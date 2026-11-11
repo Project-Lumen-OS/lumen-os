@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trial_no_sound_title">У пробному запуску немає звуку</string>
+    <string name="trial_no_sound_text">Звук з\'явиться після встановлення Lumen OS.</string>
+</resources>

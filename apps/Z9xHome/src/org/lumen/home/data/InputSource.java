@@ -46,6 +46,8 @@ public final class InputSource {
     public static final String TVINPUT_PKG = "org.lumen.tvinput";
     public static final String PKG_CHROMECAST = "com.google.android.apps.mediashell";
     public static final String PKG_AIRPLAY = "org.lumen.airplay";
+    /** Screen mirroring receiver (Miracast sink, apps/LumenMiracast): tile "miracast" opens its settings. */
+    public static final String PKG_MIRACAST = "org.lumen.miracast";
     private static final Pattern HW = Pattern.compile("/HW(\\d+)$");
     private static final Pattern CONSOLE = Pattern.compile("(?i)playstation|ps[345]|xbox|nintendo|switch|steam");
 
@@ -407,6 +409,7 @@ public final class InputSource {
         tile(out, c, "action:sleep_timer", R.string.tile_sleep_timer, R.drawable.ic_timer);
         tile(out, c, "section:general", R.string.tile_projector_settings, R.drawable.ic_tune);
         tile(out, c, "settings", R.string.tile_android_settings, R.drawable.ic_settings);
+        if (installed(c, PKG_MIRACAST)) tile(out, c, "miracast", R.string.tile_miracast, R.drawable.ic_cast);
         Set<String> off = ProjectorBridge.unsupportedTiles(c);
         if (!off.isEmpty()) out.removeIf(k -> off.contains(k.intent) || off.contains(k.id));
         return out;

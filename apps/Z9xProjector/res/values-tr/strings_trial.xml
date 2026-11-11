@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trial_no_sound_title">Deneme sürümünde ses yok</string>
+    <string name="trial_no_sound_text">Ses, Lumen OS kurulunca gelir.</string>
+</resources>

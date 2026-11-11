@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Сярэдні</string>
     <string name="pro_strong_hb">Высокі</string>
     <string name="pro_auto_hb">Аўтаматычна</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: больш высокая яркасць. Пасля выхаду з Boost колеры становяцца больш насычанымі.</string>
+    <string name="hb_boost_locked">У рэжыме выявы «%1$s» Boost уваходзіць у сам рэжым і тут не выключаецца. Выберыце іншы рэжым выявы.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Поўны сон адключаны</string>
+    <string name="hb_str_blocked_usb">Падключаны камп\'ютар праз USB: у рэжыме чакання праектар не засне цалкам, вентылятары будуць працаваць. Адключыце кабель USB, каб вярнуць поўны сон.</string>
+    <string name="hb_str_blocked_update">Усталёўваецца абнаўленне: поўны сон вернецца пасля ўсталёўкі.</string>
+    <string name="hb_str_blocked_update_check">Абноўленая сістэма правяраецца пасля запуску: поўны сон вернецца праз некалькі хвілін.</string>
+    <string name="hb_str_blocked_off">Поўны сон адключаны на гэтым праектары (сэрвісная налада).</string>
 </resources>

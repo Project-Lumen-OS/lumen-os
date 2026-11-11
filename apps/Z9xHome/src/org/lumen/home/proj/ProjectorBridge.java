@@ -51,10 +51,19 @@ public final class ProjectorBridge {
     private static final Uri STANDBY_URI = Uri.parse("content://org.lumen.projector.standbystate");
     private static final Uri UPDATER_URI = Uri.parse("content://org.lumen.updater/state");
 
-    /** "section:x", "action:x", "settings" or "" (the grid). */
+    /** "section:x", "action:x", "settings", "miracast" or "" (the grid). */
     public static void showPanel(Context c, String target) {
         if ("settings".equals(target)) {
             openAndroidSettings(c);
+            return;
+        }
+        if ("miracast".equals(target)) {
+            try {
+                c.startActivity(new Intent("org.lumen.miracast.SETTINGS").setPackage("org.lumen.miracast")
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            } catch (RuntimeException e) {
+                Log.w(App.TAG, "screen mirroring settings: " + e);
+            }
             return;
         }
         Intent i = new Intent(ACTION_SHOW_PANEL).setPackage(PROJECTOR);

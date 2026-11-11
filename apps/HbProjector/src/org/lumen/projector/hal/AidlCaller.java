@@ -3,7 +3,7 @@
  * G0130). HB-only file (the design notes to 6), the HB twin of HidlCaller.
  *
  * The vendor process /vendor/bin/hw/xgimi.hardware.gmpf-service registers 14 stable AIDL services
- * "xgimi.hardware.gmpf.I<Name>/default" (frozen V1, hash HASH). This class talks to nine of them with raw Binder
+ * "xgimi.hardware.gmpf.I<Name>/default" (V1, hash per firmware: GmpfHash). This class talks to nine of them with raw Binder
  * transactions laid out exactly as the stock Java proxies do it (com.xgimi.middle.jar,
  * xgimi.hardware.gmpf.I<Name>$Stub$Proxy):
  *   writeInterfaceToken(DESCRIPTOR) + arguments -> transact(code, data, reply, 0)
@@ -16,8 +16,10 @@
  * subclasses) fix or range-check every argument before anything is sent.
  *
  * VERSION GUARD (HbBoot rule): before the first real call on an interface, getInterfaceVersion must return 1 and
- * getInterfaceHash must return HASH. A mismatch or a failed meta call latches that interface closed for the
- * process: nothing else is sent to it, and every typed method on it throws ReplyException at once.
+ * getInterfaceHash must return a hash GmpfHash.accepted for this unit's ro.vendor.build.version.incremental
+ * (908de964 of V6.16.24 anywhere, 715affd0 only on v6.17.12). A mismatch or a failed meta call latches that
+ * interface closed for the process: nothing else is sent to it, and every typed method on it throws ReplyException
+ * at once.
  *
  * Connection: ServiceManager.checkService, never the blocking getService. Every connected interface gets a death
  * recipient; all 14 services live in one vendor process, so the first death notice drops every binder, resets
@@ -39,14 +41,16 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.util.Log;
 
 abstract class AidlCaller {
     static final String TAG = "Z9xGmpf";
 
-    /** Frozen hash of xgimi.hardware.gmpf V1 (one copy per stub in com.xgimi.middle.jar). */
-    static final String HASH = "908de964b7da427ad21df846e629b80ffdc183ab";
+    /** xgimi.hardware.gmpf V1; the accepted interface hashes per firmware are GmpfHash's rule. */
     static final int VERSION = 1;
+    /** The hash the guard accepted last (the callback stub answers it, as the stock stub of that firmware does). */
+    private static volatile String sAcceptedHash = GmpfHash.V61624;
     private static final String PKG = "xgimi.hardware.gmpf.";
 
     /** One stable AIDL service of the vendor process, with its own guard state (guarded by AidlCaller.class). */
@@ -337,17 +341,20 @@ abstract class AidlCaller {
                 Log.e(TAG, "guard: " + i.descriptor + " meta call failed, interface closed: " + e.getMessage());
                 throw e;
             }
-            if (version != VERSION || !HASH.equals(hash)) {
+            String firmware = SystemProperties.get(GmpfHash.FIRMWARE_PROP, "");
+            if (version != VERSION || !GmpfHash.accepted(hash, firmware)) {
                 i.refused = true;
                 i.binder = null;
                 i.refusedLogged = true;
-                String msg = "guard: " + i.descriptor + " version " + version + " hash " + hash + ", expected "
-                        + VERSION + " " + HASH + "; interface closed, nothing sent";
+                String msg = "guard: " + i.descriptor + " version " + version + " hash " + hash + " on firmware "
+                        + firmware + ", expected " + VERSION + " " + GmpfHash.V61624 + " (or " + GmpfHash.V61712
+                        + " on " + GmpfHash.V61712_FIRMWARE + "); interface closed, nothing sent";
                 Log.e(TAG, msg);
                 throw new ReplyException(msg);
             }
             i.verified = true;
-            Log.i(TAG, "guard: " + i.descriptor + " V" + version + " hash ok");
+            sAcceptedHash = GmpfHash.answer(hash);
+            Log.i(TAG, "guard: " + i.descriptor + " V" + version + " hash " + hash + " ok on " + firmware);
         }
     }
 
@@ -676,7 +683,7 @@ abstract class AidlCaller {
      * Java xgimi.hardware.gmpf.IProjectorFocusCallback, answered as the stock $Stub (com.xgimi.middle.jar):
      * markVintfStability in the constructor (the vendor process may only call a VINTF binder), code 1
      * oneway focusEvent(int, String) with enforceInterface and enforceNoDataAvail, 0x00FFFFFF version 1,
-     * 0x00FFFFFE the frozen hash, everything else to Binder.onTransact (descriptor, dump, shell).
+     * 0x00FFFFFE the hash the guard accepted (that firmware's stub), everything else to Binder.onTransact.
      * Never calls the HAL, never blocks: the event goes to the sink, which posts it.
      */
     private static final class FocusCallback extends Binder implements IInterface {
@@ -697,7 +704,7 @@ abstract class AidlCaller {
             if (code == META_VERSION || code == META_HASH) {
                 data.enforceInterface(DESCRIPTOR);
                 reply.writeNoException();
-                if (code == META_VERSION) reply.writeInt(VERSION); else reply.writeString(HASH);
+                if (code == META_VERSION) reply.writeInt(VERSION); else reply.writeString(sAcceptedHash);
                 return true;
             }
             if (code != FOCUS_EVENT) return super.onTransact(code, data, reply, flags);

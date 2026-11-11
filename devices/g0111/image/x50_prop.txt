@@ -1,0 +1,34 @@
+# Property edits of the X50 test image (compose_x50.sh step 5, x50_props.py). Sections name the file:
+#   [system]   /system/build.prop          [product]  /system/product/etc/build.prop
+# KEY=VALUE replaces the one line of KEY in that file (it must be there exactly once), +KEY=VALUE appends a new
+# key (it must not be in the file), -KEY deletes the one line of KEY. @V@ is the variant (t1), @BID@ the build id
+# date part (UTC yyyymmddHHMM). Nothing else of either file changes (verify_tree_x50.py compares line by line).
+[system]
+ro.product.system.model=XGIMI X50 Ultra
+ro.build.display.id=Lumen OS x50-@V@ (AP2A.240905.003, @BID@, test)
+# Setup shows it; Lumen Setup is the only reader in the image
+ro.z9x.version=x50-@V@
+[product]
+ro.product.product.model=XGIMI X50 Ultra
+bluetooth.device.default_name=XGIMI X50 Ultra
+ro.lumen.version=x50-@V@
+# no OTA on the X50: no partition list, no manifest, the Z9X device id gone, no Z9X build id or version code
+-ro.product.ab_ota_partitions
+-ro.z9x.ota.manifest_url
+ro.z9x.device=x50
+ro.z9x.build_id=lumen-x50-@V@-@BID@
+ro.z9x.version_code=0
+# the OTA boot gate behaves like stock update_verifier (no update can be pending without an updater)
+ro.z9x.ota.gate=0
+# no rescue reboot to fastbootd (z9x_rescue.rc is removed too)
+ro.z9x.rescue=0
+# test image: adb over the network and USB without confirmation (as the HB tN images)
+ro.adb.secure=0
+persist.sys.usb.config=adb
++service.adb.tcp.port=5555
+# identity of the X50 image (registry devices/g0111: family horse_popular, model G0111)
++ro.lumen.device=g0111
++ro.lumen.model=G0111
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-x50-@V@-@BID@
++ro.lumen.base_build_id=lumen-1.0.9-20261106anp

@@ -88,6 +88,8 @@ public final class OpticalZoomPanel extends Panel {
     private final java.util.concurrent.atomic.AtomicBoolean session = new java.util.concurrent.atomic.AtomicBoolean();
     // HAL thread writes, UI reads
     private volatile int max = -1, limitTotal = 0, progress = -1, startProgress = -1;
+    /** HB beta6: the stock dial math (ZoomScale); max / limitTotal mirror it for the reads below. */
+    private volatile ZoomScale scale;
     /** HAL thread: 98 optical step read at open (stock isOpticalCurStep); -1 = unknown, no AF on close. */
     private int startOptical = -1;
     private TextView value, status;
@@ -150,8 +152,9 @@ public final class OpticalZoomPanel extends Panel {
             if (range[1] != 0 || range[2] < 1 || range[2] > MAX_POSITIONS) {
                 throw new IllegalStateException("unexpected zoom range");
             }
-            max = range[2];
-            limitTotal = lim >= 0 && lim <= MAX_LIMIT ? lim : 0;
+            scale = new ZoomScale(range[2], lim);
+            max = scale.max();
+            limitTotal = scale.limit();
             progress = startProgress = readProgress(g);
             startOptical = readOptical(g);
             Log.i(TAG, "enter: position " + progress + " of 0.." + (limitTotal + max) + ", 98 optical " + startOptical);
@@ -169,11 +172,9 @@ public final class OpticalZoomPanel extends Panel {
     private int readProgress(GmpfClient g) throws Exception {
         int cur = g.getZoomStep()[1];
         int lim = limitTotal > 0 ? g.getZoomLimitStep()[1] : 0;
-        if (cur < 0 || cur > max || lim > 0 || lim < -limitTotal) {
-            throw new IllegalStateException("98 optical " + cur + ", 190 limit " + lim);
-        }
-        if (cur != 0 && lim != 0) throw new IllegalStateException("limit " + lim + " away from index 0 (" + cur + ")");
-        return cur == 0 ? limitTotal + lim : cur + limitTotal;
+        int p = scale.progress(cur, lim);
+        if (p < 0) throw new IllegalStateException("98 optical " + cur + ", 190 limit " + lim + " outside 0.." + scale.last());
+        return p;
     }
 
     /** 98 optical step alone (stock KeyStoneManager.getCurOpticalCurZoomStep), -1 when the read fails. */
@@ -203,29 +204,30 @@ public final class OpticalZoomPanel extends Panel {
     private void step(GmpfClient g, int dir) {
         try {
             int now = readProgress(g);              // fresh 98 + 190 for the guards
-            int last = limitTotal + max;
-            if ((dir < 0 && now <= 0) || (dir > 0 && now >= last)) {
+            int[] mv = scale.move(now, dir);
+            if (mv == null) {
                 pending.set(0);
                 progress = now;
                 ui(() -> { render(); say(dir < 0 ? R.string.zoom_limit_big : R.string.zoom_limit_small); });
                 return;
             }
             long t0 = SystemClock.uptimeMillis();
-            int r;
-            String what;
-            boolean limitZone = dir > 0 ? now < limitTotal : now <= limitTotal;
-            if (limitZone) {
-                int lim = now - limitTotal;          // 0 or -1..-limitTotal
-                r = g.setOpticalZoomLimitStep(lim + dir);
-                what = "189(" + (lim + dir) + ")";
-            } else {
-                int cur = now - limitTotal;
-                r = g.setOpticalZoomStep(cur + dir);
-                what = "95(" + (cur + dir) + ")";
-            }
+            int r = mv[0] == 189 ? g.setOpticalZoomLimitStep(mv[1]) : g.setOpticalZoomStep(mv[1]);
+            String what = mv[0] + "(" + mv[1] + ")";
             int after = readProgress(g);
             Log.i(TAG, what + " -> " + r + " in " + (SystemClock.uptimeMillis() - t0) + " ms, position " + now + " -> " + after);
             progress = after;
+            if (r != 0 && after == now && scale.refusedAtEnd(now, dir)) {
+                // HB beta6: the vendor refuses the end it reported (tester: Size 1 of 15 never reachable); that end is
+                // no position on this unit, the counter runs over the reachable ones (ZoomScale.refusedAtEnd)
+                max = scale.max();
+                limitTotal = scale.limit();
+                progress = readProgress(g);
+                Log.i(TAG, "end refused: positions now 0.." + scale.last() + ", position " + progress);
+                pending.set(0);
+                ui(() -> { render(); say(dir < 0 ? R.string.zoom_limit_big : R.string.zoom_limit_small); });
+                return;
+            }
             if (r != 0) { pending.set(0); ui(() -> { render(); say(R.string.zoom_refused); }); return; }
             ui(this::render);
         } catch (Throwable t) {
@@ -426,10 +428,11 @@ public final class OpticalZoomPanel extends Panel {
 
     /** Bar (left small, right big) and "Size N of M" over all stock positions (limit ones included). */
     private void render() {
-        if (value == null || state != READY || max < 0 || progress < 0) return;
-        int last = limitTotal + max;
+        ZoomScale sc = scale;
+        if (value == null || state != READY || sc == null || progress < 0) return;
+        int last = sc.last();
         int p = Math.min(progress, last);
-        value.setText(app.getString(R.string.zoom_position, last - p + 1, last + 1));
+        value.setText(app.getString(R.string.zoom_position, sc.sizeNumber(p), sc.positions()));
         bar.set(last - p, last, false);
         status.setText("");
     }

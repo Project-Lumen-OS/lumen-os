@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">متوسط</string>
     <string name="pro_strong_hb">مرتفع</string>
     <string name="pro_auto_hb">تلقائي</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: سطوع أعلى. عند الخروج من Boost تصبح الألوان أكثر حيوية.</string>
+    <string name="hb_boost_locked">في وضع الصورة «%1$s» يكون Boost جزءًا من الوضع ولا يمكن إيقافه هنا. اختر وضع صورة آخر.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">السكون العميق متوقف</string>
+    <string name="hb_str_blocked_usb">حاسوب متصل عبر USB: في وضع الاستعداد لن ينام جهاز العرض بالكامل وستستمر المراوح في العمل. افصل كابل USB لاستعادة السكون العميق.</string>
+    <string name="hb_str_blocked_update">يجري تثبيت تحديث: يعود السكون العميق بعد انتهائه.</string>
+    <string name="hb_str_blocked_update_check">يجري فحص النظام المحدَّث بعد التشغيل: يعود السكون العميق خلال بضع دقائق.</string>
+    <string name="hb_str_blocked_off">السكون العميق متوقف على جهاز العرض هذا (إعداد خدمة).</string>
 </resources>

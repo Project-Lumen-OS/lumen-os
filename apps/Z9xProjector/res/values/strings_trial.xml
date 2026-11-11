@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Z9X trial on a stock unit without the user's audio files (audio/AudioPorts): shown once per build -->
+<resources>
+    <string name="trial_no_sound_title">No sound in the trial</string>
+    <string name="trial_no_sound_text">Sound comes with the installation of Lumen OS.</string>
+</resources>

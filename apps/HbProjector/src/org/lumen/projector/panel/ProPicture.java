@@ -104,6 +104,8 @@ final class ProPicture {
     private int ccColorIndex;
     private int gen;
     private State state;
+    /** HB fork: the coalescers of this page's sliders (white balance, 11-point, colour correction). */
+    private final java.util.List<SlideCoalescer> slides = new java.util.ArrayList<>();
 
     ProPicture(Context app, SharedPreferences prefs, Host host) {
         this.app = app;
@@ -126,7 +128,7 @@ final class ProPicture {
         for (int i = 0; i < WB_ORDER.length; i++) {
             final GmpfClient.WbItem item = WB_ORDER[i];
             wb[i] = wb2Page.add(new SliderRow(app, s(wbTitles[i]), 0, 100, slide(v ->
-                    change("wb " + item + " " + v, (g, g2) -> g.setWb(item, v)))));
+                    new SlideMain.Step("wb " + item + " " + v, (g, g2) -> g.setWb(item, v)))));
             wb[i].setCommitDelay(WB_COMMIT_MS);
         }
         // Z9X HB fork: two_point_white_balance_reset_btn (PictureViewModel.postAction :3282-3284, no confirmation)
@@ -147,7 +149,7 @@ final class ProPicture {
             final int channel = c;
             wb11[c] = wb11Page.add(new SliderRow(app, s(rgb[c]), 0, 100, slide(v -> {
                 final int point = Gmpf2Client.WB_POINTS[wbPointIndex];
-                change("11-point wb " + point + " ch" + channel + " " + v, (g, g2) -> {
+                return new SlideMain.Step("11-point wb " + point + " ch" + channel + " " + v, (g, g2) -> {
                     int[] cur = g2.getMultiPointWb(point);           // the other two as the HAL has them
                     cur[channel] = v;
                     if (!g2.setMultiPointWb(point, cur[0], cur[1], cur[2])) throw new IllegalStateException("282 false");
@@ -176,7 +178,7 @@ final class ProPicture {
             final Gmpf2Client.HsyType type = HSY_ORDER[t];
             hsy[t] = ccPage.add(new SliderRow(app, s(hsyTitles[t]), 0, 100, slide(v -> {
                 final int colour = ccColorIndex;
-                change("hsy " + type + " colour " + colour + " " + v, (g, g2) -> {
+                return new SlideMain.Step("hsy " + type + " colour " + colour + " " + v, (g, g2) -> {
                     int[] arr = g2.getHsyColorModel(type);             // whole array, one colour changed (stock)
                     arr[colour] = v;
                     if (!g2.setHsyColorModel(type, arr)) throw new IllegalStateException("325 false");
@@ -285,6 +287,8 @@ final class ProPicture {
 
     // ================================================================== read / show
     void refresh() {
+        if (sliding()) return;                                  // HB fork: the slide reads once at its end
+        for (SlideCoalescer c : slides) c.forget();             // the read may move a slider: write the next value
         final int my = ++gen;
         final int point = Gmpf2Client.WB_POINTS[wbPointIndex];
         Hal.query((g, g2) -> read(g, g2, point), st -> {
@@ -420,13 +424,29 @@ final class ProPicture {
         return sig == null ? src : src + "  " + sig;
     }
 
-    private interface IntAction { void run(int v); }
-
-    private SliderRow.OnSlide slide(IntAction commit) {
+    /**
+     * HB fork (4PDA report 2026-11-10: the picture flickers when a slider moves fast over several steps): every step
+     * goes to the slider's SlideCoalescer, which writes the newest value at most every 100 ms with one write in flight
+     * (stock PictureViewModel: job.cancel + delay(100) for 2-point white balance, one synchronous write per key for the
+     * others) and reads the page once when the slide is over. Before, every commit queued a write plus a full re-read
+     * (read(): about 25 vendor getters) on the HAL thread.
+     */
+    private SliderRow.OnSlide slide(SlideMain.Write write) {
+        final SlideCoalescer c = SlideMain.of(app, write, this::refresh);
+        slides.add(c);
         return new SliderRow.OnSlide() {
-            @Override public void onChanging(SliderRow row, int value) { row.setTag(android.os.SystemClock.uptimeMillis()); }
-            @Override public void onCommit(SliderRow row, int value) { safe("slider", () -> commit.run(value)).run(); }
+            @Override public void onChanging(SliderRow row, int value) {
+                row.setTag(android.os.SystemClock.uptimeMillis());
+                safe("slider", () -> c.submit(value)).run();
+            }
+            @Override public void onCommit(SliderRow row, int value) { safe("slider", () -> c.submit(value)).run(); }
         };
+    }
+
+    /** A slider write is in flight or waiting: no page read now (its own read comes when the slide is over). */
+    private boolean sliding() {
+        for (SlideCoalescer c : slides) if (c.busy()) return true;
+        return false;
     }
 
     /** A slider the user is moving is not moved back by an older read-back. */

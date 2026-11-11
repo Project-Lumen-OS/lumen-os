@@ -18,9 +18,13 @@
 #       add-on stays off from now on (marker /metadata/z9x_gapps/off = "<n> <slot> <ro.z9x.build_id>",
 #       removed by the installer's 'gapps'), so a system that fails with Google services gets one start
 #       without them before the rescue at the 4th start sends it to fastbootd. The marker holds only for
-#       the slot and build that failed: after an update that did not start (the OTA gate rolls back at its
-#       4th attempt, after the marker) or a 'rescue' with another build, the other slot or build keeps its
-#       Google services;
+#       the slot and build that failed: after a 'rescue' with another build, or on the other slot, the add-on
+#       is on again. Not on an update slot that the OTA gate (z9x_ota.sh) can still roll back (libsnapshot's
+#       indicator /metadata/ota/snapshot-boot names the other slot, ro.z9x.ota.gate is not 0, no no_rollback
+#       record for this slot; the same rule as z9x_rescue.sh): there the gate decides, it rolls back at its
+#       4th attempt to the old slot with its Google services, and a third start that completes keeps them on
+#       the new build too (before, that third start wrote the marker, and the updated system went on without
+#       Google services for good after one rough first start);
 #    3. the block device read-only, then the partition mounted read-only at /mnt/z9x_gapps: erofs with
 #       context=system_file, erofs without it (the image carries the same label on every inode), then ext4
 #       with context=system_file (every file labelled system_file as MindTheGapps' own installer does);
@@ -44,10 +48,16 @@
 # Result: sys.z9x.gapps = ok | none | skip | off | bad:<why> (allow, config, mkdir, mount, manifest, zip,
 # path, missing, size, entry, overlay, slow), sys.z9x.gapps.zip = the zip's sha256, sys.z9x.gapps.fs =
 # erofs | ext4 (with ok).
+# Log: every boot run that finds the partition adds one line to /metadata/z9x_gapps/log.txt (moved to log.old
+# at 16 KiB): time, uptime, slot, build, start number of the boot rescue counter, update slot (1) or not (0),
+# the result with its reason and the time the run took. The property and logcat are gone after the next
+# restart; this line tells later why a start went without Google services. Nothing is written without the
+# partition. The installer's 'gapps' removes the directory with the marker, and the log with it.
 # The installer reads the next line from the image (dump.erofs) before it builds an erofs add-on: keep it.
 # lumen-gapps-fs: erofs ext4
 # Any failure: the system starts without Google services, never a boot loop. Never writes a partition; the
-# only file it writes is the marker. Bounded (init waits for this exec and the vendor PWM watchdog reboots
+# only files it writes are the marker and the log (after the budget's last check, about 3 short processes).
+# Bounded (init waits for this exec and the vendor PWM watchdog reboots
 # when early-boot is late, margin ~7 s): it reads only the partition's metadata (about 60 entries, one stat
 # per listed file), the overlay mounts only look up directories: about 60 short processes, roughly 0.2 s.
 # One time budget for the whole boot run, BUDGET (2 s), checked from /proc/uptime (a shell read, no
@@ -60,6 +70,8 @@ MODE=${1:-boot}
 ALLOW=$R/system/etc/z9x/gapps_allow.txt
 CFG=$R/system/etc/z9x/gapps/sysconfig
 OFF=$R/metadata/z9x_gapps/off
+LOG=$R/metadata/z9x_gapps/log.txt
+LOGON=                 # set once a boot run found the partition: its result goes into LOG
 CTX=u:object_r:system_file:s0
 BUDGET=200             # centiseconds for the whole boot run (see above)
 case "$MODE" in
@@ -91,7 +103,24 @@ fail() {
   if [ "$MODE" = check ]; then echo "$1${2:+: $2}"; exit 1; fi
   setprop sys.z9x.gapps "$1"
   say "$1${2:+: $2}"
+  glog "$1${2:+: $2}"
   exit 0
+}
+# glog TEXT: the boot run's one line in LOG (see the header); never fails the run, never prints
+glog() {
+  [ -n "$LOGON" ] || return 0
+  ms=?; now; [ -z "$c" ] || [ -z "$t0" ] || ms=$(( (c - t0) * 10 ))
+  up=?; [ -z "$t0" ] || up=$((t0 / 100))
+  [ -d "${LOG%/*}" ] || mkdir -p "${LOG%/*}" 2>/dev/null
+  [ -z "$(find "$LOG" -size +16384c 2>/dev/null)" ] || mv -f "$LOG" "${LOG%.txt}.old" 2>/dev/null
+  echo "$(date +%m%d-%H%M%S 2>/dev/null) up ${up}s $cur $bid start ${rn:-?} update ${upd:-0}: $1 ($ms ms)" 2>/dev/null >> "$LOG"
+}
+# ota_waits: 0 = this start is on an update slot that z9x_ota.sh can still roll back by itself (z9x_rescue.sh's
+# rule): libsnapshot's indicator names the other slot (upd=1), the gate is on, no no_rollback for this slot
+ota_waits() {
+  [ "$upd" = 1 ] && [ "$(getprop ro.z9x.ota.gate)" != 0 ] || return 1
+  nr=; read -r nr _ 2>/dev/null < "$R/metadata/z9x_ota/no_rollback"
+  [ "$nr" != "$cur" ]
 }
 # now: centiseconds since boot in c (/proc/uptime, "12.34 ..."); c empty when that cannot be read
 now() {
@@ -121,6 +150,9 @@ case "$cur" in _a|_b) ;; *) fail none "no slot suffix" ;; esac
 [ -b "$dev" ] || { [ -n "$R" ] && [ -d "$dev" ]; } || fail none "no $name"
 if [ "$MODE" = boot ]; then
   bid=$(getprop ro.z9x.build_id)
+  LOGON=1
+  upd=0; src=; read -r src _ 2>/dev/null < "$R/metadata/ota/snapshot-boot"
+  [ -z "$src" ] || [ "$src" = "$cur" ] || upd=1
   if [ -e "$OFF" ]; then
     os=; ob=
     read -r _ os ob 2>/dev/null < "$OFF"
@@ -129,13 +161,17 @@ if [ "$MODE" = boot ]; then
     fi
     say "ignoring $OFF (${os:-?} ${ob:-?}): another slot or build"
   fi
-  n=; s=
-  read -r n s 2>/dev/null < "$R/metadata/z9x_rescue/count"
-  case "$n" in ''|*[!0-9]*) n=0 ;; esac
-  if [ "$s" = "$cur" ] && [ "$n" -ge 3 ]; then
-    mkdir -p "${OFF%/*}" 2>/dev/null
-    echo "$n $cur $bid" 2>/dev/null > "$OFF" || say "cannot write $OFF"
-    fail off "start $n of $cur in a row without a completed boot: from now on without Google services on $cur $bid"
+  rn=; s=
+  read -r rn s 2>/dev/null < "$R/metadata/z9x_rescue/count"
+  case "$rn" in ''|*[!0-9]*) rn=0 ;; esac
+  if [ "$s" = "$cur" ] && [ "$rn" -ge 3 ]; then
+    if ota_waits; then
+      say "start $rn of $cur in a row without a completed boot, on an update slot: Google services stay on (the OTA gate rolls the update back by itself)"
+    else
+      mkdir -p "${OFF%/*}" 2>/dev/null
+      echo "$rn $cur $bid" 2>/dev/null > "$OFF" || say "cannot write $OFF"
+      fail off "start $rn of $cur in a row without a completed boot: from now on without Google services on $cur $bid"
+    fi
   fi
 fi
 [ -f "$ALLOW" ] || fail bad:allow "no $ALLOW"
@@ -217,4 +253,5 @@ setprop sys.z9x.gapps.zip "$z"
 setprop sys.z9x.gapps.fs "$fs"
 setprop sys.z9x.gapps ok
 say "ok: $n files of $zn (gmsversion $gv, $fs)"
+glog "ok: $n files ($fs)"
 exit 0

@@ -14,6 +14,9 @@
  *   Soundbar (ARC) while the soundbar is known: an ARC / eARC output now, a CEC audio system in the HDMI-CEC device
  *     list, or either of them seen earlier in this process (the app is persistent: one process per boot).
  *   Bluetooth, wired, USB while connected.
+ *   Headphones (WIRED) always where the projector has a 3.5 mm jack (2026-11-10, 4PDA: the HB menu offered only Auto /
+ *     Projector / Bluetooth): the HB kernel reports no plug, and stock lists "Headphones" whenever the feature
+ *     support_wired_headphone is not "false" (GimiAudioService.getAudioDeviceForNewSDK, HbAudioRules.wiredStep).
  *   The stored choice always gets its row, even while its device is momentarily missing (never a hidden selection).
  *   The row is shown only with more than one real output (Auto is not an output): Speaker alone = hidden.
  */
@@ -40,12 +43,17 @@ public final class HbOutputRows {
      * chosen: the stored kind (null = AUTO).
      */
     public static List<String> kinds(Collection<String> connected, boolean soundbarKnown, String chosen) {
+        return kinds(connected, soundbarKnown, chosen, false);
+    }
+
+    /** As above; wiredJack: the projector has a 3.5 mm jack the system cannot detect (HbFeatures WIRED_HEADPHONE). */
+    public static List<String> kinds(Collection<String> connected, boolean soundbarKnown, String chosen, boolean wiredJack) {
         List<String> out = new ArrayList<>();
         out.add(AUTO);
         out.add(SPEAKER);
         for (String k : EXTRA) {
             boolean listed = connected != null && connected.contains(k);
-            if (listed || (ARC.equals(k) && soundbarKnown) || k.equals(chosen)) out.add(k);
+            if (listed || (ARC.equals(k) && soundbarKnown) || (WIRED.equals(k) && wiredJack) || k.equals(chosen)) out.add(k);
         }
         return out;
     }

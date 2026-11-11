@@ -506,6 +506,18 @@ public final class InfoTest {
             codes.put(f[0] + "/" + code(f[1]), f[2]);
             sigs.put(f[0] + "/" + code(f[1]), f[3]);
         }
+        // the V6.17.12 vendor table (GmpfHash accepts its hash only on v6.17.12): every plan row must be the same row
+        // there (service, code, method, Java signature and NDK proxy arguments)
+        Map<String, String> rows61624 = new HashMap<>(), rows61712 = new HashMap<>();
+        for (String[] f : tsv(r.resolve("aidl_codes.tsv"))) rows61624.put(f[0] + "/" + code(f[1]), String.join("\t", f));
+        for (String[] f : tsv(r.resolve("aidl_codes_v61712.tsv"))) rows61712.put(f[0] + "/" + code(f[1]), String.join("\t", f));
+        ok(rows61712.size() > rows61624.size(), "aidl_codes_v61712.tsv read (" + rows61712.size() + " rows)");
+        for (String[] p : Hb.PLAN) {
+            if (p[0].equals("-")) continue;
+            String k = p[0] + "/" + code(p[1]);
+            ok(rows61624.get(k) != null && rows61624.get(k).equals(rows61712.get(k)),
+                    "plan row " + k + " " + p[2] + " is the same row in aidl_codes.tsv and aidl_codes_v61712.tsv");
+        }
         // allowed_lumeninfo.tsv: LumenInfo-only getters (2026-11-01)
         Set<String> extra = new HashSet<>();
         Set<String> planKeys = new HashSet<>();

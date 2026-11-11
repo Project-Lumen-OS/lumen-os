@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS: /system/product/etc/default-permissions/lumen-miracast.xml
+     Runtime permissions of org.lumen.miracast (/system/priv-app/LumenMiracast, platform-signed). The
+     receiver runs from boot without anyone opening it, so nothing could ask: NEARBY_WIFI_DEVICES for the
+     Wi-Fi Direct calls (declared neverForLocation), POST_NOTIFICATIONS for its status notification, which
+     opens the screen mirroring settings. Read by DefaultPermissionGrantPolicy when the permission defaults
+     are (re)applied: first boot of a user or a changed build fingerprint (every Lumen OS update). -->
+<exceptions>
+    <exception package="org.lumen.miracast">
+        <permission name="android.permission.NEARBY_WIFI_DEVICES" fixed="false" />
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="false" />
+    </exception>
+</exceptions>

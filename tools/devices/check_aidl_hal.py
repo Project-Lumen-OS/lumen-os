@@ -2,7 +2,8 @@
 """check_aidl_hal.py: build-time guard for an app that talks to a stable AIDL gmpf HAL through one hand-written
 transport. Run through tools/devices/check_hal.py for devices with hal_check=aidl-table.
 
-  check_aidl_hal.py --app APP --codes CODES_TSV --banned BANNED_TSV --allowed ALLOWED_TSV [--dex DEX]
+  check_aidl_hal.py --app APP --codes CODES_TSV [--codes CODES_TSV ...] --banned BANNED_TSV --allowed ALLOWED_TSV
+                    [--dex DEX]
 
 Fail-closed: every option but --dex is required, and a call that no rule names is refused. Source-level check
 over APP/src (javac does not shrink and d8 runs without R8, so every compiled call is in the dex). Comments and
@@ -16,7 +17,10 @@ same place.
    "method"), ... }'. Service = the descriptor's last segment without the leading I.
 3. Every Call with an interface is a row of CODES_TSV (service, code, method; '#' lines skipped) with the same
    service, code and method. A Call with null is a meta call: getInterfaceVersion 0x00FFFFFF or
-   getInterfaceHash 0x00FFFFFE, nothing else.
+   getInterfaceHash 0x00FFFFFE, nothing else. With several --codes (one table per vendor firmware the app accepts,
+   e.g. the HB V6.16.24 and V6.17.12 tables), every Call must be a row of EVERY table and that row must be equal in
+   all of them (service, code, method, signature and every further column, e.g. the NDK proxy arguments): a method
+   whose code or signature changed between firmwares (HB FOCUS 102 doProImgFusionOverlap) can never be sent.
 4. No Call matches a BANNED or REVIEW row of BANNED_TSV (service, code, method, signature, status) by
    (service, code) or by (service, method): a call still under review counts as refused.
 5. Every call of a transport method (a method of that file with a Call parameter) passes Call.X, a declared
@@ -93,6 +97,9 @@ def call_params(params):
 
 
 def check(app, codes, banned, allowed):
+    """codes: one code table path or a list of them (the first one names the rows in messages)."""
+    codes_list = [codes] if isinstance(codes, str) else list(codes)
+    codes = codes_list[0]
     errs = []
     src = os.path.join(app, "src")
     files = {}
@@ -160,7 +167,10 @@ def check(app, codes, banned, allowed):
                     % (tf, declared, len(calls)))
 
     # 3. every call is a row of the code table; 4. none is banned
-    table = {(r[0], int(r[1], 0)): r[2] for r in tsv(codes) if len(r) >= 3 and re.match(r"^(0x[0-9a-fA-F]+|\d+)$", r[1])}
+    full = []
+    for path in codes_list:
+        full.append({(r[0], int(r[1], 0)): r for r in tsv(path) if len(r) >= 3 and re.match(r"^(0x[0-9a-fA-F]+|\d+)$", r[1])})
+    table = {k: r[2] for k, r in full[0].items()}
     ban = [(r[0], int(r[1], 0), r[2], r[4]) for r in tsv(banned) if len(r) >= 5 and r[4] in ("BANNED", "REVIEW")]
     allow = set()
     for r in tsv(allowed):
@@ -187,6 +197,15 @@ def check(app, codes, banned, allowed):
         if table.get((svc, code)) != method:
             errs.append("rule 3: Call.%s: %s %d %s is not a row of %s (the table has %r)"
                         % (name, svc, code, method, os.path.basename(codes), table.get((svc, code))))
+        for path, other in zip(codes_list[1:], full[1:]):
+            mine, theirs = full[0].get((svc, code)), other.get((svc, code))
+            if theirs is None or theirs[2] != method:
+                errs.append("rule 3: Call.%s: %s %d %s is not a row of %s (the table has %r)"
+                            % (name, svc, code, method, os.path.basename(path), theirs and theirs[2]))
+            elif mine is not None and mine != theirs:
+                errs.append("rule 3: Call.%s: %s %d %s differs between %s and %s (%s / %s): never sent"
+                            % (name, svc, code, method, os.path.basename(codes), os.path.basename(path),
+                               " | ".join(mine[3:]), " | ".join(theirs[3:])))
         for s, c, mth, st in ban:
             if s == svc and (c == code or mth == method):
                 errs.append("rule 4: Call.%s: %s %d %s is %s (%s %d %s)"
@@ -270,12 +289,16 @@ def check_dex(dex, transport):
 
 
 def main(argv):
-    opts = dict(zip(argv[::2], argv[1::2])) if len(argv) % 2 == 0 else {}
+    pairs = list(zip(argv[::2], argv[1::2])) if len(argv) % 2 == 0 else None
     need = {"--app", "--codes", "--banned", "--allowed"}
-    if not need <= set(opts) or not set(opts) <= need | {"--dex"} or len(opts) * 2 != len(argv):
+    opts = dict(pairs or [])
+    names = [k for k, _ in pairs or []]
+    if pairs is None or not need <= set(opts) or not set(opts) <= need | {"--dex"} \
+            or any(names.count(k) > 1 for k in set(names) - {"--codes"}):
         print(__doc__)
         return 2
-    errs, n, m, transport = check(opts["--app"], opts["--codes"], opts["--banned"], opts["--allowed"])
+    codes = [v for k, v in pairs if k == "--codes"]
+    errs, n, m, transport = check(opts["--app"], codes, opts["--banned"], opts["--allowed"])
     if "--dex" in opts:
         errs += check_dex(opts["--dex"], transport)
     for e in errs:

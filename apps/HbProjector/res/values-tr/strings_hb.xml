@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Orta</string>
     <string name="pro_strong_hb">Yüksek</string>
     <string name="pro_auto_hb">Otomatik</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: daha yüksek parlaklık. Boost’tan çıkınca renkler daha canlı olur.</string>
+    <string name="hb_boost_locked">“%1$s” görüntü modunda Boost modun bir parçasıdır ve burada kapatılamaz. Başka bir görüntü modu seçin.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Derin uyku kapalı</string>
+    <string name="hb_str_blocked_usb">USB ile bir bilgisayar bağlı: bekleme modunda projektör tam olarak uyumaz ve fanlar çalışmaya devam eder. Derin uykuyu geri almak için USB kablosunu çıkarın.</string>
+    <string name="hb_str_blocked_update">Bir güncelleme yükleniyor: derin uyku bittiğinde geri gelir.</string>
+    <string name="hb_str_blocked_update_check">Güncellenen sistem başlatmadan sonra denetleniyor: derin uyku birkaç dakika içinde geri gelir.</string>
+    <string name="hb_str_blocked_off">Bu projektörde derin uyku kapalı (servis ayarı).</string>
 </resources>

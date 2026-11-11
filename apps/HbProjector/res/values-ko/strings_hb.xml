@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">보통</string>
     <string name="pro_strong_hb">높음</string>
     <string name="pro_auto_hb">자동</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: 더 높은 밝기. Boost를 끄면 색이 더 선명해집니다.</string>
+    <string name="hb_boost_locked">‘%1$s’ 화면 모드에서는 Boost가 모드의 일부라 여기서 끌 수 없습니다. 다른 화면 모드를 선택하세요.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">딥 슬립 꺼짐</string>
+    <string name="hb_str_blocked_usb">USB로 컴퓨터가 연결되어 있습니다. 대기 중에도 프로젝터가 완전히 잠들지 않고 팬이 계속 돌아갑니다. 딥 슬립을 되돌리려면 USB 케이블을 분리하세요.</string>
+    <string name="hb_str_blocked_update">업데이트를 설치하는 중입니다. 완료되면 딥 슬립이 돌아옵니다.</string>
+    <string name="hb_str_blocked_update_check">업데이트된 시스템을 시작 후 확인하는 중입니다. 몇 분 후 딥 슬립이 돌아옵니다.</string>
+    <string name="hb_str_blocked_off">이 프로젝터에서 딥 슬립이 꺼져 있습니다(서비스 설정).</string>
 </resources>

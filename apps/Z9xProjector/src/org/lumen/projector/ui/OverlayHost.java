@@ -243,6 +243,10 @@ public final class OverlayHost {
         if (!onMain("addStatic")) return false;
         try {
             if (lp.getTitle() == null || lp.getTitle().length() == 0) lp.setTitle("Z9xStatic");
+            if (v.getParent() != null) {                     // still held by the window manager: take it back first
+                Log.w(TAG, "addStatic: " + lp.getTitle() + " was still added, removing it first");
+                try { wm.removeViewImmediate(v); } catch (Throwable ignored) { }
+            }
             wm.addView(v, lp);
             statics.add(v);
             return true;
@@ -265,7 +269,12 @@ public final class OverlayHost {
         if (!onMain("removeStatic")) { main.post(() -> removeStatic(v)); return; }
         statics.remove(v);
         try {
-            if (v.isAttachedToWindow()) wm.removeViewImmediate(v);
+            // Not gated on isAttachedToWindow(): a view added but not yet traversed (a re-add over a new
+            // panel) reports false while the window manager still holds it, and that left the card's window
+            // on screen for good (2026-11-07, "Sleep timer off" stuck in the corner).
+            if (v.getParent() != null || v.isAttachedToWindow()) wm.removeViewImmediate(v);
+        } catch (IllegalArgumentException notAdded) {
+            // not added: nothing to remove
         } catch (Throwable t) {
             Log.w(TAG, "removeStatic: " + t);
         }

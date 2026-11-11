@@ -149,6 +149,44 @@ public final class HbAudioRulesTest {
         eq("auto off: CEC off", false, HbAudioRules.autoSystemAudioOff("SPEAKER", false, true, true, true, -1));
         eq("auto off: soundbar switch off", false, HbAudioRules.autoSystemAudioOff("SPEAKER", true, false, true, true, -1));
         eq("auto off: no audio system", false, HbAudioRules.autoSystemAudioOff("SPEAKER", true, true, false, true, -1));
+        // 6. the 3.5 mm jack (2026-11-10, 4PDA): connect while chosen, remove only our own connection
+        HbAudioRules.WiredStep C = HbAudioRules.WiredStep.CONNECT, D = HbAudioRules.WiredStep.DISCONNECT,
+                N = HbAudioRules.WiredStep.NONE;
+        eq("jack: chosen, not listed -> connect", C, HbAudioRules.wiredStep("WIRED", false, false));
+        eq("jack: chosen, ours gone (audio server) -> connect", C, HbAudioRules.wiredStep("WIRED", false, true));
+        eq("jack: chosen, listed -> nothing", N, HbAudioRules.wiredStep("WIRED", true, true));
+        eq("jack: chosen, a real jack listed -> nothing", N, HbAudioRules.wiredStep("WIRED", true, false));
+        for (String k : new String[] {"AUTO", "SPEAKER", "ARC", "BT", "USB"}) {
+            eq("jack: " + k + " chosen, ours listed -> remove", D, HbAudioRules.wiredStep(k, true, true));
+            eq("jack: " + k + " chosen, a real jack -> keep", N, HbAudioRules.wiredStep(k, true, false));
+            eq("jack: " + k + " chosen, nothing listed -> nothing", N, HbAudioRules.wiredStep(k, false, true));
+        }
+        eq("jack: Auto leaves via the speaker", true, HbAudioRules.speakerBeforeDisconnect("AUTO", D));
+        eq("jack: Speaker chosen needs no interim", false, HbAudioRules.speakerBeforeDisconnect("SPEAKER", D));
+        eq("jack: Bluetooth chosen needs no interim", false, HbAudioRules.speakerBeforeDisconnect("BT", D));
+        eq("jack: no removal, no interim", false, HbAudioRules.speakerBeforeDisconnect("AUTO", N));
+        // headphone_volume: only on the confirmed path 4; stored before switch_end=4 only
+        eq("hp: routed + confirmed", true, HbAudioRules.headphoneConfirmed(4, 4));
+        eq("hp: routed, not confirmed", false, HbAudioRules.headphoneConfirmed(4, 0));
+        eq("hp: confirmed, routed elsewhere", false, HbAudioRules.headphoneConfirmed(0, 4));
+        eq("hp: speaker", false, HbAudioRules.headphoneConfirmed(0, 0));
+        eq("hp: level sent", 35, HbAudioRules.headphoneVolume(true, 35, -1, false));
+        eq("hp: same level not again", -1, HbAudioRules.headphoneVolume(true, 35, 35, false));
+        eq("hp: same level forced", 35, HbAudioRules.headphoneVolume(true, 35, 35, true));
+        eq("hp: off the jack nothing", -1, HbAudioRules.headphoneVolume(false, 35, -1, true));
+        eq("hp: out of range", -1, HbAudioRules.headphoneVolume(true, 101, -1, true));
+        eq("hp: store before end on 4", true, HbAudioRules.storeHeadphoneBeforeEnd(4));
+        eq("hp: not on 0", false, HbAudioRules.storeHeadphoneBeforeEnd(0));
+        eq("hp: not on 3", false, HbAudioRules.storeHeadphoneBeforeEnd(3));
+        eq("hp: wire value 4 (stock threadInit)", 4, HbAudioRules.PATH_WIRED);
+        // the speaker sink comes back after Bluetooth and after the jack, not after ARC or the speaker itself
+        eq("sink: jack -> speaker", true, HbAudioRules.speakerSinkAfter(4, 0));
+        eq("sink: jack -> ARC", true, HbAudioRules.speakerSinkAfter(4, 2));
+        eq("sink: BT -> speaker", true, HbAudioRules.speakerSinkAfter(3, 0));
+        eq("sink: BT -> jack handled by the jack branch first", true, HbAudioRules.speakerSinkAfter(3, 4));
+        eq("sink: jack stays", false, HbAudioRules.speakerSinkAfter(4, 4));
+        eq("sink: speaker / ARC never", false, HbAudioRules.speakerSinkAfter(0, 2));
+        eq("sink: ARC -> speaker (switch_end path)", false, HbAudioRules.speakerSinkAfter(2, 0));
         if (fails > 0) {
             System.out.println("HbAudioRulesTest: " + fails + " of " + checks + " checks failed");
             System.exit(1);

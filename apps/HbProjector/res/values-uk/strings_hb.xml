@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Середній</string>
     <string name="pro_strong_hb">Високий</string>
     <string name="pro_auto_hb">Автоматично</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: вища яскравість. Після виходу з Boost кольори стають насиченішими.</string>
+    <string name="hb_boost_locked">У режимі зображення «%1$s» Boost є частиною режиму і тут не вимикається. Виберіть інший режим зображення.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Повний сон вимкнено</string>
+    <string name="hb_str_blocked_usb">Підключено комп\'ютер через USB: у режимі очікування проєктор не засне повністю, вентилятори працюватимуть. Від\'єднайте кабель USB, щоб повернути повний сон.</string>
+    <string name="hb_str_blocked_update">Встановлюється оновлення: повний сон повернеться після встановлення.</string>
+    <string name="hb_str_blocked_update_check">Оновлена система перевіряється після запуску: повний сон повернеться за кілька хвилин.</string>
+    <string name="hb_str_blocked_off">Повний сон вимкнено на цьому проєкторі (сервісне налаштування).</string>
 </resources>

@@ -37,8 +37,9 @@ import org.lumen.projector.ui.OverlayHost;
  *
  * v6.1 (v6.1 design):
  *  - Gear (KEYCODE_SETTINGS): UP without a long press -> QuickPanel.toggle (also during setup: the
- *    panel only changes projector settings); held (first repeated DOWN, ~400 ms+) -> close panels
- *    and open Android TV Settings (after setup only, like LineageParts KeyHandler did).
+ *    panel only changes projector settings); held (first repeated DOWN, ~400 ms+) -> the game menu while
+ *    game mode runs on HDMI (panel.GameMenu, 2026-11-11), else close panels and open Android TV Settings
+ *    (after setup only, like LineageParts KeyHandler did).
  *    Never acts on a key that began while the screen was off (EXTRA_BEGAN_FROM_NON_INTERACTIVE).
  *  - Source (KEYCODE_TV_INPUT): UP -> SourceOverlay.toggle (after setup).
  *  - KEYSTONE/LENS (KEYCODE_TV_NETWORK): UP -> QuickPanel.show(projection section).
@@ -177,8 +178,12 @@ public final class KeyReceiver extends BroadcastReceiver {
                 sGearDownTime = ev.getDownTime();
             } else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {
                 sGearLongFired = true;
-                OverlayHost.get(ctx).dismissAll(false);
-                if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+                // Lumen game menu (2026-11-11, as stock xhplayer): while game mode runs on the HDMI input on
+                // screen the long press opens the game menu (again: closes it); otherwise Android settings as before
+                org.lumen.projector.panel.GameMenu.onGearLong(ctx, () -> {
+                    OverlayHost.get(ctx).dismissAll(false);
+                    if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+                });
             }
             return;
         }

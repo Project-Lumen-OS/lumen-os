@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import org.lumen.info.core.Hb;
@@ -21,14 +22,15 @@ import org.lumen.info.core.HalStructs;
  * HDMI ARC device id and the DISPLAY 103 ranges.
  *
  * Guard (as HbProjector): before the first call on an interface getInterfaceVersion must be 1 and
- * getInterfaceHash the frozen V1 hash; a mismatch closes that interface for the process. checkService only
+ * getInterfaceHash a V1 hash GmpfHash.accepted for ro.vendor.build.version.incremental (908de964 of V6.16.24
+ * anywhere, 715affd0 only on v6.17.12); a mismatch closes that interface for the process. checkService only
  * (never the blocking getService); calls on the main thread are refused. The vendor policy lets only system_app
  * reach these services, so this works only in the platform-signed build (sharedUserId android.uid.system); in
  * any other build {@link #available} is false and the app shows the vendor rows as not available.
  */
 public final class HbGmpf {
     private static final String TAG = "LumenInfo";
-    static final String HASH = "908de964b7da427ad21df846e629b80ffdc183ab";
+    /** xgimi.hardware.gmpf V1; the accepted interface hashes per firmware are GmpfHash's rule. */
     static final int VERSION = 1;
 
     enum Iface {
@@ -285,10 +287,12 @@ public final class HbGmpf {
                     i.binder = null;
                     throw e;
                 }
-                if (v != VERSION || !HASH.equals(h)) {
+                String fw = SystemProperties.get(GmpfHash.FIRMWARE_PROP, "");
+                if (v != VERSION || !GmpfHash.accepted(h, fw)) {
                     i.refused = true;
                     i.binder = null;
-                    Log.e(TAG, "guard: " + i.descriptor + " version " + v + " hash " + h + ": closed, nothing sent");
+                    Log.e(TAG, "guard: " + i.descriptor + " version " + v + " hash " + h + " on firmware " + fw
+                            + ": closed, nothing sent");
                     throw new RemoteException(i.descriptor + " version/hash mismatch");
                 }
                 i.verified = true;

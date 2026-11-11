@@ -4,12 +4,13 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.util.Log;
 
 /**
  * HbGmpf: the only path from HbBoot to XGIMI's vendor service on the Z9X HB (goat_elegant, G0130,
  * MT9660). The vendor process /vendor/bin/hw/xgimi.hardware.gmpf-service registers 14 stable AIDL
- * services "xgimi.hardware.gmpf.I*Manager/default" (frozen V1, hash HASH below). HbBoot talks to two
+ * services "xgimi.hardware.gmpf.I*Manager/default" (V1, hash per firmware: GmpfHash). HbBoot talks to two
  * of them with raw Binder transactions, laid out exactly as the stock Java proxies do it
  * (com.xgimi.middle.jar, classes xgimi.hardware.gmpf.I{Power,System}Manager$Stub$Proxy):
  *   writeInterfaceToken(DESCRIPTOR) [+ writeInt(arg)] -> transact(code, data, reply, 0)
@@ -18,7 +19,7 @@ import android.util.Log;
  * HARD ALLOWLIST (devices/goat_elegant/stock analysis, section 6). Only the members of the enum
  * Call can ever be transacted, with only the argument values listed there:
  *   meta   getInterfaceVersion  0xFFFFFF  ()            -> int    must be 1
- *   meta   getInterfaceHash     0xFFFFFE  ()            -> String must be HASH
+ *   meta   getInterfaceHash     0xFFFFFE  ()            -> String GmpfHash.accepted on this firmware
  *   IPowerManager  2  goToBootCompleted(int stage)      -> boolean   stage 0 or 1
  *   ISystemManager 32 setBootAnimState(int state)       -> void      state 1 or 2
  *   ISystemManager 33 getBootAnimState()                -> int
@@ -28,7 +29,9 @@ import android.util.Log;
  * only while that dialog is shown, not a boot or keep-alive signal (handshake.md section 4).
  *
  * VERSION GUARD: before the first real call on an interface, getInterfaceVersion must return 1 and
- * getInterfaceHash must return HASH. A mismatch, or a meta call that fails, latches that interface
+ * getInterfaceHash must return a hash GmpfHash.accepted for ro.vendor.build.version.incremental (908de964 of
+ * V6.16.24 on any firmware, 715affd0 only on v6.17.12, where the 4 calls below have the same codes and
+ * signatures: research/aidl_codes_v61712.tsv). A mismatch, or a meta call that fails, latches that interface
  * closed for the life of the process: no further call of any kind is sent to it.
  *
  * Codes are absolute transaction codes (IBinder.FIRST_CALL_TRANSACTION + n with n = AIDL index), read
@@ -39,8 +42,7 @@ import android.util.Log;
 final class HbGmpf {
     private static final String TAG = "HbBoot";
 
-    /** Frozen hash of xgimi.hardware.gmpf V1 (34 copies in com.xgimi.middle.jar, one per stub). */
-    static final String HASH = "908de964b7da427ad21df846e629b80ffdc183ab";
+    /** xgimi.hardware.gmpf V1; the accepted interface hashes per firmware are GmpfHash's rule. */
     static final int VERSION = 1;
 
     /** One stable AIDL interface of the vendor service, with its own guard state. */
@@ -190,10 +192,12 @@ final class HbGmpf {
             Log.e(TAG, "guard: " + i.descriptor + " meta call failed, interface closed: " + e.getMessage());
             throw e;
         }
-        if (version != VERSION || !HASH.equals(hash)) {
+        String firmware = SystemProperties.get(GmpfHash.FIRMWARE_PROP, "");
+        if (version != VERSION || !GmpfHash.accepted(hash, firmware)) {
             i.refused = true;
-            String msg = "guard: " + i.descriptor + " version " + version + " hash " + hash
-                    + ", expected " + VERSION + " " + HASH + "; interface closed, nothing sent";
+            String msg = "guard: " + i.descriptor + " version " + version + " hash " + hash + " on firmware "
+                    + firmware + ", expected " + VERSION + " " + GmpfHash.V61624 + " (or " + GmpfHash.V61712
+                    + " on " + GmpfHash.V61712_FIRMWARE + "); interface closed, nothing sent";
             Log.e(TAG, msg);
             throw new ReplyException(msg);
         }

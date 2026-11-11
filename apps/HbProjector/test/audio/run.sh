@@ -1,6 +1,6 @@
 #!/bin/sh
 # ARC volume spike decisions (audio/HbAudioRules) and the sound output rows (audio/HbOutputRows), plain Java, no stubs,
-# 2026-11-01: sh test/audio/run.sh
+# 2026-11-01; the 3.5 mm output (2026-11-10: HbAudioRules.wiredStep and friends, check_wiring.py): sh test/audio/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)
 T=$HERE/test/audio
@@ -12,3 +12,4 @@ trap 'rm -rf "$OUT"' EXIT
   "$HERE/src/org/lumen/projector/audio/HbOutputRows.java" "$T/HbOutputRowsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.audio.HbAudioRulesTest
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.audio.HbOutputRowsTest
+python3 "$T/check_wiring.py"

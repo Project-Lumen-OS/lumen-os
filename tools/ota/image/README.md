@@ -131,8 +131,14 @@ keep it in every image.
 `z9x_gapps.sh` (exec at post-fs-data, like `z9x_blobs.sh`): only with `ro.z9x.gms=0` and the partition; not
 when the boot rescue counter says this is the 3rd start of the slot in a row without boot_completed (then
 the marker `/metadata/z9x_gapps/off` = `<n> <slot> <ro.z9x.build_id>` keeps it off on that slot and build
-until the installer's `gapps` turns it on again; another slot or build ignores it, so an OTA that the gate
-rolls back, after the marker, leaves the old slot with its Google services);
+until the installer's `gapps` turns it on again; another slot or build ignores it). An update slot that the OTA
+gate can still roll back (`/metadata/ota/snapshot-boot` names the other slot, `ro.z9x.ota.gate` not 0, no
+`no_rollback` for this slot: the rule of `z9x_rescue.sh`) never gets the marker: the gate rolls back at its 4th
+attempt to the old slot with its Google services, and a 3rd start that completes keeps them on the new build
+(up to 1.0.9 the 3rd start wrote the marker, so one rough first start of an update left the new build without
+Google services for good). Each boot run with the partition adds one line to `/metadata/z9x_gapps/log.txt`
+(slot, build, start number, update slot, result, time; `log.old` at 16 KiB), read with `adb root` +
+`adb shell cat /metadata/z9x_gapps/log.txt`;
 `blockdev --setro`, ext4 mounted read-only at `/mnt/z9x_gapps` with `context=u:object_r:system_file:s0`
 (MindTheGapps' own installer labels every file system_file; the Z9X runs SELinux permissive anyway), nosuid,
 nodev; `MANIFEST` must name an allow-listed zip and repeat exactly its file lines; every file present with its

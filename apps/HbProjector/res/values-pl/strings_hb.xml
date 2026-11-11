@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Średni</string>
     <string name="pro_strong_hb">Wysoki</string>
     <string name="pro_auto_hb">Automatycznie</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: wyższa jasność. Po wyjściu z Boost kolory są żywsze.</string>
+    <string name="hb_boost_locked">W trybie obrazu „%1$s” Boost jest częścią trybu i nie można go tu wyłączyć. Wybierz inny tryb obrazu.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Głęboki sen wyłączony</string>
+    <string name="hb_str_blocked_usb">Komputer jest podłączony przez USB: w trybie czuwania projektor nie zaśnie całkowicie, a wentylatory będą pracować. Odłącz kabel USB, aby przywrócić głęboki sen.</string>
+    <string name="hb_str_blocked_update">Trwa instalacja aktualizacji: głęboki sen wróci po jej zakończeniu.</string>
+    <string name="hb_str_blocked_update_check">Zaktualizowany system jest sprawdzany po uruchomieniu: głęboki sen wróci za kilka minut.</string>
+    <string name="hb_str_blocked_off">Głęboki sen jest wyłączony na tym projektorze (ustawienie serwisowe).</string>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trial_no_sound_title">試用模式沒有聲音</string>
+    <string name="trial_no_sound_text">安裝 Lumen OS 後就有聲音了。</string>
+</resources>

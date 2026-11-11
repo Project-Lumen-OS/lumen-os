@@ -25,6 +25,7 @@ XGIMI Play 6 (G0058, XGIMI firmware V1.7.116). Follow the install guide of your 
 | `lib/play6/gapps_fill.sh`, `lib/play6/lumen-gapps.xml` | XGIMI Play 6: runs on the projector during `gapps` and formats and fills the `lumen_gapps` partition; the Lumen settings it adds for the Google apps |
 | `certs/ota.x509.pem` | the Lumen OS certificate that checks `SHA256SUMS.sig` (XGIMI Z9X) |
 | `certs/play6/ota.x509.pem` | the same for the XGIMI Play 6 (in a Play 6 download) |
+| `certs/x50/ota.x509.pem`, `lib/x50/blobs_allow.txt` | XGIMI X50 Ultra (test builds only so far): its own certificate, and the checksums of the files its `blobs` step takes from the projector (the codec files and the stock eye-protection drawer; hashes only) |
 
 Put `lumen-os-<version>-nogms-system.img` (Play 6: `lumen-os-play6-<version>-nogms-system.img`),
 `SHA256SUMS` and `SHA256SUMS.sig` from the same release next to `lumen-install.sh`. The installer refuses an
@@ -137,5 +138,7 @@ Mock tests: `tools/ota/test/installer_blobs.sh`, `installer_edition.sh`,
 `installer_gapps.sh`, `installer_profiles.sh` (lib/devices.conf, and the Z9X command logs compared byte for
 byte with `tools/ota/test/golden/installer_z9x/`), `installer_play6.sh` (a fake Play 6 over Wi-Fi and in
 fastbootd), `installer_play6_gapps.sh`, and the PowerShell host tests `installer_ps1_gapps.sh` and
-`installer_ps1_play6.sh` (the Play 6 erase request and pre-checks give the same results in both scripts). The `--blobs=embedded` and `--unsigned-image` options are only for
+`installer_ps1_play6.sh` (the Play 6 erase request and pre-checks give the same results in both scripts);
+`tools/devices/test/installer_x50.sh` and `x50_z9x_separation.sh` (the Z9X and the X50 Ultra, which share
+XGIMI's product image, never take each other's image or installer, in both directions). The `--blobs=embedded` and `--unsigned-image` options are only for
 your own test builds.

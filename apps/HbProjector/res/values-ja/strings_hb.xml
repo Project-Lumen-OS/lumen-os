@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">中</string>
     <string name="pro_strong_hb">高</string>
     <string name="pro_auto_hb">自動</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost：より高い明るさ。Boost を終了すると色がより鮮やかになります。</string>
+    <string name="hb_boost_locked">画質モード「%1$s」では Boost はモードの一部のため、ここではオフにできません。別の画質モードを選んでください。</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">ディープスリープはオフです</string>
+    <string name="hb_str_blocked_usb">USB でコンピューターが接続されています。スタンバイ中もプロジェクターは完全にはスリープせず、ファンは回り続けます。ディープスリープに戻すには USB ケーブルを抜いてください。</string>
+    <string name="hb_str_blocked_update">アップデートをインストール中です。完了するとディープスリープに戻ります。</string>
+    <string name="hb_str_blocked_update_check">更新されたシステムを起動後に確認中です。数分でディープスリープに戻ります。</string>
+    <string name="hb_str_blocked_off">このプロジェクターではディープスリープがオフになっています（サービス設定）。</string>
 </resources>

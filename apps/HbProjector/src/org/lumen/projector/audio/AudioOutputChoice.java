@@ -29,6 +29,8 @@ import java.util.List;
  * through the vendor path, and HdmiVolume follows path 0.
  *
  * Rows: Auto and Speaker always; ARC / eARC, Bluetooth A2DP, wired and USB only while such an output is connected.
+ * HB fork (2026-11-10): the HB jack is never detected, so HbOutputOptions lists Headphones always (stock) and apply
+ * connects the wired output while it is the choice (HbWiredJack, HbAudioRules.wiredStep).
  * Never Spdif (attached port in the Z9X policy, always "available", no jack) and never the XGIMI wireless speaker
  * ports (BUS, ECHO_CANCELLER). Bluetooth and USB are categories, like stock: the chosen address first, else the
  * first connected device of that kind.
@@ -210,7 +212,16 @@ public final class AudioOutputChoice {
                 return;
             }
             Kind k = kind(app);
+            // HB fork (2026-11-10, 4PDA: no 3.5 mm output): the jack is connected while it is the choice (HbWiredJack)
+            HbAudioRules.WiredStep jack = HbWiredJack.step(am, k);
+            if (jack == HbAudioRules.WiredStep.CONNECT) {
+                HbWiredJack.connect(am, true, why);
+                return;                                  // "devices added" evaluates again with the output listed
+            }
             AudioDeviceInfo d = k == Kind.AUTO ? null : find(am, k, prefs(app).getString(KEY_ADDR, ""));
+            if (d == null && HbAudioRules.speakerBeforeDisconnect(k.name(), jack)) {
+                d = find(am, Kind.SPEAKER, "");          // routing off the jack first: no BECOMING_NOISY on the removal
+            }
             List<AudioDeviceAttributes> cur = am.getPreferredDevicesForStrategy(media);
             if (d == null) {
                 if (cur != null && !cur.isEmpty() && ours(cur)) {
@@ -218,13 +229,19 @@ public final class AudioOutputChoice {
                     Log.i(TAG, why + ": " + (k == Kind.AUTO ? "auto" : k + " not connected, auto until it is back")
                             + ", preferred " + cur + " removed" + (ok ? "" : " (REFUSED)"));
                 }
+                if (jack == HbAudioRules.WiredStep.DISCONNECT) HbWiredJack.connect(am, false, why);
                 return;
             }
             AudioDeviceAttributes want = new AudioDeviceAttributes(d);
-            if (cur != null && cur.size() == 1 && same(cur.get(0), want)) return;    // already set
+            if (cur != null && cur.size() == 1 && same(cur.get(0), want)) {             // already set
+                if (jack == HbAudioRules.WiredStep.DISCONNECT) HbWiredJack.connect(am, false, why);
+                return;
+            }
             boolean ok = am.setPreferredDeviceForStrategy(media, want);
-            Log.i(TAG, why + ": media -> " + k + " (type " + want.getType() + " '" + want.getAddress() + "')"
-                    + (ok ? "" : " REFUSED"));
+            Log.i(TAG, why + ": media -> " + (jack == HbAudioRules.WiredStep.DISCONNECT && k == Kind.AUTO
+                    ? "SPEAKER before the 3.5 mm output goes (auto)" : k) + " (type " + want.getType() + " '"
+                    + want.getAddress() + "')" + (ok ? "" : " REFUSED"));
+            if (jack == HbAudioRules.WiredStep.DISCONNECT) HbWiredJack.connect(am, false, why);
         } catch (Throwable t) {
             Log.w(TAG, why + ": " + t);
         }

@@ -2,8 +2,9 @@
  * HbFeatures: the compile-time feature table of the Z9X HB.
  * HB-only file, no HAL access.
  *
- * Sources: the stock switches live/mnt/vendor/xgimiconfig/G0130/feature/feature.xml, the stock settings tree
- * settings_tree_product_dapengse.json, devices/goat_elegant/stock analysis, and the S0 values in
+ * Sources: the stock switches /mnt/vendor/xgimiconfig/<model>/feature/feature.xml (the model code of this unit,
+ * ro.boot.xgimi.modelname: one stock build serves G0118, G0130 and G0148, each with its own folder), the stock
+ * settings tree settings_tree_product_dapengse.json, devices/goat_elegant/stock analysis, and the S0 values in
  * stock analysis States:
  *   ON       present and proven: rows built.
  *   OFF      absent on the HB: rows never built, the HAL methods send nothing (NotOnHbException).
@@ -11,12 +12,17 @@
  *            table passes; then one line here changes to ON (a reviewed fork change).
  * Lumen rule: never show a disabled row; fail toward hiding.
  *
- * At start init() reads feature.xml once when it is readable and logs every key that disagrees with the table;
- * a key that says "off" where the table says ON or PENDING turns that feature OFF for the process. The file is
- * never required (an unreadable file changes nothing).
+ * At start init() reads the feature.xml of this unit's model once when it is readable and logs every key that
+ * disagrees with the table; a key that says "off" where the table says ON or PENDING turns that feature OFF for the
+ * process. On top of the file, MODEL_SENSITIVE lists the features whose stock rows differ between the HB model codes
+ * (gsi-stock analysis): the menu was ported from the G0130 (dapengse) tree only, so
+ * G0148 (dapengfhm: support_brightness_boost=0, support_custom_picture_mode=false, colour temperature list 16 / 17
+ * instead of 0 / 16) hides them until its own menu is ported, and so does any model code this table does not know
+ * or a feature.xml that cannot be read (fail toward hiding). Everything else keeps the table.
  */
 package org.lumen.projector.hal;
 
+import android.os.SystemProperties;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +34,9 @@ import java.util.regex.Pattern;
 
 public final class HbFeatures {
     private static final String TAG = "Z9xFeatures";
-    static final String FEATURE_XML = "/mnt/vendor/xgimiconfig/G0130/feature/feature.xml";
+    /** The unit's model code (G0130, G0148, ...), the name of its stock config folder. */
+    static final String MODEL_PROP = "ro.boot.xgimi.modelname";
+    static final String CONFIG_ROOT = "/mnt/vendor/xgimiconfig/";
 
     public enum State { ON, OFF, PENDING }
 
@@ -107,10 +115,23 @@ public final class HbFeatures {
          * BrightnessViewModel.java:1655-1660, BrightnessRepository.choiceLedMode). AREA picture 2026-10-30.
          */
         COLOR_TEMP(State.ON, null),
-        /** Brightness levels and Boost: support_brightness_boost=2. */
+        /** Brightness levels and Boost: support_brightness_boost=2 (G0130). G0148 has 0: no Boost on its stock. */
         BOOST(State.ON, "support_brightness_boost", "0"),
+        /**
+         * User picture modes (stock image_mode_custom_base_*, CustomizeDataManager): not built in Lumen
+         * (stock analysis, NEW). G0148 stock has support_custom_picture_mode=false, so it stays hidden there
+         * even after a port (MODEL_SENSITIVE).
+         */
+        CUSTOM_PICTURE_MODE(State.PENDING, "support_custom_picture_mode", "false"),
         /** Sound modes: HB SoundEnum values equal the Z9X ones (S0). */
         SOUND_MODES(State.ON, null),
+        /**
+         * The 3.5 mm headphone / line output as a sound output row (2026-11-10, 4PDA: HDMI sound never reached a soundbar
+         * or headphones on the jack). Stock GimiAudioService.getSupportWiredHeadphone: listed unless the feature
+         * support_wired_headphone is "false" (absent in the G0130 file); the HB kernel reports no plug, so the row is
+         * always there and choosing it connects the wired output (audio/HbWiredJack).
+         */
+        WIRED_HEADPHONE(State.ON, "support_wired_headphone", "false"),
         /** SoC PEQ equalizer: the HB audio path (Atmos, DTS DRC) is not traced; hidden until a device check. */
         EQUALIZER(State.PENDING, null),
         /** eARC, HDMI range, EDID: voice_earc_*, signal_*. */
@@ -168,6 +189,7 @@ public final class HbFeatures {
         final String key;
         final String[] offValues;
         volatile boolean offByFile;
+        volatile boolean offByModel;
 
         F(State table, String key, String... offValues) {
             this.table = table;
@@ -176,13 +198,40 @@ public final class HbFeatures {
         }
     }
 
+    /**
+     * The features whose stock rows differ between the HB model codes and are ported from the G0130 tree only
+     *: Boost (G0148 support_brightness_boost=0), user picture modes (G0148
+     * support_custom_picture_mode=false) and the colour temperature list (dapengse 0 Standard / 16 Movie,
+     * dapengfhm 16 Movie / 17 Balance: Lumen's 0 is not in the G0148 list, and the vendor stores it).
+     */
+    static final F[] MODEL_SENSITIVE = {F.BOOST, F.CUSTOM_PICTURE_MODE, F.COLOR_TEMP};
+
+    /** Model codes whose stock tree the menu was checked against, and what each of them hides. */
+    static F[] modelOff(String model) {
+        if ("G0130".equals(model)) return new F[0];
+        if ("G0148".equals(model)) return new F[] {F.BOOST, F.CUSTOM_PICTURE_MODE, F.COLOR_TEMP};
+        return MODEL_SENSITIVE;                                     // unknown model: hide every model-dependent row
+    }
+
+    /** The stock feature.xml of a model code; null for anything that is not a model code (never a free path). */
+    static String featureXml(String model) {
+        if (model == null || !model.matches("G[0-9]{4}")) return null;
+        return CONFIG_ROOT + model + "/feature/feature.xml";
+    }
+
     private static volatile boolean sInit;
+    private static volatile String sModel = "";
 
     private HbFeatures() {}
 
-    /** The state for this process: the table, or OFF when feature.xml says off. */
+    /** The state for this process: the table, or OFF when feature.xml or the model rule says off. */
     public static State state(F f) {
-        return f.offByFile ? State.OFF : f.table;
+        return f.offByFile || f.offByModel ? State.OFF : f.table;
+    }
+
+    /** The model code read at init() ("" before it or when the property is empty). */
+    public static String model() {
+        return sModel;
     }
 
     /** true only for ON (PENDING and OFF both hide the row). Any thread. */
@@ -195,18 +244,45 @@ public final class HbFeatures {
         if (!on(f)) throw new AidlCaller.NotOnHbException(what + " (" + f + " is " + state(f) + ")");
     }
 
-    /** Reads feature.xml once (App start, any thread). Never throws; an unreadable file changes nothing. */
+    /**
+     * Reads the model's feature.xml once (App start, any thread). Never throws. An unreadable file keeps the table
+     * but hides MODEL_SENSITIVE.
+     */
     public static synchronized void init() {
         if (sInit) return;
         sInit = true;
-        String xml;
-        try (InputStream in = new FileInputStream(FEATURE_XML)) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buf = new byte[8192];
-            for (int n; (n = in.read(buf)) > 0; ) out.write(buf, 0, n);
-            xml = new String(out.toByteArray(), StandardCharsets.UTF_8);
+        String model = "";
+        try {
+            model = SystemProperties.get(MODEL_PROP, "");
         } catch (Throwable t) {
-            Log.i(TAG, "feature.xml not readable (" + t + "): the compile-time table stands");
+            Log.w(TAG, MODEL_PROP + " not readable: " + t);
+        }
+        String path = featureXml(model);
+        String xml = null;
+        if (path != null) {
+            try (InputStream in = new FileInputStream(path)) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buf = new byte[8192];
+                for (int n; (n = in.read(buf)) > 0; ) out.write(buf, 0, n);
+                xml = new String(out.toByteArray(), StandardCharsets.UTF_8);
+            } catch (Throwable t) {
+                Log.w(TAG, path + " not readable (" + t + ")");
+            }
+        }
+        init(model, xml);
+    }
+
+    /** Package-private for the host test: the model rule, then one feature.xml text (null = no readable file). */
+    static void init(String model, String xml) {
+        sModel = model == null ? "" : model;
+        for (F f : modelOff(model)) {
+            f.offByModel = true;
+            Log.w(TAG, f + ": not ported for model " + model + " (stock rows differ): OFF");
+        }
+        if (xml == null) {
+            for (F f : MODEL_SENSITIVE) f.offByModel = true;
+            Log.w(TAG, "no stock feature.xml for model '" + model + "': the table stands, "
+                    + java.util.Arrays.toString(MODEL_SENSITIVE) + " OFF");
             return;
         }
         apply(xml);

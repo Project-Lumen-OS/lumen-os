@@ -108,8 +108,10 @@
 #   backup     as for the Z9X, over the network
 #   vbmeta     shows the one manual step (Google's vbmeta.img, both slots); the installer never runs it
 #   blobs      copies the MediaTek / XGIMI files of the profile's allow-list from YOUR projector's own system
-#   flash      in one fastbootd visit: z9x_blobs_<slot>, system_<slot>, then 'fastboot format:ext4' of userdata
-#              and metadata (the full data wipe; never erase or -w). No --keep-data
+#   flash      in one fastbootd visit: z9x_blobs_<slot>, system_<slot>, then 'fastboot format' of userdata
+#              and metadata with the file system of the projector's stock fstab (ext4 on the HB, f2fs with
+#              casefold and project quota for userdata on the X50: the profile's WIPE_FS); the full data wipe,
+#              never erase or -w. No --keep-data
 #   verify     after the setup, with debugging on again: checks the install over the network
 #   gapps      (a profile with GAPPS_ALLOW) add Google services from YOUR OWN download of MindTheGapps (the guide
 #              names the one accepted file) to the installed Lumen OS: gapps --zip FILE. The add-on image is built
@@ -404,7 +406,12 @@ fb_do() {  # action partition [args...]: every partition write goes through here
     resize) fb resize-logical-partition "$part" "$@" ;;
     delete) fb delete-logical-partition "$part" ;;
     format)
-      if [ "$P_FLOW" = ab-fastbootd ]; then fb format:ext4 "$part"   # fastbootd says raw: the type is given
+      # FLOW=ab-fastbootd: fastbootd says raw, so the type is given: the profile's WIPE_FS, the file system its
+      # stock fstab mounts there (ext4 on the HB, f2fs on the X50); f2fs as the Z9X way below
+      if [ "$P_FLOW" = ab-fastbootd ] && [ "$P_WIPE_FS" = f2fs ]; then
+        if [ "$part" = userdata ]; then fb --fs-options=casefold,projid format:f2fs userdata
+        else fb format:f2fs "$part"; fi   # metadata
+      elif [ "$P_FLOW" = ab-fastbootd ]; then fb format:ext4 "$part"
       elif [ "$part" = userdata ]; then fb --fs-options=casefold,projid format:f2fs userdata
       elif [ "$part" = metadata ]; then fb format:f2fs metadata
       else fb format:ext4 "$part"; fi ;;  # cache, z9x_gapps_<slot>
@@ -460,7 +467,7 @@ image_owner() {
 # the edition of the image (1.0.1): 0 = Lumen OS without Google (-nogms- in the name, ro.z9x.gms=0), 1 = with
 # Google services. With dump.erofs on this computer the image's own product build.prop must agree.
 image_edition() {
-  local name g p bp
+  local name g p bp d id lp
   name=$(basename "$IMG")
   case "$name" in *-nogms-*) g=0 ;; *) g=1 ;; esac
   if command -v dump.erofs >/dev/null 2>&1; then
@@ -468,6 +475,21 @@ image_edition() {
     p=$(printf '%s\n' "$bp" | sed -n 's/^ro\.z9x\.gms=//p' | tail -1)
     if [ -n "$bp" ] && { { [ "$g" = 0 ] && [ "$p" != 0 ]; } || { [ "$g" = 1 ] && [ "$p" = 0 ]; }; }; then
       die "$(t "$name: the file name and the image disagree about Google services (ro.z9x.gms='$p'): do not install it" "$name: имя файла и сам образ расходятся насчёт сервисов Google (ro.z9x.gms='$p'): не устанавливайте его")"
+    fi
+    # whose image it is: Lumen OS that names another projector of lib/devices.conf (its LUMEN_PROP, e.g. the X50
+    # Ultra, which runs the same XGIMI product image) or another device id than the Z9X's is never written here
+    if [ -n "$bp" ]; then
+      while IFS='=' read -r id lp; do
+        [ -n "$lp" ] || continue
+        id=${id%.LUMEN_PROP}
+        [ "$(printf '%s\n' "$bp" | sed -n "s/^${lp%% *}=//p" | tail -1)" != "${lp#* }" ] \
+          || die "$(t "this image is for the $(dev_name "$id"), not for the XGIMI Z9X. Nothing was written." "этот образ для $(dev_name "$id"), а не для XGIMI Z9X. Ничего не записано.")"
+      done <<EOF
+$([ -f "$DEVCONF" ] && awk '{ sub(/\r$/, "") } /^[a-z0-9]+\.LUMEN_PROP=[^ ]+ [^ ]+$/' "$DEVCONF")
+EOF
+      d=$(printf '%s\n' "$bp" | sed -n 's/^ro\.z9x\.device=//p' | tail -1)
+      [ -z "$d" ] || [ "$d" = z9x ] \
+        || die "$(t "$name is not Lumen OS for the XGIMI Z9X (ro.z9x.device='$d'). Nothing was written." "$name не Lumen OS для XGIMI Z9X (ro.z9x.device='$d'). Ничего не записано.")"
     fi
   fi
   state_set image_gms "$g"
@@ -497,7 +519,11 @@ check_tools() {  # pt_setup ran: adb and fastboot of our own, 35 or newer
     [ -x "$PT_DIR/make_f2fs" ] && [ -x "$PT_DIR/mke2fs" ] \
       || die "$(t "make_f2fs/mke2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip" "нет make_f2fs/mke2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools")"
   fi
-  if [ "$P_FLOW" = ab-fastbootd ]; then   # 'fastboot format:ext4' makes the file system with this mke2fs
+  # FLOW=ab-fastbootd: 'fastboot format:<WIPE_FS>' makes the file system with the tool next to fastboot
+  if [ "$P_FLOW" = ab-fastbootd ] && [ "$P_WIPE_FS" = f2fs ]; then
+    [ -x "$PT_DIR/make_f2fs" ] \
+      || die "$(t "make_f2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip. Nothing was done." "нет make_f2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools. Ничего не сделано.")"
+  elif [ "$P_FLOW" = ab-fastbootd ]; then
     [ -x "$PT_DIR/mke2fs" ] \
       || die "$(t "mke2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip. Nothing was done." "нет mke2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools. Ничего не сделано.")"
   fi
@@ -1556,14 +1582,24 @@ P_NAME=""; P_MODEL=""; P_BOARD=""; P_FB_PRODUCT=""; P_VENDOR_OK=""; P_CERT=""; P
 P_LUMEN_PROP=""; P_LOGICAL=""; P_RESERVE=0; P_GUIDE=""; P_RESTORE_BIN=""; P_RESTORE_MD5=""
 P_FLOW=""; P_SLOTS=""; P_KEEP=""; P_WIPE=""; P_SYSMAX=""; P_BLOBS_ALLOW=""   # FLOW=ab-fastbootd and its keys
 P_GAPPS_ALLOW=""; P_GAPPS_IMAGES=""   # FLOW=ab-fastbootd, optional (both or neither): the Google services add-on
-P_KEYS="NAME MODEL BOARD FB_PRODUCT VENDOR_OK CERT IMAGE_TOKEN IMAGE_FS VERSION_PROP LUMEN_PROP LOGICAL SUPER_RESERVE GUIDE RESTORE_BIN RESTORE_MD5 FLOW SLOTS KEEP WIPE_PARTS SYSTEM_MAX BLOBS_ALLOW GAPPS_ALLOW GAPPS_IMAGES"
+P_BLOBS_SIZE=""   # FLOW=ab-fastbootd, optional: its z9x_blobs partition in bytes (default BLOB_SIZE)
+P_FAMILY=""       # optional, instead of FB_PRODUCT: the id whose product image (and fastbootd 'product') it shares
+P_SLOT_CHECK=""   # FLOW=ab-fastbootd, optional: yes = the other slot told (and asked) before the write, the slots read after
+P_WIPE_FS=""      # FLOW=ab-fastbootd, optional: ext4 (default) or f2fs, the file system WIPE_PARTS are formatted with
+# FLOW=ab-fastbootd, optional (all of them or none): the model code x stock firmware table of a projector sold under
+# several model codes, each model's stock product name, the stock ro.product.device, the root of the per-model stock
+# config folders, and the model codes of that projector that are not supported yet
+P_MODELS_OK=""; P_PRODUCT_NAMES=""; P_DEVICE=""; P_MODEL_CONFIG=""; P_MODELS_NOT_YET=""
+P_MODELS_CHECK_ONLY=""   # with MODELS_OK, optional: models of the table that get 'check' and 'blobs' only, no write
+ABF_MODEL=""      # the model code abf_identity found (one of MODELS_OK, else MODEL)
+P_KEYS="NAME MODEL BOARD FB_PRODUCT VENDOR_OK CERT IMAGE_TOKEN IMAGE_FS VERSION_PROP LUMEN_PROP LOGICAL SUPER_RESERVE GUIDE RESTORE_BIN RESTORE_MD5 FLOW SLOTS KEEP WIPE_PARTS SYSTEM_MAX BLOBS_ALLOW GAPPS_ALLOW GAPPS_IMAGES BLOBS_SIZE FAMILY SLOT_CHECK WIPE_FS MODELS_OK PRODUCT_NAMES DEVICE MODEL_CONFIG MODELS_NOT_YET MODELS_CHECK_ONLY"
 devconf_check() {  # stops on a missing file, a broken line, an unknown key or a key given twice
   local bad
   [ -f "$DEVCONF" ] || die "internal: lib/devices.conf is missing: re-download the installer"
   bad=$(awk -v keys=" $P_KEYS " '
     { sub(/\r$/, "") }
     /^#/ || /^$/ { next }
-    !/^[a-z0-9]+\.[A-Z][A-Z0-9_]*=[A-Za-z0-9 ._:\/-]*$/ { print NR; exit }
+    !/^[a-z0-9]+\.[A-Z][A-Z0-9_]*=[A-Za-z0-9 ._:\/,-]*$/ { print NR; exit }
     { k = substr($0, 1, index($0, "=") - 1); n = k; sub(/^[^.]*\./, "", n)
       if (index(keys, " " n " ") == 0 || (k in seen)) { print NR; exit }
       seen[k] = 1 }' "$DEVCONF")
@@ -1578,12 +1614,15 @@ dev_name() {  # id -> the name shown to the user
   [ -n "$n" ] || case "$1" in z9x) n="XGIMI Z9X" ;; play6) n="XGIMI Play 6" ;; *) n=$1 ;; esac
   printf '%s' "$n"
 }
-profile_of() {  # model board -> the id of the profile that has both (nothing: unknown)
+profile_of() {  # model board -> the id of the profile that has both (nothing: unknown); a profile's model codes are
+  # its MODEL, the models of its MODELS_OK and its MODELS_NOT_YET
   [ -f "$DEVCONF" ] || return 0
   awk -v m="$1" -v b="$2" '{ sub(/\r$/, "") }
     /^[a-z0-9]+\.MODEL=/ { i = substr($0, 1, index($0, ".") - 1); mo[i] = substr($0, index($0, "=") + 1); o[++n] = i }
     /^[a-z0-9]+\.BOARD=/ { i = substr($0, 1, index($0, ".") - 1); bo[i] = substr($0, index($0, "=") + 1) }
-    END { for (j = 1; j <= n; j++) if (mo[o[j]] == m && bo[o[j]] == b) { print o[j]; exit } }' "$DEVCONF"
+    /^[a-z0-9]+\.(MODELS_OK|MODELS_NOT_YET)=/ { i = substr($0, 1, index($0, ".") - 1)
+      k = split(substr($0, index($0, "=") + 1), a, " "); for (x = 1; x <= k; x++) { sub(/:.*/, "", a[x]); ex[i] = ex[i] " " a[x] } }
+    END { for (j = 1; j <= n; j++) if ((mo[o[j]] == m || index(ex[o[j]] " ", " " m " ") > 0) && bo[o[j]] == b) { print o[j]; exit } }' "$DEVCONF"
 }
 profiles_named() {  # "XGIMI Z9X (G0082) and XGIMI Play 6 (...)": every projector of lib/devices.conf with a built-in
   # flow (a FLOW=ab-fastbootd one is named by its own path, abf_other_hint)
@@ -1606,16 +1645,41 @@ load_profile() {  # id: the P_* values of that projector
       SUPER_RESERVE) P_RESERVE=$v ;; GUIDE) P_GUIDE=$v ;; RESTORE_BIN) P_RESTORE_BIN=$v ;; RESTORE_MD5) P_RESTORE_MD5=$v ;;
       FLOW) P_FLOW=$v ;; SLOTS) P_SLOTS=$v ;; KEEP) P_KEEP=$v ;; WIPE_PARTS) P_WIPE=$v ;; SYSTEM_MAX) P_SYSMAX=$v ;;
       BLOBS_ALLOW) P_BLOBS_ALLOW=$v ;; GAPPS_ALLOW) P_GAPPS_ALLOW=$v ;; GAPPS_IMAGES) P_GAPPS_IMAGES=$v ;;
+      BLOBS_SIZE) P_BLOBS_SIZE=$v ;; FAMILY) P_FAMILY=$v ;; SLOT_CHECK) P_SLOT_CHECK=$v ;; WIPE_FS) P_WIPE_FS=$v ;;
+      MODELS_OK) P_MODELS_OK=$v ;; PRODUCT_NAMES) P_PRODUCT_NAMES=$v ;; DEVICE) P_DEVICE=$v ;;
+      MODEL_CONFIG) P_MODEL_CONFIG=$v ;; MODELS_NOT_YET) P_MODELS_NOT_YET=$v ;; MODELS_CHECK_ONLY) P_MODELS_CHECK_ONLY=$v ;;
     esac
   done <<EOF
 $(awk -v id="$1." '{ sub(/\r$/, "") } index($0, id) == 1 { print substr($0, length(id) + 1) }' "$DEVCONF")
 EOF
+  # FAMILY: the fastbootd 'product' of the projector whose XGIMI product image this one shares (never its own
+  # FB_PRODUCT as well; that projector names its own and has no FAMILY): MODEL and BOARD tell the two apart
+  if [ -n "$P_FAMILY" ]; then
+    { [ -z "$P_FB_PRODUCT" ] && [ "$P_FAMILY" != "$1" ] && [ -z "$(devconf_get "$P_FAMILY" FAMILY)" ] \
+      && [ "$(devconf_get "$P_FAMILY" MODEL)" != "$P_MODEL" ]; } || die "internal: lib/devices.conf: $1.FAMILY"
+    P_FB_PRODUCT=$(devconf_get "$P_FAMILY" FB_PRODUCT)
+    [ -n "$P_FB_PRODUCT" ] || die "internal: lib/devices.conf: $1.FAMILY"
+  fi
   for k in P_MODEL P_BOARD P_FB_PRODUCT P_VENDOR_OK P_CERT P_TOKEN P_FS P_VERSION_PROP P_LUMEN_PROP P_LOGICAL P_RESERVE; do
     [ -n "${!k}" ] || die "internal: lib/devices.conf: '$1' has no ${k#P_}: re-download the installer"
   done
   case "$P_RESERVE" in *[!0-9]*) die "internal: lib/devices.conf: $1.SUPER_RESERVE" ;; esac
   case "$P_LUMEN_PROP" in *" "*) ;; *) die "internal: lib/devices.conf: $1.LUMEN_PROP" ;; esac
+  # SLOT_CHECK (optional): only 'yes', only with FLOW, and only with RESTORE_BIN (its texts name the way back)
+  if [ -n "$P_SLOT_CHECK" ]; then
+    { [ "$P_SLOT_CHECK" = yes ] && [ -n "$P_FLOW" ] && [ -n "$P_RESTORE_BIN" ]; } || die "internal: lib/devices.conf: $1.SLOT_CHECK"
+  fi
+  # WIPE_FS (optional, only with FLOW): ext4 or f2fs, as the projector's stock fstab mounts userdata and metadata
+  if [ -n "$P_WIPE_FS" ]; then
+    { [ -n "$P_FLOW" ] && { [ "$P_WIPE_FS" = ext4 ] || [ "$P_WIPE_FS" = f2fs ]; }; } || die "internal: lib/devices.conf: $1.WIPE_FS"
+  fi
+  # the model x firmware table (optional, only with FLOW)
+  if [ -n "$P_MODELS_OK$P_PRODUCT_NAMES$P_DEVICE$P_MODEL_CONFIG$P_MODELS_NOT_YET$P_MODELS_CHECK_ONLY" ]; then
+    [ -n "$P_FLOW" ] || die "internal: lib/devices.conf: $1.MODELS_OK"
+    abf_table_check "$1"
+  fi
   [ -n "$P_FLOW" ] || return 0
+  [ -n "$P_WIPE_FS" ] || P_WIPE_FS=ext4
   # FLOW=ab-fastbootd: every one of its keys; what they may name is narrowed here (fb_allowed narrows it again)
   [ "$P_FLOW" = ab-fastbootd ] || die "internal: lib/devices.conf: $1.FLOW=$P_FLOW"
   for k in SLOTS:P_SLOTS KEEP:P_KEEP WIPE_PARTS:P_WIPE SYSTEM_MAX:P_SYSMAX BLOBS_ALLOW:P_BLOBS_ALLOW; do
@@ -1626,6 +1690,13 @@ EOF
   for k in $P_WIPE; do case "$k" in userdata|metadata) ;; *) die "internal: lib/devices.conf: $1.WIPE_PARTS" ;; esac; done
   case "$P_BLOBS_ALLOW" in lib/*.txt) ;; *) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
   case "$P_BLOBS_ALLOW" in *..*) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
+  # its z9x_blobs partition (optional): bytes, whole MiB from 4 to 64; without it the 4 MiB of BLOB_SIZE
+  if [ -n "$P_BLOBS_SIZE" ]; then
+    case "$P_BLOBS_SIZE" in *[!0-9]*) die "internal: lib/devices.conf: $1.BLOBS_SIZE" ;; esac
+    { [ $((P_BLOBS_SIZE % 1048576)) = 0 ] && [ "$P_BLOBS_SIZE" -ge 4194304 ] && [ "$P_BLOBS_SIZE" -le 67108864 ]; } \
+      || die "internal: lib/devices.conf: $1.BLOBS_SIZE"
+    BLOB_SIZE=$P_BLOBS_SIZE
+  fi
   [ "$P_FS" = erofs ] || die "internal: lib/devices.conf: $1.IMAGE_FS (ab-fastbootd: erofs)"
   # the Google services add-on: both lists or neither (then gapps, gsf and --gapps-zip are not there for it)
   if [ -n "$P_GAPPS_ALLOW$P_GAPPS_IMAGES" ]; then
@@ -1636,6 +1707,81 @@ EOF
     done
     GAPPS_ALLOW_F=$HERE/$P_GAPPS_ALLOW; GAPPS_IMAGES_F=$HERE/$P_GAPPS_IMAGES
   fi
+}
+abf_table_check() {  # id: MODELS_OK and its companion keys are one consistent table, else an internal STOP
+  # MODELS_OK: 'G0001:v1.2.3,v1.3.0 G0002:v1.3.0', every model once, its first model is MODEL, every
+  # firmware in VENDOR_OK and every firmware of VENDOR_OK some model's; PRODUCT_NAMES: 'G0001:Product_x ...' for
+  # exactly those models; DEVICE: one word; MODEL_CONFIG: a folder under /mnt/vendor/; MODELS_NOT_YET: model codes
+  # not in MODELS_OK; MODELS_CHECK_ONLY: models of MODELS_OK, each once
+  local e m v l first="" mods="" fws="" bad="internal: lib/devices.conf: $1.MODELS_OK"
+  { [ -n "$P_MODELS_OK" ] && [ -n "$P_PRODUCT_NAMES" ] && [ -n "$P_DEVICE" ] && [ -n "$P_MODEL_CONFIG" ]; } || die "$bad"
+  for e in $P_MODELS_OK; do
+    m=${e%%:*}; l=${e#*:}
+    case "$m" in G[0-9][0-9][0-9][0-9]) ;; *) die "$bad" ;; esac
+    case "$l" in ''|*:*|,*|*,|*,,*) die "$bad" ;; esac
+    case " $mods " in *" $m "*) die "$bad" ;; esac
+    [ -n "$first" ] || first=$m
+    mods="$mods $m"
+    for v in $(printf '%s' "$l" | tr ',' ' '); do
+      case "$v" in v[0-9]*) ;; *) die "$bad" ;; esac
+      case "$v" in *[!v0-9.]*) die "$bad" ;; esac
+      case " $P_VENDOR_OK " in *" $v "*) ;; *) die "$bad ($m:$v is not in VENDOR_OK)" ;; esac
+      fws="$fws $v"
+    done
+  done
+  [ "$first" = "$P_MODEL" ] || die "$bad (its first model is not MODEL)"
+  for v in $P_VENDOR_OK; do case " $fws " in *" $v "*) ;; *) die "$bad (VENDOR_OK $v is no model's)" ;; esac; done
+  l=0
+  for e in $P_PRODUCT_NAMES; do
+    m=${e%%:*}; v=${e#*:}
+    { [ "$m:$v" = "$e" ] && [ -n "$v" ]; } || die "internal: lib/devices.conf: $1.PRODUCT_NAMES"
+    case " $mods " in *" $m "*) ;; *) die "internal: lib/devices.conf: $1.PRODUCT_NAMES" ;; esac
+    l=$((l + 1))
+  done
+  [ "$l" = "$(printf '%s\n' $mods | wc -l | tr -d ' ')" ] || die "internal: lib/devices.conf: $1.PRODUCT_NAMES"
+  case "$P_DEVICE" in *" "*) die "internal: lib/devices.conf: $1.DEVICE" ;; esac
+  case "$P_MODEL_CONFIG" in /mnt/vendor/?*) ;; *) die "internal: lib/devices.conf: $1.MODEL_CONFIG" ;; esac
+  case "$P_MODEL_CONFIG" in *..*|*" "*|*/) die "internal: lib/devices.conf: $1.MODEL_CONFIG" ;; esac
+  for m in $P_MODELS_NOT_YET; do
+    case "$m" in G[0-9][0-9][0-9][0-9]) ;; *) die "internal: lib/devices.conf: $1.MODELS_NOT_YET" ;; esac
+    case " $mods " in *" $m "*) die "internal: lib/devices.conf: $1.MODELS_NOT_YET" ;; esac
+  done
+  l=""
+  for m in $P_MODELS_CHECK_ONLY; do
+    case " $mods " in *" $m "*) ;; *) die "internal: lib/devices.conf: $1.MODELS_CHECK_ONLY" ;; esac
+    case " $l " in *" $m "*) die "internal: lib/devices.conf: $1.MODELS_CHECK_ONLY" ;; esac
+    l="$l $m"
+  done
+}
+abf_pair() {  # "K:V K2:V2 ..." K -> V (status 1: no such K)
+  local e
+  for e in $1; do [ "${e%%:*}" = "$2" ] && { printf '%s' "${e#*:}"; return 0; }; done
+  return 1
+}
+abf_is_model() {  # model: 0 = a model code of this profile (one of MODELS_OK, else MODEL)
+  [ -n "$1" ] || return 1
+  [ -n "$P_MODELS_OK" ] || { [ "$1" = "$P_MODEL" ]; return; }
+  abf_pair "$P_MODELS_OK" "$1" >/dev/null
+}
+abf_model_fw() {  # model -> the firmware it may run, space separated (its MODELS_OK entry, else VENDOR_OK)
+  if [ -n "$P_MODELS_OK" ]; then abf_pair "$P_MODELS_OK" "$1" | tr ',' ' '; else printf '%s' "$P_VENDOR_OK"; fi
+}
+abf_check_only() {  # 0 = the model abf_identity found is one of MODELS_CHECK_ONLY: 'check' and 'blobs', no write yet
+  [ -n "$ABF_MODEL" ] && case " $P_MODELS_CHECK_ONLY " in *" $ABF_MODEL "*) true ;; *) false ;; esac
+}
+abf_live_gate() {  # every write ('flash', 'all', 'gapps --zip', 'gapps --remove') once abf_device ran: a model of
+  # MODELS_CHECK_ONLY is refused before anything is written. It mirrors the live switch of the installers that run on
+  # the projector itself (a check and a dry run only, until one live test on that model)
+  abf_check_only || return 0
+  die "$(t "$ABF_MODEL support is in testing: Lumen OS goes on the $P_NAME $ABF_MODEL only after a live test on that model, not yet. 'check' and 'blobs' work for it. Nothing was written." "поддержка $ABF_MODEL в тестировании: Lumen OS ставится на $P_NAME $ABF_MODEL только после живого теста на этой модели, пока нет. 'check' и 'blobs' для неё работают. Ничего не записано.")"
+}
+abf_fw_names() {  # "v1.2.3 v1.3.0" -> "V1.2.3 and V1.3.0"
+  printf '%s\n' "$1" | awk -v and="$(t and и)" '{ for (i = 1; i <= NF; i++) s = s (i > 1 ? (i == NF ? " " and " " : ", ") : "") "V" substr($i, 2); print s }'
+}
+abf_matrix() {  # "G0001 (V1.2.3, V1.3.0) and G0002 (V1.3.0)": the models and the firmware of each
+  printf '%s\n' "$P_MODELS_OK" | awk -v and="$(t and и)" '{ for (i = 1; i <= NF; i++) { m = $i; sub(/:.*/, "", m); f = $i; sub(/^[^:]*:/, "", f)
+      k = split(f, a, ","); f = ""; for (j = 1; j <= k; j++) f = f (j > 1 ? ", " : "") "V" substr(a[j], 2)
+      s = s (i > 1 ? (i == NF ? " " and " " : ", ") : "") m " (" f ")" } print s }'
 }
 other_hint() {  # model board: the Z9X check met another projector this installer knows: its way in
   case "$(profile_of "$1" "$2")" in
@@ -3150,11 +3296,15 @@ play6_not_needed() {  # the Z9X commands the Play 6 has no use for
 # port: the A-to-A cable goes in when the installer asks, right before 'adb reboot fastboot' (play6_adb's way of
 # connecting: ADB_T = ADDR:PORT, SERIAL = ro.serialno, the fastboot serial). What the projector IS comes from its
 # profile (P_*); what may be written is fixed in fb_allowed: z9x_blobs<slot> (create, resize, flash) and
-# system<slot> of the running slot when SLOTS has it, then 'fastboot format:ext4' of WIPE_PARTS (fastbootd reports
-# them as raw, so the type is always given; the host's mke2fs makes them), and with GAPPS_ALLOW z9x_gapps<slot>
+# system<slot> of the running slot when SLOTS has it, then 'fastboot format:<WIPE_FS>' of WIPE_PARTS (fastbootd
+# reports them as raw, so the type is always given: ext4 made by the host's mke2fs, or f2fs by its make_f2fs, with
+# casefold and projid for userdata as on the Z9X), and with GAPPS_ALLOW z9x_gapps<slot>
 # (create, resize, flash, delete: the Google services add-on). Never vbmeta (the user types that step: 'vbmeta'),
 # never -w, erase, another delete, --slot, set_active, a KEEP partition or the other slot. The slot is the one
-# the system runs from and fastbootd reports (a or b: after a Lumen OS update it is the other one). fastbootd has no
+# the system runs from and fastbootd reports (a or b: after a Lumen OS update it is the other one). With SLOT_CHECK
+# (abf_slot_check) the other slot is shown before the first write (asked when it holds no system: a fall to it starts
+# nothing) and the slots are read again after system (still the written slot, not unbootable, the other slot as it
+# was, else STOP before the wipe). fastbootd has no
 # idle timeout, so one visit writes and wipes. A staged or merging update (stock or Lumen OS) shows in fastbootd
 # (snapshot-update-status, *-cow): 'flash' stops there, nothing written, so userdata and metadata are never
 # formatted while one exists. Steps: check -> backup (asked) -> vbmeta (asked) -> blobs -> flash; verify later, after
@@ -3169,6 +3319,7 @@ ABF_GAPPS=0          # 1 = this run is 'gapps' (its own fastbootd visit): a STOP
 ABF_GW=0             # 1 = 'gapps' changed z9x_gapps in this visit (a STOP then keeps it in fastboot mode)
 ABF_GNEED=0          # bytes of super the add-on of this write still needs (--gapps-zip; abf_room counts them)
 
+abf_other() { case "$1" in a) echo b ;; *) echo a ;; esac; }   # slot -> the other one (slot-count is 2); the slot checks of SLOT_CHECK=yes
 abf_ids() {  # the ids of lib/devices.conf with FLOW=ab-fastbootd (nothing without lib/devices.conf)
   [ -f "$DEVCONF" ] || return 0
   awk '{ sub(/\r$/, "") } /^[a-z0-9]+\.FLOW=ab-fastbootd$/ { print substr($0, 1, index($0, ".") - 1) }' "$DEVCONF"
@@ -3221,8 +3372,12 @@ abf_other_hint() {  # model board: another projector this installer knows, and i
 abf_identity() {  # the device at ADB_T: this projector model, and the saved one (DHCP may give its address away)
   local code board ser
   code=$(prop ro.boot.xgimi.modelname); board=$(prop ro.boot.hardware); ser=$(prop ro.serialno)
-  if [ "$code" != "$P_MODEL" ] || [ "$board" != "$P_BOARD" ]; then
+  if ! abf_is_model "$code" || [ "$board" != "$P_BOARD" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
+    # a model code of this projector that is not supported yet (MODELS_NOT_YET): named as such, never 'not an HB'
+    if [ "$board" = "$P_BOARD" ] && [ -n "$code" ] && case " $P_MODELS_NOT_YET " in *" $code "*) true ;; *) false ;; esac; then
+      die "$(t "the $P_NAME model $code is not supported yet: Lumen OS is made for the models $(abf_matrix) only. Nothing was done." "модель $P_NAME $code пока не поддерживается: Lumen OS сделана только для моделей $(abf_matrix). Ничего не сделано.")"
+    fi
     die "$(t "this is not an $P_NAME (model '$code', board '$board'). Nothing was done." "это не $P_NAME (код модели '$code', плата '$board'). Ничего не сделано.")$(abf_other_hint "$code" "$board")"
   fi
   [ -n "$ser" ] || die "$(t "the projector at $ADB_T reports no serial number. Nothing was done." "проектор по адресу $ADB_T не сообщает серийный номер. Ничего не сделано.")"
@@ -3233,7 +3388,34 @@ abf_identity() {  # the device at ADB_T: this projector model, and the saved one
     fi
     die "$(t "the projector at $ADB_T has the serial $ser, not $SERIAL (--serial). Nothing was done." "у проектора по адресу $ADB_T серийный номер $ser, а не $SERIAL (--serial). Ничего не сделано.")"
   fi
-  SERIAL=$ser
+  SERIAL=$ser; ABF_MODEL=$code
+  [ -z "$P_MODELS_OK" ] || abf_revision "$code"
+}
+abf_revision() {  # model: its stock really is that model's (MODELS_OK profiles; read only): the stock ro.product.device
+  # (not asked on a running Lumen OS of this projector, whose system names the device itself), the stock product
+  # name of that model (another one = the firmware of another model: a cross-flashed unit) and the stock config
+  # folder of that model (MODEL_CONFIG/<model>/system.ini). The shell may list that folder but not stat its files
+  # (the stock SELinux policy: shell has dir access to mnt_xgimiconfig_file only; 'ls FILE' is denied), so the
+  # folder is listed and system.ini must be one of its names
+  local dev prod want cfg got
+  dev=$(prop ro.product.device)
+  if [ "$(prop "${P_LUMEN_PROP%% *}")" != "${P_LUMEN_PROP#* }" ] && [ "$dev" != "$P_DEVICE" ]; then
+    adb disconnect "$ADB_T" >/dev/null 2>&1
+    die "$(t "this is not an $P_NAME: its stock reports the device '$dev', not $P_DEVICE. Nothing was done." "это не $P_NAME: сток сообщает устройство '$dev', а не $P_DEVICE. Ничего не сделано.")"
+  fi
+  want=$(abf_pair "$P_PRODUCT_NAMES" "$1"); prod=$(prop ro.vendor.xgimi.product.name)
+  if [ -z "$prod" ]; then
+    warn "$(t "the projector reports no stock product name (ro.vendor.xgimi.product.name): not cross-checked with $want" "проектор не сообщает имя стокового продукта (ro.vendor.xgimi.product.name): сверка с $want не сделана")"
+  elif [ "$prod" != "$want" ]; then
+    adb disconnect "$ADB_T" >/dev/null 2>&1
+    die "$(t "the $P_NAME model $1 reports the stock product '$prod', not $want: its XGIMI firmware is not the one of its model (a cross-flashed unit?). Restore the stock firmware of model $1 from a USB stick first (see the guide). Nothing was done." "$P_NAME модели $1 сообщает стоковый продукт '$prod', а не $want: прошивка XGIMI на нём не от его модели (прошит чужой прошивкой?). Сначала верните родную прошивку модели $1 с флешки (см. инструкцию). Ничего не сделано.")"
+  fi
+  cfg="$P_MODEL_CONFIG/$1/system.ini"
+  got=$(adbs shell ls "$P_MODEL_CONFIG/$1" 2>/dev/null | tr -d '\r' | grep -cx 'system\.ini')
+  if [ "$got" != 1 ]; then
+    adb disconnect "$ADB_T" >/dev/null 2>&1
+    die "$(t "the XGIMI firmware of this $P_NAME has no settings of its model $1 ($cfg is missing): it is the firmware of other models. Restore the stock firmware of model $1 from a USB stick first (see the guide). Nothing was done." "в прошивке XGIMI этого $P_NAME нет настроек его модели $1 (нет $cfg): это прошивка других моделей. Сначала верните родную прошивку модели $1 с флешки (см. инструкцию). Ничего не сделано.")"
+  fi
 }
 abf_adb() {  # seconds: adb over the network (--ip, the saved address, or mDNS) and who it is; 1 = no answer
   local a
@@ -3253,13 +3435,32 @@ abf_adb() {  # seconds: adb over the network (--ip, the saved address, or mDNS) 
   ABF_UP=1
 }
 abf_device() {  # connected: firmware, slot, virtual A/B, stock or Lumen OS; saves serial, address, firmware, slot
-  local vend slot vab lum ver
+  local vend slot vab lum ver fv
   vend=$(prop ro.vendor.build.version.incremental); slot=$(prop ro.boot.slot_suffix); vab=$(prop ro.virtual_ab.enabled)
   lum=$(prop "$(p6_lprop)")
-  case " $P_VENDOR_OK " in
-    *" $vend "*) ;;
-    *) die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME is made for $(p6_fw_list) only. If yours is older, let the stock system update itself (Settings, network), then run the installer again. If it is newer, Lumen OS does not support it yet. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME сделана только для $(p6_fw_list). Если ваша старее, дайте стоку обновиться (настройки, сеть) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. Ничего не сделано.")" ;;
-  esac
+  # a projector that shares its XGIMI product image with another (FAMILY) could run that one's Lumen OS: it names
+  # itself by the family's version property, never by ours
+  if [ -z "$lum" ] && [ -n "$P_FAMILY" ]; then
+    fv=$(devconf_get "$P_FAMILY" VERSION_PROP)
+    if [ -n "$fv" ] && [ "$fv" != "$P_VERSION_PROP" ] && [ -n "$(prop "$fv")" ]; then lum=$P_FAMILY; fi
+  fi
+  if [ -n "$P_MODELS_OK" ]; then
+    # the model x firmware table: this model's own list; a firmware only other models of this projector run is the
+    # firmware of another model on it (a cross-flash), and the way out is its own stock, never Lumen OS
+    fv=$(abf_model_fw "$ABF_MODEL")
+    case " $fv " in
+      *" $vend "*) ;;
+      *) case " $P_VENDOR_OK " in
+           *" $vend "*) die "$(t "XGIMI firmware $vend is not the firmware of the $P_NAME model $ABF_MODEL: Lumen OS for the $ABF_MODEL is made for $(abf_fw_names "$fv") only, and $vend is the firmware of other models (all: $(abf_matrix)). Restore the stock firmware of model $ABF_MODEL ($(abf_fw_names "${fv%% *}")) from a USB stick first (see the guide). Nothing was done." "прошивка XGIMI $vend не от модели $P_NAME $ABF_MODEL: Lumen OS для $ABF_MODEL сделана только для $(abf_fw_names "$fv"), а $vend это прошивка других моделей (все: $(abf_matrix)). Сначала верните родную прошивку модели $ABF_MODEL ($(abf_fw_names "${fv%% *}")) с флешки (см. инструкцию). Ничего не сделано.")" ;;
+           *) die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME $ABF_MODEL is made for $(abf_fw_names "$fv") only. If yours is lower, let the stock system update itself (Settings, network), then run the installer again. If it is higher, Lumen OS does not support it yet. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME $ABF_MODEL сделана только для $(abf_fw_names "$fv"). Если ваша ниже, дайте стоку обновиться (настройки, сеть) и запустите установщик снова. Если выше, Lumen OS её пока не поддерживает. Ничего не сделано.")" ;;
+         esac ;;
+    esac
+  else
+    case " $P_VENDOR_OK " in
+      *" $vend "*) ;;
+      *) die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME is made for $(p6_fw_list) only. If yours is older, let the stock system update itself (Settings, network), then run the installer again. If it is newer, Lumen OS does not support it yet. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME сделана только для $(p6_fw_list). Если ваша старее, дайте стоку обновиться (настройки, сеть) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. Ничего не сделано.")" ;;
+    esac
+  fi
   case "$slot" in
     _?) case " $P_SLOTS " in *" ${slot#_} "*) ;; *) die "$(t "the $P_NAME runs from slot ${slot#_}: Lumen OS installs only into slot $P_SLOTS, the one the stock system uses. Nothing was done." "$P_NAME работает из слота ${slot#_}: Lumen OS ставится только в слот $P_SLOTS, в котором работает сток. Ничего не сделано.")" ;; esac ;;
     *) die "$(t "this projector reports no system slot ('$slot'): it is not the $P_NAME this installer knows. Nothing was done." "этот проектор не сообщает системный слот ('$slot'): это не тот $P_NAME, который знает установщик. Ничего не сделано.")" ;;
@@ -3475,13 +3676,22 @@ abf_check() {
   free=$(df -k "$HOME" | awk 'NR==2{print $4}')
   [ "${free:-0}" -ge 4194304 ] || warn "$(t "less than 4 GB free on this computer" "на компьютере свободно меньше 4 ГБ")"
   abf_check_image
+  # MODELS_CHECK_ONLY: the check passes, but the model is not written yet (abf_live_gate), so the check is never kept
+  # as a step done ('all' checks again and stops there)
+  abf_check_only && warn "$(t "the $P_NAME model $ABF_MODEL: supported after a live test, not yet ('flash' and 'gapps' refuse it until then)" "модель $P_NAME $ABF_MODEL: поддержка после живого теста, пока нет ('flash' и 'gapps' до тех пор отказывают)")"
   ok "$(t "check passed; nothing was written" "проверка пройдена; ничего не записано")"
-  state_set step_check done
+  abf_check_only || state_set step_check done
 }
 
 # blobs: the files of the profile's allow-list (BLOBS_ALLOW, the image's /system/etc/z9x/blobs_allow.txt) pulled
-# from this projector's own system, each checked by sha256 (or derived by its from= line deletes), into the 4 MiB
-# ustar tar that the image's unchanged z9x_blobs.sh reads from z9x_blobs<slot>; built by the rules of cmd_blobs.
+# from this projector's own system, each checked by sha256 (or derived by its from= line deletes), into the ustar
+# tar of BLOB_SIZE (4 MiB, or the profile's BLOBS_SIZE) that the image's blobs reader reads from z9x_blobs<slot>;
+# built by the rules of cmd_blobs. need=eye lines (the eye-protection drawer of the image, e.g. a stock native-UI
+# program and its library) are files like the others, but such a profile is never installed without them: no
+# --no-blobs, no --blobs=embedded (abf_main), and a file that does not match stops for good.
+abf_eye() {  # 0 = the profile's allow-list has need=eye lines
+  grep -q -E '^[0-9a-f]{64} [^ ]+ [^ ]+ (.* )?need=eye( |$)' "$HERE/$P_BLOBS_ALLOW" 2>/dev/null
+}
 abf_blobs_file() { [ "$BLOBS" = partition ] && printf '%s' "$BACKUP_ROOT/$PROJECTOR-blobs-$SERIAL.img"; return 0; }
 abf_blobs_ok() {  # 0 = the blobs tar of this projector is ready (or none is needed)
   local f; f=$(abf_blobs_file)
@@ -3499,29 +3709,38 @@ abf_blobs() {
     state_set step_blobs skip; return 0
   fi
   [ "$ABF_UP" = 1 ] || abf_adb 60 || die "$(p6_noconn_text)"
-  local allow="$HERE/$P_BLOBS_ALLOW" w="$SD/blobs" set h rel src opt o p from got n=0 img out
+  local allow="$HERE/$P_BLOBS_ALLOW" w="$SD/blobs" set h rel src opt o p from froms got n=0 img out
   [ -f "$allow" ] || die "internal: $P_BLOBS_ALLOW is missing: re-download the installer"
   rm -rf "$w"; mkdir -p "$w/x"
   set=$(sed -n 's/^set=//p' "$allow")
   printf 'set=%s\n' "$set" > "$w/x/MANIFEST"
   while read -r h rel src opt; do
     case "$h" in ''|\#*|set=*) continue ;; esac
-    from=""
-    for o in $opt; do case "$o" in from=*) from=${o#from=} ;; esac; done
-    case "${from#*:}" in *[!0-9,d\;]*) die "internal: $rel: from= may only delete lines" ;; esac
+    # from= may be given several times: one stock original per XGIMI firmware (each with its own line deletes);
+    # the one whose sha256 the pulled file has is used, and the result must still be <sha256>
+    froms=""
+    for o in $opt; do case "$o" in from=*) from=${o#from=}
+      case "$from" in *:*) ;; *) die "internal: $rel: from= needs <sha256>:<deletes>" ;; esac
+      case "${from#*:}" in *[!0-9,d\;]*) die "internal: $rel: from= may only delete lines" ;; esac
+      froms="$froms $from" ;; esac; done
     mkdir -p "$w/x/$(dirname "$rel")"
     got=""
     for p in "$src" "/system/$rel"; do
       adbs pull "$p" "$w/x/$rel" >/dev/null 2>&1 || continue
       got=$(sha256 "$w/x/$rel")
       [ "$got" = "$h" ] && break
-      if [ -n "$from" ] && [ "$got" = "${from%%:*}" ]; then
+      for from in $froms; do
+        [ "$got" = "${from%%:*}" ] || continue
         sed "${from#*:}" "$w/x/$rel" > "$w/x/$rel.new" && mv "$w/x/$rel.new" "$w/x/$rel"
         got=$(sha256 "$w/x/$rel")
-        [ "$got" = "$h" ] && break
-      fi
+        break
+      done
+      [ "$got" = "$h" ] && break
       got="bad"
     done
+    if [ "$got" != "$h" ] && abf_eye; then
+      die "$(t "$rel from the projector does not match the allow-list ($got): this firmware is not supported, and without these files the $P_NAME cannot draw its eye-protection mask. Nothing was written." "$rel с проектора не совпадает со списком ($got): эта прошивка не поддерживается, а без этих файлов $P_NAME не может рисовать маску защиты глаз. Ничего не записано.")"
+    fi
     [ "$got" = "$h" ] || die "$(t "$rel from the projector does not match the allow-list ($got): this firmware is not supported. Run again with --no-blobs to install without these files (then there is NO SOUND and no MediaTek video decoders). Nothing was written." "$rel с проектора не совпадает со списком ($got): эта прошивка не поддерживается. Чтобы установить без этих файлов, запустите с --no-blobs (тогда НЕ БУДЕТ ЗВУКА и видеодекодеров MediaTek). Ничего не записано.")"
     printf '%s %s %s\n' "$rel" "$h" "$(wc -c < "$w/x/$rel" | tr -d ' ')" >> "$w/x/MANIFEST"
     n=$((n + 1))
@@ -3533,7 +3752,7 @@ abf_blobs() {
   else
     (cd "$w/x" && find . -mindepth 1 | sed 's|^\./||' | LC_ALL=C sort | tar --format=ustar --owner=0 --group=0 --numeric-owner --mtime=@0 --no-recursion -cf "$img" -T -)
   fi
-  [ "$(wc -c < "$img")" -le "$BLOB_SIZE" ] || die "blobs tar larger than 4 MiB"
+  [ "$(wc -c < "$img")" -le "$BLOB_SIZE" ] || die "blobs tar larger than $((BLOB_SIZE / 1048576)) MiB"
   dd if=/dev/null of="$img" bs=1 seek="$BLOB_SIZE" 2>/dev/null
   [ "$(wc -c < "$img" | tr -d ' ')" = "$BLOB_SIZE" ] || die "cannot pad $img"
   mkdir -p "$BACKUP_ROOT"
@@ -3605,6 +3824,74 @@ abf_room() {  # [blobs file]: the new z9x_blobs and the image (and the add-on of
   g=$(( ABF_GNEED - gold )); [ "$g" -gt 0 ] || g=0
   [ $(( need + g )) -le "$room" ] || abf_fb_stop "$(t "the image and the Google services do not fit into super together ($((room / 1048576)) MB free, $(( (need + g) / 1048576 )) MB needed). To install without them, run the installer without --gapps-zip." "образ и сервисы Google вместе не помещаются в super (свободно $((room / 1048576)) МБ, нужно $(( (need + g) / 1048576 )) МБ). Чтобы установить без них, запустите установщик без --gapps-zip.")"
 }
+# SLOT_CHECK=yes (the X50): XGIMI ships the other slot's logical partitions empty (system_b, vendor_b, product_b,
+# system_ext_b of size 0 in lpdump) while the boot loader keeps that slot bootable (misc: priority 14, 3 tries, not
+# unbootable), so failed starts of the written slot can end on a slot where nothing starts. As on the HB (and the
+# Z9X way), the installer writes only the slot the system runs from and never the other one, never switches slots
+# (no set_active, no --slot), and abf_fbd_check has already required that slot to be the saved one and marked
+# successful. 'before' (in fastbootd, before the first write of a visit, from its getvar all): the written slot not
+# marked unbootable, the other slot's system size saved (state other_sys), and when that slot holds no system the
+# user is told what a fall to it means and asked; 'no' leaves fastbootd with nothing written. 'after' (system
+# written and its size checked, before the wipe): one more getvar all; fastbootd must still run the written slot,
+# not marked unbootable, and the other slot's system must be the size saved before, else STOP there (no wipe, no
+# restart: a restart could start the other slot). A written slot that lost its successful mark (the boot loader
+# now counts its tries down) is told. abf_slot_note repeats the empty other slot after the restart. Reads only.
+abf_slot_check() {  # before|after
+  local cs o osz o2 u r suc cur v
+  cs=${ABF_S#_}; o=$(abf_other "$cs")
+  if [ "$1" = before ]; then
+    [ "$(abf_gv "slot-unbootable:$cs")" != yes ] || abf_fb_stop "$(t "the boot loader marks slot $cs, the one to be written, unbootable (slot-unbootable:$cs yes)." "загрузчик отметил слот $cs, в который идёт запись, как незагружаемый (slot-unbootable:$cs yes).")"
+    osz=$(gv_size "system_$o"); osz=$(( ${osz:-0} ))
+    state_set other_sys "$osz"
+    if [ "$osz" -gt 0 ]; then
+      ok "$(t "slot $o: system_$o holds a system ($((osz / 1048576)) MB); it stays as it is" "слот $o: в system_$o есть система ($((osz / 1048576)) МБ); она остаётся как есть")"
+      return 0
+    fi
+    u=$(abf_gv "slot-unbootable:$o"); r=$(abf_gv "slot-retry-count:$o")
+    echo
+    t "Slot $o of the $P_NAME holds no system (system_$o is empty, as XGIMI ships it). The installer writes only
+slot $cs and never switches slots, so slot $cs stays the one that starts. But when a system fails to start several
+times in a row, the boot loader may switch to slot $o by itself (slot-unbootable:$o '$u', slot-retry-count:$o '$r'),
+and nothing starts there: no picture, or the logo and a restart again and again. Then only the stock USB restore
+($P_RESTORE_BIN, see the guide) brings the projector back." "У $P_NAME в слоте $o нет системы (system_$o пуст, так его поставляет XGIMI). Установщик записывает только
+слот $cs и никогда не переключает слоты, поэтому загружается по-прежнему слот $cs. Но если система несколько раз
+подряд не загрузится, загрузчик может сам переключиться на слот $o (slot-unbootable:$o '$u', slot-retry-count:$o
+'$r'), а там ничего не загружается: нет изображения или логотип и перезапуск снова и снова. Тогда проектор вернёт
+только восстановление стока с USB-флешки ($P_RESTORE_BIN, см. инструкцию)."; echo
+    ask "$(t "Write slot $cs anyway?" "Всё равно записать слот $cs?")" || abf_fb_stop "$(t "cancelled." "отменено.")"
+    return 0
+  fi
+  GV=$(fb getvar all 2>&1)
+  # as in abf_fbd_check: a fastbootd that leaves the mark out of 'getvar all' is asked for this slot alone
+  if ! printf '%s\n' "$GV" | grep -q "^(bootloader) slot-successful:$cs:"; then
+    v=$(fb getvar "slot-successful:$cs" 2>&1 | sed -n "s/^slot-successful:$cs: *//p" | head -n 1 | tr -d ' \r')
+    case $v in yes|no) GV="$GV
+(bootloader) slot-successful:$cs:$v" ;; esac
+  fi
+  cur=$(abf_gv current-slot); suc=$(abf_gv "slot-successful:$cs"); u=$(abf_gv "slot-unbootable:$cs")
+  r=$(abf_gv "slot-retry-count:$cs")
+  o2=$(gv_size "system_$o"); o2=$(( ${o2:-0} )); osz=$(state_get other_sys)
+  if [ "$cur" != "$cs" ] || [ "$u" = yes ] || { [ -n "$osz" ] && [ "$o2" != "$osz" ]; }; then
+    die "$(t "after the write fastboot mode reports current-slot '$cur', slot-unbootable:$cs '$u' and system_$o of $o2 bytes (before the write: slot $cs, ${osz:-?} bytes): the boot loader may not start the slot just written. The projector stays in fastboot mode and nothing more is written (no wipe, no restart). Keep the cable in and do not restart it; the guide, 'Back to stock', has the way back." "после записи режим fastboot сообщает current-slot '$cur', slot-unbootable:$cs '$u' и system_$o размером $o2 байт (до записи: слот $cs, ${osz:-?} байт): загрузчик может не загрузить только что записанный слот. Проектор остаётся в режиме fastboot, больше ничего не записывается (без очистки и перезапуска). Не вынимайте кабель и не перезапускайте его; путь назад описан в инструкции, раздел «Откат на сток».")"
+  fi
+  ok "$(t "slot $cs stays the one that starts (current-slot $cur, not unbootable); slot $o was not touched" "загружается по-прежнему слот $cs (current-slot $cur, не отмечен как незагружаемый); слот $o не затронут")"
+  [ "$suc" != yes ] || return 0
+  if [ "$o2" -gt 0 ]; then
+    warn "$(t "slot $cs is no longer marked successful (slot-successful:$cs '$suc'): the boot loader now counts its starts down (slot-retry-count:$cs '$r'), and if Lumen OS fails to start that many times it switches to slot $o and its system" "слот $cs больше не отмечен как успешный (slot-successful:$cs '$suc'): загрузчик теперь считает его попытки загрузки (slot-retry-count:$cs '$r'), и если Lumen OS столько раз не загрузится, он переключится на слот $o и его систему")"
+  else
+    warn "$(t "slot $cs is no longer marked successful (slot-successful:$cs '$suc'): the boot loader now counts its starts down (slot-retry-count:$cs '$r'), and if Lumen OS fails to start that many times it switches to slot $o, which holds no system: then only the stock USB restore $P_RESTORE_BIN helps" "слот $cs больше не отмечен как успешный (slot-successful:$cs '$suc'): загрузчик теперь считает его попытки загрузки (slot-retry-count:$cs '$r'), и если Lumen OS столько раз не загрузится, он переключится на слот $o, в котором нет системы: тогда поможет только восстановление стока с USB-флешки $P_RESTORE_BIN")"
+  fi
+}
+abf_slot_note() {  # SLOT_CHECK, the end of a write: the other slot that holds no system, told once more
+  local cs o
+  [ "$P_SLOT_CHECK" = yes ] && [ "$(state_get other_sys)" = 0 ] || return 0
+  cs=${ABF_S#_}; o=$(abf_other "$cs")
+  t "Slot $cs starts Lumen OS. Slot $o still holds no system, and the installer did not switch slots. If Lumen OS
+does not start (no setup screen after 10 minutes, or the logo and a restart again and again), do not wait: only the
+stock USB restore $P_RESTORE_BIN brings it back (see the guide)." "Lumen OS загружается из слота $cs. В слоте $o по-прежнему нет системы, и установщик не переключал слоты.
+Если Lumen OS не загрузится (через 10 минут нет экрана настройки или логотип и перезапуск снова и снова), не
+ждите: вернёт его только восстановление стока с USB-флешки $P_RESTORE_BIN (см. инструкцию)."; echo
+}
 abf_infb() { [ -n "$(state_get step_fastboot)" ] && [ "$(state_get step_flash)" != done ] && p6_in_fastboot; }
 abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x_blobs, system, the wipe, restart
   local a infb=0 blobs sz got p k
@@ -3619,6 +3906,7 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
       die "$(p6_noconn_text)"
     fi
     abf_device
+    abf_live_gate
     abf_vbmeta_check flash
   fi
   FORCE_HASH=1 abf_check_image
@@ -3710,6 +3998,7 @@ in that port first). Its system keeps running; fastboot mode uses the cable." "�
     say "$(t "z9x_gapps$ABF_S (Google services you added) stays as it is; 'gapps --remove' removes it" "z9x_gapps$ABF_S (добавленные вами сервисы Google) остаётся как есть; 'gapps --remove' его удаляет")"
   fi
   if [ "$(state_get step_system)" != done ]; then
+    [ "$P_SLOT_CHECK" != yes ] || abf_slot_check before
     abf_room "$blobs"
     if [ -n "$blobs" ]; then
       if [ -n "$(gv_size "z9x_blobs$ABF_S")" ]; then fb_do resize "z9x_blobs$ABF_S" "$BLOB_SIZE"
@@ -3732,8 +4021,9 @@ in that port first). Its system keeps running; fastboot mode uses the cable." "�
   fi
   state_set step_system done
   ok "system$ABF_S ($((sz / 1048576)) MB)"
+  [ "$P_SLOT_CHECK" != yes ] || abf_slot_check after
   if [ -n "$(state_get gapps_plan)" ] && [ "$(state_get step_gapps_flash)" != done ]; then abf_gapps_write || state_set gapps_plan ""; fi
-  say "$(t "wiping data (format:ext4 $P_WIPE)" "очистка данных (format:ext4 $P_WIPE)")"
+  say "$(t "wiping data (format:$P_WIPE_FS $P_WIPE)" "очистка данных (format:$P_WIPE_FS $P_WIPE)")"
   for p in $P_WIPE; do
     fb_do format "$p" || die "$(t "the wipe ($p) failed. The projector stays in fastboot mode: keep the cable in and run the installer again, it continues with the wipe." "очистка ($p) не удалась. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите установщик снова, он продолжит с очистки.")"
   done
@@ -3745,11 +4035,13 @@ in that port first). Its system keeps running; fastboot mode uses the cable." "�
     t "Written. The projector starts Lumen OS now; the first start takes 2-4 minutes and ends in the setup
 on the screen, with the Google sign-in step. $(abf_hint) The cable can come out now." "Записано. Проектор загружает Lumen OS; первый запуск 2–4 минуты и заканчивается экраном настройки,
 в ней есть шаг входа в Google. $(abf_hint) Кабель теперь можно вынуть."; echo
+    abf_slot_note
     return 0
   fi
   t "Written. The projector starts Lumen OS now; the first start takes 2-4 minutes and ends in the setup
 on the screen. $(abf_hint) The cable can come out now." "Записано. Проектор загружает Lumen OS; первый запуск 2–4 минуты и заканчивается экраном настройки.
 $(abf_hint) Кабель теперь можно вынуть."; echo
+  abf_slot_note
 }
 # The Google services add-on of a profile with GAPPS_ALLOW (its own allow-list, the same file as the image's
 # /system/etc/z9x/gapps_allow.txt, and GAPPS_IMAGES, the add-on images checked for it), the Z9X way: the user's own
@@ -3811,7 +4103,7 @@ in that port first). Its system keeps running; fastboot mode uses the cable." "�
 }
 abf_gapps_wipe() {  # the 'gapps' visit, z9x_gapps changed: the format of WIPE_PARTS, then the restart
   local p
-  say "$(t "wiping data (format:ext4 $P_WIPE)" "очистка данных (format:ext4 $P_WIPE)")"
+  say "$(t "wiping data (format:$P_WIPE_FS $P_WIPE)" "очистка данных (format:$P_WIPE_FS $P_WIPE)")"
   for p in $P_WIPE; do
     fb_do format "$p" || die "$(t "the wipe ($p) failed. The projector stays in fastboot mode: keep the cable in and run the same command again, it continues there." "очистка ($p) не удалась. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите ту же команду снова, она продолжит там.")"
   done
@@ -3834,6 +4126,7 @@ abf_gapps_install() {
   else
     abf_adb 60 || die "$(p6_noconn_text)"
     abf_device
+    abf_live_gate
     abf_gapps_lumen
     # the same add-on, on: writing it again would only cost the Google apps their data (one start without them)
     have=$(prop sys.z9x.gapps)
@@ -3911,6 +4204,7 @@ abf_gapps_remove() {
   else
     abf_adb 60 || die "$(p6_noconn_text)"
     abf_device
+    abf_live_gate
     abf_gapps_lumen
     if [ "$(prop sys.z9x.gapps)" = none ]; then
       ok "$(t "slot $(state_get slot | tr -d _) has no z9x_gapps: nothing to remove. Nothing was written." "в слоте $(state_get slot | tr -d _) нет z9x_gapps: удалять нечего. Ничего не записано.")"
@@ -4038,6 +4332,7 @@ abf_all() {  # check, backup (asked), vbmeta (asked), blobs, flash: each step on
   [ -z "$GAPPS_WITH" ] || z9x_gapps_plan   # --gapps-zip: the zip, and that the install saved here can take it
   if ! abf_infb; then
     [ "$(state_get step_check)" = done ] || abf_check
+    abf_live_gate
     # --gapps-zip: the add-on image built before the backup question, so that a refusal comes first
     [ -z "$GAPPS_WITH" ] || [ "$(state_get step_flash)" = done ] || z9x_gapps_prepare
     if [ -z "$(state_get step_backup)" ]; then
@@ -4050,6 +4345,9 @@ abf_all() {  # check, backup (asked), vbmeta (asked), blobs, flash: each step on
   abf_done
 }
 abf_main() {  # the commands of a FLOW=ab-fastbootd projector
+  if abf_eye && [ "$BLOBS" != partition ]; then   # its eye-protection drawer comes from its own files (abf_blobs)
+    die "$(t "the $P_NAME draws its eye-protection mask with files from its own system: --no-blobs and --blobs=embedded are not possible for it. Nothing was done." "$P_NAME рисует маску защиты глаз файлами из своей же системы: --no-blobs и --blobs=embedded для него невозможны. Ничего не сделано.")"
+  fi
   case "${CMD:-all}" in
     stick) abf_not_yet "$CMD" ;;
     gapps|gsf) abf_gapps_on || abf_not_yet "$CMD" ;;

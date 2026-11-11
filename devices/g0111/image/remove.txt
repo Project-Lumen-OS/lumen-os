@@ -1,0 +1,19 @@
+# X50 test image (compose_x50.sh step 3): paths of the Z9X 1.0.9 base removed from the X50 image, one per line,
+# relative to the image root (system-as-root). Each must exist in the base; a directory goes with everything in it.
+# <path><TAB><why>. Nothing else of the base is removed (verify_tree_x50.py checks the exact set).
+system/app/Z9xUpdater	the Z9X OTA client (wire id z9x, manifest on the tag z9x): no updater may ever offer a Z9X image to an X50
+system/app/LumenBridgeUpdater	the org.z9x.updater data bridge of the 1.0.8 rename; its only reader is Z9xUpdater
+system/app/Z9xProjector	the Z9X projector app: HIDL IGmpf client (the X50 has no HIDL gmpf), setters for light, motor, keystone, eye protection
+system/app/LumenBridgeProjector	the org.z9x.projector data bridge of the 1.0.8 rename; its only reader is Z9xProjector
+system/product/etc/default-permissions/z9x-projector.xml	default permissions of the removed Z9xProjector
+system/product/etc/default-permissions/z9x-updater.xml	default permissions of the removed Z9xUpdater
+system/etc/init/z9x_rescue.rc	boot rescue (3 failed starts -> fastbootd): the installer's rescue command is being removed, and fastbootd over USB is unverified on the X50
+system/etc/z9x/z9x_rescue.sh	its script
+system/etc/init/z9x_power.rc	writes the Z9X choice of /sys/mtk_pm/wakeup_source/* at every boot and the Projector's STR lock: on the X50 the stock wake sources stay
+system/etc/init/z9x_poweroff.rc	magic close of /dev/watchdog0 at shutdown (a Z9X fix): the X50 hardware watchdog stays as stock
+system/etc/xgimi/z9x_poweroff.sh	its script
+system/etc/init/z9x_nui.rc	the Z9X eye-protection fifo reader ACKs every native-UI command without drawing; on the X50 the human-shape mask IS drawn by the stock nativeui, so an ACK would tell the vendor the person is masked while the lasers keep projecting (gsi-research/X50_HARDWARE_SAFETY.md 0.1 and 5.6): no reader until a real drawer exists (owner's decision)
+system/etc/xgimi/z9x_nui.sh	its script
+system/etc/init/z9x_blobs.rc	the Z9X blobs reader: replaced by x50_blobs.rc / x50_blobs.sh, which read the X50's 16 MiB z9x_blobs with the nine Z9X codec / audio files and the stock eye-protection drawer nativeui (x50_blobs_allow.txt)
+system/etc/z9x/z9x_blobs.sh	its script (4 MiB partition, no eye-protection group)
+system/etc/z9x/blobs_allow.txt	the Z9X allow-list (set z9x-v61558-b): x50_blobs_allow.txt holds the same nine lines plus the two need=eye lines

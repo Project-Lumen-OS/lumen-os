@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS: /system/etc/permissions/privapp-permissions-lumen-miracast.xml (0644, root:root, system_file).
+     org.lumen.miracast (screen mirroring receiver, Miracast sink) lives in /system/priv-app/LumenMiracast,
+     platform-signed. The two privileged permissions it asks for are also signature permissions, so the
+     platform key grants them today (ro.control_privapp_permissions=disable); listed so that "enforce" in a
+     future base does not break boot. CONFIGURE_WIFI_DISPLAY, NETWORK_SETTINGS and SYSTEM_ALERT_WINDOW
+     are signature without "privileged" and need no entry. -->
+<permissions>
+    <privapp-permissions package="org.lumen.miracast">
+        <!-- WifiP2pManager.addExternalApprover / setConnectionRequestResult: our own accept prompt -->
+        <permission name="android.permission.MANAGE_WIFI_NETWORK_SELECTION" />
+        <!-- the full-screen picture comes up when a phone starts mirroring -->
+        <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
+    </privapp-permissions>
+</permissions>

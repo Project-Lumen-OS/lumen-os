@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Moyen</string>
     <string name="pro_strong_hb">Élevé</string>
     <string name="pro_auto_hb">Automatique</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost : luminosité plus élevée. En quittant le Boost, les couleurs sont plus vives.</string>
+    <string name="hb_boost_locked">En mode d’image « %1$s », le Boost fait partie du mode et ne peut pas être désactivé ici. Choisissez un autre mode d’image.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Veille profonde désactivée</string>
+    <string name="hb_str_blocked_usb">Un ordinateur est connecté en USB : en veille, le projecteur ne s\'endort pas complètement et les ventilateurs continuent de tourner. Débranchez le câble USB pour retrouver la veille profonde.</string>
+    <string name="hb_str_blocked_update">Une mise à jour est en cours d\'installation : la veille profonde reviendra ensuite.</string>
+    <string name="hb_str_blocked_update_check">Le système mis à jour est vérifié après le démarrage : la veille profonde reviendra dans quelques minutes.</string>
+    <string name="hb_str_blocked_off">La veille profonde est désactivée sur ce projecteur (réglage de service).</string>
 </resources>

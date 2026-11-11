@@ -267,6 +267,11 @@ def check_version(version, channel):
         + (", or major.minor.patch-betaN" if channel in PACKAGE_TAG else ""))
 
 
+# requires.vendor_incremental when no --vendor is given: the XGIMI firmware the installer accepts
+# (installer/lib/devices.conf z9x.VENDOR_OK, a test keeps them equal).
+VENDOR_DEFAULT = ["v6.15.58", "v6.15.62", "v6.15.19"]
+
+
 def package_tag(version):
     """The GitHub release that holds a version's packages: z9x-<version> (the tags v<version> end at 1.0.7)."""
     return f"z9x-{version}"
@@ -283,7 +288,8 @@ def main():
     ap.add_argument("--old-image", help="clean deltas: the exact source image, for delta_proof.py")
     ap.add_argument("--delta", action="append", default=[], help="ZIP=FROM_BUILD_ID")
     ap.add_argument("--changelog", required=True, help='JSON {"en": "...", "ru": "...", ...}')
-    ap.add_argument("--vendor", action="append", default=[], help="allowed ro.vendor.build.version.incremental")
+    ap.add_argument("--vendor", action="append", default=[],
+                    help="allowed ro.vendor.build.version.incremental (default: %s)" % " ".join(VENDOR_DEFAULT))
     ap.add_argument("--blobs-set", action="append", default=[])
     ap.add_argument("--min-version-code", type=int, default=10000)
     ap.add_argument("--channel", default="stable", choices=CHANNELS)
@@ -322,7 +328,7 @@ def main():
         "schema": 1, "device": "z9x", "channel": a.channel, "published_utc": int(time.time()),
         "version": a.version, "version_code": a.version_code, "build_utc": a.build_utc,
         "build_id": a.build_id,
-        "requires": {"vendor_incremental": a.vendor or ["v6.15.58", "v6.15.62", "v6.15.19"], "min_version_code": a.min_version_code,
+        "requires": {"vendor_incremental": a.vendor or VENDOR_DEFAULT, "min_version_code": a.min_version_code,
                      "blobs_set": a.blobs_set},
         "changelog": ch, "packages": pk,
     }

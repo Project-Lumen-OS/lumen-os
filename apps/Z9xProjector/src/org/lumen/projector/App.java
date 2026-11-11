@@ -77,7 +77,11 @@ public final class App extends Application {
         // ===== Lumen OS 1.0 module "cec": HDMI-CEC power (wake guards, PM51 cec0 arm, standby to devices) =====
         try { org.lumen.projector.cec.CecPolicy.install(this); } catch (Throwable t) { Log.e(TAG, "CecPolicy.install", t); }
         // 2026-11-04: eARC the stock way (the HDMI ARC output while the vendor reports the eARC link, ARC back after)
-        try { org.lumen.projector.cec.EarcLink.install(this); } catch (Throwable t) { Log.e(TAG, "EarcLink.install", t); }
+        // EarcLink registers an audio device callback: only once the audio policy answers (AudioPorts)
+        try {
+            org.lumen.projector.audio.AudioPorts.whenUp(this, new android.os.Handler(android.os.Looper.getMainLooper()),
+                    "EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));
+        } catch (Throwable t) { Log.e(TAG, "EarcLink.install", t); }
         try { RemoteAutoPair.install(this); } catch (Throwable t) { Log.e(TAG, "RemoteAutoPair.install", t); }
         try { EyeGuard.install(this); } catch (Throwable t) { Log.e(TAG, "EyeGuard.install", t); }
         try { org.lumen.projector.voice.Assistant.install(this, new org.lumen.projector.voice.AssistantHost()); } catch (Throwable t) { Log.e(TAG, "Assistant.install", t); }
@@ -99,6 +103,8 @@ public final class App extends Application {
         try { org.lumen.projector.dream.IdleOwner.install(this); } catch (Throwable t) { Log.e(TAG, "IdleOwner.install", t); }
         // ===== v6.2 module "game": HDMI console recognition + auto game profile (no HAL call here) =====
         try { org.lumen.projector.game.GameProfile.install(this); } catch (Throwable t) { Log.e(TAG, "GameProfile.install", t); }
+        // Lumen game menu (2026-11-11): gear long press during a game, shown once by itself on the first game mode entry
+        try { org.lumen.projector.panel.GameMenu.install(this); } catch (Throwable t) { Log.e(TAG, "GameMenu.install", t); }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }
         // ===== v6.3 manual keystone: resume real-time keystone if a session could not (paused marker) =====

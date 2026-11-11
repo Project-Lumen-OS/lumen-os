@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">中</string>
     <string name="pro_strong_hb">高</string>
     <string name="pro_auto_hb">自動</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost：更高亮度。退出 Boost 後色彩更鮮豔。</string>
+    <string name="hb_boost_locked">在「%1$s」影像模式下，Boost 屬於該模式，無法在此關閉。請選擇其他影像模式。</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">深度休眠已關閉</string>
+    <string name="hb_str_blocked_usb">已透過 USB 連接電腦：待機時投影機不會完全休眠，風扇會繼續運轉。拔下 USB 線即可恢復深度休眠。</string>
+    <string name="hb_str_blocked_update">正在安裝更新：安裝完成後恢復深度休眠。</string>
+    <string name="hb_str_blocked_update_check">更新後的系統正在啟動後檢查：幾分鐘後恢復深度休眠。</string>
+    <string name="hb_str_blocked_off">此投影機已關閉深度休眠（服務設定）。</string>
 </resources>

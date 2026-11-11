@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen game menu, design A (Z9X, 2026-11-11): plain words, no dashes, no semicolons. -->
+<resources>
+    <string name="gm_vrr" translatable="false">VRR</string>
+    <string name="gm_pic_1" translatable="false">FPS</string>
+    <string name="gm_pic_2" translatable="false">RPG</string>
+    <string name="gm_pic_3" translatable="false">RTS</string>
+    <string name="gm_group_speed">Speed</string>
+    <string name="gm_group_picture">Picture</string>
+    <string name="gm_group_sound">Sound</string>
+    <string name="gm_group_overlay">Over the game</string>
+    <string name="gm_presets">Preset</string>
+    <string name="gm_preset_compete">Competitive</string>
+    <string name="gm_preset_balance">Balance</string>
+    <string name="gm_preset_story">Story</string>
+    <string name="gm_preset_on">%1$s preset is on</string>
+    <string name="gm_preset_partly">%1$s preset is on, but some items could not be changed</string>
+    <string name="gm_lat">Response speed</string>
+    <string name="gm_lat_0">Standard</string>
+    <string name="gm_lat_1">Turbo</string>
+    <string name="gm_lat_d0">Normal delay. Keystone and picture fitting work.</string>
+    <string name="gm_lat_d1">Lowest delay. Keystone and picture fitting do not work.</string>
+    <string name="gm_vrr_d0">The screen refresh rate stays fixed.</string>
+    <string name="gm_vrr_d1">The screen follows the game\'s frame rate. Less stutter and tearing. The console must support VRR.</string>
+    <string name="gm_hfr">High frame rate</string>
+    <string name="gm_hfr_d0">Quality first. 120 Hz from the console is not accepted.</string>
+    <string name="gm_hfr_d1">Smoothness first. The resolution may drop.</string>
+    <string name="gm_off">Off</string>
+    <string name="gm_on">On</string>
+    <string name="gm_auto">Auto</string>
+    <string name="gm_pic">Picture mode</string>
+    <string name="gm_pic_0">Standard</string>
+    <string name="gm_pic_4">Sports</string>
+    <string name="gm_pic_d0">For any game.</string>
+    <string name="gm_pic_d1">For shooters.</string>
+    <string name="gm_pic_d2">For role playing games.</string>
+    <string name="gm_pic_d3">For strategy games.</string>
+    <string name="gm_pic_d4">For sports games.</string>
+    <string name="gm_dark">Dark scenes</string>
+    <string name="gm_dark_d0">Dark areas look as in the game.</string>
+    <string name="gm_dark_d1">You see more detail in dark areas.</string>
+    <string name="gm_sr">Super resolution</string>
+    <string name="gm_sr_d0">The picture as the console sends it.</string>
+    <string name="gm_sr_d1">A neural network makes the picture sharper.</string>
+    <string name="gm_ar">Aspect ratio</string>
+    <string name="gm_ar_d0">As the console sends it.</string>
+    <string name="gm_ar_d1">Regular screen.</string>
+    <string name="gm_snd">Game sound</string>
+    <string name="gm_snd_1">Surround</string>
+    <string name="gm_snd_2">Story</string>
+    <string name="gm_snd_d0">Sound as in the game.</string>
+    <string name="gm_snd_d1">Sound tuned to the type of game.</string>
+    <string name="gm_aim">Crosshair</string>
+    <string name="gm_aim_d">A mark in the centre of the screen. Handy in games without their own crosshair.</string>
+    <string name="gm_aim_style">Style</string>
+    <string name="gm_aim_colour">Colour</string>
+    <string name="gm_aim_move">Move the crosshair</string>
+    <string name="gm_aim_move_hint">Arrows, then OK</string>
+    <string name="gm_fps">Frame counter</string>
+    <string name="gm_fps_1">Left</string>
+    <string name="gm_fps_2">Centre</string>
+    <string name="gm_fps_3">Right</string>
+    <string name="gm_fps_d">How many frames per second come from the console.</string>
+    <string name="gm_fps_unit">fps</string>
+    <string name="gm_faster">faster</string>
+    <string name="gm_turbo_title">Turn Turbo on?</string>
+    <string name="gm_turbo_msg">Turbo turns keystone correction off and returns the picture to the full frame. The delay will be the lowest.</string>
+    <string name="gm_turbo_ok">Turn on</string>
+    <string name="gm_rule_vrr_wide">First choose 16:9 or Auto</string>
+    <string name="gm_rule_ar_vrr">First turn VRR off</string>
+    <string name="gm_rule_ar_4k">Wide frames work only with a 3840 × 2160 signal</string>
+    <string name="gm_rule_hfr_vrr">With VRR on, high frame rate is needed</string>
+    <string name="gm_failed">The projector did not accept this setting. The item is hidden until a restart.</string>
+    <string name="gm_failed_soft">The projector did not accept this setting.</string>
+    <string name="gm_hint_first">During a game, hold the settings button to open this menu</string>
+    <string name="gm_kind_console">console</string>
+    <string name="gm_kind_computer">computer</string>
+    <string name="gm_licences">Licences</string>
+    <string name="gm_licences_d">Authors of material used by Lumen OS</string>
+    <string name="gm_credits_intro">The controller pictures in the game menu are made from these 3D models:</string>
+</resources>

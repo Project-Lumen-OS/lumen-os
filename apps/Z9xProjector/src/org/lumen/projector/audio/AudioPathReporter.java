@@ -143,10 +143,11 @@ public final class AudioPathReporter {
             sH = new Handler(t.getLooper());
             AudioManager am = sApp.getSystemService(AudioManager.class);
             if (am != null) {
-                am.registerAudioDeviceCallback(new AudioDeviceCallback() {
+                // only while the audio policy answers (AudioPorts: a trial without the user's audio files)
+                AudioPorts.registerDeviceCallback(sApp, new AudioDeviceCallback() {
                     @Override public void onAudioDevicesAdded(AudioDeviceInfo[] added) { evaluate("devices added"); }
                     @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] removed) { evaluate("devices removed"); }
-                }, sH);
+                }, sH, "AudioPathReporter");
                 try {
                     am.addOnDevicesForAttributesChangedListener(MEDIA, sH::post,
                             (attrs, devices) -> evaluate("media routing " + devices));

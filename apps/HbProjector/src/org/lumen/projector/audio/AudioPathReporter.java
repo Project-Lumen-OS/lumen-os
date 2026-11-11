@@ -76,6 +76,9 @@ import java.util.List;
  *    did not come within HbAudioRules.SWITCH_END_SAFETY_MS (commit failed / retrying) gets it anyway.
  *  - {@link #targetPath} and {@link #addStateListener}: HdmiVolume follows the speaker only while it is both routed
  *    and confirmed, and stops at once when the routing leaves it (the confirmation comes about 1.9 s later).
+ *  - HB fork 2026-11-10 (4PDA: HDMI sound only on the speaker): path 4 (the 3.5 mm jack, connected by HbWiredJack while
+ *    it is the choice) gets the stock switch_end=4 after 59(4), headphone_volume stored first (HbHeadphoneVolume);
+ *    leaving 4 selects the speaker sink again as leaving Bluetooth does (HbAudioRules.speakerSinkAfter).
  *  - install posts HdmiVolume.install (2026-11-01): spk_volume follows the music volume on the confirmed speaker from
  *    the process start, HDMI picture or not (stock setDspVolumesToHal).
  */
@@ -214,6 +217,7 @@ public final class AudioPathReporter {
             }
             // HB fork (2026-11-01 "sound to maximum"): the speaker level follows STREAM_MUSIC from the process start on
             org.lumen.projector.Ui.main().post(() -> org.lumen.projector.source.HdmiVolume.install(sApp));
+            org.lumen.projector.Ui.main().post(() -> HbHeadphoneVolume.install(sApp));   // HB fork 2026-11-10
             Log.i(TAG, "installed");
         } catch (Throwable t) {
             Log.e(TAG, "install", t);
@@ -473,10 +477,16 @@ public final class AudioPathReporter {
                 am.setParameters("xgimi_audiopath_switch_end=" + target);
                 sHalSink = target;
                 Log.i(TAG, "audio HAL sink: A2DP (switch_end=" + target + ")");
-            } else if (sHalSink == GmpfClient.AudioPath.BT_A2DP.wire) {
+            } else if (HbAudioRules.storeHeadphoneBeforeEnd(target)) {
+                // HB fork (2026-11-10, 4PDA: HDMI sound never on the jack): stock threadInit switch_end=4 after 59(4),
+                // headphone_volume stored first (HbHeadphoneVolume, stock setDspVolumesToHal for devices 4 / 8)
+                sHalSink = target;
+                org.lumen.projector.Ui.main().post(() -> HbHeadphoneVolume.selectSink(sApp, "after 59(" + target + ")"));
+            } else if (HbAudioRules.speakerSinkAfter(sHalSink, target)) {
+                final int from = sHalSink;
                 sHalSink = 0;
-                org.lumen.projector.Ui.main().post(() ->
-                        org.lumen.projector.source.HdmiVolume.selectSpeakerSink(sApp, "left Bluetooth for path " + target));
+                org.lumen.projector.Ui.main().post(() -> org.lumen.projector.source.HdmiVolume.selectSpeakerSink(sApp,
+                        "left " + (from == HbAudioRules.PATH_WIRED ? "the 3.5 mm jack" : "Bluetooth") + " for path " + target));
             }
         } catch (Throwable t) {
             Log.w(TAG, "audio HAL sink " + target + ": " + t);

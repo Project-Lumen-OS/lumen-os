@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trial_no_sound_title">لا يوجد صوت في التجربة</string>
+    <string name="trial_no_sound_text">سيأتي الصوت بعد تثبيت Lumen OS.</string>
+</resources>

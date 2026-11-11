@@ -9,6 +9,9 @@
  * "Soundbar" / "Auto" bring ARC back about 4 s later; rows built only from AudioManager lost the soundbar in that gap
  * (hb-t12 tester 16:48:52, the soundbar played from 16:48:56 on).
  *
+ * Headphones (2026-11-10, 4PDA report: only Auto / Projector / Bluetooth were offered): always listed on the HB, as
+ * stock lists it (no jack detection on the HB kernel); choosing it connects the wired output (HbWiredJack).
+ *
  * Choosing the soundbar row stores Kind.ARC: AudioOutputChoice keeps "Auto until it is back" until ARC connects, then
  * makes it the preferred media device; HbSystemAudio asks for System Audio on.
  */
@@ -54,7 +57,8 @@ public final class HbOutputOptions {
         if (arcNow || cecAvr) sSoundbarSeen = true;
         boolean known = HbOutputRows.soundbarKnown(arcNow, cecAvr, sSoundbarSeen);
         String chosen = AudioOutputChoice.kind(ctx).name();
-        List<String> kinds = HbOutputRows.kinds(connected, known, chosen);
+        // 2026-11-10 (4PDA): the 3.5 mm jack has its row always, as on stock (HbAudioRules.wiredStep)
+        List<String> kinds = HbOutputRows.kinds(connected, known, chosen, HbWiredJack.offered());
         List<AudioOutputChoice.Option> out = new ArrayList<>();
         for (String k : kinds) {
             AudioOutputChoice.Option o = find(base, k);

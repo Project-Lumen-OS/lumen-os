@@ -44,4 +44,13 @@
     <string name="pro_medium_hb">Mid</string>
     <string name="pro_strong_hb">High</string>
     <string name="pro_auto_hb">Automatic</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: higher brightness. Leaving Boost gives more vivid colours.</string>
+    <string name="hb_boost_locked">In the %1$s picture mode Boost is part of the mode and cannot be turned off here. Choose another picture mode.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Deep sleep is off</string>
+    <string name="hb_str_blocked_usb">A computer is connected over USB: in standby the projector will not sleep fully and the fans keep running. Unplug the USB cable to get deep sleep back.</string>
+    <string name="hb_str_blocked_update">An update is being installed: deep sleep returns once it is done.</string>
+    <string name="hb_str_blocked_update_check">The updated system is being checked after start: deep sleep returns in a few minutes.</string>
+    <string name="hb_str_blocked_off">Deep sleep is turned off on this projector (service setting).</string>
 </resources>

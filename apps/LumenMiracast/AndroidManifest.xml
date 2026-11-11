@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  org.lumen.miracast: screen mirroring receiver (Miracast / Wi-Fi Display sink) as a system service.
+  Image: /system/priv-app/LumenMiracast/LumenMiracast.apk, platform-signed (every permission below that
+  is not normal is a signature permission, so the platform key grants it; the two that are also
+  privileged are in privapp-permissions-lumen-miracast.xml, required because the base image runs
+  ro.control_privapp_permissions=enforce on some builds). Runtime permissions NEARBY_WIFI_DEVICES and
+  POST_NOTIFICATIONS are pre-granted by default-permissions/lumen-miracast.xml.
+  Works the same when adb-installed to /data with the image's platform key (live test before an image).
+  versionCode/versionName come from build_apk.sh (VERSION_CODE / VERSION_NAME), as for the other image apps.
+  Not persistent (like AirPlay): BootReceiver starts the foreground service, START_STICKY restarts it,
+  and a crash in the receiver can only take down screen mirroring.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lumen.miracast">
+
+    <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
+
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi.direct" android:required="false" />
+
+    <!-- other Lumen apps (quick panel, Home) may switch the receiver on and off (BootReceiver SET_ENABLED,
+         StateProvider) -->
+    <permission
+        android:name="org.lumen.miracast.permission.CONTROL"
+        android:protectionLevel="signature" />
+
+    <!-- normal -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <!-- runtime (dangerous): Wi-Fi Direct calls; never used for location -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- signature: WFD information element (setWfdInfo) -->
+    <uses-permission android:name="android.permission.CONFIGURE_WIFI_DISPLAY" />
+    <!-- signature: Wi-Fi Direct device name (setDeviceName), DHCP lease list of the group (TetheringManager) -->
+    <uses-permission android:name="android.permission.NETWORK_SETTINGS" />
+    <!-- signature|privileged: our own accept prompt instead of the framework dialog (addExternalApprover) -->
+    <uses-permission android:name="android.permission.MANAGE_WIFI_NETWORK_SELECTION" />
+    <!-- signature: the small prompt / PIN card over any app -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- signature|privileged: bring the picture up when a phone starts mirroring -->
+    <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_mirroring"
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.Miracast.Settings">
+
+        <service
+            android:name=".MiracastService"
+            android:exported="false"
+            android:directBootAware="false"
+            android:foregroundServiceType="connectedDevice" />
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true"
+            android:permission="org.lumen.miracast.permission.CONTROL">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.lumen.miracast.action.SET_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".MirrorActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity="org.lumen.miracast.receiver"
+            android:excludeFromRecents="true"
+            android:resizeableActivity="false"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density"
+            android:theme="@style/Theme.Miracast.Mirror" />
+
+        <!-- the switches for other Lumen apps (the projector's quick menu tile): call() only, CONTROL checked there too -->
+        <provider
+            android:name=".StateProvider"
+            android:authorities="org.lumen.miracast"
+            android:exported="true"
+            android:readPermission="org.lumen.miracast.permission.CONTROL"
+            android:writePermission="org.lumen.miracast.permission.CONTROL" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:label="@string/settings_title"
+            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:theme="@style/Theme.Miracast.Settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.lumen.miracast.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

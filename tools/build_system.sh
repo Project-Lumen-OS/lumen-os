@@ -39,7 +39,8 @@
 #       /system/app:       Z9xProjector (1.0), Z9xTvInput (1.0, CEC, pinned), Z9xAirPlay (1.0:
 #                          follows Settings.Global device_name, pinned), Z9xUpdater (1.0, new)
 #       /system/priv-app:  Z9xHome (Lumen Home, 1.0, new, HOME priority 3), Z9xSetup (first-run,
-#                          1.0, new, HOME priority 10)
+#                          1.0, new, HOME priority 10), LumenMiracast (screen mirroring receiver,
+#                          Miracast sink service, not persistent, started at boot)
 #       /system/product/overlay: Z9xFrameworkKeysOverlay (1.0: + cached processes 16, default
 #                          assistant org.lumen.projector, 8 CEC defaults), Z9xLineagePlatformOverlay
 #                          (new: HOME double-tap 0 = no 300 ms delay, long-press HOME = assist ->
@@ -248,15 +249,15 @@ EDITION_SFX=; [ "$GMS" = 0 ] && EDITION_SFX=-nogms
 MANIFEST_BASE=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x
 CHANNEL=$([ "$VARIANT" = public ] && echo public || echo stable)$EDITION_SFX
 MANIFEST_URL=$MANIFEST_BASE/update-$CHANNEL.json
-# Lumen OS release (1.0.9; 1.0.8 was the org.lumen bridge release; 1.0.4 to 1.0.7 were tar patches on the Mac; 1.0.0 shipped 2026-10-08, 1.0.1 and 1.0.2 on 2026-10-10): user-facing version and the updater's version_code.
+# Lumen OS release (1.0.10; 1.0.8 was the org.lumen bridge release; 1.0.4 to 1.0.7 were tar patches on the Mac; 1.0.0 shipped 2026-10-08, 1.0.1 and 1.0.2 on 2026-10-10): user-facing version and the updater's version_code.
 # Scheme (tools/ota/image/ota_props.txt, docs/ota.md): version_code = major*10000 + minor*100 + patch + 1,
 # so 1.0.0 = 10001 is offered over the 1.0 test builds (version_code 10000, build_id lumen-1.0-<date>)
 # 1.0.1 = 10002 over 1.0.0, 1.0.2 = 10003 over 1.0.1 and 1.0.3 = 10004 over 1.0.2.
 # From 1.0.8 on the offset is +2: the first 1.0.8 build (10009, lumen-1.0.8-20261104anp) was withdrawn, and the
-# re-published 1.0.8 (10010) must be offered to a projector that has it; 1.0.9 = 10011.
+# re-published 1.0.8 (10010) must be offered to a projector that has it; 1.0.9 = 10011, 1.0.10 = 10012.
 # ro.z9x.version, ro.lumen.version, the build id lumen-$VER-<date>[suffix], the version_code and the APK set's
 # versionName (tools/lumen/lumen_checks.py VERSION_NAME) are all checked against VER in the preflight.
-VER=1.0.9
+VER=1.0.10
 BUILD_ID=lumen-$VER-$BUILD_DATE$BUILD_ID_SUFFIX
 # 1.0.3 system library slot (header, SYSLIBS below): on by default from VER 1.0.3; SYSLIB=0 keeps the base's
 # libraries. Only these two values (an unset or empty SYSLIB takes the default).
@@ -449,7 +450,7 @@ preflight() {
            audio_policy_engine_stream_volumes.xml z9x-projector-default-permissions.xml \
            z9x-airplay-default-permissions.xml z9x-home-default-permissions.xml \
            privapp-permissions-z9xhome.xml privapp-permissions-z9xsetup.xml bootanimation.zip LineageCustomizer.apk \
-           z9x-sysconfig-nogms.xml; do
+           z9x-sysconfig-nogms.xml privapp-permissions-lumen-miracast.xml lumen-miracast-default-permissions.xml; do
     need "$V1/$f"
   done
   need "$LT/gen_customizer.py"
@@ -785,7 +786,8 @@ for f in sorted(os.listdir(d)) + [otaperm]:
 r = ET.parse(os.path.join(d, 'z9x-sysconfig.xml')).getroot()
 st = {(e.get('package'), e.get('stopped')) for e in r.findall('initial-package-state')}
 want = {(p, 'false') for p in ('org.lumen.projector', 'org.lumen.tvinput', 'org.lumen.airplay', 'org.lumen.home',
-                                'org.lumen.setup', 'org.lumen.updater', 'com.google.android.tv.remote.service',
+                                'org.lumen.setup', 'org.lumen.updater', 'org.lumen.miracast',
+                                'com.google.android.tv.remote.service',
                                 'com.android.vending', 'com.google.android.gms', 'com.google.android.gsf')}
 assert st == want, st
 co = {(e.get('package'), c.get('class'), c.get('enabled')) for e in r.findall('component-override') for c in e}
@@ -800,7 +802,7 @@ assert co == {('com.google.android.tungsten.setupwraith', 'com.google.android.tu
 rn = ET.parse(nogms).getroot()
 stn = {(e.get('package'), e.get('stopped')) for e in rn.findall('initial-package-state')}
 con = {(e.get('package'), c.get('class'), c.get('enabled')) for e in rn.findall('component-override') for c in e}
-assert stn == {x for x in st if x[0].startswith('org.lumen.')} and len(stn) == 6, stn
+assert stn == {x for x in st if x[0].startswith('org.lumen.')} and len(stn) == 7, stn
 assert con == {x for x in co if x[0] == LP} and len(con) == 3, con
 assert {c.tag for c in rn} == {'initial-package-state', 'component-override'}, {c.tag for c in rn}
 bad = [v for e in rn.iter() for v in e.attrib.values() if 'google' in v.lower() or 'vending' in v]
@@ -809,14 +811,16 @@ def exc(f):
     return [(e.get('package'), sorted(q.get('name') for q in e.findall('permission'))) for e in ET.parse(f).getroot().findall('exception')]
 assert exc(os.path.join(d, 'z9x-home-default-permissions.xml')) == [('org.lumen.home', ['android.permission.READ_TV_LISTINGS', 'android.permission.RECORD_AUDIO'])]
 assert exc(os.path.join(d, 'z9x-airplay-default-permissions.xml')) == [('org.lumen.airplay', ['android.permission.POST_NOTIFICATIONS'])]
+assert exc(os.path.join(d, 'lumen-miracast-default-permissions.xml')) == [('org.lumen.miracast', ['android.permission.NEARBY_WIFI_DEVICES', 'android.permission.POST_NOTIFICATIONS'])]
 assert exc(os.path.join(d, 'z9x-projector-default-permissions.xml'))[0][0] == 'org.lumen.projector'
 assert [e.get('package') for e in ET.parse(otaperm).getroot().findall('exception')] == ['org.lumen.updater']
-for f, pkg in (('privapp-permissions-z9xhome.xml', 'org.lumen.home'), ('privapp-permissions-z9xsetup.xml', 'org.lumen.setup')):
+for f, pkg in (('privapp-permissions-z9xhome.xml', 'org.lumen.home'), ('privapp-permissions-z9xsetup.xml', 'org.lumen.setup'),
+               ('privapp-permissions-lumen-miracast.xml', 'org.lumen.miracast')):
     assert [e.get('package') for e in ET.parse(os.path.join(d, f)).getroot().findall('privapp-permissions')] == [pkg], f
 r = ET.parse(os.path.join(d, 'audio_policy_engine_stream_volumes.xml')).getroot()
 g = {x.findtext('name'): {v.get('deviceCategory'): v.get('ref') for v in x.findall('volume')} for x in r.findall('volumeGroup')}
 assert len(g) == 12 and g['system']['DEVICE_CATEGORY_SPEAKER'] == 'MM' and g['system']['DEVICE_CATEGORY_HEADSET'] == 'MM'
-print('xml ok: sysconfig (6 org.lumen + 4 Google packages not stopped, SetupWraith + LineageOS stats overrides; nogms: the 6 + the 3 stats), permissions, stream volumes')
+print('xml ok: sysconfig (7 org.lumen + 4 Google packages not stopped, SetupWraith + LineageOS stats overrides; nogms: the 7 + the 3 stats), permissions, stream volumes')
 PY
   # the Google services add-on's sysconfig layer (tools/ota/image, both public editions) = exactly the Google
   # entries of the Google edition's z9x.xml (main minus nogms), so the three files cannot drift apart
@@ -1036,7 +1040,7 @@ PY
 # VARIANT=public, both editions (tools/ota/image/README.md section 2b): the boot side of the Google services add-on. z9x_gapps.sh
 # runs while init waits (the vendor PWM watchdog reboots when early-boot is late) and in front of PackageManager:
 # it may only read its partition (read-only mount, bounded), overlay it read-only, set its three properties and
-# write its one marker; it never unpacks anything at boot.
+# write its one marker and its one-line-per-start log; it never unpacks anything at boot.
 gapps_preflight() {
   local f um w b
   for f in "$GAPPS_SH" "$GAPPS_RC" "$GAPPS_ALLOW" "$GAPPS_XML"; do need "$OTAIMG/$f"; done
@@ -1073,9 +1077,15 @@ gapps_preflight() {
   [ "$(grep -v '^[[:space:]]*#' "$OTAIMG/$GAPPS_SH" | grep -oE 'setprop [^ ]+' | sort -u)" = \
     "$(printf '%s\n' 'setprop ro.com.google.gmsversion' 'setprop sys.z9x.gapps' 'setprop sys.z9x.gapps.fs' 'setprop sys.z9x.gapps.zip' | sort -u)" ] \
     || die "$GAPPS_SH: setprop only of sys.z9x.gapps, sys.z9x.gapps.zip, sys.z9x.gapps.fs and ro.com.google.gmsversion"
-  w=$(grep -v '^[[:space:]]*#' "$OTAIMG/$GAPPS_SH" | grep -oE '[^2]>[[:space:]]*[^ &|;)]+' | grep -v '/dev/null' \
-    | sed -E 's/^.>[[:space:]]*//' | sort -u) || true
-  [ "$w" = '"$OFF"' ] || die "$GAPPS_SH: it may write only its marker \$OFF (got: $w)"
+  w=$(grep -v '^[[:space:]]*#' "$OTAIMG/$GAPPS_SH" | grep -oE '[^2>]>>?[[:space:]]*[^ &|;)>]+' | grep -v '/dev/null' \
+    | sed -E 's/^.>>?[[:space:]]*//' | sort -u) || true
+  [ "$w" = "$(printf '%s\n' '"$LOG"' '"$OFF"' | sort -u)" ] \
+    || die "$GAPPS_SH: it may write only its marker \$OFF and its log \$LOG (got: $w)"
+  # both in its own /metadata directory; the log's only other write is its move to log.old
+  grep -qx 'OFF=$R/metadata/z9x_gapps/off' "$OTAIMG/$GAPPS_SH" && grep -qx 'LOG=$R/metadata/z9x_gapps/log.txt' "$OTAIMG/$GAPPS_SH" \
+    && [ "$(grep -v '^[[:space:]]*#' "$OTAIMG/$GAPPS_SH" | grep -oE '(^|[^A-Za-z0-9_.-])(mv|cp|rm|ln|dd|tee) [^;&|)]*' | sed -E 's/^[^a-z]//')" = \
+      'mv -f "$LOG" "${LOG%.txt}.old" 2>/dev/null' ] \
+    || die "$GAPPS_SH: OFF and LOG must stay in /metadata/z9x_gapps, and the only mv / cp / rm / ln / dd / tee is the log's move to log.old"
   # the image's allow-list and the installer's are one file; its rules (tools/ota/gapps_allow.py)
   if [ -f "$TOOLS/../installer/lib/$GAPPS_ALLOW" ] && [ "$OTAIMG" -ef "$TOOLS/ota/image" ]; then
     cmp -s "$OTAIMG/$GAPPS_ALLOW" "$TOOLS/../installer/lib/$GAPPS_ALLOW" \
@@ -1253,9 +1263,10 @@ stage_prep() {
   NEW_PATHS=$(printf '%s\n' system/app/Z9xProjector system/app/Z9xTvInput system/app/Z9xAirPlay system/app/Z9xUpdater \
       system/app/LumenBridgeProjector system/app/LumenBridgeHome system/app/LumenBridgeSetup \
       system/app/LumenBridgeTvInput system/app/LumenBridgeUpdater system/app/LumenBridgeAirPlay \
-      system/priv-app/Z9xHome system/priv-app/Z9xSetup system/product/usr/idc system/etc/sysconfig/z9x.xml \
+      system/priv-app/Z9xHome system/priv-app/Z9xSetup system/priv-app/LumenMiracast system/product/usr/idc system/etc/sysconfig/z9x.xml \
       system/product/usr/keylayout/Generic.kl system/etc/z9x system/etc/init/z9x_ota.rc system/etc/init/z9x_rescue.rc \
       system/etc/permissions/privapp-permissions-z9xhome.xml system/etc/permissions/privapp-permissions-z9xsetup.xml \
+      system/etc/permissions/privapp-permissions-lumen-miracast.xml system/product/etc/default-permissions/lumen-miracast.xml \
       system/product/etc/default-permissions/z9x-projector.xml system/product/etc/default-permissions/z9x-airplay.xml \
       system/product/etc/default-permissions/z9x-home.xml system/product/etc/default-permissions/z9x-updater.xml \
       system/etc/xgimi/audio_policy_engine_stream_volumes.xml system/etc/init/z9x_features.rc \
@@ -1346,10 +1357,12 @@ PY
   add system/etc/sysconfig/z9x.xml "$V1/z9x-sysconfig$EDITION_SFX.xml" 644
   add system/etc/permissions/privapp-permissions-z9xhome.xml "$V1/privapp-permissions-z9xhome.xml" 644
   add system/etc/permissions/privapp-permissions-z9xsetup.xml "$V1/privapp-permissions-z9xsetup.xml" 644
+  add system/etc/permissions/privapp-permissions-lumen-miracast.xml "$V1/privapp-permissions-lumen-miracast.xml" 644
   add system/etc/xgimi/audio_policy_engine_stream_volumes.xml "$V1/audio_policy_engine_stream_volumes.xml" 644
   add system/product/etc/default-permissions/z9x-projector.xml "$V1/z9x-projector-default-permissions.xml" 644
   add system/product/etc/default-permissions/z9x-airplay.xml "$V1/z9x-airplay-default-permissions.xml" 644
   add system/product/etc/default-permissions/z9x-home.xml "$V1/z9x-home-default-permissions.xml" 644
+  add system/product/etc/default-permissions/lumen-miracast.xml "$V1/lumen-miracast-default-permissions.xml" 644
   add system/product/etc/default-permissions/z9x-updater.xml "$OTAIMG/$OTA_PERM" 644
   # OTA plumbing: gate + replaced update_verifier.rc (same label/mode as the base member)
   mkd system/etc/z9x 755

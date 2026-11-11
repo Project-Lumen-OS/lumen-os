@@ -76,6 +76,9 @@ APKS = [
     ('Z9xHome', 'org.lumen.home', 'system/priv-app/Z9xHome', 'app'),
     ('Z9xSetup', 'org.lumen.setup', 'system/priv-app/Z9xSetup', 'app'),
     ('Z9xUpdater', 'org.lumen.updater', 'system/app/Z9xUpdater', 'app'),
+    # screen mirroring receiver (Miracast sink, apps/LumenMiracast): priv-app for its two signature|privileged
+    # Wi-Fi Direct / background-start permissions (overlay/v1/privapp-permissions-lumen-miracast.xml)
+    ('LumenMiracast', 'org.lumen.miracast', 'system/priv-app/LumenMiracast', 'app'),
     ('Z9xFrameworkKeysOverlay', 'org.lumen.overlay.framework', '', 'rro'),
     ('Z9xLineagePlatformOverlay', 'org.lumen.overlay.lineageplatform', '', 'rro'),
     ('Z9xDeviceConfigOverlay', 'org.lumen.overlay.deviceconfig', '', 'rro'),
@@ -111,13 +114,18 @@ NEEDS_ACTION = {
     'org.lumen.updater': ['android.settings.SYSTEM_UPDATE_SETTINGS'],  # About > System update row
 }
 HOME_PRIO = {'org.lumen.setup': 10, 'org.lumen.home': 3}                 # plan C3
-VERSION_NAME = '1.0.9'  # Lumen OS 1.0.9 (1.0.8 had '1.0.8', the org.lumen rename; 1.0.3 had '1.0.3', 1.0.2 '1.0.2', ...)
+VERSION_NAME = '1.0.10'  # Lumen OS 1.0.10 (1.0.9 had '1.0.9', 1.0.8 had '1.0.8', the org.lumen rename; 1.0.3 had '1.0.3', 1.0.2 '1.0.2', ...)
 # Since 1.0.3 an app or RRO whose sources did not change keeps its earlier build byte for byte, and so its
 # version (overlay/apps_v1/README.txt): name -> the versionName it kept. A self-build (LUMEN_SELF=1,
 # docs/selfbuild) builds every APK from source, so there VERSION_NAME is accepted for them too.
 # 1.0.9: the three RROs have no source change since z9x-1.0.8 (Z9xLineagePlatformOverlay: only its README.txt, not
 # in the APK) and keep their 1.0.8 files. 1.0.8 kept none (the rename gave every APK a new package).
-KEPT_VERSION = {'Z9xFrameworkKeysOverlay': '1.0.8', 'Z9xLineagePlatformOverlay': '1.0.8', 'Z9xDeviceConfigOverlay': '1.0.8'}
+# 1.0.10: Z9xProjector is built for it (VERSION_CODE=110 VERSION_NAME=1.0.10); Z9xSetup and Z9xUpdater keep their
+# z9x-1.0.9 files (Z9xUpdater: only the repo name of its fallback URL changed, GitHub redirects the old one),
+# LumenMiracast keeps the 1.0.9 / 109 build pinned for screen mirroring (z9x-az2); Z9xHome (install lock) is
+# built for 1.0.10 (manifest 110 / 1.0.10).
+KEPT_VERSION = {'Z9xFrameworkKeysOverlay': '1.0.8', 'Z9xLineagePlatformOverlay': '1.0.8', 'Z9xDeviceConfigOverlay': '1.0.8',
+                'Z9xSetup': '1.0.9', 'Z9xUpdater': '1.0.9', 'LumenMiracast': '1.0.9'}
 
 
 def cmd_apks(apps, testcerts, releasecerts, plan_out):
@@ -206,7 +214,8 @@ def cmd_apks(apps, testcerts, releasecerts, plan_out):
             err('%s: declares com.tv.settings.action.PARTNER_CUSTOMIZATION (blanks TvSettings)' % name)
         if pkg in ('org.lumen.projector', 'org.lumen.tvinput') and not m['persistent']:
             err('%s: expected android:persistent' % name)
-        if pkg in ('org.lumen.airplay', 'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater') and m['persistent']:
+        if pkg in ('org.lumen.airplay', 'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater',
+                   'org.lumen.miracast') and m['persistent']:
             err('%s: must not be persistent' % name)
         if m['sharedUserId']:
             err('%s: sharedUserId %s is not allowed' % (name, m['sharedUserId']))
@@ -525,7 +534,7 @@ FORBIDDEN = {
     'com.google.android.tv.dfuservice': 'DfuService (speed: removed)',
 }
 REQUIRED = ['android', 'lineageos.platform', 'org.lumen.projector', 'org.lumen.tvinput', 'org.lumen.airplay',
-            'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater', 'org.lumen.overlay.framework',
+            'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater', 'org.lumen.miracast', 'org.lumen.overlay.framework',
             'org.lumen.overlay.lineageplatform', 'org.lumen.overlay.deviceconfig',
             'org.lumen.overlay.tvsettings.hdr',
             # the 1.0.8 bridges under the pre-1.0.8 names (apps/LumenBridge): without one, Android wipes that
@@ -585,7 +594,8 @@ def cmd_packages(path):
                 err('Google package %s in the no-Google edition (GMS=0): %s' % (p, where))
     for p in required:
         if p not in pkgs:
-            if os.environ.get('ALLOW_MISSING_APKS') == '1' and p in ('org.lumen.projector', 'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater'):
+            if os.environ.get('ALLOW_MISSING_APKS') == '1' and p in ('org.lumen.projector', 'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater',
+                                                                    'org.lumen.miracast'):
                 print('WARN required package %s missing (partial dry run)' % p); continue
             err('required package %s missing' % p)
     for p, where in pkgs.items():

@@ -131,6 +131,7 @@
     <string name="tile_sleep_timer">Ұйқы таймері</string>
     <string name="tile_projector_settings">Проектор параметрлері</string>
     <string name="tile_android_settings">Android параметрлері</string>
+    <string name="tile_miracast">Экранды қайталау</string>
     <string name="menu_open">Ашу</string>
     <string name="menu_add_favorite">Таңдаулыларға қосу</string>
     <string name="menu_remove_favorite">Таңдаулылардан алу</string>

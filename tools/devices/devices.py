@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """devices.py: the Lumen OS device registry, devices/<codename>/device.conf.
 
-  devices.py [--root DIR] list                      codename, installer id and name, one per line
+  devices.py [--root DIR] list                      codename, installer id and name of each supported device,
+                                                    one per line
+  devices.py [--root DIR] identify FAMILY MODEL     the entry of (ro.product.device, ro.boot.xgimi.modelname):
+                                                    codename and status, tab-separated; exit 1 when none
   devices.py [--root DIR] get CODENAME KEY          one value (scripts use this instead of sourcing a file)
   devices.py [--root DIR] validate                  every device.conf: format, keys, enums, uniqueness, paths
   devices.py [--root DIR] check-installer [CONF]    installer/lib/devices.conf agrees with the registry
@@ -11,13 +14,25 @@
   devices.py [--root DIR] image CODENAME KEY        one value of devices/<codename>/image.conf
 
 DIR defaults to the tree this script lives in. As a library: load(root), get(root, codename),
-by_installer_id(root, id), by_model(root, model); a device is a dict of its keys, list keys split.
+by_installer_id(root, id), by_model(root, model), identify(root, family, model), load_all(root); a device is a
+dict of its keys, list keys split.
+
+Identity: a projector is (family, model) = (ro.product.device, ro.boot.xgimi.modelname). XGIMI builds several
+models from one product image, so one family can hold several entries; each (family, model) pair belongs to one
+entry only. The folder name (codename) is the Lumen name of the entry; family defaults to it.
+
+Status: supported entries are the devices the tools work with. A stock analysis entry (status=stock analysis) only names a
+projector that is not supported (no image, no install, no OTA): load(), list, get, image and every tool on top of
+them never return it, get and image refuse it by name, identify and load_all show it.
 
 Format: data only, never sourced. One key=value per line, '#' starts a comment line, empty lines allowed.
 A key is [a-z][a-z0-9_]* and appears at most once; a value holds only letters, digits, spaces and . _ : / - ~ ,
 (the installer's set plus ~ and ,). Unknown keys are an error. The folder name must equal codename.
-Keys (all required unless marked optional):
-  codename          ro.product.device
+Keys (all required unless marked optional; a stock analysis entry needs only codename, family, status, name, models,
+platform and hardware):
+  codename          the Lumen name of the entry, equal to its folder; ro.product.device when family is absent
+  family            optional: ro.product.device when it differs from codename (default: codename)
+  status            optional: supported (the default) or stock analysis (a projector Lumen does not support)
   name              shown to users
   models            ro.boot.xgimi.modelname, the first one is the main one (list)
   platform          ro.board.platform
@@ -40,9 +55,12 @@ Keys (all required unless marked optional):
   installer_id      the id in installer/lib/devices.conf ([a-z0-9]+, fixed by shipped downloads)
   fastboot_product  fastbootd 'getvar product'
   forks             the table of deliberate copies of another device's files (tools/devices/check_forks.py), or none
-  hal_check         the HAL caller check (tools/devices/check_hal.py): z9x-callers, play6-hidl, aidl-table
+  hal_check         the HAL caller check (tools/devices/check_hal.py): z9x-callers, play6-hidl, aidl-table, or none
+                    (the image carries no app of ours that calls the projector HAL; then hal_app is none)
   hal_app           the app that talks to the gmpf HAL
   hal_codes         the HAL code table, or none
+  hal_codes_also    optional, aidl-table only: the code tables of the other supported stock firmware (list); every
+                    call must be the same row in each of them and in hal_codes (check_aidl_hal.py, several --codes)
   hal_banned        the table of banned HAL calls, or none
   hal_allowed       optional, required with hal_check=aidl-table: the complete list of HAL calls the app may send
   apps              optional: device-only apps under apps/<name> (list)
@@ -72,8 +90,10 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 REQUIRED = ("codename name models platform hardware abi base_product vendor_sdk vendor_firmware hal_transport "
             "image_fs slots install_flow ota_engine ota_wire_id prop_namespace keys_dir app_prefix channel "
             "installer_id fastboot_product forks hal_check hal_app hal_codes hal_banned").split()
-OPTIONAL = ("apps", "hal_allowed", "ota_tools")
-LISTS = ("models", "vendor_firmware", "channel", "apps")
+OPTIONAL = ("apps", "hal_allowed", "ota_tools", "family", "status", "hal_codes_also")
+# a stock analysis entry: only who the projector is, nothing to build or install
+RESEARCH_REQUIRED = "codename family status name models platform hardware".split()
+LISTS = ("models", "vendor_firmware", "channel", "apps", "hal_codes_also")
 ENUMS = {
     "abi": ("arm64", "arm32"),
     "hal_transport": ("hidl", "aidl"),
@@ -81,7 +101,8 @@ ENUMS = {
     "slots": ("single", "ab", "ab-virtual"),
     "install_flow": ("z9x-usb", "play6-wifi", "ab-fastbootd"),
     "ota_engine": ("update_engine", "recovery-block", "none"),
-    "hal_check": ("z9x-callers", "play6-hidl", "aidl-table"),
+    "hal_check": ("z9x-callers", "play6-hidl", "aidl-table", "none"),
+    "status": ("supported", "research"),
 }
 PATHS = ("forks", "hal_app", "hal_codes", "hal_banned", "hal_allowed")
 IMAGE_KEYS = ("generic", "entry", "compose", "host", "remote_dir", "stage", "variants", "fs")
@@ -149,25 +170,53 @@ def _device(vals):
     return {k: (v.split() if k in LISTS else v) for k, v in vals.items()}
 
 
-def load(root=ROOT):
-    """{codename: device}; raises RegistryError when a file does not parse (validate gives every reason)."""
+def family(d):
+    """ro.product.device of an entry: its family key, or its codename when the key is absent."""
+    return d.get("family") or d["codename"]
+
+
+def status(d):
+    return d.get("status") or "supported"
+
+
+def load_all(root=ROOT):
+    """{codename: entry} of every entry, stock analysis ones included; raises RegistryError when a file does not
+    parse (validate gives every reason)."""
     out = {}
     for p in _paths(root):
         vals, errs = parse(p)
         if errs:
             raise RegistryError(errs[0])
-        missing = [k for k in REQUIRED if k not in vals]
+        need = RESEARCH_REQUIRED if vals.get("status") == "research" else REQUIRED
+        missing = [k for k in need if k not in vals]
         if missing:
             raise RegistryError("%s: missing %s" % (p, " ".join(missing)))
         out[vals["codename"]] = _device(vals)
     return out
 
 
+def load(root=ROOT):
+    """{codename: device} of the supported devices (stock analysis entries left out)."""
+    return {c: d for c, d in load_all(root).items() if status(d) == "supported"}
+
+
+def _refuse_research(d):
+    raise RegistryError("%s is not a supported device (status=%s: %s, ro.product.device %s, model %s): no image, "
+                        "no install, no OTA" % (d["codename"], status(d), d["name"], family(d), d["models"][0]))
+
+
 def get(root, codename):
-    d = load(root).get(codename)
+    d = load_all(root).get(codename)
     if d is None:
         raise RegistryError("unknown device %r (devices.py list)" % codename)
+    if status(d) != "supported":
+        _refuse_research(d)
     return d
+
+
+def identify(root, fam, model):
+    """The entry (stock analysis ones included) whose family is fam and whose models hold model, or None."""
+    return next((d for d in load_all(root).values() if family(d) == fam and model in d["models"]), None)
 
 
 def by_installer_id(root, iid):
@@ -185,6 +234,9 @@ def ota_tools(d):
 
 def image(root, codename):
     """devices/<codename>/image.conf -> dict (list keys split); RegistryError when absent or broken."""
+    d = load_all(root).get(codename)
+    if d is not None and status(d) != "supported":
+        _refuse_research(d)
     p = os.path.join(root, "devices", codename, "image.conf")
     if not os.path.isfile(p):
         raise RegistryError("%s has no image.conf" % codename)
@@ -243,14 +295,32 @@ def validate_image(root, codename, image_fs, errs, notes):
 
 def validate(root):
     """-> (errors, notes) over every device.conf."""
-    errs, notes, seen = [], [], {}
+    errs, notes, seen, fams = [], [], {}, {}
     for p in _paths(root):
         vals, e = parse(p)
         errs += e
         rel = os.path.relpath(p, root)
-        for k in REQUIRED:
+        research = vals.get("status") == "research"
+        for k in (RESEARCH_REQUIRED if research else REQUIRED):
             if k not in vals:
                 errs.append("%s: missing %s" % (rel, k))
+        if research:
+            # only who it is: nothing a tool could build, sign, install or update from
+            for k in sorted(set(REQUIRED + list(OPTIONAL)) - set(RESEARCH_REQUIRED)):
+                if k in vals:
+                    errs.append("%s: %s given for a research entry (it has no image, install or OTA)" % (rel, k))
+            if os.path.isfile(os.path.join(os.path.dirname(p), "image.conf")):
+                errs.append("%s: a research entry has no image.conf" % rel)
+        fam = vals.get("family") or vals.get("codename")
+        if "family" in vals and not re.match(r"^[a-z0-9_]+$", vals["family"]):
+            errs.append("%s: family %r is not [a-z0-9_]+" % (rel, vals["family"]))
+        if fam:
+            fams[rel] = (vals.get("codename"), fam)
+        for m in (vals.get("models", "").split() if fam else ()):
+            other = seen.setdefault(("identity", fam, m), rel)
+            if other != rel:
+                errs.append("%s: ro.product.device %s with model %s is also %s (one entry per family and model)"
+                            % (rel, fam, m, other))
         folder = os.path.basename(os.path.dirname(p))
         if vals.get("codename") not in (None, folder):
             errs.append("%s: codename %s is not its folder %s" % (rel, vals["codename"], folder))
@@ -268,6 +338,8 @@ def validate(root):
             errs.append("%s: install_flow ab-fastbootd needs slots ab or ab-virtual, not %s" % (rel, vals.get("slots")))
         if vals.get("hal_check") == "aidl-table" and vals.get("hal_allowed", "none") == "none":
             errs.append("%s: hal_check aidl-table needs hal_allowed (the check refuses every call without it)" % rel)
+        if (vals.get("hal_check") == "none") != (vals.get("hal_app") == "none"):
+            errs.append("%s: hal_app must be none exactly when hal_check is none (no HAL caller app in the image)" % rel)
         if "ota_engine" in vals and (vals["ota_engine"] == "none") != (vals.get("ota_wire_id") == "none"):
             errs.append("%s: ota_wire_id must be none exactly when ota_engine is none" % rel)
         if vals.get("ota_engine", "none") != "none" and vals.get("ota_wire_id") != vals.get("installer_id"):
@@ -292,13 +364,21 @@ def validate(root):
                 errs.append("%s: keys_dir %s has a .. part" % (rel, kd))
         if "codename" in vals:
             validate_image(root, folder, vals.get("image_fs"), errs, notes)
-        for k in PATHS:
-            v = vals.get(k)
-            if v and v != "none" and not os.path.exists(os.path.join(root, v)):
-                if v.startswith(PRIVATE_PATHS):
-                    notes.append("%s: %s=%s not in this tree (private)" % (rel, k, v))
-                else:
-                    errs.append("%s: %s=%s does not exist" % (rel, k, v))
+        for k in PATHS + ("hal_codes_also",):
+            for v in (vals.get(k) or "").split() if k == "hal_codes_also" else [vals.get(k)]:
+                if v and v != "none" and not os.path.exists(os.path.join(root, v)):
+                    if v.startswith(PRIVATE_PATHS):
+                        notes.append("%s: %s=%s not in this tree (private)" % (rel, k, v))
+                    else:
+                        errs.append("%s: %s=%s does not exist" % (rel, k, v))
+        if vals.get("hal_codes_also") and vals.get("hal_check") != "aidl-table":
+            errs.append("%s: hal_codes_also is for hal_check=aidl-table only" % rel)
+    # a codename names its own family or a family nobody else uses: horse_popular is the Z9X folder, so another
+    # entry of that family has its own folder name and says family=horse_popular
+    for rel, (code, fam) in sorted(fams.items()):
+        for rel2, (code2, fam2) in sorted(fams.items()):
+            if rel2 != rel and code is not None and code == fam2 and fam != fam2:
+                errs.append("%s: codename %s is the family of %s, but its own family is %s" % (rel, code, rel2, fam))
     return errs, notes
 
 
@@ -318,18 +398,38 @@ def installer_profiles(conf):
 
 
 def check_installer(root, conf):
-    """-> (errors, notes): every installer id is a registry device and says the same about it."""
+    """-> (errors, notes): every installer id is a registry device and says the same about it.
+
+    A profile with FAMILY (a projector on another one's XGIMI product image: the registry entry's family is that
+    device's codename) names no FB_PRODUCT of its own; the family's profile gives it, and must equal the entry's
+    fastboot_product. Across profiles the identity must stay apart: (MODEL, BOARD), IMAGE_TOKEN, the LUMEN_PROP value
+    and the CERT file (its certificate bytes) are each one projector's; a CERT next to which the registry keeps the
+    device's own certificates (devices/<codename>/certs/ota.x509.pem) is that certificate byte for byte."""
     errs, notes = [], []
     reg = load(root)
     prof = installer_profiles(conf)
     by_iid = {d["installer_id"]: d for d in reg.values()}
+    inst = os.path.dirname(os.path.dirname(os.path.abspath(conf)))   # installer/ (conf is installer/lib/devices.conf)
     for iid, p in sorted(prof.items()):
         d = by_iid.get(iid)
         if d is None:
             errs.append("installer id %s: no registry device has installer_id=%s" % (iid, iid))
             continue
+        fb = p.get("FB_PRODUCT")
+        if "FAMILY" in p:
+            fam, fp = p["FAMILY"], prof.get(p["FAMILY"], {})
+            fd = by_iid.get(fam)
+            if "FB_PRODUCT" in p:
+                errs.append("installer id %s: FAMILY and FB_PRODUCT (FAMILY gives the fastbootd product)" % iid)
+            elif fam == iid or not fp or "FAMILY" in fp or not fp.get("FB_PRODUCT") or fp.get("MODEL") == p.get("MODEL"):
+                errs.append("installer id %s: FAMILY=%s is not another profile with its own FB_PRODUCT and model" % (iid, fam))
+            elif fd is None or family(d) != fd["codename"]:
+                errs.append("installer id %s: FAMILY=%s, but the registry family of %s is %s" % (iid, fam, d["codename"], family(d)))
+            else:
+                fb = fp["FB_PRODUCT"]
+                notes.append("installer id %s: fastbootd product %s of its family %s (%s)" % (iid, fb, fam, fd["codename"]))
         want = {"NAME": d["name"], "MODEL": d["models"][0], "BOARD": d["hardware"],
-                "FB_PRODUCT": d["fastboot_product"], "VENDOR_OK": " ".join(d["vendor_firmware"])}
+                "VENDOR_OK": " ".join(d["vendor_firmware"])}
         if "IMAGE_FS" in p:
             want["IMAGE_FS"] = d["image_fs"]
         if "FLOW" in p:
@@ -339,11 +439,42 @@ def check_installer(root, conf):
         for k, v in want.items():
             if p.get(k) != v:
                 errs.append("installer id %s: %s=%r, registry %s says %r" % (iid, k, p.get(k), d["codename"], v))
+        # a model x firmware table (MODELS_OK): its models are the registry's models, its firmware the registry's
+        if "MODELS_OK" in p:
+            tm, tf = [], set()
+            for e in p["MODELS_OK"].split():
+                m, _, fl = e.partition(":")
+                tm.append(m)
+                tf.update(x for x in fl.split(",") if x)
+            if tm != d["models"]:
+                errs.append("installer id %s: MODELS_OK models %s, registry %s models %s" % (iid, tm, d["codename"], d["models"]))
+            if tf != set(d["vendor_firmware"]):
+                errs.append("installer id %s: MODELS_OK firmware %s, registry %s vendor_firmware %s"
+                            % (iid, sorted(tf), d["codename"], d["vendor_firmware"]))
+        if fb != d["fastboot_product"]:
+            errs.append("installer id %s: FB_PRODUCT=%r, registry %s says %r" % (iid, fb, d["codename"], d["fastboot_product"]))
         ns = d["prop_namespace"] + "."
         for k in ("VERSION_PROP", "LUMEN_PROP"):
             if k in p and not p[k].split()[0].startswith(ns):
                 errs.append("installer id %s: %s %s is not in %s" % (iid, k, p[k].split()[0], d["prop_namespace"]))
+        own = os.path.join(root, "devices", d["codename"], "certs", "ota.x509.pem")
+        if p.get("CERT") and os.path.isfile(own):
+            cf = os.path.join(inst, p["CERT"])
+            if not os.path.isfile(cf) or open(cf, "rb").read() != open(own, "rb").read():
+                errs.append("installer id %s: CERT %s is not devices/%s/certs/ota.x509.pem" % (iid, p["CERT"], d["codename"]))
         notes.append("installer id %s = %s: agrees" % (iid, d["codename"]))
+    seen = {}
+    for iid, p in sorted(prof.items()):
+        cf = os.path.join(inst, p["CERT"]) if p.get("CERT") else ""
+        keys = [("MODEL+BOARD", "%s %s" % (p.get("MODEL"), p.get("BOARD"))), ("IMAGE_TOKEN", p.get("IMAGE_TOKEN")),
+                ("LUMEN_PROP value", (p.get("LUMEN_PROP") or "").partition(" ")[2] or None),
+                ("CERT", open(cf, "rb").read() if os.path.isfile(cf) else None)]
+        for what, v in keys:
+            if not v:
+                continue
+            other = seen.setdefault((what, v), iid)
+            if other != iid:
+                errs.append("installer ids %s and %s share their %s: one projector's identity each" % (other, iid, what))
     for d in reg.values():
         if d["installer_id"] not in prof:
             notes.append("%s: no installer lines (installer id %s)" % (d["codename"], d["installer_id"]))
@@ -412,11 +543,24 @@ def main(argv):
             for c, d in sorted(load(root).items()):
                 print("%s\t%s\t%s" % (c, d["installer_id"], d["name"]))
             return 0
+        if cmd == "identify" and len(argv) == 3:
+            d = identify(root, argv[1], argv[2])
+            if d is None:
+                print("devices identify: no entry for ro.product.device %s with model %s" % (argv[1], argv[2]),
+                      file=sys.stderr)
+                return 1
+            print("%s\t%s" % (d["codename"], status(d)))
+            return 0
         if cmd == "get" and len(argv) == 3:
             d = get(root, argv[1])
             if argv[2] not in REQUIRED + list(OPTIONAL):
                 raise RegistryError("unknown key %r" % argv[2])
-            v = d.get(argv[2], "")
+            if argv[2] == "family":
+                v = family(d)
+            elif argv[2] == "status":
+                v = status(d)
+            else:
+                v = d.get(argv[2], "")
             print(" ".join(v) if isinstance(v, list) else v)
             return 0
         if cmd == "image" and len(argv) == 3:

@@ -45,6 +45,8 @@ public final class Gmpf2Client extends HidlCaller {
     private static final int GET_LENS_DISP_MODE = 51;          // ()        -> i32
     private static final int SET_LENS_DISP_MODE = 52;          // (i32)     -> bool
     private static final int SET_AE_ON_OFF = 53;               // (bool)    -> i32
+    private static final int GET_GAMING_SOUND_EFFECT_MODE = 1; // ()        -> i32   [Lumen game menu]
+    private static final int SET_GAMING_SOUND_EFFECT_MODE = 2; // (i32)     -> bool  [Lumen game menu, 190..192]
     private static final int GET_GAME_MODE_PROP = 55;          // ()        -> cb(bool, GameModeProp_st 12 bytes)  [v6.2 game]
     private static final int SET_GAME_MODE_TYPE = 56;          // (i32)     -> bool
     private static final int SET_GAME_MODE_STATE = 57;         // (i32)     -> bool
@@ -67,6 +69,12 @@ public final class Gmpf2Client extends HidlCaller {
     private static final int TOGGLE_AI_CONTRAST = 288;         // (i32,i32) -> bool
     private static final int GET_CUSTOMIZED_3D_LUT = 289;      // ()        -> hidl_string (cb)
     private static final int SET_CUSTOMIZED_3D_LUT = 290;      // (hidl_string) -> bool
+    private static final int GET_DARK_BOOST_STATE = 296;       // (i32 pic, i32 src) -> bool        [Lumen game menu]
+    private static final int SET_DARK_BOOST_ONOFF = 297;       // (bool, i32 pic, i32 src) -> i32   [Lumen game menu]
+    private static final int GET_GAME_PICTURE_MODE = 298;      // (i32 src) -> i32                  [Lumen game menu]
+    private static final int SET_GAME_PICTURE_MODE = 299;      // (i32 mode 0..4, i32 src) -> i32   [Lumen game menu]
+    private static final int GET_VRR_ENABLE_STATE = 300;       // (i32 src) -> i32                  [Lumen game menu]
+    private static final int SET_VRR_MODE_ENABLE = 301;        // (i32 state 0|1, i32 src) -> i32   [Lumen game menu]
     private static final int GET_ALLM_STATUS = 310;            // (i32)     -> bool
     private static final int GET_ALLM_ENABLE_STATE = 311;      // ()        -> bool
     private static final int SET_ALLM_ENABLE = 312;            // (bool)    -> bool
@@ -189,6 +197,69 @@ public final class Gmpf2Client extends HidlCaller {
         return p[0] == 0 ? 1 : 0;
     }
     // ------------------------------------------------------------------ v6.2 game module (END)
+
+    // ------------------------------------------------------------------ Lumen game menu (2026-11-11, BEGIN)
+    // The stock Z9X game menu (vendor xhplayer, GameModeApi / OtherViewModel, gsi-stock analysis) sends
+    // these with exactly the arguments allowed below; the source is stock TV.inputToInt on Android 9+: HDMI 1 = 1,
+    // HDMI 2 = 2 (the Z9X has two HDMI inputs). Caller: panel.GameMenu only (sh test/gamemenu/run.sh counts it), and
+    // only while game mode runs on that HDMI input. Every write there is read back with the getter here and an item
+    // whose getter answers outside these ranges, or whose read-back disagrees, is hidden (GmModel.Caps). Not proven
+    // on the device yet: the live check list is in gsi-stock analysis (game menu section).
+
+    /** 300 getVRREnableState(source 1|2) -> stock 0 off / 1 on (-1 read as off). TSV W=writeInt32 R=readInt32. */
+    public int getVrrState(int hdmiSource) throws RemoteException {
+        need();
+        return callI32RetI32(GET_VRR_ENABLE_STATE, checkRange("hdmi source", hdmiSource, 1, 2));
+    }
+
+    /** 301 setVRRModeEnable(state 0|1, source 1|2) (stock GameModeApi.setVrr). TSV W=writeInt32,writeInt32 R=readInt32. */
+    public int setVrrState(boolean on, int hdmiSource) throws RemoteException {
+        need();
+        return callI32I32RetI32(SET_VRR_MODE_ENABLE, on ? 1 : 0, checkRange("hdmi source", hdmiSource, 1, 2));
+    }
+
+    /** 298 getGamePictureMode(source 1|2) -> 0 standard, 1 FPS, 2 RPG, 3 RTS, 4 sports (-1 read as 0). TSV W=writeInt32 R=readInt32. */
+    public int getGamePicture(int hdmiSource) throws RemoteException {
+        need();
+        return callI32RetI32(GET_GAME_PICTURE_MODE, checkRange("hdmi source", hdmiSource, 1, 2));
+    }
+
+    /** 299 setGamePictureMode(mode 0..4, source 1|2) (stock GameModeApi.setPictureMode). TSV W=writeInt32,writeInt32 R=readInt32. */
+    public int setGamePicture(int mode, int hdmiSource) throws RemoteException {
+        need();
+        return callI32I32RetI32(SET_GAME_PICTURE_MODE, checkRange("game picture", mode, 0, 4),
+                checkRange("hdmi source", hdmiSource, 1, 2));
+    }
+
+    /** 296 getDarkBoostState(game picture 0..4, source 1|2) -> bool (stock OtherViewModel). TSV W=writeInt32,writeInt32 R=readBool. */
+    public boolean getDarkScenes(int gamePicture, int hdmiSource) throws RemoteException {
+        need();
+        return callI32I32RetBool(GET_DARK_BOOST_STATE, checkRange("game picture", gamePicture, 0, 4),
+                checkRange("hdmi source", hdmiSource, 1, 2));
+    }
+
+    /**
+     * 297 setDarkBoostOnoff(on, game picture 0..4, source 1|2) (stock OtherViewModel: the current game picture). The
+     * vendor keeps one value per game picture. TSV W=writeBool,writeInt32,writeInt32 R=readInt32.
+     */
+    public int setDarkScenes(boolean on, int gamePicture, int hdmiSource) throws RemoteException {
+        need();
+        HwParcel q = request();
+        q.writeBool(on);
+        q.writeInt32(checkRange("game picture", gamePicture, 0, 4));
+        q.writeInt32(checkRange("hdmi source", hdmiSource, 1, 2));
+        return call(SET_DARK_BOOST_ONOFF, q, RET_I32);
+    }
+
+    /** 1 getGamingSoundEffectMode() -> 190 off, 191 surround, 192 story (0 read as off). TSV R=readInt32. */
+    public int getGameSound() throws RemoteException { need(); return callRetI32(GET_GAMING_SOUND_EFFECT_MODE); }
+
+    /** 2 setGamingSoundEffectMode(190..192) (stock GameModeApi.setGameSoundEffect). TSV W=writeInt32 R=readBool. */
+    public boolean setGameSound(int mode) throws RemoteException {
+        need();
+        return callI32RetBool(SET_GAMING_SOUND_EFFECT_MODE, checkRange("game sound", mode, 190, 192));
+    }
+    // ------------------------------------------------------------------ Lumen game menu (END)
 
     /** 311 getAllmEnableState(). TSV R=readBool. */
     public boolean getAllmAutoSwitch() throws RemoteException { need(); return callRetBool(GET_ALLM_ENABLE_STATE); }

@@ -8,7 +8,7 @@ apps/common/projector/FILES); the projector target skips them, and apps/common/s
 generated files into each app.
 
 Source format (UTF-8):
-    @<app>/<file>          app = projector | common | tvinput | airplay | home | setup | updater, file = strings_panel.xml ...
+    @<app>/<file>          app = projector | common | tvinput | airplay | home | setup | updater | miracast, file = strings_panel.xml ...
     key=text               plain text, no XML escaping (the generator escapes)
     key#quantity=text      plural item
     # comment / blank lines ignored
@@ -30,6 +30,8 @@ RES = {"projector": APPS + "/Z9xProjector/res", "tvinput": APPS + "/Z9xTvInput/r
        # Lumen OS 1.0: new apps; every values-<locale>/strings.xml of these is generated
        "home": APPS + "/Z9xHome/res", "setup": APPS + "/Z9xSetup/res",
        "updater": APPS + "/Z9xUpdater/res",
+       # screen mirroring receiver (Miracast sink), every values-<locale>/strings.xml generated
+       "miracast": APPS + "/LumenMiracast/res",
        # strings files shared by the projector apps (single source, copied by apps/common/sync.sh projector)
        "common": APPS + "/common/projector/res"}
 HERE = os.path.dirname(os.path.abspath(__file__))

@@ -1,0 +1,15 @@
+# data_fs.tsv: the file systems the stock XGIMI X50 Ultra (G0111, mt9681, v1.2.64) mounts on the partitions the
+# installer formats (installer/lib/devices.conf x50.WIPE_PARTS), read from the stock dump on the build host
+# (~/devices/g0111_mt9681, 2026-11-07). Facts only, no XGIMI file. The x50 profile's WIPE_FS must be the type of
+# every row (tools/devices/test/installer_x50.sh checks it): fs_mgr reformats a partition only when it is wiped
+# (all 0x00 or 0xFF in its first 4 KiB), so an ext4 userdata under an f2fs fstab line stays unmounted and Android
+# never starts.
+# Sources (sha256): first_stage_ramdisk/fstab.mt9681 of boot_a = vendor/etc/fstab.mt9681 077c66f3...12f0,
+# boot_a ramdisk system/etc/recovery.fstab 48cff6c7...2ea5 (lines 22 and 24 of each), the live mounts
+# (info/mounts.txt: /data and /metadata f2fs), vendor build.prop lines 142-143 external_storage.projid.enabled=1,
+# external_storage.casefold.enabled=1 (userdata needs casefold and project quota).
+# For comparison, the HB (G0130, ~/devices/g0130_mt9660 vendor/etc/fstab.mt9660 0e7b074c...d53c): /data and
+# /metadata ext4, so the hb profile keeps the default WIPE_FS (ext4).
+# partition	mount	fs	fs_options	fstab_flags
+userdata	/data	f2fs	casefold,projid	noatime,nosuid,nodev,data_flush
+metadata	/metadata	f2fs	-	noatime,nosuid,nodev,noexec,discard,sync

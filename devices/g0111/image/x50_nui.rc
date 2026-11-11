@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: Apache-2.0
+# Lumen OS X50 Ultra (g0111) images (image path /system/etc/init/x50_nui.rc): the stock eye-protection drawer.
+# On stock (v1.2.64) /system/etc/init/nativeui.rc (64 bytes, sha256 6d289394ea73e2130ac7e1caf2c1761372acc4464...)
+# is the service nativeui /system/bin/nativeui, class main, oneshot: started once by class_start main (init.rc
+# 'on nonencrypted'), as root (no user line), in the domain nativeui_main by its file label (the vendor's
+# vendor_file_contexts labels /system/bin/nativeui nativeui_main_exec, its vendor_sepolicy.cil has
+# typetransition init nativeui_main_exec process nativeui_main). nativeui creates /data/vendor/tmp/nuififo and
+# retnuififo, reads the vendor's native-UI commands there (eye protection mode 0: the person-shaped black mask)
+# and draws them on its own SurfaceFlinger layer.
+# Here: the same service name (init.svc.nativeui as on stock), path, class, oneshot, root and label (x50_blobs.sh
+# binds the user's own copy over the 0-byte /system/bin/nativeui with nativeui_main_exec), with one difference,
+# 'disabled': class_start main never starts it, and the same trigger starts it only when x50_blobs.sh verified
+# both eye-protection files (sys.lumen.nui=ok). Without them there is no drawer and no fifo: the vendor's
+# eye-follow mask is not drawn. The vendor does not notice (libxgimi ignores the reply and nativeui's error
+# reports, devices/g0111/research/NATIVEUI.md section 5) and falls back to nothing, so sys.lumen.nui is what tells
+# the Lumen projector app that eye follow (mode 0) must not be offered or kept (X50_PARITY.md, eye protection).
+service nativeui /system/bin/nativeui
+    class main
+    oneshot
+    disabled
+
+on nonencrypted && property:sys.lumen.nui=ok
+    start nativeui
+
+# The drawer exited (oneshot, as on stock: not started again in this boot): sys.lumen.nui says so, and its fifos
+# go, so a vendor command that has not opened them yet finds no file and gives up after its 4 s of retries instead
+# of blocking in open() for ever under its mutex (which would also stop its keystone / focus native UI). A fifo the
+# vendor already holds open stays broken for this boot (as on stock).
+on property:init.svc.nativeui=stopped
+    setprop sys.lumen.nui down
+    rm /data/vendor/tmp/nuififo
+    rm /data/vendor/tmp/retnuififo

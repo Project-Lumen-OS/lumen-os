@@ -9,6 +9,11 @@
 # without its allowlist, an installer file that disagrees, a wire id the tools do not carry) must fail. Exit 0 only
 # when every case gives what it should.
 #
+# Identity cases: two entries on one family (ro.product.device) are allowed only with different model codes;
+# identify FAMILY MODEL finds the entry; a stock analysis entry (status=stock analysis) carries only who the projector is, is
+# left out of list and load(), and get and image refuse it. On the real tree (horse_popular, G0082) is the Z9X
+# and (horse_popular, G0111) the X50 stock analysis entry.
+#
 # OTA cases: ota_wire_id must equal installer_id; ota_tools takes only a
 # known folder that exists, and only with ota_engine=update_engine; for ota_tools=tools/devices/ota check-wire reads
 # devices/<codename>/ota.conf (missing, another wire id or two wire_id lines: red); ota.py runs the folder's tool
@@ -140,6 +145,107 @@ printf '%s\n' generic=yes entry=x/c.sh compose=x/c.sh host=h remote_dir=r 'stage
 expect image_stage_names 0 py --root "$R" validate
 sed -i.bak 's#^stage=.*#stage=x/c.sh x/a.sh y/a.sh#' "$R/devices/alpha_one/image.conf"
 expect image_stage_same_name 1 py --root "$R" validate
+
+# ---- identity: (family, model) = (ro.product.device, ro.boot.xgimi.modelname); stock analysis entries
+research() { # dir codename family model: a stock analysis entry (only who the projector is)
+  mkdir -p "$1/devices/$2"
+  printf '%s\n' "# test research entry" "codename=$2" "family=$3" status=research "name=Test $2" "models=$4" \
+    platform=tp1 hardware=thx > "$1/devices/$2/device.conf"
+}
+good "$R"; research "$R" gamma_x alpha_one Tzz
+expect family_other_model_ok 0 py --root "$R" validate
+expect family_check_installer_unchanged 0 py --root "$R" check-installer
+expect family_check_wire_unchanged 0 py --root "$R" check-wire
+expect identify_supported 0 test "$(py --root "$R" identify alpha_one Tta)" = "$(printf 'alpha_one\tsupported')"
+expect identify_research 0 test "$(py --root "$R" identify alpha_one Tzz)" = "$(printf 'gamma_x\tresearch')"
+expect identify_other_family 1 py --root "$R" identify beta_two Tzz
+expect identify_unknown_model 1 py --root "$R" identify alpha_one Tqq
+expect research_not_listed 0 test "$(py --root "$R" list | cut -f1 | tr '\n' ' ')" = "alpha_one beta_two "
+expect research_get_refused 1 py --root "$R" get gamma_x name
+expect research_image_refused 1 py --root "$R" image gamma_x entry
+expect research_get_family_of_supported 0 test "$(py --root "$R" get alpha_one family)" = alpha_one
+expect research_not_loaded 0 python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import devices
+r = devices.load(sys.argv[2]); a = devices.load_all(sys.argv[2])
+assert sorted(r) == ["alpha_one", "beta_two"] and sorted(a) == ["alpha_one", "beta_two", "gamma_x"]
+assert devices.by_model(sys.argv[2], "Tzz") is None
+assert devices.identify(sys.argv[2], "alpha_one", "Tzz")["codename"] == "gamma_x"' "$D" "$R"
+good "$R"; research "$R" gamma_x alpha_one Tta
+expect family_same_model 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak 's/^models=.*/models=Tzz Tta/' "$R/devices/gamma_x/device.conf"
+expect family_same_second_model 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x beta_two Tta
+expect other_family_same_model_ok 0 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; echo "installer_id=tg" >> "$R/devices/gamma_x/device.conf"
+expect research_with_installer_id 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; echo "install_flow=ab-fastbootd" >> "$R/devices/gamma_x/device.conf"
+expect research_with_install_flow 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; : > "$R/devices/gamma_x/image.conf"
+expect research_with_image_conf 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak '/^models=/d' "$R/devices/gamma_x/device.conf"
+expect research_missing_models 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak 's/^status=.*/status=maybe/' "$R/devices/gamma_x/device.conf"
+expect bad_status 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak '/^status=/d' "$R/devices/gamma_x/device.conf"
+expect family_entry_without_status_needs_every_key 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak 's/^family=.*/family=Alpha-One/' "$R/devices/gamma_x/device.conf"
+expect bad_family 1 py --root "$R" validate
+good "$R"; research "$R" alpha_x beta_two Tzz; research "$R" gamma_x alpha_x Tyy
+expect codename_is_other_family 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; echo "tg.NAME=Test gamma_x" >> "$R/installer/lib/devices.conf"
+expect installer_id_of_research_refused 1 py --root "$R" check-installer
+good "$R"; conf "$R" delta_four td Td; sed -i.bak 's/^models=.*/models=Tta/' "$R/devices/delta_four/device.conf"
+echo "family=alpha_one" >> "$R/devices/delta_four/device.conf"
+expect family_supported_same_model 1 py --root "$R" validate
+sed -i.bak 's/^models=.*/models=Ttd/' "$R/devices/delta_four/device.conf"
+expect family_supported_other_model_ok 0 py --root "$R" validate
+expect identify_supported_family 0 test "$(py --root "$R" identify alpha_one Ttd)" = "$(printf 'delta_four\tsupported')"
+# FAMILY: a projector on another one's product image takes that one's fastbootd product (it names none itself)
+fam() { # dir: delta_four on alpha_one's product image, with installer lines that say FAMILY=ta
+  good "$1"; conf "$1" delta_four td Td; echo "family=alpha_one" >> "$1/devices/delta_four/device.conf"
+  sed -i.bak 's/^fastboot_product=.*/fastboot_product=alpha_one/' "$1/devices/delta_four/device.conf"
+  inst "$1" delta_four td; sed -i.bak -e 's/^td\.FB_PRODUCT=.*/td.FAMILY=ta/' "$1/installer/lib/devices.conf"
+}
+fam "$R"
+expect installer_family_ok 0 py --root "$R" check-installer
+fam "$R"; echo "td.FB_PRODUCT=alpha_one" >> "$R/installer/lib/devices.conf"
+expect installer_family_and_fb_product 1 py --root "$R" check-installer
+fam "$R"; sed -i.bak 's/^td\.FAMILY=.*/td.FAMILY=tb/' "$R/installer/lib/devices.conf"
+expect installer_family_not_the_registry_family 1 py --root "$R" check-installer
+fam "$R"; sed -i.bak 's/^td\.FAMILY=.*/td.FAMILY=td/' "$R/installer/lib/devices.conf"
+expect installer_family_of_itself 1 py --root "$R" check-installer
+fam "$R"; sed -i.bak 's/^fastboot_product=.*/fastboot_product=other/' "$R/devices/delta_four/device.conf"
+expect installer_family_product_differs 1 py --root "$R" check-installer
+# one projector's identity each: (MODEL, BOARD), IMAGE_TOKEN, the LUMEN_PROP value, the CERT bytes
+good "$R"; printf '%s\n' ta.IMAGE_TOKEN=same tb.IMAGE_TOKEN=same >> "$R/installer/lib/devices.conf"
+expect installer_same_image_token 1 py --root "$R" check-installer
+good "$R"; sed -i.bak 's/^tb\.LUMEN_PROP=.*/tb.LUMEN_PROP=ro.lumen.device alpha_one/' "$R/installer/lib/devices.conf"
+expect installer_same_lumen_value 1 py --root "$R" check-installer
+good "$R"; mkdir -p "$R/installer/certs/ta" "$R/installer/certs/tb"
+printf 'CERT-A\n' > "$R/installer/certs/ta/ota.x509.pem"; printf 'CERT-B\n' > "$R/installer/certs/tb/ota.x509.pem"
+printf '%s\n' ta.CERT=certs/ta/ota.x509.pem tb.CERT=certs/tb/ota.x509.pem >> "$R/installer/lib/devices.conf"
+expect installer_own_certs_ok 0 py --root "$R" check-installer
+cp "$R/installer/certs/ta/ota.x509.pem" "$R/installer/certs/tb/ota.x509.pem"
+expect installer_same_cert 1 py --root "$R" check-installer
+printf 'CERT-B\n' > "$R/installer/certs/tb/ota.x509.pem"; mkdir -p "$R/devices/beta_two/certs"
+printf 'CERT-B\n' > "$R/devices/beta_two/certs/ota.x509.pem"
+expect installer_cert_is_the_devices 0 py --root "$R" check-installer
+printf 'CERT-C\n' > "$R/devices/beta_two/certs/ota.x509.pem"
+expect installer_cert_not_the_devices 1 py --root "$R" check-installer
+
+# ---- the real tree: the Z9X and the X50 share ro.product.device, the model code tells them apart
+expect real_identify_z9x 0 test "$(cd "$G" && py identify horse_popular G0082)" = "$(printf 'horse_popular\tsupported')"
+expect real_identify_x50 0 test "$(cd "$G" && py identify horse_popular G0111)" = "$(printf 'g0111\tsupported')"
+# since 2026-11-07 the X50 is a supported device of its own (test images only): never the Z9X's entry
+expect real_x50_family 0 test "$(py get g0111 family)" = horse_popular
+expect real_x50_own_ids 0 sh -c 'test "$(python3 -B "$1/devices.py" get g0111 installer_id)" = x50 &&
+  test "$(python3 -B "$1/devices.py" get g0111 ota_wire_id)" = none &&
+  test "$(python3 -B "$1/devices.py" get g0111 channel)" = none &&
+  test "$(python3 -B "$1/devices.py" image g0111 remote_dir)" = x50-out' sh "$D"
+expect real_x50_listed 0 sh -c 'python3 -B "$1/devices.py" list | cut -f1 | grep -qx g0111' sh "$D"
+expect real_x50_by_model 0 python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import devices
+assert devices.by_model(devices.ROOT, "G0111")["codename"] == "g0111"
+assert devices.by_model(devices.ROOT, "G0082")["codename"] == "horse_popular"
+assert devices.identify(devices.ROOT, "horse_popular", "G0082")["codename"] == "horse_popular"' "$D"
 
 # ---- OTA: one id per device, the ota_tools folder, the wire id in ota.conf, the ota.py route
 ue() { # dir codename wire_id [ota_tools]: the device gets update_engine OTA

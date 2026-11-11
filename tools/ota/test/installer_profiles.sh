@@ -298,7 +298,7 @@ conf() { awk -v k="$1.$2" 'index($0, k "=") == 1 { print substr($0, length(k) + 
 
 begin devices_conf_strict
 # every line: a comment, empty, or id.KEY=value with a known key and only safe characters
-bad=$(awk '!/^#/ && !/^$/ && !/^[a-z0-9]+\.[A-Z][A-Z0-9_]*=[A-Za-z0-9 ._:\/-]*$/' "$CONF")
+bad=$(awk '!/^#/ && !/^$/ && !/^[a-z0-9]+\.[A-Z][A-Z0-9_]*=[A-Za-z0-9 ._:\/,-]*$/' "$CONF")
 [ -z "$bad" ] || fail "bad lines: $bad"
 [ "$(conf z9x MODEL)" = "$(sed -n 's/^MODEL_CODE=//p' "$INST/lumen-install.sh")" ] || fail "z9x.MODEL differs from MODEL_CODE"
 [ "$(conf z9x BOARD)" = "$(sed -n 's/^BOARD=//p' "$INST/lumen-install.sh")" ] || fail "z9x.BOARD differs from BOARD"

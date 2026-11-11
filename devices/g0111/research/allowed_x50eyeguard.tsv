@@ -1,0 +1,27 @@
+# allowed_x50eyeguard.tsv: the complete list of gmpf calls the X50 eye-protection fail-safe (apps/X50EyeGuard,
+# org.lumen.x50.eyeguard) may send on the X50 (G0111, X50 Ultra, mt9681, stock v1.2.64). Every row is a Call of
+# apps/X50EyeGuard/src/org/lumen/x50/eyeguard/Gmpf.java and every Call a row (rule 6 of tools/devices/check_aidl_hal.py,
+# which the app's test/run.sh runs on its sources and on its dex, with research/aidl_codes.tsv and
+# devices/goat_elegant/research/banned.tsv: neither 126 nor 127 is BANNED or REVIEW there).
+# Design decision 2026-11-07 ("делай все", X50 work approved): when the stock drawer of the eye-follow mask is not
+# verified and running (sys.lumen.nui != ok, or init.svc.nativeui not running after boot), the app must not keep eye
+# follow and switches to the full-screen mode. the design notes: "126 only user choice
+# and only when a real drawer exists" is about writing the eye-follow mode 0; this app writes only 1 (the safe mode,
+# EYE_PROTECT_SAFE_MODE), never 0, and only when 127 read something else (the design notes
+# section 8). 2026-11-07 boot handshake (B1):
+# every vendor human-detection path waits for SystemManager 32 setBootAnimState(2), so the app sends the stock
+# handshake (32 with 1 and 2, 36 with 1, PowerManager 2 with 0 and 1, each value a constant of one Gmpf method) and,
+# when detection is not armed (Armed.java), turns the eye-protection light off: 66 with false only (the stock
+# EyeProjectionDialog cover), 67 to read it back. Not here, on purpose: 61 (on/off), 66 with true (light back on),
+# 99 / 100 (heartbeat), 62, 37.
+# service	code	method	signature	reason
+-	0x00FFFFFF	getInterfaceVersion	int()	meta: version guard before the first call (must be 1)
+-	0x00FFFFFE	getInterfaceHash	String()	meta: hash guard (must be 715affd032170b4d256c28c9bbc3c6cbaf5de492)
+DisplayManager	127	getHumanDetectMode	int()	read the eye-protection mode (0 eye follow, 1 full screen); stock wrapper GmDisplayManager.getHumanDetectMode (X50 SystemUI EyeProtect30Core, newsettings MoreViewModel); X50_HARDWARE_SAFETY.md section 4 "127 allow"
+DisplayManager	126	setHumanDetectMode	boolean(int)	value 1 (full screen) only, written by Gmpf.setSafeMode when 127 is not 1 and the drawer is not running; stock setter of the same mode choice in newsettings
+DisplayManager	66	setHumanDetectScreenOnOff	boolean(boolean)	value false only (the eye-protection light off), written by Gmpf.lightOff when human detection is not armed; stock X50 SystemUI EyeProjectionDialog sends it when it covers the picture; never true
+DisplayManager	67	getHumanDetectScreenOnOff	boolean()	read the eye-protection light (before and after 66); X50_HARDWARE_SAFETY.md "67 read allow"
+SystemManager	32	setBootAnimState	void(int)	values 1 and 2 only (Gmpf.bootAnimRunning / bootAnimStopped): stock libbootanimation BootAnimation constructor (1) and end of threadLoop (2); HumDet, AK, AF wait for 2
+SystemManager	33	getBootAnimState	int()	read back after the handshake and every 60 s: 2 = what the vendor detector waits for (Armed.java)
+SystemManager	36	setSystemUIState	void(int)	value 1 only (Gmpf.systemUiReady): stock SystemUI FocusUIV2.start -> SystemUtils.systemUIServicesCompleted
+PowerManager	2	goToBootCompleted	boolean(int)	values 0 and 1 only (Gmpf.bootCompletedEarly / bootCompletedLate): stock XRMService.initXRMServices (0) and BootControlService.bootCompletedCheck after unlock and bootanim stop (1)

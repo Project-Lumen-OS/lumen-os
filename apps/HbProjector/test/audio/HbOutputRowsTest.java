@@ -88,6 +88,20 @@ public final class HbOutputRowsTest {
         eq("known: seen", true, HbOutputRows.soundbarKnown(false, false, true));
         eq("unknown", false, HbOutputRows.soundbarKnown(false, false, false));
 
+        // 2026-11-10 (4PDA, Lumen for HB): the menu offered only Auto / Projector / Bluetooth; the HB jack is never
+        // detected, so Headphones is listed always (stock getSupportWiredHeadphone), after Bluetooth, before USB
+        List<String> bt = l("BT");
+        eq("4PDA: BT connected, jack row", l("AUTO", "SPEAKER", "BT", "WIRED"), HbOutputRows.kinds(bt, false, "AUTO", true));
+        eq("jack row with nothing else connected", l("AUTO", "SPEAKER", "WIRED"), HbOutputRows.kinds(none, false, "AUTO", true));
+        eq("jack row: the panel row is shown (speaker + headphones)", true,
+                HbOutputRows.rowVisible(HbOutputRows.kinds(none, false, "AUTO", true)));
+        eq("jack row once, also when listed and chosen", l("AUTO", "SPEAKER", "ARC", "WIRED"),
+                HbOutputRows.kinds(l("ARC", "WIRED"), true, "WIRED", true));
+        eq("no jack (other model): no row unless listed", l("AUTO", "SPEAKER", "BT"), HbOutputRows.kinds(bt, false, "AUTO", false));
+        eq("old 3-argument form: no jack row", l("AUTO", "SPEAKER", "BT"), HbOutputRows.kinds(bt, false, "AUTO"));
+        eq("order with every output", l("AUTO", "SPEAKER", "ARC", "BT", "WIRED", "USB"),
+                HbOutputRows.kinds(l("USB", "BT", "ARC"), true, "AUTO", true));
+
         System.out.println("HbOutputRowsTest: " + (checks - fails) + "/" + checks + " ok");
         if (fails > 0) System.exit(1);
     }

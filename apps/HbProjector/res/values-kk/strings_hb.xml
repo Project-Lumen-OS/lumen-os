@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Орташа</string>
     <string name="pro_strong_hb">Жоғары</string>
     <string name="pro_auto_hb">Автоматты түрде</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: жарықтық жоғарырақ. Boost режимінен шыққанда түстер қанықтырақ болады.</string>
+    <string name="hb_boost_locked">«%1$s» сурет режимінде Boost режимнің бөлігі, оны мұнда өшіруге болмайды. Басқа сурет режимін таңдаңыз.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Толық ұйқы өшірулі</string>
+    <string name="hb_str_blocked_usb">Компьютер USB арқылы қосылған: күту режимінде проектор толық ұйықтамайды, желдеткіштер жұмыс істей береді. Толық ұйқыны қайтару үшін USB кабелін ажыратыңыз.</string>
+    <string name="hb_str_blocked_update">Жаңарту орнатылуда: орнату аяқталған соң толық ұйқы қайтады.</string>
+    <string name="hb_str_blocked_update_check">Жаңартылған жүйе іске қосылғаннан кейін тексерілуде: толық ұйқы бірнеше минуттан соң қайтады.</string>
+    <string name="hb_str_blocked_off">Бұл проекторда толық ұйқы өшірілген (қызметтік параметр).</string>
 </resources>

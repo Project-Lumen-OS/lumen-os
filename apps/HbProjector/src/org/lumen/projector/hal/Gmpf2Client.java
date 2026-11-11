@@ -55,8 +55,14 @@ public final class Gmpf2Client extends AidlCaller {
     // ------------------------------------------------------------------ brightness Boost
     /** DISPLAY 152 getLensDispMode() -> 1 = Boost [IGmpf2 51]. */
     public boolean isBoost() throws RemoteException { return callRetI32(Call.GET_LENS_DISP_MODE) == 1; }
-    /** DISPLAY 151 setLensDispMode(1 Boost | 0 normal) [IGmpf2 52]. Keep the stock confirmation, refuse when hot. */
-    public boolean setBoost(boolean on) throws RemoteException { return callI32RetBool(Call.SET_LENS_DISP_MODE, on ? 1 : 0); }
+    /**
+     * DISPLAY 151 setLensDispMode(1 Boost | 0 normal) [IGmpf2 52]. Keep the stock confirmation, refuse when hot.
+     * Boost on only while HbFeatures.F.BOOST is ON (not on G0148); leaving Boost is always allowed.
+     */
+    public boolean setBoost(boolean on) throws RemoteException {
+        if (on) HbFeatures.require(HbFeatures.F.BOOST, "setBoost(true)");
+        return callI32RetBool(Call.SET_LENS_DISP_MODE, on ? 1 : 0);
+    }
 
     // ------------------------------------------------------------------ game mode / ALLM
     /** DISPLAY 147 setGameModeType(0 manual | 1 auto) [IGmpf2 56]. */

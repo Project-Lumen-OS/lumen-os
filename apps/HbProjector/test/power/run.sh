@@ -7,11 +7,14 @@ HERE=$(cd "$(dirname "$0")/../.." && pwd)
 # folder two levels up
 GSI=${LUMEN_GSI:-$(cd "$HERE/../.." && pwd)}
 T=$HERE/test/power
+# StrGate has no HB copy: run from apps/HbProjector (not the assembled tree), take the file the recipe takes
+SRC=$HERE/src/org/lumen/projector/power/StrGate.java
+[ -f "$SRC" ] || SRC=$GSI/apps/Z9xProjector/src/org/lumen/projector/power/StrGate.java
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE/src/org/lumen/projector/power/StrGate.java" \
+  "$SRC" \
   "$T/stubs/android/content/Context.java" "$T/stubs/android/content/BroadcastReceiver.java" \
   "$T/stubs/android/content/Intent.java" "$T/stubs/android/content/IntentFilter.java" \
   "$T/stubs/android/os/SystemProperties.java" "$T/stubs/android/os/SystemClock.java" \

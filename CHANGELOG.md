@@ -5,6 +5,8 @@
 
 ## Установщик и инструкции, ещё не в релизе
 
+- XGIMI Z9X: в разделе «Откат на сток» добавлены официальные файлы V6.15.62 (`.bin` для флешки и полный
+  пакет обновления): проектор, который пришёл с V6.15.62, возвращается на V6.15.62, остальные на V6.15.19.
 - Инструкция по установке разделена: у Z9X и у Play 6 теперь свои страницы,
   [для Z9X](docs/install/z9x/ru.md) и [для Play 6](docs/install/play6/ru.md). Обе начинаются с трёх
   вариантов установки. Старые ссылки ведут на страницу со ссылками на обе инструкции.
@@ -23,6 +25,24 @@
   Просит держать в USB-порту при каждом включении только флешку FAT32 и видит адаптер USB Ethernet в порту.
   Если проектор не вернулся после запуска, говорит, что делать, как прислать журнал загрузки и как
   правильно откатиться для вашей партии.
+
+## 1.0.10, ноябрь 2026
+
+Обновление придёт по Wi-Fi: «Настройки → Об устройстве → Обновление Lumen OS». С 1.0.7, 1.0.8 и 1.0.9 оно ставится
+сразу, промежуточные версии не нужны. Данные сохраняются.
+
+- Новое быстрое меню: в каждом ряду одна большая плитка и две маленькие, настройки открываются в небольшом окне
+  рядом с плиткой, в конце «Все настройки».
+- Игровое меню: во время игры по HDMI зажмите кнопку с шестерёнкой. Игровой режим, VRR, игровая картинка, тёмные
+  сцены и игровой звук как в стоке, сверху картинка приставки или значок компьютера.
+- Повтор экрана (Miracast) с ноутбуков Windows и телефонов Android, которые это умеют. Плитка в быстром меню,
+  перед каждым подключением проектор спрашивает разрешение.
+- «Улучшение звука» снова показывает настоящий выбор, DTS и Harman Kardon переключаются в обе стороны.
+- Установка прямо с проектора, без компьютера: приложение Lumen Installer (`lumen-installer-0.5.apk`). Сначала
+  Lumen OS можно попробовать, система XGIMI при этом не меняется, потом установить насовсем, с сервисами Google
+  или без.
+- Сервисы Google больше не выключаются после неудачного первого запуска обновления.
+- Мелкие исправления.
 
 ## 1.0.9, ноябрь 2026
 
@@ -342,6 +362,8 @@ Newest first. Versions 1.0.x are for the XGIMI Z9X; the XGIMI Play 6 has its own
 
 ## Installer and guides, not released yet
 
+- XGIMI Z9X: "Back to stock" now lists the official V6.15.62 files (the `.bin` for the stick and the full
+  update package): a projector that came with V6.15.62 goes back to V6.15.62, the others to V6.15.19.
 - The install guide is split: the Z9X and the Play 6 each have their own page,
   [for the Z9X](docs/install/z9x/en.md) and [for the Play 6](docs/install/play6/en.md). Both start with the
   three ways to install. Old links lead to a page that links both guides.
@@ -360,6 +382,23 @@ Newest first. Versions 1.0.x are for the XGIMI Z9X; the XGIMI Play 6 has its own
   them. It asks to keep only a FAT32 stick in the USB port at every power-on and notices a USB Ethernet
   adapter in the port. If the projector does not come back after a start, it says what to do, how to send the
   boot log and the right way back to stock for your batch.
+
+## 1.0.10, November 2026
+
+The update arrives over Wi-Fi: Settings > About > Lumen OS update. From 1.0.7, 1.0.8 and 1.0.9 it installs straight
+away, no version in between is needed. Your data stays.
+
+- A new quick menu: one large tile and two small ones per row, settings open in a small window next to their tile,
+  All settings at the end.
+- Game menu: hold the gear button during a game on HDMI. Game mode, VRR, game picture, dark scenes and game sound
+  as on stock, with a picture of the console or a computer icon on top.
+- Screen mirroring (Miracast) from Windows laptops and Android phones that support it. A tile in the quick menu,
+  and the projector asks before every connection.
+- Sound enhancement shows the real choice again, DTS and Harman Kardon switch both ways.
+- Install straight from the projector, no computer needed: the Lumen Installer app (`lumen-installer-0.5.apk`). Try
+  Lumen OS first, the XGIMI system stays as it is, then install it for good, with or without Google services.
+- Google services no longer turn off after an unlucky first start of an update.
+- Smaller fixes.
 
 ## 1.0.9, November 2026
 

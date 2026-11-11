@@ -12,6 +12,9 @@ package org.lumen.projector.audio;
 public final class HbAudioRules {
     public static final int PATH_SPEAKER = 0;
     public static final int PATH_ARC = 2;
+    public static final int PATH_BT = 3;
+    /** The 3.5 mm jack (headphones / line out): stock threadInit maps WIRED_HEADSET / WIRED_HEADPHONE to 4. */
+    public static final int PATH_WIRED = 4;
     /** Stock threadInit: 50 x 20 ms after the last change (libxgimiaudiopolicy.so @0x4680). */
     public static final long STOCK_SWITCH_MS = 1_000L;
     /** Lumen 1.0.6 debounce for the other switches (Bluetooth back to the speaker was silent for 2 s with 1 s). */
@@ -141,5 +144,76 @@ public final class HbAudioRules {
         if (!"SPEAKER".equals(kind)) return false;
         if (!systemAudioChange(Boolean.FALSE, cecOn, controlOn, avrKnown, modeOn)) return false;
         return sinceLastMs < 0 || sinceLastMs >= AUTO_OFF_GAP_MS;
+    }
+
+    // ------------------------------------------------------------------ the 3.5 mm jack (4PDA report 2026-11-10)
+    //
+    // The HB kernel reports no jack: no /sys/class/switch/h2w ("This kernel does not have wired headset support" at
+    // every Lumen boot) and config_useDevInputEventForAudioJack=false in the stock framework-res as well, so neither
+    // stock nor Lumen ever sees a plug. Stock lists "Headphones" anyway: GimiAudioService.getAudioDeviceForNewSDK
+    // (ro.build.version.sdk 33, ro.vendor.xgimi.system.isatv unset) sets the headset bit whenever
+    // getSupportWiredHeadphone() (feature support_wired_headphone not "false"; absent in the G0130 feature.xml) and the
+    // Bluetooth bit always; the user picks the output (voice_output -> setAudioDeviceOn(4) -> FOR_MEDIA headphones).
+    // Lumen's AOSP audio policy routes only to a connected device, so the HB app connects the wired headphone output
+    // itself while it is the user's choice (AudioManager.setWiredDeviceConnectionState, as WiredAccessoryManager does
+    // for a real jack) and removes it again when another output is chosen.
+
+    /** What the HB app does with its wired headphone output on a sound output evaluation. */
+    public enum WiredStep {
+        /** "Headphones" is the choice and no wired output is listed: connect it (the next evaluation routes to it). */
+        CONNECT,
+        /** Another output is the choice and the listed wired output is the one this app connected: remove it. */
+        DISCONNECT,
+        /** Nothing to do. */
+        NONE
+    }
+
+    /**
+     * chosen: the stored AudioOutputChoice.Kind name; wiredListed: AudioManager lists a wired headphone / headset
+     * output now; ours: this process connected it (a real jack, if a future kernel reports one, is never removed).
+     */
+    public static WiredStep wiredStep(String chosen, boolean wiredListed, boolean ours) {
+        boolean want = "WIRED".equals(chosen);
+        if (want) return wiredListed ? WiredStep.NONE : WiredStep.CONNECT;
+        return ours && wiredListed ? WiredStep.DISCONNECT : WiredStep.NONE;
+    }
+
+    /**
+     * Leaving the headphones for Auto: Auto removes the media role, and AOSP would then keep routing to the still
+     * connected wired output, so the disconnect would come while music plays there and AudioService would send
+     * ACTION_AUDIO_BECOMING_NOISY (apps pause). The speaker is made the preferred device first, the wired output goes,
+     * and the evaluation that follows (devices removed) removes the role for Auto.
+     */
+    public static boolean speakerBeforeDisconnect(String chosen, WiredStep step) {
+        return step == WiredStep.DISCONNECT && ("AUTO".equals(chosen) || chosen == null);
+    }
+
+    /** headphone_volume follows STREAM_MUSIC only while the 3.5 mm path is both routed and confirmed by the vendor. */
+    public static boolean headphoneConfirmed(int target, int confirmed) {
+        return target == PATH_WIRED && confirmed == PATH_WIRED;
+    }
+
+    /**
+     * headphone_volume to send (stock AudioService setDspVolumesToHal: "headphone_volume=" + index for device 4 / 8),
+     * or -1: nothing off the confirmed 3.5 mm path, an out of range level, or the value already sent (unless force).
+     */
+    public static int headphoneVolume(boolean wired, int music, int sent, boolean force) {
+        return speakerVolume(wired, music, sent, force);
+    }
+
+    /**
+     * switch_end=4 restores the headphone level the HAL stored from headphone_volume (zero from adev_open, like
+     * spk_volume), so headphone_volume is stored first.
+     */
+    public static boolean storeHeadphoneBeforeEnd(int path) {
+        return path == PATH_WIRED;
+    }
+
+    /**
+     * After 59(P) the HAL's sink goes back to the speaker (stored spk_volume, then switch_end=0) when the last sink
+     * this process selected was Bluetooth or the 3.5 mm jack and P is not that sink any more.
+     */
+    public static boolean speakerSinkAfter(int halSink, int target) {
+        return (halSink == PATH_BT || halSink == PATH_WIRED) && target != halSink;
     }
 }

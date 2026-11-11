@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 /**
- * Translucent manual-focus overlay: small bottom panel "Manual focus  ◀ ▶   OK/Back: done".
+ * Manual-focus overlay: the stock full-screen focus chart (HB beta6, FocusPattern) with the bottom panel
+ * "Manual focus  ◀ ▶   OK/Back: done".
  * onResume -> manualFocus(17); DPAD_LEFT DOWN (repeat 0) -> start(1), DPAD_RIGHT -> start(0),
  * repeats -> feed, UP -> stop; any other key DOWN -> stop first, then close (the volume keys pass
  * through); onPause / onStop / focus loss -> stop; closes itself after 3 s without keys.
@@ -77,6 +79,10 @@ public final class ManualFocusActivity extends Activity {
         try {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             setContentView(R.layout.activity_manual_focus);
+            // HB beta6 (tester): the stock manual-focus window is the full-screen focus chart (SystemUI FocusAdjust
+            // cp01_focus_bk, FocusPattern): drawn behind the panel from the first frame, as stock
+            ((ViewGroup) findViewById(android.R.id.content)).addView(new FocusPatternView(this), 0,
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             motor = HalController.get(this).motor();
         } catch (Throwable t) {
             Log.e(TAG, "onCreate", t);

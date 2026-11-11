@@ -1,0 +1,11 @@
+# X50 test image only (compose_x50.sh, every tN image): adbd at boot for network adb on port 5555, as the HB
+# test images do (fork of devices/goat_elegant/image/hb_netadb.rc, devices/g0111/forks.tsv). The props of the test
+# image (ro.adb.secure=0, service.adb.tcp.port=5555) make it a shell for anyone on the LAN: never in a release.
+on boot
+    start adbd
+
+on property:sys.usb.state=mtp
+    start adbd
+
+on property:sys.boot_completed=1
+    start adbd

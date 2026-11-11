@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Medio</string>
     <string name="pro_strong_hb">Alto</string>
     <string name="pro_auto_hb">Automatico</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: luminosità più alta. Uscendo dal Boost i colori sono più vividi.</string>
+    <string name="hb_boost_locked">Nella modalità immagine «%1$s» il Boost fa parte della modalità e non si può disattivare qui. Scegli un’altra modalità immagine.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Sospensione profonda disattivata</string>
+    <string name="hb_str_blocked_usb">Un computer è collegato via USB: in standby il proiettore non si sospende del tutto e le ventole continuano a girare. Scollega il cavo USB per ripristinare la sospensione profonda.</string>
+    <string name="hb_str_blocked_update">È in corso l\'installazione di un aggiornamento: la sospensione profonda tornerà al termine.</string>
+    <string name="hb_str_blocked_update_check">Il sistema aggiornato viene verificato dopo l\'avvio: la sospensione profonda tornerà tra pochi minuti.</string>
+    <string name="hb_str_blocked_off">La sospensione profonda è disattivata su questo proiettore (impostazione di servizio).</string>
 </resources>

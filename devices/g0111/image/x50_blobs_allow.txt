@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+# Lumen OS on the XGIMI X50 Ultra: the MediaTek / XGIMI files the image takes at boot from the user's own
+# z9x_blobs partition (16 MiB on this projector). Hashes only; the files themselves are proprietary and are never
+# in git or in an image. The installer copies them from the user's own stock (or Lumen OS) system with adb and
+# refuses any file whose sha256 is not listed here.
+# Image path /system/etc/z9x/x50_blobs_allow.txt (read by /system/etc/z9x/x50_blobs.sh); installer copy
+# installer/lib/x50/blobs_allow.txt (identical).
+#   - the nine codec / audio files of the Z9X set z9x-v61558-b: the X50 stock v1.2.64 copies have the very same
+#     sha256 (gsi-research/X50_PORT_LOG.md), so these lines are the Z9X lines unchanged;
+#   - need=eye: the stock eye-protection drawer /system/bin/nativeui (it draws the person-shaped black mask of
+#     eye protection mode 0 when the vendor asks for it) and the one library it links that
+#     the Lumen system does not have. All or nothing: x50_blobs.sh binds and starts nativeui only when every
+#     need=eye line is there with its sha256, and the installer never builds a partition without them.
+#
+# set=<id> names this exact file set (sys.z9x.blobs.set).
+# <sha256> <path inside the blobs tar> <stock source path> [option ...]
+#   path       image path relative to /system/: x50_blobs.sh binds the file over that 0-byte placeholder,
+#   bind=      or, when given, over this vendor / VNDK APEX file instead (no placeholder),
+#   from=      the installer may derive the file from the stock file at <stock source path> with that
+#              sha256 by deleting lines (sed 'N,Md' commands only), then checks <sha256> as usual,
+#   label=     the SELinux type of the bound file instead of system_file / system_lib_file (only
+#              nativeui_main_exec: the vendor policy's typetransition init -> nativeui_main),
+#   mode=      0755 for the executable (default 0644),
+#   need=eye   eye protection: all of these lines or none of them; the installer has no way around them.
+# The installer pulls <stock source path> first, then /system/<path>.
+set=x50-v1264-a
+4d848dec4b480ed37690095d67702466bb1d17e924c6af42fa7e2c50e784b0ea system_ext/lib/libc2plugin_store.so /system_ext/lib/libc2plugin_store.so
+4f6d375fb4d7c0aae92ccd901ca01e9a0a8c368c145c1c45a666a8a1c0f66d5c system_ext/lib64/libc2plugin_store.so /system_ext/lib64/libc2plugin_store.so
+e8eb86b04fa79f33739df5a417381be8125938b7692ba29270b20c1790fbeaaa system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so /system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+f1e325c8955b1af57dafadc77bdd09efc9f8b3cd0119b1846d606abc34385c65 system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so /system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+66e9a1676bcaa8a7dddb724eab3e5d9f4b474ea857bf09eca1ea2e2372953b83 lib/libcodec2_soft_common.so /system/lib/libcodec2_soft_common.so
+21dffeba0d3fae032d53b607d838141d58aea2e826a0a44e803d9ae73e260645 lib64/libcodec2_soft_common.so /system/lib64/libcodec2_soft_common.so
+d6cd92ce457c6594866bca064cce52ae69d16f89e1e7379f2d1f7db229601727 etc/xgimi/libstagefright_foundation.so /apex/com.android.vndk.v34/lib/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+8e36f8eafb74db1f6b4db15bec3adad99a9811f14e9ce3bcd9f0e357c8d5a65c etc/xgimi/libstagefright_foundation64.so /apex/com.android.vndk.v34/lib64/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+c8ee620addf084b5a777b5fbfdb534efbceacefeec881a5c13b7d99548a261ed etc/xgimi/audio_policy_configuration.xml /vendor/etc/audio_policy_configuration.xml bind=/vendor/etc/audio_policy_configuration.xml from=19b9d27d55ddef1408094b2ea7d09d0b73462aac992ed42ce89512797f312cbe:113,115d;182,184d;254,256d;386,389d;464,465d
+61e4ee8ec158c7dd5604c7959a0c2d8a73105a77d3701e7f859835b339f3ea5c bin/nativeui /system/bin/nativeui label=nativeui_main_exec mode=0755 need=eye
+76e8a5e9f234773263196410dfe67ad5ec16070936268ad04ccc125d1c01e90e lib64/xgimi.hardware.gmpf-V1-ndk.so /system/lib64/xgimi.hardware.gmpf-V1-ndk.so need=eye

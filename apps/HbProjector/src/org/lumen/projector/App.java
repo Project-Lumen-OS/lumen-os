@@ -98,6 +98,8 @@ public final class App extends Application {
         }
         try { AkOverlay.install(this); } catch (Throwable t) { Log.e(TAG, "AkOverlay.install", t); }
         try { PowerPolicy.install(this); } catch (Throwable t) { Log.e(TAG, "PowerPolicy.install", t); }
+        // HB beta6: a computer on USB keeps the projector out of deep sleep: say so once per connection (StrNotice)
+        try { org.lumen.projector.power.StrNotice.install(this); } catch (Throwable t) { Log.e(TAG, "StrNotice.install", t); }
         // ===== Lumen OS 1.0 module "cec": HDMI-CEC power (wake guards, PM51 cec0 arm, standby to devices) =====
         try { org.lumen.projector.cec.CecPolicy.install(this); } catch (Throwable t) { Log.e(TAG, "CecPolicy.install", t); }
         // Z9X HB: CEC volume control / System Audio follow the sound output choice at boot, wake and ARC (cec/HbSystemAudio)

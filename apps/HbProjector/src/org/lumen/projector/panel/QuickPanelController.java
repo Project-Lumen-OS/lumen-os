@@ -98,6 +98,8 @@ final class QuickPanelController {
 
     private static final String KEY_GAME_MODE = QuickPanel.KEY_GAME_MODE;   // 0 off, 1 on, 2 auto (last set)
     static final String KEY_ULTRA_120 = "ultra_120";                // last value set (157 not readable); also ProPicture
+    /** HB beta6: the optical zoom tile (no page; OpticalZoomPanel, the stock quick menu "scale" tile). */
+    static final String SECTION_ZOOM_TILE = "optical_zoom";
     /** v6.2: section key of the tile focused last (restored at the next open). */
     private static final String KEY_LAST_TILE = "last_tile";
 
@@ -182,6 +184,8 @@ final class QuickPanelController {
     private ToggleRow pRear;
     private TextRow picHint;
     private final SliderRow[] pq = new SliderRow[PQ_ORDER.length];
+    /** HB fork: the coalescers of the four picture sliders (SlideCoalescer). */
+    private final java.util.List<SlideCoalescer> pqSlides = new java.util.ArrayList<>();
     private ChoiceRow colorTemp, memc;
     private ToggleRow aiContrast, superRes;
     private ProPicture pro;
@@ -197,6 +201,8 @@ final class QuickPanelController {
 
     // Boost two-press state
     private boolean boostOn;
+    /** HB beta6: brightness page line shown while Performance / Office holds Boost (BoostRules). */
+    private TextRow boostLockHint;
     private int boostArmDir;
     private long boostArmAt;
 
@@ -289,7 +295,18 @@ final class QuickPanelController {
         // "Towards the start" is RIGHT in RTL (the slider is mirrored, Row.onKeyDown).
         int towardsStart = lamp != null && lamp.isRtl() ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;
         if (boostOn && lamp != null && lamp.isFocused() && ev.getKeyCode() == towardsStart) {
-            if (ev.getAction() == KeyEvent.ACTION_DOWN && ev.getRepeatCount() == 0) boostPress(-1);
+            if (ev.getAction() == KeyEvent.ACTION_DOWN && ev.getRepeatCount() == 0) {
+                // HB beta6 (live beta5 bug): in Performance / Office the vendor holds Boost (xgimipq.db settings_default
+                // 17), 52(0) is refused; stock refuses brightness there too (common.json dlpLumensLevel
+                // colorModePerformance / colorModeOffice). Explain instead of arming a call the vendor refuses.
+                if (BoostRules.onLeavePress(snap == null ? null : snap.boost, snap == null ? null : snap.pictureMode)
+                        == BoostRules.Leave.EXPLAIN_PICTURE_MODE) {
+                    boostArmDir = 0;
+                    Notify.show(app, s(R.string.panel_boost), boostLockedText(snap.pictureMode));
+                } else {
+                    boostPress(-1);
+                }
+            }
             return true;
         }
         return false;
@@ -341,6 +358,12 @@ final class QuickPanelController {
         if (QuickPanel.SECTION_INPUT.equals(section)) {
             // replaces the quick panel; BACK there returns to this grid (Input tile remembered)
             if (setupDone("input")) SourceOverlay.showFromQuickPanel(app);
+            return;
+        }
+        if (SECTION_ZOOM_TILE.equals(section)) {
+            // HB beta6: no page, the optical zoom screen replaces the panel; BACK there returns to this grid
+            if (snap != null && snap.isTopSpeedGame()) { Notify.show(app, s(R.string.panel_kst_game_mode)); return; }
+            OpticalZoomPanel.open(app, () -> show(null, null));
             return;
         }
         Page p = pages.get(section);
@@ -581,6 +604,8 @@ final class QuickPanelController {
 
     /** Re-reads every value (one HAL task) and updates the rows on the main thread. */
     void refresh() {
+        for (SlideCoalescer c : pqSlides) if (c.busy()) return;  // HB fork: a picture slide reads once at its end
+        for (SlideCoalescer c : pqSlides) c.forget();            // the read may move a slider: write the next value
         final int gen = ++refreshGen;
         Hal.query((g, g2) -> {
             Snapshot sn = Snapshot.read(g, g2);
@@ -618,6 +643,12 @@ final class QuickPanelController {
         // Lumen OS 1.0: ONE Keystone tile (auto and manual correction inside); the v6.3 separate
         // "Manual keystone" tile duplicated it (decision 2026-10-08).
         addTile(QuickPanel.SECTION_KEYSTONE, R.drawable.ic_tile_keystone, R.string.panel_tile_keystone, false);
+        // HB beta6 (tester): the optical zoom as its own tile, as the stock quick menu (newsettings
+        // res/raw/misckey_default_config.json row 102: "缩放与位移" funType scale, then brightness; on the G0130
+        // openScale -> CoreFactory.openZoomMoveWind = the ZoomStateView dial, stock analysis (b)).
+        // Same screen and the same top-speed game refusal as the Keystone page row (LaunchUtils "scale":
+        // isGameKeystoneMutex)
+        if (HbFeatures.on(F.OPTICAL_ZOOM)) addTile(SECTION_ZOOM_TILE, R.drawable.ic_tile_zoom, R.string.panel_optical_zoom, false);
         addTile(QuickPanel.SECTION_LAMP, R.drawable.ic_tile_brightness, R.string.panel_lamp, false);
         // Z9X HB fork: every switch of the table is read somewhere; PICTURE gates the whole Picture tile
         if (HbFeatures.on(F.PICTURE)) addTile(QuickPanel.SECTION_PICTURE, R.drawable.ic_tile_picture, R.string.panel_sec_picture, false);
@@ -785,13 +816,21 @@ final class QuickPanelController {
         }));
         lamp.setFormatter(v -> v >= BOOST_LEVEL ? s(R.string.panel_boost) : Integer.toString(v));
         lamp.setEdgeListener((row, dir) -> {
-            if (dir > 0 && !boostOn) safe("boost", () -> boostPress(1)).run();
+            // Boost only where the model's stock has it (HbFeatures: G0148 support_brightness_boost=0)
+            if (dir > 0 && !boostOn && HbFeatures.on(F.BOOST)) safe("boost", () -> boostPress(1)).run();
             return true;
         });
-        p.add(new TextRow(app, s(R.string.panel_lamp_hint)));
-        // hb-t7 (Z9X 1.0.8 parity brightness item 9): what Boost gives and costs, as the stock boost_title /
-        // boost_close_desc (HB SystemUI has the same strings)
-        p.add(new TextRow(app, s(R.string.boost_effect)));
+        if (HbFeatures.on(F.BOOST)) {
+            p.add(new TextRow(app, s(R.string.panel_lamp_hint)));
+            // hb-t7 (Z9X 1.0.8 parity brightness item 9): what Boost gives and costs, as the stock boost_title /
+            // boost_close_desc (HB SystemUI has the same strings)
+            // HB beta6 (tester): the stock HB meaning only, boost_title / boost_close_title /
+            // brightness_adjustment_back_only_boost of newsettings (higher brightness; leaving it gives more vivid
+            // colours); the Z9X text (paler colours, colour space unchanged) is not what the HB stock says
+            p.add(new TextRow(app, s(R.string.hb_boost_effect)));
+            boostLockHint = p.add(new TextRow(app, ""));
+            boostLockHint.setVisibility(View.GONE);
+        }
     }
 
     // ================================================================== picture page (stock spec 3.2-3.5)
@@ -807,11 +846,19 @@ final class QuickPanelController {
                 R.string.panel_pq_sharpness};
         for (int i = 0; i < PQ_ORDER.length && i < titles.length; i++) {
             final GmpfClient.PqItem item = PQ_ORDER[i];
+            // HB fork (4PDA report 2026-11-10, flicker on a fast slide): every step goes to the slider's SlideCoalescer
+            // (newest value, at most every 100 ms, one write in flight, one panel read after the slide), as stock
+            // writes one setPictureItem per key synchronously; before, every commit queued a write plus a full
+            // Snapshot read on the HAL thread
+            final SlideCoalescer slide = SlideMain.of(app,
+                    v -> new SlideMain.Step("pq " + item + " " + v, (g, g2) -> g.setPq(item, v)), this::refresh);
+            pqSlides.add(slide);
             pq[i] = p.add(new SliderRow(app, s(titles[i]), 0, 100, new SliderRow.OnSlide() {
-                @Override public void onChanging(SliderRow row, int value) { touch(row); }
-                @Override public void onCommit(SliderRow row, int value) {
-                    safe("pq", () -> change("pq " + item + " " + value, (g, g2) -> g.setPq(item, value))).run();
+                @Override public void onChanging(SliderRow row, int value) {
+                    touch(row);
+                    safe("pq", () -> slide.submit(value)).run();
                 }
+                @Override public void onCommit(SliderRow row, int value) { safe("pq", () -> slide.submit(value)).run(); }
             }));
         }
         colorTemp = addIf(p, F.COLOR_TEMP, new ChoiceRow(app, s(R.string.panel_color_temp),
@@ -1418,7 +1465,8 @@ final class QuickPanelController {
             refresh();
             return;
         }
-        if (m == GmpfClient.PictureMode.COLOR_ACCURACY && Boolean.TRUE.equals(snap.boost)) {
+        // HB beta6: a Boost held by Performance / Office leaves with that mode (BoostRules), so it never blocks here
+        if (m == GmpfClient.PictureMode.COLOR_ACCURACY && BoostRules.blocksColorAccuracy(snap.boost, snap.pictureMode)) {
             Notify.show(app, title, s(R.string.boost_blocks_change));
             refresh();
             return;
@@ -1486,9 +1534,28 @@ final class QuickPanelController {
                 // current itself (dispcomm.ini BrightnessBoostType 3)
             }
             Boolean db = dynamicBlack(g2);
-            if (!g2.setBoost(on)) throw new IllegalStateException("52 returned false");
+            boolean ret = g2.setBoost(on);
+            // HB beta6: judged as stock does, by the 152 read-back (stock ignores the 52 boolean); a refusal in
+            // Performance / Office is the vendor's picture mode rule, not a failure (BoostRules)
+            int lensAfter;
+            try { lensAfter = g2.isBoost() ? 1 : 0; } catch (Throwable t) { lensAfter = -1; }
+            Integer pmAfter;
+            try { pmAfter = g.getPictureModeRaw(); } catch (Throwable t) { pmAfter = null; }
+            BoostRules.Outcome o = BoostRules.judge(on, ret, lensAfter, pmAfter);
+            Log.i(TAG, "52(" + (on ? 1 : 0) + ") -> " + ret + ", 152 -> " + lensAfter + ", picture mode " + pmAfter + ": " + o);
+            if (o == BoostRules.Outcome.LOCKED_BY_PICTURE_MODE) {
+                Notify.show(app, s(R.string.panel_boost), boostLockedText(pmAfter));
+                return;
+            }
+            if (o == BoostRules.Outcome.FAILED) throw new IllegalStateException("52 returned " + ret + ", 152 reads " + lensAfter);
             dynamicBlackOff(g2, db, R.string.panel_boost);              // vendor DB_OFF:setlensmode
         });
+    }
+
+    /** "Boost belongs to <picture mode>: choose another picture mode" (Performance / Office, BoostRules). */
+    private String boostLockedText(Integer pictureModeWire) {
+        GmpfClient.PictureMode m = pictureModeWire == null ? null : GmpfClient.PictureMode.fromWire(pictureModeWire);
+        return app.getString(R.string.hb_boost_locked, m != null ? pmLabel(m) : s(R.string.panel_picture_mode));
     }
 
     /** Ultra 120 Hz, IGmpf 161 setOutputTiming(4 on / 6 off) (stock analysis decisions). */
@@ -1802,6 +1869,11 @@ final class QuickPanelController {
             else lamp.setRange(1, 10).setValue(ok ? sn.lamp : null);
         }
         lamp.setRowEnabled(ok && (sn.lamp != null || boostOn));
+        if (boostLockHint != null) {
+            boolean locked = boostOn && BoostRules.lockedByPictureMode(sn.pictureMode);
+            if (locked) boostLockHint.setText(boostLockedText(sn.pictureMode));
+            boostLockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
+        }
 
         boolean u120 = prefs.getBoolean(KEY_ULTRA_120, false);
         ultra120.setChecked(ok ? u120 : null);

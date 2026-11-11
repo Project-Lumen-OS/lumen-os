@@ -4,19 +4,24 @@
 
 [Русская версия](ru.md)
 
-Lumen OS is Android TV 14 based on LineageOS 21 for the XGIMI Z9X HB (model G0130) with XGIMI firmware
-V6.16.24. It replaces only the system partition. XGIMI's firmware, boot, vendor and calibration are not
+Lumen OS is Android TV 14 based on LineageOS 21 for the XGIMI Z9X HB: model G0130 with XGIMI firmware
+V6.16.24 or V6.17.12. Model G0148 with V6.17.12 is in testing: the installer checks it, but installs on it only
+after a live test on a unit (not yet); model G0118 is not supported yet. It replaces only the system partition. XGIMI's firmware, boot, vendor and calibration are not
 touched. New versions then arrive over Wi-Fi, and your data stays.
 
 > [!CAUTION]
 > The install **erases all data on the projector**. The stock firmware is put back with XGIMI's official
-> V6.16.24 firmware file (2.2 GB, [download from XGIMI's server](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.16.24_20260428-152516/XGIMI_GOATELEGANT_XR03D.bin)), see
+> firmware file of the version your projector has (2.2 GB each, from XGIMI's server):
+> [V6.16.24](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.16.24_20260428-152516/XGIMI_GOATELEGANT_XR03D.bin) (model G0130 only) or [V6.17.12](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.17.12_20260728-200706/XGIMI_GOATELEGANT_XR03D.bin), see
 > ["Back to stock"](#hb-stock). Download it before the install.
 
 > [!WARNING]
-> **Note: this is firmware 6.16.24.** It is only for going back to stock from Lumen OS. If your projector came
-> with firmware V6.17.12 (the menu may also show the GMUI launcher version 6.18.x), do not put 6.16.24 on it to install Lumen OS afterwards: nobody knows whether the old
-> firmware fits the newer boards, and on other XGIMI models such a downgrade left Wi-Fi and Bluetooth dead.
+> **Model G0148: never put firmware V6.16.24 on it.** V6.16.24 has no settings for the G0148 at all (no
+> `xgimiconfig/G0148` folder), so the projector would run with another model's configuration. The only way back
+> to stock for a G0148 is the V6.17.12 file. The installer refuses a G0148 on V6.16.24.
+> On any projector that came with V6.17.12, do not put 6.16.24 on it to install Lumen OS: Lumen OS runs on
+> V6.17.12 as it is, and on other XGIMI models such a downgrade left Wi-Fi and Bluetooth dead. The menu may also
+> show the GMUI launcher version 6.18.x: that is not the firmware version.
 
 The install takes about 30 minutes. You type a few commands in a terminal, and one step in fastboot mode
 (vbmeta) you do yourself, without the installer.
@@ -31,8 +36,10 @@ this guide or the installer says so. Fastboot mode does not end by itself, so th
 
 ## What you need
 
-- An XGIMI Z9X HB, model G0130, on XGIMI firmware V6.16.24. The model and the firmware version are shown on
-  stock in "Settings → About". The installer checks them too and does nothing on another projector.
+- An XGIMI Z9X HB, model G0130 on XGIMI firmware V6.16.24 or V6.17.12 (model G0148 on V6.17.12: only `check` for
+  now, see above). The model
+  and the firmware version are shown on stock in "Settings → About". The installer checks them too (and that the
+  firmware on the projector is the one of its model) and does nothing on another projector.
 - A Wi-Fi network that both the projector and the computer are on. A guest network where devices cannot see
   each other will not do.
 - A computer with macOS, Linux or Windows 10/11 (on Windows the install on the projector has not been tested
@@ -318,8 +325,11 @@ that and offers to turn them on again (that needs "Rooted debugging" too).
 | any step | adb did not start (port 5038 busy?) | Usually another program with adb already holds the projector: Android Studio, scrcpy, another adb. Close it (or run `adb kill-server` with its adb) and run the installer again. Nothing was done. |
 | check | no adb connection to … over Wi-Fi | Is debugging on (step 1, item 2), are the projector and the computer on the same network, is the address right? Nothing was done. |
 | check | the projector … did not allow debugging from this computer | On the projector allow debugging, tick "Always allow from this computer" and press OK. Run again. |
-| check | this is not an XGIMI Z9X HB (model …, board …) | The installer is only for model G0130. Nothing was done. |
-| check | XGIMI firmware … is not supported | It must be exactly V6.16.24. Nothing was done. If you have another version, write about it. |
+| check | this is not an XGIMI Z9X HB (model …, board …) | The installer is only for models G0130 and G0148. Nothing was done. |
+| check | the XGIMI Z9X HB model G0118 is not supported yet | Lumen OS has not been checked on the G0118. Nothing was done. Write about it. |
+| check, flash | the XGIMI Z9X HB model G0148: supported after a live test, not yet; G0148 support is in testing | The G0148 passes `check` and `blobs`, the install on it opens after a live test on a unit. Nothing was written. |
+| check | XGIMI firmware … is not supported | G0130: V6.16.24 or V6.17.12; G0148: V6.17.12 only. Nothing was done. If you have another version, write about it. |
+| check | XGIMI firmware … is not the firmware of the XGIMI Z9X HB model …, or … reports the stock product …, or … has no settings of its model … | The projector runs the firmware of another model (for example V6.16.24 on a G0148). Put its own firmware back from a USB stick ([Back to stock](#hb-stock): G0148 only V6.17.12), then run the installer again. Nothing was done. |
 | check | the XGIMI Z9X HB runs from slot …, or this projector has no virtual A/B | Nothing was done. Write about it and attach the installer's output. |
 | check | … is not an image for the XGIMI Z9X HB, … is not a release file, … is Lumen OS …, but this installer download is for Lumen OS … | Not the right image. Download the image, both `SHA256SUMS` files and the installer archive from one HB release and do not rename them. Nothing was written. |
 | check | SHA256SUMS is not signed with the Lumen OS key, or checksum mismatch | The files are damaged or not from GitHub. Download them again from one HB release. |
@@ -377,9 +387,17 @@ Usually the Google sign-in just works. If Google refuses it or Play says the dev
 
 The stock firmware is put back by XGIMI's own update from a USB stick.
 
-1. Download XGIMI's official V6.16.24 firmware for model G0130 from XGIMI's server:
-   [XGIMI_GOATELEGANT_XR03D.bin](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.16.24_20260428-152516/XGIMI_GOATELEGANT_XR03D.bin) (2.2 GB). A file for another model will not do.
-   **Note: this is 6.16.24**, only for going back from Lumen OS, not for projectors on firmware V6.17.12.
+1. Download XGIMI's official firmware file from XGIMI's server. Both have the same name,
+   `XGIMI_GOATELEGANT_XR03D.bin`; take the one of the firmware your projector had before Lumen OS:
+
+   | Firmware | For | File |
+   |---|---|---|
+   | V6.17.12 | G0148 (always), and a G0130 that had V6.17.12 | [download](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.17.12_20260728-200706/XGIMI_GOATELEGANT_XR03D.bin), 2,178,814,576 bytes, MD5 `a5c3129065e1122f229df2d77b218d95` |
+   | V6.16.24 | a G0130 that had V6.16.24, never a G0148 | [download](https://product-library.static.xgimi.com/firmware/release/MTK9660_AOSP/dapeng/MTK9660_AOSP_GEMINI_6.16.24_20260428-152516/XGIMI_GOATELEGANT_XR03D.bin) (2.2 GB) |
+
+   Check the size and, for V6.17.12, the MD5 (macOS `md5 FILE`, Linux `md5sum FILE`, Windows
+   `certutil -hashfile FILE MD5`). A file for another projector will not do. **A G0148 must never get the
+   V6.16.24 file:** it has no settings for that model.
 2. A USB stick with an **MBR** partition scheme and **one FAT32 partition**. On macOS: "Disk Utility → View →
    Show All Devices", pick the stick itself (not its volume), "Erase", format "MS-DOS (FAT)", scheme "Master
    Boot Record".

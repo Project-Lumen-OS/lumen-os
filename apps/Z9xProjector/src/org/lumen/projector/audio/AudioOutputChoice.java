@@ -91,10 +91,11 @@ public final class AudioOutputChoice {
             sH = new Handler(t.getLooper());
             AudioManager am = sApp.getSystemService(AudioManager.class);
             if (am != null) {
-                am.registerAudioDeviceCallback(new AudioDeviceCallback() {
+                // only while the audio policy answers (AudioPorts: a trial without the user's audio files)
+                AudioPorts.registerDeviceCallback(sApp, new AudioDeviceCallback() {
                     @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) { apply("devices added"); arcFormat(); }
                     @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) { apply("devices removed"); arcFormat(); }
-                }, sH);
+                }, sH, "AudioOutputChoice");
                 try {
                     am.addOnDevicesForAttributesChangedListener(MEDIA, sH::post,
                             (attrs, devices) -> apply("media routing " + devices));

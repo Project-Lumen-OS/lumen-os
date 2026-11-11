@@ -296,7 +296,9 @@ inst 'WRITE\n' --keep-data gapps --zip "$ZIP"
 expect_rc 0
 expect_cmds "$S getvar all;$S resize-logical-partition $P 536870912;$S format:ext4 $P;$S reboot;"
 [ ! -e "$DEV/dev/block/mapper/$P/old.apk" ] || fail "the old content stayed"
-[ ! -e "$DEV/metadata/z9x_gapps" ] || fail "the 'off' marker stayed"
+# the marker went with the directory; the start after the fill left its one log line there (z9x_gapps.sh)
+[ ! -e "$DEV/metadata/z9x_gapps/off" ] || fail "the 'off' marker stayed"
+[ "$(grep -c ': ok: ' "$DEV/metadata/z9x_gapps/log.txt" 2>/dev/null)" = 1 ] || fail "boot log: $(cat "$DEV/metadata/z9x_gapps/log.txt" 2>&1)"
 [ "$(gprop sys.z9x.gapps)" = ok ] || fail "sys.z9x.gapps=$(gprop sys.z9x.gapps)"
 end
 
@@ -417,7 +419,10 @@ partition; mkdir -p "$DEV/metadata/z9x_gapps"; echo "3 _b $BID" > "$DEV/metadata
 inst 'yes\n' gapps
 expect_rc 0; expect_cmds ""
 expect_out "failed to start twice in a row"
-[ ! -e "$DEV/metadata/z9x_gapps" ] || fail "marker left"
+# the directory went (marker and the old log with the off line); the restart wrote one new line
+[ ! -e "$DEV/metadata/z9x_gapps/off" ] || fail "marker left"
+[ "$(cat "$DEV/metadata/z9x_gapps/log.txt" 2>/dev/null | wc -l | tr -d ' ')" = 1 ] && grep -q ': ok: ' "$DEV/metadata/z9x_gapps/log.txt" \
+  || fail "boot log after the restart: $(cat "$DEV/metadata/z9x_gapps/log.txt" 2>&1)"
 [ "$(gprop sys.z9x.gapps)" = ok ] || fail "after the restart sys.z9x.gapps=$(gprop sys.z9x.gapps)"
 end
 

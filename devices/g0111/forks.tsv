@@ -1,0 +1,9 @@
+# Deliberate copies of Z9X and HB files in the X50 Ultra (g0111) port, checked by tools/devices/check_forks.py
+#. One row per copy, tab-separated, paths relative to gsi/:
+#   X50 path <TAB> origin <TAB> sha256 of the origin at fork time <TAB> note
+# Files the X50 image takes from the Z9X image unchanged are not forks: they stay the base image's bytes
+# (devices/g0111/image/compose_x50.sh, verify_tree_x50.py).
+devices/g0111/image/x50_netadb.rc	devices/goat_elegant/image/hb_netadb.rc	33610dc655bc3a0b4731bf2e125fa8fc30494515ef04a088932171adffc3a298	adbd at boot for network adb in the test images; the same three triggers, X50 comment
+devices/g0111/image/x50_blobs.sh	tools/ota/image/z9x_blobs.sh	8ad31ef4fbcf91bb1ad14e9ac0610a80b0c36a822113af64885c80759a468832	the Z9X blobs reader for the X50: 16 MiB partition, 8 MiB members, the need=eye group (all or none), label= and mode= of the stock drawer nativeui, sys.lumen.nui, the stale native-UI fifos removed at boot
+devices/g0111/image/x50_blobs.rc	tools/ota/image/z9x_blobs.rc	40333ab318e13009cf82283fe2a3361683687a70af17063d104587783751d6e1	the same post-fs-data exec, of x50_blobs.sh
+devices/g0111/image/x50_blobs_allow.txt	tools/ota/image/blobs_allow.txt	61a68347d8a08fe32e2f3ad1bbfd6be5c884e8a94eefa878a98b1d250cb95f14	the nine Z9X lines unchanged (the X50 stock copies have the same sha256), set x50-v1264-a, plus the two need=eye lines

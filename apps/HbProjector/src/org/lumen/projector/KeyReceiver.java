@@ -89,6 +89,8 @@ public final class KeyReceiver extends BroadcastReceiver {
         // sleep) / long press (power menu); handled before the AK gate and before wakeFromDream (a
         // short press sleeps also during AK or a screensaver). For any other key's first DOWN it
         // aborts a running sleep-timer fade and lifts a wake curtain; the key then goes on as usual.
+        // HB beta6: the power menu opening while deep sleep is blocked says why (StrNotice, no vendor call)
+        org.lumen.projector.power.StrNotice.onGlobalKey(ctx, ev);
         if (org.lumen.projector.power.PowerUi.onGlobalKey(ctx, intent, ev)) return;
         // ===== v6.2 module "power" END =====
 

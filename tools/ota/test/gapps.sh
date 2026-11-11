@@ -6,6 +6,7 @@
 # tools/ota/image/gapps_allow.txt. POSIX sh, on the Mac, no projector, no Google file:
 #   sh tools/ota/test/gapps.sh          every case under sh, dash and ksh (the ones installed)
 #   sh tools/ota/test/gapps.sh bad_     only the cases whose name starts with this
+#   GAPPS_SHELLS=sh sh tools/ota/test/gapps.sh   only under these shells
 # gapps_fixture.py makes a fake MindTheGapps zip (the real member paths, made-up contents) and its test
 # allow-list by the real rules (tools/ota/gapps_allow.py). Every case gets a fake root (Z9X_ROOT): the image's
 # pieces (test allow-list, the real sysconfig layer, the overlay targets), the partition as a directory
@@ -235,6 +236,133 @@ cases() {
     expect_prop ro.com.google.gmsversion 14_test
     end
   fi
+  if want ota_slot_keeps_addon; then
+    # an update slot (libsnapshot's indicator names the old slot _a) whose first two starts did not complete:
+    # the third start is still the OTA gate's, which rolls back at its 4th attempt to _a with its Google
+    # services. The add-on stays on, no marker: once this start completes, the updated build keeps them
+    begin ota_slot_keeps_addon; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota"
+    echo "3 _b" > "$R/metadata/z9x_rescue/count"; echo "_a" > "$R/metadata/ota/snapshot-boot"; run
+    expect_prop sys.z9x.gapps ok; [ "$(overlays)" = 6 ] || fail "$(overlays) overlays, want 6"
+    [ ! -e "$R/metadata/z9x_gapps/off" ] || fail "marker on an update slot: $(cat "$R/metadata/z9x_gapps/off")"
+    expect_log "start 3 of _b in a row without a completed boot, on an update slot: Google services stay on"
+    # the start completed (vold marked the slot, the merge ended, the indicator is gone): the next start
+    rm -f "$R/metadata/ota/snapshot-boot"; echo "1 _b" > "$R/metadata/z9x_rescue/count"; rm -rf "$R/mnt/z9x_gapps"
+    : > "$T/mounts"; printf '%s\n' ro.boot.slot_suffix=_b ro.z9x.gms=0 ro.z9x.build_id=$BID > "$T/props"; run
+    expect_prop sys.z9x.gapps ok; [ "$(overlays)" = 6 ] || fail "$(overlays) overlays on the next start, want 6"
+    end
+  fi
+  if want ota_slot_attempt4; then
+    # the 4th start of the update slot (the gate rolls back in this same post-fs-data): still no marker
+    begin ota_slot_attempt4; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota"
+    echo "4 _b" > "$R/metadata/z9x_rescue/count"; echo "_a" > "$R/metadata/ota/snapshot-boot"; run
+    expect_prop sys.z9x.gapps ok; [ ! -e "$R/metadata/z9x_gapps/off" ] || fail "marker written"
+    end
+  fi
+  if want ota_slot_no_rollback_off; then
+    # the gate cannot roll this slot back any more (marked successful, HAL failure, ...): the rule of a normal
+    # slot, off with the marker
+    begin ota_slot_no_rollback_off; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota" "$R/metadata/z9x_ota"
+    echo "3 _b" > "$R/metadata/z9x_rescue/count"; echo "_a" > "$R/metadata/ota/snapshot-boot"
+    echo "_b marked successful" > "$R/metadata/z9x_ota/no_rollback"; run
+    expect_prop sys.z9x.gapps off; [ "$(cat "$R/metadata/z9x_gapps/off" 2>/dev/null)" = "3 _b $BID" ] || fail "no marker"
+    end
+  fi
+  if want ota_slot_gate_off; then
+    # an image with the OTA gate turned off (ro.z9x.ota.gate=0) has no rollback: the rule of a normal slot
+    begin ota_slot_gate_off; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota"
+    echo "3 _b" > "$R/metadata/z9x_rescue/count"; echo "_a" > "$R/metadata/ota/snapshot-boot"
+    echo ro.z9x.ota.gate=0 >> "$T/props"; run
+    expect_prop sys.z9x.gapps off; [ -e "$R/metadata/z9x_gapps/off" ] || fail "no marker"
+    end
+  fi
+  if want ota_slot_indicator_own; then
+    # the indicator names this slot (the update went to the other slot and was not started yet): a normal slot
+    begin ota_slot_indicator_own; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota"
+    echo "3 _b" > "$R/metadata/z9x_rescue/count"; echo "_b" > "$R/metadata/ota/snapshot-boot"; run
+    expect_prop sys.z9x.gapps off; [ -e "$R/metadata/z9x_gapps/off" ] || fail "no marker"
+    end
+  fi
+  if want log_ok; then
+    # every boot run with the partition leaves one line in /metadata/z9x_gapps/log.txt (logcat is gone after the
+    # next restart): slot, build, start number, update slot or not, the result and the time it took
+    begin log_ok; mkdir -p "$R/metadata/z9x_rescue"; echo "1 _b" > "$R/metadata/z9x_rescue/count"; run
+    expect_prop sys.z9x.gapps ok
+    L=$R/metadata/z9x_gapps/log.txt
+    [ "$(wc -l < "$L" 2>/dev/null | tr -d ' ')" = 1 ] || fail "log: $(cat "$L" 2>&1)"
+    grep -Eq "^[0-9]{4}-[0-9]{6} up 9s _b $BID start 1 update 0: ok: $NFILES files \(ext4\) \([0-9]+ ms\)$" "$L" \
+      || fail "log line: $(cat "$L" 2>&1)"
+    [ ! -e "$R/metadata/z9x_gapps/off" ] || fail "marker written"
+    end
+  fi
+  if want log_two_boots; then
+    begin log_two_boots; run; printf '%s\n' ro.boot.slot_suffix=_b ro.z9x.gms=0 ro.z9x.build_id=$BID > "$T/props"
+    rm -rf "$R/mnt/z9x_gapps"; : > "$T/mounts"; run
+    [ "$(grep -c ': ok: ' "$R/metadata/z9x_gapps/log.txt" 2>/dev/null)" = 2 ] || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_update_slot; then
+    begin log_update_slot; mkdir -p "$R/metadata/z9x_rescue" "$R/metadata/ota"
+    echo "3 _b" > "$R/metadata/z9x_rescue/count"; echo "_a" > "$R/metadata/ota/snapshot-boot"; run
+    grep -q " _b $BID start 3 update 1: ok: " "$R/metadata/z9x_gapps/log.txt" 2>/dev/null \
+      || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_off; then
+    begin log_off; mkdir -p "$R/metadata/z9x_rescue"; echo "3 _b" > "$R/metadata/z9x_rescue/count"; run
+    expect_prop sys.z9x.gapps off
+    grep -q " _b $BID start 3 update 0: off: start 3 of _b in a row" "$R/metadata/z9x_gapps/log.txt" 2>/dev/null \
+      || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_off_marker; then
+    begin log_off_marker; mkdir -p "$R/metadata/z9x_gapps"; echo "3 _b $BID" > "$R/metadata/z9x_gapps/off"; run
+    grep -q ": off: turned off after failed starts of _b $BID" "$R/metadata/z9x_gapps/log.txt" 2>/dev/null \
+      || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_bad; then
+    begin log_bad; : > "$T/mount_fail_ext4"; run
+    expect_prop sys.z9x.gapps bad:mount
+    grep -q ": bad:mount: $(part) ([0-9]* ms)$" "$R/metadata/z9x_gapps/log.txt" 2>/dev/null \
+      || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_slow; then
+    # the budget used up: the line says where and how long it took
+    begin log_slow; slow find 150; run
+    expect_prop sys.z9x.gapps bad:slow
+    grep -q ": bad:slow: [0-9]* ms, at " "$R/metadata/z9x_gapps/log.txt" 2>/dev/null \
+      || fail "log: $(cat "$R/metadata/z9x_gapps/log.txt" 2>&1)"
+    end
+  fi
+  if want log_none_nothing; then
+    # no partition (most projectors) or the Google edition: nothing is written at all
+    begin log_none_nothing; rm -rf "$(part)"; run
+    expect_prop sys.z9x.gapps none; [ ! -e "$R/metadata/z9x_gapps" ] || fail "wrote $(ls -R "$R/metadata/z9x_gapps")"
+    end
+  fi
+  if want log_skip_nothing; then
+    begin log_skip_nothing; printf '%s\n' ro.boot.slot_suffix=_b ro.z9x.build_id=$BID > "$T/props"; run
+    expect_prop sys.z9x.gapps skip; [ ! -e "$R/metadata/z9x_gapps" ] || fail "wrote $(ls -R "$R/metadata/z9x_gapps")"
+    end
+  fi
+  if want log_rotate; then
+    # at 16 KiB the log moves to log.old, so it never grows
+    begin log_rotate; mkdir -p "$R/metadata/z9x_gapps"
+    head -c 17000 /dev/zero | tr '\0' 'x' > "$R/metadata/z9x_gapps/log.txt"; run
+    expect_prop sys.z9x.gapps ok
+    [ "$(wc -c < "$R/metadata/z9x_gapps/log.old" 2>/dev/null | tr -d ' ')" = 17000 ] || fail "log.old: $(ls -l "$R/metadata/z9x_gapps")"
+    [ "$(wc -l < "$R/metadata/z9x_gapps/log.txt" | tr -d ' ')" = 1 ] || fail "log.txt not started over"
+    end
+  fi
+  if want log_unwritable; then
+    # /metadata cannot be written: the run is the same, no output (end checks), no marker problem
+    begin log_unwritable; mkdir -p "$R/metadata/z9x_gapps"; : > "$R/metadata/z9x_gapps/log.txt"
+    chmod 0444 "$R/metadata/z9x_gapps/log.txt"; chmod 0555 "$R/metadata/z9x_gapps"; run
+    expect_prop sys.z9x.gapps ok; [ "$(overlays)" = 6 ] || fail "$(overlays) overlays, want 6"
+    chmod 0755 "$R/metadata/z9x_gapps"; chmod 0644 "$R/metadata/z9x_gapps/log.txt"
+    end
+  fi
   if want bad_allow; then
     begin bad_allow; rm -f "$R/system/etc/z9x/gapps_allow.txt"; run
     expect_prop sys.z9x.gapps bad:allow; [ ! -s "$T/mount.log" ] || fail "mount called"
@@ -451,7 +579,7 @@ if [ -z "$ONLY" ] || [ "$ONLY" = fill ]; then
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   - fill_pre"; else FAIL=$((FAIL + 1)); echo "FAIL - fill_pre"; fi
 fi
 
-for SH in sh dash ksh; do
+for SH in ${GAPPS_SHELLS:-sh dash ksh}; do   # GAPPS_SHELLS: fewer shells (gapps_mutate.py runs sh only)
   command -v $SH >/dev/null 2>&1 || continue
   SHN=$SH
   cases

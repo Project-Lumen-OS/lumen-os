@@ -158,6 +158,11 @@ def main():
         expect("make_manifest: stable packages on z9x-<version>",
                (mm.package_base(r, "public-nogms", "1.0.9") != "https://github.com/" + r + "/releases/download/z9x-1.0.9/",
                 mm.package_base(r, "public-nogms", "1.0.9")), False)
+        # requires.vendor_incremental without --vendor: the installer's firmware list
+        conf = open(os.path.join(GSI, "installer", "lib", "devices.conf"), encoding="utf-8").read()
+        inst_ok = [ln.split("=", 1)[1].split() for ln in conf.splitlines() if ln.startswith("z9x.VENDOR_OK=")]
+        expect("make_manifest: the default firmware list is the installer's z9x.VENDOR_OK",
+               (inst_ok != [mm.VENDOR_DEFAULT], f"{mm.VENDOR_DEFAULT} vs {inst_ok}"), False)
     print("nogms ota: " + ("FAILED %d" % fails if fails else "all passed"))
     return 1 if fails else 0
 

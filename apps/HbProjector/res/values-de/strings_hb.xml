@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Mittel</string>
     <string name="pro_strong_hb">Hoch</string>
     <string name="pro_auto_hb">Auto</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: höhere Helligkeit. Ohne Boost wirken die Farben kräftiger.</string>
+    <string name="hb_boost_locked">Im Bildmodus „%1$s“ gehört Boost zum Modus und lässt sich hier nicht ausschalten. Wählen Sie einen anderen Bildmodus.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Tiefschlaf ist aus</string>
+    <string name="hb_str_blocked_usb">Ein Computer ist per USB verbunden: Im Standby schläft der Projektor nicht vollständig, die Lüfter laufen weiter. Ziehen Sie das USB-Kabel ab, um den Tiefschlaf wiederherzustellen.</string>
+    <string name="hb_str_blocked_update">Ein Update wird installiert: Der Tiefschlaf ist danach wieder aktiv.</string>
+    <string name="hb_str_blocked_update_check">Das aktualisierte System wird nach dem Start geprüft: Der Tiefschlaf ist in wenigen Minuten wieder aktiv.</string>
+    <string name="hb_str_blocked_off">Der Tiefschlaf ist auf diesem Projektor ausgeschaltet (Service-Einstellung).</string>
 </resources>

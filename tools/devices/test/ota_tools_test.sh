@@ -172,6 +172,11 @@ if kind == "hb":
                      (OFX + "/Z9xAirPlay.apk", "system/app/Z9xAirPlay/Z9xAirPlay.apk")):
         shutil.copyfile(os.path.join(G, src), os.path.join(d, dst))
     os.chmod(os.path.join(d, "system/bin/bootctl"), 0o755)
+    # 1.0.10-beta6: the toybox applets the boot gate runs (check_public_hb.py GATE_TOOLS), with the options it uses
+    open(os.path.join(d, "system/bin/toybox"), "wb").write(b"toybox 0.8.10-android\0O(to-stdout)\0(getsize64)\0" + seed.encode())
+    os.chmod(os.path.join(d, "system/bin/toybox"), 0o755)
+    for x in ("blockdev", "cut", "dd", "head", "od", "sed", "sha256sum", "tar", "timeout", "tr", "wc"):
+        os.symlink("toybox", os.path.join(d, "system/bin", x))
 else:
     prop = {"ro.z9x.variant": "public", "ro.z9x.gms": "0", "ro.z9x.version": ver, "ro.z9x.build_id": "lumen-%s-%s" % (ver, seed),
             "ro.z9x.ota.manifest_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/latest/download/update-public-nogms.json"}
@@ -216,6 +221,11 @@ mkimg "$I/apunal/lumen-os-hb-1.0.8-beta1-nogms-system.img" hb 1.0.8-beta1 hb-nog
   "/system/app/Z9xAirPlay/Z9xAirPlay.apk=$OFX/Z9xAirPlay_unaligned.apk"
 mkimg "$I/z9xgate/lumen-os-hb-1.0.8-beta1-nogms-system.img" hb 1.0.8-beta1 hb-nogms z9xgate \
   "/system/etc/init/z9x_ota.rc=$G/tools/ota/image/z9x_ota.rc"
+# the gate's toybox tools (1.0.10-beta6): tar no link to toybox; a toybox without tar -O and blockdev --getsize64
+mkdir -p "$I/notar" "$I/oldtb"
+printf 'toybox 0.7.0\0' > "$OFX/toybox_old"
+mkimg "$I/notar/lumen-os-hb-1.0.8-beta1-nogms-system.img" hb 1.0.8-beta1 hb-nogms notar /system/bin/tar=-
+mkimg "$I/oldtb/lumen-os-hb-1.0.8-beta1-nogms-system.img" hb 1.0.8-beta1 hb-nogms oldtb "/system/bin/toybox=$OFX/toybox_old"
 
 # ------------------------------------------------------------------ delta_generator (stub unless given)
 cat > "$WORK/bin/delta_generator" << 'EOF'
@@ -401,6 +411,10 @@ if want image_; then
     mo --root "$FX" unsigned --new "$I/apunal/lumen-os-hb-1.0.8-beta1-nogms-system.img" --version 1.0.8-beta1 --out "$WORK/x"
   refuse "make_ota refuses an image with a Z9X gate file" "Z9X gate file in the image: /system/etc/init/z9x_ota.rc" \
     mo --root "$FX" unsigned --new "$I/z9xgate/lumen-os-hb-1.0.8-beta1-nogms-system.img" --version 1.0.8-beta1 --out "$WORK/x"
+  refuse "make_ota refuses an image whose tar is no toybox link (the gate's stock_record)" "/system/bin/tar not a link to toybox" \
+    mo --root "$FX" unsigned --new "$I/notar/lumen-os-hb-1.0.8-beta1-nogms-system.img" --version 1.0.8-beta1 --out "$WORK/x"
+  refuse "make_ota refuses an image whose toybox lacks tar -O / blockdev --getsize64" "lacks O(to-stdout), (getsize64)" \
+    mo --root "$FX" unsigned --new "$I/oldtb/lumen-os-hb-1.0.8-beta1-nogms-system.img" --version 1.0.8-beta1 --out "$WORK/x"
   refuse "make_ota refuses a wrong --version" "--version 1.0.9" \
     mo --root "$FX" unsigned --new "$NEW" --version 1.0.9 --out "$WORK/x"
   refuse "make_ota refuses a delta across channels" "crosses channels" \
@@ -512,12 +526,12 @@ if want manifest_; then
   py -c "
 import json; m = json.load(open('$M/update-hb-nogms.json'))
 assert m['device'] == 'hb' and m['channel'] == 'hb-nogms' and m['version'] == '1.0.8-beta1' and m['version_code'] == 1000801, m
-assert m['requires']['vendor_incremental'] == ['v6.16.24'] and m['requires']['min_version_code'] == 1000000
+assert m['requires']['vendor_incremental'] == ['v6.16.24', 'v6.17.12'] and m['requires']['min_version_code'] == 1000000, m['requires']
 assert m['requires']['blobs_set'] == ['hb-v61624-a'], m['requires']
 base = 'https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.8-beta1/'
 assert all(p['url'].startswith(base) and p['metadata_url'].startswith(base) for p in m['packages'])
 assert [p['type'] for p in m['packages']] == ['delta', 'full']
-" > "$OUT" 2>&1 && ok "the manifest: device hb, O1 code, v6.16.24, blobs set, URLs on z9x-hb-1.0.8-beta1" || bad "manifest content"
+" > "$OUT" 2>&1 && ok "the manifest: device hb, O1 code, v6.16.24 and v6.17.12 (the registry), blobs set, URLs on z9x-hb-1.0.8-beta1" || bad "manifest content"
   expect 0 "verify_manifest round trip (signature, schema, URLs)" vf --root "$FX" "$M/update-hb-nogms.json"
   expect 0 "verify_manifest round trip with --zips" vf --root "$FX" "$M/update-hb-nogms.json" --zips "$WORK/zips"
   mkdir -p "$WORK/tm"; sed 's/"test build"/"test buiLd"/' "$M/update-hb-nogms.json" > "$WORK/tm/update-hb-nogms.json"

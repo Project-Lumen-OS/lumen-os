@@ -33,6 +33,7 @@ import org.lumen.projector.ui.NavRow;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Page;
+import org.lumen.projector.ui.PageAccess;
 import org.lumen.projector.ui.PagedPanel;
 import org.lumen.projector.ui.SliderRow;
 import org.lumen.projector.ui.TextRow;
@@ -125,18 +126,32 @@ final class QuickPanelController {
 
     private final Context app;
     private final SharedPreferences prefs;
-    private QuickPanelView panel;
+    private QpdPanel panel;
     private Snapshot snap;
     private int refreshGen;
     /** Section pages by QuickPanel.SECTION_* key (SECTION_INPUT has none). */
     private final Map<String, Page> pages = new HashMap<>();
 
-    // root page: info line + tile grid
+    // root page: the layout D card (2026-11-11, owner's choice D: clock, round buttons, tile rows, brightness slider)
     private final Page root;
-    private TextRow info;
-    private TileGrid grid;
-    /** Index of the grid in the root page's rows (PagedPanel focus restore). */
-    private int gridRow;
+    private QpdCard card;
+    /** Layout D popups: picture mode, sound mode and game mode as radio lists (the full pages stay one row away). */
+    private Page picD, soundD, gameD;
+    private final List<CheckRow> picRadios = new ArrayList<>(), soundRadios = new ArrayList<>(),
+            gameRadios = new ArrayList<>();
+    /** Hint blocks: only where Z9X stock has a hint picture (picture mode, rear projection). */
+    private QpdTip picTip, rearTip;
+    /** Input tile popup: the inputs with what is connected (the Source key keeps the Source overlay). */
+    private QpdSource sourceD;
+    /** Screen mirroring tile popup (org.lumen.miracast); null when the receiver is not in this system. */
+    private QpdMirror mirrorD;
+    /** All settings (gear): the category shown last, picture first as in the prototype. */
+    private String lastAllCat = QuickPanel.SECTION_PICTURE;
+    private Boolean lastBoost;
+    private boolean eyeOffShown;
+    // layout D tiles that are not section pages
+    private static final String TILE_AK = "autocorrect", TILE_ZOOM = "zoom", TILE_BT = "bluetooth",
+            TILE_NET = "network", TILE_USB = QpdLayout.TILE_USB, TILE_MIRROR = QpdLayout.TILE_MIRROR;
 
     // section rows
     private ChoiceRow pictureMode;
@@ -196,11 +211,12 @@ final class QuickPanelController {
         buildGamePage();
         buildEyePage();
         buildSettingsPage();
+        buildPopupsD();
         root = buildRoot();
         String last = prefs.getString(KEY_LAST_TILE, null);
         // the v6.3 "Manual keystone" tile is part of the Keystone tile now
         if (QuickPanel.SECTION_MANUAL_KEYSTONE.equals(last)) last = QuickPanel.SECTION_KEYSTONE;
-        if (last != null) grid.remember(last);
+        if (last != null) card.remember(last);
         for (Map.Entry<String, Page> e : pages.entrySet()) {
             for (QuickPanel.Extension x : QuickPanel.extensions(e.getKey())) addRows(e.getKey(), e.getValue(), x);
         }
@@ -208,7 +224,7 @@ final class QuickPanelController {
 
     // ================================================================== show / toggle
     void toggle() {
-        if (panel != null && panel.isShowing() && OverlayHost.get(app).current() == panel) {
+        if (panel != null && panel.isShowing() && OverlayHost.get(app).current() == panel && !panel.isBar()) {
             panel.dismiss();
             return;
         }
@@ -235,32 +251,163 @@ final class QuickPanelController {
             if (setupDone("input")) SourceOverlay.toggle(app);
             return;
         }
+        // layout D: All settings is its own screen (rail of the section pages, list, hint card)
+        if (QuickPanel.SECTION_GENERAL.equals(key)) {
+            openAll(key, focusRow);
+            return;
+        }
         if (QuickPanel.SECTION_MANUAL_KEYSTONE.equals(key)) {
-            grid.remember(QuickPanel.SECTION_KEYSTONE);      // its entry in the panel is the Keystone page
+            card.remember(QuickPanel.SECTION_KEYSTONE);      // its entry in the panel is the Keystone popup
             ManualKeystonePanel.open(app, null);             // not from the panel: BACK just closes
             return;
         }
-        Page target = key == null ? null : pages.get(key);
+        // layout D: brightness has no page; a direct open (Home shortcut, voice) shows the slim bar alone
+        if (QuickPanel.SECTION_LAMP.equals(key)) {
+            showBar();
+            return;
+        }
+        openSection(key, focusRow);
+    }
+
+    /**
+     * The quick panel with the popup of {@code key} (null = the card alone), focus on {@code focusRow} when given.
+     * Also the way back to an open Input popup (restorer): show() itself gives a direct Input open to the overlay.
+     */
+    private void openSection(String key, View focusRow) {
+        // the popup of the section, and the full page above it when the row to focus is on the full page
+        List<Page> open = new ArrayList<>();
+        Page target = key == null ? null : popupPage(key);
         if (target != null) {
-            grid.remember(key);                              // BACK from the page lands on its tile
-            target.setInitialFocus(focusRow == null ? -1 : target.rows().indexOf(focusRow));
+            card.remember(key);                              // BACK from the popup lands on its tile
+            Page full = pages.get(key);
+            if (focusRow != null && full != null && full != target && !target.rows().contains(focusRow)
+                    && full.rows().contains(focusRow)) {
+                target.setInitialFocus(-1);
+                open.add(target);
+                full.setInitialFocus(full.rows().indexOf(focusRow));
+                open.add(full);
+            } else {
+                target.setInitialFocus(focusRow == null ? focusOfChecked(target) : target.rows().indexOf(focusRow));
+                open.add(target);
+            }
+            if (target == gameD) refreshGameD();
         }
         OverlayHost host = OverlayHost.get(app);
-        if (panel != null && panel.isShowing() && host.current() == panel) {
-            while (panel.pop()) { /* back to the tile grid */ }
-            if (target != null) panel.push(target);
+        if (panel != null && panel.isShowing() && host.current() == panel && !panel.isBar()) {
+            while (panel.pop()) { /* back to the card */ }
+            for (Page p : open) panel.push(p);
             panel.resetAutoHide();
             return;
         }
-        QuickPanelView v = new QuickPanelView(root, this);   // fresh page stack each open; rows are reused
-        if (target != null) v.push(target);                  // before the window exists: no slide
-        root.setInitialFocus(gridRow);
-        grid.settle();
+        QpdPanel v = new QpdPanel(root, card, qpdHost, false);  // fresh page stack each open; rows are reused
+        for (Page p : open) v.push(p);                       // before the window exists: no slide
+        card.settle();
         panel = v;
         if (!host.show(v)) Log.w(TAG, "quick panel window could not be added");
     }
 
-    /** Every key of the quick panel window, before the rows (QuickPanelView.onKeyEvent). */
+    /** Remote brightness: the slider alone in a slim bar (layout D), closing 2.5 s after the last key. */
+    private void showBar() {
+        OverlayHost host = OverlayHost.get(app);
+        if (panel != null && panel.isShowing() && host.current() == panel && panel.isBar()) {
+            panel.resetAutoHide();
+            return;
+        }
+        QpdPanel v = new QpdPanel(root, card, qpdHost, true);
+        panel = v;
+        if (!host.show(v)) Log.w(TAG, "brightness bar window could not be added");
+    }
+
+    /**
+     * Opens All settings on {@code category} (null = the one shown last) with the focus on {@code focusRow} in its
+     * list, or on the rail when null. Reuses the quick panel window when it is the one shown.
+     */
+    private void openAll(String category, View focusRow) {
+        List<QpdPanel.Cat> cats = allCategories();
+        String want = category != null ? category : lastAllCat;
+        int idx = 0;
+        for (int i = 0; i < cats.size(); i++) if (cats.get(i).key.equals(want)) idx = i;
+        lastAllCat = cats.get(idx).key;
+        card.remember(QuickPanel.SECTION_GENERAL);           // BACK from All settings lands on the gear
+        OverlayHost host = OverlayHost.get(app);
+        if (panel != null && panel.isShowing() && host.current() == panel && !panel.isBar()) {
+            panel.openAll(cats, idx, QuickPanel.SECTION_GENERAL, focusRow);
+            panel.resetAutoHide();
+            return;
+        }
+        QpdPanel v = new QpdPanel(root, card, qpdHost, false);
+        v.openAll(cats, idx, QuickPanel.SECTION_GENERAL, focusRow);  // before the window exists: no slide
+        card.settle();
+        panel = v;
+        if (!host.show(v)) Log.w(TAG, "all settings window could not be added");
+    }
+
+    /** All settings categories: the section pages this projector has, in the prototype's order of topics. */
+    private List<QpdPanel.Cat> allCategories() {
+        List<QpdPanel.Cat> out = new ArrayList<>();
+        cat(out, QuickPanel.SECTION_KEYSTONE, R.string.panel_tile_keystone, R.drawable.qpd_ic_kst);
+        cat(out, QuickPanel.SECTION_FOCUS, R.string.panel_tile_focus, R.drawable.qpd_ic_focus);
+        cat(out, QuickPanel.SECTION_PICTURE, R.string.panel_sec_picture, R.drawable.qpd_ic_pic);
+        cat(out, QuickPanel.SECTION_PROJECTION_MODE, R.string.panel_tile_projection, R.drawable.qpd_ic_proj);
+        cat(out, QuickPanel.SECTION_SOUND, R.string.panel_sec_sound, R.drawable.qpd_ic_snd);
+        cat(out, QuickPanel.SECTION_EYE, R.string.panel_eye, R.drawable.qpd_ic_eye);
+        cat(out, QuickPanel.SECTION_GENERAL, R.string.panel_sec_general, R.drawable.qpd_ic_gear);
+        return out;
+    }
+
+    private void cat(List<QpdPanel.Cat> out, String key, int label, int icon) {
+        Page p = pages.get(key);
+        if (p != null) out.add(new QpdPanel.Cat(key, s(label), icon, p));
+    }
+
+    /** The page a tile's popup shows (null: the tile acts directly, or there is no such section). */
+    private Page popupPage(String key) {
+        if (key == null) return null;
+        if (QuickPanel.SECTION_INPUT.equals(key)) return sourceD == null ? null : sourceD.page;
+        if (TILE_MIRROR.equals(key)) return mirrorD == null ? null : mirrorD.page;
+        if (QuickPanel.SECTION_PICTURE.equals(key)) return picD;
+        if (QuickPanel.SECTION_SOUND.equals(key)) return soundD;
+        if (QuickPanel.SECTION_GAME.equals(key)) return gameD;
+        if (QuickPanel.SECTION_LAMP.equals(key)) return null;
+        return pages.get(key);
+    }
+
+    /** Section key of a page shown in the popup (layout D popups first, then the section pages), or null. */
+    private String sectionOf(Page p) {
+        if (p == null) return null;
+        if (p == picD) return QuickPanel.SECTION_PICTURE;
+        if (p == soundD) return QuickPanel.SECTION_SOUND;
+        if (p == gameD) return QuickPanel.SECTION_GAME;
+        if (sourceD != null && p == sourceD.page) return QuickPanel.SECTION_INPUT;
+        if (mirrorD != null && p == mirrorD.page) return TILE_MIRROR;
+        for (Map.Entry<String, Page> e : pages.entrySet()) if (e.getValue() == p) return e.getKey();
+        return null;
+    }
+
+    private final QpdPanel.Host qpdHost = new QpdPanel.Host() {
+        @Override public boolean onKey(KeyEvent ev) { return QuickPanelController.this.onKey(ev); }
+        @Override public void onClosed(QpdPanel p) {
+            if (p.allCategory() != null) lastAllCat = p.allCategory();
+            onPanelClosed();
+        }
+        @Override public View tipFor(Page p) {
+            if (p == picD) return picTip;
+            if (p != null && p == pages.get(QuickPanel.SECTION_PROJECTION_MODE)) return rearTip;
+            return null;
+        }
+        @Override public View tipForRow(View row) {
+            if (row != null && row == pictureMode) return picTip;
+            if (row != null && row == pRear) return rearTip;
+            return null;
+        }
+        @Override public String anchorFor(Page sectionPage) { return sectionOf(sectionPage); }
+        @Override public boolean hasPopup(String key) {
+            return !QuickPanel.SECTION_GENERAL.equals(key) && popupPage(key) != null;   // All settings is a screen
+        }
+        @Override public void openPopup(String key) { onTileD(key); }
+    };
+
+    /** Every key of the quick panel window, before the rows (QpdPanel.onKeyEvent). */
     boolean onKey(KeyEvent ev) {
         // v6.4: BACK while an equalizer band is being adjusted only ends adjusting.
         if (eqBands != null && eqBands.isEditing()
@@ -309,67 +456,125 @@ final class QuickPanelController {
 
     void onPanelClosed() {
         boostArmDir = 0;
-        grid.settle();
-        String last = grid.lastSection();
+        card.settle();
+        String last = card.lastKey();
         if (last != null && !last.equals(prefs.getString(KEY_LAST_TILE, null))) {
             prefs.edit().putString(KEY_LAST_TILE, last).apply();
         }
     }
 
-    /** Open animation of the page shown first (QuickPanelView.onShown). */
-    void animateIn(Page page) {
-        if (page == root) {
-            info.setAlpha(0f);
-            info.animate().alpha(1f).setStartDelay(60).setDuration(200).start();
-            grid.staggerIn(40);
-            return;
-        }
-        // A section page opened directly (KEYSTONE key): rows slide in, 16 ms apart. Translation
-        // only: disabled rows carry alpha 0.4 (Row.setRowEnabled).
-        float dx = Theme.pxf(app, 36);
-        List<View> rows = page.rows();
-        for (int i = 0; i < rows.size(); i++) {
-            View r = rows.get(i);
-            r.setTranslationX(dx);
-            r.animate().translationX(0f).setStartDelay(i * Theme.ROW_STAGGER_MS).setDuration(220)
-                    .setInterpolator(new PathInterpolator(0.2f, 0f, 0f, 1f)).start();
-        }
-    }
-
     // ================================================================== tiles, pages, extensions
-    private void addTile(String section, int icon, int label, boolean wide) {
-        grid.addTile(new Tile(app, section, icon, s(label), wide, () -> onTile(section)));
+    private void wide(String key, int icon, int label, CharSequence value) {
+        QpdTile t = new QpdTile(app, key, QpdTile.WIDE, icon, s(label), () -> onTileD(key));
+        t.setValue(value);
+        card.addTile(t);
     }
 
-    /** Tile OK (after its press animation). */
-    private void onTile(String section) {
+    private void small(String key, int icon, int label) {
+        card.addTile(new QpdTile(app, key, QpdTile.SMALL, icon, s(label), () -> onTileD(key)));
+    }
+
+    private void round(String key, int icon, int label) {
+        card.addTile(new QpdTile(app, key, QpdTile.ROUND, icon, s(label), () -> onTileD(key)));
+    }
+
+    /**
+     * Tile OK (and RIGHT on the last tile of a row). The actions are the ones the section rows had: Auto keystone
+     * now, the optical zoom screen, the Source overlay, the section pages with their rules; Bluetooth, Network and USB
+     * open the system pages / Lumen Home's files (stock quick menu has these three tiles). Screen mirroring (in the
+     * USB tile's place where the receiver is installed, 2026-11-11) opens its popup like a section.
+     */
+    private void onTileD(String key) {
         if (panel == null || !panel.isShowing()) return;     // closed during the press
-        grid.remember(section);
-        if (QuickPanel.SECTION_INPUT.equals(section)) {
-            // replaces the quick panel; BACK there returns to this grid (Input tile remembered)
-            if (setupDone("input")) SourceOverlay.showFromQuickPanel(app);
-            return;
-        }
-        Page p = pages.get(section);
-        if (p == null) return;
-        // 1.0.8 (parity brightness item 13): stock does not open its brightness page in 3D (CoreViewModel.buildPage3,
-        // SettingMutexManager node brightness_adjustment -> dlpLumensLevel rules). The tile stays as it is (value
-        // shown, not greyed); the press shows the stock note. Direct opens (Home shortcut, voice) meet the onKey gate.
-        // Also Custom / Office / Performance (175 = 6 / 12 / 15): stock refuses brightness there with its own note.
-        if (QuickPanel.SECTION_LAMP.equals(section) && snap != null
-                && (Lamp3d.blocks(snap.fmt3d, snap.is3dTo2d) || Lamp3d.modeLocks(snap.lumensMode))) {
-            lampRefusal();
-            return;
+        card.remember(key);
+        switch (key) {
+            case TILE_AK:
+                closeThen(() -> Hal.requestKeystone(app, false));
+                return;
+            case TILE_ZOOM:
+                OpticalZoomPanel.open(app, () -> show(null));  // replaces the panel; BACK comes back to this tile
+                return;
+            case QuickPanel.SECTION_INPUT:
+                // layout D: the inputs in a popup beside the tile (QpdSource); the Source key keeps the overlay
+                if (!setupDone("input")) return;
+                break;
+            case QuickPanel.SECTION_GENERAL:
+                openAll(null, null);
+                return;
+            case TILE_BT:
+                if (setupDone("bluetooth")) closeThen(() -> openSystemPage(Settings.ACTION_BLUETOOTH_SETTINGS));
+                return;
+            case TILE_NET:
+                if (setupDone("network")) closeThen(() -> openSystemPage(Settings.ACTION_WIFI_SETTINGS));
+                return;
+            case TILE_USB:
+                if (setupDone("usb files")) closeThen(this::openUsbFiles);
+                return;
+            default:
+                break;
         }
         // 2026-11-04 (stock game_enhance_mode_entrance, common.json gameMode): the page itself is refused with Dolby
         // Vision, in 3D and off HDMI, in that order; no page of disabled rows
-        if (QuickPanel.SECTION_GAME.equals(section) && snap != null
+        if (QuickPanel.SECTION_GAME.equals(key) && snap != null
                 && RuleNotes.show(app, s(R.string.panel_sec_game), PanelRules.gamePage(rin(snap)), true)) {
             return;
         }
-        grid.settle();                                       // a stagger still running ends now
-        p.setInitialFocus(-1);                               // a page always opens at its first row
+        Page p = popupPage(key);
+        if (p == null) return;
+        if (p == gameD) refreshGameD();
+        while (panel.depth() > 1 && panel.pop()) { /* one popup at a time */ }
+        card.settle();
+        p.setInitialFocus(focusOfChecked(p));                // radio lists open on the current choice, others on row 1
         panel.push(p);
+    }
+
+    /** Index of the visible checked radio row of {@code p} (prototype: a radio popup opens on its choice), or -1. */
+    private static int focusOfChecked(Page p) {
+        List<View> rows = p.rows();
+        for (int i = 0; i < rows.size(); i++) {
+            View v = rows.get(i);
+            if (v.getVisibility() != View.VISIBLE) continue;
+            if (v instanceof CheckRow && ((CheckRow) v).isChecked()) return i;
+            if (v instanceof QpdRowFrame.Radio && ((QpdRowFrame.Radio) v).isSelected()) return i;
+        }
+        return -1;
+    }
+
+    private void openSystemPage(String action) {
+        try {
+            Ui.wakeFromDream(app);
+            Intent i = new Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (i.resolveActivity(app.getPackageManager()) == null) { openTvSettings(); return; }
+            app.startActivity(i);
+        } catch (Throwable t) {
+            Log.w(TAG, action + ": " + t);
+            Ui.toast(app, R.string.toast_failed);
+        }
+    }
+
+    /** Lumen Home's USB files screen (its exported FilesLauncher alias). */
+    private static final String HOME_PKG = "org.lumen.home", HOME_FILES = "org.lumen.home.FilesLauncher";
+
+    private Intent usbFilesIntent() {
+        return new Intent(Intent.ACTION_MAIN).setClassName(HOME_PKG, HOME_FILES).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    private boolean usbFilesAvailable() {
+        try {
+            return usbFilesIntent().resolveActivity(app.getPackageManager()) != null;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    private void openUsbFiles() {
+        try {
+            Ui.wakeFromDream(app);
+            app.startActivity(usbFilesIntent());
+        } catch (Throwable t) {
+            Log.w(TAG, "usb files: " + t);
+            Ui.toast(app, R.string.toast_failed);
+        }
     }
 
     /**
@@ -407,7 +612,12 @@ final class QuickPanelController {
             }
         }
         final View row = from;
-        return () -> show(section, row);
+        // opened from the All settings list: BACK comes back to that list
+        final boolean all = panel != null && panel.isShowing() && panel.isAllMode() && section != null;
+        return () -> {
+            if (all) openAll(section, row);
+            else show(section, row);
+        };
     }
 
     /**
@@ -418,10 +628,17 @@ final class QuickPanelController {
     Runnable restorer() {
         if (panel == null || !panel.isShowing() || OverlayHost.get(app).current() != panel) return null;
         Page top = panel.currentPage();
-        String section = null;
-        for (Map.Entry<String, Page> e : pages.entrySet()) {
-            if (e.getValue() == top) { section = e.getKey(); break; }
+        if (panel.isAllMode()) {
+            final String cat = panel.allCategory();
+            View focused = null;
+            for (View v : top.rows()) {
+                if (v.isFocused()) { focused = v; break; }
+            }
+            final View r = focused;
+            Log.i(TAG, "restorer: all settings " + cat);
+            return () -> openAll(cat, r);
         }
+        String section = top == root ? null : sectionOf(top);
         View from = null;
         if (section != null) {
             for (View v : top.rows()) {
@@ -431,6 +648,7 @@ final class QuickPanelController {
         final String sec = section;
         final View row = from;
         Log.i(TAG, "restorer: " + (sec == null ? "tile grid" : sec + (row == null ? "" : ", focused row")));
+        if (QuickPanel.SECTION_INPUT.equals(sec)) return () -> openSection(sec, row);   // its popup, not the overlay
         return () -> show(sec, row);
     }
 
@@ -596,28 +814,106 @@ final class QuickPanelController {
     // ================================================================== root: the tile grid
     private Page buildRoot() {
         Page p = new Page(s(R.string.panel_title));
-        info = p.add(new TextRow(app, ""));
-        grid = p.add(new TileGrid(app));
-        gridRow = p.rows().indexOf(grid);
-        // v6.2 requirements 3 order: focus, keystone, brightness, picture, sound, input, projection
-        // mode, game mode, eye protection, all settings (wide, last row).
-        addTile(QuickPanel.SECTION_FOCUS, R.drawable.ic_tile_focus, R.string.panel_tile_focus, false);
-        // Lumen OS 1.0: ONE Keystone tile (auto and manual correction inside); the v6.3 separate
-        // "Manual keystone" tile duplicated it (decision 2026-10-08).
-        addTile(QuickPanel.SECTION_KEYSTONE, R.drawable.ic_tile_keystone, R.string.panel_tile_keystone, false);
-        addTile(QuickPanel.SECTION_LAMP, R.drawable.ic_tile_brightness, R.string.panel_lamp, false);
-        addTile(QuickPanel.SECTION_PICTURE, R.drawable.ic_tile_picture, R.string.panel_sec_picture, false);
-        addTile(QuickPanel.SECTION_SOUND, R.drawable.ic_tile_sound, R.string.panel_sec_sound, false);
-        // v6.2 translate phase: panel_tile_input/_game/_eye = the section names, shortened only in
-        // the languages where the full name would ellipsize on a tile (ru/uk/be/fr/es/it).
-        addTile(QuickPanel.SECTION_INPUT, R.drawable.ic_tile_input, R.string.panel_tile_input, false);
-        addTile(QuickPanel.SECTION_PROJECTION_MODE, R.drawable.ic_tile_projection, R.string.panel_tile_projection, false);
-        addTile(QuickPanel.SECTION_GAME, R.drawable.ic_tile_game, R.string.panel_tile_game, false);
-        addTile(QuickPanel.SECTION_EYE, R.drawable.ic_tile_eye, R.string.panel_tile_eye, false);
-        addTile(QuickPanel.SECTION_GENERAL, R.drawable.ic_tile_settings, R.string.panel_all_settings, true);
-        p.setInitialFocus(gridRow);
+        card = new QpdCard(app);
+        // owner's layout D (2026-11-11), stock quick menu structure: round Eye protection and All settings buttons,
+        // then per row one wide tile and two small ones, the brightness slider last
+        round(QuickPanel.SECTION_EYE, R.drawable.qpd_ic_eye, R.string.panel_tile_eye);
+        round(QuickPanel.SECTION_GENERAL, R.drawable.qpd_ic_gear, R.string.panel_all_settings);
+        wide(TILE_AK, R.drawable.qpd_ic_ak, R.string.qpd_autocorrect, s(R.string.qpd_autocorrect_value));
+        small(QuickPanel.SECTION_KEYSTONE, R.drawable.qpd_ic_kst, R.string.panel_tile_keystone);
+        small(TILE_ZOOM, R.drawable.qpd_ic_zoom, R.string.qpd_zoom);
+        wide(QuickPanel.SECTION_PICTURE, R.drawable.qpd_ic_pic, R.string.panel_sec_picture, null);
+        small(QuickPanel.SECTION_SOUND, R.drawable.qpd_ic_snd, R.string.panel_sec_sound);
+        small(QuickPanel.SECTION_FOCUS, R.drawable.qpd_ic_focus, R.string.panel_tile_focus);
+        wide(QuickPanel.SECTION_INPUT, R.drawable.qpd_ic_src, R.string.panel_tile_input, null);
+        small(TILE_BT, R.drawable.qpd_ic_bt, R.string.qpd_bluetooth);
+        small(TILE_NET, R.drawable.qpd_ic_wifi, R.string.qpd_network);
+        wide(QuickPanel.SECTION_GAME, R.drawable.qpd_ic_game, R.string.panel_tile_game, null);
+        small(QuickPanel.SECTION_PROJECTION_MODE, R.drawable.qpd_ic_proj, R.string.panel_tile_projection);
+        // 2026-11-11: screen mirroring takes the USB tile's place (USB files stay in the Input popup and Home)
+        String lastSmall = QpdLayout.lastSmallTile(mirrorD != null, usbFilesAvailable());
+        if (TILE_MIRROR.equals(lastSmall)) small(TILE_MIRROR, R.drawable.qpd_ic_mirror, R.string.qpd_mirroring);
+        else if (TILE_USB.equals(lastSmall)) small(TILE_USB, R.drawable.qpd_ic_usb, R.string.qpd_usb);
+        card.setLamp((QpdLampRow) lamp);
         p.setOnShown(this::refresh);
         return p;
+    }
+
+    /** Layout D popups (radio lists) built once; their rows call the same actions as the section page rows. */
+    private void buildPopupsD() {
+        picTip = new QpdTip(app, QpdTip.PICTURE_MODE, s(R.string.qpd_tip_picture));
+        rearTip = new QpdTip(app, QpdTip.REAR_PROJECTION, s(R.string.qpd_tip_rear));
+        sourceD = new QpdSource(app, s(R.string.panel_tile_input), new QpdSource.Host() {
+            @Override public void close() { if (panel != null) panel.dismiss(); }
+            @Override public boolean usbFilesAvailable() { return QuickPanelController.this.usbFilesAvailable(); }
+            @Override public void openUsbFiles() {
+                if (setupDone("usb files")) closeThen(QuickPanelController.this::openUsbFiles);
+            }
+        });
+        if (QpdMirror.installed(app)) {
+            mirrorD = new QpdMirror(app, s(R.string.qpd_mirroring), new QpdMirror.Host() {
+                @Override public void closeThen(Runnable r) { QuickPanelController.this.closeThen(r); }
+                @Override public boolean setupDone(String what) { return QuickPanelController.this.setupDone(what); }
+            });
+        }
+        picD = new Page(s(R.string.panel_picture_mode));
+        picD.setOnShown(this::refresh);
+        rebuildPicD();
+        soundD = new Page(s(R.string.panel_sound_mode));
+        soundD.setOnShown(this::refresh);
+        CharSequence[] sl = soundLabels();
+        for (int i = 0; i < sl.length; i++) {
+            final int idx = i;
+            soundRadios.add(soundD.add(new CheckRow(app, sl[i], false, safe("sound mode item", () -> {
+                soundMode.setSelected(idx);
+                onSoundModeChosen(idx, s(R.string.panel_sound_mode));
+            }))));
+        }
+        soundD.add(new NavRow(app, s(R.string.qpd_sound_more), safe("sound page", () -> push(pages.get(QuickPanel.SECTION_SOUND)))));
+        gameD = new Page(s(R.string.panel_sec_game));
+        gameD.setOnShown(() -> onPageShown(QuickPanel.SECTION_GAME));
+        CharSequence[] gl = gameModeLabels();
+        for (int i = 0; i < gl.length; i++) {
+            final int idx = i;
+            gameRadios.add(new CheckRow(app, gl[i], false, safe("game mode item", () -> {
+                gameMode.setSelected(idx);
+                onGameMode(idx);
+            })));
+        }
+        refreshGameD();
+    }
+
+    /** Picture mode radios for the modes this content offers (pmOptions), then the full picture page. */
+    private void rebuildPicD() {
+        picD.clear();
+        picRadios.clear();
+        GmpfClient.PictureMode cur = snap == null || snap.pictureMode == null ? null
+                : GmpfClient.PictureMode.fromWire(snap.pictureMode);
+        for (int i = 0; i < pmOptions.length; i++) {
+            final int idx = i;
+            final GmpfClient.PictureMode m = pmOptions[i];
+            picRadios.add(picD.add(new CheckRow(app, pmLabel(m), m == cur, safe("picture mode item", () -> {
+                pictureMode.setSelected(idx);
+                onPictureModeChosen(idx);
+            }))));
+        }
+        picD.add(new NavRow(app, s(R.string.qpd_picture_more), safe("picture page", () -> push(pages.get(QuickPanel.SECTION_PICTURE)))));
+    }
+
+    /** Game popup: the mode radios, then every other row of the game page (speed, auto switch, console rows). */
+    private void refreshGameD() {
+        int f = PageAccess.focusIndex(gameD);
+        gameD.clear();
+        Page full = pages.get(QuickPanel.SECTION_GAME);
+        if (full == null) return;
+        for (View v : full.rows()) {
+            if (v == gameMode) {
+                for (CheckRow r : gameRadios) gameD.add(r);
+            } else {
+                gameD.add(v);
+            }
+        }
+        gameD.setInitialFocus(f);
     }
 
     // ================================================================== focus page (stock spec 2.7)
@@ -707,7 +1003,9 @@ final class QuickPanelController {
     // ================================================================== brightness page (stock spec 3.1)
     private void buildLampPage() {
         Page p = page(QuickPanel.SECTION_LAMP, R.string.panel_lamp);
-        lamp = p.add(new SliderRow(app, s(R.string.panel_lamp), 1, 10, new SliderRow.OnSlide() {
+        // layout D: the slider sits at the bottom of the card (QpdLampRow = this SliderRow with the D look), not on
+        // a page; the page keeps its hint rows for extensions
+        lamp = new QpdLampRow(app, s(R.string.panel_lamp), new SliderRow.OnSlide() {
             @Override public void onChanging(SliderRow row, int value) { touch(row); }
             @Override public void onCommit(SliderRow row, int value) {
                 safe("lamp", () -> {
@@ -715,10 +1013,11 @@ final class QuickPanelController {
                     change("176 lamp " + value, (g, g2) -> g.setLampLevel(value));
                 }).run();
             }
-        }));
+        });
         lamp.setFormatter(v -> v >= BOOST_LEVEL ? s(R.string.panel_boost) : Integer.toString(v));
         lamp.setEdgeListener((row, dir) -> {
-            if (dir > 0 && !boostOn) safe("boost", () -> boostPress(1)).run();
+            // Boost only where this projector reports it (IGmpf2 51 read): never a dead Boost step
+            if (dir > 0 && !boostOn && snap != null && snap.boost != null) safe("boost", () -> boostPress(1)).run();
             return true;
         });
         p.add(new TextRow(app, s(R.string.panel_lamp_hint)));
@@ -901,25 +1200,7 @@ final class QuickPanelController {
         soundHint.setVisibility(View.GONE);
         final CharSequence[] soundLabels = soundLabels();
         soundMode = p.add(new ChoiceRow(app, s(R.string.panel_sound_mode), soundLabels,
-                (row, i) -> safe("sound mode", () -> {
-                    if (snap == null || snap.soundEffect == null || i < 0 || i >= SOUND_ORDER.length) { refresh(); return; }
-                    final GmpfClient.SoundEffect e = SOUND_ORDER[i];
-                    final CharSequence title = row.getTitle();
-                    change("61 sound " + e, (g, g2) -> {
-                        if (e == GmpfClient.SoundEffect.AI) {
-                            // property = foreground category, then 61(3); the sub-mode follows the app
-                            AiSoundEngine.userChoseAi(g);
-                        } else {
-                            g.setSoundEffect(e);                              // 61
-                            AiSoundEngine.noteMode(e.wire, "user");
-                        }
-                        SoundProfiles.rememberMode(app, e);
-                        // a user mode change rewrites this mode's curve in full (repairs a PEQ the
-                        // vendor turned off unseen; the 61 table switch already mutes the amp briefly)
-                        SoundEq.afterUserModeChange(g, "61(" + e.wire + ")");
-                        Notify.show(app, title + ": " + soundLabel(e));
-                    });
-                }).run()));
+                (row, i) -> safe("sound mode", () -> onSoundModeChosen(i, row.getTitle())).run()));
         soundMode.setCommitDelay(CHOICE_COMMIT_MS);
         eqNav = p.add(new NavRow(app, s(R.string.eq_title), safe("equalizer", () -> {
             if (panel == null || !panel.isShowing() || eqPage == null) return;
@@ -1048,9 +1329,8 @@ final class QuickPanelController {
     /** Main thread, from apply(): the equalizer rows for the current sound mode and process. */
     private void applyEq(Snapshot sn, boolean ok) {
         int mode = ok && sn.soundEffect != null && SoundEq.validMode(sn.soundEffect) ? sn.soundEffect : -1;
-        boolean amp = ok && Boolean.FALSE.equals(sn.dtsOn) && sn.soundProcess != null
-                && sn.soundProcess == GmpfClient.SoundProcess.HARMAN.wire;
-        boolean dts = ok && SoundProfiles.dtsStored(sn.soundProcess, sn.dtsOn);
+        boolean amp = ok && SoundState.eqUsable(sn.soundProcess, sn.dtsOn);
+        boolean dts = ok && SoundState.dtsStored(sn.soundProcess, sn.dtsOn);
         boolean usable = amp && mode >= 0;
         if (eqBands.isBusy() && mode == eqMode) {
             // the user is adjusting: keep the rows as they are
@@ -1100,6 +1380,26 @@ final class QuickPanelController {
             case KARAOKE: return R.string.panel_sound_karaoke;
             default: return R.string.panel_sound_standard;
         }
+    }
+
+    /** Sound mode {@code i} of SOUND_ORDER chosen (the Sound page row or the layout D sound popup). */
+    private void onSoundModeChosen(int i, CharSequence title) {
+        if (snap == null || snap.soundEffect == null || i < 0 || i >= SOUND_ORDER.length) { refresh(); return; }
+        final GmpfClient.SoundEffect e = SOUND_ORDER[i];
+        change("61 sound " + e, (g, g2) -> {
+            if (e == GmpfClient.SoundEffect.AI) {
+                // property = foreground category, then 61(3); the sub-mode follows the app
+                AiSoundEngine.userChoseAi(g);
+            } else {
+                g.setSoundEffect(e);                              // 61
+                AiSoundEngine.noteMode(e.wire, "user");
+            }
+            SoundProfiles.rememberMode(app, e);
+            // a user mode change rewrites this mode's curve in full (repairs a PEQ the
+            // vendor turned off unseen; the 61 table switch already mutes the amp briefly)
+            SoundEq.afterUserModeChange(g, "61(" + e.wire + ")");
+            Notify.show(app, title + ": " + soundLabel(e));
+        });
     }
 
     // ================================================================== projection mode page (stock spec 2.9)
@@ -1799,13 +2099,14 @@ final class QuickPanelController {
     private void apply(Snapshot sn) {
         snap = sn;
         boolean ok = sn != null;
-        info.setText(infoText(sn));
 
         // ---- picture mode (options depend on the content's HDR type)
         GmpfClient.PictureMode[] modes = visibleModes(sn);
         if (modes.length != pmOptions.length || !java.util.Arrays.equals(modes, pmOptions)) {
             pmOptions = modes;
             pictureMode.setOptions(pmLabels(modes));
+            rebuildPicD();
+            if (panel != null && panel.isShowing() && panel.currentPage() == picD) panel.refreshPage();
         }
         GmpfClient.PictureMode pm = ok && sn.pictureMode != null ? GmpfClient.PictureMode.fromWire(sn.pictureMode) : null;
         setChoice(pictureMode, indexOf(pmOptions, pm), pm != null, true);
@@ -1866,16 +2167,16 @@ final class QuickPanelController {
         gameSpeed.setVisibility(hdmi && sn.gameOption != null && gm == 1 ? View.VISIBLE : View.GONE);
         allm.setVisibility(hdmi && sn.allm != null && gm == 2 ? View.VISIBLE : View.GONE);
 
-        // ---- sound (v6.3.1: SoundProfiles state mapping, DTS only with the output path reported)
-        SoundProfiles.Profile prof = ok ? SoundProfiles.fromState(sn.soundProcess, sn.dtsOn, sn.soundPathActive) : null;
-        // "—" while unknown (43 on, another process type, a getter failed); still selectable = re-apply.
-        setChoice(soundEnh, SoundProfiles.indexOf(prof), ok && sn.soundProcess != null, true);
-        boolean unknown = ok && sn.soundProcess != null && prof == null;
-        boolean dtsStored = ok && SoundProfiles.dtsStored(sn.soundProcess, sn.dtsOn);
+        // ---- sound: the STORED enhancement as stock shows it (SoundState; DTS stays DTS before the output path is
+        // reported, so Harman Kardon is always a real choice), "—" while unknown (43 on, another process, a failed
+        // read: choosing re-applies), the hint says when DTS is stored but not running
+        setChoice(soundEnh, ok ? SoundState.enhancementRow(sn.soundProcess, sn.dtsOn) : -1, ok && sn.soundProcess != null, true);
         CharSequence dtsLabel = s(R.string.panel_dts_vx);
-        CharSequence sh = dtsStored && !sn.soundPathActive ? app.getString(R.string.sound_output_not_ready, dtsLabel)
-                : dtsStored && sn.soundPath != GmpfClient.AudioPath.SPEAKER.wire ? app.getString(R.string.sound_speaker_only, dtsLabel)
-                : unknown ? s(R.string.sound_unknown_hint) : null;
+        int hk = ok ? SoundState.hint(sn.soundProcess, sn.dtsOn, sn.soundPathActive, sn.soundPath,
+                GmpfClient.AudioPath.SPEAKER.wire) : SoundState.HINT_NONE;
+        CharSequence sh = hk == SoundState.HINT_NOT_READY ? app.getString(R.string.sound_output_not_ready, dtsLabel)
+                : hk == SoundState.HINT_SPEAKER_ONLY ? app.getString(R.string.sound_speaker_only, dtsLabel)
+                : hk == SoundState.HINT_UNKNOWN ? s(R.string.sound_unknown_hint) : null;
         soundHint.setText(sh);
         soundHint.setVisibility(sh == null ? View.GONE : View.VISIBLE);
         int sm = ok ? SoundProfiles.modeIndex(sn.soundEffect) : -1;
@@ -1968,21 +2269,34 @@ final class QuickPanelController {
         digitalFormat.setSelected(arcOut ? org.lumen.projector.audio.AudioOutputChoice.formatIndex(app) : -1);
         digitalFormat.setVisibility(arcOut ? View.VISIBLE : View.GONE);
 
-        // ---- tile values (top level): the same read-back, one short line each
-        // in Custom / Office / Performance the vendor's own wheel mode reads as Boost: no level is shown there
-        tileValue(QuickPanel.SECTION_LAMP, !ok || Lamp3d.modeLocks(sn.lumensMode) ? null : boostOn ? s(R.string.panel_boost)
-                : sn.lamp != null ? Integer.toString(sn.lamp) : null);
+        // ---- layout D: tile values (one short line on the wide tiles), popup radios, eye button, Boost notice
         tileValue(QuickPanel.SECTION_PICTURE, pm != null ? pmTileLabel(pm) : null);
-        tileValue(QuickPanel.SECTION_SOUND, sm >= 0 ? sl[sm] : null);
-        tileValue(QuickPanel.SECTION_INPUT, ok ? inputLabel(sn) : null);
-        tileValue(QuickPanel.SECTION_PROJECTION_MODE, ok ? projectionLabel(sn) : null);
+        tileValue(QuickPanel.SECTION_INPUT, ok ? infoText(sn) : null);      // input and HDR type (the old info line)
         tileValue(QuickPanel.SECTION_GAME, !ok ? null : !hdmi ? s(R.string.panel_tile_hdmi_only)
                 : gm >= 0 && gm <= 2 ? gameModeLabels()[gm] : null);
-        tileValue(QuickPanel.SECTION_EYE, ok && sn.eye != null ? s(sn.eye ? R.string.panel_on : R.string.panel_off) : null);
+        for (int i = 0; i < picRadios.size(); i++) picRadios.get(i).setChecked(pm != null && i < pmOptions.length && pmOptions[i] == pm);
+        for (int i = 0; i < soundRadios.size(); i++) {
+            if (i < sl.length) soundRadios.get(i).setTitle(sl[i]);          // "AI · <sub-mode>" follows the app
+            soundRadios.get(i).setChecked(i == sm);
+        }
+        for (int i = 0; i < gameRadios.size(); i++) {
+            gameRadios.get(i).setChecked(i == gm);
+            gameRadios.get(i).setVisibility(gameMode.getVisibility());
+        }
+        QpdTile eyeTile = card.tile(QuickPanel.SECTION_EYE);
+        boolean eyeOff = ok && Boolean.FALSE.equals(sn.eye);              // crossed out only when it reads off
+        if (eyeTile != null && eyeOff != eyeOffShown) {
+            eyeOffShown = eyeOff;
+            eyeTile.setIcon(eyeOff ? R.drawable.qpd_ic_eyeoff : R.drawable.qpd_ic_eye);
+        }
+        Boolean b = ok ? sn.boost : null;
+        if (QpdLayout.boostNoticeDue(lastBoost, b)) Notify.show(app, s(R.string.panel_boost), s(R.string.qpd_boost_note));
+        if (b != null) lastBoost = b;
+        ((QpdLampRow) lamp).invalidate();
     }
 
     private void tileValue(String section, CharSequence v) {
-        Tile t = grid.tile(section);
+        QpdTile t = card.tile(section);
         if (t != null) t.setValue(v);
     }
 
@@ -2025,75 +2339,6 @@ final class QuickPanelController {
             case 2: return s(R.string.panel_proj_rear_table);
             case 3: return s(R.string.panel_proj_rear_ceiling);
             default: return null;
-        }
-    }
-
-    // ================================================================== the panel window
-    /**
-     * The quick panel window: PagedPanel + Boost key handling + v6.2 motion + close hook.
-     * Open: the card grows out of the right edge (scale 0.96 -> 1, +48 px -> 0, alpha) in 200 ms
-     * with PathInterpolator(0.2,0,0,1), then the tiles stagger in. Close: 160 ms the other way with
-     * PathInterpolator(0.4,0,1,1). The close runs on a hardware layer; the open does not (its tiles
- * animate on their own layers inside it). Page switches keep the foundation's
-     * 140 ms slide (PagedPanel).
-     */
-    static final class QuickPanelView extends PagedPanel {
-        private static final long OPEN_MS = 200, CLOSE_MS = 160;
-        private final QuickPanelController ctl;
-
-        QuickPanelView(Page root, QuickPanelController ctl) {
-            super(root);
-            this.ctl = ctl;
-        }
-
-        private static void pivotAtEdge(View root) {
-            boolean rtl = root.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-            root.setPivotX(rtl ? 0f : Math.max(root.getWidth(), 1));
-            root.setPivotY(root.getHeight() / 2f);
-        }
-
-        @Override
-        protected void onShown(View root) {
-            float dx = Theme.pxf(root.getContext(), 48);
-            pivotAtEdge(root);
-            root.setAlpha(0f);
-            root.setTranslationX(dx);
-            root.setScaleX(0.96f);
-            root.setScaleY(0.96f);
-            // No hardware layer on the root here: the info row and the tiles animate inside it (each
-            // tile on its own layer), so a root layer would be re-rendered every frame anyway. One
-            // layer level only; the root's alpha is applied per child (no offscreen buffer) while it
-            // fades in.
-            root.forceHasOverlappingRendering(false);
-            root.animate().alpha(1f).translationX(0f).scaleX(1f).scaleY(1f).setStartDelay(0)
-                    .setDuration(OPEN_MS).setInterpolator(new PathInterpolator(0.2f, 0f, 0f, 1f))
-                    .withEndAction(() -> root.forceHasOverlappingRendering(true)).start();
-            try { ctl.animateIn(currentPage()); } catch (Throwable t) { Log.w(TAG, "animateIn: " + t); }
-        }
-
-        @Override
-        protected void animateOut(View root, Runnable end) {
-            root.animate().cancel();
-            pivotAtEdge(root);
-            root.animate().alpha(0f).translationX(Theme.pxf(root.getContext(), 40)).scaleX(0.97f).scaleY(0.97f)
-                    .setStartDelay(0).setDuration(CLOSE_MS).setInterpolator(new PathInterpolator(0.4f, 0f, 1f, 1f))
-                    .withLayer().withEndAction(end).start();
-        }
-
-        @Override
-        protected boolean onKeyEvent(KeyEvent ev) {
-            try {
-                return ctl.onKey(ev);
-            } catch (Throwable t) {
-                Log.w(TAG, "key: " + t);
-                return false;
-            }
-        }
-
-        @Override
-        protected void onDismissed() {
-            super.onDismissed();
-            try { ctl.onPanelClosed(); } catch (Throwable t) { Log.w(TAG, "closed: " + t); }
         }
     }
 }

@@ -26,6 +26,36 @@ drop      src/org/lumen/projector/panel/RuleNotes.java
 drop      src/org/lumen/projector/AiScenePolicy.java
 drop      res/values*/strings_rules.xml
 drop      test/rules/
+# Z9X quick panel layout D (2026-11-11): Z9X only, the HB keeps its own QuickPanelController
+drop      src/org/lumen/projector/panel/Qpd*.java
+drop      src/org/lumen/projector/ui/PageAccess.java
+drop      res/drawable/qpd_ic_*.xml
+drop      res/interpolator/qpd_*.xml
+drop      res/values*/strings_qpd.xml
+drop      assets/fonts/InterVariable.ttf
+drop      assets/fonts/OFL-Inter.txt
+drop      tools/qpd_icons.py
+drop      test/qpd/
+# Z9X game menu design A (2026-11-11): Z9X only (the HB has its own GameBar), with its icons, strings, frames, tests
+drop      src/org/lumen/projector/panel/Gm*.java
+drop      src/org/lumen/projector/panel/GameMenu.java
+drop      res/drawable/gm_ic_*.xml
+drop      res/values*/strings_gm.xml
+drop      assets/gamemenu/
+drop      tools/gm_icons.py
+drop      test/gamemenu/
+# Z9X game try fixes (2026-11-11): audio device callbacks behind the audio policy check with the trial notice, the
+# Sound page state in the stock mapping; Z9X only (the HB keeps its forks of AudioPathReporter, AudioOutputChoice,
+# App and QuickPanelController)
+drop      src/org/lumen/projector/audio/AudioPorts.java
+drop      src/org/lumen/projector/audio/AudioPortRules.java
+drop      src/org/lumen/projector/panel/SoundState.java
+drop      res/values*/strings_trial.xml
+drop      test/sound/
+# Lumen OS installer, final install (2026-11-11): the Z9X KeyReceiver ignores every global key while it writes; Z9X
+# only (the HB keeps its own KeyReceiver fork)
+drop      src/org/lumen/projector/sys/InstallGuard.java
+drop      test/install/
 top       apps/HbProjector
 # never part of an app tree: build output, APKs, notes
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

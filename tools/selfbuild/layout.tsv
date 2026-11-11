@@ -125,6 +125,8 @@ system/etc/legacy/unmute_system_sounds.sh	overlay/unmute_system_sounds.sh
 system/etc/legacy/xgimi_compat.rc	overlay/xgimi_compat.rc
 system/etc/legacy/xgimi_compat_extra.rc	overlay/xgimi_compat_extra.rc
 system/etc/legacy/z9x_build_prop.txt	overlay/z9x_build_prop.txt
+system/etc/lumen-miracast-default-permissions.xml	overlay/v1/lumen-miracast-default-permissions.xml
+system/etc/privapp-permissions-lumen-miracast.xml	overlay/v1/privapp-permissions-lumen-miracast.xml
 system/etc/privapp-permissions-z9xhome.xml	overlay/v1/privapp-permissions-z9xhome.xml
 system/etc/privapp-permissions-z9xsetup.xml	overlay/v1/privapp-permissions-z9xsetup.xml
 system/etc/product_prop_v1.txt	overlay/v1/product_prop_v1.txt

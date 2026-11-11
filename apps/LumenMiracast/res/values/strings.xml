@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Screen mirroring (Miracast receiver). Translations: apps/i18n/langs/<locale>.txt, section @miracast. -->
+<resources>
+    <string name="app_name">Screen mirroring</string>
+    <string name="settings_title">Screen mirroring</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="status_title">Status</string>
+    <string name="status_off">Off. Phones and computers do not see this projector.</string>
+    <string name="status_starting">Starting</string>
+    <string name="status_ready">Ready. Phones and computers see this projector as %1$s.</string>
+    <string name="status_no_wifi">Wi-Fi is off. Turn it on to receive a screen.</string>
+    <string name="status_unsupported">Wi-Fi Direct is not available on this projector.</string>
+    <string name="status_in_use">Showing the screen of %1$s</string>
+    <string name="row_enabled">Screen mirroring (Miracast)</string>
+    <string name="row_name">Name</string>
+    <string name="row_ask">Ask before connecting</string>
+    <string name="row_quality">Picture quality</string>
+    <string name="quality_1080_60">Up to 1080p, 60 frames per second</string>
+    <string name="quality_1080_30">Up to 1080p, 30 frames per second</string>
+    <string name="quality_720">Up to 720p</string>
+    <string name="howto_title">How to connect</string>
+    <string name="howto_android">Android: open Cast or Smart View in the quick settings and choose %1$s.</string>
+    <string name="howto_windows">Windows: press Win and K together and choose %1$s.</string>
+    <string name="name_dialog_title">Name of this projector</string>
+    <string name="notif_ready">Ready to show a screen as %1$s</string>
+    <string name="notif_in_use">Showing the screen of %1$s</string>
+    <string name="prompt_title">%1$s wants to show its screen</string>
+    <string name="prompt_hint">The picture and sound of that device will play on the projector.</string>
+    <string name="prompt_allow">Allow</string>
+    <string name="prompt_decline">Decline</string>
+    <string name="pin_title">Enter this code on %1$s</string>
+    <string name="connecting">Connecting to %1$s</string>
+    <string name="ended">Screen mirroring has ended</string>
+    <string name="unknown_device">A device</string>
+</resources>

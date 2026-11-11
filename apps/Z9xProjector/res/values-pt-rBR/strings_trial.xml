@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trial_no_sound_title">O teste não tem som</string>
+    <string name="trial_no_sound_text">O som chega com a instalação do Lumen OS.</string>
+</resources>

@@ -37,9 +37,12 @@ ANDROID_SDK=${ANDROID_SDK:-$HOME/Library/Android/sdk}
 REAL_DEXDUMP=${BUILD_TOOLS:-$ANDROID_SDK/build-tools/36.0.0}/dexdump
 
 copy() { rm -rf "$W/app"; mkdir -p "$W/app"; cp -R "$APP/src" "$W/app/src"; cp "$ALLOWED" "$W/allowed.tsv"; }
+CODES_ALSO=""   # part 3: the code tables of the other stock firmware (hal_codes_also, relative to G), one --codes each
 run() { # extra args...
-  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$W/app" --codes "$R/aidl_codes.tsv" --banned "$R/banned.tsv" \
-    "$@" > "$W/out" 2>&1
+  local more=() c
+  for c in $CODES_ALSO; do more+=(--codes "$G/$c"); done
+  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$W/app" --codes "$R/aidl_codes.tsv" ${more[@]+"${more[@]}"} \
+    --banned "$R/banned.tsv" "$@" > "$W/out" 2>&1
 }
 result() { # name want got
   if [ "$3" = "$2" ]; then PASS=$((PASS + 1)); echo "ok   $1: $(tail -1 "$W/out")"
@@ -274,6 +277,45 @@ if build build2; then
   dex_suite p2_ build2 org.lumen.projector.hal.GmpfClient.getHdrType org.lumen.projector.App.onCreate
 else
   FAIL=$((FAIL + 1)); echo "FAIL p2_dex_build: the scratch copy did not compile"; sed 's/^/     /' "$W/build.log" | tail -20
+fi
+
+# ------------------------------------------------------------------ part 3: several stock firmware (hal_codes_also)
+# HB V6.16.24 and V6.17.12: XGIMI changed the frozen gmpf V1 in place. With both
+# tables every Call must be the same row in each: the clean app passes; FOCUS 102 doProImgFusionOverlap (its NDK
+# argument changed: KstPoint const& / KstPoint*) is refused even with an allowlist row, while one table alone lets it
+# through (only the second table catches it); a method only V6.17.12 has (DisplayManager 207 isKeystoneAdjusted) is
+# refused; the registry's allowlist has no FOCUS 102 row and the app no doProImgFusionOverlap (it stays unsent).
+CODES_ALSO=$(python3 -B "$G/tools/devices/devices.py" get goat_elegant hal_codes_also 2>/dev/null)
+echo "part 3: ${HAL_APP#$G/} with hal_codes_also"
+if [ -z "${CODES_ALSO// /}" ]; then
+  FAIL=$((FAIL + 1)); echo "FAIL p3: goat_elegant has no hal_codes_also"
+else
+  copy
+  expect p3_clean 0
+  reported p3_clean "$WANT_OK"
+
+  copy
+  edit $H/AidlCaller.java "$LAST" "$LAST_OPEN DO_PRO_IMG_FUSION_OVERLAP(Iface.FOCUS, 102, \"doProImgFusionOverlap\");"
+  printf 'ProjectorFocusManager\t102\tdoProImgFusionOverlap\tapproved by nobody\n' >> "$W/allowed.tsv"
+  expect p3_focus102_changed 1
+  reported p3_focus102_changed 'rule 3: Call.DO_PRO_IMG_FUSION_OVERLAP: ProjectorFocusManager 102 doProImgFusionOverlap differs between aidl_codes.tsv and aidl_codes_v61712.tsv'
+  KEEP_ALSO=$CODES_ALSO; CODES_ALSO=""
+  expect p3_focus102_one_table 0
+  CODES_ALSO=$KEEP_ALSO
+
+  copy
+  edit $H/AidlCaller.java "$LAST" "$LAST_OPEN IS_KEYSTONE_ADJUSTED(Iface.DISPLAY, 207, \"isKeystoneAdjusted\");"
+  printf 'DisplayManager\t207\tisKeystoneAdjusted\tapproved by nobody\n' >> "$W/allowed.tsv"
+  expect p3_only_in_61712 1
+  reported p3_only_in_61712 'rule 3: Call.IS_KEYSTONE_ADJUSTED: DisplayManager 207 isKeystoneAdjusted is not a row of aidl_codes.tsv'
+
+  if grep -v '^#' "$ALLOWED" | awk -F '\t' '$1 == "ProjectorFocusManager" && ($2 == "102" || $3 == "doProImgFusionOverlap")' | grep -q .; then
+    FAIL=$((FAIL + 1)); echo "FAIL p3_focus102_unsent: the allowlist names FOCUS 102"
+  elif grep -rqE '"doProImgFusionOverlap"|Iface\.FOCUS, *102[,)]' "$APP/src"; then
+    FAIL=$((FAIL + 1)); echo "FAIL p3_focus102_unsent: the app names doProImgFusionOverlap"
+  else
+    PASS=$((PASS + 1)); echo "ok   p3_focus102_unsent: no allowlist row, no Call"
+  fi
 fi
 
 echo "check_aidl_hal_test: $PASS passed, $FAIL failed"

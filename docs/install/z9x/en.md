@@ -6,7 +6,7 @@
 > This guide is for the XGIMI Z9X. The XGIMI Play 6 has [its own guide](../play6/en.md): it installs
 > differently (over Wi-Fi, with a cable only for the write) and needs its own release files.
 
-This guide covers Lumen OS 1.0.9 without Google on the XGIMI Z9X (model code G0082) with XGIMI
+This guide covers Lumen OS 1.0.10 without Google on the XGIMI Z9X (model code G0082) with XGIMI
 firmware V6.15.58, V6.15.62 or V6.15.19. Lumen OS is Android TV 14, built on LineageOS 21. It replaces only the
 system partition. The XGIMI firmware and calibration are not touched, and focus, keystone and the lamp
 work as on stock.
@@ -91,9 +91,9 @@ the installer looks for a USB device without a driver and says how to install it
 
 1. Open the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases) on GitHub. Download only
    from there. We do not check or support copies on forums or file hosts.
-2. From the latest Z9X release (now [Lumen OS 1.0.9](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.9)),
-   download four files: `lumen-os-1.0.9-nogms-system.img`, `SHA256SUMS`, `SHA256SUMS.sig` and
-   `lumen-os-1.0.9-installer.zip`.
+2. From the latest Z9X release (now [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10)),
+   download four files: `lumen-os-1.0.10-nogms-system.img`, `SHA256SUMS`, `SHA256SUMS.sig` and
+   `lumen-os-1.0.10-installer.zip`.
 3. Unpack the installer zip. Put the image and both `SHA256SUMS` files next to `lumen-install.sh`.
    Remove any older `lumen-os-*-system.img` from that folder.
 4. Open a terminal and go to that folder:
@@ -336,7 +336,7 @@ If there is no setup screen after 10 minutes, see [Something went wrong](#proble
 
 ## 8. Optional: verify the install
 
-On the projector, open Settings > Device Preferences > About. It should show Lumen OS 1.0.9.
+On the projector, open Settings > Device Preferences > About. It should show Lumen OS 1.0.10.
 
 To check over USB:
 
@@ -544,9 +544,19 @@ Usually the Google sign-in just works. If Google refuses it or Play says the dev
 
 The stock firmware is installed by XGIMI's own USB update.
 
-1. Download the official XGIMI firmware V6.15.19 for the Z9X (G0082) from XGIMI's server:
-   [XGIMI_HORSEPOPULAR_XR03D.bin](https://product-library.static.xgimi.com/firmware/release/MTK9681/dapengend/MTK9681_LEO_6.15.19_20251014-012201/XGIMI_HORSEPOPULAR_XR03D.bin)
-   (2,589,266,736 bytes). A file for another model will not work.
+1. Download the official XGIMI firmware for the Z9X (G0082) from XGIMI's server. Which file depends on the
+   firmware your projector had before Lumen OS:
+   - V6.15.58 or V6.15.19: V6.15.19,
+     [XGIMI_HORSEPOPULAR_XR03D.bin](https://product-library.static.xgimi.com/firmware/release/MTK9681/dapengend/MTK9681_LEO_6.15.19_20251014-012201/XGIMI_HORSEPOPULAR_XR03D.bin)
+     (2,589,266,736 bytes).
+   - V6.15.62: its own version, V6.15.62,
+     [XGIMI_HORSEPOPULAR_XR03D.bin](https://product-library.static.xgimi.com/firmware/release/MTK9681/dapengend/MTK9681_LEO_6.15.62_20260325-154151/XGIMI_HORSEPOPULAR_XR03D.bin)
+     (2,656,047,920 bytes). XGIMI also publishes this version as a full update package,
+     [XGIMI_HORSEPOPULAR_XR03D_FULL_V6.15.62.zip](https://product-library.static.xgimi.com/firmware/release/MTK9681/dapengend/MTK9681_LEO_6.15.62_20260325-154151/XGIMI_HORSEPOPULAR_XR03D_FULL_V6.15.62.zip)
+     (1,942,475,481 bytes); the stick restore below needs only the `.bin`.
+
+   XGIMI gives no checksum for these files, so check the size: it must match the number above to the byte
+   (`ls -l ~/Downloads/XGIMI_HORSEPOPULAR_XR03D.bin`). A file for another model will not work.
 2. A USB stick with an **MBR** partition scheme and **one FAT32 partition**. On macOS: Disk Utility > View >
    Show All Devices, select the stick itself (not its volume), Erase, format "MS-DOS (FAT)", scheme
    "Master Boot Record".

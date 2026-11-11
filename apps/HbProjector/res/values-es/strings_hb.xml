@@ -27,4 +27,13 @@
     <string name="pro_medium_hb">Medio</string>
     <string name="pro_strong_hb">Alto</string>
     <string name="pro_auto_hb">Automático</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_effect">Boost: más brillo. Al salir de Boost, los colores son más vivos.</string>
+    <string name="hb_boost_locked">En el modo de imagen «%1$s», Boost forma parte del modo y no se puede desactivar aquí. Elige otro modo de imagen.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="hb_str_blocked_title">Suspensión profunda desactivada</string>
+    <string name="hb_str_blocked_usb">Hay un ordenador conectado por USB: en reposo el proyector no se suspende del todo y los ventiladores siguen funcionando. Desconecte el cable USB para recuperar la suspensión profunda.</string>
+    <string name="hb_str_blocked_update">Se está instalando una actualización: la suspensión profunda volverá al terminar.</string>
+    <string name="hb_str_blocked_update_check">El sistema actualizado se está comprobando tras el inicio: la suspensión profunda volverá en unos minutos.</string>
+    <string name="hb_str_blocked_off">La suspensión profunda está desactivada en este proyector (ajuste de servicio).</string>
 </resources>

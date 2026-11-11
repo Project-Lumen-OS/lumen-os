@@ -6,8 +6,11 @@
 
   z9x-callers   apps/check_hal_callers.py <hal_app>/src          (Z9X gate input, unchanged)
   play6-hidl    tools/play6/check_play6_hal.py <hal_app>          (unchanged)
-  aidl-table    tools/devices/check_aidl_hal.py --app <hal_app> --codes <hal_codes> --banned <hal_banned>
-                --allowed <hal_allowed> [--dex DEX]   (no hal_allowed: the checker stops, the device is red)
+  aidl-table    tools/devices/check_aidl_hal.py --app <hal_app> --codes <hal_codes> [--codes <each of hal_codes_also>]
+                --banned <hal_banned> --allowed <hal_allowed> [--dex DEX]   (no hal_allowed: the checker stops, the
+                device is red; hal_codes_also: the tables of the other supported stock firmware, every call the same
+                row in each)
+  none          no app of ours in the image calls the projector HAL (hal_app none): nothing to check, exit 0
 --dex (aidl-table only) also checks the compiled hal_app, classes.dex or its APK, right after a build.
 A hal_app built from a recipe (devices/<codename>/app/*.layers whose app is the hal_app's name, docs/architecture/
 the design notes) is checked on its assembled tree (tools/devices/assemble_app.py into a scratch dir; a recipe still in compare
@@ -51,6 +54,8 @@ def command(root, d, dex=None, app=None):
         return [os.path.join(root, "tools/play6/check_play6_hal.py"), app]
     cmd = [os.path.join(root, "tools/devices/check_aidl_hal.py"), "--app", app,
            "--codes", os.path.join(root, d["hal_codes"]), "--banned", os.path.join(root, d["hal_banned"])]
+    for c in d.get("hal_codes_also", []):   # the other supported stock firmware: the same rows in every table
+        cmd += ["--codes", os.path.join(root, c)]
     if d.get("hal_allowed", "none") != "none":
         cmd += ["--allowed", os.path.join(root, d["hal_allowed"])]
     return cmd + (["--dex", dex] if dex else [])
@@ -88,6 +93,9 @@ def main(argv):
             if len(targets) > 1:
                 print("check_hal: %s (%s)" % (c, reg[c]["hal_check"]))
                 sys.stdout.flush()
+            if reg[c]["hal_check"] == "none":
+                print("check_hal: %s: no HAL caller app in its image (hal_check none)" % c)
+                continue
             app, err = assembled(root, reg[c], scratch)
             if err:
                 print(err)
