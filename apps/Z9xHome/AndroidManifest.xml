@@ -17,7 +17,8 @@
 
     <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
 
-    <!-- Only org.lumen.projector (platform-signed) may start voice search and signal the mic release. -->
+    <!-- Only the projector app (org.lumen.projector; org.lumen.x50.projector on the X50; platform-signed) may start voice
+         search and signal the mic release. -->
     <permission android:name="org.lumen.home.permission.MIC" android:protectionLevel="signature" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
@@ -55,7 +56,8 @@
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <!-- our other apps (signature permissions they define) -->
+    <!-- our other apps (signature permissions they define; the four org.lumen.projector ones are defined by
+         org.lumen.x50.projector on the X50 image, proj/ProjectorTarget) -->
     <uses-permission android:name="org.lumen.projector.permission.SHOW_PANEL" />
     <uses-permission android:name="org.lumen.projector.permission.SHOW_SOURCE" />
     <uses-permission android:name="org.lumen.projector.permission.SET_LAUNCHER" />
@@ -73,6 +75,7 @@
         <package android:name="com.google.android.tvlauncher" />
         <package android:name="com.google.android.apps.mediashell" />
         <package android:name="org.lumen.projector" />
+        <package android:name="org.lumen.x50.projector" />
         <package android:name="org.lumen.tvinput" />
         <package android:name="org.lumen.airplay" />
         <package android:name="org.lumen.updater" />

@@ -4,9 +4,13 @@
 #
 #   tools/play6/build_play6.sh
 #
-# 1. checks H (check_play6_hal.py), K (check_handshake.py) and F (check_forks.py); any red stops the build
-# 2. apps/build_apk.sh for apps/Play6Projector, apps/Play6FrameworkOverlay, apps/Play6Updater and, once it exists,
-#    apps/Play6TvSettingsOverlay, signed with the Play 6 platform key -> build/play6/<App>.apk
+# 1. assembles the projector app from its recipe devices/dragon_healthy/app/Play6Projector.layers
+#    (tools/devices/assemble_app.py: apps/common/projector by its FILES, HidlCaller and LumenImport, then
+#    apps/Play6Projector on top) into OUT_DIR/tree/Play6Projector; a recipe error stops the build
+# 2. checks H (check_play6_hal.py) and K (check_handshake.py) on that assembled tree, and F (check_forks.py);
+#    any red stops the build
+# 3. apps/build_apk.sh for the assembled Play6Projector, apps/Play6FrameworkOverlay, apps/Play6Updater and, once it
+#    exists, apps/Play6TvSettingsOverlay, signed with the Play 6 platform key -> build/play6/<App>.apk
 #
 # Key (S1: never a certificate a Z9X image trusts):
 #   KEY_PK8  default ~/.lumen-keys/play6/platform.pk8 (made by tools/play6/gen_play6_keys.sh; the private key
@@ -16,7 +20,7 @@
 # tools/sign/testcerts) and every Lumen release cert of tools/sign/release_certs/FINGERPRINTS.txt.
 # build_apk.sh verifies after signing that the APK's signer is exactly KEY_PEM.
 # OUT_DIR (default build/play6) takes the APKs; each app builds in OUT_DIR/apk/<App> (wiped by build_apk.sh),
-# so apps/Play6*/build is not used.
+# so apps/Play6*/build is not used. OUT_DIR/tree/Play6Projector is the assembled projector tree (rewritten each run).
 # HOME_SRC=1 also builds Lumen Home from its source (apps/Z9xHome) with the Play 6 key -> OUT_DIR/Z9xHome.apk,
 # for a test image that carries a Home newer than the Z9X pin (build_test.sh --home-src); TVINPUT_SRC=1 the same
 # for the TV input app (apps/Z9xTvInput -> OUT_DIR/Z9xTvInput.apk, build_test.sh --tvinput-src), SETUP_SRC=1 for
@@ -32,8 +36,12 @@ OUT=${OUT_DIR:-$G/build/play6}
 KEY_PK8=${KEY_PK8:-$HOME/.lumen-keys/play6/platform.pk8}
 KEY_PEM=${KEY_PEM:-$P/certs/platform.x509.pem}
 
-python3 -B "$P/check_play6_hal.py" "$G/apps/Play6Projector" || die "check H failed"
-python3 -B "$P/check_handshake.py" "$G/apps/Play6Projector" || die "check K failed"
+# the projector app is built from its recipe: the shared files are never copied into apps/Play6Projector
+TREE=$OUT/tree/Play6Projector
+python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Projector --out "$TREE" \
+  || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble"
+python3 -B "$P/check_play6_hal.py" "$TREE" || die "check H failed"
+python3 -B "$P/check_handshake.py" "$TREE" || die "check K failed"
 python3 -B "$P/check_forks.py" || die "check F failed"
 
 [ -f "$KEY_PK8" ] || die "no Play 6 private key $KEY_PK8 (owner decision O1: tools/play6/gen_play6_keys.sh)"
@@ -56,8 +64,16 @@ echo "build_play6: Play 6 platform cert SHA-256 $FP"
 mkdir -p "$OUT"
 for app in Play6Projector Play6FrameworkOverlay Play6TvSettingsOverlay Play6Updater; do
   [ -d "$G/apps/$app" ] || continue
+  src=$G/apps/$app
+  [ "$app" = Play6Projector ] && src=$TREE
+  # the updater is assembled from its recipe too (devices/dragon_healthy/app/Play6Updater.layers, base apps/Z9xUpdater)
+  if [ "$app" = Play6Updater ]; then
+    src=$OUT/tree/Play6Updater
+    python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Updater --out "$src" --quiet \
+      || die "the Play6Updater recipe does not assemble"
+  fi
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
-    sh "$G/apps/build_apk.sh" "$G/apps/$app" "$OUT/$app.apk"
+    sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
 SRC=
 [ "${HOME_SRC:-0}" = 1 ] && SRC="$SRC Z9xHome"

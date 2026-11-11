@@ -4,7 +4,7 @@
 
     make_manifest_play6.py --package lumen-play6-<ver>-full.zip --version 1.0.0 --version-code 10000
         --build-id <ro.lumen.build_id of the image> --changelog '{"en": "...", "ru": "..."}' --out DIR
-        [--vendor v1.7.116] [--min-version-code 0] [--tag play6] [--repo Project-Lumen-OS/lumen-os]
+        [--vendor v1.7.116 --vendor v1.8.127] [--min-version-code 0] [--tag play6] [--repo Project-Lumen-OS/lumen-os]
 
 Writes DIR/update-play6.json and DIR/update-play6.json.sig: RSA PKCS#1 v1.5 SHA-256 over the exact JSON bytes
 with ~/.lumen-keys/play6/ota/ota.pk8 (the key whose certificate is in the image's otacerts.zip and in the
@@ -80,7 +80,7 @@ def main():
         "version_code": a.version_code,
         "build_id": a.build_id,
         "build_utc": a.build_utc,
-        "requires": {"vendor_incremental": a.vendor or ["v1.7.116"], "min_version_code": a.min_version_code},
+        "requires": {"vendor_incremental": a.vendor or ["v1.7.116", "v1.8.127"], "min_version_code": a.min_version_code},
         "changelog": changelog,
         "packages": [{
             "type": "full",

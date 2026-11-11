@@ -18,8 +18,11 @@ do not drift unnoticed, and every resource of the Z9X projector app has a place.
 2. Every file under apps/Z9xProjector/res is listed in apps/common/projector/FILES or matches a pattern of
    tools/play6/res_not_shared.txt, never both; every pattern matches a file. Until FILES exists (plan steps
    5 and 7) the shared files are reported as pending and do not fail.
-3. A file of apps/Play6Projector/{src,res} at the same path as a file of apps/Z9xProjector is a synced copy
-   (hal/HidlCaller.java, common/LumenImport.java, or listed in FILES) or a row of forks.tsv: no untracked copy.
+3. apps/Play6Projector is the Play 6 layer of devices/dragon_healthy/app/Play6Projector.layers (docs/architecture/
+   the design notes): the shared files (listed in FILES, hal/HidlCaller.java, common/LumenImport.java) come from
+   apps/common, so a file of apps/Play6Projector at such a path is red unless forks.tsv has a row for it whose
+   origin is that apps/common file (a deliberate fork). Any other file of apps/Play6Projector/{src,res} at the
+   same path as a file of apps/Z9xProjector is a row of forks.tsv: no untracked copy.
 Exit 0 = F green, 1 = red.
 """
 import fnmatch
@@ -167,26 +170,38 @@ def main():
     for n, pat in patterns:
         if n not in used:
             errors.append("res_not_shared.txt:%d: %s matches no file of apps/Z9xProjector" % (n, pat))
-    # ---- 3. a Play 6 file at the same path as a Z9X projector file is a synced copy or a listed fork
+    # ---- 3. the Play 6 layer: no copy of a shared file, and a Play 6 file at a Z9X path is a listed fork
     p6app = os.path.join(root, "apps/Play6Projector")
-    for sub in ("src", "res"):
-        for d, _, fs in os.walk(os.path.join(p6app, sub)):
-            for f in fs:
-                rel = os.path.relpath(os.path.join(d, f), p6app)
-                if f == ".DS_Store" or not os.path.isfile(os.path.join(z9, rel)):
-                    continue
-                if rel == "src/org/lumen/projector/hal/HidlCaller.java" or (shared and rel in shared):
-                    continue                           # synced copies (sync.sh items hal / projector)
-                if rel == "src/org/lumen/common/LumenImport.java":
-                    # sync.sh item migrate (the 1.0.8 bridge import): byte-identical to apps/common
-                    with open(os.path.join(p6app, rel), "rb") as a, open(os.path.join(root, "apps/common/LumenImport.java"), "rb") as b:
-                        if a.read() != b.read():
-                            errors.append("apps/Play6Projector/%s differs from apps/common/LumenImport.java "
-                                          "(sh apps/common/sync.sh APP migrate)" % rel)
-                    continue
-                if "apps/Play6Projector/" + rel not in seen:
-                    errors.append("apps/Play6Projector/%s has the path of a Z9X file but is neither synced "
-                                  "(FILES) nor listed in forks.tsv" % rel)
+    common = {"src/org/lumen/projector/hal/HidlCaller.java": "apps/common/hal/HidlCaller.java",
+              "src/org/lumen/common/LumenImport.java": "apps/common/LumenImport.java"}
+    for rel in shared or ():
+        common[rel] = "apps/common/projector/" + rel
+    origin_of = {}
+    for line in open(forks, encoding="utf-8"):
+        p = line.rstrip("\n").split("\t")
+        if len(p) >= 2 and not line.startswith("#"):
+            origin_of[p[0]] = p[1]
+    ncommon = 0
+    for d, dirs, fs in os.walk(p6app):
+        dirs[:] = [x for x in dirs if not (d == p6app and x == "build")]
+        for f in fs:
+            if f == ".DS_Store":
+                continue
+            rel = os.path.relpath(os.path.join(d, f), p6app).replace(os.sep, "/")
+            copy = "apps/Play6Projector/" + rel
+            if rel in common:
+                if origin_of.get(copy) != common[rel]:
+                    errors.append("%s is a shared file: the recipe devices/dragon_healthy/app/Play6Projector.layers "
+                                  "takes it from %s; delete it (or record a deliberate fork in forks.tsv with that "
+                                  "origin)" % (copy, common[rel]))
+                ncommon += 1
+                continue
+            if rel.split("/", 1)[0] not in ("src", "res") or not os.path.isfile(os.path.join(z9, rel)):
+                continue
+            if copy not in seen:
+                errors.append("%s has the path of a Z9X file but is not listed in forks.tsv" % copy)
+    notes.append("apps/Play6Projector: %d shared file(s) given by apps/common (FILES, HidlCaller, LumenImport), "
+                 "%d of them shadowed by a fork" % (len(common), ncommon))
     notes.append("forks.tsv: %d row(s)" % rows)
     if shared is None:
         notes.append("resources: %d files, %d not shared (res_not_shared.txt), %d pending until "

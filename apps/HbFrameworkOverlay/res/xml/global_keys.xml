@@ -63,6 +63,10 @@
          :5263 before :5311, :4328 before :4334), so TvSettings no longer opens by itself.
          Short press = quick panel, long press = TvSettings (org.lumen.projector KeyReceiver). -->
     <key keyCode="KEYCODE_SETTINGS" component="org.lumen.projector/.KeyReceiver" />
+    <!-- Gear held, as the XGIMI remotes report it themselves: one short press of the stock MENU scancode (BT 127,
+         IR / keypad 139), KEYCODE_TV_MEDIA_CONTEXT_MENU in the .kl files: the gear long press (game menu on HDMI
+         game mode, else TV Settings). MENU itself stays with the apps (keyboards, other remotes). -->
+    <key keyCode="KEYCODE_TV_MEDIA_CONTEXT_MENU" component="org.lumen.projector/.KeyReceiver" />
     <!-- Voice key (BT scancode 63 = HID F5; AI key 137), mapped SEARCH WAKE in the BT .kl files.
          Lineage consumes KEYCODE_ASSIST before the global-key check, so SEARCH is used; the app calls
          SearchManager.launchAssist on the first DOWN, while the remote still streams audio.

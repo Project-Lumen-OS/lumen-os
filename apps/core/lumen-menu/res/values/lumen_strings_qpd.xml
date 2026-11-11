@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quick panel layout D (2026-11-11): Z9X only, not shared with apps/common. English base written by Lumen; translations: gsi/apps/i18n/langs/<locale>.txt @projector/strings_qpd.xml (ru hand-written). -->
+<resources>
+    <string name="lumen_qpd_autocorrect">Auto correction</string>
+    <string name="lumen_qpd_autocorrect_value">One press</string>
+    <string name="lumen_qpd_zoom">Zoom</string>
+    <string name="lumen_qpd_bluetooth">Bluetooth</string>
+    <string name="lumen_qpd_network">Network</string>
+    <string name="lumen_qpd_usb">USB</string>
+    <!-- screen mirroring tile (org.lumen.miracast, 2026-11-11: in place of the USB tile) and its popup -->
+    <string name="lumen_qpd_mirroring">Screen mirroring</string>
+    <string name="lumen_qpd_mirror_on">Screen mirroring (Miracast)</string>
+    <string name="lumen_qpd_mirror_ask">Ask before connecting</string>
+    <string name="lumen_qpd_mirror_name">Name</string>
+    <string name="lumen_qpd_mirror_more">All mirroring settings</string>
+    <string name="lumen_qpd_picture_more">Picture settings</string>
+    <string name="lumen_qpd_sound_more">All sound settings</string>
+    <string name="lumen_qpd_boost_note">Maximum brightness. The fans get louder.</string>
+    <string name="lumen_qpd_tip_picture">Choose a mode for what you watch.</string>
+    <string name="lumen_qpd_tip_rear">You and the projector are on opposite sides of the screen.</string>
+</resources>

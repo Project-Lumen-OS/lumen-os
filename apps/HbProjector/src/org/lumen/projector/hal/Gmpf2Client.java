@@ -233,10 +233,15 @@ public final class Gmpf2Client extends AidlCaller {
                 checkRange("game picture", gamePicture, 0, GAME_PICTURE_MAX), checkRange("hdmi", src, 1, 2));
     }
 
-    /** TV 192 getHGiGMode(). */
-    public boolean getHgig() throws RemoteException { return callRetBool(Call.GET_HGIG_MODE); }
-    /** TV 191 setHGiGMode(bool). */
-    public boolean setHgig(boolean on) throws RemoteException { return callBoolRetBool(Call.SET_HGIG_MODE, on); }
+    /*
+     * Parked (2026-11-11 shared menu): the game bar's HDR item (HGiG) is gone with the HB game bar; the shared game menu
+     * has no HDR item yet (devices/goat_elegant/menu.json pending game.hdr, REQUESTS-hb.md). Back with that item:
+     *
+     * TV 192 getHGiGMode().
+     * public boolean getHgig() throws RemoteException { return callRetBool(Call.GET_HGIG_MODE); }
+     * TV 191 setHGiGMode(bool).
+     * public boolean setHgig(boolean on) throws RemoteException { return callBoolRetBool(Call.SET_HGIG_MODE, on); }
+     */
 
     /** DISPLAY 179 getDispOutputFps(): the output frame rate (stock FPS overlay while VRR is on). */
     public int getOutputFps() throws RemoteException { return callRetI32(Call.GET_DISP_OUTPUT_FPS); }

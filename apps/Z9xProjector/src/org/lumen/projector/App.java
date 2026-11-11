@@ -104,7 +104,7 @@ public final class App extends Application {
         // ===== v6.2 module "game": HDMI console recognition + auto game profile (no HAL call here) =====
         try { org.lumen.projector.game.GameProfile.install(this); } catch (Throwable t) { Log.e(TAG, "GameProfile.install", t); }
         // Lumen game menu (2026-11-11): gear long press during a game, shown once by itself on the first game mode entry
-        try { org.lumen.projector.panel.GameMenu.install(this); } catch (Throwable t) { Log.e(TAG, "GameMenu.install", t); }
+        try { org.lumen.projector.panel.GameMenu.install(this, new org.lumen.projector.panel.Z9xGameIo(this)); } catch (Throwable t) { Log.e(TAG, "GameMenu.install", t); }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }
         // ===== v6.3 manual keystone: resume real-time keystone if a session could not (paused marker) =====

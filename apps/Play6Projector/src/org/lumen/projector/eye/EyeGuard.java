@@ -95,6 +95,8 @@ public final class EyeGuard {
     private static final long BRIGHT_NOTICE_GAP_MS = 30 * 60_000L;
     /** Remote gear key (Z9xKeys.GEAR, package-private there). */
     private static final int KEYCODE_GEAR = KeyEvent.KEYCODE_SETTINGS;
+    /** The remote's own gear hold (Z9xKeys.GEAR_HOLD): a held gear. */
+    private static final int KEYCODE_GEAR_HOLD = KeyEvent.KEYCODE_TV_MEDIA_CONTEXT_MENU;
 
     /** Opaque black card on 500 (Z9X multi-ToF) or the transparent key layer on 503 (cutout). */
     private static final int MODE_NONE = 0, MODE_MASK = 1, MODE_LAYER = 2;
@@ -345,6 +347,10 @@ public final class EyeGuard {
     public static boolean onGlobalKey(KeyEvent ev) {
         if (sMode == MODE_NONE) return false;
         try {
+            if (ev.getKeyCode() == KEYCODE_GEAR_HOLD) {
+                if (ev.getAction() == KeyEvent.ACTION_DOWN && ev.getRepeatCount() == 0) restoreByUser("gear held", true);
+                return true;
+            }
             if (ev.getKeyCode() != KEYCODE_GEAR) {
                 if (ev.getAction() == KeyEvent.ACTION_DOWN && ev.getRepeatCount() == 0) {
                     Log.i(TAG, "global key " + ev.getKeyCode() + " eaten (mask up)");

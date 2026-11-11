@@ -8,8 +8,9 @@ import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
 
 /**
- * The values the Play 6 quick panel shows, read on the p6-hal thread (Hal.query) in parts, so the panel
- * reads only what it shows: on open the first page ({@link
+ * The values the Play 6 menu shows, read on the p6-hal thread (Hal.query) in parts (since 2026-11-11 the shared
+ * menu: panel/Play6Features reads the parts of every row at once and maps them with Play6MenuGates; the device pages
+ * of Play6MenuPages read their own part when shown). Originally the old Play 6 panel read only what it showed: on open the first page ({@link
  * #ROOT}: one task with 696, 620, 666, 177, 62, 553, 586, 173, 579 and IGmpf2 63; 151 only while the eye
  * protection tile exists, Device.hasEyeProtection; IGmpf2 33 only while HDMI is the current source), every other
  * page its own part when it is shown, and the part of a row again after every change (read-back). The

@@ -1,0 +1,12 @@
+# Recipe of X50Projector (the X50 projector menu), read by tools/devices/assemble_app.py and tools/devices/build_apps.sh: the
+# shared lumen-ui module (TvFocus, Tokens), lumen-menu (the shared projector menu) with this model's
+# profile as assets/lumen_menu/menu.json, plus the app. The module is closed: no file of apps/X50Projector may shadow it.
+app       X50Projector
+module    lumen-ui
+module    lumen-hal
+module    lumen-common-strings
+module    lumen-menu
+base      apps/common/projector devices/g0111/app/X50Projector.projector
+file      devices/g0111/menu.json assets/lumen_menu/menu.json
+top       apps/X50Projector
+skip      build/ *.apk CHANGES*.md README*.md DESIGN*.md .DS_Store app.layers BUILD_VERSION

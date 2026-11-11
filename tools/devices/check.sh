@@ -14,7 +14,7 @@
 #   forks     tools/devices/check_forks.py --device <c>
 #   hal       tools/devices/check_hal.py --device <c>
 #   device    horse_popular: the Z9X gate (tools/play6/z9x_gate.sh, incremental; it never records);
-#             dragon_healthy: check K (tools/play6/check_handshake.py)
+#             dragon_healthy: check K (tools/play6/check_handshake.py) on its assembled Play6Projector tree
 # Once: the tests in tools/devices/test/*.sh and the publish audit (to a temp manifest; no REVIEW row).
 # Mac only, no device, no network, no key of an image. Writes only build/devices_check/ (the throwaway key) and
 # what the Z9X gate writes itself (build/play6/z9x_gate.log). Prints one line per step and a summary.
@@ -109,7 +109,7 @@ for c in $DEVS; do
   step "$c.hal" python3 -B tools/devices/check_hal.py --device "$c"
   case $c in
     horse_popular) step "$c.z9x_gate" sh tools/play6/z9x_gate.sh ;;
-    dragon_healthy) step "$c.check_k" python3 -B tools/play6/check_handshake.py apps/Play6Projector ;;
+    dragon_healthy) step "$c.check_k" python3 -B tools/play6/check_handshake.py "$W/apps/$c/Play6Projector" ;;
   esac
 done
 
@@ -123,6 +123,17 @@ publish() {
   echo "publish audit: $n REVIEW row(s)"
   [ "$n" = 0 ]
 }
+# the shared vocabulary (apps/core/lumen-common-strings): generated files fresh, every alias resolves, no app keeps a
+# copy of a vocabulary text (tools/i18n/catalog.py)
+vocabulary() {
+  python3 -B tools/i18n/catalog.py validate || return 1
+  for a in $(grep -l 'module *lumen-common-strings' apps/*/app.layers devices/*/app/*.layers 2>/dev/null | xargs -n1 awk '$1 == "top" { sub("apps/", "", $2); print $2 }'); do
+    python3 -B tools/i18n/catalog.py adopt "$a" --check || return 1
+  done
+}
+step i18n_vocabulary vocabulary
+# the gmpf AIDL code tables: every AIDL model's full table = devices/_hal/gmpf-aidl/base.tsv + its hal/codes.delta.tsv
+step hal_codes python3 -B tools/hal/gen_codes.py --check
 step publish_audit publish
 
 echo "check.sh: $(grep -c '^ok' "$SUM") ok, $(grep -c '^RED' "$SUM") red"

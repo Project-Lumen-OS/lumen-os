@@ -8,8 +8,9 @@ Runs apps/i18n/gen.py (imported read-only: its source format, checks and output)
   base     apps/Play6Projector/res/values/strings_p6.xml (Play 6-only rows; until it exists there is nothing
            to generate, and a @play6 section is an error)
   output   apps/Play6Projector/res/values-<locale>/strings_p6.xml (with --write)
-The other strings files in apps/Play6Projector/res are the shared ones that apps/common/sync.sh copies from
-apps/common/projector (gen.py target common): they are not Play 6 text and are left alone here.
+The shared strings files (apps/common/projector, gen.py target common) are not Play 6 text and are left alone
+here; since the design notes they are not copied into apps/Play6Projector, the recipe
+devices/dragon_healthy/app/Play6Projector.layers takes them from apps/common.
 Nothing under apps/i18n and nothing of a Z9X app is written.
 
 Check I, besides gen.py's own checks (run both with --check-only; gen.py --check-only covers the Z9X side):

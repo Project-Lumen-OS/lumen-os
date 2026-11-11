@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost: luminosità più alta. Uscendo dal Boost i colori sono più vividi.</string>
+    <string name="lumen_gm_cs">Spazio colore</string>
+    <string name="lumen_gm_cs_0">Nativo</string>
+    <string name="lumen_gm_hdr_1">Mappatura dinamica dei toni</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">Turbo: correzione trapezoidale disattivata</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">Annulla</string>
+    <string name="lumen_m_panel_boost_press_again">Premi di nuovo → per Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Premi di nuovo ← per uscire da Boost</string>
+    <string name="lumen_m_toast_setup_running">Prima completa la configurazione</string>
+    <string name="lumen_m_panel_tileval_pm_ai">Immagine IA</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Colori fedeli</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Prestazioni</string>
+    <string name="lumen_m_panel_move_ak">Trapezio auto dopo lo spostamento</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Film</string>
+    <string name="lumen_m_pm_tv">TV</string>
+    <string name="lumen_m_pm_custom">Personalizzata</string>
+    <string name="lumen_m_ct_cool">Fredda</string>
+    <string name="lumen_m_ct_warm">Calda</string>
+    <string name="lumen_m_zs_title">Zoom e spostamento</string>
+    <string name="lumen_m_eco">Risparmio energetico</string>
+    <string name="lumen_m_ambient_speaker">Altoparlante ambient</string>
+    <string name="lumen_m_ct_custom">Personalizzata</string>
+</resources>

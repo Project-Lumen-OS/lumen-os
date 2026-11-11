@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost：より高い明るさ。Boost を終了すると色がより鮮やかになります。</string>
+    <string name="lumen_gm_cs">色空間</string>
+    <string name="lumen_gm_cs_0">ネイティブ</string>
+    <string name="lumen_gm_hdr_1">ダイナミックトーンマッピング</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">最速：台形補正はオフです</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">キャンセル</string>
+    <string name="lumen_m_panel_boost_press_again">もう一度 → を押すと Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">もう一度 ← を押すと Boost を終了</string>
+    <string name="lumen_m_toast_setup_running">先にセットアップを完了してください</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI 映像</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">色忠実</string>
+    <string name="lumen_m_panel_tileval_pm_performance">パフォーマンス</string>
+    <string name="lumen_m_panel_move_ak">移動後に自動台形補正</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">映画</string>
+    <string name="lumen_m_pm_tv">テレビ</string>
+    <string name="lumen_m_pm_custom">カスタム</string>
+    <string name="lumen_m_ct_cool">寒色</string>
+    <string name="lumen_m_ct_warm">暖色</string>
+    <string name="lumen_m_zs_title">ズームとシフト</string>
+    <string name="lumen_m_eco">省電モード</string>
+    <string name="lumen_m_ambient_speaker">アンビエントスピーカー</string>
+    <string name="lumen_m_ct_custom">カスタム</string>
+</resources>

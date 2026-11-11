@@ -44,11 +44,15 @@ OTHER=$(for c in "$G/apps/sdk/platform.x509.pem" "$G"/tools/sign/testcerts/*.x50
                  "$G"/tools/sign/release_certs/*.x509.pem; do [ -f "$c" ] && certsha "$c"; done)
 W=$(mktemp -d "${TMPDIR:-/tmp}/build_apps.XXXXXX")
 trap 'rm -rf "$W"' EXIT
-# the recipe of an app (devices/<codename>/app/*.layers naming it), unless it is still in compare mode: then the app
-# is built from its assembled tree
+# the recipe of an app (devices/<codename>/app/*.layers naming it, else the app's own apps/<name>/app.layers of a
+# stand-alone app that uses apps/core modules), unless it is still in compare mode: then the app is built from its
+# assembled tree (tools/arch/README.md)
 recipe_of() {
   python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import assemble_app as a
+import os
 r = a.find_recipe(sys.argv[2], sys.argv[3], sys.argv[4])
+own = os.path.join(sys.argv[2], "apps", sys.argv[4], "app.layers")
+r = r or (own if os.path.isfile(own) else None)
 print(r if r and a.parse(sys.argv[2], r)["identical"] != "allow" else "")' "$H" "$ROOT" "$C" "$1"
 }
 for n in $APPS; do
@@ -68,8 +72,9 @@ for n in $APPS; do
   got=$("$APKSIGNER" verify --print-certs "$OUT/$n.apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
   [ "$got" = "$WANT" ] || die "$n: signed by $got, not the $C platform certificate $WANT"
   for o in $OTHER; do [ "$o" != "$got" ] || die "$n: signed with a certificate of another device or a test key"; done
-  if [ "$(reg hal_check)" = aidl-table ] && [ "$(reg hal_app)" = "apps/$n" ]; then
-    python3 -B "$H/check_hal.py" --root "$ROOT" --device "$C" --dex "$OUT/$n.apk" || die "$n: HAL gate failed on the APK"
+  # every HAL app of the device (hal_app and hal_more), each with its own allow list, on its dex
+  if [ "$(reg hal_check)" = aidl-table ] && { [ "$(reg hal_app)" = "apps/$n" ] || reg hal_more 2>/dev/null | tr ' ' '\n' | grep -q "^apps/$n:"; }; then
+    python3 -B "$H/check_hal.py" --root "$ROOT" --device "$C" --app "apps/$n" --dex "$OUT/$n.apk" || die "$n: HAL gate failed on the APK"
   fi
   echo "build_apps: $n -> $OUT/$n.apk ($(sha256in < "$OUT/$n.apk"))"
 done

@@ -63,6 +63,11 @@ platform and hardware):
                     call must be the same row in each of them and in hal_codes (check_aidl_hal.py, several --codes)
   hal_banned        the table of banned HAL calls, or none
   hal_allowed       optional, required with hal_check=aidl-table: the complete list of HAL calls the app may send
+  hal_more          optional, aidl-table only: further HAL apps of the image, each APP:ALLOWED (its own allow list; the
+                    same hal_codes and hal_banned), checked by tools/devices/check_hal.py like hal_app (X50: the menu)
+  hal_unbanned      optional, aidl-table only: APP:UNBANNED entries, the maintainer's per-app exceptions to hal_banned (each
+                    row with its argument range); APP must be hal_app or a hal_more app of this device and the list's
+                    file name unbanned_<app in lower case>.tsv under devices/<codename>/research (t20, X50 menu)
   apps              optional: device-only apps under apps/<name> (list)
   ota_tools         optional, update_engine only: the folder of the device's OTA host tools, tools/ota (the
                     default when absent) or tools/devices/ota (they read the wire id from devices/<codename>/ota.conf)
@@ -90,7 +95,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 REQUIRED = ("codename name models platform hardware abi base_product vendor_sdk vendor_firmware hal_transport "
             "image_fs slots install_flow ota_engine ota_wire_id prop_namespace keys_dir app_prefix channel "
             "installer_id fastboot_product forks hal_check hal_app hal_codes hal_banned").split()
-OPTIONAL = ("apps", "hal_allowed", "ota_tools", "family", "status", "hal_codes_also")
+OPTIONAL = ("apps", "hal_allowed", "hal_more", "ota_tools", "family", "status", "hal_codes_also", "hal_unbanned")
 # a stock analysis entry: only who the projector is, nothing to build or install
 RESEARCH_REQUIRED = "codename family status name models platform hardware".split()
 LISTS = ("models", "vendor_firmware", "channel", "apps", "hal_codes_also")
@@ -338,6 +343,22 @@ def validate(root):
             errs.append("%s: install_flow ab-fastbootd needs slots ab or ab-virtual, not %s" % (rel, vals.get("slots")))
         if vals.get("hal_check") == "aidl-table" and vals.get("hal_allowed", "none") == "none":
             errs.append("%s: hal_check aidl-table needs hal_allowed (the check refuses every call without it)" % rel)
+        for ent in vals.get("hal_more", "").split():
+            ap, _, al = ent.partition(":")
+            if vals.get("hal_check") != "aidl-table":
+                errs.append("%s: hal_more is for hal_check aidl-table" % rel)
+            if not al or not os.path.isdir(os.path.join(root, ap)) or not os.path.isfile(os.path.join(root, al)):
+                errs.append("%s: hal_more entry %r is not APP:ALLOWED with both present" % (rel, ent))
+        hal_apps = [vals.get("hal_app", "")] + [e.partition(":")[0] for e in vals.get("hal_more", "").split()]
+        for ent in vals.get("hal_unbanned", "").split():
+            ap, _, ub = ent.partition(":")
+            want = "devices/%s/research/unbanned_%s.tsv" % (vals.get("codename", ""), os.path.basename(ap.rstrip("/")).lower())
+            if vals.get("hal_check") != "aidl-table":
+                errs.append("%s: hal_unbanned is for hal_check aidl-table" % rel)
+            if ap.rstrip("/") not in [a.rstrip("/") for a in hal_apps]:
+                errs.append("%s: hal_unbanned entry %r: %s is not a HAL app of this device (hal_app, hal_more)" % (rel, ent, ap))
+            if ub != want or not os.path.isfile(os.path.join(root, ub)):
+                errs.append("%s: hal_unbanned entry %r: the list must be %s and exist" % (rel, ent, want))
         if (vals.get("hal_check") == "none") != (vals.get("hal_app") == "none"):
             errs.append("%s: hal_app must be none exactly when hal_check is none (no HAL caller app in the image)" % rel)
         if "ota_engine" in vals and (vals["ota_engine"] == "none") != (vals.get("ota_wire_id") == "none"):

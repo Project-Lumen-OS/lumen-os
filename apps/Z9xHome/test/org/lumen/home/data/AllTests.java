@@ -13,6 +13,7 @@ public final class AllTests {
         CecNamesTest.run();
         HomeV2Test.run();
         TmdbTest.run();
+        ProjectorTargetTest.run();
         System.out.println("tests passed=" + T.passed + " failed=" + T.failed);
         System.exit(T.failed == 0 ? 0 : 1);
     }

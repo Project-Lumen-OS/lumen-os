@@ -1,0 +1,58 @@
+device dragon_healthy model G0058
+card
+  top: round eye | round general
+  row 1: wide keystone.ak_now | small keystone | small zoom.digital
+  row 2: wide picture | small sound | small focus
+  row 3: wide input | small bluetooth | small network
+  row 4: wide game | small projection | small usb_files
+  slider: lamp 1..10
+section keystone
+  action keystone.ak_now
+  screen keystone.manual
+  screen zoom.digital
+  screen keystone.rotation
+  -- image_correction
+  toggle keystone.realtime
+  toggle keystone.on_power
+  -- more
+  action keystone.restore
+section focus
+  action focus.af_now
+  screen focus.manual
+  toggle focus.smart
+section lamp
+  slider lamp 1..10
+section picture
+  choice picture.mode [ai, movie, sport, tv, custom, office, performance]  hint picture picture_mode
+  slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
+  choice picture.color_temp [cool, standard, warm, custom]
+  choice picture.memc [off, low, medium, high]
+  toggle picture.dynamic_contrast
+  screen picture.pro
+  action picture.reset
+  -- hdmi
+  choice hdmi.range [auto, full, limited]
+  choice hdmi.edid [compat, enhanced]
+  choice picture.aspect [auto, r4_3, r16_9, original]
+section sound
+  choice sound.mode [ai, music, movie, karaoke, sports, standard]
+  screen sound.eq
+  toggle sound.earc
+  choice sound.output [auto, speaker, arc, bt, usb]
+section projection
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
+section game
+  choice game.mode [off, on, auto]  hint picture game_mode
+section eye
+  choice eye [off, on]
+section general
+  screen settings.system
+  screen settings.projector
+  screen settings.recents
+  screen settings.ambient_speaker
+  toggle lamp.eco
+  choice settings.launcher [lumen, classic]
+all settings: keystone focus picture projection sound eye general
+keys: gear short quick_menu, gear long none
+game menu: none

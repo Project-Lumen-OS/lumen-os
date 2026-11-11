@@ -34,7 +34,7 @@ key 116        STB_POWER WAKE
 key 113        VOLUME_MUTE
 key 115        VOLUME_UP
 key 114        VOLUME_DOWN
-key 139        ALL_APPS  # XGIMI: MENU (four-diamond key) -> Google TV "Your apps"
+key 139        TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU = the gear held (the remote sends it once on a long press; stock KEYCODE_MENU = the game menu) -> org.lumen.projector gear long press
 key 251        SETTINGS  # XGIMI: MOVE_HOME; gear -> org.lumen.projector quick panel (short) / TvSettings (long)
 key 254        MEDIA_STEP_FORWARD  # XGIMI: FOCUS_RIGHT; manual focus step (hold) -> org.lumen.projector
 key 253        MEDIA_STEP_BACKWARD  # XGIMI: FOCUS_LEFT; manual focus step (hold) -> org.lumen.projector

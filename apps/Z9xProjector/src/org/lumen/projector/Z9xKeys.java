@@ -29,6 +29,13 @@ final class Z9xKeys {
      * :5311 / :4334 (v6.1 design). Short press = quick panel, long press = TvSettings.
      */
     static final int GEAR = KeyEvent.KEYCODE_SETTINGS;                       // 176
+    /**
+     * The gear held, as the XGIMI remotes report it themselves: one short press of the stock MENU scancode (BT 127 =
+     * KEY_COMPOSE on the "XGIMI RC Keyboard" 000d:3841 and its siblings, IR / keypad 139), stock KEYCODE_MENU = the
+     * game menu. A key of its own in the .kl files (not MENU, which keyboards and other remotes keep for apps):
+     * the gear long press action.
+     */
+    static final int GEAR_HOLD = KeyEvent.KEYCODE_TV_MEDIA_CONTEXT_MENU;     // 257
     /** Source key (BT 430, IR 88, keypad 225/268/466): input chooser overlay (v6.1, from org.lumen.tvinput). */
     static final int SOURCE = KeyEvent.KEYCODE_TV_INPUT;                     // 178
     /** App-key slots 1..5 (stock VIDEO0..VIDEO4). Z9X remotes: iQIYI key = slot 3 or 2, bilibili key = slot 4 or 5 (AppSlots.keySlot). */

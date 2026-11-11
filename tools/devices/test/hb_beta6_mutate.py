@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""hb_beta6_mutate.py: mutation check of the HB beta6 changes (vendor-held Boost in Performance / Office, the stock HB
-Boost line, the optical zoom tile, ZoomScale, one-way fit / obstacle coupling, the manual-focus chart). Each mutant breaks one rule in a scratch
+"""hb_beta6_mutate.py: mutation check of the HB beta6 changes (vendor-held Boost in Performance / Office in the HB
+adapter of the shared menu, the stock HB Boost texts, the optical zoom tile, ZoomScale, one-way fit / obstacle coupling, the manual-focus chart). Each mutant breaks one rule in a scratch
 copy of apps/HbProjector (+ the Z9X Hal.java the HB app takes from its recipe); apps/HbProjector/test/beta6/run.sh must
 turn red, and the unmutated copy must pass.  python3 tools/devices/test/hb_beta6_mutate.py"""
 import os, shutil, subprocess, sys, tempfile
 
 G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 P = "src/org/lumen/projector/panel/"
-BR, ZS, QP, OZ = P + "BoostRules.java", P + "ZoomScale.java", P + "QuickPanelController.java", P + "OpticalZoomPanel.java"
+BR, ZS, QP, OZ = P + "BoostRules.java", P + "ZoomScale.java", P + "HbMenuFeatures.java", P + "OpticalZoomPanel.java"
+GT = P + "HbMenuGates.java"
 HAL = "@Z9X/src/org/lumen/projector/Hal.java"
 MUT = [
     ("br_perf_only", BR, "pm == PM_PERFORMANCE || pm == PM_OFFICE", "pm == PM_PERFORMANCE"),
@@ -19,26 +20,16 @@ MUT = [
     ("br_unreadable_done", BR, "return ret ? Outcome.DONE : Outcome.FAILED;", "return Outcome.DONE;"),
     ("br_explain_without_boost", BR, "Boolean.TRUE.equals(boost) && lockedByPictureMode", "lockedByPictureMode"),
     ("br_ca_always", BR, "Boolean.TRUE.equals(boost) && !lockedByPictureMode(pictureModeWire)", "Boolean.TRUE.equals(boost)"),
-    ("qp_onkey_arm_always", QP, "== BoostRules.Leave.EXPLAIN_PICTURE_MODE) {", "== null) {"),
-    ("qp_setboost_boolean", QP, "BoostRules.judge(on, ret, lensAfter, pmAfter)", "BoostRules.judge(on, true, lensAfter, pmAfter)"),
-    ("qp_setboost_throw_old", QP, "boolean ret = g2.setBoost(on);", "boolean ret = g2.setBoost(on); if (!ret) throw new IllegalStateException(\"52 returned false\");"),
-    ("qp_ca_raw_boost", QP, "BoostRules.blocksColorAccuracy(snap.boost, snap.pictureMode)", "Boolean.TRUE.equals(snap.boost)"),
-    ("qp_old_boost_line", QP, "R.string.hb_boost_effect", "R.string.boost_effect"),
-    ("qp_no_lock_line", QP, "boolean locked = boostOn && BoostRules.lockedByPictureMode(sn.pictureMode);", "boolean locked = false;"),
-    ("qp_no_zoom_tile", QP, "if (HbFeatures.on(F.OPTICAL_ZOOM)) addTile(SECTION_ZOOM_TILE, R.drawable.ic_tile_zoom, R.string.panel_optical_zoom, false);", ""),
-    ("qp_zoom_tile_ungated", QP, "if (HbFeatures.on(F.OPTICAL_ZOOM)) addTile(SECTION_ZOOM_TILE", "addTile(SECTION_ZOOM_TILE"),
-    ("qp_zoom_tile_no_game_refusal", QP, "            if (snap != null && snap.isTopSpeedGame()) { Notify.show(app, s(R.string.panel_kst_game_mode)); return; }\n            OpticalZoomPanel.open(app, () -> show(null, null));", "            OpticalZoomPanel.open(app, () -> show(null, null));"),
-    ("qp_obstacle_uncoupled", QP, "Hal.setObstacleAvoidCoupled(g, w)", "g.setObstacleAvoid(w)"),
-    ("qp_fit_uncoupled", QP, "Hal.setCurtainFitCoupled(g, w)", "g.setCurtainFit(w)"),
-    ("zs_progress_off_by_one", ZS, "return cur98 == 0 ? limit + lim190 : cur98 + limit;", "return cur98 == 0 ? limit + lim190 : cur98 + limit + 1;"),
-    ("zs_size_off_by_one", ZS, "return last() - progress + 1;", "return last() - progress;"),
-    ("zs_positions_plus", ZS, "public int positions() { return last() + 1; }", "public int positions() { return last() + 2; }"),
-    ("zs_limit_zone", ZS, "boolean limitZone = dir > 0 ? progress < limit : progress <= limit;", "boolean limitZone = dir > 0 ? progress <= limit : progress <= limit;"),
-    ("zs_small_end", ZS, "if (dir > 0 && progress == last() - 1 && max > 1)", "if (dir > 0 && progress == last() && max > 1)"),
-    ("zs_big_end", ZS, "if (dir < 0 && progress == 1 && limit > 0)", "if (dir < 0 && progress == 0 && limit > 0)"),
-    ("zs_ends_open", ZS, "if ((dir < 0 && progress <= 0) || (dir > 0 && progress >= last())) return null;", ""),
-    ("oz_refused_any", OZ, "if (r != 0 && after == now && scale.refusedAtEnd(now, dir))", "if (r != 0 && scale.refusedAtEnd(now, dir))"),
-    ("oz_counter_raw", OZ, "sc.sizeNumber(p), sc.positions()", "last - p, last + 1"),
+    ("mf_leave_no_explain", QP, "        if (!on && BoostRules.onLeavePress(cur, pm) == BoostRules.Leave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);\n", ""),
+    ("mf_setboost_boolean", QP, "BoostRules.judge(on, ret, lensAfter, pmAfter)", "BoostRules.judge(on, true, lensAfter, pmAfter)"),
+    ("mf_setboost_throw_old", QP, "boolean ret = g2.setBoost(on);", "boolean ret = g2.setBoost(on); if (!ret) throw new IllegalStateException(\"151 returned false\");"),
+    ("mf_ca_raw_boost", QP, "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)", "Boolean.TRUE.equals(safeBoost(g2))"),
+    ("mf_lock_no_mode", QP, "R.string.hb_boost_locked, mode", "R.string.hb_boost_locked"),
+    ("mf_lamp_in_boost_kept", QP, "String r = setBoost(false, g, g2);", "String r = null;"),
+    ("gt_zoom_ungated", GT, '{"zoom", "OPTICAL_ZOOM"}', '{"zoom", null}'),
+    ("mf_zoom_no_game_refusal", QP, "                if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }\n", ""),
+    ("mf_obstacle_uncoupled", QP, "Hal.setObstacleAvoidCoupled(g, on)", "g.setObstacleAvoid(on)"),
+    ("mf_fit_uncoupled", QP, "Hal.setCurtainFitCoupled(g, on)", "g.setCurtainFit(on)"),
     ("hal_fit_off_sets_obstacle", HAL, "if (on) g.setObstacleAvoid(true);", "g.setObstacleAvoid(true);"),
     ("hal_fit_on_no_obstacle", HAL, "if (on) g.setObstacleAvoid(true);", ""),
     ("hal_obstacle_on_sets_fit", HAL, "if (!on) g.setCurtainFit(false);", "g.setCurtainFit(on);"),

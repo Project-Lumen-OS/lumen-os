@@ -3,7 +3,9 @@
 projector app stays exactly as it was tested (t1..t11): BootHandshake.java, BootReceiver.java, the
 handshake members of Play6Gmpf.java and App.java with at most the one added Play6App line.
 
-  check_handshake.py [APP_DIR]        default APP_DIR: apps/Play6Projector
+  check_handshake.py [APP_DIR]        default APP_DIR: the assembled Play 6 projector tree
+  (devices/dragon_healthy/app/Play6Projector.layers, written to a temp dir by play6_tree.py;
+  apps/Play6Projector alone is only the Play 6 layer since the design notes)
 
 Baseline: tools/play6/baseline/{App,BootReceiver,BootHandshake,Play6Gmpf}.java, copied at setup step 0.
 The sha256 of each baseline copy is fixed below, so an edited baseline fails too.
@@ -34,6 +36,7 @@ sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import javascan  # noqa: E402
+import play6_tree  # noqa: E402
 
 G = os.path.dirname(os.path.dirname(HERE))
 BASE = os.path.join(HERE, "baseline")
@@ -73,7 +76,7 @@ def sha(path):
 
 
 def main():
-    app = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(G, "apps/Play6Projector")
+    app = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else play6_tree.default_app("check_handshake")
     errors = []
     notes = []
 

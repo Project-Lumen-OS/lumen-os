@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """HB slider wiring (source level): every picture slider of the advanced picture page (panel/ProPicture: 2-point and
-11-point white balance, colour correction) and of the quick panel (panel/QuickPanelController: brightness, contrast,
-saturation, sharpness) writes through its own SlideCoalescer (SlideMain.of), on every step, with no direct change()
-per commit and no page re-read while a slide is in flight (4PDA report 2026-11-10: flicker on a fast slide)."""
+11-point white balance, colour correction) writes through its own SlideCoalescer (SlideMain.of), on every step, with no
+direct change() per commit and no page re-read while a slide is in flight (4PDA report 2026-11-10: flicker on a fast
+slide). The quick menu's brightness / contrast / saturation / sharpness are the shared menu's sliders now: SliderRow
+commits once, 200 ms after the last step, with the final value only, and the HB adapter (panel/HbMenuFeatures) writes
+that one value, range checked, then reads back."""
 import os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +34,7 @@ def body(src, sig):
 
 
 pp = open(os.path.join(P, "ProPicture.java"), encoding="utf-8").read()
-qp = open(os.path.join(P, "QuickPanelController.java"), encoding="utf-8").read()
+qp = open(os.path.join(P, "HbMenuFeatures.java"), encoding="utf-8").read()
 sm = open(os.path.join(P, "SlideMain.java"), encoding="utf-8").read()
 
 # ---- ProPicture
@@ -54,17 +56,14 @@ ok("ProPicture.refresh forgets the written values on a read", "c.forget()" in rf
 sg = body(pp, "private boolean sliding()")
 ok("ProPicture.sliding asks every coalescer", "for (SlideCoalescer c : slides) if (c.busy()) return true;" in sg)
 
-# ---- QuickPanelController
-i = qp.find("final GmpfClient.PqItem item = PQ_ORDER[i];")
-seg = qp[i:i + 1500]
-ok("quick panel pq: coalescer per slider", "SlideMain.of(app," in seg and "g.setPq(item, v)" in seg and "pqSlides.add(slide)" in seg)
-ok("quick panel pq: every step submitted", re.search(r"onChanging\([^)]*\)\s*\{[^}]*slide\.submit\(value\)", seg, re.S) is not None)
-ok("quick panel pq: commit submitted", re.search(r"onCommit\([^)]*\)\s*\{[^}]*slide\.submit\(value\)", seg, re.S) is not None)
-ok("quick panel pq: no change() per commit", 'change("pq "' not in qp)
-rq = body(qp, "void refresh()")
-ok("quick panel refresh skips while a pq slide is busy", "for (SlideCoalescer c : pqSlides) if (c.busy()) return;" in rq
-   and rq.find("c.busy()") < rq.find("Hal.query"))
-ok("quick panel refresh forgets the written values on a read", "c.forget()" in rq)
+# ---- quick menu sliders (HbMenuFeatures.setPq): one write per committed value, range checked, one item each
+pq = body(qp, "private void setPq(String item, String value, Consumer<Result> cb)")
+ok("quick menu pq: range 0..100 checked before a write", "if (v < 0 || v > 100) { refuse(cb, null); return; }" in pq
+   and pq.find("v > 100") < pq.find("write("))
+ok("quick menu pq: one write per commit with read-back", pq.count("write(") == 1 and "g.setPq(it, v)" in pq)
+for item, enum in (("brightness", "BRIGHTNESS"), ("contrast", "CONTRAST"), ("saturation", "SATURATION"), ("sharpness", "SHARPNESS")):
+    ok("quick menu pq: %s -> PqItem.%s" % (item, enum), 'case "%s": it = GmpfClient.PqItem.%s; break;' % (item, enum) in pq)
+ok("quick menu pq: an unknown item refused", "default: refuse(cb, null); return;" in pq)
 
 # ---- SlideMain: the write reports back, on the HAL thread
 wr = body(sm, "private static void write(")

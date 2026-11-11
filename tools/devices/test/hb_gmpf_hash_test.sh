@@ -1,14 +1,15 @@
 #!/bin/bash
 # SPDX-License-Identifier: Apache-2.0
-# hb_gmpf_hash_test.sh: the gmpf V1 hash rule of the Z9X HB apps (GmpfHash.java in apps/HbProjector, apps/HbBoot and
-# apps/LumenInfo). On the Mac or Linux, javac only:
+# hb_gmpf_hash_test.sh: the gmpf V1 hash rule of the Z9X HB apps (GmpfHash.java in apps/HbProjector and apps/LumenInfo;
+# apps/HbBoot, which had a third copy, is gone on this branch: it left the HB image in S7 and was removed as dead code,
+# design decision). On the Mac or Linux, javac only:
 #   bash tools/devices/test/hb_gmpf_hash_test.sh
-# 1. The three copies are one file: equal apart from the package line and the one doc line naming the app's transport.
+# 1. The copies are one file: equal apart from the package line and the one doc line naming the app's transport.
 # 2. The rule of each copy, compiled and run: 908de964 (V6.16.24) on any firmware; 715affd0 (V6.17.12) only on exactly
 #    v6.17.12 (never on v6.16.24, an empty or a null firmware, V6.17.12 in upper case, a value with a space); any other
 #    hash, a null or empty one, the hashes in upper case: refused. answer() gives back the accepted hash.
 # 3. The hashes and the firmware are pinned (the strings of the stock gmpf-V1-ndk.so of each dump).
-# 4. Each transport (AidlCaller, HbBoot HbGmpf, LumenInfo HbGmpf) asks GmpfHash.accepted exactly once, with the
+# 4. Each transport (AidlCaller, LumenInfo HbGmpf) asks GmpfHash.accepted exactly once, with the
 #    firmware read from GmpfHash.FIRMWARE_PROP, and no app source but GmpfHash.java has a hash literal.
 # The tree is only read.
 set -u
@@ -18,15 +19,15 @@ trap 'rm -rf "$W"' EXIT
 PASS=0 FAIL=0
 ok() { PASS=$((PASS + 1)); echo "ok   $1"; }
 bad() { FAIL=$((FAIL + 1)); echo "FAIL $1"; }
-COPIES="apps/HbProjector/src/org/lumen/projector/hal apps/HbBoot/src/org/lumen/hb/boot apps/LumenInfo/src/org/lumen/info/hal"
-TRANSPORTS="apps/HbProjector/src/org/lumen/projector/hal/AidlCaller.java apps/HbBoot/src/org/lumen/hb/boot/HbGmpf.java apps/LumenInfo/src/org/lumen/info/hal/HbGmpf.java"
+COPIES="apps/HbProjector/src/org/lumen/projector/hal apps/LumenInfo/src/org/lumen/info/hal"
+TRANSPORTS="apps/HbProjector/src/org/lumen/projector/hal/AidlCaller.java apps/LumenInfo/src/org/lumen/info/hal/HbGmpf.java"
 
 # 1. one file
 first=""
 for d in $COPIES; do
   f=$G/$d/GmpfHash.java
   [ -f "$f" ] || { bad "copy: $d/GmpfHash.java missing"; continue; }
-  sed -E -e '1d' -e 's/\((HbProjector: AidlCaller|HbBoot: HbGmpf|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
+  sed -E -e '1d' -e 's/\((HbProjector: AidlCaller|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
   if [ -z "$first" ]; then first=$W/norm.$(echo "$d" | cut -d/ -f2)
   elif cmp -s "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)"; then ok "copy: $d/GmpfHash.java = the HbProjector copy"
   else bad "copy: $d/GmpfHash.java differs from the HbProjector copy: $(diff "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)" | head -4 | tr '\n' ' ')"; fi
@@ -78,7 +79,7 @@ for d in $COPIES; do
   classes="$classes $pkg.GmpfHash"
 done
 if javac -d "$W/out" $(find "$W/src" -name '*.java') > "$W/javac.log" 2>&1; then
-  if java -cp "$W/out" HashRule $classes > "$W/rule.log" 2>&1; then ok "rule of the three copies ($(tail -1 "$W/rule.log"))"
+  if java -cp "$W/out" HashRule $classes > "$W/rule.log" 2>&1; then ok "rule of the copies ($(tail -1 "$W/rule.log"))"
   else bad "rule: $(grep FAIL "$W/rule.log" | head -5 | tr '\n' ' ')"; fi
 else
   bad "javac: $(head -5 "$W/javac.log" | tr '\n' ' ')"
@@ -95,7 +96,7 @@ for t in $TRANSPORTS; do
     bad "transport: $t: the firmware '$var' is not read from GmpfHash.FIRMWARE_PROP"
   else ok "transport: $t asks GmpfHash.accepted once, firmware from GmpfHash.FIRMWARE_PROP"; fi
 done
-lit=$(cd "$G" && grep -rlE '"(908de964|715affd0)' apps/HbProjector/src apps/HbBoot/src apps/LumenInfo/src | grep -v '/GmpfHash\.java$')
+lit=$(cd "$G" && grep -rlE '"(908de964|715affd0)' apps/HbProjector/src apps/LumenInfo/src | grep -v '/GmpfHash\.java$')
 if [ -z "$lit" ]; then ok "no app source but GmpfHash.java has a gmpf hash literal"; else bad "a hash literal outside GmpfHash.java: $lit"; fi
 
 echo "hb_gmpf_hash_test: $PASS passed, $FAIL failed"

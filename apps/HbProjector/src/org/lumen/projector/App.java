@@ -123,6 +123,8 @@ public final class App extends Application {
         // HbFeatures.F.GAME_MODE is ON (since 2026-11-04, stock HB wires checked)
         if (HbFeatures.on(HbFeatures.F.GAME_MODE)) {
             try { org.lumen.projector.game.GameProfile.install(this); } catch (Throwable t) { Log.e(TAG, "GameProfile.install", t); }
+            // the shared game menu (apps/core/lumen-menu) with the HB io, when the profile and this unit have it
+            try { org.lumen.projector.panel.HbMenu.install(this); } catch (Throwable t) { Log.e(TAG, "HbMenu.install", t); }
         }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }

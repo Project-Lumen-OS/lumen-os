@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost: жарықтық жоғарырақ. Boost режимінен шыққанда түстер қанықтырақ болады.</string>
+    <string name="lumen_gm_cs">Түс кеңістігі</string>
+    <string name="lumen_gm_cs_0">Төл</string>
+    <string name="lumen_gm_hdr_1">Динамикалық тон бейнелеу</string>
+    <string name="lumen_gm_chip_hz">%1$d Гц</string>
+    <string name="lumen_m_panel_speed_top_note">Турбо: трапецияны түзету өшірулі</string>
+    <string name="lumen_m_ok">Жарайды</string>
+    <string name="lumen_m_cancel">Бас тарту</string>
+    <string name="lumen_m_panel_boost_press_again">Boost үшін → түймесін тағы басыңыз</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Boost режимінен шығу үшін ← түймесін тағы басыңыз</string>
+    <string name="lumen_m_toast_setup_running">Алдымен реттеуді аяқтаңыз</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI кескіні</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Түс дәлдігі</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Өнімділік</string>
+    <string name="lumen_m_panel_move_ak">Жылжытқаннан кейін трапецияны түзету</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Фильм</string>
+    <string name="lumen_m_pm_tv">ТВ</string>
+    <string name="lumen_m_pm_custom">Пайдаланушы</string>
+    <string name="lumen_m_ct_cool">Суық</string>
+    <string name="lumen_m_ct_warm">Жылы</string>
+    <string name="lumen_m_zs_title">Масштаб және ығысу</string>
+    <string name="lumen_m_eco">Қуат үнемдеу</string>
+    <string name="lumen_m_ambient_speaker">Колонка және жарық</string>
+    <string name="lumen_m_ct_custom">Пайдаланушы</string>
+</resources>

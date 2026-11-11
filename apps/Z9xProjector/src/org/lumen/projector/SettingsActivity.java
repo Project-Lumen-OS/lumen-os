@@ -212,7 +212,7 @@ public final class SettingsActivity extends Activity {
         LinearLayout gc = Kit.card(this);
         actionRow(gc, R.string.guide_title, R.string.s2_d_guide, v -> org.lumen.projector.guide.GuideDialog.show(this));
         // licences of third party material in this app (the game menu controller models need a CC BY credit)
-        actionRow(gc, R.string.gm_licences, R.string.gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));
+        actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));
         help.addView(gc);
 
         // Diagnostics

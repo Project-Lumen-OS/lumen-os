@@ -23,6 +23,9 @@ gsi/ unless said otherwise):
   file SRC DEST         a base layer of one file: SRC (relative to gsi/) at DEST (relative to the app).
   drop PATTERN          remove base files: an exact path, a folder ending in '/', or an fnmatch pattern. Each
                         drop must remove at least one base file (a renamed Z9X file is noticed).
+  module NAME|PATH      a shared source module (tools/arch/README.md): apps/core/NAME (or PATH, relative to gsi/,
+                        when the word has a '/'), a base layer read with its module.conf (name=, package=,
+                        depends=). Modules are closed: see rules 5 to 8.
   top DIR               the device layer: its files win over the bases.
   skip PATTERN          never part of the tree, in any layer and in --compare: a folder ending in '/' (at the
                         top of a layer), a pattern with '/' (fnmatch on the path) or a file name pattern
@@ -40,12 +43,22 @@ Rules (fail-closed, exit 1):
   4. the origin sha256 of each such row equals the base file now: a warning that names the file to review, red
      with --release (so Z9X work never blocks a development build of another device, and nothing reaches a
      release unreviewed).
+  5. a module's module.conf names the module (name= equals its folder name), its Java package (package=) and any
+     further packages it adds classes to (packages=, space separated; lumen-menu adds to the projector app's panel
+     and ui packages so the moved classes keep their package-private access); each
+     module it depends on (depends=) is named by a module line of the same recipe;
+  6. a module file is never shadowed (a top file at a module path is an error: change the module, or keep the
+     device code under another name) and never dropped;
+  7. module Java sources live under src/<package path>/; module resources are prefixed: every file under res/
+     other than res/values*/ is named lumen_*, every resource name in res/values*/*.xml starts with lumen_;
+  8. module.conf, README*.md, the design notes, *.tsv (module data) and test/ of a module are never part of an app tree.
 Output: one summary line, warnings and errors; exit 0 green, 1 red, 2 usage. Never writes outside --out and
 --list.
 """
 import fnmatch
 import hashlib
 import os
+import re
 import shutil
 import sys
 
@@ -111,6 +124,9 @@ def parse(root, recipe):
             r["bases"].append(("dir", a[0], a[1] if len(a) == 2 else None, where))
         elif k == "file" and len(a) == 2:
             r["bases"].append(("file", a[0], a[1], where))
+        elif k == "module" and len(a) == 1:
+            path = a[0] if "/" in a[0] else "apps/core/" + a[0]
+            r["bases"].append(("module", path.rstrip("/"), None, where))
         elif k == "drop" and len(a) == 1:
             r["drops"].append((a[0], where))
         elif k == "top" and len(a) == 1 and r["top"] is None:
@@ -122,7 +138,7 @@ def parse(root, recipe):
         else:
             raise RecipeError("%s: cannot read %r" % (where, line.strip()))
     if not r["app"] or not r["top"] or not r["bases"]:
-        raise RecipeError("%s: needs app, at least one base and one top" % os.path.relpath(recipe, root))
+        raise RecipeError("%s: needs app, at least one base or module and one top" % os.path.relpath(recipe, root))
     return r
 
 
@@ -159,12 +175,84 @@ def codename_of(root, recipe):
     return None
 
 
+MODULE_SKIPS = ["module.conf", "README*.md", "CONTRACT.md", "test/", "tools/", "*.tsv"]
+RES_NAME = re.compile(r'<(?:string|string-array|plurals|color|dimen|integer|bool|style|array|integer-array|item|attr|'
+                      r'declare-styleable|fraction|drawable|id)\b[^>]*\bname="([^"]+)"')
+
+
+def module_conf(root, path, where):
+    """{key: value} of apps/core/<m>/module.conf (same strict key=value format as device.conf)."""
+    conf = os.path.join(root, path, "module.conf")
+    if not os.path.isfile(conf):
+        raise RecipeError("%s: module %s has no module.conf" % (where, path))
+    out = {}
+    for n, line in enumerate(open(conf, encoding="utf-8"), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        k, eq, v = line.partition("=")
+        if not eq or k not in ("name", "package", "packages", "depends"):
+            raise RecipeError("%s/module.conf:%d: cannot read %r" % (path, n, line))
+        out[k] = v.strip()
+    if out.get("name") != os.path.basename(path):
+        raise RecipeError("%s/module.conf: name=%s, the folder is %s" % (path, out.get("name"), os.path.basename(path)))
+    if not re.match(r"^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$", out.get("package", "")):
+        raise RecipeError("%s/module.conf: package= is not a Java package" % path)
+    return out
+
+
+def module_errors(path, files, conf):
+    """Rule 7 for one module: source places and prefixed resources."""
+    errs = []
+    pkgs = tuple("src/" + p.replace(".", "/") + "/" for p in [conf["package"]] + conf.get("packages", "").split())
+    for rel, src in sorted(files.items()):
+        if rel.startswith("src/") and not (rel.startswith(pkgs) and "/" not in rel[len(next(p for p in pkgs if rel.startswith(p))):]):
+            errs.append("module %s: %s is outside its package folders %s" % (path, rel, " ".join(pkgs)))
+        elif rel.startswith("res/"):
+            parts = rel.split("/")
+            if len(parts) != 3:
+                errs.append("module %s: %s is not res/<type>/<file>" % (path, rel))
+            elif parts[1] == "values" or parts[1].startswith("values-"):
+                for name in RES_NAME.findall(open(src, encoding="utf-8").read()):
+                    if not name.startswith("lumen_"):
+                        errs.append("module %s: resource %s in %s is not prefixed lumen_" % (path, name, rel))
+            elif not parts[2].startswith("lumen_"):
+                errs.append("module %s: resource file %s is not named lumen_*" % (path, rel))
+        elif not rel.startswith(("src/", "res/", "assets/")):
+            errs.append("module %s: %s is neither src/, res/ nor assets/" % (path, rel))
+    return errs
+
+
 def assemble(root, recipe, release=False):
     """Returns (files {rel: source abs path}, stats, warnings, errors)."""
     r = parse(root, recipe)
     errors, warnings = [], []
     base, origin_of = {}, {}
+    module_of = {}                      # path in the app -> module folder (rules 6, 7)
+    modules = {os.path.basename(m[1]) for m in r["bases"] if m[0] == "module"}
     for kind, a, b, where in r["bases"]:
+        if kind == "module":
+            folder = os.path.join(root, a)
+            if not os.path.isdir(folder):
+                errors.append("%s: no module folder %s" % (where, a))
+                continue
+            try:
+                conf = module_conf(root, a, where)
+            except RecipeError as e:
+                errors.append(str(e))
+                continue
+            for dep in conf.get("depends", "").split():
+                if dep not in modules:
+                    errors.append("%s: module %s depends on %s, which this recipe does not name" % (where, a, dep))
+            got = walk(folder, r["skips"] + MODULE_SKIPS)
+            errors.extend(module_errors(a, got, conf))
+            for rel, src in got.items():
+                if rel in base:
+                    errors.append("%s: %s is given by two bases (%s and %s)" % (where, rel, origin_of[rel], a))
+                base[rel] = src
+                origin_of[rel] = a + "/" + rel
+                module_of[rel] = a
+            continue
         if kind == "dir":
             folder = os.path.join(root, a)
             if not os.path.isdir(folder):
@@ -211,6 +299,9 @@ def assemble(root, recipe, release=False):
         if not hit:
             errors.append("%s: drop %s removes nothing from the bases" % (where, pattern))
         for p in hit:
+            if p in module_of:
+                errors.append("%s: drop %s removes %s of module %s (modules are closed)" % (where, pattern, p, module_of[p]))
+                continue
             del base[p]
             dropped += 1
     top_dir = os.path.join(root, r["top"])
@@ -226,6 +317,10 @@ def assemble(root, recipe, release=False):
             own += 1
             continue
         copy = r["top"].rstrip("/") + "/" + rel
+        if rel in module_of:
+            errors.append("%s shadows %s of module %s: modules are closed (change the module, or give the device "
+                          "code another name)" % (copy, rel, module_of[rel]))
+            continue
         if sha(src) == sha(base[rel]):
             copies += 1
             if r["identical"] != "allow":
@@ -260,7 +355,7 @@ def listing(files):
 def safe_out(root, out, recipe):
     r = parse(root, recipe)
     real = os.path.realpath(out)
-    layers = [r["top"]] + [b[1] for b in r["bases"] if b[0] == "dir"]
+    layers = [r["top"]] + [b[1] for b in r["bases"] if b[0] in ("dir", "module")]
     for x in layers:
         lx = os.path.realpath(os.path.join(root, x))
         if real.startswith(lx + os.sep):

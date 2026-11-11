@@ -26,6 +26,12 @@
 # apps/Z9x*/jni of a pinned app (build_apk.sh packs the prebuilt lib/ and never compiles jni/), and any
 # change in overlay/apps_v1 (a new pin is the maintainer's to confirm; a changed APK is still rebuilt, so the
 # report shows whether it matches its source).
+# Next-release builds (tools/play6/z9x_next.tsv, itself a gate input): a pinned app whose sources already hold reviewed
+# commits for the next Z9X release no longer rebuilds its pin from HEAD. Its row names the commit that recorded the
+# pin and the sha256 HEAD builds now. Such an app is green only when HEAD builds exactly that sha256 AND the pin
+# rebuilds byte for byte from the named commit (git archive of apps/ there, the same build), so the released APK
+# stays proven and any further change of its sources is red again. A row is added or changed only with the maintainer's
+# OK, followed by a re-record.
 # Log of the last run: build/play6/z9x_gate.log.
 set -u
 FULL=0; RECORD=0
@@ -65,7 +71,8 @@ list_inputs() {
     done
     find apps/common apps/i18n apps/sdk apps/LumenBridge overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
       tools/lumen tools/sign tools/ota -type f
-    for f in apps/build_apk.sh apps/check_hal_callers.py apps/check_global_keys.py tools/lumen_v1.sh tools/compose_tv.py; do
+    for f in apps/build_apk.sh apps/check_hal_callers.py apps/check_global_keys.py tools/lumen_v1.sh tools/compose_tv.py \
+        tools/play6/z9x_next.tsv; do
       echo "$f"
     done
   } | grep -v -E '(^|/)__pycache__/|\.pyc$|(^|/)\.DS_Store$|^overlay/debug/lumen_escape\.' | LC_ALL=C sort -u
@@ -136,6 +143,21 @@ fi
 pin_of() { # name -> sha256 from PINS.sha256 (empty if not listed)
   grep -v '^#' overlay/apps_v1/PINS.sha256 2>/dev/null | awk -v f="$1.apk" '$2 == f { print $1 }' | tail -1
 }
+next_of() { # name column -> the field of its tools/play6/z9x_next.tsv row (2 pin commit, 3 accepted HEAD sha256)
+  [ -f tools/play6/z9x_next.tsv ] || return 0
+  grep -v '^#' tools/play6/z9x_next.tsv | awk -F'\t' -v n="$1" -v c="$2" '$1 == n { print $c }' | tail -1
+}
+pin_at_commit() { # name commit version_code version_name tmdb_key -> sha256 of the build of apps/<name> at commit
+  d=$W/at_$2
+  if [ ! -d "$d" ]; then
+    mkdir -p "$d" && git archive "$2" apps | tar -x -C "$d" || return 1
+    # ignored inputs of a pinned app (the AirPlay native libs) come from this checkout, as for the HEAD build
+    [ -d apps/Z9xAirPlay/lib ] && [ -d "$d/apps/Z9xAirPlay" ] && cp -R apps/Z9xAirPlay/lib "$d/apps/Z9xAirPlay/"
+  fi
+  ( cd "$d" && BUILD_DIR="$W/at_$1" VERSION_CODE="$3" VERSION_NAME="$4" TMDB_KEY_FILE="$5" \
+      sh apps/build_apk.sh "apps/$1" "$W/$1.at.apk" ) > "$W/$1.at.log" 2>&1 || return 1
+  shasum -a 256 "$W/$1.at.apk" | cut -d' ' -f1
+}
 for n in $APKS; do
   want=$(pin_of "$n")
   [ -z "$want" ] && continue
@@ -178,8 +200,17 @@ for n in $REBUILD; do
   got=$(shasum -a 256 "$out" | cut -d' ' -f1)
   have=$(shasum -a 256 "$pin" | cut -d' ' -f1)
   want=$(pin_of "$n")
+  nxt=$(next_of "$n" 3); ncm=$(next_of "$n" 2)
   if [ "$got" = "$have" ] && { [ -z "$want" ] || [ "$got" = "$want" ]; }; then
     say "  $n $vn/$vc: identical to the pin ($got)${want:+, PINS.sha256 too}"
+    [ -n "$nxt" ] && red "$n: HEAD rebuilds the pin again, its tools/play6/z9x_next.tsv row is stale (remove it, re-record)"
+  elif [ -n "$nxt" ] && [ "$got" = "$nxt" ]; then
+    at=$(pin_at_commit "$n" "$ncm" "$vc" "$vn" "$key")
+    if [ -n "$at" ] && [ "$at" = "$have" ] && { [ -z "$want" ] || [ "$at" = "$want" ]; }; then
+      say "  $n $vn/$vc: HEAD builds the accepted next-release APK ($got, z9x_next.tsv); the pin rebuilds from $ncm ($at)"
+    else
+      red "$n $vn/$vc: HEAD builds the accepted next-release APK, but $ncm builds ${at:-nothing ($W/$n.at.log)}, pinned $have"
+    fi
   else
     if unzip -l "$pin" classes.dex >/dev/null 2>&1 || unzip -l "$out" classes.dex >/dev/null 2>&1; then
       a=$(unzip -p "$pin" classes.dex 2>/dev/null | shasum -a 256 | cut -d' ' -f1)
@@ -188,7 +219,7 @@ for n in $REBUILD; do
     else
       what="resources / signature (no code)"
     fi
-    red "$n $vn/$vc: rebuilt $got, pinned $have${want:+, PINS.sha256 $want}: $what"
+    red "$n $vn/$vc: rebuilt $got, pinned $have${want:+, PINS.sha256 $want}${nxt:+, accepted next-release $nxt}: $what"
   fi
 done
 say "rebuilt: $NB of $(printf '%s\n' $REBUILD | grep -c .) planned ($(printf '%s\n' $APKS | grep -c .) pinned APKs)"
@@ -201,7 +232,10 @@ sync_check() { # app items...
 PITEMS=hal
 [ -f apps/common/projector/FILES ] && PITEMS="hal projector"
 sync_check apps/Z9xProjector $PITEMS
-sync_check apps/Play6Projector $PITEMS
+# the Play 6 projector app holds no shared copies since the design notes: it is assembled from
+# devices/dragon_healthy/app/Play6Projector.layers, which refuses a copy of a shared file
+out=$(python3 -B tools/devices/assemble_app.py --device dragon_healthy --app Play6Projector 2>&1); rc=$?
+if [ $rc = 0 ]; then say "  assemble Play6Projector: OK"; else red "assemble Play6Projector: $out"; fi
 if [ -d apps/common/overlay ]; then
   sync_check apps/Z9xFrameworkKeysOverlay keys
   sync_check apps/Play6FrameworkOverlay keys

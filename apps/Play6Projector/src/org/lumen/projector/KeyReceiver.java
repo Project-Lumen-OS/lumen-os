@@ -136,6 +136,11 @@ public final class KeyReceiver extends BroadcastReceiver {
             if (upOk && setupDone(ctx, "ambient")) startAmbient(ctx);
             return;
         }
+        if (code == Z9xKeys.GEAR_HOLD) {
+            // the remote's own gear hold: one short press of the stock MENU scancode (BT 127, IR / keypad 139)
+            if (firstDown && !intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) gearLong(ctx);
+            return;
+        }
         if (code == Z9xKeys.GEAR) {
             handleGear(ctx, intent, ev);
             return;
@@ -177,8 +182,7 @@ public final class KeyReceiver extends BroadcastReceiver {
                 sGearDownTime = ev.getDownTime();
             } else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {
                 sGearLongFired = true;
-                OverlayHost.get(ctx).dismissAll(false);
-                if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+                gearLong(ctx);
             }
             return;
         }
@@ -188,6 +192,17 @@ public final class KeyReceiver extends BroadcastReceiver {
             sGearDownTime = -1;
             if (shortPress) QuickPanel.toggle(ctx);
         }
+    }
+
+    /**
+     * The gear long press (a held gear: its first repeated DOWN, or the remote's own Z9xKeys.GEAR_HOLD): the shared
+     * menu's profile decides (keys.gear_long; the Play 6 has no game menu: none = Android settings as before).
+     */
+    private static void gearLong(Context ctx) {
+        org.lumen.projector.panel.Play6Menu.gearLong(ctx, () -> {
+            OverlayHost.get(ctx).dismissAll(false);
+            if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+        });
     }
 
     /** Android TV Settings (what LineageParts KeyHandler opened for KEYCODE_SETTINGS). */

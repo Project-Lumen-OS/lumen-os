@@ -1008,25 +1008,6 @@ rules_custom=Свой
 af_init_failed=Не удалось запустить автофокус
 af_done_fine_tune=Фокус настроен. Для точной настройки удерживайте кнопку фокуса.
 
-@projector/strings_qpd.xml
-qpd_autocorrect=Автокоррекция
-qpd_autocorrect_value=Одним нажатием
-qpd_zoom=Зум
-qpd_bluetooth=Bluetooth
-qpd_network=Сеть
-qpd_usb=USB
-qpd_mirroring=Повтор экрана
-qpd_mirror_on=Повтор экрана (Miracast)
-qpd_mirror_ask=Спрашивать перед подключением
-qpd_mirror_name=Имя
-qpd_mirror_more=Все настройки повтора экрана
-qpd_picture_more=Настроить изображение
-qpd_sound_more=Все настройки звука
-qpd_boost_note=Максимум яркости. Вентиляторы будут громче.
-qpd_tip_picture=Выберите режим под то, что смотрите.
-qpd_tip_rear=Вы и проектор по разные стороны экрана.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=Повтор экрана
 settings_title=Повтор экрана

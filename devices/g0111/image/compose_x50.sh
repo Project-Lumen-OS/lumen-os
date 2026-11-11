@@ -36,6 +36,9 @@
 #                       /system/lib64/xgimi.hardware.gmpf-V1-ndk.so (system_lib_file)
 #   x50_nui.rc          the stock service nativeui (class main, oneshot, root, domain by the label), started only
 #                       when x50_blobs.sh verified both eye-protection files (sys.lumen.nui=ok)
+#   blobs_stock_dsu.sh  /system/etc/z9x/blobs_stock_dsu.sh (tools/devices/image, shared, sourced by x50_blobs.sh):
+#                       in a DSU trial on stock (no z9x_blobs partition) the same allow-listed files read-only from
+#                       the stock slot, checked and bound by x50_blobs.sh as from the partition
 #   X50EyeGuard         /system/app/X50EyeGuard/X50EyeGuard.apk: the eye-follow fail-safe (org.lumen.x50.eyeguard,
 #                       persistent): while the drawer is not verified and running it switches eye protection to the
 #                       full-screen mode. Built and signed with the
@@ -48,7 +51,29 @@
 #   X50PowerOverlay     /system/product/overlay/X50PowerOverlay.apk: static framework RRO above the Z9X one (short
 #                       POWER = Android sleep as stock's goToSleep, long POWER = power menu; gear and Source keys
 #                       routed to what the image has), built and signed like X50EyeGuard
-# Kept from the Z9X image unchanged, among others: Lumen Home, Setup, TV input, AirPlay, the other key layouts, the six
+#   LumenDsuInstall     (t8) /system/priv-app/LumenDsuInstall/LumenDsuInstall.apk (built and signed like
+#                       X50EyeGuard), /system/etc/init/lumen_dsu_install.rc and /system/etc/lumen/lumen_dsu_install.sh
+#                       (apps/LumenDsuInstall/image): "Install Lumen OS on this projector" from a DSU try into slot
+#                       b; every rc trigger needs ro.gsid.image_running=1 (checked below and by verify_tree_x50.py),
+#                       prop ro.lumen.dsu_install=1; a real write on the X50 needs the maintainer switch on the unit
+#                      ; the home-screen entry shows only during a DSU try
+#   X50Projector        (t11) /system/priv-app/X50Projector/X50Projector.apk (built and signed like X50EyeGuard) and
+#                       /system/product/etc/default-permissions/x50-projector.xml (apps/X50Projector/image): the gear-key
+#                       menu (stock focus / keystone functions, its own HAL allow list, verify_tree_x50.py MENU_APP) and
+#                       the remote pairing of t10 (the former X50Remote app: pairs the original XGIMI RC by itself and
+#                       reports it to Setup's remote step)
+#   platform set        (t12) framework-res and every other base APK on the Z9X release platform key, re-signed with the
+#                       g0111 platform key on the Mac (devices/g0111/image/sign_x50_base.py; keys never leave the Mac),
+#                       the four APEXes that hold such an APK (configinfrastructure, devicelock, ondevicepersonalization,
+#                       permission) rebuilt with it and signed with the g0111 APEX keys, and the mac_permissions files
+#                       naming the g0111 certificate (staged as IN/stage/base_signed, step 3b): the X50 apps signed with
+#                       the g0111 platform key are platform apps (X50Projector runs as android.uid.system), a Z9X-signed
+#                       app is not. APKs on the Z9X shared / media / networkstack / releasekey keys stay as in the base.
+#   X50TvInput          (t17) the HDMI input app (org.lumen.tvinput) built from devices/g0111/app/X50TvInput.layers
+#                       (apps/Z9xTvInput + the X50 source picker look), signed with the g0111 platform key on the Mac
+#                       (tools/devices/build_apps.sh g0111), in place of the base's /system/app/Z9xTvInput/Z9xTvInput.apk;
+#                       the base's oat files go (verify_tree_x50.py TVIN_APP)
+# Kept from the Z9X image unchanged, among others: Setup, AirPlay, the other key layouts, the six
 # 0-byte Codec2 placeholders, the Google add-on reader z9x_gapps, the OTA boot gate (off by prop, update_verifier as
 # stock).
 #
@@ -56,7 +81,12 @@
 # (owners, modes, labels and capabilities must survive). Started by tools/image/compose.sh from the Mac, which
 # stages OUT/in first:
 #   bash ~/x50-out/in/compose_x50.sh VARIANT [--stage-only | --image-only] [--dry-run]
-#   VARIANT       t1, t2, ...: ro.lumen.version=x50-VARIANT, TAG x50-VARIANT-net. There is no release variant.
+#   VARIANT       t1, t2, ...: ro.lumen.version=x50-VARIANT, TAG x50-VARIANT-net (test image, X50 Ultra only); or a
+#                 release version (1.0.10-beta1, 2026-11-11 public beta): the PUBLIC variant, TAG <prefix>-VERSION-pub,
+#                 ro.lumen.version=<prefix>-VERSION, no network adb (x50_prop_pub.txt / x50max_prop_pub.txt, no
+#                 x50_netadb.rc). X50_CODENAME picks the model: g0111 X50 Ultra (prefix x50, the default) or g0100
+#                 X50 Ultra Max (prefix x50max, its own keys, apps and platform set in IN/stage, model props
+#                 x50max_model_prop.txt from the stock G0100 file).
 #   --stage-only  steps 0-7: the staged tree OUT/TAG/root, checked against the base (verify_stage.log); no image
 #   --image-only  steps 8-11 on the staged tree of an earlier --stage-only run with the same BUILD_ID
 #   --dry-run     print TAG, build id and paths, then stop
@@ -69,8 +99,24 @@
 set -euo pipefail
 die() { echo "compose_x50: ERROR $*" >&2; exit 1; }
 V=${1:-}
-case $V in t[0-9]|t[0-9][0-9]) ;; *) die "usage: compose_x50.sh tN [--stage-only|--image-only] [--dry-run]" ;; esac
+PUBLIC=0
+case $V in
+  t[0-9]|t[0-9][0-9]) ;;
+  [0-9]*.[0-9]*.[0-9]*)
+    printf '%s' "$V" | grep -Eqx '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(beta|rc)[0-9]{1,2})?' || die "bad release version $V"
+    PUBLIC=1 ;;
+  *) die "usage: [X50_CODENAME=g0111|g0100] compose_x50.sh tN|X.Y.Z[-betaN] [--stage-only|--image-only] [--dry-run]" ;;
+esac
 shift
+C=${X50_CODENAME:-g0111}
+case $C in
+  g0111) MODEL=G0111; PREFIX=x50; STOCK_MODEL_SHA=16d66b7c2b99831c29c006d1cb6a04f0af555502a98fa40bacafc65ac3ff1525
+         MPROPF=x50_model_prop.txt; [ $PUBLIC = 1 ] && PROPF=x50_prop_pub.txt || PROPF=x50_prop.txt ;;
+  g0100) MODEL=G0100; PREFIX=x50max; STOCK_MODEL_SHA=8d9e70ce15505f85ae6492f1f96637e53806dc314f3363a3211f6527678289d2
+         MPROPF=x50max_model_prop.txt; PROPF=x50max_prop_pub.txt
+         [ $PUBLIC = 1 ] || die "the X50 Ultra Max (g0100) has no test variant: give a release version" ;;
+  *) die "X50_CODENAME $C is not an X50 model (g0111, g0100)" ;;
+esac
 MODE=all DRY=0
 for a in "$@"; do
   case $a in
@@ -82,7 +128,7 @@ for a in "$@"; do
 done
 OUT=${LUMEN_IMAGE_DIR:-$HOME/x50-out}
 IN=$OUT/in
-TAG=x50-$V-net
+if [ $PUBLIC = 1 ]; then TAG=$PREFIX-$V-pub; else TAG=x50-$V-net; fi
 T=$OUT/$TAG
 R=$T/root
 MB=$T/mnt_base
@@ -90,8 +136,8 @@ MN=$T/mnt_new
 IMG=$T/system_$TAG.img
 BASE=$OUT/base/z9x-1.0.9-anp-system.img
 DUMP=${X50_DUMP:-$HOME/devices/g0111_mt9681/work/fs}
-STOCK_MODEL=$DUMP/vendor/etc/xgimimodelname/G0111/build.prop
-STOCK_MODEL_SHA=16d66b7c2b99831c29c006d1cb6a04f0af555502a98fa40bacafc65ac3ff1525
+# the stock model props of this model (the dump holds every model's file: one XGIMI build for the whole line)
+STOCK_MODEL=$DUMP/vendor/etc/xgimimodelname/$MODEL/build.prop
 # the X50's own kernel (boot_a = boot_b in the v1.2.64 dump): the image's ART boot image needs its userfaultfd
 BOOT=${X50_BOOT:-$HOME/devices/g0111_mt9681/dump}
 BOOT_SHA=bf169bef493291a8cada10fa688ff53a62b22043e7e82fcfba9c4db76fc7d2f5
@@ -104,22 +150,42 @@ if [ "$MODE" = image ] && [ -z "${BUILD_ID:-}" ]; then
 fi
 BID=${BUILD_ID:-$(date -u +%Y%m%d%H%M)}
 case $BID in *[!A-Za-z0-9._-]*|'') die "BUILD_ID may hold only letters, digits and . _ -" ;; esac
-echo "compose_x50: TAG=$TAG build_id=lumen-x50-$V-$BID mode=$MODE out=$T"
+echo "compose_x50: $C ($MODEL) TAG=$TAG build_id=lumen-$PREFIX-$V-$BID mode=$MODE out=$T props=$PROPF + $MPROPF"
 [ $DRY = 1 ] && exit 0
 
-case $T in "$HOME"/*/x50-t*-net) ;; *) die "refusing the output folder $T" ;; esac
-for f in base.sha256 remove.txt x50_prop.txt x50_model_prop.txt x50_props.py x50_netadb.rc verify_tree_x50.py \
+case $T in "$HOME"/*/x50-t*-net|"$HOME"/*/x50-[0-9]*-pub|"$HOME"/*/x50max-[0-9]*-pub) ;; *) die "refusing the output folder $T" ;; esac
+for f in base.sha256 remove.txt "$PROPF" "$MPROPF" x50_props.py x50_netadb.rc verify_tree_x50.py \
          erofs_kcheck.py x50_blobs.sh x50_blobs.rc x50_blobs_allow.txt x50_nui.rc x50_apk_check.py x50_kconfig.py \
-         x50_power_keys.py; do
+         x50_power_keys.py x50_perm_pkgs.py apkinfo.py x50_diag.py blobs_stock_dsu.sh lumen_dsu_install.rc lumen_dsu_install.sh \
+         x50-projector.xml; do
   [ -f "$IN/$f" ] || die "missing input $IN/$f (tools/image/compose.sh g0111 stages it)"
 done
 APP_APK=stage/X50EyeGuard.apk
 [ -s "$IN/$APP_APK" ] || die "missing $IN/$APP_APK (build and sign it on the Mac: tools/devices/build_apps.sh g0111 build/g0111/stage)"
 OVL_APK=stage/X50PowerOverlay.apk
 [ -s "$IN/$OVL_APK" ] || die "missing $IN/$OVL_APK (build and sign it on the Mac: tools/devices/build_apps.sh g0111 build/g0111/stage)"
+DSU_APK=stage/LumenDsuInstall.apk
+[ -s "$IN/$DSU_APK" ] || die "missing $IN/$DSU_APK (build and sign it on the Mac: tools/devices/build_apps.sh g0111 build/g0111/stage)"
+RC_APK=stage/X50Projector.apk
+[ -s "$IN/$RC_APK" ] || die "missing $IN/$RC_APK (build and sign it on the Mac: tools/devices/build_apps.sh g0111 build/g0111/stage)"
+HOME_APK=stage/Z9xHome.apk
+[ -s "$IN/$HOME_APK" ] || die "missing $IN/$HOME_APK (build and sign it on the Mac: devices/g0111/image/build_home_x50.sh)"
+TVIN_APK=stage/X50TvInput.apk
+[ -s "$IN/$TVIN_APK" ] || die "missing $IN/$TVIN_APK (build and sign it on the Mac: tools/devices/build_apps.sh g0111 build/g0111/stage)"
+[ -s "$IN/stage/base_signed/base_signed.tsv" ] \
+  || die "missing $IN/stage/base_signed (the platform set on the g0111 keys: devices/g0111/image/sign_x50_base.py all on the Mac)"
+# the install-from-DSU rc: every trigger needs ro.gsid.image_running=1 (a normal boot of an installed Lumen OS starts
+# none of its services); nothing else but its three disabled oneshot services
+bad_on=$(grep -E '^on ' "$IN/lumen_dsu_install.rc" | grep -v -E '^on property:sys\.lumen\.dsu\.request=(check|install|reboot) && property:ro\.gsid\.image_running=1$' || true)
+[ -z "$bad_on" ] || die "lumen_dsu_install.rc has a trigger without ro.gsid.image_running=1: $bad_on"
+[ "$(grep -c '^service ' "$IN/lumen_dsu_install.rc")" = 3 ] && [ "$(grep -c '^    disabled$' "$IN/lumen_dsu_install.rc")" = 3 ] \
+  || die "lumen_dsu_install.rc is not the three disabled services of apps/LumenDsuInstall/image"
 # what the APK may do with the HAL, before anything is built from it (verify_tree_x50.py checks it again in the tree)
 mkdir -p "$T"
-python3 -I "$IN/x50_apk_check.py" "$IN/$APP_APK" --expect "$IN/verify_tree_x50.py" > "$T/apk_check.log" 2>&1 \
+# the model's own platform certificate (verify_tree_x50.py PLATFORM_CERTS)
+PCERT=$(python3 -I -c 'import re, sys; s = open(sys.argv[1]).read(); m = re.search(r"PLATFORM_CERTS = \{[^}]*\"%s\": \"([0-9a-f]{64})\"" % sys.argv[2], s); print(m.group(1) if m else "")' "$IN/verify_tree_x50.py" "$C")
+[ -n "$PCERT" ] || die "no platform certificate of $C in verify_tree_x50.py"
+python3 -I "$IN/x50_apk_check.py" "$IN/$APP_APK" --expect "$IN/verify_tree_x50.py" --cert "$PCERT" > "$T/apk_check.log" 2>&1 \
   || { cat "$T/apk_check.log"; die "$APP_APK is not the X50 HAL app verify_tree_x50.py allows"; }
 tail -n 1 "$T/apk_check.log"
 
@@ -138,7 +204,7 @@ got=$(sha256sum "$BASE" | awk '{print $1}')
 echo "base: ok $got"
 [ -f "$STOCK_MODEL" ] || die "no stock model props $STOCK_MODEL (X50_DUMP)"
 [ "$(sha256sum "$STOCK_MODEL" | awk '{print $1}')" = "$STOCK_MODEL_SHA" ] || die "$STOCK_MODEL is not the dumped v1.2.64 file"
-python3 -I "$IN/x50_props.py" model "$IN/x50_model_prop.txt" "$STOCK_MODEL" || die "x50_model_prop.txt is not the stock subset"
+python3 -I "$IN/x50_props.py" model "$IN/$MPROPF" "$STOCK_MODEL" || die "$MPROPF is not the stock subset of $MODEL"
 # the ART boot image of the base is compiled for the userfaultfd GC (verify_tree_x50.py checks boot.oat against
 # ro.dalvik.vm.enable_uffd_gc=true): the X50 kernel must have it, else odrefresh compiles the boot classpath before
 # zygote at the first boot (x50_kconfig.py); both dumped boot images, pinned
@@ -173,6 +239,68 @@ if [ "$MODE" != image ]; then
   done < "$IN/remove.txt"
   echo "stage: removed $n paths"
 
+  # 3b. t12: the platform set on the g0111 keys (devices/g0111/image/sign_x50_base.py base, signed on the Mac, staged
+  #     as IN/stage/base_signed): framework-res and every other base APK on the Z9X release platform key re-signed with
+  #     the g0111 platform key, the four APEXes holding such an APK rebuilt and signed with the g0111 APEX keys, the
+  #     mac_permissions files naming the g0111 certificate. Every row of base_signed.tsv is installed over its base copy
+  #     only when the base file is the one the Mac read (base sha256) and the staged file the one it wrote (signed
+  #     sha256); owner, mode and label stay the base path's. A row whose base file is a .capex installs the signed
+  #     uncompressed .apex in its place (same owner, mode, label) and removes the .capex (as the HB composer does).
+  sudo python3 -I - "$IN/stage/base_signed" "$MB" "$R" <<'PY'
+import hashlib, os, shutil, sys
+sig, base, top = sys.argv[1:4]
+def sha(p):
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for b in iter(lambda: f.read(1 << 20), b""):
+            h.update(b)
+    return h.hexdigest()
+def fail(m):
+    sys.exit("ERROR: base_signed: " + m)
+rows, kinds = [], {}
+for n, line in enumerate(open(os.path.join(sig, "base_signed.tsv")), 1):
+    if line.startswith("#") or not line.strip():
+        continue
+    p = line.rstrip("\n").split("\t")
+    if len(p) != 5:
+        fail("base_signed.tsv:%d: expected 5 columns" % n)
+    path, kind, old, new, rep = p
+    for x in (path, rep):
+        if not x.startswith("system/") or ".." in x.split("/") or "//" in x:
+            fail("base_signed.tsv:%d: bad path %r" % (n, x))
+    if kind not in ("apk", "apex", "mac_permissions"):
+        fail("base_signed.tsv:%d: unknown kind %r" % (n, kind))
+    if rep != path and not (kind == "apex" and rep.endswith(".capex") and path == rep[:-len(".capex")] + ".apex"):
+        fail("%s replaces %s: only a .capex may be replaced by its .apex" % (path, rep))
+    src, bf, dst, old_dst = os.path.join(sig, path), os.path.join(base, rep), os.path.join(top, path), os.path.join(top, rep)
+    if not os.path.isfile(src) or sha(src) != new:
+        fail("%s: not the file sign_x50_base.py wrote (signed sha256 %s)" % (path, new))
+    if not os.path.isfile(bf) or os.path.islink(bf) or sha(bf) != old:
+        fail("%s: the base file is not the one the Mac signed (base sha256 %s)" % (rep, old))
+    if not os.path.isfile(old_dst) or os.path.islink(old_dst):
+        fail("%s: not in the composed tree" % rep)
+    if rep != path and os.path.lexists(dst):
+        fail("%s: already in the composed tree" % path)
+    rows.append((path, rep, src, dst, old_dst))
+    kinds[kind] = kinds.get(kind, 0) + 1
+paths = {r[0] for r in rows}
+for must in ("system/framework/framework-res.apk", "system/etc/selinux/plat_mac_permissions.xml",
+             "system/apex/com.android.permission.apex"):
+    if must not in paths:
+        fail("%s is not in the signed set: not a complete sign_x50_base.py base output" % must)
+for path, rep, src, dst, old_dst in rows:
+    st = os.lstat(old_dst)
+    attrs = {k: os.getxattr(old_dst, k, follow_symlinks=False) for k in os.listxattr(old_dst, follow_symlinks=False)}
+    shutil.copyfile(src, dst)
+    os.chown(dst, st.st_uid, st.st_gid)
+    os.chmod(dst, st.st_mode & 0o7777)
+    for k, v in attrs.items():
+        os.setxattr(dst, k, v, follow_symlinks=False)
+    if rep != path:
+        os.unlink(old_dst)
+print("base_signed: %d files installed over the base (%s)" % (len(rows), ", ".join("%s %d" % kv for kv in sorted(kinds.items()))))
+PY
+
   # 4. otacerts.zip without a certificate, written into the base file (inode, owner, mode, label kept)
   sudo python3 -I - "$R/system/etc/security/otacerts.zip" <<'PY'
 import io, sys, zipfile
@@ -185,7 +313,7 @@ print("stage: otacerts.zip now holds no certificate (%d bytes)" % len(b.getvalue
 PY
 
   # 5. the two build.prop files, edited in place
-  sudo python3 -I "$IN/x50_props.py" apply "$IN/x50_prop.txt" "$IN/x50_model_prop.txt" \
+  sudo python3 -I "$IN/x50_props.py" apply "$IN/$PROPF" "$IN/$MPROPF" \
     "$R/system/build.prop" "$R/system/product/etc/build.prop" "$V" "$BID"
 
   # 6. network adb of the test image; the X50 blobs reader with the eye-protection drawer and its placeholders
@@ -195,11 +323,13 @@ PY
     sudo python3 -I -c 'import os, sys; os.setxattr(sys.argv[1], "security.selinux", sys.argv[2].encode() + b"\0")' \
       "$R/$2" "$6"
   }
-  put x50_netadb.rc system/etc/init/x50_netadb.rc 0644 0 0 u:object_r:system_file:s0
+  # the public variant has no network adb (verify_tree_x50.py refuses the file there)
+  [ $PUBLIC = 1 ] || put x50_netadb.rc system/etc/init/x50_netadb.rc 0644 0 0 u:object_r:system_file:s0
   put x50_blobs.rc system/etc/init/x50_blobs.rc 0644 0 0 u:object_r:system_file:s0
   put x50_nui.rc system/etc/init/x50_nui.rc 0644 0 0 u:object_r:system_file:s0
   put x50_blobs.sh system/etc/z9x/x50_blobs.sh 0755 0 0 u:object_r:system_file:s0
   put x50_blobs_allow.txt system/etc/z9x/x50_blobs_allow.txt 0644 0 0 u:object_r:system_file:s0
+  put blobs_stock_dsu.sh system/etc/z9x/blobs_stock_dsu.sh 0644 0 0 u:object_r:system_file:s0
   put - system/bin/nativeui 0755 0 2000 u:object_r:nativeui_main_exec:s0
   put - system/lib64/xgimi.hardware.gmpf-V1-ndk.so 0644 0 0 u:object_r:system_lib_file:s0
   # the eye-follow fail-safe, a persistent system app (the system partition: /system/app)
@@ -211,21 +341,58 @@ PY
   # press sleep and a long press open the power menu
   sudo python3 -I "$IN/x50_power_keys.py" apply "$R/system/product/usr/keylayout"
   put "$OVL_APK" system/product/overlay/X50PowerOverlay.apk 0644 0 0 u:object_r:system_file:s0
+  # t12 (t11 review P0.3): Lumen Home of this tree (talks to org.lumen.x50.projector on G0111), signed with the g0111
+  # platform key on the Mac, over the base's (and its re-signed copy of step 3b); the base's oat files were compiled
+  # for the base APK and go (verify_tree_x50.py HOME_APP)
+  put "$HOME_APK" system/priv-app/Z9xHome/Z9xHome.apk 0644 0 0 u:object_r:system_file:s0
+  sudo rm -rf "$R/system/priv-app/Z9xHome/oat"
+  # t17 (t16 live BUG C): the HDMI input app of this tree with the X50 source picker look (devices/g0111/app/
+  # X50TvInput.layers), same package org.lumen.tvinput, over the base's (and its re-signed copy of step 3b); the base's
+  # oat files were compiled for the base APK and go (verify_tree_x50.py TVIN_APP)
+  put "$TVIN_APK" system/app/Z9xTvInput/Z9xTvInput.apk 0644 0 0 u:object_r:system_file:s0
+  sudo rm -rf "$R/system/app/Z9xTvInput/oat"
+  # t12: the boot logger watches the X50 gmpf HAL service (xgimi_middle, not gmpf_main) and silences the FaceCutoutBin
+  # flood in its logcat (in place, x50_diag.py; verify_tree_x50.py checks the exact edit)
+  sudo python3 -I "$IN/x50_diag.py" apply "$R/system/etc/xgimi/z9x_diag.sh"
+  # install from a DSU try (t8): the app, its init rc and its root script
+  for d in system/priv-app/LumenDsuInstall system/etc/lumen; do
+    sudo install -d -o 0 -g 0 -m 0755 "$R/$d"
+    sudo python3 -I -c 'import os, sys; os.setxattr(sys.argv[1], "security.selinux", sys.argv[2].encode() + b"\0")' \
+      "$R/$d" u:object_r:system_file:s0
+  done
+  put "$DSU_APK" system/priv-app/LumenDsuInstall/LumenDsuInstall.apk 0644 0 0 u:object_r:system_file:s0
+  put lumen_dsu_install.rc system/etc/init/lumen_dsu_install.rc 0644 0 0 u:object_r:system_file:s0
+  put lumen_dsu_install.sh system/etc/lumen/lumen_dsu_install.sh 0755 0 0 u:object_r:system_file:s0
+  # the projector menu with the remote pairing (t11; in t10 the pairing alone was the X50Remote app): the priv-app
+  # and its runtime Bluetooth permissions
+  sudo install -d -o 0 -g 0 -m 0755 "$R/system/priv-app/X50Projector"
+  sudo python3 -I -c 'import os, sys; os.setxattr(sys.argv[1], "security.selinux", sys.argv[2].encode() + b"\0")' \
+    "$R/system/priv-app/X50Projector" u:object_r:system_file:s0
+  put "$RC_APK" system/priv-app/X50Projector/X50Projector.apk 0644 0 0 u:object_r:system_file:s0
+  put x50-projector.xml system/product/etc/default-permissions/x50-projector.xml 0644 0 0 u:object_r:system_file:s0
 
   # 7. the staged tree against the base
-  sudo python3 -I "$IN/verify_tree_x50.py" "$MB" "$R" "$IN" "$V" "$BID" > "$T/verify_stage.log" 2>&1 \
+  sudo python3 -I "$IN/verify_tree_x50.py" "$MB" "$R" "$IN" "$V" "$BID" "$C" "$PROPF" "$MPROPF" > "$T/verify_stage.log" 2>&1 \
     || { cat "$T/verify_stage.log"; die "the staged tree does not verify"; }
   tail -n 3 "$T/verify_stage.log"
-  { echo "tag=$TAG"; echo "bid=$BID"; echo "build_id=lumen-x50-$V-$BID"; echo "base_sha256=$got"
+  { echo "tag=$TAG"; echo "bid=$BID"; echo "build_id=lumen-$PREFIX-$V-$BID"; echo "codename=$C"; echo "model=$MODEL"
+    echo "public=$PUBLIC"; echo "base_sha256=$got"
     echo "base_build_id=$BASE_BUILD_ID"; echo "stock_model_sha256=$STOCK_MODEL_SHA"
-    echo "inputs_sha256=$(cd "$IN" && cat base.sha256 remove.txt x50_prop.txt x50_model_prop.txt x50_props.py \
+    echo "inputs_sha256=$(cd "$IN" && cat base.sha256 remove.txt "$PROPF" "$MPROPF" x50_props.py \
       x50_netadb.rc verify_tree_x50.py x50_blobs.sh x50_blobs.rc x50_blobs_allow.txt x50_nui.rc x50_apk_check.py \
-      x50_kconfig.py x50_power_keys.py "$APP_APK" "$OVL_APK" | sha256sum | awk '{print $1}')"
+      x50_kconfig.py x50_power_keys.py x50_perm_pkgs.py apkinfo.py x50_diag.py blobs_stock_dsu.sh lumen_dsu_install.rc \
+      lumen_dsu_install.sh x50-projector.xml "$APP_APK" "$OVL_APK" "$DSU_APK" "$RC_APK" "$HOME_APK" "$TVIN_APK" \
+      stage/base_signed/base_signed.tsv | sha256sum | awk '{print $1}')"
     echo "kernel=boot_a,boot_b $BOOT_SHA CONFIG_USERFAULTFD=y"
     echo "art_gc=$(sed -n 's/^verify_tree_x50: ART //p' "$T/verify_stage.log")"
     echo "blobs_set=$(sed -n 's/^set=//p' "$IN/x50_blobs_allow.txt")"
     echo "app=system/app/X50EyeGuard/X50EyeGuard.apk $(sha256sum "$IN/$APP_APK" | awk '{print $1}')"
-    echo "overlay=system/product/overlay/X50PowerOverlay.apk $(sha256sum "$IN/$OVL_APK" | awk '{print $1}')"; } > "$T/STAGE_INFO.txt"
+    echo "overlay=system/product/overlay/X50PowerOverlay.apk $(sha256sum "$IN/$OVL_APK" | awk '{print $1}')"
+    echo "dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk $(sha256sum "$IN/$DSU_APK" | awk '{print $1}')"
+    echo "menu=system/priv-app/X50Projector/X50Projector.apk $(sha256sum "$IN/$RC_APK" | awk '{print $1}')"
+    echo "home=system/priv-app/Z9xHome/Z9xHome.apk $(sha256sum "$IN/$HOME_APK" | awk '{print $1}')"
+    echo "tvinput=system/app/Z9xTvInput/Z9xTvInput.apk $(sha256sum "$IN/$TVIN_APK" | awk '{print $1}')"
+    echo "platform_set=$C $(sha256sum "$IN/stage/base_signed/base_signed.tsv" | awk '{print $1}')"; } > "$T/STAGE_INFO.txt"
   echo "stage: OK ($T/STAGE_INFO.txt)"
   [ "$MODE" = stage ] && exit 0
 fi
@@ -246,7 +413,7 @@ echo "erofs_kcheck: $(tail -n 1 "$T/kcheck.log")"
 
 # 9. the image, mounted, against the base
 sudo mount -t erofs -o loop,ro "$IMG" "$MN"
-sudo python3 -I "$IN/verify_tree_x50.py" "$MB" "$MN" "$IN" "$V" "$BID" > "$T/verify.log" 2>&1 \
+sudo python3 -I "$IN/verify_tree_x50.py" "$MB" "$MN" "$IN" "$V" "$BID" "$C" "$PROPF" "$MPROPF" > "$T/verify.log" 2>&1 \
   || { cat "$T/verify.log"; die "the image does not verify"; }
 tail -n 3 "$T/verify.log"
 

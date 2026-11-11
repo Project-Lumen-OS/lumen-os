@@ -1,0 +1,14 @@
+# X50 Ultra Max (g0100, 2026-11-11): the X50 Ultra's per-app exceptions as they are (the same firmware build and the
+# same stock settings tree: the design notes); kept equal to devices/g0111/research/unbanned_x50projector.tsv
+# unbanned_x50projector.tsv: the maintainer's per-app exceptions to devices/goat_elegant/research/banned.tsv for apps/X50Projector
+# ONLY (decision 2026-11-10: the X50 menu gets the light source level, the zoom and lens shift screen and the whole
+# keystone reset with exact stock parity; ambient light getter and laser current tables stay out). Read by
+# tools/devices/check_aidl_hal.py --unbanned, which tools/devices/check_hal.py passes only for the app named in
+# devices/g0111/device.conf hal_unbanned. Each row: the app, the BANNED row (service, code, method) and its argument
+# range (args, org.lumen.hal.ArgSpec), which must equal the Call in Gmpf.java and the allow-list row; the shared
+# transport enforces it on the device. Nothing else of banned.tsv changes: for every other app and device these rows
+# stay BANNED (tools/devices/test/check_aidl_hal_unban_test.sh).
+# app	service	code	method	args	reason
+apps/X50Projector	DisplayManager	11	correctKeystone	args:50	stock setLowConfigureKeyStoneValue(50) of the keystone reset (newsettings KeyStoneManager.resetKeyStone 286-334)
+apps/X50Projector	ProjectorFocusManager	88	setTiltShiftMove	args:1..5,f:0;13,f:0	the stock lens shift page (TiltShiftLensViewModel 152-243, held key = move, UP = stop 5) and the reset's shift home (13, 0f)
+apps/X50Projector	ProjectorFocusManager	3	autoFocus	args:47	the stock auto focus after an optical zoom change (ZoomStateView.release -> KeyStoneManager.autoFocus = autoFocus((byte) 47))

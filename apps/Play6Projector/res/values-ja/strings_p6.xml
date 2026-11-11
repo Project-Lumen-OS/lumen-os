@@ -25,6 +25,7 @@
     <string name="p6_game_on">ゲームモード オン</string>
     <string name="p6_game_off">ゲームモード オフ</string>
     <string name="p6_smart_af_desc">プロジェクターを動かした後、映像のピントを合わせ直します。</string>
+    <string name="p6_af_fine_tune">ピント合わせが完了しました。フォーカスキーを長押しすると微調整できます。</string>
     <string name="p6_lamp_hint">バッテリー駆動中は、プロジェクターが省電モードをオンにして明るさを下げます。明るさを上げると省電モードはオフになります。</string>
     <string name="p6_eco">省電モード</string>
     <string name="p6_eco_on_title">省電モードをオンにしますか？</string>

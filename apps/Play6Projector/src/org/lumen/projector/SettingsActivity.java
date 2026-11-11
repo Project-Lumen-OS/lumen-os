@@ -6,15 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemProperties;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.lumen.projector.battery.Battery;
@@ -22,6 +20,8 @@ import org.lumen.projector.battery.BatteryNotices;
 import org.lumen.projector.diag.Probe;
 import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.settings.Kit;
+import org.lumen.projector.settings.Shell;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -44,6 +44,9 @@ import java.util.Map;
  *    state, battery/Battery), the vendor power listener (235 / 242) and the cards (battery/BatteryNotices),
  *    212, the focus motor and the 404 feature list (on p6-long, with support_battery next to
  *    Device.hasBattery()).
+ * Lumen OS 1.0.9 look (decision 2026-11-10, Q1: the Z9X change of 0e3f9252 ported): sections in a rail on
+ * the left, the "now" actions as large tiles, settings in cards (settings.Kit, settings.Shell, taken from
+ * apps/Z9xProjector by the recipe); the rows, HAL calls and rules of the Play 6 stay as they were.
  * All HAL I/O goes through the Hal facade (p6-hal / p6-long); results come back on the main thread.
  * Toggles are read on open and written ONLY on click. Not on the Play 6: interface resolution, problem
  * reports, fit to screen and obstacle avoidance, autofocus at power-on.
@@ -56,13 +59,12 @@ public final class SettingsActivity extends Activity {
     /** The automation toggles of the Play 6. */
     private enum Toggle { POWER_ON_AK, MOVE_AK, SMART_AF, BOOT_MUSIC }
 
-    private LinearLayout list;
+    private Shell shell;
     private View keystoneAnchor;
-    private final Map<Toggle, TextView> toggleValues = new EnumMap<>(Toggle.class);
-    private final Map<Toggle, View> toggleRows = new EnumMap<>(Toggle.class);
+    private final Map<Toggle, Kit.Row> toggleRows = new EnumMap<>(Toggle.class);
     private final Map<Toggle, Boolean> toggleState = new EnumMap<>(Toggle.class);
-    private TextView slot3Value, slot4Value, launcherValue, bootSourceValue, cecWakeValue;
-    private TextView voiceLang, voiceSpeak, voiceKey;
+    private Kit.Row slot3Row, slot4Row, launcherRow, bootSourceRow, cecWakeRow;
+    private Kit.Row voiceLang, voiceSpeak, voiceKey;
     private LinearLayout diagBox;
     private int diagGen;
 
@@ -93,6 +95,12 @@ public final class SettingsActivity extends Activity {
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        if (shell != null && shell.handleKey(e)) return true;
+        return super.dispatchKeyEvent(e);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         refreshToggles();
@@ -102,163 +110,140 @@ public final class SettingsActivity extends Activity {
     }
 
     // ------------------------------------------------------------------ UI building
-    private int dp(float v) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, getResources().getDisplayMetrics()));
-    }
-
     private void buildUi() {
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        scroll.setBackgroundColor(getColor(R.color.bg));
-        list = new LinearLayout(this);
-        list.setOrientation(LinearLayout.VERTICAL);
-        list.setPadding(dp(96), dp(32), dp(96), dp(48));
-        scroll.addView(list, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        String model = Build.MODEL == null ? "" : Build.MODEL;
+        String lumen = SystemProperties.get("ro.lumen.version", "");
+        CharSequence subline = lumen.isEmpty() ? getString(R.string.version_line, versionName())
+                : getString(R.string.s2_brand_line, model, lumen);
+        shell = new Shell(this, getString(R.string.app_name), subline);
 
-        TextView title = text(getString(R.string.app_name), 30, R.color.text, true);
-        list.addView(title);
-        TextView ver = text(getString(R.string.version_line, versionName()), 14, R.color.text_dim, false);
-        ver.setPadding(0, 0, 0, dp(12));
-        list.addView(ver);
+        // Focus and keystone: the "now" actions as tiles (no fit to screen on the Play 6), the automation in cards
+        LinearLayout focus = shell.section("focus", R.drawable.ic_s2_focus, getString(R.string.s2_sec_focus));
+        Kit.heading(focus, getString(R.string.s2_now), getString(R.string.s2_now_title));
+        View af = tile(R.drawable.ic_s2_t_af, R.string.s2_t_af, R.string.s2_t_af_sub, v -> Hal.requestAutofocus(this));
+        keystoneAnchor = tile(R.drawable.ic_s2_t_kst, R.string.s2_t_kst, R.string.s2_t_kst_sub, v -> Hal.requestKeystone(this));
+        View manual = tile(R.drawable.ic_s2_t_manual, R.string.s2_t_manual, R.string.s2_t_manual_sub,
+                v -> ManualFocusActivity.open(this));
+        focus.addView(Kit.tileRow(this, af, keystoneAnchor, manual));
+        focus.addView(Kit.space(this, 20));
+        LinearLayout left = Kit.card(this), right = Kit.card(this);
+        toggle(left, Toggle.POWER_ON_AK, R.string.tg_power_on_ak, R.string.s2_d_power_on_ak);       // 553 / 552
+        toggle(right, Toggle.MOVE_AK, R.string.tg_move_ak, R.string.s2_d_move);                      // 586 / 585
+        toggle(right, Toggle.SMART_AF, R.string.panel_smart_af, 0);       // IGmpf2 63 / 64 + 587, hidden while closed
+        focus.addView(Kit.columns(this, left, right));
 
-        header(R.string.sec_focus);
-        action(R.string.act_af_now, v -> Hal.requestAutofocus(this));
-        action(R.string.act_manual_focus, v -> ManualFocusActivity.open(this));
-
-        header(R.string.sec_keystone);
-        keystoneAnchor = action(R.string.act_kst_now, v -> Hal.requestKeystone(this));
-
-        header(R.string.sec_auto);
-        toggle(Toggle.POWER_ON_AK, R.string.tg_power_on_ak);
-        toggle(Toggle.MOVE_AK, R.string.tg_move_ak);
-        toggle(Toggle.SMART_AF, R.string.panel_smart_af);
-        // stock parity 2026-10-21: General > Advanced > Power on / off > boot music (IGmpf 420 / 419)
-        toggle(Toggle.BOOT_MUSIC, R.string.tg_power_on_music);
-        // stock parity 2026-10-21: Signal > Boot source (source/BootSource)
-        bootSourceValue = valueRow(R.string.p6_boot_source, v -> pickBootSource());
+        // Power on: stock parity 2026-10-21 (General > Advanced > Power on / off > boot music, IGmpf 420 / 419;
+        // Signal > Boot source; Signal > HDMI device controls the projector, cec/CecPolicy, shown once read; General >
+        // About > Device info > temperature, IGmpf 438, read only, shown once 438 answered: rule)
+        LinearLayout power = shell.section("power", R.drawable.ic_s2_power, getString(R.string.s2_sec_power));
+        Kit.heading(power, null, getString(R.string.s2_sec_power));
+        LinearLayout pc = Kit.card(this);
+        toggle(pc, Toggle.BOOT_MUSIC, R.string.tg_power_on_music, R.string.s2_d_music);
+        bootSourceRow = valueRow(pc, R.string.p6_boot_source, R.string.s2_d_boot, v -> pickBootSource());
         refreshBootSource();
-        // stock parity 2026-10-21: Signal > HDMI device controls the projector (cec/CecPolicy); shown once read
-        cecWakeValue = valueRow(R.string.p6_cec_wake, v -> toggleCecWake());
-        ((View) cecWakeValue.getParent()).setVisibility(View.GONE);
+        cecWakeRow = valueRow(pc, R.string.p6_cec_wake, 0, v -> toggleCecWake());
+        cecWakeRow.setShown(false);
         refreshCecWake();
+        tempRow = valueRow(pc, R.string.p6_temperature, 0, v -> refreshTemperature());
+        tempRow.setShown(false);
+        power.addView(pc);
 
-        // stock parity 2026-10-21: General > About > Device info > temperature (IGmpf 438), read only
-        tempRow = valueRow(R.string.p6_temperature, v -> refreshTemperature());
-        ((View) tempRow.getParent()).setVisibility(View.GONE);         // shown once 438 answered (rule)
-
-        header(R.string.sec_keys);
-        slot3Value = valueRow(R.string.key_slot3, v -> pickApp(3));
-        slot4Value = valueRow(R.string.key_slot4, v -> pickApp(4));
+        // Remote and keys
+        LinearLayout remote = shell.section("remote", R.drawable.ic_s2_remote, getString(R.string.s2_sec_remote));
+        Kit.heading(remote, null, getString(R.string.s2_sec_remote));
+        LinearLayout rc = Kit.card(this);
+        slot3Row = valueRow(rc, R.string.key_slot3, R.string.s2_d_slot, v -> pickApp(3));
+        slot4Row = valueRow(rc, R.string.key_slot4, R.string.s2_d_slot, v -> pickApp(4));
         // Pair a new / second / reset remote (120 s fast LE scan; RemoteAutoPair.startPairing).
-        action(R.string.remote_pair_action,
+        actionRow(rc, R.string.remote_pair_action, R.string.s2_d_pair,
                 v -> org.lumen.projector.remote.RemoteAutoPair.startPairing(getApplicationContext()));
-
-        // The way back to Lumen Home in classic mode (gear long press -> Projector)
-        if (org.lumen.projector.home.LauncherSwitcher.choiceAvailable(this)) {
-            launcherValue = valueRow(R.string.launcher_row, v -> pickLauncher());
-        }
+        remote.addView(rc);
 
         // Lumen OS 1.0.5: the voice assistant (mic key), only where a speech recogniser exists
         if (org.lumen.projector.voice.Assistant.available(this)) {
-            header(R.string.voice_settings);
-            voiceLang = valueRow(R.string.voice_language, v -> org.lumen.projector.voice.VoiceSettings.pickLanguage(this, this::refreshVoice));
-            voiceSpeak = valueRow(R.string.voice_speak, v -> org.lumen.projector.voice.VoiceSettings.toggleSpeak(this, this::refreshVoice));
-            voiceKey = valueRow(R.string.voice_key, v -> org.lumen.projector.voice.VoiceSettings.editKey(this, this::refreshVoice));
+            LinearLayout voice = shell.section("voice", R.drawable.ic_s2_mic, getString(R.string.voice_settings));
+            Kit.heading(voice, null, getString(R.string.voice_settings));
+            LinearLayout vc = Kit.card(this);
+            voiceLang = valueRow(vc, R.string.voice_language, R.string.s2_d_voice_lang,
+                    v -> org.lumen.projector.voice.VoiceSettings.pickLanguage(this, this::refreshVoice));
+            voiceSpeak = valueRow(vc, R.string.voice_speak, R.string.s2_d_voice_speak,
+                    v -> org.lumen.projector.voice.VoiceSettings.toggleSpeak(this, this::refreshVoice));
+            voiceKey = valueRow(vc, R.string.voice_key, R.string.s2_d_voice_key,
+                    v -> org.lumen.projector.voice.VoiceSettings.editKey(this, this::refreshVoice));
+            voice.addView(vc);
             refreshVoice();
         }
 
+        // Home screen: the way back to Lumen Home in classic mode (gear long press -> Projector)
+        LinearLayout home = shell.section("home", R.drawable.ic_s2_home, getString(R.string.s2_sec_home));
+        Kit.heading(home, null, getString(R.string.s2_sec_home));
+        LinearLayout hc = Kit.card(this);
+        if (org.lumen.projector.home.LauncherSwitcher.choiceAvailable(this)) {
+            launcherRow = valueRow(hc, R.string.launcher_row, R.string.s2_d_launcher, v -> pickLauncher());
+        }
+        if (hc.getChildCount() > 0) home.addView(hc);
+        shell.hideIfEmpty(home);
+
+        // Help: licences of third party material in this app (the shared menu module carries the game menu controller
+        // models, which need a CC BY credit, also where the model has no game menu); the Z9X row of 2026-11-11
+        LinearLayout help = shell.section("help", R.drawable.ic_s2_help, getString(R.string.s2_sec_help));
+        Kit.heading(help, null, getString(R.string.s2_sec_help));
+        LinearLayout gc = Kit.card(this);
+        actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));
+        help.addView(gc);
+
         if (Device.isTestBuild()) {                     // Diagnostics: test builds only
-            header(R.string.sec_diag);
-            action(R.string.act_refresh, v -> refreshDiagnostics());
-            diagBox = new LinearLayout(this);
-            diagBox.setOrientation(LinearLayout.VERTICAL);
-            list.addView(diagBox);
+            LinearLayout diag = shell.section("diag", R.drawable.ic_s2_diag, getString(R.string.sec_diag));
+            Kit.heading(diag, null, getString(R.string.sec_diag));
+            LinearLayout dc = Kit.card(this);
+            actionRow(dc, R.string.act_refresh, R.string.s2_d_refresh, v -> refreshDiagnostics());
+            diag.addView(dc);
+            diag.addView(Kit.space(this, 14));
+            diagBox = Kit.card(this);
+            diagBox.setPadding(Kit.dp(this, 4), Kit.dp(this, 8), Kit.dp(this, 4), Kit.dp(this, 8));
+            diag.addView(diagBox);
         }
 
-        setContentView(scroll);
+        shell.attach(getString(R.string.s2_hint_ok), getString(R.string.s2_hint_nav));
     }
 
-    private TextView text(String s, int sp, int colorRes, boolean bold) {
-        TextView t = new TextView(this);
-        t.setText(s);
-        t.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
-        t.setTextColor(getColor(colorRes));
-        if (bold) t.setTypeface(Typeface.DEFAULT_BOLD);
-        return t;
+    private View tile(int icon, int title, int sub, View.OnClickListener l) {
+        return Kit.tile(this, icon, getString(title), getString(sub), l);
     }
 
-    private void header(int res) {
-        TextView h = text(getString(res), 15, R.color.accent, true);
-        h.setPadding(dp(4), dp(20), 0, dp(6));
-        list.addView(h);
-    }
-
-    private LinearLayout row() {
-        LinearLayout r = new LinearLayout(this);
-        r.setOrientation(LinearLayout.HORIZONTAL);
-        r.setGravity(Gravity.CENTER_VERTICAL);
-        r.setFocusable(true);
-        r.setClickable(true);
-        r.setBackgroundResource(R.drawable.row_bg);
-        r.setPadding(dp(20), dp(12), dp(20), dp(12));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.bottomMargin = dp(4);
-        list.addView(r, lp);
+    /** sub 0: a Play 6 row without an explanation line (no new translations for it yet). */
+    private Kit.Row valueRow(LinearLayout card, int title, int sub, View.OnClickListener l) {
+        Kit.Row r = Kit.valueRow(this, getString(title), sub == 0 ? null : getString(sub)).onClick(l);
+        Kit.add(card, r);
         return r;
     }
 
-    private View action(int res, View.OnClickListener l) {
-        LinearLayout r = row();
-        TextView t = text(getString(res), 18, R.color.text, false);
-        r.addView(t, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        r.setOnClickListener(v -> {
-            try { l.onClick(v); } catch (Throwable e) { Log.w(TAG, "click: " + e); }
-        });
+    private Kit.Row actionRow(LinearLayout card, int title, int sub, View.OnClickListener l) {
+        Kit.Row r = Kit.actionRow(this, getString(title), sub == 0 ? null : getString(sub)).onClick(l);
+        Kit.add(card, r);
         return r;
+    }
+
+    private void toggle(LinearLayout card, Toggle t, int title, int sub) {
+        Kit.Row r = Kit.switchRow(this, getString(title), sub == 0 ? null : getString(sub)).onClick(v -> onToggleClick(t));
+        Kit.add(card, r);
+        r.sw.setOn(null);
+        toggleRows.put(t, r);
     }
 
     private void refreshVoice() {
         if (voiceLang == null) return;
-        voiceLang.setText(org.lumen.projector.voice.VoiceSettings.languageValue(this));
-        voiceSpeak.setText(org.lumen.projector.voice.VoiceSettings.speakValue(this));
-        voiceKey.setText(org.lumen.projector.voice.VoiceSettings.keyValue(this));
-    }
-
-    private TextView valueRow(int res, View.OnClickListener l) {
-        LinearLayout r = row();
-        r.addView(text(getString(res), 18, R.color.text, false), new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView value = text("…", 16, R.color.text_dim, false);
-        r.addView(value);
-        r.setOnClickListener(v -> {
-            try { l.onClick(v); } catch (Throwable e) { Log.w(TAG, "click: " + e); }
-        });
-        return value;
-    }
-
-    private void toggle(Toggle t, int res) {
-        LinearLayout r = row();
-        r.addView(text(getString(res), 18, R.color.text, false), new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView value = text("…", 16, R.color.text_dim, false);
-        r.addView(value);
-        toggleValues.put(t, value);
-        toggleRows.put(t, r);
-        r.setOnClickListener(v -> onToggleClick(t));
+        voiceLang.value.setText(org.lumen.projector.voice.VoiceSettings.languageValue(this));
+        voiceSpeak.value.setText(org.lumen.projector.voice.VoiceSettings.speakValue(this));
+        voiceKey.value.setText(org.lumen.projector.voice.VoiceSettings.keyValue(this));
     }
 
     private void focusSection(Intent i) {
         String s = i == null ? null : i.getStringExtra(EXTRA_SECTION);
         View target = null;
         if (SECTION_KEYSTONE.equals(s)) target = keystoneAnchor;
-        if (target == null || !target.isFocusable()) {
-            for (int k = 0; k < list.getChildCount(); k++) {
-                View c = list.getChildAt(k);
-                if (c.isFocusable()) { target = c; break; }
-            }
-        }
-        final View f = target;
-        if (f != null) {
-            f.post(f::requestFocus);                    // ScrollView scrolls to the focused row
-        }
+        if (target != null && target.isFocusable()) shell.focusView(target);
+        else shell.focusSection(null);
     }
 
     // ------------------------------------------------------------------ toggles
@@ -288,17 +273,15 @@ public final class SettingsActivity extends Activity {
 
     private void showToggles(Map<Toggle, Boolean> m) {
         if (isFinishing() || isDestroyed()) return;
-        View smart = toggleRows.get(Toggle.SMART_AF);
-        if (smart != null) smart.setVisibility(Hal.hasGmpf2() ? View.VISIBLE : View.GONE);
-        View music = toggleRows.get(Toggle.BOOT_MUSIC);              // hidden when 420 does not answer (rule)
-        if (music != null) music.setVisibility(m != null && m.get(Toggle.BOOT_MUSIC) != null ? View.VISIBLE : View.GONE);
+        Kit.Row smart = toggleRows.get(Toggle.SMART_AF);
+        if (smart != null) smart.setShown(Hal.hasGmpf2());
+        Kit.Row music = toggleRows.get(Toggle.BOOT_MUSIC);            // hidden when 420 does not answer (rule)
+        if (music != null) music.setShown(m != null && m.get(Toggle.BOOT_MUSIC) != null);
         for (Toggle t : Toggle.values()) {
             Boolean v = m == null ? null : m.get(t);
             toggleState.put(t, v);
-            TextView tv = toggleValues.get(t);
-            if (tv == null) continue;
-            if (v == null) tv.setText(Hal.isReady() ? R.string.val_unknown : R.string.val_not_ready);
-            else tv.setText(v ? R.string.val_on : R.string.val_off);
+            Kit.Row r = toggleRows.get(t);
+            if (r != null) r.sw.setOn(v);         // null: not read (HAL not ready), the switch shows dim
         }
     }
 
@@ -310,8 +293,8 @@ public final class SettingsActivity extends Activity {
             return;
         }
         final boolean on = !cur;
-        TextView tv = toggleValues.get(t);
-        if (tv != null) tv.setText("…");
+        Kit.Row r = toggleRows.get(t);
+        if (r != null) r.sw.setOn(null);
         toggleState.put(t, null);                       // no second click until the read-back
         final Context app = getApplicationContext();
         boolean queued = Hal.run((g, g2) -> {
@@ -334,7 +317,7 @@ public final class SettingsActivity extends Activity {
     }
 
     // ------------------------------------------------------------------ remote app keys
-    private TextView tempRow;
+    private Kit.Row tempRow;
 
     /** IGmpf 438 getSystemTemperature() -> °C, as stock Device info; the row stays hidden without an answer. */
     private void refreshTemperature() {
@@ -342,38 +325,38 @@ public final class SettingsActivity extends Activity {
         Hal.query((g, g2) -> g.getSystemTemperature(), t -> {
             if (isFinishing() || isDestroyed() || tempRow == null) return;
             boolean ok = t != null && t > 0 && t < 150;
-            ((View) tempRow.getParent()).setVisibility(ok ? View.VISIBLE : View.GONE);
-            if (ok) tempRow.setText(getString(R.string.p6_temperature_value, t));
+            tempRow.setShown(ok);
+            if (ok) tempRow.value.setText(getString(R.string.p6_temperature_value, t));
         });
     }
 
     private void refreshSlots() {
-        slot3Value.setText(slotText(3));
-        slot4Value.setText(slotText(4));
+        slot3Row.value.setText(slotText(3));
+        slot4Row.value.setText(slotText(4));
         refreshLauncher();
     }
 
     // ------------------------------------------------------------------ home screen
     private void refreshLauncher() {
-        if (launcherValue == null) return;
+        if (launcherRow == null) return;
         boolean classic = org.lumen.projector.home.LauncherSwitcher.MODE_CLASSIC.equals(
                 org.lumen.projector.home.LauncherSwitcher.currentMode(this));
-        launcherValue.setText(classic ? R.string.launcher_classic : R.string.launcher_lumen);
+        launcherRow.value.setText(classic ? R.string.launcher_classic : R.string.launcher_lumen);
     }
 
     private void refreshCecWake() {
         new Thread(() -> {
             final Boolean on = org.lumen.projector.cec.CecPolicy.wakeOn(this);
             runOnUiThread(() -> {
-                if (isFinishing() || isDestroyed() || cecWakeValue == null) return;
-                ((View) cecWakeValue.getParent()).setVisibility(on == null ? View.GONE : View.VISIBLE);
-                if (on != null) cecWakeValue.setText(on ? R.string.panel_on : R.string.panel_off);
+                if (isFinishing() || isDestroyed() || cecWakeRow == null) return;
+                cecWakeRow.setShown(on != null);
+                if (on != null) cecWakeRow.value.setText(on ? R.string.panel_on : R.string.panel_off);
             });
         }, "p6-cec-read").start();
     }
 
     private void toggleCecWake() {
-        cecWakeValue.setText("…");
+        cecWakeRow.value.setText("…");
         new Thread(() -> {
             Boolean on = org.lumen.projector.cec.CecPolicy.wakeOn(this);
             if (on != null && !org.lumen.projector.cec.CecPolicy.setWake(this, !on)) runOnUiThread(() -> Ui.toast(this, R.string.toast_failed));
@@ -382,7 +365,7 @@ public final class SettingsActivity extends Activity {
     }
 
     private void refreshBootSource() {
-        if (bootSourceValue != null) bootSourceValue.setText(bootSourceItems()[org.lumen.projector.source.BootSource.get(this)]);
+        if (bootSourceRow != null) bootSourceRow.value.setText(bootSourceItems()[org.lumen.projector.source.BootSource.get(this)]);
     }
 
     private CharSequence[] bootSourceItems() {
@@ -417,7 +400,7 @@ public final class SettingsActivity extends Activity {
                         Ui.toast(this, R.string.toast_setup_running);
                         return;
                     }
-                    launcherValue.setText("…");
+                    launcherRow.value.setText("…");
                     org.lumen.projector.home.LauncherSwitcher.apply(this, modes[which], true, "projector settings",
                             (ok, holder, err) -> { if (!isFinishing() && !isDestroyed()) refreshLauncher(); });
                 })
@@ -569,11 +552,13 @@ public final class SettingsActivity extends Activity {
         if (diagBox == null || isFinishing() || isDestroyed() || gen != diagGen) return;
         if (!append) diagBox.removeAllViews();
         for (String line : text.split("\n")) {
-            TextView t = text(line, 14, R.color.text_dim, false);
-            t.setTypeface(Typeface.MONOSPACE);
+            TextView t = Kit.text(this, line, 10.5f, Kit.T2, Typeface.MONOSPACE);
             t.setFocusable(true);                  // D-pad can scroll through the lines
-            t.setBackgroundResource(R.drawable.row_bg);
-            t.setPadding(dp(20), dp(3), dp(20), dp(3));
+            t.setPadding(Kit.dp(this, 12), Kit.dp(this, 3), Kit.dp(this, 12), Kit.dp(this, 3));
+            t.setOnFocusChangeListener((v, f) -> {
+                v.setBackgroundColor(f ? Kit.S2 : 0x00000000);
+                ((TextView) v).setTextColor(f ? Kit.T1 : Kit.T2);
+            });
             diagBox.addView(t);
         }
     }

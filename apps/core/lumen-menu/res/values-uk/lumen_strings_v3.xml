@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost: вища яскравість. Після виходу з Boost кольори стають насиченішими.</string>
+    <string name="lumen_gm_cs">Колірний простір</string>
+    <string name="lumen_gm_cs_0">Рідний</string>
+    <string name="lumen_gm_hdr_1">Динамічне тональне відображення</string>
+    <string name="lumen_gm_chip_hz">%1$d Гц</string>
+    <string name="lumen_m_panel_speed_top_note">Турбо: корекцію трапеції вимкнено</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">Скасувати</string>
+    <string name="lumen_m_panel_boost_press_again">Натисніть → ще раз для Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Натисніть ← ще раз, щоб вийти з Boost</string>
+    <string name="lumen_m_toast_setup_running">Спершу завершіть налаштування</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI-якість</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Точні кольори</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Продуктивність</string>
+    <string name="lumen_m_panel_move_ak">Автотрапеція після переміщення</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Фільм</string>
+    <string name="lumen_m_pm_tv">ТБ</string>
+    <string name="lumen_m_pm_custom">Користувацький</string>
+    <string name="lumen_m_ct_cool">Холодна</string>
+    <string name="lumen_m_ct_warm">Тепла</string>
+    <string name="lumen_m_zs_title">Масштаб і зсув</string>
+    <string name="lumen_m_eco">Енергозбереження</string>
+    <string name="lumen_m_ambient_speaker">Колонка і світло</string>
+    <string name="lumen_m_ct_custom">Користувацька</string>
+</resources>

@@ -5,13 +5,15 @@
 #
 #   tools/play6/release_image.sh IN.img VERSION OUT.img
 #     IN.img   play6/tN/system_play6_tN.img (the build the maintainer tested on the device)
-#     VERSION  x.y.z, the version the installer checks (installer/release.conf VERSION = ro.lumen.version)
+#     VERSION  x.y.z, the version the installer checks (installer/release.conf VERSION = ro.lumen.version), or
+#              x.y.z-<mark> for a pre-release (lower case letters and digits, e.g. 1.0.10-beta1): its
+#              ro.lumen.version_code is the one of x.y.z, so a pre-release never claims a later release's number
 #     OUT.img  e.g. build/release/play6-beta1/lumen-os-play6-VERSION-nogms-system.img (the installer's name;
 #              an OUT named lumen-os-play6-<v>-nogms-system.img with <v> other than VERSION is refused)
 # The installer zip for OUT, after SHA256SUMS + .sig: tools/ota/pack_installer.sh OUT.img OUTDIR (docs/release.md).
 #
-# Changes (Mac, debugfs of Homebrew e2fsprogs; the vendor fstab mounts system without verity, so the stale AVB
-# footer is never read):
+# Changes (debugfs and e2fsck of Homebrew e2fsprogs on the Mac, or E2FS=<dir with both> / the PATH ones on a
+# Linux build host; the vendor fstab mounts system without verity, so the stale AVB footer is never read):
 #   system_ext/etc/build.prop  ro.adb.secure=0 -> 1, persist.sys.usb.config=adb -> none (the GSI default lines)
 #   product/etc/build.prop     drops the test line ro.adb.secure=0 (adb on Wi-Fi without authorisation), keeps
 #                              service.adb.tcp.port=5555 and adds ro.adb.secure=1 and persist.sys.usb.config=none
@@ -25,13 +27,15 @@ set -euo pipefail
 die() { echo "release_image: ERROR: $*" >&2; exit 1; }
 IN=${1:?usage: release_image.sh IN.img VERSION OUT.img}; VER=${2:?VERSION}; OUT=${3:?OUT.img}
 E2=${E2FS:-/opt/homebrew/opt/e2fsprogs/sbin}
-D=$E2/debugfs
-[ -x "$D" ] || die "needs e2fsprogs (brew install e2fsprogs)"
+D=$E2/debugfs; FSCK=$E2/e2fsck
+[ -x "$D" ] || D=$(command -v debugfs || true)
+[ -x "$FSCK" ] || FSCK=$(command -v e2fsck || true)
+[ -n "$D" ] && [ -x "$D" ] && [ -n "$FSCK" ] && [ -x "$FSCK" ] || die "needs e2fsprogs (brew install e2fsprogs, or E2FS=<dir>)"
 [ -s "$IN" ] || die "no $IN"
-echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || die "VERSION must be x.y.z, not $VER"
+echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+)?$' || die "VERSION must be x.y.z or x.y.z-<mark>, not $VER"
 . "$(dirname "$0")/image_version.sh"
 iv_check_out_name "$OUT" "$VER" || exit 1
-IFS=. read -r MA MI PA <<< "$VER"
+IFS=. read -r MA MI PA <<< "${VER%%-*}"
 VCODE=$((MA * 10000 + MI * 100 + PA))
 T=$(mktemp -d "${TMPDIR:-/tmp}/p6rel.XXXXXX")
 trap 'rm -rf "$T"' EXIT
@@ -99,8 +103,9 @@ for g in /system/product/priv-app/PrebuiltGmsCorePano /system/system_ext/priv-ap
          /system/product/priv-app/Phonesky /system/product/priv-app/Tubesky; do
   "$D" -R "stat $g" "$OUT.part" 2>/dev/null | grep -q '^Inode' && die "Google file $g in the image"
 done
-"$E2/e2fsck" -fn "$OUT.part" >/dev/null 2>&1 || die "e2fsck found problems"
+"$FSCK" -fn "$OUT.part" >/dev/null 2>&1 || die "e2fsck found problems"
 mv "$OUT.part" "$OUT"
-shasum -a 256 "$OUT" | sed "s#  .*#  $(basename "$OUT")#" > "$OUT.sha256"
-echo "release_image: $OUT ($(stat -f %z "$OUT") bytes), ro.lumen.version=$VER ($VCODE), $BUILD_ID, adb secured"
+if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$OUT"; else sha256sum "$OUT"; fi \
+  | sed "s#  .*#  $(basename "$OUT")#" > "$OUT.sha256"
+echo "release_image: $OUT ($(wc -c < "$OUT" | tr -d ' ') bytes), ro.lumen.version=$VER ($VCODE), $BUILD_ID, adb secured"
 cat "$OUT.sha256"

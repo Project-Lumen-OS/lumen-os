@@ -25,6 +25,7 @@
     <string name="p6_game_on">وضع اللعب مفعّل</string>
     <string name="p6_game_off">وضع اللعب متوقف</string>
     <string name="p6_smart_af_desc">تُعاد الصورة إلى التركيز بعد تحريك جهاز العرض.</string>
+    <string name="p6_af_fine_tune">اكتمل التركيز. اضغط مطولًا على زر التركيز لضبطه بدقة.</string>
     <string name="p6_lamp_hint">عند العمل على البطارية يشغّل جهاز العرض توفير الطاقة ويخفض السطوع. رفع السطوع يوقف توفير الطاقة.</string>
     <string name="p6_eco">توفير الطاقة</string>
     <string name="p6_eco_on_title">تشغيل توفير الطاقة؟</string>

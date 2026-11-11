@@ -1,0 +1,47 @@
+# g0111: its gmpf AIDL rows beyond devices/_hal/gmpf-aidl/base.tsv (tools/hal/gen_codes.py)
+head	# aidl_codes.tsv: все транзакции HAL проектора xgimi.hardware.gmpf V1 на X50 (G0111, mt9681), из стокового дампа 2026-11-01.
+head	# Хэш интерфейса 715affd032170b4d256c28c9bbc3c6cbaf5de492 (у HB 908de964...). 14 сервисов, 1199 строк (1139 методов, 12 callback, 48 meta).
+head	# Сделано генераторами HB (devices/goat_elegant/research/gen: ndk_codes.py по vendor/lib/xgimi.hardware.gmpf-V1-ndk.so sha256 afc5c7fe...,
+head	# java_codes.py по system_ext/framework/com.xgimi.middle.jar sha256 0e860b7a..., merge_codes.py: 0 расхождений) на билдере в
+head	# ~/devices/g0111_mt9681/work/gen. Все 1111 методов HB есть здесь с тем же кодом и сигнатурой; 40 новых в new_vs_hb.tsv.
++	DisplayManager	207	isKeystoneAdjusted	KeystoneAdjustedResult_st(int)	int, IDisplayType::KeystoneAdjustedResult_st*	method	ndk+java
++	DisplayManager	208	startDispUpgrade	void()		method	ndk+java
++	DisplayManager	209	getLightUsageCycleInfo	String()	std::string*	method	ndk+java
++	DisplayManager	210	resetCycleUsageData	void()		method	ndk+java
++	DisplayManager	211	getPhotesenorColorData	String()	std::string*	method	ndk+java
++	DisplayManager	212	setPhotesenorMatrix	boolean(String)	std::string const&, bool*	method	ndk+java
++	DisplayManager	213	getCurColorTempSupportInfo	String()	std::string*	method	ndk+java
++	DisplayManager	214	getDlpFunctionSupportedByType	boolean(int, boolean[])	int, std::vector<bool>*, bool*	method	ndk+java
++	DisplayManager	215	GetDisplayHwInfo	String(int)	int, std::string*	method	ndk+java
++	DisplayManager	216	setDlpFunctionSupportedByType	boolean(int, boolean)	int, bool, bool*	method	ndk+java
++	DisplayManager	217	getUserColorUniformityInfo	int(GMHAL_COLOR_UNIF_INFO_st)	IDisplayType::GMHAL_COLOR_UNIF_INFO_st*, int*	method	ndk+java
++	DisplayManager	218	getUserColorUniformityCell	int(int, byte, byte, GMHAL_COLOR_UNIF_CELL_INFO_st)	int, signed char, signed char, IDisplayType::GMHAL_COLOR_UNIF_CELL_INFO_st*, int*	method	ndk+java
++	DisplayManager	219	setUserColorUniformityCell	int(int, GMHAL_COLOR_UNIF_CELL_st)	int, IDisplayType::GMHAL_COLOR_UNIF_CELL_st const&, int*	method	ndk+java
++	DisplayManager	220	getUserColorUniformityGrid	int(int, GMHAL_COLOR_UNIF_GRID_INFO_st)	int, IDisplayType::GMHAL_COLOR_UNIF_GRID_INFO_st*, int*	method	ndk+java
++	DisplayManager	221	setUserColorUniformityGrid	int(int, GMHAL_COLOR_UNIF_GRID_st)	int, IDisplayType::GMHAL_COLOR_UNIF_GRID_st const&, int*	method	ndk+java
++	DisplayManager	222	switchUserColorUniformityMode	int(int)	int, int*	method	ndk+java
++	DisplayManager	223	resetUserColorUniformity	int(int, int)	int, int, int*	method	ndk+java
++	GmTvManager	203	UpdateCustomImageMode	int(int)	int, int*	method	ndk+java
++	ProjectorFocusManager	102	doProImgFusionOverlap	boolean(int, KstPoint)	int, IDisplayType::KstPoint*, bool*	method	ndk+java
++	ProjectorFocusManager	112	getUitiltShiftSwithStatus	void(boolean)	bool	method	ndk+java
++	ProjectorFocusManager	113	createLensSaveData	boolean(int, String)	int, std::string const&, bool*	method	ndk+java
++	ProjectorFocusManager	114	updateLensSaveData	boolean(int, String)	int, std::string const&, bool*	method	ndk+java
++	ProjectorFocusManager	115	deleteLensSaveData	boolean(int)	int, bool*	method	ndk+java
++	ProjectorFocusManager	116	getLensSaveDataList	String()	std::string*	method	ndk+java
++	ProjectorFocusManager	117	applyLensSaveData	boolean(int)	int, bool*	method	ndk+java
++	ProjectorFocusManager	118	executeNimbleOpticalTempPos	boolean()	bool*	method	ndk+java
++	ProjectorFocusManager	119	storeNimbleOpticalTempPos	boolean()	bool*	method	ndk+java
++	ProjectorFocusManager	120	getLensType	int()	int*	method	ndk+java
++	ProjectorFocusManager	121	getCurNimbleOpticalStatus	String()	std::string*	method	ndk+java
++	SystemManager	253	setDeviceActivated	void(int)	int	method	ndk+java
++	SystemManager	254	getDeviceActivated	int()	int*	method	ndk+java
++	SystemManager	255	switchNetworkPort	boolean(int)	int, bool*	method	ndk+java
++	SystemManager	256	getNetworkPort	int()	int*	method	ndk+java
++	TemperatureManager	13	SetDehumidifierMode	boolean(byte)	signed char, bool*	method	ndk+java
++	TemperatureManager	14	GetHumidityFromSensor	byte(byte)	signed char, signed char*	method	ndk+java
++	TemperatureManager	15	getFanNum	byte()	signed char*	method	ndk+java
++	TemperatureManager	16	setPumpRotationRate	boolean(byte, int)	signed char, int, bool*	method	ndk+java
++	TemperatureManager	17	getPumpRotationRate	int(byte)	signed char, int*	method	ndk+java
++	TemperatureManager	18	setTECSpeed	boolean(byte, boolean, int, boolean)	signed char, bool, int, bool, bool*	method	ndk+java
++	TemperatureManager	19	getTECSpeed	int(byte)	signed char, int*	method	ndk+java
++	TemperatureManager	20	getTemperatureSensorNum	byte()	signed char*	method	ndk+java

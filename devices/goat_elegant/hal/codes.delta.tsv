@@ -1,0 +1,2 @@
+# goat_elegant: its gmpf AIDL rows beyond devices/_hal/gmpf-aidl/base.tsv (tools/hal/gen_codes.py)
++	ProjectorFocusManager	102	doProImgFusionOverlap	boolean(int, KstPoint)	int, IDisplayType::KstPoint const&, bool*	method	ndk+java

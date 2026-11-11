@@ -31,5 +31,5 @@ key 114        VOLUME_DOWN
 key 115        VOLUME_UP
 key 102        HOME
 key 1          BACK
-key 127        ALL_APPS  # XGIMI: MENU (four-diamond key) -> Google TV "Your apps"
+key 127        TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU = the gear held (the remote sends it once on a long press; stock KEYCODE_MENU = the game menu) -> org.lumen.projector gear long press
 key 66         SETTINGS  # XGIMI: MOVE_HOME; gear -> org.lumen.projector quick panel (short) / TvSettings (long)

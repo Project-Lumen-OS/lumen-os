@@ -25,6 +25,7 @@
     <string name="p6_game_on">Tryb gry włączony</string>
     <string name="p6_game_off">Tryb gry wyłączony</string>
     <string name="p6_smart_af_desc">Po przesunięciu projektora obraz jest ponownie ustawiany ostro.</string>
+    <string name="p6_af_fine_tune">Ostrość ustawiona. Przytrzymaj klawisz ostrości, aby ją dostroić.</string>
     <string name="p6_lamp_hint">Na baterii projektor włącza oszczędzanie energii i zmniejsza jasność. Zwiększenie jasności wyłącza oszczędzanie energii.</string>
     <string name="p6_eco">Oszczędzanie energii</string>
     <string name="p6_eco_on_title">Włączyć oszczędzanie energii?</string>

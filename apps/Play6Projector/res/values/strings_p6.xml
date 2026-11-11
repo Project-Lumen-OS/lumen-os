@@ -39,6 +39,9 @@
     <string name="p6_game_off">Game mode off</string>
     <!-- quick panel: focus -->
     <string name="p6_smart_af_desc">The picture is focused again after the projector is moved.</string>
+    <!-- after a remote-key autofocus (focus event 18 "AF_Success_Into_Adjust"), as stock does; not with the
+         starry sky lens in -->
+    <string name="p6_af_fine_tune">Focus done. Hold the focus key to fine-tune it.</string>
     <!-- quick panel: Brightness page, the vendor's power saving and its switch (stock eco_mode_switch, IGmpf
          327 / 328, stock analysis 1.4 and 6.1 B6); the two confirmations come the first time each way -->
     <string name="p6_lamp_hint">On battery the projector turns on power saving and lowers the brightness. Raising the brightness turns power saving off.</string>

@@ -25,6 +25,7 @@
     <string name="p6_game_on">Modalità gioco attiva</string>
     <string name="p6_game_off">Modalità gioco disattivata</string>
     <string name="p6_smart_af_desc">L\'immagine viene rimessa a fuoco dopo aver spostato il proiettore.</string>
+    <string name="p6_af_fine_tune">Messa a fuoco completata. Tieni premuto il tasto di messa a fuoco per regolarla con precisione.</string>
     <string name="p6_lamp_hint">A batteria il proiettore attiva il risparmio energetico e riduce la luminosità. Se aumenti la luminosità, il risparmio energetico si disattiva.</string>
     <string name="p6_eco">Risparmio energetico</string>
     <string name="p6_eco_on_title">Attivare il risparmio energetico?</string>

@@ -1,0 +1,29 @@
+# The model properties the stock X50 system loads at every boot: the stock /system/bin/init (XGIMI build) reads
+# /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop; LineageOS init does not. compose_x50.sh appends
+# these lines to the image's product build.prop, so they are set from the first second of boot, as on stock.
+# X50 Ultra Max (g0100, 2026-11-11): the same rule over the stock G0100 file. Rule: every line of the stock model file except the identity keys ro.product.{device,model,brand,manufacturer,
+# board,name} and ro.build.product (Lumen keeps its own) and persist.sys.* (the GSI's namespace). compose_x50.sh checks on the build server that each line below is a line
+# of that stock file (the dump, sha256 8d9e70ce15505f85ae6492f1f96637e53806dc314f3363a3211f6527678289d2) and that
+# no other line of the file passes the rule. persist.vendor.xgimi.hd_server=2 starts the vendor human detection
+# server hd_server2 (eye protection; stock getprop: init.svc.hd_server2=running).
+ro.xgimi.product.name=Product_dianamax
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_dianamax
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.xgimi.bootanimation.style=black
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9681+T-UHD003F0003001F0017000100010037+dianamax+ProjectorUHD_3
+vendor.xgimi.mw.support=1
+persist.xgimi.vendor.bootwizard.theme=black
+vendor.xgimi.bootanim.delay=3000

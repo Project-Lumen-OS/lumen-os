@@ -28,6 +28,7 @@ p6_pic_game_hint=Görüntüyü oyun modu belirler. Başka bir görüntü modu se
 p6_game_on=Oyun modu açık
 p6_game_off=Oyun modu kapalı
 p6_smart_af_desc=Projektör hareket ettirildikten sonra görüntü yeniden odaklanır.
+p6_af_fine_tune=Odaklama tamam. İnce ayar için odak tuşunu basılı tutun.
 p6_lamp_hint=Pille çalışırken projektör güç tasarrufunu açar ve parlaklığı düşürür. Parlaklığı artırmak güç tasarrufunu kapatır.
 p6_eco=Güç tasarrufu
 p6_eco_on_title=Güç tasarrufu açılsın mı?

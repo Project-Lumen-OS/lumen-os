@@ -159,6 +159,13 @@ set -- link -o "$B/base.apk" -I "$AJ" --manifest "$APP/AndroidManifest.xml" \
 [ -d "$APP/assets" ] && set -- "$@" -A "$APP/assets"
 [ -d "$B/secret-assets" ] && set -- "$@" -A "$B/secret-assets"
 [ $HAS_CODE = 1 ] && set -- "$@" --java "$B/gen"
+# R_EXTRA_PACKAGES (optional, one Java package per line): R classes for these packages too, for shared module code
+# that imports another package's R (apps/core/lumen-menu uses org.lumen.projector.R; an app with another manifest
+# package lists it there). Apps without the file build exactly as before.
+if [ $HAS_CODE = 1 ] && [ -f "$APP/R_EXTRA_PACKAGES" ]; then
+  XP=$(grep -v '^#' "$APP/R_EXTRA_PACKAGES" | grep . | tr '\n' ':' | sed 's/:$//')
+  [ -n "$XP" ] && set -- "$@" --extra-packages "$XP"
+fi
 [ -n "$FLAT" ] && set -- "$@" "$FLAT"
 "$BUILD_TOOLS/aapt2" "$@"
 

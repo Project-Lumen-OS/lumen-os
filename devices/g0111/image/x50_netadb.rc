@@ -1,6 +1,7 @@
 # X50 test image only (compose_x50.sh, every tN image): adbd at boot for network adb on port 5555, as the HB
 # test images do (fork of devices/goat_elegant/image/hb_netadb.rc, devices/g0111/forks.tsv). The props of the test
 # image (ro.adb.secure=0, service.adb.tcp.port=5555) make it a shell for anyone on the LAN: never in a release.
+# t14: also the larger log buffers of the test image (below; t17: through logcat -G, the props do nothing on A14 logd).
 on boot
     start adbd
 
@@ -9,3 +10,40 @@ on property:sys.usb.state=mtp
 
 on property:sys.boot_completed=1
     start adbd
+
+# Test image log buffers (t17; t16 live BUG B: still 256 KiB after boot, as in t14 and t15).
+# Cause, in the image's own logd (Android 14 system/logging, logd/LogSize.cpp GetBufferSizeFromProperties,
+# b/196856709; the image's /system/bin/logd carries the "automotive" / "ro.hardware.type" strings of that gate): logd
+# reads persist.logd.size* / ro.logd.size* only when ro.hardware.type is "automotive" on a debuggable build. The X50 has
+# no ro.hardware.type, so every SerializedLogBuffer::Init(), at logd's start and at every logd --reinit, sets the 256 KiB
+# default: the vendor's 64 KiB (init.fusion.rc, post-fs-data) never applied either, t14 / t15's setprop + logd --reinit
+# could not change anything, and a --reinit after a manual logcat -G even sets 256 KiB again (so there is none here).
+# What works is logd's setLogSize command, the one `logcat -G` sends (adb shell, t14 live): one-shot logcat services,
+# user logd / group log (logd takes the log group as privileged: LogPermissions UserIsPrivileged), no seclabel (the
+# image's policy moves init's logcat_exec children to logpersist, which may connect to logd: plat_sepolicy.cil
+# typetransition init logcat_exec process logpersist; the stock logcatd service runs the same way). Order: started
+# once the boot has completed; init.rc's own logd-reinit runs only at load_persist_props_action, long before, and no rc
+# of the image restarts it later (verify_tree_x50.py checks it); a logd crash would bring back 256 KiB until the next
+# boot. Nothing of the vendor is silenced: only the buffer sizes change.
+on property:sys.boot_completed=1
+    start x50-logsize-main
+    start x50-logsize-system
+    start x50-logsize-crash
+
+service x50-logsize-main /system/bin/logcat -b main -G 16M
+    oneshot
+    disabled
+    user logd
+    group log
+
+service x50-logsize-system /system/bin/logcat -b system -G 4M
+    oneshot
+    disabled
+    user logd
+    group log
+
+service x50-logsize-crash /system/bin/logcat -b crash -G 1M
+    oneshot
+    disabled
+    user logd
+    group log

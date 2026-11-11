@@ -1,0 +1,7 @@
+# Recipe of X50EyeGuard (the X50 eye-protection fail-safe), read by tools/devices/assemble_app.py and tools/devices/build_apps.sh: the
+# shared lumen-ui module (TvFocus, Tokens) plus the app. The module is closed: no file of apps/X50EyeGuard may shadow it.
+app       X50EyeGuard
+module    lumen-ui
+module    lumen-hal
+top       apps/X50EyeGuard
+skip      build/ *.apk CHANGES*.md README*.md DESIGN*.md .DS_Store app.layers BUILD_VERSION

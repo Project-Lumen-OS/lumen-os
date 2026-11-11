@@ -56,6 +56,18 @@ for i in 1 2 3 4 5; do
 done
 p6_bcb_make "$FX/bcb_sh.bin"
 EOF
+  grep '^t() {' "$INST/lumen-install.sh"; grep '^p6_fw_first() {' "$INST/lumen-install.sh"; grep '^p6_fw_last() {' "$INST/lumen-install.sh"
+  for f in p6_fw_back p6_nb_back; do fn "$f"; done
+  cat <<'EOF'
+state_get() { [ "$1" = vendor ] && printf '%s' "$SV"; }
+P_NAME="XGIMI Play 6"
+for P_VENDOR_OK in "v1.7.116 v1.8.127" "v1.7.116"; do for LANG_UI in en ru; do
+  for c in "0e8d:7663|XHN|v1.7.116" "0e8d:7663|AA2|v1.8.127" "368b:8d91|XHN|v1.7.116" "|XHF|v1.8.127" "|XHN|v9.9.9" "0e8d:7663|XHN|"; do
+    chip=${c%%|*}; r=${c#*|}; pre=${r%%|*}; SV=${r#*|}
+    echo "fw [$P_VENDOR_OK] $LANG_UI $c first=$(p6_fw_first) last=$(p6_fw_last) back=$(p6_fw_back "$chip" "$pre") nb=$(p6_nb_back)"
+  done
+done; done
+EOF
 } > "$W/sh_part.sh"
 FX=$W/fx bash "$W/sh_part.sh" > "$W/sh.out" 2>&1 || { bad "shell functions: $(cat "$W/sh.out")"; }
 
@@ -69,7 +81,7 @@ if ($errs.Count) { $errs | ForEach-Object { "PARSE $($_.Extent.StartLineNumber):
 $vars = @("P6BcbArgs", "P6BcbSha", "P6UsbCmd", "P6PwrCmd", "P6MntCmd")
 $asg = $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left -is [System.Management.Automation.Language.VariableExpressionAst] -and $vars -contains $n.Left.VariablePath.UserPath }, $false)
 foreach ($a in $asg) { . ([scriptblock]::Create($a.Extent.Text)) }
-$want = @("P6-Chip-Name", "P6-Usb-Parse", "P6-Power-Parse", "P6-Bcb-Bytes", "Fb-Allowed")
+$want = @("P6-Chip-Name", "P6-Usb-Parse", "P6-Power-Parse", "P6-Bcb-Bytes", "Fb-Allowed", "T", "P6-Fw-First", "P6-Fw-Last", "P6-Fw-Back", "P6-Nb-Back")
 $defs = $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $want -contains $n.Name }, $true)
 foreach ($d in $defs) { . ([scriptblock]::Create($d.Extent.Text)) }
 function State-Get($k) { return "" }
@@ -91,6 +103,15 @@ $script:Projector = "play6"; $script:P6BcbOk = $false
 $script:P6BcbOk = $true
 "allow misc on $(Fb-Allowed flash misc)"
 "allow userdata on $(Fb-Allowed format userdata) $(Fb-Allowed flash userdata) $(Fb-Allowed flash vendor)"
+function State-Get($k) { if ($k -eq "vendor") { return $script:SV } return "" }
+function P6-Name { return $script:Prof["NAME"] }
+foreach ($vok in @("v1.7.116 v1.8.127", "v1.7.116")) { foreach ($lg in @("en", "ru")) {
+  $script:Prof = @{ NAME = "XGIMI Play 6"; VENDOR_OK = $vok }; $Lang = $lg
+  foreach ($c in @("0e8d:7663|XHN|v1.7.116", "0e8d:7663|AA2|v1.8.127", "368b:8d91|XHN|v1.7.116", "|XHF|v1.8.127", "|XHN|v9.9.9", "0e8d:7663|XHN|")) {
+    $f = $c -split "\|", 3; $script:SV = $f[2]
+    "fw [$vok] $lg $c first=$(P6-Fw-First) last=$(P6-Fw-Last) back=$(P6-Fw-Back $f[0] $f[1]) nb=$(P6-Nb-Back)"
+  }
+} }
 EOF
 if [ "$RUN" = local ]; then out=$(pwsh -NoProfile -File "$W/t.ps1" -W "$W" 2>&1)
 else out=$(docker run --rm -v "$W":/w "$IMAGE" pwsh -NoProfile -File /w/t.ps1 -W /w 2>&1 | grep -v "^WARNING: The requested image's platform" | sed "s|/w/|$W/|g"); fi
@@ -128,5 +149,21 @@ for c in usb:P6_USB_CMD pwr:P6_PWR_CMD mnt:P6_MNT_CMD; do
 done
 grep -qx "allow misc off False" "$W/ps.out" && grep -qx "allow misc on True" "$W/ps.out" && grep -qx "allow userdata on False False False" "$W/ps.out" \
   && ok "Fb-Allowed: misc only while the erase request is written" || bad "Fb-Allowed: $(grep '^allow' "$W/ps.out")"
+# the firmware helpers (the way back to stock per unit): every case the same in both scripts
+n_sh=$(grep -c '^fw ' "$W/sh.out"); n_ps=$(grep -c '^fw ' "$W/ps.out")
+if [ "$n_sh" = 24 ] && [ "$n_ps" = 24 ] && [ "$(grep '^fw ' "$W/sh.out")" = "$(grep '^fw ' "$W/ps.out")" ]; then ok "firmware helpers: 24 cases equal"
+else bad "firmware helpers: sh $n_sh / ps $n_ps lines: $(diff <(grep '^fw ' "$W/sh.out") <(grep '^fw ' "$W/ps.out") | head -6)"; fi
+two='[v1.7.116 v1.8.127] en'
+for l in "fw $two 0e8d:7663|XHN|v1.7.116 first=V1.7.116 last=V1.8.127 back=V1.7.116 " \
+         "fw $two 0e8d:7663|AA2|v1.8.127 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
+         "fw $two 368b:8d91|XHN|v1.7.116 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
+         "fw $two |XHF|v1.8.127 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
+         "fw $two |XHN|v9.9.9 first=V1.7.116 last=V1.8.127 back=V1.7.116 " \
+         "fw [v1.7.116] en 368b:8d91|XHN|v1.7.116 first=V1.7.116 last=V1.7.116 back=V1.7.116 nb=The way back to stock for this batch is a V1.8.x firmware from XGIMI support."; do
+  grep -qF -- "$l" "$W/sh.out" && ok "expected: ${l#fw }" || bad "expected '$l': $(grep '^fw ' "$W/sh.out" | head -3)"
+done
+grep -qF "nb=The way back to stock for this batch is the V1.8.127 .bin from a FAT32 stick (guide, section 'XGIMI Play 6', 'Back to stock')." "$W/sh.out" \
+  && grep -qF "nb=Вернуться на сток с этой партией можно прошивкой .bin V1.8.127 с флешки FAT32" "$W/sh.out" \
+  && ok "the newer batch is sent to the V1.8.127 .bin (en, ru)" || bad "newer batch text: $(grep '^fw ' "$W/sh.out" | head -2)"
 echo "installer ps1 play6: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

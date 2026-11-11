@@ -28,6 +28,7 @@ p6_pic_game_hint=遊戲模式決定影像。關閉遊戲模式後才能選擇其
 p6_game_on=遊戲模式已開啟
 p6_game_off=遊戲模式已關閉
 p6_smart_af_desc=移動投影機後，畫面會重新對焦。
+p6_af_fine_tune=對焦完成。長按對焦鍵可進行微調。
 p6_lamp_hint=使用電池時，投影機會開啟節能模式並降低亮度。調高亮度會關閉節能模式。
 p6_eco=節能模式
 p6_eco_on_title=開啟節能模式？

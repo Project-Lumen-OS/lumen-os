@@ -25,6 +25,7 @@
     <string name="p6_game_on">Ойын режимі қосулы</string>
     <string name="p6_game_off">Ойын режимі өшірулі</string>
     <string name="p6_smart_af_desc">Проектор жылжытылғаннан кейін кескін қайта фокусталады.</string>
+    <string name="p6_af_fine_tune">Фокус бапталды. Дәлірек баптау үшін фокус түймесін басып тұрыңыз.</string>
     <string name="p6_lamp_hint">Батареядан жұмыс істегенде проектор қуат үнемдеуді қосып, жарықтықты азайтады. Жарықтықты арттырсаңыз, қуат үнемдеу өшеді.</string>
     <string name="p6_eco">Қуат үнемдеу</string>
     <string name="p6_eco_on_title">Қуат үнемдеуді қосу керек пе?</string>

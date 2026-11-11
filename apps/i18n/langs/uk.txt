@@ -1207,25 +1207,6 @@ s2_d_report=Надсилає журнали розробнику
 s2_d_refresh=Знову прочитати стан проектора
 s2_diag_state=Стан проектора
 
-@projector/strings_qpd.xml
-qpd_autocorrect=Автокорекція
-qpd_autocorrect_value=Одним натисканням
-qpd_zoom=Зум
-qpd_bluetooth=Bluetooth
-qpd_network=Мережа
-qpd_usb=USB
-qpd_mirroring=Дублювання екрана
-qpd_mirror_on=Дублювання екрана (Miracast)
-qpd_mirror_ask=Питати перед підключенням
-qpd_mirror_name=Назва
-qpd_mirror_more=Усі налаштування дублювання екрана
-qpd_picture_more=Налаштувати зображення
-qpd_sound_more=Усі налаштування звуку
-qpd_boost_note=Максимальна яскравість. Вентилятори будуть гучніші.
-qpd_tip_picture=Виберіть режим під те, що дивитеся.
-qpd_tip_rear=Ви і проєктор по різні боки екрана.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=Дублювання екрана
 settings_title=Дублювання екрана

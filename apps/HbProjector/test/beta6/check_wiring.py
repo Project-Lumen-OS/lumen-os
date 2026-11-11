@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""HB beta6 wiring checks (source level, the HB app tree): Boost rules used where the vendor refuses 52(0), the stock
-HB Boost line in every locale, the optical zoom tile, the zoom screen on ZoomScale, and the one-way fit / obstacle
+"""HB beta6 wiring checks (source level, the HB app tree): Boost rules used where the vendor refuses 151(0) (in the HB
+adapter of the shared menu, panel/HbMenuFeatures), the stock HB Boost texts in every locale, the optical zoom tile, the zoom screen on ZoomScale, and the one-way fit / obstacle
 coupling (stock spec 2.3, stock KeyStoneRepository.java:506-521) in all four directions, run on the real Hal source."""
 import os, re, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HB = os.path.abspath(os.path.join(HERE, "..", ".."))
 APPS = os.path.dirname(HB)
-QP = os.path.join(HB, "src/org/lumen/projector/panel/QuickPanelController.java")
+QP = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuFeatures.java")      # the HB adapter of the shared menu
+GATES = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuGates.java")
 OZ = os.path.join(HB, "src/org/lumen/projector/panel/OpticalZoomPanel.java")
 SA = os.path.join(HB, "src/org/lumen/projector/SettingsActivity.java")
 HAL = os.path.join(HB, "src/org/lumen/projector/Hal.java")
@@ -36,22 +37,24 @@ def body(src, sig):
     return ""
 
 qp = open(QP, encoding="utf-8").read()
-# ---- Boost (live beta5 bug)
-onkey = body(qp, "boolean onKey(KeyEvent ev)")
-ok("onKey asks BoostRules before arming", "BoostRules.onLeavePress(" in onkey and "EXPLAIN_PICTURE_MODE" in onkey)
-ok("onKey explains without a vendor call", re.search(r"EXPLAIN_PICTURE_MODE\)\s*\{[^}]*Notify\.show", onkey, re.S) is not None
-   and "boostPress(-1)" in onkey)
-sb = body(qp, "private void setBoost(boolean on)")
+gates = open(GATES, encoding="utf-8").read()
+# ---- Boost (live beta5 bug), in the HB adapter of the shared menu (panel/HbMenuFeatures)
+sb = body(qp, "private String setBoost(boolean on, GmpfClient g, Gmpf2Client g2)")
+ok("setBoost asks BoostRules before 151", "BoostRules.onLeavePress(cur, pm) == BoostRules.Leave.EXPLAIN_PICTURE_MODE" in sb
+   and sb.find("EXPLAIN_PICTURE_MODE") < sb.find("g2.setBoost(on)"))
+ok("setBoost explains without a vendor call", "EXPLAIN_PICTURE_MODE) return boostLocked(pm);" in sb)
 ok("setBoost judges by the 152 read-back", "BoostRules.judge(on, ret, lensAfter, pmAfter)" in sb and "g2.isBoost()" in sb)
 ok("setBoost reads the picture mode after", "g.getPictureModeRaw()" in sb)
-ok("setBoost explains a picture mode lock", "LOCKED_BY_PICTURE_MODE" in sb and "boostLockedText(pmAfter)" in sb)
+ok("setBoost explains a picture mode lock", "LOCKED_BY_PICTURE_MODE) return boostLocked(pmAfter);" in sb)
 ok("setBoost fails only on FAILED", "Outcome.FAILED) throw" in sb)
-ok("setBoost no longer throws on the boolean", 'throw new IllegalStateException("52 returned false")' not in sb)
-pmc = body(qp, "private void onPictureModeChosen(int i)")
-ok("colour accuracy uses BoostRules", "BoostRules.blocksColorAccuracy(snap.boost, snap.pictureMode)" in pmc)
-ok("no raw boost block for colour accuracy", "COLOR_ACCURACY && Boolean.TRUE.equals(snap.boost)" not in pmc)
-ok("brightness page shows the lock line", "boostLockHint" in qp and "BoostRules.lockedByPictureMode(sn.pictureMode)" in qp)
-ok("Boost line is the HB stock text", "R.string.hb_boost_effect" in qp and "R.string.boost_effect" not in qp)
+ok("setBoost no longer throws on the boolean", re.search(r"if \(!ret\)\s*throw", sb) is None)
+pmc = body(qp, "private String setPictureMode(String value, GmpfClient g, Gmpf2Client g2)")
+ok("colour accuracy uses BoostRules", "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)" in pmc)
+ok("no raw boost block for colour accuracy", "COLOR_ACCURACY && Boolean.TRUE.equals(" not in pmc)
+bl = body(qp, "private String boostLocked(Integer pictureModeWire)")
+ok("Boost lock notice: the HB stock text with the mode", "R.string.hb_boost_locked, mode" in bl)
+lamp = qp[qp.find("case Feature.LAMP: {"):qp.find("case Feature.BOOST:")]
+ok("light step in Boost leaves Boost by the same rules", "setBoost(false, g, g2)" in lamp)
 # ---- strings in every locale
 for loc in LOCALES:
     f = os.path.join(HB, "res", loc, "strings_hb.xml")
@@ -67,20 +70,16 @@ for loc in LOCALES:
     if loc == "values-ru" and eff:
         t = eff.group(1)
         ok("ru Boost line: no old claims", "бледн" not in t and "Цветовое пространство" not in t)
-# ---- zoom tile (stock quick menu row 102: scale, then brightness)
-root = body(qp, "private void buildRoot(")
-if not root:
-    m = re.search(r"grid = p\.add\(new TileGrid\(app\)\);(.*?)addTile\(QuickPanel\.SECTION_GENERAL", qp, re.S)
-    root = m.group(1) if m else ""
-iz = root.find("addTile(SECTION_ZOOM_TILE"); il = root.find("addTile(QuickPanel.SECTION_LAMP"); ik = root.find("addTile(QuickPanel.SECTION_KEYSTONE")
-ok("zoom tile exists", iz >= 0)
-ok("zoom tile after keystone, before brightness", 0 <= ik < iz < il)
-ok("zoom tile behind OPTICAL_ZOOM", re.search(r"if \(HbFeatures\.on\(F\.OPTICAL_ZOOM\)\) addTile\(SECTION_ZOOM_TILE", root) is not None)
-ot = body(qp, "private void onTile(String section)")
-zt = ot[ot.find("SECTION_ZOOM_TILE.equals(section)"):]
-ok("zoom tile opens the optical zoom screen", "OpticalZoomPanel.open(app" in zt[:600])
-ok("zoom tile refused in top-speed game", "isTopSpeedGame()" in zt[:600])
-ok("zoom tile icon", os.path.exists(os.path.join(HB, "res/drawable/ic_tile_zoom.xml")))
+# ---- zoom tile (stock quick menu row 102): the shared menu's card has it in row 1 after keystone (module layout D);
+# the HB gates it by OPTICAL_ZOOM and opens the optical zoom screen, refused in a top-speed game
+ok("zoom tile behind OPTICAL_ZOOM", '{"zoom", "OPTICAL_ZOOM"}' in gates)
+zt = qp[qp.find("case Feature.ZOOM:"):]
+ok("zoom tile opens the optical zoom screen", "OpticalZoomPanel.open(app, back)" in zt[:400])
+ok("zoom tile refused in top-speed game", "if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }" in zt[:400])
+GSI = os.environ.get("LUMEN_GSI") or os.path.abspath(os.path.join(HB, "..", ".."))
+prof = os.path.join(GSI, "devices/goat_elegant/menu.json")
+if os.path.exists(prof):
+    ok("zoom in the HB profile", '"zoom": {}' in open(prof, encoding="utf-8").read())
 # ---- zoom screen on ZoomScale
 oz = open(OZ, encoding="utf-8").read()
 ok("zoom: scale from 97 + 63(12,10)", "new ZoomScale(range[2], lim)" in oz)
@@ -125,9 +124,9 @@ for loc in LOCALES:
     m = re.search(r'<string name="hb_str_blocked_usb">([^<]+)</string>', x)
     ok(loc + " usb text names USB", m is not None and "USB" in m.group(1))
 # ---- fit / obstacle coupling: the panel rows and SettingsActivity use only the coupled setters
-ok("panel obstacle row coupled", "Hal.setObstacleAvoidCoupled(g, w)" in qp)
-ok("panel fit row coupled", "Hal.setCurtainFitCoupled(g, w)" in qp)
-for name, path in (("panel", QP), ("settings", SA)):
+ok("menu obstacle switch coupled", "Hal.setObstacleAvoidCoupled(g, on)" in qp)
+ok("menu fit switch coupled", "Hal.setCurtainFitCoupled(g, on)" in qp)
+for name, path in (("menu", QP), ("settings", SA)):
     s = open(path, encoding="utf-8").read()
     ok(name + ": no direct 290 / 292 writes", re.search(r"\.set(CurtainFit|ObstacleAvoid)\(", s) is None)
 hal = open(HAL, encoding="utf-8").read()

@@ -39,7 +39,7 @@ import org.lumen.projector.ui.OverlayHost;
  *  - Gear (KEYCODE_SETTINGS): UP without a long press -> QuickPanel.toggle (also during setup: the
  *    panel only changes projector settings); held (first repeated DOWN, ~400 ms+) -> close panels
  *    and open Android TV Settings (after setup only, like LineageParts KeyHandler did). Z9X HB fork: held on
- *    an HDMI input while the game mode runs -> the game bar instead (game.GameBar).
+ *    an HDMI input while the game mode runs -> the shared game menu instead (panel.HbMenu.gearLong).
  *    Never acts on a key that began while the screen was off (EXTRA_BEGAN_FROM_NON_INTERACTIVE).
  *  - Source (KEYCODE_TV_INPUT): UP -> SourceOverlay.toggle (after setup).
  *  - KEYSTONE/LENS (KEYCODE_TV_NETWORK): UP -> QuickPanel.show(projection section).
@@ -147,6 +147,11 @@ public final class KeyReceiver extends BroadcastReceiver {
             if (upOk && setupDone(ctx, "ambient")) startAmbient(ctx);
             return;
         }
+        if (code == Z9xKeys.GEAR_HOLD) {
+            // the remote's own gear hold: one short press of the stock MENU scancode (BT 127, IR / keypad 139)
+            if (firstDown && !intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) gearLong(ctx);
+            return;
+        }
         if (code == Z9xKeys.GEAR) {
             handleGear(ctx, intent, ev);
             return;
@@ -180,12 +185,7 @@ public final class KeyReceiver extends BroadcastReceiver {
                 sGearDownTime = ev.getDownTime();
             } else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {
                 sGearLongFired = true;
-                OverlayHost.get(ctx).dismissAll(false);
-                // Z9X HB fork: on HDMI with the game mode running the long press opens the game bar (stock HB
-                // xhplayer GameMenuActivity, stock analysis); otherwise TV Settings as before
-                if (setupDone(ctx, "gear long press")) {
-                    org.lumen.projector.game.GameBar.gearLong(ctx, () -> openTvSettings(ctx));
-                }
+                gearLong(ctx);
             }
             return;
         }
@@ -195,6 +195,19 @@ public final class KeyReceiver extends BroadcastReceiver {
             sGearDownTime = -1;
             if (shortPress) QuickPanel.toggle(ctx);
         }
+    }
+
+    /**
+     * The gear long press (a held gear: its first repeated DOWN, or the remote's own Z9xKeys.GEAR_HOLD): the profile's
+     * gear long action (devices/goat_elegant/menu.json keys.gear_long = game_menu): while game mode runs on the HDMI
+     * input on screen the shared game menu (again: closes it), as the stock HB xhplayer GameMenuActivity
+     * (stock analysis); otherwise TV Settings as before.
+     */
+    private static void gearLong(Context ctx) {
+        org.lumen.projector.panel.HbMenu.gearLong(ctx, () -> {
+            OverlayHost.get(ctx).dismissAll(false);
+            if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+        });
     }
 
     /** Android TV Settings (what LineageParts KeyHandler opened for KEYCODE_SETTINGS). */

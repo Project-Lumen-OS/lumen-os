@@ -14,8 +14,14 @@
 #   not_staged   only the tree's APK = the test-key build: refused, not the staged file
 #   missing      the APK removed from the tree: refused, missing and "not in the image"
 #   elsewhere    the real APK also at system/app/Other/Other.apk: refused, a path not allowed and a gmpf name
+#   z9x_framework (t12) the tree's framework-res.apk is the base's, still on the Z9X release platform key: refused (not
+#                the signed file, not on the g0111 platform certificate, a Z9X-signed file in the image)
+#   z9x_app      (t12) a Z9X-platform-signed APK of the base (SettingsProvider) put back over its signed copy: refused
 #   uffd_false   the product build.prop says ro.dalvik.vm.enable_uffd_gc=false (the stock X50's value): refused, an
 #                ART property differs from the base and the boot image is compiled for the userfaultfd GC
+#   logd_reinit  (t17) x50_netadb.rc (tree and IN) gets t16's size properties + logd --reinit back: refused (Android
+#                14 logd ignores the properties and a reinit sets 256 KiB again)
+#   tvinput_base (t17) the base's re-signed Z9xTvInput.apk instead of the X50 build: refused, not IN/stage/X50TvInput.apk
 # No key is read (test key only), nothing signed with the X50 key leaves the Mac, nothing of the X50 image changes.
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -28,6 +34,8 @@ trap 'rm -rf "$W"' EXIT
 retry() { local i; for i in 1 2 3 4 5 6; do "$@" && return 0; sleep 10; done; return 1; }
 for n in testkey fifth; do
   cp -R "$G/apps/X50EyeGuard" "$W/app_$n"; rm -rf "$W/app_$n/build" "$W/app_$n/test"
+  # the source modules of devices/g0111/app/X50EyeGuard.layers (their src/ only)
+  cp -R "$G/apps/core/lumen-ui/src/." "$G/apps/core/lumen-hal/src/." "$W/app_$n/src/"
 done
 python3 -B - "$W/app_fifth/src/org/lumen/x50/eyeguard/Gmpf.java" <<'PY' || exit 1
 import sys
@@ -69,7 +77,7 @@ check() {  # name want-rc text...
   sudo rm -rf "$N/c_$n"
 }
 TK=$N/testkey.apk; FIVE=$N/fifth.apk; REAL=$O/in/stage/X50EyeGuard.apk
-prep unchanged; check unchanged 0 "verify_tree_x50: OK" "HAL app $APP" \
+prep unchanged; check unchanged 0 "verify_tree_x50: OK" "HAL app $APP" "verify_tree_x50: platform set g0111" "0 on the Z9X platform key" \
   "verify_tree_x50: ART ro.dalvik.vm.enable_uffd_gc=true, boot image and services.odex concurrent-copying=false"
 # the stock X50's value in the image: refused (a property differs from the base; the boot image is the uffd one)
 prep uffd_false; P=$N/c_uffd_false/root/system/product/etc/build.prop
@@ -84,13 +92,30 @@ check uffd_false 1 "ART / dexopt / zygote properties differ from the base: ro.da
 prep testkey; setfile "$N/c_testkey/root" "$APP" "$TK"; cp "$TK" "$N/c_testkey/in/stage/X50EyeGuard.apk"
 check testkey 1 "(the one HAL app): v2 signer certificate" "(the one HAL app): v3 signer certificate"
 prep fifth_call; setfile "$N/c_fifth_call/root" "$APP" "$FIVE"; cp "$FIVE" "$N/c_fifth_call/in/stage/X50EyeGuard.apk"
-check fifth_call 1 "(the one HAL app): the calls are" "setHumanDetectScreenOnOff"
+check fifth_call 1 "(the one HAL app): the calls are" "'DisplayManager', 61, 'setHumanDetectOnOff'"
 prep not_staged; setfile "$N/c_not_staged/root" "$APP" "$TK"
 check not_staged 1 "added $APP is not the staged stage/X50EyeGuard.apk"
 prep missing; sudo rm -f "$N/c_missing/root/$APP"
 check missing 1 "missing added file $APP" "the HAL app $APP is not in the image"
 prep elsewhere; setfile "$N/c_elsewhere/root" system/app/Other/Other.apk "$REAL"
 check elsewhere 1 "added path not allowed: system/app/Other/Other.apk" "names the gmpf HAL: system/app/Other/Other.apk!classes.dex"
+FW=system/framework/framework-res.apk
+prep z9x_framework; setfile "$N/c_z9x_framework/root" "$FW" "$N/mnt_base/$FW"
+check z9x_framework 1 "$FW is not the file sign_x50_base.py signed" "$FW is not signed by the g0111 platform certificate alone" \
+  "signed by the Z9X release platform certificate: $FW"
+SP=system/priv-app/SettingsProvider/SettingsProvider.apk
+prep z9x_app; setfile "$N/c_z9x_app/root" "$SP" "$N/mnt_base/$SP"
+check z9x_app 1 "signed by the Z9X release platform certificate: $SP"
+# t17: t16's log size block back in x50_netadb.rc (tree and IN): refused by the logd checks
+prep logd_reinit; NRC=$N/c_logd_reinit/in/x50_netadb.rc
+printf '%s\n' '' 'on property:sys.boot_completed=1' '    setprop persist.logd.size.main 16777216' '    start x50-logd-reinit' '' \
+  'service x50-logd-reinit /system/bin/logd --reinit' '    oneshot' '    disabled' '    user logd' '    group logd' >> "$NRC"
+setfile "$N/c_logd_reinit/root" system/etc/init/x50_netadb.rc "$NRC"
+check logd_reinit 1 "no logd size property (Android 14 logd ignores them" "no logd --reinit (it sets the 256 KiB default again"
+# t17: the base's TV input (re-signed, without the X50 source picker look) instead of the staged X50 build: refused
+TVA=system/app/Z9xTvInput/Z9xTvInput.apk
+prep tvinput_base; setfile "$N/c_tvinput_base/root" "$TVA" "$O/in/stage/base_signed/$TVA"
+check tvinput_base 1 "$TVA is not IN/stage/X50TvInput.apk"
 echo "x50_verify_negtest: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]
 EOF

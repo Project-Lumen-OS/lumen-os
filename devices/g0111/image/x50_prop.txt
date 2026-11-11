@@ -2,12 +2,22 @@
 #   [system]   /system/build.prop          [product]  /system/product/etc/build.prop
 # KEY=VALUE replaces the one line of KEY in that file (it must be there exactly once), +KEY=VALUE appends a new
 # key (it must not be in the file), -KEY deletes the one line of KEY. @V@ is the variant (t1), @BID@ the build id
-# date part (UTC yyyymmddHHMM). Nothing else of either file changes (verify_tree_x50.py compares line by line).
+# date part (UTC yyyymmddHHMM), @UTC@ / @DATE@ that minute as epoch seconds / as the build.prop date text. Nothing else of either file changes (verify_tree_x50.py compares line by line).
 [system]
 ro.product.system.model=XGIMI X50 Ultra
 ro.build.display.id=Lumen OS x50-@V@ (AP2A.240905.003, @BID@, test)
 # Setup shows it; Lumen Setup is the only reader in the image
 ro.z9x.version=x50-@V@
+# t12 (t11 review P0.1b): every test build has its own identity. Android re-runs the default permission grants and
+# rescans packages only when the build fingerprint differs from the one stored in /data (a reused DSU /data with the
+# previous tN's fingerprint never granted the new package). ro.build.fingerprint is derived by init from these.
+ro.build.version.incremental=eng.root.20261003.104216.lumen10.x50@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261003.104216.x50@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.240905.003/eng.root.20261003.104216.x50@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
 [product]
 ro.product.product.model=XGIMI X50 Ultra
 bluetooth.device.default_name=XGIMI X50 Ultra
@@ -32,3 +42,6 @@ persist.sys.usb.config=adb
 +ro.lumen.family=horse_popular
 +ro.lumen.build_id=lumen-x50-@V@-@BID@
 +ro.lumen.base_build_id=lumen-1.0.9-20261106anp
+# install from a DSU try (apps/LumenDsuInstall, t8): on; 0 is the kill switch. The owner switch for a real X50 write,
+# ro.lumen.dsu_install.x50_write, is never set by the image (verify_tree_x50.py refuses it)
++ro.lumen.dsu_install=1

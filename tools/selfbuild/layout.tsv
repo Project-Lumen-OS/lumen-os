@@ -120,10 +120,7 @@ keys/public/sdk_sandbox.x509.pem	tools/sign/release_certs/sdk_sandbox.x509.pem
 keys/public/shared.x509.pem	tools/sign/release_certs/shared.x509.pem
 system/etc/audio_policy_engine_stream_volumes.xml	overlay/v1/audio_policy_engine_stream_volumes.xml
 system/etc/build_prop_v1.txt	overlay/v1/build_prop_v1.txt
-system/etc/legacy/hide_xgimi_vendor_apps.rc	overlay/hide_xgimi_vendor_apps.rc
-system/etc/legacy/unmute_system_sounds.sh	overlay/unmute_system_sounds.sh
 system/etc/legacy/xgimi_compat.rc	overlay/xgimi_compat.rc
-system/etc/legacy/xgimi_compat_extra.rc	overlay/xgimi_compat_extra.rc
 system/etc/legacy/z9x_build_prop.txt	overlay/z9x_build_prop.txt
 system/etc/lumen-miracast-default-permissions.xml	overlay/v1/lumen-miracast-default-permissions.xml
 system/etc/privapp-permissions-lumen-miracast.xml	overlay/v1/privapp-permissions-lumen-miracast.xml
@@ -196,7 +193,4 @@ tools/dev/debuglog/lumen_escape.sh	overlay/debug/lumen_escape.sh
 tools/dev/debuglog/z9x_debuglog.rc	overlay/debug/z9x_debuglog.rc
 tools/dev/debuglog/z9x_earlylog.rc	overlay/debug/z9x_earlylog.rc
 tools/dev/debuglog/z9x_earlylog.sh	overlay/debug/z9x_earlylog.sh
-tools/dev/flash_gsi.sh	tools/flash_gsi.sh
-tools/dev/flash_gsi_system.sh	tools/flash_gsi_system.sh
-tools/dev/flash_tv.sh	tools/flash_tv.sh
 tools/ota/image/README.md	tools/ota/image/HANDOFF.md

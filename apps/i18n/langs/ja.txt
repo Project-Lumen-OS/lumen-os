@@ -1198,25 +1198,6 @@ s2_d_report=ログを開発者に送ります
 s2_d_refresh=プロジェクターの状態を読み直す
 s2_diag_state=プロジェクターの状態
 
-@projector/strings_qpd.xml
-qpd_autocorrect=自動補正
-qpd_autocorrect_value=ワンタッチ
-qpd_zoom=ズーム
-qpd_bluetooth=Bluetooth
-qpd_network=ネットワーク
-qpd_usb=USB
-qpd_mirroring=画面ミラーリング
-qpd_mirror_on=画面ミラーリング（Miracast）
-qpd_mirror_ask=接続前に確認する
-qpd_mirror_name=名前
-qpd_mirror_more=すべての画面ミラーリング設定
-qpd_picture_more=映像の設定
-qpd_sound_more=すべての音声設定
-qpd_boost_note=最大の明るさです。ファンの音が大きくなります。
-qpd_tip_picture=見る内容に合わせてモードを選んでください。
-qpd_tip_rear=あなたとプロジェクターはスクリーンの反対側にいます。
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=画面ミラーリング
 settings_title=画面ミラーリング

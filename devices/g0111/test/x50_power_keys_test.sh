@@ -36,6 +36,24 @@ t "factory remotes untouched" cmp "$T/base/Vendor_9999_Product_0666.kl" "$T/new/
 t "BT 3839 untouched" cmp "$T/base/Vendor_000d_Product_3839.kl" "$T/new/Vendor_000d_Product_3839.kl"
 n=$(for x in "$T"/base/*.kl; do cmp -s "$x" "$T/new/$(basename "$x")" || echo x; done | wc -l | tr -d ' ')
 t "exactly 11 files changed ($n)" test "$n" = 11
+for k in Vendor_000d_Product_3840.kl:64:TV_AUDIO_DESCRIPTION Vendor_000d_Product_3840.kl:88:TV_DATA_SERVICE \
+         Vendor_3697_Product_0001.kl:81:TV_DATA_SERVICE Vendor_000d_Product_3843.kl:87:FOCUS Vendor_000d_Product_3843.kl:62:TV_CONTENTS_MENU; do
+  f_=${k%%:*}; r_=${k#*:}; sc=${r_%%:*}; kc=${r_#*:}
+  t "t12: $f_ adds stock scancode $sc as $kc" sh -c "grep -Eq '^key $sc $kc  # ' '$T/new/$f_' && ! grep -Eq '^key $sc[[:space:]]' '$T/base/$f_'"
+done
+# the gear held: stock X50 kl 000d:3840 / 3838 / 3843 "key 127 MENU", IR / keypad 3697:0001 / 0002 "key 139 MENU" (the
+# remote sends it once on a hold; stock xhplayer: MENU UP = game menu). The base maps them to the gear hold key; the
+# X50 edit keeps each line byte for byte.
+for k in Vendor_000d_Product_3840.kl:127 Vendor_000d_Product_3838.kl:127 Vendor_000d_Product_3843.kl:127 \
+         Vendor_3697_Product_0001.kl:139 Vendor_3697_Product_0002.kl:139; do
+  f_=${k%%:*}; sc=${k#*:}
+  t "gear hold: $f_ $sc (stock MENU) is TV_MEDIA_CONTEXT_MENU, the base line kept" sh -c \
+    "grep -E '^key $sc[[:space:]]' '$T/new/$f_' | grep -Eq '^key $sc[[:space:]]+TV_MEDIA_CONTEXT_MENU([[:space:]]|\$)' && [ \"\$(grep -E '^key $sc[[:space:]]' '$T/new/$f_')\" = \"\$(grep -E '^key $sc[[:space:]]' '$T/base/$f_')\" ]"
+done
+d=$(diff "$T/base/Vendor_000d_Product_3840.kl" "$T/new/Vendor_000d_Product_3840.kl" | grep -c '^>')
+t "3840: exactly 3 lines changed or added: 113, 64, 88 ($d)" test "$d" = 3
+t "gear hold: no key layout maps a stock MENU scancode to ALL_APPS" sh -c "! sed 's/#.*//' '$T/new'/*.kl | grep -Eq '^key[[:space:]]+(127|139)[[:space:]]+ALL_APPS'"
+t "184 (stock DIY shortcut) stays ALL_APPS" sh -c "grep -Eq '^key 184[[:space:]]+ALL_APPS' '$T/new/Vendor_000d_Product_3840.kl'"
 d=$(diff "$T/base/Vendor_3697_Product_0002.kl" "$T/new/Vendor_3697_Product_0002.kl" | grep -c '^>')
 t "keypad: exactly 3 lines changed ($d)" test "$d" = 3
 f "apply twice refuses (no STB_POWER left to edit)" pk apply "$T/new"
@@ -56,6 +74,24 @@ f "check refuses SLEEP in place of POWER" pk check "$T/base" "$T/new"
 fresh; pk apply "$T/new" >/dev/null
 rm "$T/new/Generic.kl"
 f "check refuses a missing key layout" pk check "$T/base" "$T/new"
+fresh; pk apply "$T/new" >/dev/null
+sed '/^key 64 TV_AUDIO_DESCRIPTION/d' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
+f "check refuses a dropped t12 stock key" pk check "$T/base" "$T/new"
+fresh; pk apply "$T/new" >/dev/null
+sed 's/^key 127        TV_MEDIA_CONTEXT_MENU.*/key 127        ALL_APPS/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
+f "check refuses the gear hold 127 turned into ALL_APPS" pk check "$T/base" "$T/new"
+fresh
+sed 's/^key 127        TV_MEDIA_CONTEXT_MENU.*/key 127        ALL_APPS/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
+f "apply refuses a base where 127 is ALL_APPS (the old base)" pk apply "$T/new"
+fresh
+sed 's/^key 139        TV_MEDIA_CONTEXT_MENU.*/key 139        MENU/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+f "apply refuses a base where the IR 139 is not the gear hold" pk apply "$T/new"
+fresh
+sed '/^key 127 /d' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
+f "apply refuses a base without scancode 127" pk apply "$T/new"
+fresh
+echo "key 88 HOME" >> "$T/new/Vendor_000d_Product_3840.kl"
+f "apply refuses a base that already maps an added scancode" pk apply "$T/new"
 fresh
 echo "key 77 STB_POWER WAKE" >> "$T/new/Vendor_9999_Product_0777.kl"
 f "apply refuses another STB_POWER key outside the table" pk apply "$T/new"
@@ -83,24 +119,32 @@ v = {i.get("name"): i.text.strip() for i in ET.parse(sys.argv[1]).getroot().iter
 assert v == {"config_shortPressOnPowerBehavior": "1", "config_longPressOnPowerBehavior": "1"}, v
 PY
 t "RRO: global_keys.xml passes check_global_keys.py" python3 "$G/apps/check_global_keys.py" "$O/res/xml/global_keys.xml"
-t "RRO: no STB_POWER / SETTINGS route; Source to tvinput; HDMI keys kept" python3 - "$O/res/xml/global_keys.xml" "$G/apps/Z9xFrameworkKeysOverlay/res/xml/global_keys.xml" <<'PY'
+t "RRO: no STB_POWER route; gear and projector keys to the X50 app; Source to tvinput; HDMI keys kept" python3 - "$O/res/xml/global_keys.xml" "$G/apps/Z9xFrameworkKeysOverlay/res/xml/global_keys.xml" <<'PY'
 import sys, xml.etree.ElementTree as ET
 def keys(p):
     return {k.get("keyCode"): k.get("component") for k in ET.parse(p).getroot().iter("key")}
 x, z = keys(sys.argv[1]), keys(sys.argv[2])
-assert "KEYCODE_STB_POWER" not in x and "KEYCODE_SETTINGS" not in x and "KEYCODE_POWER" not in x, x
+assert "KEYCODE_STB_POWER" not in x and "KEYCODE_POWER" not in x, x
+assert x["KEYCODE_SETTINGS"] == "org.lumen.x50.projector/.KeyReceiver", x
 assert x["KEYCODE_TV_INPUT"] == "org.lumen.tvinput/.GlobalKeyReceiver"
 for k in ("KEYCODE_TV_INPUT_HDMI_1", "KEYCODE_TV_INPUT_HDMI_2"):
     assert x[k] == z[k] == "org.lumen.tvinput/.GlobalKeyReceiver"
-# every other Z9X entry is kept as it was (projector keys swallowed, not handed to the app in front)
+# t12: every projector key of the Z9X file goes to the X50 projector app; none to the absent org.lumen.projector
+P = "org.lumen.x50.projector/.KeyReceiver"
 for k, c in z.items():
-    if k not in ("KEYCODE_STB_POWER", "KEYCODE_SETTINGS", "KEYCODE_TV_INPUT", "KEYCODE_SEARCH"):
+    if k in ("KEYCODE_STB_POWER", "KEYCODE_TV_INPUT"):
+        continue
+    if c == "org.lumen.projector/.KeyReceiver":
+        assert x.get(k) == P, (k, x.get(k))
+    else:
         assert x.get(k) == c, (k, x.get(k), c)
-assert x["KEYCODE_SEARCH"] == "org.lumen.projector/.KeyReceiver"
-assert set(x) == set(z) - {"KEYCODE_STB_POWER", "KEYCODE_SETTINGS"}, sorted(set(x) ^ set(z))
+assert "org.lumen.projector/" not in "".join(x.values()), x
+assert x["KEYCODE_TV_AUDIO_DESCRIPTION"] == x["KEYCODE_TV_DATA_SERVICE"] == x["KEYCODE_TV_MEDIA_CONTEXT_MENU"] == P
+assert set(x) == (set(z) - {"KEYCODE_STB_POWER"}) | {"KEYCODE_TV_AUDIO_DESCRIPTION", "KEYCODE_TV_DATA_SERVICE",
+                                                    "KEYCODE_TV_MEDIA_CONTEXT_MENU"}, sorted(set(x) ^ set(z))
 PY
 t "registry: g0111 builds X50PowerOverlay; image.conf stages x50_power_keys.py" sh -c \
-  "grep -qx 'apps=X50EyeGuard X50PowerOverlay' '$G/devices/g0111/device.conf' && grep -q 'devices/g0111/image/x50_power_keys.py' '$G/devices/g0111/image.conf'"
+  "grep -qE '^apps=(.* )?X50PowerOverlay( .*)?$' '$G/devices/g0111/device.conf' && grep -q 'devices/g0111/image/x50_power_keys.py' '$G/devices/g0111/image.conf'"
 t "compose and verify name the key edit and the RRO" sh -c \
   "grep -q 'x50_power_keys.py\" apply \"\$R/system/product/usr/keylayout\"' '$G/devices/g0111/image/compose_x50.sh' && grep -q 'system/product/overlay/X50PowerOverlay.apk' '$G/devices/g0111/image/compose_x50.sh' && grep -q '\"system/product/overlay/X50PowerOverlay.apk\": (0, 0, 0o644, SYSF, \"stage/X50PowerOverlay.apk\")' '$G/devices/g0111/image/verify_tree_x50.py'"
 t "nothing outside the X50 names the RRO or the key tool" sh -c \

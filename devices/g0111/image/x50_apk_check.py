@@ -24,8 +24,9 @@ What it reads:
 problems(report, expect) -> [text]: the signer certificate of every scheme present is expect["cert"] (and v2 or v3
 is present), the gmpf descriptors of the dex are exactly expect["ifaces"], no HIDL gmpf, exactly one transact site
 and it is in the transport class, no Method.invoke, no native code, T$Call is constructed only in its own static
-initialiser and its rows (service, code, method) are exactly expect["calls"] (service: the descriptor's last part
-without the leading I, '-' for a meta call without interface).
+initialiser and its rows (service, code, method[, args]) are exactly expect["calls"] (service: the descriptor's last
+part without the leading I, '-' for a meta call without interface; args: the t20 argument range, the Call's fourth
+constructor String, which org.lumen.hal.AidlTransport enforces before the transact).
 """
 import ast
 import hashlib
@@ -241,6 +242,10 @@ class Dex:
         return out
 
 
+# the shared transport of apps/core/lumen-hal (tools/devices/check_aidl_hal.py --module)
+MODULE_TRANSPORT = "Lorg/lumen/hal/AidlTransport;"
+
+
 def report(path):
     data = open(path, "rb").read()
     rep = {"sha256": hashlib.sha256(data).hexdigest(), "signers": signers(data), "dex": [], "gmpf": set(),
@@ -278,6 +283,18 @@ def report(path):
         t = rep["transact"][0].rsplit(".", 1)[0]
         rep["transport"] = t
         base = t[:-1]
+        if t == MODULE_TRANSPORT:
+            # apps/core/lumen-hal: the transport is the shared AidlTransport, the allow list (enum Call, enum Iface) is
+            # the one app class T with T$Call and T$Iface whose constants its own <clinit> builds
+            owners = sorted({c[:-len("$Call;")] for _, c, n, tc, tn, _, _ in sites
+                             if n == "<clinit>" and tn == "<init>" and c == tc and c.endswith("$Call;")
+                             and (c[:-len("$Call;")] + "$Iface;") in {x[1] for x in sites}})
+            if len(owners) == 1:
+                base = owners[0]
+                rep["allow_list"] = base + ";"
+            else:
+                rep["call_ctor_outside"].append("the shared transport %s, but %d allow-list classes (T$Call with T$Iface): %s"
+                                                % (t, len(owners), owners))
         iface_ctor, call_ctor = base + "$Iface;", base + "$Call;"
         for d, cls, name, tc, tn, args, proto in sites:
             if tn != "<init>" or tc not in (iface_ctor, call_ctor) or cls == tc and name == "<init>":
@@ -294,9 +311,17 @@ def report(path):
                 else:
                     rep["call_ctor_outside"].append("%s: an Iface constant that cannot be read %r" % (tc, args))
             else:
-                # (this, enum name, ordinal, Iface or null, code, method)
-                if len(args) != 6 or params[2] != iface_ctor:
-                    rep["call_ctor_outside"].append("%s: a constructor %r that is not (Iface, int, String)" % (tc, params))
+                # (this, enum name, ordinal, Iface or null, code, method) or, t20, with the argument range (ArgSpec) as a
+                # fourth String: (..., method, args)
+                spec = None
+                if len(args) == 7 and len(params) == 6 and params[2] == iface_ctor and params[5] == "Ljava/lang/String;":
+                    if not (isinstance(args[6], tuple) and args[6][0] == "str"):
+                        rep["call_ctor_outside"].append("%s: a Call whose argument range cannot be read %r" % (tc, args))
+                        continue
+                    spec = args[6][1]
+                elif len(args) != 6 or params[2] != iface_ctor:
+                    rep["call_ctor_outside"].append("%s: a constructor %r that is not (Iface, int, String[, String])"
+                                                    % (tc, params))
                     continue
                 ifc, code, meth = args[3], args[4], args[5]
                 if isinstance(ifc, tuple) and ifc[0] == "field" and ifc[1] == iface_ctor:
@@ -308,16 +333,16 @@ def report(path):
                 if not isinstance(code, int) or not (isinstance(meth, tuple) and meth[0] == "str"):
                     rep["call_ctor_outside"].append("%s: a Call whose code or method cannot be read %r" % (tc, args))
                     continue
-                rep["calls"].append((ifc, code, meth[1]))
+                rep["calls"].append((ifc, code, meth[1], spec))
     rows = []
-    for ifc, code, meth in rep["calls"]:
+    for ifc, code, meth, spec in rep["calls"]:
         if ifc is None:
             svc = "-"
         elif isinstance(ifc, str) and ifc in rep["ifaces"]:
             svc = rep["ifaces"][ifc].rsplit(".", 1)[-1][1:]
         else:
             svc = "?%s" % (ifc,)
-        rows.append((svc, code & 0xFFFFFFFF, meth))
+        rows.append((svc, code & 0xFFFFFFFF, meth, spec))
     rep["rows"] = rows
     return rep
 
@@ -344,18 +369,19 @@ def problems(rep, expect):
         bad.append("the call table is not only its enum constants: %s" % rep["call_ctor_outside"])
     if set(rep["ifaces"].values()) != set(expect["ifaces"]):
         bad.append("the transport's interfaces are %s, not %s" % (sorted(rep["ifaces"].values()), sorted(expect["ifaces"])))
-    want = sorted((s, c & 0xFFFFFFFF, m) for s, c, m in expect["calls"])
-    if sorted(rep["rows"]) != want:
-        bad.append("the calls are %s, not exactly %s" % (sorted(rep["rows"]), want))
+    # a row of expect["calls"]: [service, code, method] or, with an argument range, [service, code, method, args]
+    want = sorted((r[0], r[1] & 0xFFFFFFFF, r[2], r[3] if len(r) > 3 else None) for r in expect["calls"])
+    if sorted(rep["rows"], key=str) != sorted(want, key=str):
+        bad.append("the calls are %s, not exactly %s" % (sorted(rep["rows"], key=str), sorted(want, key=str)))
     return bad
 
 
-def expect_from(verify_py):
-    """HAL_APP of verify_tree_x50.py (a literal), without running that script"""
+def expect_from(verify_py, name="HAL_APP"):
+    """HAL_APP (or, with name, another literal such as MENU_APP of t11) of verify_tree_x50.py, without running it"""
     for node in ast.parse(open(verify_py, encoding="utf-8").read()).body:
-        if isinstance(node, ast.Assign) and [getattr(t, "id", None) for t in node.targets] == ["HAL_APP"]:
+        if isinstance(node, ast.Assign) and [getattr(t, "id", None) for t in node.targets] == [name]:
             return ast.literal_eval(node.value)
-    raise ValueError("%s has no HAL_APP" % verify_py)
+    raise ValueError("%s has no %s" % (verify_py, name))
 
 
 def main(a):
@@ -372,10 +398,10 @@ def main(a):
     print("  transact sites: %s; Method.invoke: %s" % (", ".join(rep["transact"]) or "none",
                                                         ", ".join(rep["reflect"]) or "none"))
     for r in rep["rows"]:
-        print("  call %s\t0x%08X\t%s" % r)
+        print("  call %s\t0x%08X\t%s" % r[:3] + ("" if r[3] is None else "\targs:" + r[3]))
     if "--expect" not in opts:
         return 0
-    exp = expect_from(opts["--expect"])
+    exp = expect_from(opts["--expect"], opts.get("--name", "HAL_APP"))
     if "--cert" in opts:
         exp["cert"] = opts["--cert"]
     bad = problems(rep, exp)

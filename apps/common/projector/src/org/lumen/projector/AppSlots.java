@@ -15,7 +15,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** Remote app keys, slots 1..5. The user can choose the app for slot 3 (iQIYI key) and slot 4 (bilibili key). */
+/**
+ * Remote app keys, slots 1..5. The user can choose the app for slot 3 (iQIYI key) and slot 4 (bilibili key).
+ * Z9X remotes differ: on one remote (2026-11-05, getevent) the "China TV" / iQIYI key is scancode 230
+ * (VIDEO1, slot 2) and the bilibili key is 134 (VIDEO4, slot 5), on others 235 (slot 3) and 144 (slot 4). So slot 2
+ * follows the iQIYI row and slot 5 the bilibili row (keySlot); slot 1 stays its own.
+ */
 final class AppSlots {
     static final String TAG = "Z9xSlots";
     private static final String PREFS = "app_slots";
@@ -94,8 +99,15 @@ final class AppSlots {
         }
     }
 
-    /** Launch the app of slot 1..5 (called on the main thread from KeyReceiver). */
-    static void launch(Context c, int slot) {
+    /** The settings slot a key slot follows: 2 -> 3 (iQIYI row), 5 -> 4 (bilibili row), else itself. */
+    static int keySlot(int slot) {
+        return slot == 2 ? 3 : slot == 5 ? 4 : slot;
+    }
+
+    /** Launch the app of key slot 1..5 (called on the main thread from KeyReceiver). */
+    static void launch(Context c, int keySlot) {
+        int slot = keySlot(keySlot);
+        if (slot != keySlot) Log.i(TAG, "key slot " + keySlot + " follows slot " + slot);
         String pkg = effectivePackage(c, slot);
         Intent i = launchIntent(c, pkg);
         if (i == null && chosenPackage(c, slot) != null) {

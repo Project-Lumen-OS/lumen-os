@@ -28,8 +28,18 @@ for f in getprop setprop log timeout chcon chown; do cp "$STUBS/$f" "$BIN/$f" &&
 cat > "$BIN/mount" <<'EOF'
 #!/bin/sh
 # test stub: 'mount --bind SRC DST' records "<sha256 of SRC> DST" in $Z9X_T/binds (DST must exist; fails when DST
-# is the path in $Z9X_T/mount_fail_dst); every call goes to $Z9X_T/mount.log
+# is the path in $Z9X_T/mount_fail_dst); 'mount -t TYPE -o OPTS SRC DIR' (the DSU path's stock partitions and the
+# APEX payload, which are tars here) refuses OPTS without ro, else extracts SRC into DIR and records
+# "TYPE OPTS SRC DIR" in $Z9X_T/fsmounts (and fsmounts.log); every call goes to $Z9X_T/mount.log
 echo "mount $*" >> "$Z9X_T/mount.log"
+if [ "$1" = -t ] && [ "$3" = -o ]; then
+  case ",$4," in *,ro,*) ;; *) echo "mount: $6: not read-only" >&2; exit 1 ;; esac
+  [ -f "$5" ] && [ -d "$6" ] || exit 1
+  [ -e "$Z9X_T/fail_$2" ] && exit 1
+  tar -xf "$5" -C "$6" 2>/dev/null || exit 1
+  echo "$2 $4 $5 $6" >> "$Z9X_T/fsmounts"; echo "$2 $4 $5 $6" >> "$Z9X_T/fsmounts.log"
+  exit 0
+fi
 [ "$1" = --bind ] || exit 0
 [ -e "$2" ] && [ -e "$3" ] || { echo "mount: $3: No such file or directory" >&2; exit 1; }
 [ "$(cat "$Z9X_T/mount_fail_dst" 2>/dev/null)" = "$3" ] && exit 1
@@ -37,11 +47,37 @@ printf '%s %s\n' "$(sha256sum "$2" | cut -d' ' -f1)" "$3" >> "$Z9X_T/binds"
 EOF
 cat > "$BIN/umount" <<'EOF'
 #!/bin/sh
-# test stub: drops the bind over $1 from $Z9X_T/binds (else 'not mounted')
+# test stub: a stock mount of $Z9X_T/fsmounts is emptied and dropped; else drops the bind over $1 from
+# $Z9X_T/binds (else 'not mounted')
 echo "umount $*" >> "$Z9X_T/umount.log"
+if grep -q " $1\$" "$Z9X_T/fsmounts" 2>/dev/null; then
+  rm -rf "$1" && mkdir "$1"
+  grep -v " $1\$" "$Z9X_T/fsmounts" > "$Z9X_T/fsmounts.tmp"; mv "$Z9X_T/fsmounts.tmp" "$Z9X_T/fsmounts"; exit 0
+fi
 grep -q " $1\$" "$Z9X_T/binds" 2>/dev/null || { echo "umount: $1: not mounted" >&2; exit 1; }
 grep -v " $1\$" "$Z9X_T/binds" > "$Z9X_T/binds.tmp"; mv "$Z9X_T/binds.tmp" "$Z9X_T/binds"
 EOF
+# the DSU path's mapper for a stock partition first stage did not map (only on PATH in the case that needs it)
+LPBIN=$WORK/lpbin
+mkdir -p "$LPBIN"
+cat > "$LPBIN/lpdump" <<'EOF'
+#!/bin/sh
+# test stub: 'lpdump --slot=N' prints $Z9X_T/lpdump.txt and logs its arguments
+echo "lpdump $*" >> "$Z9X_T/dm.log"; cat "$Z9X_T/lpdump.txt"
+EOF
+cat > "$LPBIN/dmctl" <<'EOF'
+#!/bin/sh
+# test stub: 'dmctl create NAME -ro TARGETS' (refused without -ro) makes $Z9X_T/dm/NAME a copy of the fake
+# partition $Z9X_T/lp/<NAME without lumen_ro_>; getpath prints that path; delete removes it. Logs to dm.log
+echo "dmctl $*" >> "$Z9X_T/dm.log"
+case "$1" in
+  create) [ "$3" = -ro ] || exit 1; mkdir -p "$Z9X_T/dm"; cp "$Z9X_T/lp/${2#lumen_ro_}" "$Z9X_T/dm/$2" ;;
+  getpath) [ -f "$Z9X_T/dm/$2" ] && echo "$Z9X_T/dm/$2" ;;
+  delete) rm -f "$Z9X_T/dm/$2" ;;
+esac
+EOF
+chmod 755 "$LPBIN/lpdump" "$LPBIN/dmctl"
+cp "$STUBS/blockdev" "$BIN/blockdev" && chmod 755 "$BIN/blockdev"
 chmod 755 "$BIN/mount" "$BIN/umount"
 PASS=0; FAIL=0; CASE=; CFAIL=0; SHN=-
 ALLOW=$WORK/allow.txt
@@ -73,7 +109,7 @@ begin() {  # case name [fixture options]: slot B, every placeholder and target i
 }
 mk() { python3 "$HERE/x50_fixture.py" tar "$WORK/files" "$ALLOW" "$R/dev/block/mapper/z9x_blobs_b" "$@"; }
 run() {  # the reader, with a 20 s watchdog
-  env Z9X_ROOT="$R" Z9X_T="$T" PATH="$BIN:$PATH" $SH "$IMG/x50_blobs.sh" >> "$T/out" 2>&1 &
+  env Z9X_ROOT="$R" Z9X_T="$T" PATH="${XBIN:+$XBIN:}$BIN:$PATH" $SH "$IMG/x50_blobs.sh" >> "$T/out" 2>&1 &
   pid=$!; i=0
   while kill -0 $pid 2>/dev/null; do
     i=$((i + 1)); [ $i -le 200 ] || { kill $pid 2>/dev/null; fail "x50_blobs.sh still runs after 20 s"; break; }
@@ -108,6 +144,33 @@ end() {
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   $SHN $CASE"
   else FAIL=$((FAIL + 1)); echo "FAIL $SHN $CASE"; sed 's/^/     | /' "$T/logcat" | tail -6; fi
 }
+# a DSU trial on stock: no z9x_blobs partition, ro.gsid.image_running=1, this model, the fake stock slot B
+# (dev/block/mapper/system_b and system_ext_b, tars here; the vendor's own files under vendor/) built with these
+# x50_fixture.py stock options, and the shared reader in place as in the image
+dsu_begin() {  # case name [stock fixture options]
+  begin "$1"; shift; XBIN=
+  rm -f "$R/dev/block/mapper/z9x_blobs_b"
+  cp "$G/tools/devices/image/blobs_stock_dsu.sh" "$R/system/etc/z9x/blobs_stock_dsu.sh"
+  printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0111 > "$T/props"
+  python3 "$HERE/x50_fixture.py" stock "$WORK/files" "$ALLOW" "$T/lp" "$R" "$@" || fail "stock fixture"
+  mv "$T/lp/system.tar" "$T/lp/system_b"; mv "$T/lp/system_ext.tar" "$T/lp/system_ext_b"
+  cp "$T/lp/system_b" "$T/lp/system_ext_b" "$R/dev/block/mapper/"
+  : > "$T/fsmounts"; : > "$T/fsmounts.log"; : > "$T/blockdev.log"
+  (cd "$T/lp" && sha256sum system_b system_ext_b) > "$T/stock.sha"
+}
+expect_stock_untouched() {  # nothing left mounted, no scratch left, the stock partitions byte-identical, all ro
+  [ ! -s "$T/fsmounts" ] || fail "still mounted: $(cat "$T/fsmounts")"
+  [ ! -e "$R/mnt/z9x_stock" ] || fail "the stock scratch folder is left"
+  for p in system_b system_ext_b; do
+    [ ! -f "$R/dev/block/mapper/$p" ] || cmp -s "$R/dev/block/mapper/$p" "$T/lp/$p" || fail "stock $p changed"
+  done
+  (cd "$T/lp" && sha256sum system_b system_ext_b) | cmp -s - "$T/stock.sha" || fail "a stock partition changed"
+  awk '$2 !~ /(^|,)ro(,|$)/' "$T/fsmounts.log" | grep . && fail "a stock mount was not read-only"
+  grep -E -- '-o (rw|remount)|remount' "$T/mount.log" | grep -v z9x_blobs && fail "a remount: $(cat "$T/mount.log")"
+  return 0
+}
+expect_no_stock_mount() { [ ! -s "$T/fsmounts.log" ] || fail "stock mounted: $(cat "$T/fsmounts.log")"; }
+
 want() { [ -z "$ONLY" ] || case "$1" in "$ONLY"*) return 0 ;; *) return 1 ;; esac; }
 
 cases() {
@@ -269,6 +332,144 @@ cases() {
     expect_prop sys.lumen.nui "missing:$NUI"; expect_bound 9
     end
   fi
+  if want dsu_ok; then
+    # a DSU trial on stock: every file from the stock slot, checked and bound as from the partition
+    dsu_begin dsu_ok; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b
+    expect_prop sys.z9x.blobs.set "$SET"; expect_bound 11; expect_all_bound_but
+    expect_log "DSU trial: no z9x_blobs_b, 11 files read-only from the stock slot _b"
+    expect_log "ok: 11 files of set $SET bound"
+    grep -q "^u:object_r:nativeui_main_exec:s0 .*/x/$NUI$" "$T/chcon.log" || fail "nativeui is not nativeui_main_exec"
+    [ "$(ls -l "$R/mnt/z9x_blobs/x/$NUI" | cut -c1-10)" = -rwxr-xr-x ] || fail "nativeui is not 0755"
+    for p in system_b system_ext_b; do grep -q -- "--setro $R/dev/block/mapper/$p\$" "$T/blockdev.log" || fail "no setro on $p"; done
+    grep -q '^ext4 ro,loop,nodev,nosuid,noexec,noload .*apex_payload.img ' "$T/fsmounts.log" || fail "the APEX payload: $(cat "$T/fsmounts.log")"
+    [ "$(grep -c . "$T/fsmounts.log")" = 3 ] || fail "want 3 stock mounts: $(cat "$T/fsmounts.log")"
+    expect_stock_untouched; expect_fifos_gone
+    end
+  fi
+  if want dsu_partition_wins; then
+    # a DSU trial that has a z9x_blobs partition after all: the partition, the stock slot is not even mounted
+    dsu_begin dsu_partition_wins; mk; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src partition; expect_bound 11
+    expect_no_stock_mount
+    end
+  fi
+  if want dsu_not_dsu; then
+    # no DSU trial: no partition is missing as before, the stock slot is never read
+    dsu_begin dsu_not_dsu; printf '%s\n' ro.boot.slot_suffix=_b ro.boot.xgimi.modelname=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "missing: no z9x_blobs_b"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_other_model; then
+    # the shared reader is on for G0111 only: another model's DSU trial reads nothing
+    dsu_begin dsu_other_model; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0082 ro.lumen.model=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_ultra_max; then
+    # the X50 Ultra Max image (g0100, ro.lumen.model G0100) in a trial on a G0100: the same stock files, read the same way
+    dsu_begin dsu_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.model=G0100 > "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b; expect_bound 11
+    expect_log "DSU trial: no z9x_blobs_b, 11 files read-only from the stock slot _b"; expect_stock_untouched
+    end
+  fi
+  if want dsu_ultra_max_image_on_ultra; then
+    # the Ultra Max image on an X50 Ultra: not its model, nothing is read
+    dsu_begin dsu_ultra_max_image_on_ultra; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0100 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_ultra_image_on_ultra_max; then
+    # the Ultra image on an X50 Ultra Max: not its model, nothing is read
+    dsu_begin dsu_ultra_image_on_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.model=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_no_image_model; then
+    # an image that names no X50 model: nothing is read (fail closed)
+    dsu_begin dsu_no_image_model; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "this image names no X50 model (ro.lumen.model unset)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_no_stock_reader; then
+    # an image without the shared reader: missing, as t5
+    dsu_begin dsu_no_stock_reader; rm -f "$R/system/etc/z9x/blobs_stock_dsu.sh"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0; expect_no_stock_mount
+    end
+  fi
+  if want dsu_no_stock; then
+    # the stock partitions are not there (and no lpdump / dmctl): fail closed
+    dsu_begin dsu_no_stock; rm -f "$R/dev/block/mapper/system_b" "$R/dev/block/mapper/system_ext_b"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "was not read (nostock)"; expect_stock_untouched
+    end
+  fi
+  if want dsu_nativeui_missing; then
+    dsu_begin dsu_nativeui_missing --drop "$NUI"; run
+    expect_prop sys.lumen.nui "missing:$NUI"; expect_prop sys.z9x.blobs partial; expect_bound 9; expect_eye_unbound
+    expect_stock_untouched
+    end
+  fi
+  if want dsu_nativeui_wrong_hash; then
+    dsu_begin dsu_nativeui_wrong_hash --corrupt "$NUI"; run
+    expect_prop sys.lumen.nui "bad:$NUI"; expect_prop sys.z9x.blobs partial; expect_bound 9; expect_eye_unbound
+    [ ! -e "$R/mnt/z9x_blobs/x/$NUI" ] && [ ! -e "$R/mnt/z9x_blobs/x/$LIB" ] || fail "an eye-protection file was kept"
+    expect_log "eye-protection drawer nativeui not started: bad:$NUI"; expect_stock_untouched
+    end
+  fi
+  if want dsu_library_wrong_hash; then
+    dsu_begin dsu_library_wrong_hash --corrupt "$LIB"; run
+    expect_prop sys.lumen.nui "bad:$LIB"; expect_bound 9; expect_eye_unbound; expect_stock_untouched
+    end
+  fi
+  if want dsu_codec_wrong_hash; then
+    dsu_begin dsu_codec_wrong_hash --corrupt system_ext/lib64/libc2plugin_store.so; run
+    expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs partial; expect_bound 10
+    expect_all_bound_but system_ext/lib64/libc2plugin_store.so; expect_stock_untouched
+    end
+  fi
+  if want dsu_nativeui_symlink; then
+    # a symlink on the stock side is never followed, even to a good copy
+    dsu_begin dsu_nativeui_symlink --symlink "$NUI"; run
+    expect_prop sys.lumen.nui "missing:$NUI"; expect_bound 9; expect_eye_unbound; expect_stock_untouched
+    end
+  fi
+  if want dsu_audio_source_changed; then
+    # the from= source (the stock vendor's file) is not the allow-listed one: not derived, not bound
+    dsu_begin dsu_audio_source_changed; echo changed >> "$R/vendor/etc/audio_policy_configuration.xml"; run
+    expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs partial; expect_bound 10
+    expect_all_bound_but etc/xgimi/audio_policy_configuration.xml
+    end
+  fi
+  if want dsu_no_apex; then
+    dsu_begin dsu_no_apex --no-apex; run
+    expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs partial; expect_bound 9
+    expect_all_bound_but etc/xgimi/libstagefright_foundation.so etc/xgimi/libstagefright_foundation64.so
+    expect_stock_untouched
+    end
+  fi
+  if want dsu_dmctl_map; then
+    # first stage did not map the stock partitions: mapped read-only from lpdump's extents and deleted again
+    dsu_begin dsu_dmctl_map; rm -f "$R/dev/block/mapper/system_b" "$R/dev/block/mapper/system_ext_b"; XBIN=$LPBIN
+    printf '%s\n' 'Partition table:' '------------------------' '  Name: system_b' '  Group: main_b' '  Extents:' \
+      '    0 .. 2047 linear super 2048' '    2048 .. 4095 linear super 10240' '------------------------' \
+      '  Name: system_ext_b' '  Extents:' '    0 .. 1023 linear super 8192' '------------------------' > "$T/lpdump.txt"
+    run; XBIN=
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_bound 11
+    grep -qx "dmctl create lumen_ro_system_b -ro linear 0 2048 $R/dev/block/by-name/super 2048 linear 2048 2048 $R/dev/block/by-name/super 10240" "$T/dm.log" \
+      || fail "dmctl create: $(cat "$T/dm.log")"
+    grep -qx "lpdump --slot=1" "$T/dm.log" || fail "lpdump not of slot 1"
+    grep -qx "dmctl delete lumen_ro_system_b" "$T/dm.log" && grep -qx "dmctl delete lumen_ro_system_ext_b" "$T/dm.log" \
+      || fail "the dm devices were not deleted: $(cat "$T/dm.log")"
+    [ -z "$(ls "$T/dm" 2>/dev/null)" ] || fail "dm devices left: $(ls "$T/dm")"
+    expect_stock_untouched
+    end
+  fi
   if want only_fifos_removed; then
     # a regular file or a directory with a fifo's name is not ours to remove
     begin only_fifos_removed; rm -f "$R/data/vendor/tmp/nuififo"; echo x > "$R/data/vendor/tmp/nuififo"; run
@@ -337,7 +538,12 @@ PY
       grep -nE 'nuififo' "$IMG/x50_blobs.sh" | grep -vE 'rm -f|for f in nuififo|^[0-9]+:#|say "removed' && fail "x50_blobs.sh uses the fifo other than to remove it"
       grep -nE '(<|>)[^&]*nuififo|exec [0-9]' "$IMG/x50_blobs.sh" "$IMG/x50_nui.rc" && fail "a redirection to the fifo"
       # verify_tree_x50.py lets only these two /system/etc files name the fifo
-      grep -l nuififo "$IMG/x50_blobs_allow.txt" "$IMG/x50_blobs.rc" "$IMG/x50_netadb.rc" && fail "another staged file names the fifo"
+      grep -l nuififo "$IMG/x50_blobs_allow.txt" "$IMG/x50_blobs.rc" "$IMG/x50_netadb.rc" "$G/tools/devices/image/blobs_stock_dsu.sh" \
+        && fail "another staged file names the fifo"
+      # the shared DSU reader is on for the X50 only, and only the X50 reader sources it (the Z9X / HB readers do not)
+      [ "$(sed -n 's/^DSU_STOCK_MODELS=//p' "$G/tools/devices/image/blobs_stock_dsu.sh")" = '"G0111 G0100"' ] \
+        || fail "DSU_STOCK_MODELS is not exactly the X50 Ultra and Ultra Max (G0111 G0100)"
+      grep -l blobs_stock_dsu "$G/tools/ota/image/z9x_blobs.sh" "$G"/devices/goat_elegant/image/* 2>/dev/null && fail "a Z9X / HB reader sources the DSU reader"
       ;;
   esac
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   - $1"; else FAIL=$((FAIL + 1)); echo "FAIL - $1"; fi

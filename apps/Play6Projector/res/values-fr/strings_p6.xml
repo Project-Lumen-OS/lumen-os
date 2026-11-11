@@ -25,6 +25,7 @@
     <string name="p6_game_on">Mode jeu activé</string>
     <string name="p6_game_off">Mode jeu désactivé</string>
     <string name="p6_smart_af_desc">L\'image est remise au point après un déplacement du projecteur.</string>
+    <string name="p6_af_fine_tune">Mise au point terminée. Maintenez la touche de mise au point pour l\'affiner.</string>
     <string name="p6_lamp_hint">Sur batterie, le projecteur active l\'économie d\'énergie et réduit la luminosité. Augmenter la luminosité désactive l\'économie d\'énergie.</string>
     <string name="p6_eco">Économie d\'énergie</string>
     <string name="p6_eco_on_title">Activer l\'économie d\'énergie ?</string>

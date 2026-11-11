@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.os.SystemClock;
 
 /**
- * org.lumen.home.action.MIC_UP from org.lumen.projector's KeyReceiver (the mic key was released). Guarded
+ * org.lumen.home.action.MIC_UP from the projector app's KeyReceiver (org.lumen.projector; org.lumen.x50.projector
+ * on the X50) (the mic key was released). Guarded
  * by org.lumen.home.permission.MIC (signature). Remembers the release time (extra up_uptime, else now)
  * even when no search screen is open yet: on a cold start of this process the release often arrives
  * before the screen exists, and SearchActivity then opens keyboard search instead of listening to

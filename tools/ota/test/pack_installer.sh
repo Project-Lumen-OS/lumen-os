@@ -114,6 +114,13 @@ check rel_wrong_name_wrote_nothing '[ ! -e "$W/rel/lumen-os-play6-1.0.6-nogms-sy
 expect rel_ok 0 'ro.lumen.version=1.0.7' bash "$G/tools/play6/release_image.sh" "$T33" 1.0.7 "$REL"
 check rel_props '[ "$(prop "$REL" ro.lumen.version)" = 1.0.7 ] && [ "$(prop "$REL" ro.adb.secure)" = 1 ]'
 rm -f "$REL.sha256"
+# a pre-release straight from a test build: the version code of its x.y.z, never a later release's
+BETA=$W/beta/lumen-os-play6-1.0.10-beta1-nogms-system.img
+expect rel_pre 0 'ro.lumen.version=1.0.10-beta1 \(10010\)' bash "$G/tools/play6/release_image.sh" "$T33" 1.0.10-beta1 "$BETA"
+check rel_pre_props '[ "$(prop "$BETA" ro.lumen.version)" = 1.0.10-beta1 ] && [ "$(prop "$BETA" ro.lumen.version_code)" = 10010 ] && [ "$(prop "$BETA" ro.lumen.build_id)" = lumen-play6-1.0.10-beta1-20261024 ] && [ "$(prop "$BETA" ro.adb.secure)" = 1 ]'
+expect rel_pre_wrong_name 1 'named for Lumen OS 1.0.10-beta1' bash "$G/tools/play6/release_image.sh" "$T33" 1.0.10 "$BETA.x/lumen-os-play6-1.0.10-beta1-nogms-system.img"
+expect rel_bad_mark 1 'x.y.z or x.y.z-<mark>' bash "$G/tools/play6/release_image.sh" "$T33" 1.0.10-Beta1 "$W/beta/x.img"
+rm -rf "$W/beta"
 
 echo "swap_sf_into_image.sh"
 KST=$W/pre/lumen-os-play6-1.0.7-kst1-nogms-system.img

@@ -1,0 +1,12 @@
+# Recipe of the Play 6 updater (decision 2026-11-10, Q1), read by
+# tools/devices/assemble_app.py. The Z9X updater is the base; apps/Play6Updater is only the Play 6 layer: the
+# recovery-block install (Engine, UpdateService, UpdateManifest, Preflight), the ro.lumen.* properties and the play6
+# channel without a beta channel (Ota), the consent texts of the recovery install (UpdaterActivity, strings), the
+# system uid and RECOVERY (AndroidManifest), its tests. Each of them has a row in tools/play6/forks.tsv. Statistics,
+# the one-time notice, the channel logic and the rest come from apps/Z9xUpdater unchanged.
+# tools/play6/build_play6.sh and tools/arch/baseline.sh build the assembled tree.
+app       Play6Updater
+base      apps/Z9xUpdater
+top       apps/Play6Updater
+skip      build/ tools/ *.apk CHANGES*.md README*.md .DS_Store
+identical error

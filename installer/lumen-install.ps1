@@ -1771,12 +1771,25 @@ function Play6-Adb($secs) {  # adb over Wi-Fi to the Play 6 (-Ip, the saved addr
 }
 function P6-Fw-List { return (Join-And @($script:Prof["VENDOR_OK"] -split " " | ForEach-Object { "V" + $_.Substring(1) })) }
 function P6-Fw-First { return ("V" + ($script:Prof["VENDOR_OK"] -split " ")[0].Substring(1)) }
+function P6-Fw-Last { $l = @($script:Prof["VENDOR_OK"] -split " "); return ("V" + $l[$l.Count - 1].Substring(1)) }   # the newest (VENDOR_OK is oldest first)
+function P6-Fw-Back([string]$chip, [string]$pre) {  # the stock .bin that brings this unit back: the firmware it ran (saved by Play6-Device),
+  # never the first one on the newer batch (serial XHF or the AIC chip: that firmware has no driver for it)
+  if ($pre -ceq "XHF" -or $chip -clike "368b:*") { return (P6-Fw-Last) }
+  $v = State-Get vendor
+  if ($v -and (@($script:Prof["VENDOR_OK"] -split " ") -ccontains $v)) { return ("V" + $v.Substring(1)) }
+  return (P6-Fw-First)
+}
+function P6-Nb-Back {  # the way back to stock for the newer batch: the newest supported firmware, once it is not the first one
+  $nm = P6-Name; $nb = P6-Fw-Last
+  if ($nb -cne (P6-Fw-First)) { return (T "The way back to stock for this batch is the $nb .bin from a FAT32 stick (guide, section '$nm', 'Back to stock')." "Вернуться на сток с этой партией можно прошивкой .bin $nb с флешки FAT32 (инструкция, раздел «${nm}», «Откат на сток»).") }
+  return (T "The way back to stock for this batch is a V1.8.x firmware from XGIMI support." "Вернуться на сток с этой партией можно только прошивкой V1.8.x от поддержки XGIMI.")
+}
 function Play6-Device {  # connected: firmware, single slot, stock or Lumen OS; saves serial, address, firmware
   $nm = P6-Name
   $vend = Prop ro.vendor.build.version.incremental; $slot = Prop ro.boot.slot_suffix; $lum = Prop (P6-LProp)
   if (@($script:Prof["VENDOR_OK"] -split " ") -cnotcontains $vend) {
     $all = P6-Fw-List; $first = P6-Fw-First
-    Die (T "XGIMI firmware $vend is not supported: Lumen OS for the $nm is tested on $all only. Older: let the stock system update itself to $first (Settings, Wi-Fi), then run the installer again. Newer (for example V1.8.x, shown in Settings as R$($script:Prof["MODEL"])V1.8xxx): Lumen OS does not support it yet. Do NOT install $first from a USB stick over it: newer $nm units have another Wi-Fi chip, $first has no driver for it, and Wi-Fi and Bluetooth then stop working. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $nm проверена только на $all. Если ваша старее, дайте стоку обновиться до $first (настройки, Wi-Fi) и запустите установщик снова. Если новее (например V1.8.x, в настройках видна как R$($script:Prof["MODEL"])V1.8xxx), Lumen OS её пока не поддерживает. НЕ ставьте поверх неё $first с флешки: в новых $nm другой чип Wi-Fi, драйвера для него в $first нет, и Wi-Fi с Bluetooth перестают работать. Ничего не сделано.")
+    Die (T "XGIMI firmware $vend is not supported: Lumen OS for the $nm is tested on $all only. Older: let the stock system update itself to $first (Settings, Wi-Fi), then run the installer again. Newer: Lumen OS does not support it yet. Do NOT install $first from a USB stick over it: newer $nm units have another Wi-Fi chip, $first has no driver for it, and Wi-Fi and Bluetooth then stop working. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $nm проверена только на $all. Если ваша старее, дайте стоку обновиться до $first (настройки, Wi-Fi) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. НЕ ставьте поверх неё $first с флешки: в новых $nm другой чип Wi-Fi, драйвера для него в $first нет, и Wi-Fi с Bluetooth перестают работать. Ничего не сделано.")
   }
   if ($slot) { Die (T "this projector has a second system slot ($slot): it is not the $nm this installer knows. Nothing was done." "у этого проектора есть второй системный слот ($slot): это не тот $nm, который знает установщик. Ничего не сделано.") }
   if (-not $lum) {
@@ -1862,7 +1875,7 @@ function P6-Prechecks {  # before any write, on the running system over adb: whi
   # the newer batch: the first-batch stock .bin kills its Wi-Fi and Bluetooth
   if ($pre -ceq "XHF" -or $u.ChipId -clike "368b:*") {
     Write-Host ""
-    Write-Host (T "This $nm is from a newer batch (serial XHF... or the AIC Wi-Fi chip; it came with firmware V1.8.x). Lumen OS brings its own Wi-Fi and Bluetooth driver for it; this is newer and less tested than on the first batch. NEVER roll this projector back with the $fw1 .bin from a USB stick: that firmware has no driver for its chip, and Wi-Fi and Bluetooth then stop working on stock. The way back to stock for this batch is a V1.8.x firmware from XGIMI support." "Этот $nm из новой партии (серийный номер XHF... или чип Wi-Fi AIC; с завода на нём была прошивка V1.8.x). Lumen OS ставит для него свой драйвер Wi-Fi и Bluetooth; это новее и проверено меньше, чем на первой партии. НИКОГДА не откатывайте этот проектор прошивкой .bin $fw1 с флешки: в ней нет драйвера для его чипа, и на стоке перестают работать Wi-Fi и Bluetooth. Вернуться на сток с этой партией можно только прошивкой V1.8.x от поддержки XGIMI.")
+    Write-Host (T "This $nm is from a newer batch (serial XHF... or the AIC Wi-Fi chip; it came with firmware V1.8.x). Lumen OS brings its own Wi-Fi and Bluetooth driver for it; this is newer and less tested than on the first batch. NEVER roll this projector back with the $fw1 .bin from a USB stick: that firmware has no driver for its chip, and Wi-Fi and Bluetooth then stop working on stock. $(P6-Nb-Back)" "Этот $nm из новой партии (серийный номер XHF... или чип Wi-Fi AIC; с завода на нём была прошивка V1.8.x). Lumen OS ставит для него свой драйвер Wi-Fi и Bluetooth; это новее и проверено меньше, чем на первой партии. НИКОГДА не откатывайте этот проектор прошивкой .bin $fw1 с флешки: в ней нет драйвера для его чипа, и на стоке перестают работать Wi-Fi и Bluetooth. $(P6-Nb-Back)")
     if (-not (Ask (T "Install Lumen OS on this projector?" "Ставить Lumen OS на этот проектор?"))) { Die (T "cancelled, nothing was written" "отменено, ничего не записано") }
     P6-Log "pre-check: newer batch confirmed by the user"
   }
@@ -1896,9 +1909,9 @@ function P6-Noboot-Help {  # the projector did not come back after a start: what
   Write-Host (T "  4. To find the cause we need the boot log: ask for the Lumen OS diagnostic build (the project's GitHub issues or the 4PDA topic). It writes the boot log to the FAT32 stick (folder lumen_os_diag_logs). Send that folder together with this installer's log: $lp" "  4. Чтобы найти причину, нужен журнал загрузки: попросите диагностическую сборку Lumen OS (issues проекта на GitHub или тема на 4PDA). Она пишет журнал загрузки на флешку FAT32 (папка lumen_os_diag_logs). Пришлите эту папку вместе с журналом установщика: $lp")
   Write-Host (T "  5. Back to stock (erases everything): guide, section '$nm', 'Back to stock'." "  5. Откат на сток (стирает всё): инструкция, раздел «${nm}», «Откат на сток».")
   $c = if ($chip) { $chip } else { "?" }
-  if ($pre -ceq "XHF" -or $chip -clike "368b:*") { Write-Host (T "     This projector (serial $pre, chip $c) is from the newer batch: do NOT use the $fw1 .bin, on this unit it kills Wi-Fi and Bluetooth; ask XGIMI support for its V1.8.x firmware." "     Этот проектор (серийный номер $pre, чип $c) из новой партии: НЕ используйте .bin $fw1, на нём он убивает Wi-Fi и Bluetooth; попросите у поддержки XGIMI прошивку V1.8.x.") }
-  elseif ($chip -clike "0e8d:*") { Write-Host (T "     This projector (serial $pre, MediaTek chip $chip): the $fw1 .bin from a FAT32 stick." "     Этот проектор (серийный номер $pre, чип MediaTek $chip): .bin $fw1 с флешки FAT32.") }
-  else { Write-Host (T "     Serial XHN and a MediaTek Wi-Fi chip (0e8d): the $fw1 .bin from a FAT32 stick. Serial XHF or an AIC chip (368b): do NOT use that .bin, ask XGIMI support." "     Серийный номер XHN и чип Wi-Fi MediaTek (0e8d): .bin $fw1 с флешки FAT32. Серийный номер XHF или чип AIC (368b): этот .bin НЕ используйте, обратитесь в поддержку XGIMI.") }
+  if ($pre -ceq "XHF" -or $chip -clike "368b:*") { Write-Host (T "     This projector (serial $pre, chip $c) is from the newer batch: do NOT use the $fw1 .bin, on this unit it kills Wi-Fi and Bluetooth. $(P6-Nb-Back)" "     Этот проектор (серийный номер $pre, чип $c) из новой партии: НЕ используйте .bin $fw1, на нём он убивает Wi-Fi и Bluetooth. $(P6-Nb-Back)") }
+  elseif ($chip -clike "0e8d:*") { $fwb = P6-Fw-Back $chip $pre; Write-Host (T "     This projector (serial $pre, MediaTek chip $chip): the $fwb .bin from a FAT32 stick." "     Этот проектор (серийный номер $pre, чип MediaTek $chip): .bin $fwb с флешки FAT32.") }
+  else { $fwb = P6-Fw-Back "" $pre; Write-Host (T "     Serial XHN and a MediaTek Wi-Fi chip (0e8d): the $fwb .bin from a FAT32 stick. Serial XHF or an AIC chip (368b): do NOT use the $fw1 .bin. $(P6-Nb-Back)" "     Серийный номер XHN и чип Wi-Fi MediaTek (0e8d): .bin $fwb с флешки FAT32. Серийный номер XHF или чип AIC (368b): .bin $fw1 НЕ используйте. $(P6-Nb-Back)") }
   Write-Host ""
 }
 function P6-Marker-Write {  # the check file for 'verify' (a real wipe removes /data/local/tmp); $false = not written

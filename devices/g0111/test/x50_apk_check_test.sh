@@ -12,7 +12,7 @@
 #               the Z9X release, the AOSP test key or the HB platform certificates; the path is
 #               /system/app/<name>/<name>.apk of the registry's apps; the composer stages it and the image check
 #               imports x50_apk_check from IN
-#   real        the g0111-signed APK passes, with exactly 10 calls, and fails with another expected certificate
+#   real        the g0111-signed APK passes, with exactly 8 calls, and fails with another expected certificate
 #   testkey     the same sources signed with the AOSP test key: refused for its signer; with --cert of the test
 #               key it passes (the dex is read the same way on a second build)
 #   mutants     (test key, checked with --cert of the test key, so only the mutation can fail) an eleventh call (61);
@@ -97,8 +97,8 @@ RC=$?; expect sources 0 "sources: OK"
 
 # ---------------------------------------------------------------- real
 if [ -f "$APK" ]; then
-  run "$APK" --expect "$VER"; expect real_g0111_apk 0 "OK: 10 calls"
-  grep -qF "call DisplayManager	0x0000007E	setHumanDetectMode" "$W/out" || bad "real_reads_126"
+  run "$APK" --expect "$VER"; expect real_g0111_apk 0 "OK: 8 calls"
+  grep -qF "call DisplayManager	0x0000003E	getHumanDetectOnOff" "$W/out" || bad "real_reads_62"
   grep -qF "call SystemManager	0x00000020	setBootAnimState" "$W/out" || bad "real_reads_32"
   grep -qF "call PowerManager	0x00000002	goToBootCompleted" "$W/out" || bad "real_reads_2"
   run "$APK" --expect "$VER" --cert 0000000000000000000000000000000000000000000000000000000000000000
@@ -112,6 +112,9 @@ TK=$(certsha "$G/apps/sdk/platform.x509.pem")
 build() {  # name: apps/X50EyeGuard copied to $W/app_<name>, Gmpf.java edited by $W/edit_<name>.py, built with the test key
   rm -rf "$W/app_$1"; cp -R "$G/apps/X50EyeGuard" "$W/app_$1"; rm -rf "$W/app_$1/build" "$W/app_$1/test"
   if [ -f "$W/edit_$1.py" ]; then python3 -B "$W/edit_$1.py" "$W/app_$1" || return 1; fi
+  # the lumen-ui module, as devices/g0111/app/X50EyeGuard.layers assembles it (its src/ only)
+  cp -R "$G/apps/core/lumen-ui/src/." "$W/app_$1/src/"
+  cp -R "$G/apps/core/lumen-hal/src/." "$W/app_$1/src/"
   BUILD_DIR="$W/b_$1" sh "$G/apps/build_apk.sh" "$W/app_$1" "$W/$1.apk" > "$W/b_$1.log" 2>&1
 }
 edit() {  # name old new: replace old (must be there once) by new in Gmpf.java of that mutant
@@ -130,7 +133,7 @@ mutant() {  # name reason
 }
 if build testkey; then
   run "$W/testkey.apk" --expect "$VER"; expect testkey_refused 1 "v3 signer certificate $TK"
-  run "$W/testkey.apk" --expect "$VER" --cert "$TK"; expect testkey_same_dex_ok 0 "OK: 10 calls"
+  run "$W/testkey.apk" --expect "$VER" --cert "$TK"; expect testkey_same_dex_ok 0 "OK: 8 calls"
 else
   bad "testkey (build failed: $(tail -n 3 "$W/b_testkey.log" | tr '\n' ' '))"
 fi
@@ -140,25 +143,25 @@ edit extra_call 'GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted");' \
 mutant extra_call "the calls are"
 edit code_37 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 33, ' 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 37, '
 mutant code_37 "the calls are"
-edit code_61 'SET_HUMAN_DETECT_MODE(Iface.DISPLAY, 126, ' 'SET_HUMAN_DETECT_MODE(Iface.DISPLAY, 61, '
+edit code_61 'GET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 62, ' 'GET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 61, '
 mutant code_61 "the calls are"
 edit fourth_iface 'POWER("xgimi.hardware.gmpf.IPowerManager");' \
   'POWER("xgimi.hardware.gmpf.IPowerManager"), TV("xgimi.hardware.gmpf.IGmTvManager");'
 mutant fourth_iface "names the gmpf interfaces"
-edit second_transact '    private static void drop(Iface i, IBinder b) {' \
-  '    static boolean raw(IBinder b) throws RemoteException { return b.transact(61, Parcel.obtain(), null, 0); }
+edit second_transact '    boolean connect() {' \
+  '    static boolean raw(android.os.IBinder b) throws RemoteException { return b.transact(61, Parcel.obtain(), null, 0); }
 
-    private static void drop(Iface i, IBinder b) {'
+    boolean connect() {'
 mutant second_transact "2 IBinder.transact sites"
-edit reflect '    private static void drop(Iface i, IBinder b) {' \
+edit reflect '    boolean connect() {' \
   '    static Object refl(Object o) throws Exception { return o.getClass().getMethod("toString").invoke(o); }
 
-    private static void drop(Iface i, IBinder b) {'
+    boolean connect() {'
 mutant reflect "calls Method.invoke"
-edit hidl '    private static void drop(Iface i, IBinder b) {' \
+edit hidl '    boolean connect() {' \
   '    static String hidl() { return "xgimi.hardware.gmpf@1.0::IGmpf"; }
 
-    private static void drop(Iface i, IBinder b) {'
+    boolean connect() {'
 mutant hidl "names the HIDL gmpf"
 # native code: a lib/ entry added to the test-key APK (zip only; the signer check sees the signing block broken or
 # not, the native rule refuses it either way)

@@ -36,7 +36,7 @@ import java.util.Arrays;
  * 150 Hz; Voice and Night as the Z9X shapes. Boosts below 200 Hz stay <= +3 dB; an automatic downward shift of all
  * bands (0.5 dB steps) keeps the combined curve at or below +3 dB. One preset for every sound mode.
  * Triggers: the user's choice; HAL (re)connect +5 s / +30 s / +130 s; SCREEN_ON +3 s / +20 s; after our own sound
- * mode change +600 ms (Play6PanelController). Log tag P6Eq. HAL on p6-hal only.
+ * mode change +600 ms (panel/Play6Features, the shared menu). Log tag P6Eq. HAL on p6-hal only.
  */
 public final class P6SoundEq {
     static final String TAG = "P6Eq";

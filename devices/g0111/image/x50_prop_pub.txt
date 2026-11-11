@@ -1,0 +1,45 @@
+# Property edits of the PUBLIC XGIMI X50 Ultra image (g0111, compose_x50.sh step 5 with a release version, x50_props.py;
+# 2026-11-11 public beta). Same as x50_prop.txt without the test adb lines and without "test" in the name. Sections name the file:
+#   [system]   /system/build.prop          [product]  /system/product/etc/build.prop
+# KEY=VALUE replaces the one line of KEY in that file (it must be there exactly once), +KEY=VALUE appends a new
+# key (it must not be in the file), -KEY deletes the one line of KEY. @V@ is the variant (t1), @BID@ the build id
+# date part (UTC yyyymmddHHMM), @UTC@ / @DATE@ that minute as epoch seconds / as the build.prop date text. Nothing else of either file changes (verify_tree_x50.py compares line by line).
+[system]
+ro.product.system.model=XGIMI X50 Ultra
+ro.build.display.id=Lumen OS x50-@V@ (AP2A.240905.003, @BID@)
+# Setup shows it; Lumen Setup is the only reader in the image
+ro.z9x.version=x50-@V@
+# t12 (t11 review P0.1b): every test build has its own identity. Android re-runs the default permission grants and
+# rescans packages only when the build fingerprint differs from the one stored in /data (a reused DSU /data with the
+# previous tN's fingerprint never granted the new package). ro.build.fingerprint is derived by init from these.
+ro.build.version.incremental=eng.root.20261003.104216.lumen10.x50.@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261003.104216.x50.@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.240905.003/eng.root.20261003.104216.x50.@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
+[product]
+ro.product.product.model=XGIMI X50 Ultra
+bluetooth.device.default_name=XGIMI X50 Ultra
+ro.lumen.version=x50-@V@
+# no OTA on the X50: no partition list, no manifest, the Z9X device id gone, no Z9X build id or version code
+-ro.product.ab_ota_partitions
+-ro.z9x.ota.manifest_url
+ro.z9x.device=x50
+ro.z9x.build_id=lumen-x50-@V@-@BID@
+ro.z9x.version_code=0
+# the OTA boot gate behaves like stock update_verifier (no update can be pending without an updater)
+ro.z9x.ota.gate=0
+# no rescue reboot to fastbootd (z9x_rescue.rc is removed too)
+ro.z9x.rescue=0
+# public image: adb stays as the base (Lumen OS 1.0.9) has it; no network adb, no adb without confirmation
+# identity of the image (registry devices/g0111: family horse_popular, model G0111)
++ro.lumen.device=g0111
++ro.lumen.model=G0111
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-x50-@V@-@BID@
++ro.lumen.base_build_id=lumen-1.0.9-20261106anp
+# install from a DSU try (apps/LumenDsuInstall, t8): on; 0 is the kill switch. The owner switch for a real X50 write,
+# ro.lumen.dsu_install.x50_write, is never set by the image (verify_tree_x50.py refuses it)
++ro.lumen.dsu_install=1

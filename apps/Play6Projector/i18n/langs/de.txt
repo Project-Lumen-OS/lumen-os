@@ -28,6 +28,7 @@ p6_pic_game_hint=Der Spielmodus legt das Bild fest. Schalte den Spielmodus aus, 
 p6_game_on=Spielmodus an
 p6_game_off=Spielmodus aus
 p6_smart_af_desc=Nach dem Bewegen des Projektors wird das Bild neu fokussiert.
+p6_af_fine_tune=Fokus eingestellt. Halten Sie die Fokustaste gedrückt, um ihn fein nachzustellen.
 p6_lamp_hint=Im Akkubetrieb schaltet der Projektor den Energiesparmodus ein und verringert die Helligkeit. Erhöhst du die Helligkeit, schaltet sich der Energiesparmodus aus.
 p6_eco=Energiesparmodus
 p6_eco_on_title=Energiesparmodus einschalten?

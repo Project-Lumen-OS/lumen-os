@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 """hb_audio_mutate.py: mutation check of the HB slider flicker fix (panel/SlideCoalescer and its wiring in ProPicture /
-QuickPanelController / SlideMain) and the 3.5 mm output (HbAudioRules jack rules, HbOutputRows jack row, HbWiredJack,
+HbMenuFeatures / SlideMain) and the 3.5 mm output (HbAudioRules jack rules, HbOutputRows jack row, HbWiredJack,
 AudioOutputChoice.apply order, AudioPathReporter switch_end=4, HbHeadphoneVolume, HbFeatures WIRED_HEADPHONE). Each
 mutant breaks one rule in a scratch copy of apps/HbProjector; test/slider, test/audio and test/features must turn red,
 and the unmutated copy must pass.  python3 tools/devices/test/hb_audio_mutate.py   (MUT_ONLY="sc_ ar_" to filter)"""
@@ -10,7 +10,7 @@ import os, shutil, subprocess, sys, tempfile
 G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 P = "src/org/lumen/projector/panel/"
 A = "src/org/lumen/projector/audio/"
-SC, SM, PP, QP = P + "SlideCoalescer.java", P + "SlideMain.java", P + "ProPicture.java", P + "QuickPanelController.java"
+SC, SM, PP, QP = P + "SlideCoalescer.java", P + "SlideMain.java", P + "ProPicture.java", P + "HbMenuFeatures.java"
 AR, ROWS, OPT, AOC = A + "HbAudioRules.java", A + "HbOutputRows.java", A + "HbOutputOptions.java", A + "AudioOutputChoice.java"
 APR, HP, JACK = A + "AudioPathReporter.java", A + "HbHeadphoneVolume.java", A + "HbWiredJack.java"
 FEAT = "src/org/lumen/projector/hal/HbFeatures.java"
@@ -35,8 +35,8 @@ MUT = [
     ("pp_read_while_sliding", PP, "        if (sliding()) return;                                  // HB fork", "        // HB fork"),
     ("pp_no_forget", PP, "        for (SlideCoalescer c : slides) c.forget();", ""),
     ("pp_no_register", PP, "        slides.add(c);\n", ""),
-    ("qp_commit_only", QP, "                    touch(row);\n                    safe(\"pq\", () -> slide.submit(value)).run();", "                    touch(row);"),
-    ("qp_read_while_sliding", QP, "        for (SlideCoalescer c : pqSlides) if (c.busy()) return;", ""),
+    ("mf_pq_no_range", QP, "        if (v < 0 || v > 100) { refuse(cb, null); return; }\n", ""),
+    ("mf_pq_wrong_item", QP, 'case "contrast": it = GmpfClient.PqItem.CONTRAST; break;', 'case "contrast": it = GmpfClient.PqItem.BRIGHTNESS; break;'),
     ("sm_fire_and_forget", SM, "        Hal.query((g, g2) -> {", "        Hal.run((g, g2) -> {"),
     ("sm_ok_on_null", SM, "boolean ok = Boolean.TRUE.equals(r);", "boolean ok = !Boolean.FALSE.equals(r);"),
     # ---- the 3.5 mm rules

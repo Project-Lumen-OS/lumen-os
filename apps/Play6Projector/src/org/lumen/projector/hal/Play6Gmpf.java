@@ -707,7 +707,7 @@ public final class Play6Gmpf extends HidlCaller {
     // Stock paths (inventory B 4.2 / 4.4 / 4.7, dayao tree): the picture items of the Custom mode (3DNR, colour
     // temperature and its gains / offsets, picture style), HDR and local contrast; HDMI colour range and EDID
     // version; boot music. Each getter is read before its row is shown; each setter is sent on the user's row
-    // action only, with the stock value set. Callers: panel/Play6PanelController, panel/Play6Snapshot,
+    // action only, with the stock value set. Callers: panel/Play6Features and panel/Play6MenuPages (the shared menu), panel/Play6Snapshot,
     // SettingsActivity (boot music).
 
     /** 670 get3DNR(0) -> 0 off, 1 weak, 2 medium, 3 strong, 4 auto. */

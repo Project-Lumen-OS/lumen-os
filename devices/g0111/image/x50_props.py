@@ -24,6 +24,26 @@ def die(msg):
     sys.exit(1)
 
 
+def bid_time(bid):
+    """(epoch seconds, build.prop date text) of the build id's leading UTC minute yyyymmddHHMM"""
+    import calendar
+    import time
+    m = re.match(r"^(\d{12})", bid)
+    if not m:
+        die("build id %r does not start with a UTC minute yyyymmddHHMM (@UTC@ / @DATE@ need it)" % bid)
+    try:
+        tm = time.strptime(m.group(1), "%Y%m%d%H%M")
+    except ValueError:
+        die("build id %r does not start with a valid UTC minute" % bid)
+    utc = calendar.timegm(tm)
+    g = time.gmtime(utc)
+    text = "%s %s %2d %02d:%02d:%02d UTC %d" % (("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")[g.tm_wday],
+                                                ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
+                                                 "Nov", "Dec")[g.tm_mon - 1], g.tm_mday, g.tm_hour, g.tm_min,
+                                                g.tm_sec, g.tm_year)
+    return str(utc), text
+
+
 def read_edits(path, v, bid):
     out = {"system": [], "product": []}
     sec = None
@@ -37,6 +57,9 @@ def read_edits(path, v, bid):
         if sec is None:
             die("%s:%d: an edit before [system] or [product]" % (path, n))
         line = line.replace("@V@", v).replace("@BID@", bid)
+        if "@UTC@" in line or "@DATE@" in line:
+            utc, text = bid_time(bid)
+            line = line.replace("@UTC@", utc).replace("@DATE@", text)
         if "@" in line:
             die("%s:%d: unknown @...@ placeholder" % (path, n))
         op = "set"

@@ -24,12 +24,15 @@
 #   app given as a source build (its source is ahead of the Z9X release); every other pin must still rebuild
 #   identical, and any other red stops the build. The Z9X pins and the Z9X image stay as they are.
 # 1. checks on the Mac, any red stops before anything is built or sent: G (tools/play6/z9x_gate.sh), S
-#    (apps/common/sync.sh --check: HAL transport and projector files of both projector apps, the framework
-#    key files of Play6FrameworkOverlay; copy-mode sync never runs here), P (docs/repo/publish_audit.py: no
+#    (apps/common/sync.sh --check: HAL transport and projector files of Z9xProjector, the framework key files of
+#    Play6FrameworkOverlay; copy-mode sync never runs here; Play6Projector holds no shared copies since
+#    the design notes, its recipe devices/dragon_healthy/app/Play6Projector.layers must assemble),
+#    P (docs/repo/publish_audit.py: no
 #    REVIEW row, that is no file without a rule and no published file that names a serial-named private log
 #    folder, the LOGREF flag); apps/Play6Projector must be org.lumen.projector (D1)
-# 2. tools/play6/build_play6.sh: H, K, F, then Play6Projector, Play6FrameworkOverlay and the apps given as
-#    source builds signed with the Play 6 platform key (rule S1) -> build/play6/
+# 2. tools/play6/build_play6.sh: the assembled Play6Projector tree, H and K on it, F, then Play6Projector,
+#    Play6FrameworkOverlay and the apps given as source builds signed with the Play 6 platform key (rule S1)
+#    -> build/play6/
 # 3. sign_play6.py pinned: Z9xHome, Z9xTvInput, Z9xLineagePlatformOverlay, Z9xSetup re-signed -> build/play6/signed/;
 #    an app given as a source build replaces its re-signed pin there (noted in signed/pinned.tsv)
 # 4. the base: the build laptop's base system tree (its APKs, APEXes and text files; tools/play6/base_export.sh
@@ -198,7 +201,8 @@ if ! sh "$P/z9x_gate.sh"; then
   fi
 fi
 echo "== S: shared copies"
-sh "$G/apps/common/sync.sh" --check "$G/apps/Play6Projector" hal projector || die "Play6Projector shared copies differ from apps/common (run sync.sh)"
+python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Projector \
+  || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble (a shared file copied into apps/Play6Projector, or an untracked fork)"
 sh "$G/apps/common/sync.sh" --check "$G/apps/Z9xProjector" hal projector || die "Z9xProjector shared copies differ from apps/common (Z9X lane: see apps/common/projector/README.txt)"
 sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys || die "Play6FrameworkOverlay key files differ from apps/common (run sync.sh)"
 echo "== P: publish audit"

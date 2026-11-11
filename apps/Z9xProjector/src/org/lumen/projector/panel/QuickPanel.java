@@ -36,9 +36,10 @@ import java.util.Map;
  * the panel's All settings page ("Standby, then power off after"). Stored and applied by PowerPolicy /
  * StandbyController (single store, prefs z9x_power); the panel row only calls PowerPolicy.setQuickWakeMinutes.
  *
- * Implementation: {@link QuickPanelController} (pages, rows, tiles, HAL read-back), {@link TileGrid}
- * / {@link Tile} (the top level), {@link Snapshot} (one HAL read of every value),
- * {@link ManualKeystonePanel} (4-corner keystone card).
+ * Implementation (Lumen 1.1): the shared projector menu (apps/core/lumen-menu MenuController) with
+ * the Z9X adapter {@link Z9xFeatures} (HAL reads and writes, {@link Snapshot}), its stock rules {@link Z9xMenuRules}
+ * (the 1.0.10 quick panel behaviour, QPC:line) and its pages {@link Z9xMenuPages}; {@link QuickPanelController}
+ * only maps the calls of this class onto it. {@link ManualKeystonePanel} is the 4-corner keystone card.
  * Spec: stock analysis decisions (verdict corrected_decisions win), stock analysis,
  * stock spec.md sections 1.3 and 2-5, v6.1 requirements "Decisions", v6.2 requirements 3/7.
  */
@@ -168,13 +169,10 @@ public final class QuickPanel {
         if (section == null || ext == null) return;
         String key = SECTION_PROJECTION.equals(section) ? SECTION_KEYSTONE : section;
         EXTENSIONS.computeIfAbsent(key, k -> new ArrayList<>()).add(ext);
-        QuickPanelController c = sCtl;
-        if (c != null) {
-            try {
-                c.addExtension(key, ext);
-            } catch (Throwable t) {
-                Log.e(TAG, "extension for " + key + " failed", t);
-            }
+        try {
+            QuickPanelController.extensionAdded(key, ext);       // the shared menu keeps it for every menu it builds
+        } catch (Throwable t) {
+            Log.e(TAG, "extension for " + key + " failed", t);
         }
     }
 

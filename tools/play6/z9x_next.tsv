@@ -1,0 +1,8 @@
+# Next-release builds of pinned Z9X apps, read by tools/play6/z9x_gate.sh (a gate input: any change here is red until
+# the maintainer's OK and a re-record). One row per pinned app whose sources already hold reviewed commits for the next Z9X
+# release, so HEAD no longer rebuilds its 1.0.9 pin. The gate is green for such an app only when HEAD builds exactly
+# the accepted sha256 AND the pin rebuilds byte for byte from the pin commit, so the released APK stays proven.
+# app<TAB>pin commit<TAB>sha256 that HEAD builds<TAB>commits since the pin (reason)
+Z9xHome	ad7bbc5ebb825ecb7115b56c4949d6c067326b00	8a5bb2baffbc4979c8691d24773734406c38c0636ca1f304fa047e049f0bc780	68649612 (Lumen Home opens the X50 projector app on G0111), next release; owner OK 2026-11-10 (Q2)
+Z9xProjector	ad7bbc5ebb825ecb7115b56c4949d6c067326b00	8f1541afb3e1a655f5bc8489b15759484ac96f5ab25a7aee9808ade2488645c2	a34efbd2 (notification card never stays on screen), 689732ec (repository moved to Project-Lumen-OS), next release; owner OK 2026-11-10 (Q2)
+Z9xUpdater	ad7bbc5ebb825ecb7115b56c4949d6c067326b00	76c92ddf7c5e4d8dbef81328b1e51400958c01ce042057a1ae4d5e770176df72	689732ec (repository moved to Project-Lumen-OS), next release; owner OK 2026-11-10 (Q2)

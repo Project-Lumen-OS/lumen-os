@@ -28,6 +28,7 @@ p6_pic_game_hint=El modo de juego fija la imagen. Desactiva el modo de juego par
 p6_game_on=Modo de juego activado
 p6_game_off=Modo de juego desactivado
 p6_smart_af_desc=La imagen se vuelve a enfocar después de mover el proyector.
+p6_af_fine_tune=Enfoque listo. Mantén pulsada la tecla de enfoque para ajustarlo con precisión.
 p6_lamp_hint=Con batería, el proyector activa el ahorro de energía y baja el brillo. Si subes el brillo, el ahorro de energía se desactiva.
 p6_eco=Ahorro de energía
 p6_eco_on_title=¿Activar el ahorro de energía?

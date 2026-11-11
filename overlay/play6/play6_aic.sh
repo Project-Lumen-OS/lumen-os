@@ -2,7 +2,7 @@
 # Lumen OS on the XGIMI Play 6: load the AIC8800D80X2 Wi-Fi/BT modules, only on units that have that chip
 # (play6_aic.rc). mksh + toybox only. Writes nothing but kernel modules into the kernel and two properties:
 #   sys.lumen.wifi_chip  aic | mediatek | none   (what the USB bus shows)
-#   sys.lumen.aic        off | ready | failed:<step>
+#   sys.lumen.aic        off | vendor | ready | failed:<step>
 # and, on an AIC unit only, one bind mount: AIC's Bluetooth vendor library (built by tools/play6/aic, it opens
 # /dev/aicbt_dev and reads /system/etc/bluetooth/aicbt.conf) over MediaTek's /vendor/lib/libbt-vendor.so, which the
 # stock HAL (android.hardware.bluetooth@1.0-impl, user bluetooth) dlopens when Bluetooth is switched on.
@@ -10,11 +10,15 @@
 # through firmware_class) and the chip comes back as 368b:8d91; then aic_btusb (/dev/aicbt_dev) and
 # aic8800_fdrv (wlan0 + p2p0, which the stock wpa_supplicant -N -ip2p0 needs). aic8800_fdrv uses symbols of
 # aic_load_fw, cfg80211 and firmware_class: the vendor loads the last two (init.fusion.rc), so wait for them.
+# A vendor that drives the chip itself (XGIMI V1.8.127: its own AIC modules, its dongle.cfg maps 368b:8d90 and its
+# Bluetooth HAL takes libbt-vendor-aic.so when vendor.mtk.wifi.driver=aic8d90) gets nothing from us: no module,
+# no bind mount, no restart of Wi-Fi or Bluetooth, only sys.lumen.aic=vendor.
 # R is empty on the device (init gives services a clean environment); tools/play6/aic/test_play6_aic.sh sets it.
 M=$R/system/etc/aic8800/modules
 FW=/system/etc/aic8800/firmware
 BTLIB=$R/system/lib/libbt-vendor-aic.so
 VBTLIB=$R/vendor/lib/libbt-vendor.so
+VDONGLE=$R/vendor/lib/firmware/dongle.cfg
 
 say() { log -t lumen_aic "$*"; }
 usb_ids() {
@@ -44,6 +48,11 @@ if [ $chip != aic ]; then
   exit 0
 fi
 say "AIC8800D80X2 found after $i s"
+if [ -f $VDONGLE ] && grep -q '^[^#]*:368b:8d90:' $VDONGLE; then
+  setprop sys.lumen.aic vendor
+  say "the vendor loads the AIC driver itself (dongle.cfg): nothing to do"
+  exit 0
+fi
 
 # 1b. Bluetooth library (the HAL dlopens it when Bluetooth is switched on; restarted in step 4)
 bt_lib=0

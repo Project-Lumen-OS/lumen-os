@@ -4,7 +4,9 @@ projector app: only the two Play 6 clients talk to the vendor HAL, every code th
 Play 6 code (research/play6/gmpf_codes_play6.tsv, by name), nothing banned (Note A) is even declared,
 and the special values of Note C can only leave from the methods allowed to send them.
 
-  check_play6_hal.py [APP_DIR]        default APP_DIR: apps/Play6Projector
+  check_play6_hal.py [APP_DIR]        default APP_DIR: the assembled Play 6 projector tree
+  (devices/dragon_healthy/app/Play6Projector.layers, written to a temp dir by play6_tree.py;
+  apps/Play6Projector alone is only the Play 6 layer since the design notes)
 
 Rules (Note B):
  1. No GmpfClient.java, Gmpf2Client.java or KstPoint.java anywhere under APP_DIR. A file of package
@@ -83,6 +85,7 @@ sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import javascan  # noqa: E402
+import play6_tree  # noqa: E402
 
 G = os.path.dirname(os.path.dirname(HERE))
 TSV = os.path.join(G, "research/play6/gmpf_codes_play6.tsv")
@@ -395,7 +398,7 @@ def main():
     if len(sys.argv) > 2:
         print(__doc__)
         return 2
-    app = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(G, "apps/Play6Projector")
+    app = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else play6_tree.default_app("check_play6_hal")
     src = os.path.join(app, "src")
     hal = os.path.join(src, "org/lumen/projector/hal")
     if not os.path.isdir(src):

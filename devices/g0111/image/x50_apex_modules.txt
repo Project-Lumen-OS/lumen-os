@@ -1,0 +1,7 @@
+# The APEX modules of the X50 base (published Z9X 1.0.9 image) whose payload holds an APK on the Z9X release platform
+# certificate (sign_x50_base.py scan, t12): these four are rebuilt with that APK on the g0111 platform key and signed
+# with the g0111 APEX keys of gen_x50_apex_keys.sh. Every other APEX stays byte for byte as in the base.
+com.android.configinfrastructure
+com.android.devicelock
+com.android.ondevicepersonalization
+com.android.permission

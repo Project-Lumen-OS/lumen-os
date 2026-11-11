@@ -741,14 +741,43 @@ public final class Hal {
         for (FocusEventListener l : LISTENERS) {
             try { l.onFocusEvent(type, value); } catch (Throwable t) { Log.w(FOCUS_TAG, "focus listener: " + t); }
         }
-        if (!handled) onFocusEvent(type);
+        if (!handled) onFocusEvent(type, value);
     }
 
-    /** MAIN thread: the AF busy window and its notices, as the Z9X HalController. */
-    private static void onFocusEvent(int type) {
+    /**
+     * MAIN thread: the AF busy window and its notices. The Z9X camera-AF set (4 / 8 / 333-335) is kept; the
+     * Play 6 hall AF sends 330 start / end and 5, 18 instead (P6AfRules).
+     */
+    private static void onFocusEvent(int type, String value) {
         Context app = sApp;
         long now = SystemClock.elapsedRealtime();
         switch (type) {
+            case 330: {
+                // vendor AF report: no toast and no window close here (stock shows no AF window on the hall path)
+                int r = P6AfRules.report330(value);
+                if (r == P6AfRules.REPORT_AF_START) {
+                    sAfBusyUntil = now + AF_BUSY_MS;
+                    Log.i(FOCUS_TAG, "AF busy: 330 start");
+                } else if (r == P6AfRules.REPORT_AF_END) {
+                    sAfBusyUntil = 0;
+                    Log.i(FOCUS_TAG, "AF busy cleared: 330 end");
+                }
+                break;
+            }
+            case 18:
+                sAfBusyUntil = 0;
+                if (app != null && P6AfRules.fineTuneHint(type, value)) {
+                    // stock FocusUIV2: the notice only without the starry sky lens (IGmpf2 84)
+                    query((g, g2) -> g2.isConvexLensIn(), lensIn -> {
+                        if (Boolean.TRUE.equals(lensIn)) {
+                            Log.i(FOCUS_TAG, "AF done, fine-tune notice skipped: lens in");
+                        } else {
+                            Log.i(FOCUS_TAG, "AF done, fine-tune notice shown");
+                            Ui.toast(app, R.string.p6_af_fine_tune);
+                        }
+                    });
+                }
+                break;
             case 4: case 8: case 333: case 334: case 335:
                 ManualFocusActivity.closeForAutofocus();           // stock: an AF start closes the manual focus window
                 sAfBusyUntil = now + AF_BUSY_MS;

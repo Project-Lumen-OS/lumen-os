@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost: больш высокая яркасць. Пасля выхаду з Boost колеры становяцца больш насычанымі.</string>
+    <string name="lumen_gm_cs">Каляровая прастора</string>
+    <string name="lumen_gm_cs_0">Роднае</string>
+    <string name="lumen_gm_hdr_1">Дынамічнае танальнае адлюстраванне</string>
+    <string name="lumen_gm_chip_hz">%1$d Гц</string>
+    <string name="lumen_m_panel_speed_top_note">Турба: карэкцыя трапецыі выключана</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">Скасаваць</string>
+    <string name="lumen_m_panel_boost_press_again">Націсніце → яшчэ раз для Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Націсніце ← яшчэ раз, каб выйсці з Boost</string>
+    <string name="lumen_m_toast_setup_running">Спачатку завяршыце наладжванне</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI-якасць</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Дакладны колер</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Прадукцыйнасць</string>
+    <string name="lumen_m_panel_move_ak">Аўтатрапецыя пасля перамяшчэння</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Фільм</string>
+    <string name="lumen_m_pm_tv">ТБ</string>
+    <string name="lumen_m_pm_custom">Карыстальніцкі</string>
+    <string name="lumen_m_ct_cool">Халодная</string>
+    <string name="lumen_m_ct_warm">Цёплая</string>
+    <string name="lumen_m_zs_title">Маштаб і зрух</string>
+    <string name="lumen_m_eco">Энергазберажэнне</string>
+    <string name="lumen_m_ambient_speaker">Калонка і святло</string>
+    <string name="lumen_m_ct_custom">Карыстальніцкая</string>
+</resources>

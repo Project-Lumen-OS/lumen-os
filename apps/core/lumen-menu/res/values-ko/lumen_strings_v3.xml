@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost: 더 높은 밝기. Boost를 끄면 색이 더 선명해집니다.</string>
+    <string name="lumen_gm_cs">색 공간</string>
+    <string name="lumen_gm_cs_0">기본</string>
+    <string name="lumen_gm_hdr_1">동적 톤 매핑</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">터보: 키스톤 보정이 꺼집니다</string>
+    <string name="lumen_m_ok">확인</string>
+    <string name="lumen_m_cancel">취소</string>
+    <string name="lumen_m_panel_boost_press_again">→를 한 번 더 누르면 Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">←를 한 번 더 누르면 Boost 종료</string>
+    <string name="lumen_m_toast_setup_running">먼저 설정을 완료하세요</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI 화질</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">정확한 색상</string>
+    <string name="lumen_m_panel_tileval_pm_performance">성능</string>
+    <string name="lumen_m_panel_move_ak">이동 후 자동 키스톤 보정</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">영화</string>
+    <string name="lumen_m_pm_tv">TV</string>
+    <string name="lumen_m_pm_custom">사용자 지정</string>
+    <string name="lumen_m_ct_cool">차갑게</string>
+    <string name="lumen_m_ct_warm">따뜻하게</string>
+    <string name="lumen_m_zs_title">줌 및 이동</string>
+    <string name="lumen_m_eco">절전 모드</string>
+    <string name="lumen_m_ambient_speaker">앰비언트 스피커</string>
+    <string name="lumen_m_ct_custom">사용자 지정</string>
+</resources>

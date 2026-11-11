@@ -1207,25 +1207,6 @@ s2_d_report=Адпраўляе журналы распрацоўшчыку
 s2_d_refresh=Зноў прачытаць стан праектара
 s2_diag_state=Стан праектара
 
-@projector/strings_qpd.xml
-qpd_autocorrect=Аўтакарэкцыя
-qpd_autocorrect_value=Адным націскам
-qpd_zoom=Зум
-qpd_bluetooth=Bluetooth
-qpd_network=Сетка
-qpd_usb=USB
-qpd_mirroring=Паўтор экрана
-qpd_mirror_on=Паўтор экрана (Miracast)
-qpd_mirror_ask=Пытацца перад падключэннем
-qpd_mirror_name=Назва
-qpd_mirror_more=Усе налады паўтору экрана
-qpd_picture_more=Наладзіць выяву
-qpd_sound_more=Усе налады гуку
-qpd_boost_note=Максімальная яркасць. Вентылятары будуць гучнейшыя.
-qpd_tip_picture=Выберыце рэжым пад тое, што глядзіце.
-qpd_tip_rear=Вы і праектар па розныя бакі экрана.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=Паўтор экрана
 settings_title=Паўтор экрана

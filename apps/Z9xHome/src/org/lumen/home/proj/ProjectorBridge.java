@@ -8,6 +8,7 @@ import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -18,7 +19,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Lumen Home's only links to org.lumen.projector and org.lumen.updater. Every call is an explicit,
+ * Lumen Home's only links to the projector app and org.lumen.updater. The projector app is org.lumen.projector, on the
+ * X50 (ro.boot.xgimi.modelname G0111) org.lumen.x50.projector ({@link ProjectorTarget}, {@link #projector()}); the
+ * actions, extras, authorities and permissions below are the same for both. Every call is an explicit,
  * signature-permission protected broadcast or provider call; Lumen Home itself never talks to any HAL
  * (all hardware work, its whitelists and safety gates stay inside the projector).
  *
@@ -27,7 +30,8 @@ import java.util.Set;
  *    or extra "action" = autofocus | lamp_standby | sleep_timer; no extra = the quick panel grid.
  *  - org.lumen.projector.action.SHOW_SOURCE (perm SHOW_SOURCE): the input overlay.
  *  - org.lumen.projector.action.SET_LAUNCHER (perm SET_LAUNCHER): extra "mode" (and "target") = z9x | classic.
- *  - content://org.lumen.projector.standbystate call("standby_state") -> {standby} (perm STANDBY_STATE).
+ *  - content://org.lumen.projector.standbystate call("standby_state") -> {standby} (perm STANDBY_STATE); on the X50
+ *    org.lumen.x50.projector serves the authority (always false there: no lamp-only standby).
  *  - content://org.lumen.updater/state (perm org.lumen.updater.permission.OTA_STATE): call("state") or query,
  *    field "state"; "ready" (or "downloaded", "reboot_required") shows the "Update ready" badge.
  *  - Optional: content://org.lumen.projector.device (read only, no permission),
@@ -35,13 +39,13 @@ import java.util.Set;
  *    tiles it cannot serve). call("battery") -> {level int 0..100 (-1 while present is false), adapter,
  *    charging, full, present, eco}; notifyChange on content://org.lumen.projector.device/battery at every
  *    change. call("caps") -> {unsupported: String[]} = tile intents of data/InputSource.tiles to hide.
- *    Used only when the authority belongs to the system app org.lumen.projector (any app could declare it);
+ *    Used only when the authority belongs to the system projector app (any app could declare it);
  *    without it (the Z9X) Home looks it up once and changes nothing.
  */
 public final class ProjectorBridge {
     private ProjectorBridge() {}
 
-    public static final String PROJECTOR = "org.lumen.projector";
+    public static final String PROJECTOR = ProjectorTarget.DEFAULT;
     public static final String UPDATER = "org.lumen.updater";
     public static final String ACTION_SHOW_PANEL = "org.lumen.projector.action.SHOW_PANEL";
     public static final String ACTION_SHOW_SOURCE = "org.lumen.projector.action.SHOW_SOURCE";
@@ -50,6 +54,25 @@ public final class ProjectorBridge {
     public static final String PERM_STANDBY = "org.lumen.projector.permission.STANDBY_STATE";
     private static final Uri STANDBY_URI = Uri.parse("content://org.lumen.projector.standbystate");
     private static final Uri UPDATER_URI = Uri.parse("content://org.lumen.updater/state");
+    private static volatile String sProjector;
+
+    /**
+     * The package of this projector's projector app (ProjectorTarget by ro.boot.xgimi.modelname), read once per
+     * process: org.lumen.projector everywhere but on the X50.
+     */
+    public static String projector() {
+        String p = sProjector;
+        if (p != null) return p;
+        String model = "";
+        try {
+            model = SystemProperties.get("ro.boot.xgimi.modelname", "");
+        } catch (Throwable ignored) {
+            // unreadable: the default projector app, as before
+        }
+        p = ProjectorTarget.packageFor(model);
+        sProjector = p;
+        return p;
+    }
 
     /** "section:x", "action:x", "settings", "miracast" or "" (the grid). */
     public static void showPanel(Context c, String target) {
@@ -66,7 +89,7 @@ public final class ProjectorBridge {
             }
             return;
         }
-        Intent i = new Intent(ACTION_SHOW_PANEL).setPackage(PROJECTOR);
+        Intent i = new Intent(ACTION_SHOW_PANEL).setPackage(projector());
         if (target != null && target.startsWith("section:")) i.putExtra("section", target.substring(8));
         else if (target != null && target.startsWith("action:")) i.putExtra("action", target.substring(7));
         i.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
@@ -75,12 +98,12 @@ public final class ProjectorBridge {
     }
 
     public static void showSource(Context c) {
-        Intent i = new Intent(ACTION_SHOW_SOURCE).setPackage(PROJECTOR).addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        Intent i = new Intent(ACTION_SHOW_SOURCE).setPackage(projector()).addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         c.sendBroadcast(i);
     }
 
     public static void setLauncher(Context c, String mode) {
-        Intent i = new Intent(ACTION_SET_LAUNCHER).setPackage(PROJECTOR)
+        Intent i = new Intent(ACTION_SET_LAUNCHER).setPackage(projector())
                 .putExtra("mode", mode).putExtra("target", mode)
                 .addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         c.sendBroadcast(i);
@@ -160,7 +183,7 @@ public final class ProjectorBridge {
     }
 
     /**
-     * True when org.lumen.projector (a system app) has the device-state provider. A PackageManager lookup only
+     * True when the projector app ({@link #projector()}, a system app) has the device-state provider. A PackageManager lookup only
      * (no provider start, no "failed to find provider" log), once per process: the provider comes with
      * the image. A failed lookup is not remembered.
      */
@@ -169,7 +192,7 @@ public final class ProjectorBridge {
         if (d != 0) return d > 0;
         try {
             ProviderInfo pi = c.getPackageManager().resolveContentProvider(DEVICE_AUTHORITY, 0);
-            boolean ok = pi != null && PROJECTOR.equals(pi.packageName) && pi.applicationInfo != null
+            boolean ok = pi != null && projector().equals(pi.packageName) && pi.applicationInfo != null
                     && (pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
             sDevice = ok ? 1 : -1;
             return ok;

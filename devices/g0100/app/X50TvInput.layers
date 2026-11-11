@@ -1,0 +1,11 @@
+# Recipe of the X50 HDMI input app (org.lumen.tvinput), read by tools/devices/assemble_app.py. The X50 app is the
+# Z9X app (apps/Z9xTvInput, the 1.0.8 sources the Z9X 1.0.9 image pins) plus the X50 layer apps/X50TvInput: the source
+# picker (InputPickerActivity) in the look of the X50 apps (TvFocus, t16 live BUG C: the focused button could not be
+# told apart). The Z9X folder is only read; the Z9X and HB images keep their pinned / own Z9xTvInput / HbTvInput APKs.
+# compose_x50.sh puts the build (stage/X50TvInput.apk) in place of the base's /system/app/Z9xTvInput/Z9xTvInput.apk.
+app       X50TvInput
+base      apps/Z9xTvInput
+module    lumen-ui
+top       apps/X50TvInput
+# never part of an app tree: build output, APKs, notes, the build version (read by tools/devices/build_apps.sh)
+skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store BUILD_VERSION

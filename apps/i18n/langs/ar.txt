@@ -1215,25 +1215,6 @@ s2_d_report=يرسل السجلات إلى المطوّر
 s2_d_refresh=إعادة قراءة حالة جهاز العرض
 s2_diag_state=حالة جهاز العرض
 
-@projector/strings_qpd.xml
-qpd_autocorrect=تصحيح تلقائي
-qpd_autocorrect_value=بضغطة واحدة
-qpd_zoom=تكبير
-qpd_bluetooth=Bluetooth
-qpd_network=الشبكة
-qpd_usb=USB
-qpd_mirroring=عكس الشاشة
-qpd_mirror_on=عكس الشاشة (Miracast)
-qpd_mirror_ask=السؤال قبل الاتصال
-qpd_mirror_name=الاسم
-qpd_mirror_more=كل إعدادات عكس الشاشة
-qpd_picture_more=إعدادات الصورة
-qpd_sound_more=كل إعدادات الصوت
-qpd_boost_note=أقصى سطوع. ستعلو أصوات المراوح.
-qpd_tip_picture=اختر وضعًا يناسب ما تشاهده.
-qpd_tip_rear=أنت وجهاز العرض على جانبين متقابلين من الشاشة.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=عكس الشاشة
 settings_title=عكس الشاشة

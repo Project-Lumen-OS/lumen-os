@@ -28,6 +28,7 @@ p6_pic_game_hint=La modalità gioco imposta l'immagine. Disattiva la modalità g
 p6_game_on=Modalità gioco attiva
 p6_game_off=Modalità gioco disattivata
 p6_smart_af_desc=L'immagine viene rimessa a fuoco dopo aver spostato il proiettore.
+p6_af_fine_tune=Messa a fuoco completata. Tieni premuto il tasto di messa a fuoco per regolarla con precisione.
 p6_lamp_hint=A batteria il proiettore attiva il risparmio energetico e riduce la luminosità. Se aumenti la luminosità, il risparmio energetico si disattiva.
 p6_eco=Risparmio energetico
 p6_eco_on_title=Attivare il risparmio energetico?

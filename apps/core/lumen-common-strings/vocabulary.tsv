@@ -1,0 +1,86 @@
+# The shared vocabulary of Lumen (apps/core/lumen-common-strings, tools/i18n/catalog.py; tools/arch/README.md).
+# key <TAB> source app <TAB> source key <TAB> English (note). Each text is the source app's translation in all 17 locales,
+# byte for byte; the module's res files are generated from this list (catalog.py module) and checked (catalog.py
+# validate). Sources are the frozen Z9X apps (they do not change before the 1.1 seam, decision D4); a source is taken only
+# where its 17 translations equal the user's own (catalog.py adopt changes no translation). One English text in two
+# contexts is two keys (lumen_auto, lumen_auto_short, lumen_auto_output). Not taken, because the grammatical context
+# differs: "Connected: %1$s" (X50 remote, masculine in ru, vs the Play 6 speaker) and "Restart now" (the installer
+# reboots the projector; Z9X restarts the UI).
+lumen_ai_picture	Z9xProjector	panel_pm_ai	AI picture
+lumen_ai_sound	Z9xProjector	panel_sound_ai	AI sound
+lumen_audio_format	Z9xProjector	sound_format	Audio format
+lumen_auto	Z9xProjector	sound_format_auto	Auto (the audio format choice)
+lumen_auto_game_mode	Z9xProjector	panel_allm	Auto game mode
+lumen_auto_keystone_now	Z9xProjector	act_kst_now	Auto keystone now
+lumen_auto_output	Z9xProjector	sound_output_auto	Auto (the audio output choice)
+lumen_auto_short	Z9xProjector	panel_auto	Auto (the short row value, as the Z9X panel)
+lumen_bluetooth	Z9xProjector	sound_output_bt	Bluetooth
+lumen_brightness	Z9xProjector	panel_lamp	Brightness
+lumen_cancel	Z9xProjector	cancel	Cancel
+lumen_ceiling	Z9xProjector	panel_proj_ceiling	Ceiling
+lumen_close	Z9xProjector	recents_close	Close
+lumen_color_accuracy	Z9xProjector	panel_pm_color_accuracy	Color accuracy
+lumen_color_range	Z9xProjector	hdmi_range	Color range
+lumen_compatible_hdmi_1_4	Z9xProjector	hdmi_mode_compat	Compatible (HDMI 1.4)
+lumen_continue	Z9xSetup	action_continue	Continue
+lumen_contrast	Z9xProjector	panel_pq_contrast	Contrast
+lumen_correcting_the_picture	Z9xProjector	ak_running	Correcting the picture…
+lumen_custom	Play6Projector	p6_pm_custom	Custom
+lumen_done	Z9xProjector	fit_done	Done
+lumen_dynamic_black_enhancement	Z9xProjector	pro_dynamic_black	Dynamic black enhancement
+lumen_dynamic_contrast	Z9xProjector	pro_dynamic_contrast	Dynamic contrast
+lumen_enhanced_hdmi_2_0	Z9xProjector	hdmi_mode_enhanced	Enhanced (HDMI 2.0)
+lumen_eye_protection	Z9xProjector	eye_mask_title	Eye protection
+lumen_focus	Z9xProjector	panel_tile_focus	Focus
+lumen_front_ceiling	Z9xProjector	panel_proj_front_ceiling	Front, ceiling
+lumen_full	Z9xProjector	hdmi_range_full	Full
+lumen_game	Play6Projector	p6_pm_game	Game
+lumen_game_mode	Z9xProjector	panel_game_mode	Game mode
+lumen_hdmi_arc	Z9xProjector	sound_output_arc	HDMI ARC
+lumen_hdmi_earc	Z9xProjector	sound_output_earc	HDMI eARC
+lumen_hdmi_input_options	Z9xProjector	cec_hdmi_options	HDMI input options
+lumen_hdmi_mode	Z9xProjector	hdmi_mode	HDMI mode
+lumen_hdmi_only	Z9xProjector	panel_tile_hdmi_only	HDMI only
+lumen_hdmi_settings	Z9xProjector	panel_hdmi_settings	HDMI settings
+lumen_headphones	Z9xProjector	sound_output_wired	Headphones
+lumen_karaoke	Z9xProjector	panel_sound_karaoke	Karaoke
+lumen_keystone	Z9xProjector	panel_tile_keystone	Keystone
+lumen_later	Z9xSetup	action_later	Later
+lumen_limited	Z9xProjector	hdmi_range_limited	Limited
+lumen_looking_for_the_remote	Z9xProjector	remote_pair_searching	Looking for the remote…
+lumen_manual_focus	Z9xProjector	act_manual_focus	Manual focus
+lumen_movie	Z9xProjector	panel_sound_movie	Movie
+lumen_music	Z9xProjector	panel_sound_music	Music
+lumen_not_available_in_the_office_mode	Z9xProjector	rules_not_office	Not available in the Office mode
+lumen_obstacle_avoidance	Z9xProjector	panel_obstacle	Obstacle avoidance
+lumen_off	Z9xProjector	panel_off	Off
+lumen_office	Z9xProjector	panel_pm_office	Office
+lumen_on	Z9xProjector	panel_on	On
+lumen_on_allm_signal	Z9xProjector	panel_allm_signal	On ALLM signal
+lumen_on_game_console	Z9xProjector	panel_allm_device	On game console
+lumen_other	Z9xProjector	kst_more	Other
+lumen_passthrough	Z9xProjector	sound_format_passthrough	Passthrough
+lumen_pause	Z9xUpdater	btn_pause	Pause
+lumen_pcm	Z9xProjector	sound_format_pcm	PCM
+lumen_performance	Z9xProjector	panel_pm_performance	Performance
+lumen_picture	Z9xProjector	panel_sec_picture	Picture
+lumen_picture_mode	Z9xProjector	panel_picture_mode	Picture mode
+lumen_projection	Z9xProjector	panel_tile_projection	Projection
+lumen_projector	Z9xProjector	app_name	Projector
+lumen_projector_speaker	Z9xProjector	sound_output_speaker	Projector speaker
+lumen_rear_ceiling	Z9xProjector	panel_proj_rear_ceiling	Rear, ceiling
+lumen_rear_projection	Z9xProjector	panel_proj_rear	Rear projection
+lumen_reset_keystone	Z9xProjector	panel_reset_keystone	Reset keystone
+lumen_restart_now	Z9xProjector	uires_restart	Restart now
+lumen_saturation	Z9xProjector	panel_pq_saturation	Saturation
+lumen_sharpness	Z9xProjector	panel_pq_sharpness	Sharpness
+lumen_sleep_timer	Z9xProjector	power_menu_timer	Sleep timer
+lumen_sound	Z9xProjector	panel_sec_sound	Sound
+lumen_sound_mode	Z9xProjector	panel_sound_mode	Sound mode
+lumen_sound_output	Z9xProjector	sound_output	Sound output
+lumen_sport	Z9xProjector	panel_pm_sport	Sport
+lumen_sports	Z9xProjector	panel_sound_sports	Sports
+lumen_standard	Z9xProjector	panel_pm_standard	Standard
+lumen_turn_off	Z9xProjector	panel_turn_off	Turn off
+lumen_turn_on	Z9xProjector	panel_turn_on	Turn on
+lumen_usb_audio	Z9xProjector	sound_output_usb	USB audio

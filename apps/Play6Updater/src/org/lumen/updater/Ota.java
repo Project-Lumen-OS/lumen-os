@@ -26,12 +26,14 @@ public final class Ota {
             PROJECT_URL + "/releases/download/play6/update-play6.json";
     /** The device name in the signed manifest. */
     public static final String DEVICE = "play6";
+    /** The guide the Play 6 updater links (docs/install/&lt;lang&gt;.md, as before the recipe). */
+    static final String GUIDE = PROJECT_URL + "/blob/main/docs/install/";
     /** Guide section of the one-time vbmeta step (language picked at runtime). */
-    public static final String GUIDE_VBMETA_EN = PROJECT_URL + "/blob/main/docs/install/en.md#vbmeta";
-    public static final String GUIDE_VBMETA_RU = PROJECT_URL + "/blob/main/docs/install/ru.md#vbmeta";
+    public static final String GUIDE_VBMETA_EN = GUIDE + "en.md#vbmeta";
+    public static final String GUIDE_VBMETA_RU = GUIDE + "ru.md#vbmeta";
     /** Guide section "Rescue" (lumen-install.sh rescue, keeps the data): shown with a gate problem. */
-    public static final String GUIDE_RESCUE_EN = PROJECT_URL + "/blob/main/docs/install/en.md#rescue";
-    public static final String GUIDE_RESCUE_RU = PROJECT_URL + "/blob/main/docs/install/ru.md#rescue";
+    public static final String GUIDE_RESCUE_EN = GUIDE + "en.md#rescue";
+    public static final String GUIDE_RESCUE_RU = GUIDE + "ru.md#rescue";
     public static final String USER_AGENT = "Lumen-OS-Updater/" + VERSION;
     public static final String OTACERTS = "/system/etc/security/otacerts.zip";
 
@@ -89,15 +91,57 @@ public final class Ota {
 
     public static String buildId() { return prop("ro.lumen.build_id"); }
 
-    public static String manifestUrl() {
+    /** The manifest this image was built to read (ro.lumen.ota.manifest_url, https only). */
+    public static String imageManifestUrl() {
         String u = prop("ro.lumen.ota.manifest_url");
         return u.startsWith("https://") ? u : DEFAULT_MANIFEST_URL;
     }
 
+    /** The user's "Beta updates" choice (Store, the app's own storage); null = not chosen = the image's channel. */
+    private static volatile Boolean sBeta;
+
+    static void setBeta(Boolean on) { sBeta = on; }
+
     /**
-     * The file name of this image's own manifest (update-stable.json, update-public.json,
-     * update-public-nogms.json: docs/ota.md "Variants"): the USB file to look for, and the channel a
-     * manifest must carry (an edition never installs another edition's update).
+     * {stable, beta} manifest URLs of the edition an image of manifest URL {@code image} belongs to, or null when the
+     * edition has no beta channel. Play 6 fork: no edition of the Play 6 has one (Z9X: the no-Google edition).
+     */
+    static String[] channels(String image) {
+        return null;                                   // the Play 6 has no beta channel (no "Beta updates" switch)
+    }
+
+    /** True when this edition has a beta channel: only then the updater shows the "Beta updates" switch. */
+    public static boolean betaAvailable() { return channels(imageManifestUrl()) != null; }
+
+    /** True when the beta channel is read: the user's choice, else whether the image itself reads it. */
+    public static boolean betaOn() { return betaOn(imageManifestUrl(), sBeta); }
+
+    static boolean betaOn(String image, Boolean choice) {
+        String[] c = channels(image);
+        if (c == null) return false;
+        return choice != null ? choice : c[1].equals(image);
+    }
+
+    /**
+     * The main manifest of the chosen channel: the stable or the beta one of this edition (betaOn), else the image's
+     * own. A check with beta on reads the stable one too (Channels.read). Turning beta off never downgrades: a
+     * manifest is offered only with a version_code above the installed one (Preflight.applicable), so a beta stays
+     * until the stable channel has a newer version.
+     */
+    public static String manifestUrl() { return manifestUrl(imageManifestUrl(), sBeta); }
+
+    static String manifestUrl(String image, Boolean choice) {
+        String[] c = channels(image);
+        if (c == null) return image;
+        return betaOn(image, choice) ? c[1] : c[0];
+    }
+
+    /**
+     * The file name of the manifest this updater reads (update-stable.json, update-public.json,
+     * update-public-nogms.json: docs/ota.md "Variants", or the edition's beta update-public-beta.json). With beta
+     * on a check accepts the stable file too (Channels.files / accepts: the USB files and the channels a manifest
+     * may carry; an edition never installs another edition's update, a beta manifest is refused while beta
+     * updates are off).
      */
     public static String channelFile() {
         return channelFile(manifestUrl());

@@ -3,24 +3,17 @@
 #
 #   bash tools/devices/test/check_aidl_hal_test.sh
 #
-# Part 1, apps/HbBoot (while it exists; removed after the first HbProjector boot proof),
-# checked against its own six-row allowlist written into the scratch dir. Part 2, the app named by hal_app of the
-# Z9X HB (apps/HbProjector, assembled from devices/goat_elegant/app/HbProjector.layers when that recipe exists)
-# with the registry's allowlist.
-#
-# Part 1 copies HbBoot into a scratch dir: the clean copy must pass, and each broken copy must fail: a banned call
-# (DataBaseManager updateDbInt), a wrong code for getBootAnimState, a second '.transact(' in BootSequence.java, a raw
-# integer transact code, a reflection bypass (Class.forName + getMethod + invoke on ServiceManager outside the
-# transport), a call on a REVIEW row (DisplayManager uiHeartBeatDo), a call that is neither banned nor allowlisted
-# (DisplayManager getProjectorPutMode), an allowlist row that is no call, and a run without --allowed (fail-closed:
-# usage, exit 2).
-# Part 2: the clean HbProjector copy must pass ('OK: N calls on M interfaces', N and M counted from the registry's
+# The app named by hal_app of the Z9X HB (apps/HbProjector, assembled from devices/goat_elegant/app/HbProjector.layers
+# when that recipe exists), checked with the registry's allowlist. The section header and the
+# "p2_" test names date from when a second app (apps/HbBoot, since removed) was tested as part 1.
+# The clean HbProjector copy must pass ('OK: N calls on M interfaces', N and M counted from the registry's
 # allowed.tsv: the rows and their distinct interfaces, never a fixed number) and each broken copy must fail: a Call of
 # DataBaseManager 2 updateDbInt (BANNED), a Call of a REVIEW row (DisplayManager 56 generateLogoByTrapezoid, even with an
 # allowlist row; newAutoKst left REVIEW on 2026-10-29, 9.1), a wrong code (getBootAnimState 34), a second '.transact(' in GmpfClient.java, Parcel used in
-# KstPoint.java, a raw integer transact code, an integer code passed to a typed helper, a Call that no allowlist row
-# names (DisplayManager 10 isVideoPlaying), an allowlist row that is no Call, and a run without --allowed.
-# Dex level (rule 7), both parts: the clean copy is compiled in the scratch dir with a throwaway key
+# KstPoint.java, a raw integer transact code, a reflection bypass (Class.forName + getMethod + invoke on ServiceManager
+# outside the transport), an integer code passed to a typed helper, a Call that no allowlist row names (DisplayManager
+# 10 isVideoPlaying), an allowlist row that is no Call, and a run without --allowed (fail-closed: usage, exit 2).
+# Dex level (rule 7): the clean copy is compiled in the scratch dir with a throwaway key
 # (apps/build_apk.sh) and must pass; a fake dexdump then adds one forbidden instruction to the real dump each time
 # (Method.invoke, a second IBinder.transact, a const-string "ServiceManager" outside the transport class) and
 # finally fails itself: each must fail.
@@ -100,95 +93,6 @@ build() { # build-dir: compile $W/app with the throwaway key into $W/app.apk
     > "$W/build.log" 2>&1
 }
 
-# ------------------------------------------------------------------ part 1: apps/HbBoot
-APP=$G/apps/HbBoot
-ALLOWED=$W/hbboot_allowed.tsv
-J=src/org/lumen/hb/boot
-display() { # add IDisplayManager to enum Iface and one call on it: NAME CODE METHOD
-  edit $J/HbGmpf.java 'SYSTEM("xgimi.hardware.gmpf.ISystemManager");' \
-    'SYSTEM("xgimi.hardware.gmpf.ISystemManager"), DISPLAY("xgimi.hardware.gmpf.IDisplayManager");'
-  edit $J/HbGmpf.java 'SET_SYSTEM_UI_STATE(Iface.SYSTEM, 36, "setSystemUIState");' \
-    "SET_SYSTEM_UI_STATE(Iface.SYSTEM, 36, \"setSystemUIState\"), $1(Iface.DISPLAY, $2, \"$3\");"
-}
-if [ -d "$APP/src" ]; then
-  echo "part 1: apps/HbBoot"
-  printf '%s\t%s\t%s\t%s\n' '# HbBoot allowlist, scratch copy of its last registry rows' '' '' '' \
-    - 0x00FFFFFF getInterfaceVersion guard - 0x00FFFFFE getInterfaceHash guard \
-    PowerManager 2 goToBootCompleted 'rows C and E' SystemManager 32 setBootAnimState 'rows A and D' \
-    SystemManager 33 getBootAnimState read SystemManager 36 setSystemUIState 'row B' > "$ALLOWED"
-
-  copy
-  expect clean 0
-
-  copy
-  edit $J/HbGmpf.java 'SYSTEM("xgimi.hardware.gmpf.ISystemManager");' \
-    'SYSTEM("xgimi.hardware.gmpf.ISystemManager"), DB("xgimi.hardware.gmpf.IDataBaseManager");'
-  edit $J/HbGmpf.java 'SET_SYSTEM_UI_STATE(Iface.SYSTEM, 36, "setSystemUIState");' \
-    'SET_SYSTEM_UI_STATE(Iface.SYSTEM, 36, "setSystemUIState"), UPDATE_DB_INT(Iface.DB, 2, "updateDbInt");'
-  expect banned_call 1
-  reported banned_call 'rule 4: Call.UPDATE_DB_INT.* is banned'
-
-  copy
-  edit $J/HbGmpf.java 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 33, "getBootAnimState")' 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 34, "getBootAnimState")'
-  expect wrong_code 1
-  reported wrong_code 'rule 3: Call.GET_BOOT_ANIM_STATE'
-
-  copy
-  edit $J/BootSequence.java 'private final HbGmpf gmpf = new HbGmpf();' \
-    'private final HbGmpf gmpf = new HbGmpf();
-    static void poke(android.os.IBinder b) throws android.os.RemoteException { b.transact(1, null, null, 0); }'
-  expect second_transact 1
-  reported second_transact 'rule 1:'
-
-  copy
-  edit $J/HbGmpf.java 'b.transact(c.code, data, reply, 0)' 'b.transact(33, data, reply, 0)'
-  expect raw_integer_code 1
-  reported raw_integer_code 'rule 1: .*found .33.'
-
-  copy
-  edit $J/BootSequence.java 'private final HbGmpf gmpf = new HbGmpf();' \
-    'private final HbGmpf gmpf = new HbGmpf();
-    static Object peek() throws Exception {
-        return Class.forName("android.os.Service" + "Manager").getMethod("check" + "Service", String.class)
-                .invoke(null, "x");
-    }'
-  expect reflection_bypass 1
-  reported reflection_bypass 'rule 1: .*BootSequence.java:.*Class.forName( outside'
-  reported reflection_bypass 'rule 1: .*BootSequence.java:.*getMethod( outside'
-  reported reflection_bypass 'rule 1: .*BootSequence.java:.*\.invoke( outside'
-
-  copy
-  display UI_HEART_BEAT_DO 100 uiHeartBeatDo
-  expect review_row_call 1
-  reported review_row_call 'rule 4: Call.UI_HEART_BEAT_DO.* is under review'
-
-  copy
-  display GET_PUT_MODE 3 getProjectorPutMode
-  expect not_allowlisted 1
-  reported not_allowlisted 'rule 6: Call.GET_PUT_MODE: DisplayManager 3 getProjectorPutMode is not a row'
-  if grep -q 'rule [1-5]:' "$W/out"; then FAIL=$((FAIL + 1)); echo "FAIL not_allowlisted: refused by another rule too"; fi
-
-  copy
-  printf 'SystemManager\t33\tgetBootAnimState\ta second copy\nPowerManager\t11\tgetBootReason\tnot a call\n' >> "$W/allowed.tsv"
-  expect stale_allowlist_row 1
-  reported stale_allowlist_row 'rule 6: .*PowerManager 11 getBootReason is no Call'
-
-  copy
-  run; result no_allowed_option 2 $?
-
-  copy
-  cp "$APP/AndroidManifest.xml" "$W/app/"
-  if build build1; then
-    expect dex_clean 0 --dex "$W/app.apk"
-    reported dex_clean 'OK: 6 calls'
-    dex_suite "" build1 org.lumen.hb.boot.BootSequence.run org.lumen.hb.boot.App.onCreate
-  else
-    FAIL=$((FAIL + 1)); echo "FAIL dex_build: the scratch copy did not compile"; sed 's/^/     /' "$W/build.log" | tail -20
-  fi
-else
-  echo "part 1: apps/HbBoot is gone, skipped"
-fi
-
 # ------------------------------------------------------------------ part 2: the hal_app (apps/HbProjector)
 APP=$HAL_APP
 # an app built from a recipe: the test runs on its assembled tree, as the build
@@ -250,9 +154,43 @@ expect p2_raw_integer_code 1
 reported p2_raw_integer_code 'rule 1: .*found .33.'
 
 copy
+edit $H/GmpfClient.java 'public final class GmpfClient extends AidlCaller {' \
+  'public final class GmpfClient extends AidlCaller {
+    static Object peek() throws Exception {
+        return Class.forName("android.os.Service" + "Manager").getMethod("check" + "Service", String.class)
+                .invoke(null, "x");
+    }'
+expect p2_reflection_bypass 1
+reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*Class.forName( outside'
+reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*getMethod( outside'
+reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*\.invoke( outside'
+
+copy
 edit $H/GmpfClient.java 'callI32(Call.SET_SYSTEM_UI_STATE, SYSTEM_UI_STATE_READY)' 'callI32(36, SYSTEM_UI_STATE_READY)'
 expect p2_helper_integer_code 1
 reported p2_helper_integer_code 'rule 5: src/org/lumen/projector/hal/GmpfClient.java:.*callI32(36, SYSTEM_UI_STATE_READY) passes no Call'
+
+# rule 5 names: a class outside the transport's hierarchy with its own method of a transport name calls its own method
+# (the shared menu's QpdMirror: call(method, arg) on a content provider); a transport subclass is checked even through
+# an overload of its own
+copy
+mkdir -p "$W/app/src/org/lumen/projector/panel"
+cat > "$W/app/src/org/lumen/projector/panel/LocalCall.java" <<'JEOF'
+package org.lumen.projector.panel;
+final class LocalCall {
+    private static String call(String method, String arg) { return method + arg; }
+    static String read() { return call("state", null); }
+}
+JEOF
+expect p2_local_method_named_like_transport 0
+
+copy
+edit $H/GmpfClient.java 'public final class GmpfClient extends AidlCaller {' \
+  'public final class GmpfClient extends AidlCaller {
+    private int callI32(int code, int v) throws android.os.RemoteException { return code + v; }
+    int poke() throws android.os.RemoteException { return callI32(36, 1); }'
+expect p2_subclass_own_overload 1
+reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/GmpfClient.java:.*callI32(36, 1) passes no Call'
 
 copy
 edit $H/AidlCaller.java "$LAST" "$LAST_OPEN IS_VIDEO_PLAYING(Iface.DISPLAY, 10, \"isVideoPlaying\");"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost：更高亮度。退出 Boost 后色彩更鲜艳。</string>
+    <string name="lumen_gm_cs">色彩空间</string>
+    <string name="lumen_gm_cs_0">原生</string>
+    <string name="lumen_gm_hdr_1">动态色调映射</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">极速：梯形校正已关闭</string>
+    <string name="lumen_m_ok">确定</string>
+    <string name="lumen_m_cancel">取消</string>
+    <string name="lumen_m_panel_boost_press_again">再按一次 → 进入 Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">再按一次 ← 退出 Boost</string>
+    <string name="lumen_m_toast_setup_running">请先完成设置</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI 画质</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">精准色彩</string>
+    <string name="lumen_m_panel_tileval_pm_performance">性能</string>
+    <string name="lumen_m_panel_move_ak">移动后自动梯形校正</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">电影</string>
+    <string name="lumen_m_pm_tv">电视</string>
+    <string name="lumen_m_pm_custom">自定义</string>
+    <string name="lumen_m_ct_cool">冷色</string>
+    <string name="lumen_m_ct_warm">暖色</string>
+    <string name="lumen_m_zs_title">缩放与位移</string>
+    <string name="lumen_m_eco">节能模式</string>
+    <string name="lumen_m_ambient_speaker">氛围音箱</string>
+    <string name="lumen_m_ct_custom">自定义</string>
+</resources>

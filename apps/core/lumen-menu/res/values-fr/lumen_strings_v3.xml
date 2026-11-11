@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_boost_effect_brighter">Boost : luminosité plus élevée. En quittant le Boost, les couleurs sont plus vives.</string>
+    <string name="lumen_gm_cs">Espace colorimétrique</string>
+    <string name="lumen_gm_cs_0">Natif</string>
+    <string name="lumen_gm_hdr_1">Mappage dynamique des tons</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">Turbo : correction du trapèze désactivée</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">Annuler</string>
+    <string name="lumen_m_panel_boost_press_again">Appuyez encore sur → pour Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Appuyez encore sur ← pour quitter Boost</string>
+    <string name="lumen_m_toast_setup_running">Terminez d\'abord la configuration</string>
+    <string name="lumen_m_panel_tileval_pm_ai">Image IA</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Couleurs fidèles</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Performance</string>
+    <string name="lumen_m_panel_move_ak">Trapèze auto après déplacement</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Film</string>
+    <string name="lumen_m_pm_tv">TV</string>
+    <string name="lumen_m_pm_custom">Personnalisé</string>
+    <string name="lumen_m_ct_cool">Froide</string>
+    <string name="lumen_m_ct_warm">Chaude</string>
+    <string name="lumen_m_zs_title">Zoom et décalage</string>
+    <string name="lumen_m_eco">Économie d\'énergie</string>
+    <string name="lumen_m_ambient_speaker">Enceinte d’ambiance</string>
+    <string name="lumen_m_ct_custom">Personnalisée</string>
+</resources>

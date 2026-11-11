@@ -25,16 +25,26 @@
 #      every one of them is there with its sha256: never one without the other,
 #   6. remount the tmpfs read-only (every bind shares it).
 # Results: sys.z9x.blobs = ok | missing | bad:<why> | partial (the whole set, as z9x_blobs.sh), sys.z9x.blobs.set,
+# sys.z9x.blobs.src (partition | stock_a / stock_b: a DSU trial),
 # and sys.lumen.nui = ok | missing | bad:<why> (the eye-protection drawer). x50_nui.rc starts the service
 # nativeui only on sys.lumen.nui=ok. Without it the system still boots with no drawer and no fifo: the vendor's
 # eye-follow mask is not drawn, nothing on the system answers for it, and the vendor itself does not fall back
 #: the Lumen projector app reads sys.lumen.nui for that.
+# DSU trial (ro.gsid.image_running=1, the stock gsid; the stock super is untouched, so there is no z9x_blobs
+# partition): steps 1-2 take the allow-listed files read-only from the stock slot instead (the shared
+# /system/etc/z9x/blobs_stock_dsu.sh, tools/devices/image/blobs_stock_dsu.sh: stock system, system_ext and product
+# of this slot mounted ro, /vendor, the stock VNDK APEX payload; unmounted again before step 3), into the same
+# folder; steps 3-6 are the same, so every file is checked against the same allow-list and bound at the same
+# place, and a file that does not verify stays out (eye protection: both need=eye files or none). Only for this
+# image's model (ro.lumen.model G0111 or G0100, equal to the unit's) and only when no z9x_blobs partition is there. sys.z9x.blobs.src = partition | stock<slot>.
 # Never writes any partition. Bounded, since init waits for this exec and the vendor PWM watchdog reboots when
 # early-boot is late: the 16 MiB read, the two listings and the untar each have a 3 s timeout (each takes well
 # under a second on 16 MiB), then sha256 of at most the allow-listed files, each at most 8 MiB. Runs once per boot.
+# The DSU path: each stock mount 3 s, the unzip of the 44 MB VNDK APEX payload 5 s (well under a second each).
 TAG=x50_blobs
 R=${Z9X_ROOT:-}        # empty on the projector; devices/g0111/test/x50_blobs_test.sh points it at a temp dir
 ALLOW=$R/system/etc/z9x/x50_blobs_allow.txt
+STOCK=$R/system/etc/z9x/blobs_stock_dsu.sh
 M=$R/mnt/z9x_blobs
 NUIDIR=$R/data/vendor/tmp
 BLOCKS=256             # x 64 KiB = 16 MiB, the partition the installer makes (lib/devices.conf x50.BLOBS_SIZE)
@@ -53,18 +63,36 @@ name=z9x_blobs$cur
 dev=$R/dev/block/mapper/$name
 case "$cur" in _a|_b) ;; *) fail missing "no slot suffix" ;; esac
 # (the host test's partition is a plain file)
-[ -b "$dev" ] || { [ -n "$R" ] && [ -f "$dev" ]; } || fail missing "no $name"
+src=partition
+if ! { [ -b "$dev" ] || { [ -n "$R" ] && [ -f "$dev" ]; }; }; then
+  # a DSU trial on stock has no blobs partition: the stock slot's own files instead, checked the same way below
+  [ "$(getprop ro.gsid.image_running)" = 1 ] && [ -f "$STOCK" ] || fail missing "no $name"
+  src=stock$cur
+fi
 
 mkdir -p $M || fail bad:mkdir
 [ -n "$R" ] || mount -t tmpfs -o mode=0750,uid=0,gid=0,size=32m,nosuid,nodev tmpfs $M 2>/dev/null || fail bad:tmpfs
-img=$M/.img
-timeout 3 dd if="$dev" of=$img bs=65536 count=$BLOCKS 2>/dev/null || fail bad:read "$dev"
-timeout 3 tar -tf $img 2>/dev/null | grep -qE '^/|^\.\.(/|$)|/\.\.(/|$)' && fail bad:path
-odd=$(timeout 3 tar -tvf $img 2>/dev/null | grep '^[lhcbps]' | head -n 1)
-[ -z "$odd" ] || fail bad:entry "$odd"
-mkdir -p $M/x
-( cd $M/x && timeout 3 tar -xf $img ) 2>/dev/null || fail bad:tar
-rm -f $img
+setprop sys.z9x.blobs.src "$src"
+if [ "$src" = partition ]; then
+  img=$M/.img
+  timeout 3 dd if="$dev" of=$img bs=65536 count=$BLOCKS 2>/dev/null || fail bad:read "$dev"
+  timeout 3 tar -tf $img 2>/dev/null | grep -qE '^/|^\.\.(/|$)|/\.\.(/|$)' && fail bad:path
+  odd=$(timeout 3 tar -tvf $img 2>/dev/null | grep '^[lhcbps]' | head -n 1)
+  [ -z "$odd" ] || fail bad:entry "$odd"
+  mkdir -p $M/x
+  ( cd $M/x && timeout 3 tar -xf $img ) 2>/dev/null || fail bad:tar
+  rm -f $img
+else
+  . "$STOCK"
+  mkdir -p $M/x
+  # the model this image is for (x50_prop.txt ro.lumen.model): G0111 X50 Ultra or G0100 X50 Ultra Max (its own image
+  # g0100); stock_blobs_collect reads only when it is this unit's model. Anything else: nothing is read
+  mdl=$(getprop ro.lumen.model)
+  case $mdl in G0111|G0100) ;; *) fail missing "no $name, and this image names no X50 model (ro.lumen.model ${mdl:-unset})" ;; esac
+  stock_blobs_collect "$mdl" "$ALLOW" $M/x $R/mnt/z9x_stock $MAXF \
+    || fail missing "no $name, and the stock slot $cur of this DSU trial was not read ($STOCK_WHY)"
+  say "DSU trial: no $name, $STOCK_N files read-only from the stock slot $cur (checked below like the partition's)"
+fi
 odd=$(find $M/x ! -type d \( ! -type f -o -size +${MAXF}c \) 2>/dev/null | head -n 1)
 [ -z "$odd" ] || fail bad:entry "${odd#$M/x/}"
 [ -f $M/x/MANIFEST ] || fail bad:manifest

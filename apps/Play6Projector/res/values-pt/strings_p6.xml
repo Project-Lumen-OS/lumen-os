@@ -25,6 +25,7 @@
     <string name="p6_game_on">Modo de jogo ativado</string>
     <string name="p6_game_off">Modo de jogo desativado</string>
     <string name="p6_smart_af_desc">A imagem é focada de novo depois que o projetor é movido.</string>
+    <string name="p6_af_fine_tune">Foco concluído. Mantenha a tecla de foco pressionada para ajustá-lo com precisão.</string>
     <string name="p6_lamp_hint">Na bateria, o projetor ativa a economia de energia e reduz o brilho. Aumentar o brilho desativa a economia de energia.</string>
     <string name="p6_eco">Economia de energia</string>
     <string name="p6_eco_on_title">Ativar a economia de energia?</string>

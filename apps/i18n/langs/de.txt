@@ -1201,25 +1201,6 @@ s2_d_report=Sendet die Protokolle an den Entwickler
 s2_d_refresh=Projektorstatus neu lesen
 s2_diag_state=Projektorstatus
 
-@projector/strings_qpd.xml
-qpd_autocorrect=Autokorrektur
-qpd_autocorrect_value=Mit einem Klick
-qpd_zoom=Zoom
-qpd_bluetooth=Bluetooth
-qpd_network=Netzwerk
-qpd_usb=USB
-qpd_mirroring=Bildschirmspiegelung
-qpd_mirror_on=Bildschirmspiegelung (Miracast)
-qpd_mirror_ask=Vor dem Verbinden fragen
-qpd_mirror_name=Name
-qpd_mirror_more=Alle Einstellungen zur Bildschirmspiegelung
-qpd_picture_more=Bildeinstellungen
-qpd_sound_more=Alle Toneinstellungen
-qpd_boost_note=Maximale Helligkeit. Die Lüfter werden lauter.
-qpd_tip_picture=Wählen Sie einen Modus für das, was Sie sehen.
-qpd_tip_rear=Sie und der Projektor sind auf verschiedenen Seiten der Leinwand.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=Bildschirmspiegelung
 settings_title=Bildschirmspiegelung

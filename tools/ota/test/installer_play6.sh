@@ -365,13 +365,25 @@ inst '' --ip 192.0.2.50 check
 expect_rc 0; expect_out "firmware $FW1"
 end
 
-for fw in v1.7.200 v1.0.9; do
+begin check_stock_fw2
+# V1.8.127 (the newer stock, 2026-04, MediaTek and AIC units) is supported next to V1.7.116, oldest first
+[ "$FW1" = v1.7.116 ] && [ "$FW2" = v1.8.127 ] || fail "play6.VENDOR_OK: '$FW1' '$FW2'"
+grep -qx 'play6.RESTORE_MD5=55ae66ed7e14a20759ea4b9d5686d591:V1.7.116 a14277a6c73676487a7de5ede36dc017:V1.8.127' "$CONF" \
+  || fail "play6.RESTORE_MD5 must name the official V1.7.116 and V1.8.127 files"
+setp stock ro.vendor.build.version.incremental "$FW2"
+inst '' --ip 192.0.2.50 check
+expect_rc 0; expect_out "firmware $FW2"
+end
+
+for fw in v1.7.200 v1.0.9 v1.8.130; do
   begin "check_firmware_${fw}_refused"
   setp stock ro.vendor.build.version.incremental "$fw"
   inst '' --ip 192.0.2.50 check
   expect_rc 1
   expect_out "XGIMI firmware $fw is not supported: Lumen OS for the $NAME is tested on $FWLIST."
-  expect_out "Do NOT install V${FW1#v} from a USB stick over it"; expect_out "RG0058V1.8xxx"; expect_out "Nothing was done."
+  expect_out "Do NOT install V${FW1#v} from a USB stick over it"; expect_out "Newer: Lumen OS does not support it yet."
+  expect_out "Nothing was done."
+  if grep -q 'V1\.8\.x' "$C/out"; then fail "the refusal still calls V1.8.x unsupported"; fi
   [ -z "$(writes)" ] || fail "adb wrote: $(writes)"
   end
 done
@@ -617,13 +629,21 @@ inst 'no\nERASE\n\n\nno\n' --ip 192.0.2.50
 expect_rc 1
 expect_out "If the projector does not come back:"; expect_out "ONLY a FAT32 USB stick"; expect_out "repeat this 3 to 5 times"
 expect_out "ask for the Lumen OS diagnostic build"; expect_out "lumen_os_diag_logs"; expect_out "$C/state/play6/install.log"
-expect_out "This projector (serial P6T, MediaTek chip 0e8d:7663): the V1.7.116 .bin from a FAT32 stick."
+expect_out "This projector (serial P6T, MediaTek chip 0e8d:7663): the V${FW2#v} .bin from a FAT32 stick."
 expect_out "when Lumen OS shows, run the same command again: it continues here"
 [ -z "$(state step_boot1)" ] || fail "step_boot1=$(state step_boot1)"
 : > "$FB/fb.log"
 inst 'yes\n'
 expect_rc 0; expect_cmds ""; expect_out "the projector is off Wi-Fi: the data was erased"
 [ "$(state step_boot1)" = done ] && [ "$(state step_wipe)" = requested ] || fail "state: $(cat "$C/state/play6/state")"
+end
+
+begin install_light_start_not_seen_fw1
+# a MediaTek unit on the older stock: its way back stays the V1.7.116 .bin
+setp stock ro.vendor.build.version.incremental "$FW1"
+inst 'no\nERASE\n\n\nno\n' --ip 192.0.2.50
+expect_rc 1
+expect_out "This projector (serial P6T, MediaTek chip 0e8d:7663): the V${FW1#v} .bin from a FAT32 stick."
 end
 
 begin install_light_start_aic_help
@@ -634,6 +654,29 @@ expect_rc 1
 expect_out "Wi-Fi and Bluetooth chip: AIC8800 (368b:8d91)"; expect_out "This $NAME is from a newer batch"
 expect_out "NEVER roll this projector back with the V1.7.116 .bin"
 expect_out "This projector (serial P6T, chip 368b:8d91) is from the newer batch: do NOT use the V1.7.116 .bin"
+[ "$(grep -c "The way back to stock for this batch is the V${FW2#v} .bin from a FAT32 stick" "$C/out")" -ge 2 ] \
+  || fail "the pre-check and the help must both name the V${FW2#v} .bin"
+if grep -q 'XGIMI support' "$C/out"; then fail "the newer batch is still sent to XGIMI support"; fi
+end
+
+begin install_light_start_aic_help_one_firmware
+# a profile with one firmware only: the newer batch is sent to XGIMI support, never to that firmware's .bin
+sed -i.bak "s/^play6\.VENDOR_OK=.*/play6.VENDOR_OK=$FW1/" "$C/inst/lib/devices.conf"
+setp stock ro.vendor.build.version.incremental "$FW1"
+printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d91 ff" "1-1 0951:1666 08" > "$FB/usb"
+inst 'no\n' --ip 192.0.2.50
+expect_rc 1
+expect_out "This $NAME is from a newer batch"; expect_out "a V1.8.x firmware from XGIMI support"
+if grep -q "is the V${FW1#v} .bin" "$C/out"; then fail "the first firmware is named as the way back"; fi
+end
+
+begin install_light_start_aic_help_ru
+printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d91 ff" "1-1 0951:1666 08" > "$FB/usb"
+LANG_CASE=ru_RU.UTF-8 inst 'да\nнет\nERASE\n\n\nнет\n' --ip 192.0.2.50
+expect_rc 1
+expect_out "Вернуться на сток с этой партией можно прошивкой .bin V${FW2#v} с флешки FAT32"
+if grep -q 'поддержки XGIMI' "$C/out"; then fail "the Russian text still sends the newer batch to XGIMI support"; fi
+if grep -q '—' "$C/out"; then fail "an em dash in the Russian text"; fi
 end
 
 begin install_all_ru
@@ -1203,6 +1246,14 @@ expect_rc 1
 expect_out "partition table 'gpt': it must be MBR"; expect_out "2 partitions: there must be exactly one"
 expect_out "it must be FAT32"; expect_out "._$BIN: a macOS helper file"; expect_out "notes.txt: nothing else may be on the stick"
 expect_out "factory.txt must be empty"; expect_out "the stick is not ready"
+end
+
+begin stick_second_known_firmware
+# RESTORE_MD5 is a list (V1.7.116 and V1.8.127): a file that matches a later entry is known too
+stick
+sed -i.bak "s/^play6\.RESTORE_MD5=.*/play6.RESTORE_MD5=55ae66ed7e14a20759ea4b9d5686d591:V1.7.116 $m:V9.9.8/" "$C/inst/lib/devices.conf"
+inst '' stick "$C/stick"
+expect_rc 0; expect_out "XGIMI firmware V9.9.8"; expect_out "the stick is ready"
 end
 
 begin stick_unknown_firmware

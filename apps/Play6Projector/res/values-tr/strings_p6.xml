@@ -25,6 +25,7 @@
     <string name="p6_game_on">Oyun modu açık</string>
     <string name="p6_game_off">Oyun modu kapalı</string>
     <string name="p6_smart_af_desc">Projektör hareket ettirildikten sonra görüntü yeniden odaklanır.</string>
+    <string name="p6_af_fine_tune">Odaklama tamam. İnce ayar için odak tuşunu basılı tutun.</string>
     <string name="p6_lamp_hint">Pille çalışırken projektör güç tasarrufunu açar ve parlaklığı düşürür. Parlaklığı artırmak güç tasarrufunu kapatır.</string>
     <string name="p6_eco">Güç tasarrufu</string>
     <string name="p6_eco_on_title">Güç tasarrufu açılsın mı?</string>

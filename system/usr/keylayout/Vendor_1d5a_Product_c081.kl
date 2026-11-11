@@ -28,7 +28,7 @@ key 114        VOLUME_DOWN
 key 115        VOLUME_UP
 key 172        HOME
 key 1          BACK
-key 139        ALL_APPS  # XGIMI: MENU (four-diamond key) -> Google TV "Your apps"
+key 139        TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU = the gear held (the remote sends it once on a long press; stock KEYCODE_MENU = the game menu) -> org.lumen.projector gear long press
 key 63         SEARCH WAKE  # XGIMI: F5 = voice key (audio streams only while held) -> Google Assistant via org.lumen.projector
 key 64         SETTINGS  # XGIMI: MOVE_HOME; gear -> org.lumen.projector quick panel (short) / TvSettings (long)
 # key 65       STEM_1  (dropped: STEM_1 is a wake key by itself (KeyEvent.isWakeKey); meaning unknown)

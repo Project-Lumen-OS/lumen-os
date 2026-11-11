@@ -30,7 +30,7 @@ key 114        VOLUME_DOWN
 key 115        VOLUME_UP
 key 102        HOME
 key 1          BACK
-key 127        ALL_APPS  # XGIMI: MENU (four-diamond key) -> Google TV "Your apps"
+key 127        TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU = the gear held (the remote sends it once on a long press; stock KEYCODE_MENU = the game menu) -> org.lumen.projector gear long press
 key 66         SETTINGS  # XGIMI: MOVE_HOME; gear -> org.lumen.projector quick panel (short) / TvSettings (long)
 key 87         FOCUS  # XGIMI: FOCUS_AUTO; focus key short press -> org.lumen.projector autofocus
 key 63         SEARCH WAKE  # XGIMI: F5 = voice key (audio streams only while held) -> Google Assistant via org.lumen.projector
@@ -39,7 +39,7 @@ key 65         FOCUS  # XGIMI: FOCUS_AUTO_NEW; focus key short press -> org.lume
 key 62         TV_CONTENTS_MENU  # XGIMI: FOCUS_MAN_NEW; focus key long press -> org.lumen.projector manual-focus overlay
 # key 88       RC_LOW_BATTERY  (dropped: remote low-battery report, not a key)
 key 183        TV_SATELLITE_SERVICE  # XGIMI: AMBIENT; stock "screen saver" key -> org.lumen.projector starts Ambient mode
-key 184        ALL_APPS  # XGIMI: SHORTCUT; stock DIY shortcut key -> all apps (hedge for the four-diamond key)
+key 184        ALL_APPS  # XGIMI: SHORTCUT; stock DIY shortcut key -> all apps
 # key 185      SECONDARY_POWER  (not mapped yet: stock XgimiWindowManager handles it (2130) exactly
 #   like KPPOWER (2100): wake from sleep, swallow the waking press. Not mapped blindly: if one press
 #   sends both the main power scancode and 185, Android has no stock-like dedupe and one press would

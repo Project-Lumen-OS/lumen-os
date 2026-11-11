@@ -1,0 +1,148 @@
+# allowed_x50projector.tsv: the complete list of gmpf calls apps/X50Projector (org.lumen.x50.projector, the X50 gear-key
+# menu) may send on the X50 (G0111). Read by tools/devices/check_aidl_hal.py (apps/X50Projector/test/run.sh, rule 6:
+# every Call of Gmpf.java is a row and every row a Call) and mirrored in devices/g0111/image/verify_tree_x50.py MENU_APP.
+# Codes: found BY METHOD NAME in devices/g0111/research/aidl_codes.tsv (X50 hash 715affd0...), never copied from the Z9X
+# (test/run.sh checks every row against that table; all of them also have the same code on the HB table, which is why
+# the HB's banned.tsv applies). Stock evidence: the X50 stock apps decompiled on xgimi-builder
+# (~/devices/g0111_mt9681/work/dec/{release_838_newsettings,SystemUI_release_838}), call sites in
+# the design notes. t12 adds the stock eye-protection switch / mode (61, 126: user rows only,
+# newsettings MoreRepository / MoreViewModel), projection mode (2 / 3 + MotionDetection 8, SystemManager 140), the
+# four-corner keystone (15 / 16 / 64), picture items (GmTvManager 5..12, the XgimiService MtkVideo path) and sound mode
+# (GmAudioManager 6 / 7). NOT here on purpose: 101 (setHumanDetectOnOffEx, not the newsettings path), 66 (vendor eye
+# cover), 99 / 100 (heartbeat), laser current and ambient light getters (README.md says why); autoFocus 3,
+# correctKeystone 11 and setTiltShiftMove 88 (BANNED) only since t20, see below. t14 adds
+# the level angles (MotionDetectionManager 25 getMotionAttitude, newsettings AngleMonitorDialog) with that dialog's own
+# calls around them (maintainer OK 2026-11-08: setMotionACalEnable 24 heartbeat, temporarySwitchTrigger(2, z) 15 move-AK
+# pause), and the picture page of the design notes: picture mode 33 / 34 (the X50 settings tree list),
+# dynamic black 172 / 174, dynamic contrast 113 / 114. Still NOT here: contrast enhancement 166 / 167 (t15: the X50
+# settings tree has no such node, so the stock X50 menu never shows it), the dynamic black
+# level 173 / 175 (X50 dynamicBlack.ini force_level = 1, the stock switch never writes it), setDynamicBlackTypeEx 184 (no
+# stock caller), AI contrast 156-159, HDR 174-175 / 133-135, light source / lumens (4-7, 177 / 178, Xlab factory path).
+# t17: powerOnAFEnable 4 / isPowerOnAFEnabled 5 and getAngTriggerAF
+# (MotionDetectionManager 5) removed: the X50 tree focus_tab has only smart_auto_focus (85 + MotionDetectionManager 4
+# together), so a power-on AF or a separate 'AF when moved' switch would write vendor-store states stock never shows.
+# t18 (owner OK 2026-11-09): the projection Auto radio: MotionDetectionManager 8 now also sends true
+# (only from Sequences.autoTurn, the Auto choice) and its getter 9 getAutoReverse is read; 68 rows.
+# service	code	method	signature	reason
+-	0x00FFFFFF	getInterfaceVersion	int()	meta: version guard before the first call on an interface (must be 1)
+-	0x00FFFFFE	getInterfaceHash	String()	meta: hash guard (must be 715affd032170b4d256c28c9bbc3c6cbaf5de492)
+DisplayManager	38	correctKeystoneReset	void(byte)	(0) only: keystone reset, stock gmuiapi V3DisplayManager.setIChipReset() (newsettings KeyStoneManager.setCorrectKeystoneReset / resetKeyStone, SystemUI FineTuneAutoKeyWind:283 correctKeystoneReset(0); t19 also right after 76 to top speed: PictureViewModel.switchGameModeSpeed setIChipReset); HB allowed 38 same caller
+DisplayManager	84	getCurrentKeystoneMode	int()	read only inside the reset: stock V3DisplayManager.setIChipReset reads it after 38(0)
+DisplayManager	85	switchKeystoneMode	boolean(int, int)	(0, 0) only and only when 84 read 6 in the same reset (stock V3DisplayManager.setIChipReset:190); Sequences.keystoneReset
+DisplayManager	62	getHumanDetectOnOff	boolean()	read only: the stock eye-protection switch shown in the menu (stock SystemUI tip / newsettings), read back after every 61 write of the menu's eye row (Sequences.eyeSet, stock MoreRepository.setHumandetect)
+DisplayManager	127	getHumanDetectMode	int()	read only: eye-protection mode (0 eye follow, 1 full screen), stock SystemUI global/eye HumanDetectUtils getHumanDetectMode
+ProjectorFocusManager	2	manualFocus	void(byte)	17 / 1 / 0 / 2 only, as the stock remote overlay SystemUI FocusAdjust: showFocusAdjust GmDeviceManager.manualFocus(17) once when it opens (X50 libxgimi FocusMotor::ManualFocus case 17 only logs and returns 1), newVontrolAf LEFT key DOWN setFocusCommand("1") nearer, RIGHT DOWN "0" farther, the key UP "2" stop (FocusActivity / FocusHold); newsettings FocusViewModel MANUAL_FOCUS_LEFT / RIGHT use the same 1 / 0 / 2 (400 ms pulse, no longer used); HallCalibrationManualDialog the same values
+ProjectorFocusManager	8	sendFocusStatus	void(byte)	(44) only: auto focus now as the remote's focus key, stock SystemUI FocusUIV2.autoFocus sendFocusStatus(MusicPlayerManager.EN_LED_AIRPLAY_DISCON = 44); autoFocus (3) is BANNED in banned.tsv and not used; HB allowed 8 (44) same caller
+ProjectorFocusManager	27	autoKst	byte()	auto keystone now: stock newsettings KeyStoneManager.autoKeystone (settings caller) GmDisplayManager.autoKst(); HB allowed 27
+ProjectorFocusManager	33	setProjScreenAdp	void(boolean)	switch 'obstacle avoidance': stock newsettings KeyStoneManager.setProjScreenAdp (KeyStoneRepository:503)
+ProjectorFocusManager	34	getProjScreenAdp	boolean()	read of that switch (KeyStoneManager.isProjScreenAdp)
+ProjectorFocusManager	35	setProjCurtainAdp	void(boolean)	switch 'fit to screen frame': stock newsettings KeyStoneManager.setProjCurtainAdp (KeyStoneRepository:512)
+ProjectorFocusManager	36	getProjCurtainAdp	boolean()	read of that switch
+ProjectorFocusManager	85	setPowerOnAFUseDistance	boolean(boolean)	switch 'smart auto focus' (the only focus switch of the X50 tree focus_tab): stock newsettings FocusRepository.setSmartAutoFocus:179 setPowerOnAFUseDistance(z) followed by setAngTriggerAF(z) (FocusFunctionManager.setDisplacementFocus), both sent by Sequences.toggle
+ProjectorFocusManager	86	getPowerOnAFUseDistance	boolean()	read of that switch
+MotionDetectionManager	4	setAngTriggerAF	boolean(boolean)	the second call of 'smart auto focus' only (Sequences.toggle, right after ProjectorFocusManager 85): stock newsettings FocusRepository.setSmartAutoFocus -> FocusFunctionManager.setDisplacementFocus -> GmDeviceManager.setFocusAutoOnOff; t17: no row of its own (the X50 tree focus_tab has no 'auto focus when moved' node), so no getter 5
+MotionDetectionManager	6	setAccTriggerAK	boolean(boolean)	switch 'auto keystone when moved': stock newsettings FocusFunctionManager / CalibrationManager GmDisplayManager.setAccTriggerAK, Home KeyStoneManager:543
+MotionDetectionManager	7	getAccTriggerAK	boolean()	read of that switch
+GmFactoryManager	45	savePowerOnAKFlag	void(boolean)	switch 'auto keystone at power on': stock newsettings KeyStoneManager.setBootAk GmDisplayManager.savePowerOnAKFlag; EXCEPTION row of banned.tsv (as HB allowed 45)
+GmFactoryManager	46	getPowerOnAKFlag	boolean()	read of that switch (KeyStoneManager.getBootAk); EXCEPTION row of banned.tsv
+DisplayManager	61	setHumanDetectOnOff	boolean(boolean)	args:0..1	user row only: stock newsettings MoreRepository.setHumandetect(z) on the X50 (support_human_detect_mode true): GmDisplayManager.setHumanDetectOnOff(z) = V3DisplayManager -> 61, then GmSystemManager.setProp("persist.sys.humandetect.enable", z); the off confirm dialog of MoreRepository.setHumanDetectOnOff (close: 300 ms, off again; cancel / back: on); Sequences.eyeSet
+DisplayManager	126	setHumanDetectMode	boolean(int)	args:0..1	user row only, 0 / 1: stock newsettings MoreViewModel ACTION_EYE_PROJECT_FOLLOW / ACTION_EYE_PROJECT_BE_AT_EASE GmDisplayManager.setHumanDetectMode (MoreRepository maps 127 == 0 to follow); Sequences.eyeMode
+DisplayManager	2	setProjectorPutMode	void(byte)	0..3 only: stock newsettings ProjectionRepository.setProjectorPutModeV5 / setRearProjection -> ProjectionManager.setProjectorPutMode -> GmDisplayManager.setProjectorPutMode; HB allowed 2 same caller
+DisplayManager	3	getProjectorPutMode	byte()	read of the put mode (ProjectionManager.getProjectorPutMode), first call of setProjectorPutModeV5 / setRearProjection
+DisplayManager	15	setCorrectKeystoneFullPiont	boolean(byte, KstPoint)	(0, corners) only: stock newsettings KeyStoneManager.setCorrectKeystoneExs(false) -> GmDisplayManager.correctKeystone(KeyStoneFullCoordinates) -> middle DisplayManagerWrapper.correctKeystone -> 15(kstMode, KstPoint of 81 points); one corner moved by one stock step; HB allowed 15
+DisplayManager	16	getCorrectKeystoneFullPiont	KstPoint(byte)	(0) only: stock KeyStoneManager.getCorrectKeystone(mode) -> DisplayManagerWrapper.getCorrectKeystone -> 16(kstMode), before every corner move and probe; HB allowed 16
+DisplayManager	64	checkTrapezoidCoordinate	boolean(KstPoint)	stock KeyStoneManager.setCorrectKeystoneExs: checkTrapezoidCoordinate after the apply (the "limit") and the arrow probes (isCheck true: no apply); HB allowed 64
+MotionDetectionManager	8	setAutoReverse	boolean(boolean)	(false | true): false from stock ProjectionRepository.setProjectorPutModeV5 (desk / ceiling radios) -> ProjectionManager.setAutoVerticalTurn(false) -> GmDeviceManager.setAutoReverse -> V3MotionDetectionManager.setAutoReverse; true ONLY from the projection Auto radio (t18, owner OK 2026-11-09; X50 tree projection_settings node autoVerticalTurn_v5 'auto_turn', action projection.projection_settings.autoTurn): ProjectionViewModel.postAction PROJECTION_SETTINGS_AUTO_TURN -> ProjectionRepository.setAutoVerticalTurnV5(data.isCheck()) -> setAutoVerticalTurn(isTurn) = MD 8(isTurn) and nothing else; the radio is a ChoiceCell whose click flips the check, so OK on a checked Auto sends false (Sequences.autoTurn, the only sender of true)
+MotionDetectionManager	9	getAutoReverse	boolean()	read only (t18): the Auto radio's check, stock ProjectionRepository.isAutoTurn / isAutoVerticalTurn / isDress / isHoist -> ProjectionManager.getAutoVerticalTurn -> GmDeviceManager.isAutoReverse -> gmuiapi V3MotionDetectionManager.isAutoReverse = getAutoReverse; read when the menu / the placement list opens and after an Auto change
+MotionDetectionManager	25	getMotionAttitude	boolean(stAttitudeInfo)	read only, no argument: the level angles (roll = horizontal angle, pitch = vertical angle) of stock newsettings AngleMonitorDialog.refreshAngle (X50 settings tree node angle_monitor, horizontal_level_installation_assistance) -> GmDeviceManager.getMotionAttitude -> gmuiapi V3MotionDetectionManager -> middle MotionDetectionManagerWrapper -> 25; the dialog's setMotionACalEnable(true) heartbeat (24) and temporarySwitchTrigger are NOT sent
+SystemManager	140	setPushPullScreenOnOff	boolean(boolean)	(false) only: stock ProjectionViewModel PROJECTION_SETTINGS_HOIST confirm "change" on the X50 (unsupported_inversion_functions 1_1_1_0_1_1): setProjectorPutModeV5(11) then GmDeviceManager.setPushPullScreenOnOff(false) -> V3SystemManager
+GmTvManager	5	setContrast	boolean(int, int)	(0, 0..100): stock newsettings PictureViewModel GmDisplayManager.setPictureItem(1, v) -> XgimiService MtkVideo.setPictureItem case 1 GmTvManager.setContrast(0, v); HB allowed 5
+GmTvManager	6	getContrast	int(int)	(0): MtkVideo.getPictureItem case 1
+GmTvManager	7	setBrightness	boolean(int, int)	(0, 0..100): picture item 0 (MtkVideo.setPictureItem case 0 GmTvManager.setBrightness(0, v)); the picture brightness, not the light source (GmFactory setCommonCmd "Xlab ALA_*" is NOT used); HB allowed 7
+GmTvManager	8	getBrightness	int(int)	(0): MtkVideo.getPictureItem case 0
+GmTvManager	9	setSaturation	boolean(int, int)	(0, 0..100): picture item 2 (MtkVideo.setPictureItem GmTvManager.setSaturation(0, v)); HB allowed 9
+GmTvManager	10	getSaturation	int(int)	(0): MtkVideo.getPictureItem
+GmTvManager	11	setSharpness	boolean(int, int)	(0, 0..100): picture item 3 (MtkVideo.setPictureItem GmTvManager.setSharpness(0, v)); HB allowed 11
+GmTvManager	12	getSharpness	int(int)	(0): MtkVideo.getPictureItem
+GmAudioManager	6	setSoundeffect	void(byte)	the X50 tree sound_effect values only, in its order (3 AI, 2 music, 1 movie, 4 karaoke, 12 sports, 20 standard): newsettings SoundHelper.setSoundMode -> GmAudioManager.setSoundEffect -> gmuiapi V3 setSoundEffect((byte) mode) (api >= 300); never news 5 / vocal 21 / game 22 (SoundEnum values with no X50 node), never from the remote's speaker-mode key 64
+GmAudioManager	7	getSoundeffect	byte()	read of the sound mode (SoundHelper, NewSounderMode getSoundeffect)
+# x50-hdmi: HDMI picture, vendor sound path, EDID, range, eARC, ALLM, game mode
+GmTvManager	3	switchInputSource	boolean(int)	x50-hdmi HdmiSource, (0..3) only: stock xhplayer utils/TV.switchInputSource(inputToInt: HDMI1..3TVINPUTSERVICE -> 1..3) when InputActivity tunes (InputActivity$checkInSignal$2$1), TV.switchToMM (0) when it leaves; the HB sends the same (hb-t9 black HDMI picture without it)
+GmTvManager	4	getCurrentInputSource	int()	x50-hdmi read of the input on screen: stock xhplayer InputActivity, newsettings (33 sites), XRMService; HdmiSource self-heal and the HDMI-only menu rows
+GmTvManager	39	getEdidVersion	int()	x50-hdmi read: newsettings signal/SignalManager.getHdmiVersion (2 = 2.0, else 1.4)
+GmTvManager	40	setEdidVersion	boolean(int)	x50-hdmi (1 | 2) only: newsettings signal/SignalManager.setHdmiVersion -> GmDeviceManager.setEDIDVersion(SignalEnum HDMI1_4 1 / HDMI2_0 2, feature edid_2_version_val=1)
+GmTvManager	63	setHdmiRange	boolean(byte)	x50-hdmi (0 auto | 1 full | 2 limited) only: newsettings signal SignalEnum COLOR_RANGE_* -> GmDisplayManager.setHdmiColorRange -> gmuiapi V3GmTvManager.setHdmiRange
+GmTvManager	64	getHdmiRange	byte()	x50-hdmi read: newsettings signal/SignalManager.getHdmiColorRange
+GmTvManager	65	setEARCEnable	boolean(boolean)	x50-hdmi: newsettings voice/VoiceRepository.setEarcSound -> GmAudioManager.setEarcEnable (voice_earc_sound_v5 Auto / Off)
+GmTvManager	66	getEARCEnableState	boolean()	x50-hdmi read: newsettings voice/VoiceRepository.isEracSound / setEarcSound read-back
+GmTvManager	79	getEARCStatus	int()	x50-hdmi read (3 = eARC linked): XRMService (getEARCStatus, as the HB cec/EarcLink)
+GmTvManager	129	setAllmEnable	boolean(boolean)	x50-hdmi: newsettings picture/PictureRepository.setGameEnhanceTiming -> GmDisplayManager.setAllmEnable(type == 0) (display_gamemode_version=3)
+GmTvManager	130	getAllmEnableState	boolean()	x50-hdmi read: newsettings picture (getAllmEnableState, 7 sites), xhplayer GameModeApi
+GmAudioManager	2	setAudioOutput	void(byte)	x50-hdmi AudioPath, (0 speaker | 2 ARC | 3 BT | 4 wired | 6 USB | 100 switch start) only, never 1: stock system/lib64/libxgimiaudiopolicy.so threadInit / setXgimiPathForDeviceDelay (AIDL IGmAudioManager), the path table of newsettings voice/VoiceEnum; Lumen's AOSP audio server sends nothing (t7: vender.xgimi.audio.ready absent, stock 1)
+GmAudioManager	3	getAudioOutput	byte()	x50-hdmi read-back of the path: newsettings voice/VoiceHelper.getAudioDeviceV5, XRMService.java
+DisplayManager	76	setGameModeOption	boolean(int)	x50-hdmi (0..3) only, the option read with 77 sent again before game mode on: newsettings picture/PictureViewModel (setGameModeOption 0..3), stock gmuiapi DisplayManager.setGameMode; t19 game speed row: 2 -> 1 / 3 -> 0 (setGameModeOptionHrrNormal), 1 -> 2 / 0 -> 3 after the confirm dialog (switchGameModeSpeed)
+DisplayManager	77	getGameModeOption	int()	x50-hdmi read: newsettings picture/PictureViewModel.setGameModeOptionHrrNormal (31 sites)
+DisplayManager	146	setGameModeState	boolean(int)	x50-hdmi (0 on | 1 off) only: newsettings picture/PictureViewModel.setGameMode -> gmuiapi DisplayManager.setGameMode
+DisplayManager	147	setGameModeType	boolean(int)	x50-hdmi (0 manual | 1 auto) only: newsettings picture/PictureViewModel.setGameMode -> gmuiapi DisplayManager.setGameMode
+DisplayManager	148	getGameModeProp	boolean(GameModeProp_st)	x50-hdmi read {state, type, opt}: newsettings picture (getGameModeProp, 13 sites), xhplayer GameModeApi
+# t14 level angles: stock newsettings com/xgimi/common/dialog/AngleMonitorDialog show() / keepHeartBeat / dismiss()
+MotionDetectionManager	15	temporarySwitchTrigger	boolean(int, boolean)	(2, false | true) only, by Sequences.AngleWatch: AngleMonitorDialog.show() reads getAccTriggerAK() and, when on, GmDisplayManager.temporarySwitchTrigger(2, false) (the move-triggered auto keystone paused); dismiss() temporarySwitchTrigger(2, true) only if show() paused it -> gmuiapi MotionDetectionManager / V3MotionDetectionManager.temporarySwitchTrigger -> middle MotionDetectionManagerWrapper -> 15
+MotionDetectionManager	24	setMotionACalEnable	boolean(boolean)	by Sequences.AngleWatch only, while the level-angle rows are on screen: AngleMonitorDialog.keepHeartBeat = GmDeviceManager.setMotionACalEnable(true) at show and every 5 s, dismiss() setMotionACalEnable(false) -> gmuiapi V3MotionDetectionManager.setMotionACalEnable -> middle MotionDetectionManagerWrapper -> 24
+# t14 picture page: newsettings com/xgimi/picture, X50 settings tree res raw/settings_tree_product_dianapro
+GmTvManager	33	setPictureMode	boolean(int, int)	(0, id) with id of the X50 tree node image_mode_4_state (other: AI 10, sport 9, soft 24, Filmmaker 27, ISF 38 / 39, colour accuracy 29, office 25) only: PictureRepository.setImageMode (skip when id == getPictureMode) -> choiceLedMode -> GmDisplayManager.setPictureMode -> MstPictureManager (XgimiService) -> MtkVideo.setPictureMode = GmTvManager.setPictureMode(0, i)
+GmTvManager	34	getPictureMode	int(int)	(0): GmDisplayManager.getPictureMode -> XgimiService MtkVideo.getPictureMode = GmTvManager.getPictureMode(0); read before a set and after it
+DisplayManager	172	setDynamicBlackType	boolean(int)	(1 | 0) only: PictureViewModel switch case PICTURE_IMAGE_DYNAMIC_BLACK_BIT_ENHANCEMENT (X50 tree node image_dynamic_black_bit_enhancement) GmDisplayManager.setDynamicBlackType(isCheck ? 1 : 0) -> gmpf.api DisplayManager -> DisplayManagerWrapper -> 172; not sent in the PC 6 / office 25 / HDR Vivid 26 picture modes (the vendor refuses it there)
+DisplayManager	174	getDynamicBlackType	int()	read (on only when 1): PictureViewModel / PictureRepository.refreshBlackEnhance / PictureFactory, after every set
+GmTvManager	113	setTvDynamicContrastEnable	boolean(int, boolean)	(0, z) only: PictureViewModel case PICTURE_IMAGE_MODE_DYNAMIC_CONTRAST (X50 tree node image_mode_custom_dynamic_contrast) GmDisplayManager.setTvDynamicContrastEnable(0, isCheck)
+GmTvManager	114	getTvDynamicContrastEnable	boolean(int)	(0): PictureViewModel read-back after the set, PictureRepository reporter
+# t20 (decision 2026-11-10): with exact stock parity the light source level, the
+# zoom and lens shift screen, the whole keystone reset and the eye-protection switch / mode. Every row below carries its
+# argument range in the args column (org.lumen.hal.ArgSpec: ';' alternatives, ',' words, '-' no word, f: a float), the
+# same text as the Call in Gmpf.java (check_aidl_hal rule 8); the shared transport refuses any other argument before the
+# transact. DisplayManager 11, ProjectorFocusManager 88 and 3 are BANNED rows of banned.tsv, unbanned for this app only
+# (devices/g0111/research/unbanned_x50projector.tsv, device.conf hal_unbanned). Stock evidence: newsettings
+# (~/devices/g0111_mt9681/work/dec/release_838_newsettings) com/xgimi/keystone/KeyStoneManager.java 166-226 / 286-334,
+# keystone/view/zoommove/{ZoomMoveWind,view/ZoomMoveView,zoom/ZoomStateView,zoom/ZoomUtils,displacement/DisplacementView,
+# displacement/TiltShiftLensViewModel}.java, middleware/MiddleWareApi.java 110-122 / 201-215, core/CoreFactory.java
+# openZoomAndDisplacementWind, brightness/BrightnessRepository.java setLedLight; X50 feature.xml support_tiltshift_type 2,
+# support_zoom_and_displacement_type 2, support_optical_zoom true, stepless_zooming false, support_brightness_boost 2.
+DisplayManager	11	correctKeystone	int(byte)	args:50	the keystone reset's stock setLowConfigureKeyStoneValue(50) = V3DisplayManager correctKeystone((byte) 50), only inside Sequences.keystoneReset (newsettings KeyStoneManager.resetKeyStone 286-334); unbanned for this app (owner 2026-11-10)
+DisplayManager	63	zoomControl	int(int, int)	args:5,10;11,10;12,10;13,10;18,1	(5, 10) the lens home of the keystone reset (KeyStoneManager.resetKeyStone, support_optical_zoom true); the zoom page's reads (ZoomStateView getEndRation 11, getLimitStep 12, getLimitEndRation 13 with 10, getStartRation 18 with 1)
+ProjectorFocusManager	88	setTiltShiftMove	boolean(int, float)	args:1..5,f:0;13,f:0	the lens shift page (TiltShiftLensViewModel.setShiftAdjust: 1..4 on the key DOWN by put mode, 5 the stop on the key UP; LensHold with the watchdog) and (13, 0f) the shift home of the keystone reset (KeyStoneManager.resetKeyStone / resetOpticalMove, support_tiltshift_type 2); unbanned for this app (owner 2026-11-10)
+DisplayManager	6	setDlpLumensLevel	void(byte)	args:1..10	the light source level (tree image > brightness_adjustment, itemListMin 1, itemListMax 10): BrightnessRepository.setLedLight -> BrightnessManager.setLedLight 200 ms after the last key (jobDelay); never while 152 reads the boost
+DisplayManager	7	getDlpLumensLevel	byte()	args:-	read of the light source level (BrightnessManager.getLedLevel when the boost is off)
+DisplayManager	152	getLensDispMode	int()	args:-	read only: 1 = brightness boost on (BrightnessManager.isBoostMode, support_brightness_boost 2); the boost setter 151 is not here (the boost dialogs are not ported)
+DisplayManager	93	zoomStart	int(int)	args:0	the zoom page opens: ZoomStateView.initZoom zoomStart(getZoomCode() = 0 on the X50, no support_zoom_dependence_state)
+DisplayManager	94	zoomFinish	int(int)	args:0	before a zoomStart when a session is open (initZoom(true)) and at close (ZoomStateView.release)
+DisplayManager	95	setOpticalZoomStep	int(int)	args:0..64	optical zoom one step: KeyStoneManager.zoomControl(0 | 1, 10) = setOpticalZoomStep(getCurrentZoomStep2 optical +- 1), Zoom.step inside the 97 range
+DisplayManager	96	setDigitalZoomStep	int(int)	args:-200..200	digital zoom one step past the optical end: KeyStoneManager.setScreenResolutions(4 | 0) = setDigitalZoomStep(digital +- 1), Zoom.step inside the 97 range
+DisplayManager	97	getZoomStepRange	int(st_ZoomStepRange)	args:-	read: optical and digital ranges (KeyStoneManager.getOpticalZoomStep / getZoomStep / getZoomInMaxStep)
+DisplayManager	98	getCurrentZoomStep2	int(st_ZoomStep)	args:-	read: current optical / digital step (KeyStoneManager.getCurOpticalCurZoomStep / getCurZoomStep, before every step)
+DisplayManager	185	setKstPrepare	boolean(boolean, int)	args:0..1,1..2	MiddleWareApi.notifyKeystone(enter, type): (true, 2) at the zoom page's first key, (false, 2) when it hides or closes; (true, 1) / (false, 1) the same for the shift page (DisplacementView); EXCEPTION row of banned.tsv (HB: type 2 only)
+DisplayManager	189	SetOpticalZoomLimitStep	int(int)	args:-16..0	the zoom limit zone: ZoomUtils.setOpticalZoomLimitStep = GetCurrentZoomLimitStep() + 1 (LEFT) / - 1 (RIGHT), only inside [-(63(12,10) count), 0] at optical 0; EXCEPTION row of banned.tsv
+DisplayManager	190	GetCurrentZoomLimitStep	int(st_ZoomStep)	args:-	read: the limit position (ZoomUtils.getCurrentZoomLimitStep), only when 63(12,10) gives a count
+ProjectorFocusManager	3	autoFocus	void(byte)	args:47	only at the zoom screen's close after an optical change and getShiftProfessionalMode() != 1: ZoomStateView.release -> KeyStoneManager.autoFocus() = GmDisplayManager.autoFocus((byte) 47) (support_af_calibration true, zoom_direct_trigger_af default true); unbanned for this app (owner 2026-11-10)
+ProjectorFocusManager	94	getShiftProfessionalMode	int()	args:-	read before that auto focus (ZoomStateView.release, MiddleWareApi.getShiftProfessionalMode)
+ProjectorFocusManager	104	setTiltShiftKstAlgInfo	boolean()	args:-	once when the screen opens: ZoomMoveView.configZoomAndOpticalShift
+ProjectorFocusManager	105	setTiltShiftCompensation	boolean()	args:-	right after every stop (88 with 5): MiddleWareApi.setTiltShiftMove
+ProjectorFocusManager	112	getUitiltShiftSwithStatus	void(boolean)	args:0..1	the page change: ZoomMoveView getUitiltShiftSwithStatus(!isZoomPage) (existOpticsShift true): false on the zoom page, true on the shift page
+SystemManager	147	setPushPullScreenState	boolean(int)	args:0..1	(1) when the screen opens (ZoomMoveWind.showZoomAndOpticalShift), (0) when it closes (hideKstWind)
+# core-menu-x50game: the shared game menu's X50 adapter (apps/X50Projector/src/org/lumen/projector/panel/X50GameIo.java over
+# org.lumen.x50.projector.GameSequences / GameHal). Every call proven from the stock X50 game menu (xhplayer, decompiled on
+# xgimi-builder ~/devices/g0111_mt9681/work/dec/release_838_xhplayer; codes = com.xgimi.middle.jar Stub TRANSACTION_* = the
+# X50 table by method name): file and line per call in the design notes. "src" = stock TV.inputToInt HDMI1..3 -> 1..3.
+# None was ever sent by Lumen on an X50: GameSequences sends a setter only after its getter answered in range this boot
+# and reads every write back (a disagreeing read-back closes the item for the boot). Not here: aspect ratio (XgimiService
+# path, not traced), colour space 102 / 103, AMD FreeSync 172 / 173, HDR 174 / 175 / 191 / 192, screen offset.
+GmTvManager	145	setVRRModeEnable	int(int, int)	args:0..1,1..3	game menu VRR (state, src): stock OtherFactory.postClick VRR "0" / "1" -> OtherViewModel.setVrr -> GameModeApi.setVrr:765 GmDisplayManager.setVRRModeEnable(state, TV.inputToInt(input)); also GameModeApi.afterGameModeApi:435 (the value 146 reads, 200 ms after a speed level change); only after 146 answered in range, read back by 146
+GmTvManager	146	getVRREnableState	int(int)	args:1..3	read (src): stock GameModeApi.getVrrState:769 (-1 read as 0), FpsCell (VRR on -> 179); the game menu's VRR value and gate
+GmTvManager	147	setGamePictureMode	int(int, int)	args:0..4,1..3	game picture (mode, src): stock PICTURE_MODE balance 0, FPS 1, RPG 2, RTS 3, sport 4 -> OtherViewModel.setPictureMode -> GameModeApi.setPictureMode:777 GmDisplayManager.setGamePictureMode; also afterGameModeApi:436; only after 148 answered in range, read back by 148
+GmTvManager	148	getGamePictureMode	int(int)	args:1..3	read (src): stock GameModeApi.getPictureMode:781 (-1 read as 0); the game picture value and gate, and the picture argument of 149 / 150
+GmTvManager	149	setDarkBoostOnoff	int(boolean, int, int)	args:0..1,0..4,1..3	dark scenes (on, game picture, src): stock ENHANCE_DARK "true" / "false" -> OtherViewModel.setDarkEnhance:227 GmDisplayManager.setDarkBoostOnoff(isOpen, getPictureMode(), src) with the picture 148 reads right before; only after 150 answered, read back by 150
+GmTvManager	150	getDarkBoostState	boolean(int, int)	args:0..4,1..3	read (game picture, src): stock OtherViewModel.getDarkEnhance:231; the dark scenes value and gate
+GmTvManager	120	setAisrType	boolean(int)	args:0..1	game super resolution: stock GAME_SUPER_RESOLUTION "true" / "false" -> OtherViewModel.setGameSuperResolution:241 GmDisplayManager.setAisrType(isOpen ? 1 : 0); only after 121 read 0 or 1 this boot (the module does not gate sr), read back by 121
+GmTvManager	121	getAisrType	int()	args:-	read: stock OtherViewModel.getGameSuperResolution:250 (on = 1); the super resolution value and gate (only 0 / 1 count)
+GmTvManager	122	getVideoInfo	boolean(stVideoInfo)	args:-	read only, out stVideoInfo (width, height, frameRate 1/100 Hz, bHdmiOrDvi, videoType): stock FpsCell runFps (every 2 s, VRR off: frameRate / 100 rounded), via gmpf GmTvManager -> middle GmTvManagerWrapper.getVideoInfo; also the signal size and rate of the game menu card
+GmAudioManager	75	setGamingSoundEffectMode	boolean(int)	args:190..194	game sound: stock GAME_SOUND_EFFECT off 190, surround 191, story 192, clarity 193, balanced 194 (BaseConfigKt:70, the X50 list getDianaConfigListV2) -> OtherFactory :1093 / :1269 OtherViewModel.setGameSoundEffect -> GameModeApi.setGameSoundEffect:799 GmAudioManager.setGamingSoundEffectMode(mode); only after 76 answered in range, read back by 76
+GmAudioManager	76	getGamingSoundEffectMode	int()	args:-	read: stock GameModeApi.getGameSoundEffect:803 (0 read as 190 = off); the game sound value and gate (0, 190..194 count)
+DisplayManager	179	getDispOutputFps	int()	args:-	read only: stock FpsCell runFps while GameModeApi.getVrrState() == 1 (every 2 s), GmDisplayManager.getDispOutputFps; the game menu's frame counter while VRR is on

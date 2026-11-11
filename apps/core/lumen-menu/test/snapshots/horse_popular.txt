@@ -1,0 +1,73 @@
+device horse_popular model G0082
+card
+  top: round eye | round general
+  row 1: wide keystone.ak_now | small keystone | small zoom
+  row 2: wide picture | small sound | small focus
+  row 3: wide input | small bluetooth | small network
+  row 4: wide game | small projection | small mirroring|usb_files
+  slider: lamp 1..10, Boost at 11 (hint: paler)
+section keystone
+  action keystone.ak_now
+  action keystone.fit_now
+  screen keystone.manual
+  screen zoom
+  screen keystone.fit_screen
+  screen keystone.rotation
+  -- image_correction
+  toggle keystone.realtime
+  toggle keystone.on_power
+  toggle keystone.curtain
+  toggle keystone.obstacle
+  -- more
+  action keystone.restore
+section focus
+  action focus.af_now
+  screen focus.manual
+  toggle focus.smart
+  toggle focus.on_move
+  toggle focus.on_power
+section lamp
+  slider lamp 1..10
+  toggle boost
+section picture
+  choice picture.mode [ai, standard, sport, hdr_vivid, color_accuracy, office, performance]  hint picture picture_mode
+  slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
+  choice picture.color_temp [d65, color_temp_1]
+  choice picture.memc [off, low, medium, high]
+  toggle picture.ai_contrast
+  toggle picture.super_res
+  toggle picture.ultra120
+  screen picture.pro
+  action picture.reset
+  action picture.reset_all
+  -- hdmi
+  choice hdmi.range [auto, full, limited]
+  choice hdmi.edid [compat, enhanced]
+  choice picture.aspect [auto, r4_3, r16_9, original]
+section sound
+  choice sound.enhancement [harman, dts_vx]
+  choice sound.mode [ai, movie, music, sports, karaoke]
+  screen sound.eq
+  toggle sound.leveling
+  toggle sound.earc
+  choice sound.output [auto, speaker]
+  choice sound.format [auto, pcm, passthrough]
+section projection
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
+section game
+  choice game.mode [off, on, auto]
+  choice game.speed [basic, basic_hfr, top_speed, top_speed_hfr]
+  choice game.allm [signal, device]
+section eye
+  choice eye [off, on]
+section general
+  screen settings.system
+  screen settings.projector
+  screen settings.cec
+  screen settings.recents
+  choice settings.launcher [lumen, classic]
+all settings: keystone focus picture projection sound eye general
+keys: gear short quick_menu, gear long game_menu
+game menu: lat vrr hfr pic dark sr ar snd aim fps
+  themes: ps xbox switch pad apple windows computer, CEC detection on

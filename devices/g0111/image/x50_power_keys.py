@@ -8,7 +8,8 @@ keys did nothing (the design notes/B16). The stock X50 has these scancodes as th
 (vendor .kl: POWER or XGIMI's KPPOWER), and its PhoneWindowManager ends a short press in a plain
 PowerManager.goToSleep (XgimiWindowManager.xgimiGotoSleep, no projector HAL call). So the X50 image turns exactly
 those lines back into KEYCODE_POWER WAKE; apps/X50PowerOverlay makes the framework sleep on a short press and open
-the power menu on a long one.
+the power menu on a long one. t12 adds stock scancodes the base drops (ADD); GEAR_HOLD names the stock MENU scancodes
+(the gear held) that the base must already map to the gear hold key, left as they are.
 
     x50_power_keys.py apply KL_DIR      edit the .kl files of KL_DIR in place (inode, owner, mode, label kept)
     x50_power_keys.py check BASE_DIR NEW_DIR
@@ -37,6 +38,37 @@ TABLE = {
     "Vendor_0001_Product_0001.kl": (116, 183),       # TV-style remote: 116 POWER, 183 KPPOWER
     "Generic.kl": (142,),                            # KEY_SLEEP of any other keyboard (stock Generic: SLEEP)
 }
+# t12: stock X50 scancodes the Z9X base layouts drop, added at the end of the file (the scancode must be absent in the
+# base): file -> (scancode, Android key, comment). Routed by apps/X50PowerOverlay global_keys.xml to
+# org.lumen.x50.projector/.KeyReceiver. Left unmapped on purpose (stock handler not proven or no Lumen function):
+# 3840 185 SECONDARY_POWER, IR 0001 60/87 OSD, 63 ROTATE, 65 ZOOM_SHIFT, 79 SOURCE_USB, 184-189 picture / CAST keys,
+# 3843 picture and SHORTCUT keys.
+ADD = {
+    "Vendor_000d_Product_3840.kl": ((64, "TV_AUDIO_DESCRIPTION", "XGIMI: MUSIC_SOUNDERMODE; stock Bluetooth speaker mode, not ported: a notice only"),
+                                    (88, "TV_DATA_SERVICE", "XGIMI: RC_LOW_BATTERY; remote battery notice")),
+    "Vendor_3697_Product_0001.kl": ((81, "TV_DATA_SERVICE", "XGIMI: IR_LOW_BATTERY; remote battery notice"),),
+    "Vendor_000d_Product_3843.kl": ((87, "FOCUS", "XGIMI: FOCUS_AUTO_NEW; auto focus"),
+                                    (62, "TV_CONTENTS_MENU", "XGIMI: FOCUS_MAN_NEW; manual focus")),
+}
+# The gear held: the X50 remotes detect the hold themselves and send the stock MENU scancode once (stock X50 v1.2.64
+# vendor/usr/keylayout: 000d:3840 / 3838 / 3843 "key 127 MENU", IR 3697:0001 and keypad 3697:0002 "key 139 MENU"; the
+# remote B970C hint long_press_reset). Stock xhplayer InputActivity.dispatchKeyEvent opens the game menu on MENU UP and
+# newsettings KeyStoneWind.onKey resets the corners on it. The base layouts (overlay/v1/keylayout, since the shared
+# gear-hold fix, tools/devices/test/keylayout_gear_test.py) map every one of them to TV_MEDIA_CONTEXT_MENU, a global key
+# that apps/X50PowerOverlay sends to org.lumen.x50.projector/.KeyReceiver = the long gear press (game menu on HDMI game
+# mode, corner reset on the four-corner screen, else Android settings). The X50 edit keeps these lines and refuses a
+# base that maps them to anything else (the old base had ALL_APPS on 127, which the framework consumes).
+GEAR_HOLD_KEY = "TV_MEDIA_CONTEXT_MENU"
+GEAR_HOLD = {
+    "Vendor_000d_Product_3840.kl": (127,),
+    "Vendor_000d_Product_3838.kl": (127,),
+    "Vendor_000d_Product_3843.kl": (127,),
+    "Vendor_3697_Product_0001.kl": (139,),
+    "Vendor_3697_Product_0002.kl": (139,),
+}
+ADD_NOTE = " -> org.lumen.x50.projector (devices/g0111/image/x50_power_keys.py)"
+ANY_LINE = re.compile(r"^key([ \t]+)(\d+)([ \t]+)(\S+)")
+ANY_KEY = re.compile(r"^key[ \t]+(\d+)[ \t]")
 KEY = re.compile(r"^key[ \t]+(\d+)([ \t]+)STB_POWER([ \t]+WAKE)([ \t#].*)?$")
 NOTE = "  # X50: system power key (devices/g0111/image/x50_power_keys.py)"
 
@@ -44,8 +76,18 @@ NOTE = "  # X50: system power key (devices/g0111/image/x50_power_keys.py)"
 def edit(text, name):
     """Return (new text, problems) for one file."""
     want = set(TABLE[name])
-    out, seen, bad = [], set(), []
+    hold = set(GEAR_HOLD.get(name, ()))
+    out, seen, bad, held = [], set(), [], set()
     for line in text.split("\n"):
+        r = ANY_LINE.match(line)
+        if r and int(r.group(2)) in hold:
+            sc = int(r.group(2))
+            if r.group(4) != GEAR_HOLD_KEY or sc in held:
+                bad.append("%s: scancode %d is '%s', the X50 gear hold needs '%s' once in the base"
+                           % (name, sc, r.group(4), GEAR_HOLD_KEY))
+            held.add(sc)
+            out.append(line)                                     # kept as the base has it
+            continue
         m = KEY.match(line)
         if m and int(m.group(1)) in want:
             sc = int(m.group(1))
@@ -58,6 +100,19 @@ def edit(text, name):
         out.append(line)
     for sc in sorted(want - seen):
         bad.append("%s: no 'key %d STB_POWER WAKE' line in the base" % (name, sc))
+    for sc in sorted(hold - held):
+        bad.append("%s: no 'key %d %s' line in the base (the gear hold)" % (name, sc, GEAR_HOLD_KEY))
+    if name in ADD:
+        mapped = {int(m.group(1)) for m in (ANY_KEY.match(l.split("#", 1)[0]) for l in out) if m}
+        tail = []
+        while out and out[-1] == "":
+            tail.append(out.pop())
+        for sc, key, why in ADD[name]:
+            if sc in mapped:
+                bad.append("%s: scancode %d already mapped in the base (the X50 addition expects it absent)" % (name, sc))
+                continue
+            out.append("key %d %s  # %s%s" % (sc, key, why, ADD_NOTE))
+        out += tail
     return "\n".join(out), bad
 
 
@@ -118,7 +173,8 @@ def main(a):
         what = "applied to %d files" % len(TABLE)
     elif len(a) == 3 and a[0] == "check":
         bad = check(a[1], a[2])
-        what = "%d files are the base with the power-key edit, the rest unchanged" % len(TABLE)
+        what = "%d files are the base with the power-key edit (and %d added stock keys, %d gear-hold keys kept), the rest unchanged" % (
+            len(TABLE), sum(len(v) for v in ADD.values()), sum(len(v) for v in GEAR_HOLD.values()))
     else:
         print((__doc__ or "usage: see the source").strip(), file=sys.stderr)
         return 2

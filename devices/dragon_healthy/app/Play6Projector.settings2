@@ -1,0 +1,37 @@
+# The settings look of Lumen OS 1.0.9 (settings.Kit, settings.Shell, fonts, icons, texts) that the Play 6 projector takes
+# from apps/Z9xProjector (devices/dragon_healthy/app/Play6Projector.layers; decision 2026-11-10, Q1).
+src/org/lumen/projector/settings/Kit.java
+src/org/lumen/projector/settings/Shell.java
+assets/fonts/OFL-Onest.txt
+assets/fonts/OFL-Prata.txt
+assets/fonts/Onest-Variable.ttf
+assets/fonts/Prata-Regular.ttf
+res/drawable/ic_s2_diag.xml
+res/drawable/ic_s2_focus.xml
+res/drawable/ic_s2_help.xml
+res/drawable/ic_s2_home.xml
+res/drawable/ic_s2_mic.xml
+res/drawable/ic_s2_power.xml
+res/drawable/ic_s2_remote.xml
+res/drawable/ic_s2_t_af.xml
+res/drawable/ic_s2_t_fit.xml
+res/drawable/ic_s2_t_kst.xml
+res/drawable/ic_s2_t_manual.xml
+res/values-ar/strings_settings2.xml
+res/values-be/strings_settings2.xml
+res/values-de/strings_settings2.xml
+res/values-es/strings_settings2.xml
+res/values-fr/strings_settings2.xml
+res/values-it/strings_settings2.xml
+res/values-ja/strings_settings2.xml
+res/values-kk/strings_settings2.xml
+res/values-ko/strings_settings2.xml
+res/values-pl/strings_settings2.xml
+res/values-pt-rBR/strings_settings2.xml
+res/values-pt/strings_settings2.xml
+res/values-ru/strings_settings2.xml
+res/values-tr/strings_settings2.xml
+res/values-uk/strings_settings2.xml
+res/values-zh-rCN/strings_settings2.xml
+res/values-zh-rTW/strings_settings2.xml
+res/values/strings_settings2.xml

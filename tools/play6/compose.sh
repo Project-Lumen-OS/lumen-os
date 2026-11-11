@@ -563,6 +563,22 @@ cp "$B/obj/PACKAGING/systemimage_intermediates/system_image_info.txt" "$T/image_
 cd /src   # the image_info's avb key path is relative to the source tree
 # build_image picks the partition type from the output name, so it must be system.img
 build_image "$S" "$T/image_info.txt" "$T/system.img" "$S"
+# 9. the AIC files keep the metadata of the image tested on an AIC unit (tools/play6/aic/add_aic_to_image.sh,
+#    play6-1.0.7): build_image gives every file the fs_config mode and the file_contexts label of its path, which
+#    for these two are 0644 and system_lib_file. AIC's Bluetooth library is bound over /vendor/lib/libbt-vendor.so
+#    and dlopened by the vendor HAL, so it carries vendor_file; play6_aic.sh is 0755 like the other xgimi scripts.
+printf 'u:object_r:vendor_file:s0\0' > "$T/aic_label"
+debugfs_static -w -f - "$T/system.img" > "$T/aic_debugfs.log" 2>&1 <<EOF
+set_inode_field /system/etc/xgimi/play6_aic.sh mode 0100755
+ea_set -f $T/aic_label /system/lib/libbt-vendor-aic.so security.selinux
+EOF
+grep -v '^debugfs[: ]' "$T/aic_debugfs.log" | grep . && die "debugfs on the AIC files: see above"
+debugfs_static -R "stat /system/etc/xgimi/play6_aic.sh" "$T/system.img" 2>/dev/null | grep -q 'Mode:  0755' \
+  || die "play6_aic.sh is not 0755 after the fix-up"
+debugfs_static -R "ea_get /system/lib/libbt-vendor-aic.so security.selinux" "$T/system.img" 2>/dev/null \
+  | grep -q 'u:object_r:vendor_file:s0' || die "libbt-vendor-aic.so is not vendor_file after the fix-up"
+e2fsck -fn "$T/system.img" > /dev/null 2>&1 || die "e2fsck after the AIC fix-up"
+echo "AIC files: play6_aic.sh 0755, libbt-vendor-aic.so vendor_file (as play6-1.0.7)"
 mv "$T/system.img" "$IMG"
 sha256sum "$IMG" | sed "s#  .*#  $(basename "$IMG")#" > "$IMG.sha256"
 ls -la "$IMG"

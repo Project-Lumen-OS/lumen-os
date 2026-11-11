@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels: the Z9X projector app's own texts and translations, copied under lumen_m_ names -->
+<resources>
+    <string name="lumen_m_boost_effect">Boost makes the picture brighter, but colors look paler. The color space stays as it is.</string>
+    <string name="lumen_m_cec_entry">HDMI devices (CEC)</string>
+    <string name="lumen_m_eq_title">Equalizer</string>
+    <string name="lumen_m_fit_row">Fit to screen size</string>
+    <string name="lumen_m_fit_row_summary">The zoom is set from the distance to your screen and its size</string>
+    <string name="lumen_m_hdmi_mode">HDMI mode</string>
+    <string name="lumen_m_hdmi_mode_compat">Compatible (HDMI 1.4)</string>
+    <string name="lumen_m_hdmi_mode_enhanced">Enhanced (HDMI 2.0)</string>
+    <string name="lumen_m_hdmi_range">Color range</string>
+    <string name="lumen_m_hdmi_range_full">Full</string>
+    <string name="lumen_m_hdmi_range_limited">Limited</string>
+    <string name="lumen_m_kst_more">Other</string>
+    <string name="lumen_m_kst_restore">Reset picture to original</string>
+    <string name="lumen_m_launcher_classic">Android TV (classic)</string>
+    <string name="lumen_m_launcher_lumen">Lumen Home</string>
+    <string name="lumen_m_launcher_row">Home screen</string>
+    <string name="lumen_m_panel_af_now">Autofocus now</string>
+    <string name="lumen_m_panel_ai_contrast">AI contrast</string>
+    <string name="lumen_m_panel_ak_now">Auto keystone now</string>
+    <string name="lumen_m_panel_all_settings">All settings</string>
+    <string name="lumen_m_panel_allm">Auto game mode</string>
+    <string name="lumen_m_panel_allm_device">On game console</string>
+    <string name="lumen_m_panel_allm_signal">On ALLM signal</string>
+    <string name="lumen_m_panel_aspect">Aspect ratio</string>
+    <string name="lumen_m_panel_aspect_16_9" translatable="false">16:9</string>
+    <string name="lumen_m_panel_aspect_4_3" translatable="false">4:3</string>
+    <string name="lumen_m_panel_aspect_original">Original</string>
+    <string name="lumen_m_panel_auto">Auto</string>
+    <string name="lumen_m_panel_boost">Boost</string>
+    <string name="lumen_m_panel_color_temp">Color temperature</string>
+    <string name="lumen_m_panel_ct_1">Color temp 1</string>
+    <string name="lumen_m_panel_ct_d65" translatable="false">D65</string>
+    <string name="lumen_m_panel_dts_vx" translatable="false">DTS Virtual:X</string>
+    <string name="lumen_m_panel_eye">Eye protection</string>
+    <string name="lumen_m_panel_eye_desc">The light is dimmed when someone is in front of the lens.</string>
+    <string name="lumen_m_panel_fit_now">Fit to screen now</string>
+    <string name="lumen_m_panel_fit_screen">Fit to the screen</string>
+    <string name="lumen_m_panel_game_mode">Game mode</string>
+    <string name="lumen_m_panel_game_speed">Game speed</string>
+    <string name="lumen_m_panel_harman" translatable="false">Harman Kardon</string>
+    <string name="lumen_m_panel_high">High</string>
+    <string name="lumen_m_panel_image_correction_settings">Image correction settings</string>
+    <string name="lumen_m_panel_lamp">Brightness</string>
+    <string name="lumen_m_panel_lamp_hint">At 10, press → twice to turn on Boost.</string>
+    <string name="lumen_m_panel_low">Low</string>
+    <string name="lumen_m_panel_manual_focus">Manual focus</string>
+    <string name="lumen_m_panel_manual_keystone">Manual keystone</string>
+    <string name="lumen_m_panel_medium">Medium</string>
+    <string name="lumen_m_panel_memc">Motion smoothing</string>
+    <string name="lumen_m_panel_move_af">Autofocus after moving</string>
+    <string name="lumen_m_panel_obstacle">Obstacle avoidance</string>
+    <string name="lumen_m_panel_off">Off</string>
+    <string name="lumen_m_panel_on">On</string>
+    <string name="lumen_m_panel_optical_zoom">Optical zoom</string>
+    <string name="lumen_m_panel_optical_zoom_summary">Picture size without losing sharpness. Auto keystone and “Fit to the screen” move the zoom again.</string>
+    <string name="lumen_m_panel_picture_mode">Picture mode</string>
+    <string name="lumen_m_panel_picture_reset">Reset picture settings</string>
+    <string name="lumen_m_panel_pm_ai">AI picture</string>
+    <string name="lumen_m_panel_pm_color_accuracy">Color accuracy</string>
+    <string name="lumen_m_panel_pm_hdr_vivid" translatable="false">HDR Vivid</string>
+    <string name="lumen_m_panel_pm_office">Office</string>
+    <string name="lumen_m_panel_pm_performance">Performance</string>
+    <string name="lumen_m_panel_pm_sport">Sport</string>
+    <string name="lumen_m_panel_pm_standard">Standard</string>
+    <string name="lumen_m_panel_power_on_af">Autofocus at power-on</string>
+    <string name="lumen_m_panel_power_on_keystone">Auto keystone at power-on</string>
+    <string name="lumen_m_panel_pq_brightness">Brightness</string>
+    <string name="lumen_m_panel_pq_contrast">Contrast</string>
+    <string name="lumen_m_panel_pq_saturation">Saturation</string>
+    <string name="lumen_m_panel_pq_sharpness">Sharpness</string>
+    <string name="lumen_m_panel_proj_auto">Auto</string>
+    <string name="lumen_m_panel_proj_ceiling">Ceiling</string>
+    <string name="lumen_m_panel_proj_rear">Rear projection</string>
+    <string name="lumen_m_panel_proj_table">Table</string>
+    <string name="lumen_m_panel_projection_mode">Projection mode</string>
+    <string name="lumen_m_panel_projector_settings">Projector settings</string>
+    <string name="lumen_m_panel_rt_keystone">Real-time keystone</string>
+    <string name="lumen_m_panel_sec_game">Game (HDMI)</string>
+    <string name="lumen_m_panel_sec_general">General</string>
+    <string name="lumen_m_panel_sec_picture">Picture</string>
+    <string name="lumen_m_panel_sec_sound">Sound</string>
+    <string name="lumen_m_panel_smart_af">Smart autofocus</string>
+    <string name="lumen_m_panel_sound_ai">AI sound</string>
+    <string name="lumen_m_panel_sound_enhancement">Sound enhancement</string>
+    <string name="lumen_m_panel_sound_karaoke">Karaoke</string>
+    <string name="lumen_m_panel_sound_mode">Sound mode</string>
+    <string name="lumen_m_panel_sound_movie">Movie</string>
+    <string name="lumen_m_panel_sound_music">Music</string>
+    <string name="lumen_m_panel_sound_sports">Sports</string>
+    <string name="lumen_m_panel_sound_standard">Standard</string>
+    <string name="lumen_m_panel_speed_standard">Standard</string>
+    <string name="lumen_m_panel_speed_standard_hfr">Standard, high frame rate</string>
+    <string name="lumen_m_panel_speed_top">Top speed</string>
+    <string name="lumen_m_panel_speed_top_hfr">Top speed, high frame rate</string>
+    <string name="lumen_m_panel_super_resolution">Super resolution</string>
+    <string name="lumen_m_panel_system_settings">System settings</string>
+    <string name="lumen_m_panel_tile_eye">Eye protection</string>
+    <string name="lumen_m_panel_tile_focus">Focus</string>
+    <string name="lumen_m_panel_tile_game">Game mode</string>
+    <string name="lumen_m_panel_tile_input">Input</string>
+    <string name="lumen_m_panel_tile_keystone">Keystone</string>
+    <string name="lumen_m_panel_tile_projection">Projection</string>
+    <string name="lumen_m_panel_title">Quick settings</string>
+    <string name="lumen_m_panel_ultra120">Ultra 120 Hz</string>
+    <string name="lumen_m_picture_reset_all">Reset all picture settings</string>
+    <string name="lumen_m_pro_title">Professional settings</string>
+    <string name="lumen_m_recents_title">Recent apps</string>
+    <string name="lumen_m_rot_title">Picture rotation</string>
+    <string name="lumen_m_sound_format">Audio format</string>
+    <string name="lumen_m_sound_format_auto">Auto</string>
+    <string name="lumen_m_sound_format_passthrough">Passthrough</string>
+    <string name="lumen_m_sound_format_pcm">PCM</string>
+    <string name="lumen_m_sound_output">Sound output</string>
+    <string name="lumen_m_sound_output_auto">Auto</string>
+    <string name="lumen_m_sound_output_speaker">Projector speaker</string>
+    <string name="lumen_m_sound_volume_leveling">Volume leveling</string>
+    <string name="lumen_m_toast_failed">Could not do that</string>
+    <string name="lumen_m_toast_not_ready">The projector is not ready yet</string>
+    <string name="lumen_m_eye_follow">Eye follow</string>
+    <string name="lumen_m_eye_rest">Full screen</string>
+    <string name="lumen_m_pm_soft">Soft</string>
+    <string name="lumen_m_pm_filmmaker" translatable="false">Filmmaker Mode</string>
+    <string name="lumen_m_pm_isf_day">ISF Day</string>
+    <string name="lumen_m_pm_isf_night">ISF Night</string>
+    <string name="lumen_m_edid_hdmi_1_4">Compatible (HDMI 1.4)</string>
+    <string name="lumen_m_edid_hdmi_2_0">Enhanced (HDMI 2.0)</string>
+    <string name="lumen_m_out_arc">HDMI ARC</string>
+    <string name="lumen_m_out_bt">Bluetooth</string>
+    <string name="lumen_m_out_wired">Headphones</string>
+    <string name="lumen_m_out_usb">USB audio</string>
+    <string name="lumen_m_earc" translatable="false">eARC</string>
+    <string name="lumen_m_angle_h">Horizontal angle</string>
+    <string name="lumen_m_angle_v">Vertical angle</string>
+    <string name="lumen_m_dynamic_contrast">Dynamic contrast</string>
+    <string name="lumen_m_dynamic_black">Dynamic black enhancement</string>
+    <string name="lumen_m_sleep_timer">Sleep timer</string>
+    <string name="lumen_m_remote">Pair the remote</string>
+    <string name="lumen_m_ct_standard">Standard</string>
+    <string name="lumen_m_ct_movie">Movie</string>
+</resources>

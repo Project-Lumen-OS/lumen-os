@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<resources>
+    <string name="lumen_m_panel_move_ak">Auto keystone after moving</string>
+    <string name="lumen_m_boost_effect_brighter">Boost: higher brightness. Leaving Boost gives more vivid colours.</string>
+    <string name="lumen_gm_cs">Colour space</string>
+    <string name="lumen_gm_cs_0">Native</string>
+    <string name="lumen_gm_hdr_1">Dynamic tone mapping</string>
+    <string name="lumen_gm_chip_hz">%1$d Hz</string>
+    <string name="lumen_m_panel_speed_top_note">Top speed: keystone correction is off</string>
+    <string name="lumen_m_ok">OK</string>
+    <string name="lumen_m_cancel">Cancel</string>
+    <string name="lumen_m_panel_boost_press_again">Press → again for Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">Press ← again to leave Boost</string>
+    <string name="lumen_m_toast_setup_running">Finish the setup first</string>
+    <string name="lumen_m_panel_tileval_pm_ai">AI picture</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">Color accuracy</string>
+    <string name="lumen_m_panel_tileval_pm_performance">Performance</string>
+    <string name="lumen_gm_cs_1" translatable="false">BT.2020</string>
+    <string name="lumen_gm_cs_2" translatable="false">Adobe RGB</string>
+    <string name="lumen_gm_cs_3" translatable="false">DCI-P3</string>
+    <string name="lumen_gm_cs_4" translatable="false">Rec.709</string>
+    <string name="lumen_gm_hdr" translatable="false">HDR</string>
+    <string name="lumen_gm_hdr_2" translatable="false">HGIG</string>
+    <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
+         temperature Custom agrees with the noun) -->
+    <string name="lumen_m_pm_movie">Movie</string>
+    <string name="lumen_m_pm_tv">TV</string>
+    <string name="lumen_m_pm_custom">Custom</string>
+    <string name="lumen_m_ct_cool">Cool</string>
+    <string name="lumen_m_ct_warm">Warm</string>
+    <string name="lumen_m_zs_title">Zoom and shift</string>
+    <string name="lumen_m_eco">Power saving</string>
+    <string name="lumen_m_ambient_speaker">Ambient speaker</string>
+    <string name="lumen_m_ct_custom">Custom</string>
+</resources>

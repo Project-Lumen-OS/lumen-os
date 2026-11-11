@@ -1204,25 +1204,6 @@ s2_d_report=Envia os registros ao desenvolvedor
 s2_d_refresh=Ler de novo o estado do projetor
 s2_diag_state=Estado do projetor
 
-@projector/strings_qpd.xml
-qpd_autocorrect=Correção automática
-qpd_autocorrect_value=Com um toque
-qpd_zoom=Zoom
-qpd_bluetooth=Bluetooth
-qpd_network=Rede
-qpd_usb=USB
-qpd_mirroring=Espelhamento de tela
-qpd_mirror_on=Espelhamento de tela (Miracast)
-qpd_mirror_ask=Perguntar antes de conectar
-qpd_mirror_name=Nome
-qpd_mirror_more=Todas as definições de espelhamento
-qpd_picture_more=Definições de imagem
-qpd_sound_more=Todas as definições de som
-qpd_boost_note=Brilho máximo. As ventoinhas ficam mais ruidosas.
-qpd_tip_picture=Escolha um modo para o que está a ver.
-qpd_tip_rear=Você e o projetor estão em lados opostos do ecrã.
-
-# Screen mirroring (org.lumen.miracast, apps/LumenMiracast). Miracast, Smart View, Wi-Fi Direct, Win and K stay untranslated.
 @miracast/strings.xml
 app_name=Espelhamento de tela
 settings_title=Espelhamento de tela

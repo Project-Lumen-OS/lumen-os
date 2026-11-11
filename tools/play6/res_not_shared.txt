@@ -26,3 +26,6 @@ res/values*/strings_fit.xml	fit to my screen size (docs/fit_screen/DESIGN.md, 20
 res/values*/strings_kst_restore.xml	Z9X 1.0.8 keystone page section "More" / "Restore default picture" (docs/z9x/parity/keystone.md items 7, 8); the Play 6 keeps the shared panel_reset_keystone
 res/values*/strings_stats.xml	the anonymous statistics switch of the network updater (sys.UpdaterStats); the Play 6 has USB-only updates, no ping
 res/values*/strings_rules.xml	Z9X 1.0.9 stock refusal notes of the quick panel (PanelRules, G0082 SettingMutexManager rules) and two AF card texts; the Play 6 keeps its own rules
+res/values*/strings_settings2.xml	the projector-v2 settings look (settings/Kit, settings/Shell) of the Z9X and the HB; the Play 6 SettingsActivity is its own fork (forks.tsv), not ported yet
+res/drawable/ic_s2_*.xml	icons of the projector-v2 settings look (Z9X and HB only, as strings_settings2.xml)
+res/values*/strings_trial.xml	Z9X DSU trial notice of the audio port rules (AudioPorts, Z9X only); the Play 6 has no DSU trial

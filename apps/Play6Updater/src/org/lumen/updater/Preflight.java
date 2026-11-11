@@ -8,6 +8,7 @@ import android.os.BatteryManager;
 import android.os.PowerManager;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Read-only checks before an update is offered or installed. Every check reads a
@@ -24,18 +25,26 @@ public final class Preflight {
 
     /** Is this manifest an update for this projector at all? null = yes. "uptodate" = nothing newer. */
     public static Block applicable(UpdateManifest m) {
-        if (m.schema != 1 || !Ota.DEVICE.equals(m.device)) return new Block("err_signature", "");
-        // the manifest's channel must be this image's own file (docs/ota.md "Variants"): a USB stick or a
-        // mirror may carry another edition's signed manifest, which must never be installed here
-        if (!("update-" + m.channel + ".json").equals(Ota.channelFile())) return new Block("blk_channel", m.channel);
+        return applicable(m.schema, m.device, m.channel, m.vendorIncremental, m.versionCode, m.minVersionCode);
+    }
+
+    static Block applicable(int schema, String device, String channel, List<String> vendorIncremental,
+                            int versionCode, int minVersionCode) {
+        if (schema != 1 || !Ota.DEVICE.equals(device)) return new Block("err_signature", "");
+        // the manifest's channel must be a file this check reads (docs/ota.md "Variants", Channels): a USB stick
+        // or a mirror may carry another edition's signed manifest, which must never be installed here (the Play 6
+        // has no beta channel, so that is the image's own file)
+        if (!Channels.accepts(channel)) return new Block("blk_channel", channel);
         String vendor = Ota.prop("ro.vendor.build.version.incremental");
-        if (!m.vendorIncremental.isEmpty() && !m.vendorIncremental.contains(vendor)) {
+        if (!vendorIncremental.isEmpty() && !vendorIncremental.contains(vendor)) {
             return new Block("blk_vendor", vendor.isEmpty() ? "?" : vendor);
         }
+        // never a downgrade: also after beta updates are turned off, nothing is offered until the stable
+        // channel has a version above the installed beta
         int cur = Ota.currentVersionCode();
-        if (m.versionCode <= cur) return new Block("uptodate", "");
-        if (cur < m.minVersionCode) {
-            int mv = m.minVersionCode;
+        if (versionCode <= cur) return new Block("uptodate", "");
+        if (cur < minVersionCode) {
+            int mv = minVersionCode;
             return new Block("blk_min_version", (mv / 10000) + "." + (mv / 100 % 100)
                     + (mv % 100 != 0 ? "." + (mv % 100) : ""));
         }

@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  *  - ANY key UP (also canceled) -> stop = manualFocus(2), then the flag is cleared;
  *  - a failed stop is retried every 200 ms while the flag is set and the HAL is connected; after a
  *    process restart or an IGmpf reconnect the flag makes {@link #onConnected} send the stop.
- * A stop is sent only when something may be moving (or the overlay entered 17): any manualFocus call
+ * A stop is sent only when something may be moving (not for a window that only entered 17): any manualFocus call
  * interrupts a running autofocus in the vendor. No move while an auto keystone (326) runs.
  * One instance per process ({@link #get}); without a manual focus nothing of it exists (no thread).
  */
@@ -189,11 +189,16 @@ final class MotorController {
         h.post(this::stopNow);
     }
 
-    /** Overlay closed: stop if moving, or if 17 was sent (leave the manual mode). */
+    /**
+     * Overlay closed: stop only if something may be moving (P6AfRules.stopOnClose). Stock FocusAdjust sends
+     * no manualFocus(2) when the window hides, and the Play 6 vendor has no 17 mode to leave ("invalid
+     * m_MF_StateMachine:17"); an idle 2 only wrote CRI and could cut into a vendor AF that runs meanwhile.
+     */
     void exit() {
         h.post(() -> {
             h.removeCallbacks(watchdog);
-            if (moving || flagged() || entered) sendStop();
+            if (P6AfRules.stopOnClose(moving, flagged())) sendStop();
+            else if (entered) Log.i(TAG, "manual focus closed idle: no manualFocus(2)");
             entered = false;
         });
     }

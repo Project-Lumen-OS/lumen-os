@@ -1,0 +1,21 @@
+# The projector shell classes the shared menu (apps/core/lumen-menu) builds on, taken from
+# apps/common/projector by the X50Projector recipes of g0111 and g0100; their two texts are the app's own
+# res/values*/strings_shell.xml. One path per line, relative to apps/common/projector.
+src/org/lumen/projector/SafeHandler.java
+src/org/lumen/projector/Ui.java
+src/org/lumen/projector/ui/CheckRow.java
+src/org/lumen/projector/ui/ChoiceRow.java
+src/org/lumen/projector/ui/DialogPanel.java
+src/org/lumen/projector/ui/HeaderRow.java
+src/org/lumen/projector/ui/Marquee.java
+src/org/lumen/projector/ui/NavRow.java
+src/org/lumen/projector/ui/Notify.java
+src/org/lumen/projector/ui/OverlayHost.java
+src/org/lumen/projector/ui/Page.java
+src/org/lumen/projector/ui/PagedPanel.java
+src/org/lumen/projector/ui/Panel.java
+src/org/lumen/projector/ui/Row.java
+src/org/lumen/projector/ui/SliderRow.java
+src/org/lumen/projector/ui/TextRow.java
+src/org/lumen/projector/ui/Theme.java
+src/org/lumen/projector/ui/ToggleRow.java

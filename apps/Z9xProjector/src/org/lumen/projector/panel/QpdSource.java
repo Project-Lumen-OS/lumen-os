@@ -199,7 +199,7 @@ final class QpdSource {
                 if (!android.os.Environment.MEDIA_MOUNTED.equals(v.getState())
                         && !android.os.Environment.MEDIA_MOUNTED_READ_ONLY.equals(v.getState())) continue;
                 String d = v.getDescription(app);
-                return TextUtils.isEmpty(d) ? app.getString(R.string.qpd_usb) : d;
+                return TextUtils.isEmpty(d) ? app.getString(R.string.lumen_qpd_usb) : d;
             }
         } catch (Throwable t) {
             Log.w(TAG, "source popup usb: " + t);
@@ -295,7 +295,7 @@ final class QpdSource {
         boolean signal;
 
         InputRow(Context c, int port) {
-            super(c, port == HOME ? c.getString(R.string.source_home) : port == USB ? c.getString(R.string.qpd_usb)
+            super(c, port == HOME ? c.getString(R.string.source_home) : port == USB ? c.getString(R.string.lumen_qpd_usb)
                     : c.getString(R.string.source_hdmi, port));
             this.port = port;
             if (port == USB) setVisibility(GONE);
