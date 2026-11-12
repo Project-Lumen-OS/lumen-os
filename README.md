@@ -103,24 +103,30 @@ MindTheGapps download, see the Google part of the guide for the [Z9X](docs/insta
 One guide covers every projector: [Installing Lumen OS](docs/install/en.md)
 ([по-русски](docs/install/ru.md)). Installing Lumen OS for good erases all data on the projector, once.
 
-**Easy install, from the projector.** No computer and no cable. For the Z9X, the Z9X HB, and as a trial the
-X50 Ultra and X50 Ultra Max.
-
-1. Download the Lumen Installer `.apk` from its [releases page](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
-   and copy it to a USB stick.
-2. Plug the stick into the projector and open the file in the XGIMI file manager.
-3. Open Lumen Installer. It finds your model and downloads the right Lumen OS release.
-4. Try Lumen OS first. It starts once, and the XGIMI system and your files stay as they are. A restart brings
-   the XGIMI system back.
-5. To keep it, open Install Lumen OS inside the trial and choose whether you want Google services.
-
-**Advanced, with a computer.** For the Play 6, which the app does not support yet, and for the cases the app does
-not cover, see [Advanced](docs/install/en.md#advanced).
-
 Download only from this repository's [Releases](https://github.com/Project-Lumen-OS/lumen-os/releases) and the
 [Lumen Installer releases](https://github.com/Project-Lumen-OS/lumen-installer/releases). The release marked
 Latest is for the Z9X. Every Lumen OS release has `SHA256SUMS` and `SHA256SUMS.sig`. Both installers check them
 and refuse anything else. Copies on forums and file hosts are not ours.
+
+### Easy install: from the projector
+
+No computer and no cable. For the Z9X, the Z9X HB, and as a trial the X50 Ultra and X50 Ultra Max.
+
+1. Download `lumen-installer-1.0.1.apk` from the Lumen Installer [releases page](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
+2. Rename it to `lumen-installer-1.0.1.apk1`: the XGIMI file manager may refuse a file that ends in `.apk`. Copy
+   it to a USB stick.
+3. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
+4. Open Lumen Installer. It finds your model and downloads the right Lumen OS release.
+5. Try Lumen OS first. It starts once, and the XGIMI system and your files stay as they are. A restart brings
+   the XGIMI system back.
+6. To keep it, open Install Lumen OS inside the trial and choose whether you want Google services.
+
+---
+
+### Advanced: with a computer
+
+For the Play 6, which the app does not support yet, and for the cases the app does not cover, see
+[Advanced](docs/install/en.md#advanced).
 
 ## Updates and going back
 
