@@ -17,11 +17,12 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 
 ## Supported projectors
 
-| Projector | Status | Latest release | Install guide |
+| Projector | Status | Latest release | Install |
 |---|---|---|---|
-| XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [English](docs/install/z9x/en.md), [Русский](docs/install/z9x/ru.md) |
-| XGIMI Play 6 | stable | [Lumen OS 1.0.7 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.7) | [English](docs/install/play6/en.md), [Русский](docs/install/play6/ru.md) |
-| XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [English](docs/install/hb/en.md), [Русский](docs/install/hb/ru.md) |
+| XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/z9x/en.md) |
+| XGIMI Play 6 | stable | [Lumen OS 1.0.7 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.7) | [with a computer](docs/install/play6/en.md) |
+| XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/hb/en.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | beta, try only | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta3), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta3) | [from the projector](docs/install/en.md#easy) |
 
 Each projector has its own release files, signed with its own key. The installer refuses an image for
 another projector and any XGIMI firmware it does not know.
@@ -33,9 +34,12 @@ another projector and any XGIMI firmware it does not know.
   keeps your data. Updates over Wi-Fi come later.
 - XGIMI Play 6: Google services are not in the image and cannot be added yet. As on the Z9X, they are
   planned as an add-on that you make from your own MindTheGapps download.
-- XGIMI Z9X HB (model code G0130): XGIMI firmware V6.16.24, no other version. Updates come over Wi-Fi. Two
-  XGIMI files are not in the image: the installer copies them from your own projector. Google services can be
-  added with the installer from your own MindTheGapps download.
+- XGIMI Z9X HB (model code G0130): XGIMI firmware V6.16.24 with a computer. From the projector, the HB beta
+  also installs on V6.17.12 and on the G0148 with V6.17.12. Updates come over Wi-Fi. Two XGIMI files are not
+  in the image: the installer copies them from your own projector. Google services can be added with the
+  installer from your own MindTheGapps download.
+- XGIMI X50 Ultra (model code G0111) and X50 Ultra Max (model code G0100): XGIMI firmware V1.2.64 or V1.2.54.
+  A beta that you try from the projector: Lumen OS starts once and the XGIMI system stays as it is.
 
 More projectors will come later.
 
@@ -70,6 +74,7 @@ On the Z9X the interface runs at 1080p.
   and a quick panel.
 - Real sleep: the lamp goes off at once and the projector suspends. The remote wakes it in the same app.
 - AirPlay receiver.
+- HDMI-CEC: the HDMI input shows the name of the player or console, and the remote controls it.
 - 17 languages. The XGIMI remote pairs in the first setup.
 - Updates over Wi-Fi, signed with the project's key. If a new version fails to start, the projector
   goes back to the previous one.
@@ -88,42 +93,56 @@ weather (Open-Meteo), updates (GitHub) and that counter.
 
 The published edition has no Google apps: no Google Play, no Chromecast built-in, no Google voice
 search. Apps that need Google Play services will not run. Apps install from a USB stick or from any store
-you choose. You can add Google services yourself from your own MindTheGapps download: together with the
-install in one command, or later with the installer's `gapps` step. See the Google part of the guide for
-the [Z9X](docs/install/z9x/en.md#google) or the [Play 6](docs/install/play6/en.md#play6-google).
+you choose. You can add Google services yourself. Installing from the projector, you choose Yes at Google
+services and the installer downloads them from their official page. With a computer, they come from your own
+MindTheGapps download, see the Google part of the guide for the [Z9X](docs/install/z9x/en.md#google), the
+[Z9X HB](docs/install/hb/en.md#hb-google) or the [Play 6](docs/install/play6/en.md#play6-google).
 
 ## Install
 
-You need a computer with macOS or Linux (or Windows, in beta), Android Platform-Tools 35 or newer and a
-USB A-to-A cable. The install erases all data on the projector. On the Z9X the cable goes into the
-projector's USB 2.0 port, and there is one vbmeta step that you do by hand. The Play 6 talks to the
-computer over Wi-Fi and needs the cable only for the write itself.
+One guide covers every projector: [Installing Lumen OS](docs/install/en.md)
+([по-русски](docs/install/ru.md)). Installing Lumen OS for good erases all data on the projector, once.
 
-- Install guide: [XGIMI Z9X](docs/install/z9x/en.md), [XGIMI Play 6](docs/install/play6/en.md)
-- Инструкция по установке: [XGIMI Z9X](docs/install/z9x/ru.md), [XGIMI Play 6](docs/install/play6/ru.md)
+**Easy install, from the projector.** No computer and no cable. For the Z9X, the Z9X HB, and as a trial the
+X50 Ultra and X50 Ultra Max.
 
-Download only from this repository's [Releases](https://github.com/Project-Lumen-OS/lumen-os/releases). The
-release marked Latest is for the Z9X. The Play 6 release has a tag that starts with `play6-`. Every release has `SHA256SUMS` and `SHA256SUMS.sig`; the installer checks both and
-refuses anything else. Copies on forums and file hosts are not ours.
+1. Download the Lumen Installer `.apk` from its [releases page](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
+   and copy it to a USB stick.
+2. Plug the stick into the projector and open the file in the XGIMI file manager.
+3. Open Lumen Installer. It finds your model and downloads the right Lumen OS release.
+4. Try Lumen OS first. It starts once, and the XGIMI system and your files stay as they are. A restart brings
+   the XGIMI system back.
+5. To keep it, open Install Lumen OS inside the trial and choose whether you want Google services.
+
+**Advanced, with a computer.** For the Play 6, which the app does not support yet, and for the cases the app does
+not cover, see [Advanced](docs/install/en.md#advanced).
+
+Download only from this repository's [Releases](https://github.com/Project-Lumen-OS/lumen-os/releases) and the
+[Lumen Installer releases](https://github.com/Project-Lumen-OS/lumen-installer/releases). The release marked
+Latest is for the Z9X. Every Lumen OS release has `SHA256SUMS` and `SHA256SUMS.sig`. Both installers check them
+and refuse anything else. Copies on forums and file hosts are not ours.
 
 ## Updates and going back
 
 On the Z9X, Lumen OS updates itself over Wi-Fi from Settings > Device Preferences > About > Lumen OS
-update. An update installs into the other slot, keeps your data and waits for your OK. See
+update. An update installs next to the running system, keeps your data and waits for your OK. See
 [Updates](docs/install/z9x/en.md#updates) and [CHANGELOG.md](CHANGELOG.md).
 
 On the Play 6 there are no updates over Wi-Fi yet. Download the new Play 6 release and run
 `bash lumen-install.sh --ip ADDRESS --keep-data flash`. It writes the new system over the USB cable and
 keeps your data. Debugging must be on, see [step 6 of the Play 6 guide](docs/install/play6/en.md#play6-verify).
 
-To go back, flash the official XGIMI firmware from a USB stick. This erases everything, see Back to stock
-for the [Z9X](docs/install/z9x/en.md#stock) and for the [Play 6](docs/install/play6/en.md#play6-stock).
+To go back during a trial, just restart the projector. After an install from the projector, open the apps in
+Lumen OS and choose Go back to the XGIMI system. This erases everything in Lumen OS. The official XGIMI firmware
+from a USB stick always works too and also erases everything, see Back to stock for the
+[Z9X](docs/install/z9x/en.md#stock), the [Z9X HB](docs/install/hb/en.md#hb-stock) and the
+[Play 6](docs/install/play6/en.md#play6-stock).
 
 ## Privacy
 
 No ads, no tracking: only an anonymous usage counter that you can turn off. At every start and once a day it
 sends the model, the version and the serial number (the server keeps only its hash), and from your connection the
-server works out the country; your IP address is not stored. In detail: the projector model (codename
+server works out the country. Your IP address is not stored. In detail: the projector model (codename
 and XGIMI model), the Lumen OS version, its version code and build id, the update channel, a random install id,
 and after an update the previous version and how it was installed. The serial number and the install id are kept
 only as a keyed hash, rows are deleted after 400 days, and nothing else is sent: no MAC address, no account, no
@@ -131,34 +150,26 @@ list of apps, nothing about what you watch. It only counts how many projectors r
 have updated. Country: IP Geolocation by [DB-IP](https://db-ip.com).
 
 To turn it off: the switch "Send anonymous statistics" in the projector settings (Diagnostics). Turning it off
-also deletes the install id; turning it on again starts with a new one.
+also deletes the install id. Turning it on again starts with a new one.
 
 ## Known issues
 
 - The Windows installer has not been tested yet.
 - On the Z9X, while a USB cable to a computer is connected, the projector does not really sleep. Unplug
   it after the install.
-- HDMI-CEC has not been tested on the Z9X.
-- The built-in keyboard types English; Lumen Home's search has its own keyboard.
-- Once a new version has started, an update cannot be undone over the air.
 - Play 6: no updates over Wi-Fi, no AirPlay receiver and no Google services yet.
-- Play 6: while the A-to-A cable is in, the projector does not start. Unplug it right after the write,
-  when the installer says so.
-- Play 6: after failed starts Lumen OS does not go to fastboot mode by itself yet. If it does not start,
-  the stock restore from a USB stick is the way back.
 
 ## Help and bug reports
 
 Open an [issue](https://github.com/Project-Lumen-OS/lumen-os/issues) and include the projector model, the XGIMI
 firmware version, the Lumen OS version (Settings > Device Preferences > About), what you did right before
-the problem and the full installer output. Russian-speaking users also talk about Lumen OS in the
-[XGIMI Z9X thread on 4PDA](https://4pda.to/forum/index.php?showtopic=1121837) and in the Telegram channel
-[@projector_lumenos](https://t.me/projector_lumenos).
+the problem and the full installer output (in Lumen Installer: About, Details for help). Russian-speaking users
+also talk about Lumen OS in the [XGIMI Z9X thread on 4PDA](https://4pda.to/forum/index.php?showtopic=1121837)
+and in the Telegram channel [@projector_lumenos](https://t.me/projector_lumenos).
 
-## Kino player
+## Lumen Play
 
-The video player made for Lumen OS lives in its own repository:
-[kmuradoff/kino-player](https://github.com/kmuradoff/kino-player).
+The video player made for Lumen OS lives in [its own repository](https://github.com/kmuradoff/kino-player).
 
 ## Build
 
@@ -188,7 +199,7 @@ Lumen OS and reports back.
 **If Lumen OS gave your projector a second life, please consider supporting it!**
 
 Every donation goes to one goal: **a build computer (Beelink HX series), about $1,300.**<br>
-Today one image takes hours to build; a powerful mini PC means faster updates and more projectors.
+Today one image takes hours to build. A powerful mini PC means faster updates and more projectors.
 
 <br>
 

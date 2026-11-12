@@ -111,7 +111,7 @@ power-on. If a device switched the projector on through HDMI-CEC, its own input 
 storage and any USB stick plugged in.
 
 - OK opens a folder, Back goes one level up.
-- Videos and music open in the player you chose (Kino, VLC). Without one, in the built-in player: OK
+- Videos and music open in the player you chose (Lumen Play, VLC). Without one, in the built-in player: OK
   pauses, Left and Right jump 10 seconds (30 while held), Back exits.
 - Photos open full screen, Left and Right go through the folder.
 - An `.apk` file installs as an app: OK, then confirm.

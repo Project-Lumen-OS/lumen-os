@@ -5,8 +5,8 @@
 [Русская версия](ru.md)
 
 > [!NOTE]
-> This guide is for the XGIMI Play 6. The XGIMI Z9X has [its own guide](../z9x/en.md): it installs over
-> the cable and needs its own release files.
+> This guide is for the XGIMI Play 6. The Play 6 installs with a computer: the Lumen Installer app does not
+> support it yet. Other projectors: [Installing Lumen OS](../en.md).
 
 This guide covers Lumen OS on the XGIMI Play 6 (model code G0058) with XGIMI
 firmware V1.7.116 or V1.8.127. As on the Z9X, Lumen OS replaces only the system partition. XGIMI's firmware,

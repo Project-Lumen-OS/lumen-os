@@ -4,6 +4,10 @@
 
 [Русская версия](ru.md)
 
+> [!NOTE]
+> This is the computer guide for the XGIMI Z9X HB. You can also install from the projector itself, with the
+> Lumen Installer app, see [Easy install](../en.md#easy). Other projectors: [Installing Lumen OS](../en.md).
+
 Lumen OS is Android TV 14 based on LineageOS 21 for the XGIMI Z9X HB: model G0130 with XGIMI firmware
 V6.16.24 or V6.17.12. Model G0148 with V6.17.12 is in testing: the installer checks it, but installs on it only
 after a live test on a unit (not yet); model G0118 is not supported yet. It replaces only the system partition. XGIMI's firmware, boot, vendor and calibration are not

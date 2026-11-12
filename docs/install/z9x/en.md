@@ -3,8 +3,8 @@
 [Русская версия](ru.md)
 
 > [!NOTE]
-> This guide is for the XGIMI Z9X. The XGIMI Play 6 has [its own guide](../play6/en.md): it installs
-> differently (over Wi-Fi, with a cable only for the write) and needs its own release files.
+> This is the computer guide for the XGIMI Z9X. The easy way is from the projector itself, with the Lumen
+> Installer app, see [Easy install](../en.md#easy). Other projectors: [Installing Lumen OS](../en.md).
 
 This guide covers Lumen OS 1.0.10 without Google on the XGIMI Z9X (model code G0082) with XGIMI
 firmware V6.15.58, V6.15.62 or V6.15.19. Lumen OS is Android TV 14, built on LineageOS 21. It replaces only the
@@ -372,9 +372,6 @@ Play apps without an account) or Aptoide TV. The first time the store installs s
 asks for a permission. You can also give it in advance: Settings > Apps > Security & restrictions >
 Unknown sources.
 
-The built-in keyboard types English. Lumen Home's search has its own keyboard with Cyrillic layouts.
-You can install another keyboard from a stick. For now the mic button opens search with the keyboard.
-
 <a name="google"></a>
 
 ## Adding Google services
@@ -424,8 +421,6 @@ This also works when the projector sits in fastboot mode after failed starts. If
 twice in a row with Google services, the next start goes without them and they stay off. To check them
 and turn them back on: `bash lumen-install.sh gapps`.
 
-<a name="updates"></a>
-
 ## Chromecast
 
 Chromecast built-in does not work on Lumen OS, with or without the Google services. Google gives the Cast
@@ -442,6 +437,8 @@ What works instead:
   device", many torrent clients and browser extensions.
 - YouTube without Cast: in YouTube on the projector open Settings > Link with TV code, then in YouTube on
   the phone Settings > Watch on TV > Enter TV code. After that the phone's cast button finds the projector.
+
+<a name="updates"></a>
 
 ## Updates
 

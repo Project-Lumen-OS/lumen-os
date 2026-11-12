@@ -215,7 +215,7 @@ HDMI:
 - Новый главный экран Lumen Home. Один ряд «Для вас»: сначала то, что вы смотрите, потом рекомендации, без
   повторов. Фон на весь экран берётся из выбранной карточки и медленно движется. В «Продолжить просмотр» у
   сериалов теперь постер сериала, а не кадр из серии.
-- Приложение «Кино» стало Lumen Play: главная, ТВ (IPTV-плейлисты с программой передач), торренты с поиском по
+- Видеоплеер Lumen Play: главная, ТВ (IPTV-плейлисты с программой передач), торренты с поиском по
   источникам Jackett и Torznab, файлы. Lumen Play виден телефонам и компьютерам как DLNA-телевизор: видео можно
   отправить на проектор из приложений с кнопкой «Воспроизвести на устройстве». Lumen Play обновляется сам, отдельно
   от системы.
@@ -569,7 +569,7 @@ The update comes over Wi-Fi: Settings > Device Preferences > About > Lumen OS up
 - A new Lumen Home. One "For you" row: what you are watching first, then recommendations, no repeats. The
   full-screen background comes from the focused card and moves slowly. Series in "Continue watching" now show the
   series poster, not a frame of the episode.
-- The "Kino" app is now Lumen Play: home, TV (IPTV playlists with a programme guide), torrents with search through
+- The Lumen Play video player: home, TV (IPTV playlists with a programme guide), torrents with search through
   Jackett and Torznab sources, files. Phones and computers see Lumen Play as a DLNA TV, so apps with "Play on
   device" can send video to the projector. Lumen Play updates itself, apart from the system.
 - App store recommendations (RuStore, Google Play) no longer appear in "For you": they only advertise apps. Customize
