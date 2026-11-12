@@ -112,9 +112,9 @@ and refuse anything else. Copies on forums and file hosts are not ours.
 
 No computer and no cable. For the Z9X, the Z9X HB, and as a trial the X50 Ultra and X50 Ultra Max.
 
-1. Download `lumen-installer-1.0.1.apk` from the Lumen Installer [releases page](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
-2. Rename it to `lumen-installer-1.0.1.apk1`: the XGIMI file manager may refuse a file that ends in `.apk`. Copy
-   it to a USB stick.
+1. Download the Lumen Installer `.apk` file from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
+2. Rename the file: change the ending `.apk` to `.apk1`. The XGIMI file manager may refuse a file that ends in
+   `.apk`. Copy it to a USB stick.
 3. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
 4. Open Lumen Installer. It finds your model and downloads the right Lumen OS release.
 5. Try Lumen OS first. It starts once, and the XGIMI system and your files stay as they are. A restart brings

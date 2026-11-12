@@ -23,9 +23,9 @@ Lumen Installer shows the model code and the XGIMI firmware of your projector un
 You need the projector on its XGIMI system with internet, a USB stick and free space in the projector's memory.
 The app tells you how much space it needs.
 
-1. Download `lumen-installer-1.0.1.apk` from the Lumen Installer [releases page](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
-2. Rename it to `lumen-installer-1.0.1.apk1`: the XGIMI file manager may refuse a file that ends in `.apk`. Copy
-   it to a USB stick (FAT32 or exFAT).
+1. Download the Lumen Installer `.apk` file from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
+2. Rename the file: change the ending `.apk` to `.apk1`. The XGIMI file manager may refuse a file that ends in
+   `.apk`. Copy it to a USB stick (FAT32 or exFAT).
 3. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
 4. Open Lumen Installer. It reads the model, finds it in the signed list of supported projectors and downloads
    the Lumen OS release for exactly that model. Every file is checked against its signature before it is used.
