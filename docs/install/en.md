@@ -23,21 +23,20 @@ Lumen Installer shows the model code and the XGIMI firmware of your projector un
 You need the projector on its XGIMI system with internet, a USB stick and free space in the projector's memory.
 The app tells you how much space it needs.
 
-1. Download the Lumen Installer `.apk` file from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
-2. Rename the file: change the ending `.apk` to `.apk1`. The XGIMI file manager may refuse a file that ends in
-   `.apk`. Copy it to a USB stick (FAT32 or exFAT).
-3. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
-4. Open Lumen Installer. It reads the model, finds it in the signed list of supported projectors and downloads
+1. Download the Lumen Installer file that ends in `.apk1` from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
+   and copy it to a USB stick (FAT32 or exFAT).
+2. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
+3. Open Lumen Installer. It reads the model, finds it in the signed list of supported projectors and downloads
    the Lumen OS release for exactly that model. Every file is checked against its signature before it is used.
    On the Z9X HB you choose Version: Stable or Version: Beta.
-5. Try Lumen OS first: choose Get the trial ready, then Start Lumen OS. Lumen OS starts once, from files in the
+4. Try Lumen OS first: choose Get the trial ready, then Start Lumen OS. Lumen OS starts once, from files in the
    projector's memory. The XGIMI system and your files stay as they are. To go back, just restart the
    projector.
-6. To keep Lumen OS, open Install Lumen OS inside the trial and choose whether you want Google services (Play
+5. To keep Lumen OS, open Install Lumen OS inside the trial and choose whether you want Google services (Play
    Store, YouTube and your Google account, about 400 MB from their official page). Installing erases everything
    on the projector once: apps, accounts, settings and files. It takes about 10 minutes. Keep the projector
    plugged in.
-7. Lumen OS then starts with its setup. New versions arrive over Wi-Fi. If Lumen OS ever fails to start, the
+6. Lumen OS then starts with its setup. New versions arrive over Wi-Fi. If Lumen OS ever fails to start, the
    projector goes back to the XGIMI system by itself.
 
 Where installing for good is not open (the X50, the stable HB release, a Z9X on V6.15.19), the trial still works
