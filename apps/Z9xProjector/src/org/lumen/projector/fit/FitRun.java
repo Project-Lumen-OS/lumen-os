@@ -24,16 +24,9 @@ public final class FitRun {
     public static final long DISTANCE_GAP_MS = 1000;
     public static final double PITCH_MAX_DEG = 30;
 
-    public enum Phase { CHECK, DISTANCE, KEYSTONE, ZOOM, FOCUS, DONE }
-
-    public enum Status {
-        DONE, UNSUPPORTED, NO_SCREEN, NO_CALIBRATION, MOUNT_UNKNOWN, DISTANCE_RANGE, DISTANCE_UNSTABLE,
-        PITCH_UNKNOWN, PITCH_RANGE, KEYSTONE_FAILED, NOT_HOME, LENS_UNEXPECTED, CANCELLED, ERROR
-    }
-
     public interface Listener {
         /** Progress; for ZOOM a = moves done, b = moves planned. Called on the run's thread. */
-        void onPhase(Phase phase, int a, int b);
+        void onPhase(FitPhase phase, int a, int b);
     }
 
     public interface Sleeper { void sleep(long ms) throws InterruptedException; }
@@ -44,12 +37,12 @@ public final class FitRun {
         public double distanceMm = Double.NaN, pitchDeg = Double.NaN;
         public int[] distances = new int[0];
         public int[] corners;
-        public FitGeometry.Estimator estimator;
+        public FitEstimator estimator;
         public FitGeometry geometry;
     }
 
     public static final class Result {
-        public Status status;
+        public FitStatus status;
         public Prepared prepared;
         public FitPlanner.Plan plan;
         /** Position at the end (-1 unknown) and the size there. */
@@ -57,7 +50,7 @@ public final class FitRun {
         public FitGeometry.Size finalSize;
         public String detail = "";
 
-        Result(Status s) { status = s; }
+        Result(FitStatus s) { status = s; }
 
         @Override public String toString() {
             return status + (detail.isEmpty() ? "" : " (" + detail + ")") + ", final position " + finalProgress
@@ -96,48 +89,48 @@ public final class FitRun {
 
     /** Steps 1-6. Returns null when everything is ready (see {@link #prepared()}), else the stopping result. */
     public Result prepare() {
-        listener.onPhase(Phase.CHECK, 0, 0);
-        if (!dev.supported()) return new Result(Status.UNSUPPORTED);
+        listener.onPhase(FitPhase.CHECK, 0, 0);
+        if (!dev.supported()) return new Result(FitStatus.UNSUPPORTED);
         if (dev.positionCount() != ZoomModel.POSITIONS) {
-            Result r = new Result(Status.UNSUPPORTED);
+            Result r = new Result(FitStatus.UNSUPPORTED);
             r.detail = "positions " + dev.positionCount();
             return r;
         }
         Prepared p = new Prepared();
         prep = p;
         p.mount = dev.mountMode();
-        if (p.mount < 0 || p.mount > 3) return stop(Status.MOUNT_UNKNOWN, "mount " + p.mount);
-        listener.onPhase(Phase.DISTANCE, 0, 0);
+        if (p.mount < 0 || p.mount > 3) return stop(FitStatus.MOUNT_UNKNOWN, "mount " + p.mount);
+        listener.onPhase(FitPhase.DISTANCE, 0, 0);
         int[] d = new int[MAX_DISTANCE_READS];
         for (int i = 0; i < d.length; i++) {
-            if (cancelled) return stop(Status.CANCELLED, "");
-            if (i > 0 && !pause(DISTANCE_GAP_MS)) return stop(Status.CANCELLED, "");
+            if (cancelled) return stop(FitStatus.CANCELLED, "");
+            if (i > 0 && !pause(DISTANCE_GAP_MS)) return stop(FitStatus.CANCELLED, "");
             d[i] = readDistance();
             if (d[i] < DISTANCE_MIN_MM || d[i] > DISTANCE_MAX_MM) {
                 p.distances = java.util.Arrays.copyOf(d, i + 1);
-                return stop(Status.DISTANCE_RANGE, "read " + d[i] + " mm");
+                return stop(FitStatus.DISTANCE_RANGE, "read " + d[i] + " mm");
             }
         }
         p.distances = d.clone();
         int[] s = d.clone();
         java.util.Arrays.sort(s);
-        if (s[s.length - 1] - s[0] > DISTANCE_SPREAD_MM) return stop(Status.DISTANCE_UNSTABLE, "spread " + (s[s.length - 1] - s[0]) + " mm");
+        if (s[s.length - 1] - s[0] > DISTANCE_SPREAD_MM) return stop(FitStatus.DISTANCE_UNSTABLE, "spread " + (s[s.length - 1] - s[0]) + " mm");
         p.distanceMm = s[s.length / 2];
         p.pitchDeg = dev.readPitchDeg();
-        if (Double.isNaN(p.pitchDeg)) return stop(Status.PITCH_UNKNOWN, "");
-        if (Math.abs(p.pitchDeg) > PITCH_MAX_DEG) return stop(Status.PITCH_RANGE, String.format(java.util.Locale.ROOT, "%.1f deg", p.pitchDeg));
-        if (cancelled) return stop(Status.CANCELLED, "");
-        listener.onPhase(Phase.KEYSTONE, 0, 0);
-        if (!dev.runAutoKeystone()) return stop(Status.KEYSTONE_FAILED, "");
+        if (Double.isNaN(p.pitchDeg)) return stop(FitStatus.PITCH_UNKNOWN, "");
+        if (Math.abs(p.pitchDeg) > PITCH_MAX_DEG) return stop(FitStatus.PITCH_RANGE, String.format(java.util.Locale.ROOT, "%.1f deg", p.pitchDeg));
+        if (cancelled) return stop(FitStatus.CANCELLED, "");
+        listener.onPhase(FitPhase.KEYSTONE, 0, 0);
+        if (!dev.runAutoKeystone()) return stop(FitStatus.KEYSTONE_FAILED, "");
         p.progress = dev.readProgress();
         if (p.progress != 0) {
             dev.homeZoom();
             p.progress = dev.readProgress();
-            if (p.progress != 0) return stop(Status.NOT_HOME, "position " + p.progress);
+            if (p.progress != 0) return stop(FitStatus.NOT_HOME, "position " + p.progress);
         }
         int[] c = dev.readKeystoneCorners();
         p.estimator = FitGeometry.estimatorFor(c);
-        p.corners = p.estimator == FitGeometry.Estimator.CORNERS ? c.clone() : null;
+        p.corners = p.estimator == FitEstimator.CORNERS ? c.clone() : null;
         p.geometry = new FitGeometry(p.distanceMm, p.pitchDeg);
         return null;
     }
@@ -148,19 +141,19 @@ public final class FitRun {
      */
     public Result walkSmallerTo(int target) {
         int n = ZoomModel.POSITIONS;
-        if (target < prep.progress || target > n - 1) return stop(Status.ERROR, "walk " + prep.progress + " -> " + target);
+        if (target < prep.progress || target > n - 1) return stop(FitStatus.ERROR, "walk " + prep.progress + " -> " + target);
         if (target == prep.progress) return null;
         int from = prep.progress, total = target - from;
         dev.beginZoomSession();
         try {
             for (int k = from + 1; k <= target; k++) {
-                if (cancelled) return stop(Status.CANCELLED, "stopped at " + prep.progress);
-                if (prep.progress >= n - 1) return stop(Status.ERROR, "already the smallest");
+                if (cancelled) return stop(FitStatus.CANCELLED, "stopped at " + prep.progress);
+                if (prep.progress >= n - 1) return stop(FitStatus.ERROR, "already the smallest");
                 int got = dev.stepSmaller();
-                listener.onPhase(Phase.ZOOM, k - from, total);
+                listener.onPhase(FitPhase.ZOOM, k - from, total);
                 if (got != k) {
                     prep.progress = got;
-                    return stop(Status.LENS_UNEXPECTED, "expected " + k + ", read " + got);
+                    return stop(FitStatus.LENS_UNEXPECTED, "expected " + k + ", read " + got);
                 }
                 prep.progress = got;
             }
@@ -172,17 +165,17 @@ public final class FitRun {
 
     /** Step 9. */
     public void focus() {
-        listener.onPhase(Phase.FOCUS, 0, 0);
+        listener.onPhase(FitPhase.FOCUS, 0, 0);
         dev.autofocus();
     }
 
     /** The whole fit (steps 1-10). */
-    public Result run(ScreenSize screen, ThrowModel model, FitPlanner.Mode mode) {
-        if (screen == null) return new Result(Status.NO_SCREEN);
-        if (model == null) return new Result(Status.NO_CALIBRATION);
+    public Result run(ScreenSize screen, ThrowModel model, FitMode mode) {
+        if (screen == null) return new Result(FitStatus.NO_SCREEN);
+        if (model == null) return new Result(FitStatus.NO_CALIBRATION);
         Result stop = prepare();
         if (stop != null) return stop;
-        Result r = new Result(Status.DONE);
+        Result r = new Result(FitStatus.DONE);
         r.prepared = prep;
         r.plan = FitPlanner.plan(prep.geometry, prep.estimator, prep.corners, model, screen, mode);
         int start = prep.progress;
@@ -192,24 +185,24 @@ public final class FitRun {
             r.detail = walk.detail;
         }
         boolean moved = prep.progress != start;
-        if (moved && r.status != Status.LENS_UNEXPECTED) focus();
+        if (moved && r.status != FitStatus.LENS_UNEXPECTED) focus();
         int fin = dev.readProgress();
         r.finalProgress = fin;
         if (fin >= 0 && fin < model.positions()) {
             int[] c = dev.readKeystoneCorners();
-            FitGeometry.Estimator e = FitGeometry.estimatorFor(c);
-            int[] use = e == FitGeometry.Estimator.CORNERS ? c : null;
+            FitEstimator e = FitGeometry.estimatorFor(c);
+            int[] use = e == FitEstimator.CORNERS ? c : null;
             if (!FitGeometry.validCorners(c)) {                 // no new read: the corners of step 6
                 e = prep.estimator;
                 use = prep.corners;
             }
             r.finalSize = prep.geometry.size(e, use, model.tr(fin));
         }
-        listener.onPhase(Phase.DONE, 0, 0);
+        listener.onPhase(FitPhase.DONE, 0, 0);
         return r;
     }
 
-    private Result stop(Status s, String detail) {
+    private Result stop(FitStatus s, String detail) {
         Result r = new Result(s);
         r.prepared = prep;
         r.detail = detail;

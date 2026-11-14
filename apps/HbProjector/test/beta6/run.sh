@@ -9,7 +9,7 @@ export JAVA_HOME
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE/src/org/lumen/projector/panel/BoostRules.java" "$HERE/src/org/lumen/projector/panel/ZoomScale.java" \
+  "$HERE/src/org/lumen/projector/panel/BoostRules.java" "$HERE/src/org/lumen/projector/panel/BoostLeave.java" "$HERE/src/org/lumen/projector/panel/BoostOutcome.java" "$HERE/src/org/lumen/projector/panel/ZoomScale.java" \
   "$HERE/src/org/lumen/projector/FocusPattern.java" \
   "$T/BoostRulesTest.java" "$T/ZoomScaleTest.java" "$T/FocusPatternTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.BoostRulesTest
@@ -22,7 +22,7 @@ SG=$HERE/src/org/lumen/projector/power/StrGate.java
 PS=$HERE/test/power/stubs
 OUT2=$(mktemp -d)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT2" "$SG" \
-  "$HERE/src/org/lumen/projector/power/StrNoticeRules.java" "$T/StrNoticeTest.java" \
+  "$HERE/src/org/lumen/projector/power/StrNoticeRules.java" "$HERE/src/org/lumen/projector/power/StrNoticeKind.java" "$T/StrNoticeTest.java" \
   "$PS/android/content/Context.java" "$PS/android/content/BroadcastReceiver.java" "$PS/android/content/Intent.java" \
   "$PS/android/content/IntentFilter.java" "$PS/android/os/SystemProperties.java" "$PS/android/os/SystemClock.java" \
   "$PS/android/util/Log.java"

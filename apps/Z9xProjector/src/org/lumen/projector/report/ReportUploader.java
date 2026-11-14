@@ -18,13 +18,10 @@ import java.util.regex.Pattern;
  * followed (a redirect could leave https). The server answers {"code":"LR-7K2Q", ...}.
  */
 final class ReportUploader {
-    /** Reasons the activity can explain; NETWORK covers DNS, connect, TLS and timeouts. */
-    enum Failure { NO_NETWORK, NETWORK, RATE_LIMITED, REJECTED, SERVER, COLLECT }
-
     static final class UploadException extends IOException {
-        final Failure failure;
+        final ReportFailure failure;
 
-        UploadException(Failure f, String msg) {
+        UploadException(ReportFailure f, String msg) {
             super(msg);
             failure = f;
         }
@@ -47,13 +44,13 @@ final class ReportUploader {
 
     /** Worker thread. Returns the report code. */
     String upload(String url, File zip, String installId, String version, Progress p) throws IOException {
-        if (url == null || !url.startsWith("https://")) throw new UploadException(Failure.REJECTED, "no https url");
+        if (url == null || !url.startsWith("https://")) throw new UploadException(ReportFailure.REJECTED, "no https url");
         long total = zip.length();
         HttpURLConnection c;
         try {
             c = (HttpURLConnection) URI.create(url).toURL().openConnection();
         } catch (IOException | IllegalArgumentException e) {
-            throw new UploadException(Failure.REJECTED, "bad url: " + e);
+            throw new UploadException(ReportFailure.REJECTED, "bad url: " + e);
         }
         conn = c;
         try {
@@ -84,24 +81,24 @@ final class ReportUploader {
             String body = readBody(c, status);
             if (status == 200 || status == 201) {
                 String code = parseCode(body);
-                if (code == null) throw new UploadException(Failure.SERVER, "no code in answer");
+                if (code == null) throw new UploadException(ReportFailure.SERVER, "no code in answer");
                 return code;
             }
             throw new UploadException(failureFor(status), "HTTP " + status);
         } catch (UploadException | CanceledException e) {
             throw e;
         } catch (IOException e) {
-            throw new UploadException(Failure.NETWORK, e.getClass().getSimpleName() + ": " + e.getMessage());
+            throw new UploadException(ReportFailure.NETWORK, e.getClass().getSimpleName() + ": " + e.getMessage());
         } finally {
             conn = null;
             c.disconnect();
         }
     }
 
-    static Failure failureFor(int status) {
-        if (status == 429) return Failure.RATE_LIMITED;
-        if (status >= 500) return Failure.SERVER;
-        return Failure.REJECTED;                         // 400, 404, 405, 411, 413, 415, 3xx
+    static ReportFailure failureFor(int status) {
+        if (status == 429) return ReportFailure.RATE_LIMITED;
+        if (status >= 500) return ReportFailure.SERVER;
+        return ReportFailure.REJECTED;                         // 400, 404, 405, 411, 413, 415, 3xx
     }
 
     /**

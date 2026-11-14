@@ -56,13 +56,10 @@ public final class SettingsActivity extends Activity {
     static final String EXTRA_SECTION = "org.lumen.projector.extra.SECTION";
     static final String SECTION_KEYSTONE = "keystone";
 
-    /** The automation toggles of the Play 6. */
-    private enum Toggle { POWER_ON_AK, MOVE_AK, SMART_AF, BOOT_MUSIC }
-
     private Shell shell;
     private View keystoneAnchor;
-    private final Map<Toggle, Kit.Row> toggleRows = new EnumMap<>(Toggle.class);
-    private final Map<Toggle, Boolean> toggleState = new EnumMap<>(Toggle.class);
+    private final Map<AutomationToggle, Kit.Row> toggleRows = new EnumMap<>(AutomationToggle.class);
+    private final Map<AutomationToggle, Boolean> toggleState = new EnumMap<>(AutomationToggle.class);
     private Kit.Row slot3Row, slot4Row, launcherRow, bootSourceRow, cecWakeRow;
     private Kit.Row voiceLang, voiceSpeak, voiceKey;
     private LinearLayout diagBox;
@@ -127,9 +124,9 @@ public final class SettingsActivity extends Activity {
         focus.addView(Kit.tileRow(this, af, keystoneAnchor, manual));
         focus.addView(Kit.space(this, 20));
         LinearLayout left = Kit.card(this), right = Kit.card(this);
-        toggle(left, Toggle.POWER_ON_AK, R.string.tg_power_on_ak, R.string.s2_d_power_on_ak);       // 553 / 552
-        toggle(right, Toggle.MOVE_AK, R.string.tg_move_ak, R.string.s2_d_move);                      // 586 / 585
-        toggle(right, Toggle.SMART_AF, R.string.panel_smart_af, 0);       // IGmpf2 63 / 64 + 587, hidden while closed
+        toggle(left, AutomationToggle.POWER_ON_AK, R.string.tg_power_on_ak, R.string.s2_d_power_on_ak);       // 553 / 552
+        toggle(right, AutomationToggle.MOVE_AK, R.string.tg_move_ak, R.string.s2_d_move);                      // 586 / 585
+        toggle(right, AutomationToggle.SMART_AF, R.string.panel_smart_af, 0);       // IGmpf2 63 / 64 + 587, hidden while closed
         focus.addView(Kit.columns(this, left, right));
 
         // Power on: stock parity 2026-10-21 (General > Advanced > Power on / off > boot music, IGmpf 420 / 419;
@@ -138,7 +135,7 @@ public final class SettingsActivity extends Activity {
         LinearLayout power = shell.section("power", R.drawable.ic_s2_power, getString(R.string.s2_sec_power));
         Kit.heading(power, null, getString(R.string.s2_sec_power));
         LinearLayout pc = Kit.card(this);
-        toggle(pc, Toggle.BOOT_MUSIC, R.string.tg_power_on_music, R.string.s2_d_music);
+        toggle(pc, AutomationToggle.BOOT_MUSIC, R.string.tg_power_on_music, R.string.s2_d_music);
         bootSourceRow = valueRow(pc, R.string.p6_boot_source, R.string.s2_d_boot, v -> pickBootSource());
         refreshBootSource();
         cecWakeRow = valueRow(pc, R.string.p6_cec_wake, 0, v -> toggleCecWake());
@@ -190,6 +187,17 @@ public final class SettingsActivity extends Activity {
         Kit.heading(help, null, getString(R.string.s2_sec_help));
         LinearLayout gc = Kit.card(this);
         actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));
+        // anonymous statistics (apps/core/lumen-stats): this app keeps the switch, the Play 6 image has no updater
+        if (org.lumen.stats.Ping.configured()) {
+            org.lumen.stats.PrefsState stats = org.lumen.stats.PrefsState.get(this);
+            Kit.Row sr = Kit.switchRow(this, getString(R.string.lumen_stats_row), getString(R.string.lumen_stats_note));
+            sr.onClick(v -> {
+                stats.setOn(!stats.on());
+                sr.sw.setOn(stats.on());
+            });
+            Kit.add(gc, sr);
+            sr.sw.setOn(stats.on());
+        }
         help.addView(gc);
 
         if (Device.isTestBuild()) {                     // Diagnostics: test builds only
@@ -224,7 +232,7 @@ public final class SettingsActivity extends Activity {
         return r;
     }
 
-    private void toggle(LinearLayout card, Toggle t, int title, int sub) {
+    private void toggle(LinearLayout card, AutomationToggle t, int title, int sub) {
         Kit.Row r = Kit.switchRow(this, getString(title), sub == 0 ? null : getString(sub)).onClick(v -> onToggleClick(t));
         Kit.add(card, r);
         r.sw.setOn(null);
@@ -252,15 +260,15 @@ public final class SettingsActivity extends Activity {
     }
 
     /** p6-hal: every toggle (null = unknown); SMART_AF only while the IGmpf2 guard is open. */
-    private static Map<Toggle, Boolean> readToggles(Play6Gmpf g, Play6Gmpf2 g2) {
-        Map<Toggle, Boolean> m = new EnumMap<>(Toggle.class);
-        for (Toggle t : Toggle.values()) {
+    private static Map<AutomationToggle, Boolean> readToggles(Play6Gmpf g, Play6Gmpf2 g2) {
+        Map<AutomationToggle, Boolean> m = new EnumMap<>(AutomationToggle.class);
+        for (AutomationToggle t : AutomationToggle.values()) {
             try {
                 switch (t) {
                     case POWER_ON_AK: m.put(t, g.getPowerOnAk()); break;          // 553
                     case MOVE_AK: m.put(t, g.getMoveAk()); break;                 // 586
                     case SMART_AF: m.put(t, g2.isIdentityOpen() ? g2.getSmartAutofocus() : null); break;   // IGmpf2 63
-                    case BOOT_MUSIC: m.put(t, g.getBootMusic()); break;           // 420
+                    case BOOT_MUSIC: m.put(t, g.getPowerOnMusic()); break;           // 420
                     default: break;
                 }
             } catch (Throwable e) {
@@ -271,13 +279,13 @@ public final class SettingsActivity extends Activity {
         return m;
     }
 
-    private void showToggles(Map<Toggle, Boolean> m) {
+    private void showToggles(Map<AutomationToggle, Boolean> m) {
         if (isFinishing() || isDestroyed()) return;
-        Kit.Row smart = toggleRows.get(Toggle.SMART_AF);
+        Kit.Row smart = toggleRows.get(AutomationToggle.SMART_AF);
         if (smart != null) smart.setShown(Hal.hasGmpf2());
-        Kit.Row music = toggleRows.get(Toggle.BOOT_MUSIC);            // hidden when 420 does not answer (rule)
-        if (music != null) music.setShown(m != null && m.get(Toggle.BOOT_MUSIC) != null);
-        for (Toggle t : Toggle.values()) {
+        Kit.Row music = toggleRows.get(AutomationToggle.BOOT_MUSIC);            // hidden when 420 does not answer (rule)
+        if (music != null) music.setShown(m != null && m.get(AutomationToggle.BOOT_MUSIC) != null);
+        for (AutomationToggle t : AutomationToggle.values()) {
             Boolean v = m == null ? null : m.get(t);
             toggleState.put(t, v);
             Kit.Row r = toggleRows.get(t);
@@ -285,7 +293,7 @@ public final class SettingsActivity extends Activity {
         }
     }
 
-    private void onToggleClick(Toggle t) {
+    private void onToggleClick(AutomationToggle t) {
         Boolean cur = toggleState.get(t);
         if (cur == null || !Hal.isReady()) {
             Ui.toast(this, R.string.toast_not_ready);
@@ -303,7 +311,7 @@ public final class SettingsActivity extends Activity {
                     case POWER_ON_AK: g.setPowerOnAk(on); break;                // 552
                     case MOVE_AK: g.setMoveAk(on); break;                       // 585
                     case SMART_AF: Hal.setSmartAutofocus(g, g2, on); break;     // IGmpf2 64, then 587
-                    case BOOT_MUSIC: g.setBootMusic(on); break;                 // 419
+                    case BOOT_MUSIC: g.setPowerOnMusic(on); break;                 // 419
                     default: break;
                 }
                 Log.i(TAG, "toggle " + t + " -> " + on);

@@ -14,7 +14,7 @@ expect() { # name want command...
   if [ "$got" = "$want" ]; then PASS=$((PASS + 1)); echo "ok   $n: $(tail -1 "$W/out")"
   else FAIL=$((FAIL + 1)); echo "FAIL $n (exit $got, want $want)"; sed 's/^/     /' "$W/out"; fi
 }
-copy() { rm -rf "$W/g"; mkdir -p "$W/g"; (cd "$G" && git ls-files devices tools/devices tools/hal | grep -v '^devices/.*/\(research/stock\|logs\)/' \
+copy() { rm -rf "$W/g"; mkdir -p "$W/g"; (cd "$G" && git ls-files devices tools/devices tools/hal 'apps/*HalCodes.java' | grep -v '^devices/.*/\(research/stock\|logs\)/' \
   | tar -cf - -T -) | tar -xf - -C "$W/g"; }
 edit() { python3 -B - "$@" <<'PY'
 import sys

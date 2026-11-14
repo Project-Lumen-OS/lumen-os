@@ -1,6 +1,7 @@
 package org.lumen.projector.panel;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuProfile;
 
 import java.nio.charset.StandardCharsets;
@@ -36,6 +37,13 @@ public final class HbMenuGatesTest {
     /** HbFeatures switches of a G0130 on 6.17.12 (every key the gates name ON). */
     private static final Predicate<String> G0130 = f -> true;
     /** G0148 / unknown model / unreadable feature.xml: HbFeatures.modelOff = BOOST and COLOR_TEMP off. */
+    /** The id texts of a set of features (the checks below name features by their id). */
+    private static List<String> ids(java.util.Collection<FeatureId> fs) {
+        List<String> out = new ArrayList<>();
+        for (FeatureId f : fs) out.add(f.id);
+        return out;
+    }
+
     private static final Predicate<String> G0148 = f -> !f.equals("BOOST") && !f.equals("COLOR_TEMP");
 
     private static Predicate<String> without(String... off) {
@@ -57,48 +65,48 @@ public final class HbMenuGatesTest {
 
         // ---- one gate row per profile feature, in the profile order, every gate a feature id the module knows
         List<String> gateIds = new ArrayList<>(), shown = new ArrayList<>();
-        for (String[] g : HbMenuGates.GATES) {
-            gateIds.add(g[0]);
-            if (!pending(p, g[0])) shown.add(g[0]);
+        for (Object[] g : HbMenuGates.GATES) {
+            gateIds.add(g[0].toString());
+            if (!pending(p, g[0].toString())) shown.add(g[0].toString());
         }
-        eq("gate rows without the pending ones = profile features (order)", new ArrayList<>(p.features()), shown);
+        eq("gate rows without the pending ones = profile features (order)", ids(p.features()), shown);
         eq("no gate row twice", gateIds.size(), new HashSet<>(gateIds).size());
-        for (String id : gateIds) check("known feature " + id, Feature.known(id));
-        for (String id : gateIds) check("gate row " + id + " is a profile feature or pending", p.has(id) || pending(p, id));
+        for (String id : gateIds) check("known feature " + id, FeatureId.known(id) != null);
+        for (String id : gateIds) check("gate row " + id + " is a profile feature or pending", p.has(FeatureId.known(id)) || pending(p, id));
 
         // ---- presence per unit
-        Set<String> all = HbMenuGates.implemented(G0130);
+        Set<String> all = new HashSet<>(ids(HbMenuGates.implemented(G0130)));
         eq("G0130: every gate row", new HashSet<>(gateIds), all);
-        check("G0130: every profile feature", all.containsAll(p.features()));
-        Set<String> g48 = HbMenuGates.implemented(G0148);
+        check("G0130: every profile feature", all.containsAll(ids(p.features())));
+        Set<String> g48 = new HashSet<>(ids(HbMenuGates.implemented(G0148)));
         check("G0148: no boost", !g48.contains("boost"));
         check("G0148: no colour temperature", !g48.contains("picture.color_temp"));
         check("G0148: light kept", g48.contains("lamp"));
         check("G0148: picture mode kept", g48.contains("picture.mode"));
         eq("G0148: exactly two fewer", all.size() - 2, g48.size());
-        Set<String> noZoom = HbMenuGates.implemented(without("OPTICAL_ZOOM"));
+        Set<String> noZoom = new HashSet<>(ids(HbMenuGates.implemented(without("OPTICAL_ZOOM"))));
         check("OPTICAL_ZOOM off: no zoom", !noZoom.contains("zoom"));
         eq("OPTICAL_ZOOM off: only zoom goes", all.size() - 1, noZoom.size());
-        Set<String> noEye = HbMenuGates.implemented(without("EYE_PROTECTION"));
+        Set<String> noEye = new HashSet<>(ids(HbMenuGates.implemented(without("EYE_PROTECTION"))));
         check("EYE_PROTECTION off: no eye", !noEye.contains("eye"));
-        Set<String> noAk = HbMenuGates.implemented(without("AUTO_KEYSTONE"));
+        Set<String> noAk = new HashSet<>(ids(HbMenuGates.implemented(without("AUTO_KEYSTONE"))));
         check("AUTO_KEYSTONE off: no AK tile, no AK at power-on",
                 !noAk.contains("keystone.ak_now") && !noAk.contains("keystone.on_power"));
-        Set<String> noFit = HbMenuGates.implemented(without("CURTAIN_FIT"));
+        Set<String> noFit = new HashSet<>(ids(HbMenuGates.implemented(without("CURTAIN_FIT"))));
         check("CURTAIN_FIT off: no fit now, no fit switch", !noFit.contains("keystone.fit_now") && !noFit.contains("keystone.curtain"));
-        Set<String> noHdmi = HbMenuGates.implemented(without("HDMI"));
+        Set<String> noHdmi = new HashSet<>(ids(HbMenuGates.implemented(without("HDMI"))));
         check("HDMI off: no range, EDID, eARC", !noHdmi.contains("hdmi.range") && !noHdmi.contains("hdmi.edid")
                 && !noHdmi.contains("sound.earc"));
-        Set<String> noGame = HbMenuGates.implemented(without("GAME_MODE"));
+        Set<String> noGame = new HashSet<>(ids(HbMenuGates.implemented(without("GAME_MODE"))));
         check("GAME_MODE off: no game rows", !noGame.contains("game.mode") && !noGame.contains("game.speed")
                 && !noGame.contains("game.allm"));
-        Set<String> noPic = HbMenuGates.implemented(without("PICTURE"));
+        Set<String> noPic = new HashSet<>(ids(HbMenuGates.implemented(without("PICTURE"))));
         for (String f : new String[] {"picture.mode", "picture.pq", "picture.memc", "picture.pro", "picture.reset", "picture.reset_all"}) {
             check("PICTURE off: no " + f, !noPic.contains(f));
         }
-        Set<String> none = HbMenuGates.implemented(f -> false);
-        for (String[] g : HbMenuGates.GATES) check("all off: " + g[0] + (g[1] == null ? " kept (no switch)" : " gone"),
-                none.contains(g[0]) == (g[1] == null));
+        Set<String> none = new HashSet<>(ids(HbMenuGates.implemented(f -> false)));
+        for (Object[] g : HbMenuGates.GATES) check("all off: " + g[0] + (g[1] == null ? " kept (no switch)" : " gone"),
+                none.contains(g[0].toString()) == (g[1] == null));
 
         // ---- game menu items
         eq("game items G0130 = profile game_menu.items", p.gameItems(), new ArrayList<>(HbMenuGates.gameItems(G0130)));
@@ -113,7 +121,7 @@ public final class HbMenuGatesTest {
 
         // ---- every token table = the profile's options of its feature (same order)
         for (HbMenuGates.Table t : HbMenuGates.TABLES) {
-            if (pending(p, t.feature)) {
+            if (pending(p, t.feature.id)) {
                 check("pending table " + t.feature + " is not a profile feature", !p.has(t.feature));
                 for (String tok : t.wire.keySet()) check("pending token " + t.feature + "|" + tok, p.pending().contains(t.feature + "|" + tok));
                 continue;
@@ -121,9 +129,8 @@ public final class HbMenuGatesTest {
             eq("tokens of " + t.feature, p.options(t.feature), new ArrayList<>(t.wire.keySet()));
             for (String tok : t.wire.keySet()) eq("round trip " + t.feature + " " + tok, tok, t.token(t.wire(tok)));
         }
-        for (String f : p.features()) {
-            Feature.Def d = Feature.def(f);
-            if (d != null && d.kind == Feature.Kind.CHOICE && !f.equals("eye")) check("table for choice " + f, HbMenuGates.table(f) != null);
+        for (FeatureId f : p.features()) {
+            if (f.kind == FeatureKind.CHOICE && f != FeatureId.EYE) check("table for choice " + f, HbMenuGates.table(f) != null);
         }
 
         // ---- HB wire values (stock tree order, GmpfClient enums, allowed.tsv)
@@ -145,9 +152,9 @@ public final class HbMenuGatesTest {
         eq("output unknown", null, HbMenuGates.outputKind("hdmi"));
 
         // ---- light without the Boost step
-        eq("light min", 1, p.number("lamp", "min", -1));
-        eq("light max", 10, p.number("lamp", "max", -1));
-        eq("Boost level", 11, p.number("boost", "level", -1));
+        eq("light min", 1, p.number(FeatureId.LAMP, "min", -1));
+        eq("light max", 10, p.number(FeatureId.LAMP, "max", -1));
+        eq("Boost level", 11, p.number(FeatureId.BOOST, "level", -1));
         check("light 1..10 sent", HbMenuGates.lampValue(1) && HbMenuGates.lampValue(10));
         check("light 0 never sent", !HbMenuGates.lampValue(0));
         check("Boost step never sent as a light level", !HbMenuGates.lampValue(11));
@@ -165,9 +172,9 @@ public final class HbMenuGatesTest {
         eq("rear off from rear ceiling", 1, HbMenuGates.putModeForRear(false, 3));
 
         // ---- hints: only stock HB pictures
-        eq("hint picture mode", "picture_mode", p.hint("picture.mode"));
-        eq("hint rear", "rear_projection", p.hint("projection.rear"));
-        check("no eye hint (the HB tree has none)", p.hint("eye") == null);
+        eq("hint picture mode", "picture_mode", p.hint(FeatureId.PICTURE_MODE));
+        eq("hint rear", "rear_projection", p.hint(FeatureId.PROJECTION_REAR));
+        check("no eye hint (the HB tree has none)", p.hint(FeatureId.EYE) == null);
 
         System.out.println("HbMenuGatesTest: " + pass + " passed, " + fail + " failed");
         System.exit(fail == 0 ? 0 : 1);

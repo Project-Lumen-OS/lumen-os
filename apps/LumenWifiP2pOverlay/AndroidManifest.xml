@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS: static RRO on com.android.wifi.resources (ServiceWifiResources in the Wi-Fi APEX), overlayable
+     WifiCustomization (policies odm|product|system|vendor, checked with aapt2 dump overlayable on the 1.0.9
+     image's APK). It sets only config_wifi_p2p_device_type, the WPS primary device type the Wi-Fi Direct
+     service writes into the supplicant (WifiP2pServiceImpl.initializeP2pSettings, on every P2P start).
+     The AOSP default "10-0050F204-5" says "smartphone"; Windows lists Miracast receivers only for some device
+     types and "television" (7-0050F204-1) is the one known to work (intel/wds interoperability notes, every
+     Linux receiver guide, Samsung and Honor TVs in the wild), so Win+K can show the projector.
+     Install: /system/product/overlay/LumenWifiP2pOverlay.apk (0644). The vendor's WifiRROOverlay (priority 0)
+     and Android TV's TvWifiOverlay do not set this resource. No code, no permissions. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lumen.overlay.wifip2p"
+    android:versionCode="111"
+    android:versionName="1.0.11">
+    <overlay
+        android:targetPackage="com.android.wifi.resources"
+        android:targetName="WifiCustomization"
+        android:isStatic="true"
+        android:priority="2000" />
+    <application android:hasCode="false" />
+</manifest>

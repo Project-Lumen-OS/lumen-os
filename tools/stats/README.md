@@ -18,7 +18,7 @@ How many projectors run which Lumen OS version. Two sources:
 ## Server (`server/`)
 
 `lumen_stats.py`: Python standard library + python3-maxminddb, SQLite, on 127.0.0.1:8095 of the VPS behind nginx
-(today the <domain> site, Cloudflare in front for TLS). Stores per install and day: HMAC of the install id and of
+(today the owner's site, Cloudflare in front for TLS). Stores per install and day: HMAC of the install id and of
 the serial (secret salt; `SERIAL_RAW = True` would keep the serial itself), model, XGIMI model, version, version
 code, build, channel, country; and update events (from, to, method). The country comes from the client
 address through DB-IP Lite Country, no city (CC BY 4.0, attribution "IP Geolocation by DB-IP", https://db-ip.com, refreshed

@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -25,9 +26,10 @@ import java.util.Map;
  * outside that range (t20: the calls the owner unbanned for one app carry one each, stock analysis
  * unbanned_x50projector.tsv).
  *
- * Guard: before the first call on an interface getInterfaceVersion must be the app's version and getInterfaceHash its
- * hash; a mismatch closes that interface for the process (a model whose hash differs, or a later firmware, gets
- * nothing). checkService only (never the blocking getService); calls on the main thread are refused. Every call gets a
+ * Guard: before the first call on an interface getInterfaceVersion must be the app's version and getInterfaceHash a
+ * hash its {@link HashRule} accepts on the running stock firmware (the base hash anywhere, an extra hash only on its
+ * own firmware); a mismatch closes that interface for the process (a model whose hash differs, or a later firmware,
+ * gets nothing). checkService only (never the blocking getService); calls on the main thread are refused. Every call gets a
  * paced INFO line under the app's tag (HalLog).
  */
 public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
@@ -64,17 +66,18 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
 
     private final String tag;
     private final int version;
-    private final String hash;
+    private final HashRule rule;
     private final C getVersion, getHash;
 
-    protected AidlTransport(String tag, int version, String hash, C getVersion, C getHash) {
+    protected AidlTransport(String tag, int version, HashRule rule, C getVersion, C getHash) {
         if (getVersion.iface() != null || getVersion.code() != META_VERSION || !"getInterfaceVersion".equals(getVersion.method())
                 || getHash.iface() != null || getHash.code() != META_HASH || !"getInterfaceHash".equals(getHash.method())) {
             throw new IllegalArgumentException("the guard needs getInterfaceVersion 0x00FFFFFF and getInterfaceHash 0x00FFFFFE");
         }
         this.tag = tag;
         this.version = version;
-        this.hash = hash;
+        if (rule == null) throw new IllegalArgumentException("the guard needs a hash rule");
+        this.rule = rule;
         this.getVersion = getVersion;
         this.getHash = getHash;
     }
@@ -138,10 +141,12 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                     st.binder = null;
                     throw e;
                 }
-                if (v != version || !hash.equals(h)) {
+                String fw = SystemProperties.get(HashRule.FIRMWARE_PROP, "");
+                if (v != version || !rule.accepted(h, fw)) {
                     st.refused = true;
                     st.binder = null;
-                    Log.e(tag, "guard: " + i.descriptor() + " version " + v + " hash " + h + ": closed, nothing sent");
+                    Log.e(tag, "guard: " + i.descriptor() + " version " + v + " hash " + h + " on firmware " + fw
+                            + ": closed, nothing sent");
                     throw new RemoteException(i.descriptor() + " version/hash mismatch");
                 }
                 st.verified = true;

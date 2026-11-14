@@ -20,9 +20,6 @@ public final class Control {
     public static final String ENABLED = "enabled";
     public static final String ASK = "ask";
 
-    /** What the receiver is doing, for the status line. */
-    public enum Status { OFF, STARTING, READY, IN_USE, NO_WIFI, UNSUPPORTED }
-
     /** The setting a set call changes ({@link #ENABLED} or {@link #ASK}), or null for any other method. */
     public static String settingOf(String method) {
         if (SET_ENABLED.equals(method)) return ENABLED;
@@ -39,16 +36,16 @@ public final class Control {
 
     /**
      * The status line: off while the setting is off, starting until the service runs, the peer while a session
-     * runs, then the Wi-Fi Direct state ({@code p2pState} = P2pController.State name; unknown names count as
+     * runs, then the Wi-Fi Direct state ({@code p2pState} = P2pState name; unknown names count as
      * starting).
      */
-    public static Status status(boolean enabled, boolean serviceUp, boolean mirroring, String p2pState) {
-        if (!enabled) return Status.OFF;
-        if (!serviceUp) return Status.STARTING;
-        if (mirroring) return Status.IN_USE;
-        if ("UNSUPPORTED".equals(p2pState)) return Status.UNSUPPORTED;
-        if ("WIFI_OFF".equals(p2pState)) return Status.NO_WIFI;
-        if ("VISIBLE".equals(p2pState)) return Status.READY;
-        return Status.STARTING;
+    public static ReceiverStatus status(boolean enabled, boolean serviceUp, boolean mirroring, String p2pState) {
+        if (!enabled) return ReceiverStatus.OFF;
+        if (!serviceUp) return ReceiverStatus.STARTING;
+        if (mirroring) return ReceiverStatus.IN_USE;
+        if ("UNSUPPORTED".equals(p2pState)) return ReceiverStatus.UNSUPPORTED;
+        if ("WIFI_OFF".equals(p2pState)) return ReceiverStatus.NO_WIFI;
+        if ("VISIBLE".equals(p2pState)) return ReceiverStatus.READY;
+        return ReceiverStatus.STARTING;
     }
 }

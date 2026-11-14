@@ -8,13 +8,17 @@ import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.game.GameProfile;
+import org.lumen.projector.hal.AspectRatio;
+import org.lumen.projector.hal.GameModeOption;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.HbFeatures;
-import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.HdmiSignal;
 import org.lumen.projector.ui.Notify;
 
 import java.util.function.Consumer;
+
+import static org.lumen.projector.utils.KstFrames.isFullFrame;
 
 /**
  * Z9X HB (goat_elegant): the HB side of the shared game menu (apps/core/lumen-menu GameMenu.Io).
@@ -62,7 +66,7 @@ public final class HbGameIo implements GameMenu.Io {
     static GameMenu.Snap readOnHal(GmpfClient g, Gmpf2Client g2, int port) {
         GameMenu.Snap s = new GameMenu.Snap();
         try {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             if (o != null) s.opt = o.wire;
         } catch (Throwable t) { Log.d(TAG, "77: " + t); }
         try {
@@ -70,7 +74,7 @@ public final class HbGameIo implements GameMenu.Io {
             s.running = p != null && p.length >= 1 && p[0] == 0;
         } catch (Throwable t) { Log.d(TAG, "148: " + t); }
         try {
-            GmpfClient.HdmiSignal sig = g.getHdmiInfo();
+            HdmiSignal sig = g.getHdmiInfo();
             if (sig != null && sig.plausible()) { s.width = sig.width; s.height = sig.height; s.frameCenti = sig.frameRateCenti; }
         } catch (Throwable t) { Log.d(TAG, "TV 38: " + t); }
         try { s.hdr = g.getHdrType(); } catch (Throwable t) { Log.d(TAG, "78: " + t); }
@@ -101,7 +105,7 @@ public final class HbGameIo implements GameMenu.Io {
     /** HAL thread: DISPLAY 76 with the stock HB order; the raw 77 read back (BAD when none). */
     private int writeSpeed(GmpfClient g, Gmpf2Client g2, int value, int port) throws Exception {
         onPort(g, port);
-        GmpfClient.GameModeOption o = GmpfClient.GameModeOption.fromWire(value);
+        GameModeOption o = GameModeOption.fromWire(value);
         if (o == null) throw new IllegalArgumentException("option " + value);
         if (!o.isTopSpeed() && HbFeatures.on(HbFeatures.F.GAME_VRR)) {
             try {
@@ -109,7 +113,7 @@ public final class HbGameIo implements GameMenu.Io {
             } catch (Throwable t) { Log.w(TAG, "145 before 76: " + t); }
         }
         boolean r = g.setGameModeOption(o);
-        GmpfClient.GameModeOption now = g.getGameModeOption();
+        GameModeOption now = g.getGameModeOption();
         long end = SystemClock.uptimeMillis() + SPEED_WAIT_MS;
         while (!r && now != o && SystemClock.uptimeMillis() < end) {
             SystemClock.sleep(SPEED_POLL_MS);
@@ -138,9 +142,9 @@ public final class HbGameIo implements GameMenu.Io {
     }
 
     /** DISPLAY 38(0) for top speed once 77 reads it (re-polled every 300 ms, never holding the HAL thread). */
-    private void topSpeedKeystone(GmpfClient.GameModeOption o, long deadline) {
+    private void topSpeedKeystone(GameModeOption o, long deadline) {
         Hal.runDelayed((g, g2) -> {
-            GmpfClient.GameModeOption now = g.getGameModeOption();
+            GameModeOption now = g.getGameModeOption();
             if (now == o) {
                 g.resetKeystoneForTopSpeedGame();
                 GameProfile.noteKeystoneFullFrame(app, "game menu top speed");
@@ -160,7 +164,7 @@ public final class HbGameIo implements GameMenu.Io {
         switch (key) {
             case GmModel.AR: {
                 int wire = GmModel.arWire(value);
-                GmpfClient.AspectRatio a = wire == 2 ? GmpfClient.AspectRatio.AUTO : wire == 1 ? GmpfClient.AspectRatio.R16_9 : null;
+                AspectRatio a = wire == 2 ? AspectRatio.AUTO : wire == 1 ? AspectRatio.R16_9 : null;
                 if (a == null) throw new IllegalArgumentException("aspect " + value);
                 boolean r = g.setAspectRatio(a);
                 int back = g.getAspectRatioRaw();
@@ -211,15 +215,6 @@ public final class HbGameIo implements GameMenu.Io {
         return raw;
     }
 
-    private static boolean isFullFrame(KstPoint p) {
-        if (p == null) return false;
-        KstPoint f = KstPoint.fullFrame();
-        for (int c = KstPoint.TL; c <= KstPoint.BL; c++) {
-            if (Math.abs(p.x(c) - f.x(c)) > 4 || Math.abs(p.y(c) - f.y(c)) > 4) return false;
-        }
-        return true;
-    }
-
     @Override public int activePort() { return GameProfile.activePort(); }
 
     @Override public boolean isConsolePort(int port) { return GameProfile.isConsolePort(app, port); }
@@ -238,7 +233,7 @@ public final class HbGameIo implements GameMenu.Io {
                 int f = g2.getOutputFps();                                  // 179 while VRR runs (stock)
                 return f > 0 ? f : -1;
             }
-            GmpfClient.HdmiSignal s = g.getHdmiInfo();
+            HdmiSignal s = g.getHdmiInfo();
             return s != null && s.plausible() ? GmModel.fpsShown(s.frameRateCenti) : -1;
         }, cb::accept);
     }

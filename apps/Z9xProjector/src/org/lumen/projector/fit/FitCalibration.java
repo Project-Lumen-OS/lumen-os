@@ -16,22 +16,20 @@ import java.util.List;
  * Positions: TWO = 0 and 13; THREE = 0, 7 (check) and 13; FULL = all 14.
  */
 public final class FitCalibration {
-    public enum Kind { TWO, THREE, FULL }
-
     private final FitRun run;
     private final int[] plan;
     private final List<double[]> points = new ArrayList<>();
     private int index;
 
-    public FitCalibration(FitRun run, Kind kind) {
+    public FitCalibration(FitRun run, CalibrationKind kind) {
         this.run = run;
         this.plan = positions(kind);
     }
 
-    public static int[] positions(Kind k) {
+    public static int[] positions(CalibrationKind k) {
         int last = ZoomModel.POSITIONS - 1;
-        if (k == Kind.TWO) return new int[] {0, last};
-        if (k == Kind.THREE) return new int[] {0, 7, last};
+        if (k == CalibrationKind.TWO) return new int[] {0, last};
+        if (k == CalibrationKind.THREE) return new int[] {0, 7, last};
         int[] a = new int[ZoomModel.POSITIONS];
         for (int i = 0; i < a.length; i++) a[i] = i;
         return a;

@@ -97,6 +97,15 @@ printf '<resources><string name="ok">OK</string></resources>\n' > "$W/M/lumen-x/
 mrecipe
 expect module_unprefixed_res 1 'not prefixed lumen_' "$W/r.layers"
 rm "$W/M/lumen-x/res/values/lumen_more.xml"
+# a sub-package of the module's own package: red unless packages= names it
+mkdir -p "$W/M/lumen-x/src/org/lumen/x/utils"; echo 'package org.lumen.x.utils; public final class U {}' > "$W/M/lumen-x/src/org/lumen/x/utils/U.java"
+mrecipe
+expect module_subpackage_unlisted 1 'outside its package folders' "$W/r.layers"
+printf 'name=lumen-x\npackage=org.lumen.x\npackages=org.lumen.x.utils\n' > "$W/M/lumen-x/module.conf"
+mrecipe
+expect module_subpackage_listed 0 '4 files' "$W/r.layers"
+printf 'name=lumen-x\npackage=org.lumen.x\n' > "$W/M/lumen-x/module.conf"
+rm -r "$W/M/lumen-x/src/org/lumen/x/utils"
 mkdir -p "$W/M/lumen-x/src/org/other"; echo 'package org.other; class B {}' > "$W/M/lumen-x/src/org/other/B.java"
 mrecipe
 expect module_outside_package 1 'outside its package folder' "$W/r.layers"

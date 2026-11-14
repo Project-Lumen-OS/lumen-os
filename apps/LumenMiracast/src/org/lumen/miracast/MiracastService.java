@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lumen.miracast;
 
+import android.app.DreamManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -30,8 +31,18 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Surface;
 
+import org.lumen.miracast.core.Diag;
+import org.lumen.miracast.core.P2pCapability;
+import org.lumen.miracast.core.P2pRules;
+import org.lumen.miracast.core.P2pVerdict;
 import org.lumen.miracast.core.WfdSession;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -40,19 +51,32 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * when enabled, foreground (type connectedDevice), no launcher entry. It keeps the projector visible
  * over Wi-Fi Direct ({@link P2pController}), asks (or not) when a phone or computer connects
  * ({@link PromptOverlay}), runs one {@link SinkSession} at a time and shows it in {@link MirrorActivity}.
+ *
+ * A unit without Wi-Fi Direct ({@link P2pCapability}, decided at run time for every model and chip) loses the control
+ * provider ({@link ControlGate}: no quick menu tile, no Lumen Home tile) and, when nothing can change that on this
+ * boot, the service stops.
+ *
+ * Diagnostics: every step goes to {@link #diag()} (logcat tag LumenMiracastDiag, one line per step), the
+ * report of the last finished attempt is kept in diag-last.txt, and both print with
+ * {@code adb shell dumpsys activity service org.lumen.miracast/.MiracastService} or on the hidden
+ * {@link DiagActivity} page.
  */
 public final class MiracastService extends Service implements P2pController.Callback, SinkSession.Host {
     static final String TAG = "LumenMiracast";
     static final String ACTION_RELOAD = "org.lumen.miracast.action.RELOAD";
     private static final String CHANNEL = "miracast";
     private static final int NOTIF_ID = 1;
+    static final String DIAG_FILE = "diag-last.txt";
 
     interface UiListener {
         void onMiracastState();
     }
 
     private static volatile MiracastService instance;
+    /** This boot found no Wi-Fi Direct at all (the service stopped itself): the status line says so. */
+    private static volatile boolean noWifiDirect;
     private static final Set<UiListener> listeners = new CopyOnWriteArraySet<>();
+    private static final Diag DIAG = new Diag(System::currentTimeMillis, line -> Log.i(Diag.TAG, line));
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private P2pController p2p;
@@ -61,6 +85,8 @@ public final class MiracastService extends Service implements P2pController.Call
     private String peerName = "";
     /** Name from the connection request: group client entries often carry only the address. */
     private String requestName;
+    /** RTSP port from the sender's WFD element in the request (the group record usually has none). */
+    private int requestPort;
     private boolean firstFrame;
     private int videoW, videoH;
     private AudioFocusRequest focus;
@@ -74,6 +100,15 @@ public final class MiracastService extends Service implements P2pController.Call
 
     static MiracastService instance() {
         return instance;
+    }
+
+    static boolean noWifiDirect() {
+        return noWifiDirect;
+    }
+
+    /** The receiver's stage diagnostics (one per process, also before the service runs). */
+    static Diag diag() {
+        return DIAG;
     }
 
     static void addListener(UiListener l) {
@@ -105,8 +140,9 @@ public final class MiracastService extends Service implements P2pController.Call
         ch.setShowBadge(false);
         nm.createNotificationChannel(ch);
         startForeground(NOTIF_ID, notification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+        DIAG.ok(Diag.Stage.SERVICE, "started, version " + versionName() + ", ask=" + Prefs.ask(this));
         prompt = new PromptOverlay(this);
-        p2p = new P2pController(this, this);
+        p2p = new P2pController(this, this, DIAG);
         p2p.start(Prefs.name(this));
         IntentFilter f = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOff, f, Context.RECEIVER_NOT_EXPORTED);
@@ -135,6 +171,7 @@ public final class MiracastService extends Service implements P2pController.Call
         if (screenReceiverOn) unregisterReceiver(screenOff);
         main.removeCallbacks(nameChanged);
         if (nameObserver != null) getContentResolver().unregisterContentObserver(nameObserver);
+        DIAG.waiting(Diag.Stage.SERVICE, "stopped (switched off or the system ended it)");
         instance = null;
         notifyUi();
         super.onDestroy();
@@ -143,6 +180,21 @@ public final class MiracastService extends Service implements P2pController.Call
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    /** adb shell dumpsys activity service org.lumen.miracast/.MiracastService */
+    @Override
+    protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+        pw.println("Lumen screen mirroring " + versionName() + " as \"" + Prefs.name(this) + "\" enabled=" + Prefs.enabled(this)
+                + " ask=" + Prefs.ask(this) + " quality=" + Prefs.quality(this));
+        pw.println("p2p: " + (p2p != null ? p2p.summary() : "not started"));
+        pw.println("session: " + (session != null ? "with " + peerName + " playing=" + session.playing() + " firstFrame=" + firstFrame
+                + " video=" + videoW + "x" + videoH : "none"));
+        pw.println("dreaming: " + dreaming());
+        pw.println("---- current");
+        pw.print(DIAG.report());
+        pw.println("---- last finished attempt (" + DIAG_FILE + ")");
+        pw.println(lastReport(this));
     }
 
     private final BroadcastReceiver screenOff = new BroadcastReceiver() {
@@ -203,8 +255,8 @@ public final class MiracastService extends Service implements P2pController.Call
         return videoH;
     }
 
-    P2pController.State p2pState() {
-        return p2p != null ? p2p.state() : P2pController.State.STOPPED;
+    P2pState p2pState() {
+        return p2p != null ? p2p.state() : P2pState.STOPPED;
     }
 
     String lastError() {
@@ -235,23 +287,30 @@ public final class MiracastService extends Service implements P2pController.Call
         String who = label(device);
         requestName = device != null && device.deviceName != null && !device.deviceName.trim().isEmpty()
                 ? device.deviceName.trim() : null;
+        WifiP2pWfdInfo w = device != null ? device.getWfdInfo() : null;
+        requestPort = w != null ? w.getControlPort() : 0;
+        String address = device != null ? device.deviceAddress : null;
         if (session != null) {
             Log.i(TAG, "busy: declining " + who);
-            p2p.answer(device, false);
+            p2p.answer(address, false, "busy with " + peerName);
             return;
         }
+        // the card and later the picture must not sit under the screensaver (a dream task stays on top)
+        wakeFromScreensaver("connection request");
         if (!Prefs.ask(this)) {
-            p2p.answer(device, true);
+            p2p.answer(address, true, "ask is off");
             return;
         }
+        DIAG.waiting(Diag.Stage.ANSWER, "asking on screen (30 s)");
         prompt.ask(who, allow -> {
-            Log.i(TAG, (allow ? "allowed " : "declined ") + who);
-            p2p.answer(device, allow);
+            Log.i(TAG, (allow ? "allowed " : "declined ") + who + " (" + prompt.lastHow() + ")");
+            p2p.answer(address, allow, "on screen: " + prompt.lastHow());
         });
     }
 
     @Override
     public void onPin(String peerAddress, String pin) {
+        wakeFromScreensaver("PIN");
         prompt.showPin(peerName.isEmpty() ? getString(R.string.unknown_device) : peerName, pin);
     }
 
@@ -263,9 +322,9 @@ public final class MiracastService extends Service implements P2pController.Call
         peerName = peer != null && peer.deviceName != null && !peer.deviceName.trim().isEmpty() ? peer.deviceName.trim()
                 : requestName != null ? requestName : getString(R.string.unknown_device);
         requestName = null;
-        int port = Prefs.CONTROL_PORT;
         WifiP2pWfdInfo w = peer != null ? peer.getWfdInfo() : null;
-        if (w != null && w.getControlPort() > 0) port = w.getControlPort();
+        int port = P2pRules.controlPort(w != null ? w.getControlPort() : 0, requestPort);
+        requestPort = 0;
         Log.i(TAG, "session with " + peerName + " control port " + port + " wfd=" + (w != null));
         WfdSession.Config cfg = new WfdSession.Config();
         cfg.friendlyName = Prefs.name(this);
@@ -275,7 +334,7 @@ public final class MiracastService extends Service implements P2pController.Call
         cfg.quality = Prefs.quality(this);
         firstFrame = false;
         videoW = videoH = 0;
-        session = new SinkSession(this, this, peerName);
+        session = new SinkSession(this, this, peerName, DIAG);
         session.start(info, group, port, cfg);
         notifyUi();
     }
@@ -291,6 +350,16 @@ public final class MiracastService extends Service implements P2pController.Call
         notifyUi();
     }
 
+    @Override
+    public void onCapability(P2pVerdict verdict, String why, boolean definitive) {
+        ControlGate.apply(this, P2pCapability.providerOn(verdict));
+        if (verdict == P2pVerdict.NO && definitive) {
+            noWifiDirect = true;
+            Log.i(TAG, "no Wi-Fi Direct on this unit, the receiver stops: " + why);
+            main.post(this::stopSelf);
+        }
+    }
+
     // ------------------------------------------------------------------ SinkSession.Host (any thread)
 
     @Override
@@ -298,11 +367,14 @@ public final class MiracastService extends Service implements P2pController.Call
         main.post(() -> {
             if (s != session) return;
             takeFocus();
+            wakeFromScreensaver("picture");
             Intent i = new Intent(this, MirrorActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             try {
                 startActivity(i);
+                DIAG.waiting(Diag.Stage.SCREEN, "mirror screen started");
             } catch (RuntimeException e) {
+                DIAG.fail(Diag.Stage.SCREEN, "cannot start the mirror screen: " + e);
                 Log.e(TAG, "cannot show the picture", e);
             }
             updateNotification();
@@ -331,6 +403,7 @@ public final class MiracastService extends Service implements P2pController.Call
 
     @Override
     public void onSessionEnded(SinkSession s, String reason) {
+        saveReport(this);
         main.post(() -> {
             if (s != session) return;
             Log.i(TAG, "session ended: " + reason);
@@ -352,10 +425,37 @@ public final class MiracastService extends Service implements P2pController.Call
         if (s == null) return;
         Log.i(TAG, "ending session: " + why);
         session = null;
-        s.stop(polite);
+        s.stop(polite, why);
         releaseFocus();
         updateNotification();
         notifyUi();
+    }
+
+    /**
+     * Ends the screensaver: a dream task stays above every other task (TaskDisplayArea.getPriority), so
+     * the mirror screen would start behind it, stop at once and end the session. WRITE_DREAM_STATE.
+     */
+    private void wakeFromScreensaver(String why) {
+        try {
+            DreamManager dm = getSystemService(DreamManager.class);
+            if (dm != null && dm.isDreaming()) {
+                dm.stopDream();
+                Log.i(TAG, "screensaver stopped for the " + why);
+                DIAG.ok(Diag.Stage.SCREEN, "screensaver stopped for the " + why);
+            }
+        } catch (Throwable t) {
+            Log.w(TAG, "stopDream: " + t);
+            DIAG.fail(Diag.Stage.SCREEN, "cannot stop the screensaver: " + t);
+        }
+    }
+
+    private boolean dreaming() {
+        try {
+            DreamManager dm = getSystemService(DreamManager.class);
+            return dm != null && dm.isDreaming();
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     /** Also called again when a paused source resumes (PLAY): keeps the one request. */
@@ -382,6 +482,25 @@ public final class MiracastService extends Service implements P2pController.Call
             focus = null;
         }
         if (wake != null && wake.isHeld()) wake.release();
+    }
+
+    /** The finished attempt's report survives a restart of the receiver (device-protected storage). */
+    static void saveReport(Context c) {
+        try {
+            File f = new File(c.createDeviceProtectedStorageContext().getFilesDir(), DIAG_FILE);
+            Files.write(f.toPath(), DIAG.report().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException | RuntimeException e) {
+            Log.w(TAG, "diag save: " + e);
+        }
+    }
+
+    static String lastReport(Context c) {
+        try {
+            File f = new File(c.createDeviceProtectedStorageContext().getFilesDir(), DIAG_FILE);
+            return f.exists() ? new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8) : "(none yet)";
+        } catch (IOException | RuntimeException e) {
+            return "(unreadable: " + e + ")";
+        }
     }
 
     private static WifiP2pDevice peer(WifiP2pInfo info, WifiP2pGroup group) {
@@ -412,9 +531,9 @@ public final class MiracastService extends Service implements P2pController.Call
         String text;
         if (session != null) {
             text = getString(R.string.notif_in_use, peerName);
-        } else if (p2p != null && p2p.state() == P2pController.State.WIFI_OFF) {
+        } else if (p2p != null && p2p.state() == P2pState.WIFI_OFF) {
             text = getString(R.string.status_no_wifi);
-        } else if (p2p != null && p2p.state() == P2pController.State.UNSUPPORTED) {
+        } else if (p2p != null && p2p.state() == P2pState.UNSUPPORTED) {
             text = getString(R.string.status_unsupported);
         } else {
             text = getString(R.string.notif_ready, Prefs.name(this));

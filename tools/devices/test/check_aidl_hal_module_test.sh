@@ -56,7 +56,7 @@ package org.lumen.x50.eyeguard;
 
 enum Sneak implements org.lumen.hal.AidlTransport.Method {
     X;
-    public org.lumen.hal.AidlTransport.Service iface() { return Gmpf.Iface.DISPLAY; }
+    public org.lumen.hal.AidlTransport.Service iface() { return GmpfIface.DISPLAY; }
     public int code() { return 61; }
     public String method() { return "setHumanDetectOnOff"; }
 }
@@ -70,16 +70,16 @@ copy; edit "app/$GM" '    boolean connect() {' '    static Object sm() { return 
 
     boolean connect() {'
 broken service_manager_in_allow_list "ServiceManager outside the transport file"
-copy; edit "app/$GM" 'final class Gmpf extends AidlTransport<Gmpf.Call> {' 'final class Gmpf extends AidlTransport<Call> {'
+copy; edit "app/$GM" 'final class Gmpf extends AidlTransport<GmpfCall> {' 'final class Gmpf extends AidlTransport<Call> {'
 broken not_extending_the_call_list "does not extend AidlTransport"
-copy; edit "app/$GM" 'call(Call.GET_BOOT_ANIM_STATE, null, Parcel::readInt)' 'call(null, null, Parcel::readInt)'
+copy; edit "app/$GM" 'call(GmpfCall.GET_BOOT_ANIM_STATE, null, Parcel::readInt)' 'call(null, null, Parcel::readInt)'
 broken call_without_a_constant "passes no Call constant or Call parameter"
 copy; edit "mod/$MT" '    private static void drop(Service i, IBinder b) {' '    static boolean raw(IBinder b) throws RemoteException { return b.transact(61, Parcel.obtain(), null, 0); }
 
     private static void drop(Service i, IBinder b) {'
 broken second_transact_in_module "exactly one '.transact(' site expected"
-copy; edit "app/$GM" '        GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted");' '        GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted"),
-        SET_ON_OFF(Iface.DISPLAY, 61, "setHumanDetectOnOff");'
+copy; edit "app/${GM%Gmpf.java}GmpfCall.java" '    GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted");' '    GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted"),
+    SET_ON_OFF(GmpfIface.DISPLAY, 61, "setHumanDetectOnOff");'
 broken eye_switch_61_added "is not a row of allowed_x50eyeguard.tsv"
 
 echo "check_aidl_hal_module_test: $PASS passed, $FAIL failed"

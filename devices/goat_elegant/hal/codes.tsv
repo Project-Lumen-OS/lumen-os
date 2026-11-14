@@ -1,0 +1,183 @@
+# devices/goat_elegant/hal/codes.tsv: every HAL code the Lumen apps of the Z9X HB (G0130 / G0118 / G0148, MT9660): stable AIDL xgimi.hardware.gmpf V1 send.
+# One row = one named constant. tools/hal/gen_codes.py --write writes the HalCodes class of each app on a java line from
+# the rows naming that app; --check fails when a class differs. tools/hal/check_codes.py proves every row against its
+# stock table (same interface, code and method; AIDL also the signature) and refuses any HAL call in any app whose
+# code is not a HalCodes constant. NAME = interface prefix + "_" + the stock method in capitals (underscores only
+# for reading): if a call does not work, the row of its constant is the place to look. A new call = a new row here.
+#   java<TAB>APP<TAB>PATH[<TAB>public]          the generated class (package from PATH, class name from the file name)
+#   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
+# columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
+# args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
+java	HbProjector	apps/HbProjector/src/org/lumen/projector/hal/HalCodes.java
+java	LumenInfo	apps/LumenInfo/src/org/lumen/info/hal/HalCodes.java
+stock	*	devices/goat_elegant/research/aidl_codes.tsv
+stock	*	devices/goat_elegant/research/aidl_codes_v61712.tsv
+# interface	NAME	code	method	args	kind	apps	source
+-	META_GET_INTERFACE_HASH	0x00FFFFFE	getInterfaceHash	String()	meta	HbProjector,LumenInfo	AIDL meta transaction (android.os.IBinder); client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+-	META_GET_INTERFACE_VERSION	0x00FFFFFF	getInterfaceVersion	int()	meta	HbProjector,LumenInfo	AIDL meta transaction (android.os.IBinder); client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+DisplayManager	DM_SET_PROJECTOR_PUT_MODE	2	setProjectorPutMode	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_PROJECTOR_PUT_MODE	3	getProjectorPutMode	byte()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_DLP_LUMENS_MODE	4	setDlpLumensMode	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_DLP_LUMENS_MODE	5	getDlpLumensMode	byte()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_DLP_LUMENS_LEVEL	6	setDlpLumensLevel	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_DLP_LUMENS_LEVEL	7	getDlpLumensLevel	byte()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_CORRECT_KEYSTONE_FULL_PIONT	15	setCorrectKeystoneFullPiont	boolean(byte, KstPoint)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_CORRECT_KEYSTONE_FULL_PIONT	16	getCorrectKeystoneFullPiont	KstPoint(byte)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_SCREEN_ON_OFF	27	setScreenOnOff	void(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_SCREEN_ON_OFF	28	getScreenOnOff	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_SCREEN_RESOLUTION	31	getScreenResolution	ScreenResolution()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+DisplayManager	DM_CORRECT_KEYSTONE_RESET	38	correctKeystoneReset	void(byte)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_OUTPUT_TIMING_INFO	57	getOutputTimingInfo	boolean(OutputTimingInfo)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+DisplayManager	DM_SET_HUMAN_DETECT_ON_OFF	61	setHumanDetectOnOff	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_HUMAN_DETECT_ON_OFF	62	getHumanDetectOnOff	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_ZOOM_CONTROL	63	zoomControl	int(int, int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_CHECK_TRAPEZOID_COORDINATE	64	checkTrapezoidCoordinate	boolean(KstPoint)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_HUMAN_DETECT_SCREEN_ON_OFF	66	setHumanDetectScreenOnOff	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_HUMAN_DETECT_SCREEN_ON_OFF	67	getHumanDetectScreenOnOff	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_UI_AK_DISPLAY	68	uiAkDisplay	void(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_TRANSLATION_KST	72	translationKst	int(int, boolean)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_GAME_MODE_OPTION	76	setGameModeOption	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_GAME_MODE_OPTION	77	getGameModeOption	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_CURRENT_KEYSTONE_MODE	84	getCurrentKeystoneMode	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SWITCH_KEYSTONE_MODE	85	switchKeystoneMode	boolean(int, int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_ZOOM_START	93	zoomStart	int(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_ZOOM_FINISH	94	zoomFinish	int(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_OPTICAL_ZOOM_STEP	95	setOpticalZoomStep	int(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_DIGITAL_ZOOM_STEP	96	setDigitalZoomStep	int(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_ZOOM_STEP_RANGE	97	getZoomStepRange	int(st_ZoomStepRange)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_CURRENT_ZOOM_STEP2	98	getCurrentZoomStep2	int(st_ZoomStep)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SWITCH_DISP_COLOR_SPACE	102	switchDispColorSpace	int(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_DISP_COLOR_SPACE	103	getDispColorSpace	int(int, int)	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+DisplayManager	DM_GET_COLOR_SPACE_INFO	145	getColorSpaceInfo	boolean(int, int, ColorSpaceInfo_st)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+DisplayManager	DM_SET_GAME_MODE_STATE	146	setGameModeState	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_GAME_MODE_TYPE	147	setGameModeType	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_GAME_MODE_PROP	148	getGameModeProp	boolean(GameModeProp_st)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_LENS_DISP_MODE	151	setLensDispMode	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_LENS_DISP_MODE	152	getLensDispMode	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_SCREEN_ON_OFF_WITH_ACTION	168	setScreenOnOffWithAction	boolean(boolean, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_DYNAMIC_BLACK_TYPE	172	setDynamicBlackType	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_DYNAMIC_BLACK_TYPE	174	getDynamicBlackType	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_DISP_OUTPUT_FPS	179	getDispOutputFps	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_KST_PREPARE	185	setKstPrepare	boolean(boolean, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_SET_OPTICAL_ZOOM_LIMIT_STEP	189	SetOpticalZoomLimitStep	int(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+DisplayManager	DM_GET_CURRENT_ZOOM_LIMIT_STEP	190	GetCurrentZoomLimitStep	int(st_ZoomStep)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_SET_AUDIO_OUTPUT	2	setAudioOutput	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_GET_AUDIO_OUTPUT	3	getAudioOutput	byte()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_SET_SOUNDEFFECT	6	setSoundeffect	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_GET_SOUNDEFFECT	7	getSoundeffect	byte()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_SET_AUTO_SOUNDEFFECT	8	setAutoSoundeffect	void(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_GET_AUDIO_DELAY	13	getAudioDelay	int()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmAudioManager	AM_SET_PEQ_ENABLE	15	SetPEQEnable	int(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_SET_PEQ	16	SetPEQ	int(int, int, int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmAudioManager	AM_GET_ARC_TYPE	28	getARCType	byte()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmAudioManager	AM_GET_SPDIF_TYPE	29	getSpdifType	byte()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmAudioManager	AM_IS_AUDIO_DEVICE_CONNECTED	33	isAudioDeviceConnected	boolean(byte)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmAudioManager	AM_GET_AUDIO_DEVICE_SUPPORT_TYPE	34	getAudioDeviceSupportType	byte(byte)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmFactoryManager	FM_SAVE_POWER_ON_AK_FLAG	45	savePowerOnAKFlag	void(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmFactoryManager	FM_GET_POWER_ON_AK_FLAG	46	getPowerOnAKFlag	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SWITCH_INPUT_SOURCE	3	switchInputSource	boolean(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_CURRENT_INPUT_SOURCE	4	getCurrentInputSource	int()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_SET_CONTRAST	5	setContrast	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_CONTRAST	6	getContrast	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_BRIGHTNESS	7	setBrightness	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_BRIGHTNESS	8	getBrightness	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_SATURATION	9	setSaturation	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_SATURATION	10	getSaturation	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_SHARPNESS	11	setSharpness	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_SHARPNESS	12	getSharpness	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_RED_GAIN	17	setColorTempRedGain	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_RED_GAIN	18	getColorTempRedGain	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_GREEN_GAIN	19	setColorTempGreenGain	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_GREEN_GAIN	20	getColorTempGreenGain	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_BLUE_GAIN	21	setColorTempBlueGain	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_BLUE_GAIN	22	getColorTempBlueGain	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_RED_OFFSET	23	setColorTempRedOffset	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_RED_OFFSET	24	getColorTempRedOffset	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_GREEN_OFFSET	25	setColorTempGreenOffset	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_GREEN_OFFSET	26	getColorTempGreenOffset	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_COLOR_TEMP_BLUE_OFFSET	27	setColorTempBlueOffset	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_COLOR_TEMP_BLUE_OFFSET	28	getColorTempBlueOffset	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_3DNR	29	set3DNR	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_3DNR	30	get3DNR	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_MEMC_LEVEL	31	setMemcLevel	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_MEMC_LEVEL	32	getMemcLevel	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_PICTURE_MODE	33	setPictureMode	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_PICTURE_MODE	34	getPictureMode	int(int)	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_SET_ASPECT_RATIO	35	setAspectRatio	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_ASPECT_RATIO	36	getAspectRatio	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDMI_INFO	38	getHdmiInfo	stHdmiInfo()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_GET_EDID_VERSION	39	getEdidVersion	int()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_SET_EDID_VERSION	40	setEdidVersion	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_UCD_LEVEL	45	setUcdLevel	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_UCD_LEVEL	49	getUcdLevel	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDR_ENABLE	51	getHdrEnable	boolean()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_GET_WAKE_UP_SOURCE	58	getWakeUpSource	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_HDMI_RANGE	63	setHdmiRange	boolean(byte)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDMI_RANGE	64	getHdmiRange	byte()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_SET_EARC_ENABLE	65	setEARCEnable	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_EARC_ENABLE_STATE	66	getEARCEnableState	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDMI_CONNECT_STATUS	70	getHdmiConnectStatus	boolean(byte)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_GET_HDR_TYPE	78	getHdrType	int()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_GET_EARC_STATUS	79	getEARCStatus	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_SIGNAL_STATUS	106	getSignalStatus	int()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_GET_HSY_PICTURE_MODE_ENABLE	112	getHsyPictureModeEnable	boolean(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_TV_DYNAMIC_CONTRAST_ENABLE	113	setTvDynamicContrastEnable	boolean(int, boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_TV_DYNAMIC_CONTRAST_ENABLE	114	getTvDynamicContrastEnable	boolean(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_TV_GAMMA_LEVEL	115	setTvGammaLevel	boolean(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_TV_GAMMA_LEVEL	116	getTvGammaLevel	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_HSY_COLOR_MODEL	117	setHsyColorModel	boolean(int, int, byte[])	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HSY_COLOR_MODEL	118	getHsyColorModel	boolean(int, int, byte[])	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_HSY_PICTURE_MODE_ENABLE	119	setHsyPictureModeEnable	boolean(int, boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_VIDEO_INFO	122	getVideoInfo	boolean(stVideoInfo)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_SET_ALLM_ENABLE	129	setAllmEnable	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_ALLM_ENABLE_STATE	130	getAllmEnableState	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_ALLM_STATUS	131	getAllmStatus	boolean(int)	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv
+GmTvManager	TV_IS_HDR_VIVID_PLAYING	135	isHdrVividPlaying	boolean()	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_SET_VRR_MODE_ENABLE	145	setVRRModeEnable	int(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_VRR_ENABLE_STATE	146	getVRREnableState	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_GAME_PICTURE_MODE	147	setGamePictureMode	int(int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_GAME_PICTURE_MODE	148	getGamePictureMode	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_DARK_BOOST_ONOFF	149	setDarkBoostOnoff	int(boolean, int, int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_DARK_BOOST_STATE	150	getDarkBoostState	boolean(int, int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDMI_HW_CONFIG	153	getHdmiHwConfig	stHdmiHwCfg(int)	get	LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client HbGmpf; allow allowed_lumeninfo.tsv
+GmTvManager	TV_RESET_PICTURE_TO_DEFAULT	164	ResetPictureToDefault	boolean(int, int, int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_ONE_OF_MULTI_POINT_WB	165	setOneOfMultiPointWB	boolean(int, stOneOfMultiPointWB)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_ONE_OF_MULTI_POINT_WB	166	getOneOfMultiPointWB	boolean(int, stOneOfMultiPointWB)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_TOGGLE_HDR_DY_TONE_MAPPING	174	ToggleHDRDyToneMapping	boolean(int, int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HDR_DY_TONE_MAPPING_STATUS	175	GetHDRDyToneMappingStatus	int(int)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_SET_HGIG_MODE	191	setHGiGMode	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+GmTvManager	TV_GET_HGIG_MODE	192	getHGiGMode	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_GET_MOTION_DETECTION	2	getMotionDetection	MsensorDataStruct()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_SET_ANG_TRIGGER_AF	4	setAngTriggerAF	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_GET_ANG_TRIGGER_AF	5	getAngTriggerAF	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_SET_ACC_TRIGGER_AK	6	setAccTriggerAK	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_GET_ACC_TRIGGER_AK	7	getAccTriggerAK	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_SET_AUTO_REVERSE	8	setAutoReverse	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_GET_AUTO_REVERSE	9	getAutoReverse	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+MotionDetectionManager	MD_TEMPORARY_SWITCH_TRIGGER	15	temporarySwitchTrigger	boolean(int, boolean)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+PowerManager	PM_GO_TO_BOOT_COMPLETED	2	goToBootCompleted	boolean(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_SET_FOCUS_CALLBACK	1	setFocusCallback	void(IProjectorFocusCallback)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_MANUAL_FOCUS	2	manualFocus	void(byte)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_POWER_ON_AF_ENABLE	4	powerOnAFEnable	void(boolean)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_IS_POWER_ON_AF_ENABLED	5	isPowerOnAFEnabled	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_SEND_FOCUS_STATUS	8	sendFocusStatus	void(byte)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_AUTO_KST	27	autoKst	byte()	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_SET_PROJ_SCREEN_ADP	33	setProjScreenAdp	void(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_GET_PROJ_SCREEN_ADP	34	getProjScreenAdp	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_SET_PROJ_CURTAIN_ADP	35	setProjCurtainAdp	void(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_GET_PROJ_CURTAIN_ADP	36	getProjCurtainAdp	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_GET_TOF_DISTANCE	46	getTofDistance	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_NEW_AUTO_KST	53	newAutoKst	byte(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_SET_POWER_ON_AF_USE_DISTANCE	85	setPowerOnAFUseDistance	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+ProjectorFocusManager	PF_GET_POWER_ON_AF_USE_DISTANCE	86	getPowerOnAFUseDistance	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_ENABLE_POWER_ON_MUSIC	5	enablePowerOnMusic	void(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_IS_POWER_ON_MUSIC_ENABLED	6	isPowerOnMusicEnabled	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_SET_BOOT_ANIM_STATE	32	setBootAnimState	void(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_GET_BOOT_ANIM_STATE	33	getBootAnimState	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_SET_SYSTEM_UI_STATE	36	setSystemUIState	void(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_GET_SYSTEM_UI_STATE	37	getSystemUIState	int()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_SET_SCREEN_ROTATION	134	setScreenRotation	boolean(int, float)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_SET_PUSH_PULL_SCREEN_ON_OFF	140	setPushPullScreenOnOff	boolean(boolean)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_GET_SCREEN_ROTATION_INFO	142	getScreenRotationInfo	boolean(ScreenRotationInfo_st)	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+SystemManager	SM_SET_PUSH_PULL_SCREEN_STATE	147	setPushPullScreenState	boolean(int)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+TemperatureManager	TM_GET_SYSTEM_TEMPERATURE	6	getSystemTemperature	byte()	get	HbProjector,LumenInfo	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller, HbGmpf; allow allowed.tsv, allowed_lumeninfo.tsv

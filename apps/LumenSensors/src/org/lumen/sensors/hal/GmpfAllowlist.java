@@ -56,39 +56,14 @@ public final class GmpfAllowlist {
 
     public static final int IGMPF = 1, IGMPF2 = 2;
 
-    // ------------------------------------------------------------------ IGmpf reads
-    public static final int SENSOR_STATUS = 339;
-    public static final int LUMENS_MODE = 175;
-    public static final int LAMP_LEVEL = 177;
-    public static final int SCREEN_ON = 196;
-    public static final int FOCUS_STEP = 266;
-    public static final int TOF_DISTANCE = 279;
-    public static final int FAN_MODE = 435;
-    public static final int FAN_SPEED = 437;
-    public static final int SYSTEM_TEMPERATURE = 438;
-    public static final int SENSOR_TEMPERATURE = 439;
-    public static final int MOTION = 584;
-    public static final int HDR_TYPE = 620;
-    public static final int HDMI_INFO = 662;
-    public static final int INPUT_SOURCE = 696;
-    public static final int OUTPUT_TIMING = 157;
-
     // ------------------------------------------------------------------ IGmpf2 reads (Z9X numbering)
-    public static final int OUTPUT_FPS = 22;
-    public static final int LED_LEVEL = 25;
-    public static final int LIGHT_USAGE = 27;
-    public static final int LENS_DISP_MODE = 51;
-    public static final int SUPPLY_VOLTAGE = 68;
-    public static final int OVER_TEMPERATURE = 241;
-    public static final int LED_CURRENTS = 252;
-    public static final int VIDEO_INFO = 319;
 
     private static final int[] IGMPF_READS = {
-            SENSOR_STATUS, LUMENS_MODE, LAMP_LEVEL, SCREEN_ON, FOCUS_STEP, TOF_DISTANCE, FAN_MODE, FAN_SPEED,
-            SYSTEM_TEMPERATURE, SENSOR_TEMPERATURE, MOTION, HDR_TYPE, HDMI_INFO, INPUT_SOURCE, OUTPUT_TIMING};
+            Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR_STATUS, Z9xHalCodes.GMPF_GET_DLP_LUMENS_MODE, Z9xHalCodes.GMPF_GET_DLP_LUMENS_LEVEL, Z9xHalCodes.GMPF_GET_SCREEN_ON_OFF, Z9xHalCodes.GMPF_GET_FOCUS_MOTOR_CURRENT_STEP, Z9xHalCodes.GMPF_GET_TOF_DISTANCE, Z9xHalCodes.GMPF_GET_FAN_MODE, Z9xHalCodes.GMPF_GET_FAN_ROTATION_RATE,
+            Z9xHalCodes.GMPF_GET_SYSTEM_TEMPERATURE, Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR, Z9xHalCodes.GMPF_GET_MOTION_DETECTION, Z9xHalCodes.GMPF_GET_HDR_TYPE, Z9xHalCodes.GMPF_GET_HDMI_INFO, Z9xHalCodes.GMPF_GET_CURRENT_INPUT_SOURCE, Z9xHalCodes.GMPF_GET_OUTPUT_TIMING_INFO};
     private static final int[] IGMPF2_READS = {
-            OUTPUT_FPS, LED_LEVEL, LIGHT_USAGE, LENS_DISP_MODE, SUPPLY_VOLTAGE, OVER_TEMPERATURE, LED_CURRENTS,
-            VIDEO_INFO};
+            Z9xHalCodes.GMPF2_GET_DISP_OUTPUT_FPS, Z9xHalCodes.GMPF2_GET_DISP_LUMENS_LEVEL, Z9xHalCodes.GMPF2_GET_LIGHT_USAGE_INFO, Z9xHalCodes.GMPF2_GET_LENS_DISP_MODE, Z9xHalCodes.GMPF2_GET_POWER_SUPPLY_VOLTAGE, Z9xHalCodes.GMPF2_IS_TEMP_ULTRA_HIGH, Z9xHalCodes.GMPF2_GET_CUR_HW_CURRENT,
+            Z9xHalCodes.GMPF2_GET_VIDEO_INFO};
 
     /** Never sent on IGmpf (see the class comment). */
     public static final int[] BANNED_IGMPF = {

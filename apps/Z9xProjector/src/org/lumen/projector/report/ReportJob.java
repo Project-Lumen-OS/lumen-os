@@ -27,8 +27,6 @@ import java.util.List;
 final class ReportJob {
     private static final String TAG = ReportConfig.TAG;
 
-    enum State { IDLE, COLLECTING, UPLOADING, DONE, FAILED }
-
     interface Listener {
         void onReportChanged();
     }
@@ -51,11 +49,11 @@ final class ReportJob {
     private static ReportJob sJob;
 
     private final List<Listener> listeners = new ArrayList<>();
-    private State state = State.IDLE;
+    private ReportState state = ReportState.IDLE;
     private int step, steps = ReportCollector.STEPS;
     private long sent, total;
     private String code;
-    private ReportUploader.Failure failure;
+    private ReportFailure failure;
     /** The zip of a failed upload: "Try again" sends it again instead of collecting anew. */
     private File zip;
     private Run current;
@@ -67,14 +65,14 @@ final class ReportJob {
         return sJob;
     }
 
-    State state() { return state; }
+    ReportState state() { return state; }
     int step() { return step; }
     int steps() { return steps; }
     long sent() { return sent; }
     long total() { return total; }
     String code() { return code; }
-    ReportUploader.Failure failure() { return failure; }
-    boolean busy() { return state == State.COLLECTING || state == State.UPLOADING; }
+    ReportFailure failure() { return failure; }
+    boolean busy() { return state == ReportState.COLLECTING || state == ReportState.UPLOADING; }
 
     void addListener(Listener l) { if (!listeners.contains(l)) listeners.add(l); }
 
@@ -86,7 +84,7 @@ final class ReportJob {
         final Context app = ctx.getApplicationContext();
         final String url = ReportConfig.url();
         if (url == null) {
-            fail(ReportUploader.Failure.REJECTED);
+            fail(ReportFailure.REJECTED);
             return;
         }
         final File retry = zip != null && zip.isFile() ? zip : null;
@@ -97,7 +95,7 @@ final class ReportJob {
         code = null;
         sent = total = 0;
         step = 0;
-        state = retry != null ? State.UPLOADING : State.COLLECTING;
+        state = retry != null ? ReportState.UPLOADING : ReportState.COLLECTING;
         notifyListeners();
         r.worker = SafeHandler.newThread("z9x-report");
         r.worker.post(() -> run(app, url, r, retry));
@@ -114,7 +112,7 @@ final class ReportJob {
         ReportUploader u = r.uploader;
         if (u != null) u.abort();
         zip = null;
-        state = State.IDLE;
+        state = ReportState.IDLE;
         notifyListeners();
     }
 
@@ -124,7 +122,7 @@ final class ReportJob {
         File z = zip;
         zip = null;
         if (z != null) deleteDir(z.getParentFile());   // a failed run's zip kept for "Try again"
-        state = State.IDLE;
+        state = ReportState.IDLE;
         code = null;
         failure = null;
         notifyListeners();
@@ -152,9 +150,9 @@ final class ReportJob {
                 z = col.collect();
             }
             final File done = z;
-            post(r, () -> { zip = done; state = State.UPLOADING; total = done.length(); notifyListeners(); });
+            post(r, () -> { zip = done; state = ReportState.UPLOADING; total = done.length(); notifyListeners(); });
             if (r.canceled) throw new CanceledException();
-            if (!online(app)) throw new ReportUploader.UploadException(ReportUploader.Failure.NO_NETWORK, "offline");
+            if (!online(app)) throw new ReportUploader.UploadException(ReportFailure.NO_NETWORK, "offline");
             ReportUploader up = new ReportUploader();
             r.uploader = up;
             if (r.canceled) throw new CanceledException();     // cancel() may have missed the uploader
@@ -174,7 +172,7 @@ final class ReportJob {
             post(r, () -> {
                 code = c;
                 zip = null;
-                state = State.DONE;
+                state = ReportState.DONE;
                 current = null;
                 notifyListeners();
             });
@@ -184,11 +182,11 @@ final class ReportJob {
                 deleteDir(r.dir);
                 return;
             }
-            final ReportUploader.Failure f = t instanceof ReportUploader.UploadException
+            final ReportFailure f = t instanceof ReportUploader.UploadException
                     ? ((ReportUploader.UploadException) t).failure
-                    : (z == null ? ReportUploader.Failure.COLLECT : ReportUploader.Failure.NETWORK);
+                    : (z == null ? ReportFailure.COLLECT : ReportFailure.NETWORK);
             Log.w(TAG, "report failed (" + f + "): " + t);
-            final File keep = f == ReportUploader.Failure.COLLECT ? null : z;
+            final File keep = f == ReportFailure.COLLECT ? null : z;
             if (keep == null) {
                 deleteDir(r.dir);
             } else {
@@ -233,9 +231,9 @@ final class ReportJob {
         });
     }
 
-    private void fail(ReportUploader.Failure f) {
+    private void fail(ReportFailure f) {
         failure = f;
-        state = State.FAILED;
+        state = ReportState.FAILED;
         notifyListeners();
     }
 

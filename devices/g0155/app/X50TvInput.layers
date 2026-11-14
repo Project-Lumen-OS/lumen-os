@@ -1,0 +1,10 @@
+# Recipe of the HDMI input app (org.lumen.tvinput) of the RS30 Ultra Max, read by tools/devices/assemble_app.py: the X50
+# recipe (devices/g0111/app/X50TvInput.layers) on the g0155 platform key. Its vendor has the same tv.input AIDL HAL
+# (android.hardware.tv.input-service.xgimi, running on stock) and HDMI CEC / connection HALs as the X50. compose_rs30.sh
+# installs the build (stage/X50TvInput.apk) as /system/app/X50TvInput/X50TvInput.apk.
+app       X50TvInput
+base      apps/Z9xTvInput
+module    lumen-ui
+top       apps/X50TvInput
+# never part of an app tree: build output, APKs, notes, the build version (read by tools/devices/build_apps.sh)
+skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store BUILD_VERSION

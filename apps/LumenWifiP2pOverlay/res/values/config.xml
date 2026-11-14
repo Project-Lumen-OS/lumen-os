@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WPS primary device type for Wi-Fi Direct: category 7 (display), WFA OUI 0050F204, subcategory 1 (television).
+     Lets Windows (Win+K) list the projector as a Miracast receiver; Android senders only read the WFD element. -->
+<resources>
+    <string name="config_wifi_p2p_device_type" translatable="false">7-0050F204-1</string>
+</resources>

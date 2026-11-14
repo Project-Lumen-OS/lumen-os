@@ -62,9 +62,9 @@ public final class Lamp {
             return;
         }
         Hal.query((g, g2) -> {
-            boolean before = g.getScreenOnOff();                     // 196
-            if (before) g.setScreenOnOff(false);                     // 195(false)
-            return g.getScreenOnOff();                               // 196
+            boolean before = g.getScreenOn();                     // 196
+            if (before) g.setScreenOn(false);                     // 195(false)
+            return g.getScreenOn();                               // 196
         }, on -> {
             if (gen != GEN.get()) return;                            // a newer on / off
             if (Boolean.FALSE.equals(on)) {
@@ -104,8 +104,8 @@ public final class Lamp {
             return;
         }
         Hal.query((g, g2) -> {
-            if (send) g.setScreenOnOff(true);                        // 195(true)
-            return g.getScreenOnOff();                               // 196
+            if (send) g.setScreenOn(true);                        // 195(true)
+            return g.getScreenOn();                               // 196
         }, on -> {
             if (gen != GEN.get()) return;
             long el = SystemClock.uptimeMillis() - t0;

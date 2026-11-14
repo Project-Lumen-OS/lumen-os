@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import org.lumen.miracast.core.Control;
+import org.lumen.miracast.core.ReceiverStatus;
 
 /**
  * content://org.lumen.miracast, the screen mirroring switches for other Lumen apps (the projector's quick menu tile).
@@ -19,12 +20,14 @@ import org.lumen.miracast.core.Control;
  *   call("set_enabled", "1"|"0")  -> on or off, then the state
  *   call("set_ask", "1"|"0")      -> ask before connecting or not, then the state
  * State keys: enabled, ask (boolean), name (what phones and computers list), status (the status line in the
- * user's language), code (Control.Status name), mirroring (boolean). A bad method or value changes nothing and
+ * user's language), code (ReceiverStatus name), mirroring (boolean). A bad method or value changes nothing and
  * returns null. The name is edited on the settings screen (action org.lumen.miracast.SETTINGS with the extra
  * "edit" = "name"): a text field needs an activity.
  */
 public final class StateProvider extends ContentProvider {
     static final String PERM_CONTROL = "org.lumen.miracast.permission.CONTROL";
+    /** call("diag"): verdict, report and the last finished attempt of the stage diagnostics. */
+    static final String DIAG = "diag";
 
     @Override
     public boolean onCreate() {
@@ -49,10 +52,17 @@ public final class StateProvider extends ContentProvider {
             } finally {
                 Binder.restoreCallingIdentity(id);
             }
+        } else if (DIAG.equals(method)) {
+            // the stage report (hidden status page, support): no switch changes
+            Bundle d = new Bundle();
+            d.putString("verdict", MiracastService.diag().verdict());
+            d.putString("report", MiracastService.diag().report());
+            d.putString("last", MiracastService.lastReport(c));
+            return d;
         } else if (!Control.STATE.equals(method)) {
             return null;
         }
-        Control.Status st = StatusText.status(c);
+        ReceiverStatus st = StatusText.status(c);
         MiracastService s = MiracastService.instance();
         Bundle b = new Bundle();
         b.putBoolean("enabled", Prefs.enabled(c));

@@ -26,9 +26,7 @@ import java.util.Locale;
  * updated in place.
  */
 public final class UpdaterActivity extends Activity {
-    private enum Screen { MAIN, CONSENT, LICENSES }
-
-    private Screen screen = Screen.MAIN;
+    private UpdaterScreen screen = UpdaterScreen.MAIN;
     private LinearLayout left, right;
     private String renderedKey = "";
     private Ui.ProgressLine progress;
@@ -87,10 +85,10 @@ public final class UpdaterActivity extends Activity {
         renderedKey = "";
         refresh();
         Store st = Store.get(this);
-        Store.State s = st.state();
-        if (s == Store.State.INSTALLING) {
+        UpdateState s = st.state();
+        if (s == UpdateState.INSTALLING) {
             UpdateService.start(this, UpdateService.ACTION_WATCH, false);
-        } else if ((s == Store.State.IDLE || s == Store.State.ERROR) && result(st).isEmpty()
+        } else if ((s == UpdateState.IDLE || s == UpdateState.ERROR) && result(st).isEmpty()
                 && System.currentTimeMillis() - st.lastCheck() > 30 * 60 * 1000L) {
             check();
         }
@@ -104,8 +102,8 @@ public final class UpdaterActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (screen != Screen.MAIN) {
-            screen = Screen.MAIN;
+        if (screen != UpdaterScreen.MAIN) {
+            screen = UpdaterScreen.MAIN;
             refresh();
             return;
         }
@@ -136,7 +134,7 @@ public final class UpdaterActivity extends Activity {
     private void checkUsb() {
         bg(() -> {
             Checker.Result r = Checker.checkUsb(this);
-            if (r.outcome == Checker.Outcome.ERROR && "usb_none".equals(r.res)) {
+            if (r.outcome == CheckOutcome.ERROR && "usb_none".equals(r.res)) {
                 Store.get(this).setError("usb_none", "");
             }
         });
@@ -146,7 +144,7 @@ public final class UpdaterActivity extends Activity {
     private void install() {
         bg(() -> {
             Store st = Store.get(this);
-            Store.State before = st.state();
+            UpdateState before = st.state();
             Preflight.Block b = Preflight.install(this);
             if (b != null) {
                 st.setError(b.res, b.arg);
@@ -154,7 +152,7 @@ public final class UpdaterActivity extends Activity {
             }
             if (!st.firmwareConsent()) {
                 runOnUiThread(() -> {
-                    screen = Screen.CONSENT;
+                    screen = UpdaterScreen.CONSENT;
                     refresh();
                 });
                 return;
@@ -163,8 +161,8 @@ public final class UpdaterActivity extends Activity {
         });
     }
 
-    private void startInstall(Store.State before) {
-        if (before == Store.State.DOWNLOADED) {
+    private void startInstall(UpdateState before) {
+        if (before == UpdateState.DOWNLOADED) {
             UpdateService.start(this, UpdateService.ACTION_INSTALL, false);
         } else {
             UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, true);
@@ -181,7 +179,7 @@ public final class UpdaterActivity extends Activity {
             UpdateManifest.Pkg p = UpdateManifest.Pkg.parse(st.packageJson());
             File src = UpdateService.payloadSource(this, st, p);
             boolean have = src.isFile() && src.length() == p.size && UpdateService.metaFile(this, p).isFile();
-            st.setState(have ? Store.State.DOWNLOADED : Store.State.AVAILABLE);
+            st.setState(have ? UpdateState.DOWNLOADED : UpdateState.AVAILABLE);
         } catch (JSONException e) {
             check();
         }
@@ -200,14 +198,14 @@ public final class UpdaterActivity extends Activity {
         st.setBeta(!Ota.betaOn());
         UpdateService.deleteFiles(this);
         st.clearOffer();
-        st.setState(Store.State.IDLE);
+        st.setState(UpdateState.IDLE);
         check();
     }
 
     /** While an update is downloaded, installed or waits for the restart the channel stays (the row is hidden). */
-    private static boolean betaLocked(Store.State s) {
-        return s == Store.State.DOWNLOADING || s == Store.State.PAUSED || s == Store.State.DOWNLOADED
-                || s == Store.State.INSTALLING || s == Store.State.READY;
+    private static boolean betaLocked(UpdateState s) {
+        return s == UpdateState.DOWNLOADING || s == UpdateState.PAUSED || s == UpdateState.DOWNLOADED
+                || s == UpdateState.INSTALLING || s == UpdateState.READY;
     }
 
     private void reboot() {
@@ -243,7 +241,7 @@ public final class UpdaterActivity extends Activity {
 
     private void refresh() {
         Store st = Store.get(this);
-        Store.State s = st.state();
+        UpdateState s = st.state();
         String key = screen + "|" + s + "|" + st.errorRes() + "|" + st.errorArg() + "|" + st.lastResult()
                 + "|" + st.autoMode() + "|" + Ota.betaOn() + "|" + st.statsOn() + "|" + working + "|" + Locale.getDefault();
         if (key.equals(renderedKey)) {
@@ -320,7 +318,7 @@ public final class UpdaterActivity extends Activity {
         etaText = body("", Ui.DIM);
     }
 
-    private View renderMain(Store st, Store.State s) {
+    private View renderMain(Store st, UpdateState s) {
         brand();
         UpdateManifest m = manifest();
         UpdateManifest.Pkg p = pkg();
@@ -339,7 +337,7 @@ public final class UpdaterActivity extends Activity {
                     String size = Formatter.formatShortFileSize(this, p.size);
                     body(getString(p.isDelta() ? R.string.avail_size_delta : R.string.avail_size_full, size), Ui.DIM);
                 }
-                if (s == Store.State.PAUSED) {
+                if (s == UpdateState.PAUSED) {
                     addProgress();
                     progressText.setText(R.string.dl_paused);
                 }
@@ -347,11 +345,11 @@ public final class UpdaterActivity extends Activity {
                 if (m != null) changelog(m);
                 row = buttons();
                 View first;
-                if (s == Store.State.PAUSED) {
+                if (s == UpdateState.PAUSED) {
                     first = addButton(row, R.string.btn_resume, true, v -> UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false));
                     addButton(row, R.string.btn_cancel, false, v -> UpdateService.start(this, UpdateService.ACTION_CANCEL, false));
                 } else {
-                    first = addButton(row, s == Store.State.DOWNLOADED ? R.string.btn_install : R.string.btn_download_install,
+                    first = addButton(row, s == UpdateState.DOWNLOADED ? R.string.btn_install : R.string.btn_download_install,
                             true, v -> install());
                     addButton(row, R.string.btn_later, false, v -> finish());
                 }
@@ -435,8 +433,8 @@ public final class UpdaterActivity extends Activity {
                 18, Ui.TEXT, 400), Ui.match());
         col.addView(Ui.text(this, getString(R.string.done_rescue_scan), 18, Ui.DIM, 400),
                 Ui.margins(Ui.match(), 0, Ui.dp(this, 10), 0, 0));
-        Outcome.Why kind = Outcome.why(why);
-        if (kind != Outcome.Why.NONE && kind != Outcome.Why.OTHER) {   // OTHER: already in the sentence
+        GateReason kind = Outcome.why(why);
+        if (kind != GateReason.NONE && kind != GateReason.OTHER) {   // OTHER: already in the sentence
             col.addView(Ui.text(this, getString(R.string.done_details, why.trim()), 18, Ui.DIM, 400),
                     Ui.margins(Ui.match(), 0, Ui.dp(this, 10), 0, 0));
         }
@@ -500,13 +498,13 @@ public final class UpdaterActivity extends Activity {
         body(getString(R.string.consent_body, Ota.slotLetter(Ota.otherSlot()), Ota.slotLetter(Ota.slot())), Ui.TEXT);
         LinearLayout row = buttons();
         View deny = addButton(row, R.string.consent_deny, false, v -> {
-            screen = Screen.MAIN;
+            screen = UpdaterScreen.MAIN;
             refresh();
         });
         addButton(row, R.string.consent_allow, true, v -> {
             Store st = Store.get(this);
             st.setFirmwareConsent(true);
-            screen = Screen.MAIN;
+            screen = UpdaterScreen.MAIN;
             startInstall(st.state());
             refresh();
         });
@@ -592,7 +590,7 @@ public final class UpdaterActivity extends Activity {
                 Ui.dp(this, 16), 0, 0, 0));
         ab.addView(qrRow, Ui.match());
         ab.addView(Ui.row(this, getString(R.string.about_licenses), "›", v -> {
-            screen = Screen.LICENSES;
+            screen = UpdaterScreen.LICENSES;
             refresh();
         }), Ui.match());
         right.addView(ab, Ui.match());
@@ -600,11 +598,11 @@ public final class UpdaterActivity extends Activity {
 
     private void updateDynamic(Store st) {
         if (progress == null) return;
-        Store.State s = st.state();
-        if (s == Store.State.DOWNLOADING || s == Store.State.PAUSED) {
+        UpdateState s = st.state();
+        if (s == UpdateState.DOWNLOADING || s == UpdateState.PAUSED) {
             long b = st.dlBytes(), t = st.dlTotal();
             progress.set(t > 0 ? (float) b / t : -1f);
-            if (s == Store.State.DOWNLOADING && t > 0) {
+            if (s == UpdateState.DOWNLOADING && t > 0) {
                 long sp = st.dlSpeed();
                 progressText.setText(getString(R.string.dl_progress, Formatter.formatShortFileSize(this, b),
                         Formatter.formatShortFileSize(this, t), Formatter.formatShortFileSize(this, sp)));
@@ -615,12 +613,12 @@ public final class UpdaterActivity extends Activity {
                     etaText.setText(R.string.dl_waiting_network);
                 }
             }
-        } else if (s == Store.State.INSTALLING) {
+        } else if (s == UpdateState.INSTALLING) {
             float f = st.progress();
             progress.set(f);
             progressText.setText(String.format(Locale.getDefault(), "%d%%", Math.round(f * 100)));
             etaText.setText("");
-        } else if (s == Store.State.CHECKING) {
+        } else if (s == UpdateState.CHECKING) {
             progress.set(-1f);
         }
     }

@@ -18,10 +18,12 @@ same, read straight from their source, nothing run:
     no rescue mode of the fastbootd check (it always tests the saved slot, slot-successful and the update state);
   - the commands: the ones that are not there yet, gapps and gsf gated on GAPPS_ALLOW, the ones that set up adb and
     fastboot first;
-  - every text the user reads (t "en" "ru" / T "en" "ru", English and Russian) of the two sections, plus the
-    mke2fs check and the image owner: equal once the variables are <v>, the white space is one space, '\\' is '/',
-    the option names are the ps1 ones (--ip -> -Ip, ...), 'bash lumen-install.sh' is 'lumen-install.cmd' and the
-    final '.' or ':' is dropped. Allowed differences are listed below (WINDOWS_TEXT, SH_ONLY), each with its reason;
+  - every text the user reads: the two sections call the same message ids (m ID / M ID, installer/lib/messages.tsv),
+    plus the mke2fs check and the image owner; where the ps1 reads a Windows wording (the row ID.win), its English
+    and Russian equal the row ID once the values are <v>, the white space is one space, '\\' is '/', the option names
+    are the ps1 ones (--ip -> -Ip, ...), 'bash lumen-install.sh' is 'lumen-install.cmd' and the final '.' or ':' is
+    dropped. Allowed differences are listed below (WINDOWS_TEXT, SH_ONLY), each with its reason; the catalog itself
+    (every id there, the values of each call, all languages) is checked by installer_msgs.py;
   - neither installer, nor this test or installer_ps1_hb.sh, names a value of a FLOW projector (its model,
     board, fastbootd product, firmware, Lumen OS device value, the allow-list hashes); no em dash.
     python3 tools/devices/test/installer_ps1_parity.py
@@ -36,6 +38,7 @@ SH = G / "installer" / "lumen-install.sh"
 PS = G / "installer" / "lumen-install.ps1"
 CMD = G / "installer" / "lumen-install.cmd"
 CONF = G / "installer" / "lib" / "devices.conf"
+MSGS = G / "installer" / "lib" / "messages.tsv"
 TESTS = [Path(__file__).resolve(), Path(__file__).resolve().parent / "installer_ps1_hb.sh"]
 RULE = "# ------------------------------------------------------------------ "
 
@@ -47,9 +50,9 @@ WINDOWS_TEXT = [
     ("on Linux the udev permissions", "on Windows the Google USB Driver"),
     ("на Linux права udev", "на Windows Google USB Driver"),
 ]
-# sh texts the ps1 has no use for (English start of the normalized text): the reason
+# sh message ids the ps1 has no use for: the reason
 SH_ONLY = {
-    "openssl is needed to check the image signature": "the ps1 checks the signature with .NET (Verify-Sig)",
+    "openssl_needed_check_image": "the ps1 checks the signature with .NET (Verify-Sig)",
 }
 OPTS = [("bash lumen-install.sh", "lumen-install.cmd"), ("--ip", "-Ip"), ("--no-blobs", "-NoBlobs"),
         ("--blobs=embedded", "-Blobs embedded"), ("--unsigned-image", "-UnsignedImage"), ("--device", "-Device"),
@@ -303,12 +306,48 @@ def norm(s, sub_end):
     return s.rstrip(".: ")
 
 
-def sh_pairs(body):
-    return {(norm(a, sh_sub), norm(b, sh_sub)) for a, b in pairs(body, "t", sh_arg)}
+def catalog():  # lib/messages.tsv: {id: (en, ru)}, the .win rows under their own id
+    rows = {}
+    head = None
+    for line in MSGS.read_text(encoding="utf-8").splitlines():
+        if not line or line.startswith("#"):
+            continue
+        f = line.split("\t")
+        if head is None:
+            head = f
+            continue
+        un = [re.sub(r"\\(.)", lambda x: {"n": "\n", "t": "\t"}.get(x.group(1), x.group(1)), c) for c in f]
+        rows[f[0]] = (un[head.index("en")], un[head.index("ru")])
+    return rows
 
 
-def ps_pairs(body):
-    return {(norm(a, ps_sub), norm(b, ps_sub)) for a, b in pairs(body, "T", ps_arg)}
+MSG = catalog()
+
+
+def cnorm(s):  # a catalog text as norm() leaves a script text: the values {1}, {2}, ... are <v>
+    s = re.sub(r"\{[0-9]+\}", "<v>", s)
+    s = re.sub(r"\s+", " ", s).strip().replace("\\", "/")
+    for a, b in OPTS:
+        s = s.replace(a, b)
+    return s.rstrip(".: ")
+
+
+def sh_ids(body):  # the message ids the shell code calls (m ID ...)
+    return set(re.findall(r"(?<![\w$./=-])m ([a-z0-9_]+)\b", code(body)))
+
+
+def ps_ids(body):  # the message ids the ps1 code calls (M ID ...)
+    return set(re.findall(r"(?<![\w$-])M ([a-z0-9_]+)\b", code(body)))
+
+
+def sh_text(i):  # (en, ru) the shell installer shows for id i, normalized
+    en, ru = MSG.get(i, ("<missing %s>" % i, ""))
+    return (cnorm(en), cnorm(ru))
+
+
+def ps_text(i):  # the same for the ps1: its Windows wording where the catalog has one
+    en, ru = MSG.get(i + ".win", MSG.get(i, ("<missing %s>" % i, "")))
+    return (cnorm(en), cnorm(ru))
 
 
 def windows(p):
@@ -344,7 +383,7 @@ else:
     fail("P_KEYS %s, $PKeys %s" % (shk, psk))
 m = re.search(r"for k in ((?:[A-Z_]+:P_[A-Z_]+ ?)+); do", sh_fn(sh, "load_profile"))
 shf = [k.split(":")[0] for k in m.group(1).split()] if m else []
-m = re.search(r'foreach \(\$k in @\(((?:"[A-Z_]+",? ?)+)\)\)', ps_fn(ps, "Load-Profile").split('-not $script:Prof["FLOW"]')[-1])
+m = re.search(r'foreach \(\$k in @\(((?:"[A-Z_]+",? ?)+)\)\)', ps_fn(ps, "Load-Profile").split('if (-not $abf) { return }')[-1])
 psf = re.findall(r'"([A-Z_]+)"', m.group(1)) if m else []
 if shf and shf == psf:
     ok("keys a FLOW profile must have: " + " ".join(shf))
@@ -457,56 +496,64 @@ if left:
 else:
     ok("no 'rescue' command in either installer: no rescue function, command or rescue mode of the fastbootd check")
 
-# the commands
-m1 = re.search(r"\n    ([a-z|]+)\) abf_not_yet \"\$CMD\" ;;", sh_fn(sh, "abf_main"))
-gate_sh = "\n    gapps|gsf) abf_gapps_on || abf_not_yet \"$CMD\" ;;" in sh_fn(sh, "abf_main")
-gate_ps = 'if (@("gapps", "gsf") -contains $Command -and -not (Abf-Gapps-On)) { Abf-Not-Yet $Command }' in ps_fn(ps, "Abf-Main")
-if gate_sh and gate_ps:
-    ok("commands: gapps and gsf only for a profile with GAPPS_ALLOW in both")
+# the commands: both scripts run them from lib/flows.conf (flow_run / Flow-Run) with the same keys and the same strict
+# reading of that file; neither keeps a command table of its own
+frs, frp = sh_fn(sh, "flow_run"), ps_fn(ps, "Flow-Run")
+FKEYS = ("START", "NOT_NEEDED", "NOT_YET", "NEEDS", "CMD_", "TOOLS")
+if frs and frp and all(k in frs and k in frp for k in FKEYS) and sh.rstrip().endswith("\nflow_run") and \
+   "\nFlow-Run\nPt-Cleanup" in ps:
+    ok("commands: both run the step lib/flows.conf names (%s)" % " ".join(FKEYS))
 else:
-    fail("commands: the GAPPS_ALLOW gate of gapps and gsf differs (sh %s, ps1 %s)" % (gate_sh, gate_ps))
-m2 = re.search(r'@\(([^)]*)\) -contains \$Command\) \{ Abf-Not-Yet', ps_fn(ps, "Abf-Main"))
-n1 = sorted(m1.group(1).split("|")) if m1 else []
-n2 = sorted(re.findall(r'"([a-z]+)"', m2.group(1))) if m2 else []
-m1 = re.search(r"\n    ([a-z|]+)\) pt_setup ;;", sh_fn(sh, "abf_main"))
-m2 = re.search(r'@\(([^)]*)\) -contains \$Command\) \{ Pt-Setup', ps_fn(ps, "Abf-Main"))
-s1 = sorted(x if x != "all" else "" for x in m1.group(1).split("|")) if m1 else []
-s2 = sorted(re.findall(r'"([a-z]*)"', m2.group(1))) if m2 else []
-if n1 and n1 == n2 and s1 and s1 == s2:
-    ok("commands: not yet %s; adb and fastboot first for %s" % (" ".join(n1), " ".join(x or "(none)" for x in s1)))
+    fail("flow_run / Flow-Run: the commands do not come from lib/flows.conf the same way")
+LINE = "(KEYS|STATE|START|TOOLS|NOT_NEEDED|NOT_YET|NEEDS|CMD_[A-Z]+)"
+STEP = "=(cmd|stick|play6|abf)_[a-z0-9_]+( [0-9]+)?$"
+if LINE in sh_fn(sh, "flowconf_check") and LINE in ps_fn(ps, "Flowconf-Check") and \
+   STEP in sh_fn(sh, "flowconf_check") and STEP in ps_fn(ps, "Flowconf-Check"):
+    ok("lib/flows.conf: the same keys and the same step names in both")
 else:
-    fail("commands: not yet sh %s ps1 %s; setup sh %s ps1 %s" % (n1, n2, s1, s2))
-if "if (Abf-On) { Abf-Main; Pt-Cleanup; exit 0 }" in ps and 'if [ "$P_FLOW" = ab-fastbootd ]; then abf_main; exit 0; fi' in sh:
-    ok("dispatch to the ab-fastbootd way before the Z9X and Play 6 commands in both")
+    fail("flowconf_check / Flowconf-Check: lib/flows.conf is not read the same way")
+if re.search(r'^\s*switch \(\$Command\)', ps, re.M) or re.search(r'case "\$\{CMD:-all\}" in\n\s+all\)', sh):
+    fail("a command table is left in a script (lib/flows.conf has them)")
 else:
-    fail("dispatch to abf_main / Abf-Main missing")
+    ok("no command table in either script")
 
-# the texts
-shp = sh_pairs(shs) | sh_pairs(sh_fn(sh, "p6_bound_text"))
-psp = ps_pairs(pss)
-shw = {windows(p) for p in shp}
-missing = [p for p in sorted(shw) if p not in psp and not any(p[0].startswith(k) for k in SH_ONLY)]
-extra = [p for p in sorted(psp) if p not in shw]
-for p in missing:
-    fail("text of lumen-install.sh not in the ps1: %r / %r" % p)
-for p in extra:
-    fail("text of the ps1 not in lumen-install.sh: %r / %r" % p)
+# the texts: the same message ids, and a Windows wording only where it says the same
+shi = sh_ids(shs) | sh_ids(sh_fn(sh, "p6_bound_text"))
+psi = ps_ids(pss)
+if not shi or not psi:
+    fail("no message ids found in the ab-fastbootd sections (sh %d, ps1 %d)" % (len(shi), len(psi)))
+missing = sorted(i for i in shi - psi if i not in SH_ONLY)
+extra = sorted(psi - shi)
+for i in missing:
+    fail("message %s of lumen-install.sh is not called in the ps1: %r" % (i, MSG.get(i, ("?",))[0][:80]))
+for i in extra:
+    fail("message %s of the ps1 is not called in lumen-install.sh: %r" % (i, MSG.get(i, ("?",))[0][:80]))
+worded = 0
+for i in sorted(shi & psi):
+    if windows(sh_text(i)) != ps_text(i):
+        fail("message %s: its Windows wording says something else: %r / %r" % (i, ps_text(i), windows(sh_text(i))))
+    elif i + ".win" in MSG:
+        worded += 1
 if not missing and not extra:
-    ok("texts of the two sections: %d English/Russian pairs agree (%d worded for Windows, %d sh only)"
-       % (len(psp), sum(1 for p in shp if windows(p) != p), len(SH_ONLY)))
-for a, b, key in (("check_tools", "Check-Tools", "mke2fs missing next to fastboot"), ("image_owner", "Image-Owner", "this image is for the")):
-    x = {p for p in sh_pairs(sh_fn(sh, a)) if p[0].startswith(key)}
-    y = {p for p in ps_pairs(ps_fn(ps, b)) if p[0].startswith(key)}
-    if x and x == y:
+    ok("texts of the two sections: the same %d message ids (%d worded for Windows, %d sh only)"
+       % (len(psi), worded, len(SH_ONLY)))
+for a, b, key in (("check_tools", "Check-Tools", "mke2fs missing next to fastboot"),
+                  ("check_tools", "Check-Tools", "make_f2fs missing next to fastboot ("),
+                  ("image_owner", "Image-Owner", "this image is for the")):
+    x = {i for i in sh_ids(sh_fn(sh, a)) if MSG.get(i, ("",))[0].startswith(key)}
+    y = {i for i in ps_ids(ps_fn(ps, b)) if MSG.get(i, ("",))[0].startswith(key)}
+    if x and x == y and all(windows(sh_text(i)) == ps_text(i) for i in x):
         ok("texts of %s / %s (%s): %d" % (a, b, key, len(x)))
     else:
         fail("texts of %s / %s: sh %s, ps1 %s" % (a, b, sorted(x), sorted(y)))
 
-# the -Device check at the top of the ps1 reads the same ids as Abf-Ids
-if "'^([a-z0-9]+)\\.FLOW=ab-fastbootd$'" in ps.split("\nfunction T(")[0] and "'^([a-z0-9]+)\\.FLOW=ab-fastbootd$'" in pss:
-    ok("-Device accepts the FLOW=ab-fastbootd ids of lib/devices.conf (same pattern as Abf-Ids)")
+# the -Device check at the top of the ps1 reads the same ids as Profile-Ids, and as profile_ids of the sh
+NAMEPAT = "'^([a-z0-9]+)\\.NAME='"
+if NAMEPAT in ps.split("\nfunction T(")[0] and NAMEPAT in ps_fn(ps, "Profile-Ids") and \
+   "/^[a-z0-9]+\\.NAME=/" in sh_fn(sh, "profile_ids"):
+    ok("-Device / --device accept the projectors of lib/devices.conf (the same NAME lines in both)")
 else:
-    fail("-Device check and Abf-Ids do not read the same ids")
+    fail("-Device check, Profile-Ids and profile_ids do not read the same ids")
 
 # no value of a FLOW projector in the scripts, no em dash
 conf = CONF.read_text(encoding="utf-8").splitlines()
@@ -526,7 +573,7 @@ for i in ids:
             vals.update(mm.group(2).split())
 if not ids:
     fail("lib/devices.conf has no FLOW=ab-fastbootd projector")
-for f in [SH, PS, CMD] + TESTS:
+for f in [SH, PS, CMD, MSGS] + TESTS:
     t = f.read_text(encoding="utf-8-sig", errors="replace")
     low = t.lower()
     hit = sorted(v for v in vals if v.lower() in low)

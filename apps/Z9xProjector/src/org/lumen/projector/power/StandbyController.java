@@ -374,6 +374,7 @@ public final class StandbyController {
             // wakes instead of dozing; a SCREEN_BRIGHT wakelock does not count while DREAMING
             // (PowerManagerService.adjustWakeLockSummary), and a doze is a display power cycle
             userActivity();
+            LampOffHal.get(ctx).onSleep();                  // the standby owns the light now (its exit lights it)
             sState = ENTERING;
             sRestorePending = false;
             sReason = reason;

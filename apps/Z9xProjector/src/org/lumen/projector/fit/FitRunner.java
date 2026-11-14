@@ -44,7 +44,7 @@ public final class FitRunner {
         try { size = sc.toSize(); } catch (IllegalArgumentException e) { Notify.show(app, R.string.fit_screen_bad); return; }
         ThrowModel model0 = FitPrefs.model(app, model);
         if (model0 == null) { Notify.show(app, R.string.fit_e_no_calib); return; }
-        FitPlanner.Mode mode = sc.planMode();
+        FitMode mode = sc.planMode();
         confirm(app, app.getString(R.string.fit_row), () -> worker(app, () -> {
             FitRun run = newRun(app, dev);
             Log.i(TAG, "fit start: model " + model + ", screen " + size + ", mode " + mode);
@@ -56,7 +56,7 @@ public final class FitRunner {
                         r.prepared.mount, java.util.Arrays.toString(r.prepared.distances), r.prepared.distanceMm,
                         r.prepared.pitchDeg, r.prepared.estimator));
             }
-            if (r.status == FitRun.Status.DONE && r.finalProgress >= 0) {
+            if (r.status == FitStatus.DONE && r.finalProgress >= 0) {
                 FitStore.LastFit f = new FitStore.LastFit();
                 f.progress = r.finalProgress;
                 f.distanceMm = r.prepared.distanceMm;
@@ -64,14 +64,14 @@ public final class FitRunner {
                 f.date = System.currentTimeMillis();
                 FitPrefs.setLastFit(app, model, f);
             }
-            String title = app.getString(r.status == FitRun.Status.DONE ? R.string.fit_done : R.string.fit_row);
+            String title = app.getString(r.status == FitStatus.DONE ? R.string.fit_done : R.string.fit_row);
             String msg = resultText(app, r, size);
             ui(() -> show(app, new DialogPanel(title, msg, app.getString(R.string.ok), null, ok -> { }).setAutoHideMs(120_000)));
         }));
     }
 
     // =================================================================== calibration
-    public static void startCalibration(Context ctx, FitCalibration.Kind kind) {
+    public static void startCalibration(Context ctx, CalibrationKind kind) {
         Context app = ctx.getApplicationContext();
         FitDevice dev = FitDevices.get(app);
         if (!checkCommon(app)) return;
@@ -112,8 +112,8 @@ public final class FitRunner {
             Log.i(TAG, "calibration result: " + b.problem + (b.checkPos >= 0 ? String.format(Locale.ROOT,
                     ", check position %d predicted %.4f measured %.4f", b.checkPos, b.predicted, b.measured) : ""));
             if (!b.ok()) {
-                int why = b.problem == ThrowModel.Problem.FULL_TABLE_NEEDED ? R.string.fit_cal_r_full
-                        : b.problem == ThrowModel.Problem.NOT_INCREASING ? R.string.fit_cal_r_order : R.string.fit_cal_r_range;
+                int why = b.problem == ThrowProblem.FULL_TABLE_NEEDED ? R.string.fit_cal_r_full
+                        : b.problem == ThrowProblem.NOT_INCREASING ? R.string.fit_cal_r_order : R.string.fit_cal_r_range;
                 finishCal(app, null, app.getString(R.string.fit_cal_refused) + ": " + app.getString(why));
                 return;
             }
@@ -123,7 +123,7 @@ public final class FitRunner {
             c.pitchDeg = p.pitchDeg;
             c.corners = p.corners;
             c.date = System.currentTimeMillis();
-            c.kind = kind == FitCalibration.Kind.FULL ? "full" : kind == FitCalibration.Kind.THREE ? "three" : "two";
+            c.kind = kind == CalibrationKind.FULL ? "full" : kind == CalibrationKind.THREE ? "three" : "two";
             FitPrefs.setCalib(app, model, c);
             StringBuilder t = new StringBuilder();
             for (double[] q : c.points) t.append(String.format(Locale.ROOT, " p%d=%.4f", (int) q[0], q[1]));
@@ -193,7 +193,7 @@ public final class FitRunner {
         return run;
     }
 
-    private static void onPhase(Context app, FitRun.Phase phase, int a, int b) {
+    private static void onPhase(Context app, FitPhase phase, int a, int b) {
         switch (phase) {
             case CHECK:
             case DISTANCE: progress(app, app.getString(R.string.fit_p_distance)); break;
@@ -270,9 +270,9 @@ public final class FitRunner {
                 String.format(Locale.ROOT, "%.2f", r.prepared.distanceMm / 1000),
                 String.format(Locale.ROOT, "%.1f", r.prepared.pitchDeg), ZoomModel.displayNumber(fin), n));
         FitPlanner.Plan p = r.plan;
-        if (p.kind == FitPlanner.Kind.MOVE_CLOSER) {
+        if (p.kind == FitAdvice.MOVE_CLOSER) {
             b.append('\n').append(app.getString(R.string.fit_small_screen, cm(-p.adviceMm)));
-        } else if (p.kind == FitPlanner.Kind.MOVE_FURTHER) {
+        } else if (p.kind == FitAdvice.MOVE_FURTHER) {
             b.append('\n').append(app.getString(R.string.fit_big_screen, cm(p.adviceMm)));
         } else if (p.showAdvice()) {
             b.append('\n').append(app.getString(p.adviceMm > 0 ? R.string.fit_advice_further : R.string.fit_advice_closer,

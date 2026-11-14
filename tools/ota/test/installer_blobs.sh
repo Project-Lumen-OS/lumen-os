@@ -81,7 +81,7 @@ begin() {
   C=$W/$1; rm -rf "$C"; mkdir -p "$C/inst/certs" "$C/fb" "$C/state" "$C/backup" "$C/dev"
   DEV=$C/dev
   cp "$INST/lumen-install.sh" "$INST/release.conf" "$C/inst/"; mkdir -p "$C/inst/lib"
-  cp "$W/allow.txt" "$C/inst/lib/blobs_allow.txt"
+  cp "$W/allow.txt" "$C/inst/lib/blobs_allow.txt"; cp "$INST/lib/messages.tsv" "$INST/lib/devices.conf" "$INST/lib/flows.conf" "$C/inst/lib/"
   cp "$W/keys/c.pem" "$C/inst/certs/ota.x509.pem"
   printf 'LUMEN-TEST-PUBLIC-IMAGE' > "$C/inst/lumen-os-1.0.1-system.img"
   (cd "$C/inst" && { sha256sum lumen-os-1.0.1-system.img 2>/dev/null || shasum -a 256 lumen-os-1.0.1-system.img; } > SHA256SUMS

@@ -1,0 +1,137 @@
+# devices/g0111/hal/codes.tsv: every HAL code the Lumen apps of the X50 Ultra (G0111), X50 Ultra Max (G0100) and RS30
+# Ultra Max (G0155) send (devices/g0100 and devices/g0155 use this table), MT9681:
+# stable AIDL xgimi.hardware.gmpf V1; every row is proven against the X50 and the RS30 stock tables.
+# One row = one named constant. tools/hal/gen_codes.py --write writes the HalCodes class of each app on a java line from
+# the rows naming that app; --check fails when a class differs. tools/hal/check_codes.py proves every row against its
+# stock table (same interface, code and method; AIDL also the signature) and refuses any HAL call in any app whose
+# code is not a HalCodes constant. NAME = interface prefix + "_" + the stock method in capitals (underscores only
+# for reading): if a call does not work, the row of its constant is the place to look. A new call = a new row here.
+#   java<TAB>APP<TAB>PATH[<TAB>public]          the generated class (package from PATH, class name from the file name)
+#   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
+# columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
+# args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
+java	X50Projector	apps/X50Projector/src/org/lumen/x50/projector/HalCodes.java
+java	X50EyeGuard	apps/X50EyeGuard/src/org/lumen/x50/eyeguard/HalCodes.java
+java	LumenSensors	apps/LumenSensors/src/org/lumen/sensors/hal/X50HalCodes.java
+stock	*	devices/g0111/research/aidl_codes.tsv
+stock	*	devices/g0155/research/aidl_codes.tsv
+# interface	NAME	code	method	args	kind	apps	source
+-	META_GET_INTERFACE_HASH	0x00FFFFFE	getInterfaceHash	String()	meta	X50Projector,X50EyeGuard,LumenSensors	AIDL meta transaction (android.os.IBinder); client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50eyeguard.tsv, allowed_x50projector.tsv
+-	META_GET_INTERFACE_VERSION	0x00FFFFFF	getInterfaceVersion	int()	meta	X50Projector,X50EyeGuard,LumenSensors	AIDL meta transaction (android.os.IBinder); client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50eyeguard.tsv, allowed_x50projector.tsv
+DisplayManager	DM_SET_PROJECTOR_PUT_MODE	2	setProjectorPutMode	void(byte)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_PROJECTOR_PUT_MODE	3	getProjectorPutMode	byte()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_DLP_LUMENS_MODE	5	getDlpLumensMode	byte()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+DisplayManager	DM_SET_DLP_LUMENS_LEVEL	6	setDlpLumensLevel	void(byte)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_DLP_LUMENS_LEVEL	7	getDlpLumensLevel	byte()	get	X50Projector,LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+DisplayManager	DM_CORRECT_KEYSTONE	11	correctKeystone	int(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_CORRECT_KEYSTONE_FULL_PIONT	15	setCorrectKeystoneFullPiont	boolean(byte, KstPoint)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_CORRECT_KEYSTONE_FULL_PIONT	16	getCorrectKeystoneFullPiont	KstPoint(byte)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_SCREEN_ON_OFF	28	getScreenOnOff	boolean()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+DisplayManager	DM_CORRECT_KEYSTONE_RESET	38	correctKeystoneReset	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_OUTPUT_TIMING_INFO	57	getOutputTimingInfo	boolean(OutputTimingInfo)	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+DisplayManager	DM_SET_HUMAN_DETECT_ON_OFF	61	setHumanDetectOnOff	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_HUMAN_DETECT_ON_OFF	62	getHumanDetectOnOff	boolean()	get	X50Projector,X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv, allowed_x50projector.tsv
+DisplayManager	DM_ZOOM_CONTROL	63	zoomControl	int(int, int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_CHECK_TRAPEZOID_COORDINATE	64	checkTrapezoidCoordinate	boolean(KstPoint)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_GAME_MODE_OPTION	76	setGameModeOption	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_GAME_MODE_OPTION	77	getGameModeOption	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_CURRENT_KEYSTONE_MODE	84	getCurrentKeystoneMode	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SWITCH_KEYSTONE_MODE	85	switchKeystoneMode	boolean(int, int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_ZOOM_START	93	zoomStart	int(int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_ZOOM_FINISH	94	zoomFinish	int(int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_OPTICAL_ZOOM_STEP	95	setOpticalZoomStep	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_DIGITAL_ZOOM_STEP	96	setDigitalZoomStep	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_ZOOM_STEP_RANGE	97	getZoomStepRange	int(st_ZoomStepRange)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_CURRENT_ZOOM_STEP2	98	getCurrentZoomStep2	int(st_ZoomStep)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_HUMAN_DETECT_MODE	126	setHumanDetectMode	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_HUMAN_DETECT_MODE	127	getHumanDetectMode	int()	get	X50Projector,X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv, allowed_x50projector.tsv
+DisplayManager	DM_SET_GAME_MODE_STATE	146	setGameModeState	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_GAME_MODE_TYPE	147	setGameModeType	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_GAME_MODE_PROP	148	getGameModeProp	boolean(GameModeProp_st)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_LENS_DISP_MODE	152	getLensDispMode	int()	get	X50Projector,LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+DisplayManager	DM_SET_DYNAMIC_BLACK_TYPE	172	setDynamicBlackType	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_DYNAMIC_BLACK_TYPE	174	getDynamicBlackType	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_LIGHT_USAGE_INFO	176	getLightUsageInfo	String()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+DisplayManager	DM_GET_DISP_LUMENS_LEVEL	178	getDispLumensLevel	int()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+DisplayManager	DM_GET_DISP_OUTPUT_FPS	179	getDispOutputFps	int()	get	X50Projector,LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+DisplayManager	DM_SET_KST_PREPARE	185	setKstPrepare	boolean(boolean, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_OPTICAL_ZOOM_LIMIT_STEP	189	SetOpticalZoomLimitStep	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_CURRENT_ZOOM_LIMIT_STEP	190	GetCurrentZoomLimitStep	int(st_ZoomStep)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_SET_AUDIO_OUTPUT	2	setAudioOutput	void(byte)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_GET_AUDIO_OUTPUT	3	getAudioOutput	byte()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_SET_SOUNDEFFECT	6	setSoundeffect	void(byte)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_GET_SOUNDEFFECT	7	getSoundeffect	byte()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_SET_GAMING_SOUND_EFFECT_MODE	75	setGamingSoundEffectMode	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmAudioManager	AM_GET_GAMING_SOUND_EFFECT_MODE	76	getGamingSoundEffectMode	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmFactoryManager	FM_SAVE_POWER_ON_AK_FLAG	45	savePowerOnAKFlag	void(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmFactoryManager	FM_GET_POWER_ON_AK_FLAG	46	getPowerOnAKFlag	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SWITCH_INPUT_SOURCE	3	switchInputSource	boolean(int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_CURRENT_INPUT_SOURCE	4	getCurrentInputSource	int()	get	X50Projector,LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+GmTvManager	TV_SET_CONTRAST	5	setContrast	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_CONTRAST	6	getContrast	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_BRIGHTNESS	7	setBrightness	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_BRIGHTNESS	8	getBrightness	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_SATURATION	9	setSaturation	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_SATURATION	10	getSaturation	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_SHARPNESS	11	setSharpness	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_SHARPNESS	12	getSharpness	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_PICTURE_MODE	33	setPictureMode	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_PICTURE_MODE	34	getPictureMode	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_HDMI_INFO	38	getHdmiInfo	stHdmiInfo()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+GmTvManager	TV_GET_EDID_VERSION	39	getEdidVersion	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_EDID_VERSION	40	setEdidVersion	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_HDMI_RANGE	63	setHdmiRange	boolean(byte)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_HDMI_RANGE	64	getHdmiRange	byte()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_EARC_ENABLE	65	setEARCEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_EARC_ENABLE_STATE	66	getEARCEnableState	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_HDR_TYPE	78	getHdrType	int()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+GmTvManager	TV_GET_EARC_STATUS	79	getEARCStatus	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_TV_DYNAMIC_CONTRAST_ENABLE	113	setTvDynamicContrastEnable	boolean(int, boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_TV_DYNAMIC_CONTRAST_ENABLE	114	getTvDynamicContrastEnable	boolean(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_AISR_TYPE	120	setAisrType	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_AISR_TYPE	121	getAisrType	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_VIDEO_INFO	122	getVideoInfo	boolean(stVideoInfo)	get	X50Projector,LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+GmTvManager	TV_SET_ALLM_ENABLE	129	setAllmEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_ALLM_ENABLE_STATE	130	getAllmEnableState	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_VRR_MODE_ENABLE	145	setVRRModeEnable	int(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_VRR_ENABLE_STATE	146	getVRREnableState	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_GAME_PICTURE_MODE	147	setGamePictureMode	int(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_GAME_PICTURE_MODE	148	getGamePictureMode	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_DARK_BOOST_ONOFF	149	setDarkBoostOnoff	int(boolean, int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_DARK_BOOST_STATE	150	getDarkBoostState	boolean(int, int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_GET_MOTION_DETECTION	2	getMotionDetection	MsensorDataStruct()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+MotionDetectionManager	MD_SET_ANG_TRIGGER_AF	4	setAngTriggerAF	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_SET_ACC_TRIGGER_AK	6	setAccTriggerAK	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_GET_ACC_TRIGGER_AK	7	getAccTriggerAK	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_SET_AUTO_REVERSE	8	setAutoReverse	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_GET_AUTO_REVERSE	9	getAutoReverse	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_TEMPORARY_SWITCH_TRIGGER	15	temporarySwitchTrigger	boolean(int, boolean)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_SET_MOTION_A_CAL_ENABLE	24	setMotionACalEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+MotionDetectionManager	MD_GET_MOTION_ATTITUDE	25	getMotionAttitude	boolean(stAttitudeInfo)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+PowerManager	PM_GO_TO_BOOT_COMPLETED	2	goToBootCompleted	boolean(int)	call	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
+ProjectorFocusManager	PF_MANUAL_FOCUS	2	manualFocus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_AUTO_FOCUS	3	autoFocus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SEND_FOCUS_STATUS	8	sendFocusStatus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_AUTO_KST	27	autoKst	byte()	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SET_PROJ_SCREEN_ADP	33	setProjScreenAdp	void(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_PROJ_SCREEN_ADP	34	getProjScreenAdp	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SET_PROJ_CURTAIN_ADP	35	setProjCurtainAdp	void(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_PROJ_CURTAIN_ADP	36	getProjCurtainAdp	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_FOCUS_MOTOR_CURRENT_STEP	59	getFocusMotorCurrentStep	int()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+ProjectorFocusManager	PF_SET_POWER_ON_AF_USE_DISTANCE	85	setPowerOnAFUseDistance	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_POWER_ON_AF_USE_DISTANCE	86	getPowerOnAFUseDistance	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SET_TILT_SHIFT_MOVE	88	setTiltShiftMove	boolean(int, float)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_SHIFT_PROFESSIONAL_MODE	94	getShiftProfessionalMode	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SET_TILT_SHIFT_KST_ALG_INFO	104	setTiltShiftKstAlgInfo	boolean()	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_SET_TILT_SHIFT_COMPENSATION	105	setTiltShiftCompensation	boolean()	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_UITILT_SHIFT_SWITH_STATUS	112	getUitiltShiftSwithStatus	void(boolean)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+SystemManager	SM_SET_BOOT_ANIM_STATE	32	setBootAnimState	void(int)	set	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
+SystemManager	SM_GET_BOOT_ANIM_STATE	33	getBootAnimState	int()	get	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
+SystemManager	SM_SET_SYSTEM_UI_STATE	36	setSystemUIState	void(int)	set	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
+SystemManager	SM_SET_PUSH_PULL_SCREEN_ON_OFF	140	setPushPullScreenOnOff	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+SystemManager	SM_SET_PUSH_PULL_SCREEN_STATE	147	setPushPullScreenState	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+TemperatureManager	TM_GET_FAN_MODE	3	getFanMode	byte()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+TemperatureManager	TM_GET_FAN_ROTATION_RATE	5	getFanRotationRate	int(byte)	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+TemperatureManager	TM_GET_SYSTEM_TEMPERATURE	6	getSystemTemperature	byte()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+TemperatureManager	TM_GET_TEMPERATURE_FROM_SENSOR	7	getTemperatureFromSensor	byte(byte)	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv
+TemperatureManager	TM_IS_TEMP_ULTRA_HIGH	12	isTempUltraHigh	boolean()	get	LumenSensors	stock devices/g0111/research/aidl_codes.tsv; client X50Gmpf; allow allowed_lumensensors.tsv

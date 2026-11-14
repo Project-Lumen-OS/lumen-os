@@ -21,10 +21,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.GearPress;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.panel.MenuController;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 
@@ -107,9 +109,10 @@ public final class EyeGuard {
     /** Masked (or 500) at screen-off and no 601 since: 148(true) at the next lamp-on. */
     private static volatile boolean sRestoreAtLampOn;
     private static long sLastBrightNotice = -BRIGHT_NOTICE_GAP_MS;
-    /** Gear press that began while the mask was up (downTime), and whether its hold already fired. */
-    private static long sGearDown = -1;
-    private static boolean sGearLongFired;
+    /** The gear press that began while the mask was up (org.lumen.menu.GearPress, the rule of every app). */
+    private static final GearPress sGear = new GearPress();
+    /** The menu profile's keys.eye_gear_short, read once (null: not read yet). */
+    private static Boolean sShortGearOff;
 
     private EyeGuard() {}
 
@@ -274,8 +277,7 @@ public final class EyeGuard {
         }
         sView = v;
         sMode = mode;
-        sGearDown = -1;
-        sGearLongFired = false;
+        sGear.reset();
         v.requestFocus();
     }
 
@@ -339,8 +341,20 @@ public final class EyeGuard {
     }
 
     /**
+     * What a short gear press does on the mask, from the menu profile (devices/&lt;c&gt;/menu.json keys.eye_gear_short):
+     * restore_off (HB stock SystemUI EyeProjectionDialog, the UP of key 82: cancel + restoreLight + closeHumanDetect)
+     * also turns eye protection off; restore (the default; Z9X and Play 6) only gives the picture back. Read once. A
+     * profile that cannot be read keeps eye protection on.
+     */
+    private static boolean shortGearTurnsOff() {
+        if (sShortGearOff == null && sApp != null) sShortGearOff = MenuController.profile(sApp).eyeGearShortOff();
+        return Boolean.TRUE.equals(sShortGearOff);
+    }
+
+    /**
      * KeyReceiver, every GLOBAL_BUTTON after the power key, main thread. Returns true (consumed)
-     * while the mask or layer is up: gear UP (short) restores the light, gear held (first repeat)
+     * while the mask or layer is up: gear UP (short) restores the light (and also turns eye protection off where the
+     * profile says so, {@link #shortGearTurnsOff}), gear held (first repeat) or the remote's own gear hold
      * restores it and turns eye protection off; every other global key is eaten so no panel or
      * app opens behind the mask. A gear press that began before the mask appeared only gets eaten.
      */
@@ -359,18 +373,9 @@ public final class EyeGuard {
             }
             int action = ev.getAction();
             if (action == KeyEvent.ACTION_DOWN) {
-                if (ev.getRepeatCount() == 0) {
-                    sGearDown = ev.getDownTime();
-                    sGearLongFired = false;
-                } else if (!sGearLongFired && ev.getDownTime() == sGearDown) {
-                    sGearLongFired = true;
-                    restoreByUser("gear held", true);
-                }
-            } else if (action == KeyEvent.ACTION_UP) {
-                boolean shortPress = !sGearLongFired && !ev.isCanceled() && ev.getDownTime() == sGearDown;
-                sGearDown = -1;
-                sGearLongFired = false;
-                if (shortPress) restoreByUser("gear", false);
+                if (sGear.down(ev.getRepeatCount(), ev.getDownTime())) restoreByUser("gear held", true);
+            } else if (action == KeyEvent.ACTION_UP && sGear.up(ev.getDownTime(), ev.isCanceled())) {
+                restoreByUser("gear", shortGearTurnsOff());
             }
         } catch (Throwable t) {
             Log.w(TAG, "global key: " + t);

@@ -19,9 +19,11 @@ import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
+import org.lumen.projector.hal.GameModeOption;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.ReplyException;
 import org.lumen.projector.source.TifHdmiState;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
@@ -416,7 +418,7 @@ public final class ManualKeystonePanel extends Panel {
                 reason = R.string.kst_reason_ak_busy;
                 throw new IllegalStateException("auto keystone running");
             }
-            GmpfClient.GameModeOption o = null;
+            GameModeOption o = null;
             try { o = g.getGameModeOption(); } catch (Throwable t) { Log.w(TAG, "647: " + t); }
             if (o != null && o.isTopSpeed()) {
                 int src = -1;
@@ -457,7 +459,7 @@ public final class ManualKeystonePanel extends Panel {
             KstPoint cur;
             try {
                 cur = g.getKeystonePoints();                 // 186
-            } catch (GmpfClient.ReplyException e) {
+            } catch (ReplyException e) {
                 // Delivered but unusable: not a 326-byte KstPoint, or a corner outside the 3840x2160
                 // panel (KstPoint.set -> "x 4000 not in 0..3840; raw ...", wrapped by getKeystonePoints).
                 // Out of range = another coordinate space: refuse, never reset into a guessed one.

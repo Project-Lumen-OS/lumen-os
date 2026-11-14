@@ -1,6 +1,7 @@
 package org.lumen.projector.panel;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuJson;
 import org.lumen.menu.MenuProfile;
 import org.lumen.menu.MenuSpec;
@@ -39,6 +40,8 @@ public final class NewWalk {
         return v;
     }
 
+    static String lab(String fn, FeatureId f) { return lab(fn, f.id); }
+
     static String s(String name) { return name == null ? "" : res.get(name); }
 
     static void parseLabels(String src) {
@@ -55,35 +58,35 @@ public final class NewWalk {
     }
 
     /** MenuController.INLINE_RADIOS (run.sh checks the source still says so). */
-    static final java.util.Set<String> INLINE_RADIOS = java.util.Collections.singleton(Feature.PROJECTION_MODE);
+    static final java.util.Set<FeatureId> INLINE_RADIOS = java.util.Collections.singleton(FeatureId.PROJECTION_MODE);
 
     static Map<String, Object> env;
     static Z9xMenuRules.In in;
     static MenuState st;
 
-    static boolean has(String f) {
+    static boolean has(FeatureId f) {
         if (!prof.has(f)) return false;
-        if (Feature.SETTINGS_LAUNCHER.equals(f)) return Boolean.TRUE.equals(env.get("launcher"));
-        if (Feature.KEYSTONE_FIT_SCREEN.equals(f)) return Boolean.TRUE.equals(env.get("fit"));
+        if (FeatureId.SETTINGS_LAUNCHER == f) return Boolean.TRUE.equals(env.get("launcher"));
+        if (FeatureId.KEYSTONE_FIT_SCREEN == f) return Boolean.TRUE.equals(env.get("fit"));
         return Z9xFeatures_FEATURES_contains(f);
     }
 
-    static java.util.Set<String> implemented;
+    static java.util.Set<FeatureId> implemented;
 
-    static boolean Z9xFeatures_FEATURES_contains(String f) { return implemented.contains(f); }
+    static boolean Z9xFeatures_FEATURES_contains(FeatureId f) { return implemented.contains(f); }
 
-    static boolean switchChoice(String f) {
-        return Feature.def(f).kind == Feature.Kind.CHOICE && prof.options(f).equals(Arrays.asList("off", "on"));
+    static boolean switchChoice(FeatureId f) {
+        return f.kind == FeatureKind.CHOICE && prof.options(f).equals(Arrays.asList("off", "on"));
     }
 
-    static String optionLabel(String f, String token) {
+    static String optionLabel(FeatureId f, String token) {
         String rt = st == null ? null : st.label(f, token);
         if (rt != null) return rt;
         String r = lab("option", f + "|" + token);
         return r == null ? token : s(r);
     }
 
-    static List<String> shownOptions(String f) {
+    static List<String> shownOptions(FeatureId f) {
         return st == null || st.options(f) == null ? prof.options(f) : st.options(f);
     }
 
@@ -94,33 +97,32 @@ public final class NewWalk {
         String topNote = ok ? st.note(sec) : null;
         if (topNote != null) out.add(new WalkLib.Row("text", topNote));
         for (MenuSpec.Group g : spec.sections.get(sec)) {
-            List<String> present = new ArrayList<>();
-            for (String f : g.rows) if (has(f)) present.add(f);
+            List<FeatureId> present = new ArrayList<>();
+            for (FeatureId f : g.rows) if (has(f)) present.add(f);
             if (present.isEmpty()) continue;
             if (g.header != null) {
                 String h = lab("header", g.header);
                 WalkLib.Row hr = new WalkLib.Row("header", h != null ? s(h) : g.header.toUpperCase());
                 if (ok) {
                     boolean any = false;
-                    for (String f : present) any |= !st.hidden(f);
+                    for (FeatureId f : present) any |= !st.hidden(f);
                     hr.visible = any;
                 }
                 out.add(hr);
             }
-            for (String f : present) row(out, f);
+            for (FeatureId f : present) row(out, f);
         }
         if (MenuSpec.GENERAL.equals(sec)) out.add(new WalkLib.Row("text", s(Z9xMenuRules.FOOTER_GENERAL)));
         return out;
     }
 
-    static void row(List<WalkLib.Row> out, String f) {
-        Feature.Def d = Feature.def(f);
+    static void row(List<WalkLib.Row> out, FeatureId f) {
         boolean ok = st != null;
-        if (Feature.BOOST.equals(f)) { out.add(new WalkLib.Row("text", s(lab("boostSummary", prof.boostSummary())))); return; }
+        if (FeatureId.BOOST == f) { out.add(new WalkLib.Row("text", s(lab("boostSummary", prof.boostSummary())))); return; }
         String title = s(lab("title", f));
         String val = ok ? st.get(f) : null;
         WalkLib.Row r = null;
-        switch (d.kind) {
+        switch (f.kind) {
             case TOGGLE: {
                 r = new WalkLib.Row("toggle", title);
                 Boolean on = ok ? st.on(f) : null;
@@ -162,9 +164,9 @@ public final class NewWalk {
                 return;
             }
             case SLIDER:
-                if (Feature.PICTURE_PQ.equals(f)) {
+                if (FeatureId.PICTURE_PQ == f) {
                     for (String item : prof.items(f)) {
-                        String id = f + "." + item;
+                        FeatureId id = FeatureId.pq(item);
                         WalkLib.Row sr = new WalkLib.Row("slider", s(lab("pq", item)));
                         Integer n = ok ? st.number(id) : null;
                         sr.value = n == null ? null : Integer.toString(n);
@@ -174,7 +176,7 @@ public final class NewWalk {
                     }
                     return;
                 }
-                if (Feature.LAMP.equals(f)) { out.add(new WalkLib.Row("text", s(lab("summary", f)))); return; }
+                if (FeatureId.LAMP == f) { out.add(new WalkLib.Row("text", s(lab("summary", f)))); return; }
                 r = new WalkLib.Row("slider", title);
                 break;
             case ACTION: r = new WalkLib.Row("action", title); break;
@@ -191,17 +193,17 @@ public final class NewWalk {
         summaryAndTip(out, f);
     }
 
-    static void summaryAndTip(List<WalkLib.Row> out, String f) {
+    static void summaryAndTip(List<WalkLib.Row> out, FeatureId f) {
         String sum = lab("summary", f);
         if (sum != null) out.add(new WalkLib.Row("text", s(sum)));
         String h = prof.hint(f);
         if (h != null && lab("tipText", h) != null) out.add(new WalkLib.Row("hint", s(lab("tipText", h))));
     }
 
-    static List<WalkLib.Row> radios(String f, String moreRes) {
+    static List<WalkLib.Row> radios(FeatureId f, String moreRes) {
         List<WalkLib.Row> out = new ArrayList<>();
         String cur = st == null ? null : st.get(f);
-        List<String> opts = Feature.PICTURE_MODE.equals(f) ? shownOptions(f) : prof.options(f);
+        List<String> opts = FeatureId.PICTURE_MODE == f ? shownOptions(f) : prof.options(f);
         for (String o : opts) {
             WalkLib.Row r = new WalkLib.Row("radio", optionLabel(f, o));
             r.value = o.equals(cur) ? "[x]" : "[ ]";
@@ -215,12 +217,12 @@ public final class NewWalk {
 
     static List<WalkLib.Row> gamePopup() {
         List<WalkLib.Row> full = section(MenuSpec.GAME), out = new ArrayList<>();
-        String gm = st == null ? null : st.get(Feature.GAME_MODE);
-        String modeTitle = s(lab("title", Feature.GAME_MODE));
+        String gm = st == null ? null : st.get(FeatureId.GAME_MODE);
+        String modeTitle = s(lab("title", FeatureId.GAME_MODE));
         for (WalkLib.Row r : full) {
             if ("choice".equals(r.kind) && modeTitle.equals(r.title)) {
-                for (String o : prof.options(Feature.GAME_MODE)) {
-                    WalkLib.Row cr = new WalkLib.Row("radio", optionLabel(Feature.GAME_MODE, o));
+                for (String o : prof.options(FeatureId.GAME_MODE)) {
+                    WalkLib.Row cr = new WalkLib.Row("radio", optionLabel(FeatureId.GAME_MODE, o));
                     cr.value = o.equals(gm) ? "[x]" : "[ ]";
                     cr.visible = r.visible;
                     out.add(cr);
@@ -237,14 +239,14 @@ public final class NewWalk {
         String title = l != null ? s(l) : s(lab("title", id));
         String value = null;
         boolean ok = st != null;
-        if (Feature.KEYSTONE_AK_NOW.equals(id)) value = s("lumen_qpd_autocorrect_value");
+        if (FeatureId.KEYSTONE_AK_NOW.id.equals(id)) value = s("lumen_qpd_autocorrect_value");
         else if (MenuSpec.PICTURE.equals(id)) {
-            String m = ok ? st.get(Feature.PICTURE_MODE) : null;
+            String m = ok ? st.get(FeatureId.PICTURE_MODE) : null;
             String over = ok ? st.tile(MenuSpec.PICTURE) : null;
-            String tv = m == null ? null : lab("tileValue", Feature.PICTURE_MODE + "|" + m);
-            value = over != null ? over : m == null ? null : tv != null ? s(tv) : optionLabel(Feature.PICTURE_MODE, m);
-        } else if (Feature.INPUT.equals(id) || MenuSpec.GAME.equals(id)) value = ok ? st.tile(id) : null;
-        String icon = MenuSpec.EYE.equals(id) && ok && "off".equals(st.get(Feature.EYE)) ? " (icon eye off)" : "";
+            String tv = m == null ? null : lab("tileValue", FeatureId.PICTURE_MODE + "|" + m);
+            value = over != null ? over : m == null ? null : tv != null ? s(tv) : optionLabel(FeatureId.PICTURE_MODE, m);
+        } else if (FeatureId.INPUT.id.equals(id) || MenuSpec.GAME.equals(id)) value = ok ? st.tile(id) : null;
+        String icon = MenuSpec.EYE.equals(id) && ok && "off".equals(st.get(FeatureId.EYE)) ? " (icon eye off)" : "";
         return size + " " + title + (value == null ? "" : " = " + value) + icon;
     }
 
@@ -258,7 +260,7 @@ public final class NewWalk {
             text = res.get(n.res, a);
         }
         String title = null;
-        if (Note.ROW_TITLE.equals(n.title)) title = f.startsWith(Feature.PICTURE_PQ + ".") ? s(lab("pq", f.substring(11)))
+        if (Note.ROW_TITLE.equals(n.title)) title = f.startsWith(FeatureId.PICTURE_PQ.id + ".") ? s(lab("pq", f.substring(11)))
                 : lab("title", f) != null ? s(lab("title", f)) : s(lab("section", f));
         else if (n.title != null && n.title.startsWith("@")) title = s(n.title.substring(1));
         return (n.toast ? "toast " : "note ") + (title == null ? "" : title + " | ") + text;
@@ -287,14 +289,14 @@ public final class NewWalk {
                 for (Object po : probes) {
                     @SuppressWarnings("unchecked") List<Object> p = (List<Object>) po;
                     String f = (String) p.get(0), v = (String) p.get(1);
-                    boolean present = f.startsWith(Feature.PICTURE_PQ + ".") ? has(Feature.PICTURE_PQ)
-                            : Feature.known(f) ? has(f) : spec.hasSection(f);
+                    FeatureId id = FeatureId.of(f);
+                    boolean present = id == null ? spec.hasSection(f) : has(id.parent != null ? id.parent : id);
                     if (!present) continue;
-                    Note n = Z9xMenuRules.blocked(f, v, in);
+                    Note n = id != null ? Z9xMenuRules.blocked(id, v, in) : MenuSpec.GAME.equals(f) ? Z9xMenuRules.gamePage(in) : null;
                     String line;
                     if (n != null) line = noteText(n, f);
                     else {
-                        Confirm c = Z9xMenuRules.confirm(f, v, in);
+                        Confirm c = id == null ? null : Z9xMenuRules.confirm(id, v, in);
                         line = c == null ? "go" : "confirm " + s(c.title) + " | " + s(c.message) + " | " + s(c.ok);
                     }
                     out.append("probe ").append(f).append('=').append(v).append(": ").append(line).append('\n');
@@ -304,7 +306,7 @@ public final class NewWalk {
         System.out.print(out);
     }
 
-    static java.util.Set<String> Z9xFeatures_FEATURES() { return prof.features(); }
+    static java.util.Set<FeatureId> Z9xFeatures_FEATURES() { return prof.features(); }
 
     static void walk(StringBuilder out) {
         out.append("card\n");
@@ -312,21 +314,22 @@ public final class NewWalk {
         for (List<MenuSpec.Tile> row : spec.rows) {
             for (MenuSpec.Tile t : row) {
                 String id = t.id;
-                if (Feature.MIRRORING.equals(id) || Feature.USB_FILES.equals(id)) {
-                    boolean mir = has(Feature.MIRRORING) && Boolean.TRUE.equals(env.get("mirroring"));
-                    boolean usb = has(Feature.USB_FILES) && Boolean.TRUE.equals(env.get("usb"));
-                    id = mir ? Feature.MIRRORING : usb ? Feature.USB_FILES : null;
+                FeatureId f = t.feature;
+                if (FeatureId.MIRRORING == f || FeatureId.USB_FILES == f) {
+                    boolean mir = has(FeatureId.MIRRORING) && Boolean.TRUE.equals(env.get(FeatureId.MIRRORING.id));
+                    boolean usb = has(FeatureId.USB_FILES) && Boolean.TRUE.equals(env.get("usb"));
+                    id = mir ? FeatureId.MIRRORING.id : usb ? FeatureId.USB_FILES.id : null;
                     if (id == null) continue;
-                } else if (Feature.known(id) ? !has(id) : !spec.hasSection(id)) continue;
+                } else if (f != null ? !has(f) : !spec.hasSection(id)) continue;
                 out.append("  ").append(tileLine(MenuSpec.WIDE.equals(t.size) ? "wide" : "small", id)).append('\n');
             }
         }
-        boolean boost = st != null && Boolean.TRUE.equals(st.on(Feature.BOOST));
-        Integer lamp = st == null ? null : st.number(Feature.LAMP);
-        out.append("  slider ").append(s(lab("title", Feature.LAMP))).append(" = ")
+        boolean boost = st != null && Boolean.TRUE.equals(st.on(FeatureId.BOOST));
+        Integer lamp = st == null ? null : st.number(FeatureId.LAMP);
+        out.append("  slider ").append(s(lab("title", FeatureId.LAMP))).append(" = ")
                 .append(boost ? s("lumen_m_panel_boost") : lamp == null ? "-" : lamp.toString()).append('\n');
-        WalkLib.page(out, "popup " + s("lumen_m_panel_picture_mode"), radios(Feature.PICTURE_MODE, "lumen_qpd_picture_more"));
-        WalkLib.page(out, "popup " + s("lumen_m_panel_sound_mode"), radios(Feature.SOUND_MODE, "lumen_qpd_sound_more"));
+        WalkLib.page(out, "popup " + s("lumen_m_panel_picture_mode"), radios(FeatureId.PICTURE_MODE, "lumen_qpd_picture_more"));
+        WalkLib.page(out, "popup " + s("lumen_m_panel_sound_mode"), radios(FeatureId.SOUND_MODE, "lumen_qpd_sound_more"));
         WalkLib.page(out, "popup " + s(lab("section", MenuSpec.GAME)), gamePopup());
         for (String sec : new String[]{MenuSpec.KEYSTONE, MenuSpec.FOCUS, MenuSpec.PICTURE, MenuSpec.SOUND, MenuSpec.PROJECTION,
                 MenuSpec.GAME, MenuSpec.EYE, MenuSpec.GENERAL}) {

@@ -13,7 +13,7 @@ public final class EarcRulesTest {
     }
 
     public static void main(String[] a) {
-        EarcRules.Step none = EarcRules.Step.NONE, con = EarcRules.Step.CONNECT, dis = EarcRules.Step.DISCONNECT;
+        EarcStep none = EarcStep.NONE, con = EarcStep.CONNECT, dis = EarcStep.DISCONNECT;
         eq("eARC linked, nothing listed", con, EarcRules.step(3, false, false));
         eq("eARC linked, CEC ARC output listed", none, EarcRules.step(3, false, true));
         eq("eARC linked, ours listed", none, EarcRules.step(3, true, true));

@@ -7,6 +7,7 @@
 # tools/play6/build_play6.sh and tools/arch/baseline.sh build the assembled tree.
 app       Play6Updater
 base      apps/Z9xUpdater
+module    lumen-stats
 top       apps/Play6Updater
 skip      build/ tools/ *.apk CHANGES*.md README*.md .DS_Store
 identical error

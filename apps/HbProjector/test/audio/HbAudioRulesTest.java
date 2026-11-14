@@ -1,7 +1,7 @@
 package org.lumen.projector.audio;
 
-import static org.lumen.projector.audio.HbAudioRules.VolumeStep.FOLLOW;
-import static org.lumen.projector.audio.HbAudioRules.VolumeStep.HOLD;
+import static org.lumen.projector.audio.HdmiVolumeStep.FOLLOW;
+import static org.lumen.projector.audio.HdmiVolumeStep.HOLD;
 
 /** Host test of the HB ARC volume spike decisions (device tests, "ARC volume spike"). */
 public final class HbAudioRulesTest {
@@ -150,8 +150,8 @@ public final class HbAudioRulesTest {
         eq("auto off: soundbar switch off", false, HbAudioRules.autoSystemAudioOff("SPEAKER", true, false, true, true, -1));
         eq("auto off: no audio system", false, HbAudioRules.autoSystemAudioOff("SPEAKER", true, true, false, true, -1));
         // 6. the 3.5 mm jack (2026-11-10, 4PDA): connect while chosen, remove only our own connection
-        HbAudioRules.WiredStep C = HbAudioRules.WiredStep.CONNECT, D = HbAudioRules.WiredStep.DISCONNECT,
-                N = HbAudioRules.WiredStep.NONE;
+        WiredOutputStep C = WiredOutputStep.CONNECT, D = WiredOutputStep.DISCONNECT,
+                N = WiredOutputStep.NONE;
         eq("jack: chosen, not listed -> connect", C, HbAudioRules.wiredStep("WIRED", false, false));
         eq("jack: chosen, ours gone (audio server) -> connect", C, HbAudioRules.wiredStep("WIRED", false, true));
         eq("jack: chosen, listed -> nothing", N, HbAudioRules.wiredStep("WIRED", true, true));

@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">ناعم</string>
     <string name="lumen_m_pm_isf_day">ISF نهاري</string>
     <string name="lumen_m_pm_isf_night">ISF ليلي</string>
+    <string name="lumen_m_pm_bright">ساطع</string>
     <string name="lumen_m_edid_hdmi_1_4">متوافق (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">محسّن (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

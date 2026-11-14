@@ -61,20 +61,20 @@ public final class Probe {
         line("IGmpf 438 getSystemTemperature", () -> g.getSystemTemperature());
         line("IGmpf 390 getSystemUIState", () -> g.getSystemUiState());
         line("IGmpf 394 getBootAnimState", () -> g.getBootAnimState());
-        line("IGmpf 666 getPictureMode(0)", () -> g.getPictureMode());
+        line("IGmpf 666 getPictureMode(0)", () -> g.getPictureModeRaw());
         line("IGmpf 177 getDlpLumensLevel", () -> g.getLampLevel());
         line("IGmpf 668 getMemcLevel(0)", () -> g.getMemcLevel());
-        line("IGmpf 62 getSoundeffect", () -> g.getSoundEffect());
+        line("IGmpf 62 getSoundeffect", () -> g.getSoundEffectRaw());
         line("IGmpf 151 getHumanDetectOnOff", () -> g.getEyeProtection());
         line("IGmpf 553 getPowerOnAKFlag", () -> g.getPowerOnAk());
         line("IGmpf 586 getAccTriggerAK", () -> g.getMoveAk());
         line("IGmpf 588 getAngTriggerAF", () -> g.getMoveAf());
-        line("IGmpf 173 getProjectorPutMode", () -> g.getPutMode());
-        line("IGmpf 579 getAutoReverse", () -> g.getAutoProjection());
+        line("IGmpf 173 getProjectorPutMode", () -> g.getPutModeRaw());
+        line("IGmpf 579 getAutoReverse", () -> g.getAutoReverse());
         line("IGmpf 696 getCurrentInputSource", () -> g.getCurrentInputSource());
         line("IGmpf 620 getHdrType", () -> g.getHdrType());
-        line("IGmpf 647 getGameModeOption", () -> g.getGameModeOption());
-        line("IGmpf 664 getAspectRatio", () -> g.getAspectRatio());
+        line("IGmpf 647 getGameModeOption", () -> g.getGameModeOptionRaw());
+        line("IGmpf 664 getAspectRatio", () -> g.getAspectRatioRaw());
         line("IGmpf 130 getCurrentKeystoneMode", () -> g.getKeystoneMode());
         line("IGmpf 186 getCorrectKeystoneFullPiont(0)", () -> {
             Play6KstPoint p = g.getKeystonePoints();

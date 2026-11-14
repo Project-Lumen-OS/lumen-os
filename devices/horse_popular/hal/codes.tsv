@@ -1,0 +1,204 @@
+# devices/horse_popular/hal/codes.tsv: every HAL code the Lumen apps of the Z9X (G0082, MT5877): HIDL xgimi.hardware.gmpf@1.0 IGmpf / IGmpf2 send.
+# One row = one named constant. tools/hal/gen_codes.py --write writes the HalCodes class of each app on a java line from
+# the rows naming that app; --check fails when a class differs. tools/hal/check_codes.py proves every row against its
+# stock table (same interface, code and method; AIDL also the signature) and refuses any HAL call in any app whose
+# code is not a HalCodes constant. NAME = interface prefix + "_" + the stock method in capitals (underscores only
+# for reading): if a call does not work, the row of its constant is the place to look. A new call = a new row here.
+#   java<TAB>APP<TAB>PATH[<TAB>public]          the generated class (package from PATH, class name from the file name)
+#   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
+# columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
+# args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
+java	Z9xProjector	apps/Z9xProjector/src/org/lumen/projector/hal/HalCodes.java
+java	LumenSensors	apps/LumenSensors/src/org/lumen/sensors/hal/Z9xHalCodes.java	public
+stock	IGmpf	research/play6/z9x_gmpf_codes.txt	BpHwGmpf
+stock	IGmpf2	research/play6/z9x_gmpf_codes.txt	BpHwGmpf2
+# interface	NAME	code	method	args	kind	apps	source
+IGmpf	GMPF_GET_SOUND_PROCESS_TYPE	26	getSoundProcessType	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SOUND_PROCESS_TYPE	27	setSoundProcessType	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_VOLUME_BALANCE_ENABLE	41	getVolumeBalanceEnable	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_VOLUME_BALANCE_ENABLE	42	setVolumeBalanceEnable	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_DTS_EFFECTS_ENABLE	43	getDtsEffectsEnable	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_DTS_EFFECTS_ENABLE	44	setDtsEffectsEnable	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PEQ	50	SetPEQ	W=writeInt32,writeInt32,writeInt32,writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PEQ_ENABLE	51	SetPEQEnable	W=writeBool R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_AUDIO_OUTPUT	59	setAudioOutput	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_AUDIO_OUTPUT	60	getAudioOutput	W= R=readUint8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SOUND_EFFECT	61	setSoundeffect	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_SOUND_EFFECT	62	getSoundeffect	W= R=readUint8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_AUTO_SOUND_EFFECT	63	setAutoSoundeffect	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_DISP_COLOR_SPACE	111	getDispColorSpace	W=writeInt32,writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SWITCH_DISP_COLOR_SPACE	112	switchDispColorSpace	W=writeInt32 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_UI_HEART_BEAT_DO	114	uiHeartBeatDo	W=writeBuffer R=readInt8	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_UI_HEART_BEAT_SET	115	uiHeartBeatSet	W=writeBuffer,writeInt32,writeInt32 R=readInt8	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CURRENT_ZOOM_STEP2	116	getCurrentZoomStep2	W= R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_ZOOM_STEP_RANGE	117	getZoomStepRange	W= R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_DIGITAL_ZOOM_STEP	118	setDigitalZoomStep	W=writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_OPTICAL_ZOOM_STEP	119	setOpticalZoomStep	W=writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ZOOM_FINISH	120	zoomFinish	W=writeInt32 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ZOOM_START	121	zoomStart	W=writeInt32 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SWITCH_KEYSTONE_MODE	129	switchKeystoneMode	W=writeInt32,writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CURRENT_KEYSTONE_MODE	130	getCurrentKeystoneMode	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_TRANSLATION_KST	141	translationKst	W=writeInt32,writeBool R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_UI_AK_DISPLAY	146	uiAkDisplay	W=writeInt32 R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_HUMAN_DETECT_SCREEN_ON_OFF	147	getHumanDetectScreenOnOff	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_HUMAN_DETECT_SCREEN_ON_OFF	148	setHumanDetectScreenOnOff	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_CHECK_TRAPEZOID_COORDINATE	150	checkTrapezoidCoordinate	W=writeBuffer R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_HUMAN_DETECT_ON_OFF	151	getHumanDetectOnOff	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_HUMAN_DETECT_ON_OFF	152	setHumanDetectOnOff	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ZOOM_CONTROL	153	zoomControl	W=writeInt32,writeInt32 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_OUTPUT_TIMING_INFO	157	getOutputTimingInfo	W= R=	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_GENERATE_LOGO_BY_TRAPEZOID	158	generateLogoByTrapezoid	W=writeInt32 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_OUTPUT_TIMING	161	setOutputTiming	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PROJECTOR_PUT_MODE	172	setProjectorPutMode	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_PROJECTOR_PUT_MODE	173	getProjectorPutMode	W= R=readUint8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_DLP_LUMENS_MODE	174	setDlpLumensMode	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_DLP_LUMENS_MODE	175	getDlpLumensMode	W= R=readUint8	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_SET_DLP_LUMENS_LEVEL	176	setDlpLumensLevel	W=writeUint8 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_DLP_LUMENS_LEVEL	177	getDlpLumensLevel	W= R=readUint8	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_IS_VIDEO_PLAYING	180	isVideoPlaying	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_CORRECT_KEYSTONE	181	correctKeystone	W=writeUint8 R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_CORRECT_KEYSTONE_FULL_PIONT	185	correctKeystoneFullPiont	W=writeBuffer R=readInt32	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CORRECT_KEYSTONE_FULL_PIONT	186	getCorrectKeystoneFullPiont	W=writeUint8 R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ENABLE_3D	190	enable3D	W=writeUint8 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ENABLE_3D_TO_2D	191	enable3DTo2D	W=writeUint8 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CURRENT_3D_FORMAT	192	getCurrent3DFormat	W= R=readUint8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_IS_3D_TO_2D_ENABLED	193	is3DTo2DEnabled	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SCREEN_ON_OFF	195	setScreenOnOff	W=writeBool R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_SCREEN_ON_OFF	196	getScreenOnOff	W= R=readBool	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_CORRECT_KEYSTONE_RESET	207	correctKeystoneReset	W=writeUint8 R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_BOOT_REASON	230	getBootReason	W= R=readInt8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GO_TO_BOOT_COMPLETED	237	goToBootCompleted	W=writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_FOCUS_MOTOR_CURRENT_STEP	266	getFocusMotorCurrentStep	W= R=readInt32	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client Z9xGmpfReader
+IGmpf	GMPF_NEW_AUTO_KST	272	newAutoKst	W=writeInt32 R=readInt8	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_TOF_DISTANCE	279	getTofDistance	W= R=readInt32	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_GET_PROJ_CURTAIN_ADP	289	getProjCurtainAdp	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PROJ_CURTAIN_ADP	290	setProjCurtainAdp	W=writeBool R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_PROJ_SCREEN_ADP	291	getProjScreenAdp	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PROJ_SCREEN_ADP	292	setProjScreenAdp	W=writeBool R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_CONNECT_PROJECTOR_FOCUS_MANAGER	298	connectProjectorFocusManager	W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_MANUAL_FOCUS	300	manualFocus	W=writeUint8 R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_POWER_ON_AF_ENABLE	302	powerOnAFEnable	W=writeBool R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_IS_POWER_ON_AF_ENABLED	303	isPowerOnAFEnabled	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PROJECTOR_FOCUS_LISTENER	306	setProjectorFocusListener	W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SEND_FOCUS_STATUS	307	sendFocusStatus	W=writeUint8 R=	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_AUTO_KST	326	autoKst	W= R=readInt8	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_TEMPERATURE_FROM_SENSOR_STATUS	339	getTemperatureFromSensorStatus	W=writeInt8 R=readBool	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client Z9xGmpfReader
+IGmpf	GMPF_GET_SYSTEM_UI_STATE	390	getSystemUIState	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SYSTEM_UI_STATE	391	setSystemUIState	W=writeInt32 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_BOOT_ANIM_STATE	394	getBootAnimState	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_BOOT_ANIM_STATE	395	setBootAnimState	W=writeInt32 R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_ENABLE_POWER_ON_MUSIC	419	enablePowerOnMusic	W=writeBool R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_IS_POWER_ON_MUSIC_ENABLED	420	isPowerOnMusicEnabled	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_FAN_MODE	435	getFanMode	W= R=readUint8	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client Z9xGmpfReader
+IGmpf	GMPF_GET_FAN_ROTATION_RATE	437	getFanRotationRate	W=writeUint8 R=readUint16	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client Z9xGmpfReader
+IGmpf	GMPF_GET_SYSTEM_TEMPERATURE	438	getSystemTemperature	W= R=readUint8	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_GET_TEMPERATURE_FROM_SENSOR	439	getTemperatureFromSensor	W=writeUint8 R=readFloat	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client Z9xGmpfReader
+IGmpf	GMPF_SAVE_POWER_ON_AK_FLAG	552	savePowerOnAKFlag	W=writeBool R=	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_POWER_ON_AK_FLAG	553	getPowerOnAKFlag	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_TEMPORARY_SWITCH_TRIGGER	573	temporarySwitchTrigger	W=writeInt32,writeBool R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_AUTO_REVERSE	579	getAutoReverse	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_AUTO_REVERSE	580	setAutoReverse	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_MOTION_DETECTION	584	getMotionDetection	W= R=	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_SET_ACC_TRIGGER_AK	585	setAccTriggerAK	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_ACC_TRIGGER_AK	586	getAccTriggerAK	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_ANG_TRIGGER_AF	587	setAngTriggerAF	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_ANG_TRIGGER_AF	588	getAngTriggerAF	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_EARC_STATUS	619	getEARCStatus	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_HDR_TYPE	620	getHdrType	W= R=readInt32	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_GET_EARC_ENABLE_STATE	632	getEARCEnableState	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_EARC_ENABLE	633	setEARCEnable	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_HDMI_RANGE	634	getHdmiRange	W= R=readInt8	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_HDMI_RANGE	635	setHdmiRange	W=writeInt8 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_WAKE_UP_SOURCE	639	getWakeUpSource	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_GAME_MODE_OPTION	647	getGameModeOption	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_GAME_MODE_OPTION	648	setGameModeOption	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_UCD_LEVEL	651	getUcdLevel	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_UCD_LEVEL	655	setUcdLevel	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_EDID_VERSION	660	setEdidVersion	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_EDID_VERSION	661	getEdidVersion	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_HDMI_INFO	662	getHdmiInfo	W= R=	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_GET_ASPECT_RATIO	664	getAspectRatio	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_ASPECT_RATIO	665	setAspectRatio	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_PICTURE_MODE	666	getPictureMode	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_PICTURE_MODE	667	setPictureMode	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_MEMC_LEVEL	668	getMemcLevel	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_MEMC_LEVEL	669	setMemcLevel	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_3DNR	670	get3DNR	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_3DNR	671	set3DNR	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_BLUE_OFFSET	672	getColorTempBlueOffset	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_BLUE_OFFSET	673	setColorTempBlueOffset	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_GREEN_OFFSET	674	getColorTempGreenOffset	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_GREEN_OFFSET	675	setColorTempGreenOffset	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_RED_OFFSET	676	getColorTempRedOffset	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_RED_OFFSET	677	setColorTempRedOffset	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_BLUE_GAIN	678	getColorTempBlueGain	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_BLUE_GAIN	679	setColorTempBlueGain	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_GREEN_GAIN	680	getColorTempGreenGain	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_GREEN_GAIN	681	setColorTempGreenGain	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_COLOR_TEMP_RED_GAIN	682	getColorTempRedGain	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_COLOR_TEMP_RED_GAIN	683	setColorTempRedGain	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_SHARPNESS	688	getSharpness	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SHARPNESS	689	setSharpness	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_SATURATION	690	getSaturation	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_SATURATION	691	setSaturation	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_BRIGHTNESS	692	getBrightness	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_BRIGHTNESS	693	setBrightness	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CONTRAST	694	getContrast	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_SET_CONTRAST	695	setContrast	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GET_CURRENT_INPUT_SOURCE	696	getCurrentInputSource	W= R=readInt32	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
+IGmpf	GMPF_SWITCH_INPUT_SOURCE_WITH_CALLING_PID	698	switchInputSourceWithCallingPid	W=writeInt32,writeUint32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf2	GMPF2_GET_GAMING_SOUND_EFFECT_MODE	1	getGamingSoundEffectMode	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_GAMING_SOUND_EFFECT_MODE	2	setGamingSoundEffectMode	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_CURRENT_ZOOM_LIMIT_STEP	13	GetCurrentZoomLimitStep	W= R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_OPTICAL_ZOOM_LIMIT_STEP	14	SetOpticalZoomLimitStep	W=writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_KST_PREPARE	18	setKstPrepare	W=writeBool,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_DISP_OUTPUT_FPS	22	getDispOutputFps	W= R=readInt32	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_DISP_LUMENS_LEVEL	25	getDispLumensLevel	W= R=readInt32	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_LIGHT_USAGE_INFO	27	getLightUsageInfo	W= R=	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_DYNAMIC_BLACK_TYPE	29	getDynamicBlackType	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_DYNAMIC_BLACK_TYPE	31	setDynamicBlackType	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_SCREEN_ON_OFF_WITH_ACTION	35	setScreenOnOffWithAction	W=writeBool,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client (power menu Turn off screen, false + action 1 only)
+IGmpf2	GMPF2_DO_KEYSTONE_RATIO	46	doKeystoneRatio	W=writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_LENS_DISP_MODE	51	getLensDispMode	W= R=readInt32	get	Z9xProjector,LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client, Z9xGmpfReader
+IGmpf2	GMPF2_SET_LENS_DISP_MODE	52	setLensDispMode	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_GAME_MODE_PROP	55	getGameModeProp	W= R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_GAME_MODE_TYPE	56	setGameModeType	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_GAME_MODE_STATE	57	setGameModeState	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_POWER_SUPPLY_VOLTAGE	68	getPowerSupplyVoltage	W= R=readFloat	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_POWER_ON_AF_USE_DISTANCE	90	getPowerOnAFUseDistance	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_POWER_ON_AF_USE_DISTANCE	91	setPowerOnAFUseDistance	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_PUSH_PULL_SCREEN_STATE	194	setPushPullScreenState	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_SCREEN_ROTATION_INFO	199	getScreenRotationInfo	W= R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_PUSH_PULL_SCREEN_ON_OFF	201	setPushPullScreenOnOff	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_SCREEN_ROTATION	207	setScreenRotation	W=writeInt32,writeFloat R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_IS_TEMP_ULTRA_HIGH	241	isTempUltraHigh	W= R=readBool	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_CUR_HW_CURRENT	252	getCurHwCurrent	W= R=	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_HDR_DY_TONE_MAPPING_STATUS	269	GetHDRDyToneMappingStatus	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_TOGGLE_HDR_DY_TONE_MAPPING	270	ToggleHDRDyToneMapping	W=writeInt32,writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_RESET_PICTURE_TO_DEFAULT	278	ResetPictureToDefault	W=writeInt32,writeInt32,writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_ONE_OF_MULTI_POINT_WB	281	getOneOfMultiPointWB	W=writeInt32 R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_ONE_OF_MULTI_POINT_WB	282	setOneOfMultiPointWB	W=writeInt32,writeBuffer R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_FD_BOOST_STATUS	283	getFDBoostStatus	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_TOGGLE_FD_BOOST	284	toggleFDBoost	W=writeInt32,writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_AI_CONTRAST_STATUS	287	getAIContrastStatus	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_TOGGLE_AI_CONTRAST	288	toggleAIContrast	W=writeInt32,writeInt32 R=readBool	call	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_DARK_BOOST_STATE	296	getDarkBoostState	W=writeInt32,writeInt32 R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_DARK_BOOST_ONOFF	297	setDarkBoostOnoff	W=writeBool,writeInt32,writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_GAME_PICTURE_MODE	298	getGamePictureMode	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_GAME_PICTURE_MODE	299	setGamePictureMode	W=writeInt32,writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_VRR_ENABLE_STATE	300	getVRREnableState	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_VRR_MODE_ENABLE	301	setVRRModeEnable	W=writeInt32,writeInt32 R=readInt32	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_ALLM_STATUS	310	getAllmStatus	W=writeInt32 R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_ALLM_ENABLE_STATE	311	getAllmEnableState	W= R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_ALLM_ENABLE	312	setAllmEnable	W=writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_VIDEO_INFO	319	getVideoInfo	W= R=	get	LumenSensors	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Z9xGmpfReader
+IGmpf2	GMPF2_GET_AISR_TYPE	321	getAisrType	W= R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_AISR_TYPE	322	setAisrType	W=writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_HSY_PICTURE_MODE_ENABLE	323	setHsyPictureModeEnable	W=writeInt32,writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_HSY_COLOR_MODEL	324	getHsyColorModel	W=writeInt32,writeInt32 R=	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_HSY_COLOR_MODEL	325	setHsyColorModel	W=writeInt32,writeInt32,writeBuffer R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_TV_GAMMA_LEVEL	326	getTvGammaLevel	W=writeInt32 R=readInt32	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_TV_GAMMA_LEVEL	327	setTvGammaLevel	W=writeInt32,writeInt32 R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_TV_DYNAMIC_CONTRAST_ENABLE	328	getTvDynamicContrastEnable	W=writeInt32 R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_SET_TV_DYNAMIC_CONTRAST_ENABLE	329	setTvDynamicContrastEnable	W=writeInt32,writeBool R=readBool	set	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client
+IGmpf2	GMPF2_GET_HSY_PICTURE_MODE_ENABLE	330	getHsyPictureModeEnable	W=writeInt32 R=readBool	get	Z9xProjector	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf2; client Gmpf2Client

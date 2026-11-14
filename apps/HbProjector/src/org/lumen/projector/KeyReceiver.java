@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 
+import org.lumen.menu.GearPress;
 import org.lumen.projector.panel.QuickPanel;
 import org.lumen.projector.source.SourceOverlay;
 import org.lumen.projector.ui.OverlayHost;
@@ -54,9 +55,8 @@ public final class KeyReceiver extends BroadcastReceiver {
     /** GlobalKeyIntent's extra (Lineage services/.../policy/GlobalKeyIntent.java:29-30, literal key). */
     private static final String EXTRA_BEGAN_FROM_NON_INTERACTIVE = "EXTRA_BEGAN_FROM_NON_INTERACTIVE";
 
-    /** Gear long press already fired for the current hold (main thread only). */
-    private static boolean sGearLongFired;
-    private static long sGearDownTime = -1;
+    /** The gear key's press (short = quick menu, held = the long action), the rule every projector app shares. */
+    private static final GearPress GEAR = new GearPress();
     /** Mic press that started voice search (its UP sends MIC_UP); main thread only. */
     private static long sMicDownTime = -1;
 
@@ -83,6 +83,11 @@ public final class KeyReceiver extends BroadcastReceiver {
         if (firstDown && code != Z9xKeys.FOCUS_STEP_LEFT && code != Z9xKeys.FOCUS_STEP_RIGHT) {
             HalController.get(ctx).motor().stop();                   // posts; sends 2 only if moving
         }
+
+        // the stock "Turn off screen" (lamp.off, org.lumen.menu.LampOff): while the light is off the power key gives it
+        // back and does nothing else (no sleep, no power menu), the focus keys are eaten, any other key goes on
+        if (org.lumen.projector.power.LampOffHal.get(ctx).eats(Z9xKeys.lampOffKey(code), down, ev.getRepeatCount(),
+                ev.getDownTime())) return;
 
         // ===== v6.2 module "power" BEGIN =====
         // BT remote power key (KEYCODE_STB_POWER, BT .kl "STB_POWER WAKE") -> own short press (fade +
@@ -173,28 +178,17 @@ public final class KeyReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Gear: DOWN(repeat 0) arms; the first repeated DOWN of the same press = long press (TvSettings);
+     * Gear (org.lumen.menu.GearPress): DOWN(repeat 0) arms; the first repeated DOWN of the same press = long press;
      * UP without a long press = short press (quick panel). A canceled UP does nothing.
      */
     private static void handleGear(Context ctx, Intent intent, KeyEvent ev) {
         if (intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) return;
         int action = ev.getAction();
         if (action == KeyEvent.ACTION_DOWN) {
-            if (ev.getRepeatCount() == 0) {
-                sGearLongFired = false;
-                sGearDownTime = ev.getDownTime();
-            } else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {
-                sGearLongFired = true;
-                gearLong(ctx);
-            }
+            if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);
             return;
         }
-        if (action == KeyEvent.ACTION_UP) {
-            boolean shortPress = !sGearLongFired && !ev.isCanceled() && ev.getDownTime() == sGearDownTime;
-            sGearLongFired = false;
-            sGearDownTime = -1;
-            if (shortPress) QuickPanel.toggle(ctx);
-        }
+        if (action == KeyEvent.ACTION_UP && GEAR.up(ev.getDownTime(), ev.isCanceled())) QuickPanel.toggle(ctx);
     }
 
     /**

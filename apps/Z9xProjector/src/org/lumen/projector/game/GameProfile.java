@@ -19,9 +19,13 @@ import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
 import org.lumen.projector.SafeHandler;
 import org.lumen.projector.Ui;
+import org.lumen.projector.hal.GameModeOption;
+import org.lumen.projector.hal.GameModeType;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.HdmiSignal;
 import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.OutputTiming;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 
@@ -182,7 +186,7 @@ public final class GameProfile {
     private ConsoleMatcher.Match cec;        // console seen behind sessionPort
     private long allmSince;                  // first ALLM=true of the current run, 0 = none
     private boolean allmSeen;
-    private GmpfClient.HdmiSignal signal;    // last plausible-or-not read of 662
+    private HdmiSignal signal;    // last plausible-or-not read of 662
     private String lastSignalLog;
     private int tickCount;
     private int hfrStreak;
@@ -717,7 +721,7 @@ public final class GameProfile {
         if (monitoring || tickCount % every == 0) resync("tick");
         if (!monitoring && cec == null && tickCount % every == 0) game.post(() -> pollCec(port, g));
 
-        final boolean wantSignal = !monitoring || (appliedOpt[port] == GmpfClient.GameModeOption.BASIC_HFR.wire && topSpeedAllowed()
+        final boolean wantSignal = !monitoring || (appliedOpt[port] == GameModeOption.BASIC_HFR.wire && topSpeedAllowed()
                 && upgradeHoldUntil != Long.MAX_VALUE);
         if (!wantSignal) return;
         final boolean wantAllm = !monitoring && isAutoEnabled(app);
@@ -730,11 +734,11 @@ public final class GameProfile {
             return r;
         }, r -> {
             if (r == null || g != gen || port != sessionPort) return;
-            onSignal(port, (GmpfClient.HdmiSignal) r[0], (Boolean) r[1]);
+            onSignal(port, (HdmiSignal) r[0], (Boolean) r[1]);
         });
     }
 
-    private void onSignal(int port, GmpfClient.HdmiSignal sig, Boolean allm) {
+    private void onSignal(int port, HdmiSignal sig, Boolean allm) {
         if (sig != null) {
             String line = sig.toString();
             if (!line.equals(lastSignalLog)) {
@@ -809,7 +813,7 @@ public final class GameProfile {
 
     /** Values read by the first HAL task of an apply (z9x-hal), committed on z9x-game. */
     private static final class Snap {
-        GmpfClient.GameModeOption prevOpt, opt;
+        GameModeOption prevOpt, opt;
         int prevState, prevPanel;
     }
 
@@ -821,7 +825,7 @@ public final class GameProfile {
     private void apply(final int port, final int trigger) {
         applyInFlight = true;
         final int g = gen;
-        final GmpfClient.HdmiSignal sig = signal;
+        final HdmiSignal sig = signal;
         final boolean top = topSpeedAllowed();
         final boolean hfr = isHfrEnabled(app);
         final ConsoleMatcher.Match match = cec;
@@ -861,7 +865,7 @@ public final class GameProfile {
         });
     }
 
-    private void postApplied(int port, int g, int trigger, ConsoleMatcher.Match match, GmpfClient.HdmiSignal sig,
+    private void postApplied(int port, int g, int trigger, ConsoleMatcher.Match match, HdmiSignal sig,
                              Outcome o) {
         main.post(() -> safe("applied", () -> onApplied(port, g, trigger, match, sig, o)));
     }
@@ -873,7 +877,7 @@ public final class GameProfile {
 
     /** z9x-game: write-ahead snapshot (commit), then the HAL writes. */
     private void commitAndWrite(Snap sn, int port, int g, int trigger, ConsoleMatcher.Match match,
-                                GmpfClient.HdmiSignal sig, Outcome o) {
+                                HdmiSignal sig, Outcome o) {
         boolean saved = false;
         try {
             saved = prefs.edit()
@@ -941,7 +945,7 @@ public final class GameProfile {
 
     /** z9x-hal thread, read only: the gate and the snapshot values. null (with o.refused) = no apply. */
     private Snap readForApplyOnHal(GmpfClient gm, Gmpf2Client g2, int port, int g, int[] ports,
-                                   GmpfClient.HdmiSignal sig, boolean topAllowed, boolean hfr, Outcome o)
+                                   HdmiSignal sig, boolean topAllowed, boolean hfr, Outcome o)
             throws Exception {
         // ---- gate: same session (cheap in-process state), tvinput still reports a session on this
         // port (read on z9x-game just before), and the vendor's current source (696) is that port: the
@@ -988,11 +992,11 @@ public final class GameProfile {
         // ---- option. 0 BASIC -> 1 BASIC_HFR with "120 Hz for consoles" (UNVERIFIED: 648(1) from 0 on
         // the device; the vendor switches the EDID by option). 3 never moves to 2 (2/3 need 207);
         // 1 BASIC_HFR moves to 2 TOP_SPEED_HFR only for a >= 100 Hz input with a neutral keystone.
-        GmpfClient.GameModeOption opt = sn.prevOpt;
-        if (opt == GmpfClient.GameModeOption.BASIC && hfr && SUPPORT_HFR) opt = GmpfClient.GameModeOption.BASIC_HFR;
-        if (opt == GmpfClient.GameModeOption.BASIC_HFR && topAllowed && sig != null && sig.isHighFrameRate()
+        GameModeOption opt = sn.prevOpt;
+        if (opt == GameModeOption.BASIC && hfr && SUPPORT_HFR) opt = GameModeOption.BASIC_HFR;
+        if (opt == GameModeOption.BASIC_HFR && topAllowed && sig != null && sig.isHighFrameRate()
                 && keystoneNeutral(gm, app)) {
-            opt = GmpfClient.GameModeOption.TOP_SPEED_HFR;
+            opt = GameModeOption.TOP_SPEED_HFR;
         }
         sn.opt = opt;
         return sn;
@@ -1009,18 +1013,18 @@ public final class GameProfile {
             o.refuse("696", "696=" + src + " is not HDMI " + port + " any more");
             return;
         }
-        GmpfClient.GameModeOption prevOpt = sn.prevOpt;
-        GmpfClient.GameModeOption now = gm.getGameModeOption();     // 647
+        GameModeOption prevOpt = sn.prevOpt;
+        GameModeOption now = gm.getGameModeOption();     // 647
         if (now != prevOpt) {
             o.refuse("647", "647 changed since the snapshot (" + prevOpt + " -> " + now + ")");
             return;
         }
         // ---- writes (stock setGameMode(1) order)
-        GmpfClient.GameModeOption opt = sn.opt;
+        GameModeOption opt = sn.opt;
         boolean ok648 = opt == prevOpt || gm.setGameModeOption(opt);                       // 648
         if (!ok648 && opt.isTopSpeed() && !prevOpt.isTopSpeed()) {
             Log.i(TAG, "648(" + opt + ") refused: falling back to BASIC_HFR");
-            opt = GmpfClient.GameModeOption.BASIC_HFR;
+            opt = GameModeOption.BASIC_HFR;
             ok648 = opt == prevOpt || gm.setGameModeOption(opt);
         }
         if (!ok648) {
@@ -1028,7 +1032,7 @@ public final class GameProfile {
             opt = prevOpt;
         }
         if (opt != sn.opt) prefs.edit().putInt(k(K_SET_OPT, port), opt.wire).apply();
-        boolean ok56 = g2.setGameModeType(Gmpf2Client.GameModeType.MANUAL);                // 56(0)
+        boolean ok56 = g2.setGameModeType(GameModeType.MANUAL);                // 56(0)
         boolean ok57 = g2.setGameModeState(true);                                           // 57(0) = on
         // Mirrors right after 57, before 207: a failing 207 must not leave them out (the restore uses
         // the panel value while 55 is not trusted).
@@ -1042,7 +1046,7 @@ public final class GameProfile {
         }
         boolean wantTop = opt.isTopSpeed() && !prevOpt.isTopSpeed();
         if (wantTop && !resetKeystoneAfterTopSpeed(gm, port)) {
-            opt = GmpfClient.GameModeOption.fromWire(prefs.getInt(k(K_SET_OPT, port), opt.wire));
+            opt = GameModeOption.fromWire(prefs.getInt(k(K_SET_OPT, port), opt.wire));
             if (opt == null) opt = prevOpt;
             wantTop = false;
         }
@@ -1065,8 +1069,8 @@ public final class GameProfile {
         } catch (Throwable t) {
             Log.w(TAG, "207 failed (" + t + "): 648 back to BASIC_HFR");
             try {
-                if (gm.setGameModeOption(GmpfClient.GameModeOption.BASIC_HFR)) {
-                    prefs.edit().putInt(k(K_SET_OPT, port), GmpfClient.GameModeOption.BASIC_HFR.wire).apply();
+                if (gm.setGameModeOption(GameModeOption.BASIC_HFR)) {
+                    prefs.edit().putInt(k(K_SET_OPT, port), GameModeOption.BASIC_HFR.wire).apply();
                 } else {
                     Log.w(TAG, "648(BASIC_HFR) rollback returned false");
                 }
@@ -1077,7 +1081,7 @@ public final class GameProfile {
         }
     }
 
-    private void onApplied(int port, int g, int trigger, ConsoleMatcher.Match match, GmpfClient.HdmiSignal sig,
+    private void onApplied(int port, int g, int trigger, ConsoleMatcher.Match match, HdmiSignal sig,
                            Outcome o) {
         applyInFlight = false;
         applied[port] = prefs.getBoolean(k(K_ACTIVE, port), false);
@@ -1203,8 +1207,8 @@ public final class GameProfile {
 
     // ================================================================== top speed later (main thread)
     private void maybeUpgradeToTopSpeed(final int port) {
-        GmpfClient.HdmiSignal sig = signal;
-        if (!validPort(port) || appliedOpt[port] != GmpfClient.GameModeOption.BASIC_HFR.wire || !topSpeedAllowed()
+        HdmiSignal sig = signal;
+        if (!validPort(port) || appliedOpt[port] != GameModeOption.BASIC_HFR.wire || !topSpeedAllowed()
                 || applyInFlight || restoreInFlight[port]) {
             hfrStreak = 0;
             return;
@@ -1222,8 +1226,8 @@ public final class GameProfile {
                 try {
                     if (g != gen || port != sessionPort || !contains(ports, port)) return;
                     if (readSource(gm) != sourceOf(port)) return;          // per-source state: not this port now
-                    GmpfClient.GameModeOption cur = gm.getGameModeOption();
-                    if (cur != GmpfClient.GameModeOption.BASIC_HFR) { stop = true; return; }   // user changed it
+                    GameModeOption cur = gm.getGameModeOption();
+                    if (cur != GameModeOption.BASIC_HFR) { stop = true; return; }   // user changed it
                     // a quick-panel change wins: game mode must still be ON (55, else the panel's
                     // persisted value), and the vendor refuses game mode in 3D
                     int st = readGameState(g2, cur.wire);
@@ -1242,9 +1246,9 @@ public final class GameProfile {
                         return;
                     }
                     if (!keystoneNeutral(gm, app)) return;
-                    if (gm.setGameModeOption(GmpfClient.GameModeOption.TOP_SPEED_HFR)) {
+                    if (gm.setGameModeOption(GameModeOption.TOP_SPEED_HFR)) {
                         // apply(): a crash before the write lands only makes the restore keep top speed
-                        prefs.edit().putInt(k(K_SET_OPT, port), GmpfClient.GameModeOption.TOP_SPEED_HFR.wire).apply();
+                        prefs.edit().putInt(k(K_SET_OPT, port), GameModeOption.TOP_SPEED_HFR.wire).apply();
                         if (resetKeystoneAfterTopSpeed(gm, port)) {             // 207, else 648 back to 1
                             done = true;
                             Log.i(TAG, "input >= 100 Hz: top speed + HFR");
@@ -1364,7 +1368,7 @@ public final class GameProfile {
         SharedPreferences panel = app.getSharedPreferences(PANEL_PREFS, Context.MODE_PRIVATE);
         if (prevState != MODE_ON) {
             boolean stillOurs;
-            GmpfClient.GameModeOption cur = null;
+            GameModeOption cur = null;
             try { cur = gm.getGameModeOption(); } catch (Throwable t) { Log.d(TAG, "647: " + t); }
             int st = cur == null ? MODE_UNKNOWN : readGameState(g2, cur.wire);
             if (st != MODE_UNKNOWN) {
@@ -1376,10 +1380,10 @@ public final class GameProfile {
             if (stillOurs) {
                 try {
                     if (prevState == MODE_AUTO) {
-                        ok &= g2.setGameModeType(Gmpf2Client.GameModeType.AUTO);          // 56(1)
+                        ok &= g2.setGameModeType(GameModeType.AUTO);          // 56(1)
                     } else {
                         // MODE_OFF, or UNKNOWN (assumption, labelled: off is the stock default)
-                        ok &= g2.setGameModeType(Gmpf2Client.GameModeType.MANUAL);        // 56(0)
+                        ok &= g2.setGameModeType(GameModeType.MANUAL);        // 56(0)
                         ok &= g2.setGameModeState(false);                                  // 57(1)
                     }
                     int panelBack = prevPanel >= MODE_OFF ? prevPanel : (prevState == MODE_AUTO ? MODE_AUTO : MODE_OFF);
@@ -1395,10 +1399,10 @@ public final class GameProfile {
         // 648: only if the option is still the one we set
         int setOpt = prefs.getInt(k(K_SET_OPT, port), -1);
         int prevOptW = prefs.getInt(k(K_PREV_OPT, port), -1);
-        GmpfClient.GameModeOption prevOpt = GmpfClient.GameModeOption.fromWire(prevOptW);
+        GameModeOption prevOpt = GameModeOption.fromWire(prevOptW);
         if (prevOpt != null && setOpt != prevOptW) {
             try {
-                GmpfClient.GameModeOption cur = gm.getGameModeOption();
+                GameModeOption cur = gm.getGameModeOption();
                 if (cur != null && cur.wire == setOpt) {
                     boolean r = gm.setGameModeOption(prevOpt);
                     ok &= r;
@@ -1498,7 +1502,7 @@ public final class GameProfile {
                         prefs.edit().remove(K_U120_PENDING).apply();
                         return;
                     }
-                    boolean ok = gm.setOutputTiming(GmpfClient.OutputTiming.ULTRA_120_ON);   // 161(4)
+                    boolean ok = gm.setOutputTiming(OutputTiming.ULTRA_120_ON);   // 161(4)
                     if (ok) panel.edit().putBoolean(PANEL_KEY_ULTRA_120, true).apply();
                     prefs.edit().remove(K_U120_PENDING).apply();
                     Log.i(TAG, "Ultra 120 Hz given back after game mode: 161(4) -> " + ok);
@@ -1513,7 +1517,7 @@ public final class GameProfile {
     }
 
     // ================================================================== Play cue (main thread)
-    private void showCue(int port, int g, int trigger, ConsoleMatcher.Match match, GmpfClient.HdmiSignal sig,
+    private void showCue(int port, int g, int trigger, ConsoleMatcher.Match match, HdmiSignal sig,
                          boolean top) {
         if (g != gen || port != sessionPort || !validPort(port) || !applied[port] || !screenOn) return;
         if (!KeyReceiver.isSetupComplete(app)) return;
@@ -1531,8 +1535,8 @@ public final class GameProfile {
         if (match != null && !match.osdName.isEmpty()) {
             chips.add(match.osdName);
         } else if (match != null) {
-            chips.add(app.getString(match.brand == ConsoleMatcher.Brand.PLAYSTATION ? R.string.game_brand_playstation
-                    : match.brand == ConsoleMatcher.Brand.XBOX ? R.string.game_brand_xbox : R.string.game_brand_nintendo));
+            chips.add(app.getString(match.brand == ConsoleBrand.PLAYSTATION ? R.string.game_brand_playstation
+                    : match.brand == ConsoleBrand.XBOX ? R.string.game_brand_xbox : R.string.game_brand_nintendo));
         }
         chips.add(app.getString(R.string.game_chip_low_latency));
         if (sig != null && sig.plausible() && sig.frameRateCenti >= 11_000) {

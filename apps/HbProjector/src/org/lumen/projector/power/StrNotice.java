@@ -31,7 +31,7 @@ public final class StrNotice {
 
     private StrNotice() {}
 
-    static int textRes(StrNoticeRules.Kind k) {
+    static int textRes(StrNoticeKind k) {
         switch (k) {
             case USB: return R.string.hb_str_blocked_usb;
             case UPDATE: return R.string.hb_str_blocked_update;
@@ -52,9 +52,9 @@ public final class StrNotice {
     }
 
     private static void onUsbState(Context app) {
-        StrNoticeRules.Kind k = StrNoticeRules.kind(StrGate.blocker(app));
+        StrNoticeKind k = StrNoticeRules.kind(StrGate.blocker(app));
         boolean due = StrNoticeRules.usbNoticeDue(k, sUsbShown);
-        sUsbShown = k == StrNoticeRules.Kind.USB;
+        sUsbShown = k == StrNoticeKind.USB;
         if (due) show(app, k, "usb connected");
     }
 
@@ -65,12 +65,12 @@ public final class StrNotice {
         sMenuNotedFor = ev.getDownTime();
         final Context app = ctx.getApplicationContext();
         Ui.main().postDelayed(() -> {
-            StrNoticeRules.Kind k = StrNoticeRules.kind(StrGate.blocker(app));
+            StrNoticeKind k = StrNoticeRules.kind(StrGate.blocker(app));
             if (k != null) show(app, k, "power menu");
         }, MENU_DELAY_MS);
     }
 
-    private static void show(Context app, StrNoticeRules.Kind k, String why) {
+    private static void show(Context app, StrNoticeKind k, String why) {
         try {
             if (StandbyController.isActive()) return;                      // lamp off: nobody sees it
             PowerManager pm = app.getSystemService(PowerManager.class);

@@ -91,6 +91,8 @@ fail() { echo "  FAIL [$CASE/$SHN] $*"; CFAIL=1; }
 lines() { awk '$1 !~ /^#/ && $1 !~ /^set=/ && NF >= 3 { t = "/system/" $2; e = 0
   for (i = 4; i <= NF; i++) { if ($i ~ /^bind=/) t = substr($i, 6); if ($i == "need=eye") e = 1 }
   print $1, $2, t, e }' "${1:-$ALLOW}"; }
+# the alt= sha256 of a path in the test allow-list
+alt_sha() { awk -v p="$1" '$2 == p { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$ALLOW"; }
 
 begin() {  # case name [fixture options]: slot B, every placeholder and target in place, a good partition, stale fifos
   CASE=$1; CFAIL=0; shift
@@ -253,6 +255,48 @@ cases() {
     expect_prop sys.lumen.nui "noplaceholder:$LIB"; expect_bound 9; expect_eye_unbound
     end
   fi
+  if want eye_alt_v1254; then
+    # stock v1.2.54: its own nativeui + gmpf ndk pair (alt=v1.2.54:...), accepted only on that firmware
+    begin eye_alt_v1254 --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_bound 11
+    expect_all_bound_but "$NUI" "$LIB"
+    is_bound "$(alt_sha "$NUI")" "/system/$NUI" || fail "the v1.2.54 nativeui is not bound: $(cat "$T/binds")"
+    is_bound "$(alt_sha "$LIB")" "/system/$LIB" || fail "the v1.2.54 library is not bound"
+    grep -q "^u:object_r:nativeui_main_exec:s0 .*/x/$NUI$" "$T/chcon.log" || fail "nativeui is not nativeui_main_exec"
+    expect_log "ok: 11 files of set $SET bound"
+    end
+  fi
+  if want eye_alt_other_firmware; then
+    begin eye_alt_other_firmware --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.64 >> "$T/props"; run
+    expect_prop sys.z9x.blobs partial; expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
+    end
+  fi
+  if want eye_alt_no_firmware; then
+    begin eye_alt_no_firmware --alt "$NUI,$LIB"; run
+    expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
+    end
+  fi
+  if want eye_alt_firmware_prefix; then
+    # v1.2.5 is not v1.2.54: the firmware must be exactly the alt= one
+    begin eye_alt_firmware_prefix --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.5 >> "$T/props"; run
+    expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
+    end
+  fi
+  if want eye_alt_mixed; then
+    # a v1.2.54 drawer with the base library (or the other way round) is never bound
+    begin eye_alt_mixed --alt "$NUI"; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.lumen.nui bad:mixed; expect_prop sys.z9x.blobs partial; expect_bound 9; expect_eye_unbound
+    end
+    begin eye_alt_mixed_lib --alt "$LIB"; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.lumen.nui bad:mixed; expect_bound 9; expect_eye_unbound
+    end
+  fi
+  if want eye_alt_base_on_v1254; then
+    # the base pair on a v1.2.54 vendor is still the base pair (one stock slot never holds two firmwares)
+    begin eye_alt_base_on_v1254; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_bound 11; expect_all_bound_but
+    end
+  fi
   if want eye_second_bind_fails; then
     # the drawer is bound, its library's bind fails: the drawer comes off again
     begin eye_second_bind_fails; echo "$R/system/$LIB" > "$T/mount_fail_dst"; run
@@ -347,6 +391,24 @@ cases() {
     expect_stock_untouched; expect_fifos_gone
     end
   fi
+  if want dsu_alt_v1254; then
+    # a DSU trial on a unit with stock v1.2.54: the stock slot holds that firmware's
+    # own nativeui + gmpf ndk pair, accepted by their alt= sha256 because the running vendor is v1.2.54
+    dsu_begin dsu_alt_v1254 --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b
+    expect_bound 11; expect_all_bound_but "$NUI" "$LIB"
+    is_bound "$(alt_sha "$NUI")" "/system/$NUI" || fail "the v1.2.54 nativeui is not bound: $(cat "$T/binds")"
+    is_bound "$(alt_sha "$LIB")" "/system/$LIB" || fail "the v1.2.54 library is not bound"
+    expect_stock_untouched; expect_fifos_gone
+    end
+  fi
+  if want dsu_alt_on_v1264; then
+    # the same v1.2.54 pair while a v1.2.64 vendor runs: refused, the picture stays covered by the guard
+    dsu_begin dsu_alt_on_v1264 --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.64 >> "$T/props"; run
+    expect_prop sys.z9x.blobs partial; expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
+    expect_stock_untouched
+    end
+  fi
   if want dsu_partition_wins; then
     # a DSU trial that has a z9x_blobs partition after all: the partition, the stock slot is not even mounted
     dsu_begin dsu_partition_wins; mk; run
@@ -385,6 +447,20 @@ cases() {
   if want dsu_ultra_image_on_ultra_max; then
     # the Ultra image on an X50 Ultra Max: not its model, nothing is read
     dsu_begin dsu_ultra_image_on_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.model=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_rs30_image_on_x50; then
+    # the RS30 Ultra Max image on an X50 Ultra: not its model, nothing is read
+    dsu_begin dsu_rs30_image_on_x50; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0155 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    end
+  fi
+  if want dsu_x50_image_on_rs30; then
+    # the X50 Ultra image on an RS30 Ultra Max: not its model, nothing is read
+    dsu_begin dsu_x50_image_on_rs30; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0155 ro.lumen.model=G0111 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
     expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
     end
@@ -492,7 +568,7 @@ static() {
       cmp -s "$WORK/z9x.lines" "$WORK/x50.lines" || fail "the codec / audio lines differ from tools/ota/image/blobs_allow.txt"
       python3 - "$IMG/x50_blobs_allow.txt" <<'PY' || fail "format"
 import re, sys
-n = {"place": 0, "bind": 0, "eye": 0}; sets = []
+n = {"place": 0, "bind": 0, "eye": 0, "alt": 0}; sets = []
 for line in open(sys.argv[1]):
     w = line.split()
     if not w or w[0].startswith("#"):
@@ -501,7 +577,12 @@ for line in open(sys.argv[1]):
         sets.append(w[0]); continue
     assert re.fullmatch(r"[0-9a-f]{64}", w[0]) and len(w) >= 3, line
     o = dict(x.split("=", 1) for x in w[3:])
-    assert set(o) <= {"bind", "from", "label", "mode", "need"}, line
+    assert set(o) <= {"bind", "from", "label", "mode", "need", "alt"}, line
+    if "alt" in o:
+        # another stock firmware's copy, only on the eye-protection pair (the codec / audio sources are equal)
+        assert re.fullmatch(r"v[0-9]+(\.[0-9]+)+:[0-9a-f]{64}", o["alt"]) and o.get("need") == "eye", line
+        assert o["alt"].split(":")[1] != w[0], line
+        n["alt"] += 1
     if "bind" in o:
         assert re.fullmatch(r"/(vendor/etc|apex/com\.android\.vndk\.v\d+/lib(64)?)/[^/]+", o["bind"]), line
         assert "need" not in o and "label" not in o and "mode" not in o, line
@@ -515,7 +596,7 @@ for line in open(sys.argv[1]):
         n["eye"] += 1
     if "label" in o:
         assert o["label"] == "nativeui_main_exec" and o.get("mode") == "0755" and w[1] == "bin/nativeui", line
-assert sets == ["set=x50-v1264-a"] and n == {"place": 8, "bind": 3, "eye": 2}, (sets, n)
+assert sets == ["set=x50-v1264-a"] and n == {"place": 8, "bind": 3, "eye": 2, "alt": 2}, (sets, n)
 PY
       ;;
     rc)
@@ -541,8 +622,8 @@ PY
       grep -l nuififo "$IMG/x50_blobs_allow.txt" "$IMG/x50_blobs.rc" "$IMG/x50_netadb.rc" "$G/tools/devices/image/blobs_stock_dsu.sh" \
         && fail "another staged file names the fifo"
       # the shared DSU reader is on for the X50 only, and only the X50 reader sources it (the Z9X / HB readers do not)
-      [ "$(sed -n 's/^DSU_STOCK_MODELS=//p' "$G/tools/devices/image/blobs_stock_dsu.sh")" = '"G0111 G0100"' ] \
-        || fail "DSU_STOCK_MODELS is not exactly the X50 Ultra and Ultra Max (G0111 G0100)"
+      [ "$(sed -n 's/^DSU_STOCK_MODELS=//p' "$G/tools/devices/image/blobs_stock_dsu.sh")" = '"G0111 G0100 G0155"' ] \
+        || fail "DSU_STOCK_MODELS is not exactly the X50 Ultra, Ultra Max and RS30 Ultra Max (G0111 G0100 G0155)"
       grep -l blobs_stock_dsu "$G/tools/ota/image/z9x_blobs.sh" "$G"/devices/goat_elegant/image/* 2>/dev/null && fail "a Z9X / HB reader sources the DSU reader"
       ;;
   esac

@@ -10,9 +10,6 @@ public final class EarcRules {
 
     private EarcRules() {}
 
-    /** What EarcLink does with the HDMI ARC audio output after a status read. */
-    public enum Step { NONE, CONNECT, DISCONNECT }
-
     /**
      * Stock (XRMService eARCstate -> AudioService.seteARCStatus, HdmiCecLocalDeviceTv "don't disconnect ARC while eARC
      * mode"): the HDMI ARC output stays connected while eARC is linked. ours = EarcLink connected it; arcPresent = an
@@ -20,15 +17,15 @@ public final class EarcRules {
      * &lt;Terminate ARC&gt; or on "Speaker", so it is connected again while the link holds; an output that is there
      * (with CEC ARC's descriptors) is never touched.
      */
-    public static Step step(int status, boolean ours, boolean arcPresent) {
-        if (status == EARC_LINKED) return arcPresent ? Step.NONE : Step.CONNECT;
-        return ours ? Step.DISCONNECT : Step.NONE;
+    public static EarcStep step(int status, boolean ours, boolean arcPresent) {
+        if (status == EARC_LINKED) return arcPresent ? EarcStep.NONE : EarcStep.CONNECT;
+        return ours ? EarcStep.DISCONNECT : EarcStep.NONE;
     }
 
     /**
      * After an eARC link ended (or an eARC attempt failed) and no ARC output came back: ask the framework for ARC again
      * (IHdmiControlService.setArcMode(true), the AOSP RequestArcInitiationAction) for "Auto" or the soundbar (kind =
-     * AudioOutputChoice.Kind name, null = none stored), never with a local output chosen ("Speaker" ends ARC on purpose)
+     * AudioOutputKind name, null = none stored), never with a local output chosen ("Speaker" ends ARC on purpose)
      * and only with an audio system known.
      */
     public static boolean arcRestart(String kind, boolean arcPresent, boolean avrKnown) {

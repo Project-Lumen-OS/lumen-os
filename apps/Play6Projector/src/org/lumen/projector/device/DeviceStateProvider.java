@@ -33,7 +33,8 @@ import org.lumen.projector.battery.Battery;
  *    (registerContentObserver on that Uri; one notification per change, never per read).
  *  - call("caps") -> Bundle {unsupported: String[]}: the Lumen Home Projector tab tiles this projector does
  *    not support, by the tile intent of apps/Z9xHome InputSource.tiles (Card id "tile:" + it), for Home to
- *    hide them. Today {"section:eye"} (eye protection waits for the NUI reader, Device.hasEyeProtection).
+ *    hide them: "section:eye" while eye protection waits for the NUI reader (Device.hasEyeProtection),
+ *    "miracast" where the receiver found no Wi-Fi Direct (Device.screenMirroring).
  *  - Any other method or Uri: null. Nothing can be written (insert / update / delete do nothing).
  *
  * No permission: the values are the facts Android hands every app without a permission in
@@ -124,7 +125,7 @@ public final class DeviceStateProvider extends ContentProvider {
         }
         if (METHOD_CAPS.equals(method)) {
             Bundle b = new Bundle();
-            b.putStringArray(KEY_UNSUPPORTED, Device.unsupportedHomeTiles());
+            b.putStringArray(KEY_UNSUPPORTED, Device.unsupportedHomeTiles(getContext()));
             return b;
         }
         return null;

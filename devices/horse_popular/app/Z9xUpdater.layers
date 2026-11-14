@@ -1,0 +1,7 @@
+# Recipe of the Z9X updater, read by tools/devices/assemble_app.py, tools/devices/build_apps.sh and the Z9X gate
+# (tools/play6/z9x_gate.sh): the app plus the shared statistics client lumen-stats (apps/core/lumen-stats, the one
+# client of every projector; Stats in the app is only its adapter to the updater's Store).
+app       Z9xUpdater
+module    lumen-stats
+top       apps/Z9xUpdater
+skip      build/ test/ tools/ *.apk CHANGES*.md README*.md .DS_Store

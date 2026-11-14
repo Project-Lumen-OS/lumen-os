@@ -9,8 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * The values the device read, by feature id. Plain data, immutable once built; a feature
- * the device could not read is simply absent.
+ * The values the device read, by feature ({@link FeatureId}, kept by its id text: the design notes). Plain data,
+ * immutable once built; a feature the device could not read is simply absent.
  *
  * <p>v3 runtime parts (the profile says the MODEL has a feature, these say what is usable
  * NOW): {@link #hidden} rows (the Lumen rule: hide, never a disabled row: HDMI rows off HDMI, a row whose getter
@@ -41,20 +41,22 @@ public final class MenuState {
 
     public static Builder builder() { return new Builder(); }
 
-    public boolean has(String feature) { return values.containsKey(feature); }
+    private static String key(FeatureId f) { return f == null ? null : f.id; }
+
+    public boolean has(FeatureId feature) { return values.containsKey(key(feature)); }
 
     /** The raw text value, or null when not read. */
-    public String get(String feature) { return values.get(feature); }
+    public String get(FeatureId feature) { return values.get(key(feature)); }
 
     /** TOGGLE value: TRUE "on", FALSE "off", null not read. */
-    public Boolean on(String feature) {
-        String v = values.get(feature);
+    public Boolean on(FeatureId feature) {
+        String v = values.get(key(feature));
         return v == null ? null : "on".equals(v) ? Boolean.TRUE : "off".equals(v) ? Boolean.FALSE : null;
     }
 
     /** SLIDER value, or null when not read or not a number. */
-    public Integer number(String feature) {
-        String v = values.get(feature);
+    public Integer number(FeatureId feature) {
+        String v = values.get(key(feature));
         if (v == null) return null;
         try {
             return Integer.valueOf(v.trim());
@@ -63,27 +65,31 @@ public final class MenuState {
         }
     }
 
-    /** True: the row of {@code feature} (or a picture.pq.&lt;item&gt; slider, or a tile) is not shown now. */
-    public boolean hidden(String feature) { return hidden.contains(feature); }
+    /** True: the row of {@code feature} (or a picture slider) is not shown now. */
+    public boolean hidden(FeatureId feature) { return hidden.contains(key(feature)); }
 
     /** The options usable now (a subset of the profile's, in its order), or null = all of the profile's. */
-    public List<String> options(String feature) { return options.get(feature); }
+    public List<String> options(FeatureId feature) { return options.get(key(feature)); }
 
     /** The text of a runtime option token (key "feature|token"), or null = the module's label. */
-    public String label(String feature, String token) { return labels.get(feature + "|" + token); }
+    public String label(FeatureId feature, String token) { return labels.get(feature + "|" + token); }
 
     /** Text a choice shows when its value matches none of the options (stock "Colour temp 3"), or null. */
-    public String placeholder(String feature) { return placeholders.get(feature); }
+    public String placeholder(FeatureId feature) { return placeholders.get(key(feature)); }
 
-    /** The value line of a card tile (input and HDR type, the game mode), or null. */
+    /** The value line of a card tile ({@link MenuSpec.Tile#id}: input and HDR type, the game mode), or null. */
     public String tile(String id) { return tiles.get(id); }
 
     /** A text line shown under the row of {@code feature} now (why a choice does not run yet), or null. */
-    public String note(String feature) { return notes.get(feature); }
+    public String note(FeatureId feature) { return notes.get(key(feature)); }
+
+    /** A text line at the top of a section page ({@link MenuSpec} section id), or null. */
+    public String note(String section) { return notes.get(section); }
 
     /** True: the row is shown but cannot be used now (only where stock greys it too, e.g. the equalizer entry). */
-    public boolean disabled(String feature) { return disabled.contains(feature); }
+    public boolean disabled(FeatureId feature) { return disabled.contains(key(feature)); }
 
+    /** The values by id text. */
     public Map<String, String> asMap() { return values; }
 
     public Set<String> hiddenSet() { return hidden; }
@@ -129,41 +135,41 @@ public final class MenuState {
         private final TreeMap<String, String> notes = new TreeMap<>();
         private final TreeSet<String> disabled = new TreeSet<>();
 
-        public Builder put(String feature, String value) {
-            if (feature != null && value != null) v.put(feature, value);
+        public Builder put(FeatureId feature, String value) {
+            if (feature != null && value != null) v.put(feature.id, value);
             return this;
         }
 
-        public Builder on(String feature, Boolean value) {
+        public Builder on(FeatureId feature, Boolean value) {
             return value == null ? this : put(feature, value ? "on" : "off");
         }
 
-        public Builder number(String feature, Integer value) {
+        public Builder number(FeatureId feature, Integer value) {
             return value == null ? this : put(feature, Integer.toString(value));
         }
 
         /** The row (or tile) of {@code feature} is not shown now. */
-        public Builder hide(String feature) {
-            if (feature != null) hidden.add(feature);
+        public Builder hide(FeatureId feature) {
+            if (feature != null) hidden.add(feature.id);
             return this;
         }
 
         /** {@link #hide} when {@code yes}. */
-        public Builder hideIf(String feature, boolean yes) { return yes ? hide(feature) : this; }
+        public Builder hideIf(FeatureId feature, boolean yes) { return yes ? hide(feature) : this; }
 
         /** Only these options are usable now (tokens of the profile, or runtime tokens with a {@link #label}). */
-        public Builder options(String feature, List<String> tokens) {
-            if (feature != null && tokens != null) options.put(feature, Collections.unmodifiableList(new java.util.ArrayList<>(tokens)));
+        public Builder options(FeatureId feature, List<String> tokens) {
+            if (feature != null && tokens != null) options.put(feature.id, Collections.unmodifiableList(new java.util.ArrayList<>(tokens)));
             return this;
         }
 
-        public Builder label(String feature, String token, String text) {
+        public Builder label(FeatureId feature, String token, String text) {
             if (feature != null && token != null && text != null) labels.put(feature + "|" + token, text);
             return this;
         }
 
-        public Builder placeholder(String feature, String text) {
-            if (feature != null && text != null) placeholders.put(feature, text);
+        public Builder placeholder(FeatureId feature, String text) {
+            if (feature != null && text != null) placeholders.put(feature.id, text);
             return this;
         }
 
@@ -172,13 +178,18 @@ public final class MenuState {
             return this;
         }
 
-        public Builder note(String feature, String text) {
-            if (feature != null && text != null) notes.put(feature, text);
+        public Builder tile(FeatureId feature, String text) { return tile(feature == null ? null : feature.id, text); }
+
+        public Builder note(FeatureId feature, String text) { return note(feature == null ? null : feature.id, text); }
+
+        /** A line at the top of a section page (a {@link MenuSpec} section id). */
+        public Builder note(String section, String text) {
+            if (section != null && text != null) notes.put(section, text);
             return this;
         }
 
-        public Builder disable(String feature) {
-            if (feature != null) disabled.add(feature);
+        public Builder disable(FeatureId feature) {
+            if (feature != null) disabled.add(feature.id);
             return this;
         }
 

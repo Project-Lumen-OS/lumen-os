@@ -206,7 +206,7 @@ def module_errors(path, files, conf):
     errs = []
     pkgs = tuple("src/" + p.replace(".", "/") + "/" for p in [conf["package"]] + conf.get("packages", "").split())
     for rel, src in sorted(files.items()):
-        if rel.startswith("src/") and not (rel.startswith(pkgs) and "/" not in rel[len(next(p for p in pkgs if rel.startswith(p))):]):
+        if rel.startswith("src/") and not (rel.startswith(pkgs) and "/" not in rel[len(max((p for p in pkgs if rel.startswith(p)), key=len)):]):
             errs.append("module %s: %s is outside its package folders %s" % (path, rel, " ".join(pkgs)))
         elif rel.startswith("res/"):
             parts = rel.split("/")

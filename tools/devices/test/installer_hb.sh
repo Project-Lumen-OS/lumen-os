@@ -366,7 +366,7 @@ inst '' --ip "$ADDR" check
 expect_rc 0; expect_out "$NAME $SER ($ADDR), firmware $FW, slot $SL, system: XGIMI stock"
 expect_out "vbmeta: verification is off on slot $SL (no *-verity)"; expect_out "SHA256SUMS signature: Lumen OS key for the $NAME"
 expect_out "dump.erofs could not read the image content (not needed: the signed SHA256SUMS lists this file as Lumen OS $VER"
-expect_out "check passed; nothing was written"
+expect_out "check passed. Nothing was written"
 [ "$(st step_check)" = done ] && [ "$(st serial)" = "$SER" ] && [ "$(st ip)" = "$ADDR" ] && [ "$(st slot)" = "_$SL" ] || fail "state"
 expect_cmds ""
 end
@@ -703,7 +703,7 @@ end
 
 begin flash_blobs_write_fails
 dev_stock; touch "$FB/flash_fail_z9x_blobs_$SL"; inst 'ERASE\n\n' --ip "$ADDR" flash
-expect_rc 1; expect_out "z9x_blobs_$SL was not written; system was not touched. Nothing was written."
+expect_rc 1; expect_out "z9x_blobs_$SL was not written. System was not touched. Nothing was written."
 expect_cmds "$F getvar all;$F create-logical-partition z9x_blobs_$SL 4194304;$F flash z9x_blobs_$SL backup/$BLOBN;$F reboot;"
 end
 
@@ -813,9 +813,9 @@ lumen_update_refusal() {  # case status cow expected: Lumen OS runs, its update 
   for p in $WIPEP; do [ ! -e "$FB/formatted_$p" ] || fail "$p formatted"; done
   end
 }
-lumen_update_refusal flash_lumen_merging merging "" "an update is finishing (snapshot-update-status merging); start Lumen OS and wait 10 minutes"
-lumen_update_refusal flash_lumen_snapshotted snapshotted cow "an update is finishing (snapshot-update-status snapshotted); start Lumen OS and wait 10 minutes"
-lumen_update_refusal flash_lumen_cow none cow "*-cow partitions: an update is finishing; start Lumen OS and wait 10 minutes"
+lumen_update_refusal flash_lumen_merging merging "" "an update is finishing (snapshot-update-status merging): start Lumen OS and wait 10 minutes"
+lumen_update_refusal flash_lumen_snapshotted snapshotted cow "an update is finishing (snapshot-update-status snapshotted): start Lumen OS and wait 10 minutes"
+lumen_update_refusal flash_lumen_cow none cow "*-cow partitions: an update is finishing. Start Lumen OS and wait 10 minutes"
 
 begin flash_resumed_merging_stays
 # system begun, then the next visit finds an update merging: it stops in fastboot mode, the wipe never runs
@@ -1007,7 +1007,7 @@ end
 
 begin gapps_install_flash_fails
 gapps_case; touch "$FB/flash_fail_z9x_gapps_$SL"; inst 'no\nERASE\n\n' --ip "$ADDR" --erofs-utils "$EUD" gapps --zip "$GZIP"
-expect_rc 1; expect_out "could not be written and was removed again; nothing else changed"
+expect_rc 1; expect_out "could not be written and was removed again. Nothing else changed"
 expect_cmds "$F getvar all;$F create-logical-partition z9x_gapps_$SL $GNEED;$F flash z9x_gapps_$SL $GIMG;$F delete-logical-partition z9x_gapps_$SL;$F reboot;"
 for p in $WIPEP; do [ ! -e "$FB/formatted_$p" ] || fail "$p formatted"; done
 end
@@ -1061,7 +1061,7 @@ end
 begin gapps_status_off_turned_on
 gapps_case; setp lumen sys.z9x.gapps off; ADBW="-s $ADDR root;-s $ADDR shell rm -rf /metadata/z9x_gapps;-s $ADDR reboot;"
 inst 'yes\n' --ip "$ADDR" gapps
-expect_rc 0; expect_out "the Google services were turned off"; expect_out "turned on; the projector restarts"
+expect_rc 0; expect_out "the Google services were turned off"; expect_out "turned on. The projector restarts"
 [ -e "$FB/gapps_on_again" ] && [ -e "$FB/rebooted" ] || fail "not turned on again"
 end
 

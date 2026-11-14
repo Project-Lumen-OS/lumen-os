@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">Yumuşak</string>
     <string name="lumen_m_pm_isf_day">ISF gündüz</string>
     <string name="lumen_m_pm_isf_night">ISF gece</string>
+    <string name="lumen_m_pm_bright">Parlak</string>
     <string name="lumen_m_edid_hdmi_1_4">Uyumlu (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">Gelişmiş (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

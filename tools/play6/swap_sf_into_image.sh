@@ -1,7 +1,7 @@
 #!/bin/bash
 # SPDX-License-Identifier: Apache-2.0
 # swap_sf_into_image.sh: put a newly built /system/bin/surfaceflinger (lineage/play6_sf_build.sh) into an existing
-# Play 6 system image, the way tools/play6/aic/add_aic_to_image.sh edits one: debugfs, nothing else changes except
+# Play 6 system image, the way tools/play6/release_image.sh edits one: debugfs, nothing else changes except
 # ro.lumen.build_id (gets "-TAG"). Mode, owner and SELinux label are copied from the binary it replaces.
 #
 #   tools/play6/swap_sf_into_image.sh IN.img OUT.img TAG SURFACEFLINGER [--version VER]

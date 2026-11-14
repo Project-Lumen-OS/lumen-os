@@ -8,9 +8,13 @@ import android.os.UserManager;
 import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
+import org.lumen.projector.hal.AutoKstMode;
+import org.lumen.projector.hal.BootStage;
+import org.lumen.projector.hal.DeathListener;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.HbFeatures;
+import org.lumen.projector.hal.ReplyException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -93,12 +97,9 @@ final class HalController {
     private static final int ST_IDLE = 0, ST_CONNECT = 1, ST_EARLY = 2, ST_WAIT_ANIM = 3, ST_LATE = 4,
             ST_WAIT_UNLOCK = 5, ST_LATE2 = 6, ST_DONE = 7, ST_OFF = 8;
 
-    /** Lumen OS 1.0.4: POWER_ON_MUSIC (IGmpf 420 / 419, the stock power-on music). */
-    enum Toggle { POWER_ON_AF, POWER_ON_AK, MOVE_AF, MOVE_AK, CURTAIN_FIT, OBSTACLE, POWER_ON_MUSIC }
-
     interface ToggleResult {
         /** Main thread. Value null = unknown (not connected / error). */
-        void onToggles(Map<Toggle, Boolean> values);
+        void onToggles(Map<HalToggle, Boolean> values);
     }
 
     interface TextResult {
@@ -163,7 +164,7 @@ final class HalController {
     private long lastAfRequestAt = -100_000L;   // main thread
 
     /** Vendor death (AidlCaller: the first notice of a generation, binder thread): only post. */
-    private final GmpfClient.DeathListener death = () -> {
+    private final DeathListener death = () -> {
         final long cookie = generation;
         hal.post(() -> onHalDied(cookie));
     };
@@ -369,7 +370,7 @@ final class HalController {
             client.setFocusListener();                         // folded on the HB: sends nothing
             registered = true;
             Log.i(TAG, "focus callback registered (FOCUS 1 setFocusCallback)");
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             registered = true;                                 // reached the vendor: do not send it again
             Log.w(TAG, "focus callback registration reply: " + e);
         } catch (Throwable t) {
@@ -391,7 +392,7 @@ final class HalController {
             delivered.run();
             done.run();
             return true;
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             Log.w(TAG, what + " delivered or refused, not repeated: " + e.getMessage());
             delivered.run();
             done.run();
@@ -441,7 +442,7 @@ final class HalController {
     /** C: POWER 2 goToBootCompleted(0). */
     private boolean stepC() {
         return row("2 goToBootCompleted(0)", ++triesC,
-                () -> String.valueOf(client.goToBootCompleted(GmpfClient.BootStage.EARLY)),
+                () -> String.valueOf(client.goToBootCompleted(BootStage.EARLY)),
                 () -> deliveredC = true, () -> doneC = true);
     }
 
@@ -454,7 +455,7 @@ final class HalController {
     /** E: POWER 2 goToBootCompleted(1). */
     private boolean stepE() {
         return row("2 goToBootCompleted(1)", ++triesE,
-                () -> String.valueOf(client.goToBootCompleted(GmpfClient.BootStage.AFTER_BOOTANIM)),
+                () -> String.valueOf(client.goToBootCompleted(BootStage.AFTER_BOOTANIM)),
                 () -> deliveredE = true, () -> doneE = true);
     }
 
@@ -574,8 +575,8 @@ final class HalController {
             Log.w(TAG, "the vendor lost its boot state: resending 36(1), 32(2), 2(0), 2(1) (not 17)");
             try { client.setSystemUiReady(); } catch (Throwable t) { Log.w(TAG, "36: " + t); }
             try { client.setBootAnimFinished(); } catch (Throwable t) { Log.w(TAG, "32(2): " + t); }
-            try { client.goToBootCompleted(GmpfClient.BootStage.EARLY); } catch (Throwable t) { Log.w(TAG, "2(0): " + t); }
-            try { client.goToBootCompleted(GmpfClient.BootStage.AFTER_BOOTANIM); } catch (Throwable t) { Log.w(TAG, "2(1): " + t); }
+            try { client.goToBootCompleted(BootStage.EARLY); } catch (Throwable t) { Log.w(TAG, "2(0): " + t); }
+            try { client.goToBootCompleted(BootStage.AFTER_BOOTANIM); } catch (Throwable t) { Log.w(TAG, "2(1): " + t); }
         } else if (sentUiState && ui != 1) {
             try { client.setSystemUiReady(); Log.i(TAG, "36(1) resent"); } catch (Throwable t) { Log.w(TAG, "36: " + t); }
         }
@@ -794,7 +795,7 @@ final class HalController {
                 return;
             }
             try {
-                byte r = client.newAutoKst(GmpfClient.AutoKstMode.CURTAIN_ALIGN);
+                byte r = client.newAutoKst(AutoKstMode.CURTAIN_ALIGN);
                 Log.i(TAG, "newAutoKst(12) -> " + r);
             } finally {
                 lastKstEndAt = SystemClock.elapsedRealtime();
@@ -837,7 +838,7 @@ final class HalController {
             }
             Ui.toast(app, fit ? R.string.toast_fit : R.string.toast_kst);
             try {
-                byte r = fit ? client.newAutoKst(GmpfClient.AutoKstMode.CURTAIN_REFIT) : client.autoKst();
+                byte r = fit ? client.newAutoKst(AutoKstMode.CURTAIN_REFIT) : client.autoKst();
                 Log.i(TAG, (fit ? "newAutoKst(11)" : "autoKst()") + " -> " + r);
             } finally {
                 lastKstEndAt = SystemClock.elapsedRealtime();
@@ -875,8 +876,8 @@ final class HalController {
     // ================================================================== toggles
     void readToggles(ToggleResult cb) {
         hal.post(() -> {
-            Map<Toggle, Boolean> m = new EnumMap<>(Toggle.class);
-            for (Toggle t : Toggle.values()) m.put(t, connected && featureEnabled() && toggleOn(t) ? safeGet(t) : null);
+            Map<HalToggle, Boolean> m = new EnumMap<>(HalToggle.class);
+            for (HalToggle t : HalToggle.values()) m.put(t, connected && featureEnabled() && toggleOn(t) ? safeGet(t) : null);
             Ui.main().post(() -> cb.onToggles(m));
         });
     }
@@ -885,7 +886,7 @@ final class HalController {
      * HB: a toggle whose feature is not ON is neither read nor written (its value stays null = unknown), whoever
      * asks (panel, Projector settings, the Setup bridge); the setters in GmpfClient refuse it as well.
      */
-    static boolean toggleOn(Toggle t) {
+    static boolean toggleOn(HalToggle t) {
         switch (t) {
             case CURTAIN_FIT: return HbFeatures.on(HbFeatures.F.CURTAIN_FIT);
             case OBSTACLE: return HbFeatures.on(HbFeatures.F.OBSTACLE_AVOID);
@@ -895,7 +896,7 @@ final class HalController {
     }
 
     /** Called only on a user click. Sets, then reads back. */
-    void setToggle(Toggle t, boolean on, ToggleResult cb) {
+    void setToggle(HalToggle t, boolean on, ToggleResult cb) {
         hal.post(() -> {
             if (!featureEnabled() || !connected) {
                 Ui.toast(app, R.string.toast_not_ready);
@@ -910,13 +911,13 @@ final class HalController {
                     Ui.toast(app, R.string.toast_failed);
                 }
             }
-            Map<Toggle, Boolean> m = new EnumMap<>(Toggle.class);
-            for (Toggle x : Toggle.values()) m.put(x, connected && featureEnabled() && toggleOn(x) ? safeGet(x) : null);
+            Map<HalToggle, Boolean> m = new EnumMap<>(HalToggle.class);
+            for (HalToggle x : HalToggle.values()) m.put(x, connected && featureEnabled() && toggleOn(x) ? safeGet(x) : null);
             Ui.main().post(() -> cb.onToggles(m));
         });
     }
 
-    private Boolean safeGet(Toggle t) {
+    private Boolean safeGet(HalToggle t) {
         try {
             switch (t) {
                 case POWER_ON_AF: return client.getPowerOnAf();
@@ -935,7 +936,7 @@ final class HalController {
     }
 
     /** The 290/292/585 interlocks are the shared Hal helpers (same sequence as the quick panel). */
-    private void set(Toggle t, boolean on) throws Exception {
+    private void set(HalToggle t, boolean on) throws Exception {
         switch (t) {
             case POWER_ON_AF: client.setPowerOnAf(on); break;
             case POWER_ON_AK: client.setPowerOnAk(on); break;

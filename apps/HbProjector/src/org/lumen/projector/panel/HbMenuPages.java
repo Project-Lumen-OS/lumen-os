@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
@@ -34,11 +34,11 @@ final class HbMenuPages implements MenuController.Pages {
     private MenuController menu;
 
     @Override
-    public Page page(String id, MenuController menu) {
+    public Page page(FeatureId id, MenuController menu) {
         this.menu = menu;
         switch (id) {
-            case Feature.PICTURE_PRO: return pro().page;
-            case Feature.SETTINGS_CEC: return cec();
+            case PICTURE_PRO: return pro().page;
+            case SETTINGS_CEC: return cec();
             default: return null;
         }
     }

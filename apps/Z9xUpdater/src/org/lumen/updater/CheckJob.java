@@ -123,15 +123,15 @@ public final class CheckJob extends JobService {
     }
 
     private void run(Store st) {
-        Store.State s = st.state();
-        if (s == Store.State.PAUSED && st.autoMode() == Store.AUTO_DOWNLOAD) {
+        UpdateState s = st.state();
+        if (s == UpdateState.PAUSED && st.autoMode() == Store.AUTO_DOWNLOAD) {
             UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false);   // resume an interrupted download
             return;
         }
         Checker.Result r = Checker.check(this);
-        if (r.outcome != Checker.Outcome.OFFER) return;
+        if (r.outcome != CheckOutcome.OFFER) return;
         String ver = r.manifest.version;
-        if (st.autoMode() == Store.AUTO_DOWNLOAD && st.state() != Store.State.DOWNLOADED) {
+        if (st.autoMode() == Store.AUTO_DOWNLOAD && st.state() != UpdateState.DOWNLOADED) {
             UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false);
         } else {
             UpdateService.notifyResult(this, getString(R.string.avail_title, ver), getString(R.string.n_available_body));

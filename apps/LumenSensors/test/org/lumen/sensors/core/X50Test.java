@@ -253,15 +253,21 @@ public final class X50Test {
     }
 
     private static void allowList(Path src, Path devices) throws Exception {
-        String client = new String(Files.readAllBytes(src.resolve("org/lumen/sensors/hal/X50Gmpf.java")),
-                StandardCharsets.UTF_8);
+        // the allow list: the top-level X50GmpfIface / X50GmpfCall next to X50Gmpf, its codes X50HalCodes constants
+        // (generated from devices/g0111/hal/codes.tsv), read here as their numbers
+        String client = new String(Files.readAllBytes(src.resolve("org/lumen/sensors/hal/X50Gmpf.java")), StandardCharsets.UTF_8)
+                + new String(Files.readAllBytes(src.resolve("org/lumen/sensors/hal/X50GmpfIface.java")), StandardCharsets.UTF_8)
+                + new String(Files.readAllBytes(src.resolve("org/lumen/sensors/hal/X50GmpfCall.java")), StandardCharsets.UTF_8);
+        Matcher hm = Pattern.compile("static final int (\\w+) = (0x[0-9A-Fa-f]+|\\d+);").matcher(
+                new String(Files.readAllBytes(src.resolve("org/lumen/sensors/hal/X50HalCodes.java")), StandardCharsets.UTF_8));
+        while (hm.find()) client = client.replace("X50HalCodes." + hm.group(1) + ",", hm.group(2) + ",");
         // Iface NAME("xgimi.hardware.gmpf.IXxx") -> service Xxx
         Map<String, String> ifaces = new HashMap<>();
         Matcher im = Pattern.compile("\\b([A-Z]+)\\(\"xgimi\\.hardware\\.gmpf\\.I(\\w+)\"\\)").matcher(client);
         while (im.find()) ifaces.put(im.group(1), im.group(2));
         eq("five interfaces", 5, ifaces.size());
         Set<String> calls = new HashSet<>();
-        Matcher cm = Pattern.compile("\\b[A-Z_]+\\((null|Iface\\.([A-Z]+)), (0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(client);
+        Matcher cm = Pattern.compile("\\b[A-Z_]+\\((null|X50GmpfIface\\.([A-Z]+)), (0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(client);
         while (cm.find()) {
             String svc = cm.group(2) == null ? "-" : ifaces.get(cm.group(2));
             calls.add(svc + "\t" + Integer.decode(cm.group(3)) + "\t" + cm.group(4));
@@ -332,7 +338,7 @@ public final class X50Test {
                 StandardCharsets.UTF_8);
         String hub = new String(Files.readAllBytes(src.resolve("org/lumen/sensors/Hub.java")), StandardCharsets.UTF_8);
         int tasks = count(s, "new OneTask(\"") + count(s, "new Task(\"") + count(s, "super(\"");
-        Matcher named = Pattern.compile("(new OneTask|new Task|super)\\(\"[^\"]*\"( \\+ \\w+)?, Call\\.[A-Z_]+,").matcher(s);
+        Matcher named = Pattern.compile("(new OneTask|new Task|super)\\(\"[^\"]*\"( \\+ \\w+)?, X50GmpfCall\\.[A-Z_]+,").matcher(s);
         int withCall = 0;
         while (named.find()) withCall++;
         yes("tasks found (" + tasks + ")", tasks >= 20);

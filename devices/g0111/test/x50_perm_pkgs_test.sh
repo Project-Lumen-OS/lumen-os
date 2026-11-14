@@ -59,8 +59,8 @@ mkdir -p "$W/empty"; run "$W/empty"; expect not_a_tree_refused 1 "no APK found"
 run "$W/ok" "$W/empty"; expect not_a_base_refused 1 "not the base tree"
 
 V=$G/devices/g0111/image/verify_tree_x50.py
-if grep -q 'x50_perm_pkgs.problems(NEW_ROOT, BASE_ROOT)' "$V" && ! grep -q 'x50_perm_pkgs.problems(new' "$V" && grep -q 'x50_perm_pkgs.py' "$G/devices/g0111/image.conf" \
-    && grep -q 'tools/lumen/apkinfo.py' "$G/devices/g0111/image.conf"; then ok "verify_tree_x50 runs it, image.conf stages it"
-else echo "hook" > "$W/out"; bad "verify_tree_x50 runs it, image.conf stages it"; fi
+if grep -q 'x50_perm_pkgs.problems(NEW_ROOT, BASE_ROOT)' "$V" && ! grep -q 'x50_perm_pkgs.problems(new' "$V" && grep -q 'x50_perm_pkgs.py' "$G/devices/g0111/build.conf" \
+    && grep -q 'tools/lumen/apkinfo.py' "$G/devices/g0111/build.conf"; then ok "verify_tree_x50 runs it, build.conf stages it"
+else echo "hook" > "$W/out"; bad "verify_tree_x50 runs it, build.conf stages it"; fi
 echo "x50_perm_pkgs_test: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

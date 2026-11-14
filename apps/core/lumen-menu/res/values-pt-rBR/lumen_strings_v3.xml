@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Economia de energia</string>
     <string name="lumen_m_ambient_speaker">Coluna ambiente</string>
     <string name="lumen_m_ct_custom">Personalizada</string>
+    <string name="lumen_m_lamp_off">Desligar a imagem</string>
 </resources>

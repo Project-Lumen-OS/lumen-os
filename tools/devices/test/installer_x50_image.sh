@@ -168,16 +168,16 @@ link "$IMGN"
 inst '' "" --ip "$ADDR" --unsigned-image --image "$C/img/$IMGN" check
 expect_rc 0; expect_out "$XNAME $SER ($ADDR)"; expect_out "SHA256SUMS signature: Lumen OS key for the $XNAME"
 expect_out "$IMGN sha256 ${SUM:0:16}"; expect_out "image: Lumen OS x50-$VER for the $XNAME"
-expect_out "check passed; nothing was written"; expect_no_out "Type UNSIGNED"
+expect_out "check passed. Nothing was written"; expect_no_out "Type UNSIGNED"
 reads_only
 end
 
 begin x50_repo_installer_device_opt x50 net z9x
 link "$IMGN"
 inst '' "" --device "$X" --ip "$ADDR" --unsigned-image --image "$C/img/$IMGN" check
-expect_rc 0; expect_out "your own image is used (--unsigned-image)"
+expect_rc 0; expect_out "Your own image is used (--unsigned-image)"
 expect_out "SHA256SUMS signature: Lumen OS key for the $XNAME"; expect_out "image: Lumen OS x50-$VER for the $XNAME"
-expect_out "check passed; nothing was written"
+expect_out "check passed. Nothing was written"
 reads_only
 end
 

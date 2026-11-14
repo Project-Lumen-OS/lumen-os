@@ -11,6 +11,9 @@
 #    any red stops the build
 # 3. apps/build_apk.sh for the assembled Play6Projector, apps/Play6FrameworkOverlay, apps/Play6Updater and, once it
 #    exists, apps/Play6TvSettingsOverlay, signed with the Play 6 platform key -> build/play6/<App>.apk
+# 4. the shared screen mirroring receiver apps/LumenMiracast (Java only, the version of its 1.0.11 line: its manifest
+#    names none) and its Wi-Fi Direct device type overlay apps/LumenWifiP2pOverlay, the same sources as the Z9X image,
+#    on the Play 6 platform key -> build/play6/LumenMiracast.apk, build/play6/LumenWifiP2pOverlay.apk
 #
 # Key (S1: never a certificate a Z9X image trusts):
 #   KEY_PK8  default ~/.lumen-keys/play6/platform.pk8 (made by tools/play6/gen_play6_keys.sh; the private key
@@ -75,6 +78,11 @@ for app in Play6Projector Play6FrameworkOverlay Play6TvSettingsOverlay Play6Upda
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
     sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
+# the receivers of every Lumen projector, no per-model copy (AirPlay is the re-signed pin: sign_play6.py pinned)
+BUILD_DIR="$OUT/apk/LumenMiracast" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE=111 VERSION_NAME=1.0.11 \
+  sh "$G/apps/build_apk.sh" "$G/apps/LumenMiracast" "$OUT/LumenMiracast.apk"
+BUILD_DIR="$OUT/apk/LumenWifiP2pOverlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
+  sh "$G/apps/build_apk.sh" "$G/apps/LumenWifiP2pOverlay" "$OUT/LumenWifiP2pOverlay.apk"
 SRC=
 [ "${HOME_SRC:-0}" = 1 ] && SRC="$SRC Z9xHome"
 [ "${TVINPUT_SRC:-0}" = 1 ] && SRC="$SRC Z9xTvInput"

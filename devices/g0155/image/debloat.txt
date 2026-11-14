@@ -1,0 +1,55 @@
+# The RS30 Ultra Max debloat: the setup, launcher, updater and emulator lines of the HB list (devices/goat_elegant
+# compose_hb.sh step 2), read by tools/build/tree.py keep-rules and remove (one path below /system per line, * allowed).
+# The LineageOS setup wizard goes: with TvProvision it took HOME and kept opening the Bluetooth accessory screen on the
+# Play 6 t9, and a fresh trial has no paired remote yet. The sample launcher goes (one HOME: TVLauncherNoGMS), the
+# LineageOS updater goes (no OTA in a trial), and so do the emulator overlays and radio config. TvProvision stays: it
+# provisions the device. The vendor is VNDK 34: every VNDK APEX stays (the composer keeps v34 by rule).
+system_ext/priv-app/LineageSetupWizard
+system_ext/etc/permissions/privapp_whitelist_org.lineageos.setupwizard.xml
+product/overlay/LineageSetupWizard__*_auto_generated_rro_product.apk
+product/overlay/LineageGoogleSetupWraithOverlay
+product/overlay/LineageGoogleSetupWraithPairingOverlay
+product/priv-app/TvSampleLeanbackLauncher
+product/etc/permissions/com.example.sampleleanbacklauncher.xml
+system_ext/priv-app/Updater
+product/overlay/Updater__lineage_gsi_tv_arm__auto_generated_rro_product.apk
+system_ext/etc/permissions/privapp_whitelist_org.lineageos.updater.xml
+system_ext/priv-app/EmulatorRadioConfig
+product/overlay/EmulatorTetheringConfigOverlay.apk
+product/overlay/CompanionDeviceManager__emulator__auto_generated_characteristics_rro.apk
+product/overlay/framework-res__emulator__auto_generated_characteristics_rro.apk
+product/overlay/EmulationPixel2XL
+product/overlay/EmulationPixel3
+product/overlay/EmulationPixel3XL
+product/overlay/EmulationPixel3a
+product/overlay/EmulationPixel3aXL
+product/overlay/EmulationPixel4
+product/overlay/EmulationPixel4XL
+product/overlay/EmulationPixel4a
+product/overlay/EmulationPixel5
+product/overlay/EmulationPixel6
+product/overlay/EmulationPixel6Pro
+product/overlay/EmulationPixel6a
+product/overlay/EmulationPixel7
+product/overlay/EmulationPixel7Pro
+product/overlay/EmulationPixel7a
+product/overlay/EmulationPixel8
+product/overlay/EmulationPixel8Pro
+product/overlay/EmulationPixelFold
+product/overlay/SystemUIEmulationPixel3
+product/overlay/SystemUIEmulationPixel3XL
+product/overlay/SystemUIEmulationPixel3a
+product/overlay/SystemUIEmulationPixel3aXL
+product/overlay/SystemUIEmulationPixel4
+product/overlay/SystemUIEmulationPixel4XL
+product/overlay/SystemUIEmulationPixel4a
+product/overlay/SystemUIEmulationPixel5
+product/overlay/SystemUIEmulationPixel6
+product/overlay/SystemUIEmulationPixel6Pro
+product/overlay/SystemUIEmulationPixel6a
+product/overlay/SystemUIEmulationPixel7
+product/overlay/SystemUIEmulationPixel7Pro
+product/overlay/SystemUIEmulationPixel7a
+product/overlay/SystemUIEmulationPixel8
+product/overlay/SystemUIEmulationPixel8Pro
+product/overlay/SystemUIEmulationPixelFold

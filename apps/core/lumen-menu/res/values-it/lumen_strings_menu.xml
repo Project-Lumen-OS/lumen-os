@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">Morbido</string>
     <string name="lumen_m_pm_isf_day">ISF giorno</string>
     <string name="lumen_m_pm_isf_night">ISF notte</string>
+    <string name="lumen_m_pm_bright">Luminoso</string>
     <string name="lumen_m_edid_hdmi_1_4">Compatibile (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">Avanzata (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

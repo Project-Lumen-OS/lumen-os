@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Ahorro de energía</string>
     <string name="lumen_m_ambient_speaker">Altavoz ambiental</string>
     <string name="lumen_m_ct_custom">Personalizada</string>
+    <string name="lumen_m_lamp_off">Apagar la imagen</string>
 </resources>

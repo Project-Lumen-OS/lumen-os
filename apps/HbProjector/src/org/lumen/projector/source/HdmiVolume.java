@@ -11,6 +11,7 @@ import android.util.Log;
 import org.lumen.projector.Ui;
 import org.lumen.projector.audio.AudioPathReporter;
 import org.lumen.projector.audio.HbAudioRules;
+import org.lumen.projector.audio.HdmiVolumeStep;
 
 /**
  * Lumen OS 1.0.4: the HDMI volume of the Z9X (the remote's volume keys did nothing to an HDMI source in 1.0.3).
@@ -155,7 +156,7 @@ public final class HdmiVolume {
         AudioManager am = app.getSystemService(AudioManager.class);
         if (am == null) return;
         boolean speaker = HbAudioRules.volumeStep(AudioPathReporter.targetPath(), AudioPathReporter.confirmedPath())
-                == HbAudioRules.VolumeStep.FOLLOW;
+                == HdmiVolumeStep.FOLLOW;
         if (!speaker) {
             if (sFollowing) {
                 sFollowing = false;

@@ -240,24 +240,25 @@ final class QpdLayout {
     }
 
     // ------------------------------------------------------------------ brightness slider
-    /** Level shown for Boost (QuickPanelController.BOOST_LEVEL). */
-    static final int BOOST_LEVEL = 11;
+    /** Boost is the profile's level after the top one; 0 = the model has no Boost. */
+    static boolean isBoost(int value, int boostLevel) { return boostLevel > 0 && value >= boostLevel; }
 
-    static boolean isBoost(int value) { return value >= BOOST_LEVEL; }
-
-    /** Filled part of the track 0..1: level / 10 (1 = 10 %), Boost = full. Unknown (null) = empty. */
-    static float fill(Integer value) {
-        if (value == null) return 0f;
-        if (isBoost(value)) return 1f;
-        int v = Math.max(1, Math.min(10, value));
-        return v / 10f;
+    /**
+     * Filled part of the track 0..1 over the slider's own range: min = empty (the knob on the left edge), max = full
+     * (the right edge; Boost is the top of the range while it is on). Unknown (null) or an empty range = empty.
+     */
+    static float fill(Integer value, int min, int max) {
+        if (value == null || max <= min) return 0f;
+        return (clamp(value, min, max) - min) / (float) (max - min);
     }
 
-    /** Number at the right of the slider: the level, the Boost word, or empty while unknown. */
-    static String label(Integer value, String boostWord) {
+    /** Number at the right of the slider: the level inside the range, the Boost word, or empty while unknown. */
+    static String label(Integer value, int min, int max, int boostLevel, String boostWord) {
         if (value == null) return "";
-        return isBoost(value) ? boostWord : Integer.toString(Math.max(1, Math.min(10, value)));
+        return isBoost(value, boostLevel) ? boostWord : Integer.toString(clamp(value, min, max));
     }
+
+    private static int clamp(int v, int min, int max) { return Math.max(min, Math.min(max, v)); }
 
     /** Boost notice shown once when the read-back turns Boost on (not on every refresh while it stays on). */
     static boolean boostNoticeDue(Boolean before, Boolean now) {

@@ -34,6 +34,7 @@ final class PromptOverlay {
     private final Handler main = new Handler(Looper.getMainLooper());
     private View shown;
     private Answer pending;
+    private String lastHow = "";
 
     PromptOverlay(Context ctx) {
         this.ctx = ctx;
@@ -42,6 +43,11 @@ final class PromptOverlay {
 
     boolean asking() {
         return pending != null;
+    }
+
+    /** How the last question ended: button, back, timeout, replaced (for the diagnostics). */
+    String lastHow() {
+        return lastHow;
     }
 
     void ask(String who, Answer answer) {
@@ -62,28 +68,33 @@ final class PromptOverlay {
         card.addView(row);
         card.setOnKeyListener((v, code, e) -> {
             if (code == KeyEvent.KEYCODE_BACK && e.getAction() == KeyEvent.ACTION_UP) {
-                finish(false);
+                finish(false, "back");
                 return true;
             }
             return false;
         });
-        allow.setOnClickListener(v -> finish(true));
-        decline.setOnClickListener(v -> finish(false));
+        allow.setOnClickListener(v -> finish(true, "button"));
+        decline.setOnClickListener(v -> finish(false, "button"));
         decline.setOnKeyListener((v, code, e) -> {
             if (code == KeyEvent.KEYCODE_BACK) {
-                if (e.getAction() == KeyEvent.ACTION_UP) finish(false);
+                if (e.getAction() == KeyEvent.ACTION_UP) finish(false, "back");
                 return true;
             }
             return false;
         });
         allow.setOnKeyListener((v, code, e) -> {
             if (code == KeyEvent.KEYCODE_BACK) {
-                if (e.getAction() == KeyEvent.ACTION_UP) finish(false);
+                if (e.getAction() == KeyEvent.ACTION_UP) finish(false, "back");
                 return true;
             }
             return false;
         });
         show(card, true);
+        if (shown == null) {
+            // the card could not be shown: answer now instead of leaving the sender waiting
+            finish(false, "card not shown");
+            return;
+        }
         allow.requestFocus();
         main.postDelayed(timeout, ASK_TIMEOUT_MS);
     }
@@ -123,14 +134,18 @@ final class PromptOverlay {
         }
         Answer a = pending;
         pending = null;
-        if (a != null) a.onAnswer(false);
+        if (a != null) {
+            lastHow = "replaced";
+            a.onAnswer(false);
+        }
     }
 
-    private final Runnable timeout = () -> finish(false);
+    private final Runnable timeout = () -> finish(false, "no answer in " + ASK_TIMEOUT_MS / 1000 + " s");
 
-    private void finish(boolean allow) {
+    private void finish(boolean allow, String how) {
         Answer a = pending;
         pending = null;
+        lastHow = how;
         hide();
         if (a != null) a.onAnswer(allow);
     }

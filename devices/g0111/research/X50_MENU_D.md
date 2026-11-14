@@ -99,7 +99,7 @@ GmDisplayManager` (gmuiapi copy in xhplayer) -> gmpf method name -> X50 code. "s
 
 Game state on the X50: running = DM 148 getGameModeProp state == 0 (stock GameModeApi.isGameModeRunning). Stock opens the
 game menu with the held gear = KEYCODE_MENU in xhplayer InputActivity. On Lumen X50 the held gear arrives as 3840
-scancode 127 (IR / keypad 139), TV_MEDIA_CONTEXT_MENU in the base key layouts -> KeyReceiver.gear(long): the game menu
+scancode 127 (IR / keypad 139), TV_MEDIA_CONTEXT_MENU after the X50 key edit (x50_power_keys.py GEAR_HOLD: ALL_APPS in the 1.0.9 base) -> KeyReceiver.gear(long): the game menu
 while game mode runs on HDMI, else the corner reset on the corner screen, else Android settings (X50_GAME_CALLS.md 7).
 
 None of the new game calls is BANNED in `devices/goat_elegant/research/banned.tsv` (checked: TV 120/121, 122, 145-150,
@@ -107,7 +107,7 @@ None of the new game calls is BANNED in `devices/goat_elegant/research/banned.ts
 Z9X GATED pattern (shown only after its getter answers in range on this unit, every write read back, hide on mismatch)
 and add each row to `allowed_x50projector.tsv` with its stock caller and an args range.
 
-## 3. All settings (the whole X50 menu, Menu.Row order, 45559d0)
+## 3. All settings (the whole X50 menu, MenuRow order, 45559d0)
 
 FOCUS: AUTO_FOCUS (PF 8(44)), MANUAL_FOCUS (PF 2), SMART_AF (PF 85/86 + MD 4).
 KEYSTONE: AUTO_KEYSTONE (PF 27), MANUAL_KEYSTONE (DM 15/16/64), ZOOM_SHIFT (zoom/shift calls above), KEYSTONE_RESET,

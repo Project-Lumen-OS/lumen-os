@@ -21,7 +21,9 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.Ui;
+import org.lumen.projector.hal.AudioPath;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.SoundEffect;
 import org.lumen.projector.source.TifHdmiState;
 
 import java.util.HashSet;
@@ -154,7 +156,7 @@ public final class AiSoundEngine {
     private static volatile boolean sAiMode;
     private static volatile boolean sScreenOn = true;
     /** Last sub-mode requested (63 sent) or chosen with 61(3), for the UI label. */
-    private static volatile GmpfClient.SoundEffect sLast;
+    private static volatile SoundEffect sLast;
     /**
      * A 63 of the current sub-mode went through since the last boot / process start, wake, HAL
      * reconnect or speaker report (the vendor restore may have replaced the sub-mode before that).
@@ -208,7 +210,7 @@ public final class AiSoundEngine {
                 }, sH);
             }
             AudioPathReporter.addPathListener(path -> {
-                if (path == GmpfClient.AudioPath.SPEAKER.wire) {
+                if (path == AudioPath.SPEAKER.wire) {
                     sConfirmed = false;                         // SetOutputType re-resolved AUTO
                     resend("speaker path confirmed", PATH_RESEND_MS);
                 }
@@ -234,7 +236,7 @@ public final class AiSoundEngine {
     /** Any thread: 62 as read / written (null = unknown, ignored). Starts / stops the engine. */
     public static void noteMode(Integer wire62, String why) {
         if (wire62 == null) return;
-        boolean ai = wire62 == GmpfClient.SoundEffect.AI.wire;
+        boolean ai = wire62 == SoundEffect.AI.wire;
         if (ai == sAiMode) return;
         sAiMode = ai;
         Log.i(TAG, (ai ? "AI sound on" : "AI sound off (62=" + wire62 + ")") + " (" + why + ")");
@@ -276,9 +278,9 @@ public final class AiSoundEngine {
     }
 
     /** The sub-mode to show as "AI · X": the last one requested, else Movie (the vendor default). Any thread. */
-    public static GmpfClient.SoundEffect shownSubMode() {
-        GmpfClient.SoundEffect s = sLast;
-        return s != null ? s : GmpfClient.SoundEffect.MOVIE;
+    public static SoundEffect shownSubMode() {
+        SoundEffect s = sLast;
+        return s != null ? s : SoundEffect.MOVIE;
     }
 
     // ------------------------------------------------------------------ user action (HAL thread)
@@ -289,21 +291,21 @@ public final class AiSoundEngine {
      * Returns the 62 read-back.
      */
     public static int userChoseAi(GmpfClient g) throws Exception {
-        GmpfClient.SoundEffect cat = null;
+        SoundEffect cat = null;
         try { cat = categoryNow(); } catch (Throwable t) { Log.w(TAG, "category now: " + t); }
         if (cat == null) cat = shownSubMode();
         boolean propOk = setProp(cat);
-        g.setSoundEffect(GmpfClient.SoundEffect.AI);                          // 61(3)
+        g.setSoundEffect(SoundEffect.AI);                          // 61(3)
         int back = -1;
         try { back = g.getSoundEffectRaw(); } catch (Throwable t) { Log.w(TAG, "62: " + t); }
         Log.i(TAG, "user chose AI: property " + PROP_PKG_MOD + "=" + cat.wire + (propOk ? " (ok)" : " (not written)")
                 + ", 61(3) -> 62=" + back);
         remember(cat);
         noteMode(back, "user");
-        final GmpfClient.SoundEffect c = cat;
+        final SoundEffect c = cat;
         Handler h = sH;
         if (h != null) h.post(() -> sLastSendAt = SystemClock.elapsedRealtime());   // counts as a switch
-        if (!propOk && cat != GmpfClient.SoundEffect.MOVIE && back == GmpfClient.SoundEffect.AI.wire) {
+        if (!propOk && cat != SoundEffect.MOVIE && back == SoundEffect.AI.wire) {
             Hal.runDelayed((g1, g2) -> send(g1, c, "AI chosen, property not writable"), PROP_FALLBACK_63_MS);
         }
         return back;
@@ -358,7 +360,7 @@ public final class AiSoundEngine {
         if (pkg == null) return;
         long wall = System.currentTimeMillis();
         if (wall - sFgSince < STABLE_MS) return;
-        GmpfClient.SoundEffect cat = categoryOf(pkg);
+        SoundEffect cat = categoryOf(pkg);
         String guardPkg = pkg;
         if (cat == null) {                                  // launcher / unknown: AirPlay audio in the background?
             cat = airplayPlayingCategory();
@@ -390,14 +392,14 @@ public final class AiSoundEngine {
         if (!sAiMode || !sScreenOn || sInFlight || !speakerPath()) return;
         long now = SystemClock.elapsedRealtime();
         if (now - sLastSendAt < PERIODIC_RESEND_MS || now < sBlockedUntil) return;
-        GmpfClient.SoundEffect cat = resendCategory();
+        SoundEffect cat = resendCategory();
         if (cat == null) return;
         request(cat, "periodic (re-send)");
     }
 
     /** The confirmed output path is the built-in speaker (cached, no HAL call). Any thread. */
     private static boolean speakerPath() {
-        return AudioPathReporter.confirmedPath() == GmpfClient.AudioPath.SPEAKER.wire;
+        return AudioPathReporter.confirmedPath() == AudioPath.SPEAKER.wire;
     }
 
     /** Engine thread: queue 63 now (respecting the 10 s gap) for an idempotent re-send of the last sub-mode. */
@@ -416,7 +418,7 @@ public final class AiSoundEngine {
                 resend(why, wait);
                 return;
             }
-            GmpfClient.SoundEffect cat = resendCategory();
+            SoundEffect cat = resendCategory();
             if (cat == null) return;
             request(cat, why + " (re-send)");
         }, Math.max(0, delayMs));
@@ -426,12 +428,12 @@ public final class AiSoundEngine {
      * Engine thread: what a re-send asks for: the foreground category when it is due (stable, not
      * held back by the playback guard), else the last sub-mode (the one the label shows).
      */
-    private static GmpfClient.SoundEffect resendCategory() {
-        GmpfClient.SoundEffect cat = sLast;
+    private static SoundEffect resendCategory() {
+        SoundEffect cat = sLast;
         String pkg = sFgPkg;
         try {
             if (pkg != null && System.currentTimeMillis() - sFgSince >= STABLE_MS) {
-                GmpfClient.SoundEffect fg = categoryOf(pkg);
+                SoundEffect fg = categoryOf(pkg);
                 String guardPkg = pkg;
                 if (fg == null) {
                     fg = airplayPlayingCategory();
@@ -445,7 +447,7 @@ public final class AiSoundEngine {
         return cat;
     }
 
-    private static void request(final GmpfClient.SoundEffect cat, final String why) {
+    private static void request(final SoundEffect cat, final String why) {
         sInFlight = true;
         sLastSendAt = SystemClock.elapsedRealtime();
         // runDelayed with ifSkipped: Hal.run drops a task silently when the HAL is not connected at
@@ -470,15 +472,15 @@ public final class AiSoundEngine {
     }
 
     /** HAL thread: the gated 63. True when sent. */
-    private static boolean send(GmpfClient g, GmpfClient.SoundEffect cat, String why) {
+    private static boolean send(GmpfClient g, SoundEffect cat, String why) {
         try {
             int m = g.getSoundEffectRaw();                                    // 62
-            if (m != GmpfClient.SoundEffect.AI.wire) {
+            if (m != SoundEffect.AI.wire) {
                 Log.i(TAG, why + ": 62=" + m + " is not AI, 63 not sent");
                 noteMode(m, "62 read");
                 return false;
             }
-            if (!AudioPathReporter.isActive(g) || AudioPathReporter.confirmedPath() != GmpfClient.AudioPath.SPEAKER.wire) {
+            if (!AudioPathReporter.isActive(g) || AudioPathReporter.confirmedPath() != AudioPath.SPEAKER.wire) {
                 Log.i(TAG, why + ": output is not the reported speaker path (" + AudioPathReporter.confirmedPath() + "), 63 not sent");
                 return false;
             }
@@ -500,7 +502,7 @@ public final class AiSoundEngine {
 
     // ------------------------------------------------------------------ categories
     /** Any worker thread: category of the current foreground app right now (fresh UsageStats read). */
-    private static GmpfClient.SoundEffect categoryNow() {
+    private static SoundEffect categoryNow() {
         UsageStatsManager usm = sApp.getSystemService(UsageStatsManager.class);
         if (usm == null) return null;
         long now = System.currentTimeMillis();
@@ -513,23 +515,23 @@ public final class AiSoundEngine {
             if (e.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED && e.getPackageName() != null
                     && !TRANSIENT.contains(e.getPackageName())) pkg = e.getPackageName();
         }
-        GmpfClient.SoundEffect cat = pkg == null ? null : categoryOf(pkg);
+        SoundEffect cat = pkg == null ? null : categoryOf(pkg);
         return cat != null ? cat : airplayPlayingCategory();             // AirPlay audio behind the launcher
     }
 
     /** MOVIE / MUSIC / SPORTS / KARAOKE, or null = keep the current sub-mode. */
-    static GmpfClient.SoundEffect categoryOf(String pkg) {
+    static SoundEffect categoryOf(String pkg) {
         if (pkg == null || KEEP.contains(pkg)) return null;
         if (PKG_AIRPLAY.equals(pkg)) return airplayCategory();
         if (PKG_MEDIASHELL.equals(pkg)) return playerCategory(pkg);
-        if (SPORTS.contains(pkg)) return GmpfClient.SoundEffect.SPORTS;
-        if (VIDEO.contains(pkg)) return GmpfClient.SoundEffect.MOVIE;
-        if (MUSIC.contains(pkg)) return GmpfClient.SoundEffect.MUSIC;
-        if (KTV.contains(pkg)) return GmpfClient.SoundEffect.KARAOKE;
+        if (SPORTS.contains(pkg)) return SoundEffect.SPORTS;
+        if (VIDEO.contains(pkg)) return SoundEffect.MOVIE;
+        if (MUSIC.contains(pkg)) return SoundEffect.MUSIC;
+        if (KTV.contains(pkg)) return SoundEffect.KARAOKE;
         try {
             ApplicationInfo ai = sApp.getPackageManager().getApplicationInfo(pkg, 0);
-            if (ai.category == ApplicationInfo.CATEGORY_AUDIO) return GmpfClient.SoundEffect.MUSIC;
-            if (ai.category == ApplicationInfo.CATEGORY_VIDEO) return GmpfClient.SoundEffect.MOVIE;
+            if (ai.category == ApplicationInfo.CATEGORY_AUDIO) return SoundEffect.MUSIC;
+            if (ai.category == ApplicationInfo.CATEGORY_VIDEO) return SoundEffect.MOVIE;
         } catch (Throwable t) {
             Log.d(TAG, "category of " + pkg + ": " + t);
         }
@@ -541,7 +543,7 @@ public final class AiSoundEngine {
      * podcasts) and with fast-forward / rewind for AirPlay video; mirroring has no active session.
      * Its players always say CONTENT_TYPE_MOVIE, so they cannot tell music apart.
      */
-    private static GmpfClient.SoundEffect airplayCategory() {
+    private static SoundEffect airplayCategory() {
         try {
             MediaSessionManager msm = sApp.getSystemService(MediaSessionManager.class);
             if (msm != null) {
@@ -550,15 +552,15 @@ public final class AiSoundEngine {
                     PlaybackState st = mc.getPlaybackState();
                     long a = st == null ? 0 : st.getActions();
                     if ((a & PlaybackState.ACTION_SKIP_TO_NEXT) != 0 && (a & PlaybackState.ACTION_FAST_FORWARD) == 0) {
-                        return GmpfClient.SoundEffect.MUSIC;
+                        return SoundEffect.MUSIC;
                     }
-                    return GmpfClient.SoundEffect.MOVIE;
+                    return SoundEffect.MOVIE;
                 }
             }
         } catch (Throwable t) {
             Log.d(TAG, "airplay session: " + t);
         }
-        return GmpfClient.SoundEffect.MOVIE;                                  // mirroring / unknown
+        return SoundEffect.MOVIE;                                  // mirroring / unknown
     }
 
     /**
@@ -566,7 +568,7 @@ public final class AiSoundEngine {
      * foreground app is KEEP / unknown: with MUSIC_SCREEN off Z9xAirPlay plays audio without bringing
      * its screen to the front.
      */
-    private static GmpfClient.SoundEffect airplayPlayingCategory() {
+    private static SoundEffect airplayPlayingCategory() {
         try {
             MediaSessionManager msm = sApp.getSystemService(MediaSessionManager.class);
             if (msm == null) return null;
@@ -578,7 +580,7 @@ public final class AiSoundEngine {
                 if (s != PlaybackState.STATE_PLAYING && s != PlaybackState.STATE_BUFFERING) continue;
                 long a = st.getActions();
                 return (a & PlaybackState.ACTION_SKIP_TO_NEXT) != 0 && (a & PlaybackState.ACTION_FAST_FORWARD) == 0
-                        ? GmpfClient.SoundEffect.MUSIC : GmpfClient.SoundEffect.MOVIE;
+                        ? SoundEffect.MUSIC : SoundEffect.MOVIE;
             }
         } catch (Throwable t) {
             Log.d(TAG, "airplay session (background): " + t);
@@ -587,7 +589,7 @@ public final class AiSoundEngine {
     }
 
     /** Content type of the playing media players of {@code pkg}'s uid: MUSIC / MOVIE, else keep. */
-    private static GmpfClient.SoundEffect playerCategory(String pkg) {
+    private static SoundEffect playerCategory(String pkg) {
         int uid = uidOf(pkg);
         if (uid < 0) return null;
         boolean music = false, movie = false;
@@ -596,7 +598,7 @@ public final class AiSoundEngine {
             if (p[2] == AudioAttributes.CONTENT_TYPE_MUSIC) music = true;
             if (p[2] == AudioAttributes.CONTENT_TYPE_MOVIE) movie = true;
         }
-        return movie ? GmpfClient.SoundEffect.MOVIE : music ? GmpfClient.SoundEffect.MUSIC : null;
+        return movie ? SoundEffect.MOVIE : music ? SoundEffect.MUSIC : null;
     }
 
     // ------------------------------------------------------------------ playback guard
@@ -656,7 +658,7 @@ public final class AiSoundEngine {
     }
 
     /** Best effort (default_prop; works on this permissive build only). Read back. */
-    private static boolean setProp(GmpfClient.SoundEffect cat) {
+    private static boolean setProp(SoundEffect cat) {
         String v = Integer.toString(cat.wire);
         try {
             if (!v.equals(SystemProperties.get(PROP_PKG_MOD, ""))) SystemProperties.set(PROP_PKG_MOD, v);
@@ -667,16 +669,16 @@ public final class AiSoundEngine {
         }
     }
 
-    private static void remember(GmpfClient.SoundEffect cat) {
+    private static void remember(SoundEffect cat) {
         sLast = cat;
         try { prefs(sApp).edit().putInt(KEY_LAST, cat.wire).apply(); } catch (Throwable t) { Log.w(TAG, "save: " + t); }
     }
 
-    private static GmpfClient.SoundEffect persisted(Context app) {
+    private static SoundEffect persisted(Context app) {
         try {
-            GmpfClient.SoundEffect s = GmpfClient.SoundEffect.fromWire(prefs(app).getInt(KEY_LAST, -1));
-            if (s == GmpfClient.SoundEffect.MOVIE || s == GmpfClient.SoundEffect.MUSIC
-                    || s == GmpfClient.SoundEffect.SPORTS || s == GmpfClient.SoundEffect.KARAOKE) return s;
+            SoundEffect s = SoundEffect.fromWire(prefs(app).getInt(KEY_LAST, -1));
+            if (s == SoundEffect.MOVIE || s == SoundEffect.MUSIC
+                    || s == SoundEffect.SPORTS || s == SoundEffect.KARAOKE) return s;
         } catch (Throwable ignored) { }
         return null;
     }

@@ -19,9 +19,10 @@ import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.game.GameMode;
-import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6KstPoint;
+import org.lumen.projector.hal.ReplyException;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
@@ -255,7 +256,7 @@ public final class ManualKeystonePanel extends Panel {
         if (!on) return false;
         markFlag(app, KEY_PAUSED, true);
         try {
-            Log.i(TAG, who + ": 573(2,false) -> " + g.setRealtimeAkRunning(false));
+            Log.i(TAG, who + ": 573(2,false) -> " + g.setRealtimeAkTemporarily(false));
         } catch (Throwable t) {
             Log.w(TAG, who + ": 573(2,false): " + t + " (continuing)");
         }
@@ -265,7 +266,7 @@ public final class ManualKeystonePanel extends Panel {
     /** HAL thread: 573(2,true); the marker is cleared only on a true result. */
     private static boolean tryResume(Context app, Play6Gmpf g, String who) {
         try {
-            boolean r = g.setRealtimeAkRunning(true);
+            boolean r = g.setRealtimeAkTemporarily(true);
             Log.i(TAG, who + ": 573(2,true) -> " + r);
             if (r) {
                 markFlag(app, KEY_PAUSED, false);
@@ -281,11 +282,11 @@ public final class ManualKeystonePanel extends Panel {
     /** HAL thread: IGmpf2 125(0); its marker is cleared on any delivered reply (result logged). */
     private static boolean tryPushPullOff(Context app, Play6Gmpf2 g2, String who) {
         try {
-            boolean r = g2.setPushPullScreen(false);
+            boolean r = g2.setAdjustScreenOpen(false);
             markFlag(app, KEY_PUSH_PULL, false);
             Log.i(TAG, who + ": IGmpf2 125(0) -> " + r);
             return true;
-        } catch (Play6Gmpf2.ReplyException e) {
+        } catch (ReplyException e) {
             markFlag(app, KEY_PUSH_PULL, false);
             Log.w(TAG, who + ": IGmpf2 125(0) delivered, bad reply: " + e.getMessage());
             return true;
@@ -337,9 +338,9 @@ public final class ManualKeystonePanel extends Panel {
             // value counts as "not blocking" (as stock's simpleCatch)
             int pm = -1, opt = -1;
             int[] prop33 = null;
-            try { pm = g.getPictureMode(); } catch (Throwable t) { Log.w(TAG, "666: " + t); }
+            try { pm = g.getPictureModeRaw(); } catch (Throwable t) { Log.w(TAG, "666: " + t); }
             try { prop33 = g2.getGameModeProp(); } catch (Throwable t) { Log.w(TAG, "IGmpf2 33: " + t); }
-            try { opt = g.getGameModeOption(); } catch (Throwable t) { Log.w(TAG, "647: " + t); }
+            try { opt = g.getGameModeOptionRaw(); } catch (Throwable t) { Log.w(TAG, "647: " + t); }
             if ((opt == GAME_OPTION_TOP_SPEED || opt == GAME_OPTION_TOP_SPEED_HFR) && GameMode.isOn(pm, prop33, opt)) {
                 reason = R.string.panel_kst_game_mode;
                 throw new IllegalStateException("game mode keystone mutex (666=" + pm + " 33 raw " + GameMode.raw(prop33)
@@ -348,8 +349,8 @@ public final class ManualKeystonePanel extends Panel {
             // IGmpf2 125(1) before any IGmpf write (plan 1.3): not delivered = no session at all
             markFlag(app, KEY_PUSH_PULL, true);
             try {
-                Log.i(TAG, "IGmpf2 125(1) -> " + g2.setPushPullScreen(true));
-            } catch (Play6Gmpf2.ReplyException e) {
+                Log.i(TAG, "IGmpf2 125(1) -> " + g2.setAdjustScreenOpen(true));
+            } catch (ReplyException e) {
                 Log.w(TAG, "IGmpf2 125(1) delivered, bad reply (continuing): " + e.getMessage());
             } catch (Throwable t) {
                 markFlag(app, KEY_PUSH_PULL, false);
@@ -368,7 +369,7 @@ public final class ManualKeystonePanel extends Panel {
             Play6KstPoint cur;
             try {
                 cur = g.getKeystonePoints();                 // 186
-            } catch (Play6Gmpf.ReplyException e) {
+            } catch (ReplyException e) {
                 // Delivered but unusable: not a 326-byte KstPoint, or a corner outside 0..1920 x 0..1080
                 // (= another coordinate space; raw values in the message): refuse, never guess.
                 String m = String.valueOf(e.getMessage());

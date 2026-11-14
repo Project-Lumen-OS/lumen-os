@@ -17,3 +17,9 @@ temperature tables) and calibration files: gsi-research/X50_ULTRA_MAX_RU.md.
 - Published (2026-11-11, pre-release, public repo Project-Lumen-OS/lumen-os): `x50max-1.0.10-beta1`, image
   `lumen-os-x50max-1.0.10-beta1-nogms-system.img` sha256 4374b14ae2a0ef203bae0ed7e3114eed5f743ab11486a4cc2b16a852d90e39ec
   (build lumen-x50max-1.0.10-beta1-202611111759), channel manifest `x50/update-x50max-beta.json` (+ .sig, OTA key of g0100).
+- Stock v1.2.54 (2026-11-11, most Ultra Max owners have it; gsi-research/X50_FW_1254_RU.md, official FULL OTAs of both
+  versions compared file by file): same kernel and config, boot ramdisk, gsid, vendor init, SELinux and fstab as v1.2.64.
+  Differences the image handles: the gmpf hash ecadd76e (v1.2.64's table without DisplayManager 217..223; every call of
+  ours is in it), accepted only on v1.2.54 (`org.lumen.hal.HashRule`), and the eye-protection pair nativeui + gmpf ndk,
+  allowed by its own sha256 only on v1.2.54 (`alt=` lines of `devices/g0111/image/x50_blobs_allow.txt`). Since
+  `x50max-1.0.10-beta2`; registry vendor_firmware v1.2.64 v1.2.54.

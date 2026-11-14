@@ -3,7 +3,7 @@
   "device": "dragon_healthy",
   "model": "G0058",
   "adapter": "apps/Play6Projector/src/org/lumen/projector/panel/Play6Features.java",
-  "note": "XGIMI Play 6 (dragon_healthy, G0058): rows of the stock tree settings_tree_product_dayao (release_838_newsettings of v1.7.116), HIDL codes in research/play6/gmpf_codes_play6.tsv, facts in lumen-build-tmp/core-menu/PLAY6_FEATURES.md. No optical zoom, no Boost, no obstacle avoidance or curtain fit, no game menu (stock has only the game mode page), eye protection is one switch (more_eye) and only with the image's NUI reader (the adapter drops eye otherwise). The expert rows of the stock picture modes (noise reduction, white balance, gamma, local contrast, HDR, picture style, R/G/B light) are the device page picture.pro, the equalizer presets the device page sound.eq. Digital zoom and shift is zoom.digital (no optical claim), power saving lamp.eco (a General row as stock), the ambient speaker a device page (lumen-menu v3.1). Stock hint pictures: picture mode (with picture.mode), rear projection, game mode.",
+  "note": "XGIMI Play 6 (dragon_healthy, G0058): rows of the stock tree settings_tree_product_dayao (release_838_newsettings of v1.7.116), HIDL codes in research/play6/gmpf_codes_play6.tsv, facts in lumen-build-tmp/core-menu/PLAY6_FEATURES.md. No optical zoom, no Boost, no obstacle avoidance or curtain fit, no game menu (stock has only the game mode page), eye protection is one switch (more_eye) and only with the image's NUI reader (the adapter drops eye otherwise). The expert rows of the stock picture modes (noise reduction, white balance, gamma, local contrast, HDR, picture style, R/G/B light) are the device page picture.pro, the equalizer presets the device page sound.eq. Digital zoom and shift is zoom.digital (no optical claim), power saving lamp.eco (a General row as stock), the ambient speaker a device page (lumen-menu v3.1). Screen mirroring (Miracast, apps/LumenMiracast) is a tile as on the Z9X, built only where the receiver found Wi-Fi Direct on this unit (both Play 6 Wi-Fi chips, MediaTek MT7663 and AIC8800, have it in the vendor; the receiver decides at run time). Stock hint pictures: picture mode (with picture.mode), rear projection, game mode.",
   "features": {
     "eye": {"options": ["off", "on"]},
     "keystone.ak_now": {},
@@ -18,6 +18,7 @@
     "focus.smart": {},
     "lamp": {"min": 1, "max": 10},
     "lamp.eco": {},
+    "lamp.off": {},
     "picture.mode": {"options": ["ai", "movie", "sport", "tv", "custom", "office", "performance"]},
     "picture.pq": {"items": ["brightness", "contrast", "saturation", "sharpness"], "min": 0, "max": 100},
     "picture.color_temp": {"options": ["cool", "standard", "warm", "custom"]},
@@ -35,6 +36,7 @@
     "input": {},
     "bluetooth": {},
     "network": {},
+    "mirroring": {},
     "usb_files": {},
     "game.mode": {"options": ["off", "on", "auto"]},
     "projection.mode": {"options": ["auto", "table", "ceiling"]},
@@ -46,7 +48,7 @@
     "settings.launcher": {"options": ["lumen", "classic"]}
   },
   "hints": {"picture.mode": "picture_mode", "projection.rear": "rear_projection", "game.mode": "game_mode"},
-  "keys": {"gear_short": "quick_menu", "gear_long": "none"},
+  "keys": {"gear_short": "quick_menu", "gear_long": "none", "eye_gear_short": "restore"},
   "game_menu": {"enabled": false},
   "pending": []
 }

@@ -152,9 +152,19 @@ def main():
         expect("make_manifest: 1.0.10-beta0 refused", dies(mm.check_version, "1.0.10-beta0", "public-beta"), True,
                "expected major.minor.patch")
         expect("make_manifest: 1.0.10 in public-nogms", dies(mm.check_version, "1.0.10", "public-nogms"), False)
-        expect("make_manifest: a beta's version code is that of x.y.z",
+        expect("make_manifest: before 1.0.11 a beta's version code is that of x.y.z",
                (mm.version_code("1.0.10-beta1") != mm.version_code("1.0.10"), mm.version_code("1.0.10-beta1")), False)
         expect("make_manifest: 1.0.9 is 10011", (mm.version_code("1.0.9") != 10011, mm.version_code("1.0.9")), False)
+        expect("make_manifest: 1.0.7 is 10008", (mm.version_code("1.0.7") != 10008, mm.version_code("1.0.7")), False)
+        expect("make_manifest: the published 1.0.11-beta1 keeps 10013",
+               (mm.version_code("1.0.11-beta1") != 10013, mm.version_code("1.0.11-beta1")), False)
+        expect("make_manifest: 1.0.11-beta2 is 1001102 (O1)",
+               (mm.version_code("1.0.11-beta2") != 1001102, mm.version_code("1.0.11-beta2")), False)
+        expect("make_manifest: 1.0.11 is 1001199 (O1)", (mm.version_code("1.0.11") != 1001199, mm.version_code("1.0.11")), False)
+        order = ["1.0.10", "1.0.11-beta1", "1.0.11-beta2", "1.0.11-beta3", "1.0.11", "1.0.12-beta1", "1.0.12"]
+        codes = [mm.version_code(v) for v in order]
+        expect("make_manifest: every release above the one before (beta to beta, beta to final)",
+               (codes != sorted(set(codes)), codes), False)
         expect("make_manifest: stable packages on z9x-<version>",
                (mm.package_base(r, "public-nogms", "1.0.9") != "https://github.com/" + r + "/releases/download/z9x-1.0.9/",
                 mm.package_base(r, "public-nogms", "1.0.9")), False)

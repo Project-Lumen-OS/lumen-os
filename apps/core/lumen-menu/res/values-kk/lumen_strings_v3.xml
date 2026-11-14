@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Қуат үнемдеу</string>
     <string name="lumen_m_ambient_speaker">Колонка және жарық</string>
     <string name="lumen_m_ct_custom">Пайдаланушы</string>
+    <string name="lumen_m_lamp_off">Кескінді өшіру</string>
 </resources>

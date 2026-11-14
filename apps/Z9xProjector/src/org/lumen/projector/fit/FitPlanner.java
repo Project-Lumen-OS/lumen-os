@@ -25,19 +25,15 @@ public final class FitPlanner {
     /** Advice below this is not shown. */
     public static final double ADVICE_MIN_MM = 10;
 
-    public enum Mode { INSIDE, CLOSEST }
-
-    public enum Kind { FIT, MOVE_CLOSER, MOVE_FURTHER }
-
     public static final class Plan {
         public final int target;
-        public final Kind kind;
+        public final FitAdvice kind;
         public final FitGeometry.Size[] sizes;
         public final double eps;
         /** The distance at which the chosen position fits exactly, and Dexact - D (positive = further). */
         public final double exactMm, adviceMm;
 
-        Plan(int target, Kind kind, FitGeometry.Size[] sizes, double eps, double exactMm, double adviceMm) {
+        Plan(int target, FitAdvice kind, FitGeometry.Size[] sizes, double eps, double exactMm, double adviceMm) {
             this.target = target;
             this.kind = kind;
             this.sizes = sizes;
@@ -49,24 +45,24 @@ public final class FitPlanner {
         public FitGeometry.Size size() { return sizes[target]; }
 
         /** True when the advice is worth showing (1 cm or more, or a screen outside the zoom range). */
-        public boolean showAdvice() { return kind != Kind.FIT || Math.abs(adviceMm) >= ADVICE_MIN_MM; }
+        public boolean showAdvice() { return kind != FitAdvice.FIT || Math.abs(adviceMm) >= ADVICE_MIN_MM; }
     }
 
     private FitPlanner() {}
 
-    public static Plan plan(FitGeometry g, FitGeometry.Estimator est, int[] corners, ThrowModel model,
-                            ScreenSize screen, Mode mode) {
+    public static Plan plan(FitGeometry g, FitEstimator est, int[] corners, ThrowModel model,
+                            ScreenSize screen, FitMode mode) {
         return plan(g, est, corners, model, screen, mode, EPS);
     }
 
-    public static Plan plan(FitGeometry g, FitGeometry.Estimator est, int[] corners, ThrowModel model,
-                            ScreenSize screen, Mode mode, double eps0) {
+    public static Plan plan(FitGeometry g, FitEstimator est, int[] corners, ThrowModel model,
+                            ScreenSize screen, FitMode mode, double eps0) {
         int n = model.positions();
         FitGeometry.Size[] s = new FitGeometry.Size[n];
         for (int p = 0; p < n; p++) s[p] = g.size(est, corners, model.tr(p));
         double eps = eps0 + Math.max(0, s[0].mismatch - MISMATCH_FREE);
         double ws = screen.targetW(), hs = screen.targetH();
-        boolean inside = mode == Mode.INSIDE;
+        boolean inside = mode == FitMode.INSIDE;
         int target = -1;
         if (inside) {
             for (int p = 0; p < n && target < 0; p++) {
@@ -88,15 +84,15 @@ public final class FitPlanner {
             int t = n - 1;
             double k = scale(s[t], ws, hs, inside);
             double exact = d * k / (1 + eps);
-            return new Plan(t, Kind.MOVE_CLOSER, s, eps, exact, exact - d);
+            return new Plan(t, FitAdvice.MOVE_CLOSER, s, eps, exact, exact - d);
         }
         double k = scale(s[target], ws, hs, inside);
         double exact = d * k;
         if (target == 0 && n > 1) {
             double step = (inside ? s[0].outerW / s[1].outerW : s[0].w / s[1].w);
-            if (k > step) return new Plan(0, Kind.MOVE_FURTHER, s, eps, exact, exact - d);
+            if (k > step) return new Plan(0, FitAdvice.MOVE_FURTHER, s, eps, exact, exact - d);
         }
-        return new Plan(target, Kind.FIT, s, eps, exact, exact - d);
+        return new Plan(target, FitAdvice.FIT, s, eps, exact, exact - d);
     }
 
     /** min(Ws / w, Hs / h) with the box of the mode. */

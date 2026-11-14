@@ -9,6 +9,7 @@ import android.util.Log;
 import org.lumen.projector.Hal;
 import org.lumen.projector.Play6App;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 
 /**
  * IGmpf 307 sendFocusStatus(17), the power-on UI-ready signal of the XGIMI Play 6
@@ -58,7 +59,7 @@ public final class UiReady17 {
             g.sendPowerOnUiReady();
             delivered = true;
             Log.i(TAG, "ui_ready17 sent (307(17), boot_id " + (boot == null ? "unreadable" : "stored") + ")");
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             delivered = true;
             Log.w(TAG, "ui_ready17 delivered, bad reply (not repeated): " + e.getMessage());
         } catch (RemoteException e) {

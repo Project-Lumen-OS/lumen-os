@@ -4,7 +4,7 @@ card
   row 1: wide keystone.ak_now | small keystone | small zoom.digital
   row 2: wide picture | small sound | small focus
   row 3: wide input | small bluetooth | small network
-  row 4: wide game | small projection | small usb_files
+  row 4: wide game | small projection | small mirroring|usb_files
   slider: lamp 1..10
 section keystone
   action keystone.ak_now
@@ -47,6 +47,7 @@ section game
 section eye
   choice eye [off, on]
 section general
+  action lamp.off
   screen settings.system
   screen settings.projector
   screen settings.recents
@@ -54,5 +55,5 @@ section general
   toggle lamp.eco
   choice settings.launcher [lumen, classic]
 all settings: keystone focus picture projection sound eye general
-keys: gear short quick_menu, gear long none
+keys: gear short quick_menu, gear long none, eye_gear_short restore
 game menu: none

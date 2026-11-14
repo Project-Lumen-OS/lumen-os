@@ -17,27 +17,27 @@ public final class BoostRulesTest {
         eq("PM_OFFICE", BoostRules.PM_OFFICE, 25);
 
         // LEFT at Boost: explain in Performance / Office, arm otherwise; never explain without Boost
-        eq("leave perf", BoostRules.onLeavePress(true, 5), BoostRules.Leave.EXPLAIN_PICTURE_MODE);
-        eq("leave office", BoostRules.onLeavePress(true, 25), BoostRules.Leave.EXPLAIN_PICTURE_MODE);
-        eq("leave standard", BoostRules.onLeavePress(true, 1), BoostRules.Leave.ARM);
-        eq("leave ai", BoostRules.onLeavePress(true, 12), BoostRules.Leave.ARM);
-        eq("leave unknown pm", BoostRules.onLeavePress(true, null), BoostRules.Leave.ARM);
-        eq("leave no boost", BoostRules.onLeavePress(false, 5), BoostRules.Leave.ARM);
-        eq("leave boost unknown", BoostRules.onLeavePress(null, 5), BoostRules.Leave.ARM);
+        eq("leave perf", BoostRules.onLeavePress(true, 5), BoostLeave.EXPLAIN_PICTURE_MODE);
+        eq("leave office", BoostRules.onLeavePress(true, 25), BoostLeave.EXPLAIN_PICTURE_MODE);
+        eq("leave standard", BoostRules.onLeavePress(true, 1), BoostLeave.ARM);
+        eq("leave ai", BoostRules.onLeavePress(true, 12), BoostLeave.ARM);
+        eq("leave unknown pm", BoostRules.onLeavePress(true, null), BoostLeave.ARM);
+        eq("leave no boost", BoostRules.onLeavePress(false, 5), BoostLeave.ARM);
+        eq("leave boost unknown", BoostRules.onLeavePress(null, 5), BoostLeave.ARM);
 
         // 52 judged by the 152 read-back (stock ignores the boolean)
-        eq("off ok", BoostRules.judge(false, true, 0, 1), BoostRules.Outcome.DONE);
-        eq("off false but done", BoostRules.judge(false, false, 0, 1), BoostRules.Outcome.DONE);
-        eq("off refused perf (live 22:17:25)", BoostRules.judge(false, false, 1, 5), BoostRules.Outcome.LOCKED_BY_PICTURE_MODE);
-        eq("off refused office", BoostRules.judge(false, false, 1, 25), BoostRules.Outcome.LOCKED_BY_PICTURE_MODE);
-        eq("off refused standard", BoostRules.judge(false, false, 1, 1), BoostRules.Outcome.FAILED);
-        eq("off true but still on", BoostRules.judge(false, true, 1, 1), BoostRules.Outcome.FAILED);
-        eq("off unreadable true", BoostRules.judge(false, true, -1, 1), BoostRules.Outcome.DONE);
-        eq("off unreadable false", BoostRules.judge(false, false, -1, 5), BoostRules.Outcome.FAILED);
-        eq("on ok", BoostRules.judge(true, true, 1, 1), BoostRules.Outcome.DONE);
-        eq("on false but done", BoostRules.judge(true, false, 1, 1), BoostRules.Outcome.DONE);
-        eq("on refused", BoostRules.judge(true, false, 0, 1), BoostRules.Outcome.FAILED);
-        eq("on refused perf pm", BoostRules.judge(true, false, 0, 5), BoostRules.Outcome.FAILED);
+        eq("off ok", BoostRules.judge(false, true, 0, 1), BoostOutcome.DONE);
+        eq("off false but done", BoostRules.judge(false, false, 0, 1), BoostOutcome.DONE);
+        eq("off refused perf (live 22:17:25)", BoostRules.judge(false, false, 1, 5), BoostOutcome.LOCKED_BY_PICTURE_MODE);
+        eq("off refused office", BoostRules.judge(false, false, 1, 25), BoostOutcome.LOCKED_BY_PICTURE_MODE);
+        eq("off refused standard", BoostRules.judge(false, false, 1, 1), BoostOutcome.FAILED);
+        eq("off true but still on", BoostRules.judge(false, true, 1, 1), BoostOutcome.FAILED);
+        eq("off unreadable true", BoostRules.judge(false, true, -1, 1), BoostOutcome.DONE);
+        eq("off unreadable false", BoostRules.judge(false, false, -1, 5), BoostOutcome.FAILED);
+        eq("on ok", BoostRules.judge(true, true, 1, 1), BoostOutcome.DONE);
+        eq("on false but done", BoostRules.judge(true, false, 1, 1), BoostOutcome.DONE);
+        eq("on refused", BoostRules.judge(true, false, 0, 1), BoostOutcome.FAILED);
+        eq("on refused perf pm", BoostRules.judge(true, false, 0, 5), BoostOutcome.FAILED);
 
         // Colour accuracy: the user's Boost blocks it, a Boost held by Performance / Office does not
         eq("ca user boost", BoostRules.blocksColorAccuracy(true, 1), true);

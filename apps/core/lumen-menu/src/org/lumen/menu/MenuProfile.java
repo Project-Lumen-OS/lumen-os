@@ -26,6 +26,11 @@ public final class MenuProfile {
     /** What a short / long gear press may do. */
     public static final Set<String> GEAR_SHORT = set("quick_menu");
     public static final Set<String> GEAR_LONG = set("game_menu", "keystone_reset", "none");
+    /**
+     * What a short gear press does on the eye-protection mask (keys.eye_gear_short, optional): restore = give the
+     * picture back (the default; Z9X and Play 6 stock), restore_off = also turn eye protection off (HB stock SystemUI).
+     */
+    public static final Set<String> EYE_GEAR_SHORT = set("restore", "restore_off");
     /** Game menu dock items in their fixed order (GmModel.ORDER) and controller themes (GmModel.TH_*). */
     public static final List<String> GAME_ITEMS = Collections.unmodifiableList(Arrays.asList(
             "lat", "vrr", "hfr", "pic", "cs", "dark", "sr", "ar", "hdr", "snd", "aim", "fps"));
@@ -46,8 +51,8 @@ public final class MenuProfile {
     private static final Set<String> GAME_KEYS = set("enabled", "items", "themes", "cec_detect", "note", "gated", "sound");
 
     private final String device, model, adapter;
-    private final LinkedHashMap<String, Map<String, Object>> features = new LinkedHashMap<>();
-    private final LinkedHashMap<String, String> hints = new LinkedHashMap<>();
+    private final LinkedHashMap<FeatureId, Map<String, Object>> features = new LinkedHashMap<>();
+    private final LinkedHashMap<FeatureId, String> hints = new LinkedHashMap<>();
     private final LinkedHashMap<String, String> keys = new LinkedHashMap<>();
     private final List<String> gameItems = new ArrayList<>(), gameThemes = new ArrayList<>(), pending = new ArrayList<>(),
             gameGated = new ArrayList<>(), gameSounds = new ArrayList<>(GAME_SOUNDS.subList(0, 3));
@@ -70,7 +75,7 @@ public final class MenuProfile {
         if (pe != null) {
             for (Object o : list(pe, "pending")) {
                 if (!(o instanceof String)) problem("pending: not a feature id");
-                else if (Feature.known((String) o)) problem("pending: " + o + " is a known feature, list it under features");
+                else if (FeatureId.known((String) o) != null) problem("pending: " + o + " is a known feature, list it under features");
                 else pending.add((String) o);
             }
         }
@@ -103,31 +108,30 @@ public final class MenuProfile {
         if (!(o instanceof Map)) { problem("features must be an object"); return; }
         @SuppressWarnings("unchecked") Map<String, Object> m = (Map<String, Object>) o;
         for (Map.Entry<String, Object> e : m.entrySet()) {
-            String id = e.getKey();
-            Feature.Def d = Feature.def(id);
-            if (d == null) { problem("unknown feature \"" + id + "\" (add it under pending and ask the lumen-menu lead)"); continue; }
+            FeatureId id = FeatureId.known(e.getKey());
+            if (id == null) { problem("unknown feature \"" + e.getKey() + "\" (add it under pending and ask the lumen-menu lead)"); continue; }
             if (!(e.getValue() instanceof Map)) { problem(id + ": must be an object ({} when it has no parameters)"); continue; }
             @SuppressWarnings("unchecked") Map<String, Object> par = (Map<String, Object>) e.getValue();
             for (String k : par.keySet()) if (!PARAMS.contains(k)) problem(id + ": unknown parameter \"" + k + "\"");
-            if (d.kind == Feature.Kind.CHOICE) {
+            if (id.kind == FeatureKind.CHOICE) {
                 List<String> opts = tokens(par.get("options"), id + ".options");
                 if (opts.isEmpty()) problem(id + ": a choice needs a non-empty options list");
-                if (Feature.EYE.equals(id) && !opts.isEmpty() && !"off".equals(opts.get(0))) problem("eye: options start with off");
+                if (FeatureId.EYE == id && !opts.isEmpty() && !"off".equals(opts.get(0))) problem("eye: options start with off");
             } else if (par.containsKey("options")) {
                 problem(id + ": only a choice has options");
             }
-            if (Feature.LAMP.equals(id)) {
+            if (FeatureId.LAMP == id) {
                 long mn = num(par.get("min"), id + ".min"), mx = num(par.get("max"), id + ".max");
                 if (mn >= mx) problem("lamp: min must be below max");
             }
-            if (Feature.BOOST.equals(id)) {
+            if (FeatureId.BOOST == id) {
                 num(par.get("level"), "boost.level");
                 Object sm = par.get("summary");
                 if (sm != null && !BOOST_SUMMARIES.contains(sm)) problem("boost.summary must be one of " + BOOST_SUMMARIES);
             } else if (par.containsKey("summary")) {
                 problem(id + ": only boost has a summary");
             }
-            if (Feature.PICTURE_PQ.equals(id)) {
+            if (FeatureId.PICTURE_PQ == id) {
                 List<String> items = tokens(par.get("items"), "picture.pq.items");
                 if (items.isEmpty()) problem("picture.pq: items needed");
                 for (String it : items) if (!PQ_ITEMS.contains(it)) problem("picture.pq: unknown item " + it);
@@ -136,10 +140,10 @@ public final class MenuProfile {
             }
             features.put(id, Collections.unmodifiableMap(new LinkedHashMap<>(par)));
         }
-        if (features.containsKey(Feature.BOOST)) {
-            if (!features.containsKey(Feature.LAMP)) problem("boost needs lamp");
-            else if (num(features.get(Feature.BOOST).get("level"), "boost.level")
-                    != num(features.get(Feature.LAMP).get("max"), "lamp.max") + 1) {
+        if (features.containsKey(FeatureId.BOOST)) {
+            if (!features.containsKey(FeatureId.LAMP)) problem("boost needs lamp");
+            else if (num(features.get(FeatureId.BOOST).get("level"), "boost.level")
+                    != num(features.get(FeatureId.LAMP).get("max"), "lamp.max") + 1) {
                 problem("boost.level must be lamp.max + 1 (the step after the top light level)");
             }
         }
@@ -150,24 +154,32 @@ public final class MenuProfile {
         if (!(o instanceof Map)) { problem("hints must be an object"); return; }
         @SuppressWarnings("unchecked") Map<String, Object> m = (Map<String, Object>) o;
         for (Map.Entry<String, Object> e : m.entrySet()) {
-            if (!features.containsKey(e.getKey())) problem("hint for " + e.getKey() + ", which the profile does not have");
+            FeatureId f = FeatureId.known(e.getKey());
+            if (f == null || !features.containsKey(f)) problem("hint for " + e.getKey() + ", which the profile does not have");
             if (!(e.getValue() instanceof String) || !HINT_PICTURES.contains(e.getValue())) {
                 problem("hint " + e.getKey() + ": unknown picture " + e.getValue() + " (known: " + HINT_PICTURES + ")");
                 continue;
             }
-            hints.put(e.getKey(), (String) e.getValue());
+            if (f != null) hints.put(f, (String) e.getValue());
         }
     }
 
     private void readKeys(Object o) {
         if (!(o instanceof Map)) { problem("keys must be an object"); return; }
         @SuppressWarnings("unchecked") Map<String, Object> m = (Map<String, Object>) o;
-        for (String k : m.keySet()) if (!"gear_short".equals(k) && !"gear_long".equals(k)) problem("keys: unknown " + k);
+        for (String k : m.keySet()) {
+            if (!"gear_short".equals(k) && !"gear_long".equals(k) && !"eye_gear_short".equals(k)) problem("keys: unknown " + k);
+        }
         String s = str(m.get("gear_short"), "keys.gear_short"), l = str(m.get("gear_long"), "keys.gear_long");
         if (!GEAR_SHORT.contains(s)) problem("keys.gear_short: " + s + " (allowed " + GEAR_SHORT + ")");
         if (!GEAR_LONG.contains(l)) problem("keys.gear_long: " + l + " (allowed " + GEAR_LONG + ")");
         keys.put("gear_short", s);
         keys.put("gear_long", l);
+        if (m.containsKey("eye_gear_short")) {
+            String e = str(m.get("eye_gear_short"), "keys.eye_gear_short");
+            if (!EYE_GEAR_SHORT.contains(e)) problem("keys.eye_gear_short: " + e + " (allowed " + EYE_GEAR_SHORT + ")");
+            keys.put("eye_gear_short", e);
+        }
     }
 
     private void readGame(Object o) {
@@ -267,38 +279,44 @@ public final class MenuProfile {
     public String adapter() { return adapter; }
 
     /** THE gate: a feature exists in the menu only when this is true (never a disabled row). */
-    public boolean has(String feature) { return ok() && features.containsKey(feature); }
+    public boolean has(FeatureId feature) { return ok() && features.containsKey(feature); }
 
-    public Set<String> features() { return ok() ? Collections.unmodifiableSet(features.keySet()) : Collections.emptySet(); }
+    public Set<FeatureId> features() { return ok() ? Collections.unmodifiableSet(features.keySet()) : Collections.emptySet(); }
 
     @SuppressWarnings("unchecked")
-    public List<String> options(String feature) {
+    public List<String> options(FeatureId feature) {
         if (!has(feature)) return Collections.emptyList();
         Object o = features.get(feature).get("options");
         return o == null ? Collections.emptyList() : Collections.unmodifiableList((List<String>) (List<?>) o);
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> items(String feature) {
+    public List<String> items(FeatureId feature) {
         if (!has(feature)) return Collections.emptyList();
         Object o = features.get(feature).get("items");
         return o == null ? Collections.emptyList() : Collections.unmodifiableList((List<String>) (List<?>) o);
     }
 
-    public int number(String feature, String key, int fallback) {
+    public int number(FeatureId feature, String key, int fallback) {
         if (!has(feature)) return fallback;
         Object o = features.get(feature).get(key);
         return o instanceof Long ? (int) (long) (Long) o : fallback;
     }
 
     /** The hint picture of a row, or null: a picture is drawn only where the profile names one. */
-    public String hint(String feature) { return has(feature) ? hints.get(feature) : null; }
+    public String hint(FeatureId feature) { return has(feature) ? hints.get(feature) : null; }
 
-    public Map<String, String> hints() { return ok() ? Collections.unmodifiableMap(hints) : Collections.emptyMap(); }
+    public Map<FeatureId, String> hints() { return ok() ? Collections.unmodifiableMap(hints) : Collections.emptyMap(); }
 
     public String gearShort() { return keys.get("gear_short"); }
 
     public String gearLong() { return keys.get("gear_long"); }
+
+    /** keys.eye_gear_short as named, or null (the default restore). */
+    public String eyeGearShort() { return keys.get("eye_gear_short"); }
+
+    /** A short gear press on the eye-protection mask also turns eye protection off (restore_off; a broken profile: no). */
+    public boolean eyeGearShortOff() { return ok() && "restore_off".equals(keys.get("eye_gear_short")); }
 
     public boolean gameMenu() { return ok() && gameMenu; }
 
@@ -321,7 +339,7 @@ public final class MenuProfile {
 
     /** The Boost hint of this model (features.boost.summary): "paler" (Z9X stock, default) or "brighter" (HB stock). */
     public String boostSummary() {
-        Map<String, Object> b = features.get(Feature.BOOST);
+        Map<String, Object> b = features.get(FeatureId.BOOST);
         Object s = b == null ? null : b.get("summary");
         return s instanceof String ? (String) s : "paler";
     }

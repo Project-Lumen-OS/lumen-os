@@ -5,7 +5,7 @@ the module, never in place.
 
   python3 apps/core/lumen-menu/test/mutate.py
 """
-import os, shutil, subprocess, sys, tempfile
+import glob, json, os, shutil, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOD = os.path.dirname(HERE)
@@ -14,11 +14,59 @@ S = "src/org/lumen/menu/"
 MC = "src/org/lumen/projector/panel/MenuController.java"
 UI = "src/org/lumen/projector/ui/"
 MUTANTS = [
-    ("row shown without the feature", S + "MenuSpec.java", "if (p.has((String) g[i])) rs.add", "rs.add"),
+    # ---- the shared "Turn off screen" (LampOff)
+    ("power key passes while the light is off", S + "LampOff.java", "if (key == LampOffKey.POWER && off && down && repeatCount == 0) {",
+     "if (false) {"),
+    ("a held press from before the light-off relights", S + "LampOff.java", "&& off && down && repeatCount == 0) {",
+     "&& off && down) {"),
+    ("power repeats and UP of the relighting press reach the device", S + "LampOff.java",
+     "if (key == LampOffKey.POWER) return downTime == relitPress;", "if (key == LampOffKey.POWER) return false;"),
+    ("focus keys work in the dark", S + "LampOff.java", "return off && key == LampOffKey.FOCUS;", "return false;"),
+    ("every key eaten in the dark", S + "LampOff.java", "return off && key == LampOffKey.FOCUS;", "return off;"),
+    ("the power key does not relight", S + "LampOff.java", "        off = false;\n        marker.mark(false);\n        light.on();\n",
+     "        off = false;\n        marker.mark(false);\n"),
+    ("a failed light-off counts as off", S + "LampOff.java", "                if (ok) {\n                    off = true;",
+     "                if (true) {\n                    off = true;"),
+    ("a sleep keeps the light-off state", S + "LampOff.java", "        if (!off) return;\n        off = false;\n        marker.mark(false);",
+     "        if (!off) return;\n        marker.mark(false);"),
+    ("a sleep keeps the mark", S + "LampOff.java", "        if (!off) return;\n        off = false;\n        marker.mark(false);",
+     "        if (!off) return;\n        off = false;"),
+    ("a restart forgets the light is off", S + "LampOff.java", "        if (marker.thisBoot()) {\n            off = true;",
+     "        if (marker.thisBoot()) {\n            off = false;"),
+    ("a reboot leaves the light off", S + "LampOff.java", "            marker.mark(false);\n            light.on();\n        }",
+     "            marker.mark(false);\n        }"),
+    ("the off light is not marked", S + "LampOff.java", "                    marker.mark(true);\n", ""),
+    ("lamp slider: left at the minimum without lamp.off turns the light off", S + "LampOff.java",
+     "return offered && dir < 0 && repeatCount == 0", "return dir < 0 && repeatCount == 0"),
+    ("lamp slider: right at the edge turns the light off", S + "LampOff.java",
+     "return offered && dir < 0 && repeatCount == 0", "return offered && repeatCount == 0"),
+    ("lamp slider: a held left at the minimum turns the light off", S + "LampOff.java",
+     "return offered && dir < 0 && repeatCount == 0", "return offered && dir < 0"),
+    ("lamp slider: left at the minimum never turns the light off", MC,
+     "safe(\"lamp off\", () -> action(FeatureId.LAMP_OFF));", "safe(\"lamp off\", () -> { });"),
+    # ---- the shared gear press (GearPress) and the eye guard's short press (keys.eye_gear_short)
+    ("gear long press on every repeat", S + "GearPress.java", "if (!longFired && eventDownTime == downTime) {",
+     "if (eventDownTime == downTime) {"),
+    ("gear long press of another press", S + "GearPress.java", "if (!longFired && eventDownTime == downTime) {",
+     "if (!longFired) {"),
+    ("canceled gear UP is a short press", S + "GearPress.java",
+     "boolean shortPress = !longFired && !canceled && eventDownTime == downTime;",
+     "boolean shortPress = !longFired && eventDownTime == downTime;"),
+    ("gear UP after a long press is a short press", S + "GearPress.java",
+     "boolean shortPress = !longFired && !canceled && eventDownTime == downTime;",
+     "boolean shortPress = !canceled && eventDownTime == downTime;"),
+    ("gear UP keeps the press armed", S + "GearPress.java",
+     "        longFired = false;\n        downTime = -1;\n        return shortPress;", "        return shortPress;"),
+    ("gear reset keeps the press", S + "GearPress.java", "    public void reset() {\n        downTime = -1;",
+     "    public void reset() {\n        if (false) downTime = -1;"),
+    ("eye short press off in a broken profile", S + "MenuProfile.java",
+     'return ok() && "restore_off".equals(keys.get("eye_gear_short"));', 'return "restore_off".equals(keys.get("eye_gear_short"));'),
+    ("unknown eye_gear_short accepted", S + "MenuProfile.java", "if (!EYE_GEAR_SHORT.contains(e)) problem(", "if (false) problem("),
+    ("row shown without the feature", S + "MenuSpec.java", "if (p.has((FeatureId) g[i])) rs.add", "rs.add"),
     ("header kept without rows", S + "MenuSpec.java", "if (!rs.isEmpty()) groups.add", "groups.add"),
-    ("round eye without the feature", S + "MenuSpec.java", "if (t[1] == null || p.has(t[1]))", "if (true)"),
-    ("tile without the feature", S + "MenuSpec.java", "if (a) r.add(new Tile(t[0], id, b ? alt : null));",
-     "r.add(new Tile(t[0], id, b ? alt : null));"),
+    ("round eye without the feature", S + "MenuSpec.java", "if (t[1] == null || p.has((FeatureId) t[1]))", "if (true)"),
+    ("tile without the feature", S + "MenuSpec.java", "if (a) r.add(new Tile((String) t[0], id, b ? alt : null));",
+     "r.add(new Tile((String) t[0], id, b ? alt : null));"),
     ("second candidate kept without the feature", S + "MenuSpec.java", "b = alt != null && present(alt)",
      "b = alt != null"),
     ("section tile without rows", S + "MenuSpec.java", ": sections.containsKey(id);", ": true;"),
@@ -26,19 +74,19 @@ MUTANTS = [
      "if (true)"),
     ("empty tile row kept", S + "MenuSpec.java", "if (!r.isEmpty()) rws.add", "rws.add"),
     ("parameters of an absent feature", S + "MenuProfile.java",
-     "public int number(String feature, String key, int fallback) {\n        if (!has(feature)) return fallback;",
-     "public int number(String feature, String key, int fallback) {\n        if (!features.containsKey(feature)) return fallback;"),
+     "public int number(FeatureId feature, String key, int fallback) {\n        if (!has(feature)) return fallback;",
+     "public int number(FeatureId feature, String key, int fallback) {\n        if (!features.containsKey(feature)) return fallback;"),
     ("has() ignores the profile", S + "MenuProfile.java", "return ok() && features.containsKey(feature);",
      "return ok();"),
     ("has() ignores problems", S + "MenuProfile.java", "return ok() && features.containsKey(feature);",
      "return features.containsKey(feature);"),
     ("hint of an absent feature", S + "MenuProfile.java", "return has(feature) ? hints.get(feature) : null;",
      "return hints.get(feature);"),
-    ("unknown feature accepted", S + "MenuProfile.java", "if (d == null) { problem(", "if (d == null) { if (false) problem("),
+    ("unknown feature accepted", S + "MenuProfile.java", "if (id == null) { problem(", "if (id == null) { if (false) problem("),
     ("hint for an absent feature accepted", S + "MenuProfile.java",
-     "if (!features.containsKey(e.getKey())) problem(", "if (false) problem("),
+     "if (f == null || !features.containsKey(f)) problem(", "if (false) problem("),
     ("choice without options accepted", S + "MenuProfile.java", "if (opts.isEmpty()) problem(", "if (false) problem("),
-    ("boost without lamp accepted", S + "MenuProfile.java", "if (!features.containsKey(Feature.LAMP)) problem(\"boost needs lamp\");",
+    ("boost without lamp accepted", S + "MenuProfile.java", "if (!features.containsKey(FeatureId.LAMP)) problem(\"boost needs lamp\");",
      "if (false) problem(\"boost needs lamp\");"),
     ("eye options not starting with off accepted", S + "MenuProfile.java", "&& !\"off\".equals(opts.get(0))) problem(",
      "&& false) problem("),
@@ -95,14 +143,14 @@ def main():
                 if os.path.isfile(j):
                     os.makedirs(os.path.join(root, "devices", c))
                     shutil.copy(j, os.path.join(root, "devices", c, "menu.json"))
-            # the adapters the profiles name (read by the contract test)
+            # the adapters the profiles name and their *Rows sections (read by the contract test)
             for c in os.listdir(os.path.join(root, "devices")):
-                txt = open(os.path.join(root, "devices", c, "menu.json")).read()
-                import json
-                ad = json.loads(txt).get("adapter", "")
+                ad = json.load(open(os.path.join(root, "devices", c, "menu.json"))).get("adapter", "")
                 if ad and os.path.isfile(os.path.join(G, ad)):
-                    os.makedirs(os.path.dirname(os.path.join(root, ad)), exist_ok=True)
-                    shutil.copy(os.path.join(G, ad), os.path.join(root, ad))
+                    d = os.path.dirname(ad)
+                    os.makedirs(os.path.join(root, d), exist_ok=True)
+                    for f in [ad] + glob.glob(os.path.join(G, d, "*Rows.java")):
+                        shutil.copy(os.path.join(G, f), os.path.join(root, d))
             p = os.path.join(dst, rel)
             src = open(p, encoding="utf-8").read()
             if src.count(old) != 1:

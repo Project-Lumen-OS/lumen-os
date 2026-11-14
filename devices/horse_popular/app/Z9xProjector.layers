@@ -1,8 +1,11 @@
 # Recipe of the Z9X projector app (1.1 line), read by tools/devices/assemble_app.py: the shared projector menu
 # (apps/core/lumen-menu: quick panel D, game menu, their icons, strings, fonts and controller frames) with the Z9X
-# profile, then the Z9X app (its screens, its HAL clients and its menu adapters Z9xFeatures / Z9xGameIo).
+# profile, the shared gmpf clients (apps/core/lumen-gmpf), then the Z9X app (its screens, its HAL clients and its
+# menu adapters Z9xFeatures / Z9xGameIo).
 app       Z9xProjector
 module    lumen-menu
 file      devices/horse_popular/menu.json assets/lumen_menu/menu.json
+# the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer) under the Z9X GmpfClient / Gmpf2Client
+module    lumen-gmpf
 top       apps/Z9xProjector
 skip      build/ test/ tools/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

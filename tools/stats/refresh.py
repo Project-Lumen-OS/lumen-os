@@ -7,10 +7,12 @@
 github.json   one row per snapshot date and release: installs, updates, checks (github_downloads.py --json),
               merged into tools/stats/data/github_history.json so the counts keep a history (GitHub has none)
 From the updater ping server (https://prompt.az/lumen/v1/stats), windows 7 and 30 days:
-totals.json   installs, projectors (distinct hashed serials), reinstalled projectors (90 days)
-active.json   installs per model / version / channel      models.json   per model and XGIMI model
-countries.json per country                              daily.json    per day and version, 90 days
-updates.json  update events per day and method, 90 days   pairs.json    from-to version pairs, 90 days
+Every count is of projectors (units: a hashed serial; an install without one by its install id), never of install ids.
+totals.json   units, install ids, projectors seen with several install ids (90 days)
+active.json   units per model / version / channel         models.json   per model and XGIMI model
+countries.json per country                                kinds.json    per model: trial runs and installed
+daily.json    units per day and version, 90 days            new.json      units seen for the first time per day
+updates.json  units updated per day and method, 90 days     pairs.json    from-to version pairs, 90 days
 Then upload the files to the dashboard (Claude: Artifact asset upload + one dataset update each).
 """
 import json
@@ -66,12 +68,14 @@ def main():
                                    capture_output=True, text=True).stdout)
     a = st["active"]
     files = {
-        "totals": [{"window": w, "installs": a[w]["installs"], "projectors": a[w]["projectors"],
-                    "reinstalled": st["reinstalled"]} for w in sorted(a)],
+        "totals": [{"window": w, "units": a[w]["units"], "ids": a[w]["ids"], "reinstalled": st["reinstalled"]}
+                   for w in sorted(a)],
         "active": [dict(window=w, **r) for w in sorted(a) for r in a[w]["by_version"]],
         "models": [dict(window=w, **r) for w in sorted(a) for r in a[w]["by_model"]],
         "countries": [dict(window=w, **r) for w in sorted(a) for r in a[w]["by_country"]],
+        "kinds": [dict(window=w, **r) for w in sorted(a) for r in a[w]["by_kind"]],
         "daily": st["daily"],
+        "new": st["new_daily"],
         "updates": st["updates_daily"],
         "pairs": st["pairs"],
     }

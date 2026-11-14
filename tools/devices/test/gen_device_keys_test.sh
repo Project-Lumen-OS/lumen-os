@@ -36,7 +36,7 @@ mode() { stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1"; }
 begin() {  # case: a fresh scratch registry ($R) and HOME ($HM)
   CASE=$1; CFAIL=0
   R=$W/$1/root; HM=$W/$1/home; rm -rf "$W/$1"; mkdir -p "$R" "$HM/.lumen-keys"
-  (cd "$G" && for f in devices/*/device.conf devices/*/image.conf; do mkdir -p "$R/$(dirname "$f")"; cp "$f" "$R/$f"; done)
+  (cd "$G" && for f in devices/*/device.conf devices/*/build.conf; do mkdir -p "$R/$(dirname "$f")"; cp "$f" "$R/$f"; done)
   local d kd
   for d in "$G"/devices/*/certs; do
     [ -d "$d" ] || continue

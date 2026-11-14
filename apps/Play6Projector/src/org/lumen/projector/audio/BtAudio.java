@@ -3,7 +3,9 @@ package org.lumen.projector.audio;
 import android.content.Context;
 
 import org.lumen.projector.Hal;
+import org.lumen.projector.hal.AudioPath;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.Play6Values;
 import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
@@ -124,20 +126,20 @@ public final class BtAudio {
 
     /** The vendor path (59) of the media route: the Z9X AudioPathReporter / stock threadInit mapping. */
     private static int pathOf(java.util.List<android.media.AudioDeviceAttributes> devices) {
-        if (devices == null) return Play6Gmpf.AUDIO_PATH_SPEAKER;
+        if (devices == null) return AudioPath.SPEAKER.wire;
         for (android.media.AudioDeviceAttributes d : devices) {
             switch (d.getType()) {
-                case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP: return Play6Gmpf.AUDIO_PATH_A2DP;
+                case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP: return AudioPath.BT_A2DP.wire;
                 case AudioDeviceInfo.TYPE_HDMI_ARC:
-                case AudioDeviceInfo.TYPE_HDMI_EARC: return Play6Gmpf.AUDIO_PATH_ARC;
+                case AudioDeviceInfo.TYPE_HDMI_EARC: return AudioPath.ARC.wire;
                 case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
-                case AudioDeviceInfo.TYPE_WIRED_HEADSET: return Play6Gmpf.AUDIO_PATH_WIRED;
+                case AudioDeviceInfo.TYPE_WIRED_HEADSET: return AudioPath.WIRED.wire;
                 case AudioDeviceInfo.TYPE_USB_DEVICE:
-                case AudioDeviceInfo.TYPE_USB_HEADSET: return Play6Gmpf.AUDIO_PATH_USB;
+                case AudioDeviceInfo.TYPE_USB_HEADSET: return AudioPath.USB.wire;
                 default: break;
             }
         }
-        return Play6Gmpf.AUDIO_PATH_SPEAKER;
+        return AudioPath.SPEAKER.wire;
     }
 
     /**
@@ -152,18 +154,18 @@ public final class BtAudio {
      */
     private static void sink(AudioManager am, java.util.List<android.media.AudioDeviceAttributes> devices) {
         final int want = pathOf(devices);
-        final boolean a2dp = want == Play6Gmpf.AUDIO_PATH_A2DP;
+        final boolean a2dp = want == AudioPath.BT_A2DP.wire;
         if (want == sPath) return;
-        if (sPath < 0 && sSink == -1 && want == Play6Gmpf.AUDIO_PATH_SPEAKER) return;   // boot state, nothing to undo
+        if (sPath < 0 && sSink == -1 && want == AudioPath.SPEAKER.wire) return;   // boot state, nothing to undo
         final int from = sPath;
         sPath = want;
         Log.i(TAG, "media path " + from + " -> " + want);
         Hal.run((g, g2) -> {
             try {
-                g.setAudioOutput(Play6Gmpf.AUDIO_PATH_SWITCHING);                  // 59(100)
+                g.setAudioOutput(AudioPath.SWITCHING);                  // 59(100)
                 android.os.SystemClock.sleep(SWITCH_MS);
-                g.setAudioOutput(want);                                             // 59(P)
-                Log.i(TAG, "59(" + want + ") sent, 60 reads " + g.getAudioOutput());
+                g.setAudioOutput(Play6Values.audioPath(want));                                             // 59(P)
+                Log.i(TAG, "59(" + want + ") sent, 60 reads " + g.getAudioOutputRaw());
             } catch (Throwable t) {
                 Log.w(TAG, "59(" + want + "): " + t);
             }
@@ -196,7 +198,7 @@ public final class BtAudio {
     /** p6-btaudio thread: the path again when it is not the speaker (the vendor's own state then). */
     private static void resend(AudioManager am, String why) {
         int want = pathOf(am.getDevicesForAttributes(MEDIA));
-        if (want == Play6Gmpf.AUDIO_PATH_SPEAKER && sPath < 0) return;
+        if (want == AudioPath.SPEAKER.wire && sPath < 0) return;
         resync(am, why);
     }
 

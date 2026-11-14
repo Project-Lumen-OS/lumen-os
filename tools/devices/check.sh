@@ -8,11 +8,12 @@
 #             override whose origin changed is a warning, red with --release); a recipe still in compare mode
 #             ('identical allow') must also equal apps/<App> file by file; every strings file of the top layer's
 #             res/values has all the locales of the app; the assembled tree compiles (apps/build_apk.sh, a
-#             throwaway key made once in build/devices_check/testkey, never an image key); the hal_app of an
-#             aidl-table device also passes check_hal.py --dex on that APK; host tests test/*/run.sh of the
-#             assembled tree.
+#             throwaway key made once in build/devices_check/testkey, never an image key); the hal_app and each
+#             hal_more app of an aidl-table device also pass check_hal.py --app --dex on that APK; host tests
+#             test/*/run.sh of the assembled tree.
 #   forks     tools/devices/check_forks.py --device <c>
 #   hal       tools/devices/check_hal.py --device <c>
+#   build     tools/build/build.py check <c>: the image descriptor and every variant plan (a dry run, nothing built)
 #   device    horse_popular: the Z9X gate (tools/play6/z9x_gate.sh, incremental; it never records);
 #             dragon_healthy: check K (tools/play6/check_handshake.py) on its assembled Play6Projector tree
 # Once: the tests in tools/devices/test/*.sh and the publish audit (to a temp manifest; no REVIEW row).
@@ -91,8 +92,10 @@ recipe_steps() { # codename recipe
   step "$c.$app.strings" strings_locales "$out" "$G/$top" "$r"
   step "$c.$app.compile" env KEY_PK8="$K/testkey.pk8" KEY_PEM="$K/testkey.x509.pem" BUILD_DIR="$W/build/$c/$app" \
     sh apps/build_apk.sh "$out" "$W/apk/$c/$app.apk"
-  if [ "$(reg "$c" hal_check)" = aidl-table ] && [ "$(reg "$c" hal_app)" = "$top" ] && [ -f "$W/apk/$c/$app.apk" ]; then
-    step "$c.$app.hal_dex" python3 -B tools/devices/check_hal.py --device "$c" --dex "$W/apk/$c/$app.apk"
+  # every HAL app of an aidl-table device (hal_app and each hal_more one) against its own allow list
+  if [ "$(reg "$c" hal_check)" = aidl-table ] && [ -f "$W/apk/$c/$app.apk" ] &&
+     printf '%s\n' "$(reg "$c" hal_app)" $(reg "$c" hal_more | tr ' ' '\n' | cut -d: -f1) | grep -qx "$top"; then
+    step "$c.$app.hal_dex" python3 -B tools/devices/check_hal.py --device "$c" --app "$top" --dex "$W/apk/$c/$app.apk"
   fi
   for t in "$out"/test/*/run.sh; do
     [ -f "$t" ] || continue
@@ -107,6 +110,7 @@ for c in $DEVS; do
   done
   step "$c.forks" python3 -B tools/devices/check_forks.py --device "$c"
   step "$c.hal" python3 -B tools/devices/check_hal.py --device "$c"
+  step "$c.build" python3 -B tools/build/build.py check "$c"
   case $c in
     horse_popular) step "$c.z9x_gate" sh tools/play6/z9x_gate.sh ;;
     dragon_healthy) step "$c.check_k" python3 -B tools/play6/check_handshake.py "$W/apps/$c/Play6Projector" ;;

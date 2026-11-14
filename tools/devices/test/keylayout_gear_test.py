@@ -21,6 +21,9 @@ GLOBAL_KEYS = ["apps/Z9xFrameworkKeysOverlay/res/xml/global_keys.xml", "apps/com
                "apps/HbFrameworkOverlay/res/xml/global_keys.xml", "apps/Play6FrameworkOverlay/res/xml/global_keys.xml"]
 RECEIVERS = ["apps/Z9xProjector/src/org/lumen/projector", "apps/HbProjector/src/org/lumen/projector",
              "apps/Play6Projector/src/org/lumen/projector"]
+# the eye guard each of those apps runs: the HB app takes the Z9X one (no fork; its short gear press on the mask is
+# the profile's keys.eye_gear_short)
+EYE_GUARDS = {"apps/HbProjector/src/org/lumen/projector": "apps/Z9xProjector/src/org/lumen/projector"}
 LINE = re.compile(r"^key\s+(\d+)\s+(\S+)(.*)$")
 
 
@@ -98,7 +101,16 @@ def main():
             errs.append("%s/KeyReceiver.java: Z9xKeys.GEAR_HOLD does not run the gear long press" % d)
         if kr.count("gearLong(ctx);") != 2:
             errs.append("%s/KeyReceiver.java: the held gear and the gear hold do not share gearLong" % d)
-        eg = open(os.path.join(G, d, "eye/EyeGuard.java"), encoding="utf-8").read()
+        eg = open(os.path.join(G, EYE_GUARDS.get(d, d), "eye/EyeGuard.java"), encoding="utf-8").read()
+        # the gear press itself is the shared org.lumen.menu.GearPress (lumen-menu): no app keeps its own copy
+        for name, t in (("KeyReceiver.java", kr), ("eye/EyeGuard.java", eg)):
+            if re.search(r"sGearLongFired|sGearDownTime|sGearDown\b", t) \
+                    or not re.search(r"(GEAR|sGear)\.down\(ev\.getRepeatCount\(\), ev\.getDownTime\(\)\)", t) \
+                    or not re.search(r"(GEAR|sGear)\.up\(ev\.getDownTime\(\), ev\.isCanceled\(\)\)", t):
+                errs.append("%s/%s: the gear key does not run through org.lumen.menu.GearPress" % (d, name))
+        if 'restoreByUser("gear", shortGearTurnsOff());' not in eg \
+                or "MenuController.profile(sApp).eyeGearShortOff()" not in eg:
+            errs.append("%s/eye/EyeGuard.java: the short gear press on the mask does not follow keys.eye_gear_short" % d)
         if "private static final int KEYCODE_GEAR_HOLD = KeyEvent.KEYCODE_%s;" % GEAR_HOLD not in eg \
                 or 'if (ev.getKeyCode() == KEYCODE_GEAR_HOLD) {' not in eg:
             errs.append("%s/eye/EyeGuard.java: the gear hold does not lift the eye-protection mask like a held gear" % d)

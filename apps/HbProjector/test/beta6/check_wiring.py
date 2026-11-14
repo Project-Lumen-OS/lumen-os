@@ -2,12 +2,13 @@
 """HB beta6 wiring checks (source level, the HB app tree): Boost rules used where the vendor refuses 151(0) (in the HB
 adapter of the shared menu, panel/HbMenuFeatures), the stock HB Boost texts in every locale, the optical zoom tile, the zoom screen on ZoomScale, and the one-way fit / obstacle
 coupling (stock spec 2.3, stock KeyStoneRepository.java:506-521) in all four directions, run on the real Hal source."""
-import os, re, subprocess, sys, tempfile
+import glob, os, re, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HB = os.path.abspath(os.path.join(HERE, "..", ".."))
 APPS = os.path.dirname(HB)
 QP = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuFeatures.java")      # the HB adapter of the shared menu
+QPS = [QP] + sorted(glob.glob(os.path.join(HB, "src/org/lumen/projector/panel/Hb*Rows.java")))   # and its sections
 GATES = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuGates.java")
 OZ = os.path.join(HB, "src/org/lumen/projector/panel/OpticalZoomPanel.java")
 SA = os.path.join(HB, "src/org/lumen/projector/SettingsActivity.java")
@@ -36,11 +37,11 @@ def body(src, sig):
             if depth == 0: return src[i:k + 1]
     return ""
 
-qp = open(QP, encoding="utf-8").read()
+qp = "\n".join(open(f, encoding="utf-8").read() for f in QPS)
 gates = open(GATES, encoding="utf-8").read()
 # ---- Boost (live beta5 bug), in the HB adapter of the shared menu (panel/HbMenuFeatures)
 sb = body(qp, "private String setBoost(boolean on, GmpfClient g, Gmpf2Client g2)")
-ok("setBoost asks BoostRules before 151", "BoostRules.onLeavePress(cur, pm) == BoostRules.Leave.EXPLAIN_PICTURE_MODE" in sb
+ok("setBoost asks BoostRules before 151", "BoostRules.onLeavePress(cur, pm) == BoostLeave.EXPLAIN_PICTURE_MODE" in sb
    and sb.find("EXPLAIN_PICTURE_MODE") < sb.find("g2.setBoost(on)"))
 ok("setBoost explains without a vendor call", "EXPLAIN_PICTURE_MODE) return boostLocked(pm);" in sb)
 ok("setBoost judges by the 152 read-back", "BoostRules.judge(on, ret, lensAfter, pmAfter)" in sb and "g2.isBoost()" in sb)
@@ -53,7 +54,7 @@ ok("colour accuracy uses BoostRules", "BoostRules.blocksColorAccuracy(safeBoost(
 ok("no raw boost block for colour accuracy", "COLOR_ACCURACY && Boolean.TRUE.equals(" not in pmc)
 bl = body(qp, "private String boostLocked(Integer pictureModeWire)")
 ok("Boost lock notice: the HB stock text with the mode", "R.string.hb_boost_locked, mode" in bl)
-lamp = qp[qp.find("case Feature.LAMP: {"):qp.find("case Feature.BOOST:")]
+lamp = qp[qp.find("case LAMP: {"):qp.find("case BOOST:")]
 ok("light step in Boost leaves Boost by the same rules", "setBoost(false, g, g2)" in lamp)
 # ---- strings in every locale
 for loc in LOCALES:
@@ -72,8 +73,8 @@ for loc in LOCALES:
         ok("ru Boost line: no old claims", "бледн" not in t and "Цветовое пространство" not in t)
 # ---- zoom tile (stock quick menu row 102): the shared menu's card has it in row 1 after keystone (module layout D);
 # the HB gates it by OPTICAL_ZOOM and opens the optical zoom screen, refused in a top-speed game
-ok("zoom tile behind OPTICAL_ZOOM", '{"zoom", "OPTICAL_ZOOM"}' in gates)
-zt = qp[qp.find("case Feature.ZOOM:"):]
+ok("zoom tile behind OPTICAL_ZOOM", '{FeatureId.ZOOM, "OPTICAL_ZOOM"}' in gates)
+zt = qp[qp.find("case ZOOM:"):]
 ok("zoom tile opens the optical zoom screen", "OpticalZoomPanel.open(app, back)" in zt[:400])
 ok("zoom tile refused in top-speed game", "if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }" in zt[:400])
 GSI = os.environ.get("LUMEN_GSI") or os.path.abspath(os.path.join(HB, "..", ".."))
@@ -100,15 +101,15 @@ ok("chart view draws every wheel and the line", "FocusPattern.wheels(w, h)" in f
 ok("no XGIMI chart asset copied", not any(os.path.exists(os.path.join(HB, "res", d, "cp01_focus_bk.webp")) for d in ("drawable", "drawable-nodpi")))
 # ---- deep sleep blocked notice (StrNotice)
 SN = open(os.path.join(HB, "src/org/lumen/projector/power/StrNotice.java"), encoding="utf-8").read()
-tr = body(SN, "static int textRes(StrNoticeRules.Kind k)")
+tr = body(SN, "static int textRes(StrNoticeKind k)")
 for kind, res in (("USB", "hb_str_blocked_usb"), ("UPDATE", "hb_str_blocked_update"), ("UPDATE_CHECK", "hb_str_blocked_update_check")):
     ok("str notice: " + kind + " text", re.search(r"case " + kind + r": return R\.string\." + res + ";", tr) is not None)
 ok("str notice: kill switch text", "default: return R.string.hb_str_blocked_off;" in tr)
-shw = body(SN, "private static void show(Context app, StrNoticeRules.Kind k, String why)")
+shw = body(SN, "private static void show(Context app, StrNoticeKind k, String why)")
 ok("str notice: never in standby", "if (StandbyController.isActive()) return;" in shw)
 ok("str notice: never with the screen off", "!pm.isInteractive()) return;" in shw)
 ok("str notice: Notify title + reason", "Notify.show(app, app.getString(R.string.hb_str_blocked_title), app.getString(textRes(k)))" in shw)
-ok("str notice: usb once per connection", "StrNoticeRules.usbNoticeDue(k, sUsbShown)" in SN and "sUsbShown = k == StrNoticeRules.Kind.USB;" in SN)
+ok("str notice: usb once per connection", "StrNoticeRules.usbNoticeDue(k, sUsbShown)" in SN and "sUsbShown = k == StrNoticeKind.USB;" in SN)
 ok("str notice: power menu by PowerKey.LONG_PRESS_MS", "PowerKey.LONG_PRESS_MS" in SN)
 kr = open(os.path.join(HB, "src/org/lumen/projector/KeyReceiver.java"), encoding="utf-8").read()
 i1 = kr.find("org.lumen.projector.power.StrNotice.onGlobalKey(ctx, ev);"); i2 = kr.find("org.lumen.projector.power.PowerUi.onGlobalKey(ctx, intent, ev)")
@@ -126,7 +127,7 @@ for loc in LOCALES:
 # ---- fit / obstacle coupling: the panel rows and SettingsActivity use only the coupled setters
 ok("menu obstacle switch coupled", "Hal.setObstacleAvoidCoupled(g, on)" in qp)
 ok("menu fit switch coupled", "Hal.setCurtainFitCoupled(g, on)" in qp)
-for name, path in (("menu", QP), ("settings", SA)):
+for name, path in [("menu", f) for f in QPS] + [("settings", SA)]:
     s = open(path, encoding="utf-8").read()
     ok(name + ": no direct 290 / 292 writes", re.search(r"\.set(CurtainFit|ObstacleAvoid)\(", s) is None)
 hal = open(HAL, encoding="utf-8").read()

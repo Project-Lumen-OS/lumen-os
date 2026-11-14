@@ -1,0 +1,4 @@
+The key layouts of the published Z9X 1.0.9 image (/system/product/usr/keylayout of
+z9x-1.0.9-anp-system.img, pinned in devices/g0111/image/base.sha256), the base every X50 image is composed from.
+Byte-equal to overlay/v1/keylayout before the shared gear-hold fix. The AOSP file Vendor_045e_Product_0719.kl of
+that folder is left out (no X50 edit touches it). SHA256SUMS = the sha256 of each file read from the mounted base.

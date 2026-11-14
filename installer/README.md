@@ -14,7 +14,9 @@ XGIMI Play 6 (G0058, XGIMI firmware V1.7.116 or V1.8.127). Follow the install gu
 | `lumen-install.sh` | the installer for macOS and Linux (bash 3.2 or newer) |
 | `lumen-install.cmd`, `lumen-install.ps1` | the installer for Windows 10/11; beta, not tested on Windows yet |
 | `release.conf` | properties of the image this installer belongs to (`DEVICE=play6` in a Play 6 download; none: the Z9X) |
-| `lib/devices.conf` | what each projector is: model code, board, firmware versions, image name, certificate (data only; what the installer may write stays in the scripts) |
+| `lib/devices.conf` | what each projector is: model code, board, firmware versions, image name, certificate and its way of installing (data only, what the installer may write stays in the scripts) |
+| `lib/flows.conf` | the commands of each way of installing (USB, Wi-Fi with a cable for the write, network with fastbootd): which step each command runs and which ones a projector does not need (data only) |
+| `lib/messages.tsv` | every text both scripts show, one row per text, one column per language (English, Russian and the other languages of Lumen OS; an empty cell shows the English text) |
 | `lib/blobs_allow.txt` | checksums of the nine MediaTek and XGIMI codec and audio files the `blobs` step accepts (hashes only, no files) |
 | `lib/gapps_allow.txt` | the one MindTheGapps zip the `gapps` step accepts, its official URL, and the files it installs from it (hashes only) |
 | `lib/gapps_fill.sh` | runs on the projector during `gapps` and fills the `z9x_gapps` partition |
@@ -101,7 +103,7 @@ Options:
 |---|---|---|
 | `--image FILE` | `-Image FILE` | the system image to use; needed when the folder holds more than one |
 | `--serial SERIAL` | `-Serial SERIAL` | the projector's serial when more than one device is connected |
-| `--lang en\|ru` | `-Lang en\|ru` | language of the messages |
+| `--lang LANG` | `-Lang LANG` | language of the messages: `en`, `ru`, `ar`, `be`, `de`, `es`, `fr`, `it`, `ja`, `kk`, `ko`, `pl`, `pt`, `tr`, `uk`, `zh-CN`, `zh-TW` (default: the computer's language, else English) |
 | `--keep-data` | `-KeepData` | no data wipe (`flash`, `gapps`) |
 | `--wipe=factory-reset` | `-Wipe factory-reset` | leave the wipe to a factory reset on the projector instead of `format` |
 | `--no-blobs` | `-NoBlobs` | install without the codec and audio files: no sound, no protected video |
@@ -142,3 +144,10 @@ fastbootd), `installer_play6_gapps.sh`, and the PowerShell host tests `installer
 `tools/devices/test/installer_x50.sh` and `x50_z9x_separation.sh` (the Z9X and the X50 Ultra, which share
 XGIMI's product image, never take each other's image or installer, in both directions). The `--blobs=embedded` and `--unsigned-image` options are only for
 your own test builds.
+
+Texts: the scripts call `m ID value...` (sh) and `M ID value...` (ps1); `lib/messages.tsv` holds the text of each id
+in every language, with `{1}`, `{2}`, ... for the values. `tools/devices/test/installer_msgs.py` checks the catalog
+against both scripts (ids, values, languages; `--mutants` proves it catches a missing id), `installer_ps1_parity.py`
+that the two scripts call the same ids, and `tools/devices/installer_msgs_lang.py export|import LANG` takes one
+language out for translation and back in. `tools/devices/test/installer_msgs_golden.sh` compares what the installer
+suites print before and after a change, word for word.

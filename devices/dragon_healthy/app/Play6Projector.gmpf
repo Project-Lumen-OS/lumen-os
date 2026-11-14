@@ -1,0 +1,26 @@
+# The Z9X files the Play 6 projector takes for the shared gmpf clients (devices/dragon_healthy/app/Play6Projector.layers):
+# the HIDL transport and focus callback of IGmpf / IGmpf2, and the vendor value types the shared bodies name, with the
+# same values on the Play 6 (its picture modes and picture styles are its own: hal/PictureMode, hal/ColorTemp).
+src/org/lumen/projector/hal/HidlWire.java
+src/org/lumen/projector/hal/HidlFocusCallback.java
+src/org/lumen/projector/hal/AiScene.java
+src/org/lumen/projector/hal/AspectRatio.java
+src/org/lumen/projector/hal/AudioPath.java
+src/org/lumen/projector/hal/BootStage.java
+src/org/lumen/projector/hal/ColorSpace.java
+src/org/lumen/projector/hal/GameModeOption.java
+src/org/lumen/projector/hal/GameModeType.java
+src/org/lumen/projector/hal/HdmiRange.java
+src/org/lumen/projector/hal/HsyType.java
+src/org/lumen/projector/hal/ManualFocus.java
+src/org/lumen/projector/hal/MemcLevel.java
+src/org/lumen/projector/hal/Mode3D.java
+src/org/lumen/projector/hal/NoiseReduction.java
+src/org/lumen/projector/hal/OutputTiming.java
+src/org/lumen/projector/hal/PictureReset.java
+src/org/lumen/projector/hal/PqItem.java
+src/org/lumen/projector/hal/PutMode.java
+src/org/lumen/projector/hal/ShiftDir.java
+src/org/lumen/projector/hal/SoundEffect.java
+src/org/lumen/projector/hal/SoundProcess.java
+src/org/lumen/projector/hal/WbItem.java

@@ -128,6 +128,7 @@ public final class StandbyController {
         final Context app = ctx.getApplicationContext();
         if (sApp == null) sApp = app;
         if (sActive) return;
+        LampOffHal.get(app).onSleep();                      // the standby owns the light now (its exit lights it)
         sActive = true;
         try { org.lumen.projector.eye.EyeGuard.onStandbyChanged(true); } catch (Throwable t) { Log.w(TAG, "eye: " + t); }
         sClosing = false;

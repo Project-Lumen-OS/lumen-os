@@ -135,11 +135,11 @@ final class DreamPanelRows implements QuickPanel.Extension {
             for (int i = 0; i < sleepMs.length; i++) if (sleepMs[i] == ms || (sleepMs[i] < 0 && ms < 0)) si = i;
             sleep.setSelected(si);
             light.setRowEnabled(on);
-            DreamDefaults.Shown shown = DreamSettings.shown(app);
+            DreamShown shown = DreamSettings.shown(app);
             int si2 = -1;
             for (int i = 0; i < showDreams.length; i++) {
-                if ((shown == DreamDefaults.Shown.SKY && DreamSettings.SKY.equals(showDreams[i]))
-                        || (shown == DreamDefaults.Shown.CLOCK && DreamSettings.CLOCK.equals(showDreams[i]))) si2 = i;
+                if ((shown == DreamShown.SKY && DreamSettings.SKY.equals(showDreams[i]))
+                        || (shown == DreamShown.CLOCK && DreamSettings.CLOCK.equals(showDreams[i]))) si2 = i;
             }
             show.setSelected(si2);                            // another dream: "—"
             show.setRowEnabled(on);

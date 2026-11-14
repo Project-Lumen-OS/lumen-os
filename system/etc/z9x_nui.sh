@@ -24,6 +24,10 @@
 #                     restart of z9x_nui never leaves gmpf_main (which does NOT ignore SIGPIPE) with
 #                     a reader-less fifo. It never reads; z9x_nui drains what queued meanwhile.
 # Nothing is drawn: the Projector app shows its own mask on focusEvent 500 and hides it on 601.
+# That holds only on the models listed below (Z9X G0082, Z9X HB G0130 / G0118 / G0148, Play 6 G0058). On any other
+# model (the X50 family draws its mask with the stock nativeui) the fifos are still held and drained, so the vendor
+# never blocks, but every command is refused and sys.z9x.nui never reads ready: the vendor is never told that a
+# mask nobody draws is up.
 # Never touches a vendor service or property; the fifo directory belongs to the vendor (it is never
 # created here, only waited for).
 #
@@ -32,6 +36,10 @@ D=${Z9X_NUI_DIR:-/data/vendor/tmp}
 F=$D/nuififo
 R=$D/retnuififo
 umask 077
+case $(getprop ro.boot.xgimi.modelname) in
+  G0082|G0130|G0118|G0148|G0058) OWN=1 ;;
+  *) OWN=0 ;;
+esac
 
 n=0
 while [ ! -d "$D" ]; do                       # vendor init creates it (mt_tmp); wait, never mkdir
@@ -53,8 +61,13 @@ fi
 [ -p "$R" ] || { rm -f "$R"; mkfifo -m 600 "$R" || exit 1; }
 exec 3<>"$F" || exit 1
 exec 4<>"$R" || exit 1
-setprop sys.z9x.nui ready
-log -t Z9xNui "ready: $F and $R held"
+if [ $OWN = 1 ]; then
+  setprop sys.z9x.nui ready
+  log -t Z9xNui "ready: $F and $R held"
+else
+  setprop sys.z9x.nui refused
+  log -t Z9xNui "model $(getprop ro.boot.xgimi.modelname) draws its own mask: every command refused"
+fi
 
 while :; do
   c=
@@ -68,6 +81,10 @@ while :; do
   esac
   case $a in ''|*[!0-9]*) a=0 ;; esac
   case $g in *[!A-Za-z0-9_]*) g=x ;; esac
-  print -nr -- "$a;$g;ok;0" >&4               # reply first: gmpf waits for it under its mutex
+  if [ $OWN = 1 ]; then                        # reply first: gmpf waits for it under its mutex
+    print -nr -- "$a;$g;ok;0" >&4
+  else
+    print -nr -- "$a;none;refused;1" >&4
+  fi
   log -t Z9xNui "a=$a g=$g cfg=${rest#*;}"
 done

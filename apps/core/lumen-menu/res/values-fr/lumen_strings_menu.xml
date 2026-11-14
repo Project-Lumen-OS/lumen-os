@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">Doux</string>
     <string name="lumen_m_pm_isf_day">ISF jour</string>
     <string name="lumen_m_pm_isf_night">ISF nuit</string>
+    <string name="lumen_m_pm_bright">Lumineux</string>
     <string name="lumen_m_edid_hdmi_1_4">Compatible (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">Amélioré (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

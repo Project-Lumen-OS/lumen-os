@@ -121,7 +121,7 @@ public final class HdmiVolume {
         int p = AudioPathReporter.confirmedPath();
         if (p >= 0) return p == 0;
         if (org.lumen.projector.audio.AudioOutputChoice.kind(app)
-                == org.lumen.projector.audio.AudioOutputChoice.Kind.SPEAKER) return true;
+                == org.lumen.projector.audio.AudioOutputKind.SPEAKER) return true;
         AudioManager am = app.getSystemService(AudioManager.class);
         if (am == null) return false;
         for (AudioDeviceInfo d : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {

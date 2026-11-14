@@ -4,7 +4,7 @@ package org.lumen.projector.panel;
  * Lumen OS 1.0.8 Z9X sweep (2026-11-04): the stock refusal rules of the Z9X settings (SettingMutexManager.mutex per
  * node, read from the dexdump because jadx did not decompile it, plus common.json rule lists; Z9X G0082 feature.xml:
  * support_Trapezoid_3D=0, display_gamemode_version=3, display_picture_mode_version=2). Each rule returns the FIRST
- * reason in the stock order, or {@link Why#NONE}. Raw vendor values, tested exactly as stock tests them (666 == 10 for
+ * reason in the stock order, or {@link RefusalReason#NONE}. Raw vendor values, tested exactly as stock tests them (666 == 10 for
  * AI, not the 10..17 scene range). A value that could not be read never refuses. Plain Java, no Android, no HAL: the
  * callers read the values (Snapshot on the main thread, or fresh reads on the HAL thread), this class only decides.
  * sh test/rules/run.sh
@@ -13,12 +13,6 @@ package org.lumen.projector.panel;
  * display.ThreeD while {@code ThreeD.useStockRules()} was called (Z9X App only).
  */
 public final class PanelRules {
-    /** Why a change is refused. The caller picks the note (stock meaning, our own words). */
-    public enum Why {
-        NONE, GAME, TOP_SPEED, AI, PERFORMANCE, OFFICE, THREE_D, BOOST, NATIVE_FPS, ULTRA_120, DOLBY_VISION, HDR,
-        NO_VIDEO, HIGH_FRAME_RATE, CLOSE_HFR, NOT_HDMI
-    }
-
     /** IGmpf 666 raw picture modes stock tests (PictureUtils / BrightnessManager / DisplayHelper). */
     public static final int PIC_GAME = 4, PIC_PERFORMANCE = 5, PIC_OFFICE_6 = 6, PIC_AI = 10, PIC_OFFICE = 25;
     /** IGmpf 620: Dolby Vision (stock PictureUtils.isDolbyVision), SDR. */
@@ -75,33 +69,33 @@ public final class PanelRules {
      * and on every step: 55 state on, then 666 == 10 (AI), then 666 == 5 (Performance); AI / Performance not with
      * Dolby Vision content.
      */
-    public static Why basicOrPro(In in) {
-        if (Boolean.TRUE.equals(in.game55)) return Why.GAME;
-        if (is(in.pic666, PIC_AI) && !dv(in)) return Why.AI;
-        if (is(in.pic666, PIC_PERFORMANCE) && !dv(in)) return Why.PERFORMANCE;
-        return Why.NONE;
+    public static RefusalReason basicOrPro(In in) {
+        if (Boolean.TRUE.equals(in.game55)) return RefusalReason.GAME;
+        if (is(in.pic666, PIC_AI) && !dv(in)) return RefusalReason.AI;
+        if (is(in.pic666, PIC_PERFORMANCE) && !dv(in)) return RefusalReason.PERFORMANCE;
+        return RefusalReason.NONE;
     }
 
     /** Colour temperature (image_mode_3_color_temp_dapeng): Office (666 == 25), then 3D. */
-    public static Why colorTemp(In in) {
-        if (is(in.pic666, PIC_OFFICE)) return Why.OFFICE;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason colorTemp(In in) {
+        if (is(in.pic666, PIC_OFFICE)) return RefusalReason.OFFICE;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /**
      * Auto keystone, manual keystone, zoom and move, rotation (common.json autoKeystone / manualKeystone / pictureZoom
      * / screenRotation): top-speed game first, then 3D (support_Trapezoid_3D=0).
      */
-    public static Why keystone(In in) {
-        if (topSpeedRuns(in)) return Why.TOP_SPEED;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason keystone(In in) {
+        if (topSpeedRuns(in)) return RefusalReason.TOP_SPEED;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /** Real-time keystone (displacementAk): 3D only, no game rule. */
-    public static Why realtimeKeystone(In in) {
-        return is3d(in) ? Why.THREE_D : Why.NONE;
+    public static RefusalReason realtimeKeystone(In in) {
+        return is3d(in) ? RefusalReason.THREE_D : RefusalReason.NONE;
     }
 
     /**
@@ -109,64 +103,64 @@ public final class PanelRules {
      * Performance lumens mode (175 == 15), no video, HDR, Ultra 120 again (stock checks it twice), HDMI 120 Hz.
      * 4K is not checked (no is3DFormatSupported read yet). Turning 3D off is never refused.
      */
-    public static Why threeDOn(In in) {
-        if (Boolean.TRUE.equals(in.ultra120)) return Why.ULTRA_120;
-        if (Boolean.TRUE.equals(in.nativeFps283)) return Why.NATIVE_FPS;
-        if (gameRuns(in)) return Why.GAME;
-        if (topSpeedRuns(in)) return Why.TOP_SPEED;
-        if (is(in.lumens175, LUMENS_PERFORMANCE)) return Why.PERFORMANCE;
-        if (Boolean.FALSE.equals(in.videoPlaying)) return Why.NO_VIDEO;
-        if (in.hdr620 != null && in.hdr620 != HDR_SDR) return Why.HDR;
-        if (Boolean.TRUE.equals(in.ultra120)) return Why.ULTRA_120;
-        if (in.hdmi && in.hdmiFpsCenti != null && in.hdmiFpsCenti >= HFR_CENTI) return Why.HIGH_FRAME_RATE;
-        return Why.NONE;
+    public static RefusalReason threeDOn(In in) {
+        if (Boolean.TRUE.equals(in.ultra120)) return RefusalReason.ULTRA_120;
+        if (Boolean.TRUE.equals(in.nativeFps283)) return RefusalReason.NATIVE_FPS;
+        if (gameRuns(in)) return RefusalReason.GAME;
+        if (topSpeedRuns(in)) return RefusalReason.TOP_SPEED;
+        if (is(in.lumens175, LUMENS_PERFORMANCE)) return RefusalReason.PERFORMANCE;
+        if (Boolean.FALSE.equals(in.videoPlaying)) return RefusalReason.NO_VIDEO;
+        if (in.hdr620 != null && in.hdr620 != HDR_SDR) return RefusalReason.HDR;
+        if (Boolean.TRUE.equals(in.ultra120)) return RefusalReason.ULTRA_120;
+        if (in.hdmi && in.hdmiFpsCenti != null && in.hdmiFpsCenti >= HFR_CENTI) return RefusalReason.HIGH_FRAME_RATE;
+        return RefusalReason.NONE;
     }
 
     /** HDMI mode / EDID (signal_setting_hdmi_version): a game at a high-frame-rate speed (55 on, 647 1 / 2). */
-    public static Why hdmiMode(In in) {
-        if (Boolean.TRUE.equals(in.game55) && in.opt647 != null && (in.opt647 == 1 || in.opt647 == 2)) return Why.CLOSE_HFR;
-        return Why.NONE;
+    public static RefusalReason hdmiMode(In in) {
+        if (Boolean.TRUE.equals(in.game55) && in.opt647 != null && (in.opt647 == 1 || in.opt647 == 2)) return RefusalReason.CLOSE_HFR;
+        return RefusalReason.NONE;
     }
 
     /** Aspect ratio (SettingMutexManager.java:989-1006): game, then 3D (HDMI is checked on the HAL thread). */
-    public static Why aspect(In in, boolean gameOn) {
-        if (gameOn) return Why.GAME;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason aspect(In in, boolean gameOn) {
+        if (gameOn) return RefusalReason.GAME;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /** Colour space (picture_gamut_athenaultra): Office (666 == 25), then Boost (IGmpf2 51). */
-    public static Why colorSpace(In in) {
-        if (is(in.pic666, PIC_OFFICE)) return Why.OFFICE;
-        if (Boolean.TRUE.equals(in.boost51)) return Why.BOOST;
-        return Why.NONE;
+    public static RefusalReason colorSpace(In in) {
+        if (is(in.pic666, PIC_OFFICE)) return RefusalReason.OFFICE;
+        if (Boolean.TRUE.equals(in.boost51)) return RefusalReason.BOOST;
+        return RefusalReason.NONE;
     }
 
     /** Dynamic black (image_dynamic_black_bit_enhancement): stock isOfficeImageMode, 666 6 or 25. */
-    public static Why dynamicBlack(In in) {
-        return is(in.pic666, PIC_OFFICE_6) || is(in.pic666, PIC_OFFICE) ? Why.OFFICE : Why.NONE;
+    public static RefusalReason dynamicBlack(In in) {
+        return is(in.pic666, PIC_OFFICE_6) || is(in.pic666, PIC_OFFICE) ? RefusalReason.OFFICE : RefusalReason.NONE;
     }
 
     /** Original frame rate ON (image_original_needle_display): Ultra 120 on, then 3D. */
-    public static Why nativeFpsOn(In in) {
-        if (Boolean.TRUE.equals(in.ultra120)) return Why.ULTRA_120;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason nativeFpsOn(In in) {
+        if (Boolean.TRUE.equals(in.ultra120)) return RefusalReason.ULTRA_120;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /** Ultra 120 ON (image_mode_prefect_120): original frame rate on, then 3D. */
-    public static Why ultra120On(In in) {
-        if (Boolean.TRUE.equals(in.nativeFps283)) return Why.NATIVE_FPS;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason ultra120On(In in) {
+        if (Boolean.TRUE.equals(in.nativeFps283)) return RefusalReason.NATIVE_FPS;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /** Picture mode change (common.json pictureMode, isImageMode2): game, Dolby Vision, 3D. */
-    public static Why pictureMode(In in, boolean gameOn) {
-        if (gameOn) return Why.GAME;
-        if (dv(in)) return Why.DOLBY_VISION;
-        if (is3d(in)) return Why.THREE_D;
-        return Why.NONE;
+    public static RefusalReason pictureMode(In in, boolean gameOn) {
+        if (gameOn) return RefusalReason.GAME;
+        if (dv(in)) return RefusalReason.DOLBY_VISION;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        return RefusalReason.NONE;
     }
 
     /** {@link #brightness} results besides the lumens lock names of {@link #lockName}. */
@@ -191,11 +185,11 @@ public final class PanelRules {
     }
 
     /** Game page and game speed (common.json gameMode on game_enhance_mode_entrance): Dolby Vision, 3D, not HDMI. */
-    public static Why gamePage(In in) {
-        if (dv(in)) return Why.DOLBY_VISION;
-        if (is3d(in)) return Why.THREE_D;
-        if (!in.hdmi) return Why.NOT_HDMI;
-        return Why.NONE;
+    public static RefusalReason gamePage(In in) {
+        if (dv(in)) return RefusalReason.DOLBY_VISION;
+        if (is3d(in)) return RefusalReason.THREE_D;
+        if (!in.hdmi) return RefusalReason.NOT_HDMI;
+        return RefusalReason.NONE;
     }
 
     // ---- wire values (Z9X G0082: getHdmi2_1() false, so the stock Enhanced index is raw 1)

@@ -114,7 +114,7 @@ Before (core-menu 05b584d): `check_aidl_hal: OK: 89 calls on 7 interfaces`. Afte
 + GmTvManager      150 getDarkBoostState        boolean(int, int)       args:0..4,1..3
 ```
 
-Kept equal in three places: Gmpf.Call (4th argument = ArgSpec, enforced by the transport before the transact),
+Kept equal in three places: GmpfCall (4th argument = ArgSpec, enforced by the transport before the transact),
 allowed_x50projector.tsv (args column, rule 8) and verify_tree_x50.py MENU_APP (4-field rows,
 x50_menu_apk_check_test.sh). None is BANNED or REVIEW in banned.tsv; no unban row was needed
 (unbanned_x50projector.tsv unchanged, g0100's copy stays row-equal).
@@ -124,7 +124,7 @@ x50_menu_apk_check_test.sh). None is BANNED or REVIEW in banned.tsv; no unban ro
 - G1 host: DONE. App installs GameMenu with X50GameIo in X50Menu's activity host (X50Menu.installGameMenu:
   GameMenu.install(app, new X50GameIo(), host(app))), the same ActivityPanelHost and Gate as the quick menu D, so the
   game menu never opens over X50EyeGuard's cover. The held gear (SETTINGS held >= 800 ms, and the remote's own hold
-  scancode: 3840 / 3838 / 3843 127 and IR / keypad 139 = stock MENU, KEYCODE_TV_MEDIA_CONTEXT_MENU in the base key
+  scancode: 3840 / 3838 / 3843 127 and IR / keypad 139 = stock MENU, KEYCODE_TV_MEDIA_CONTEXT_MENU after the X50 key edit (x50_power_keys.py, ALL_APPS in the 1.0.9 base) in the image key
   layouts) runs KeyReceiver.gear(long) -> MenuController.onGearLong -> GameMenu.onGearLong: the game menu while game
   mode runs (DM 148 state 0) on the HDMI input on screen, as stock xhplayer InputActivity.dispatchKeyEvent (MENU UP ->
   GameMenuActivity.show), else the corner reset on the four-corner screen (stock KeyStoneWind MENU), else Android

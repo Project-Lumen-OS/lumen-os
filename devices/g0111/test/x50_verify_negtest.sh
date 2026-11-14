@@ -37,13 +37,13 @@ for n in testkey fifth; do
   # the source modules of devices/g0111/app/X50EyeGuard.layers (their src/ only)
   cp -R "$G/apps/core/lumen-ui/src/." "$G/apps/core/lumen-hal/src/." "$W/app_$n/src/"
 done
-python3 -B - "$W/app_fifth/src/org/lumen/x50/eyeguard/Gmpf.java" <<'PY' || exit 1
+python3 -B - "$W/app_fifth/src/org/lumen/x50/eyeguard/GmpfCall.java" <<'PY' || exit 1
 import sys
 p = sys.argv[1]; s = open(p).read()
-old = 'GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted");'
+old = 'GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted");'
 assert s.count(old) == 1
-open(p, "w").write(s.replace(old, 'GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted"),\n'
-                                  '        SET_ON_OFF(Iface.DISPLAY, 61, "setHumanDetectOnOff");'))
+open(p, "w").write(s.replace(old, 'GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted"),\n'
+                                  '    SET_ON_OFF(GmpfIface.DISPLAY, 61, "setHumanDetectOnOff");'))
 PY
 for n in testkey fifth; do
   BUILD_DIR="$W/b_$n" sh "$G/apps/build_apk.sh" "$W/app_$n" "$W/$n.apk" > "$W/b_$n.log" 2>&1 \

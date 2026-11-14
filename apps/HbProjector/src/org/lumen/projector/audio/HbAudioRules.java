@@ -24,14 +24,6 @@ public final class HbAudioRules {
 
     private HbAudioRules() {}
 
-    /** What HdmiVolume does after a change of the routed or the confirmed vendor path, HDMI picture or not. */
-    public enum VolumeStep {
-        /** The speaker is both routed and confirmed: spk_volume follows STREAM_MUSIC. */
-        FOLLOW,
-        /** The output is not (or not yet) the confirmed speaker: send nothing (never on ARC). */
-        HOLD
-    }
-
     /** The media output is the projector's speaker: routed there (latest evaluation) AND confirmed by the vendor. */
     public static boolean speakerConfirmed(int target, int confirmed) {
         return target == PATH_SPEAKER && confirmed == PATH_SPEAKER;
@@ -46,8 +38,8 @@ public final class HbAudioRules {
      * (services.jar AudioService) writes spk_volume=N for DEVICE_OUT_SPEAKER on every music change, with or without
      * HDMI, and has no HDMI_ARC branch and no 100: so FOLLOW whenever the speaker is confirmed, HOLD otherwise.
      */
-    public static VolumeStep volumeStep(int target, int confirmed) {
-        return speakerConfirmed(target, confirmed) ? VolumeStep.FOLLOW : VolumeStep.HOLD;
+    public static HdmiVolumeStep volumeStep(int target, int confirmed) {
+        return speakerConfirmed(target, confirmed) ? HdmiVolumeStep.FOLLOW : HdmiVolumeStep.HOLD;
     }
 
     /**
@@ -92,7 +84,7 @@ public final class HbAudioRules {
     }
 
     /**
-     * CEC System Audio for a sound output choice (AudioOutputChoice.Kind name): "SPEAKER" off (AOSP AudioService
+     * CEC System Audio for a sound output choice (AudioOutputKind name): "SPEAKER" off (AOSP AudioService
      * forwards the volume keys over CEC whenever System Audio is on and the routed device is not an absolute volume
      * device, even the speaker), "ARC" and "AUTO" on (the soundbar back), anything else unchanged (null).
      */
@@ -158,24 +150,14 @@ public final class HbAudioRules {
     // itself while it is the user's choice (AudioManager.setWiredDeviceConnectionState, as WiredAccessoryManager does
     // for a real jack) and removes it again when another output is chosen.
 
-    /** What the HB app does with its wired headphone output on a sound output evaluation. */
-    public enum WiredStep {
-        /** "Headphones" is the choice and no wired output is listed: connect it (the next evaluation routes to it). */
-        CONNECT,
-        /** Another output is the choice and the listed wired output is the one this app connected: remove it. */
-        DISCONNECT,
-        /** Nothing to do. */
-        NONE
-    }
-
     /**
-     * chosen: the stored AudioOutputChoice.Kind name; wiredListed: AudioManager lists a wired headphone / headset
+     * chosen: the stored AudioOutputKind name; wiredListed: AudioManager lists a wired headphone / headset
      * output now; ours: this process connected it (a real jack, if a future kernel reports one, is never removed).
      */
-    public static WiredStep wiredStep(String chosen, boolean wiredListed, boolean ours) {
+    public static WiredOutputStep wiredStep(String chosen, boolean wiredListed, boolean ours) {
         boolean want = "WIRED".equals(chosen);
-        if (want) return wiredListed ? WiredStep.NONE : WiredStep.CONNECT;
-        return ours && wiredListed ? WiredStep.DISCONNECT : WiredStep.NONE;
+        if (want) return wiredListed ? WiredOutputStep.NONE : WiredOutputStep.CONNECT;
+        return ours && wiredListed ? WiredOutputStep.DISCONNECT : WiredOutputStep.NONE;
     }
 
     /**
@@ -184,8 +166,8 @@ public final class HbAudioRules {
      * ACTION_AUDIO_BECOMING_NOISY (apps pause). The speaker is made the preferred device first, the wired output goes,
      * and the evaluation that follows (devices removed) removes the role for Auto.
      */
-    public static boolean speakerBeforeDisconnect(String chosen, WiredStep step) {
-        return step == WiredStep.DISCONNECT && ("AUTO".equals(chosen) || chosen == null);
+    public static boolean speakerBeforeDisconnect(String chosen, WiredOutputStep step) {
+        return step == WiredOutputStep.DISCONNECT && ("AUTO".equals(chosen) || chosen == null);
     }
 
     /** headphone_volume follows STREAM_MUSIC only while the 3.5 mm path is both routed and confirmed by the vendor. */

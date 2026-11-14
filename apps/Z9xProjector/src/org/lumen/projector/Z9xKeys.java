@@ -2,6 +2,8 @@ package org.lumen.projector;
 
 import android.view.KeyEvent;
 
+import org.lumen.menu.LampOffKey;
+
 /**
  * Keycodes produced by the Z9X keylayouts (stock analysis) and routed to
  * org.lumen.projector/.KeyReceiver by the global-keys RRO (stock analysis).
@@ -46,6 +48,13 @@ final class Z9xKeys {
             KeyEvent.KEYCODE_TV_SATELLITE_BS,         // 238 slot 4 (bilibili key)
             KeyEvent.KEYCODE_TV_SATELLITE_CS,         // 239 slot 5
     };
+    /** What a key is to the shared "Turn off screen" (LampOff): the power key, a focus key or any other key. */
+    static LampOffKey lampOffKey(int code) {
+        if (code == KeyEvent.KEYCODE_STB_POWER) return LampOffKey.POWER;
+        boolean focus = code == AUTOFOCUS || code == MANUAL_FOCUS || code == FOCUS_STEP_LEFT || code == FOCUS_STEP_RIGHT;
+        return focus ? LampOffKey.FOCUS : LampOffKey.OTHER;
+    }
+
     /** Input-device vendor ids of XGIMI remotes / IR receiver / keypad (InputDevice#getVendorId). */
     static final int[] XGIMI_VENDOR_IDS = {0x000d, 0x1d5a, 0x26e3, 0x3697, 0x0001, 0x9999};
 }

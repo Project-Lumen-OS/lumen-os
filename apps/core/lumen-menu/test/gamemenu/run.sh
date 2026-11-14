@@ -39,6 +39,8 @@ IO="$SRC/panel/Z9xGameIo.java"      # the Z9X side of the shared game menu (its 
 CTL="$SRC/panel/GmController.java"
 VIEW="$SRC/panel/GmView.java"
 G2="$SRC/hal/Gmpf2Client.java"
+B2="$SRC/hal/Gmpf2Base.java"         # the shared IGmpf2 body under it (apps/core/lumen-gmpf)
+HC="$SRC/hal/HalCodes.java"          # the named codes, generated from devices/horse_popular/hal/codes.tsv
 bad=0
 fail() { echo "FAIL $1"; bad=1; }
 has() { grep -qF -- "$2" "$1" || fail "$3"; }
@@ -53,7 +55,7 @@ n=$(grep -c 'GameMenu.onGearLong(ctx, () -> {' "$K" || true)
 [ "$n" = 1 ] || fail "KeyReceiver: $n gear long press hooks (want 1)"
 grep -A3 'GameMenu.onGearLong(ctx, () -> {' "$K" | grep -qF 'if (setupDone(ctx, "gear long press")) openTvSettings(ctx);' \
   || fail "KeyReceiver: Android settings no longer the fallback of the long press"
-grep -A2 -F '} else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {' "$K" | grep -qF 'gearLong(ctx);' \
+grep -qF 'if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);' "$K" \
   || fail "KeyReceiver: game menu not on the first repeated DOWN of the gear"
 grep -A2 -F 'if (code == Z9xKeys.GEAR_HOLD) {' "$K" | grep -qF 'gearLong(ctx);' \
   || fail "KeyReceiver: the remote's own gear hold (stock MENU 127 / 139) does not open the game menu"
@@ -91,20 +93,27 @@ for m in getVrrState setVrrState getGamePicture setGamePicture getDarkScenes set
   users=$(grep -rlE "\\.$m\\(" "$SRC" --include=*.java | grep -v '/hal/' | sed "s|$SRC/||" | sort | tr '\n' ' ')
   [ "$users" = "panel/Z9xGameIo.java " ] || fail "$m called from: $users(want panel/Z9xGameIo.java only)"
 done
-has "$G2" 'private static final int GET_GAMING_SOUND_EFFECT_MODE = 1;' "IGmpf2 1 code"
-has "$G2" 'private static final int SET_GAMING_SOUND_EFFECT_MODE = 2;' "IGmpf2 2 code"
-has "$G2" 'private static final int GET_DARK_BOOST_STATE = 296;' "IGmpf2 296 code"
-has "$G2" 'private static final int SET_DARK_BOOST_ONOFF = 297;' "IGmpf2 297 code"
-has "$G2" 'private static final int GET_GAME_PICTURE_MODE = 298;' "IGmpf2 298 code"
-has "$G2" 'private static final int SET_GAME_PICTURE_MODE = 299;' "IGmpf2 299 code"
-has "$G2" 'private static final int GET_VRR_ENABLE_STATE = 300;' "IGmpf2 300 code"
-has "$G2" 'private static final int SET_VRR_MODE_ENABLE = 301;' "IGmpf2 301 code"
-n=$(grep -c 'checkRange("hdmi source", hdmiSource, 1, 2)' "$G2" || true)
-[ "$n" = 7 ] || fail "Gmpf2Client: $n HDMI source range checks (want 7: 310 and the new 296..301)"
-n=$(grep -c 'checkRange("game picture", \(mode\|gamePicture\), 0, 4)' "$G2" || true)
-[ "$n" = 3 ] || fail "Gmpf2Client: $n game picture range checks (want 3: 296, 297, 299)"
-has "$G2" 'return callI32RetBool(SET_GAMING_SOUND_EFFECT_MODE, checkRange("game sound", mode, 190, 192));' "IGmpf2 2 outside 190..192"
-has "$G2" 'return callI32I32RetI32(SET_VRR_MODE_ENABLE, on ? 1 : 0, checkRange("hdmi source", hdmiSource, 1, 2));' "IGmpf2 301 state not 0/1"
+has "$HC" 'static final int GMPF2_GET_GAMING_SOUND_EFFECT_MODE = 1;' "IGmpf2 1 code"
+has "$HC" 'static final int GMPF2_SET_GAMING_SOUND_EFFECT_MODE = 2;' "IGmpf2 2 code"
+has "$HC" 'static final int GMPF2_GET_DARK_BOOST_STATE = 296;' "IGmpf2 296 code"
+has "$HC" 'static final int GMPF2_SET_DARK_BOOST_ONOFF = 297;' "IGmpf2 297 code"
+has "$HC" 'static final int GMPF2_GET_GAME_PICTURE_MODE = 298;' "IGmpf2 298 code"
+has "$HC" 'static final int GMPF2_SET_GAME_PICTURE_MODE = 299;' "IGmpf2 299 code"
+has "$HC" 'static final int GMPF2_GET_VRR_ENABLE_STATE = 300;' "IGmpf2 300 code"
+has "$HC" 'static final int GMPF2_SET_VRR_MODE_ENABLE = 301;' "IGmpf2 301 code"
+# the ranges are in the shared IGmpf2 body (apps/core/lumen-gmpf), the wire golden of test/wire sends every value
+n=$(grep -c 'hdmi(hdmi))' "$B2" || true)
+[ "$n" = 7 ] || fail "Gmpf2Base: $n HDMI source range checks (want 7: 310 and 296..301)"
+has "$B2" 'private static int hdmi(int v) { return checkRange("hdmi source", v, HDMI_1, HDMI_2); }' "HDMI source not checked"
+has "$B2" 'private static final int HDMI_1 = 1, HDMI_2 = 2;' "HDMI source outside 1..2"
+n=$(grep -c 'gamePicture(\(mode\|gamePicture\)), hdmi(hdmi))' "$B2" || true)
+[ "$n" = 3 ] || fail "Gmpf2Base: $n game picture range checks (want 3: 296, 297, 299)"
+has "$B2" 'private static int gamePicture(int v) { return checkRange("game picture", v, 0, GAME_PICTURE_MAX); }' "game picture not checked"
+has "$B2" 'public static final int GAME_PICTURE_MAX = 4;' "game picture outside 0..4"
+has "$G2" 'checkRange("game sound", mode, GAME_SOUND_OFF, GAME_SOUND_STORY));' "IGmpf2 2 not checked"
+has "$G2" 'private static final int GAME_SOUND_OFF = 190, GAME_SOUND_STORY = 192;' "IGmpf2 2 outside 190..192"
+has "$B2" 'return wire.i32I32RetI32(key(SET_VRR_MODE_ENABLE), on ? ON : OFF, hdmi(hdmi));' "IGmpf2 301 state not 0/1"
+has "$B2" 'private static final int ON = 1, OFF = 0;' "IGmpf2 301 state not 0/1"
 has "$IO" 'int back = poll(() -> g2.getVrrState(port), GmModel.VRR, value);' "VRR write not read back"
 has "$IO" 'int back = poll(() -> g2.getGamePicture(port), GmModel.PIC, value);' "game picture write not read back"
 has "$IO" 'int back = poll(() -> g2.getDarkScenes(p, port) ? 1 : 0, GmModel.DARK, value);' "dark scenes write not read back"
@@ -114,6 +123,11 @@ has "$IO" 'if (g.getCurrentInputSource() != port) throw new IllegalStateExceptio
 n=$(grep -c 'if (g.getCurrentInputSource() != port) throw' "$IO" || true)
 [ "$n" = 2 ] || fail "Z9xGameIo: $n write paths with the 696 check (want 2: speed and the others)"
 has "$IO" 'if (back == value && o != null && o.isTopSpeed()) {' "207 not only after 647 reads top speed"
+# the speed read back polls from the main thread (speedPoll): the one sleep of Z9xGameIo is the short read-back poll
+# of the other values
+n=$(grep -c 'SystemClock.sleep(' "$IO" || true)
+{ [ "$n" = 1 ] && grep -qF 'SystemClock.sleep(READ_BACK_POLL_MS);' "$IO"; } \
+  || fail "Z9xGameIo: $n sleeps on the HAL thread (want 1, the read-back poll): the speed read back sleeps again"
 fi
 grep -q 'SystemClock.sleep(100)' "$GM" && fail "GameMenu: the speed read back sleeps on the HAL thread again"
 # only the HAL thread talks to the vendor: every client call in panel/Gm* sits inside Hal.query lambdas
@@ -159,9 +173,21 @@ has "$GM" 'marked = sIo.isConsolePort(port);' "the user's console mark is not a 
 [ $Z9X = 1 ] && has "$IO" 'return GameProfile.isConsolePort(app, port);' "the Z9X console mark is not GameProfile's"
 has "$CTL" 'boolean hint = consolePort || (snap != null && Boolean.TRUE.equals(snap.allm));' "ALLM is not a console hint"
 
-# ---- licences (CC BY 4.0 credit of the frames) in Projector settings, Help
-has "$SRC/SettingsActivity.java" 'actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));' \
-  "no Licences row"
+# ---- licences (CC BY 4.0 credit of the controller models and frames): every app that ships them shows the shared
+#      Licences screen GmLicences, in Projector settings, Help (an app with a SettingsActivity: Z9X, HB, Play 6) or,
+#      in an app without one (X50), from the menu's General page (profile settings.licences -> LicencesActivity)
+if [ -f "$SRC/SettingsActivity.java" ]; then
+  has "$SRC/SettingsActivity.java" 'actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));' \
+    "no Licences row"
+else
+  grep -qF '"settings.licences": {}' "$G/devices/${MENU_DEVICE:-horse_popular}/menu.json" \
+    || fail "no Licences row: no SettingsActivity and the profile has no settings.licences"
+  grep -qF 'android:name="org.lumen.projector.ui.LicencesActivity"' "$HERE/AndroidManifest.xml" \
+    || fail "no Licences row: the app does not declare org.lumen.projector.ui.LicencesActivity"
+  grep -rqF 'return LicencesActivity.open(app);' "$HERE/src" || fail "no Licences row: the app never opens LicencesActivity"
+fi
+has "$SRC/ui/LicencesActivity.java" 'AlertDialog d = GmLicences.open(this);' "the Licences screen does not show GmLicences"
+has "$SRC/ui/LicencesActivity.java" 'd.setOnDismissListener(x -> finish());' "the Licences screen stays after its dialog"
 L="$SRC/panel/GmLicences.java"
 for w in '"PS5 Controller\" by Taohid Animation' '"Xbox One Controller Free\" by paxillop' '"Nintendo Switch OLED\" by Wille Evensson' \
          'https://creativecommons.org/licenses/by/4.0/' 'ps5-controller-b7bb9c5102a04cb0b1966c6d02bad7d6' \
@@ -199,5 +225,7 @@ for d in ['values'] + dirs:
 sys.exit(bad)
 EOF
 
+# the real-time controller (test/gm3d: reader, framing, motion, the model/strip gate; GM_APK: its assets in the APK)
+sh "$T/../gm3d/run.sh" || fail "gm3d"
 [ $bad = 0 ] && echo "game menu wiring: ok"
 exit $bad

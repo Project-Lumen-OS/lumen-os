@@ -49,6 +49,8 @@ final class GmController {
     long shownAt;
 
     private GmView view;
+    /** The window content: the stage with the real-time model, or the view alone (GmStage.wrap). */
+    private View root;
 
     GmController(Context app, GameMenu.Io io, int port, boolean first, GmModel.Source source, boolean consolePort) {
         this.app = app;
@@ -82,11 +84,17 @@ final class GmController {
     }
 
     View view() {
-        if (view == null) view = new GmView(app, this);
-        return view;
+        if (root == null) {
+            view = new GmView(app, this);
+            root = GmStage.wrap(app, view);
+        }
+        return root;
     }
 
-    GmView gmView() { return (GmView) view(); }
+    GmView gmView() {
+        view();
+        return view;
+    }
 
     List<String> tiles() { return GmModel.visibleOrder(GameMenu.CAPS); }
 

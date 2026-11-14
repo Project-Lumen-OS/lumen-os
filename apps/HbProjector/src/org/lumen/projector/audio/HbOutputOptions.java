@@ -51,7 +51,7 @@ public final class HbOutputOptions {
         boolean arcNow = false;
         for (AudioOutputChoice.Option o : base) {
             connected.add(o.kind.name());
-            arcNow |= o.kind == AudioOutputChoice.Kind.ARC;
+            arcNow |= o.kind == AudioOutputKind.ARC;
         }
         boolean cecAvr = org.lumen.projector.cec.HbSystemAudio.audioSystemListed(ctx);
         if (arcNow || cecAvr) sSoundbarSeen = true;
@@ -62,7 +62,7 @@ public final class HbOutputOptions {
         List<AudioOutputChoice.Option> out = new ArrayList<>();
         for (String k : kinds) {
             AudioOutputChoice.Option o = find(base, k);
-            out.add(o != null ? o : placeholder(ctx, AudioOutputChoice.Kind.valueOf(k)));
+            out.add(o != null ? o : placeholder(ctx, AudioOutputKind.valueOf(k)));
         }
         boolean visible = HbOutputRows.rowVisible(kinds);
         boolean format = HbOutputRows.formatRowVisible(arcNow, known, chosen);
@@ -79,7 +79,7 @@ public final class HbOutputOptions {
     }
 
     /** A row whose device is not listed right now: the soundbar while ARC comes back, or the stored choice. */
-    private static AudioOutputChoice.Option placeholder(Context ctx, AudioOutputChoice.Kind k) {
+    private static AudioOutputChoice.Option placeholder(Context ctx, AudioOutputKind k) {
         int res;
         switch (k) {
             case ARC: res = org.lumen.projector.R.string.sound_output_arc; break;

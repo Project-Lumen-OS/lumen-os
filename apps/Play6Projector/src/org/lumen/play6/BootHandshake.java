@@ -7,7 +7,9 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.util.Log;
 
+import org.lumen.projector.hal.BootStage;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -70,7 +72,7 @@ final class BootHandshake implements Runnable {
         } else {
             boolean a = send("391 setSystemUIState(1)", () -> { gmpf.setSystemUiReady(); return "ok"; });
             boolean b = send("237 goToBootCompleted(0)",
-                    () -> String.valueOf(gmpf.goToBootCompleted(Play6Gmpf.STAGE_EARLY)));
+                    () -> String.valueOf(gmpf.goToBootCompleted(BootStage.EARLY)));
             if (a && b && boot != null) sp.edit().putString(K_EARLY, boot).commit();
         }
 
@@ -86,7 +88,7 @@ final class BootHandshake implements Runnable {
         } else {
             boolean a = send("395 setBootAnimState(2)", () -> { gmpf.setBootAnimFinished(); return "ok"; });
             boolean b = send("237 goToBootCompleted(1)",
-                    () -> String.valueOf(gmpf.goToBootCompleted(Play6Gmpf.STAGE_AFTER_BOOTANIM)));
+                    () -> String.valueOf(gmpf.goToBootCompleted(BootStage.AFTER_BOOTANIM)));
             if (a && b && boot != null) sp.edit().putString(K_LATE, boot).commit();
         }
         send("394 getBootAnimState()", () -> String.valueOf(gmpf.getBootAnimState()));
@@ -99,7 +101,7 @@ final class BootHandshake implements Runnable {
             try {
                 log(what + " -> " + c.run());
                 return true;
-            } catch (Play6Gmpf.ReplyException e) {
+            } catch (ReplyException e) {
                 log(what + " delivered, bad reply (not repeated): " + e.getMessage());
                 return true;
             } catch (Throwable t) {

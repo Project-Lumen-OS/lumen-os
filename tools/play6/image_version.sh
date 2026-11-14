@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # image_version.sh: the version rules shared by the Play 6 image tools (sourced by release_image.sh,
-# swap_sf_into_image.sh, aic/add_aic_to_image.sh). The installer accepts an image only when its file name, the
+# swap_sf_into_image.sh, add_diag_to_image.sh). The installer accepts an image only when its file name, the
 # installer's release.conf VERSION and the image's ro.lumen.version are one string (lumen-install.sh / .ps1,
 # play6_check_image), so a tool that names an image like a release must give it exactly that version.
 # Messages go to stderr; the functions return 1 on a refusal (the caller exits).

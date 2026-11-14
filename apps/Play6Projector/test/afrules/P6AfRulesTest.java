@@ -3,8 +3,9 @@ package org.lumen.projector;
 /**
  * Host check of the Play 6 focus rules ({@link P6AfRules}): the AF busy window follows the vendor's 330
  * AutoFocusing start / end (the hall AF never sends 4 / 8 / 333-335), the stock fine-tune notice is due on
- * 18 "AF_Success_Into_Adjust" only, and closing the manual focus window sends manualFocus(2) only when
- * something may be moving. The 330 samples are real lines of logs/play6_<serial> (t14 10-13 13:11:36
+ * 18 "AF_Success_Into_Adjust" only, closing the manual focus window sends manualFocus(2) only when
+ * something may be moving, and a manual move sends the motor command before the flag's disk write. The 330
+ * samples are real lines of logs/<device>_<serial> of a Play 6 (t14 10-13 13:11:36
  * and 13:11:37) and an AutoKeystone report. sh test/afrules/run.sh
  */
 public final class P6AfRulesTest {
@@ -17,6 +18,16 @@ public final class P6AfRulesTest {
             failed++;
             System.out.println("FAIL " + what + ": want " + want + ", got " + got);
         }
+    }
+
+    /** Runs P6AfRules.startMove with steps that log their order; the result goes to R[0]. */
+    private static String startMove(boolean motorOk, boolean flagOk, int[] r) {
+        StringBuilder log = new StringBuilder();
+        r[0] = P6AfRules.startMove(
+                () -> { log.append(" motor"); return motorOk; },
+                () -> { log.append(" flag"); return flagOk; },
+                () -> log.append(" stop"));
+        return log.toString().trim();
     }
 
     static final String AF_START = "{\"ev_describe\":\"AutoFocusing\",\"classify_code\":5,\"sub_classify_code\":42,"
@@ -75,6 +86,19 @@ public final class P6AfRulesTest {
         eq("close while moving", true, P6AfRules.stopOnClose(true, false));
         eq("close with the persisted flag", true, P6AfRules.stopOnClose(false, true));
         eq("close moving and flagged", true, P6AfRules.stopOnClose(true, true));
+
+        // ---- manual move start: the motor command first, the flag's disk write after it (no write before the
+        // first motor step), a flag that cannot be saved stops the move, a failed motor command saves the flag
+        // before its fail-safe stop (the reconnect resends a stop the HAL cannot take now)
+        int[] res = new int[1];
+        eq("move: motor, then flag", "motor flag", startMove(true, true, res));
+        eq("move: started", P6AfRules.MOVE_STARTED, res[0]);
+        eq("move: flag not saved stops the move", "motor flag stop", startMove(true, false, res));
+        eq("move: flag failure reported", P6AfRules.MOVE_FLAG_FAILED, res[0]);
+        eq("move: motor failed, flag then stop", "motor flag stop", startMove(false, true, res));
+        eq("move: motor failure reported", P6AfRules.MOVE_MOTOR_FAILED, res[0]);
+        eq("move: motor and flag failed, still stopped", "motor flag stop", startMove(false, false, res));
+        eq("move: motor failure first", P6AfRules.MOVE_MOTOR_FAILED, res[0]);
 
         // ---- a whole remote AF as logged (t14 13:11:36-37): 330 start, 12, 5 "0:44", 18, 330 end
         boolean busy = false;

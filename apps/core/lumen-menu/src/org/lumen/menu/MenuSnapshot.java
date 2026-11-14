@@ -36,9 +36,9 @@ public final class MenuSnapshot {
             for (MenuSpec.Tile t : row) r.append(r.length() == 0 ? "" : " | ").append(t);
             b.append("  row ").append(n++).append(": ").append(r).append('\n');
         }
-        if (p.has(Feature.LAMP)) {
-            b.append("  slider: lamp ").append(p.number(Feature.LAMP, "min", 0)).append("..")
-                    .append(p.number(Feature.LAMP, "max", 0));
+        if (p.has(FeatureId.LAMP)) {
+            b.append("  slider: lamp ").append(p.number(FeatureId.LAMP, "min", 0)).append("..")
+                    .append(p.number(FeatureId.LAMP, "max", 0));
             if (m.boostLevel() > 0) b.append(", Boost at ").append(m.boostLevel()).append(" (hint: ").append(p.boostSummary()).append(')');
             b.append('\n');
         }
@@ -46,13 +46,13 @@ public final class MenuSnapshot {
             b.append("section ").append(sec).append('\n');
             for (MenuSpec.Group g : m.sections.get(sec)) {
                 if (g.header != null) b.append("  -- ").append(g.header).append('\n');
-                for (String f : g.rows) {
-                    b.append("  ").append(Feature.def(f).kind.name().toLowerCase()).append(' ').append(f);
+                for (FeatureId f : g.rows) {
+                    b.append("  ").append(f.kind.name().toLowerCase()).append(' ').append(f);
                     List<String> o = p.options(f);
                     if (!o.isEmpty()) b.append(" ").append(o);
                     List<String> it = p.items(f);
                     if (!it.isEmpty()) b.append(" items ").append(it);
-                    if (Feature.def(f).kind == Feature.Kind.SLIDER) {
+                    if (f.kind == FeatureKind.SLIDER) {
                         b.append(" ").append(p.number(f, "min", 0)).append("..").append(p.number(f, "max", 0));
                     }
                     String h = p.hint(f);
@@ -62,7 +62,9 @@ public final class MenuSnapshot {
             }
         }
         b.append("all settings: ").append(String.join(" ", m.allSettings)).append('\n');
-        b.append("keys: gear short ").append(p.gearShort()).append(", gear long ").append(p.gearLong()).append('\n');
+        b.append("keys: gear short ").append(p.gearShort()).append(", gear long ").append(p.gearLong())
+                .append(p.eyeGearShort() == null ? "" : ", eye_gear_short " + p.eyeGearShort())
+                .append('\n');
         if (p.gameMenu()) {
             b.append("game menu: ").append(String.join(" ", p.gameItems()))
                     .append(p.gameGated().isEmpty() ? "" : " (shown once the device answers: " + String.join(" ", p.gameGated()) + ")")

@@ -7,6 +7,7 @@ import android.util.Log;
 import org.lumen.projector.Hal;
 import org.lumen.projector.Ui;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.ReplyException;
 import org.lumen.projector.power.StandbyController;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -189,7 +190,7 @@ public final class HdmiSource {
             boolean r = g.switchInputSource(source);
             sLastSent = source;
             Log.i(TAG, head + " -> " + r + " (" + why + ")");
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             sLastSent = source;                                 // reached the HAL: not repeated
             Log.w(TAG, head + " -> bad reply, not repeated (" + why + "): " + e.getMessage());
         } catch (Throwable t) {

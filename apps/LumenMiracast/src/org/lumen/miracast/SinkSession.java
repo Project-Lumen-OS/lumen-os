@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Surface;
 
 import org.lumen.miracast.core.AudioPayload;
+import org.lumen.miracast.core.Diag;
+import org.lumen.miracast.core.EndReason;
 import org.lumen.miracast.core.MediaPipeline;
 import org.lumen.miracast.core.RtpReceiver;
 import org.lumen.miracast.core.SinkConnection;
@@ -23,6 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * One mirroring session: find the source, run the RTSP control connection, receive RTP, decode.
  * Lives on its own worker thread; the service hears back through {@link Host} (from any thread).
+ * Each step is reported to the {@link Diag} stages; at the end the stage it stopped at is marked.
  */
 final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, VideoRenderer.Events {
     private static final String TAG = "LumenMiracast";
@@ -42,6 +45,7 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
     final String peerName;
     private final Context ctx;
     private final Host host;
+    private final Diag diag;
     private final AtomicBoolean cancelled = new AtomicBoolean();
     private final AtomicBoolean ended = new AtomicBoolean();
     private final SinkConnection.Clock clock = SystemClock::elapsedRealtime;
@@ -52,13 +56,19 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
     // seen by one side or the other, never lost
     private volatile VideoRenderer video;
     private volatile AudioRenderer audio;
-    private volatile boolean playing;
+    private volatile boolean playing, gotMedia, gotFrame;
     private volatile Surface pendingSurface;
+    /** Why we ended it (BACK, standby, group gone...); null while the session ends by itself. */
+    private volatile String stopReason;
+    /** The RTSP session's own close reason (source teardown, SETUP refused...). */
+    private volatile String closeReason;
+    private volatile String target = "?";
 
-    SinkSession(Context ctx, Host host, String peerName) {
+    SinkSession(Context ctx, Host host, String peerName, Diag diag) {
         this.ctx = ctx.getApplicationContext();
         this.host = host;
         this.peerName = peerName;
+        this.diag = diag;
     }
 
     boolean playing() {
@@ -88,12 +98,17 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
             rxThread = new Thread(rx, "miracast-rtp");
             rxThread.setPriority(Thread.MAX_PRIORITY);
             rxThread.start();
+            diag.waiting(Diag.Stage.SOURCE_IP, info != null && info.isGroupOwner
+                    ? "looking for the sender (we are the group owner)" : "sender is the group owner");
             SourceFinder.Result r = SourceFinder.find(ctx, info, group, controlPort, 20_000, cancelled);
             if (r == null) {
                 why = cancelled.get() ? "cancelled" : "source not found";
                 return;
             }
+            diag.ok(Diag.Stage.SOURCE_IP, r.host + " (" + r.how + ")");
             Log.i(TAG, "rtsp to " + r.host + ":" + controlPort + " rtp port " + cfg.rtpPort);
+            target = r.host + ":" + controlPort;
+            diag.waiting(Diag.Stage.RTSP_TCP, "connecting to " + target + ", RTP on UDP " + cfg.rtpPort);
             SinkConnection c = new SinkConnection(r.host, controlPort, clock);
             if (r.connected != null) c.adopt(r.connected);
             WfdSession ws = new WfdSession(cfg, r.host, c, this);
@@ -128,9 +143,27 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
                 Log.i(TAG, audio.stats());
                 audio.release();
             }
+            String reason = stopReason != null ? stopReason
+                    : "session closed".equals(why) && closeReason != null ? closeReason : why;
+            finishDiag(reason);
             playing = false;
-            if (ended.compareAndSet(false, true)) host.onSessionEnded(this, why);
+            if (ended.compareAndSet(false, true)) host.onSessionEnded(this, reason);
         }
+    }
+
+    /** Marks the stage the session stopped at (if it failed), then END with the reason and the counters. */
+    private void finishDiag(String reason) {
+        Diag.Stage bad = EndReason.failedStage(reason, stopReason != null, playing, gotMedia, gotFrame);
+        if (bad != null) {
+            String d = reason;
+            if (bad == Diag.Stage.MEDIA) d = "no RTP packet on UDP " + (rx != null ? rx.localPort() : "?") + " after PLAY: " + reason;
+            if (bad == Diag.Stage.FIRST_FRAME) d = "media arrived but no picture was decoded: " + reason;
+            if (bad == Diag.Stage.RTSP_TCP) d = target + ": " + reason;
+            if (bad == Diag.Stage.SOURCE_IP) d = "no DHCP lease, ARP entry or open port 7236 in 20 s: " + reason;
+            diag.fail(bad, d);
+        }
+        diag.ok(Diag.Stage.END, reason + (pipeline != null ? "; " + pipeline.stats() : "")
+                + (video != null ? "; " + video.stats() : ""));
     }
 
     private RtpReceiver bindRtp(int port) {
@@ -148,12 +181,17 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
         while (!ended.get() && !cancelled.get()) {
             SystemClock.sleep(1000);
             RtpReceiver r = rx;
-            if (playing && r != null) {
-                long last = r.lastPacketMs();
+            if (r == null) continue;
+            long last = r.lastPacketMs();
+            if (last != 0 && !gotMedia) {
+                gotMedia = true;
+                diag.ok(Diag.Stage.MEDIA, "RTP on UDP " + r.localPort());
+            }
+            if (playing) {
                 long since = clock.nowMs() - (last == 0 ? playingSinceMs : last);
                 if (since > MEDIA_SILENCE_MS) {
                     Log.w(TAG, "no media for " + since + " ms; ending");
-                    stop(false);
+                    stop(false, "no media for " + since + " ms");
                     return;
                 }
             }
@@ -162,8 +200,9 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
 
     private volatile long playingSinceMs;
 
-    /** polite: send TEARDOWN first (the user ended it); else just close. Any thread. */
-    void stop(boolean polite) {
+    /** polite: send TEARDOWN first (the user ended it); else just close. why: for the diagnostics. Any thread. */
+    void stop(boolean polite, String why) {
+        if (stopReason == null) stopReason = why;
         cancelled.set(true);
         SinkConnection c = conn;
         if (c != null) {
@@ -181,6 +220,12 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
     // ------------------------------------------------------------------ WfdSession.Listener (session thread)
 
     @Override
+    public void onConnected() {
+        diag.ok(Diag.Stage.RTSP_TCP, target);
+        diag.waiting(Diag.Stage.RTSP, "waiting for M1 OPTIONS from the sender");
+    }
+
+    @Override
     public void onFormats(WfdFormats.Video v, WfdFormats.Audio a) {
         Log.i(TAG, "formats video=" + v + " audio=" + a);
         if (v != null && video != null) video.setSize(v.width, v.height);
@@ -190,17 +235,24 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
     public void onPlaying() {
         playing = true;
         playingSinceMs = clock.nowMs();
+        diag.ok(Diag.Stage.PLAYING, "to " + target);
         host.onSessionPlaying(this);
     }
 
     @Override
     public void onClosed(String reason) {
+        closeReason = reason;
         Log.i(TAG, "rtsp closed: " + reason);
     }
 
     @Override
     public void onLog(String line) {
         Log.i(TAG, line);
+    }
+
+    @Override
+    public void onStep(String step) {
+        diag.ok(Diag.Stage.RTSP, step);
     }
 
     // ------------------------------------------------------------------ MediaPipeline.Output (RTP thread)
@@ -233,18 +285,28 @@ final class SinkSession implements WfdSession.Listener, MediaPipeline.Output, Vi
     @Override
     public void onStreams(List<TsDemuxer.Stream> streams) {
         Log.i(TAG, "streams " + streams);
+        diag.ok(Diag.Stage.MEDIA, "streams " + streams);
     }
 
     // ------------------------------------------------------------------ VideoRenderer.Events (video thread)
 
     @Override
+    public void onDecoder(String detail, boolean ok) {
+        if (ok) diag.ok(Diag.Stage.DECODER, detail);
+        else diag.fail(Diag.Stage.DECODER, detail);
+    }
+
+    @Override
     public void onFirstFrame() {
         Log.i(TAG, "first frame");
+        gotFrame = true;
+        diag.ok(Diag.Stage.FIRST_FRAME, "decoded and shown");
         host.onSessionFirstFrame(this);
     }
 
     @Override
     public void onVideoSize(int width, int height) {
+        diag.ok(Diag.Stage.DECODER, "output " + width + "x" + height);
         host.onSessionVideoSize(this, width, height);
     }
 }

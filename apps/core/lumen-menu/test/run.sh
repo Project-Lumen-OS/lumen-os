@@ -11,7 +11,8 @@ JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexe
 OUT=$(mktemp -d "${TMPDIR:-/tmp}/lumen_menu.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE"/src/org/lumen/menu/*.java "$HERE/test/MenuSpecTest.java"
+  "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" \
+  "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java"
 bad=0
 n=0
 for j in "$G"/devices/*/menu.json; do
@@ -31,7 +32,26 @@ for j in "$G"/devices/*/menu.json; do
   fi
 done
 [ "$n" -gt 0 ] || { echo "FAIL no devices/*/menu.json found"; exit 1; }
+# the build check (apps/build_apk.sh): every profile names only FeatureId ids, a typo fails it
+IDS="$HERE/tools/menu_ids.py"; FID="$HERE/src/org/lumen/menu/FeatureId.java"
+if python3 "$IDS" "$FID" "$G"/devices/*/menu.json; then echo "ok   menu_ids: every profile id is a FeatureId"; else bad=1; fi
+sed 's/"keystone.ak_now"/"keystone.ak_nwo"/' "$G/devices/horse_popular/menu.json" > "$OUT/typo.json"
+if python3 "$IDS" "$FID" "$OUT/typo.json" 2>/dev/null; then echo "FAIL menu_ids: a typo id passed"; bad=1; else echo "ok   menu_ids: a typo id fails"; fi
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.MenuSpecTest "$G" "$G"/devices/*/menu.json || bad=1
+# the gear key: one shared press rule (GearPress); that every app runs it is checked by tools/devices/test/keylayout_gear_test.py
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GearPressTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.utils.MenuValuesTest || bad=1
+# the stock "Turn off screen" (LampOff): one key and recovery rule for every app that offers lamp.off
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.LampOffTest "$G" || bad=1
+# the brightness slider: LEFT at its minimum goes the "Turn off screen" row's own way (menu closes first), lamp.off only
+LMC="$HERE/src/org/lumen/projector/panel/MenuController.java"
+if grep -qxF '                if (LampOff.offFromSlider(has(FeatureId.LAMP_OFF), row.isKnown() ? row.getValue() : null, row.getMin(), dir, 0)) {' "$LMC" \
+  && grep -qxF '                    safe("lamp off", () -> action(FeatureId.LAMP_OFF));' "$LMC" \
+  && grep -qxF '            FeatureId.LAMP_OFF);' "$LMC"; then
+  echo "ok   lamp slider: left at the minimum runs the lamp.off action"
+else
+  echo "FAIL lamp slider: left at the minimum does not run the lamp.off action of the profile"; bad=1
+fi
 # the module never touches a HAL or a device class: device code lives in the adapters
 leak=$(grep -rnE 'import org\.lumen\.projector\.(Hal|HalController|hal\.|game\.|source\.|cec\.|audio\.|fit\.)|[^a-zA-Z]Hal\.(query|run|is)|GmpfClient|Gmpf2Client|PanelRules|KstPoint' "$HERE/src" | grep -vE '^[^:]*:[0-9]+: *(\*|//|/\*)' || true)
 [ -z "$leak" ] || { echo "FAIL device code in the module: $leak"; bad=1; }

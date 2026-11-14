@@ -8,7 +8,7 @@
 12:00:00   ✓ lumen-os-1.0.2-nogms-system.img sha256 c26fc63dd3403258…
 12:00:00   ✓ edition: Lumen OS without Google
 12:00:00   ✓ vbmeta: verification is off on slot b (no system-verity)
-12:00:00   ✓ check passed; nothing was written
+12:00:00   ✓ check passed. Nothing was written
 == adb
 version
 start-server

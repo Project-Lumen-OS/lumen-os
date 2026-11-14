@@ -85,6 +85,8 @@ public final class PowerKey {
         try { registerShutdownCurtain(sApp); } catch (Throwable t) { Log.e(TAG, "shutdown curtain", t); }
         try { Hal.addFocusEventListener(PowerKey::onFocusEvent); } catch (Throwable t) { Log.e(TAG, "focus listener", t); }
         try { StandbyController.install(sApp); } catch (Throwable t) { Log.e(TAG, "standby", t); }
+        // the stock "Turn off screen": an off light of this boot stays ours, a mark from an earlier boot relights
+        try { LampOffHal.get(sApp); } catch (Throwable t) { Log.e(TAG, "lamp off", t); }
         Log.i(TAG, "installed");
     }
 
@@ -104,6 +106,7 @@ public final class PowerKey {
 
     /** SCREEN_OFF, main thread: close panels at once, end the power action and the timer, curtain black. */
     private static void onScreenOff(Context c) {
+        try { LampOffHal.get(c).onSleep(); } catch (Throwable t) { Log.w(TAG, "lamp off: " + t); }
         try { StandbyController.onScreenOff(c); } catch (Throwable t) { Log.w(TAG, "standby: " + t); }
         try { Hal.stopMotor(); } catch (Throwable t) { Log.w(TAG, "motor: " + t); }
         try { OverlayHost.get(c).onScreenOff(); } catch (Throwable t) { Log.w(TAG, "screen off overlays: " + t); }

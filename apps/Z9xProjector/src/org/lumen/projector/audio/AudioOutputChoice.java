@@ -53,21 +53,12 @@ public final class AudioOutputChoice {
     static final String KEY_ADDR = "addr";
     static final String KEY_FORMAT = "digital_format";
 
-    public enum Kind { AUTO, SPEAKER, ARC, BT, WIRED, USB }
-
-    /** Stock wire values of digital_output_format (MtkAudio.setAudioDataFormatAndNoSave). UI order. */
-    public enum Format {
-        AUTO("auto"), PCM("pcm"), PASSTHROUGH("bypass");
-        public final String wire;
-        Format(String w) { wire = w; }
-    }
-
     /** One row: a connected output (label = the device name for Bluetooth / USB). */
     public static final class Option {
-        public final Kind kind;
+        public final AudioOutputKind kind;
         public final String addr;
         public final CharSequence label;
-        Option(Kind k, String a, CharSequence l) { kind = k; addr = a == null ? "" : a; label = l; }
+        Option(AudioOutputKind k, String a, CharSequence l) { kind = k; addr = a == null ? "" : a; label = l; }
     }
 
     private static final AudioAttributes MEDIA = new AudioAttributes.Builder()
@@ -121,7 +112,7 @@ public final class AudioOutputChoice {
 
     // ------------------------------------------------------------------ UI (main thread)
     /** Store the user's choice and apply it. */
-    public static void choose(Context ctx, Kind k, String addr) {
+    public static void choose(Context ctx, AudioOutputKind k, String addr) {
         prefs(ctx).edit().putString(KEY_KIND, k.name()).putString(KEY_ADDR, addr == null ? "" : addr).apply();
         Log.i(TAG, "user chose " + k + (addr == null || addr.isEmpty() ? "" : " " + addr));
         install(ctx);
@@ -129,7 +120,7 @@ public final class AudioOutputChoice {
         if (h != null) h.post(() -> apply("user"));
     }
 
-    public static void chooseFormat(Context ctx, Format f) {
+    public static void chooseFormat(Context ctx, DigitalOutputFormat f) {
         prefs(ctx).edit().putString(KEY_FORMAT, f.name()).apply();
         install(ctx);
         Handler h = sH;
@@ -137,11 +128,11 @@ public final class AudioOutputChoice {
     }
 
     /** The stored choice (AUTO when none or unreadable). */
-    public static Kind kind(Context ctx) {
+    public static AudioOutputKind kind(Context ctx) {
         try {
-            return Kind.valueOf(prefs(ctx).getString(KEY_KIND, Kind.AUTO.name()));
+            return AudioOutputKind.valueOf(prefs(ctx).getString(KEY_KIND, AudioOutputKind.AUTO.name()));
         } catch (Throwable t) {
-            return Kind.AUTO;
+            return AudioOutputKind.AUTO;
         }
     }
 
@@ -151,20 +142,20 @@ public final class AudioOutputChoice {
     }
 
     /** The stored format, or PCM when never chosen (stock XgimiAudio.init default). */
-    private static Format effectiveFormat(Context ctx) {
-        Format f = format(ctx);
-        return f == null ? Format.PCM : f;
+    private static DigitalOutputFormat effectiveFormat(Context ctx) {
+        DigitalOutputFormat f = format(ctx);
+        return f == null ? DigitalOutputFormat.PCM : f;
     }
 
     /** Rows to show now: Auto, Speaker, then each connected kind once (rule: hide, never disable). */
     public static List<Option> options(Context ctx) {
         List<Option> out = new ArrayList<>();
-        out.add(new Option(Kind.AUTO, "", ctx.getString(org.lumen.projector.R.string.sound_output_auto)));
-        out.add(new Option(Kind.SPEAKER, "", ctx.getString(org.lumen.projector.R.string.sound_output_speaker)));
+        out.add(new Option(AudioOutputKind.AUTO, "", ctx.getString(org.lumen.projector.R.string.sound_output_auto)));
+        out.add(new Option(AudioOutputKind.SPEAKER, "", ctx.getString(org.lumen.projector.R.string.sound_output_speaker)));
         AudioManager am = ctx.getSystemService(AudioManager.class);
         if (am == null) return out;
         String addr = prefs(ctx).getString(KEY_ADDR, "");
-        for (Kind k : new Kind[] {Kind.ARC, Kind.BT, Kind.WIRED, Kind.USB}) {
+        for (AudioOutputKind k : new AudioOutputKind[] {AudioOutputKind.ARC, AudioOutputKind.BT, AudioOutputKind.WIRED, AudioOutputKind.USB}) {
             AudioDeviceInfo d = find(am, k, k == kind(ctx) ? addr : "");
             if (d == null) continue;
             CharSequence label;
@@ -177,7 +168,7 @@ public final class AudioOutputChoice {
                 case WIRED: label = ctx.getString(org.lumen.projector.R.string.sound_output_wired); break;
                 default: {
                     CharSequence n = d.getProductName();
-                    label = n != null && n.length() > 0 ? n : ctx.getString(k == Kind.BT
+                    label = n != null && n.length() > 0 ? n : ctx.getString(k == AudioOutputKind.BT
                             ? org.lumen.projector.R.string.sound_output_bt : org.lumen.projector.R.string.sound_output_usb);
                 }
             }
@@ -192,14 +183,14 @@ public final class AudioOutputChoice {
      * elsewhere (stock shows the vendor's real output, VoiceHelper getAudioDeviceV5).
      */
     public static int selectedIndex(Context ctx, List<Option> opts) {
-        Kind k = kind(ctx);
-        if (k != Kind.AUTO && !routedTo(ctx, k)) return 0;
+        AudioOutputKind k = kind(ctx);
+        if (k != AudioOutputKind.AUTO && !routedTo(ctx, k)) return 0;
         for (int i = 0; i < opts.size(); i++) if (opts.get(i).kind == k) return i;
         return 0;
     }
 
     /** Media's preferred device is the stored one. A failed read counts as routed (no false Auto). */
-    private static boolean routedTo(Context ctx, Kind k) {
+    private static boolean routedTo(Context ctx, AudioOutputKind k) {
         try {
             AudioManager am = ctx.getSystemService(AudioManager.class);
             AudioProductStrategy media = mediaStrategy();
@@ -219,7 +210,7 @@ public final class AudioOutputChoice {
     /** An HDMI ARC / eARC output is connected now (the Audio format row is shown only then). */
     public static boolean arcConnected(Context ctx) {
         AudioManager am = ctx.getSystemService(AudioManager.class);
-        return am != null && find(am, Kind.ARC, "") != null;
+        return am != null && find(am, AudioOutputKind.ARC, "") != null;
     }
 
     // ------------------------------------------------------------------ z9x-audioout thread
@@ -233,13 +224,13 @@ public final class AudioOutputChoice {
                 Log.w(TAG, why + ": no product strategy for USAGE_MEDIA");
                 return;
             }
-            Kind k = kind(app);
-            AudioDeviceInfo d = k == Kind.AUTO ? null : find(am, k, prefs(app).getString(KEY_ADDR, ""));
+            AudioOutputKind k = kind(app);
+            AudioDeviceInfo d = k == AudioOutputKind.AUTO ? null : find(am, k, prefs(app).getString(KEY_ADDR, ""));
             List<AudioDeviceAttributes> cur = am.getPreferredDevicesForStrategy(media);
             if (d == null) {
                 if (cur != null && !cur.isEmpty() && ours(cur)) {
                     boolean ok = am.removePreferredDeviceForStrategy(media);
-                    Log.i(TAG, why + ": " + (k == Kind.AUTO ? "auto" : k + " not connected, auto until it is back")
+                    Log.i(TAG, why + ": " + (k == AudioOutputKind.AUTO ? "auto" : k + " not connected, auto until it is back")
                             + ", preferred " + cur + " removed" + (ok ? "" : " (REFUSED)"));
                 }
                 return;
@@ -266,7 +257,7 @@ public final class AudioOutputChoice {
     private static void sendFormat(String why) {
         Context app = sApp;
         if (app == null) return;
-        Format f = effectiveFormat(app);                         // never chosen: PCM, as stock
+        DigitalOutputFormat f = effectiveFormat(app);                         // never chosen: PCM, as stock
         try {
             AudioManager am = app.getSystemService(AudioManager.class);
             if (am == null) return;
@@ -286,18 +277,18 @@ public final class AudioOutputChoice {
     }
 
     /** A connected output of this kind: the given address first, else the first one. */
-    private static AudioDeviceInfo find(AudioManager am, Kind k, String addr) {
+    private static AudioDeviceInfo find(AudioManager am, AudioOutputKind k, String addr) {
         AudioDeviceInfo first = null;
         for (AudioDeviceInfo d : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
             if (!is(k, d.getType())) continue;
-            if (k == Kind.ARC && d.getType() == AudioDeviceInfo.TYPE_HDMI_EARC) return d;   // eARC before ARC
+            if (k == AudioOutputKind.ARC && d.getType() == AudioDeviceInfo.TYPE_HDMI_EARC) return d;   // eARC before ARC
             if (addr != null && !addr.isEmpty() && addr.equals(d.getAddress())) return d;
             if (first == null) first = d;
         }
         return first;
     }
 
-    private static boolean is(Kind k, int type) {
+    private static boolean is(AudioOutputKind k, int type) {
         switch (k) {
             case SPEAKER: return type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER;
             case ARC: return type == AudioDeviceInfo.TYPE_HDMI_ARC || type == AudioDeviceInfo.TYPE_HDMI_EARC;
@@ -311,7 +302,7 @@ public final class AudioOutputChoice {
     /** Only remove a role of a kind this class sets (never an internal role of another output). */
     private static boolean ours(List<AudioDeviceAttributes> cur) {
         for (AudioDeviceAttributes a : cur) {
-            for (Kind k : Kind.values()) if (k != Kind.AUTO && is(k, a.getType())) return true;
+            for (AudioOutputKind k : AudioOutputKind.values()) if (k != AudioOutputKind.AUTO && is(k, a.getType())) return true;
         }
         return false;
     }
@@ -320,10 +311,10 @@ public final class AudioOutputChoice {
         return a.getType() == b.getType() && String.valueOf(a.getAddress()).equals(String.valueOf(b.getAddress()));
     }
 
-    private static Format format(Context ctx) {
+    private static DigitalOutputFormat format(Context ctx) {
         try {
             String v = prefs(ctx).getString(KEY_FORMAT, null);
-            return v == null ? null : Format.valueOf(v);
+            return v == null ? null : DigitalOutputFormat.valueOf(v);
         } catch (Throwable t) {
             return null;
         }

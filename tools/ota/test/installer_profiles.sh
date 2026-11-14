@@ -300,18 +300,17 @@ begin devices_conf_strict
 # every line: a comment, empty, or id.KEY=value with a known key and only safe characters
 bad=$(awk '!/^#/ && !/^$/ && !/^[a-z0-9]+\.[A-Z][A-Z0-9_]*=[A-Za-z0-9 ._:\/,-]*$/' "$CONF")
 [ -z "$bad" ] || fail "bad lines: $bad"
-[ "$(conf z9x MODEL)" = "$(sed -n 's/^MODEL_CODE=//p' "$INST/lumen-install.sh")" ] || fail "z9x.MODEL differs from MODEL_CODE"
-[ "$(conf z9x BOARD)" = "$(sed -n 's/^BOARD=//p' "$INST/lumen-install.sh")" ] || fail "z9x.BOARD differs from BOARD"
-[ "$(conf z9x FB_PRODUCT)" = "$(sed -n 's/^FB_PRODUCT=//p' "$INST/lumen-install.sh")" ] || fail "z9x.FB_PRODUCT differs"
-[ "\"$(conf z9x VENDOR_OK)\"" = "$(sed -n 's/^VENDOR_OK=//p' "$INST/lumen-install.sh")" ] || fail "z9x.VENDOR_OK differs"
-# the ps1 is checked out with CRLF (.gitattributes: *.ps1 eol=crlf): the \r goes before the line-end match
-ps=$(tr -d '\r' < "$INST/lumen-install.ps1" | sed -n 's/^\$ModelCode = "\([^"]*\)"; \$Board = "\([^"]*\)"; \$FbProduct = "\([^"]*\)"; \$VendorOk = @(\(.*\))$/\1 \2 \3 \4/p' | tr -d '",')
-[ "$ps" = "$(conf z9x MODEL) $(conf z9x BOARD) $(conf z9x FB_PRODUCT) $(conf z9x VENDOR_OK)" ] || fail "the ps1 Z9X constants differ: '$ps'"
+# every projector has a FLOW, and every FLOW is a way of lib/flows.conf (its commands and the keys it needs)
+for id in $(sed -n 's/^\([a-z0-9]*\)\.NAME=.*/\1/p' "$CONF"); do
+  f=$(conf "$id" FLOW)
+  [ -n "$f" ] || fail "$id has no FLOW"
+  grep -q "^$f\.KEYS=" "$INST/lib/flows.conf" || fail "$id.FLOW=$f is not a flow of lib/flows.conf"
+done
 end
 
 begin devices_conf_no_values_in_scripts
-# the other projectors' values live only in lib/devices.conf
-for id in $(sed -n 's/^\([a-z0-9]*\)\.NAME=.*/\1/p' "$CONF" | grep -vx z9x); do
+# every projector's values live only in lib/devices.conf, the Z9X's too
+for id in $(sed -n 's/^\([a-z0-9]*\)\.NAME=.*/\1/p' "$CONF"); do
   for v in $(conf "$id" MODEL) $(conf "$id" BOARD) $(conf "$id" FB_PRODUCT) $(conf "$id" VENDOR_OK) \
            $(conf "$id" RESTORE_MD5 | tr ' :' '\n\n' | grep -E '^[0-9a-f]{32}$'); do
     for f in lumen-install.sh lumen-install.ps1; do
@@ -345,12 +344,14 @@ inst '' --device play6 --ip 192.0.2.10 check
 expect_rc 1; expect_out "re-download the installer"
 end
 
-begin z9x_without_devices_conf
-# the Z9X never needs lib/devices.conf (an old download, or a test that copies only lib/blobs_allow.txt)
+begin z9x_devices_conf_missing
+# the Z9X reads its profile from lib/devices.conf like every projector: without it, a STOP before any adb call
 rm -f "$C/inst/lib/devices.conf"
 inst '' check
-expect_rc 0; expect_out "check passed; nothing was written"
+expect_rc 1; expect_out "internal: lib/devices.conf is missing: re-download the installer"
+if grep -vxF version "$FB/adb.log" | grep -q .; then fail "adb was used: $(head -3 "$FB/adb.log")"; fi
 end
+
 
 begin z9x_refuses_image_of_another_projector
 P6TOK=$(conf play6 IMAGE_TOKEN)
@@ -530,7 +531,7 @@ begin pt_flash_hangs
 touch "$FB/hang_flash"
 TMAX=2 inst_path /nonexistent 'yes\nERASE\n' --no-blobs flash
 expect_rc 1; expect_out "did not finish in 2 s and was stopped: the write is incomplete"
-expect_out "system was not written; the projector still has its old system"
+expect_out "system was not written. The projector still has its old system"
 grep -q 'format' "$FB/fb.log" && fail "wiped after a failed write: $(tr '\n' ';' < "$FB/fb.log")"
 end
 
@@ -538,6 +539,21 @@ begin pt_reused_without_download
 fake_curl fail; inst_path "$C/curl" '' check
 expect_rc 0; expect_out "Platform-Tools 35.0.2 (tools/platform-tools, checked), own adb server on port 5038"
 [ -e "$FB/curl.log" ] && fail "downloaded again: $(cat "$FB/curl.log")"
+end
+
+begin flows_conf_missing
+rm -f "$C/inst/lib/flows.conf"
+inst '' check
+expect_rc 1; expect_out "internal: lib/flows.conf is missing: re-download the installer"
+if grep -vxF version "$FB/adb.log" | grep -q .; then fail "adb was used: $(head -3 "$FB/adb.log")"; fi
+end
+
+begin flows_conf_step_not_a_function
+# a step of lib/flows.conf is one of the installer's own functions with its prefix, never another command
+printf '%s\n' 'z9x-usb.CMD_ALL=rm -rf x' >> "$C/inst/lib/flows.conf"
+inst '' check
+expect_rc 1; expect_out "internal: lib/flows.conf line"
+if grep -vxF version "$FB/adb.log" | grep -q .; then fail "adb was used: $(head -3 "$FB/adb.log")"; fi
 end
 
 echo "installer profiles: $PASS passed, $FAIL failed"

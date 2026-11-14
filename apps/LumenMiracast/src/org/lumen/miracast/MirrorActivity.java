@@ -4,30 +4,34 @@ package org.lumen.miracast;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import org.lumen.miracast.core.Diag;
+
 /**
- * Full-screen picture of the mirrored device. Started by the service when the source begins to play;
- * finishes when the session ends. BACK (or leaving the screen) ends the session. No launcher entry,
- * not in recents.
+ * The mirrored picture, full screen, aspect kept. BACK (or leaving the screen once it was shown, HOME
+ * or another app) ends the session; when the session ends the screen closes. Own task, not in recents.
  */
 public final class MirrorActivity extends Activity implements MiracastService.UiListener {
     private AspectSurfaceView surface;
     private TextView status;
     private boolean stopping;
+    /** Only a screen the user saw can be "left": a start behind something else must not end the session. */
+    private boolean resumedOnce;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setTurnScreenOn(true);
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.BLACK);
         surface = new AspectSurfaceView(this);
@@ -67,15 +71,30 @@ public final class MirrorActivity extends Activity implements MiracastService.Ui
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!resumedOnce) {
+            resumedOnce = true;
+            MiracastService.diag().ok(Diag.Stage.SCREEN, "mirror screen in front");
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         MiracastService.removeListener(this);
-        // left the screen (HOME, another app): mirroring ends, as on stock
-        if (!isChangingConfigurations() && !stopping) {
-            MiracastService s = MiracastService.instance();
-            if (s != null) s.stopMirroring("screen left");
-            finish();
+        if (isChangingConfigurations() || stopping) return;
+        if (!resumedOnce) {
+            // started under another window (a screensaver the service could not stop, a system dialog):
+            // keep the session, the screen comes up when that window goes
+            Log.w(MiracastService.TAG, "mirror screen stopped before it was shown");
+            MiracastService.diag().fail(Diag.Stage.SCREEN, "mirror screen covered before it was shown");
+            return;
         }
+        // left the screen (HOME, another app): mirroring ends, as on stock
+        MiracastService s = MiracastService.instance();
+        if (s != null) s.stopMirroring("screen left");
+        finish();
     }
 
     @Override

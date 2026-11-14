@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.audio.EqCurve;
@@ -60,14 +60,14 @@ final class Z9xMenuPages implements MenuController.Pages {
 
     private String named(String name) { return dev.text(name); }
 
-    @Override public Page page(String id, MenuController m) {
+    @Override public Page page(FeatureId id, MenuController m) {
         menu = m;
         switch (id) {
-            case Feature.INPUT: return source().page;
-            case Feature.PICTURE_PRO: return pro().page;
-            case Feature.SETTINGS_CEC: return cec();
-            case Feature.KEYSTONE_FIT_SCREEN: return fitPage();
-            case Feature.SOUND_EQ: return eq();
+            case INPUT: return source().page;
+            case PICTURE_PRO: return pro().page;
+            case SETTINGS_CEC: return cec();
+            case KEYSTONE_FIT_SCREEN: return fitPage();
+            case SOUND_EQ: return eq();
             default: return null;
         }
     }

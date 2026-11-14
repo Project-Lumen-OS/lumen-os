@@ -35,6 +35,6 @@ t usage 2 python3 -I "$PY"
 t z9x_file_untouched 0 cmp "$SRC" "$W/base"
 V=$G/devices/g0111/image/verify_tree_x50.py
 t verify_tree_runs_it 0 grep -q 'x50_diag.check(B\[DIAG\], N\[DIAG\])' "$V"
-t compose_applies_it 0 grep -q 'x50_diag.py" apply "$R/system/etc/xgimi/z9x_diag.sh"' "$G/devices/g0111/image/compose_x50.sh"
+t compose_applies_it 0 grep -qE 'x50_diag.py.apply.[{]sys[}]/etc/xgimi/z9x_diag.sh' "$G/devices/g0111/image/steps.tsv"
 echo "x50_diag_test: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

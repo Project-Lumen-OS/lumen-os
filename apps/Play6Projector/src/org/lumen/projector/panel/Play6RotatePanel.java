@@ -16,8 +16,10 @@ import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
-import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.AbsentException;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
@@ -136,7 +138,7 @@ public final class Play6RotatePanel extends Panel {
             if (closed) exitNow(g, g2, "closed during enter");
         } catch (Throwable t) {
             Log.w(TAG, "enter failed: " + t);
-            if (t instanceof Play6Gmpf2.ReplyException || t instanceof Play6Gmpf2.AbsentException) {
+            if (t instanceof ReplyException || t instanceof AbsentException) {
                 markUnsupported("130: " + t.getMessage());
             }
             exitNow(g, g2, "enter failed");

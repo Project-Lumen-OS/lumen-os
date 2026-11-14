@@ -2,7 +2,7 @@
 """sign_device.py: the sign stage of rule S1 for a device of the registry, on the
 model of tools/play6/sign_play6.py, which it imports read only (read_base, scan, apex_needs, normalized,
 write_apex_tsv, tar_members, sign_one) and never edits. Mac only for everything that touches the device key; the
-two key-free APEX steps run on the device's build host (image.conf host) with tools/sign/apex_laptop.py,
+two key-free APEX steps run on the device's build host (build.conf host) with tools/sign/apex_laptop.py,
 unchanged. The device's platform key never leaves the Mac and is never printed.
 
   sign_device.py CODENAME base-import SRC   SRC: a copy of the base system tree (SRC/system/...), e.g.
@@ -21,7 +21,7 @@ unchanged. The device's platform key never leaves the Mac and is never printed.
                                             the host against base_dir and the stage (check_device_signers.py)
   options: --jobs N
 
-Inputs: devices/CODENAME/device.conf (keys_dir, apps), image.conf (host, remote_dir) and image/sign.conf (keys
+Inputs: devices/CODENAME/device.conf (keys_dir, apps), build.conf (host, remote_dir) and image/sign.conf (keys
 in its header). Keys: <keys_dir>/platform.pk8 (gen_device_keys.sh; dir mode 700 outside the tree, pk8 mode 600)
 whose certificate must be devices/CODENAME/certs/platform.x509.pem and none of another projector's
 (check_device_signers.foreign_sets).
@@ -74,6 +74,7 @@ FRAMEWORK_RES = "system/framework/framework-res.apk"
 PLAT_MAC = "system/etc/selinux/plat_mac_permissions.xml"
 MARKER = ".sign_device"
 JOB_MARKER = ".sign_device_job"
+NO_PINNED = "none"
 SIGN_KEYS = ("base_image_remote", "base_sha256", "base_dir", "pinned", "host_bin_remote", "module_keys_remote",
              "test_keys_remote", "apex_work_remote", "stage")
 # the selection of tools/play6/base_export.sh (sign_tar TEXT_EXT plus APKs and APEXes)
@@ -260,6 +261,12 @@ def check_base(x):
 
 
 # ------------------------------------------------------------------ pinned
+def pinned_apps(conf):
+    """sign.conf pinned: the overlay/apps_v1 APK names, or none for a device whose image carries no pinned APK."""
+    v = conf["pinned"]
+    return [] if v == NO_PINNED else v.split()
+
+
 def stage_pinned(x):
     key = x.key
     pins = {}
@@ -268,7 +275,7 @@ def stage_pinned(x):
         if m:
             pins[m.group(2)] = m.group(1)
     todo = []
-    for app in x.conf["pinned"].split():
+    for app in pinned_apps(x.conf):
         src = os.path.join(APPS_V1, app + ".apk")
         if not os.path.isfile(src):
             die(f"missing {src}")
@@ -293,7 +300,8 @@ def stage_pinned(x):
         o.write("# apk\tpackage\tsource sha256 (overlay/apps_v1)\tsigned sha256\n")
         for r in rows:
             o.write("\t".join(r) + "\n")
-    x.check([os.path.join(part, app + ".apk") for app, _, _, _ in todo])
+    if todo:
+        x.check([os.path.join(part, app + ".apk") for app, _, _, _ in todo])
     replace_dir(part, out, MARKER)
     log(f"OK: {len(rows)} pinned APKs in {out}")
     return 0
@@ -772,9 +780,9 @@ def stage_base(x):
 
 # ------------------------------------------------------------------ stage, check-image
 def stage_stage(x):
-    """The stage folder (image.conf stage_dir): pinned/, apps/ (build_apps.sh output), base_signed/, SHA256SUMS."""
+    """The stage folder (build.conf stage_dir): pinned/, apps/ (build_apps.sh output), base_signed/, SHA256SUMS."""
     if x.img.get("stage_dir") != x.conf["stage"]:
-        die(f"image.conf stage_dir ({x.img.get('stage_dir')!r}) is not sign.conf stage ({x.conf['stage']!r})")
+        die(f"build.conf stage_dir ({x.img.get('stage_dir')!r}) is not sign.conf stage ({x.conf['stage']!r})")
     pinned = os.path.join(x.signed, "pinned")
     base = os.path.join(x.signed, "base")
     for d in (pinned, base):

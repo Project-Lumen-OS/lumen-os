@@ -152,14 +152,14 @@ public final class UiResTest {
         eq("failed list null", false, UiRes.listed(null, 1440));
 
         // ---- "Keep this resolution?"
-        eq("no marker (the 4K default after the update): never asked", UiRes.Keep.NONE, UiRes.keep(0, "", "b2", 2160));
-        eq("no marker", UiRes.Keep.NONE, UiRes.keep(0, "", "b2", 1440));
-        eq("user chose 1080p, it runs: ask", UiRes.Keep.ASK, UiRes.keep(1080, "b1", "b2", 1080));
-        eq("same boot: restart pending", UiRes.Keep.SAME_BOOT, UiRes.keep(2160, "b1", "b1", 1440));
-        eq("boot id unreadable", UiRes.Keep.SAME_BOOT, UiRes.keep(2160, "b1", null, 2160));
-        eq("new mode runs: ask", UiRes.Keep.ASK, UiRes.keep(2160, "b1", "b2", 2160));
-        eq("boot fallback ran: drop", UiRes.Keep.DROP, UiRes.keep(2160, "b1", "b2", 1080));
-        eq("active unknown: drop", UiRes.Keep.DROP, UiRes.keep(1440, "b1", "b2", 0));
+        eq("no marker (the 4K default after the update): never asked", UiResKeep.NONE, UiRes.keep(0, "", "b2", 2160));
+        eq("no marker", UiResKeep.NONE, UiRes.keep(0, "", "b2", 1440));
+        eq("user chose 1080p, it runs: ask", UiResKeep.ASK, UiRes.keep(1080, "b1", "b2", 1080));
+        eq("same boot: restart pending", UiResKeep.SAME_BOOT, UiRes.keep(2160, "b1", "b1", 1440));
+        eq("boot id unreadable", UiResKeep.SAME_BOOT, UiRes.keep(2160, "b1", null, 2160));
+        eq("new mode runs: ask", UiResKeep.ASK, UiRes.keep(2160, "b1", "b2", 2160));
+        eq("boot fallback ran: drop", UiResKeep.DROP, UiRes.keep(2160, "b1", "b2", 1080));
+        eq("active unknown: drop", UiResKeep.DROP, UiRes.keep(1440, "b1", "b2", 0));
         eq("countdown 15 s", 15, UiRes.secondsLeft(15_000));
         eq("countdown rounds up", 15, UiRes.secondsLeft(14_001));
         eq("countdown last second", 1, UiRes.secondsLeft(1));

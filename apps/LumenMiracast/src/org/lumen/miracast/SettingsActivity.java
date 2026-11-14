@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.lumen.miracast.core.WfdFormats;
+import org.lumen.miracast.core.WfdQuality;
 
 /**
  * Screen mirroring settings: on/off, the name phones see, ask before connecting, picture quality,
@@ -81,9 +81,9 @@ public final class SettingsActivity extends Activity implements MiracastService.
         enabledValue.setText(on ? R.string.on : R.string.off);
         nameValue.setText(name);
         askValue.setText(Prefs.ask(this) ? R.string.on : R.string.off);
-        WfdFormats.Quality q = Prefs.quality(this);
-        qualityValue.setText(q == WfdFormats.Quality.P1080_30 ? R.string.quality_1080_30
-                : q == WfdFormats.Quality.P720_60 ? R.string.quality_720 : R.string.quality_1080_60);
+        WfdQuality q = Prefs.quality(this);
+        qualityValue.setText(q == WfdQuality.P1080_30 ? R.string.quality_1080_30
+                : q == WfdQuality.P720_60 ? R.string.quality_720 : R.string.quality_1080_60);
         String st = StatusText.of(this, StatusText.status(this));
         statusValue.setText(st);
         howto.setText(getString(R.string.howto_android, name) + "\n" + getString(R.string.howto_windows, name));
@@ -118,6 +118,11 @@ public final class SettingsActivity extends Activity implements MiracastService.
         View enabled = row(list, R.string.row_enabled);
         enabledValue = value(enabled);
         enabled.setOnClickListener(v -> changed(prefs.edit().putBoolean(Prefs.ENABLED, !Prefs.enabled(this))));
+        // hidden status page for support (stage report): long press OK on the first row
+        enabled.setOnLongClickListener(v -> {
+            startActivity(new android.content.Intent(this, DiagActivity.class));
+            return true;
+        });
         View nameRow = row(list, R.string.row_name);
         nameValue = value(nameRow);
         nameRow.setOnClickListener(v -> editName());
@@ -127,9 +132,9 @@ public final class SettingsActivity extends Activity implements MiracastService.
         View quality = row(list, R.string.row_quality);
         qualityValue = value(quality);
         quality.setOnClickListener(v -> {
-            WfdFormats.Quality q = Prefs.quality(this);
-            WfdFormats.Quality next = q == WfdFormats.Quality.P1080_60 ? WfdFormats.Quality.P1080_30
-                    : q == WfdFormats.Quality.P1080_30 ? WfdFormats.Quality.P720_60 : WfdFormats.Quality.P1080_60;
+            WfdQuality q = Prefs.quality(this);
+            WfdQuality next = q == WfdQuality.P1080_60 ? WfdQuality.P1080_30
+                    : q == WfdQuality.P1080_30 ? WfdQuality.P720_60 : WfdQuality.P1080_60;
             changed(prefs.edit().putString(Prefs.QUALITY, next.name()));
         });
         howto = info(list, R.string.howto_title);

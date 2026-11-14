@@ -12,8 +12,8 @@
  * HARD ALLOWLIST: only the members of enum Call can ever be transacted. Every Call is a row of
  * devices/goat_elegant/research/allowed.tsv, of aidl_codes.tsv (same service, code and stub method) and not a
  * BANNED or REVIEW row of banned.tsv (tools/devices/check_aidl_hal.py, rules 1 to 7, with --dex in every build).
- * No IGmpf / IGmpf2 HIDL code number ever reaches this file. The typed clients (GmpfClient, Gmpf2Client, both
- * subclasses) fix or range-check every argument before anything is sent.
+ * No IGmpf / IGmpf2 HIDL code number ever reaches this file. The typed clients (GmpfClient, Gmpf2Client over the
+ * shared GmpfBase / Gmpf2Base, through AidlWire) fix or range-check every argument before anything is sent.
  *
  * VERSION GUARD (HbBoot rule): before the first real call on an interface, getInterfaceVersion must return 1 and
  * getInterfaceHash must return a hash GmpfHash.accepted for this unit's ro.vendor.build.version.incremental
@@ -53,210 +53,7 @@ abstract class AidlCaller {
     private static volatile String sAcceptedHash = GmpfHash.V61624;
     private static final String PKG = "xgimi.hardware.gmpf.";
 
-    /** One stable AIDL service of the vendor process, with its own guard state (guarded by AidlCaller.class). */
-    enum Iface {
-        SYSTEM("xgimi.hardware.gmpf.ISystemManager"),
-        POWER("xgimi.hardware.gmpf.IPowerManager"),
-        FOCUS("xgimi.hardware.gmpf.IProjectorFocusManager"),
-        DISPLAY("xgimi.hardware.gmpf.IDisplayManager"),
-        TV("xgimi.hardware.gmpf.IGmTvManager"),
-        AUDIO("xgimi.hardware.gmpf.IGmAudioManager"),
-        MOTION("xgimi.hardware.gmpf.IMotionDetectionManager"),
-        TEMPERATURE("xgimi.hardware.gmpf.ITemperatureManager"),
-        FACTORY("xgimi.hardware.gmpf.IGmFactoryManager");
-
-        /** Interface descriptor, as the stub's DESCRIPTOR. */
-        final String descriptor;
-        /** servicemanager name (vendor manifest xgimi.hardware.gmpf-service.xml). */
-        final String instance;
-
-        IBinder binder;
-        boolean verified;      // version and hash checked and equal for this binder
-        boolean refused;       // latched: never send anything to this interface again (until a vendor death)
-        boolean refusedLogged;
-
-        Iface(String descriptor) {
-            this.descriptor = descriptor;
-            this.instance = descriptor + "/default";
-        }
-    }
-
-    /**
-     * The complete list of transactions this app can produce: (interface, code, stub method). Codes are the
-     * absolute transaction codes of the stock proxies (aidl_codes.tsv). null interface = meta call, valid on any.
-     */
-    enum Call {
-        GET_INTERFACE_VERSION(null, 0x00FFFFFF, "getInterfaceVersion"),
-        GET_INTERFACE_HASH(null, 0x00FFFFFE, "getInterfaceHash"),
-        SET_PROJECTOR_PUT_MODE(Iface.DISPLAY, 2, "setProjectorPutMode"),
-        GET_PROJECTOR_PUT_MODE(Iface.DISPLAY, 3, "getProjectorPutMode"),
-        SET_DLP_LUMENS_MODE(Iface.DISPLAY, 4, "setDlpLumensMode"),
-        GET_DLP_LUMENS_MODE(Iface.DISPLAY, 5, "getDlpLumensMode"),
-        SET_DLP_LUMENS_LEVEL(Iface.DISPLAY, 6, "setDlpLumensLevel"),
-        GET_DLP_LUMENS_LEVEL(Iface.DISPLAY, 7, "getDlpLumensLevel"),
-        SET_CORRECT_KEYSTONE_FULL_PIONT(Iface.DISPLAY, 15, "setCorrectKeystoneFullPiont"),
-        GET_CORRECT_KEYSTONE_FULL_PIONT(Iface.DISPLAY, 16, "getCorrectKeystoneFullPiont"),
-        SET_SCREEN_ON_OFF(Iface.DISPLAY, 27, "setScreenOnOff"),
-        GET_SCREEN_ON_OFF(Iface.DISPLAY, 28, "getScreenOnOff"),
-        CORRECT_KEYSTONE_RESET(Iface.DISPLAY, 38, "correctKeystoneReset"),
-        SET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 61, "setHumanDetectOnOff"),
-        GET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 62, "getHumanDetectOnOff"),
-        ZOOM_CONTROL(Iface.DISPLAY, 63, "zoomControl"),
-        CHECK_TRAPEZOID_COORDINATE(Iface.DISPLAY, 64, "checkTrapezoidCoordinate"),
-        SET_HUMAN_DETECT_SCREEN_ON_OFF(Iface.DISPLAY, 66, "setHumanDetectScreenOnOff"),
-        GET_HUMAN_DETECT_SCREEN_ON_OFF(Iface.DISPLAY, 67, "getHumanDetectScreenOnOff"),
-        UI_AK_DISPLAY(Iface.DISPLAY, 68, "uiAkDisplay"),
-        TRANSLATION_KST(Iface.DISPLAY, 72, "translationKst"),
-        SET_GAME_MODE_OPTION(Iface.DISPLAY, 76, "setGameModeOption"),
-        GET_GAME_MODE_OPTION(Iface.DISPLAY, 77, "getGameModeOption"),
-        GET_CURRENT_KEYSTONE_MODE(Iface.DISPLAY, 84, "getCurrentKeystoneMode"),
-        SWITCH_KEYSTONE_MODE(Iface.DISPLAY, 85, "switchKeystoneMode"),
-        ZOOM_START(Iface.DISPLAY, 93, "zoomStart"),
-        ZOOM_FINISH(Iface.DISPLAY, 94, "zoomFinish"),
-        SET_OPTICAL_ZOOM_STEP(Iface.DISPLAY, 95, "setOpticalZoomStep"),
-        SET_DIGITAL_ZOOM_STEP(Iface.DISPLAY, 96, "setDigitalZoomStep"),
-        GET_ZOOM_STEP_RANGE(Iface.DISPLAY, 97, "getZoomStepRange"),
-        GET_CURRENT_ZOOM_STEP2(Iface.DISPLAY, 98, "getCurrentZoomStep2"),
-        SWITCH_DISP_COLOR_SPACE(Iface.DISPLAY, 102, "switchDispColorSpace"),
-        GET_DISP_COLOR_SPACE(Iface.DISPLAY, 103, "getDispColorSpace"),
-        SET_GAME_MODE_STATE(Iface.DISPLAY, 146, "setGameModeState"),
-        SET_GAME_MODE_TYPE(Iface.DISPLAY, 147, "setGameModeType"),
-        GET_GAME_MODE_PROP(Iface.DISPLAY, 148, "getGameModeProp"),
-        SET_LENS_DISP_MODE(Iface.DISPLAY, 151, "setLensDispMode"),
-        GET_LENS_DISP_MODE(Iface.DISPLAY, 152, "getLensDispMode"),
-        SET_DYNAMIC_BLACK_TYPE(Iface.DISPLAY, 172, "setDynamicBlackType"),
-        GET_DYNAMIC_BLACK_TYPE(Iface.DISPLAY, 174, "getDynamicBlackType"),
-        GET_DISP_OUTPUT_FPS(Iface.DISPLAY, 179, "getDispOutputFps"),           // game bar FPS overlay with VRR on
-        SET_KST_PREPARE(Iface.DISPLAY, 185, "setKstPrepare"),
-        SET_OPTICAL_ZOOM_LIMIT_STEP(Iface.DISPLAY, 189, "SetOpticalZoomLimitStep"),
-        GET_CURRENT_ZOOM_LIMIT_STEP(Iface.DISPLAY, 190, "GetCurrentZoomLimitStep"),
-        SET_AUDIO_OUTPUT(Iface.AUDIO, 2, "setAudioOutput"),
-        GET_AUDIO_OUTPUT(Iface.AUDIO, 3, "getAudioOutput"),
-        SET_SOUNDEFFECT(Iface.AUDIO, 6, "setSoundeffect"),
-        GET_SOUNDEFFECT(Iface.AUDIO, 7, "getSoundeffect"),
-        SET_AUTO_SOUNDEFFECT(Iface.AUDIO, 8, "setAutoSoundeffect"),
-        SET_PEQ_ENABLE(Iface.AUDIO, 15, "SetPEQEnable"),
-        SET_PEQ(Iface.AUDIO, 16, "SetPEQ"),
-        SAVE_POWER_ON_AK_FLAG(Iface.FACTORY, 45, "savePowerOnAKFlag"),
-        GET_POWER_ON_AK_FLAG(Iface.FACTORY, 46, "getPowerOnAKFlag"),
-        SWITCH_INPUT_SOURCE(Iface.TV, 3, "switchInputSource"),
-        GET_CURRENT_INPUT_SOURCE(Iface.TV, 4, "getCurrentInputSource"),
-        SET_CONTRAST(Iface.TV, 5, "setContrast"),
-        GET_CONTRAST(Iface.TV, 6, "getContrast"),
-        SET_BRIGHTNESS(Iface.TV, 7, "setBrightness"),
-        GET_BRIGHTNESS(Iface.TV, 8, "getBrightness"),
-        SET_SATURATION(Iface.TV, 9, "setSaturation"),
-        GET_SATURATION(Iface.TV, 10, "getSaturation"),
-        SET_SHARPNESS(Iface.TV, 11, "setSharpness"),
-        GET_SHARPNESS(Iface.TV, 12, "getSharpness"),
-        SET_COLOR_TEMP_RED_GAIN(Iface.TV, 17, "setColorTempRedGain"),
-        GET_COLOR_TEMP_RED_GAIN(Iface.TV, 18, "getColorTempRedGain"),
-        SET_COLOR_TEMP_GREEN_GAIN(Iface.TV, 19, "setColorTempGreenGain"),
-        GET_COLOR_TEMP_GREEN_GAIN(Iface.TV, 20, "getColorTempGreenGain"),
-        SET_COLOR_TEMP_BLUE_GAIN(Iface.TV, 21, "setColorTempBlueGain"),
-        GET_COLOR_TEMP_BLUE_GAIN(Iface.TV, 22, "getColorTempBlueGain"),
-        SET_COLOR_TEMP_RED_OFFSET(Iface.TV, 23, "setColorTempRedOffset"),
-        GET_COLOR_TEMP_RED_OFFSET(Iface.TV, 24, "getColorTempRedOffset"),
-        SET_COLOR_TEMP_GREEN_OFFSET(Iface.TV, 25, "setColorTempGreenOffset"),
-        GET_COLOR_TEMP_GREEN_OFFSET(Iface.TV, 26, "getColorTempGreenOffset"),
-        SET_COLOR_TEMP_BLUE_OFFSET(Iface.TV, 27, "setColorTempBlueOffset"),
-        GET_COLOR_TEMP_BLUE_OFFSET(Iface.TV, 28, "getColorTempBlueOffset"),
-        SET_3DNR(Iface.TV, 29, "set3DNR"),
-        GET_3DNR(Iface.TV, 30, "get3DNR"),
-        SET_MEMC_LEVEL(Iface.TV, 31, "setMemcLevel"),
-        GET_MEMC_LEVEL(Iface.TV, 32, "getMemcLevel"),
-        SET_PICTURE_MODE(Iface.TV, 33, "setPictureMode"),
-        GET_PICTURE_MODE(Iface.TV, 34, "getPictureMode"),
-        SET_ASPECT_RATIO(Iface.TV, 35, "setAspectRatio"),
-        GET_ASPECT_RATIO(Iface.TV, 36, "getAspectRatio"),
-        GET_HDMI_INFO(Iface.TV, 38, "getHdmiInfo"),
-        GET_EDID_VERSION(Iface.TV, 39, "getEdidVersion"),
-        SET_EDID_VERSION(Iface.TV, 40, "setEdidVersion"),
-        SET_UCD_LEVEL(Iface.TV, 45, "setUcdLevel"),
-        GET_UCD_LEVEL(Iface.TV, 49, "getUcdLevel"),
-        GET_WAKE_UP_SOURCE(Iface.TV, 58, "getWakeUpSource"),
-        SET_HDMI_RANGE(Iface.TV, 63, "setHdmiRange"),
-        GET_HDMI_RANGE(Iface.TV, 64, "getHdmiRange"),
-        SET_EARC_ENABLE(Iface.TV, 65, "setEARCEnable"),
-        GET_EARC_ENABLE_STATE(Iface.TV, 66, "getEARCEnableState"),
-        GET_HDR_TYPE(Iface.TV, 78, "getHdrType"),
-        GET_EARC_STATUS(Iface.TV, 79, "getEARCStatus"),
-        GET_HSY_PICTURE_MODE_ENABLE(Iface.TV, 112, "getHsyPictureModeEnable"),
-        SET_TV_DYNAMIC_CONTRAST_ENABLE(Iface.TV, 113, "setTvDynamicContrastEnable"),
-        GET_TV_DYNAMIC_CONTRAST_ENABLE(Iface.TV, 114, "getTvDynamicContrastEnable"),
-        SET_TV_GAMMA_LEVEL(Iface.TV, 115, "setTvGammaLevel"),
-        GET_TV_GAMMA_LEVEL(Iface.TV, 116, "getTvGammaLevel"),
-        SET_HSY_COLOR_MODEL(Iface.TV, 117, "setHsyColorModel"),
-        GET_HSY_COLOR_MODEL(Iface.TV, 118, "getHsyColorModel"),
-        SET_HSY_PICTURE_MODE_ENABLE(Iface.TV, 119, "setHsyPictureModeEnable"),
-        SET_ALLM_ENABLE(Iface.TV, 129, "setAllmEnable"),
-        GET_ALLM_ENABLE_STATE(Iface.TV, 130, "getAllmEnableState"),
-        GET_ALLM_STATUS(Iface.TV, 131, "getAllmStatus"),
-        SET_VRR_MODE_ENABLE(Iface.TV, 145, "setVRRModeEnable"),              // game bar
-        GET_VRR_ENABLE_STATE(Iface.TV, 146, "getVRREnableState"),
-        SET_GAME_PICTURE_MODE(Iface.TV, 147, "setGamePictureMode"),
-        GET_GAME_PICTURE_MODE(Iface.TV, 148, "getGamePictureMode"),
-        SET_DARK_BOOST_ONOFF(Iface.TV, 149, "setDarkBoostOnoff"),
-        GET_DARK_BOOST_STATE(Iface.TV, 150, "getDarkBoostState"),
-        RESET_PICTURE_TO_DEFAULT(Iface.TV, 164, "ResetPictureToDefault"),
-        SET_ONE_OF_MULTI_POINT_WB(Iface.TV, 165, "setOneOfMultiPointWB"),
-        GET_ONE_OF_MULTI_POINT_WB(Iface.TV, 166, "getOneOfMultiPointWB"),
-        TOGGLE_HDR_DY_TONE_MAPPING(Iface.TV, 174, "ToggleHDRDyToneMapping"),
-        GET_HDR_DY_TONE_MAPPING_STATUS(Iface.TV, 175, "GetHDRDyToneMappingStatus"),
-        SET_HGIG_MODE(Iface.TV, 191, "setHGiGMode"),                            // game bar HDR settings
-        GET_HGIG_MODE(Iface.TV, 192, "getHGiGMode"),
-        GET_MOTION_DETECTION(Iface.MOTION, 2, "getMotionDetection"),   // fit to screen size: the tilt (read)
-        SET_ANG_TRIGGER_AF(Iface.MOTION, 4, "setAngTriggerAF"),
-        GET_ANG_TRIGGER_AF(Iface.MOTION, 5, "getAngTriggerAF"),
-        SET_ACC_TRIGGER_AK(Iface.MOTION, 6, "setAccTriggerAK"),
-        GET_ACC_TRIGGER_AK(Iface.MOTION, 7, "getAccTriggerAK"),
-        SET_AUTO_REVERSE(Iface.MOTION, 8, "setAutoReverse"),
-        GET_AUTO_REVERSE(Iface.MOTION, 9, "getAutoReverse"),
-        TEMPORARY_SWITCH_TRIGGER(Iface.MOTION, 15, "temporarySwitchTrigger"),
-        GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted"),
-        SET_FOCUS_CALLBACK(Iface.FOCUS, 1, "setFocusCallback"),
-        MANUAL_FOCUS(Iface.FOCUS, 2, "manualFocus"),
-        POWER_ON_AF_ENABLE(Iface.FOCUS, 4, "powerOnAFEnable"),
-        IS_POWER_ON_AF_ENABLED(Iface.FOCUS, 5, "isPowerOnAFEnabled"),
-        SEND_FOCUS_STATUS(Iface.FOCUS, 8, "sendFocusStatus"),
-        AUTO_KST(Iface.FOCUS, 27, "autoKst"),
-        SET_PROJ_SCREEN_ADP(Iface.FOCUS, 33, "setProjScreenAdp"),
-        GET_PROJ_SCREEN_ADP(Iface.FOCUS, 34, "getProjScreenAdp"),
-        SET_PROJ_CURTAIN_ADP(Iface.FOCUS, 35, "setProjCurtainAdp"),
-        GET_PROJ_CURTAIN_ADP(Iface.FOCUS, 36, "getProjCurtainAdp"),
-        GET_TOF_DISTANCE(Iface.FOCUS, 46, "getTofDistance"),          // fit to screen size: the distance (read)
-        NEW_AUTO_KST(Iface.FOCUS, 53, "newAutoKst"),          // 2026-10-29 (9.1): mode 9 / 10 / 11, + 12 hb-t7 (GmpfClient)
-        SET_POWER_ON_AF_USE_DISTANCE(Iface.FOCUS, 85, "setPowerOnAFUseDistance"),
-        GET_POWER_ON_AF_USE_DISTANCE(Iface.FOCUS, 86, "getPowerOnAFUseDistance"),
-        ENABLE_POWER_ON_MUSIC(Iface.SYSTEM, 5, "enablePowerOnMusic"),
-        IS_POWER_ON_MUSIC_ENABLED(Iface.SYSTEM, 6, "isPowerOnMusicEnabled"),
-        SET_BOOT_ANIM_STATE(Iface.SYSTEM, 32, "setBootAnimState"),
-        GET_BOOT_ANIM_STATE(Iface.SYSTEM, 33, "getBootAnimState"),
-        SET_SYSTEM_UI_STATE(Iface.SYSTEM, 36, "setSystemUIState"),
-        GET_SYSTEM_UI_STATE(Iface.SYSTEM, 37, "getSystemUIState"),
-        SET_SCREEN_ROTATION(Iface.SYSTEM, 134, "setScreenRotation"),
-        SET_PUSH_PULL_SCREEN_ON_OFF(Iface.SYSTEM, 140, "setPushPullScreenOnOff"),
-        GET_SCREEN_ROTATION_INFO(Iface.SYSTEM, 142, "getScreenRotationInfo"),
-        SET_PUSH_PULL_SCREEN_STATE(Iface.SYSTEM, 147, "setPushPullScreenState"),
-        GET_SYSTEM_TEMPERATURE(Iface.TEMPERATURE, 6, "getSystemTemperature");
-
-        final Iface iface;   // null: meta call, valid on any Iface
-        final int code;
-        final String method;
-
-        Call(Iface iface, int code, String method) {
-            this.iface = iface;
-            this.code = code;
-            this.method = method;
-        }
-    }
-
-    // ---------------------------------------------------------------- errors
-    /** Request reached the vendor (transact returned) but the reply was bad. Do not repeat one-shot calls. */
-    public static class ReplyException extends RemoteException {
-        ReplyException(String msg) { super(msg); }
-    }
-
+    // ---------------------------------------------------------------- errors (a bad reply is the shared ReplyException)
     /** A feature the HB does not have: nothing was sent. */
     public static final class NotOnHbException extends RemoteException {
         NotOnHbException(String what) { super(what + ": not on the Z9X HB, nothing sent"); }
@@ -278,7 +75,7 @@ abstract class AidlCaller {
         synchronized (AidlCaller.class) {
             if (generation != sGeneration) return;            // a second notice of the same death, or stale
             sGeneration++;
-            for (Iface i : Iface.values()) {
+            for (GmpfIface i : GmpfIface.values()) {
                 i.binder = null;
                 i.verified = false;
                 i.refused = false;                             // a restarted service runs the guard again
@@ -297,7 +94,7 @@ abstract class AidlCaller {
     }
 
     /** checkService + linkToDeath, without waiting. Never throws. true when the interface has a live binder. */
-    private static boolean connectIface(Iface i) {
+    private static boolean connectIface(GmpfIface i) {
         synchronized (AidlCaller.class) {
             if (i.refused) return false;
             if (i.binder != null && i.binder.isBinderAlive()) return true;
@@ -318,7 +115,7 @@ abstract class AidlCaller {
     }
 
     /** Connect and run the version guard of one interface. ReplyException when the guard refuses it. */
-    private static void need(Iface i) throws RemoteException {
+    private static void need(GmpfIface i) throws RemoteException {
         synchronized (AidlCaller.class) {
             if (i.refused) {
                 if (!i.refusedLogged) {
@@ -332,8 +129,8 @@ abstract class AidlCaller {
             int version;
             String hash;
             try {
-                version = sendCall(i, Call.GET_INTERFACE_VERSION, null, In::i32);
-                hash = sendCall(i, Call.GET_INTERFACE_HASH, null, In::str);
+                version = sendCall(i, GmpfCall.GET_INTERFACE_VERSION, null, In::i32);
+                hash = sendCall(i, GmpfCall.GET_INTERFACE_HASH, null, In::str);
             } catch (ReplyException e) {
                 i.refused = true;
                 i.binder = null;
@@ -362,7 +159,7 @@ abstract class AidlCaller {
     static boolean connectHandshake(Runnable deathListener) {
         setDeathListener(deathListener);
         boolean ok = true;
-        for (Iface i : new Iface[] {Iface.SYSTEM, Iface.POWER, Iface.FOCUS}) {
+        for (GmpfIface i : new GmpfIface[] {GmpfIface.SYSTEM, GmpfIface.POWER, GmpfIface.FOCUS}) {
             try {
                 need(i);
             } catch (Throwable t) {
@@ -375,7 +172,7 @@ abstract class AidlCaller {
     /** SYSTEM, POWER and FOCUS connected and verified. */
     public boolean isConnected() {
         synchronized (AidlCaller.class) {
-            for (Iface i : new Iface[] {Iface.SYSTEM, Iface.POWER, Iface.FOCUS}) {
+            for (GmpfIface i : new GmpfIface[] {GmpfIface.SYSTEM, GmpfIface.POWER, GmpfIface.FOCUS}) {
                 if (i.binder == null || !i.verified || !i.binder.isBinderAlive()) return false;
             }
             return true;
@@ -385,7 +182,7 @@ abstract class AidlCaller {
     /** Forget every binder after a death notice (no vendor call). The guards run again at the next connect. */
     public void dropConnection() {
         synchronized (AidlCaller.class) {
-            for (Iface i : Iface.values()) {
+            for (GmpfIface i : GmpfIface.values()) {
                 i.binder = null;
                 i.verified = false;
             }
@@ -525,14 +322,14 @@ abstract class AidlCaller {
 
     // ---------------------------------------------------------------- calls
     /** Guarded call of one Call: verify its interface first, then send. Package-private: no raw code anywhere. */
-    static <T> T call(Call c, Args a, Ret<T> r) throws RemoteException {
+    static <T> T call(GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (c.iface == null) throw new IllegalStateException(c.method + " is a meta call");
         need(c.iface);
         return sendCall(c.iface, c, a, r);
     }
 
     /** The only transact. RemoteException: not delivered (the binder is dropped); ReplyException: delivered. */
-    private static <T> T sendCall(Iface i, Call c, Args a, Ret<T> r) throws RemoteException {
+    private static <T> T sendCall(GmpfIface i, GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (c.iface != null && c.iface != i) throw new IllegalStateException(c.method + " is not on " + i.descriptor);
         if (Looper.getMainLooper().isCurrentThread()) {
             Log.e(TAG, i.descriptor + " " + c.method + " refused: called on the main thread");
@@ -575,7 +372,7 @@ abstract class AidlCaller {
         }
     }
 
-    private static void dropIfSame(Iface i, IBinder b) {
+    private static void dropIfSame(GmpfIface i, IBinder b) {
         synchronized (AidlCaller.class) {
             if (i.binder == b) {
                 i.binder = null;
@@ -591,71 +388,71 @@ abstract class AidlCaller {
         return (byte) v;
     }
 
-    static void callU8(Call c, int v) throws RemoteException {
+    static void callU8(GmpfCall c, int v) throws RemoteException {
         final byte b = u8(v);
         call(c, o -> o.i8(b), RET_VOID);
     }
 
-    static boolean callU8RetBool(Call c, int v) throws RemoteException {
+    static boolean callU8RetBool(GmpfCall c, int v) throws RemoteException {
         final byte b = u8(v);
         return call(c, o -> o.i8(b), RET_BOOL);
     }
 
-    static void callI32(Call c, int v) throws RemoteException { call(c, o -> o.i32(v), RET_VOID); }
+    static void callI32(GmpfCall c, int v) throws RemoteException { call(c, o -> o.i32(v), RET_VOID); }
 
-    static boolean callI32RetBool(Call c, int v) throws RemoteException { return call(c, o -> o.i32(v), RET_BOOL); }
+    static boolean callI32RetBool(GmpfCall c, int v) throws RemoteException { return call(c, o -> o.i32(v), RET_BOOL); }
 
-    static int callI32RetI32(Call c, int v) throws RemoteException { return call(c, o -> o.i32(v), RET_I32); }
+    static int callI32RetI32(GmpfCall c, int v) throws RemoteException { return call(c, o -> o.i32(v), RET_I32); }
 
-    static boolean callI32I32RetBool(Call c, int a, int b) throws RemoteException {
+    static boolean callI32I32RetBool(GmpfCall c, int a, int b) throws RemoteException {
         return call(c, o -> { o.i32(a); o.i32(b); }, RET_BOOL);
     }
 
-    static int callI32I32RetI32(Call c, int a, int b) throws RemoteException {
+    static int callI32I32RetI32(GmpfCall c, int a, int b) throws RemoteException {
         return call(c, o -> { o.i32(a); o.i32(b); }, RET_I32);
     }
 
-    static int callBoolI32I32RetI32(Call c, boolean a, int b, int d) throws RemoteException {
+    static int callBoolI32I32RetI32(GmpfCall c, boolean a, int b, int d) throws RemoteException {
         return call(c, o -> { o.bool(a); o.i32(b); o.i32(d); }, RET_I32);
     }
 
-    static boolean callI32x3RetBool(Call c, int a, int b, int d) throws RemoteException {
+    static boolean callI32x3RetBool(GmpfCall c, int a, int b, int d) throws RemoteException {
         return call(c, o -> { o.i32(a); o.i32(b); o.i32(d); }, RET_BOOL);
     }
 
-    static boolean callI32BoolRetBool(Call c, int a, boolean b) throws RemoteException {
+    static boolean callI32BoolRetBool(GmpfCall c, int a, boolean b) throws RemoteException {
         return call(c, o -> { o.i32(a); o.bool(b); }, RET_BOOL);
     }
 
-    static boolean callBoolI32RetBool(Call c, boolean a, int b) throws RemoteException {
+    static boolean callBoolI32RetBool(GmpfCall c, boolean a, int b) throws RemoteException {
         return call(c, o -> { o.bool(a); o.i32(b); }, RET_BOOL);
     }
 
-    static int callI32BoolRetI32(Call c, int a, boolean b) throws RemoteException {
+    static int callI32BoolRetI32(GmpfCall c, int a, boolean b) throws RemoteException {
         return call(c, o -> { o.i32(a); o.bool(b); }, RET_I32);
     }
 
-    static boolean callI32F32RetBool(Call c, int a, float f) throws RemoteException {
+    static boolean callI32F32RetBool(GmpfCall c, int a, float f) throws RemoteException {
         return call(c, o -> { o.i32(a); o.f32(f); }, RET_BOOL);
     }
 
-    static void callBool(Call c, boolean v) throws RemoteException { call(c, o -> o.bool(v), RET_VOID); }
+    static void callBool(GmpfCall c, boolean v) throws RemoteException { call(c, o -> o.bool(v), RET_VOID); }
 
-    static boolean callBoolRetBool(Call c, boolean v) throws RemoteException { return call(c, o -> o.bool(v), RET_BOOL); }
+    static boolean callBoolRetBool(GmpfCall c, boolean v) throws RemoteException { return call(c, o -> o.bool(v), RET_BOOL); }
 
-    static int callBoolRetI32(Call c, boolean v) throws RemoteException { return call(c, o -> o.bool(v), RET_I32); }
+    static int callBoolRetI32(GmpfCall c, boolean v) throws RemoteException { return call(c, o -> o.bool(v), RET_I32); }
 
-    static int callI32x4RetI32(Call c, int a, int b, int d, int e) throws RemoteException {
+    static int callI32x4RetI32(GmpfCall c, int a, int b, int d, int e) throws RemoteException {
         return call(c, o -> { o.i32(a); o.i32(b); o.i32(d); o.i32(e); }, RET_I32);
     }
 
-    static boolean callRetBool(Call c) throws RemoteException { return call(c, null, RET_BOOL); }
+    static boolean callRetBool(GmpfCall c) throws RemoteException { return call(c, null, RET_BOOL); }
 
-    static int callRetI32(Call c) throws RemoteException { return call(c, null, RET_I32); }
+    static int callRetI32(GmpfCall c) throws RemoteException { return call(c, null, RET_I32); }
 
-    static int callRetU8(Call c) throws RemoteException { return call(c, null, RET_U8); }
+    static int callRetU8(GmpfCall c) throws RemoteException { return call(c, null, RET_U8); }
 
-    static byte callRetI8(Call c) throws RemoteException { return call(c, null, RET_I8); }
+    static byte callRetI8(GmpfCall c) throws RemoteException { return call(c, null, RET_I8); }
 
     // ---------------------------------------------------------------- the focus callback
     /** Receives (type, value) of IProjectorFocusCallback.focusEvent on a binder thread: only post. */
@@ -670,7 +467,7 @@ abstract class AidlCaller {
     }
 
     /** FOCUS 1 setFocusCallback(cb), the stock registration (ProjectorFocusManagerWrapper.initCallback). */
-    static void callRegisterFocusCallback(Call c) throws RemoteException {
+    static void callRegisterFocusCallback(GmpfCall c) throws RemoteException {
         final FocusCallback cb;
         synchronized (AidlCaller.class) {
             if (sCallback == null) sCallback = new FocusCallback();

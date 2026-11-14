@@ -109,10 +109,13 @@ public final class PowerPolicy {
         try { PowerUi.install(sApp); } catch (Throwable t) { Log.e(TAG, "PowerUi.install", t); }
         // v6.5 lamp-only standby + power-off deadline (also restores them after a process restart)
         try { StandbyController.install(sApp); } catch (Throwable t) { Log.e(TAG, "StandbyController.install", t); }
+        // the stock "Turn off screen": an off light of this boot stays ours, a mark from an earlier boot relights
+        try { LampOffHal.get(sApp); } catch (Throwable t) { Log.e(TAG, "LampOffHal", t); }
     }
 
     public static void onScreenOff(Context ctx) {
         if (sApp == null) install(ctx);
+        try { LampOffHal.get(sApp).onSleep(); } catch (Throwable t) { Log.w(TAG, "LampOffHal.onSleep: " + t); }
         try { PowerUi.onScreenOff(sApp); } catch (Throwable t) { Log.w(TAG, "PowerUi.onScreenOff: " + t); }
         boolean lampOff = false;
         try {

@@ -58,8 +58,8 @@ final class HbWiredJack {
     }
 
     /** The step for this evaluation (HbAudioRules.wiredStep); NONE where the projector has no jack row. */
-    static HbAudioRules.WiredStep step(AudioManager am, AudioOutputChoice.Kind chosen) {
-        if (!offered() && !sOurs) return HbAudioRules.WiredStep.NONE;
+    static WiredOutputStep step(AudioManager am, AudioOutputKind chosen) {
+        if (!offered() && !sOurs) return WiredOutputStep.NONE;
         return HbAudioRules.wiredStep(chosen.name(), listed(am), sOurs);
     }
 

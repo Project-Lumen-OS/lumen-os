@@ -8,8 +8,15 @@ import android.view.View;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
+import org.lumen.projector.hal.ColorSpace;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.HsyType;
+import org.lumen.projector.hal.NoiseReduction;
+import org.lumen.projector.hal.OutputTiming;
+import org.lumen.projector.hal.OutputTimingInfo;
+import org.lumen.projector.hal.PictureReset;
+import org.lumen.projector.hal.WbItem;
 import org.lumen.projector.ui.ChoiceRow;
 import org.lumen.projector.ui.HeaderRow;
 import org.lumen.projector.ui.NavRow;
@@ -48,14 +55,14 @@ final class ProPicture {
         void confirm(int titleRes, CharSequence msg, int okRes, Runnable onOk);
     }
 
-    private static final GmpfClient.ColorSpace[] CS_ORDER = {GmpfClient.ColorSpace.NATIVE,
-            GmpfClient.ColorSpace.BT2020, GmpfClient.ColorSpace.ADOBE_RGB, GmpfClient.ColorSpace.DCI_P3,
-            GmpfClient.ColorSpace.REC709};
-    private static final GmpfClient.NoiseReduction[] NR_ORDER = GmpfClient.NoiseReduction.values();
-    private static final GmpfClient.WbItem[] WB_ORDER = {GmpfClient.WbItem.RED_GAIN, GmpfClient.WbItem.GREEN_GAIN,
-            GmpfClient.WbItem.BLUE_GAIN, GmpfClient.WbItem.RED_OFFSET, GmpfClient.WbItem.GREEN_OFFSET,
-            GmpfClient.WbItem.BLUE_OFFSET};
-    private static final Gmpf2Client.HsyType[] HSY_ORDER = Gmpf2Client.HsyType.values();
+    private static final ColorSpace[] CS_ORDER = {ColorSpace.NATIVE,
+            ColorSpace.BT2020, ColorSpace.ADOBE_RGB, ColorSpace.DCI_P3,
+            ColorSpace.REC709};
+    private static final NoiseReduction[] NR_ORDER = NoiseReduction.values();
+    private static final WbItem[] WB_ORDER = {WbItem.RED_GAIN, WbItem.GREEN_GAIN,
+            WbItem.BLUE_GAIN, WbItem.RED_OFFSET, WbItem.GREEN_OFFSET,
+            WbItem.BLUE_OFFSET};
+    private static final HsyType[] HSY_ORDER = HsyType.values();
     /** Gamma keys of IGmpf2 327 (stock freshGammaValue): curves, and the 1.8..2.6 index 0..8 ("manual"). */
     private static final int GAMMA_BT1886 = 10, GAMMA_ST2084 = 11, GAMMA_HLG = 12;
     /** Choosing Manual sends 2.2 (index 4), as stock. */
@@ -102,7 +109,7 @@ final class ProPicture {
         int[] wbTitles = {R.string.pro_red_gain, R.string.pro_green_gain, R.string.pro_blue_gain,
                 R.string.pro_red_offset, R.string.pro_green_offset, R.string.pro_blue_offset};
         for (int i = 0; i < WB_ORDER.length; i++) {
-            final GmpfClient.WbItem item = WB_ORDER[i];
+            final WbItem item = WB_ORDER[i];
             wb[i] = wbPage.add(new SliderRow(app, s(wbTitles[i]), 0, 100, slide(v ->
                     change("wb " + item + " " + v, (g, g2) -> g.setWb(item, v)))));
             wb[i].setCommitDelay(WB_COMMIT_MS);
@@ -141,7 +148,7 @@ final class ProPicture {
         }).run()));
         int[] hsyTitles = {R.string.pro_hue, R.string.panel_pq_saturation, R.string.panel_pq_brightness};
         for (int t = 0; t < HSY_ORDER.length; t++) {
-            final Gmpf2Client.HsyType type = HSY_ORDER[t];
+            final HsyType type = HSY_ORDER[t];
             hsy[t] = ccPage.add(new SliderRow(app, s(hsyTitles[t]), 0, 100, slide(v -> {
                 final int colour = ccColorIndex;
                 change("hsy " + type + " colour " + colour + " " + v, (g, g2) -> {
@@ -161,7 +168,7 @@ final class ProPicture {
         CharSequence[] csLabels = {s(R.string.pro_cs_native), "BT.2020", "Adobe RGB", "DCI-P3", "Rec.709"};
         colorSpace = page.add(new ChoiceRow(app, s(R.string.pro_color_space), csLabels, (row, i) -> safe("cs", () -> {
             if (i < 0 || i >= CS_ORDER.length) return;
-            final GmpfClient.ColorSpace cs = CS_ORDER[i];
+            final ColorSpace cs = CS_ORDER[i];
             final CharSequence title = row.getTitle();
             change("112 colour space " + cs, (g, g2) -> {
                 // 1.0.8 (parity brightness item 10): stock colorAdjustmentMutexBoost, the 5-segment Boost mode keeps
@@ -170,8 +177,8 @@ final class ProPicture {
                 PanelRules.In in = new PanelRules.In();
                 in.pic666 = opt("666", g::getPictureModeRaw);
                 in.boost51 = opt("g2 51", g2::isBoost);
-                PanelRules.Why w = PanelRules.colorSpace(in);
-                if (w != PanelRules.Why.NONE) {
+                RefusalReason w = PanelRules.colorSpace(in);
+                if (w != RefusalReason.NONE) {
                     Log.i(TAG, "112 refused: " + w);
                     RuleNotes.show(app, title, w, true);
                     return;
@@ -228,7 +235,7 @@ final class ProPicture {
                         // then in 3D; the 161(6) below is kept for what the rule lets through
                         PanelRules.In in = new PanelRules.In();
                         in.ultra120 = opt("157", () -> {
-                            GmpfClient.OutputTimingInfo t = g.getOutputTimingInfo();
+                            OutputTimingInfo t = g.getOutputTimingInfo();
                             return t == null ? null : t.isUltra120();
                         });
                         in.fmt192 = opt("192", g::getCurrent3DFormat);
@@ -238,7 +245,7 @@ final class ProPicture {
                     bool(g2.setNativeFrameRate(w), "284");
                     if (w) {
                         // stock: original frame rate turns Ultra 120 Hz off (161(6), 2160p60)
-                        boolean ok = g.setOutputTiming(GmpfClient.OutputTiming.ULTRA_120_OFF);
+                        boolean ok = g.setOutputTiming(OutputTiming.ULTRA_120_OFF);
                         Log.i(TAG, "161(6) with original frame rate: " + ok);
                         if (ok) prefs.edit().putBoolean(QuickPanelController.KEY_ULTRA_120, false).apply();
                     }
@@ -250,14 +257,14 @@ final class ProPicture {
                 R.string.panel_auto);
         noise = page.add(new ChoiceRow(app, s(R.string.pro_noise), nr, (row, i) -> safe("671", () -> {
             if (i < 0 || i >= NR_ORDER.length) return;
-            final GmpfClient.NoiseReduction n = NR_ORDER[i];
+            final NoiseReduction n = NR_ORDER[i];
             change("671 noise reduction " + n, (g, g2) -> bool(g.setNoiseReduction(n), "671"));
         }).run()));
         noise.setCommitDelay(CHOICE_COMMIT_MS);
         page.add(new NavRow(app, s(R.string.pro_reset), safe("pro reset", () ->
                 host.confirm(R.string.pro_reset, s(R.string.pro_reset_msg), R.string.panel_reset,
                         () -> change("IGmpf2 278 reset professional",
-                                (g, g2) -> bool(g2.resetPicture(Gmpf2Client.PictureReset.PROFESSIONAL), "278")))))).setChevron(false);
+                                (g, g2) -> bool(g2.resetPicture(PictureReset.PROFESSIONAL), "278")))))).setChevron(false);
     }
 
     // ================================================================== read / show
@@ -285,7 +292,7 @@ final class ProPicture {
         s.localContrast = opt("651", g::getLocalContrast);
         s.noise = opt("670", g::getNoiseReduction);
         for (int i = 0; i < WB_ORDER.length; i++) {
-            final GmpfClient.WbItem it = WB_ORDER[i];
+            final WbItem it = WB_ORDER[i];
             s.wb[i] = opt("wb " + it, () -> g.getWb(it));
         }
         s.gamma = opt("g2 326", g2::getGamma);
@@ -297,7 +304,7 @@ final class ProPicture {
         int[][] h = new int[HSY_ORDER.length][];
         boolean hsyOk = true;
         for (int t = 0; t < HSY_ORDER.length && hsyOk; t++) {
-            final Gmpf2Client.HsyType type = HSY_ORDER[t];
+            final HsyType type = HSY_ORDER[t];
             h[t] = opt("g2 324 " + type, () -> g2.getHsyColorModel(type));
             hsyOk = h[t] != null;
         }

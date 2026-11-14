@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 """GitHub download counts for the private statistics page on the VPS (tools/stats/server/web): reads the public
-releases of Project-Lumen-OS/lumen-os without a token (one request per run, an hourly timer) and writes
+releases of Project-Lumen-OS/lumen-os and of the Lumen Installer without a token (two requests per run, an hourly
+timer) and writes
 OUT_DIR/github.json: one row per snapshot day and release (installs, updates, checks), the history kept in the
 same file. Uses the classification of github_downloads.py and refresh.py (copied next to it).
 Usage: github_fetch.py OUT_DIR
 """
-import datetime
 import json
 import os
 import sys
@@ -17,12 +17,16 @@ import github_downloads as gd  # noqa: E402
 import refresh  # noqa: E402
 
 
+def fetch(repo):
+    req = urllib.request.Request("https://api.github.com/repos/%s/releases?per_page=100" % repo,
+                                 headers={"User-Agent": "lumen-stats", "Accept": "application/vnd.github+json"})
+    return [r for r in json.loads(urllib.request.urlopen(req, timeout=30).read()) if not r.get("draft")]
+
+
 def main():
     out = os.path.join(sys.argv[1], "github.json")
-    req = urllib.request.Request("https://api.github.com/repos/%s/releases?per_page=100" % gd.REPO,
-                                 headers={"User-Agent": "lumen-stats", "Accept": "application/vnd.github+json"})
-    rels = [r for r in json.loads(urllib.request.urlopen(req, timeout=30).read()) if not r.get("draft")]
-    rows = gd.rows(rels, datetime.date.today().isoformat())
+    rels = fetch(gd.REPO) + gd.installer_tags(fetch(gd.INSTALLER_REPO))
+    rows = gd.rows(rels, gd.utc_day())
     hist = {}
     if os.path.exists(out):
         for r in json.load(open(out)):

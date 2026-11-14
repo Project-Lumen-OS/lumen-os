@@ -135,7 +135,7 @@ public final class CoreTest {
     }
 
     static void formats() {
-        String v = WfdFormats.sinkVideoFormats(WfdFormats.Quality.P1080_60);
+        String v = WfdFormats.sinkVideoFormats(WfdQuality.P1080_60);
         String[] t = v.split(",")[0].trim().split("\\s+");
         eq("40", t[0], "formats: native = CEA 1080p60");
         eq("02", t[2], "formats: CHP first");
@@ -150,12 +150,12 @@ public final class CoreTest {
         check((vesa & (1L << 28)) != 0, "formats: 1920x1200p30 offered");
         eq(13, t.length, "formats: 13 fields per codec entry");
         check(v.contains(", 01 10 "), "formats: CBP entry follows");
-        String v30 = WfdFormats.sinkVideoFormats(WfdFormats.Quality.P1080_30);
+        String v30 = WfdFormats.sinkVideoFormats(WfdQuality.P1080_30);
         long cea30 = Long.parseLong(v30.split("\\s+")[4], 16);
         check((cea30 & (1 << 8)) == 0 && (cea30 & (1 << 7)) != 0, "formats: 1080p30 cap drops 1080p60");
         check((cea30 & (1 << 6)) != 0, "formats: 1080p30 cap keeps 720p60");
         eq("38", v30.substring(0, 2), "formats: native 1080p30");
-        String v720 = WfdFormats.sinkVideoFormats(WfdFormats.Quality.P720_60);
+        String v720 = WfdFormats.sinkVideoFormats(WfdQuality.P720_60);
         long cea720 = Long.parseLong(v720.split("\\s+")[4], 16);
         check((cea720 & ((1 << 7) | (1 << 8))) == 0 && (cea720 & (1 << 6)) != 0, "formats: 720p cap");
         eq("LPCM 00000003 00, AAC 00000001 00", WfdFormats.sinkAudioCodecs(true, true), "formats: audio offer");
@@ -249,7 +249,7 @@ public final class CoreTest {
         eq("OPTIONS", m2.method, "session: M2 OPTIONS");
         eq("org.wfa.wfd1.0", m2.header("Require"), "session: M2 Require");
         s.onMessage(resp(m2.cseq(), 200, "Public", "org.wfa.wfd1.0, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"), 20);
-        eq(WfdSession.State.CAPABILITIES, s.state(), "session: capabilities state");
+        eq(WfdState.CAPABILITIES, s.state(), "session: capabilities state");
         // M3 (with a Windows key and an unknown key)
         s.onMessage(req("GET_PARAMETER", "rtsp://localhost/wfd1.0", 2,
                 "wfd_video_formats\r\nwfd_audio_codecs\r\nwfd_client_rtp_ports\r\nwfd_content_protection\r\n"
@@ -258,10 +258,10 @@ public final class CoreTest {
         eq(200, m3r.status, "session: M3 200");
         eq("text/parameters", m3r.header("Content-Type"), "session: M3 content type");
         Map<String, String> vals = WfdParams.parse(m3r.bodyText());
-        eq(7, vals.size(), "session: M3 answers every name");
+        eq(6, vals.size(), "session: M3 answers the WFD names it knows");
         eq("RTP/AVP/UDP;unicast 19000 0 mode=play", vals.get("wfd_client_rtp_ports"), "session: rtp ports");
         eq("none", vals.get("wfd_content_protection"), "session: no HDCP");
-        eq("none", vals.get("microsoft_cursor"), "session: unknown -> none");
+        check(!vals.containsKey("microsoft_cursor"), "session: unknown vendor key left out, not \"none\"");
         eq("Lumen Z9X", vals.get("intel_friendly_name"), "session: friendly name");
         check(vals.get("wfd_video_formats").startsWith("40 00 02 10"), "session: video formats offered");
         // M4
@@ -294,7 +294,7 @@ public final class CoreTest {
         check(!r.playing, "session: not playing before PLAY reply");
         s.onMessage(resp(m7.cseq(), 200, "Session", "6B8B4567"), 70);
         check(r.playing, "session: playing");
-        eq(WfdSession.State.PLAYING, s.state(), "session: PLAYING");
+        eq(WfdState.PLAYING, s.state(), "session: PLAYING");
         // M16 keep-alive
         before = r.sent.size();
         s.onMessage(req("GET_PARAMETER", "rtsp://localhost/wfd1.0", 5, null).setHeader("Session", "6B8B4567"), 20000);
@@ -323,20 +323,20 @@ public final class CoreTest {
         eq("PAUSE", m9.method, "session: M9 PAUSE");
         eq("6B8B4567", m9.header("Session"), "session: M9 Session");
         s.onMessage(resp(m9.cseq(), 200), 30860);
-        eq(WfdSession.State.PAUSED, s.state(), "session: PAUSED");
+        eq(WfdState.PAUSED, s.state(), "session: PAUSED");
         s.onMessage(req("SET_PARAMETER", "rtsp://localhost/wfd1.0", 9, "wfd_trigger_method: PLAY\r\n"), 30870);
         RtspMessage resume = r.last();
         eq("PLAY", resume.method, "session: trigger PLAY");
         eq("6B8B4567", resume.header("Session"), "session: trigger PLAY Session");
         s.onMessage(resp(resume.cseq(), 200, "Session", "6B8B4567"), 30880);
-        eq(WfdSession.State.PLAYING, s.state(), "session: PLAYING after resume");
+        eq(WfdState.PLAYING, s.state(), "session: PLAYING after resume");
         // M5 TEARDOWN trigger -> M8
         s.onMessage(req("SET_PARAMETER", "rtsp://localhost/wfd1.0", 7, "wfd_trigger_method: TEARDOWN\r\n"), 31000);
         RtspMessage m8 = r.last();
         eq("TEARDOWN", m8.method, "session: M8 TEARDOWN");
-        eq(WfdSession.State.TEARING_DOWN, s.state(), "session: tearing down");
+        eq(WfdState.TEARING_DOWN, s.state(), "session: tearing down");
         s.onMessage(resp(m8.cseq(), 200), 31100);
-        eq(WfdSession.State.CLOSED, s.state(), "session: closed");
+        eq(WfdState.CLOSED, s.state(), "session: closed");
         eq("teardown done", r.closed, "session: closed reason");
 
         // refused SETUP closes
@@ -352,13 +352,13 @@ public final class CoreTest {
         Recorder r3 = new Recorder();
         WfdSession s3 = new WfdSession(cfg, "192.0.2.5", r3, r3);
         s3.teardown();
-        eq(WfdSession.State.CLOSED, s3.state(), "session: teardown before setup");
+        eq(WfdState.CLOSED, s3.state(), "session: teardown before setup");
         // source TEARDOWN request
         Recorder r4 = new Recorder();
         WfdSession s4 = new WfdSession(cfg, "192.0.2.5", r4, r4);
         s4.onMessage(req("TEARDOWN", "rtsp://x", 9, null), 1);
         eq(200, r4.last().status, "session: source TEARDOWN answered");
-        eq(WfdSession.State.CLOSED, s4.state(), "session: source TEARDOWN closes");
+        eq(WfdState.CLOSED, s4.state(), "session: source TEARDOWN closes");
         WfdSession s5 = new WfdSession(cfg, "h", r4, r4);
         s5.parseSession("ABC;timeout=5");
         eq("ABC", s5.sessionId(), "session: id parsed with bad timeout");

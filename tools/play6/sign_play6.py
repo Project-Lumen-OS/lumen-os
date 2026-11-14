@@ -25,7 +25,7 @@ apk_certs; rebuild_zip, sign_container, same_entries; read_apex, avb_info, run_a
 tools/sign is not edited.
 
 pinned: the pinned Lumen APKs the Play 6 image carries, overlay/apps_v1/{Z9xHome, Z9xTvInput,
-  Z9xLineagePlatformOverlay, Z9xSetup}.apk (only read; an APK listed in PINS.sha256 must match its pin).
+  Z9xLineagePlatformOverlay, Z9xSetup, Z9xAirPlay}.apk (only read; an APK listed in PINS.sha256 must match its pin).
   Each must be signed by exactly the AOSP test platform certificate, as overlay/apps_v1/README.txt says,
   else the stage stops. Output DIR/<App>.apk (zipalign -P 16, the original v1/v2/v3 schemes, every zip entry outside
   META-INF unchanged, so dex and resources stay byte-identical) and DIR/pinned.tsv.
@@ -130,8 +130,9 @@ import check_signers  # noqa: E402  (the S1 sets)
 import sign_tar  # noqa: E402  (read only)
 
 APPS_V1 = os.path.join(G, "overlay", "apps_v1")
-# Z9xSetup since t19: without --setup-src the image carries the Z9X pin
-PINNED = ("Z9xHome", "Z9xTvInput", "Z9xLineagePlatformOverlay", "Z9xSetup")
+# Z9xSetup since t19: without --setup-src the image carries the Z9X pin;
+# Z9xAirPlay since play6-cast (its armeabi-v7a library is in the pin; resign_apk keeps it stored and aligned)
+PINNED = ("Z9xHome", "Z9xTvInput", "Z9xLineagePlatformOverlay", "Z9xSetup", "Z9xAirPlay")
 PLAY6_CERT = check_signers.PLAY6_CERT
 PLAY6_APEX_CERTS = check_signers.PLAY6_APEX_CERTS
 PLAY6_KEY = os.path.expanduser("~/.lumen-keys/play6/platform.pk8")

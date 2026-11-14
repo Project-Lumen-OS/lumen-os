@@ -36,8 +36,8 @@ public final class ColorTempRuleTest {
         eq("read failed kept", false, ColorTempRule.hidden(false, null));
         eq("read failed not known", false, ColorTempRule.known(false, null));
         eq("no read index", -1, ColorTempRule.index(null));
-        // ---- the wire list matches GmpfClient.ColorTemp (row order = CT_ORDER)
-        String src = new String(Files.readAllBytes(Paths.get(a[0], "src/org/lumen/projector/hal/GmpfClient.java")),
+        // ---- the wire list matches ColorTemp (row order = CT_ORDER)
+        String src = new String(Files.readAllBytes(Paths.get(a[0], "src/org/lumen/projector/hal/ColorTemp.java")),
                 StandardCharsets.UTF_8);
         eq("enum order", true, src.contains("D65(16), COLOR_TEMP_1(17);"));
         eq("2 wires", 2, ColorTempRule.WIRES.length);

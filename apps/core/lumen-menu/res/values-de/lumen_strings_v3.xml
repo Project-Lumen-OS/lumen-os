@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Energiesparmodus</string>
     <string name="lumen_m_ambient_speaker">Ambient-Lautsprecher</string>
     <string name="lumen_m_ct_custom">Benutzerdefiniert</string>
+    <string name="lumen_m_lamp_off">Bild ausschalten</string>
 </resources>

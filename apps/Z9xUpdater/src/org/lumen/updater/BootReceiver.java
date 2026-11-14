@@ -49,9 +49,9 @@ public final class BootReceiver extends BroadcastReceiver {
             Log.i(Ota.TAG, "result '" + st.lastResult() + "' of build '" + st.lastResultBuild() + "' dropped: running " + now);
             st.setLastResult("");
         }
-        Store.State s = st.state();
-        Outcome.Boot b = Outcome.afterBoot(target, st.pendingFrom(), st.pendingVersion(), now, Ota.currentVersion(),
-                s == Store.State.READY, s == Store.State.INSTALLING, ota, Engine::isNeedReboot);
+        UpdateState s = st.state();
+        BootVerdict b = Outcome.afterBoot(target, st.pendingFrom(), st.pendingVersion(), now, Ota.currentVersion(),
+                s == UpdateState.READY, s == UpdateState.INSTALLING, ota, Engine::isNeedReboot);
         switch (b) {
             case STALE:
                 st.clearPending();
@@ -61,7 +61,7 @@ public final class BootReceiver extends BroadcastReceiver {
                 String v = st.pendingVersion();
                 Log.i(Ota.TAG, "update to " + v + " is running (slot " + Ota.slot() + ", gate " + ota + ")");
                 finish(c, st);
-                if (b == Outcome.Boot.UNHEALTHY) {
+                if (b == BootVerdict.UNHEALTHY) {
                     problem(c, st, v, Ota.prop("sys.z9x.ota.why"));
                 } else {
                     st.setLastResult("ok:" + v);
@@ -89,14 +89,14 @@ public final class BootReceiver extends BroadcastReceiver {
             case INTERRUPTED:
                 // the install was interrupted by a restart: update_engine starts over next time
                 st.clearPending();
-                st.setState(Store.State.DOWNLOADED);
+                st.setState(UpdateState.DOWNLOADED);
                 break;
             default:
-                if (s == Store.State.DOWNLOADING || s == Store.State.CHECKING) {
-                    st.setState(s == Store.State.DOWNLOADING ? Store.State.PAUSED : Store.State.IDLE);
+                if (s == UpdateState.DOWNLOADING || s == UpdateState.CHECKING) {
+                    st.setState(s == UpdateState.DOWNLOADING ? UpdateState.PAUSED : UpdateState.IDLE);
                 }
         }
-        if (b == Outcome.Boot.NONE && Outcome.rolledBackLater(st.gateWatch(), ota, Ota.currentVersion())) {
+        if (b == BootVerdict.NONE && Outcome.rolledBackLater(st.gateWatch(), ota, Ota.currentVersion())) {
             // the update ran, then the gate rolled it back after boot_completed: its "Updated to" was
             // dropped above (recorded on the other build), the restored version is said instead
             String v = Ota.currentVersion();
@@ -124,7 +124,7 @@ public final class BootReceiver extends BroadcastReceiver {
         st.clearPending();
         UpdateService.deleteFiles(c);
         st.clearOffer();
-        st.setState(Store.State.IDLE);
+        st.setState(UpdateState.IDLE);
     }
 
     /**

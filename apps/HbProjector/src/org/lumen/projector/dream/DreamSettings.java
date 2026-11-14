@@ -278,11 +278,11 @@ public final class DreamSettings {
     }
 
     /** Which of the sky / the clock is the active screensaver (screensaver_components). Cheap read. */
-    static DreamDefaults.Shown shown(Context c) {
+    static DreamShown shown(Context c) {
         try {
             return DreamDefaults.shown(Settings.Secure.getString(c.getContentResolver(), SCREENSAVER_COMPONENTS));
         } catch (Throwable t) {
-            return DreamDefaults.Shown.OTHER;
+            return DreamShown.OTHER;
         }
     }
 

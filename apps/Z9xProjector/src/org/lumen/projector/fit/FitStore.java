@@ -31,8 +31,8 @@ public final class FitStore {
                     : ScreenSize.fromDiagonal(diag, inches, aspect, marginMm);
         }
 
-        public FitPlanner.Mode planMode() {
-            return "closest".equals(fitMode) ? FitPlanner.Mode.CLOSEST : FitPlanner.Mode.INSIDE;
+        public FitMode planMode() {
+            return "closest".equals(fitMode) ? FitMode.CLOSEST : FitMode.INSIDE;
         }
 
         public Screen copy() { return screenFromJson(toJson(this)); }

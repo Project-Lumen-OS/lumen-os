@@ -20,5 +20,11 @@ public final class AudioPortRulesProbe {
         for (int i = 0; i < 50; i++) ok.accept(AudioPortRules.backoffMs(i) >= 1_000L, "never faster than 1 s (" + i + ")");
         ok.accept(!AudioPortRules.policyUp(0), "no outputs: policy down");
         ok.accept(AudioPortRules.policyUp(1), "the speaker: policy up");
+        ok.accept(AudioPortRules.trialNoSound("1", "missing", false), "trial, blobs missing, no policy: notice");
+        ok.accept(AudioPortRules.trialNoSound("1", "", false), "trial, blobs prop unset: notice");
+        ok.accept(!AudioPortRules.trialNoSound("1", "ok", false), "trial with the blobs: no notice");
+        ok.accept(!AudioPortRules.trialNoSound("", "missing", false), "installed system: no notice");
+        ok.accept(!AudioPortRules.trialNoSound("0", "missing", false), "gsid 0: no notice");
+        ok.accept(!AudioPortRules.trialNoSound("1", "missing", true), "policy answers: no notice");
     }
 }

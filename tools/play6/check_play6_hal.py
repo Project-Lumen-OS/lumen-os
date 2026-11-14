@@ -1,84 +1,64 @@
 #!/usr/bin/env python3
-"""check_play6_hal.py: check H of the design notes (Note B). The HAL guard of the Play 6
-projector app: only the two Play 6 clients talk to the vendor HAL, every code they send is a reviewed
-Play 6 code (research/play6/gmpf_codes_play6.tsv, by name), nothing banned (Note A) is even declared,
-and the special values of Note C can only leave from the methods allowed to send them.
+"""check_play6_hal.py: check H of the design notes (Notes A, B, C). The HAL guard of the Play 6
+projector app: only the Play 6 gmpf clients talk to the vendor HAL, every code they can send is a reviewed Play 6
+code (research/play6/gmpf_codes_play6.tsv, by name), nothing banned (Note A) is reachable, and the special values
+of Note C can only leave from the members allowed to send them.
 
-  check_play6_hal.py [APP_DIR]        default APP_DIR: the assembled Play 6 projector tree
-  (devices/dragon_healthy/app/Play6Projector.layers, written to a temp dir by play6_tree.py;
-  apps/Play6Projector alone is only the Play 6 layer since the design notes)
+  check_play6_hal.py [APP_DIR]        APP_DIR: an assembled Play 6 projector tree; without it (or given the layer
+  apps/Play6Projector, as tools/devices/check_hal.py passes) the tree of devices/dragon_healthy/app/
+  Play6Projector.layers, written to a temp dir by play6_tree.py
 
-Rules (Note B):
- 1. No GmpfClient.java, Gmpf2Client.java or KstPoint.java anywhere under APP_DIR. A file of package
-    org.lumen.projector.hal is one of HidlCaller, Play6Gmpf, Play6Gmpf2, Play6KstPoint, Play6FocusCallback,
-    Play6PowerCallback, and nothing imports org.lumen.projector.hal.* or another hal class; no static
-    import from org.lumen.projector.hal outside hal/ (the caller rules below need qualified calls).
-    apps/common/projector/FILES (once it exists) lists nothing under hal/. No transact( (`.transact(`,
-    `. transact(`, `::transact`) and no HwBinder.getService outside HidlCaller.
- 2. Every static final integral constant of Play6Gmpf.java / Play6Gmpf2.java is
-      a code constant      `... NAME = <code>;   // tsv:<methodName> [free text]`, found in the TSV as
-                           (BpHwGmpf for Play6Gmpf, BpHwGmpf2 for Play6Gmpf2, code, methodName);
-      a value constant     `... NAME = <int literal>;   // value [free text]`;
-      the IBase code       `... NAME = 0x0f485348;   // ibase:getHashChain` (Play6Gmpf2 only);
-      or one of the eight frozen handshake constants of Play6Gmpf (checked by name, codes by TSV; K
-      keeps their text). Anything else fails, also an unmarked constant.
- 3. Only Play6Gmpf and Play6Gmpf2 use call*( / request( (any other hal file: refused), only inside
-    their own top-level methods (not in a nested type or a field initializer), only on their own binder
-    (unqualified, this. or super.; no method reference to the transport), and the first argument is a
-    code constant of the same client (Play6Gmpf: BpHwGmpf codes; Play6Gmpf2: BpHwGmpf2 codes and the IBase
-    code; a constant of the other client would go out over the wrong interface, D2). In Play6Gmpf2 an
-    IGmpf2 code goes out only as c(CONSTANT) (the vendor code table, rule 8) and the IBase code only bare.
-    Only a private helper whose own name is call* / request may pass its first parameter on; its own call
-    sites are then checked the same way.
- 4. Note A: no code constant names a banned method (by interface and name, plus every name matching
-    factory|aging|cali|McuUpgrade). Note C: the values each special code may carry, see VALUE_RULES.
- 5. Every client method that transacts (any visibility, so a private helper does not escape it; not
-    a private call* / request helper, whose callers transact themselves) and takes a numeric parameter
-    passes that parameter through a check*( call (HidlCaller.checkRange or the client's own set check)
-    and never assigns it.
- 6. The caller check of apps/check_hal_callers.py, imported read-only with CLIENTS set to the Play 6
-    clients that exist: every transacting method has a caller outside hal/.
- 7. The IGmpf2 identity guard (plan 2.1, D2: no bypass): Play6Gmpf2 declares a private need() without
-    parameters, and every Play6Gmpf2 method that sends an IGmpf2 code calls it first: a `need();`
-    statement of its own (or `this.need();`) that stands before the method's first IGmpf2 call site, not
-    behind if / else / case / a label or inside a try, lambda or other block that does not hold the call.
-    Exempt: the IBase getHashChain code (the guard's own read, readHashChain) and a private call* /
-    request helper passing its code parameter on (its call sites are checked instead).
- 8. The vendor code tables of the guard. Play6Gmpf2 accepts exactly
-    the IGmpf2 hashes of ACCEPTED, each a String constant equal to its row of research/play6/hidl_hashes.txt;
-    enum Table holds exactly their tables in that order; tableFor(hash) is exactly one
-    `if (CONST.equals(hash)) return Table.X;` per accepted hash, then `return null;`; need() selects through
-    tableFor( and compares no hash constant itself (it may log them); only need() writes `table` and opens
-    the guard. c(int code) has a fixed shape: guard open check, `return code;` for the first table (whose
-    numbers are the constants), then a switch of `case CONST: return N;` and a default that throws
-    AbsentException. Every case is proven by name: CONST is an IGmpf2 code constant and N names the same
-    method in research/play6/vendor_v1167/gmpf_codes_play6.tsv; every IGmpf2 code constant without a case
-    names a method that v1.1.67 does not have. IGmpf has no map, so the v1.1.67 IGmpf table must equal the
-    v1.7.116 one, and the methods of Note A that are absent on v1.7.116 must be absent on v1.1.67 too.
+The clients (docs/architecture: apps/core/lumen-gmpf): Play6Gmpf extends the shared GmpfBase over the Z9X HIDL
+transport, Play6Gmpf2 extends Gmpf2Base over Play6Gmpf2Wire (the IGmpf2 identity guard). A shared call sends the code
+of its operation (GmpfOp) in the device table hal/Play6Codes, whose rows are constants of the generated
+hal/HalCodes.java (devices/dragon_healthy/hal/codes.tsv); an operation without a row sends nothing on the Play 6.
+The Play 6 view of a client is the client plus the members of its shared body it does not override (an overridden
+one counts where the override calls super.name( ).
 
-How Note C is proven (conventions the clients follow): a send of a code with a value rule goes through a
-HidlCaller typed helper (callU8, callI32I32RetBool, ...; the arguments after the code are the wire
-arguments) or through call(CODE, q, ...) with q.write*( statements in the same method (in order). Each
-wire argument is a literal, a value constant, a boolean parameter, `c ? A : B` of two such values,
-`Process.myPid()` where a rule asks for the caller's own pid ("pid"),
-`checkRange(what, x, LO, HI)` / `checkSet(what, x, A, B, ...)` (inline, or a variable proven by such a
-check), or, for IGmpf 648, a local variable assigned from the IGmpf 647 read in the same method. A
-variable counts as proven only by a statement of its own (`checkRange(..., x, ...);`, `int x =
-checkRange(...);`, `x = callRetI32(GET);`) that stands, not behind if / else / case / a label, in the
-block that holds the call (or one around it, not a switch body), before the call; any other write to the
-variable in the method (`x =`, `x +=`, `x++`, ...; any write after the call too, which also covers a loop
-around it) makes it unprovable. The resulting value set must lie inside the rule. A value reserved for
-one method (307: 44 in requestAutofocus, 17 in sendPowerOnUiReady; 667 no longer has one, t15) must be
-sent as a fixed value from exactly that method, and such a method may only be called from the files
-named in the rule (the game-mode path = a file under game/ or a file whose name contains "Game"); inside
-hal/ it may not be called at all, also not unqualified or through this. or a method reference (that
-would hand it on to any caller). The same holds for the method that sends IGmpf 648. 148 / 152 senders
-call requireNuiReader( first.
+Rules:
+ 1. Structure (Note B). Every file of package org.lumen.projector.hal is a Play 6 HAL file (HAL_FILES), a file of
+    the module or a Z9X file of devices/dragon_healthy/app/Play6Projector.gmpf; no GmpfClient, Gmpf2Client or
+    KstPoint anywhere. Outside hal/ (and the module's call layer org/lumen/hal) no file names the transport or the
+    tables (INTERNAL), imports org.lumen.projector.hal.* or imports a hal member statically (the caller rules
+    need qualified calls). No transact( outside HidlCaller and the vendor callbacks (Binder stubs), no
+    HwBinder.getService outside HidlCaller. apps/common/projector/FILES lists nothing under hal/.
+ 2. Codes by name. Every HalCodes constant names its stock method in the TSV (GMPF_ BpHwGmpf, GMPF2_ BpHwGmpf2; the
+    only IBase code is getHashChain 0x0f485348). Every row of Play6Codes.GMPF / GMPF2 maps an operation to a
+    HalCodes constant of its own interface whose method is the operation's stock method (GmpfOp). A client names
+    HalCodes of its own interface only (D2: Play6Gmpf GMPF_, Play6Gmpf2 and Gmpf2Vendor GMPF2_, Play6Gmpf2Wire
+    the IBase code), no other hal file names HalCodes, and every send site of the Play 6 view names its code as
+    key(OP), HalCodes.X or a local or parameter holding one (no number).
+ 3. Note A. No HalCodes constant names a banned method (BAN, by interface, code and name, and every name
+    matching factory|aging|cali|McuUpgrade); with rule 2 no banned code can be sent.
+ 4. Note C, static. For each code of VALUE_RULES every send site of the Play 6 view belongs to a sender of the rule
+    (its public member; a private helper is followed to its callers) or to a forbidden member. The wire arguments
+    of a sender are evaluated (literal, constant, a value enum's .wire = every NAME(n) of the enum in the tree,
+    checkRange(.., LO, HI), oneOf( guards, `c ? A : B`, booleans, Process.myPid(), the value just read with a
+    code, a check*( call for a float) and lie inside the rule. A forbidden member (a shared body that would send
+    another value) is called nowhere in the Play 6 code; a sender with a caller rule is called only from those
+    files (and not from hal/); 148 / 152 senders call requireNuiReader( first. Every numeric value any Play 6 send
+    site carries is provable this way (the old rule 5: a numeric parameter passes a check first).
+ 5. Note C, recorded. Every transaction of a VALUE_RULES code in the wire golden of the clients
+    (apps/core/lumen-gmpf/test/wire/golden/dragon_healthy.txt; run.sh proves the clients still send exactly it)
+    carries values inside the rule, and every rule is exercised there.
+ 6. The caller check of apps/check_hal_callers.py with the Play 6 clients and their shared bodies: every member
+    that transacts has a caller outside hal/ (the forbidden members of rule 4 excepted: they may have none).
+ 7. The IGmpf2 identity guard (plan 2.1, D2: no bypass). Play6Gmpf2 hands a Play6Gmpf2Wire and Play6Codes.GMPF2 to
+    Gmpf2Base and holds no other transport. In Play6Gmpf2Wire every transaction goes out on c(k) (the guard, then
+    the code of the open vendor build) but the guard's own IBase read, c( starts with need(), only need() opens the
+    guard or picks the vendor (through Gmpf2Vendor.of), drop() closes it for the next connection.
+ 8. The vendor code tables. Gmpf2Vendor holds exactly ACCEPTED, each hash
+    equal to its IGmpf2 row of research/play6/hidl_hashes.txt; V1_7_116 has no table (its numbers are the HalCodes
+    constants); every V1_1_67 row {HalCodes.GMPF2_X, N} names the same method as N in
+    research/play6/vendor_v1167/gmpf_codes_play6.tsv, and every GMPF2 constant without a row names a method
+    v1.1.67 does not have. IGmpf has no map: its v1.1.67 table equals v1.7.116, and the Note A methods absent on
+    v1.7.116 are absent on v1.1.67 too.
 Exit 0 = H green, 1 = red (every finding is printed), 2 = usage or a broken input file.
 """
 import importlib.util
 import os
 import re
+import struct
 import sys
 
 sys.dont_write_bytecode = True
@@ -89,31 +69,36 @@ import play6_tree  # noqa: E402
 
 G = os.path.dirname(os.path.dirname(HERE))
 TSV = os.path.join(G, "research/play6/gmpf_codes_play6.tsv")
-# rule 8: the v1.1.67 vendor table (tools/play6/gmpf_compare.py on the v1.1.67 vendor library) and the hashes
 TSV_V1167 = os.path.join(G, "research/play6/vendor_v1167/gmpf_codes_play6.tsv")
 HASHES = os.path.join(G, "research/play6/hidl_hashes.txt")
-# the hashes Play6Gmpf2 accepts: (constant, vendor build in hidl_hashes.txt, Table constant); the first is the
-# table of TSV (c() returns the constant itself), the others are mapped by the case list of c()
-ACCEPTED = (("RECORDED_HASH", "v1.7.116", "V1_7_116"), ("RECORDED_HASH_V1_1_67", "v1.1.67", "V1_1_67"))
 COMMON_FILES = os.path.join(G, "apps/common/projector/FILES")
-Z9X_CALLER_CHECK = os.path.join(G, "apps/check_hal_callers.py")
+Z9X_LIST = os.path.join(G, "devices/dragon_healthy/app/Play6Projector.gmpf")
+CALLER_CHECK = os.path.join(G, "apps/check_hal_callers.py")
+MODULE = os.path.join(G, "apps/core/lumen-gmpf/src")
+WIRE_TEST = os.path.join(G, "apps/core/lumen-gmpf/test/wire")
+GOLDEN = os.path.join(WIRE_TEST, "golden/dragon_healthy.txt")
+STUB_PID = os.path.join(WIRE_TEST, "stubs/android/os/Process.java")
 
-CLIENTS = {"Play6Gmpf.java": "BpHwGmpf", "Play6Gmpf2.java": "BpHwGmpf2"}
-GUARDED = "Play6Gmpf2.java"                            # rule 7: every IGmpf2 send after need()
-IFACE = {"BpHwGmpf": "IGmpf", "BpHwGmpf2": "IGmpf2"}
-HAL_CLASSES = {"HidlCaller", "Play6Gmpf", "Play6Gmpf2", "Play6KstPoint", "Play6FocusCallback", "Play6PowerCallback",
-               "Play6MusicPlayerCallback"}
+HAL = "src/org/lumen/projector/hal"
+GMPF_PKG = "src/org/lumen/hal/gmpf"
+HAL_FILES = {"HidlCaller", "HalCodes", "Play6Gmpf", "Play6Gmpf2", "Play6Gmpf2Wire", "Play6Codes", "Play6Rules",
+             "Play6Values", "Play6KstPoint", "Play6PowerCallback", "Play6MusicPlayerCallback", "Gmpf2Identity",
+             "Gmpf2Vendor", "IdentityException", "AbsentException", "PictureMode", "ColorTemp"}
+INTERNAL = ("HidlCaller", "HidlWire", "Play6Gmpf2Wire", "Play6Codes", "Play6Rules", "HalCodes", "Gmpf2Identity",
+            "Gmpf2Vendor", "GmpfWire", "GmpfCodes", "GmpfCaller", "HidlFocusCallback")
 FORBIDDEN_FILES = {"GmpfClient.java", "Gmpf2Client.java", "KstPoint.java"}
-HANDSHAKE_CODES = {"GO_TO_BOOT_COMPLETED": (237, "goToBootCompleted"), "SET_SYSTEM_UI_STATE": (391, "setSystemUIState"),
-                   "GET_BOOT_ANIM_STATE": (394, "getBootAnimState"), "SET_BOOT_ANIM_STATE": (395, "setBootAnimState")}
-HANDSHAKE_VALUES = {"SYSTEM_UI_STATE_READY", "BOOT_ANIM_STATE_FINISHED", "STAGE_EARLY", "STAGE_AFTER_BOOTANIM"}
+CALLBACKS = {"Play6PowerCallback.java", "Play6MusicPlayerCallback.java", "HidlFocusCallback.java"}
+# client -> (shared body, table, HalCodes prefix, interface)
+VIEWS = {"Play6Gmpf": ("GmpfBase", "GMPF", "GMPF", "BpHwGmpf"),
+         "Play6Gmpf2": ("Gmpf2Base", "GMPF2", "GMPF2", "BpHwGmpf2")}
+OWN_PREFIX = {"Play6Gmpf.java": {"GMPF"}, "Play6Gmpf2.java": {"GMPF2"}, "Gmpf2Vendor.java": {"GMPF2"},
+              "Play6Gmpf2Wire.java": {"IBASE"}, "Play6Codes.java": {"GMPF", "GMPF2"}}
+PREFIX = {"GMPF": "BpHwGmpf", "GMPF2": "BpHwGmpf2", "IBASE": "IBase"}
+IFACE = {"BpHwGmpf": "IGmpf", "BpHwGmpf2": "IGmpf2"}
 IBASE_GET_HASH_CHAIN = 0x0f485348
-INTEGRAL = {"int", "long", "short", "byte", "char"}
-NUMERIC = INTEGRAL | {"float", "double", "Integer", "Long", "Short", "Byte", "Float", "Double"}
-
-# Design decision (keystone reset with IGmpf 207 / 129): taken 2026-10-21, "as in stock". Both only with the
-# stock values, 207(0) and 129(0, 0) (VALUE_RULES).
-O3_KEYSTONE_RESET = True
+ACCEPTED = (("V1_7_116", "v1.7.116"), ("V1_1_67", "v1.1.67"))
+NUMERIC = {"int", "long", "short", "byte", "char", "float", "double", "Integer", "Long", "Short", "Byte", "Float",
+           "Double"}
 
 # Note A, by (interface, code, name). code None = the method is absent on the Play 6 (checked too).
 BAN = [
@@ -182,100 +167,99 @@ BAN = [
     ("BpHwGmpf", 272, "newAutoKst", "not in the Play 6 clients"),
     ("BpHwGmpf2", None, "setKstPrepare", "absent on the Play 6 IGmpf2"),
 ]
-if not O3_KEYSTONE_RESET:
-    BAN += [("BpHwGmpf", 207, "correctKeystoneReset", "owner decision O3 pending"),
-            ("BpHwGmpf", 129, "switchKeystoneMode", "owner decision O3 pending")]
 BAN_PATTERN = re.compile(r"factory|aging|cali|McuUpgrade", re.I)
 
 GAME_PATH = r"(/game/|/[^/]*Game[^/]*\.java$)"
 HDMI_PATH = r"/source/HdmiSource\.java$"
-PID_EXPRS = ("Process.myPid()", "android.os.Process.myPid()")
 U = lambda lo, hi: set(range(lo, hi + 1))  # noqa: E731
-# Note C, by (class, code): name, one spec per wire argument, and the extra rules.
-#   spec: set of ints | "bool" | "true" | ("read", code) | "pid" (exactly Process.myPid(): our own pid) |
-#         "float_checked" (a float wire argument written as a check*( call, the bound is the check's)
+B = "bool"
+# Note C, by (interface, code): the stock name, one spec per wire argument, the senders (Play 6 view members; a
+# list of specs narrows the rule for that sender) and the extra rules.
+#   spec: set of ints | "bool" | "true" | "pid" (exactly Process.myPid()) | ("read", code) (the value just read
+#         with that code in the same member) | "float_checked" (a float through a check*( call)
+#   forbidden: shared members that would send other values; nothing in the Play 6 code calls them
+#   callers: {sender: path regex} the only Play 6 files that may call it (never hal/)
 VALUE_RULES = {
-    ("BpHwGmpf", 300): dict(name="manualFocus", args=[{17, 1, 0, 2}]),
+    ("BpHwGmpf", 300): dict(name="manualFocus", args=[{17, 1, 0, 2}], senders={"manualFocus": None}),
     ("BpHwGmpf", 307): dict(name="sendFocusStatus", args=[{44, 17}],
-                            only_in={(0, 44): "requestAutofocus", (0, 17): "sendPowerOnUiReady"},
-                            method_callers={"sendPowerOnUiReady": r"/power/UiReady17\.java$"}),
-    # t15 (stock analysis hdmi_volume_game.md 3.3): never 4, the vendor refuses 667(0,4) in its independent game
-    # mode (IGmpf2 35 sets the Game picture itself)
-    ("BpHwGmpf", 667): dict(name="setPictureMode", args=[{0}, {10, 1, 9, 7, 3, 25, 5}]),
-    # t15 (stock analysis 4.1): the vendor values 0 4:3, 1 16:9, 2 full screen, 4 original; 3 and 5+ are not sent
-    ("BpHwGmpf", 665): dict(name="setAspectRatio", args=[{0, 1, 2, 4}]),
-    ("BpHwGmpf", 648): dict(name="setGameModeOption", args=[("read", 647)], sender_callers=GAME_PATH),
-    ("BpHwGmpf", 148): dict(name="setHumanDetectScreenOnOff", args=["true"], nui=True),
-    ("BpHwGmpf", 152): dict(name="setHumanDetectOnOff", args=["bool"], nui=True),
-    ("BpHwGmpf", 573): dict(name="temporarySwitchTrigger", args=[{2}, "bool"]),
-    ("BpHwGmpf", 176): dict(name="setDlpLumensLevel", args=[U(1, 10)]),
-    ("BpHwGmpf", 172): dict(name="setProjectorPutMode", args=[U(0, 3)]),
-    ("BpHwGmpf", 61): dict(name="setSoundeffect", args=[{3, 2, 1, 4, 12, 20}]),
-    ("BpHwGmpf", 669): dict(name="setMemcLevel", args=[{0}, U(0, 3)]),
-    ("BpHwGmpf", 689): dict(name="setSharpness", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 691): dict(name="setSaturation", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 693): dict(name="setBrightness", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 695): dict(name="setContrast", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 186): dict(name="getCorrectKeystoneFullPiont", args=[{0}]),
-    ("BpHwGmpf", 207): dict(name="correctKeystoneReset", args=[{0}]),
-    ("BpHwGmpf", 129): dict(name="switchKeystoneMode", args=[{0}, {0}]),
-    ("BpHwGmpf", 587): dict(name="setAngTriggerAF", args=["bool"]),
-    ("BpHwGmpf2", 34): dict(name="setGameModeType", args=[{0, 1}]),
-    ("BpHwGmpf2", 35): dict(name="setGameModeState", args=[{0, 1}]),
-    ("BpHwGmpf2", 125): dict(name="setPushPullScreenState", args=[{0, 1}]),
-    ("BpHwGmpf2", 64): dict(name="setPowerOnAFUseDistance", args=["bool"]),
-    ("BpHwGmpf2", 214): dict(name="setAllmEnable", args=["bool"]),
+                            senders={"sendRemoteAutofocus": [{44}], "sendPowerOnUiReady": [{17}]},
+                            forbidden={"sendAfUiOpen", "sendAfCardClosed", "sendAfStop"},
+                            callers={"sendPowerOnUiReady": r"/power/UiReady17\.java$"}),
+    # t15 (stock analysis hdmi_volume_game.md 3.3): never 4, the vendor refuses 667(0,4) in its independent game mode
+    ("BpHwGmpf", 667): dict(name="setPictureMode", args=[{0}, {10, 1, 9, 7, 3, 25, 5}],
+                            senders={"setPictureMode": None}, forbidden={"setAiScene"}),
+    # t15 (stock analysis 4.1): 0 4:3, 1 16:9, 2 full screen, 4 original; 3 and 5+ are not sent
+    ("BpHwGmpf", 665): dict(name="setAspectRatio", args=[{0, 1, 2, 4}], senders={"setAspectRatio": None}),
+    ("BpHwGmpf", 648): dict(name="setGameModeOption", args=[("read", 647)], senders={"applyGameModeOption": None},
+                            forbidden={"setGameModeOption"}, callers={"applyGameModeOption": GAME_PATH}),
+    ("BpHwGmpf", 148): dict(name="setHumanDetectScreenOnOff", args=["true"], nui=True,
+                            senders={"restoreEyeProtectionScreen": None}),
+    ("BpHwGmpf", 152): dict(name="setHumanDetectOnOff", args=[B], nui=True, senders={"setEyeProtection": None}),
+    ("BpHwGmpf", 573): dict(name="temporarySwitchTrigger", args=[{2}, B], senders={"setRealtimeAkTemporarily": None}),
+    ("BpHwGmpf", 176): dict(name="setDlpLumensLevel", args=[U(1, 10)], senders={"setLampLevel": None}),
+    ("BpHwGmpf", 172): dict(name="setProjectorPutMode", args=[U(0, 3)], senders={"setPutMode": None}),
+    ("BpHwGmpf", 61): dict(name="setSoundeffect", args=[{3, 2, 1, 4, 12, 20}], senders={"setSoundEffect": None}),
+    ("BpHwGmpf", 669): dict(name="setMemcLevel", args=[{0}, U(0, 3)], senders={"setMemcLevel": None}),
+    ("BpHwGmpf", 689): dict(name="setSharpness", args=[{0}, U(0, 100)], senders={"setPq": None}),
+    ("BpHwGmpf", 691): dict(name="setSaturation", args=[{0}, U(0, 100)], senders={"setPq": None}),
+    ("BpHwGmpf", 693): dict(name="setBrightness", args=[{0}, U(0, 100)], senders={"setPq": None}),
+    ("BpHwGmpf", 695): dict(name="setContrast", args=[{0}, U(0, 100)], senders={"setPq": None}),
+    ("BpHwGmpf", 186): dict(name="getCorrectKeystoneFullPiont", args=[{0}], senders={"getKeystonePoints": None}),
+    # design decision (2026-10-21, "as in stock"): 207(0) and 129(0, 0), only from the keystone reset
+    ("BpHwGmpf", 207): dict(name="correctKeystoneReset", args=[{0}], senders={"resetKeystone": None},
+                            forbidden={"resetKeystoneForTopSpeedGame"}),
+    ("BpHwGmpf", 129): dict(name="switchKeystoneMode", args=[{0}, {0}], senders={"resetKeystone": None},
+                            forbidden={"resetKeystoneForTopSpeedGame"}),
+    ("BpHwGmpf", 587): dict(name="setAngTriggerAF", args=[B], senders={"setMoveAf": None}),
+    ("BpHwGmpf2", 34): dict(name="setGameModeType", args=[{0, 1}], senders={"setGameModeType": None}),
+    ("BpHwGmpf2", 35): dict(name="setGameModeState", args=[{0, 1}], senders={"setGameModeState": None}),
+    ("BpHwGmpf2", 125): dict(name="setPushPullScreenState", args=[{0, 1}], senders={"setAdjustScreenOpen": None}),
+    ("BpHwGmpf2", 64): dict(name="setPowerOnAFUseDistance", args=[B], senders={"setSmartAutofocus": None}),
+    ("BpHwGmpf2", 214): dict(name="setAllmEnable", args=[B], senders={"setAllmAutoSwitch": None}),
     # t14 HDMI (stock analysis hdmi_stock.md 7): the input source with our own pid, 0 Android / 1 HDMI only, and the
     # full-panel display area of the debug fallback; both only from source/HdmiSource
     ("BpHwGmpf", 698): dict(name="switchInputSourceWithCallingPid", args=[{0, 1}, "pid"],
-                            sender_callers=HDMI_PATH),
-    ("BpHwGmpf", 659): dict(name="setDisplayArea", args=[{0}, {0}, {1920}, {1080}], sender_callers=HDMI_PATH),
-    # P3 item 21, digital zoom and shift (stock ZoomDisplacementWind): the session calls with 0 only, a digital
-    # step inside the sanity bound (the card sends only the neighbour of a fresh 116 read inside the 117 range),
-    # the four shift directions; picture rotation (stock RotateWind): 5 clockwise / 6 counter-clockwise with a
-    # checked relative angle
-    ("BpHwGmpf", 121): dict(name="zoomStart", args=[{0}]),
-    ("BpHwGmpf", 120): dict(name="zoomFinish", args=[{0}]),
-    ("BpHwGmpf", 118): dict(name="setDigitalZoomStep", args=[U(-200, 200)]),
-    ("BpHwGmpf", 141): dict(name="translationKst", args=[{1, 2, 3, 4}, "bool"]),
-    ("BpHwGmpf2", 138): dict(name="setScreenRotation", args=[{5, 6}, "float_checked"]),
+                            senders={"switchInputSource": None}, callers={"switchInputSource": HDMI_PATH}),
+    ("BpHwGmpf", 659): dict(name="setDisplayArea", args=[{0}, {0}, {1920}, {1080}],
+                            senders={"setFullDisplayArea": None}, callers={"setFullDisplayArea": HDMI_PATH}),
+    # P3 item 21, digital zoom and shift (stock ZoomDisplacementWind), picture rotation (stock RotateWind)
+    ("BpHwGmpf", 121): dict(name="zoomStart", args=[{0}], senders={"zoomSessionStart": None}),
+    ("BpHwGmpf", 120): dict(name="zoomFinish", args=[{0}], senders={"zoomSessionFinish": None}),
+    ("BpHwGmpf", 118): dict(name="setDigitalZoomStep", args=[U(-200, 200)], senders={"setDigitalZoomStep": None}),
+    ("BpHwGmpf", 141): dict(name="translationKst", args=[{1, 2, 3, 4}, B], senders={"shiftPicture": None}),
+    ("BpHwGmpf2", 138): dict(name="setScreenRotation", args=[{5, 6}, "float_checked"], senders={"rotateScreen": None}),
     # stock parity (2026-10-21, inventory B 4.2 / 4.4 / 4.7 and the dayao settings tree): the stock value sets only
-    ("BpHwGmpf", 671): dict(name="set3DNR", args=[{0}, U(0, 4)]),
-    ("BpHwGmpf", 685): dict(name="setColorTemperature", args=[{0}, U(0, 3)]),
-    ("BpHwGmpf", 683): dict(name="setColorTempRedGain", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 681): dict(name="setColorTempGreenGain", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 679): dict(name="setColorTempBlueGain", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 677): dict(name="setColorTempRedOffset", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 675): dict(name="setColorTempGreenOffset", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 673): dict(name="setColorTempBlueOffset", args=[{0}, U(0, 100)]),
-    ("BpHwGmpf", 650): dict(name="setHdrEnable", args=["bool"]),
-    ("BpHwGmpf", 655): dict(name="setUcdLevel", args=[{0}, U(0, 3)]),
-    ("BpHwGmpf", 174): dict(name="setDlpLumensMode", args=[{0, 16, 12, 6}]),
-    ("BpHwGmpf", 658): dict(name="resetPqSettings", args=[{3}]),
-    ("BpHwGmpf", 635): dict(name="setHdmiRange", args=[{0, 1, 2}]),
-    ("BpHwGmpf", 660): dict(name="setEdidVersion", args=[{1, 2}]),
-    ("BpHwGmpf", 419): dict(name="enablePowerOnMusic", args=["bool"]),
-    ("BpHwGmpf2", 69): dict(name="setSlideFunc", args=[{0, 1}]),
+    ("BpHwGmpf", 671): dict(name="set3DNR", args=[{0}, U(0, 4)], senders={"setNoiseReduction": None}),
+    ("BpHwGmpf", 685): dict(name="setColorTemperature", args=[{0}, U(0, 3)], senders={"setColorTemperature": None}),
+    ("BpHwGmpf", 683): dict(name="setColorTempRedGain", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 681): dict(name="setColorTempGreenGain", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 679): dict(name="setColorTempBlueGain", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 677): dict(name="setColorTempRedOffset", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 675): dict(name="setColorTempGreenOffset", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 673): dict(name="setColorTempBlueOffset", args=[{0}, U(0, 100)], senders={"setWb": None}),
+    ("BpHwGmpf", 650): dict(name="setHdrEnable", args=[B], senders={"setHdrAuto": None}),
+    ("BpHwGmpf", 655): dict(name="setUcdLevel", args=[{0}, U(0, 3)], senders={"setLocalContrast": None}),
+    ("BpHwGmpf", 174): dict(name="setDlpLumensMode", args=[{0, 16, 12, 6}], senders={"setColorTemp": None}),
+    ("BpHwGmpf", 658): dict(name="resetPqSettings", args=[{3}], senders={"resetCustomPicture": None}),
+    ("BpHwGmpf", 635): dict(name="setHdmiRange", args=[{0, 1, 2}], senders={"setHdmiRange": None}),
+    ("BpHwGmpf", 660): dict(name="setEdidVersion", args=[{1, 2}], senders={"setEdidVersion": None}),
+    ("BpHwGmpf", 419): dict(name="enablePowerOnMusic", args=[B], senders={"setPowerOnMusic": None}),
+    ("BpHwGmpf2", 69): dict(name="setSlideFunc", args=[{0, 1}], senders={"setSlideFunction": None}),
     # equalizer (2026-10-21): the SoC PEQ of the speaker path, inside Lumen's own limits
-    ("BpHwGmpf", 50): dict(name="SetPEQ", args=[U(1, 13), U(-120, 60), U(50, 20000), U(5, 160)]),
-    ("BpHwGmpf", 51): dict(name="SetPEQEnable", args=["bool"]),
-    ("BpHwGmpf2", 229): dict(name="setTvGammaLevel", args=[{0}, U(0, 8)]),
-    ("BpHwGmpf2", 231): dict(name="setTvDynamicContrastEnable", args=[{0}, "bool"]),
+    ("BpHwGmpf", 50): dict(name="SetPEQ", args=[U(1, 13), U(-120, 60), U(50, 20000), U(5, 160)],
+                           senders={"setPeqBand": None}),
+    ("BpHwGmpf", 51): dict(name="SetPEQEnable", args=[B], senders={"setPeqEnabled": None}),
+    ("BpHwGmpf2", 229): dict(name="setTvGammaLevel", args=[{0}, U(0, 8)], senders={"setGamma": None}),
+    ("BpHwGmpf2", 231): dict(name="setTvDynamicContrastEnable", args=[{0}, B], senders={"setDynamicContrast": None}),
 }
-if O3_KEYSTONE_RESET:
-    VALUE_RULES[("BpHwGmpf", 207)] = dict(name="correctKeystoneReset", args=[{0}], method_prefix="resetKeystone")
-    VALUE_RULES[("BpHwGmpf", 129)] = dict(name="switchKeystoneMode", args=[{0}, {0}], method_prefix="resetKeystone")
 
-CALL_RE = re.compile(r"\b(call(?:[A-Z]\w*)?|request)\s*\(")
-CALL_REF_RE = re.compile(r"::\s*(call(?:[A-Z]\w*)?|request)\b")
-TRANSACT_RE = re.compile(r"\.\s*transact\s*\(|::\s*transact\b")
-GET_SERVICE_RE = re.compile(r"\bHwBinder\s*(?:\.|::)\s*getService\b")
-# a write to a variable: x = / x op= / x++ / x-- (not == <= >= !=); ++x / --x separately
-WRITE_OPS = r"(?:=(?!=)|[-+*/%&|^]=|<<=|>>>?=|\+\+|--)"
-CHECK_RE = re.compile(r"\b(checkRange|checkSet)\s*\(")
-NEED_RE = re.compile(r"(?<![\w$.])(?:this\s*\.\s*)?need\s*\(\s*\)\s*;")
-MARK_RE = re.compile(r"^//\s*(tsv:(\w+)|value\b|ibase:(\w+))")
-INT_RE = re.compile(r"^-?(0[xX][0-9a-fA-F]+|\d+)[lL]?$")
+# shared members that read on a Play 6 row without a Play 6 caller (rule 6 tolerates them; they send no value)
+SHARED_UNUSED = {"getPutMode": "the Play 6 shows the raw put mode (Play6Gmpf.getPutModeRaw), an unknown reply too"}
+
+SEND_WIRE = re.compile(r"\b(wire|hidl|guard)\s*\.\s*(\w+)\s*\(")
+NO_SEND = {"code", "name", "ready", "connected", "connect", "drop", "request", "need", "isOpen", "liveHashChain"}
+OPS_RE = re.compile(r"\b([A-Z][A-Z0-9_]*)\s*\(\s*\"(\w+)\"\s*\)")
+INT_RE = re.compile(r"^-?(0[xX][0-9a-fA-F_]+|\d[\d_]*)[lL]?$")
 
 
 class Findings:
@@ -286,7 +270,7 @@ class Findings:
         self.errors.append("%s: %s" % (where, msg))
 
 
-def load_tsv(path=TSV):
+def load_tsv(path):
     tab, by_name = {}, {}
     for line in open(path, encoding="utf-8"):
         p = line.rstrip("\n").split("\t")
@@ -296,384 +280,642 @@ def load_tsv(path=TSV):
     return tab, by_name
 
 
-def self_check(tab, by_name):
+def self_check(find, tab, by_name):
     """The tables above must name real Play 6 methods (a typo would silently allow something)."""
-    bad = []
     for cls, code, name, _ in BAN:
-        if code is None:
-            if (cls, name) in by_name:
-                bad.append("BAN %s %s is not absent: code %d" % (cls, name, by_name[(cls, name)]))
-        elif tab.get((cls, code)) != name:
-            bad.append("BAN %s %s %s: TSV says %s" % (cls, code, name, tab.get((cls, code))))
+        if code is None and (cls, name) in by_name:
+            find("BAN", "%s %s is not absent: code %d" % (cls, name, by_name[(cls, name)]))
+        elif code is not None and tab.get((cls, code)) != name:
+            find("BAN", "%s %s %s: the TSV says %s" % (cls, code, name, tab.get((cls, code))))
     for (cls, code), r in VALUE_RULES.items():
         if tab.get((cls, code)) != r["name"]:
-            bad.append("VALUE_RULES %s %d %s: TSV says %s" % (cls, code, r["name"], tab.get((cls, code))))
-    for n, (code, name) in HANDSHAKE_CODES.items():
-        if tab.get(("BpHwGmpf", code)) != name:
-            bad.append("HANDSHAKE_CODES %s %d %s: TSV says %s" % (n, code, name, tab.get(("BpHwGmpf", code))))
-    return bad
+            find("VALUE_RULES", "%s %d %s: the TSV says %s" % (cls, code, r["name"], tab.get((cls, code))))
 
 
-def strip_expr(e):
+def strip_parens(e):
     e = e.strip()
     while True:
-        m = re.match(r"^\((?:byte|int|short|long|char)\)\s*(.*)$", e, re.S)
+        m = re.match(r"^\((?:byte|int|short|long|char|float)\)\s*(.*)$", e, re.S)
         if m:
             e = m.group(1).strip()
             continue
-        if e.startswith("(") and e.endswith(")"):
-            try:
-                if javascan.matching(e, 0, "(", ")") == len(e) - 1:
-                    e = e[1:-1].strip()
-                    continue
-            except ValueError:
-                pass
+        if e.startswith("(") and e.endswith(")") and javascan.matching(e, 0, "(", ")") == len(e) - 1:
+            e = e[1:-1].strip()
+            continue
         return e
 
 
+def top_split(e, ch):
+    """Index of the first ch at depth 0 of e, or -1."""
+    d = 0
+    for i, c in enumerate(e):
+        if c in "([{":
+            d += 1
+        elif c in ")]}":
+            d -= 1
+        elif c == ch and d == 0:
+            return i
+    return -1
+
+
 def call_args(m, open_idx):
-    """Argument texts (masked) of the call whose '(' is at m[open_idx], and the offset after ')'."""
     close = javascan.matching(m, open_idx, "(", ")")
     inner = m[open_idx + 1:close]
-    args = [a.strip() for a in javascan.split_top(inner)] if inner.strip() else []
-    return args, close + 1
+    return ([a.strip() for a in javascan.split_top(inner)] if inner.strip() else []), close + 1
 
 
-class Client:
-    """One scanned hal file with its constants."""
+class Member:
+    def __init__(self, cls, name, params, body, start, mods, src):
+        self.cls, self.name, self.body, self.start, self.mods, self.src = cls, name, body, start, mods, src
+        self.params = []                                   # [(type, name)]
+        for p in javascan.split_top(params) if params.strip() else []:
+            toks = p.replace("final ", "").split()
+            self.params.append((" ".join(toks[:-1]), toks[-1]))
 
-    def __init__(self, path, cls, find):
-        self.path = path
-        self.name = os.path.basename(path)
-        self.cls = cls                                 # BpHwGmpf / BpHwGmpf2 / None (other hal file)
-        self.jf = javascan.JavaFile(path)              # scanned once before, so it parses
-        self.codes = {}                                # NAME -> (class, code, method name)
-        self.values = {}                               # NAME -> int
-        if cls is None:
-            return
-        for f in self.jf.fields():
-            if not ({"static", "final"} <= f.modifiers) or f.type not in INTEGRAL:
-                continue
-            mark = MARK_RE.match(f.trailing_comment)
-            where = "%s:%d" % (self.name, f.line(self.jf.src))
-            for name, init in f.declarators:
-                lit = strip_expr(init)
-                val = int(lit.rstrip("lL"), 0) if INT_RE.match(lit) else None
-                if self.name == "Play6Gmpf.java" and name in HANDSHAKE_CODES:
-                    code, mname = HANDSHAKE_CODES[name]
-                    if val != code:
-                        find(where, "handshake constant %s = %s, expected %d" % (name, init, code))
-                    if mark:
-                        find(where, "handshake constant %s carries a marker (its text is frozen, check K)" % name)
-                    self.codes[name] = (cls, code, mname)
-                    continue
-                if self.name == "Play6Gmpf.java" and name in HANDSHAKE_VALUES:
-                    if mark:
-                        find(where, "handshake constant %s carries a marker (its text is frozen, check K)" % name)
-                    if val is None:
-                        find(where, "%s is not an int literal" % name)
-                    else:
-                        self.values[name] = val
-                    continue
-                if not mark:
-                    find(where, "constant %s has no marker (// tsv:<method>, // value or // ibase:getHashChain)" % name)
-                    continue
-                if val is None:
-                    find(where, "constant %s = %s is not an int literal" % (name, init))
-                    continue
-                if mark.group(2):                      # tsv:<method>
-                    if len(f.declarators) != 1:
-                        find(where, "a // tsv: marker needs one constant per declaration")
-                    self.codes[name] = (cls, val, mark.group(2))
-                elif mark.group(3):                    # ibase:<method>
-                    if self.name != "Play6Gmpf2.java" or mark.group(3) != "getHashChain" or val != IBASE_GET_HASH_CHAIN:
-                        find(where, "%s: only Play6Gmpf2 may declare the IBase getHashChain code 0x%08x"
-                             % (name, IBASE_GET_HASH_CHAIN))
-                    self.codes[name] = ("IBase", val, "getHashChain")
-                else:
-                    self.values[name] = val
+    @property
+    def key(self):
+        return "%s.%s" % (self.cls, self.name)
+
+    def ptype(self, n):
+        return dict((b, a) for a, b in self.params).get(n)
+
+
+HEAD = re.compile(r"^[ ]{4}((?:@\w+\s+)*(?:(?:public|protected|private|static|final|synchronized|abstract)\s+)*)"
+                  r"(?:<[^>]+>\s+)?[\w.<>\[\], ?]+\s+(\w+)\s*\(([^)]*)\)[^;{=]*\{", re.M)
+
+
+def members(path):
+    """The top-level methods (and constructors) of the first class of path, on masked text."""
+    src = javascan.mask(open(path, encoding="utf-8").read())
+    cls = os.path.basename(path)[:-5]
+    out = []
+    for m in HEAD.finditer(src):
+        if m.group(2) in ("if", "for", "while", "switch", "catch", "synchronized", "return", "new"):
+            continue
+        end = javascan.matching(src, m.end() - 1)
+        out.append(Member(cls, m.group(2), m.group(3), src[m.end():end], m.end(), m.group(1), src))
+    return out, src
+
+
+def int_constants(src):
+    out = {}
+    for m in re.finditer(r"\bstatic\s+final\s+(?:int|long|short|byte)\s+([^;]+);", src):
+        for d in javascan.split_top(m.group(1)):
+            if "=" in d:
+                n, v = d.split("=", 1)
+                v = strip_parens(v)
+                if INT_RE.match(v):
+                    out[n.strip()] = int(v.replace("_", "").rstrip("lL"), 0)
+    return out
+
+
+class Tree:
+    """The Play 6 HAL sources of one assembled tree."""
+
+    def __init__(self, tree):
+        self.tree = tree
+        self.hal = os.path.join(tree, HAL)
+        self.files = {}
+        self.consts = {}
+        for d in (self.hal, os.path.join(tree, GMPF_PKG)):
+            for f in os.listdir(d):
+                if f.endswith(".java"):
+                    self.files[f[:-5]] = os.path.join(d, f)
+        for name in ("GmpfBase", "Gmpf2Base", "Play6Gmpf", "Play6Gmpf2", "HalCodes"):
+            src = javascan.mask(open(self.files[name], encoding="utf-8").read())
+            c = int_constants(src)
+            self.consts[name] = c
+        self.enums = {}
+
+    def enum_values(self, t):
+        if t not in self.enums:
+            vals = None
+            p = self.files.get(t)
+            if p:
+                s = javascan.mask(open(p, encoding="utf-8").read())
+                m = re.search(r"\benum\s+%s\b[^{]*\{([^;}]*)" % re.escape(t), s)
+                if m:
+                    vals = {}
+                    for n, v in re.findall(r"([A-Z][A-Z0-9_]*)\s*\(\s*(-?\d+)", m.group(1)):
+                        vals[n] = int(v)
+            self.enums[t] = vals
+        return self.enums[t]
+
+
+class Eval:
+    """The value set of a wire argument in a member of the Play 6 view (rule 4)."""
+
+    def __init__(self, tree, consts, find, by=None):
+        self.tree, self.consts, self.find, self.by = tree, consts, find, by or {}
+
+    def const(self, n):
+        n = n.split(".")[-1] if "." in n and n.split(".")[0][0].isupper() else n
+        return self.consts.get(n)
+
+    def value(self, e, m, env, depth=0):
+        """A set of ints / True / False / "pid" / ("read", code) / "checked", or None (not provable)."""
+        e = strip_parens(e)
+        if depth > 6:
+            return None
+        q = top_split(e, "?")
+        if q > 0:
+            c = top_split(e[q + 1:], ":")
+            if c < 0:
+                return None
+            a = self.value(e[q + 1:q + 1 + c], m, env, depth + 1)
+            b = self.value(e[q + 2 + c:], m, env, depth + 1)
+            return None if a is None or b is None else a | b
+        if e in ("true", "false"):
+            return {e == "true"}
+        if INT_RE.match(e):
+            return {int(e.replace("_", "").rstrip("lL"), 0)}
+        if e.startswith("-"):
+            v = self.value(e[1:], m, env, depth + 1)
+            return None if v is None or any(not isinstance(x, int) or isinstance(x, bool) for x in v) else {-x for x in v}
+        if re.match(r"^(?:android\.os\.)?Process\.myPid\(\)$", e):
+            return {"pid"}
+        mm = re.match(r"^checkRange\s*\(", e)
+        if mm:
+            args, _ = call_args(e, e.index("("))
+            if len(args) == 4:
+                lo, hi = self.value(args[2], m, env, depth + 1), self.value(args[3], m, env, depth + 1)
+                if lo and hi and len(lo) == 1 and len(hi) == 1:
+                    return U(next(iter(lo)), next(iter(hi)))
+            return None
+        mm = re.match(r"^([a-z]\w*)\s*\(", e)
+        if mm and mm.group(1) in self.by and javascan.matching(e, mm.end() - 1, "(", ")") == len(e) - 1:
+            args, _ = call_args(e, mm.end() - 1)
+            for x in self.by[mm.group(1)]:
+                r = re.match(r"^\s*return\s+([^;]+);\s*$", x.body)
+                if len(x.params) == len(args) and helper(x) and r:
+                    return self.value(r.group(1), x, {p[1]: (m, a, env) for p, a in zip(x.params, args)}, depth + 1)
+        if re.match(r"^\w*[cC]heck\w*\s*\(", e):
+            return {"checked"}
+        mm = re.match(r"^([a-z]\w*)\.wire$", e)
+        if mm:
+            t = m.ptype(mm.group(1))
+            vals = self.tree.enum_values(t) if t else None
+            return set(vals.values()) if vals else None
+        if re.match(r"^(?:[A-Z]\w*\.)?[A-Z][A-Z0-9_]*$", e):
+            v = self.const(e)
+            return None if v is None else {v}
+        if re.match(r"^[a-z]\w*$", e):
+            return self.variable(e, m, env, depth)
+        return None
+
+    def variable(self, n, m, env, depth):
+        t = m.ptype(n)
+        if t == "boolean":
+            return {True, False} if n not in env else self.value(env[n][1], env[n][0], env[n][2], depth + 1)
+        body = m.body
+        decl = re.search(r"\b(?:final\s+)?(?:int|long|short|byte|float|Integer)\s+%s\s*=\s*([^;]+);" % re.escape(n), body)
+        if decl and t is None:
+            writes = len(re.findall(r"(?<![\w.])%s\s*(?:=(?!=)|[-+*/%%&|^]=|\+\+|--)" % re.escape(n), body))
+            if writes != 1:
+                return None
+            init = strip_parens(decl.group(1))
+            r = re.match(r"^(?:wire|hidl)\s*\.\s*ret\w*\s*\(\s*(HalCodes\.\w+|key\s*\(\s*[A-Z]\w*\s*\))\s*\)$", init)
+            if r:
+                return {("read", r.group(1))}
+            return self.value(init, m, env, depth + 1)
+        if t is None:
+            return None
+        guard = self.guard(n, m)
+        if n in env:
+            outer = self.value(env[n][1], env[n][0], env[n][2], depth + 1)
+            if outer is None:
+                return guard
+            return outer if guard is None else {x for x in outer if x in guard}
+        return guard
+
+    def guard(self, n, m):
+        """The values a numeric parameter is held to by a check statement of the member, or None."""
+        g = re.search(r"\boneOf\s*\(\s*%s\s*,\s*([^;]*?)\)\s*\)\s*throw\b" % re.escape(n), m.body)
+        if g:
+            if re.match(r"^rules\(\)\s*\.\s*edidVersions\(\s*\)?$", g.group(1).strip()):
+                return set(EDID_VALUES)
+            vals = [self.value(a, m, {}) for a in javascan.split_top(g.group(1))]
+            return None if any(v is None for v in vals) else set().union(*vals)
+        g = re.search(r"(?<![\w.])checkRange\s*\(\s*[^,]+,\s*%s\s*,\s*([^,]+),\s*([^,)]+)\)\s*;" % re.escape(n), m.body)
+        if g:
+            lo, hi = self.value(g.group(1), m, {}), self.value(g.group(2), m, {})
+            if lo and hi and len(lo) == 1 and len(hi) == 1:
+                return U(next(iter(lo)), next(iter(hi)))
+        return None
+
+
+EDID_VALUES = []
+
+
+def tree_of(arg):
+    if arg and os.path.isfile(os.path.join(arg, HAL, "GmpfBase.java")):
+        return os.path.abspath(arg)
+    return play6_tree.default_app("check_play6_hal")
+
+
+def run_caller_check(src):
+    spec = importlib.util.spec_from_file_location("check_hal_callers_play6", CALLER_CHECK)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    mod.CLIENTS = ("Play6Gmpf.java", "Play6Gmpf2.java")
+    mod.SHARED = {"Play6Gmpf.java": mod.SHARED["GmpfClient.java"], "Play6Gmpf2.java": mod.SHARED["Gmpf2Client.java"]}
+    # the Play 6 bans are rule 3 (by name and Play 6 code), its value rules rules 4 and 5
+    mod.BANNED = {c: {} for c in mod.CLIENTS}
+    mod.EXCEPTIONS, mod.ONLY_ARGS = {}, {}
+    import contextlib
+    import io
+    buf, argv = io.StringIO(), sys.argv
+    try:
+        sys.argv = ["check_hal_callers.py", src]
+        with contextlib.redirect_stdout(buf):
+            rc = mod.main()
+    finally:
+        sys.argv = argv
+    return rc, buf.getvalue().strip()
+
+
+def helper(m):
+    """A member only the clients call (private, or protected for the device clients): followed from its callers."""
+    return "private" in m.mods or "protected" in m.mods
+
+
+def calls(src, name):
+    return re.search(r"(?:\.\s*%s\s*\(|::\s*%s\b)" % (name, name), src) is not None
 
 
 def main():
     if len(sys.argv) > 2:
         print(__doc__)
         return 2
-    app = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else play6_tree.default_app("check_play6_hal")
-    src = os.path.join(app, "src")
-    hal = os.path.join(src, "org/lumen/projector/hal")
-    if not os.path.isdir(src):
-        print("check_play6_hal: no %s" % src)
-        return 2
+    t = Tree(tree_of(sys.argv[1] if len(sys.argv) == 2 else None))
+    tree, hal = t.tree, t.hal
     find = Findings()
-    tab, by_name = load_tsv()
-    try:
-        tab67, by_name67 = load_tsv(TSV_V1167)
-        hashes = load_hashes()
-    except OSError as e:
-        print("check_play6_hal: %s" % e)
-        return 2
-    bad = self_check(tab, by_name)
-    if bad:
-        for b in bad:
-            print("check_play6_hal: SCRIPT TABLE WRONG: " + b)
-        return 2
+    tab, by_name = load_tsv(TSV)
+    tab67, by_name67 = load_tsv(TSV_V1167)
+    self_check(find, tab, by_name)
+    banned = {(c, n): why for c, _, n, why in BAN}
 
-    # ---- rule 1
-    java = []
-    for d, dirs, files in os.walk(app):
+    # ---- rule 1: structure
+    z9x = {os.path.basename(l.split("#", 1)[0].strip())[:-5] for l in open(Z9X_LIST, encoding="utf-8")
+           if l.split("#", 1)[0].strip()}
+    module = {f[:-5] for f in os.listdir(os.path.join(MODULE, "org/lumen/projector/hal")) if f.endswith(".java")}
+    for f in sorted(os.listdir(hal)):
+        if f.endswith(".java") and f[:-5] not in HAL_FILES | z9x | module:
+            find(HAL + "/" + f, "not a Play 6 HAL file (HAL_FILES, the module lumen-gmpf, Play6Projector.gmpf)")
+    for name in sorted(HAL_FILES | {"GmpfBase", "Gmpf2Base", "HidlWire"}):
+        if name not in t.files:
+            find(HAL, "%s.java is missing" % name)
+    internal = re.compile(r"\b(%s)\b" % "|".join(INTERNAL))
+    outside = {}
+    for d, _, files in os.walk(os.path.join(tree, "src")):
         for f in files:
+            if not f.endswith(".java"):
+                continue
             p = os.path.join(d, f)
+            rel = os.path.relpath(p, tree)
             if f in FORBIDDEN_FILES:
-                find(os.path.relpath(p, G), "Z9X HAL file inside the Play 6 tree")
-            if f.endswith(".java") and p.startswith(src + os.sep):
-                java.append(p)
-    java.sort()
-    scanned = {}
-    for p in java:
-        rel = os.path.relpath(p, G)
-        try:
-            jf = javascan.JavaFile(p)
-        except ValueError as e:
-            find(rel, "cannot scan: %s" % e)
-            continue
-        scanned[p] = jf
-        if jf.package == "org.lumen.projector.hal" and jf.class_name not in HAL_CLASSES:
-            find(rel, "class %s in package org.lumen.projector.hal is not one of %s" % (jf.class_name, sorted(HAL_CLASSES)))
-        if jf.package == "org.lumen.projector.hal" and os.path.dirname(p) != hal:
-            find(rel, "package org.lumen.projector.hal outside src/org/lumen/projector/hal")
-        for static, imp in jf.imports:
-            m = re.match(r"org\.lumen\.projector\.hal\.(\*|\w+)", imp)
-            if m and (m.group(1) == "*" or m.group(1) not in HAL_CLASSES):
-                find(rel, "import %s%s" % ("static " if static else "", imp))
-            elif m and static and os.path.dirname(p) != hal:
-                find(rel, "import static %s (outside hal/ a client member is used qualified, so its callers "
-                          "can be checked)" % imp)
-        if os.path.basename(p) != "HidlCaller.java":
-            if TRANSACT_RE.search(jf.m):
-                find(rel, "uses transact itself (only HidlCaller.call may transact)")
-            if GET_SERVICE_RE.search(jf.m):
+                find(rel, "a Z9X client file inside the Play 6 tree")
+            src = javascan.mask(open(p, encoding="utf-8").read())
+            if re.search(r"\.\s*transact\s*\(|::\s*transact\b", src) and f != "HidlCaller.java" \
+                    and not (f in CALLBACKS and rel.startswith(HAL + "/")):
+                find(rel, "transacts itself (only HidlCaller.call may)")
+            if re.search(r"\bHwBinder\s*(?:\.|::)\s*getService\b", src) and f != "HidlCaller.java":
                 find(rel, "uses HwBinder.getService itself (only HidlCaller connects)")
-        for m in re.finditer(r"\borg\.lumen\.projector\.hal\.(\w+)", jf.m):
-            if m.group(1) not in HAL_CLASSES and not jf.m[m.start() - 7:m.start()].strip().endswith("package"):
-                find(rel, "uses org.lumen.projector.hal.%s" % m.group(1))
-    if os.path.isfile(COMMON_FILES):
-        for n, line in enumerate(open(COMMON_FILES, encoding="utf-8"), 1):
-            s = line.split("#", 1)[0].strip()
-            if s and re.search(r"(^|/)hal/", s):
-                find("apps/common/projector/FILES:%d" % n, "lists %s (device HAL files are never shared)" % s)
-        files_note = "FILES checked"
-    else:
-        files_note = "apps/common/projector/FILES not created yet"
-
-    # ---- rule 2 and Note A on the declarations
-    clients = {}
-    for name, cls in CLIENTS.items():
-        p = os.path.join(hal, name)
-        if p in scanned:
-            clients[name] = Client(p, cls, find)
-    others = [Client(p, None, find) for p in java if p in scanned and os.path.dirname(p) == hal
-              and os.path.basename(p) not in CLIENTS and os.path.basename(p) != "HidlCaller.java"]
-    banned = {(c, n): r for c, _, n, r in BAN}
-    ncodes = 0
-    for c in clients.values():
-        for cname, (cls, code, mname) in c.codes.items():
-            ncodes += 1
-            where = "%s %s" % (c.name, cname)
-            if cls == "IBase":
+            if re.search(r"\bimport\s+(?:static\s+)?org\.lumen\.projector\.hal\.\*", src):
+                find(rel, "imports org.lumen.projector.hal.* (name each class)")
+            if rel.startswith(HAL + "/") or rel.startswith("src/org/lumen/hal/"):
                 continue
-            if tab.get((cls, code)) != mname:
-                find(where, "%s %d is %s in the TSV, not %s" % (IFACE[cls], code, tab.get((cls, code), "absent"), mname))
-            if (cls, mname) in banned:
-                find(where, "%s %d %s is banned (Note A: %s)" % (IFACE[cls], code, mname, banned[(cls, mname)]))
-            elif BAN_PATTERN.search(mname):
-                find(where, "%s %d %s is banned by name (factory|aging|cali|McuUpgrade)" % (IFACE[cls], code, mname))
-        seen = {}
-        for cname, (cls, code, _) in c.codes.items():
-            if (cls, code) in seen:
-                find(c.name, "%s and %s both hold %s %d (one constant per code)" % (seen[(cls, code)], cname, cls, code))
-            seen[(cls, code)] = cname
+            outside[rel] = src
+            for m in sorted(set(internal.findall(src))):
+                find(rel, "uses %s (the transport and the tables stay inside the clients)" % m)
+            for m in re.findall(r"\bimport\s+static\s+(org\.lumen\.projector\.hal\.[\w.]+)", src):
+                find(rel, "import static %s (outside hal/ a client member is used qualified, so its callers "
+                          "can be checked)" % m)
+    for n, line in enumerate(open(COMMON_FILES, encoding="utf-8"), 1):
+        if "projector/hal/" in line.split("#", 1)[0]:
+            find("apps/common/projector/FILES:%d" % n, "lists a hal file (device HAL files are never shared)")
 
-    # typed helpers of the synced HidlCaller: name -> number of wire arguments after the code
-    helpers = {}
-    hc = os.path.join(hal, "HidlCaller.java")
-    if os.path.isfile(hc):
-        for mth in javascan.JavaFile(hc).methods():
-            if re.match(r"call\w*$", mth.names[0]) and mth.params and mth.params[0] == ("int", "code"):
-                helpers[mth.names[0]] = None if mth.names[0] == "call" else len(mth.params) - 1
-
-    # ---- rules 3, 4 (Note C) and 5 on every call site
-    nsites = nrule = 0
-    nguarded = 0                                       # rule 7: Play6Gmpf2 methods sending IGmpf2 codes
-    special_methods = {}                               # method name -> caller regex
-    sender_rules = {}                                  # (client file, method name) -> caller regex
-    if GUARDED in clients and not any(m.names[0] == "need" and not m.params and "private" in m.modifiers
-                                      for m in clients[GUARDED].jf.methods()):
-        find(GUARDED, "no private need() (the IGmpf2 identity guard, rule 7)")
-    for c in list(clients.values()) + others:
-        jf = c.jf
-        client = c.cls is not None
-        codes = {}                                     # only this client's own codes (D2)
-        for k, v in c.codes.items():
-            codes[k] = v
-            codes["%s.%s" % (jf.class_name, k)] = v
-        values = dict(c.values)
-        stray_call_sites(find, c, client)
-        for mth in jf.methods():
-            if not mth.body:
+    # ---- rule 2: codes by name
+    hc = {}
+    for m in re.finditer(r"static final int (\w+) = (0x[0-9a-fA-F]+|\d+);\s*// (\w+)",
+                         open(t.files["HalCodes"], encoding="utf-8").read()):
+        name, code, meth = m.group(1), int(m.group(2), 0), m.group(3)
+        cls = PREFIX.get(name.split("_", 1)[0]) if not name.startswith("GMPF2_") else "BpHwGmpf2"
+        hc[name] = (cls, code, meth)
+        if cls == "IBase":
+            if meth != "getHashChain" or code != IBASE_GET_HASH_CHAIN:
+                find("HalCodes." + name, "the only IBase code is getHashChain 0x%08x" % IBASE_GET_HASH_CHAIN)
+        elif cls is None:
+            find("HalCodes." + name, "no interface prefix (GMPF_, GMPF2_, IBASE_)")
+        elif tab.get((cls, code)) != meth:
+            find("HalCodes." + name, "%s %d is %s in the TSV, not %s" % (IFACE[cls], code, tab.get((cls, code), "absent"), meth))
+    if len(hc) != len(t.consts["HalCodes"]):
+        find("HalCodes", "%d constants without the stock method comment" % (len(t.consts["HalCodes"]) - len(hc)))
+    ops = dict(OPS_RE.findall(open(t.files["GmpfOp"], encoding="utf-8").read()))
+    codes_src = javascan.mask(open(t.files["Play6Codes"], encoding="utf-8").read())
+    table = {}                                             # table -> {OP: HalCodes name}
+    for tname, prefix in (("GMPF", "GMPF"), ("GMPF2", "GMPF2")):
+        table[tname] = {}
+        body = re.search(r"\b%s\s*=\s*new\s+GmpfCodes\s*<[^>]*>\s*\(\s*\)(.*?);" % tname, codes_src, re.S)
+        if not body:
+            find("Play6Codes", "no table %s" % tname)
+            continue
+        rows = re.findall(r"\.\s*put\s*\(\s*([A-Z][A-Z0-9_]*)\s*,\s*([^)]*)\)", body.group(1))
+        for op, ref in rows:
+            where = "Play6Codes.%s %s" % (tname, op)
+            r = re.match(r"^HalCodes\.((%s)_[A-Z0-9_]+)$" % prefix, ref.strip())
+            if not r or (prefix == "GMPF" and r.group(1).startswith("GMPF2_")):
+                find(where, "%s is not a HalCodes.%s_ constant (each table its own interface)" % (ref.strip(), prefix))
                 continue
-            b0, b1 = mth.body
-            body = jf.m[b0:b1 + 1]
-            mname = mth.names[0]
-            where = "%s:%d %s" % (c.name, mth.line(jf.src), mname)
-            pnames = {n: t for t, n in mth.params}
-            helper = bool(re.match(r"(call\w*|request)$", mname)) and "private" in mth.modifiers
-            transacts = False
-            guard_at = None                            # rule 7: first IGmpf2 call site of the method
-            for cm in CALL_RE.finditer(body):
-                if not client:
-                    find(where, "%s( in %s: only Play6Gmpf and Play6Gmpf2 use the transport (Note B)"
-                         % (cm.group(1), c.name))
+            ref = r.group(1)
+            if ref not in hc:
+                find(where, "HalCodes.%s does not exist" % ref)
+            elif ops.get(op) != hc[ref][2]:
+                find(where, "the operation is stock %s, HalCodes.%s is %s" % (ops.get(op), ref, hc[ref][2]))
+            if op in table[tname]:
+                find(where, "two rows")
+            table[tname][op] = ref
+    for f in os.listdir(hal):
+        if not f.endswith(".java") or f == "HalCodes.java":
+            continue
+        refs = set(re.findall(r"\bHalCodes\.([A-Z0-9_]+)", javascan.mask(open(os.path.join(hal, f), encoding="utf-8").read())))
+        if refs and f not in OWN_PREFIX:
+            find(HAL + "/" + f, "names HalCodes (only the clients, the table and the guard do)")
+        for ref in sorted(refs):
+            pre = "GMPF2" if ref.startswith("GMPF2_") else ref.split("_", 1)[0]
+            if f in OWN_PREFIX and pre not in OWN_PREFIX[f]:
+                find(HAL + "/" + f, "names HalCodes.%s: only %s codes go out over this interface (D2)"
+                     % (ref, "/".join(sorted(OWN_PREFIX[f]))))
+
+    # ---- rule 3: Note A
+    for name, (cls, code, meth) in sorted(hc.items()):
+        if cls in IFACE and ((cls, meth) in banned or BAN_PATTERN.search(meth)):
+            find("HalCodes." + name, "%s %d %s is banned (Note A: %s)" % (IFACE[cls], code, meth,
+                                                                         banned.get((cls, meth), "by name")))
+
+    # ---- rule 4: Note C on the sources
+    rules_src = javascan.mask(open(t.files["Play6Rules"], encoding="utf-8").read())
+    edid = re.search(r"\bint\s*\[\]\s*EDID\s*=\s*\{([^}]*)\}", rules_src)
+    EDID_VALUES[:] = [t.consts["Play6Gmpf"].get(x.strip().split(".")[-1]) for x in edid.group(1).split(",")] if edid else []
+    if not edid or None in EDID_VALUES:
+        find("Play6Rules", "no int[] EDID of Play6Gmpf constants")
+    sites = []                                             # (entry member, (cls, code), [value sets], where, site offset)
+    entries = {}
+    unproven = []
+    for client, (base, tname, prefix, cls) in sorted(VIEWS.items()):
+        cm, _ = members(t.files[client])
+        bm, _ = members(t.files[base])
+        consts = dict(t.consts[base])
+        consts.update(t.consts[client])
+        consts.update({"HalCodes." + k: v for k, v in t.consts["HalCodes"].items()})
+        over = {(m.name, len(m.params)) for m in cm}
+        supered = {m.name for m in cm if re.search(r"\bsuper\s*\.\s*%s\s*\(" % m.name, m.body)}
+        view = [m for m in cm] + [m for m in bm if (m.name, len(m.params)) not in over or m.name in supered]
+        by = {}
+        for m in view:
+            by.setdefault(m.name, []).append(m)
+        entries[client] = view
+        ev = Eval(t, consts, find, by)
+
+        def code_of(expr, m, env):
+            """[(cls, code, label)] a code expression can name (empty: not on the Play 6), or None."""
+            e = strip_parens(expr)
+            r = re.match(r"^key\s*\(\s*(.+)\)$", e)
+            if r:
+                inner = strip_parens(r.group(1))
+                h = re.match(r"^has\s*\(\s*([A-Z]\w*)\s*\)\s*\?\s*([A-Z]\w*)\s*:\s*([A-Z]\w*)$", inner)
+                names = list(h.groups()[1:]) if h else [inner]
+                out = []
+                for op in names:
+                    if re.match(r"^[a-z]\w*$", op):
+                        if op in env:
+                            sub = code_of("key(%s)" % env[op][1], env[op][0], env[op][2])
+                            if sub is None:
+                                return None
+                            out += sub
+                            continue
+                        return None
+                    if op not in ops:
+                        return None
+                    ref = table[tname].get(op)
+                    if ref and ref in hc:
+                        out.append((hc[ref][0], hc[ref][1], op))
+                return out
+            r = re.match(r"^HalCodes\.(\w+)$", e)
+            if r:
+                return [(hc[r.group(1)][0], hc[r.group(1)][1], r.group(1))] if r.group(1) in hc else None
+            if re.match(r"^[a-z]\w*$", e):
+                d = re.search(r"\b(?:Integer|int|K)\s+%s\s*=\s*([^;]+);" % e, m.body)
+                if d:
+                    return code_of(d.group(1), m, env)
+                if e in env:
+                    return code_of(env[e][1], env[e][0], env[e][2])
+            return None
+
+        def walk(m, env, entry, depth=0):
+            """Every send site reached from member m (followed into private helpers and super calls)."""
+            if depth > 4:
+                return
+            body = m.body
+            for s in SEND_WIRE.finditer(body):
+                obj, meth = s.group(1), s.group(2)
+                if meth in NO_SEND or (obj == "guard" and meth != "retF32"):
                     continue
-                recv = receiver(body, cm.start())
-                if recv not in (None, "this", "super"):
-                    find(where, "%s.%s(: a client transacts only on its own binder (unqualified, this. or super.)"
-                         % (recv, cm.group(1)))
-                    continue
-                args, _ = call_args(body, cm.end() - 1)
+                args, _ = call_args(body, s.end() - 1)
                 if not args:
-                    continue                           # request() without arguments
-                nsites += 1
-                transacts = True
-                first = strip_expr(args[0])
-                mapped = re.match(r"^c\s*\(\s*([\w.]+)\s*\)$", first) if c.name == GUARDED else None
-                if mapped:
-                    first = mapped.group(1)
-                if first in codes:
-                    cls, code, _ = codes[first]
-                    if c.name == GUARDED and cls == "BpHwGmpf2" and not mapped:
-                        find(where, "IGmpf2 %s goes out without c(): on v1.1.67 it would be another method "
-                                    "(rule 8, send c(%s))" % (first, first))
-                    if mapped and cls != "BpHwGmpf2":
-                        find(where, "c(%s): only IGmpf2 codes go through the vendor table" % first)
-                    if c.name == GUARDED and cls == "BpHwGmpf2" and guard_at is None:
-                        guard_at = (cm.start(), first)
-                elif helper and mth.params and first == mth.params[0][1]:
-                    continue                           # private helper passing its own code parameter on
+                    continue
+                where = "%s.%s" % (m.cls, m.name) + ("" if entry is m else " (from %s)" % entry.name)
+                codes = code_of(args[0], m, env)
+                if codes is None:
+                    find(where, "%s.%s(%s, ..): the code is not key(OP), HalCodes.X or a local holding one"
+                         % (obj, meth, args[0]))
+                    continue
+                if not codes:
+                    continue                               # no Play 6 row: key() refuses, nothing is sent
+                if obj == "hidl" and meth == "send":
+                    pos = s.start()
+                    vals = [w.group(2) for w in re.finditer(r"\bq\s*\.\s*(write\w+)\s*\(([^;]*)\)\s*;", body[:pos])
+                            if w.group(1) != "writeInterfaceToken"]
+                    kinds = [w.group(1) for w in re.finditer(r"\bq\s*\.\s*(write\w+)\s*\(", body[:pos])
+                             if w.group(1) != "writeInterfaceToken"]
+                    vargs = [(k, v) for k, v in zip(kinds, vals)]
                 else:
-                    other = [o.name for o in clients.values() if o is not c and (
-                        first in o.codes or first.startswith(o.jf.class_name + ".") and first.split(".")[-1] in o.codes)]
-                    find(where, "first argument of %s( is %r, not a code constant of %s%s" % (
-                        cm.group(1), first, c.name,
-                        " (a code of %s would go out over this client's interface, D2)" % other[0] if other else ""))
-                    continue
-                rule = VALUE_RULES.get((cls, code))
-                if not rule:
-                    continue
-                nrule += 1
-                callee = cm.group(1)
-                if callee == "call":
-                    pv = strip_expr(args[1]) if len(args) > 1 else ""
-                    wire = []
-                    if re.match(r"^\w+$", pv):
-                        for w in re.finditer(r"\b%s\s*\.\s*write(\w+)\s*\(" % re.escape(pv), body[:cm.start()]):
-                            if w.group(1) == "InterfaceToken":
-                                continue
-                            a, _ = call_args(body, w.end() - 1)
-                            wire.append(a[0] if a else "")
-                elif callee in helpers and helpers[callee] is not None:
-                    wire = args[1:]
-                else:
-                    find(where, "%s %d (Note C) is sent through %s(; use a HidlCaller call* helper or call() with "
-                                "q.write*( so the values can be checked" % (IFACE[cls], code, callee))
-                    continue
-                if len(wire) != len(rule["args"]):
-                    find(where, "%s %d %s: %d wire argument(s), the rule has %d" % (IFACE[cls], code, rule["name"],
-                                                                                   len(wire), len(rule["args"])))
-                    continue
-                for i, (expr, spec) in enumerate(zip(wire, rule["args"])):
-                    kind, val = evaluate(expr, body, cm.start(), pnames, values, codes)
-                    tag = "%s %d %s argument %d (%s)" % (IFACE[cls], code, rule["name"], i + 1,
-                                                         re.sub(r'"\s*"', '"..."', " ".join(expr.split())))
-                    if spec == "float_checked":           # a float argument: only through a check*( call
-                        if not re.match(r"^(?:\w+\s*\.\s*)?check\w*\s*\(", strip_expr(expr)):
-                            find(where, "%s: must be passed through a check*( call" % tag)
+                    vargs = [("arg", a) for a in args[1:]]
+                values = []
+                for kind, a in vargs:
+                    if kind in ("writeBuffer", "writeStrongBinder") or "->" in a or re.search(r"\b(toBlob|cb|callback)\b", a):
+                        values.append({"opaque"})
                         continue
-                    if spec == "pid":
-                        if " ".join(strip_expr(expr).split()) not in PID_EXPRS:
-                            find(where, "%s: must be Process.myPid() (our own pid)" % tag)
-                        continue
-                    if spec in ("bool", "true"):
-                        if kind != "bool" or (spec == "true" and val != {True}):
-                            find(where, "%s: must be %s" % (tag, "the literal true" if spec == "true" else "a boolean"))
-                        continue
-                    if isinstance(spec, tuple):        # ("read", code)
-                        if kind != "read" or val != ("BpHwGmpf", spec[1]):
-                            find(where, "%s: must be the value just read with IGmpf %d in this method%s" % (
-                                tag, spec[1], " (%s)" % val if kind == "written" else ""))
-                        continue
-                    if kind != "ints":
-                        find(where, "%s: value not provable (%s); use a value constant, checkRange or checkSet"
-                             % (tag, val if kind == "written" else kind))
-                        continue
-                    if not val <= spec:
-                        find(where, "%s: may send %s, allowed %s" % (tag, fmt(val - spec), fmt(spec)))
-                    for (pos, special), meth in rule.get("only_in", {}).items():
-                        if pos == i and special in val and (mname != meth or val != {special}):
-                            find(where, "%s: the value %d may only be sent, as a fixed value, from %s"
-                                 % (tag, special, meth))
-                for meth, rx in rule.get("method_callers", {}).items():
-                    special_methods[meth] = rx
-                if "sender_callers" in rule:
-                    sender_rules[(c.name, mname)] = rule["sender_callers"]
-                if rule.get("nui") and not re.search(r"\brequireNuiReader\s*\(", body[:cm.start()]):
-                    find(where, "%s %d %s: requireNuiReader( must come first (NUI fifo gate)" % (IFACE[cls], code, rule["name"]))
-                if rule.get("method_prefix") and not mname.startswith(rule["method_prefix"]):
-                    find(where, "%s %d %s: only from a %s* method" % (IFACE[cls], code, rule["name"], rule["method_prefix"]))
-            # rule 7: the identity guard before the first IGmpf2 send of the method
-            if guard_at is not None:
+                    v = ev.value(a, m, env)
+                    typ = m.ptype(strip_parens(a)) or ""
+                    if v is None and typ and typ not in NUMERIC and typ != "boolean":
+                        v = {"opaque"}
+                    values.append(v)
+                    if v is None:
+                        unproven.append((where, a))
+                for c in codes:
+                    sites.append((entry, c, values, where, s.start(), m))
+            for c in re.finditer(r"(?<![\w.])(?:this\s*\.\s*)?(\w+)\s*\(", body):
+                callee = c.group(1)
+                if callee in by and callee != m.name and any(helper(x) for x in by[callee]):
+                    args, _ = call_args(body, c.end() - 1)
+                    for x in by[callee]:
+                        if len(x.params) == len(args) and helper(x):
+                            walk(x, {p[1]: (m, a, env) for p, a in zip(x.params, args)}, entry, depth + 1)
+            for c in re.finditer(r"\bsuper\s*\.\s*(\w+)\s*\(", body):
+                args, _ = call_args(body, c.end() - 1)
+                for x in [b for b in bm if b.name == c.group(1) and len(b.params) == len(args)]:
+                    walk(x, {p[1]: (m, a, env) for p, a in zip(x.params, args)}, entry, depth + 1)
+
+        for m in view:
+            if helper(m) or m.name == client:
+                continue
+            if m.cls == base and (m.name, len(m.params)) in over:
+                continue                                   # reached through super from the override
+            walk(m, {}, m)
+
+    note_c = 0
+    rule_of = {}
+    for (cls, code), rule in VALUE_RULES.items():
+        rule_of[(cls, code)] = rule
+    seen_entries = set()
+    for entry, (cls, code, label), values, where, pos, m in sites:
+        rule = rule_of.get((cls, code))
+        if rule is None:
+            continue
+        note_c += 1
+        name = entry.name
+        if name in rule.get("forbidden", set()):
+            continue
+        if name not in rule["senders"]:
+            find(where, "sends %s %d %s (%s) but is no sender of its Note C rule: add it to VALUE_RULES with its "
+                        "values, or forbid it" % (IFACE[cls], code, rule["name"], label))
+            continue
+        seen_entries.add((cls, code, name))
+        spec = rule["senders"][name] or rule["args"]
+        if len(values) != len(spec):
+            find(where, "%s %d %s: %d wire argument(s), the rule has %d" % (IFACE[cls], code, rule["name"],
+                                                                         len(values), len(spec)))
+            continue
+        for i, (v, s) in enumerate(zip(values, spec)):
+            tag = "%s %d %s argument %d" % (IFACE[cls], code, rule["name"], i + 1)
+            if v is None:
+                continue                                    # reported as unproven below
+            if isinstance(s, set):
+                bad = {x for x in v if isinstance(x, bool) or not isinstance(x, int) or x not in s}
+                if bad:
+                    find(where, "%s: may send %s, allowed %s" % (tag, sorted(map(str, bad)), sorted(s)))
+            elif s == B:
+                if not v <= {True, False}:
+                    find(where, "%s: must be a boolean, is %s" % (tag, v))
+            elif s == "true":
+                if v != {True}:
+                    find(where, "%s: must be the literal true" % tag)
+            elif s == "pid":
+                if v != {"pid"}:
+                    find(where, "%s: must be Process.myPid() (our own pid)" % tag)
+            elif s == "float_checked":
+                if v != {"checked"}:
+                    find(where, "%s: must be passed through a check*( call" % tag)
+            elif isinstance(s, tuple) and s[0] == "read":
+                want = [k for k, (c2, n2, _) in hc.items() if (c2, n2) == (cls, s[1])]
+                got = {x[1] for x in v if isinstance(x, tuple)}
+                ok = bool(got) and all(g in ["HalCodes." + w for w in want] or
+                                       (g.startswith("key") and table[VIEWS[entry.cls][1] if entry.cls in VIEWS else "GMPF"].get(
+                                           re.sub(r"key\s*\(\s*(\w+)\s*\)", r"\1", g)) in want) for g in got) and len(v) == len(got)
+                if not ok:
+                    find(where, "%s: must be the value just read with %s %d in this member" % (tag, IFACE[cls], s[1]))
+        if rule.get("nui") and "requireNuiReader(" not in m.body[:pos]:
+            find(where, "%s %d %s: requireNuiReader( must come first (NUI fifo gate)" % (IFACE[cls], code, rule["name"]))
+    for (cls, code), rule in sorted(VALUE_RULES.items()):
+        if not ("GMPF2_" if cls == "BpHwGmpf2" else "GMPF_") or not any(
+                (c2, n2) == (cls, code) for c2, n2, _ in hc.values()):
+            continue
+        for name in rule["senders"]:
+            if (cls, code, name) not in seen_entries:
+                find("VALUE_RULES %s %d" % (IFACE[cls], code), "sender %s sends nothing of it (stale rule)" % name)
+        for name in sorted(rule.get("forbidden", set())):
+            for rel, src in sorted(outside.items()):
+                if calls(src, name):
+                    find(rel, "calls %s: it would send %s %d outside the Play 6 rule" % (name, IFACE[cls], code))
+        for name, rx in rule.get("callers", {}).items():
+            for rel, src in sorted(outside.items()):
+                if calls(src, name) and not re.search(rx, "/" + rel):
+                    find(rel, "calls %s: only %s may (Note C)" % (name, rx if rx != "^$" else "the Play 6 clients"))
+            for client in VIEWS:
+                for m in entries[client]:
+                    if m.name != name and m.name not in rule.get("forbidden", set()) \
+                            and re.search(r"(?<![\w$])%s\s*\(|::\s*%s\b" % (name, name), m.body) \
+                            and not (rx == "^$" and m.cls.startswith("Play6")):
+                        find("%s.%s" % (m.cls, m.name), "calls %s: inside hal/ it is not handed on (Note C)" % name)
+    for where, a in sorted(set(unproven)):
+        find(where, "wire argument %s: value not provable (a constant, a value enum, checkRange / oneOf first)" % a)
+
+    # ---- rule 5: Note C in the wire golden
+    rule5 = check_golden(find, tab, tab67, {(c, n) for c, n, _ in hc.values()})
+
+    # ---- rule 6: callers
+    rc, caller_line = run_caller_check(os.path.join(tree, "src"))
+    forbidden = {n for r in VALUE_RULES.values() for n in r.get("forbidden", set())} | set(SHARED_UNUSED)
+    if rc != 0:
+        left = [l for l in caller_line.split("\n")
+                if not any(re.search(r"\.%s transacts but has no caller" % re.escape(n), l) for n in forbidden)
+                and not l.startswith("check_hal_callers: FAILED")]
+        if any("transacts but has no caller" in l or "banned" in l or "outside a recognised" in l for l in left):
+            find("check_hal_callers", " | ".join(left))
+        else:
+            caller_line = ("OK but the Note C forbidden members and SHARED_UNUSED (%s), which have no caller"
+                           % ", ".join(sorted(forbidden)))
+
+    # ---- rule 7: the identity guard
+    g2 = javascan.mask(open(t.files["Play6Gmpf2"], encoding="utf-8").read())
+    if not re.search(r"\bthis\s*\(\s*new\s+Play6Gmpf2Wire\s*\(\s*\)\s*\)", g2) \
+            or not re.search(r"\bsuper\s*\(\s*guard\s*,\s*Play6Codes\.GMPF2\s*,", g2):
+        find("Play6Gmpf2", "does not hand its Play6Gmpf2Wire (the guard) and Play6Codes.GMPF2 to Gmpf2Base")
+    if re.search(r"\b(HidlWire|HidlCaller|hidl)\b", g2):
+        find("Play6Gmpf2", "holds another transport than the guard")
+    if re.search(r"\b(HidlWire|HidlCaller|hidl)\b", javascan.mask(open(t.files["Gmpf2Base"], encoding="utf-8").read())):
+        find("Gmpf2Base", "holds a transport of its own (it sends through the wire it is given only)")
+    wm, wsrc = members(t.files["Play6Gmpf2Wire"])
+    nguarded = 0
+    for m in wm:
+        for s in re.finditer(r"\bhidl\s*\.\s*(\w+)\s*\(", m.body):
+            if s.group(1) in NO_SEND:
+                continue
+            args, _ = call_args(m.body, s.end() - 1)
+            first = args[0].replace(" ", "") if args else ""
+            if m.name == "readHashChain" and first == "HalCodes.IBASE_GET_HASH_CHAIN":
+                continue
+            if first not in ("c(k)",):
+                find("Play6Gmpf2Wire.%s" % m.name, "hidl.%s(%s, ..) does not go out on c(k) (guard and vendor table)"
+                     % (s.group(1), first))
+            else:
                 nguarded += 1
-                if not guarded(body, guard_at[0]):
-                    find(where, "sends IGmpf2 %s without need() first (a `need();` statement that stands before the "
-                                "call; the IGmpf2 identity guard, D2)" % guard_at[1])
-            # rule 5: every transacting method, any visibility (a private call* helper is part of the transport)
-            if transacts and not helper:
-                checked = " ".join(body[x.end():javascan.matching(body, x.end() - 1, "(", ")")]
-                                   for x in re.finditer(r"\bcheck\w*\s*\(", body))
-                for t, n in mth.params:
-                    if t not in NUMERIC:
-                        continue
-                    if not re.search(r"\b%s\b" % re.escape(n), checked):
-                        find(where, "numeric parameter %s is not passed through checkRange / a set check" % n)
-                    if writes(body, n):
-                        find(where, "numeric parameter %s is assigned in a transacting method" % n)
+        if m.name != "need" and re.search(r"\bidentity\s*=\s*Gmpf2Identity\.OPEN|\bvendor\s*=", m.body):
+            find("Play6Gmpf2Wire.%s" % m.name, "opens the guard or picks the vendor (only need())")
+    by_w = {m.name: m for m in wm}
+    if "c" not in by_w or not by_w["c"].body.strip().startswith("need();"):
+        find("Play6Gmpf2Wire.c", "does not start with need()")
+    if "need" not in by_w or not re.search(r"\bGmpf2Vendor\.of\s*\(", by_w["need"].body):
+        find("Play6Gmpf2Wire.need", "does not select the vendor through Gmpf2Vendor.of(")
+    if "drop" not in by_w or not re.search(r"\bidentity\s*=\s*Gmpf2Identity\.UNKNOWN", by_w["drop"].body):
+        find("Play6Gmpf2Wire.drop", "does not reset the guard for the next connection")
+    if re.search(r"SystemProperties|getprop|System\.getProperty", wsrc):
+        find("Play6Gmpf2Wire", "reads a property (no switch may open the guard)")
 
-    # callers of the methods that may send special values
-    for meth, rx in special_methods.items():
-        check_callers(find, meth, rx, scanned, hal)
-    for (cfile, meth), rx in sender_rules.items():
-        check_callers(find, meth, rx, scanned, hal)
-
-    # ---- rule 8
-    rule8 = "skipped (no %s)" % GUARDED
-    if GUARDED in clients:
-        rule8 = check_vendor_tables(find, clients[GUARDED], tab, tab67, by_name67, hashes)
-
-    # ---- rule 6
-    caller_line = "skipped (no Play 6 client yet)"
-    if clients:
-        caller_line = run_caller_check(src, sorted(clients))
-        if not caller_line.startswith("check_hal_callers: OK"):
-            find("check_hal_callers", caller_line)
+    # ---- rule 8: the vendor code tables
+    rule8 = check_vendors(find, t, hc, tab, tab67, by_name67)
 
     for e in find.errors:
         print("check_play6_hal: ERROR " + e)
-    print("check_play6_hal: rule 1: %d java files, %s" % (len(java), files_note))
-    print("check_play6_hal: rules 2-5: clients %s, %d code constants, %d call sites, %d with a Note C rule"
-          % (", ".join(sorted(clients)) or "none", ncodes, nsites, nrule))
+    print("check_play6_hal: rule 1: %d hal files, %d Play 6 files outside hal/" % (
+        len([f for f in os.listdir(hal) if f.endswith(".java")]), len(outside)))
+    print("check_play6_hal: rules 2-3: %d HalCodes constants, %d + %d table rows, %d send sites in the Play 6 view"
+          % (len(hc), len(table.get("GMPF", {})), len(table.get("GMPF2", {})), len(sites)))
+    print("check_play6_hal: rule 4: %d Note C codes, %d of their send sites" % (len(VALUE_RULES), note_c))
+    print("check_play6_hal: rule 5: " + rule5)
     print("check_play6_hal: rule 6: " + caller_line.replace("\n", " | "))
-    rule7 = ("%s: %d method(s) send IGmpf2 codes, each checked for need() first" % (GUARDED, nguarded)
-             if GUARDED in clients else "skipped (no %s)" % GUARDED)
-    print("check_play6_hal: rule 7: " + rule7)
+    print("check_play6_hal: rule 7: Play6Gmpf2Wire: %d transactions on c(k)" % nguarded)
     print("check_play6_hal: rule 8: " + rule8)
     if find.errors:
         print("check_play6_hal: FAILED (%d)" % len(find.errors))
@@ -682,392 +924,105 @@ def main():
     return 0
 
 
-def load_hashes():
-    """(vendor build, interface) -> hash, from research/play6/hidl_hashes.txt (hidl_hash.py)."""
-    out = {}
+def golden_value(tok):
+    kind, _, v = tok.partition(":")
+    if kind in ("i32", "i8", "u8", "i64"):
+        return int(v)
+    if kind == "b":
+        return v == "true"
+    if kind == "f":
+        return ("float", struct.unpack(">f", struct.pack(">i", int(v)))[0])
+    return (kind, v)
+
+
+def check_golden(find, tab, tab67, named):
+    if not os.path.isfile(GOLDEN):
+        find("rule 5", "no wire golden %s" % os.path.relpath(GOLDEN, G))
+        return "no golden"
+    pid = int(re.search(r"return\s+(\d+)\s*;", open(STUB_PID, encoding="utf-8").read()).group(1))
+    by = {(cls, r["name"]): (code, r) for (cls, code), r in VALUE_RULES.items()}
+    hit = {}
+    vendor = "v1.7.116"
+    n = 0
+    for ln, line in enumerate(open(GOLDEN, encoding="utf-8"), 1):
+        if line.startswith("# pass"):
+            vendor = "v1.1.67" if "v1.1.67" in line else "v1.7.116"
+        elif line.startswith("# scripted"):
+            vendor = "any"
+        m = re.match(r"^  TX \S+::(IGmpf2?) (\d+) f\d+ tok:(\S+)(.*)$", line)
+        if not m or m.group(3).startswith("android.hidl"):
+            continue
+        cls = "BpHwGmpf2" if m.group(1) == "IGmpf2" else "BpHwGmpf"
+        code = int(m.group(2))
+        tabs = [tab] if cls == "BpHwGmpf" or vendor == "v1.7.116" else [tab67] if vendor == "v1.1.67" else [tab, tab67]
+        names = {x.get((cls, code)) for x in tabs} - {None}
+        args = [golden_value(x) for x in m.group(4).split()]
+        for name in names:
+            if (cls, name) not in by:
+                continue
+            rcode, rule = by[(cls, name)]
+            if vendor == "any" and len(names) > 1:
+                continue                                   # a scripted IGmpf2 code of either build: not decidable
+            n += 1
+            hit[(cls, rcode)] = hit.get((cls, rcode), 0) + 1
+            where = "golden:%d %s %d %s" % (ln, IFACE[cls], rcode, name)
+            if len(args) != len(rule["args"]):
+                find(where, "%d wire arguments, the rule has %d" % (len(args), len(rule["args"])))
+                continue
+            for i, (v, s) in enumerate(zip(args, rule["args"])):
+                ok = ((isinstance(s, set) and not isinstance(v, bool) and v in s) or
+                      (s == B and isinstance(v, bool)) or (s == "true" and v is True) or
+                      (s == "pid" and v == pid) or (isinstance(s, tuple) and s[0] == "read" and isinstance(v, int)) or
+                      (s == "float_checked" and isinstance(v, tuple) and v[0] == "float" and 0 < v[1] <= 45))
+                if not ok:
+                    find(where, "argument %d is %r, outside the rule" % (i + 1, v))
+    for key, rule in sorted(VALUE_RULES.items()):
+        if key not in hit and key in named:
+            find("rule 5", "%s %d %s is never sent in the wire golden (the rule is not exercised)"
+                 % (IFACE[key[0]], key[1], rule["name"]))
+    return "%d Note C transactions of the wire golden, %d of %d rules exercised (%d without a HalCodes constant)" % (
+        n, len(hit), len(VALUE_RULES), len(set(VALUE_RULES) - named))
+
+
+def check_vendors(find, t, hc, tab, tab67, by_name67):
+    src = open(t.files["Gmpf2Vendor"], encoding="utf-8").read()
+    rows = {}
     for line in open(HASHES, encoding="utf-8"):
-        p = line.rstrip("\n").split("\t")
-        if len(p) >= 4 and not line.startswith("#"):
-            out[(p[0], p[1].split("::")[-1])] = p[3]
-    return out
-
-
-def norm(text):
-    return " ".join(text.split())
-
-
-def check_vendor_tables(find, c, tab, tab67, by_name67, hashes):
-    """Rule 8 on Play6Gmpf2 (see the module docstring). Returns the summary line."""
-    jf, where = c.jf, c.name
-    nfind = len(find.errors)
-    # IGmpf has no map: its v1.1.67 table must be the v1.7.116 one; Note A absences hold on v1.1.67 too
-    g1 = {k: v for k, v in tab.items() if k[0] == "BpHwGmpf"}
-    g67 = {k: v for k, v in tab67.items() if k[0] == "BpHwGmpf"}
-    if g1 != g67:
-        find("vendor v1.1.67", "the IGmpf table differs from v1.7.116 (%d codes differ); Play6Gmpf has no code map"
-             % len(set(g1.items()) ^ set(g67.items())))
+        p = line.split()
+        if len(p) >= 4 and p[1].endswith("::IGmpf2"):
+            rows[p[0]] = p[3]
+    consts = re.findall(r"^\s{4}(V\w+)\(\"([\w.]+)\",\s*\"([0-9a-f]{64})\"", src, re.M)
+    if [(c, v) for c, v, _ in consts] != list(ACCEPTED):
+        find("Gmpf2Vendor", "holds %s, expected %s" % ([(c, v) for c, v, _ in consts], list(ACCEPTED)))
+    for c, v, h in consts:
+        if v not in rows:
+            find("Gmpf2Vendor." + c, "research/play6/hidl_hashes.txt has no %s IGmpf2 row" % v)
+        elif rows[v] != h:
+            find("Gmpf2Vendor." + c, "hash %s, hidl_hashes.txt %s IGmpf2 is %s" % (h, v, rows[v]))
+    if not re.search(r"^\s{4}V1_7_116\([^\n]*,\s*null\s*\)\s*,", src, re.M):
+        find("Gmpf2Vendor.V1_7_116", "must have no table (its numbers are the HalCodes constants)")
+    mapped = {}
+    for ref, n in re.findall(r"\{\s*HalCodes\.(GMPF2_[A-Z0-9_]+)\s*,\s*(\d+)\s*\}", src):
+        meth = hc.get(ref, (None, None, None))[2]
+        if ref in mapped:
+            find("Gmpf2Vendor.V1_1_67", "two rows for %s" % ref)
+        mapped[ref] = int(n)
+        if tab67.get(("BpHwGmpf2", int(n))) != meth:
+            find("Gmpf2Vendor.V1_1_67 " + ref, "%s maps to %s, which is %s on v1.1.67" % (meth, n, tab67.get(("BpHwGmpf2", int(n)))))
+    if len(re.findall(r"\{\s*HalCodes\.", src)) != len(mapped):
+        find("Gmpf2Vendor.V1_1_67", "a row that is not {HalCodes.GMPF2_X, N}")
+    for ref, (cls, code, meth) in sorted(hc.items()):
+        if cls == "BpHwGmpf2" and ref not in mapped and ("BpHwGmpf2", meth) in by_name67:
+            find("Gmpf2Vendor.V1_1_67", "no row for %s (%s is %d on v1.1.67)" % (ref, meth, by_name67[("BpHwGmpf2", meth)]))
+    absent = sorted(meth for ref, (cls, code, meth) in hc.items() if cls == "BpHwGmpf2" and ref not in mapped)
+    diff = [k for k in set(tab) | set(tab67) if k[0] == "BpHwGmpf" and tab.get(k) != tab67.get(k)]
+    if diff:
+        find("vendor v1.1.67", "the IGmpf table differs from v1.7.116 (%d codes): Play6Gmpf has no code map" % len(diff))
     for cls, code, name, _ in BAN:
         if code is None and (cls, name) in by_name67:
-            find("vendor v1.1.67", "BAN %s %s is absent on v1.7.116 but present on v1.1.67 (code %d): review"
-                 % (cls, name, by_name67[(cls, name)]))
-    # the accepted hash constants equal hidl_hashes.txt
-    strings = {}
-    for f in jf.fields():
-        if {"static", "final"} <= f.modifiers and f.type == "String":
-            for n, init in f.declarators:
-                strings[n] = init.strip()
-    for const, vendor, _ in ACCEPTED:
-        want = hashes.get((vendor, "IGmpf2"))
-        if want is None:
-            find(where, "research/play6/hidl_hashes.txt has no %s IGmpf2 row" % vendor)
-        elif strings.get(const) != '"%s"' % want:
-            find(where, "%s is %s, hidl_hashes.txt %s IGmpf2 is %s" % (const, strings.get(const, "missing"), vendor, want))
-    # enum Table: exactly the accepted tables, in order, with their vendor labels
-    enum = [mm for mm in jf.members if mm.kind == "type" and mm.names == ["Table"]]
-    if len(enum) != 1 or not re.match(r"^(?:private\s+)?enum\s+Table\s*\{", norm(enum[0].mcode)):
-        find(where, "no private enum Table (the vendor code tables)")
-    else:
-        body = enum[0].code[enum[0].code.index("{") + 1:]
-        consts = re.findall(r"(\w+)\s*\(\s*\"([^\"]*)\"\s*\)\s*[,;]", body[:body.index(";") + 1])
-        if consts != [(e, v) for _, v, e in ACCEPTED]:
-            find(where, "enum Table holds %s, expected %s" % (consts, [(e, v) for _, v, e in ACCEPTED]))
-    meths = {}
-    for mth in jf.methods():
-        meths.setdefault(mth.names[0], []).append(mth)
-
-    def body_of(name, params):
-        ms = meths.get(name, [])
-        if len(ms) != 1 or not ms[0].body or "private" not in ms[0].modifiers or ms[0].params != params:
-            find(where, "rule 8 needs exactly one private %s(%s)" % (name, ", ".join("%s %s" % p for p in params)))
-            return None
-        b0, b1 = ms[0].body
-        return norm(jf.m[b0:b1 + 1])
-    # tableFor: one if per accepted hash, then return null
-    tf = body_of("tableFor", [("String", "hash")])
-    want_tf = norm("{ %s return null; }" % " ".join("if (%s.equals(hash)) return Table.%s;" % (k, e) for k, _, e in ACCEPTED))
-    if tf is not None and tf != want_tf:
-        find(where, "tableFor(String hash) is not exactly: %s" % want_tf)
-    # need(): selects through tableFor and names no hash constant; only need() writes table / opens the guard
-    nd = body_of("need", [])
-    if nd is not None:
-        if "tableFor(" not in nd:
-            find(where, "need() does not select the table through tableFor(")
-        for k, _, _ in ACCEPTED:
-            if re.search(r"\b%s\s*(?:\.\s*(?:equals|compareTo|contentEquals)\w*\s*\(|[!=]=)|"
-                         r"(?:\bequals\w*\s*\(|[!=]=)\s*%s\b" % (k, k), nd):
-                find(where, "need() compares %s itself (only tableFor compares hashes)" % k)
-    for mth in jf.methods():
-        if mth.body and mth.names[0] != "need":
-            b = jf.m[mth.body[0]:mth.body[1] + 1]
-            if re.search(r"(?<![\w$.])(?:this\s*\.\s*)?table\s*%s" % WRITE_OPS, b) or \
-                    re.search(r"\bidentity\s*=\s*Identity\s*\.\s*OPEN\b", b):
-                find("%s:%d %s" % (where, mth.line(jf.src), mth.names[0]), "writes table or opens the guard (only need())")
-    # c(int code): fixed shape, then every case proven by name
-    cb = body_of("c", [("int", "code")])
-    ncase = 0
-    if cb is not None:
-        m = re.match(r"^\{ Table t = table; if \(identity != Identity\.OPEN \|\| t == null\) throw new "
-                     r"IdentityException\([^;{}]*\); if \(t == Table\.%s\) return code; switch \(code\) \{ "
-                     r"((?:case \w+: return \d+; )*)default: throw new AbsentException\([^;{}]*\); \} \}$"
-                     % ACCEPTED[0][2], cb)
-        if not m:
-            find(where, "c(int code) does not have the fixed shape of rule 8 (guard check, `return code;` for "
-                        "Table.%s, switch of `case CONST: return N;`, default throws AbsentException)" % ACCEPTED[0][2])
-        else:
-            seen = {}
-            for name, num in re.findall(r"case (\w+): return (\d+);", m.group(1)):
-                ncase += 1
-                num = int(num)
-                if name not in c.codes or c.codes[name][0] != "BpHwGmpf2":
-                    find(where, "c(): case %s is not an IGmpf2 code constant of %s" % (name, where))
-                    continue
-                if name in seen:
-                    find(where, "c(): two cases for %s" % name)
-                seen[name] = num
-                meth = c.codes[name][2]
-                if tab67.get(("BpHwGmpf2", num)) != meth:
-                    find(where, "c(): case %s (%s) returns %d, which is %s on v1.1.67 (%s is %s there)" % (
-                        name, meth, num, tab67.get(("BpHwGmpf2", num), "absent"), meth,
-                        by_name67.get(("BpHwGmpf2", meth), "absent")))
-            for name, (cls, code, meth) in sorted(c.codes.items()):
-                if cls == "BpHwGmpf2" and name not in seen and ("BpHwGmpf2", meth) in by_name67:
-                    find(where, "c(): no case for %s (%s is %d on v1.1.67)" % (name, meth, by_name67[("BpHwGmpf2", meth)]))
-    absent = sorted(m for cls, _, m in c.codes.values() if cls == "BpHwGmpf2" and ("BpHwGmpf2", m) not in by_name67)
-    return "%s: %d accepted hash(es) = hidl_hashes.txt, %d v1.1.67 case(s) proven by name, absent on v1.1.67: %s%s" % (
-        where, len(ACCEPTED), ncase, ", ".join(absent) or "none", "" if len(find.errors) == nfind else " (FINDINGS)")
-
-
-def fmt(s):
-    s = sorted(s)
-    if len(s) > 6 and s == list(range(s[0], s[-1] + 1)):
-        return "%d..%d" % (s[0], s[-1])
-    return "{%s}" % ", ".join(str(x) for x in s)
-
-
-def resolve_int(tok, values):
-    t = strip_expr(tok)
-    if INT_RE.match(t):
-        return int(t.rstrip("lL"), 0)
-    return values.get(t)
-
-
-def check_set(text, values):
-    """Value set of a checkRange( / checkSet( argument list (masked text), or None."""
-    m = re.match(r"(checkRange|checkSet)\s*\((.*)\)$", text.strip(), re.S)
-    if not m:
-        return None, None
-    args = [a.strip() for a in javascan.split_top(m.group(2))]
-    if len(args) < 3:
-        return None, None
-    nums = [resolve_int(a, values) for a in args[2:]]
-    if any(n is None for n in nums):
-        return args[1], None
-    if m.group(1) == "checkRange":
-        if len(nums) != 2:
-            return args[1], None
-        return args[1], set(range(nums[0], nums[1] + 1))
-    return args[1], set(nums)
-
-
-def evaluate(expr, body, at, pnames, values, codes):
-    """(kind, value) of one wire argument: ints / bool / read / written (value = the reason) /
-    unchecked parameter / unknown."""
-    e = strip_expr(expr)
-    if e in ("true", "false"):
-        return "bool", {e == "true"}
-    v = resolve_int(e, values)
-    if v is not None:
-        return "ints", {v}
-    if CHECK_RE.match(e):
-        _, s = check_set(e, values)
-        return ("ints", s) if s is not None else ("unknown", e)
-    q = javascan.split_top(e, "?")
-    if len(q) == 2:                                    # cond ? A : B, both branches must be provable
-        ab = javascan.split_top(q[1], ":")
-        if len(ab) == 2:
-            ka, va = evaluate(ab[0], body, at, pnames, values, codes)
-            kb, vb = evaluate(ab[1], body, at, pnames, values, codes)
-            if ka == kb and ka in ("ints", "bool"):
-                return ka, va | vb
-        return "unknown", e
-    if re.match(r"^\w+$", e):
-        if e in pnames and pnames[e] == "boolean":
-            return "bool", {True, False}
-        return var_value(e, body, at, pnames, values, codes)
-    return "unknown", e
-
-
-def writes(body, name):
-    """Offsets of every write to the variable name in body (masked text)."""
-    n = re.escape(name)
-    out = [m.start() for m in re.finditer(r"(?<![\w$.])%s\s*%s" % (n, WRITE_OPS), body)]
-    out += [m.end() - len(name) for m in re.finditer(r"(?:\+\+|--)\s*%s\b" % n, body)]
-    return sorted(set(out))
-
-
-def enclosing_blocks(body, pos):
-    """[(open, close)] of every { } around pos, innermost first (masked text)."""
-    out, d = [], 0
-    for i in range(pos - 1, -1, -1):
-        if body[i] == "}":
-            d += 1
-        elif body[i] == "{":
-            if d == 0:
-                out.append((i, javascan.matching(body, i)))
-            else:
-                d -= 1
-    return out
-
-
-def is_switch_body(body, ob):
-    """True when the block opened at body[ob] is the body of a switch (its statements are skipped by case)."""
-    j = ob - 1
-    while j >= 0 and body[j].isspace():
-        j -= 1
-    if j < 0 or body[j] != ")":
-        return False
-    d = 0
-    for k in range(j, -1, -1):
-        if body[k] == ")":
-            d += 1
-        elif body[k] == "(":
-            d -= 1
-            if d == 0:
-                return re.search(r"\bswitch\s*$", body[:k]) is not None
-    return False
-
-
-def statement_prefix(body, pos):
-    """Text between the start of the statement holding pos and pos, or None when pos lies inside the
-    brackets of an expression (a for header, an argument list, ...)."""
-    d = 0
-    for i in range(pos - 1, -1, -1):
-        ch = body[i]
-        if ch in ")]":
-            d += 1
-        elif ch in "([":
-            if d == 0:
-                return None
-            d -= 1
-        elif ch in "{;}" and d == 0:
-            return body[i + 1:pos]
-    return None
-
-
-def guarded(body, at):
-    """Rule 7: a `need();` (or `this.need();`) statement of its own stands before the call at `at`."""
-    for nm in NEED_RE.finditer(body[:at]):
-        pre = statement_prefix(body, nm.start())
-        if pre is not None and pre.strip() == "" and stands_for(body, nm.start(), at):
-            return True
-    return False
-
-
-def stands_for(body, pos, at):
-    """True when the statement at pos runs before every arrival at `at`: it starts a statement of its own
-    (no if / else / case / label in front), in a block that holds `at` and is not a switch body."""
-    blocks = enclosing_blocks(body, pos)
-    if not blocks:
-        return False
-    ob, cb = blocks[0]
-    return pos < at and ob < at <= cb and not is_switch_body(body, ob)
-
-
-def var_value(e, body, at, pnames, values, codes):
-    """(kind, value) of the variable e at the call `at`: proven by statements of its own (see the module
-    docstring); any other write to e in the method makes it unprovable."""
-    events = []
-    for w in writes(body, e):
-        if w > at:                                     # also covers a loop around the call
-            return "written", "%s is written after the call" % e
-        proof = None
-        pre = statement_prefix(body, w)
-        am = re.match(r"%s\s*=(?!=)" % re.escape(e), body[w:])
-        if pre is not None and am and re.fullmatch(r"\s*(?:final\s+)?(?:(?:int|byte|short|long|char)\s+)?", pre) \
-                and stands_for(body, w, at):
-            rhs_start = w + am.end()
-            parts = javascan.split_top(body[rhs_start:body.index(";", rhs_start)] if ";" in body[rhs_start:] else "")
-            rhs = strip_expr(parts[0]) if len(parts) == 1 else ""
-            if CHECK_RE.match(rhs):
-                _, st = check_set(rhs, values)
-                proof = ("ints", st) if st is not None else None
-            else:
-                cm = re.match(r"^(?:(?:this|super)\s*\.\s*)?(call(?:[A-Z]\w*)?)\s*\(", rhs)
-                if cm:
-                    args, _ = call_args(rhs, rhs.index("(", cm.start(1)))
-                    if args and strip_expr(args[0]) in codes:
-                        cls, code, _ = codes[strip_expr(args[0])]
-                        proof = ("read", (cls, code))
-        if proof is None:
-            return "written", "%s is written in the method, not by a check or read statement that stands " \
-                              "before the call in its block" % e
-        events.append((w, proof))
-    for cm in CHECK_RE.finditer(body[:at]):
-        close = javascan.matching(body, cm.end() - 1, "(", ")")
-        var, st = check_set(body[cm.start():close + 1], values)
-        pre = statement_prefix(body, cm.start())
-        if var is not None and strip_expr(var) == e and st is not None and pre is not None and pre.strip() == "" \
-                and stands_for(body, cm.start(), at):
-            events.append((cm.start(), ("check", st)))
-    state = None
-    for _, (kind, val) in sorted(events, key=lambda x: x[0]):
-        if kind in ("ints", "read"):
-            state = (kind, val)
-        elif state is None:                            # a check statement
-            state = ("ints", set(val))
-        elif state[0] == "ints":
-            state = ("ints", state[1] & val)
-    if state:
-        return state
-    return ("unchecked parameter" if e in pnames else "unknown"), e
-
-
-def receiver(m, start):
-    """The token before `.name(` at m[start] (masked text): None when unqualified."""
-    j = start - 1
-    while j >= 0 and m[j].isspace():
-        j -= 1
-    if j < 0 or m[j] != ".":
-        return None
-    j -= 1
-    while j >= 0 and m[j].isspace():
-        j -= 1
-    w = re.search(r"([\w$]+)$", m[:j + 1])
-    return w.group(1) if w else m[max(0, j - 10):j + 1].strip() or "?"
-
-
-def decl_offsets(jf):
-    """Offsets of the declared names of the top-level methods and constructors of jf."""
-    out = set()
-    for mth in jf.methods():
-        h = javascan._blank(javascan.ANNOTATION, mth.mcode)
-        paren = h.find("(")
-        pre = h[:paren].rstrip()
-        out.add(mth.start + len(pre) - len(mth.names[0]))
-    return out
-
-
-def stray_call_sites(find, c, client):
-    """call*( / request( outside the top-level method bodies of a hal file (nested types, field
-    initializers) are not checked, so they are refused; so are method references to the transport."""
-    jf = c.jf
-    bodies = [mth.body for mth in jf.methods() if mth.body]
-    decls = decl_offsets(jf)
-    for cm in CALL_RE.finditer(jf.m):
-        if cm.start() in decls or any(b0 < cm.start() < b1 for b0, b1 in bodies):
-            continue
-        find("%s:%d" % (c.name, jf.line_of(cm.start())),
-             "%s( outside a top-level method of the client (a nested type or a field initializer is not checked)"
-             % cm.group(1) if client else
-             "%s( in %s: only Play6Gmpf and Play6Gmpf2 use the transport (Note B)" % (cm.group(1), c.name))
-    for cm in CALL_REF_RE.finditer(jf.m):
-        find("%s:%d" % (c.name, jf.line_of(cm.start())),
-             "method reference ::%s hands the transport on unchecked" % cm.group(1))
-
-
-def check_callers(find, meth, rx, scanned, hal):
-    """meth may be used only from files matching rx: qualified (x.meth, this.meth, ::meth) anywhere else is
-    refused, and inside hal/ also an unqualified call (its own declaration aside), so no client method
-    can hand it on to other callers."""
-    pat = re.compile(r"(?:\.\s*|::\s*)%s\b" % re.escape(meth))
-    bare = re.compile(r"(?<![\w$.:])%s\s*\(" % re.escape(meth))
-    for p, jf in scanned.items():
-        if re.search(rx, p.replace(os.sep, "/")):
-            continue
-        rel = os.path.relpath(p, G)
-        if pat.search(jf.m):
-            find(rel, "calls %s, which may only be called from files matching %s" % (meth, rx))
-        elif os.path.dirname(p) == hal:
-            decls = decl_offsets(jf)
-            for m in bare.finditer(jf.m):
-                if m.start() not in decls:
-                    find("%s:%d" % (rel, jf.line_of(m.start())), "calls %s inside hal/; it may only be called from "
-                                                                  "files matching %s" % (meth, rx))
-                    break
-
-
-def run_caller_check(src, client_names):
-    spec = importlib.util.spec_from_file_location("z9x_check_hal_callers", Z9X_CALLER_CHECK)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    mod.CLIENTS = tuple(client_names)
-    # Z9X 1.0.3 added a banned-code table keyed by the Z9X client files (Z9X code numbers, resolved through the
-    # Z9X clients' constants). Only the caller part of that check applies to the Play 6 clients: their banned
-    # methods are rule 4 (Note A) here, by name and Play 6 code. So the table is empty for them.
-    if hasattr(mod, "BANNED"):
-        mod.BANNED = {name: {} for name in client_names}
-    import contextlib
-    import io
-    buf = io.StringIO()
-    argv = sys.argv
-    try:
-        sys.argv = ["check_hal_callers.py", src]
-        with contextlib.redirect_stdout(buf):
-            rc = mod.main()
-    finally:
-        sys.argv = argv
-    out = buf.getvalue().strip()
-    return out if rc == 0 else (out or "check_hal_callers: rc %d" % rc)
+            find("vendor v1.1.67", "BAN %s %s is absent on v1.7.116 but present on v1.1.67: review" % (cls, name))
+    return "%d vendor builds = hidl_hashes.txt, %d v1.1.67 rows proven by name, absent on v1.1.67: %s" % (
+        len(consts), len(mapped), ", ".join(absent) or "none")
 
 
 if __name__ == "__main__":

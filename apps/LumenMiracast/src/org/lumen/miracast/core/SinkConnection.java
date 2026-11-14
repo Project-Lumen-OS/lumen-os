@@ -88,7 +88,7 @@ public final class SinkConnection implements WfdSession.Out {
                 List<RtspMessage> msgs = parser.feed(buf, 0, n);
                 synchronized (this) {
                     for (RtspMessage m : msgs) session.onMessage(m, clock.nowMs());
-                    if (session.state() == WfdSession.State.CLOSED) return "session closed";
+                    if (session.state() == WfdState.CLOSED) return "session closed";
                 }
             }
             return "stopped";
@@ -127,7 +127,7 @@ public final class SinkConnection implements WfdSession.Out {
         long end = clock.nowMs() + waitMs;
         while (clock.nowMs() < end) {
             synchronized (this) {
-                if (session == null || session.state() == WfdSession.State.CLOSED) break;
+                if (session == null || session.state() == WfdState.CLOSED) break;
             }
             sleep(50);
         }

@@ -25,15 +25,13 @@ final class ConsoleMatcher {
     static final int VENDOR_SONY = 0x080046;
     static final int VENDOR_SELF_MTK = 0x6D746B;
 
-    enum Brand { PLAYSTATION, XBOX, NINTENDO }
-
     static final class Match {
-        final Brand brand;
+        final ConsoleBrand brand;
         /** CEC OSD name as reported (may be empty). */
         final String osdName;
         final int vendorId, logicalAddress, physicalAddress;
 
-        Match(Brand brand, String osdName, int vendorId, int logicalAddress, int physicalAddress) {
+        Match(ConsoleBrand brand, String osdName, int vendorId, int logicalAddress, int physicalAddress) {
             this.brand = brand;
             this.osdName = osdName == null ? "" : osdName.trim();
             this.vendorId = vendorId;
@@ -88,15 +86,15 @@ final class ConsoleMatcher {
         String raw = d.getDisplayName();
         String name = raw == null ? "" : raw.trim().toLowerCase(Locale.ROOT);
         int vendor = d.getVendorId();
-        Brand b = null;
+        ConsoleBrand b = null;
         if (name.contains("playstation") || name.matches("^ps[2-9]\\b.*")) {
-            b = Brand.PLAYSTATION;
+            b = ConsoleBrand.PLAYSTATION;
         } else if (name.contains("xbox")) {
-            b = Brand.XBOX;
+            b = ConsoleBrand.XBOX;
         } else if (name.contains("nintendo") || name.matches("^switch( ?2)?$")) {
-            b = Brand.NINTENDO;
+            b = ConsoleBrand.NINTENDO;
         } else if (name.isEmpty() && vendor == VENDOR_SONY && type == HdmiDeviceInfo.DEVICE_PLAYBACK) {
-            b = Brand.PLAYSTATION;
+            b = ConsoleBrand.PLAYSTATION;
         }
         if (b == null) return null;
         return new Match(b, raw, vendor, d.getLogicalAddress(), d.getPhysicalAddress());

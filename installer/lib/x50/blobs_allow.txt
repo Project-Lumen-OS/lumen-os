@@ -22,6 +22,11 @@
 #              nativeui_main_exec: the vendor policy's typetransition init -> nativeui_main),
 #   mode=      0755 for the executable (default 0644),
 #   need=eye   eye protection: all of these lines or none of them; the installer has no way around them.
+#   alt=       <firmware>:<sha256>: the copy of another XGIMI stock firmware (ro.vendor.build.version.incremental),
+#              accepted as it is only while that firmware's vendor runs (the image's x50_blobs.sh, the in-trial
+#              installer, the computer installer); the need=eye files are all base copies or all that firmware's.
+#              v1.2.54: the nine codec / audio sources are byte-equal to v1.2.64,
+#              only the eye-protection pair differs.
 # The installer pulls <stock source path> first, then /system/<path>.
 set=x50-v1264-a
 4d848dec4b480ed37690095d67702466bb1d17e924c6af42fa7e2c50e784b0ea system_ext/lib/libc2plugin_store.so /system_ext/lib/libc2plugin_store.so
@@ -33,5 +38,5 @@ f1e325c8955b1af57dafadc77bdd09efc9f8b3cd0119b1846d606abc34385c65 system_ext/lib6
 d6cd92ce457c6594866bca064cce52ae69d16f89e1e7379f2d1f7db229601727 etc/xgimi/libstagefright_foundation.so /apex/com.android.vndk.v34/lib/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
 8e36f8eafb74db1f6b4db15bec3adad99a9811f14e9ce3bcd9f0e357c8d5a65c etc/xgimi/libstagefright_foundation64.so /apex/com.android.vndk.v34/lib64/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
 c8ee620addf084b5a777b5fbfdb534efbceacefeec881a5c13b7d99548a261ed etc/xgimi/audio_policy_configuration.xml /vendor/etc/audio_policy_configuration.xml bind=/vendor/etc/audio_policy_configuration.xml from=19b9d27d55ddef1408094b2ea7d09d0b73462aac992ed42ce89512797f312cbe:113,115d;182,184d;254,256d;386,389d;464,465d
-61e4ee8ec158c7dd5604c7959a0c2d8a73105a77d3701e7f859835b339f3ea5c bin/nativeui /system/bin/nativeui label=nativeui_main_exec mode=0755 need=eye
-76e8a5e9f234773263196410dfe67ad5ec16070936268ad04ccc125d1c01e90e lib64/xgimi.hardware.gmpf-V1-ndk.so /system/lib64/xgimi.hardware.gmpf-V1-ndk.so need=eye
+61e4ee8ec158c7dd5604c7959a0c2d8a73105a77d3701e7f859835b339f3ea5c bin/nativeui /system/bin/nativeui label=nativeui_main_exec mode=0755 need=eye alt=v1.2.54:bd9b56a0148b195857171ab66d541fe632b6110312a6fac4ef948170ca75db2e
+76e8a5e9f234773263196410dfe67ad5ec16070936268ad04ccc125d1c01e90e lib64/xgimi.hardware.gmpf-V1-ndk.so /system/lib64/xgimi.hardware.gmpf-V1-ndk.so need=eye alt=v1.2.54:00a7ceba64a944de9b8fc40ca0352e7b211b77c403db7c30df0bd38f5941ed51

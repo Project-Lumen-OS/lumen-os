@@ -41,18 +41,6 @@ public final class UiRes {
     /** Closed this often without an answer (HOME, screen off, another window): no answer = back. */
     static final int KEEP_MAX_INTERRUPTS = 5;
 
-    /** What the first start in a new resolution does with the change marker. */
-    enum Keep {
-        /** no change pending */
-        NONE,
-        /** still the boot that asked for it (the restart has not happened): keep the marker */
-        SAME_BOOT,
-        /** the new resolution runs: ask "Keep this resolution?" */
-        ASK,
-        /** another resolution runs (the boot fallback, or the image cannot apply it): drop, no question */
-        DROP
-    }
-
     /**
      * A property value -> height, or 0 when it names none of the choices. Accepts "1080", "1440",
      * "2160", "1440p", "2560x1440" (the height wins), "2k" / "4k" (any case, spaces ignored).
@@ -197,10 +185,10 @@ public final class UiRes {
      * pendingBoot / bootNow = boot ids (the boot of the request, this boot; null unknown),
      * active = {@link #active}.
      */
-    static Keep keep(int pendingNew, String pendingBoot, String bootNow, int active) {
-        if (pendingNew == 0) return Keep.NONE;
-        if (bootNow == null || bootNow.isEmpty() || bootNow.equals(pendingBoot)) return Keep.SAME_BOOT;
-        return active == pendingNew ? Keep.ASK : Keep.DROP;
+    static UiResKeep keep(int pendingNew, String pendingBoot, String bootNow, int active) {
+        if (pendingNew == 0) return UiResKeep.NONE;
+        if (bootNow == null || bootNow.isEmpty() || bootNow.equals(pendingBoot)) return UiResKeep.SAME_BOOT;
+        return active == pendingNew ? UiResKeep.ASK : UiResKeep.DROP;
     }
 
     /** What "Back to ..." restores: the resolution that ran when the change was asked for. */

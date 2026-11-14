@@ -187,12 +187,12 @@ public final class FitTest {
         int[] full = {0, 0, 3839, 0, 3839, 2159, 0, 2159};
         q = g.quad(full, 1.20);
         is("13 full frame = keystone off", q.keystoneOff);
-        eq("13 estimator", FitGeometry.Estimator.FULL_PANEL, FitGeometry.estimatorFor(full));
+        eq("13 estimator", FitEstimator.FULL_PANEL, FitGeometry.estimatorFor(full));
         double[] tz = g.trapezoid(1.20);
         near("13 outer w = Wb", tz[1], q.outerW, MM);
         near("13 outer h = H", tz[2], q.outerH, MM);
-        eq("13 null corners", FitGeometry.Estimator.INSCRIBED, FitGeometry.estimatorFor(null));
-        eq("13 logged corners", FitGeometry.Estimator.CORNERS, FitGeometry.estimatorFor(LOGGED));
+        eq("13 null corners", FitEstimator.INSCRIBED, FitGeometry.estimatorFor(null));
+        eq("13 logged corners", FitEstimator.CORNERS, FitGeometry.estimatorFor(LOGGED));
     }
 
     // ------------------------------------------------------------------ 14-17 throw model
@@ -210,7 +210,7 @@ public final class FitTest {
             TABLE15[p] = m.tr(p);
             if (!Double.isNaN(want[p])) near("15 TR p" + p, want[p], m.tr(p), p == 0 || p == 13 ? 1e-12 : 0.0005);
         }
-        eq("15 kind", ThrowModel.Kind.TWO, m.kind());
+        eq("15 kind", ThrowTableKind.TWO, m.kind());
 
         FitGeometry g = new FitGeometry(2450, 4.06);
         double tr = ThrowModel.solve(x -> g.quad(LOGGED, x).meanW, 2630.8);
@@ -225,20 +225,20 @@ public final class FitTest {
         }
         is("16 width out of range -> NaN", Double.isNaN(ThrowModel.solve(x -> g.inscribed(x)[0], 99999)));
 
-        eq("17 TR 0.55", ThrowModel.Problem.TR_RANGE, ThrowModel.build(new double[][] {{0, 0.55}, {13, 0.70}}).problem);
-        eq("17 ratio 1.10", ThrowModel.Problem.RATIO, ThrowModel.build(new double[][] {{0, 1.0}, {13, 1.10}}).problem);
+        eq("17 TR 0.55", ThrowProblem.TR_RANGE, ThrowModel.build(new double[][] {{0, 0.55}, {13, 0.70}}).problem);
+        eq("17 ratio 1.10", ThrowProblem.RATIO, ThrowModel.build(new double[][] {{0, 1.0}, {13, 1.10}}).problem);
         double[][] full = new double[14][];
         for (int p = 0; p < 14; p++) full[p] = new double[] {p, m.tr(p)};
         full[5][1] = full[4][1];
-        eq("17 non-increasing table", ThrowModel.Problem.NOT_INCREASING, ThrowModel.build(full).problem);
+        eq("17 non-increasing table", ThrowProblem.NOT_INCREASING, ThrowModel.build(full).problem);
         full[5][1] = m.tr(5);
         ThrowModel.Built fb = ThrowModel.build(full);
-        eq("17 full table", ThrowModel.Kind.FULL, fb.ok() ? fb.model.kind() : null);
+        eq("17 full table", ThrowTableKind.FULL, fb.ok() ? fb.model.kind() : null);
         double mid = m.tr(7);
         ThrowModel.Built off = ThrowModel.build(new double[][] {{0, 0.9}, {7, mid * 1.015}, {13, 1.188}});
-        eq("17 middle off by 1.5 %", ThrowModel.Problem.FULL_TABLE_NEEDED, off.problem);
+        eq("17 middle off by 1.5 %", ThrowProblem.FULL_TABLE_NEEDED, off.problem);
         ThrowModel.Built okb = ThrowModel.build(new double[][] {{0, 0.9}, {7, mid * 1.004}, {13, 1.188}});
-        is("17 middle off by 0.4 % accepted", okb.ok() && okb.model.kind() == ThrowModel.Kind.THREE);
+        is("17 middle off by 0.4 % accepted", okb.ok() && okb.model.kind() == ThrowTableKind.THREE);
         near("17 middle predicted", mid, okb.predicted, 1e-9);
     }
 
@@ -247,7 +247,7 @@ public final class FitTest {
         ThrowModel m = fixtureModel();
         FitGeometry g = new FitGeometry(2450, 4.06);
         ScreenSize s100 = ScreenSize.fromDiagonal(100, true, 0, 0);
-        FitPlanner.Plan p = FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, s100, FitPlanner.Mode.INSIDE);
+        FitPlanner.Plan p = FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, s100, FitMode.INSIDE);
         near("18 p0 w", 2735, p.sizes[0].w, 1);
         near("18 p0 h", 1538, p.sizes[0].h, 1);
         near("18 p9 w", 2258, p.sizes[9].w, 1);
@@ -259,12 +259,12 @@ public final class FitTest {
         near("18 p13 w", 2070, p.sizes[13].w, 1);
         near("18 p13 h", 1164, p.sizes[13].h, 1);
         eq("18 target", 11, p.target);
-        eq("18 kind", FitPlanner.Kind.FIT, p.kind);
+        eq("18 kind", FitAdvice.FIT, p.kind);
         is("18 p10 fits without the budget only", p.sizes[10].w <= s100.targetW() && p.sizes[10].w * 1.01 > s100.targetW());
         near("18 Dexact", 2509, p.exactMm, 1);
         is("18 advice shown, about 6 cm further", p.showAdvice() && Math.round(p.adviceMm / 10) == 6);
 
-        p = FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, s100, FitPlanner.Mode.CLOSEST);
+        p = FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, s100, FitMode.CLOSEST);
         eq("19 closest target", 10, p.target);
         near("19 Dexact", 2455, p.exactMm, 1);
         is("19 no advice under 1 cm", !p.showAdvice());
@@ -272,15 +272,15 @@ public final class FitTest {
         near("19 gap top/bottom", 1.1, (s100.hMm - p.size().h) / 2, 0.5);
 
         ScreenSize m20 = ScreenSize.fromDiagonal(100, true, 0, 20);
-        eq("20 margin 20 mm", 12, FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, m20, FitPlanner.Mode.INSIDE).target);
+        eq("20 margin 20 mm", 12, FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, m20, FitMode.INSIDE).target);
 
         FitGeometry level = new FitGeometry(2450, 0);
-        p = FitPlanner.plan(level, FitGeometry.Estimator.INSCRIBED, null, m, s100, FitPlanner.Mode.INSIDE);
+        p = FitPlanner.plan(level, FitEstimator.INSCRIBED, null, m, s100, FitMode.INSIDE);
         near("21 level p10 w", 2201, p.sizes[10].w, 1);
         near("21 level p11 w", 2154, p.sizes[11].w, 1);
         eq("21 level target", 11, p.target);
 
-        p = FitPlanner.plan(g, FitGeometry.Estimator.CORNERS, LOGGED, m, s100, FitPlanner.Mode.INSIDE);
+        p = FitPlanner.plan(g, FitEstimator.CORNERS, LOGGED, m, s100, FitMode.INSIDE);
         near("22 p9 outer w", 2178, p.sizes[9].outerW, 1);
         near("22 p9 outer h", 1245, p.sizes[9].outerH, 1);
         is("22 p9 fails on height", p.sizes[9].outerH * 1.01 > s100.hMm);
@@ -291,23 +291,23 @@ public final class FitTest {
         near("22 report h", 1196, p.sizes[10].h, 1);
 
         ScreenSize s80 = ScreenSize.fromDiagonal(80, true, 0, 0);
-        p = FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, s80, FitPlanner.Mode.INSIDE);
+        p = FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, s80, FitMode.INSIDE);
         eq("23 80in target", 13, p.target);
-        eq("23 80in kind", FitPlanner.Kind.MOVE_CLOSER, p.kind);
+        eq("23 80in kind", FitAdvice.MOVE_CLOSER, p.kind);
         near("23 exact", 2075, p.exactMm, 1);
         near("23 closer by 37.5 cm", -374.7, p.adviceMm, 1);
 
         ScreenSize s150 = ScreenSize.fromDiagonal(150, true, 0, 0);
-        p = FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, s150, FitPlanner.Mode.INSIDE);
+        p = FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, s150, FitMode.INSIDE);
         eq("24 150in target", 0, p.target);
-        eq("24 150in kind", FitPlanner.Kind.MOVE_FURTHER, p.kind);
+        eq("24 150in kind", FitAdvice.MOVE_FURTHER, p.kind);
         near("24 exact", 2975, p.exactMm, 1);
         near("24 further by 52.5 cm", 525, p.adviceMm, 1.5);
 
         ScreenSize s235 = ScreenSize.fromDiagonal(110, true, 3, 0);
-        p = FitPlanner.plan(g, FitGeometry.Estimator.INSCRIBED, null, m, s235, FitPlanner.Mode.INSIDE);
+        p = FitPlanner.plan(g, FitEstimator.INSCRIBED, null, m, s235, FitMode.INSIDE);
         eq("25 2.35:1 target", 13, p.target);
-        eq("25 2.35:1 kind", FitPlanner.Kind.MOVE_CLOSER, p.kind);
+        eq("25 2.35:1 kind", FitAdvice.MOVE_CLOSER, p.kind);
         near("25 2.35:1 exact", 2279, p.exactMm, 1);
     }
 
@@ -369,8 +369,8 @@ public final class FitTest {
         FakeDevice d = new FakeDevice();
         FitRun r = new FitRun(d, none, null);
         d.run = r;
-        FitRun.Result res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
-        eq("26 status", FitRun.Status.DONE, res.status);
+        FitRun.Result res = r.run(screenForTarget9(), m, FitMode.INSIDE);
+        eq("26 status", FitStatus.DONE, res.status);
         eq("26 target", 9, res.plan.target);
         eq("26 steps", 9, d.count("step"));
         eq("26 final", 9, res.finalProgress);
@@ -385,27 +385,27 @@ public final class FitTest {
         d.afterAk = 4;
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
+        res = r.run(screenForTarget9(), m, FitMode.INSIDE);
         eq("27 home once", 1, d.count("home"));
         eq("27 walk from 0", 9, d.count("step"));
-        eq("27 status", FitRun.Status.DONE, res.status);
+        eq("27 status", FitStatus.DONE, res.status);
 
         d = new FakeDevice();
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(ScreenSize.fromDiagonal(150, true, 0, 0), m, FitPlanner.Mode.INSIDE);
+        res = r.run(ScreenSize.fromDiagonal(150, true, 0, 0), m, FitMode.INSIDE);
         eq("27 target 0: no step", 0, d.count("step"));
         eq("27 target 0: no session", 0, d.count("begin"));
         eq("27 target 0: no autofocus", 0, d.count("af"));
-        eq("27 target 0: kind", FitPlanner.Kind.MOVE_FURTHER, res.plan.kind);
+        eq("27 target 0: kind", FitAdvice.MOVE_FURTHER, res.plan.kind);
 
         d = new FakeDevice();
         d.badAt = 3;
         d.badValue = 4;
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
-        eq("28 status", FitRun.Status.LENS_UNEXPECTED, res.status);
+        res = r.run(screenForTarget9(), m, FitMode.INSIDE);
+        eq("28 status", FitStatus.LENS_UNEXPECTED, res.status);
         eq("28 no 4th step", 3, d.count("step"));
         eq("28 session ended", 1, d.count("end"));
         eq("28 no autofocus after a lost lens", 0, d.count("af"));
@@ -414,8 +414,8 @@ public final class FitTest {
         d.cancelAt = 2;
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
-        eq("29 status", FitRun.Status.CANCELLED, res.status);
+        res = r.run(screenForTarget9(), m, FitMode.INSIDE);
+        eq("29 status", FitStatus.CANCELLED, res.status);
         eq("29 step 2 completes, no step 3", 2, d.count("step"));
         eq("29 session ended", 1, d.count("end"));
         eq("29 stopped at", 2, res.finalProgress);
@@ -424,8 +424,8 @@ public final class FitTest {
         d.distances = new int[] {2440, 2450, 2490};
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
-        eq("30 status", FitRun.Status.DISTANCE_UNSTABLE, res.status);
+        res = r.run(screenForTarget9(), m, FitMode.INSIDE);
+        eq("30 status", FitStatus.DISTANCE_UNSTABLE, res.status);
         is("30 no AK, no lens call", d.count("ak") == 0 && d.count("step") == 0 && d.count("home") == 0
                 && d.count("begin") == 0 && d.count("af") == 0);
 
@@ -433,8 +433,8 @@ public final class FitTest {
             d = new FakeDevice();
             if (k == 0) d.positions = 13; else d.supported = false;
             r = new FitRun(d, none, null);
-            res = r.run(screenForTarget9(), m, FitPlanner.Mode.INSIDE);
-            eq("31 unsupported " + k, FitRun.Status.UNSUPPORTED, res.status);
+            res = r.run(screenForTarget9(), m, FitMode.INSIDE);
+            eq("31 unsupported " + k, FitStatus.UNSUPPORTED, res.status);
             boolean only = true;
             for (String c : d.calls) only &= c.equals("supported") || c.equals("positionCount");
             is("31 no call but supported / positionCount " + k + " " + d.calls, only);
@@ -452,7 +452,7 @@ public final class FitTest {
         d = new FakeDevice();
         r = new FitRun(d, none, null);
         d.run = r;
-        res = r.run(ScreenSize.fromDiagonal(60, true, 0, 0), m, FitPlanner.Mode.INSIDE);
+        res = r.run(ScreenSize.fromDiagonal(60, true, 0, 0), m, FitMode.INSIDE);
         boolean inWalk = false, onlySteps = true;
         for (String c : d.calls) {
             if (c.equals("begin")) inWalk = true;
@@ -467,7 +467,7 @@ public final class FitTest {
         d = new FakeDevice();
         r = new FitRun(d, none, null);
         d.run = r;
-        FitCalibration cal = new FitCalibration(r, FitCalibration.Kind.TWO);
+        FitCalibration cal = new FitCalibration(r, CalibrationKind.TWO);
         is("calibration prepare", cal.prepare() == null);
         FitGeometry g = r.prepared().geometry;
         eq("calibration position 0", 0, cal.position());
@@ -490,7 +490,7 @@ public final class FitTest {
         s.fitMode = "closest";
         FitStore.Screen back = FitStore.screenFromJson(FitStore.toJson(s));
         is("store screen round trip", back != null && back.mode.equals("wh") && back.wMm == 2210 && back.marginMm == 15
-                && back.planMode() == FitPlanner.Mode.CLOSEST);
+                && back.planMode() == FitMode.CLOSEST);
         is("store bad screen", FitStore.screenFromJson("{\"mode\":\"wh\",\"wMm\":10}") == null);
         is("store garbage", FitStore.screenFromJson("not json") == null && FitStore.screenFromJson(null) == null);
         FitStore.Calib c = new FitStore.Calib();

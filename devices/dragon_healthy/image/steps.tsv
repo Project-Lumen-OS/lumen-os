@@ -1,0 +1,162 @@
+# The Play 6 recipe (dragon_healthy: XGIMI Play 6 G0058, mt5889, 32-bit userspace, Android 11 vendor with VNDK 30):
+# steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS, run as root inside the lineage-builder container (/src the
+# LineageOS source, /out the base build, /work the staged inputs and outputs). Why each step: tools/play6/compose.sh
+# history and docs/play6. Every APK and APEX staged carries the Play 6 keys (rule S1, check_signers.py on the Mac).
+# Flags: test (tN), diag, usbadb, nodex (--no-dexpreopt), expall/exp (--exp, --exp=N,...), gms (the Google test
+# edition, never a release), ota (the updater and the recovery certificate).
+# ---- inputs
+*	need	Play6FrameworkOverlay.apk	Play6TvSettingsOverlay.apk	Play6Projector.apk	Z9xHome.apk	Z9xTvInput.apk	Z9xLineagePlatformOverlay.apk	Z9xSetup.apk	LumenBridge_projector.apk	LumenBridge_home.apk	LumenBridge_setup.apk	LumenBridge_tvinput.apk	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-projector-default-permissions.xml	z9x-sysconfig-nogms.xml	bootanimation.zip	product_prop.txt	play6_compat.rc	play6_base.rc	Vendor_000d_Product_3841.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_000d_Product_3841.idc	base_id.txt	base_signed/base_signed.tsv	base_export.sh	check_privapp.py	apkinfo.py	lumen_gapps.rc	lumen_gapps.sh	z9x_nui.rc	z9x_nui.sh	play6_early_mik.rc	LumenMiracast.apk	LumenWifiP2pOverlay.apk	Z9xAirPlay.apk	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	airplay_libs.py
+ota	need	Play6Updater.apk	LumenBridge_updater.apk	lumen_recovery.rc	lumen_recovery.sh	lumen_play6_ota.x509
+!nodex	need	dexpreopt_play6.sh	lumen_checks.py
+diag	need	z9x_earlylog.rc	z9x_earlylog.sh	earlylog_usb.sh	lumen_escape.rc	lumen_escape.sh	play6_boottiming.rc	play6_boottiming.sh
+gms	need	gms/members.txt	gms/lumen-gapps.xml	gms/gms.tsv
+!gms	absent	{in}/gms
+# the keystone SurfaceFlinger of step 1d and the base it was built over (build.conf SF_SHA, SF_BASE_SHA)
+*	need	surfaceflinger
+*	sha	surfaceflinger	{SF_SHA}
+*	file_type	surfaceflinger	^ELF 32-bit LSB pie executable, ARM
+*	sha	{BASE}/bin/surfaceflinger	{SF_BASE_SHA}
+# the base is the very one the Mac signed (base_export.sh id: every entry of the system tree)
+*	out_is	base_id.txt	base_export.sh	id
+*	out	fresh
+*	copy_dir	{BASE}	{sys}
+# 0. APEX modules uncompressed (apexd would unpack every .capex before the vendor's early-boot drivers)
+*	unpack_capex	{sys}/apex
+# 0a. rule S1: the base's platform set, the APEXes with such APKs and mac_permissions, re-signed on the Mac; the folders
+#     of the replaced files get a new mtime (PackageManager's parse cache goes by it)
+*	base_signed	base_signed	{OUTDIR}	{t}	0644+touch	system/framework/framework-res.apk	system/etc/selinux/plat_mac_permissions.xml
+# 0b. no second setup flow (LineageOS SetupWizard and TvProvision), then the debloat (shared lists + the Play 6 line)
+*	cleanup	{sys}/system_ext/priv-app/LineageSetupWizard	{sys}/product/priv-app/TvProvision	{sys}/product/overlay/LineageSetupWizard__*_auto_generated_rro_product.apk
+*	keep_rules	debloat_gsi_tv_arm.txt	{sys}/framework/oat/arm/services.odex	system_ext/apex/com.android.vndk.v30.apex
+*	keep_rules	debloat_launcher.txt	{sys}/framework/oat/arm/services.odex
+*	keep_rules	debloat.txt	{sys}/framework/oat/arm/services.odex
+*	remove	debloat_launcher.txt	{sys}
+*	remove	debloat_gsi_tv_arm.txt	{sys}
+*	remove	debloat.txt	{sys}
+# 0c. key layouts and the remote's idc in /product/usr (read before /vendor; XGIMI's do not parse on Android 14)
+*	mkdir	0755	{sys}/product/usr/keylayout	{sys}/product/usr/idc
+*	install	0644	Vendor_000d_Product_3841.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3841.kl
+*	install	0644	Vendor_3697_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0001.kl
+*	install	0644	Vendor_3697_Product_0002.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0002.kl
+*	install	0644	Vendor_000d_Product_3841.idc	{sys}/product/usr/idc/Vendor_000d_Product_3841.idc
+# 1a. vendor compatibility (bind mounts at boot), the lens-mode mount point, always-on settings
+*	install	0644	play6_compat.rc	{sys}/etc/init/play6_compat.rc
+*	mkdir	0755	{sys}/etc/empty_dir
+*	mkdir	0755	{sys}/etc/lumen_lens
+*	install	0644	play6_base.rc	{sys}/etc/init/play6_base.rc
+# 1c. the vendor's projector driver chain (kheaders ... mik, stock init.fusion.rc order) at late-fs in EVERY image:
+#     MBOOT's 60 s hardware watchdog is taken over only by gmpf_main, within its 30 tries, and only once mik.ko is in
+#    ; left to the vendor's early-boot, a first boot on clean data comes too late
+*	install	0644	play6_early_mik.rc	{sys}/etc/init/play6_early_mik.rc
+# 1d. keystone like stock: the stock SurfaceFlinger warps the whole UI on the GPU with GL_LINEAR on every layer into a
+#     4x MSAA target (GLESTrapezoidalRenderEngine), lineage/patches/play6/0002 does the same since lumen-os d0ba63d.
+#     The base build in /out is older, its own binary warps with nearest sampling, so every frame of an auto keystone
+#     run crawls. The binary built over this very base replaces it. fs_config
+#     and file_contexts of build_image give it root:shell 0755 and surfaceflinger_exec as before
+*	install	0755	surfaceflinger	{sys}/bin/surfaceflinger
+# 1, 1b. the framework config RRO and the TvSettings switch fix
+*	install	0644	Play6FrameworkOverlay.apk	{sys}/product/overlay/Play6FrameworkOverlay.apk
+*	install	0644	Play6TvSettingsOverlay.apk	{sys}/product/overlay/Play6TvSettingsOverlay.apk
+# 2. the projector app and its remote-pairing permissions
+*	mkdir	0755	{sys}/app/Play6Projector
+*	install	0644	Play6Projector.apk	{sys}/app/Play6Projector/Play6Projector.apk
+*	mkdir	0755	{sys}/product/etc/default-permissions
+*	install	0644	z9x-projector-default-permissions.xml	{sys}/product/etc/default-permissions/z9x-projector.xml
+# 3. Lumen Home, TvInput, the LineageOS platform values, sysconfig, Lumen Setup, the 1.0.8 bridges
+*	mkdir	0755	{sys}/priv-app/Z9xHome
+*	install	0644	Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk
+*	install	0644	privapp-permissions-z9xhome.xml	{sys}/etc/permissions/privapp-permissions-z9xhome.xml
+*	mkdir	0755	{sys}/etc/default-permissions
+*	install	0644	z9x-home-default-permissions.xml	{sys}/etc/default-permissions/z9x-home-default-permissions.xml
+*	mkdir	0755	{sys}/app/Z9xTvInput
+*	install	0644	Z9xTvInput.apk	{sys}/app/Z9xTvInput/Z9xTvInput.apk
+*	install	0644	Z9xLineagePlatformOverlay.apk	{sys}/product/overlay/Z9xLineagePlatformOverlay.apk
+*	install	0644	z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml
+*	mkdir	0755	{sys}/priv-app/Z9xSetup
+*	install	0644	Z9xSetup.apk	{sys}/priv-app/Z9xSetup/Z9xSetup.apk
+*	install	0644	privapp-permissions-z9xsetup.xml	{sys}/etc/permissions/privapp-permissions-z9xsetup.xml
+*	mkdir	0755	{sys}/app/LumenBridgeProjector	{sys}/app/LumenBridgeHome	{sys}/app/LumenBridgeSetup	{sys}/app/LumenBridgeTvInput
+*	install	0644	LumenBridge_projector.apk	{sys}/app/LumenBridgeProjector/LumenBridgeProjector.apk
+*	install	0644	LumenBridge_home.apk	{sys}/app/LumenBridgeHome/LumenBridgeHome.apk
+*	install	0644	LumenBridge_setup.apk	{sys}/app/LumenBridgeSetup/LumenBridgeSetup.apk
+*	install	0644	LumenBridge_tvinput.apk	{sys}/app/LumenBridgeTvInput/LumenBridgeTvInput.apk
+# 3d. screen mirroring and AirPlay, the receivers of the Z9X. The Miracast sink is a priv-app (two privileged
+#     permissions), its runtime permissions granted by default, and the Wi-Fi Direct device type is television for
+#     Windows (static RRO); it shows its quick menu tile only where it found Wi-Fi Direct. AirPlay loads its
+#     armeabi-v7a library straight from the APK, so the library must be stored and page-aligned there.
+*	mkdir	0755	{sys}/priv-app/LumenMiracast	{sys}/app/Z9xAirPlay
+*	install	0644	LumenMiracast.apk	{sys}/priv-app/LumenMiracast/LumenMiracast.apk
+*	install	0644	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml
+*	install	0644	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml
+*	install	0644	LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk
+*	install	0644	Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
+*	install	0644	z9x-airplay-default-permissions.xml	{sys}/etc/default-permissions/z9x-airplay-default-permissions.xml
+*	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
+# 3e. --ota: the updater (/cache, XGIMI's recovery installs it), the recovery certificate, lumen_recovery
+*	mkdir	0755	{sys}/etc/xgimi
+ota	mkdir	0755	{sys}/app/Play6Updater	{sys}/app/LumenBridgeUpdater
+ota	install	0644	Play6Updater.apk	{sys}/app/Play6Updater/Play6Updater.apk
+ota	install	0644	LumenBridge_updater.apk	{sys}/app/LumenBridgeUpdater/LumenBridgeUpdater.apk
+ota	run_root	ota_certs.py	{in}/lumen_play6_ota.x509	{sys}/etc/security/otacerts.zip
+ota	install	0644	lumen_recovery.rc	{sys}/etc/init/lumen_recovery.rc
+ota	install	0755	lumen_recovery.sh	{sys}/etc/xgimi/lumen_recovery.sh
+# 3f. the Google add-on partition (lumen_gapps in super): overlay mounts when it exists
+*	install	0644	lumen_gapps.rc	{sys}/etc/init/lumen_gapps.rc
+*	install	0755	lumen_gapps.sh	{sys}/etc/xgimi/lumen_gapps.sh
+# 3h. no Wi-Fi or Bluetooth driver of our own: V1.8.127 drives both chips (MediaTek MT7663 and AIC8800) itself, and the
+#     installer refuses an AIC unit on V1.7.116 (tools/play6/test_play6_no_aic.sh keeps the image free of AIC files)
+# 3g. the vendor native-UI fifo reader (eye protection), the Z9X files unchanged
+*	install	0644	z9x_nui.rc	{sys}/etc/init/z9x_nui.rc
+*	install	0755	z9x_nui.sh	{sys}/etc/xgimi/z9x_nui.sh
+# 4. Lumen boot animation (the -dark link keeps pointing at it)
+*	install	0644	bootanimation.zip	{sys}/product/media/bootanimation.zip
+# 5. the USB-stick boot logger and its device hooks (test builds with --diag)
+diag	install	0644	z9x_earlylog.rc	{sys}/etc/init/z9x_earlylog.rc
+diag	install	0755	z9x_earlylog.sh	{sys}/etc/xgimi/z9x_earlylog.sh
+diag	install	0644	earlylog_usb.sh	{sys}/etc/xgimi/earlylog_usb.sh
+diag	install	0644	lumen_escape.rc	{sys}/etc/init/lumen_escape.rc
+diag	install	0755	lumen_escape.sh	{sys}/etc/xgimi/lumen_escape.sh
+diag	install	0644	play6_boottiming.rc	{sys}/etc/init/play6_boottiming.rc
+diag	install	0755	play6_boottiming.sh	{sys}/etc/xgimi/play6_boottiming.sh
+# 5a. --gms: the Google test edition (inputs never in the repository); Lumen Home stays HOME
+gms	run_root	gms_install.py	{in}/gms	{t}
+gms	absent	{sys}/product/priv-app/TVLauncher
+gms	absent	{sys}/product/priv-app/TVRecommendations
+gms	absent	{sys}/product/priv-app/TVLauncherNoGMS
+gms	absent	{sys}/product/priv-app/TVRecommendationsNoGMS
+gms	absent	{sys}/product/priv-app/Katniss
+gms	absent	{sys}/product/priv-app/DfuService
+gms	install	0644	gms/lumen-gapps.xml	{sys}/etc/sysconfig/lumen-gapps.xml
+# 5b. Lumen Setup is HOME on wiped data
+*	apk_roles	{sys}	priv-app/Z9xSetup/Z9xSetup.apk:org.lumen.setup:setup	priv-app/Z9xHome/Z9xHome.apk:org.lumen.home:home
+# 6. build-time AOT (speed) of Lumen Home, the projector app, Lumen Setup and the screen mirroring and AirPlay receivers
+#    against this base's boot image (the receivers run from boot on a low-memory unit: no JIT warm-up)
+!nodex	boot_image_gate	{DEXP}	{sys}/framework/arm
+!nodex	run	dexpreopt_play6.sh	{sys}/priv-app/Z9xHome/Z9xHome.apk	/system/priv-app/Z9xHome/Z9xHome.apk	{t}/odex/Z9xHome	{sys}/product/app/webview/oat/arm/webview.odex	>dexopt_Z9xHome.log
+!nodex	mkdir	0755	{sys}/priv-app/Z9xHome/oat	{sys}/priv-app/Z9xHome/oat/arm
+!nodex	install	0644	{t}/odex/Z9xHome/oat/arm/Z9xHome.odex	{sys}/priv-app/Z9xHome/oat/arm/Z9xHome.odex
+!nodex	install	0644	{t}/odex/Z9xHome/oat/arm/Z9xHome.vdex	{sys}/priv-app/Z9xHome/oat/arm/Z9xHome.vdex
+!nodex	run	dexpreopt_play6.sh	{sys}/app/Play6Projector/Play6Projector.apk	/system/app/Play6Projector/Play6Projector.apk	{t}/odex/Play6Projector	{sys}/product/app/webview/oat/arm/webview.odex	>dexopt_Play6Projector.log
+!nodex	mkdir	0755	{sys}/app/Play6Projector/oat	{sys}/app/Play6Projector/oat/arm
+!nodex	install	0644	{t}/odex/Play6Projector/oat/arm/Play6Projector.odex	{sys}/app/Play6Projector/oat/arm/Play6Projector.odex
+!nodex	install	0644	{t}/odex/Play6Projector/oat/arm/Play6Projector.vdex	{sys}/app/Play6Projector/oat/arm/Play6Projector.vdex
+!nodex	run	dexpreopt_play6.sh	{sys}/priv-app/Z9xSetup/Z9xSetup.apk	/system/priv-app/Z9xSetup/Z9xSetup.apk	{t}/odex/Z9xSetup	{sys}/product/app/webview/oat/arm/webview.odex	>dexopt_Z9xSetup.log
+!nodex	mkdir	0755	{sys}/priv-app/Z9xSetup/oat	{sys}/priv-app/Z9xSetup/oat/arm
+!nodex	install	0644	{t}/odex/Z9xSetup/oat/arm/Z9xSetup.odex	{sys}/priv-app/Z9xSetup/oat/arm/Z9xSetup.odex
+!nodex	install	0644	{t}/odex/Z9xSetup/oat/arm/Z9xSetup.vdex	{sys}/priv-app/Z9xSetup/oat/arm/Z9xSetup.vdex
+!nodex	run	dexpreopt_play6.sh	{sys}/priv-app/LumenMiracast/LumenMiracast.apk	/system/priv-app/LumenMiracast/LumenMiracast.apk	{t}/odex/LumenMiracast	{sys}/product/app/webview/oat/arm/webview.odex	>dexopt_LumenMiracast.log
+!nodex	mkdir	0755	{sys}/priv-app/LumenMiracast/oat	{sys}/priv-app/LumenMiracast/oat/arm
+!nodex	install	0644	{t}/odex/LumenMiracast/oat/arm/LumenMiracast.odex	{sys}/priv-app/LumenMiracast/oat/arm/LumenMiracast.odex
+!nodex	install	0644	{t}/odex/LumenMiracast/oat/arm/LumenMiracast.vdex	{sys}/priv-app/LumenMiracast/oat/arm/LumenMiracast.vdex
+!nodex	run	dexpreopt_play6.sh	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	/system/app/Z9xAirPlay/Z9xAirPlay.apk	{t}/odex/Z9xAirPlay	{sys}/product/app/webview/oat/arm/webview.odex	>dexopt_Z9xAirPlay.log
+!nodex	mkdir	0755	{sys}/app/Z9xAirPlay/oat	{sys}/app/Z9xAirPlay/oat/arm
+!nodex	install	0644	{t}/odex/Z9xAirPlay/oat/arm/Z9xAirPlay.odex	{sys}/app/Z9xAirPlay/oat/arm/Z9xAirPlay.odex
+!nodex	install	0644	{t}/odex/Z9xAirPlay/oat/arm/Z9xAirPlay.vdex	{sys}/app/Z9xAirPlay/oat/arm/Z9xAirPlay.vdex
+nodex	echo	WARN --no-dexpreopt: no build-time AOT (Lumen Home, the projector app, Lumen Setup and the two receivers run JIT)
+# 7. properties and D's experiments
+*	run	play6_props.py	{in}	{sys}	{vname}	{vcode}	{build_id}	{EXPS}	{flags}
+# 8. every priv-app has its privapp-permissions entries (the vendor enforces them)
+*	run	check_privapp.py	{sys}
+# ext4 by the base build's own build_image (the Play 6 kernel has no erofs)
+*	pack	{sys}
+*	sha256

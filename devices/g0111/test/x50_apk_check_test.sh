@@ -8,7 +8,7 @@
 # tools/devices/build_apps.sh g0111 build/g0111/stage); without it the real-APK cases are skipped and said so.
 # Cases:
 #   sources     HAL_APP holds to its sources: calls = research/allowed_x50eyeguard.tsv (service, code, method), the
-#               interface = the Iface of Gmpf.java, cert = devices/g0111/certs/platform.x509.pem, which is none of
+#               interface = GmpfIface of the app, cert = devices/g0111/certs/platform.x509.pem, which is none of
 #               the Z9X release, the AOSP test key or the HB platform certificates; the path is
 #               /system/app/<name>/<name>.apk of the registry's apps; the composer stages it and the image check
 #               imports x50_apk_check from IN
@@ -57,10 +57,11 @@ for line in open(os.path.join(G, "devices/g0111/research/allowed_x50eyeguard.tsv
     rows.append((s, int(c, 0), m))
 if sorted(tuple(r) for r in h["calls"]) != sorted(rows):
     bad.append("HAL_APP calls %s != allowed_x50eyeguard.tsv %s" % (h["calls"], rows))
-src = open(os.path.join(G, "apps/X50EyeGuard/src/org/lumen/x50/eyeguard/Gmpf.java"), encoding="utf-8").read()
+src = "".join(open(os.path.join(G, "apps/X50EyeGuard/src/org/lumen/x50/eyeguard", f), encoding="utf-8").read()
+              for f in ("Gmpf.java", "GmpfIface.java") if os.path.isfile(os.path.join(G, "apps/X50EyeGuard/src/org/lumen/x50/eyeguard", f)))
 ifs = re.findall(r'^\s+[A-Z_]+\("(xgimi\.hardware\.gmpf\.I\w+)"\)', src, re.M)
 if sorted(ifs) != sorted(h["ifaces"]):
-    bad.append("HAL_APP ifaces %s != Gmpf.java Iface %s" % (h["ifaces"], ifs))
+    bad.append("HAL_APP ifaces %s != GmpfIface %s" % (h["ifaces"], ifs))
 def cert(p):
     der = subprocess.run(["openssl", "x509", "-in", p, "-outform", "DER"], capture_output=True, check=True).stdout
     import hashlib
@@ -81,12 +82,12 @@ if reg["hal_app"] != "apps/" + name or reg["hal_check"] != "aidl-table" \
     bad.append("registry: hal_app %s hal_check %s hal_allowed %s" % (reg["hal_app"], reg["hal_check"], reg.get("hal_allowed")))
 if h["staged"] != "stage/%s.apk" % name:
     bad.append("HAL_APP staged %s" % h["staged"])
-conf = dict(l.rstrip("\n").split("=", 1) for l in open(os.path.join(G, "devices/g0111/image.conf")) if "=" in l and not l.startswith("#"))
-if conf.get("stage_dir") != "build/g0111/stage" or "devices/g0111/image/x50_apk_check.py" not in conf.get("stage", "").split():
-    bad.append("image.conf does not stage x50_apk_check.py and build/g0111/stage")
-comp = open(os.path.join(G, "devices/g0111/image/compose_x50.sh"), encoding="utf-8").read()
-if "APP_APK=" + h["staged"] not in comp or "system/app/%s/%s.apk" % (name, name) not in comp:
-    bad.append("compose_x50.sh does not install %s at %s" % (h["staged"], h["path"]))
+conf = dict(l.rstrip("\n").split("=", 1) for l in open(os.path.join(G, "devices/g0111/build.conf")) if "=" in l and not l.startswith("#"))
+if conf.get("stage_dir") != "build/g0111/stage" or "devices/g0111/image/x50_apk_check.py" not in conf.get("tools", "").split():
+    bad.append("build.conf does not stage x50_apk_check.py and build/g0111/stage")
+comp = open(os.path.join(G, "devices/g0111/image/steps.tsv"), encoding="utf-8").read()
+if "\tplace\t%s\t{sys}/app/%s/%s.apk\t" % (h["staged"], name, name) not in comp:
+    bad.append("steps.tsv does not install %s at %s" % (h["staged"], h["path"]))
 vsrc = open(ver, encoding="utf-8").read()
 if "import x50_apk_check" not in vsrc or "x50_apk_check.problems(rep, HAL_APP)" not in vsrc:
     bad.append("verify_tree_x50.py does not check the HAL app with x50_apk_check")
@@ -117,14 +118,17 @@ build() {  # name: apps/X50EyeGuard copied to $W/app_<name>, Gmpf.java edited by
   cp -R "$G/apps/core/lumen-hal/src/." "$W/app_$1/src/"
   BUILD_DIR="$W/b_$1" sh "$G/apps/build_apk.sh" "$W/app_$1" "$W/$1.apk" > "$W/b_$1.log" 2>&1
 }
-edit() {  # name old new: replace old (must be there once) by new in Gmpf.java of that mutant
+edit() {  # name old new: replace old (must be there once) by new in the HAL client of that mutant (Gmpf.java and
+          # its top-level allow list GmpfCall.java / GmpfIface.java)
   cat > "$W/edit_$1.py" <<PY
-import sys
-p = sys.argv[1] + "/src/org/lumen/x50/eyeguard/Gmpf.java"
-s = open(p).read()
+import os, sys
 old, new = $(python3 -c 'import sys; print(repr(sys.argv[1]))' "$2"), $(python3 -c 'import sys; print(repr(sys.argv[1]))' "$3")
-assert s.count(old) == 1, "edit: %r not found once" % old
-open(p, "w").write(s.replace(old, new))
+d = sys.argv[1] + "/src/org/lumen/x50/eyeguard/"
+ps = [d + f for f in ("Gmpf.java", "GmpfCall.java", "GmpfIface.java") if os.path.isfile(d + f)]
+hits = [p for p in ps for _ in range(open(p).read().count(old))]
+assert len(hits) == 1, "edit: %r not found once" % old
+s = open(hits[0]).read()
+open(hits[0], "w").write(s.replace(old, new))
 PY
 }
 mutant() {  # name reason
@@ -137,13 +141,13 @@ if build testkey; then
 else
   bad "testkey (build failed: $(tail -n 3 "$W/b_testkey.log" | tr '\n' ' '))"
 fi
-edit extra_call 'GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted");' \
-  'GO_TO_BOOT_COMPLETED(Iface.POWER, 2, "goToBootCompleted"),
-        SET_ON_OFF(Iface.DISPLAY, 61, "setHumanDetectOnOff");'
+edit extra_call 'GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted");' \
+  'GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted"),
+    SET_ON_OFF(GmpfIface.DISPLAY, 61, "setHumanDetectOnOff");'
 mutant extra_call "the calls are"
-edit code_37 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 33, ' 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 37, '
+edit code_37 'GET_BOOT_ANIM_STATE(GmpfIface.SYSTEM, HalCodes.SM_GET_BOOT_ANIM_STATE, ' 'GET_BOOT_ANIM_STATE(GmpfIface.SYSTEM, 37, '
 mutant code_37 "the calls are"
-edit code_61 'GET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 62, ' 'GET_HUMAN_DETECT_ON_OFF(Iface.DISPLAY, 61, '
+edit code_61 'GET_HUMAN_DETECT_ON_OFF(GmpfIface.DISPLAY, HalCodes.DM_GET_HUMAN_DETECT_ON_OFF, ' 'GET_HUMAN_DETECT_ON_OFF(GmpfIface.DISPLAY, 61, '
 mutant code_61 "the calls are"
 edit fourth_iface 'POWER("xgimi.hardware.gmpf.IPowerManager");' \
   'POWER("xgimi.hardware.gmpf.IPowerManager"), TV("xgimi.hardware.gmpf.IGmTvManager");'

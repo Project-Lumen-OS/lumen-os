@@ -59,26 +59,27 @@ public final class MenuSpecTest {
             } else {
                 String src = new String(Files.readAllBytes(ad), StandardCharsets.UTF_8);
                 check(src.contains("implements ProjectorFeatures"), dev + ": adapter does not implement ProjectorFeatures");
-                for (String id : p.features()) {
-                    String c = constOf(id);
-                    check(src.contains("Feature." + c), dev + ": adapter never names Feature." + c);
+                String all = src + sections(ad);
+                for (FeatureId id : p.features()) {
+                    check(all.contains("FeatureId." + id.name()) || all.contains("case " + id.name() + ":"),
+                            dev + ": adapter never names FeatureId." + id.name());
                 }
             }
             // every option token and every row of the profile has a label in MenuLabels (never a raw token on screen)
             String labels = new String(Files.readAllBytes(root.resolve(
                     "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuLabels.java")), StandardCharsets.UTF_8);
-            for (String id : p.features()) {
+            for (FeatureId id : p.features()) {
                 for (String o : p.options(id)) check(labels.contains("case \"" + id + "|" + o + "\":"),
                         dev + ": no label for " + id + " option " + o);
-                Feature.Kind kind = Feature.def(id).kind;
-                if (kind != Feature.Kind.TILE && !Feature.LAMP.equals(id) && !Feature.PICTURE_PQ.equals(id)) {
+                FeatureKind kind = id.kind;
+                if (kind != FeatureKind.TILE && FeatureId.LAMP != id && FeatureId.PICTURE_PQ != id) {
                     check(labels.contains("case \"" + id + "\":"), dev + ": no title for " + id);
                 }
             }
             String full = MenuSnapshot.render(p);
             // (3) removing one feature removes exactly its rows, tiles and hints
-            for (String id : p.features()) {
-                String j2 = without(json, id);
+            for (FeatureId id : p.features()) {
+                String j2 = without(json, id.id);
                 MenuProfile p2 = MenuProfile.parse(j2);
                 if (!p2.ok()) {
                     // a feature others depend on (boost needs lamp): the profile without it must say so
@@ -87,9 +88,9 @@ public final class MenuSpecTest {
                 }
                 check(!p2.has(id), dev + " -" + id + ": still has it");
                 String snap = MenuSnapshot.render(p2);
-                check(!tokens(snap).contains(id), dev + " -" + id + ": the menu still shows it:\n" + snap);
+                check(!tokens(snap).contains(id.id), dev + " -" + id + ": the menu still shows it:\n" + snap);
                 MenuSpec m2 = MenuSpec.of(p2);
-                check(!m2.hasTile(id), dev + " -" + id + ": tile still there");
+                check(!m2.hasTile(id.id), dev + " -" + id + ": tile still there");
                 for (String sec : m2.sections.keySet()) {
                     check(!m2.rowsOf(sec).contains(id), dev + " -" + id + ": row still in " + sec);
                 }
@@ -97,19 +98,20 @@ public final class MenuSpecTest {
                 // nothing else moved: same tiles in the same rows and the same rows in the same sections, minus it
                 MenuSpec m1 = MenuSpec.of(p);
                 // a section tile goes with the last row of its section, so a vanished section is no change
-                List<String> wantCard = minus(cardIds(m1), id);
+                List<String> wantCard = minus(cardIds(m1), id.id);
                 for (String s : m1.sections.keySet()) if (!m2.sections.containsKey(s)) wantCard = minus(wantCard, s);
                 check(cardIds(m2).equals(wantCard), dev + " -" + id + ": the card changed beyond it: "
                         + cardIds(m1) + " -> " + cardIds(m2));
                 for (String sec : m1.sections.keySet()) {
-                    List<String> want = minus(m1.rowsOf(sec), id);
+                    List<FeatureId> want = new ArrayList<>(m1.rowsOf(sec));
+                    want.remove(id);
                     check(want.equals(m2.rowsOf(sec)), dev + " -" + id + ": section " + sec + " changed beyond it");
                 }
-                check(m2.boostLevel() == (Feature.BOOST.equals(id) ? -1 : m1.boostLevel()), dev + " -" + id + ": Boost moved");
+                check(m2.boostLevel() == (FeatureId.BOOST == id ? -1 : m1.boostLevel()), dev + " -" + id + ": Boost moved");
             }
             // every feature of the profile shows up somewhere (no dead profile entries)
             List<String> t = tokens(full);
-            for (String id : p.features()) check(t.contains(id), dev + ": " + id + " in the profile but not in the menu");
+            for (FeatureId id : p.features()) check(t.contains(id.id), dev + ": " + id + " in the profile but not in the menu");
         }
         // (4) broken profiles: no menu (fail closed)
         String[] bad = {
@@ -135,10 +137,10 @@ public final class MenuSpecTest {
         for (String b : bad) {
             MenuProfile p = MenuProfile.parse(b);
             check(!p.ok(), "broken profile accepted: " + b);
-            check(!p.has(Feature.EYE) && p.features().isEmpty() && !p.gameMenu(), "broken profile still has features: " + b);
-            check(p.hint(Feature.PICTURE_MODE) == null && p.hint(Feature.EYE) == null && p.hints().isEmpty(),
+            check(!p.has(FeatureId.EYE) && p.features().isEmpty() && !p.gameMenu(), "broken profile still has features: " + b);
+            check(p.hint(FeatureId.PICTURE_MODE) == null && p.hint(FeatureId.EYE) == null && p.hints().isEmpty(),
                     "broken profile still has a hint picture: " + b);
-            check(p.number(Feature.LAMP, "max", -7) == -7 && p.options(Feature.EYE).isEmpty(),
+            check(p.number(FeatureId.LAMP, "max", -7) == -7 && p.options(FeatureId.EYE).isEmpty(),
                     "broken profile still gives parameters: " + b);
             MenuSpec m = MenuSpec.of(p);
             check(m.sections.isEmpty() && m.rows.isEmpty(), "broken profile has a menu: " + b);
@@ -196,8 +198,12 @@ public final class MenuSpecTest {
         return out;
     }
 
-    private static String constOf(String id) { return id.toUpperCase().replace('.', '_'); }
-
-
-
+    /** The adapter's section files (the {@code *Rows.java} next to it), as one text. */
+    static String sections(Path adapter) throws java.io.IOException {
+        StringBuilder b = new StringBuilder();
+        try (java.nio.file.DirectoryStream<Path> d = Files.newDirectoryStream(adapter.getParent(), "*Rows.java")) {
+            for (Path f : d) b.append(new String(Files.readAllBytes(f), StandardCharsets.UTF_8));
+        }
+        return b.toString();
+    }
 }

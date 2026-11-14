@@ -25,16 +25,19 @@ public final class MenuSpec {
     /** Tile sizes of layout D. */
     public static final String ROUND = "round", WIDE = "wide", SMALL = "small";
 
-    /** A tile: {@code feature} is a feature id or a section id (a section tile exists when its section has rows). */
+    /** A tile: {@code id} is a feature id or a section id (a section tile exists when its section has rows). */
     public static final class Tile {
         public final String size, id;
+        /** The feature of a feature tile, null for a section tile. */
+        public final FeatureId feature;
         /** For the last small slot: the second candidate (mirroring, else USB files), or null. */
         public final String orElse;
 
-        Tile(String size, String id, String orElse) {
+        Tile(String size, Object id, Object orElse) {
             this.size = size;
-            this.id = id;
-            this.orElse = orElse;
+            this.id = String.valueOf(id);
+            this.feature = id instanceof FeatureId ? (FeatureId) id : null;
+            this.orElse = orElse == null ? null : String.valueOf(orElse);
         }
 
         @Override public String toString() { return size + " " + id + (orElse == null ? "" : "|" + orElse); }
@@ -43,52 +46,53 @@ public final class MenuSpec {
     /** A group of rows under an optional header (header null: no header). */
     public static final class Group {
         public final String header;
-        public final List<String> rows;
+        public final List<FeatureId> rows;
 
-        Group(String header, List<String> rows) {
+        Group(String header, List<FeatureId> rows) {
             this.header = header;
             this.rows = Collections.unmodifiableList(rows);
         }
     }
 
-    private static final String[][] ROUND_TILES = {{EYE, Feature.EYE}, {GENERAL, null}};
-    /** Rows of the card: one wide tile and two small ones each (stock structure), {size, id, orElse}. */
-    private static final String[][][] TILE_ROWS = {
-            {{WIDE, Feature.KEYSTONE_AK_NOW}, {SMALL, KEYSTONE}, {SMALL, Feature.ZOOM, Feature.ZOOM_DIGITAL}},
+    private static final Object[][] ROUND_TILES = {{EYE, FeatureId.EYE}, {GENERAL, null}};
+    /** Rows of the card: one wide tile and two small ones each (stock structure), {size, feature or section, orElse}. */
+    private static final Object[][][] TILE_ROWS = {
+            {{WIDE, FeatureId.KEYSTONE_AK_NOW}, {SMALL, KEYSTONE}, {SMALL, FeatureId.ZOOM, FeatureId.ZOOM_DIGITAL}},
             {{WIDE, PICTURE}, {SMALL, SOUND}, {SMALL, FOCUS}},
-            {{WIDE, Feature.INPUT}, {SMALL, Feature.BLUETOOTH}, {SMALL, Feature.NETWORK}},
-            {{WIDE, GAME}, {SMALL, PROJECTION}, {SMALL, Feature.MIRRORING, Feature.USB_FILES}},
+            {{WIDE, FeatureId.INPUT}, {SMALL, FeatureId.BLUETOOTH}, {SMALL, FeatureId.NETWORK}},
+            {{WIDE, GAME}, {SMALL, PROJECTION}, {SMALL, FeatureId.MIRRORING, FeatureId.USB_FILES}},
     };
     /** Section pages: {section, header-or-null, rows...} groups in order. */
     private static final Object[][] SECTIONS = {
             {KEYSTONE, new Object[][]{
-                    {null, Feature.KEYSTONE_AK_NOW, Feature.KEYSTONE_FIT_NOW, Feature.KEYSTONE_MANUAL, Feature.ZOOM,
-                            Feature.ZOOM_DIGITAL,
-                            Feature.KEYSTONE_FIT_SCREEN, Feature.KEYSTONE_ROTATION, Feature.KEYSTONE_ANGLE_H,
-                            Feature.KEYSTONE_ANGLE_V},
-                    {"image_correction", Feature.KEYSTONE_REALTIME, Feature.KEYSTONE_ON_MOVE, Feature.KEYSTONE_ON_POWER, Feature.KEYSTONE_CURTAIN,
-                            Feature.KEYSTONE_OBSTACLE},
-                    {"more", Feature.KEYSTONE_RESTORE}}},
+                    {null, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL, FeatureId.ZOOM,
+                            FeatureId.ZOOM_DIGITAL,
+                            FeatureId.KEYSTONE_FIT_SCREEN, FeatureId.KEYSTONE_ROTATION, FeatureId.KEYSTONE_ANGLE_H,
+                            FeatureId.KEYSTONE_ANGLE_V},
+                    {"image_correction", FeatureId.KEYSTONE_REALTIME, FeatureId.KEYSTONE_ON_MOVE, FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_CURTAIN,
+                            FeatureId.KEYSTONE_OBSTACLE},
+                    {"more", FeatureId.KEYSTONE_RESTORE}}},
             {FOCUS, new Object[][]{
-                    {null, Feature.FOCUS_AF_NOW, Feature.FOCUS_MANUAL, Feature.FOCUS_SMART, Feature.FOCUS_ON_MOVE,
-                            Feature.FOCUS_ON_POWER}}},
-            {LAMP, new Object[][]{{null, Feature.LAMP, Feature.BOOST}}},
+                    {null, FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART, FeatureId.FOCUS_ON_MOVE,
+                            FeatureId.FOCUS_ON_POWER}}},
+            {LAMP, new Object[][]{{null, FeatureId.LAMP, FeatureId.BOOST}}},
             {PICTURE, new Object[][]{
-                    {null, Feature.PICTURE_MODE, Feature.PICTURE_PQ, Feature.PICTURE_COLOR_TEMP, Feature.PICTURE_MEMC,
-                            Feature.PICTURE_AI_CONTRAST, Feature.PICTURE_DYNAMIC_CONTRAST,
-                            Feature.PICTURE_DYNAMIC_BLACK, Feature.PICTURE_SUPER_RES, Feature.PICTURE_ULTRA120,
-                            Feature.PICTURE_PRO, Feature.PICTURE_RESET, Feature.PICTURE_RESET_ALL},
-                    {"hdmi", Feature.HDMI_RANGE, Feature.HDMI_EDID, Feature.PICTURE_ASPECT}}},
+                    {null, FeatureId.PICTURE_MODE, FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP, FeatureId.PICTURE_MEMC,
+                            FeatureId.PICTURE_AI_CONTRAST, FeatureId.PICTURE_DYNAMIC_CONTRAST,
+                            FeatureId.PICTURE_DYNAMIC_BLACK, FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_ULTRA120,
+                            FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET, FeatureId.PICTURE_RESET_ALL},
+                    {"hdmi", FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT}}},
             {SOUND, new Object[][]{
-                    {null, Feature.SOUND_ENHANCEMENT, Feature.SOUND_MODE, Feature.SOUND_EQ, Feature.SOUND_LEVELING,
-                            Feature.SOUND_EARC, Feature.SOUND_OUTPUT, Feature.SOUND_FORMAT}}},
-            {PROJECTION, new Object[][]{{null, Feature.PROJECTION_MODE, Feature.PROJECTION_REAR}}},
-            {GAME, new Object[][]{{null, Feature.GAME_MODE, Feature.GAME_SPEED, Feature.GAME_ALLM}}},
-            {EYE, new Object[][]{{null, Feature.EYE}}},
+                    {null, FeatureId.SOUND_ENHANCEMENT, FeatureId.SOUND_MODE, FeatureId.SOUND_EQ, FeatureId.SOUND_LEVELING,
+                            FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT, FeatureId.SOUND_FORMAT}}},
+            {PROJECTION, new Object[][]{{null, FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR}}},
+            {GAME, new Object[][]{{null, FeatureId.GAME_MODE, FeatureId.GAME_SPEED, FeatureId.GAME_ALLM}}},
+            {EYE, new Object[][]{{null, FeatureId.EYE}}},
             {GENERAL, new Object[][]{
-                    {null, Feature.SETTINGS_SYSTEM, Feature.SETTINGS_PROJECTOR, Feature.SETTINGS_CEC,
-                            Feature.SETTINGS_RECENTS, Feature.SETTINGS_AMBIENT_SPEAKER, Feature.SETTINGS_SLEEP_TIMER,
-                            Feature.SETTINGS_REMOTE, Feature.LAMP_ECO, Feature.SETTINGS_LAUNCHER}}},
+                    {null, FeatureId.LAMP_OFF, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC,
+                            FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER,
+                            FeatureId.SETTINGS_REMOTE, FeatureId.LAMP_ECO, FeatureId.SETTINGS_LAUNCHER,
+                            FeatureId.SETTINGS_LICENCES}}},
     };
     /** All settings: the round category buttons, in this order. */
     private static final String[] ALL_SETTINGS = {KEYSTONE, FOCUS, PICTURE, PROJECTION, SOUND, EYE, GENERAL};
@@ -107,26 +111,26 @@ public final class MenuSpec {
         for (Object[] s : SECTIONS) {
             List<Group> groups = new ArrayList<>();
             for (Object[] g : (Object[][]) s[1]) {
-                List<String> rs = new ArrayList<>();
-                for (int i = 1; i < g.length; i++) if (p.has((String) g[i])) rs.add((String) g[i]);
+                List<FeatureId> rs = new ArrayList<>();
+                for (int i = 1; i < g.length; i++) if (p.has((FeatureId) g[i])) rs.add((FeatureId) g[i]);
                 if (!rs.isEmpty()) groups.add(new Group((String) g[0], rs));
             }
             if (!groups.isEmpty()) secs.put((String) s[0], Collections.unmodifiableList(groups));
         }
         sections = Collections.unmodifiableMap(secs);
         List<Tile> rt = new ArrayList<>();
-        for (String[] t : ROUND_TILES) {
-            if (t[1] == null || p.has(t[1])) rt.add(new Tile(ROUND, t[0], null));
+        for (Object[] t : ROUND_TILES) {
+            if (t[1] == null || p.has((FeatureId) t[1])) rt.add(new Tile(ROUND, t[0], null));
         }
         round = Collections.unmodifiableList(rt);
         List<List<Tile>> rws = new ArrayList<>();
-        for (String[][] row : TILE_ROWS) {
+        for (Object[][] row : TILE_ROWS) {
             List<Tile> r = new ArrayList<>();
-            for (String[] t : row) {
-                String id = t[1], alt = t.length > 2 ? t[2] : null;
+            for (Object[] t : row) {
+                Object id = t[1], alt = t.length > 2 ? t[2] : null;
                 boolean a = present(id), b = alt != null && present(alt);
-                if (a) r.add(new Tile(t[0], id, b ? alt : null));
-                else if (b) r.add(new Tile(t[0], alt, null));
+                if (a) r.add(new Tile((String) t[0], id, b ? alt : null));
+                else if (b) r.add(new Tile((String) t[0], alt, null));
             }
             if (!r.isEmpty()) rws.add(Collections.unmodifiableList(r));
         }
@@ -136,8 +140,8 @@ public final class MenuSpec {
         allSettings = Collections.unmodifiableList(all);
     }
 
-    private boolean present(String id) {
-        return Feature.known(id) ? profile.has(id) : sections.containsKey(id);
+    private boolean present(Object id) {
+        return id instanceof FeatureId ? profile.has((FeatureId) id) : sections.containsKey(id);
     }
 
     /** The menu of a profile; an invalid profile gives an empty menu (only the gear, nothing to set). */
@@ -147,8 +151,8 @@ public final class MenuSpec {
     public boolean hasSection(String section) { return sections.containsKey(section); }
 
     /** Rows of a section in order (headers left out), empty when absent. */
-    public List<String> rowsOf(String section) {
-        List<String> out = new ArrayList<>();
+    public List<FeatureId> rowsOf(String section) {
+        List<FeatureId> out = new ArrayList<>();
         List<Group> gs = sections.get(section);
         if (gs != null) for (Group g : gs) out.addAll(g.rows);
         return out;
@@ -162,7 +166,7 @@ public final class MenuSpec {
     }
 
     /** The Boost step of the light slider, or -1 when the model has no Boost. */
-    public int boostLevel() { return profile.has(Feature.BOOST) ? profile.number(Feature.BOOST, "level", -1) : -1; }
+    public int boostLevel() { return profile.has(FeatureId.BOOST) ? profile.number(FeatureId.BOOST, "level", -1) : -1; }
 
     /** True when the tile with this id (feature or section) is on the card. */
     public boolean hasTile(String id) {

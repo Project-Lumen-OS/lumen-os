@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">节能模式</string>
     <string name="lumen_m_ambient_speaker">氛围音箱</string>
     <string name="lumen_m_ct_custom">自定义</string>
+    <string name="lumen_m_lamp_off">关屏</string>
 </resources>

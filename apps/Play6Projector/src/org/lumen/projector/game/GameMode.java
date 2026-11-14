@@ -6,8 +6,9 @@ import android.util.Log;
 
 import org.lumen.projector.Play6App;
 import org.lumen.projector.R;
-import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.GameModeType;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.ui.Notify;
 
 /**
@@ -69,20 +70,20 @@ public final class GameMode {
             case ON: {
                 sOnNotice = false;                                    // the user took over
                 boolean r648 = g.applyGameModeOption();               // 648(647)
-                boolean r34 = g2.setGameModeType(0);                  // IGmpf2 34(0) manual
+                boolean r34 = g2.setGameModeType(GameModeType.MANUAL);                  // IGmpf2 34(0) manual
                 boolean r35 = g2.setGameModeState(true);              // IGmpf2 35(0) open
                 Log.i(TAG, "on: 648 -> " + r648 + ", 34(0) -> " + r34 + ", 35(0) -> " + r35);
                 return true;
             }
             case OFF: {
                 sOnNotice = false;
-                boolean r34 = g2.setGameModeType(0);                  // IGmpf2 34(0)
+                boolean r34 = g2.setGameModeType(GameModeType.MANUAL);                  // IGmpf2 34(0)
                 boolean r35 = g2.setGameModeState(false);             // IGmpf2 35(1) closed
                 Log.i(TAG, "off: 34(0) -> " + r34 + ", 35(1) -> " + r35);
                 return true;
             }
             case AUTO: {
-                boolean r34 = g2.setGameModeType(1);                  // IGmpf2 34(1)
+                boolean r34 = g2.setGameModeType(GameModeType.AUTO);                  // IGmpf2 34(1)
                 Log.i(TAG, "auto: 34(1) -> " + r34);
                 autoState(app, g2, read33(g2), "Auto chosen", false);      // the panel's change: no notice
                 return true;
@@ -108,7 +109,7 @@ public final class GameMode {
             SharedPreferences dp = Play6App.prefs(app);
             if (!dp.getBoolean(K_AUTO_DEFAULT, false)) {
                 if (p[1] != 1) {
-                    boolean r = g2.setGameModeType(1);                               // IGmpf2 34(1)
+                    boolean r = g2.setGameModeType(GameModeType.AUTO);                               // IGmpf2 34(1)
                     Log.i(TAG, "default Auto (once): 33 was " + raw(p) + ", 34(1) -> " + r);
                     p = read33(g2);
                     if (p == null) return;

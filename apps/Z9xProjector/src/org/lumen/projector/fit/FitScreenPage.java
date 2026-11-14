@@ -154,8 +154,8 @@ public final class FitScreenPage {
                 str(R.string.fit_cal_two), str(R.string.fit_cal_three), str(R.string.fit_cal_all)}, (row, i) -> kind[0] = i));
         k.setSelected(0);
         p.add(new NavRow(app, str(R.string.fit_cal_start), () -> host.closeThen(() -> FitRunner.startCalibration(app,
-                kind[0] == 2 ? FitCalibration.Kind.FULL : kind[0] == 1 ? FitCalibration.Kind.THREE
-                        : FitCalibration.Kind.TWO))).setChevron(false));
+                kind[0] == 2 ? CalibrationKind.FULL : kind[0] == 1 ? CalibrationKind.THREE
+                        : CalibrationKind.TWO))).setChevron(false));
         return p;
     }
 

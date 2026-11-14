@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/Z9xProjector res/values-zh-rCN/strings_stats.xml
+     under the module prefix. -->
+<resources>
+    <string name="lumen_stats_row">发送匿名统计信息</string>
+    <string name="lumen_stats_note">每次开机时及每天一次：型号、版本、构建、更新信息、国家、随机安装编号和序列号（服务器只保存其哈希值）。不会保存您的 IP 地址。</string>
+</resources>

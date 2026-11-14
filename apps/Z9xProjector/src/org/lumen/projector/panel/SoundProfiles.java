@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.lumen.projector.audio.AudioPathReporter;
+import org.lumen.projector.hal.AudioPath;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.SoundEffect;
+import org.lumen.projector.hal.SoundProcess;
 
 /**
  * v6.3.1 "Sound enhancement" row of the quick panel: Harman Kardon / DTS Virtual:X (stock values),
@@ -54,27 +57,13 @@ public final class SoundProfiles {
     static final String KEY_VOLUME_LEVELING = "volume_leveling";
     private static final String TAG = "Z9xSound";
 
-    enum Profile { HARMAN, DTS }
-
-    /** Outcome of {@link #apply}. */
-    enum Result {
-        /** The read-back shows the profile and it is running. */
-        APPLIED,
-        /** DTS stored; the vendor applies DTS on the built-in speaker only (current path is not 0). */
-        SPEAKER_ONLY,
-        /** DTS stored; output-path reporting is not active yet, so the amp still runs Harman. */
-        OUTPUT_NOT_READY,
-        /** The read-back does not show the profile (or is unknown). */
-        NOT_CONFIRMED
-    }
-
     /** Order of the "Sound enhancement" choices (labels: Harman Kardon, DTS Virtual:X). */
-    static final Profile[] ORDER = {Profile.HARMAN, Profile.DTS};
+    static final SoundProfile[] ORDER = {SoundProfile.HARMAN, SoundProfile.DTS};
 
     /** Sound modes offered: AI first (as stock), then the 4 real amp tables; Movie = default. */
-    static final GmpfClient.SoundEffect[] MODES = {
-            GmpfClient.SoundEffect.AI, GmpfClient.SoundEffect.MOVIE, GmpfClient.SoundEffect.MUSIC,
-            GmpfClient.SoundEffect.SPORTS, GmpfClient.SoundEffect.KARAOKE};
+    static final SoundEffect[] MODES = {
+            SoundEffect.AI, SoundEffect.MOVIE, SoundEffect.MUSIC,
+            SoundEffect.SPORTS, SoundEffect.KARAOKE};
 
     /** Device-protected prefs (readable before the first unlock). */
     private static final String PREFS = "z9x_sound";
@@ -90,21 +79,21 @@ public final class SoundProfiles {
      * The profile to show, or null (unknown / 43 on / a getter failed). {@code pathActive}: output
      * path reporting is active ({@link AudioPathReporter#isActive}).
      */
-    static Profile fromState(Integer process, Boolean dtsEffects, boolean pathActive) {
+    static SoundProfile fromState(Integer process, Boolean dtsEffects, boolean pathActive) {
         if (dtsEffects == null || dtsEffects) return null;        // 43 true: neither option (QS)
         if (process == null) return null;
-        if (process == GmpfClient.SoundProcess.DTS_VIRTUAL_X.wire) return pathActive ? Profile.DTS : Profile.HARMAN;
-        if (process == GmpfClient.SoundProcess.HARMAN.wire) return Profile.HARMAN;
+        if (process == SoundProcess.DTS_VIRTUAL_X.wire) return pathActive ? SoundProfile.DTS : SoundProfile.HARMAN;
+        if (process == SoundProcess.HARMAN.wire) return SoundProfile.HARMAN;
         return null;
     }
 
     /** True when the vendor DB holds DTS Virtual:X (26 == 5, 43 off), whether or not it runs. */
     static boolean dtsStored(Integer process, Boolean dtsEffects) {
         return Boolean.FALSE.equals(dtsEffects) && process != null
-                && process == GmpfClient.SoundProcess.DTS_VIRTUAL_X.wire;
+                && process == SoundProcess.DTS_VIRTUAL_X.wire;
     }
 
-    static int indexOf(Profile p) {
+    static int indexOf(SoundProfile p) {
         for (int i = 0; i < ORDER.length; i++) if (ORDER[i] == p) return i;
         return -1;
     }
@@ -124,14 +113,14 @@ public final class SoundProfiles {
     }
 
     /** The sound mode to restore when 62 is not a valid mode (default Movie). */
-    static GmpfClient.SoundEffect lastMode(Context app) {
-        int w = GmpfClient.SoundEffect.MOVIE.wire;
+    static SoundEffect lastMode(Context app) {
+        int w = SoundEffect.MOVIE.wire;
         try { w = prefs(app).getInt(KEY_MODE, w); } catch (Throwable ignored) { }
         int i = modeIndex(w);
-        return i >= 0 ? MODES[i] : GmpfClient.SoundEffect.MOVIE;
+        return i >= 0 ? MODES[i] : SoundEffect.MOVIE;
     }
 
-    static void rememberMode(Context app, GmpfClient.SoundEffect e) {
+    static void rememberMode(Context app, SoundEffect e) {
         if (e == null || modeIndex(e.wire) < 0) return;
         try { prefs(app).edit().putInt(KEY_MODE, e.wire).apply(); } catch (Throwable ignored) { }
     }
@@ -158,8 +147,8 @@ public final class SoundProfiles {
             return;
         }
         try {
-            g.setSoundEffect(GmpfClient.SoundEffect.MOVIE);                        // 61(u8 1)
-            if (app != null) rememberMode(app, GmpfClient.SoundEffect.MOVIE);
+            g.setSoundEffect(SoundEffect.MOVIE);                        // 61(u8 1)
+            if (app != null) rememberMode(app, SoundEffect.MOVIE);
             int after = -1;
             try { after = g.getSoundEffectRaw(); } catch (Throwable ignored) { }
             org.lumen.projector.audio.AiSoundEngine.noteMode(after, "boot check");
@@ -173,7 +162,7 @@ public final class SoundProfiles {
      * HAL thread, user action only. Applies {@code p} and says honestly what it achieved. Throws on
      * a transport error (the caller shows "Could not do that").
      */
-    static Result apply(Context app, GmpfClient g, Profile p) throws Exception {
+    static SoundResult apply(Context app, GmpfClient g, SoundProfile p) throws Exception {
         // 41/42: back to the stock default "off" only when it is on and the user did not turn it on
         // (Lumen OS 1.0.4: the Sound page's Volume leveling switch, KEY_VOLUME_LEVELING).
         Boolean vb = null;
@@ -184,8 +173,8 @@ public final class SoundProfiles {
             boolean r = g.disableVolumeBalance();                                  // 42(false)
             Log.i(TAG, "volume levelling was on: 42(false) -> " + r);
         }
-        GmpfClient.SoundProcess proc = p == Profile.DTS
-                ? GmpfClient.SoundProcess.DTS_VIRTUAL_X : GmpfClient.SoundProcess.HARMAN;
+        SoundProcess proc = p == SoundProfile.DTS
+                ? SoundProcess.DTS_VIRTUAL_X : SoundProcess.HARMAN;
         boolean ok = g.setSoundEnhancement(proc);                                  // 44(false), 27(2|5)
         ensureMode(app, g);
         // v6.4: the process change ran setAdvSnd (SoC PEQ off); the EQ of the mode is re-applied in AMP
@@ -199,11 +188,11 @@ public final class SoundProfiles {
         int path = AudioPathReporter.confirmedPath();
         Log.i(TAG, "apply " + p + ": 27(" + proc.wire + ") -> " + ok + ", read-back 26=" + process
                 + " 43=" + dts + ", path active=" + active + " (" + path + ")");
-        if (!ok || process == null || process != proc.wire || !Boolean.FALSE.equals(dts)) return Result.NOT_CONFIRMED;
-        if (p == Profile.HARMAN) return Result.APPLIED;          // Harman plays with or without the path
-        if (!active) return Result.OUTPUT_NOT_READY;
-        if (path != GmpfClient.AudioPath.SPEAKER.wire) return Result.SPEAKER_ONLY;
-        return Result.APPLIED;
+        if (!ok || process == null || process != proc.wire || !Boolean.FALSE.equals(dts)) return SoundResult.NOT_CONFIRMED;
+        if (p == SoundProfile.HARMAN) return SoundResult.APPLIED;          // Harman plays with or without the path
+        if (!active) return SoundResult.OUTPUT_NOT_READY;
+        if (path != AudioPath.SPEAKER.wire) return SoundResult.SPEAKER_ONLY;
+        return SoundResult.APPLIED;
     }
 
     /** 62 not a valid mode (20, a read failure) -> 61(last mode; AI through AiSoundEngine). HAL thread. */
@@ -211,9 +200,9 @@ public final class SoundProfiles {
         int raw = -1;
         try { raw = g.getSoundEffectRaw(); } catch (Throwable t) { Log.w(TAG, "62: " + t); }
         if (modeIndex(raw) >= 0) return;
-        GmpfClient.SoundEffect m = lastMode(app);
+        SoundEffect m = lastMode(app);
         try {
-            if (m == GmpfClient.SoundEffect.AI) org.lumen.projector.audio.AiSoundEngine.userChoseAi(g);   // prop + 61(3)
+            if (m == SoundEffect.AI) org.lumen.projector.audio.AiSoundEngine.userChoseAi(g);   // prop + 61(3)
             else g.setSoundEffect(m);                                              // 61
             Log.i(TAG, "62=" + raw + " is not a valid mode: 61(" + m.wire + ")");
         } catch (Throwable t) {

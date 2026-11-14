@@ -41,7 +41,8 @@
     "projection.rear": {},
     "settings.system": {},
     "settings.sleep_timer": {},
-    "settings.remote": {}
+    "settings.remote": {},
+    "settings.licences": {}
   },
   "hints": {"eye": "eye_follow", "picture.mode": "picture_mode", "keystone.curtain": "curtain_fit", "projection.rear": "rear_projection", "picture.dynamic_black": "dynamic_black"},
   "keys": {"gear_short": "quick_menu", "gear_long": "game_menu"},

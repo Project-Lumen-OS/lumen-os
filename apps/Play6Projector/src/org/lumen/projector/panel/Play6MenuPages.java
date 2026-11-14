@@ -4,11 +4,14 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
+import org.lumen.projector.hal.ColorTemp;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.Play6Values;
+import org.lumen.projector.hal.WbItem;
 import org.lumen.projector.ui.ChoiceRow;
 import org.lumen.projector.ui.NavRow;
 import org.lumen.projector.ui.Page;
@@ -33,8 +36,8 @@ final class Play6MenuPages implements MenuController.Pages {
     private static final String TAG = "P6Menu";
     private static final long CHOICE_COMMIT_MS = 500;
     /** Picture styles in row order (174 values, stock color_style_*). */
-    private static final int[] STYLE_ORDER = {Play6Gmpf.STYLE_STANDARD, Play6Gmpf.STYLE_MOVIE_D65, Play6Gmpf.STYLE_OFFICE,
-            Play6Gmpf.STYLE_CUSTOM};
+    private static final int[] STYLE_ORDER = {ColorTemp.STANDARD.wire, ColorTemp.MOVIE_D65.wire, ColorTemp.OFFICE.wire,
+            ColorTemp.CUSTOM.wire};
 
     private final Context app;
     /** The menu these pages belong to (MenuController.Pages: given with every page call). */
@@ -59,12 +62,12 @@ final class Play6MenuPages implements MenuController.Pages {
     Play6MenuPages(Context c) { app = c.getApplicationContext(); }
 
     @Override
-    public Page page(String id, MenuController menu) {
+    public Page page(FeatureId id, MenuController menu) {
         this.menu = menu;
         switch (id) {
-            case Feature.PICTURE_PRO: return pro();
-            case Feature.SOUND_EQ: return eq();
-            case Feature.SETTINGS_AMBIENT_SPEAKER: return speaker();
+            case PICTURE_PRO: return pro();
+            case SOUND_EQ: return eq();
+            case SETTINGS_AMBIENT_SPEAKER: return speaker();
             default: return null;                     // input, mirroring and the rest: Play6Features.open
         }
     }
@@ -126,7 +129,7 @@ final class Play6MenuPages implements MenuController.Pages {
     private boolean custom() { return Play6MenuGates.custom(snap.pictureMode); }
 
     private boolean customStyle() {
-        return custom() && snap.style != null && snap.style == Play6Gmpf.STYLE_CUSTOM && Play6Snapshot.rgbOk(snap.rgb);
+        return custom() && snap.style != null && snap.style == ColorTemp.CUSTOM.wire && Play6Snapshot.rgbOk(snap.rgb);
     }
 
     // ================================================================== picture.pro
@@ -137,7 +140,7 @@ final class Play6MenuPages implements MenuController.Pages {
         nrRow = p.add(new P6ChoiceRow(app, s(R.string.pro_noise), labels(app, R.string.panel_off, R.string.panel_low,
                 R.string.panel_medium, R.string.panel_high, R.string.panel_auto), (row, i) -> {
                     if (!custom() || i < 0 || i > 4) { refresh(Play6Snapshot.PICTURE); return; }
-                    change("671 noise reduction " + i, Play6Snapshot.PICTURE, (g, g2) -> g.setNoiseReduction(i));
+                    change("671 noise reduction " + i, Play6Snapshot.PICTURE, (g, g2) -> g.setNoiseReduction(Play6Values.noiseReduction(i)));
                 }));
         int[] wbTitles = {R.string.pro_red_gain, R.string.pro_green_gain, R.string.pro_blue_gain, R.string.pro_red_offset,
                 R.string.pro_green_offset, R.string.pro_blue_offset};
@@ -159,7 +162,7 @@ final class Play6MenuPages implements MenuController.Pages {
         // stock PictureViewModel: no HDR change on the HDMI input in HDMI 1.4 mode (EDID 1), a notice instead
         hdrRow = p.add(new ToggleRow(app, s(R.string.p6_hdr), (row, w) ->
                 change("650 HDR auto " + w, Play6Snapshot.PICTURE, (g, g2) -> {
-                    if (g.getCurrentInputSource() == Play6Gmpf.SOURCE_HDMI1 && g.getEdidVersion() == Play6Gmpf.EDID_14) {
+                    if (g.getCurrentInputSource() == Play6Gmpf.SOURCE_HDMI1 && g.getEdidVersion() == Play6Gmpf.EDID_V14) {
                         Log.i(TAG, "650 not sent: HDMI 1.4 mode");
                         Ui.main().post(() -> Ui.toast(app, R.string.p6_hdr_hdmi_compat));
                         return;
@@ -170,7 +173,7 @@ final class Play6MenuPages implements MenuController.Pages {
                 R.string.p6_style_movie, R.string.panel_pm_office, R.string.p6_pm_custom), (row, i) -> {
                     if (!custom() || i < 0 || i >= STYLE_ORDER.length) { refresh(Play6Snapshot.PICTURE); return; }
                     final int st = STYLE_ORDER[i];
-                    change("174 picture style " + st, Play6Snapshot.PICTURE | Play6Snapshot.LAMP, (g, g2) -> g.setPictureStyle(st));
+                    change("174 picture style " + st, Play6Snapshot.PICTURE | Play6Snapshot.LAMP, (g, g2) -> g.setColorTemp(Play6Values.pictureStyle(st)));
                 }));
         int[] rgbTitles = {R.string.p6_light_red, R.string.p6_light_green, R.string.p6_light_blue};
         for (int k = 0; k < rgbRows.length; k++) {
@@ -201,12 +204,12 @@ final class Play6MenuPages implements MenuController.Pages {
         change("wb " + item + " " + value, Play6Snapshot.PICTURE, (g, g2) -> {
             boolean r;
             switch (item) {
-                case 0: r = g.setRedGain(value); break;
-                case 1: r = g.setGreenGain(value); break;
-                case 2: r = g.setBlueGain(value); break;
-                case 3: r = g.setRedOffset(value); break;
-                case 4: r = g.setGreenOffset(value); break;
-                default: r = g.setBlueOffset(value); break;
+                case 0: r = g.setWb(WbItem.RED_GAIN, value); break;
+                case 1: r = g.setWb(WbItem.GREEN_GAIN, value); break;
+                case 2: r = g.setWb(WbItem.BLUE_GAIN, value); break;
+                case 3: r = g.setWb(WbItem.RED_OFFSET, value); break;
+                case 4: r = g.setWb(WbItem.GREEN_OFFSET, value); break;
+                default: r = g.setWb(WbItem.BLUE_OFFSET, value); break;
             }
             if (!r) throw new IllegalStateException("white balance item " + item + " returned false");
         });

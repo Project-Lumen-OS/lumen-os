@@ -11,6 +11,7 @@ import android.util.Log;
 import org.lumen.projector.Hal;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.HbFeatures;
+import org.lumen.projector.hal.SoundEffect;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -277,9 +278,9 @@ public final class SoundEq {
     // ------------------------------------------------------------------ persistence
     /** The sound modes with their own equalizer setting (62 values: AI, Movie, Music, Sports, Karaoke). */
     public static boolean validMode(int mode) {
-        return mode == GmpfClient.SoundEffect.AI.wire || mode == GmpfClient.SoundEffect.MOVIE.wire
-                || mode == GmpfClient.SoundEffect.MUSIC.wire || mode == GmpfClient.SoundEffect.SPORTS.wire
-                || mode == GmpfClient.SoundEffect.KARAOKE.wire;
+        return mode == SoundEffect.AI.wire || mode == SoundEffect.MOVIE.wire
+                || mode == SoundEffect.MUSIC.wire || mode == SoundEffect.SPORTS.wire
+                || mode == SoundEffect.KARAOKE.wire;
     }
 
     private static SharedPreferences prefs(Context app) {

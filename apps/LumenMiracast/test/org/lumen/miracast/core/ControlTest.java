@@ -31,18 +31,18 @@ public final class ControlTest {
         eq("null is not a value", null, Control.parseSwitch(null));
         eq("2 is not a value", null, Control.parseSwitch("2"));
         // status line
-        eq("off wins over everything", Control.Status.OFF, Control.status(false, true, true, "VISIBLE"));
-        eq("off without a service", Control.Status.OFF, Control.status(false, false, false, null));
-        eq("on, service not up yet", Control.Status.STARTING, Control.status(true, false, false, null));
-        eq("a running session", Control.Status.IN_USE, Control.status(true, true, true, "CONNECTED"));
-        eq("a session wins over a Wi-Fi state", Control.Status.IN_USE, Control.status(true, true, true, "WIFI_OFF"));
-        eq("visible = ready", Control.Status.READY, Control.status(true, true, false, "VISIBLE"));
-        eq("Wi-Fi off", Control.Status.NO_WIFI, Control.status(true, true, false, "WIFI_OFF"));
-        eq("no Wi-Fi Direct", Control.Status.UNSUPPORTED, Control.status(true, true, false, "UNSUPPORTED"));
-        eq("starting", Control.Status.STARTING, Control.status(true, true, false, "STARTING"));
-        eq("connected without a session yet", Control.Status.STARTING, Control.status(true, true, false, "CONNECTED"));
-        eq("stopped", Control.Status.STARTING, Control.status(true, true, false, "STOPPED"));
-        eq("unknown state", Control.Status.STARTING, Control.status(true, true, false, null));
+        eq("off wins over everything", ReceiverStatus.OFF, Control.status(false, true, true, "VISIBLE"));
+        eq("off without a service", ReceiverStatus.OFF, Control.status(false, false, false, null));
+        eq("on, service not up yet", ReceiverStatus.STARTING, Control.status(true, false, false, null));
+        eq("a running session", ReceiverStatus.IN_USE, Control.status(true, true, true, "CONNECTED"));
+        eq("a session wins over a Wi-Fi state", ReceiverStatus.IN_USE, Control.status(true, true, true, "WIFI_OFF"));
+        eq("visible = ready", ReceiverStatus.READY, Control.status(true, true, false, "VISIBLE"));
+        eq("Wi-Fi off", ReceiverStatus.NO_WIFI, Control.status(true, true, false, "WIFI_OFF"));
+        eq("no Wi-Fi Direct", ReceiverStatus.UNSUPPORTED, Control.status(true, true, false, "UNSUPPORTED"));
+        eq("starting", ReceiverStatus.STARTING, Control.status(true, true, false, "STARTING"));
+        eq("connected without a session yet", ReceiverStatus.STARTING, Control.status(true, true, false, "CONNECTED"));
+        eq("stopped", ReceiverStatus.STARTING, Control.status(true, true, false, "STOPPED"));
+        eq("unknown state", ReceiverStatus.STARTING, Control.status(true, true, false, null));
         System.out.println("control: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);
     }

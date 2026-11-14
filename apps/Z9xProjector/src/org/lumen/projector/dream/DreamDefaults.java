@@ -30,23 +30,11 @@ final class DreamDefaults {
             "com.google.android.deskclock/com.android.deskclock.Screensaver",    // AOSP framework default
             "com.android.deskclock/com.android.deskclock.Screensaver"));
 
-    /** What happens to the active screensaver (screensaver on). */
-    enum Active {
-        /** unset or a previous default: the sky becomes the active screensaver */
-        SKY,
-        /** unset, and the sky is not an installed dream: the v1 default (our clock) */
-        CLOCK,
-        /** the sky already */
-        ALREADY,
-        /** the user's choice (or a previous default while the sky is missing): kept */
-        KEEP
-    }
-
-    static Active active(String comps, boolean skyInstalled) {
-        if (isUnset(comps)) return skyInstalled ? Active.SKY : Active.CLOCK;
-        if (SKY.equals(first(comps))) return Active.ALREADY;
-        if (!onlyPrevious(comps)) return Active.KEEP;
-        return skyInstalled ? Active.SKY : Active.KEEP;
+    static DreamActive active(String comps, boolean skyInstalled) {
+        if (isUnset(comps)) return skyInstalled ? DreamActive.SKY : DreamActive.CLOCK;
+        if (SKY.equals(first(comps))) return DreamActive.ALREADY;
+        if (!onlyPrevious(comps)) return DreamActive.KEEP;
+        return skyInstalled ? DreamActive.SKY : DreamActive.KEEP;
     }
 
     /**
@@ -60,21 +48,11 @@ final class DreamDefaults {
         return isUnset(saved) || IDLE.equals(first(saved)) || (!SKY.equals(first(saved)) && onlyPrevious(saved));
     }
 
-    /** Which of our two screensavers the quick panel's "Show" row marks (Lumen OS 1.0.1). */
-    enum Shown {
-        /** Lumen Home's living sky is the active screensaver */
-        SKY,
-        /** our clock is */
-        CLOCK,
-        /** another dream, none chosen, or the blank standby dream (screensaver off) */
-        OTHER
-    }
-
-    static Shown shown(String comps) {
+    static DreamShown shown(String comps) {
         String f = first(comps);
-        if (SKY.equals(f)) return Shown.SKY;
-        if (CLOCK.equals(f)) return Shown.CLOCK;
-        return Shown.OTHER;
+        if (SKY.equals(f)) return DreamShown.SKY;
+        if (CLOCK.equals(f)) return DreamShown.CLOCK;
+        return DreamShown.OTHER;
     }
 
     /** The blank standby dream is the active one (IdleOwner: screensaver off). */

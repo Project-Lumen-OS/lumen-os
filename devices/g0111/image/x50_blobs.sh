@@ -17,12 +17,14 @@
 #   2. untar it into our own tmpfs /mnt/z9x_blobs (32 MiB: the 16 MiB copy + the files; /mnt is noexec and a
 #      bind keeps the flags of its source mount). Before extracting: no member name absolute or with '..', no
 #      link / device / fifo member; after: only directories and regular files of at most 8 MiB,
-#   3. accept only files whose sha256 is in /system/etc/z9x/x50_blobs_allow.txt,
+#   3. accept only files whose sha256 is in /system/etc/z9x/x50_blobs_allow.txt (or, for a line with
+#      alt=<firmware>:<sha256>, that stock firmware's copy, only while that firmware's vendor runs),
 #   4. label them (label=nativeui_main_exec when the line says so, else system_lib_file for a .so and
 #      system_file otherwise; mode 0755 only with mode=0755 and a label=) and bind-mount each over its 0-byte
 #      placeholder in /system, or for a bind= line over that vendor / VNDK APEX file,
 #   5. the need=eye lines (stock nativeui and its gmpf ndk library) are all checked first and bound only when
-#      every one of them is there with its sha256: never one without the other,
+#      every one of them is there with its sha256: never one without the other, and never base copies mixed with
+#      one firmware's alt= copies,
 #   6. remount the tmpfs read-only (every bind shares it).
 # Results: sys.z9x.blobs = ok | missing | bad:<why> | partial (the whole set, as z9x_blobs.sh), sys.z9x.blobs.set,
 # sys.z9x.blobs.src (partition | stock_a / stock_b: a DSU trial),
@@ -88,7 +90,7 @@ else
   # the model this image is for (x50_prop.txt ro.lumen.model): G0111 X50 Ultra or G0100 X50 Ultra Max (its own image
   # g0100); stock_blobs_collect reads only when it is this unit's model. Anything else: nothing is read
   mdl=$(getprop ro.lumen.model)
-  case $mdl in G0111|G0100) ;; *) fail missing "no $name, and this image names no X50 model (ro.lumen.model ${mdl:-unset})" ;; esac
+  case $mdl in G0111|G0100|G0155) ;; *) fail missing "no $name, and this image names no X50 model (ro.lumen.model ${mdl:-unset})" ;; esac
   stock_blobs_collect "$mdl" "$ALLOW" $M/x $R/mnt/z9x_stock $MAXF \
     || fail missing "no $name, and the stock slot $cur of this DSU trial was not read ($STOCK_WHY)"
   say "DSU trial: no $name, $STOCK_N files read-only from the stock slot $cur (checked below like the partition's)"
@@ -101,7 +103,11 @@ want=$(sed -n 's/^set=//p' $ALLOW)
 setprop sys.z9x.blobs.set "$set"
 [ "$set" = "$want" ] || say "blob set '$set' is not this image's '$want' (files still checked one by one)"
 
-n=0; bad=; eye=0; eyebad=; Q=$M/eye.q
+# alt=<firmware>:<sha256> (x50_blobs_allow.txt): that stock firmware's own copy of the file, accepted only while
+# that firmware's vendor runs (ro.vendor.build.version.incremental: in a DSU trial and on an installed Lumen OS
+# /vendor is the unit's stock vendor). The need=eye files must all be the base copies or all this firmware's.
+fw=$(getprop ro.vendor.build.version.incremental)
+n=0; bad=; eye=0; eyebad=; eyebase=0; eyealt=0; Q=$M/eye.q
 : > $Q
 while read -r h p src opt; do
   case "$h" in ''|\#*|set=*) continue ;; esac
@@ -111,8 +117,15 @@ while read -r h p src opt; do
     bad=${bad:-missing:$p}; [ $e = 0 ] || eyebad=${eyebad:-missing:$p}; continue
   fi
   got=$(sha256sum "$f" | cut -d' ' -f1)
-  if [ "$got" != "$h" ]; then
-    bad=${bad:-bad:$p}; [ $e = 0 ] || eyebad=${eyebad:-bad:$p}; rm -f "$f"; continue
+  if [ "$got" = "$h" ]; then
+    [ $e = 0 ] || eyebase=$((eyebase + 1))
+  else
+    a=0
+    for o in $opt; do case "$o" in alt=*) [ -n "$fw" ] && [ "${o#alt=}" = "$fw:$got" ] && a=1 ;; esac; done
+    if [ $a = 0 ]; then
+      bad=${bad:-bad:$p}; [ $e = 0 ] || eyebad=${eyebad:-bad:$p}; rm -f "$f"; continue
+    fi
+    [ $e = 0 ] || eyealt=$((eyealt + 1))
   fi
   dst=/system/$p
   case " $opt " in
@@ -144,8 +157,10 @@ while read -r h p src opt; do
   n=$((n + 1))
 done < $ALLOW
 
-# the eye-protection drawer: every need=eye line verified, or none of them bound
+# the eye-protection drawer: every need=eye line verified, or none of them bound; never a base nativeui with this
+# firmware's library or the other way round
 [ $eye -gt 0 ] || eyebad=${eyebad:-bad:allow}
+[ $eyebase = 0 ] || [ $eyealt = 0 ] || eyebad=${eyebad:-bad:mixed}
 en=0
 if [ -z "$eyebad" ]; then
   while read -r f dst; do

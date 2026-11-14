@@ -13,25 +13,30 @@ G = os.environ.get("LUMEN_GSI") or os.path.dirname(os.path.dirname(APP))
 A = "apps/Play6Projector/src/org/lumen/projector/panel/"
 GT = A + "Play6MenuGates.java"
 FT = A + "Play6Features.java"
+FT_Play6GameRows = 'apps/Play6Projector/src/org/lumen/projector/panel/Play6GameRows.java'
+FT_Play6GeneralRows = 'apps/Play6Projector/src/org/lumen/projector/panel/Play6GeneralRows.java'
+FT_Play6HdmiRows = 'apps/Play6Projector/src/org/lumen/projector/panel/Play6HdmiRows.java'
+FT_Play6PictureRows = 'apps/Play6Projector/src/org/lumen/projector/panel/Play6PictureRows.java'
 PG = A + "Play6MenuPages.java"
 OW = A + "Play6Menu.java"
 MJ = "devices/dragon_healthy/menu.json"
+DV = "apps/Play6Projector/src/org/lumen/projector/Device.java"
 LY = "devices/dragon_healthy/app/Play6Projector.layers"
 MUTANTS = [
     # ---- rule: values (Play6MenuGates.state)
     ("pq items outside Custom", GT, "if (custom && v != null && v >= 0 && v <= 100) b.number(f, v);", "if (v != null && v >= 0 && v <= 100) b.number(f, v);"),
-    ("motion compensation in every mode", GT, "if (memcMode(r.pictureMode)) b.put(Feature.PICTURE_MEMC", "if (true) b.put(Feature.PICTURE_MEMC"),
+    ("motion compensation in every mode", GT, "if (memcMode(r.pictureMode)) b.put(FeatureId.PICTURE_MEMC", "if (true) b.put(FeatureId.PICTURE_MEMC"),
     ("HDMI rows on any input", GT, "        if (hdmi(r)) {\n", "        if (true) {\n"),
     ("game mode without IGmpf2", GT, "if (r.gmpf2 && r.gameMode >= 0)", "if (r.gameMode >= 0)"),
-    ("eye available without the NUI reader", GT, "case Feature.EYE: return eyeReady;", "case Feature.EYE: return true;"),
-    ("home screen choice where it cannot switch", GT, "case Feature.SETTINGS_LAUNCHER: return launcherChoice;", "case Feature.SETTINGS_LAUNCHER: return true;"),
-    ("power saving without the battery", GT, "case Feature.LAMP_ECO: return battery;", "case Feature.LAMP_ECO: return true;"),
-    ("picture reset shown outside Custom", GT, "            b.hide(Feature.PICTURE_RESET);\n", ""),
-    ("a value row without its value shown", GT, "for (String f : VALUE_ROWS) if (!probe.has(f)) b.hide(f);", ""),
-    ("equalizer entry while it cannot work", GT, "if (Boolean.FALSE.equals(r.eqOk)) b.hide(Feature.SOUND_EQ);", ""),
+    ("eye available without the NUI reader", GT, "case EYE: return eyeReady;", "case EYE: return true;"),
+    ("home screen choice where it cannot switch", GT, "case SETTINGS_LAUNCHER: return launcherChoice;", "case SETTINGS_LAUNCHER: return true;"),
+    ("power saving without the battery", GT, "case LAMP_ECO: return battery;", "case LAMP_ECO: return true;"),
+    ("picture reset shown outside Custom", GT, "            b.hide(FeatureId.PICTURE_RESET);\n", ""),
+    ("a value row without its value shown", GT, "for (FeatureId f : VALUE_ROWS) if (!probe.has(f)) b.hide(f);", ""),
+    ("equalizer entry while it cannot work", GT, "if (Boolean.FALSE.equals(r.eqOk)) b.hide(FeatureId.SOUND_EQ);", ""),
     ("no stock hint in Game", GT, "if (gamePicture(r.pictureMode)) b.note(MenuSpec.PICTURE, text.apply(\"p6_pic_game_hint\"));\n        else ", ""),
-    ("smart focus without IGmpf2", GT, "if (r.gmpf2) b.on(Feature.FOCUS_SMART, r.smartAf);", "b.on(Feature.FOCUS_SMART, r.smartAf);"),
-    ("dynamic contrast without IGmpf2", GT, "if (r.gmpf2) b.on(Feature.PICTURE_DYNAMIC_CONTRAST", "b.on(Feature.PICTURE_DYNAMIC_CONTRAST"),
+    ("smart focus without IGmpf2", GT, "if (r.gmpf2) b.on(FeatureId.FOCUS_SMART, r.smartAf);", "b.on(FeatureId.FOCUS_SMART, r.smartAf);"),
+    ("dynamic contrast without IGmpf2", GT, "if (r.gmpf2) b.on(FeatureId.PICTURE_DYNAMIC_CONTRAST", "b.on(FeatureId.PICTURE_DYNAMIC_CONTRAST"),
     ("AI scene sub-modes not shown as AI", GT, "raw >= AI_SCENE_FIRST && raw <= AI_SCENE_LAST ? Integer.valueOf(PM_AI) : raw", "raw"),
     ("light level out of range shown", GT, "if (r.lamp != null && lampValue(r.lamp)) b.number", "if (r.lamp != null) b.number"),
     ("pq value out of range shown", GT, "if (custom && v != null && v >= 0 && v <= 100) b.number", "if (custom && v != null) b.number"),
@@ -47,7 +52,7 @@ MUTANTS = [
     ("picture mode write in Game without the stock hint", GT, "if (gamePicture(r.pictureMode)) return \"p6_pic_game_hint\";", ""),
     ("picture mode write from an unknown mode", GT, "return PICTURE_MODE.token(shownPictureMode(r.pictureMode)) == null ? \"\" : null;", "return r.pictureMode == null ? \"\" : null;"),
     ("dynamic contrast write without IGmpf2", GT, "return custom(r.pictureMode) && r.gmpf2 ? null : \"\";", "return custom(r.pictureMode) ? null : \"\";"),
-    ("smart focus write without IGmpf2", GT, "            case Feature.FOCUS_SMART:\n                return r.gmpf2 ? null : \"toast_not_ready\";", "            case Feature.FOCUS_SMART:\n                return null;"),
+    ("smart focus write without IGmpf2", GT, "            case FOCUS_SMART:\n                return r.gmpf2 ? null : \"toast_not_ready\";", "            case FOCUS_SMART:\n                return null;"),
     ("projection write without a read", GT, "return r.putMode == null || r.autoReverse == null ? \"toast_not_ready\" : null;", "return null;"),
     # ---- tables and mappings
     ("table loses the rear side", GT, "return front ? PUT_FRONT_TABLE : PUT_REAR_TABLE;", "return PUT_FRONT_TABLE;"),
@@ -56,13 +61,13 @@ MUTANTS = [
     ("Original fits the full panel", GT, "w < 1920 && h < 1080", "w <= 1920 && h <= 1080"),
     ("sound mode wires swapped", GT, "new int[]{3, 2, 1, 4, 12, 20}", "new int[]{1, 2, 3, 4, 12, 20}"),
     ("HDMI mode wires swapped", GT, "new int[]{EDID_14, EDID_20}", "new int[]{EDID_20, EDID_14}"),
-    ("an absent feature implemented", GT, "Feature.LAMP, Feature.LAMP_ECO,\n            Feature.PICTURE_MODE, Feature.PICTURE_PQ", "Feature.LAMP, Feature.LAMP_ECO, Feature.BOOST,\n            Feature.PICTURE_MODE, Feature.PICTURE_PQ"),
-    ("a profile feature not implemented", GT, "Feature.SOUND_EQ, Feature.SOUND_EARC, Feature.SOUND_OUTPUT,", "Feature.SOUND_EQ, Feature.SOUND_OUTPUT,"),
-    ("outputs not limited to the connected ones", GT, "            b.options(Feature.SOUND_OUTPUT, outs);\n", ""),
+    ("an absent feature implemented", GT, "FeatureId.LAMP, FeatureId.LAMP_ECO, FeatureId.LAMP_OFF,\n", "FeatureId.LAMP, FeatureId.LAMP_ECO, FeatureId.LAMP_OFF, FeatureId.BOOST,\n"),
+    ("a profile feature not implemented", GT, "FeatureId.SOUND_EQ, FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT,", "FeatureId.SOUND_EQ, FeatureId.SOUND_OUTPUT,"),
+    ("outputs not limited to the connected ones", GT, "            b.options(FeatureId.SOUND_OUTPUT, outs);\n", ""),
     ("a gone output not shown as Auto", GT, "if (out != null && !outs.contains(out)) out = \"auto\";", ""),
-    ("Original offered for a full panel signal", GT, "if (!originalFits(r.hdmiInfo)) b.options(Feature.PICTURE_ASPECT,", "if (false) b.options(Feature.PICTURE_ASPECT,"),
+    ("Original offered for a full panel signal", GT, "if (!originalFits(r.hdmiInfo)) b.options(FeatureId.PICTURE_ASPECT,", "if (false) b.options(FeatureId.PICTURE_ASPECT,"),
     # ---- the v3 hooks: refusals before a press, the stock questions
-    ("game page off HDMI opens", GT, "if (MenuSpec.GAME.equals(feature)) return hdmi(r) ? null : Note.of(\"panel_game_hdmi_only\");", ""),
+    ("game page off HDMI opens", GT, "return r == null || hdmi(r) ? null : Note.of(\"panel_game_hdmi_only\");", "return null;"),
     ("blocked ignores the refusal", GT, "        String no = refusal(feature, r);\n        return no == null || no.isEmpty() ? null : Note.of(no);", "        return null;"),
     ("Performance without the heat warning", GT, "return change && m == PM_PERFORMANCE", "return false && m == PM_PERFORMANCE"),
     ("a flip without the question", GT, "return flip ? new Confirm(", "return false ? new Confirm("),
@@ -73,7 +78,7 @@ MUTANTS = [
     ("home screen question the wrong way", GT, "if (\"classic\".equals(value)) return new Confirm(\"launcher_row\", \"launcher_confirm_classic\"",
      "if (\"classic\".equals(value)) return new Confirm(\"launcher_row\", \"launcher_confirm_lumen\""),
     # ---- the adapter (Play6Features): entry gates and p6-hal re-checks
-    ("set without the implemented gate", FT, "if (!implemented().contains(feature) && !feature.startsWith(Feature.PICTURE_PQ + \".\")) { refuse(cb, null); return; }", ""),
+    ("set without the implemented gate", FT, "if (!implemented().contains(feature) && feature.parent != FeatureId.PICTURE_PQ) { refuse(cb, null); return; }", ""),
     ("set without the refusal", FT, "String no = Play6MenuGates.refusal(feature, r);", "String no = null;"),
     ("run without the implemented gate", FT, "if (!implemented().contains(action)) { refuse(cb, null); return; }", ""),
     ("open without the implemented gate", FT, "if (!implemented().contains(screen)) return false;", ""),
@@ -82,14 +87,14 @@ MUTANTS = [
     ("confirm hook dropped", FT, "        return Play6MenuGates.confirm(feature, value, last,", "        if (true) return null;\n        return Play6MenuGates.confirm(feature, value, last,"),
     ("setup gate ignored", FT, "public boolean setupDone() { return KeyReceiver.isSetupComplete(app); }", "public boolean setupDone() { return true; }"),
     ("power saving answer not kept", FT, "            prefs.edit().putBoolean(\"on\".equals(value) ? KEY_ECO_ON_CONFIRMED : KEY_ECO_OFF_CONFIRMED, true).apply();\n", ""),
-    ("HDMI range without the 696 re-read", FT, "if (!hdmiNow(g, \"635\")) return \"panel_game_hdmi_only\";", ""),
-    ("aspect without the 696 re-read", FT, "if (!hdmiNow(g, \"665\")) return \"panel_game_hdmi_only\";", ""),
-    ("game mode without the 696 re-read", FT, "if (!hdmiNow(g, \"game mode\")) return \"panel_game_hdmi_only\";", ""),
-    ("HDMI mode without the 696 re-read", FT, "if (!hdmiNow(g, \"660\")) return \"panel_game_hdmi_only\";", ""),
-    ("pq without the Custom re-read", FT, "        if (!Play6MenuGates.custom(g.getPictureMode())) return \"\";\n        boolean r;", "        boolean r;"),
-    ("motion compensation without the mode re-read", FT, "if (!Play6MenuGates.memcMode(g.getPictureMode())) return \"\";", ""),
-    ("eye without the NUI reader check", FT, "if (!Device.hasEyeProtection()) return \"\";", ""),
-    ("picture reset without the Custom re-read", FT, "if (!Play6MenuGates.custom(g.getPictureMode())) return \"\";\n                    g.resetCustomPicture();", "g.resetCustomPicture();"),
+    ("HDMI range without the 696 re-read", FT_Play6HdmiRows, "if (!hdmiNow(g, \"635\")) return \"panel_game_hdmi_only\";", ""),
+    ("aspect without the 696 re-read", FT_Play6HdmiRows, "if (!hdmiNow(g, \"665\")) return \"panel_game_hdmi_only\";", ""),
+    ("game mode without the 696 re-read", FT_Play6GameRows, "if (!hdmiNow(g, \"game mode\")) return \"panel_game_hdmi_only\";", ""),
+    ("HDMI mode without the 696 re-read", FT_Play6HdmiRows, "if (!hdmiNow(g, \"660\")) return \"panel_game_hdmi_only\";", ""),
+    ("pq without the Custom re-read", FT_Play6PictureRows, "        if (!Play6MenuGates.custom(g.getPictureModeRaw())) return \"\";\n        boolean r;", "        boolean r;"),
+    ("motion compensation without the mode re-read", FT_Play6PictureRows, "if (!Play6MenuGates.memcMode(g.getPictureModeRaw())) return \"\";", ""),
+    ("eye without the NUI reader check", FT_Play6GeneralRows, "if (!Device.hasEyeProtection()) return \"\";", ""),
+    ("picture reset without the Custom re-read", FT_Play6PictureRows, "if (!Play6MenuGates.custom(g.getPictureModeRaw())) return \"\";\n                    g.resetCustomPicture();", "g.resetCustomPicture();"),
     ("refusal note that is no string", FT, "if (r == null) { refuse(cb, \"toast_not_ready\"); return; }", "if (r == null) { refuse(cb, \"toast_not_redy\"); return; }"),
     # ---- device pages, owner, recipe, profile
     ("white balance rows disabled, not hidden", PG, "visible(wbRows[k], v != null);", ""),
@@ -104,10 +109,21 @@ MUTANTS = [
     ("profile turns the game menu on", MJ, "\"game_menu\": {\"enabled\": false}", "\"game_menu\": {\"enabled\": true}"),
     ("profile adds optical zoom", MJ, "\"focus.af_now\": {},", "\"focus.af_now\": {},\n    \"zoom\": {},"),
     ("profile hint with an unknown picture", MJ, "\"hints\": {\"picture.mode\": \"picture_mode\", \"projection.rear\": \"rear_projection\", \"game.mode\": \"game_mode\"}", "\"hints\": {\"picture.mode\": \"picture_mode\", \"projection.rear\": \"rear_projection\", \"game.mode\": \"game_mode\", \"sound.earc\": \"x\"}"),
+    # ---- screen mirroring: the tile only with the receiver's provider (Wi-Fi Direct found), Home's tile the same
+    ("mirroring tile not implemented", GT, "FeatureId.NETWORK, FeatureId.MIRRORING, FeatureId.USB_FILES,", "FeatureId.NETWORK, FeatureId.USB_FILES,"),
+    ("profile drops the mirroring tile", MJ, "    \"mirroring\": {},\n", ""),
+    ("mirroring opened as an adapter screen", FT, "Log.i(TAG, \"open \" + screen + \": the menu's screen mirroring popup, not a screen\");\n                return false;",
+     "Log.i(TAG, \"open \" + screen + \": the menu's screen mirroring popup, not a screen\");\n                return true;"),
+    ("Home keeps the mirroring tile without Wi-Fi Direct", DV, "        if (!screenMirroring(c)) off.add(HOME_TILE_MIRRORING);\n", ""),
+    ("Home caps without the receiver's provider", DV, "resolveContentProvider(MIRRORING_AUTHORITY, 0) != null", "true"),
 ]
 
+# the hal sources test/menu/run.sh reads the wire values from: the shared GmpfBase and the Z9X value enums of the recipe
+ZH = "apps/Z9xProjector/src/org/lumen/projector/hal/"
 COPY = ["apps/Play6Projector/src", "apps/Play6Projector/test", "apps/Play6Projector/res", "apps/common/projector/res",
-        "apps/core/lumen-menu/src", "apps/core/lumen-menu/res", MJ, LY, "tools/play6/forks.tsv"]
+        "apps/core/lumen-menu/src", "apps/core/lumen-menu/res", MJ, LY, "tools/play6/forks.tsv",
+        "apps/core/lumen-gmpf/src/org/lumen/projector/hal/GmpfBase.java",
+        ZH + "AspectRatio.java", ZH + "HdmiRange.java", ZH + "SoundEffect.java"]
 
 
 def main():

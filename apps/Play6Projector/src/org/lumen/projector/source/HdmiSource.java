@@ -13,8 +13,10 @@ import android.util.Log;
 import org.lumen.projector.Hal;
 import org.lumen.projector.Ui;
 import org.lumen.projector.game.GameMode;
-import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.AspectRatio;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 import org.lumen.projector.power.StandbyController;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -218,10 +220,10 @@ public final class HdmiSource {
         if (sAspectChecked) return;
         try {
             if (g.getCurrentInputSource() != Play6Gmpf.SOURCE_HDMI1) return;              // 696
-            int a = g.getAspectRatio();                                                  // 664
+            int a = g.getAspectRatioRaw();                                                  // 664
             sAspectChecked = true;
             if (a <= Play6Gmpf.ASPECT_MAX) return;
-            boolean r = g.setAspectRatio(Play6Gmpf.ASPECT_AUTO);                         // 665(2)
+            boolean r = g.setAspectRatio(AspectRatio.AUTO);                         // 665(2)
             Log.i(TAG, "aspect ratio " + a + " is outside the vendor range (t14 wrote 5): 665(2) -> " + r);
         } catch (Throwable t) {
             Log.w(TAG, "aspect check: " + t);
@@ -291,7 +293,7 @@ public final class HdmiSource {
                 final int t = TOKEN.get();
                 Hal.runDelayed((g1, g2) -> waitStable(g1, t, 0), STABLE_POLL_MS);
             }
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             sLastSent = source;                                 // reached the HAL: not repeated
             sLastLine = head + " -> bad reply, not repeated (" + why + "): " + e.getMessage();
             Log.w(TAG, sLastLine);

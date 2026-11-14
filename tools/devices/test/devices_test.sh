@@ -138,13 +138,14 @@ mkdir -p "$R/tools/ota"; echo 'md = "pre-device=zz\n"' > "$R/tools/ota/make_ota.
 expect wire_mismatch 1 py --root "$R" check-wire
 echo 'md = "pre-device=ta\n"' > "$R/tools/ota/make_ota.py"
 expect wire_match 0 py --root "$R" check-wire
-# image.conf: compose.sh stages flat, so two stage files with one file name are refused
-good "$R"; mkdir -p "$R/x" "$R/y"; : > "$R/x/c.sh"; : > "$R/x/a.sh"; : > "$R/y/a.sh"
-printf '%s\n' generic=yes entry=x/c.sh compose=x/c.sh host=h remote_dir=r 'stage=x/c.sh x/a.sh' variants=t: fs=erofs \
-  > "$R/devices/alpha_one/image.conf"
-expect image_stage_names 0 py --root "$R" validate
-sed -i.bak 's#^stage=.*#stage=x/c.sh x/a.sh y/a.sh#' "$R/devices/alpha_one/image.conf"
-expect image_stage_same_name 1 py --root "$R" validate
+# build.conf: the registry reads its host keys (the builder checks the rest: tools/build/build.py check)
+good "$R"; printf '%s\n' host=h remote_dir=r variants=t: fs=erofs 'version=t:t[0-9]+' steps=x > "$R/devices/alpha_one/build.conf"
+expect image_host_keys 0 py --root "$R" validate
+expect image_remote_dir 0 test "$(py --root "$R" image alpha_one remote_dir)" = r
+sed -i.bak 's/^fs=.*/fs=ext4/' "$R/devices/alpha_one/build.conf"
+expect image_fs_not_image_fs 1 py --root "$R" validate
+sed -i.bak -e 's/^fs=.*/fs=erofs/' -e 's/^variants=.*/variants=T/' "$R/devices/alpha_one/build.conf"
+expect image_variant_not_name_args 1 py --root "$R" validate
 
 # ---- identity: (family, model) = (ro.product.device, ro.boot.xgimi.modelname); stock analysis entries
 research() { # dir codename family model: a stock analysis entry (only who the projector is)
@@ -162,7 +163,7 @@ expect identify_other_family 1 py --root "$R" identify beta_two Tzz
 expect identify_unknown_model 1 py --root "$R" identify alpha_one Tqq
 expect research_not_listed 0 test "$(py --root "$R" list | cut -f1 | tr '\n' ' ')" = "alpha_one beta_two "
 expect research_get_refused 1 py --root "$R" get gamma_x name
-expect research_image_refused 1 py --root "$R" image gamma_x entry
+expect research_image_refused 1 py --root "$R" image gamma_x host
 expect research_get_family_of_supported 0 test "$(py --root "$R" get alpha_one family)" = alpha_one
 expect research_not_loaded 0 python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import devices
 r = devices.load(sys.argv[2]); a = devices.load_all(sys.argv[2])
@@ -179,8 +180,8 @@ good "$R"; research "$R" gamma_x alpha_one Tzz; echo "installer_id=tg" >> "$R/de
 expect research_with_installer_id 1 py --root "$R" validate
 good "$R"; research "$R" gamma_x alpha_one Tzz; echo "install_flow=ab-fastbootd" >> "$R/devices/gamma_x/device.conf"
 expect research_with_install_flow 1 py --root "$R" validate
-good "$R"; research "$R" gamma_x alpha_one Tzz; : > "$R/devices/gamma_x/image.conf"
-expect research_with_image_conf 1 py --root "$R" validate
+good "$R"; research "$R" gamma_x alpha_one Tzz; : > "$R/devices/gamma_x/build.conf"
+expect research_with_build_conf 1 py --root "$R" validate
 good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak '/^models=/d' "$R/devices/gamma_x/device.conf"
 expect research_missing_models 1 py --root "$R" validate
 good "$R"; research "$R" gamma_x alpha_one Tzz; sed -i.bak 's/^status=.*/status=maybe/' "$R/devices/gamma_x/device.conf"
@@ -231,6 +232,26 @@ printf 'CERT-B\n' > "$R/devices/beta_two/certs/ota.x509.pem"
 expect installer_cert_is_the_devices 0 py --root "$R" check-installer
 printf 'CERT-C\n' > "$R/devices/beta_two/certs/ota.x509.pem"
 expect installer_cert_not_the_devices 1 py --root "$R" check-installer
+# TODO: a profile that is not finished (only the keys the port may still lack, only with FLOW=ab-fastbootd); a
+# registry entry that still says TODO keeps its profile unfinished; ABI is the registry's abi
+good "$R"; echo "tb.SYSTEM_MAX=TODO" >> "$R/installer/lib/devices.conf"
+expect installer_todo_ok 0 py --root "$R" check-installer
+expect installer_todo_noted 0 sh -c 'python3 -B "$1/devices.py" --root "$2" check-installer | grep -q "installer id tb: NOT FINISHED, TODO for SYSTEM_MAX"' sh "$D" "$R"
+good "$R"; echo "tb.IMAGE_TOKEN=TODO" >> "$R/installer/lib/devices.conf"
+expect installer_todo_identity_key 1 py --root "$R" check-installer
+good "$R"; sed -i.bak 's/^tb\.FLOW=.*/tb.FLOW=play6-wifi/' "$R/installer/lib/devices.conf"
+sed -i.bak 's/^install_flow=.*/install_flow=play6-wifi/' "$R/devices/beta_two/device.conf"
+expect installer_other_flow_ok 0 py --root "$R" check-installer
+echo "tb.KEEP=TODO" >> "$R/installer/lib/devices.conf"
+expect installer_todo_other_flow 1 py --root "$R" check-installer
+good "$R"; sed -i.bak 's/^base_product=.*/base_product=TODO/' "$R/devices/beta_two/device.conf"
+expect registry_todo_profile_finished 1 py --root "$R" check-installer
+echo "tb.RESTORE_BIN=TODO" >> "$R/installer/lib/devices.conf"
+expect registry_todo_profile_unfinished 0 py --root "$R" check-installer
+good "$R"; echo "tb.ABI=arm32" >> "$R/installer/lib/devices.conf"
+expect installer_abi_is_the_registrys 0 py --root "$R" check-installer
+sed -i.bak 's/^tb\.ABI=.*/tb.ABI=arm64/' "$R/installer/lib/devices.conf"
+expect installer_abi_not_the_registrys 1 py --root "$R" check-installer
 
 # ---- the real tree: the Z9X and the X50 share ro.product.device, the model code tells them apart
 expect real_identify_z9x 0 test "$(cd "$G" && py identify horse_popular G0082)" = "$(printf 'horse_popular\tsupported')"
@@ -246,6 +267,9 @@ expect real_x50_by_model 0 python3 -B -c 'import sys; sys.path.insert(0, sys.arg
 assert devices.by_model(devices.ROOT, "G0111")["codename"] == "g0111"
 assert devices.by_model(devices.ROOT, "G0082")["codename"] == "horse_popular"
 assert devices.identify(devices.ROOT, "horse_popular", "G0082")["codename"] == "horse_popular"' "$D"
+# the RS30 Ultra Max (G0155): a third entry of the family; its installer profile is data that is not finished (TODO)
+expect real_identify_rs30 0 test "$(cd "$G" && py identify horse_popular G0155)" = "$(printf 'g0155\tsupported')"
+expect real_rs30_profile_unfinished 0 sh -c 'cd "$2" && python3 -B "$1/devices.py" check-installer | grep -q "installer id rs30: NOT FINISHED, TODO for "' sh "$D" "$G"
 
 # ---- OTA: one id per device, the ota_tools folder, the wire id in ota.conf, the ota.py route
 ue() { # dir codename wire_id [ota_tools]: the device gets update_engine OTA

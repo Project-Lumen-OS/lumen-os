@@ -1,0 +1,4 @@
+# Lumen Home is HOME: the classic launcher, its recommendations feed and its partner configuration go.
+product/priv-app/TVLauncherNoGMS
+product/priv-app/TVRecommendationsNoGMS
+product/priv-app/LineageCustomizer

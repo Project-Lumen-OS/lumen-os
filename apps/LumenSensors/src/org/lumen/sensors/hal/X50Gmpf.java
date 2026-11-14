@@ -40,64 +40,6 @@ public final class X50Gmpf {
     /** At most this many reply words are copied (the largest reply, DISPLAY 57, has 13). */
     private static final int MAX_WORDS = 64;
 
-    public enum Iface {
-        TEMPERATURE("xgimi.hardware.gmpf.ITemperatureManager"),
-        DISPLAY("xgimi.hardware.gmpf.IDisplayManager"),
-        TV("xgimi.hardware.gmpf.IGmTvManager"),
-        MOTION("xgimi.hardware.gmpf.IMotionDetectionManager"),
-        FOCUS("xgimi.hardware.gmpf.IProjectorFocusManager");
-
-        final String descriptor, instance;
-        /** The service name of the code table (descriptor without the package and the leading I). */
-        public final String service;
-        IBinder binder;
-        boolean verified, refused;
-
-        Iface(String d) {
-            descriptor = d;
-            instance = d + "/default";
-            service = d.substring(d.lastIndexOf('.') + 2);
-        }
-    }
-
-    /** Every transaction this app can produce on the X50 (= research/allowed_lumensensors.tsv). */
-    public enum Call {
-        GET_INTERFACE_VERSION(null, 0x00FFFFFF, "getInterfaceVersion"),
-        GET_INTERFACE_HASH(null, 0x00FFFFFE, "getInterfaceHash"),
-        GET_SCREEN_ON_OFF(Iface.DISPLAY, 28, "getScreenOnOff"),
-        GET_SYSTEM_TEMPERATURE(Iface.TEMPERATURE, 6, "getSystemTemperature"),
-        GET_TEMPERATURE_FROM_SENSOR(Iface.TEMPERATURE, 7, "getTemperatureFromSensor"),
-        IS_TEMP_ULTRA_HIGH(Iface.TEMPERATURE, 12, "isTempUltraHigh"),
-        GET_FAN_MODE(Iface.TEMPERATURE, 3, "getFanMode"),
-        GET_FAN_ROTATION_RATE(Iface.TEMPERATURE, 5, "getFanRotationRate"),
-        GET_DLP_LUMENS_LEVEL(Iface.DISPLAY, 7, "getDlpLumensLevel"),
-        GET_DLP_LUMENS_MODE(Iface.DISPLAY, 5, "getDlpLumensMode"),
-        GET_LENS_DISP_MODE(Iface.DISPLAY, 152, "getLensDispMode"),
-        GET_DISP_LUMENS_LEVEL(Iface.DISPLAY, 178, "getDispLumensLevel"),
-        GET_LIGHT_USAGE_INFO(Iface.DISPLAY, 176, "getLightUsageInfo"),
-        GET_OUTPUT_TIMING_INFO(Iface.DISPLAY, 57, "getOutputTimingInfo"),
-        GET_DISP_OUTPUT_FPS(Iface.DISPLAY, 179, "getDispOutputFps"),
-        GET_CURRENT_INPUT_SOURCE(Iface.TV, 4, "getCurrentInputSource"),
-        GET_HDR_TYPE(Iface.TV, 78, "getHdrType"),
-        GET_HDMI_INFO(Iface.TV, 38, "getHdmiInfo"),
-        GET_VIDEO_INFO(Iface.TV, 122, "getVideoInfo"),
-        GET_MOTION_DETECTION(Iface.MOTION, 2, "getMotionDetection"),
-        GET_FOCUS_MOTOR_CURRENT_STEP(Iface.FOCUS, 59, "getFocusMotorCurrentStep");
-
-        public final Iface iface;
-        public final int code;
-        public final String method;
-
-        Call(Iface iface, int code, String method) {
-            this.iface = iface;
-            this.code = code;
-            this.method = method;
-        }
-
-        /** Service name of the code table ("TemperatureManager"), or "-" for a meta call. */
-        public String service() { return iface == null ? "-" : iface.service; }
-    }
-
     private interface Args { void write(Parcel p); }
     private interface Ret<T> { T read(Parcel p); }
 
@@ -106,7 +48,7 @@ public final class X50Gmpf {
     /** The display service is registered and reachable from this process (no transact). Never throws. */
     public boolean connect() {
         try {
-            return ServiceManager.checkService(Iface.DISPLAY.instance) != null;
+            return ServiceManager.checkService(X50GmpfIface.DISPLAY.instance) != null;
         } catch (Throwable t) {
             return false;
         }
@@ -115,7 +57,7 @@ public final class X50Gmpf {
     /** Drops every binder (the next call looks the service up again; the guard is kept). */
     public void disconnect() {
         synchronized (X50Gmpf.class) {
-            for (Iface i : Iface.values()) {
+            for (X50GmpfIface i : X50GmpfIface.values()) {
                 i.binder = null;
                 i.verified = false;
             }
@@ -124,77 +66,77 @@ public final class X50Gmpf {
 
     // ---------------------------------------------------------------- getters (sampler thread only)
     /** DISPLAY 28: light / screen on (the gate of every other read). */
-    public boolean screenOn() throws RemoteException { return call(Call.GET_SCREEN_ON_OFF, null, Parcel::readBoolean); }
+    public boolean screenOn() throws RemoteException { return call(X50GmpfCall.GET_SCREEN_ON_OFF, null, Parcel::readBoolean); }
 
     /** TEMPERATURE 6: byte, degrees C. */
     public int systemTemperature() throws RemoteException {
-        return call(Call.GET_SYSTEM_TEMPERATURE, null, p -> p.readByte() & 0xff);
+        return call(X50GmpfCall.GET_SYSTEM_TEMPERATURE, null, p -> p.readByte() & 0xff);
     }
 
     /** TEMPERATURE 7 (byte sensor): signed byte, degrees C; 0 = no such sensor. Index 1..12 only. */
     public int sensorTemperature(int index) throws RemoteException {
         if (index < 1 || index > 12) throw new IllegalArgumentException("sensor " + index);
-        return call(Call.GET_TEMPERATURE_FROM_SENSOR, p -> p.writeByte((byte) index), Parcel::readByte);
+        return call(X50GmpfCall.GET_TEMPERATURE_FROM_SENSOR, p -> p.writeByte((byte) index), Parcel::readByte);
     }
 
     /** TEMPERATURE 12: over-temperature flag. */
-    public boolean overTemperature() throws RemoteException { return call(Call.IS_TEMP_ULTRA_HIGH, null, Parcel::readBoolean); }
+    public boolean overTemperature() throws RemoteException { return call(X50GmpfCall.IS_TEMP_ULTRA_HIGH, null, Parcel::readBoolean); }
 
     /** TEMPERATURE 3: fan mode byte (X50Structs.fanModeKnown). */
-    public int fanMode() throws RemoteException { return call(Call.GET_FAN_MODE, null, p -> p.readByte() & 0xff); }
+    public int fanMode() throws RemoteException { return call(X50GmpfCall.GET_FAN_MODE, null, p -> p.readByte() & 0xff); }
 
     /** TEMPERATURE 5 (byte fan): commanded PWM speed (not RPM). Fan 0 or 1 only (tempctrl: two fans). */
     public int fanSpeed(int fan) throws RemoteException {
         if (fan != 0 && fan != 1) throw new IllegalArgumentException("fan " + fan);
-        return call(Call.GET_FAN_ROTATION_RATE, p -> p.writeByte((byte) fan), Parcel::readInt);
+        return call(X50GmpfCall.GET_FAN_ROTATION_RATE, p -> p.writeByte((byte) fan), Parcel::readInt);
     }
 
     /** DISPLAY 7: brightness level 1..10. */
-    public int lampLevel() throws RemoteException { return call(Call.GET_DLP_LUMENS_LEVEL, null, p -> p.readByte() & 0xff); }
+    public int lampLevel() throws RemoteException { return call(X50GmpfCall.GET_DLP_LUMENS_LEVEL, null, p -> p.readByte() & 0xff); }
 
     /** DISPLAY 5: light mode byte (24 on the X50 at the survey, meaning unknown). */
-    public int lumensMode() throws RemoteException { return call(Call.GET_DLP_LUMENS_MODE, null, p -> p.readByte() & 0xff); }
+    public int lumensMode() throws RemoteException { return call(X50GmpfCall.GET_DLP_LUMENS_MODE, null, p -> p.readByte() & 0xff); }
 
     /** DISPLAY 152: 1 = Boost. */
-    public int lensDispMode() throws RemoteException { return call(Call.GET_LENS_DISP_MODE, null, Parcel::readInt); }
+    public int lensDispMode() throws RemoteException { return call(X50GmpfCall.GET_LENS_DISP_MODE, null, Parcel::readInt); }
 
     /** DISPLAY 178: light power 0..1000. */
-    public int lightPower() throws RemoteException { return call(Call.GET_DISP_LUMENS_LEVEL, null, Parcel::readInt); }
+    public int lightPower() throws RemoteException { return call(X50GmpfCall.GET_DISP_LUMENS_LEVEL, null, Parcel::readInt); }
 
     /** DISPLAY 176: JSON {current_light, error_code, light_list:[{light_id, usage_time}]} (X50Structs.lightUsage). */
-    public String lightUsageJson() throws RemoteException { return call(Call.GET_LIGHT_USAGE_INFO, null, Parcel::readString); }
+    public String lightUsageJson() throws RemoteException { return call(X50GmpfCall.GET_LIGHT_USAGE_INFO, null, Parcel::readString); }
 
     /** DISPLAY 57 into out (X50Structs.outputTiming): false when the vendor said no or the struct did not decode. */
     public boolean outputTiming(int[] out) throws RemoteException {
-        return call(Call.GET_OUTPUT_TIMING_INFO, null, p -> X50Structs.outputTiming(words, copy(p), out));
+        return call(X50GmpfCall.GET_OUTPUT_TIMING_INFO, null, p -> X50Structs.outputTiming(words, copy(p), out));
     }
 
     /** DISPLAY 179: output frames per second. */
-    public int outputFps() throws RemoteException { return call(Call.GET_DISP_OUTPUT_FPS, null, Parcel::readInt); }
+    public int outputFps() throws RemoteException { return call(X50GmpfCall.GET_DISP_OUTPUT_FPS, null, Parcel::readInt); }
 
     /** TV 4: 0 media, 1 HDMI 1, 2 HDMI 2 (as on the Z9X / HB; the X50 answered 2 on HDMI 2). */
-    public int inputSource() throws RemoteException { return call(Call.GET_CURRENT_INPUT_SOURCE, null, Parcel::readInt); }
+    public int inputSource() throws RemoteException { return call(X50GmpfCall.GET_CURRENT_INPUT_SOURCE, null, Parcel::readInt); }
 
     /** TV 78: 0 SDR, 1 HDR10, 2 Dolby Vision, 4 HLG, 5 HDR10+, 6 HDR Vivid. */
-    public int hdrType() throws RemoteException { return call(Call.GET_HDR_TYPE, null, Parcel::readInt); }
+    public int hdrType() throws RemoteException { return call(X50GmpfCall.GET_HDR_TYPE, null, Parcel::readInt); }
 
     /** TV 38 into out (X50Structs.hdmiInfo). */
     public boolean hdmiInfo(int[] out) throws RemoteException {
-        return call(Call.GET_HDMI_INFO, null, p -> X50Structs.hdmiInfo(words, copy(p), out));
+        return call(X50GmpfCall.GET_HDMI_INFO, null, p -> X50Structs.hdmiInfo(words, copy(p), out));
     }
 
     /** TV 122 into out (X50Structs.videoInfo). */
     public boolean videoInfo(int[] out) throws RemoteException {
-        return call(Call.GET_VIDEO_INFO, null, p -> X50Structs.videoInfo(words, copy(p), out));
+        return call(X50GmpfCall.GET_VIDEO_INFO, null, p -> X50Structs.videoInfo(words, copy(p), out));
     }
 
     /** MOTION 2 into out (X50Structs.motion): accData[3], angData[3], msensorType. */
     public boolean motion(int[] out) throws RemoteException {
-        return call(Call.GET_MOTION_DETECTION, null, p -> X50Structs.motion(words, copy(p), out));
+        return call(X50GmpfCall.GET_MOTION_DETECTION, null, p -> X50Structs.motion(words, copy(p), out));
     }
 
     /** FOCUS 59: focus motor step. */
-    public int focusMotorStep() throws RemoteException { return call(Call.GET_FOCUS_MOTOR_CURRENT_STEP, null, Parcel::readInt); }
+    public int focusMotorStep() throws RemoteException { return call(X50GmpfCall.GET_FOCUS_MOTOR_CURRENT_STEP, null, Parcel::readInt); }
 
     /** The reply words after readException into {@link #words}; returns how many. */
     private int copy(Parcel p) {
@@ -204,17 +146,17 @@ public final class X50Gmpf {
     }
 
     // ---------------------------------------------------------------- transport
-    private <T> T call(Call c, Args a, Ret<T> r) throws RemoteException {
+    private <T> T call(X50GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (Looper.getMainLooper().isCurrentThread()) throw new RemoteException("vendor call on the main thread refused");
         IBinder b = need(c.iface);
         return send(b, c.iface, c, a, r);
     }
 
-    private <T> T meta(Iface i, Call c, Ret<T> r) throws RemoteException {
+    private <T> T meta(X50GmpfIface i, X50GmpfCall c, Ret<T> r) throws RemoteException {
         return send(i.binder, i, c, null, r);
     }
 
-    private IBinder need(Iface i) throws RemoteException {
+    private IBinder need(X50GmpfIface i) throws RemoteException {
         synchronized (X50Gmpf.class) {
             if (i.refused) throw new RemoteException(i.descriptor + " closed by the version guard");
             if (i.binder == null || !i.binder.isBinderAlive()) {
@@ -233,8 +175,8 @@ public final class X50Gmpf {
                 int v;
                 String h;
                 try {
-                    v = meta(i, Call.GET_INTERFACE_VERSION, Parcel::readInt);
-                    h = meta(i, Call.GET_INTERFACE_HASH, Parcel::readString);
+                    v = meta(i, X50GmpfCall.GET_INTERFACE_VERSION, Parcel::readInt);
+                    h = meta(i, X50GmpfCall.GET_INTERFACE_HASH, Parcel::readString);
                 } catch (RemoteException e) {
                     i.binder = null;
                     throw e;
@@ -251,7 +193,7 @@ public final class X50Gmpf {
         }
     }
 
-    private <T> T send(IBinder b, Iface i, Call c, Args a, Ret<T> r) throws RemoteException {
+    private <T> T send(IBinder b, X50GmpfIface i, X50GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (c.iface != null && c.iface != i) throw new IllegalStateException(c.method + " is not on " + i.descriptor);
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
@@ -281,7 +223,7 @@ public final class X50Gmpf {
         }
     }
 
-    private static void drop(Iface i, IBinder b) {
+    private static void drop(X50GmpfIface i, IBinder b) {
         synchronized (X50Gmpf.class) {
             if (i.binder == b) {
                 i.binder = null;

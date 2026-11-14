@@ -38,25 +38,6 @@ public final class WfdFormats {
     static final long[] LEVEL_MBPS = {108000, 216000, 245760, 245760, 522240};
     public static final int PROFILE_CBP = 0x01, PROFILE_CHP = 0x02;
 
-    /** Highest picture the sink offers. */
-    public enum Quality {
-        P1080_60(1080, 60), P1080_30(1080, 30), P720_60(720, 60);
-
-        public final int maxHeight, maxFps;
-
-        Quality(int h, int f) {
-            maxHeight = h;
-            maxFps = f;
-        }
-
-        public static Quality parse(String s) {
-            for (Quality q : values()) {
-                if (q.name().equalsIgnoreCase(s)) return q;
-            }
-            return P1080_60;
-        }
-    }
-
     /** One video mode chosen by the source. */
     public static final class Video {
         public final int table, index, width, height, fps, profile, level;
@@ -99,7 +80,7 @@ public final class WfdFormats {
 
     // ------------------------------------------------------------------ sink offer (M3)
 
-    private static boolean fits(int[] row, Quality q) {
+    private static boolean fits(int[] row, WfdQuality q) {
         if (row[3] != 0) return false;                          // no interlaced modes
         int maxH = q.maxHeight == 1080 ? 1200 : q.maxHeight;     // 1200-line VESA modes are scaled down
         if (row[1] > maxH) return false;
@@ -112,11 +93,11 @@ public final class WfdFormats {
         return mbW * mbH * row[2];
     }
 
-    private static int levelIndex(Quality q) {
-        return q == Quality.P1080_60 ? 4 : 3;   // 4.2 for 1080p60, else 4.1
+    private static int levelIndex(WfdQuality q) {
+        return q == WfdQuality.P1080_60 ? 4 : 3;   // 4.2 for 1080p60, else 4.1
     }
 
-    static long mask(int[][] table, Quality q) {
+    static long mask(int[][] table, WfdQuality q) {
         long m = 0;
         for (int i = 0; i < table.length; i++) {
             if (fits(table[i], q)) m |= 1L << i;
@@ -125,7 +106,7 @@ public final class WfdFormats {
     }
 
     /** Value of wfd_video_formats in the M3 reply, e.g. "40 00 02 10 0001ffeb 1fffffff 00000fff 00 0000 0000 00 none none, 01 10 ...". */
-    public static String sinkVideoFormats(Quality q) {
+    public static String sinkVideoFormats(WfdQuality q) {
         long cea = mask(CEA, q), vesa = mask(VESA, q), hh = mask(HH, q);
         int nativeByte = nativeIndex(q) << 3 | TABLE_CEA;
         int level = LEVEL_BIT[levelIndex(q)];
@@ -141,7 +122,7 @@ public final class WfdFormats {
     }
 
     /** CEA index of the native (preferred) mode: the best one allowed. */
-    static int nativeIndex(Quality q) {
+    static int nativeIndex(WfdQuality q) {
         switch (q) {
             case P1080_30: return 7;
             case P720_60: return 6;

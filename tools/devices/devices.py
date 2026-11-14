@@ -11,7 +11,7 @@
   devices.py [--root DIR] check-wire                the OTA device ids written in the tools (or in the device's
                                                     ota.conf) agree with the registry
 
-  devices.py [--root DIR] image CODENAME KEY        one value of devices/<codename>/image.conf
+  devices.py [--root DIR] image CODENAME KEY        one host value of devices/<codename>/build.conf
 
 DIR defaults to the tree this script lives in. As a library: load(root), get(root, codename),
 by_installer_id(root, id), by_model(root, model), identify(root, family, model), load_all(root); a device is a
@@ -72,17 +72,14 @@ platform and hardware):
   ota_tools         optional, update_engine only: the folder of the device's OTA host tools, tools/ota (the
                     default when absent) or tools/devices/ota (they read the wire id from devices/<codename>/ota.conf)
 
-devices/<codename>/image.conf (section 4), same format, how the system image is composed:
-  generic     yes: tools/image/compose.sh composes it; no: it has its own entry and compose.sh refuses it
-  entry       the script that builds the image
-  compose     the composer run on the build host (generic only), or none
-  host        the build host (ssh name), or builder.env (the entry reads it from ~/.config/lumen/builder.env)
+devices/<codename>/build.conf, same format: the image build descriptor of tools/build/build.py (every key in
+tools/build/README.md); the registry reads its host keys, the builder checks the rest (build.py check):
+  host        the build host (ssh name), builder.env (BUILDER of ~/.config/lumen/builder.env) or local (the Mac)
   remote_dir  the folder under the build host's home: inputs in <remote_dir>/in, outputs next to it
-  stage       the files staged into <remote_dir>/in (generic only), or none (the entry stages them) (list)
-  variants    NAME:ARGS of each image variant (generic only; ARGS comma-separated, may be empty) (list)
+  variants    NAME:ARGS of each image variant (ARGS comma-separated, may be empty) (list)
   fs          the image's file system, must equal the device's image_fs
-  stage_dir   optional: a folder (relative to gsi/) of signed build outputs that compose.sh copies whole into
-              <remote_dir>/in/<its name>; signed on the Mac, never a key (compose.sh refuses key-like files)
+  stage_dir   optional: a folder (relative to gsi/) of signed build outputs staged whole into <remote_dir>/in;
+              signed on the Mac, never a key (build.py run refuses key-like files)
 """
 import os
 import re
@@ -110,12 +107,21 @@ ENUMS = {
     "status": ("supported", "research"),
 }
 PATHS = ("forks", "hal_app", "hal_codes", "hal_banned", "hal_allowed")
-IMAGE_KEYS = ("generic", "entry", "compose", "host", "remote_dir", "stage", "variants", "fs")
-IMAGE_LISTS = ("stage", "variants")
+IMAGE_KEYS = ("host", "remote_dir", "variants", "fs")
+IMAGE_LISTS = ("variants",)
 IMAGE_OPTIONAL = ("stage_dir",)
 # a path under these folders is private (publish_audit.py excludes it): absent from a public checkout, reported only
 PRIVATE_PATHS = ("research/",)
 BUILT_IN_FLOWS = ("z9x-usb", "play6-wifi")
+# the installer profile keys that may say TODO (installer/lib/devices.conf header, the installers' TODO_KEYS)
+INSTALLER_TODO_KEYS = ("VENDOR_OK", "LOGICAL", "KEEP", "SYSTEM_MAX", "BLOBS_ALLOW", "BLOBS_SIZE", "RESTORE_BIN")
+
+
+def is_todo(v):
+    """A value that is not known yet: it starts with TODO (TODO, or TODO:<what decides it>)."""
+    return isinstance(v, str) and v.startswith("TODO")
+
+
 KEY_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 VALUE_RE = re.compile(r"^[A-Za-z0-9 ._:/~,-]*$")
 INSTALLER_LINE = re.compile(r"^([a-z0-9]+)\.([A-Z0-9_]+)=(.*)$")
@@ -138,8 +144,9 @@ class RegistryError(Exception):
     pass
 
 
-def parse(path, keys=None):
-    """One device.conf (or image.conf with keys=IMAGE_KEYS) -> (dict of raw string values, list of errors)."""
+def parse(path, keys=None, others=False):
+    """One device.conf (or the host keys of a build.conf: keys=IMAGE_KEYS, others=True skips the other keys, which
+    the builder checks) -> (dict of raw string values, list of errors)."""
     vals, errs = {}, []
     with open(path, encoding="utf-8") as f:
         for n, line in enumerate(f, 1):
@@ -150,6 +157,8 @@ def parse(path, keys=None):
                 errs.append("%s:%d: not key=value: %r" % (path, n, line))
                 continue
             k, v = line.split("=", 1)
+            if others and k not in keys:
+                continue
             if not KEY_RE.match(k):
                 errs.append("%s:%d: bad key %r" % (path, n, k))
             elif (k not in keys) if keys else (k not in REQUIRED and k not in OPTIONAL):
@@ -238,14 +247,14 @@ def ota_tools(d):
 
 
 def image(root, codename):
-    """devices/<codename>/image.conf -> dict (list keys split); RegistryError when absent or broken."""
+    """The host keys of devices/<codename>/build.conf -> dict (list keys split); RegistryError when absent or broken."""
     d = load_all(root).get(codename)
     if d is not None and status(d) != "supported":
         _refuse_research(d)
-    p = os.path.join(root, "devices", codename, "image.conf")
+    p = os.path.join(root, "devices", codename, "build.conf")
     if not os.path.isfile(p):
-        raise RegistryError("%s has no image.conf" % codename)
-    vals, errs = parse(p, IMAGE_KEYS + IMAGE_OPTIONAL)
+        raise RegistryError("%s has no build.conf" % codename)
+    vals, errs = parse(p, IMAGE_KEYS + IMAGE_OPTIONAL, others=True)
     if errs:
         raise RegistryError(errs[0])
     missing = [k for k in IMAGE_KEYS if k not in vals]
@@ -258,41 +267,20 @@ def image(root, codename):
 
 
 def validate_image(root, codename, image_fs, errs, notes):
-    rel = "devices/%s/image.conf" % codename
+    rel = "devices/%s/build.conf" % codename
     p = os.path.join(root, rel)
     if not os.path.isfile(p):
         return
-    vals, e = parse(p, IMAGE_KEYS + IMAGE_OPTIONAL)
+    vals, e = parse(p, IMAGE_KEYS + IMAGE_OPTIONAL, others=True)
     errs += e
     for k in IMAGE_KEYS:
         if k not in vals:
             errs.append("%s: missing %s" % (rel, k))
-    if vals.get("generic") not in (None, "yes", "no"):
-        errs.append("%s: generic=%s, not yes or no" % (rel, vals["generic"]))
     if "fs" in vals and vals["fs"] != image_fs:
         errs.append("%s: fs=%s, but device.conf says image_fs=%s" % (rel, vals["fs"], image_fs))
-    paths = [vals.get("entry", "")] + [vals.get("compose", "")] + vals.get("stage", "").split()
-    for v in paths:
-        if v and v != "none" and not os.path.isfile(os.path.join(root, v)):
-            if vals.get("generic") == "no" and v == vals.get("entry"):
-                # an own entry is only named here; the public repository may carry it under another name
-                notes.append("%s: entry %s not in this tree" % (rel, v))
-            else:
-                errs.append("%s: %s does not exist" % (rel, v))
-    # tools/image/compose.sh copies the stage files flat into one folder: two with one file name would overwrite
-    names = {}
-    for v in vals.get("stage", "").split():
-        b = os.path.basename(v)
-        if b in names:
-            errs.append("%s: stage files %s and %s have the same file name (compose.sh stages flat)" % (rel, names[b], v))
-        names.setdefault(b, v)
-    if vals.get("generic") == "yes":
-        for k in ("compose", "stage", "variants"):
-            if vals.get(k, "none") in ("", "none"):
-                errs.append("%s: generic=yes needs %s" % (rel, k))
-        for v in vals.get("variants", "").split():
-            if not re.match(r"^[a-z0-9]+:", v):
-                errs.append("%s: variant %r is not NAME:ARGS" % (rel, v))
+    for v in vals.get("variants", "").split():
+        if not re.match(r"^[a-z0-9]+:", v):
+            errs.append("%s: variant %r is not NAME:ARGS" % (rel, v))
     sd = vals.get("stage_dir", "")
     if sd and (sd.startswith("/") or ".." in sd.split("/") or not re.match(r"^[A-Za-z0-9._/-]+$", sd)):
         errs.append("%s: stage_dir %r must be a plain relative path" % (rel, sd))
@@ -314,8 +302,8 @@ def validate(root):
             for k in sorted(set(REQUIRED + list(OPTIONAL)) - set(RESEARCH_REQUIRED)):
                 if k in vals:
                     errs.append("%s: %s given for a research entry (it has no image, install or OTA)" % (rel, k))
-            if os.path.isfile(os.path.join(os.path.dirname(p), "image.conf")):
-                errs.append("%s: a research entry has no image.conf" % rel)
+            if os.path.isfile(os.path.join(os.path.dirname(p), "build.conf")):
+                errs.append("%s: a research entry has no build.conf" % rel)
         fam = vals.get("family") or vals.get("codename")
         if "family" in vals and not re.match(r"^[a-z0-9_]+$", vals["family"]):
             errs.append("%s: family %r is not [a-z0-9_]+" % (rel, vals["family"]))
@@ -425,7 +413,10 @@ def check_installer(root, conf):
     device's codename) names no FB_PRODUCT of its own; the family's profile gives it, and must equal the entry's
     fastboot_product. Across profiles the identity must stay apart: (MODEL, BOARD), IMAGE_TOKEN, the LUMEN_PROP value
     and the CERT file (its certificate bytes) are each one projector's; a CERT next to which the registry keeps the
-    device's own certificates (devices/<codename>/certs/ota.x509.pem) is that certificate byte for byte."""
+    device's own certificates (devices/<codename>/certs/ota.x509.pem) is that certificate byte for byte.
+
+    A profile that is not finished says TODO only for INSTALLER_TODO_KEYS and only with FLOW=ab-fastbootd; a registry
+    entry that still says TODO for any key keeps its profile unfinished. ABI, when given, is the entry's abi."""
     errs, notes = [], []
     reg = load(root)
     prof = installer_profiles(conf)
@@ -436,6 +427,20 @@ def check_installer(root, conf):
         if d is None:
             errs.append("installer id %s: no registry device has installer_id=%s" % (iid, iid))
             continue
+        todo = sorted(k for k, v in p.items() if is_todo(v))
+        for k in todo:
+            if k not in INSTALLER_TODO_KEYS or p.get("FLOW") != "ab-fastbootd":
+                errs.append("installer id %s: %s=TODO (TODO only with FLOW=ab-fastbootd, for %s)"
+                            % (iid, k, " ".join(INSTALLER_TODO_KEYS)))
+        rtodo = sorted(k for k, v in d.items() if is_todo(v[0] if isinstance(v, list) and v else v))
+        if rtodo and not todo:
+            errs.append("installer id %s: finished (no TODO), but registry %s still says TODO for %s"
+                        % (iid, d["codename"], " ".join(rtodo)))
+        if todo:
+            notes.append("installer id %s: NOT FINISHED, TODO for %s (registry %s: %s), the installer writes nothing to it"
+                         % (iid, " ".join(todo), d["codename"], " ".join(rtodo) or "no TODO"))
+        if "ABI" in p and p["ABI"] != d["abi"]:
+            errs.append("installer id %s: ABI=%r, registry %s says abi %r" % (iid, p["ABI"], d["codename"], d["abi"]))
         fb = p.get("FB_PRODUCT")
         if "FAMILY" in p:
             fam, fp = p["FAMILY"], prof.get(p["FAMILY"], {})
@@ -458,7 +463,7 @@ def check_installer(root, conf):
         elif d["install_flow"] not in BUILT_IN_FLOWS:
             errs.append("installer id %s: no FLOW line, but %s is not a built-in flow" % (iid, d["install_flow"]))
         for k, v in want.items():
-            if p.get(k) != v:
+            if p.get(k) != v and not is_todo(p.get(k)):
                 errs.append("installer id %s: %s=%r, registry %s says %r" % (iid, k, p.get(k), d["codename"], v))
         # a model x firmware table (MODELS_OK): its models are the registry's models, its firmware the registry's
         if "MODELS_OK" in p:
@@ -586,7 +591,7 @@ def main(argv):
             return 0
         if cmd == "image" and len(argv) == 3:
             if argv[2] not in IMAGE_KEYS + IMAGE_OPTIONAL:
-                raise RegistryError("unknown image.conf key %r" % argv[2])
+                raise RegistryError("unknown build.conf host key %r" % argv[2])
             v = image(root, argv[1])[argv[2]]
             print(" ".join(v) if isinstance(v, list) else v)
             return 0

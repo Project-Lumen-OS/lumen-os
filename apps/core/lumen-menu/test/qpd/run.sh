@@ -14,7 +14,19 @@ OUT=$(mktemp -d)
 trap 'rm -rf "$OUT" "$TREE"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$HERE/src/org/lumen/projector/panel/QpdLayout.java" "$T/QpdLayoutTest.java"
-"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.QpdLayoutTest
+# the light range of every profile (min, max, Boost level or -1): the slider spans exactly that range
+RANGES=$(python3 - "$G/devices" <<'EOF'
+import glob, json, os, sys
+out = []
+for p in sorted(glob.glob(os.path.join(sys.argv[1], "*", "menu.json"))):
+    f = json.load(open(p))["features"]
+    if "lamp" in f:
+        out.append("%s:%d:%d:%d" % (os.path.basename(os.path.dirname(p)), f["lamp"]["min"], f["lamp"]["max"],
+                                    f.get("boost", {}).get("level", -1)))
+print(",".join(out))
+EOF
+)
+"$JAVA_HOME/bin/java" -Dlamp.ranges="$RANGES" -cp "$OUT" org.lumen.projector.panel.QpdLayoutTest
 # the controller is the shared engine (MenuController + MenuSpec + the device profile)
 C="$HERE/src/org/lumen/projector/panel/MenuController.java"
 SP="$HERE/src/org/lumen/menu/MenuSpec.java"
@@ -25,26 +37,32 @@ want() { grep -q -- "$1" "$C" || { echo "FAIL controller: missing $2"; bad=1; };
 # Boost: the level from the profile, QpdLayout's 11 on the Z9X; the Boost step only where 51 reads
 lvl=$(python3 -c "import json,sys; f=json.load(open(sys.argv[1]))['features']; print(f.get('boost',{}).get('level',''))" "$PJ")
 if [ "$DEV" = horse_popular ]; then
-  [ "$lvl" = 11 ] || { echo "FAIL profile: Z9X boost level $lvl (want 11, QpdLayout.BOOST_LEVEL)"; bad=1; }
-  grep -q 'BOOST_LEVEL = 11' "$HERE/src/org/lumen/projector/panel/QpdLayout.java" || { echo "FAIL QpdLayout.BOOST_LEVEL is not 11"; bad=1; }
+  [ "$lvl" = 11 ] || { echo "FAIL profile: Z9X boost level $lvl (want 11)"; bad=1; }
 fi
 want 'final int bl = spec.boostLevel();' "Boost level from the profile"
-want '!boostOn() && state != null && state.on(Feature.BOOST) != null' "Boost step only where 51 reads"
+want 'lamp.setBoostLevel(bl);' "the slider gets the profile's Boost level"
+want 'new QpdLampRow(app, s(MenuLabels.title(FeatureId.LAMP)), lampMin(), lampMax(),' "the slider spans the profile's range"
+grep -q 'QpdLayout.fill(lv, getMin(), getMax())' "$HERE/src/org/lumen/projector/panel/QpdLampRow.java" \
+  || { echo "FAIL slider: the fill does not use the row's range"; bad=1; }
+want '!boostOn() && state != null && state.on(FeatureId.BOOST) != null' "Boost step only where 51 reads"
 # tile order of the owner's layout: round eye and gear; wide autocorrect, picture, input, game; small keystone, zoom,
 # sound, focus, bluetooth, network, projection, then screen mirroring (or USB)
-grep -q 'ROUND_TILES = {{EYE, Feature.EYE}, {GENERAL, null}};' "$SP" || { echo "FAIL controller: round tiles"; bad=1; }
+grep -q 'ROUND_TILES = {{EYE, FeatureId.EYE}, {GENERAL, null}};' "$SP" || { echo "FAIL controller: round tiles"; bad=1; }
 order=$(sed -n '/TILE_ROWS = {/,/^    };/p' "$SP" | grep -o '{SMALL, [A-Za-z_.]*\(, [A-Za-z_.]*\)\?}\|{WIDE, [A-Za-z_.]*}' | tr '\n' ' ')
-exp='{WIDE, Feature.KEYSTONE_AK_NOW} {SMALL, KEYSTONE} {SMALL, Feature.ZOOM, Feature.ZOOM_DIGITAL} {WIDE, PICTURE} {SMALL, SOUND} {SMALL, FOCUS} {WIDE, Feature.INPUT} {SMALL, Feature.BLUETOOTH} {SMALL, Feature.NETWORK} {WIDE, GAME} {SMALL, PROJECTION} {SMALL, Feature.MIRRORING, Feature.USB_FILES} '
+exp='{WIDE, FeatureId.KEYSTONE_AK_NOW} {SMALL, KEYSTONE} {SMALL, FeatureId.ZOOM, FeatureId.ZOOM_DIGITAL} {WIDE, PICTURE} {SMALL, SOUND} {SMALL, FOCUS} {WIDE, FeatureId.INPUT} {SMALL, FeatureId.BLUETOOTH} {SMALL, FeatureId.NETWORK} {WIDE, GAME} {SMALL, PROJECTION} {SMALL, FeatureId.MIRRORING, FeatureId.USB_FILES} '
 [ "$order" = "$exp" ] || { echo "FAIL controller: tile order"; echo "$order"; bad=1; }
 # last small slot (2026-11-11): screen mirroring in place of USB, from QpdLayout.lastSmallTile; USB only as the
 # fallback where the receiver is missing, and only with Lumen Home's Files
-want 'String l = QpdLayout.lastSmallTile(mirror != null, has(Feature.USB_FILES) && usbFilesAvailable());' "last small tile from QpdLayout.lastSmallTile"
-want 'if (has(Feature.MIRRORING) && QpdMirror.installed(app)) {' "mirroring popup gated on the receiver"
+want 'String l = QpdLayout.lastSmallTile(mirror != null, has(FeatureId.USB_FILES) && usbFilesAvailable());' "last small tile from QpdLayout.lastSmallTile"
+want 'if (has(FeatureId.MIRRORING) && QpdMirror.installed(app)) {' "mirroring popup gated on the receiver"
+want 'return QpdLayout.TILE_MIRROR.equals(l) ? FeatureId.MIRRORING.id : QpdLayout.TILE_USB.equals(l) ? FeatureId.USB_FILES.id : null;' \
+  "the last small tile is the one QpdLayout chose"
 # All settings (gear) is its own screen: the gear tile opens it, never a popup
-want 'case MenuSpec.GENERAL: openAll(null, null); return;' "gear opens All settings"
+want 'if (MenuSpec.GENERAL.equals(id)) { openAll(null, null); return; }' "gear opens All settings"
 want '@Override public boolean hasPopup(String key) { return !MenuSpec.GENERAL.equals(key) && popupPage(key) != null; }' "gear not a popup"
 # Input tile: the device's input popup (pages API)
-want 'if (Feature.INPUT.equals(key)) return devicePages == null ? null : devicePages.page(Feature.INPUT, this);' "Input tile popup from the device pages"
+want 'if (FeatureId.INPUT.id.equals(key)) return devicePages == null ? null : devicePages.page(FeatureId.INPUT, this);' "Input tile popup from the device pages"
+want 'if (FeatureId.MIRRORING.id.equals(key)) return mirror == null ? null : mirror.page;' "mirroring tile opens its popup"
 if [ "$DEV" = horse_popular ]; then
   # Z9X eye protection is one switch on stock (more_eye): no mode list; hint pictures only where stock has one
   python3 - "$PJ" <<'EOF' || bad=1
@@ -56,7 +74,7 @@ if sorted(p.get("hints", {})) != ["picture.mode", "projection.rear"]: print("FAI
 sys.exit(bad)
 EOF
   P9="$HERE/src/org/lumen/projector/panel/Z9xMenuPages.java"
-  grep -q 'case Feature.INPUT: return source().page;' "$P9" || { echo "FAIL Z9X: Input tile has no popup"; bad=1; }
+  grep -q 'case INPUT: return source().page;' "$P9" || { echo "FAIL Z9X: Input tile has no popup"; bad=1; }
 fi
 M="$HERE/src/org/lumen/projector/panel/QpdMirror.java"
 # the receiver owns the values: the popup only calls its provider, off the main thread, and shows the read back

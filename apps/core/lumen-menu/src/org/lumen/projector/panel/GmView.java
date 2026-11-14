@@ -30,9 +30,11 @@ import java.util.Map;
  * shade, the status card (controller frames or a computer icon on a soft glow, name, input, live chips), the presets,
  * the dock with group labels and tiles, the popup above the focused tile, the Turbo question, the note and the first
  * time hint. Motion as the quick menu D: focus scale 1.08 in 300 ms on the stock ease, an own icon animation per tile
- * (AnimatedVectorDrawables of tools/gm_icons.py), the console turn then sway (GmModel.frameAt).
+ * (AnimatedVectorDrawables of tools/gm_icons.py), the console turn then sway: drawn in real time on the GPU by
+ * Gm3dView over the picture slot (GmStage), or from the frame strip (GmModel.frameAt) when that is off or fails
+ * (Gm3dGate).
  */
-final class GmView extends View {
+final class GmView extends View implements Gm3dView.Listener {
     private static final String TAG = GameMenu.TAG;
     // colours of the prototype (COMMON_CSS)
     static final int ACCENT = 0xFF3B78E7, TILE = 0xFF34353A, TILE_HI = 0xFF3E3F45, PANEL = 0xF016171A,
@@ -55,6 +57,10 @@ final class GmView extends View {
     private long rowAt;
     private final Frames frames = new Frames();
     private String framesTheme;
+    /** The real-time controller over the picture slot (GmStage), null without it; the gate picks model or strip. */
+    private Gm3dView model;
+    private final Gm3dGate gate = new Gm3dGate();
+    private float modelShift = Float.NaN;
 
     GmView(Context c, GmController ctl) {
         super(c);
@@ -92,15 +98,20 @@ final class GmView extends View {
         return p;
     }
 
+    void attachModel(Gm3dView m) { model = m; }
+
+    /** The view that fades: the stage (with the model in it) when there is one. */
+    private View fadeTarget() {
+        return getParent() instanceof GmStage ? (View) getParent() : this;
+    }
+
     // ================================================================== lifecycle
     void enter() {
         enterAt = SystemClock.uptimeMillis();
-        setAlpha(0f);
-        animate().alpha(1f).setDuration(240).setInterpolator(QpdStyle.ease()).start();
-        if (!ctl.theme.equals(framesTheme)) {          // a first draw before enter() may have started them
-            frames.start(ctl.theme);
-            framesTheme = ctl.theme;
-        }
+        View fade = fadeTarget();
+        fade.setAlpha(0f);
+        fade.animate().alpha(1f).setDuration(240).setInterpolator(QpdStyle.ease()).start();
+        if (!ctl.theme.equals(framesTheme)) startPicture(ctl.theme);   // a first draw before enter() may have started it
         startIcon(ctl.focusId());
         invalidate();
     }
@@ -108,9 +119,50 @@ final class GmView extends View {
     void exit(Runnable end) {
         exitAt = SystemClock.uptimeMillis();
         exitEnd = end;
-        animate().cancel();
-        animate().alpha(0f).setDuration(200).setInterpolator(QpdStyle.ease()).withEndAction(this::finishExit).start();
+        View fade = fadeTarget();
+        fade.animate().cancel();
+        fade.animate().alpha(0f).setDuration(200).setInterpolator(QpdStyle.ease()).withEndAction(this::finishExit).start();
         postDelayed(this::finishExit, 400);
+    }
+
+    /**
+     * The card's picture for {@code theme}: a console turns on the GPU (Gm3dView) unless the gate sends it to the frame
+     * strip (model off, no GPU drawing in this window, an earlier failure); a computer gets its icon.
+     */
+    private void startPicture(String theme) {
+        framesTheme = theme;
+        if (!GmModel.isConsole(theme)) {
+            gate.off();
+            if (model != null) model.hide();
+            frames.start(theme);
+            return;
+        }
+        long now = SystemClock.uptimeMillis();
+        if (model != null && gate.begin(theme, true, isHardwareAccelerated(), now)) {
+            frames.startHero(theme);           // only the hero frame, holding the card until the model's first frame
+            model.show(theme);
+            return;
+        }
+        if (model != null) model.hide();
+        frames.start(theme);
+    }
+
+    /** The strip takes over from the model (it failed or missed its time). */
+    private void toFrames(String why) {
+        Log.i(TAG, "controller picture: frame strip (" + why + ")");
+        if (model != null) model.hide();
+        frames.start(framesTheme);
+        invalidate();
+    }
+
+    @Override public void onModelReady(String theme) {
+        gate.ready(theme);
+        if (gate.live()) frames.release();
+        invalidate();
+    }
+
+    @Override public void onModelFailed(String theme, String why, boolean hard) {
+        if (gate.failed(theme, hard)) toFrames(why);
     }
 
     private void finishExit() {
@@ -121,6 +173,7 @@ final class GmView extends View {
 
     void release() {
         frames.release();
+        if (model != null) model.release();
         for (QpdStyle.Icon i : icons.values()) i.release();
         icons.clear();
     }
@@ -275,7 +328,8 @@ final class GmView extends View {
         if (k <= 0) return;
         c.save();
         c.scale(k, k);
-        if (!ctl.theme.equals(framesTheme)) { frames.start(ctl.theme); framesTheme = ctl.theme; }
+        if (!ctl.theme.equals(framesTheme)) startPicture(ctl.theme);
+        if (gate.timedOut(now)) toFrames("no first frame in " + Gm3dGate.READY_MS + " ms");
         layoutDock();
         drawShade(c);
         float rise = (1 - ease((now - enterAt) / 340f));
@@ -295,10 +349,25 @@ final class GmView extends View {
         c.restore();
         if (animating(now)) postInvalidateOnAnimation();
         else if (ctl.toast != null && now < ctl.toastUntil) postInvalidateDelayed(ctl.toastUntil - now + 10);
-        if (GmModel.isConsole(ctl.theme) || allmLive()) {
+        // the strip needs a redraw per frame; the model draws itself (only its first-frame wait is checked here)
+        boolean strip = GmModel.isConsole(ctl.theme) && gate.frames();
+        if (strip || allmLive()) {
             long t = now - frames.t0;
-            postInvalidateDelayed(t < GmModel.TURN_MS ? 33 : 140);
+            postInvalidateDelayed(strip && t < GmModel.TURN_MS ? 33 : 140);
         }
+        if (gate.pending()) postInvalidateDelayed(50);
+        placeModel(k, rise);
+    }
+
+    /** The model moves with the card (its rise on entry) and darkens under the question's shade. */
+    private void placeModel(float k, float rise) {
+        if (model == null) return;
+        float shift = -16 * rise * k;
+        if (shift != modelShift) {
+            modelShift = shift;
+            model.setTranslationY(shift);
+        }
+        model.dim(ctl.confirmOk != null);
     }
 
     private boolean allmLive() { return ctl.snap != null && Boolean.TRUE.equals(ctl.snap.allm); }
@@ -341,7 +410,7 @@ final class GmView extends View {
         c.clipRect(slot);
         c.drawRoundRect(slot, 30, 30, fill);
         fill.setShader(null);
-        if (GmModel.isConsole(ctl.theme)) {
+        if (GmModel.isConsole(ctl.theme) && (model == null || gate.frames() || gate.pending())) {
             Bitmap b = frames.frame(now);
             if (b != null) {
                 float s = Math.min(slot.width() / b.getWidth(), slot.height() / b.getHeight());
@@ -986,6 +1055,26 @@ final class GmView extends View {
             int f = GmModel.frameAt(now - t0);
             Bitmap b = f >= GmModel.IDLE_BASE ? idle[f - GmModel.IDLE_BASE] : turn[f];
             return b != null ? b : turn[0];
+        }
+
+        /** Only the hero frame (turn_00): the card's picture while the real-time model loads. */
+        void startHero(String theme) {
+            release();
+            t0 = SystemClock.uptimeMillis();
+            final int g = gen;
+            final android.content.res.AssetManager am = getContext().getAssets();
+            loader().post(() -> {
+                try {
+                    Bitmap b = decodeFrame(am, theme, 0);
+                    if (b != null) post(() -> {
+                        if (g != gen) { b.recycle(); return; }
+                        turn[0] = b;
+                        invalidate();
+                    });
+                } catch (Throwable e) {
+                    Log.w(TAG, "hero frame " + theme + ": " + e);
+                }
+            });
         }
 
         void release() {

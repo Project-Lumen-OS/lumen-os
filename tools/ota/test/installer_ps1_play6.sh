@@ -9,7 +9,10 @@
 #     the same fixtures the same way (chip, stick, other devices; battery level, adapter);
 #   - the commands sent to the projector are the same strings in both scripts and hold no double quote (PowerShell
 #     5.1 does not pass those to adb.exe intact);
-#   - Fb-Allowed (ps1) lets 'flash misc' through only while the erase request is written.
+#   - Fb-Allowed (ps1) lets 'flash misc' through only while the erase request is written;
+#   - the way back to stock (P6-Fw-Last, P6-Restore-Md5, P6-Restore-Url, P6-Fw-Back) and the AIC gate's reading of
+#     the vendor dongle.cfg (P6-Vendor-Aic) give what p6_fw_last, p6_restore_md5, p6_restore_url, p6_fw_back and
+#     p6_vendor_aic give, on devices.conf's own values.
 # The functions are taken out of the parsed scripts; the installers' main parts are not run.
 #   bash tools/ota/test/installer_ps1_play6.sh
 # Needs PowerShell: pwsh on PATH, else docker with mcr.microsoft.com/powershell:lts-alpine-3.20. Without either it
@@ -43,11 +46,33 @@ printf '%s\n' "D/gmpf_main(  311): powerEvent:type{POWER_BATTERY_LEVEL},val{91}"
 printf '%s\n' "I/P6Battery( 900): P6Battery: read level=64 adapter=true source=3" > "$W/fx/pwr3"
 printf '%s\n' "D/gmpf_main(  311): IsAdapterPowered:0" "D/gmpf_main(  311): powerEvent:type{POWER_ADPATER},val{AdapterInsert}" > "$W/fx/pwr4"
 : > "$W/fx/pwr5"
+conf() { awk -v k="play6.$1" 'index($0, k "=") == 1 { print substr($0, length(k) + 2) }' "$INST/lib/devices.conf"; }
+# the way back to stock: VENDOR_OK, RESTORE_MD5 and RESTORE_URL of devices.conf, chip / serial prefix / firmware it ran
+conf VENDOR_OK > "$W/fx/vendor_ok"; conf RESTORE_MD5 > "$W/fx/restore_md5"; conf RESTORE_URL > "$W/fx/restore_url"
+FWA=$(awk '{ print $1 }' "$W/fx/vendor_ok"); FWZ=$(awk '{ print $NF }' "$W/fx/vendor_ok")
+printf '%s\n' "3|$FWA" "0|$FWZ" "|$FWA" "|$FWZ" "grep: /vendor/lib/firmware/dongle.cfg: No such file or directory|$FWZ" "0|$FWA" > "$W/fx/aic"
+printf '%s\n' "0e8d:7663 XHN $FWA" "0e8d:7663 XHN $FWZ" "0e8d:7663 XHN v0.0.0" "368b:8d90 XHN $FWA" "- XHF $FWA" "- XHN -" "0e8d:7663 - -" > "$W/fx/back"
 
 # the shell installer's functions, taken out of the script (from 'name() {' to the first line '}')
-fn() { awk -v n="$1() {" 'index($0, n) == 1 { on = 1 } on { print } on && /^}/ { exit }' "$INST/lumen-install.sh"; }
-{ grep '^P6_BCB_ARGS=' "$INST/lumen-install.sh"; for f in p6_chip_name p6_usb_parse p6_power_parse p6_bcb_make; do fn "$f"; done
+# (a one-line function: that line only)
+fn() { awk -v n="$1() {" 'index($0, n) == 1 { on = 1; print; l = $0; sub(/[[:space:]]+#.*$/, "", l); if (l ~ /; }$/) exit; next }
+  on { print } on && /^}/ { exit }' "$INST/lumen-install.sh"; }
+{ grep '^P6_BCB_ARGS=' "$INST/lumen-install.sh"
+  for f in p6_chip_name p6_usb_parse p6_power_parse p6_bcb_make p6_fw_first p6_fw_last p6_restore_md5 p6_restore_url p6_fw_back \
+           p6_vendor_aic; do fn "$f"; done
   cat <<'EOF'
+state_get() { printf '%s\n' "$ST_VENDOR"; }
+P_VENDOR_OK=$(cat "$FX/vendor_ok"); P_RESTORE_MD5=$(cat "$FX/restore_md5"); P_RESTORE_URL=$(cat "$FX/restore_url")
+echo "fw first=$(p6_fw_first)|last=$(p6_fw_last)"
+for v in $(p6_fw_first) $(p6_fw_last) V0.0.0; do echo "restore $v md5=$(p6_restore_md5 "$v")|url=$(p6_restore_url "$v")"; done
+while read -r chip pre vend; do
+  ST_VENDOR=${vend#-}; echo "back ${chip:-} ${pre} ${vend} = $(p6_fw_back "${chip#-}" "${pre#-}")"
+done < "$FX/back"
+adbs() { cat "$FX/aic_out"; }
+while IFS='|' read -r out fw; do
+  printf '%s\n' "$out" > "$FX/aic_out"
+  if p6_vendor_aic "$fw"; then r=True; else r=False; fi; echo "aic '$out' $fw = $r"
+done < "$FX/aic"
 for i in 1 2 3 4 5; do
   p6_usb_parse "$(cat "$FX/usb$i")"; echo "usb$i chip=$P6_CHIP|id=$P6_CHIPID|stick=$P6_STICK|other=$P6_OTHER"
 done
@@ -55,18 +80,6 @@ for i in 1 2 3 4 5; do
   p6_power_parse "$(cat "$FX/pwr$i")"; echo "pwr$i lvl=$P6_LVL|ad=$P6_AD"
 done
 p6_bcb_make "$FX/bcb_sh.bin"
-EOF
-  grep '^t() {' "$INST/lumen-install.sh"; grep '^p6_fw_first() {' "$INST/lumen-install.sh"; grep '^p6_fw_last() {' "$INST/lumen-install.sh"
-  for f in p6_fw_back p6_nb_back; do fn "$f"; done
-  cat <<'EOF'
-state_get() { [ "$1" = vendor ] && printf '%s' "$SV"; }
-P_NAME="XGIMI Play 6"
-for P_VENDOR_OK in "v1.7.116 v1.8.127" "v1.7.116"; do for LANG_UI in en ru; do
-  for c in "0e8d:7663|XHN|v1.7.116" "0e8d:7663|AA2|v1.8.127" "368b:8d91|XHN|v1.7.116" "|XHF|v1.8.127" "|XHN|v9.9.9" "0e8d:7663|XHN|"; do
-    chip=${c%%|*}; r=${c#*|}; pre=${r%%|*}; SV=${r#*|}
-    echo "fw [$P_VENDOR_OK] $LANG_UI $c first=$(p6_fw_first) last=$(p6_fw_last) back=$(p6_fw_back "$chip" "$pre") nb=$(p6_nb_back)"
-  done
-done; done
 EOF
 } > "$W/sh_part.sh"
 FX=$W/fx bash "$W/sh_part.sh" > "$W/sh.out" 2>&1 || { bad "shell functions: $(cat "$W/sh.out")"; }
@@ -78,13 +91,27 @@ $errs = $null; $tok = $null
 $ast = [System.Management.Automation.Language.Parser]::ParseFile("$W/lumen-install.ps1", [ref]$tok, [ref]$errs)
 if ($errs.Count) { $errs | ForEach-Object { "PARSE $($_.Extent.StartLineNumber): $($_.Message)" }; exit 1 }
 "parse ok"
-$vars = @("P6BcbArgs", "P6BcbSha", "P6UsbCmd", "P6PwrCmd", "P6MntCmd")
+$vars = @("P6BcbArgs", "P6BcbSha", "P6UsbCmd", "P6PwrCmd", "P6MntCmd", "P6AicCmd")
 $asg = $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left -is [System.Management.Automation.Language.VariableExpressionAst] -and $vars -contains $n.Left.VariablePath.UserPath }, $false)
 foreach ($a in $asg) { . ([scriptblock]::Create($a.Extent.Text)) }
-$want = @("P6-Chip-Name", "P6-Usb-Parse", "P6-Power-Parse", "P6-Bcb-Bytes", "Fb-Allowed", "T", "P6-Fw-First", "P6-Fw-Last", "P6-Fw-Back", "P6-Nb-Back")
+$want = @("P6-Chip-Name", "P6-Usb-Parse", "P6-Power-Parse", "P6-Bcb-Bytes", "Fb-Allowed", "P6-Fw-First", "P6-Fw-Last", "P6-Restore-Md5", "P6-Restore-Url", "P6-Fw-Back", "P6-Vendor-Aic")
 $defs = $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $want -contains $n.Name }, $true)
 foreach ($d in $defs) { . ([scriptblock]::Create($d.Extent.Text)) }
-function State-Get($k) { return "" }
+$script:StVendor = ""
+function State-Get($k) { return $script:StVendor }
+$script:Prof = @{ VENDOR_OK = [IO.File]::ReadAllText("$W/fx/vendor_ok").Trim(); RESTORE_MD5 = [IO.File]::ReadAllText("$W/fx/restore_md5").Trim(); RESTORE_URL = [IO.File]::ReadAllText("$W/fx/restore_url").Trim() }
+"fw first=$(P6-Fw-First)|last=$(P6-Fw-Last)"
+foreach ($v in @((P6-Fw-First), (P6-Fw-Last), "V0.0.0")) { "restore $v md5=$(P6-Restore-Md5 $v)|url=$(P6-Restore-Url $v)" }
+foreach ($l in [IO.File]::ReadAllLines("$W/fx/back")) {
+  $f = @($l -split " "); $script:StVendor = $f[2].TrimStart("-")
+  $chip = $f[0]; if ($chip -ceq "-") { $chip = "" }; $pre = $f[1]; if ($pre -ceq "-") { $pre = "" }
+  "back $($f[0]) $($f[1]) $($f[2]) = $(P6-Fw-Back $chip $pre)"
+}
+function Adb { return $script:AdbOut }
+foreach ($l in [IO.File]::ReadAllLines("$W/fx/aic")) {
+  $f = $l -split "\|", 2; $script:AdbOut = $f[0]
+  "aic '$($f[0])' $($f[1]) = $(P6-Vendor-Aic $f[1])"
+}
 foreach ($i in 1..5) {
   $u = P6-Usb-Parse ([IO.File]::ReadAllText("$W/fx/usb$i"))
   "usb$i chip=$($u.Chip)|id=$($u.ChipId)|stick=$(if ($u.Stick) { 1 } else { 0 })|other=$($u.Other)"
@@ -98,20 +125,12 @@ foreach ($i in 1..5) {
 "cmd usb $P6UsbCmd"
 "cmd pwr $P6PwrCmd"
 "cmd mnt $P6MntCmd"
-$script:Projector = "play6"; $script:P6BcbOk = $false
+"cmd aic $P6AicCmd"
+$script:Projector = "play6"; $script:Prof = @{ FLOW = "play6-wifi" }; $script:P6BcbOk = $false
 "allow misc off $(Fb-Allowed flash misc)"
 $script:P6BcbOk = $true
 "allow misc on $(Fb-Allowed flash misc)"
 "allow userdata on $(Fb-Allowed format userdata) $(Fb-Allowed flash userdata) $(Fb-Allowed flash vendor)"
-function State-Get($k) { if ($k -eq "vendor") { return $script:SV } return "" }
-function P6-Name { return $script:Prof["NAME"] }
-foreach ($vok in @("v1.7.116 v1.8.127", "v1.7.116")) { foreach ($lg in @("en", "ru")) {
-  $script:Prof = @{ NAME = "XGIMI Play 6"; VENDOR_OK = $vok }; $Lang = $lg
-  foreach ($c in @("0e8d:7663|XHN|v1.7.116", "0e8d:7663|AA2|v1.8.127", "368b:8d91|XHN|v1.7.116", "|XHF|v1.8.127", "|XHN|v9.9.9", "0e8d:7663|XHN|")) {
-    $f = $c -split "\|", 3; $script:SV = $f[2]
-    "fw [$vok] $lg $c first=$(P6-Fw-First) last=$(P6-Fw-Last) back=$(P6-Fw-Back $f[0] $f[1]) nb=$(P6-Nb-Back)"
-  }
-} }
 EOF
 if [ "$RUN" = local ]; then out=$(pwsh -NoProfile -File "$W/t.ps1" -W "$W" 2>&1)
 else out=$(docker run --rm -v "$W":/w "$IMAGE" pwsh -NoProfile -File /w/t.ps1 -W /w 2>&1 | grep -v "^WARNING: The requested image's platform" | sed "s|/w/|$W/|g"); fi
@@ -141,29 +160,29 @@ for l in "usb1 chip=MediaTek MT7663 (0e8d:7663)|id=0e8d:7663|stick=1|other=" "us
   grep -qxF -- "$l" "$W/sh.out" && ok "expected: $l" || bad "expected '$l': $(cat "$W/sh.out")"
 done
 # the commands: the same strings, no double quote
-for c in usb:P6_USB_CMD pwr:P6_PWR_CMD mnt:P6_MNT_CMD; do
+for c in usb:P6_USB_CMD pwr:P6_PWR_CMD mnt:P6_MNT_CMD aic:P6_AIC_CMD; do
   k=${c%%:*}; v=${c#*:}
   shv=$(bash -c "$(grep "^$v=" "$INST/lumen-install.sh"); printf '%s' \"\$$v\"")
   psv=$(sed -n "s/^cmd $k //p" "$W/ps.out")
   if [ -n "$shv" ] && [ "$shv" = "$psv" ] && ! printf '%s' "$shv" | grep -q '"'; then ok "command $k"; else bad "command $k: sh '$shv' ps '$psv'"; fi
 done
+# the way back to stock: line by line the same, and what it should be
+for k in fw restore back aic; do
+  a=$(grep "^$k " "$W/sh.out"); b=$(grep "^$k " "$W/ps.out")
+  if [ -n "$a" ] && [ "$a" = "$b" ]; then ok "$k: $(printf '%s\n' "$a" | wc -l | tr -d ' ') lines the same"; else bad "$k: sh '$a' ps '$b'"; fi
+done
+A=V${FWA#v}; Z=V${FWZ#v}
+URLZ=$(tr ' ' '\n' < "$W/fx/restore_url" | awk -v v="$Z:" 'index($0, v) == 1 { print substr($0, length(v) + 1) }')
+MD5Z=$(tr ' ' '\n' < "$W/fx/restore_md5" | awk -F: -v v="$Z" '$2 == v { print $1 }')
+for l in "fw first=$A|last=$Z" "restore $Z md5=$MD5Z|url=$URLZ" "restore V0.0.0 md5=|url=" \
+         "back 0e8d:7663 XHN $FWA = $A" "back 0e8d:7663 XHN $FWZ = $Z" "back 0e8d:7663 XHN v0.0.0 = $A" \
+         "back 368b:8d90 XHN $FWA = $Z" "back - XHF $FWA = $Z" "back - XHN - = $A" \
+         "aic '3' $FWA = True" "aic '0' $FWZ = False" "aic '' $FWA = False" "aic '' $FWZ = True" "aic '0' $FWA = False"; do
+  grep -qxF -- "$l" "$W/sh.out" && ok "expected: $l" || bad "expected '$l': $(grep -E '^(fw|restore|back|aic) ' "$W/sh.out")"
+done
+case "$MD5Z:$URLZ" in a14277a6c73676487a7de5ede36dc017:https://*/XGIMI_DRAGONHEALTHY_XN03C.bin) ok "the newest firmware has its md5 and URL ($Z)" ;;
+  *) bad "the newest firmware $Z: md5 '$MD5Z' url '$URLZ'" ;; esac
 grep -qx "allow misc off False" "$W/ps.out" && grep -qx "allow misc on True" "$W/ps.out" && grep -qx "allow userdata on False False False" "$W/ps.out" \
   && ok "Fb-Allowed: misc only while the erase request is written" || bad "Fb-Allowed: $(grep '^allow' "$W/ps.out")"
-# the firmware helpers (the way back to stock per unit): every case the same in both scripts
-n_sh=$(grep -c '^fw ' "$W/sh.out"); n_ps=$(grep -c '^fw ' "$W/ps.out")
-if [ "$n_sh" = 24 ] && [ "$n_ps" = 24 ] && [ "$(grep '^fw ' "$W/sh.out")" = "$(grep '^fw ' "$W/ps.out")" ]; then ok "firmware helpers: 24 cases equal"
-else bad "firmware helpers: sh $n_sh / ps $n_ps lines: $(diff <(grep '^fw ' "$W/sh.out") <(grep '^fw ' "$W/ps.out") | head -6)"; fi
-two='[v1.7.116 v1.8.127] en'
-for l in "fw $two 0e8d:7663|XHN|v1.7.116 first=V1.7.116 last=V1.8.127 back=V1.7.116 " \
-         "fw $two 0e8d:7663|AA2|v1.8.127 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
-         "fw $two 368b:8d91|XHN|v1.7.116 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
-         "fw $two |XHF|v1.8.127 first=V1.7.116 last=V1.8.127 back=V1.8.127 " \
-         "fw $two |XHN|v9.9.9 first=V1.7.116 last=V1.8.127 back=V1.7.116 " \
-         "fw [v1.7.116] en 368b:8d91|XHN|v1.7.116 first=V1.7.116 last=V1.7.116 back=V1.7.116 nb=The way back to stock for this batch is a V1.8.x firmware from XGIMI support."; do
-  grep -qF -- "$l" "$W/sh.out" && ok "expected: ${l#fw }" || bad "expected '$l': $(grep '^fw ' "$W/sh.out" | head -3)"
-done
-grep -qF "nb=The way back to stock for this batch is the V1.8.127 .bin from a FAT32 stick (guide, section 'XGIMI Play 6', 'Back to stock')." "$W/sh.out" \
-  && grep -qF "nb=Вернуться на сток с этой партией можно прошивкой .bin V1.8.127 с флешки FAT32" "$W/sh.out" \
-  && ok "the newer batch is sent to the V1.8.127 .bin (en, ru)" || bad "newer batch text: $(grep '^fw ' "$W/sh.out" | head -2)"
 echo "installer ps1 play6: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

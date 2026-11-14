@@ -34,7 +34,7 @@ def body(src, sig):
 
 
 pp = open(os.path.join(P, "ProPicture.java"), encoding="utf-8").read()
-qp = open(os.path.join(P, "HbMenuFeatures.java"), encoding="utf-8").read()
+qp = open(os.path.join(P, "HbPictureRows.java"), encoding="utf-8").read()     # the picture section of HbMenuFeatures
 sm = open(os.path.join(P, "SlideMain.java"), encoding="utf-8").read()
 
 # ---- ProPicture
@@ -57,12 +57,12 @@ sg = body(pp, "private boolean sliding()")
 ok("ProPicture.sliding asks every coalescer", "for (SlideCoalescer c : slides) if (c.busy()) return true;" in sg)
 
 # ---- quick menu sliders (HbMenuFeatures.setPq): one write per committed value, range checked, one item each
-pq = body(qp, "private void setPq(String item, String value, Consumer<Result> cb)")
-ok("quick menu pq: range 0..100 checked before a write", "if (v < 0 || v > 100) { refuse(cb, null); return; }" in pq
-   and pq.find("v > 100") < pq.find("write("))
+pq = body(qp, "void setPq(String item, String value, Consumer<Result> cb)")
+ok("quick menu pq: range 0..100 checked before a write", "if (v < PQ_MIN || v > PQ_MAX) { refuse(cb, null); return; }" in pq
+   and pq.find("v > PQ_MAX") < pq.find("write("))
 ok("quick menu pq: one write per commit with read-back", pq.count("write(") == 1 and "g.setPq(it, v)" in pq)
 for item, enum in (("brightness", "BRIGHTNESS"), ("contrast", "CONTRAST"), ("saturation", "SATURATION"), ("sharpness", "SHARPNESS")):
-    ok("quick menu pq: %s -> PqItem.%s" % (item, enum), 'case "%s": it = GmpfClient.PqItem.%s; break;' % (item, enum) in pq)
+    ok("quick menu pq: %s -> PqItem.%s" % (item, enum), 'case "%s": it = PqItem.%s; break;' % (item, enum) in pq)
 ok("quick menu pq: an unknown item refused", "default: refuse(cb, null); return;" in pq)
 
 # ---- SlideMain: the write reports back, on the HAL thread

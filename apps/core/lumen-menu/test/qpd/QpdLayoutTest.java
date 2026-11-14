@@ -191,20 +191,39 @@ public final class QpdLayoutTest {
         eq("radio dot 22, ring 7 when chosen", "22/7", QpdLayout.DOT + "/" + QpdLayout.DOT_SEL);
         eq("rows come in 22 ms apart over 260 ms", "22/260", QpdLayout.ROW_STAGGER_MS + "/" + QpdLayout.ROW_IN_MS);
 
-        // ---- brightness slider and Boost
-        eq("level 1 = 10 %", 0.1f, QpdLayout.fill(1));
-        eq("level 10 = full", 1f, QpdLayout.fill(10));
-        eq("Boost = full", 1f, QpdLayout.fill(11));
-        eq("unknown = empty", 0f, QpdLayout.fill(null));
-        eq("below range clamps", 0.1f, QpdLayout.fill(0));
-        eq("above 10 without Boost flag still full, never more", 1f, Math.min(1f, QpdLayout.fill(10)));
-        eq("label level", "7", QpdLayout.label(7, "Boost"));
-        eq("label 10", "10", QpdLayout.label(10, "Boost"));
-        eq("label Boost", "Boost", QpdLayout.label(11, "Boost"));
-        eq("label unknown", "", QpdLayout.label(null, "Boost"));
-        check("10 is not Boost", !QpdLayout.isBoost(10));
-        check("11 is Boost", QpdLayout.isBoost(QpdLayout.BOOST_LEVEL));
-        eq("Boost level matches the controller", 11, QpdLayout.BOOST_LEVEL);
+        // ---- brightness slider and Boost: the track spans the model's own range (min on the left edge, max on the
+        // right edge), Boost is full
+        eq("level 1 of 1..10 = left edge", 0f, QpdLayout.fill(1, 1, 10));
+        eq("level 10 of 1..10 = right edge", 1f, QpdLayout.fill(10, 1, 10));
+        eq("level 4 of 1..10 = a third", 1f / 3f, QpdLayout.fill(4, 1, 10));
+        eq("Boost (the top of the range while on) = full", 1f, QpdLayout.fill(11, 1, 11));
+        eq("unknown = empty", 0f, QpdLayout.fill(null, 1, 10));
+        eq("below the range clamps to the left edge", 0f, QpdLayout.fill(0, 1, 10));
+        eq("above the range stays full", 1f, QpdLayout.fill(12, 1, 10));
+        eq("an empty range draws nothing", 0f, QpdLayout.fill(5, 5, 5));
+        eq("level 0 of 0..5 = left edge", 0f, QpdLayout.fill(0, 0, 5));
+        eq("label level", "7", QpdLayout.label(7, 1, 10, 11, "Boost"));
+        eq("label 10", "10", QpdLayout.label(10, 1, 10, 11, "Boost"));
+        eq("label below the range", "1", QpdLayout.label(0, 1, 10, 11, "Boost"));
+        eq("label Boost", "Boost", QpdLayout.label(11, 1, 11, 11, "Boost"));
+        eq("label without Boost", "10", QpdLayout.label(11, 1, 10, -1, "Boost"));
+        eq("label unknown", "", QpdLayout.label(null, 1, 10, 11, "Boost"));
+        check("10 is not Boost", !QpdLayout.isBoost(10, 11));
+        check("11 is Boost", QpdLayout.isBoost(11, 11));
+        check("no Boost on a model without it", !QpdLayout.isBoost(11, -1));
+        // every profile's range (test/qpd/run.sh passes device:min:max:boost of every devices/*/menu.json lamp)
+        String ranges = System.getProperty("lamp.ranges", "");
+        check("the profiles' lamp ranges were passed", !ranges.isEmpty());
+        for (String r : ranges.split(",")) {
+            if (r.isEmpty()) continue;
+            String[] f = r.split(":");
+            int min = Integer.parseInt(f[1]), max = Integer.parseInt(f[2]), boost = Integer.parseInt(f[3]);
+            eq(f[0] + ": min " + min + " on the left edge", 0f, QpdLayout.fill(min, min, max));
+            eq(f[0] + ": max " + max + " on the right edge", 1f, QpdLayout.fill(max, min, max));
+            check(f[0] + ": min + 1 moves the knob", QpdLayout.fill(min + 1, min, max) > 0f);
+            check(f[0] + ": max - 1 is short of the edge", QpdLayout.fill(max - 1, min, max) < 1f);
+            if (boost > 0) eq(f[0] + ": Boost full", 1f, QpdLayout.fill(boost, min, boost));
+        }
         check("notice when Boost turns on", QpdLayout.boostNoticeDue(false, true));
         check("no notice when it was on at open", !QpdLayout.boostNoticeDue(null, true));
         check("no notice while it stays on", !QpdLayout.boostNoticeDue(true, true));

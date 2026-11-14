@@ -45,8 +45,7 @@ public final class UpdateService extends Service implements Engine.Listener {
 
     static final int NOTIF_PROGRESS = 1, NOTIF_RESULT = 2;
 
-    private volatile boolean stop;
-    private volatile Thread worker;
+    private final JobRunner jobs = new JobRunner();
     private PowerManager.WakeLock wake;
     private long lastNotif;
 
@@ -80,15 +79,14 @@ public final class UpdateService extends Service implements Engine.Listener {
         Store st = Store.get(this);
         switch (a) {
             case ACTION_PAUSE:
-                stop = true;
-                if (st.state() == Store.State.DOWNLOADING) st.setState(Store.State.PAUSED);
+                jobs.requestStop();
+                if (st.state() == UpdateState.DOWNLOADING) st.setState(UpdateState.PAUSED);
                 stopIfIdle();
                 break;
             case ACTION_CANCEL:
-                stop = true;
-                if (st.state() == Store.State.INSTALLING) Engine.get().cancel();
-                runWorker(() -> {
-                    joinOther();
+                jobs.requestStop();
+                if (st.state() == UpdateState.INSTALLING) Engine.get().cancel();
+                runWorker(ServiceJob.OTHER, () -> {
                     // 2026-11-04 (M2): Cancel just as update_engine reached NEED_REBOOT: the cancel above failed
                     // quietly and the slot switch is staged; undo it, or the next restart installs it unasked
                     try {
@@ -101,23 +99,25 @@ public final class UpdateService extends Service implements Engine.Listener {
                         Log.w(Ota.TAG, "cancel revert: " + t);
                     }
                     deleteFiles(this);
-                    st.setState(Store.State.AVAILABLE);
+                    st.setState(UpdateState.AVAILABLE);
                     Ota.setBusy(this, false, "idle");
                     stopIfIdle();
                 });
                 break;
             case ACTION_REVERT:
-                runWorker(() -> {
+                runWorker(ServiceJob.OTHER, () -> {
                     Engine.get().revertReady();
                     st.clearPending();
-                    st.setState(Store.State.DOWNLOADED);
+                    st.setState(UpdateState.DOWNLOADED);
                     cancelNotif(NOTIF_RESULT);
                     stopIfIdle();
                 });
                 break;
             case ACTION_DOWNLOAD: {
                 boolean then = intent.getBooleanExtra(EXTRA_THEN_INSTALL, false);
-                runWorker(() -> {
+                ServiceJob kind = then ? ServiceJob.DOWNLOAD_INSTALL : ServiceJob.DOWNLOAD;
+                if (repeat(kind)) break;
+                runWorker(kind, () -> {
                     if (download() && then) install();
                     stopIfIdle();
                 });
@@ -125,14 +125,14 @@ public final class UpdateService extends Service implements Engine.Listener {
             }
             case ACTION_INSTALL:
                 // one install at a time: a second press must not race the USB copy or the signature check
-                if (worker != null && worker.isAlive()) break;
-                runWorker(() -> {
+                if (jobs.busy()) break;
+                runWorker(ServiceJob.INSTALL, () -> {
                     install();
                     stopIfIdle();
                 });
                 break;
             case ACTION_VERIFY_ONLY:
-                runWorker(() -> {
+                runWorker(ServiceJob.OTHER, () -> {
                     verifyOnly();
                     stopIfIdle();
                 });
@@ -141,12 +141,11 @@ public final class UpdateService extends Service implements Engine.Listener {
                 // 2026-11-04 (M1): the activity sends WATCH at every onResume during an install. A worker that is
                 // already following it must not be stopped (runWorker's join used to end its wait loop, and then
                 // nothing ended the foreground service after READY)
-                Thread w = worker;
-                if (w != null && w.isAlive()) {
+                if (jobs.busy()) {
                     Log.i(Ota.TAG, "watch: a worker is already running, nothing to do");
                     break;
                 }
-                runWorker(this::watch);
+                runWorker(ServiceJob.OTHER, this::watch);
         }
         return START_NOT_STICKY;
     }
@@ -156,29 +155,22 @@ public final class UpdateService extends Service implements Engine.Listener {
      * (M3): the join runs on the new worker, not on the main thread (the activity shares this process: Pause or
      * Cancel froze the UI for up to 10 s).
      */
-    private void runWorker(Runnable r) {
-        final Thread prev = worker;
-        if (prev != null && prev.isAlive()) stop = true;
-        Thread t = new Thread(() -> {
+    private void runWorker(ServiceJob kind, Runnable r) {
+        jobs.start(kind, () -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            if (prev != null && prev.isAlive()) {
-                try {
-                    prev.join(10000);
-                } catch (InterruptedException ignored) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-            stop = false;
-            try {
-                r.run();
-            } catch (Throwable e) {
-                Log.e(Ota.TAG, "worker", e);
-                Store.get(this).setError("err_install_unknown", "");
-                stopIfIdle();
-            }
-        }, "updater");
-        worker = t;
-        t.start();
+            r.run();
+        }, e -> {
+            Log.e(Ota.TAG, "worker", e);
+            Store.get(this).setError("err_install_unknown", "");
+            stopIfIdle();
+        });
+    }
+
+    /** The request repeats the running job (a second "Install now" press while it installs): nothing to start. */
+    private boolean repeat(ServiceJob kind) {
+        if (!jobs.repeats(kind)) return false;
+        Log.i(Ota.TAG, kind + ": the running job already does it");
+        return true;
     }
 
     /**
@@ -190,29 +182,18 @@ public final class UpdateService extends Service implements Engine.Listener {
         BootReceiver.settleIfStale(this, "watch");
         Store st = Store.get(this);
         int s = Engine.get().status();
-        if (st.state() == Store.State.INSTALLING && (s == Ota.UE_IDLE || s < 0)) {
+        if (st.state() == UpdateState.INSTALLING && (s == Ota.UE_IDLE || s < 0)) {
             st.setError("err_install", "-1");
         } else if (s == Ota.UE_NEED_REBOOT) {
-            st.setState(Store.State.READY);
+            st.setState(UpdateState.READY);
         }
         stopIfIdle();
     }
 
-    private void joinOther() {
-        Thread w = worker;
-        if (w != null && w != Thread.currentThread() && w.isAlive()) {
-            stop = true;
-            try {
-                w.join(10000);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
     private void stopIfIdle() {
-        Store.State s = Store.get(this).state();
-        if (s != Store.State.DOWNLOADING && s != Store.State.INSTALLING) {
+        if (!jobs.mayEnd()) return;                           // a newer job runs and ends the service itself
+        UpdateState s = Store.get(this).state();
+        if (s != UpdateState.DOWNLOADING && s != UpdateState.INSTALLING) {
             stopForeground(STOP_FOREGROUND_REMOVE);
             stopSelf();
         }
@@ -254,14 +235,14 @@ public final class UpdateService extends Service implements Engine.Listener {
         Store st = Store.get(this);
         UpdateManifest.Pkg p = pkg();
         if (p == null) {
-            st.setState(Store.State.IDLE);
+            st.setState(UpdateState.IDLE);
             return false;
         }
         String ver = version();
         File meta = metaFile(this, p);
         File src = payloadSource(this, st, p);
-        if (st.state() == Store.State.DOWNLOADED && src.isFile()) return true;
-        st.setState(Store.State.DOWNLOADING);
+        if (st.state() == UpdateState.DOWNLOADED && src.isFile()) return true;
+        st.setState(UpdateState.DOWNLOADING);
         Ota.setBusy(this, true, "downloading");
         try {
             if (st.fromUsb()) {
@@ -285,7 +266,7 @@ public final class UpdateService extends Service implements Engine.Listener {
                 long t0 = System.nanoTime(), b0 = src.isFile() ? src.length() : 0;
                 int attempt = 0;
                 while (true) {
-                    if (stop) return false;
+                    if (jobs.stopRequested()) return false;
                     if (src.isFile() && src.length() == p.size) break;   // complete: straight to the checks
                     if (!online()) {
                         st.setDownload(src.isFile() ? src.length() : 0, p.size, st.dlEtag(), 0);
@@ -300,7 +281,7 @@ public final class UpdateService extends Service implements Engine.Listener {
                             long speed = dt > 0 ? (bytes - bStart) * 1_000_000_000L / dt : 0;
                             st.setDownload(bytes, total, st.dlEtag(), speed);
                             notifyProgress(getString(R.string.dl_title, ver), total > 0 ? (int) (bytes * 100 / total) : -1);
-                            return !stop;
+                            return !jobs.stopRequested();
                         });
                         st.setDownload(p.size, p.size, tag, 0);
                         break;
@@ -320,7 +301,7 @@ public final class UpdateService extends Service implements Engine.Listener {
             }
             // verify: whole-zip sha256, metadata = payload prefix
             notifyProgress(getString(R.string.dl_verifying), -1);
-            String h = Trust.sha256(src, -1, () -> stop);
+            String h = Trust.sha256(src, -1, jobs::stopRequested);
             if (!h.equals(p.sha256)) {
                 Log.w(Ota.TAG, "zip sha256 " + h + " != " + p.sha256);
                 if (!st.fromUsb()) src.delete();
@@ -332,15 +313,15 @@ public final class UpdateService extends Service implements Engine.Listener {
                 st.setError("err_signature", "");
                 return false;
             }
-            st.setState(Store.State.DOWNLOADED);
+            st.setState(UpdateState.DOWNLOADED);
             Log.i(Ota.TAG, "download verified: " + p.fileName());
             return true;
         } catch (IOException e) {
             Log.w(Ota.TAG, "download failed", e);
-            if (!stop) st.setError(st.fromUsb() ? "usb_none" : "err_network", "");
+            if (!jobs.stopRequested()) st.setError(st.fromUsb() ? "usb_none" : "err_network", "");
             return false;
         } finally {
-            if (stop && st.state() == Store.State.DOWNLOADING) st.setState(Store.State.PAUSED);
+            if (jobs.stopRequested() && st.state() == UpdateState.DOWNLOADING) st.setState(UpdateState.PAUSED);
             Ota.setBusy(this, false, st.state().name().toLowerCase());
         }
     }
@@ -368,7 +349,7 @@ public final class UpdateService extends Service implements Engine.Listener {
 
     private byte[] fetchWithRetry(String url) throws IOException {
         for (int i = 0; ; i++) {
-            if (stop) return null;
+            if (jobs.stopRequested()) return null;
             try {
                 return Http.fetch(url, 8 << 20);
             } catch (Http.HttpException e) {
@@ -387,7 +368,7 @@ public final class UpdateService extends Service implements Engine.Listener {
 
     private void sleep(long ms) {
         long end = System.currentTimeMillis() + ms;
-        while (!stop && System.currentTimeMillis() < end) {
+        while (!jobs.stopRequested() && System.currentTimeMillis() < end) {
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) {
@@ -404,17 +385,17 @@ public final class UpdateService extends Service implements Engine.Listener {
         try {
             m = new UpdateManifest(st.manifestJson());
         } catch (JSONException e) {
-            st.setState(Store.State.IDLE);
+            st.setState(UpdateState.IDLE);
             return;
         }
         if (p == null) return;
         File src = payloadSource(this, st, p);
         if (!src.isFile()) {
-            st.setState(Store.State.AVAILABLE);
+            st.setState(UpdateState.AVAILABLE);
             return;
         }
         if (!st.firmwareConsent()) {          // the activity asks first; never install without it
-            st.setState(Store.State.DOWNLOADED);
+            st.setState(UpdateState.DOWNLOADED);
             return;
         }
         Preflight.Block b = Preflight.install(this);
@@ -428,7 +409,7 @@ public final class UpdateService extends Service implements Engine.Listener {
             try {
                 notifyProgress(getString(R.string.inst_title, version()), -1);
                 java.nio.file.Files.copy(src.toPath(), dst.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                if (!Trust.sha256(dst, -1, () -> stop).equals(p.sha256)) throw new IOException("copy sha256");
+                if (!Trust.sha256(dst, -1, jobs::stopRequested).equals(p.sha256)) throw new IOException("copy sha256");
                 src = dst;
             } catch (IOException e) {
                 Log.w(Ota.TAG, "USB copy to " + dst + ": " + e);
@@ -444,8 +425,8 @@ public final class UpdateService extends Service implements Engine.Listener {
             st.setError("err_signature", "");
             return;
         }
-        if (stop) {
-            st.setState(Store.State.DOWNLOADED);
+        if (jobs.stopRequested()) {
+            st.setState(UpdateState.DOWNLOADED);
             return;
         }
         // READY only right before the BCB and the restart: after the boot, Outcome.afterBoot says "updated" when
@@ -453,13 +434,13 @@ public final class UpdateService extends Service implements Engine.Listener {
         // Under the Checker lock (as on the Z9X since 2026-11-04), so a background check cannot write CHECKING
         // (and then the old state) between these lines; a stop asked meanwhile (Cancel) is honoured here
         synchronized (Checker.class) {
-            if (stop || st.state() != Store.State.DOWNLOADED) {
-                Log.i(Ota.TAG, "install not started: stop " + stop + ", state " + st.state());
+            if (jobs.stopRequested() || st.state() != UpdateState.DOWNLOADED) {
+                Log.i(Ota.TAG, "install not started: stop " + jobs.stopRequested() + ", state " + st.state());
                 return;
             }
             st.setPending(m.buildId, m.version, Ota.buildId(), Ota.currentVersion());
             st.setProgress(1f);
-            st.setState(Store.State.READY);
+            st.setState(UpdateState.READY);
         }
         Ota.setBusy(this, true, "installing");
         acquireWake();
@@ -478,7 +459,7 @@ public final class UpdateService extends Service implements Engine.Listener {
     private void verifyOnly() {
         Store st = Store.get(this);
         UpdateManifest.Pkg p = pkg();
-        if (p == null || st.state() != Store.State.DOWNLOADED) {
+        if (p == null || st.state() != UpdateState.DOWNLOADED) {
             Log.i(Ota.TAG, "verify-only: no downloaded update (state " + st.state() + ")");
             return;
         }
@@ -492,7 +473,7 @@ public final class UpdateService extends Service implements Engine.Listener {
     @Override
     public void onStatus(int status, float percent) {
         Store st = Store.get(this);
-        if (st.state() != Store.State.INSTALLING) return;
+        if (st.state() != UpdateState.INSTALLING) return;
         float f;
         switch (status) {
             case Ota.UE_DOWNLOADING: f = 0.90f * percent; break;
@@ -507,16 +488,16 @@ public final class UpdateService extends Service implements Engine.Listener {
     @Override
     public void onComplete(int code) {
         Store st = Store.get(this);
-        if (st.state() != Store.State.INSTALLING) return;
+        if (st.state() != UpdateState.INSTALLING) return;
         String ver = version();
         if (code == Ota.ERR_SUCCESS || code == Ota.ERR_UPDATED_BUT_NOT_ACTIVE) {
             st.setProgress(1f);
-            st.setState(Store.State.READY);
+            st.setState(UpdateState.READY);
             Ota.setBusy(this, false, "ready");
             result(getString(R.string.n_ready_title), getString(R.string.ready_body, ver));
         } else if (code == Ota.ERR_USER_CANCELED) {
             st.clearPending();
-            st.setState(Store.State.DOWNLOADED);
+            st.setState(UpdateState.DOWNLOADED);
             Ota.setBusy(this, false, "idle");
         } else {
             st.clearPending();

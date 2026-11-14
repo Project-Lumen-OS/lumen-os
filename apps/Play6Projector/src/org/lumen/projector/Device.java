@@ -1,5 +1,6 @@
 package org.lumen.projector;
 
+import android.content.Context;
 import android.os.SystemProperties;
 import android.util.Log;
 
@@ -65,13 +66,34 @@ public final class Device {
     /** Lumen Home's Projector tab tile of eye protection (apps/Z9xHome data/InputSource.tiles: its intent). */
     public static final String HOME_TILE_EYE = "section:eye";
 
+    /** Lumen Home's Projector tab tile of screen mirroring (apps/Z9xHome data/InputSource.tiles: its intent). */
+    public static final String HOME_TILE_MIRRORING = "miracast";
+    /** The screen mirroring receiver's control provider (apps/LumenMiracast StateProvider). */
+    static final String MIRRORING_AUTHORITY = "org.lumen.miracast";
+
     /**
      * The Lumen Home Projector tab tiles this projector does not support, by the tile's intent string of
      * apps/Z9xHome InputSource.tiles ("section:eye", "action:autofocus", ...; the Card id is "tile:" + it),
-     * for device/DeviceStateProvider call("caps"). Today: eye protection until the NUI reader exists.
+     * for device/DeviceStateProvider call("caps"): eye protection until the NUI reader exists, screen mirroring
+     * where the receiver found no Wi-Fi Direct ({@link #screenMirroring}).
      */
-    public static String[] unsupportedHomeTiles() {
-        return hasEyeProtection() ? new String[0] : new String[] {HOME_TILE_EYE};
+    public static String[] unsupportedHomeTiles(Context c) {
+        java.util.List<String> off = new java.util.ArrayList<>(2);
+        if (!hasEyeProtection()) off.add(HOME_TILE_EYE);
+        if (!screenMirroring(c)) off.add(HOME_TILE_MIRRORING);
+        return off.toArray(new String[0]);
+    }
+
+    /**
+     * Screen mirroring works on this unit: the receiver is in the image and its control provider resolves, which it
+     * does only once the receiver found Wi-Fi Direct (LumenMiracast ControlGate; the quick menu tile asks the same).
+     */
+    public static boolean screenMirroring(Context c) {
+        try {
+            return c != null && c.getPackageManager().resolveContentProvider(MIRRORING_AUTHORITY, 0) != null;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     private static String prop(String name) {

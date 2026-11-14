@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lumen.miracast.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +36,14 @@ public final class WfdSession {
         void onClosed(String reason);
 
         void onLog(String line);
+
+        /** The TCP connection to the source is up; the source speaks first (M1). */
+        default void onConnected() {
+        }
+
+        /** RTSP progress for the diagnostics (M1, M3 answered, SETUP ok, ...). */
+        default void onStep(String step) {
+        }
     }
 
     public static final class Config {
@@ -43,11 +52,9 @@ public final class WfdSession {
         public String model = "Projector";
         public String version = "1.0";
         public int rtpPort = 19000;
-        public WfdFormats.Quality quality = WfdFormats.Quality.P1080_60;
+        public WfdQuality quality = WfdQuality.P1080_60;
         public boolean lpcm = true, aac = true;
     }
-
-    public enum State { WAIT_M1, CAPABILITIES, SETUP_SENT, PLAY_SENT, PLAYING, PAUSED, TEARING_DOWN, CLOSED }
 
     public static final String WFD_TAG = "org.wfa.wfd1.0";
     public static final int MIN_IDR_INTERVAL_MS = 500;
@@ -57,7 +64,7 @@ public final class WfdSession {
     private final Listener listener;
     private final String sourceHost;
     private final Map<Integer, String> pending = new HashMap<>();
-    private State state = State.WAIT_M1;
+    private WfdState state = WfdState.WAIT_M1;
     private int nextCseq = 1;
     private String presentationUrl;
     private String sessionId;
@@ -66,6 +73,7 @@ public final class WfdSession {
     private WfdFormats.Audio audio;
     private long lastSourceMs;
     private long lastIdrMs = Long.MIN_VALUE / 2;
+    private boolean keepAliveSeen;
 
     public WfdSession(Config cfg, String sourceHost, Out out, Listener listener) {
         this.cfg = cfg;
@@ -74,7 +82,7 @@ public final class WfdSession {
         this.listener = listener;
     }
 
-    public State state() {
+    public WfdState state() {
         return state;
     }
 
@@ -97,6 +105,7 @@ public final class WfdSession {
     /** Call once when the TCP connection is up (starts the keep-alive clock). */
     public void start(long nowMs) {
         lastSourceMs = nowMs;
+        listener.onConnected();
     }
 
     /**
@@ -104,13 +113,13 @@ public final class WfdSession {
      * keep-alive (M16) at least every timeout seconds; before SETUP the limit is the default 60 s.
      */
     public boolean timedOut(long nowMs) {
-        if (state == State.CLOSED) return false;
+        if (state == WfdState.CLOSED) return false;
         return nowMs - lastSourceMs > (sessionTimeoutS + 15) * 1000L;
     }
 
     public void onMessage(RtspMessage m, long nowMs) {
         lastSourceMs = nowMs;
-        if (state == State.CLOSED) return;
+        if (state == WfdState.CLOSED) return;
         if (m.isRequest()) onRequest(m);
         else onResponse(m);
     }
@@ -121,10 +130,11 @@ public final class WfdSession {
         switch (m.method) {
             case "OPTIONS": {   // M1
                 send(m, 200, "OK", "Public", WFD_TAG + ", GET_PARAMETER, SET_PARAMETER");
-                if (state == State.WAIT_M1) {
-                    state = State.CAPABILITIES;
+                if (state == WfdState.WAIT_M1) {
+                    state = WfdState.CAPABILITIES;
                     sendRequest("OPTIONS", "*", "M2").setHeader("Require", WFD_TAG);
                     flushLast();
+                    step("M1 answered, M2 sent" + server(m));
                 }
                 return;
             }
@@ -132,13 +142,26 @@ public final class WfdSession {
                 List<String> names = WfdParams.names(m.bodyText());
                 if (names.isEmpty()) {
                     send(m, 200, "OK");
+                    if (!keepAliveSeen && state == WfdState.PLAYING) {
+                        keepAliveSeen = true;
+                        step("M16 keep-alive answered");
+                    }
                     return;
                 }
                 Map<String, String> values = new LinkedHashMap<>();
-                for (String n : names) values.put(n, value(n));
+                List<String> skipped = new ArrayList<>();
+                for (String n : names) {
+                    String v = value(n);
+                    if (v != null) values.put(n, v);
+                    else skipped.add(n);
+                }
                 RtspMessage r = reply(m, 200, "OK");
                 r.setTextBody("text/parameters", WfdParams.format(values));
                 out.send(r);
+                String what = "M3 answered " + values.size() + " of " + names.size()
+                        + (skipped.isEmpty() ? "" : ", not supported: " + String.join(" ", skipped));
+                log(what);
+                step(what);
                 return;
             }
             case "SET_PARAMETER": {
@@ -160,6 +183,7 @@ public final class WfdSession {
                 send(m, 200, "OK");
                 if (formats) {
                     log("M4 video=" + video + " audio=" + audio + " url=" + presentationUrl());
+                    step("M4 video=" + video + " audio=" + audio);
                     listener.onFormats(video, audio);
                 }
                 String trigger = p.get("wfd_trigger_method");
@@ -183,16 +207,17 @@ public final class WfdSession {
         log("trigger " + t);
         switch (t) {
             case "SETUP":
-                if (state == State.CAPABILITIES || state == State.WAIT_M1) {
-                    state = State.SETUP_SENT;
+                if (state == WfdState.CAPABILITIES || state == WfdState.WAIT_M1) {
+                    state = WfdState.SETUP_SENT;
                     sendRequest("SETUP", presentationUrl(), "SETUP")
                             .setHeader("Transport", "RTP/AVP/UDP;unicast;client_port=" + cfg.rtpPort + "-" + (cfg.rtpPort + 1));
                     flushLast();
+                    step("M5 trigger, M6 SETUP sent");
                 }
                 return;
             case "PLAY":
                 if (sessionId != null) {
-                    state = State.PLAY_SENT;
+                    state = WfdState.PLAY_SENT;
                     withSession(sendRequest("PLAY", presentationUrl(), "PLAY"));
                     flushLast();
                 }
@@ -211,18 +236,37 @@ public final class WfdSession {
         }
     }
 
-    /** Value for one M3 parameter; "none" for anything we do not support. */
+    /**
+     * Value for one M3 parameter, or null to leave it out of the reply.
+     *
+     * WFD R1 parameters we do not support get their spec value "none" (content protection = no HDCP,
+     * no EDID, no UIBC, no coupled sink, no 3D, no standby control, no I2C). Every other name (vendor
+     * and extension keys: microsoft_*, wfdx_*, wfd2_*, Samsung wfd_vnd_*) is left out, which the
+     * extensions define as "not supported". Answering "none" there is malformed for some of them:
+     * MS-WFDPE 2.7.1.2 microsoft_video_formats = 12HEXDIG and 2.10.1.1 microsoft_max_bitrate =
+     * 1*10DIGIT (Windows 10 1703 and later, Windows 11 ask both), and a wfdx_video_formats "none"
+     * would make the source drop our wfd_video_formats (2.7.1.1).
+     */
     String value(String name) {
         switch (name) {
             case "wfd_video_formats": return WfdFormats.sinkVideoFormats(cfg.quality);
             case "wfd_audio_codecs": return WfdFormats.sinkAudioCodecs(cfg.lpcm, cfg.aac);
             case "wfd_client_rtp_ports": return "RTP/AVP/UDP;unicast " + cfg.rtpPort + " 0 mode=play";
             case "wfd_connector_type": return "05";
+            case "wfd_idr_request_capability": return "1";
+            case "wfd_content_protection":
+            case "wfd_display_edid":
+            case "wfd_coupled_sink":
+            case "wfd_uibc_capability":
+            case "wfd_standby_resume_capability":
+            case "wfd_3d_video_formats":
+            case "wfd_I2C":
+                return "none";
             case "intel_friendly_name": return cfg.friendlyName;
             case "intel_sink_manufacturer_name": return cfg.manufacturer;
             case "intel_sink_model_name": return cfg.model;
             case "intel_sink_version": return cfg.version;
-            default: return "none";   // content protection, EDID, UIBC, coupled sink, 3D, standby, vendor keys
+            default: return null;
         }
     }
 
@@ -250,9 +294,10 @@ public final class WfdSession {
                     return;
                 }
                 log("SETUP ok session=" + sessionId + " timeout=" + sessionTimeoutS + " transport=" + m.header("Transport"));
-                state = State.PLAY_SENT;
+                state = WfdState.PLAY_SENT;
                 withSession(sendRequest("PLAY", presentationUrl(), "PLAY"));
                 flushLast();
+                step("SETUP ok, M7 PLAY sent");
                 return;
             }
             case "PLAY":
@@ -260,11 +305,12 @@ public final class WfdSession {
                     close("PLAY refused " + m.status);
                     return;
                 }
-                state = State.PLAYING;
+                state = WfdState.PLAYING;
+                step("PLAY ok");
                 listener.onPlaying();
                 return;
             case "PAUSE":
-                if (ok) state = State.PAUSED;
+                if (ok) state = WfdState.PAUSED;
                 return;
             case "TEARDOWN":
                 close("teardown done");
@@ -297,7 +343,7 @@ public final class WfdSession {
 
     /** M13: ask the source for a key frame. Rate limited; true when a request went out. */
     public boolean requestIdr(long nowMs) {
-        if (state != State.PLAYING || sessionId == null) return false;
+        if (state != WfdState.PLAYING || sessionId == null) return false;
         if (nowMs - lastIdrMs < MIN_IDR_INTERVAL_MS) return false;
         lastIdrMs = nowMs;
         RtspMessage r = withSession(sendRequest("SET_PARAMETER", presentationUrl(), "IDR"));
@@ -308,12 +354,12 @@ public final class WfdSession {
 
     /** M8: end the session from our side (BACK on the remote, disabled, standby). */
     public void teardown() {
-        if (state == State.CLOSED || state == State.TEARING_DOWN) return;
+        if (state == WfdState.CLOSED || state == WfdState.TEARING_DOWN) return;
         if (sessionId == null) {
             close("teardown before setup");
             return;
         }
-        state = State.TEARING_DOWN;
+        state = WfdState.TEARING_DOWN;
         withSession(sendRequest("TEARDOWN", presentationUrl(), "TEARDOWN"));
         flushLast();
     }
@@ -357,13 +403,24 @@ public final class WfdSession {
     }
 
     private void close(String reason) {
-        if (state == State.CLOSED) return;
-        state = State.CLOSED;
+        if (state == WfdState.CLOSED) return;
+        state = WfdState.CLOSED;
         log("closed: " + reason);
         listener.onClosed(reason);
     }
 
     private void log(String s) {
         listener.onLog(s);
+    }
+
+    private void step(String s) {
+        listener.onStep(s);
+    }
+
+    /** " (Server: ...)" of the source's M1, which names the sender stack (MSMiracastSource, stagefright). */
+    private static String server(RtspMessage m) {
+        String s = m.header("Server");
+        if (s == null) s = m.header("User-Agent");
+        return s == null ? "" : " (" + s + ")";
     }
 }

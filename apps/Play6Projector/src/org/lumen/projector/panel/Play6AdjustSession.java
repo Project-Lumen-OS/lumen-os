@@ -5,8 +5,9 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.lumen.projector.Hal;
-import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 
 /**
  * The vendor session shared by the two Play 6 picture adjustment cards (design notes
@@ -86,9 +87,9 @@ public final class Play6AdjustSession {
     static boolean pushPullOn(Context app, Play6Gmpf2 g2, String who) {
         mark(app, KEY_PUSH_PULL, true);
         try {
-            Log.i(TAG, who + ": IGmpf2 125(1) -> " + g2.setPushPullScreen(true));
+            Log.i(TAG, who + ": IGmpf2 125(1) -> " + g2.setAdjustScreenOpen(true));
             return true;
-        } catch (Play6Gmpf2.ReplyException e) {
+        } catch (ReplyException e) {
             Log.w(TAG, who + ": IGmpf2 125(1) delivered, bad reply (continuing): " + e.getMessage());
             return true;
         } catch (Throwable t) {
@@ -119,7 +120,7 @@ public final class Play6AdjustSession {
         if (!on) return false;
         mark(app, KEY_PAUSED, true);
         try {
-            Log.i(TAG, who + ": 573(2,false) -> " + g.setRealtimeAkRunning(false));
+            Log.i(TAG, who + ": 573(2,false) -> " + g.setRealtimeAkTemporarily(false));
         } catch (Throwable t) {
             Log.w(TAG, who + ": 573(2,false): " + t + " (continuing)");
         }
@@ -131,7 +132,7 @@ public final class Play6AdjustSession {
         mark(app, KEY_ZOOM, true);
         try {
             Log.i(TAG, who + ": 121 zoomStart(0) -> " + g.zoomSessionStart());
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             Log.w(TAG, who + ": 121 delivered, bad reply (continuing): " + e.getMessage());
         } catch (Exception e) {
             mark(app, KEY_ZOOM, false);
@@ -166,7 +167,7 @@ public final class Play6AdjustSession {
             mark(app, KEY_ZOOM, false);
             Log.i(TAG, who + ": 120 zoomFinish(0) -> " + r);
             return true;
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             mark(app, KEY_ZOOM, false);
             Log.w(TAG, who + ": 120 delivered, bad reply: " + e.getMessage());
             return true;
@@ -178,7 +179,7 @@ public final class Play6AdjustSession {
 
     private static boolean resume(Context app, Play6Gmpf g, String who) {
         try {
-            boolean r = g.setRealtimeAkRunning(true);                  // 573(2,true)
+            boolean r = g.setRealtimeAkTemporarily(true);                  // 573(2,true)
             Log.i(TAG, who + ": 573(2,true) -> " + r);
             if (r) {
                 mark(app, KEY_PAUSED, false);
@@ -193,11 +194,11 @@ public final class Play6AdjustSession {
 
     private static boolean pushPullOff(Context app, Play6Gmpf2 g2, String who) {
         try {
-            boolean r = g2.setPushPullScreen(false);                   // IGmpf2 125(0)
+            boolean r = g2.setAdjustScreenOpen(false);                   // IGmpf2 125(0)
             mark(app, KEY_PUSH_PULL, false);
             Log.i(TAG, who + ": IGmpf2 125(0) -> " + r);
             return true;
-        } catch (Play6Gmpf2.ReplyException e) {
+        } catch (ReplyException e) {
             mark(app, KEY_PUSH_PULL, false);
             Log.w(TAG, who + ": IGmpf2 125(0) delivered, bad reply: " + e.getMessage());
             return true;

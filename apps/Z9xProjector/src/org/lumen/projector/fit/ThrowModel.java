@@ -22,19 +22,15 @@ public final class ThrowModel {
     /** Bisection range of {@link #solve}. */
     public static final double SOLVE_MIN = 0.5, SOLVE_MAX = 3.0;
 
-    public enum Kind { TWO, THREE, FULL }
-
-    public enum Problem { NONE, TOO_FEW, TR_RANGE, RATIO, NOT_INCREASING, FULL_TABLE_NEEDED }
-
     /** Result of {@link #build}: a model, or the reason it was refused. */
     public static final class Built {
         public final ThrowModel model;
-        public final Problem problem;
+        public final ThrowProblem problem;
         /** The worst check point (-1 = none): its predicted and measured TR. */
         public final int checkPos;
         public final double predicted, measured;
 
-        Built(ThrowModel m, Problem p, int checkPos, double predicted, double measured) {
+        Built(ThrowModel m, ThrowProblem p, int checkPos, double predicted, double measured) {
             model = m;
             problem = p;
             this.checkPos = checkPos;
@@ -42,14 +38,14 @@ public final class ThrowModel {
             this.measured = measured;
         }
 
-        public boolean ok() { return problem == Problem.NONE; }
+        public boolean ok() { return problem == ThrowProblem.NONE; }
     }
 
     private final double[] tr;
     private final double[][] points;
-    private final Kind kind;
+    private final ThrowTableKind kind;
 
-    private ThrowModel(double[] tr, double[][] points, Kind kind) {
+    private ThrowModel(double[] tr, double[][] points, ThrowTableKind kind) {
         this.tr = tr;
         this.points = points;
         this.kind = kind;
@@ -62,7 +58,7 @@ public final class ThrowModel {
 
     public int positions() { return tr.length; }
 
-    public Kind kind() { return kind; }
+    public ThrowTableKind kind() { return kind; }
 
     /** The measured points {p, TR}, sorted by p (a copy). */
     public double[][] points() {
@@ -86,7 +82,7 @@ public final class ThrowModel {
 
     /** points: {p, TR} pairs, distinct positions 0..13. */
     public static Built build(double[][] points) {
-        if (points == null || points.length < 2) return new Built(null, Problem.TOO_FEW, -1, 0, 0);
+        if (points == null || points.length < 2) return new Built(null, ThrowProblem.TOO_FEW, -1, 0, 0);
         double[][] pts = new double[points.length][];
         for (int i = 0; i < points.length; i++) pts[i] = points[i].clone();
         Arrays.sort(pts, (x, y) -> Double.compare(x[0], y[0]));
@@ -95,20 +91,20 @@ public final class ThrowModel {
         for (double[] q : pts) {
             int p = (int) q[0];
             if (q.length != 2 || p != q[0] || p < 0 || p >= ZoomModel.POSITIONS || !Double.isNaN(measured[p])) {
-                return new Built(null, Problem.TOO_FEW, -1, 0, 0);
+                return new Built(null, ThrowProblem.TOO_FEW, -1, 0, 0);
             }
-            if (!(q[1] >= TR_MIN && q[1] <= TR_MAX)) return new Built(null, Problem.TR_RANGE, p, 0, q[1]);
+            if (!(q[1] >= TR_MIN && q[1] <= TR_MAX)) return new Built(null, ThrowProblem.TR_RANGE, p, 0, q[1]);
             measured[p] = q[1];
         }
         for (int i = 1; i < pts.length; i++) {
-            if (!(pts[i][1] > pts[i - 1][1])) return new Built(null, Problem.NOT_INCREASING, (int) pts[i][0], 0, pts[i][1]);
+            if (!(pts[i][1] > pts[i - 1][1])) return new Built(null, ThrowProblem.NOT_INCREASING, (int) pts[i][0], 0, pts[i][1]);
         }
         int last = ZoomModel.POSITIONS - 1;
-        if (Double.isNaN(measured[0]) || Double.isNaN(measured[last])) return new Built(null, Problem.TOO_FEW, -1, 0, 0);
+        if (Double.isNaN(measured[0]) || Double.isNaN(measured[last])) return new Built(null, ThrowProblem.TOO_FEW, -1, 0, 0);
         double ratio = measured[last] / measured[0];
-        if (!(ratio >= RATIO_MIN && ratio <= RATIO_MAX)) return new Built(null, Problem.RATIO, last, 0, ratio);
+        if (!(ratio >= RATIO_MIN && ratio <= RATIO_MAX)) return new Built(null, ThrowProblem.RATIO, last, 0, ratio);
         if (pts.length == ZoomModel.POSITIONS) {
-            return new Built(new ThrowModel(measured, pts, Kind.FULL), Problem.NONE, -1, 0, 0);
+            return new Built(new ThrowModel(measured, pts, ThrowTableKind.FULL), ThrowProblem.NONE, -1, 0, 0);
         }
         double[] t = line(0, measured[0], last, measured[last]);
         int worst = -1;
@@ -122,10 +118,10 @@ public final class ThrowModel {
             }
         }
         if (worst >= 0 && worstErr > CHECK_TOLERANCE) {
-            return new Built(null, Problem.FULL_TABLE_NEEDED, worst, t[worst], measured[worst]);
+            return new Built(null, ThrowProblem.FULL_TABLE_NEEDED, worst, t[worst], measured[worst]);
         }
-        Kind k = pts.length == 2 ? Kind.TWO : Kind.THREE;
-        return new Built(new ThrowModel(t, pts, k), Problem.NONE, worst, worst >= 0 ? t[worst] : 0,
+        ThrowTableKind k = pts.length == 2 ? ThrowTableKind.TWO : ThrowTableKind.THREE;
+        return new Built(new ThrowModel(t, pts, k), ThrowProblem.NONE, worst, worst >= 0 ? t[worst] : 0,
                 worst >= 0 ? measured[worst] : 0);
     }
 

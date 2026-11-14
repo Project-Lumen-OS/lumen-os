@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lumen.projector.panel;
 
+import org.lumen.menu.FeatureId;
 import org.lumen.projector.R;
 
 /**
@@ -13,17 +14,27 @@ final class MenuLabels {
     private MenuLabels() {}
 
     /** title: a string resource id, 0 when none. */
+    static int title(FeatureId f) { return title(f.id); }
+
+    static int summary(FeatureId f) { return summary(f.id); }
+
+    static int option(FeatureId f, String token) { return option(f.id, token); }
+
+    static int tileValue(FeatureId f, String token) { return tileValue(f.id, token); }
+
     static int title(String id) {
         switch (id) {
             case "keystone.angle_h": return R.string.lumen_m_angle_h;
             case "zoom.digital": return R.string.lumen_m_zs_title;
             case "lamp.eco": return R.string.lumen_m_eco;
+            case "lamp.off": return R.string.lumen_m_lamp_off;
             case "settings.ambient_speaker": return R.string.lumen_m_ambient_speaker;
             case "keystone.angle_v": return R.string.lumen_m_angle_v;
             case "picture.dynamic_contrast": return R.string.lumen_m_dynamic_contrast;
             case "picture.dynamic_black": return R.string.lumen_m_dynamic_black;
             case "settings.sleep_timer": return R.string.lumen_m_sleep_timer;
             case "settings.remote": return R.string.lumen_m_remote;
+            case "settings.licences": return R.string.lumen_gm_licences;
             case "sound.earc": return R.string.lumen_m_earc;
             case "boost": return R.string.lumen_m_panel_boost;
             case "eye": return R.string.lumen_m_panel_eye;
@@ -205,6 +216,7 @@ final class MenuLabels {
             case "picture.mode|filmmaker": return R.string.lumen_m_pm_filmmaker;
             case "picture.mode|isf_day": return R.string.lumen_m_pm_isf_day;
             case "picture.mode|isf_night": return R.string.lumen_m_pm_isf_night;
+            case "picture.mode|bright": return R.string.lumen_m_pm_bright;
             case "picture.mode|soft": return R.string.lumen_m_pm_soft;
             case "sound.output|arc": return R.string.lumen_m_out_arc;
             case "sound.output|bt": return R.string.lumen_m_out_bt;

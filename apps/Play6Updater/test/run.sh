@@ -13,7 +13,8 @@ python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play
 A=$OUT/tree
 S=$A/src/org/lumen/updater
 grep -q 'DEVICE = "play6"' "$S/Ota.java" || { echo "FAIL the assembled Ota.java is not the Play 6 one"; exit 1; }
-"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/o" "$S/Outcome.java" "$A/test/org/lumen/updater/OutcomeTest.java"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/o" "$S/Outcome.java" "$S/BootVerdict.java" "$S/GateVerdict.java" "$S/GateReason.java" \
+  "$S/InstallError.java" "$A/test/org/lumen/updater/OutcomeTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/o" org.lumen.updater.OutcomeTest
 # (hidden APIs: our framework header jar to compile, android.jar first to run)
 AJ=${ANDROID_SDK:-$HOME/Library/Android/sdk}/platforms/android-34/android.jar
@@ -29,3 +30,9 @@ mkdir -p "$OUT/stats"
 mkdir -p "$OUT/notice"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/notice" "$S/NoticeRule.java" "$A/test/org/lumen/updater/NoticeTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/notice" org.lumen.updater.NoticeTest
+# the shared worker of UpdateService (JobRunner, ServiceJob): a second "Install now" is dropped, only the newest job
+# ends the service (a test Z9X 2026-11-12)
+mkdir -p "$OUT/jobs"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/jobs" "$S/ServiceJob.java" "$S/JobRunner.java" \
+  "$A/test/org/lumen/updater/JobRunnerTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/jobs" org.lumen.updater.JobRunnerTest

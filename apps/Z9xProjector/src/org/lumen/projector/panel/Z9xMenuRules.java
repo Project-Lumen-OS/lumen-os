@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.lumen.projector.panel;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.ProjectorFeatures.Confirm;
@@ -48,7 +48,7 @@ final class Z9xMenuRules {
     static final int[] SPEED_WIRE = {0, 1, 3, 2};                      // QPC:116 SPEED_ORDER
     static final String[] GAME = {"off", "on", "auto"};
     static final String[] ENH = {"harman", "dts_vx"};                  // SoundProfiles.ORDER
-    static final String[] FORMAT = {"auto", "pcm", "passthrough"};     // AudioOutputChoice.Format order
+    static final String[] FORMAT = {"auto", "pcm", "passthrough"};     // DigitalOutputFormat order
 
     /** One read of the projector and the app stores the rules look at (null fields = that read failed). */
     static final class In {
@@ -186,105 +186,105 @@ final class Z9xMenuRules {
         }
         boolean ok = !in.failed;
         // ---- picture mode (options depend on the content's HDR type)
-        b.options(Feature.PICTURE_MODE, visibleModes(in));
-        b.put(Feature.PICTURE_MODE, pmToken(in.pictureMode));
+        b.options(FeatureId.PICTURE_MODE, visibleModes(in));
+        b.put(FeatureId.PICTURE_MODE, pmToken(in.pictureMode));
         // ---- lamp + Boost (the menu puts the slider on the Boost step while Boost reads on)
-        b.number(Feature.LAMP, in.lamp).on(Feature.BOOST, in.boost);
+        b.number(FeatureId.LAMP, in.lamp).on(FeatureId.BOOST, in.boost);
         // ---- Ultra 120 Hz: 157, else the value set last; never grey (QPC:2124)
-        b.on(Feature.PICTURE_ULTRA120, !ok ? null : in.ultra120 != null ? in.ultra120 : in.storedUltra120);
+        b.on(FeatureId.PICTURE_ULTRA120, !ok ? null : in.ultra120 != null ? in.ultra120 : in.storedUltra120);
         // ---- game (QPC:2139): off HDMI only the hint; Speed only in On, Auto switch only in Auto
         boolean hdmi = in.hdmiConfirmed();
         if (ok && !hdmi) b.note(MenuSpec.GAME, t.get("panel_game_hdmi_only"));
         int gm = shownGameMode(in);
-        b.put(Feature.GAME_MODE, gm >= 0 && gm <= 2 ? GAME[gm] : "");
-        b.hideIf(Feature.GAME_MODE, !(hdmi && in.boost != null));
+        b.put(FeatureId.GAME_MODE, gm >= 0 && gm <= 2 ? GAME[gm] : "");
+        b.hideIf(FeatureId.GAME_MODE, !(hdmi && in.boost != null));
         if (in.gameOption != null) {
             int shown = in.gameOption;
             if (in.pendingSpeed != null) shown = in.pendingSpeed;
             String sp = tokenOf(SPEED, SPEED_WIRE, shown);
-            b.put(Feature.GAME_SPEED, sp != null ? sp : "");
+            b.put(FeatureId.GAME_SPEED, sp != null ? sp : "");
         }
-        b.hideIf(Feature.GAME_SPEED, !(hdmi && in.gameOption != null && gm == 1));
-        if (in.allm != null) b.put(Feature.GAME_ALLM, in.allm ? "signal" : "device");
-        b.hideIf(Feature.GAME_ALLM, !(hdmi && in.allm != null && gm == 2));
+        b.hideIf(FeatureId.GAME_SPEED, !(hdmi && in.gameOption != null && gm == 1));
+        if (in.allm != null) b.put(FeatureId.GAME_ALLM, in.allm ? "signal" : "device");
+        b.hideIf(FeatureId.GAME_ALLM, !(hdmi && in.allm != null && gm == 2));
         // ---- sound enhancement: the STORED profile as stock shows it, "—" while unknown, the DTS hint
         if (in.soundProcess != null) {
             int row = SoundState.enhancementRow(in.soundProcess, in.dtsOn);
-            b.put(Feature.SOUND_ENHANCEMENT, row >= 0 && row < ENH.length ? ENH[row] : "");
+            b.put(FeatureId.SOUND_ENHANCEMENT, row >= 0 && row < ENH.length ? ENH[row] : "");
         }
         String dts = t.get("panel_dts_vx");
         int hk = ok ? SoundState.hint(in.soundProcess, in.dtsOn, in.soundPathActive, in.soundPath, SPEAKER_PATH) : SoundState.HINT_NONE;
         String sh = hk == SoundState.HINT_NOT_READY ? t.get("sound_output_not_ready", dts)
                 : hk == SoundState.HINT_SPEAKER_ONLY ? t.get("sound_speaker_only", dts)
                 : hk == SoundState.HINT_UNKNOWN ? t.get("sound_unknown_hint") : null;
-        b.note(Feature.SOUND_ENHANCEMENT, sh);
+        b.note(FeatureId.SOUND_ENHANCEMENT, sh);
         // ---- sound mode: "AI · <sub-mode>" follows the app (QPC:1366)
-        b.label(Feature.SOUND_MODE, "ai", t.get("sound_ai_sub", t.get(soundLabelRes(in.aiSubWire))));
+        b.label(FeatureId.SOUND_MODE, "ai", t.get("sound_ai_sub", t.get(soundLabelRes(in.aiSubWire))));
         if (in.soundEffect != null) {
             String sm = soundToken(in.soundEffect);
-            b.put(Feature.SOUND_MODE, sm != null ? sm : "");
+            b.put(FeatureId.SOUND_MODE, sm != null ? sm : "");
         }
         // ---- equalizer entry: the preset of this mode, "off with DTS", greyed while nothing could be read
         // (QPC:1354: eqPresetLabel is set by the app only when the equalizer is usable: AMP mode and a valid sound mode)
         boolean dtsStored = SoundState.dtsStored(in.soundProcess, in.dtsOn);
-        b.put(Feature.SOUND_EQ, in.eqPresetLabel != null ? t.get(in.eqPresetLabel) : dtsStored ? t.get("eq_off_dts") : null);
-        if (!ok) b.disable(Feature.SOUND_EQ);                         // QPC:1356 setRowEnabled(ok)
+        b.put(FeatureId.SOUND_EQ, in.eqPresetLabel != null ? t.get(in.eqPresetLabel) : dtsStored ? t.get("eq_off_dts") : null);
+        if (!ok) b.disable(FeatureId.SOUND_EQ);                         // QPC:1356 setRowEnabled(ok)
         // ---- eye protection, home screen
-        b.on(Feature.EYE, in.eye);
-        b.put(Feature.SETTINGS_LAUNCHER, in.launcherClassic ? "classic" : "lumen");
+        b.on(FeatureId.EYE, in.eye);
+        b.put(FeatureId.SETTINGS_LAUNCHER, in.launcherClassic ? "classic" : "lumen");
         // ---- focus + keystone
-        b.on(Feature.KEYSTONE_REALTIME, in.moveAk).on(Feature.KEYSTONE_ON_POWER, in.powerOnAk)
-                .on(Feature.KEYSTONE_CURTAIN, in.curtain).on(Feature.KEYSTONE_OBSTACLE, in.obstacle)
-                .on(Feature.FOCUS_ON_MOVE, in.moveAf).on(Feature.FOCUS_ON_POWER, in.powerOnAf)
-                .on(Feature.FOCUS_SMART, in.smartAf);
+        b.on(FeatureId.KEYSTONE_REALTIME, in.moveAk).on(FeatureId.KEYSTONE_ON_POWER, in.powerOnAk)
+                .on(FeatureId.KEYSTONE_CURTAIN, in.curtain).on(FeatureId.KEYSTONE_OBSTACLE, in.obstacle)
+                .on(FeatureId.FOCUS_ON_MOVE, in.moveAf).on(FeatureId.FOCUS_ON_POWER, in.powerOnAf)
+                .on(FeatureId.FOCUS_SMART, in.smartAf);
         // ---- projection
         if (in.putMode != null && in.autoReverse != null) {
             int p = in.putMode;
-            b.put(Feature.PROJECTION_MODE, in.autoReverse ? "auto" : (p == 1 || p == 3) ? "ceiling" : "table");
-            b.on(Feature.PROJECTION_REAR, p == 2 || p == 3);
+            b.put(FeatureId.PROJECTION_MODE, in.autoReverse ? "auto" : (p == 1 || p == 3) ? "ceiling" : "table");
+            b.on(FeatureId.PROJECTION_REAR, p == 2 || p == 3);
         }
         // ---- picture rows: a row whose getter failed is hidden (rule: hide, never disable)
         String[] pqItems = {"brightness", "contrast", "saturation", "sharpness"};
         for (int i = 0; i < pqItems.length; i++) {
-            String id = Feature.PICTURE_PQ + "." + pqItems[i];
+            FeatureId id = FeatureId.pq(pqItems[i]);
             b.number(id, in.pq[i]);
             b.hideIf(id, ok && in.pq[i] == null);
         }
         Integer lm = in.lumensMode;
-        if (ColorTempRule.isOffice(lm)) b.placeholder(Feature.PICTURE_COLOR_TEMP, t.get("panel_ct_3"));
+        if (ColorTempRule.isOffice(lm)) b.placeholder(FeatureId.PICTURE_COLOR_TEMP, t.get("panel_ct_3"));
         if (ColorTempRule.known(ok, lm)) {
             int ci = ColorTempRule.index(lm);
-            b.put(Feature.PICTURE_COLOR_TEMP, ci >= 0 ? CT[ci] : "");
+            b.put(FeatureId.PICTURE_COLOR_TEMP, ci >= 0 ? CT[ci] : "");
         }
-        b.hideIf(Feature.PICTURE_COLOR_TEMP, ColorTempRule.hidden(ok, lm));
+        b.hideIf(FeatureId.PICTURE_COLOR_TEMP, ColorTempRule.hidden(ok, lm));
         boolean memcKnown = in.memc != null && in.memc >= 0 && in.memc <= 3;
-        if (memcKnown) b.put(Feature.PICTURE_MEMC, MEMC[in.memc]);
-        b.hideIf(Feature.PICTURE_MEMC, ok && !memcKnown);
-        b.on(Feature.PICTURE_AI_CONTRAST, in.aiContrast).hideIf(Feature.PICTURE_AI_CONTRAST, ok && in.aiContrast == null);
-        b.on(Feature.PICTURE_SUPER_RES, in.superRes).hideIf(Feature.PICTURE_SUPER_RES, ok && in.superRes == null);
+        if (memcKnown) b.put(FeatureId.PICTURE_MEMC, MEMC[in.memc]);
+        b.hideIf(FeatureId.PICTURE_MEMC, ok && !memcKnown);
+        b.on(FeatureId.PICTURE_AI_CONTRAST, in.aiContrast).hideIf(FeatureId.PICTURE_AI_CONTRAST, ok && in.aiContrast == null);
+        b.on(FeatureId.PICTURE_SUPER_RES, in.superRes).hideIf(FeatureId.PICTURE_SUPER_RES, ok && in.superRes == null);
         // HDMI settings: only while HDMI is on screen (they apply to that input)
         boolean showRange = hdmi && in.hdmiRange != null && in.hdmiRange >= 0 && in.hdmiRange <= 2;
         boolean showEdid = hdmi && in.edid != null;
         String as = tokenOf(ASPECT, ASPECT_WIRE, in.aspect);
         boolean showAspect = hdmi && as != null;
-        if (showRange) b.put(Feature.HDMI_RANGE, RANGE[in.hdmiRange]);
-        if (showEdid) b.put(Feature.HDMI_EDID, PanelRules.edidIndex(in.edid) == 1 ? "enhanced" : "compat");
-        if (showAspect) b.put(Feature.PICTURE_ASPECT, as);
-        b.hideIf(Feature.HDMI_RANGE, !showRange).hideIf(Feature.HDMI_EDID, !showEdid).hideIf(Feature.PICTURE_ASPECT, !showAspect);
-        b.on(Feature.SOUND_LEVELING, in.volumeBalance).hideIf(Feature.SOUND_LEVELING, in.volumeBalance == null);
-        b.on(Feature.SOUND_EARC, in.earc).hideIf(Feature.SOUND_EARC, in.earc == null);
+        if (showRange) b.put(FeatureId.HDMI_RANGE, RANGE[in.hdmiRange]);
+        if (showEdid) b.put(FeatureId.HDMI_EDID, PanelRules.edidIndex(in.edid) == 1 ? "enhanced" : "compat");
+        if (showAspect) b.put(FeatureId.PICTURE_ASPECT, as);
+        b.hideIf(FeatureId.HDMI_RANGE, !showRange).hideIf(FeatureId.HDMI_EDID, !showEdid).hideIf(FeatureId.PICTURE_ASPECT, !showAspect);
+        b.on(FeatureId.SOUND_LEVELING, in.volumeBalance).hideIf(FeatureId.SOUND_LEVELING, in.volumeBalance == null);
+        b.on(FeatureId.SOUND_EARC, in.earc).hideIf(FeatureId.SOUND_EARC, in.earc == null);
         // sound output: the connected outputs (Auto and Speaker always), labels from the audio module
         if (!in.outTokens.isEmpty()) {
-            b.options(Feature.SOUND_OUTPUT, in.outTokens);
-            for (int i = 0; i < in.outTokens.size(); i++) b.label(Feature.SOUND_OUTPUT, in.outTokens.get(i), in.outLabels.get(i));
-            if (in.outSelected >= 0 && in.outSelected < in.outTokens.size()) b.put(Feature.SOUND_OUTPUT, in.outTokens.get(in.outSelected));
-            else b.put(Feature.SOUND_OUTPUT, "");
+            b.options(FeatureId.SOUND_OUTPUT, in.outTokens);
+            for (int i = 0; i < in.outTokens.size(); i++) b.label(FeatureId.SOUND_OUTPUT, in.outTokens.get(i), in.outLabels.get(i));
+            if (in.outSelected >= 0 && in.outSelected < in.outTokens.size()) b.put(FeatureId.SOUND_OUTPUT, in.outTokens.get(in.outSelected));
+            else b.put(FeatureId.SOUND_OUTPUT, "");
         }
-        if (in.arcConnected && in.formatIndex >= 0 && in.formatIndex < FORMAT.length) b.put(Feature.SOUND_FORMAT, FORMAT[in.formatIndex]);
-        else if (in.arcConnected) b.put(Feature.SOUND_FORMAT, "");
-        b.hideIf(Feature.SOUND_FORMAT, !in.arcConnected);
+        if (in.arcConnected && in.formatIndex >= 0 && in.formatIndex < FORMAT.length) b.put(FeatureId.SOUND_FORMAT, FORMAT[in.formatIndex]);
+        else if (in.arcConnected) b.put(FeatureId.SOUND_FORMAT, "");
+        b.hideIf(FeatureId.SOUND_FORMAT, !in.arcConnected);
         // ---- tiles: input and HDR type; the game tile says HDMI only off HDMI, else the mode
-        b.tile(Feature.INPUT, ok ? infoText(in, t) : null);
+        b.tile(FeatureId.INPUT, ok ? infoText(in, t) : null);
         b.tile(MenuSpec.GAME, !ok ? null : !hdmi ? t.get("panel_tile_hdmi_only") : gm >= 0 && gm <= 2 ? t.get(gameLabel(gm)) : null);
         return b.build();
     }
@@ -324,7 +324,7 @@ final class Z9xMenuRules {
     }
 
     /** RuleNotes.note: the string resource name of a stock refusal reason. */
-    static String note(PanelRules.Why w, boolean turnOff3d) {
+    static String note(RefusalReason w, boolean turnOff3d) {
         switch (w) {
             case GAME: return "blocked_game";
             case TOP_SPEED: return "rules_not_top_speed";
@@ -346,8 +346,8 @@ final class Z9xMenuRules {
     }
 
     /** RuleNotes.show under the pressed row's title: the note, or null when the rule allows it. */
-    private static Note rule(PanelRules.Why w, boolean turnOff3d) {
-        if (w == null || w == PanelRules.Why.NONE) return null;
+    private static Note rule(RefusalReason w, boolean turnOff3d) {
+        if (w == null || w == RefusalReason.NONE) return null;
         String res = note(w, turnOff3d);
         return res == null ? null : Note.titled(res);
     }
@@ -355,47 +355,50 @@ final class Z9xMenuRules {
     /** A press that does nothing (the read is missing: the rows only re-read, QPC "refresh(); return"). */
     static final Note SILENT = Note.text(null, false);
 
+    /** QPC:518 the stock refusal of the game page: Dolby Vision, 3D, off HDMI. */
+    static Note gamePage(In in) {
+        return in == null ? null : rule(PanelRules.gamePage(in.rules()), true);
+    }
+
     /**
      * The stock refusal of a press before anything moves (QPC handlers, in their order), or null. {@code value}
      * null = a slider step, a section page or a screen; for the lamp also the Boost presses.
      */
-    static Note blocked(String f, String value, In in) {
-        if (f.startsWith(Feature.PICTURE_PQ + ".")) {                 // QPC:428 / 1045 basic picture sliders
+    static Note blocked(FeatureId f, String value, In in) {
+        if (f.parent == FeatureId.PICTURE_PQ) {                 // QPC:428 / 1045 basic picture sliders
             return in == null ? null : rule(PanelRules.basicOrPro(in.rules()), true);
         }
         switch (f) {
-            case Feature.LAMP:
-            case Feature.BOOST: {                                     // QPC:421 + 584 lampRefusal (3D, a locked lumens mode)
-                if (in == null) return Feature.BOOST.equals(f) ? SILENT : null;
-                if (Feature.BOOST.equals(f) && in.boost == null) return SILENT;
+            case LAMP:
+            case BOOST: {                                     // QPC:421 + 584 lampRefusal (3D, a locked lumens mode)
+                if (in == null) return FeatureId.BOOST == f ? SILENT : null;
+                if (FeatureId.BOOST == f && in.boost == null) return SILENT;
                 if (!(Lamp3d.blocks(in.fmt3d, in.is3dTo2d) || Lamp3d.modeLocks(in.lumensMode))) return null;
                 int lb = PanelRules.brightness(in.rules());
                 if (lb == PanelRules.LAMP_3D || lb == PanelRules.LAMP_FREE) return Note.titledBy("panel_lamp", "panel_boost_3d");
                 String name = lb == 0 ? "@rules_custom" : lb == 1 ? "@panel_pm_office" : "@panel_pm_performance";
                 return Note.titledBy("panel_lamp", "panel_lamp_mode_locked", name);
             }
-            case MenuSpec.GAME:                                       // QPC:518 the game page: DV, 3D, HDMI
-                return in == null ? null : rule(PanelRules.gamePage(in.rules()), true);
-            case Feature.PICTURE_MODE:                                // QPC:1639
+            case PICTURE_MODE:                                // QPC:1639
                 if (in == null || in.pictureMode == null) return SILENT;
                 return rule(PanelRules.pictureMode(in.rules(), in.gameModeOn()), true);
-            case Feature.PICTURE_COLOR_TEMP: {                        // QPC:1053
+            case PICTURE_COLOR_TEMP: {                        // QPC:1053
                 if (in == null || in.lumensMode == null) return SILENT;
                 Note n = rule(PanelRules.basicOrPro(in.rules()), true);
                 return n != null ? n : rule(PanelRules.colorTemp(in.rules()), true);
             }
-            case Feature.PICTURE_MEMC: {                              // QPC:1065
+            case PICTURE_MEMC: {                              // QPC:1065
                 if (in == null || in.memc == null) return SILENT;
                 Note n = rule(PanelRules.basicOrPro(in.rules()), true);
                 if (n != null) return n;
                 return Boolean.TRUE.equals(in.nativeFps) ? Note.titled("pro_memc_blocked") : null;
             }
-            case Feature.PICTURE_AI_CONTRAST:
-            case Feature.PICTURE_SUPER_RES:
-            case Feature.PICTURE_PRO:
-            case Feature.PICTURE_RESET:                               // QPC:1079 / 1084 / 1101 / 1105
+            case PICTURE_AI_CONTRAST:
+            case PICTURE_SUPER_RES:
+            case PICTURE_PRO:
+            case PICTURE_RESET:                               // QPC:1079 / 1084 / 1101 / 1105
                 return in == null ? null : rule(PanelRules.basicOrPro(in.rules()), true);
-            case Feature.PICTURE_ULTRA120: {                          // QPC:1089 + 1725
+            case PICTURE_ULTRA120: {                          // QPC:1089 + 1725
                 if (in == null) return null;
                 Note n = rule(PanelRules.basicOrPro(in.rules()), true);
                 if (n != null || !"on".equals(value)) return n;
@@ -406,29 +409,29 @@ final class Z9xMenuRules {
                 }
                 return null;
             }
-            case Feature.HDMI_EDID:                                   // QPC:1139
+            case HDMI_EDID:                                   // QPC:1139
                 return in == null ? null : rule(PanelRules.hdmiMode(in.rules()), false);
-            case Feature.PICTURE_ASPECT:                              // QPC:1153
+            case PICTURE_ASPECT:                              // QPC:1153
                 if (in == null || in.aspect == null) return SILENT;
                 return rule(PanelRules.aspect(in.rules(), in.gameModeOn()), false);
-            case Feature.SOUND_ENHANCEMENT:                           // QPC:1180
+            case SOUND_ENHANCEMENT:                           // QPC:1180
                 return in == null || in.soundProcess == null ? SILENT : null;
-            case Feature.SOUND_MODE:                                  // QPC:1387
+            case SOUND_MODE:                                  // QPC:1387
                 return in == null || in.soundEffect == null ? SILENT : null;
-            case Feature.GAME_SPEED:                                  // QPC:1848
+            case GAME_SPEED:                                  // QPC:1848
                 if (in == null || in.gameOption == null) return SILENT;
                 return rule(PanelRules.gamePage(in.rules()), true);
-            case Feature.GAME_ALLM:                                   // QPC:1430
+            case GAME_ALLM:                                   // QPC:1430
                 return in == null || in.allm == null ? SILENT : null;
-            case Feature.KEYSTONE_REALTIME:                           // QPC:979
+            case KEYSTONE_REALTIME:                           // QPC:979
                 return in == null ? null : rule(PanelRules.realtimeKeystone(in.rules()), false);
-            case Feature.KEYSTONE_ROTATION:                           // QPC:973
+            case KEYSTONE_ROTATION:                           // QPC:973
                 return in == null ? null : rule(PanelRules.keystone(in.rules()), false);
-            case Feature.KEYSTONE_FIT_SCREEN:                         // QPC:965
+            case KEYSTONE_FIT_SCREEN:                         // QPC:965
                 return in != null && in.isTopSpeedGame() ? Note.of("panel_kst_game_mode") : null;
-            case Feature.PROJECTION_MODE:                             // QPC:2023
+            case PROJECTION_MODE:                             // QPC:2023
                 return in == null || in.putMode == null || in.autoReverse == null ? SILENT : null;
-            case Feature.PROJECTION_REAR:                             // QPC:2043
+            case PROJECTION_REAR:                             // QPC:2043
                 return in == null || in.putMode == null ? SILENT : null;
             default:
                 return null;
@@ -436,29 +439,29 @@ final class Z9xMenuRules {
     }
 
     /** The stock question before a change (QPC confirm calls), or null. */
-    static Confirm confirm(String f, String value, In in) {
+    static Confirm confirm(FeatureId f, String value, In in) {
         switch (f) {
-            case Feature.EYE:                                         // QPC:1942
+            case EYE:                                         // QPC:1942
                 boolean on = "on".equals(value);
                 return new Confirm("panel_eye", on ? "panel_eye_on_msg" : "panel_eye_off_msg", on ? "panel_turn_on" : "panel_turn_off");
-            case Feature.PICTURE_MODE:                                // QPC:1653
+            case PICTURE_MODE:                                // QPC:1653
                 return "performance".equals(value) ? new Confirm("panel_pm_performance", "panel_pm_performance_msg", "panel_switch") : null;
-            case Feature.PICTURE_ULTRA120:                            // QPC:1744
+            case PICTURE_ULTRA120:                            // QPC:1744
                 return "on".equals(value) ? new Confirm("panel_ultra120", "panel_ultra120_msg", "panel_switch") : null;
-            case Feature.PICTURE_RESET:                               // QPC:1106
+            case PICTURE_RESET:                               // QPC:1106
                 return new Confirm("panel_picture_reset", "panel_picture_reset_msg", "panel_reset");
-            case Feature.PICTURE_RESET_ALL:                           // QPC:1114
+            case PICTURE_RESET_ALL:                           // QPC:1114
                 return new Confirm("picture_reset_all", "picture_reset_all_msg", "panel_reset");
-            case Feature.SETTINGS_LAUNCHER:                           // QPC:1496
+            case SETTINGS_LAUNCHER:                           // QPC:1496
                 return new Confirm("launcher_row", "classic".equals(value) ? "launcher_confirm_classic" : "launcher_confirm_lumen", "launcher_switch");
-            case Feature.PROJECTION_MODE: {                           // QPC:2022
+            case PROJECTION_MODE: {                           // QPC:2022
                 if (in == null || in.putMode == null || in.autoReverse == null) return null;
                 if ("auto".equals(value)) return in.autoReverse ? null : new Confirm("panel_projection_mode", "panel_proj_confirm_flip", "panel_switch");
                 int target = projectionTarget(in.putMode, value);
                 if (target == in.putMode) return null;                // same put mode: only auto flip goes off, no question
                 return putModeConfirm(in.putMode, target);
             }
-            case Feature.PROJECTION_REAR: {                           // QPC:2042
+            case PROJECTION_REAR: {                           // QPC:2042
                 if (in == null || in.putMode == null) return null;
                 int target = rearTarget(in.putMode, "on".equals(value));
                 return target == in.putMode ? null : putModeConfirm(in.putMode, target);

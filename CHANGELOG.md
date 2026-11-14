@@ -13,12 +13,29 @@
 - Lumen OS и сервисы Google одной командой, на обоих проекторах: `--gapps-zip ФАЙЛ` (на Windows
   `-GappsZip ФАЙЛ`) ставит систему и сервисы Google из вашего файла MindTheGapps за один запуск, а данные
   стираются только один раз. Отдельный шаг `gapps` для уже установленной Lumen OS остался как был.
+
+## XGIMI Play 6, 1.0.10, ноябрь 2026
+
+Ставится с компьютера: [релиз](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) и
+[инструкция](docs/install/play6/ru.md). С Lumen OS 1.0.7 или бета-версии `--keep-data flash` сохраняет данные.
+
+- Новое быстрое меню на шестерёнке, то же, что на Z9X: изображение, звук, фокус и трапеция, проекция, защита
+  глаз, входы и настройки в одном месте. В нём только то, что есть на Play 6.
+- Прошивка XGIMI V1.7.116 и теперь ещё V1.8.127.
+- Первый запуск больше не должен обрываться выключением на логотипе XGIMI: драйверы проектора грузятся так же
+  рано, как на стоке.
+- Своего драйвера Wi-Fi и Bluetooth в Lumen OS больше нет, работает драйвер прошивки XGIMI. Play 6 с чипом AIC
+  (новые партии, серийный номер XHF) нужна V1.8.127. Установщик сам проверяет чип и прошивку.
+- Трапеция плавная, как на стоке. Ручная фокусировка быстрее откликается на кнопку.
+- Повтор экрана с Windows и Android (Miracast) и AirPlay с iPhone и Mac.
+- В быстром меню «Отключить изображение»: картинка гаснет, звук идёт дальше.
+- Анонимная статистика версий, отключается в настройках проектора («Справка»).
 - XGIMI Play 6, лёгкий первый запуск: данные теперь стираются до первого запуска Lumen OS, а не после него.
   В том же заходе в режим fastboot установщик оставляет запрос на стирание для recovery XGIMI (те же 2 КБ в
   misc, что пишет сброс из настроек), и Lumen OS впервые запускается на чистых данных. Раньше первый запуск
   шёл на старых данных стока, это самая тяжёлая загрузка, а Play 6 выключается, если драйверы проектора
   поднимаются слишком поздно. Если запрос не сработает, установщик стирает данные прежним способом.
-  `--keep-data` работает как раньше. На проекторе ещё не проверялось.
+  `--keep-data` работает как раньше.
 - XGIMI Play 6, проверки до записи: установщик показывает и пишет в журнал чип Wi-Fi и Bluetooth (MediaTek
   или AIC), серийный номер, прошивку, заряд и блок питания; при заряде ниже 50 % или без блока питания не
   ставит. На новых партиях (XHF, чип AIC) предупреждает, что откат флешкой V1.7.116 на них делать нельзя.
@@ -370,12 +387,30 @@ Newest first. Versions 1.0.x are for the XGIMI Z9X; the XGIMI Play 6 has its own
 - Lumen OS and Google services in one command, on both projectors: `--gapps-zip FILE` (on Windows
   `-GappsZip FILE`) installs the system and Google services from your own MindTheGapps download in one run,
   with only one data wipe. The separate `gapps` step for an installed Lumen OS stays as it was.
+
+## XGIMI Play 6, 1.0.10, November 2026
+
+Installed with a computer: [release](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) and
+[guide](docs/install/play6/en.md). From Lumen OS 1.0.7 or a beta, `--keep-data flash` keeps your data.
+
+- New quick menu on the gear key, the same as on the Z9X: picture, sound, focus and keystone, projection, eye
+  protection, inputs and settings in one place. It shows only what the Play 6 has.
+- XGIMI firmware V1.7.116 and now also V1.8.127.
+- The first start should no longer end with the projector switching off on the XGIMI logo: the projector drivers
+  load as early as on the stock firmware.
+- Lumen OS no longer brings its own Wi-Fi and Bluetooth driver, the driver of the XGIMI firmware does the job. A
+  Play 6 with the AIC chip (newer batches, serial XHF) needs V1.8.127. The installer checks the chip and the
+  firmware itself.
+- Keystone is smooth like on the stock firmware. Manual focus reacts faster to the button.
+- Screen mirroring from Windows and Android (Miracast) and AirPlay from an iPhone or a Mac.
+- Turn off screen in the quick menu: the picture goes dark, sound keeps playing.
+- Anonymous version statistics, turned off in the projector settings (Help).
 - XGIMI Play 6, a light first start: the data is now erased before the first start of Lumen OS, not after it.
   In the same visit to fastboot mode the installer leaves an erase request for XGIMI's recovery (the same
   2 KB in misc that Settings > Reset writes), and Lumen OS starts for the first time on clean data. Before,
   the first start ran on the old stock data, the heaviest start of all, and the Play 6 switches off when its
   projector drivers come up too late. If the request does not work, the installer erases the data the earlier
-  way. `--keep-data` works as before. Not tested on a projector yet.
+  way. `--keep-data` works as before.
 - XGIMI Play 6, checks before any write: the installer shows and logs the Wi-Fi and Bluetooth chip (MediaTek or
   AIC), the serial, the firmware, the battery and the power adapter, and refuses below 50 % or without the
   adapter. On newer batches (XHF, AIC chip) it warns that the V1.7.116 stick restore must never be used on

@@ -30,7 +30,7 @@ SER=X50TESTSER01
 ADDR=192.0.2.61:5555
 dc() { sed -n "s/^$1=//p" "$DCONF" | head -n 1; }
 ID=$(dc installer_id); NAME=$(dc name); MODEL=$(dc models | awk '{print $1}'); BOARD=$(dc hardware)
-PRODUCT=$(dc fastboot_product); FW=$(dc vendor_firmware); SL=a
+PRODUCT=$(dc fastboot_product); FW=$(dc vendor_firmware | awk '{print $1}'); SL=a
 ALLOW=lib/$ID/blobs_allow.txt
 [ -f "$INST/$ALLOW" ] || { echo "no $INST/$ALLOW"; exit 1; }
 cmp -s "$INST/$ALLOW" "$G/devices/g0111/image/x50_blobs_allow.txt" || { echo "$ALLOW differs from the image's allow-list"; exit 1; }
@@ -168,12 +168,15 @@ roundtrip() {  # the tar the installer wrote, read by the real x50_blobs.sh with
   awk '$1 !~ /^#/ && $1 !~ /^set=/ && NF >= 3 { t = "/system/" $2; for (i = 4; i <= NF; i++) if ($i ~ /^bind=/) t = substr($i, 6); print $1, t }' \
     "$W/allow.txt" > "$T/want"
   while read -r h t; do mkdir -p "$(dirname "$R$t")"; case "$t" in /system/*) : > "$R$t" ;; *) echo own > "$R$t" ;; esac; done < "$T/want"
-  echo "ro.boot.slot_suffix=_$SL" > "$T/props"; : > "$T/binds"
+  printf '%s\n' "ro.boot.slot_suffix=_$SL" "ro.vendor.build.version.incremental=${RTFW:-$FW}" > "$T/props"; : > "$T/binds"
   env Z9X_ROOT="$R" Z9X_T="$T" PATH="$W/dbin:$PATH" sh "$READER" > "$T/out" 2>&1
   [ ! -s "$T/out" ] || fail "x50_blobs.sh output: $(cat "$T/out")"
   grep -qx 'sys.z9x.blobs=ok' "$T/props" || fail "round trip: $(grep sys.z9x.blobs "$T/props") $(cat "$T/logcat" 2>/dev/null)"
   grep -qx 'sys.lumen.nui=ok' "$T/props" || fail "round trip: $(grep sys.lumen.nui "$T/props")"
-  while read -r h t; do grep -qx "$h $R$t" "$T/binds" || fail "round trip: $t not bound with its file"; done < "$T/want"
+  while read -r h t; do
+    case " ${RTALT-} " in *" $t "*) h=$(awk -v t="$t" '"/system/" $2 == t { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt") ;; esac
+    grep -qx "$h $R$t" "$T/binds" || fail "round trip: $t not bound with its file"
+  done < "$T/want"
   grep -q "^u:object_r:nativeui_main_exec:s0 .*/$NUI$" "$T/chcon.log" || fail "round trip: the drawer is not nativeui_main_exec"
 }
 eye_text="cannot draw its eye-protection mask. Nothing was written."
@@ -190,6 +193,23 @@ tar -xOf "$(BLOBF)" MANIFEST > "$C/manifest" 2>/dev/null
 [ "$(grep -c . "$C/manifest" | tr -d ' ')" = $((NB + 1)) ] || fail "MANIFEST lines: $(cat "$C/manifest")"
 grep -qx "$NUI $(awk -v p="$NUI" '$2 == p { print $1 }' "$W/allow.txt") 5242880" "$C/manifest" || fail "MANIFEST lacks the drawer line"
 roundtrip
+end
+
+# stock v1.2.54: its own eye-protection pair (the alt= copies), taken only there
+begin blobs_stock_v1254
+sed -i.bak 's/^ro.vendor.build.version.incremental=.*/ro.vendor.build.version.incremental=v1.2.54/' "$FB/props"
+cp "$W/files/$NUI.alt" "$DEV/system/$NUI"; cp "$W/files/$LIB.alt" "$DEV/system/$LIB"
+inst --ip "$ADDR" blobs
+expect_rc 0; expect_out "$NB MediaTek / XGIMI files from your projector, set $SET"
+tar -xOf "$(BLOBF)" MANIFEST > "$C/manifest" 2>/dev/null
+alt() { awk -v p="$1" '$2 == p { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt"; }
+grep -q "^$NUI $(alt "$NUI") " "$C/manifest" && grep -q "^$LIB $(alt "$LIB") " "$C/manifest" || fail "MANIFEST: $(cat "$C/manifest")"
+RTFW=v1.2.54 RTALT="/system/$NUI /system/$LIB" roundtrip
+end
+begin eye_alt_on_v1264
+cp "$W/files/$NUI.alt" "$DEV/system/$NUI"; cp "$W/files/$LIB.alt" "$DEV/system/$LIB"
+inst --ip "$ADDR" blobs
+expect_rc 1; expect_out "$NUI from the projector does not match the allow-list"; expect_out "$eye_text"; expect_no_tar
 end
 
 begin eye_drawer_mismatch

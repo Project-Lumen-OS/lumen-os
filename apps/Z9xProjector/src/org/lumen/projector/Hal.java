@@ -229,9 +229,9 @@ public final class Hal {
         return c != null && c.isAfBusy();
     }
 
-    /** Toggle names of {@link #readToggles} / {@link #setToggle} (HalController.Toggle). */
+    /** Toggle names of {@link #readToggles} / {@link #setToggle} (HalToggle). */
     public static String[] toggleNames() {
-        HalController.Toggle[] v = HalController.Toggle.values();
+        HalToggle[] v = HalToggle.values();
         String[] out = new String[v.length];
         for (int i = 0; i < v.length; i++) out[i] = v[i].name();
         return out;
@@ -248,9 +248,9 @@ public final class Hal {
      */
     public static boolean setToggle(Context ctx, String name, boolean on,
                                     java.util.function.Consumer<java.util.Map<String, Boolean>> cb) {
-        HalController.Toggle t;
+        HalToggle t;
         try {
-            t = HalController.Toggle.valueOf(name);
+            t = HalToggle.valueOf(name);
         } catch (Throwable e) {
             return false;
         }
@@ -258,9 +258,9 @@ public final class Hal {
         return true;
     }
 
-    private static java.util.Map<String, Boolean> byName(java.util.Map<HalController.Toggle, Boolean> m) {
+    private static java.util.Map<String, Boolean> byName(java.util.Map<HalToggle, Boolean> m) {
         java.util.Map<String, Boolean> out = new java.util.LinkedHashMap<>();
-        for (java.util.Map.Entry<HalController.Toggle, Boolean> e : m.entrySet()) out.put(e.getKey().name(), e.getValue());
+        for (java.util.Map.Entry<HalToggle, Boolean> e : m.entrySet()) out.put(e.getKey().name(), e.getValue());
         return out;
     }
 

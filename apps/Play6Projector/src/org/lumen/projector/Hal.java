@@ -7,11 +7,11 @@ import android.os.SystemProperties;
 import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
-import org.lumen.projector.hal.Play6FocusCallback;
-import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6MusicPlayerCallback;
 import org.lumen.projector.hal.Play6PowerCallback;
+import org.lumen.projector.hal.ReplyException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *  - "p6-motor": the manual focus motor (MotorController), created on first use.
  *
  * Connection: getService + linkToDeath after the gate; then the IGmpf2 identity check (all or nothing:
- * {@link #hasGmpf2}), the focus listener (298 then 306, one Play6FocusCallback) and the vendor power
+ * {@link #hasGmpf2}), the focus listener (298 then 306, the client's one focus callback) and the vendor power
  * listener (235 then 242, one Play6PowerCallback; stock analysis 6.1 B3
  * a project decision reversed). After an IGmpf death: reconnect with backoff, identity, 298 / 306 and 235 / 242
  * again, then the connected listeners.
@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * switch {@value #POWER_LISTENER_SWITCH} (default 1; 0 = no 235 / 242 at the next connect, the battery
  * then falls back to its 30 s watchdog read).
  *
- * Focus events (Play6FocusCallback replies at once and posts here): MAIN thread, in arrival order. AK
+ * Focus events (the focus callback replies at once and posts here): MAIN thread, in arrival order. AK
  * events (105-118, 120) go to AkOverlay first (P1: logged with their timing, AkOverlay.isActive() is
  * false); every other event is logged once (tag P6Focus). Then every FocusEventListener, then the AF
  * busy window as on the Z9X: 4 / 8 / 333..335 busy, 5 done, 2 failed.
@@ -120,7 +120,7 @@ public final class Hal {
     private static boolean sRegistered215, sRegistered227;
     private static int sMusicTries;
     private static final CopyOnWriteArrayList<Runnable> CONNECT_LISTENERS = new CopyOnWriteArrayList<>();
-    private static final Play6Gmpf GMPF = new Play6Gmpf();
+    private static final Play6Gmpf GMPF = new Play6Gmpf((type, value) -> Ui.main().post(() -> dispatchEvent(type, value)));
     private static final Play6Gmpf2 GMPF2 = new Play6Gmpf2();
     private static final AtomicBoolean LONG_IN_FLIGHT = new AtomicBoolean();
     /** An auto keystone (326) is queued or running: claimed by requestKeystone, released when it ends. */
@@ -133,9 +133,7 @@ public final class Hal {
     private static volatile boolean sGateOpen;
     private static volatile boolean sConnected;
     private static volatile long sAfBusyUntil;
-    /** Strong reference: the HAL keeps only a binder reference to our callback. */
-    private static Play6FocusCallback sCallback;
-    /** Strong reference, as sCallback: the power listener of 235 / 242. */
+    /** Strong reference (the HAL keeps only a binder reference): the power listener of 235 / 242. */
     private static Play6PowerCallback sPowerCallback;
     /** 235 and 242 both returned normally on the current connection (the vendor sends us its events). */
     private static volatile boolean sPowerListening;
@@ -244,21 +242,18 @@ public final class Hal {
      */
     private static void registerFocusListener() {
         if (!sConnected) return;
-        if (sCallback == null) {
-            sCallback = new Play6FocusCallback((type, value) -> Ui.main().post(() -> dispatchEvent(type, value)));
-        }
         final long gen = sGeneration;
         try {
             if (!sRegistered298) {
-                GMPF.connectFocusManager(sCallback);           // 298
+                GMPF.connectFocusManager();                    // 298
                 sRegistered298 = true;
             }
             if (!sRegistered306) {
-                GMPF.setFocusListener(sCallback);              // 306, same callback object
+                GMPF.setFocusListener();                       // 306, same callback object
                 sRegistered306 = true;
             }
             Log.i(FOCUS_TAG, "listener registered (298, 306)");
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             // reached the HAL: do not send it again
             String code = sRegistered298 ? "306" : "298";
             if (!sRegistered298) sRegistered298 = true; else sRegistered306 = true;
@@ -304,7 +299,7 @@ public final class Hal {
             sPowerListening = true;
             sPowerState = null;
             Log.i(POWER_TAG, "listener registered (235, 242)");
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             // reached the HAL: do not send it again
             String code = sRegistered235 ? "242" : "235";
             if (!sRegistered235) sRegistered235 = true; else sRegistered242 = true;
@@ -350,7 +345,7 @@ public final class Hal {
                 sRegistered227 = true;
             }
             Log.i(MUSIC_TAG, "listener registered (215, 227)");
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             String code = sRegistered215 ? "227" : "215";
             if (!sRegistered215) sRegistered215 = true; else sRegistered227 = true;
             Log.w(MUSIC_TAG, "listener: " + code + " delivered, bad reply (not repeated): " + e.getMessage());
@@ -622,7 +617,7 @@ public final class Hal {
                 return;
             }
             try {
-                GMPF.requestAutofocus();
+                GMPF.sendRemoteAutofocus();
                 Log.i(TAG, "307(44) sent");
             } catch (Throwable t) {
                 Log.w(TAG, "307(44): " + t);
@@ -704,7 +699,7 @@ public final class Hal {
         boolean r64;
         try {
             r64 = g2.setSmartAutofocus(on);                        // IGmpf2 64
-        } catch (Play6Gmpf2.ReplyException e) {
+        } catch (ReplyException e) {
             r64 = false;                                           // delivered: go on as stock does
             Log.w(TAG, "IGmpf2 64(" + on + ") reply: " + e.getMessage());
         }

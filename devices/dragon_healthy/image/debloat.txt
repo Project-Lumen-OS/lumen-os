@@ -1,0 +1,3 @@
+# The Play 6 line of the debloat (devices/_image/debloat_gsi_tv_arm.txt has the shared ones): the Play 6 vendor is
+# VNDK 30, so v30 stays and v33 goes.
+system_ext/apex/com.android.vndk.v33.apex

@@ -408,7 +408,7 @@ public final class Assistant {
                 }
                 case VOLUME_UP: case VOLUME_DOWN: {
                     AudioManager am = c.getSystemService(AudioManager.class);
-                    int dir = cmd.kind == Commands.Kind.VOLUME_UP ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER;
+                    int dir = cmd.kind == CommandKind.VOLUME_UP ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER;
                     for (int k = 0; k < cmd.n; k++) am.adjustStreamVolume(AudioManager.STREAM_MUSIC, dir, k == cmd.n - 1 ? AudioManager.FLAG_SHOW_UI : 0);
                     show(L(c).getString(R.string.voice_volume, percent(am)));
                     break;
@@ -422,9 +422,9 @@ public final class Assistant {
                 }
                 case MUTE: case UNMUTE: {
                     AudioManager am = c.getSystemService(AudioManager.class);
-                    am.adjustStreamVolume(AudioManager.STREAM_MUSIC, cmd.kind == Commands.Kind.MUTE
+                    am.adjustStreamVolume(AudioManager.STREAM_MUSIC, cmd.kind == CommandKind.MUTE
                             ? AudioManager.ADJUST_MUTE : AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_SHOW_UI);
-                    show(L(c).getString(cmd.kind == Commands.Kind.MUTE ? R.string.voice_muted : R.string.voice_unmuted));
+                    show(L(c).getString(cmd.kind == CommandKind.MUTE ? R.string.voice_muted : R.string.voice_unmuted));
                     break;
                 }
                 case PAUSE: media(c, KeyEvent.KEYCODE_MEDIA_PAUSE); show(L(c).getString(R.string.voice_paused)); break;

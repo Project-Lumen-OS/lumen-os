@@ -182,6 +182,7 @@ final class ReportCollector {
                 "-d", "-b", "main,system", "-v", "threadtime", "-v", "uid",
                 "-s", "z9x_ota:V", "LumenUpdater:V", "update_engine:V", "update_verifier:V");
         textFile("ota_gate_log.txt", "/metadata/z9x_ota/log.txt", ReportConfig.CAP_OTA);
+        miracastDiag();
 
         step(7);
         dropbox(now);
@@ -431,6 +432,26 @@ final class ReportCollector {
 
     private static Writer writer(File f) throws IOException {
         return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8), 64 * 1024);
+    }
+
+    /**
+     * The screen mirroring receiver's stage report (org.lumen.miracast StateProvider call "diag", permission
+     * org.lumen.miracast.permission.CONTROL, held for the quick menu tile): where the last attempt stopped. Best effort.
+     */
+    private void miracastDiag() {
+        try {
+            android.os.Bundle b = c.getContentResolver().call("org.lumen.miracast", "diag", null, null);
+            if (b == null) {
+                note("miracast_diag.txt: receiver too old (no diag call)");
+                return;
+            }
+            String text = "verdict: " + b.getString("verdict") + "\n\n" + b.getString("report")
+                    + "\nlast finished attempt:\n" + b.getString("last") + "\n";
+            parts.add(ReportZip.Part.text("miracast_diag.txt", scrubber.scrubText(text)));
+            note("miracast_diag.txt: " + text.length() + " chars");
+        } catch (Throwable t) {
+            note("miracast_diag.txt: not readable (" + t.getClass().getSimpleName() + ")");
+        }
     }
 
     // ------------------------------------------------------------------ plain files (best effort)

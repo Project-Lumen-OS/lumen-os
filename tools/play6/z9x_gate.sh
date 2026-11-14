@@ -16,7 +16,8 @@
 # of each pinned APK) and the input list are read at run time. The Z9X tree is only read: every build runs
 # in a scratch dir under TMPDIR (BUILD_DIR set, so no apps/Z9x*/build is touched). On red the script exits 1
 # with the report and never edits, reverts or re-records anything; the scratch dir is kept for a look.
-# Z9X inputs: apps/Z9x*/{AndroidManifest.xml,src,res,assets,lib,stub,jni}, apps/common, apps/i18n,
+# Z9X inputs: apps/Z9x*/{AndroidManifest.xml,src,res,assets,lib,stub,jni}, apps/common, apps/core (the modules a Z9X
+# recipe devices/horse_popular/app/*.layers assembles, with tools/devices/assemble_app.py), apps/i18n,
 # apps/build_apk.sh, apps/check_hal_callers.py, apps/check_global_keys.py, apps/sdk, overlay/v1,
 # overlay/apps_v1, overlay/debug (Z9X DIAG images; without lumen_escape.*, a Play 6 test-build helper),
 # overlay/v65 (tools/lumen_v1.sh compares z9x_setup.rc with it), tools/lumen_v1.sh, tools/compose_tv.py,
@@ -55,6 +56,13 @@ red() { RED=1; say "RED: $*"; }
 ANDROID_SDK=${ANDROID_SDK:-$HOME/Library/Android/sdk}
 AAPT2=${BUILD_TOOLS:-$ANDROID_SDK/build-tools/36.0.0}/aapt2
 [ -x "$AAPT2" ] || { say "z9x_gate: missing $AAPT2"; exit 2; }
+# the pins are built with JDK 21 (apps/sdk/system-modules-android-34-jdk21): another javac compiles other bytecode
+if [ -x /usr/libexec/java_home ]; then
+  JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null) || { say "z9x_gate: needs JDK 21 (/usr/libexec/java_home -v 21)"; exit 2; }
+else   # a Linux build host: JAVA_HOME must already be a JDK 21 (~/lumen-tools/env.sh)
+  "${JAVA_HOME:-/nonexistent}/bin/javac" -version 2>&1 | grep -q '^javac 21\.' || { say "z9x_gate: needs JAVA_HOME = JDK 21"; exit 2; }
+fi
+export JAVA_HOME
 W=$(mktemp -d "${TMPDIR:-/tmp}/z9x_gate.XXXXXX") || exit 2
 
 say "z9x_gate: $(date '+%Y-%m-%d %H:%M:%S') full=$FULL record=$RECORD scratch=$W"
@@ -69,10 +77,10 @@ list_inputs() {
         [ -d "$a/$s" ] && find "$a/$s" -type f
       done
     done
-    find apps/common apps/i18n apps/sdk apps/LumenBridge overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
-      tools/lumen tools/sign tools/ota -type f
+    find apps/common apps/core apps/i18n apps/sdk apps/LumenBridge overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
+      tools/lumen tools/sign tools/ota devices/horse_popular/app -type f
     for f in apps/build_apk.sh apps/check_hal_callers.py apps/check_global_keys.py tools/lumen_v1.sh tools/compose_tv.py \
-        tools/play6/z9x_next.tsv; do
+        tools/play6/z9x_next.tsv tools/devices/assemble_app.py tools/devices/devices.py devices/horse_popular/menu.json; do
       echo "$f"
     done
   } | grep -v -E '(^|/)__pycache__/|\.pyc$|(^|/)\.DS_Store$|^overlay/debug/lumen_escape\.' | LC_ALL=C sort -u
@@ -115,6 +123,8 @@ if [ -f "$OK_FILE" ]; then
       overlay/apps_v1/*)
         say "  $st $p  (pin list: every pinned APK is rebuilt, for the report)"; ALL=1
         red "pin list changed since the recorded green run: $p (the owner confirms it, then re-record)" ;;
+      apps/core/*|devices/horse_popular/app/*|devices/horse_popular/menu.json|tools/devices/assemble_app.py|tools/devices/devices.py)
+        say "  $st $p  (build input of the assembled apps: every pinned APK is rebuilt)"; ALL=1 ;;
       apps/LumenBridge/*)
         say "  $st $p  (rebuild every LumenBridge*)"
         for n in $APKS; do case $n in LumenBridge*) add "$n" ;; esac; done ;;
@@ -147,15 +157,27 @@ next_of() { # name column -> the field of its tools/play6/z9x_next.tsv row (2 pi
   [ -f tools/play6/z9x_next.tsv ] || return 0
   grep -v '^#' tools/play6/z9x_next.tsv | awk -F'\t' -v n="$1" -v c="$2" '$1 == n { print $c }' | tail -1
 }
+# the source dir build_apk.sh builds for app $2 of the tree $1: its Z9X recipe assembled into $3 (apps/core modules,
+# as tools/devices/build_apps.sh builds the image's APK), or apps/<name> itself when it has no recipe there
+src_of() { # tree name scratch
+  r=$(cd "$1" && [ -f tools/devices/assemble_app.py ] && python3 -B -c 'import sys; sys.path.insert(0, "tools/devices")
+import assemble_app as a
+r = a.find_recipe(".", "horse_popular", sys.argv[1])
+print(r if r and a.parse(".", r)["identical"] != "allow" else "")' "$2") || return 1
+  if [ -z "$r" ]; then echo "$1/apps/$2"; return 0; fi
+  ( cd "$1" && python3 -B tools/devices/assemble_app.py "$r" --out "$3" --quiet ) > "$3.log" 2>&1 || return 1
+  echo "$3"
+}
 pin_at_commit() { # name commit version_code version_name tmdb_key -> sha256 of the build of apps/<name> at commit
   d=$W/at_$2
   if [ ! -d "$d" ]; then
-    mkdir -p "$d" && git archive "$2" apps | tar -x -C "$d" || return 1
+    mkdir -p "$d" && git archive "$2" apps tools/devices devices/horse_popular | tar -x -C "$d" || return 1
     # ignored inputs of a pinned app (the AirPlay native libs) come from this checkout, as for the HEAD build
     [ -d apps/Z9xAirPlay/lib ] && [ -d "$d/apps/Z9xAirPlay" ] && cp -R apps/Z9xAirPlay/lib "$d/apps/Z9xAirPlay/"
   fi
+  src=$(src_of "$d" "$1" "$W/at_tree_$1") || return 1
   ( cd "$d" && BUILD_DIR="$W/at_$1" VERSION_CODE="$3" VERSION_NAME="$4" TMDB_KEY_FILE="$5" \
-      sh apps/build_apk.sh "apps/$1" "$W/$1.at.apk" ) > "$W/$1.at.log" 2>&1 || return 1
+      sh apps/build_apk.sh "$src" "$W/$1.at.apk" ) > "$W/$1.at.log" 2>&1 || return 1
   shasum -a 256 "$W/$1.at.apk" | cut -d' ' -f1
 }
 for n in $APKS; do
@@ -193,7 +215,8 @@ for n in $REBUILD; do
     key=${TMDB_KEY_FILE:-$HOME/.lumen-keys/tmdb.txt}
     [ -r "$key" ] || { red "$n: the pin carries a TMDB key, but $key is not readable"; continue; }
   fi
-  if ! BUILD_DIR="$W/$n" VERSION_CODE="$vc" VERSION_NAME="$vn" TMDB_KEY_FILE="$key" sh apps/build_apk.sh "apps/$n" "$out" > "$W/$n.log" 2>&1; then
+  if ! src=$(src_of "$G" "$n" "$W/tree_$n"); then red "$n: its recipe does not assemble ($W/tree_$n.log)"; continue; fi
+  if ! BUILD_DIR="$W/$n" VERSION_CODE="$vc" VERSION_NAME="$vn" TMDB_KEY_FILE="$key" sh apps/build_apk.sh "$src" "$out" > "$W/$n.log" 2>&1; then
     red "$n: build failed ($W/$n.log)"; tail -5 "$W/$n.log" | sed 's/^/    /' | tee -a "$LOG"; continue
   fi
   NB=$((NB + 1))

@@ -3,8 +3,8 @@
 
   x50_kconfig.py BOOT_IMG... --need CONFIG_X=y [--need ...]
 
-Every BOOT_IMG is an Android boot image (header v0 to v4, magic ANDROID!) whose kernel is a raw arm64 Image or a
-gzip one; its configuration is the in-kernel copy (CONFIG_IKCONFIG: the gzip data between IKCFG_ST and IKCFG_ED).
+Every BOOT_IMG is an Android boot image (header v0 to v4, magic ANDROID!; a name ending in .gz is read through gzip,
+as a dump keeps it) whose kernel is a raw arm64 Image or a gzip one; its configuration is the in-kernel copy (CONFIG_IKCONFIG: the gzip data between IKCFG_ST and IKCFG_ED).
 Prints the kernel version string and every --need line as found; exit 0 only when every image has every --need
 option with exactly that value ('# CONFIG_X is not set' counts as 'n').
 
@@ -33,6 +33,8 @@ def die(msg):
 
 def kernel_of(path):
     b = open(path, "rb").read()
+    if path.endswith(".gz"):
+        b = gzip.decompress(b)
     if b[:8] != b"ANDROID!":
         raise ValueError("not an Android boot image (no ANDROID! magic)")
     ksz = struct.unpack_from("<I", b, 8)[0]

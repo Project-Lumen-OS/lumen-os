@@ -1,6 +1,6 @@
 /*
  * Play6PowerCallback: our Java xgimi.hardware.gmpf@1.0::IPowerCallback for IGmpf 235 / 242 on the XGIMI
- * Play 6, built like Play6FocusCallback (stock analysis 1.1 and 6.1 B1;
+ * Play 6, built like the Z9X HidlFocusCallback (stock analysis 1.1 and 6.1 B1;
  * a project decision reversed: Lumen registers with the vendor power manager, as every stock process that
  * shows the power state does).
  *

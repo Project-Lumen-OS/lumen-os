@@ -40,18 +40,18 @@ public final class StateProvider extends ContentProvider {
         // 2026-11-04: Home asks at its first start after an OTA reboot, before BOOT_COMPLETED reached this app; a
         // READY of the old boot must not show "Update ready" (binder thread: update_engine may be bound here)
         try { BootReceiver.settleIfStale(getContext(), "provider"); } catch (Throwable t) { android.util.Log.w(Ota.TAG, "settle: " + t); }
-        Store.State s = st.state();
+        UpdateState s = st.state();
         // the update already runs (the first seconds of its boot, before BootReceiver stored IDLE): not "ready"
-        if (Outcome.readyStale(s == Store.State.READY, st.pendingTarget(), st.pendingFrom(), st.pendingVersion(),
+        if (Outcome.readyStale(s == UpdateState.READY, st.pendingTarget(), st.pendingFrom(), st.pendingVersion(),
                 Ota.buildId(), Ota.currentVersion())) {
-            s = Store.State.IDLE;
+            s = UpdateState.IDLE;
         }
         Bundle b = new Bundle();
         b.putString("state", s.name().toLowerCase());
-        b.putBoolean("busy", s == Store.State.DOWNLOADING || s == Store.State.INSTALLING);
-        b.putBoolean("ready", s == Store.State.READY);
-        b.putBoolean("available", s == Store.State.AVAILABLE || s == Store.State.DOWNLOADED
-                || s == Store.State.PAUSED);
+        b.putBoolean("busy", s == UpdateState.DOWNLOADING || s == UpdateState.INSTALLING);
+        b.putBoolean("ready", s == UpdateState.READY);
+        b.putBoolean("available", s == UpdateState.AVAILABLE || s == UpdateState.DOWNLOADED
+                || s == UpdateState.PAUSED);
         String v = "";
         try {
             if (!st.manifestJson().isEmpty()) v = new UpdateManifest(st.manifestJson()).version;
@@ -59,7 +59,7 @@ public final class StateProvider extends ContentProvider {
         }
         b.putString("version", v);
         b.putString("current", Ota.currentVersion());
-        float pr = s == Store.State.INSTALLING ? st.progress()
+        float pr = s == UpdateState.INSTALLING ? st.progress()
                 : st.dlTotal() > 0 ? (float) st.dlBytes() / st.dlTotal() : 0f;
         b.putFloat("progress", pr);
         return b;

@@ -12,14 +12,14 @@
 
 Writing Lumen OS to slot b WITHOUT wiping data (repair). On slot b this also DELETES
 XGIMI's product_b and system_ext_b partitions if they still exist (parts of the stock system,
-unused by Lumen OS; the stock system on the other slot keeps its own) and any *-cow update leftovers.
+unused by Lumen OS, the stock system on the other slot keeps its own) and any *-cow update leftovers.
 Calibration, the other slot, vendor and boot stay untouched.
 Type WRITE to continue: 12:00:00 restarting into fastbootd (about 30 s)
 12:00:00 removing update leftover system_b-cow
 12:00:00 removing unused XGIMI partition product_b
 12:00:00 removing unused XGIMI partition system_ext_b
 12:00:00 writing system (about 40 s)
-12:00:00   ✓ written. First start takes 2-4 minutes; the setup screen appears on the projector.
+12:00:00   ✓ written. First start takes 2-4 minutes. The setup screen appears on the projector.
 == adb
 version
 start-server

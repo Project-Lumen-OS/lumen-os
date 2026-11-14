@@ -299,7 +299,7 @@ public final class GmModelTest {
         eq(GmModel.theme("", GmModel.VENDOR_SONY, false), GmModel.TH_COMPUTER, "nameless Sony non-playback");
         eq(GmModel.theme("BDP-S6700", GmModel.VENDOR_SONY, true), GmModel.TH_COMPUTER, "named Sony Blu-ray is no console");
         eq(GmModel.theme("MacBook Pro", 0, true), GmModel.TH_APPLE, "MacBook = Apple icon");
-        eq(GmModel.theme("<name>'s Mac", 0, true), GmModel.TH_APPLE, "Mac as a word");
+        eq(GmModel.theme("Guest's Mac", 0, true), GmModel.TH_APPLE, "Mac as a word");
         eq(GmModel.theme("iMac", 0, true), GmModel.TH_APPLE, "iMac");
         eq(GmModel.theme("Mac mini", 0, true), GmModel.TH_APPLE, "Mac mini");
         eq(GmModel.theme("Apple TV", 0, true), GmModel.TH_APPLE, "Apple");

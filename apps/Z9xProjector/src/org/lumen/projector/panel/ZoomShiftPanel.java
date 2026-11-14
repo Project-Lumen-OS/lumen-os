@@ -22,6 +22,7 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.ShiftDir;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
@@ -169,7 +170,7 @@ public final class ZoomShiftPanel extends Panel {
         }
     }
 
-    private void shiftStep(GmpfClient g, Gmpf2Client g2, GmpfClient.ShiftDir d) {
+    private void shiftStep(GmpfClient g, Gmpf2Client g2, ShiftDir d) {
         try {
             if (state != READY || closed) return;
             prepare(g2);
@@ -227,8 +228,8 @@ public final class ZoomShiftPanel extends Panel {
         inFlight = true;
         boolean queued;
         if (shiftMode) {
-            final GmpfClient.ShiftDir d = up ? GmpfClient.ShiftDir.UP : down ? GmpfClient.ShiftDir.DOWN
-                    : left ? GmpfClient.ShiftDir.LEFT : GmpfClient.ShiftDir.RIGHT;
+            final ShiftDir d = up ? ShiftDir.UP : down ? ShiftDir.DOWN
+                    : left ? ShiftDir.LEFT : ShiftDir.RIGHT;
             queued = Hal.run((g, g2) -> shiftStep(g, g2, d));
         } else {
             final boolean smaller = left || down;

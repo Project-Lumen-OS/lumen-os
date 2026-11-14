@@ -10,20 +10,15 @@ import java.util.regex.Pattern;
  * goes to the assistant's brain (Brain, Gemini) when one is set up, else to Lumen Home search.
  */
 public final class Commands {
-    public enum Kind {
-        OPEN_APP, VOLUME_UP, VOLUME_DOWN, VOLUME_SET, MUTE, UNMUTE, PAUSE, PLAY, NEXT, PREVIOUS, HOME,
-        SETTINGS, SECTION, AUTOFOCUS, KEYSTONE, TIME, SEARCH, YOUTUBE, UNKNOWN
-    }
-
     /** One parsed command. {@code arg}: app name, search text or quick panel section; {@code n}: steps or percent. */
     public static final class Cmd {
-        public final Kind kind;
+        public final CommandKind kind;
         public final String arg;
         public final int n;
         /** The whole utterance, normalised (for the brain and for OPEN_APP's fallback to search). */
         public final String text;
 
-        Cmd(Kind kind, String arg, int n, String text) {
+        Cmd(CommandKind kind, String arg, int n, String text) {
             this.kind = kind;
             this.arg = arg;
             this.n = n;
@@ -84,43 +79,43 @@ public final class Commands {
 
     public static Cmd parse(String raw) {
         String t = normalize(raw);
-        if (t.isEmpty()) return new Cmd(Kind.UNKNOWN, null, 0, t);
+        if (t.isEmpty()) return new Cmd(CommandKind.UNKNOWN, null, 0, t);
         Matcher m;
 
         // volume
-        if ((m = VOLUME_SET.matcher(t)).find()) return new Cmd(Kind.VOLUME_SET, null, Math.min(100, Integer.parseInt(m.group(1))), t);
-        if (has(t, "\\b(без звука|выключи звук|отключи звук|заглуши|mute|silence)\\b")) return new Cmd(Kind.MUTE, null, 0, t);
-        if (has(t, "^(включи звук|верни звук|unmute|sound on)$")) return new Cmd(Kind.UNMUTE, null, 0, t);
+        if ((m = VOLUME_SET.matcher(t)).find()) return new Cmd(CommandKind.VOLUME_SET, null, Math.min(100, Integer.parseInt(m.group(1))), t);
+        if (has(t, "\\b(без звука|выключи звук|отключи звук|заглуши|mute|silence)\\b")) return new Cmd(CommandKind.MUTE, null, 0, t);
+        if (has(t, "^(включи звук|верни звук|unmute|sound on)$")) return new Cmd(CommandKind.UNMUTE, null, 0, t);
         if (has(t, "(погромче|громче|louder|volume up|turn it up|turn up)")) {
-            return new Cmd(Kind.VOLUME_UP, null, has(t, "(намного|гораздо|сильно|much|a lot)") ? 5 : 2, t);
+            return new Cmd(CommandKind.VOLUME_UP, null, has(t, "(намного|гораздо|сильно|much|a lot)") ? 5 : 2, t);
         }
         if (has(t, "(потише|тише|quieter|volume down|turn it down|turn down)")) {
-            return new Cmd(Kind.VOLUME_DOWN, null, has(t, "(намного|гораздо|сильно|much|a lot)") ? 5 : 2, t);
+            return new Cmd(CommandKind.VOLUME_DOWN, null, has(t, "(намного|гораздо|сильно|much|a lot)") ? 5 : 2, t);
         }
         // media
-        if (has(t, "^(пауза|поставь на паузу|на паузу|останови|стоп|pause|stop)$")) return new Cmd(Kind.PAUSE, null, 0, t);
-        if (has(t, "^(продолжи|продолжить|играй|воспроизведи|сними с паузы|play|resume|continue)$")) return new Cmd(Kind.PLAY, null, 0, t);
-        if (has(t, "^(следующ\\w*|дальше|вперед|next)( серия| трек| видео| episode| track| video)?$")) return new Cmd(Kind.NEXT, null, 0, t);
-        if (has(t, "^(предыдущ\\w*|назад к предыдущ\\w*|previous)( серия| трек| видео| episode| track| video)?$")) return new Cmd(Kind.PREVIOUS, null, 0, t);
+        if (has(t, "^(пауза|поставь на паузу|на паузу|останови|стоп|pause|stop)$")) return new Cmd(CommandKind.PAUSE, null, 0, t);
+        if (has(t, "^(продолжи|продолжить|играй|воспроизведи|сними с паузы|play|resume|continue)$")) return new Cmd(CommandKind.PLAY, null, 0, t);
+        if (has(t, "^(следующ\\w*|дальше|вперед|next)( серия| трек| видео| episode| track| video)?$")) return new Cmd(CommandKind.NEXT, null, 0, t);
+        if (has(t, "^(предыдущ\\w*|назад к предыдущ\\w*|previous)( серия| трек| видео| episode| track| video)?$")) return new Cmd(CommandKind.PREVIOUS, null, 0, t);
         // navigation
-        if (has(t, "^(домой|на главную|главная|главный экран|на главный экран|home|go home|home screen)$")) return new Cmd(Kind.HOME, null, 0, t);
+        if (has(t, "^(домой|на главную|главная|главный экран|на главный экран|home|go home|home screen)$")) return new Cmd(CommandKind.HOME, null, 0, t);
         // projector
-        if (has(t, "(автофокус|сфокусируй|наведи резкость|фокус|focus)")) return new Cmd(Kind.AUTOFOCUS, null, 0, t);
-        if (has(t, "(трапеци|выровняй (картинку|изображение|экран)|keystone|straighten)")) return new Cmd(Kind.KEYSTONE, null, 0, t);
-        if (has(t, "(настройк\\w* звука|sound settings)")) return new Cmd(Kind.SECTION, SEC_SOUND, 0, t);
-        if (has(t, "(настройк\\w* (изображения|картинки)|режим изображения|picture settings|picture mode)")) return new Cmd(Kind.SECTION, SEC_PICTURE, 0, t);
-        if (has(t, "(яркост\\w*|brightness)")) return new Cmd(Kind.SECTION, SEC_LAMP, 0, t);
-        if (has(t, "(источник\\w*|hdmi|input source|inputs)") && !has(t, "^(открой|open) ")) return new Cmd(Kind.SECTION, SEC_INPUT, 0, t);
-        if (has(t, "^(настройки|открой настройки|настройки проектора|settings|projector settings|open settings)$")) return new Cmd(Kind.SETTINGS, null, 0, t);
+        if (has(t, "(автофокус|сфокусируй|наведи резкость|фокус|focus)")) return new Cmd(CommandKind.AUTOFOCUS, null, 0, t);
+        if (has(t, "(трапеци|выровняй (картинку|изображение|экран)|keystone|straighten)")) return new Cmd(CommandKind.KEYSTONE, null, 0, t);
+        if (has(t, "(настройк\\w* звука|sound settings)")) return new Cmd(CommandKind.SECTION, SEC_SOUND, 0, t);
+        if (has(t, "(настройк\\w* (изображения|картинки)|режим изображения|picture settings|picture mode)")) return new Cmd(CommandKind.SECTION, SEC_PICTURE, 0, t);
+        if (has(t, "(яркост\\w*|brightness)")) return new Cmd(CommandKind.SECTION, SEC_LAMP, 0, t);
+        if (has(t, "(источник\\w*|hdmi|input source|inputs)") && !has(t, "^(открой|open) ")) return new Cmd(CommandKind.SECTION, SEC_INPUT, 0, t);
+        if (has(t, "^(настройки|открой настройки|настройки проектора|settings|projector settings|open settings)$")) return new Cmd(CommandKind.SETTINGS, null, 0, t);
         // time
-        if (has(t, "(который час|сколько времени|сколько сейчас времени|what time|what s the time|current time)")) return new Cmd(Kind.TIME, null, 0, t);
+        if (has(t, "(который час|сколько времени|сколько сейчас времени|what time|what s the time|current time)")) return new Cmd(CommandKind.TIME, null, 0, t);
         // YouTube search
-        if ((m = YT_AT_END.matcher(t)).find()) return new Cmd(Kind.YOUTUBE, m.group(1).trim(), 0, t);
-        if ((m = YT_AT_START.matcher(t)).find()) return new Cmd(Kind.YOUTUBE, m.group(1).trim(), 0, t);
+        if ((m = YT_AT_END.matcher(t)).find()) return new Cmd(CommandKind.YOUTUBE, m.group(1).trim(), 0, t);
+        if ((m = YT_AT_START.matcher(t)).find()) return new Cmd(CommandKind.YOUTUBE, m.group(1).trim(), 0, t);
         // apps
-        if ((m = OPEN.matcher(t)).find()) return new Cmd(Kind.OPEN_APP, m.group(1).trim(), 0, t);
-        if ((m = TURN_ON.matcher(t)).find()) return new Cmd(Kind.OPEN_APP, m.group(1).trim(), 1, t);   // n=1: app or search
-        if ((m = SEARCH.matcher(t)).find()) return new Cmd(Kind.SEARCH, m.group(1).trim(), 0, t);
-        return new Cmd(Kind.UNKNOWN, null, 0, t);
+        if ((m = OPEN.matcher(t)).find()) return new Cmd(CommandKind.OPEN_APP, m.group(1).trim(), 0, t);
+        if ((m = TURN_ON.matcher(t)).find()) return new Cmd(CommandKind.OPEN_APP, m.group(1).trim(), 1, t);   // n=1: app or search
+        if ((m = SEARCH.matcher(t)).find()) return new Cmd(CommandKind.SEARCH, m.group(1).trim(), 0, t);
+        return new Cmd(CommandKind.UNKNOWN, null, 0, t);
     }
 }

@@ -37,7 +37,9 @@ def read(p):
     return open(p, encoding="utf-8").read() if os.path.exists(p) else ""
 
 
-mf = read(os.path.join(P, "panel/HbMenuFeatures.java"))
+# the adapter and its sections (panel/Hb*Rows) with their HAL reads, read as one text
+mf = "\n".join(read(f) for f in [os.path.join(P, "panel/HbMenuFeatures.java")] + sorted(glob.glob(os.path.join(P, "panel/Hb*Rows.java")))
+               + [os.path.join(P, "utils/HbHalReads.java")])
 gi = read(os.path.join(P, "panel/HbGameIo.java"))
 hm = read(os.path.join(P, "panel/HbMenu.java"))
 qp = read(os.path.join(P, "panel/QuickPanelController.java"))
@@ -46,19 +48,20 @@ ap = read(os.path.join(P, "App.java"))
 ok("adapter present", bool(mf) and bool(gi) and bool(hm))
 
 # ---- gates at every entry
-imp = body(mf, "public Set<String> implemented()")
+imp = body(mf, "public Set<FeatureId> implemented()")
 ok("implemented() = HbMenuGates read against HbFeatures", "HbMenuGates.implemented(" in imp and "HbFeatures.on(" in imp)
-for sig, guard in (("public void set(String feature, String value, Consumer<Result> cb)", "if (!implemented().contains(feature))"),
-                   ("public void run(String action, Consumer<Result> cb)", "if (!implemented().contains(action))"),
-                   ("public boolean open(String screen, Runnable back)", "if (!implemented().contains(screen)) return false;")):
+for sig, guard in (("public void set(FeatureId feature, String value, Consumer<Result> cb)", "if (!implemented().contains(feature))"),
+                   ("public void run(FeatureId action, Consumer<Result> cb)", "if (!implemented().contains(action))"),
+                   ("public boolean open(FeatureId screen, Runnable back)", "if (!implemented().contains(screen)) return false;")):
     b = body(mf, sig)
-    ok(sig.split("(")[0].split()[-1] + ": the gate comes first", b and b.find(guard) >= 0 and b.find(guard) < b.find("switch ("))
+    dispatch = [i for i in (b.find("switch ("), b.find("for (HbRows s : sections)")) if i >= 0]   # the switch or the sections
+    ok(sig.split("(")[0].split()[-1] + ": the gate comes first", b and dispatch and 0 <= b.find(guard) < min(dispatch))
 gm = body(mf, "public static Set<String> gameItems()")
 ok("gameItems() = HbMenuGates read against HbFeatures", "HbMenuGates.gameItems(" in gm and "HbFeatures.on(" in gm)
 
 # ---- Boost: refused without a vendor call where the picture mode holds it; judged by the 152 read-back
 sb = body(mf, "private String setBoost(boolean on, GmpfClient g, Gmpf2Client g2)")
-i_explain = sb.find("BoostRules.Leave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);")
+i_explain = sb.find("BoostLeave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);")
 ok("Boost: explain before 151", 0 <= i_explain < sb.find("g2.setBoost(on)"))
 ok("Boost: judged by BoostRules with the read-back", "BoostRules.judge(on, ret, lensAfter, pmAfter)" in sb and "g2.isBoost()" in sb)
 ok("Boost: picture mode read after", "pmAfter = g.getPictureModeRaw()" in sb)
@@ -66,7 +69,7 @@ ok("Boost: lock after 151 explained", "LOCKED_BY_PICTURE_MODE) return boostLocke
 ok("Boost: fails only on FAILED", "Outcome.FAILED) throw" in sb and not re.search(r"if \(!ret\)\s*throw", sb))
 bl = body(mf, "private String boostLocked(Integer pictureModeWire)")
 ok("Boost lock: the stock HB text with the mode", "app.getString(R.string.hb_boost_locked, mode)" in bl and "return EXPLAINED;" in bl)
-lamp = mf[mf.find("case Feature.LAMP: {"):mf.find("case Feature.BOOST:")]
+lamp = mf[mf.find("case LAMP: {"):mf.find("case BOOST:")]
 ok("light: 1..10 only (never the Boost step)", "if (!HbMenuGates.lampValue(v)) throw" in lamp)
 ok("light in Boost: leaves Boost first by the same rules", lamp.find("setBoost(false, g, g2)") >= 0
    and lamp.find("setBoost(false, g, g2)") < lamp.find("g.setLampLevel(v)"))
@@ -76,15 +79,15 @@ ok("picture mode: refused in game mode", 'if (gameModeOn(g, raw)) return "blocke
 ok("picture mode: stock visibility for the content", "if (!offered(w, hdr)) return EXPLAINED;" in pm)
 
 # ---- HDMI-only setters re-check the input
-for case in ("case Feature.HDMI_RANGE: {", "case Feature.HDMI_EDID: {", "case Feature.PICTURE_ASPECT: {", "case Feature.GAME_ALLM: {"):
+for case in ("case HDMI_RANGE: {", "case HDMI_EDID: {", "case PICTURE_ASPECT: {", "case GAME_ALLM: {"):
     seg = mf[mf.find(case):]
-    seg = seg[:seg.find("case Feature.", 10)]
+    seg = seg[:re.search(r"case [A-Z_]+:", seg[10:]).start() + 10]
     ok(case + " re-checks HDMI", 'if (!hdmiNow(g)) return "panel_game_hdmi_only";' in seg)
 for sig in ("private String setGameMode(", "private String setGameSpeed("):
     ok(sig + " re-checks HDMI", 'if (!hdmiNow(g)) return "panel_game_hdmi_only";' in body(mf, sig))
 
 # ---- top-speed game refusals and the keystone coupling
-ok("zoom refused in top-speed game", re.search(r"case Feature\.ZOOM:\s*if \(topSpeed\) \{ Notify\.show\(app, app\.getString\(R\.string\.panel_kst_game_mode\)\); return false; \}\s*OpticalZoomPanel\.open\(app, back\);", mf) is not None)
+ok("zoom refused in top-speed game", re.search(r"case ZOOM:\s*if \(topSpeed\) \{ Notify\.show\(app, app\.getString\(R\.string\.panel_kst_game_mode\)\); return false; \}\s*OpticalZoomPanel\.open\(app, back\);", mf) is not None)
 ok("auto keystone refused in top-speed game", 'if (topSpeedGame(g, g2)) return "panel_kst_game_mode";' in mf)
 ok("restore refused in top speed", 'if (o != null && o.isTopSpeed()) return "panel_kst_game_mode";' in body(mf, "private String restore("))
 ok("fit switch coupled", "Hal.setCurtainFitCoupled(g, on)" in mf)

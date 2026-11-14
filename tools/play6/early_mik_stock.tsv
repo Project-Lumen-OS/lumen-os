@@ -1,0 +1,20 @@
+# The stock files that decide when the Play 6 hardware watchdog is taken over, per supported XGIMI firmware
+# (overlay/play6/play6_early_mik.rc). init.fusion.rc loads the driver chain
+# kheaders ... mik at early-boot, init.xgimi.gmpf.rc starts gmpf_main at post-fs, libporting.so holds its DrvWdt
+# thread (30 tries once a second), mik.ko makes /dev/mik!wdt, init.mt5889.rc mounts what the modules read at fs.
+# tools/play6/test_play6_early_mik.sh fails when a firmware of the registry or the installer has no rows here, and
+# checks a stock vendor dump against them: a new XGIMI firmware is supported only after its boot path is compared.
+# Sources: official FULL OTA V1.7.116 and the LumenDump of a G0058 on V1.8.127 (2026-11-12), equal file by file.
+# firmware	file	sha256
+v1.7.116	/vendor/etc/init/init.fusion.rc	002bb22bdc8fff87ddceda226a9b5e496424a011d845fa62f51c13ed408fdddd
+v1.7.116	/vendor/etc/init/hw/init.mt5889.rc	7c73266fb74e13e14d6ec8ad96549ea80a3d438ef997fa089ad6aca128566801
+v1.7.116	/vendor/etc/init/hw/init.xgimi.gmpf.rc	7df5b2b97315fd470275f814d1f789ca7863328565c547d2b9788ca6c8358a93
+v1.7.116	/vendor/bin/gmpf_main	ecbb051ca98f2e32a9434d4a10092b15a8ef790dd04db9def2dcb48f21d5f84c
+v1.7.116	/vendor/lib/libporting.so	a3c49c26cef76edbd05ec6f883b2306e9ee220f4b3fdfd0056e4da8143056322
+v1.7.116	/vendor/lib/modules/mik.ko	6a1f4fc097d9955899e681f28beb7d991225d68326c85c1a1ca9df057113447f
+v1.8.127	/vendor/etc/init/init.fusion.rc	002bb22bdc8fff87ddceda226a9b5e496424a011d845fa62f51c13ed408fdddd
+v1.8.127	/vendor/etc/init/hw/init.mt5889.rc	7c73266fb74e13e14d6ec8ad96549ea80a3d438ef997fa089ad6aca128566801
+v1.8.127	/vendor/etc/init/hw/init.xgimi.gmpf.rc	7df5b2b97315fd470275f814d1f789ca7863328565c547d2b9788ca6c8358a93
+v1.8.127	/vendor/bin/gmpf_main	ecbb051ca98f2e32a9434d4a10092b15a8ef790dd04db9def2dcb48f21d5f84c
+v1.8.127	/vendor/lib/libporting.so	a3c49c26cef76edbd05ec6f883b2306e9ee220f4b3fdfd0056e4da8143056322
+v1.8.127	/vendor/lib/modules/mik.ko	6a1f4fc097d9955899e681f28beb7d991225d68326c85c1a1ca9df057113447f

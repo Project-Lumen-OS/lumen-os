@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/Z9xProjector res/values-de/strings_stats.xml
+     under the module prefix. -->
+<resources>
+    <string name="lumen_stats_row">Anonyme Statistik senden</string>
+    <string name="lumen_stats_note">Bei jedem Start und einmal am Tag: Modell, Version, Build, Update-Angaben, Land, eine zufällige Installationsnummer und die Seriennummer (der Server speichert nur ihren Hash). Deine IP-Adresse wird nicht gespeichert.</string>
+</resources>

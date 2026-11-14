@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
 """Mutants of the Lumen game menu (GmModel logic + the wiring run.sh pins): each must turn test/gamemenu red.
-python3 test/gamemenu/mutate.py"""
-import os, shutil, subprocess, sys, tempfile
+python3 test/gamemenu/mutate.py [-k substring]"""
+import os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-APP = os.path.normpath(os.path.join(HERE, '..', '..'))
-ROOT = os.path.normpath(os.path.join(APP, '..', '..'))
-PJ = 'src/org/lumen/projector/'
+sys.path.insert(0, os.path.dirname(HERE))
+import scratch  # noqa: E402
+
+# paths relative to gsi/: the menu lives in the module, the hooks in the device app the suite assembles (the Z9X)
+M = 'apps/core/lumen-menu/'
+PJ = M + 'src/org/lumen/projector/'
 MOD = PJ + 'panel/GmModel.java'
 GM = PJ + 'panel/GameMenu.java'
 CTL = PJ + 'panel/GmController.java'
 VIEW = PJ + 'panel/GmView.java'
 LIC = PJ + 'panel/GmLicences.java'
-KEY = PJ + 'KeyReceiver.java'
-G2 = PJ + 'hal/Gmpf2Client.java'
-SET = PJ + 'SettingsActivity.java'
-APPJ = PJ + 'App.java'
-RU = 'res/values-ru/strings_gm.xml'
-DE = 'res/values-de/strings_gm.xml'
-HB = '../../devices/goat_elegant/app/HbProjector.layers'
+ZJ = 'apps/Z9xProjector/src/org/lumen/projector/'
+KEY = ZJ + 'KeyReceiver.java'
+G2 = ZJ + 'hal/Gmpf2Client.java'
+B2 = 'apps/core/lumen-gmpf/src/org/lumen/projector/hal/Gmpf2Base.java'   # the shared IGmpf2 body
+SET = ZJ + 'SettingsActivity.java'
+APPJ = ZJ + 'App.java'
+IO = ZJ + 'panel/Z9xGameIo.java'   # the Z9X side of the shared game menu: its reads, writes and read-backs
+RU = M + 'res/values-ru/lumen_strings_gm.xml'
+DE = M + 'res/values-de/lumen_strings_gm.xml'
+HB = 'devices/goat_elegant/app/HbProjector.layers'
 
 MUTANTS = [
     # ---- capability gating
@@ -29,15 +35,16 @@ MUTANTS = [
      'if (!cap.containsKey(k)) return;'),
     ('no answer keeps the item', MOD, 'if (cap.containsKey(k) && get(k) != CAP_FAILED) cap.put(k, CAP_UNKNOWN);', ''),
     ('a bad read back keeps the item', MOD, 'if (!ok && cap.containsKey(k)) cap.put(k, CAP_FAILED);', ''),
-    ('unknown counts as visible', MOD, 'return !cap.containsKey(k) || get(k) == CAP_OK;', 'return !cap.containsKey(k) || get(k) != CAP_FAILED;'),
-    ('VRR proven without a check', MOD, 'static final String[] GATED = {VRR, PIC, DARK, SND};', 'static final String[] GATED = {PIC, DARK, SND};'),
+    ('unknown counts as visible', MOD, '&& (!cap.containsKey(k) || get(k) == CAP_OK);', '&& (!cap.containsKey(k) || get(k) != CAP_FAILED);'),
+    ('VRR proven without a check', MOD, 'static final String[] GATED = {VRR, PIC, DARK, SND, CS, HDR};',
+     'static final String[] GATED = {PIC, DARK, SND, CS, HDR};'),
     ('empty group kept', MOD, '            if (ks.isEmpty()) continue;\n', ''),
     # ---- raw values
     ('VRR -1 not read as off', MOD, 'case VRR: return raw == -1 ? 0 :', 'case VRR: return raw == -1 ? BAD :'),
     ('game picture 5 accepted', MOD, '(raw >= 0 && raw <= 4) ? raw : BAD;', '(raw >= 0 && raw <= 5) ? raw : BAD;'),
-    ('sound 0 not off', MOD, 'case SND: return (raw == 0 || raw == 190) ? 0 :', 'case SND: return (raw == 190) ? 0 :'),
-    ('sound wire shifted', MOD, 'return 190 + v;', 'return 191 + v;'),
-    ('sound 3 sent', MOD, 'if (v < 0 || v > 2) throw', 'if (v < 0 || v > 3) throw'),
+    ('sound 0 not off', MOD, 'case SND: return (raw == 0 || raw == SND_OFF) ? 0 :', 'case SND: return (raw == SND_OFF) ? 0 :'),
+    ('sound wire shifted', MOD, 'return SND_OFF + v;', 'return SND_OFF + 1 + v;'),
+    ('sound past the profile sent', MOD, 'if (v < 0 || v >= sounds) throw', 'if (v < 0 || v > sounds) throw'),
     ('turbo option swapped', MOD, 'if (lat == 1) return hfr == 1 ? 2 : 3;', 'if (lat == 1) return hfr == 1 ? 3 : 2;'),
     ('HFR bit of 647 wrong', MOD, 'static int hfrOf(int opt) { return (opt == 1 || opt == 2) ? 1', 'static int hfrOf(int opt) { return (opt == 1 || opt == 3) ? 1'),
     ('21:9 offered without the live check', MOD, 'static final int[] WIDE_WIRE = {};', 'static final int[] WIDE_WIRE = {5, 6};'),
@@ -111,94 +118,47 @@ MUTANTS = [
     # ---- wiring: keys, auto show
     ('gear long press always Android settings', KEY, 'org.lumen.projector.panel.GameMenu.onGearLong(ctx, () -> {',
      'android.util.Log.d("x", "long"); ((Runnable) () -> {'),
-    ('game menu off HDMI', GM, 'if (port != 1 && port != 2) { fallback.run(); return; }', ''),
-    ('game menu without game mode', GM, 'if (Boolean.TRUE.equals(running) && GameProfile.activePort() == port) show(app, port, false);',
+    ('game menu off HDMI', GM, 'if (!hdmiPort(port)) { fallback.run(); return; }', ''),
+    ('game menu without game mode', GM, 'if (Boolean.TRUE.equals(running) && sIo.activePort() == port) show(app, port, false);',
      'if (true) show(app, port, false);'),
     ('auto show every time', GM, 'if (!prefs.getBoolean(K_FIRST_SHOWN, false)) firstPending = true;', 'firstPending = true;'),
-    ('auto show over another panel', GM, 'if (firstPending && OverlayHost.get(app).current() == null) {', 'if (firstPending) {'),
+    ('auto show over another panel', GM, 'if (firstPending && sHost.current() == null) {', 'if (firstPending) {'),
     ('auto hide fixed', GM, '@Override protected long autoHideMs() { return GmModel.autoHideMs(ctl.first); }',
      '@Override protected long autoHideMs() { return 10_000; }'),
-    ('watcher polls without an HDMI session', GM, 'if ((port != 1 && port != 2) || !screen) {', 'if (!screen) {'),
-    ('not installed', APPJ, 'try { org.lumen.projector.panel.GameMenu.install(this); }', 'try { }'),
+    ('watcher polls without an HDMI session', GM, 'if (!hdmiPort(port) || !screen) {', 'if (!screen) {'),
+    ('not installed', APPJ, 'try { org.lumen.projector.panel.GameMenu.install(this, new org.lumen.projector.panel.Z9xGameIo(this)); }',
+     'try { }'),
     # ---- wiring: HAL
-    ('VRR source 3 allowed', G2, 'return callI32RetI32(GET_VRR_ENABLE_STATE, checkRange("hdmi source", hdmiSource, 1, 2));',
-     'return callI32RetI32(GET_VRR_ENABLE_STATE, checkRange("hdmi source", hdmiSource, 1, 3));'),
-    ('game sound 193 allowed', G2, 'checkRange("game sound", mode, 190, 192)', 'checkRange("game sound", mode, 190, 193)'),
-    ('game picture 5 sent', G2, 'return callI32I32RetI32(SET_GAME_PICTURE_MODE, checkRange("game picture", mode, 0, 4),',
-     'return callI32I32RetI32(SET_GAME_PICTURE_MODE, checkRange("game picture", mode, 0, 5),'),
-    ('VRR write not read back', GM, 'int back = poll(() -> g2.getVrrState(port), GmModel.VRR, value);', 'int back = value;'),
-    ('sound write not read back', GM, 'int back = poll(g2::getGameSound, GmModel.SND, value);', 'int back = GmModel.sndWire(value);'),
-    ('write on another input', GM, '        if (g.getCurrentInputSource() != port) throw new IllegalStateException("696 is not HDMI " + port);\n        switch (key) {',
+    ('VRR source 3 allowed', B2, 'private static final int HDMI_1 = 1, HDMI_2 = 2;', 'private static final int HDMI_1 = 1, HDMI_2 = 3;'),
+    ('VRR read without a source check', B2, 'return wire.i32RetI32(key(GET_VRR_ENABLE_STATE), hdmi(hdmi));',
+     'return wire.i32RetI32(key(GET_VRR_ENABLE_STATE), hdmi);'),
+    ('game sound 193 allowed', G2, 'GAME_SOUND_OFF = 190, GAME_SOUND_STORY = 192;', 'GAME_SOUND_OFF = 190, GAME_SOUND_STORY = 193;'),
+    ('game picture 5 sent', B2, 'public static final int GAME_PICTURE_MAX = 4;', 'public static final int GAME_PICTURE_MAX = 5;'),
+    ('game picture write without a check', B2, 'wire.i32I32RetI32(key(SET_GAME_PICTURE_MODE), gamePicture(mode), hdmi(hdmi));',
+     'wire.i32I32RetI32(key(SET_GAME_PICTURE_MODE), mode, hdmi(hdmi));'),
+    ('VRR state 2 sent', B2, 'private static final int ON = 1, OFF = 0;', 'private static final int ON = 2, OFF = 0;'),
+    ('VRR write not read back', IO, 'int back = poll(() -> g2.getVrrState(port), GmModel.VRR, value);', 'int back = value;'),
+    ('sound write not read back', IO, 'int back = poll(g2::getGameSound, GmModel.SND, value);', 'int back = GmModel.sndWire(value);'),
+    ('write on another input', IO, '        if (g.getCurrentInputSource() != port) throw new IllegalStateException("696 is not HDMI " + port);\n        switch (key) {',
      '        switch (key) {'),
-    ('207 before 647 agrees', GM, 'if (back == value && o != null && o.isTopSpeed()) {', 'if (o != null && o.isTopSpeed()) {'),
-    ('speed read back sleeps on the HAL thread', GM, 'GmpfClient.GameModeOption back = g.getGameModeOption();\n',
-     'SystemClock.sleep(100); GmpfClient.GameModeOption back = g.getGameModeOption();\n'),
-    ('gated read without a port', GM, '        if (port == 1 || port == 2) {\n            try { s.vrr =', '        {\n            try { s.vrr ='),
+    ('207 before 647 agrees', IO, 'if (back == value && o != null && o.isTopSpeed()) {', 'if (o != null && o.isTopSpeed()) {'),
+    ('speed read back sleeps on the HAL thread', IO, 'GameModeOption back = g.getGameModeOption();\n',
+     'SystemClock.sleep(100); GameModeOption back = g.getGameModeOption();\n'),
+    ('gated read without a port', IO, '        if (port == 1 || port == 2) {\n            try { s.vrr =', '        {\n            try { s.vrr ='),
     ('no answer not fed to the check', CTL, '            c.onNoAnswer(k);\n', ''),
     ('gated write trusted', CTL, 'ok = back != GmModel.BAD && GameMenu.CAPS.onReadBack(key, value, back);', 'ok = true;'),
     ('dock shows every item', CTL, 'List<String> tiles() { return GmModel.visibleOrder(GameMenu.CAPS); }',
      'List<String> tiles() { return java.util.Arrays.asList(GmModel.ORDER); }'),
     # ---- licences, strings, HB
     ('no Licences row', SET, '        actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));\n', ''),
+    ('licences screen stays after its dialog', PJ + 'ui/LicencesActivity.java', '        d.setOnDismissListener(x -> finish());\n', ''),
+    ('licences screen without the credits', PJ + 'ui/LicencesActivity.java', 'AlertDialog d = GmLicences.open(this);', 'AlertDialog d = null;'),
     ('Xbox credit missing', LIC, '"\\"Xbox One Controller Free\\" by paxillop, ', '"\\"Xbox One Controller\\", '),
     ('an em dash in Russian', RU, 'Обычная задержка. Трапеция', 'Обычная задержка \u2014 трапеция'),
-    ('a semicolon in German', DE, '<string name="gm_off">', '<string name="gm_off">Aus; '),
-    ('a German string missing', DE, '<string name="gm_on">', '<string name="gm_on_x">'),
-    ('HB gets the game menu', HB, 'drop      src/org/lumen/projector/panel/GameMenu.java\n', ''),
+    ('a semicolon in German', DE, '<string name="lumen_gm_off">', '<string name="lumen_gm_off">Aus; '),
+    ('a German string missing', DE, '<string name="lumen_gm_on">', '<string name="lumen_gm_on_x">'),
+    # (the HB runs the shared game menu since core-menu: the old 'HB gets the game menu' recipe mutant is gone)
 ]
 
-COPY_DIRS = ['src', 'res', 'test/gamemenu']
-
-
-def tree(tmp):
-    root = os.path.join(tmp, 'r')
-    app = os.path.join(root, 'apps', 'Z9xProjector')
-    for d in COPY_DIRS:
-        shutil.copytree(os.path.join(APP, d), os.path.join(app, d))
-    os.makedirs(os.path.join(app, 'assets'))
-    os.symlink(os.path.join(APP, 'assets', 'gamemenu'), os.path.join(app, 'assets', 'gamemenu'))
-    hb = os.path.join(root, 'devices', 'goat_elegant', 'app')
-    os.makedirs(hb)
-    shutil.copy(os.path.join(ROOT, 'devices', 'goat_elegant', 'app', 'HbProjector.layers'), hb)
-    return app
-
-
-def run(app):
-    r = subprocess.run(['sh', os.path.join(app, 'test/gamemenu/run.sh')], capture_output=True, text=True)
-    return r.returncode, r.stdout + r.stderr
-
-
-def main():
-    tmp = tempfile.mkdtemp(prefix='gm_mut_')
-    try:
-        rc, out = run(tree(tmp))
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
-    if rc != 0:
-        print('BASELINE RED: ' + out[-800:])
-        sys.exit(1)
-    killed = 0
-    for name, rel, old, new in MUTANTS:
-        tmp = tempfile.mkdtemp(prefix='gm_mut_')
-        try:
-            app = tree(tmp)
-            target = os.path.normpath(os.path.join(app, rel))
-            s = open(target, encoding='utf-8').read()
-            if s.count(old) != 1:
-                print('ANCHOR %d: %s' % (s.count(old), name))
-                continue
-            open(target, 'w', encoding='utf-8').write(s.replace(old, new))
-            rc, out = run(app)
-            if rc != 0:
-                killed += 1
-                print('killed   ' + name)
-            else:
-                print('SURVIVED ' + name)
-        finally:
-            shutil.rmtree(tmp, ignore_errors=True)
-    print('mutants: %d/%d killed' % (killed, len(MUTANTS)))
-    sys.exit(0 if killed == len(MUTANTS) else 1)
-
-
 if __name__ == '__main__':
-    main()
+    scratch.main(M + 'test/gamemenu/run.sh', MUTANTS)

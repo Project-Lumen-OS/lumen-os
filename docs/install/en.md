@@ -12,7 +12,7 @@ There are two ways to install Lumen OS:
 | XGIMI Z9X (G0082) | try and install on XGIMI firmware V6.15.58 or V6.15.62, try only on V6.15.19 | [Z9X guide](z9x/en.md) |
 | XGIMI Z9X HB (G0130, G0148) | try the stable release, try and install the beta. G0130 on V6.16.24 or V6.17.12, G0148 on V6.17.12 | [Z9X HB guide](hb/en.md) |
 | XGIMI X50 Ultra (G0111), X50 Ultra Max (G0100) | try only, beta. XGIMI firmware V1.2.64 or V1.2.54 | no |
-| XGIMI Play 6 (G0058) | no | [Play 6 guide](play6/en.md) |
+| XGIMI Play 6 (G0058) | no | [Play 6 guide](play6/en.md), XGIMI firmware V1.7.116 or V1.8.127 |
 
 Lumen Installer shows the model code and the XGIMI firmware of your projector under About (the round "i").
 

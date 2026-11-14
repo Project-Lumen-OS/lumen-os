@@ -4,8 +4,14 @@ import android.util.Log;
 
 import org.lumen.projector.Device;
 import org.lumen.projector.battery.Battery;
-import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.AbsentException;
+import org.lumen.projector.hal.ColorTemp;
+import org.lumen.projector.hal.PictureMode;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.PqItem;
+import org.lumen.projector.hal.ReplyException;
+import org.lumen.projector.hal.WbItem;
 
 /**
  * The values the Play 6 menu shows, read on the p6-hal thread (Hal.query) in parts (since 2026-11-11 the shared
@@ -107,13 +113,13 @@ final class Play6Snapshot {
         s.gmpf2 = g2.isIdentityOpen();
         if (any(parts, ROOT | GAME)) s.source = opt("696", g::getCurrentInputSource);
         if (any(parts, ROOT)) s.hdr = opt("620", g::getHdrType);
-        if (any(parts, ROOT | PICTURE | GAME)) s.pictureMode = opt("666", g::getPictureMode);
+        if (any(parts, ROOT | PICTURE | GAME)) s.pictureMode = opt("666", g::getPictureModeRaw);
         if (any(parts, ROOT | LAMP)) s.lamp = opt("177", g::getLampLevel);
         if (any(parts, LAMP) && Device.hasBattery()) {
             s.eco = opt("327", g::getEcoState);
             Battery.noteEco(s.eco);                     // p6-hal, as Battery's own reads
         }
-        if (any(parts, ROOT | SOUND)) s.soundEffect = opt("62", g::getSoundEffect);
+        if (any(parts, ROOT | SOUND)) s.soundEffect = opt("62", g::getSoundEffectRaw);
         if (any(parts, SOUND)) s.eqOk = org.lumen.projector.audio.P6SoundEq.usable(g);
         if (any(parts, SOUND)) s.earc = opt("632", g::getEarc);
         if (any(parts, ROOT | EYE) && Device.hasEyeProtection()) s.eye = opt("151", g::getEyeProtection);
@@ -122,40 +128,40 @@ final class Play6Snapshot {
             s.moveAk = opt("586", g::getMoveAk);
         }
         if (any(parts, ROOT | PROJECTION)) {
-            s.putMode = opt("173", g::getPutMode);
-            s.autoReverse = opt("579", g::getAutoProjection);
+            s.putMode = opt("173", g::getPutModeRaw);
+            s.autoReverse = opt("579", g::getAutoReverse);
         }
         if (any(parts, PICTURE) && s.pictureMode != null) {
             int pm = s.pictureMode;
             if (memcMode(pm)) s.memc = opt("668", g::getMemcLevel);
             if (memcMode(pm)) s.localContrast = opt("651", g::getLocalContrast);
             if (hdrMode(pm)) s.hdrAuto = opt("649", g::getHdrAuto);
-            if (pm == Play6Gmpf.PICTURE_CUSTOM) {
+            if (pm == PictureMode.CUSTOM.wire) {
                 s.nr = opt("670", g::getNoiseReduction);
                 s.colorTemp = opt("684", g::getColorTemperature);
-                s.style = opt("175", g::getPictureStyle);
-                if (s.style != null && s.style == Play6Gmpf.STYLE_CUSTOM) s.rgb = opt("179", g::getRgbLevels);
+                s.style = opt("175", g::getLumensModeRaw);
+                if (s.style != null && s.style == ColorTemp.CUSTOM.wire) s.rgb = opt("179", g::getRgbLevels);
                 if (s.colorTemp != null && s.colorTemp == 3) {
-                    s.wb[0] = opt("682", g::getRedGain);
-                    s.wb[1] = opt("680", g::getGreenGain);
-                    s.wb[2] = opt("678", g::getBlueGain);
-                    s.wb[3] = opt("676", g::getRedOffset);
-                    s.wb[4] = opt("674", g::getGreenOffset);
-                    s.wb[5] = opt("672", g::getBlueOffset);
+                    s.wb[0] = opt("682", () -> g.getWb(WbItem.RED_GAIN));
+                    s.wb[1] = opt("680", () -> g.getWb(WbItem.GREEN_GAIN));
+                    s.wb[2] = opt("678", () -> g.getWb(WbItem.BLUE_GAIN));
+                    s.wb[3] = opt("676", () -> g.getWb(WbItem.RED_OFFSET));
+                    s.wb[4] = opt("674", () -> g.getWb(WbItem.GREEN_OFFSET));
+                    s.wb[5] = opt("672", () -> g.getWb(WbItem.BLUE_OFFSET));
                 }
                 if (s.gmpf2) {
                     s.gamma = opt("g2 228", g2::getGamma);
                     s.dynContrast = opt("g2 230", g2::getDynamicContrast);
                 }
-                s.pq[0] = opt("692", g::getBrightness);
-                s.pq[1] = opt("694", g::getContrast);
-                s.pq[2] = opt("690", g::getSaturation);
-                s.pq[3] = opt("688", g::getSharpness);
+                s.pq[0] = opt("692", () -> g.getPq(PqItem.BRIGHTNESS));
+                s.pq[1] = opt("694", () -> g.getPq(PqItem.CONTRAST));
+                s.pq[2] = opt("690", () -> g.getPq(PqItem.SATURATION));
+                s.pq[3] = opt("688", () -> g.getPq(PqItem.SHARPNESS));
             }
         }
         boolean hdmiSource = s.source != null && s.source == Play6Gmpf.SOURCE_HDMI1;
         if (any(parts, GAME) && hdmiSource) {
-            s.aspect = opt("664", g::getAspectRatio);
+            s.aspect = opt("664", g::getAspectRatioRaw);
             s.hdmiInfo = opt("662", g::getHdmiInfo);
             s.hdmiRange = opt("634", g::getHdmiRange);
             s.edid = opt("661", g::getEdidVersion);
@@ -193,7 +199,7 @@ final class Play6Snapshot {
                 }
             }
             return true;
-        } catch (Play6Gmpf.ReplyException e) {
+        } catch (ReplyException e) {
             Play6ZoomShiftPanel.markUnsupported("probe: " + e.getMessage());
             return false;
         } catch (Throwable t) {
@@ -215,7 +221,7 @@ final class Play6Snapshot {
             Log.i(TAG, "probe 130 -> " + java.util.Arrays.toString(r));
             sRotationProbed = true;
             return true;
-        } catch (Play6Gmpf2.ReplyException | Play6Gmpf2.AbsentException e) {
+        } catch (ReplyException | AbsentException e) {
             Play6RotatePanel.markUnsupported("probe: " + e.getMessage());
             return false;
         } catch (Throwable t) {
@@ -236,7 +242,7 @@ final class Play6Snapshot {
     static Integer shownPictureMode(Integer pm) {
         // Integer.valueOf: a bare int in the ternary would unbox a null pm (NPE seen 2026-10-21 when a page opened
         // before the first read)
-        return pm != null && pm >= AI_SCENE_FIRST && pm <= AI_SCENE_LAST ? Integer.valueOf(Play6Gmpf.PICTURE_AI) : pm;
+        return pm != null && pm >= AI_SCENE_FIRST && pm <= AI_SCENE_LAST ? Integer.valueOf(PictureMode.AI.wire) : pm;
     }
 
     /** Motion smoothing (668 / 669) exists only in Movie (1), TV (7) and Custom (3) (stock dayao tree). */
@@ -245,12 +251,12 @@ final class Play6Snapshot {
      * not Performance and not Game; audit 2026-10-24, B4).
      */
     static boolean hdrMode(int pm) {
-        return pm == Play6Gmpf.PICTURE_AI || pm == Play6Gmpf.PICTURE_MOVIE || pm == Play6Gmpf.PICTURE_SPORT
-                || pm == Play6Gmpf.PICTURE_TV || pm == Play6Gmpf.PICTURE_CUSTOM || pm == Play6Gmpf.PICTURE_OFFICE;
+        return pm == PictureMode.AI.wire || pm == PictureMode.MOVIE.wire || pm == PictureMode.SPORT.wire
+                || pm == PictureMode.TV.wire || pm == PictureMode.CUSTOM.wire || pm == PictureMode.OFFICE.wire;
     }
 
     static boolean memcMode(int pm) {
-        return pm == Play6Gmpf.PICTURE_MOVIE || pm == Play6Gmpf.PICTURE_TV || pm == Play6Gmpf.PICTURE_CUSTOM;
+        return pm == PictureMode.MOVIE.wire || pm == PictureMode.TV.wire || pm == PictureMode.CUSTOM.wire;
     }
 
     /**

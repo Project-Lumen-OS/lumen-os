@@ -97,10 +97,10 @@ public final class SettingsActivity extends Activity implements AirPlayService.L
         String st;
         if (!enabled) {
             st = getString(R.string.status_off);
-        } else if (s == null || s.serverState == AirPlayService.ServerState.STARTING
-                || s.serverState == AirPlayService.ServerState.STOPPED) {
+        } else if (s == null || s.serverState == ServerState.STARTING
+                || s.serverState == ServerState.STOPPED) {
             st = getString(R.string.connecting);
-        } else if (s.serverState == AirPlayService.ServerState.ERROR) {
+        } else if (s.serverState == ServerState.ERROR) {
             st = getString(R.string.status_error);
         } else if (s.sessionActive()) {
             st = getString(R.string.status_in_use);

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 
-import org.lumen.miracast.core.WfdFormats;
 
 import java.nio.charset.StandardCharsets;
+import org.lumen.miracast.core.WfdQuality;
 
 /** Receiver settings (device-protected storage: readable before the first unlock, at boot). */
 final class Prefs {
@@ -39,8 +39,8 @@ final class Prefs {
         return get(c).getBoolean(ASK, DEF_ASK);
     }
 
-    static WfdFormats.Quality quality(Context c) {
-        return WfdFormats.Quality.parse(get(c).getString(QUALITY, WfdFormats.Quality.P1080_60.name()));
+    static WfdQuality quality(Context c) {
+        return WfdQuality.parse(get(c).getString(QUALITY, WfdQuality.P1080_60.name()));
     }
 
     /**

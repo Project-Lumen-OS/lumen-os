@@ -28,10 +28,15 @@ final class VideoRenderer {
         void onVideoSize(int width, int height);
 
         void onNeedKeyFrame(String why);
+
+        /** The decoder started (detail = codec name and size) or could not start (detail = the error). */
+        void onDecoder(String detail, boolean ok);
     }
 
     private static final String TAG = "LumenMiracast";
     private static final String MIME = MediaFormat.MIMETYPE_VIDEO_AVC;
+    /** Decoder start order: with the low-latency key, then without (a decoder may refuse the key). */
+    private static final boolean[] LOW_LATENCY_FIRST = {true, false};
     static final int MAX_BACKLOG = 20;
 
     private static final class Unit {
@@ -170,29 +175,48 @@ final class VideoRenderer {
         }
     }
 
+    /**
+     * The platform's decoder for H.264 (c2.mtk on the Z9X, OMX.MS on the Play 6), low-latency first; a decoder that
+     * refuses the low-latency key fails configure (ACodec / Codec2 return the error), so it is started again without.
+     */
     private void startCodec() {
-        try {
-            MediaFormat f = MediaFormat.createVideoFormat(MIME, width, height);
+        Exception last = null;
+        for (boolean lowLatency : LOW_LATENCY_FIRST) {
+            try {
+                startCodec(lowLatency);
+                return;
+            } catch (Exception e) {
+                last = e;
+                Log.w(TAG, "video decoder start failed (low-latency " + lowLatency + "): " + e);
+                stopCodec();
+            }
+        }
+        Log.e(TAG, "video decoder start failed", last);
+        events.onDecoder("start failed: " + last, false);
+    }
+
+    private void startCodec(boolean lowLatency) throws Exception {
+        MediaFormat f = MediaFormat.createVideoFormat(MIME, width, height);
+        if (lowLatency) {
             f.setInteger(MediaFormat.KEY_LOW_LATENCY, 1);
             f.setInteger("lowlatency", 1);   // the key the stock XGIMI sink also sets for the MTK decoder
-            f.setInteger(MediaFormat.KEY_PRIORITY, 0);
-            f.setInteger(MediaFormat.KEY_MAX_WIDTH, 1920);
-            f.setInteger(MediaFormat.KEY_MAX_HEIGHT, 1200);
-            f.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 1024 * 1024);
-            codec = MediaCodec.createDecoderByType(MIME);
-            MediaCodecInfo info = codec.getCodecInfo();
-            Log.i(TAG, "video decoder " + info.getName() + " " + width + "x" + height);
-            codec.setCallback(callback, h);
-            codec.configure(f, surface, null, 0);
-            codec.setVideoScalingMode(MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-            codec.start();
-            needKey = true;
-            firstFrame = false;
-            events.onNeedKeyFrame("decoder started");
-        } catch (Exception e) {
-            Log.e(TAG, "video decoder start failed", e);
-            stopCodec();
         }
+        f.setInteger(MediaFormat.KEY_PRIORITY, 0);
+        f.setInteger(MediaFormat.KEY_MAX_WIDTH, 1920);
+        f.setInteger(MediaFormat.KEY_MAX_HEIGHT, 1200);
+        f.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 1024 * 1024);
+        codec = MediaCodec.createDecoderByType(MIME);
+        MediaCodecInfo info = codec.getCodecInfo();
+        Log.i(TAG, "video decoder " + info.getName() + " " + width + "x" + height + " low-latency " + lowLatency);
+        codec.setCallback(callback, h);
+        codec.configure(f, surface, null, 0);
+        codec.setVideoScalingMode(MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+        codec.start();
+        needKey = true;
+        firstFrame = false;
+        events.onDecoder(info.getName() + " " + width + "x" + height + (info.isHardwareAccelerated() ? " hw" : " sw")
+                + (lowLatency ? "" : " (no low-latency)"), true);
+        events.onNeedKeyFrame("decoder started");
     }
 
     private void stopCodec() {

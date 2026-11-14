@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Енергозбереження</string>
     <string name="lumen_m_ambient_speaker">Колонка і світло</string>
     <string name="lumen_m_ct_custom">Користувацька</string>
+    <string name="lumen_m_lamp_off">Вимкнути зображення</string>
 </resources>

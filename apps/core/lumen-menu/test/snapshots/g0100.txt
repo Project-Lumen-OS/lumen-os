@@ -47,6 +47,7 @@ section general
   screen settings.system
   screen settings.sleep_timer
   screen settings.remote
+  screen settings.licences
 all settings: keystone focus picture projection sound eye general
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)

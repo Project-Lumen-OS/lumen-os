@@ -8,8 +8,11 @@ import android.os.SystemProperties;
 import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
+import org.lumen.projector.hal.AutoKstMode;
+import org.lumen.projector.hal.BootStage;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.ReplyException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -92,12 +95,9 @@ final class HalController {
     private static final int ST_IDLE = 0, ST_WAIT_BOOT = 1, ST_CONNECT = 2, ST_EARLY = 3,
             ST_WAIT_ANIM = 4, ST_LATE = 5, ST_DONE = 6, ST_OFF = 7;
 
-    /** Lumen OS 1.0.4: POWER_ON_MUSIC (IGmpf 420 / 419, the stock power-on music). */
-    enum Toggle { POWER_ON_AF, POWER_ON_AK, MOVE_AF, MOVE_AK, CURTAIN_FIT, OBSTACLE, POWER_ON_MUSIC }
-
     interface ToggleResult {
         /** Main thread. Value null = unknown (not connected / error). */
-        void onToggles(Map<Toggle, Boolean> values);
+        void onToggles(Map<HalToggle, Boolean> values);
     }
 
     interface TextResult {
@@ -287,7 +287,7 @@ final class HalController {
                     if (!step391()) return;
                 }
                 if (!done237_0) {
-                    if (!step237(GmpfClient.BootStage.EARLY)) return;
+                    if (!step237(BootStage.EARLY)) return;
                 }
                 stage = ST_WAIT_ANIM;
                 animWaitStart = now;
@@ -311,7 +311,7 @@ final class HalController {
                     if (!step395()) return;
                 }
                 if (!done237_1) {
-                    if (!step237(GmpfClient.BootStage.AFTER_BOOTANIM)) return;
+                    if (!step237(BootStage.AFTER_BOOTANIM)) return;
                 }
                 if (!done17) {
                     if (!step17()) return;
@@ -358,7 +358,7 @@ final class HalController {
                 registered306 = true;
             }
             Log.i(TAG, "focus listener registered (298 + 306)");
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             // reached the HAL: do not send it again
             if (!registered298) registered298 = true; else registered306 = true;
             Log.w(TAG, "listener registration reply: " + e);
@@ -394,8 +394,8 @@ final class HalController {
     }
 
     /** 237(stage) once per boot_id (fail-open), at most two attempts per process. */
-    private boolean step237(GmpfClient.BootStage s) {
-        boolean early = s == GmpfClient.BootStage.EARLY;
+    private boolean step237(BootStage s) {
+        boolean early = s == BootStage.EARLY;
         String key = early ? K_BOOT237_0 : K_BOOT237_1;
         String boot = bootId();
         if (boot != null && boot.equals(state.getString(key, null))) {
@@ -409,7 +409,7 @@ final class HalController {
             persistBoot(key, boot);
             markDone237(early);
             return true;
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             Log.w(TAG, "goToBootCompleted reply error (delivered, not repeated): " + e);
             persistBoot(key, boot);
             markDone237(early);
@@ -438,7 +438,7 @@ final class HalController {
             persistBoot(K_BOOT17, boot);
             done17 = true;
             return true;
-        } catch (GmpfClient.ReplyException e) {
+        } catch (ReplyException e) {
             Log.w(TAG, "sendFocusStatus(17) reply error (delivered): " + e);
             persistBoot(K_BOOT17, boot);
             done17 = true;
@@ -566,8 +566,8 @@ final class HalController {
             Log.w(TAG, "gmpf_main lost its boot state: resending 391(1), 395(2), 237(0), 237(1) (not 17)");
             try { client.setSystemUiReady(); } catch (Throwable t) { Log.w(TAG, "391: " + t); }
             try { client.setBootAnimFinished(); } catch (Throwable t) { Log.w(TAG, "395: " + t); }
-            try { client.goToBootCompleted(GmpfClient.BootStage.EARLY); } catch (Throwable t) { Log.w(TAG, "237(0): " + t); }
-            try { client.goToBootCompleted(GmpfClient.BootStage.AFTER_BOOTANIM); } catch (Throwable t) { Log.w(TAG, "237(1): " + t); }
+            try { client.goToBootCompleted(BootStage.EARLY); } catch (Throwable t) { Log.w(TAG, "237(0): " + t); }
+            try { client.goToBootCompleted(BootStage.AFTER_BOOTANIM); } catch (Throwable t) { Log.w(TAG, "237(1): " + t); }
         } else if (sentUiState && ui != 1) {
             try { client.setSystemUiReady(); Log.i(TAG, "391(1) resent"); } catch (Throwable t) { Log.w(TAG, "391: " + t); }
         }
@@ -771,9 +771,9 @@ final class HalController {
             // 2026-11-04 (stock autoKeystone, common.json:284): a user "Auto keystone now" is refused in a top-speed game
             // (KstGameLock), then in 3D (G0082 support_Trapezoid_3D=0). Fit now (curtainAutoKeystone) has no such rule.
             if (user && !fit) {
-                org.lumen.projector.panel.PanelRules.Why w = org.lumen.projector.panel.PanelRules.keystone(
+                org.lumen.projector.panel.RefusalReason w = org.lumen.projector.panel.PanelRules.keystone(
                         org.lumen.projector.panel.RuleNotes.readKeystone(app, client, client2));
-                if (w != org.lumen.projector.panel.PanelRules.Why.NONE) {
+                if (w != org.lumen.projector.panel.RefusalReason.NONE) {
                     Log.i(TAG, "keystone refused: stock rule " + w);
                     org.lumen.projector.panel.RuleNotes.show(app, app.getString(R.string.panel_ak_now), w, false);
                     return;
@@ -790,7 +790,7 @@ final class HalController {
             }
             Ui.toast(app, fit ? R.string.toast_fit : R.string.toast_kst);
             try {
-                byte r = fit ? client.newAutoKst(GmpfClient.AutoKstMode.CURTAIN_REFIT) : client.autoKst();
+                byte r = fit ? client.newAutoKst(AutoKstMode.CURTAIN_REFIT) : client.autoKst();
                 Log.i(TAG, (fit ? "newAutoKst(11)" : "autoKst()") + " -> " + r);
             } finally {
                 lastKstEndAt = SystemClock.elapsedRealtime();
@@ -807,14 +807,14 @@ final class HalController {
     // ================================================================== toggles
     void readToggles(ToggleResult cb) {
         hal.post(() -> {
-            Map<Toggle, Boolean> m = new EnumMap<>(Toggle.class);
-            for (Toggle t : Toggle.values()) m.put(t, connected && featureEnabled() ? safeGet(t) : null);
+            Map<HalToggle, Boolean> m = new EnumMap<>(HalToggle.class);
+            for (HalToggle t : HalToggle.values()) m.put(t, connected && featureEnabled() ? safeGet(t) : null);
             Ui.main().post(() -> cb.onToggles(m));
         });
     }
 
     /** Called only on a user click. Sets, then reads back. */
-    void setToggle(Toggle t, boolean on, ToggleResult cb) {
+    void setToggle(HalToggle t, boolean on, ToggleResult cb) {
         hal.post(() -> {
             if (!featureEnabled() || !connected) {
                 Ui.toast(app, R.string.toast_not_ready);
@@ -827,13 +827,13 @@ final class HalController {
                     Ui.toast(app, R.string.toast_failed);
                 }
             }
-            Map<Toggle, Boolean> m = new EnumMap<>(Toggle.class);
-            for (Toggle x : Toggle.values()) m.put(x, connected && featureEnabled() ? safeGet(x) : null);
+            Map<HalToggle, Boolean> m = new EnumMap<>(HalToggle.class);
+            for (HalToggle x : HalToggle.values()) m.put(x, connected && featureEnabled() ? safeGet(x) : null);
             Ui.main().post(() -> cb.onToggles(m));
         });
     }
 
-    private Boolean safeGet(Toggle t) {
+    private Boolean safeGet(HalToggle t) {
         try {
             switch (t) {
                 case POWER_ON_AF: return client.getPowerOnAf();
@@ -852,7 +852,7 @@ final class HalController {
     }
 
     /** The 290/292/585 interlocks are the shared Hal helpers (same sequence as the quick panel). */
-    private void set(Toggle t, boolean on) throws Exception {
+    private void set(HalToggle t, boolean on) throws Exception {
         switch (t) {
             case POWER_ON_AF: client.setPowerOnAf(on); break;
             case POWER_ON_AK: client.setPowerOnAk(on); break;

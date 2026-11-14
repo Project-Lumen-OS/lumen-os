@@ -9,5 +9,7 @@ OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$F/FitGeometry.java" "$F/ScreenSize.java" "$F/ZoomModel.java" "$F/ThrowModel.java" "$F/FitPlanner.java" \
-  "$F/FitDevice.java" "$F/FitRun.java" "$F/FitCalibration.java" "$F/FitStore.java" "$HERE/test/fit/FitTest.java"
+  "$F/FitDevice.java" "$F/FitRun.java" "$F/FitCalibration.java" "$F/FitStore.java" \
+  "$F/CalibrationKind.java" "$F/FitEstimator.java" "$F/FitMode.java" "$F/FitAdvice.java" "$F/FitPhase.java" "$F/FitStatus.java" \
+  "$F/ThrowTableKind.java" "$F/ThrowProblem.java" "$HERE/test/fit/FitTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.fit.FitTest

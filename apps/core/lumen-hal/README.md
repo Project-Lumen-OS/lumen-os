@@ -4,11 +4,17 @@ The one raw Binder path from a Lumen app to XGIMI's stable AIDL vendor services 
 format aidl): `AidlTransport` and the paced call log `HalLog`. Taken on 2026-11-10 from the two transports of
 `apps/X50EyeGuard` and `apps/X50Projector` (`Gmpf`), whose transport parts were the same code.
 
-- An app subclasses `AidlTransport<Gmpf.Call>` once. Its `enum Iface implements AidlTransport.Service` names the
-  interfaces, its `enum Call implements AidlTransport.Method` is its allow list (= `devices/<c>/research/allowed_<app>.tsv`)
-  and the only type `call()` accepts. Every value a setter may carry is fixed in the subclass.
+- An app subclasses `AidlTransport<GmpfCall>` once (its `Gmpf`). Two top-level enums of the app go with it:
+  `GmpfIface implements AidlTransport.Service` names the interfaces, `GmpfCall implements AidlTransport.Method` is its
+  allow list (= `devices/<c>/research/allowed_<app>.tsv`) and the only type `call()` accepts. Every code in it is a
+  constant of the app's generated `HalCodes` (`tools/hal/gen_codes.py` from `devices/<c>/hal/codes.tsv`, named by the
+  interface and the stock method, proven against the stock table by `tools/hal/check_codes.py`), never a number.
+  Every value a setter may carry is fixed in the subclass.
 - Guard: getInterfaceVersion and getInterfaceHash must be the app's before the first call on an interface; a mismatch
-  closes it for the process. `checkService` only, never `getService`; calls on the main thread are refused; every
+  closes it for the process. The hashes come from a `HashRule`: a base hash on every firmware, and extra hashes each
+  only on its own stock firmware (`ro.vendor.build.version.incremental`; X50 v1.2.54 ecadd76e, whose code table is
+  v1.2.64's without seven appended methods). Add an extra hash only with that firmware's code table checked against
+  the app's allow list (`check_aidl_hal.py` with one `--codes` per firmware). `checkService` only, never `getService`; calls on the main thread are refused; every
   call gets a paced INFO line under the app's tag.
 - `tools/devices/check_aidl_hal.py --module apps/core/lumen-hal` checks the app with this transport on the sources and
   the dex (one transact site, here; the allow list in the app); `devices/g0111/image/x50_apk_check.py` reads the

@@ -1,95 +1,20 @@
-/*
- * Gmpf2Client: whitelisted, typed Java hwbinder client for
- *   xgimi.hardware.gmpf@1.0::IGmpf2/default
- * A SEPARATE interface from IGmpf with its own code table (research/focus/gmpf_IGmpf2_codes.tsv,
- * class BpHwGmpf2). Registered by the same vendor service gmpfHw (vendor/etc/vintf/manifest.xml:97-102)
- * and labelled hal_gmpf_hwservice like IGmpf (vendor_hwservice_contexts:40-41), so platform_app may
- * find and call it (HAL verified_facts 20/22). IGmpf2 codes overlap IGmpf numbers with a different
- * meaning (e.g. IGmpf 289-292 curtain/obstacle vs IGmpf2 289/290 3D LUT, IGmpf 207 vs IGmpf2 207):
- * never mix the two clients.
- *
- * Every code/wire type below is quoted from gmpf_IGmpf2_codes.tsv ("TSV: W=... R=..."). Same wire
- * rules and safety as GmpfClient (HidlCaller): two-way, Status first, refused on the main thread,
- * no generic transact, fixed/range-checked arguments only.
- *
- * NOT here on purpose: 76 cleanAllCalibrationData (factory), 236/237 radar, 303 enableAiPq (stub on
- * Z9X, FS 0.2), 203-206 pan-tilt / auto projection, 279 getExtDecInfo (string query, not needed).
- * Lumen OS 1.0.4 added 194 / 199 / 207 for the picture rotation screen (stock RotateWind), with a check of the
- * rotation struct before any move.
- * Lumen OS 1.0.4 added 281/282 multi-point white balance and 324/325 HSY colour correction for the
- * professional picture settings, with the stock app's values (stock analysis) and a
- * read-back check of the struct before anything is written (see those methods).
- * Removed in v6.1 review: 300 getVRREnableState / 301 setVRRModeEnable (state values UNVERIFIED,
- * no UI offers VRR); add back only after a device test fixes the values.
- * Methods without a reviewed caller are parked (not compiled) at the end of the class, and the
- * build fails on a new one (gsi/apps/check_hal_callers.py, run by build_apk.sh).
- *
- * Connection: lazy getService on first use (no death recipient); a failed transact drops the binder
- * so the next call reconnects. HalController also drops it when IGmpf dies (same process).
- */
 package org.lumen.projector.hal;
 
-import android.os.HwParcel;
+import static org.lumen.hal.gmpf.utils.Args.checkRange;
+
 import android.os.RemoteException;
 
-public final class Gmpf2Client extends HidlCaller {
+/**
+ * Gmpf2Client of the Z9X: the shared IGmpf2 client (Gmpf2Base) over the HIDL interface
+ *   xgimi.hardware.gmpf@1.0::IGmpf2/default
+ * a SEPARATE interface from IGmpf with its own codes (they overlap IGmpf numbers with another meaning: never mix
+ * the two clients), and the Z9X calls of its own: the keystone ratio reset, the optical zoom limit position, the game
+ * sound and setKstPrepare of the manual keystone screen. Registered by the same vendor service as IGmpf. Connection:
+ * on first use (no death recipient); a failed transaction drops the binder so the next call reconnects. NOT here on
+ * purpose: 76 cleanAllCalibrationData, 236 / 237 radar, 303 enableAiPq, 203..206 pan-tilt, 279 getExtDecInfo.
+ */
+public final class Gmpf2Client extends Gmpf2Base<Integer> {
     public static final String IGMPF2 = "xgimi.hardware.gmpf@1.0::IGmpf2";
-
-    // ------------------------------------------------ IGmpf2 transaction codes (private, VERIFIED TSV)
-    private static final int GET_CURRENT_ZOOM_LIMIT_STEP = 13; // ()        -> cb(i32, st_ZoomStep 8 bytes)  [1.0.8 zoom limit position]
-    private static final int SET_OPTICAL_ZOOM_LIMIT_STEP = 14; // (i32)     -> i32  [1.0.8, guarded EXCEPTION, apps/check_hal_callers.py]
-    private static final int SET_KST_PREPARE = 18;             // (bool,i32) -> bool  [v6.3 manual keystone]
-    private static final int GET_DYNAMIC_BLACK_TYPE = 29;      // ()        -> i32
-    private static final int SET_DYNAMIC_BLACK_TYPE = 31;      // (i32)     -> bool
-    private static final int DO_KEYSTONE_RATIO = 46;           // (i32)     -> bool
-    private static final int GET_LENS_DISP_MODE = 51;          // ()        -> i32
-    private static final int SET_LENS_DISP_MODE = 52;          // (i32)     -> bool
-    private static final int SET_AE_ON_OFF = 53;               // (bool)    -> i32
-    private static final int GET_GAMING_SOUND_EFFECT_MODE = 1; // ()        -> i32   [Lumen game menu]
-    private static final int SET_GAMING_SOUND_EFFECT_MODE = 2; // (i32)     -> bool  [Lumen game menu, 190..192]
-    private static final int GET_GAME_MODE_PROP = 55;          // ()        -> cb(bool, GameModeProp_st 12 bytes)  [v6.2 game]
-    private static final int SET_GAME_MODE_TYPE = 56;          // (i32)     -> bool
-    private static final int SET_GAME_MODE_STATE = 57;         // (i32)     -> bool
-    private static final int GET_POWER_ON_AF_USE_DISTANCE = 90;// ()        -> bool
-    private static final int SET_POWER_ON_AF_USE_DISTANCE = 91;// (bool)    -> bool
-    private static final int NOTIFY_AUTOKST = 192;             // (i32)     -> bool
-    private static final int SET_PUSH_PULL_SCREEN_STATE = 194; // (i32)     -> bool  [1.0.4 zoom / shift / rotation screens]
-    private static final int GET_SCREEN_ROTATION_INFO = 199;   // ()        -> cb(bool, ScreenRotationInfo_st 16 bytes)
-    private static final int SET_PUSH_PULL_SCREEN = 201;       // (bool)    -> bool
-    private static final int SET_SCREEN_ROTATION = 207;        // (i32 dir, float deg) -> bool  [NOT IGmpf 207]
-    private static final int GET_HDR_DY_TONE_MAPPING = 269;    // (i32)     -> i32
-    private static final int TOGGLE_HDR_DY_TONE_MAPPING = 270; // (i32,i32) -> bool
-    private static final int RESET_PICTURE_TO_DEFAULT = 278;   // (i32,i32,i32) -> bool
-    private static final int GET_ONE_OF_MULTI_POINT_WB = 281;  // (i32 segment) -> cb(bool, stOneOfMultiPointWB 16 bytes)
-    private static final int SET_ONE_OF_MULTI_POINT_WB = 282;  // (i32 segment, stOneOfMultiPointWB) -> bool
-    private static final int TOGGLE_AUTO_MODE = 280;           // (i32,bool) -> bool
-    private static final int GET_FD_BOOST = 283;               // (i32)     -> i32
-    private static final int TOGGLE_FD_BOOST = 284;            // (i32,i32) -> bool
-    private static final int GET_AI_CONTRAST_STATUS = 287;     // (i32)     -> i32
-    private static final int TOGGLE_AI_CONTRAST = 288;         // (i32,i32) -> bool
-    private static final int GET_CUSTOMIZED_3D_LUT = 289;      // ()        -> hidl_string (cb)
-    private static final int SET_CUSTOMIZED_3D_LUT = 290;      // (hidl_string) -> bool
-    private static final int GET_DARK_BOOST_STATE = 296;       // (i32 pic, i32 src) -> bool        [Lumen game menu]
-    private static final int SET_DARK_BOOST_ONOFF = 297;       // (bool, i32 pic, i32 src) -> i32   [Lumen game menu]
-    private static final int GET_GAME_PICTURE_MODE = 298;      // (i32 src) -> i32                  [Lumen game menu]
-    private static final int SET_GAME_PICTURE_MODE = 299;      // (i32 mode 0..4, i32 src) -> i32   [Lumen game menu]
-    private static final int GET_VRR_ENABLE_STATE = 300;       // (i32 src) -> i32                  [Lumen game menu]
-    private static final int SET_VRR_MODE_ENABLE = 301;        // (i32 state 0|1, i32 src) -> i32   [Lumen game menu]
-    private static final int GET_ALLM_STATUS = 310;            // (i32)     -> bool
-    private static final int GET_ALLM_ENABLE_STATE = 311;      // ()        -> bool
-    private static final int SET_ALLM_ENABLE = 312;            // (bool)    -> bool
-    private static final int GET_AISR_TYPE = 321;              // ()        -> i32
-    private static final int SET_AISR_TYPE = 322;              // (i32)     -> bool
-    private static final int SET_HSY_PICTURE_MODE = 323;       // (i32,bool) -> bool
-    private static final int GET_HSY_COLOR_MODEL = 324;        // (i32,i32) -> cb(bool, int8[7])
-    private static final int SET_HSY_COLOR_MODEL = 325;        // (i32,i32,int8[7]) -> bool
-    private static final int GET_TV_GAMMA_LEVEL = 326;         // (i32)     -> i32
-    private static final int SET_TV_GAMMA_LEVEL = 327;         // (i32,i32) -> bool
-    private static final int GET_TV_DYNAMIC_CONTRAST = 328;    // (i32)     -> bool
-    private static final int SET_TV_DYNAMIC_CONTRAST = 329;    // (i32,bool) -> bool
-    private static final int GET_HSY_PICTURE_MODE = 330;       // (i32)     -> bool
-
-    private static final int WINDOW_MAIN = 0;
 
     /** The only 3D LUT files offered (FS 3.6 built-ins; vendor files, read by the HAL in place). */
     public static final String[] LUT_FILES = {
@@ -100,455 +25,82 @@ public final class Gmpf2Client extends HidlCaller {
             "/mnt/vendor/xgimiconfig/G0082/HDR/3dlut4.cube",
     };
 
-    /** ResetPictureToDefault triples used by stock (FS 3.4/3.5); no other combination is sent. */
-    public enum PictureReset {
-        BASIC(0, 0, 1), PROFESSIONAL(0, 0, 2), ALL(0, -8, 0);
-        final int a, b, c;
-        PictureReset(int a, int b, int c) { this.a = a; this.b = b; this.c = c; }
-    }
-
-    /** Game mode type (DS / QS gmuiapi DisplayManager.setGameMode): 0 manual, 1 auto. */
-    public enum GameModeType {
-        MANUAL(0), AUTO(1);
-        final int wire;
-        GameModeType(int v) { wire = v; }
-    }
-
-    /**
-     * Gamma (FS 3.5): BT.1886 10, ST.2084 11, HLG 12, DICOM 100..800 = 13..17, and the same call takes
-     * the gamma index 1.8..2.6 = 0..8 (stock "manual" is 4). Allowed: 0..8 and 10..17.
-     */
-    public static boolean isValidGamma(int g) { return (g >= 0 && g <= 8) || (g >= 10 && g <= 17); }
+    /** setKstPrepare type of the manual keystone screen (stock KeyStoneWind). */
+    private static final int KST_PREPARE_KEYSTONE = 0;
+    /** doKeystoneRatio argument of the stock keystone reset: the ratio back to default. */
+    private static final int KEYSTONE_RATIO_RESET = 3;
+    /** setGamingSoundEffectMode: 190 off, 191 surround, 192 story. */
+    private static final int GAME_SOUND_OFF = 190, GAME_SOUND_STORY = 192;
 
     public Gmpf2Client() {
-        super(IGMPF2);
+        super(new HidlWire(IGMPF2, true), Z9xCodes.GMPF2, Z9xRules.RULES);
     }
 
-    @Override boolean onTransactFailed() { return true; }
-
-    private void need() throws RemoteException {
-        if (!ensureConnected()) throw new RemoteException(IGMPF2 + " not available");
-    }
-
-    // ------------------------------------------------------------------ brightness Boost
-    /** 51 getLensDispMode() -> 1 = Boost. TSV W= R=readInt32. */
-    public boolean isBoost() throws RemoteException { need(); return callRetI32(GET_LENS_DISP_MODE) == 1; }
-    /**
-     * 52 setLensDispMode(1 Boost | 0 normal). Boost does not raise the laser current: it switches the DLP colour
-     * wheel sequence from 3 to 5 segments (brighter, paler colours; the vendor lowers the current itself when hot,
-     * current.ini LOWPLUMENSCONMAP). Keep the stock two-press confirmation and refuse in 3D, as stock; no
-     * temperature check (stock has none, parity brightness item 8). Never the "*ForTest" path.
-     * TSV W=writeInt32 R=readBool.
-     */
-    public boolean setBoost(boolean on) throws RemoteException { need(); return callI32RetBool(SET_LENS_DISP_MODE, on ? 1 : 0); }
-
-
-    // ------------------------------------------------------------------ keystone reset
-    /**
-     * 46 doKeystoneRatio(3) only: ratio reset, the last step of the stock keystone reset (KeyStoneManager.java:254-276;
-     * stock shows keystone_reset_toast on false). Lumen OS 1.0.8, parity keystone item 8. TSV W=writeInt32 R=readBool.
-     * Caller: the quick panel's "Reset keystone".
-     */
-    public boolean resetKeystoneRatio() throws RemoteException { need(); return callI32RetBool(DO_KEYSTONE_RATIO, 3); }
-
-    // ------------------------------------------------------------------ game mode / ALLM
-    /** 56 setGameModeType(0 manual | 1 auto). TSV W=writeInt32 R=readBool. Read-back 55 not implemented: persist our value. */
-    public boolean setGameModeType(GameModeType t) throws RemoteException { need(); return callI32RetBool(SET_GAME_MODE_TYPE, t.wire); }
-    /** 57 setGameModeState(0 on | 1 off). TSV W=writeInt32 R=readBool. */
-    public boolean setGameModeState(boolean on) throws RemoteException { need(); return callI32RetBool(SET_GAME_MODE_STATE, on ? 0 : 1); }
-
-    // ------------------------------------------------------------------ v6.2 game module (BEGIN)
-    /**
-     * 310 getAllmStatus(source 1|2): ALLM flag currently received on that HDMI input (EN_INPUT_SOURCE_HDMI1=1,
-     * HDMI2=2 VERIFIED from stock com.xgimi.gmpf.api.GmTvManager). Read-only. Caller: game.GameProfile
-     * (polled only while an HDMI session is on screen). TSV W=writeInt32 R=readBool.
-     */
-    public boolean getAllmStatus(int hdmiSource) throws RemoteException {
-        need();
-        return callI32RetBool(GET_ALLM_STATUS, checkRange("hdmi source", hdmiSource, 1, 2));
+    // ------------------------------------------------------------------ keystone
+    /** 46 doKeystoneRatio(3) only: the last step of the stock keystone reset (stock shows a toast on false). */
+    public boolean resetKeystoneRatio() throws RemoteException {
+        wire.ready();
+        return wire.i32RetBool(HalCodes.GMPF2_DO_KEYSTONE_RATIO, KEYSTONE_RATIO_RESET);
     }
 
     /**
-     * 55 getGameModeProp() -> {state, type, gameModeOpt}. Wire VERIFIED (reply lambda 0x25d820:
-     * Status, readBool, then readBuffer(12)). Field order {state, type, opt} at 0/4/8 (AIDL twin GameModeProp_st)
-     * VERIFIED on a test Z9X 2026-10-30: off HDMI the raw {1,0,0} was logged by
-     * the vendor as "getGameModeProp Type/State/Opt= 0 / 1 / 0"; on HDMI 1 with a PS5 and game mode on, {0,0,0}
-     * with 647 = 0 and {0,0,1} with 647 = 1. state 0 = on / 1 = off (as 57), type 0 manual / 1 auto (as 56).
-     * Read-only. Callers decode it with {@link #gameModeOf}, which still checks opt == 647 and state/type in {0,1}.
-     * A reply of another size fails only this call (ReplyException).
-     */
-    public int[] getGameModeProp() throws RemoteException {
-        need();
-        return call(GET_GAME_MODE_PROP, request(), r -> {
-            if (!r.readBool()) throw new IllegalStateException("55 returned false");
-            android.os.HwBlob b = r.readBuffer(12);
-            return new int[] {b.getInt32(0), b.getInt32(4), b.getInt32(8)};
-        });
-    }
-
-    /**
-     * Game mode of a 55 reply {state, type, opt} (see {@link #getGameModeProp()}): 2 auto (type 1), 1 on (state 0),
-     * 0 off (state 1); -1 when it does not fit (null, opt != the 647 read just before, state or type not 0 / 1).
-     * Not a HAL call.
-     */
-    public static int gameModeOf(int[] p, int opt647) {
-        if (p == null || p.length < 3 || p[2] != opt647 || (p[0] != 0 && p[0] != 1) || (p[1] != 0 && p[1] != 1)) return -1;
-        if (p[1] == 1) return 2;
-        return p[0] == 0 ? 1 : 0;
-    }
-    // ------------------------------------------------------------------ v6.2 game module (END)
-
-    // ------------------------------------------------------------------ Lumen game menu (2026-11-11, BEGIN)
-    // The stock Z9X game menu (vendor xhplayer, GameModeApi / OtherViewModel, gsi-stock analysis) sends
-    // these with exactly the arguments allowed below; the source is stock TV.inputToInt on Android 9+: HDMI 1 = 1,
-    // HDMI 2 = 2 (the Z9X has two HDMI inputs). Caller: panel.GameMenu only (sh test/gamemenu/run.sh counts it), and
-    // only while game mode runs on that HDMI input. Every write there is read back with the getter here and an item
-    // whose getter answers outside these ranges, or whose read-back disagrees, is hidden (GmModel.Caps). Not proven
-    // on the device yet: the live check list is in gsi-stock analysis (game menu section).
-
-    /** 300 getVRREnableState(source 1|2) -> stock 0 off / 1 on (-1 read as off). TSV W=writeInt32 R=readInt32. */
-    public int getVrrState(int hdmiSource) throws RemoteException {
-        need();
-        return callI32RetI32(GET_VRR_ENABLE_STATE, checkRange("hdmi source", hdmiSource, 1, 2));
-    }
-
-    /** 301 setVRRModeEnable(state 0|1, source 1|2) (stock GameModeApi.setVrr). TSV W=writeInt32,writeInt32 R=readInt32. */
-    public int setVrrState(boolean on, int hdmiSource) throws RemoteException {
-        need();
-        return callI32I32RetI32(SET_VRR_MODE_ENABLE, on ? 1 : 0, checkRange("hdmi source", hdmiSource, 1, 2));
-    }
-
-    /** 298 getGamePictureMode(source 1|2) -> 0 standard, 1 FPS, 2 RPG, 3 RTS, 4 sports (-1 read as 0). TSV W=writeInt32 R=readInt32. */
-    public int getGamePicture(int hdmiSource) throws RemoteException {
-        need();
-        return callI32RetI32(GET_GAME_PICTURE_MODE, checkRange("hdmi source", hdmiSource, 1, 2));
-    }
-
-    /** 299 setGamePictureMode(mode 0..4, source 1|2) (stock GameModeApi.setPictureMode). TSV W=writeInt32,writeInt32 R=readInt32. */
-    public int setGamePicture(int mode, int hdmiSource) throws RemoteException {
-        need();
-        return callI32I32RetI32(SET_GAME_PICTURE_MODE, checkRange("game picture", mode, 0, 4),
-                checkRange("hdmi source", hdmiSource, 1, 2));
-    }
-
-    /** 296 getDarkBoostState(game picture 0..4, source 1|2) -> bool (stock OtherViewModel). TSV W=writeInt32,writeInt32 R=readBool. */
-    public boolean getDarkScenes(int gamePicture, int hdmiSource) throws RemoteException {
-        need();
-        return callI32I32RetBool(GET_DARK_BOOST_STATE, checkRange("game picture", gamePicture, 0, 4),
-                checkRange("hdmi source", hdmiSource, 1, 2));
-    }
-
-    /**
-     * 297 setDarkBoostOnoff(on, game picture 0..4, source 1|2) (stock OtherViewModel: the current game picture). The
-     * vendor keeps one value per game picture. TSV W=writeBool,writeInt32,writeInt32 R=readInt32.
-     */
-    public int setDarkScenes(boolean on, int gamePicture, int hdmiSource) throws RemoteException {
-        need();
-        HwParcel q = request();
-        q.writeBool(on);
-        q.writeInt32(checkRange("game picture", gamePicture, 0, 4));
-        q.writeInt32(checkRange("hdmi source", hdmiSource, 1, 2));
-        return call(SET_DARK_BOOST_ONOFF, q, RET_I32);
-    }
-
-    /** 1 getGamingSoundEffectMode() -> 190 off, 191 surround, 192 story (0 read as off). TSV R=readInt32. */
-    public int getGameSound() throws RemoteException { need(); return callRetI32(GET_GAMING_SOUND_EFFECT_MODE); }
-
-    /** 2 setGamingSoundEffectMode(190..192) (stock GameModeApi.setGameSoundEffect). TSV W=writeInt32 R=readBool. */
-    public boolean setGameSound(int mode) throws RemoteException {
-        need();
-        return callI32RetBool(SET_GAMING_SOUND_EFFECT_MODE, checkRange("game sound", mode, 190, 192));
-    }
-    // ------------------------------------------------------------------ Lumen game menu (END)
-
-    /** 311 getAllmEnableState(). TSV R=readBool. */
-    public boolean getAllmAutoSwitch() throws RemoteException { need(); return callRetBool(GET_ALLM_ENABLE_STATE); }
-    /** 312 setAllmEnable(bool): true = switch to game mode on ALLM content (DS). TSV W=writeBool R=readBool. */
-    public boolean setAllmAutoSwitch(boolean on) throws RemoteException { need(); return callBoolRetBool(SET_ALLM_ENABLE, on); }
-
-
-    // ------------------------------------------------------------------ focus / keystone
-    /** 90 / 91 smart autofocus (FS 2.7 VERIFIED FocusRepository.setSmartAutoFocus). TSV 91 W=writeBool R=readBool. */
-    public boolean getSmartAutofocus() throws RemoteException { need(); return callRetBool(GET_POWER_ON_AF_USE_DISTANCE); }
-    public boolean setSmartAutofocus(boolean on) throws RemoteException { need(); return callBoolRetBool(SET_POWER_ON_AF_USE_DISTANCE, on); }
-
-
-    /**
-     * 18 setKstPrepare(enter, 0): stock MiddleWareApi.notifyKeystone(isEnter, 0) around the manual
-     * keystone screen (KeyStoneWind: (true,0) before the first corner move, (false,0) when it closes;
-     * vendor Gmhal_DisplayCtrl::setKstPrepare -> KstAdjustModuleAKMode::setKstPrepareMode, the software
-     * keystone scene). Type is always 0, as stock. Caller: panel.ManualKeystonePanel only. Result
-     * semantics UNVERIFIED (logged). TSV W=writeBool,writeInt32 R=readBool.
+     * 18 setKstPrepare(enter, 0): stock MiddleWareApi.notifyKeystone(isEnter, 0) around the manual keystone screen
+     * ((true, 0) before the first corner move, (false, 0) when it closes). Caller: panel.ManualKeystonePanel only.
      */
     public boolean setKstPrepare(boolean enter) throws RemoteException {
-        need();
-        HwParcel q = request();
-        q.writeBool(enter);
-        q.writeInt32(0);
-        return call(SET_KST_PREPARE, q, RET_BOOL);
+        wire.ready();
+        return wire.boolI32RetBool(HalCodes.GMPF2_SET_KST_PREPARE, enter, KST_PREPARE_KEYSTONE);
     }
 
-    /**
-     * 18 setKstPrepare(enter, 2): stock ZoomStateView around an optical zoom session ((true,2) before the
-     * first step, (false,2) when it closes). Caller: panel.OpticalZoomPanel only. TSV W=writeBool,writeInt32 R=readBool.
-     */
-    public boolean setKstPrepareForZoom(boolean enter) throws RemoteException {
-        need();
-        if (!enter) GmpfClient.noteZoomPrepare(false);
-        HwParcel q = request();
-        q.writeBool(enter);
-        q.writeInt32(2);
-        boolean r = call(SET_KST_PREPARE, q, RET_BOOL);
-        if (enter) GmpfClient.noteZoomPrepare(true);   // the 119 guard (zoom audit F2)
-        return r;
+    // ------------------------------------------------------------------ optical zoom limit position
+    /** 13 GetCurrentZoomLimitStep() -> {ret, limit, digital}: 0 out of the limit zone, -1..-count inside it. */
+    public int[] getZoomLimitStep() throws RemoteException { return readZoomLimitStep(); }
+
+    /** 14 SetOpticalZoomLimitStep(step), as stock ZoomUtils; ZoomGuard.checkLimitStep refuses (nothing sent) otherwise. */
+    public int setOpticalZoomLimitStep(int step) throws RemoteException { return writeZoomLimitStep(step); }
+
+    // ------------------------------------------------------------------ v6.2 game module, Lumen game menu (2026-11-11)
+    // The stock Z9X game menu (vendor xhplayer, gsi-stock analysis) sends these with exactly the
+    // arguments allowed by Gmpf2Base. Caller: panel.GameMenu through Z9xGameIo (apps/core/lumen-menu/test/gamemenu
+    // counts it), and only while game mode runs on that HDMI input. Every write there is read back with the getter here.
+
+    /** 310 getAllmStatus(source 1|2). Caller: game.GameProfile. */
+    public boolean getAllmStatus(int hdmiSource) throws RemoteException { return readAllmStatus(hdmiSource); }
+
+    /** 300 getVRREnableState(source 1|2) -> stock 0 off / 1 on (-1 read as off). */
+    public int getVrrState(int hdmiSource) throws RemoteException { return readVrr(hdmiSource); }
+
+    /** 301 setVRRModeEnable(state 0|1, source 1|2) (stock GameModeApi.setVrr). */
+    public int setVrrState(boolean on, int hdmiSource) throws RemoteException { return writeVrr(on, hdmiSource); }
+
+    /** 298 getGamePictureMode(source 1|2) -> 0 standard, 1 FPS, 2 RPG, 3 RTS, 4 sports (-1 read as 0). */
+    public int getGamePicture(int hdmiSource) throws RemoteException { return readGamePicture(hdmiSource); }
+
+    /** 299 setGamePictureMode(mode 0..4, source 1|2) (stock GameModeApi.setPictureMode). */
+    public int setGamePicture(int mode, int hdmiSource) throws RemoteException { return writeGamePicture(mode, hdmiSource); }
+
+    /** 296 getDarkBoostState(game picture 0..4, source 1|2) -> bool (stock OtherViewModel). */
+    public boolean getDarkScenes(int gamePicture, int hdmiSource) throws RemoteException {
+        return readDarkBoost(gamePicture, hdmiSource);
     }
 
-    // ------------------------------------------------------------------ optical zoom limit position (Lumen OS 1.0.8)
-    // Zoom audit F1: the Z9X vendor has one zoom
-    // "limit" position beyond optical index 0 (G0082 zoom.ini [ZOOM_LIMIT_POSITION] zoomLimitStepEn = 1,
-    // zoomMotorLimitStep = 129), which stock enters and leaves only through these two calls. Stock callers (V6.15.62
-    // settings jadx, com/xgimi/keystone/view/zoommove/zoom/): ZoomUtils.getCurrentZoomLimitStep (ZoomUtils.java:90-94,
-    // GmDisplayManager.GetCurrentZoomLimitStep().getZoomOpticalstep(), read by ZoomStateView.initZoom :509, :526) and
-    // ZoomUtils.setOpticalZoomLimitStep (ZoomUtils.java:103-120: GetCurrentZoomLimitStep() - 1 for key 22 bigger,
-    // + 1 for key 21 smaller -> SetOpticalZoomLimitStep, from ZoomStateView.setZoom :689 smaller and :849 bigger);
-    // DisplayManagerWrapper.java:1219-1231. Wire: stock analysis:715-716 (BpHwGmpf2 13 cb(int,
-    // IDisplayType::st_ZoomStep) as IGmpf 116; 14 W=writeInt32 R=readInt32). The guard state lives in GmpfClient
-    // (ZOOM_LOCK, with the 116 / 117 / 153(12,10) reads of the same session).
-
-    /**
-     * IGmpf2 13 GetCurrentZoomLimitStep() -> {ret, limit, digital}: 0 out of the limit zone, -1..-count inside it
-     * (st_ZoomStep {zoomOpticalstep, zoomDigtalstep}, the IGmpf 116 layout). A read; remembered for the 14 and 119
-     * guards when an 18(true,2) + 121 session is open. Callers validate. Layout UNVERIFIED on the Z9X (audit F8).
-     */
-    public int[] getZoomLimitStep() throws RemoteException {
-        need();
-        int[] v = call(GET_CURRENT_ZOOM_LIMIT_STEP, request(), r -> {
-            int ret = r.readInt32();
-            android.os.HwBlob b = r.readBuffer(8);
-            return new int[] {ret, b.getInt32(0), b.getInt32(4)};
-        });
-        GmpfClient.noteZoomLimitRead(v[1]);
-        return v;
+    /** 297 setDarkBoostOnoff(on, game picture 0..4, source 1|2): one value per game picture in the vendor. */
+    public int setDarkScenes(boolean on, int gamePicture, int hdmiSource) throws RemoteException {
+        return writeDarkBoost(on, gamePicture, hdmiSource);
     }
 
-    /**
-     * IGmpf2 14 SetOpticalZoomLimitStep(step) -> i32, the guarded EXCEPTION of apps/check_hal_callers.py (was BANNED
-     * as "zoom (large move)" until O1; the HB device test of the same vendor code, showed one limit
-     * move = about 130 motor steps to / from the PI sensor). Sent only as stock: the neighbour (+-1) of a fresh 13
-     * read, inside [-count, 0] of a 153(12,10) count, at optical index 0 (a fresh 116 read = 0), inside an
-     * 18(true,2) + 121 session; both reads are used up. GmpfClient.checkZoomLimitStep refuses (nothing sent) otherwise.
-     */
-    public int setOpticalZoomLimitStep(int step) throws RemoteException {
-        need();
-        GmpfClient.checkZoomLimitStep(step);
-        return callI32RetI32(SET_OPTICAL_ZOOM_LIMIT_STEP, step);
+    /** 1 getGamingSoundEffectMode() -> 190 off, 191 surround, 192 story (0 read as off). */
+    public int getGameSound() throws RemoteException {
+        wire.ready();
+        return wire.retI32(HalCodes.GMPF2_GET_GAMING_SOUND_EFFECT_MODE);
     }
 
-    /**
-     * Lumen OS 1.0.4: 194 setPushPullScreenState(1) while a zoom / shift / rotation screen is open, (0) when it
-     * closes, as stock ZoomMoveWind / RotateWind (GmSystemManager.setPushPullScreenState). TSV W=writeInt32 R=readBool.
-     */
-    public boolean setAdjustScreenOpen(boolean open) throws RemoteException { need(); return callI32RetBool(SET_PUSH_PULL_SCREEN_STATE, open ? 1 : 0); }
-
-    /**
-     * Lumen OS 1.0.4: 199 getScreenRotationInfo() -> {minAng, maxAng, curAng, startAng} in degrees (stock
-     * ScreenRotationInfo_st, 4 floats). Wire: Status, bool, readBuffer(16). Fails unless the reply is
-     * plausible (bool true, -45 <= min < 0 < max <= 45, min <= cur <= max): nothing rotates on a misread.
-     */
-    public float[] getScreenRotation() throws RemoteException {
-        need();
-        return call(GET_SCREEN_ROTATION_INFO, request(), r -> {
-            if (!r.readBool()) throw new IllegalStateException("199 returned false");
-            android.os.HwBlob b = r.readBuffer(16);
-            float min = b.getFloat(0), max = b.getFloat(4), cur = b.getFloat(8), start = b.getFloat(12);
-            if (!(min >= -45f && min < 0f && max > 0f && max <= 45f && cur >= min - 0.01f && cur <= max + 0.01f)) {
-                throw new IllegalStateException("199 struct " + min + "," + max + "," + cur + "," + start);
-            }
-            return new float[] {min, max, cur, start};
-        });
+    /** 2 setGamingSoundEffectMode(190..192) (stock GameModeApi.setGameSoundEffect). */
+    public boolean setGameSound(int mode) throws RemoteException {
+        wire.ready();
+        return wire.i32RetBool(HalCodes.GMPF2_SET_GAMING_SOUND_EFFECT_MODE,
+                checkRange("game sound", mode, GAME_SOUND_OFF, GAME_SOUND_STORY));
     }
-
-    /**
-     * Lumen OS 1.0.4: 207 setScreenRotation(5 clockwise | 6 counter-clockwise, degrees > 0, relative), as stock
-     * RotateWind (one 0.5 degree step per key). TSV W=writeInt32,writeFloat R=readBool.
-     */
-    public boolean rotateScreen(boolean clockwise, float degrees) throws RemoteException {
-        if (!(degrees > 0f && degrees <= 10f)) throw new IllegalArgumentException("rotation step " + degrees);
-        need();
-        HwParcel q = request();
-        q.writeInt32(clockwise ? 5 : 6);
-        q.writeFloat(degrees);
-        return call(SET_SCREEN_ROTATION, q, RET_BOOL);
-    }
-
-    /** 201 setPushPullScreenOnOff(FALSE) only, when switching to ceiling mount (FS 2.9). TSV W=writeBool R=readBool. */
-    public boolean disablePushPullScreenForCeiling() throws RemoteException { need(); return callBoolRetBool(SET_PUSH_PULL_SCREEN, false); }
-
-
-    // ------------------------------------------------------------------ AI / picture extras (window 0)
-    /** 321 getAisrType() -> 0 off / 1 on (super resolution). TSV R=readInt32. */
-    public boolean getSuperResolution() throws RemoteException { need(); return callRetI32(GET_AISR_TYPE) == 1; }
-    /** 322 setAisrType(0|1). TSV W=writeInt32 R=readBool. */
-    public boolean setSuperResolution(boolean on) throws RemoteException { need(); return callI32RetBool(SET_AISR_TYPE, on ? 1 : 0); }
-
-    /** 287 getAIContrastStatus(0) -> 0/1. TSV W=writeInt32 R=readInt32. */
-    public boolean getAiContrast() throws RemoteException { need(); return callI32RetI32(GET_AI_CONTRAST_STATUS, WINDOW_MAIN) == 1; }
-    /** 288 toggleAIContrast(0, 0|1). SDR only (FS 3.5; real impl Gmhal_TvCtrl::toggleAIContrast). TSV W=writeInt32,writeInt32 R=readBool. */
-    public boolean setAiContrast(boolean on) throws RemoteException { need(); return callI32I32RetBool(TOGGLE_AI_CONTRAST, WINDOW_MAIN, on ? 1 : 0); }
-
-
-
-
-
-
-
-
-    // ------------------------------------------------------------------ Lumen OS 1.0.4: professional picture settings
-    // Stock image mode 3.0 "专业设置" (PictureViewModel / GmDisplayManager, stock analysis): window 0,
-    // values as the stock app sends them, every setter followed by a read-back in the panel. Caller: panel.ProPicture.
-
-    /** 326 getTvGammaLevel(0) -> 0..8 (gamma 1.8..2.6) or 10..17 (curves). TSV W=writeInt32 R=readInt32. */
-    public int getGamma() throws RemoteException { need(); return callI32RetI32(GET_TV_GAMMA_LEVEL, WINDOW_MAIN); }
-    /** 327 setTvGammaLevel(0, g), g per {@link #isValidGamma}. TSV W=writeInt32,writeInt32 R=readBool. */
-    public boolean setGamma(int g) throws RemoteException {
-        if (!isValidGamma(g)) throw new IllegalArgumentException("gamma " + g);
-        need();
-        return callI32I32RetBool(SET_TV_GAMMA_LEVEL, WINDOW_MAIN, g);
-    }
-
-    /** 269 GetHDRDyToneMappingStatus(0) == 1. Shown only while HDR10 plays (stock). TSV W=writeInt32 R=readInt32. */
-    public boolean getHdrDynamicToneMapping() throws RemoteException { need(); return callI32RetI32(GET_HDR_DY_TONE_MAPPING, WINDOW_MAIN) == 1; }
-    /** 270 ToggleHDRDyToneMapping(0, 0|1). TSV W=writeInt32,writeInt32 R=readBool. */
-    public boolean setHdrDynamicToneMapping(boolean on) throws RemoteException { need(); return callI32I32RetBool(TOGGLE_HDR_DY_TONE_MAPPING, WINDOW_MAIN, on ? 1 : 0); }
-
-    /** 283 getFDBoostStatus(0) == 1 ("original frame rate"). TSV W=writeInt32 R=readInt32. */
-    public boolean getNativeFrameRate() throws RemoteException { need(); return callI32RetI32(GET_FD_BOOST, WINDOW_MAIN) == 1; }
-    /**
-     * 284 toggleFDBoost(0, 0|1). Stock turns Ultra 120 Hz off with it (161 setOutputTiming(6)) and refuses
-     * motion smoothing while it is on; the panel does both. TSV W=writeInt32,writeInt32 R=readBool.
-     */
-    public boolean setNativeFrameRate(boolean on) throws RemoteException { need(); return callI32I32RetBool(TOGGLE_FD_BOOST, WINDOW_MAIN, on ? 1 : 0); }
-
-    /** 29 getDynamicBlackType() == 1 ("dynamic black enhancement"). TSV R=readInt32. */
-    public boolean getDynamicBlack() throws RemoteException { need(); return callRetI32(GET_DYNAMIC_BLACK_TYPE) == 1; }
-    /** 31 setDynamicBlackType(0|1). TSV W=writeInt32 R=readBool. */
-    public boolean setDynamicBlack(boolean on) throws RemoteException { need(); return callI32RetBool(SET_DYNAMIC_BLACK_TYPE, on ? 1 : 0); }
-
-    /** 328 getTvDynamicContrastEnable(0). TSV W=writeInt32 R=readBool. */
-    public boolean getDynamicContrast() throws RemoteException { need(); return callI32RetBool(GET_TV_DYNAMIC_CONTRAST, WINDOW_MAIN); }
-    /** 329 setTvDynamicContrastEnable(0, bool). TSV W=writeInt32,writeBool R=readBool. */
-    public boolean setDynamicContrast(boolean on) throws RemoteException { need(); return callI32BoolRetBool(SET_TV_DYNAMIC_CONTRAST, WINDOW_MAIN, on); }
-
-    /** 330 getHsyPictureModeEnable(0) ("colour optimisation"). TSV W=writeInt32 R=readBool. */
-    public boolean getColorOptimization() throws RemoteException { need(); return callI32RetBool(GET_HSY_PICTURE_MODE, WINDOW_MAIN); }
-    /** 323 setHsyPictureModeEnable(0, bool). TSV W=writeInt32,writeBool R=readBool. */
-    public boolean setColorOptimization(boolean on) throws RemoteException { need(); return callI32BoolRetBool(SET_HSY_PICTURE_MODE, WINDOW_MAIN, on); }
-
-    /** HSY colour correction: what one 7-colour array holds (stock ColorCorrection: 0 hue, 1 saturation, 2 lightness). */
-    public enum HsyType {
-        HUE(0), SATURATION(1), LIGHTNESS(2);
-        final int wire;
-        HsyType(int v) { wire = v; }
-    }
-    /** Colours of the HSY arrays, in array order (stock ColorCorrection): red, green, blue, cyan, magenta, yellow, skin. */
-    public static final int HSY_COLORS = 7;
-
-    /**
-     * 324 getHsyColorModel(0, type) -> the 7 values (0..100, 50 = unchanged) of red, green, blue, cyan,
-     * magenta, yellow, skin. Wire: Status, bool, then the hidl_array<int8,7> as a 7-byte buffer (the proxy's
-     * callback reads it so). A false or a value outside 0..100 fails the call: the panel then hides colour
-     * correction rather than write over values it cannot read. TSV W=writeInt32,writeInt32 (cb).
-     */
-    public int[] getHsyColorModel(HsyType t) throws RemoteException {
-        need();
-        HwParcel q = request();
-        q.writeInt32(WINDOW_MAIN);
-        q.writeInt32(t.wire);
-        return call(GET_HSY_COLOR_MODEL, q, r -> {
-            if (!r.readBool()) throw new IllegalStateException("324 returned false");
-            android.os.HwBlob b = r.readBuffer(HSY_COLORS);
-            int[] v = new int[HSY_COLORS];
-            for (int i = 0; i < HSY_COLORS; i++) {
-                v[i] = b.getInt8(i);
-                if (v[i] < 0 || v[i] > 100) throw new IllegalStateException("324 value " + v[i] + " at " + i);
-            }
-            return v;
-        });
-    }
-
-    /**
-     * 325 setHsyColorModel(0, type, 7 values 0..100): the whole array, as stock (one changed colour, the
-     * other six as read). TSV W=writeInt32,writeInt32,writeBuffer R=readBool.
-     */
-    public boolean setHsyColorModel(HsyType t, int[] values) throws RemoteException {
-        if (values == null || values.length != HSY_COLORS) throw new IllegalArgumentException("hsy array");
-        android.os.HwBlob b = new android.os.HwBlob(HSY_COLORS);
-        for (int i = 0; i < HSY_COLORS; i++) b.putInt8(i, (byte) checkRange("hsy value", values[i], 0, 100));
-        need();
-        HwParcel q = request();
-        q.writeInt32(WINDOW_MAIN);
-        q.writeInt32(t.wire);
-        q.writeBuffer(b);
-        return call(SET_HSY_COLOR_MODEL, q, RET_BOOL);
-    }
-
-    /** The 11 points of multi-point white balance (stock image_segmentation): 5, 10, 20 ... 100 (% of white). */
-    public static final int[] WB_POINTS = {5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-
-    private static boolean isWbPoint(int p) {
-        for (int x : WB_POINTS) if (x == p) return true;
-        return false;
-    }
-
-    /**
-     * 281 getOneOfMultiPointWB(point) -> {red, green, blue} 0..100. Struct stOneOfMultiPointWB = 4 x int32
-     * {per_gain, red, green, blue} (XGIMI's AIDL twin; the HIDL order is checked here, not assumed): the reply
-     * must carry per_gain == point and three values 0..100, else the call fails and the panel hides 11-point
-     * white balance. Wire: Status, bool, readBuffer(16).
-     */
-    public int[] getMultiPointWb(int point) throws RemoteException {
-        if (!isWbPoint(point)) throw new IllegalArgumentException("wb point " + point);
-        need();
-        HwParcel q = request();
-        q.writeInt32(point);
-        return call(GET_ONE_OF_MULTI_POINT_WB, q, r -> {
-            if (!r.readBool()) throw new IllegalStateException("281 returned false");
-            android.os.HwBlob b = r.readBuffer(16);
-            int pg = b.getInt32(0), red = b.getInt32(4), green = b.getInt32(8), blue = b.getInt32(12);
-            if (pg != point || red < 0 || red > 100 || green < 0 || green > 100 || blue < 0 || blue > 100) {
-                throw new IllegalStateException("281 struct " + pg + "," + red + "," + green + "," + blue + " for " + point);
-            }
-            return new int[] {red, green, blue};
-        });
-    }
-
-    /** 282 setOneOfMultiPointWB(point, {point, red, green, blue}), as stock. TSV W=writeInt32,writeBuffer R=readBool. */
-    public boolean setMultiPointWb(int point, int red, int green, int blue) throws RemoteException {
-        if (!isWbPoint(point)) throw new IllegalArgumentException("wb point " + point);
-        android.os.HwBlob b = new android.os.HwBlob(16);
-        b.putInt32(0, point);
-        b.putInt32(4, checkRange("wb red", red, 0, 100));
-        b.putInt32(8, checkRange("wb green", green, 0, 100));
-        b.putInt32(12, checkRange("wb blue", blue, 0, 100));
-        need();
-        HwParcel q = request();
-        q.writeInt32(point);
-        q.writeBuffer(b);
-        return call(SET_ONE_OF_MULTI_POINT_WB, q, RET_BOOL);
-    }
-
-    /** 278 ResetPictureToDefault(one of three stock triples). TSV W=writeInt32 x3 R=readBool. */
-    public boolean resetPicture(PictureReset r) throws RemoteException {
-        need();
-        HwParcel q = request();
-        q.writeInt32(r.a);
-        q.writeInt32(r.b);
-        q.writeInt32(r.c);
-        return call(RESET_PICTURE_TO_DEFAULT, q, RET_BOOL);
-    }
-
-    // ------------------------------------------------------------------ style filters (3D LUT)
-
     // ================================================================== PARKED (not compiled)
     // No reviewed caller outside hal/ (check_hal_callers.py fails the build on a transacting
     // method without one). Kept as reference: re-enable a method only together with its caller,

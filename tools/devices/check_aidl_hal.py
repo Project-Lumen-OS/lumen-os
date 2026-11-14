@@ -182,8 +182,31 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
     # the module layout (--module, or an assembled tree that holds apps/core/lumen-hal): the transport is the shared
     # AidlTransport, the allow list another file
     module = module or tf.replace(os.sep, "/").endswith("src/org/lumen/hal/AidlTransport.java")
+    # the allow-list enums: enum Iface / enum Call nested in the allow-list file, or each a top-level type of its own
+    # file (GmpfIface.java / GmpfCall.java; module layout: the one enum implementing AidlTransport.Method / Service)
+    def top_enum(suffix, impl):
+        out = []
+        for f, (r, m) in files.items():
+            for em in re.finditer(r"\benum\s+(\w*%s)\s*(implements\s+[\w.]+\s*)?\{" % suffix, m):
+                if impl is not None and not (em.group(2) and impl in em.group(2)):
+                    continue
+                if impl is None and os.path.basename(f) != em.group(1) + ".java":
+                    continue
+                out.append((f, em.group(1)))
+        return out
+    if module:
+        ce = top_enum("Call", "AidlTransport.Method")
+        ie = top_enum("Iface", "AidlTransport.Service")
+    else:
+        ce = [(tf, "Call")] if re.search(r"\benum\s+Call\b", mk) else top_enum("Call", None)
+        ie = [(tf, "Iface")] if re.search(r"\benum\s+Iface\b", mk) else top_enum("Iface", None)
+    if len(ce) != 1:
+        errs.append("rule 2: exactly one file must declare 'enum Call%s' (or a top-level enum ...Call), found %s"
+                    % (" implements AidlTransport.Method" if module else "", ce or "none"))
+        return errs, 0, 0, None
+    (cfile, cname), (ifile, iname) = ce[0], (ie[0] if len(ie) == 1 else (None, "Iface"))
     CALL_TYPES.clear()
-    CALL_TYPES.update({"Call", "C"} if module else {"Call"})
+    CALL_TYPES.update({"Call", cname, "C"} if module else {"Call", cname})
     meths = methods(mk)
     for f, i in sites:
         if f != tf:
@@ -195,19 +218,19 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
         cm = re.match(r"^(\w+)\.code\(\)$" if module else r"^(\w+)\.code$", first)
         if not cm or not em or cm.group(1) not in call_params(em[3]):
             errs.append("rule 1: %s:%d: the transact code must be <Call parameter>.code, found %r" % (f, line, first))
-    # module layout: the allow list is the one app file with the two enums that extends the transport
+    # module layout: the allow list is the app class that extends the transport (with its enums, nested or top-level)
     af = tf
     if module:
-        cands = [f for f, (r, m) in files.items() if f != tf and re.search(r"\benum\s+Call\s+implements\s+AidlTransport\.Method\b", m)]
-        if len(cands) != 1:
-            errs.append("rule 2: exactly one file must declare 'enum Call implements AidlTransport.Method', found %s" % (cands or "none"))
+        subs = [f for f, (r, m) in files.items() if f != tf and re.search(r"\bextends\s+AidlTransport\s*<", m)]
+        if len(subs) != 1:
+            errs.append("rule 2: exactly one file must extend AidlTransport<...Call>, found %s" % (subs or "none"))
             return errs, 0, 0, None
-        af = cands[0]
-        if not re.search(r"\bextends\s+AidlTransport\s*<\s*\w+\.Call\s*>", files[af][1]):
-            errs.append("rule 2: %s does not extend AidlTransport<...Call>" % af)
+        af = subs[0]
+        if not re.search(r"\bextends\s+AidlTransport\s*<\s*(?:\w+\.)?%s\s*>" % re.escape(cname), files[af][1]):
+            errs.append("rule 2: %s does not extend AidlTransport<...%s>" % (af, cname))
         for f, (r, m) in files.items():
-            if f != af and re.search(r"\bimplements\b[^{]*\bMethod\b", m) and f != tf:
-                errs.append("rule 2: %s implements AidlTransport.Method outside the allow list %s" % (f, af))
+            if f not in (af, cfile, tf) and re.search(r"\bimplements\b[^{]*\bMethod\b", m):
+                errs.append("rule 2: %s implements AidlTransport.Method outside the allow list %s" % (f, cfile))
     for f, (r, m) in files.items():
         if f != tf and (re.search(r"\bServiceManager\b", m) or "android.os.ServiceManager" in r):
             errs.append("rule 1: %s: ServiceManager outside the transport file %s" % (f, tf))
@@ -216,15 +239,22 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
                 if f == af and what == "Parcel":
                     continue   # the allow list writes the arguments and reads the reply (no Binder without IBinder)
                 for bm in re.finditer(rx, m):
+                    if what == "IBinder" and f == ifile and not module and (
+                            re.match(r"IBinder\s+\w+\s*;", m[bm.start():]) or "import android.os.IBinder;" in m[max(0, bm.start() - 20):bm.end() + 1]):
+                        continue   # the top-level Iface holds each interface's binder (a field); it never transacts
                     errs.append("rule 1: %s:%d: %s outside the transport file %s"
                                 % (f, m.count("\n", 0, bm.start()) + 1, what, tf))
     tsite = [i for f, i in sites if f == tf]
     tmeth = enclosing(meths, tsite[0]) if tsite else None
     tport = (tf, tmeth[2] if tmeth else None)
 
-    # 2. the two enums
+    # 2. the two enums: in the allow-list file, or each a top-level type of its own (GmpfIface, GmpfCall)
     araw, amk = files[af]
-    ib, cb = enum_body(araw, amk, "Iface"), enum_body(araw, amk, "Call")
+    ib, cb = enum_body(araw, amk, iname), enum_body(araw, amk, cname)
+    if not ib and ifile:
+        ib = enum_body(files[ifile][0], files[ifile][1], iname)
+    if not cb and cfile:
+        cb = enum_body(files[cfile][0], files[cfile][1], cname)
     if not ib or not cb:
         errs.append("rule 2: %s: enum Iface and enum Call expected" % af)
         return errs, 0, 0, tport
@@ -234,14 +264,28 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
     ifaces = {k: (v[1:] if v.startswith("I") else v) for k, v in ifaces.items()}
     calls = {}
     specs = {}
-    for m in re.finditer(r"\b([A-Z][A-Z0-9_]*)\s*\(\s*(null|Iface\.([A-Z][A-Z0-9_]*))\s*,\s*(0[xX][0-9a-fA-F]+|\d+)\s*,"
-                         r"\s*\"(\w+)\"\s*(?:,\s*\"([^\"\\]*)\"\s*)?\)", cb[0]):
-        calls[m.group(1)] = (m.group(3), int(m.group(4), 0), m.group(5))
+    # the generated HalCodes classes of the app (tools/hal/gen_codes.py): a Call names its code as HalCodes.NAME
+    halcodes = {}
+    for f, (r, m) in files.items():
+        if os.path.basename(f).endswith("HalCodes.java"):
+            cls = os.path.basename(f)[:-len(".java")]
+            for cm in re.finditer(r"\bstatic\s+final\s+int\s+(\w+)\s*=\s*(0[xX][0-9a-fA-F]+|\d+)\s*;", m):
+                halcodes["%s.%s" % (cls, cm.group(1))] = int(cm.group(2), 0)
+    for m in re.finditer(r"\b([A-Z][A-Z0-9_]*)\s*\(\s*(null|%s\.([A-Z][A-Z0-9_]*))\s*,\s*(0[xX][0-9a-fA-F]+|\d+|\w*HalCodes\.[A-Z][A-Z0-9_]*)\s*,"
+                         r"\s*\"(\w+)\"\s*(?:,\s*\"([^\"\\]*)\"\s*)?\)" % re.escape(iname), cb[0]):
+        if "HalCodes." in m.group(4):
+            if m.group(4) not in halcodes:
+                errs.append("rule 2: %s.%s: %s is no constant of a generated HalCodes class" % (cname, m.group(1), m.group(4)))
+                continue
+            code = halcodes[m.group(4)]
+        else:
+            code = int(m.group(4), 0)
+        calls[m.group(1)] = (m.group(3), code, m.group(5))
         if m.group(6) is not None:
             specs[m.group(1)] = m.group(6)
     declared = len(javascan.split_top(cb[1].strip().rstrip(","))) if cb[1].strip() else 0
     if declared != len(calls):
-        errs.append("rule 2: %s: enum Call has %d entries, %d in the form NAME(Iface.X | null, CODE, \"method\"[, \"args\"])"
+        errs.append("rule 2: %s: enum Call has %d entries, %d in the form NAME(Iface.X | null, CODE | HalCodes.NAME, \"method\"[, \"args\"])"
                     % (af, declared, len(calls)))
 
     # 3. every call is a row of the code table; 4. none is banned
@@ -367,7 +411,8 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
                 if own is None:
                     continue   # the declaration itself
                 args = [a.strip() for a in javascan.split_top(m[op + 1:javascan.matching(m, op, "(", ")")])]
-                okc = [a for a in args if re.match(r"^Call\.([A-Z][A-Z0-9_]*)$", a) and a[5:] in calls] \
+                okc = [a for a in args if re.match(r"^(?:Call|%s)\.([A-Z][A-Z0-9_]*)$" % re.escape(cname), a)
+                       and a.split(".", 1)[1] in calls] \
                     + [a for a in args if a in call_params(own[3]) or (f == tf and a in cfields)]
                 if not okc:
                     errs.append("rule 5: %s:%d: %s(%s) passes no Call constant or Call parameter"

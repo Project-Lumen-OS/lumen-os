@@ -43,3 +43,11 @@ ro.z9x.report.url=
 # re-pairing, because BlueZ keeps the projector's SDP record from the first pairing (a record without volume
 # category 2 makes it answer REJECTED / invalid parameter). A value saved in /data (developer option) still wins.
 persist.bluetooth.disableabsvol=false
+# ---- Vendor debug logging below INFO dropped at the source (as on the Play 6). Live Z9X 2026-11-12: these five tags
+# were 76 % of the main log buffer (about 150 lines/s with eye protection on), so it held only the last 70 s and no
+# app line of the evening was left to read. Re-enable one for a test with: setprop log.tag.Motion_det_ctl D
+log.tag.Motion_det_ctl=I
+log.tag.TOF_DEBUG_DTS6004=I
+log.tag.HumDetectDebug=I
+log.tag.XLAB_DISPATCH=I
+log.tag.XGIMI_PERCEPTION_DEBUG=I

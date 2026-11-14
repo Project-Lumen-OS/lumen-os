@@ -6,12 +6,17 @@
 app       Play6Projector
 base      apps/common/projector apps/common/projector/FILES
 file      apps/common/hal/HidlCaller.java src/org/lumen/projector/hal/HidlCaller.java
+# the shared gmpf clients (apps/core/lumen-gmpf: GmpfBase / Gmpf2Base and their call layer) under Play6Gmpf / Play6Gmpf2,
+# with the Z9X HIDL transport and the vendor value types of the shared bodies (Play6Projector.gmpf)
+module    lumen-gmpf
+base      apps/Z9xProjector devices/dragon_healthy/app/Play6Projector.gmpf
 file      apps/common/LumenImport.java src/org/lumen/common/LumenImport.java
 # the settings look of Lumen OS 1.0.9 from the Z9X app itself (Kit, Shell, fonts, icons, strings_settings2)
 base      apps/Z9xProjector devices/dragon_healthy/app/Play6Projector.settings2
 # the shared projector menu of every Lumen projector with the Play 6 profile; the
 # Play 6 adapter is apps/Play6Projector panel/Play6Features (+ Play6MenuGates, Play6MenuPages, Play6Menu)
 module    lumen-menu
+module    lumen-stats
 file      devices/dragon_healthy/menu.json assets/lumen_menu/menu.json
 top       apps/Play6Projector
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

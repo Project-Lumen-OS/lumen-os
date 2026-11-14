@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">省電モード</string>
     <string name="lumen_m_ambient_speaker">アンビエントスピーカー</string>
     <string name="lumen_m_ct_custom">カスタム</string>
+    <string name="lumen_m_lamp_off">画面をオフ</string>
 </resources>

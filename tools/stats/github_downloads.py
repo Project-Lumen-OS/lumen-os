@@ -20,11 +20,16 @@ import subprocess
 import sys
 
 REPO = "Project-Lumen-OS/lumen-os"
+# the model-agnostic Lumen Installer (its own repository): APK downloads are installer downloads, the signed device
+# index (devices.json on the tag index) is fetched at every start of the installer; its tags get this prefix
+INSTALLER_REPO, INSTALLER_PREFIX = "Project-Lumen-OS/lumen-installer", "lumen-installer-"
 KINDS = [
     ("sig", re.compile(r"\.sig$")),
     ("manifest", re.compile(r"^update-.*\.json$")),
     ("image", re.compile(r"system\.img(\.\w+)?$")),
     ("installer", re.compile(r"installer\.zip$")),
+    ("installer", re.compile(r"^lumen-installer-.*\.apk$")),
+    ("manifest", re.compile(r"^devices\.json$")),
     ("ota_full", re.compile(r"full-ota\.zip$")),
     ("ota_delta", re.compile(r"-from-.*-ota\.zip$")),
     ("metadata", re.compile(r"payload_metadata\.bin$")),
@@ -33,10 +38,12 @@ KINDS = [
 ]
 # release tag prefix -> device codename, longest first (the design notes: <slug>-<version> from 1.0.8,
 # the Z9X up to 1.0.7 as v<version>, the HB until its 1.0.8 as hb-<version>)
-DEVICES = [("z9x-hb", "goat_elegant"), ("hb", "goat_elegant"), ("play6", "dragon_healthy"), ("z9x", "horse_popular"),
+DEVICES = [("lumen-installer", "installer"), ("z9x-hb", "goat_elegant"), ("hb", "goat_elegant"),
+           ("play6", "dragon_healthy"), ("x50max", "g0100"), ("x50", "g0111"), ("rs30", "g0155"), ("z9x", "horse_popular"),
            ("v", "horse_popular")]
-# update channel tags: fixed pre-releases holding only the signed manifests; their downloads are update checks
-CHANNELS = {"z9x", "z9x-hb", "hb", "play6"}
+# update channel tags: fixed pre-releases holding only the signed manifests; their downloads are update checks (the
+# installer's index: installer starts)
+CHANNELS = {"z9x", "z9x-hb", "hb", "play6", "x50", "x50max", "rs30", "lumen-installer-index"}
 
 
 def kind(name):
@@ -58,8 +65,18 @@ def version(tag):
     return m.group(0) if m else tag
 
 
-def releases():
-    out = subprocess.run(["gh", "api", "--paginate", "repos/%s/releases?per_page=100" % REPO],
+def utc_day():
+    """The snapshot date in UTC (the VPS runs on EST, the Mac on MSK: local dates would split one snapshot)."""
+    return datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+
+
+def installer_tags(rels):
+    """Releases of the installer repository under the prefixed tag (v1.0.1 -> lumen-installer-v1.0.1)."""
+    return [dict(r, tag_name=INSTALLER_PREFIX + r["tag_name"]) for r in rels]
+
+
+def releases(repo=REPO):
+    out = subprocess.run(["gh", "api", "--paginate", "repos/%s/releases?per_page=100" % repo],
                          check=True, capture_output=True, text=True).stdout
     # --paginate concatenates one JSON array per page
     data, dec, i = [], json.JSONDecoder(), 0
@@ -94,8 +111,9 @@ def main():
     g.add_argument("--json", action="store_true")
     g.add_argument("--summary", action="store_true")
     a = ap.parse_args()
-    rels = sorted(releases(), key=lambda r: r.get("published_at") or "", reverse=True)
-    day = datetime.date.today().isoformat()
+    rels = sorted(releases() + installer_tags(releases(INSTALLER_REPO)), key=lambda r: r.get("published_at") or "",
+                  reverse=True)
+    day = utc_day()
     if a.json:
         json.dump(rows(rels, day), sys.stdout, indent=1)
         print()

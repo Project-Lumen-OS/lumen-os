@@ -1,0 +1,52 @@
+# The model properties the stock RS30 Ultra Max system loads at every boot: the stock /system/bin/init (XGIMI build)
+# reads /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop; LineageOS init does not. The recipe
+# (image/steps.tsv) appends these lines to the image's product build.prop, so they are set from the first second of boot, as on stock.
+# Rule (x50_props.py model_rule, the X50's): every line of the stock G0155 file except the identity keys and
+# persist.sys.*. Stock file: vendor/etc/xgimimodelname/G0155/build.prop of v1.1.42, sha256
+# d4038dfdd6eeeabcb63b8c357dec7b96ccf4dfc8eec316c11a6a6e2f4eaf7faf (x50_props.py model checks it on the build host).
+# Against the X50: its own product name, the blue boot style, the 3 GB RAM heap / hwui / lmkd tuning and 120 Hz UI.
+ro.xgimi.product.name=Product_athena35ultramax
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_athena35ultramax
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.vendor.xgimi.animation.style=blue
+persist.xgimi.bootanimation.style=blue
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9681+T-UHD003F0003001F0017000100010037+athena35ultramax+ProjectorUHD_3
+vendor.xgimi.mw.support=1
+ro.vendor.xgimi.ram_size=3g
+dalvik.vm.heapgrowthlimit=192m
+dalvik.vm.heapsize=512m
+dalvik.vm.heapminfree=2m
+dalvik.vm.heapmaxfree=16m
+dalvik.vm.heaptargetutilization=0.75
+ro.hwui.texture_cache_size=48
+ro.hwui.layer_cache_size=24
+ro.hwui.path_cache_size=12
+ro.lmk.swap_free_low_percentage=22
+ro.lmk.thrashing_limit=60
+ro.lmk.thrashing_limit_decay=20
+ro.lmk.thrashing_limit_critical=100
+ro.lmk.kill_heaviest_task=true
+ro.lmk.stall_limit_critical=200
+ro.lmk.swap_util_max=75
+ro.lmk.mw_protect_visible=true
+dalvik.vm.usap_pool_enabled=true
+dalvik.vm.dex2oat-threads=4
+dalvik.vm.dex2oat-cpu-set=0,1,2,3
+dalvik.vm.background-dex2oat-threads=2
+dalvik.vm.background-dex2oat-cpu-set=0,1
+dalvik.vm.image-dex2oat-Xms=128m
+dalvik.vm.dex2oat-Xms=128m
+vendor.xgimi.display.hfr.enable=1

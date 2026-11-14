@@ -3,6 +3,7 @@ package org.lumen.projector;
 import android.content.Context;
 import android.util.Log;
 
+import org.lumen.projector.hal.AiScene;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.panel.PanelRules;
 
@@ -31,7 +32,7 @@ public final class AiScenePolicy {
         Hal.run((g, g2) -> {
             int raw = g.getPictureModeRaw();
             if (!PanelRules.aiSceneReassert(raw)) return;
-            boolean ok = g.setAiScene(GmpfClient.AiScene.FILM);
+            boolean ok = g.setAiScene(AiScene.FILM);
             Log.i(TAG, why + ": 666 read " + raw + ", 667(0,16) -> " + ok);
         });
     }

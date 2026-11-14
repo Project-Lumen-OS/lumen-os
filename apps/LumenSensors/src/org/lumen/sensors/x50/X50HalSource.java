@@ -15,7 +15,7 @@ import org.lumen.sensors.core.Sample;
 import org.lumen.sensors.core.Sampler;
 import org.lumen.sensors.core.Source;
 import org.lumen.sensors.hal.X50Gmpf;
-import org.lumen.sensors.hal.X50Gmpf.Call;
+import org.lumen.sensors.hal.X50GmpfCall;
 import org.lumen.sensors.hal.X50Structs;
 
 import java.util.ArrayList;
@@ -288,7 +288,7 @@ public final class X50HalSource implements Source {
         boolean dead, probed, again, deadIfAbsent, once;
 
         /** The period comes from the plan of the call's service and code (X50Schedule.kindOf). */
-        Task(String name, Call call, int group, int modes) {
+        Task(String name, X50GmpfCall call, int group, int modes) {
             this.name = name;
             this.group = group;
             this.modes = modes;
@@ -311,7 +311,7 @@ public final class X50HalSource implements Source {
     private abstract class OneTask extends Task {
         Sample sample;
 
-        OneTask(String name, Call call, int group, int modes) {
+        OneTask(String name, X50GmpfCall call, int group, int modes) {
             super(name, call, group, modes);
         }
 
@@ -348,7 +348,7 @@ public final class X50HalSource implements Source {
     }
 
     private void buildTasks() {
-        screenTask = new Task("DISPLAY 28 screen", Call.GET_SCREEN_ON_OFF, -1, 0) {
+        screenTask = new Task("DISPLAY 28 screen", X50GmpfCall.GET_SCREEN_ON_OFF, -1, 0) {
             @Override boolean run() throws Exception {
                 boolean on = hal.screenOn();
                 if (on == lampOff) {
@@ -362,7 +362,7 @@ public final class X50HalSource implements Source {
         };
         tasks.add(screenTask);
 
-        tasks.add(new OneTask("TEMPERATURE 6 system", Call.GET_SYSTEM_TEMPERATURE, Group.TEMPS, M_ROW_GRAPH) {
+        tasks.add(new OneTask("TEMPERATURE 6 system", X50GmpfCall.GET_SYSTEM_TEMPERATURE, Group.TEMPS, M_ROW_GRAPH) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -378,7 +378,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("TEMPERATURE 3 fan mode", Call.GET_FAN_MODE, Group.COOLING, M_ROW) {
+        tasks.add(new OneTask("TEMPERATURE 3 fan mode", X50GmpfCall.GET_FAN_MODE, Group.COOLING, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -393,7 +393,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("DISPLAY 7 brightness level", Call.GET_DLP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 7 brightness level", X50GmpfCall.GET_DLP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -408,7 +408,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("TV 4 input source", Call.GET_CURRENT_INPUT_SOURCE, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("TV 4 input source", X50GmpfCall.GET_CURRENT_INPUT_SOURCE, Group.PICTURE, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -435,7 +435,7 @@ public final class X50HalSource implements Source {
 
         tasks.add(new MotionTask());
 
-        tasks.add(new OneTask("FOCUS 59 focus motor", Call.GET_FOCUS_MOTOR_CURRENT_STEP, Group.MOTION, M_ROW) {
+        tasks.add(new OneTask("FOCUS 59 focus motor", X50GmpfCall.GET_FOCUS_MOTOR_CURRENT_STEP, Group.MOTION, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -453,7 +453,7 @@ public final class X50HalSource implements Source {
         tasks.add(new SensorProbe());
         tasks.add(new FanProbe());
 
-        tasks.add(new OneTask("TEMPERATURE 12 over-temperature", Call.IS_TEMP_ULTRA_HIGH, Group.TEMPS, M_ROW) {
+        tasks.add(new OneTask("TEMPERATURE 12 over-temperature", X50GmpfCall.IS_TEMP_ULTRA_HIGH, Group.TEMPS, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.overheat", Group.TEMPS, Fmt.YES_NO).label(R.string.s_overheat)
                         .kind(Levels.K_FLAG).order(200);
@@ -465,7 +465,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("DISPLAY 152 Boost", Call.GET_LENS_DISP_MODE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 152 Boost", X50GmpfCall.GET_LENS_DISP_MODE, Group.LIGHT, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.boost", Group.LIGHT, Fmt.ON_OFF).label(R.string.s_boost).order(20);
             }
@@ -478,7 +478,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("DISPLAY 5 light mode", Call.GET_DLP_LUMENS_MODE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 5 light mode", X50GmpfCall.GET_DLP_LUMENS_MODE, Group.LIGHT, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.lightmode", Group.LIGHT, Fmt.TEXT).label(R.string.s_light_mode).order(30);
             }
@@ -491,7 +491,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("DISPLAY 178 light power", Call.GET_DISP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 178 light power", X50GmpfCall.GET_DISP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -508,7 +508,7 @@ public final class X50HalSource implements Source {
 
         tasks.add(new LightUsageTask());
 
-        tasks.add(new OneTask("TV 78 HDR type", Call.GET_HDR_TYPE, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("TV 78 HDR type", X50GmpfCall.GET_HDR_TYPE, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.hdr", Group.PICTURE, Fmt.TEXT).label(R.string.s_hdr).order(20);
             }
@@ -521,7 +521,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        videoTask = new OneTask("TV 122 video info", Call.GET_VIDEO_INFO, Group.PICTURE, M_ROW) {
+        videoTask = new OneTask("TV 122 video info", X50GmpfCall.GET_VIDEO_INFO, Group.PICTURE, M_ROW) {
             @Override boolean needed() { return X50Schedule.readsVideoInfo(inputSource); }
 
             @Override Sample create() {
@@ -537,7 +537,7 @@ public final class X50HalSource implements Source {
         };
         tasks.add(videoTask);
 
-        tasks.add(new OneTask("DISPLAY 179 output frame rate", Call.GET_DISP_OUTPUT_FPS, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 179 output frame rate", X50GmpfCall.GET_DISP_OUTPUT_FPS, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.outfps", Group.PICTURE, Fmt.HZ).label(R.string.s_out_fps).order(50);
             }
@@ -550,7 +550,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("DISPLAY 57 output timing", Call.GET_OUTPUT_TIMING_INFO, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("DISPLAY 57 output timing", X50GmpfCall.GET_OUTPUT_TIMING_INFO, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("x50.output", Group.PICTURE, Fmt.SIGNAL).label(R.string.s_output).order(35);
             }
@@ -562,7 +562,7 @@ public final class X50HalSource implements Source {
             }
         });
 
-        hdmiTask = new OneTask("TV 38 HDMI info", Call.GET_HDMI_INFO, Group.PICTURE, M_ROW) {
+        hdmiTask = new OneTask("TV 38 HDMI info", X50GmpfCall.GET_HDMI_INFO, Group.PICTURE, M_ROW) {
             @Override boolean needed() { return X50Schedule.readsHdmiInfo(inputSource); }
 
             @Override Sample create() {
@@ -591,7 +591,7 @@ public final class X50HalSource implements Source {
         Sample tilt, accel, ang;
 
         MotionTask() {
-            super("MOTION 2 motion", Call.GET_MOTION_DETECTION, Group.MOTION, M_ROW);
+            super("MOTION 2 motion", X50GmpfCall.GET_MOTION_DETECTION, Group.MOTION, M_ROW);
             deadIfAbsent = true;
         }
 
@@ -631,7 +631,7 @@ public final class X50HalSource implements Source {
         private int k;
 
         SensorProbe() {
-            super("TEMPERATURE 7 sensor probe", Call.GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, M_TEMP);
+            super("TEMPERATURE 7 sensor probe", X50GmpfCall.GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, M_TEMP);
         }
 
         @Override boolean run() throws Exception {
@@ -686,7 +686,7 @@ public final class X50HalSource implements Source {
         final Sample sample;
 
         SensorTask(int idx, Sample sample) {
-            super("TEMPERATURE 7 sensor " + idx, Call.GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, sample.modes);
+            super("TEMPERATURE 7 sensor " + idx, X50GmpfCall.GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, sample.modes);
             this.idx = idx;
             this.sample = sample;
             probed = true;
@@ -712,7 +712,7 @@ public final class X50HalSource implements Source {
         private int k;
 
         FanProbe() {
-            super("TEMPERATURE 5 fan probe", Call.GET_FAN_ROTATION_RATE, Group.COOLING, M_FAN);
+            super("TEMPERATURE 5 fan probe", X50GmpfCall.GET_FAN_ROTATION_RATE, Group.COOLING, M_FAN);
         }
 
         @Override boolean run() throws Exception {
@@ -755,7 +755,7 @@ public final class X50HalSource implements Source {
         final Sample sample;
 
         FanTask(int fan, Sample sample) {
-            super("TEMPERATURE 5 fan " + fan, Call.GET_FAN_ROTATION_RATE, Group.COOLING, sample.modes);
+            super("TEMPERATURE 5 fan " + fan, X50GmpfCall.GET_FAN_ROTATION_RATE, Group.COOLING, sample.modes);
             this.fan = fan;
             this.sample = sample;
             probed = true;
@@ -783,7 +783,7 @@ public final class X50HalSource implements Source {
         private Sample[] rows;
 
         LightUsageTask() {
-            super("DISPLAY 176 light usage", Call.GET_LIGHT_USAGE_INFO, Group.LIGHT, M_ROW);
+            super("DISPLAY 176 light usage", X50GmpfCall.GET_LIGHT_USAGE_INFO, Group.LIGHT, M_ROW);
             deadIfAbsent = true;
             once = true;
         }

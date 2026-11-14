@@ -239,6 +239,7 @@ res/values-tr/strings_voice.xml
 res/values-uk/strings_voice.xml
 res/values-zh-rCN/strings_voice.xml
 res/values-zh-rTW/strings_voice.xml
+src/org/lumen/projector/voice/CommandKind.java
 src/org/lumen/projector/voice/Commands.java
 src/org/lumen/projector/voice/AppMatcher.java
 src/org/lumen/projector/voice/Speaker.java

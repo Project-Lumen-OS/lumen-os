@@ -115,6 +115,13 @@ if [ -f "$APP/res/xml/global_keys.xml" ] && [ -f "$HERE/check_global_keys.py" ];
   fi
 fi
 
+# A lumen-menu profile names only ids of the module's FeatureId: an unknown one shows no menu on the device
+# (gsi/apps/core/lumen-menu/tools/menu_ids.py).
+if [ -f "$APP/assets/lumen_menu/menu.json" ] && [ -f "$APP/src/org/lumen/menu/FeatureId.java" ]; then
+  python3 "$HERE/core/lumen-menu/tools/menu_ids.py" "$APP/src/org/lumen/menu/FeatureId.java" \
+    "$APP/assets/lumen_menu/menu.json" || die "menu.json check failed"
+fi
+
 # org.lumen.projector: every HAL method that transacts must have a reviewed caller outside hal/
 # (no dead whitelist entries in the dex; gsi/apps/check_hal_callers.py).
 if [ -f "$APP/src/org/lumen/projector/hal/GmpfClient.java" ]; then

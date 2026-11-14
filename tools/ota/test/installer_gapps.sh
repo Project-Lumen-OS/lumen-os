@@ -236,7 +236,7 @@ inst 'no\nERASE\n' gapps --zip "$ZIP"
 expect_rc 0
 expect_cmds "$CREATE$WIPE"
 expect_out "$NAME, sha256"; expect_out "ERASES ALL DATA"; expect_out "$P: $NFILES files of $NAME"
-expect_out "the setup now has a Google sign-in step"
+expect_out "The setup now has a Google sign-in step"
 [ -f "$DEV/dev/block/mapper/$P/MANIFEST" ] || fail "no MANIFEST in the partition"
 [ "$(gprop sys.z9x.gapps)" = ok ] || fail "after the last start sys.z9x.gapps=$(gprop sys.z9x.gapps): $(cat "$FB/boot.out")"
 [ "$(gprop ro.com.google.gmsversion)" = 14_test ] || fail "gmsversion $(gprop ro.com.google.gmsversion)"
@@ -248,7 +248,7 @@ end
 begin install_wipe_ru
 LANG_CASE=ru_RU.UTF-8 inst 'нет\nERASE\n' gapps --zip "$ZIP"
 expect_rc 0
-expect_out "СТИРАЕТ ВСЕ ДАННЫЕ"; expect_out "в настройке теперь есть шаг входа в Google"
+expect_out "СТИРАЕТ ВСЕ ДАННЫЕ"; expect_out "В настройке теперь есть шаг входа в Google"
 if grep -q '—' "$C/out"; then fail "an em dash in the Russian text"; fi
 end
 
@@ -510,7 +510,7 @@ expect_out "the image takes the Google services add-on as erofs"
 expect_out "Google services add-on image: $NFILES files checked"
 expect_out "With --gapps-zip the same session also writes the Google services from $NAME"
 expect_out "writing the Google services into $P"; expect_out "  ✓ $P: $NAME"
-expect_out "written. First start takes 2-4 minutes; the setup screen appears on the projector, with the Google sign-in step."
+expect_out "written. First start takes 2-4 minutes. The setup screen appears on the projector, with the Google sign-in step."
 expect_out "If Google refuses the sign-in: bash lumen-install.sh gsf"
 [ "$(grep -c 'Type ERASE' "$C/out")" = 1 ] || fail "ERASE asked $(grep -c 'Type ERASE' "$C/out") times"
 n_img=$(grep -n "Google services add-on image:" "$C/out" | head -1 | cut -d: -f1); n_er=$(grep -n "Type ERASE" "$C/out" | cut -d: -f1)
@@ -603,7 +603,7 @@ inst 'ERASE\n' --no-blobs --gapps-zip "$ZIP"
 expect_rc 0
 expect_out "Next the installer writes the Google services (if asked) and ERASES ALL DATA"
 expect_cmds "$S getvar all;$S getvar all;$S resize-logical-partition $P $NEED;$S flash $P $(printf '%s' "$GIMG" | sed "s|/CASE/|/$CASE/|");$FMT"
-expect_out "data wiped. The first start takes 2-4 minutes; the setup has a Google sign-in step."
+expect_out "data wiped. The first start takes 2-4 minutes. The setup has a Google sign-in step."
 google_on
 end
 

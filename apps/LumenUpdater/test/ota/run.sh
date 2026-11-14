@@ -43,7 +43,7 @@ S=$T/src/org/lumen/updater
 mkdir -p "$OUT/j"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/j" -cp "$HJ:$AJ" \
   "$T/test/ota/stubs/android/os/SystemProperties.java" "$S/Ota.java" "$S/Channels.java" "$S/Preflight.java" "$S/Engine.java" \
-  "$S/UpdateManifest.java" "$S/Outcome.java" "$T/test/org/lumen/updater/ChannelTest.java" \
+  "$S/UpdateManifest.java" "$S/Outcome.java" "$S/BootVerdict.java" "$S/GateVerdict.java" "$S/GateReason.java" "$S/InstallError.java" "$T/test/org/lumen/updater/ChannelTest.java" \
   "$T/test/org/lumen/updater/PreflightHbTest.java" "$T/test/org/lumen/updater/PreflightGateTest.java" \
   "$T/test/org/lumen/updater/OutcomeTest.java" "$T/test/org/lumen/updater/BetaTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.OutcomeTest

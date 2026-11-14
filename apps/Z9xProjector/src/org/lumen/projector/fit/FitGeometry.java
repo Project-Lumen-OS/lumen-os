@@ -25,16 +25,6 @@ public final class FitGeometry {
     /** The full panel as corners TL, TR, BR, BL (x, y), on the pixel edges. */
     public static final int[] FULL_FRAME = {0, 0, 3840, 0, 3840, 2160, 0, 2160};
 
-    /** Which picture the lit area is (section 4.3). */
-    public enum Estimator {
-        /** A: the corrected keystone corners, mapped onto the screen. */
-        CORNERS,
-        /** B, keystone off: the lit picture is the whole trapezoid of the panel. */
-        FULL_PANEL,
-        /** B, keystone active but corners unknown: the largest 16:9 rectangle inside the trapezoid. */
-        INSCRIBED
-    }
-
     public final double distanceMm, thetaDeg, axisRow;
     private final double cos, sin;
 
@@ -168,7 +158,7 @@ public final class FitGeometry {
         }
     }
 
-    public Size size(Estimator e, int[] corners, double tr) {
+    public Size size(FitEstimator e, int[] corners, double tr) {
         switch (e) {
             case CORNERS: {
                 Quad q = quad(corners, tr);
@@ -186,9 +176,9 @@ public final class FitGeometry {
     }
 
     /** The estimator for a corner read after an auto keystone: null or invalid -> inscribed. */
-    public static Estimator estimatorFor(int[] corners) {
-        if (!validCorners(corners)) return Estimator.INSCRIBED;
-        return isFullFrame(corners) ? Estimator.FULL_PANEL : Estimator.CORNERS;
+    public static FitEstimator estimatorFor(int[] corners) {
+        if (!validCorners(corners)) return FitEstimator.INSCRIBED;
+        return isFullFrame(corners) ? FitEstimator.FULL_PANEL : FitEstimator.CORNERS;
     }
 
     /** 8 ints, inside the panel, TL left of TR, BL left of BR, TL / TR above BL / BR, at least half the panel each way (the vendor refuses less). */

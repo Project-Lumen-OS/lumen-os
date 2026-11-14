@@ -16,8 +16,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * in this process.
  */
 public final class Store {
-    public enum State { IDLE, CHECKING, AVAILABLE, DOWNLOADING, PAUSED, DOWNLOADED, INSTALLING, READY, ERROR }
-
     public static final int AUTO_OFF = 0, AUTO_NOTIFY = 1, AUTO_DOWNLOAD = 2;
 
     private static Store sInstance;
@@ -45,18 +43,18 @@ public final class Store {
     }
 
     // ---- state
-    public State state() {
+    public UpdateState state() {
         try {
-            return State.valueOf(p.getString("state", "IDLE"));
+            return UpdateState.valueOf(p.getString("state", "IDLE"));
         } catch (IllegalArgumentException e) {
-            return State.IDLE;
+            return UpdateState.IDLE;
         }
     }
 
-    public void setState(State s) {
+    public void setState(UpdateState s) {
         SharedPreferences.Editor e = p.edit().putString("state", s.name());
         // 2026-11-04: READY / INSTALLING remember their boot (Outcome.staleBootState)
-        if (s == State.READY || s == State.INSTALLING) e.putString("state_boot", bootId()); else e.remove("state_boot");
+        if (s == UpdateState.READY || s == UpdateState.INSTALLING) e.putString("state_boot", bootId()); else e.remove("state_boot");
         e.apply();
         changed();
     }
@@ -76,7 +74,7 @@ public final class Store {
 
     /** Error message: string resource name + optional argument (shown in the current language). */
     public void setError(String resName, String arg) {
-        p.edit().putString("state", State.ERROR.name()).putString("err", resName).putString("err_arg", arg)
+        p.edit().putString("state", UpdateState.ERROR.name()).putString("err", resName).putString("err_arg", arg)
                 .remove("state_boot").apply();
         changed();
     }

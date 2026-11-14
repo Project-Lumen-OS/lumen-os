@@ -7,7 +7,7 @@ JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexe
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE/src/org/lumen/projector/display/UiRes.java" "$HERE/src/org/lumen/projector/sys/BootReason.java" \
+  "$HERE/src/org/lumen/projector/display/UiRes.java" "$HERE/src/org/lumen/projector/display/UiResKeep.java" "$HERE/src/org/lumen/projector/sys/BootReason.java" \
   "$HERE/src/org/lumen/projector/ak/AkPatternSpec.java" \
   "$HERE/test/uires/UiResTest.java" "$HERE/test/uires/AkUnitsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.display.UiResTest

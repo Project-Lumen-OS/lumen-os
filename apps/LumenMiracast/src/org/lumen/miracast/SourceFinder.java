@@ -47,10 +47,12 @@ final class SourceFinder {
     static final class Result {
         final String host;
         final Socket connected;   // non-null only from the sweep
+        final String how;         // for the diagnostics: group owner, DHCP lease, ARP, sweep
 
-        Result(String host, Socket connected) {
+        Result(String host, Socket connected, String how) {
             this.host = host;
             this.connected = connected;
+            this.how = how;
         }
     }
 
@@ -58,7 +60,7 @@ final class SourceFinder {
 
     static Result find(Context c, WifiP2pInfo info, WifiP2pGroup group, int port, long windowMs, AtomicBoolean cancelled) {
         if (info != null && !info.isGroupOwner && info.groupOwnerAddress != null) {
-            return new Result(info.groupOwnerAddress.getHostAddress(), null);
+            return new Result(info.groupOwnerAddress.getHostAddress(), null, "group owner address");
         }
         String iface = group != null ? group.getInterface() : null;
         long end = System.currentTimeMillis() + windowMs;
@@ -67,12 +69,12 @@ final class SourceFinder {
             String ip = fromTethering(c, 1500);
             if (ip != null) {
                 Log.i(TAG, "source " + ip + " from the DHCP lease list");
-                return new Result(ip, null);
+                return new Result(ip, null, "DHCP lease");
             }
             ip = fromArp(iface);
             if (ip != null) {
                 Log.i(TAG, "source " + ip + " from ARP on " + iface);
-                return new Result(ip, null);
+                return new Result(ip, null, "ARP on " + iface);
             }
             if (round++ >= 1) { // give DHCP a moment before sweeping
                 String own = ownAddress(iface);
@@ -81,7 +83,7 @@ final class SourceFinder {
                     if (s != null) {
                         String host = s.getInetAddress().getHostAddress();
                         Log.i(TAG, "source " + host + " found by sweep");
-                        return new Result(host, s);
+                        return new Result(host, s, "port sweep from " + own);
                     }
                 }
             }

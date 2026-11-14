@@ -1,6 +1,7 @@
 package org.lumen.sensors.z9x;
 
 import org.lumen.sensors.hal.GmpfAllowlist;
+import org.lumen.sensors.hal.Z9xHalCodes;
 
 /**
  * Z9X ONLY: the XGIMI HAL read plan of the Z9X HAL source, plain Java so the host test checks it: the
@@ -103,29 +104,29 @@ public final class Z9xSchedule {
 
     /** {interface, code, period kind} of every read of the allowlist. */
     private static final int[][] PLAN = {
-            {I1, GmpfAllowlist.SCREEN_ON, P_ROUND},
-            {I1, GmpfAllowlist.SYSTEM_TEMPERATURE, P_ROUND},
-            {I1, GmpfAllowlist.SENSOR_TEMPERATURE, P_ROUND},
-            {I1, GmpfAllowlist.FAN_MODE, P_ROUND},
-            {I1, GmpfAllowlist.FAN_SPEED, P_ROUND},
-            {I1, GmpfAllowlist.LAMP_LEVEL, P_SLOW},
-            {I1, GmpfAllowlist.LUMENS_MODE, P_SLOW},
-            {I1, GmpfAllowlist.INPUT_SOURCE, P_SLOW},
-            {I1, GmpfAllowlist.HDR_TYPE, P_SLOW},
-            {I1, GmpfAllowlist.HDMI_INFO, P_SLOW},
-            {I1, GmpfAllowlist.OUTPUT_TIMING, P_SLOW},
-            {I1, GmpfAllowlist.MOTION, P_SLOW},
-            {I1, GmpfAllowlist.FOCUS_STEP, P_SLOW},
-            {I1, GmpfAllowlist.TOF_DISTANCE, P_TOF},
-            {I1, GmpfAllowlist.SENSOR_STATUS, P_ONCE},
-            {I2, GmpfAllowlist.LENS_DISP_MODE, P_SLOW},
-            {I2, GmpfAllowlist.LED_LEVEL, P_SLOW},
-            {I2, GmpfAllowlist.LED_CURRENTS, P_SLOW},
-            {I2, GmpfAllowlist.OVER_TEMPERATURE, P_SLOW},
-            {I2, GmpfAllowlist.VIDEO_INFO, P_SLOW},
-            {I2, GmpfAllowlist.OUTPUT_FPS, P_SLOW},
-            {I2, GmpfAllowlist.SUPPLY_VOLTAGE, P_VOLTAGE},
-            {I2, GmpfAllowlist.LIGHT_USAGE, P_ONCE},
+            {I1, Z9xHalCodes.GMPF_GET_SCREEN_ON_OFF, P_ROUND},
+            {I1, Z9xHalCodes.GMPF_GET_SYSTEM_TEMPERATURE, P_ROUND},
+            {I1, Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR, P_ROUND},
+            {I1, Z9xHalCodes.GMPF_GET_FAN_MODE, P_ROUND},
+            {I1, Z9xHalCodes.GMPF_GET_FAN_ROTATION_RATE, P_ROUND},
+            {I1, Z9xHalCodes.GMPF_GET_DLP_LUMENS_LEVEL, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_DLP_LUMENS_MODE, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_CURRENT_INPUT_SOURCE, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_HDR_TYPE, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_HDMI_INFO, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_OUTPUT_TIMING_INFO, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_MOTION_DETECTION, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_FOCUS_MOTOR_CURRENT_STEP, P_SLOW},
+            {I1, Z9xHalCodes.GMPF_GET_TOF_DISTANCE, P_TOF},
+            {I1, Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR_STATUS, P_ONCE},
+            {I2, Z9xHalCodes.GMPF2_GET_LENS_DISP_MODE, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_GET_DISP_LUMENS_LEVEL, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_GET_CUR_HW_CURRENT, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_IS_TEMP_ULTRA_HIGH, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_GET_VIDEO_INFO, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_GET_DISP_OUTPUT_FPS, P_SLOW},
+            {I2, Z9xHalCodes.GMPF2_GET_POWER_SUPPLY_VOLTAGE, P_VOLTAGE},
+            {I2, Z9xHalCodes.GMPF2_GET_LIGHT_USAGE_INFO, P_ONCE},
     };
 
     /** Period kind of a read, or -1 for a code this plan does not read. */

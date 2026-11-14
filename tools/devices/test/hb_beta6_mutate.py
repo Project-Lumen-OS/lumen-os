@@ -9,27 +9,29 @@ import os, shutil, subprocess, sys, tempfile
 G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 P = "src/org/lumen/projector/panel/"
 BR, ZS, QP, OZ = P + "BoostRules.java", P + "ZoomScale.java", P + "HbMenuFeatures.java", P + "OpticalZoomPanel.java"
+QP_HbKeystoneRows = 'src/org/lumen/projector/panel/HbKeystoneRows.java'
+QP_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 GT = P + "HbMenuGates.java"
 HAL = "@Z9X/src/org/lumen/projector/Hal.java"
 MUT = [
     ("br_perf_only", BR, "pm == PM_PERFORMANCE || pm == PM_OFFICE", "pm == PM_PERFORMANCE"),
     ("br_office_only", BR, "pm == PM_PERFORMANCE || pm == PM_OFFICE", "pm == PM_OFFICE"),
     ("br_perf_wire", BR, "PM_PERFORMANCE = 5;", "PM_PERFORMANCE = 6;"),
-    ("br_trust_boolean", BR, "if (lensAfter == want) return Outcome.DONE;", ""),
+    ("br_trust_boolean", BR, "if (lensAfter == want) return BoostOutcome.DONE;", ""),
     ("br_lock_on_enter", BR, "if (!wantOn && lockedByPictureMode(pictureMode))", "if (lockedByPictureMode(pictureMode))"),
-    ("br_unreadable_done", BR, "return ret ? Outcome.DONE : Outcome.FAILED;", "return Outcome.DONE;"),
+    ("br_unreadable_done", BR, "return ret ? BoostOutcome.DONE : BoostOutcome.FAILED;", "return BoostOutcome.DONE;"),
     ("br_explain_without_boost", BR, "Boolean.TRUE.equals(boost) && lockedByPictureMode", "lockedByPictureMode"),
     ("br_ca_always", BR, "Boolean.TRUE.equals(boost) && !lockedByPictureMode(pictureModeWire)", "Boolean.TRUE.equals(boost)"),
-    ("mf_leave_no_explain", QP, "        if (!on && BoostRules.onLeavePress(cur, pm) == BoostRules.Leave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);\n", ""),
-    ("mf_setboost_boolean", QP, "BoostRules.judge(on, ret, lensAfter, pmAfter)", "BoostRules.judge(on, true, lensAfter, pmAfter)"),
-    ("mf_setboost_throw_old", QP, "boolean ret = g2.setBoost(on);", "boolean ret = g2.setBoost(on); if (!ret) throw new IllegalStateException(\"151 returned false\");"),
-    ("mf_ca_raw_boost", QP, "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)", "Boolean.TRUE.equals(safeBoost(g2))"),
-    ("mf_lock_no_mode", QP, "R.string.hb_boost_locked, mode", "R.string.hb_boost_locked"),
-    ("mf_lamp_in_boost_kept", QP, "String r = setBoost(false, g, g2);", "String r = null;"),
-    ("gt_zoom_ungated", GT, '{"zoom", "OPTICAL_ZOOM"}', '{"zoom", null}'),
+    ("mf_leave_no_explain", QP_HbPictureRows, "        if (!on && BoostRules.onLeavePress(cur, pm) == BoostLeave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);\n", ""),
+    ("mf_setboost_boolean", QP_HbPictureRows, "BoostRules.judge(on, ret, lensAfter, pmAfter)", "BoostRules.judge(on, true, lensAfter, pmAfter)"),
+    ("mf_setboost_throw_old", QP_HbPictureRows, "boolean ret = g2.setBoost(on);", "boolean ret = g2.setBoost(on); if (!ret) throw new IllegalStateException(\"151 returned false\");"),
+    ("mf_ca_raw_boost", QP_HbPictureRows, "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)", "Boolean.TRUE.equals(safeBoost(g2))"),
+    ("mf_lock_no_mode", QP_HbPictureRows, "R.string.hb_boost_locked, mode", "R.string.hb_boost_locked"),
+    ("mf_lamp_in_boost_kept", QP_HbPictureRows, "String r = setBoost(false, g, g2);", "String r = null;"),
+    ("gt_zoom_ungated", GT, '{FeatureId.ZOOM, "OPTICAL_ZOOM"}', '{FeatureId.ZOOM, null}'),
     ("mf_zoom_no_game_refusal", QP, "                if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }\n", ""),
-    ("mf_obstacle_uncoupled", QP, "Hal.setObstacleAvoidCoupled(g, on)", "g.setObstacleAvoid(on)"),
-    ("mf_fit_uncoupled", QP, "Hal.setCurtainFitCoupled(g, on)", "g.setCurtainFit(on)"),
+    ("mf_obstacle_uncoupled", QP_HbKeystoneRows, "Hal.setObstacleAvoidCoupled(g, on)", "g.setObstacleAvoid(on)"),
+    ("mf_fit_uncoupled", QP_HbKeystoneRows, "Hal.setCurtainFitCoupled(g, on)", "g.setCurtainFit(on)"),
     ("hal_fit_off_sets_obstacle", HAL, "if (on) g.setObstacleAvoid(true);", "g.setObstacleAvoid(true);"),
     ("hal_fit_on_no_obstacle", HAL, "if (on) g.setObstacleAvoid(true);", ""),
     ("hal_obstacle_on_sets_fit", HAL, "if (!on) g.setCurtainFit(false);", "g.setCurtainFit(on);"),
@@ -44,8 +46,8 @@ MUT = [
     ("mf_no_chart", "src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new android.view.View(this), 0,"),
     ("mf_chart_on_top", "src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new FocusPatternView(this), 1,"),
     ("fv_no_line", "src/org/lumen/projector/FocusPatternView.java", "c.drawRect(l[0], l[1], l[2], l[3], ink);", "c.drawRect(0, 0, 0, 0, ink);"),
-    ("sn_usb_any", "src/org/lumen/projector/power/StrNoticeRules.java", "return now == Kind.USB && !shownForThisConnection;", "return now == Kind.USB;"),
-    ("sn_usb_kind", "src/org/lumen/projector/power/StrNoticeRules.java", "if (blocker.startsWith(StrGate.B_USB)) return Kind.USB;", ""),
+    ("sn_usb_any", "src/org/lumen/projector/power/StrNoticeRules.java", "return now == StrNoticeKind.USB && !shownForThisConnection;", "return now == StrNoticeKind.USB;"),
+    ("sn_usb_kind", "src/org/lumen/projector/power/StrNoticeRules.java", "if (blocker.startsWith(StrGate.B_USB)) return StrNoticeKind.USB;", ""),
     ("sn_short_press", "src/org/lumen/projector/power/StrNoticeRules.java", "heldMs >= longPressMs", "heldMs >= 0"),
     ("sn_every_repeat", "src/org/lumen/projector/power/StrNoticeRules.java", " && downTime != notedFor;", ";"),
     ("sn_stb_code", "src/org/lumen/projector/power/StrNoticeRules.java", "KEYCODE_STB_POWER = 179", "KEYCODE_STB_POWER = 178"),

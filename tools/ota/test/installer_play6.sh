@@ -63,6 +63,8 @@ NAME=$(conf play6 NAME); MODEL=$(conf play6 MODEL); BOARD=$(conf play6 BOARD); P
 FW1=$(conf play6 VENDOR_OK | awk '{print $1}'); FW2=$(conf play6 VENDOR_OK | awk '{print $2}')
 # one supported firmware (2026-10-13: only the latest XGIMI firmware): the second slot of the tests is the same one
 FW2=${FW2:-$FW1}
+P6URL2=$(conf play6 RESTORE_URL | tr ' ' '\n' | awk -v v="V${FW2#v}:" 'index($0, v) == 1 { print substr($0, length(v) + 1) }')
+P6MD52=$(conf play6 RESTORE_MD5 | tr ' ' '\n' | awk -F: -v v="V${FW2#v}" '$2 == v { print $1 }')
 if [ "$FW1" = "$FW2" ]; then FWLIST="V${FW1#v} only"; else FWLIST="V${FW1#v} and V${FW2#v} only"; fi
 TOK=$(conf play6 IMAGE_TOKEN)
 IMGN=lumen-os-$TOK-1.1.0-nogms-system.img
@@ -154,6 +156,7 @@ case "$1" in
       "for d in /sys/bus/usb/devices/*;"*) cat "$FB/usb" 2>/dev/null ;;
       "logcat -d -v brief 2>/dev/null | grep -E "*) cat "$FB/power" 2>/dev/null ;;
       "grep ' /mnt/media_rw/' /proc/mounts") cat "$FB/mounts" 2>/dev/null ;;
+      "grep -c '^[^#]*:368b:8d90:' /vendor/lib/firmware/dongle.cfg") [ -f "$FB/dongle" ] && cat "$FB/dongle" ;;
       "pm path "*) grep -qxF "$3" "$FB/packages3" && echo "package:/data/app/$3-1/base.apk" ;;
       "pm list packages -3") sed 's/^/package:/' "$FB/packages3" ;;
       "dumpsys media.audio_policy") echo "Outputs:" ;;
@@ -351,7 +354,7 @@ inst '' --ip 192.0.2.50 check
 expect_rc 0
 expect_out "$NAME $SER ($ADDR), firmware $FW2, system: XGIMI stock"
 expect_out "SHA256SUMS signature: Lumen OS key for the $NAME"; expect_out "image: Lumen OS 1.1.0 for the $NAME"
-expect_out "edition: Lumen OS without Google"; expect_out "check passed; nothing was written"
+expect_out "edition: Lumen OS without Google"; expect_out "check passed. Nothing was written"
 [ "$(state serial)" = "$SER" ] && [ "$(state ip)" = "$ADDR" ] && [ "$(state vendor)" = "$FW2" ] && [ "$(state dev_lumen)" = 0 ] \
   || fail "state: $(cat "$C/state/play6/state")"
 [ ! -e "$C/state/state" ] || fail "the Z9X state file was written"
@@ -365,25 +368,13 @@ inst '' --ip 192.0.2.50 check
 expect_rc 0; expect_out "firmware $FW1"
 end
 
-begin check_stock_fw2
-# V1.8.127 (the newer stock, 2026-04, MediaTek and AIC units) is supported next to V1.7.116, oldest first
-[ "$FW1" = v1.7.116 ] && [ "$FW2" = v1.8.127 ] || fail "play6.VENDOR_OK: '$FW1' '$FW2'"
-grep -qx 'play6.RESTORE_MD5=55ae66ed7e14a20759ea4b9d5686d591:V1.7.116 a14277a6c73676487a7de5ede36dc017:V1.8.127' "$CONF" \
-  || fail "play6.RESTORE_MD5 must name the official V1.7.116 and V1.8.127 files"
-setp stock ro.vendor.build.version.incremental "$FW2"
-inst '' --ip 192.0.2.50 check
-expect_rc 0; expect_out "firmware $FW2"
-end
-
-for fw in v1.7.200 v1.0.9 v1.8.130; do
+for fw in v1.7.200 v1.0.9; do
   begin "check_firmware_${fw}_refused"
   setp stock ro.vendor.build.version.incremental "$fw"
   inst '' --ip 192.0.2.50 check
   expect_rc 1
   expect_out "XGIMI firmware $fw is not supported: Lumen OS for the $NAME is tested on $FWLIST."
-  expect_out "Do NOT install V${FW1#v} from a USB stick over it"; expect_out "Newer: Lumen OS does not support it yet."
-  expect_out "Nothing was done."
-  if grep -q 'V1\.8\.x' "$C/out"; then fail "the refusal still calls V1.8.x unsupported"; fi
+  expect_out "Do NOT install V${FW1#v} from a USB stick over it"; expect_no_out "V1.8xxx"; expect_out "Nothing was done."
   [ -z "$(writes)" ] || fail "adb wrote: $(writes)"
   end
 done
@@ -443,7 +434,7 @@ end
 
 begin check_ru
 LANG_CASE=ru_RU.UTF-8 inst '' --ip 192.0.2.50 check
-expect_rc 0; expect_out "прошивка $FW2, система: родная XGIMI"; expect_out "проверка пройдена; ничего не записано"
+expect_rc 0; expect_out "прошивка $FW2, система: родная XGIMI"; expect_out "проверка пройдена. Ничего не записано"
 if grep -q '—' "$C/out"; then fail "an em dash in the Russian text"; fi
 end
 
@@ -629,6 +620,7 @@ inst 'no\nERASE\n\n\nno\n' --ip 192.0.2.50
 expect_rc 1
 expect_out "If the projector does not come back:"; expect_out "ONLY a FAT32 USB stick"; expect_out "repeat this 3 to 5 times"
 expect_out "ask for the Lumen OS diagnostic build"; expect_out "lumen_os_diag_logs"; expect_out "$C/state/play6/install.log"
+# an MT7663 unit goes back to the firmware it ran (the stock props say $FW2)
 expect_out "This projector (serial P6T, MediaTek chip 0e8d:7663): the V${FW2#v} .bin from a FAT32 stick."
 expect_out "when Lumen OS shows, run the same command again: it continues here"
 [ -z "$(state step_boot1)" ] || fail "step_boot1=$(state step_boot1)"
@@ -638,8 +630,8 @@ expect_rc 0; expect_cmds ""; expect_out "the projector is off Wi-Fi: the data wa
 [ "$(state step_boot1)" = done ] && [ "$(state step_wipe)" = requested ] || fail "state: $(cat "$C/state/play6/state")"
 end
 
-begin install_light_start_not_seen_fw1
-# a MediaTek unit on the older stock: its way back stays the V1.7.116 .bin
+begin install_light_start_not_seen_mediatek_v17
+# an MT7663 unit on the first firmware: the way back is that firmware
 setp stock ro.vendor.build.version.incremental "$FW1"
 inst 'no\nERASE\n\n\nno\n' --ip 192.0.2.50
 expect_rc 1
@@ -654,35 +646,55 @@ expect_rc 1
 expect_out "Wi-Fi and Bluetooth chip: AIC8800 (368b:8d91)"; expect_out "This $NAME is from a newer batch"
 expect_out "NEVER roll this projector back with the V1.7.116 .bin"
 expect_out "This projector (serial P6T, chip 368b:8d91) is from the newer batch: do NOT use the V1.7.116 .bin"
-[ "$(grep -c "The way back to stock for this batch is the V${FW2#v} .bin from a FAT32 stick" "$C/out")" -ge 2 ] \
-  || fail "the pre-check and the help must both name the V${FW2#v} .bin"
-if grep -q 'XGIMI support' "$C/out"; then fail "the newer batch is still sent to XGIMI support"; fi
+expect_out "Use the V${FW2#v} .bin from a FAT32 stick: $P6URL2 (md5 $P6MD52)."
+expect_out "Its Wi-Fi and Bluetooth run on the driver of XGIMI firmware V${FW2#v}, Lumen OS adds none of its own."
+expect_no_out "XGIMI support"
 end
 
-begin install_light_start_aic_help_one_firmware
-# a profile with one firmware only: the newer batch is sent to XGIMI support, never to that firmware's .bin
-sed -i.bak "s/^play6\.VENDOR_OK=.*/play6.VENDOR_OK=$FW1/" "$C/inst/lib/devices.conf"
+# ------------------------------------------------------------------ the AIC chip needs XGIMI's own driver (V1.8.127)
+# Lumen OS carries no Wi-Fi or Bluetooth driver: an AIC unit runs only on a firmware whose dongle.cfg maps the chip
+for c in "aic_v17_dongle_0:$FW1:0" "aic_v17_unreadable:$FW1:" "aic_v18_dongle_0:$FW2:0"; do
+  n=${c%%:*}; r=${c#*:}; fw=${r%%:*}; dg=${r#*:}
+  begin "precheck_${n}_refused"
+  printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d90 ff" "1-1 0951:1666 08" > "$FB/usb"
+  setp stock ro.vendor.build.version.incremental "$fw"
+  [ -n "$dg" ] && echo "$dg" > "$FB/dongle"
+  inst 'yes\n' --ip 192.0.2.50 check
+  expect_rc 1
+  expect_out "This $NAME has the AIC Wi-Fi chip AIC8800 (368b:8d90), and its XGIMI firmware $fw has no driver for that chip."
+  expect_out "First put the official V${FW2#v} on the projector from a FAT32 USB stick"
+  expect_out "$P6URL2 (md5 $P6MD52)"; expect_out "Nothing was done."
+  expect_no_out "This $NAME is from a newer batch"
+  grep -q "pre-check: refused, AIC chip 368b:8d90 on firmware $fw" "$C/state/play6/install.log" || fail "not logged"
+  [ -z "$(writes)" ] || fail "adb wrote: $(writes)"
+  expect_cmds ""
+  end
+done
+for c in "aic_v18_dongle_1:$FW2:1" "aic_v18_unreadable:$FW2:"; do
+  n=${c%%:*}; r=${c#*:}; fw=${r%%:*}; dg=${r#*:}
+  begin "precheck_${n}_vendor_driver"
+  printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d91 ff" "1-1 0951:1666 08" > "$FB/usb"
+  setp stock ro.vendor.build.version.incremental "$fw"
+  [ -n "$dg" ] && echo "$dg" > "$FB/dongle"
+  inst 'yes\n' --ip 192.0.2.50 check
+  expect_rc 0
+  expect_out "This $NAME is from a newer batch"; expect_out "run on the driver of XGIMI firmware V${FW2#v}"
+  expect_out "The way back to stock for this batch is the V${FW2#v} .bin"; expect_no_out "has no driver for that chip"
+  expect_out "check passed. Nothing was written"
+  end
+done
+begin precheck_mediatek_v17_no_aic_question
 setp stock ro.vendor.build.version.incremental "$FW1"
-printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d91 ff" "1-1 0951:1666 08" > "$FB/usb"
-inst 'no\n' --ip 192.0.2.50
-expect_rc 1
-expect_out "This $NAME is from a newer batch"; expect_out "a V1.8.x firmware from XGIMI support"
-if grep -q "is the V${FW1#v} .bin" "$C/out"; then fail "the first firmware is named as the way back"; fi
-end
-
-begin install_light_start_aic_help_ru
-printf '%s\n' "usb1 1d6b:0002 09" "3-1 368b:8d91 ff" "1-1 0951:1666 08" > "$FB/usb"
-LANG_CASE=ru_RU.UTF-8 inst 'да\nнет\nERASE\n\n\nнет\n' --ip 192.0.2.50
-expect_rc 1
-expect_out "Вернуться на сток с этой партией можно прошивкой .bin V${FW2#v} с флешки FAT32"
-if grep -q 'поддержки XGIMI' "$C/out"; then fail "the Russian text still sends the newer batch to XGIMI support"; fi
-if grep -q '—' "$C/out"; then fail "an em dash in the Russian text"; fi
+echo 0 > "$FB/dongle"
+inst '' --ip 192.0.2.50 check
+expect_rc 0; expect_no_out "has no driver for that chip"; expect_no_out "newer batch"
+expect_out "check passed. Nothing was written"
 end
 
 begin install_all_ru
 LANG_CASE=ru_RU.UTF-8 inst 'нет\nERASE\n\n\nда\n' --ip 192.0.2.50
 expect_rc 0
-expect_out "Выньте флешку (или то, что там вставлено) из USB-порта проектора"; expect_out "Сейчас выньте кабель A–A из проектора"
+expect_out "Выньте флешку (или то, что там вставлено) из USB-порта проектора"; expect_out "Сейчас выньте кабель A-A из проектора"
 expect_out "чип Wi-Fi и Bluetooth: MediaTek MT7663"; expect_out "ТОЛЬКО флешка FAT32"
 expect_out "Сейчас проектор запускает recovery XGIMI"; expect_out "подключитесь к своему Wi-Fi"
 if grep -q '—' "$C/out"; then fail "an em dash in the Russian text"; fi
@@ -762,7 +774,7 @@ touch "$FB/flashed"; echo fastboot > "$FB/mode"
 inst '\nERASE\nyes\n'
 expect_rc 0; BROADCAST=1
 expect_cmds "$S reboot;"
-expect_out "system is already written; restarting the projector"
+expect_out "system is already written. Restarting the projector"
 # nothing was typed in this run before the write: the wipe asks again
 [ "$(grep -c 'Type ERASE' "$C/out")" = 1 ] || fail "ERASE asked $(grep -c 'Type ERASE' "$C/out") times"
 end
@@ -874,7 +886,7 @@ mkdir -p "$C/state/play6"
 printf '%s\n' "serial=$SER" "ip=$ADDR" step_check=done step_backup=skipped step_fastboot=x step_flash_system=done step_flash=done > "$C/state/play6/state"
 echo lumen > "$FB/mode"; touch "$FB/net_down"
 inst '\n'
-expect_rc 1; expect_out "Lumen OS did not answer over Wi-Fi within 10 minutes"; expect_out "your data is still there"
+expect_rc 1; expect_out "Lumen OS did not answer over Wi-Fi within 10 minutes"; expect_out "Your data is still there"
 expect_out "Is the A-to-A cable out of the projector? The $NAME does not start while it is in."
 expect_out "If the projector does not come back:"
 end
@@ -1248,14 +1260,6 @@ expect_out "it must be FAT32"; expect_out "._$BIN: a macOS helper file"; expect_
 expect_out "factory.txt must be empty"; expect_out "the stick is not ready"
 end
 
-begin stick_second_known_firmware
-# RESTORE_MD5 is a list (V1.7.116 and V1.8.127): a file that matches a later entry is known too
-stick
-sed -i.bak "s/^play6\.RESTORE_MD5=.*/play6.RESTORE_MD5=55ae66ed7e14a20759ea4b9d5686d591:V1.7.116 $m:V9.9.8/" "$C/inst/lib/devices.conf"
-inst '' stick "$C/stick"
-expect_rc 0; expect_out "XGIMI firmware V9.9.8"; expect_out "the stick is ready"
-end
-
 begin stick_unknown_firmware
 stick; printf 'OTHER' > "$C/stick/$BIN"; rm -f "$C/stick/factory.txt"
 inst '' stick "$C/stick"
@@ -1297,7 +1301,7 @@ mkdir -p "$C/state/play6"; printf '%s\n' "serial=$SER" "ip=$ADDR" step_check=don
 rm -f "$C/inst/release.conf"
 inst '' --unsigned-image check
 expect_rc 0; expect_out "connecting to $ADDR over Wi-Fi"; expect_out "check passed"
-expect_out "this installer folder came with the XGIMI Z9X release; your own image is used (--unsigned-image)"
+expect_out "this installer folder came with the XGIMI Z9X release. Your own image is used (--unsigned-image)"
 end
 
 begin z9x_download_ignores_unfinished_play6
@@ -1322,7 +1326,7 @@ end
 
 begin help_lists_play6
 bash "$INST/lumen-install.sh" --help > "$C/out" 2>&1; RC=$?
-expect_rc 0; expect_out "stick DIR"; expect_out "What it writes on the Play 6: 'system'; the 2 KiB erase request at the start of misc"
+expect_rc 0; expect_out "stick DIR"; expect_out "What it writes on the Play 6: 'system', the 2 KiB erase request at the start of misc"
 end
 
 echo "installer play6: $PASS passed, $FAIL failed"

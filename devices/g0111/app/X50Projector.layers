@@ -6,6 +6,7 @@ module    lumen-ui
 module    lumen-hal
 module    lumen-common-strings
 module    lumen-menu
+module    lumen-stats
 base      apps/common/projector devices/g0111/app/X50Projector.projector
 file      devices/g0111/menu.json assets/lumen_menu/menu.json
 top       apps/X50Projector

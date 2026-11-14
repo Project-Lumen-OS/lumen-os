@@ -51,13 +51,14 @@ section game
 section eye
   choice eye [off, on]
 section general
+  action lamp.off
   screen settings.system
   screen settings.projector
   screen settings.cec
   screen settings.recents
   choice settings.launcher [lumen, classic]
 all settings: keystone focus picture projection sound eye general
-keys: gear short quick_menu, gear long game_menu
+keys: gear short quick_menu, gear long game_menu, eye_gear_short restore_off
 game menu: lat vrr hfr pic dark ar aim fps
   themes: ps xbox switch pad apple windows computer, CEC detection on
 pending (not shown): hint.keystone.ak_now game.color_space game.hdr

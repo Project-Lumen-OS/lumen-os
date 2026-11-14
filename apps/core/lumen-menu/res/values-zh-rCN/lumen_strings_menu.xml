@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">柔和</string>
     <string name="lumen_m_pm_isf_day">ISF 白天</string>
     <string name="lumen_m_pm_isf_night">ISF 夜晚</string>
+    <string name="lumen_m_pm_bright">明亮</string>
     <string name="lumen_m_edid_hdmi_1_4">兼容模式 (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">增强模式 (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

@@ -33,4 +33,5 @@
     <string name="lumen_m_eco">Power saving</string>
     <string name="lumen_m_ambient_speaker">Ambient speaker</string>
     <string name="lumen_m_ct_custom">Custom</string>
+    <string name="lumen_m_lamp_off">Turn off screen</string>
 </resources>

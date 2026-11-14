@@ -11,7 +11,7 @@
 # DataBaseManager 2 updateDbInt (BANNED), a Call of a REVIEW row (DisplayManager 56 generateLogoByTrapezoid, even with an
 # allowlist row; newAutoKst left REVIEW on 2026-10-29, 9.1), a wrong code (getBootAnimState 34), a second '.transact(' in GmpfClient.java, Parcel used in
 # KstPoint.java, a raw integer transact code, a reflection bypass (Class.forName + getMethod + invoke on ServiceManager
-# outside the transport), an integer code passed to a typed helper, a Call that no allowlist row names (DisplayManager
+# outside the transport), an integer code passed to a typed helper of the gmpf transport (AidlWire), a Call that no allowlist row names (DisplayManager
 # 10 isVideoPlaying), an allowlist row that is no Call, and a run without --allowed (fail-closed: usage, exit 2).
 # Dex level (rule 7): the clean copy is compiled in the scratch dir with a throwaway key
 # (apps/build_apk.sh) and must pass; a fake dexdump then adds one forbidden instruction to the real dump each time
@@ -103,8 +103,8 @@ if [ -n "$(ls "$G"/devices/goat_elegant/app/*.layers 2>/dev/null)" ]; then
 fi
 ALLOWED=$HAL_ALLOWED
 H=src/org/lumen/projector/hal
-LAST='GET_SYSTEM_TEMPERATURE(Iface.TEMPERATURE, 6, "getSystemTemperature");'
-LAST_OPEN='GET_SYSTEM_TEMPERATURE(Iface.TEMPERATURE, 6, "getSystemTemperature"),'
+LAST='GET_SYSTEM_TEMPERATURE(GmpfIface.TEMPERATURE, HalCodes.TM_GET_SYSTEM_TEMPERATURE, "getSystemTemperature");'
+LAST_OPEN='GET_SYSTEM_TEMPERATURE(GmpfIface.TEMPERATURE, HalCodes.TM_GET_SYSTEM_TEMPERATURE, "getSystemTemperature"),'
 echo "part 2: ${HAL_APP#$G/}"
 # the expected summary, from the allowlist itself: rows (comments and blank lines skipped) and distinct interfaces
 # ('-' marks a meta call, no interface of its own)
@@ -117,26 +117,26 @@ expect p2_clean 0
 reported p2_clean "$WANT_OK"
 
 copy
-edit $H/AidlCaller.java 'FACTORY("xgimi.hardware.gmpf.IGmFactoryManager");' \
+edit $H/GmpfIface.java 'FACTORY("xgimi.hardware.gmpf.IGmFactoryManager");' \
   'FACTORY("xgimi.hardware.gmpf.IGmFactoryManager"), DB("xgimi.hardware.gmpf.IDataBaseManager");'
-edit $H/AidlCaller.java "$LAST" "$LAST_OPEN UPDATE_DB_INT(Iface.DB, 2, \"updateDbInt\");"
+edit $H/GmpfCall.java "$LAST" "$LAST_OPEN UPDATE_DB_INT(GmpfIface.DB, 2, \"updateDbInt\");"
 expect p2_banned_call 1
 reported p2_banned_call 'rule 4: Call.UPDATE_DB_INT: DataBaseManager 2 updateDbInt is banned'
 
 copy
-edit $H/AidlCaller.java "$LAST" "$LAST_OPEN GENERATE_LOGO_BY_TRAPEZOID(Iface.DISPLAY, 56, \"generateLogoByTrapezoid\");"
+edit $H/GmpfCall.java "$LAST" "$LAST_OPEN GENERATE_LOGO_BY_TRAPEZOID(GmpfIface.DISPLAY, 56, \"generateLogoByTrapezoid\");"
 printf 'DisplayManager\t56\tgenerateLogoByTrapezoid\tapproved by nobody\n' >> "$W/allowed.tsv"
 expect p2_review_row_call 1
 reported p2_review_row_call 'rule 4: Call.GENERATE_LOGO_BY_TRAPEZOID: DisplayManager 56 generateLogoByTrapezoid is under review'
 
 copy
-edit $H/AidlCaller.java 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 33, "getBootAnimState")' 'GET_BOOT_ANIM_STATE(Iface.SYSTEM, 34, "getBootAnimState")'
+edit $H/GmpfCall.java 'GET_BOOT_ANIM_STATE(GmpfIface.SYSTEM, HalCodes.SM_GET_BOOT_ANIM_STATE, "getBootAnimState")' 'GET_BOOT_ANIM_STATE(GmpfIface.SYSTEM, 34, "getBootAnimState")'
 expect p2_wrong_code 1
 reported p2_wrong_code 'rule 3: Call.GET_BOOT_ANIM_STATE'
 
 copy
-edit $H/GmpfClient.java 'public final class GmpfClient extends AidlCaller {' \
-  'public final class GmpfClient extends AidlCaller {
+edit $H/GmpfClient.java 'public final class GmpfClient extends GmpfBase<GmpfCall> {' \
+  'public final class GmpfClient extends GmpfBase<GmpfCall> {
     static void poke(android.os.IBinder b) throws android.os.RemoteException { b.transact(1, null, null, 0); }'
 expect p2_second_transact 1
 reported p2_second_transact "rule 1: '.transact(' must be in exactly one file"
@@ -154,8 +154,8 @@ expect p2_raw_integer_code 1
 reported p2_raw_integer_code 'rule 1: .*found .33.'
 
 copy
-edit $H/GmpfClient.java 'public final class GmpfClient extends AidlCaller {' \
-  'public final class GmpfClient extends AidlCaller {
+edit $H/GmpfClient.java 'public final class GmpfClient extends GmpfBase<GmpfCall> {' \
+  'public final class GmpfClient extends GmpfBase<GmpfCall> {
     static Object peek() throws Exception {
         return Class.forName("android.os.Service" + "Manager").getMethod("check" + "Service", String.class)
                 .invoke(null, "x");
@@ -166,9 +166,10 @@ reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*getMethod( outside'
 reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*\.invoke( outside'
 
 copy
-edit $H/GmpfClient.java 'callI32(Call.SET_SYSTEM_UI_STATE, SYSTEM_UI_STATE_READY)' 'callI32(36, SYSTEM_UI_STATE_READY)'
+edit $H/AidlWire.java '@Override public void i32(GmpfCall k, int v) throws RemoteException { callI32(k, v); }' \
+  '@Override public void i32(GmpfCall k, int v) throws RemoteException { callI32(36, v); }'
 expect p2_helper_integer_code 1
-reported p2_helper_integer_code 'rule 5: src/org/lumen/projector/hal/GmpfClient.java:.*callI32(36, SYSTEM_UI_STATE_READY) passes no Call'
+reported p2_helper_integer_code 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*callI32(36, v) passes no Call'
 
 # rule 5 names: a class outside the transport's hierarchy with its own method of a transport name calls its own method
 # (the shared menu's QpdMirror: call(method, arg) on a content provider); a transport subclass is checked even through
@@ -185,15 +186,15 @@ JEOF
 expect p2_local_method_named_like_transport 0
 
 copy
-edit $H/GmpfClient.java 'public final class GmpfClient extends AidlCaller {' \
-  'public final class GmpfClient extends AidlCaller {
+edit $H/AidlWire.java 'final class AidlWire extends AidlCaller implements GmpfWire<GmpfCall> {' \
+  'final class AidlWire extends AidlCaller implements GmpfWire<GmpfCall> {
     private int callI32(int code, int v) throws android.os.RemoteException { return code + v; }
     int poke() throws android.os.RemoteException { return callI32(36, 1); }'
 expect p2_subclass_own_overload 1
-reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/GmpfClient.java:.*callI32(36, 1) passes no Call'
+reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*callI32(36, 1) passes no Call'
 
 copy
-edit $H/AidlCaller.java "$LAST" "$LAST_OPEN IS_VIDEO_PLAYING(Iface.DISPLAY, 10, \"isVideoPlaying\");"
+edit $H/GmpfCall.java "$LAST" "$LAST_OPEN IS_VIDEO_PLAYING(GmpfIface.DISPLAY, 10, \"isVideoPlaying\");"
 expect p2_not_allowlisted 1
 reported p2_not_allowlisted 'rule 6: Call.IS_VIDEO_PLAYING: DisplayManager 10 isVideoPlaying is not a row'
 if grep -q 'rule [1-5]:' "$W/out"; then FAIL=$((FAIL + 1)); echo "FAIL p2_not_allowlisted: refused by another rule too"; fi
@@ -212,7 +213,7 @@ cp -R "$APP/res" "$W/app/res"
 if build build2; then
   expect p2_dex_clean 0 --dex "$W/app.apk"
   reported p2_dex_clean "$WANT_OK"
-  dex_suite p2_ build2 org.lumen.projector.hal.GmpfClient.getHdrType org.lumen.projector.App.onCreate
+  dex_suite p2_ build2 org.lumen.projector.hal.GmpfBase.getHdrType org.lumen.projector.App.onCreate
 else
   FAIL=$((FAIL + 1)); echo "FAIL p2_dex_build: the scratch copy did not compile"; sed 's/^/     /' "$W/build.log" | tail -20
 fi
@@ -233,7 +234,7 @@ else
   reported p3_clean "$WANT_OK"
 
   copy
-  edit $H/AidlCaller.java "$LAST" "$LAST_OPEN DO_PRO_IMG_FUSION_OVERLAP(Iface.FOCUS, 102, \"doProImgFusionOverlap\");"
+  edit $H/GmpfCall.java "$LAST" "$LAST_OPEN DO_PRO_IMG_FUSION_OVERLAP(GmpfIface.FOCUS, 102, \"doProImgFusionOverlap\");"
   printf 'ProjectorFocusManager\t102\tdoProImgFusionOverlap\tapproved by nobody\n' >> "$W/allowed.tsv"
   expect p3_focus102_changed 1
   reported p3_focus102_changed 'rule 3: Call.DO_PRO_IMG_FUSION_OVERLAP: ProjectorFocusManager 102 doProImgFusionOverlap differs between aidl_codes.tsv and aidl_codes_v61712.tsv'
@@ -242,7 +243,7 @@ else
   CODES_ALSO=$KEEP_ALSO
 
   copy
-  edit $H/AidlCaller.java "$LAST" "$LAST_OPEN IS_KEYSTONE_ADJUSTED(Iface.DISPLAY, 207, \"isKeystoneAdjusted\");"
+  edit $H/GmpfCall.java "$LAST" "$LAST_OPEN IS_KEYSTONE_ADJUSTED(GmpfIface.DISPLAY, 207, \"isKeystoneAdjusted\");"
   printf 'DisplayManager\t207\tisKeystoneAdjusted\tapproved by nobody\n' >> "$W/allowed.tsv"
   expect p3_only_in_61712 1
   reported p3_only_in_61712 'rule 3: Call.IS_KEYSTONE_ADJUSTED: DisplayManager 207 isKeystoneAdjusted is not a row of aidl_codes.tsv'

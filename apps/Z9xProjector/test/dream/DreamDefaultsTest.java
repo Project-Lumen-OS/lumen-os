@@ -25,30 +25,30 @@ public final class DreamDefaultsTest {
 
     public static void main(String[] a) {
         // ---- screensaver on: unset or an earlier default -> the sky
-        eq("unset", DreamDefaults.Active.SKY, DreamDefaults.active(null, true));
-        eq("blank", DreamDefaults.Active.SKY, DreamDefaults.active("  ", true));
-        eq("v1 clock", DreamDefaults.Active.SKY, DreamDefaults.active(CLOCK, true));
-        eq("v1 clock, short form", DreamDefaults.Active.SKY,
+        eq("unset", DreamActive.SKY, DreamDefaults.active(null, true));
+        eq("blank", DreamActive.SKY, DreamDefaults.active("  ", true));
+        eq("v1 clock", DreamActive.SKY, DreamDefaults.active(CLOCK, true));
+        eq("v1 clock, short form", DreamActive.SKY,
                 DreamDefaults.active("org.lumen.projector/.dream.ClockDream", true));
-        eq("BasicDreams Colors", DreamDefaults.Active.SKY, DreamDefaults.active(COLORS, true));
-        eq("Colors, short form", DreamDefaults.Active.SKY, DreamDefaults.active("com.android.dreams.basic/.Colors", true));
-        eq("Backdrop", DreamDefaults.Active.SKY, DreamDefaults.active(BACKDROP, true));
-        eq("DeskClock", DreamDefaults.Active.SKY, DreamDefaults.active(DESKCLOCK, true));
-        eq("list of earlier defaults", DreamDefaults.Active.SKY, DreamDefaults.active(COLORS + "," + CLOCK, true));
-        eq("unreadable", DreamDefaults.Active.SKY, DreamDefaults.active("garbage", true));
+        eq("BasicDreams Colors", DreamActive.SKY, DreamDefaults.active(COLORS, true));
+        eq("Colors, short form", DreamActive.SKY, DreamDefaults.active("com.android.dreams.basic/.Colors", true));
+        eq("Backdrop", DreamActive.SKY, DreamDefaults.active(BACKDROP, true));
+        eq("DeskClock", DreamActive.SKY, DreamDefaults.active(DESKCLOCK, true));
+        eq("list of earlier defaults", DreamActive.SKY, DreamDefaults.active(COLORS + "," + CLOCK, true));
+        eq("unreadable", DreamActive.SKY, DreamDefaults.active("garbage", true));
         // ---- already the sky
-        eq("sky", DreamDefaults.Active.ALREADY, DreamDefaults.active(SKY, true));
-        eq("sky, short form", DreamDefaults.Active.ALREADY, DreamDefaults.active("org.lumen.home/.sky.SkyDreamService", true));
-        eq("sky first in a list", DreamDefaults.Active.ALREADY, DreamDefaults.active(SKY + "," + CLOCK, true));
+        eq("sky", DreamActive.ALREADY, DreamDefaults.active(SKY, true));
+        eq("sky, short form", DreamActive.ALREADY, DreamDefaults.active("org.lumen.home/.sky.SkyDreamService", true));
+        eq("sky first in a list", DreamActive.ALREADY, DreamDefaults.active(SKY + "," + CLOCK, true));
         // ---- the user's own choice is never replaced
-        eq("user's dream", DreamDefaults.Active.KEEP, DreamDefaults.active(USERS, true));
-        eq("user's dream in a list", DreamDefaults.Active.KEEP, DreamDefaults.active(COLORS + "," + USERS, true));
-        eq("standby dream (off) is not an earlier default", DreamDefaults.Active.KEEP, DreamDefaults.active(IDLE, true));
+        eq("user's dream", DreamActive.KEEP, DreamDefaults.active(USERS, true));
+        eq("user's dream in a list", DreamActive.KEEP, DreamDefaults.active(COLORS + "," + USERS, true));
+        eq("standby dream (off) is not an earlier default", DreamActive.KEEP, DreamDefaults.active(IDLE, true));
         // ---- the sky not installed: v1 rule for unset, everything else stays
-        eq("unset, no sky", DreamDefaults.Active.CLOCK, DreamDefaults.active(null, false));
-        eq("v1 clock, no sky", DreamDefaults.Active.KEEP, DreamDefaults.active(CLOCK, false));
-        eq("Colors, no sky", DreamDefaults.Active.KEEP, DreamDefaults.active(COLORS, false));
-        eq("user's dream, no sky", DreamDefaults.Active.KEEP, DreamDefaults.active(USERS, false));
+        eq("unset, no sky", DreamActive.CLOCK, DreamDefaults.active(null, false));
+        eq("v1 clock, no sky", DreamActive.KEEP, DreamDefaults.active(CLOCK, false));
+        eq("Colors, no sky", DreamActive.KEEP, DreamDefaults.active(COLORS, false));
+        eq("user's dream, no sky", DreamActive.KEEP, DreamDefaults.active(USERS, false));
 
         // ---- screensaver off (blank standby dream active): what "on" brings back
         eq("off, nothing saved", true, DreamDefaults.savedToSky("", true));
@@ -65,13 +65,13 @@ public final class DreamDefaultsTest {
         eq("unset is not the standby dream", false, DreamDefaults.isIdle(null));
 
         // ---- 1.0.1 quick panel "Show" row: which of the sky / the clock is active
-        eq("show sky", DreamDefaults.Shown.SKY, DreamDefaults.shown(SKY));
-        eq("show sky, short form", DreamDefaults.Shown.SKY, DreamDefaults.shown("org.lumen.home/.sky.SkyDreamService"));
-        eq("show clock", DreamDefaults.Shown.CLOCK, DreamDefaults.shown(CLOCK));
-        eq("show clock first in a list", DreamDefaults.Shown.CLOCK, DreamDefaults.shown(CLOCK + "," + SKY));
-        eq("show user's dream", DreamDefaults.Shown.OTHER, DreamDefaults.shown(USERS));
-        eq("show standby dream (off)", DreamDefaults.Shown.OTHER, DreamDefaults.shown(IDLE));
-        eq("show unset", DreamDefaults.Shown.OTHER, DreamDefaults.shown(null));
+        eq("show sky", DreamShown.SKY, DreamDefaults.shown(SKY));
+        eq("show sky, short form", DreamShown.SKY, DreamDefaults.shown("org.lumen.home/.sky.SkyDreamService"));
+        eq("show clock", DreamShown.CLOCK, DreamDefaults.shown(CLOCK));
+        eq("show clock first in a list", DreamShown.CLOCK, DreamDefaults.shown(CLOCK + "," + SKY));
+        eq("show user's dream", DreamShown.OTHER, DreamDefaults.shown(USERS));
+        eq("show standby dream (off)", DreamShown.OTHER, DreamDefaults.shown(IDLE));
+        eq("show unset", DreamShown.OTHER, DreamDefaults.shown(null));
 
         // ---- component names
         eq("normalize short", SKY, DreamDefaults.normalize(" org.lumen.home/.sky.SkyDreamService "));

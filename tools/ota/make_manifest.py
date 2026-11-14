@@ -39,9 +39,9 @@ update-public-beta.json beside update-public-nogms.json on the channel tag z9x (
 packages come from a no-Google image (one that reads update-public-nogms.json) and their URLs point at the
 version's own pre-release z9x-<version>, where --version may carry -betaN (z9x-1.0.10-beta1; only with
 --channel public-beta). With the switch on the updater reads both manifests and offers the higher version_code,
-so stable updates keep coming while no beta is published. The version_code of x.y.z-betaN is that of x.y.z (the
-Z9X scheme has no beta slot): a stable release meant for beta users is the same build as the last beta (they
-already run it) or a later version. Turning the switch off never downgrades.
+so stable updates keep coming while no beta is published. Version codes: tools/build/recipe.py z9x_code (decision
+O1 from 1.0.11: x.y.z-betaN = x*1000000 + y*10000 + z*100 + N, the final x.y.z ends in 99), so a unit on a beta
+is offered the next beta and the final. Turning the switch off never downgrades.
 """
 import argparse
 import hashlib
@@ -248,11 +248,10 @@ def bind_to_clean_image(image, zips, old_image=None, has_full=True):
 
 
 def version_code(version):
-    """ro.z9x.version_code of a release: major*10000 + minor*100 + patch + 1, + 2 from 1.0.8 (x.y.z-betaN: that of
-    x.y.z, the Z9X scheme has no beta slot)."""
-    v = [int(x) for x in version.split("-", 1)[0].split(".")]
-    base = v[0] * 10000 + v[1] * 100 + v[2]
-    return base + (2 if base >= 10008 else 1)
+    """ro.z9x.version_code of a release, from the one builder's table (tools/build/recipe.py z9x_code)."""
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "build"))
+    import recipe  # noqa: E402
+    return recipe.z9x_code(version)
 
 
 def check_version(version, channel):
@@ -298,13 +297,12 @@ def main():
     ap.add_argument("--keys", default=os.environ.get("KEYS_DIR", os.path.expanduser("~/.lumen-keys")))
     a = ap.parse_args()
 
-    # Since 1.0.0: version_code = major*10000 + minor*100 + patch + 1 (tools/ota/image/ota_props.txt):
-    # the 1.0 test builds carry 10000, and every release must be newer for the updater. From 1.0.8 on the
-    # offset is +2: the first 1.0.8 build (10009) was withdrawn, the re-published 1.0.8 is 10010.
+    # version_code (recipe.z9x_code): major*10000 + minor*100 + patch + 1 since 1.0.0 (the 1.0 test builds carry
+    # 10000), + 2 from 1.0.8 (the withdrawn first 1.0.8 build had 10009), design decision from 1.0.11
     check_version(a.version, a.channel)
     vc = version_code(a.version)
     if vc != a.version_code:
-        die(f"version_code {a.version_code} != {vc} (major*10000 + minor*100 + patch + 1, + 2 from 1.0.8)")
+        die(f"version_code {a.version_code} != {vc} (tools/build/recipe.py z9x_code)")
     ch = json.load(open(a.changelog, encoding="utf-8"))
     if "en" not in ch:
         die("changelog needs at least 'en'")

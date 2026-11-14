@@ -9,7 +9,7 @@ package org.lumen.projector.panel;
  * sh test/picture/run.sh
  */
 final class ColorTempRule {
-    /** Row order = GmpfClient.ColorTemp order: D65, Colour temp 1. */
+    /** Row order = ColorTemp order: D65, Colour temp 1. */
     static final int[] WIRES = {16, 17};
     /** Lumens mode of the Office picture mode (stock DisplayHelper). */
     static final int OFFICE = 12;

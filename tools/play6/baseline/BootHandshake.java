@@ -14,7 +14,7 @@ import java.io.FileReader;
 
 /**
  * Boot handshake with XGIMI's gmpf_main on the Play 6, in the order stock sends it (the same order as
- * Z9xProjector HalController on the Z9X, stock analysis):
+ * Z9xProjector HalController on the Z9X):
  *   connect IGmpf (every 500 ms, up to 120 s)
  *   -> 391 setSystemUIState(1) -> 237 goToBootCompleted(0)     once per boot_id (stock SystemUI + XRMService)
  *   -> wait until init.svc.bootanim is no longer "running" (200 ms poll, at most 180 s)

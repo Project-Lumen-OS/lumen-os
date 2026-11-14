@@ -17,8 +17,9 @@ What it reads:
   xgimi.hardware.gmpf@ of the HIDL), every invoke of android.os.IBinder.transact and of
   java.lang.reflect.Method.invoke (the class and method it sits in), and the call table of the transport class
   (tools/devices/check_aidl_hal.py rules 1-2: the class T with the one transact site declares enum T$Iface
-  {NAME("descriptor")} and enum T$Call {NAME(Iface.X or null, code, "method")}): the arguments of every
-  T$Iface / T$Call constructor call, read by following constants through the registers of the code.
+  {NAME("descriptor")} and enum T$Call {NAME(Iface.X or null, code, "method")}; with the shared transport the pair
+  may also be two top-level enums PIface / PCall, e.g. GmpfIface / GmpfCall): the arguments of every
+  Iface / Call constructor call, read by following constants through the registers of the code.
 - native code: any lib/ entry (a .so could reach the HAL around the dex).
 
 problems(report, expect) -> [text]: the signer certificate of every scheme present is expect["cert"] (and v2 or v3
@@ -282,20 +283,22 @@ def report(path):
     if len(rep["transact"]) == 1:
         t = rep["transact"][0].rsplit(".", 1)[0]
         rep["transport"] = t
-        base = t[:-1]
+        base = t[:-1] + "$"
         if t == MODULE_TRANSPORT:
-            # apps/core/lumen-hal: the transport is the shared AidlTransport, the allow list (enum Call, enum Iface) is
-            # the one app class T with T$Call and T$Iface whose constants its own <clinit> builds
-            owners = sorted({c[:-len("$Call;")] for _, c, n, tc, tn, _, _ in sites
-                             if n == "<clinit>" and tn == "<init>" and c == tc and c.endswith("$Call;")
-                             and (c[:-len("$Call;")] + "$Iface;") in {x[1] for x in sites}})
+            # apps/core/lumen-hal: the transport is the shared AidlTransport, the allow list is the app's enum pair
+            # P + "Call" / P + "Iface" whose constants the Call's own <clinit> builds: nested in one class T
+            # (T$Call, T$Iface) or two top-level enums (GmpfCall, GmpfIface, since the codes are HalCodes constants)
+            classes = {x[1] for x in sites}
+            owners = sorted({c[:-len("Call;")] for _, c, n, tc, tn, _, _ in sites
+                             if n == "<clinit>" and tn == "<init>" and c == tc and c.endswith("Call;")
+                             and (c[:-len("Call;")] + "Iface;") in classes})
             if len(owners) == 1:
                 base = owners[0]
-                rep["allow_list"] = base + ";"
+                rep["allow_list"] = (base[:-1] if base.endswith("$") else base + "Call") + ";"
             else:
-                rep["call_ctor_outside"].append("the shared transport %s, but %d allow-list classes (T$Call with T$Iface): %s"
+                rep["call_ctor_outside"].append("the shared transport %s, but %d allow-list classes (P Call with P Iface): %s"
                                                 % (t, len(owners), owners))
-        iface_ctor, call_ctor = base + "$Iface;", base + "$Call;"
+        iface_ctor, call_ctor = base + "Iface;", base + "Call;"
         for d, cls, name, tc, tn, args, proto in sites:
             if tn != "<init>" or tc not in (iface_ctor, call_ctor) or cls == tc and name == "<init>":
                 continue

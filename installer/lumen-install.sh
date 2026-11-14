@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
-# Lumen OS installer for the XGIMI Z9X and the XGIMI Play 6 (macOS and Linux; bash 3.2 compatible).
+# Lumen OS installer for the XGIMI Z9X and the XGIMI Play 6 (macOS and Linux, bash 3.2 compatible).
 #
 #   bash lumen-install.sh [options] [command]
 #   bash lumen-install.sh --ip ADDRESS [options] [command]      the XGIMI Play 6 (over Wi-Fi, see below)
@@ -20,35 +20,35 @@
 #              z9x_gapps_<slot> (kept by updates and factory resets), then the data is wiped like 'flash'
 #              does (--keep-data: not). gapps --remove takes them out again (also from fastboot mode, after
 #              failed starts), with the same wipe. 'gapps' alone shows their state
-#   status     shows the saved progress;  reset   forgets it (does not touch the projector)
+#   status     shows the saved progress.  reset   forgets it (does not touch the projector)
 #
 # Options:
-#   --image FILE        system image (default: the one lumen-os-*-system.img next to this script or in ..;
+#   --image FILE        system image (default: the one lumen-os-*-system.img next to this script or in ..,
 #                       with several there, e.g. with and without Google, --image is required)
 #   --serial SERIAL     the projector's adb serial (default: the only connected device)
 #   --keep-data         'flash' writes system only, no wipe (repair of an installed Lumen OS)
-#   --wipe=format|factory-reset   how the data wipe is done (default format; see the guide)
+#   --wipe=format|factory-reset   how the data wipe is done (default format, see the guide)
 #   --lang en|ru        language of the messages (default from $LANG)
 #   --yes               do not ask before read-only steps (the wipe is always confirmed)
 #   --blobs=partition|embedded   override release.conf (published default: partition, codec and audio
-#                       files from your own projector); the maintainer's private image carries them: --blobs=embedded
+#                       files from your own projector). The maintainer's private image carries them: --blobs=embedded
 #   --no-blobs          public image without those files (skips 'blobs': NO SOUND from the projector and
-#                       no protected video, e.g. Kinopoisk HD; only for a first test). Same as
+#                       no protected video, e.g. Kinopoisk HD, only for a first test). Same as
 #                       --blobs=none or the environment BLOBS=none
 #   --unsigned-image    your own build without SHA256SUMS + SHA256SUMS.sig: the image is NOT
-#                       authenticated; asks you to type UNSIGNED (never use it for a downloaded image)
-#   --zip FILE          'gapps': the MindTheGapps zip you downloaded;  --remove  'gapps': take them out
+#                       authenticated. Asks you to type UNSIGNED (never use it for a downloaded image)
+#   --zip FILE          'gapps': the MindTheGapps zip you downloaded.  --remove  'gapps': take them out
 #   --gapps-zip FILE    the full install (no command) with Google services in one pass and ONE data wipe:
 #                       the MindTheGapps zip the guide names for this projector. Not with --keep-data or
 #                       --wipe=factory-reset. XGIMI Z9X: the Google services partition is built on this computer
 #                       (erofs, tools/erofs-utils) before the restart, then ONE fastbootd visit writes system, the
-#                       Google services and wipes the data; no USB debugging or Rooted debugging needed after it.
+#                       Google services and wipes the data. No USB debugging or Rooted debugging needed after it.
 #                       XGIMI Play 6: Lumen OS starts once on the old data and the Google apps are filled in as root
 #   --erofs-utils DIR   use mkfs.erofs, fsck.erofs and dump.erofs (erofs-utils 1.9.4) in DIR instead of the
 #                       installer's own tools/erofs-utils: for a computer it ships none for. The image built with
 #                       them must still be bit for bit the checked one (lib/gapps_images.txt)
 #   --ip ADDR[:PORT]    the XGIMI Play 6's Wi-Fi address (port 5555 if not given): it has no USB debugging
-#   --device z9x|play6|ID  which projector (default: the one this download is for, or an unfinished install;
+#   --device z9x|play6|ID  which projector (default: the one this download is for, or an unfinished install,
 #                       ID: a projector of lib/devices.conf with FLOW=ab-fastbootd, see below)
 #   --platform-tools DIR  use the adb and fastboot in DIR (Platform-Tools 35 or newer, with mke2fs and
 #                       make_f2fs) instead of downloading them: for a computer without internet access
@@ -61,20 +61,20 @@
 # call has a time limit: a call that hangs stops the installer with a message instead of waiting for ever.
 #
 # XGIMI Z9X, what it writes, ever: system_<slot>, z9x_blobs_<slot> (create/resize/flash), z9x_gapps_<slot>
-# (--gapps-zip: create/resize/flash of the erofs image built here; 'gapps': create/resize/format, filled over adb as
-# root; delete), and formats userdata, metadata and cache. It may
+# (--gapps-zip: create/resize/flash of the erofs image built here, 'gapps': create/resize/format, filled over adb as
+# root, delete), and formats userdata, metadata and cache. It may
 # delete only *-cow leftovers and XGIMI's unused product_<slot> and system_ext_<slot>. Every other
 # partition name is refused by fb_allowed(). It NEVER touches vbmeta,
 # boot, vendor, dtbo, mboot, persist, xgimi*, tvconfig, misc, frp or the other slot, and never runs
 # 'fastboot -w' or 'fastboot erase' (proven boot hang on this projector).
 #
-# XGIMI Play 6 (its model code, firmware versions and image name are in lib/devices.conf; guide:
+# XGIMI Play 6 (its model code, firmware versions and image name are in lib/devices.conf, guide:
 # docs/install/play6/<language>.md). The computer talks to stock Android over Wi-Fi (network
-# debugging on); fastboot mode is reached over a USB A-to-A cable in the projector's one USB port, plugged
+# debugging on). Fastboot mode is reached over a USB A-to-A cable in the projector's one USB port, plugged
 # in only for the write. Commands:
-#   (none)     check, backup (asked), flash, then the first start; continues where it stopped
+#   (none)     check, backup (asked), flash, then the first start. Continues where it stopped
 #   check      read-only: computer, Wi-Fi connection, projector, firmware, image, signature, and the pre-checks
-#              (Wi-Fi chip, serial, firmware, battery and adapter, what is in the USB port; install.log)
+#              (Wi-Fi chip, serial, firmware, battery and adapter, what is in the USB port, install.log)
 #   backup     as for the Z9X, over Wi-Fi
 #   flash      writes system in fastboot mode and, in the same visit, the erase request for XGIMI's recovery
 #              (the 2 KiB in misc that Android's factory reset writes there): the recovery erases all data,
@@ -91,26 +91,26 @@
 #              alone shows their state
 #   gsf        shows the Google Services Framework ID for google.com/android/uncertified
 #   status, reset (--device play6 reset forgets only the Play 6's progress)
-# What it writes on the Play 6: 'system'; the 2 KiB erase request at the start of misc (the recovery's
-# command block, nothing else in misc); 'gapps' also creates, resizes or deletes the logical partition
+# What it writes on the Play 6: 'system', the 2 KiB erase request at the start of misc (the recovery's
+# command block, nothing else in misc). 'gapps' also creates, resizes or deletes the logical partition
 # lumen_gapps in super (fb_allowed: nothing else, no format, erase or -w), then formats and fills it on the
 # projector (adb root, lib/play6/gapps_fill.sh) and writes /cache/lumen_gapps_off while it does. Every data
 # wipe is carried out by XGIMI's recovery, as for Settings > Reset. Never vendor, boot, recovery, MBOOT, env
 # (MPOOL), calibration or factory data.
 #
 # Projectors with FLOW=ab-fastbootd in lib/devices.conf (their model codes, firmware, slots and image name are
-# there; guide: docs/install/<GUIDE>/<language>.md). The computer talks to their system over the network (--ip
-# ADDRESS; on stock, Developer options > USB debugging opens it); fastbootd is reached over a USB A-to-A cable in
+# there, guide: docs/install/<GUIDE>/<language>.md). The computer talks to their system over the network (--ip
+# ADDRESS. On stock, Developer options > USB debugging opens it). Fastbootd is reached over a USB A-to-A cable in
 # the projector's USB port, plugged in when the installer asks. Commands:
-#   (none)     check, backup (asked), vbmeta (asked), blobs, flash; continues where it stopped
+#   (none)     check, backup (asked), vbmeta (asked), blobs, flash. Continues where it stopped
 #   check      read-only: computer, network connection, projector, firmware, slot, the vbmeta state, image,
 #              signature
 #   backup     as for the Z9X, over the network
-#   vbmeta     shows the one manual step (Google's vbmeta.img, both slots); the installer never runs it
+#   vbmeta     shows the one manual step (Google's vbmeta.img, both slots). The installer never runs it
 #   blobs      copies the MediaTek / XGIMI files of the profile's allow-list from YOUR projector's own system
 #   flash      in one fastbootd visit: z9x_blobs_<slot>, system_<slot>, then 'fastboot format' of userdata
 #              and metadata with the file system of the projector's stock fstab (ext4 on the HB, f2fs with
-#              casefold and project quota for userdata on the X50: the profile's WIPE_FS); the full data wipe,
+#              casefold and project quota for userdata on the X50: the profile's WIPE_FS). The full data wipe,
 #              never erase or -w. No --keep-data
 #   verify     after the setup, with debugging on again: checks the install over the network
 #   gapps      (a profile with GAPPS_ALLOW) add Google services from YOUR OWN download of MindTheGapps (the guide
@@ -123,7 +123,7 @@
 #   status, reset (--device ID reset forgets only that projector's progress)
 # What it writes there: system_<slot> and z9x_blobs_<slot> (create, resize, flash) of the running slot (a or b,
 # the one fastbootd reports) when the profile's SLOTS has it, z9x_gapps_<slot> of that slot (create, resize,
-# flash, delete; only with GAPPS_ALLOW), and the format of userdata and metadata, only while no update is staged or
+# flash, delete, only with GAPPS_ALLOW), and the format of userdata and metadata, only while no update is staged or
 # merging (snapshot-update-status none).
 # Never vbmeta, boot, vendor, the KEEP partitions, the other slot, --slot, set_active, a delete of anything but
 # z9x_gapps_<slot>, erase or -w (fb_allowed). stick: not yet.
@@ -144,18 +144,7 @@ PT_SLEEP=/bin/sleep     # the watchdog's clock: the system's own sleep, never on
 [ -x "$PT_SLEEP" ] || PT_SLEEP=$(command -pv sleep 2>/dev/null || echo sleep)
 STATE_DIR=${LUMEN_STATE_DIR:-$HOME/.lumen-installer}
 BACKUP_ROOT=${LUMEN_BACKUP_DIR:-$HOME/Lumen-backup}
-MODEL_CODE=G0082
-BOARD=mt9952
-FB_PRODUCT=mt5877
-# v6.15.19 (2025-10-14): same kernel, modules, projector HAL (gmpf) and PM51 firmware as v6.15.58;
-# only hwcomposer, libwhitebalance and XGIMI apps differ (z9x-firmware-dump/v61519, 2026-10-08).
-# v6.15.62 (2026-03-25, the current firmware of the Z9X 4K flagship variant): same kernel, gmpf, HALs, init,
-# SELinux, VINTF, blobs and PM51 firmware as v6.15.58; libxgimi.so the same size, only rebuilt files differ
-# (compatibility check of a 4PDA user's dumps, 2026-10-13 / 14).
-VENDOR_OK="v6.15.58 v6.15.62 v6.15.19"
 GUIDE_BASE="https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install"   # one guide per projector and language
-GUIDE_EN="$GUIDE_BASE/z9x/en.md"
-GUIDE_RU="$GUIDE_BASE/z9x/ru.md"
 GOOGLE_GSI="https://source.android.com/docs/core/tests/vts/gsi#flashing-gsis"
 BLOB_SIZE=4194304
 SERIAL=""
@@ -164,8 +153,13 @@ KEEP_DATA=0
 UNSIGNED=0
 WIPE=format
 YES=0
-LANG_UI=en
-case "${LANG:-}" in ru*|RU*) LANG_UI=ru ;; esac
+LANG_UI=en            # the language of the messages (lib/messages.tsv): from $LANG, or --lang
+case "${LANG:-}" in
+  ru*|RU*) LANG_UI=ru ;;
+  zh_TW*|zh_HK*|zh_MO*) LANG_UI=zh-TW ;;
+  zh*) LANG_UI=zh-CN ;;
+  ar*|be*|de*|es*|fr*|it*|ja*|kk*|ko*|pl*|pt*|tr*|uk*) LANG_UI=${LANG%"${LANG#??}"} ;;
+esac
 BLOBS_ENV=${BLOBS:-}                                    # an explicit environment value wins over release.conf
 DEVICE=""
 [ -f "$HERE/release.conf" ] && . "$HERE/release.conf"   # BLOBS=partition|embedded, VERSION=..., DEVICE=z9x|play6
@@ -175,7 +169,7 @@ FORCE_HASH=0
 GAPPS_ZIP=""
 GAPPS_REMOVE=0
 GAPPS_WITH=""         # --gapps-zip: the full install with Google services in one pass
-PROJECTOR=z9x         # the projector profile (resolve_device); the Z9X path is the one this script always had
+PROJECTOR=""          # the projector: an id of lib/devices.conf (resolve_device), its FLOW picks the steps
 DEVICE_OPT=""
 IP=""
 IP_GIVEN=0
@@ -189,19 +183,53 @@ P6_BCB_OK=0           # XGIMI Play 6: set only while p6_bcb_write writes its che
 P6_PRE_DONE=0         # XGIMI Play 6: the pre-checks of this run are done (p6_prechecks)
 
 # ------------------------------------------------------------------ helpers
-t() { if [ "$LANG_UI" = ru ]; then printf '%s' "$2"; else printf '%s' "$1"; fi; }
+MSG_FILE=$HERE/lib/messages.tsv   # every text the user reads, by id, in each language
+MSG_LANG=""
+msg_load() {  # the texts of $LANG_UI as M_<id> (lib/messages.tsv; English where a text has no translation)
+  local id s
+  [ -f "$MSG_FILE" ] || { printf '%s\n' "lib/messages.tsv is missing: download the installer again. Nothing was done." >&2; exit 1; }
+  while IFS=$'\t' read -r id s; do
+    printf -v "M_$id" '%b' "$s"
+  done < <(awk -F '\t' -v l="$LANG_UI" '/^#/ { next }
+    !h { for (i = 2; i <= NF; i++) if ($i == l) c = i; h = 1; next }
+    $1 ~ /^[a-z0-9_]+$/ { print $1 "\t" ((c && $c != "") ? $c : $2) }' "$MSG_FILE")
+  MSG_LANG=$LANG_UI
+}
+m() {  # id [value...]: the text of id in the language of the messages, {1}, {2}, ... filled in with the values
+  local n=M_$1 s r="" k
+  [ "$MSG_LANG" = "$LANG_UI" ] || msg_load   # --lang given just now (the option loop)
+  s=${!n-"[$1]"}
+  shift
+  while :; do
+    case $s in
+      *\{[1-9]*) ;;
+      *) break ;;
+    esac
+    k=${s%%\{[1-9]*}; r=$r$k; s=${s#"$k"}
+    case $s in
+      \{[1-9]\}*) k=${s:1:1}; s=${s:3} ;;
+      \{[1-9][0-9]\}*) k=${s:1:2}; s=${s:4} ;;
+      *) r=$r{; s=${s:1}; continue ;;
+    esac
+    r=$r${!k-}
+  done
+  printf '%s' "$r$s"
+}
+msg_load
 say() { printf '%s %s\n' "$(date +%H:%M:%S)" "$*"; }
 ok() { say "  ✓ $*"; }
 warn() { say "  ! $*"; }
-die() { say "$(t 'STOP' 'СТОП'): $*"; exit 1; }
+die() { say "$(m stop): $*"; exit 1; }
 sha256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | cut -d' ' -f1; else shasum -a 256 "$1" | cut -d' ' -f1; fi; }
 # identity of the file on disk (size, mtime, inode): a cached check is only valid for exactly that file
 filekey() { local m; m=$(stat -f '%z %m %i' "$1" 2>/dev/null) || m=$(stat -c '%s %Y %i' "$1" 2>/dev/null) || m="?"; printf '%s' "$m" | tr ' ' ':'; }
 ask() {  # ask "question" -> 0 if yes
   local a
-  printf '%s [%s] ' "$1" "$(t 'yes/no' 'да/нет')"
+  printf '%s [%s] ' "$1" "$(m yes_no)"
   read -r a
-  case "$a" in y|Y|yes|Yes|YES|д|Д|да|Да|ДА) return 0 ;; *) return 1 ;; esac
+  case "$a" in y|Y|yes|Yes|YES|д|Д|да|Да|ДА) return 0 ;; '') return 1 ;; esac
+  case " $(m answer_yes) " in *" $a "*) return 0 ;; esac   # the words of the language of the messages
+  return 1
 }
 # progress of the projector in use: $SD/state ($SD = $STATE_DIR on the Z9X, $STATE_DIR/play6 on the Play 6)
 state_get() { [ -f "$SD/state" ] && sed -n "s/^$1=//p" "$SD/state" | tail -1; }
@@ -271,10 +299,10 @@ pt_call() {  # adb|fastboot args...: our own copy, within the time limit of that
   pt_run "$secs" "$PT_DIR/$tool" "$@"; rc=$?
   [ "$rc" = 124 ] || return "$rc"
   if [ "$tool" = fastboot ] && [ "$(pt_sub "$@")" = flash ]; then   # the caller says what that means for the projector
-    say "  ! $(t "'fastboot $*' did not finish in $secs s and was stopped: the write is incomplete. A slow disk (USB stick, network drive) can cause it: copy the installer folder to the computer's own disk." "'fastboot $*' не завершился за $secs с и остановлен: запись неполная. Причиной может быть медленный диск (флешка, сетевой диск): скопируйте папку установщика на диск самого компьютера.")" >&9
+    say "  ! $(m fastboot_did_not_finish_s "$*" "$secs")" >&9
     return 124
   fi
-  say "$(t 'STOP' 'СТОП'): $(t "'$tool $*' did not answer within $secs s and was stopped; the installer went no further (nothing after this step was written). Unplug the USB cable and plug it in again (Play 6: check its Wi-Fi), then run the same command again. If it happens again, restart the computer: another program may be holding the USB connection." "'$tool $*' не ответил за $secs с и остановлен; установщик дальше не пошёл (ничего после этого шага не записано). Выньте и снова вставьте кабель USB (Play 6: проверьте его Wi-Fi) и запустите ту же команду ещё раз. Если повторится, перезагрузите компьютер: соединение USB может держать другая программа.")" >&9   # fd 9: the terminal, also when the caller hides stderr
+  say "$(m stop): $(m did_not_answer_within_s "$tool" "$*" "$secs")" >&9   # fd 9: the terminal, also when the caller hides stderr
   kill -TERM $$ 2>/dev/null   # the whole installer stops, also from inside $(...)
   exit 1
 }
@@ -291,17 +319,17 @@ pt_marker_ok() {  # DIR: our checked unpack (zip sha256, and the sha256 of each 
 }
 pt_fetch() {  # zip name: the pinned zip into $HERE/tools (kept: a later run checks it again instead of downloading)
   local zip=$1 url=$PT_URL/$1 dir=$HERE/tools
-  mkdir -p "$dir" 2>/dev/null && [ -w "$dir" ] || die "$(t "cannot write $dir: copy the installer folder to a folder of your own (for example your home folder) and run it there. Nothing was done." "нельзя писать в $dir: скопируйте папку установщика в свою папку (например, домашнюю) и запустите оттуда. Ничего не сделано.")"
+  mkdir -p "$dir" 2>/dev/null && [ -w "$dir" ] || die "$(m cannot_write_copy_installer_folder "$dir")"
   if [ -f "$dir/$zip" ] && [ "$(sha256 "$dir/$zip")" = "$PT_SHA" ]; then return 0; fi
-  say "$(t "downloading Google's Android SDK Platform-Tools $PT_VER (adb and fastboot, about 10 MB, once): $url" "скачиваю Android SDK Platform-Tools $PT_VER от Google (adb и fastboot, около 10 МБ, один раз): $url")"
+  say "$(m downloading_googles_android_sdk "$PT_VER" "$url")"
   if command -v curl >/dev/null 2>&1; then
     curl -fsSL --retry 3 --connect-timeout 20 --speed-limit 1024 --speed-time 60 -o "$dir/$zip.part" "$url"
   elif command -v wget >/dev/null 2>&1; then
     wget -q -T 60 -t 3 -O "$dir/$zip.part" "$url"
   else
     false
-  fi || die "$(t "the download failed (no internet?). Download $url yourself and put it into $dir, or run with --platform-tools DIR (Platform-Tools 35 or newer). Nothing was done." "скачать не удалось (нет интернета?). Скачайте $url сами и положите в $dir или запустите с --platform-tools ПАПКА (Platform-Tools 35 или новее). Ничего не сделано.")"
-  [ "$(sha256 "$dir/$zip.part")" = "$PT_SHA" ] || { rm -f "${dir:?}/${zip:?}.part"; die "$(t "the downloaded $zip is not Google's file (sha256 differs): removed, not used. Try again later. Nothing was done." "скачанный $zip не совпадает с файлом Google (другой sha256): удалён, не используется. Повторите позже. Ничего не сделано.")"; }
+  fi || die "$(m download_failed_no_internet "$url" "$dir")"
+  [ "$(sha256 "$dir/$zip.part")" = "$PT_SHA" ] || { rm -f "${dir:?}/${zip:?}.part"; die "$(m downloaded_not_googles_file_sha256 "$zip")"; }
   mv "$dir/$zip.part" "$dir/$zip"
 }
 pt_unpack() {  # zip name -> $HERE/tools/platform-tools, with the marker that lets later runs reuse it
@@ -309,7 +337,7 @@ pt_unpack() {  # zip name -> $HERE/tools/platform-tools, with the marker that le
   rm -rf "${new:?}"; mkdir -p "$new"
   if command -v unzip >/dev/null 2>&1; then unzip -q "$zip" -d "$new"
   else python3 -I -m zipfile -e "$zip" "$new"; fi \
-    || { rm -rf "${new:?}"; die "$(t "cannot unpack $zip (install unzip). Nothing was done." "не удаётся распаковать $zip (установите unzip). Ничего не сделано.")"; }
+    || { rm -rf "${new:?}"; die "$(m cannot_unpack_install_unzip "$zip")"; }
   [ -f "$new/platform-tools/adb" ] || { rm -rf "${new:?}"; die "internal: $zip has no platform-tools/adb"; }
   for f in $(pt_files) make_f2fs_casefold; do [ -f "$new/platform-tools/$f" ] && chmod 755 "$new/platform-tools/$f"; done
   { echo "zip $PT_SHA"; for f in $(pt_files); do [ -f "$new/platform-tools/$f" ] && echo "$(sha256 "$new/platform-tools/$f") $f"; done; } \
@@ -324,16 +352,16 @@ pt_setup() {  # adb and fastboot of our own, checked; our own adb server started
   esac
   if [ -n "$PT_OPT" ]; then
     dir=$(cd "$PT_OPT" 2>/dev/null && pwd) && [ -x "$dir/adb" ] && [ -x "$dir/fastboot" ] \
-      || die "$(t "--platform-tools $PT_OPT: no adb and fastboot there. Nothing was done." "--platform-tools $PT_OPT: там нет adb и fastboot. Ничего не сделано.")"
+      || die "$(m platform_tools_no_adb_fastboot "$PT_OPT")"
     src=$dir
   else
-    [ -n "$os" ] || die "$(t "Google's Platform-Tools run on macOS, Linux x86-64 and Windows (lumen-install.cmd), not on this computer ($(uname -s) $(uname -m)): install adb and fastboot 35 or newer for it and run with --platform-tools DIR (the folder that has them). Nothing was done." "Platform-Tools от Google работают на macOS, Linux x86-64 и Windows (lumen-install.cmd), а не на этом компьютере ($(uname -s) $(uname -m)): установите для него adb и fastboot версии 35 или новее и запустите с --platform-tools ПАПКА (где они лежат). Ничего не сделано.")"
+    [ -n "$os" ] || die "$(m googles_platform_tools_run_macos "$(uname -s)" "$(uname -m)")"
     eval "PT_SHA=\$PT_SHA_$os"; zip=platform-tools_r$PT_VER-$os.zip; dir=$HERE/tools/platform-tools
     if ! pt_marker_ok "$dir"; then
       pt_fetch "$zip"; pt_unpack "$zip"
       pt_marker_ok "$dir" || die "internal: the unpacked Platform-Tools do not check out"
     fi
-    src="tools/platform-tools, $(t "checked" "проверены")"
+    src="tools/platform-tools, $(m checked)"
   fi
   PT_DIR=$dir
   exec 9>&2
@@ -341,7 +369,7 @@ pt_setup() {  # adb and fastboot of our own, checked; our own adb server started
   PT_ADBV=$(pt_run 20 "$dir/adb" version 2>/dev/null </dev/null | tr -d '\r')
   PT_FBV=$(pt_run 20 "$dir/fastboot" --version 2>/dev/null </dev/null | tr -d '\r')
   for v in "$(printf '%s\n' "$PT_ADBV" | pt_major)" "$(printf '%s\n' "$PT_FBV" | pt_major)"; do
-    [ -n "$v" ] && [ "$v" -ge 35 ] 2>/dev/null || die "$(t "adb or fastboot in $dir is too old or does not run: need Platform-Tools 35 or newer. Nothing was done." "adb или fastboot в $dir слишком старые или не запускаются: нужны Platform-Tools 35 или новее. Ничего не сделано.")"
+    [ -n "$v" ] && [ "$v" -ge 35 ] 2>/dev/null || die "$(m adb_fastboot_too_old_not "$dir")"
   done
   PT_ADBV=$(printf '%s\n' "$PT_ADBV" | head -n 1 | awk '{print $NF}'); PT_FBV=$(printf '%s\n' "$PT_FBV" | head -n 1 | awk '{print $3}')
   trap pt_cleanup EXIT; trap 'exit 1' TERM; trap 'exit 130' INT
@@ -349,10 +377,10 @@ pt_setup() {  # adb and fastboot of our own, checked; our own adb server started
   pt_run 20 "$dir/adb" start-server >/dev/null 2>&1 </dev/null
   case $? in
     0) ;;
-    124) die "$(t "adb did not start within 20 s (port $ADB_PORT). Close programs for phones and Android devices (Android Studio, phone managers, scrcpy) or restart the computer, then try again. Nothing was done." "adb не запустился за 20 с (порт $ADB_PORT). Закройте программы для телефонов и Android-устройств (Android Studio, менеджеры телефонов, scrcpy) или перезагрузите компьютер и повторите. Ничего не сделано.")" ;;
-    *) die "$(t "adb did not start (port $ADB_PORT busy?). Restart the computer and try again. Nothing was done." "adb не запустился (порт $ADB_PORT занят?). Перезагрузите компьютер и повторите. Ничего не сделано.")" ;;
+    124) die "$(m adb_did_not_start_within "$ADB_PORT")" ;;
+    *) die "$(m adb_did_not_start_port "$ADB_PORT")" ;;
   esac
-  ok "Platform-Tools $(printf '%s' "$PT_FBV" | cut -d- -f1) ($src), $(t "own adb server on port" "свой сервер adb на порту") $ADB_PORT"
+  ok "Platform-Tools $(printf '%s' "$PT_FBV" | cut -d- -f1) ($src), $(m own_adb_server_port) $ADB_PORT"
 }
 pt_cleanup() {  # only our own adb server, never another program's
   [ "$PT_SERVER" = 1 ] && pt_run 10 "$PT_DIR/adb" kill-server >/dev/null 2>&1 </dev/null
@@ -366,7 +394,7 @@ fb_allowed() {  # action partition -> 0 if the installer may touch it
   # XGIMI Play 6: system, and the Google services add-on partition lumen_gapps ('gapps': create, resize,
   # delete; it is formatted and filled on the projector). Single slot; never format, erase or another flash.
   # misc: only the 2 KiB erase request for XGIMI's recovery (p6_bcb_write checks its bytes before the write).
-  if [ "$PROJECTOR" = play6 ]; then
+  if [ "$P_FLOW" = play6-wifi ]; then
     case "$1:$2" in flash:system|create:lumen_gapps|resize:lumen_gapps|delete:lumen_gapps) return 0 ;; esac
     [ "$1:$2" = flash:misc ] && [ "$P6_BCB_OK" = 1 ] && return 0
     return 1
@@ -423,43 +451,41 @@ pick_device() {
   list=$(adb devices 2>/dev/null | awk 'NR>1 && $2=="device"{print $1}')
   if [ -n "$SERIAL" ]; then
     printf '%s\n' "$list" | grep -qx "$SERIAL" && return 0
-    [ "$SERIAL_FROM_STATE" = 1 ] || die "$(t "device $SERIAL is not connected over adb" "устройство $SERIAL не подключено по adb")"
+    [ "$SERIAL_FROM_STATE" = 1 ] || die "$(m device_not_connected_over_adb "$SERIAL")"
     SERIAL=""
   fi
   n=$(printf '%s\n' "$list" | grep -c .)
   if [ "$n" != 1 ]; then
     adb devices
-    die "$(t "exactly one projector must be connected over adb, found $n. USB debugging on? Projector restarted after enabling it? A-A cable in the projector's USB 2.0 port? Allowed the 'USB debugging' prompt on the screen?" "нужно ровно одно устройство в adb, найдено: $n. Отладка по USB включена? Проектор перезагружали после её включения? Кабель A–A в порту USB 2.0? Разрешили запрос «Отладка по USB» на экране?")"
+    die "$(m exactly_one_projector_must "$n")"
   fi
   SERIAL=$list
 }
 
 find_image() {
-  [ -n "$IMG" ] && { [ -f "$IMG" ] || die "$(t "no image $IMG" "нет образа $IMG")"; image_owner; return; }
+  [ -n "$IMG" ] && { [ -f "$IMG" ] || die "$(m no_image "$IMG")"; image_owner; return; }
   local found f n=0
   for f in "$HERE"/$IMG_GLOB "$HERE"/../$IMG_GLOB; do
     [ -f "$f" ] || continue
     n=$((n + 1)); found=$f
   done
-  [ "$n" -gt 0 ] || die "$(t "no $IMG_GLOB found; use --image FILE" "не найден $IMG_GLOB; укажите --image ФАЙЛ")"
+  [ "$n" -gt 0 ] || die "$(m no_found_use_image_file "$IMG_GLOB")"
   # never pick one of several by name order: the editions (with and without Google) differ
-  [ "$n" = 1 ] || die "$(t "several images found (with and without Google?): choose one with --image FILE" "найдено несколько образов (с Google и без?): выберите один через --image ФАЙЛ")"
+  [ "$n" = 1 ] || die "$(m several_images_found_without)"
   IMG=$found
   image_owner
 }
 
-# a Z9X never takes an image named for another projector (lumen-os-play6-... matches lumen-os-*-system.img)
+# a Z9X never takes an image named for another projector (lumen-os-play6-... matches lumen-os-*-system.img): the
+# Play 6 token anywhere in the name, the token of a FLOW=ab-fastbootd projector after lumen-os-
 image_owner() {
-  [ "$PROJECTOR" = z9x ] || return 0
-  case "$(basename "$IMG")" in
-    *play6*) die "$(t "this image is for the $(dev_name play6), not for the XGIMI Z9X. Nothing was written." "этот образ для $(dev_name play6), а не для XGIMI Z9X. Ничего не записано.")" ;;
-  esac
-  local id tok   # lumen-os-<IMAGE_TOKEN>-...: the FLOW=ab-fastbootd projectors of lib/devices.conf
-  for id in $(abf_ids); do
+  [ "$P_FLOW" = z9x-usb ] || return 0
+  local id tok
+  for id in $(profile_ids); do
     tok=$(devconf_get "$id" IMAGE_TOKEN)
     [ -n "$tok" ] || continue
-    case "$(basename "$IMG")" in
-      "lumen-os-$tok-"*) die "$(t "this image is for the $(dev_name "$id"), not for the XGIMI Z9X. Nothing was written." "этот образ для $(dev_name "$id"), а не для XGIMI Z9X. Ничего не записано.")" ;;
+    case "$(profile_flow "$id"):$(basename "$IMG")" in
+      play6-wifi:*"$tok"*|ab-fastbootd:"lumen-os-$tok-"*) die "$(m image_not_xgimi_z9x_nothing "$(dev_name "$id")")" ;;
     esac
   done
 }
@@ -474,7 +500,7 @@ image_edition() {
     bp=$(dump.erofs --cat --path=/system/product/etc/build.prop "$IMG" 2>/dev/null) || bp=""
     p=$(printf '%s\n' "$bp" | sed -n 's/^ro\.z9x\.gms=//p' | tail -1)
     if [ -n "$bp" ] && { { [ "$g" = 0 ] && [ "$p" != 0 ]; } || { [ "$g" = 1 ] && [ "$p" = 0 ]; }; }; then
-      die "$(t "$name: the file name and the image disagree about Google services (ro.z9x.gms='$p'): do not install it" "$name: имя файла и сам образ расходятся насчёт сервисов Google (ro.z9x.gms='$p'): не устанавливайте его")"
+      die "$(m file_name_image_disagree_about "$name" "$p")"
     fi
     # whose image it is: Lumen OS that names another projector of lib/devices.conf (its LUMEN_PROP, e.g. the X50
     # Ultra, which runs the same XGIMI product image) or another device id than the Z9X's is never written here
@@ -483,18 +509,18 @@ image_edition() {
         [ -n "$lp" ] || continue
         id=${id%.LUMEN_PROP}
         [ "$(printf '%s\n' "$bp" | sed -n "s/^${lp%% *}=//p" | tail -1)" != "${lp#* }" ] \
-          || die "$(t "this image is for the $(dev_name "$id"), not for the XGIMI Z9X. Nothing was written." "этот образ для $(dev_name "$id"), а не для XGIMI Z9X. Ничего не записано.")"
+          || die "$(m image_not_xgimi_z9x_nothing "$(dev_name "$id")")"
       done <<EOF
 $([ -f "$DEVCONF" ] && awk '{ sub(/\r$/, "") } /^[a-z0-9]+\.LUMEN_PROP=[^ ]+ [^ ]+$/' "$DEVCONF")
 EOF
       d=$(printf '%s\n' "$bp" | sed -n 's/^ro\.z9x\.device=//p' | tail -1)
       [ -z "$d" ] || [ "$d" = z9x ] \
-        || die "$(t "$name is not Lumen OS for the XGIMI Z9X (ro.z9x.device='$d'). Nothing was written." "$name не Lumen OS для XGIMI Z9X (ro.z9x.device='$d'). Ничего не записано.")"
+        || die "$(m not_lumen_os_xgimi_z9x "$name" "$d")"
     fi
   fi
   state_set image_gms "$g"
-  if [ "$g" = 0 ]; then ok "$(t "edition: Lumen OS without Google" "редакция: Lumen OS без Google")"
-  else ok "$(t "edition: with Google services" "редакция: с сервисами Google")"; fi
+  if [ "$g" = 0 ]; then ok "$(m edition_lumen_os_without_google)"
+  else ok "$(m edition_google_services)"; fi
 }
 
 # keep-data repairs never switch editions: Play and Google services updates in /data would be orphaned and
@@ -505,9 +531,9 @@ edition_guard() {
   case "$d" in
     0|1) [ "$d" = "$i" ] && return 0
          if [ "$d" = 0 ]; then
-           die "$(t "this projector runs Lumen OS without Google and the image has Google services: switching editions needs a full install with a data wipe (without --keep-data)" "на проекторе Lumen OS без Google, а образ с сервисами Google: смена редакции требует полной установки с очисткой данных (без --keep-data)")"
+           die "$(m projector_runs_lumen_os_without)"
          else
-           die "$(t "this projector runs Lumen OS with Google services and the image is without Google: switching editions needs a full install with a data wipe (without --keep-data)" "на проекторе Lumen OS с сервисами Google, а образ без Google: смена редакции требует полной установки с очисткой данных (без --keep-data)")"
+           die "$(m projector_runs_lumen_os_google)"
          fi ;;
   esac
   return 0
@@ -515,39 +541,39 @@ edition_guard() {
 
 # ------------------------------------------------------------------ check
 check_tools() {  # pt_setup ran: adb and fastboot of our own, 35 or newer
-  if [ "$PROJECTOR" = z9x ] && [ "$KEEP_DATA" = 0 ] && [ "$WIPE" = format ]; then
+  if [ "$P_FLOW" = z9x-usb ] && [ "$KEEP_DATA" = 0 ] && [ "$WIPE" = format ]; then
     [ -x "$PT_DIR/make_f2fs" ] && [ -x "$PT_DIR/mke2fs" ] \
-      || die "$(t "make_f2fs/mke2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip" "нет make_f2fs/mke2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools")"
+      || die "$(m make_f2fs_mke2fs_missing_next "$PT_DIR")"
   fi
   # FLOW=ab-fastbootd: 'fastboot format:<WIPE_FS>' makes the file system with the tool next to fastboot
   if [ "$P_FLOW" = ab-fastbootd ] && [ "$P_WIPE_FS" = f2fs ]; then
     [ -x "$PT_DIR/make_f2fs" ] \
-      || die "$(t "make_f2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip. Nothing was done." "нет make_f2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools. Ничего не сделано.")"
+      || die "$(m make_f2fs_missing_next_fastboot "$PT_DIR")"
   elif [ "$P_FLOW" = ab-fastbootd ]; then
     [ -x "$PT_DIR/mke2fs" ] \
-      || die "$(t "mke2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip. Nothing was done." "нет mke2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools. Ничего не сделано.")"
+      || die "$(m mke2fs_missing_next_fastboot_use "$PT_DIR")"
   fi
   ok "adb $PT_ADBV, fastboot $PT_FBV"
 }
 
 check_image() {
   find_image
-  local sums="$(dirname "$IMG")/SHA256SUMS" sig name want got cert="$HERE/certs/ota.x509.pem" pub a
+  local sums="$(dirname "$IMG")/SHA256SUMS" sig name want got cert="$HERE/$P_CERT" pub a
   name=$(basename "$IMG")
   sig="$sums.sig"
   # image variant vs BLOBS: a -PRIVATE- image carries the codec files ('embedded'); with dump.erofs on
   # this computer the image itself says it (0-byte placeholder = public)
-  case "$name" in *PRIVATE*) [ "$BLOBS" = embedded ] || die "$(t "$name is a PRIVATE image (codec files inside): run with --blobs=embedded" "$name: ЧАСТНЫЙ образ (файлы кодеков внутри): запустите с --blobs=embedded")" ;; esac
-  [ "$BLOBS" != none ] || warn "$(t "--no-blobs: no sound and no protected video (e.g. Kinopoisk HD) with this install" "--no-blobs: не будет звука и защищённого видео (например, Кинопоиск HD)")"
+  case "$name" in *PRIVATE*) [ "$BLOBS" = embedded ] || die "$(m private_image_codec_files_inside "$name")" ;; esac
+  [ "$BLOBS" != none ] || warn "$(m no_blobs_no_sound_no)"
   if command -v dump.erofs >/dev/null 2>&1; then
     local inf sz
     inf=$(dump.erofs --path=/system/system_ext/lib64/libc2plugin_store.so "$IMG" 2>/dev/null) || inf=""
     sz=$(printf '%s\n' "$inf" | sed -n 's/^Size: \([0-9]*\).*/\1/p' | head -1)
     if [ -n "$sz" ]; then
       if [ "$sz" -gt 0 ] && [ "$BLOBS" != embedded ]; then
-        die "$(t "this image carries the codec files itself (private image): run with --blobs=embedded" "образ сам содержит файлы кодеков (частный образ): запустите с --blobs=embedded")"
+        die "$(m image_carries_codec_files_itself)"
       elif [ "$sz" -eq 0 ] && [ "$BLOBS" = embedded ]; then
-        die "$(t "this is a public image (codec placeholder): run with --blobs=partition" "это публичный образ (заглушка кодеков): запустите с --blobs=partition")"
+        die "$(m public_image_codec_placeholder_run)"
       fi
     fi
   fi
@@ -555,15 +581,15 @@ check_image() {
     pub=$(mktemp)
     openssl x509 -in "$cert" -pubkey -noout > "$pub"
     openssl dgst -sha256 -verify "$pub" -signature "$sig" "$sums" >/dev/null 2>&1 \
-      || { rm -f "$pub"; die "$(t "SHA256SUMS is not signed by Lumen OS: do not install this image" "SHA256SUMS не подписан Lumen OS: не устанавливайте этот образ")"; }
+      || { rm -f "$pub"; die "$(m sha256sums_not_signed_lumen_os)"; }
     rm -f "$pub"
-    ok "$(t "SHA256SUMS signature: Lumen OS release key" "подпись SHA256SUMS: ключ Lumen OS")"
+    ok "$(m sha256sums_signature_lumen_os)"
   elif [ "$UNSIGNED" = 1 ]; then
-    warn "$(t "--unsigned-image: this image is NOT authenticated (no signed SHA256SUMS). Only for your own build." "--unsigned-image: образ НЕ проверен (нет подписанного SHA256SUMS). Только для собственной сборки.")"
+    warn "$(m unsigned_image_image_not)"
     if [ "$(state_get unsigned_ok)" != "$name:$(filekey "$IMG")" ]; then
-      printf '%s ' "$(t "Type UNSIGNED to install $name anyway:" "Введите UNSIGNED, чтобы всё равно установить $name:")"
+      printf '%s ' "$(m type_unsigned_install_anyway "$name")"
       read -r a
-      [ "$a" = UNSIGNED ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+      [ "$a" = UNSIGNED ] || die "$(m cancelled_nothing_written)"
       state_set unsigned_ok "$name:$(filekey "$IMG")"
     fi
     if [ ! -f "$sums" ]; then   # e.g. the maintainer's build/SHA256SUMS_lumen_v1.txt: the file that lists this image
@@ -574,25 +600,25 @@ check_image() {
       done
     fi
   else
-    [ -f "$sums" ] || die "$(t "no SHA256SUMS next to the image: it cannot be checked. Download SHA256SUMS and SHA256SUMS.sig from the same release." "рядом с образом нет SHA256SUMS: его нельзя проверить. Скачайте SHA256SUMS и SHA256SUMS.sig из того же релиза.")"
-    [ -f "$sig" ] || die "$(t "no SHA256SUMS.sig next to the image: its origin cannot be checked" "рядом с образом нет SHA256SUMS.sig: происхождение образа нельзя проверить")"
-    [ -f "$cert" ] || die "$(t "installer certificate certs/ota.x509.pem missing: re-download the installer" "нет сертификата установщика certs/ota.x509.pem: скачайте установщик заново")"
-    die "$(t "openssl is needed to check the image signature (macOS and Linux have it; install it)" "для проверки подписи образа нужен openssl (есть в macOS и Linux; установите его)")"
+    [ -f "$sums" ] || die "$(m no_sha256sums_next_image_cannot)"
+    [ -f "$sig" ] || die "$(m no_sha256sums_sig_next_image)"
+    [ -f "$cert" ] || die "$(m installer_certificate_certs_ota)"
+    die "$(m openssl_needed_check_image)"
   fi
   if [ -n "$sums" ] && [ -f "$sums" ]; then
     want=$(awk -v f="$name" '$2==f || $2=="*"f {print $1}' "$sums")
-    [ -n "$want" ] || die "$(t "$name is not listed in $(basename "$sums")" "$name нет в $(basename "$sums")")"
+    [ -n "$want" ] || die "$(m not_listed "$name" "$(basename "$sums")")"
     # the cache only spares a second hash in 'check' for exactly the same file (sha + size + mtime +
     # inode); 'flash' always hashes the file it is about to write (FORCE_HASH)
     if [ "$FORCE_HASH" = 1 ] || [ "$(state_get image_ok)" != "$want:$(filekey "$IMG")" ]; then
-      say "$(t "checking the image checksum (about a minute)" "проверяю контрольную сумму образа (около минуты)")"
+      say "$(m checking_image_checksum_about)"
       got=$(sha256 "$IMG")
-      [ "$got" = "$want" ] || { state_set image_ok none; die "$(t "checksum mismatch: the image is damaged or not the right file" "контрольная сумма не совпала: образ повреждён или не тот")"; }
+      [ "$got" = "$want" ] || { state_set image_ok none; die "$(m checksum_mismatch_image_damaged)"; }
       state_set image_ok "$want:$(filekey "$IMG")"
     fi
     ok "$name sha256 ${want:0:16}…"
   else
-    warn "$(t "--unsigned-image without any SHA256SUMS file: checksum not checked" "--unsigned-image без файла SHA256SUMS: контрольная сумма не проверена")"
+    warn "$(m unsigned_image_without_any)"
   fi
   image_edition
 }
@@ -603,17 +629,17 @@ check_device() {
   code=$(prop ro.boot.xgimi.modelname); board=$(prop ro.boot.hardware)
   vend=$(prop ro.vendor.build.version.incremental); slot=$(prop ro.boot.slot_suffix)
   sys=$(prop ro.z9x.version)
-  [ "$code" = "$MODEL_CODE" ] && [ "$board" = "$BOARD" ] \
-    || die "$(t "this is not an XGIMI Z9X (model '$code', board '$board'). Nothing was done." "это не XGIMI Z9X (код модели '$code', плата '$board'). Ничего не сделано.")$(other_hint "$code" "$board")"
-  case " $VENDOR_OK " in
+  [ "$code" = "$P_MODEL" ] && [ "$board" = "$P_BOARD" ] \
+    || die "$(m not_xgimi_z9x_model_board "$code" "$board")$(other_hint "$code" "$board")"
+  case " $P_VENDOR_OK " in
     *" $vend "*) ;;
-    *) die "$(t "XGIMI firmware $vend is not supported (V6.15.58, V6.15.62 or V6.15.19 only). If it is older, let the stock system update itself (Settings, Wi-Fi), then run the installer again. If it is newer, Lumen OS does not support it yet. Nothing was written." "прошивка XGIMI $vend не поддерживается (только V6.15.58, V6.15.62 или V6.15.19). Если она старее, дайте стоку обновиться (настройки, Wi-Fi) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. Ничего не записано.")" ;;
+    *) die "$(m xgimi_firmware_not_supported_v6 "$vend")" ;;
   esac
   state_set serial "$SERIAL"; state_set slot "$slot"
   if [ -n "$sys" ]; then local g; g=$(prop ro.z9x.gms); state_set dev_gms "${g:-1}"; else state_set dev_gms stock; fi
-  ok "XGIMI Z9X $SERIAL, $(t 'firmware' 'прошивка') $vend, $(t 'slot' 'слот') ${slot#_}, $(t 'system' 'система'): ${sys:+Lumen/Z9X OS }${sys:-$(t 'XGIMI stock' 'родная XGIMI')}"
+  ok "XGIMI Z9X $SERIAL, $(m firmware) $vend, $(m slot) ${slot#_}, $(m system): ${sys:+Lumen/Z9X OS }${sys:-$(m xgimi_stock)}"
   free=$(df -k "$HOME" | awk 'NR==2{print $4}')
-  [ "${free:-0}" -ge 4194304 ] || warn "$(t "less than 4 GB free on this computer" "на компьютере свободно меньше 4 ГБ")"
+  [ "${free:-0}" -ge 4194304 ] || warn "$(m less_4_gb_free_computer)"
 }
 
 cmd_check() {
@@ -621,33 +647,27 @@ cmd_check() {
   check_device
   check_image
   check_vbmeta_effective "$(prop ro.boot.slot_suffix)"
-  ok "$(t "check passed; nothing was written" "проверка пройдена; ничего не записано")"
+  ok "$(m check_passed_nothing_written)"
   state_set step_check done
 }
 
 # ------------------------------------------------------------------ backup
 cmd_backup() {
   local pre=""
-  if [ "$PROJECTOR" = play6 ]; then play6_adb 60 || die "$(p6_noconn_text)"; pre=play6-
+  if [ "$P_FLOW" = play6-wifi ]; then play6_adb 60 || die "$(p6_noconn_text)"; pre=$PROJECTOR-
   elif [ "$P_FLOW" = ab-fastbootd ]; then abf_adb 60 || die "$(p6_noconn_text)"; pre=$PROJECTOR-
   else pick_device; fi
   local d="$BACKUP_ROOT/$pre$(date +%Y%m%d-%H%M)" p path n=0
   mkdir -p "$d/apps" "$d/sdcard" "$d/settings"
-  say "$(t "backup to $d" "резервная копия в $d")"
-  if [ "$PROJECTOR" = play6 ] || [ "$P_FLOW" = ab-fastbootd ]; then
-    say "$(t "over Wi-Fi this takes about 1 minute per GB" "по Wi-Fi это около минуты на каждый ГБ")"
-  elif [ "$(state_get image_gms)" = 0 ]; then
-    say "$(t "Recommended: remove your Google account on the projector first (Settings > Accounts). Lumen OS without Google does not ask for it, but a later switch to an image with Google services would (Factory Reset Protection)." "Рекомендуется: сначала удалите аккаунт Google на проекторе (Настройки > Аккаунты). Lumen OS без Google его не спросит, но при переходе позже на образ с сервисами Google его спросит защита от сброса.")"
-  else
-    say "$(t "IMPORTANT: remove your Google account on the projector first (Settings > Accounts), or Factory Reset Protection may ask for it after the wipe." "ВАЖНО: сначала удалите аккаунт Google на проекторе (Настройки > Аккаунты), иначе после очистки защита от сброса может попросить его.")"
-  fi
+  say "$(m backup "$d")"
+  [ "$P_FLOW" = z9x-usb ] || say "$(m over_wi_fi_takes_about)"
   for p in $(adbs shell pm list packages -3 2>/dev/null | tr -d '\r' | sed 's/^package://'); do
     for path in $(adbs shell pm path "$p" 2>/dev/null | tr -d '\r' | sed 's/^package://'); do
       mkdir -p "$d/apps/$p"
       adbs pull "$path" "$d/apps/$p/" >/dev/null 2>&1 && n=$((n + 1))
     done
   done
-  ok "$(t "$n APK files of your apps (app data cannot be saved without root)" "$n APK ваших приложений (данные приложений без root сохранить нельзя)")"
+  ok "$(m apk_files_apps_app_data "$n")"
   for p in Download Movies Music Pictures DCIM Documents; do
     adbs shell "[ -d /sdcard/$p ] && [ -n \"\$(ls -A /sdcard/$p 2>/dev/null)\" ]" 2>/dev/null \
       && adbs pull "/sdcard/$p" "$d/sdcard/" >/dev/null 2>&1 && ok "/sdcard/$p"
@@ -656,7 +676,7 @@ cmd_backup() {
   adbs shell pm list packages -3 2>/dev/null | tr -d '\r' > "$d/settings/user_apps.txt"
   state_set backup "$d"
   state_set step_backup done
-  ok "$(t "backup done" "копия готова")"
+  ok "$(m backup_done)"
 }
 
 # ------------------------------------------------------------------ blobs (public images)
@@ -665,11 +685,11 @@ cmd_backup() {
 # deleting lines ('N,Md' only), then checked against <sha256> like every other file.
 cmd_blobs() {
   if [ "$BLOBS" = none ]; then
-    warn "$(t "--no-blobs: codec and audio files skipped (no sound, no protected video)" "--no-blobs: файлы кодеков и звука пропущены (не будет звука и защищённого видео)")"
+    warn "$(m no_blobs_codec_audio_files)"
     state_set step_blobs skip; return 0
   fi
   if [ "$BLOBS" != partition ]; then
-    ok "$(t "this image carries its codec files itself: no blobs step needed" "этот образ содержит файлы кодеков сам: шаг blobs не нужен")"
+    ok "$(m image_carries_codec_files_itself_2)"
     state_set step_blobs skip; return 0
   fi
   pick_device
@@ -696,7 +716,7 @@ cmd_blobs() {
       fi
       got="bad"
     done
-    [ "$got" = "$h" ] || die "$(t "$rel from the projector does not match the allow-list ($got): this firmware is not supported. Run again with --no-blobs to install without these files (then there is NO SOUND and no protected video)." "$rel с проектора не совпадает со списком ($got): эта прошивка не поддерживается. Чтобы установить без этих файлов, запустите с --no-blobs (тогда НЕ БУДЕТ ЗВУКА и защищённого видео).")"
+    [ "$got" = "$h" ] || die "$(m projector_not_match_allow_list "$rel" "$got")"
     printf '%s %s %s\n' "$rel" "$h" "$(wc -c < "$w/x/$rel" | tr -d ' ')" >> "$w/x/MANIFEST"
     n=$((n + 1))
   done < "$allow"
@@ -715,36 +735,21 @@ cmd_blobs() {
   cp "$img" "$out"
   state_set blobs_img "$out"
   state_set step_blobs done
-  ok "$(t "$n codec and audio files from your projector, set $set -> $out (keep this file: a later repair needs it)" "$n файлов кодеков и звука с вашего проектора, набор $set -> $out (сохраните файл: он нужен для ремонта)")"
+  ok "$(m codec_audio_files_projector_set "$n" "$set" "$out")"
 }
 
 # ------------------------------------------------------------------ vbmeta (manual)
 cmd_vbmeta() {
-  local g=$GUIDE_EN
-  [ "$LANG_UI" = ru ] && g=$GUIDE_RU
+  local g; g=$(p6_guide)
   echo
-  t "ONE MANUAL STEP: vbmeta (you do it yourself; this installer never runs any vbmeta command)
-  Lumen OS is not signed by XGIMI, so the projector must be told once not to verify the system
-  partition. You do this with Google's official GSI instructions, section 'Requirements for flashing
-  GSIs': flash Google's unchanged vbmeta.img with verification disabled.
-  Do it for BOTH slots (the current one and the other one) in the same fastboot session: then
-  future updates over Wi-Fi need nothing more. Restart, let the projector start normally, connect
-  the cable again.
-" "ОДИН РУЧНОЙ ШАГ: vbmeta (вы делаете его сами; установщик никогда не выполняет команды vbmeta)
-  Lumen OS не подписана XGIMI, поэтому проектору один раз нужно разрешить не проверять раздел
-  system. Это делается по официальной инструкции Google для GSI, раздел «Requirements for flashing
-  GSIs»: прошейте неизменённый vbmeta.img Google с отключённой проверкой (verification disabled).
-  Сделайте это для ОБОИХ слотов (текущего и второго) в одной сессии fastboot: тогда будущие
-  обновления по Wi-Fi ничего больше не потребуют. Перезагрузите, дайте проектору нормально
-  загрузиться, снова подключите кабель.
-"
+  m one_manual_step_vbmeta_yourself
   echo "  Google: $GOOGLE_GSI"
-  echo "  $(t 'Guide' 'Инструкция'): $g#vbmeta"
+  echo "  $(m guide): $g#vbmeta"
   echo
-  if ask "$(t "Have you done the vbmeta step and did the projector start normally after it?" "Вы сделали шаг vbmeta и проектор после него нормально загрузился?")"; then
+  if ask "$(m have_done_vbmeta_step_did)"; then
     state_set step_vbmeta done
   else
-    die "$(t "do the vbmeta step first, then run the installer again" "сначала шаг vbmeta, затем запустите установщик снова")"
+    die "$(m vbmeta_step_first_run_installer)"
   fi
 }
 
@@ -762,10 +767,10 @@ vbmeta_effective() {  # 0 = verification off on the running slot
 
 check_vbmeta_effective() {
   vbmeta_effective; case $? in
-    0) ok "$(t "vbmeta: verification is off on slot ${1#_} (no system-verity)" "vbmeta: проверка в слоте ${1#_} выключена (нет system-verity)")" ;;
+    0) ok "$(m vbmeta_verification_off_slot_no "${1#_}")" ;;
     1) state_set step_vbmeta ""
-       die "$(t "the running slot ${1#_} still verifies the system partition (system-verity is active): the vbmeta step was not done for this slot or did not take effect. Do it again for both slots, restart, then run the installer again. Nothing was written." "текущий слот ${1#_} всё ещё проверяет раздел system (активен system-verity): шаг vbmeta для этого слота не сделан или не применился. Сделайте его снова для обоих слотов, перезагрузите и запустите установщик ещё раз. Ничего не записано.")" ;;
-    *) warn "$(t "could not read /dev/block/mapper; vbmeta state not checked" "не удалось прочитать /dev/block/mapper; состояние vbmeta не проверено")" ;;
+       die "$(m running_slot_still_verifies_system "${1#_}")" ;;
+    *) warn "$(m could_not_read_dev_block)" ;;
   esac
 }
 
@@ -795,38 +800,18 @@ cmd_flash() {
   echo
   local a
   if [ "$KEEP_DATA" = 1 ]; then
-    t "Writing Lumen OS to slot ${S#_} WITHOUT wiping data (repair). On slot ${S#_} this also DELETES
-XGIMI's product${S} and system_ext${S} partitions if they still exist (parts of the stock system,
-unused by Lumen OS; the stock system on the other slot keeps its own) and any *-cow update leftovers.
-Calibration, the other slot, vendor and boot stay untouched." \
-      "Записываю Lumen OS в слот ${S#_} БЕЗ очистки данных (ремонт). В слоте ${S#_} также УДАЛЯЮТСЯ
-разделы XGIMI product${S} и system_ext${S}, если они ещё есть (части стоковой системы, Lumen OS их
-не использует; стоковая система в другом слоте сохраняет свои), и остатки обновлений *-cow.
-Калибровка, второй слот, vendor и boot не затрагиваются."; echo
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    m writing_lumen_os_slot_without "${S#_}" "$S"; echo
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
   else
-    t "Writing Lumen OS to slot ${S#_} and then ERASING ALL DATA on the projector (apps, accounts,
-settings, files). On slot ${S#_} XGIMI's product${S} and system_ext${S} partitions are DELETED
-(parts of the stock system that Lumen OS does not use; the stock system on the other slot keeps its
-own), plus any *-cow update leftovers. XGIMI's calibration, the other slot, vendor and boot stay
-untouched." \
-      "Записываю Lumen OS в слот ${S#_}, затем СТИРАЮ ВСЕ ДАННЫЕ проектора (приложения, аккаунты,
-настройки, файлы). В слоте ${S#_} УДАЛЯЮТСЯ разделы XGIMI product${S} и system_ext${S} (части
-стоковой системы, Lumen OS их не использует; стоковая система в другом слоте сохраняет свои) и
-остатки обновлений *-cow. Калибровка XGIMI, второй слот, vendor и boot не затрагиваются."; echo
+    m writing_lumen_os_slot_erasing "${S#_}" "$S"; echo
     if [ -n "$GAPPS_WITH" ]; then
-      t "With --gapps-zip the same session also writes the Google services from $GZ_NAME into the
-partition z9x_gapps$S ($(( (GI_SIZE + 1048575) / 1048576 )) MB, the image just built on this computer), before the wipe. All in one
-visit to fastbootd: the first start is clean and its setup has the Google sign-in step." \
-        "С --gapps-zip в той же сессии в раздел z9x_gapps$S ($(( (GI_SIZE + 1048575) / 1048576 )) МБ, образ только что собран на
-компьютере) записываются ещё сервисы Google из $GZ_NAME, до очистки. Всё за один заход в
-fastbootd: первый запуск чистый, и в его настройке есть шаг входа в Google."; echo
+      m gapps_zip_same_session_also "$GZ_NAME" "$S" "$(( (GI_SIZE + 1048575) / 1048576 ))"; echo
     fi
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
     ERASE_NOW=1
   fi
   # --gapps-zip: the Google services of this write (z9x_gapps_finish completes them); any other write forgets
@@ -837,42 +822,42 @@ fastbootd: первый запуск чистый, и в его настройк
     [ -z "$GAPPS_WITH" ] || state_set step_wipe ""
   fi
   try_root && calib_snapshot before
-  say "$(t "restarting into fastbootd (about 30 s)" "перезагрузка в fastbootd (около 30 секунд)")"
+  say "$(m restarting_fastbootd_about_30_s)"
   adbs reboot fastboot >/dev/null 2>&1 || die "adb reboot fastboot failed"
-  fb_wait || die "$(t "the projector did not appear in fastboot within 90 s" "проектор не появился в fastboot за 90 секунд")"
+  fb_wait || die "$(m projector_did_not_appear_fastboot)"
   GV=$(fb getvar all 2>&1)
-  [ "$(gv_val is-userspace)" = yes ] || { fb reboot; die "$(t "not fastbootd" "это не fastbootd")"; }
-  [ "$(gv_val product)" = "$FB_PRODUCT" ] || { fb reboot; die "$(t "fastbootd is not the Z9X one" "fastbootd не от Z9X") ($(gv_val product))"; }
-  [ "$(gv_val unlocked)" = yes ] || { fb reboot; die "$(t "the bootloader is locked" "загрузчик заблокирован")"; }
+  [ "$(gv_val is-userspace)" = yes ] || { fb reboot; die "$(m not_fastbootd)"; }
+  [ "$(gv_val product)" = "$P_FB_PRODUCT" ] || { fb reboot; die "$(m fastbootd_not_z9x_one) ($(gv_val product))"; }
+  [ "$(gv_val unlocked)" = yes ] || { fb reboot; die "$(m bootloader_locked)"; }
   [ "$(gv_val current-slot)" = "${S#_}" ] || { fb reboot; die "slot $(gv_val current-slot) != ${S#_}"; }
   if [ "$(gv_val snapshot-update-status)" != none ]; then
     fb reboot
-    die "$(t "an XGIMI or Lumen update is still being finished ($(gv_val snapshot-update-status)). Let the projector start, wait 10 minutes, try again." "ещё завершается обновление XGIMI или Lumen ($(gv_val snapshot-update-status)). Дайте проектору загрузиться, подождите 10 минут и повторите.")"
+    die "$(m xgimi_lumen_update_still_being "$(gv_val snapshot-update-status)")"
   fi
   for p in $(printf '%s\n' "$GV" | grep -oE 'partition-size:[a-z0-9_]+-cow' | cut -d: -f2 | sort -u); do
-    say "$(t "removing update leftover" "удаляю остаток обновления") $p"; fb_do delete "$p" || { fb reboot; die "delete $p"; }
+    say "$(m removing_update_leftover) $p"; fb_do delete "$p" || { fb reboot; die "delete $p"; }
   done
   for p in "product$S" "system_ext$S"; do
     if printf '%s\n' "$GV" | grep -q "partition-size:$p:"; then
-      say "$(t "removing unused XGIMI partition" "удаляю неиспользуемый раздел XGIMI") $p"; fb_do delete "$p" || warn "delete $p"
+      say "$(m removing_unused_xgimi_partition) $p"; fb_do delete "$p" || warn "delete $p"
     fi
   done
   if [ -z "$GAPPS_WITH" ] && printf '%s\n' "$GV" | grep -q "partition-size:z9x_gapps$S:"; then
-    say "$(t "z9x_gapps$S (Google services you added) stays as it is; 'gapps --remove' removes it" "z9x_gapps$S (добавленные вами сервисы Google) остаётся как есть; 'gapps --remove' его удаляет")"
+    say "$(m z9x_gapps_google_services_added "$S")"
   fi
-  say "$(t "writing system (about 40 s)" "записываю system (около 40 секунд)")"
-  fb_do flash system "$IMG" || { fb reboot; die "$(t "system was not written; the projector still has its old system" "system не записан; на проекторе осталась старая система")"; }
+  say "$(m writing_system_about_40_s)"
+  fb_do flash system "$IMG" || { fb reboot; die "$(m system_not_written_projector_still)"; }
   state_set step_flash_system done
   if [ -n "$blobs" ]; then
     if printf '%s\n' "$GV" | grep -q "partition-size:z9x_blobs$S:"; then fb_do resize "z9x_blobs$S" "$BLOB_SIZE"
     else fb_do create "z9x_blobs$S" "$BLOB_SIZE"; fi || warn "z9x_blobs$S"
-    fb_do flash "z9x_blobs$S" "$blobs" && ok "z9x_blobs$S" || warn "$(t "codec and audio files not written: no sound and no protected video until 'blobs' + 'flash --keep-data'" "файлы кодеков и звука не записаны: не будет звука и защищённого видео до 'blobs' + 'flash --keep-data'")"
+    fb_do flash "z9x_blobs$S" "$blobs" && ok "z9x_blobs$S" || warn "$(m codec_audio_files_not_written)"
   fi
   if [ -n "$GAPPS_WITH" ]; then z9x_gapps_write "$S" || state_set gapps_plan ""; fi
   if [ "$KEEP_DATA" = 0 ]; then
     if [ "$WIPE" = format ]; then
-      say "$(t "wiping data (format userdata, metadata, cache)" "очистка данных (format userdata, metadata, cache)")"
-      fb_do format userdata || { fb reboot; die "$(t "the wipe failed: the projector starts Lumen OS on the old data; do Settings > Device > Reset instead" "очистка не удалась: проектор загрузит Lumen OS на старых данных; сделайте Настройки > Устройство > Сброс")"; }
+      say "$(m wiping_data_format_userdata)"
+      fb_do format userdata || { fb reboot; die "$(m wipe_failed_projector_starts_lumen)"; }
       fb_do format metadata || warn "format metadata"
       printf '%s\n' "$GV" | grep -q "partition-type:cache:" && { fb_do format cache || warn "format cache"; }
       state_set step_wipe done
@@ -883,12 +868,12 @@ fastbootd: первый запуск чистый, и в его настройк
   fb reboot >/dev/null 2>&1
   state_set step_flash done
   if [ "$(state_get step_gapps_flash)" = done ]; then
-    ok "$(t "written. First start takes 2-4 minutes; the setup screen appears on the projector, with the Google sign-in step." "записано. Первый запуск 2–4 минуты; на проекторе появится экран настройки, в нём есть шаг входа в Google.")"
+    ok "$(m written_first_start_takes_2)"
     return 0
   fi
-  ok "$(t "written. First start takes 2-4 minutes; the setup screen appears on the projector." "записано. Первый запуск 2–4 минуты; на проекторе появится экран настройки.")"
+  ok "$(m written_first_start_takes_2_2)"
   if [ "$WIPE" = factory-reset ] && [ "$KEEP_DATA" = 0 ]; then
-    say "$(t "Now on the projector: Settings > Device preferences > Reset > Factory reset." "Теперь на проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам.")"
+    say "$(m now_projector_settings_device)"
   fi
 }
 
@@ -903,17 +888,11 @@ try_root() {  # 0 if adb shell runs as root (Lumen/Z9X userdebug builds; never o
 root_setting_wait() {  # --gapps-zip: Developer options > Rooted debugging is off; 0 = the user turned it on, try again
   # (LineageOS adbd asks its adb_root service first: "ADB Root access is disabled by system setting"; never bypassed)
   echo
-  t "Root debugging is off on the projector, and the Google services step needs it. With the remote:
-Settings > Device Preferences > Developer options > Rooted debugging: turn it on. If Developer options
-is not in the list: Settings > Device Preferences > About, press Build 7 times, then go back. Nothing
-was erased; your data is still there." "На проекторе выключена отладка с правами root, а она нужна для шага с сервисами Google. Пультом:
-Настройки > Настройки устройства > Для разработчиков > Отладка суперпользователем: включите. Если
-пункта «Для разработчиков» нет: Настройки > Настройки устройства > Об устройстве, нажмите 7 раз на
-«Сборка» и вернитесь назад. Ничего не стёрто, данные на месте."; echo
-  ask "$(t "Is Rooted debugging on now?" "Отладка суперпользователем включена?")"
+  m root_debugging_off_projector; echo
+  ask "$(m rooted_debugging_now)"
 }
 root_setting_stop() {  # the user did not turn it on now: the next run continues at this step
-  die "$(t "turn on Rooted debugging (Settings > Device Preferences > Developer options) and run the same command again: it continues here. Nothing was erased." "включите отладку суперпользователем (Настройки > Настройки устройства > Для разработчиков) и запустите ту же команду снова: установка продолжится с этого места. Ничего не стёрто.")"
+  die "$(m turn_rooted_debugging_settings)"
 }
 CALIB="persist xgimidatabase xgimisps xgimicri project_id tvcertificate"
 calib_snapshot() {  # before|after: sha256 of XGIMI calibration partitions (read-only, needs adb root)
@@ -922,40 +901,40 @@ calib_snapshot() {  # before|after: sha256 of XGIMI calibration partitions (read
   for p in $CALIB; do
     adbs shell "[ -e /dev/block/by-name/$p ] && sha256sum /dev/block/by-name/$p" 2>/dev/null | tr -d '\r' >> "$f"
   done
-  [ -s "$f" ] && ok "$(t "calibration fingerprint ($1) saved (read-only)" "отпечаток калибровки ($1) сохранён (только чтение)")"
+  [ -s "$f" ] && ok "$(m calibration_fingerprint_saved_read "$1")"
 }
 
 # ------------------------------------------------------------------ verify
 cmd_verify() {
   local i s
-  say "$(t "waiting for the projector to finish starting (up to 5 minutes)" "жду, пока проектор загрузится (до 5 минут)")"
+  say "$(m waiting_projector_finish_starting)"
   for i in $(seq 1 150); do
     s=$(adb devices 2>/dev/null | awk 'NR>1 && $2=="device"{print $1}' | head -1)
     [ -n "$s" ] && SERIAL=${SERIAL:-$s} && [ "$(prop sys.boot_completed)" = 1 ] && break
     sleep 2
   done
   if [ "$(prop sys.boot_completed)" != 1 ]; then
-    warn "$(t "no USB connection to the started system. After a wipe USB debugging is off: that is normal. Check the projector screen: the Lumen OS setup should be there. To verify over USB, enable USB debugging and run 'verify' again." "нет USB-связи с загруженной системой. После очистки отладка по USB выключена: это нормально. Посмотрите на экран: должна быть настройка Lumen OS. Чтобы проверить по USB, включите отладку и запустите 'verify' ещё раз.")"
+    warn "$(m no_usb_connection_started_system)"
     return 0
   fi
   local v keys bl gm data
   v=$(prop ro.z9x.version); keys=$(prop ro.z9x.keys); bl=$(prop sys.z9x.blobs); gm=$(prop init.svc.gmpf_main)
-  local ng=""; [ "$(prop ro.z9x.gms)" = 0 ] && ng=", $(t "without Google" "без Google")"
-  [ -n "$v" ] && ok "Lumen OS $v ($(prop ro.z9x.build_id), $(prop ro.z9x.variant | sed 's/^$/private/')$ng)" || warn "$(t "ro.z9x.version missing" "нет ro.z9x.version")"
+  local ng=""; [ "$(prop ro.z9x.gms)" = 0 ] && ng=", $(m without_google)"
+  [ -n "$v" ] && ok "Lumen OS $v ($(prop ro.z9x.build_id), $(prop ro.z9x.variant | sed 's/^$/private/')$ng)" || warn "$(m ro_z9x_version_missing)"
   if [ -n "$ng" ] && [ "$(prop sys.z9x.gapps)" = ok ]; then
-    ok "$(t "Google services added by you ('gapps'): on" "сервисы Google, добавленные вами ('gapps'): включены")"
+    ok "$(m google_services_added_gapps)"
   elif [ -n "$ng" ]; then
     local gp
     gp=$(adbs shell pm list packages 2>/dev/null | tr -d '\r' | sed 's/^package://' | grep -E '^(com\.google\.|com\.mtg\.|com\.android\.vending$)' | head -3 | tr '\n' ' ')
-    [ -z "$gp" ] && ok "$(t "no Google package" "пакетов Google нет")" || warn "$(t "Google packages on Lumen OS without Google" "пакеты Google на Lumen OS без Google"): $gp"
+    [ -z "$gp" ] && ok "$(m no_google_package)" || warn "$(m google_packages_lumen_os_without): $gp"
     case "$(prop sys.z9x.gapps)" in
-      off|bad:*) warn "$(t "the Google services add-on is not in use ($(prop sys.z9x.gapps)): bash lumen-install.sh gapps" "дополнение с сервисами Google не используется ($(prop sys.z9x.gapps)): bash lumen-install.sh gapps")" ;;
+      off|bad:*) warn "$(m google_services_add_not_use "$(prop sys.z9x.gapps)")" ;;
     esac
   fi
-  [ "$keys" = release ] && ok "$(t "release keys" "релизные ключи")" || warn "ro.z9x.keys=$keys"
-  [ "$gm" = running ] && ok "$(t "projector service (lamp, fans) running" "служба проектора (лампа, вентиляторы) работает")" || warn "gmpf_main: $gm"
-  if [ "$BLOBS" = partition ]; then [ "$bl" = ok ] && ok "$(t "codec and audio files (z9x_blobs)" "файлы кодеков и звука (z9x_blobs)") ok" || warn "sys.z9x.blobs=$bl ($(t "no sound / protected video until 'blobs' + 'flash --keep-data'" "без звука и защищённого видео до 'blobs' + 'flash --keep-data'"))"; fi
-  adbs shell dumpsys media.audio_policy 2>/dev/null | grep -q "Output" && ok "$(t "audio outputs present" "аудиовыходы есть")" || warn "$(t "no audio outputs listed" "аудиовыходы не найдены")"
+  [ "$keys" = release ] && ok "$(m release_keys)" || warn "ro.z9x.keys=$keys"
+  [ "$gm" = running ] && ok "$(m projector_service_lamp_fans)" || warn "gmpf_main: $gm"
+  if [ "$BLOBS" = partition ]; then [ "$bl" = ok ] && ok "$(m codec_audio_files_z9x_blobs) ok" || warn "sys.z9x.blobs=$bl ($(m no_sound_protected_video_until))"; fi
+  adbs shell dumpsys media.audio_policy 2>/dev/null | grep -q "Output" && ok "$(m audio_outputs_present)" || warn "$(m no_audio_outputs_listed)"
   data=$(adbs shell 'mount | grep " /data "' 2>/dev/null | tr -d '\r')
   case "$data" in *f2fs*) ok "/data f2fs" ;; *) warn "/data: $data" ;; esac
   if [ -f "$STATE_DIR/calib_before.txt" ] && try_root; then
@@ -963,7 +942,7 @@ cmd_verify() {
     # XGIMI's own services write persist, xgimidatabase, xgimisps, xgimicri and tvcertificate at every start
     # (measured 2026-10-10 on a Z9X: all five hashes change across a plain reboot), so a changed hash proves
     # nothing. The guarantee is fb_allowed(): the installer never writes them. The snapshots stay as a record.
-    ok "$(t "calibration partitions: never written by the installer (snapshots in $STATE_DIR)" "разделы калибровки: установщик их не записывает (снимки в $STATE_DIR)")"
+    ok "$(m calibration_partitions_never "$STATE_DIR")"
     adbs unroot >/dev/null 2>&1
   fi
   state_set step_verify done
@@ -972,20 +951,20 @@ cmd_verify() {
 # ------------------------------------------------------------------ gsf
 cmd_gsf() {
   pick_device
-  [ -n "$(prop ro.z9x.version)" ] || die "$(t "the projector is not running Lumen OS" "на проекторе не Lumen OS")"
+  [ -n "$(prop ro.z9x.version)" ] || die "$(m projector_not_running_lumen_os)"
   # Lumen OS without Google with the user's add-on ('gapps') has GSF too: the package decides, not ro.z9x.gms
   if [ -z "$(adbs shell pm path com.google.android.gsf 2>/dev/null | tr -d '\r')" ]; then
-    ok "$(t "this Lumen OS has no Google services: nothing to register" "в этой Lumen OS нет сервисов Google: регистрировать нечего")"
-    [ "$(prop ro.z9x.gms)" = 0 ] && say "$(t "To add them: bash lumen-install.sh gapps --zip FILE (guide, section 'Adding Google services')" "Как их добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «Как поставить сервисы Google»)")"
+    ok "$(m lumen_os_has_no_google)"
+    [ "$(prop ro.z9x.gms)" = 0 ] && say "$(m add_them_bash_lumen_install)"
     return 0
   fi
   adbs root >/dev/null 2>&1; sleep 3; adbs wait-for-device
   local id
   id=$(adbs shell "sqlite3 /data/data/com.google.android.gsf/databases/gservices.db \"select value from main where name='android_id';\"" 2>/dev/null | tr -d '\r')
   adbs unroot >/dev/null 2>&1
-  [ -n "$id" ] || die "$(t "no GSF ID yet: connect the projector to the internet, wait two minutes, try again" "GSF ID ещё нет: подключите проектор к интернету, подождите пару минут и повторите")"
+  [ -n "$id" ] || die "$(m no_gsf_id_yet_connect)"
   echo "GSF ID: $id"
-  echo "$(t "Register it at https://www.google.com/android/uncertified (signed in with your Google account), wait 10-30 minutes, then sign in on the projector." "Зарегистрируйте его на https://www.google.com/android/uncertified (войдя в свой аккаунт Google), подождите 10–30 минут и войдите на проекторе.")"
+  echo "$(m register_https_www_google_com)"
 }
 
 # ------------------------------------------------------------------ waiting for fastbootd
@@ -999,12 +978,12 @@ fbd_find() {  # wait up to $1 s for the projector in fastboot; sets SERIAL (0 = 
     n=$(printf '%s\n' "$list" | grep -c .)
     if [ -n "$SERIAL" ] && printf '%s\n' "$list" | grep -qx "$SERIAL"; then return 0; fi
     if [ "$n" = 1 ] && { [ -z "$SERIAL" ] || [ "$SERIAL_FROM_STATE" = 1 ]; }; then
-      [ -n "$SERIAL" ] && warn "$(t "using $list (the saved serial was $SERIAL)" "использую $list (сохранённый серийный номер был $SERIAL)")"
+      [ -n "$SERIAL" ] && warn "$(m using_saved_serial "$list" "$SERIAL")"
       SERIAL=$list
       return 0
     fi
-    [ "$n" -gt 1 ] && die "$(t "several devices in fastboot mode: choose one with --serial" "несколько устройств в режиме fastboot: выберите одно через --serial")"
-    [ "$i" -gt 0 ] && [ $((i % 120)) = 0 ] && say "$(t "still waiting for fastboot mode..." "всё ещё жду режима fastboot...")"
+    [ "$n" -gt 1 ] && die "$(m several_devices_fastboot_mode)"
+    [ "$i" -gt 0 ] && [ $((i % 120)) = 0 ] && say "$(m still_waiting_fastboot_mode)"
     sleep 2; i=$((i + 2))
   done
   return 1
@@ -1048,27 +1027,27 @@ super_free() {  # bytes of super that no logical partition uses: each rounded up
 fbd_check() {  # [slot]: the fastbootd checks of 'flash' on GV; sets S (the slot fastbootd runs)
   local cs
   GV=$(fb getvar all 2>&1)
-  [ "$(gv_val is-userspace)" = yes ] || { fb reboot; die "$(t "not fastbootd" "это не fastbootd")"; }
-  [ "$(gv_val product)" = "$FB_PRODUCT" ] || { fb reboot; die "$(t "fastbootd is not the Z9X one" "fastbootd не от Z9X") ($(gv_val product))"; }
-  [ "$(gv_val unlocked)" = yes ] || { fb reboot; die "$(t "the bootloader is locked" "загрузчик заблокирован")"; }
+  [ "$(gv_val is-userspace)" = yes ] || { fb reboot; die "$(m not_fastbootd)"; }
+  [ "$(gv_val product)" = "$P_FB_PRODUCT" ] || { fb reboot; die "$(m fastbootd_not_z9x_one) ($(gv_val product))"; }
+  [ "$(gv_val unlocked)" = yes ] || { fb reboot; die "$(m bootloader_locked)"; }
   cs=$(gv_val current-slot)
   case "$cs" in a|b) ;; *) fb reboot; die "current-slot '$cs'" ;; esac
   if [ -n "${1-}" ] && [ "$cs" != "${1#_}" ]; then fb reboot; die "slot $cs != ${1#_}"; fi
   S=_$cs
   if [ "$(gv_val snapshot-update-status)" != none ]; then
     fb reboot
-    die "$(t "a Lumen OS update is still being finished ($(gv_val snapshot-update-status)). Let the projector start, wait 10 minutes, try again. Nothing was written." "ещё завершается обновление Lumen OS ($(gv_val snapshot-update-status)). Дайте проектору загрузиться, подождите 10 минут и повторите. Ничего не записано.")"
+    die "$(m lumen_os_update_still_being "$(gv_val snapshot-update-status)")"
   fi
 }
 fbd_enter() {  # slot: adb reboot fastboot, wait, check
-  say "$(t "restarting into fastbootd (about 30 s)" "перезагрузка в fastbootd (около 30 секунд)")"
+  say "$(m restarting_fastbootd_about_30_s)"
   adbs reboot fastboot >/dev/null 2>&1 || die "adb reboot fastboot failed"
-  fb_wait || die "$(t "the projector did not appear in fastboot within 90 s" "проектор не появился в fastboot за 90 секунд")"
+  fb_wait || die "$(m projector_did_not_appear_fastboot)"
   fbd_check "$1"
 }
 fb_wipe() {  # the data wipe of 'flash', in fastbootd
-  say "$(t "wiping data (format userdata, metadata, cache)" "очистка данных (format userdata, metadata, cache)")"
-  fb_do format userdata || { fb reboot; die "$(t "the wipe failed: on the projector do Settings > Device preferences > Reset > Factory reset" "очистка не удалась: на проекторе сделайте Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам")"; }
+  say "$(m wiping_data_format_userdata)"
+  fb_do format userdata || { fb reboot; die "$(m wipe_failed_projector_settings)"; }
   fb_do format metadata || warn "format metadata"
   printf '%s\n' "$GV" | grep -q "partition-type:cache:" && { fb_do format cache || warn "format cache"; }
   state_set step_wipe done
@@ -1091,10 +1070,10 @@ gapps_push_fill() {
 
 gapps_zipcheck() {  # FILE: the zip on this computer (sha256 in lib/gapps_allow.txt); sets GZ_SHA, GZ_NAME, GZ_PART
   local zl
-  say "$(t "checking $(basename "$1")" "проверяю $(basename "$1")")"
+  say "$(m checking "$(basename "$1")")"
   GZ_SHA=$(sha256 "$1")
   zl=$(gapps_line "$GZ_SHA")
-  [ -n "$zl" ] || die "$(t "$(basename "$1") is not the MindTheGapps file this installer accepts (sha256 ${GZ_SHA:0:16}...). Download exactly the file the guide names, section 'Adding Google services'" "$(basename "$1") не тот файл MindTheGapps, который принимает установщик (sha256 ${GZ_SHA:0:16}...). Скачайте ровно тот файл, что указан в инструкции, раздел «Как поставить сервисы Google»"). $(t 'Nothing was written.' 'Ничего не записано.')"
+  [ -n "$zl" ] || die "$(m not_mindthegapps_file_installer "$(basename "$1")" "${GZ_SHA:0:16}"). $(m nothing_written)"
   GZ_NAME=$(printf '%s\n' "$zl" | cut -d' ' -f2); GZ_PART=$(gapps_field "$zl" part)
   case "$GZ_PART" in ''|*[!0-9]*) die "internal: gapps_allow.txt part=" ;; esac
   ok "$GZ_NAME, sha256 ${GZ_SHA:0:16}..."
@@ -1102,125 +1081,112 @@ gapps_zipcheck() {  # FILE: the zip on this computer (sha256 in lib/gapps_allow.
 
 gapps_install() {
   local zip=$GAPPS_ZIP zsha zl name part slot p o a free cur have
-  [ -f "$zip" ] || die "$(t "no file $zip" "нет файла $zip")"
+  [ -f "$zip" ] || die "$(m no_file "$zip")"
   check_tools
-  [ -x "$PT_DIR/mke2fs" ] || die "$(t "mke2fs missing next to fastboot ($PT_DIR): use the official Platform-Tools zip" "нет mke2fs рядом с fastboot ($PT_DIR): используйте официальный архив Platform-Tools")"
+  [ -x "$PT_DIR/mke2fs" ] || die "$(m mke2fs_missing_next_fastboot_use_2 "$PT_DIR")"
   gapps_zipcheck "$zip"
   zsha=$GZ_SHA; name=$GZ_NAME; part=$GZ_PART
   check_device
   slot=$(state_get slot); p=z9x_gapps$slot
   case "$(state_get dev_gms)" in
     0) ;;
-    1) die "$(t "this projector runs Lumen OS with Google services built in: nothing to add" "на проекторе Lumen OS со встроенными сервисами Google: добавлять нечего")" ;;
-    *) die "$(t "this projector does not run Lumen OS: install Lumen OS without Google first" "на проекторе не Lumen OS: сначала установите Lumen OS без Google")" ;;
+    1) die "$(m projector_runs_lumen_os_google_2)" ;;
+    *) die "$(m projector_not_run_lumen_os)" ;;
   esac
   # the same add-on, on: writing it again would only cost the Google apps their data (one start without them)
   have=$(prop sys.z9x.gapps)
   if [ "$have" = ok ] && [ "$(prop sys.z9x.gapps.zip)" = "$zsha" ]; then
-    ok "$(t "these Google services ($name) are already installed and on: nothing to do. Nothing was written." "эти сервисы Google ($name) уже установлены и включены: делать нечего. Ничего не записано.")"
+    ok "$(m these_google_services_already "$name")"
     return 0
   fi
-  try_root || die "$(t "adb root is not possible on this system (Lumen OS is a userdebug build: is it really Lumen OS?)" "adb root на этой системе невозможен (Lumen OS собрана как userdebug: точно ли это Lumen OS?)")"
+  try_root || die "$(m adb_root_not_possible_system)"
   if ! adbs shell cat /system/etc/z9x/gapps_allow.txt 2>/dev/null | tr -d '\r' | grep -q "^zip=$zsha "; then
-    die "$(t "the Lumen OS on the projector does not accept this file yet: update Lumen OS first (Settings > Device preferences > About > Lumen OS update). Nothing was written." "Lumen OS на проекторе ещё не принимает этот файл: сначала обновите Lumen OS (Настройки > Настройки устройства > Об устройстве > Обновление Lumen OS). Ничего не записано.")"
+    die "$(m lumen_os_projector_not_accept)"
   fi
   echo
   if [ "$KEEP_DATA" = 1 ] || [ "$WIPE" = factory-reset ]; then
-    t "Adding Google services (slot ${slot#_}): the installer creates the partition $p ($((part / 1048576)) MB) in
-super, restarts the projector a few times and copies the Google apps from $name into it,
-each one checked. Your data stays. system, the other slot, vendor, boot and XGIMI's calibration stay
-untouched." "Добавляю сервисы Google (слот ${slot#_}): установщик создаёт раздел $p ($((part / 1048576)) МБ) в super,
-несколько раз перезагружает проектор и копирует в этот раздел приложения Google из $name, проверяя
-каждое. Ваши данные остаются. System, второй слот, vendor, boot и калибровка XGIMI не затрагиваются."; echo
+    m adding_google_services_slot "${slot#_}" "$p" "$((part / 1048576))" "$name"; echo
     if [ "$KEEP_DATA" = 1 ]; then
-      say "$(t "--keep-data: sign in to Google later in Settings > Accounts. Some Google features (Chromecast, the phone remote) may work fully only after a factory reset." "--keep-data: в Google войдите потом через Настройки > Аккаунты. Некоторые функции Google (Chromecast, пульт на телефоне) могут полностью заработать только после сброса к заводским настройкам.")"
+      say "$(m keep_data_sign_google_later)"
       case "$have" in ''|none) ;; *)
-        say "$(t "Google services are already installed: replacing them signs you out of Google, and the GSF ID must be registered again." "Сервисы Google уже установлены: после замены вы выйдете из аккаунта Google, а GSF ID нужно будет зарегистрировать снова.")" ;;
+        say "$(m google_services_already_installed)" ;;
       esac
     fi
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
   else
-    t "Adding Google services (slot ${slot#_}): the installer creates the partition $p ($((part / 1048576)) MB) in
-super, restarts the projector a few times, copies the Google apps from $name into it, each one
-checked, and then ERASES ALL DATA on the projector (apps, accounts, settings, files), as at the install:
-the first start then sets up Google services properly. system, the other slot, vendor, boot and
-XGIMI's calibration stay untouched." "Добавляю сервисы Google (слот ${slot#_}): установщик создаёт раздел $p ($((part / 1048576)) МБ) в super,
-несколько раз перезагружает проектор, копирует в этот раздел приложения Google из $name, проверяя
-каждое, и затем СТИРАЕТ ВСЕ ДАННЫЕ проектора (приложения, аккаунты, настройки, файлы), как при
-установке: тогда первый запуск правильно настроит сервисы Google. System, второй слот, vendor, boot
-и калибровка XGIMI не затрагиваются."; echo
-    if [ "$(state_get step_backup)" != done ] && ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then
+    m adding_google_services_slot_2 "${slot#_}" "$p" "$((part / 1048576))" "$name"; echo
+    if [ "$(state_get step_backup)" != done ] && ask "$(m make_backup_apps_files_first)"; then
       cmd_backup
     fi
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
   fi
   # 1. the fill script's own checks on the projector (root, edition, its allow-list, unzip, room in /data
   # for the zip) before any partition is touched
   gapps_push_fill
   o=$(gapps_sh pre "$zsha" "$(wc -c < "$zip" | tr -d ' ')")
   adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
-  case "$o" in "OK pre "*) ;; *) die "$(t "the projector is not ready" "проектор не готов"): ${o#FAIL }. $(t 'Nothing was written.' 'Ничего не записано.')" ;; esac
+  case "$o" in "OK pre "*) ;; *) die "$(m projector_not_ready): ${o#FAIL }. $(m nothing_written)" ;; esac
   # 2. fastbootd: the partition
   fbd_enter "$slot"
   free=$(super_free); cur=0
   if printf '%s\n' "$GV" | grep -q "partition-size:$p:"; then cur=$(( $(gv_size "$p") )); fi
   if [ $(( free + cur )) -lt "$part" ]; then
     fb reboot
-    die "$(t "not enough free space in super: $(( (free + cur) / 1048576 )) MB, the Google services need $((part / 1048576)) MB. Nothing was written." "в super мало места: свободно $(( (free + cur) / 1048576 )) МБ, сервисам Google нужно $((part / 1048576)) МБ. Ничего не записано.")"
+    die "$(m not_enough_free_space_super "$(( (free + cur) / 1048576 ))" "$((part / 1048576))")"
   fi
-  say "$(t "creating $p ($((part / 1048576)) MB, $(( (free + cur - part) / 1048576 )) MB of super stay free)" "создаю $p ($((part / 1048576)) МБ, в super останется $(( (free + cur - part) / 1048576 )) МБ)")"
+  say "$(m creating_mb_mb_super_stay "$p" "$((part / 1048576))" "$(( (free + cur - part) / 1048576 ))")"
   if [ "$cur" -gt 0 ]; then fb_do resize "$p" "$part"; else fb_do create "$p" "$part"; fi \
-    || { fb reboot; die "$(t "$p could not be created; nothing was written" "$p создать не удалось; ничего не записано")"; }
+    || { fb reboot; die "$(m could_not_created_nothing_written "$p")"; }
   if ! fb_do format "$p"; then
     fb_do delete "$p" >/dev/null 2>&1
     fb reboot
-    die "$(t "$p could not be formatted and was removed again; nothing else changed" "$p не удалось отформатировать, раздел удалён; больше ничего не изменилось")"
+    die "$(m could_not_formatted_removed_again "$p")"
   fi
   fb reboot >/dev/null 2>&1
   # 3. filled over adb as root, checked by the image's own script
-  say "$(t "waiting for the projector to start (up to 5 minutes)" "жду, пока проектор загрузится (до 5 минут)")"
-  boot_wait || die "$(t "the projector did not come back over USB within 5 minutes. $p is still empty, so Lumen OS starts without Google services. Run 'gapps --zip' again." "проектор не вернулся по USB за 5 минут. $p пока пуст, Lumen OS запускается без сервисов Google. Запустите 'gapps --zip' ещё раз.")"
+  say "$(m waiting_projector_start_up_5)"
+  boot_wait || die "$(m projector_did_not_come_back "$p")"
   try_root || die "adb root"
   gapps_push_fill
-  say "$(t "copying $name to the projector (about a minute)" "копирую $name на проектор (около минуты)")"
+  say "$(m copying_projector_about_minute "$name")"
   adbs push "$zip" "$GAPPS_DIR/gapps.zip" >/dev/null 2>&1 \
-    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(t "adb push of the zip failed. $p is still empty, so Lumen OS starts without Google services. Run 'gapps --zip' again." "adb push архива не удался. $p пока пуст, Lumen OS запускается без сервисов Google. Запустите 'gapps --zip' ещё раз.")"; }
-  say "$(t "copying the Google apps into $p and checking each one (1 to 2 minutes)" "копирую приложения Google в $p и проверяю каждое (1–2 минуты)")"
+    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(m adb_push_zip_failed_still "$p")"; }
+  say "$(m copying_google_apps_checking_each "$p")"
   o=$(gapps_sh fill "$zsha")
   case "$o" in
     "OK fill "*) ;;
     *) adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
-       die "$(t "the Google services were not added" "сервисы Google не добавлены"): ${o#FAIL }. $(t "Lumen OS starts without them as before. Run 'gapps --zip' again, or 'gapps --remove'." "Lumen OS запускается без них, как раньше. Запустите 'gapps --zip' ещё раз или 'gapps --remove'.")" ;;
+       die "$(m google_services_were_not_added): ${o#FAIL }. $(m lumen_os_starts_without_them)" ;;
   esac
   o=$(adbs shell sh /system/etc/z9x/z9x_gapps.sh check 2>&1 | tr -d '\r')
   adbs shell rm -rf "$GAPPS_DIR" /metadata/z9x_gapps >/dev/null 2>&1
   case "$o" in
     "ok: "*) ok "$p: ${o#ok: }" ;;
-    *) die "$(t "the projector's own check of $p failed" "собственная проверка $p на проекторе не прошла"): $o. $(t "Lumen OS starts without Google services. Run 'gapps --zip' again, or 'gapps --remove'." "Lumen OS запускается без сервисов Google. Запустите 'gapps --zip' ещё раз или 'gapps --remove'.")" ;;
+    *) die "$(m projectors_own_check_failed "$p"): $o. $(m lumen_os_starts_without_google)" ;;
   esac
   state_set gapps "$name"
   # 4. the wipe, so that the first start sets up Google services
   if [ "$KEEP_DATA" = 1 ]; then
     adbs reboot >/dev/null 2>&1
-    say "$(t "restarting" "перезагрузка")"
+    say "$(m restarting)"
     if boot_wait && [ "$(prop sys.z9x.gapps)" = ok ]; then
-      ok "$(t "Google services are on. Sign in: Settings > Accounts. If Google refuses the sign-in, register the GSF ID (bash lumen-install.sh gsf)." "сервисы Google включены. Вход: Настройки > Аккаунты. Если Google не пускает, зарегистрируйте GSF ID (bash lumen-install.sh gsf).")"
+      ok "$(m google_services_sign_settings)"
     else
-      warn "$(t "the projector did not report the Google services as on yet (sys.z9x.gapps=$(prop sys.z9x.gapps)); check later with 'bash lumen-install.sh gapps'" "проектор пока не сообщил, что сервисы Google включены (sys.z9x.gapps=$(prop sys.z9x.gapps)); проверьте позже: 'bash lumen-install.sh gapps'")"
+      warn "$(m projector_did_not_report_google "$(prop sys.z9x.gapps)")"
     fi
   elif [ "$WIPE" = factory-reset ]; then
     adbs reboot >/dev/null 2>&1
     state_set step_wipe factory-reset
-    say "$(t "Now on the projector: Settings > Device preferences > Reset > Factory reset. The first start after it sets up Google services." "Теперь на проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам. Первый запуск после него настроит сервисы Google.")"
+    say "$(m now_projector_settings_device_2)"
   else
     fbd_enter "$slot"
     fb_wipe
     fb reboot >/dev/null 2>&1
-    ok "$(t "done. The first start takes 2-4 minutes; the setup now has a Google sign-in step. If Google refuses the sign-in, register the GSF ID (guide, section 'Adding Google services')." "готово. Первый запуск 2–4 минуты; в настройке теперь есть шаг входа в Google. Если Google не пускает, зарегистрируйте GSF ID (инструкция, раздел «Как поставить сервисы Google»).")"
+    ok "$(m done_first_start_takes_2)"
   fi
   state_set step_gapps done
 }
@@ -1231,67 +1197,59 @@ gapps_remove() {
   if adb devices 2>/dev/null | awk 'NR>1 && $2=="device"' | grep -q .; then via=adb; check_device; else via=fastboot; fi
   echo
   if [ "$KEEP_DATA" = 1 ] || [ "$WIPE" = factory-reset ]; then
-    t "Removing the Google services you added: the installer deletes the partition z9x_gapps of the
-current slot in fastboot mode and restarts. Your data stays, but Google apps updated from Play stay
-behind as apps that may not work: a factory reset removes them." "Удаляю добавленные вами сервисы Google: установщик в режиме fastboot удаляет раздел z9x_gapps
-текущего слота и перезагружает проектор. Данные остаются, но обновлённые из Play приложения Google
-останутся и могут не работать: их уберёт сброс к заводским настройкам."; echo
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    m removing_google_services_added; echo
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
   else
-    t "Removing the Google services you added: the installer deletes the partition z9x_gapps of the
-current slot in fastboot mode and then ERASES ALL DATA on the projector (apps, accounts, settings,
-files), as at the install. system, vendor, boot and XGIMI's calibration stay untouched." "Удаляю добавленные вами сервисы Google: установщик в режиме fastboot удаляет раздел z9x_gapps
-текущего слота и затем СТИРАЕТ ВСЕ ДАННЫЕ проектора (приложения, аккаунты, настройки, файлы), как
-при установке. System, vendor, boot и калибровка XGIMI не затрагиваются."; echo
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    m removing_google_services_added_2; echo
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
   fi
   if [ "$via" = adb ]; then
     fbd_enter "$(state_get slot)"
   else
-    say "$(t "no projector over adb: waiting for it in fastboot mode (up to 15 minutes; after 3 failed starts in a row Lumen OS goes there by itself)" "проектора нет в adb: жду его в режиме fastboot (до 15 минут; после 3 неудачных загрузок подряд Lumen OS переходит туда сама)")"
-    fbd_find 900 || die "$(t "the projector did not appear in fastboot mode within 15 minutes; nothing was written" "проектор не появился в режиме fastboot за 15 минут; ничего не записано")"
+    say "$(m no_projector_over_adb_waiting)"
+    fbd_find 900 || die "$(m projector_did_not_appear_fastboot_2)"
     fbd_check ""
     state_set serial "$SERIAL"; state_set slot "$S"
   fi
   p=z9x_gapps$S
   if printf '%s\n' "$GV" | grep -q "partition-size:$p:"; then
-    fb_do delete "$p" || { fb reboot; die "$(t "$p could not be deleted; nothing changed" "$p удалить не удалось; ничего не изменилось")"; }
-    removed=1; ok "$(t "$p deleted" "$p удалён")"
+    fb_do delete "$p" || { fb reboot; die "$(m could_not_deleted_nothing_changed "$p")"; }
+    removed=1; ok "$(m deleted "$p")"
   else
-    ok "$(t "slot ${S#_} has no $p: nothing to remove" "в слоте ${S#_} нет $p: удалять нечего")"
+    ok "$(m slot_has_no_nothing_remove "${S#_}" "$p")"
   fi
   if [ "$removed" = 1 ] && [ "$KEEP_DATA" = 0 ] && [ "$WIPE" = format ]; then fb_wipe; fi
   fb reboot >/dev/null 2>&1
   state_set gapps ""
   if [ "$removed" = 1 ] && [ "$KEEP_DATA" = 0 ] && [ "$WIPE" = factory-reset ]; then
-    say "$(t "Now on the projector: Settings > Device preferences > Reset > Factory reset." "Теперь на проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам.")"
+    say "$(m now_projector_settings_device)"
   fi
-  ok "$(t "the projector starts Lumen OS without Google services" "проектор загружает Lumen OS без сервисов Google")"
+  ok "$(m projector_starts_lumen_os_without)"
 }
 
 gapps_status() {
   local v z a
   pick_device
-  [ -n "$(prop ro.z9x.version)" ] || die "$(t "the projector is not running Lumen OS" "на проекторе не Lumen OS")"
+  [ -n "$(prop ro.z9x.version)" ] || die "$(m projector_not_running_lumen_os)"
   v=$(prop sys.z9x.gapps); z=$(prop sys.z9x.gapps.zip)
   case "$v" in
-    ok) ok "$(t "Google services added by you: on" "добавленные вами сервисы Google: включены") ($(gapps_line "$z" | cut -d' ' -f2))" ;;
-    skip) ok "$(t "this Lumen OS has Google services built in" "в этой Lumen OS сервисы Google встроены")" ;;
-    none|'') say "$(t "no Google services added. To add them: bash lumen-install.sh gapps --zip FILE (guide, section 'Adding Google services')" "сервисы Google не добавлены. Как добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «Как поставить сервисы Google»)")" ;;
-    bad:slow) warn "$(t "at the last start the check of the Google services took too long, so the projector started without them: restart it" "при последнем запуске проверка сервисов Google шла слишком долго, поэтому проектор запустился без них: перезагрузите его")" ;;
+    ok) ok "$(m google_services_added) ($(gapps_line "$z" | cut -d' ' -f2))" ;;
+    skip) ok "$(m lumen_os_has_google_services)" ;;
+    none|'') say "$(m no_google_services_added_add)" ;;
+    bad:slow) warn "$(m last_start_check_google_services)" ;;
     off)
-      warn "$(t "the Google services were turned off: the projector failed to start twice in a row with them" "сервисы Google выключены: проектор дважды подряд не смог загрузиться с ними")"
-      if ask "$(t "Turn them on again (the projector restarts)?" "Включить их снова (проектор перезагрузится)?")"; then
+      warn "$(m google_services_were_turned_off)"
+      if ask "$(m turn_them_again_projector_restarts)"; then
         try_root || die "adb root"
         adbs shell rm -rf /metadata/z9x_gapps >/dev/null 2>&1
         adbs reboot >/dev/null 2>&1
-        ok "$(t "turned on; the projector restarts" "включены; проектор перезагружается")"
+        ok "$(m turned_projector_restarts)"
       fi ;;
-    *) warn "$(t "the Google services you added cannot be used ($v): run 'gapps --zip FILE' again, or 'gapps --remove'" "добавленные сервисы Google не могут использоваться ($v): запустите 'gapps --zip ФАЙЛ' ещё раз или 'gapps --remove'")" ;;
+    *) warn "$(m google_services_added_cannot_used "$v")" ;;
   esac
 }
 
@@ -1349,14 +1307,14 @@ eu_setup() {  # mkfs.erofs, fsck.erofs, dump.erofs: our own (tools/erofs-utils),
   local plat src sums d p want v
   if [ -n "$EU_OPT" ]; then
     d=$(cd "$EU_OPT" 2>/dev/null && pwd) && [ -x "$d/mkfs.erofs" ] && [ -x "$d/fsck.erofs" ] && [ -x "$d/dump.erofs" ] \
-      || die "$(t "--erofs-utils $EU_OPT: no mkfs.erofs, fsck.erofs and dump.erofs there. Nothing was written." "--erofs-utils $EU_OPT: там нет mkfs.erofs, fsck.erofs и dump.erofs. Ничего не записано.")"
+      || die "$(m erofs_utils_no_mkfs_erofs "$EU_OPT")"
     v=$("$d/mkfs.erofs" --version 2>/dev/null | head -n 1 | awk '{ print $NF }')
-    [ "$v" = "$EU_VER" ] || die "$(t "--erofs-utils $EU_OPT: erofs-utils '$v', this installer needs $EU_VER (the add-on image must be bit for bit the checked one). Nothing was written." "--erofs-utils $EU_OPT: erofs-utils '$v', установщику нужна $EU_VER (образ дополнения должен совпасть с проверенным побайтно). Ничего не записано.")"
+    [ "$v" = "$EU_VER" ] || die "$(m erofs_utils_erofs_utils_installer "$EU_OPT" "$v" "$EU_VER")"
     EU_DIR=$d; ok "erofs-utils $EU_VER (--erofs-utils $d)"; return 0
   fi
   plat=$(eu_plat); src=$HERE/tools/erofs-utils; sums=$HERE/lib/erofs_utils.txt
   if [ -z "$plat" ] || [ ! -f "$sums" ] || ! grep -q " $plat/mkfs.erofs\$" "$sums" || [ ! -d "$src/$plat" ]; then
-    die "$(t "this installer has no erofs-utils for this computer ($(uname -s) $(uname -m)), and the one-pass install with Google services needs them. Install without --gapps-zip and add Google services later (gapps --zip FILE), or use a Mac or a Linux x86-64 / ARM64 computer. Nothing was written." "у установщика нет erofs-utils для этого компьютера ($(uname -s) $(uname -m)), а установке с сервисами Google за один заход они нужны. Установите без --gapps-zip и добавьте сервисы Google позже (gapps --zip ФАЙЛ) или используйте Mac либо Linux x86-64 / ARM64. Ничего не записано.")"
+    die "$(m installer_has_no_erofs_utils "$(uname -s)" "$(uname -m)")"
   fi
   d=$STATE_DIR/erofs-utils-$EU_VER/$plat
   mkdir -p "$d" || die "mkdir $d"
@@ -1365,15 +1323,15 @@ eu_setup() {  # mkfs.erofs, fsck.erofs, dump.erofs: our own (tools/erofs-utils),
     [ -n "$want" ] || die "internal: lib/erofs_utils.txt has no $plat/$p.erofs"
     [ -f "$d/$p.erofs" ] && [ "$(sha256 "$d/$p.erofs")" = "$want" ] && continue
     [ -f "$src/$plat/$p.erofs" ] && [ "$(sha256 "$src/$plat/$p.erofs")" = "$want" ] \
-      || die "$(t "tools/erofs-utils/$plat/$p.erofs is missing or damaged (sha256 differs): download the installer again. Nothing was written." "tools/erofs-utils/$plat/$p.erofs нет или он повреждён (другой sha256): скачайте установщик заново. Ничего не записано.")"
+      || die "$(m tools_erofs_utils_erofs_missing "$plat" "$p")"
     cat "$src/$plat/$p.erofs" > "$d/$p.erofs.new" && chmod 755 "$d/$p.erofs.new" && mv "$d/$p.erofs.new" "$d/$p.erofs" \
-      || die "$(t "cannot copy $p.erofs to $d" "не удаётся скопировать $p.erofs в $d")"
+      || die "$(m cannot_copy_erofs "$p" "$d")"
     [ "$(sha256 "$d/$p.erofs")" = "$want" ] || die "internal: $d/$p.erofs"
   done
   v=$("$d/mkfs.erofs" --version 2>/dev/null | head -n 1 | awk '{ print $NF }')
-  [ "$v" = "$EU_VER" ] || die "$(t "mkfs.erofs of tools/erofs-utils/$plat does not run on this computer. Install without --gapps-zip and add Google services later (gapps --zip FILE). Nothing was written." "mkfs.erofs из tools/erofs-utils/$plat не запускается на этом компьютере. Установите без --gapps-zip и добавьте сервисы Google позже (gapps --zip ФАЙЛ). Ничего не записано.")"
+  [ "$v" = "$EU_VER" ] || die "$(m mkfs_erofs_tools_erofs_utils "$plat")"
   EU_DIR=$d
-  ok "erofs-utils $EU_VER (tools/erofs-utils, $(t "checked" "проверены"))"
+  ok "erofs-utils $EU_VER (tools/erofs-utils, $(m checked))"
 }
 
 # the tar for mkfs.erofs --tar=f, written here byte by byte (bash 3.2, no Python): every entry a PAX header with its
@@ -1435,75 +1393,75 @@ gi_image_ok() {  # the Lumen OS image to be written can use an erofs add-on of t
   local s
   s=$("$EU_DIR/dump.erofs" --cat --path=/system/etc/z9x/z9x_gapps.sh "$IMG" 2>/dev/null) || s=""
   printf '%s\n' "$s" | grep -q '^# lumen-gapps-fs:.* erofs' \
-    || die "$(t "$(basename "$IMG") cannot take the Google services in one pass (its add-on support is older than this installer): use the image of the same release as this installer. Nothing was written." "$(basename "$IMG") не может принять сервисы Google за один заход (его поддержка дополнения старше этого установщика): используйте образ того же выпуска, что и установщик. Ничего не записано.")"
+    || die "$(m cannot_take_google_services_one "$(basename "$IMG")")"
   s=$("$EU_DIR/dump.erofs" --cat --path=/system/etc/z9x/gapps_allow.txt "$IMG" 2>/dev/null) || s=""
   printf '%s\n' "$s" | grep -q "^zip=$GZ_SHA " \
-    || die "$(t "$(basename "$IMG") does not accept $GZ_NAME (not in its gapps_allow.txt): use the image of the same release as this installer. Nothing was written." "$(basename "$IMG") не принимает $GZ_NAME (его нет в gapps_allow.txt образа): используйте образ того же выпуска, что и установщик. Ничего не записано.")"
-  ok "$(t "the image takes the Google services add-on as erofs" "образ принимает дополнение с сервисами Google как erofs")"
+    || die "$(m not_accept_not_gapps_allow "$(basename "$IMG")" "$GZ_NAME")"
+  ok "$(m image_takes_google_services_add)"
 }
 gi_build() {  # zip: the add-on image in $STATE_DIR/gapps, built and checked; sets GI_IMG, GI_SHA, GI_SIZE
   local zip=$1 ref w img kb lines h s p got imf=${GAPPS_IMAGES_F#"$HERE/"}
   ref=$(awk -v z="$GZ_SHA" -v v="$EU_VER" '$1 == z && $2 == v && $3 == "plain" { print; exit }' "$GAPPS_IMAGES_F" 2>/dev/null)
-  [ -n "$ref" ] || die "$(t "$imf names no checked add-on image of $GZ_NAME for erofs-utils $EU_VER: download the installer again. Nothing was written." "в $imf нет проверенного образа дополнения из $GZ_NAME для erofs-utils $EU_VER: скачайте установщик заново. Ничего не записано.")"
+  [ -n "$ref" ] || die "$(m names_no_checked_add_image "$imf" "$GZ_NAME" "$EU_VER")"
   GI_SHA=$(printf '%s\n' "$ref" | awk '{ print $4 }'); GI_SIZE=$(printf '%s\n' "$ref" | awk '{ print $5 }')
   case "$GI_SIZE" in ''|*[!0-9]*) die "internal: $imf size" ;; esac
   w=$STATE_DIR/gapps; img=$w/z9x_gapps-$(printf '%s' "$GZ_SHA" | cut -c1-16).img
   GI_IMG=$img
   if [ -f "$img" ] && [ "$(wc -c < "$img" | tr -d ' ')" = "$GI_SIZE" ] && [ "$(sha256 "$img")" = "$GI_SHA" ]; then
-    ok "$(t "Google services add-on image: built earlier, checked" "образ дополнения с сервисами Google: собран раньше, проверен") ($(( (GI_SIZE + 1048575) / 1048576 )) $(t MB МБ))"
+    ok "$(m google_services_add_image_built) ($(( (GI_SIZE + 1048575) / 1048576 )) $(m mb))"
     return 0
   fi
   rm -rf "${w:?}"; mkdir -p "$w" || die "mkdir $w"
   kb=$(df -k "$w" | awk 'NR == 2 { print $4 }')
   [ "${kb:-0}" -ge $(( GI_SIZE / 1024 * 2 + 65536 )) ] \
-    || die "$(t "not enough free space on this computer for the Google services add-on image: $((GI_SIZE * 2 / 1048576 + 64)) MB needed in $w for a moment. Nothing was written." "на компьютере мало места для образа дополнения с сервисами Google: в $w ненадолго нужно $((GI_SIZE * 2 / 1048576 + 64)) МБ. Ничего не записано.")"
-  say "$(t "building the Google services add-on image from $GZ_NAME (erofs, each file checked; about 10-30 s)" "собираю образ дополнения с сервисами Google из $GZ_NAME (erofs, каждый файл проверяется; 10–30 секунд)")"
+    || die "$(m not_enough_free_space_computer "$((GI_SIZE * 2 / 1048576 + 64))" "$w")"
+  say "$(m building_google_services_add_image "$GZ_NAME")"
   if ! gi_tar "$zip" "$w/gapps.tar"; then
-    die "$(t "the zip does not hold the expected files ($(cat "$w/bad" 2>/dev/null)): download it again. Nothing was written." "в архиве не те файлы ($(cat "$w/bad" 2>/dev/null)): скачайте его заново. Ничего не записано.")"
+    die "$(m zip_not_hold_expected_files "$(cat "$w/bad" 2>/dev/null)")"
   fi
   rm -f "$w/file"
   "$EU_DIR/mkfs.erofs" -b4096 -E noinline_data -T"$GI_MTIME" -U 00000000-0000-0000-0000-000000000000 --all-root --workers=1 \
     -Lz9x_gapps --tar=f "$img.part" "$w/gapps.tar" > "$w/mkfs.log" 2>&1 \
-    || { rm -f "$w/gapps.tar" "$img.part"; die "$(t "mkfs.erofs failed" "mkfs.erofs не сработал"): $(tail -n 3 "$w/mkfs.log" | tr '\n' ' '). $(t 'Nothing was written.' 'Ничего не записано.')"; }
+    || { rm -f "$w/gapps.tar" "$img.part"; die "$(m mkfs_erofs_failed): $(tail -n 3 "$w/mkfs.log" | tr '\n' ' '). $(m nothing_written)"; }
   rm -f "$w/gapps.tar"
-  "$EU_DIR/fsck.erofs" "$img.part" > "$w/fsck.log" 2>&1 || { rm -f "$img.part"; die "fsck.erofs: $(tail -n 3 "$w/fsck.log" | tr '\n' ' '). $(t 'Nothing was written.' 'Ничего не записано.')"; }
+  "$EU_DIR/fsck.erofs" "$img.part" > "$w/fsck.log" 2>&1 || { rm -f "$img.part"; die "fsck.erofs: $(tail -n 3 "$w/fsck.log" | tr '\n' ' '). $(m nothing_written)"; }
   # every file read back out of the image
   lines=$(gi_lines "$GZ_SHA")
   while read -r h s p; do
     got=$("$EU_DIR/dump.erofs" --cat --path="/$p" "$img.part" 2>/dev/null | sha256_in)
-    [ "$got" = "$h" ] || { rm -f "$img.part"; die "$(t "$p read back from the add-on image differs. Nothing was written." "$p, прочитанный из образа дополнения, не совпал. Ничего не записано.")"; }
+    [ "$got" = "$h" ] || { rm -f "$img.part"; die "$(m read_back_add_image_differs "$p")"; }
   done <<EOF
 $lines
 EOF
   [ "$("$EU_DIR/dump.erofs" --cat --path=/MANIFEST "$img.part" 2>/dev/null | sha256_in)" = "$(sha256 "$w/MANIFEST")" ] \
-    || { rm -f "$img.part"; die "$(t "MANIFEST read back from the add-on image differs. Nothing was written." "MANIFEST, прочитанный из образа дополнения, не совпал. Ничего не записано.")"; }
+    || { rm -f "$img.part"; die "$(m manifest_read_back_add_image)"; }
   got=$(sha256 "$img.part")
   if [ "$got" != "$GI_SHA" ] || [ "$(wc -c < "$img.part" | tr -d ' ')" != "$GI_SIZE" ]; then
     rm -f "$img.part"
-    die "$(t "the add-on image built here (sha256 $(printf '%s' "$got" | cut -c1-16)...) is not the one checked for this release ($(printf '%s' "$GI_SHA" | cut -c1-16)...): Google services are not written. Install without --gapps-zip and add them later (gapps --zip FILE). Nothing was written." "собранный здесь образ дополнения (sha256 $(printf '%s' "$got" | cut -c1-16)...) не тот, что проверен для этого выпуска ($(printf '%s' "$GI_SHA" | cut -c1-16)...): сервисы Google не записываются. Установите без --gapps-zip и добавьте их позже (gapps --zip ФАЙЛ). Ничего не записано.")"
+    die "$(m add_image_built_here_sha256 "$(printf '%s' "$got" | cut -c1-16)" "$(printf '%s' "$GI_SHA" | cut -c1-16)")"
   fi
   mv "$img.part" "$img"
-  ok "$(t "Google services add-on image" "образ дополнения с сервисами Google"): $(printf '%s\n' "$lines" | grep -c .) $(t "files checked" "файлов проверено"), $(( (GI_SIZE + 1048575) / 1048576 )) $(t MB МБ), sha256 $(printf '%s' "$GI_SHA" | cut -c1-16)..."
+  ok "$(m google_services_add_image): $(printf '%s\n' "$lines" | grep -c .) $(m files_checked), $(( (GI_SIZE + 1048575) / 1048576 )) $(m mb), sha256 $(printf '%s' "$GI_SHA" | cut -c1-16)..."
 }
 
 z9x_gapps_plan() {  # --gapps-zip, before anything else: the zip, and that the install saved here can take it
   local plan
-  [ -f "$GAPPS_WITH" ] || die "$(t "no file $GAPPS_WITH" "нет файла $GAPPS_WITH")"
+  [ -f "$GAPPS_WITH" ] || die "$(m no_file "$GAPPS_WITH")"
   gapps_zipcheck "$GAPPS_WITH"
   plan=$(state_get gapps_plan)
   if [ "$(state_get step_flash)" = done ]; then
     # an older installer's install waiting for its fill (z9x_gapps_finish completes it), or this one-pass install done
     if ! { [ "$(state_get step_gapps_part)" = done ] && [ -z "$(state_get step_wipe)" ]; } \
        && [ "$(state_get step_gapps_flash)" != done ] && [ "$(state_get step_gapps_fill)" != done ]; then
-      die "$(t "Lumen OS was installed here without Google services. To add them: bash lumen-install.sh gapps --zip FILE. For a new install: bash lumen-install.sh reset first. Nothing was written." "Lumen OS здесь уже установлена без сервисов Google. Добавить их: bash lumen-install.sh gapps --zip ФАЙЛ. Для новой установки сначала: bash lumen-install.sh reset. Ничего не записано.")"
+      die "$(m lumen_os_installed_here_without)"
     fi
-    [ -z "$plan" ] || [ "$plan" = "$GZ_SHA" ] || die "$(t "this install was started with another MindTheGapps file: use the same file. Nothing was erased." "эта установка начата с другим файлом MindTheGapps: укажите тот же файл. Ничего не стёрто.")"
+    [ -z "$plan" ] || [ "$plan" = "$GZ_SHA" ] || die "$(m install_started_another)"
   fi
 }
 z9x_gapps_prepare() {  # before the ERASE question: erofs-utils, the image takes the add-on, the add-on image built
   [ "$GI_READY" = 0 ] || return 0
   [ -n "$IMG" ] && [ -f "$IMG" ] || find_image
-  [ "$(state_get image_gms)" = 0 ] || die "$(t "this image has Google services built in: --gapps-zip is for Lumen OS without Google. Nothing was written." "в этом образе сервисы Google уже встроены: --gapps-zip нужен для Lumen OS без Google. Ничего не записано.")"
+  [ "$(state_get image_gms)" = 0 ] || die "$(m image_has_google_services_built)"
   eu_setup
   gi_image_ok
   gi_build "$GAPPS_WITH"
@@ -1513,24 +1471,24 @@ z9x_gapps_write() {  # slot, fastbootd after system (+ z9x_blobs): z9x_gapps_<sl
   # 1 = left out (warned; the partition is deleted, so the system starts plainly without Google)
   local p=z9x_gapps$1 need free cur=0 why
   need=$(( (GI_SIZE + 1048575) / 1048576 * 1048576 ))
-  why=$(t "the install goes on without Google services (add them later: gapps --zip FILE)" "установка продолжается без сервисов Google (добавить их позже: gapps --zip ФАЙЛ)")
+  why=$(m install_goes_without_google)
   GV=$(fb getvar all 2>&1)   # system and z9x_blobs have their new sizes now
   free=$(super_free)
   if printf '%s\n' "$GV" | grep -q "partition-size:$p:"; then cur=$(( $(gv_size "$p") )); fi
   if [ $(( free + cur )) -lt "$need" ]; then
     [ "$cur" -gt 0 ] && fb_do delete "$p" >/dev/null 2>&1
-    warn "$(t "not enough free space in super for the Google services ($(( (free + cur) / 1048576 )) MB, $((need / 1048576)) MB needed): $why" "в super мало места для сервисов Google ($(( (free + cur) / 1048576 )) МБ, нужно $((need / 1048576)) МБ): $why")"
+    warn "$(m not_enough_free_space_super_2 "$(( (free + cur) / 1048576 ))" "$((need / 1048576))" "$why")"
     state_set step_gapps_flash skipped:room; return 1
   fi
-  say "$(t "writing the Google services into $p ($((need / 1048576)) MB, about 20 s)" "записываю сервисы Google в $p ($((need / 1048576)) МБ, около 20 секунд)")"
+  say "$(m writing_google_services_mb_about "$p" "$((need / 1048576))")"
   if [ "$cur" -gt 0 ]; then fb_do resize "$p" "$need"; else fb_do create "$p" "$need"; fi \
-    || { fb_do delete "$p" >/dev/null 2>&1; warn "$(t "$p could not be created: $why" "$p создать не удалось: $why")"; state_set step_gapps_flash skipped:create; return 1; }
+    || { fb_do delete "$p" >/dev/null 2>&1; warn "$(m could_not_created "$p" "$why")"; state_set step_gapps_flash skipped:create; return 1; }
   if ! fb_do flash "$p" "$GI_IMG"; then
     # fastbootd gone (its time limit, the cable): nothing is erased, the projector starts on the old data with USB
     # debugging, and the same command writes everything again in one visit
-    z9x_in_fastboot || die "$(t "fastbootd ended while $p was being written. Nothing was erased: the projector starts on its old data, USB debugging still on. Run the same command again: it writes everything again in one visit." "fastbootd завершился во время записи $p. Ничего не стёрто: проектор загрузится на старых данных, отладка по USB по-прежнему включена. Запустите ту же команду ещё раз: она снова запишет всё за один заход.")"
+    z9x_in_fastboot || die "$(m fastbootd_ended_while_being "$p")"
     fb_do delete "$p" >/dev/null 2>&1
-    warn "$(t "$p could not be written and was removed again: $why" "$p записать не удалось, раздел удалён: $why")"
+    warn "$(m could_not_written_removed_again "$p" "$why")"
     state_set step_gapps_flash skipped:flash; return 1
   fi
   state_set step_gapps_flash done; state_set gapps "$GZ_NAME"; state_set gapps_img "$GI_SHA"
@@ -1542,9 +1500,9 @@ z9x_gapps_finish() {  # an install of an older installer that waits on the old d
   local slot a
   slot=$(state_get slot)
   if [ -z "$GAPPS_WITH" ]; then
-    say "$(t "this install was started with Google services (--gapps-zip), and they are not in yet" "эта установка начата с сервисами Google (--gapps-zip), и они ещё не добавлены")"
-    ask "$(t "Finish the install without Google services? (Adding them later with 'gapps' wipes the data once more.)" "Завершить установку без сервисов Google? (Если добавить их позже через 'gapps', данные сотрутся ещё раз.)")" \
-      || die "$(t "run the same command again with --gapps-zip FILE: it continues there. Nothing was erased." "запустите ту же команду снова с --gapps-zip ФАЙЛ: установка продолжится с того же места. Ничего не стёрто.")"
+    say "$(m install_started_google_services)"
+    ask "$(m finish_install_without_google)" \
+      || die "$(m run_same_command_again_gapps)"
     state_set gapps_plan ""
   else
     FORCE_HASH=1 check_image
@@ -1552,12 +1510,10 @@ z9x_gapps_finish() {  # an install of an older installer that waits on the old d
   fi
   if [ "$ERASE_NOW" != 1 ]; then
     echo
-    t "Lumen OS is written. Next the installer writes the Google services (if asked) and ERASES ALL DATA on the
-projector (apps, accounts, settings, files) in fastbootd, as at a clean install." "Lumen OS записана. Дальше установщик записывает сервисы Google (если они выбраны) и СТИРАЕТ ВСЕ ДАННЫЕ
-проектора (приложения, аккаунты, настройки, файлы) в fastbootd, как при чистой установке."; echo
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    m lumen_os_written_next_installer; echo
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was erased" "отменено, ничего не стёрто")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_erased)"
     ERASE_NOW=1
   fi
   if z9x_in_fastboot; then fbd_check "$slot"; else fbd_enter "$slot"; fi
@@ -1566,20 +1522,20 @@ projector (apps, accounts, settings, files) in fastbootd, as at a clean install.
   fb reboot >/dev/null 2>&1
   state_set step_gapps_part ""; state_set step_gapps_fill ""
   if [ "$(state_get step_gapps_flash)" = done ]; then
-    ok "$(t "data wiped. The first start takes 2-4 minutes; the setup has a Google sign-in step." "данные стёрты. Первый запуск 2–4 минуты; в настройке есть шаг входа в Google.")"
+    ok "$(m data_wiped_first_start_takes)"
   else
-    ok "$(t "data wiped. The first start takes 2-4 minutes; the setup screen appears on the projector." "данные стёрты. Первый запуск 2–4 минуты; на проекторе появится экран настройки.")"
+    ok "$(m data_wiped_first_start_takes_2)"
   fi
 }
 
-# ------------------------------------------------------------------ projector profiles (lib/devices.conf)
-# What a projector IS comes from lib/devices.conf: data only, checked line by line here and never sourced.
-# What the installer DOES (its steps, and fb_allowed) stays in this script, so that file cannot widen what is
-# written. The Z9X runs on the constants at the top and does not need lib/devices.conf (it only names other
-# projectors from it).
+# ------------------------------------------------------------------ projector profiles (lib/devices.conf, lib/flows.conf)
+# What a projector IS comes from lib/devices.conf, which commands its FLOW has from lib/flows.conf: data only,
+# checked line by line here and never sourced. What the installer DOES (the steps of each flow, and fb_allowed)
+# stays in this script, so neither file can widen what is written.
 DEVCONF="$HERE/lib/devices.conf"
+FLOWCONF="$HERE/lib/flows.conf"
 P_NAME=""; P_MODEL=""; P_BOARD=""; P_FB_PRODUCT=""; P_VENDOR_OK=""; P_CERT=""; P_TOKEN=""; P_FS=""; P_VERSION_PROP=""
-P_LUMEN_PROP=""; P_LOGICAL=""; P_RESERVE=0; P_GUIDE=""; P_RESTORE_BIN=""; P_RESTORE_MD5=""
+P_LUMEN_PROP=""; P_LOGICAL=""; P_RESERVE=0; P_GUIDE=""; P_RESTORE_BIN=""; P_RESTORE_MD5=""; P_RESTORE_URL=""
 P_FLOW=""; P_SLOTS=""; P_KEEP=""; P_WIPE=""; P_SYSMAX=""; P_BLOBS_ALLOW=""   # FLOW=ab-fastbootd and its keys
 P_GAPPS_ALLOW=""; P_GAPPS_IMAGES=""   # FLOW=ab-fastbootd, optional (both or neither): the Google services add-on
 P_BLOBS_SIZE=""   # FLOW=ab-fastbootd, optional: its z9x_blobs partition in bytes (default BLOB_SIZE)
@@ -1591,8 +1547,11 @@ P_WIPE_FS=""      # FLOW=ab-fastbootd, optional: ext4 (default) or f2fs, the fil
 # config folders, and the model codes of that projector that are not supported yet
 P_MODELS_OK=""; P_PRODUCT_NAMES=""; P_DEVICE=""; P_MODEL_CONFIG=""; P_MODELS_NOT_YET=""
 P_MODELS_CHECK_ONLY=""   # with MODELS_OK, optional: models of the table that get 'check' and 'blobs' only, no write
+P_ABI=""          # FLOW=ab-fastbootd, optional: arm32 | arm64, the userspace its image must be built for
+P_TODO=""         # the keys of the profile whose value is TODO: not finished, nothing is written (abf_todo_stop)
 ABF_MODEL=""      # the model code abf_identity found (one of MODELS_OK, else MODEL)
-P_KEYS="NAME MODEL BOARD FB_PRODUCT VENDOR_OK CERT IMAGE_TOKEN IMAGE_FS VERSION_PROP LUMEN_PROP LOGICAL SUPER_RESERVE GUIDE RESTORE_BIN RESTORE_MD5 FLOW SLOTS KEEP WIPE_PARTS SYSTEM_MAX BLOBS_ALLOW GAPPS_ALLOW GAPPS_IMAGES BLOBS_SIZE FAMILY SLOT_CHECK WIPE_FS MODELS_OK PRODUCT_NAMES DEVICE MODEL_CONFIG MODELS_NOT_YET MODELS_CHECK_ONLY"
+P_KEYS="NAME MODEL BOARD FB_PRODUCT VENDOR_OK CERT IMAGE_TOKEN IMAGE_FS VERSION_PROP LUMEN_PROP LOGICAL SUPER_RESERVE GUIDE RESTORE_BIN RESTORE_MD5 RESTORE_URL FLOW SLOTS KEEP WIPE_PARTS SYSTEM_MAX BLOBS_ALLOW GAPPS_ALLOW GAPPS_IMAGES BLOBS_SIZE FAMILY SLOT_CHECK WIPE_FS MODELS_OK PRODUCT_NAMES DEVICE MODEL_CONFIG MODELS_NOT_YET MODELS_CHECK_ONLY ABI"
+TODO_KEYS="VENDOR_OK LOGICAL KEEP SYSTEM_MAX BLOBS_ALLOW BLOBS_SIZE RESTORE_BIN"   # the only keys that may say TODO
 devconf_check() {  # stops on a missing file, a broken line, an unknown key or a key given twice
   local bad
   [ -f "$DEVCONF" ] || die "internal: lib/devices.conf is missing: re-download the installer"
@@ -1609,10 +1568,46 @@ devconf_get() {  # id KEY -> value (nothing without lib/devices.conf)
   [ -f "$DEVCONF" ] || return 0
   awk -v k="$1.$2=" '{ sub(/\r$/, "") } index($0, k) == 1 { print substr($0, length(k) + 1); exit }' "$DEVCONF"
 }
+is_todo() { case "$1" in TODO*) return 0 ;; esac; return 1; }   # a profile value that is not known yet (TODO, TODO:<why>)
+devconf_todo() {  # id -> the keys of that profile whose value is TODO, space-separated (nothing: finished)
+  [ -f "$DEVCONF" ] || return 0
+  awk -v id="$1." '{ sub(/\r$/, "") } index($0, id) == 1 { k = substr($0, length(id) + 1); e = index(k, "=")
+    if (index(substr(k, e + 1), "TODO") == 1) { printf "%s%s", s, substr(k, 1, e - 1); s = " " } }' "$DEVCONF"
+}
 dev_name() {  # id -> the name shown to the user
   local n; n=$(devconf_get "$1" NAME)
-  [ -n "$n" ] || case "$1" in z9x) n="XGIMI Z9X" ;; play6) n="XGIMI Play 6" ;; *) n=$1 ;; esac
-  printf '%s' "$n"
+  printf '%s' "${n:-$1}"
+}
+profile_ids() {  # every projector of lib/devices.conf, in its order
+  [ -f "$DEVCONF" ] || return 0
+  awk '{ sub(/\r$/, "") } /^[a-z0-9]+\.NAME=/ { print substr($0, 1, index($0, ".") - 1) }' "$DEVCONF"
+}
+profile_is() { [ -n "$1" ] && profile_ids | grep -qx -- "$1"; }   # id -> 0 for a projector of lib/devices.conf
+profile_flow() { [ -n "$1" ] && devconf_get "$1" FLOW; return 0; }   # id -> its FLOW
+flow_id() {  # flow -> the first projector of lib/devices.conf with that FLOW
+  [ -f "$DEVCONF" ] || return 0
+  awk -v f="$1" '{ sub(/\r$/, "") } /^[a-z0-9]+\.FLOW=/ && substr($0, index($0, "=") + 1) == f { print substr($0, 1, index($0, ".") - 1); exit }' "$DEVCONF"
+}
+state_dir_of() {  # id -> the folder of its saved progress (lib/flows.conf STATE)
+  if [ "$(flow_get "$(profile_flow "$1")" STATE)" = root ]; then printf '%s' "$STATE_DIR"; else printf '%s' "$STATE_DIR/$1"; fi
+}
+state_file_of() { printf '%s/state' "$(state_dir_of "$1")"; }
+not_yet() { die "$(m not_available_yet_nothing_done "$1" "$P_NAME")"; }   # a command or option this projector has not yet
+device_opt_text() { printf '%s' "--device $(profile_ids | tr '\n' '|' | sed 's/|$//')"; }
+flowconf_check() {  # lib/flows.conf: every line flow.KEY=value with a known key, no key twice, a known step name
+  local bad
+  [ -f "$FLOWCONF" ] || die "internal: lib/flows.conf is missing: re-download the installer"
+  bad=$(awk '
+    { sub(/\r$/, "") }
+    /^#/ || /^$/ { next }
+    !/^[a-z0-9-]+\.(KEYS|STATE|START|TOOLS|NOT_NEEDED|NOT_YET|NEEDS|CMD_[A-Z]+)=[A-Za-z0-9 ._:\/,-]*$/ { print NR; exit }
+    /\.(START|CMD_[A-Z]+)=/ && !/=(cmd|stick|play6|abf)_[a-z0-9_]+( [0-9]+)?$/ { print NR; exit }
+    { k = substr($0, 1, index($0, "=") - 1); if (k in seen) { print NR; exit }; seen[k] = 1 }' "$FLOWCONF")
+  [ -z "$bad" ] || die "internal: lib/flows.conf line $bad is not valid: re-download the installer"
+}
+flow_get() {  # flow KEY -> value (nothing without lib/flows.conf)
+  [ -n "$1" ] && [ -f "$FLOWCONF" ] || return 0
+  awk -v k="$1.$2=" '{ sub(/\r$/, "") } index($0, k) == 1 { print substr($0, length(k) + 1); exit }' "$FLOWCONF"
 }
 profile_of() {  # model board -> the id of the profile that has both (nothing: unknown); a profile's model codes are
   # its MODEL, the models of its MODELS_OK and its MODELS_NOT_YET
@@ -1624,14 +1619,17 @@ profile_of() {  # model board -> the id of the profile that has both (nothing: u
       k = split(substr($0, index($0, "=") + 1), a, " "); for (x = 1; x <= k; x++) { sub(/:.*/, "", a[x]); ex[i] = ex[i] " " a[x] } }
     END { for (j = 1; j <= n; j++) if ((mo[o[j]] == m || index(ex[o[j]] " ", " " m " ") > 0) && bo[o[j]] == b) { print o[j]; exit } }' "$DEVCONF"
 }
-profiles_named() {  # "XGIMI Z9X (G0082) and XGIMI Play 6 (...)": every projector of lib/devices.conf with a built-in
-  # flow (a FLOW=ab-fastbootd one is named by its own path, abf_other_hint)
-  awk -v and="$(t and и)" '{ sub(/\r$/, "") }
+profiles_named() {  # "XGIMI Z9X (model) and XGIMI Play 6 (...)": every projector of lib/devices.conf whose flow is not
+  # ab-fastbootd (a FLOW=ab-fastbootd one is named by its own path, abf_other_hint)
+  awk -v conj="$(m and)" '{ sub(/\r$/, "") }
     /^[a-z0-9]+\.NAME=/ { i = substr($0, 1, index($0, ".") - 1); nm[i] = substr($0, index($0, "=") + 1); o[++n] = i }
     /^[a-z0-9]+\.MODEL=/ { i = substr($0, 1, index($0, ".") - 1); mo[i] = substr($0, index($0, "=") + 1) }
-    /^[a-z0-9]+\.FLOW=/ { fl[substr($0, 1, index($0, ".") - 1)] = 1 }
+    /^[a-z0-9]+\.FLOW=ab-fastbootd$/ { fl[substr($0, 1, index($0, ".") - 1)] = 1 }
     END { for (j = 1; j <= n; j++) if (!(o[j] in fl)) b[++m] = o[j]
-          for (j = 1; j <= m; j++) s = s (j > 1 ? (j == m ? " " and " " : ", ") : "") nm[b[j]] " (" mo[b[j]] ")"; print s }' "$DEVCONF"
+          for (j = 1; j <= m; j++) s = s (j > 1 ? (j == m ? " " conj " " : ", ") : "") nm[b[j]] " (" mo[b[j]] ")"; print s }' "$DEVCONF"
+}
+p_var() {  # a key of lib/devices.conf -> the variable load_profile keeps it in
+  case "$1" in IMAGE_TOKEN) echo P_TOKEN ;; IMAGE_FS) echo P_FS ;; SUPER_RESERVE) echo P_RESERVE ;; *) echo "P_$1" ;; esac
 }
 load_profile() {  # id: the P_* values of that projector
   local k v
@@ -1643,15 +1641,25 @@ load_profile() {  # id: the P_* values of that projector
       VENDOR_OK) P_VENDOR_OK=$v ;; CERT) P_CERT=$v ;; IMAGE_TOKEN) P_TOKEN=$v ;; IMAGE_FS) P_FS=$v ;;
       VERSION_PROP) P_VERSION_PROP=$v ;; LUMEN_PROP) P_LUMEN_PROP=$v ;; LOGICAL) P_LOGICAL=$v ;;
       SUPER_RESERVE) P_RESERVE=$v ;; GUIDE) P_GUIDE=$v ;; RESTORE_BIN) P_RESTORE_BIN=$v ;; RESTORE_MD5) P_RESTORE_MD5=$v ;;
+      RESTORE_URL) P_RESTORE_URL=$v ;;
       FLOW) P_FLOW=$v ;; SLOTS) P_SLOTS=$v ;; KEEP) P_KEEP=$v ;; WIPE_PARTS) P_WIPE=$v ;; SYSTEM_MAX) P_SYSMAX=$v ;;
       BLOBS_ALLOW) P_BLOBS_ALLOW=$v ;; GAPPS_ALLOW) P_GAPPS_ALLOW=$v ;; GAPPS_IMAGES) P_GAPPS_IMAGES=$v ;;
       BLOBS_SIZE) P_BLOBS_SIZE=$v ;; FAMILY) P_FAMILY=$v ;; SLOT_CHECK) P_SLOT_CHECK=$v ;; WIPE_FS) P_WIPE_FS=$v ;;
       MODELS_OK) P_MODELS_OK=$v ;; PRODUCT_NAMES) P_PRODUCT_NAMES=$v ;; DEVICE) P_DEVICE=$v ;;
       MODEL_CONFIG) P_MODEL_CONFIG=$v ;; MODELS_NOT_YET) P_MODELS_NOT_YET=$v ;; MODELS_CHECK_ONLY) P_MODELS_CHECK_ONLY=$v ;;
+      ABI) P_ABI=$v ;;
     esac
   done <<EOF
 $(awk -v id="$1." '{ sub(/\r$/, "") } index($0, id) == 1 { print substr($0, length(id) + 1) }' "$DEVCONF")
 EOF
+  # TODO (lib/devices.conf header): only with FLOW=ab-fastbootd and only for the facts a port may still lack
+  # (TODO_KEYS). Such a profile is not finished: their checks below are skipped, abf_main and abf_check stop it
+  P_TODO=$(devconf_todo "$1")
+  for k in $P_TODO; do
+    case " $TODO_KEYS " in *" $k "*) [ "$P_FLOW" = ab-fastbootd ] || die "internal: lib/devices.conf: $1.$k=TODO" ;; *) die "internal: lib/devices.conf: $1.$k=TODO" ;; esac
+  done
+  # ABI (optional, with FLOW=ab-fastbootd): the userspace of its stock vendor, checked in the image (abf_check_image)
+  case "$P_ABI" in '') ;; arm32|arm64) [ "$P_FLOW" = ab-fastbootd ] || die "internal: lib/devices.conf: $1.ABI" ;; *) die "internal: lib/devices.conf: $1.ABI" ;; esac
   # FAMILY: the fastbootd 'product' of the projector whose XGIMI product image this one shares (never its own
   # FB_PRODUCT as well; that projector names its own and has no FAMILY): MODEL and BOARD tell the two apart
   if [ -n "$P_FAMILY" ]; then
@@ -1660,38 +1668,42 @@ EOF
     P_FB_PRODUCT=$(devconf_get "$P_FAMILY" FB_PRODUCT)
     [ -n "$P_FB_PRODUCT" ] || die "internal: lib/devices.conf: $1.FAMILY"
   fi
-  for k in P_MODEL P_BOARD P_FB_PRODUCT P_VENDOR_OK P_CERT P_TOKEN P_FS P_VERSION_PROP P_LUMEN_PROP P_LOGICAL P_RESERVE; do
-    [ -n "${!k}" ] || die "internal: lib/devices.conf: '$1' has no ${k#P_}: re-download the installer"
+  # FLOW: one of lib/flows.conf, whose KEYS this profile must have
+  flowconf_check
+  [ -n "$(flow_get "$P_FLOW" KEYS)" ] || die "internal: lib/devices.conf: $1.FLOW=$P_FLOW"
+  for k in $(flow_get "$P_FLOW" KEYS); do
+    v=$(p_var "$k"); [ -n "${!v}" ] || die "internal: lib/devices.conf: '$1' has no $k: re-download the installer"
   done
   case "$P_RESERVE" in *[!0-9]*) die "internal: lib/devices.conf: $1.SUPER_RESERVE" ;; esac
-  case "$P_LUMEN_PROP" in *" "*) ;; *) die "internal: lib/devices.conf: $1.LUMEN_PROP" ;; esac
-  # SLOT_CHECK (optional): only 'yes', only with FLOW, and only with RESTORE_BIN (its texts name the way back)
+  case "$P_LUMEN_PROP" in ''|*" "*) ;; *) die "internal: lib/devices.conf: $1.LUMEN_PROP" ;; esac
+  # SLOT_CHECK (optional): only 'yes', only with FLOW=ab-fastbootd, and only with RESTORE_BIN (its texts name the way back)
   if [ -n "$P_SLOT_CHECK" ]; then
-    { [ "$P_SLOT_CHECK" = yes ] && [ -n "$P_FLOW" ] && [ -n "$P_RESTORE_BIN" ]; } || die "internal: lib/devices.conf: $1.SLOT_CHECK"
+    { [ "$P_SLOT_CHECK" = yes ] && [ "$P_FLOW" = ab-fastbootd ] && [ -n "$P_RESTORE_BIN" ] && ! is_todo "$P_RESTORE_BIN"; } || die "internal: lib/devices.conf: $1.SLOT_CHECK"
   fi
-  # WIPE_FS (optional, only with FLOW): ext4 or f2fs, as the projector's stock fstab mounts userdata and metadata
+  # WIPE_FS (optional, only with FLOW=ab-fastbootd): ext4 or f2fs, as the projector's stock fstab mounts userdata and metadata
   if [ -n "$P_WIPE_FS" ]; then
-    { [ -n "$P_FLOW" ] && { [ "$P_WIPE_FS" = ext4 ] || [ "$P_WIPE_FS" = f2fs ]; }; } || die "internal: lib/devices.conf: $1.WIPE_FS"
+    { [ "$P_FLOW" = ab-fastbootd ] && { [ "$P_WIPE_FS" = ext4 ] || [ "$P_WIPE_FS" = f2fs ]; }; } || die "internal: lib/devices.conf: $1.WIPE_FS"
   fi
-  # the model x firmware table (optional, only with FLOW)
+  # the model x firmware table (optional, only with FLOW=ab-fastbootd)
   if [ -n "$P_MODELS_OK$P_PRODUCT_NAMES$P_DEVICE$P_MODEL_CONFIG$P_MODELS_NOT_YET$P_MODELS_CHECK_ONLY" ]; then
-    [ -n "$P_FLOW" ] || die "internal: lib/devices.conf: $1.MODELS_OK"
+    [ "$P_FLOW" = ab-fastbootd ] || die "internal: lib/devices.conf: $1.MODELS_OK"
     abf_table_check "$1"
   fi
-  [ -n "$P_FLOW" ] || return 0
+  [ "$P_FLOW" = ab-fastbootd ] || return 0
   [ -n "$P_WIPE_FS" ] || P_WIPE_FS=ext4
   # FLOW=ab-fastbootd: every one of its keys; what they may name is narrowed here (fb_allowed narrows it again)
-  [ "$P_FLOW" = ab-fastbootd ] || die "internal: lib/devices.conf: $1.FLOW=$P_FLOW"
   for k in SLOTS:P_SLOTS KEEP:P_KEEP WIPE_PARTS:P_WIPE SYSTEM_MAX:P_SYSMAX BLOBS_ALLOW:P_BLOBS_ALLOW; do
     v=${k#*:}; [ -n "${!v}" ] || die "internal: lib/devices.conf: '$1' has no ${k%%:*}: re-download the installer"
   done
-  case "$P_SYSMAX" in *[!0-9]*) die "internal: lib/devices.conf: $1.SYSTEM_MAX" ;; esac
+  case "$P_SYSMAX" in TODO*) ;; *[!0-9]*) die "internal: lib/devices.conf: $1.SYSTEM_MAX" ;; esac
   for k in $P_SLOTS; do case "$k" in a|b) ;; *) die "internal: lib/devices.conf: $1.SLOTS" ;; esac; done
   for k in $P_WIPE; do case "$k" in userdata|metadata) ;; *) die "internal: lib/devices.conf: $1.WIPE_PARTS" ;; esac; done
-  case "$P_BLOBS_ALLOW" in lib/*.txt) ;; *) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
-  case "$P_BLOBS_ALLOW" in *..*) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
+  if ! is_todo "$P_BLOBS_ALLOW"; then
+    case "$P_BLOBS_ALLOW" in lib/*.txt) ;; *) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
+    case "$P_BLOBS_ALLOW" in *..*) die "internal: lib/devices.conf: $1.BLOBS_ALLOW" ;; esac
+  fi
   # its z9x_blobs partition (optional): bytes, whole MiB from 4 to 64; without it the 4 MiB of BLOB_SIZE
-  if [ -n "$P_BLOBS_SIZE" ]; then
+  if [ -n "$P_BLOBS_SIZE" ] && ! is_todo "$P_BLOBS_SIZE"; then
     case "$P_BLOBS_SIZE" in *[!0-9]*) die "internal: lib/devices.conf: $1.BLOBS_SIZE" ;; esac
     { [ $((P_BLOBS_SIZE % 1048576)) = 0 ] && [ "$P_BLOBS_SIZE" -ge 4194304 ] && [ "$P_BLOBS_SIZE" -le 67108864 ]; } \
       || die "internal: lib/devices.conf: $1.BLOBS_SIZE"
@@ -1753,7 +1765,7 @@ abf_table_check() {  # id: MODELS_OK and its companion keys are one consistent t
     l="$l $m"
   done
 }
-abf_pair() {  # "K:V K2:V2 ..." K -> V (status 1: no such K)
+pair_get() {  # "K:V K2:V2 ..." K -> V (status 1: no such K)
   local e
   for e in $1; do [ "${e%%:*}" = "$2" ] && { printf '%s' "${e#*:}"; return 0; }; done
   return 1
@@ -1761,10 +1773,10 @@ abf_pair() {  # "K:V K2:V2 ..." K -> V (status 1: no such K)
 abf_is_model() {  # model: 0 = a model code of this profile (one of MODELS_OK, else MODEL)
   [ -n "$1" ] || return 1
   [ -n "$P_MODELS_OK" ] || { [ "$1" = "$P_MODEL" ]; return; }
-  abf_pair "$P_MODELS_OK" "$1" >/dev/null
+  pair_get "$P_MODELS_OK" "$1" >/dev/null
 }
 abf_model_fw() {  # model -> the firmware it may run, space separated (its MODELS_OK entry, else VENDOR_OK)
-  if [ -n "$P_MODELS_OK" ]; then abf_pair "$P_MODELS_OK" "$1" | tr ',' ' '; else printf '%s' "$P_VENDOR_OK"; fi
+  if [ -n "$P_MODELS_OK" ]; then pair_get "$P_MODELS_OK" "$1" | tr ',' ' '; else printf '%s' "$P_VENDOR_OK"; fi
 }
 abf_check_only() {  # 0 = the model abf_identity found is one of MODELS_CHECK_ONLY: 'check' and 'blobs', no write yet
   [ -n "$ABF_MODEL" ] && case " $P_MODELS_CHECK_ONLY " in *" $ABF_MODEL "*) true ;; *) false ;; esac
@@ -1773,69 +1785,68 @@ abf_live_gate() {  # every write ('flash', 'all', 'gapps --zip', 'gapps --remove
   # MODELS_CHECK_ONLY is refused before anything is written. It mirrors the live switch of the installers that run on
   # the projector itself (a check and a dry run only, until one live test on that model)
   abf_check_only || return 0
-  die "$(t "$ABF_MODEL support is in testing: Lumen OS goes on the $P_NAME $ABF_MODEL only after a live test on that model, not yet. 'check' and 'blobs' work for it. Nothing was written." "поддержка $ABF_MODEL в тестировании: Lumen OS ставится на $P_NAME $ABF_MODEL только после живого теста на этой модели, пока нет. 'check' и 'blobs' для неё работают. Ничего не записано.")"
+  die "$(m support_testing_lumen_os_goes "$ABF_MODEL" "$P_NAME")"
 }
 abf_fw_names() {  # "v1.2.3 v1.3.0" -> "V1.2.3 and V1.3.0"
-  printf '%s\n' "$1" | awk -v and="$(t and и)" '{ for (i = 1; i <= NF; i++) s = s (i > 1 ? (i == NF ? " " and " " : ", ") : "") "V" substr($i, 2); print s }'
+  printf '%s\n' "$1" | awk -v conj="$(m and)" '{ for (i = 1; i <= NF; i++) s = s (i > 1 ? (i == NF ? " " conj " " : ", ") : "") "V" substr($i, 2); print s }'
 }
 abf_matrix() {  # "G0001 (V1.2.3, V1.3.0) and G0002 (V1.3.0)": the models and the firmware of each
-  printf '%s\n' "$P_MODELS_OK" | awk -v and="$(t and и)" '{ for (i = 1; i <= NF; i++) { m = $i; sub(/:.*/, "", m); f = $i; sub(/^[^:]*:/, "", f)
+  printf '%s\n' "$P_MODELS_OK" | awk -v conj="$(m and)" '{ for (i = 1; i <= NF; i++) { m = $i; sub(/:.*/, "", m); f = $i; sub(/^[^:]*:/, "", f)
       k = split(f, a, ","); f = ""; for (j = 1; j <= k; j++) f = f (j > 1 ? ", " : "") "V" substr(a[j], 2)
-      s = s (i > 1 ? (i == NF ? " " and " " : ", ") : "") m " (" f ")" } print s }'
+      s = s (i > 1 ? (i == NF ? " " conj " " : ", ") : "") m " (" f ")" } print s }'
 }
 other_hint() {  # model board: the Z9X check met another projector this installer knows: its way in
-  case "$(profile_of "$1" "$2")" in
-    play6) printf ' %s' "$(t "It is an $(dev_name play6): it installs over Wi-Fi, run the installer with --ip ADDRESS (see its section of the guide)." "Это $(dev_name play6): он ставится по Wi-Fi, запустите установщик с --ip АДРЕС (см. его раздел инструкции).")" ;;
-    ?*) abf_is "$(profile_of "$1" "$2")" && abf_other_hint "$1" "$2" ;;
+  local id; id=$(profile_of "$1" "$2")
+  case "$(profile_flow "$id")" in
+    play6-wifi) printf ' %s' "$(m installs_over_wi_fi_run "$(dev_name "$id")")" ;;
+    ab-fastbootd) abf_other_hint "$1" "$2" ;;
   esac
   return 0
 }
 p6_unfinished() {  # 0 = a Play 6 install is saved that was checked and has not reached the wipe yet
-  local f="$STATE_DIR/play6/state"
+  local f; f=$(state_file_of "$(flow_id play6-wifi)")
   [ -f "$f" ] && grep -qx 'step_check=done' "$f" && ! grep -q '^step_wipe=.' "$f"
 }
 z9x_unfinished() {
-  local f="$STATE_DIR/state"
+  local f; f=$(state_file_of "$(flow_id z9x-usb)")
   [ -f "$f" ] && grep -qx 'step_check=done' "$f" && ! grep -qx 'step_flash=done' "$f"
 }
 resolve_device() {  # the projector: --device, else --ip or 'stick' (Play 6), this download, an unfinished own build
-  case "$DEVICE_OPT" in ''|z9x|play6) ;; *) abf_is "$DEVICE_OPT" || die "$(abf_opt_text)" ;; esac
-  case "$REL_DEVICE" in ''|z9x|play6) ;; *) abf_is "$REL_DEVICE" || die "internal: release.conf DEVICE=$REL_DEVICE: re-download the installer" ;; esac
+  local usb wifi
+  devconf_check
+  [ -z "$DEVICE_OPT" ] || profile_is "$DEVICE_OPT" || die "$(device_opt_text)"
+  [ -z "$REL_DEVICE" ] || profile_is "$REL_DEVICE" || die "internal: release.conf DEVICE=$REL_DEVICE: re-download the installer"
+  usb=$(flow_id z9x-usb); wifi=$(flow_id play6-wifi)
   # A download names its projector (release.conf DEVICE, none = the Z9X), so a Z9X download behaves exactly as it
   # always did, also on a computer that keeps an unfinished Play 6 install. Only your own builds
   # (--unsigned-image, not bound to a download) let an unfinished install name the projector.
   # A download for a FLOW=ab-fastbootd projector means it with --ip and 'stick' too (never the Play 6).
+  PROJECTOR=$usb
   if [ -n "$DEVICE_OPT" ]; then PROJECTOR=$DEVICE_OPT
-  elif abf_is "$REL_DEVICE"; then PROJECTOR=$REL_DEVICE
-  elif [ "$IP_GIVEN" = 1 ] || [ "${CMD:-all}" = stick ]; then PROJECTOR=play6
+  elif [ "$(profile_flow "$REL_DEVICE")" = ab-fastbootd ]; then PROJECTOR=$REL_DEVICE
+  elif [ "$IP_GIVEN" = 1 ] || [ "${CMD:-all}" = stick ]; then PROJECTOR=$wifi
   elif [ -n "$REL_DEVICE" ]; then PROJECTOR=$REL_DEVICE
   elif [ "$UNSIGNED" = 1 ] && p6_unfinished; then
     if z9x_unfinished; then
-      die "$(t "two unfinished installs are saved, an XGIMI Z9X and an $(dev_name play6): choose one with --device z9x or --device play6" "сохранены две незаконченные установки, XGIMI Z9X и $(dev_name play6): выберите одну через --device z9x или --device play6")"
+      die "$(m two_unfinished_installs_saved "$(dev_name "$wifi")")"
     fi
-    PROJECTOR=play6
+    PROJECTOR=$wifi
   fi
-  if [ "$PROJECTOR" = z9x ] && [ "$IP_GIVEN" = 1 ]; then
-    die "$(t "--ip is for the $(dev_name play6); the XGIMI Z9X installs over the USB cable (guide)" "--ip нужен для $(dev_name play6); XGIMI Z9X ставится по кабелю USB (инструкция)")"
+  if [ "$(profile_flow "$PROJECTOR")" = z9x-usb ] && [ "$IP_GIVEN" = 1 ]; then
+    die "$(m ip_xgimi_z9x_installs_over "$(dev_name "$wifi")")"
   fi
-  if [ "$PROJECTOR" = play6 ]; then
-    load_profile play6
-    SD=$STATE_DIR/play6
-    IMG_GLOB="lumen-os-$P_TOKEN-*-system.img"
-  elif abf_is "$PROJECTOR"; then
-    load_profile "$PROJECTOR"
-    SD=$STATE_DIR/$PROJECTOR
-    IMG_GLOB="lumen-os-$P_TOKEN-*-system.img"
-  fi
+  load_profile "$PROJECTOR"
+  SD=$(state_dir_of "$PROJECTOR")
+  if [ -n "$P_TOKEN" ]; then IMG_GLOB="lumen-os-$P_TOKEN-*-system.img"; fi
 }
 release_guard() {  # the image of this download belongs to one projector (release.conf DEVICE; none = the Z9X)
-  local rel=${REL_DEVICE:-z9x}
+  local rel=${REL_DEVICE:-$(flow_id z9x-usb)}
   [ "$rel" = "$PROJECTOR" ] && return 0
   if [ "$UNSIGNED" = 1 ]; then
-    warn "$(t "this installer folder came with the $(dev_name "$rel") release; your own image is used (--unsigned-image)" "эта папка установщика из релиза для $(dev_name "$rel"); используется ваш собственный образ (--unsigned-image)")"
+    warn "$(m installer_folder_came_release_own "$(dev_name "$rel")")"
     return 0
   fi
-  die "$(t "this download of the installer is for the $(dev_name "$rel"), not for the $(dev_name "$PROJECTOR"): download the $(dev_name "$PROJECTOR") release (see the guide). Nothing was done." "этот установщик скачан для $(dev_name "$rel"), а не для $(dev_name "$PROJECTOR"): скачайте релиз для $(dev_name "$PROJECTOR") (см. инструкцию). Ничего не сделано.")"
+  die "$(m download_installer_not_download "$(dev_name "$rel")" "$(dev_name "$PROJECTOR")")"
 }
 
 # ------------------------------------------------------------------ XGIMI Play 6
@@ -1871,19 +1882,21 @@ P6_USB_CMD='for d in /sys/bus/usb/devices/*; do [ -f $d/idVendor ] || continue; 
 # XGIMI's power daemon logs the battery level and the adapter (stock Android itself says "battery present: false")
 P6_PWR_CMD="logcat -d -v brief 2>/dev/null | grep -E 'POWER_BATTERY_LEVEL|IsAdapterPowered|AdapterOut|AdapterInsert|P6Battery' | tail -n 50"
 P6_MNT_CMD="grep ' /mnt/media_rw/' /proc/mounts"
+# the vendor's own AIC8800 driver (the last firmware of VENDOR_OK: its wlan_dongle_detect loads it when dongle.cfg maps the chip)
+P6_AIC_CMD="grep -c '^[^#]*:368b:8d90:' /vendor/lib/firmware/dongle.cfg"
 
 p6_lprop() { printf '%s' "${P_LUMEN_PROP%% *}"; }  # the property that names the device on Lumen OS
 p6_lval() { printf '%s' "${P_LUMEN_PROP#* }"; }    # and its value for this projector
 p6_guide() { if [ "$LANG_UI" = ru ]; then printf '%s/%s/ru.md' "$GUIDE_BASE" "$P_GUIDE"; else printf '%s/%s/en.md' "$GUIDE_BASE" "$P_GUIDE"; fi; }
 P6_ST=""             # what 'adb get-state' said last in wifi_connect (unauthorized: the allow prompt was not accepted)
 p6_noconn_text() {  # [seconds]: why wifi_connect gave up, as the user can act on it
-  local en ru
-  case "${1:-60}" in 60) en="within a minute"; ru="за минуту" ;; *) en="within $(( ${1} / 60 )) minutes"; ru="за $(( ${1} / 60 )) мин." ;; esac
+  local w
+  case "${1:-60}" in 60) w=$(m within_minute) ;; *) w=$(m within_minutes "$(( ${1} / 60 ))") ;; esac
   case "$P6_ST" in
     *unauthorized*)
-      t "the projector at $ADB_T did not allow this computer $en. On the projector: allow debugging from this computer, tick \"Always allow from this computer\" and press OK; then run the installer again. Nothing was done." "проектор по адресу $ADB_T не разрешил отладку с этого компьютера $ru. На проекторе разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK, затем запустите установщик снова. Ничего не сделано." ;;
+      m projector_did_not_allow_computer "$ADB_T" "$w" ;;
     *)
-      t "no adb connection to $ADB_T over Wi-Fi $en. On the projector: is Wi-Fi on, is network debugging on (guide, section '$P_NAME'), is it this address (the projector's network settings show it)? This computer must be in the same network. Nothing was done." "нет связи adb с $ADB_T по Wi-Fi $ru. На проекторе включены Wi-Fi и отладка по сети (инструкция, раздел «${P_NAME}»), адрес тот же (он виден в настройках сети проектора)? Компьютер должен быть в той же сети. Ничего не сделано." ;;
+      m no_adb_connection_over_wi "$ADB_T" "$w" "$P_NAME" ;;
   esac
 }
 
@@ -1906,7 +1919,7 @@ wifi_connect() {  # seconds: adb to ADB_T until it answers as 'device' (0) or th
     case "$st" in
       device) return 0 ;;
       *unauthorized*)
-        [ "$said" = 1 ] || say "$(t "On the projector: allow debugging from this computer. Tick \"Always allow from this computer\" and press OK." "На проекторе разрешите отладку с этого компьютера: отметьте «Всегда разрешать с этого компьютера» и нажмите OK.")"
+        [ "$said" = 1 ] || say "$(m projector_allow_debugging_computer)"
         said=1 ;;
       *offline*) adb disconnect "$ADB_T" >/dev/null 2>&1 ;;
     esac
@@ -1916,7 +1929,7 @@ wifi_connect() {  # seconds: adb to ADB_T until it answers as 'device' (0) or th
     if [ -n "$SERIAL" ] && [ $((i % 30)) = 25 ]; then
       a=$(p6_discover "$SERIAL")
       if [ -n "$a" ] && [ "$a" != "$ADB_T" ]; then
-        say "$(t "the projector answers at a new address: $a" "проектор отвечает по новому адресу: $a")"
+        say "$(m projector_answers_new_address "$a")"
         ADB_T=$a
       fi
     fi
@@ -1945,18 +1958,18 @@ p6_identity() {  # the device at ADB_T: this projector model, and the saved one 
   code=$(prop ro.boot.xgimi.modelname); board=$(prop ro.boot.hardware); ser=$(prop ro.serialno)
   if [ "$code" != "$P_MODEL" ] || [ "$board" != "$P_BOARD" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
-    if [ "$(profile_of "$code" "$board")" = z9x ]; then
-      die "$(t "the device at $ADB_T is an XGIMI Z9X: it installs over the USB cable, without --ip (guide). Nothing was done." "устройство по адресу $ADB_T это XGIMI Z9X: он ставится по кабелю USB, без --ip (инструкция). Ничего не сделано.")"
+    if [ "$(profile_flow "$(profile_of "$code" "$board")")" = z9x-usb ]; then
+      die "$(m device_xgimi_z9x_installs_over "$ADB_T")"
     fi
-    die "$(t "this projector is not supported: model '$code', board '$board'. Lumen OS installs on $(profiles_named). Nothing was done." "этот проектор не поддерживается: код модели '$code', плата '$board'. Lumen OS ставится на $(profiles_named). Ничего не сделано.")"
+    die "$(m projector_not_supported_model "$code" "$board" "$(profiles_named)")"
   fi
-  [ -n "$ser" ] || die "$(t "the projector at $ADB_T reports no serial number. Nothing was done." "проектор по адресу $ADB_T не сообщает серийный номер. Ничего не сделано.")"
+  [ -n "$ser" ] || die "$(m projector_reports_no_serial_number "$ADB_T")"
   if [ -n "$SERIAL" ] && [ "$SERIAL" != "$ser" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
     if [ "$SERIAL_FROM_STATE" = 1 ]; then
-      die "$(t "the projector at $ADB_T has the serial $ser, but this install was started on $SERIAL. Another projector? Then first: bash lumen-install.sh --device play6 reset. Nothing was done." "у проектора по адресу $ADB_T серийный номер $ser, а установка начиналась на $SERIAL. Другой проектор? Тогда сначала: bash lumen-install.sh --device play6 reset. Ничего не сделано.")"
+      die "$(m projector_has_serial_but_install "$ADB_T" "$ser" "$SERIAL")"
     fi
-    die "$(t "the projector at $ADB_T has the serial $ser, not $SERIAL (--serial). Nothing was done." "у проектора по адресу $ADB_T серийный номер $ser, а не $SERIAL (--serial). Ничего не сделано.")"
+    die "$(m projector_has_serial_not_serial "$ADB_T" "$ser" "$SERIAL")"
   fi
   SERIAL=$ser
 }
@@ -1967,11 +1980,11 @@ p6_usb_hint() {  # no address for a Play 6: a Z9X on the USB cable means the wro
   [ "$(printf '%s\n' "$l" | grep -c .)" = 1 ] || return 0
   code=$(adb -s "$l" shell getprop ro.boot.xgimi.modelname 2>/dev/null | tr -d '\r')
   board=$(adb -s "$l" shell getprop ro.boot.hardware 2>/dev/null | tr -d '\r')
-  if [ "$(profile_of "$code" "$board")" = z9x ]; then
-    if [ "${REL_DEVICE:-z9x}" = play6 ]; then
-      die "$(t "the projector on the USB cable is an XGIMI Z9X, and this download of the installer is for the $P_NAME: download the XGIMI Z9X release (see the guide). Nothing was done." "на кабеле USB проектор XGIMI Z9X, а этот установщик скачан для $P_NAME: скачайте релиз для XGIMI Z9X (см. инструкцию). Ничего не сделано.")"
+  if [ "$(profile_flow "$(profile_of "$code" "$board")")" = z9x-usb ]; then
+    if [ "$(profile_flow "$REL_DEVICE")" = play6-wifi ]; then
+      die "$(m projector_usb_cable_xgimi_z9x "$P_NAME")"
     fi
-    die "$(t "the projector on the USB cable is an XGIMI Z9X: run the installer without --device play6. Nothing was done." "на кабеле USB проектор XGIMI Z9X: запустите установщик без --device play6. Ничего не сделано.")"
+    die "$(m projector_usb_cable_xgimi_z9x_2)"
   fi
 }
 
@@ -1981,37 +1994,41 @@ play6_adb() {  # seconds: adb over Wi-Fi to the Play 6 (--ip, the saved address,
     a=$(state_get ip)
     if [ -z "$a" ]; then
       a=$(p6_discover)
-      if [ -z "$a" ] || ! ask "$(t "A projector answers at $a. Is it yours, the one to install on?" "По адресу $a отвечает проектор. Это ваш, на который ставим?")"; then
+      if [ -z "$a" ] || ! ask "$(m projector_answers_yours_one "$a")"; then
         p6_usb_hint
-        die "$(t "give the projector's Wi-Fi address: bash lumen-install.sh --ip 192.168.x.y (the projector's network settings show it; see the guide, section '$P_NAME'). The $P_NAME has no USB debugging: this computer reaches it over Wi-Fi. Nothing was done." "укажите адрес проектора в Wi-Fi: bash lumen-install.sh --ip 192.168.x.y (он виден в настройках сети проектора; см. инструкцию, раздел «${P_NAME}»). У $P_NAME нет отладки по USB: компьютер подключается к нему по Wi-Fi. Ничего не сделано.")"
+        die "$(m give_projectors_wi_fi_address "$P_NAME")"
       fi
     fi
     ADB_T=$a
   fi
-  say "$(t "connecting to $ADB_T over Wi-Fi" "подключаюсь к $ADB_T по Wi-Fi")"
+  say "$(m connecting_over_wi_fi "$ADB_T")"
   wifi_connect "$1" || return 1
   p6_identity
 }
 
 p6_fw_list() {  # "V<first> and V<second>" from VENDOR_OK
-  printf '%s\n' "$P_VENDOR_OK" | awk -v and="$(t and и)" '{ for (i = 1; i <= NF; i++) s = s (i > 1 ? (i == NF ? " " and " " : ", ") : "") "V" substr($i, 2); print s }'
+  printf '%s\n' "$P_VENDOR_OK" | awk -v conj="$(m and)" '{ for (i = 1; i <= NF; i++) s = s (i > 1 ? (i == NF ? " " conj " " : ", ") : "") "V" substr($i, 2); print s }'
 }
 p6_fw_first() { printf '%s\n' "$P_VENDOR_OK" | awk '{ print "V" substr($1, 2) }'; }
 p6_fw_last() { printf '%s\n' "$P_VENDOR_OK" | awk '{ print "V" substr($NF, 2) }'; }   # the newest (VENDOR_OK is oldest first)
-p6_fw_back() {  # CHIP PREFIX: the stock .bin that brings this unit back: the firmware it ran (saved by play6_device),
-  # never the first one on the newer batch (serial XHF or the AIC chip: that firmware has no driver for it)
+p6_restore_md5() { printf '%s\n' $P_RESTORE_MD5 | awk -F: -v v="$1" '$2 == v { print $1; exit }'; }   # VERSION: md5 of its .bin
+p6_restore_url() { printf '%s\n' $P_RESTORE_URL | awk -v v="$1:" 'index($0, v) == 1 { print substr($0, length(v) + 1); exit }'; }
+p6_fw_back() {  # CHIP PREFIX: the stock .bin that brings this unit back: the newest firmware for the newer batch (serial
+  # XHF or the AIC chip: the first one has no driver for its chip), else the firmware it ran (saved by play6_device)
   local v
   case "$2:$1" in XHF:*|*:368b:*) p6_fw_last; return 0 ;; esac
   v=$(state_get vendor)
   case " $P_VENDOR_OK " in *" $v "*) printf 'V%s\n' "${v#v}" ;; *) p6_fw_first ;; esac
 }
-p6_nb_back() {  # the way back to stock for the newer batch: the newest supported firmware, once it is not the first one
-  local nb; nb=$(p6_fw_last)
-  if [ "$nb" != "$(p6_fw_first)" ]; then
-    t "The way back to stock for this batch is the $nb .bin from a FAT32 stick (guide, section '$P_NAME', 'Back to stock')." "Вернуться на сток с этой партией можно прошивкой .bin $nb с флешки FAT32 (инструкция, раздел «${P_NAME}», «Откат на сток»)."
-  else
-    t "The way back to stock for this batch is a V1.8.x firmware from XGIMI support." "Вернуться на сток с этой партией можно только прошивкой V1.8.x от поддержки XGIMI."
-  fi
+p6_vendor_aic() {  # FIRMWARE: 0 = the running vendor drives the AIC chip itself (its dongle.cfg maps 368b:8d90: XGIMI
+  # the last firmware of VENDOR_OK). Unreadable file: only the first firmware of VENDOR_OK counts as one without it
+  local n
+  n=$(adbs shell "$P6_AIC_CMD" 2>/dev/null | tr -d '\r' | tail -n 1)
+  case "$n" in
+    ''|*[!0-9]*) [ "V${1#v}" != "$(p6_fw_first)" ] ;;
+    0) return 1 ;;
+    *) return 0 ;;
+  esac
 }
 
 play6_device() {  # connected: firmware, single slot, stock or Lumen OS; saves serial, address, firmware
@@ -2020,21 +2037,21 @@ play6_device() {  # connected: firmware, single slot, stock or Lumen OS; saves s
   case " $P_VENDOR_OK " in
     *" $vend "*) ;;
     *) all=$(p6_fw_list); first=$(p6_fw_first)
-       die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME is tested on $all only. Older: let the stock system update itself to $first (Settings, Wi-Fi), then run the installer again. Newer: Lumen OS does not support it yet. Do NOT install $first from a USB stick over it: newer $P_NAME units have another Wi-Fi chip, $first has no driver for it, and Wi-Fi and Bluetooth then stop working. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME проверена только на $all. Если ваша старее, дайте стоку обновиться до $first (настройки, Wi-Fi) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. НЕ ставьте поверх неё $first с флешки: в новых $P_NAME другой чип Wi-Fi, драйвера для него в $first нет, и Wi-Fi с Bluetooth перестают работать. Ничего не сделано.")" ;;
+       die "$(m xgimi_firmware_not_supported_lumen "$vend" "$P_NAME" "$all" "$first")" ;;
   esac
-  [ -z "$slot" ] || die "$(t "this projector has a second system slot ($slot): it is not the $P_NAME this installer knows. Nothing was done." "у этого проектора есть второй системный слот ($slot): это не тот $P_NAME, который знает установщик. Ничего не сделано.")"
+  [ -z "$slot" ] || die "$(m projector_has_second_system_slot "$slot" "$P_NAME")"
   case "$lum" in
-    '') state_set dev_lumen 0; state_set dev_version ""; ver=$(t "XGIMI stock" "родная XGIMI")
+    '') state_set dev_lumen 0; state_set dev_version ""; ver=$(m xgimi_stock)
         # a downloaded XGIMI update arms the next restart; the installer's own restart into fastbootd does not
         # run it (adb reboot fastboot writes its own command, fastbootd clears it), a restart by hand would
         up=$(prop xgimi.ota.update.onboot)
         [ -n "$up" ] || up=$(adbs shell settings get system xgimi_ota_update 2>/dev/null | tr -d '\r')
-        case "$up" in 1|2) warn "$(t "a downloaded XGIMI update waits for the next restart: do not restart the projector yourself until the installer has written Lumen OS (it replaces that system anyway). Next time turn automatic updates off first." "скачанное обновление XGIMI ждёт следующей перезагрузки: не перезагружайте проектор сами, пока установщик не запишет Lumen OS (она всё равно заменит эту систему). В следующий раз сначала выключите автообновление.")" ;; esac ;;
+        case "$up" in 1|2) warn "$(m downloaded_xgimi_update_waits_next)" ;; esac ;;
     "$(p6_lval)") ver=$(prop "$P_VERSION_PROP"); state_set dev_lumen 1; state_set dev_version "$ver"; ver="Lumen OS $ver" ;;
-    *) die "$(t "this projector runs Lumen OS for another device ('$lum'). Nothing was done." "на проекторе Lumen OS для другого устройства ('$lum'). Ничего не сделано.")" ;;
+    *) die "$(m projector_runs_lumen_os_another "$lum")" ;;
   esac
   state_set serial "$SERIAL"; state_set ip "$ADB_T"; state_set vendor "$vend"
-  ok "$P_NAME $SERIAL ($ADB_T), $(t 'firmware' 'прошивка') $vend, $(t 'system' 'система'): $ver"
+  ok "$P_NAME $SERIAL ($ADB_T), $(m firmware) $vend, $(m system): $ver"
 }
 
 # ------------------------------------------------------------------ XGIMI Play 6: pre-checks, log, erase request, help
@@ -2080,59 +2097,58 @@ p6_prechecks() {  # before any write, on the running system over adb: which unit
   mnt=$(adbs shell "$P6_MNT_CMD" 2>/dev/null | tr -d '\r'); fs=$(printf '%s\n' "$mnt" | awk 'NF >= 3 { print $3; exit }')
   state_set chip "${P6_CHIPID:-unknown}"; state_set serial_prefix "$pre"
   p6_log "pre-check: serial $SERIAL ($pre), model $model, firmware $fw${disp:+ ($disp)}, chip ${P6_CHIP:-unknown}, battery ${P6_LVL:-?}, adapter ${P6_AD:-?}, usb [$(printf '%s' "$P6_USB" | tr '\n' ';')], stick ${fs:--}"
-  ok "$(t "this unit" "этот аппарат"): $(t "serial" "серийный номер") $SERIAL ($pre), $(t "model" "модель") $model, $(t "firmware" "прошивка") $fw${disp:+ ($disp)}"
-  if [ -n "$P6_CHIP" ]; then ok "$(t "Wi-Fi and Bluetooth chip" "чип Wi-Fi и Bluetooth"): $P6_CHIP"
-  else warn "$(t "the Wi-Fi and Bluetooth chip was not found in the USB list" "чип Wi-Fi и Bluetooth не найден в списке USB") ($(printf '%s\n' "$P6_USB" | awk 'NF >= 2 { printf "%s%s", s, $2; s = " " }'))"; fi
+  ok "$(m unit): $(m serial) $SERIAL ($pre), $(m model) $model, $(m firmware) $fw${disp:+ ($disp)}"
+  if [ -n "$P6_CHIP" ]; then ok "$(m wi_fi_bluetooth_chip): $P6_CHIP"
+  else warn "$(m wi_fi_bluetooth_chip_not) ($(printf '%s\n' "$P6_USB" | awk 'NF >= 2 { printf "%s%s", s, $2; s = " " }'))"; fi
+  # the AIC chip runs only on XGIMI's own AIC driver (the last firmware of VENDOR_OK): Lumen OS brings none, so the first would leave it
+  # without Wi-Fi and Bluetooth. Refused before anything is written, also when an older Lumen OS runs on it
+  if [ "${P6_CHIPID%%:*}" = 368b ] && ! p6_vendor_aic "$fw"; then
+    p6_log "pre-check: refused, AIC chip $P6_CHIPID on firmware $fw without XGIMI's AIC driver"
+    die "$(m aic_chip_firmware_no_driver "$P_NAME" "$P6_CHIP" "$fw" "$(p6_fw_last)" "$(p6_restore_url "$(p6_fw_last)")" "$(p6_restore_md5 "$(p6_fw_last)")")"
+  fi
   # power: an erase or a write cut off by an empty battery leaves the projector without a system
   if [ -n "$P6_LVL" ] && [ "$P6_LVL" -lt "$P6_MIN_BATTERY" ]; then
     p6_log "pre-check: refused, battery $P6_LVL"
-    die "$(t "the battery is at $P6_LVL %: charge it to at least $P6_MIN_BATTERY % with the power adapter connected, then run the installer again. A write or an erase cut off by an empty battery leaves the projector without a system. Nothing was written." "заряд аккумулятора $P6_LVL %: зарядите его хотя бы до $P6_MIN_BATTERY % с подключённым блоком питания и запустите установщик снова. Если запись или стирание оборвутся из-за разряженного аккумулятора, проектор останется без системы. Ничего не записано.")"
+    die "$(m battery_charge_least_power_adapter "$P6_LVL" "$P6_MIN_BATTERY")"
   fi
   if [ "$P6_AD" = 0 ]; then
     p6_log "pre-check: refused, on battery"
-    die "$(t "the projector runs on its battery: connect its power adapter and keep it connected for the whole install, then run the installer again. Nothing was written." "проектор работает от аккумулятора: подключите блок питания и не отключайте его всю установку, затем запустите установщик снова. Ничего не записано.")"
+    die "$(m projector_runs_battery_connect)"
   fi
   if [ -n "$P6_LVL" ] && [ "$P6_AD" = 1 ]; then
-    ok "$(t "battery $P6_LVL %, power adapter connected" "аккумулятор $P6_LVL %, блок питания подключён")"
+    ok "$(m battery_power_adapter_connected "$P6_LVL")"
   else
-    say "$(t "the installer could not read the battery level and the power adapter on this system" "установщик не смог прочитать заряд и блок питания на этой системе")${P6_LVL:+ ($P6_LVL %)}"
-    ask "$(t "Is the power adapter connected, and does the projector show a battery level of $P6_MIN_BATTERY % or more?" "Блок питания подключён, и проектор показывает заряд $P6_MIN_BATTERY % или больше?")" \
-      || die "$(t "connect the power adapter and charge the projector to at least $P6_MIN_BATTERY %, then run the installer again. Nothing was written." "подключите блок питания и зарядите проектор хотя бы до $P6_MIN_BATTERY %, затем запустите установщик снова. Ничего не записано.")"
+    say "$(m installer_could_not_read_battery)${P6_LVL:+ ($P6_LVL %)}"
+    ask "$(m power_adapter_connected_projector "$P6_MIN_BATTERY")" \
+      || die "$(m connect_power_adapter_charge "$P6_MIN_BATTERY")"
     p6_log "pre-check: power confirmed by the user"
   fi
   # the newer batch (memory play6-wifi-chip-variants): the first-batch stock .bin kills its Wi-Fi and Bluetooth
   if [ "$pre" = XHF ] || [ "${P6_CHIPID%%:*}" = 368b ]; then
     echo
-    t "This $P_NAME is from a newer batch (serial XHF... or the AIC Wi-Fi chip; it came with firmware V1.8.x).
-Lumen OS brings its own Wi-Fi and Bluetooth driver for it; this is newer and less tested than on the first
-batch. NEVER roll this projector back with the $(p6_fw_first) .bin from a USB stick: that firmware has no driver
-for its chip, and Wi-Fi and Bluetooth then stop working on stock." "Этот $P_NAME из новой партии (серийный номер XHF... или чип Wi-Fi AIC; с завода на нём была прошивка V1.8.x).
-Lumen OS ставит для него свой драйвер Wi-Fi и Bluetooth; это новее и проверено меньше, чем на первой партии.
-НИКОГДА не откатывайте этот проектор прошивкой .bin $(p6_fw_first) с флешки: в ней нет драйвера для его чипа, и
-на стоке перестают работать Wi-Fi и Bluetooth."; echo
-    p6_nb_back; echo
-    ask "$(t "Install Lumen OS on this projector?" "Ставить Lumen OS на этот проектор?")" || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    m newer_batch_serial_xhf_aic "$P_NAME" "$(p6_fw_first)" "$(p6_fw_last)" "$(p6_restore_url "$(p6_fw_last)")" "$(p6_restore_md5 "$(p6_fw_last)")"; echo
+    ask "$(m install_lumen_os_projector)" || die "$(m cancelled_nothing_written)"
     p6_log "pre-check: newer batch confirmed by the user"
   fi
   # what is in the USB port at power-on matters: a FAT32 stick is good, a USB Ethernet adapter or an A-to-A cable is not
   if [ -n "$P6_OTHER" ]; then
-    warn "$(t "a USB device that is not a USB stick is in the projector's USB port: $P6_OTHER (a USB Ethernet adapter, a hub or another device). With it in, the $P_NAME may not power on." "в USB-порту проектора устройство, которое не флешка: $P6_OTHER (адаптер USB Ethernet, хаб или другое устройство). С ним $P_NAME может не включиться.")"
-    if ask "$(t "Is this device the projector's only connection to your network (a USB Ethernet adapter)?" "Это устройство единственное подключение проектора к сети (адаптер USB Ethernet)?")"; then
-      say "$(t "Keep it in for now. When the installer asks for the A-to-A cable, take it out, and do not put it back before Lumen OS shows its home screen." "Пока оставьте его. Когда установщик попросит кабель A–A, выньте его и не вставляйте обратно, пока Lumen OS не покажет главный экран.")"
+    warn "$(m usb_device_not_usb_stick "$P6_OTHER" "$P_NAME")"
+    if ask "$(m device_projectors_only_connection)"; then
+      say "$(m keep_now_when_installer_asks)"
       p6_log "pre-check: other USB device kept as the network: $P6_OTHER"
     else
-      printf '%s ' "$(t "Take it out of the projector's USB port now and press Enter." "Выньте его из USB-порта проектора и нажмите Enter.")"
+      printf '%s ' "$(m take_out_projectors_usb_port)"
       read -r a
       p6_usb_scan
-      [ -z "$P6_OTHER" ] || die "$(t "the USB device $P6_OTHER is still in the projector's USB port. Take it out and run the installer again. Nothing was written." "устройство USB $P6_OTHER всё ещё в USB-порту проектора. Выньте его и запустите установщик снова. Ничего не записано.")"
-      ok "$(t "no other device in the USB port now" "другого устройства в USB-порту больше нет")"
+      [ -z "$P6_OTHER" ] || die "$(m usb_device_still_projectors_usb "$P6_OTHER")"
+      ok "$(m no_other_device_usb_port)"
       p6_log "pre-check: other USB device removed"
     fi
   fi
   if [ "$P6_STICK" = 1 ] && [ -n "$fs" ] && [ "$fs" != vfat ]; then
-    warn "$(t "the USB stick in the projector is not FAT32 ($fs): use a FAT32 stick, the $P_NAME starts reliably with it" "флешка в проекторе не FAT32 ($fs): возьмите флешку FAT32, с ней $P_NAME включается надёжно")"
+    warn "$(m usb_stick_projector_not_fat32 "$fs" "$P_NAME")"
   fi
-  say "$(t "At every power-on during the install keep ONLY a FAT32 USB stick in the projector's USB port: no USB Ethernet adapter, no hub; the A-to-A cable goes in only while the installer writes." "При каждом включении во время установки в USB-порту проектора должна быть ТОЛЬКО флешка FAT32: без адаптера USB Ethernet и без хаба; кабель A–A вставляется только на время записи.")"
+  say "$(m every_power_during_install_keep)"
   P6_PRE_DONE=1
 }
 
@@ -2141,33 +2157,11 @@ p6_noboot_help() {  # the projector did not come back after a start: what to do,
   chip=$(state_get chip); pre=$(state_get serial_prefix)
   p6_log "no start reported (serial $pre, chip ${chip:-?})"
   echo
-  t "If the projector does not come back:
-  1. In its USB port: ONLY a FAT32 USB stick. No A-to-A cable, no USB Ethernet adapter, no hub.
-  2. Pull the power adapter, wait 30 seconds, plug it in again, then press the power button once (do NOT hold
-     it while plugging in: that starts the stock restore). The first start after the erase can take up to 15
-     minutes. If it switches off again after the XGIMI logo, repeat this 3 to 5 times: on some units Lumen OS
-     came up only after a few attempts.
-  3. Note what you see: the XGIMI logo and then fully off (after how many seconds), the logo or the Lumen
-     animation over and over, or XGIMI's recovery screen.
-  4. To find the cause we need the boot log: ask for the Lumen OS diagnostic build (the project's GitHub
-     issues or the 4PDA topic). It writes the boot log to the FAT32 stick (folder lumen_os_diag_logs). Send
-     that folder together with this installer's log: $(p6_logpath)
-  5. Back to stock (erases everything): guide, section '$P_NAME', 'Back to stock'." "Если проектор не возвращается:
-  1. В его USB-порту ТОЛЬКО флешка FAT32. Без кабеля A–A, без адаптера USB Ethernet, без хаба.
-  2. Выньте блок питания, подождите 30 секунд, вставьте снова и нажмите кнопку питания один раз (НЕ держите
-     её при подключении питания: так начинается откат на сток). Первый запуск после стирания может занять до
-     15 минут. Если после логотипа XGIMI он снова выключается, повторите это 3-5 раз: на некоторых аппаратах
-     Lumen OS поднималась только после нескольких попыток.
-  3. Запишите, что видно: логотип XGIMI и полное выключение (через сколько секунд), логотип или анимация
-     Lumen по кругу, или экран recovery XGIMI.
-  4. Чтобы найти причину, нужен журнал загрузки: попросите диагностическую сборку Lumen OS (issues проекта
-     на GitHub или тема на 4PDA). Она пишет журнал загрузки на флешку FAT32 (папка lumen_os_diag_logs).
-     Пришлите эту папку вместе с журналом установщика: $(p6_logpath)
-  5. Откат на сток (стирает всё): инструкция, раздел «${P_NAME}», «Откат на сток»."; echo
+  m if_projector_not_come_back "$(p6_logpath)" "$P_NAME"; echo
   case "$pre:$chip" in
-    XHF:*|*:368b:*) t "     This projector (serial $pre, chip ${chip:-?}) is from the newer batch: do NOT use the $(p6_fw_first) .bin, on this unit it kills Wi-Fi and Bluetooth." "     Этот проектор (серийный номер $pre, чип ${chip:-?}) из новой партии: НЕ используйте .bin $(p6_fw_first), на нём он убивает Wi-Fi и Bluetooth."; printf ' '; p6_nb_back ;;
-    *:0e8d:*) t "     This projector (serial $pre, MediaTek chip $chip): the $(p6_fw_back "$chip" "$pre") .bin from a FAT32 stick." "     Этот проектор (серийный номер $pre, чип MediaTek $chip): .bin $(p6_fw_back "$chip" "$pre") с флешки FAT32." ;;
-    *) t "     Serial XHN and a MediaTek Wi-Fi chip (0e8d): the $(p6_fw_back "" "$pre") .bin from a FAT32 stick. Serial XHF or an AIC chip (368b): do NOT use the $(p6_fw_first) .bin." "     Серийный номер XHN и чип Wi-Fi MediaTek (0e8d): .bin $(p6_fw_back "" "$pre") с флешки FAT32. Серийный номер XHF или чип AIC (368b): .bin $(p6_fw_first) НЕ используйте."; printf ' '; p6_nb_back ;;
+    XHF:*|*:368b:*) m projector_serial_chip_newer_batch "$pre" "${chip:-?}" "$(p6_fw_first)" "$(p6_fw_last)" "$(p6_restore_url "$(p6_fw_last)")" "$(p6_restore_md5 "$(p6_fw_last)")" ;;
+    *:0e8d:*) m projector_serial_mediatek_chip_bin "$pre" "$chip" "$(p6_fw_back "$chip" "$pre")" ;;
+    *) m serial_xhn_mediatek_wi_fi "$(p6_fw_back "" "$pre")" "$(p6_fw_first)" "$(p6_fw_last)" ;;
   esac
   echo
 }
@@ -2190,12 +2184,12 @@ p6_bcb_write() {  # fastbootd, system written: the erase request into misc; 1 = 
   f=$SD/bcb.bin
   mkdir -p "$SD"; p6_bcb_make "$f"
   [ "$(wc -c < "$f" | tr -d ' ')" = 2048 ] && [ "$(sha256 "$f")" = "$P6_BCB_SHA" ] || { rm -f "$f"; p6_fb_stop "internal: the erase request is not the known one."; }
-  say "$(t "writing the erase request for XGIMI's recovery (2 KB in misc, what Android's factory reset writes there)" "записываю запрос на стирание для recovery XGIMI (2 КБ в misc, то же, что пишет сброс Android)")"
+  say "$(m writing_erase_request_xgimis)"
   P6_BCB_OK=1; fb_do flash misc "$f"; rc=$?; P6_BCB_OK=0
   rm -f "$f"
   if [ "$rc" = 0 ]; then state_set step_bcb done; p6_log "erase request written"; return 0; fi
   state_set step_bcb failed; p6_log "erase request refused by fastbootd"
-  warn "$(t "fastboot mode did not take the erase request. Lumen OS then starts once on the old data, and the installer erases the data afterwards with Android's factory reset (the way of earlier versions)." "режим fastboot не принял запрос на стирание. Тогда Lumen OS один раз запустится на старых данных, а установщик потом сотрёт данные сбросом Android (как в прежних версиях).")"
+  warn "$(m fastboot_mode_did_not_take)"
   return 1
 }
 
@@ -2203,36 +2197,32 @@ play6_boot_fresh() {  # the start after the write: XGIMI's recovery erases the d
   local a
   [ -n "$ADB_T" ] || ADB_T=$(state_get ip)
   echo
-  t "The projector now starts XGIMI's recovery, which erases the data (a few minutes; the picture may stay dark
-or show XGIMI's logo), and then starts Lumen OS for the first time, on clean data (up to 15 minutes in all).
-The Wi-Fi network is erased too: this computer cannot reach the projector again until you join Wi-Fi on it." "Сейчас проектор запускает recovery XGIMI, которое стирает данные (несколько минут; изображения может не быть
-или виден логотип XGIMI), а затем впервые запускает Lumen OS на чистых данных (всего до 15 минут).
-Сеть Wi-Fi тоже стирается: компьютер снова увидит проектор, только когда вы подключите его к Wi-Fi."; echo
+  m projector_now_starts_xgimis; echo
   p6_log "light first start: waiting for the user"
-  if ! ask "$(t "Wait for Lumen OS on the projector (its first screen or Lumen Home, up to 15 minutes). Do you see Lumen OS? (XGIMI's own setup: answer no)" "Дождитесь Lumen OS на проекторе (первый экран или Lumen Home, до 15 минут). Lumen OS на экране? (если видна настройка XGIMI, ответьте нет)")"; then
+  if ! ask "$(m wait_lumen_os_projector_first)"; then
     p6_log "light first start: not seen"
     p6_noboot_help
-    die "$(t "when Lumen OS shows, run the same command again: it continues here. Nothing else was written." "когда появится Lumen OS, запустите ту же команду снова: установка продолжится с этого места. Больше ничего не записано.")"
+    die "$(m when_lumen_os_shows_run)"
   fi
   # erased: the projector is off Wi-Fi now. Still answering with the old data: the recovery did not take the request.
-  say "$(t "checking that the old data is gone (up to a minute)" "проверяю, что старых данных больше нет (до минуты)")"
+  say "$(m checking_old_data_gone_up)"
   if [ -n "$ADB_T" ] && wifi_connect 60; then
     p6_identity
     case "$(p6_marker)" in
       there)
         p6_log "light first start: the old data is still there"
-        warn "$(t "the projector still has its old data: XGIMI's recovery did not carry out the erase request. The installer erases the data the earlier way: Android's factory reset on Lumen OS." "на проекторе всё ещё старые данные: recovery XGIMI не выполнило запрос на стирание. Установщик сотрёт данные прежним способом: сбросом Android на Lumen OS.")"
+        warn "$(m projector_still_has_old_data)"
         # from here on the earlier way: its messages ("Nothing was erased.") and a resumed run go straight to boot1
         state_set step_bcb ignored
         play6_boot1
         return 0 ;;
-      gone) ok "$(t "data erased (the check file written before the write is gone)" "данные стёрты (проверочного файла, записанного до записи, нет)")"
+      gone) ok "$(m data_erased_check_file_written)"
             state_set step_wipe done ;;
-      *) warn "$(t "the check file could not be read: 'verify' checks the erase later" "проверочный файл прочитать не удалось: 'verify' проверит стирание позже")"
+      *) warn "$(m check_file_could_not_read)"
          state_set step_wipe requested ;;
     esac
   else
-    ok "$(t "the projector is off Wi-Fi: the data was erased, the Wi-Fi network with it" "проектора нет в Wi-Fi: данные стёрты, сеть Wi-Fi вместе с ними")"
+    ok "$(m projector_off_wi_fi_data)"
     state_set step_wipe requested
     WIPED_NOW=1
   fi
@@ -2243,23 +2233,11 @@ p6_gapps_fresh_fill() {  # one pass after the light first start: debugging on ag
   local a
   if [ -z "$GAPPS_WITH" ]; then p6_gapps_fill_step; return 0; fi   # asks whether to finish without Google
   echo
-  t "Lumen OS runs on clean data. To copy the Google apps in, the installer needs debugging again. On the
-projector, with the remote:
-  1. Settings > Network & Internet: join your Wi-Fi (the same network as this computer).
-  2. Settings > Device Preferences > About: press OK on Build 7 times.
-  3. Settings > Device Preferences > Developer options: turn on USB debugging (on the $P_NAME this is
-     debugging over the network) and Rooted debugging.
-When the projector asks \"Allow USB debugging?\", tick \"Always allow from this computer\" and press OK." "Lumen OS работает на чистых данных. Чтобы скопировать приложения Google, установщику снова нужна отладка.
-На проекторе пультом:
-  1. «Настройки > Сеть и Интернет»: подключитесь к своему Wi-Fi (той же сети, что и компьютер).
-  2. «Настройки > Настройки устройства > Об устройстве»: нажмите OK на «Сборка» 7 раз.
-  3. «Настройки > Настройки устройства > Для разработчиков»: включите «Отладка по USB» (на $P_NAME это
-     отладка по сети) и «Отладка суперпользователем».
-Когда проектор спросит «Разрешить отладку по USB?», отметьте «Всегда разрешать с этого компьютера» и нажмите OK."; echo
-  printf '%s ' "$(t "Press Enter when this is done." "Когда всё готово, нажмите Enter.")"
+  m lumen_os_runs_clean_data "$P_NAME"; echo
+  printf '%s ' "$(m press_enter_when_done)"
   read -r a
   [ -n "$ADB_T" ] || ADB_T=$(state_get ip)
-  wifi_connect 600 || die "$(p6_noconn_text 600) $(t "Run the same command again: it continues here. To finish without Google services: run it without --gapps-zip." "Запустите ту же команду снова: установка продолжится с этого места. Чтобы завершить без сервисов Google, запустите её без --gapps-zip.")"
+  wifi_connect 600 || die "$(p6_noconn_text 600) $(m run_same_command_again_continues)"
   # the fill is followed by Android's factory reset (play6_install): the first start after it sets Google up.
   # The check file of the erase before the first start must not count for that reset.
   state_set step_wipe ""; state_set wipe_marker ""; ERASE_NOW=1
@@ -2268,9 +2246,9 @@ When the projector asks \"Allow USB debugging?\", tick \"Always allow from this 
 
 p6_bound_text() {  # version from the name (empty: an own build): what binds the image without reading its content
   if [ -n "$1" ]; then
-    t "the signed SHA256SUMS lists this file as Lumen OS $1, the version of this installer download" "подписанный SHA256SUMS называет этот файл Lumen OS $1, версией этого установщика"
+    m signed_sha256sums_lists_file_lumen "$1"
   else
-    t "an own build (--unsigned-image)" "собственная сборка (--unsigned-image)"
+    m own_build_unsigned_image
   fi
 }
 p6_image_props() {  # the image's properties in the order init reads them (a later file wins: product is read last)
@@ -2285,41 +2263,41 @@ play6_check_image() {  # the release image of this projector: name, file system,
   local name dir sums sig cert pub want got a f sz bp v sec nv=""
   find_image
   name=$(basename "$IMG"); dir=$(dirname "$IMG"); sums="$dir/SHA256SUMS"; sig="$sums.sig"; cert="$HERE/$P_CERT"
-  case "$name" in *"$P_TOKEN"*) ;; *) die "$(t "$name is not an image for the $P_NAME (its name must contain '$P_TOKEN'). Nothing was written." "$name не образ для $P_NAME (в имени должно быть '$P_TOKEN'). Ничего не записано.")" ;; esac
-  case "$name" in *PRIVATE*) die "$(t "$name is a private image: it is never installed on the $P_NAME. Nothing was written." "$name частный образ: на $P_NAME он не ставится. Ничего не записано.")" ;; esac
+  case "$name" in *"$P_TOKEN"*) ;; *) die "$(m not_image_name_must_contain "$name" "$P_NAME" "$P_TOKEN")" ;; esac
+  case "$name" in *PRIVATE*) die "$(m private_image_never_installed "$name" "$P_NAME")" ;; esac
   if [ "$UNSIGNED" = 0 ]; then
-    case "$name" in *-nogms-*) ;; *) die "$(t "$name is not a release file (the $P_NAME has Lumen OS without Google only: '-nogms-' in the name). Nothing was written." "$name не файл релиза (для $P_NAME есть только Lumen OS без Google: '-nogms-' в имени). Ничего не записано.")" ;; esac
+    case "$name" in *-nogms-*) ;; *) die "$(m not_release_file_has_lumen "$name" "$P_NAME")" ;; esac
     # the release version is in the name, and the signed SHA256SUMS lists the image under that name: a file of
     # another release (signed with the same key) next to this installer stops here, before anything is written
     [ -n "${VERSION:-}" ] || die "internal: release.conf has no VERSION: re-download the installer of the $P_NAME release"
     case "$name" in "lumen-os-$P_TOKEN-"*"-nogms-system.img") nv=${name#"lumen-os-$P_TOKEN-"}; nv=${nv%-nogms-system.img} ;; esac
-    [ -n "$nv" ] || die "$(t "$name is not named like a release file (lumen-os-$P_TOKEN-<version>-nogms-system.img): use the file exactly as downloaded. Nothing was written." "$name назван не как файл релиза (lumen-os-$P_TOKEN-<версия>-nogms-system.img): используйте файл ровно таким, как он скачан. Ничего не записано.")"
-    [ "$nv" = "$VERSION" ] || die "$(t "$name is Lumen OS $nv, but this installer download is for Lumen OS $VERSION: download the image and the installer from the same release (guide, section '$P_NAME'). Nothing was written." "$name это Lumen OS $nv, а этот установщик скачан для Lumen OS $VERSION: скачайте образ и установщик из одного релиза (инструкция, раздел «${P_NAME}»). Ничего не записано.")"
+    [ -n "$nv" ] || die "$(m not_named_like_release_file "$name" "$P_TOKEN")"
+    [ "$nv" = "$VERSION" ] || die "$(m lumen_os_but_installer_download "$name" "$nv" "$VERSION" "$P_NAME")"
   fi
   # the file system, read without any tool: raw ext4 has 53 ef at byte 1080
   if [ "$P_FS" = ext4 ] && [ "$(od -An -tx1 -j1080 -N2 "$IMG" 2>/dev/null | tr -d ' \n')" != 53ef ]; then
     if [ "$(od -An -tx1 -j1024 -N4 "$IMG" 2>/dev/null | tr -d ' \n')" = e2e1f5e0 ]; then
-      die "$(t "$name is an XGIMI Z9X image (erofs), not one for the $P_NAME. Nothing was written." "$name образ для XGIMI Z9X (erofs), а не для $P_NAME. Ничего не записано.")"
+      die "$(m xgimi_z9x_image_erofs_not "$name" "$P_NAME")"
     elif [ "$(od -An -tx1 -N4 "$IMG" 2>/dev/null | tr -d ' \n')" = 3aff26ed ]; then
-      die "$(t "$name is a sparse image, not the release file. Nothing was written." "$name разреженный (sparse) образ, а не файл релиза. Ничего не записано.")"
+      die "$(m sparse_image_not_release_file "$name")"
     fi
-    die "$(t "$name is not an ext4 system image. Nothing was written." "$name не системный образ ext4. Ничего не записано.")"
+    die "$(m not_ext4_system_image_nothing "$name")"
   fi
   sz=$(wc -c < "$IMG" | tr -d ' ')
-  [ $((sz % 4096)) = 0 ] || die "$(t "$name has a size that is not a multiple of 4096: damaged. Nothing was written." "размер $name не кратен 4096: файл испорчен. Ничего не записано.")"
+  [ $((sz % 4096)) = 0 ] || die "$(m has_size_not_multiple_4096 "$name")"
   if [ -f "$sums" ] && [ -f "$sig" ] && [ -f "$cert" ] && command -v openssl >/dev/null 2>&1; then
     pub=$(mktemp)
     openssl x509 -in "$cert" -pubkey -noout > "$pub"
     openssl dgst -sha256 -verify "$pub" -signature "$sig" "$sums" >/dev/null 2>&1 \
-      || { rm -f "$pub"; die "$(t "SHA256SUMS is not signed with the Lumen OS key for the $P_NAME: do not install this image" "SHA256SUMS не подписан ключом Lumen OS для $P_NAME: не устанавливайте этот образ")"; }
+      || { rm -f "$pub"; die "$(m sha256sums_not_signed_lumen_os_2 "$P_NAME")"; }
     rm -f "$pub"
-    ok "$(t "SHA256SUMS signature: Lumen OS key for the $P_NAME" "подпись SHA256SUMS: ключ Lumen OS для $P_NAME")"
+    ok "$(m sha256sums_signature_lumen_os_key "$P_NAME")"
   elif [ "$UNSIGNED" = 1 ]; then
-    warn "$(t "--unsigned-image: this image is NOT authenticated (no signed SHA256SUMS). Only for your own build." "--unsigned-image: образ НЕ проверен (нет подписанного SHA256SUMS). Только для собственной сборки.")"
+    warn "$(m unsigned_image_image_not)"
     if [ "$(state_get unsigned_ok)" != "$name:$(filekey "$IMG")" ]; then
-      printf '%s ' "$(t "Type UNSIGNED to install $name anyway:" "Введите UNSIGNED, чтобы всё равно установить $name:")"
+      printf '%s ' "$(m type_unsigned_install_anyway "$name")"
       read -r a
-      [ "$a" = UNSIGNED ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+      [ "$a" = UNSIGNED ] || die "$(m cancelled_nothing_written)"
       state_set unsigned_ok "$name:$(filekey "$IMG")"
     fi
     if [ ! -f "$sums" ]; then   # a list that names the image, or the image's own .sha256 (tools/play6/build_test.sh)
@@ -2330,23 +2308,23 @@ play6_check_image() {  # the release image of this projector: name, file system,
       done
     fi
   else
-    [ -f "$sums" ] || die "$(t "no SHA256SUMS next to the image: it cannot be checked. Download SHA256SUMS and SHA256SUMS.sig from the same release." "рядом с образом нет SHA256SUMS: его нельзя проверить. Скачайте SHA256SUMS и SHA256SUMS.sig из того же релиза.")"
-    [ -f "$sig" ] || die "$(t "no SHA256SUMS.sig next to the image: its origin cannot be checked" "рядом с образом нет SHA256SUMS.sig: происхождение образа нельзя проверить")"
-    [ -f "$cert" ] || die "$(t "installer certificate $P_CERT missing: re-download the installer of the $P_NAME release" "нет сертификата установщика $P_CERT: скачайте установщик из релиза для $P_NAME заново")"
-    die "$(t "openssl is needed to check the image signature (macOS and Linux have it; install it)" "для проверки подписи образа нужен openssl (есть в macOS и Linux; установите его)")"
+    [ -f "$sums" ] || die "$(m no_sha256sums_next_image_cannot)"
+    [ -f "$sig" ] || die "$(m no_sha256sums_sig_next_image)"
+    [ -f "$cert" ] || die "$(m installer_certificate_missing_re "$P_CERT" "$P_NAME")"
+    die "$(m openssl_needed_check_image)"
   fi
   if [ -n "$sums" ] && [ -f "$sums" ]; then
     want=$(awk -v f="$name" '$2==f || $2=="*"f {print $1}' "$sums")
-    [ -n "$want" ] || die "$(t "$name is not listed in $(basename "$sums")" "$name нет в $(basename "$sums")")"
+    [ -n "$want" ] || die "$(m not_listed "$name" "$(basename "$sums")")"
     if [ "$FORCE_HASH" = 1 ] || [ "$(state_get image_ok)" != "$want:$(filekey "$IMG")" ]; then
-      say "$(t "checking the image checksum (about a minute)" "проверяю контрольную сумму образа (около минуты)")"
+      say "$(m checking_image_checksum_about)"
       got=$(sha256 "$IMG")
-      [ "$got" = "$want" ] || { state_set image_ok none; die "$(t "checksum mismatch: the image is damaged or not the right file" "контрольная сумма не совпала: образ повреждён или не тот")"; }
+      [ "$got" = "$want" ] || { state_set image_ok none; die "$(m checksum_mismatch_image_damaged)"; }
       state_set image_ok "$want:$(filekey "$IMG")"
     fi
     ok "$name sha256 ${want:0:16}…"
   else
-    warn "$(t "--unsigned-image without any SHA256SUMS file: checksum not checked" "--unsigned-image без файла SHA256SUMS: контрольная сумма не проверена")"
+    warn "$(m unsigned_image_without_any)"
   fi
   # what the image says about itself, when debugfs (e2fsprogs) is installed. Without it the name (its version,
   # checked above against release.conf) and the signed SHA256SUMS (which lists the file under that name) bind the
@@ -2355,22 +2333,22 @@ play6_check_image() {  # the release image of this projector: name, file system,
     bp=$(p6_image_props)
     if [ -n "$bp" ]; then
       v=$(printf '%s\n' "$bp" | sed -n "s/^$(p6_lprop)=//p" | tail -1)
-      [ "$v" = "$(p6_lval)" ] || die "$(t "$name is not Lumen OS for the $P_NAME ($(p6_lprop)='$v'). Nothing was written." "$name не Lumen OS для $P_NAME ($(p6_lprop)='$v'). Ничего не записано.")"
+      [ "$v" = "$(p6_lval)" ] || die "$(m not_lumen_os_nothing_written "$name" "$P_NAME" "$(p6_lprop)" "$v")"
       v=$(printf '%s\n' "$bp" | sed -n "s/^$P_VERSION_PROP=//p" | tail -1)
       sec=$(printf '%s\n' "$bp" | sed -n 's/^ro\.adb\.secure=//p' | tail -1)
       if [ "$UNSIGNED" = 0 ]; then
-        [ "$v" = "${VERSION:-}" ] || die "$(t "$name holds Lumen OS '$v', the release is ${VERSION:-?}. Nothing was written." "в $name Lumen OS '$v', а релиз ${VERSION:-?}. Ничего не записано.")"
-        [ "$sec" = 1 ] || die "$(t "$name is a test build (ro.adb.secure='$sec'), not a release. Nothing was written." "$name тестовая сборка (ro.adb.secure='$sec'), а не релиз. Ничего не записано.")"
+        [ "$v" = "${VERSION:-}" ] || die "$(m holds_lumen_os_release_nothing "$name" "$v" "${VERSION:-?}")"
+        [ "$sec" = 1 ] || die "$(m test_build_ro_adb_secure "$name" "$sec")"
       fi
-      ok "$(t "image: Lumen OS $v for the $P_NAME" "образ: Lumen OS $v для $P_NAME")"
+      ok "$(m image_lumen_os "$v" "$P_NAME")"
     else
-      warn "$(t "debugfs could not read the image content (not needed: $(p6_bound_text "$nv"))" "debugfs не смог прочитать содержимое образа (не обязательно: $(p6_bound_text "$nv"))")"
+      warn "$(m debugfs_could_not_read_image "$(p6_bound_text "$nv")")"
     fi
   else
-    say "$(t "image content not read (debugfs not installed): $(p6_bound_text "$nv")" "содержимое образа не прочитано (нет debugfs): $(p6_bound_text "$nv")")"
+    say "$(m image_content_not_read_debugfs "$(p6_bound_text "$nv")")"
   fi
   state_set image_gms 0
-  ok "$(t "edition: Lumen OS without Google" "редакция: Lumen OS без Google")"
+  ok "$(m edition_lumen_os_without_google)"
 }
 
 play6_check() {
@@ -2380,9 +2358,9 @@ play6_check() {
   play6_device
   p6_prechecks
   free=$(df -k "$HOME" | awk 'NR==2{print $4}')
-  [ "${free:-0}" -ge 4194304 ] || warn "$(t "less than 4 GB free on this computer" "на компьютере свободно меньше 4 ГБ")"
+  [ "${free:-0}" -ge 4194304 ] || warn "$(m less_4_gb_free_computer)"
   play6_check_image
-  ok "$(t "check passed; nothing was written" "проверка пройдена; ничего не записано")"
+  ok "$(m check_passed_nothing_written)"
   state_set step_check done
 }
 
@@ -2391,22 +2369,22 @@ p6_fb_wait() {  # seconds: the projector (SERIAL) in fastboot mode on the cable
   local i=0
   while [ "$i" -lt "$1" ]; do
     p6_in_fastboot && return 0
-    [ "$i" -gt 0 ] && [ $((i % 60)) = 0 ] && say "$(t "still waiting for fastboot mode..." "всё ещё жду режима fastboot...")"
+    [ "$i" -gt 0 ] && [ $((i % 60)) = 0 ] && say "$(m still_waiting_fastboot_mode)"
     sleep 2; i=$((i + 2))
   done
   return 1
 }
 p6_fb_stop() {  # message: leave fastbootd for the old system, nothing was written
   fb reboot >/dev/null 2>&1
-  die "$1 $(t "Nothing was written. Unplug the A-to-A cable: the projector then starts its old system (press the power button if the picture does not come back)." "Ничего не записано. Выньте кабель A–A: проектор загрузит прежнюю систему (если изображения нет, нажмите кнопку питания).")"
+  die "$1 $(m nothing_written_unplug_cable)"
 }
 play6_fbd_check() {  # fastbootd: this Play 6 (serial), its firmware and the known layout of super; else STOP
   local why="" l want wantg v fw=0
   GV=$(fb getvar all 2>&1)
-  [ "$(gv_val is-userspace)" = yes ] || why=$(t "not fastbootd" "это не fastbootd")
-  [ -n "$why" ] || [ "$(gv_val product)" = "$P_FB_PRODUCT" ] || why="$(t "fastbootd is not the one of the $P_NAME" "fastbootd не от $P_NAME") ($(gv_val product))"
-  [ -n "$why" ] || [ "$(gv_val unlocked)" = yes ] || why=$(t "the bootloader is locked" "загрузчик заблокирован")
-  [ -n "$why" ] || [ "$(gv_val serialno)" = "$SERIAL" ] || why="$(t "another projector in fastboot mode" "в режиме fastboot другой проектор") (serialno $(gv_val serialno), $(t 'expected' 'ожидался') $SERIAL)"
+  [ "$(gv_val is-userspace)" = yes ] || why=$(m not_fastbootd)
+  [ -n "$why" ] || [ "$(gv_val product)" = "$P_FB_PRODUCT" ] || why="$(m fastbootd_not_one "$P_NAME") ($(gv_val product))"
+  [ -n "$why" ] || [ "$(gv_val unlocked)" = yes ] || why=$(m bootloader_locked)
+  [ -n "$why" ] || [ "$(gv_val serialno)" = "$SERIAL" ] || why="$(m another_projector_fastboot_mode) (serialno $(gv_val serialno), $(m expected) $SERIAL)"
   if [ -z "$why" ]; then case "$(gv_val slot-count)" in ''|0) ;; *) why="slot-count $(gv_val slot-count)" ;; esac; fi
   [ -n "$why" ] || [ -z "$(gv_val current-slot)" ] || why="current-slot $(gv_val current-slot)"
   [ -n "$why" ] || [ "$(gv_val super-partition-name)" = super ] || why="super-partition-name '$(gv_val super-partition-name)'"
@@ -2414,23 +2392,23 @@ play6_fbd_check() {  # fastbootd: this Play 6 (serial), its firmware and the kno
   want=$(printf '%s\n' $P_LOGICAL | LC_ALL=C sort -u | tr '\n' ' ' | sed 's/ $//')
   # the Google services add-on ('gapps') adds one partition of its own
   wantg=$(printf '%s\n' $P_LOGICAL "$P6_GAPPS" | LC_ALL=C sort -u | tr '\n' ' ' | sed 's/ $//')
-  [ -n "$why" ] || [ "$l" = "$want" ] || [ "$l" = "$wantg" ] || why="$(t "the partitions in super are not the known ones" "разделы в super не те, что известны") ($l)"
+  [ -n "$why" ] || [ "$l" = "$want" ] || [ "$l" = "$wantg" ] || why="$(m partitions_super_not_known_ones) ($l)"
   if [ -z "$why" ]; then
     for v in $P_VENDOR_OK; do case "$(gv_val vendor-fingerprint)" in */"${v#v}":*) fw=1 ;; esac; done
-    [ "$fw" = 1 ] || why="$(t "XGIMI firmware not supported" "прошивка XGIMI не поддерживается") ($(gv_val vendor-fingerprint))"
+    [ "$fw" = 1 ] || why="$(m xgimi_firmware_not_supported) ($(gv_val vendor-fingerprint))"
   fi
-  [ -z "$why" ] || p6_fb_stop "$(t "fastboot mode check failed" "проверка режима fastboot не пройдена"): $why."
-  ok "$(t "fastboot mode: $P_NAME $SERIAL" "режим fastboot: $P_NAME $SERIAL")"
+  [ -z "$why" ] || p6_fb_stop "$(m fastboot_mode_check_failed): $why."
+  ok "$(m fastboot_mode "$P_NAME" "$SERIAL")"
 }
 p6_room() {  # [bytes]: the image must fit into super next to the other logical partitions (each rounded up to 1 MiB);
   # with --gapps-zip the image and lumen_gapps at that size together (an existing lumen_gapps is resized to it)
   local sup p sz used=0 room need
   sup=$(gv_size super)
-  [ -n "$sup" ] || p6_fb_stop "$(t "fastbootd did not report the size of super." "fastbootd не сообщил размер super.")"
+  [ -n "$sup" ] || p6_fb_stop "$(m fastbootd_did_not_report_size)"
   for p in $P_LOGICAL; do
     [ "$p" = system ] && continue
     sz=$(gv_size "$p")
-    [ -n "$sz" ] || p6_fb_stop "$(t "fastbootd did not report the size of $p." "fastbootd не сообщил размер $p.")"
+    [ -n "$sz" ] || p6_fb_stop "$(m fastbootd_did_not_report_size_2 "$p")"
     used=$(( used + (sz + 1048575) / 1048576 * 1048576 ))
   done
   sz=$(gv_size "$P6_GAPPS")   # the Google services add-on ('gapps') keeps its space
@@ -2439,22 +2417,16 @@ p6_room() {  # [bytes]: the image must fit into super next to the other logical 
   sz=$(wc -c < "$IMG" | tr -d ' ')
   if [ -n "${1-}" ]; then
     need=$(( (sz + 1048575) / 1048576 * 1048576 + ($1 + 1048575) / 1048576 * 1048576 ))
-    [ "$need" -le "$room" ] || p6_fb_stop "$(t "the image and the Google services do not fit into super together ($((room / 1048576)) MB free, $((need / 1048576)) MB needed)." "образ и сервисы Google вместе не помещаются в super (свободно $((room / 1048576)) МБ, нужно $((need / 1048576)) МБ).")"
+    [ "$need" -le "$room" ] || p6_fb_stop "$(m image_google_services_not_fit "$((room / 1048576))" "$((need / 1048576))")"
     return 0
   fi
-  [ "$sz" -le "$room" ] || p6_fb_stop "$(t "the image does not fit into super ($((room / 1048576)) MB free, $(( (sz + 1048575) / 1048576 )) MB needed)." "образ не помещается в super (свободно $((room / 1048576)) МБ, нужно $(( (sz + 1048575) / 1048576 )) МБ).")"
+  [ "$sz" -le "$room" ] || p6_fb_stop "$(m image_not_fit_super_mb "$((room / 1048576))" "$(( (sz + 1048575) / 1048576 ))")"
 }
 p6_cable_out() {  # after 'fastboot reboot': the projector does not start while the computer's cable is in
   local a
   echo
-  t "Written. Unplug the A-to-A cable from the projector NOW: the $P_NAME does not start while it is
-connected. Put ONLY a FAT32 USB stick into its USB port instead (it helps the $P_NAME power on; no USB
-Ethernet adapter, no hub; do NOT hold the power button, that starts the stock restore). If the picture does
-not come back within a minute, press the power button once." "Записано. Сейчас выньте кабель A–A из проектора: пока он подключён, $P_NAME не загружается.
-Вставьте вместо него в USB-порт ТОЛЬКО флешку FAT32 (с ней $P_NAME включается надёжнее; без адаптера USB
-Ethernet и без хаба; кнопку питания НЕ держите, иначе начнётся откат на сток). Если через минуту изображения
-нет, нажмите кнопку питания один раз."; echo
-  printf '%s ' "$(t "Press Enter when the cable is out." "Когда кабель вынут, нажмите Enter.")"
+  m written_unplug_cable_projector_now "$P_NAME"; echo
+  printf '%s ' "$(m press_enter_when_cable_out)"
   read -r a
 }
 
@@ -2467,17 +2439,17 @@ play6_write() {  # check, confirmation, cable, fastbootd, write system, restart 
       [ -z "$GAPPS_WITH" ] || state_set gapps_plan "$P6G_SHA"
       if [ -n "$(state_get gapps_plan)" ] && [ "$(state_get step_gapps_part)" != done ]; then play6_fbd_check; p6_gapps_add; fi
       if [ "$KEEP_DATA" = 0 ] && [ "$(state_get wipe_plan)" = bcb ] && [ -z "$(state_get step_bcb)" ]; then play6_fbd_check; p6_bcb_write; fi
-      ok "$(t "system is already written; restarting the projector" "system уже записан; перезагружаю проектор")"
+      ok "$(m system_already_written_restarting)"
       fb reboot >/dev/null 2>&1
       state_set step_flash done
       p6_cable_out
       return 0
     fi
-    say "$(t "the projector waits in fastboot mode on the cable: continuing there" "проектор ждёт в режиме fastboot на кабеле: продолжаю там")"
+    say "$(m projector_waits_fastboot_mode)"
   else
     if ! play6_adb 60; then
       # an earlier run sent the projector to fastboot mode: it is neither there (on the cable) nor back in its system
-      [ -z "$(state_get step_fastboot)" ] || die "$(t "the projector is neither in fastboot mode on the cable nor reachable over Wi-Fi at $ADB_T. If the picture is dark: unplug the A-to-A cable (the $P_NAME does not start while it is in) and press the power button; a USB stick in the port helps it start. When its system is back, run the installer again: it sends the projector to fastboot mode again. If it stays dark: guide, section '$P_NAME', 'Back to stock'." "проектора нет ни в режиме fastboot на кабеле, ни в Wi-Fi по адресу $ADB_T. Если изображения нет, выньте кабель A–A (пока он вставлен, $P_NAME не загружается) и нажмите кнопку питания; флешка в порту помогает ему загрузиться. Когда система загрузится, запустите установщик снова: он снова отправит проектор в режим fastboot. Если изображения так и нет: инструкция, раздел «${P_NAME}», «Откат на сток».")"
+      [ -z "$(state_get step_fastboot)" ] || die "$(m projector_neither_fastboot_mode "$ADB_T" "$P_NAME")"
       die "$(p6_noconn_text)"
     fi
     play6_device
@@ -2486,39 +2458,19 @@ play6_write() {  # check, confirmation, cable, fastbootd, write system, restart 
   FORCE_HASH=1 play6_check_image
   echo
   if [ "$KEEP_DATA" = 1 ]; then
-    t "Writing Lumen OS to the system partition of the $P_NAME WITHOUT erasing data (a repair).
-XGIMI's firmware stays untouched: vendor, boot, recovery, MBOOT, calibration and factory data." "Записываю Lumen OS в раздел system $P_NAME БЕЗ стирания данных (ремонт).
-Прошивка XGIMI не затрагивается: vendor, boot, recovery, MBOOT, калибровка и заводские данные."; echo
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    m writing_lumen_os_system_partition "$P_NAME"; echo
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
     state_set wipe_plan keep
   else
-    t "Writing Lumen OS to the system partition of the $P_NAME and ERASING ALL DATA (apps, accounts,
-settings, files, Wi-Fi networks). In the same visit to fastboot mode the installer leaves an erase request
-for XGIMI's recovery: it erases the data before Lumen OS starts for the first time, as Settings > Reset
-does, so that first start is a light one on clean data. XGIMI's firmware stays untouched: vendor, boot,
-recovery, MBOOT, calibration and factory data. The $P_NAME has only one system: if the write is cut off
-by a power loss, the way back is the USB stick restore (guide, 'Back to stock'). Keep the power adapter
-connected." "Записываю Lumen OS в раздел system $P_NAME и СТИРАЮ ВСЕ ДАННЫЕ (приложения, аккаунты,
-настройки, файлы, сети Wi-Fi). В том же заходе в режим fastboot установщик оставляет запрос на стирание
-для recovery XGIMI: оно стирает данные до первого запуска Lumen OS, как сброс из настроек, поэтому первый
-запуск лёгкий, на чистых данных. Прошивка XGIMI не затрагивается: vendor, boot, recovery, MBOOT,
-калибровка и заводские данные. Система у $P_NAME одна: если запись оборвётся из-за отключения питания,
-вернуть проектор можно только восстановлением с флешки (инструкция, «Откат на сток»). Блок питания
-держите подключённым."; echo
+    m writing_lumen_os_system_partition_2 "$P_NAME"; echo
     if [ -n "$GAPPS_WITH" ]; then
-      t "With --gapps-zip the same fastboot session also creates the partition $P6_GAPPS ($((P6G_PART / 1048576)) MB)
-for $P6G_NAME. After the first start on clean data you join Wi-Fi and turn debugging on, the installer
-copies the Google apps in as root (Rooted debugging) and then resets the clean system once more, so that
-the next start sets Google up." "С --gapps-zip в той же сессии fastboot создаётся ещё раздел $P6_GAPPS ($((P6G_PART / 1048576)) МБ) для
-$P6G_NAME. После первого запуска на чистых данных вы подключаете Wi-Fi и включаете отладку, установщик
-копирует приложения Google с правами root (отладка суперпользователем) и ещё раз сбрасывает чистую
-систему, чтобы следующий запуск настроил Google."; echo
+      m gapps_zip_same_fastboot_session "$P6_GAPPS" "$((P6G_PART / 1048576))" "$P6G_NAME"; echo
     fi
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
     ERASE_NOW=1
     state_set erase_ok "$(date +%Y%m%d-%H%M%S)"
     state_set wipe_plan bcb
@@ -2530,29 +2482,27 @@ $P6G_NAME. После первого запуска на чистых данны
     for k in step_fastboot step_flash_system step_flash step_boot1 step_wipe step_verify wipe_marker step_gapps_part step_gapps_fill step_bcb; do state_set "$k" ""; done
     # the proof for 'verify' and for the light first start: /data/local/tmp does not survive the erase
     if [ "$KEEP_DATA" = 0 ]; then
-      p6_marker_write || die "$(t "could not write the check file $P6_MARKER on the projector. Nothing was written." "не удалось записать проверочный файл $P6_MARKER на проектор. Ничего не записано.")"
+      p6_marker_write || die "$(m could_not_write_check_file "$P6_MARKER")"
     fi
     echo
-    t "Take the USB stick (or whatever is in it) out of the projector's USB port and connect that port to
-this computer with the USB A-to-A cable. Keep the power adapter connected." "Выньте флешку (или то, что там вставлено) из USB-порта проектора и соедините этот порт с компьютером
-кабелем USB A–A. Блок питания оставьте подключённым."; echo
-    printf '%s ' "$(t "Press Enter when the cable is in." "Когда кабель вставлен, нажмите Enter.")"
+    m take_usb_stick_whatever_out; echo
+    printf '%s ' "$(m press_enter_when_cable)"
     read -r a
-    say "$(t "restarting into fastboot mode (about 30 seconds)" "перезагрузка в режим fastboot (около 30 секунд)")"
+    say "$(m restarting_fastboot_mode_about_30)"
     # saved first: a restart that happens although adb reports an error (the Wi-Fi connection drops with it) is
     # still continued in fastboot mode by the next run
     state_set step_fastboot "$(date +%Y%m%d-%H%M%S)"
     if ! adbs reboot fastboot >/dev/null 2>&1 && p6_alive; then
       state_set step_fastboot ""
-      die "$(t "adb reboot fastboot failed: the projector still runs its system. Nothing was written. Unplug the A-to-A cable and run the installer again." "adb reboot fastboot не удался: проектор работает в своей системе. Ничего не записано. Выньте кабель A–A и запустите установщик снова.")"
+      die "$(m adb_reboot_fastboot_failed)"
     fi
     adb disconnect "$ADB_T" >/dev/null 2>&1
   fi
-  p6_fb_wait 180 || die "$(t "the projector did not appear on the cable within 3 minutes. Is the cable in the projector's USB port (not a hub)? On Windows: the Google USB Driver. On Linux: udev permissions ('no permissions' in 'fastboot devices'). Nothing was written. Run the installer again: it finds the projector in fastboot mode or sends it there again." "проектор не появился на кабеле за 3 минуты. Кабель в USB-порту проектора (не через хаб)? На Windows нужен Google USB Driver. На Linux права udev ('no permissions' в 'fastboot devices'). Ничего не записано. Запустите установщик снова: он найдёт проектор в режиме fastboot или снова отправит его туда.")"
+  p6_fb_wait 180 || die "$(m projector_did_not_appear_cable)"
   play6_fbd_check
   p6_room $(p6_plan_part)
-  say "$(t "writing system (about 1 minute). Do not unplug the cable or the power until it is done." "записываю system (около минуты). Не отключайте кабель и питание, пока запись не закончится.")"
-  fb_do flash system "$IMG" || die "$(t "system was not written completely. The projector stays in fastboot mode: keep the cable in and run the installer again, it writes system again." "system записан не полностью. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите установщик снова, он запишет system ещё раз.")"
+  say "$(m writing_system_about_1_minute)"
+  fb_do flash system "$IMG" || die "$(m system_not_written_completely)"
   state_set step_flash_system done
   [ -z "$(state_get gapps_plan)" ] || p6_gapps_add
   if [ "$KEEP_DATA" = 0 ] && [ "$(state_get wipe_plan)" = bcb ]; then p6_bcb_write; fi
@@ -2569,39 +2519,39 @@ play6_boot1() {  # the first start of Lumen OS on the old data: Wi-Fi and debugg
   local i=0 t0 v lum
   [ -n "$ADB_T" ] || ADB_T=$(state_get ip)
   [ -n "$ADB_T" ] || die "internal: no saved address of the projector"
-  say "$(t "waiting for Lumen OS over Wi-Fi (the first start takes up to 10 minutes)" "жду Lumen OS по Wi-Fi (первый запуск занимает до 10 минут)")"
+  say "$(m waiting_lumen_os_over_wi)"
   if ! wifi_connect 600; then
     case "$P6_ST" in *unauthorized*)
-      die "$(t "Lumen OS runs, but it did not allow this computer within 10 minutes. On the projector: allow debugging from this computer, tick \"Always allow from this computer\" and press OK; then run the installer again. Nothing was erased; your data is still there." "Lumen OS работает, но проектор за 10 минут не разрешил отладку с этого компьютера. На проекторе разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK, затем запустите установщик снова. Ничего не стёрто, данные на месте.")" ;;
+      die "$(m lumen_os_runs_but_did)" ;;
     esac
     p6_noboot_help
-    die "$(t "Lumen OS did not answer over Wi-Fi within 10 minutes. Is the A-to-A cable out of the projector? The $P_NAME does not start while it is in. If the picture stays dark: unplug the cable and press the power button; a USB stick in the projector's USB port helps the $P_NAME start. If Lumen Home is on the screen: look up its address in Settings > Network & Internet and run the installer again with --ip ADDRESS. Nothing else was changed; your data is still there." "Lumen OS не ответила по Wi-Fi за 10 минут. Кабель A–A вынут из проектора? Пока он вставлен, $P_NAME не загружается. Если изображения нет, выньте кабель и нажмите кнопку питания; флешка в USB-порту помогает $P_NAME загрузиться. Если на экране Lumen Home, посмотрите адрес в «Настройки > Сеть и Интернет» и запустите установщик снова с --ip АДРЕС. Больше ничего не изменено, данные на месте.")"
+    die "$(m lumen_os_did_not_answer "$P_NAME")"
   fi
   p6_identity
   t0=$SECONDS
   while [ "$(prop sys.boot_completed)" != 1 ]; do
-    [ "$i" -lt 300 ] && [ $((SECONDS - t0)) -lt 300 ] || die "$(t "Lumen OS did not finish starting within 5 more minutes. Restart the projector with the power button and run the installer again." "Lumen OS не загрузилась до конца ещё за 5 минут. Перезагрузите проектор кнопкой питания и запустите установщик снова.")"
+    [ "$i" -lt 300 ] && [ $((SECONDS - t0)) -lt 300 ] || die "$(m lumen_os_did_not_finish)"
     sleep 5; i=$((i + 5))
   done
   lum=$(prop "$(p6_lprop)")
   if [ -z "$lum" ]; then
     p6_write_again
-    die "$(t "the projector still runs XGIMI's system: the write did not take effect. Nothing was erased. Run the installer again with the A-to-A cable at hand: it writes system again. If this happens again, report it with the installer output." "на проекторе всё ещё система XGIMI: запись не применилась. Ничего не стёрто. Запустите установщик снова, держа кабель A–A под рукой: он запишет system ещё раз. Если это повторится, напишите об этом и приложите вывод установщика.")"
+    die "$(m projector_still_runs_xgimis_system)"
   fi
-  [ "$lum" = "$(p6_lval)" ] || die "$(t "the projector runs Lumen OS for another device ('$lum'). Nothing was erased." "на проекторе Lumen OS для другого устройства ('$lum'). Ничего не стёрто.")"
+  [ "$lum" = "$(p6_lval)" ] || die "$(m projector_runs_lumen_os_another_2 "$lum")"
   v=$(prop "$P_VERSION_PROP")
   if [ "$UNSIGNED" = 0 ] && [ -n "${VERSION:-}" ] && [ "$v" != "$VERSION" ]; then
     if [ "$(state_get dev_lumen)" = 1 ] && [ "$v" = "$(state_get dev_version)" ]; then
       p6_write_again
-      die "$(t "the projector still runs the Lumen OS $v it had before: the write did not take effect. Nothing was erased. Run the installer again with the A-to-A cable at hand: it writes system again." "на проекторе всё ещё прежняя Lumen OS $v: запись не применилась. Ничего не стёрто. Запустите установщик снова, держа кабель A–A под рукой: он запишет system ещё раз.")"
+      die "$(m projector_still_runs_lumen_os "$v")"
     fi
     # the image was checked against this release before the write (name, signature, checksum): only its own
     # version name differs, which does not make the wipe of this projector any less right
-    warn "$(t "Lumen OS '$v' runs, and this installer download is for $VERSION: the image names its version differently from its release. Please report it; the install goes on." "работает Lumen OS '$v', а этот установщик для $VERSION: образ называет свою версию иначе, чем его релиз. Сообщите об этом; установка продолжается.")"
+    warn "$(m lumen_os_runs_installer_download "$v" "$VERSION")"
   fi
-  ok "$(t "Lumen OS $v started" "Lumen OS $v запустилась") ($SERIAL, $ADB_T)"
-  if [ -n "$(adbs shell pidof "$P6_APP" 2>/dev/null | tr -d '\r')" ]; then ok "$(t "projector app running" "приложение проектора работает")"
-  else warn "$(t "the projector app ($P6_APP) is not running yet" "приложение проектора ($P6_APP) пока не запущено")"; fi
+  ok "$(m lumen_os_started "$v") ($SERIAL, $ADB_T)"
+  if [ -n "$(adbs shell pidof "$P6_APP" 2>/dev/null | tr -d '\r')" ]; then ok "$(m projector_app_running)"
+  else warn "$(m projector_app_not_running_yet "$P6_APP")"; fi
   state_set ip "$ADB_T"
   state_set step_boot1 done
 }
@@ -2629,74 +2579,67 @@ play6_wipe() {  # Android's own factory reset on the first Lumen OS start; XGIMI
     # a factory reset asked for by an earlier run (cut off before it saved that) erases Wi-Fi and turns debugging off
     if [ -n "$(state_get wipe_marker)" ]; then
       case "$P6_ST" in *unauthorized*) ;; *)
-        die "$(t "the projector does not answer over Wi-Fi at $ADB_T. If it shows Lumen OS without your apps, the factory reset of an earlier run has already erased the data, the Wi-Fi network too: join Wi-Fi with the remote (Settings > Network & Internet), turn debugging on (guide, section '$P_NAME', 'Check the install') and run the installer again with --ip ADDRESS; it then sees that the data is erased. Otherwise: is the projector on, in the same network, debugging on? Nothing was done." "проектор не отвечает по Wi-Fi по адресу $ADB_T. Если на нём Lumen OS без ваших приложений, сброс прошлого запуска уже стёр данные и сеть Wi-Fi тоже: подключитесь к Wi-Fi пультом («Настройки > Сеть и Интернет»), включите отладку (инструкция, раздел «${P_NAME}», «Проверьте установку») и запустите установщик снова с --ip АДРЕС; он увидит, что данные стёрты. Иначе: проектор включён, в той же сети, отладка включена? Ничего не сделано.")" ;;
+        die "$(m projector_not_answer_over_wi "$ADB_T" "$P_NAME")" ;;
       esac
     fi
     die "$(p6_noconn_text 120)"
   fi
   p6_identity
-  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(t "the projector does not run Lumen OS for the $P_NAME: no factory reset is sent. Nothing was changed." "на проекторе не Lumen OS для $P_NAME: сброс не отправлен. Ничего не изменено.")"
+  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(m projector_not_run_lumen_os_2 "$P_NAME")"
   # an earlier run asked for the reset and was cut off before it saved that: the check file tells what happened
   if [ -n "$(state_get wipe_marker)" ] && [ "$(p6_marker)" = gone ]; then
-    ok "$(t "the data is already erased (the check file written before the factory reset is gone): no second factory reset" "данные уже стёрты (проверочного файла, записанного до сброса, нет): второй сброс не нужен")"
+    ok "$(m data_already_erased_check_file)"
     state_set step_wipe done
     return 0
   fi
   if [ "$ERASE_NOW" != 1 ]; then
     echo
     if [ "$(state_get step_bcb)" = done ] && [ "$(state_get step_gapps_fill)" = done ]; then
-      t "The Google apps are copied in. Next, Android's factory reset ERASES the projector once more (Wi-Fi
-network too), so that the next start sets Google up. XGIMI's recovery carries it out." "Приложения Google скопированы. Дальше сброс Android к заводским настройкам ещё раз СТИРАЕТ проектор
-(сеть Wi-Fi тоже), чтобы следующий запуск настроил Google. Его выполняет recovery XGIMI."; echo
+      m google_apps_copied_next_androids; echo
     else
-      t "Lumen OS runs on the old data. Next, Android's factory reset ERASES ALL DATA on the projector (apps,
-accounts, settings, files, Wi-Fi networks). XGIMI's recovery carries it out, as for Settings > Reset." "Lumen OS работает на старых данных. Дальше сброс Android к заводским настройкам СТИРАЕТ ВСЕ ДАННЫЕ
-проектора (приложения, аккаунты, настройки, файлы, сети Wi-Fi). Его выполняет recovery XGIMI, как
-при сбросе из настроек."; echo
+      m lumen_os_runs_old_data; echo
     fi
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was erased" "отменено, ничего не стёрто")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_erased)"
     ERASE_NOW=1
   fi
   # the proof for 'verify': /data/local/tmp does not survive a real wipe
-  p6_marker_write || die "$(t "could not write the check file $P6_MARKER on the projector; nothing was erased" "не удалось записать проверочный файл $P6_MARKER на проектор; ничего не стёрто")"
+  p6_marker_write || die "$(m could_not_write_check_file_2 "$P6_MARKER")"
   p6_root; rc=$?
   case "$rc" in
     0) ;;
-    2) die "$(t "after 'adb root' the projector did not answer over Wi-Fi again within a minute (adbd restarts with it). If the projector asks: allow debugging from this computer, tick \"Always allow from this computer\" and press OK. Then run the installer again. Nothing was erased." "после 'adb root' проектор не ответил по Wi-Fi снова за минуту (adbd при этом перезапускается). Если проектор спрашивает, разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK. Затем запустите установщик снова. Ничего не стёрто.")" ;;
-    *) [ "$rc" = 3 ] && say "$(t "(root debugging is off: Settings > Device Preferences > Developer options > Rooted debugging)" "(выключена отладка с правами root: Настройки > Настройки устройства > Для разработчиков > Отладка суперпользователем)")"
-       warn "$(t "adb root is not possible on this system: the installer cannot start the factory reset" "adb root на этой системе невозможен: установщик не может запустить сброс")"
-       say "$(t "On the projector: Settings > Device Preferences > Reset > Factory reset." "На проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам.")"
+    2) die "$(m after_adb_root_projector_did)" ;;
+    *) [ "$rc" = 3 ] && say "$(m root_debugging_off_settings_device)"
+       warn "$(m adb_root_not_possible_system_2)"
+       say "$(m projector_settings_device)"
        state_set step_wipe manual
        return 0 ;;
   esac
-  say "$(t "asking Android for its factory reset" "запускаю сброс Android к заводским настройкам")"
+  say "$(m asking_android_factory_reset)"
   # --user 0: MasterClearReceiver wipes only the sending user when that is not user 0
   out=$(adbs shell am broadcast --user 0 -a android.intent.action.FACTORY_RESET -p android --receiver-foreground \
         --es android.intent.extra.REASON lumen-install 2>&1 | tr -d '\r')
   case "$out" in
     *"Broadcast completed"*) ;;
-    *) die "$(t "the factory reset was not accepted ($out). Your data is unchanged. On the projector: Settings > Device Preferences > Reset > Factory reset." "сброс не принят ($out). Данные не изменены. На проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам.")" ;;
+    *) die "$(m factory_reset_not_accepted_data "$out")" ;;
   esac
   # the projector restarts into XGIMI's recovery: it stops answering. Asked on a new connection each time, since
   # the computer's old one can still say 'device' for a while after the projector went away.
   t0=$SECONDS
   while p6_alive; do
-    [ "$i" -lt 60 ] && [ $((SECONDS - t0)) -lt 60 ] || die "$(t "the projector still answers a minute after the factory reset was asked for: the factory reset did not start, your data is unchanged. On the projector: Settings > Device Preferences > Reset > Factory reset. To report it, send the logcat lines of MasterClearReceiver and uncrypt." "проектор отвечает и через минуту после запроса сброса: сброс не начался, данные не изменены. На проекторе: Настройки > Настройки устройства > Сброс > Сброс к заводским настройкам. Для отчёта пришлите строки logcat от MasterClearReceiver и uncrypt.")"
+    [ "$i" -lt 60 ] && [ $((SECONDS - t0)) -lt 60 ] || die "$(m projector_still_answers_minute)"
     sleep 5; i=$((i + 5))
   done
   adb disconnect "$ADB_T" >/dev/null 2>&1
   state_set step_wipe requested
   WIPED_NOW=1
   echo
-  t "The projector restarts into XGIMI's recovery, which erases the data (a few minutes), then starts
-Lumen OS clean. The Wi-Fi network is erased too." "Проектор перезагружается в recovery XGIMI, которое стирает данные (несколько минут), и затем
-запускает чистую Lumen OS. Сеть Wi-Fi тоже стирается."; echo
-  if ask "$(t "Wait for Lumen Home on the projector (up to 10 minutes). Do you see Lumen Home?" "Дождитесь Lumen Home на проекторе (до 10 минут). Lumen Home на экране?")"; then
-    ok "$(t "Lumen OS started clean" "Lumen OS запустилась начисто")"
+  m projector_restarts_xgimis_recovery; echo
+  if ask "$(m wait_lumen_home_projector_up)"; then
+    ok "$(m lumen_os_started_clean)"
   else
-    warn "$(t "Press the power button once. If the picture stays dark for 10 more minutes: guide, section '$P_NAME', 'Something went wrong'." "Нажмите кнопку питания один раз. Если ещё 10 минут изображения нет: инструкция, раздел «${P_NAME}», «Если что-то пошло не так».")"
+    warn "$(m press_power_button_once_if "$P_NAME")"
     p6_noboot_help
   fi
 }
@@ -2709,45 +2652,45 @@ play6_verify() {  # [seconds]: over Wi-Fi, after the wipe (the user joined Wi-Fi
   if [ -z "$ADB_T" ] || ! wifi_connect "${1:-60}"; then
     case "$P6_ST" in
       *unauthorized*)
-        warn "$(t "the projector at $ADB_T did not allow this computer. On the projector: allow debugging from this computer, tick \"Always allow from this computer\" and press OK; then run 'verify' again." "проектор по адресу $ADB_T не разрешил отладку с этого компьютера. На проекторе разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK, затем запустите 'verify' снова.")" ;;
+        warn "$(m projector_did_not_allow_computer_2 "$ADB_T")" ;;
       *)
-        warn "$(t "no adb connection to the projector over Wi-Fi. After the wipe Wi-Fi and debugging are off: that is normal. To check the install: join Wi-Fi on the projector, turn on debugging (guide, section '$P_NAME', 'Check the install') and run: bash lumen-install.sh verify --ip ADDRESS" "нет связи adb с проектором по Wi-Fi. После сброса Wi-Fi и отладка выключены: это нормально. Чтобы проверить установку, подключите проектор к Wi-Fi, включите отладку (инструкция, раздел «${P_NAME}», «Проверьте установку») и запустите: bash lumen-install.sh verify --ip АДРЕС")" ;;
+        warn "$(m no_adb_connection_projector_over "$P_NAME")" ;;
     esac
     return 0
   fi
   p6_identity
-  [ "$(prop sys.boot_completed)" = 1 ] && ok "$(t "started" "загружена")" || warn "sys.boot_completed=$(prop sys.boot_completed)"
-  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(t "the projector does not run Lumen OS for the $P_NAME" "на проекторе не Lumen OS для $P_NAME")"
+  [ "$(prop sys.boot_completed)" = 1 ] && ok "$(m started)" || warn "sys.boot_completed=$(prop sys.boot_completed)"
+  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(m projector_not_run_lumen_os_3 "$P_NAME")"
   v=$(prop "$P_VERSION_PROP"); sec=$(prop ro.adb.secure)
-  if [ "$UNSIGNED" = 0 ] && [ -n "${VERSION:-}" ] && [ "$v" != "$VERSION" ]; then warn "Lumen OS $v ($(t "expected" "ожидалась") $VERSION)"
+  if [ "$UNSIGNED" = 0 ] && [ -n "${VERSION:-}" ] && [ "$v" != "$VERSION" ]; then warn "Lumen OS $v ($(m expected_2) $VERSION)"
   else ok "Lumen OS $v ($SERIAL, $ADB_T)"; fi
-  [ "$sec" = 1 ] && ok "$(t "debugging asks before a new computer may connect (ro.adb.secure=1)" "отладка спрашивает разрешение для нового компьютера (ro.adb.secure=1)")" || warn "ro.adb.secure=$sec ($(t "a test build" "тестовая сборка"))"
+  [ "$sec" = 1 ] && ok "$(m debugging_asks_before_new_computer)" || warn "ro.adb.secure=$sec ($(m test_build))"
   st=$(state_get step_wipe)
   case "$st" in
     requested|manual|done)
       case "$(p6_marker)" in
         there)
-          warn "$(t "the data was NOT erased: the check file from before the factory reset is still there" "данные НЕ стёрты: проверочный файл, записанный до сброса, на месте")"
-          if ask "$(t "Erase all data now with Android's factory reset?" "Стереть все данные сейчас сбросом Android к заводским настройкам?")"; then
+          warn "$(m data_not_erased_check_file)"
+          if ask "$(m erase_all_data_now_androids)"; then
             ERASE_NOW=0; play6_wipe; return 0
           fi ;;
         gone)
-          ok "$(t "data erased (the check file from before the factory reset is gone)" "данные стёрты (проверочного файла, записанного до сброса, нет)")"
+          ok "$(m data_erased_check_file_before)"
           state_set step_wipe done ;;
-        *) warn "$(t "the check file of the factory reset could not be read: run 'verify' again" "проверочный файл сброса прочитать не удалось: запустите 'verify' снова")" ;;
+        *) warn "$(m check_file_factory_reset_could)" ;;
       esac
-      [ -z "$(adbs shell pm path "$P6_TUNER" 2>/dev/null | tr -d '\r')" ] && ok "$(t "SystemUI Tuner from stock is gone" "SystemUI Tuner со стока удалён")" || warn "$(t "SystemUI Tuner from stock is still installed" "SystemUI Tuner со стока всё ещё установлен")"
+      [ -z "$(adbs shell pm path "$P6_TUNER" 2>/dev/null | tr -d '\r')" ] && ok "$(m systemui_tuner_stock_gone)" || warn "$(m systemui_tuner_stock_still)"
       n=$(adbs shell pm list packages -3 2>/dev/null | tr -d '\r' | grep -c '^package:')
-      [ "$n" = 0 ] && ok "$(t "no apps from before" "приложений со старой системы нет")" || say "$(t "user apps: $n" "приложений пользователя: $n")" ;;
-    keep) ok "$(t "your data was kept (--keep-data)" "ваши данные сохранены (--keep-data)")" ;;
+      [ "$n" = 0 ] && ok "$(m no_apps_before)" || say "$(m user_apps "$n")" ;;
+    keep) ok "$(m data_kept_keep_data)" ;;
   esac
   for s in "global device_provisioned" "secure user_setup_complete" "secure tv_user_setup_complete"; do
     flags="$flags$(adbs shell settings get $s 2>/dev/null | tr -d '\r')"
   done
-  [ "$flags" = 111 ] && ok "$(t "the projector is marked set up (Home and the remote work)" "проектор отмечен как настроенный (Home и пульт работают)")" \
-    || warn "$(t "the projector is not marked set up ($flags): Home and the remote may not work; report it" "проектор не отмечен как настроенный ($flags): Home и пульт могут не работать; сообщите об этом")"
-  [ -n "$(adbs shell pidof "$P6_APP" "$P6_APP_OLD" 2>/dev/null | tr -d '\r')" ] && ok "$(t "projector app running" "приложение проектора работает")" || warn "$(t "the projector app ($P6_APP) is not running" "приложение проектора ($P6_APP) не запущено")"
-  adbs shell dumpsys media.audio_policy 2>/dev/null | grep -q "Output" && ok "$(t "audio outputs present" "аудиовыходы есть")" || warn "$(t "no audio outputs listed" "аудиовыходы не найдены")"
+  [ "$flags" = 111 ] && ok "$(m projector_marked_set_up_home)" \
+    || warn "$(m projector_not_marked_set_up "$flags")"
+  [ -n "$(adbs shell pidof "$P6_APP" "$P6_APP_OLD" 2>/dev/null | tr -d '\r')" ] && ok "$(m projector_app_running)" || warn "$(m projector_app_not_running "$P6_APP")"
+  adbs shell dumpsys media.audio_policy 2>/dev/null | grep -q "Output" && ok "$(m audio_outputs_present)" || warn "$(m no_audio_outputs_listed)"
   state_set step_verify done
 }
 
@@ -2783,34 +2726,28 @@ play6_done() {
   case "$w" in
     keep)
       [ "$(state_get step_verify)" = done ] || play6_verify 30
-      t "Done. Lumen OS runs on the $P_NAME with your data kept." "Готово. Lumen OS работает на $P_NAME, ваши данные сохранены."; echo ;;
+      m done_lumen_os_runs_data "$P_NAME"; echo ;;
     manual)
-      t "Lumen OS is written. Finish with the factory reset on the projector (Settings > Device Preferences >
-Reset > Factory reset), then join your Wi-Fi in Settings > Network & Internet." "Lumen OS записана. Завершите сбросом на проекторе («Настройки > Настройки устройства > Сброс >
-Сброс к заводским настройкам»), затем подключитесь к Wi-Fi в «Настройки > Сеть и Интернет»."; echo ;;
+      m lumen_os_written_finish_factory; echo ;;
     *)
       # a later run: the projector may answer again (Wi-Fi joined, debugging on): then check it
       if [ "$WIPED_NOW" = 0 ] && [ "$(state_get step_verify)" != done ]; then
         [ -n "$ADB_T" ] || ADB_T=$(state_get ip)
         if [ -n "$ADB_T" ] && wifi_connect 0; then play6_verify 0; echo; fi
       fi
-      t "Done. On the projector: Settings > Network & Internet: join your Wi-Fi. To check the install from
-this computer later: turn on debugging (guide, section '$P_NAME', 'Check the install') and run:
-bash lumen-install.sh verify --ip ADDRESS" "Готово. На проекторе: «Настройки > Сеть и Интернет», подключитесь к своему Wi-Fi. Проверить
-установку с компьютера можно позже: включите отладку (инструкция, раздел «${P_NAME}», «Проверьте
-установку») и запустите: bash lumen-install.sh verify --ip АДРЕС"; echo
+      m done_projector_settings_network "$P_NAME"; echo
       if [ -n "$(state_get gapps_plan)" ] && [ "$(state_get step_gapps_fill)" = done ]; then
-        ok "$(t "Google services are in: after joining Wi-Fi, sign in with Settings > Accounts > Add account. If Google refuses the sign-in, register the GSF ID (guide, section '$P_NAME', 'Google services')." "сервисы Google добавлены: после подключения к Wi-Fi войдите через Настройки > Аккаунты > Добавить аккаунт. Если Google не пускает, зарегистрируйте GSF ID (инструкция, раздел «${P_NAME}», «Сервисы Google»).")"
+        ok "$(m google_services_after_joining_wi "$P_NAME")"
       fi ;;
   esac
-  echo "  $(t 'Guide' 'Инструкция'): $(p6_guide)"
+  echo "  $(m guide): $(p6_guide)"
 }
 play6_all() {
   release_guard
   [ -z "$GAPPS_WITH" ] || p6_gapps_plan
   [ "$(state_get step_check)" = done ] || play6_check
   if [ -z "$(state_get step_backup)" ] && ! p6_in_fastboot; then
-    if ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then cmd_backup; else state_set step_backup skipped; fi
+    if ask "$(m make_backup_apps_files_first)"; then cmd_backup; else state_set step_backup skipped; fi
   fi
   play6_install
   play6_done
@@ -2848,44 +2785,42 @@ p6_gapps_push() {  # fill.sh, the allow-list and the sysconfig layer into GAPPS_
   done
 }
 p6_lumen_only() {  # connected: Lumen OS for this projector runs (play6_device said so), else STOP
-  [ "$(state_get dev_lumen)" = 1 ] || die "$(t "this projector runs XGIMI's system: install Lumen OS first (guide, section '$P_NAME'). Nothing was written." "на проекторе система XGIMI: сначала установите Lumen OS (инструкция, раздел «${P_NAME}»). Ничего не записано.")"
+  [ "$(state_get dev_lumen)" = 1 ] || die "$(m projector_runs_xgimis_system "$P_NAME")"
 }
 p6_root_or_die() {  # adb root over Wi-Fi, else STOP (nothing written yet)
   local rc
   p6_root; rc=$?
   case "$rc" in
     0) ;;
-    2) die "$(t "after 'adb root' the projector did not answer over Wi-Fi again within a minute (adbd restarts with it). If the projector asks: allow debugging from this computer, tick \"Always allow from this computer\" and press OK. Then run the installer again." "после 'adb root' проектор не ответил по Wi-Fi снова за минуту (adbd при этом перезапускается). Если проектор спрашивает, разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK. Затем запустите установщик снова.")" ;;
-    3) die "$(t "root debugging is off on the projector. Turn it on: Settings > Device Preferences > Developer options > Rooted debugging. Then run the same command again. Nothing was written." "на проекторе выключена отладка с правами root. Включите: Настройки > Настройки устройства > Для разработчиков > Отладка суперпользователем. Затем запустите ту же команду снова. Ничего не записано.")" ;;
-    *) die "$(t "adb root is not possible on this system (Lumen OS is a userdebug build: is it really Lumen OS?)" "adb root на этой системе невозможен (Lumen OS собрана как userdebug: точно ли это Lumen OS?)")" ;;
+    2) die "$(m after_adb_root_projector_did_2)" ;;
+    3) die "$(m root_debugging_off_projector_turn)" ;;
+    *) die "$(m adb_root_not_possible_system)" ;;
   esac
 }
 p6_wait_lumen() {  # after a restart: Lumen OS of this projector back over Wi-Fi and started (else STOP with $1)
   local i=0 t0
-  say "$(t "waiting for Lumen OS over Wi-Fi (up to 10 minutes)" "жду Lumen OS по Wi-Fi (до 10 минут)")"
-  wifi_connect 600 || die "$(t "Lumen OS did not answer over Wi-Fi within 10 minutes. Is the A-to-A cable out of the projector? Press the power button if the picture is dark. Then run the same command again." "Lumen OS не ответила по Wi-Fi за 10 минут. Кабель A–A вынут из проектора? Если изображения нет, нажмите кнопку питания. Затем запустите ту же команду снова.") $1"
+  say "$(m waiting_lumen_os_over_wi_2)"
+  wifi_connect 600 || die "$(m lumen_os_did_not_answer_2) $1"
   p6_identity
   t0=$SECONDS
   while [ "$(prop sys.boot_completed)" != 1 ]; do
-    [ "$i" -lt 300 ] && [ $((SECONDS - t0)) -lt 300 ] || die "$(t "Lumen OS did not finish starting within 5 more minutes. Restart the projector with the power button and run the same command again." "Lumen OS не загрузилась до конца ещё за 5 минут. Перезагрузите проектор кнопкой питания и запустите ту же команду снова.") $1"
+    [ "$i" -lt 300 ] && [ $((SECONDS - t0)) -lt 300 ] || die "$(m lumen_os_did_not_finish_2) $1"
     sleep 5; i=$((i + 5))
   done
-  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(t "the projector does not run Lumen OS for the $P_NAME" "на проекторе не Lumen OS для $P_NAME")"
+  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(m projector_not_run_lumen_os_3 "$P_NAME")"
 }
 p6_to_fastboot() {  # Lumen OS runs: cable in, restart into fastboot mode, check it there
   local a
   echo
-  t "Take the USB stick out of the projector's USB port, if one is in, and connect that port to this
-computer with the USB A-to-A cable. Keep the power adapter connected." "Выньте флешку из USB-порта проектора, если она там, и соедините этот порт с компьютером кабелем
-USB A–A. Блок питания оставьте подключённым."; echo
-  printf '%s ' "$(t "Press Enter when the cable is in." "Когда кабель вставлен, нажмите Enter.")"
+  m take_usb_stick_out_projectors; echo
+  printf '%s ' "$(m press_enter_when_cable)"
   read -r a
-  say "$(t "restarting into fastboot mode (about 30 seconds)" "перезагрузка в режим fastboot (около 30 секунд)")"
+  say "$(m restarting_fastboot_mode_about_30)"
   if ! adbs reboot fastboot >/dev/null 2>&1 && p6_alive; then
-    die "$(t "adb reboot fastboot failed: the projector still runs its system. Unplug the A-to-A cable and run the same command again." "adb reboot fastboot не удался: проектор работает в своей системе. Выньте кабель A–A и запустите ту же команду снова.")"
+    die "$(m adb_reboot_fastboot_failed_2)"
   fi
   adb disconnect "$ADB_T" >/dev/null 2>&1
-  p6_fb_wait 180 || die "$(t "the projector did not appear on the cable within 3 minutes. Is the cable in the projector's USB port (not a hub)? On Windows: the Google USB Driver. On Linux: udev permissions ('no permissions' in 'fastboot devices'). Unplug the cable, press the power button if the picture is dark, and run the same command again." "проектор не появился на кабеле за 3 минуты. Кабель в USB-порту проектора (не через хаб)? На Windows нужен Google USB Driver. На Linux права udev ('no permissions' в 'fastboot devices'). Выньте кабель, нажмите кнопку питания, если изображения нет, и запустите ту же команду снова.")"
+  p6_fb_wait 180 || die "$(m projector_did_not_appear_cable_2)"
   play6_fbd_check
 }
 p6_super_free() {  # bytes of super that no logical partition uses (each rounded up to 1 MiB), minus SUPER_RESERVE
@@ -2908,17 +2843,17 @@ p6_gapps_wipe() {  # the data wipe of the install (Android's factory reset), rig
 
 p6_gapps_files() {  # FILE: the zip is there, and the installer's own files for it
   local f
-  [ -f "$1" ] || die "$(t "no file $1" "нет файла $1")"
+  [ -f "$1" ] || die "$(m no_file "$1")"
   for f in gapps_allow.txt gapps_fill.sh lumen-gapps.xml; do
     [ -f "$P6_GAPPS_LIB/$f" ] || die "internal: lib/play6/$f is missing: re-download the installer of the $P_NAME release"
   done
 }
 p6_gapps_zipcheck() {  # FILE: the zip on this computer against lib/play6/gapps_allow.txt; sets P6G_SHA, P6G_NAME, P6G_PART
   local zl sc
-  say "$(t "checking $(basename "$1")" "проверяю $(basename "$1")")"
+  say "$(m checking "$(basename "$1")")"
   P6G_SHA=$(sha256 "$1")
   zl=$(p6_gapps_line "$P6G_SHA")
-  [ -n "$zl" ] || die "$(t "$(basename "$1") is not the MindTheGapps file this installer accepts for the $P_NAME (sha256 ${P6G_SHA:0:16}...). Download exactly the file the guide names, section '$P_NAME', 'Google services'" "$(basename "$1") не тот файл MindTheGapps, который установщик принимает для $P_NAME (sha256 ${P6G_SHA:0:16}...). Скачайте ровно тот файл, что указан в инструкции, раздел «${P_NAME}», «Сервисы Google»"). $(t 'Nothing was written.' 'Ничего не записано.')"
+  [ -n "$zl" ] || die "$(m not_mindthegapps_file_installer_2 "$(basename "$1")" "$P_NAME" "${P6G_SHA:0:16}"). $(m nothing_written)"
   P6G_NAME=$(printf '%s\n' "$zl" | cut -d' ' -f2); P6G_PART=$(gapps_field "$zl" part); sc=$(gapps_field "$zl" sysconfig)
   case "$P6G_PART" in ''|*[!0-9]*) die "internal: lib/play6/gapps_allow.txt part=" ;; esac
   [ "$(sha256 "$P6_GAPPS_LIB/lumen-gapps.xml")" = "$sc" ] || die "internal: lib/play6/lumen-gapps.xml is not the allow-listed one: re-download the installer"
@@ -2928,17 +2863,17 @@ p6_gapps_part() {  # part: fastboot mode (GV current): lumen_gapps created, or r
   local free cur mb=$(($1 / 1048576))
   free=$(p6_super_free); cur=$(gv_size "$P6_GAPPS"); cur=$(( ${cur:-0} ))
   if [ $(( free + (cur + 1048575) / 1048576 * 1048576 )) -lt "$1" ]; then
-    P6G_WHY="$(t "not enough free space in super: $(( (free + cur) / 1048576 )) MB, the Google services need $mb MB." "в super мало места: свободно $(( (free + cur) / 1048576 )) МБ, сервисам Google нужно $mb МБ.")"
+    P6G_WHY="$(m not_enough_free_space_super_3 "$(( (free + cur) / 1048576 ))" "$mb")"
     return 1
   fi
   if [ "$cur" = 0 ]; then
-    say "$(t "creating $P6_GAPPS ($mb MB)" "создаю $P6_GAPPS ($mb МБ)")"
-    fb_do create "$P6_GAPPS" "$1" || { P6G_WHY="$(t "$P6_GAPPS could not be created." "$P6_GAPPS создать не удалось.")"; return 1; }
+    say "$(m creating_mb "$P6_GAPPS" "$mb")"
+    fb_do create "$P6_GAPPS" "$1" || { P6G_WHY="$(m could_not_created_2 "$P6_GAPPS")"; return 1; }
   elif [ "$cur" != "$1" ]; then
-    say "$(t "resizing $P6_GAPPS to $mb MB" "меняю размер $P6_GAPPS на $mb МБ")"
-    fb_do resize "$P6_GAPPS" "$1" || { P6G_WHY="$(t "$P6_GAPPS could not be resized." "размер $P6_GAPPS изменить не удалось.")"; return 1; }
+    say "$(m resizing_mb "$P6_GAPPS" "$mb")"
+    fb_do resize "$P6_GAPPS" "$1" || { P6G_WHY="$(m could_not_resized "$P6_GAPPS")"; return 1; }
   else
-    ok "$(t "$P6_GAPPS is there ($mb MB)" "$P6_GAPPS уже есть ($mb МБ)")"
+    ok "$(m there_mb "$P6_GAPPS" "$mb")"
   fi
 }
 
@@ -2953,7 +2888,7 @@ play6_gapps_install() {
     # an earlier run may have stopped while the projector waited in fastboot mode on the cable
     if p6_in_fastboot; then
       fb reboot >/dev/null 2>&1
-      die "$(t "the projector was waiting in fastboot mode (an earlier run stopped there) and restarts now. Unplug the A-to-A cable, wait for Lumen OS and run the same command again." "проектор ждал в режиме fastboot (прошлый запуск остановился там) и сейчас перезагружается. Выньте кабель A–A, дождитесь Lumen OS и запустите ту же команду снова.")"
+      die "$(m projector_waiting_fastboot_mode)"
     fi
     die "$(p6_noconn_text)"
   fi
@@ -2961,85 +2896,71 @@ play6_gapps_install() {
   p6_lumen_only
   have=$(prop sys.lumen.gapps)
   case "$have" in
-    '') die "$(t "the Lumen OS on the projector has no Google services add-on support: install a newer Lumen OS for the $P_NAME first (guide, section '$P_NAME'). Nothing was written." "в Lumen OS на проекторе нет поддержки дополнения с сервисами Google: сначала поставьте более новую Lumen OS для $P_NAME (инструкция, раздел «${P_NAME}»). Ничего не записано.")" ;;
+    '') die "$(m lumen_os_projector_has_no "$P_NAME")" ;;
     mounted:*)
-      ok "$(t "Google services are already added and on: nothing to do. To put them in again, first: bash lumen-install.sh gapps --remove. Nothing was written." "сервисы Google уже добавлены и включены: делать нечего. Чтобы поставить их заново, сначала: bash lumen-install.sh gapps --remove. Ничего не записано.")"
+      ok "$(m google_services_already_added)"
       return 0 ;;
-    none) [ -z "$(prop ro.com.google.gmsversion)" ] || die "$(t "this projector runs Lumen OS with Google services built in: nothing to add" "на проекторе Lumen OS со встроенными сервисами Google: добавлять нечего")" ;;
+    none) [ -z "$(prop ro.com.google.gmsversion)" ] || die "$(m projector_runs_lumen_os_google_2)" ;;
   esac
   p6_root_or_die
   echo
   if [ "$KEEP_DATA" = 1 ]; then
-    t "Adding Google services: the installer creates the partition $P6_GAPPS ($mb MB) in super in fastboot
-mode (over the A-to-A cable), restarts the projector a few times and copies the Google apps from
-$name into it, each one checked. Your data stays. system, vendor, boot, recovery and XGIMI's
-calibration stay untouched." "Добавляю сервисы Google: установщик в режиме fastboot (через кабель A–A) создаёт раздел $P6_GAPPS
-($mb МБ) в super, несколько раз перезагружает проектор и копирует в этот раздел приложения Google из
-$name, проверяя каждое. Ваши данные остаются. System, vendor, boot, recovery и калибровка XGIMI не
-затрагиваются."; echo
-    say "$(t "--keep-data: sign in to Google later in Settings > Accounts. Some Google features (the phone remote) may work fully only after a factory reset." "--keep-data: в Google войдите потом через Настройки > Аккаунты. Некоторые функции Google (пульт на телефоне) могут полностью заработать только после сброса к заводским настройкам.")"
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    m adding_google_services_installer "$P6_GAPPS" "$mb" "$name"; echo
+    say "$(m keep_data_sign_google_later_2)"
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
   else
-    t "Adding Google services: the installer creates the partition $P6_GAPPS ($mb MB) in super in fastboot
-mode (over the A-to-A cable), restarts the projector a few times, copies the Google apps from $name
-into it, each one checked, and then ERASES ALL DATA on the projector (apps, accounts, settings, files,
-Wi-Fi networks) with Android's factory reset, as at the install: the first start then sets up Google
-services properly. system, vendor, boot, recovery and XGIMI's calibration stay untouched." "Добавляю сервисы Google: установщик в режиме fastboot (через кабель A–A) создаёт раздел $P6_GAPPS
-($mb МБ) в super, несколько раз перезагружает проектор, копирует в этот раздел приложения Google из
-$name, проверяя каждое, и затем СТИРАЕТ ВСЕ ДАННЫЕ проектора (приложения, аккаунты, настройки,
-файлы, сети Wi-Fi) сбросом Android к заводским настройкам, как при установке: тогда первый запуск
-правильно настроит сервисы Google. System, vendor, boot, recovery и калибровка XGIMI не затрагиваются."; echo
-    if [ "$(state_get step_backup)" != done ] && ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then
+    m adding_google_services_installer_2 "$P6_GAPPS" "$mb" "$name"; echo
+    if [ "$(state_get step_backup)" != done ] && ask "$(m make_backup_apps_files_first)"; then
       cmd_backup
     fi
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
   fi
   # 1. the fill script's own checks on the projector, then the 'off' file (the next starts leave the partition alone)
   p6_gapps_push
   o=$(gapps_sh pre "$zsha" "$(wc -c < "$zip" | tr -d ' ')")
-  case "$o" in "OK pre "*) ;; *) adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(t "the projector is not ready" "проектор не готов"): ${o#FAIL }. $(t 'Nothing was written.' 'Ничего не записано.')" ;; esac
+  case "$o" in "OK pre "*) ;; *) adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(m projector_not_ready): ${o#FAIL }. $(m nothing_written)" ;; esac
   o=$(gapps_sh off "$zsha")
   adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
-  case "$o" in "OK off"*) ;; *) die "$(t "the projector is not ready" "проектор не готов"): ${o#FAIL }. $(t 'Nothing was written.' 'Ничего не записано.')" ;; esac
+  case "$o" in "OK off"*) ;; *) die "$(m projector_not_ready): ${o#FAIL }. $(m nothing_written)" ;; esac
   # 2. fastboot mode: the partition
   p6_to_fastboot
   p6_gapps_part "$part" || p6_fb_stop "$P6G_WHY"
   fb reboot >/dev/null 2>&1
   p6_cable_out
   # 3. filled over Wi-Fi as root
-  p6_wait_lumen "$(t "$P6_GAPPS is still empty, so Lumen OS starts without Google services." "$P6_GAPPS пока пуст, Lumen OS запускается без сервисов Google.")"
+  p6_wait_lumen "$(m still_empty_lumen_os_starts "$P6_GAPPS")"
   p6_root_or_die
-  [ "$(prop sys.lumen.gapps)" = off ] || die "$(t "the projector did not leave $P6_GAPPS unmounted (sys.lumen.gapps=$(prop sys.lumen.gapps)). Restart it and run the same command again." "проектор не оставил $P6_GAPPS неподключённым (sys.lumen.gapps=$(prop sys.lumen.gapps)). Перезагрузите его и запустите ту же команду снова.")"
+  [ "$(prop sys.lumen.gapps)" = off ] || die "$(m projector_did_not_leave_unmounted "$P6_GAPPS" "$(prop sys.lumen.gapps)")"
   p6_gapps_push
-  say "$(t "copying $name to the projector over Wi-Fi (a few minutes)" "копирую $name на проектор по Wi-Fi (несколько минут)")"
+  say "$(m copying_projector_over_wi_fi "$name")"
   adbs push "$zip" "$GAPPS_DIR/gapps.zip" >/dev/null 2>&1 \
-    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(t "adb push of the zip failed. Lumen OS starts without Google services. Run the same command again." "adb push архива не удался. Lumen OS запускается без сервисов Google. Запустите ту же команду снова.")"; }
-  say "$(t "formatting $P6_GAPPS and copying the Google apps into it, each one checked (2 to 4 minutes)" "форматирую $P6_GAPPS и копирую в него приложения Google, проверяя каждое (2-4 минуты)")"
+    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(m adb_push_zip_failed_lumen)"; }
+  say "$(m formatting_copying_google_apps "$P6_GAPPS")"
   o=$(gapps_sh fill "$zsha")
   adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
   case "$o" in
-    "OK fill "*) ok "$P6_GAPPS: ${o#OK fill } $(t "of" "из") $name" ;;
-    *) die "$(t "the Google services were not added" "сервисы Google не добавлены"): ${o#FAIL }. $(t "Lumen OS starts without them as before. Run the same command again, or 'gapps --remove'." "Lumen OS запускается без них, как раньше. Запустите ту же команду снова или 'gapps --remove'.")" ;;
+    "OK fill "*) ok "$P6_GAPPS: ${o#OK fill } $(m of) $name" ;;
+    *) die "$(m google_services_were_not_added): ${o#FAIL }. $(m lumen_os_starts_without_them_2)" ;;
   esac
   state_set gapps "$name"
   # 4. the wipe, so that the first start sets up Google services
   if [ "$KEEP_DATA" = 1 ]; then
-    say "$(t "restarting" "перезагрузка")"
+    say "$(m restarting)"
     adbs reboot >/dev/null 2>&1
     i=0; while p6_alive && [ "$i" -lt 60 ]; do sleep 5; i=$((i + 5)); done   # until it goes away
     adb disconnect "$ADB_T" >/dev/null 2>&1
     p6_wait_lumen ""
     case "$(prop sys.lumen.gapps)" in
-      mounted:*) ok "$(t "Google services are on. Sign in: Settings > Accounts. If Google refuses the sign-in, register the GSF ID (bash lumen-install.sh gsf)." "сервисы Google включены. Вход: Настройки > Аккаунты. Если Google не пускает, зарегистрируйте GSF ID (bash lumen-install.sh gsf).")" ;;
-      *) warn "$(t "the projector does not use the Google services yet (sys.lumen.gapps=$(prop sys.lumen.gapps)); check with 'bash lumen-install.sh gapps'" "проектор пока не использует сервисы Google (sys.lumen.gapps=$(prop sys.lumen.gapps)); проверьте: 'bash lumen-install.sh gapps'")" ;;
+      mounted:*) ok "$(m google_services_sign_settings)" ;;
+      *) warn "$(m projector_not_use_google_services "$(prop sys.lumen.gapps)")" ;;
     esac
   else
     p6_gapps_wipe
-    ok "$(t "done. Join Wi-Fi on the projector, then sign in to Google: Settings > Accounts > Add account. If Google refuses the sign-in, register the GSF ID (guide, section '$P_NAME', 'Google services')." "готово. Подключите проектор к Wi-Fi и войдите в Google: Настройки > Аккаунты > Добавить аккаунт. Если Google не пускает, зарегистрируйте GSF ID (инструкция, раздел «${P_NAME}», «Сервисы Google»).")"
+    ok "$(m done_join_wi_fi_projector "$P_NAME")"
   fi
   state_set step_gapps done
 }
@@ -3051,37 +2972,27 @@ play6_gapps_remove() {
   play6_device
   p6_lumen_only
   case "$(prop sys.lumen.gapps)" in
-    none|'') ok "$(t "this projector has no $P6_GAPPS: nothing to remove. Nothing was written." "на проекторе нет $P6_GAPPS: удалять нечего. Ничего не записано.")"
+    none|'') ok "$(m projector_has_no_nothing_remove "$P6_GAPPS")"
              state_set gapps ""; return 0 ;;
   esac
   echo
   if [ "$KEEP_DATA" = 1 ]; then
-    t "Removing the Google services you added: the installer deletes the partition $P6_GAPPS in fastboot
-mode (over the A-to-A cable) and restarts. Your data stays, but Google apps updated from Play stay
-behind as apps that may not work: a factory reset removes them." "Удаляю добавленные вами сервисы Google: установщик в режиме fastboot (через кабель A–A) удаляет
-раздел $P6_GAPPS и перезагружает проектор. Данные остаются, но обновлённые из Play приложения Google
-останутся и могут не работать: их уберёт сброс к заводским настройкам."; echo
-    printf '%s ' "$(t "Type WRITE to continue:" "Введите WRITE, чтобы продолжить:")"
+    m removing_google_services_added_3 "$P6_GAPPS"; echo
+    printf '%s ' "$(m type_write_continue)"
     read -r a
-    [ "$a" = WRITE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = WRITE ] || die "$(m cancelled_nothing_written)"
   else
-    t "Removing the Google services you added: the installer deletes the partition $P6_GAPPS in fastboot
-mode (over the A-to-A cable) and then ERASES ALL DATA on the projector (apps, accounts, settings,
-files, Wi-Fi networks) with Android's factory reset, as at the install. system, vendor, boot,
-recovery and XGIMI's calibration stay untouched." "Удаляю добавленные вами сервисы Google: установщик в режиме fastboot (через кабель A–A) удаляет
-раздел $P6_GAPPS и затем СТИРАЕТ ВСЕ ДАННЫЕ проектора (приложения, аккаунты, настройки, файлы, сети
-Wi-Fi) сбросом Android к заводским настройкам, как при установке. System, vendor, boot, recovery и
-калибровка XGIMI не затрагиваются."; echo
-    printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+    m removing_google_services_added_4 "$P6_GAPPS"; echo
+    printf '%s ' "$(m type_erase_continue)"
     read -r a
-    [ "$a" = ERASE ] || die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$a" = ERASE ] || die "$(m cancelled_nothing_written)"
   fi
   p6_to_fastboot
   if [ -n "$(gv_size "$P6_GAPPS")" ]; then
-    fb_do delete "$P6_GAPPS" || p6_fb_stop "$(t "$P6_GAPPS could not be deleted." "$P6_GAPPS удалить не удалось.")"
-    removed=1; ok "$(t "$P6_GAPPS deleted" "$P6_GAPPS удалён")"
+    fb_do delete "$P6_GAPPS" || p6_fb_stop "$(m could_not_deleted "$P6_GAPPS")"
+    removed=1; ok "$(m deleted "$P6_GAPPS")"
   else
-    ok "$(t "no $P6_GAPPS in super: nothing to remove" "в super нет $P6_GAPPS: удалять нечего")"
+    ok "$(m no_super_nothing_remove "$P6_GAPPS")"
   fi
   fb reboot >/dev/null 2>&1
   p6_cable_out
@@ -3090,7 +3001,7 @@ Wi-Fi) сбросом Android к заводским настройкам, как
     p6_wait_lumen ""
     p6_gapps_wipe
   fi
-  ok "$(t "the projector starts Lumen OS without Google services" "проектор загружает Lumen OS без сервисов Google")"
+  ok "$(m projector_starts_lumen_os_without)"
 }
 
 play6_gapps_status() {
@@ -3100,13 +3011,13 @@ play6_gapps_status() {
   p6_lumen_only
   v=$(prop sys.lumen.gapps)
   case "$v" in
-    mounted:*) ok "$(t "Google services added by you: on" "добавленные вами сервисы Google: включены") ($(prop ro.com.google.gmsversion))" ;;
+    mounted:*) ok "$(m google_services_added) ($(prop ro.com.google.gmsversion))" ;;
     none)
-      if [ -n "$(prop ro.com.google.gmsversion)" ]; then ok "$(t "this Lumen OS has Google services built in" "в этой Lumen OS сервисы Google встроены")"
-      else say "$(t "no Google services added. To add them: bash lumen-install.sh gapps --zip FILE (guide, section '$P_NAME', 'Google services')" "сервисы Google не добавлены. Как добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «${P_NAME}», «Сервисы Google»)")"; fi ;;
-    off) warn "$(t "the Google services are off: a 'gapps --zip' run did not finish (the file /cache/lumen_gapps_off). Run 'gapps --zip FILE' again, or 'gapps --remove'." "сервисы Google выключены: запуск 'gapps --zip' не завершился (файл /cache/lumen_gapps_off). Запустите 'gapps --zip ФАЙЛ' ещё раз или 'gapps --remove'.")" ;;
-    '') say "$(t "this Lumen OS has no Google services add-on support" "в этой Lumen OS нет поддержки дополнения с сервисами Google")" ;;
-    *) warn "$(t "the Google services you added cannot be used ($v): run 'gapps --zip FILE' again, or 'gapps --remove'" "добавленные сервисы Google не могут использоваться ($v): запустите 'gapps --zip ФАЙЛ' ещё раз или 'gapps --remove'")" ;;
+      if [ -n "$(prop ro.com.google.gmsversion)" ]; then ok "$(m lumen_os_has_google_services)"
+      else say "$(m no_google_services_added_add_2 "$P_NAME")"; fi ;;
+    off) warn "$(m google_services_off_gapps_zip)" ;;
+    '') say "$(m lumen_os_has_no_google_2)" ;;
+    *) warn "$(m google_services_added_cannot_used "$v")" ;;
   esac
 }
 
@@ -3124,25 +3035,25 @@ play6_gsf() {
   play6_device
   p6_lumen_only
   if [ -z "$(adbs shell pm path com.google.android.gsf 2>/dev/null | tr -d '\r')" ]; then
-    ok "$(t "this Lumen OS has no Google services: nothing to register" "в этой Lumen OS нет сервисов Google: регистрировать нечего")"
-    say "$(t "To add them: bash lumen-install.sh gapps --zip FILE (guide, section '$P_NAME', 'Google services')" "Как их добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «${P_NAME}», «Сервисы Google»)")"
+    ok "$(m lumen_os_has_no_google)"
+    say "$(m add_them_bash_lumen_install_2 "$P_NAME")"
     return 0
   fi
   p6_root_or_die
   id=$(adbs shell "sqlite3 /data/data/com.google.android.gsf/databases/gservices.db \"select value from main where name='android_id';\"" 2>/dev/null | tr -d '\r')
-  [ -n "$id" ] || die "$(t "no GSF ID yet: connect the projector to the internet, wait two minutes, try again" "GSF ID ещё нет: подключите проектор к интернету, подождите пару минут и повторите")"
+  [ -n "$id" ] || die "$(m no_gsf_id_yet_connect)"
   echo "GSF ID: $id"
-  echo "$(t "Register it at https://www.google.com/android/uncertified (signed in with your Google account), wait 10-30 minutes, then sign in on the projector." "Зарегистрируйте его на https://www.google.com/android/uncertified (войдя в свой аккаунт Google), подождите 10–30 минут и войдите на проекторе.")"
+  echo "$(m register_https_www_google_com)"
 }
 
 # ------------------------------------------------------------------ stick (read-only check of a restore stick)
 p6_md5() { if command -v md5sum >/dev/null 2>&1; then md5sum "$1" | cut -d' ' -f1; else md5 -q "$1"; fi; }
 stick_check() {  # DIR: the stock-restore USB stick of this projector, read only (it never formats anything)
   local m=$STICK n f bad=0 sum ver dev fs pt parts src disk
-  [ -n "$P_RESTORE_BIN" ] || die "$(t "'stick' checks the restore stick of the $(dev_name play6): bash lumen-install.sh --device play6 stick FOLDER" "'stick' проверяет флешку восстановления $(dev_name play6): bash lumen-install.sh --device play6 stick ПАПКА")"
-  [ -n "$m" ] || die "$(t "which stick? bash lumen-install.sh stick FOLDER (macOS: /Volumes/NAME, Linux: /media/${USER:-you}/NAME)" "какая флешка? bash lumen-install.sh stick ПАПКА (macOS: /Volumes/ИМЯ, Linux: /media/${USER:-you}/ИМЯ)")"
-  [ -d "$m" ] || die "$(t "$m is not a folder" "$m не папка")"
-  say "$(t "checking the stock restore stick $m (read only)" "проверяю флешку восстановления $m (только чтение)")"
+  [ -n "$P_RESTORE_BIN" ] || die "$(m stick_checks_restore_stick_bash "$(dev_name "$(flow_id play6-wifi)")")"
+  [ -n "$m" ] || die "$(m which_stick_bash_lumen_install "${USER:-you}")"
+  [ -d "$m" ] || die "$(m not_folder "$m")"
+  say "$(m checking_stock_restore_stick_read "$m")"
   # the partition table and the file system (MBOOT reads only MBR + one FAT32 partition)
   if command -v diskutil >/dev/null 2>&1; then
     dev=$(diskutil info "$m" 2>/dev/null | sed -n 's/^ *Part of Whole: *//p' | head -1)
@@ -3162,11 +3073,11 @@ stick_check() {  # DIR: the stock-restore USB stick of this projector, read only
   else
     pt=""
   fi
-  if [ -z "$pt" ]; then warn "$(t "the partition table could not be read on this computer: make sure it is MBR with one FAT32 partition" "схему разделов на этом компьютере прочитать не удалось: убедитесь, что это MBR с одним разделом FAT32")"
+  if [ -z "$pt" ]; then warn "$(m partition_table_could_not_read)"
   else
-    [ "$pt" = mbr ] && ok "$(t "partition table: MBR" "схема разделов: MBR")" || { warn "$(t "partition table '$pt': it must be MBR (master boot record), not GPT" "схема разделов '$pt': нужна MBR (главная загрузочная запись), не GPT")"; bad=1; }
-    [ "$parts" = 1 ] && ok "$(t "one partition" "один раздел")" || { warn "$(t "$parts partitions: there must be exactly one" "разделов: $parts, а нужен ровно один")"; bad=1; }
-    [ "$fs" = fat32 ] && ok "$(t "file system: FAT32" "файловая система: FAT32")" || { warn "$(t "file system '$fs': it must be FAT32" "файловая система '$fs': нужна FAT32")"; bad=1; }
+    [ "$pt" = mbr ] && ok "$(m partition_table_mbr)" || { warn "$(m partition_table_must_mbr_master "$pt")"; bad=1; }
+    [ "$parts" = 1 ] && ok "$(m one_partition)" || { warn "$(m partitions_there_must_exactly_one "$parts")"; bad=1; }
+    [ "$fs" = fat32 ] && ok "$(m file_system_fat32)" || { warn "$(m file_system_must_fat32 "$fs")"; bad=1; }
   fi
   # exactly the firmware file and an empty factory.txt (folders the computer makes itself do no harm)
   for f in "$m"/* "$m"/.[!.]* "$m"/..?*; do
@@ -3174,22 +3085,22 @@ stick_check() {  # DIR: the stock-restore USB stick of this projector, read only
     n=$(basename "$f")
     case "$n" in
       "$P_RESTORE_BIN"|factory.txt|.fseventsd|.Spotlight-V100|.Trashes|.TemporaryItems|"System Volume Information") ;;
-      ._*) warn "$(t "$n: a macOS helper file; delete it, and copy with 'cp -X' next time" "$n: служебный файл macOS; удалите его, а копируйте командой 'cp -X'")"; bad=1 ;;
-      *) warn "$(t "$n: nothing else may be on the stick" "$n: на флешке не должно быть ничего лишнего")"; bad=1 ;;
+      ._*) warn "$(m macos_helper_file_delete_copy "$n")"; bad=1 ;;
+      *) warn "$(m nothing_else_may_stick "$n")"; bad=1 ;;
     esac
   done
   if [ -f "$m/factory.txt" ]; then
-    [ -s "$m/factory.txt" ] && { warn "$(t "factory.txt must be empty" "factory.txt должен быть пустым")"; bad=1; } || ok "$(t "factory.txt, empty" "factory.txt, пустой")"
-  else warn "$(t "no factory.txt: create an empty file with that name" "нет factory.txt: создайте пустой файл с таким именем")"; bad=1; fi
+    [ -s "$m/factory.txt" ] && { warn "$(m factory_txt_must_empty)"; bad=1; } || ok "$(m factory_txt_empty)"
+  else warn "$(m no_factory_txt_create_empty)"; bad=1; fi
   if [ -f "$m/$P_RESTORE_BIN" ]; then
-    say "$(t "checking $P_RESTORE_BIN (md5, about a minute)" "проверяю $P_RESTORE_BIN (md5, около минуты)")"
+    say "$(m checking_md5_about_minute "$P_RESTORE_BIN")"
     sum=$(p6_md5 "$m/$P_RESTORE_BIN")
     ver=$(printf '%s\n' $P_RESTORE_MD5 | awk -F: -v s="$sum" '$1 == s { print $2 }')
-    if [ -n "$ver" ]; then ok "$P_RESTORE_BIN: $(t "XGIMI firmware" "прошивка XGIMI") $ver (md5 $sum)"
-    else warn "$(t "$P_RESTORE_BIN is not a firmware file the installer knows (md5 $sum): download it again" "$P_RESTORE_BIN не известный установщику файл прошивки (md5 $sum): скачайте его заново")"; bad=1; fi
-  else warn "$(t "no $P_RESTORE_BIN on the stick (exactly this name)" "на флешке нет $P_RESTORE_BIN (ровно с таким именем)")"; bad=1; fi
-  [ "$bad" = 0 ] || die "$(t "the stick is not ready: fix the lines marked ! (guide, section '$P_NAME', 'Back to stock')" "флешка не готова: исправьте строки с ! (инструкция, раздел «${P_NAME}», «Откат на сток»)")"
-  ok "$(t "the stick is ready. Restore: power cable out, stick in the projector's USB port, hold the power button, plug the power in and keep holding about 5 seconds (guide)." "флешка готова. Восстановление: отключите питание, вставьте флешку в USB-порт проектора, зажмите кнопку питания, подключите питание и держите кнопку около 5 секунд (инструкция).")"
+    if [ -n "$ver" ]; then ok "$P_RESTORE_BIN: $(m xgimi_firmware) $ver (md5 $sum)"
+    else warn "$(m not_firmware_file_installer_knows "$P_RESTORE_BIN" "$sum")"; bad=1; fi
+  else warn "$(m no_stick_exactly_name "$P_RESTORE_BIN")"; bad=1; fi
+  [ "$bad" = 0 ] || die "$(m stick_not_ready_fix_lines "$P_NAME")"
+  ok "$(m stick_ready_restore_power_cable)"
 }
 
 # ------------------------------------------------------------------ XGIMI Play 6: Lumen OS and Google services in one pass (--gapps-zip FILE)
@@ -3219,11 +3130,11 @@ p6_gapps_plan() {  # --gapps-zip, before anything else: the zip, and that the in
   plan=$(state_get gapps_plan)
   [ "$(state_get step_flash)" = done ] || return 0
   if [ -n "$(state_get step_wipe)" ]; then
-    [ "$(state_get step_gapps_fill)" = done ] || die "$(t "Lumen OS was installed here without Google services. To add them: bash lumen-install.sh gapps --zip FILE. For a new install: bash lumen-install.sh --device play6 reset first. Nothing was written." "Lumen OS здесь уже установлена без сервисов Google. Добавить их: bash lumen-install.sh gapps --zip ФАЙЛ. Для новой установки сначала: bash lumen-install.sh --device play6 reset. Ничего не записано.")"
+    [ "$(state_get step_gapps_fill)" = done ] || die "$(m lumen_os_installed_here_without_2)"
   elif [ -z "$plan" ]; then
-    die "$(t "this install was started without Google services and Lumen OS is written already: finish it without --gapps-zip, then add them with 'gapps --zip FILE'. Nothing was erased." "эта установка начата без сервисов Google, и Lumen OS уже записана: завершите её без --gapps-zip, затем добавьте их через 'gapps --zip ФАЙЛ'. Ничего не стёрто.")"
+    die "$(m install_started_without_google)"
   elif [ "$plan" != "$P6G_SHA" ]; then
-    die "$(t "this install was started with another MindTheGapps file: use the same file. Nothing was erased." "эта установка начата с другим файлом MindTheGapps: укажите тот же файл. Ничего не стёрто.")"
+    die "$(m install_started_another)"
   fi
 }
 p6_gapps_add() {  # fastboot mode, system written: lumen_gapps for the saved plan; a failure leaves Google out (warned)
@@ -3232,12 +3143,12 @@ p6_gapps_add() {  # fastboot mode, system written: lumen_gapps for the saved pla
   GV=$(fb getvar all 2>&1)   # system has its new size now
   P6G_WHY="internal: lib/play6/gapps_allow.txt part="
   if [ -n "$part" ] && p6_gapps_part "$part"; then state_set step_gapps_part done; return 0; fi
-  warn "$P6G_WHY $(t "Lumen OS is installed without Google services; add them later: gapps --zip FILE (guide, section '$P_NAME', 'Google services')." "Lumen OS ставится без сервисов Google; добавить их можно позже: gapps --zip ФАЙЛ (инструкция, раздел «${P_NAME}», «Сервисы Google»).")"
+  warn "$P6G_WHY $(m lumen_os_installed_without_google "$P_NAME")"
   state_set gapps_plan ""
 }
-p6_ne() {  # en|ru: "Nothing was erased." for the earlier way; nothing after the erase before the first start
+p6_ne() {  # "Nothing was erased." for the earlier way; nothing after the erase before the first start
   [ "$(state_get step_bcb)" = done ] && return 0
-  if [ "$1" = ru ]; then printf '%s' 'Ничего не стёрто.'; else printf '%s' 'Nothing was erased.'; fi
+  m nothing_erased
 }
 p6_root_wait() {  # adb root over Wi-Fi; Rooted debugging off: waits for the user; else STOP (the next run continues here)
   local rc
@@ -3245,65 +3156,62 @@ p6_root_wait() {  # adb root over Wi-Fi; Rooted debugging off: waits for the use
     p6_root; rc=$?
     case "$rc" in
       0) return 0 ;;
-      3) root_setting_wait || die "$(t "turn on Rooted debugging (Settings > Device Preferences > Developer options) and run the same command again: it continues here. $(p6_ne en)" "включите отладку суперпользователем (Настройки > Настройки устройства > Для разработчиков) и запустите ту же команду снова: установка продолжится с этого места. $(p6_ne ru)")" ;;
-      2) die "$(t "after 'adb root' the projector did not answer over Wi-Fi again within a minute (adbd restarts with it). If the projector asks: allow debugging from this computer, tick \"Always allow from this computer\" and press OK. Then run the same command again: it continues here. $(p6_ne en)" "после 'adb root' проектор не ответил по Wi-Fi снова за минуту (adbd при этом перезапускается). Если проектор спрашивает, разрешите отладку с этого компьютера, отметьте «Всегда разрешать с этого компьютера» и нажмите OK. Затем запустите ту же команду снова: установка продолжится с этого места. $(p6_ne ru)")" ;;
-      *) die "$(t "adb root is not possible on this system (Lumen OS is a userdebug build: is it really Lumen OS?). $(p6_ne en)" "adb root на этой системе невозможен (Lumen OS собрана как userdebug: точно ли это Lumen OS?). $(p6_ne ru)")" ;;
+      3) root_setting_wait || die "$(m turn_rooted_debugging_settings_2 "$(p6_ne)")" ;;
+      2) die "$(m after_adb_root_projector_did_3 "$(p6_ne)")" ;;
+      *) die "$(m adb_root_not_possible_system_3 "$(p6_ne)")" ;;
     esac
   done
 }
 p6_gapps_fill_step() {  # step 3: on the first start (old data), fill lumen_gapps as root; Google left out: plan cleared
   local o i
   if [ -z "$GAPPS_WITH" ]; then
-    say "$(t "this install was started with Google services (--gapps-zip), and they are not in yet" "эта установка начата с сервисами Google (--gapps-zip), и они ещё не добавлены")"
-    ask "$(t "Finish the install without Google services? (Adding them later with 'gapps' erases the data once more.)" "Завершить установку без сервисов Google? (Если добавить их позже через 'gapps', данные сотрутся ещё раз.)")" \
-      || die "$(t "run the same command again with --gapps-zip FILE: it continues there. $(p6_ne en)" "запустите ту же команду снова с --gapps-zip ФАЙЛ: установка продолжится с того же места. $(p6_ne ru)")"
+    say "$(m install_started_google_services)"
+    ask "$(m finish_install_without_google_2)" \
+      || die "$(m run_same_command_again_gapps_2 "$(p6_ne)")"
     state_set gapps_plan ""; return 0
   fi
   [ -n "$ADB_T" ] || ADB_T=$(state_get ip)
-  wifi_connect 120 || die "$(p6_noconn_text 120) $(t "$(p6_ne en)" "$(p6_ne ru)")"
+  wifi_connect 120 || die "$(p6_noconn_text 120) $(p6_ne)"
   p6_identity
-  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(t "the projector does not run Lumen OS for the $P_NAME. $(p6_ne en)" "на проекторе не Lumen OS для $P_NAME. $(p6_ne ru)")"
+  [ "$(prop "$(p6_lprop)")" = "$(p6_lval)" ] || die "$(m projector_not_run_lumen_os_4 "$P_NAME" "$(p6_ne)")"
   case "$(prop sys.lumen.gapps)" in
     ''|none)
-      warn "$(t "this Lumen OS shows no $P6_GAPPS (sys.lumen.gapps='$(prop sys.lumen.gapps)'): the install finishes without Google services; add them later: gapps --zip FILE" "эта Lumen OS не видит $P6_GAPPS (sys.lumen.gapps='$(prop sys.lumen.gapps)'): установка завершается без сервисов Google; добавить их позже: gapps --zip ФАЙЛ")"
+      warn "$(m lumen_os_shows_no_sys "$P6_GAPPS" "$(prop sys.lumen.gapps)")"
       state_set gapps_plan ""; return 0 ;;
   esac
   p6_root_wait
   case "$(prop sys.lumen.gapps)" in
     mounted:*)
       # Google from an earlier install is in use: the 'off' file, one restart, then the partition is free to format
-      say "$(t "Google services from an earlier install are in use: turning them off for one restart" "сервисы Google от прошлой установки используются: выключаю их на один перезапуск")"
+      say "$(m google_services_earlier_install)"
       p6_gapps_push
       o=$(gapps_sh off "$P6G_SHA")
       adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
-      case "$o" in "OK off"*) ;; *) die "$(t "the projector is not ready" "проектор не готов"): ${o#FAIL }. $(t "$(p6_ne en)" "$(p6_ne ru)")" ;; esac
+      case "$o" in "OK off"*) ;; *) die "$(m projector_not_ready): ${o#FAIL }. $(p6_ne)" ;; esac
       adbs reboot >/dev/null 2>&1
       i=0; while p6_alive && [ "$i" -lt 60 ]; do sleep 5; i=$((i + 5)); done   # until it goes away
       adb disconnect "$ADB_T" >/dev/null 2>&1
-      p6_wait_lumen "$(t "$(p6_ne en)" "$(p6_ne ru)")"
+      p6_wait_lumen "$(p6_ne)"
       p6_root_wait
-      [ "$(prop sys.lumen.gapps)" = off ] || die "$(t "the projector did not leave $P6_GAPPS unmounted (sys.lumen.gapps=$(prop sys.lumen.gapps)). Restart it and run the same command again. $(p6_ne en)" "проектор не оставил $P6_GAPPS неподключённым (sys.lumen.gapps=$(prop sys.lumen.gapps)). Перезагрузите его и запустите ту же команду снова. $(p6_ne ru)")" ;;
+      [ "$(prop sys.lumen.gapps)" = off ] || die "$(m projector_did_not_leave_unmounted_2 "$P6_GAPPS" "$(prop sys.lumen.gapps)" "$(p6_ne)")" ;;
   esac
   p6_gapps_push
   o=$(gapps_sh pre "$P6G_SHA" "$(wc -c < "$GAPPS_WITH" | tr -d ' ')")
-  case "$o" in "OK pre "*) ;; *) adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(t "the projector is not ready" "проектор не готов"): ${o#FAIL }. $(t "$(p6_ne en)" "$(p6_ne ru)")" ;; esac
-  say "$(t "copying $P6G_NAME to the projector over Wi-Fi (a few minutes)" "копирую $P6G_NAME на проектор по Wi-Fi (несколько минут)")"
+  case "$o" in "OK pre "*) ;; *) adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(m projector_not_ready): ${o#FAIL }. $(p6_ne)" ;; esac
+  say "$(m copying_projector_over_wi_fi "$P6G_NAME")"
   adbs push "$GAPPS_WITH" "$GAPPS_DIR/gapps.zip" >/dev/null 2>&1 \
-    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(t "adb push of the zip failed. Run the same command again: it continues here. $(p6_ne en)" "adb push архива не удался. Запустите ту же команду снова: установка продолжится с этого места. $(p6_ne ru)")"; }
-  say "$(t "formatting $P6_GAPPS and copying the Google apps into it, each one checked (2 to 4 minutes)" "форматирую $P6_GAPPS и копирую в него приложения Google, проверяя каждое (2-4 минуты)")"
+    || { adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1; die "$(m adb_push_zip_failed_run "$(p6_ne)")"; }
+  say "$(m formatting_copying_google_apps "$P6_GAPPS")"
   o=$(gapps_sh fill "$P6G_SHA")
   adbs shell rm -rf "$GAPPS_DIR" >/dev/null 2>&1
   case "$o" in
-    "OK fill "*) ok "$P6_GAPPS: ${o#OK fill } $(t "of" "из") $P6G_NAME" ;;
-    *) die "$(t "the Google services were not added" "сервисы Google не добавлены"): ${o#FAIL }. $(t "Run the same command again: it continues here. $(p6_ne en)" "Запустите ту же команду снова: установка продолжится с этого места. $(p6_ne ru)")" ;;
+    "OK fill "*) ok "$P6_GAPPS: ${o#OK fill } $(m of) $P6G_NAME" ;;
+    *) die "$(m google_services_were_not_added): ${o#FAIL }. $(m run_same_command_again_continues_2 "$(p6_ne)")" ;;
   esac
   state_set gapps "$P6G_NAME"
   state_set step_gapps_fill done
 }
 
-play6_not_needed() {  # the Z9X commands the Play 6 has no use for
-  die "$(t "'$1' is not needed on the $P_NAME. Nothing was done." "на $P_NAME шаг '$1' не нужен. Ничего не сделано.")"
-}
 
 # ------------------------------------------------------------------ projectors with FLOW=ab-fastbootd (lib/devices.conf)
 # A virtual A/B projector whose stock Android has adb over the network only (port 5555; Developer options > USB
@@ -3335,53 +3243,50 @@ ABF_GW=0             # 1 = 'gapps' changed z9x_gapps in this visit (a STOP then 
 ABF_GNEED=0          # bytes of super the add-on of this write still needs (--gapps-zip; abf_room counts them)
 
 abf_other() { case "$1" in a) echo b ;; *) echo a ;; esac; }   # slot -> the other one (slot-count is 2); the slot checks of SLOT_CHECK=yes
-abf_ids() {  # the ids of lib/devices.conf with FLOW=ab-fastbootd (nothing without lib/devices.conf)
-  [ -f "$DEVCONF" ] || return 0
-  awk '{ sub(/\r$/, "") } /^[a-z0-9]+\.FLOW=ab-fastbootd$/ { print substr($0, 1, index($0, ".") - 1) }' "$DEVCONF"
-}
-abf_is() { [ -n "$1" ] && abf_ids | grep -qx -- "$1"; }   # id -> 0 for a FLOW=ab-fastbootd projector
-abf_opt_text() { local l; l=$(abf_ids | tr '\n' '|'); printf '%s' "--device z9x|play6${l:+|${l%|}}"; }
-abf_not_yet() { die "$(t "'$1' is not available for the $P_NAME yet. Nothing was done." "'$1' для $P_NAME пока недоступен. Ничего не сделано.")"; }
 abf_refuse_opts() {  # options of the Z9X and Play 6 ways that this flow does not have
-  [ "$KEEP_DATA" = 0 ] || abf_not_yet --keep-data
-  [ "$WIPE" = format ] || abf_not_yet "--wipe=$WIPE"
-  [ -z "$GAPPS_WITH" ] || abf_gapps_on || abf_not_yet --gapps-zip
+  [ "$KEEP_DATA" = 0 ] || not_yet --keep-data
+  [ "$WIPE" = format ] || not_yet "--wipe=$WIPE"
+  [ -z "$GAPPS_WITH" ] || abf_gapps_on || not_yet --gapps-zip
 }
 abf_gapps_on() { [ -n "$P_GAPPS_ALLOW" ]; }   # the profile has the Google services add-on (GAPPS_ALLOW, GAPPS_IMAGES)
 abf_gv() { printf '%s\n' "$GV" | sed -n "s/^(bootloader) $1: *//p" | head -n 1 | tr -d ' \r'; }   # getvar all, a key with ':' too
-abf_hint() { printf '%s' "$(t "If it hangs with the cable in, pull the cable (then press the power button if the picture does not come back)." "Если он зависнет с вставленным кабелем, выньте кабель (и нажмите кнопку питания, если изображение не вернётся).")"; }
+abf_hint() { printf '%s' "$(m if_hangs_cable_pull_cable)"; }
 abf_dot() {  # a message that another sentence follows ends in a full stop
   case "$1" in *[.!?]) printf '%s' "$1" ;; *) printf '%s.' "$1" ;; esac
 }
 abf_fb_stop() {  # message: leave fastbootd for the old system (nothing was written), or stay once system was begun
   set -- "$(abf_dot "$1")"
   if [ "$ABF_GAPPS" = 1 ]; then   # 'gapps': its own visit decides, the install's steps are not this visit's
-    [ "$ABF_GW" = 0 ] || die "$1 $(t "z9x_gapps was changed in this visit: the projector stays in fastboot mode. Keep the cable in and run the same command again." "z9x_gapps в этом заходе уже изменён: проектор остаётся в режиме fastboot. Не вынимайте кабель и запустите ту же команду снова.")"
+    [ "$ABF_GW" = 0 ] || die "$1 $(m z9x_gapps_changed_visit_projector)"
     state_set gapps_fastboot ""
     fb reboot >/dev/null 2>&1
-    die "$1 $(t "Nothing was written. The projector starts Lumen OS again." "Ничего не записано. Проектор снова загружает Lumen OS.") $(abf_hint)"
+    die "$1 $(m nothing_written_projector_starts) $(abf_hint)"
   fi
   case "$(state_get step_system)" in   # a restart now would start half a system, or Lumen OS on the old data
-    started|done) die "$1 $(t "The write of this install is not finished: the projector stays in fastboot mode. Keep the cable in and run the installer again." "Запись этой установки не закончена: проектор остаётся в режиме fastboot. Не вынимайте кабель и запустите установщик снова.")" ;;
+    started|done) die "$1 $(m write_install_not_finished)" ;;
   esac
   # this visit is over: a later fastboot mode (entered by hand) is never taken for it, so no run skips the checks
   state_set step_fastboot ""
   fb reboot >/dev/null 2>&1
-  die "$1 $(t "Nothing was written. The projector starts its old system." "Ничего не записано. Проектор загружает прежнюю систему.") $(abf_hint)"
+  die "$1 $(m nothing_written_projector_starts_2) $(abf_hint)"
 }
 abf_img_stop() {  # message [1 = it ends in 'Nothing was written.']: an image STOP, in a fastboot visit by abf_fb_stop
   [ "$ABF_RESUME" = 0 ] || abf_fb_stop "$1"
-  [ "${2-}" != 1 ] || die "$(abf_dot "$1") $(t "Nothing was written." "Ничего не записано.")"
+  [ "${2-}" != 1 ] || die "$(abf_dot "$1") $(m nothing_written)"
   die "$1"
 }
 
 abf_other_hint() {  # model board: another projector this installer knows, and its way in
   local id; id=$(profile_of "$1" "$2")
-  case "$id" in
+  case "$(profile_flow "$id")" in
     '') ;;
-    z9x) printf ' %s' "$(t "It is an XGIMI Z9X: it installs over the USB cable with the installer of the XGIMI Z9X release (see its guide)." "Это XGIMI Z9X: он ставится по кабелю USB установщиком из релиза для XGIMI Z9X (см. его инструкцию).")" ;;
-    play6) printf ' %s' "$(t "It is an $(dev_name play6): it installs with the installer of its own release, over Wi-Fi with --ip ADDRESS (see its guide)." "Это $(dev_name play6): он ставится установщиком из своего релиза, по Wi-Fi с --ip АДРЕС (см. его инструкцию).")" ;;
-    *) printf ' %s' "$(t "It is an $(dev_name "$id"): it installs with the installer of its own release (--device $id, see its guide)." "Это $(dev_name "$id"): он ставится установщиком из своего релиза (--device $id, см. его инструкцию).")" ;;
+    z9x-usb) printf ' %s' "$(m xgimi_z9x_installs_over_usb)" ;;
+    play6-wifi) printf ' %s' "$(m installs_installer_own_release "$(dev_name "$id")")" ;;
+    *) if [ -n "$(devconf_todo "$id")" ]; then   # its profile is not finished (TODO): no way in yet
+         printf ' %s' "$(m lumen_os_not_support_yet "$(dev_name "$id")")"
+       else
+         printf ' %s' "$(m installs_installer_own_release_2 "$(dev_name "$id")" "$id")"
+       fi ;;
   esac
 }
 abf_identity() {  # the device at ADB_T: this projector model, and the saved one (DHCP may give its address away)
@@ -3391,17 +3296,17 @@ abf_identity() {  # the device at ADB_T: this projector model, and the saved one
     adb disconnect "$ADB_T" >/dev/null 2>&1
     # a model code of this projector that is not supported yet (MODELS_NOT_YET): named as such, never 'not an HB'
     if [ "$board" = "$P_BOARD" ] && [ -n "$code" ] && case " $P_MODELS_NOT_YET " in *" $code "*) true ;; *) false ;; esac; then
-      die "$(t "the $P_NAME model $code is not supported yet: Lumen OS is made for the models $(abf_matrix) only. Nothing was done." "модель $P_NAME $code пока не поддерживается: Lumen OS сделана только для моделей $(abf_matrix). Ничего не сделано.")"
+      die "$(m model_not_supported_yet_lumen "$P_NAME" "$code" "$(abf_matrix)")"
     fi
-    die "$(t "this is not an $P_NAME (model '$code', board '$board'). Nothing was done." "это не $P_NAME (код модели '$code', плата '$board'). Ничего не сделано.")$(abf_other_hint "$code" "$board")"
+    die "$(m not_model_board_nothing_done "$P_NAME" "$code" "$board")$(abf_other_hint "$code" "$board")"
   fi
-  [ -n "$ser" ] || die "$(t "the projector at $ADB_T reports no serial number. Nothing was done." "проектор по адресу $ADB_T не сообщает серийный номер. Ничего не сделано.")"
+  [ -n "$ser" ] || die "$(m projector_reports_no_serial_number "$ADB_T")"
   if [ -n "$SERIAL" ] && [ "$SERIAL" != "$ser" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
     if [ "$SERIAL_FROM_STATE" = 1 ]; then
-      die "$(t "the projector at $ADB_T has the serial $ser, but this install was started on $SERIAL. Another projector? Then first: bash lumen-install.sh --device $PROJECTOR reset. Nothing was done." "у проектора по адресу $ADB_T серийный номер $ser, а установка начиналась на $SERIAL. Другой проектор? Тогда сначала: bash lumen-install.sh --device $PROJECTOR reset. Ничего не сделано.")"
+      die "$(m projector_has_serial_but_install_2 "$ADB_T" "$ser" "$SERIAL" "$PROJECTOR")"
     fi
-    die "$(t "the projector at $ADB_T has the serial $ser, not $SERIAL (--serial). Nothing was done." "у проектора по адресу $ADB_T серийный номер $ser, а не $SERIAL (--serial). Ничего не сделано.")"
+    die "$(m projector_has_serial_not_serial "$ADB_T" "$ser" "$SERIAL")"
   fi
   SERIAL=$ser; ABF_MODEL=$code
   [ -z "$P_MODELS_OK" ] || abf_revision "$code"
@@ -3416,20 +3321,20 @@ abf_revision() {  # model: its stock really is that model's (MODELS_OK profiles;
   dev=$(prop ro.product.device)
   if [ "$(prop "${P_LUMEN_PROP%% *}")" != "${P_LUMEN_PROP#* }" ] && [ "$dev" != "$P_DEVICE" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
-    die "$(t "this is not an $P_NAME: its stock reports the device '$dev', not $P_DEVICE. Nothing was done." "это не $P_NAME: сток сообщает устройство '$dev', а не $P_DEVICE. Ничего не сделано.")"
+    die "$(m not_stock_reports_device_not "$P_NAME" "$dev" "$P_DEVICE")"
   fi
-  want=$(abf_pair "$P_PRODUCT_NAMES" "$1"); prod=$(prop ro.vendor.xgimi.product.name)
+  want=$(pair_get "$P_PRODUCT_NAMES" "$1"); prod=$(prop ro.vendor.xgimi.product.name)
   if [ -z "$prod" ]; then
-    warn "$(t "the projector reports no stock product name (ro.vendor.xgimi.product.name): not cross-checked with $want" "проектор не сообщает имя стокового продукта (ro.vendor.xgimi.product.name): сверка с $want не сделана")"
+    warn "$(m projector_reports_no_stock_product "$want")"
   elif [ "$prod" != "$want" ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
-    die "$(t "the $P_NAME model $1 reports the stock product '$prod', not $want: its XGIMI firmware is not the one of its model (a cross-flashed unit?). Restore the stock firmware of model $1 from a USB stick first (see the guide). Nothing was done." "$P_NAME модели $1 сообщает стоковый продукт '$prod', а не $want: прошивка XGIMI на нём не от его модели (прошит чужой прошивкой?). Сначала верните родную прошивку модели $1 с флешки (см. инструкцию). Ничего не сделано.")"
+    die "$(m model_reports_stock_product_not "$P_NAME" "$1" "$prod" "$want")"
   fi
   cfg="$P_MODEL_CONFIG/$1/system.ini"
   got=$(adbs shell ls "$P_MODEL_CONFIG/$1" 2>/dev/null | tr -d '\r' | grep -cx 'system\.ini')
   if [ "$got" != 1 ]; then
     adb disconnect "$ADB_T" >/dev/null 2>&1
-    die "$(t "the XGIMI firmware of this $P_NAME has no settings of its model $1 ($cfg is missing): it is the firmware of other models. Restore the stock firmware of model $1 from a USB stick first (see the guide). Nothing was done." "в прошивке XGIMI этого $P_NAME нет настроек его модели $1 (нет $cfg): это прошивка других моделей. Сначала верните родную прошивку модели $1 с флешки (см. инструкцию). Ничего не сделано.")"
+    die "$(m xgimi_firmware_has_no_settings "$P_NAME" "$1" "$cfg")"
   fi
 }
 abf_adb() {  # seconds: adb over the network (--ip, the saved address, or mDNS) and who it is; 1 = no answer
@@ -3438,13 +3343,13 @@ abf_adb() {  # seconds: adb over the network (--ip, the saved address, or mDNS) 
     a=$(state_get ip)
     if [ -z "$a" ]; then
       a=$(p6_discover)
-      if [ -z "$a" ] || ! ask "$(t "A projector answers at $a. Is it yours, the one to install on?" "По адресу $a отвечает проектор. Это ваш, на который ставим?")"; then
-        die "$(t "give the projector's network address: bash lumen-install.sh --ip 192.168.x.y (the projector's network settings show it; see the guide, section '$P_NAME'). The $P_NAME is reached over the network: on stock, Developer options > USB debugging on opens it. Nothing was done." "укажите сетевой адрес проектора: bash lumen-install.sh --ip 192.168.x.y (он виден в настройках сети проектора; см. инструкцию, раздел «${P_NAME}»). К $P_NAME компьютер подключается по сети: на стоке её открывает «Для разработчиков > Отладка по USB». Ничего не сделано.")"
+      if [ -z "$a" ] || ! ask "$(m projector_answers_yours_one "$a")"; then
+        die "$(m give_projectors_network_address "$P_NAME")"
       fi
     fi
     ADB_T=$a
   fi
-  say "$(t "connecting to $ADB_T over the network" "подключаюсь к $ADB_T по сети")"
+  say "$(m connecting_over_network "$ADB_T")"
   wifi_connect "$1" || return 1
   abf_identity
   ABF_UP=1
@@ -3466,28 +3371,29 @@ abf_device() {  # connected: firmware, slot, virtual A/B, stock or Lumen OS; sav
     case " $fv " in
       *" $vend "*) ;;
       *) case " $P_VENDOR_OK " in
-           *" $vend "*) die "$(t "XGIMI firmware $vend is not the firmware of the $P_NAME model $ABF_MODEL: Lumen OS for the $ABF_MODEL is made for $(abf_fw_names "$fv") only, and $vend is the firmware of other models (all: $(abf_matrix)). Restore the stock firmware of model $ABF_MODEL ($(abf_fw_names "${fv%% *}")) from a USB stick first (see the guide). Nothing was done." "прошивка XGIMI $vend не от модели $P_NAME $ABF_MODEL: Lumen OS для $ABF_MODEL сделана только для $(abf_fw_names "$fv"), а $vend это прошивка других моделей (все: $(abf_matrix)). Сначала верните родную прошивку модели $ABF_MODEL ($(abf_fw_names "${fv%% *}")) с флешки (см. инструкцию). Ничего не сделано.")" ;;
-           *) die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME $ABF_MODEL is made for $(abf_fw_names "$fv") only. If yours is lower, let the stock system update itself (Settings, network), then run the installer again. If it is higher, Lumen OS does not support it yet. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME $ABF_MODEL сделана только для $(abf_fw_names "$fv"). Если ваша ниже, дайте стоку обновиться (настройки, сеть) и запустите установщик снова. Если выше, Lumen OS её пока не поддерживает. Ничего не сделано.")" ;;
+           *" $vend "*) die "$(m xgimi_firmware_not_firmware_model "$vend" "$P_NAME" "$ABF_MODEL" "$(abf_fw_names "$fv")" "$(abf_matrix)" "$(abf_fw_names "${fv%% *}")")" ;;
+           *) die "$(m xgimi_firmware_not_supported_lumen_2 "$vend" "$P_NAME" "$ABF_MODEL" "$(abf_fw_names "$fv")")" ;;
          esac ;;
     esac
   else
     case " $P_VENDOR_OK " in
+      " TODO"*) ;;   # not known yet: the profile is not finished, abf_check stops after its reads (abf_todo_stop)
       *" $vend "*) ;;
-      *) die "$(t "XGIMI firmware $vend is not supported: Lumen OS for the $P_NAME is made for $(p6_fw_list) only. If yours is older, let the stock system update itself (Settings, network), then run the installer again. If it is newer, Lumen OS does not support it yet. Nothing was done." "прошивка XGIMI $vend не поддерживается: Lumen OS для $P_NAME сделана только для $(p6_fw_list). Если ваша старее, дайте стоку обновиться (настройки, сеть) и запустите установщик снова. Если новее, Lumen OS её пока не поддерживает. Ничего не сделано.")" ;;
+      *) die "$(m xgimi_firmware_not_supported_lumen_3 "$vend" "$P_NAME" "$(p6_fw_list)")" ;;
     esac
   fi
   case "$slot" in
-    _?) case " $P_SLOTS " in *" ${slot#_} "*) ;; *) die "$(t "the $P_NAME runs from slot ${slot#_}: Lumen OS installs only into slot $P_SLOTS, the one the stock system uses. Nothing was done." "$P_NAME работает из слота ${slot#_}: Lumen OS ставится только в слот $P_SLOTS, в котором работает сток. Ничего не сделано.")" ;; esac ;;
-    *) die "$(t "this projector reports no system slot ('$slot'): it is not the $P_NAME this installer knows. Nothing was done." "этот проектор не сообщает системный слот ('$slot'): это не тот $P_NAME, который знает установщик. Ничего не сделано.")" ;;
+    _?) case " $P_SLOTS " in *" ${slot#_} "*) ;; *) die "$(m runs_slot_lumen_os_installs "$P_NAME" "${slot#_}" "$P_SLOTS")" ;; esac ;;
+    *) die "$(m projector_reports_no_system_slot "$slot" "$P_NAME")" ;;
   esac
-  [ "$vab" = true ] || die "$(t "this projector has no virtual A/B (ro.virtual_ab.enabled='$vab'): it is not the $P_NAME this installer knows. Nothing was done." "у этого проектора нет virtual A/B (ro.virtual_ab.enabled='$vab'): это не тот $P_NAME, который знает установщик. Ничего не сделано.")"
+  [ "$vab" = true ] || die "$(m projector_has_no_virtual_b "$vab" "$P_NAME")"
   case "$lum" in
-    '') state_set dev_lumen 0; state_set dev_version ""; ver=$(t "XGIMI stock" "родная XGIMI") ;;
+    '') state_set dev_lumen 0; state_set dev_version ""; ver=$(m xgimi_stock) ;;
     "$(p6_lval)") ver=$(prop "$P_VERSION_PROP"); state_set dev_lumen 1; state_set dev_version "$ver"; ver="Lumen OS $ver" ;;
-    *) die "$(t "this projector runs Lumen OS for another device ('$lum'). Nothing was done." "на проекторе Lumen OS для другого устройства ('$lum'). Ничего не сделано.")" ;;
+    *) die "$(m projector_runs_lumen_os_another "$lum")" ;;
   esac
   state_set serial "$SERIAL"; state_set ip "$ADB_T"; state_set vendor "$vend"; state_set slot "$slot"
-  ok "$P_NAME $SERIAL ($ADB_T), $(t 'firmware' 'прошивка') $vend, $(t 'slot' 'слот') ${slot#_}, $(t 'system' 'система'): $ver"
+  ok "$P_NAME $SERIAL ($ADB_T), $(m firmware) $vend, $(m slot) ${slot#_}, $(m system): $ver"
 }
 
 # The vbmeta step, read only: with verification off first-stage init sets up no dm-verity, so /dev/block/mapper
@@ -3504,48 +3410,26 @@ abf_vbmeta_state() {  # 0 = verification off on the running slot, 1 = on, 2 = co
 abf_vbmeta_check() {  # check|flash
   local s; s=$(state_get slot)
   abf_vbmeta_state; case $? in
-    0) ok "$(t "vbmeta: verification is off on slot ${s#_} (no *-verity)" "vbmeta: проверка в слоте ${s#_} выключена (нет *-verity)")"; state_set step_vbmeta done ;;
+    0) ok "$(m vbmeta_verification_off_slot_no_2 "${s#_}")"; state_set step_vbmeta done ;;
     1) state_set step_vbmeta ""
-       [ "$1" = flash ] && die "$(t "the running slot ${s#_} still verifies its system (*-verity in /dev/block/mapper): the vbmeta step was not done or did not take effect. Do it (bash lumen-install.sh vbmeta), let the stock system start, then run the installer again. Nothing was written." "текущий слот ${s#_} всё ещё проверяет систему (*-verity в /dev/block/mapper): шаг vbmeta не сделан или не применился. Сделайте его (bash lumen-install.sh vbmeta), дайте стоку загрузиться и запустите установщик ещё раз. Ничего не записано.")"
-       warn "$(t "vbmeta: slot ${s#_} still verifies its system (*-verity): the vbmeta step is needed before 'flash' (bash lumen-install.sh vbmeta)" "vbmeta: слот ${s#_} всё ещё проверяет систему (*-verity): перед 'flash' нужен шаг vbmeta (bash lumen-install.sh vbmeta)")" ;;
-    *) [ "$1" = flash ] && die "$(t "could not read /dev/block/mapper on the projector, so the vbmeta step cannot be confirmed. Restart the projector and run the installer again. Nothing was written." "не удалось прочитать /dev/block/mapper на проекторе, поэтому шаг vbmeta не подтвердить. Перезагрузите проектор и запустите установщик ещё раз. Ничего не записано.")"
-       warn "$(t "could not read /dev/block/mapper; vbmeta state not checked" "не удалось прочитать /dev/block/mapper; состояние vbmeta не проверено")" ;;
+       [ "$1" = flash ] && die "$(m running_slot_still_verifies_system_2 "${s#_}")"
+       warn "$(m vbmeta_slot_still_verifies_system "${s#_}")" ;;
+    *) [ "$1" = flash ] && die "$(m could_not_read_dev_block_2)"
+       warn "$(m could_not_read_dev_block)" ;;
   esac
 }
 abf_vbmeta() {  # the one manual step; the installer never runs any vbmeta command
   local a=${ADB_T:-$(state_get ip)}
   a=${a:-ADDRESS:5555}
   echo
-  t "ONE MANUAL STEP: vbmeta (you type it yourself; this installer never runs any vbmeta command)
-  Lumen OS is not signed by XGIMI, so the $P_NAME must be told once not to verify its system. Use
-  Google's unchanged vbmeta.img from the GSI page below (section 'Requirements for flashing GSIs'),
-  the A-to-A cable between the projector's USB port and this computer, and the adb and fastboot of
-  tools/platform-tools next to this script (there after 'check'):
-    adb connect $a
-    adb -s $a reboot fastboot          (fastboot mode starts in about 30 s)
-    fastboot --disable-verity --disable-verification --slot=all flash vbmeta vbmeta.img
-                                       (BOTH slots: Writing 'vbmeta_a' OKAY and Writing 'vbmeta_b' OKAY)
-    fastboot reboot                    ($(abf_hint))
-  Nothing else in that visit. The stock system must then start normally, as before.
-" "ОДИН РУЧНОЙ ШАГ: vbmeta (вы вводите его сами; установщик никогда не выполняет команды vbmeta)
-  Lumen OS не подписана XGIMI, поэтому $P_NAME один раз нужно разрешить не проверять систему.
-  Нужны неизменённый vbmeta.img Google со страницы GSI ниже (раздел «Requirements for flashing GSIs»),
-  кабель A–A между USB-портом проектора и компьютером, adb и fastboot из tools/platform-tools рядом
-  с этим скриптом (они там после 'check'):
-    adb connect $a
-    adb -s $a reboot fastboot          (режим fastboot примерно через 30 с)
-    fastboot --disable-verity --disable-verification --slot=all flash vbmeta vbmeta.img
-                                       (ОБА слота: Writing 'vbmeta_a' OKAY и Writing 'vbmeta_b' OKAY)
-    fastboot reboot                    ($(abf_hint))
-  Больше ничего в этом заходе. Затем сток должен загрузиться как обычно.
-"
+  m one_manual_step_vbmeta_type "$P_NAME" "$a" "$(abf_hint)"
   echo "  Google: $GOOGLE_GSI"
-  echo "  $(t 'Guide' 'Инструкция'): $(p6_guide)#vbmeta"
+  echo "  $(m guide): $(p6_guide)#vbmeta"
   echo
-  if ask "$(t "Have you done the vbmeta step and did the stock system start normally after it?" "Вы сделали шаг vbmeta и сток после него нормально загрузился?")"; then
+  if ask "$(m have_done_vbmeta_step_did_2)"; then
     state_set step_vbmeta done
   else
-    die "$(t "do the vbmeta step first, then run the installer again. Nothing was written." "сначала шаг vbmeta, затем запустите установщик снова. Ничего не записано.")"
+    die "$(m vbmeta_step_first_run_installer_2)"
   fi
 }
 
@@ -3573,50 +3457,53 @@ abf_check_image() {  # the release image of this projector: name, erofs, size, s
   local name dir sums sig cert pub want got a f sz bp v sec rel max g nv="" own=0
   find_image
   name=$(basename "$IMG"); dir=$(dirname "$IMG"); sums="$dir/SHA256SUMS"; sig="$sums.sig"; cert="$HERE/$P_CERT"
-  case "$name" in *"$P_TOKEN"*) ;; *) abf_img_stop "$(t "$name is not an image for the $P_NAME (its name must contain '$P_TOKEN')." "$name не образ для $P_NAME (в имени должно быть '$P_TOKEN').")" 1 ;; esac
-  case "$name" in *PRIVATE*) abf_img_stop "$(t "$name is a private image: it is never installed on the $P_NAME." "$name частный образ: на $P_NAME он не ставится.")" 1 ;; esac
+  case "$name" in *"$P_TOKEN"*) ;; *) abf_img_stop "$(m not_image_name_must_contain_2 "$name" "$P_NAME" "$P_TOKEN")" 1 ;; esac
+  case "$name" in *PRIVATE*) abf_img_stop "$(m private_image_never_installed_2 "$name" "$P_NAME")" 1 ;; esac
   if [ "$UNSIGNED" = 0 ]; then
-    case "$name" in *-nogms-*) ;; *) abf_img_stop "$(t "$name is not a release file (the $P_NAME has Lumen OS without Google only: '-nogms-' in the name)." "$name не файл релиза (для $P_NAME есть только Lumen OS без Google: '-nogms-' в имени).")" 1 ;; esac
+    case "$name" in *-nogms-*) ;; *) abf_img_stop "$(m not_release_file_has_lumen_2 "$name" "$P_NAME")" 1 ;; esac
     # the release version is in the name, and the signed SHA256SUMS lists the image under that name
     [ -n "${VERSION:-}" ] || die "internal: release.conf has no VERSION: re-download the installer of the $P_NAME release"
     case "$name" in "lumen-os-$P_TOKEN-"*"-nogms-system.img") nv=${name#"lumen-os-$P_TOKEN-"}; nv=${nv%-nogms-system.img} ;; esac
-    [ -n "$nv" ] || abf_img_stop "$(t "$name is not named like a release file (lumen-os-$P_TOKEN-<version>-nogms-system.img): use the file exactly as downloaded." "$name назван не как файл релиза (lumen-os-$P_TOKEN-<версия>-nogms-system.img): используйте файл ровно таким, как он скачан.")" 1
-    [ "$nv" = "$VERSION" ] || abf_img_stop "$(t "$name is Lumen OS $nv, but this installer download is for Lumen OS $VERSION: download the image and the installer from the same release (guide, section '$P_NAME')." "$name это Lumen OS $nv, а этот установщик скачан для Lumen OS $VERSION: скачайте образ и установщик из одного релиза (инструкция, раздел «${P_NAME}»).")" 1
+    [ -n "$nv" ] || abf_img_stop "$(m not_named_like_release_file_2 "$name" "$P_TOKEN")" 1
+    [ "$nv" = "$VERSION" ] || abf_img_stop "$(m lumen_os_but_installer_download_2 "$name" "$nv" "$VERSION" "$P_NAME")" 1
   fi
   # the file system, read without any tool: erofs has e2 e1 f5 e0 at byte 1024 (the fstab mounts nothing else)
   if [ "$(od -An -tx1 -j1024 -N4 "$IMG" 2>/dev/null | tr -d ' \n')" != e2e1f5e0 ]; then
     if [ "$(od -An -tx1 -j1080 -N2 "$IMG" 2>/dev/null | tr -d ' \n')" = 53ef ]; then
-      abf_img_stop "$(t "$name is an ext4 image (another projector's), not one for the $P_NAME." "$name образ ext4 (для другого проектора), а не для $P_NAME.")" 1
+      abf_img_stop "$(m ext4_image_another_projectors_not "$name" "$P_NAME")" 1
     elif [ "$(od -An -tx1 -N4 "$IMG" 2>/dev/null | tr -d ' \n')" = 3aff26ed ]; then
-      abf_img_stop "$(t "$name is a sparse image, not the release file." "$name разреженный (sparse) образ, а не файл релиза.")" 1
+      abf_img_stop "$(m sparse_image_not_release_file_2 "$name")" 1
     fi
-    abf_img_stop "$(t "$name is not an erofs system image." "$name не системный образ erofs.")" 1
+    abf_img_stop "$(m not_erofs_system_image "$name")" 1
   fi
   sz=$(wc -c < "$IMG" | tr -d ' ')
-  [ $((sz % 4096)) = 0 ] || abf_img_stop "$(t "$name has a size that is not a multiple of 4096: damaged." "размер $name не кратен 4096: файл испорчен.")" 1
-  # with blobs the new z9x_blobs and the reserve of super come off the budget too (as abf_room counts them later)
-  max=$P_SYSMAX; [ "$BLOBS" != partition ] || max=$(( P_SYSMAX - BLOB_SIZE - P_RESERVE ))
-  [ "$sz" -le "$max" ] || abf_img_stop "$(t "$name is too big for the $P_NAME ($(( (sz + 1048575) / 1048576 )) MB, at most $((max / 1048576)) MB fit next to its vendor, product and system_ext)." "$name слишком велик для $P_NAME ($(( (sz + 1048575) / 1048576 )) МБ, рядом с его vendor, product и system_ext помещается не больше $((max / 1048576)) МБ).")" 1
-  # with --gapps-zip the add-on image (rounded up to 1 MiB) comes off it as well, as abf_room counts it in super
-  g=$(abf_gapps_need)
-  if [ "$g" -gt 0 ] && [ $(( (sz + 1048575) / 1048576 * 1048576 + g )) -gt "$max" ]; then
-    abf_img_stop "$(t "$name and the Google services do not fit on the $P_NAME together ($(( (sz + 1048575) / 1048576 )) MB + $((g / 1048576)) MB, at most $((max / 1048576)) MB fit next to its vendor, product and system_ext). Install without --gapps-zip." "$name и сервисы Google вместе не помещаются на $P_NAME ($(( (sz + 1048575) / 1048576 )) МБ + $((g / 1048576)) МБ, рядом с его vendor, product и system_ext помещается не больше $((max / 1048576)) МБ). Установите без --gapps-zip.")" 1
+  [ $((sz % 4096)) = 0 ] || abf_img_stop "$(m has_size_not_multiple_4096_2 "$name")" 1
+  # with blobs the new z9x_blobs and the reserve of super come off the budget too (as abf_room counts them later);
+  # SYSTEM_MAX TODO: the budget is not known yet (the profile is not finished, abf_check stops after its reads)
+  if ! is_todo "$P_SYSMAX"; then
+    max=$P_SYSMAX; [ "$BLOBS" != partition ] || max=$(( P_SYSMAX - BLOB_SIZE - P_RESERVE ))
+    [ "$sz" -le "$max" ] || abf_img_stop "$(m too_big_mb_most_mb "$name" "$P_NAME" "$(( (sz + 1048575) / 1048576 ))" "$((max / 1048576))")" 1
+    # with --gapps-zip the add-on image (rounded up to 1 MiB) comes off it as well, as abf_room counts it in super
+    g=$(abf_gapps_need)
+    if [ "$g" -gt 0 ] && [ $(( (sz + 1048575) / 1048576 * 1048576 + g )) -gt "$max" ]; then
+      abf_img_stop "$(m google_services_not_fit_together "$name" "$P_NAME" "$(( (sz + 1048575) / 1048576 ))" "$((g / 1048576))" "$((max / 1048576))")" 1
+    fi
   fi
   if [ -f "$sums" ] && [ -f "$sig" ] && [ -f "$cert" ] && command -v openssl >/dev/null 2>&1; then
     pub=$(mktemp)
     openssl x509 -in "$cert" -pubkey -noout > "$pub"
     openssl dgst -sha256 -verify "$pub" -signature "$sig" "$sums" >/dev/null 2>&1 \
-      || { rm -f "$pub"; abf_img_stop "$(t "SHA256SUMS is not signed with the Lumen OS key for the $P_NAME: do not install this image" "SHA256SUMS не подписан ключом Lumen OS для $P_NAME: не устанавливайте этот образ")"; }
+      || { rm -f "$pub"; abf_img_stop "$(m sha256sums_not_signed_lumen_os_2 "$P_NAME")"; }
     rm -f "$pub"
-    ok "$(t "SHA256SUMS signature: Lumen OS key for the $P_NAME" "подпись SHA256SUMS: ключ Lumen OS для $P_NAME")"
+    ok "$(m sha256sums_signature_lumen_os_key "$P_NAME")"
   elif [ "$UNSIGNED" = 1 ]; then
-    warn "$(t "--unsigned-image: this image is NOT authenticated (no signed SHA256SUMS). Only for your own build." "--unsigned-image: образ НЕ проверен (нет подписанного SHA256SUMS). Только для собственной сборки.")"
+    warn "$(m unsigned_image_image_not)"
     if [ "$(state_get unsigned_ok)" != "$name:$(filekey "$IMG")" ]; then
-      printf '%s ' "$(t "Type UNSIGNED to install $name anyway:" "Введите UNSIGNED, чтобы всё равно установить $name:")"
+      printf '%s ' "$(m type_unsigned_install_anyway "$name")"
       read -r a
       if [ "$a" != UNSIGNED ]; then
-        [ "$ABF_RESUME" = 0 ] || abf_fb_stop "$(t "cancelled." "отменено.")"
-        die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+        [ "$ABF_RESUME" = 0 ] || abf_fb_stop "$(m cancelled)"
+        die "$(m cancelled_nothing_written)"
       fi
       state_set unsigned_ok "$name:$(filekey "$IMG")"
     fi
@@ -3628,23 +3515,23 @@ abf_check_image() {  # the release image of this projector: name, erofs, size, s
       done
     fi
   else
-    [ -f "$sums" ] || abf_img_stop "$(t "no SHA256SUMS next to the image: it cannot be checked. Download SHA256SUMS and SHA256SUMS.sig from the same release." "рядом с образом нет SHA256SUMS: его нельзя проверить. Скачайте SHA256SUMS и SHA256SUMS.sig из того же релиза.")"
-    [ -f "$sig" ] || abf_img_stop "$(t "no SHA256SUMS.sig next to the image: its origin cannot be checked" "рядом с образом нет SHA256SUMS.sig: происхождение образа нельзя проверить")"
-    [ -f "$cert" ] || abf_img_stop "$(t "installer certificate $P_CERT missing: re-download the installer of the $P_NAME release" "нет сертификата установщика $P_CERT: скачайте установщик из релиза для $P_NAME заново")"
-    abf_img_stop "$(t "openssl is needed to check the image signature (macOS and Linux have it; install it)" "для проверки подписи образа нужен openssl (есть в macOS и Linux; установите его)")"
+    [ -f "$sums" ] || abf_img_stop "$(m no_sha256sums_next_image_cannot)"
+    [ -f "$sig" ] || abf_img_stop "$(m no_sha256sums_sig_next_image)"
+    [ -f "$cert" ] || abf_img_stop "$(m installer_certificate_missing_re "$P_CERT" "$P_NAME")"
+    abf_img_stop "$(m openssl_needed_check_image)"
   fi
   if [ -n "$sums" ] && [ -f "$sums" ]; then
     want=$(awk -v f="$name" '$2==f || $2=="*"f {print $1}' "$sums")
-    [ -n "$want" ] || abf_img_stop "$(t "$name is not listed in $(basename "$sums")" "$name нет в $(basename "$sums")")"
+    [ -n "$want" ] || abf_img_stop "$(m not_listed "$name" "$(basename "$sums")")"
     if [ "$FORCE_HASH" = 1 ] || [ "$(state_get image_ok)" != "$want:$(filekey "$IMG")" ]; then
-      say "$(t "checking the image checksum (about a minute)" "проверяю контрольную сумму образа (около минуты)")"
+      say "$(m checking_image_checksum_about)"
       got=$(sha256 "$IMG")
-      [ "$got" = "$want" ] || { state_set image_ok none; abf_img_stop "$(t "checksum mismatch: the image is damaged or not the right file" "контрольная сумма не совпала: образ повреждён или не тот")"; }
+      [ "$got" = "$want" ] || { state_set image_ok none; abf_img_stop "$(m checksum_mismatch_image_damaged)"; }
       state_set image_ok "$want:$(filekey "$IMG")"
     fi
     ok "$name sha256 ${want:0:16}…"
   else
-    warn "$(t "--unsigned-image without any SHA256SUMS file: checksum not checked" "--unsigned-image без файла SHA256SUMS: контрольная сумма не проверена")"
+    warn "$(m unsigned_image_without_any)"
   fi
   # what the image says about itself, when a dump.erofs is there; without one the name (its version, checked
   # above) and the signed SHA256SUMS (which lists the file under that name) bind the image to this release
@@ -3653,33 +3540,41 @@ abf_check_image() {  # the release image of this projector: name, erofs, size, s
     bp=$(abf_image_props)
     if [ -n "$bp" ]; then
       v=$(printf '%s\n' "$bp" | sed -n "s/^$(p6_lprop)=//p" | tail -1)
-      [ "$v" = "$(p6_lval)" ] || abf_img_stop "$(t "$name is not Lumen OS for the $P_NAME ($(p6_lprop)='$v')." "$name не Lumen OS для $P_NAME ($(p6_lprop)='$v').")" 1
+      [ "$v" = "$(p6_lval)" ] || abf_img_stop "$(m not_lumen_os "$name" "$P_NAME" "$(p6_lprop)" "$v")" 1
+      # ABI: a system of the other userspace never starts on this projector's stock vendor (an arm64 image on a
+      # 32-bit-only vendor finds none of its 64-bit libraries); the image says it in ro.system.product.cpu.abilist
+      if [ -n "$P_ABI" ]; then
+        v=$(printf '%s\n' "$bp" | sed -n 's/^ro\.system\.product\.cpu\.abilist=//p' | tail -1 | tr -d ' \r')
+        case ",$v," in *,arm64-v8a,*) a=arm64 ;; *,armeabi-v7a,*) a=arm32 ;; *) a="" ;; esac
+        [ "$a" = "$P_ABI" ] || abf_img_stop "$(m not_built_needs_system_image "$name" "$P_NAME")" 1
+      fi
       v=$(printf '%s\n' "$bp" | sed -n "s/^$P_VERSION_PROP=//p" | tail -1)
       sec=$(printf '%s\n' "$bp" | sed -n 's/^ro\.adb\.secure=//p' | tail -1)
       if [ "$UNSIGNED" = 0 ]; then
-        [ "$v" = "${VERSION:-}" ] || abf_img_stop "$(t "$name holds Lumen OS '$v', the release is ${VERSION:-?}." "в $name Lumen OS '$v', а релиз ${VERSION:-?}.")" 1
-        [ "$sec" = 1 ] || abf_img_stop "$(t "$name is a test build (ro.adb.secure='$sec'), not a release." "$name тестовая сборка (ro.adb.secure='$sec'), а не релиз.")" 1
+        [ "$v" = "${VERSION:-}" ] || abf_img_stop "$(m holds_lumen_os_release "$name" "$v" "${VERSION:-?}")" 1
+        [ "$sec" = 1 ] || abf_img_stop "$(m test_build_ro_adb_secure_2 "$name" "$sec")" 1
       fi
       # a public image holds none of the allow-list's files at /system/<path in the tar>: they come from 'blobs'
-      while read -r a rel f; do
+      # (BLOBS_ALLOW TODO: no list yet, the profile is not finished)
+      is_todo "$P_BLOBS_ALLOW" || while read -r a rel f; do
         case "$a" in ''|\#*|set=*) continue ;; esac
         abf_image_has "/system/$rel" && own=1
       done < "$HERE/$P_BLOBS_ALLOW"
       if [ "$own" = 1 ] && [ "$BLOBS" = partition ]; then
-        abf_img_stop "$(t "$name carries the MediaTek / XGIMI files itself (a private build): run with --blobs=embedded" "$name сам содержит файлы MediaTek / XGIMI (частная сборка): запустите с --blobs=embedded")"
+        abf_img_stop "$(m carries_mediatek_xgimi_files "$name")"
       elif [ "$own" = 0 ] && [ "$BLOBS" = embedded ]; then
-        abf_img_stop "$(t "$name is a public image: its MediaTek / XGIMI files come from your projector ('blobs'). Run without --blobs=embedded" "$name публичный образ: файлы MediaTek / XGIMI берутся с вашего проектора ('blobs'). Запустите без --blobs=embedded")"
+        abf_img_stop "$(m public_image_mediatek_xgimi_files "$name")"
       fi
-      ok "$(t "image: Lumen OS $v for the $P_NAME" "образ: Lumen OS $v для $P_NAME")"
+      ok "$(m image_lumen_os "$v" "$P_NAME")"
     else
-      warn "$(t "dump.erofs could not read the image content (not needed: $(p6_bound_text "$nv"))" "dump.erofs не смог прочитать содержимое образа (не обязательно: $(p6_bound_text "$nv"))")"
+      warn "$(m dump_erofs_could_not_read "$(p6_bound_text "$nv")")"
     fi
   else
-    say "$(t "image content not read (dump.erofs not installed): $(p6_bound_text "$nv")" "содержимое образа не прочитано (нет dump.erofs): $(p6_bound_text "$nv")")"
+    say "$(m image_content_not_read_dump "$(p6_bound_text "$nv")")"
   fi
-  [ "$BLOBS" != none ] || warn "$(t "--no-blobs: no sound and no MediaTek video decoders with this install" "--no-blobs: в этой установке не будет звука и видеодекодеров MediaTek")"
+  [ "$BLOBS" != none ] || warn "$(m no_blobs_no_sound_no_2)"
   state_set image_gms 0
-  ok "$(t "edition: Lumen OS without Google" "редакция: Lumen OS без Google")"
+  ok "$(m edition_lumen_os_without_google)"
 }
 abf_check() {
   local free
@@ -3689,12 +3584,14 @@ abf_check() {
   abf_device
   abf_vbmeta_check check
   free=$(df -k "$HOME" | awk 'NR==2{print $4}')
-  [ "${free:-0}" -ge 4194304 ] || warn "$(t "less than 4 GB free on this computer" "на компьютере свободно меньше 4 ГБ")"
+  [ "${free:-0}" -ge 4194304 ] || warn "$(m less_4_gb_free_computer)"
   abf_check_image
   # MODELS_CHECK_ONLY: the check passes, but the model is not written yet (abf_live_gate), so the check is never kept
   # as a step done ('all' checks again and stops there)
-  abf_check_only && warn "$(t "the $P_NAME model $ABF_MODEL: supported after a live test, not yet ('flash' and 'gapps' refuse it until then)" "модель $P_NAME $ABF_MODEL: поддержка после живого теста, пока нет ('flash' и 'gapps' до тех пор отказывают)")"
-  ok "$(t "check passed; nothing was written" "проверка пройдена; ничего не записано")"
+  abf_check_only && warn "$(m model_supported_after_live_test "$P_NAME" "$ABF_MODEL")"
+  # not finished (TODO values): what could be read was read and nothing was written; the check never passes
+  [ -z "$P_TODO" ] || abf_todo_stop
+  ok "$(m check_passed_nothing_written)"
   abf_check_only || state_set step_check done
 }
 
@@ -3716,33 +3613,39 @@ abf_blobs_ok() {  # 0 = the blobs tar of this projector is ready (or none is nee
 }
 abf_blobs() {
   if [ "$BLOBS" = none ]; then
-    warn "$(t "--no-blobs: the MediaTek / XGIMI files are skipped (no sound, no MediaTek video decoders)" "--no-blobs: файлы MediaTek / XGIMI пропущены (не будет звука и видеодекодеров MediaTek)")"
+    warn "$(m no_blobs_mediatek_xgimi_files)"
     state_set step_blobs skip; return 0
   fi
   if [ "$BLOBS" != partition ]; then
-    ok "$(t "this image carries its MediaTek / XGIMI files itself: no blobs step needed" "этот образ содержит файлы MediaTek / XGIMI сам: шаг blobs не нужен")"
+    ok "$(m image_carries_mediatek_xgimi_files)"
     state_set step_blobs skip; return 0
   fi
   [ "$ABF_UP" = 1 ] || abf_adb 60 || die "$(p6_noconn_text)"
-  local allow="$HERE/$P_BLOBS_ALLOW" w="$SD/blobs" set h rel src opt o p from froms got n=0 img out
+  local allow="$HERE/$P_BLOBS_ALLOW" w="$SD/blobs" set h rel src opt o p from froms alts a fw got n=0 img out
   [ -f "$allow" ] || die "internal: $P_BLOBS_ALLOW is missing: re-download the installer"
   rm -rf "$w"; mkdir -p "$w/x"
   set=$(sed -n 's/^set=//p' "$allow")
   printf 'set=%s\n' "$set" > "$w/x/MANIFEST"
+  fw=$(prop ro.vendor.build.version.incremental)
   while read -r h rel src opt; do
     case "$h" in ''|\#*|set=*) continue ;; esac
     # from= may be given several times: one stock original per XGIMI firmware (each with its own line deletes);
     # the one whose sha256 the pulled file has is used, and the result must still be <sha256>
-    froms=""
+    froms=""; alts=""
     for o in $opt; do case "$o" in from=*) from=${o#from=}
       case "$from" in *:*) ;; *) die "internal: $rel: from= needs <sha256>:<deletes>" ;; esac
       case "${from#*:}" in *[!0-9,d\;]*) die "internal: $rel: from= may only delete lines" ;; esac
-      froms="$froms $from" ;; esac; done
+      froms="$froms $from" ;;
+      # alt=<firmware>:<sha256>: that stock firmware's own copy, taken as it is only on that firmware (this
+      # projector's ro.vendor.build.version.incremental); the image's reader checks it the same way
+      alt=*) alts="$alts ${o#alt=}" ;; esac; done
     mkdir -p "$w/x/$(dirname "$rel")"
     got=""
     for p in "$src" "/system/$rel"; do
       adbs pull "$p" "$w/x/$rel" >/dev/null 2>&1 || continue
       got=$(sha256 "$w/x/$rel")
+      [ "$got" = "$h" ] && break
+      for a in $alts; do [ -n "$fw" ] && [ "$a" = "$fw:$got" ] && h=$got; done
       [ "$got" = "$h" ] && break
       for from in $froms; do
         [ "$got" = "${from%%:*}" ] || continue
@@ -3754,9 +3657,9 @@ abf_blobs() {
       got="bad"
     done
     if [ "$got" != "$h" ] && abf_eye; then
-      die "$(t "$rel from the projector does not match the allow-list ($got): this firmware is not supported, and without these files the $P_NAME cannot draw its eye-protection mask. Nothing was written." "$rel с проектора не совпадает со списком ($got): эта прошивка не поддерживается, а без этих файлов $P_NAME не может рисовать маску защиты глаз. Ничего не записано.")"
+      die "$(m projector_not_match_allow_list_2 "$rel" "$got" "$P_NAME")"
     fi
-    [ "$got" = "$h" ] || die "$(t "$rel from the projector does not match the allow-list ($got): this firmware is not supported. Run again with --no-blobs to install without these files (then there is NO SOUND and no MediaTek video decoders). Nothing was written." "$rel с проектора не совпадает со списком ($got): эта прошивка не поддерживается. Чтобы установить без этих файлов, запустите с --no-blobs (тогда НЕ БУДЕТ ЗВУКА и видеодекодеров MediaTek). Ничего не записано.")"
+    [ "$got" = "$h" ] || die "$(m projector_not_match_allow_list_3 "$rel" "$got")"
     printf '%s %s %s\n' "$rel" "$h" "$(wc -c < "$w/x/$rel" | tr -d ' ')" >> "$w/x/MANIFEST"
     n=$((n + 1))
   done < "$allow"
@@ -3775,7 +3678,7 @@ abf_blobs() {
   cp "$img" "$out"
   state_set blobs_img "$out"
   state_set step_blobs done
-  ok "$(t "$n MediaTek / XGIMI files from your projector, set $set -> $out (keep this file)" "Файлы MediaTek / XGIMI с вашего проектора: $n, набор $set -> $out (сохраните этот файл)")"
+  ok "$(m mediatek_xgimi_files_projector_set "$n" "$set" "$out")"
 }
 
 abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot and the known layout; else STOP
@@ -3791,25 +3694,25 @@ abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot
 (bootloader) slot-successful:$s:$v" ;; esac
     done
   fi
-  [ "$(abf_gv is-userspace)" = yes ] || why=$(t "not fastbootd" "это не fastbootd")
-  [ -n "$why" ] || [ "$(abf_gv product)" = "$P_FB_PRODUCT" ] || why="$(t "fastbootd is not the one of the $P_NAME" "fastbootd не от $P_NAME") ($(abf_gv product))"
-  [ -n "$why" ] || [ "$(abf_gv serialno)" = "$SERIAL" ] || why="$(t "another projector in fastboot mode" "в режиме fastboot другой проектор") (serialno $(abf_gv serialno), $(t 'expected' 'ожидался') $SERIAL)"
-  [ -n "$why" ] || [ "$(abf_gv unlocked)" = yes ] || why=$(t "the bootloader is locked" "загрузчик заблокирован")
+  [ "$(abf_gv is-userspace)" = yes ] || why=$(m not_fastbootd)
+  [ -n "$why" ] || [ "$(abf_gv product)" = "$P_FB_PRODUCT" ] || why="$(m fastbootd_not_one "$P_NAME") ($(abf_gv product))"
+  [ -n "$why" ] || [ "$(abf_gv serialno)" = "$SERIAL" ] || why="$(m another_projector_fastboot_mode) (serialno $(abf_gv serialno), $(m expected) $SERIAL)"
+  [ -n "$why" ] || [ "$(abf_gv unlocked)" = yes ] || why=$(m bootloader_locked)
   cs=$(abf_gv current-slot)
   if [ -z "$why" ]; then case " $P_SLOTS " in *" $cs "*) ;; *) why="current-slot '$cs'" ;; esac; fi
-  [ -n "$why" ] || [ "_$cs" = "$(state_get slot)" ] || why="current-slot $cs, $(t "the system ran from" "система работала из") $(state_get slot)"
+  [ -n "$why" ] || [ "_$cs" = "$(state_get slot)" ] || why="current-slot $cs, $(m system_ran) $(state_get slot)"
   [ -n "$why" ] || [ "$(abf_gv slot-count)" = 2 ] || why="slot-count '$(abf_gv slot-count)'"
   [ -n "$why" ] || [ "$(abf_gv "slot-successful:$cs")" = yes ] || why="slot-successful:$cs '$(abf_gv "slot-successful:$cs")'"
   if [ -n "$why" ]; then :
   elif [ "$(state_get dev_lumen)" = 1 ]; then   # a Lumen OS update: it finishes only while Lumen OS runs
-    [ "$(abf_gv snapshot-update-status)" = none ] || why="$(t "an update is finishing" "обновление ещё завершается") (snapshot-update-status $(abf_gv snapshot-update-status)); $(t "start Lumen OS and wait 10 minutes" "загрузите Lumen OS и подождите 10 минут")"
+    [ "$(abf_gv snapshot-update-status)" = none ] || why="$(m update_finishing) (snapshot-update-status $(abf_gv snapshot-update-status)): $(m start_lumen_os_wait_10)"
     if [ -z "$why" ] && printf '%s\n' "$GV" | grep -qE ':[a-z0-9_]+-cow(:|$)'; then
-      why="$(t "*-cow partitions: an update is finishing; start Lumen OS and wait 10 minutes" "разделы *-cow: обновление ещё завершается; загрузите Lumen OS и подождите 10 минут")"
+      why="$(m cow_partitions_update_finishing)"
     fi
   else
-    [ "$(abf_gv snapshot-update-status)" = none ] || why="$(t "an XGIMI update is staged or not finished" "обновление XGIMI подготовлено или не завершено") (snapshot-update-status $(abf_gv snapshot-update-status)); $(t "let the projector start, turn automatic updates off, wait 10 minutes" "дайте проектору загрузиться, выключите автообновление, подождите 10 минут")"
+    [ "$(abf_gv snapshot-update-status)" = none ] || why="$(m xgimi_update_staged_not_finished) (snapshot-update-status $(abf_gv snapshot-update-status)): $(m let_projector_start_turn_automatic)"
     if [ -z "$why" ] && printf '%s\n' "$GV" | grep -qE ':[a-z0-9_]+-cow(:|$)'; then
-      why="$(t "*-cow partitions: an XGIMI update is not finished; let the projector start, turn automatic updates off, wait 10 minutes" "разделы *-cow: обновление XGIMI не завершено; дайте проектору загрузиться, выключите автообновление, подождите 10 минут")"
+      why="$(m cow_partitions_xgimi_update_not)"
     fi
   fi
   [ -n "$why" ] || [ "$(abf_gv super-partition-name)" = super ] || why="super-partition-name '$(abf_gv super-partition-name)'"
@@ -3817,27 +3720,27 @@ abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot
   for k in $P_KEEP; do
     [ -z "$why" ] || break
     sz=$(gv_size "${k}_$cs")
-    [ -n "$sz" ] && [ $((sz)) -gt 0 ] || why="$(t "the partition ${k}_$cs is missing" "нет раздела ${k}_$cs") (partition-size '$sz')"
+    [ -n "$sz" ] && [ $((sz)) -gt 0 ] || why="$(m partition_missing "$k" "$cs") (partition-size '$sz')"
   done
-  [ -z "$why" ] || abf_fb_stop "$(t "fastboot mode check failed" "проверка режима fastboot не пройдена"): $why."
+  [ -z "$why" ] || abf_fb_stop "$(m fastboot_mode_check_failed): $why."
   ABF_S=_$cs
-  ok "$(t "fastboot mode: $P_NAME $SERIAL, slot $cs" "режим fastboot: $P_NAME $SERIAL, слот $cs")"
+  ok "$(m fastboot_mode_slot "$P_NAME" "$SERIAL" "$cs")"
 }
 abf_room() {  # [blobs file]: the new z9x_blobs and the image (and the add-on of ABF_GNEED) fit into super; else STOP
   local free sys old img room need blob=0 gold g
-  [ -n "$(gv_size super)" ] || abf_fb_stop "$(t "fastbootd did not report the size of super." "fastbootd не сообщил размер super.")"
+  [ -n "$(gv_size super)" ] || abf_fb_stop "$(m fastbootd_did_not_report_size)"
   free=$(super_free); sys=$(gv_size "system$ABF_S"); old=$(gv_size "z9x_blobs$ABF_S")
   if [ -n "${1-}" ]; then blob=$(( BLOB_SIZE - ${old:-0} )); [ "$blob" -gt 0 ] || blob=0; fi
-  [ "$free" -ge $(( blob + P_RESERVE )) ] || abf_fb_stop "$(t "no room in super for z9x_blobs$ABF_S ($((free / 1048576)) MB free, $(( (blob + P_RESERVE) / 1048576 )) MB needed)." "в super нет места для z9x_blobs$ABF_S (свободно $((free / 1048576)) МБ, нужно $(( (blob + P_RESERVE) / 1048576 )) МБ).")"
+  [ "$free" -ge $(( blob + P_RESERVE )) ] || abf_fb_stop "$(m no_room_super_z9x_blobs "$ABF_S" "$((free / 1048576))" "$(( (blob + P_RESERVE) / 1048576 ))")"
   # the write resizes system to the image: the space it has now counts for it
   room=$(( free + (${sys:-0} + 1048575) / 1048576 * 1048576 - (blob + 1048575) / 1048576 * 1048576 - P_RESERVE ))
   img=$(wc -c < "$IMG" | tr -d ' '); need=$(( (img + 1048575) / 1048576 * 1048576 ))
-  [ "$need" -le "$room" ] || abf_fb_stop "$(t "the image does not fit into super ($((room / 1048576)) MB free, $((need / 1048576)) MB needed)." "образ не помещается в super (свободно $((room / 1048576)) МБ, нужно $((need / 1048576)) МБ).")"
+  [ "$need" -le "$room" ] || abf_fb_stop "$(m image_not_fit_super_mb "$((room / 1048576))" "$((need / 1048576))")"
   # --gapps-zip: z9x_gapps is made or resized to the add-on image after system; what it adds to its space counts too
   [ "$ABF_GNEED" -gt 0 ] || return 0
   gold=$(gv_size "z9x_gapps$ABF_S"); gold=$(( (${gold:-0} + 1048575) / 1048576 * 1048576 ))
   g=$(( ABF_GNEED - gold )); [ "$g" -gt 0 ] || g=0
-  [ $(( need + g )) -le "$room" ] || abf_fb_stop "$(t "the image and the Google services do not fit into super together ($((room / 1048576)) MB free, $(( (need + g) / 1048576 )) MB needed). To install without them, run the installer without --gapps-zip." "образ и сервисы Google вместе не помещаются в super (свободно $((room / 1048576)) МБ, нужно $(( (need + g) / 1048576 )) МБ). Чтобы установить без них, запустите установщик без --gapps-zip.")"
+  [ $(( need + g )) -le "$room" ] || abf_fb_stop "$(m image_google_services_not_fit_2 "$((room / 1048576))" "$(( (need + g) / 1048576 ))")"
 }
 # SLOT_CHECK=yes (the X50): XGIMI ships the other slot's logical partitions empty (system_b, vendor_b, product_b,
 # system_ext_b of size 0 in lpdump) while the boot loader keeps that slot bootable (misc: priority 14, 3 tries, not
@@ -3855,25 +3758,17 @@ abf_slot_check() {  # before|after
   local cs o osz o2 u r suc cur v
   cs=${ABF_S#_}; o=$(abf_other "$cs")
   if [ "$1" = before ]; then
-    [ "$(abf_gv "slot-unbootable:$cs")" != yes ] || abf_fb_stop "$(t "the boot loader marks slot $cs, the one to be written, unbootable (slot-unbootable:$cs yes)." "загрузчик отметил слот $cs, в который идёт запись, как незагружаемый (slot-unbootable:$cs yes).")"
+    [ "$(abf_gv "slot-unbootable:$cs")" != yes ] || abf_fb_stop "$(m boot_loader_marks_slot_one "$cs")"
     osz=$(gv_size "system_$o"); osz=$(( ${osz:-0} ))
     state_set other_sys "$osz"
     if [ "$osz" -gt 0 ]; then
-      ok "$(t "slot $o: system_$o holds a system ($((osz / 1048576)) MB); it stays as it is" "слот $o: в system_$o есть система ($((osz / 1048576)) МБ); она остаётся как есть")"
+      ok "$(m slot_system_holds_system_mb "$o" "$((osz / 1048576))")"
       return 0
     fi
     u=$(abf_gv "slot-unbootable:$o"); r=$(abf_gv "slot-retry-count:$o")
     echo
-    t "Slot $o of the $P_NAME holds no system (system_$o is empty, as XGIMI ships it). The installer writes only
-slot $cs and never switches slots, so slot $cs stays the one that starts. But when a system fails to start several
-times in a row, the boot loader may switch to slot $o by itself (slot-unbootable:$o '$u', slot-retry-count:$o '$r'),
-and nothing starts there: no picture, or the logo and a restart again and again. Then only the stock USB restore
-($P_RESTORE_BIN, see the guide) brings the projector back." "У $P_NAME в слоте $o нет системы (system_$o пуст, так его поставляет XGIMI). Установщик записывает только
-слот $cs и никогда не переключает слоты, поэтому загружается по-прежнему слот $cs. Но если система несколько раз
-подряд не загрузится, загрузчик может сам переключиться на слот $o (slot-unbootable:$o '$u', slot-retry-count:$o
-'$r'), а там ничего не загружается: нет изображения или логотип и перезапуск снова и снова. Тогда проектор вернёт
-только восстановление стока с USB-флешки ($P_RESTORE_BIN, см. инструкцию)."; echo
-    ask "$(t "Write slot $cs anyway?" "Всё равно записать слот $cs?")" || abf_fb_stop "$(t "cancelled." "отменено.")"
+    m slot_holds_no_system_system "$o" "$P_NAME" "$cs" "$u" "$r" "$P_RESTORE_BIN"; echo
+    ask "$(m write_slot_anyway "$cs")" || abf_fb_stop "$(m cancelled)"
     return 0
   fi
   GV=$(fb getvar all 2>&1)
@@ -3887,25 +3782,21 @@ and nothing starts there: no picture, or the logo and a restart again and again.
   r=$(abf_gv "slot-retry-count:$cs")
   o2=$(gv_size "system_$o"); o2=$(( ${o2:-0} )); osz=$(state_get other_sys)
   if [ "$cur" != "$cs" ] || [ "$u" = yes ] || { [ -n "$osz" ] && [ "$o2" != "$osz" ]; }; then
-    die "$(t "after the write fastboot mode reports current-slot '$cur', slot-unbootable:$cs '$u' and system_$o of $o2 bytes (before the write: slot $cs, ${osz:-?} bytes): the boot loader may not start the slot just written. The projector stays in fastboot mode and nothing more is written (no wipe, no restart). Keep the cable in and do not restart it; the guide, 'Back to stock', has the way back." "после записи режим fastboot сообщает current-slot '$cur', slot-unbootable:$cs '$u' и system_$o размером $o2 байт (до записи: слот $cs, ${osz:-?} байт): загрузчик может не загрузить только что записанный слот. Проектор остаётся в режиме fastboot, больше ничего не записывается (без очистки и перезапуска). Не вынимайте кабель и не перезапускайте его; путь назад описан в инструкции, раздел «Откат на сток».")"
+    die "$(m after_write_fastboot_mode_reports "$cur" "$cs" "$u" "$o" "$o2" "${osz:-?}")"
   fi
-  ok "$(t "slot $cs stays the one that starts (current-slot $cur, not unbootable); slot $o was not touched" "загружается по-прежнему слот $cs (current-slot $cur, не отмечен как незагружаемый); слот $o не затронут")"
+  ok "$(m slot_stays_one_starts_current "$cs" "$cur" "$o")"
   [ "$suc" != yes ] || return 0
   if [ "$o2" -gt 0 ]; then
-    warn "$(t "slot $cs is no longer marked successful (slot-successful:$cs '$suc'): the boot loader now counts its starts down (slot-retry-count:$cs '$r'), and if Lumen OS fails to start that many times it switches to slot $o and its system" "слот $cs больше не отмечен как успешный (slot-successful:$cs '$suc'): загрузчик теперь считает его попытки загрузки (slot-retry-count:$cs '$r'), и если Lumen OS столько раз не загрузится, он переключится на слот $o и его систему")"
+    warn "$(m slot_no_longer_marked_successful "$cs" "$suc" "$r" "$o")"
   else
-    warn "$(t "slot $cs is no longer marked successful (slot-successful:$cs '$suc'): the boot loader now counts its starts down (slot-retry-count:$cs '$r'), and if Lumen OS fails to start that many times it switches to slot $o, which holds no system: then only the stock USB restore $P_RESTORE_BIN helps" "слот $cs больше не отмечен как успешный (slot-successful:$cs '$suc'): загрузчик теперь считает его попытки загрузки (slot-retry-count:$cs '$r'), и если Lumen OS столько раз не загрузится, он переключится на слот $o, в котором нет системы: тогда поможет только восстановление стока с USB-флешки $P_RESTORE_BIN")"
+    warn "$(m slot_no_longer_marked_successful_2 "$cs" "$suc" "$r" "$o" "$P_RESTORE_BIN")"
   fi
 }
 abf_slot_note() {  # SLOT_CHECK, the end of a write: the other slot that holds no system, told once more
   local cs o
   [ "$P_SLOT_CHECK" = yes ] && [ "$(state_get other_sys)" = 0 ] || return 0
   cs=${ABF_S#_}; o=$(abf_other "$cs")
-  t "Slot $cs starts Lumen OS. Slot $o still holds no system, and the installer did not switch slots. If Lumen OS
-does not start (no setup screen after 10 minutes, or the logo and a restart again and again), do not wait: only the
-stock USB restore $P_RESTORE_BIN brings it back (see the guide)." "Lumen OS загружается из слота $cs. В слоте $o по-прежнему нет системы, и установщик не переключал слоты.
-Если Lumen OS не загрузится (через 10 минут нет экрана настройки или логотип и перезапуск снова и снова), не
-ждите: вернёт его только восстановление стока с USB-флешки $P_RESTORE_BIN (см. инструкцию)."; echo
+  m slot_starts_lumen_os_slot "$cs" "$o" "$P_RESTORE_BIN"; echo
 }
 abf_infb() { [ -n "$(state_get step_fastboot)" ] && [ "$(state_get step_flash)" != done ] && p6_in_fastboot; }
 abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x_blobs, system, the wipe, restart
@@ -3914,10 +3805,10 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
   check_tools
   if abf_infb; then
     infb=1; ABF_RESUME=1
-    say "$(t "the projector waits in fastboot mode on the cable: continuing there" "проектор ждёт в режиме fastboot на кабеле: продолжаю там")"
+    say "$(m projector_waits_fastboot_mode)"
   else
     if [ "$ABF_UP" != 1 ] && ! abf_adb 60; then
-      [ -z "$(state_get step_fastboot)" ] || [ "$(state_get step_flash)" = done ] || die "$(t "the projector is neither in fastboot mode on the cable nor reachable over the network at $ADB_T. If its screen shows fastboot mode: check the cable (the projector's USB port, not a hub; on Linux the udev permissions) and run the installer again. If its system runs: run the installer again, it starts over. Nothing more was written." "проектора нет ни в режиме fastboot на кабеле, ни в сети по адресу $ADB_T. Если на экране режим fastboot: проверьте кабель (USB-порт проектора, не хаб; на Linux права udev) и запустите установщик снова. Если работает его система: запустите установщик снова, он начнёт сначала. Больше ничего не записано.")"
+      [ -z "$(state_get step_fastboot)" ] || [ "$(state_get step_flash)" = done ] || die "$(m projector_neither_fastboot_mode_2 "$ADB_T")"
       die "$(p6_noconn_text)"
     fi
     abf_device
@@ -3930,9 +3821,9 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
   [ "$infb" = 0 ] || [ "$(state_get step_zblobs)" != done ] || blobs=""
   if [ -n "$blobs" ] && { [ "$infb" = 0 ] || [ "$(state_get step_system)" != done ]; } && ! abf_blobs_ok; then
     if [ "$infb" = 1 ] && [ "$(state_get step_system)" = started ]; then
-      abf_fb_stop "$(t "$blobs (the MediaTek / XGIMI files of this projector) is missing. To finish without them (no sound, no MediaTek video decoders), run the installer again with --no-blobs." "нет $blobs (файлов MediaTek / XGIMI этого проектора). Чтобы закончить без них (без звука и видеодекодеров MediaTek), запустите установщик снова с --no-blobs.")"
+      abf_fb_stop "$(m mediatek_xgimi_files_projector "$blobs")"
     fi
-    [ "$infb" = 0 ] || abf_fb_stop "$(t "$blobs (the MediaTek / XGIMI files of this projector) is missing." "нет $blobs (файлов MediaTek / XGIMI этого проектора).")"
+    [ "$infb" = 0 ] || abf_fb_stop "$(m mediatek_xgimi_files_projector_2 "$blobs")"
     abf_blobs
   fi
   # --gapps-zip (one visit, one wipe, as on the Z9X): the add-on image built and checked here, before the ERASE
@@ -3940,44 +3831,26 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
   if [ -n "$GAPPS_WITH" ]; then
     z9x_gapps_prepare
   elif [ "$infb" = 1 ] && [ -n "$(state_get gapps_plan)" ] && [ "$(state_get step_gapps_flash)" != done ]; then
-    say "$(t "this install was started with Google services (--gapps-zip), and they are not written yet" "эта установка начата с сервисами Google (--gapps-zip), и они ещё не записаны")"
-    ask "$(t "Finish the install without Google services? (Adding them later with 'gapps' wipes the data once more.)" "Завершить установку без сервисов Google? (Если добавить их позже через 'gapps', данные сотрутся ещё раз.)")" \
-      || abf_fb_stop "$(t "run the same command again with --gapps-zip FILE." "запустите ту же команду снова с --gapps-zip ФАЙЛ.")"
+    say "$(m install_started_google_services_2)"
+    ask "$(m finish_install_without_google)" \
+      || abf_fb_stop "$(m run_same_command_again_gapps_3)"
     state_set gapps_plan ""
   fi
   local s; s=$(state_get slot); s=${s#_}
   echo
   if [ -n "$blobs" ]; then
-    t "Writing Lumen OS to slot $s of the $P_NAME and then ERASING ALL DATA on it (apps, accounts, settings,
-files, Wi-Fi networks). In one visit to fastboot mode the installer writes the partition z9x_blobs_$s with the
-files copied from your projector, then system_$s, then formats userdata and metadata. XGIMI's firmware stays
-untouched: vendor, boot, vbmeta, product, system_ext, the other slot, calibration and factory data. Keep the
-power adapter connected." "Записываю Lumen OS в слот $s $P_NAME, затем СТИРАЮ ВСЕ ДАННЫЕ (приложения, аккаунты,
-настройки, файлы, сети Wi-Fi). За один заход в режим fastboot установщик записывает раздел z9x_blobs_$s с
-файлами, скопированными с вашего проектора, затем system_$s, затем форматирует userdata и metadata. Прошивка
-XGIMI не затрагивается: vendor, boot, vbmeta, product, system_ext, второй слот, калибровка и заводские данные.
-Блок питания держите подключённым."; echo
+    m writing_lumen_os_slot_erasing_2 "$s" "$P_NAME"; echo
   else
-    t "Writing Lumen OS to slot $s of the $P_NAME and then ERASING ALL DATA on it (apps, accounts, settings,
-files, Wi-Fi networks). In one visit to fastboot mode the installer writes system_$s, then formats userdata
-and metadata. XGIMI's firmware stays untouched: vendor, boot, vbmeta, product, system_ext, the other slot,
-calibration and factory data. Keep the power adapter connected." "Записываю Lumen OS в слот $s $P_NAME, затем СТИРАЮ ВСЕ ДАННЫЕ (приложения, аккаунты,
-настройки, файлы, сети Wi-Fi). За один заход в режим fastboot установщик записывает system_$s, затем
-форматирует userdata и metadata. Прошивка XGIMI не затрагивается: vendor, boot, vbmeta, product, system_ext,
-второй слот, калибровка и заводские данные. Блок питания держите подключённым."; echo
+    m writing_lumen_os_slot_erasing_3 "$s" "$P_NAME"; echo
   fi
   if [ -n "$GAPPS_WITH" ]; then
-    t "With --gapps-zip the same visit also writes the Google services from $GZ_NAME into the partition
-z9x_gapps_$s ($(( (GI_SIZE + 1048575) / 1048576 )) MB, the image just built on this computer), after system and before the wipe: the first start
-is clean and its setup has the Google sign-in step." "С --gapps-zip в том же заходе в раздел z9x_gapps_$s ($(( (GI_SIZE + 1048575) / 1048576 )) МБ, образ только что собран на
-компьютере) записываются ещё сервисы Google из $GZ_NAME, после system и до очистки: первый запуск чистый, и в его
-настройке есть шаг входа в Google."; echo
+    m gapps_zip_same_visit_also "$GZ_NAME" "$s" "$(( (GI_SIZE + 1048575) / 1048576 ))"; echo
   fi
-  printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+  printf '%s ' "$(m type_erase_continue)"
   read -r a
   if [ "$a" != ERASE ]; then
-    [ "$infb" = 0 ] || abf_fb_stop "$(t "cancelled." "отменено.")"
-    die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$infb" = 0 ] || abf_fb_stop "$(m cancelled)"
+    die "$(m cancelled_nothing_written)"
   fi
   ERASE_NOW=1
   # the add-on of this write (abf_gapps_write); a new write without --gapps-zip forgets what an earlier one saved
@@ -3993,24 +3866,22 @@ is clean and its setup has the Google sign-in step." "С --gapps-zip в том �
   if [ "$infb" = 0 ]; then
     for k in step_fastboot step_zblobs step_system step_wipe step_flash step_verify; do state_set "$k" ""; done
     echo
-    t "Connect the projector's USB port to this computer with the USB A-to-A cable now (take out whatever is
-in that port first). Its system keeps running; fastboot mode uses the cable." "Соедините сейчас USB-порт проектора с компьютером кабелем USB A–A (сначала выньте то, что вставлено в
-этот порт). Система проектора продолжает работать; режим fastboot использует кабель."; echo
-    printf '%s ' "$(t "Press Enter when the cable is in." "Когда кабель вставлен, нажмите Enter.")"
+    m connect_projectors_usb_port; echo
+    printf '%s ' "$(m press_enter_when_cable)"
     read -r a
-    say "$(t "restarting into fastboot mode (about 30 seconds)" "перезагрузка в режим fastboot (около 30 секунд)")"
+    say "$(m restarting_fastboot_mode_about_30)"
     # saved first: a restart that happens although adb reports an error is still continued by the next run
     state_set step_fastboot "$(date +%Y%m%d-%H%M%S)"
     if ! adbs reboot fastboot >/dev/null 2>&1 && p6_alive; then
       state_set step_fastboot ""
-      die "$(t "adb reboot fastboot failed: the projector still runs its system. Nothing was written. Run the installer again." "adb reboot fastboot не удался: проектор работает в своей системе. Ничего не записано. Запустите установщик снова.")"
+      die "$(m adb_reboot_fastboot_failed_3)"
     fi
     adb disconnect "$ADB_T" >/dev/null 2>&1
   fi
-  p6_fb_wait 180 || die "$(t "the projector did not appear on the cable within 3 minutes. Is the cable in the projector's USB port (not a hub)? On Linux: udev permissions ('no permissions' in 'fastboot devices'). Nothing was written. Run the installer again: it finds the projector in fastboot mode, or, once its system is back, sends it there again." "проектор не появился на кабеле за 3 минуты. Кабель в USB-порту проектора (не через хаб)? На Linux права udev ('no permissions' в 'fastboot devices'). Ничего не записано. Запустите установщик снова: он найдёт проектор в режиме fastboot или, когда система вернётся, снова отправит его туда.")"
+  p6_fb_wait 180 || die "$(m projector_did_not_appear_cable_3)"
   abf_fbd_check
   if [ -z "$(state_get gapps_plan)" ] && [ -n "$(gv_size "z9x_gapps$ABF_S")" ]; then
-    say "$(t "z9x_gapps$ABF_S (Google services you added) stays as it is; 'gapps --remove' removes it" "z9x_gapps$ABF_S (добавленные вами сервисы Google) остаётся как есть; 'gapps --remove' его удаляет")"
+    say "$(m z9x_gapps_google_services_added "$ABF_S")"
   fi
   if [ "$(state_get step_system)" != done ]; then
     [ "$P_SLOT_CHECK" != yes ] || abf_slot_check before
@@ -4018,44 +3889,40 @@ in that port first). Its system keeps running; fastboot mode uses the cable." "�
     if [ -n "$blobs" ]; then
       if [ -n "$(gv_size "z9x_blobs$ABF_S")" ]; then fb_do resize "z9x_blobs$ABF_S" "$BLOB_SIZE"
       else fb_do create "z9x_blobs$ABF_S" "$BLOB_SIZE"; fi \
-        || abf_fb_stop "$(t "the partition z9x_blobs$ABF_S could not be made." "раздел z9x_blobs$ABF_S не удалось создать.")"
-      fb_do flash "z9x_blobs$ABF_S" "$blobs" || abf_fb_stop "$(t "z9x_blobs$ABF_S was not written; system was not touched." "z9x_blobs$ABF_S не записан; system не затронут.")"
+        || abf_fb_stop "$(m partition_z9x_blobs_could_not "$ABF_S")"
+      fb_do flash "z9x_blobs$ABF_S" "$blobs" || abf_fb_stop "$(m z9x_blobs_not_written_system "$ABF_S")"
       state_set step_zblobs done
       ok "z9x_blobs$ABF_S"
     fi
-    say "$(t "writing system (about 1 minute). Do not unplug the cable or the power until it is done." "записываю system (около минуты). Не отключайте кабель и питание, пока запись не закончится.")"
+    say "$(m writing_system_about_1_minute)"
     state_set step_system started
-    fb_do flash "system$ABF_S" "$IMG" || die "$(t "system was not written completely. The projector stays in fastboot mode: keep the cable in and run the installer again, it writes system again." "system записан не полностью. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите установщик снова, он запишет system ещё раз.")"
+    fb_do flash "system$ABF_S" "$IMG" || die "$(m system_not_written_completely)"
   fi
   sz=$(wc -c < "$IMG" | tr -d ' ')
   got=$(fb getvar "partition-size:system$ABF_S" 2>&1 | sed -n "s/^partition-size:system$ABF_S: *//p" | head -n 1 | tr -d ' \r')
   case "$got" in 0x[0-9a-fA-F]*) got=$((got)) ;; *) got="" ;; esac
   if [ "$got" != "$sz" ]; then
     state_set step_system started
-    die "$(t "after the write system$ABF_S has ${got:-?} bytes, the image $sz: the write did not take. The projector stays in fastboot mode: keep the cable in and run the installer again, it writes system again." "после записи в system$ABF_S ${got:-?} байт, а в образе $sz: запись не применилась. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите установщик снова, он запишет system ещё раз.")"
+    die "$(m after_write_system_has_bytes "$ABF_S" "${got:-?}" "$sz")"
   fi
   state_set step_system done
   ok "system$ABF_S ($((sz / 1048576)) MB)"
   [ "$P_SLOT_CHECK" != yes ] || abf_slot_check after
   if [ -n "$(state_get gapps_plan)" ] && [ "$(state_get step_gapps_flash)" != done ]; then abf_gapps_write || state_set gapps_plan ""; fi
-  say "$(t "wiping data (format:$P_WIPE_FS $P_WIPE)" "очистка данных (format:$P_WIPE_FS $P_WIPE)")"
+  say "$(m wiping_data_format "$P_WIPE_FS" "$P_WIPE")"
   for p in $P_WIPE; do
-    fb_do format "$p" || die "$(t "the wipe ($p) failed. The projector stays in fastboot mode: keep the cable in and run the installer again, it continues with the wipe." "очистка ($p) не удалась. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите установщик снова, он продолжит с очистки.")"
+    fb_do format "$p" || die "$(m wipe_failed_projector_stays "$p")"
   done
   state_set step_wipe done
   fb reboot >/dev/null 2>&1
   state_set step_flash done
   echo
   if [ "$(state_get step_gapps_flash)" = done ]; then
-    t "Written. The projector starts Lumen OS now; the first start takes 2-4 minutes and ends in the setup
-on the screen, with the Google sign-in step. $(abf_hint) The cable can come out now." "Записано. Проектор загружает Lumen OS; первый запуск 2–4 минуты и заканчивается экраном настройки,
-в ней есть шаг входа в Google. $(abf_hint) Кабель теперь можно вынуть."; echo
+    m written_projector_starts_lumen_os "$(abf_hint)"; echo
     abf_slot_note
     return 0
   fi
-  t "Written. The projector starts Lumen OS now; the first start takes 2-4 minutes and ends in the setup
-on the screen. $(abf_hint) The cable can come out now." "Записано. Проектор загружает Lumen OS; первый запуск 2–4 минуты и заканчивается экраном настройки.
-$(abf_hint) Кабель теперь можно вынуть."; echo
+  m written_projector_starts_lumen_os_2 "$(abf_hint)"; echo
   abf_slot_note
 }
 # The Google services add-on of a profile with GAPPS_ALLOW (its own allow-list, the same file as the image's
@@ -4073,21 +3940,21 @@ abf_gapps_write() {  # fastbootd, system written: z9x_gapps_<slot> sized to the 
   # (warned; the partition is deleted again, so the system starts plainly without Google)
   local p=z9x_gapps$ABF_S need free cur why
   need=$(( (GI_SIZE + 1048575) / 1048576 * 1048576 ))
-  why=$(t "the install goes on without Google services (add them later: gapps --zip FILE)" "установка продолжается без сервисов Google (добавить их позже: gapps --zip ФАЙЛ)")
+  why=$(m install_goes_without_google)
   GV=$(fb getvar all 2>&1)   # system and z9x_blobs have their new sizes now
   free=$(super_free); cur=$(gv_size "$p"); cur=$(( ${cur:-0} ))
   if [ $(( free + cur )) -lt "$need" ]; then
     [ "$cur" -gt 0 ] && fb_do delete "$p" >/dev/null 2>&1
-    warn "$(t "not enough free space in super for the Google services ($(( (free + cur) / 1048576 )) MB, $((need / 1048576)) MB needed): $why" "в super мало места для сервисов Google ($(( (free + cur) / 1048576 )) МБ, нужно $((need / 1048576)) МБ): $why")"
+    warn "$(m not_enough_free_space_super_2 "$(( (free + cur) / 1048576 ))" "$((need / 1048576))" "$why")"
     state_set step_gapps_flash skipped:room; return 1
   fi
-  say "$(t "writing the Google services into $p ($((need / 1048576)) MB, about 20 s)" "записываю сервисы Google в $p ($((need / 1048576)) МБ, около 20 секунд)")"
+  say "$(m writing_google_services_mb_about "$p" "$((need / 1048576))")"
   if [ "$cur" -gt 0 ]; then fb_do resize "$p" "$need"; else fb_do create "$p" "$need"; fi \
-    || { fb_do delete "$p" >/dev/null 2>&1; warn "$(t "$p could not be created: $why" "$p создать не удалось: $why")"; state_set step_gapps_flash skipped:create; return 1; }
+    || { fb_do delete "$p" >/dev/null 2>&1; warn "$(m could_not_created "$p" "$why")"; state_set step_gapps_flash skipped:create; return 1; }
   if ! fb_do flash "$p" "$GI_IMG"; then
-    p6_in_fastboot || die "$(t "fastboot mode ended while $p was being written. Put the cable in again and run the same command: it continues there, or, once Lumen OS runs, writes everything again in one visit." "режим fastboot завершился во время записи $p. Снова вставьте кабель и запустите ту же команду: установка продолжится там или, если уже работает Lumen OS, всё запишется заново за один заход.")"
+    p6_in_fastboot || die "$(m fastboot_mode_ended_while_being "$p")"
     fb_do delete "$p" >/dev/null 2>&1
-    warn "$(t "$p could not be written and was removed again: $why" "$p записать не удалось, раздел удалён: $why")"
+    warn "$(m could_not_written_removed_again "$p" "$why")"
     state_set step_gapps_flash skipped:flash; return 1
   fi
   state_set step_gapps_flash done; state_set gapps "$GZ_NAME"; state_set gapps_img "$GI_SHA"
@@ -4102,42 +3969,40 @@ abf_gapps_need() {  # bytes of super the --gapps-zip add-on takes (its checked i
 abf_gapps_cable() {  # Lumen OS runs: cable in, restart into fastboot mode for the 'gapps' visit, wait for it there
   local a
   echo
-  t "Connect the projector's USB port to this computer with the USB A-to-A cable now (take out whatever is
-in that port first). Its system keeps running; fastboot mode uses the cable." "Соедините сейчас USB-порт проектора с компьютером кабелем USB A–A (сначала выньте то, что вставлено в
-этот порт). Система проектора продолжает работать; режим fastboot использует кабель."; echo
-  printf '%s ' "$(t "Press Enter when the cable is in." "Когда кабель вставлен, нажмите Enter.")"
+  m connect_projectors_usb_port; echo
+  printf '%s ' "$(m press_enter_when_cable)"
   read -r a
-  say "$(t "restarting into fastboot mode (about 30 seconds)" "перезагрузка в режим fastboot (около 30 секунд)")"
+  say "$(m restarting_fastboot_mode_about_30)"
   state_set gapps_fastboot "$(date +%Y%m%d-%H%M%S)"
   if ! adbs reboot fastboot >/dev/null 2>&1 && p6_alive; then
     state_set gapps_fastboot ""
-    die "$(t "adb reboot fastboot failed: the projector still runs its system. Nothing was written. Run the installer again." "adb reboot fastboot не удался: проектор работает в своей системе. Ничего не записано. Запустите установщик снова.")"
+    die "$(m adb_reboot_fastboot_failed_3)"
   fi
   adb disconnect "$ADB_T" >/dev/null 2>&1
-  p6_fb_wait 180 || die "$(t "the projector did not appear on the cable within 3 minutes. Is the cable in the projector's USB port (not a hub)? On Linux: udev permissions ('no permissions' in 'fastboot devices'). Nothing was written. Run the same command again: it finds the projector in fastboot mode, or, once its system is back, sends it there again." "проектор не появился на кабеле за 3 минуты. Кабель в USB-порту проектора (не через хаб)? На Linux права udev ('no permissions' в 'fastboot devices'). Ничего не записано. Запустите ту же команду снова: она найдёт проектор в режиме fastboot или, когда система вернётся, снова отправит его туда.")"
+  p6_fb_wait 180 || die "$(m projector_did_not_appear_cable_4)"
 }
 abf_gapps_wipe() {  # the 'gapps' visit, z9x_gapps changed: the format of WIPE_PARTS, then the restart
   local p
-  say "$(t "wiping data (format:$P_WIPE_FS $P_WIPE)" "очистка данных (format:$P_WIPE_FS $P_WIPE)")"
+  say "$(m wiping_data_format "$P_WIPE_FS" "$P_WIPE")"
   for p in $P_WIPE; do
-    fb_do format "$p" || die "$(t "the wipe ($p) failed. The projector stays in fastboot mode: keep the cable in and run the same command again, it continues there." "очистка ($p) не удалась. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите ту же команду снова, она продолжит там.")"
+    fb_do format "$p" || die "$(m wipe_failed_projector_stays_2 "$p")"
   done
   fb reboot >/dev/null 2>&1
   state_set gapps_fastboot ""
 }
 abf_gapps_lumen() {  # connected: Lumen OS of this projector without Google built in, else STOP
   p6_lumen_only
-  [ "$(prop ro.z9x.gms)" = 0 ] || die "$(t "this projector runs Lumen OS with Google services built in: nothing to add" "на проекторе Lumen OS со встроенными сервисами Google: добавлять нечего")"
+  [ "$(prop ro.z9x.gms)" = 0 ] || die "$(m projector_runs_lumen_os_google_2)"
 }
 abf_gapps_install() {
   local zip=$GAPPS_ZIP a s have infb=0 p
   abf_refuse_opts
-  [ -f "$zip" ] || die "$(t "no file $zip" "нет файла $zip")"
+  [ -f "$zip" ] || die "$(m no_file "$zip")"
   check_tools
   gapps_zipcheck "$zip"
   if [ -n "$(state_get gapps_fastboot)" ] && p6_in_fastboot; then
     infb=1
-    say "$(t "the projector waits in fastboot mode on the cable: continuing there" "проектор ждёт в режиме fastboot на кабеле: продолжаю там")"
+    say "$(m projector_waits_fastboot_mode)"
   else
     abf_adb 60 || die "$(p6_noconn_text)"
     abf_device
@@ -4146,37 +4011,29 @@ abf_gapps_install() {
     # the same add-on, on: writing it again would only cost the Google apps their data (one start without them)
     have=$(prop sys.z9x.gapps)
     if [ "$have" = ok ] && [ "$(prop sys.z9x.gapps.zip)" = "$GZ_SHA" ]; then
-      ok "$(t "these Google services ($GZ_NAME) are already installed and on: nothing to do. Nothing was written." "эти сервисы Google ($GZ_NAME) уже установлены и включены: делать нечего. Ничего не записано.")"
+      ok "$(m these_google_services_already "$GZ_NAME")"
       return 0
     fi
     # the Lumen OS on the projector takes this zip as an erofs add-on (its own files, read without root)
     if ! adbs shell cat /system/etc/z9x/gapps_allow.txt 2>/dev/null | tr -d '\r' | grep -q "^zip=$GZ_SHA " \
        || ! adbs shell cat /system/etc/z9x/z9x_gapps.sh 2>/dev/null | tr -d '\r' | grep -q '^# lumen-gapps-fs:.* erofs'; then
-      die "$(t "the Lumen OS on the projector does not accept this file yet: update Lumen OS first (Settings > Device preferences > About > Lumen OS update). Nothing was written." "Lumen OS на проекторе ещё не принимает этот файл: сначала обновите Lumen OS (Настройки > Настройки устройства > Об устройстве > Обновление Lumen OS). Ничего не записано.")"
+      die "$(m lumen_os_projector_not_accept)"
     fi
   fi
   eu_setup
   gi_build "$zip"
   s=$(state_get slot); s=${s#_}
   echo
-  t "Adding Google services (slot $s): in one visit to fastboot mode the installer writes the partition
-z9x_gapps_$s ($(( (GI_SIZE + 1048575) / 1048576 )) MB, the image just built on this computer from $GZ_NAME), then ERASES ALL DATA on the
-projector (apps, accounts, settings, files, Wi-Fi networks) by formatting userdata and metadata, as at the
-install: the first start then sets up Google services properly. system, vendor, boot, vbmeta, the other slot,
-calibration and factory data stay untouched. Keep the power adapter connected." "Добавляю сервисы Google (слот $s): за один заход в режим fastboot установщик записывает раздел
-z9x_gapps_$s ($(( (GI_SIZE + 1048575) / 1048576 )) МБ, образ только что собран на компьютере из $GZ_NAME), затем СТИРАЕТ ВСЕ ДАННЫЕ
-проектора (приложения, аккаунты, настройки, файлы, сети Wi-Fi), форматируя userdata и metadata, как при
-установке: тогда первый запуск правильно настроит сервисы Google. System, vendor, boot, vbmeta, второй слот,
-калибровка и заводские данные не затрагиваются. Блок питания держите подключённым."; echo
-  if [ "$infb" = 0 ] && [ "$(state_get step_backup)" != done ] && ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then
+  m adding_google_services_slot_one "$s" "$(( (GI_SIZE + 1048575) / 1048576 ))" "$GZ_NAME"; echo
+  if [ "$infb" = 0 ] && [ "$(state_get step_backup)" != done ] && ask "$(m make_backup_apps_files_first)"; then
     cmd_backup
   fi
-  printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+  printf '%s ' "$(m type_erase_continue)"
   read -r a
   ABF_GAPPS=1; ABF_GW=0
   if [ "$a" != ERASE ]; then
-    [ "$infb" = 0 ] || abf_fb_stop "$(t "cancelled." "отменено.")"
-    die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$infb" = 0 ] || abf_fb_stop "$(m cancelled)"
+    die "$(m cancelled_nothing_written)"
   fi
   ERASE_NOW=1
   [ "$infb" = 1 ] || abf_gapps_cable
@@ -4186,28 +4043,24 @@ z9x_gapps_$s ($(( (GI_SIZE + 1048575) / 1048576 )) МБ, образ только
   local need free cur
   need=$(( (GI_SIZE + 1048575) / 1048576 * 1048576 ))
   free=$(super_free); cur=$(gv_size "$p"); cur=$(( ${cur:-0} ))
-  [ $(( free + cur )) -ge $(( need + P_RESERVE )) ] || abf_fb_stop "$(t "not enough free space in super: $(( (free + cur) / 1048576 )) MB, the Google services need $(( (need + P_RESERVE) / 1048576 )) MB." "в super мало места: свободно $(( (free + cur) / 1048576 )) МБ, сервисам Google нужно $(( (need + P_RESERVE) / 1048576 )) МБ.")"
-  say "$(t "writing the Google services into $p ($((need / 1048576)) MB, about 20 s)" "записываю сервисы Google в $p ($((need / 1048576)) МБ, около 20 секунд)")"
+  [ $(( free + cur )) -ge $(( need + P_RESERVE )) ] || abf_fb_stop "$(m not_enough_free_space_super_3 "$(( (free + cur) / 1048576 ))" "$(( (need + P_RESERVE) / 1048576 ))")"
+  say "$(m writing_google_services_mb_about "$p" "$((need / 1048576))")"
   if [ "$cur" -gt 0 ]; then fb_do resize "$p" "$need"; else fb_do create "$p" "$need"; fi \
-    || abf_fb_stop "$(t "$p could not be made." "$p не удалось создать.")"
+    || abf_fb_stop "$(m could_not_made "$p")"
   ABF_GW=1
   if ! fb_do flash "$p" "$GI_IMG"; then
-    p6_in_fastboot || die "$(t "fastboot mode ended while $p was being written. Put the cable in again and run the same command." "режим fastboot завершился во время записи $p. Снова вставьте кабель и запустите ту же команду.")"
-    fb_do delete "$p" >/dev/null 2>&1 || die "$(t "$p could not be written. The projector stays in fastboot mode: keep the cable in and run the same command again." "$p записать не удалось. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите ту же команду снова.")"
+    p6_in_fastboot || die "$(m fastboot_mode_ended_while_being_2 "$p")"
+    fb_do delete "$p" >/dev/null 2>&1 || die "$(m could_not_written_projector_stays "$p")"
     state_set gapps_fastboot ""
     fb reboot >/dev/null 2>&1
-    die "$(t "$p could not be written and was removed again; nothing else changed: Lumen OS starts without Google services. Run 'gapps --zip FILE' again." "$p записать не удалось, раздел удалён; больше ничего не изменилось: Lumen OS загружается без сервисов Google. Запустите 'gapps --zip ФАЙЛ' ещё раз.") $(abf_hint)"
+    die "$(m could_not_written_removed_again_2 "$p") $(abf_hint)"
   fi
   ok "$p: $GZ_NAME"
   state_set gapps "$GZ_NAME"; state_set gapps_img "$GI_SHA"
   abf_gapps_wipe
   state_set step_gapps done
   echo
-  t "Done. The projector starts Lumen OS on wiped data now; the first start takes 2-4 minutes and ends in the
-setup on the screen, with the Google sign-in step. If Google refuses the sign-in, register the GSF ID (guide,
-section 'Adding Google services'). $(abf_hint) The cable can come out now." "Готово. Проектор загружает Lumen OS на очищенных данных; первый запуск 2–4 минуты и заканчивается
-экраном настройки, в ней есть шаг входа в Google. Если Google не пускает, зарегистрируйте GSF ID (инструкция,
-раздел «Как поставить сервисы Google»). $(abf_hint) Кабель теперь можно вынуть."; echo
+  m done_projector_starts_lumen_os "$(abf_hint)"; echo
 }
 abf_gapps_remove() {
   local a p infb=0
@@ -4215,31 +4068,25 @@ abf_gapps_remove() {
   check_tools
   if [ -n "$(state_get gapps_fastboot)" ] && p6_in_fastboot; then
     infb=1
-    say "$(t "the projector waits in fastboot mode on the cable: continuing there" "проектор ждёт в режиме fastboot на кабеле: продолжаю там")"
+    say "$(m projector_waits_fastboot_mode)"
   else
     abf_adb 60 || die "$(p6_noconn_text)"
     abf_device
     abf_live_gate
     abf_gapps_lumen
     if [ "$(prop sys.z9x.gapps)" = none ]; then
-      ok "$(t "slot $(state_get slot | tr -d _) has no z9x_gapps: nothing to remove. Nothing was written." "в слоте $(state_get slot | tr -d _) нет z9x_gapps: удалять нечего. Ничего не записано.")"
+      ok "$(m slot_has_no_z9x_gapps "$(state_get slot | tr -d _)")"
       return 0
     fi
   fi
   echo
-  t "Removing the Google services you added: in one visit to fastboot mode the installer deletes the
-partition z9x_gapps of the slot Lumen OS runs from and then ERASES ALL DATA on the projector (apps,
-accounts, settings, files, Wi-Fi networks), as at the install. system, vendor, boot, vbmeta, the other slot,
-calibration and factory data stay untouched." "Удаляю добавленные вами сервисы Google: за один заход в режим fastboot установщик удаляет раздел
-z9x_gapps того слота, из которого работает Lumen OS, и затем СТИРАЕТ ВСЕ ДАННЫЕ проектора (приложения,
-аккаунты, настройки, файлы, сети Wi-Fi), как при установке. System, vendor, boot, vbmeta, второй слот,
-калибровка и заводские данные не затрагиваются."; echo
-  printf '%s ' "$(t "Type ERASE to continue:" "Введите ERASE, чтобы продолжить:")"
+  m removing_google_services_added_one; echo
+  printf '%s ' "$(m type_erase_continue)"
   read -r a
   ABF_GAPPS=1; ABF_GW=0
   if [ "$a" != ERASE ]; then
-    [ "$infb" = 0 ] || abf_fb_stop "$(t "cancelled." "отменено.")"
-    die "$(t "cancelled, nothing was written" "отменено, ничего не записано")"
+    [ "$infb" = 0 ] || abf_fb_stop "$(m cancelled)"
+    die "$(m cancelled_nothing_written)"
   fi
   ERASE_NOW=1
   [ "$infb" = 1 ] || abf_gapps_cable
@@ -4247,14 +4094,14 @@ z9x_gapps того слота, из которого работает Lumen OS, 
   p=z9x_gapps$ABF_S
   if [ -n "$(gv_size "$p")" ]; then
     ABF_GW=1
-    fb_do delete "$p" || die "$(t "$p could not be deleted. The projector stays in fastboot mode: keep the cable in and run the same command again." "$p удалить не удалось. Проектор остаётся в режиме fastboot: не вынимайте кабель и запустите ту же команду снова.")"
-    ok "$(t "$p deleted" "$p удалён")"
+    fb_do delete "$p" || die "$(m could_not_deleted_projector_stays "$p")"
+    ok "$(m deleted "$p")"
   elif [ "$infb" = 0 ]; then
-    abf_fb_stop "$(t "slot ${ABF_S#_} has no $p: nothing to remove." "в слоте ${ABF_S#_} нет $p: удалять нечего.")"
+    abf_fb_stop "$(m slot_has_no_nothing_remove_2 "${ABF_S#_}" "$p")"
   fi
   abf_gapps_wipe
   state_set gapps ""; state_set gapps_img ""
-  ok "$(t "the projector starts Lumen OS without Google services on wiped data" "проектор загружает Lumen OS без сервисов Google на очищенных данных") $(abf_hint)"
+  ok "$(m projector_starts_lumen_os_without_2) $(abf_hint)"
 }
 abf_gapps_status() {
   local v z
@@ -4264,18 +4111,18 @@ abf_gapps_status() {
   p6_lumen_only
   v=$(prop sys.z9x.gapps); z=$(prop sys.z9x.gapps.zip)
   case "$v" in
-    ok) ok "$(t "Google services added by you: on" "добавленные вами сервисы Google: включены") ($(gapps_line "$z" | cut -d' ' -f2))" ;;
-    none|'') say "$(t "no Google services added. To add them: bash lumen-install.sh gapps --zip FILE (guide, section 'Adding Google services')" "сервисы Google не добавлены. Как добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «Как поставить сервисы Google»)")" ;;
-    bad:slow) warn "$(t "at the last start the check of the Google services took too long, so the projector started without them: restart it" "при последнем запуске проверка сервисов Google шла слишком долго, поэтому проектор запустился без них: перезагрузите его")" ;;
+    ok) ok "$(m google_services_added) ($(gapps_line "$z" | cut -d' ' -f2))" ;;
+    none|'') say "$(m no_google_services_added_add)" ;;
+    bad:slow) warn "$(m last_start_check_google_services)" ;;
     off)
-      warn "$(t "the Google services were turned off: the projector failed to start twice in a row with them" "сервисы Google выключены: проектор дважды подряд не смог загрузиться с ними")"
-      if ask "$(t "Turn them on again (the projector restarts)?" "Включить их снова (проектор перезагрузится)?")"; then
+      warn "$(m google_services_were_turned_off)"
+      if ask "$(m turn_them_again_projector_restarts)"; then
         p6_root_or_die
         adbs shell rm -rf /metadata/z9x_gapps >/dev/null 2>&1
         adbs reboot >/dev/null 2>&1
-        ok "$(t "turned on; the projector restarts" "включены; проектор перезагружается")"
+        ok "$(m turned_projector_restarts)"
       fi ;;
-    *) warn "$(t "the Google services you added cannot be used ($v): run 'gapps --zip FILE' again, or 'gapps --remove'" "добавленные сервисы Google не могут использоваться ($v): запустите 'gapps --zip ФАЙЛ' ещё раз или 'gapps --remove'")" ;;
+    *) warn "$(m google_services_added_cannot_used "$v")" ;;
   esac
 }
 abf_gapps() {
@@ -4291,52 +4138,46 @@ abf_gsf() {  # the Google Services Framework ID of the projector's Lumen OS, for
   abf_device
   p6_lumen_only
   if [ -z "$(adbs shell pm path com.google.android.gsf 2>/dev/null | tr -d '\r')" ]; then
-    ok "$(t "this Lumen OS has no Google services: nothing to register" "в этой Lumen OS нет сервисов Google: регистрировать нечего")"
-    say "$(t "To add them: bash lumen-install.sh gapps --zip FILE (guide, section 'Adding Google services')" "Как их добавить: bash lumen-install.sh gapps --zip ФАЙЛ (инструкция, раздел «Как поставить сервисы Google»)")"
+    ok "$(m lumen_os_has_no_google)"
+    say "$(m add_them_bash_lumen_install)"
     return 0
   fi
   p6_root_or_die
   id=$(adbs shell "sqlite3 /data/data/com.google.android.gsf/databases/gservices.db \"select value from main where name='android_id';\"" 2>/dev/null | tr -d '\r')
   adbs unroot >/dev/null 2>&1
-  [ -n "$id" ] || die "$(t "no GSF ID yet: connect the projector to the internet, wait two minutes, try again" "GSF ID ещё нет: подключите проектор к интернету, подождите пару минут и повторите")"
+  [ -n "$id" ] || die "$(m no_gsf_id_yet_connect)"
   echo "GSF ID: $id"
-  echo "$(t "Register it at https://www.google.com/android/uncertified (signed in with your Google account), wait 10-30 minutes, then sign in on the projector." "Зарегистрируйте его на https://www.google.com/android/uncertified (войдя в свой аккаунт Google), подождите 10–30 минут и войдите на проекторе.")"
+  echo "$(m register_https_www_google_com)"
 }
 abf_verify() {  # after the setup, with debugging on again: Lumen OS of this projector started, with its files
   local v bl good=1
   check_tools
   abf_adb 60 || die "$(p6_noconn_text)"
-  [ "$(prop sys.boot_completed)" = 1 ] || die "$(t "the system has not finished starting yet: wait a minute and run verify again. Nothing was done." "система ещё не загрузилась: подождите минуту и запустите verify снова. Ничего не сделано.")"
+  [ "$(prop sys.boot_completed)" = 1 ] || die "$(m system_has_not_finished_starting)"
   v=$(prop "$(p6_lprop)")
-  [ "$v" = "$(p6_lval)" ] || die "$(t "this projector does not run Lumen OS for the $P_NAME ($(p6_lprop)='$v'). Nothing was done." "на проекторе не Lumen OS для $P_NAME ($(p6_lprop)='$v'). Ничего не сделано.")"
+  [ "$v" = "$(p6_lval)" ] || die "$(m projector_not_run_lumen_os_5 "$P_NAME" "$(p6_lprop)" "$v")"
   v=$(prop "$P_VERSION_PROP")
-  if [ -n "$v" ]; then ok "Lumen OS $v $(t "on the" "на") $P_NAME $SERIAL"; else warn "$(t "$P_VERSION_PROP missing" "нет $P_VERSION_PROP")"; good=0; fi
+  if [ -n "$v" ]; then ok "Lumen OS $v $(m on_the) $P_NAME $SERIAL"; else warn "$(m missing "$P_VERSION_PROP")"; good=0; fi
   if [ "$BLOBS" = partition ]; then
     bl=$(prop sys.z9x.blobs)
-    if [ "$bl" = ok ]; then ok "$(t "MediaTek / XGIMI files (z9x_blobs$(state_get slot)) ok" "файлы MediaTek / XGIMI (z9x_blobs$(state_get slot)) в порядке")"
-    else warn "sys.z9x.blobs=$bl ($(t "no sound and no MediaTek video decoders until 'blobs' and 'flash'" "без звука и видеодекодеров MediaTek до 'blobs' и 'flash'"))"; good=0; fi
+    if [ "$bl" = ok ]; then ok "$(m mediatek_xgimi_files_z9x_blobs "$(state_get slot)")"
+    else warn "sys.z9x.blobs=$bl ($(m no_sound_no_mediatek_video))"; good=0; fi
   fi
   if abf_gapps_on; then
     case "$(prop sys.z9x.gapps)" in
-      ok) ok "$(t "Google services added by you ('gapps'): on" "сервисы Google, добавленные вами ('gapps'): включены")" ;;
-      off|bad:*) warn "$(t "the Google services add-on is not in use ($(prop sys.z9x.gapps)): bash lumen-install.sh gapps" "дополнение с сервисами Google не используется ($(prop sys.z9x.gapps)): bash lumen-install.sh gapps")" ;;
+      ok) ok "$(m google_services_added_gapps)" ;;
+      off|bad:*) warn "$(m google_services_add_not_use "$(prop sys.z9x.gapps)")" ;;
     esac
   fi
-  if [ "$good" = 1 ]; then state_set step_verify done; ok "$(t "verify passed" "проверка пройдена")"; fi
+  if [ "$good" = 1 ]; then state_set step_verify done; ok "$(m verify_passed)"; fi
 }
 abf_done() {
   echo
-  t "Done. On the projector: the Lumen OS setup (language, network). To check the install from this computer
-later: turn on debugging (guide, section '$P_NAME', 'Check the install') and run:
-bash lumen-install.sh verify --ip ADDRESS" "Готово. На проекторе пройдите настройку Lumen OS (язык, сеть). Проверить установку с компьютера можно
-позже: включите отладку (инструкция, раздел «${P_NAME}», «Проверьте установку») и запустите:
-bash lumen-install.sh verify --ip АДРЕС"; echo
+  m done_projector_lumen_os_setup "$P_NAME"; echo
   if [ "$(state_get step_gapps_flash)" = done ]; then
-    t "For Google sign-in, if Google refuses it: register the GSF ID (bash lumen-install.sh gsf --ip ADDRESS,
-guide, section 'Adding Google services')." "Для входа в Google, если Google не пускает: зарегистрируйте GSF ID (bash lumen-install.sh gsf --ip АДРЕС,
-инструкция, раздел «Как поставить сервисы Google»)."; echo
+    m google_sign_if_google_refuses; echo
   fi
-  echo "  $(t 'Guide' 'Инструкция'): $(p6_guide)"
+  echo "  $(m guide): $(p6_guide)"
 }
 abf_flash() {  # the 'flash' command: a new write, unless one waits in fastboot mode (then it continues there)
   abf_write
@@ -4351,7 +4192,7 @@ abf_all() {  # check, backup (asked), vbmeta (asked), blobs, flash: each step on
     # --gapps-zip: the add-on image built before the backup question, so that a refusal comes first
     [ -z "$GAPPS_WITH" ] || [ "$(state_get step_flash)" = done ] || z9x_gapps_prepare
     if [ -z "$(state_get step_backup)" ]; then
-      if ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then cmd_backup; else state_set step_backup skipped; fi
+      if ask "$(m make_backup_apps_files_first)"; then cmd_backup; else state_set step_backup skipped; fi
     fi
     [ "$(state_get step_flash)" = done ] || [ "$(state_get step_vbmeta)" = done ] || abf_vbmeta
     [ "$(state_get step_flash)" = done ] || abf_blobs_ok || abf_blobs
@@ -4359,30 +4200,16 @@ abf_all() {  # check, backup (asked), vbmeta (asked), blobs, flash: each step on
   [ "$(state_get step_flash)" = done ] || abf_write
   abf_done
 }
-abf_main() {  # the commands of a FLOW=ab-fastbootd projector
+abf_todo_stop() {  # a profile with TODO values (lib/devices.conf header): nothing is ever written to that projector
+  die "$(m lumen_os_cannot_installed_computer "$P_NAME")"
+}
+abf_main() {  # what every command of a FLOW=ab-fastbootd projector checks first (lib/flows.conf START)
+  # a profile that is not finished (TODO values): only 'check' runs (it reads, then stops); every other command
+  # stops here, before adb or fastboot
+  [ -z "$P_TODO" ] || [ "${CMD:-all}" = check ] || abf_todo_stop
   if abf_eye && [ "$BLOBS" != partition ]; then   # its eye-protection drawer comes from its own files (abf_blobs)
-    die "$(t "the $P_NAME draws its eye-protection mask with files from its own system: --no-blobs and --blobs=embedded are not possible for it. Nothing was done." "$P_NAME рисует маску защиты глаз файлами из своей же системы: --no-blobs и --blobs=embedded для него невозможны. Ничего не сделано.")"
+    die "$(m draws_eye_protection_mask_files "$P_NAME")"
   fi
-  case "${CMD:-all}" in
-    stick) abf_not_yet "$CMD" ;;
-    gapps|gsf) abf_gapps_on || abf_not_yet "$CMD" ;;
-  esac
-  case "${CMD:-all}" in
-    all|check|backup|blobs|flash|verify|gapps|gsf) pt_setup ;;
-    vbmeta) ;;
-    *) die "unknown command $CMD (see --help)" ;;
-  esac
-  case "${CMD:-all}" in
-    all) abf_all ;;
-    gapps) abf_gapps ;;
-    gsf) abf_gsf ;;
-    check) abf_check ;;
-    backup) cmd_backup ;;
-    vbmeta) abf_vbmeta ;;
-    blobs) abf_blobs ;;
-    flash) abf_flash ;;
-    verify) abf_verify ;;
-  esac
 }
 
 # ------------------------------------------------------------------ main
@@ -4394,7 +4221,7 @@ z9x_new_install_if_stock() {  # the saved progress says Lumen OS was written, bu
   list=$(adb devices 2>/dev/null | awk 'NR>1 && $2=="device"{print $1}')
   [ -n "$SERIAL" ] || { [ "$(printf '%s\n' "$list" | grep -c .)" = 1 ] || return 0; SERIAL=$list; }
   if [ -n "$(prop ro.boot.slot_suffix)" ] && [ -z "$(prop ro.z9x.version)" ]; then
-    say "$(t "the projector runs the stock system again: the earlier install is finished, starting a new one" "на проекторе снова родная система: прошлая установка закончена, начинаю новую")"
+    say "$(m projector_runs_stock_system_again)"
     for k in step_check step_backup step_blobs step_flash step_wipe step_verify step_gapps_part step_gapps_fill step_gapps_flash gapps_plan gapps_img image_ok; do
       state_set "$k" ""
     done
@@ -4402,16 +4229,35 @@ z9x_new_install_if_stock() {  # the saved progress says Lumen OS was written, bu
   SERIAL=$was
 }
 
+flow_step() {  # flow KEY -> its step, a function of this script with its arguments (lib/flows.conf)
+  local step; step=$(flow_get "$1" "$2")
+  [ -z "$step" ] || declare -F "${step%% *}" >/dev/null || die "internal: lib/flows.conf: $1.$2"
+  printf '%s' "$step"
+}
+flow_run() {  # the command of this projector's flow, as lib/flows.conf says
+  local cmd=${CMD:-all} step need v
+  step=$(flow_step "$P_FLOW" START); [ -z "$step" ] || $step
+  case " $(flow_get "$P_FLOW" NOT_NEEDED) " in *" $cmd "*) die "$(m not_needed_nothing_done "$cmd" "$P_NAME")" ;; esac
+  case " $(flow_get "$P_FLOW" NOT_YET) " in *" $cmd "*) not_yet "$cmd" ;; esac
+  if need=$(pair_get "$(flow_get "$P_FLOW" NEEDS)" "$cmd"); then
+    v=$(p_var "$need"); [ -n "${!v}" ] || not_yet "$cmd"
+  fi
+  case "$cmd" in *[!a-z]*) step="" ;; *) step=$(flow_step "$P_FLOW" "CMD_$(printf '%s' "$cmd" | tr 'a-z' 'A-Z')") ;; esac
+  [ -n "$step" ] || die "unknown command $CMD (see --help)"
+  case " $(flow_get "$P_FLOW" TOOLS) " in *" $cmd "*) pt_setup ;; esac
+  $step
+}
+
 cmd_all() {
   z9x_new_install_if_stock
   [ -z "$GAPPS_WITH" ] || z9x_gapps_plan
   [ "$(state_get step_check)" = done ] || cmd_check
   if [ -n "$GAPPS_WITH" ] && [ "$(state_get image_gms)" != 0 ]; then
-    die "$(t "this image has Google services built in: --gapps-zip is for Lumen OS without Google. Nothing was written." "в этом образе сервисы Google уже встроены: --gapps-zip нужен для Lumen OS без Google. Ничего не записано.")"
+    die "$(m image_has_google_services_built)"
   fi
   [ -z "$GAPPS_WITH" ] || [ "$(state_get step_flash)" = done ] || z9x_gapps_prepare   # before the backup question: a refusal comes first
   if [ "$(state_get step_backup)" != done ]; then
-    if ask "$(t "Make a backup of your apps and files first (recommended)?" "Сначала сделать копию ваших приложений и файлов (рекомендуется)?")"; then cmd_backup; else state_set step_backup skipped; fi
+    if ask "$(m make_backup_apps_files_first)"; then cmd_backup; else state_set step_backup skipped; fi
   fi
   [ "$BLOBS" != partition ] || [ "$(state_get step_blobs)" = done ] || cmd_blobs
   [ "$(state_get step_vbmeta)" = done ] || cmd_vbmeta
@@ -4426,13 +4272,9 @@ cmd_all() {
   fi
   echo
   if [ "$(state_get image_gms)" = 0 ] && [ "$(state_get step_gapps_fill)" != done ] && [ "$(state_get step_gapps_flash)" != done ]; then
-    t "Done. On the projector: choose the language, Wi-Fi and the rest of the setup. Install apps from a
-USB stick: Lumen Home > Apps > Install from USB. Google services can be added later: 'gapps' (guide)." "Готово. На проекторе выберите язык, Wi-Fi и пройдите настройку. Приложения ставятся с
-USB-накопителя: Lumen Home > Приложения > Установить с USB. Сервисы Google можно добавить позже: 'gapps' (инструкция)."; echo
+    m done_projector_choose_language_wi; echo
   else
-    t "Done. On the projector: choose the language, Wi-Fi and the rest of the setup, with the Google sign-in.
-If Google refuses the sign-in: bash lumen-install.sh gsf (guide, 'Something went wrong')." "Готово. На проекторе выберите язык, Wi-Fi и пройдите настройку со входом в Google.
-Если Google не пускает: bash lumen-install.sh gsf (инструкция, «Если что-то пошло не так»)."; echo
+    m done_projector_choose_language_wi_2; echo
   fi
 }
 
@@ -4469,73 +4311,42 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+[ "$MSG_LANG" = "$LANG_UI" ] || msg_load
 case "$WIPE" in format|factory-reset) ;; *) die "--wipe=format|factory-reset" ;; esac
 case "$BLOBS" in partition|embedded|none) ;; *) die "--blobs=partition|embedded|none (--no-blobs)" ;; esac
 case "${CMD:-all}" in gapps) ;; *) [ -z "$GAPPS_ZIP" ] && [ "$GAPPS_REMOVE" = 0 ] || die "--zip / --remove belong to 'gapps'" ;; esac
-case "$DEVICE_OPT" in ''|z9x|play6) ;; *) abf_is "$DEVICE_OPT" || die "$(abf_opt_text)" ;; esac
+[ -z "$DEVICE_OPT" ] || [ ! -f "$DEVCONF" ] || profile_is "$DEVICE_OPT" || die "$(device_opt_text)"
 if [ -n "$GAPPS_WITH" ]; then   # one pass, one wipe: the full install only
-  [ -z "$CMD" ] || die "$(t "--gapps-zip belongs to the full install (no command). For Lumen OS that is installed already: gapps --zip FILE. Nothing was done." "--gapps-zip относится к полной установке (без команды). Для уже установленной Lumen OS: gapps --zip ФАЙЛ. Ничего не сделано.")"
-  [ "$KEEP_DATA" = 0 ] || die "$(t "--gapps-zip installs with one data wipe, not with --keep-data. To keep the data: flash --keep-data, then gapps --keep-data --zip FILE. Nothing was done." "--gapps-zip ставит систему с одним стиранием данных, не с --keep-data. Чтобы сохранить данные: flash --keep-data, затем gapps --keep-data --zip ФАЙЛ. Ничего не сделано.")"
-  [ "$WIPE" = format ] || die "$(t "--gapps-zip wipes the data itself, not with --wipe=factory-reset. Nothing was done." "--gapps-zip стирает данные сам, не с --wipe=factory-reset. Ничего не сделано.")"
+  [ -z "$CMD" ] || die "$(m gapps_zip_belongs_full_install)"
+  [ "$KEEP_DATA" = 0 ] || die "$(m gapps_zip_installs_one_data)"
+  [ "$WIPE" = format ] || die "$(m gapps_zip_wipes_data_itself)"
 fi
 if [ "$IP_GIVEN" = 1 ]; then
-  case "$IP" in ''|*[!A-Za-z0-9.:_-]*|:*|*:) die "$(t "--ip: '$IP' is not an address (for example --ip 192.168.x.y, as the projector's network settings show it)" "--ip: '$IP' не адрес (например --ip 192.168.x.y, как в настройках сети проектора)")" ;; esac
+  case "$IP" in ''|*[!A-Za-z0-9.:_-]*|:*|*:) die "$(m ip_not_address_example_ip "$IP")" ;; esac
   case "$IP" in *:*) ADB_T=$IP ;; *) ADB_T=$IP:5555 ;; esac
 fi
 case "${CMD:-all}" in   # the saved progress only: no projector, no profile needed
   status)
     shown=0
-    case "$DEVICE_OPT" in ''|z9x) [ -f "$STATE_DIR/state" ] && { cat "$STATE_DIR/state"; shown=1; } ;; esac
-    case "$DEVICE_OPT" in ''|play6) [ -f "$STATE_DIR/play6/state" ] && { echo "$(dev_name play6):"; sed 's/^/  /' "$STATE_DIR/play6/state"; shown=1; } ;; esac
-    for id in $(abf_ids); do   # FLOW=ab-fastbootd projectors: $STATE_DIR/<id>
-      case "$DEVICE_OPT" in ''|"$id") [ -f "$STATE_DIR/$id/state" ] && { echo "$(dev_name "$id"):"; sed 's/^/  /' "$STATE_DIR/$id/state"; shown=1; } ;; esac
+    for id in $(profile_ids); do   # the projector whose progress is the root folder first, as it is, the others by name
+      f=$(state_file_of "$id")
+      case "$DEVICE_OPT" in ''|"$id") [ -f "$f" ] || continue ;; *) continue ;; esac
+      if [ "$f" = "$STATE_DIR/state" ]; then cat "$f"; else echo "$(dev_name "$id"):"; sed 's/^/  /' "$f"; fi
+      shown=1
     done
-    [ "$shown" = 1 ] || echo "$(t "no saved progress" "сохранённого прогресса нет")"
+    [ "$shown" = 1 ] || echo "$(m no_saved_progress)"
     exit 0 ;;
   reset)
-    case "$DEVICE_OPT" in
-      play6) rm -rf "$STATE_DIR/play6" ;;
-      z9x) keep=""; for id in $(abf_ids); do keep="$keep ! -name $id"; done   # every other projector's folder stays
-           [ -d "$STATE_DIR" ] && find "$STATE_DIR" -mindepth 1 -maxdepth 1 ! -name play6 $keep -exec rm -rf {} + ;;
-      '') rm -rf "$STATE_DIR" ;;
-      *) rm -rf "${STATE_DIR:?}/$DEVICE_OPT" ;;   # an ab-fastbootd id (checked above)
-    esac
-    echo "$(t "progress forgotten" "прогресс сброшен")"
+    if [ -z "$DEVICE_OPT" ]; then rm -rf "$STATE_DIR"
+    elif [ "$(state_dir_of "$DEVICE_OPT")" = "$STATE_DIR" ]; then   # every other projector's folder stays
+      keep=""; for id in $(profile_ids); do [ "$id" = "$DEVICE_OPT" ] || keep="$keep ! -name $id"; done
+      [ -d "$STATE_DIR" ] && find "$STATE_DIR" -mindepth 1 -maxdepth 1 $keep -exec rm -rf {} +
+    else rm -rf "${STATE_DIR:?}/$DEVICE_OPT"; fi   # a projector of lib/devices.conf (checked above)
+    echo "$(m progress_forgotten)"
     exit 0 ;;
 esac
 resolve_device
 SERIAL_FROM_STATE=0
 if [ -z "$SERIAL" ]; then SERIAL=$(state_get serial); [ -n "$SERIAL" ] && SERIAL_FROM_STATE=1; fi
 case "${CMD:-all}" in all|check|flash) release_guard ;; esac
-if [ "$P_FLOW" = ab-fastbootd ]; then abf_main; exit 0; fi
-case "$PROJECTOR ${CMD:-all}" in   # every command that talks to the projector: our own adb and fastboot first
-  *" all"|*" check"|*" backup"|z9x" blobs"|z9x" vbmeta"|*" flash"|*" verify"|*" gsf"|*" gapps") pt_setup ;;
-esac
-if [ "$PROJECTOR" = play6 ]; then
-  case "${CMD:-all}" in
-    all) play6_all ;;
-    check) play6_check ;;
-    backup) cmd_backup ;;
-    flash) play6_flash ;;
-    verify) play6_verify 60 ;;
-    stick) stick_check ;;
-    gapps) play6_gapps ;;
-    gsf) play6_gsf ;;
-    blobs|vbmeta) play6_not_needed "$CMD" ;;
-    *) die "unknown command $CMD (see --help)" ;;
-  esac
-  exit 0
-fi
-case "${CMD:-all}" in
-  all) cmd_all ;;
-  check) cmd_check ;;
-  backup) cmd_backup ;;
-  blobs) cmd_blobs ;;
-  vbmeta) cmd_vbmeta ;;
-  flash) cmd_flash ;;
-  verify) cmd_verify ;;
-  gsf) cmd_gsf ;;
-  gapps) cmd_gapps ;;
-  stick) stick_check ;;
-  *) die "unknown command $CMD (see --help)" ;;
-esac
+flow_run

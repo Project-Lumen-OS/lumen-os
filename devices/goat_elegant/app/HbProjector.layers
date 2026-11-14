@@ -7,14 +7,21 @@ base      apps/Z9xProjector
 # HB adapters are apps/HbProjector panel/HbMenuFeatures (+ HbMenuGates) and the game menu io
 module    lumen-menu
 file      devices/goat_elegant/menu.json assets/lumen_menu/menu.json
+# the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer); the HB clients, its AIDL transport, its codes
+# and rules are apps/HbProjector hal/ (GmpfClient, Gmpf2Client, AidlWire, HbCodes, HbRules)
+module    lumen-gmpf
 # the Z9X quick panel controller: on the HB QuickPanel drives the shared MenuController through the HB-only
 # panel/QuickPanelController (HbMenu); the old HB fork of the Z9X controller and the HB game bar are gone
 drop      src/org/lumen/projector/panel/QuickPanelController.java
-# Z9X-only: the report screen, 3D, the Z9X fit adapter, the HIDL transport (the HB is AIDL), the 1.0.8 import
+# Z9X-only: the report screen, 3D, the Z9X fit adapter, the HIDL transport and focus callback (the HB is AIDL), the Z9X
+# gmpf codes and rules, the 1.0.8 import
 drop      src/org/lumen/projector/report/
 drop      src/org/lumen/projector/display/ThreeD.java
 drop      src/org/lumen/projector/fit/Z9xFitDevice.java
-drop      src/org/lumen/projector/hal/HidlCaller.java
+drop      src/org/lumen/projector/hal/Hidl*.java
+drop      src/org/lumen/projector/hal/Z9x*.java
+# the Z9X HIDL code table; the HB has its own HalCodes (devices/goat_elegant/hal/codes.tsv)
+drop      src/org/lumen/projector/hal/HalCodes.java
 drop      src/org/lumen/common/LumenImport.java
 # Z9X-only strings of the keystone page's last section (the HB has its own, strings_hb.xml)
 drop      res/values*/strings_kst_restore.xml
@@ -29,6 +36,7 @@ drop      test/lamp3d/
 # Z9X-only 2026-11-04 sweep: the stock Z9X refusal rules (they use KstGameLock / Lamp3d), the AI scene policy and
 # their notes; the HB quick panel, keystone screens and App are its own forks
 drop      src/org/lumen/projector/panel/PanelRules.java
+drop      src/org/lumen/projector/panel/RefusalReason.java
 drop      src/org/lumen/projector/panel/RuleNotes.java
 drop      src/org/lumen/projector/AiScenePolicy.java
 drop      res/values*/strings_rules.xml
@@ -38,6 +46,7 @@ drop      test/rules/
 drop      src/org/lumen/projector/panel/QpdSource.java
 # Z9X menu adapters (Z9X HAL): every device brings its own
 drop      src/org/lumen/projector/panel/Z9x*.java
+drop      src/org/lumen/projector/utils/Z9x*.java
 # Z9X game try fixes (2026-11-11): audio device callbacks behind the audio policy check with the trial notice, the
 # Sound page state in the stock mapping; Z9X only (the HB keeps its forks of AudioPathReporter, AudioOutputChoice
 # and App; its quick panel is the shared menu)

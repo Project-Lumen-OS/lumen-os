@@ -9,6 +9,9 @@
 #     -v ~/lineage-docker/play6_sf_build.sh:/play6_sf_build.sh:ro -e JOBS=4 \
 #     $(bash ~/lineage-docker/play6_overrides.sh) lineage-builder bash /play6_sf_build.sh
 # Result: ~/play6-out/target/product/generic/system/bin/surfaceflinger
+# Into every image: copy it to gsi/build/play6/sf/surfaceflinger and pin it as var.SF_SHA in
+# devices/dragon_healthy/build.conf (the recipe step 1d installs it, check_public_play6.py checks it,
+# docs/play6/research/keystone_lag.md). A full base rebuild carries the patch itself: then drop step 1d and both pins.
 cd /src
 export OUT_DIR=/out PYTHONDONTWRITEBYTECODE=1
 source build/envsetup.sh

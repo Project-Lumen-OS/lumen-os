@@ -2,8 +2,15 @@ package org.lumen.projector.panel;
 
 import android.util.Log;
 
+import org.lumen.projector.hal.ColorTemp;
+import org.lumen.projector.hal.GameModeOption;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.HdmiSignal;
+import org.lumen.projector.hal.OutputTimingInfo;
+import org.lumen.projector.hal.PqItem;
+import org.lumen.projector.hal.PutMode;
+import org.lumen.projector.hal.SoundEffect;
 
 /**
  * One read of every value the quick panel shows, taken on the "z9x-hal" thread (Hal.query) each time
@@ -31,10 +38,10 @@ final class Snapshot {
             soundProcess, putMode;
     /**
      * Lumen OS 1.0.8: raw IGmpf 175 lumens mode, null = read failed. colorTemp = its wire only when the device's
-     * GmpfClient.ColorTemp lists it (Z9X 16 / 17, HB 0 / 16), else null, as before.
+     * ColorTemp lists it (Z9X 16 / 17, HB 0 / 16), else null, as before.
      */
     Integer lumensMode;
-    final Integer[] pq = new Integer[4];   // GmpfClient.PqItem order: BRIGHTNESS, CONTRAST, SATURATION, SHARPNESS
+    final Integer[] pq = new Integer[4];   // PqItem order: BRIGHTNESS, CONTRAST, SATURATION, SHARPNESS
     /** Lumen OS 1.0.4: IGmpf2 283 original frame rate (stock blocks motion smoothing while it is on). */
     Boolean nativeFps;
     /** Lumen OS 1.0.4: IGmpf 41 volume leveling, 632 eARC; 634 HDMI colour range, 661 EDID (shown on HDMI only). */
@@ -45,7 +52,7 @@ final class Snapshot {
     /** IGmpf 157: Ultra 120 Hz on (user timing 4); null = read failed. */
     Boolean ultra120;
     /** IGmpf 662: the HDMI signal (the last one when no HDMI is on screen); null = read failed. */
-    GmpfClient.HdmiSignal hdmiSignal;
+    HdmiSignal hdmiSignal;
     /** IGmpf2 55 for the current source, only when it fits 647: 0 off, 1 on, 2 auto (null = unknown). */
     Integer gameMode55;
     /** IGmpf2 55 state field on (0) for the current source, only when 55 fits 647 (null = unknown). */
@@ -78,20 +85,20 @@ final class Snapshot {
         s.lumensMode = opt("175", g::getLumensModeRaw);
         s.colorTemp = listedColorTemp(s.lumensMode);
         s.memc = opt("668", g::getMemcLevel);
-        GmpfClient.PqItem[] items = GmpfClient.PqItem.values();
+        PqItem[] items = PqItem.values();
         for (int i = 0; i < items.length && i < s.pq.length; i++) {
-            final GmpfClient.PqItem it = items[i];
+            final PqItem it = items[i];
             s.pq[i] = opt("pq " + it, () -> g.getPq(it));
         }
         s.fmt3d = opt("192", g::getCurrent3DFormat);
         s.is3dTo2d = opt("193", g::is3DTo2DEnabled);
         s.gameOption = opt("647", () -> {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             return o == null ? null : o.wire;
         });
         s.aspect = opt("664", g::getAspectRatioRaw);
         s.soundEffect = opt("62", () -> {
-            GmpfClient.SoundEffect e = g.getSoundEffect();
+            SoundEffect e = g.getSoundEffect();
             return e == null ? null : e.wire;
         });
         s.dtsOn = opt("43", g::getDtsEffects);
@@ -104,7 +111,7 @@ final class Snapshot {
         s.moveAf = opt("588", g::getMoveAf);
         s.powerOnAf = opt("303", g::getPowerOnAf);
         s.putMode = opt("173", () -> {
-            GmpfClient.PutMode m = g.getPutMode();
+            PutMode m = g.getPutMode();
             return m == null ? null : m.wire;
         });
         s.autoReverse = opt("579", g::getAutoReverse);
@@ -113,7 +120,7 @@ final class Snapshot {
         s.hdmiRange = opt("634", g::getHdmiRange);
         s.edid = opt("661", g::getEdidVersion);
         s.ultra120 = opt("157", () -> {
-            GmpfClient.OutputTimingInfo t = g.getOutputTimingInfo();
+            OutputTimingInfo t = g.getOutputTimingInfo();
             return t == null ? null : t.isUltra120();
         });
         s.hdmiSignal = opt("662", g::getHdmiInfo);
@@ -139,10 +146,10 @@ final class Snapshot {
     }
 
     /** 3D (or 3D-to-2D) active. Stock is3dMode: getCurrent3DFormat() != 1. Unknown counts as active. */
-    /** Wire of a listed GmpfClient.ColorTemp, null otherwise. Not a HAL call. */
+    /** Wire of a listed ColorTemp, null otherwise. Not a HAL call. */
     private static Integer listedColorTemp(Integer raw) {
         if (raw == null) return null;
-        for (GmpfClient.ColorTemp c : GmpfClient.ColorTemp.values()) if (c.wire == raw) return c.wire;
+        for (ColorTemp c : ColorTemp.values()) if (c.wire == raw) return c.wire;
         return null;
     }
 

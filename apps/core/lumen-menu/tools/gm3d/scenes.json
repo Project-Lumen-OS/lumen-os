@@ -1,0 +1,298 @@
+{
+ "ps": {
+  "models": [
+   {
+    "url": "ps_dualsense_taohid/dualsense.glb",
+    "hide": "ps__logo|symbol-decal",
+    "cap": [
+     {
+      "of": "^ps__logo",
+      "color": "#0e0f12",
+      "scale": 1.12,
+      "h": 0.22,
+      "off": 0.02
+     }
+    ]
+   }
+  ],
+  "accent": "#4C7DFF",
+  "tilt": -10,
+  "elev": 16,
+  "yaw0": -22,
+  "rim": 6.08,
+  "key": 2.4,
+  "env": 0.55,
+  "margin": 1.05,
+  "W": 600,
+  "H": 360
+ },
+ "xbox": {
+  "models": [
+   {
+    "url": "xbox_one_paxillop/scene.gltf",
+    "mat": [
+     {
+      "re": "aiStandardSurface1SG",
+      "color": "#1c1d21",
+      "rough": 0.45
+     },
+     {
+      "re": "aiStandardSurface14SG",
+      "nomap": true,
+      "color": "#141518",
+      "rough": 0.35
+     }
+    ],
+    "drop": [
+     {
+      "obj": "^Object_10$",
+      "box": [
+       [
+        -0.25,
+        0.9,
+        -5
+       ],
+       [
+        0.25,
+        1.35,
+        5
+       ]
+      ]
+     }
+    ],
+    "hide": "^Object_8\\b",
+    "cap": [
+     {
+      "of": "^Object_8$",
+      "at": [
+       0,
+       1.108,
+       0.548
+      ],
+      "n": [
+       0,
+       0.18,
+       0.98
+      ],
+      "r": 0.185,
+      "scale": 1,
+      "h": 0.16,
+      "color": "#2a2c31",
+      "rough": 0.28
+     }
+    ],
+    "paint": [
+     {
+      "obj": "^Object_11$",
+      "box": [
+       [
+        0.95,
+        0.8,
+        -5
+       ],
+       [
+        1.35,
+        1.25,
+        5
+       ]
+      ],
+      "color": "#E9C440",
+      "rough": 0.25
+     },
+     {
+      "obj": "^Object_11$",
+      "box": [
+       [
+        0.95,
+        0.05,
+        -5
+       ],
+       [
+        1.35,
+        0.52,
+        5
+       ]
+      ],
+      "color": "#4BAE54",
+      "rough": 0.25
+     },
+     {
+      "obj": "^Object_11$",
+      "box": [
+       [
+        0.55,
+        0.4,
+        -5
+       ],
+       [
+        0.98,
+        0.92,
+        5
+       ]
+      ],
+      "color": "#3E86E0",
+      "rough": 0.25
+     },
+     {
+      "obj": "^Object_11$",
+      "box": [
+       [
+        1.32,
+        0.4,
+        -5
+       ],
+       [
+        1.75,
+        0.92,
+        5
+       ]
+      ],
+      "color": "#E0524C",
+      "rough": 0.25
+     }
+    ]
+   }
+  ],
+  "accent": "#3FBF5B",
+  "tilt": -10,
+  "elev": 16,
+  "yaw0": -22,
+  "rim": 6.5,
+  "key": 2.8,
+  "env": 0.7,
+  "margin": 1.05,
+  "W": 600,
+  "H": 360
+ },
+ "switch": {
+  "models": [
+   {
+    "url": "switch_joycon_wevensson/joycon-left.glb",
+    "pos": [
+     -0.52,
+     0,
+     0
+    ],
+    "mat": [
+     {
+      "re": "^shell",
+      "nomap": true,
+      "color": "#0AB9E6",
+      "rough": 0.42
+     },
+     {
+      "re": "^(a|b|x|y|plus|minus|home|sync|detail-1)\\b",
+      "nomap": true,
+      "color": "#1b1c1f",
+      "rough": 0.35
+     }
+    ]
+   },
+   {
+    "url": "switch_joycon_wevensson/joycon-right.glb",
+    "pos": [
+     0.52,
+     0,
+     0
+    ],
+    "mat": [
+     {
+      "re": "^shell",
+      "nomap": true,
+      "color": "#FF3C28",
+      "rough": 0.42
+     },
+     {
+      "re": "^(a|b|x|y|plus|minus|home|sync|detail-1)\\b",
+      "nomap": true,
+      "color": "#1b1c1f",
+      "rough": 0.35
+     }
+    ]
+   }
+  ],
+  "accent": "#FF5A51",
+  "accent2": "#1FB6E6",
+  "tilt": -8,
+  "elev": 16,
+  "yaw0": -22,
+  "rim": 5.699999999999999,
+  "key": 2.4,
+  "env": 0.55,
+  "margin": 1.05,
+  "W": 600,
+  "H": 360
+ },
+ "pad": {
+  "models": [
+   {
+    "url": "xbox_one_paxillop/scene.gltf",
+    "mat": [
+     {
+      "re": "aiStandardSurface1SG",
+      "color": "#3a3d44",
+      "rough": 0.55
+     },
+     {
+      "re": "aiStandardSurface14SG",
+      "nomap": true,
+      "color": "#1a1b1e"
+     },
+     {
+      "re": "aiStandardSurface6SG",
+      "color": "#c9ccd3",
+      "rough": 0.3
+     }
+    ],
+    "drop": [
+     {
+      "obj": "^Object_10$",
+      "box": [
+       [
+        -0.25,
+        0.9,
+        -5
+       ],
+       [
+        0.25,
+        1.35,
+        5
+       ]
+      ]
+     }
+    ],
+    "hide": "^Object_8\\b",
+    "cap": [
+     {
+      "of": "^Object_8$",
+      "at": [
+       0,
+       1.108,
+       0.548
+      ],
+      "n": [
+       0,
+       0.18,
+       0.98
+      ],
+      "r": 0.185,
+      "scale": 1,
+      "h": 0.16,
+      "color": "#5d6168",
+      "rough": 0.3
+     }
+    ]
+   }
+  ],
+  "accent": "#3B78E7",
+  "tilt": -10,
+  "elev": 16,
+  "yaw0": -22,
+  "rim": 6.46,
+  "key": 2.6,
+  "env": 0.6,
+  "margin": 1.05,
+  "W": 600,
+  "H": 360
+ }
+}

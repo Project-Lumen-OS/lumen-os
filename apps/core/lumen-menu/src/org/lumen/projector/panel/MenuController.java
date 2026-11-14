@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.FeatureKind;
+import org.lumen.menu.LampOff;
 import org.lumen.menu.MenuProfile;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
@@ -78,21 +80,22 @@ public final class MenuController {
     static final long BOOST_PRESS_WINDOW_MS = 3_000, CONFIRM_RECHECK_MS = 300;
 
     /** Choices shown as radio rows on their page (stock projection page), not as a stepping row. */
-    static final Set<String> INLINE_RADIOS = set(Feature.PROJECTION_MODE);
+    static final Set<FeatureId> INLINE_RADIOS = set(FeatureId.PROJECTION_MODE);
     /** Choosing the value shown already does nothing (stock: picture mode, home screen, projection). */
-    static final Set<String> SKIP_SAME = set(Feature.PICTURE_MODE, Feature.SETTINGS_LAUNCHER, Feature.PROJECTION_MODE);
+    static final Set<FeatureId> SKIP_SAME = set(FeatureId.PICTURE_MODE, FeatureId.SETTINGS_LAUNCHER, FeatureId.PROJECTION_MODE);
     /** These close the menu first and act when it is gone (they show their own overlay or leave the menu). */
-    static final Set<String> CLOSE_FIRST = set(Feature.KEYSTONE_AK_NOW, Feature.KEYSTONE_FIT_NOW, Feature.FOCUS_AF_NOW,
-            Feature.FOCUS_MANUAL, Feature.SETTINGS_SYSTEM, Feature.SETTINGS_PROJECTOR, Feature.SETTINGS_RECENTS,
-            Feature.SETTINGS_LAUNCHER, Feature.SETTINGS_SLEEP_TIMER, Feature.SETTINGS_REMOTE);
+    static final Set<FeatureId> CLOSE_FIRST = set(FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.FOCUS_AF_NOW,
+            FeatureId.FOCUS_MANUAL, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_RECENTS,
+            FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.SETTINGS_REMOTE, FeatureId.SETTINGS_LICENCES,
+            FeatureId.LAMP_OFF);
     /** These leave the menu for another app or screen: refused while the first-run setup runs. */
-    static final Set<String> SETUP_GATED = set(Feature.INPUT, Feature.BLUETOOTH, Feature.NETWORK, Feature.USB_FILES,
-            Feature.SETTINGS_SYSTEM, Feature.SETTINGS_PROJECTOR, Feature.SETTINGS_CEC, Feature.SETTINGS_RECENTS,
-            Feature.SETTINGS_LAUNCHER);
+    static final Set<FeatureId> SETUP_GATED = set(FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK, FeatureId.USB_FILES,
+            FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_RECENTS,
+            FeatureId.SETTINGS_LAUNCHER);
 
     /** Device pages shown inside the panel (null: none, the menu then asks ProjectorFeatures.open). */
     public interface Pages {
-        Page page(String id, MenuController menu);
+        Page page(FeatureId id, MenuController menu);
     }
 
     /** Rows another module adds to a section page (Z9X / HB QuickPanel.addExtension): UI resolution, screensaver. */
@@ -122,16 +125,16 @@ public final class MenuController {
     private final PanelHost host;
     private final Map<String, Page> pages = new LinkedHashMap<>();       // section -> full page
     private final Map<String, Page> popups = new HashMap<>();            // wide tile -> radio popup
-    private final Map<String, View> rows = new LinkedHashMap<>();        // feature (picture.pq.<item>) -> row
-    private final Map<View, String> featureOf = new HashMap<>();
-    private final Map<String, List<CheckRow>> radios = new HashMap<>();  // choice feature -> its popup radios
-    private final Map<String, List<CheckRow>> inline = new HashMap<>();  // inline radio choice -> its rows
+    private final Map<FeatureId, View> rows = new LinkedHashMap<>();        // feature (picture.pq.<item>) -> row
+    private final Map<View, FeatureId> featureOf = new HashMap<>();
+    private final Map<FeatureId, List<CheckRow>> radios = new HashMap<>();  // choice feature -> its popup radios
+    private final Map<FeatureId, List<CheckRow>> inline = new HashMap<>();  // inline radio choice -> its rows
     private final Map<String, TextRow> notes = new HashMap<>();          // feature or section -> its note line
-    private final Map<HeaderRow, List<String>> headers = new LinkedHashMap<>();
+    private final Map<HeaderRow, List<FeatureId>> headers = new LinkedHashMap<>();
     private final Map<View, View> tips = new HashMap<>();                // row -> hint picture
     private final Map<Page, View> pageTips = new HashMap<>();
-    private final Map<String, List<String>> shownOptions = new HashMap<>();   // choice -> the tokens its row shows
-    private final Map<String, Long> steppedAt = new HashMap<>();
+    private final Map<FeatureId, List<String>> shownOptions = new HashMap<>();   // choice -> the tokens its row shows
+    private final Map<FeatureId, Long> steppedAt = new HashMap<>();
     private List<CheckRow> gameRadios = new ArrayList<>();
     private Page root;
     private QpdCard card;
@@ -181,7 +184,7 @@ public final class MenuController {
         this.host = host != null ? host : OverlayPanelHost.get(app);
         this.profile = profile(app);
         this.spec = MenuSpec.of(profile);
-        for (String missing : missingInAdapter()) Log.e(TAG, "adapter lacks " + missing + ": its rows are not shown");
+        for (FeatureId missing : missingInAdapter()) Log.e(TAG, "adapter lacks " + missing + ": its rows are not shown");
         for (String sec : spec.sections.keySet()) pages.put(sec, buildSection(sec));
         buildPopups();
         root = buildRoot();
@@ -194,7 +197,7 @@ public final class MenuController {
         }
     }
 
-    private static Set<String> set(String... s) { return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(s))); }
+    private static Set<FeatureId> set(FeatureId... s) { return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(s))); }
 
     private static List<Extension> extensions(String section) {
         List<Extension> l = EXTENSIONS.get(section);
@@ -202,13 +205,13 @@ public final class MenuController {
     }
 
     /** Features of the profile the adapter does not implement (shown nowhere). */
-    private List<String> missingInAdapter() {
-        List<String> out = new ArrayList<>();
-        for (String f : profile.features()) if (!dev.implemented().contains(f)) out.add(f);
+    private List<FeatureId> missingInAdapter() {
+        List<FeatureId> out = new ArrayList<>();
+        for (FeatureId f : profile.features()) if (!dev.implemented().contains(f)) out.add(f);
         return out;
     }
 
-    private boolean has(String f) {
+    private boolean has(FeatureId f) {
         if (!profile.has(f) || !dev.implemented().contains(f)) return false;
         try {
             return dev.available(f);
@@ -236,15 +239,15 @@ public final class MenuController {
         p.add(top);
         notes.put(sec, top);
         for (MenuSpec.Group g : spec.sections.get(sec)) {
-            List<String> present = new ArrayList<>();
-            for (String f : g.rows) if (has(f)) present.add(f);
+            List<FeatureId> present = new ArrayList<>();
+            for (FeatureId f : g.rows) if (has(f)) present.add(f);
             if (present.isEmpty()) continue;
             if (g.header != null) {
                 int h = MenuLabels.header(g.header);
                 HeaderRow hr = p.add(new HeaderRow(app, h != 0 ? s(h) : g.header.toUpperCase()));
                 headers.put(hr, present);
             }
-            for (String f : present) addRow(p, f);
+            for (FeatureId f : present) addRow(p, f);
         }
         String foot = dev.footer(sec);
         if (foot != null) p.add(new TextRow(app, named(foot)));
@@ -284,19 +287,18 @@ public final class MenuController {
     }
 
     /** A CHOICE whose options are exactly off, on (Z9X eye protection) is one switch, as stock. */
-    private boolean switchChoice(String f) {
-        return Feature.def(f).kind == Feature.Kind.CHOICE && profile.options(f).equals(Arrays.asList("off", "on"));
+    private boolean switchChoice(FeatureId f) {
+        return f.kind == FeatureKind.CHOICE && profile.options(f).equals(Arrays.asList("off", "on"));
     }
 
-    private void addRow(Page p, String f) {
-        Feature.Def d = Feature.def(f);
-        if (Feature.BOOST.equals(f)) {                        // Boost is the slider's top step; here only its hint
+    private void addRow(Page p, FeatureId f) {
+        if (FeatureId.BOOST == f) {                        // Boost is the slider's top step; here only its hint
             p.add(new TextRow(app, s(MenuLabels.boostSummary(profile.boostSummary()))));
             return;
         }
         CharSequence title = s(MenuLabels.title(f));
         View row = null;
-        switch (d.kind) {
+        switch (f.kind) {
             case TOGGLE:
                 row = p.add(new ToggleRow(app, title, (r, wanted) -> safe("toggle " + f, () -> onToggle(f, r, wanted))));
                 break;
@@ -322,26 +324,26 @@ public final class MenuController {
                     if (shown != null && i >= 0 && i < shown.size()) choose(f, shown.get(i));
                     else refresh();
                 }));
-                cr.setCommitDelay(Feature.PICTURE_MODE.equals(f) ? PICTURE_MODE_COMMIT_MS : CHOICE_COMMIT_MS);
-                if (Feature.PICTURE_MODE.equals(f)) cr.setOnOpen(() -> safe("picture mode list", this::openModeList));
+                cr.setCommitDelay(FeatureId.PICTURE_MODE == f ? PICTURE_MODE_COMMIT_MS : CHOICE_COMMIT_MS);
+                if (FeatureId.PICTURE_MODE == f) cr.setOnOpen(() -> safe("picture mode list", this::openModeList));
                 row = p.add(cr);
                 TextRow note = p.add(new TextRow(app, ""));
                 note.setVisibility(View.GONE);
-                notes.put(f, note);
+                notes.put(f.id, note);
                 break;
             }
             case SLIDER:
-                if (Feature.PICTURE_PQ.equals(f)) {
+                if (FeatureId.PICTURE_PQ == f) {
                     int mn = profile.number(f, "min", 0), mx = profile.number(f, "max", 100);
                     for (String item : profile.items(f)) {
-                        String id = f + "." + item;
+                        FeatureId id = FeatureId.pq(item);
                         SliderRow sr = p.add(new SliderRow(app, s(MenuLabels.pq(item)), mn, mx, slide(id)));
                         rows.put(id, sr);
                         featureOf.put(sr, id);
                     }
                     return;
                 }
-                if (Feature.LAMP.equals(f)) {                 // the bottom slider of the card; here only its hints
+                if (FeatureId.LAMP == f) {                 // the bottom slider of the card; here only its hints
                     p.add(new TextRow(app, s(MenuLabels.summary(f))));
                     return;
                 }
@@ -370,7 +372,7 @@ public final class MenuController {
         }
     }
 
-    private SliderRow.OnSlide slide(String f) {
+    private SliderRow.OnSlide slide(FeatureId f) {
         return new SliderRow.OnSlide() {
             @Override public void onChanging(SliderRow row, int value) { touch(row); }
             @Override public void onCommit(SliderRow row, int value) {
@@ -392,7 +394,7 @@ public final class MenuController {
     }
 
     /** The hint picture of a row: only where the profile names one and the module can draw it. */
-    private View tip(String f) {
+    private View tip(FeatureId f) {
         String h = profile.hint(f);
         if (h == null) return null;
         int kind = "picture_mode".equals(h) ? QpdTip.PICTURE_MODE : "rear_projection".equals(h) ? QpdTip.REAR_PROJECTION : 0;
@@ -403,7 +405,7 @@ public final class MenuController {
         return new QpdTip(app, kind, s(MenuLabels.tipText(h)));
     }
 
-    private CharSequence optionLabel(String f, String token) {
+    private CharSequence optionLabel(FeatureId f, String token) {
         String rt = state == null ? null : state.label(f, token);
         if (rt != null) return rt;
         int r = MenuLabels.option(f, token);
@@ -411,7 +413,7 @@ public final class MenuController {
         return r == 0 ? token : s(r);
     }
 
-    private CharSequence[] labels(String f, List<String> opts) {
+    private CharSequence[] labels(FeatureId f, List<String> opts) {
         CharSequence[] out = new CharSequence[opts.size()];
         for (int i = 0; i < out.length; i++) out[i] = optionLabel(f, opts.get(i));
         return out;
@@ -419,21 +421,21 @@ public final class MenuController {
 
     /** The wide tiles of picture, sound and game open a radio list (layout D); mirroring has its receiver popup. */
     private void buildPopups() {
-        radioPopup(MenuSpec.PICTURE, Feature.PICTURE_MODE, R.string.lumen_m_panel_picture_mode, R.string.lumen_qpd_picture_more);
-        radioPopup(MenuSpec.SOUND, Feature.SOUND_MODE, R.string.lumen_m_panel_sound_mode, R.string.lumen_qpd_sound_more);
+        radioPopup(MenuSpec.PICTURE, FeatureId.PICTURE_MODE, R.string.lumen_m_panel_picture_mode, R.string.lumen_qpd_picture_more);
+        radioPopup(MenuSpec.SOUND, FeatureId.SOUND_MODE, R.string.lumen_m_panel_sound_mode, R.string.lumen_qpd_sound_more);
         if (pages.containsKey(MenuSpec.GAME)) {
             Page g = new Page(s(MenuLabels.section(MenuSpec.GAME)));
             g.setOnShown(() -> onPageShown(MenuSpec.GAME));
             popups.put(MenuSpec.GAME, g);
-            if (has(Feature.GAME_MODE) && !switchChoice(Feature.GAME_MODE)) {
-                for (String o : profile.options(Feature.GAME_MODE)) {
-                    gameRadios.add(new CheckRow(app, optionLabel(Feature.GAME_MODE, o), false,
-                            () -> safe("game mode item", () -> choose(Feature.GAME_MODE, o))));
+            if (has(FeatureId.GAME_MODE) && !switchChoice(FeatureId.GAME_MODE)) {
+                for (String o : profile.options(FeatureId.GAME_MODE)) {
+                    gameRadios.add(new CheckRow(app, optionLabel(FeatureId.GAME_MODE, o), false,
+                            () -> safe("game mode item", () -> choose(FeatureId.GAME_MODE, o))));
                 }
             }
             refreshGamePopup();
         }
-        if (has(Feature.MIRRORING) && QpdMirror.installed(app)) {
+        if (has(FeatureId.MIRRORING) && QpdMirror.installed(app)) {
             mirror = new QpdMirror(app, s(R.string.lumen_qpd_mirroring), new QpdMirror.Host() {
                 @Override public void closeThen(Runnable r) { MenuController.this.closeThen(r); }
                 @Override public boolean setupDone(String what) { return MenuController.this.setupDone(what); }
@@ -441,7 +443,7 @@ public final class MenuController {
         }
     }
 
-    private void radioPopup(String sec, String f, int titleRes, int moreRes) {
+    private void radioPopup(String sec, FeatureId f, int titleRes, int moreRes) {
         if (!has(f) || !pages.containsKey(sec)) return;
         Page p = new Page(s(titleRes));
         p.setOnShown(() -> { refresh(); live(sec); });
@@ -449,7 +451,7 @@ public final class MenuController {
         rebuildRadios(sec, f, moreRes, profile.options(f));
     }
 
-    private void rebuildRadios(String sec, String f, int moreRes, List<String> opts) {
+    private void rebuildRadios(String sec, FeatureId f, int moreRes, List<String> opts) {
         Page p = popups.get(sec);
         if (p == null) return;
         p.clear();
@@ -470,11 +472,11 @@ public final class MenuController {
         if (g == null || full == null) return;
         int f = PageAccess.focusIndex(g);
         g.clear();
-        View mode = rows.get(Feature.GAME_MODE);
+        View mode = rows.get(FeatureId.GAME_MODE);
         for (View v : full.rows()) {
             if (v == mode && !gameRadios.isEmpty()) {
                 for (CheckRow r : gameRadios) g.add(r);
-            } else if (v != notes.get(Feature.GAME_MODE) || gameRadios.isEmpty()) {
+            } else if (v != notes.get(FeatureId.GAME_MODE.id) || gameRadios.isEmpty()) {
                 g.add(v);
             }
         }
@@ -488,7 +490,7 @@ public final class MenuController {
         for (List<MenuSpec.Tile> row : spec.rows) {
             for (MenuSpec.Tile t : row) {
                 String id = t.id;
-                if (Feature.MIRRORING.equals(id) || Feature.USB_FILES.equals(id)) {
+                if (FeatureId.MIRRORING.id.equals(id) || FeatureId.USB_FILES.id.equals(id)) {
                     String last = lastSmall();
                     if (last == null) continue;
                     id = last;
@@ -498,22 +500,27 @@ public final class MenuController {
                 tile(id, MenuSpec.WIDE.equals(t.size) ? QpdTile.WIDE : QpdTile.SMALL);
             }
         }
-        if (has(Feature.LAMP)) {
-            lamp = new QpdLampRow(app, s(MenuLabels.title(Feature.LAMP)), new SliderRow.OnSlide() {
+        if (has(FeatureId.LAMP)) {
+            lamp = new QpdLampRow(app, s(MenuLabels.title(FeatureId.LAMP)), lampMin(), lampMax(), new SliderRow.OnSlide() {
                 @Override public void onChanging(SliderRow row, int value) { touch(row); }
                 @Override public void onCommit(SliderRow row, int value) {
                     safe("lamp", () -> {
                         if (boostOn() || value > lampMax() || value < lampMin()) return;
-                        set(Feature.LAMP, Integer.toString(value));
+                        set(FeatureId.LAMP, Integer.toString(value));
                     });
                 }
             });
-            lamp.setRange(lampMin(), lampMax());
             final int bl = spec.boostLevel();
+            lamp.setBoostLevel(bl);
             lamp.setFormatter(v -> bl > 0 && v >= bl ? s(R.string.lumen_m_panel_boost) : Integer.toString(v));
             lamp.setEdgeListener((row, dir) -> {
+                // LEFT at the lowest level: the "Turn off screen" row's own path (menu closes first, power key relights)
+                if (LampOff.offFromSlider(has(FeatureId.LAMP_OFF), row.isKnown() ? row.getValue() : null, row.getMin(), dir, 0)) {
+                    safe("lamp off", () -> action(FeatureId.LAMP_OFF));
+                    return true;
+                }
                 // Boost only where this projector reads it: never a dead Boost step
-                if (dir > 0 && bl > 0 && has(Feature.BOOST) && !boostOn() && state != null && state.on(Feature.BOOST) != null) {
+                if (dir > 0 && bl > 0 && has(FeatureId.BOOST) && !boostOn() && state != null && state.on(FeatureId.BOOST) != null) {
                     safe("boost", () -> boostPress(1));
                 }
                 return true;
@@ -526,28 +533,29 @@ public final class MenuController {
 
     /** A feature tile exists when the feature is usable; a section tile when its section has rows. */
     private boolean tilePresent(String id) {
-        return Feature.known(id) ? has(id) : spec.hasSection(id);
+        FeatureId f = FeatureId.known(id);
+        return f != null ? has(f) : spec.hasSection(id);
     }
 
     /** The last small tile: screen mirroring where the receiver is installed, else USB files, else none. */
     private String lastSmall() {
-        String l = QpdLayout.lastSmallTile(mirror != null, has(Feature.USB_FILES) && usbFilesAvailable());
-        return QpdLayout.TILE_MIRROR.equals(l) ? Feature.MIRRORING : QpdLayout.TILE_USB.equals(l) ? Feature.USB_FILES : null;
+        String l = QpdLayout.lastSmallTile(mirror != null, has(FeatureId.USB_FILES) && usbFilesAvailable());
+        return QpdLayout.TILE_MIRROR.equals(l) ? FeatureId.MIRRORING.id : QpdLayout.TILE_USB.equals(l) ? FeatureId.USB_FILES.id : null;
     }
 
     private void tile(String id, int kind) {
         int label = MenuLabels.tile(id);
         CharSequence title = label != 0 ? s(label) : s(MenuLabels.title(id));
         QpdTile t = new QpdTile(app, id, kind, MenuLabels.icon(id), title, () -> safe("tile " + id, () -> onTile(id)));
-        if (Feature.KEYSTONE_AK_NOW.equals(id)) t.setValue(s(R.string.lumen_qpd_autocorrect_value));
+        if (FeatureId.KEYSTONE_AK_NOW.id.equals(id)) t.setValue(s(R.string.lumen_qpd_autocorrect_value));
         card.addTile(t);
     }
 
-    private int lampMin() { return profile.number(Feature.LAMP, "min", 1); }
+    private int lampMin() { return profile.number(FeatureId.LAMP, "min", 1); }
 
-    private int lampMax() { return profile.number(Feature.LAMP, "max", 10); }
+    private int lampMax() { return profile.number(FeatureId.LAMP, "max", 10); }
 
-    private boolean boostOn() { return state != null && Boolean.TRUE.equals(state.on(Feature.BOOST)) && spec.boostLevel() > 0; }
+    private boolean boostOn() { return state != null && Boolean.TRUE.equals(state.on(FeatureId.BOOST)) && spec.boostLevel() > 0; }
 
     // ================================================================== showing
 
@@ -571,14 +579,14 @@ public final class MenuController {
     private void show(String section, View focusRow) {
         if (MenuSpec.GENERAL.equals(section)) { openAll(section, focusRow); return; }
         if (MenuSpec.LAMP.equals(section)) { showBar(); return; }
-        if (Feature.MIRRORING.equals(section) && mirror == null) section = null;
+        if (FeatureId.MIRRORING.id.equals(section) && mirror == null) section = null;
         openSection(section, focusRow);
     }
 
     private Page popupPage(String key) {
         if (key == null) return null;
-        if (Feature.INPUT.equals(key)) return devicePages == null ? null : devicePages.page(Feature.INPUT, this);
-        if (Feature.MIRRORING.equals(key)) return mirror == null ? null : mirror.page;
+        if (FeatureId.INPUT.id.equals(key)) return devicePages == null ? null : devicePages.page(FeatureId.INPUT, this);
+        if (FeatureId.MIRRORING.id.equals(key)) return mirror == null ? null : mirror.page;
         if (MenuSpec.LAMP.equals(key) || MenuSpec.GENERAL.equals(key)) return null;
         Page p = popups.get(key);
         return p != null ? p : pages.get(key);
@@ -636,7 +644,7 @@ public final class MenuController {
     public void onGearLong(Runnable fallback) {
         String what = profile.gearLong();
         if ("game_menu".equals(what) && profile.gameMenu()) GameMenu.onGearLong(app, fallback);
-        else if ("keystone_reset".equals(what) && has(Feature.KEYSTONE_RESTORE)) run(Feature.KEYSTONE_RESTORE);
+        else if ("keystone_reset".equals(what) && has(FeatureId.KEYSTONE_RESTORE)) run(FeatureId.KEYSTONE_RESTORE);
         else if (fallback != null) fallback.run();
     }
 
@@ -672,31 +680,34 @@ public final class MenuController {
     private void onTile(String id) {
         if (panel == null || !panel.isShowing()) return;      // closed during the press
         card.remember(id);
-        switch (id) {
-            case MenuSpec.GENERAL: openAll(null, null); return;
-            case Feature.KEYSTONE_AK_NOW: closeThen(() -> run(id)); return;
-            case Feature.ZOOM:
-            case Feature.ZOOM_DIGITAL:
-                if (!dev.open(id, () -> show(null, null))) Log.w(TAG, id + " cannot open now");   // BACK comes back here
-                return;
-            case Feature.BLUETOOTH:
-                if (setupDone(id)) closeThen(() -> openSystemPage(Settings.ACTION_BLUETOOTH_SETTINGS));
-                return;
-            case Feature.NETWORK:
-                if (setupDone(id)) closeThen(() -> openSystemPage(Settings.ACTION_WIFI_SETTINGS));
-                return;
-            case Feature.USB_FILES:
-                if (setupDone(id)) closeThen(this::openUsbFiles);
-                return;
-            case Feature.INPUT:
-                if (!setupDone(id)) return;
-                if (popupPage(id) == null) {                  // no input popup of the device: its input screen (HB, Play 6)
-                    closeThen(() -> { if (!dev.open(id, () -> show(null, null))) Log.w(TAG, "input cannot open now"); });
+        if (MenuSpec.GENERAL.equals(id)) { openAll(null, null); return; }
+        FeatureId f = FeatureId.known(id);
+        if (f != null) {
+            switch (f) {
+                case KEYSTONE_AK_NOW: closeThen(() -> run(f)); return;
+                case ZOOM:
+                case ZOOM_DIGITAL:
+                    if (!dev.open(f, () -> show(null, null))) Log.w(TAG, id + " cannot open now");   // BACK comes back here
                     return;
-                }
-                break;
-            default:
-                break;
+                case BLUETOOTH:
+                    if (setupDone(id)) closeThen(() -> openSystemPage(Settings.ACTION_BLUETOOTH_SETTINGS));
+                    return;
+                case NETWORK:
+                    if (setupDone(id)) closeThen(() -> openSystemPage(Settings.ACTION_WIFI_SETTINGS));
+                    return;
+                case USB_FILES:
+                    if (setupDone(id)) closeThen(this::openUsbFiles);
+                    return;
+                case INPUT:
+                    if (!setupDone(id)) return;
+                    if (popupPage(id) == null) {                  // no input popup of the device: its input screen (HB, Play 6)
+                        closeThen(() -> { if (!dev.open(f, () -> show(null, null))) Log.w(TAG, "input cannot open now"); });
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
         if (spec.hasSection(id) && refusedPage(id)) return;
         Page p = popupPage(id);
@@ -710,7 +721,7 @@ public final class MenuController {
 
     /** The stock refusal of a whole section page (the game page off HDMI, with Dolby Vision, in 3D). */
     private boolean refusedPage(String section) {
-        Note n = dev.blocked(section, null, state);
+        Note n = dev.blockedPage(section, state);
         if (n == null) return false;
         note(n, null, s(MenuLabels.section(section)));
         return true;
@@ -729,7 +740,7 @@ public final class MenuController {
 
     /** The picture mode list (OK on the stepping row): the modes of this content, the current one marked. */
     private void openModeList() {
-        String f = Feature.PICTURE_MODE;
+        FeatureId f = FeatureId.PICTURE_MODE;
         String cur = state == null ? null : state.get(f);
         if (cur == null) { readyOrNote(); return; }
         Page p = new Page(s(MenuLabels.title(f)));
@@ -808,7 +819,7 @@ public final class MenuController {
         final View row = section == null ? null : focused(top);
         final String sec = section;
         Log.i(TAG, "restorer: " + (sec == null ? "card" : sec + (row == null ? "" : ", focused row")));
-        if (Feature.INPUT.equals(sec) || Feature.MIRRORING.equals(sec)) return () -> openSection(sec, row);
+        if (FeatureId.INPUT.id.equals(sec) || FeatureId.MIRRORING.id.equals(sec)) return () -> openSection(sec, row);
         return () -> show(sec, row);
     }
 
@@ -839,8 +850,8 @@ public final class MenuController {
     private String sectionOf(Page p) {
         if (p == null) return null;
         for (Map.Entry<String, Page> e : popups.entrySet()) if (e.getValue() == p) return e.getKey();
-        if (mirror != null && p == mirror.page) return Feature.MIRRORING;
-        if (devicePages != null && p == devicePages.page(Feature.INPUT, this)) return Feature.INPUT;
+        if (mirror != null && p == mirror.page) return FeatureId.MIRRORING.id;
+        if (devicePages != null && p == devicePages.page(FeatureId.INPUT, this)) return FeatureId.INPUT.id;
         for (Map.Entry<String, Page> e : pages.entrySet()) if (e.getValue() == p) return e.getKey();
         return null;
     }
@@ -907,7 +918,7 @@ public final class MenuController {
         }
         boolean step = k == KeyEvent.KEYCODE_DPAD_LEFT || k == KeyEvent.KEYCODE_DPAD_RIGHT;
         if (step && f instanceof SliderRow) {
-            String feat = f == lamp ? Feature.LAMP : featureOf.get(f);
+            FeatureId feat = f == lamp ? FeatureId.LAMP : featureOf.get(f);
             Note n = feat == null ? null : dev.blocked(feat, null, state);
             if (n != null) {                                  // stock: the slider does not move, one note per press
                 if (first) note(n, feat);
@@ -915,7 +926,7 @@ public final class MenuController {
             }
         }
         if (step && f instanceof ChoiceRow && down) {          // the option list the user steps through stays until commit
-            String feat = featureOf.get(f);
+            FeatureId feat = featureOf.get(f);
             if (feat != null) steppedAt.put(feat, SystemClock.uptimeMillis());
         }
         // leaving Boost: at "Boost" a press towards the start arms, a second one within 3 s turns it off
@@ -942,9 +953,9 @@ public final class MenuController {
         if (boostArmDir == dir && now - boostArmAt < BOOST_PRESS_WINDOW_MS) {
             boostArmDir = 0;
             String v = dir > 0 ? "on" : "off";
-            Note n = dev.blocked(Feature.BOOST, v, state);
-            if (n != null) { note(n, Feature.BOOST); return; }
-            set(Feature.BOOST, v);
+            Note n = dev.blocked(FeatureId.BOOST, v, state);
+            if (n != null) { note(n, FeatureId.BOOST); return; }
+            set(FeatureId.BOOST, v);
             return;
         }
         boostArmDir = dir;
@@ -954,7 +965,7 @@ public final class MenuController {
 
     // ================================================================== user actions
 
-    private void onToggle(String f, ToggleRow row, boolean wanted) {
+    private void onToggle(FeatureId f, ToggleRow row, boolean wanted) {
         String v = wanted ? "on" : "off";
         Note n = dev.blocked(f, v, state);
         if (n != null) {
@@ -972,9 +983,9 @@ public final class MenuController {
         set(f, v);
     }
 
-    private void choose(String f, String token) {
+    private void choose(FeatureId f, String token) {
         if (SKIP_SAME.contains(f) && state != null && token.equals(state.get(f))) return;
-        if (SETUP_GATED.contains(f) && !setupDone(f)) { refresh(); return; }
+        if (SETUP_GATED.contains(f) && !setupDone(f.id)) { refresh(); return; }
         Note n = dev.blocked(f, token, state);
         if (n != null) {
             note(n, f);
@@ -992,7 +1003,7 @@ public final class MenuController {
         else set(f, token);
     }
 
-    private void action(String f) {
+    private void action(FeatureId f) {
         Note n = dev.blocked(f, null, state);
         if (n != null) { note(n, f); return; }
         ProjectorFeatures.Confirm c = dev.confirm(f, null, state);
@@ -1004,8 +1015,8 @@ public final class MenuController {
         else run(f);
     }
 
-    private void screen(String f) {
-        if (SETUP_GATED.contains(f) && !setupDone(f)) return;
+    private void screen(FeatureId f) {
+        if (SETUP_GATED.contains(f) && !setupDone(f.id)) return;
         Note n = dev.blocked(f, null, state);
         if (n != null) { note(n, f); return; }
         Page p = devicePages == null ? null : devicePages.page(f, this);
@@ -1026,7 +1037,7 @@ public final class MenuController {
         confirm(named(c.title), named(c.message), named(c.ok), yes);
     }
 
-    private String lastSectionOf(String f) {
+    private String lastSectionOf(FeatureId f) {
         for (String sec : spec.sections.keySet()) if (spec.rowsOf(sec).contains(f)) return sec;
         return null;
     }
@@ -1040,24 +1051,24 @@ public final class MenuController {
         return false;
     }
 
-    private void set(String f, String value) {
+    private void set(FeatureId f, String value) {
         if (!readyOrNote()) return;
         dev.set(f, value, r -> after(f, value, r));
     }
 
-    private void setConfirmed(String f, String value) {
+    private void setConfirmed(FeatureId f, String value) {
         if (!readyOrNote()) return;
         dev.setConfirmed(f, value, r -> after(f, value, r));
     }
 
-    private void run(String f) {
+    private void run(FeatureId f) {
         if (!readyOrNote()) return;
         dev.run(f, r -> after(f, r));
     }
 
-    private void after(String f, ProjectorFeatures.Result r) { after(f, null, r); }
+    private void after(FeatureId f, ProjectorFeatures.Result r) { after(f, null, r); }
 
-    private void after(String f, String value, ProjectorFeatures.Result r) {
+    private void after(FeatureId f, String value, ProjectorFeatures.Result r) {
         if (r == null) { refresh(); return; }
         switch (r.kind) {
             case REFUSED:
@@ -1077,9 +1088,9 @@ public final class MenuController {
     }
 
     /** Shows a device note (R8: formatted, titled); {@code f} names the row for a row title. */
-    private void note(ProjectorFeatures.Note n, String f) { note(n, f, null); }
+    private void note(ProjectorFeatures.Note n, FeatureId f) { note(n, f, null); }
 
-    private void note(ProjectorFeatures.Note n, String f, CharSequence fallbackTitle) {
+    private void note(ProjectorFeatures.Note n, FeatureId f, CharSequence fallbackTitle) {
         if (n == null || n.res == null && n.text == null) return;   // a silent refusal: the rows only re-read
         if (n.toast) {
             int id = app.getResources().getIdentifier(n.res, "string", app.getPackageName());
@@ -1105,13 +1116,13 @@ public final class MenuController {
         else host.note(title, text);
     }
 
-    private CharSequence rowTitle(String f, CharSequence fallback) {
+    private CharSequence rowTitle(FeatureId f, CharSequence fallback) {
         View v = f == null ? null : rows.get(f);
         if (v instanceof Row) return ((Row) v).getTitle();
-        if (f != null && f.startsWith(Feature.PICTURE_PQ + ".")) {
-            return s(MenuLabels.pq(f.substring(Feature.PICTURE_PQ.length() + 1)));
+        if (f != null && f.parent == FeatureId.PICTURE_PQ) {
+            return s(MenuLabels.pq(f.item));
         }
-        if (f != null && Feature.known(f)) return s(MenuLabels.title(f));
+        if (f != null) return s(MenuLabels.title(f));
         return fallback;
     }
 
@@ -1128,8 +1139,8 @@ public final class MenuController {
     private void apply(MenuState st) {
         state = st;
         boolean ok = st != null;
-        for (Map.Entry<String, View> e : rows.entrySet()) {
-            String f = e.getKey();
+        for (Map.Entry<FeatureId, View> e : rows.entrySet()) {
+            FeatureId f = e.getKey();
             View v = e.getValue();
             if (ok) v.setVisibility(st.hidden(f) ? View.GONE : View.VISIBLE);
             boolean usable = ok && !st.disabled(f);
@@ -1145,12 +1156,11 @@ public final class MenuController {
                 if (!sliderBusy((SliderRow) v)) ((SliderRow) v).setValue(n);
                 ((SliderRow) v).setRowEnabled(usable && n != null);
             } else if (v instanceof NavRow) {
-                Feature.Def d = Feature.def(f);
-                if (d != null && (d.kind == Feature.Kind.INFO || d.kind == Feature.Kind.SCREEN)) ((NavRow) v).setValue(val);
-                if (d != null && d.kind == Feature.Kind.SCREEN) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));
+                if (f.kind == FeatureKind.INFO || f.kind == FeatureKind.SCREEN) ((NavRow) v).setValue(val);
+                if (f.kind == FeatureKind.SCREEN) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));
             }
         }
-        for (Map.Entry<String, List<CheckRow>> e : inline.entrySet()) {
+        for (Map.Entry<FeatureId, List<CheckRow>> e : inline.entrySet()) {
             String val = ok ? st.get(e.getKey()) : null;
             List<String> opts = profile.options(e.getKey());
             for (int i = 0; i < e.getValue().size(); i++) {
@@ -1165,10 +1175,10 @@ public final class MenuController {
             e.getValue().setText(t);
             e.getValue().setVisibility(t == null ? View.GONE : View.VISIBLE);
         }
-        for (Map.Entry<HeaderRow, List<String>> e : headers.entrySet()) {
+        for (Map.Entry<HeaderRow, List<FeatureId>> e : headers.entrySet()) {
             if (!ok) continue;
             boolean any = false;
-            for (String f : e.getValue()) any |= !st.hidden(f) && !(Feature.PICTURE_PQ.equals(f) && allPqHidden(st));
+            for (FeatureId f : e.getValue()) any |= !st.hidden(f) && !(FeatureId.PICTURE_PQ == f && allPqHidden(st));
             e.getKey().setVisibility(any ? View.VISIBLE : View.GONE);
         }
         applyRadios(st);
@@ -1204,18 +1214,18 @@ public final class MenuController {
         if (part == null) return;
         state = state == null ? part : state.with(part);
         for (Map.Entry<String, String> e : part.asMap().entrySet()) {
-            View v = rows.get(e.getKey());
-            Feature.Def d = Feature.def(e.getKey());
-            if (v instanceof NavRow && d != null && d.kind == Feature.Kind.INFO) ((NavRow) v).setValue(e.getValue());
+            FeatureId f = FeatureId.of(e.getKey());
+            View v = f == null ? null : rows.get(f);
+            if (v instanceof NavRow && f.kind == FeatureKind.INFO) ((NavRow) v).setValue(e.getValue());
         }
     }
 
     private boolean allPqHidden(MenuState st) {
-        for (String item : profile.items(Feature.PICTURE_PQ)) if (!st.hidden(Feature.PICTURE_PQ + "." + item)) return false;
+        for (String item : profile.items(FeatureId.PICTURE_PQ)) if (!st.hidden(FeatureId.pq(item))) return false;
         return true;
     }
 
-    private void applyChoice(String f, ChoiceRow r, MenuState st, boolean usable) {
+    private void applyChoice(FeatureId f, ChoiceRow r, MenuState st, boolean usable) {
         List<String> want = st == null || st.options(f) == null ? profile.options(f) : st.options(f);
         Long at = steppedAt.get(f);
         boolean stepping = at != null && SystemClock.uptimeMillis() - at < CHOICE_COMMIT_MS + 300;
@@ -1231,39 +1241,39 @@ public final class MenuController {
         r.setRowEnabled(usable && val != null);
     }
 
-    private static boolean hasRuntimeLabels(String f, List<String> opts, MenuState st) {
+    private static boolean hasRuntimeLabels(FeatureId f, List<String> opts, MenuState st) {
         for (String o : opts) if (st.label(f, o) != null) return true;
         return false;
     }
 
     private void applyRadios(MenuState st) {
         boolean ok = st != null;
-        String pm = ok ? st.get(Feature.PICTURE_MODE) : null;
-        List<CheckRow> pr = radios.get(Feature.PICTURE_MODE);
+        String pm = ok ? st.get(FeatureId.PICTURE_MODE) : null;
+        List<CheckRow> pr = radios.get(FeatureId.PICTURE_MODE);
         if (pr != null) {
-            List<String> opts = ok && st.options(Feature.PICTURE_MODE) != null ? st.options(Feature.PICTURE_MODE)
-                    : profile.options(Feature.PICTURE_MODE);
-            if (opts.size() != pr.size() || !opts.equals(currentRadioTokens(Feature.PICTURE_MODE))) {
-                rebuildRadios(MenuSpec.PICTURE, Feature.PICTURE_MODE, R.string.lumen_qpd_picture_more, opts);
-                radioTokens.put(Feature.PICTURE_MODE, opts);
-                pr = radios.get(Feature.PICTURE_MODE);
+            List<String> opts = ok && st.options(FeatureId.PICTURE_MODE) != null ? st.options(FeatureId.PICTURE_MODE)
+                    : profile.options(FeatureId.PICTURE_MODE);
+            if (opts.size() != pr.size() || !opts.equals(currentRadioTokens(FeatureId.PICTURE_MODE))) {
+                rebuildRadios(MenuSpec.PICTURE, FeatureId.PICTURE_MODE, R.string.lumen_qpd_picture_more, opts);
+                radioTokens.put(FeatureId.PICTURE_MODE, opts);
+                pr = radios.get(FeatureId.PICTURE_MODE);
                 if (panel != null && panel.isShowing() && panel.currentPage() == popups.get(MenuSpec.PICTURE)) panel.refreshPage();
             }
             for (int i = 0; i < pr.size(); i++) pr.get(i).setChecked(pm != null && opts.get(i).equals(pm));
         }
-        List<CheckRow> sr = radios.get(Feature.SOUND_MODE);
+        List<CheckRow> sr = radios.get(FeatureId.SOUND_MODE);
         if (sr != null) {
-            String sm = ok ? st.get(Feature.SOUND_MODE) : null;
-            List<String> opts = profile.options(Feature.SOUND_MODE);
+            String sm = ok ? st.get(FeatureId.SOUND_MODE) : null;
+            List<String> opts = profile.options(FeatureId.SOUND_MODE);
             for (int i = 0; i < sr.size() && i < opts.size(); i++) {
-                sr.get(i).setTitle(optionLabel(Feature.SOUND_MODE, opts.get(i)));   // "AI · <sub-mode>" follows the app
+                sr.get(i).setTitle(optionLabel(FeatureId.SOUND_MODE, opts.get(i)));   // "AI · <sub-mode>" follows the app
                 sr.get(i).setChecked(opts.get(i).equals(sm));
             }
         }
         if (!gameRadios.isEmpty()) {
-            String gm = ok ? st.get(Feature.GAME_MODE) : null;
-            View mode = rows.get(Feature.GAME_MODE);
-            List<String> opts = profile.options(Feature.GAME_MODE);
+            String gm = ok ? st.get(FeatureId.GAME_MODE) : null;
+            View mode = rows.get(FeatureId.GAME_MODE);
+            List<String> opts = profile.options(FeatureId.GAME_MODE);
             for (int i = 0; i < gameRadios.size(); i++) {
                 gameRadios.get(i).setChecked(opts.get(i).equals(gm));
                 if (mode != null) gameRadios.get(i).setVisibility(mode.getVisibility());
@@ -1271,9 +1281,9 @@ public final class MenuController {
         }
     }
 
-    private final Map<String, List<String>> radioTokens = new HashMap<>();
+    private final Map<FeatureId, List<String>> radioTokens = new HashMap<>();
 
-    private List<String> currentRadioTokens(String f) {
+    private List<String> currentRadioTokens(FeatureId f) {
         List<String> l = radioTokens.get(f);
         return l != null ? l : profile.options(f);
     }
@@ -1284,10 +1294,10 @@ public final class MenuController {
         boolean boost = boostOn();
         if (!sliderBusy(lamp)) {
             if (boost) lamp.setRange(lampMin(), spec.boostLevel()).setValue(spec.boostLevel());
-            else lamp.setRange(lampMin(), lampMax()).setValue(ok ? st.number(Feature.LAMP) : null);
+            else lamp.setRange(lampMin(), lampMax()).setValue(ok ? st.number(FeatureId.LAMP) : null);
         }
-        lamp.setRowEnabled(ok && (st.number(Feature.LAMP) != null || boost));
-        Boolean b = ok && has(Feature.BOOST) ? st.on(Feature.BOOST) : null;
+        lamp.setRowEnabled(ok && (st.number(FeatureId.LAMP) != null || boost));
+        Boolean b = ok && has(FeatureId.BOOST) ? st.on(FeatureId.BOOST) : null;
         if (QpdLayout.boostNoticeDue(lastBoost, b)) host.note(s(R.string.lumen_m_panel_boost), s(R.string.lumen_qpd_boost_note));
         if (b != null) lastBoost = b;
         lamp.invalidate();
@@ -1297,18 +1307,18 @@ public final class MenuController {
         boolean ok = st != null;
         QpdTile pic = card.tile(MenuSpec.PICTURE);
         if (pic != null) {
-            String m = ok ? st.get(Feature.PICTURE_MODE) : null;
+            String m = ok ? st.get(FeatureId.PICTURE_MODE) : null;
             String over = ok ? st.tile(MenuSpec.PICTURE) : null;
-            pic.setValue(over != null ? over : m == null ? null : tileLabel(Feature.PICTURE_MODE, m));
+            pic.setValue(over != null ? over : m == null ? null : tileLabel(FeatureId.PICTURE_MODE, m));
         }
-        for (String id : new String[]{Feature.INPUT, MenuSpec.GAME, MenuSpec.SOUND, MenuSpec.PROJECTION}) {
+        for (String id : new String[]{FeatureId.INPUT.id, MenuSpec.GAME, MenuSpec.SOUND, MenuSpec.PROJECTION}) {
             QpdTile t = card.tile(id);
-            if (t != null && (ok && st.tile(id) != null || Feature.INPUT.equals(id) || MenuSpec.GAME.equals(id))) {
+            if (t != null && (ok && st.tile(id) != null || FeatureId.INPUT.id.equals(id) || MenuSpec.GAME.equals(id))) {
                 t.setValue(ok ? st.tile(id) : null);
             }
         }
         QpdTile eye = card.tile(MenuSpec.EYE);
-        boolean eyeOff = ok && "off".equals(st.get(Feature.EYE));   // crossed out only when it reads off
+        boolean eyeOff = ok && "off".equals(st.get(FeatureId.EYE));   // crossed out only when it reads off
         if (eye != null && eyeOff != eyeOffShown) {
             eyeOffShown = eyeOff;
             eye.setIcon(eyeOff ? R.drawable.lumen_qpd_ic_eyeoff : R.drawable.lumen_qpd_ic_eye);
@@ -1316,7 +1326,7 @@ public final class MenuController {
     }
 
     /** Tile value line: the short form where the full name does not fit a square tile in some languages. */
-    private CharSequence tileLabel(String f, String token) {
+    private CharSequence tileLabel(FeatureId f, String token) {
         int r = MenuLabels.tileValue(f, token);
         return r != 0 ? s(r) : optionLabel(f, token);
     }

@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">ソフト</string>
     <string name="lumen_m_pm_isf_day">ISF デイ</string>
     <string name="lumen_m_pm_isf_night">ISF ナイト</string>
+    <string name="lumen_m_pm_bright">明るい</string>
     <string name="lumen_m_edid_hdmi_1_4">互換 (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">拡張 (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

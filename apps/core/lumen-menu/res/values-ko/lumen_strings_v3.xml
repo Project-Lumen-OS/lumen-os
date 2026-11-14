@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">절전 모드</string>
     <string name="lumen_m_ambient_speaker">앰비언트 스피커</string>
     <string name="lumen_m_ct_custom">사용자 지정</string>
+    <string name="lumen_m_lamp_off">화면 끄기</string>
 </resources>

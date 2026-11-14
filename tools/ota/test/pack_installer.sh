@@ -230,7 +230,7 @@ SH=$G/installer/lumen-install.sh; PS=$G/installer/lumen-install.ps1
 check rule_sh_name 'grep -qF "\"lumen-os-\$P_TOKEN-\"*\"-nogms-system.img\") nv=\${name#\"lumen-os-\$P_TOKEN-\"}; nv=\${nv%-nogms-system.img}" "$SH"'
 check rule_sh_version 'grep -qF "[ \"\$nv\" = \"\$VERSION\" ]" "$SH" && grep -qF "[ \"\$v\" = \"\${VERSION:-}\" ]" "$SH"'
 check rule_ps1_version 'grep -qF "\$nv -cne \$conf[\"VERSION\"]" "$PS" && grep -qF "\$v -cne \$conf[\"VERSION\"]" "$PS"'
-check rule_ps1_name 'grep -qF "lumen-os-\$tok-<version>-nogms-system.img" "$PS"'
+check rule_ps1_name 'grep -qF "^lumen-os-\$([regex]::Escape(\$tok))-(.+)-nogms-system\.img\$" "$PS" && grep -qF "(lumen-os-{2}-<version>-nogms-system.img)" "$G/installer/lib/messages.tsv"'
 
 echo
 echo "pack_installer: $PASS passed, $FAIL failed"

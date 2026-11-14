@@ -22,6 +22,7 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.ShiftDir;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
@@ -136,7 +137,7 @@ public final class OpticalZoomPanel extends Panel {
         // 2026-11-04 (stock pictureZoom, common.json:355, node zoom_and_move): refused in a top-speed game, then in 3D,
         // before the screen replaces the quick panel. Fresh reads on the HAL thread.
         Hal.query((g, g2) -> PanelRules.keystone(RuleNotes.readKeystone(app, g, g2)), w -> {
-            if (w != null && w != PanelRules.Why.NONE) {
+            if (w != null && w != RefusalReason.NONE) {
                 Log.i(TAG, "open refused: " + w);
                 RuleNotes.show(app, app.getString(R.string.panel_optical_zoom), w, false);
                 return;
@@ -397,10 +398,10 @@ public final class OpticalZoomPanel extends Panel {
 
     /** Position mode: one 141 step per press (a held key repeats every MIN_STEP_GAP_MS at most). Main thread. */
     private boolean onShiftKey(KeyEvent ev, int code) {
-        final GmpfClient.ShiftDir d = code == KeyEvent.KEYCODE_DPAD_UP ? GmpfClient.ShiftDir.UP
-                : code == KeyEvent.KEYCODE_DPAD_DOWN ? GmpfClient.ShiftDir.DOWN
-                : code == KeyEvent.KEYCODE_DPAD_LEFT ? GmpfClient.ShiftDir.LEFT
-                : code == KeyEvent.KEYCODE_DPAD_RIGHT ? GmpfClient.ShiftDir.RIGHT : null;
+        final ShiftDir d = code == KeyEvent.KEYCODE_DPAD_UP ? ShiftDir.UP
+                : code == KeyEvent.KEYCODE_DPAD_DOWN ? ShiftDir.DOWN
+                : code == KeyEvent.KEYCODE_DPAD_LEFT ? ShiftDir.LEFT
+                : code == KeyEvent.KEYCODE_DPAD_RIGHT ? ShiftDir.RIGHT : null;
         if (d == null) return false;
         if (ev.getAction() != KeyEvent.ACTION_DOWN || state != READY || shiftInFlight
                 || SystemClock.uptimeMillis() - lastShiftAt < MIN_STEP_GAP_MS) return true;
@@ -410,7 +411,7 @@ public final class OpticalZoomPanel extends Panel {
     }
 
     /** HAL thread: 141(dir, true); when it answers 0 (possible), 141(dir, false). -1 = at the edge. */
-    private void shiftStep(GmpfClient g, GmpfClient.ShiftDir d) {
+    private void shiftStep(GmpfClient g, ShiftDir d) {
         try {
             if (state != READY || closed) return;
             if (!shiftAkPaused && !shifted) shiftAkPaused = ManualKeystonePanel.pauseRealtime(app, g, "zoom shift");

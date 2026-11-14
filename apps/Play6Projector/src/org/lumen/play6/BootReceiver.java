@@ -9,5 +9,6 @@ public final class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent intent) {
         BootHandshake.start(ctx);
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) org.lumen.stats.StatsJob.schedule(ctx);
     }
 }

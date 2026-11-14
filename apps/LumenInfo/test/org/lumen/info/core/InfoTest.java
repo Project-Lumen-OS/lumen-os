@@ -558,15 +558,22 @@ public final class InfoTest {
             eq(f[2], codes.get(f[0] + "/" + f[1]), "wanted getter " + w + " matches aidl_codes.tsv");
         }
         // hal/HbGmpf.java has exactly the plan
-        String src = new String(Files.readAllBytes(app.resolve("src/org/lumen/info/hal/HbGmpf.java")), StandardCharsets.UTF_8);
+        // the allow list is the top-level GmpfCall / GmpfIface next to HbGmpf; its codes are HalCodes constants
+        // (generated from devices/goat_elegant/hal/codes.tsv), read here as their numbers
+        String src = new String(Files.readAllBytes(app.resolve("src/org/lumen/info/hal/HbGmpf.java")), StandardCharsets.UTF_8)
+                + new String(Files.readAllBytes(app.resolve("src/org/lumen/info/hal/GmpfCall.java")), StandardCharsets.UTF_8)
+                + new String(Files.readAllBytes(app.resolve("src/org/lumen/info/hal/GmpfIface.java")), StandardCharsets.UTF_8);
+        String hc = new String(Files.readAllBytes(app.resolve("src/org/lumen/info/hal/HalCodes.java")), StandardCharsets.UTF_8);
+        Matcher hm = Pattern.compile("static final int (\\w+) = (0x[0-9A-Fa-f]+|\\d+);").matcher(hc);
+        while (hm.find()) src = src.replace("HalCodes." + hm.group(1) + ",", hm.group(2) + ",");
         Map<String, String> iface = Map.of("TV", "GmTvManager", "DISPLAY", "DisplayManager", "TEMPERATURE", "TemperatureManager",
                 "AUDIO", "GmAudioManager");
-        Matcher m = Pattern.compile("\\n\\s+[A-Z_]+\\((null|Iface\\.([A-Z]+)), (0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(src);
+        Matcher m = Pattern.compile("\\n\\s+[A-Z_]+\\((null|GmpfIface\\.([A-Z]+)), (0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(src);
         List<String> got = new ArrayList<>();
         while (m.find()) got.add((m.group(2) == null ? "-" : iface.get(m.group(2))) + "/" + code(m.group(3)) + "/" + m.group(4));
         List<String> want = new ArrayList<>();
         for (String[] p : Hb.PLAN) want.add(p[0] + "/" + code(p[1]) + "/" + p[2]);
-        eq(want, got, "HbGmpf.Call equals Hb.PLAN");
+        eq(want, got, "GmpfCall equals Hb.PLAN");
         ok(!src.contains("setEdidVersion"), "no EDID setter");
         Matcher d = Pattern.compile("\"(xgimi\\.hardware\\.gmpf\\.I\\w+)\"").matcher(src);
         Set<String> desc = new HashSet<>();
@@ -574,20 +581,20 @@ public final class InfoTest {
         eq(Set.of("xgimi.hardware.gmpf.IDisplayManager", "xgimi.hardware.gmpf.IGmTvManager",
                 "xgimi.hardware.gmpf.ITemperatureManager", "xgimi.hardware.gmpf.IGmAudioManager"), desc, "descriptors");
         // arguments of the new getters stay inside the stock choices
-        ok(src.contains("if (port != 1 && port != 2) throw new IllegalArgumentException(\"port \" + port);\n        return call(Call.GET_HDMI_CONNECT_STATUS"),
+        ok(src.contains("if (port != 1 && port != 2) throw new IllegalArgumentException(\"port \" + port);\n        return call(GmpfCall.GET_HDMI_CONNECT_STATUS"),
                 "TV 70 only for HDMI ports 1 / 2");
-        ok(src.contains("if (port != 1 && port != 2) throw new IllegalArgumentException(\"port \" + port);\n        return call(Call.GET_HDMI_HW_CONFIG"),
+        ok(src.contains("if (port != 1 && port != 2) throw new IllegalArgumentException(\"port \" + port);\n        return call(GmpfCall.GET_HDMI_HW_CONFIG"),
                 "TV 153 only for HDMI ports 1 / 2");
         ok(src.contains("p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readBoolean") && src.contains("p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readByte"),
                 "GmAudio 33 / 34 only with HDMI ARC");
         eq(2, (int) Hb.AUDIO_DEVICE_ARC, "HDMI ARC device id (stock EN_AUDIO_ARC)");
         // every PLAN getter except the meta calls has a caller in the Collector schedule (no dead allow rows)
         String col = new String(Files.readAllBytes(app.resolve("src/org/lumen/info/data/Collector.java")), StandardCharsets.UTF_8);
-        Matcher cm = Pattern.compile("\\n\\s+([A-Z_]+)\\((?:null|Iface\\.[A-Z]+), (?:0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(src);
+        Matcher cm = Pattern.compile("\\n\\s+([A-Z_]+)\\((?:null|GmpfIface\\.[A-Z]+), (?:0x[0-9A-Fa-f]+|\\d+), \"(\\w+)\"\\)").matcher(src);
         while (cm.find()) {
             String m2 = cm.group(2);
             if (m2.startsWith("getInterface")) continue;
-            Matcher def = Pattern.compile("public static \\S+ (\\w+)\\([^)]*\\)[^{]*\\{[^}]*?Call\\." + cm.group(1) + "\\b").matcher(src);
+            Matcher def = Pattern.compile("public static \\S+ (\\w+)\\([^)]*\\)[^{]*\\{[^}]*?GmpfCall\\." + cm.group(1) + "\\b").matcher(src);
             ok(def.find(), "a public wrapper sends Call." + cm.group(1));
         }
         for (String w2 : new String[] {"HbGmpf::hdmiInfo", "HbGmpf::videoInfo", "HbGmpf::outputTiming", "HbGmpf.colorSpaceInfo(",
@@ -610,7 +617,7 @@ public final class InfoTest {
             String n = app.relativize(f).toString();
             boolean hal = n.endsWith("hal/HbGmpf.java");
             ok(hal || !t.contains(".transact("), n + ": transact only in hal/HbGmpf.java");
-            ok(hal || !t.contains("xgimi.hardware"), n + ": vendor names only in hal/");
+            ok(hal || n.endsWith("hal/GmpfIface.java") || !t.contains("xgimi.hardware"), n + ": vendor names only in hal/");
             ok(!t.contains("Runtime.getRuntime().exec") && !t.contains("ProcessBuilder"), n + ": no shell");
             ok(!t.contains("\"su\"") && !t.contains("/system/xbin"), n + ": no su");
             ok(!t.contains("utopia_mdb"), n + ": no MStar debug nodes");

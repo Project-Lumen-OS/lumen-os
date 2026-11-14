@@ -1,0 +1,77 @@
+# The X50 recipe (g0111 X50 Ultra, g0100 X50 Ultra Max): steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS.
+# Base: the published Z9X 1.0.9 image; every kept file is the base's byte for byte with its owner, mode, label and
+# capability. What changes and why: devices/g0111/README.md; verify_tree_x50.py proves exactly that and nothing else.
+# Flags: test (tN) or pub (a release version), stage (--stage-only), image (--image-only).
+*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	x50_props.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	x50_blobs.sh	x50_blobs.rc	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	blobs_stock_dsu.sh	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml
+*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/X50TvInput.apk	stage/base_signed/base_signed.tsv
+*	dsu_rc	lumen_dsu_install.rc
+*	out	mounts
+# the HAL app's calls against the allow lists of verify_tree_x50.py, with the model's own platform certificate
+*	set	PCERT	verify_tree_x50.py	PLATFORM_CERTS = \{[^}]*"{codename}": "([0-9a-f]{64})"
+*	run	x50_apk_check.py	{in}/stage/X50EyeGuard.apk	--expect	{in}/verify_tree_x50.py	--cert	{PCERT}	>apk_check.log
+# the base, the stock model props of the dump, the X50 kernel (the base's ART boot image needs userfaultfd)
+*	base_pin
+*	sha	{STOCK_MODEL}	{STOCK_MODEL_SHA}
+*	run	x50_props.py	model	{in}/{MPROPF}	{STOCK_MODEL}
+*	sha	{BOOT}/boot_a.img	{BOOT_SHA}
+*	sha	{BOOT}/boot_b.img	{BOOT_SHA}
+*	run	x50_kconfig.py	{BOOT}/boot_a.img	{BOOT}/boot_b.img	--need	CONFIG_USERFAULTFD=y	>kconfig.log
+*	base_mount
+*	base_line	system/product/etc/build.prop	ro.z9x.build_id={BASE_BUILD_ID}
+*	base_prefix	system/build.prop	ro.build.display.id=Lumen OS 1.0.9 (
+# the tree: root copy, removals, the platform set on the model's keys, otacerts without a certificate, props
+!image	copy_base
+!image	remove	remove.txt	{root}
+!image	base_signed	stage/base_signed	{mb}	{root}	keep	system/framework/framework-res.apk	system/etc/selinux/plat_mac_permissions.xml	system/apex/com.android.permission.apex
+!image	zip_empty	{sys}/etc/security/otacerts.zip
+!image	run_root	x50_props.py	apply	{in}/{PROPF}	{in}/{MPROPF}	{sys}/build.prop	{sys}/product/etc/build.prop	{v}	{bid}
+# network adb (test images only), the X50 blobs reader with the eye-protection drawer and its placeholders
+test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
+!image	place	x50_blobs.rc	{sys}/etc/init/x50_blobs.rc	0644	0	0	{LABEL}
+!image	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
+!image	place	x50_blobs.sh	{sys}/etc/z9x/x50_blobs.sh	0755	0	0	{LABEL}
+!image	place	x50_blobs_allow.txt	{sys}/etc/z9x/x50_blobs_allow.txt	0644	0	0	{LABEL}
+!image	place	blobs_stock_dsu.sh	{sys}/etc/z9x/blobs_stock_dsu.sh	0644	0	0	{LABEL}
+!image	place	-	{sys}/bin/nativeui	0755	0	2000	u:object_r:nativeui_main_exec:s0
+!image	place	-	{sys}/lib64/xgimi.hardware.gmpf-V1-ndk.so	0644	0	0	u:object_r:system_lib_file:s0
+# the eye-follow fail-safe (persistent system app), the power keys and their framework RRO
+!image	mkdir	0755	{sys}/app/X50EyeGuard
+!image	label	{sys}/app/X50EyeGuard	{LABEL}
+!image	place	stage/X50EyeGuard.apk	{sys}/app/X50EyeGuard/X50EyeGuard.apk	0644	0	0	{LABEL}
+!image	run_root	x50_power_keys.py	apply	{sys}/product/usr/keylayout
+!image	place	stage/X50PowerOverlay.apk	{sys}/product/overlay/X50PowerOverlay.apk	0644	0	0	{LABEL}
+# Lumen Home and the HDMI input of this tree over the base's (their oat files were compiled for the base APKs)
+!image	place	stage/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/priv-app/Z9xHome/oat
+!image	place	stage/X50TvInput.apk	{sys}/app/Z9xTvInput/Z9xTvInput.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/app/Z9xTvInput/oat
+!image	run_root	x50_diag.py	apply	{sys}/etc/xgimi/z9x_diag.sh
+# install from a DSU try: the app, its init rc and its root script
+!image	mkdir	0755	{sys}/priv-app/LumenDsuInstall
+!image	label	{sys}/priv-app/LumenDsuInstall	{LABEL}
+!image	mkdir	0755	{sys}/etc/lumen
+!image	label	{sys}/etc/lumen	{LABEL}
+!image	place	stage/LumenDsuInstall.apk	{sys}/priv-app/LumenDsuInstall/LumenDsuInstall.apk	0644	0	0	{LABEL}
+!image	place	lumen_dsu_install.rc	{sys}/etc/init/lumen_dsu_install.rc	0644	0	0	{LABEL}
+!image	place	lumen_dsu_install.sh	{sys}/etc/lumen/lumen_dsu_install.sh	0755	0	0	{LABEL}
+# the projector menu with the remote pairing
+!image	mkdir	0755	{sys}/priv-app/X50Projector
+!image	label	{sys}/priv-app/X50Projector	{LABEL}
+!image	place	stage/X50Projector.apk	{sys}/priv-app/X50Projector/X50Projector.apk	0644	0	0	{LABEL}
+!image	place	x50-projector.xml	{sys}/product/etc/default-permissions/x50-projector.xml	0644	0	0	{LABEL}
+# the staged tree against the base
+!image	run_root	verify_tree_x50.py	{mb}	{root}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	>verify_stage.log
+!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	public={public}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}	inputs_sha256=@catsha(base.sha256,remove.txt,{PROPF},{MPROPF},x50_props.py,x50_netadb.rc,verify_tree_x50.py,x50_blobs.sh,x50_blobs.rc,x50_blobs_allow.txt,x50_nui.rc,x50_apk_check.py,x50_kconfig.py,x50_power_keys.py,x50_perm_pkgs.py,apkinfo.py,x50_diag.py,blobs_stock_dsu.sh,lumen_dsu_install.rc,lumen_dsu_install.sh,x50-projector.xml,stage/X50EyeGuard.apk,stage/X50PowerOverlay.apk,stage/LumenDsuInstall.apk,stage/X50Projector.apk,stage/Z9xHome.apk,stage/X50TvInput.apk,stage/base_signed/base_signed.tsv)	kernel=boot_a,boot_b {BOOT_SHA} CONFIG_USERFAULTFD=y	art_gc=@first({t}/verify_stage.log,verify_tree_x50: ART )	blobs_set=@first(x50_blobs_allow.txt,set=)	app=system/app/X50EyeGuard/X50EyeGuard.apk @sha(stage/X50EyeGuard.apk)	overlay=system/product/overlay/X50PowerOverlay.apk @sha(stage/X50PowerOverlay.apk)	dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk @sha(stage/LumenDsuInstall.apk)	menu=system/priv-app/X50Projector/X50Projector.apk @sha(stage/X50Projector.apk)	home=system/priv-app/Z9xHome/Z9xHome.apk @sha(stage/Z9xHome.apk)	tvinput=system/app/Z9xTvInput/Z9xTvInput.apk @sha(stage/X50TvInput.apk)	platform_set={codename} @sha(stage/base_signed/base_signed.tsv)
+!image	echo	stage: OK {t}/STAGE_INFO.txt
+stage	stop
+# the image: 4 KiB blocks, lz4hc, no inline data (erofs_kcheck.py), one time for every file, a UUID from TAG,
+# the build id and the base sha256
+*	line	{t}/STAGE_INFO.txt	bid={bid}
+*	pack	{root}
+*	run	erofs_kcheck.py	{img}	>kcheck.log
+*	mount_image
+*	run_root	verify_tree_x50.py	{mb}	{mn}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	>verify.log
+# group_oem_a holds 4613734400 bytes; the system stays under 2.5 GB with room for z9x_blobs and z9x_gapps
+*	budget	2500000000
+*	sha256
+*	info	BUILD_INFO.txt	@file({t}/STAGE_INFO.txt)	image=system_{tag}.img	size={size}	sha256={sha256}	budget=2500000000	source_date_epoch={ts}	uuid={uuid}	mkfs={pack_tool}/mkfs.erofs -b4096 -zlz4hc -E noinline_data

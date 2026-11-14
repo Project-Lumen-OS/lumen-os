@@ -18,10 +18,15 @@ Output: the head lines, the base header line, then every row sorted by service a
 stock-dump generators). A new AIDL model is one delta file (RS30: X50 + 29 codes).
 
   gen_codes.py [--check]              every device with a delta: regenerate its hal_codes file, or (--check, the
-                                      default) compare byte for byte and exit 1 on a difference
-  gen_codes.py --write                write the generated tables
+                                      default) compare byte for byte and exit 1 on a difference; then the same for
+                                      every HalCodes class (java below)
+  gen_codes.py --write                write the generated tables and HalCodes classes
   gen_codes.py bootstrap OUT_DIR      derive base.tsv and the deltas from the current full tables (how the split was
                                       made; writes only under OUT_DIR)
+  gen_codes.py java [--check|--write] [--root DIR]
+                                      the named HAL codes (tools/hal/codes_table.py): every devices/<codename>/hal/
+                                      codes.tsv writes, for each of its java lines, the HalCodes class of that app (one
+                                      constant per row naming the app); --check (default) compares byte for byte
 Exit 0 green, 1 red, 2 usage.
 """
 import os
@@ -126,7 +131,45 @@ def aidl_devices_or_registry():
     return out
 
 
+def java(argv):
+    root = ROOT
+    if "--root" in argv:
+        i = argv.index("--root")
+        root, argv = os.path.abspath(argv[i + 1]), argv[:i] + argv[i + 2:]
+    if argv not in ([], ["--check"], ["--write"]):
+        print(__doc__)
+        return 2
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import codes_table  # noqa: E402
+    try:
+        gens = codes_table.generated(root)
+    except codes_table.TableError as e:
+        print("gen_codes: ERROR %s" % e)
+        return 1
+    bad = 0
+    for c, app, path, text in gens:
+        rel = os.path.relpath(path, root)
+        old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
+        n = text.count("static final int ")
+        if old == text:
+            print("gen_codes: %s: %s = devices/%s/hal/codes.tsv (%d codes of %s)" % (c, rel, c, n, app))
+        elif argv == ["--write"]:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            open(path, "w", encoding="utf-8").write(text)
+            print("gen_codes: %s: wrote %s (%d codes of %s)" % (c, rel, n, app))
+        else:
+            print("gen_codes: %s: %s is %s devices/%s/hal/codes.tsv" % (c, rel, "missing, not generated from" if old is None
+                                                                          else "NOT generated from", c))
+            bad = 1
+    if not gens:
+        print("gen_codes: ERROR no devices/<codename>/hal/codes.tsv with a java line")
+        return 1
+    return bad
+
+
 def main(argv):
+    if argv[:1] == ["java"]:
+        return java(argv[1:])
     if argv[:1] == ["bootstrap"] and len(argv) == 2:
         bootstrap(os.path.abspath(argv[1]))
         return 0
@@ -156,7 +199,7 @@ def main(argv):
     if not devs:
         print("gen_codes: ERROR no device has devices/<codename>/hal/codes.delta.tsv")
         return 1
-    return bad
+    return bad | java(["--write"] if write else ["--check"])
 
 
 if __name__ == "__main__":

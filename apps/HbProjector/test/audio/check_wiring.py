@@ -51,25 +51,25 @@ ok("apply asks the jack step before resolving the device", 0 <= i_step < i_conn 
 ok("apply returns after connecting (devices added evaluates again)",
    re.search(r"HbWiredJack\.connect\(am, true, why\);\s*return;", ap) is not None)
 ok("apply: Auto leaves the jack via the speaker", "HbAudioRules.speakerBeforeDisconnect(k.name(), jack)" in ap
-   and 'find(am, Kind.SPEAKER, "")' in ap)
+   and 'find(am, AudioOutputKind.SPEAKER, "")' in ap)
 i_set = ap.find("am.setPreferredDeviceForStrategy(media, want)")
 i_rm = ap.rfind("HbWiredJack.connect(am, false, why)")
 ok("apply removes the jack after the new preferred device", 0 <= i_set < i_rm)
 dnull = body(ap, "if (d == null) {")
 ok("apply removes the jack also when nothing is preferred (choice not connected, role removed)",
-   re.search(r"WiredStep\.DISCONNECT\) HbWiredJack\.connect\(am, false, why\);\s*return;\s*\}$", dnull) is not None)
+   re.search(r"WiredOutputStep\.DISCONNECT\) HbWiredJack\.connect\(am, false, why\);\s*return;\s*\}$", dnull) is not None)
 seg = ap[ap.find("AudioDeviceAttributes want = new AudioDeviceAttributes(d);"):i_set]
 ok("apply removes the jack before the new route only in the already-set branch",
    seg.count("HbWiredJack.connect(am, false, why)") == 1 and seg.count("return;") == 1)
 ok("apply removes the jack when the preferred device was already set",
-   re.search(r"already set\s*if \(jack == HbAudioRules\.WiredStep\.DISCONNECT\) HbWiredJack\.connect\(am, false, why\);", ap) is not None)
+   re.search(r"already set\s*if \(jack == WiredOutputStep\.DISCONNECT\) HbWiredJack\.connect\(am, false, why\);", ap) is not None)
 
 # ---- HbWiredJack: the AOSP wired connection of a headphone output
 cn = body(jack, "static boolean connect(")
 ok("jack connects TYPE_WIRED_HEADPHONES as an output", "AudioDeviceInfo.TYPE_WIRED_HEADPHONES" in cn and "ROLE_OUTPUT" in cn)
 ok("jack uses setWiredDeviceConnectionState(on ? 1 : 0)", "am.setWiredDeviceConnectionState(jack, on ? 1 : 0)" in cn)
 ok("jack remembers its own connection", "sOurs = on;" in cn)
-st = body(jack, "static HbAudioRules.WiredStep step(")
+st = body(jack, "static WiredOutputStep step(")
 ok("jack step from the rules with listed + ours", "HbAudioRules.wiredStep(chosen.name(), listed(am), sOurs)" in st)
 ok("jack listed covers headphones and headset", "TYPE_WIRED_HEADPHONES" in jack and "TYPE_WIRED_HEADSET" in body(jack, "static boolean listed("))
 
@@ -81,7 +81,7 @@ ok("halSink: speaker sink after the jack or Bluetooth", "HbAudioRules.speakerSin
    and "HdmiVolume.selectSpeakerSink(" in hs)
 ok("halSink: Bluetooth branch kept first", hs.find("BT_A2DP.wire) {") < hs.find("storeHeadphoneBeforeEnd"))
 ok("install posts HbHeadphoneVolume.install", "HbHeadphoneVolume.install(sApp)" in apr)
-ok("WIRED still maps to path 4", re.search(r"TYPE_WIRED_HEADPHONES:\s*return GmpfClient\.AudioPath\.WIRED;", apr) is not None)
+ok("WIRED still maps to path 4", re.search(r"TYPE_WIRED_HEADPHONES:\s*return AudioPath\.WIRED;", apr) is not None)
 
 # ---- HbHeadphoneVolume
 sel = body(hp, "static void selectSink(")

@@ -5,7 +5,8 @@
 #   sh devices/g0111/test/x50_kconfig_test.sh
 # Cases: header v2 and v4 with CONFIG_USERFAULTFD=y pass; a gzip kernel passes; '# ... is not set', =m, the option
 # absent, no in-kernel configuration, a broken end mark, no ANDROID! magic, an unknown kernel format and a kernel
-# that runs past the file fail; two images where the second fails, fail; a bad --need is refused.
+# that runs past the file fail; two images where the second fails, fail; a bad --need is refused; a dump's .gz copy
+# of a boot image is read through gzip.
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
 K=$G/devices/g0111/image/x50_kconfig.py
@@ -47,6 +48,8 @@ cases = {
 for n, b in cases.items():
     open("%s/%s.img" % (W, n), "wb").write(b)
 open(W + "/no_magic.img", "wb").write(b"NOTANDROID" + bytes(5000))
+open(W + "/dump_y.img.gz", "wb").write(gzip.compress(cases["v4_y"]))
+open(W + "/dump_not_set.img.gz", "wb").write(gzip.compress(cases["not_set"]))
 PY
 PASS=0; FAIL=0
 t() {  # name want-rc text args...
@@ -73,6 +76,8 @@ t short 1 "out of the file" "$W/short.img" $N
 t second_bad 1 "FAILED (1)" "$W/v2_y.img" "$W/not_set.img" $N
 t bad_need 1 "--need wants CONFIG_X=VALUE" "$W/v2_y.img" --need USERFAULTFD
 t no_need 1 "usage:" "$W/v2_y.img"
+t dump_gz 0 "header v4, raw arm64 Image" "$W/dump_y.img.gz" $N
+t dump_gz_not_set 1 "CONFIG_USERFAULTFD=n NOT y" "$W/dump_not_set.img.gz" $N
 }
 echo "x50_kconfig_test: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

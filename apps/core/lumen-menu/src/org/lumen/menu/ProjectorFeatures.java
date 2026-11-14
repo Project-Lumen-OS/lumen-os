@@ -9,24 +9,25 @@ import java.util.function.Consumer;
  * device implements it with that device's own HAL calls (Z9X HIDL IGmpf/IGmpf2, HB and X50 AIDL gmpf through
  * lumen-hal); the menu never calls a HAL itself and never asks which projector it runs on.
  *
- * <p>Values cross this interface as text: a toggle is {@code "on"} / {@code "off"}, a choice is one option token of
+ * <p>Features cross this interface as {@link FeatureId} (a picture slider is its own id, e.g.
+ * {@link FeatureId#PQ_CONTRAST}); values as text: a toggle is {@code "on"} / {@code "off"}, a choice is one option token of
  * the profile (devices/&lt;c&gt;/menu.json, {@code "options"}), a slider is a decimal number. The adapter maps tokens to
  * its own wire values. Threads: {@link #ready()}, {@link #open} and the rule hooks run on the main thread;
  * {@link #read}, {@link #set} and {@link #run} return at once and call back on the main thread when the device
  * answered.
  *
  * <p>v3: the stock rules of a device reach the shared menu through the default hooks
- * {@link #blocked}, {@link #confirm}, {@link #setConfirmed}, {@link #available}, {@link #setupDone} and
+ * {@link #blocked}, {@link #blockedPage}, {@link #confirm}, {@link #setConfirmed}, {@link #available}, {@link #setupDone} and
  * {@link #footer}, and through the runtime parts of {@link MenuState} (hidden rows, option subsets, labels, tile
  * values, notes). Every hook has a neutral default, so an adapter only implements the rules its stock has.
  */
 public interface ProjectorFeatures {
 
     /**
-     * Every feature id ({@link Feature}) this adapter reads, writes, runs or opens. It must contain every feature of
+     * Every feature ({@link FeatureId}) this adapter reads, writes, runs or opens. It must contain every feature of
      * the device's profile; the menu shows nothing the adapter does not implement (MenuProfile.check).
      */
-    Set<String> implemented();
+    Set<FeatureId> implemented();
 
     /** True when the device link answers right now (cheap, main thread). False: the menu shows "not ready". */
     boolean ready();
@@ -42,26 +43,34 @@ public interface ProjectorFeatures {
      * number (SLIDER). The result carries the read-back state; a refusal names the reason (a string resource name of
      * the app or of lumen-menu) so the menu can show it.
      */
-    void set(String feature, String value, Consumer<Result> cb);
+    void set(FeatureId feature, String value, Consumer<Result> cb);
 
     /** Runs a one-shot action (kind ACTION: Auto keystone now, Autofocus now, picture reset, ...). */
-    void run(String action, Consumer<Result> cb);
+    void run(FeatureId action, Consumer<Result> cb);
 
     /**
      * Opens a device screen (kind SCREEN: manual keystone corners, manual focus, optical zoom, picture expert page,
      * ...) that replaces the menu. {@code back} brings the menu back on BACK. False when it cannot open now.
      */
-    boolean open(String screen, Runnable back);
+    boolean open(FeatureId screen, Runnable back);
 
     // ================================================================== v3 hooks (all optional)
 
     /**
      * The stock refusal of a press BEFORE anything moves (main thread, from the last read {@code now}, which may be
-     * null): a slider step that stock does not allow in this state (3D, a running game), a section page that stock
-     * refuses (the game page off HDMI), a row whose press stock answers with a note. {@code value} is the wanted
-     * value, or null for a slider step, a section page ({@link MenuSpec} section id) or a screen. Null = allowed.
+     * null): a slider step that stock does not allow in this state (3D, a running game), a row whose press stock
+     * answers with a note. {@code value} is the wanted value, or null for a slider step or a screen. Null = allowed.
      */
-    default Note blocked(String feature, String value, MenuState now) { return null; }
+    default Note blocked(FeatureId feature, String value, MenuState now) { return null; }
+
+    /**
+     * The stock refusal of a whole section page ({@link MenuSpec} section id: the game page off HDMI), or null. By
+     * default the refusal of the feature of the same name (the eye and lamp pages), else allowed.
+     */
+    default Note blockedPage(String section, MenuState now) {
+        FeatureId f = FeatureId.known(section);
+        return f == null ? null : blocked(f, null, now);
+    }
 
     /**
      * The stock question before {@code value} is written or the action runs (main thread), or null. When the user
@@ -69,20 +78,20 @@ public interface ProjectorFeatures {
      * A question that needs the device first (e.g. "is the keystone the full frame?") is asked by returning
      * {@link Result#ask} from {@link #set} instead.
      */
-    default Confirm confirm(String feature, String value, MenuState now) { return null; }
+    default Confirm confirm(FeatureId feature, String value, MenuState now) { return null; }
 
     /** {@link #set} after the user answered yes to {@link #confirm} or to a {@link Result#ask}. */
-    default void setConfirmed(String feature, String value, Consumer<Result> cb) { set(feature, value, cb); }
+    default void setConfirmed(FeatureId feature, String value, Consumer<Result> cb) { set(feature, value, cb); }
 
     /** {@link #run} after the user answered yes to {@link #confirm}. */
-    default void runConfirmed(String action, Consumer<Result> cb) { run(action, cb); }
+    default void runConfirmed(FeatureId action, Consumer<Result> cb) { run(action, cb); }
 
     /**
      * Whether a feature of the profile is usable on this unit (main thread, cheap), asked when the menu is built: the
      * home screen choice only when it can switch, the fit page only where a fit device is supported. False: no row,
      * no tile (never a disabled one).
      */
-    default boolean available(String feature) { return true; }
+    default boolean available(FeatureId feature) { return true; }
 
     /**
      * False while the first-run setup runs: the menu then refuses everything that leaves it for another screen
@@ -175,9 +184,7 @@ public interface ProjectorFeatures {
 
     /** Outcome of {@link #set} and {@link #run}. */
     final class Result {
-        public enum Kind { DONE, REFUSED, FAILED, NOT_READY, ASK }
-
-        public final Kind kind;
+        public final ResultKind kind;
         /** For REFUSED: the string resource name of the note to show (null: no note). */
         public final String reason;
         /** The state read back after the write (null when nothing could be read). */
@@ -187,9 +194,9 @@ public interface ProjectorFeatures {
         /** For ASK: the question; yes calls {@link #setConfirmed}. */
         public final Confirm confirm;
 
-        public Result(Kind kind, String reason, MenuState after) { this(kind, reason, after, null, null); }
+        public Result(ResultKind kind, String reason, MenuState after) { this(kind, reason, after, null, null); }
 
-        private Result(Kind kind, String reason, MenuState after, Note note, Confirm confirm) {
+        private Result(ResultKind kind, String reason, MenuState after, Note note, Confirm confirm) {
             this.kind = kind;
             this.reason = reason;
             this.after = after;
@@ -197,18 +204,18 @@ public interface ProjectorFeatures {
             this.confirm = confirm;
         }
 
-        public static Result done(MenuState after) { return new Result(Kind.DONE, null, after); }
+        public static Result done(MenuState after) { return new Result(ResultKind.DONE, null, after); }
         /** Done, and the menu shows {@code note} (what the change did, as stock tells it). */
-        public static Result done(MenuState after, Note note) { return new Result(Kind.DONE, null, after, note, null); }
-        public static Result refused(String reason, MenuState after) { return new Result(Kind.REFUSED, reason, after); }
+        public static Result done(MenuState after, Note note) { return new Result(ResultKind.DONE, null, after, note, null); }
+        public static Result refused(String reason, MenuState after) { return new Result(ResultKind.REFUSED, reason, after); }
         /** Refused with a formatted or titled note (stock notes with arguments). */
         public static Result refusedWith(Note note, MenuState after) {
-            return new Result(Kind.REFUSED, note == null ? null : note.res, after, note, null);
+            return new Result(ResultKind.REFUSED, note == null ? null : note.res, after, note, null);
         }
-        public static Result failed(MenuState after) { return new Result(Kind.FAILED, null, after); }
-        public static Result notReady() { return new Result(Kind.NOT_READY, null, null); }
+        public static Result failed(MenuState after) { return new Result(ResultKind.FAILED, null, after); }
+        public static Result notReady() { return new Result(ResultKind.NOT_READY, null, null); }
         /** Ask {@code c} first (a question that needed the device); yes calls {@link #setConfirmed}. */
-        public static Result ask(Confirm c, MenuState after) { return new Result(Kind.ASK, null, after, null, c); }
+        public static Result ask(Confirm c, MenuState after) { return new Result(ResultKind.ASK, null, after, null, c); }
 
         /** The same outcome with another read-back. */
         public Result with(MenuState after) { return new Result(kind, reason, after, note, confirm); }

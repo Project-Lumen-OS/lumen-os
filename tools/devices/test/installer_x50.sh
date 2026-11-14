@@ -52,6 +52,19 @@ XFAM=$(conf "$X" FAMILY); XKEEP=$(conf "$X" KEEP); XWIPE=$(conf "$X" WIPE_PARTS)
 XWFS=$(conf "$X" WIPE_FS)
 ZNAME=$(conf z9x NAME); ZMODEL=$(conf z9x MODEL); ZBOARD=$(conf z9x BOARD); ZFW=$(conf z9x VENDOR_OK | awk '{print $1}')
 ZVP=$(conf z9x VERSION_PROP)
+# the RS30 Ultra Max (installer_id of the devices/ entry whose models name it): a profile that is not finished (TODO)
+RREG=""
+for f in "$G"/devices/*/device.conf; do grep -qx 'abi=arm32' "$f" && grep -qx 'family=horse_popular' "$f" && { RREG=$f; break; }; done
+RID=$(sed -n 's/^installer_id=//p' "$RREG"); RNAME=$(conf "$RID" NAME); RMODEL=$(conf "$RID" MODEL)
+RBOARD=$(conf "$RID" BOARD); RFW=$(conf "$RID" VENDOR_OK | awk '{print $1}'); RTOK=$(conf "$RID" IMAGE_TOKEN)
+RCERT=$(conf "$RID" CERT); RLP=$(conf "$RID" LUMEN_PROP)
+[ -n "$RID" ] && [ -n "$RNAME" ] && [ "$(conf "$RID" ABI)" = arm32 ] && conf "$RID" SYSTEM_MAX | grep -q '^TODO' \
+  || { echo "lib/devices.conf has no unfinished arm32 profile of the horse_popular family"; exit 1; }
+# the X50 Ultra Max (devices/g0100): the X50 Ultra's firmware and board, no profile of its own (trial only)
+MREG=$G/devices/g0100/device.conf
+MID=$(sed -n 's/^installer_id=//p' "$MREG"); MMODEL=$(sed -n 's/^models=//p' "$MREG" | awk '{print $1}')
+MBOARD=$(sed -n 's/^hardware=//p' "$MREG")
+[ -n "$MID" ] && [ -n "$MMODEL" ] && [ "$MBOARD" = "$XBOARD" ] || { echo "devices/g0100 is not an X50 Ultra Max entry"; exit 1; }
 [ "$XFAM" = z9x ] || { echo "the $X profile is not on the Z9X's product image (FAMILY '$XFAM')"; exit 1; }
 FBP=$(conf "$XFAM" FB_PRODUCT)
 [ -z "$(conf "$X" FB_PRODUCT)" ] || { echo "the $X profile names an FB_PRODUCT of its own"; exit 1; }
@@ -216,6 +229,8 @@ begin() {
   case "$2" in
     z9x) printf '%s\n' "ro.boot.xgimi.modelname=$ZMODEL" "ro.boot.hardware=$ZBOARD" "ro.vendor.build.version.incremental=$ZFW" ;;
     x50) printf '%s\n' "ro.boot.xgimi.modelname=$XMODEL" "ro.boot.hardware=$XBOARD" "ro.vendor.build.version.incremental=$XFW" ;;
+    x50max) printf '%s\n' "ro.boot.xgimi.modelname=$MMODEL" "ro.boot.hardware=$MBOARD" "ro.vendor.build.version.incremental=$XFW" ;;
+    rs30) printf '%s\n' "ro.boot.xgimi.modelname=$RMODEL" "ro.boot.hardware=$RBOARD" "ro.vendor.build.version.incremental=$RFW" ;;
   esac > "$FB/props"
   printf '%s\n' "ro.serialno=$SER" "ro.boot.slot_suffix=_$XSL" ro.virtual_ab.enabled=true ro.build.type=user ro.debuggable=0 \
     sys.boot_completed=1 >> "$FB/props"
@@ -377,7 +392,7 @@ z9x_download z
 # shellcheck disable=SC2086
 content $ZPROPS_IMG
 inst '' check
-expect_rc 0; expect_out "check passed; nothing was written"; expect_out "$ZNAME $SER"
+expect_rc 0; expect_out "check passed. Nothing was written"; expect_out "$ZNAME $SER"
 no_fastboot; reads_only
 end
 
@@ -388,7 +403,7 @@ x50_download x
 content $XPROPS_IMG
 inst '' --ip "$ADDR" check
 expect_rc 0; expect_out "$XNAME $SER ($ADDR)"; expect_out "SHA256SUMS signature: Lumen OS key for the $XNAME"
-expect_out "image: Lumen OS $VER for the $XNAME"; expect_out "check passed; nothing was written"
+expect_out "image: Lumen OS $VER for the $XNAME"; expect_out "check passed. Nothing was written"
 no_fastboot; reads_only
 end
 
@@ -410,7 +425,7 @@ for k in $XKEEP; do grep -q "^${k}_$XSL [1-9]" "$FB/parts" || fail "${k}_$XSL is
 expect_out "Slot $XOSL of the $XNAME holds no system (system_$XOSL is empty, as XGIMI ships it)."
 expect_out "(slot-unbootable:$XOSL 'no', slot-retry-count:$XOSL '3')"
 expect_out "Write slot $XSL anyway?"
-expect_out "slot $XSL stays the one that starts (current-slot $XSL, not unbootable); slot $XOSL was not touched"
+expect_out "slot $XSL stays the one that starts (current-slot $XSL, not unbootable). Slot $XOSL was not touched"
 expect_out "Slot $XSL starts Lumen OS. Slot $XOSL still holds no system, and the installer did not switch slots."
 expect_out "wiping data (format:$XWFS $XWIPE)"
 for p in $XWIPE; do [ -e "$FB/formatted_$p" ] || fail "$p was not formatted"; done
@@ -437,7 +452,7 @@ x50_download x
 content $XPROPS_IMG
 sed -i.bak "s/^system_$XOSL .*/system_$XOSL 942546944/" "$FB/parts"
 inst 'ERASE\n\n' --ip "$ADDR" flash
-expect_rc 0; expect_out "slot $XOSL: system_$XOSL holds a system (898 MB); it stays as it is"
+expect_rc 0; expect_out "slot $XOSL: system_$XOSL holds a system (898 MB). It stays as it is"
 expect_no_out "anyway?"; expect_no_out "still holds no system"
 expect_out "slot $XSL stays the one that starts"
 grep -q "^system_$XOSL 942546944$" "$FB/parts" || fail "system_$XOSL changed"
@@ -560,6 +575,80 @@ inst '' --device "$X" stick "$C"
 expect_rc 1; expect_out "'stick' is not available for the $XNAME yet. Nothing was done."
 grep -qvx version "$FB/adb.log" && fail "adb was used: $(tr '\n' ';' < "$FB/adb.log")"
 no_fastboot
+end
+
+# ---------------------------------------------------------------- the X50 Ultra Max: no installer profile, refused
+begin x50max_on_x50_download x50max net
+x50_download x
+inst '' --ip "$ADDR" check
+expect_rc 1; expect_out "'$MMODEL'"
+expect_no_out "check passed"; no_fastboot; reads_only
+end
+
+begin x50max_on_z9x_download x50max usb
+z9x_download z
+inst '' check
+expect_rc 1; expect_out "'$MMODEL'"
+expect_no_out "check passed"; no_fastboot; reads_only
+end
+
+begin x50max_device_option x50max net
+inst '' --device "$MID" check
+expect_rc 1; expect_out "--device"
+grep -qvx version "$FB/adb.log" && fail "adb was used: $(tr '\n' ';' < "$FB/adb.log")"
+no_fastboot
+end
+
+# ---------------------------------------------------------------- the RS30 Ultra Max: a profile that is not finished
+rs30_download() {  # the RS30 download: release.conf of its id, its image signed with the test key x as its CERT
+  printf 'DEVICE=%s\nVERSION=%s\n' "$RID" "$VER" > "$C/inst/release.conf"
+  cp "$W/keys/x.pem" "$C/inst/$RCERT"
+  mkimg "$C/inst/lumen-os-$RTOK-$VER-nogms-system.img"; sign "$C/inst" x
+}
+RPROPS_IMG="$RLP ro.z9x.gms=0 $XVP=$VER ro.adb.secure=1"
+RPROPS_IMG=$(printf '%s' "$RPROPS_IMG" | sed 's/ /=/')
+
+begin rs30_flash_refused rs30 net
+rs30_download
+inst '' --device "$RID" --ip "$ADDR" flash
+expect_rc 1; expect_out "Lumen OS for the $RNAME cannot be installed from a computer yet. Nothing was written."
+grep -qvx version "$FB/adb.log" && fail "adb was used: $(tr '\n' ';' < "$FB/adb.log")"
+no_fastboot
+end
+
+begin rs30_all_refused rs30 net
+rs30_download
+inst 'y\ny\ny\n' --device "$RID" --ip "$ADDR"
+expect_rc 1; expect_out "cannot be installed from a computer yet"
+grep -qvx version "$FB/adb.log" && fail "adb was used: $(tr '\n' ';' < "$FB/adb.log")"
+no_fastboot
+end
+
+begin rs30_check_reads_then_stops rs30 net
+rs30_download
+# shellcheck disable=SC2086
+content $RPROPS_IMG ro.system.product.cpu.abilist=armeabi-v7a,armeabi
+inst '' --device "$RID" --ip "$ADDR" check
+expect_rc 1; expect_out "$RNAME $SER ($ADDR)"; expect_out "image: Lumen OS $VER for the $RNAME"
+expect_out "cannot be installed from a computer yet"
+expect_no_out "check passed"; no_fastboot; reads_only
+[ ! -s "$C/state/$RID/state" ] || ! grep -q '^step_check=done' "$C/state/$RID/state" || fail "the check was kept as a step done"
+end
+
+begin rs30_arm64_image_refused rs30 net
+rs30_download
+# shellcheck disable=SC2086
+content $RPROPS_IMG ro.system.product.cpu.abilist=arm64-v8a,armeabi-v7a,armeabi
+inst '' --device "$RID" --ip "$ADDR" check
+expect_rc 1; expect_out "The file lumen-os-$RTOK-$VER-nogms-system.img does not fit the $RNAME. The projector would not start with it."
+expect_no_out "check passed"; no_fastboot; reads_only
+end
+
+begin rs30_unit_given_x50_download rs30 net
+x50_download x
+inst '' --ip "$ADDR" check
+expect_rc 1; expect_out "It is an $RNAME. Lumen OS for it is not ready yet."
+expect_no_out "check passed"; no_fastboot; reads_only
 end
 
 echo "installer x50 / z9x separation: $PASS passed, $FAIL failed"

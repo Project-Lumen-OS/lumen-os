@@ -1,8 +1,9 @@
 #!/bin/sh
 # x50_power_keys_test.sh: host tests of the X50 power key (devices/g0111/README.md, "Power key"):
-# devices/g0111/image/x50_power_keys.py on copies of the base's key layouts (overlay/v1/keylayout = the Z9X 1.0.9
-# image's /system/product/usr/keylayout), its check against mutants, and the RRO apps/X50PowerOverlay (values,
-# priority, global keys). Optional: BUILD=1 also builds the RRO with the test key (apps/build_apk.sh).
+# devices/g0111/image/x50_power_keys.py on copies of the base's key layouts (devices/g0111/test/base109_keylayout = the
+# published Z9X 1.0.9 image's /system/product/usr/keylayout, the pinned base; overlay/v1/keylayout = a later base with
+# the shared gear-hold fix), its check against mutants, and the RRO apps/X50PowerOverlay (values, priority, global
+# keys). Optional: BUILD=1 also builds the RRO with the test key (apps/build_apk.sh).
 #   sh devices/g0111/test/x50_power_keys_test.sh
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -17,7 +18,10 @@ ok() { pass=$((pass + 1)); echo "ok   $1"; }
 no() { fail=$((fail + 1)); echo "FAIL $1"; }
 t() { name=$1; shift; if "$@" >"$T/out" 2>&1; then ok "$name"; else no "$name"; sed 's/^/     /' "$T/out"; fi; }
 f() { name=$1; shift; if "$@" >"$T/out" 2>&1; then no "$name (expected a refusal)"; sed 's/^/     /' "$T/out"; else ok "$name"; fi; }
-fresh() { rm -rf "$T/base" "$T/new"; cp -R "$G/overlay/v1/keylayout" "$T/base"; cp -R "$G/overlay/v1/keylayout" "$T/new"; }
+K109=$G/devices/g0111/test/base109_keylayout
+fresh_from() { rm -rf "$T/base" "$T/new"; mkdir "$T/base" "$T/new"; cp "$1"/*.kl "$T/base/"; cp "$1"/*.kl "$T/new/"; }
+fresh() { fresh_from "$K109"; }
+t "fixture: the 1.0.9 base layouts are the files read from the pinned base image" sh -c "cd '$K109' && shasum -a 256 -c SHA256SUMS >/dev/null && [ \$(ls *.kl | wc -l) = \$(wc -l < SHA256SUMS) ]"
 
 # --- the edit on the real base key layouts
 fresh
@@ -42,21 +46,34 @@ for k in Vendor_000d_Product_3840.kl:64:TV_AUDIO_DESCRIPTION Vendor_000d_Product
   t "t12: $f_ adds stock scancode $sc as $kc" sh -c "grep -Eq '^key $sc $kc  # ' '$T/new/$f_' && ! grep -Eq '^key $sc[[:space:]]' '$T/base/$f_'"
 done
 # the gear held: stock X50 kl 000d:3840 / 3838 / 3843 "key 127 MENU", IR / keypad 3697:0001 / 0002 "key 139 MENU" (the
-# remote sends it once on a hold; stock xhplayer: MENU UP = game menu). The base maps them to the gear hold key; the
-# X50 edit keeps each line byte for byte.
-for k in Vendor_000d_Product_3840.kl:127 Vendor_000d_Product_3838.kl:127 Vendor_000d_Product_3843.kl:127 \
-         Vendor_3697_Product_0001.kl:139 Vendor_3697_Product_0002.kl:139; do
+# remote sends it once on a hold; stock xhplayer: MENU UP = game menu). The 1.0.9 base maps them to ALL_APPS (consumed
+# by the framework); the X50 edit turns exactly those lines into the gear hold key.
+GH="Vendor_000d_Product_3840.kl:127 Vendor_000d_Product_3838.kl:127 Vendor_000d_Product_3843.kl:127 \
+         Vendor_3697_Product_0001.kl:139 Vendor_3697_Product_0002.kl:139"
+for k in $GH; do
   f_=${k%%:*}; sc=${k#*:}
-  t "gear hold: $f_ $sc (stock MENU) is TV_MEDIA_CONTEXT_MENU, the base line kept" sh -c \
-    "grep -E '^key $sc[[:space:]]' '$T/new/$f_' | grep -Eq '^key $sc[[:space:]]+TV_MEDIA_CONTEXT_MENU([[:space:]]|\$)' && [ \"\$(grep -E '^key $sc[[:space:]]' '$T/new/$f_')\" = \"\$(grep -E '^key $sc[[:space:]]' '$T/base/$f_')\" ]"
+  t "gear hold: $f_ $sc (stock MENU) is ALL_APPS in the 1.0.9 base, TV_MEDIA_CONTEXT_MENU after the edit" sh -c \
+    "grep -Eq '^key $sc[[:space:]]+ALL_APPS([[:space:]]|\$)' '$T/base/$f_' && [ \$(grep -Ec '^key $sc[[:space:]]' '$T/new/$f_') = 1 ] && grep -Eq '^key $sc[[:space:]]+TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU \\(gear held\\)' '$T/new/$f_'"
 done
 d=$(diff "$T/base/Vendor_000d_Product_3840.kl" "$T/new/Vendor_000d_Product_3840.kl" | grep -c '^>')
-t "3840: exactly 3 lines changed or added: 113, 64, 88 ($d)" test "$d" = 3
-t "gear hold: no key layout maps a stock MENU scancode to ALL_APPS" sh -c "! sed 's/#.*//' '$T/new'/*.kl | grep -Eq '^key[[:space:]]+(127|139)[[:space:]]+ALL_APPS'"
+t "3840: exactly 4 lines changed or added: 113, 64, 88, 127 ($d)" test "$d" = 4
+t "gear hold: no X50 stock remote layout maps a stock MENU scancode to ALL_APPS" sh -c "cd '$T/new' && ! sed 's/#.*//' Vendor_000d_Product_3840.kl Vendor_000d_Product_3838.kl Vendor_000d_Product_3843.kl Vendor_3697_Product_0001.kl Vendor_3697_Product_0002.kl | grep -Eq '^key[[:space:]]+(127|139)[[:space:]]+ALL_APPS'"
 t "184 (stock DIY shortcut) stays ALL_APPS" sh -c "grep -Eq '^key 184[[:space:]]+ALL_APPS' '$T/new/Vendor_000d_Product_3840.kl'"
 d=$(diff "$T/base/Vendor_3697_Product_0002.kl" "$T/new/Vendor_3697_Product_0002.kl" | grep -c '^>')
-t "keypad: exactly 3 lines changed ($d)" test "$d" = 3
+t "keypad: exactly 4 lines changed: 30, 116, 260, 139 ($d)" test "$d" = 4
 f "apply twice refuses (no STB_POWER left to edit)" pk apply "$T/new"
+
+# --- a later base (overlay/v1/keylayout, the shared gear-hold fix): the gear hold lines are kept byte for byte
+fresh_from "$G/overlay/v1/keylayout"
+t "later base: apply" pk apply "$T/new"
+t "later base: check" pk check "$T/base" "$T/new"
+for k in $GH; do
+  f_=${k%%:*}; sc=${k#*:}
+  t "later base: gear hold $f_ $sc kept as the base has it" sh -c \
+    "grep -Eq '^key $sc[[:space:]]+TV_MEDIA_CONTEXT_MENU([[:space:]]|\$)' '$T/base/$f_' && [ \"\$(grep -E '^key $sc[[:space:]]' '$T/new/$f_')\" = \"\$(grep -E '^key $sc[[:space:]]' '$T/base/$f_')\" ]"
+done
+d=$(diff "$T/base/Vendor_000d_Product_3840.kl" "$T/new/Vendor_000d_Product_3840.kl" | grep -c '^>')
+t "later base: 3840 exactly 3 lines changed or added: 113, 64, 88 ($d)" test "$d" = 3
 
 # --- check refuses every mutant
 fresh; pk apply "$T/new" >/dev/null
@@ -80,12 +97,21 @@ f "check refuses a dropped t12 stock key" pk check "$T/base" "$T/new"
 fresh; pk apply "$T/new" >/dev/null
 sed 's/^key 127        TV_MEDIA_CONTEXT_MENU.*/key 127        ALL_APPS/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
 f "check refuses the gear hold 127 turned into ALL_APPS" pk check "$T/base" "$T/new"
+fresh; pk apply "$T/new" >/dev/null
+sed 's/^key 139        TV_MEDIA_CONTEXT_MENU.*/key 139        ALL_APPS  # XGIMI: MENU (four-diamond key) -> Google TV "Your apps"/' "$T/new/Vendor_3697_Product_0002.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0002.kl"
+f "check refuses the keypad gear hold 139 left as the 1.0.9 base line" pk check "$T/base" "$T/new"
 fresh
-sed 's/^key 127        TV_MEDIA_CONTEXT_MENU.*/key 127        ALL_APPS/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
-f "apply refuses a base where 127 is ALL_APPS (the old base)" pk apply "$T/new"
+sed 's/^key 127        ALL_APPS.*/key 127        HOME/' "$T/new/Vendor_000d_Product_3838.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3838.kl"
+f "apply refuses a base where 127 is neither ALL_APPS nor the gear hold" pk apply "$T/new"
 fresh
+sed 's/^key 139        ALL_APPS.*/key 139        MENU/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+f "apply refuses a base where the IR 139 is MENU" pk apply "$T/new"
+fresh
+echo "key 127        ALL_APPS" >> "$T/new/Vendor_000d_Product_3843.kl"
+f "apply refuses a base with the gear hold scancode twice" pk apply "$T/new"
+fresh_from "$G/overlay/v1/keylayout"
 sed 's/^key 139        TV_MEDIA_CONTEXT_MENU.*/key 139        MENU/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
-f "apply refuses a base where the IR 139 is not the gear hold" pk apply "$T/new"
+f "later base: apply refuses the IR 139 as MENU" pk apply "$T/new"
 fresh
 sed '/^key 127 /d' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
 f "apply refuses a base without scancode 127" pk apply "$T/new"
@@ -143,10 +169,10 @@ assert x["KEYCODE_TV_AUDIO_DESCRIPTION"] == x["KEYCODE_TV_DATA_SERVICE"] == x["K
 assert set(x) == (set(z) - {"KEYCODE_STB_POWER"}) | {"KEYCODE_TV_AUDIO_DESCRIPTION", "KEYCODE_TV_DATA_SERVICE",
                                                     "KEYCODE_TV_MEDIA_CONTEXT_MENU"}, sorted(set(x) ^ set(z))
 PY
-t "registry: g0111 builds X50PowerOverlay; image.conf stages x50_power_keys.py" sh -c \
-  "grep -qE '^apps=(.* )?X50PowerOverlay( .*)?$' '$G/devices/g0111/device.conf' && grep -q 'devices/g0111/image/x50_power_keys.py' '$G/devices/g0111/image.conf'"
+t "registry: g0111 builds X50PowerOverlay; build.conf stages x50_power_keys.py" sh -c \
+  "grep -qE '^apps=(.* )?X50PowerOverlay( .*)?$' '$G/devices/g0111/device.conf' && grep -q 'devices/g0111/image/x50_power_keys.py' '$G/devices/g0111/build.conf'"
 t "compose and verify name the key edit and the RRO" sh -c \
-  "grep -q 'x50_power_keys.py\" apply \"\$R/system/product/usr/keylayout\"' '$G/devices/g0111/image/compose_x50.sh' && grep -q 'system/product/overlay/X50PowerOverlay.apk' '$G/devices/g0111/image/compose_x50.sh' && grep -q '\"system/product/overlay/X50PowerOverlay.apk\": (0, 0, 0o644, SYSF, \"stage/X50PowerOverlay.apk\")' '$G/devices/g0111/image/verify_tree_x50.py'"
+  "grep -qE 'x50_power_keys.py.apply.[{]sys[}]/product/usr/keylayout' '$G/devices/g0111/image/steps.tsv' && grep -q '{sys}/product/overlay/X50PowerOverlay.apk' '$G/devices/g0111/image/steps.tsv' && grep -q '\"system/product/overlay/X50PowerOverlay.apk\": (0, 0, 0o644, SYSF, \"stage/X50PowerOverlay.apk\")' '$G/devices/g0111/image/verify_tree_x50.py'"
 t "nothing outside the X50 names the RRO or the key tool" sh -c \
   "! grep -rlE 'X50PowerOverlay|x50_power_keys' '$G/tools/ota' '$G/tools/play6' '$G/installer' '$G/devices/horse_popular' '$G/devices/goat_elegant' 2>/dev/null | grep -q ."
 

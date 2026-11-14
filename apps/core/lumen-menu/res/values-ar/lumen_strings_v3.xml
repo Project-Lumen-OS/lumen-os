@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">توفير الطاقة</string>
     <string name="lumen_m_ambient_speaker">مكبر الصوت المحيطي</string>
     <string name="lumen_m_ct_custom">مخصصة</string>
+    <string name="lumen_m_lamp_off">إيقاف الصورة</string>
 </resources>

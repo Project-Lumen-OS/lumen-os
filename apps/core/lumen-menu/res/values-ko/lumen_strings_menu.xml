@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">부드럽게</string>
     <string name="lumen_m_pm_isf_day">ISF 주간</string>
     <string name="lumen_m_pm_isf_night">ISF 야간</string>
+    <string name="lumen_m_pm_bright">밝게</string>
     <string name="lumen_m_edid_hdmi_1_4">호환 (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">향상 (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

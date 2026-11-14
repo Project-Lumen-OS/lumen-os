@@ -17,7 +17,7 @@ KEEP=""
 trap 'rm -rf "$OUT"' EXIT
 fail() { echo "FAIL render: $*"; exit 1; }
 MC="$ROOT/apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java"
-grep -q 'static final Set<String> INLINE_RADIOS = set(Feature.PROJECTION_MODE);' "$MC" \
+grep -q 'static final Set<FeatureId> INLINE_RADIOS = set(FeatureId.PROJECTION_MODE);' "$MC" \
   || fail "MenuController.INLINE_RADIOS changed: update NewWalk.INLINE_RADIOS"
 
 # ---- 1.0.10
@@ -37,7 +37,7 @@ else python3 -B "$ROOT/tools/devices/assemble_app.py" --root "$ROOT" --device ho
 PROFILE=${RENDER_PROFILE:-$ROOT/devices/horse_popular/menu.json}
 N="$OUT/tree/src/org/lumen/projector/panel"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/nc" "$OUT/tree/src/org/lumen/menu"/*.java \
-  "$N/Z9xMenuRules.java" "$N/PanelRules.java" "$N/ColorTempRule.java" "$N/SoundState.java" "$N/Lamp3d.java" \
+  "$N/Z9xMenuRules.java" "$N/PanelRules.java" "$N/RefusalReason.java" "$N/ColorTempRule.java" "$N/SoundState.java" "$N/Lamp3d.java" \
   "$N/KstGameLock.java" "$T/WalkLib.java" "$T/NewWalk.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/nc" org.lumen.projector.panel.NewWalk "$PROFILE" \
   "$N/MenuLabels.java" "$OUT/tree/res" "$T/scenarios.json" "$T/probes.json" > "$OUT/new.txt"

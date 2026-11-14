@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/Z9xProjector res/values-kk/strings_stats.xml
+     under the module prefix. -->
+<resources>
+    <string name="lumen_stats_row">Анонимді статистика жіберу</string>
+    <string name="lumen_stats_note">Әр қосылған сайын және күніне бір рет: модель, нұсқа, жинақ, жаңарту туралы мәлімет, ел, кездейсоқ орнату нөмірі және сериялық нөмір (сервер тек оның хэшін сақтайды). IP мекенжайыңыз сақталмайды.</string>
+</resources>

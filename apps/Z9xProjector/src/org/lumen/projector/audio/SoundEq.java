@@ -10,6 +10,8 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.SoundEffect;
+import org.lumen.projector.hal.SoundProcess;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -222,7 +224,7 @@ public final class SoundEq {
             try { dts = g.getDtsEffects(); } catch (Throwable t) { Log.w(TAG, why + ": 43 " + t); }
             try { proc = g.getSoundProcessRaw(); } catch (Throwable t) { Log.w(TAG, why + ": 26 " + t); }
             try { mode = g.getSoundEffectRaw(); } catch (Throwable t) { Log.w(TAG, why + ": 62 " + t); }
-            if (!Boolean.FALSE.equals(dts) || proc == null || proc != GmpfClient.SoundProcess.HARMAN.wire) {
+            if (!Boolean.FALSE.equals(dts) || proc == null || proc != SoundProcess.HARMAN.wire) {
                 Log.i(TAG, why + ": not the AMP (Harman) process (26=" + proc + " 43=" + dts + "): the vendor owns the PEQ, nothing sent");
                 sOnByUs = false;
                 return false;
@@ -276,9 +278,9 @@ public final class SoundEq {
     // ------------------------------------------------------------------ persistence
     /** The sound modes with their own equalizer setting (62 values: AI, Movie, Music, Sports, Karaoke). */
     public static boolean validMode(int mode) {
-        return mode == GmpfClient.SoundEffect.AI.wire || mode == GmpfClient.SoundEffect.MOVIE.wire
-                || mode == GmpfClient.SoundEffect.MUSIC.wire || mode == GmpfClient.SoundEffect.SPORTS.wire
-                || mode == GmpfClient.SoundEffect.KARAOKE.wire;
+        return mode == SoundEffect.AI.wire || mode == SoundEffect.MOVIE.wire
+                || mode == SoundEffect.MUSIC.wire || mode == SoundEffect.SPORTS.wire
+                || mode == SoundEffect.KARAOKE.wire;
     }
 
     private static SharedPreferences prefs(Context app) {

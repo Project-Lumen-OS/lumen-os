@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Log;
 
-import org.lumen.menu.Feature;
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.FeatureKind;
+import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.ProjectorFeatures;
 import org.lumen.projector.home.LauncherSwitcher;
@@ -17,8 +19,10 @@ import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.audio.AudioOutputChoice;
 import org.lumen.projector.game.GameMode;
-import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.Play6Values;
+import org.lumen.projector.hal.PqItem;
 import org.lumen.projector.source.SourceOverlay;
 
 import java.util.Set;
@@ -41,7 +45,7 @@ import java.util.function.Consumer;
  * Values cross as the profile's tokens (Play6MenuGates tables); the menu never sees a code.
  */
 public final class Play6Features implements ProjectorFeatures {
-    private static final String TAG = "P6Menu";
+    static final String TAG = "P6Menu";
     /** Every part the menu shows (KEYSTONE adds only the zoom / rotation probes: their screens check themselves). */
     private static final int PARTS = Play6Snapshot.ROOT | Play6Snapshot.FOCUS | Play6Snapshot.LAMP
             | Play6Snapshot.PICTURE | Play6Snapshot.SOUND | Play6Snapshot.PROJECTION | Play6Snapshot.GAME
@@ -50,30 +54,46 @@ public final class Play6Features implements ProjectorFeatures {
     private static final String KEY_ECO_ON_CONFIRMED = "eco_on_confirmed", KEY_ECO_OFF_CONFIRMED = "eco_off_confirmed";
     private static final String HOME_PKG = "org.lumen.home", HOME_FILES = "org.lumen.home.FilesLauncher";
 
-    private final Context app;
-    private final SharedPreferences prefs;
+    final Context app;
+    final SharedPreferences prefs;
     private final boolean eyeReady;
     /** Last read (main thread). */
     private volatile Play6MenuGates.Read last;
+    private final Play6GeneralRows general;
+    private final Play6PictureRows picture;
+    private final Play6HdmiRows hdmi;
+    private final Play6SoundRows sound;
+    private final Play6ProjectionRows projection;
+    /** The sections a write or an action goes to; each answers {@link Play6Rows#OTHER} / false for another's feature. */
+    private final Play6Rows[] sections;
 
     public Play6Features(Context ctx, boolean eyeReady) {
         app = ctx.getApplicationContext();
         prefs = app.getSharedPreferences(QuickPanel.PREFS, Context.MODE_PRIVATE);
         this.eyeReady = eyeReady;
+        general = new Play6GeneralRows(this);
+        picture = new Play6PictureRows(this);
+        hdmi = new Play6HdmiRows(this);
+        sound = new Play6SoundRows(this);
+        projection = new Play6ProjectionRows(this);
+        sections = new Play6Rows[]{general, new Play6KeystoneRows(this), new Play6FocusRows(this), picture, hdmi, sound,
+                new Play6GameRows(this), projection};
     }
+
+    Play6MenuGates.Read last() { return last; }
 
     // ================================================================== presence and the v3 hooks
 
     @Override
-    public Set<String> implemented() { return Play6MenuGates.implemented(); }
+    public Set<FeatureId> implemented() { return Play6MenuGates.implemented(); }
 
     @Override
     public boolean ready() { return Hal.isReady(); }
 
     @Override
-    public boolean available(String feature) {
+    public boolean available(FeatureId feature) {
         boolean launcher = false;
-        if (Feature.SETTINGS_LAUNCHER.equals(feature)) {
+        if (FeatureId.SETTINGS_LAUNCHER == feature) {
             try {
                 launcher = LauncherSwitcher.choiceAvailable(app);
             } catch (Throwable t) {
@@ -87,18 +107,23 @@ public final class Play6Features implements ProjectorFeatures {
     public boolean setupDone() { return KeyReceiver.isSetupComplete(app); }
 
     @Override
-    public Note blocked(String feature, String value, MenuState now) { return Play6MenuGates.blocked(feature, value, last); }
+    public Note blocked(FeatureId feature, String value, MenuState now) { return Play6MenuGates.blocked(feature, value, last); }
 
     @Override
-    public Confirm confirm(String feature, String value, MenuState now) {
+    public Note blockedPage(String section, MenuState now) {
+        return MenuSpec.GAME.equals(section) ? Play6MenuGates.gamePage(last) : ProjectorFeatures.super.blockedPage(section, now);
+    }
+
+    @Override
+    public Confirm confirm(FeatureId feature, String value, MenuState now) {
         return Play6MenuGates.confirm(feature, value, last, prefs.getBoolean(KEY_ECO_ON_CONFIRMED, false),
                 prefs.getBoolean(KEY_ECO_OFF_CONFIRMED, false));
     }
 
     @Override
-    public void setConfirmed(String feature, String value, Consumer<Result> cb) {
+    public void setConfirmed(FeatureId feature, String value, Consumer<Result> cb) {
         // power saving: stock asks the first time each way only
-        if (Feature.LAMP_ECO.equals(feature)) {
+        if (FeatureId.LAMP_ECO == feature) {
             prefs.edit().putBoolean("on".equals(value) ? KEY_ECO_ON_CONFIRMED : KEY_ECO_OFF_CONFIRMED, true).apply();
         }
         set(feature, value, cb);
@@ -162,7 +187,7 @@ public final class Play6Features implements ProjectorFeatures {
         return r;
     }
 
-    private MenuState state() { return Play6MenuGates.state(last, this::text); }
+    MenuState state() { return Play6MenuGates.state(last, this::text); }
 
     /** A string of the app by resource name (the name itself when it does not exist: never a crash). */
     private String text(String name) {
@@ -173,8 +198,8 @@ public final class Play6Features implements ProjectorFeatures {
     // ================================================================== set
 
     @Override
-    public void set(String feature, String value, Consumer<Result> cb) {
-        if (!implemented().contains(feature) && !feature.startsWith(Feature.PICTURE_PQ + ".")) { refuse(cb, null); return; }
+    public void set(FeatureId feature, String value, Consumer<Result> cb) {
+        if (!implemented().contains(feature) && feature.parent != FeatureId.PICTURE_PQ) { refuse(cb, null); return; }
         if (!Hal.isReady()) { Ui.main().post(() -> cb.accept(Result.notReady())); return; }
         Play6MenuGates.Read r = last;
         if (r == null) { refuse(cb, "toast_not_ready"); return; }
@@ -182,25 +207,25 @@ public final class Play6Features implements ProjectorFeatures {
         if (no != null) { refuse(cb, no.isEmpty() ? null : no); return; }
         boolean on = "on".equals(value);
         switch (feature) {
-            case Feature.SOUND_OUTPUT: setOutput(value, cb); return;
-            case Feature.SETTINGS_LAUNCHER: setLauncher(value, cb); return;
-            case Feature.LAMP_ECO: setEco(on, cb); return;
-            case Feature.PICTURE_MODE: setPictureMode(value, r, cb); return;
-            case Feature.PROJECTION_MODE: setProjection(value, r, cb); return;
-            case Feature.PROJECTION_REAR: setRear(on, r, cb); return;
-            case Feature.HDMI_EDID: setEdid(value, r, cb); return;
+            case SOUND_OUTPUT: sound.setOutput(value, cb); return;
+            case SETTINGS_LAUNCHER: general.setLauncher(value, cb); return;
+            case LAMP_ECO: general.setEco(on, cb); return;
+            case PICTURE_MODE: picture.setPictureMode(value, r, cb); return;
+            case PROJECTION_MODE: projection.setProjection(value, r, cb); return;
+            case PROJECTION_REAR: projection.setRear(on, r, cb); return;
+            case HDMI_EDID: hdmi.setEdid(value, r, cb); return;
             default: break;
         }
         write(feature + "=" + value, cb, (g, g2) -> writeHal(feature, value, on, g, g2));
     }
 
     /** A write on p6-hal: null = done, else the refusal note (string resource name, "" = no note). */
-    private interface Write {
+    interface Write {
         String run(Play6Gmpf g, Play6Gmpf2 g2) throws Exception;
     }
 
     /** Runs {@code w} on p6-hal, then reads everything back; the result on the main thread. */
-    private void write(String what, Consumer<Result> cb, Write w) {
+    void write(String what, Consumer<Result> cb, Write w) {
         Hal.query((g, g2) -> {
             Object[] out = new Object[2];
             try {
@@ -223,281 +248,81 @@ public final class Play6Features implements ProjectorFeatures {
         });
     }
 
-    private void refuse(Consumer<Result> cb, String reason) {
+    void refuse(Consumer<Result> cb, String reason) {
         Ui.main().post(() -> cb.accept(Result.refused(reason, state())));
     }
 
-    /** p6-hal: one feature write with the Play 6 rules. */
-    private String writeHal(String feature, String value, boolean on, Play6Gmpf g, Play6Gmpf2 g2) throws Exception {
-        if (Feature.def(feature) != null && Feature.def(feature).kind == Feature.Kind.TOGGLE
+    /** p6-hal: one feature write, by the section whose feature it is. */
+    private String writeHal(FeatureId feature, String value, boolean on, Play6Gmpf g, Play6Gmpf2 g2) throws Exception {
+        if (feature.kind == FeatureKind.TOGGLE
                 && !on && !"off".equals(value)) throw new IllegalArgumentException(feature + " " + value);
-        if (feature.startsWith(Feature.PICTURE_PQ + ".")) return setPq(feature.substring(Feature.PICTURE_PQ.length() + 1), value, g);
-        switch (feature) {
-            case Feature.EYE: {
-                if (!"on".equals(value) && !"off".equals(value)) throw new IllegalArgumentException("eye " + value);
-                if (!Device.hasEyeProtection()) return "";                         // no NUI reader: nothing sent
-                if (!g.setEyeProtection(on)) throw new IllegalStateException("152 returned false");
-                return null;
-            }
-            case Feature.KEYSTONE_REALTIME:
-                g.setMoveAk(on);                                                     // 585
-                return null;
-            case Feature.KEYSTONE_ON_POWER:
-                g.setPowerOnAk(on);                                                  // 552
-                return null;
-            case Feature.FOCUS_SMART:
-                if (!g2.isIdentityOpen()) return "toast_not_ready";
-                Hal.setSmartAutofocus(g, g2, on);                                    // IGmpf2 64, then 587
-                return null;
-            case Feature.LAMP: {
-                int v = Integer.parseInt(value.trim());
-                if (!Play6MenuGates.lampValue(v)) throw new IllegalArgumentException("lamp " + v);
-                g.setLampLevel(v);                                                   // 176
-                return null;
-            }
-            case Feature.PICTURE_COLOR_TEMP: {
-                Integer w = Play6MenuGates.COLOR_TEMP.wire(value);
-                if (w == null) throw new IllegalArgumentException("colour temperature " + value);
-                if (!Play6MenuGates.custom(g.getPictureMode())) return "";
-                g.setColorTemperature(w);                                            // 685
-                return null;
-            }
-            case Feature.PICTURE_MEMC: {
-                Integer w = Play6MenuGates.MEMC.wire(value);
-                if (w == null) throw new IllegalArgumentException("memc " + value);
-                if (!Play6MenuGates.memcMode(g.getPictureMode())) return "";
-                if (!g.setMemcLevel(w)) throw new IllegalStateException("669 returned false");
-                return null;
-            }
-            case Feature.PICTURE_DYNAMIC_CONTRAST:
-                if (!g2.isIdentityOpen() || !Play6MenuGates.custom(g.getPictureMode())) return "";
-                g2.setDynamicContrast(on);                                           // IGmpf2 231
-                return null;
-            case Feature.HDMI_RANGE: {
-                Integer w = Play6MenuGates.HDMI_RANGE.wire(value);
-                if (w == null) throw new IllegalArgumentException("range " + value);
-                if (!hdmiNow(g, "635")) return "panel_game_hdmi_only";
-                if (!g.setHdmiRange(w)) throw new IllegalStateException("635 returned false");
-                return null;
-            }
-            case Feature.PICTURE_ASPECT: {
-                Integer w = Play6MenuGates.ASPECT.wire(value);
-                if (w == null) throw new IllegalArgumentException("aspect " + value);
-                if (!hdmiNow(g, "665")) return "panel_game_hdmi_only";
-                if (w == Play6MenuGates.ASPECT_ORIGINAL && !Play6MenuGates.originalFits(g.getHdmiInfo())) return "";
-                if (!g.setAspectRatio(w)) throw new IllegalStateException("665 returned false");
-                return null;
-            }
-            case Feature.SOUND_MODE: {
-                Integer w = Play6MenuGates.SOUND_MODE.wire(value);
-                if (w == null) throw new IllegalArgumentException("sound mode " + value);
-                g.setSoundEffect(w);                                                 // 61
-                org.lumen.projector.audio.P6SoundEq.afterSoundModeChange(app);
-                return null;
-            }
-            case Feature.SOUND_EARC:
-                if (!g.setEarc(on)) throw new IllegalStateException("633 returned false");
-                return null;
-            case Feature.GAME_MODE: {
-                Integer w = Play6MenuGates.GAME_MODE.wire(value);
-                if (w == null) throw new IllegalArgumentException("game mode " + value);
-                if (!hdmiNow(g, "game mode")) return "panel_game_hdmi_only";
-                return GameMode.set(app, g, g2, w) ? null : "toast_not_ready";     // IGmpf2 34 / 35 (+ 648)
-            }
-            default:
-                throw new IllegalArgumentException("no writer for " + feature);
+        if (feature.parent == FeatureId.PICTURE_PQ) return picture.setPq(feature.item, value, g);
+        for (Play6Rows s : sections) {
+            String r = s.writeHal(feature, value, on, g, g2);
+            if (r != Play6Rows.OTHER) return r;
         }
-    }
-
-    /** p6-hal: a Custom picture item (0..100), Custom only (stock image_mode_custom). */
-    private String setPq(String item, String value, Play6Gmpf g) throws Exception {
-        int v = Integer.parseInt(value.trim());
-        if (v < 0 || v > 100) throw new IllegalArgumentException("pq " + item + " " + v);
-        if (!Play6MenuGates.custom(g.getPictureMode())) return "";
-        boolean r;
-        switch (item) {
-            case "brightness": r = g.setBrightness(v); break;                       // 693
-            case "contrast": r = g.setContrast(v); break;                           // 695
-            case "saturation": r = g.setSaturation(v); break;                       // 691
-            case "sharpness": r = g.setSharpness(v); break;                         // 689
-            default: throw new IllegalArgumentException("pq item " + item);
-        }
-        if (!r) throw new IllegalStateException("pq " + item + " returned false");
-        return null;
-    }
-
-    /** Picture mode: locked in Game (refusal; Performance was asked by the menu, Play6MenuGates.confirm), else 667(0, m). */
-    private void setPictureMode(String value, Play6MenuGates.Read r, Consumer<Result> cb) {
-        Integer m = Play6MenuGates.PICTURE_MODE.wire(value);
-        if (m == null) { refuse(cb, null); return; }
-        if (m.equals(Play6MenuGates.shownPictureMode(r.pictureMode))) { refuse(cb, null); return; }
-        write("667 picture mode " + m, cb, (g, g2) -> {
-            if (Play6MenuGates.gamePicture(g.getPictureMode())) return "p6_pic_game_hint";
-            if (!g.setPictureMode(m)) throw new IllegalStateException("667 returned false");
-            return null;
-        });
-    }
-
-    /** Stock sequence: Auto = 580(true); table / ceiling = 580(false) then 172 (a flip was asked by the menu). */
-    private void setProjection(String value, Play6MenuGates.Read r, Consumer<Result> cb) {
-        final int cur = r.putMode;
-        final boolean auto = r.autoReverse;
-        if ("auto".equals(value)) {
-            if (auto) { refuse(cb, null); return; }
-            write("580 auto projection on", cb, (g, g2) -> { g.setAutoProjection(true); return null; });
-            return;
-        }
-        final int target = Play6MenuGates.putModeFor(value, cur);
-        if (target < 0) { refuse(cb, null); return; }
-        if (target == cur) {
-            if (auto) write("580 auto projection off", cb, (g, g2) -> { g.setAutoProjection(false); return null; });
-            else refuse(cb, null);
-            return;
-        }
-        write("172 put mode " + target, cb, (g, g2) -> {
-            g.setAutoProjection(false);                                              // 580(false)
-            g.setPutMode(target);                                                    // 172
-            return null;
-        });
-    }
-
-    /** Rear switch: 172 alone, auto flip kept (stock ProjectionRepository.setRearProjection). */
-    private void setRear(boolean on, Play6MenuGates.Read r, Consumer<Result> cb) {
-        final int target = Play6MenuGates.putModeForRear(on, r.putMode);
-        if (target == r.putMode) { refuse(cb, null); return; }
-        write("172 put mode " + target, cb, (g, g2) -> { g.setPutMode(target); return null; });
-    }
-
-    /** HDMI mode (asked by the menu: the source reconnects): 660, HDMI on screen only. */
-    private void setEdid(String value, Play6MenuGates.Read r, Consumer<Result> cb) {
-        Integer v = Play6MenuGates.EDID.wire(value);
-        if (v == null || v.equals(r.edid)) { refuse(cb, null); return; }
-        write("660 edid " + v, cb, (g, g2) -> {
-            if (!hdmiNow(g, "660")) return "panel_game_hdmi_only";
-            if (!g.setEdidVersion(v)) throw new IllegalStateException("660 returned false");
-            return null;
-        });
-    }
-
-    /** Power saving (stock eco_mode_switch, IGmpf 327 / 328), battery model only; the vendor changes the light with it. */
-    private void setEco(boolean on, Consumer<Result> cb) {
-        if (!Device.hasBattery()) { refuse(cb, null); return; }
-        write("328 power saving " + on, cb, (g, g2) -> { g.setEcoState(on); return null; });
-    }
-
-    /** Sound output: only the outputs connected now (AudioOutputChoice, no HAL). Main thread. */
-    private void setOutput(String value, Consumer<Result> cb) {
-        String kind = Play6MenuGates.outputKind(value);
-        if (kind == null) { refuse(cb, null); return; }
-        try {
-            AudioOutputChoice.Option pick = null;
-            for (AudioOutputChoice.Option o : AudioOutputChoice.options(app)) if (o.kind.name().equals(kind)) pick = o;
-            if (pick == null) {
-                Log.i(TAG, "output " + value + ": not connected now");
-                refuse(cb, null);
-                return;
-            }
-            AudioOutputChoice.choose(app, pick.kind, pick.addr);
-        } catch (Throwable t) {
-            Log.w(TAG, "output " + value + ": " + t);
-            Ui.main().post(() -> cb.accept(Result.failed(state())));
-            return;
-        }
-        read(st -> cb.accept(Result.done(st)));
-    }
-
-    /** Home screen (asked, the menu closed first): LauncherSwitcher, after the first-run setup only. */
-    private void setLauncher(String value, Consumer<Result> cb) {
-        Integer w = Play6MenuGates.LAUNCHER.wire(value);
-        if (w == null || !KeyReceiver.isSetupComplete(app)) { refuse(cb, w == null ? null : "toast_setup_running"); return; }
-        final String mode = w == 1 ? LauncherSwitcher.MODE_CLASSIC : LauncherSwitcher.MODE_LUMEN;
-        if (mode.equals(LauncherSwitcher.currentMode(app))) { refuse(cb, null); return; }
-        LauncherSwitcher.apply(app, mode, true, "quick menu",
-                (ok, holder, err) -> Log.i(TAG, "home screen " + mode + " -> " + ok + " " + holder));
-        Ui.main().post(() -> cb.accept(Result.done(state())));
+        throw new IllegalArgumentException("no writer for " + feature);
     }
 
     // ================================================================== run
 
     @Override
-    public void run(String action, Consumer<Result> cb) {
+    public void run(FeatureId action, Consumer<Result> cb) {
         if (!implemented().contains(action)) { refuse(cb, null); return; }
-        switch (action) {
-            case Feature.KEYSTONE_AK_NOW:                                            // the menu closed first
-                Hal.requestKeystone(app);                                            // 326 on p6-long
-                Ui.main().post(() -> cb.accept(Result.done(state())));
-                return;
-            case Feature.FOCUS_AF_NOW:                                               // the menu closed first
-                Hal.requestAutofocus(app);                                           // 307(44)
-                Ui.main().post(() -> cb.accept(Result.done(state())));
-                return;
-            case Feature.KEYSTONE_RESTORE:                                           // asked by the menu
-                write("207 keystone reset", r -> cb.accept(r.kind == Result.Kind.DONE
-                        ? Result.done(r.after, Note.of("panel_reset_keystone_done")) : r), (g, g2) -> {
-                    Log.i(TAG, "keystone reset: 207(0), 130 -> " + g.resetKeystone());
-                    return null;
-                });
-                return;
-            case Feature.PICTURE_RESET: {                                            // asked by the menu
-                Play6MenuGates.Read r = last;
-                if (r == null || !Play6MenuGates.custom(r.pictureMode)) { refuse(cb, null); return; }
-                write("658 reset custom picture", cb, (g, g2) -> {
-                    if (!Play6MenuGates.custom(g.getPictureMode())) return "";
-                    g.resetCustomPicture();                                          // 658
-                    return null;
-                });
-                return;
-            }
-            default:
-                refuse(cb, null);
-        }
+        for (Play6Rows s : sections) if (s.run(action, cb)) return;
+        refuse(cb, null);
     }
 
     // ================================================================== open
 
     @Override
-    public boolean open(String screen, Runnable back) {
+    public boolean open(FeatureId screen, Runnable back) {
         if (!implemented().contains(screen)) return false;
         // BACK from a device screen: the module's way back to the row that opened it; Play6Menu keeps the menu while
         // such a screen is up (it is dropped when no menu window is left otherwise)
         switch (screen) {
-            case Feature.KEYSTONE_MANUAL:
+            case KEYSTONE_MANUAL:
                 ManualKeystonePanel.open(app, Play6Menu.holdFor(app, back));             // checks everything on p6-hal itself
                 return true;
-            case Feature.KEYSTONE_ROTATION:
+            case KEYSTONE_ROTATION:
                 Play6RotatePanel.open(app, Play6Menu.holdFor(app, back));
                 return true;
-            case Feature.ZOOM_DIGITAL:
+            case ZOOM_DIGITAL:
                 Play6ZoomShiftPanel.open(app, Play6Menu.holdFor(app, back));
                 return true;
-            case Feature.FOCUS_MANUAL:
+            case FOCUS_MANUAL:
                 Hal.openManualFocus(app);
                 return true;
-            case Feature.INPUT:
+            case INPUT:
                 if (!setupDone("input")) return false;
                 SourceOverlay.showFromQuickPanel(app);                               // BACK there opens the card again
                 return true;
-            case Feature.SETTINGS_SYSTEM:
+            case SETTINGS_SYSTEM:
                 return setupDone("system settings") && start(new Intent(Settings.ACTION_SETTINGS));
-            case Feature.SETTINGS_PROJECTOR:
+            case SETTINGS_PROJECTOR:
                 if (!setupDone("projector settings")) return false;
                 Hal.openProjectorSettings(app, null);
                 return true;
-            case Feature.SETTINGS_RECENTS:
+            case SETTINGS_RECENTS:
                 if (!setupDone("recent apps")) return false;
                 org.lumen.projector.recents.RecentsActivity.open(app);
                 return true;
-            case Feature.BLUETOOTH:
+            case BLUETOOTH:
                 return setupDone("bluetooth") && start(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
-            case Feature.NETWORK:
+            case NETWORK:
                 return setupDone("network") && start(new Intent(Settings.ACTION_WIFI_SETTINGS));
-            case Feature.USB_FILES:
+            case USB_FILES:
                 return setupDone("usb files") && start(new Intent(Intent.ACTION_MAIN).setClassName(HOME_PKG, HOME_FILES));
-            case Feature.PICTURE_PRO:
-            case Feature.SOUND_EQ:
-            case Feature.SETTINGS_AMBIENT_SPEAKER:
+            case PICTURE_PRO:
+            case SOUND_EQ:
+            case SETTINGS_AMBIENT_SPEAKER:
                 // pages inside the menu, not screens: Play6MenuPages gives them through MenuController.Pages
                 Log.i(TAG, "open " + screen + ": a page of the menu, not a screen");
+                return false;
+            case MIRRORING:
+                // the menu's own popup over the receiver (lumen-menu QpdMirror, org.lumen.miracast), shown only where the
+                // receiver's control provider resolves, i.e. this unit has Wi-Fi Direct (LumenMiracast ControlGate)
+                Log.i(TAG, "open " + screen + ": the menu's screen mirroring popup, not a screen");
                 return false;
             default:
                 Log.i(TAG, "open " + screen + ": not a screen of the Play 6 adapter");
@@ -530,14 +355,5 @@ public final class Play6Features implements ProjectorFeatures {
             Ui.toast(app, R.string.toast_failed);
             return false;
         }
-    }
-
-    /** p6-hal: the HDMI port is the current source right now (IGmpf 696, the vendor keeps these per source). */
-    private static boolean hdmiNow(Play6Gmpf g, String what) {
-        int src = -1;
-        try { src = g.getCurrentInputSource(); } catch (Throwable t) { Log.w(TAG, what + ": 696 " + t); }
-        if (src == Play6MenuGates.SOURCE_HDMI1) return true;
-        Log.i(TAG, what + " refused: HDMI is not the current source (696=" + src + ")");
-        return false;
     }
 }

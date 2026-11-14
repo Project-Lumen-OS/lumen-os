@@ -8,6 +8,7 @@ import android.util.Log;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.HbFeatures;
 import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.PutMode;
 
 import java.util.Locale;
 
@@ -61,7 +62,7 @@ final class HbFitDevice implements FitDevice {
 
     @Override public int mountMode() {
         try {
-            GmpfClient.PutMode m = FitHal.hal((g, g2) -> g.getPutMode());
+            PutMode m = FitHal.hal((g, g2) -> g.getPutMode());
             mount = m != null ? m.wire : -1;
         } catch (Exception e) {
             Log.w(TAG, "3 getProjectorPutMode: " + e);

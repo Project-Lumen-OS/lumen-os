@@ -17,6 +17,7 @@ import org.lumen.sensors.core.Sample;
 import org.lumen.sensors.core.Sampler;
 import org.lumen.sensors.core.Source;
 import org.lumen.sensors.hal.GmpfAllowlist;
+import org.lumen.sensors.hal.Z9xHalCodes;
 import org.lumen.sensors.hal.GmpfStructs;
 import org.lumen.sensors.hal.Z9xGmpfReader;
 
@@ -431,7 +432,7 @@ public final class Z9xHalSource implements Source {
     private void buildTasks() {
         // probe priority = list order (ties of "due" go to the earlier task): one value per group first
         // the gate: pump() runs it, never wanted()
-        screenTask = new Task("196 screen", IGMPF, GmpfAllowlist.SCREEN_ON, -1, 0) {
+        screenTask = new Task("196 screen", IGMPF, Z9xHalCodes.GMPF_GET_SCREEN_ON_OFF, -1, 0) {
             @Override boolean run() throws Exception {
                 boolean on = hal.screenOn();
                 if (on == lampOff) {
@@ -445,7 +446,7 @@ public final class Z9xHalSource implements Source {
         };
         tasks.add(screenTask);
 
-        tasks.add(new OneTask("438 system temperature", IGMPF, GmpfAllowlist.SYSTEM_TEMPERATURE, Group.TEMPS,
+        tasks.add(new OneTask("438 system temperature", IGMPF, Z9xHalCodes.GMPF_GET_SYSTEM_TEMPERATURE, Group.TEMPS,
                 M_ROW_GRAPH) {   // no compact rank
             { deadIfAbsent = true; }
 
@@ -462,7 +463,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("435 fan mode", IGMPF, GmpfAllowlist.FAN_MODE, Group.COOLING, M_ROW) {
+        tasks.add(new OneTask("435 fan mode", IGMPF, Z9xHalCodes.GMPF_GET_FAN_MODE, Group.COOLING, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -477,7 +478,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("177 brightness level", IGMPF, GmpfAllowlist.LAMP_LEVEL, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("177 brightness level", IGMPF, Z9xHalCodes.GMPF_GET_DLP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -492,7 +493,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("696 input source", IGMPF, GmpfAllowlist.INPUT_SOURCE, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("696 input source", IGMPF, Z9xHalCodes.GMPF_GET_CURRENT_INPUT_SOURCE, Group.PICTURE, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -520,7 +521,7 @@ public final class Z9xHalSource implements Source {
 
         tasks.add(new MotionTask());
 
-        tasks.add(new OneTask("266 focus motor", IGMPF, GmpfAllowlist.FOCUS_STEP, Group.MOTION, M_ROW) {
+        tasks.add(new OneTask("266 focus motor", IGMPF, Z9xHalCodes.GMPF_GET_FOCUS_MOTOR_CURRENT_STEP, Group.MOTION, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -538,7 +539,7 @@ public final class Z9xHalSource implements Source {
         tasks.add(new SensorProbe(socFromThermalZone()));
         tasks.add(new FanProbe());
 
-        tasks.add(new OneTask("IGmpf2 241 over-temperature", IGMPF2, GmpfAllowlist.OVER_TEMPERATURE, Group.TEMPS,
+        tasks.add(new OneTask("IGmpf2 241 over-temperature", IGMPF2, Z9xHalCodes.GMPF2_IS_TEMP_ULTRA_HIGH, Group.TEMPS,
                 M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.overheat", Group.TEMPS, Fmt.YES_NO).label(R.string.s_overheat)
@@ -551,7 +552,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("IGmpf2 51 Boost", IGMPF2, GmpfAllowlist.LENS_DISP_MODE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("IGmpf2 51 Boost", IGMPF2, Z9xHalCodes.GMPF2_GET_LENS_DISP_MODE, Group.LIGHT, M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.boost", Group.LIGHT, Fmt.ON_OFF).label(R.string.s_boost).order(20);
             }
@@ -564,7 +565,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("175 color temperature", IGMPF, GmpfAllowlist.LUMENS_MODE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("175 color temperature", IGMPF, Z9xHalCodes.GMPF_GET_DLP_LUMENS_MODE, Group.LIGHT, M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.ct", Group.LIGHT, Fmt.TEXT).label(R.string.s_color_temp).order(30);
             }
@@ -578,7 +579,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("IGmpf2 25 LED level", IGMPF2, GmpfAllowlist.LED_LEVEL, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("IGmpf2 25 LED level", IGMPF2, Z9xHalCodes.GMPF2_GET_DISP_LUMENS_LEVEL, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; }
 
             @Override Sample create() {
@@ -595,7 +596,7 @@ public final class Z9xHalSource implements Source {
 
         tasks.add(new LedCurrentsTask());
 
-        tasks.add(new OneTask("IGmpf2 68 supply voltage", IGMPF2, GmpfAllowlist.SUPPLY_VOLTAGE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("IGmpf2 68 supply voltage", IGMPF2, Z9xHalCodes.GMPF2_GET_POWER_SUPPLY_VOLTAGE, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; }   // 0 on the Z9X's mains supply: then never shown
 
             @Override Sample create() {
@@ -610,7 +611,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("IGmpf2 27 light usage", IGMPF2, GmpfAllowlist.LIGHT_USAGE, Group.LIGHT, M_ROW) {
+        tasks.add(new OneTask("IGmpf2 27 light usage", IGMPF2, Z9xHalCodes.GMPF2_GET_LIGHT_USAGE_INFO, Group.LIGHT, M_ROW) {
             { deadIfAbsent = true; once = true; }
 
             @Override Sample create() {
@@ -630,7 +631,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("620 HDR type", IGMPF, GmpfAllowlist.HDR_TYPE, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("620 HDR type", IGMPF, Z9xHalCodes.GMPF_GET_HDR_TYPE, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.hdr", Group.PICTURE, Fmt.TEXT).label(R.string.s_hdr).order(20);
             }
@@ -643,7 +644,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        videoTask = new OneTask("IGmpf2 319 video info", IGMPF2, GmpfAllowlist.VIDEO_INFO, Group.PICTURE, M_ROW) {
+        videoTask = new OneTask("IGmpf2 319 video info", IGMPF2, Z9xHalCodes.GMPF2_GET_VIDEO_INFO, Group.PICTURE, M_ROW) {
             @Override boolean needed() { return Z9xSchedule.readsVideoInfo(inputSource); }   // media input only
 
             @Override Sample create() {
@@ -659,7 +660,7 @@ public final class Z9xHalSource implements Source {
         };
         tasks.add(videoTask);
 
-        tasks.add(new OneTask("IGmpf2 22 output frame rate", IGMPF2, GmpfAllowlist.OUTPUT_FPS, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("IGmpf2 22 output frame rate", IGMPF2, Z9xHalCodes.GMPF2_GET_DISP_OUTPUT_FPS, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.outfps", Group.PICTURE, Fmt.HZ).label(R.string.s_out_fps).order(50);
             }
@@ -672,7 +673,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        tasks.add(new OneTask("157 output timing", IGMPF, GmpfAllowlist.OUTPUT_TIMING, Group.PICTURE, M_ROW) {
+        tasks.add(new OneTask("157 output timing", IGMPF, Z9xHalCodes.GMPF_GET_OUTPUT_TIMING_INFO, Group.PICTURE, M_ROW) {
             @Override Sample create() {
                 return new Sample("hal.output", Group.PICTURE, Fmt.SIGNAL).label(R.string.s_output).order(35);
             }
@@ -684,7 +685,7 @@ public final class Z9xHalSource implements Source {
             }
         });
 
-        hdmiTask = new OneTask("662 HDMI info", IGMPF, GmpfAllowlist.HDMI_INFO, Group.PICTURE, M_ROW) {
+        hdmiTask = new OneTask("662 HDMI info", IGMPF, Z9xHalCodes.GMPF_GET_HDMI_INFO, Group.PICTURE, M_ROW) {
             @Override boolean needed() { return Z9xSchedule.readsHdmiInfo(inputSource); }    // HDMI input only
 
             @Override Sample create() {
@@ -699,7 +700,7 @@ public final class Z9xHalSource implements Source {
         };
         tasks.add(hdmiTask);
 
-        tofTask = new OneTask("279 ToF distance", IGMPF, GmpfAllowlist.TOF_DISTANCE, Group.MOTION, M_ROW) {
+        tofTask = new OneTask("279 ToF distance", IGMPF, Z9xHalCodes.GMPF_GET_TOF_DISTANCE, Group.MOTION, M_ROW) {
             { probeOnlyWhenShown = true; }
 
             @Override Sample create() {
@@ -744,7 +745,7 @@ public final class Z9xHalSource implements Source {
         Sample tilt, accel, gyro;
 
         MotionTask() {
-            super("584 motion", IGMPF, GmpfAllowlist.MOTION, Group.MOTION, M_ROW);
+            super("584 motion", IGMPF, Z9xHalCodes.GMPF_GET_MOTION_DETECTION, Group.MOTION, M_ROW);
             deadIfAbsent = true;
         }
 
@@ -787,7 +788,7 @@ public final class Z9xHalSource implements Source {
         private boolean statusStep;
 
         SensorProbe(boolean socFromZone) {
-            super("439 sensor probe", IGMPF, GmpfAllowlist.SENSOR_TEMPERATURE, Group.TEMPS, M_TEMP);
+            super("439 sensor probe", IGMPF, Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, M_TEMP);
             indexes = socFromZone ? new int[] {1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12}
                     : new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
             java.util.Arrays.fill(status, -1);
@@ -869,7 +870,7 @@ public final class Z9xHalSource implements Source {
         final Sample sample;
 
         SensorTask(int idx, Sample sample) {
-            super("439 sensor " + idx, IGMPF, GmpfAllowlist.SENSOR_TEMPERATURE, Group.TEMPS, sample.modes);
+            super("439 sensor " + idx, IGMPF, Z9xHalCodes.GMPF_GET_TEMPERATURE_FROM_SENSOR, Group.TEMPS, sample.modes);
             this.idx = idx;
             this.sample = sample;
             probed = true;
@@ -896,7 +897,7 @@ public final class Z9xHalSource implements Source {
         private int id;
 
         FanProbe() {
-            super("437 fan probe", IGMPF, GmpfAllowlist.FAN_SPEED, Group.COOLING, M_FAN);
+            super("437 fan probe", IGMPF, Z9xHalCodes.GMPF_GET_FAN_ROTATION_RATE, Group.COOLING, M_FAN);
         }
 
         @Override boolean run() throws Exception {
@@ -939,7 +940,7 @@ public final class Z9xHalSource implements Source {
         final Sample sample;
 
         FanTask(int fan, Sample sample) {
-            super("437 fan " + fan, IGMPF, GmpfAllowlist.FAN_SPEED, Group.COOLING, sample.modes);
+            super("437 fan " + fan, IGMPF, Z9xHalCodes.GMPF_GET_FAN_ROTATION_RATE, Group.COOLING, sample.modes);
             this.fan = fan;
             this.sample = sample;
             probed = true;
@@ -964,7 +965,7 @@ public final class Z9xHalSource implements Source {
         private final int[] cur = new int[8];
 
         LedCurrentsTask() {
-            super("IGmpf2 252 LED currents", IGMPF2, GmpfAllowlist.LED_CURRENTS, Group.LIGHT, M_ROW);
+            super("IGmpf2 252 LED currents", IGMPF2, Z9xHalCodes.GMPF2_GET_CUR_HW_CURRENT, Group.LIGHT, M_ROW);
             deadIfAbsent = true;
         }
 

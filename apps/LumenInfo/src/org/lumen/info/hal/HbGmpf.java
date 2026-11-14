@@ -33,61 +33,6 @@ public final class HbGmpf {
     /** xgimi.hardware.gmpf V1; the accepted interface hashes per firmware are GmpfHash's rule. */
     static final int VERSION = 1;
 
-    enum Iface {
-        DISPLAY("xgimi.hardware.gmpf.IDisplayManager"),
-        TV("xgimi.hardware.gmpf.IGmTvManager"),
-        TEMPERATURE("xgimi.hardware.gmpf.ITemperatureManager"),
-        AUDIO("xgimi.hardware.gmpf.IGmAudioManager");
-
-        final String descriptor, instance;
-        IBinder binder;
-        boolean verified, refused;
-
-        Iface(String d) {
-            descriptor = d;
-            instance = d + "/default";
-        }
-    }
-
-    /** Every transaction this app can produce (core.Hb.PLAN, same order). */
-    enum Call {
-        GET_INTERFACE_VERSION(null, 0x00FFFFFF, "getInterfaceVersion"),
-        GET_INTERFACE_HASH(null, 0x00FFFFFE, "getInterfaceHash"),
-        GET_CURRENT_INPUT_SOURCE(Iface.TV, 4, "getCurrentInputSource"),
-        GET_PICTURE_MODE(Iface.TV, 34, "getPictureMode"),
-        GET_HDMI_INFO(Iface.TV, 38, "getHdmiInfo"),
-        GET_EDID_VERSION(Iface.TV, 39, "getEdidVersion"),
-        GET_HDMI_RANGE(Iface.TV, 64, "getHdmiRange"),
-        GET_HDR_TYPE(Iface.TV, 78, "getHdrType"),
-        GET_ALLM_STATUS(Iface.TV, 131, "getAllmStatus"),
-        GET_DISP_COLOR_SPACE(Iface.DISPLAY, 103, "getDispColorSpace"),
-        GET_SYSTEM_TEMPERATURE(Iface.TEMPERATURE, 6, "getSystemTemperature"),
-        GET_HDR_ENABLE(Iface.TV, 51, "getHdrEnable"),
-        GET_HDMI_CONNECT_STATUS(Iface.TV, 70, "getHdmiConnectStatus"),
-        GET_SIGNAL_STATUS(Iface.TV, 106, "getSignalStatus"),
-        GET_VIDEO_INFO(Iface.TV, 122, "getVideoInfo"),
-        IS_HDR_VIVID_PLAYING(Iface.TV, 135, "isHdrVividPlaying"),
-        GET_HDMI_HW_CONFIG(Iface.TV, 153, "getHdmiHwConfig"),
-        GET_SCREEN_RESOLUTION(Iface.DISPLAY, 31, "getScreenResolution"),
-        GET_OUTPUT_TIMING_INFO(Iface.DISPLAY, 57, "getOutputTimingInfo"),
-        GET_COLOR_SPACE_INFO(Iface.DISPLAY, 145, "getColorSpaceInfo"),
-        GET_AUDIO_DELAY(Iface.AUDIO, 13, "getAudioDelay"),
-        GET_ARC_TYPE(Iface.AUDIO, 28, "getARCType"),
-        GET_SPDIF_TYPE(Iface.AUDIO, 29, "getSpdifType"),
-        IS_AUDIO_DEVICE_CONNECTED(Iface.AUDIO, 33, "isAudioDeviceConnected"),
-        GET_AUDIO_DEVICE_SUPPORT_TYPE(Iface.AUDIO, 34, "getAudioDeviceSupportType");
-
-        final Iface iface;
-        final int code;
-        final String method;
-
-        Call(Iface iface, int code, String method) {
-            this.iface = iface;
-            this.code = code;
-            this.method = method;
-        }
-    }
-
     /** Decoded IGmTvType.stHdmiInfo (int width, int height, boolean interlace, boolean hdmiMode, int rate 1/100 Hz). */
     public static final class HdmiInfo {
         public final int width, height, frameRateCenti;
@@ -116,19 +61,19 @@ public final class HbGmpf {
     /** The vendor TV service is registered (an HB) and reachable from this process. Never throws. */
     public static boolean available() {
         try {
-            return ServiceManager.checkService(Iface.TV.instance) != null;
+            return ServiceManager.checkService(GmpfIface.TV.instance) != null;
         } catch (Throwable t) {
             return false;
         }
     }
 
     // ---------------------------------------------------------------- getters (background thread only)
-    public static int currentInputSource() throws RemoteException { return call(Call.GET_CURRENT_INPUT_SOURCE, null, Parcel::readInt); }
+    public static int currentInputSource() throws RemoteException { return call(GmpfCall.GET_CURRENT_INPUT_SOURCE, null, Parcel::readInt); }
 
-    public static int pictureMode() throws RemoteException { return call(Call.GET_PICTURE_MODE, p -> p.writeInt(0), Parcel::readInt); }
+    public static int pictureMode() throws RemoteException { return call(GmpfCall.GET_PICTURE_MODE, p -> p.writeInt(0), Parcel::readInt); }
 
     public static HdmiInfo hdmiInfo() throws RemoteException {
-        return call(Call.GET_HDMI_INFO, null, p -> {
+        return call(GmpfCall.GET_HDMI_INFO, null, p -> {
             if (p.readInt() == 0) throw new IllegalStateException("null stHdmiInfo");
             int start = p.dataPosition();
             int size = p.readInt();
@@ -140,27 +85,26 @@ public final class HbGmpf {
         });
     }
 
-    public static int edidVersion() throws RemoteException { return call(Call.GET_EDID_VERSION, null, Parcel::readInt); }
+    public static int edidVersion() throws RemoteException { return call(GmpfCall.GET_EDID_VERSION, null, Parcel::readInt); }
 
+    public static int hdmiRange() throws RemoteException { return call(GmpfCall.GET_HDMI_RANGE, null, Parcel::readByte); }
 
-    public static int hdmiRange() throws RemoteException { return call(Call.GET_HDMI_RANGE, null, Parcel::readByte); }
-
-    public static int hdrType() throws RemoteException { return call(Call.GET_HDR_TYPE, null, Parcel::readInt); }
+    public static int hdrType() throws RemoteException { return call(GmpfCall.GET_HDR_TYPE, null, Parcel::readInt); }
 
     /** ALLM flag received on HDMI 1 or 2. */
     public static boolean allmStatus(int hdmi) throws RemoteException {
         if (hdmi != 1 && hdmi != 2) throw new IllegalArgumentException("hdmi " + hdmi);
-        return call(Call.GET_ALLM_STATUS, p -> p.writeInt(hdmi), Parcel::readBoolean);
+        return call(GmpfCall.GET_ALLM_STATUS, p -> p.writeInt(hdmi), Parcel::readBoolean);
     }
 
     /** source 0..2, picture mode 0..40 (as HbProjector). */
     public static int colorSpace(int source, int pictureMode) throws RemoteException {
         if (source < 0 || source > 2 || pictureMode < 0 || pictureMode > 40) throw new IllegalArgumentException("range");
-        return call(Call.GET_DISP_COLOR_SPACE, p -> { p.writeInt(source); p.writeInt(pictureMode); }, Parcel::readInt);
+        return call(GmpfCall.GET_DISP_COLOR_SPACE, p -> { p.writeInt(source); p.writeInt(pictureMode); }, Parcel::readInt);
     }
 
     public static int systemTemperature() throws RemoteException {
-        return call(Call.GET_SYSTEM_TEMPERATURE, null, p -> p.readByte() & 0xff);
+        return call(GmpfCall.GET_SYSTEM_TEMPERATURE, null, p -> p.readByte() & 0xff);
     }
 
     // ---------------------------------------------------------------- 2026-11-01: extra read-only getters
@@ -169,45 +113,45 @@ public final class HbGmpf {
     // DISPLAY 57, DISPLAY 145) a boolean result, then an int32 flag and, if not 0, the struct.
 
     /** TV 51: the HDR switch of the picture settings (stock hdrEnable(boolean) is its setter, never sent here). */
-    public static boolean hdrEnable() throws RemoteException { return call(Call.GET_HDR_ENABLE, null, Parcel::readBoolean); }
+    public static boolean hdrEnable() throws RemoteException { return call(GmpfCall.GET_HDR_ENABLE, null, Parcel::readBoolean); }
 
     /** TV 70 with HDMI port 1 or 2 (a byte on the wire). */
     public static boolean hdmiConnectStatus(int port) throws RemoteException {
         if (port != 1 && port != 2) throw new IllegalArgumentException("port " + port);
-        return call(Call.GET_HDMI_CONNECT_STATUS, p -> p.writeByte((byte) port), Parcel::readBoolean);
+        return call(GmpfCall.GET_HDMI_CONNECT_STATUS, p -> p.writeByte((byte) port), Parcel::readBoolean);
     }
 
-    public static int signalStatus() throws RemoteException { return call(Call.GET_SIGNAL_STATUS, null, Parcel::readInt); }
+    public static int signalStatus() throws RemoteException { return call(GmpfCall.GET_SIGNAL_STATUS, null, Parcel::readInt); }
 
     /** TV 122; null when the vendor answered false or sent no struct. */
     public static HalStructs.VideoInfo videoInfo() throws RemoteException {
-        return call(Call.GET_VIDEO_INFO, null, p -> {
+        return call(GmpfCall.GET_VIDEO_INFO, null, p -> {
             boolean ok = p.readBoolean();
             int[] w = outStruct(p);
             return ok && w != null ? HalStructs.videoInfo(w) : null;
         });
     }
 
-    public static boolean hdrVividPlaying() throws RemoteException { return call(Call.IS_HDR_VIVID_PLAYING, null, Parcel::readBoolean); }
+    public static boolean hdrVividPlaying() throws RemoteException { return call(GmpfCall.IS_HDR_VIVID_PLAYING, null, Parcel::readBoolean); }
 
     /** TV 153 with HDMI port 1 or 2; null for a null struct. */
     public static HalStructs.HdmiHwCfg hdmiHwConfig(int port) throws RemoteException {
         if (port != 1 && port != 2) throw new IllegalArgumentException("port " + port);
-        return call(Call.GET_HDMI_HW_CONFIG, p -> p.writeInt(port), p -> {
+        return call(GmpfCall.GET_HDMI_HW_CONFIG, p -> p.writeInt(port), p -> {
             int[] w = outStruct(p);
             return w == null ? null : HalStructs.hdmiHwCfg(w);
         });
     }
 
     public static HalStructs.ScreenResolution screenResolution() throws RemoteException {
-        return call(Call.GET_SCREEN_RESOLUTION, null, p -> {
+        return call(GmpfCall.GET_SCREEN_RESOLUTION, null, p -> {
             int[] w = outStruct(p);
             return w == null ? null : HalStructs.screenResolution(w);
         });
     }
 
     public static HalStructs.OutputTiming outputTiming() throws RemoteException {
-        return call(Call.GET_OUTPUT_TIMING_INFO, null, p -> {
+        return call(GmpfCall.GET_OUTPUT_TIMING_INFO, null, p -> {
             boolean ok = p.readBoolean();
             int[] w = outStruct(p);
             return ok && w != null ? HalStructs.outputTiming(w) : null;
@@ -217,26 +161,26 @@ public final class HbGmpf {
     /** DISPLAY 145, same arguments as DISPLAY 103: source 0..2, picture mode 0..40. */
     public static HalStructs.ColorSpaceInfo colorSpaceInfo(int source, int pictureMode) throws RemoteException {
         if (source < 0 || source > 2 || pictureMode < 0 || pictureMode > 40) throw new IllegalArgumentException("range");
-        return call(Call.GET_COLOR_SPACE_INFO, p -> { p.writeInt(source); p.writeInt(pictureMode); }, p -> {
+        return call(GmpfCall.GET_COLOR_SPACE_INFO, p -> { p.writeInt(source); p.writeInt(pictureMode); }, p -> {
             boolean ok = p.readBoolean();
             int[] w = outStruct(p);
             return ok && w != null ? HalStructs.colorSpaceInfo(w) : null;
         });
     }
 
-    public static int audioDelay() throws RemoteException { return call(Call.GET_AUDIO_DELAY, null, Parcel::readInt); }
+    public static int audioDelay() throws RemoteException { return call(GmpfCall.GET_AUDIO_DELAY, null, Parcel::readInt); }
 
-    public static int arcType() throws RemoteException { return call(Call.GET_ARC_TYPE, null, Parcel::readByte); }
+    public static int arcType() throws RemoteException { return call(GmpfCall.GET_ARC_TYPE, null, Parcel::readByte); }
 
-    public static int spdifType() throws RemoteException { return call(Call.GET_SPDIF_TYPE, null, Parcel::readByte); }
+    public static int spdifType() throws RemoteException { return call(GmpfCall.GET_SPDIF_TYPE, null, Parcel::readByte); }
 
     /** GmAudioManager 33 / 34 take a device id; only HDMI ARC (2), the id the stock VoiceHelper asks, is sent. */
     public static boolean arcConnected() throws RemoteException {
-        return call(Call.IS_AUDIO_DEVICE_CONNECTED, p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readBoolean);
+        return call(GmpfCall.IS_AUDIO_DEVICE_CONNECTED, p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readBoolean);
     }
 
     public static int arcSupportType() throws RemoteException {
-        return call(Call.GET_AUDIO_DEVICE_SUPPORT_TYPE, p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readByte);
+        return call(GmpfCall.GET_AUDIO_DEVICE_SUPPORT_TYPE, p -> p.writeByte(Hb.AUDIO_DEVICE_ARC), Parcel::readByte);
     }
 
     /**
@@ -256,13 +200,13 @@ public final class HbGmpf {
     }
 
     // ---------------------------------------------------------------- transport
-    private static <T> T call(Call c, Args a, Ret<T> r) throws RemoteException {
+    private static <T> T call(GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (Looper.getMainLooper().isCurrentThread()) throw new RemoteException("vendor call on the main thread refused");
         IBinder b = need(c.iface);
         return send(b, c.iface, c, a, r);
     }
 
-    private static IBinder need(Iface i) throws RemoteException {
+    private static IBinder need(GmpfIface i) throws RemoteException {
         synchronized (HbGmpf.class) {
             if (i.refused) throw new RemoteException(i.descriptor + " closed by the version guard");
             if (i.binder == null || !i.binder.isBinderAlive()) {
@@ -281,8 +225,8 @@ public final class HbGmpf {
                 int v;
                 String h;
                 try {
-                    v = send(i.binder, i, Call.GET_INTERFACE_VERSION, null, Parcel::readInt);
-                    h = send(i.binder, i, Call.GET_INTERFACE_HASH, null, Parcel::readString);
+                    v = send(i.binder, i, GmpfCall.GET_INTERFACE_VERSION, null, Parcel::readInt);
+                    h = send(i.binder, i, GmpfCall.GET_INTERFACE_HASH, null, Parcel::readString);
                 } catch (RemoteException e) {
                     i.binder = null;
                     throw e;
@@ -301,7 +245,7 @@ public final class HbGmpf {
         }
     }
 
-    private static <T> T send(IBinder b, Iface i, Call c, Args a, Ret<T> r) throws RemoteException {
+    private static <T> T send(IBinder b, GmpfIface i, GmpfCall c, Args a, Ret<T> r) throws RemoteException {
         if (c.iface != null && c.iface != i) throw new IllegalStateException(c.method + " is not on " + i.descriptor);
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
@@ -331,7 +275,7 @@ public final class HbGmpf {
         }
     }
 
-    private static void drop(Iface i, IBinder b) {
+    private static void drop(GmpfIface i, IBinder b) {
         synchronized (HbGmpf.class) {
             if (i.binder == b) {
                 i.binder = null;

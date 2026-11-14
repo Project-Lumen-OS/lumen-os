@@ -3,8 +3,8 @@
 # devices/g0111/image/verify_tree_x50.py, the projector menu apps/X50Projector.
 #   sh devices/g0111/test/x50_menu_apk_check_test.sh [X50Projector.apk] [X50EyeGuard.apk]
 #   sources   MENU_APP holds to its sources: calls = research/allowed_x50projector.tsv, ifaces = the Iface list of
-#             apps/X50Projector Gmpf.java, cert = devices/g0111/certs/platform.x509.pem, path = /system/priv-app/
-#             X50Projector, an app of the registry, installed by compose_x50.sh, checked by verify_tree_x50.py
+#             apps/X50Projector GmpfIface.java, cert = devices/g0111/certs/platform.x509.pem, path = /system/priv-app/
+#             X50Projector, an app of the registry, installed by devices/g0111/image/steps.tsv, checked by verify_tree_x50.py
 #   real      the built APK passes x50_apk_check against MENU_APP (101 calls; t17: 70 - power-on AF 4 / 5 - MD 5 = 67;
 #             t18: + MD 9 getAutoReverse for the projection Auto radio; t20: + 21 with their argument ranges = 89; core-menu-x50game: + 12 game menu calls)
 #   crossed   the menu APK against HAL_APP and the eye guard APK against MENU_APP: both refused
@@ -46,10 +46,11 @@ for line in open(os.path.join(G, "devices/g0111/research/allowed_x50projector.ts
 # t20: a 4th field = the row's args column (the Call's argument range)
 if sorted(((r + [None])[:4] for r in map(list, h["calls"])), key=str) != sorted(map(list, rows), key=str):
     bad.append("MENU_APP calls %s != allowed_x50projector.tsv %s" % (h["calls"], rows))
-src = open(os.path.join(G, "apps/X50Projector/src/org/lumen/x50/projector/Gmpf.java"), encoding="utf-8").read()
+src = "".join(open(os.path.join(G, "apps/X50Projector/src/org/lumen/x50/projector", f), encoding="utf-8").read()
+              for f in ("Gmpf.java", "GmpfIface.java") if os.path.isfile(os.path.join(G, "apps/X50Projector/src/org/lumen/x50/projector", f)))
 ifs = re.findall(r'^\s+[A-Z_]+\("(xgimi\.hardware\.gmpf\.I\w+)"\)', src, re.M)
 if sorted(ifs) != sorted(h["ifaces"]):
-    bad.append("MENU_APP ifaces %s != Gmpf.java Iface %s" % (h["ifaces"], ifs))
+    bad.append("MENU_APP ifaces %s != GmpfIface %s" % (h["ifaces"], ifs))
 der = subprocess.run(["openssl", "x509", "-in", os.path.join(G, "devices/g0111/certs/platform.x509.pem"), "-outform", "DER"],
                      capture_output=True, check=True).stdout
 if h["cert"] != hashlib.sha256(der).hexdigest() or h["cert"] != e["cert"]:
@@ -59,11 +60,11 @@ if h["path"] != "system/priv-app/X50Projector/X50Projector.apk" or "X50Projector
     bad.append("MENU_APP path %s / registry apps %s" % (h["path"], reg.get("apps")))
 if h["staged"] != "stage/X50Projector.apk":
     bad.append("MENU_APP staged %s" % h["staged"])
-comp = open(os.path.join(G, "devices/g0111/image/compose_x50.sh"), encoding="utf-8").read()
-if "RC_APK=" + h["staged"] not in comp or "system/priv-app/X50Projector/X50Projector.apk" not in comp:
-    bad.append("compose_x50.sh does not install %s at %s" % (h["staged"], h["path"]))
+comp = open(os.path.join(G, "devices/g0111/image/steps.tsv"), encoding="utf-8").read()
+if "\tplace\t%s\t{sys}/priv-app/X50Projector/X50Projector.apk\t" % h["staged"] not in comp:
+    bad.append("steps.tsv does not install %s at %s" % (h["staged"], h["path"]))
 if "X50Remote.apk" in comp:
-    bad.append("compose_x50.sh still installs the separate X50Remote app (merged into X50Projector)")
+    bad.append("steps.tsv still installs the separate X50Remote app (merged into X50Projector)")
 vsrc = open(ver, encoding="utf-8").read()
 if "x50_apk_check.problems(rep, MENU_APP)" not in vsrc or 'the menu HAL app %s is not in the image' not in vsrc:
     bad.append("verify_tree_x50.py does not check the menu app with x50_apk_check")

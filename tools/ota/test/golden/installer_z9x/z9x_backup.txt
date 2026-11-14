@@ -2,7 +2,6 @@
 == output
 12:00:00   ✓ Platform-Tools 35.0.2 (tools/platform-tools, checked), own adb server on port 5038
 12:00:00 backup to <C>/backup/20261013-1200
-12:00:00 IMPORTANT: remove your Google account on the projector first (Settings > Accounts), or Factory Reset Protection may ask for it after the wipe.
 12:00:00   ✓ 2 APK files of your apps (app data cannot be saved without root)
 12:00:00   ✓ backup done
 == adb

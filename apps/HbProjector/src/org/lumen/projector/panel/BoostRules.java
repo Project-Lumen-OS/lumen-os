@@ -22,7 +22,7 @@ package org.lumen.projector.panel;
 public final class BoostRules {
     private BoostRules() {}
 
-    /** Vendor picture mode wires (GmpfClient.PictureMode PERFORMANCE / OFFICE) whose Boost is fixed by the vendor. */
+    /** Vendor picture mode wires (PictureMode PERFORMANCE / OFFICE) whose Boost is fixed by the vendor. */
     static final int PM_PERFORMANCE = 5;
     static final int PM_OFFICE = 25;
 
@@ -33,15 +33,9 @@ public final class BoostRules {
         return pm == PM_PERFORMANCE || pm == PM_OFFICE;
     }
 
-    /** What a LEFT press at "Boost" does: arm / send 52(0), or only explain (no vendor call). */
-    public enum Leave { ARM, EXPLAIN_PICTURE_MODE }
-
-    public static Leave onLeavePress(Boolean boost, Integer pictureModeWire) {
-        return Boolean.TRUE.equals(boost) && lockedByPictureMode(pictureModeWire) ? Leave.EXPLAIN_PICTURE_MODE : Leave.ARM;
+    public static BoostLeave onLeavePress(Boolean boost, Integer pictureModeWire) {
+        return Boolean.TRUE.equals(boost) && lockedByPictureMode(pictureModeWire) ? BoostLeave.EXPLAIN_PICTURE_MODE : BoostLeave.ARM;
     }
-
-    /** Outcome of a 52 call judged as stock does: by the 152 read-back after it, never by the boolean alone. */
-    public enum Outcome { DONE, LOCKED_BY_PICTURE_MODE, FAILED }
 
     /**
      * @param wantOn       the value sent to 52
@@ -49,12 +43,12 @@ public final class BoostRules {
      * @param lensAfter    152 read right after (1 = Boost, 0 = normal, -1 = unreadable)
      * @param pictureMode  667-side picture mode wire read right after, null when unknown
      */
-    public static Outcome judge(boolean wantOn, boolean ret, int lensAfter, Integer pictureMode) {
+    public static BoostOutcome judge(boolean wantOn, boolean ret, int lensAfter, Integer pictureMode) {
         int want = wantOn ? 1 : 0;
-        if (lensAfter == want) return Outcome.DONE;                 // the vendor did it (whatever it answered)
-        if (lensAfter < 0) return ret ? Outcome.DONE : Outcome.FAILED;
-        if (!wantOn && lockedByPictureMode(pictureMode)) return Outcome.LOCKED_BY_PICTURE_MODE;
-        return Outcome.FAILED;
+        if (lensAfter == want) return BoostOutcome.DONE;                 // the vendor did it (whatever it answered)
+        if (lensAfter < 0) return ret ? BoostOutcome.DONE : BoostOutcome.FAILED;
+        if (!wantOn && lockedByPictureMode(pictureMode)) return BoostOutcome.LOCKED_BY_PICTURE_MODE;
+        return BoostOutcome.FAILED;
     }
 
     /**

@@ -1,0 +1,5 @@
+# The HB lines of the debloat (devices/_image/debloat_gsi_tv_arm.txt has the shared ones): the HB vendor is VNDK 33,
+# so v33 stays and v30 goes; LineageSetupWizard and its RRO go (TvProvision stays in t1: it provisions the device).
+system_ext/priv-app/LineageSetupWizard
+product/overlay/LineageSetupWizard__*_auto_generated_rro_product.apk
+system_ext/apex/com.android.vndk.v30.apex

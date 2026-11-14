@@ -4,18 +4,22 @@ package org.lumen.miracast;
 import android.content.Context;
 
 import org.lumen.miracast.core.Control;
+import org.lumen.miracast.core.ReceiverStatus;
 
 /** The status line of screen mirroring, the same on the settings screen and in the projector's quick menu. */
 final class StatusText {
     private StatusText() {}
 
-    static Control.Status status(Context c) {
+    static ReceiverStatus status(Context c) {
         MiracastService s = MiracastService.instance();
+        if (s == null && MiracastService.noWifiDirect()) {
+            return Control.status(Prefs.enabled(c), true, false, P2pState.UNSUPPORTED.name());
+        }
         return Control.status(Prefs.enabled(c), s != null, s != null && s.mirroring(),
                 s == null ? null : s.p2pState().name());
     }
 
-    static String of(Context c, Control.Status st) {
+    static String of(Context c, ReceiverStatus st) {
         MiracastService s = MiracastService.instance();
         switch (st) {
             case OFF: return c.getString(R.string.status_off);

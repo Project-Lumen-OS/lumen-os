@@ -1,0 +1,31 @@
+# new_vs_x50.tsv: строки aidl_codes.tsv RS30 (G0155), которых нет у X50 (G0111). Ни одна строка X50 не изменена и не пропала.
+# service	code	method	signature	ndk_proxy_args	kind	source
+DisplayManager	224	set3DSyncType	boolean(int)	int, bool*	method	ndk+java
+DisplayManager	225	get3DSyncType	int()	int*	method	ndk+java
+DisplayManager	226	set3DSyncDelay	boolean(int)	int, bool*	method	ndk+java
+DisplayManager	227	get3DSyncDelay	int()	int*	method	ndk+java
+DisplayManager	228	switch3DSyncLR	boolean()	bool*	method	ndk+java
+DisplayManager	229	startColorPointCorrect	boolean()	bool*	method	ndk+java
+DisplayManager	230	getColorPointCorrectStatus	int()	int*	method	ndk+java
+DisplayManager	231	setColorPointDefault	boolean()	bool*	method	ndk+java
+DisplayManager	232	setColorPointCorrected	boolean()	bool*	method	ndk+java
+DisplayManager	233	setDynamicBlackSubtitleRegion	int(int, PointCoordinate[])	int, std::vector<IDisplayType::PointCoordinate> const&, int*	method	ndk+java
+DisplayManager	234	getDynamicBlackSubtitleRegion	int(int, PointCoordinate[])	int, std::vector<IDisplayType::PointCoordinate>*, int*	method	ndk+java
+DisplayManager	235	resetDynamicBlackSubtitleRegion	int()	int*	method	ndk+java
+DisplayManager	236	isDispDynamicFeatureSupported	String(int)	int, std::string*	method	ndk+java
+GmTvManager	204	getHdmiColorSpaceInfo	int(int)	int, int*	method	ndk+java
+ProjectorFocusManager	122	setDefocusOnOff	boolean(boolean)	bool, bool*	method	ndk+java
+ProjectorFocusManager	123	getDefocusOnOff	boolean()	bool*	method	ndk+java
+ProjectorFocusManager	124	setFocusBackMove	boolean(int, float)	int, float, bool*	method	ndk+java
+ProjectorFocusManager	125	setFocusBackSpeed	void(int)	int	method	ndk+java
+ProjectorFocusManager	126	getFocusBackSpeed	int()	int*	method	ndk+java
+ProjectorFocusManager	127	getFocusBackSelfTestInfo	String()	std::string*	method	ndk+java
+ProjectorFocusManager	128	getFocusBackCurStep	int()	int*	method	ndk+java
+ProjectorFocusManager	129	getFocusBackCurHallValue	int()	int*	method	ndk+java
+SystemManager	257	setExtNetworkAdapterEnable	boolean(boolean)	bool, bool*	method	ndk+java
+SystemManager	258	getExtNetworkAdapterEnable	boolean()	bool*	method	ndk+java
+SystemManager	259	setLampLightEnable	boolean(boolean)	bool, bool*	method	ndk+java
+SystemManager	260	getLampLightEnable	boolean()	bool*	method	ndk+java
+SystemManager	261	setStolenDevice	boolean(boolean)	bool, bool*	method	ndk+java
+SystemManager	262	isStolenDevice	boolean()	bool*	method	ndk+java
+TemperatureManager	21	getAverageLaserTemperature	byte()	signed char*	method	ndk+java

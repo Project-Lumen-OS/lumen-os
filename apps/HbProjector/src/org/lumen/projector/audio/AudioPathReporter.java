@@ -13,6 +13,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 
 import org.lumen.projector.Hal;
+import org.lumen.projector.hal.AudioPath;
 import org.lumen.projector.hal.GmpfClient;
 
 import java.util.ArrayList;
@@ -265,13 +266,13 @@ public final class AudioPathReporter {
     /** Recomputes the media output; a change starts the stock switch sequence. */
     private static void evaluate(String why) {
         try {
-            GmpfClient.AudioPath p = currentPath();
+            AudioPath p = currentPath();
             if (p == null) {
                 Log.i(TAG, why + ": no media output device known, nothing reported");
                 return;
             }
             // Lumen OS 1.0.4: the HAL's A2DP volume table starts at 0 (silent headphones), see BtDspVolume
-            if (p == GmpfClient.AudioPath.BT_A2DP) BtDspVolume.apply(sApp, why);
+            if (p == AudioPath.BT_A2DP) BtDspVolume.apply(sApp, why);
             if (p.wire == sTarget) {
                 // Same path: only make sure it is confirmed (e.g. the boot report gave up earlier).
                 if (sConfirmed != p.wire && !sVerifying && !sH.hasCallbacks(COMMIT)) {
@@ -300,7 +301,7 @@ public final class AudioPathReporter {
                     if (gen != sGen) return;
                     sSwitching = true;                      // set first: a failed call may still have muted
                     setConfirmed(-1);
-                    g.setAudioOutput(GmpfClient.AudioPath.SWITCHING);
+                    g.setAudioOutput(AudioPath.SWITCHING);
                     Log.i(TAG, "59(100) switch start (from " + prev + ")");
                 });
             }
@@ -470,7 +471,7 @@ public final class AudioPathReporter {
                 }
                 sMutePending = -1;
             }
-            if (target == GmpfClient.AudioPath.BT_A2DP.wire) {
+            if (target == AudioPath.BT_A2DP.wire) {
                 AudioManager am = sApp.getSystemService(AudioManager.class);
                 if (am == null) return;
                 BtDspVolume.apply(sApp, "A2DP sink");
@@ -536,8 +537,8 @@ public final class AudioPathReporter {
         }
     }
 
-    private static GmpfClient.AudioPath pathOf(int wire) {
-        for (GmpfClient.AudioPath p : GmpfClient.AudioPath.values()) if (p.wire == wire) return p;
+    private static AudioPath pathOf(int wire) {
+        for (AudioPath p : AudioPath.values()) if (p.wire == wire) return p;
         throw new IllegalArgumentException("path " + wire);
     }
 
@@ -546,7 +547,7 @@ public final class AudioPathReporter {
      * (QUERY_AUDIO_STATE, platform signature) is what the policy routes media to; without it, the
      * connected outputs in AOSP media priority order.
      */
-    private static GmpfClient.AudioPath currentPath() {
+    private static AudioPath currentPath() {
         AudioManager am = sApp == null ? null : sApp.getSystemService(AudioManager.class);
         if (am == null) return null;
         List<Integer> types = new ArrayList<>();
@@ -557,7 +558,7 @@ public final class AudioPathReporter {
             types.clear();
         }
         if (!types.isEmpty()) {
-            GmpfClient.AudioPath p = fromTypes(types);
+            AudioPath p = fromTypes(types);
             if (p != null) return p;
         }
         // Fallback: connected outputs, AOSP media priority (BT > wired > USB > ARC > speaker).
@@ -568,44 +569,44 @@ public final class AudioPathReporter {
             Log.w(TAG, "getDevices: " + t);
             return null;
         }
-        GmpfClient.AudioPath[] order = {GmpfClient.AudioPath.BT_A2DP, GmpfClient.AudioPath.WIRED,
-                GmpfClient.AudioPath.USB, GmpfClient.AudioPath.ARC};
-        for (GmpfClient.AudioPath want : order) {
+        AudioPath[] order = {AudioPath.BT_A2DP, AudioPath.WIRED,
+                AudioPath.USB, AudioPath.ARC};
+        for (AudioPath want : order) {
             for (int t : types) if (map(t) == want) return want;
         }
-        return types.isEmpty() ? null : GmpfClient.AudioPath.SPEAKER;
+        return types.isEmpty() ? null : AudioPath.SPEAKER;
     }
 
     /** First routed device that maps to a path (SPDIF is skipped: never 1). */
-    private static GmpfClient.AudioPath fromTypes(List<Integer> types) {
-        GmpfClient.AudioPath speaker = null;
+    private static AudioPath fromTypes(List<Integer> types) {
+        AudioPath speaker = null;
         for (int t : types) {
-            GmpfClient.AudioPath p = map(t);
+            AudioPath p = map(t);
             if (p == null) continue;
-            if (p != GmpfClient.AudioPath.SPEAKER) return p;
+            if (p != AudioPath.SPEAKER) return p;
             speaker = p;
         }
         return speaker;
     }
 
     /** AudioDeviceInfo type -> path (stock threadInit table); null = skip (SPDIF). */
-    static GmpfClient.AudioPath map(int type) {
+    static AudioPath map(int type) {
         switch (type) {
             case AudioDeviceInfo.TYPE_WIRED_HEADSET:
             case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
-                return GmpfClient.AudioPath.WIRED;
+                return AudioPath.WIRED;
             case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
-                return GmpfClient.AudioPath.BT_A2DP;
+                return AudioPath.BT_A2DP;
             case AudioDeviceInfo.TYPE_HDMI_ARC:
             case AudioDeviceInfo.TYPE_HDMI_EARC:
-                return GmpfClient.AudioPath.ARC;
+                return AudioPath.ARC;
             case AudioDeviceInfo.TYPE_USB_DEVICE:
             case AudioDeviceInfo.TYPE_USB_HEADSET:
-                return GmpfClient.AudioPath.USB;
+                return AudioPath.USB;
             case AudioDeviceInfo.TYPE_LINE_DIGITAL:            // SPDIF: path 1 is never sent
                 return null;
             default:                                           // speaker and everything unlisted: 0 (stock)
-                return GmpfClient.AudioPath.SPEAKER;
+                return AudioPath.SPEAKER;
         }
     }
 

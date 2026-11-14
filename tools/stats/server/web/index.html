@@ -170,14 +170,16 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
 <script>
 (() => {
   "use strict";
-  const MODELS = { horse_popular: "Z9X", goat_elegant: "Z9X HB", dragon_healthy: "Play 6" };
+  // short names; the server sends the registry names of every model (stats.names), shown without "XGIMI"
+  const MODELS = { horse_popular: "Z9X", goat_elegant: "Z9X HB", dragon_healthy: "Play 6", g0111: "X50 Ultra", g0100: "X50 Ultra Max",
+    g0155: "RS30 Ultra Max", installer: "Lumen Installer" };
   const METHODS = { ota_delta: "Дельта по сети", ota_full: "Полное по сети", ota: "По сети", usb: "Флешка", installer: "Установщик", unknown: "Неизвестно", first: "Первый запуск", delta: "Дельта по сети", full: "Полное по сети" };
   const SERIES = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6"];
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const fmt = n => (n == null ? "–" : Number(n).toLocaleString("ru-RU"));
   const pct = (a, b) => (b ? Math.round(a * 100 / b) + "%" : "–");
   const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const modelName = m => MODELS[m] || m || "?";
+  const modelName = m => MODELS[m] || ((stats && stats.names && stats.names[m]) || m || "?").replace(/^XGIMI /, "");
   let countryName = c => c;
   try { const dn = new Intl.DisplayNames(["ru"], { type: "region" }); countryName = c => (c && c.length === 2 ? dn.of(c.toUpperCase()) : (c || "Неизвестно")); } catch (e) {}
   const dayLabel = d => { const [y, m, dd] = d.split("-"); return dd + "." + m; };
@@ -278,9 +280,11 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
 
   function render() {
     if (!stats) return;
-    const a = (stats.active || {})[period] || { by_version: [], by_model: [], by_country: [], installs: 0, projectors: 0 };
+    // every number is of projectors (units: one serial), never of install ids (a reset, a reinstall or a trial run
+    // makes a new install id on the same projector)
+    const a = (stats.active || {})[period] || { by_version: [], by_model: [], by_country: [], by_kind: [], units: 0 };
     const a7 = (stats.active || {})["7"] || { by_version: [] };
-    const sum = rows => rows.filter(r => inModel(r.model)).reduce((s, r) => s + r.installs, 0);
+    const sum = rows => rows.filter(r => inModel(r.model)).reduce((s, r) => s + r.units, 0);
 
     // model switch (only models seen)
     const seen = [...new Set([...(stats.active["30"] || { by_model: [] }).by_model.map(r => r.model), ...(stats.daily || []).map(r => r.model)])];
@@ -291,17 +295,20 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     document.querySelectorAll("#period button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === period));
 
     // KPIs
-    const nAll = model === "all" ? (a.projectors || a.installs) : sum(a.by_version);
+    const nAll = model === "all" ? a.units : sum(a.by_version);
     document.getElementById("k-proj").textContent = fmt(nAll);
-    document.getElementById("k-proj-d").textContent = `уникальных за ${period} дней` + (stats.reinstalled ? ` · переустановок: ${fmt(stats.reinstalled)}` : "");
+    const nTrial = (a.by_kind || []).filter(r => inModel(r.model) && r.kind === "trial").reduce((s, r) => s + r.units, 0);
+    const nNew = (stats.new_daily || []).filter(r => inModel(r.model) && r.day >= lastDays(+period)[0]).reduce((s, r) => s + r.units, 0);
+    document.getElementById("k-proj-d").textContent = `уникальных за ${period} дней · новых: ${fmt(nNew)}`
+      + (nTrial ? ` · только пробный запуск: ${fmt(nTrial)}` : "");
     const n7 = sum(a7.by_version);
     document.getElementById("k-7").textContent = fmt(n7);
     document.getElementById("k-7-d").textContent = nAll ? `${pct(n7, nAll)} от всех за ${period} дней` : "";
     const since = lastDays(+period)[0];
     const upd = (stats.updates_daily || []).filter(r => r.day >= since && r.method !== "first");
-    const nUpd = upd.reduce((s, r) => s + r.n, 0);
+    const nUpd = upd.reduce((s, r) => s + r.units, 0);
     document.getElementById("k-upd").textContent = fmt(nUpd);
-    const today = (stats.updates_daily || []).filter(r => r.day === stats.day && r.method !== "first").reduce((s, r) => s + r.n, 0);
+    const today = (stats.updates_daily || []).filter(r => r.day === stats.day && r.method !== "first").reduce((s, r) => s + r.units, 0);
     document.getElementById("k-upd-d").textContent = `сегодня: ${fmt(today)}`;
     // latest stable version per model, share on it
     const vers = a.by_version.filter(r => inModel(r.model));
@@ -310,10 +317,10 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
       const stable = vers.filter(r => r.model === m && r.channel !== "beta");
       const pool = stable.length ? stable : vers.filter(r => r.model === m);
       const top = pool.map(r => r.version).sort((x, y) => vkey(y).localeCompare(vkey(x)))[0];
-      latestN += pool.filter(r => r.version === top).reduce((s, r) => s + r.installs, 0);
+      latestN += pool.filter(r => r.version === top).reduce((s, r) => s + r.units, 0);
       latestLabel.push(`${modelName(m)} ${top}`);
     });
-    const vTotal = vers.reduce((s, r) => s + r.installs, 0);
+    const vTotal = vers.reduce((s, r) => s + r.units, 0);
     document.getElementById("k-latest").textContent = pct(latestN, vTotal);
     document.getElementById("k-latest-d").textContent = latestLabel.join(" · ");
 
@@ -321,14 +328,14 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     const days = lastDays(Math.max(+period, 30));
     const dm = [...new Set((stats.daily || []).map(r => r.model))].filter(inModel);
     const mkeys = dm.map((m, i) => ({ id: m, name: modelName(m), color: css(SERIES[i % SERIES.length]) }));
-    const dIdx = {}; (stats.daily || []).forEach(r => { if (!inModel(r.model)) return; const k = r.day + "|" + r.model; dIdx[k] = (dIdx[k] || 0) + r.installs; });
+    const dIdx = {}; (stats.daily || []).forEach(r => { if (!inModel(r.model)) return; const k = r.day + "|" + r.model; dIdx[k] = (dIdx[k] || 0) + r.units; });
     legend("lg-daily", mkeys);
     const chD = document.getElementById("ch-daily");
     if (!dm.length) empty(chD, "Пока нет данных. Проекторы начнут появляться после обновления с включённой статистикой.");
     else columns(chD, days, mkeys, (i, k) => dIdx[days[i] + "|" + mkeys[k].id] || 0, { label: "Проекторы по дням", xlabel: dayLabel, tiplabel: d => new Date(d + "T00:00:00Z").toLocaleDateString("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }) });
 
     // versions
-    const vAgg = {}; vers.forEach(r => { const k = r.model + "|" + r.version + "|" + r.channel; vAgg[k] = (vAgg[k] || 0) + r.installs; });
+    const vAgg = {}; vers.forEach(r => { const k = r.model + "|" + r.version + "|" + r.channel; vAgg[k] = (vAgg[k] || 0) + r.units; });
     const multiModel = new Set(vers.map(r => r.model)).size > 1;
     barList(document.getElementById("versions"), Object.entries(vAgg).map(([k, v]) => { const [m, ver, ch] = k.split("|"); return { v, name: (multiModel ? modelName(m) + " " : "") + ver, html: (multiModel ? `<span style="color:var(--text-2)">${esc(modelName(m))}</span> ` : "") + esc(ver) + (ch === "beta" ? '<span class="tag">бета</span>' : "") }; }).sort((x, y) => y.v - x.v), { empty: "Пока нет данных" });
 
@@ -336,7 +343,7 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     const ORDER = ["ota_delta", "ota_full", "usb", "installer", "ota", "unknown"];
     const methods = [...new Set(upd.map(r => r.method))].sort((x, y) => (ORDER.indexOf(x) + 99 * (ORDER.indexOf(x) < 0)) - (ORDER.indexOf(y) + 99 * (ORDER.indexOf(y) < 0)));
     const ukeys = methods.map(m => ({ id: m, name: METHODS[m] || m, color: css(SERIES[Math.max(0, ORDER.indexOf(m) < 0 ? 4 : ORDER.indexOf(m))]) }));
-    const uIdx = {}; upd.forEach(r => { const k = r.day + "|" + r.method; uIdx[k] = (uIdx[k] || 0) + r.n; });
+    const uIdx = {}; upd.forEach(r => { const k = r.day + "|" + r.method; uIdx[k] = (uIdx[k] || 0) + r.units; });
     const udays = lastDays(+period);
     legend("lg-upd", ukeys);
     const chU = document.getElementById("ch-upd");
@@ -344,7 +351,7 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     else columns(chU, udays, ukeys, (i, k) => uIdx[udays[i] + "|" + ukeys[k].id] || 0, { h: 200, label: "Обновления по дням", xlabel: dayLabel, tiplabel: d => new Date(d + "T00:00:00Z").toLocaleDateString("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }) });
 
     // countries (country only)
-    const cRows = (a.by_country || []).map(r => ({ v: r.installs, name: countryName(r.country) })).filter(r => r.v);
+    const cRows = (a.by_country || []).map(r => ({ v: r.units, name: countryName(r.country) })).filter(r => r.v);
     barList(document.getElementById("countries"), cRows, { empty: "Пока нет данных", limit: 10 });
 
     // pairs
@@ -352,22 +359,23 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     const pBox = document.getElementById("pairs");
     if (!pr.length) empty(pBox, "Переходов пока нет. Они появятся после первых обновлений.");
     else pBox.innerHTML = `<table><thead><tr><th>Модель</th><th>Переход</th><th>Способ</th><th class="n">Проекторов</th></tr></thead><tbody>` +
-      pr.slice(0, 12).map(r => `<tr><td class="m">${esc(modelName(r.model))}</td><td>${esc(r.from_version)}<span class="arrow">→</span>${esc(r.to_version)}</td><td class="m">${esc(METHODS[r.method] || r.method)}</td><td class="n">${fmt(r.n)}</td></tr>`).join("") + `</tbody></table>`;
+      pr.slice(0, 12).map(r => `<tr><td class="m">${esc(modelName(r.model))}</td><td>${esc(r.from_version)}<span class="arrow">→</span>${esc(r.to_version)}</td><td class="m">${esc(METHODS[r.method] || r.method)}</td><td class="n">${fmt(r.units)}</td></tr>`).join("") + `</tbody></table>`;
 
     // models
     const mRows = (a.by_model || []).filter(r => inModel(r.model));
     const mdl = document.getElementById("models");
     if (!mRows.length) empty(mdl, "Пока нет данных");
     else mdl.innerHTML = `<table><thead><tr><th>Модель</th><th>Код XGIMI</th><th class="n">Проекторов</th></tr></thead><tbody>` +
-      mRows.map(r => `<tr><td>${esc(modelName(r.model))}</td><td class="m">${esc(r.xgimi_model || "–")}</td><td class="n">${fmt(r.installs)}</td></tr>`).join("") + `</tbody></table>`;
+      mRows.map(r => `<tr><td>${esc(modelName(r.model))}</td><td class="m">${esc(r.xgimi_model || "–")}</td><td class="n">${fmt(r.units)}</td></tr>`).join("") + `</tbody></table>`;
 
     // GitHub: latest snapshot per release, three measures stacked
     // tags: <slug>-<version> from 1.0.8, v<version> (Z9X) and hb-<version> (HB) before; z9x / z9x-hb / hb / play6 are
     // update channels (only the manifests: their downloads are update checks); a tag missing from the newest
     // snapshot was deleted from GitHub
-    const CHANNEL_TAGS = new Set(["z9x", "z9x-hb", "hb", "play6"]);
-    const tagDevice = t => /^(z9x-hb|hb)(-|$)/.test(t) ? "goat_elegant" : /^play6(-|$)/.test(t) ? "dragon_healthy"
-      : /^(z9x(-|$)|v\d)/.test(t) ? "horse_popular" : "other";
+    const CHANNEL_TAGS = new Set(["z9x", "z9x-hb", "hb", "play6", "x50", "x50max", "rs30", "lumen-installer-index"]);
+    const tagDevice = t => /^lumen-installer(-|$)/.test(t) ? "installer" : /^(z9x-hb|hb)(-|$)/.test(t) ? "goat_elegant"
+      : /^play6(-|$)/.test(t) ? "dragon_healthy" : /^x50max(-|$)/.test(t) ? "g0100" : /^x50(-|$)/.test(t) ? "g0111"
+      : /^rs30(-|$)/.test(t) ? "g0155" : /^(z9x(-|$)|v\d)/.test(t) ? "horse_popular" : "other";
     const newest = gh.reduce((d, r) => r.date > d ? r.date : d, "");
     const last = {}; gh.forEach(r => { if (!last[r.tag] || r.date > last[r.tag].date) last[r.tag] = r; });
     Object.values(last).forEach(r => {

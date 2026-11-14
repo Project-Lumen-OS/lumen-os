@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">Miękki</string>
     <string name="lumen_m_pm_isf_day">ISF dzień</string>
     <string name="lumen_m_pm_isf_night">ISF noc</string>
+    <string name="lumen_m_pm_bright">Jasny</string>
     <string name="lumen_m_edid_hdmi_1_4">Zgodny (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">Rozszerzony (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

@@ -243,6 +243,8 @@ class JavaFile:
                     end = k + 1
                     break
                 j += 1
+            if end is None and mm.group(1) == "enum" and not self.members:
+                end = cb                               # enum constants without a closing semicolon
             if end is None:
                 raise ValueError("%s: member at offset %d does not end" % (path, start))
             lead = self._lead_start(prev_end, start)

@@ -22,14 +22,12 @@ import java.nio.file.Files;
 public final class Checker {
     private Checker() {}
 
-    public enum Outcome { UP_TO_DATE, OFFER, BLOCKED, ERROR, BUSY }
-
     public static final class Result {
-        public final Outcome outcome;
+        public final CheckOutcome outcome;
         public final UpdateManifest manifest;
         public final String res, arg;
 
-        Result(Outcome o, UpdateManifest m, String res, String arg) {
+        Result(CheckOutcome o, UpdateManifest m, String res, String arg) {
             outcome = o; manifest = m; this.res = res; this.arg = arg;
         }
     }
@@ -40,12 +38,12 @@ public final class Checker {
     public static synchronized Result check(Context c) {
         Stats.maybeSend(c);   // own thread, at most once a day, when the user has not turned it off
         Store st = Store.get(c);
-        Store.State s = st.state();
-        if (s == Store.State.DOWNLOADING || s == Store.State.INSTALLING || s == Store.State.READY) {
-            return new Result(Outcome.BUSY, null, "", "");
+        UpdateState s = st.state();
+        if (s == UpdateState.DOWNLOADING || s == UpdateState.INSTALLING || s == UpdateState.READY) {
+            return new Result(CheckOutcome.BUSY, null, "", "");
         }
-        Store.State before = s;
-        st.setState(Store.State.CHECKING);
+        UpdateState before = s;
+        st.setState(UpdateState.CHECKING);
         // beta on: the stable and the beta manifest, the higher version is offered; a beta manifest that is
         // missing, unreachable or does not verify is skipped (Channels)
         String[] urls = Channels.read();
@@ -76,12 +74,12 @@ public final class Checker {
             // no release published yet (or none for this channel): nothing to install
             Log.i(Ota.TAG, "no update manifest published (404)");
             st.setLastCheck(System.currentTimeMillis());
-            st.setState(before == Store.State.DOWNLOADED || before == Store.State.PAUSED ? before : Store.State.IDLE);
-            return new Result(Outcome.UP_TO_DATE, null, "", "");
+            st.setState(before == UpdateState.DOWNLOADED || before == UpdateState.PAUSED ? before : UpdateState.IDLE);
+            return new Result(CheckOutcome.UP_TO_DATE, null, "", "");
         }
         Log.w(Ota.TAG, "check failed: " + mainError);
         failed(st, before);
-        return new Result(Outcome.ERROR, null, "err_network", "");
+        return new Result(CheckOutcome.ERROR, null, "err_network", "");
     }
 
     /**
@@ -110,7 +108,7 @@ public final class Checker {
     }
 
     /** 2026-11-04: a failed check never hides a downloaded or paused update behind "no connection". */
-    private static void failed(Store st, Store.State before) {
+    private static void failed(Store st, UpdateState before) {
         if (org.lumen.updater.Outcome.keepOnCheckError(before.name())) st.setState(before);
         else st.setError("err_network", "");
     }
@@ -118,9 +116,9 @@ public final class Checker {
     /** Offline: an update copied to the root (or lumen-os/) of a USB stick. */
     public static synchronized Result checkUsb(Context c) {
         Store st = Store.get(c);
-        Store.State before = st.state();
-        if (before == Store.State.DOWNLOADING || before == Store.State.INSTALLING || before == Store.State.READY) {
-            return new Result(Outcome.BUSY, null, "", "");
+        UpdateState before = st.state();
+        if (before == UpdateState.DOWNLOADING || before == UpdateState.INSTALLING || before == UpdateState.READY) {
+            return new Result(CheckOutcome.BUSY, null, "", "");
         }
         for (File dir : usbDirs(c)) {
             // only this image's own manifest files (an update of another edition is never offered); with beta on
@@ -152,13 +150,13 @@ public final class Checker {
             for (int k; (k = Channels.pick(codes)) >= 0; codes[k] = Channels.MISSING) {
                 try {
                     Result r = accept(c, json[k], sig[k], true, dir.getAbsolutePath(), before);
-                    if (r.outcome == Outcome.OFFER) {
+                    if (r.outcome == CheckOutcome.OFFER) {
                         UpdateManifest.Pkg p = UpdateManifest.Pkg.parse(st.packageJson());
                         if (new File(dir, p.fileName()).isFile()) return r;
                         Log.w(Ota.TAG, "USB: " + p.fileName() + " not next to " + files[k]);
                         st.clearOffer();
-                        st.setState(before == Store.State.CHECKING ? Store.State.IDLE : before);
-                    } else if (r.outcome != Outcome.ERROR) {
+                        st.setState(before == UpdateState.CHECKING ? UpdateState.IDLE : before);
+                    } else if (r.outcome != CheckOutcome.ERROR) {
                         return r;
                     }
                 } catch (JSONException e) {
@@ -166,7 +164,7 @@ public final class Checker {
                 }
             }
         }
-        return new Result(Outcome.ERROR, null, "usb_none", "");
+        return new Result(CheckOutcome.ERROR, null, "usb_none", "");
     }
 
     static File[] usbDirs(Context c) {
@@ -183,12 +181,12 @@ public final class Checker {
         return out.toArray(new File[0]);
     }
 
-    private static Result accept(Context c, byte[] json, byte[] sig, boolean usb, String usbDir, Store.State before) {
+    private static Result accept(Context c, byte[] json, byte[] sig, boolean usb, String usbDir, UpdateState before) {
         Store st = Store.get(c);
         if (!Trust.verifyWithSystemCerts(json, sig)) {
             Log.w(Ota.TAG, "manifest signature invalid");
             st.setError("err_signature", "");
-            return new Result(Outcome.ERROR, null, "err_signature", "");
+            return new Result(CheckOutcome.ERROR, null, "err_signature", "");
         }
         UpdateManifest m;
         try {
@@ -196,23 +194,23 @@ public final class Checker {
         } catch (JSONException e) {
             Log.w(Ota.TAG, "manifest unreadable: " + e);
             st.setError("err_signature", "");
-            return new Result(Outcome.ERROR, null, "err_signature", "");
+            return new Result(CheckOutcome.ERROR, null, "err_signature", "");
         }
         st.setLastCheck(System.currentTimeMillis());
         Preflight.Block b = Preflight.applicable(m);
         if (b != null && "uptodate".equals(b.res)) {
-            if (before != Store.State.DOWNLOADED) st.clearOffer();
-            st.setState(before == Store.State.DOWNLOADED || before == Store.State.PAUSED ? before : Store.State.IDLE);
-            return new Result(Outcome.UP_TO_DATE, m, "", "");
+            if (before != UpdateState.DOWNLOADED) st.clearOffer();
+            st.setState(before == UpdateState.DOWNLOADED || before == UpdateState.PAUSED ? before : UpdateState.IDLE);
+            return new Result(CheckOutcome.UP_TO_DATE, m, "", "");
         }
         if (b != null) {
             st.setError(b.res, b.arg);
-            return new Result(Outcome.BLOCKED, m, b.res, b.arg);
+            return new Result(CheckOutcome.BLOCKED, m, b.res, b.arg);
         }
         UpdateManifest.Pkg p = m.choose(Ota.buildId());
         if (p == null) {
             st.setError("err_signature", "");
-            return new Result(Outcome.ERROR, m, "err_signature", "");
+            return new Result(CheckOutcome.ERROR, m, "err_signature", "");
         }
         // keep a download in progress if it is the very same file
         boolean same = false;
@@ -224,13 +222,13 @@ public final class Checker {
         if (!same) {
             UpdateService.deleteFiles(c);
             st.setOffer(m.json, p.json, usb, usbDir);
-            st.setState(Store.State.AVAILABLE);
-        } else if (before == Store.State.PAUSED || before == Store.State.DOWNLOADED) {
+            st.setState(UpdateState.AVAILABLE);
+        } else if (before == UpdateState.PAUSED || before == UpdateState.DOWNLOADED) {
             st.setState(before);
         } else {
-            st.setState(Store.State.AVAILABLE);
+            st.setState(UpdateState.AVAILABLE);
         }
         Log.i(Ota.TAG, "offer " + m.version + " " + p.type + " " + p.size + " B" + (usb ? " (USB)" : ""));
-        return new Result(Outcome.OFFER, m, "", "");
+        return new Result(CheckOutcome.OFFER, m, "", "");
     }
 }

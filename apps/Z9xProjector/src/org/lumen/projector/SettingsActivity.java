@@ -43,8 +43,8 @@ public final class SettingsActivity extends Activity {
     private Shell shell;
     private View keystoneAnchor;
     private Kit.Row uiResRow;
-    private final Map<HalController.Toggle, Kit.Row> toggleRows = new EnumMap<>(HalController.Toggle.class);
-    private final Map<HalController.Toggle, Boolean> toggleState = new EnumMap<>(HalController.Toggle.class);
+    private final Map<HalToggle, Kit.Row> toggleRows = new EnumMap<>(HalToggle.class);
+    private final Map<HalToggle, Boolean> toggleState = new EnumMap<>(HalToggle.class);
     private Kit.Row slot3Row, slot4Row, launcherRow, bootSourceRow;
     private Kit.Row voiceLang, voiceSpeak, voiceKey;
     private Kit.Row statsRow;
@@ -134,7 +134,7 @@ public final class SettingsActivity extends Activity {
         View af = tile(R.drawable.ic_s2_t_af, R.string.s2_t_af, R.string.s2_t_af_sub, v -> hal.requestAutofocus());
         keystoneAnchor = tile(R.drawable.ic_s2_t_kst, R.string.s2_t_kst, R.string.s2_t_kst_sub, v -> hal.requestKeystone(false));
         View fit = tile(R.drawable.ic_s2_t_fit, R.string.s2_t_fit, R.string.s2_t_fit_sub, v -> {
-            Boolean cf = toggleState.get(HalController.Toggle.CURTAIN_FIT);
+            Boolean cf = toggleState.get(HalToggle.CURTAIN_FIT);
             if (Boolean.FALSE.equals(cf)) { Ui.toast(this, R.string.toast_need_curtain); return; }
             hal.requestKeystone(true);
         });
@@ -143,19 +143,19 @@ public final class SettingsActivity extends Activity {
         focus.addView(Kit.tileRow(this, af, keystoneAnchor, fit, manual));
         focus.addView(Kit.space(this, 20));
         LinearLayout left = Kit.card(this), right = Kit.card(this);
-        toggle(left, HalController.Toggle.POWER_ON_AF, R.string.tg_power_on_af, R.string.s2_d_power_on_af);
-        toggle(left, HalController.Toggle.POWER_ON_AK, R.string.tg_power_on_ak, R.string.s2_d_power_on_ak);
-        toggle(left, HalController.Toggle.MOVE_AF, R.string.tg_move_af, R.string.s2_d_move);
-        toggle(right, HalController.Toggle.MOVE_AK, R.string.tg_move_ak, R.string.s2_d_move);
-        toggle(right, HalController.Toggle.CURTAIN_FIT, R.string.tg_curtain, R.string.s2_d_curtain);
-        toggle(right, HalController.Toggle.OBSTACLE, R.string.tg_obstacle, R.string.s2_d_obstacle);
+        toggle(left, HalToggle.POWER_ON_AF, R.string.tg_power_on_af, R.string.s2_d_power_on_af);
+        toggle(left, HalToggle.POWER_ON_AK, R.string.tg_power_on_ak, R.string.s2_d_power_on_ak);
+        toggle(left, HalToggle.MOVE_AF, R.string.tg_move_af, R.string.s2_d_move);
+        toggle(right, HalToggle.MOVE_AK, R.string.tg_move_ak, R.string.s2_d_move);
+        toggle(right, HalToggle.CURTAIN_FIT, R.string.tg_curtain, R.string.s2_d_curtain);
+        toggle(right, HalToggle.OBSTACLE, R.string.tg_obstacle, R.string.s2_d_obstacle);
         focus.addView(Kit.columns(this, left, right));
 
         // Power on (Lumen OS 1.0.4: the stock power on/off settings, power-on music and boot source)
         LinearLayout power = shell.section("power", R.drawable.ic_s2_power, getString(R.string.s2_sec_power));
         Kit.heading(power, null, getString(R.string.s2_sec_power));
         LinearLayout pc = Kit.card(this);
-        toggle(pc, HalController.Toggle.POWER_ON_MUSIC, R.string.tg_power_on_music, R.string.s2_d_music);
+        toggle(pc, HalToggle.POWER_ON_MUSIC, R.string.tg_power_on_music, R.string.s2_d_music);
         bootSourceRow = valueRow(pc, R.string.boot_source, R.string.s2_d_boot, v -> pickBootSource());
         power.addView(pc);
 
@@ -255,7 +255,7 @@ public final class SettingsActivity extends Activity {
         return r;
     }
 
-    private void toggle(LinearLayout card, HalController.Toggle t, int title, int sub) {
+    private void toggle(LinearLayout card, HalToggle t, int title, int sub) {
         Kit.Row r = Kit.switchRow(this, getString(title), getString(sub)).onClick(v -> onToggleClick(t));
         Kit.add(card, r);
         r.sw.setOn(null);
@@ -329,9 +329,9 @@ public final class SettingsActivity extends Activity {
         hal.readToggles(this::showToggles);
     }
 
-    private void showToggles(Map<HalController.Toggle, Boolean> m) {
+    private void showToggles(Map<HalToggle, Boolean> m) {
         if (isFinishing() || isDestroyed()) return;
-        for (HalController.Toggle t : HalController.Toggle.values()) {
+        for (HalToggle t : HalToggle.values()) {
             Boolean v = m.get(t);
             toggleState.put(t, v);
             Kit.Row r = toggleRows.get(t);
@@ -339,7 +339,7 @@ public final class SettingsActivity extends Activity {
         }
     }
 
-    private void onToggleClick(HalController.Toggle t) {
+    private void onToggleClick(HalToggle t) {
         if (!feat) { Ui.featureOffNotice(this); return; }
         Boolean cur = toggleState.get(t);
         if (cur == null) {

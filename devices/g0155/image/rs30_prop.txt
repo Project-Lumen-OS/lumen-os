@@ -1,0 +1,31 @@
+# Property edits of the RS30 Ultra Max test image (image/steps.tsv, devices/g0111/image/x50_props.py; format
+# in devices/g0111/image/x50_prop.txt). Base: lineage_gsi_tv_arm eng.root.20261112.004111 (base.sha256). Every test
+# build has its own identity: Android re-runs the default permission grants and rescans packages only when the
+# fingerprint differs from the one stored in /data.
+[system]
+ro.product.system.model=XGIMI RS30 Ultra Max
+ro.build.display.id=Lumen OS rs30-@V@ (AP2A.240905.003, @BID@, test)
+ro.build.version.incremental=eng.root.20261112.004111.rs30@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261112.004111.rs30@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm/generic:14/AP2A.240905.003/eng.root.20261112.004111.rs30@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
+# test image: adb over the network with no key prompt (the USB port stays in host mode)
+ro.adb.secure=0
+[product]
+ro.product.product.model=XGIMI RS30 Ultra Max
++bluetooth.device.default_name=XGIMI RS30 Ultra Max
+# the USB port stays in host mode as on stock (vendor init.mt9681.usb.rc runs usb_otg_agent device on adb, the
+# ToF module and the USB-A port sit on that controller); adb comes over the network (x50_netadb.rc)
++persist.sys.usb.config=mtp
+# a TV, as stock (the GSI says emulator)
+ro.build.characteristics=tv
++service.adb.tcp.port=5555
++ro.lumen.version=rs30-@V@
++ro.lumen.device=g0155
++ro.lumen.model=G0155
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-rs30-@V@-@BID@
++ro.lumen.base_build_id=lineage-21-gsi_tv_arm-uffd-20261112

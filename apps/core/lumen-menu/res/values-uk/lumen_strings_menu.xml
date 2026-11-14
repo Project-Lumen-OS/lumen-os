@@ -119,6 +119,7 @@
     <string name="lumen_m_pm_soft">М’який</string>
     <string name="lumen_m_pm_isf_day">ISF день</string>
     <string name="lumen_m_pm_isf_night">ISF ніч</string>
+    <string name="lumen_m_pm_bright">Яскравий</string>
     <string name="lumen_m_edid_hdmi_1_4">Сумісний (HDMI 1.4)</string>
     <string name="lumen_m_edid_hdmi_2_0">Покращений (HDMI 2.0)</string>
     <string name="lumen_m_out_arc">HDMI ARC</string>

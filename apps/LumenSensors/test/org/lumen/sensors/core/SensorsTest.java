@@ -2,6 +2,7 @@
 package org.lumen.sensors.core;
 
 import org.lumen.sensors.hal.GmpfAllowlist;
+import org.lumen.sensors.hal.Z9xHalCodes;
 import org.lumen.sensors.hal.GmpfStructs;
 import org.lumen.sensors.z9x.Z9xSchedule;
 
@@ -564,7 +565,8 @@ public final class SensorsTest {
             boolean hal = rel.startsWith("org/lumen/sensors/hal/"), z9x = rel.startsWith("org/lumen/sensors/z9x/");
             boolean x50 = rel.startsWith("org/lumen/sensors/x50/");
             boolean x50hal = rel.equals("org/lumen/sensors/hal/X50Gmpf.java")
-                    || rel.equals("org/lumen/sensors/hal/X50Structs.java");
+                    || rel.equals("org/lumen/sensors/hal/X50Structs.java") || rel.equals("org/lumen/sensors/hal/X50GmpfCall.java")
+                    || rel.equals("org/lumen/sensors/hal/X50GmpfIface.java") || rel.equals("org/lumen/sensors/hal/X50HalCodes.java");
             for (String bad : new String[] {"callRet", "callU8", "callI32", "callBool", "HwBinder"}) {
                 eq(rel + ": no " + bad, 0, count(t, bad));
             }
@@ -635,10 +637,10 @@ public final class SensorsTest {
         }
         yes("tasks take the period of their code", count(src, "Z9xSchedule.kindOf(iface, code)") == 1);
         int tasks = count(src, "new OneTask(\"") + count(src, "new Task(\"") + count(src, "super(\"");
-        int planned = count(src, ", IGMPF, GmpfAllowlist.") + count(src, ", IGMPF2, GmpfAllowlist.");
+        int planned = count(src, ", IGMPF, Z9xHalCodes.") + count(src, ", IGMPF2, Z9xHalCodes.");
         eq("every task names its interface and code", tasks, planned);
         yes("ToF task reads 279",
-                src.contains("tofTask = new OneTask(\"279 ToF distance\", IGMPF, GmpfAllowlist.TOF_DISTANCE"));
+                src.contains("tofTask = new OneTask(\"279 ToF distance\", IGMPF, Z9xHalCodes.GMPF_GET_TOF_DISTANCE"));
         yes("ToF waits for every other first read", src.contains("if (t == tofTask && probesDoneAt == 0) return false;"));
         yes("ToF takes its turn by due time", src.contains("if (t != screenTask && wanted(t) && (best == null || t.due < best.due))")
                 && count(src, "tofTask.due < best.due") == 0);

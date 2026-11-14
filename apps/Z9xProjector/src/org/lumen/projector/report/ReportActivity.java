@@ -55,7 +55,7 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
     private TextView title;
     private LinearLayout body;
     private LinearLayout buttons;
-    private ReportJob.State shown;
+    private ReportState shown;
     private TextView status;
     private TextView hint;
     private ProgressBar bar;
@@ -172,7 +172,7 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
 
     // ------------------------------------------------------------------ states
     private void render() {
-        ReportJob.State st = job.state();
+        ReportState st = job.state();
         if (st == shown) {
             updateProgress();
             return;
@@ -271,7 +271,7 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
 
     private void updateProgress() {
         if (status == null || bar == null) return;
-        if (job.state() == ReportJob.State.COLLECTING) {
+        if (job.state() == ReportState.COLLECTING) {
             int n = Math.max(1, job.steps());
             int s = Math.max(1, Math.min(job.step(), n));
             status.setText(getString(R.string.report_collecting, s, n));
@@ -309,7 +309,7 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
         return retry;
     }
 
-    private static int failureText(ReportUploader.Failure f) {
+    private static int failureText(ReportFailure f) {
         if (f == null) return R.string.report_err_server;
         switch (f) {
             case NO_NETWORK: return R.string.report_err_no_network;

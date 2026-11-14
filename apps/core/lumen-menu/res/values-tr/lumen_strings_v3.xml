@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Güç tasarrufu</string>
     <string name="lumen_m_ambient_speaker">Ortam hoparlörü</string>
     <string name="lumen_m_ct_custom">Özel</string>
+    <string name="lumen_m_lamp_off">Görüntüyü kapat</string>
 </resources>

@@ -112,6 +112,17 @@ public final class BetaTest {
         eq("newer stable", "ok", res(app("public-nogms", 10011)));
         eq("newer beta while off", "blk_channel", res(app("public-beta", 10012)));
 
+        // 1.0.11-beta1 went out as 10013, the Z9X codes follow a project decision from 1.0.11 (recipe.z9x_code)
+        image(NOGMS, 10013);
+        Ota.setBeta(true);
+        eq("beta2 over beta1", "ok", res(app("public-beta", 1001102)));
+        eq("beta1 over beta1", "uptodate", res(app("public-beta", 10013)));
+        image(NOGMS, 1001102);
+        eq("the final over the last beta", "ok", res(app("public-nogms", 1001199)));
+        eq("pick: the final over the last beta", 0, Channels.pick(new int[] {1001199, 1001102}));
+        Ota.setBeta(false);
+        eq("1.0.10 under a beta", "uptodate", res(app("public-nogms", 10012)));
+
         // the private and the Google editions: no switch, the choice changes nothing
         image(LATEST + "update-stable.json", 10009);
         Ota.setBeta(true);

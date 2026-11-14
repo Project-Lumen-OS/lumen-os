@@ -116,6 +116,9 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- apps/core/lumen-stats: the statistics ping (HTTPS) with the serial (Build.getSerial, signature|privileged) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
 
     <!-- launches from the key receiver; Ambient key -->
     <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
@@ -334,5 +337,12 @@
                 <action android:name="org.lumen.projector.action.TEST_POWER_EVENT" />
             </intent-filter>
         </receiver>
+
+        <!-- The anonymous statistics runs (apps/core/lumen-stats StatsJob): after boot and once a day. -->
+        <service
+            android:name="org.lumen.stats.StatsJob"
+            android:directBootAware="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

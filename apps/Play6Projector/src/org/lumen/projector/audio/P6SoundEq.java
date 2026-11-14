@@ -10,6 +10,7 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.Ui;
+import org.lumen.projector.hal.AudioPath;
 import org.lumen.projector.hal.Play6Gmpf;
 
 import java.util.Arrays;
@@ -80,10 +81,10 @@ public final class P6SoundEq {
     /** The equalizer can work now: AMP process, no DTS, output on the built-in speaker (p6-hal). */
     public static boolean usable(Play6Gmpf g) {
         try {
-            int proc = g.getSoundProcess();                          // 26
+            int proc = g.getSoundProcessRaw();                          // 26
             boolean dts = g.getDtsEffects();                         // 43
-            int out = g.getAudioOutput();                            // 60
-            boolean ok = proc == Play6Gmpf.SOUND_PROCESS_AMP && !dts && out == Play6Gmpf.AUDIO_OUTPUT_SPEAKER;
+            int out = g.getAudioOutputRaw();                            // 60
+            boolean ok = proc == Play6Gmpf.SOUND_PROCESS_AMP && !dts && out == AudioPath.SPEAKER.wire;
             if (!ok) Log.i(TAG, "not usable now: process " + proc + ", dts " + dts + ", output " + out);
             return ok;
         } catch (Throwable t) {

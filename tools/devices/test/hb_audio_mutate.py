@@ -11,6 +11,7 @@ G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..
 P = "src/org/lumen/projector/panel/"
 A = "src/org/lumen/projector/audio/"
 SC, SM, PP, QP = P + "SlideCoalescer.java", P + "SlideMain.java", P + "ProPicture.java", P + "HbMenuFeatures.java"
+QP_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 AR, ROWS, OPT, AOC = A + "HbAudioRules.java", A + "HbOutputRows.java", A + "HbOutputOptions.java", A + "AudioOutputChoice.java"
 APR, HP, JACK = A + "AudioPathReporter.java", A + "HbHeadphoneVolume.java", A + "HbWiredJack.java"
 FEAT = "src/org/lumen/projector/hal/HbFeatures.java"
@@ -35,14 +36,14 @@ MUT = [
     ("pp_read_while_sliding", PP, "        if (sliding()) return;                                  // HB fork", "        // HB fork"),
     ("pp_no_forget", PP, "        for (SlideCoalescer c : slides) c.forget();", ""),
     ("pp_no_register", PP, "        slides.add(c);\n", ""),
-    ("mf_pq_no_range", QP, "        if (v < 0 || v > 100) { refuse(cb, null); return; }\n", ""),
-    ("mf_pq_wrong_item", QP, 'case "contrast": it = GmpfClient.PqItem.CONTRAST; break;', 'case "contrast": it = GmpfClient.PqItem.BRIGHTNESS; break;'),
+    ("mf_pq_no_range", QP_HbPictureRows, "        if (v < PQ_MIN || v > PQ_MAX) { refuse(cb, null); return; }\n", ""),
+    ("mf_pq_wrong_item", QP_HbPictureRows, 'case "contrast": it = PqItem.CONTRAST; break;', 'case "contrast": it = PqItem.BRIGHTNESS; break;'),
     ("sm_fire_and_forget", SM, "        Hal.query((g, g2) -> {", "        Hal.run((g, g2) -> {"),
     ("sm_ok_on_null", SM, "boolean ok = Boolean.TRUE.equals(r);", "boolean ok = !Boolean.FALSE.equals(r);"),
     # ---- the 3.5 mm rules
-    ("ar_connect_when_listed", AR, "return wiredListed ? WiredStep.NONE : WiredStep.CONNECT;", "return WiredStep.CONNECT;"),
-    ("ar_remove_real_jack", AR, "return ours && wiredListed ? WiredStep.DISCONNECT", "return wiredListed ? WiredStep.DISCONNECT"),
-    ("ar_never_remove", AR, "return ours && wiredListed ? WiredStep.DISCONNECT : WiredStep.NONE;", "return WiredStep.NONE;"),
+    ("ar_connect_when_listed", AR, "return wiredListed ? WiredOutputStep.NONE : WiredOutputStep.CONNECT;", "return WiredOutputStep.CONNECT;"),
+    ("ar_remove_real_jack", AR, "return ours && wiredListed ? WiredOutputStep.DISCONNECT", "return wiredListed ? WiredOutputStep.DISCONNECT"),
+    ("ar_never_remove", AR, "return ours && wiredListed ? WiredOutputStep.DISCONNECT : WiredOutputStep.NONE;", "return WiredOutputStep.NONE;"),
     ("ar_no_interim", AR, "(\"AUTO\".equals(chosen) || chosen == null)", "(chosen == null)"),
     ("ar_hp_unconfirmed", AR, "return target == PATH_WIRED && confirmed == PATH_WIRED;", "return target == PATH_WIRED;"),
     ("ar_store_bt_too", AR, "    public static boolean storeHeadphoneBeforeEnd(int path) {\n        return path == PATH_WIRED;",
@@ -56,16 +57,16 @@ MUT = [
     ("opt_no_jack", OPT, "HbOutputRows.kinds(connected, known, chosen, HbWiredJack.offered())", "HbOutputRows.kinds(connected, known, chosen, false)"),
     # ---- the 3.5 mm wiring
     ("aoc_no_wait", AOC, "                HbWiredJack.connect(am, true, why);\n                return;", "                HbWiredJack.connect(am, true, why);"),
-    ("aoc_no_interim", AOC, "                d = find(am, Kind.SPEAKER, \"\");", ""),
+    ("aoc_no_interim", AOC, "                d = find(am, AudioOutputKind.SPEAKER, \"\");", ""),
     ("aoc_remove_first", AOC, "            boolean ok = am.setPreferredDeviceForStrategy(media, want);",
-     "            if (jack == HbAudioRules.WiredStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n            boolean ok = am.setPreferredDeviceForStrategy(media, want);"),
-    ("aoc_never_remove_unlisted", AOC, "                if (jack == HbAudioRules.WiredStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n                return;\n            }\n            AudioDeviceAttributes want",
+     "            if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n            boolean ok = am.setPreferredDeviceForStrategy(media, want);"),
+    ("aoc_never_remove_unlisted", AOC, "                if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n                return;\n            }\n            AudioDeviceAttributes want",
      "                return;\n            }\n            AudioDeviceAttributes want"),
     ("jack_headset_type", JACK, "                    AudioDeviceInfo.TYPE_WIRED_HEADPHONES, \"\");", "                    AudioDeviceInfo.TYPE_WIRED_HEADSET, \"\");"),
     ("jack_not_ours", JACK, "            sOurs = on;\n", ""),
     ("jack_ungated", JACK, "return HbFeatures.on(HbFeatures.F.WIRED_HEADPHONE);", "return true;"),
     ("apr_no_hp_branch", APR, "} else if (HbAudioRules.storeHeadphoneBeforeEnd(target)) {", "} else if (false) {"),
-    ("apr_sink_bt_only", APR, "} else if (HbAudioRules.speakerSinkAfter(sHalSink, target)) {", "} else if (sHalSink == GmpfClient.AudioPath.BT_A2DP.wire) {"),
+    ("apr_sink_bt_only", APR, "} else if (HbAudioRules.speakerSinkAfter(sHalSink, target)) {", "} else if (sHalSink == AudioPath.BT_A2DP.wire) {"),
     ("apr_no_hp_install", APR, "            org.lumen.projector.Ui.main().post(() -> HbHeadphoneVolume.install(sApp));   // HB fork 2026-11-10\n", ""),
     ("hp_end_without_level", HP, "        if (!send(am, v)) {", "        if (false) {"),
     ("hp_unconfirmed", HP, "HbAudioRules.headphoneConfirmed(AudioPathReporter.targetPath(), AudioPathReporter.confirmedPath())",

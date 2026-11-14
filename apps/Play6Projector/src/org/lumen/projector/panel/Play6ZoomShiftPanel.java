@@ -20,8 +20,10 @@ import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
-import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Gmpf2;
+import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
+import org.lumen.projector.hal.ShiftDir;
 import org.lumen.projector.ui.Notify;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
@@ -190,7 +192,7 @@ public final class Play6ZoomShiftPanel extends Panel {
             if (closed) exitNow(g, g2, "closed during enter");
         } catch (Throwable t) {
             Log.w(TAG, "enter failed: " + t);
-            if (t instanceof Play6Gmpf.ReplyException) markUnsupported("117 / 116 reply: " + t.getMessage());
+            if (t instanceof ReplyException) markUnsupported("117 / 116 reply: " + t.getMessage());
             exitNow(g, g2, "enter failed");
             ui(() -> fail("enter"));
         }
@@ -233,7 +235,7 @@ public final class Play6ZoomShiftPanel extends Panel {
         }
     }
 
-    private void shiftStep(Play6Gmpf g, int dir) {
+    private void shiftStep(Play6Gmpf g, ShiftDir dir) {
         try {
             if (state != READY || closed) return;
             int check = g.shiftPicture(dir, true);                   // 141(dir, true)
@@ -373,10 +375,10 @@ public final class Play6ZoomShiftPanel extends Panel {
         boolean arrowsMove = stockKeys || shiftMode;                 // stock: the arrows always move
         boolean bigger = code == KeyEvent.KEYCODE_VOLUME_UP || code == 150 || !arrowsMove && (up || right);
         boolean smaller = code == KeyEvent.KEYCODE_VOLUME_DOWN || code == 148 || !arrowsMove && (down || left);
-        int dir = !arrowsMove ? 0 : up ? Play6Gmpf.SHIFT_UP : down ? Play6Gmpf.SHIFT_DOWN
-                : left ? Play6Gmpf.SHIFT_LEFT : right ? Play6Gmpf.SHIFT_RIGHT : 0;
+        ShiftDir dir = !arrowsMove ? null : up ? ShiftDir.UP : down ? ShiftDir.DOWN
+                : left ? ShiftDir.LEFT : right ? ShiftDir.RIGHT : null;
         if (ev.getAction() == KeyEvent.ACTION_DOWN) leaseVolumeKeys(true);
-        if (!bigger && !smaller && dir == 0) return up || down || left || right;
+        if (!bigger && !smaller && dir == null) return up || down || left || right;
         if (ev.getAction() != KeyEvent.ACTION_DOWN || state != READY || inFlight
                 || SystemClock.uptimeMillis() - lastStepAt < MIN_STEP_GAP_MS) return true;
         boolean queued;
@@ -386,7 +388,7 @@ public final class Play6ZoomShiftPanel extends Panel {
             inFlight = true;
             queued = Hal.run((g, g2) -> sizeStep(g, sm));
         } else {
-            final int d = dir;
+            final ShiftDir d = dir;
             inFlight = true;
             queued = Hal.run((g, g2) -> shiftStep(g, d));
         }

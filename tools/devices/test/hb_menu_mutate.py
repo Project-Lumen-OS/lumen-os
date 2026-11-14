@@ -13,17 +13,20 @@ G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..
 P = "src/org/lumen/projector/panel/"
 GT, MF, GI, HM, QP = P + "HbMenuGates.java", P + "HbMenuFeatures.java", P + "HbGameIo.java", P + "HbMenu.java", \
     P + "QuickPanelController.java"
+MF_HbGeneralRows = 'src/org/lumen/projector/panel/HbGeneralRows.java'
+MF_HbHdmiRows = 'src/org/lumen/projector/panel/HbHdmiRows.java'
+MF_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 KR, APP = "src/org/lumen/projector/KeyReceiver.java", "src/org/lumen/projector/App.java"
 PROF = "@G/devices/goat_elegant/menu.json"
 MUT = [
     # ---- gates
-    ("gt_boost_ungated", GT, '{"boost", "BOOST"}', '{"boost", null}'),
-    ("gt_color_temp_ungated", GT, '{"picture.color_temp", "COLOR_TEMP"}', '{"picture.color_temp", null}'),
-    ("gt_eye_ungated", GT, '{"eye", "EYE_PROTECTION"}', '{"eye", null}'),
-    ("gt_earc_ungated", GT, '{"sound.earc", "HDMI"}', '{"sound.earc", null}'),
-    ("gt_ak_wrong_key", GT, '{"keystone.ak_now", "AUTO_KEYSTONE"}', '{"keystone.ak_now", "CURTAIN_FIT"}'),
-    ("gt_implemented_all", GT, "if (g[1] == null || on.test(g[1])) out.add(g[0]);", "out.add(g[0]);"),
-    ("gt_row_missing", GT, '            {"usb_files", null},\n', ""),
+    ("gt_boost_ungated", GT, '{FeatureId.BOOST, "BOOST"}', '{FeatureId.BOOST, null}'),
+    ("gt_color_temp_ungated", GT, '{FeatureId.PICTURE_COLOR_TEMP, "COLOR_TEMP"}', '{FeatureId.PICTURE_COLOR_TEMP, null}'),
+    ("gt_eye_ungated", GT, '{FeatureId.EYE, "EYE_PROTECTION"}', '{FeatureId.EYE, null}'),
+    ("gt_earc_ungated", GT, '{FeatureId.SOUND_EARC, "HDMI"}', '{FeatureId.SOUND_EARC, null}'),
+    ("gt_ak_wrong_key", GT, '{FeatureId.KEYSTONE_AK_NOW, "AUTO_KEYSTONE"}', '{FeatureId.KEYSTONE_AK_NOW, "CURTAIN_FIT"}'),
+    ("gt_implemented_all", GT, "if (g[1] == null || on.test((String) g[1])) out.add((FeatureId) g[0]);", "out.add((FeatureId) g[0]);"),
+    ("gt_row_missing", GT, '            {FeatureId.USB_FILES, null},\n', ""),
     ("gt_game_sr", GT, '            {"lat", "GAME_MODE"},\n', '            {"lat", "GAME_MODE"},\n            {"sr", "GAME_MODE"},\n'),
     ("gt_game_no_bar_gate", GT, 'if (!on.test("GAME_MODE") || !on.test("GAME_BAR")) return', 'if (!on.test("GAME_MODE")) return'),
     ("gt_vrr_ungated", GT, '{"vrr", "GAME_VRR"}', '{"vrr", "GAME_MODE"}'),
@@ -37,11 +40,11 @@ MUT = [
     # ---- adapter
     ("mf_set_ungated", MF, "        if (!implemented().contains(feature)) { refuse(cb, null); return; }\n", ""),
     ("mf_open_ungated", MF, "        if (!implemented().contains(screen)) return false;\n", ""),
-    ("mf_boost_no_explain", MF, "BoostRules.Leave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);", "BoostRules.Leave.EXPLAIN_PICTURE_MODE) { }"),
-    ("mf_range_no_hdmi", MF, 'throw new IllegalArgumentException("range " + value);\n                if (!hdmiNow(g)) return "panel_game_hdmi_only";',
+    ("mf_boost_no_explain", MF_HbPictureRows, "BoostLeave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);", "BoostLeave.EXPLAIN_PICTURE_MODE) { }"),
+    ("mf_range_no_hdmi", MF_HbHdmiRows, 'throw new IllegalArgumentException("range " + value);\n                if (!hdmiNow(g)) return "panel_game_hdmi_only";',
      'throw new IllegalArgumentException("range " + value);'),
-    ("mf_reason_unknown", MF, 'return "blocked_game";', 'return "blocked_game_x";'),
-    ("mf_eye_no_nui", MF, '                if (!GmpfClient.nuiReaderReady()) return "eye_unavailable";   // no NUI fifo reader: nothing sent\n', ""),
+    ("mf_reason_unknown", MF_HbPictureRows, 'return "blocked_game";', 'return "blocked_game_x";'),
+    ("mf_eye_no_nui", MF_HbGeneralRows, '                if (!GmpfClient.nuiReaderReady()) return "eye_unavailable";   // no NUI fifo reader: nothing sent\n', ""),
     ("mf_items_ungated", MF, "return HbMenuGates.gameItems(f -> HbFeatures.on(HbFeatures.F.valueOf(f)));", "return HbMenuGates.gameItems(f -> true);"),
     # ---- game menu io
     ("gi_sr_written", GI, "            default:\n                // sr / snd",

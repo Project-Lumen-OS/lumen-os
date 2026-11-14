@@ -97,8 +97,6 @@ public final class AirPlayService extends Service {
        (any admitted LAN host could otherwise pop it over whatever is playing, again and again) */
     private static final long PIN_QUIET_MS = 30_000;
 
-    enum ServerState { STOPPED, STARTING, RUNNING, ERROR }
-
     /** UI listener (main thread). */
     interface Listener { void onAirPlayStateChanged(); }
 

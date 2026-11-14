@@ -49,6 +49,7 @@ DisplayManager	147	setGameModeType	setGameModeType [Z9X IGmpf2 56]
 DisplayManager	148	getGameModeProp	getGameModeProp [Z9X IGmpf2 55]
 DisplayManager	151	setLensDispMode	setBoost [Z9X IGmpf2 52]
 DisplayManager	152	getLensDispMode	isBoost [Z9X IGmpf2 51]
+DisplayManager	168	setScreenOnOffWithAction	shutScreen [Z9X IGmpf2 35]: (false, 1) only, the stock power menu's Turn off screen (release_838_shutdown PowerUtils.shutScreen -> GmDisplayManager.setScreenOnOffWithAction, xgimi.api.version 500)
 DisplayManager	172	setDynamicBlackType	setDynamicBlack [Z9X IGmpf2 31]
 DisplayManager	174	getDynamicBlackType	getDynamicBlack [Z9X IGmpf2 29]
 DisplayManager	179	getDispOutputFps	getDispOutputFps [-]; game bar FPS overlay while VRR is on, every 2 s, stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) FpsCell

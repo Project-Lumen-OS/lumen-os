@@ -35,7 +35,7 @@
 #   Return 0 when a stock system of the slot was mounted and read (the files it lacks are the reader's
 #   missing:<path>), 1 otherwise. STOCK_WHY says why not (notdsu, model, slot, tmpfs, nostock), STOCK_N how many
 #   files were copied. $R is the test root (empty on the device), log goes to the caller's TAG.
-DSU_STOCK_MODELS="G0111 G0100"
+DSU_STOCK_MODELS="G0111 G0100 G0155"
 
 stock_say() { log -t "${TAG:-blobs_stock}" "$*"; }
 

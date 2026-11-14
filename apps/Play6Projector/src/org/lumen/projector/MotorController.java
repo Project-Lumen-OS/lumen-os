@@ -6,7 +6,9 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
+import org.lumen.projector.hal.ManualFocus;
 import org.lumen.projector.hal.Play6Gmpf;
+import org.lumen.projector.hal.ReplyException;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -18,8 +20,9 @@ import java.util.concurrent.TimeUnit;
  * gate (nothing moves before Hal.isReady()). Stock FocusAdjust sends the same four values.
  *
  * The vendor moves the motor continuously after manualFocus(0/1) with no timeout of its own, so:
- *  - a move starts only from a key DOWN with repeatCount 0 (start), and only after the persisted flag
- *    manual_moving=true was committed (device-protected prefs of Play6App; a failed commit refuses it);
+ *  - a move starts only from a key DOWN with repeatCount 0 (start), and the persisted flag manual_moving=true
+ *    is committed right after the motor command, off the key's first step (device-protected prefs of Play6App,
+ *    P6AfRules.startMove: a failed commit stops the move at once);
  *  - key repeats feed a 700 ms watchdog; no feed -> stop;
  *  - ANY key UP (also canceled) -> stop = manualFocus(2), then the flag is cleared;
  *  - a failed stop is retried every 200 ms while the flag is set and the HAL is connected; after a
@@ -155,10 +158,10 @@ final class MotorController {
             if (!halUsable() || Hal.isKeystoneRunning() || moving) return;
             if (AkOverlay.isActive()) { Log.i(TAG, "manualFocus(17) refused: auto keystone overlay active"); return; }
             try {
-                client.manualFocus(Play6Gmpf.MANUAL_FOCUS_ENTER);
+                client.manualFocus(ManualFocus.ENTER);
                 entered = true;
                 Log.i(TAG, "manualFocus(17)");
-            } catch (Play6Gmpf.ReplyException e) {
+            } catch (ReplyException e) {
                 entered = true;
                 Log.w(TAG, "manualFocus(17) reply: " + e);
             } catch (Throwable t) {
@@ -265,25 +268,26 @@ final class MotorController {
             sendStop();
             if (moving || flagged()) return; // stop failed: never start on top of it
         }
-        if (!setFlag(true)) {                // must be on disk BEFORE the motor starts
-            // SharedPreferences already holds true in memory although the disk write failed:
-            // drop it again (best effort) and do not start a move that a restarted process
-            // could not stop.
-            state.edit().putBoolean(KEY_MOVING, false).commit();
-            Log.e(TAG, "move refused: " + KEY_MOVING + " could not be saved");
-            Ui.toast(app, R.string.toast_failed);
-            return;
-        }
         moving = true;
         dir = d;
         h.removeCallbacks(watchdog);
         h.postDelayed(watchdog, WATCHDOG_MS);
+        // the motor command first, the flag's disk write after it; a flag that cannot be saved stops the move
+        if (P6AfRules.startMove(() -> sendMove(d), () -> setFlag(true), this::sendStop) == P6AfRules.MOVE_FLAG_FAILED) {
+            Log.e(TAG, "move stopped: " + KEY_MOVING + " could not be saved");
+            Ui.toast(app, R.string.toast_failed);
+        }
+    }
+
+    /** manualFocus(1 / 0). False when the call failed: the motor may have started all the same. */
+    private boolean sendMove(int d) {
         try {
-            client.manualFocus(d == 1 ? Play6Gmpf.MANUAL_FOCUS_STOCK_LEFT : Play6Gmpf.MANUAL_FOCUS_STOCK_RIGHT);
+            client.manualFocus(d == 1 ? ManualFocus.STOCK_LEFT : ManualFocus.STOCK_RIGHT);
             Log.i(TAG, "manualFocus(" + d + ")");
+            return true;
         } catch (Throwable t) {
             Log.w(TAG, "manualFocus(" + d + ") failed, stopping: " + t);
-            sendStop();                      // fail-safe: it may have started
+            return false;
         }
     }
 
@@ -296,7 +300,7 @@ final class MotorController {
         h.removeCallbacks(stopRetry);
         h.removeCallbacks(watchdog);
         try {
-            client.manualFocus(Play6Gmpf.MANUAL_FOCUS_STOP);
+            client.manualFocus(ManualFocus.STOP);
             Log.i(TAG, "manualFocus(2)");
             moving = false;
             dir = -1;

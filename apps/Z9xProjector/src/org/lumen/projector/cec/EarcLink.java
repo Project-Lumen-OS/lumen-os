@@ -71,6 +71,7 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.audio.AudioOutputChoice;
+import org.lumen.projector.audio.AudioOutputKind;
 
 public final class EarcLink {
     private static final String TAG = "Z9xEarc";
@@ -277,7 +278,7 @@ public final class EarcLink {
         try {
             if (sLastStatus == EarcRules.EARC_LINKED) return;
             Context app = sApp;
-            AudioOutputChoice.Kind k = AudioOutputChoice.kind(app);
+            AudioOutputKind k = AudioOutputChoice.kind(app);
             boolean present = arcPresent();
             android.hardware.hdmi.HdmiDeviceInfo avrInfo = CecDevices.audioSystem(app);
             boolean avr = avrInfo != null;

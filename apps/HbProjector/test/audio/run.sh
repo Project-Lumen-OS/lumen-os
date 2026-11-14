@@ -8,7 +8,7 @@ JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexe
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE/src/org/lumen/projector/audio/HbAudioRules.java" "$T/HbAudioRulesTest.java" \
+  "$HERE/src/org/lumen/projector/audio/HbAudioRules.java" "$HERE/src/org/lumen/projector/audio/HdmiVolumeStep.java" "$HERE/src/org/lumen/projector/audio/WiredOutputStep.java" "$T/HbAudioRulesTest.java" \
   "$HERE/src/org/lumen/projector/audio/HbOutputRows.java" "$T/HbOutputRowsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.audio.HbAudioRulesTest
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.audio.HbOutputRowsTest

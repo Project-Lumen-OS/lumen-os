@@ -54,6 +54,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import org.lumen.projector.audio.AudioOutputChoice;
+import org.lumen.projector.audio.AudioOutputKind;
 import org.lumen.projector.audio.HbAudioRules;
 
 public final class HbSystemAudio {
@@ -136,7 +137,7 @@ public final class HbSystemAudio {
         try {
             Context app = sApp;
             if (app == null) return;
-            AudioOutputChoice.Kind k = AudioOutputChoice.kind(app);
+            AudioOutputKind k = AudioOutputChoice.kind(app);
             String kind = k == null ? null : k.name();
             HdmiControlManager m = CecSettings.hm(app);
             if (m == null) return;
@@ -173,7 +174,7 @@ public final class HbSystemAudio {
         }
     }
 
-    /** The user chose a sound output (AudioOutputChoice.Kind name). Main thread; the CEC work runs on z9x-hbsam. */
+    /** The user chose a sound output (AudioOutputKind name). Main thread; the CEC work runs on z9x-hbsam. */
     public static void onChoice(Context ctx, String kind) {
         final Context app = ctx.getApplicationContext();
         final Boolean want = HbAudioRules.systemAudioFor(kind);

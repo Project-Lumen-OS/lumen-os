@@ -19,16 +19,15 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.game.GameProfile;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
-import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.HdmiSignal;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.Panel;
 import java.util.List;
 import java.util.function.Consumer;
-import org.lumen.projector.Hal;
-import org.lumen.projector.game.GameProfile;
-import org.lumen.projector.hal.Gmpf2Client;
-import org.lumen.projector.hal.GmpfClient;
-import org.lumen.projector.hal.KstPoint;
+import org.lumen.projector.hal.AspectRatio;
+import org.lumen.projector.hal.GameModeOption;
+
+import static org.lumen.projector.utils.KstFrames.isFullFrame;
 
 /**
  * The Z9X side of the shared game menu (apps/core/lumen-menu, GameMenu.Io): every read and write on z9x-hal via
@@ -88,7 +87,7 @@ public final class Z9xGameIo implements GameMenu.Io {
             return;
         }
         Ui.main().postDelayed(() -> Hal.query((g, g2) -> {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             return o == null ? GmModel.BAD : o.wire;
         }, b -> speedPoll(value, port, deadline, b == null ? GmModel.BAD : b, cb)), SPEED_POLL_MS);
     }
@@ -96,7 +95,7 @@ public final class Z9xGameIo implements GameMenu.Io {
     private void finishSpeed(int value, int port, int back, GameMenu.ApplyResult cb) {
         Hal.query((g, g2) -> {
             Log.i(TAG, "648(" + value + ") read back " + back);
-            GmpfClient.GameModeOption o = GmpfClient.GameModeOption.fromWire(value);
+            GameModeOption o = GameModeOption.fromWire(value);
             if (back == value && o != null && o.isTopSpeed()) {
                 try {
                     g.resetKeystoneForTopSpeedGame();             // stock switchGameModeSpeed: 207 after 647 reads it
@@ -116,14 +115,14 @@ public final class Z9xGameIo implements GameMenu.Io {
     static int writeSpeedOnHal(GmpfClient g, Gmpf2Client g2, int value, int port) throws Exception {
         if (port != 1 && port != 2) throw new IllegalStateException("no HDMI port");
         if (g.getCurrentInputSource() != port) throw new IllegalStateException("696 is not HDMI " + port);
-        GmpfClient.GameModeOption o = GmpfClient.GameModeOption.fromWire(value);
+        GameModeOption o = GameModeOption.fromWire(value);
         if (o == null) throw new IllegalArgumentException("option " + value);
         boolean r = g.setGameModeOption(o);
         if (PanelRules.resendGameState(r, true)) {           // game mode runs (55), as the quick panel with mode On
             try { g2.getGameModeProp(); } catch (Throwable t) { Log.d(TAG, "55 before 57: " + t); }
             try { Log.i(TAG, "57(0) after 648 -> " + g2.setGameModeState(true)); } catch (Throwable t) { Log.w(TAG, "57: " + t); }
         }
-        GmpfClient.GameModeOption back = g.getGameModeOption();
+        GameModeOption back = g.getGameModeOption();
         Log.i(TAG, "648(" + o + ") -> " + r + ", 647 reads " + back);
         return back == null ? GmModel.BAD : back.wire;
     }
@@ -131,7 +130,7 @@ public final class Z9xGameIo implements GameMenu.Io {
     static GameMenu.Snap readOnHal(GmpfClient g, Gmpf2Client g2, int port) {
         GameMenu.Snap s = new GameMenu.Snap();
         try {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             if (o != null) s.opt = o.wire;
         } catch (Throwable t) { Log.d(TAG, "647: " + t); }
         try {
@@ -139,7 +138,7 @@ public final class Z9xGameIo implements GameMenu.Io {
             s.running = p != null && p.length >= 1 && p[0] == 0;
         } catch (Throwable t) { Log.d(TAG, "55: " + t); }
         try {
-            GmpfClient.HdmiSignal sig = g.getHdmiInfo();
+            HdmiSignal sig = g.getHdmiInfo();
             if (sig != null && sig.plausible()) { s.width = sig.width; s.height = sig.height; s.frameCenti = sig.frameRateCenti; }
         } catch (Throwable t) { Log.d(TAG, "662: " + t); }
         try { s.hdr = g.getHdrType(); } catch (Throwable t) { Log.d(TAG, "620: " + t); }
@@ -176,8 +175,8 @@ public final class Z9xGameIo implements GameMenu.Io {
             }
             case GmModel.AR: {
                 int wire = GmModel.arWire(value);
-                GmpfClient.AspectRatio a = wire == 2 ? GmpfClient.AspectRatio.AUTO
-                        : wire == 1 ? GmpfClient.AspectRatio.R16_9 : null;
+                AspectRatio a = wire == 2 ? AspectRatio.AUTO
+                        : wire == 1 ? AspectRatio.R16_9 : null;
                 if (a == null) throw new IllegalArgumentException("aspect " + value);
                 boolean r = g.setAspectRatio(a);
                 int back = g.getAspectRatioRaw();
@@ -230,15 +229,6 @@ public final class Z9xGameIo implements GameMenu.Io {
         return raw;
     }
 
-    private static boolean isFullFrame(KstPoint p) {
-        if (p == null) return false;
-        KstPoint f = KstPoint.fullFrame();
-        for (int c = KstPoint.TL; c <= KstPoint.BL; c++) {
-            if (Math.abs(p.x(c) - f.x(c)) > 4 || Math.abs(p.y(c) - f.y(c)) > 4) return false;
-        }
-        return true;
-    }
-
     // ================================================================== the panel
 
     @Override public int activePort() { return GameProfile.activePort(); }
@@ -254,7 +244,7 @@ public final class Z9xGameIo implements GameMenu.Io {
 
     @Override public void fps(Consumer<Integer> cb) {
         Hal.query((g, g2) -> {
-            GmpfClient.HdmiSignal s = g.getHdmiInfo();
+            HdmiSignal s = g.getHdmiInfo();
             return s != null && s.plausible() ? GmModel.fpsShown(s.frameRateCenti) : -1;
         }, cb::accept);
     }

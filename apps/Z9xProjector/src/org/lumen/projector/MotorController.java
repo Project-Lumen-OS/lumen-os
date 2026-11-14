@@ -7,6 +7,8 @@ import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.ManualFocus;
+import org.lumen.projector.hal.ReplyException;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -90,10 +92,10 @@ final class MotorController {
             if (!halUsable() || kstInFlight.get() || moving) return;
             if (AkOverlay.isActive()) { Log.i(TAG, "manualFocus(17) refused: auto keystone overlay active"); return; }
             try {
-                client.manualFocus(GmpfClient.ManualFocus.ENTER);
+                client.manualFocus(ManualFocus.ENTER);
                 entered = true;
                 Log.i(TAG, "manualFocus(17)");
-            } catch (GmpfClient.ReplyException e) {
+            } catch (ReplyException e) {
                 entered = true;
                 Log.w(TAG, "manualFocus(17) reply: " + e);
             } catch (Throwable t) {
@@ -230,7 +232,7 @@ final class MotorController {
         h.removeCallbacks(watchdog);
         h.postDelayed(watchdog, WATCHDOG_MS);
         try {
-            client.manualFocus(d == 1 ? GmpfClient.ManualFocus.STOCK_LEFT : GmpfClient.ManualFocus.STOCK_RIGHT);
+            client.manualFocus(d == 1 ? ManualFocus.STOCK_LEFT : ManualFocus.STOCK_RIGHT);
             Log.i(TAG, "manualFocus(" + d + ")");
         } catch (Throwable t) {
             Log.w(TAG, "manualFocus(" + d + ") failed, stopping: " + t);
@@ -247,7 +249,7 @@ final class MotorController {
         h.removeCallbacks(stopRetry);
         h.removeCallbacks(watchdog);
         try {
-            client.manualFocus(GmpfClient.ManualFocus.STOP);
+            client.manualFocus(ManualFocus.STOP);
             Log.i(TAG, "manualFocus(2)");
             moving = false;
             dir = -1;

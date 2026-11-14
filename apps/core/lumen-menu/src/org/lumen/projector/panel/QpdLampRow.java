@@ -35,14 +35,16 @@ final class QpdLampRow extends SliderRow {
     private final String boostWord;
 
     private boolean bar;
+    /** The profile's Boost level (the step after the top light level); 0 = no Boost on this model. */
+    private int boostLevel;
     private float focus, knob;
     private ValueAnimator focusAnim, knobAnim;
     // fill animation (200 ms ease) towards the level's fraction
     private float shown = -1f, animFrom, animTo = -1f;
     private long animAt;
 
-    QpdLampRow(Context c, CharSequence title, OnSlide l) {
-        super(c, title, 1, 10, l);
+    QpdLampRow(Context c, CharSequence title, int min, int max, OnSlide l) {
+        super(c, title, min, max, l);
         boostWord = c.getString(R.string.lumen_m_panel_boost);
         tile.setColor(QpdStyle.TILE);
         ring.setStyle(Paint.Style.STROKE);
@@ -63,6 +65,11 @@ final class QpdLampRow extends SliderRow {
     }
 
     boolean isBarMode() { return bar; }
+
+    void setBoostLevel(int level) {
+        boostLevel = level;
+        invalidate();
+    }
 
     @Override
     protected float designHeight() { return QpdLayout.SLIDER_H; }
@@ -119,7 +126,7 @@ final class QpdLampRow extends SliderRow {
     protected void onDraw(Canvas c) {
         int w = getWidth(), h = getHeight();
         Integer lv = level();
-        boolean boost = lv != null && QpdLayout.isBoost(lv);
+        boolean boost = lv != null && QpdLayout.isBoost(lv, boostLevel);
         float radius = px(QpdLayout.TILE_RADIUS);
         float padH = px(bar ? 30 : 26);
         if (!bar) {
@@ -150,7 +157,7 @@ final class QpdLampRow extends SliderRow {
         float th = px(12), cy = h / 2f;
         r.set(tx0, cy - th / 2f, tx1, cy + th / 2f);
         c.drawRoundRect(r, th / 2f, th / 2f, track);
-        float frac = animatedFill(QpdLayout.fill(lv));
+        float frac = animatedFill(QpdLayout.fill(lv, getMin(), getMax()));
         float fx = tx0 + (tx1 - tx0) * frac;
         if (frac > 0f) {
             if (boost) fillP.setShader(new LinearGradient(tx0, 0, tx1, 0, QpdStyle.BOOST_A, QpdStyle.BOOST_B, Shader.TileMode.CLAMP));
@@ -166,7 +173,7 @@ final class QpdLampRow extends SliderRow {
             c.drawCircle(fx, cy, px(13) * knob, knobP);
         }
         num.setColor(boost ? QpdStyle.BOOST_TEXT : 0xFFFFFFFF);
-        String t = QpdLayout.label(lv, boostWord);
+        String t = QpdLayout.label(lv, getMin(), getMax(), boostLevel, boostWord);
         c.drawText(t, w - padH, cy - (num.descent() + num.ascent()) / 2f, num);
     }
 

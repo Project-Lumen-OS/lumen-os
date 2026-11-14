@@ -12,9 +12,9 @@ This guide covers Lumen OS on the XGIMI Play 6 (model code G0058) with XGIMI
 firmware V1.7.116 or V1.8.127. As on the Z9X, Lumen OS replaces only the system partition. XGIMI's firmware,
 calibration and factory data are not touched.
 
-The install takes about 30 minutes and **erases all data on the projector**. There is no vbmeta step and
-no codec step: after the preparation below, one command does the rest and tells you what to do with the
-cable and the power button.
+The install takes about 30 minutes and **erases all data on the projector**. Unlike the Z9X, there is no
+manual fastboot step and no codec step: after the preparation below, one command does the rest and tells you
+what to do with the cable and the power button.
 
 What is different from the Z9X:
 
@@ -49,12 +49,15 @@ projector up only once.
 
 - A Play 6 on XGIMI firmware V1.7.116 or V1.8.127. If yours is older, let stock update over Wi-Fi first. Other
   versions are refused.
-- V1.8.127 is supported since the beta: its firmware files match V1.7.116 in everything Lumen OS relies on (the
-  kernel, the projector HAL, the partitions), but it has seen little testing on real units. It comes on newer
+- V1.8.127 is supported since Lumen OS 1.0.10: its firmware files match V1.7.116 in everything Lumen OS relies
+  on (the kernel, the projector HAL, the partitions), but it has seen little testing on real units. It comes on newer
   Play 6 batches with another Wi-Fi chip (AIC). Do not replace V1.8.x with V1.7.116 from a stick: V1.7.116 has
-  no driver for that chip, so on stock Wi-Fi and Bluetooth stop working. If you already did and Wi-Fi is gone:
-  put V1.8.127 back from a stick (see [Back to stock](#play6-stock)) or install Lumen OS 1.0.7 or newer (use a
-  USB Ethernet adapter for now), which detects this chip and loads its own driver.
+  no driver for that chip, so on stock Wi-Fi and Bluetooth stop working.
+- Lumen OS has no Wi-Fi or Bluetooth driver of its own: it uses the one in XGIMI's firmware. A Play 6 with the
+  AIC chip therefore needs V1.8.127, the first XGIMI firmware with a driver for it. On V1.7.116 the installer
+  refuses such a unit and says so. If that is yours: put the official V1.8.127 on it from a stick first (see
+  [Back to stock](#play6-stock)), then start again from [step 1](#play6-prepare). A Play 6 with the MediaTek chip
+  works on both V1.7.116 and V1.8.127.
 - Its power adapter, connected for the whole install, and the battery at 50 % or more. The installer reads
   both when stock lets it and refuses below that; otherwise it asks you.
 - A Wi-Fi network that the projector and the computer are both in. A guest network that keeps devices
@@ -104,11 +107,12 @@ the installer says so when it finds a USB device without a driver.
 
 ## 2. Download the files (5 min)
 
-1. Open the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases) and choose the release for
-   the XGIMI Play 6: its name says Play 6 and its tag starts with `play6-`. The release marked "Latest" is
-   the Z9X one.
-2. Download four files: `lumen-os-play6-<version>-nogms-system.img`, `SHA256SUMS`, `SHA256SUMS.sig` and
-   `lumen-os-play6-<version>-installer.zip`.
+1. Open the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases) on GitHub. Download only
+   from there. We do not check or support copies on forums or file hosts.
+2. From the latest Play 6 release (now [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10)), download four
+   files: `lumen-os-play6-1.0.10-nogms-system.img`, `SHA256SUMS`, `SHA256SUMS.sig` and
+   `lumen-os-play6-1.0.10-installer.zip`. The Play 6 releases have tags that start with `play6-`. The release
+   marked "Latest" is the Z9X one.
 3. Unpack the installer zip and put the image and both `SHA256SUMS` files next to `lumen-install.sh`.
 4. Open a terminal in that folder, as in [Download the files](../z9x/en.md#2-download-the-files-5-min) for the Z9X.
 
@@ -375,6 +379,7 @@ bash lumen-install.sh --ip 192.168.x.y gapps --remove
 | check | "the battery is at ... %" or "the projector runs on its battery" | Connect the power adapter, charge to at least 50 % and run the installer again. Nothing was written. |
 | check | "could not read the battery level and the power adapter" | Answer `yes` only if the adapter is connected and the projector shows 50 % or more. |
 | check | "a USB device that is not a USB stick is in the projector's USB port" | Take it out (a USB Ethernet adapter, a hub). If it is the projector's only network, answer `yes`: keep it until the installer asks for the A-to-A cable, then leave it out until Lumen Home shows. |
+| check | "has the AIC Wi-Fi chip ... and its XGIMI firmware ... has no driver for that chip" | Put the official V1.8.127 on the projector from a FAT32 stick, see [Back to stock](#play6-stock) (this erases everything). Then turn on debugging again ([step 1](#play6-prepare)) and run the installer once more. Nothing was done. |
 | check | "This XGIMI Play 6 is from a newer batch" | Read the warning: never use the V1.7.116 stick restore on this projector, its way back is V1.8.127. Answer `yes` to install. |
 | check | "the device at ... is an XGIMI Z9X" | Use the [Z9X guide](../z9x/en.md): the Z9X installs over the cable, without `--ip`. |
 | check | "this download of the installer is for the XGIMI Z9X" | Download the Play 6 release, see [step 2](#play6-files). |
@@ -457,24 +462,28 @@ Usually the Google sign-in just works. If Google refuses it or Play says the dev
 
 ## Back to stock (erases everything)
 
-**Pick the file first.** XGIMI has two Play 6 firmwares with the same file name:
+The stock firmware is put back by XGIMI's own update from a USB stick.
 
-- **V1.8.127** for newer Play 6 batches (serial XHF or the AIC Wi-Fi chip, V1.8.x from the factory) and for any
-  Play 6 that ran V1.8.x. It has drivers for both Wi-Fi chips. We have not installed it from a stick yet; it is
-  XGIMI's official file, like V1.7.116.
-- **V1.7.116** only for a Play 6 with a MediaTek Wi-Fi module that came with V1.7.116 or older. On a unit with
-  the AIC chip, Wi-Fi and Bluetooth stop working after it: V1.7.116 has no driver for that chip. Do not take a
-  Play 6 that ran V1.8.x back to V1.7.116 either: that downgrade is untested.
+1. Download XGIMI's official firmware file from XGIMI's server. Both have the same name,
+   `XGIMI_DRAGONHEALTHY_XN03C.bin`. Take the one for your projector:
 
-XGIMI's own USB update installs the stock firmware from a stick. It works only when the stick is prepared
-exactly like this:
+   | Firmware | For | File |
+   |---|---|---|
+   | V1.8.127 | newer batches (serial XHF or the AIC Wi-Fi chip, V1.8.x from the factory), and any Play 6 that ran V1.8.x | [download](https://product-library.static.xgimi.com/firmware/release/MTK9270/dayao/MTK9270_APHRODIT_1.8.127_20260410-175145/XGIMI_DRAGONHEALTHY_XN03C.bin), 2,115,834,528 bytes, MD5 `a14277a6c73676487a7de5ede36dc017` |
+   | V1.7.116 | only a Play 6 with the MediaTek Wi-Fi chip that came with V1.7.116 or lower | [download](https://product-library.static.xgimi.com/firmware/release/MTK9270/dayao/MTK9270_APHRODIT_1.7.116_20251125-162039/XGIMI_DRAGONHEALTHY_XN03C.bin), 2,051,543,712 bytes, MD5 `55ae66ed7e14a20759ea4b9d5686d591` |
 
-1. A USB stick with an **MBR** partition table and **one FAT32** partition. A stick of 32 GB or less is the
-   easiest. On macOS: Disk Utility > View > Show All Devices, select the stick itself (not its volume),
-   Erase, Format "MS-DOS (FAT)", Scheme "Master Boot Record". GPT, several partitions or a stick with other
-   files did not work.
-2. On it, only two files: the XGIMI firmware `XGIMI_DRAGONHEALTHY_XN03C.bin` (exactly this name) and an
-   **empty** file `factory.txt`. On macOS copy in the terminal, because Finder adds hidden `._` files:
+   Check the size and the MD5 (macOS `md5 FILE`, Linux `md5sum FILE`, Windows
+   `certutil -hashfile FILE MD5`). A file for another projector will not do. **A Play 6 with the AIC chip must
+   never get the V1.7.116 file:** it has no driver for that chip, so Wi-Fi and Bluetooth stop working. Do not take
+   a Play 6 that ran V1.8.x back to V1.7.116 either: that downgrade is untested. We have not installed V1.8.127
+   from a stick yet. It is XGIMI's official file, like V1.7.116. The check in [step 3](#play6-check) shows which
+   chip your projector has.
+2. A USB stick with an **MBR** partition scheme and **one FAT32 partition**. A stick of 32 GB or less is the
+   easiest. On macOS: Disk Utility > View > Show All Devices, select the stick itself (not its volume), Erase,
+   format "MS-DOS (FAT)", scheme "Master Boot Record". GPT, several partitions or a stick with other files did
+   not work.
+3. Only two files on the stick: `XGIMI_DRAGONHEALTHY_XN03C.bin` (exactly this name) and an **empty** file
+   `factory.txt`. On macOS copy in the terminal, because Finder adds hidden `._` files:
 
    ```
    cp -X ~/Downloads/XGIMI_DRAGONHEALTHY_XN03C.bin /Volumes/STICK/
@@ -484,12 +493,7 @@ exactly like this:
    touch /Volumes/STICK/factory.txt
    ```
 
-   Both firmwares are on XGIMI's own server:
-   - V1.8.127: [XGIMI_DRAGONHEALTHY_XN03C.bin](https://product-library.static.xgimi.com/firmware/release/MTK9270/dayao/MTK9270_APHRODIT_1.8.127_20260410-175145/XGIMI_DRAGONHEALTHY_XN03C.bin)
-     (2 115 834 528 bytes, md5 `a14277a6c73676487a7de5ede36dc017`);
-   - V1.7.116: [XGIMI_DRAGONHEALTHY_XN03C.bin](https://product-library.static.xgimi.com/firmware/release/MTK9270/dayao/MTK9270_APHRODIT_1.7.116_20251125-162039/XGIMI_DRAGONHEALTHY_XN03C.bin)
-     (2 051 543 712 bytes, md5 `55ae66ed7e14a20759ea4b9d5686d591`).
-3. Let the installer check the stick (read only, it never formats anything):
+   Then let the installer check the stick (read only, it never formats anything):
 
    ```
    bash lumen-install.sh stick /Volumes/STICK
@@ -497,12 +501,18 @@ exactly like this:
 
    It checks the partition table, the file system, that nothing else is on the stick, that `factory.txt`
    is empty and that the firmware file is one of the two above.
-4. Unplug the A-to-A cable and put the stick into the projector's USB port. Switch the projector off and
-   pull its power cable.
-5. Hold the projector's power button, plug the power cable in and keep holding about 5 seconds. The screen
-   shows "正在检测加载更新包" (looking for the update), then "系统更新中，请勿断开电源，预计4分钟"
-   (updating, do not cut the power, about 4 minutes).
-6. The restore erases everything. Then the stock system starts as from the factory.
+4. Pull the A-to-A cable. Plug the stick into the projector's USB port. Switch the projector off and pull its
+   power cable.
+5. Hold the projector's power button, plug the power cable in and keep the button pressed for about 5 seconds.
+   Without the button the stick does nothing. The screen shows "正在检测加载更新包" (looking for the update),
+   then "系统更新中，请勿断开电源，预计4分钟" (updating, do not cut the power, about 4 minutes).
+6. The restore takes about 4 minutes and erases everything. Do not cut the power. If the power does go off,
+   do steps 4 and 5 again with the same stick. Then the stock system starts, as from the factory.
+7. Take the stick out and delete `factory.txt` from it, so that the firmware is not installed again by
+   accident.
+
+To install Lumen OS again, start at [step 1](#play6-prepare), and before step 3 reset the progress of the
+last install: `bash lumen-install.sh --device play6 reset` (Windows: `lumen-install.cmd reset -Device play6`).
 
 <a name="play6-changes"></a>
 

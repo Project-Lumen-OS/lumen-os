@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+# Lumen OS on the XGIMI RS30 Ultra Max (G0155): the MediaTek / XGIMI files the image needs from the user's own stock
+# system. Hashes only; the files themselves are proprietary and are never in git or in an image. This model runs Lumen OS
+# only as a trial (devices/g0155/README.md), so the reader takes them read only from the stock slot
+# (blobs_stock_dsu.sh) and refuses any file whose sha256 is not listed here.
+# Image path /system/etc/z9x/x50_blobs_allow.txt (read by /system/etc/z9x/x50_blobs.sh, the X50 reader).
+#   - the X50 set (installer/lib/x50/blobs_allow.txt) for a 32-bit-only userspace: no lib64 line. libcodec2_soft_common,
+#     the VNDK libstagefright_foundation and the audio policy source have the X50's sha256; the two system_ext MTK
+#     libraries and the eye-protection pair are this firmware's own (stock v1.1.42, gsi-research/RS30_ANALYSIS.md 7.2);
+#   - need=eye: the stock eye-protection drawer /system/bin/nativeui and the gmpf NDK library it links. All or nothing.
+# Line format and options: installer/lib/x50/blobs_allow.txt.
+set=rs30-v1142-a
+41a7491f460f92176901399f293b8f6098dd5b8c8b5392198b8a482cba768e9f system_ext/lib/libc2plugin_store.so /system_ext/lib/libc2plugin_store.so
+63a6639d4e9f804f90292e6af7c08ef7dac4b2307d75c8c3014f07d8b8e7e021 system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so /system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+66e9a1676bcaa8a7dddb724eab3e5d9f4b474ea857bf09eca1ea2e2372953b83 lib/libcodec2_soft_common.so /system/lib/libcodec2_soft_common.so
+d6cd92ce457c6594866bca064cce52ae69d16f89e1e7379f2d1f7db229601727 etc/xgimi/libstagefright_foundation.so /apex/com.android.vndk.v34/lib/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+c8ee620addf084b5a777b5fbfdb534efbceacefeec881a5c13b7d99548a261ed etc/xgimi/audio_policy_configuration.xml /vendor/etc/audio_policy_configuration.xml bind=/vendor/etc/audio_policy_configuration.xml from=19b9d27d55ddef1408094b2ea7d09d0b73462aac992ed42ce89512797f312cbe:113,115d;182,184d;254,256d;386,389d;464,465d
+8315e9167933b23ee1162f9b63ff2e8e064da7fcbd8389ff3aee4bf40f0abaa9 bin/nativeui /system/bin/nativeui label=nativeui_main_exec mode=0755 need=eye
+46a62afae62ce2355a6ae9d035043bbc73f4891b9c34d031dc8dd7f151cf6591 lib/xgimi.hardware.gmpf-V1-ndk.so /system/lib/xgimi.hardware.gmpf-V1-ndk.so need=eye

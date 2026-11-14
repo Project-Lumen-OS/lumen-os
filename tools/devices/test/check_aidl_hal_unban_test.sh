@@ -46,7 +46,7 @@ PY
 }
 menu() { rm -rf "$W/X50Projector"; mkdir -p "$W/X50Projector"; cp -R "$G/apps/X50Projector/src" "$W/X50Projector/src"
          cp "$R/allowed_x50projector.tsv" "$W/allowed.tsv"; cp "$R/unbanned_x50projector.tsv" "$W/unbanned_x50projector.tsv"; }
-GM=src/org/lumen/x50/projector/Gmpf.java
+GM=src/org/lumen/x50/projector/GmpfCall.java
 UN=$W/unbanned_x50projector.tsv
 
 menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 101 calls"
@@ -57,13 +57,13 @@ grep -qF "Call.SET_TILT_SHIFT_MOVE: ProjectorFocusManager 88 setTiltShiftMove is
 # the eye guard with a 11 Call, its own allow row and the menu's list: refused (the list names another app)
 rm -rf "$W/X50EyeGuard"; mkdir -p "$W/X50EyeGuard"; cp -R "$G/apps/X50EyeGuard/src" "$W/X50EyeGuard/src"
 cp "$R/allowed_x50eyeguard.tsv" "$W/eye_allowed.tsv"
-EG=$(grep -rl 'enum Call implements AidlTransport.Method' "$W/X50EyeGuard/src" | head -1)
+EG=$(grep -rl 'enum GmpfCall implements AidlTransport.Method' "$W/X50EyeGuard/src" | head -1)
 python3 - "$EG" <<'PY'
 import re, sys
 p = sys.argv[1]
 s = open(p, encoding="utf-8").read()
-m = re.search(r'(enum Call implements AidlTransport\.Method \{\n)', s)
-s = s[:m.end()] + '        CORRECT_KEYSTONE(Iface.DISPLAY, 11, "correctKeystone", "50"),\n' + s[m.end():]
+m = re.search(r'(enum GmpfCall implements AidlTransport\.Method \{\n)', s)
+s = s[:m.end()] + '    CORRECT_KEYSTONE(GmpfIface.DISPLAY, 11, "correctKeystone", "50"),\n' + s[m.end():]
 open(p, "w", encoding="utf-8").write(s)
 PY
 printf 'DisplayManager\t11\tcorrectKeystone\tint(byte)\targs:50\ttest\n' >> "$W/eye_allowed.tsv"
@@ -118,11 +118,13 @@ if "--unbanned" not in cm or not cm[cm.index("--unbanned") + 1].endswith("device
     bad.append("the menu's check gets no --unbanned: %s" % cm)
 if "--unbanned" in ce:
     bad.append("the eye guard's check gets --unbanned: %s" % ce)
-# the X50 family (2026-11-11): the X50 Ultra Max g0100 runs the same menu with the same exceptions, row for row
-X50 = ("g0111", "g0100")
+# the X50 family apps: the X50 Ultra Max g0100 (2026-11-11) and the RS30 Ultra Max g0155 (2026-11-12) run the same menu
+# with the same exceptions, row for row
+X50 = ("g0111", "g0100", "g0155")
 rows = lambda f: [l for l in open(os.path.join(G, f), encoding="utf-8").read().splitlines() if l.strip() and not l.startswith("#")]
-if rows("devices/g0100/research/unbanned_x50projector.tsv") != rows("devices/g0111/research/unbanned_x50projector.tsv"):
-    bad.append("the g0100 exceptions are not the g0111 rows")
+for c in X50[1:]:
+    if rows("devices/%s/research/unbanned_x50projector.tsv" % c) != rows("devices/g0111/research/unbanned_x50projector.tsv"):
+        bad.append("the %s exceptions are not the g0111 rows" % c)
 for c, v in sorted(reg.items()):
     if c not in X50 and v.get("hal_unbanned"):
         bad.append("%s has hal_unbanned %s" % (c, v["hal_unbanned"]))

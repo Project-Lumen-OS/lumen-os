@@ -20,7 +20,7 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 | Projector | Status | Latest release | Install |
 |---|---|---|---|
 | XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/z9x/en.md) |
-| XGIMI Play 6 | stable | [Lumen OS 1.0.7 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.7) | [with a computer](docs/install/play6/en.md) |
+| XGIMI Play 6 | stable | [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [with a computer](docs/install/play6/en.md) |
 | XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/hb/en.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | beta, try only | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta3), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta3) | [from the projector](docs/install/en.md#easy) |
 
@@ -28,12 +28,10 @@ Each projector has its own release files, signed with its own key. The installer
 another projector and any XGIMI firmware it does not know.
 
 - XGIMI Z9X (model code G0082): XGIMI firmware V6.15.58, V6.15.62 or V6.15.19. Updates come over Wi-Fi.
-- XGIMI Play 6 (model code G0058): XGIMI firmware V1.7.116, no other version. The newer V1.8.x (newer units with
-  another Wi-Fi chip) is not supported yet: do not replace it with V1.7.116, Wi-Fi and Bluetooth then stop
-  working. A new version goes on with the installer over the USB cable and
-  keeps your data. Updates over Wi-Fi come later.
-- XGIMI Play 6: Google services are not in the image and cannot be added yet. As on the Z9X, they are
-  planned as an add-on that you make from your own MindTheGapps download.
+- XGIMI Play 6 (model code G0058): XGIMI firmware V1.7.116 or V1.8.127. A Play 6 with the AIC Wi-Fi chip
+  (newer units) needs V1.8.127: do not put V1.7.116 on it, Wi-Fi and Bluetooth then stop working. A new version
+  goes on with the installer over the USB cable and keeps your data. Updates over Wi-Fi come later. Google
+  services can be added with the installer from your own MindTheGapps download.
 - XGIMI Z9X HB (model code G0130): XGIMI firmware V6.16.24 with a computer. From the projector, the HB beta
   also installs on V6.17.12 and on the G0148 with V6.17.12. Updates come over Wi-Fi. Two XGIMI files are not
   in the image: the installer copies them from your own projector. Google services can be added with the
@@ -82,8 +80,8 @@ On the Z9X the interface runs at 1080p.
 - No ads and no Google services running in the background. At most 10 apps are kept cached.
 
 This list is for the Z9X. The Play 6 has Lumen Home, its own projector app with every stock setting, the HDMI
-input, the voice assistant and the first setup, but no AirPlay receiver, no updates over Wi-Fi and no Google
-services yet.
+input, screen mirroring (Miracast) and AirPlay, the voice assistant and the first setup, but no updates over
+Wi-Fi yet.
 
 Nothing about you is collected, apart from the anonymous usage counter you can turn off (see [Privacy](#privacy)).
 The system goes online only for the time zone and city (ip-api.com over plain HTTP, ipapi.co or ipwho.is), the
@@ -162,7 +160,7 @@ also deletes the install id. Turning it on again starts with a new one.
 - The Windows installer has not been tested yet.
 - On the Z9X, while a USB cable to a computer is connected, the projector does not really sleep. Unplug
   it after the install.
-- Play 6: no updates over Wi-Fi, no AirPlay receiver and no Google services yet.
+- Play 6: no updates over Wi-Fi yet, and Lumen Installer on the projector does not install it yet.
 
 ## Help and bug reports
 

@@ -27,4 +27,5 @@
     <string name="lumen_m_eco">Oszczędzanie energii</string>
     <string name="lumen_m_ambient_speaker">Głośnik z nastrojowym światłem</string>
     <string name="lumen_m_ct_custom">Własna</string>
+    <string name="lumen_m_lamp_off">Wyłącz obraz</string>
 </resources>

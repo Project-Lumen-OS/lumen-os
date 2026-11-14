@@ -264,45 +264,15 @@ IN=(
   "$G/build/play6/LumenBridge_home.apk"
   "$G/build/play6/LumenBridge_setup.apk"
   "$G/build/play6/LumenBridge_tvinput.apk"
+  "$G/build/play6/LumenMiracast.apk"
+  "$G/build/play6/LumenWifiP2pOverlay.apk"
+  "$G/build/play6/signed/Z9xAirPlay.apk"
   "$L/base_id.txt"
-  "$G/overlay/v1/privapp-permissions-z9xhome.xml"
-  "$G/overlay/v1/privapp-permissions-z9xsetup.xml"
-  "$G/overlay/v1/z9x-home-default-permissions.xml"
-  "$G/overlay/v1/z9x-projector-default-permissions.xml"
-  "$G/overlay/v1/z9x-sysconfig-nogms.xml"
-  "$G/overlay/v1/bootanimation.zip"
-  "$G/overlay/v1/idc/Vendor_000d_Product_3841.idc"
-  "$G/overlay/play6/keylayout/Vendor_000d_Product_3841.kl"
-  "$G/overlay/v1/keylayout/Vendor_3697_Product_0001.kl"
-  "$G/overlay/v1/keylayout/Vendor_3697_Product_0002.kl"
-  "$G/overlay/play6/product_prop.txt"
-  "$G/overlay/play6/play6_compat.rc"
-  "$G/overlay/play6/play6_base.rc"
-  "$G/overlay/play6/play6_perf.rc"
-  "$G/overlay/play6/lumen_gapps.rc"
-  "$G/overlay/play6/lumen_gapps.sh"
-  "$G/overlay/play6/play6_aic.rc"
-  "$G/overlay/play6/play6_aic.sh"
-  "$G/overlay/v1/z9x_nui.rc"
-  "$G/overlay/v1/z9x_nui.sh"
-  "$P/compose.sh"
-  "$P/dexpreopt_play6.sh"
-  "$P/check_privapp.py"
-  "$P/base_export.sh"
-  "$G/tools/lumen/lumen_checks.py"
-  "$G/tools/lumen/apkinfo.py"
 )
-[ "$OTA" = 1 ] && IN+=("$G/build/play6/Play6Updater.apk" "$G/build/play6/LumenBridge_updater.apk" "$G/overlay/play6/lumen_recovery.rc" "$G/overlay/play6/lumen_recovery.sh"
-  "$G/build/play6/lumen_play6_ota.x509")
-[ -n "$DIAG" ] && IN+=("$G/overlay/debug/z9x_earlylog.rc" "$G/overlay/debug/z9x_earlylog.sh" "$G/overlay/play6/earlylog_usb.sh"
-  "$G/overlay/debug/lumen_escape.rc" "$G/overlay/debug/lumen_escape.sh"
-  "$G/overlay/play6/play6_boottiming.rc" "$G/overlay/play6/play6_boottiming.sh" "$G/overlay/play6/play6_early_mik.rc")
+# the repository files of the descriptor (devices/dragon_healthy/build.conf: overlays, props, tools, the builder)
+while read -r f; do IN+=("$G/$f"); done < <(python3 -B "$G/tools/build/build.py" files dragon_healthy)
+[ "$OTA" = 1 ] && IN+=("$G/build/play6/Play6Updater.apk" "$G/build/play6/LumenBridge_updater.apk" "$G/build/play6/lumen_play6_ota.x509")
 BS=$G/build/play6/signed/base
-# AIC8800D80X2 Wi-Fi/BT modules and firmware (tools/play6/aic/BUILD.md; binaries in build/play6/aic, not in git):
-# pinned by tools/play6/aic/SHA256SUMS, checked here and again by compose.sh on the build laptop
-AIC=$G/build/play6/aic
-cp "$P/aic/SHA256SUMS" "$AIC/SHA256SUMS"
-(cd "$AIC" && shasum -a 256 -c SHA256SUMS >/dev/null) || die "build/play6/aic does not match tools/play6/aic/SHA256SUMS"
 for f in "${IN[@]}" "$BS/base_signed.tsv"; do [ -s "$f" ] || die "missing $f"; done
 D=$(for f in "${IN[@]}"; do basename "$f"; done | sort | uniq -d)
 [ -z "$D" ] || die "two staged files share a name: $D"
@@ -323,8 +293,6 @@ trap gms_cleanup EXIT
 "${SSH[@]}" "$BUILDER" 'rm -rf ~/play6-work/in/base_signed ~/play6-work/in/gms ~/play6-work/in/aic && mkdir -p ~/play6-work/in'
 "${SCP[@]}" "${IN[@]}" "${BUILDER}:play6-work/in/"
 "${SCP[@]}" -r "$BS" "${BUILDER}:play6-work/in/base_signed"
-"${SSH[@]}" "$BUILDER" 'mkdir -p ~/play6-work/in/aic'
-"${SCP[@]}" -r "$AIC/modules" "$AIC/firmware" "$AIC/bt" "$AIC/SHA256SUMS" "${BUILDER}:play6-work/in/aic/"
 [ "$GMS" = 0 ] || "${SCP[@]}" -r "$GM" "${BUILDER}:play6-work/in/gms"
 echo "inputs staged on the build laptop"
 

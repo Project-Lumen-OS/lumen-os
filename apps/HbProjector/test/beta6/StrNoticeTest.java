@@ -10,17 +10,17 @@ public final class StrNoticeTest {
 
     public static void main(String[] a) {
         eq("none", StrNoticeRules.kind(null), null);
-        eq("usb udc", StrNoticeRules.kind(StrGate.B_USB + " (udc configured)"), StrNoticeRules.Kind.USB);
-        eq("usb bare", StrNoticeRules.kind(StrGate.B_USB), StrNoticeRules.Kind.USB);
-        eq("update", StrNoticeRules.kind(StrGate.B_OTA_BUSY), StrNoticeRules.Kind.UPDATE);
-        eq("update check", StrNoticeRules.kind(StrGate.B_OTA_UNMARKED), StrNoticeRules.Kind.UPDATE_CHECK);
-        eq("kill switch", StrNoticeRules.kind(StrGate.B_ALLOW_STR), StrNoticeRules.Kind.OFF);
+        eq("usb udc", StrNoticeRules.kind(StrGate.B_USB + " (udc configured)"), StrNoticeKind.USB);
+        eq("usb bare", StrNoticeRules.kind(StrGate.B_USB), StrNoticeKind.USB);
+        eq("update", StrNoticeRules.kind(StrGate.B_OTA_BUSY), StrNoticeKind.UPDATE);
+        eq("update check", StrNoticeRules.kind(StrGate.B_OTA_UNMARKED), StrNoticeKind.UPDATE_CHECK);
+        eq("kill switch", StrNoticeRules.kind(StrGate.B_ALLOW_STR), StrNoticeKind.OFF);
         eq("unknown text", StrNoticeRules.kind("something else"), null);
         // USB notice once per connection
-        eq("usb first", StrNoticeRules.usbNoticeDue(StrNoticeRules.Kind.USB, false), true);
-        eq("usb again", StrNoticeRules.usbNoticeDue(StrNoticeRules.Kind.USB, true), false);
+        eq("usb first", StrNoticeRules.usbNoticeDue(StrNoticeKind.USB, false), true);
+        eq("usb again", StrNoticeRules.usbNoticeDue(StrNoticeKind.USB, true), false);
         eq("no usb", StrNoticeRules.usbNoticeDue(null, false), false);
-        eq("update is not usb", StrNoticeRules.usbNoticeDue(StrNoticeRules.Kind.UPDATE, false), false);
+        eq("update is not usb", StrNoticeRules.usbNoticeDue(StrNoticeKind.UPDATE, false), false);
         // power menu: first repeat of POWER / STB_POWER / TV_POWER held >= 700 ms, once per press
         long L = 700;
         eq("stb held", StrNoticeRules.powerMenuPress(179, 0, 1, 700, L, 5, -1), true);

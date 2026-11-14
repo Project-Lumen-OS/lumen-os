@@ -49,7 +49,7 @@ public final class X50Schedule {
         return end - due <= LATE_MS && beat >= end ? beat : end + period;
     }
 
-    /** {service, code, period kind} of every read of X50Gmpf.Call (the meta calls are not planned). */
+    /** {service, code, period kind} of every read of X50GmpfCall (the meta calls are not planned). */
     private static final Object[][] PLAN = {
             {"DisplayManager", 28, P_ROUND},
             {"TemperatureManager", 6, P_ROUND},

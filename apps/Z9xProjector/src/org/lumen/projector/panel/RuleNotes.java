@@ -4,20 +4,21 @@ import android.content.Context;
 import android.util.Log;
 
 import org.lumen.projector.R;
+import org.lumen.projector.hal.GameModeOption;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.source.TifHdmiState;
 import org.lumen.projector.ui.Notify;
 
 /**
- * Lumen OS 1.0.8 Z9X sweep: the note of each {@link PanelRules.Why} (our words, stock meaning). Stock has two 3D
+ * Lumen OS 1.0.8 Z9X sweep: the note of each {@link RefusalReason} (our words, stock meaning). Stock has two 3D
  * texts: "turn off 3D and try again" (picture mode, colour temperature, Ultra 120, game, brightness) and "not
  * supported in 3D" (keystone family, aspect ratio, original frame rate); the caller says which one.
  */
 public final class RuleNotes {
     private RuleNotes() {}
 
-    public static int note(PanelRules.Why w, boolean turnOff3d) {
+    public static int note(RefusalReason w, boolean turnOff3d) {
         switch (w) {
             case GAME: return R.string.blocked_game;
             case TOP_SPEED: return R.string.rules_not_top_speed;
@@ -39,8 +40,8 @@ public final class RuleNotes {
     }
 
     /** Shows the note under {@code title} (any thread: Notify posts to the main thread). True = refused. */
-    public static boolean show(Context app, CharSequence title, PanelRules.Why w, boolean turnOff3d) {
-        if (w == null || w == PanelRules.Why.NONE) return false;
+    public static boolean show(Context app, CharSequence title, RefusalReason w, boolean turnOff3d) {
+        if (w == null || w == RefusalReason.NONE) return false;
         int res = note(w, turnOff3d);
         if (res == 0) return false;
         if (title == null) Notify.show(app, app.getString(res));
@@ -55,7 +56,7 @@ public final class RuleNotes {
     public static PanelRules.In readKeystone(Context app, GmpfClient g, Gmpf2Client g2) {
         PanelRules.In in = new PanelRules.In();
         try {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             in.opt647 = o == null ? null : o.wire;
         } catch (Throwable t) { Log.d(TAG, "647: " + t); }
         int src = -1;

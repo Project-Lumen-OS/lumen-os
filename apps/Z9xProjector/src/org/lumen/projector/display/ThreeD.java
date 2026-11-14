@@ -5,7 +5,11 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
+import org.lumen.projector.hal.GameModeOption;
 import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.HdmiSignal;
+import org.lumen.projector.hal.Mode3D;
+import org.lumen.projector.hal.OutputTimingInfo;
 import org.lumen.projector.panel.QuickPanel;
 import org.lumen.projector.ui.ChoiceRow;
 import org.lumen.projector.ui.Notify;
@@ -142,7 +146,7 @@ public final class ThreeD implements QuickPanel.Extension {
      */
     private static int apply(GmpfClient g, org.lumen.projector.hal.Gmpf2Client g2, int want) throws Exception {
         if (want == OFF) {
-            boolean ok = g.set3DMode(GmpfClient.Mode3D.OFF);
+            boolean ok = g.set3DMode(Mode3D.OFF);
             Log.i(TAG, "190 enable3D(1) -> " + ok);
             return ok ? 0 : R.string.panel_3d_not_now;
         }
@@ -158,8 +162,8 @@ public final class ThreeD implements QuickPanel.Extension {
         if (nativeFps) return R.string.three_d_native_fps;
         boolean ok;
         switch (want) {
-            case SBS: ok = g.set3DMode(GmpfClient.Mode3D.SIDE_BY_SIDE); break;
-            case TB: ok = g.set3DMode(GmpfClient.Mode3D.TOP_BOTTOM); break;
+            case SBS: ok = g.set3DMode(Mode3D.SIDE_BY_SIDE); break;
+            case TB: ok = g.set3DMode(Mode3D.TOP_BOTTOM); break;
             case SBS_2D: ok = g.set3DTo2D(false); break;
             default: ok = g.set3DTo2D(true); break;
         }
@@ -175,12 +179,12 @@ public final class ThreeD implements QuickPanel.Extension {
     private static int stockRefusal(GmpfClient g, org.lumen.projector.hal.Gmpf2Client g2) {
         org.lumen.projector.panel.PanelRules.In in = new org.lumen.projector.panel.PanelRules.In();
         try {
-            GmpfClient.OutputTimingInfo t = g.getOutputTimingInfo();
+            OutputTimingInfo t = g.getOutputTimingInfo();
             in.ultra120 = t == null ? null : t.isUltra120();
         } catch (Throwable t) { Log.d(TAG, "157: " + t); }
         try { in.nativeFps283 = g2.getNativeFrameRate(); } catch (Throwable t) { Log.d(TAG, "IGmpf2 283: " + t); }
         try {
-            GmpfClient.GameModeOption o = g.getGameModeOption();
+            GameModeOption o = g.getGameModeOption();
             in.opt647 = o == null ? null : o.wire;
         } catch (Throwable t) { Log.d(TAG, "647: " + t); }
         int src = -1;
@@ -198,17 +202,17 @@ public final class ThreeD implements QuickPanel.Extension {
         try { in.hdr620 = g.getHdrType(); } catch (Throwable t) { Log.d(TAG, "620: " + t); }
         if (in.hdmi) {
             try {
-                GmpfClient.HdmiSignal sig = g.getHdmiInfo();
+                HdmiSignal sig = g.getHdmiInfo();
                 if (sig != null && sig.plausible()) in.hdmiFpsCenti = sig.frameRateCenti;
             } catch (Throwable t) { Log.d(TAG, "662: " + t); }
         }
-        org.lumen.projector.panel.PanelRules.Why w = org.lumen.projector.panel.PanelRules.threeDOn(in);
-        if (w == org.lumen.projector.panel.PanelRules.Why.NONE) return 0;
+        org.lumen.projector.panel.RefusalReason w = org.lumen.projector.panel.PanelRules.threeDOn(in);
+        if (w == org.lumen.projector.panel.RefusalReason.NONE) return 0;
         Log.i(TAG, "3D refused (stock rule " + w + "): 157=" + in.ultra120 + " 283=" + in.nativeFps283 + " 647="
                 + in.opt647 + " 55=" + in.game55 + " 666=" + in.pic666 + " 175=" + in.lumens175 + " 180="
                 + in.videoPlaying + " 620=" + in.hdr620 + " 662=" + in.hdmiFpsCenti);
         // original frame rate keeps its 1.0.8 note; the others their own
-        if (w == org.lumen.projector.panel.PanelRules.Why.NATIVE_FPS) return R.string.three_d_native_fps;
+        if (w == org.lumen.projector.panel.RefusalReason.NATIVE_FPS) return R.string.three_d_native_fps;
         return org.lumen.projector.panel.RuleNotes.note(w, true);
     }
 
@@ -227,7 +231,7 @@ public final class ThreeD implements QuickPanel.Extension {
                 again = true;
                 return;
             }
-            boolean ok = g.set3DMode(GmpfClient.Mode3D.OFF);
+            boolean ok = g.set3DMode(Mode3D.OFF);
             Log.i(TAG, "video ended: 190 enable3D(1) -> " + ok);
             if (!ok) again = true;
             ui(QuickPanel::refreshIfShowing);

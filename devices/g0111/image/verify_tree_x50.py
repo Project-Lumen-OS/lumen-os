@@ -111,7 +111,7 @@ HAL_APP = {
 # menu's 12 calls = 101, each with its range); no 101 / 66, no vendor
 # heartbeat 99 / 100, no laser / ambient light getter, no other BANNED call). It stays a literal
 # because x50_apk_check.expect_from reads it with ast (compose's pre-check and the tests use this one copy);
-# devices/g0111/test/x50_menu_apk_check_test.sh refuses any difference from the tsv and from Gmpf.java's Iface list.
+# devices/g0111/test/x50_menu_apk_check_test.sh refuses any difference from the tsv and from the GmpfIface list of the app.
 MENU_APP = {
     "path": "system/priv-app/X50Projector/X50Projector.apk",
     "staged": "stage/X50Projector.apk",
@@ -617,7 +617,8 @@ for allow in (B["system/etc/z9x/blobs_allow.txt"], os.path.join(IN, "x50_blobs_a
         if m:
             blob_sha.add(m.group(1))
         blob_sha |= set(re.findall(r"from=([0-9a-f]{64})", raw))
-if len(blob_sha) < 11:
+        blob_sha |= set(re.findall(r"alt=v[0-9.]+:([0-9a-f]{64})", raw))   # another stock firmware's copy (v1.2.54)
+if len(blob_sha) < 13:
     bad.append("the two blobs allow-lists give only %d sha256" % len(blob_sha))
 for raw in open(os.path.join(IN, "x50_blobs_allow.txt"), encoding="utf-8"):
     if raw.startswith("set=") and not raw.startswith("set=x50-"):

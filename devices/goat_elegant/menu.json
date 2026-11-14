@@ -19,6 +19,7 @@
     "focus.smart": {},
     "lamp": {"min": 1, "max": 10},
     "boost": {"level": 11, "summary": "brighter"},
+    "lamp.off": {},
     "picture.mode": {"options": ["ai", "standard", "sport", "color_accuracy", "hdr_vivid", "performance"]},
     "picture.pq": {"items": ["brightness", "contrast", "saturation", "sharpness"], "min": 0, "max": 100},
     "picture.color_temp": {"options": ["standard", "movie"]},
@@ -49,7 +50,7 @@
     "settings.launcher": {"options": ["lumen", "classic"]}
   },
   "hints": {"picture.mode": "picture_mode", "projection.rear": "rear_projection", "keystone.curtain": "curtain_fit"},
-  "keys": {"gear_short": "quick_menu", "gear_long": "game_menu"},
+  "keys": {"gear_short": "quick_menu", "gear_long": "game_menu", "eye_gear_short": "restore_off"},
   "game_menu": {"enabled": true, "items": ["lat", "vrr", "hfr", "pic", "dark", "ar", "aim", "fps"], "themes": ["ps", "xbox", "switch", "pad", "apple", "windows", "computer"], "cec_detect": true},
   "pending": ["hint.keystone.ak_now", "game.color_space", "game.hdr"]
 }
