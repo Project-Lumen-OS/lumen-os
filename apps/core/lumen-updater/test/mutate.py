@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
+"""mutate.py: targeted mutants of the shared updater and its model data (apps/core/lumen-updater). Each mutant
+changes one line of the module or of a model's Target, runs the tests that own it and must make them fail; the
+file is restored after every mutant, also on an error. Run from the tree root:
+
+  python3 apps/core/lumen-updater/test/mutate.py [NAME...]
+
+Prints KILLED / ALIVE per mutant and exits 1 when one stays alive or a mutation no longer applies.
+"""
+import os
+import subprocess
+import sys
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+CORE = "apps/core/lumen-updater/src/org/lumen/updater/"
+Z9X = "apps/Z9xUpdater/src/org/lumen/updater/Target.java"
+HB = "apps/LumenUpdater/src/org/lumen/updater/Target.java"
+P6 = "apps/Play6Updater/src/org/lumen/updater/Target.java"
+T_CORE = "sh apps/core/lumen-updater/test/run.sh"
+T_HB = "sh apps/LumenUpdater/test/ota/run.sh"
+T_Z9X = "sh apps/Z9xUpdater/test/run.sh"
+T_P6 = "sh apps/Play6Updater/test/run.sh"
+T_HOOKS = "bash apps/LumenDsuInstall/test/hooks_tests.sh"
+T_WIRE = "python3 -B tools/devices/devices.py check-wire"
+RES = "apps/core/lumen-updater/res/"
+T_WORDS = "python3 -B tools/i18n/test/ui_words_test.py"
+T_PARITY = "sh apps/core/lumen-updater/test/parity/run.sh"
+# the parity run must turn red with the German consent text gone (only the "key still there" rule catches it):
+# green when it does, red when the rewritten-text rule lets a missing text through
+T_PARITY_GONE = ("cp " + RES + "values-de/strings.xml /tmp/lumen_mut_de.xml && "
+                 "grep -v 'name=.consent_body.>' /tmp/lumen_mut_de.xml > " + RES + "values-de/strings.xml && "
+                 "{ sh apps/core/lumen-updater/test/parity/run.sh; r=$?; cp /tmp/lumen_mut_de.xml " + RES
+                 + "values-de/strings.xml; [ $r -ne 0 ]; }")
+
+# name, file, old, new, tests (any failing test kills it)
+MUTANTS = [
+    ("z9x_wire_id", Z9X, '.device("z9x")', '.device("z9y")', [T_CORE]),
+    ("z9x_checks", Z9X, ".checks(InstallChecks.Z9X_GATE)", ".checks(InstallChecks.LUMEN_GATE)", [T_CORE]),
+    ("z9x_versions", Z9X, ".versions(VersionScheme.LEGACY)", ".versions(VersionScheme.O1)", [T_CORE]),
+    ("z9x_beta_file", Z9X, '"update-public-beta.json")', '"update-public-test.json")', [T_CORE, T_Z9X]),
+    ("z9x_import", Z9X, ".importBridgeData(true)", ".importBridgeData(false)", [T_CORE]),
+    ("z9x_dsu", Z9X, ".dsuHandover(false)", ".dsuHandover(true)", [T_CORE, T_HOOKS]),
+    ("hb_rule", HB, ".channels(ChannelRule.PAIR)", ".channels(ChannelRule.FIXED)", [T_CORE, T_HB]),
+    ("hb_dsu", HB, ".dsuHandover(true)", ".dsuHandover(false)", [T_CORE, T_HOOKS]),
+    ("hb_hide", HB, ".hideWithoutDevice(true)", ".hideWithoutDevice(false)", [T_CORE]),
+    ("hb_default_gate", HB, "InstallChecks.LUMEN_GATE)", "InstallChecks.Z9X_GATE)", [T_CORE, T_HB]),
+    ("hb_versions", HB, ".versions(VersionScheme.O1)", ".versions(VersionScheme.LEGACY)", [T_CORE, T_HB]),
+    ("p6_install", P6, ".install(InstallKind.RECOVERY)", ".install(InstallKind.UPDATE_ENGINE)", [T_CORE]),
+    ("p6_dir", P6, ".dir(OtaDir.CACHE)", ".dir(OtaDir.APP_DATA)", [T_CORE]),
+    ("p6_wire_id", P6, '.device("play6")', '.device("play7")', [T_CORE, T_P6, T_WIRE]),
+    ("kind_skip", CORE + "InstallKind.java", "RECOVERY(false, false, true, true)", "RECOVERY(false, false, false, true)",
+     [T_CORE]),
+    ("kind_payload", CORE + "InstallKind.java", "UPDATE_ENGINE(true, true, false, false)",
+     "UPDATE_ENGINE(false, true, false, false)", [T_CORE]),
+    ("kind_meta_named", CORE + "InstallKind.java", "return payloadFacts || !p.metadataUrl.isEmpty();",
+     "return payloadFacts;", [T_CORE]),
+    ("pair_beta_suffix", CORE + "ChannelRule.java", 'beta = "update-" + d + "-test.json"',
+     'beta = "update-" + d + "-beta.json"', [T_CORE, T_HB]),
+    ("gate_name", CORE + "InstallChecks.java", 'LUMEN_GATE("lumen_ota",', 'LUMEN_GATE("lumen",', [T_HB]),
+    ("first_refusal", CORE + "Preflight.java", "            if (b != null) return b;\n        }\n        return null;",
+     "            if (b != null) continue;\n        }\n        return null;", [T_CORE, T_HB]),
+    ("vbmeta_bit", CORE + "Preflight.java", "if ((flags & 2) == 0)", "if ((flags & 1) == 0)", [T_CORE, T_HB]),
+    ("guide_format", CORE + "UpdateTarget.java", 'return g + "/" + lang + ".md#" + section;',
+     'return g + "/" + lang + "#" + section;', [T_CORE, T_HB]),
+    ("dsu_guard", CORE + "UpdateService.java", "if (Ota.T.dsuHandover && Dsu.running())", "if (Dsu.running())",
+     [T_HOOKS]),
+    ("pair_needs_wire_id", CORE + "ChannelRule.java", "return !t.device().isEmpty() && u.startsWith(\"https://\") ? u : \"\";",
+     "return u.startsWith(\"https://\") ? u : \"\";", [T_HB]),
+    ("accepts_any", CORE + "Channels.java", "if (want.equals(f)) return true;", "if (!f.isEmpty()) return true;",
+     [T_HB]),
+    ("vendor_check", CORE + "Preflight.java", "!vendorIncremental.contains(vendor)", "vendorIncremental.isEmpty()",
+     [T_HB]),
+    ("recovery_drop", CORE + "ViaRecovery.java", "{ return h.busy(); }", "{ return h.repeat(ServiceJob.INSTALL); }",
+     [T_CORE]),
+    # STORAGE: the vendor's Virtual A/B compression must be what the model's payloads use (X50 on, HB off)
+    ("vabc_ignored", CORE + "Preflight.java", "if (on != Ota.T.compressedSnapshots())", "if (on)", [T_HB]),
+    ("vabc_one_way", CORE + "Preflight.java", "if (on != Ota.T.compressedSnapshots())",
+     "if (on && !Ota.T.compressedSnapshots())", [T_HB]),
+    ("vabc_arg", CORE + "Preflight.java", 'on ? "compression on" : "compression off"', '"compression on"', [T_HB]),
+    ("vabc_any_device", CORE + "UpdateTarget.java", "return compressedSnapshots.contains(device());",
+     "return !compressedSnapshots.isEmpty();", [T_HB]),
+    ("vabc_builder", CORE + "UpdateTarget.java", "compressedSnapshots = new TreeSet<>(Arrays.asList(wireIds));",
+     "compressedSnapshots = new TreeSet<>();", [T_CORE, T_HB]),
+    ("vabc_no_x50", HB, '.compressedSnapshots("x50", "x50max")', '.compressedSnapshots("x50max")', [T_CORE, T_HB]),
+    ("vabc_hb_too", HB, '.compressedSnapshots("x50", "x50max")', '.compressedSnapshots("hb", "x50", "x50max")',
+     [T_CORE, T_HB]),
+    ("vabc_conf_side", "apps/LumenUpdater/test/ota/run.sh", 'if c["vabc"] == "yes":', 'if c["vabc"] == "no":', [T_HB]),
+    # PLAIN WORDS: no DSU, vbmeta or slot on screen, in any language (tools/i18n/ui_words.py), and the parity of the
+    # updaters accepts a rewritten text only while the key keeps a text in that folder (test/parity/rewritten.txt)
+    ("words_consent_slot", RES + "values/strings.xml", "copy the projector’s own XGIMI system files to the update",
+     "copy the projector’s own XGIMI system files to the other slot", [T_WORDS]),
+    ("words_consent_vbmeta_ru", RES + "values-ru/strings.xml", "Ничего никуда не отправляется.",
+     "Ничего никуда не отправляется, vbmeta не записывается.", [T_WORDS]),
+    ("words_block_slot_ja", RES + "values-ja/strings_lumen_ota.xml", "プロジェクターは再起動を待っています。",
+     "プロジェクターは次にシステムスロット B から起動します。", [T_WORDS]),
+    ("words_block_slot_zh", RES + "values-zh-rCN/strings_lumen_ota.xml", "投影仪正在等待重启。",
+     "投影仪下次将从系统槽位 B 启动。", [T_WORDS]),
+    ("words_block_dsu_de", RES + "values-de/strings_lumen_ota.xml",
+     "Updates lassen sich in dieser Version nicht sicher installieren.",
+     "Updates lassen sich in dieser DSU-Version nicht sicher installieren.", [T_WORDS]),
+    ("words_no_russian", "tools/i18n/ui_words.py", '("slot (ru, uk, be, kk)", re.compile(r"слот", re.I)),', "",
+     [T_WORDS]),
+    ("words_no_arrays", "tools/i18n/ui_words.py", 'elif el.tag in ("plurals", "string-array"):',
+     'elif el.tag in ("plurals",):', [T_WORDS]),
+    ("words_refs_any", "tools/i18n/ui_words.py", 'if REF.fullmatch(t):', 'if REF.match(t):', [T_WORDS]),
+    ("parity_rewrite_any", "apps/core/lumen-updater/test/parity/run.sh",
+     "if l and not (m and m.group(2) in keys and m.group(1) in now):", "if l and not (m and m.group(2) in keys):",
+     [T_PARITY_GONE]),
+    ("parity_rewrite_unlisted", "apps/core/lumen-updater/test/parity/rewritten.txt", "\nconsent_body\n", "\n",
+     [T_PARITY]),
+    ("consent_args_back", RES + "values/strings.xml", "Your calibration and settings stay untouched.",
+     "Your calibration and settings stay untouched (%1$s).", [T_CORE]),
+]
+
+
+def run(cmd):
+    r = subprocess.run(cmd, shell=True, cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return r.returncode
+
+
+def main(names):
+    alive, broken, killed = [], [], 0
+    for name, path, old, new, tests in MUTANTS:
+        if names and name not in names:
+            continue
+        p = os.path.join(ROOT, path)
+        src = open(p, encoding="utf-8").read()
+        if src.count(old) != 1:
+            print("BROKEN %s: %s does not hold the line once" % (name, path))
+            broken.append(name)
+            continue
+        try:
+            open(p, "w", encoding="utf-8").write(src.replace(old, new))
+            by = next((t for t in tests if run(t) != 0), None)
+        finally:
+            open(p, "w", encoding="utf-8").write(src)
+        if by:
+            killed += 1
+            print("KILLED %s by %s" % (name, by.split()[1]))
+        else:
+            alive.append(name)
+            print("ALIVE  %s" % name)
+        sys.stdout.flush()
+    print("updater mutants killed=%d alive=%d broken=%d" % (killed, len(alive), len(broken)))
+    return 1 if alive or broken else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

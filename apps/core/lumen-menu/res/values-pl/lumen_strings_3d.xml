@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
+     locale pl) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">Ustawienia 3D</string>
+    <string name="lumen_m_3d_off">Wyłącz 3D</string>
+    <string name="lumen_m_3d_sbs">Obok siebie</string>
+    <string name="lumen_m_3d_tb">Góra i dół</string>
+    <string name="lumen_m_3d_sbs_2d">3D do 2D (Obok siebie)</string>
+    <string name="lumen_m_3d_tb_2d">3D do 2D (Góra-dół)</string>
+    <string name="lumen_m_3d_frame_packing">Pakowanie klatek</string>
+    <string name="lumen_m_3d_summary">Podczas filmu. 3D wymaga aktywnych okularów DLP-Link.</string>
+    <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale pl) -->
+    <string name="lumen_m_3d_game">Ustawienia 3D nie są obsługiwane w trybie gry</string>
+    <string name="lumen_m_3d_no_video">Odtwórz wideo lub połącz się ze źródłem sygnału i spróbuj ponownie</string>
+    <string name="lumen_m_3d_4k">Ustawienia 3D nie są obsługiwane w wideo 4K</string>
+    <string name="lumen_m_3d_hdr">Ustawienia 3D nie są obsługiwane w wideo HDR</string>
+    <string name="lumen_m_3d_120hz">Odtwarzanie 3D jest wyłączone przy 120 Hz</string>
+    <string name="lumen_m_3d_high_fps">Ustawienia 3D nie są obsługiwane przy wysokiej liczbie klatek na sekundę</string>
+</resources>

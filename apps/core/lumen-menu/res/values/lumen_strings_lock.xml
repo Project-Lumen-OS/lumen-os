@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- PictureSettingsRule: the stock refusals of the picture settings page, the texts of the stock newsettings
+     (image_mode_mutex_game_run, ai_image_mode_mutex_prof_setting, performance_image_mode_mutex_prof_setting and the
+     _basic_setting pair of the picture mode 3.0 basic page) in every language stock has, English from its values-en
+     (what a stock HB shows in English). ar, be, kk, pt-BR, tr and uk are new translations of the same sentences -->
+<resources>
+    <string name="lumen_m_ps_game">Game Mode in effect</string>
+    <string name="lumen_m_ps_ai">Professional settings cannot be used in AI quality picture mode</string>
+    <string name="lumen_m_ps_performance">Professional settings are not supported in performance picture mode</string>
+    <string name="lumen_m_ps_ai_basic">Standard settings cannot be used in AI quality picture mode</string>
+    <string name="lumen_m_ps_performance_basic">Standard settings are not supported in performance picture mode</string>
+</resources>

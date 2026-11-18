@@ -26,6 +26,7 @@ ro.build.characteristics=tv
 +ro.lumen.version=rs30-@V@
 +ro.lumen.device=g0155
 +ro.lumen.model=G0155
++ro.lumen.models=G0155
 +ro.lumen.family=horse_popular
 +ro.lumen.build_id=lumen-rs30-@V@-@BID@
 +ro.lumen.base_build_id=lineage-21-gsi_tv_arm-uffd-20261112

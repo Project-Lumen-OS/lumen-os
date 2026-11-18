@@ -1,0 +1,21 @@
+# What an ordinary app (Lumen Installer: untrusted_app_29, targetSdk 29) reads on the XGIMI system, per model.
+# The stock firmware boots with SELinux permissive on every dumped unit (androidboot.selinux=permissive in
+# /proc/cmdline of the Z9X, HB G0148, RS30, Play 6 dumps, ro.boot.selinux=permissive in the HB G0130 and X50 getprop;
+# Lumen Installer's root route needs it on every model), so only the file modes count: the config folder
+# /mnt/vendor/xgimiconfig/<model> and its dlp files are o+rx / o+r in every firmware tree, /vendor/etc/version.txt
+# too, and every property is readable. Columns 3 and 4 are what each image's own policy would hide if a firmware
+# ever boots enforcing (vendor and system CIL files and property_contexts of the dumps on xgimi-builder ~/devices,
+# 2026-11-18): /mnt/vendor/xgimiconfig is mnt_xgimiconfig_file, which only system domains may read, and
+# vendor.wlan.firmware.version is vendor_default_prop on the MT9681 images (HB's MediaTek policy gives apps every
+# mtk_core_property_type). G0100 and H0063 share the images of G0111 and H0062. G0058: no policy in the dumps
+# (Android 11), the config files taken as closed like the rest.
+# model	stock SELinux	hidden properties if enforcing (comma separated, - for none)	hidden files if enforcing
+G0082	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+G0130	permissive	-	/mnt/vendor/xgimiconfig/
+G0148	permissive	-	/mnt/vendor/xgimiconfig/
+G0111	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+G0100	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+G0155	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+H0062	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+H0063	permissive	vendor.wlan.firmware.version	/mnt/vendor/xgimiconfig/
+G0058	permissive	-	/mnt/vendor/xgimiconfig/

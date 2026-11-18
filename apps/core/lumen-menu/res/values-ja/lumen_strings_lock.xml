@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">ゲームモード有効</string>
+    <string name="lumen_m_ps_ai">AI品質ピクチャーモードでは、プロ設定を使用できません</string>
+    <string name="lumen_m_ps_performance">パフォーマンスピクチャーモードでは、プロ設定はサポートされていません</string>
+    <string name="lumen_m_ps_ai_basic">AI品質ピクチャーモードでは、標準設定を使用できません</string>
+    <string name="lumen_m_ps_performance_basic">パフォーマンスピクチャーモードでは、標準設定はサポートされていません</string>
+</resources>

@@ -19,25 +19,29 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 
 | Projector | Status | Latest release | Install |
 |---|---|---|---|
-| XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/z9x/en.md) |
+| XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/z9x/en.md) |
 | XGIMI Play 6 | stable | [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [with a computer](docs/install/play6/en.md) |
-| XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/en.md#easy) or [with a computer](docs/install/hb/en.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | beta, try only | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta3), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta3) | [from the projector](docs/install/en.md#easy) |
+| XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/hb/en.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta8), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta8) | [from the projector](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra Max | beta, trial only | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [from the projector](docs/install/x50/en.md) |
+| XGIMI TITAN Noir Pro, TITAN Noir Max | beta, trial only | [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta1), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta1) | [from the projector](docs/install/x50/en.md) |
 
 Each projector has its own release files, signed with its own key. The installer refuses an image for
 another projector and any XGIMI firmware it does not know.
 
-- XGIMI Z9X (model code G0082): XGIMI firmware V6.15.58, V6.15.62 or V6.15.19. Updates come over Wi-Fi.
+- XGIMI Z9X (model code G0082): XGIMI firmware V6.15.58 or V6.15.62, on V6.15.19 only the trial. Updates come over
+  Wi-Fi.
 - XGIMI Play 6 (model code G0058): XGIMI firmware V1.7.116 or V1.8.127. A Play 6 with the AIC Wi-Fi chip
   (newer units) needs V1.8.127: do not put V1.7.116 on it, Wi-Fi and Bluetooth then stop working. A new version
   goes on with the installer over the USB cable and keeps your data. Updates over Wi-Fi come later. Google
   services can be added with the installer from your own MindTheGapps download.
-- XGIMI Z9X HB (model code G0130): XGIMI firmware V6.16.24 with a computer. From the projector, the HB beta
-  also installs on V6.17.12 and on the G0148 with V6.17.12. Updates come over Wi-Fi. Two XGIMI files are not
-  in the image: the installer copies them from your own projector. Google services can be added with the
-  installer from your own MindTheGapps download.
-- XGIMI X50 Ultra (model code G0111) and X50 Ultra Max (model code G0100): XGIMI firmware V1.2.64 or V1.2.54.
-  A beta that you try from the projector: Lumen OS starts once and the XGIMI system stays as it is.
+- XGIMI Z9X HB (model codes G0130 and G0148): XGIMI firmware V6.16.24 or V6.17.12 on the G0130, V6.17.12 on
+  the G0148. Updates come over Wi-Fi.
+- XGIMI X50 Ultra (model code G0111) and X50 Ultra Max (model code G0100): XGIMI firmware V1.2.64 or V1.2.54. A
+  beta. Installing for good is open on the X50 Ultra with V1.2.64. Otherwise it is a trial: Lumen OS starts once
+  and the XGIMI system stays as it is.
+- XGIMI RS30 Ultra Max (model code G0155, firmware V1.1.42), TITAN Noir Pro and TITAN Noir Max (model codes
+  H0062 and H0063, firmware V1.2.99 or V1.2.54): a beta to try from the projector.
 
 More projectors will come later.
 
@@ -92,14 +96,13 @@ weather (Open-Meteo), updates (GitHub) and that counter.
 The published edition has no Google apps: no Google Play, no Chromecast built-in, no Google voice
 search. Apps that need Google Play services will not run. Apps install from a USB stick or from any store
 you choose. You can add Google services yourself. Installing from the projector, you choose Yes at Google
-services and the installer downloads them from their official page. With a computer, they come from your own
-MindTheGapps download, see the Google part of the guide for the [Z9X](docs/install/z9x/en.md#google), the
-[Z9X HB](docs/install/hb/en.md#hb-google) or the [Play 6](docs/install/play6/en.md#play6-google).
+services and the installer downloads them from their official page. On the Play 6 the computer installer adds
+them from your own MindTheGapps download, see [Google services](docs/install/play6/en.md#play6-google).
 
 ## Install
 
-One guide covers every projector: [Installing Lumen OS](docs/install/en.md)
-([по-русски](docs/install/ru.md)). Installing Lumen OS for good erases all data on the projector, once.
+The guide starts at [Installing Lumen OS](docs/install/en.md) ([по-русски](docs/install/ru.md)) and has a
+page for each projector. Installing Lumen OS for good erases all data on the projector, once.
 
 Download only from this repository's [Releases](https://github.com/Project-Lumen-OS/lumen-os/releases) and the
 [Lumen Installer releases](https://github.com/Project-Lumen-OS/lumen-installer/releases). The release marked
@@ -108,7 +111,7 @@ and refuse anything else. Copies on forums and file hosts are not ours.
 
 ### Easy install: from the projector
 
-No computer and no cable. For the Z9X, the Z9X HB, and as a trial the X50 Ultra and X50 Ultra Max.
+No computer and no cable. For every projector in the list except the Play 6.
 
 1. Download the Lumen Installer file that ends in `.apk1` from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
    and copy it to a USB stick (FAT32 or exFAT).
@@ -122,8 +125,8 @@ No computer and no cable. For the Z9X, the Z9X HB, and as a trial the X50 Ultra 
 
 ### Advanced: with a computer
 
-For the Play 6, which the app does not support yet, and for the cases the app does not cover, see
-[Advanced](docs/install/en.md#advanced).
+The Play 6 installs with a computer, see the [Play 6 guide](docs/install/play6/en.md). On the Z9X and the
+Z9X HB a computer is needed only in rare cases, see [With a computer](docs/install/en.md#advanced).
 
 ## Updates and going back
 
@@ -133,13 +136,12 @@ update. An update installs next to the running system, keeps your data and waits
 
 On the Play 6 there are no updates over Wi-Fi yet. Download the new Play 6 release and run
 `bash lumen-install.sh --ip ADDRESS --keep-data flash`. It writes the new system over the USB cable and
-keeps your data. Debugging must be on, see [step 6 of the Play 6 guide](docs/install/play6/en.md#play6-verify).
+keeps your data. Debugging must be on, see [Check the install](docs/install/play6/en.md#play6-verify).
 
-To go back during a trial, just restart the projector. After an install from the projector, open the apps in
-Lumen OS and choose Go back to the XGIMI system. This erases everything in Lumen OS. The official XGIMI firmware
-from a USB stick always works too and also erases everything, see Back to stock for the
-[Z9X](docs/install/z9x/en.md#stock), the [Z9X HB](docs/install/hb/en.md#hb-stock) and the
-[Play 6](docs/install/play6/en.md#play6-stock).
+To go back during a trial, just restart the projector. After an install, the official XGIMI firmware from a USB
+stick brings the XGIMI system back and erases everything, see Back to the XGIMI system for the
+[Z9X](docs/install/z9x/en.md#stock), the [Z9X HB](docs/install/hb/en.md#stock), the
+[X50 Ultra and X50 Ultra Max](docs/install/x50/en.md#stock) and the [Play 6](docs/install/play6/en.md#play6-stock).
 
 ## Privacy
 
@@ -228,7 +230,7 @@ Check the network before you send: USDT sent to the TRON address over ERC20 or B
 
 ## License
 
-Apache License 2.0, except `apps/Z9xAirPlay` (GPL-3.0-only) and the third-party submodules under
+Apache License 2.0, except `apps/LumenAirPlay` (GPL-3.0-only) and the third-party submodules under
 `apps/third_party`, which keep their own licenses. See [LICENSE](LICENSE) and [NOTICE](NOTICE). This
 repository holds no Google apps, no MediaTek or XGIMI files and no signing keys.
 

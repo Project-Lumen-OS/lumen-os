@@ -6,7 +6,7 @@
 # The image build signs with the goat_elegant platform key: sh tools/devices/build_apps.sh goat_elegant.
 # Since 2026-10-30 this folder is only the HB layer: the real forks (each with a
 # row in devices/goat_elegant/forks.tsv) and the HB-only files. The full tree is assembled from the recipe
-# devices/goat_elegant/app/HbProjector.layers (apps/Z9xProjector minus the Z9X-only files, then this folder on top),
+# devices/goat_elegant/app/HbProjector.layers (apps/ProjectorBase minus the Z9X-only files, then this folder on top),
 # so the HB follows Z9X changes automatically. This script:
 #   1. the fork rows (tools/devices/check_forks.py --device goat_elegant);
 #   2. assembles the tree into build/assembled/ (tools/devices/assemble_app.py: shadow rules; an origin that changed

@@ -56,6 +56,11 @@ public interface GmpfWire<K> {
     /** Registers the transport's one focus callback object with the vendor. */
     void focusCallback(K k) throws RemoteException;
 
+    /** Registers the transport's one TV event callback object (GmTvManager events to sink) with the vendor. */
+    default void tvCallback(K k, TvEventSink sink) throws RemoteException {
+        throw new RemoteException(name(k) + ": no TV event callback on this transport");
+    }
+
     /** An int32 return, then a struct of n int32: {ret, f0 .. fn-1}. */
     int[] i32Struct(K k, int n) throws RemoteException;
 
@@ -79,4 +84,21 @@ public interface GmpfWire<K> {
 
     /** The motion sensor struct: {acc x, y, z, gyro x, y, z, type}. */
     int[] motion(K k) throws RemoteException;
+
+    // ---- reads of the signal panel (lumen-signal); a transport without them refuses before anything is sent
+
+    /** One string argument, an int reply (getExtDecInfo). */
+    default int strRetI32(K k, String s) throws RemoteException {
+        throw new UnsupportedOperationException(name(k) + ": no string read on this transport");
+    }
+
+    /** One u8 argument, a float reply (Z9X getTemperatureFromSensor). */
+    default float u8RetF32(K k, int v) throws RemoteException {
+        throw new UnsupportedOperationException(name(k) + ": no float read on this transport");
+    }
+
+    /** One int argument, a returned parcelable of {@code n} int words (HB getHdmiHwConfig). */
+    default int[] i32RetObject(K k, int a, int n) throws RemoteException {
+        throw new UnsupportedOperationException(name(k) + ": no parcelable read on this transport");
+    }
 }

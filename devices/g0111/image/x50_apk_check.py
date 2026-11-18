@@ -23,7 +23,8 @@ What it reads:
 - native code: any lib/ entry (a .so could reach the HAL around the dex).
 
 problems(report, expect) -> [text]: the signer certificate of every scheme present is expect["cert"] (and v2 or v3
-is present), the gmpf descriptors of the dex are exactly expect["ifaces"], no HIDL gmpf, exactly one transact site
+is present), the gmpf descriptors of the dex are exactly expect["ifaces"] plus expect["callbacks"] (the vendor callback
+interfaces the app implements, ai-mode-stock IGmTvCallback; none when absent), no HIDL gmpf, exactly one transact site
 and it is in the transport class, no Method.invoke, no native code, T$Call is constructed only in its own static
 initialiser and its rows (service, code, method[, args]) are exactly expect["calls"] (service: the descriptor's last
 part without the leading I, '-' for a meta call without interface; args: the t20 argument range, the Call's fourth
@@ -358,8 +359,9 @@ def problems(rep, expect):
     for s, certs in sorted(sig.items()):
         if not certs or set(certs) != {expect["cert"]}:
             bad.append("%s signer certificate %s, not %s" % (s, ",".join(certs) or "none", expect["cert"]))
-    if rep["gmpf"] != set(expect["ifaces"]):
-        bad.append("names the gmpf interfaces %s, not exactly %s" % (sorted(rep["gmpf"]), sorted(expect["ifaces"])))
+    named = set(expect["ifaces"]) | set(expect.get("callbacks", []))
+    if rep["gmpf"] != named:
+        bad.append("names the gmpf interfaces %s, not exactly %s" % (sorted(rep["gmpf"]), sorted(named)))
     if rep["hidl"]:
         bad.append("names the HIDL gmpf: %s" % sorted(rep["hidl"]))
     if rep["native"]:

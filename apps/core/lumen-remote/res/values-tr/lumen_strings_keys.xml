@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">Kumanda düğmeleri</string>
+    <string name="lumen_remote_keys_assign">Düğme ata</string>
+    <string name="lumen_remote_keys_press">Kumandada bir düğmeye basın</string>
+    <string name="lumen_remote_keys_leave">Çıkmak için Geri tuşuna basın</string>
+    <string name="lumen_remote_keys_fixed">Bu düğme yeniden atanamaz</string>
+    <string name="lumen_remote_keys_pick">Düğme ne yapsın</string>
+    <string name="lumen_remote_keys_as_before">Önceki gibi</string>
+    <string name="lumen_remote_keys_reset_all">Tümünü sıfırla</string>
+    <string name="lumen_remote_keys_saved">Kaydedildi</string>
+    <string name="lumen_remote_keys_empty">Henüz atanmış düğme yok</string>
+    <string name="lumen_remote_keys_gone">Uygulama kaldırıldı. Düğme yine eskisi gibi çalışıyor.</string>
+    <string name="lumen_remote_keys_name_youku">Youku tuşu</string>
+    <string name="lumen_remote_keys_name_tencent">Tencent Video tuşu</string>
+    <string name="lumen_remote_keys_name_iqiyi">iQIYI tuşu</string>
+    <string name="lumen_remote_keys_name_mango">Mango TV tuşu</string>
+    <string name="lumen_remote_keys_name_bilibili">bilibili tuşu</string>
+    <string name="lumen_remote_keys_name_ambient">Ekran koruyucu düğmesi</string>
+    <string name="lumen_remote_keys_name_shortcut">Hızlı erişim düğmesi</string>
+    <string name="lumen_remote_keys_name_custom">Hızlı erişim düğmesi %1$d</string>
+    <string name="lumen_remote_keys_name_f">F%1$d tuşu</string>
+    <string name="lumen_remote_keys_name_browser">Tarayıcı tuşu</string>
+    <string name="lumen_remote_keys_name_mail">Posta tuşu</string>
+    <string name="lumen_remote_keys_name_music">Müzik tuşu</string>
+    <string name="lumen_remote_keys_name_calculator">Hesap makinesi tuşu</string>
+    <string name="lumen_remote_keys_name_contacts">Kişiler tuşu</string>
+    <string name="lumen_remote_keys_name_calendar">Takvim tuşu</string>
+    <string name="lumen_remote_keys_name_bookmarks">Yer imleri tuşu</string>
+    <string name="lumen_remote_keys_do_source">Giriş</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">Yamuk</string>
+    <string name="lumen_remote_keys_do_focus">Odak</string>
+    <string name="lumen_remote_keys_do_quick">Hızlı ayarlar</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">Sinyal</string>
+</resources>

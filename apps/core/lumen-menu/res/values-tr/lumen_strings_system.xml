@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">Tuş sesleri</string>
+    <string name="lumen_m_hdmi_options">HDMI girişi seçenekleri</string>
+    <string name="lumen_m_colour_vision">Renk görme</string>
+    <string name="lumen_m_temperature">Sıcaklık</string>
+    <string name="lumen_m_colour_vision_gray">Gri tonlama</string>
+    <string name="lumen_m_colour_vision_red_green">Kırmızı/yeşil</string>
+    <string name="lumen_m_colour_vision_green_red">Yeşil/kırmızı</string>
+    <string name="lumen_m_colour_vision_blue_yellow">Mavi/sarı</string>
+</resources>

@@ -1,0 +1,4 @@
+# The remote's Source key on this model (apps/core/lumen-source, evidence the design notes).
+# key	value	evidence
+after_last	first	XRMService XrmShortcutEvent.jumpToHdmi (Play 6 build): after the last HDMI port HDMI 1 again (Hdmi1TvInputService/HW1)
+osd_ms	3000	xhplayer InputActivity SIGNAL_DIALOG_SHOW_TIME = 3000, the stock signal card's time on screen

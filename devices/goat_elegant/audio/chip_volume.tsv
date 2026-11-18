@@ -1,0 +1,20 @@
+# Z9X HB G0130 / G0148 chip volume table (apps/core/lumen-audio ChipTable). Stock G0130 services.jar AudioService
+# VolumeStreamState.setDspVolumesToHal (decompile out130 5925-5975, the same rows as the Z9X G0082) and the
+# libxgimiaudiopolicy threadInit path table.
+# kind  type  key               device  path
+out     2     spk_volume        -       0     # builtin speaker, DEVICE_OUT_SPEAKER 0x2
+out     3     headphone_volume  -       4     # wired headset 0x4
+out     4     headphone_volume  -       4     # wired headphones 0x8
+out     8     bluetooth_volume  128     3     # A2DP: DEVICE_OUT_ALL_A2DP_SET 0x80 / 0x100 / 0x200, ";device=" per id
+out     8     bluetooth_volume  256     3
+out     8     bluetooth_volume  512     3
+out     11    usb_volume        -       6     # USB device 0x4000 (DEVICE_OUT_ALL_USB_SET)
+out     22    usb_volume        -       6     # USB headset 0x4000000
+out     6     xgimi_pcm_volume  -       -     # SPDIF 0x80000: a level, never a path (threadInit never sends 1)
+out     10    -                 -       2     # HDMI ARC: no chip key, the soundbar keeps its own volume
+out     29    -                 -       2     # HDMI eARC
+path    0                                     # every other output: the speaker path (threadInit default)
+fixed   31                                    # ANLG_DOCK_HEADSET 0x800 (stock mFixedVolumeDevices)
+fixed   19                                    # AUX_LINE 0x200000
+# Not listed: the USB accessory 0x2000, the BLE set and the hearing aid of the same stock method (no Lumen media route
+# reaches them), the XGIMI wireless speaker set (xgimi_wlspk_volume, no AudioDeviceInfo type).

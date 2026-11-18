@@ -5,8 +5,8 @@
 #   sources   MENU_APP holds to its sources: calls = research/allowed_x50projector.tsv, ifaces = the Iface list of
 #             apps/X50Projector GmpfIface.java, cert = devices/g0111/certs/platform.x509.pem, path = /system/priv-app/
 #             X50Projector, an app of the registry, installed by devices/g0111/image/steps.tsv, checked by verify_tree_x50.py
-#   real      the built APK passes x50_apk_check against MENU_APP (101 calls; t17: 70 - power-on AF 4 / 5 - MD 5 = 67;
-#             t18: + MD 9 getAutoReverse for the projection Auto radio; t20: + 21 with their argument ranges = 89; core-menu-x50game: + 12 game menu calls)
+#   real      the built APK passes x50_apk_check against MENU_APP (197 calls; t17: 70 - power-on AF 4 / 5 - MD 5 = 67;
+#             t18: + MD 9 getAutoReverse for the projection Auto radio; t20: + 21 with their argument ranges = 89; core-menu-x50game: + 12 game menu calls = 101; rs30-power: + 5 light calls = 106; rs30-menu: + the RS30 rows 12 = 118; x50-iris: + 199 / 200 = 120; quick-3d-x50: + the nine 3D calls = 129; rs30-parity-picture: + 18 picture rows less 78 of quick-3d-x50 = 146; rs30-parity-system: + 6 sound = 152; rs30-parity-system2: + TemperatureManager 6 = 153; cec-core: + GmTvManager 52 / 53 = 155; rs30-parity-projection: + rotation 2, lens memory 6 = 163; x50-parity-gaps: + aspect ratio 35 / 36 = 165; rs30-parity-picture2: + 25 colour and screen calls = 190; x50-feedback1: + the shift position 98 = 191; x50-picture-stock: + the Boost switch 151, its IMAX read 127, the tuning 192 / 193 = 195; ai-mode-stock: + GmTvManager 1 = 196; x50-parity-core: + GmTvManager 106 = 197)
 #   crossed   the menu APK against HAL_APP and the eye guard APK against MENU_APP: both refused
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -51,6 +51,10 @@ src = "".join(open(os.path.join(G, "apps/X50Projector/src/org/lumen/x50/projecto
 ifs = re.findall(r'^\s+[A-Z_]+\("(xgimi\.hardware\.gmpf\.I\w+)"\)', src, re.M)
 if sorted(ifs) != sorted(h["ifaces"]):
     bad.append("MENU_APP ifaces %s != GmpfIface %s" % (h["ifaces"], ifs))
+# ai-mode-stock: the vendor callback interfaces the app implements (AidlTransport.registerCallback descriptors in Gmpf)
+cbs = re.findall(r'^\s+static final String \w+ = "(xgimi\.hardware\.gmpf\.I\w+Callback)";', src, re.M)
+if sorted(cbs) != sorted(h.get("callbacks", [])):
+    bad.append("MENU_APP callbacks %s != the callback descriptors of Gmpf %s" % (h.get("callbacks"), cbs))
 der = subprocess.run(["openssl", "x509", "-in", os.path.join(G, "devices/g0111/certs/platform.x509.pem"), "-outform", "DER"],
                      capture_output=True, check=True).stdout
 if h["cert"] != hashlib.sha256(der).hexdigest() or h["cert"] != e["cert"]:
@@ -69,11 +73,15 @@ vsrc = open(ver, encoding="utf-8").read()
 if "x50_apk_check.problems(rep, MENU_APP)" not in vsrc or 'the menu HAL app %s is not in the image' not in vsrc:
     bad.append("verify_tree_x50.py does not check the menu app with x50_apk_check")
 # t12: 61 / 126 are the stock eye-protection user rows of the menu (newsettings MoreRepository); 101, the vendor cover
-# 66, the heartbeat and the ambient light switch / getter stay forbidden, and the eye guard (HAL_APP) may still not set
+# 66 with false, the heartbeat and the ambient light switch / getter stay forbidden, and the eye guard (HAL_APP) may still not set
 # any of them. t20: the maintainer's three unbans (11, 88, 3) exist for the menu only, each with exactly the args of
 # unbanned_x50projector.tsv; the eye guard has none of them.
-forbidden = {("DisplayManager", 101), ("DisplayManager", 66), ("DisplayManager", 59), ("DisplayManager", 60),
+forbidden = {("DisplayManager", 101), ("DisplayManager", 59), ("DisplayManager", 60),
              ("DisplayManager", 99), ("DisplayManager", 100)}
+# rs30-power: 66 only as the stock power key's relight (services.jar kPPowerPress), with true only: never the cover
+for r in h["calls"]:
+    if (r[0], r[1]) == ("DisplayManager", 66) and (len(r) < 4 or r[3] != "1"):
+        bad.append("MENU_APP sends 66 with more than true: %r" % (r,))
 eye_set = {("DisplayManager", 61), ("DisplayManager", 101), ("DisplayManager", 126), ("DisplayManager", 66)}
 mine = {(r[0], r[1]) for r in h["calls"]}
 theirs = {(r[0], r[1]) for r in e["calls"]}
@@ -89,8 +97,10 @@ for line in open(os.path.join(G, "devices/g0111/research/unbanned_x50projector.t
     if f[0] != "apps/X50Projector":
         bad.append("unbanned_x50projector.tsv names another app: %s" % f[0])
     unb[(f[1], int(f[2]))] = f[4][len("args:"):]
-if sorted(unb) != [("DisplayManager", 11), ("ProjectorFocusManager", 3), ("ProjectorFocusManager", 88)]:
-    bad.append("unbanned rows %s, not exactly 11 / 88 / 3" % sorted(unb))
+if sorted(unb) != [("DisplayManager", 11), ("ProjectorFocusManager", 3), ("ProjectorFocusManager", 88),
+                   ("ProjectorFocusManager", 107), ("ProjectorFocusManager", 108), ("ProjectorFocusManager", 109),
+                   ("ProjectorFocusManager", 110), ("SystemManager", 122)]:
+    bad.append("unbanned rows %s, not exactly 11 / 88 / 3 / 107-110 / 122" % sorted(unb))
 for r in h["calls"]:
     if (r[0], r[1]) in unb and (len(r) < 4 or r[3] != unb[(r[0], r[1])]):
         bad.append("MENU_APP %s %d has args %r, the unban list %r" % (r[0], r[1], r[3] if len(r) > 3 else None, unb[(r[0], r[1])]))
@@ -102,7 +112,7 @@ PY
 RC=$?; expect sources 0 "sources: OK"
 
 if [ -f "$APK" ]; then
-  run "$APK" --expect "$VER" --name MENU_APP; expect real_menu_apk 0 "OK: 101 calls"
+  run "$APK" --expect "$VER" --name MENU_APP; expect real_menu_apk 0 "OK: 197 calls"
   run "$APK" --expect "$VER"; expect menu_apk_is_not_the_eye_guard 1 "FAILED"
 else
   bad "no menu APK $APK (build it: sh tools/devices/build_apps.sh g0111 build/g0111/stage)"

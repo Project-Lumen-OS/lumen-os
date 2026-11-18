@@ -3,20 +3,30 @@
 entry: type, owner, group, mode (not of symlinks), file content (sha256), link target, SELinux label, file capability. Run as root
 by compose_x50.sh (step 7 on the staged tree, step 9 on the mounted image):
 
-  python3 -I verify_tree_x50.py BASE NEW IN V BID
+  python3 -I verify_tree_x50.py BASE NEW IN V BID CODENAME PROPF MPROPF MODEL PREFIX PCERT
+
+CODENAME, MODEL, PREFIX and PCERT are the model's build descriptor (devices/<codename>/build.conf: codename, model,
+var.PREFIX, var.PCERT), PROPF / MPROPF the prop files it applied; IN also holds the model's public certificates
+(platform.x509.pem, FINGERPRINTS.txt of devices/<codename>/certs/apex). No model is named in this script: an X50
+family model is a descriptor.
 
 IN is the composer's input folder (remove.txt, x50_prop.txt, x50_model_prop.txt, x50_props.py, x50_netadb.rc,
-x50_blobs.sh, x50_blobs.rc, x50_blobs_allow.txt, x50_nui.rc, blobs_stock_dsu.sh, x50_apk_check.py and stage/, the APKs built and signed
+z9x_blobs.sh, z9x_blobs.rc, blobs.conf, x50_blobs_allow.txt, x50_nui.rc, x50_apk_check.py and stage/, the APKs built and signed
 on the Mac).
 Allowed differences, and nothing else:
   removed   every path of remove.txt with everything below it;
   changed   system/build.prop and system/product/etc/build.prop (exactly the base files with the edits of
-            x50_prop.txt and the lines of x50_model_prop.txt, x50_props.py check), system/etc/security/otacerts.zip
+            x50_prop.txt and the lines of x50_model_prop.txt, then the one first-start setting of every image,
+            first_start_prop.txt through first_start.py apply: x50_props.py check), system/etc/init/z9x_setup.rc
+            (byte-identical to IN/z9x_setup.rc: the base's stock-data block without the Z9X's own language and
+            time zone), system/etc/init/z9x_blobs.rc and system/etc/z9x/z9x_blobs.sh (the one blobs reader of
+            every model over the base's Z9X copy, byte-identical to IN/z9x_blobs.rc and IN/z9x_blobs.sh),
+            system/etc/security/otacerts.zip
             (a zip without any certificate: no OTA payload verifies on the X50 test image); owner, mode and
             label of all three as in the base;
-  added     system/etc/init/x50_netadb.rc, x50_blobs.rc, x50_nui.rc and system/etc/z9x/x50_blobs.sh,
-            x50_blobs_allow.txt, blobs_stock_dsu.sh (the DSU-trial reader x50_blobs.sh sources), each byte-identical to its IN file (root:root, 0644, 0755 for the script,
-            system_file), and two 0-byte placeholders the X50 blobs reader binds the user's own files over:
+  added     system/etc/init/x50_netadb.rc, x50_nui.rc and system/etc/z9x/blobs.conf (the reader's X50 family
+            settings), x50_blobs_allow.txt, each byte-identical to its IN file (root:root, 0644, system_file), and
+            two 0-byte placeholders the blobs reader binds the user's own files over:
             system/bin/nativeui (root:shell 0755 nativeui_main_exec, the stock vendor_file_contexts label) and
             system/lib64/xgimi.hardware.gmpf-V1-ndk.so (root:root 0644 system_lib_file); the eye-follow fail-safe
             system/app/X50EyeGuard/ (root:root 0755 system_file) with X50EyeGuard.apk (root:root 0644
@@ -31,11 +41,20 @@ IBinder.transact site, and its call table is exactly the eight calls of HAL_APP 
 no Z9X updater APK; no reader of the vendor's native-UI fifo (/data/vendor/tmp/nuififo): the Z9X z9x_nui ACKs without
 drawing, and on the X50 the human-shape eye-protection mask is drawn by the stock nativeui, so an ACK-only reader
 would tell the vendor the person is masked. The only /system/etc files that may
-name the fifo are x50_blobs.sh and x50_nui.rc (checked byte for byte above), which only remove it while no reader
+name the fifo are z9x_blobs.sh and x50_nui.rc (checked byte for byte above), which only remove it while no reader
 runs. Every ART, dexopt and zygote property of the two build.prop files is the base's, and
 ro.dalvik.vm.enable_uffd_gc matches the GC the boot image and services.odex were compiled for (oat key
 concurrent-copying: false = the userfaultfd GC, which needs enable_uffd_gc=true). Directory sizes and times are
 ignored.
+A model with updates (its public prop file has +ro.lumen.ota.gate=1; 2026-11-14, rules.md 2.34; build.conf
+derive=ota:pub): on top of the above, remove_ota.txt (the base's Z9X gate) is removed, system/etc/init/update_verifier.rc
+is IN/lumen_update_verifier.rc, otacerts.zip is IN/otacerts.zip (ota.x509.pem then ota_next.x509.pem of the model),
+system/product/etc/default-permissions/z9x-updater.xml stays the base's, and system/etc/init/lumen_ota.rc,
+system/etc/lumen/lumen_ota.sh, system/etc/lumen/ota_gate.conf (hal=aidl, xgimi_middle among the health services) and
+system/app/LumenUpdater/LumenUpdater.apk are added from IN; the props say ro.lumen.ota.gate=1, ro.lumen.ota.device =
+PREFIX (the wire id), ro.product.ab_ota_partitions=<the XGIMI set of apps/core/lumen-fwcopy>, ro.lumen.version = V with its O1
+ro.lumen.version_code, ro.lumen.ota.manifest_url = update-PREFIX-test.json or -nogms.json on the tag x50. A model
+without updates has no ro.lumen.ota.* prop and no updater.
 Prints a summary and every violation; exit 0 = OK, 1 = violations.
 """
 import hashlib
@@ -47,24 +66,40 @@ import sys
 import zipfile
 
 base, new, IN, V, BID = sys.argv[1:6]
-# 2026-11-11: the X50 model of the image (g0111 X50 Ultra, the default; g0100 X50 Ultra Max) and its two prop files
-# (IN names; compose_x50.sh passes what it applied); a release-shaped V (1.0.10-beta1) is the PUBLIC variant: no
-# network adb, no test adb props, no x50_netadb.rc
-C = sys.argv[6] if len(sys.argv) > 6 else "g0111"
-PROPF = sys.argv[7] if len(sys.argv) > 7 else "x50_prop.txt"
-MPROPF = sys.argv[8] if len(sys.argv) > 8 else "x50_model_prop.txt"
-X50_MODELS = {"g0111": ("G0111", "x50"), "g0100": ("G0100", "x50max")}
-if C not in X50_MODELS:
-    sys.exit("verify_tree_x50: %s is not an X50 model (g0111, g0100)" % C)
-MODEL, PREFIX = X50_MODELS[C]
+# the X50 family model of the image, from its build descriptor (steps.tsv passes codename, the two prop files it
+# applied, model, var.PREFIX and var.PCERT); a release-shaped V (1.0.10-beta1) is the PUBLIC variant: no network adb,
+# no test adb props, no x50_netadb.rc
+if len(sys.argv) != 12:
+    sys.exit("verify_tree_x50: BASE NEW IN V BID CODENAME PROPF MPROPF MODEL PREFIX PCERT (the build descriptor's values)")
+C, PROPF, MPROPF, MODEL, PREFIX, PCERT = sys.argv[6:12]
+if not (re.fullmatch(r"[a-z][a-z0-9_]+", C) and re.fullmatch(r"[A-Z][0-9]{4}", MODEL) and re.fullmatch(r"[a-z0-9]+", PREFIX)
+        and re.fullmatch(r"[0-9a-f]{64}", PCERT)):
+    sys.exit("verify_tree_x50: bad identity %r %r %r %r" % (C, MODEL, PREFIX, PCERT))
 PUBLIC = re.fullmatch(r"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(-(beta|rc)[0-9]{1,2})?", V) is not None
 if not PUBLIC and not re.fullmatch(r"t[0-9]{1,2}", V):
     sys.exit("verify_tree_x50: variant %r is neither tN nor a release version" % V)
-WANT_PROPF = {("g0111", False): "x50_prop.txt", ("g0111", True): "x50_prop_pub.txt", ("g0100", True): "x50max_prop_pub.txt"}
-WANT_MPROPF = {"g0111": "x50_model_prop.txt", "g0100": "x50max_model_prop.txt"}
-if WANT_PROPF.get((C, PUBLIC)) != PROPF or WANT_MPROPF[C] != MPROPF:
-    sys.exit("verify_tree_x50: %s %s takes %s + %s, not %s + %s" % (C, "public" if PUBLIC else "test",
-             WANT_PROPF.get((C, PUBLIC)), WANT_MPROPF[C], PROPF, MPROPF))
+
+
+def ident_lines(path):
+    return {ln.strip() for ln in open(path, encoding="utf-8") if ln.strip() and not ln.startswith("#")}
+
+
+# the prop files are this model's: the image identity of the descriptor, the stock product of its model file
+_pl, _ml = ident_lines(os.path.join(IN, PROPF)), ident_lines(os.path.join(IN, MPROPF))
+# a model with updates (2026-11-14, rules.md 2.34; build.conf derive=ota:pub): its public prop file turns the
+# neutral boot gate on, and the image then carries the update client (OTA_ADDED below); PREFIX is its wire id
+# (x50, x50max), the release name is the bare version its O1 code is made from
+OTA = "+ro.lumen.ota.gate=1" in _pl
+if OTA and not PUBLIC:
+    sys.exit("verify_tree_x50: %s: a test image (%s) never carries the updater" % (PROPF, V))
+for need in ("+ro.lumen.device=" + C, "+ro.lumen.model=" + MODEL, "+ro.lumen.models=" + MODEL, "ro.z9x.build_id=lumen-%s-@V@-@BID@" % PREFIX,
+             "ro.lumen.version=@V@" if OTA else "ro.lumen.version=%s-@V@" % PREFIX, "ro.z9x.device=x50"):
+    if need not in _pl:
+        sys.exit("verify_tree_x50: %s %s: %s lacks %r" % (C, "public" if PUBLIC else "test", PROPF, need))
+if PUBLIC == any(ln.startswith(("+persist.adb.tcp.port", "+service.adb.tcp.port", "ro.adb.secure=0")) for ln in _pl):
+    sys.exit("verify_tree_x50: %s is not a %s prop file" % (PROPF, "public" if PUBLIC else "test"))
+if not [ln for ln in _ml if ln.startswith("ro.xgimi.product.name=Product_")]:
+    sys.exit("verify_tree_x50: %s is no stock model file (no ro.xgimi.product.name)" % MPROPF)
 BASE_ROOT, NEW_ROOT = base, new   # the loops below reuse the names base / new
 bad = []
 sys.path.insert(0, IN)
@@ -108,8 +143,21 @@ HAL_APP = {
 # MotionDetectionManager 9 getAutoReverse and sends 8 true: 68; t20, decision 2026-11-10: + the keystone reset's
 # 11 / 63 / 88, the light level 6 / 7 / 152 and the zoom and lens shift screen's 15 calls = 89, each t20 row with its
 # argument range as a 4th field, 11 / 88 / 3 unbanned for this app only; core-menu-x50game: + the stock game
-# menu's 12 calls = 101, each with its range); no 101 / 66, no vendor
-# heartbeat 99 / 100, no laser / ambient light getter, no other BANNED call). It stays a literal
+# menu's 12 calls = 101, each with its range; rs30-power: + the stock Turn off screen and the power key's relight, 168 /
+# 27 / 28 / 67 / 66 = 106, 66 with true only; rs30-menu: + the RS30 picture rows, screen displacement and pan-tilt
+# head 31 / 32 / 160 / 161 / 156 / 157, 205 / 203, 102 / 103, 72 and SystemManager 122 = 118, Gmpf refuses them where
+# ModelMenu does not name the row; x50-iris: + the stock iris row 199 / 200 = 120; quick-3d-x50: + the stock 3D 22 / 23 /
+# 24 / 25 / 10 / 48 / 57 and GmTvManager 78 / 38 = 129; rs30-parity-picture: + the family picture rows DisplayManager
+# 4 / 5 and GmTvManager 29 / 30, 45 / 49, 112, 115 / 116, 119, 164, 174 / 175, 179..182 = 146, its 78 being
+# quick-3d-x50's; rs30-parity-system: + the stock sound page's strong effect and volume balance GmAudioManager 22 / 23 /
+# 39 / 40 / 24 / 25 = 152; rs30-parity-system2: + TemperatureManager 6 = 153; cec-core: + the HDMI-CEC
+# page's GmTvManager 53 / 52 = 155; rs30-parity-projection: + the rotation page 142 / 134 and the lens memory
+# 111 / 121 / 109 / 108 / 110 / 107 = 163, 185 also with type 0; x50-parity-gaps: + the HDMI aspect ratio GmTvManager
+# 35 / 36 = 165; rs30-parity-picture2: + the colour and screen pages GmTvManager 17..28, 117 / 118, 165 / 166,
+# 185 / 186, 73 / 76 / 77, 162 / 163, 154 / 155 = 190, its original frame's mutex reads DisplayManager 24 / 57 being
+# quick-3d-x50's, 160 now also (0, 1); ai-mode-stock: + GmTvManager 1 setGmTvCallback = 191, and "callbacks" the
+# vendor callback interface the app implements, IGmTvCallback, whose descriptor the dex names); no 101, no 66 with false, no vendor heartbeat 99 / 100, no laser / ambient
+# light getter, no other BANNED call). It stays a literal
 # because x50_apk_check.expect_from reads it with ast (compose's pre-check and the tests use this one copy);
 # devices/g0111/test/x50_menu_apk_check_test.sh refuses any difference from the tsv and from the GmpfIface list of the app.
 MENU_APP = {
@@ -119,7 +167,9 @@ MENU_APP = {
     "ifaces": ["xgimi.hardware.gmpf.IDisplayManager", "xgimi.hardware.gmpf.IGmAudioManager",
                "xgimi.hardware.gmpf.IGmFactoryManager", "xgimi.hardware.gmpf.IGmTvManager",
                "xgimi.hardware.gmpf.IMotionDetectionManager",
-               "xgimi.hardware.gmpf.IProjectorFocusManager", "xgimi.hardware.gmpf.ISystemManager"],
+               "xgimi.hardware.gmpf.IProjectorFocusManager", "xgimi.hardware.gmpf.ISystemManager",
+               "xgimi.hardware.gmpf.ITemperatureManager"],
+    "callbacks": ["xgimi.hardware.gmpf.IGmTvCallback"],
     "calls": [["-", 0x00FFFFFF, "getInterfaceVersion"],
               ["-", 0x00FFFFFE, "getInterfaceHash"],
               ["DisplayManager", 38, "correctKeystoneReset"],
@@ -183,6 +233,7 @@ MENU_APP = {
               ["DisplayManager", 148, "getGameModeProp"],
               ["MotionDetectionManager", 15, "temporarySwitchTrigger"],
               ["MotionDetectionManager", 24, "setMotionACalEnable"],
+              ["GmTvManager", 1, "setGmTvCallback"],
               ["GmTvManager", 33, "setPictureMode"],
               ["GmTvManager", 34, "getPictureMode"],
               ["DisplayManager", 172, "setDynamicBlackType"],
@@ -195,16 +246,22 @@ MENU_APP = {
               ["DisplayManager", 11, "correctKeystone", "50"],
               ["DisplayManager", 63, "zoomControl", "5,10;11,10;12,10;13,10;18,1"],
               ["ProjectorFocusManager", 88, "setTiltShiftMove", "1..5,f:0;13,f:0"],
-              ["DisplayManager", 6, "setDlpLumensLevel", "1..10"],
+              ["DisplayManager", 6, "setDlpLumensLevel", "1..11"],
               ["DisplayManager", 7, "getDlpLumensLevel", "-"],
               ["DisplayManager", 152, "getLensDispMode", "-"],
+              # x50-picture-stock: the stock Boost switch (151, 11 only as its step) with its IMAX read, and the
+              # dynamic black level tuning (192 / 193)
+              ["DisplayManager", 151, "setLensDispMode", "0..1"],
+              ["GmTvManager", 127, "isImaxVideoPlaying", "-"],
+              ["DisplayManager", 192, "getVibrantHDRXCoeff", "-"],
+              ["DisplayManager", 193, "setVibrantHDRXCoeff", "d:-0.02..0.02"],
               ["DisplayManager", 93, "zoomStart", "0"],
               ["DisplayManager", 94, "zoomFinish", "0"],
-              ["DisplayManager", 95, "setOpticalZoomStep", "0..64"],
+              ["DisplayManager", 95, "setOpticalZoomStep", "0..200"],
               ["DisplayManager", 96, "setDigitalZoomStep", "-200..200"],
               ["DisplayManager", 97, "getZoomStepRange", "-"],
               ["DisplayManager", 98, "getCurrentZoomStep2", "-"],
-              ["DisplayManager", 185, "setKstPrepare", "0..1,1..2"],
+              ["DisplayManager", 185, "setKstPrepare", "0..1,0..2"],
               ["DisplayManager", 189, "SetOpticalZoomLimitStep", "-16..0"],
               ["DisplayManager", 190, "GetCurrentZoomLimitStep", "-"],
               ["ProjectorFocusManager", 3, "autoFocus", "47"],
@@ -226,7 +283,115 @@ MENU_APP = {
               ["GmTvManager", 122, "getVideoInfo", "-"],
               ["GmAudioManager", 75, "setGamingSoundEffectMode", "190..194"],
               ["GmAudioManager", 76, "getGamingSoundEffectMode", "-"],
-              ["DisplayManager", 179, "getDispOutputFps", "-"]],
+              ["DisplayManager", 179, "getDispOutputFps", "-"],
+              ["DisplayManager", 168, "setScreenOnOffWithAction", "0,1"],
+              ["DisplayManager", 27, "setScreenOnOff", "0..1"],
+              ["DisplayManager", 28, "getScreenOnOff", "-"],
+              ["DisplayManager", 67, "getHumanDetectScreenOnOff", "-"],
+              ["DisplayManager", 66, "setHumanDetectScreenOnOff", "1"],
+              # rs30-menu: the RS30 Ultra Max's own picture rows, screen displacement and pan-tilt head; the shared APK
+              # carries them, Gmpf refuses them on any model whose ModelMenu does not name the row; 122 only through
+              # devices/g0111/research/unbanned_x50projector.tsv
+              ["GmTvManager", 31, "setMemcLevel", "0,0..3"],
+              ["GmTvManager", 32, "getMemcLevel", "0"],
+              ["GmTvManager", 160, "toggleFDBoost", "0,0..1"],
+              ["GmTvManager", 161, "getFDBoostStatus", "0"],
+              ["GmTvManager", 156, "toggleAIContrast", "0,0..1"],
+              ["GmTvManager", 157, "getAIContrastStatus", "0"],
+              ["DisplayManager", 205, "setRainbowReductionStatus", "0..1"],
+              ["DisplayManager", 203, "getRainbowReductionStatus", "-"],
+              ["DisplayManager", 102, "switchDispColorSpace", "1..4;7"],
+              ["DisplayManager", 103, "getDispColorSpace", "0..3,0..41"],
+              ["DisplayManager", 72, "translationKst", "1..4,0..1"],
+              ["SystemManager", 122, "pantiltElectricMove", "3..8,f:0"],
+              ["GmTvManager", 199, "SetIrisLevel", "0;20;30;40;55;70"],
+              ["GmTvManager", 200, "GetIrisLevel", "-"],
+              # quick-3d-x50: the stock 3D (newsettings PictureRepository.setImage3D, X50ThreeD)
+              ["DisplayManager", 22, "enable3D", "1..4"],
+              ["DisplayManager", 23, "enable3DTo2D", "2..3"],
+              ["DisplayManager", 24, "getCurrent3DFormat", "-"],
+              ["DisplayManager", 25, "is3DTo2DEnabled", "-"],
+              ["DisplayManager", 10, "isVideoPlaying", "-"],
+              ["DisplayManager", 48, "is3DFormatSupported", "0"],
+              ["DisplayManager", 57, "getOutputTimingInfo", "-"],
+              ["GmTvManager", 78, "getHdrType", "-"],
+              ["GmTvManager", 38, "getHdmiInfo", "-"],
+              # rs30-parity-picture: the stock picture rows of every X50 family tree (ProPictureHal), Gmpf refuses them
+              # where ModelMenu does not name the row
+              ["DisplayManager", 4, "setDlpLumensMode", "0;16..17;24"],
+              ["DisplayManager", 5, "getDlpLumensMode", "-"],
+              ["GmTvManager", 29, "set3DNR", "0,0..4"],
+              ["GmTvManager", 30, "get3DNR", "0"],
+              ["GmTvManager", 45, "setUcdLevel", "0,0..3"],
+              ["GmTvManager", 49, "getUcdLevel", "0"],
+              ["GmTvManager", 112, "getHsyPictureModeEnable", "0"],
+              ["GmTvManager", 115, "setTvGammaLevel", "0,0..8;0,10..12"],
+              ["GmTvManager", 116, "getTvGammaLevel", "0"],
+              ["GmTvManager", 119, "setHsyPictureModeEnable", "0,0..1"],
+              ["GmTvManager", 164, "ResetPictureToDefault", "0,0,1..2;0,-8,0;0,0,393216|458752|851968"],
+              ["GmTvManager", 174, "ToggleHDRDyToneMapping", "0,0..1"],
+              ["GmTvManager", 175, "GetHDRDyToneMappingStatus", "0"],
+              ["GmTvManager", 179, "getElderColorTone", "-"],
+              ["GmTvManager", 180, "setElderColorTone", "0..1"],
+              ["GmTvManager", 181, "getElderColorLevel", "-"],
+              ["GmTvManager", 182, "setElderColorLevel", "0..2"],
+              # rs30-parity-system: the stock sound page's strong effect and volume balance (every X50 family tree)
+              ["GmAudioManager", 23, "getDtsEffectsEnable", "-"],
+              ["GmAudioManager", 22, "setDtsEffectsEnable", "0"],
+              ["GmAudioManager", 40, "getSoundProcessType", "-"],
+              ["GmAudioManager", 39, "setSoundProcessType", "2;5"],
+              ["GmAudioManager", 25, "getVolumeBalanceEnable", "-"],
+              ["GmAudioManager", 24, "setVolumeBalanceEnable", "0..1"],
+              # rs30-parity-system2: the stock About page system temperature, read only
+              ["TemperatureManager", 6, "getSystemTemperature", "-"],
+              # cec-core: the stock HDMI-CEC page's wake by HDMI devices (every X50 family tree)
+              ["GmTvManager", 53, "getCecWakeUpState", "-"],
+              ["GmTvManager", 52, "setCecWakeUp", "0..1"],
+              # rs30-parity-projection: the stock picture rotation page (all three models) and the stock lens memory of
+              # the X50 Ultra and Ultra Max (Gmpf refuses 107-111 / 121 where ModelMenu does not name zoom.memory;
+              # 107-110 only through devices/g0111/research/unbanned_x50projector.tsv)
+              ["SystemManager", 142, "getScreenRotationInfo", "-"],
+              ["SystemManager", 134, "setScreenRotation", "5..6,f:0.5..90"],
+              ["ProjectorFocusManager", 111, "getNimbleOpticalPosList", "-"],
+              ["ProjectorFocusManager", 121, "getCurNimbleOpticalStatus", "-"],
+              ["ProjectorFocusManager", 109, "createNimbleOpticalPos", "1..999,s:512"],
+              ["ProjectorFocusManager", 108, "updateNimbleOpticalPos", "1..999,s:512"],
+              ["ProjectorFocusManager", 110, "deleteNimbleOpticalPos", "1..999"],
+              ["ProjectorFocusManager", 107, "executeNimbleOpticalPos", "1..999"],
+              # x50-parity-gaps: the HDMI aspect ratio of the picture page (stock setImageRatio -> MtkVideo.setZoomMode ->
+              # GmTvManager 35, read 36; auto 2, 4:3 0, 16:9 1, original 4)
+              ["GmTvManager", 35, "setAspectRatio", "0..2;4"],
+              ["GmTvManager", 36, "getAspectRatio", "-"],
+              # rs30-parity-picture2: the colour and screen pages (ColorHal) and the original frame's mutex reads, Gmpf
+              # refuses them where ModelMenu does not name the row
+              ["GmTvManager", 17, "setColorTempRedGain", "0,0..100"],
+              ["GmTvManager", 18, "getColorTempRedGain", "0"],
+              ["GmTvManager", 19, "setColorTempGreenGain", "0,0..100"],
+              ["GmTvManager", 20, "getColorTempGreenGain", "0"],
+              ["GmTvManager", 21, "setColorTempBlueGain", "0,0..100"],
+              ["GmTvManager", 22, "getColorTempBlueGain", "0"],
+              ["GmTvManager", 23, "setColorTempRedOffset", "0,0..100"],
+              ["GmTvManager", 24, "getColorTempRedOffset", "0"],
+              ["GmTvManager", 25, "setColorTempGreenOffset", "0,0..100"],
+              ["GmTvManager", 26, "getColorTempGreenOffset", "0"],
+              ["GmTvManager", 27, "setColorTempBlueOffset", "0,0..100"],
+              ["GmTvManager", 28, "getColorTempBlueOffset", "0"],
+              ["GmTvManager", 117, "setHsyColorModel", "0,0..2,7,b4:0..100,b3:0..100"],
+              ["GmTvManager", 118, "getHsyColorModel", "0,0..2,7"],
+              ["GmTvManager", 165, "setOneOfMultiPointWB", "5,1,20,5,0..100,0..100,0..100;10,1,20,10,0..100,0..100,0..100;20,1,20,20,0..100,0..100,0..100;30,1,20,30,0..100,0..100,0..100;40,1,20,40,0..100,0..100,0..100;50,1,20,50,0..100,0..100,0..100;60,1,20,60,0..100,0..100,0..100;70,1,20,70,0..100,0..100,0..100;80,1,20,80,0..100,0..100,0..100;90,1,20,90,0..100,0..100,0..100;100,1,20,100,0..100,0..100,0..100"],
+              ["GmTvManager", 166, "getOneOfMultiPointWB", "5|10|20|30|40|50|60|70|80|90|100"],
+              ["GmTvManager", 185, "SetScreenMetaData", "1,88,0,0,5..20,80|90|100|110|120|130|140|150|160|170|180|190|200|250|300,0,0,54,0,0,0,0,0,0,0,0,0,0,0,0,0,0"],
+              ["GmTvManager", 186, "GetScreenMetaData", "-"],
+              ["GmTvManager", 73, "setDolbyVisionTmax", "5..20,80|88|90|100|110|120|130|140|150|160|170|180|190|200|250|300"],
+              ["GmTvManager", 76, "getDolbyVisionTmaxSize", "-"],
+              ["GmTvManager", 77, "getDolbyVisionTmaxGain", "-"],
+              ["GmTvManager", 162, "toggleAutoMode", "0,0..1"],
+              ["GmTvManager", 163, "getExtDecInfo", "22,7667814,6488174,6881396,7209071,6357030,7602293,6226031,7798899,7602281,6815843,7471205,0"],
+              ["GmTvManager", 154, "setCustomized3DLut", "45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3473457,3080245,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101;45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3211313,3080241,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101;45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3145777,3080240,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101"],
+              ["GmTvManager", 155, "getCustomized3DLut", "-"],
+              ["ProjectorFocusManager", 98, "getTiltShiftMovePositionPercentage", "0..1"],
+              # x50-parity-core: the HDMI relink's read (lumen-hdmi HdmiRelink over X50RelinkHost)
+              ["GmTvManager", 106, "getSignalStatus", "-"]],
 }
 
 
@@ -279,7 +444,7 @@ def lines(path):
 
 B = rel_walk(base)
 N = rel_walk(new)
-REMOVE = lines(os.path.join(IN, "remove.txt"))
+REMOVE = lines(os.path.join(IN, "remove.txt")) + (lines(os.path.join(IN, "remove_ota.txt")) if OTA else [])
 removed = set()
 for r in REMOVE:
     if r not in B:
@@ -288,8 +453,14 @@ for r in REMOVE:
 # the X50 power keys: these key layouts are the base's with exactly the edit of x50_power_keys.py (checked below)
 KL = "system/product/usr/keylayout"
 DIAG = "system/etc/xgimi/z9x_diag.sh"
-CHANGED = {"system/build.prop", "system/product/etc/build.prop", "system/etc/security/otacerts.zip", DIAG} \
-    | {KL + "/" + n for n in x50_power_keys.TABLE}
+# the base's first boot over stock data without its own language and time zone (overlay/v1/z9x_setup.rc, block 3 empties
+# the stock wizard's values so the one first-start setting applies), checked byte for byte below
+SETUP_RC = "system/etc/init/z9x_setup.rc"
+CHANGED = {"system/build.prop", "system/product/etc/build.prop", "system/etc/security/otacerts.zip", DIAG, SETUP_RC} \
+    | {KL + "/" + n for n in x50_power_keys.FILES}
+# the one blobs reader of every model over the base's Z9X copy (maintainer, mode and label as the base's), byte for byte
+REPLACED = {"system/etc/init/z9x_blobs.rc": "z9x_blobs.rc", "system/etc/z9x/z9x_blobs.sh": "z9x_blobs.sh"}
+CHANGED |= set(REPLACED)
 # t12: the platform set on the g0111 keys (devices/g0111/image/sign_x50_base.py, compose_x50.sh step 3b): every row of
 # IN/stage/base_signed/base_signed.tsv is a base file (its base sha256) replaced by the signed one (its signed
 # sha256) at the same path, or a .capex replaced by its signed .apex (maintainer, mode, label of the .capex)
@@ -311,37 +482,58 @@ for k, (kind, old, new, rep) in SIGNED.items():
         SIGNED_NEW[k] = rep
     else:
         bad.append("base_signed.tsv: %s replaces %s" % (k, rep))
+# the update client: the base's default permission file of org.lumen.updater goes with the Z9X updater (remove.txt)
+# and comes back byte for byte (maintainer, mode, label as the base's) where the image carries the shared updater
+UPD_PERM = "system/product/etc/default-permissions/z9x-updater.xml"
+VERIFIER = "system/etc/init/update_verifier.rc"
+if OTA:
+    removed.discard(UPD_PERM)
+    CHANGED.add(VERIFIER)
 for must in ("system/framework/framework-res.apk", "system/etc/selinux/plat_mac_permissions.xml",
              "system/apex/com.android.permission.apex"):
     if must not in SIGNED:
-        bad.append("base_signed.tsv lacks %s: not the g0111 platform set" % must)
+        bad.append("base_signed.tsv lacks %s: not the %s platform set" % (must, C))
 # t12 (t11 review P0.3): Lumen Home of this tree, built and signed with the g0111 platform key on the Mac
 # (devices/g0111/image/build_home_x50.sh, staged as IN/stage/Z9xHome.apk), in place of the base's; its base oat files go
 HOME_APP = {"path": "system/priv-app/Z9xHome/Z9xHome.apk", "staged": "stage/Z9xHome.apk"}
 HOME_OAT = "system/priv-app/Z9xHome/oat"
 CHANGED.add(HOME_APP["path"])
 removed |= {k for k in B if k == HOME_OAT or k.startswith(HOME_OAT + "/")}
-# t17 (t16 live BUG C): the HDMI input app of this tree (devices/g0111/app/X50TvInput.layers: apps/Z9xTvInput plus the
+# t17 (t16 live BUG C): the HDMI input app of this tree (devices/g0111/app/X50TvInput.layers: apps/LumenTvInput plus the
 # X50 source picker look), built and signed with the g0111 platform key on the Mac (tools/devices/build_apps.sh g0111,
 # staged as IN/stage/X50TvInput.apk), in place of the base's; its base oat files go
 TVIN_APP = {"path": "system/app/Z9xTvInput/Z9xTvInput.apk", "staged": "stage/X50TvInput.apk"}
 TVIN_OAT = "system/app/Z9xTvInput/oat"
 CHANGED.add(TVIN_APP["path"])
 removed |= {k for k in B if k == TVIN_OAT or k.startswith(TVIN_OAT + "/")}
+# the on-screen keyboard of every model (apps/LumenKeyboard, package com.android.inputmethod.leanback), built and signed
+# with the model's platform key on the Mac (tools/devices/build_apps.sh, staged as IN/stage/LumenKeyboard.apk), in place
+# of the base's LeanbackIME; its base oat files go
+KBD_APP = {"path": "system/product/app/LeanbackIME/LeanbackIME.apk", "staged": "stage/LumenKeyboard.apk"}
+KBD_OAT = "system/product/app/LeanbackIME/oat"
+CHANGED.add(KBD_APP["path"])
+removed |= {k for k in B if k == KBD_OAT or k.startswith(KBD_OAT + "/")}
 SYSF = b"u:object_r:system_file:s0\x00"
-# the platform certificate of the model (devices/<C>/certs/platform.x509.pem, sha256 of the DER): HAL_APP and MENU_APP
-# above carry the g0111 one as a literal (x50_apk_check.expect_from reads it); the g0100 image is checked against its own
-PLATFORM_CERTS = {"g0111": "3a741e26026295ba510b6135b98294198013e271b8916db50a80a45be6fd76d2",
-                  "g0100": "9eaca977d74fd750c0ed1f6d4e89579cb93dcc2354eae83d60f9d4694da6ab4d"}
-HAL_APP["cert"] = MENU_APP["cert"] = PLATFORM_CERTS[C]
+# the platform certificate of the model: var.PCERT of its descriptor (sha256 of the DER), equal to the staged
+# IN/platform.x509.pem (devices/<C>/certs); HAL_APP and MENU_APP above carry the g0111 one as the literal
+# x50_apk_check.expect_from reads, the image is checked against its own model's
+
+
+def pem_der_sha(path):
+    import base64
+    b64 = "".join(ln.strip() for ln in open(path, encoding="ascii") if ln.strip() and not ln.startswith("-----"))
+    return hashlib.sha256(base64.b64decode(b64)).hexdigest()
+
+
+if pem_der_sha(os.path.join(IN, "platform.x509.pem")) != PCERT:
+    bad.append("IN/platform.x509.pem is not the descriptor's platform certificate %s of %s" % (PCERT[:16], C))
+HAL_APP["cert"] = MENU_APP["cert"] = PCERT
 # path: (uid, gid, mode, label, the IN file it is a copy of, None for a 0-byte placeholder, or DIR for a folder)
 DIR = "/"
 ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
-         "system/etc/init/x50_blobs.rc": (0, 0, 0o644, SYSF, "x50_blobs.rc"),
          "system/etc/init/x50_nui.rc": (0, 0, 0o644, SYSF, "x50_nui.rc"),
-         "system/etc/z9x/x50_blobs.sh": (0, 0, 0o755, SYSF, "x50_blobs.sh"),
+         "system/etc/z9x/blobs.conf": (0, 0, 0o644, SYSF, "blobs.conf"),
          "system/etc/z9x/x50_blobs_allow.txt": (0, 0, 0o644, SYSF, "x50_blobs_allow.txt"),
-         "system/etc/z9x/blobs_stock_dsu.sh": (0, 0, 0o644, SYSF, "blobs_stock_dsu.sh"),
          "system/bin/nativeui": (0, 2000, 0o755, b"u:object_r:nativeui_main_exec:s0\x00", None),
          "system/lib64/xgimi.hardware.gmpf-V1-ndk.so": (0, 0, 0o644, b"u:object_r:system_lib_file:s0\x00", None),
          os.path.dirname(HAL_APP["path"]): (0, 0, 0o755, SYSF, DIR),
@@ -363,6 +555,15 @@ ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
 # the public variant (a release version, 2026-11-11): no network adb, so no x50_netadb.rc (an extra file is refused)
 if PUBLIC:
     del ADDED["system/etc/init/x50_netadb.rc"]
+# the update client of a model with updates: the neutral gate (tools/devices/ota/image), its X50 data and the shared
+# updater signed with the model's platform key (its dex names no gmpf interface: the generic scan below)
+UPD_APP = "system/app/LumenUpdater/LumenUpdater.apk"
+if OTA:
+    ADDED.update({"system/etc/init/lumen_ota.rc": (0, 0, 0o644, SYSF, "lumen_ota.rc"),
+                  "system/etc/lumen/lumen_ota.sh": (0, 0, 0o755, SYSF, "lumen_ota.sh"),
+                  "system/etc/lumen/ota_gate.conf": (0, 0, 0o644, SYSF, "ota_gate.conf"),
+                  os.path.dirname(UPD_APP): (0, 0, 0o755, SYSF, DIR),
+                  UPD_APP: (0, 0, 0o644, SYSF, "stage/LumenUpdater.apk")})
 EMPTY = hashlib.sha256(b"").hexdigest()
 
 for k in sorted(removed):
@@ -406,6 +607,9 @@ for k in sorted(set(B) - removed):
 for k in sorted(CHANGED):
     if k in N and k in B and stat.S_ISREG(os.lstat(N[k]).st_mode) and sha(N[k]) == sha(B[k]):
         bad.append("expected a change, but the file is the base's: " + k)
+for k, src in sorted(REPLACED.items()):
+    if k not in N or sha(N[k]) != sha(os.path.join(IN, src)):
+        bad.append("%s is not the staged %s" % (k, src))
 
 # install from a DSU try: every trigger of its rc needs ro.gsid.image_running=1, its services are disabled oneshots
 # that run only the root script, and no build.prop of the image opens the X50 owner switch
@@ -495,27 +699,53 @@ for bp in ("system/build.prop", "system/product/etc/build.prop"):
 r = subprocess.run([sys.executable, "-I", os.path.join(IN, "x50_props.py"), "check", os.path.join(IN, PROPF),
                     os.path.join(IN, MPROPF), B["system/build.prop"],
                     B["system/product/etc/build.prop"], N["system/build.prop"], N["system/product/etc/build.prop"],
-                    V, BID], capture_output=True, text=True)
+                    V, BID, os.path.join(IN, "first_start_prop.txt")], capture_output=True, text=True)
 print(r.stdout.strip())
 if r.returncode:
     bad.append("build.prop edits: " + (r.stdout + r.stderr).strip())
+if SETUP_RC in N and sha(N[SETUP_RC]) != sha(os.path.join(IN, "z9x_setup.rc")):
+    bad.append(SETUP_RC + " is not the staged z9x_setup.rc")
 props = {}
 for raw in open(N["system/product/etc/build.prop"], encoding="utf-8"):
     if "=" in raw and not raw.startswith("#"):
         props.setdefault(raw.split("=", 1)[0], raw.rstrip("\n").split("=", 1)[1])
-want = {"ro.lumen.device": C, "ro.lumen.model": MODEL, "ro.lumen.family": "horse_popular",
+want = {"ro.lumen.device": C, "ro.lumen.model": MODEL, "ro.lumen.models": MODEL, "ro.lumen.family": "horse_popular",
         "ro.z9x.device": "x50", "ro.z9x.ota.gate": "0", "ro.z9x.rescue": "0", "ro.z9x.version_code": "0",
         "persist.vendor.xgimi.hd_server": "2"}
 for k, v in want.items():
     if props.get(k) != v:
         bad.append("product build.prop: %s=%r, not %r" % (k, props.get(k), v))
-for k in ("ro.z9x.ota.manifest_url", "ro.product.ab_ota_partitions"):
+for k in ("ro.z9x.ota.manifest_url",) + (() if OTA else ("ro.product.ab_ota_partitions",)):
     if k in props:
         bad.append("product build.prop still has " + k)
+UPD_URL = "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-%s-%s.json"
+if OTA:
+    import x50_props  # noqa: E402  (IN/x50_props.py: the O1 code of @VC@)
+    for k, v in (("ro.product.ab_ota_partitions", "boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig"), ("ro.lumen.ota.gate", "1"),
+                 ("ro.lumen.ota.device", PREFIX), ("ro.lumen.version_code", str(x50_props.version_code(V)))):
+        if props.get(k) != v:
+            bad.append("product build.prop: %s=%r, not %r (an image with updates)" % (k, props.get(k), v))
+    # the updater's pair on the tag x50: never the installer's update-<id>-beta.json, never releases/latest
+    if props.get("ro.lumen.ota.manifest_url") not in (UPD_URL % (PREFIX, "test"), UPD_URL % (PREFIX, "nogms")):
+        bad.append("ro.lumen.ota.manifest_url %r is not update-%s-test.json or -nogms.json on the tag x50"
+                   % (props.get("ro.lumen.ota.manifest_url"), PREFIX))
+    if sha(N[VERIFIER]) != sha(os.path.join(IN, "lumen_update_verifier.rc")):
+        bad.append(VERIFIER + " is not the neutral gate's lumen_update_verifier.rc")
+    gate = open(N["system/etc/lumen/ota_gate.conf"], encoding="utf-8").read().splitlines() \
+        if "system/etc/lumen/ota_gate.conf" in N else []
+    if "hal=aidl" not in gate or not any(ln.startswith("health=") and "xgimi_middle" in ln.split() for ln in gate):
+        bad.append("ota_gate.conf: not the X50 data (hal=aidl, xgimi_middle among the health services)")
+    if any(k in N for k in ("system/etc/init/z9x_ota.rc", "system/etc/z9x/z9x_ota.sh", "system/bin/bootctl")):
+        bad.append("the Z9X boot gate or a bootctl is in an image with the neutral gate")
+    print("verify_tree_x50: updates on: wire id %s, version code %s, %s" % (PREFIX, props.get("ro.lumen.version_code"),
+                                                                            props.get("ro.lumen.ota.manifest_url")))
+else:
+    for k in [k for k in props if k.startswith("ro.lumen.ota.")] + [k for k in N if k == UPD_APP]:
+        bad.append("an image without updates has " + k)
 if not props.get("ro.z9x.build_id", "").startswith("lumen-%s-%s-" % (PREFIX, V)):
     bad.append("ro.z9x.build_id %r is not a lumen-%s-%s build id" % (props.get("ro.z9x.build_id"), PREFIX, V))
-if props.get("ro.lumen.version") != "%s-%s" % (PREFIX, V):
-    bad.append("ro.lumen.version %r is not %s-%s" % (props.get("ro.lumen.version"), PREFIX, V))
+if props.get("ro.lumen.version") != (V if OTA else "%s-%s" % (PREFIX, V)):
+    bad.append("ro.lumen.version %r is not %s" % (props.get("ro.lumen.version"), V if OTA else "%s-%s" % (PREFIX, V)))
 sysprops = {}
 for raw in open(N["system/build.prop"], encoding="utf-8"):
     if "=" in raw and not raw.startswith("#"):
@@ -600,10 +830,20 @@ try:
 except Exception as e:
     bad.append("X50PowerOverlay.apk: %s" % e)
 
-# otacerts.zip without a certificate
+# otacerts.zip without a certificate; with updates exactly the model's two OTA certificates (IN/otacerts.zip, made by
+# tools/devices/ota/make_otacerts.py: ota then ota_next), never its platform certificate
 try:
     z = zipfile.ZipFile(N["system/etc/security/otacerts.zip"])
-    if z.namelist():
+    if OTA:
+        if sha(N["system/etc/security/otacerts.zip"]) != sha(os.path.join(IN, "otacerts.zip")):
+            bad.append("otacerts.zip is not the staged otacerts.zip of %s" % C)
+        if z.namelist() != ["ota.x509.pem", "ota_next.x509.pem"]:
+            bad.append("otacerts.zip holds %s, not ota.x509.pem and ota_next.x509.pem" % z.namelist())
+        for n in z.namelist():
+            pem = z.read(n).decode("ascii", "replace")
+            if not pem.startswith("-----BEGIN CERTIFICATE-----") or pem == open(os.path.join(IN, "platform.x509.pem")).read():
+                bad.append("otacerts.zip: %s is not an OTA certificate of %s" % (n, C))
+    elif z.namelist():
         bad.append("otacerts.zip holds %s" % z.namelist())
 except Exception as e:
     bad.append("otacerts.zip: %s" % e)
@@ -633,39 +873,41 @@ if sum(1 for raw in open(os.path.join(IN, "x50_blobs_allow.txt"), encoding="utf-
 # whose framework kept the Z9X key, is refused); each re-signed APEX container is signed by its g0111 APEX certificate
 # (devices/g0111/certs/apex/FINGERPRINTS.txt).
 Z9X_PLATFORM_CERT = "43690bdf8027f77c41b365c1b83da1cf340d030db98a4524575dbc6417ecb320"
-G0111_APEX_CERTS = {"com.android.configinfrastructure": "edcaf7ee339b4df7e534df31c3a0dccd193a90678869f3cf1b4e99222de2d432",
-                    "com.android.devicelock": "f92ee26e19cca9bc25a069e6b482c3ccc6f702a120c7155774eed3bad83d89a5",
-                    "com.android.ondevicepersonalization": "7970d61b1aa500cdeaab47ae183cc9a21a4784f0a22fc332e83f69ad3ddde3ae",
-                    "com.android.permission": "b8d1cb48fa89bbeed2a376fd7353f6ac1cab0927feee1cf05baca7a25ad025e3"}
-# the X50 Ultra Max's own APEX keys (devices/g0100/certs/apex/FINGERPRINTS.txt, 2026-11-11)
-G0100_APEX_CERTS = {"com.android.configinfrastructure": "fc1714b5aa699a147127f3f7c67b8e1ee0658bbeb2cd4664f7af7ae550750879",
-                    "com.android.devicelock": "7a6b5f0349b8b9bf703cfcf4c7494a0db2db3c1faea1c2c9ed67dcbd37f74dbd",
-                    "com.android.ondevicepersonalization": "e0ef9027decff61e899fb04f4977516af9af8b0c2e3aa1f51398ac9efe9a944a",
-                    "com.android.permission": "fce3622616f0378c4bb70f6a455453f6c7c0d4ec88d5bb832b28e9c9a8345795"}
-G0111_APEX_CERTS = {"g0111": G0111_APEX_CERTS, "g0100": G0100_APEX_CERTS}[C]   # the model's own set (the name stays)
+# the model's own APEX container certificates: IN/FINGERPRINTS.txt (devices/<C>/certs/apex, gen_x50_apex_keys.sh:
+# "<module> container <sha256> payload <sha256>")
+APEX_CERTS = {}
+for raw in open(os.path.join(IN, "FINGERPRINTS.txt"), encoding="utf-8"):
+    f = raw.split()
+    if len(f) == 5 and f[1] == "container" and f[3] == "payload" and re.fullmatch(r"[0-9a-f]{64}", f[2]):
+        APEX_CERTS[f[0]] = f[2]
+if len(APEX_CERTS) != 4:
+    bad.append("IN/FINGERPRINTS.txt names %d APEX container certificates, not the 4 of x50_apex_modules.txt" % len(APEX_CERTS))
 for k, (kind, old, new, rep) in sorted(SIGNED.items()):
     if rep in B and sha(B[rep]) != old:
         bad.append("base_signed.tsv: %s is not the base file the Mac signed" % rep)
-    if k in (HOME_APP["path"], TVIN_APP["path"]):
-        continue   # replaced by this tree's Home / TV input below
+    if k in (HOME_APP["path"], TVIN_APP["path"], KBD_APP["path"]):
+        continue   # replaced by this tree's Home / TV input / keyboard below
     if k not in N or sha(N[k]) != new:
         bad.append("%s is not the file sign_x50_base.py signed" % k)
     elif kind == "apex":
         mod = os.path.basename(k)[:-len(".apex")]
         certs = x50_apk_check.signers(open(N[k], "rb").read())
-        if mod not in G0111_APEX_CERTS or not certs or any(set(c) != {G0111_APEX_CERTS.get(mod)} for c in certs.values()):
-            bad.append("%s: container not signed by its g0111 APEX certificate (%s)" % (k, certs))
+        if mod not in APEX_CERTS or not certs or any(set(c) != {APEX_CERTS.get(mod)} for c in certs.values()):
+            bad.append("%s: container not signed by its %s APEX certificate (%s)" % (k, C, certs))
 hp = HOME_APP["path"]
 if hp not in N or sha(N[hp]) != sha(os.path.join(IN, HOME_APP["staged"])):
     bad.append("%s is not IN/%s (devices/g0111/image/build_home_x50.sh)" % (hp, HOME_APP["staged"]))
 else:
     hs = x50_apk_check.signers(open(N[hp], "rb").read())
     if not hs or any(set(c) != {HAL_APP["cert"]} for c in hs.values()):
-        bad.append("%s is not signed by the g0111 platform certificate alone: %s" % (hp, hs))
+        bad.append("%s is not signed by the %s platform certificate alone: %s" % (hp, C, hs))
     elif b"org.lumen.x50.projector" not in zipfile.ZipFile(N[hp]).read("classes.dex"):
         bad.append("%s does not name org.lumen.x50.projector (not the device-aware Home)" % hp)
     else:
-        print("verify_tree_x50: Home %s sha256 %s on the g0111 key, oat removed" % (hp, sha(N[hp])))
+        print("verify_tree_x50: Home %s sha256 %s on the %s key, oat removed" % (hp, sha(N[hp]), C))
+kp = KBD_APP["path"]
+if kp not in N or sha(N[kp]) != sha(os.path.join(IN, KBD_APP["staged"])):
+    bad.append("%s is not IN/%s (tools/devices/build_apps.sh)" % (kp, KBD_APP["staged"]))
 tp = TVIN_APP["path"]
 if tp not in N or sha(N[tp]) != sha(os.path.join(IN, TVIN_APP["staged"])):
     bad.append("%s is not IN/%s (tools/devices/build_apps.sh g0111)" % (tp, TVIN_APP["staged"]))
@@ -676,7 +918,7 @@ else:
         tv_dex = z.read("classes.dex")
     ts = x50_apk_check.signers(open(N[tp], "rb").read())
     if not ts or any(set(c) != {HAL_APP["cert"]} for c in ts.values()):
-        bad.append("%s is not signed by the g0111 platform certificate alone: %s" % (tp, ts))
+        bad.append("%s is not signed by the %s platform certificate alone: %s" % (tp, C, ts))
     elif tv_pkg != "org.lumen.tvinput":
         bad.append("%s is package %r, not org.lumen.tvinput (the base app's package)" % (tp, tv_pkg))
     elif b"Lorg/lumen/ui/TvFocus;" not in tv_dex or b"Lorg/lumen/tvinput/InputPickerActivity;" not in tv_dex:
@@ -684,11 +926,11 @@ else:
         # (frozen, no module) has neither it nor any other TvFocus
         bad.append("%s has no org.lumen.ui.TvFocus picker (not the X50 source picker of X50TvInput.layers)" % tp)
     else:
-        print("verify_tree_x50: TV input %s sha256 %s on the g0111 key, oat removed" % (tp, sha(N[tp])))
+        print("verify_tree_x50: TV input %s sha256 %s on the %s key, oat removed" % (tp, sha(N[tp]), C))
 fw = "system/framework/framework-res.apk"
 fw_signers = x50_apk_check.signers(open(N[fw], "rb").read()) if fw in N else {}
 if not fw_signers or any(set(c) != {HAL_APP["cert"]} for c in fw_signers.values()):
-    bad.append("%s is not signed by the g0111 platform certificate alone: %s" % (fw, fw_signers))
+    bad.append("%s is not signed by the %s platform certificate alone: %s" % (fw, C, fw_signers))
 z9x_signed = []
 n_signed = 0
 for k, p in sorted(N.items()):
@@ -704,7 +946,7 @@ for k, p in sorted(N.items()):
             z9x_signed.append(k)
 for k in z9x_signed:
     bad.append("signed by the Z9X release platform certificate: " + k)
-print("verify_tree_x50: platform set g0111 (%d signed files of base_signed.tsv), framework-res %s, %d APK/APEX signers "
+print("verify_tree_x50: platform set " + C + " (%d signed files of base_signed.tsv), framework-res %s, %d APK/APEX signers "
       "read, %d on the Z9X platform key" % (len(SIGNED), HAL_APP["cert"][:16], n_signed, len(z9x_signed)))
 
 # t12: the boot logger is exactly the X50 edit of the base's (service xgimi_middle, FaceCutoutBin silenced)
@@ -792,9 +1034,9 @@ elif menu_app_ok is None:
 
 # the X50 human-shape mask is drawn by the stock nativeui: no reader may answer the vendor's native-UI fifo without
 # drawing, so neither the Z9X ACK reader nor anything else that names the
-# fifo, except the X50 blobs reader and x50_nui.rc (byte-identical to their inputs, checked above), which only
+# fifo, except the blobs reader and x50_nui.rc (byte-identical to their inputs, checked above), which only
 # remove it while no reader runs
-FIFO_OK = {"system/etc/z9x/x50_blobs.sh", "system/etc/init/x50_nui.rc"}
+FIFO_OK = {"system/etc/z9x/z9x_blobs.sh", "system/etc/init/x50_nui.rc"}
 for k in ("system/etc/init/z9x_nui.rc", "system/etc/xgimi/z9x_nui.sh"):
     if k in N:
         bad.append("the Z9X ACK-only fifo reader %s is in the image" % k)

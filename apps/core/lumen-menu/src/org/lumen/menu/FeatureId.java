@@ -70,6 +70,11 @@ public enum FeatureId {
     PICTURE_RESET("picture.reset", FeatureKind.ACTION),
     /** reset every picture setting */
     PICTURE_RESET_ALL("picture.reset_all", FeatureKind.ACTION),
+    /**
+     * 3D: the stock 3D modes of the model ({@link ThreeDMode} tokens, in its stock order); the small 3D tile in the
+     * network slot of the card (network becomes a round button on top), its popup and the last Picture row
+     */
+    PICTURE_3D("picture.3d", FeatureKind.CHOICE),
     /** aspect ratio; options */
     PICTURE_ASPECT("picture.aspect", FeatureKind.CHOICE),
     /** HDMI colour range; options */
@@ -98,8 +103,6 @@ public enum FeatureId {
     NETWORK("network", FeatureKind.TILE),
     /** screen mirroring receiver (shown only when the receiver app is installed) */
     MIRRORING("mirroring", FeatureKind.TILE),
-    /** USB files (last small tile where mirroring is absent; needs Lumen Home Files) */
-    USB_FILES("usb_files", FeatureKind.TILE),
     /** game mode; options */
     GAME_MODE("game.mode", FeatureKind.CHOICE),
     /** game speed (input lag) option; options */
@@ -128,6 +131,11 @@ public enum FeatureId {
     PICTURE_DYNAMIC_CONTRAST("picture.dynamic_contrast", FeatureKind.TOGGLE),
     /** dynamic black level enhancement */
     PICTURE_DYNAMIC_BLACK("picture.dynamic_black", FeatureKind.TOGGLE),
+    /**
+     * the lens iris (stock picture_iris_ring_adjustment, first row of the picture page); options dynamic, f2, f3, f4,
+     * f5_5, f7 in the stock order of the model. Dynamic, f5.5 and f7 hold the light level ({@link IrisRule})
+     */
+    PICTURE_IRIS("picture.iris", FeatureKind.CHOICE),
     /** sleep timer */
     SETTINGS_SLEEP_TIMER("settings.sleep_timer", FeatureKind.SCREEN),
     /** pair the remote */
@@ -147,10 +155,155 @@ public enum FeatureId {
      */
     SETTINGS_LICENCES("settings.licences", FeatureKind.SCREEN),
     /**
+     * "Send a problem report": the shared report screen of apps/core/lumen-report, the same on every projector. A
+     * module screen ({@link MenuSpec#MODULE_SCREENS}): the menu opens it itself, the device adapter has no part in it
+     */
+    SETTINGS_REPORT("settings.report", FeatureKind.SCREEN),
+    /**
+     * the signal panel of apps/core/lumen-signal (2026-11-18, variant A): a round button on the card's top row
+     * and a General row; each press goes card, full panel, hidden. A module screen ({@link MenuSpec#MODULE_SCREENS}):
+     * the menu opens it itself, the device's part is its SignalReader and devices/&lt;c&gt;/signal.tsv
+     */
+    SIGNAL_PANEL("signal.panel", FeatureKind.SCREEN),
+    /**
+     * "Keep the signal card on screen" (2026-11-18, for people who film the screen): the small card stays over
+     * every HDMI input until the option goes off or the panel's key closes it. Off by default. A module setting
+     * ({@link MenuSpec#MODULE_SETTINGS}): lumen-signal stores it, no device adapter
+     */
+    SIGNAL_PIN("signal.pin", FeatureKind.TOGGLE),
+    /**
+     * How often the visible panel reads the HDMI receiver: normal (a change and every 5 s, the default) or fast (every
+     * second, rare frame stutter possible). Only where the model reads the receiver (lumen-signal HDMI_FORMAT, Z9X). A
+     * module setting ({@link MenuSpec#MODULE_SETTINGS})
+     */
+    SIGNAL_REFRESH("signal.refresh", FeatureKind.CHOICE),
+    /**
+     * The sound volume (the music stream, the level the remote's volume keys move): an item the quick menu editor
+     * offers on every model (2026-11-18), never in the default menu. A module setting of every model
+     * ({@link MenuSpec#EVERY_MODEL}): no profile names it, no device adapter
+     */
+    SOUND_VOLUME("sound.volume", FeatureKind.SLIDER),
+    /**
      * the stock power menu's "Turn off screen" (关屏): the light goes off, sound and apps go on, the power key gives
      * it back ({@link LampOff})
      */
     LAMP_OFF("lamp.off", FeatureKind.ACTION),
+    /** colour gamut (native, BT.2020, DCI-P3, BT.709, Adobe RGB: the RS30 stock picture_gamut) */
+    PICTURE_GAMUT("picture.gamut", FeatureKind.CHOICE),
+    /** rainbow reduction (the DLP colour wheel's rainbow effect, the RS30 stock picture_anti_rbe) */
+    PICTURE_ANTI_RBE("picture.anti_rbe", FeatureKind.TOGGLE),
+    /** gamma curve (X50 family stock image_mode_gamma: BT.1886, ST 2084, HLG by content, or manual); options */
+    PICTURE_GAMMA("picture.gamma", FeatureKind.CHOICE),
+    /** manual gamma value 1.8 .. 2.6 (stock image_mode_custom_gamma, only with the manual gamma); options */
+    PICTURE_GAMMA_INDEX("picture.gamma_index", FeatureKind.CHOICE),
+    /** noise reduction (stock image_mode_noise_reduct); options */
+    PICTURE_NOISE("picture.noise", FeatureKind.CHOICE),
+    /** local contrast (stock image_mode_part_constrast_ratio); options */
+    PICTURE_LOCAL_CONTRAST("picture.local_contrast", FeatureKind.CHOICE),
+    /** colour optimisation (stock image_mode_custom_color_optimization) */
+    PICTURE_COLOR_OPT("picture.color_opt", FeatureKind.TOGGLE),
+    /** HDR dynamic tone mapping, HDR10 content only (stock picture_enhanced_hdr_mapping) */
+    PICTURE_HDR_MAPPING("picture.hdr_mapping", FeatureKind.TOGGLE),
+    /** the HDR enhancement page (stock picture_hdr_enhancement: tone mapping, screen size and gain), HDR content only */
+    PICTURE_HDR("picture.hdr", FeatureKind.PAGE),
+    /** the screen size the HDR tone mapping assumes, in inches (stock picture_hdr_curtain_size); options */
+    PICTURE_HDR_SCREEN_SIZE("picture.hdr.screen_size", FeatureKind.CHOICE),
+    /** the screen gain the HDR tone mapping assumes, x10 (stock picture_hdr_curtain_gain); options */
+    PICTURE_HDR_SCREEN_GAIN("picture.hdr.screen_gain", FeatureKind.CHOICE),
+    /** the Dolby Vision screen page (stock picture_dolby_curtain at the end of the picture modes), Dolby Vision only */
+    PICTURE_DV_SCREEN("picture.dv_screen", FeatureKind.PAGE),
+    /** the screen size Dolby Vision maps for, in inches (stock picture_dolby_curtain_size); options */
+    PICTURE_DV_SCREEN_SIZE("picture.dv_screen.size", FeatureKind.CHOICE),
+    /** the screen gain Dolby Vision maps for, x10 (stock picture_dolby_curtain_gain); options */
+    PICTURE_DV_SCREEN_GAIN("picture.dv_screen.gain", FeatureKind.CHOICE),
+    /** the white balance page (stock image_mode_prof_setting_whiteBalance: the 2-point and the 11-point pages) */
+    PICTURE_WB("picture.wb", FeatureKind.PAGE),
+    /** the 2-point white balance page (stock image_2_point_white_balance): three gains, three offsets, reset */
+    PICTURE_WB2("picture.wb2", FeatureKind.PAGE),
+    /** red gain of the 2-point white balance; min, max */
+    PICTURE_WB2_RED_GAIN("picture.wb2.red_gain", FeatureKind.SLIDER),
+    /** green gain of the 2-point white balance; min, max */
+    PICTURE_WB2_GREEN_GAIN("picture.wb2.green_gain", FeatureKind.SLIDER),
+    /** blue gain of the 2-point white balance; min, max */
+    PICTURE_WB2_BLUE_GAIN("picture.wb2.blue_gain", FeatureKind.SLIDER),
+    /** red offset of the 2-point white balance; min, max */
+    PICTURE_WB2_RED_OFFSET("picture.wb2.red_offset", FeatureKind.SLIDER),
+    /** green offset of the 2-point white balance; min, max */
+    PICTURE_WB2_GREEN_OFFSET("picture.wb2.green_offset", FeatureKind.SLIDER),
+    /** blue offset of the 2-point white balance; min, max */
+    PICTURE_WB2_BLUE_OFFSET("picture.wb2.blue_offset", FeatureKind.SLIDER),
+    /** the 2-point white balance back to its defaults (stock two_point_white_balance_reset_btn) */
+    PICTURE_WB2_RESET("picture.wb2.reset", FeatureKind.ACTION),
+    /** the 11-point white balance page (stock image_11_point_white_balance): grey level, red, green, blue, reset */
+    PICTURE_WB11("picture.wb11", FeatureKind.PAGE),
+    /** the grey level the 11-point sliders edit, in percent (stock image_segmentation); options */
+    PICTURE_WB11_LEVEL("picture.wb11.level", FeatureKind.CHOICE),
+    /** red of the grey level shown; min, max */
+    PICTURE_WB11_RED("picture.wb11.red", FeatureKind.SLIDER),
+    /** green of the grey level shown; min, max */
+    PICTURE_WB11_GREEN("picture.wb11.green", FeatureKind.SLIDER),
+    /** blue of the grey level shown; min, max */
+    PICTURE_WB11_BLUE("picture.wb11.blue", FeatureKind.SLIDER),
+    /** the 11-point white balance back to its defaults (stock eleven_point_white_balance_reset_btn) */
+    PICTURE_WB11_RESET("picture.wb11.reset", FeatureKind.ACTION),
+    /** the colour correction page (stock image_mode_custom_color_correction): colour, hue, saturation, lightness */
+    PICTURE_CC("picture.cc", FeatureKind.PAGE),
+    /** the colour the three sliders edit (stock image_mode_color_correction_switch); options */
+    PICTURE_CC_COLOR("picture.cc.color", FeatureKind.CHOICE),
+    /** hue of the colour shown; min, max */
+    PICTURE_CC_HUE("picture.cc.hue", FeatureKind.SLIDER),
+    /** saturation of the colour shown; min, max */
+    PICTURE_CC_SATURATION("picture.cc.saturation", FeatureKind.SLIDER),
+    /** lightness of the colour shown; min, max */
+    PICTURE_CC_LIGHTNESS("picture.cc.lightness", FeatureKind.SLIDER),
+    /** colour correction back to its defaults (stock image_mode_custom_color_correction_reset) */
+    PICTURE_CC_RESET("picture.cc.reset", FeatureKind.ACTION),
+    /** switch to the matching picture mode for IMAX Enhanced, HDR Vivid and filmmaker content (stock image_set_mode_auto_switch) */
+    PICTURE_AUTO_SWITCH("picture.auto_switch", FeatureKind.TOGGLE),
+    /** the style filter (stock picture_3d_lut_bt, a 3D LUT): original, or a filter set on stock; options */
+    PICTURE_STYLE_FILTER("picture.style_filter", FeatureKind.CHOICE),
+    /**
+     * colour enhancement for older viewers (stock more_elderly_color_enhancement: off or a strength); a row of the
+     * general page, where stock lists it (General, Display group, with the eye protection); options
+     */
+    EYE_ELDER_COLOR("eye.elder_color", FeatureKind.CHOICE),
+    /**
+     * screen displacement: the arrows shift the picture digitally, past its edge a pan-tilt head turns the projector
+     * (the RS30 stock move_only page)
+     */
+    ZOOM_MOVE("zoom.move", FeatureKind.SCREEN),
+    /** key sounds: Android's sound_effects_enabled (the stock sound page's voice_key_tone switch) */
+    SOUND_KEY_TONE("sound.key_tone", FeatureKind.TOGGLE),
+    /**
+     * the HDMI app's own settings page (org.lumen.tvinput: switch to a newly connected device, back home when it goes,
+     * the startup source), the stock signal page's signal_source_setting_auto and signal_boot_source_info, for a device
+     * app with no HDMI-CEC page that links it ({@link #SETTINGS_CEC} does on the Z9X and the HB)
+     */
+    SETTINGS_HDMI("settings.hdmi", FeatureKind.SCREEN),
+    /**
+     * Android's colour correction (lumen-system ColourVision), the stock General page's colour vision row; options off and
+     * the stock filters gray, red_green, green_red, blue_yellow
+     */
+    SETTINGS_COLOUR_VISION("settings.colour_vision", FeatureKind.CHOICE),
+    /** the system temperature the vendor reports, as text (the stock About page's sys_tempe row) */
+    SETTINGS_TEMPERATURE("settings.temperature", FeatureKind.INFO),
+    /**
+     * lens memory: stored zoom and lens shift positions to go back to, save, rename and delete (the X50 stock
+     * lens_memory list)
+     */
+    ZOOM_MEMORY("zoom.memory", FeatureKind.SCREEN),
+    /** how the remote focuses (the stock remote_focus_img_guide row: a picture and one sentence, nothing to set) */
+    FOCUS_GUIDE("focus.guide", FeatureKind.INFO),
+    /**
+     * the stock picture settings page (newsettings image_mode_setting, Professional settings): a page whose rows and
+     * groups the profile gives (sections.picture, a {"page": ..., "groups": ...} row), on the models whose stock has it
+     */
+    PICTURE_SETTINGS("picture.settings", FeatureKind.PAGE),
+    /**
+     * dynamic black level tuning (stock image_mode_vibrant_correct, right under the dynamic black switch and shown only
+     * while it is on): a two-way slider, min and max in the profile (stock -40..40, 0 in the middle)
+     */
+    PICTURE_BLACK_TUNING("picture.black_tuning", FeatureKind.SLIDER),
     /** the brightness slider of {@link #PICTURE_PQ} */
     PQ_BRIGHTNESS(PICTURE_PQ, "brightness"),
     /** the contrast slider of {@link #PICTURE_PQ} */

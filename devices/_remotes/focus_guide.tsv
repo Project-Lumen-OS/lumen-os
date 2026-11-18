@@ -1,0 +1,22 @@
+# The focus key picture and text of the focus page, per remote, and the remote each model ships with.
+# Stock: newsettings RemoteFocusCell.refreshRemoteControlView (release_838 of G0111 and G0155, same code, also on HB release_838)
+# picks the picture and the text by persist.xgimi.rc.version, the remote's own firmware string that the stock Bluetooth
+# service reads over GATT (XgimiRcInfo 0x2A26 / 0x2A28) and saves. Lumen never reads that string, so the model's own
+# remote below decides (data, read by apps/core/lumen-menu/test/FocusGuideTest.java against every devices/*/menu.json
+# hint "focus.guide").
+# Columns (tab separated):
+#  rule  match (substrings of the version, '|' = any, checked top down as stock, '*' = anything left)  token
+#        (menu.json hints focus.guide, '-' = Lumen has no picture for it)  stock picture  stock text  key
+#  model  model code  remote version  evidence
+rule	B951C|B960C|B961C	focus_guide_front	anim_remote_focus_guide_b961c.pag	focus_guide_desc_b961c	front
+rule	B980C	focus_guide_front	anim_remote_focus_guide_b980c.pag	focus_guide_desc_b961c	front
+rule	B990C	focus_guide_side	anim_remote_focus_guide_b990c.pag	focus_guide_desc_b990c	side
+rule	B940|B970|B972|B870|B872|B975	focus_guide_front	anim_remote_focus_guide_b940d.pag	focus_guide_desc_b992c	front (G0111 lists B940 B970 B972, G0155 adds B870 B872 B975)
+rule	B992	focus_guide_front	anim_remote_focus_guide_b992c.pag	focus_guide_desc_b992c	front
+rule	B995C_	-	anim_remote_focus_guide_b995c.pag	focus_guide_desc_b995c	front, but a short press is manual focus there (stock text): no Lumen text yet
+rule	*	-	anim_remote_focus_guide_old.pag	focus_guide_desc_old	the old remote with a paddle: no Lumen picture
+model	G0111	B970C_CY07_CY_V1.0.4	xgimi-builder ~/devices/g0111_mt9681/info/getprop.txt (and live_20261107_0845, full_20261108_1335, menu_live_20261108: Slava's X50 Ultra on stock)
+model	G0100	B970C	no G0100 dump: the X50 Ultra firmware and remote, assumed
+model	G0155	B870C_CY07_CY_V1.0.5	xgimi-builder ~/devices/g0155_mt9681/dump/getprop.txt
+model	H0062	B970C	no getprop in the Titan OTA dump: the overseas X50 Ultra, assumed
+model	H0063	B970C	no getprop in the Titan OTA dump: the overseas X50 Ultra Max, assumed

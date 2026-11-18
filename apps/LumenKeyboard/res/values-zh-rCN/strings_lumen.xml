@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Lumen 键盘</string>
+    <string name="ime_service_name">Lumen 键盘</string>
+    <string name="keyboardview_keycode_language">语言</string>
+    <string name="lumen_languages_title">键盘语言</string>
+    <string name="lumen_languages_hint">按 OK 键开启或关闭某种语言。在键盘上按地球键切换语言。</string>
+    <string name="lumen_languages_last">至少会保留一种语言处于开启状态。</string>
+</resources>

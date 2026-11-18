@@ -13,7 +13,7 @@ import org.lumen.projector.power.StandbyController;
 /**
  * "Open at power-on" (Projector settings), stock parity 2026-10-21: the stock boot source (signal_boot_source_info,
  * Default or HDMI; stock SignalRepository.setBootSource, applied by XGIMI's own boot service, which Lumen does not
- * have). The Play 6 port of the Z9X 1.0.4 class (apps/Z9xProjector source/BootSource), with the one HDMI port
+ * have). The Play 6 port of the Z9X 1.0.4 class (apps/ProjectorBase source/BootSource), with the one HDMI port
  * (HW1): when the projector comes on (a cold start, an Android wake, the end of the lamp-only standby) the HDMI
  * input opens. "Home screen" (the default) changes nothing. Nothing opens when the setup has not finished, the
  * projector is not on, an HDMI picture is already shown (a source that switched the projector on wins) or the
@@ -67,7 +67,7 @@ public final class BootSource {
             Ui.main().post(() -> {
                 try {
                     Ui.wakeFromDream(c);
-                    if (!SourceOverlay.openPort(c, PORT, "boot_source")) Log.i(TAG, "HDMI not opened");
+                    if (!org.lumen.source.SourceKey.openPort(c, PORT, "boot_source")) Log.i(TAG, "HDMI not opened");
                 } catch (Throwable t) {
                     Log.w(TAG, "open: " + t);
                 }

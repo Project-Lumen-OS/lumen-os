@@ -85,8 +85,6 @@
     <string name="panel_pm_performance_msg">تأكّد من أن فتحات التهوية غير مسدودة وأن حرارة الغرفة لا تتجاوز 25 °C. لا تستخدم هذا الوضع لفترة طويلة.</string>
     <string name="panel_lamp">السطوع</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">اضغط → مرة أخرى لتفعيل Boost</string>
-    <string name="panel_boost_leave_press_again">اضغط ← مرة أخرى للخروج من Boost</string>
     <string name="panel_boost_3d">أوقف 3D وحاول مرة أخرى</string>
     <string name="panel_boost_hot">جهاز العرض ساخن جدًا لاستخدام Boost. حاول مرة أخرى لاحقًا</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -156,7 +154,6 @@
     <string name="panel_tile_hdmi_only">HDMI فقط</string>
     <string name="panel_system_settings">إعدادات النظام</string>
     <string name="panel_hdmi_settings">إعدادات HDMI</string>
-    <string name="panel_lamp_hint">عند المستوى 10، اضغط → مرتين لتفعيل Boost.</string>
     <string name="panel_eye_desc">يُخفَّض الضوء عند وجود شخص أمام العدسة.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">جنبًا إلى جنب</string>

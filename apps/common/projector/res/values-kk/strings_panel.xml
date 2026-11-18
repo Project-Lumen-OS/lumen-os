@@ -77,8 +77,6 @@
     <string name="panel_pm_performance_msg">Желдету саңылаулары жабылмағанына және бөлме температурасы 25 °C-тан аспайтынына көз жеткізіңіз. Бұл режимді ұзақ пайдаланбаңыз.</string>
     <string name="panel_lamp">Жарықтық</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Boost үшін → түймесін тағы басыңыз</string>
-    <string name="panel_boost_leave_press_again">Boost режимінен шығу үшін ← түймесін тағы басыңыз</string>
     <string name="panel_boost_3d">3D режимін өшіріп, қайталап көріңіз</string>
     <string name="panel_boost_hot">Проектор Boost үшін тым қызып кетті. Кейінірек қайталап көріңіз</string>
     <string name="panel_ultra120">Ultra 120 Гц</string>
@@ -148,7 +146,6 @@
     <string name="panel_tile_hdmi_only">Тек HDMI</string>
     <string name="panel_system_settings">Жүйе параметрлері</string>
     <string name="panel_hdmi_settings">HDMI параметрлері</string>
-    <string name="panel_lamp_hint">10 деңгейінде Boost қосу үшін → түймесін екі рет басыңыз.</string>
     <string name="panel_eye_desc">Объектив алдында адам болғанда жарық күңгірттеледі.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Қатар</string>

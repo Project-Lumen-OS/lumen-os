@@ -1,0 +1,37 @@
+# Keys that can never be given an app ("Remote buttons" says "This button cannot be changed"), whatever remote or
+# keyboard sends them. Owner order 2026-11-14: the arrows, OK, Home, Back, the gear, the microphone and the focus key
+# stay; power and volume stay too, so they always work. Read by tools/remotes/gen_catalog.py (KeyTable.FIXED); a
+# keys.tsv row with bind=app on one of these key codes is refused. Every other key that keys.tsv does not offer is not
+# offered either (letters, digits, media keys, picture keys).
+# Columns: keycode (Android KEYCODE_ name without the prefix), group, why
+keycode	group	why
+DPAD_UP	control	arrow
+DPAD_DOWN	control	arrow
+DPAD_LEFT	control	arrow
+DPAD_RIGHT	control	arrow
+DPAD_CENTER	control	OK
+ENTER	control	OK of a keyboard
+NUMPAD_ENTER	control	OK of a keyboard
+HOME	control	Home
+BACK	control	Back
+ESCAPE	control	Back of a keyboard
+SETTINGS	gear	the gear (short press: quick menu)
+TV_MEDIA_CONTEXT_MENU	gear	the gear held (the remote's own MENU scancode)
+MENU	gear	the gear held on other remotes and keyboards
+SEARCH	mic	the microphone key and the AI key
+VOICE_ASSIST	mic	voice key of other remotes
+ASSIST	mic	assistant key
+FOCUS	focus	the focus key (autofocus)
+TV_CONTENTS_MENU	focus	the focus key held (manual focus)
+MEDIA_STEP_FORWARD	focus	focus step key
+MEDIA_STEP_BACKWARD	focus	focus step key
+POWER	power	power must always work
+STB_POWER	power	the remote's power key (Lumen standby)
+TV_POWER	power	power of TV style remotes
+SLEEP	power	sleep key
+SOFT_SLEEP	power	sleep key
+WAKEUP	power	wake key
+VOLUME_UP	volume	volume must always work
+VOLUME_DOWN	volume	volume must always work
+VOLUME_MUTE	volume	mute must always work
+MUTE	volume	microphone mute of a keyboard

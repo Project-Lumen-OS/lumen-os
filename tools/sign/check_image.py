@@ -34,7 +34,7 @@ Checks (every failure is listed, exit 1 if any):
             tvconfig path)
   blobs     public: no MediaTek/XGIMI file (by sha256 over EVERY member, and by path), the codec
             placeholders exist with size 0 (0644, root, system_lib_file), no libcodec2store, no XGIMI
-            audio file; z9x_blobs.sh / z9x_blobs.rc / blobs_allow.txt and the replaced xgimi_compat.rc
+            audio file; z9x_blobs.sh / z9x_blobs.rc / blobs.conf / blobs_allow.txt and the replaced xgimi_compat.rc
             byte-identical to tools/ota/image (tools/ota/image/README.md section 2), every allow-list hash a known
             MTK_SHA entry, no init file or script of ours using a dropped file; private (your own
             image): MTK codec libs allowed, reported
@@ -112,6 +112,7 @@ NEVER_PUBLIC = [
 PUBLIC_FILES = {
     "z9x_blobs.sh": "system/etc/z9x/z9x_blobs.sh",
     "z9x_blobs.rc": "system/etc/init/z9x_blobs.rc",
+    "blobs.conf": "system/etc/z9x/blobs.conf",
     "blobs_allow.txt": "system/etc/z9x/blobs_allow.txt",
     "xgimi_compat_public.rc": "system/etc/init/xgimi_compat.rc",
 }

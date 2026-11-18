@@ -41,8 +41,11 @@ users=$(grep -rlF 'registerAudioDeviceCallback(' "$SRC" --include=*.java | sed "
 callers=$(grep -rlF 'EarcLink.install(' "$SRC" --include=*.java | sed "s|$SRC/||" | sort | tr '\n' ' ')
 [ "$callers" = "App.java " ] || fail "EarcLink.install called from: $callers(want App.java, through AudioPorts.whenUp)"
 grep -rlF 'registerAudioPortUpdateListener(' "$SRC" --include=*.java && fail "an audio port listener outside AudioPorts"
-n=$(grep -c 'AudioPorts.registerDeviceCallback(sApp, new AudioDeviceCallback() {' "$SRC/audio/AudioPathReporter.java" "$SRC/audio/AudioOutputChoice.java" | awk -F: '{s+=$2} END {print s}')
-[ "$n" = 2 ] || fail "AudioPathReporter / AudioOutputChoice: $n callbacks through AudioPorts (want 2)"
+n=$(grep -c 'AudioPorts.registerDeviceCallback(sApp, new AudioDeviceCallback() {' "$SRC/audio/AudioOutputChoice.java")
+[ "$n" = 1 ] || fail "AudioOutputChoice: $n callbacks through AudioPorts (want 1)"
+# the path reporter is the vendor adapter of lumen-audio PathSwitch: the switch's device callback through AudioPorts too
+n=$(grep -c 'AudioPorts.registerDeviceCallback(app, cb, h, "AudioPathReporter");' "$SRC/audio/AudioPathReporter.java")
+[ "$n" = 1 ] || fail "AudioPathReporter: $n device callbacks through AudioPorts (want 1)"
 grep -A2 'org.lumen.projector.audio.AudioPorts.whenUp(this, new android.os.Handler(android.os.Looper.getMainLooper()),' "$SRC/App.java" \
   | grep -qF '"EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));' || fail "EarcLink installed before the audio policy answers"
 n=$(grep -c 'EarcLink.install(' "$SRC/App.java" || true)

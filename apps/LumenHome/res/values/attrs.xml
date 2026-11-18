@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- colours of the brand mark per theme (home_mark.xml, home_wordmark.xml) -->
+    <attr name="lumenMarkA" format="color" />
+    <attr name="lumenMarkB" format="color" />
+    <attr name="lumenMarkCore" format="color" />
+    <attr name="lumenWord" format="color" />
+</resources>

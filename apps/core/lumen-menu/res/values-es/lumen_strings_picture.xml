@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family stock picture rows (gamma, noise reduction, local contrast, colour
+     optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
+     the Z9X app's pro_* and panel_reset texts with their translations -->
+<resources>
+    <string name="lumen_m_gamma">Gamma</string>
+    <string name="lumen_m_gamma_manual">Manual</string>
+    <string name="lumen_m_gamma_index">Valor de gamma</string>
+    <string name="lumen_m_noise">Reducción de ruido</string>
+    <string name="lumen_m_local_contrast">Contraste local</string>
+    <string name="lumen_m_color_opt">Optimización del color</string>
+    <string name="lumen_m_hdr_mapping">Mapeo dinámico de tonos HDR</string>
+    <string name="lumen_m_ct_balanced">Equilibrada</string>
+    <string name="lumen_m_elder_color">Colores para mayores</string>
+    <string name="lumen_m_gamma_refused">El valor de gamma solo funciona con la gamma manual</string>
+    <string name="lumen_m_hdr10_only">Solo funciona con contenido HDR10</string>
+    <string name="lumen_m_reset">Restablecer</string>
+    <string name="lumen_m_picture_reset_all_msg">Los ajustes de todos los modos de imagen volverán a sus valores predeterminados. ¿Continuar?</string>
+    <string name="lumen_m_level_low">Bajo</string>
+    <string name="lumen_m_level_medium">Medio</string>
+    <string name="lumen_m_level_high">Alto</string>
+</resources>

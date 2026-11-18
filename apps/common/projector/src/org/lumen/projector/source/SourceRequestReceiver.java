@@ -11,8 +11,8 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
 
 /**
- * Opens the Source overlay on request of org.lumen.tvinput (MENU inside its HDMI viewer), so every
- * key that offers an input choice shows the same XGIMI-style overlay (v6.1 requirements item 2).
+ * Does what the remote's Source key does (apps/core/lumen-source: the next input and its small card) on request of
+ * org.lumen.tvinput (MENU inside its HDMI viewer), so every key that asks for the source acts the same.
  * Exported, but the sender must hold org.lumen.projector.permission.SHOW_SOURCE (signature: only
  * platform-signed apps of this image). Action {@link #ACTION}. Main thread, cheap.
  */
@@ -33,7 +33,7 @@ public final class SourceRequestReceiver extends BroadcastReceiver {
                 Ui.toast(ctx, R.string.toast_setup_running);
                 return;
             }
-            SourceOverlay.toggle(ctx.getApplicationContext());
+            org.lumen.source.SourceKey.press(ctx, "show_source");
         } catch (Throwable t) {
             Log.e(TAG, "source request", t);
         }

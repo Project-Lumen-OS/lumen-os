@@ -1079,6 +1079,146 @@ C g.sendPowerOnUiReady()() s2
 C g.sendPowerOnUiReady()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 307 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:17
   = null
+C g.setAiScene(int)(-201) s0
+  ! IllegalArgumentException: ai scene -201 not in 10..17
+C g.setAiScene(int)(-201) s2
+  ! IllegalArgumentException: ai scene -201 not in 10..17
+C g.setAiScene(int)(-200) s0
+  ! IllegalArgumentException: ai scene -200 not in 10..17
+C g.setAiScene(int)(-200) s2
+  ! IllegalArgumentException: ai scene -200 not in 10..17
+C g.setAiScene(int)(-1) s0
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C g.setAiScene(int)(-1) s2
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C g.setAiScene(int)(0) s0
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C g.setAiScene(int)(0) s2
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C g.setAiScene(int)(1) s0
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C g.setAiScene(int)(1) s2
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C g.setAiScene(int)(2) s0
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C g.setAiScene(int)(2) s2
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C g.setAiScene(int)(3) s0
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C g.setAiScene(int)(3) s2
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C g.setAiScene(int)(4) s0
+  ! IllegalArgumentException: ai scene 4 not in 10..17
+C g.setAiScene(int)(4) s2
+  ! IllegalArgumentException: ai scene 4 not in 10..17
+C g.setAiScene(int)(5) s0
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C g.setAiScene(int)(5) s2
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C g.setAiScene(int)(6) s0
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C g.setAiScene(int)(6) s2
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C g.setAiScene(int)(7) s0
+  ! IllegalArgumentException: ai scene 7 not in 10..17
+C g.setAiScene(int)(7) s2
+  ! IllegalArgumentException: ai scene 7 not in 10..17
+C g.setAiScene(int)(8) s0
+  ! IllegalArgumentException: ai scene 8 not in 10..17
+C g.setAiScene(int)(8) s2
+  ! IllegalArgumentException: ai scene 8 not in 10..17
+C g.setAiScene(int)(9) s0
+  ! IllegalArgumentException: ai scene 9 not in 10..17
+C g.setAiScene(int)(9) s2
+  ! IllegalArgumentException: ai scene 9 not in 10..17
+C g.setAiScene(int)(10) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
+  = true
+C g.setAiScene(int)(10) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
+  = true
+C g.setAiScene(int)(11) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
+  = true
+C g.setAiScene(int)(11) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
+  = true
+C g.setAiScene(int)(12) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
+  = true
+C g.setAiScene(int)(12) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
+  = true
+C g.setAiScene(int)(13) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
+  = true
+C g.setAiScene(int)(13) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
+  = true
+C g.setAiScene(int)(16) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
+  = true
+C g.setAiScene(int)(16) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
+  = true
+C g.setAiScene(int)(17) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
+  = true
+C g.setAiScene(int)(17) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
+  = true
+C g.setAiScene(int)(20) s0
+  ! IllegalArgumentException: ai scene 20 not in 10..17
+C g.setAiScene(int)(20) s2
+  ! IllegalArgumentException: ai scene 20 not in 10..17
+C g.setAiScene(int)(25) s0
+  ! IllegalArgumentException: ai scene 25 not in 10..17
+C g.setAiScene(int)(25) s2
+  ! IllegalArgumentException: ai scene 25 not in 10..17
+C g.setAiScene(int)(44) s0
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C g.setAiScene(int)(44) s2
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C g.setAiScene(int)(50) s0
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C g.setAiScene(int)(50) s2
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C g.setAiScene(int)(100) s0
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C g.setAiScene(int)(100) s2
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C g.setAiScene(int)(101) s0
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C g.setAiScene(int)(101) s2
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C g.setAiScene(int)(160) s0
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C g.setAiScene(int)(160) s2
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C g.setAiScene(int)(200) s0
+  ! IllegalArgumentException: ai scene 200 not in 10..17
+C g.setAiScene(int)(200) s2
+  ! IllegalArgumentException: ai scene 200 not in 10..17
+C g.setAiScene(int)(201) s0
+  ! IllegalArgumentException: ai scene 201 not in 10..17
+C g.setAiScene(int)(201) s2
+  ! IllegalArgumentException: ai scene 201 not in 10..17
+C g.setAiScene(int)(1080) s0
+  ! IllegalArgumentException: ai scene 1080 not in 10..17
+C g.setAiScene(int)(1080) s2
+  ! IllegalArgumentException: ai scene 1080 not in 10..17
+C g.setAiScene(int)(1920) s0
+  ! IllegalArgumentException: ai scene 1920 not in 10..17
+C g.setAiScene(int)(1920) s2
+  ! IllegalArgumentException: ai scene 1920 not in 10..17
+C g.setAiScene(int)(20000) s0
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C g.setAiScene(int)(20000) s2
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C g.setAiScene(int)(20001) s0
+  ! IllegalArgumentException: ai scene 20001 not in 10..17
+C g.setAiScene(int)(20001) s2
+  ! IllegalArgumentException: ai scene 20001 not in 10..17
 C g.setAspectRatio(int)(-201) s0
   ! IllegalArgumentException: aspect ratio -201 not allowed
 C g.setAspectRatio(int)(-201) s2
@@ -7104,6 +7244,12 @@ C g.setSystemUiReady()() s2
   = null
 C g.setSystemUiReady()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 391 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:1
+  = null
+C g.setTvListener(TvEventSink)(proxy) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
+  = null
+C g.setTvListener(TvEventSink)(proxy) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
   = null
 C g.shiftPicture(int,boolean)(-201,false) s0
   ! IllegalArgumentException: shift direction -201 not allowed
@@ -9532,6 +9678,146 @@ C g.sendPowerOnUiReady()() s2
 C g.sendPowerOnUiReady()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 307 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:17
   = null
+C g.setAiScene(int)(-201) s0
+  ! IllegalArgumentException: ai scene -201 not in 10..17
+C g.setAiScene(int)(-201) s2
+  ! IllegalArgumentException: ai scene -201 not in 10..17
+C g.setAiScene(int)(-200) s0
+  ! IllegalArgumentException: ai scene -200 not in 10..17
+C g.setAiScene(int)(-200) s2
+  ! IllegalArgumentException: ai scene -200 not in 10..17
+C g.setAiScene(int)(-1) s0
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C g.setAiScene(int)(-1) s2
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C g.setAiScene(int)(0) s0
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C g.setAiScene(int)(0) s2
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C g.setAiScene(int)(1) s0
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C g.setAiScene(int)(1) s2
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C g.setAiScene(int)(2) s0
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C g.setAiScene(int)(2) s2
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C g.setAiScene(int)(3) s0
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C g.setAiScene(int)(3) s2
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C g.setAiScene(int)(4) s0
+  ! IllegalArgumentException: ai scene 4 not in 10..17
+C g.setAiScene(int)(4) s2
+  ! IllegalArgumentException: ai scene 4 not in 10..17
+C g.setAiScene(int)(5) s0
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C g.setAiScene(int)(5) s2
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C g.setAiScene(int)(6) s0
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C g.setAiScene(int)(6) s2
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C g.setAiScene(int)(7) s0
+  ! IllegalArgumentException: ai scene 7 not in 10..17
+C g.setAiScene(int)(7) s2
+  ! IllegalArgumentException: ai scene 7 not in 10..17
+C g.setAiScene(int)(8) s0
+  ! IllegalArgumentException: ai scene 8 not in 10..17
+C g.setAiScene(int)(8) s2
+  ! IllegalArgumentException: ai scene 8 not in 10..17
+C g.setAiScene(int)(9) s0
+  ! IllegalArgumentException: ai scene 9 not in 10..17
+C g.setAiScene(int)(9) s2
+  ! IllegalArgumentException: ai scene 9 not in 10..17
+C g.setAiScene(int)(10) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
+  = true
+C g.setAiScene(int)(10) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
+  = true
+C g.setAiScene(int)(11) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
+  = true
+C g.setAiScene(int)(11) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
+  = true
+C g.setAiScene(int)(12) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
+  = true
+C g.setAiScene(int)(12) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
+  = true
+C g.setAiScene(int)(13) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
+  = true
+C g.setAiScene(int)(13) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
+  = true
+C g.setAiScene(int)(16) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
+  = true
+C g.setAiScene(int)(16) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
+  = true
+C g.setAiScene(int)(17) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
+  = true
+C g.setAiScene(int)(17) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
+  = true
+C g.setAiScene(int)(20) s0
+  ! IllegalArgumentException: ai scene 20 not in 10..17
+C g.setAiScene(int)(20) s2
+  ! IllegalArgumentException: ai scene 20 not in 10..17
+C g.setAiScene(int)(25) s0
+  ! IllegalArgumentException: ai scene 25 not in 10..17
+C g.setAiScene(int)(25) s2
+  ! IllegalArgumentException: ai scene 25 not in 10..17
+C g.setAiScene(int)(44) s0
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C g.setAiScene(int)(44) s2
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C g.setAiScene(int)(50) s0
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C g.setAiScene(int)(50) s2
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C g.setAiScene(int)(100) s0
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C g.setAiScene(int)(100) s2
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C g.setAiScene(int)(101) s0
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C g.setAiScene(int)(101) s2
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C g.setAiScene(int)(160) s0
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C g.setAiScene(int)(160) s2
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C g.setAiScene(int)(200) s0
+  ! IllegalArgumentException: ai scene 200 not in 10..17
+C g.setAiScene(int)(200) s2
+  ! IllegalArgumentException: ai scene 200 not in 10..17
+C g.setAiScene(int)(201) s0
+  ! IllegalArgumentException: ai scene 201 not in 10..17
+C g.setAiScene(int)(201) s2
+  ! IllegalArgumentException: ai scene 201 not in 10..17
+C g.setAiScene(int)(1080) s0
+  ! IllegalArgumentException: ai scene 1080 not in 10..17
+C g.setAiScene(int)(1080) s2
+  ! IllegalArgumentException: ai scene 1080 not in 10..17
+C g.setAiScene(int)(1920) s0
+  ! IllegalArgumentException: ai scene 1920 not in 10..17
+C g.setAiScene(int)(1920) s2
+  ! IllegalArgumentException: ai scene 1920 not in 10..17
+C g.setAiScene(int)(20000) s0
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C g.setAiScene(int)(20000) s2
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C g.setAiScene(int)(20001) s0
+  ! IllegalArgumentException: ai scene 20001 not in 10..17
+C g.setAiScene(int)(20001) s2
+  ! IllegalArgumentException: ai scene 20001 not in 10..17
 C g.setAspectRatio(int)(-201) s0
   ! IllegalArgumentException: aspect ratio -201 not allowed
 C g.setAspectRatio(int)(-201) s2
@@ -15562,6 +15848,12 @@ C g.setSystemUiReady()() s2
 C g.setSystemUiReady()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 391 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:1
   = null
+C g.setTvListener(TvEventSink)(proxy) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
+  = null
+C g.setTvListener(TvEventSink)(proxy) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
+  = null
 C g.shiftPicture(int,boolean)(-201,false) s0
   ! IllegalArgumentException: shift direction -201 not allowed
 C g.shiftPicture(int,boolean)(-201,false) s2
@@ -17281,4 +17573,63 @@ C callback music onTransact 257120595 parse error
 C callback music onTransact 99
   = null
 C callback music onTransact 99 parse error
+  = null
+
+C callback tv g.setTvListener(TvEventSink)(proxy)
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
+  = null
+C callback tv onTransact 1
+  REPLY status:0 b:true
+  EVENT onTvEvent[5, value]
+  = null
+C callback tv onTransact 1 parse error
+  REPLY status:0 b:true
+  = null
+C callback tv onTransact 256067662
+  REPLY status:0 sv:[xgimi.hardware.gmpf@1.0::IGmTvCallback, android.hidl.base@1.0::IBase]
+  = null
+C callback tv onTransact 256067662 parse error
+  REPLY status:0 sv:[xgimi.hardware.gmpf@1.0::IGmTvCallback, android.hidl.base@1.0::IBase]
+  = null
+C callback tv onTransact 256136003
+  REPLY status:0 s:xgimi.hardware.gmpf@1.0::IGmTvCallback
+  = null
+C callback tv onTransact 256136003 parse error
+  REPLY status:0 s:xgimi.hardware.gmpf@1.0::IGmTvCallback
+  = null
+C callback tv onTransact 256921159
+  REPLY status:0
+  = null
+C callback tv onTransact 256921159 parse error
+  REPLY status:0
+  = null
+C callback tv onTransact 256398152
+  REPLY status:0 blob:00000000000000000200000000000000
+  = null
+C callback tv onTransact 256398152 parse error
+  REPLY status:0 blob:00000000000000000200000000000000
+  = null
+C callback tv onTransact 257049926
+  REPLY status:0 blob:921000000000000000000000000000000000000000000000
+  = null
+C callback tv onTransact 257049926 parse error
+  REPLY status:0 blob:921000000000000000000000000000000000000000000000
+  = null
+C callback tv onTransact 256131655
+  REPLY status:0
+  = null
+C callback tv onTransact 256131655 parse error
+  REPLY status:0
+  = null
+C callback tv onTransact 256462420
+  = null
+C callback tv onTransact 256462420 parse error
+  = null
+C callback tv onTransact 257120595
+  = null
+C callback tv onTransact 257120595 parse error
+  = null
+C callback tv onTransact 99
+  = null
+C callback tv onTransact 99 parse error
   = null

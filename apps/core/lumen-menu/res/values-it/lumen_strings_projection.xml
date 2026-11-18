@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Memoria dell\'obiettivo</string>
+    <string name="lumen_m_focus_guide">Messa a fuoco con il telecomando</string>
+    <string name="lumen_qpd_tip_focus_guide">Premi il tasto di messa a fuoco sul lato del telecomando e il proiettore mette a fuoco da solo. Tienilo premuto per regolare a mano.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Premi il tasto di messa a fuoco del telecomando e il proiettore mette a fuoco da solo. Tienilo premuto per regolare a mano.</string>
+</resources>

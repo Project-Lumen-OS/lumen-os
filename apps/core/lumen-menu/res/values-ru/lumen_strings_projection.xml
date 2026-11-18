@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Память объектива</string>
+    <string name="lumen_m_focus_guide">Фокус с пульта</string>
+    <string name="lumen_qpd_tip_focus_guide">Нажмите кнопку фокуса сбоку пульта, и проектор сам наведёт резкость. Удерживайте её, чтобы настроить резкость вручную.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Нажмите кнопку фокуса на пульте, и проектор сам наведёт резкость. Удерживайте её, чтобы настроить резкость вручную.</string>
+</resources>

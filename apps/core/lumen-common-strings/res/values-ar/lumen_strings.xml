@@ -43,11 +43,14 @@
     <string name="lumen_keystone">شبه المنحرف</string>
     <string name="lumen_later">لاحقًا</string>
     <string name="lumen_limited">محدود</string>
-    <string name="lumen_looking_for_the_remote">جارٍ البحث عن جهاز التحكم عن بُعد…</string>
     <string name="lumen_manual_focus">تركيز يدوي</string>
     <string name="lumen_movie">فيلم</string>
     <string name="lumen_music">موسيقى</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">غير متاح عند مستوى السطوع Boost</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">غير متاح في وضع الصورة بالذكاء الاصطناعي</string>
     <string name="lumen_not_available_in_the_office_mode">غير متاح في وضع المكتب</string>
+    <string name="lumen_not_available_in_the_performance_mode">غير متاح في وضع الأداء</string>
+    <string name="lumen_not_available_while_game_mode_is_on">غير متاح أثناء تشغيل وضع اللعب</string>
     <string name="lumen_obstacle_avoidance">تجنّب العوائق</string>
     <string name="lumen_off">إيقاف</string>
     <string name="lumen_office">مكتب</string>

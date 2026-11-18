@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: the HDMI-CEC page of every projector (CecPage). English base, moved byte for byte from the Z9X
+     app's strings_cec.xml (cec_* there, lumen_cec_* here) with all 16 translations. -->
+<resources>
+    <string name="lumen_cec_title" translatable="false">HDMI-CEC</string>
+    <string name="lumen_cec_unavailable">HDMI-CEC is not available</string>
+    <string name="lumen_cec_master">HDMI-CEC control</string>
+    <!-- note under it, only where the projector's driver shows it (X50 family, stock general_set_device_control_cec_tip) -->
+    <string name="lumen_cec_master_note">With HDMI-CEC off, sound over HDMI ARC is not available.</string>
+    <string name="lumen_cec_wake">Turn on with an HDMI device</string>
+    <!-- note under it, only where the same switch also turns the devices off (X50 family, stock setDeviceAutoStart) -->
+    <string name="lumen_cec_wake_note">With this on, HDMI devices also turn off when the projector turns off.</string>
+    <string name="lumen_cec_night">Night guard</string>
+    <string name="lumen_cec_night_off">Off</string>
+    <!-- %1$s / %2$s: start / end time of the night guard, e.g. 01:00 and 07:00 -->
+    <string name="lumen_cec_night_range" translatable="false">%1$s–%2$s</string>
+    <string name="lumen_cec_night_desc">During these hours HDMI devices cannot turn the projector on.</string>
+    <string name="lumen_cec_paused">Paused after several wake-ups without a picture. Using the remote turns it back on.</string>
+    <string name="lumen_cec_switch">Switch to a device when it turns on</string>
+    <string name="lumen_cec_send_standby">Turn off HDMI devices with the projector</string>
+    <string name="lumen_cec_follow_info">When the device you are watching turns off, the projector goes to sleep too.</string>
+    <string name="lumen_cec_soundbar">Soundbar or AV receiver (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Turn on the soundbar with the projector</string>
+    <string name="lumen_cec_control">Control HDMI devices with this remote</string>
+    <string name="lumen_cec_internal_exit">Tell the device when you leave HDMI</string>
+    <string name="lumen_cec_devices">Connected devices</string>
+    <string name="lumen_cec_no_devices">No HDMI-CEC devices found</string>
+    <!-- device list value: %1$d = HDMI port number, %2$s = lumen_cec_state_on / lumen_cec_state_standby -->
+    <string name="lumen_cec_dev_value" translatable="false">HDMI %1$d · %2$s</string>
+    <string name="lumen_cec_dev_port" translatable="false">HDMI %1$d</string>
+    <string name="lumen_cec_state_on">on</string>
+    <string name="lumen_cec_state_standby">standby</string>
+    <string name="lumen_cec_dev_unnamed">HDMI device</string>
+    <string name="lumen_cec_dev_soundbar">Soundbar / AV receiver</string>
+    <!-- %1$s = the projector's device name, as HDMI devices show it -->
+    <string name="lumen_cec_name_on_hdmi">Name on HDMI: %1$s</string>
+</resources>

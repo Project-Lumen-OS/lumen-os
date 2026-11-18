@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Zoom</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Rete</string>
+    <string name="lumen_qpd_theme">Tema</string>
+    <string name="lumen_qpd_theme_light">Chiaro</string>
+    <string name="lumen_qpd_theme_dark">Scuro</string>
+    <string name="lumen_qpd_theme_auto">Auto</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Mirroring dello schermo</string>
     <string name="lumen_qpd_mirror_on">Mirroring dello schermo (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Luminosità massima. Le ventole fanno più rumore.</string>
     <string name="lumen_qpd_tip_picture">Scegli una modalità in base a cosa guardi.</string>
     <string name="lumen_qpd_tip_rear">Tu e il proiettore siete ai lati opposti dello schermo.</string>
+    <string name="lumen_qpd_tip_front">Tu e il proiettore siete dallo stesso lato dello schermo.</string>
+    <string name="lumen_qpd_tip_table">Il proiettore è appoggiato su un tavolo.</string>
+    <string name="lumen_qpd_tip_ceiling">Il proiettore è appeso al soffitto, capovolto.</string>
+    <string name="lumen_qpd_tip_auto">Il proiettore capisce da solo se è appoggiato o appeso e gira l’immagine.</string>
 </resources>

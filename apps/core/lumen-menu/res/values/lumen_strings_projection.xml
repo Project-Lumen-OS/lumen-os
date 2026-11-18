@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Lens memory</string>
+    <string name="lumen_m_focus_guide">Focus with the remote</string>
+    <string name="lumen_qpd_tip_focus_guide">Press the focus key on the side of the remote and the projector focuses by itself. Hold the key to focus by hand.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Press the focus key on the remote and the projector focuses by itself. Hold the key to focus by hand.</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS RS30 Ultra Max (g0155): /system/etc/sysconfig/rs30.xml, next to the shared z9x.xml
+     (overlay/v1/z9x-sysconfig-nogms.xml: Lumen Home, tvinput, AirPlay, screen mirroring, LineageOS stats off).
+     The base sets config_stopSystemPackagesByDefault=true: a system package with an exported launcher activity starts
+     in the stopped state and gets no BOOT_COMPLETED until it is opened once. The X50 family's apps of this image must
+     run from the first boot (the projector app: menu, remote keys, statistics; the eye-protection fail-safe). -->
+<config>
+    <initial-package-state package="org.lumen.x50.projector" stopped="false" />
+    <initial-package-state package="org.lumen.x50.eyeguard" stopped="false" />
+</config>

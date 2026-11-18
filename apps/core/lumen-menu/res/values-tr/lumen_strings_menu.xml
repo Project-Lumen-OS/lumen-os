@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">Renk aralığı</string>
     <string name="lumen_m_hdmi_range_full">Tam</string>
     <string name="lumen_m_hdmi_range_limited">Sınırlı</string>
+    <string name="lumen_m_hdmi_range_auto_full">Otomatik (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">Otomatik (Limited)</string>
     <string name="lumen_m_kst_more">Diğer</string>
+    <string name="lumen_m_kst_size_position">Boyut ve konum</string>
+    <string name="lumen_m_kst_smart">Akıllı</string>
     <string name="lumen_m_kst_restore">Özgün görüntüye dön</string>
     <string name="lumen_m_launcher_classic">Android TV (klasik)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">Oyun modu</string>
     <string name="lumen_m_panel_game_speed">Tepki hızı</string>
     <string name="lumen_m_panel_high">Yüksek</string>
-    <string name="lumen_m_panel_image_correction_settings">Düzeltme ayarları</string>
     <string name="lumen_m_panel_lamp">Parlaklık</string>
     <string name="lumen_m_panel_lamp_hint">10 seviyesinde Boost\'u açmak için → tuşuna iki kez basın.</string>
     <string name="lumen_m_panel_low">Düşük</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">Kapalı</string>
     <string name="lumen_m_panel_on">Açık</string>
     <string name="lumen_m_panel_optical_zoom">Optik zoom</string>
-    <string name="lumen_m_panel_optical_zoom_summary">Netlik kaybı olmadan görüntü boyutu. Otomatik keystone ve “Ekrana sığdır” zoomu yeniden değiştirir.</string>
     <string name="lumen_m_panel_picture_mode">Görüntü modu</string>
     <string name="lumen_m_panel_picture_reset">Görüntüyü sıfırla</string>
     <string name="lumen_m_panel_pm_ai">AI görüntü</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">Yatay açı</string>
     <string name="lumen_m_angle_v">Dikey açı</string>
     <string name="lumen_m_dynamic_contrast">Dinamik kontrast</string>
-    <string name="lumen_m_dynamic_black">Dinamik siyah iyileştirme</string>
+    <string name="lumen_m_dynamic_black">Dinamik siyah seviyesi iyileştirme</string>
     <string name="lumen_m_sleep_timer">Zamanlayıcı</string>
     <string name="lumen_m_remote">Kumandayı eşle</string>
     <string name="lumen_m_ct_standard">Standart</string>
     <string name="lumen_m_ct_movie">Film</string>
+    <string name="lumen_m_signal">Sinyal</string>
+    <string name="lumen_m_signal_pin">Sinyal kartı ekranda kalsın</string>
+    <string name="lumen_m_signal_refresh">Sinyal kartı yenileme</string>
+    <string name="lumen_m_signal_refresh_normal">Normal</string>
+    <string name="lumen_m_signal_refresh_fast">Hızlı</string>
+    <string name="lumen_m_signal_refresh_note">Hızlı: nadiren görüntü takılması olabilir</string>
+    <string name="lumen_m_hdr_developer">Geliştiriciler için</string>
 </resources>

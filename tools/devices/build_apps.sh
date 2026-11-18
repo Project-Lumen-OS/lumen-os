@@ -51,13 +51,13 @@ recipe_of() {
   python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import assemble_app as a
 import os
 r = a.find_recipe(sys.argv[2], sys.argv[3], sys.argv[4])
-own = os.path.join(sys.argv[2], "apps", sys.argv[4], "app.layers")
-r = r or (own if os.path.isfile(own) else None)
 print(r if r and a.parse(sys.argv[2], r)["identical"] != "allow" else "")' "$H" "$ROOT" "$C" "$1"
 }
 for n in $APPS; do
-  [ -d "$ROOT/apps/$n" ] || die "no app dir apps/$n"
-  SRC=$ROOT/apps/$n
+  # the app's folder: apps/<name>, or its row of apps/app_dirs.tsv (a folder renamed after the APK name shipped)
+  D=$(python3 -B "$H/assemble_app.py" --root "$ROOT" --app-dir "$n") || die "$n: cannot read apps/app_dirs.tsv"
+  [ -d "$ROOT/$D" ] || die "no app dir $D"
+  SRC=$ROOT/$D
   RCP=$(recipe_of "$n") || die "$n: cannot read its recipe"
   if [ -n "$RCP" ]; then
     python3 -B "$H/assemble_app.py" --root "$ROOT" "$RCP" --out "$W/tree/$n" || die "$n: the recipe $RCP does not assemble"
@@ -65,7 +65,7 @@ for n in $APPS; do
   fi
   # optional apps/<name>/BUILD_VERSION "CODE NAME": the version of an app whose manifest has none (build_apk.sh)
   VC=; VN=
-  if [ -f "$ROOT/apps/$n/BUILD_VERSION" ]; then read -r VC VN < "$ROOT/apps/$n/BUILD_VERSION" || true; fi
+  if [ -f "$ROOT/$D/BUILD_VERSION" ]; then read -r VC VN < "$ROOT/$D/BUILD_VERSION" || true; fi
   VERSION_CODE=$VC VERSION_NAME=$VN \
   KEY_PK8=$KEY_PK8 KEY_PEM=$KEY_PEM BUILD_DIR=$W/$n sh "$G/apps/build_apk.sh" "$SRC" "$OUT/$n.apk" > "$W/$n.log" 2>&1 \
     || { cat "$W/$n.log" >&2; die "$n: build failed"; }
@@ -73,8 +73,8 @@ for n in $APPS; do
   [ "$got" = "$WANT" ] || die "$n: signed by $got, not the $C platform certificate $WANT"
   for o in $OTHER; do [ "$o" != "$got" ] || die "$n: signed with a certificate of another device or a test key"; done
   # every HAL app of the device (hal_app and hal_more), each with its own allow list, on its dex
-  if [ "$(reg hal_check)" = aidl-table ] && { [ "$(reg hal_app)" = "apps/$n" ] || reg hal_more 2>/dev/null | tr ' ' '\n' | grep -q "^apps/$n:"; }; then
-    python3 -B "$H/check_hal.py" --root "$ROOT" --device "$C" --app "apps/$n" --dex "$OUT/$n.apk" || die "$n: HAL gate failed on the APK"
+  if [ "$(reg hal_check)" = aidl-table ] && { [ "$(reg hal_app)" = "$D" ] || reg hal_more 2>/dev/null | tr ' ' '\n' | grep -q "^$D:"; }; then
+    python3 -B "$H/check_hal.py" --root "$ROOT" --device "$C" --app "$D" --dex "$OUT/$n.apk" || die "$n: HAL gate failed on the APK"
   fi
   echo "build_apps: $n -> $OUT/$n.apk ($(sha256in < "$OUT/$n.apk"))"
 done

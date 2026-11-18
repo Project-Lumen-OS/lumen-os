@@ -1,0 +1,10 @@
+ro.boot.xgimi.modelname=G0058
+ro.vendor.build.version.incremental=v1.8.127
+ro.vendor.build.date=Fri Apr 10 18:59:04 CST 2026
+ro.build.version.incremental=v1.8.127
+ro.build.version.release=11
+ro.build.version.security_patch=2024-02-05
+ro.bootloader=20170621
+ro.xgimi.gmui.version=6.18.100.01
+persist.xgimi.rc.version=B940D_CY06_CY_V1.0.3
+kernel=4.19.116+

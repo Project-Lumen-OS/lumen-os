@@ -103,4 +103,14 @@
          Screen on: DOWN / repeats / UP go to KeyReceiver -> org.lumen.projector.power.PowerKey:
          short press = fade to black + sleep, long press = own power menu. -->
     <key keyCode="KEYCODE_STB_POWER" component="org.lumen.projector/.KeyReceiver" />
+
+    <!-- ===== "Remote buttons" (apps/core/lumen-remote keys, devices/_remotes/keys.tsv) ===== -->
+    <!-- Remote keys a user may give an app that had no route of their own: the shortcut key (BT 184 SHORTCUT, mapped
+         ALL_APPS before: without an app it still opens the app list) and the custom keys 1..4 (Xgimi-RC-S3R
+         135 / 136 / 217 / 354, RS30 remote 135 / 136: without an app they ask which app to open, as stock does). -->
+    <key keyCode="KEYCODE_FEATURED_APP_1" component="org.lumen.projector/.KeyReceiver" />
+    <key keyCode="KEYCODE_MACRO_1" component="org.lumen.projector/.KeyReceiver" />
+    <key keyCode="KEYCODE_MACRO_2" component="org.lumen.projector/.KeyReceiver" />
+    <key keyCode="KEYCODE_MACRO_3" component="org.lumen.projector/.KeyReceiver" />
+    <key keyCode="KEYCODE_MACRO_4" component="org.lumen.projector/.KeyReceiver" />
 </global_keys>

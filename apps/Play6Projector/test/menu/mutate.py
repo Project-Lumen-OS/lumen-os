@@ -110,7 +110,7 @@ MUTANTS = [
     ("profile adds optical zoom", MJ, "\"focus.af_now\": {},", "\"focus.af_now\": {},\n    \"zoom\": {},"),
     ("profile hint with an unknown picture", MJ, "\"hints\": {\"picture.mode\": \"picture_mode\", \"projection.rear\": \"rear_projection\", \"game.mode\": \"game_mode\"}", "\"hints\": {\"picture.mode\": \"picture_mode\", \"projection.rear\": \"rear_projection\", \"game.mode\": \"game_mode\", \"sound.earc\": \"x\"}"),
     # ---- screen mirroring: the tile only with the receiver's provider (Wi-Fi Direct found), Home's tile the same
-    ("mirroring tile not implemented", GT, "FeatureId.NETWORK, FeatureId.MIRRORING, FeatureId.USB_FILES,", "FeatureId.NETWORK, FeatureId.USB_FILES,"),
+    ("mirroring tile not implemented", GT, "FeatureId.NETWORK, FeatureId.MIRRORING,", "FeatureId.NETWORK,"),
     ("profile drops the mirroring tile", MJ, "    \"mirroring\": {},\n", ""),
     ("mirroring opened as an adapter screen", FT, "Log.i(TAG, \"open \" + screen + \": the menu's screen mirroring popup, not a screen\");\n                return false;",
      "Log.i(TAG, \"open \" + screen + \": the menu's screen mirroring popup, not a screen\");\n                return true;"),
@@ -119,7 +119,7 @@ MUTANTS = [
 ]
 
 # the hal sources test/menu/run.sh reads the wire values from: the shared GmpfBase and the Z9X value enums of the recipe
-ZH = "apps/Z9xProjector/src/org/lumen/projector/hal/"
+ZH = "apps/ProjectorBase/src/org/lumen/projector/hal/"
 COPY = ["apps/Play6Projector/src", "apps/Play6Projector/test", "apps/Play6Projector/res", "apps/common/projector/res",
         "apps/core/lumen-menu/src", "apps/core/lumen-menu/res", MJ, LY, "tools/play6/forks.tsv",
         "apps/core/lumen-gmpf/src/org/lumen/projector/hal/GmpfBase.java",

@@ -75,8 +75,6 @@
     <string name="panel_pm_performance_msg">通気口がふさがれておらず、室温が 25 °C 以下であることを確認してください。このモードを長時間使用しないでください。</string>
     <string name="panel_lamp">明るさ</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">もう一度 → を押すと Boost</string>
-    <string name="panel_boost_leave_press_again">もう一度 ← を押すと Boost を終了</string>
     <string name="panel_boost_3d">3D をオフにしてからもう一度お試しください</string>
     <string name="panel_boost_hot">プロジェクターが高温のため Boost を使用できません。しばらくしてからお試しください</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -146,7 +144,6 @@
     <string name="panel_tile_hdmi_only">HDMI のみ</string>
     <string name="panel_system_settings">システム設定</string>
     <string name="panel_hdmi_settings">HDMI 設定</string>
-    <string name="panel_lamp_hint">10 のときに → を 2 回押すと Boost がオンになります。</string>
     <string name="panel_eye_desc">レンズの前に人がいるときは光を弱めます。</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">サイドバイサイド</string>

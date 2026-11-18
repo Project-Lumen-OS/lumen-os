@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">게임 모드 활성화 중</string>
+    <string name="lumen_m_ps_ai">AI 품질 사진 모드에서는 전문가 설정을 할 수 없습니다.</string>
+    <string name="lumen_m_ps_performance">프로페셔널 설정은 성능 화질 모드에서 지원되지 않습니다.</string>
+    <string name="lumen_m_ps_ai_basic">AI 화질 모드에서는 표준 설정을 할 수 없습니다.</string>
+    <string name="lumen_m_ps_performance_basic">표준 설정은 성능 화질 모드에서 지원되지 않습니다.</string>
+</resources>

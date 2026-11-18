@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">Enviar un informe de problema</string>
+    <string name="lumen_report_intro">Ayuda al desarrollador de Lumen OS a saber qué ha fallado. No se envía nada hasta que pulses «Enviar informe».</string>
+    <string name="lumen_report_included">Incluido</string>
+    <string name="lumen_report_inc_system">Versión del sistema, tiempo de actividad y qué copia del sistema está en uso</string>
+    <string name="lumen_report_inc_logs">Registros del sistema y de las apps de Lumen de los últimos 30 minutos</string>
+    <string name="lumen_report_inc_crashes">Registros de fallos, bloqueos y reinicios con nombres de apps</string>
+    <string name="lumen_report_inc_kernel">Registro del kernel del último reinicio y registro de actualización</string>
+    <string name="lumen_report_inc_state">Pantalla, memoria y tipo de red</string>
+    <string name="lumen_report_excluded">Eliminado o no incluido</string>
+    <string name="lumen_report_exc_accounts">Cuentas, direcciones de correo y números de teléfono</string>
+    <string name="lumen_report_exc_network">Nombres de redes Wi-Fi, direcciones IP y MAC</string>
+    <string name="lumen_report_exc_serial">Número de serie: en su lugar, un ID aleatorio de este proyector</string>
+    <string name="lumen_report_exc_apps">Registros de las apps que instalaste tú</string>
+    <string name="lumen_report_exc_files">Fotos, archivos y contraseñas</string>
+    <string name="lumen_report_footer">El informe se guarda 30 días. Solo el desarrollador de Lumen OS puede abrirlo.</string>
+    <string name="lumen_report_last">Último informe: %1$s, %2$s</string>
+    <string name="lumen_report_send">Enviar informe</string>
+    <string name="lumen_report_collecting">Recopilando información… (%1$d de %2$d)</string>
+    <string name="lumen_report_log_hint">Si Android pregunta si permitir el acceso a los registros del dispositivo, elige «Permitir».</string>
+    <string name="lumen_report_sending">Enviando… %1$s de %2$s</string>
+    <string name="lumen_report_done_title">Informe enviado</string>
+    <string name="lumen_report_done_text">Envía este código al desarrollador de Lumen OS junto con una breve descripción del problema.</string>
+    <string name="lumen_report_failed_title">No se envió el informe</string>
+    <string name="lumen_report_err_no_network">No hay conexión a internet. Comprueba la red e inténtalo de nuevo.</string>
+    <string name="lumen_report_err_network">No se puede contactar con el servidor de informes. Inténtalo más tarde.</string>
+    <string name="lumen_report_err_rate">Hay demasiados informes ahora mismo. Inténtalo más tarde.</string>
+    <string name="lumen_report_err_rejected">El servidor de informes no aceptó el informe.</string>
+    <string name="lumen_report_err_server">El servidor de informes tuvo un problema. Inténtalo más tarde.</string>
+    <string name="lumen_report_err_collect">No se pudo preparar el informe.</string>
+    <string name="lumen_report_retry">Reintentar</string>
+    <string name="lumen_report_close">Cerrar</string>
+    <string name="lumen_report_cancel">Cancelar</string>
+    <string name="lumen_report_auto">Enviar informes de problemas automáticamente</string>
+    <string name="lumen_report_auto_note">Si el sistema o una app de Lumen se cierra o se bloquea, se envía solo un informe breve. Nunca lleva registros de las apps que instalaste tú.</string>
+    <string name="lumen_report_queued_title">El informe se enviará más tarde</string>
+    <string name="lumen_report_queued_text">Ahora no se puede contactar con el servidor de informes. El proyector enviará el informe solo en cuanto pueda. Su código aparecerá entonces aquí.</string>
+    <string name="lumen_report_last_auto">Último informe automático: %1$s, %2$s</string>
+</resources>

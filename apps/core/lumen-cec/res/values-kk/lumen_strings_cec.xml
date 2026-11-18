@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC қолжетімсіз</string>
+    <string name="lumen_cec_master">HDMI-CEC басқаруы</string>
+    <string name="lumen_cec_master_note">HDMI-CEC өшірулі болса, HDMI ARC арқылы дыбыс қолжетімсіз.</string>
+    <string name="lumen_cec_wake">HDMI құрылғысынан қосылу</string>
+    <string name="lumen_cec_wake_note">Бұл қосулы болса, проектор өшкенде HDMI құрылғылары да өшеді.</string>
+    <string name="lumen_cec_night">Түнгі қорғаныс</string>
+    <string name="lumen_cec_night_off">Өшірулі</string>
+    <string name="lumen_cec_night_desc">Осы сағаттарда HDMI құрылғылары проекторды қоса алмайды.</string>
+    <string name="lumen_cec_paused">Суретсіз бірнеше рет қосылғаннан кейін тоқтатылды. Пультті пайдаланғанда қайта іске қосылады.</string>
+    <string name="lumen_cec_switch">Құрылғы қосылғанда соған ауысу</string>
+    <string name="lumen_cec_send_standby">Проектормен бірге HDMI құрылғыларын өшіру</string>
+    <string name="lumen_cec_follow_info">Сіз көріп отырған құрылғы өшкенде, проектор да ұйқы режиміне өтеді.</string>
+    <string name="lumen_cec_soundbar">Саундбар немесе AV-ресивер (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Саундбарды проектормен бірге қосу</string>
+    <string name="lumen_cec_control">HDMI құрылғыларын осы пультпен басқару</string>
+    <string name="lumen_cec_internal_exit">HDMI-ден шыққанда құрылғыға хабарлау</string>
+    <string name="lumen_cec_devices">Қосылған құрылғылар</string>
+    <string name="lumen_cec_no_devices">HDMI-CEC құрылғылары табылмады</string>
+    <string name="lumen_cec_state_on">қосулы</string>
+    <string name="lumen_cec_state_standby">күту</string>
+    <string name="lumen_cec_dev_unnamed">HDMI құрылғысы</string>
+    <string name="lumen_cec_dev_soundbar">Саундбар / AV-ресивер</string>
+    <string name="lumen_cec_name_on_hdmi">HDMI-дегі атауы: %1$s</string>
+</resources>

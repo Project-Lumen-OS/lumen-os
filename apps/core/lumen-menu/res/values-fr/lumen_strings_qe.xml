@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Modifier le menu</string>
+    <string name="lumen_qe_your_menu">Votre menu</string>
+    <string name="lumen_qe_hint_select">OK : régler une tuile</string>
+    <string name="lumen_qe_preview">Aperçu</string>
+    <string name="lumen_qe_subtitle">Seulement ce que ce projecteur sait faire.</string>
+    <string name="lumen_qe_density">Aspect du menu</string>
+    <string name="lumen_qe_tiles">Tuiles</string>
+    <string name="lumen_qe_tiles_sub">Plusieurs par rangée</string>
+    <string name="lumen_qe_list">Liste</string>
+    <string name="lumen_qe_list_sub">Une par ligne</string>
+    <string name="lumen_qe_show">Que montrer</string>
+    <string name="lumen_qe_in_menu">Dans le menu</string>
+    <string name="lumen_qe_add">Ajouter</string>
+    <string name="lumen_qe_new">Nouveau</string>
+    <string name="lumen_qe_reset">Rétablir</string>
+    <string name="lumen_qe_select">Choisir</string>
+    <string name="lumen_qe_done">Terminé</string>
+    <string name="lumen_qe_back">Retour</string>
+    <string name="lumen_qe_close_panel">Fermer le panneau</string>
+    <string name="lumen_qe_how">Comment montrer</string>
+    <string name="lumen_qe_now" formatted="true">Maintenant : %1$s</string>
+    <string name="lumen_qe_slider">Curseur</string>
+    <string name="lumen_qe_slider_sub">Se règle dans le menu</string>
+    <string name="lumen_qe_wide">Tuile large</string>
+    <string name="lumen_qe_wide_sub">Nom et valeur</string>
+    <string name="lumen_qe_small">Tuile</string>
+    <string name="lumen_qe_small_sub">Icône seule</string>
+    <string name="lumen_qe_round">Cercle</string>
+    <string name="lumen_qe_round_sub">Dans la rangée du haut</string>
+    <string name="lumen_qe_footer">Bouton en bas</string>
+    <string name="lumen_qe_footer_sub">Sous les tuiles</string>
+    <string name="lumen_qe_panel_note">Une tuile, une tuile large et un cercle ouvrent le panneau à droite du menu.</string>
+    <string name="lumen_qe_place">Place</string>
+    <string name="lumen_qe_move">Déplacer</string>
+    <string name="lumen_qe_remove">Retirer du menu</string>
+    <string name="lumen_qe_moving">Déplacement</string>
+    <string name="lumen_qe_move_hint">Les cercles bougent seulement dans la rangée du haut, les tuiles entre les lignes. Pour qu\'une tuile devienne un cercle, changez son aspect.</string>
+    <string name="lumen_qe_put">Poser ici</string>
+    <string name="lumen_qe_cancel">Annuler</string>
+    <string name="lumen_qe_full">Le menu est plein. Choisissez un aspect plus petit ou la liste.</string>
+    <string name="lumen_qe_list_full">Autant d\'éléments ne tiennent pas dans une liste. Retirez-en quelques-uns d\'abord.</string>
+    <string name="lumen_qe_pinned">Ce bouton reste toujours dans le menu.</string>
+    <string name="lumen_m_volume">Volume</string>
+    <string name="lumen_qe_pq_brightness">Luminosité de l\'image</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s se déplace dans le menu. Les autres font de la place.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s : nouvelle place</string>
+    <string name="lumen_qe_move_keys">Déplacer</string>
+    <string name="lumen_qe_move_cancel">Annuler, remettre en place</string>
+</resources>

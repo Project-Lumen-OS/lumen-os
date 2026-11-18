@@ -18,8 +18,10 @@
 # image      x50_prop.txt names the X50 (ro.lumen.device g0111 = the profile's LUMEN_PROP, ro.lumen.model G0111,
 #            ro.z9x.device not z9x), takes away the Z9X OTA (manifest URL, partition list) and remove.txt the
 #            Z9X updater
-# OTA        g0111 has no OTA (ota_engine, channel, wire id none; the OTA tools refuse to publish for it); the Z9X
-#            manifests and the Z9X updater name only the device z9x; check-wire passes
+# OTA        (open since 2026-11-14) g0111 / g0100 update through tools/devices/ota with their own wire ids, channels
+#            and otacerts.zip; the public prop files read the updater's beta channel on the tag x50 (never the
+#            installer's update-<id>-beta.json, never releases/latest); test images and the TITANs have no updater;
+#            the Z9X manifests and the Z9X updater name only the device z9x; check-wire passes
 # Exit status 0 only when every check passes.
 set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -109,11 +111,28 @@ check image_no_z9x_manifest has "-ro.z9x.ota.manifest_url"
 check image_no_ab_ota_partitions has "-ro.product.ab_ota_partitions"
 check image_no_z9x_updater grep -q '^system/app/Z9xUpdater[[:space:]]' "$G/devices/g0111/image/remove.txt"
 
-# ---------------------------------------------------------------- OTA
-check ota_none test "$(reg g0111 ota_engine) $(reg g0111 channel) $(reg g0111 ota_wire_id)" = "none none none"
-check ota_tools_refuse_x50 eval '! (cd "$G/tools/devices/ota" && python3 -B -c "import sys, ota_conf; ota_conf.device(sys.argv[1], \"g0111\", publish=True)" "$G") >/dev/null 2>&1'
+# ---------------------------------------------------------------- OTA (open since 2026-11-14, owner order)
+check ota_x50_registry test "$(reg g0111 ota_engine) $(reg g0111 ota_wire_id) $(reg g0111 ota_tools)" = "update_engine x50 tools/devices/ota"
+check ota_x50_channels test "$(reg g0111 channel)" = "x50-nogms x50-test x50-beta"
+check ota_x50max_apart test "$(reg g0100 ota_wire_id) $(reg g0100 channel)" = "x50max x50max-nogms x50max-test x50max-beta"
+check ota_tools_take_x50 eval '(cd "$G/tools/devices/ota" && python3 -B -c "import sys, ota_conf; ota_conf.device(sys.argv[1], \"g0111\", publish=True); ota_conf.device(sys.argv[1], \"g0100\", publish=True)" "$G") >/dev/null 2>&1'
+check ota_tools_x50_own_certs eval '(cd "$G" && python3 -B tools/devices/ota/make_otacerts.py --device g0111 --check devices/g0111/image/otacerts.zip && python3 -B tools/devices/ota/make_otacerts.py --device g0100 --check devices/g0100/image/otacerts.zip) >/dev/null 2>&1'
+check ota_otacerts_apart eval '! cmp -s "$G/devices/g0111/image/otacerts.zip" "$G/devices/g0100/image/otacerts.zip"'
+XU=$G/devices/g0111/image/x50_prop_pub.txt
+XM=$G/devices/g0111/image/x50max_prop_pub.txt
+U=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50
+check ota_pub_props grep -qxF "+ro.lumen.ota.manifest_url=$U/update-x50-test.json" "$XU"
+check ota_pub_props_max grep -qxF "+ro.lumen.ota.manifest_url=$U/update-x50max-test.json" "$XM"
+check ota_pub_wire eval 'grep -qxF "+ro.lumen.ota.device=x50" "$XU" && grep -qxF "+ro.lumen.ota.device=x50max" "$XM"'
+check ota_pub_never_installer_file eval '! grep -h "manifest_url" "$XU" "$XM" | grep -q -e "-beta.json" -e "releases/latest"'
+check ota_pub_ab_partitions eval 'grep -qxF "ro.product.ab_ota_partitions=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig" "$XU" && grep -qxF "ro.product.ab_ota_partitions=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig" "$XM"'
+check ota_pub_version_code eval 'grep -qxF "+ro.lumen.version_code=@VC@" "$XU" && grep -qxF "ro.lumen.version=@V@" "$XU"'
+check ota_test_image_none eval '! grep -q "ro.lumen.ota" "$XP"'
+check ota_titan_none eval '! grep -q "ro.lumen.ota" "$G/devices/h0062/image/h0062_prop_pub.txt" "$G/devices/h0063/image/h0063_prop_pub.txt" && ! grep -q "^derive=.*ota" "$G/devices/h0062/build.conf" "$G/devices/h0063/build.conf"'
+check ota_gate_aidl grep -qx "hal=aidl" "$G/devices/g0111/image/ota_gate.conf"
+check ota_derive eval 'grep -qx "derive=ota:pub" "$G/devices/g0111/build.conf" && grep -qx "derive=ota:pub" "$G/devices/g0100/build.conf"'
 check ota_z9x_manifest_device grep -q '"device": "z9x"' "$G/tools/ota/make_manifest.py"
-check ota_z9x_updater_device grep -q '!"z9x".equals(device)' "$G/apps/Z9xUpdater/src/org/lumen/updater/Preflight.java"
+check ota_z9x_updater_device grep -qF '.device("z9x")' "$G/apps/Z9xUpdater/src/org/lumen/updater/Target.java"
 check ota_check_wire eval 'py check-wire >/dev/null'
 
 echo "x50 / z9x separation: $PASS passed, $FAIL failed"

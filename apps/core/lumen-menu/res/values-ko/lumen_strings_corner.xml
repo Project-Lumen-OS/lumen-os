@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
+     (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
+<resources>
+    <string name="lumen_corner_title">모서리 미세 조정</string>
+    <string name="lumen_corner_circle">가운데 원이 동그랗게 될 때까지 조정하세요</string>
+    <string name="lumen_corner_keys_move">화살표: 모서리 이동 · OK: 다음 모서리</string>
+    <string name="lumen_corner_keys_more">톱니바퀴 키 길게 누르기: 초기화 · 뒤로: 완료</string>
+    <string name="lumen_corner_tl">왼쪽 위</string>
+    <string name="lumen_corner_tr">오른쪽 위</string>
+    <string name="lumen_corner_br">오른쪽 아래</string>
+    <string name="lumen_corner_bl">왼쪽 아래</string>
+</resources>

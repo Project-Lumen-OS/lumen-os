@@ -1,0 +1,26 @@
+# ---- First start: one setting for every Lumen OS image (devices/_image/first_start_prop.txt)
+# The language, time and time zone a projector starts with, the same on every model (owner 2026-11-13: English, the
+# time and the time zone from the network, no fixed zone). This file is the only place that sets them: the image
+# builder puts it at the end of /system/product/etc/build.prop of every image and drops any earlier line of these keys
+# there (devices/_image/checks/first_start.py apply), and every image is checked (first_start.py check).
+# Why it wins: Android 14 init reads system, system_ext, vendor, odm and then product (property_service.cpp,
+# PropertyLoadBootDefaults), and a later line of a key replaces an earlier one, so these lines beat the stock vendor
+# build.prop of every XGIMI model (persist.sys.language=zh, persist.sys.country=CN, persist.sys.timezone=Asia/Shanghai,
+# ro.product.locale=zh-CN) without writing the vendor partition. A language or time zone the user picks (Lumen Setup,
+# Settings) is saved in /data and wins from then on.
+# Language: zygote takes persist.sys.locale, then persist.sys.language with country and localevar, then
+# ro.product.locale (AndroidRuntime.cpp readLocale). The vendor's language pair is emptied, English is the product
+# locale.
+ro.product.locale=en-US
+persist.sys.locale=
+persist.sys.language=
+persist.sys.country=
+persist.sys.localevar=
+# Time zone: none fixed (the vendor's Asia/Shanghai is emptied). Lumen Setup takes the zone from the network (IP
+# lookup). Until a zone is set the clock runs on UTC. Automatic time and automatic time zone stay on: they are the
+# SettingsProvider defaults def_auto_time and def_auto_time_zone, true in AOSP, and no overlay of an image changes them
+# (first_start.py check reads every overlay).
+persist.sys.timezone=
+# Language lists without the pseudo-locales en-XA and ar-XB (TvSettings lists them once developer options are on).
+# A negative filter: LocalePicker also tests it against the user's own locale.
+ro.localization.locale_filter=^(?!en-XA$|ar-XB$)

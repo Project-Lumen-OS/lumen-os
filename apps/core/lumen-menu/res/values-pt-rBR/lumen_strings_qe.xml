@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Editar menu</string>
+    <string name="lumen_qe_your_menu">Seu menu</string>
+    <string name="lumen_qe_hint_select">OK: ajustar um bloco</string>
+    <string name="lumen_qe_preview">Prévia</string>
+    <string name="lumen_qe_subtitle">Só o que este projetor sabe fazer.</string>
+    <string name="lumen_qe_density">Aparência do menu</string>
+    <string name="lumen_qe_tiles">Blocos</string>
+    <string name="lumen_qe_tiles_sub">Vários por linha</string>
+    <string name="lumen_qe_list">Lista</string>
+    <string name="lumen_qe_list_sub">Um por linha</string>
+    <string name="lumen_qe_show">O que mostrar</string>
+    <string name="lumen_qe_in_menu">No menu</string>
+    <string name="lumen_qe_add">Adicionar</string>
+    <string name="lumen_qe_new">Novo</string>
+    <string name="lumen_qe_reset">Restaurar</string>
+    <string name="lumen_qe_select">Escolher</string>
+    <string name="lumen_qe_done">Concluído</string>
+    <string name="lumen_qe_back">Voltar</string>
+    <string name="lumen_qe_close_panel">Fechar painel</string>
+    <string name="lumen_qe_how">Como mostrar</string>
+    <string name="lumen_qe_now" formatted="true">Agora: %1$s</string>
+    <string name="lumen_qe_slider">Controle deslizante</string>
+    <string name="lumen_qe_slider_sub">Muda no próprio menu</string>
+    <string name="lumen_qe_wide">Bloco largo</string>
+    <string name="lumen_qe_wide_sub">Nome e valor</string>
+    <string name="lumen_qe_small">Bloco</string>
+    <string name="lumen_qe_small_sub">Só ícone</string>
+    <string name="lumen_qe_round">Círculo</string>
+    <string name="lumen_qe_round_sub">Na linha de cima</string>
+    <string name="lumen_qe_footer">Botão embaixo</string>
+    <string name="lumen_qe_footer_sub">Abaixo dos blocos</string>
+    <string name="lumen_qe_panel_note">Um bloco, um bloco largo e um círculo abrem o painel à direita do menu.</string>
+    <string name="lumen_qe_place">Lugar</string>
+    <string name="lumen_qe_move">Mover</string>
+    <string name="lumen_qe_remove">Tirar do menu</string>
+    <string name="lumen_qe_moving">Movendo</string>
+    <string name="lumen_qe_move_hint">Os círculos só se movem na linha de cima, os blocos entre as linhas. Para um bloco virar círculo, mude a aparência.</string>
+    <string name="lumen_qe_put">Colocar aqui</string>
+    <string name="lumen_qe_cancel">Cancelar</string>
+    <string name="lumen_qe_full">O menu está cheio. Escolha uma aparência menor ou a lista.</string>
+    <string name="lumen_qe_list_full">Tantos itens não cabem em uma lista. Tire alguns primeiro.</string>
+    <string name="lumen_qe_pinned">Este botão sempre fica no menu.</string>
+    <string name="lumen_m_volume">Volume</string>
+    <string name="lumen_qe_pq_brightness">Brilho da imagem</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s se move pelo menu. Os outros abrem espaço.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s: novo lugar</string>
+    <string name="lumen_qe_move_keys">Mover</string>
+    <string name="lumen_qe_move_cancel">Cancelar, voltar como estava</string>
+</resources>

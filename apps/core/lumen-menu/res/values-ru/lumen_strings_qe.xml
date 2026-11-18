@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Изменить меню</string>
+    <string name="lumen_qe_your_menu">Ваше меню</string>
+    <string name="lumen_qe_hint_select">OK: настроить плитку</string>
+    <string name="lumen_qe_preview">Предпросмотр</string>
+    <string name="lumen_qe_subtitle">Здесь только то, что умеет этот проектор.</string>
+    <string name="lumen_qe_density">Вид меню</string>
+    <string name="lumen_qe_tiles">Плитки</string>
+    <string name="lumen_qe_tiles_sub">Несколько в ряд</string>
+    <string name="lumen_qe_list">Список</string>
+    <string name="lumen_qe_list_sub">По одному в ряд</string>
+    <string name="lumen_qe_show">Что показывать</string>
+    <string name="lumen_qe_in_menu">В меню</string>
+    <string name="lumen_qe_add">Добавить</string>
+    <string name="lumen_qe_new">Новое</string>
+    <string name="lumen_qe_reset">Вернуть как было</string>
+    <string name="lumen_qe_select">Выбрать</string>
+    <string name="lumen_qe_done">Готово</string>
+    <string name="lumen_qe_back">Назад</string>
+    <string name="lumen_qe_close_panel">Закрыть панель</string>
+    <string name="lumen_qe_how">Как показывать</string>
+    <string name="lumen_qe_now" formatted="true">Сейчас: %1$s</string>
+    <string name="lumen_qe_slider">Ползунок</string>
+    <string name="lumen_qe_slider_sub">Меняется прямо в меню</string>
+    <string name="lumen_qe_wide">Широкая плитка</string>
+    <string name="lumen_qe_wide_sub">Название и значение</string>
+    <string name="lumen_qe_small">Плитка</string>
+    <string name="lumen_qe_small_sub">Только значок</string>
+    <string name="lumen_qe_round">Кружок</string>
+    <string name="lumen_qe_round_sub">В верхнем ряду</string>
+    <string name="lumen_qe_footer">Кнопка внизу</string>
+    <string name="lumen_qe_footer_sub">Под плитками</string>
+    <string name="lumen_qe_panel_note">Плитка, широкая плитка и кружок открывают панель справа от меню.</string>
+    <string name="lumen_qe_place">Место</string>
+    <string name="lumen_qe_move">Переместить</string>
+    <string name="lumen_qe_remove">Убрать из меню</string>
+    <string name="lumen_qe_moving">Перемещение</string>
+    <string name="lumen_qe_move_hint">Кружки двигаются только в верхнем ряду, плитки только между строками. Чтобы плитка стала кружком, смените её вид.</string>
+    <string name="lumen_qe_put">Поставить сюда</string>
+    <string name="lumen_qe_cancel">Отменить</string>
+    <string name="lumen_qe_full">Меню заполнено. Выберите вид поменьше или вид Список.</string>
+    <string name="lumen_qe_list_full">Столько пунктов не помещается списком. Сначала уберите несколько.</string>
+    <string name="lumen_qe_pinned">Эта кнопка всегда остаётся в меню.</string>
+    <string name="lumen_m_volume">Громкость</string>
+    <string name="lumen_qe_pq_brightness">Яркость картинки</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s идёт по меню. Остальные расступаются.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s: новое место</string>
+    <string name="lumen_qe_move_keys">Двигать</string>
+    <string name="lumen_qe_move_cancel">Отменить, вернуть как было</string>
+</resources>

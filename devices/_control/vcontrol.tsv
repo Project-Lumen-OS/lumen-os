@@ -1,0 +1,23 @@
+# The stock XGIMI phone remote per model (com.xgimi.vcontrol in /vendor/priv-app: LAN discovery on UDP 16752, JSON
+# commands on UDP 16750 and TCP 13145, replies to the phone on UDP 16751). Lumen hides /vendor/priv-app, so the
+# shared apps/core/lumen-control answers in its place with the values below. Keys on UDP 16735 stay with the vendor
+# daemon /vendor/bin/ucontrolMDNS, which runs in Lumen unchanged.
+# python3 tools/control/gen_vcontrol.py --write turns this table into VcontrolModels.java, with two facts taken from
+# the device registry instead of a copy here: "device" (stock Build.DEVICE = the entry's family, tools/devices/devices.py)
+# and autofocus ("focus.af_now" in devices/<c>/menu.json). apps/core/lumen-control/test/run.sh fails when they differ.
+#
+# model    the XGIMI model code (ro.boot.xgimi.modelname); every model of devices/*/device.conf has one row
+# code     stock vcontrol versionCode, sent as "versioncode" in the connect reply; - = the stock has no vcontrol
+#          (then Lumen stays silent too: hide, never fake)
+# name     stock vcontrol versionName
+# source   where the row comes from
+model	code	name	source
+G0082	20500320	v2.5.3.20	stock dump g0082 v6.15.62 vendor_a/priv-app/vcontrol_release838 (apk sha256 c7749be6)
+G0130	20500406	v2.5.4.6	stock dump g0130 vendor/priv-app/vcontrol_release838 (apk sha256 57084190)
+G0148	20500502	v2.5.5.2	stock dump g0148 vendor/priv-app/vcontrol_release838 (apk sha256 350d0640)
+G0058	20500319	v2.5.3.19	stock Play 6 v1.7.116 packages.txt (versionCode 20500319, uid 1000)
+G0111	20500408	v2.5.4.8	stock dump g0111 v1.2.64 vendor/priv-app/vcontrol_release838 (apk sha256 500503a8)
+G0100	20500408	v2.5.4.8	assumed = G0111 (same X50 firmware family, no G0100 dump yet)
+G0155	20500502	v2.5.5.2	stock dump g0155 v1.1.42 vendor/priv-app/vcontrol_release838 (apk sha256 350d0640)
+H0062	20500408	v2.5.4.8	same vendor as XR03EOS v1.2.54 full OTA: vendor/priv-app/vcontrol_release838 apk unchanged against the G0111 v1.2.64 dump (only its odex differs), v1.2.99 not read
+H0063	20500408	v2.5.4.8	same vendor as XR03EOS v1.2.54 full OTA: vendor/priv-app/vcontrol_release838 apk unchanged against the G0111 v1.2.64 dump (only its odex differs), v1.2.99 not read

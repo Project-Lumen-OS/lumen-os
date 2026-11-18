@@ -1,24 +1,24 @@
 device horse_popular model G0082
 card
-  top: round eye | round general
+  top: round network | round theme | round general
   row 1: wide keystone.ak_now | small keystone | small zoom
   row 2: wide picture | small sound | small focus
-  row 3: wide input | small bluetooth | small network
-  row 4: wide game | small projection | small mirroring|usb_files
+  row 3: wide input | small bluetooth | small picture.3d|network
+  row 4: wide game | small projection (yields) | small mirroring | small eye
   slider: lamp 1..10, Boost at 11 (hint: paler)
-section keystone
+section keystone  (stock order: settings_tree_product_dapeng projection_screen (G0082 V6.15.62), test/stock/projection_screen.json)
+  toggle keystone.realtime
   action keystone.ak_now
   action keystone.fit_now
+  -- auto_correction
+  toggle keystone.on_power
+  toggle keystone.obstacle
+  toggle keystone.curtain
+  -- line
   screen keystone.manual
   screen zoom
   screen keystone.fit_screen
   screen keystone.rotation
-  -- image_correction
-  toggle keystone.realtime
-  toggle keystone.on_power
-  toggle keystone.curtain
-  toggle keystone.obstacle
-  -- more
   action keystone.restore
 section focus
   action focus.af_now
@@ -30,7 +30,7 @@ section lamp
   slider lamp 1..10
   toggle boost
 section picture
-  choice picture.mode [ai, standard, sport, hdr_vivid, color_accuracy, office, performance]  hint picture picture_mode
+  choice picture.mode [ai, standard, sport, hdr_vivid, color_accuracy, office, performance]  support hdr_vivid for hdr_vivid, color_accuracy for sdr hdr hdr10  hint picture picture_mode
   slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
   choice picture.color_temp [d65, color_temp_1]
   choice picture.memc [off, low, medium, high]
@@ -40,6 +40,7 @@ section picture
   screen picture.pro
   action picture.reset
   action picture.reset_all
+  choice picture.3d [off, sbs, tb, sbs_2d, tb_2d]
   -- hdmi
   choice hdmi.range [auto, full, limited]
   choice hdmi.edid [compat, enhanced]
@@ -50,8 +51,8 @@ section sound
   screen sound.eq
   toggle sound.leveling
   toggle sound.earc
-  choice sound.output [auto, speaker]
-  choice sound.format [auto, pcm, passthrough]
+  output page sound.output [auto, speaker, arc, wired, bt, usb]
+    at its bottom sound.format [auto, pcm, passthrough]
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -67,7 +68,40 @@ section general
   screen settings.projector
   screen settings.cec
   screen settings.recents
+  screen settings.sleep_timer
   choice settings.launcher [lumen, classic]
+  screen settings.report
+  -- developer
+  screen signal.panel
+  toggle signal.pin
+  choice signal.refresh [normal, fast]
+popup keystone (rows with a tile of their own left out)
+  keystone.realtime
+  keystone.fit_now
+  -- auto_correction
+  keystone.on_power
+  keystone.obstacle
+  keystone.curtain
+  -- line
+  keystone.manual
+  keystone.fit_screen
+  keystone.rotation
+  keystone.restore
+popup picture (rows with a tile of their own left out)
+  picture.mode
+  picture.pq
+  picture.color_temp
+  picture.memc
+  picture.ai_contrast
+  picture.super_res
+  picture.ultra120
+  picture.pro
+  picture.reset
+  picture.reset_all
+  -- hdmi
+  hdmi.range
+  hdmi.edid
+  picture.aspect
 all settings: keystone focus picture projection sound eye general
 keys: gear short quick_menu, gear long game_menu, eye_gear_short restore
 game menu: lat vrr hfr pic dark sr ar snd aim fps

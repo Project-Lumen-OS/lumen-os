@@ -7,7 +7,6 @@ import org.lumen.menu.MenuSpec;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
-import org.lumen.projector.source.SourceOverlay;
 
 /**
  * Z9X HB (goat_elegant): QuickPanel's controller on the HB is the shared projector menu (apps/core/lumen-menu
@@ -32,7 +31,7 @@ final class QuickPanelController {
             return;
         }
         if (QuickPanel.SECTION_INPUT.equals(section)) {
-            if (KeyReceiver.isSetupComplete(app)) SourceOverlay.showFromQuickPanel(app);
+            if (KeyReceiver.isSetupComplete(app)) org.lumen.source.SourceKey.press(app, "quick_menu");
             else Ui.toast(app, R.string.toast_setup_running);
             return;
         }

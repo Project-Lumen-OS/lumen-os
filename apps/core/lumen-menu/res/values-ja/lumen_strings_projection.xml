@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">レンズメモリー</string>
+    <string name="lumen_m_focus_guide">リモコンでフォーカス</string>
+    <string name="lumen_qpd_tip_focus_guide">リモコン側面のフォーカスキーを押すと自動でピントを合わせます。長押しすると手動で調整できます。</string>
+    <string name="lumen_qpd_tip_focus_guide_front">リモコンのフォーカスキーを押すと自動でピントを合わせます。長押しすると手動で調整できます。</string>
+</resources>

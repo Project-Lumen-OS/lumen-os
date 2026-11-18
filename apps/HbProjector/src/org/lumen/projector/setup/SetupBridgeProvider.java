@@ -20,7 +20,8 @@ import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.hal.HbFeatures;
 import org.lumen.projector.home.LauncherSwitcher;
 import org.lumen.projector.panel.QuickPanel;
-import org.lumen.projector.remote.RemoteAutoPair;
+import org.lumen.remote.RemotePairing;
+import org.lumen.remote.RemoteState;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Lumen OS 1.0 SetupBridge (setup/bridge_api.md): Lumen Setup (org.lumen.setup) and Lumen Home
  * ask the persistent projector app to do hardware work. This app stays the only one that talks to the
  * HAL and to Bluetooth bonding; every existing gate and whitelist stays where it is (HalController's
- * kstInFlight / AF busy / AkOverlay / motor stop, RemoteAutoPair, the GmpfClient whitelist).
+ * kstInFlight / AF busy / AkOverlay / motor stop, RemotePairing, the GmpfClient whitelist).
  *
  * <b>Transport</b>: authority {@value #AUTHORITY}, exported, permission {@value #PERMISSION}
  * (signature, defined here); only {@link #call} is used and it checks the permission itself (the
@@ -184,7 +185,7 @@ public final class SetupBridgeProvider extends ContentProvider {
      */
     static Bundle remoteBundle(Context app) {
         Bundle b = new Bundle();
-        RemoteAutoPair.State st = RemoteAutoPair.state(app);
+        RemoteState st = RemotePairing.state(app);
         b.putInt("bonded", st.bonded);
         b.putBoolean("connected", st.connected);
         b.putString("name", st.name);

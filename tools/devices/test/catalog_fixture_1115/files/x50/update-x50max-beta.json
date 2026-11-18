@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "device": "x50max",
+  "channel": "x50max-beta",
+  "published_utc": 1794750293,
+  "version": "1.0.10-beta8",
+  "version_code": 1001008,
+  "build_utc": 1794748620,
+  "build_id": "lumen-x50max-1.0.10-beta8-202611151317",
+  "requires": {
+    "vendor_incremental": [
+      "v1.2.64",
+      "v1.2.54"
+    ],
+    "min_version_code": 0,
+    "blobs_set": [
+      "x50-v1264-b"
+    ]
+  },
+  "model": "G0100",
+  "trial_only": true,
+  "image": {
+    "name": "lumen-os-x50max-1.0.10-beta8-nogms-system.img",
+    "size": 997076992,
+    "sha256": "0bfc9e165166acfaca6dd6a62d4e988976fce683baaf3a3aba542ec3c78b8394",
+    "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50max-1.0.10-beta8/lumen-os-x50max-1.0.10-beta8-nogms-system.img"
+  },
+  "changelog": {
+    "en": "Lumen OS for the XGIMI X50 Ultra Max, beta 1.0.10-beta8. Trial only: the XGIMI system does not change, a restart brings it back. Volume, sound output choice, Auto and ARC as in the XGIMI system, eye protection off keeps the picture on, picture rows locked in the AI mode are dimmed, the HDMI 1.4 and 2.0 mode fixed. Needs XGIMI firmware V1.2.64 or V1.2.54.",
+    "ru": "Lumen OS для XGIMI X50 Ultra Max, бета 1.0.10-beta8. Только пробный запуск: система XGIMI не меняется, перезагрузка возвращает её. Громкость, выбор выхода звука, режим Авто и ARC как в системе XGIMI, выключенная защита глаз не гасит картинку, недоступные в режиме AI пункты приглушены, исправлен режим HDMI 1.4 и 2.0. Нужна прошивка XGIMI V1.2.64 или V1.2.54."
+  },
+  "packages": []
+}

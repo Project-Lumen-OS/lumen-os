@@ -131,7 +131,7 @@ WIRE = {
     "update_engine": (("tools/ota/make_ota.py", "pre-device={id}"),
                       ("tools/ota/make_manifest.py", '"device": "{id}"')),
     "recovery-block": (("tools/play6/ota/make_manifest_play6.py", '"device": "{id}"'),
-                       ("apps/Play6Updater/src/org/lumen/updater/Ota.java", 'DEVICE = "{id}"')),
+                       ("apps/Play6Updater/src/org/lumen/updater/Target.java", '.device("{id}")')),
 }
 # ota_tools when the key is absent: the Z9X tools, which write the wire id by hand (WIRE above)
 OTA_TOOLS = "tools/ota"

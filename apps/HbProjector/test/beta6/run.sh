@@ -18,7 +18,7 @@ trap 'rm -rf "$OUT"' EXIT
 # StrNoticeRules with the real StrGate (Z9X file the recipe takes) and the power test stubs
 GSI=${LUMEN_GSI:-$(cd "$HERE/../.." && pwd)}
 SG=$HERE/src/org/lumen/projector/power/StrGate.java
-[ -f "$SG" ] || SG=$GSI/apps/Z9xProjector/src/org/lumen/projector/power/StrGate.java
+[ -f "$SG" ] || SG=$GSI/apps/ProjectorBase/src/org/lumen/projector/power/StrGate.java
 PS=$HERE/test/power/stubs
 OUT2=$(mktemp -d)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT2" "$SG" \

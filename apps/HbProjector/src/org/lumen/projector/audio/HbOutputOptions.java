@@ -5,9 +5,9 @@
  * The rows come from AudioOutputChoice.options (Auto, Speaker, each connected ARC / BT / wired / USB output) and the
  * HB rules of HbOutputRows: the soundbar row stays while the soundbar is known (ARC now, a CEC audio system in the
  * HDMI-CEC device list, or seen earlier this boot), the stored choice always has its row, and the row is shown only
- * with more than one real output. Why: "Speaker" turns CEC System Audio off, which ends ARC (cec/HbSystemAudio), and
- * "Soundbar" / "Auto" bring ARC back about 4 s later; rows built only from AudioManager lost the soundbar in that gap
- * (hb-t12 tester 16:48:52, the soundbar played from 16:48:56 on).
+ * with more than one real output. Why: ARC drops while the soundbar listens to another input or System Audio is off,
+ * and comes back seconds after the soundbar is asked again; rows built only from AudioManager lost the soundbar in that
+ * gap (hb-t12 tester 16:48:52, the soundbar played from 16:48:56 on; up to beta15 "Speaker" itself ended ARC).
  *
  * Headphones (2026-11-10, 4PDA report: only Auto / Projector / Bluetooth were offered): always listed on the HB, as
  * stock lists it (no jack detection on the HB kernel); choosing it connects the wired output (HbWiredJack).

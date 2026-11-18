@@ -1,0 +1,372 @@
+{
+ "schema": 1,
+ "kind": "lumen-installer-catalog",
+ "serial": 1794777146,
+ "releases": "https://github.com/Project-Lumen-OS/lumen-os/releases",
+ "guide": "https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md",
+ "models": [
+  {
+   "model": "G0058",
+   "name": "XGIMI Play 6",
+   "board": "mt5889",
+   "product": null,
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.7.116",
+     "install": false
+    },
+    {
+     "version": "v1.8.127",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFbTCCA1WgAwIBAgIUHEINdB06mcddUGV3e1RnkUu1/ywwDQYJKoZIhvcNAQEL\nBQAwRTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEcMBoG\nA1UEAwwTTHVtZW4gT1MgUGxheSA2IE9UQTAgFw0yNjEwMTMxNTEyNTJaGA8yMDU0\nMDIyODE1MTI1MlowRTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJh\nZG9mZjEcMBoGA1UEAwwTTHVtZW4gT1MgUGxheSA2IE9UQTCCAiIwDQYJKoZIhvcN\nAQEBBQADggIPADCCAgoCggIBANLG10VFJjp1NSqsW7XsOskeNcFZJ8CGT1S/kI5V\ntL4Ovj2xLu5tUb0MizjZqx4x0hKFNaUNWB0Q5eI90xPO+aubhXR7sGUUt/j3gFER\noN2UWhqDFZgdH6xInrgNMgViYPL+ogA2aYuQfZa2ENeEPanbITBS9J4WqyJ/DoCn\nRRNR0uWC0uw6X/0EMIW3gvtoTBZ5hjI9LGQp2FoyIqF7qhwgXRvZbb9yg4U6ZOKS\nju5UVedr6hOHtp+ovWI6ErMVstjW+MP7u5BiRU0Yfd1X2PA3XBp4BLONfjU8oLFD\noI0GIftkhfbQqfWqmyFLJuN2NXScLIERPumOXZhwZQX8WFUzqrcJ0/i+zzT5dY8E\nMTCbS9n/0Gc8T/akrnWGOj6/9JvhBhyhco0w2Jn7D500h41jE94Hd3SMiVtAgAhu\nLJ/olgWoqRWJJIHPQZBbGQFyLF0ORKAq9myfJMGcPX9ZHbzc+ZObjcDRRU2x88+i\nDfKpPuM94CQJRIymFq3kYv2MC9t2d1NAXY6yVSwDS7OJ9LCxojdeFkYOCi1rd5Gn\nZ+qKDHIbQb+H7J6LH+YogaQHDwY1mS4XtGVWa00rZMEWCcPA05XaKO1kZ2/GpuKM\nyHOONEIOn+mJ2mqZjQN2efu+JaNUk9nntB1Ek3GXSV0k0m0z4AR4IomYY3X0Hov9\nNZgJAgMBAAGjUzBRMB0GA1UdDgQWBBQaM6aHRYYVUy6P9MgzvDwuWI5SoTAfBgNV\nHSMEGDAWgBQaM6aHRYYVUy6P9MgzvDwuWI5SoTAPBgNVHRMBAf8EBTADAQH/MA0G\nCSqGSIb3DQEBCwUAA4ICAQDDboYP40J+WjDGFS0pgl7LiVYeC/iwam+OX1TFCs9y\nOLc+lCgk4TYfw0OqfI1w0/Chn3C6w4UVLYEt6HHYp5C5KjPQt26nvwfs1b16XZHE\nmoYX63b9E9dkJ9RusfpZK/qBQSBjlJq6pfSXi0CNPMsxK3Roo9Ea7F/4luyPJ2Dr\njyNiQL0plXzKms7//EC0ushA4pw5KalEdOWiVcGT0nILcjcHdQxqRb8+DBdh6iSt\nqrbqSie+fTQ/ic+imqp3VbuDHpvFwPVFy2gdSgqhPO1vHq6ULkxJA+MXNl3Z41JT\nLuhz1mAYfpZZDwwYB2egpon8tQ44QDQKXFuWjr3r88Kzf/LvZe1+GVvLcvyhrovb\neZ13IzLh2FDCJnpKljNn/v0ay/wWg+yqon2+wD67aQidUhx+yhuSeOk38f1lOVMO\n4A+CXR5sl/egoVvPrd2yWBDi6SpgfiI13Nz4GayIQHuYzXNfdScabL+MeIVHzGdu\nry4NFoYG2y5y6WpOpFKDsSatK6M8QYHrsQITTUBKiUnKWnngODDqh2g52+/cYdsU\nsRkjQjIppY9nQymC+kbr0b5lJj5dR9DBLLaVJKVdnNP5zhvf6ibK/7ua1fj3tlbL\nc6SH4TlnXK1BjQEuIqZrj4h9mccOPB4jPNja42yKRehv+6b7ZBqzRpF9uCjuo8x7\nkA==\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5889",
+   "builds": [
+    {
+     "version": "1.0.10",
+     "channel": "stable",
+     "edition": "nogms",
+     "way": "computer",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6-1.0.10/lumen-os-play6-1.0.10-nogms-system.img",
+     "size": 1088929792,
+     "sha256": "ef0e349d937194efed50528bfb45dfe7d1b19d40796f0da08d33d1a0b1d65407",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6-1.0.10/SHA256SUMS",
+     "install": false,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.7.116",
+      "v1.8.127"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0100",
+   "name": "XGIMI X50 Ultra Max",
+   "board": "mt9681",
+   "product": "Product_dianamax",
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.2.64",
+     "install": false
+    },
+    {
+     "version": "v1.2.54",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFSjCCAzKgAwIBAgIUcpqYcKqdKqMlbFcfxe78/T6J37AwDQYJKoZIhvcNAQEL\nBQAwRDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEbMBkG\nA1UEAwwSTHVtZW4gT1MgZzAxMDAgT1RBMCAXDTI2MTExMTE3NDkxMFoYDzIwNTQw\nMzI5MTc0OTEwWjBEMREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFk\nb2ZmMRswGQYDVQQDDBJMdW1lbiBPUyBnMDEwMCBPVEEwggIiMA0GCSqGSIb3DQEB\nAQUAA4ICDwAwggIKAoICAQCaNh6oU86UnCa0ruLLGKIlEZzidOENsUiIUUhFd/TT\nLAuUv1mAOzLxCUVNam79S5Mj8xUjlEHLvjsvE7MwuiFHqWmH3w5RPCPQi+lpqbZd\nwfD05Tf+qtOxFCLNxA1RxiGcliT8UcfNlietPZiH94CEbFSVsBQGdGSxqZSfmMPi\n11nTZ52p4KBrDpOTP3WO5kxjVOPIgg4A2DBIeF7h9rfIvrebLSbjRMT27L8+c2k3\nETUrBPmolYUOmIUU6AdJ9w3Zz6Yx/XlfkfYvT7RYj+jIRFSAw6Vcsp6WeR7O1hv8\nHKWDOM0KpRZ847r8130sJ0BoqyFrmrdySEtcfMqdxVLTL1It/xfFcUy/pWGRC1J7\nCWSo+84E5jwXVITj+Wcf+UUgQS9kWW4gG4Zpb0SpUt7GtFX9jyVne5H2uRCiQByk\nkcbgF4deRd1nZLWUQ5PIrFQcLr0/hmO2CGld8W+Yj8ypHXouTJ0bl1stVQC4OMmZ\nBT6Fp/z6Knkkm6GueI8cj7xwf6sxrVvMzxxD3ZzQAKzA2REk4SIDogsNUwo47fA5\n5sK/NtL7jIEjyijHPjEE43xal1iirPUUXURI9VbLlULJhPc/ualHuip+gHu0X8lP\npGnEilkbLGFif7DixAEm1uTSIeStP74TPpEovwVm6GmueweAGE+NThwy0AhLMtNc\nTQIDAQABozIwMDAdBgNVHQ4EFgQUW/JK+in6TitrUfA2PTkKDzR2GIQwDwYDVR0T\nAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAP1itZR78O3qd5dWjkvm10n3b\nfRQKOxgmM1jyoN+UJBmCVAIXMJ4TYCSx/1s4nTVmAI+AN1se9o823vHAQyUe/cUV\nbWUPORcPRLii0NW51vx0Pcoha7+W+1y5VPJ/+59PivTXQjbdKi4dPcTtH2TJXkE/\nKKfoYD+Z2fRbuBilYmM4KAWZDPjGw4fyU/xsKz7LmzcqP5CIWOd5VEYUDO1WDuBk\nTSFrHd4n/vnyE4KpwDD+UNCnTd7sk+UygFoA+HTUh5KGJgNhB7JOPtkdyhNXUavb\niDHthAhp9IbnsbOfKzdlLwRHo3LujnWjjReeJwKwNiR+W0nltmURdkJ+PEIJ2ChZ\n/yuM0xR13QmDxyGp4kfGjQMGVaHMxWwitvKYeZPAJTMHWVPQWGkYLglQEr+hYAq8\nQZbJJLTBSIuZjOBxYM3A0Qh/emaW1DZdioUer437nyaZ71Lbwy98yKRKgTe7CudC\nOPyPHH103ksxCy2c31sZwnFET0Vp7TzmSbIyCv1hwuDqgJ5RgbUgDltVCc8el9O3\nal9DPQuaZLREM3mJ5M+t/FeiCKOdnh2v32fCgR9z1zqFtVav1fSbaEPj1bYH6W0N\niK4BrchnhYWNIbmFoFTT4MbEuSsFNnd5JmqPEZ+xdkI+91/m7hsUOHYvxTmrTVbx\n78mIE0/5Yu6yBEGXhCI=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFVDCCAzygAwIBAgIUY8JROwCnUiVXVjB83moJQFpR7C4wDQYJKoZIhvcNAQEL\nBQAwSTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEgMB4G\nA1UEAwwXTHVtZW4gT1MgZzAxMDAgT1RBIG5leHQwIBcNMjYxMTExMTc0OTIwWhgP\nMjA1NDAzMjkxNzQ5MjBaMEkxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlr\nbXVyYWRvZmYxIDAeBgNVBAMMF0x1bWVuIE9TIGcwMTAwIE9UQSBuZXh0MIICIjAN\nBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAzGMThFoT5BuQHUMlb/GCKwET+juO\nHbZoq+r3hon+cNRPIF7knfDGntE8lwafwZzKo1jw0LpVtKqKnUunxuaWEOM+wqTK\nU+S2R9CImZ91QNKA9ioxMYs58q0CsVGYCIV9XkWWJmkZV+CPul5taumLyrmcNt/6\ntpLXkzGy3I91dBubebupWknTtJsUpsjCMUQj0/07gC2F9hFdf8fv92nqC5FCHegS\nTaYr+XlasGXf8BU9aCDXPr/mFrKjRI8+99hzC3ghT6nrw2zICAjSfSLyCoW/r0aA\nnqEEGdGXzxNfFOWpfLEb+mHSF0m2CFAaRoozTeiUZ57eKbkuiilZEP1YI1GxRKAj\nibSJuuyeBDDO8yK9y17N2jUjWPWGynv1f4O8GzKJkGPri99R+PJsEYvlL3C+6zLj\nEuPsmA3uW5TOzbBaxWoftcHljr4XtR6SkTH1CAHTO1d13f9lhvob7SnpNYWO6iF8\nh2XW4SOkcNjgQpR6VUaGffkFxqM2Q/kmufc+GROmipZPAh3sn6o9x4BlxznW0vsH\ndMuoai09fKP0afn0z/gTAtxg8n3GLPoS3p67yd1yjjTvPkqJ/22NoeBBF58+lw3G\nNU8+257U7Dv3mGsUGgaa4MTT16zZ9aUowfUsAlCLeHrYOHjGQzDcqGaZQ3re/WfI\nqLyoe6FzwDx51fUCAwEAAaMyMDAwHQYDVR0OBBYEFMjtsANXnzRqf840htb2U07e\nLeA0MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAGn15QsPvuaF\nuSwsv4cA0lxONK70HKmFHPmFLJnZiojZjHotchmaxRd87cCwJl0TUIBrvxw8GcMo\ng5+manlFL2PGXe82qu0UbbbfD4gWVOPGUbIoSSaeLnJ3953rW+U1Kxp4i4LgpKPy\nIjxydjEKVqIbFCN8u26WJgsgKqvG0uFeocI51XAZ6KynbhfxjkLyotkIsUqfG+Y6\ng4ubdT3ITfIOWfu1XT3HNH6MmGAj/X0Zvtg93+N7cDUn7Q5KQAHRvh8gJ6SUBm7P\nLwkpTWUtObJJN2tp/5eMcMo2UqTyXJvAK2ScNgpoYyYThGrXzYUQqalXuNdpa2t5\n+4CzwvKH9o4Ak9YZRZphMTCiAnMbaf5Ocy6vPfG6u8oUzWVAra2QyLDbpe3dPiBw\n+r/BLIU1GHdWo09skADSCz2NwQipzmzYZMuAe0Lh8Sx7mNpfoK2pTaFt/6US1o9z\nFrM9ke8o1MNx9O77U35vh19YTXLTCNsG7nynhFkXpzhufVxL7wZywvyg67AWLQJb\niUFjL0nMLtCREe8X+i8gaB0nH07jWykKzK+UcJrVmsQllm9JNQmRBXIt93NddLU9\neXQuiDC07rNyk7KeUc69QpkPOIbNdfarsDYIBpBVoGyIm5HEjHWV1C15wolgAmUo\nb5rluV13kDlzuUTtB66NXy2xYPv9qmpN\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.10-beta8",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50max-1.0.10-beta8/lumen-os-x50max-1.0.10-beta8-nogms-system.img",
+     "size": 997076992,
+     "sha256": "0bfc9e165166acfaca6dd6a62d4e988976fce683baaf3a3aba542ec3c78b8394",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50max-1.0.10-beta8/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.2.64",
+      "v1.2.54"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0111",
+   "name": "XGIMI X50 Ultra",
+   "board": "mt9681",
+   "product": "Product_dianapro",
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.2.64",
+     "install": true
+    },
+    {
+     "version": "v1.2.54",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFSjCCAzKgAwIBAgIUWEUZY19t/u3BYVigZihVKRxvxqUwDQYJKoZIhvcNAQEL\nBQAwRDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEbMBkG\nA1UEAwwSTHVtZW4gT1MgZzAxMTEgT1RBMCAXDTI2MTEwNzA2NDI0NloYDzIwNTQw\nMzI1MDY0MjQ2WjBEMREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFk\nb2ZmMRswGQYDVQQDDBJMdW1lbiBPUyBnMDExMSBPVEEwggIiMA0GCSqGSIb3DQEB\nAQUAA4ICDwAwggIKAoICAQC4Ert4wcT0w/GTtd4b9c5MZC9aRsGPnhKVBSRpTECI\n9SSrBVA3SvT3hSI0KJ7YTi/10axa+PfpGi1wDHrU7M4KC//Jh+7qVBmfK3TsjLUl\nZAtUpk70GeHh+qqHQub4QzM9rE1B89HYqd/FmaoqnRW+RxYB5qw488ZRQ5wVoxvR\nc9HdH40TmliYlhNdpbNTA/IsKkPbDriFryZGMt4iWJmFUDapb+sxYdYyFyJQgFrq\nWWp3x+HKyw+/fdUXtAqrls5vEzkNmaG1y5q1/pGANZ9e6O7CRy9QgmzNdJQPjj4w\nemaM5bX1+B6rUokrzxvOHggvD/BddvGGNjtQveoq1izeN0kxinudUYofEn1CP5oU\nsB9cwweinefDiOl8M2P9+Sws9PvfmZm3iHVfnOm9iiZJK5yHf9JIJroN5UwF9s/z\naYfBScgvMtjpeJvMhfygyIj9vJL9xRNtNRwz1T9dfwEZbk+U1WvRRfqz/UqWxe8S\nr/2cTKuFEAqnTz0W4da6mNvb9SprlbX0X1E1OpwEq5Hx/KK51VFaw3dokTQqVBm8\nZWEY5ygRLHJws7F6FRWcK4ir4ulcdmhkAgI3M7QAQq2yb1ofOy7BNg/RUZtH8Er3\nSyEfO2/eBQwXF2JnjOrE4xaZ+jrsJmHOBlxvwHB3r3Es4/ND9nE04gJ4Ks3wzy9y\n/wIDAQABozIwMDAdBgNVHQ4EFgQU9OCG3S8ol/wzG4KaVezrYZkGkwswDwYDVR0T\nAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAqc8UVqrxJfNiMLFzsxQvGDrn\nhhi78P7Rf+0DoyyX3ajdOaHmpVLRGp3hWKBZ1bTxUbzEHjABg7/ofEoBNH0h6L9R\nL46XnrLzLZCD8gFcNgT5m5EUkaV6ESPdLbRAaBl5/NeRrBH863HS7WMbqWSGe1cp\n7AspQbWTNkKxSzWMnQqSob0UoX47868VYGpzzLJoO8CKzm+yY1iHBS0PjmGTya1+\ntQ9g8e2QUwWUR+J2mIFefYvCMzc6Bj8F/ahsBwTeu9luE1uuTAQ8L3MH03pnNGmj\nogFVKA3K+JcC5fpU6UZ5aao9K1xleSYIiGpmmZ93pH2u+zEXrTbErovc9u6KixoW\nGNO6Gf2KkvH9Rm56uL8OkrIwpMIEBuM+QgP0bpboi1jQRf7ieFLLFz7RamXSrwsp\n1JwF2CnyKGfhU9Y3efdh9R9GPavzV3CLtuSxrOTu55WZ1CeEbxJkPW4/h3COxA7Z\n46CFbPP0xcJMfN6zAuuKtEaJVak9X1rnrnoGLqo12a2NJIVnrhBJ3IotthmcPsT+\nHro9GnMQviVfQVTdhrMPmAwHGjJbb8FbIgtDFNTQH0TAR7GUpNMXe14dXEPWn474\nTxt3VeIPrC6bdndytQg/xOva2uzzrRjKeak0rbjS3C1XOYh4rmQv982jZrEQJER7\ng9NxiwphpxIS0KJSqcg=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFVDCCAzygAwIBAgIULxFn3eZ2Jw0w3E0iyF/Jl0OnFsswDQYJKoZIhvcNAQEL\nBQAwSTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEgMB4G\nA1UEAwwXTHVtZW4gT1MgZzAxMTEgT1RBIG5leHQwIBcNMjYxMTA3MDY0MjUxWhgP\nMjA1NDAzMjUwNjQyNTFaMEkxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlr\nbXVyYWRvZmYxIDAeBgNVBAMMF0x1bWVuIE9TIGcwMTExIE9UQSBuZXh0MIICIjAN\nBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArlBbMxOKRvg0btV0nP+vTaDBdb3E\nTkMutJjBVgrr3MxzX38NiJpR5K4xxDI4aOm4rF8HS9lBZZrRSNAfeDGg4J9UuAIK\nEtVdGDaMYhH8al+ZS91BxT9QmnK69tywzOrzMtmhUgOZH0lBn+mDfuQgbuBXIYjy\nn4dm9NV+szm8PD6+CBOLuKZNyzE5GCQkBFw5gwWQzxCt/wFRN9o1HG0I4mf20eSD\neVx/qLOG/sZpd9q1zrs/4n519kFV+rpBCb83XvFYYxGjWfICbT9KeKi1rGbAjU01\nB9oA3qTiDMp0fRSWProFG319+6JWQlMfI3VKSrGly9HH5DMxO2AcTQr9elvAE91b\n6teXAbFsd0oJFZgwMzVMxHbXGmmkIj3C2H9EtSZYxF7QhILndOoNfsV5hd8qtWjh\nxzfpaypcC5Pqq6iYdVJl+NWuiCpFfK1TMKZK7ZqzVgHRWXWrp7fBJJsN/1QRtwZK\nyQ9ozIxlEhVhLU/ExBvy/ol6y9k7kS7OHIM/o6IT9Z1LbhkdFjkVNYnDABeso95h\norwN3DEk3HuAuwULBSA2SbguDAlQgFfOB8iHlTFUOshWKrB0j3EzbHyvrpwVWGnS\nGhMxHzag8lylh5WeLYPjoHkG8z4x4eu/0diMYM50ZM82fuPSjzoKkVmiOILs9lGd\n+sH94HL1TarFcg0CAwEAAaMyMDAwHQYDVR0OBBYEFDHLWVdgbgpDaGeaWfW3GTsw\n+1vgMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAGD4sLw0XYr3\nrTjUSJIa0KdZ5srA8aOy+ladvWVgCira355WapoJtx+d4tX0UWKKupdWM/ePnUmd\n99JXSsQZDjxQ1B2QvnGusNjtBhFiX57FLGgyGsJnl5XaPid3ZYnFL56/QA8R8S66\n3xhTbIFx6w2lnv0qmH877IozqBvbutmBuuwuVq+72PEDoN8W1AQLdRrVx7Y/dGSE\nzZbFAm6VQyss2f906NZlMKcnHymgwUukeH9btKNQSRp+dGd3WRf4gn2I82vNxr2G\nILH3uM4RSJ4EVqHpPqCQoNJlsrzIT7OBg9NVpzbRMlfJIUHFbpL+6w8PoGiz/v8H\nGlv+ru3I/Sqt0oHUgpEqpIU1rr8Cuvmgi6rSLQr5tpYdqTgRZ/29aDv2isTmRqNp\nkTSFxL5SlL6kVlfleh5IFPYG6FF9wydiXrobKHGDiiApTmx9RyPbZe+AR0EEz/NS\nowY869S6ELKFxdXZn50JrqJF1bXTPya/+Y3R9zPIMUWeyebmL+f0vhI3qLH+A6z/\nNj6+99sHnlo/KypF5ptbqCS43m+Vll9Qu6z3KPG5cu89xz/HqBYMDcxO6BudTmGt\n2JZgta+wBaDmx7R6YN47JP85OGUEKu9Mj+HA5dwB81LiSeVXO4cHKtfAnkHclxvI\nGuO7HREMM3olpceN5azSzu4o1vXK0bXR\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.10-beta8",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50-1.0.10-beta8/lumen-os-x50-1.0.10-beta8-nogms-system.img",
+     "size": 997076992,
+     "sha256": "33b02aa0fc3401650077a7ebc2b080b4bb5cd17d780d7beead99be0d123e9baf",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50-1.0.10-beta8/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.2.64",
+      "v1.2.54"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0155",
+   "name": "XGIMI RS30 Ultra Max",
+   "board": "mt9681",
+   "product": null,
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.1.42",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFSjCCAzKgAwIBAgIUMKujC1T/LqYVtkJxaAb/qeMuuRswDQYJKoZIhvcNAQEL\nBQAwRDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEbMBkG\nA1UEAwwSTHVtZW4gT1MgZzAxNTUgT1RBMCAXDTI2MTEwNzE1MTEzMFoYDzIwNTQw\nMzI1MTUxMTMwWjBEMREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFk\nb2ZmMRswGQYDVQQDDBJMdW1lbiBPUyBnMDE1NSBPVEEwggIiMA0GCSqGSIb3DQEB\nAQUAA4ICDwAwggIKAoICAQChuxtpxyTC3fg9orHn3Lgre8wldWOn/uo5+00J8Mql\n1A9S2MNOiZCYof2lUqy0dl2Y6Ex1CFXquCVVJt8fRpnn38oIvD1LoxV4uKEfQsbk\n/QaqnYhaCRdumalccAE09p2aLeZUwMD+fIG5YBtjLY6F33A3E9N9gB9B7KYC/53w\nACh2I/mFMUZtl0AGuH+D56o9BKIvQC3lFZyVcaP8fVtYd95jBT0fMB9dzcCt45Kl\nira/+z15QKiPQBLiPU6ShAzIHC/l3RvQf8FpRZvL3B5CtS/mHaxyqGgOjGUxodVu\n38M91eyqaAsnJAb34kccUE+s//xn5CQRdt5widIfG7/4IVPkb1O/1kWpWDtYYOMJ\nhGqdkoPXczfHTxtNU7VDmNx7c9wXCRr6h28sz00FbuvkdVoFDogptbHOyNUS/u4C\nVRuNR54bsFg7VM5IKzI2W5737a8LHSJE/j4vxNySlNnN8bL38sLnDwurD3j2jdAP\nWP7fotR4sRZQm2mbUpYS0w3CMPpujjn+uZb/637dcuq+/QjXP/v9ylpO3WHgqTRL\nddQC8lnEMqfmZVdTZNZ/xZC1X1VSIYhoI1C6nDNAb/qkZojpndikwxvClDGrUjXL\n59tK6kqYSHHgFL+vraLufoVC9JF2RxJjQ7XiwdenDELGELeFSgj0YOTq972iHuwV\nIwIDAQABozIwMDAdBgNVHQ4EFgQUVdMxy6H1tAwAlgf2k+b2FDubQNcwDwYDVR0T\nAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAgTsFztr3yArurDv8zIb1oqNz\nP3wmwVeGM0QNzIQ2MmWiySyoDutZ9HXqZwYuxBMsl+Fw0MYhe6oSN6rMy3RgwBE1\njCbYsJ/5MF9AYJauPF9p0Amk+QDro8e54oj9zxzlJPti6MJx7bUQxCAlVKfeaoiK\n3w2qkby/T/wwN6Myj14NCOFSZdcaty8wUtquAZkf1I4UoNKvJD9ABCAmF6RSHn4j\nyCYcIN0fPS87GdeRbcLVyUw+R3MgsqFiq9ofYrgyofXUeXWBWcu+cirxGpz203yi\nzGyox2WRj/ZnMTBFu8+m2+XK6md1w22SAW5Fsc5xTlE4X6hCKB1YlTZNEUcw6nXP\nvJTxmAy7vuGvo9zapEV8u6Po1FZBmzwLkZej+HRmCzWvS85gPgJ6Zh4q/vD7BSqL\nTc3aaoHCojgy6ZxJ5QzRVLG5DXhGIX11iUUVdBI3hZyR8tT4ORvK4c9d2KO9AoeP\nn2F1KejV634MZk+Cow7VtE2PSBPuOGgKTZQdefFrbkfTQYNcOfDOnPf5hG0/Skiw\npgP5R9NciqTbVXNoSSqybFlYVWswocBAgckDvWfS2d3q2d+008gbIkAR86QU8QBv\niFHHVJ45q074LaJO+1Alt3lid3E99Be0Q0jHHLIfiHlYOpI7l5hG/I4ja3vJYir0\n0uM7BFQYomtHm39O+wo=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFVDCCAzygAwIBAgIUHRLoMXn/koFfoeJ4uQgQMLwrKMQwDQYJKoZIhvcNAQEL\nBQAwSTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEgMB4G\nA1UEAwwXTHVtZW4gT1MgZzAxNTUgT1RBIG5leHQwIBcNMjYxMTA3MTUxMTM1WhgP\nMjA1NDAzMjUxNTExMzVaMEkxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlr\nbXVyYWRvZmYxIDAeBgNVBAMMF0x1bWVuIE9TIGcwMTU1IE9UQSBuZXh0MIICIjAN\nBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAleAGkmfUdoWB7jwXKR0fM/TWj9IF\nNoE5tr78MRrijdmCp6QkIsZe4bGJcLvz2nNe514z0wKODXz/Pt7YNAIIVKIGmk5I\nTfeI9wIJopu13gVwccpM4EIYrZc1cNtUMdaWyVayxDXutnagRzoEY4jJLcEv8JJB\nafAuip/v9XikoyPvnUCeoyGazbVP3JyCOQCcf9Q8o3WwEQdfn9/VkBSB9FP47tjZ\n9B0mBLE5WpFnjITwiYXB0dRXe4Qdw41/v4Ak8ukeXN+5cq6iMYQqqFSqOgt0lno7\ntHJk1aDOXb+SCpANKp9f6s6Mj4YcmfN+Yx9TWfjRGhoMejWPcRXEcqDdoTntLqBx\nigezWxJUxV9otENvQ2KDUP6mSxu0h3tLs69S2jMM8C4yksNgX46f36w5UHYSzrPm\nA+1h5UWbix2lzSmQ+xgdCFkEojlxGfVtoNlYF2LfbMu9tDhyjjcAZIkIFm7fwCcD\nkxvFdSf/W4fyC1VHRIIQnxIXKqjbflUjEdtAAQG1tYIENDtYlEKLP5Q0Oj8ktTyP\nNOdsM0/dVeMzcYOSlzR6nLjEz44VsRG4PKTTGjG2j18pPMwtOMfYTPrhyjEizdk9\nClVZ33rQDugkLf29uWKcVcz4ZaSrv3P3vp4q3ZeAlioauAdZPqxOfArK25cqpa1c\n+ygTlDXPdPEnGAECAwEAAaMyMDAwHQYDVR0OBBYEFMAf8VKvZGxD2dkJ1GYOlX2A\nDMvsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAGUfwG6FZDhJ\nJHLH3ZX1QsP/g+dwh0YqwiNNQmWc9KQGmzUf0cLeBNXG3CmDH3aXI8yYEkpLlW3N\ne/DjDGCZwnX4F3sPgc9hdlGFTHnxufEKJenPFwrFXHfg7IdVjApQchZlCuJSBgfU\na46gsQ/D64/yWAGkqwX9suOknL1yOehxtL8Ls2NxkElQY9z8UUmFNIRZDHDycPyd\njeQVKHUL0UnY1UAEmjb6tmBBsp1Sm56/ov3/b0XkNo24i94zVELqdGItWzSTimXF\nWH58gwjRPbLyOVFoLG2SwWEag9UgsmaqP9AhAlCpo/YGem+jzlSxqFjmSIWdBuJQ\nwVxqT6ll/oG1AHr93GX7c7zOENPKQITdIfY5pH1MpHAQLTPCFKThYVLmYNvlApNL\nPCxjWTKFNxQim5Mq38pm9qogDtAbYTFl5xP/OC159mVyrc+XNXf3Ux9c7ycZsWmx\ndVd3J6OA5awrZP5qlsk+8/1KIxLZK9K4Q/gBZkWLsbz8hpgkZaLQ03iJanEDcXab\nDM5roIxH3+T+xDrZaLvJl3ZXhOMJP+4eLDphPJBUjCfJsPW55M1nwNuKmn2hLoB6\npcf/bspWLA8dK5zRv8ztpn6Q1+IRC6zGlPzHd/kBjgJmAWnVe4ruuS1TG23IJqM6\n5TtDfiySo0ltV8dhrWtbIkbMvvTfzkSF\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.10-beta6",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/rs30-1.0.10-beta6/system_dsu.img",
+     "size": 720572416,
+     "sha256": "80b838b795b900600e7feadf87413677e43742ed72ddf4fd4c35774cbfecabf7",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/rs30-1.0.10-beta6/SHA256SUMS",
+     "install": false,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.1.42"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0130",
+   "name": "XGIMI Z9X HB",
+   "board": "mt9660",
+   "product": "Product_dapengse",
+   "config_check": true,
+   "stock": [
+    {
+     "version": "v6.16.24",
+     "install": true
+    },
+    {
+     "version": "v6.17.12",
+     "install": true
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFeTCCA2GgAwIBAgIUItSVdFpHg4XSv2KR+yFoK+Uk03MwDQYJKoZIhvcNAQEL\nBQAwSzERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEiMCAG\nA1UEAwwZTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQTAgFw0yNjEwMjkxMDUzNTla\nGA8yMDU0MDMxNjEwNTM1OVowSzERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsM\nCWttdXJhZG9mZjEiMCAGA1UEAwwZTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQTCC\nAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOQDadqz80+zDh7l0TlumdF+\nwDoJMLXEAZjLOJEaddJJN/+6BEnFwL6aPuA3v0xaoyBHc241sb8Zcgr9aab377j7\ntvqKJFIRiv/4TSfHyOnt2bpkC1TRcL2TH8zKxgY794IUMagnHmPA/hAVBWFHC7Ax\nx0/j2fR/kofc9nvLfDVu+ubGXKWH3o0pIpcdYkxWyVWc3e9Syc1HJZK1UiQ3bSam\njwqo6u/H52Xb8dIHFRGhCNoin0r4OHioAJVygHQRGDDscyOD3txRFjPGUYvaUocM\n6yk5K4AyWqpvGKaFJLzfsGqpzRlRrF7aKwfXkppcv57/xr7Pbczg00VVLZNfMXz3\ny4oxE7PZ+rFd2lXMI7qJvCojVci7QpLoMsrCvnDJvILc2tVuneEHaJRaCmeGeizY\n3MMOtAHwnlNepPa0YbplbfzIqmOrGMpw3NcpICV1XVecaJUuLxCAm9P6+p1AJMel\nDf8Kob/Pgp3MI5egQNCvCkvYLYnfIv7hnx6qHSRYiNo1KylD7C/4+Eqyo0b94Agb\nLrDrD8Z1gbs4fAQQFaWMHXjucKHCRySH7lieDmfhGpXAfR4pwdKx09sqRaDDZ36Q\nyHN+Dozmx0mk0I7NCff2NAIM9Wx1C20mVlsJA9/LApWwIItb2eGQSVUoVqIhn5oe\nELljd1hsGzKTP6lAJdeLAgMBAAGjUzBRMB0GA1UdDgQWBBQR0uvsqHpLD0RETgeP\nK7OXult7yDAfBgNVHSMEGDAWgBQR0uvsqHpLD0RETgePK7OXult7yDAPBgNVHRMB\nAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4ICAQBmIpnizqjMJRc0NzsNvhrF8/PW\nhiJ1GoLwrscGe/GkIQSiv0hLE3UiOAcj/7Fms7WvhQtUrZZNC745tF3D2gs37m6q\nYStBhJ0RdSttEsYSRR+DtSfMEK2u2jXplqSyXi83NiBDQrFen+i9QViRUk1h4OT6\ngGb0PNwRPkQ3Na4uMs+baAPyowfUI/DYo0A0TEYf5HqLigFq1Q1/HalKJBVMVPE1\ngmzWbZC5oKtmIhsqFGeqkOvDewOuJAWjl5DyEEBNcyU6j6+UY24CQsKKX62uSlUH\n23guTKb4A3niPORCsgfWomXgekii27/2fj/8nxUphpg+BiMGDhAb8/Dhi5NWS/0m\nWoe+lxxYnlKnzhwSmpB2YAlsb+u+odBTV1+x4Ka4f2BeWzgiOfElrkBX7F5yHpvM\nAaPx7IG2xgYl7DO9VCqZ3Zz2J+13btyvgMuXS3A6jVbkavFTTjgWEJ0nS1kTD58T\nq2DqmJDsPlV6uRijccJphIh9yduqGer1dgserzRuaAKaK/Bq6HCArVgm33Zr1knk\nYyrALkDjBYrEpcN0hgWnH+1ie30JrMhKL18gbANHsVGTOURmtXp9Gfa7T4XL3+qk\nKtRhpyeJNsgXT8xrutC2cFAC8zT3DPpa3JblKyazGeSvWNdb7V1tIoG8I2GRH2Fg\nKVUkEZT7yXUW9sHPxQ==\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFYjCCA0qgAwIBAgIUEwKeU+4CQj+VPEgxqwqXemzGSlcwDQYJKoZIhvcNAQEL\nBQAwUDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEnMCUG\nA1UEAwweTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQSBuZXh0MCAXDTI2MTEwMzIy\nNTUxMVoYDzIwNTQwMzIxMjI1NTExWjBQMREwDwYDVQQKDAhMdW1lbiBPUzESMBAG\nA1UECwwJa211cmFkb2ZmMScwJQYDVQQDDB5MdW1lbiBPUyBnb2F0X2VsZWdhbnQg\nT1RBIG5leHQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCvqy2pikh+\nIXtFRHRQlNxmGDCJY1jkXeJX8wsSSUZEHwlLbLg1KJr+WUrE2iQvfD+E//+Q//oD\nziMsG8sLE/C7M7JtugEVtJxfYZUY9tb5sttVAlLzvXbWfEo7Zp6we34QD7Y7V2/o\nZhBJ31rK2R0fYqNlHDLgHRjd72ukfUNYFr/3l9NaHaNZIp30nWu6DsCu6EOoOMp8\nwxgHYDiM3XdCKum+TkkeWdnoKYz4CxgaEH/Pt5u9/UJh3ls6kGWNxV3Ffd2sFtLT\nIqXvuucZJ3KgjJbk+1GoZ3QS9OLi2zpfX1JhSBU8nELWPkAEV/jR14aIaDE5lVJS\nWru6RP42byQ2SWSAuIG1Nbsax4+olJanr4fbGdby8dFiFPN3jcBit5OfDePWNKbQ\n7y/USoWOO+Del9AnwkMhNNeU52Tg+azcowAvI0JkInOhMEvrHH1npbea+OaQPFFo\nAO+NlO6SMrtWw58jBv7w/CUNb+iVOg3cr9y5iXz/WOcUBz9I9g5gLbOZhjfzO0Uc\ndbTF8fcvfaNq80Rq94NvRpYVhdsJbpuMmQ6z82zGF4rERg0ozX97jbTbHR1uiiTG\nJ1KMPbrzBTktBEHLbt7k2rpGAhJm1X8kCqbF4Ik7fAbA0ZaMJ8qNLRAP0CzdIiQC\nh/YSFN7AwkMMo55KdE0pf6JJuJyFR4iDawIDAQABozIwMDAdBgNVHQ4EFgQUEAwu\niwgVrVlzr0DKkFa3Pbz0/mcwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsF\nAAOCAgEArapn7WxB+aZ0+WDb+oS+7/LHGZ4VnyZ2bjpfcLaNZP+96H8b08FAx0r0\nJaQjlofVXQNrAcdgVta9rG4jf5JZ/Ed05lrif2c2v8gNN7puYSW7Uo6yE2/ti2V8\ncai0D9GaGHLgxnvOlD0mIJ3iFk9rV2yodahaHuPu6DFajaswttmrs5pFM9J4QwaH\naSuyPjVcYXXd1+1uxvaW5EWjeL6AcDOHhmCGBhWnAp1oeOFxO/6z3Uhgq1ibDycv\nAZJVc6/x+ED1CIhmLZlPHzKKMEak0remVbc3DMCdc/0Gldo2yGkByR7OI8gs3eF+\nL1CKTGbNJndzYwySSz5Iu8MTZISkAJYaf6zwrTap3NWnQyQjiBLwLJPSkrY/TTw3\nsg7jzuNtIlGZAnSvDGX9XWub0kd2bdq8m3oqRy2j6xwP4DQFB6ldEP7hwBU9JISp\nBwx4jmAWiXepLf+sxNQFEFFQZ3oWitD92Vz3PKfH42s+ABKS6QQb+2nens8wVs/G\nvTVthuLi83y1i8yWy5VPVJ2d8C4BLxIKEfOMnAZlKU0DV68MUAJO118Et2XlyZ3z\nSHqiv5b7cV4LJIOomWRrkQ4QHgCNbbhvuuscd6qaqGIwq4Qx+UvRRW9MvBnbYhyg\neZwGpmzB5Nl0LpcKbmBaBr7ndv16jRo+xI00s3nixv7UKoc3xhk=\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5873",
+   "builds": [
+    {
+     "version": "1.0.10-beta16",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/lumen-os-hb-1.0.10-beta16-nogms-system.img",
+     "size": 639799296,
+     "sha256": "4ad931f90b739f6e2f872c88ac9f99e30bad67f90b046d1deff78e9500301e07",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": true,
+     "stock": [
+      "v6.16.24",
+      "v6.17.12"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0148",
+   "name": "XGIMI Z9X HB (G0148)",
+   "board": "mt9660",
+   "product": "Product_dapengfhm",
+   "config_check": true,
+   "stock": [
+    {
+     "version": "v6.17.12",
+     "install": true
+    }
+   ],
+   "refused": [
+    {
+     "version": "v6.16.24",
+     "message": {
+      "en": "This G0148 runs XGIMI firmware 6.16.24, which is made for other models. First put back its own XGIMI firmware 6.17.12, the guide shows how. Nothing was changed.",
+      "ru": "На этом G0148 стоит прошивка XGIMI 6.16.24 от других моделей. Сначала верните родную прошивку XGIMI 6.17.12, это описано в инструкции. Ничего не изменилось."
+     }
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFeTCCA2GgAwIBAgIUItSVdFpHg4XSv2KR+yFoK+Uk03MwDQYJKoZIhvcNAQEL\nBQAwSzERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEiMCAG\nA1UEAwwZTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQTAgFw0yNjEwMjkxMDUzNTla\nGA8yMDU0MDMxNjEwNTM1OVowSzERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsM\nCWttdXJhZG9mZjEiMCAGA1UEAwwZTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQTCC\nAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAOQDadqz80+zDh7l0TlumdF+\nwDoJMLXEAZjLOJEaddJJN/+6BEnFwL6aPuA3v0xaoyBHc241sb8Zcgr9aab377j7\ntvqKJFIRiv/4TSfHyOnt2bpkC1TRcL2TH8zKxgY794IUMagnHmPA/hAVBWFHC7Ax\nx0/j2fR/kofc9nvLfDVu+ubGXKWH3o0pIpcdYkxWyVWc3e9Syc1HJZK1UiQ3bSam\njwqo6u/H52Xb8dIHFRGhCNoin0r4OHioAJVygHQRGDDscyOD3txRFjPGUYvaUocM\n6yk5K4AyWqpvGKaFJLzfsGqpzRlRrF7aKwfXkppcv57/xr7Pbczg00VVLZNfMXz3\ny4oxE7PZ+rFd2lXMI7qJvCojVci7QpLoMsrCvnDJvILc2tVuneEHaJRaCmeGeizY\n3MMOtAHwnlNepPa0YbplbfzIqmOrGMpw3NcpICV1XVecaJUuLxCAm9P6+p1AJMel\nDf8Kob/Pgp3MI5egQNCvCkvYLYnfIv7hnx6qHSRYiNo1KylD7C/4+Eqyo0b94Agb\nLrDrD8Z1gbs4fAQQFaWMHXjucKHCRySH7lieDmfhGpXAfR4pwdKx09sqRaDDZ36Q\nyHN+Dozmx0mk0I7NCff2NAIM9Wx1C20mVlsJA9/LApWwIItb2eGQSVUoVqIhn5oe\nELljd1hsGzKTP6lAJdeLAgMBAAGjUzBRMB0GA1UdDgQWBBQR0uvsqHpLD0RETgeP\nK7OXult7yDAfBgNVHSMEGDAWgBQR0uvsqHpLD0RETgePK7OXult7yDAPBgNVHRMB\nAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4ICAQBmIpnizqjMJRc0NzsNvhrF8/PW\nhiJ1GoLwrscGe/GkIQSiv0hLE3UiOAcj/7Fms7WvhQtUrZZNC745tF3D2gs37m6q\nYStBhJ0RdSttEsYSRR+DtSfMEK2u2jXplqSyXi83NiBDQrFen+i9QViRUk1h4OT6\ngGb0PNwRPkQ3Na4uMs+baAPyowfUI/DYo0A0TEYf5HqLigFq1Q1/HalKJBVMVPE1\ngmzWbZC5oKtmIhsqFGeqkOvDewOuJAWjl5DyEEBNcyU6j6+UY24CQsKKX62uSlUH\n23guTKb4A3niPORCsgfWomXgekii27/2fj/8nxUphpg+BiMGDhAb8/Dhi5NWS/0m\nWoe+lxxYnlKnzhwSmpB2YAlsb+u+odBTV1+x4Ka4f2BeWzgiOfElrkBX7F5yHpvM\nAaPx7IG2xgYl7DO9VCqZ3Zz2J+13btyvgMuXS3A6jVbkavFTTjgWEJ0nS1kTD58T\nq2DqmJDsPlV6uRijccJphIh9yduqGer1dgserzRuaAKaK/Bq6HCArVgm33Zr1knk\nYyrALkDjBYrEpcN0hgWnH+1ie30JrMhKL18gbANHsVGTOURmtXp9Gfa7T4XL3+qk\nKtRhpyeJNsgXT8xrutC2cFAC8zT3DPpa3JblKyazGeSvWNdb7V1tIoG8I2GRH2Fg\nKVUkEZT7yXUW9sHPxQ==\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFYjCCA0qgAwIBAgIUEwKeU+4CQj+VPEgxqwqXemzGSlcwDQYJKoZIhvcNAQEL\nBQAwUDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEnMCUG\nA1UEAwweTHVtZW4gT1MgZ29hdF9lbGVnYW50IE9UQSBuZXh0MCAXDTI2MTEwMzIy\nNTUxMVoYDzIwNTQwMzIxMjI1NTExWjBQMREwDwYDVQQKDAhMdW1lbiBPUzESMBAG\nA1UECwwJa211cmFkb2ZmMScwJQYDVQQDDB5MdW1lbiBPUyBnb2F0X2VsZWdhbnQg\nT1RBIG5leHQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCvqy2pikh+\nIXtFRHRQlNxmGDCJY1jkXeJX8wsSSUZEHwlLbLg1KJr+WUrE2iQvfD+E//+Q//oD\nziMsG8sLE/C7M7JtugEVtJxfYZUY9tb5sttVAlLzvXbWfEo7Zp6we34QD7Y7V2/o\nZhBJ31rK2R0fYqNlHDLgHRjd72ukfUNYFr/3l9NaHaNZIp30nWu6DsCu6EOoOMp8\nwxgHYDiM3XdCKum+TkkeWdnoKYz4CxgaEH/Pt5u9/UJh3ls6kGWNxV3Ffd2sFtLT\nIqXvuucZJ3KgjJbk+1GoZ3QS9OLi2zpfX1JhSBU8nELWPkAEV/jR14aIaDE5lVJS\nWru6RP42byQ2SWSAuIG1Nbsax4+olJanr4fbGdby8dFiFPN3jcBit5OfDePWNKbQ\n7y/USoWOO+Del9AnwkMhNNeU52Tg+azcowAvI0JkInOhMEvrHH1npbea+OaQPFFo\nAO+NlO6SMrtWw58jBv7w/CUNb+iVOg3cr9y5iXz/WOcUBz9I9g5gLbOZhjfzO0Uc\ndbTF8fcvfaNq80Rq94NvRpYVhdsJbpuMmQ6z82zGF4rERg0ozX97jbTbHR1uiiTG\nJ1KMPbrzBTktBEHLbt7k2rpGAhJm1X8kCqbF4Ik7fAbA0ZaMJ8qNLRAP0CzdIiQC\nh/YSFN7AwkMMo55KdE0pf6JJuJyFR4iDawIDAQABozIwMDAdBgNVHQ4EFgQUEAwu\niwgVrVlzr0DKkFa3Pbz0/mcwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsF\nAAOCAgEArapn7WxB+aZ0+WDb+oS+7/LHGZ4VnyZ2bjpfcLaNZP+96H8b08FAx0r0\nJaQjlofVXQNrAcdgVta9rG4jf5JZ/Ed05lrif2c2v8gNN7puYSW7Uo6yE2/ti2V8\ncai0D9GaGHLgxnvOlD0mIJ3iFk9rV2yodahaHuPu6DFajaswttmrs5pFM9J4QwaH\naSuyPjVcYXXd1+1uxvaW5EWjeL6AcDOHhmCGBhWnAp1oeOFxO/6z3Uhgq1ibDycv\nAZJVc6/x+ED1CIhmLZlPHzKKMEak0remVbc3DMCdc/0Gldo2yGkByR7OI8gs3eF+\nL1CKTGbNJndzYwySSz5Iu8MTZISkAJYaf6zwrTap3NWnQyQjiBLwLJPSkrY/TTw3\nsg7jzuNtIlGZAnSvDGX9XWub0kd2bdq8m3oqRy2j6xwP4DQFB6ldEP7hwBU9JISp\nBwx4jmAWiXepLf+sxNQFEFFQZ3oWitD92Vz3PKfH42s+ABKS6QQb+2nens8wVs/G\nvTVthuLi83y1i8yWy5VPVJ2d8C4BLxIKEfOMnAZlKU0DV68MUAJO118Et2XlyZ3z\nSHqiv5b7cV4LJIOomWRrkQ4QHgCNbbhvuuscd6qaqGIwq4Qx+UvRRW9MvBnbYhyg\neZwGpmzB5Nl0LpcKbmBaBr7ndv16jRo+xI00s3nixv7UKoc3xhk=\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5873",
+   "builds": [
+    {
+     "version": "1.0.10-beta16",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/lumen-os-hb-1.0.10-beta16-nogms-system.img",
+     "size": 639799296,
+     "sha256": "4ad931f90b739f6e2f872c88ac9f99e30bad67f90b046d1deff78e9500301e07",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": true,
+     "stock": [
+      "v6.17.12"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "H0062",
+   "name": "XGIMI TITAN Noir Pro",
+   "board": "mt9681",
+   "product": null,
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.2.99",
+     "install": false
+    },
+    {
+     "version": "v1.2.54",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFSjCCAzKgAwIBAgIUKmi3qwgb5dhnmRp2Jgs2SCk1X3owDQYJKoZIhvcNAQEL\nBQAwRDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEbMBkG\nA1UEAwwSTHVtZW4gT1MgaDAwNjIgT1RBMCAXDTI2MTExMzE3MTgyMVoYDzIwNTQw\nMzMxMTcxODIxWjBEMREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFk\nb2ZmMRswGQYDVQQDDBJMdW1lbiBPUyBoMDA2MiBPVEEwggIiMA0GCSqGSIb3DQEB\nAQUAA4ICDwAwggIKAoICAQCVUqUb6E/TjStw0L6zF0hiPE6XEIF9eKxj37mbX0RV\n38gfiYGX7f46H81xwC9oBmiihPxYXsnyHUzgDfU0YeWKsnednI7/GHQNUSnD9Si8\nqub9Hs5ra7pD9/jhkInCVVwZFs83yEItKIPBek/GoT/ctRIEdNUPCaCLN54V+EuP\nnc1SV79a5uXipq3KaSo/AO5+LHY/OdFAnuHCh8Rz5wY9XvlsOrjDXKI418fDMF98\nDSD4sZSmoKk0b1VEbmdPs4Z+xlI1g9ntIrDpzeDMBaxYtE5mQTkGa0R66BDRz5qS\nhbjcjPfdCCIGTPGC0LPA6Bww9GX7Cp4kSAYAJNyEhc4fkNdq0Vz8Z99I1Dd4kVsC\niNPrvrr9rfhi7qaPYCxk4zqscR5fI2d5GH3SZq9FYlSFe+HdIOtnT/75NWg578oP\n7AlILDotbr+UddnvNgqX5znVH1uyQEtXlv4vAbKwlmZ8zEDO8Fc5kILFe0WNYtKS\nlONoUycmMc5nU8dqClBObBYSQj3X9fDIqipvDnN1NGSeELHI1YUZILCk2upkJllS\nYzD7Bg9JFot5QgOQp0V0YEurVUJm6s1yZY3cnoWerg+E6OJCbgqHPHaBrpWFl3lk\nZLuMEwfxzxrpBSQCOIB+Xbp3+OQTLwqA8s6ggXVpYjqJqAWBjM+r8B6XrJaXP2lG\niQIDAQABozIwMDAdBgNVHQ4EFgQUfib1y9Px8hxP6+n3e2qXO+DsP9cwDwYDVR0T\nAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEACyd+eknaP3PVp0i7ehf9KwVe\nc2jgyHdr+TVv+dsQzh64ey7koNP8wSAu6oni8it4G3ri4jAodTy1HtIBynvBCeig\nRTeDiCB0nr/sUlynN73TZoMOEVfqjpt2w52Mq2KpNVzbwR7+UNzBlQepcf+2napm\nd3J+nPYfgOqmUZPBli2P8ZkJIKEar0wnR/NtaPGDXJaD1gC0o6HjGtXxpnzc2YUY\n2i8isHhpSkdxCMfUcTe3MdIXeoWibkhkCcc2w6mtYoAiZse/yyxZoxveeDeyp4Kn\nX+JVXl4o71luDDIamzd5Qj56Il7FZi2tb7nDxapwERYhja+TQL80sMPzD11ZIxrV\nmyFDZtbWY6K2rscNLgdwgS8RMHxB0ut4hZdeagqi2XRjXSUpQd4/y/Y5vpLggAlY\nU5MyTdAXXgP/HZGSAl+z4EX9VZwpPh9WE54n8C2TJRz4EByTerH7ZCqMow/WmAFz\nGFBFUjh+YEkIcnu++WmpD407BW8EenDZf+aPD4phGjgTB43yk3pdgBnwp7CCL/oj\n3kT3AyTWJnv1MsQRxBQ30r68K2NVuSMlVsCLbDBL6eiHeiLacvqwBK5OyVBO5xU2\nnI4zYqAbu8PSgE0kZsz+rb784ZnqOQ3P03NCmK7w0AJ9BkhHA8ay9ZvWaoMsutad\nTEHXNXyMPeZnS9HuJ1s=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFVDCCAzygAwIBAgIUQfS7D5ha/gmyGScp7UuM952fN0EwDQYJKoZIhvcNAQEL\nBQAwSTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEgMB4G\nA1UEAwwXTHVtZW4gT1MgaDAwNjIgT1RBIG5leHQwIBcNMjYxMTEzMTcxODI4WhgP\nMjA1NDAzMzExNzE4MjhaMEkxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlr\nbXVyYWRvZmYxIDAeBgNVBAMMF0x1bWVuIE9TIGgwMDYyIE9UQSBuZXh0MIICIjAN\nBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxUHhDBfrje69y7M55KjwhExd2gSb\niOwyc96yxTAO9qGs5b25tvq2+dVwJrTpqtRi3B+D950FBIC7cbKeRyzJG/hFDQKT\nQleGErXOAI0D3yP6lHsvrN/1VBHP9KmxFGHkBAxcLeuPtkUsWd/Smsk6sLuNRDGg\nArpm6VZhX+S08XWj7Ti/v20KMJpTbGSlAu+rzftmH/MkWE8MHYZApGU9zga/+xoC\nGOnqontkq3g7bVAOXOPZB+zOz0cIx98/ZSyZb4L6sG+iqLLQXfgDoKNMVdrJzTyU\n67cBCcwminUoFkC1fF6Vg+ohFLftMcglpHb64Q2sgQkvIV6UUeqm+iHrAq+AO5yy\nELkK/rsouAhgoH3uKuESSQhZhesPpErWEmpKGc9hTw6Pduh9cl/R6Sn/k1SLWagB\nfG6K0hPluplLWYKDeosKg0HfJryMy2OiMI1XIvVcsb1EVSRiztX4+JDCieGVhpBv\n0g4yC6VU5hLwi+SGh0aWJ6ENwfJbj/KiltTI8kdD9rH+pehpcRC+J2bgC+fyRBrN\nHX21HkGrz85/cdcXe2fakcH2i+bDT3137Te8UVt8rTJJHpidtRBujUHJqzy38bBK\ndFa//nktZHwQY4QmVEEcGVwMSNMe1HmkiRu9Z8LTdKbStsgcRqpsFim+vhK0izxt\nqlFg4HU/E8qgnEMCAwEAAaMyMDAwHQYDVR0OBBYEFIoo87lgrEkkZhkG+7aWf/4u\nw2B7MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAAVzBXxPNPbx\n2XC2S68IRv1ZyIwJ4zENRmPJfjxNWzkYo5bbzY/FNBcC85dQp1Qm6/sCYYLgTW1A\nQLYOIqiEUWFMWobEl4jK7I+d8YalEdFywsNawHMhpNzioUrjtnknb0O4PQak87RV\n2g9TLLZn4EeNGKsCUe53FSlJzNxAdxjmjeDMeWjfPRleE/cH8vDCYYCy9qzR1G/1\nd7xHaFVtCacZPLYI7ulrIS73ysVuhXp5BGg0GYYtFS5XgiSxUIBgz9XdBDyD+7PE\nzXr4t+H8pZ/vaG72HWdHAEZEBWz8yU48DwxjqfIuMQclOZ7KcVxmNPV7pz3DwjMo\n+2LwSY1uMwS7/IPnnPoornT0vLx11YjB9/fyjUa49nqKN6/SAwSszDvsZhr13XaQ\ntaYBqZW0zQIZJKosU3D4rsCNk29NgjOJp2I8INTdKCi7z7OfR+NPfsyeMNYNE+wc\ntnY1mdVc9hGMCOxb1MxBF1x/H+XxExXiPIGWCG/e4xujqjP6UX6ixnn8Lm1HbcYw\nfwPxki/HGqPROvBy8MVS/ZI0yuxjqsK33YXtc4IINdrUFtZxE0Nx0iswbU0o3MgC\ni9LkAPZpTQ3Wj/46xKrts8OfmR2Ixs1X7wcDJPEuPTFQ9/9uUlnSB+T9BlS7GRzC\nNuhiSEXGqevkNtLe/CkXUk3Ls9fTe52/\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.10-beta1",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/titanpro-1.0.10-beta1/system_dsu.img",
+     "size": 1021317120,
+     "sha256": "6bdf34a6bdf2b0634dbedf4878ad906c752c6622d8aea66f1ae80ab186f900ea",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/titanpro-1.0.10-beta1/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.2.99",
+      "v1.2.54"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "H0063",
+   "name": "XGIMI TITAN Noir Max",
+   "board": "mt9681",
+   "product": null,
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v1.2.99",
+     "install": false
+    },
+    {
+     "version": "v1.2.54",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFSjCCAzKgAwIBAgIUaYPrTjsKEBVNsdzRP6oXXCtRmeswDQYJKoZIhvcNAQEL\nBQAwRDERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEbMBkG\nA1UEAwwSTHVtZW4gT1MgaDAwNjMgT1RBMCAXDTI2MTExMzE3MTg0MloYDzIwNTQw\nMzMxMTcxODQyWjBEMREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFk\nb2ZmMRswGQYDVQQDDBJMdW1lbiBPUyBoMDA2MyBPVEEwggIiMA0GCSqGSIb3DQEB\nAQUAA4ICDwAwggIKAoICAQDaZBiHr+i3pqODr+QVRb0cYYaX4XfAUIu5kvxkhlqt\nelU2OGTRB+NKg32+DptQ6pgls1oLQZ/g8dRWFU9D1hPQmn8e+SYDmE3Z+vdkywyN\ng/s3imkfX0SzMn4J4vuS6DG+fbY/96xRzz2cjUVyGixsX5FTfwG11vNjTOZys2xL\nh7c4nMRlX3XqILbc2TihDUemjaDH2IWo1osOAGA159hyzWrYOLXhOQtlird+hyFs\nDKmvsanBwH/hlpNC1Z6ik1bOmRu/jZqNGeoy+jirKZYt1/DuMT0nU6D/gbfJucR4\nEqfq9us80U52kN3UF0F+J8A/QZGMvMzx2b3k5OE/nb8AD5Ww9qVPEjlpO6L1/7At\nPe3cxSg5TQXysDMpJWufJOuWkMZ0KssSLEdCzz9fBhFiCgZQTej6KI2lDRRpM3DC\nnaa0t4kYlA2cQ09GDEYWuN5Hnv8vKWjaJPCSZFU8wCHz6oa13KcB4xVm7CwAPTQu\nk4UKERjer7R0G+VqYwsLMGa9joYgRDQ5Wl7XlzsqBw28xDkA4gIUIOquvGgpT62H\nGcFEqYNpmLYt548FLjawav3eVZoPOJeIa9iYngKKDiyxEUl0UbjtFmKlU09vNcKW\nvy7Pf2ohuQHjr1nScWkwRQTJq0PgU/28EDIDmxkMGwVETnWA2RRS4lra/i0JIaDx\nnQIDAQABozIwMDAdBgNVHQ4EFgQUlTP8ggVU2Hliw5Mep5w+iPovbSMwDwYDVR0T\nAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEABPjkZtQf+TNpqO4azjVh/ny7\n+XSHaEE6TqAWguVdGmtuiUqqMa4EvBU+/eq4MRp+rfoaoQYgwIeTkM4gLZhL9otG\nJx/hSi+QzcaEYbxcC9aG+4A1D62IazcZ/nfSQDMeezUT3lHbg7Bl90NuhXsWvx0q\ncnIbJr2Zv/g/V/OggBU/vwmVKj3El7C3e8nG+nLI4J8M4Qso+LSM6b5wHRoD/o+g\nweuNhfQJAkaL/y9KQw6BP7yQbpLbn65+UbC45xZZPrx1iXwReJ8atfAOlnFEV6F7\nWz6z09UWP4E/EBiD7zffJ6uWr723GJFWk00H3pSE0+/Pr2e8l/VJRcL0sIWvnP5d\npfWzg7IZ7AQcxBU4wYkl4hbqYQlLkcM/Rx+OPDpzG/uY+aQE8XMM4PQa2EmYshZF\n+MkXgbAV1V03IYDkEt81QKD12/w9ivSenC6AzrbjVsB0aSkxA5VQ2ks43ZAh5dCR\neeKeBklZdBERg0H4Ay5R/gT2ykozGQxHZqp77HZ+mEw7uO8qey6Xn3GGnaCU4DkB\npuc0zFKOgC6WGToesiin2ri8FmDr2fitPIIGpH2ArSo3cSOBdo4955nRr78+oLRf\n+3ju0vKs0HFKc97fY5p4h8CKx/P9dF1bLBzC8HbQhqttuyUOj5/3p17rxThpV+vB\nYspUsoPkmOxWi2n1MQg=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFVDCCAzygAwIBAgIUKdYMlBOdrcK/G5z20hGLNEhAOo4wDQYJKoZIhvcNAQEL\nBQAwSTERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEgMB4G\nA1UEAwwXTHVtZW4gT1MgaDAwNjMgT1RBIG5leHQwIBcNMjYxMTEzMTcxODQ5WhgP\nMjA1NDAzMzExNzE4NDlaMEkxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlr\nbXVyYWRvZmYxIDAeBgNVBAMMF0x1bWVuIE9TIGgwMDYzIE9UQSBuZXh0MIICIjAN\nBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAsK1y5aqLhRCBuP9pzBphtqGIfvs9\ndHSiz9AiKsHBi34bCP+PEOwtMm7ix99ecHqBhotR5OtGXKAmkUAIxqr2rBvWG6sr\npDD0LBLISrs2nxWA1coR/OGDAikyUvT9OjAWo2a9jrfluh65veGEPV9vC3qudc6S\ne0fZ4EEG+P0GxH6QtdT8tsrcPuQq2u9ORIWq49eFKI7EFznrZ3QnKK6odM8x2DQ+\nLcgoK2UCO0BR87/vFrhmSD6p23zyM9lBIam9CdUqDW0nu8M56uAmNBxZSkpUoSn2\noap01yLUNkhVY683IUBtTG34hVKyHoR7mc560sFT1CDEO9gEIuNnP31WTm922g8A\nZuSQsvksgWDUWrWFaieEg2BFFHPRoXS27CvUXcjUzDhvG3WDj2xLp0p8WlP0LYuv\nzPStnlXCswEHsrgJnHwiCxMIG2GZHzslS/euUVqeVc+h679kawQQjzsLr43buEcZ\niCvZtSCTwj2Oy6Oj5U340sEgHMWthl4wPciLfW8qiDWcyhukZ1l6hTNWGdQyCn6x\n/58SkFY3YV52BC/Qct2DFf+dvEpXVnv3wTdb8BE/1sCaNiOcnNFZb16gBiQdwcqy\nHX4aQoeFXbBGRBwSKEMeDAYewPgGuLJY3LKXIcV8xC/QJMhgYHXAZb6Oj55WzG0A\n+h2q320coLEYYjECAwEAAaMyMDAwHQYDVR0OBBYEFPI/x/8H/WAE6mmiCtK2gmeW\nF44YMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAKx8rMlmdREg\nf8ugis+peOgVGqG0tOpVy+l0v3wHCoHA9Clhl3kJtvknVuU3qD6SNGlzGyy1gP/a\ndN9f77kosPgin18JfFR7jnQbS/5Zuybyen7KfkRdlABS9BoTuSDAd2Z3+EU41FcG\nb82Fh3HmL61qgzP2KCFDqvwYKxNkrjS8lhq6VWsfRawCaDlyj4TfOME8aWPDSOfb\nsbO8UIQ0wwxUsNTNQGFBeVyPYWxUZVtyZkrPiSMKFy0BIZEnRK5iHQLIj5OopUIJ\nCrHqpF9muEwSW8s9X7HdUFfgWzekn7BGs+e971pVKlF8G5KahOS8llvQPfZN3BCD\nTgYNjkZ5pFZf+Wy+a+2Y6g56+5l9G0+TXezbgm5K6iWJhCYfEdXbPXIPSo5U9HhP\noQF2C0bg3Bg0BBfIXnPGYK3L7cO4ezUDSulizrO06Biqtg5Y6cW8pH8xmIhGGBQG\nQzKaA6abiSgVC/KtAf5Hpo0FvGKWHMisZSrl5r8lG/ZG2G1FEa0xC/m1GIaEjqid\n/vyeO1icvk4vYiDHHnv4wvyn7vularsE0uK7652VwZNbk3kI9EZXSnNrO1AGvSU2\nkDxnm9vR9gQefJU7FZDT6j/s02MM1ST5EsGBi45wiTJf+//zdH8vuLog/QWFF8Lw\nN2sEGa7vP+NEHBPPM/LL+iAT1neCDfEt\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.10-beta1",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/titanmax-1.0.10-beta1/system_dsu.img",
+     "size": 1021317120,
+     "sha256": "6a561173a8c9730a37d08518f3c4c2b2da68a52fc41c3fd67d3063e645dad373",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/titanmax-1.0.10-beta1/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": false,
+     "stock": [
+      "v1.2.99",
+      "v1.2.54"
+     ]
+    }
+   ]
+  },
+  {
+   "model": "G0082",
+   "name": "XGIMI Z9X",
+   "board": "mt9952",
+   "product": "Product_dapeng",
+   "config_check": false,
+   "stock": [
+    {
+     "version": "v6.15.58",
+     "install": true
+    },
+    {
+     "version": "v6.15.62",
+     "install": true
+    },
+    {
+     "version": "v6.15.19",
+     "install": false
+    }
+   ],
+   "certs": [
+    "-----BEGIN CERTIFICATE-----\nMIIFXzCCA0egAwIBAgIUMMpvlEaGebH6Qgq7ZO96tYxvvqowDQYJKoZIhvcNAQEL\nBQAwPjERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEVMBMG\nA1UEAwwMTHVtZW4gT1Mgb3RhMCAXDTI2MTAwNjE3NDcwNVoYDzIwNTQwMjIxMTc0\nNzA1WjA+MREwDwYDVQQKDAhMdW1lbiBPUzESMBAGA1UECwwJa211cmFkb2ZmMRUw\nEwYDVQQDDAxMdW1lbiBPUyBvdGEwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK\nAoICAQDHOc8D2tLiN+AIVmm1iJRrAx64UCOIjyvl7kQkxK2YPTcekKf9muZRQ7si\nJmalr3FMvX3E9zP4LQw3vCoEEwvMDnLYLDLfZooiCr6bb5Z64CqUfSkmDoOt9Bmn\nB1YF4be0Xc3p0xLwa5LVaejvDzkq/Uj1jiWpwtJduAivNmITL9Pz+BvibjHoalvo\nYakSFUYfmavuayu7ZWfhAJrfq1wrRDAQ8BWtABfj8U8R53WC7XHKQhLJUapXdSGq\ng6DlYqhJkmM/JjP2wvYisHKZBFDdhQkZsnmI7aS1UeAzQuJkMVsUkDjO4Uj4XnpB\nL+uL4x3rv/jn0Bstvpk/vVUNVRzUoJvRW1yNqG85Kc2PTHfQWBP5WcfUEkMd1YSd\nxutpk5nuTQea/n8S+TTsQ9syojKOPyVljvhnqnYl9XLO9If11fhIyGLmQZeaMxOo\nZn/ifFvrA6GNAbEYivJRp8Hc8guhpCpNxsixakhuuwzu3B2JwLMoP28cooXu9wjd\nt4NhIyEKmBr2ysyZ2V5pAY3kcIfCfMpJWZQ8eQ/c9M+MXWk4ScDE85sU4LjzRgN+\nvb/CcopM3pNYrIKLoO3NZD3fPSjToLaV8/wTl96gKCptPHX01r7bi3V3yvfayJ/B\nYloYv0RS6Y7DFHbvRpsLV9QuM6U28zWsjkfk8Ysh9PiOot/HNwIDAQABo1MwUTAd\nBgNVHQ4EFgQUEbw2vUc5y3HRW3sDGj5Q01kaxmIwHwYDVR0jBBgwFoAUEbw2vUc5\ny3HRW3sDGj5Q01kaxmIwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOC\nAgEAtOfY0bUWQYtU30rfGAHUiunlkf1S2TuhqO9zwN+pCFDzfeTHpNiwe7xUULDs\n5RMLgVKDnaJtNVwlZuvszLqRHDdfJAfANxvqR1MeEOC1Y+saNltt43veViJTFCPp\nA7h+TCP3jGWLg+xmmkmvhz6+YejPgXrTNCStjBNDDpTVMmDP5yrGIOJp4Vq0BAU+\nBlB4/vs/H/3Kt3ean2bZ0d53MLAE2Yd/Xkgi8JVQ3lqJAImwu/YJHQ1YsyF3RwLs\npTtAfoPi91kFnVtyNGMsrNF4isvC9EYzeFiDJKNln9DGx+vcx/68mfsIpCCm1/6N\na1DZZp5+VnsBqzWAIQFc/rBBDJYotqie//y0tMJpLdUfNoZiCQt6Z7Jxf2oU+nEh\nmfjzhGV+llWzK6cU+Bf6BGN920Ld7pQmehIAB1fyHM0c7QJNgrFr1J58zR0T4hR/\nU47FaTpb30uTSNwwWtCE5LTv9zrfkeQHM5ex8ZgCRL3fk1ivAjTzi6mNoJBmQfVW\n/aCDcwYyjBFu4v6JnXr1UXklYv3vmZI4EA5HTM7hWv5rI82MScXGK8HkFHBiuzEH\nFVFBnahkGHVs5J5pFS7Guuhdch/oH24be1tMG1A25gFpqpdAQVQtntheAJbGijB/\nwqz2YAuuFpbBOkkVv9k9nCu8ZiSogQ8e2zAWjvStU3jxToQ=\n-----END CERTIFICATE-----\n",
+    "-----BEGIN CERTIFICATE-----\nMIIFaTCCA1GgAwIBAgIUMCuFDbmwkuhx+WqcZrKS/gwZSk4wDQYJKoZIhvcNAQEL\nBQAwQzERMA8GA1UECgwITHVtZW4gT1MxEjAQBgNVBAsMCWttdXJhZG9mZjEaMBgG\nA1UEAwwRTHVtZW4gT1Mgb3RhX25leHQwIBcNMjYxMDA2MTc0NzA2WhgPMjA1NDAy\nMjExNzQ3MDZaMEMxETAPBgNVBAoMCEx1bWVuIE9TMRIwEAYDVQQLDAlrbXVyYWRv\nZmYxGjAYBgNVBAMMEUx1bWVuIE9TIG90YV9uZXh0MIICIjANBgkqhkiG9w0BAQEF\nAAOCAg8AMIICCgKCAgEA7x6xQrqUJsK+1HX9ZDRxDak7sX+Nb/MLiKxlCDvk38VB\nGRUT1vB+2Xf7JqTEwiBeU22YB8M3qB61DS19hM7Klf6CkMh/CoCz/wLMjlHXHw+E\n3IiIcxkZAvVsDASxEKMvRK9ZCMnCmhyd7wwk2j1Geax63N/g6k8vlNYLGBkDUhx2\niiLSCQ7nlZc6TxrMdKEsOzUZJldohBV2BetQmZv7no+40mRaWAKjYWVN6cRQJk5u\nmVSLmI3RNyWHXwFZmGVNzMVcCLJw6NDGqmO5Qj8oUIFnoFT2W14sBlx5YOQfv86R\nGCqYlOY584bw9oH7AN+9j04cYE6ZowLYVemRt9odMQnPmxScwQyAeSqQa5GBakVw\niZY5if10ljMWwiOZtE6+65cNlFTQOULk9X04Hf2Yx7AdTeTJV82rRYXqUeTauF9H\njiYGxeck795+JsRXasZUn79JIqjk7uwJpIKSVu2LA0B4Gz+/gviObkO9F/LlmPRS\nsde6FQRJPtBRyOhX5LIh+egD3LbaAOvFmVW7ZKRMcO2J/oiGt6/ln0FfZF5UPwDO\n6QI8GFK6ET8oZOslwnZECXbkPsV2hpB2ovLO8l06Abi4yLl8I7VJY5nTOUdQPdmO\nIgLJYPoy/iBt4+2eBcVjc6yVq1ukItBajLf/bUnzbK0I9NN4uE4fmDhkLjPzTwUC\nAwEAAaNTMFEwHQYDVR0OBBYEFMJZ7V4yC5OLxw6bE+5SGMTMvsrNMB8GA1UdIwQY\nMBaAFMJZ7V4yC5OLxw6bE+5SGMTMvsrNMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZI\nhvcNAQELBQADggIBADAaUG3XQYrBaXaFkcLtnN2Qey6JwjeF+hK0dHS8ZgrFfNPg\nR6tYxxh3iscm1FiTCTEX++ulVWMv8bjF03Bj6ZAYzQCeOARQ9v8gzkmBDs+072eh\nbPjFOyBaQJBNSmCvN52YTtgoPWJEx7cstfWKb9OfS/iJpThqPvL2ukSYB+FLJG2x\n72KKZy6WOLdq3z97YLL2Dx5iu0pEJLNvOcJyyogQLukvihP76LD9BTam0BAA03gU\nL3NyzoJ4W6mHWevZscEGPnJz8WbUEumGjdOLYerIlZPjsqeKzlyd0Mz3ulsJqFSo\n4s4a1yinVyWNHBFe4rclmDHllDhfI+G4G2iUkfZ6JsDjElreneENUbsYNMHxXZ+/\nWp+zDbVMrinxgORxjXOlqLndSwJ/2HRZcKMKnh0JXiY6k2N6tKKHjq9Mq32BPRkT\na09L95qiiMLuzKCE3DZJPpeC8PtjArzWdM48iMd/I+MB53h28Qq6eYs0V5pOC7Td\nGNsjB9YY1vnHFSuoiY8aKT8Ne4IRXIWwkq0RUgWvAAylnemQQiGcRJQBUs68b7PS\nkLSQWySw2jAk4M/0rdyZTpCA0mcgQvchXQXIpPsA14eFTNI7TSiwR5oWlQIIl/M1\nu1Sn2NY5cESUiJb12AybssLquk8mjv65QqKQCaRar/ltAhrYkgns5yXlU5R7\n-----END CERTIFICATE-----\n"
+   ],
+   "platform": "mt5877",
+   "builds": [
+    {
+     "version": "1.0.11-beta10",
+     "channel": "beta",
+     "edition": "nogms",
+     "way": "trial",
+     "image": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta10/lumen-os-1.0.11-beta10-nogms-system.img",
+     "size": 997699584,
+     "sha256": "a9d16c4b68b72b2de2a9facc75cdd53e65fdb2195f23dd056639db42a6f8f93e",
+     "sums": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta10/SHA256SUMS",
+     "install": true,
+     "clears_leftovers": true,
+     "stock": [
+      "v6.15.58",
+      "v6.15.62",
+      "v6.15.19"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -7,13 +7,12 @@ import org.lumen.menu.MenuSpec;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
-import org.lumen.projector.source.SourceOverlay;
 import org.lumen.projector.ui.Page;
 
 /**
  * The quick menu of the XGIMI Play 6. A fork of Z9xProjector panel/QuickPanel.java (tools/play6/forks.tsv) that keeps
  * its public API (SECTION_*, show, toggle, refreshIfShowing, addExtension), so the shared PanelRequestReceiver (Lumen
- * Home's Projector tiles), SourceOverlay, the voice commands and KeyReceiver work unchanged. Since the shared menu
+ * Home's Projector tiles), the Source key (lumen-source), the voice commands and KeyReceiver work unchanged. Since the shared menu
  * (apps/core/lumen-menu) the menu itself is the quick panel D of every Lumen projector: this class only
  * maps the old section names onto it and forwards extension rows (Play6Menu: the controller, the Play 6 adapter
  * Play6Features and pages Play6MenuPages). The old Play 6 panel (Play6PanelController, its tile grid and pages) is
@@ -77,7 +76,7 @@ public final class QuickPanel {
                 return;
             }
             if (SECTION_INPUT.equals(section)) {
-                if (KeyReceiver.isSetupComplete(app)) SourceOverlay.toggle(app);
+                if (KeyReceiver.isSetupComplete(app)) org.lumen.source.SourceKey.press(app, "quick_menu");
                 else Ui.toast(app, R.string.toast_setup_running);
                 return;
             }

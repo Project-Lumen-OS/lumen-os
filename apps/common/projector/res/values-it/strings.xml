@@ -24,11 +24,6 @@
     <string name="val_off">Disattivato</string>
     <string name="val_unknown">Nessun dato</string>
     <string name="val_not_ready">Proiettore non pronto</string>
-    <string name="key_slot3">Tasto iQIYI</string>
-    <string name="key_slot4">Tasto bilibili</string>
-    <string name="slot_default_fmt">%1$s (predefinita)</string>
-    <string name="slot_default_item">Predefinita: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: App</string>
     <string name="cancel">Annulla</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Nessuna app trovata per questo tasto</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Prima attiva «Adatta allo schermo»</string>
     <string name="toast_not_ready">Il proiettore non è ancora pronto</string>
     <string name="toast_failed">Operazione non riuscita</string>
-    <string name="toast_curtain_offer">L\'immagine si è spostata: Proiettore → Correzione trapezoidale → «Adatta allo schermo ora»</string>
+    <string name="toast_curtain_offer">L\'immagine si è spostata: Proiettore › Correzione trapezoidale › «Adatta allo schermo ora»</string>
     <string name="toast_setup_running">Prima completa la configurazione</string>
 </resources>

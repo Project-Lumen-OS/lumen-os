@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">Przyciski pilota</string>
+    <string name="lumen_remote_keys_assign">Przypisz przycisk</string>
+    <string name="lumen_remote_keys_press">Naciśnij przycisk na pilocie</string>
+    <string name="lumen_remote_keys_leave">Aby wyjść, naciśnij Wstecz</string>
+    <string name="lumen_remote_keys_fixed">Tego przycisku nie można przypisać na nowo</string>
+    <string name="lumen_remote_keys_pick">Co robi przycisk</string>
+    <string name="lumen_remote_keys_as_before">Jak wcześniej</string>
+    <string name="lumen_remote_keys_reset_all">Resetuj wszystko</string>
+    <string name="lumen_remote_keys_saved">Zapisano</string>
+    <string name="lumen_remote_keys_empty">Żaden przycisk nie jest jeszcze przypisany</string>
+    <string name="lumen_remote_keys_gone">Aplikacja została usunięta. Przycisk znowu działa jak wcześniej.</string>
+    <string name="lumen_remote_keys_name_youku">Przycisk Youku</string>
+    <string name="lumen_remote_keys_name_tencent">Przycisk Tencent Video</string>
+    <string name="lumen_remote_keys_name_iqiyi">Przycisk iQIYI</string>
+    <string name="lumen_remote_keys_name_mango">Przycisk Mango TV</string>
+    <string name="lumen_remote_keys_name_bilibili">Przycisk bilibili</string>
+    <string name="lumen_remote_keys_name_ambient">Przycisk wygaszacza</string>
+    <string name="lumen_remote_keys_name_shortcut">Przycisk szybkiego dostępu</string>
+    <string name="lumen_remote_keys_name_custom">Przycisk szybkiego dostępu %1$d</string>
+    <string name="lumen_remote_keys_name_f">Klawisz F%1$d</string>
+    <string name="lumen_remote_keys_name_browser">Klawisz przeglądarki</string>
+    <string name="lumen_remote_keys_name_mail">Klawisz poczty</string>
+    <string name="lumen_remote_keys_name_music">Klawisz muzyki</string>
+    <string name="lumen_remote_keys_name_calculator">Klawisz kalkulatora</string>
+    <string name="lumen_remote_keys_name_contacts">Klawisz kontaktów</string>
+    <string name="lumen_remote_keys_name_calendar">Klawisz kalendarza</string>
+    <string name="lumen_remote_keys_name_bookmarks">Klawisz zakładek</string>
+    <string name="lumen_remote_keys_do_source">Wejście</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">Trapez</string>
+    <string name="lumen_remote_keys_do_focus">Ostrość</string>
+    <string name="lumen_remote_keys_do_quick">Szybkie ustawienia</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">Sygnał</string>
+</resources>

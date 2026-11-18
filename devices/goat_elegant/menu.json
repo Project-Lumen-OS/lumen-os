@@ -20,7 +20,7 @@
     "lamp": {"min": 1, "max": 10},
     "boost": {"level": 11, "summary": "brighter"},
     "lamp.off": {},
-    "picture.mode": {"options": ["ai", "standard", "sport", "color_accuracy", "hdr_vivid", "performance"]},
+    "picture.mode": {"options": ["ai", "standard", "sport", "color_accuracy", "hdr_vivid", "performance"], "support": {"color_accuracy": ["sdr", "hdr", "hdr10"], "hdr_vivid": ["hdr_vivid"]}},
     "picture.pq": {"items": ["brightness", "contrast", "saturation", "sharpness"], "min": 0, "max": 100},
     "picture.color_temp": {"options": ["standard", "movie"]},
     "picture.memc": {"options": ["off", "low", "medium", "high"]},
@@ -32,12 +32,11 @@
     "picture.aspect": {"options": ["auto", "r16_9", "r4_3", "original"]},
     "sound.mode": {"options": ["ai", "music", "movie", "karaoke", "sports"]},
     "sound.earc": {},
-    "sound.output": {"options": ["auto", "speaker", "arc", "bt", "wired", "usb"]},
+    "sound.output": {"options": ["auto", "speaker", "arc", "wired", "bt", "usb"], "jack": "manual"},
     "sound.format": {"options": ["pcm", "passthrough", "auto"]},
     "input": {},
     "bluetooth": {},
     "network": {},
-    "usb_files": {},
     "game.mode": {"options": ["off", "on", "auto"]},
     "game.speed": {"options": ["basic_hfr", "top_speed_hfr"]},
     "game.allm": {"options": ["signal", "device"]},
@@ -47,10 +46,26 @@
     "settings.projector": {},
     "settings.cec": {},
     "settings.recents": {},
-    "settings.launcher": {"options": ["lumen", "classic"]}
+    "settings.sleep_timer": {},
+    "settings.launcher": {"options": ["lumen", "classic"]},
+    "settings.report": {},
+    "signal.panel": {},
+    "signal.pin": {},
+    "signal.refresh": {"options": ["normal", "fast"]}
   },
   "hints": {"picture.mode": "picture_mode", "projection.rear": "rear_projection", "keystone.curtain": "curtain_fit"},
   "keys": {"gear_short": "quick_menu", "gear_long": "game_menu", "eye_gear_short": "restore_off"},
   "game_menu": {"enabled": true, "items": ["lat", "vrr", "hfr", "pic", "dark", "ar", "aim", "fps"], "themes": ["ps", "xbox", "switch", "pad", "apple", "windows", "computer"], "cec_detect": true},
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_dapengse = settings_tree_product_dapenghm = settings_tree_product_dapengfhm projection_screen (G0130 V6.16.24, G0148 V6.17.12), test/stock/projection_screen.json",
+      "groups": [
+        {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual"]},
+        {"header": "auto_correction", "rows": ["keystone.on_power", "keystone.on_move", "keystone.obstacle", "keystone.curtain"]},
+        {"header": "size_position", "rows": ["zoom", "keystone.fit_screen", "keystone.rotation"]},
+        {"header": "more", "rows": ["keystone.restore"]}
+      ]
+    }
+  },
   "pending": ["hint.keystone.ak_now", "game.color_space", "game.hdr"]
 }

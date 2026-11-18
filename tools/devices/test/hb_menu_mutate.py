@@ -19,6 +19,11 @@ MF_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 KR, APP = "src/org/lumen/projector/KeyReceiver.java", "src/org/lumen/projector/App.java"
 PROF = "@G/devices/goat_elegant/menu.json"
 MUT = [
+    # ---- the output row lists the rows the HB offers (2026-11-14)
+    ("gt_output_tokens_twice", GT, "if (t != null && !out.contains(t)) out.add(t);", "if (t != null) out.add(t);"),
+    ("gt_output_tokens_unknown", GT, "if (t != null && !out.contains(t)) out.add(t);", "if (!out.contains(t)) out.add(t);"),
+    ("gt_output_tokens_order", GT, "        for (String k : kinds) {\n            String t = outputToken(k);", "        for (String k : new java.util.TreeSet<>(kinds)) {\n            String t = outputToken(k);"),
+    ("mf_output_profile_options", MF, "            if (!tokens.isEmpty()) b.options(FeatureId.SOUND_OUTPUT, tokens);\n", ""),
     # ---- gates
     ("gt_boost_ungated", GT, '{FeatureId.BOOST, "BOOST"}', '{FeatureId.BOOST, null}'),
     ("gt_color_temp_ungated", GT, '{FeatureId.PICTURE_COLOR_TEMP, "COLOR_TEMP"}', '{FeatureId.PICTURE_COLOR_TEMP, null}'),
@@ -26,7 +31,7 @@ MUT = [
     ("gt_earc_ungated", GT, '{FeatureId.SOUND_EARC, "HDMI"}', '{FeatureId.SOUND_EARC, null}'),
     ("gt_ak_wrong_key", GT, '{FeatureId.KEYSTONE_AK_NOW, "AUTO_KEYSTONE"}', '{FeatureId.KEYSTONE_AK_NOW, "CURTAIN_FIT"}'),
     ("gt_implemented_all", GT, "if (g[1] == null || on.test((String) g[1])) out.add((FeatureId) g[0]);", "out.add((FeatureId) g[0]);"),
-    ("gt_row_missing", GT, '            {FeatureId.USB_FILES, null},\n', ""),
+    ("gt_row_missing", GT, '            {FeatureId.NETWORK, null},\n', ""),
     ("gt_game_sr", GT, '            {"lat", "GAME_MODE"},\n', '            {"lat", "GAME_MODE"},\n            {"sr", "GAME_MODE"},\n'),
     ("gt_game_no_bar_gate", GT, 'if (!on.test("GAME_MODE") || !on.test("GAME_BAR")) return', 'if (!on.test("GAME_MODE")) return'),
     ("gt_vrr_ungated", GT, '{"vrr", "GAME_VRR"}', '{"vrr", "GAME_MODE"}'),
@@ -62,6 +67,23 @@ MUT = [
     ("prof_sr_item", PROF, '"items": ["lat", "vrr", "hfr", "pic", "dark", "ar"', '"items": ["lat", "vrr", "hfr", "pic", "dark", "sr", "ar"'),
     ("prof_eye_hint", PROF, '"hints": {"picture.mode": "picture_mode",', '"hints": {"eye": "eye_follow", "picture.mode": "picture_mode",'),
     ("prof_lamp_11", PROF, '"lamp": {"min": 1, "max": 10}', '"lamp": {"min": 1, "max": 11}'),
+    # ---- picture modes that follow the content: the stock support lists in the profile, the kind read by the adapter
+    ("prof_vivid_on_sdr", PROF, '"hdr_vivid": ["hdr_vivid"]', '"hdr_vivid": ["sdr", "hdr_vivid"]'),
+    ("prof_no_support", PROF, ', "support": {"color_accuracy": ["sdr", "hdr", "hdr10"], "hdr_vivid": ["hdr_vivid"]}', ''),
+    ("mf_no_picture_lock", MF, "return sn == null ? null : PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr);",
+     "return null;"),
+    ("mf_picture_lock_scene", MF, "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr)",
+     "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode == null ? null : 10, sn.hdr)"),
+    ("mf_picture_lock_no_game", MF, "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr)",
+     "PictureSettingsRule.blocked(PICTURE_PAGES, feature, null, sn.pictureMode, sn.hdr)"),
+    ("mf_picture_lock_no_dv", MF, "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr)",
+     "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, null)"),
+    ("mf_picture_pages_basic", MF, "PICTURE_PAGES = PictureSettingsRule.ONE_PAGE;", "PICTURE_PAGES = PictureSettingsRule.BASIC_AND_PRO;"),
+    ("mf_press_not_the_look", MF, "        return locked(feature, now);\n", "        return null;\n"),
+    ("mf_no_signal", MF, "        b.signal(Signal.ofHdrType(sn.hdr));", "        b.signal(null);"),
+    ("mf_signal_not_live", MF, "hdr -> cb.accept(Signal.ofHdrType(hdr))", "hdr -> cb.accept(null)"),
+    ("pr_own_vivid_rule", MF_HbPictureRows, '        if (gameModeOn(g, raw)) return "blocked_game";',
+     '        if (m == PictureMode.HDR_VIVID && g.getHdrType() != 6) return EXPLAINED;\n        if (gameModeOn(g, raw)) return "blocked_game";'),
 ]
 
 
@@ -70,7 +92,7 @@ def tree(dst):
                     ignore=shutil.ignore_patterns("build"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/src"), os.path.join(dst, "apps/core/lumen-menu/src"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/res/values"), os.path.join(dst, "apps/core/lumen-menu/res/values"))
-    shutil.copytree(os.path.join(G, "apps/Z9xProjector/res/values"), os.path.join(dst, "apps/Z9xProjector/res/values"))
+    shutil.copytree(os.path.join(G, "apps/ProjectorBase/res/values"), os.path.join(dst, "apps/ProjectorBase/res/values"))
     os.makedirs(os.path.join(dst, "devices/goat_elegant/app"))
     for f in ("menu.json", "forks.tsv", "app/HbProjector.layers"):
         shutil.copy2(os.path.join(G, "devices/goat_elegant", f), os.path.join(dst, "devices/goat_elegant", f))

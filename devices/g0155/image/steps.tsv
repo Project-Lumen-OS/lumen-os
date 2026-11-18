@@ -3,14 +3,19 @@
 # image's pieces that apply to this vendor: every APEX uncompressed (no .capex left for apexd's first boot), the debloat
 # of debloat.txt (setup wizard, sample launcher, updater, emulator overlays), identity and model props (USB in host
 # mode and a TV, as stock), network adb, the vendor app folders hidden (XGIMI-key system apps abort PackageManager), the
-# X50 blobs reader with rs30_blobs_allow.txt and the stock eye-protection drawer (in a trial read only from the stock
-# slot), Lumen's key layouts and input configs with the user power keys back to POWER (x50_power_keys.py), and with the
+# one blobs reader of every model with the X50 family's settings, rs30_blobs_allow.txt and the stock eye-protection
+# drawer (in a trial read only from the stock slot), Lumen's key layouts and input configs with the user power keys back to POWER (x50_power_keys.py), and with the
 # Mac's signed stage (!unsigned) the platform set on the g0155 key, X50EyeGuard (boot handshake, eye-protection
 # fail-safe), X50Projector (menu, remote), X50PowerOverlay (power, gear and projector keys to their apps) and X50TvInput
-# (org.lumen.tvinput, the HDMI inputs behind the input and game rows).
+# (org.lumen.tvinput, the HDMI inputs behind the input and game rows). Since t3 the shared apps of the other Lumen
+# images too: Lumen Home as the one HOME (the base launcher goes with debloat_launcher.txt), screen mirroring
+# (LumenMiracast, LumenWifiP2pOverlay), AirPlay (the released pin on the g0155 key), the Lumen boot animation and the
+# sysconfig that lets every Lumen package run from the first boot. Since beta3 Lumen Setup runs the first start (as on
+# the X50, the HB and the Play 6) and TvProvision goes from the signed variants.
 # Flags: test (tN), unsigned (--unsigned: the same tree without the stage, a host build check only).
-*	need	base.sha256	rs30_prop.txt	rs30_model_prop.txt	rs30_blobs_allow.txt	x50_props.py	x50_kconfig.py	x50_netadb.rc	x50_blobs.sh	x50_blobs.rc	x50_nui.rc	blobs_stock_dsu.sh	xgimi_compat_public.rc	debloat.txt	x50_power_keys.py	Generic.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3838.idc	Vendor_000d_Product_3839.idc	Vendor_000d_Product_3840.idc	Vendor_000d_Product_3841.idc	Vendor_000d_Product_3842.idc	Vendor_000d_Product_3843.idc	Vendor_1d5a_Product_c081.idc	Vendor_26e3_Product_af02.idc	erofs_kcheck.py	lumen_checks.py	apkinfo.py	x50-projector.xml
-!unsigned	need	signed_stage/SHA256SUMS	signed_stage/apps/X50EyeGuard.apk	signed_stage/apps/X50Projector.apk	signed_stage/apps/X50PowerOverlay.apk	signed_stage/apps/X50TvInput.apk	signed_stage/base_signed/base_signed.tsv
+*	need	base.sha256	rs30_prop.txt	rs30_model_prop.txt	rs30_blobs_allow.txt	x50_props.py	x50_kconfig.py	x50_netadb.rc	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_nui.rc	xgimi_compat_public.rc	debloat.txt	x50_power_keys.py	rs30_menu_keys.py	Generic.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3838.idc	Vendor_000d_Product_3839.idc	Vendor_000d_Product_3840.idc	Vendor_000d_Product_3841.idc	Vendor_000d_Product_3842.idc	Vendor_000d_Product_3843.idc	Vendor_1d5a_Product_c081.idc	Vendor_26e3_Product_af02.idc	erofs_kcheck.py	lumen_checks.py	apkinfo.py	x50-projector.xml	debloat_launcher.txt	rs30-sysconfig.xml	z9x-sysconfig-nogms.xml	privapp-permissions-z9xhome.xml	z9x-home-default-permissions.xml	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	bootanimation.zip	airplay_libs.py	first_start_prop.txt	first_start.py	privapp-permissions-z9xsetup.xml
+!unsigned	need	signed_stage/SHA256SUMS	signed_stage/apps/X50EyeGuard.apk	signed_stage/apps/X50Projector.apk	signed_stage/apps/X50PowerOverlay.apk	signed_stage/apps/X50TvInput.apk	signed_stage/apps/LumenKeyboard.apk	signed_stage/base_signed/base_signed.tsv
+!unsigned	need	signed_stage/apps/Z9xSetup.apk	signed_stage/apps/Z9xHome.apk	signed_stage/apps/LumenMiracast.apk	signed_stage/apps/LumenWifiP2pOverlay.apk	signed_stage/pinned/Z9xAirPlay.apk
 !unsigned	sums	signed_stage
 *	out	fresh	mounts
 # the stock kernel of the dump has what the base needs: the userfaultfd GC and 32-bit compat
@@ -28,21 +33,31 @@
 *	copy_base
 *	unpack_capex	{sys}/apex
 !unsigned	base_signed	signed_stage/base_signed	{mb}	{root}	keep	system/framework/framework-res.apk	system/etc/selinux/plat_mac_permissions.xml	system/apex/com.android.permission.apex
-# debloat (debloat.txt): no classpath APEX, no provisioning app, the one HOME and the vendor's VNDK APEX stay
-*	keep_rules	debloat.txt	{sys}/framework/oat/arm/services.odex	product/priv-app/TvProvision	product/priv-app/TVLauncherNoGMS	system_ext/apex/com.android.vndk.v34.apex
+# debloat (debloat.txt): no classpath APEX, no provisioning app, the vendor's VNDK APEX stays; with Lumen Home (the
+# signed variants) the base launcher, its recommendations and LineageCustomizer go too (debloat_launcher.txt, as on the
+# HB and the Play 6). TvProvision provisions only the unsigned build check: in the signed variants Lumen Setup does
+# (as on the X50, the HB and the Play 6), and TvProvision goes, since its HOME filter has Lumen Home's priority 3 and
+# Android showed its chooser on the first start of the beta2 trial (apk_roles refuses such a tie)
+*	keep_rules	debloat.txt	{sys}/framework/oat/arm/services.odex	product/priv-app/TvProvision	system_ext/apex/com.android.vndk.v34.apex
 *	remove	debloat.txt	{sys}
+!unsigned	keep_rules	debloat_launcher.txt	{sys}/framework/oat/arm/services.odex	product/priv-app/TvProvision
+!unsigned	remove	debloat_launcher.txt	{sys}
+!unsigned	rm	{sys}/product/priv-app/TvProvision
 *	run_root	x50_props.py	apply	{in}/rs30_prop.txt	{in}/rs30_model_prop.txt	{sys}/build.prop	{sys}/product/etc/build.prop	{v}	{bid}
+# the one first-start setting of every image (devices/_image/first_start_prop.txt): English over the vendor's Chinese,
+# no fixed time zone over its Asia/Shanghai
+*	run_root	first_start.py	apply	{in}/first_start_prop.txt	{sys}
 # the vendor app folders hidden, network adb, the blobs reader with the eye-protection drawer
 *	mkdir	0755	{sys}/etc/empty_dir	{sys}/etc/z9x
 *	label	{sys}/etc/empty_dir	{LABEL}
 *	label	{sys}/etc/z9x	{LABEL}
 *	place	xgimi_compat_public.rc	{sys}/etc/init/xgimi_compat.rc	0644	0	0	{LABEL}
 *	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
-*	place	x50_blobs.rc	{sys}/etc/init/x50_blobs.rc	0644	0	0	{LABEL}
+*	place	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc	0644	0	0	{LABEL}
 *	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
-*	place	x50_blobs.sh	{sys}/etc/z9x/x50_blobs.sh	0755	0	0	{LABEL}
+*	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
+*	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
 *	place	rs30_blobs_allow.txt	{sys}/etc/z9x/x50_blobs_allow.txt	0644	0	0	{LABEL}
-*	place	blobs_stock_dsu.sh	{sys}/etc/z9x/blobs_stock_dsu.sh	0644	0	0	{LABEL}
 # a 0-byte placeholder for every allow-listed file without bind= (the reader binds the verified copy over it); the
 # base must not have a real one (tools/devices/test/build_check_test.sh keeps this list equal to the allow list)
 *	absent	{sys}/system_ext/lib/libc2plugin_store.so
@@ -58,7 +73,10 @@
 # the remote keys, as the X50 image: the vendor's layouts use XGIMI labels this framework rejects (a whole file then
 # falls back to Generic.kl: power = mute, gear = F8), so Lumen's layouts and input configs go to /system/product/usr
 # (searched first) and the user power keys back to the system POWER. The RS30's own 000d:3840 scancodes (stock
-# PICTURE_MODE, SHORTCUT_1 / 2, PRO_SETTING, BRIGHTNESS) stay unmapped: no stock handler proven.
+# PICTURE_MODE, PRO_SETTING, BRIGHTNESS) open the picture mode popup, the whole picture page and the light level bar
+# (rs30_menu_keys.py after the power edit, keycodes no other layout sends, X50PowerOverlay routes them to the menu).
+# Its SHORTCUT_1 / 2 (135 / 136) are the custom keys 1 and 2 of "Remote buttons" (MACRO_1 / 2, devices/_remotes/keys.tsv):
+# stock RS30 binds a function to them (SystemUI 848 RemoteCustomKeyUI, remotes B870C / B872C).
 *	mkdir	0755	{sys}/product/usr/idc
 *	label	{sys}/product/usr/idc	{LABEL}
 *	place	Generic.kl	{sys}/product/usr/keylayout/Generic.kl	0644	0	0	{LABEL}
@@ -84,7 +102,10 @@
 *	place	Vendor_1d5a_Product_c081.idc	{sys}/product/usr/idc/Vendor_1d5a_Product_c081.idc	0644	0	0	{LABEL}
 *	place	Vendor_26e3_Product_af02.idc	{sys}/product/usr/idc/Vendor_26e3_Product_af02.idc	0644	0	0	{LABEL}
 *	run_root	x50_power_keys.py	apply	{sys}/product/usr/keylayout
-*	noline	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl	^key\s+(172|135|136|217|234)\s
+*	run_root	rs30_menu_keys.py	apply	{sys}/product/usr/keylayout
+*	line	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 172 TV_ZOOM_MODE  # XGIMI PICTURE_MODE, the picture mode popup -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
+*	line	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 217 TV_TIMER_PROGRAMMING  # XGIMI PRO_SETTING, the whole picture page -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
+*	line	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 234 TV_NUMBER_ENTRY  # XGIMI BRIGHTNESS, the light level bar -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
 # the registry apps, platform apps on the g0155 key, and every APK and APEX of the tree for the Mac's S1 check
 # (tools/devices/sign_device.py g0155 check-image TAG)
 !unsigned	mkdir	0755	{sys}/app/X50EyeGuard	{sys}/priv-app/X50Projector	{sys}/product/etc/default-permissions
@@ -98,17 +119,63 @@
 !unsigned	mkdir	0755	{sys}/app/X50TvInput
 !unsigned	label	{sys}/app/X50TvInput	{LABEL}
 !unsigned	place	signed_stage/apps/X50TvInput.apk	{sys}/app/X50TvInput/X50TvInput.apk	0644	0	0	{LABEL}
+# the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
+# languages and a language key) in LeanbackIME's place; the base's odex of the old APK goes
+!unsigned	rm	{sys}/product/app/LeanbackIME/oat
+!unsigned	place	signed_stage/apps/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
+# Lumen Setup (org.lumen.setup, apps/LumenSetup on the g0155 platform key): HOME 10 on fresh data, the remote, the
+# language, Wi-Fi, the time zone from the network and the picture through X50Projector's setup bridge, then it marks
+# the device provisioned and disables itself (the X50 image has it from its Z9X base, the HB and the Play 6 build it)
+!unsigned	mkdir	0755	{sys}/priv-app/Z9xSetup
+!unsigned	label	{sys}/priv-app/Z9xSetup	{LABEL}
+!unsigned	place	signed_stage/apps/Z9xSetup.apk	{sys}/priv-app/Z9xSetup/Z9xSetup.apk	0644	0	0	{LABEL}
+!unsigned	place	privapp-permissions-z9xsetup.xml	{sys}/etc/permissions/privapp-permissions-z9xsetup.xml	0644	0	0	{LABEL}
+# Lumen Home, the one HOME, with its privileged and runtime permissions. Screen mirroring: a priv-app with two
+# privileged permissions and its runtime permissions granted by default, the Wi-Fi Direct device type television for
+# Windows as a static RRO; the receiver shows its tiles only where it found Wi-Fi Direct on the unit (the stock vendor
+# runs wpa_supplicant with p2p_supplicant.conf and its own Wi-Fi display HAL). AirPlay loads its armeabi-v7a library
+# straight from the APK, so the library must be stored and page-aligned there.
+!unsigned	mkdir	0755	{sys}/priv-app/Z9xHome	{sys}/priv-app/LumenMiracast	{sys}/app/Z9xAirPlay
+!unsigned	label	{sys}/priv-app/Z9xHome	{LABEL}
+!unsigned	label	{sys}/priv-app/LumenMiracast	{LABEL}
+!unsigned	label	{sys}/app/Z9xAirPlay	{LABEL}
+!unsigned	place	signed_stage/apps/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
+!unsigned	place	privapp-permissions-z9xhome.xml	{sys}/etc/permissions/privapp-permissions-z9xhome.xml	0644	0	0	{LABEL}
+!unsigned	place	z9x-home-default-permissions.xml	{sys}/product/etc/default-permissions/z9x-home.xml	0644	0	0	{LABEL}
+!unsigned	place	signed_stage/apps/LumenMiracast.apk	{sys}/priv-app/LumenMiracast/LumenMiracast.apk	0644	0	0	{LABEL}
+!unsigned	place	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml	0644	0	0	{LABEL}
+!unsigned	place	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml	0644	0	0	{LABEL}
+!unsigned	place	signed_stage/apps/LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk	0644	0	0	{LABEL}
+!unsigned	place	signed_stage/pinned/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}
+!unsigned	place	z9x-airplay-default-permissions.xml	{sys}/product/etc/default-permissions/z9x-airplay.xml	0644	0	0	{LABEL}
+!unsigned	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
+!unsigned	apk_roles	{sys}	priv-app/Z9xSetup/Z9xSetup.apk:org.lumen.setup:setup	priv-app/Z9xHome/Z9xHome.apk:org.lumen.home:home	priv-app/LumenMiracast/LumenMiracast.apk:org.lumen.miracast:nohome	app/Z9xAirPlay/Z9xAirPlay.apk:org.lumen.airplay:nohome	priv-app/X50Projector/X50Projector.apk:org.lumen.x50.projector:nohome
+# every Lumen package runs from the first boot (the base stops a new system package with a launcher activity until it
+# is opened: z9x.xml for the shared apps and LineageOS statistics off, rs30.xml for the X50 family's apps), and the
+# Lumen boot animation (the base's -dark link points at it)
+*	place	z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml	0644	0	0	{LABEL}
+*	place	rs30-sysconfig.xml	{sys}/etc/sysconfig/rs30.xml	0644	0	0	{LABEL}
+*	place	bootanimation.zip	{sys}/product/media/bootanimation.zip	0644	0	0	{LABEL}
 !unsigned	apk_apex_list	{t}/apk_apex.sha256
 # the image: the X50 image's erofs flags, one time for every file, a UUID from TAG, the build id and the base sha256
 *	pack	{root}
 *	run	erofs_kcheck.py	{img}	>kcheck.log
 # the mounted image says what it is for: no .capex, nothing of the debloat list, the kept HOME and provisioning,
-# Lumen's key layouts without STB_POWER, its identity, USB host mode and TV props
+# Lumen's key layouts with STB_POWER only on the XGIMI BT remotes' own power keys (113 / 185, the remote power key of
+# org.lumen.x50.projector, x50_power_keys.py REMOTE), its identity, USB host mode and TV props
 *	mount_image
+*	run_root	first_start.py	check	{in}/first_start_prop.txt	{mn}/system	>first_start.log
 *	nofind	{mn}/system	*.capex
 *	gone	debloat.txt	{mn}/system
-*	is_dir	{mn}/system/product/priv-app/TvProvision
-*	is_dir	{mn}/system/product/priv-app/TVLauncherNoGMS
+!unsigned	gone	debloat_launcher.txt	{mn}/system
+unsigned	is_dir	{mn}/system/product/priv-app/TvProvision
+!unsigned	absent	{mn}/system/product/priv-app/TvProvision
+unsigned	is_dir	{mn}/system/product/priv-app/TVLauncherNoGMS
+!unsigned	is_dir	{mn}/system/priv-app/Z9xHome
+*	same	{mn}/system/etc/sysconfig/z9x.xml	z9x-sysconfig-nogms.xml
+*	same	{mn}/system/etc/sysconfig/rs30.xml	rs30-sysconfig.xml
+*	same	{mn}/system/product/media/bootanimation.zip	bootanimation.zip
+*	link_is	{mn}/system/product/media/bootanimation-dark.zip	bootanimation.zip
 *	exists	{mn}/system/product/usr/keylayout/Generic.kl
 *	exists	{mn}/system/product/usr/keylayout/Vendor_0001_Product_0001.kl
 *	exists	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3838.kl
@@ -131,18 +198,35 @@
 *	exists	{mn}/system/product/usr/idc/Vendor_000d_Product_3843.idc
 *	exists	{mn}/system/product/usr/idc/Vendor_1d5a_Product_c081.idc
 *	exists	{mn}/system/product/usr/idc/Vendor_26e3_Product_af02.idc
-*	noline	{mn}/system/product/usr/keylayout/*.kl	^key\s+[0-9]+\s+STB_POWER
+*	noline	{mn}/system/product/usr/keylayout/*.kl	^key\s+(?!(113|185)\s)[0-9]+\s+STB_POWER
+*	noline	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl	^key\s+(113|185)\s+(?=\S)(?!STB_POWER\s+WAKE\b)
+*	line	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 172 TV_ZOOM_MODE  # XGIMI PICTURE_MODE, the picture mode popup -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
+*	line	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 217 TV_TIMER_PROGRAMMING  # XGIMI PRO_SETTING, the whole picture page -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
+*	line	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl	key 234 TV_NUMBER_ENTRY  # XGIMI BRIGHTNESS, the light level bar -> org.lumen.x50.projector (devices/g0155/image/rs30_menu_keys.py)
+*	noline	{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl	^key\s+(135|136)\s+(?=\S)(?!MACRO_[12]\b)
 *	line	{mn}/system/product/etc/build.prop	ro.lumen.device=g0155
 *	line	{mn}/system/product/etc/build.prop	ro.lumen.model=G0155
+*	line	{mn}/system/product/etc/build.prop	ro.lumen.models=G0155
 *	line	{mn}/system/product/etc/build.prop	ro.dalvik.vm.enable_uffd_gc=true
 *	line	{mn}/system/product/etc/build.prop	persist.sys.usb.config=mtp
 *	line	{mn}/system/product/etc/build.prop	ro.build.characteristics=tv
 *	line	{mn}/system/product/etc/build.prop	ro.xgimi.product.name=Product_athena35ultramax
 *	same	{mn}/system/etc/z9x/x50_blobs_allow.txt	rs30_blobs_allow.txt
+*	same	{mn}/system/etc/z9x/z9x_blobs.sh	z9x_blobs.sh
+*	same	{mn}/system/etc/z9x/blobs.conf	blobs.conf
+*	same	{mn}/system/etc/init/z9x_blobs.rc	z9x_blobs.rc
 !unsigned	same	{mn}/system/app/X50EyeGuard/X50EyeGuard.apk	signed_stage/apps/X50EyeGuard.apk
 !unsigned	same	{mn}/system/priv-app/X50Projector/X50Projector.apk	signed_stage/apps/X50Projector.apk
 !unsigned	same	{mn}/system/product/overlay/X50PowerOverlay.apk	signed_stage/apps/X50PowerOverlay.apk
 !unsigned	same	{mn}/system/app/X50TvInput/X50TvInput.apk	signed_stage/apps/X50TvInput.apk
+!unsigned	same	{mn}/system/priv-app/Z9xSetup/Z9xSetup.apk	signed_stage/apps/Z9xSetup.apk
+!unsigned	same	{mn}/system/etc/permissions/privapp-permissions-z9xsetup.xml	privapp-permissions-z9xsetup.xml
+!unsigned	same	{mn}/system/priv-app/Z9xHome/Z9xHome.apk	signed_stage/apps/Z9xHome.apk
+!unsigned	same	{mn}/system/priv-app/LumenMiracast/LumenMiracast.apk	signed_stage/apps/LumenMiracast.apk
+!unsigned	same	{mn}/system/product/overlay/LumenWifiP2pOverlay.apk	signed_stage/apps/LumenWifiP2pOverlay.apk
+!unsigned	same	{mn}/system/app/Z9xAirPlay/Z9xAirPlay.apk	signed_stage/pinned/Z9xAirPlay.apk
+!unsigned	same	{mn}/system/etc/permissions/privapp-permissions-lumen-miracast.xml	privapp-permissions-lumen-miracast.xml
+!unsigned	same	{mn}/system/product/etc/default-permissions/z9x-home.xml	z9x-home-default-permissions.xml
 *	umount	{mn}
 *	budget	3104694272
 *	sha256

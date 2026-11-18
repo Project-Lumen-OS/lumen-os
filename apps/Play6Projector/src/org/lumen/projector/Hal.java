@@ -486,8 +486,17 @@ public final class Hal {
 
     /** Runs {@code t} on p6-hal after {@code delayMs}. False when refused or not queued. */
     public static boolean runDelayed(Task t, long delayMs) {
+        return runDelayed(t, delayMs, null);
+    }
+
+    /** Like runDelayed, {@code ifSkipped} runs on p6-hal when the task was dropped (IGmpf not connected then). */
+    public static boolean runDelayed(Task t, long delayMs, Runnable ifSkipped) {
         if (!admit("runDelayed")) return false;
-        return worker().postDelayed(() -> exec(t, "runDelayed"), delayMs);
+        return worker().postDelayed(() -> {
+            if (!exec(t, "runDelayed") && ifSkipped != null) {
+                try { ifSkipped.run(); } catch (Throwable e) { Log.w(TAG, "ifSkipped: " + e); }
+            }
+        }, delayMs);
     }
 
     /** Reads on p6-hal; {@code r} gets the value (or null) on the main thread. */

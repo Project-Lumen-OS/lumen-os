@@ -24,11 +24,6 @@
     <string name="val_off">متوقف</string>
     <string name="val_unknown">لا توجد بيانات</string>
     <string name="val_not_ready">جهاز العرض غير جاهز</string>
-    <string name="key_slot3">زر iQIYI</string>
-    <string name="key_slot4">زر bilibili</string>
-    <string name="slot_default_fmt">%1$s (افتراضي)</string>
-    <string name="slot_default_item">الافتراضي: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: التطبيقات</string>
     <string name="cancel">إلغاء</string>
     <string name="ok">حسنًا</string>
     <string name="app_not_found">لم يتم العثور على تطبيق لهذا الزر</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">فعّل «ملاءمة الشاشة» أولاً</string>
     <string name="toast_not_ready">جهاز العرض غير جاهز بعد</string>
     <string name="toast_failed">تعذّر تنفيذ ذلك</string>
-    <string name="toast_curtain_offer">تحرّكت الصورة: جهاز العرض ← تصحيح شبه المنحرف ← «ملاءمة الشاشة الآن»</string>
+    <string name="toast_curtain_offer">تحرّكت الصورة: جهاز العرض › تصحيح شبه المنحرف › «ملاءمة الشاشة الآن»</string>
     <string name="toast_setup_running">أكمل الإعداد أولاً</string>
 </resources>

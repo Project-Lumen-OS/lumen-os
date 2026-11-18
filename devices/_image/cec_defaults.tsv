@@ -1,0 +1,28 @@
+# The HDMI-CEC defaults of every Lumen image: the stock XGIMI values (2026-11-15: do it the way stock does it).
+# One table for all models, a model differs only where its own stock does (evidence: devices/_image/cec_stock.tsv).
+# tools/devices/cec_defaults.py writes the values into the framework RRO of each image (res/values/lumen_cec.xml,
+# read by system_server's HdmiCecConfig: a value the user stored wins). Every projector app with the HDMI-CEC page
+# ships this file as the asset lumen_cec/defaults.tsv (apps/core/lumen-cec CecDefaults).
+#
+#   default  SETTING  VALUE          the stock value of an HdmiCecConfig setting (its name and value)
+#   device   DEVICE  SETTING  VALUE  the stock value on one device where it differs from the default
+#   reset    DEVICE  SETTING         once after the update to this table, that device puts the stock value back:
+#                                    its old Lumen image stored the old value by itself, so a stored value is not
+#                                    known to be the user's (unless the user switched the row in the Lumen menu)
+#
+# Stock on every Android 14 / 13 XGIMI system: no <Standby> to the HDMI devices when the projector sleeps, no wake
+# on <Image View On> (the stock settings rows "CEC control" and "HDMI control projector" write both only when the
+# user switches them), CEC on.
+default  hdmi_cec_enabled                          1
+default  tv_send_standby_on_sleep                  0
+default  tv_wake_on_one_touch_play                 0
+# for a playback device only (Android 14 reads neither on a TV), stated so the values equal stock
+default  power_control_mode                        to_tv_and_audio_system
+default  power_state_change_on_active_source_lost  standby_now
+default  set_menu_language                         1
+# Play 6 stock is Android 11: HdmiCecLocalDeviceTv reads hdmi_control_auto_wakeup_enabled with default true and
+# nothing stores it, so <Image View On> wakes it (its SettingsProvider stores auto device off = false)
+device   dragon_healthy  tv_wake_on_one_touch_play  1
+# Z9X HB: the old image had no CEC values (LineageOS: wake on), and the power policy (Z9xProjector cec.CecPolicy)
+# stores that value itself around guarded sleeps and power-offs
+reset    goat_elegant    tv_wake_on_one_touch_play

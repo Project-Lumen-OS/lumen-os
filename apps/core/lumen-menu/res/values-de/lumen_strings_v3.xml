@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">Abbrechen</string>
     <string name="lumen_m_panel_boost_press_again">Für Boost noch einmal → drücken</string>
     <string name="lumen_m_panel_boost_leave_press_again">Zum Beenden von Boost noch einmal ← drücken</string>
+    <string name="lumen_m_lamp_off_press_again">Das Bild wird ausgeschaltet. Zum Wiedereinschalten die Ein/Aus-Taste drücken. Zum Ausschalten noch einmal ← drücken.</string>
     <string name="lumen_m_toast_setup_running">Zuerst die Einrichtung abschließen</string>
     <string name="lumen_m_panel_tileval_pm_ai">KI-Bild</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Farbgenau</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Ambient-Lautsprecher</string>
     <string name="lumen_m_ct_custom">Benutzerdefiniert</string>
     <string name="lumen_m_lamp_off">Bild ausschalten</string>
+    <string name="lumen_m_iris">Blende</string>
+    <string name="lumen_m_iris_dynamic">Dynamisch</string>
+    <string name="lumen_m_iris_lamp_dynamic">Bei dynamischer Blende lässt sich die Helligkeit nicht ändern.</string>
+    <string name="lumen_m_iris_lamp_held">Bei dieser Blendeneinstellung lässt sich die Helligkeit nicht ändern.</string>
 </resources>

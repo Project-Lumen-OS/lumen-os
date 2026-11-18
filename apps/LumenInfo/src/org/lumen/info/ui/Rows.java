@@ -458,7 +458,7 @@ public final class Rows {
         }
         add("edid", R.string.r_edid_version, edidVersion(s.edidVersion));
         if (s.edidCfgLink != null) add("edid_cfg", R.string.r_edid_cfg, s.edidCfgLink.isEmpty()
-                ? "edid_cfg.ini, " + s(R.string.v_own_file) : "edid_cfg.ini \u2192 " + s.edidCfgLink);
+                ? "edid_cfg.ini, " + s(R.string.v_own_file) : "edid_cfg.ini \u2192 " + s.edidCfgLink);  // lumen-icons: not an icon (a link target)
         if (s.ports == null) return;
         for (Snapshot.Port p : s.ports) {
             Boolean cable = p.port < s.hdmiConnected.length ? s.hdmiConnected[p.port] : null;
@@ -475,7 +475,7 @@ public final class Rows {
                         s(p.raw == Hb.EDID_GAME ? R.string.v_edid_game : R.string.v_edid_unreadable));
                 continue;
             }
-            String file = p.file + (p.link != null ? " \u2192 " + p.link : ", " + s(R.string.v_own_file));
+            String file = p.file + (p.link != null ? " \u2192 " + p.link : ", " + s(R.string.v_own_file));  // lumen-icons: not an icon (a link target)
             addRaw("file" + p.port, s(R.string.r_port_file, p.port), file);
             // the kernel rewrites the audio block of every input but the ARC one, so only that one keeps the file's
             boolean audio = p.port == Hb.ARC_INPUT;

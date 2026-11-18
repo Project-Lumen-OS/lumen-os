@@ -24,11 +24,6 @@
     <string name="val_off">Өшірулі</string>
     <string name="val_unknown">Дерек жоқ</string>
     <string name="val_not_ready">Проектор дайын емес</string>
-    <string name="key_slot3">iQIYI түймесі</string>
-    <string name="key_slot4">bilibili түймесі</string>
-    <string name="slot_default_fmt">%1$s (әдепкі)</string>
-    <string name="slot_default_item">Әдепкі: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: қолданбалар</string>
     <string name="cancel">Бас тарту</string>
     <string name="ok">Жарайды</string>
     <string name="app_not_found">Бұл түймеге қолданба табылмады</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Алдымен «Экранға сыйғызу» параметрін қосыңыз</string>
     <string name="toast_not_ready">Проектор әлі дайын емес</string>
     <string name="toast_failed">Орындау мүмкін болмады</string>
-    <string name="toast_curtain_offer">Кескін жылжып кетті: Проектор → Трапеция → «Қазір экранға сыйғызу»</string>
+    <string name="toast_curtain_offer">Кескін жылжып кетті: Проектор › Трапеция › «Қазір экранға сыйғызу»</string>
     <string name="toast_setup_running">Алдымен реттеуді аяқтаңыз</string>
 </resources>

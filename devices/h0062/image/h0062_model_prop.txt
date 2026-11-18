@@ -1,0 +1,32 @@
+# The model properties the stock X50 family system loads at every boot (stock /system/bin/init reads
+# /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop, LineageOS init does not), for the TITAN Noir Pro
+# image (h0062): the rule of x50max_model_prop.txt over the stock H0062 file of the overseas OTAs V1.2.54 and V1.2.99
+# and the X50 1.2.64 build (the same bytes in all three, sha256 a75145a19fb35f7133ecbbbc66946b973577c95ca2a896d39a778c84344f9daf): every line except the identity keys
+# ro.product.{device,model,brand,manufacturer,board,name} and ro.build.product (Lumen keeps its own), persist.sys.* (the
+# GSI's namespace) and ro.product.locale (the language of the first start is one setting of every image,
+# x50_props.py FIRST_START).
+ro.xgimi.product.name=Product_dianahypro
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_dianahypro
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.vendor.xgimi.animation.style=black
+persist.xgimi.bootanimation.style=black
+persist.xgimi.bootanimation.type=1
+ro.vendor.xgimi.rangelist=overseas
+ro.xgimi.recovery.remove_video=true
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+persist.vendor.xgimi.keyaction.version=1
+ro.product.unique=XGIMI+MT9681+T-UHD003F0003001F0017000100010037+dianahypro+ProjectorUHD_3
+ro.vendor.ucontrolMDNS.disable=1
+ro.xgimi.accessibility_volume=20

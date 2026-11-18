@@ -75,8 +75,6 @@
     <string name="panel_pm_performance_msg">통풍구가 막혀 있지 않고 실내 온도가 25 °C 이하인지 확인하세요. 이 모드를 오래 사용하지 마세요.</string>
     <string name="panel_lamp">밝기</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">→를 한 번 더 누르면 Boost</string>
-    <string name="panel_boost_leave_press_again">←를 한 번 더 누르면 Boost 종료</string>
     <string name="panel_boost_3d">3D를 끄고 다시 시도하세요</string>
     <string name="panel_boost_hot">프로젝터 온도가 높아 Boost를 사용할 수 없습니다. 잠시 후 다시 시도하세요</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -146,7 +144,6 @@
     <string name="panel_tile_hdmi_only">HDMI 전용</string>
     <string name="panel_system_settings">시스템 설정</string>
     <string name="panel_hdmi_settings">HDMI 설정</string>
-    <string name="panel_lamp_hint">10에서 →를 두 번 누르면 Boost가 켜집니다.</string>
     <string name="panel_eye_desc">렌즈 앞에 사람이 있으면 빛이 어두워집니다.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">사이드 바이 사이드</string>

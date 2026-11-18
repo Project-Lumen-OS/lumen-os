@@ -105,7 +105,7 @@ public final class PingTest {
         SystemProperties.VALUES.put("ro.gsid.image_running", "");
         eq("installed", false, Device.trial());
         // every host: one client, wired the same way
-        String z = read(g.resolve("apps/Z9xUpdater/src/org/lumen/updater/Stats.java"));
+        String z = read(g.resolve("apps/core/lumen-updater/src/org/lumen/updater/Stats.java"));
         eq("updater sends through the module", true, z.contains("StatsClient.maybeSend(c, new State(st), new Release(Ota.currentVersion(), Ota.currentVersionCode(),")
                 && z.contains("Ota.buildId()), st.noticeDue());"));
         eq("updater keeps no body of its own", false, z.contains("\"v\\\":") || z.contains("Build.getSerial"));

@@ -3,9 +3,38 @@
 # profile, the shared gmpf clients (apps/core/lumen-gmpf), then the Z9X app (its screens, its HAL clients and its
 # menu adapters Z9xFeatures / Z9xGameIo).
 app       Z9xProjector
+module    lumen-system
+module    lumen-aipq
+module    lumen-hdmi
+# the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
+module    lumen-icons
+# problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
+module    lumen-report
+# Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
+module    lumen-qr
+module    lumen-about
+# the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
+module    lumen-remote
+# the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
+# model's rows as data
+module    lumen-signal
+file      devices/horse_popular/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-ui
+module    lumen-source
+file      devices/horse_popular/source.tsv assets/lumen_source/source.tsv
 module    lumen-menu
+# the HDMI-CEC page of every projector (apps/core/lumen-cec), driven by this app's CecPolicyDriver
+module    lumen-cec
+# the stock HDMI-CEC defaults of every model (devices/_image/cec_defaults.tsv) for lumen-cec CecDefaults
+file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv
 file      devices/horse_popular/menu.json assets/lumen_menu/menu.json
+file      devices/horse_popular/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
 # the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer) under the Z9X GmpfClient / Gmpf2Client
 module    lumen-gmpf
-top       apps/Z9xProjector
+# the shared media route rules (apps/core/lumen-audio: MediaPath, ArcAside)
+module    lumen-audio
+# the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
+module    lumen-stats
+module    lumen-control
+top       apps/ProjectorBase
 skip      build/ test/ tools/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

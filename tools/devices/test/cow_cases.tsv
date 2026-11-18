@@ -1,0 +1,27 @@
+# The *-cow cases every implementation of the leftover rule must decide alike, run by
+#   installer_cow_rules.sh   lumen-install.sh (cow_odd, cow_leftover, fb_allowed, the Z9X block, abf_cow_clear)
+#   installer_cow_rules.ps1  lumen-install.ps1 (Cow-Odd, Cow-Leftover, Fb-Allowed, the Z9X block, Abf-Cow-Clear)
+#   the Java tests of the installer that runs on the projector, rows with java=yes (where it is in the tree)
+# and checked for coverage by cow_rules_parity.py.
+# Columns (tab separated): name, snapshot-update-status (the boot HAL merge status), the table (space separated,
+# {s} = the running slot's suffix, {o} = the other one, name=0 for a partition of size 0), the decision, java.
+# Decision: none (no *-cow), clear:<names> (the leftovers deleted, in any order), stop:<name> (the one *-cow that is
+# not a leftover; nothing deleted).
+stale_two	none	system{s} vendor{s} system{s}-cow vendor{s}-cow	clear:system{s}-cow vendor{s}-cow	yes
+stale_one	none	system{s} vendor{s} product{s}-cow product{s}	clear:product{s}-cow	yes
+no_cow	none	system{s} vendor{s}	none	yes
+other_slot	none	system{s} system{o} system{o}-cow	stop:system{o}-cow	yes
+orphan	none	system{s} odm{s}-cow	stop:odm{s}-cow	yes
+orphan_after_leftover	none	system{s} system{s}-cow odm{s}-cow	stop:odm{s}-cow	yes
+prefix_trick	none	xsystem{s} system{s}-cow	stop:system{s}-cow	no
+base_as_substring	none	system{s}_x system{s}-cow	stop:system{s}-cow	no
+upper_case	none	system{s} System{s}-cow	stop:System{s}-cow	no
+upper_case_base_listed	none	System{s} System{s}-cow	stop:System{s}-cow	no
+base_listed_upper	none	SYSTEM{s} system{s}-cow	stop:system{s}-cow	no
+dash_in_base	none	vendor-x{s} vendor-x{s}-cow	stop:vendor-x{s}-cow	no
+base_of_size_0	none	system{s}=0 system{s}-cow	stop:system{s}-cow	no
+cow_of_cow	none	system{s} system{s}-cow system{s}-cow-cow	stop:system{s}-cow-cow	no
+no_slot	none	system system-cow	stop:system-cow	no
+snapshotted	snapshotted	system{s} system{s}-cow	stop:system{s}-cow	yes
+merging	merging	system{s} system{s}-cow	stop:system{s}-cow	yes
+upper_suffix	none	system{s} system{s}-COW	none	no

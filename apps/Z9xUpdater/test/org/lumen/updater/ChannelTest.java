@@ -33,8 +33,8 @@ public final class ChannelTest {
         eq("null", "update-stable.json", Ota.channelFile(null));
         // the fallback when the image has no manifest prop: the channel tag z9x too (1.0.9), never releases/latest
         // the published edition's file: the tag z9x holds no update-stable.json
-        eq("fallback on the tag z9x", b + "update-public-nogms.json", Ota.DEFAULT_MANIFEST_URL);
-        eq("fallback file", "update-public-nogms.json", Ota.channelFile(Ota.DEFAULT_MANIFEST_URL));
+        eq("fallback on the tag z9x", b + "update-public-nogms.json", Target.SPEC.defaultManifest);
+        eq("fallback file", "update-public-nogms.json", Ota.channelFile(Target.SPEC.defaultManifest));
         // Preflight's guard: "update-" + channel + ".json" must be this file
         eq("guard nogms", true, ("update-" + "public-nogms" + ".json").equals(Ota.channelFile(b + "update-public-nogms.json")));
         eq("guard crossed", false, ("update-" + "public" + ".json").equals(Ota.channelFile(b + "update-public-nogms.json")));

@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">취소</string>
     <string name="lumen_m_panel_boost_press_again">→를 한 번 더 누르면 Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">←를 한 번 더 누르면 Boost 종료</string>
+    <string name="lumen_m_lamp_off_press_again">화면이 꺼집니다. 다시 켜려면 전원 버튼을 누르세요. ←를 한 번 더 누르면 꺼집니다.</string>
     <string name="lumen_m_toast_setup_running">먼저 설정을 완료하세요</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI 화질</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">정확한 색상</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">앰비언트 스피커</string>
     <string name="lumen_m_ct_custom">사용자 지정</string>
     <string name="lumen_m_lamp_off">화면 끄기</string>
+    <string name="lumen_m_iris">조리개 조정</string>
+    <string name="lumen_m_iris_dynamic">다이내믹</string>
+    <string name="lumen_m_iris_lamp_dynamic">조리개가 다이내믹일 때는 밝기를 바꿀 수 없습니다.</string>
+    <string name="lumen_m_iris_lamp_held">이 조리개 설정에서는 밝기를 바꿀 수 없습니다.</string>
 </resources>

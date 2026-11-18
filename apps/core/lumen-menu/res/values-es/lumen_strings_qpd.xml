@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Zoom</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Red</string>
+    <string name="lumen_qpd_theme">Tema</string>
+    <string name="lumen_qpd_theme_light">Claro</string>
+    <string name="lumen_qpd_theme_dark">Oscuro</string>
+    <string name="lumen_qpd_theme_auto">Automático</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Duplicar pantalla</string>
     <string name="lumen_qpd_mirror_on">Duplicar pantalla (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Brillo máximo. Los ventiladores suenan más.</string>
     <string name="lumen_qpd_tip_picture">Elija un modo según lo que vea.</string>
     <string name="lumen_qpd_tip_rear">Usted y el proyector están a lados opuestos de la pantalla.</string>
+    <string name="lumen_qpd_tip_front">Usted y el proyector están del mismo lado de la pantalla.</string>
+    <string name="lumen_qpd_tip_table">El proyector está sobre una mesa.</string>
+    <string name="lumen_qpd_tip_ceiling">El proyector cuelga del techo boca abajo.</string>
+    <string name="lumen_qpd_tip_auto">El proyector detecta si está apoyado o colgado y gira la imagen solo.</string>
 </resources>

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "device": "x50",
+  "channel": "x50-beta",
+  "published_utc": 1794750290,
+  "version": "1.0.10-beta8",
+  "version_code": 1001008,
+  "build_utc": 1794748620,
+  "build_id": "lumen-x50-1.0.10-beta8-202611151317",
+  "requires": {
+    "vendor_incremental": [
+      "v1.2.64",
+      "v1.2.54"
+    ],
+    "min_version_code": 0,
+    "blobs_set": [
+      "x50-v1264-b"
+    ]
+  },
+  "model": "G0111",
+  "trial_only": false,
+  "image": {
+    "name": "lumen-os-x50-1.0.10-beta8-nogms-system.img",
+    "size": 997076992,
+    "sha256": "33b02aa0fc3401650077a7ebc2b080b4bb5cd17d780d7beead99be0d123e9baf",
+    "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50-1.0.10-beta8/lumen-os-x50-1.0.10-beta8-nogms-system.img"
+  },
+  "changelog": {
+    "en": "Lumen OS for the XGIMI X50 Ultra, beta 1.0.10-beta8. Lumen OS updates itself over the internet. Installing for good from the trial works only on XGIMI firmware V1.2.64. Make the recovery stick XGIMI_HORSEPOPULAR_XR04E.bin before you install: after an install it is the only way back to the XGIMI system. Installing erases everything on the projector. The trial also runs on V1.2.54.",
+    "ru": "Lumen OS для XGIMI X50 Ultra, бета 1.0.10-beta8. Lumen OS сама обновляется через интернет. Установить насовсем из пробного запуска можно только на прошивке XGIMI V1.2.64. Перед установкой сделайте флешку восстановления XGIMI_HORSEPOPULAR_XR04E.bin: после установки вернуть систему XGIMI можно только ей. Установка стирает всё на проекторе. Проба работает и на V1.2.54."
+  },
+  "packages": []
+}

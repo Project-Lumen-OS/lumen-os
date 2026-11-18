@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC غير متاح</string>
+    <string name="lumen_cec_master">التحكم عبر HDMI-CEC</string>
+    <string name="lumen_cec_master_note">عند إيقاف HDMI-CEC، لا يتوفر الصوت عبر HDMI ARC.</string>
+    <string name="lumen_cec_wake">التشغيل بواسطة جهاز HDMI</string>
+    <string name="lumen_cec_wake_note">عند تشغيل هذا الخيار، تُطفأ أجهزة HDMI أيضًا عند إيقاف جهاز العرض.</string>
+    <string name="lumen_cec_night">الحماية الليلية</string>
+    <string name="lumen_cec_night_off">متوقفة</string>
+    <string name="lumen_cec_night_desc">خلال هذه الساعات لا يمكن لأجهزة HDMI تشغيل جهاز العرض.</string>
+    <string name="lumen_cec_paused">متوقفة مؤقتًا بعد عدة مرات تشغيل بلا صورة. تعود للعمل عند استخدام جهاز التحكم عن بُعد.</string>
+    <string name="lumen_cec_switch">التبديل إلى الجهاز عند تشغيله</string>
+    <string name="lumen_cec_send_standby">إيقاف أجهزة HDMI مع جهاز العرض</string>
+    <string name="lumen_cec_follow_info">عند إيقاف الجهاز الذي تشاهده، ينتقل جهاز العرض أيضًا إلى السكون.</string>
+    <string name="lumen_cec_soundbar">مكبر صوت شريطي أو مستقبل AV ‏(HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">تشغيل مكبر الصوت الشريطي مع جهاز العرض</string>
+    <string name="lumen_cec_control">التحكم في أجهزة HDMI بجهاز التحكم هذا</string>
+    <string name="lumen_cec_internal_exit">إبلاغ الجهاز عند مغادرة HDMI</string>
+    <string name="lumen_cec_devices">الأجهزة المتصلة</string>
+    <string name="lumen_cec_no_devices">لم يتم العثور على أجهزة HDMI-CEC</string>
+    <string name="lumen_cec_state_on">قيد التشغيل</string>
+    <string name="lumen_cec_state_standby">وضع الاستعداد</string>
+    <string name="lumen_cec_dev_unnamed">جهاز HDMI</string>
+    <string name="lumen_cec_dev_soundbar">مكبر صوت شريطي / مستقبل AV</string>
+    <string name="lumen_cec_name_on_hdmi">الاسم على HDMI: %1$s</string>
+</resources>

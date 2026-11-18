@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Trapèze</string>
     <string name="lumen_later">Plus tard</string>
     <string name="lumen_limited">Limitée</string>
-    <string name="lumen_looking_for_the_remote">Recherche de la télécommande…</string>
     <string name="lumen_manual_focus">Mise au point manuelle</string>
     <string name="lumen_movie">Film</string>
     <string name="lumen_music">Musique</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Indisponible au niveau de luminosité Boost</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Indisponible en mode Image IA</string>
     <string name="lumen_not_available_in_the_office_mode">Indisponible en mode Bureau</string>
+    <string name="lumen_not_available_in_the_performance_mode">Indisponible en mode Performance</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Indisponible tant que le mode jeu est activé</string>
     <string name="lumen_obstacle_avoidance">Évitement d\'obstacles</string>
     <string name="lumen_off">Désactivé</string>
     <string name="lumen_office">Bureau</string>

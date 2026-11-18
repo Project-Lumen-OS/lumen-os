@@ -3,6 +3,7 @@ package org.lumen.projector.panel;
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuProfile;
+import org.lumen.menu.MenuSpec;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -52,6 +53,15 @@ public final class HbMenuGatesTest {
     }
 
     /** A feature waiting for the module: its option tokens are listed as "feature|token" under the profile's pending. */
+    /** the profile features the HB adapter serves: all but the module screens and settings the menu handles itself */
+    private static List<FeatureId> served(MenuProfile p) {
+        List<FeatureId> out = new ArrayList<>();
+        for (FeatureId f : p.features()) {
+            if (!MenuSpec.module(f)) out.add(f);
+        }
+        return out;
+    }
+
     private static boolean pending(MenuProfile p, String feature) {
         for (String x : p.pending()) if (x.startsWith(feature + "|")) return true;
         return false;
@@ -69,7 +79,7 @@ public final class HbMenuGatesTest {
             gateIds.add(g[0].toString());
             if (!pending(p, g[0].toString())) shown.add(g[0].toString());
         }
-        eq("gate rows without the pending ones = profile features (order)", ids(p.features()), shown);
+        eq("gate rows without the pending ones = profile features (order)", ids(served(p)), shown);
         eq("no gate row twice", gateIds.size(), new HashSet<>(gateIds).size());
         for (String id : gateIds) check("known feature " + id, FeatureId.known(id) != null);
         for (String id : gateIds) check("gate row " + id + " is a profile feature or pending", p.has(FeatureId.known(id)) || pending(p, id));
@@ -77,7 +87,7 @@ public final class HbMenuGatesTest {
         // ---- presence per unit
         Set<String> all = new HashSet<>(ids(HbMenuGates.implemented(G0130)));
         eq("G0130: every gate row", new HashSet<>(gateIds), all);
-        check("G0130: every profile feature", all.containsAll(ids(p.features())));
+        check("G0130: every profile feature", all.containsAll(ids(served(p))));
         Set<String> g48 = new HashSet<>(ids(HbMenuGates.implemented(G0148)));
         check("G0148: no boost", !g48.contains("boost"));
         check("G0148: no colour temperature", !g48.contains("picture.color_temp"));
@@ -130,7 +140,7 @@ public final class HbMenuGatesTest {
             for (String tok : t.wire.keySet()) eq("round trip " + t.feature + " " + tok, tok, t.token(t.wire(tok)));
         }
         for (FeatureId f : p.features()) {
-            if (f.kind == FeatureKind.CHOICE && f != FeatureId.EYE) check("table for choice " + f, HbMenuGates.table(f) != null);
+            if (f.kind == FeatureKind.CHOICE && f != FeatureId.EYE && !MenuSpec.module(f)) check("table for choice " + f, HbMenuGates.table(f) != null);
         }
 
         // ---- HB wire values (stock tree order, GmpfClient enums, allowed.tsv)
@@ -150,6 +160,15 @@ public final class HbMenuGatesTest {
         eq("output bt kind", "BT", HbMenuGates.outputKind("bt"));
         eq("output kind back", "bt", HbMenuGates.outputToken("BT"));
         eq("output unknown", null, HbMenuGates.outputKind("hdmi"));
+        // 2026-11-14 (Slava): Headphones chosen, no Bluetooth output: the row must not offer Bluetooth (the HB refused
+        // it and the row kept showing it); the options are the rows the HB offers, in their order, each once
+        eq("output options: the offered rows only", Arrays.asList("auto", "speaker", "arc", "wired"),
+                HbMenuGates.outputTokens(Arrays.asList("AUTO", "SPEAKER", "ARC", "WIRED")));
+        eq("output options: bt while connected", Arrays.asList("auto", "speaker", "bt", "wired"),
+                HbMenuGates.outputTokens(Arrays.asList("AUTO", "SPEAKER", "BT", "WIRED")));
+        eq("output options: once each, unknown dropped", Arrays.asList("auto", "bt"),
+                HbMenuGates.outputTokens(Arrays.asList("AUTO", "BT", "BT", "HDMI")));
+        eq("output options: none read", new ArrayList<String>(), HbMenuGates.outputTokens(null));
 
         // ---- light without the Boost step
         eq("light min", 1, p.number(FeatureId.LAMP, "min", -1));

@@ -91,6 +91,7 @@ final class Play6PictureRows extends Play6Rows {
         write("667 picture mode " + m, cb, (g, g2) -> {
             if (Play6MenuGates.gamePicture(g.getPictureModeRaw())) return "p6_pic_game_hint";
             if (!g.setPictureMode(Play6Values.pictureMode(m))) throw new IllegalStateException("667 returned false");
+            org.lumen.projector.AiScenePolicy.afterOwnWrite(g, m);
             return null;
         });
     }

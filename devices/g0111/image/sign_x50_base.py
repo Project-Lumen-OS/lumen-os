@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""sign_x50_base.py: the X50 (g0111) image's platform set on the g0111 keys (t12). Mac only for every step that
+"""sign_x50_base.py: an X50 family image's platform set on that model's keys (t12; g0111 below stands for the model). Mac only for every step that
 reads a key; the two key-free APEX steps run on the build host (image.conf host) with tools/sign/apex_laptop.py.
 
 Why: the X50 image is composed from the published Z9X 1.0.9 image, whose framework-res and every other APK of the
@@ -53,18 +53,22 @@ import sign_device  # noqa: E402  (read only)
 import x50_apk_check  # noqa: E402  (signers() of the APK signing block)
 apexlib, sign_tar, sign_play6, devices = sign_device.apexlib, sign_device.sign_tar, sign_device.sign_play6, sign_device.devices
 
-# the X50 model whose platform set this is: g0111 X50 Ultra (default) or g0100 X50 Ultra Max (its own keys, 2026-11-11):
-#   X50_CODENAME=g0100 python3 devices/g0111/image/sign_x50_base.py all  ->  build/g0100/stage/base_signed
+import x50_family  # noqa: E402  (the X50 family of the registry, read from the build descriptors)
+
+# the X50 family model whose platform set this is (g0111 X50 Ultra by default; any model whose devices/<c>/build.conf
+# takes the X50 recipe, each on its own keys):
+#   X50_CODENAME=h0062 python3 devices/g0111/image/sign_x50_base.py all  ->  build/h0062/stage/base_signed
 C = os.environ.get("X50_CODENAME", "g0111")
-if C not in ("g0111", "g0100"):
-    sys.exit("sign_x50_base: X50_CODENAME %s is not an X50 model (g0111, g0100)" % C)
+FAMILY = x50_family.members(G)
+if C not in FAMILY:
+    sys.exit("sign_x50_base: X50_CODENAME %s is not an X50 family model (%s)" % (C, ", ".join(FAMILY)))
 TAR_DEFAULT = os.path.join(os.path.dirname(G), "gsi", "build", "lumen_v1-1.0.9",
                            "system_tv_lumen_v1_public_nogms_signed.tar")
 # the Z9X 1.0.9 signed tar the published image lumen-os-1.0.9-nogms-system.img (base.sha256) was made from
 # (gsi/build/lumen_v1-1.0.9/outputs.sha256)
 TAR_SHA256 = "48099c2b59511c9c63b6290718479c215887fb28b3629392ff0c2ca0bbb12117"
 BASE_REMOTE = "x50-out/base/z9x-1.0.9-anp-system.img"
-APEX_WORK_REMOTE = "x50-out/apex_sign" if C == "g0111" else "x50max-out/apex_sign"
+APEX_WORK_REMOTE = FAMILY[C]["remote_dir"] + "/apex_sign"   # the model's own work folder on its build host
 HOST_BIN_REMOTE = "lumen-builder-backup/lineage-out/host/linux-x86/bin"   # the host tools of the Z9X base build
 Z9X_PLATFORM = os.path.join(G, "tools", "sign", "release_certs", "platform.x509.pem")
 MINE = os.path.join(G, "devices", C, "certs", "platform.x509.pem")
@@ -341,7 +345,8 @@ def stage_base(x):
             for n, p, i in todo:
                 dst = os.path.join(part, n)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
-                futs[ex.submit(sign_tar.resign_apk, p, dst, key, i["schemes"], x.tools, x.env)] = (n, p, dst)
+                futs[ex.submit(sign_tar.resign_apk, sign_device.resign_input({"path": n, "file": p}, work), dst, key,
+                                i["schemes"], x.tools, x.env)] = (n, p, dst)
             for f in cf.as_completed(futs):
                 f.result()
                 n, p, dst = futs[f]

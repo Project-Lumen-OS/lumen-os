@@ -21,7 +21,7 @@
 #   WORK         work folder, no spaces (default build/selfbuild in this repository)
 #   ANDROID_NDK  Android NDK r29 (29.0.14206865) for the AirPlay receiver's native library ('apps')
 #   AIRPLAY_NATIVE_DIR  instead of the NDK: a folder with arm64-v8a/ and armeabi-v7a/libz9xairplay.so that
-#                you built yourself elsewhere with apps/Z9xAirPlay/jni/build_native.sh (e.g. on a Mac)
+#                you built yourself elsewhere with apps/LumenAirPlay/jni/build_native.sh (e.g. on a Mac)
 #   BOOTANIM_ZIP instead of Pillow + numpy here: a bootanimation.zip you made with tools/brand/gen_bootanim.py
 #                (checked with its --check)
 #   BUILD_DATE   yyyymmdd (default today, UTC)   BUILD_ID_SUFFIX (default snp: s = self, np = no Google)
@@ -180,21 +180,29 @@ cmd_apps() {
   local out=$TREE/overlay/apps_v1 a
   mkdir -p "$out"; rm -f "$out"/*.apk "$out/PINS.sha256"
   if [ -n "${AIRPLAY_NATIVE_DIR:-}" ]; then
-    log "AirPlay native library from $AIRPLAY_NATIVE_DIR (built with apps/Z9xAirPlay/jni/build_native.sh)"
+    log "AirPlay native library from $AIRPLAY_NATIVE_DIR (built with apps/LumenAirPlay/jni/build_native.sh)"
     for a in arm64-v8a armeabi-v7a; do
       [ -f "$AIRPLAY_NATIVE_DIR/$a/libz9xairplay.so" ] || die "no $AIRPLAY_NATIVE_DIR/$a/libz9xairplay.so"
-      mkdir -p "$TREE/apps/Z9xAirPlay/lib/$a"; cp "$AIRPLAY_NATIVE_DIR/$a/libz9xairplay.so" "$TREE/apps/Z9xAirPlay/lib/$a/"
+      mkdir -p "$TREE/apps/LumenAirPlay/lib/$a"; cp "$AIRPLAY_NATIVE_DIR/$a/libz9xairplay.so" "$TREE/apps/LumenAirPlay/lib/$a/"
     done
   else
-    log "AirPlay native library (apps/Z9xAirPlay/jni/build_native.sh, NDK ${ANDROID_NDK:-?})"
+    log "AirPlay native library (apps/LumenAirPlay/jni/build_native.sh, NDK ${ANDROID_NDK:-?})"
     [ -n "${ANDROID_NDK:-}" ] && [ -x "$ANDROID_NDK/ndk-build" ] || die "set ANDROID_NDK to Android NDK r29 (29.0.14206865)"
     [ -d "$TREE/apps/third_party/UxPlay/lib" ] || die "no apps/third_party/UxPlay: clone with --recurse-submodules (git submodule update --init)"
-    ANDROID_NDK=$ANDROID_NDK sh "$TREE/apps/Z9xAirPlay/jni/build_native.sh"
+    ANDROID_NDK=$ANDROID_NDK sh "$TREE/apps/LumenAirPlay/jni/build_native.sh"
   fi
   for a in Z9xProjector Z9xTvInput Z9xAirPlay Z9xHome Z9xSetup Z9xUpdater Z9xFrameworkKeysOverlay \
            Z9xLineagePlatformOverlay Z9xDeviceConfigOverlay Z9xTvSettingsHdrOverlay; do
     log "app $a"
-    VERSION_CODE=$VC VERSION_NAME=$VER BUILD_DIR=$WORK/apkbuild/$a sh "$TREE/apps/build_apk.sh" "$TREE/apps/$a" "$out/$a.apk"
+    d=$(cd "$TREE" && python3 -B tools/devices/assemble_app.py --app-dir "$a")   # apps/app_dirs.tsv: renamed folders
+    src=$TREE/$d
+    # an app with its own recipe (Lumen Home: apps/LumenHome/app.layers, the shared icon set) is assembled first
+    if [ -f "$src/app.layers" ]; then
+      src=$WORK/apptree/$a; rm -rf "$src"
+      ( cd "$TREE" && python3 -B tools/devices/assemble_app.py "$d/app.layers" --out "$src" --quiet ) \
+        || die "the $a recipe does not assemble"
+    fi
+    VERSION_CODE=$VC VERSION_NAME=$VER BUILD_DIR=$WORK/apkbuild/$a sh "$TREE/apps/build_apk.sh" "$src" "$out/$a.apk"
   done
   log "apps: $out"
 }

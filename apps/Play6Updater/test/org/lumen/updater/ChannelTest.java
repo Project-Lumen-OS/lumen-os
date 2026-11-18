@@ -32,9 +32,9 @@ public final class ChannelTest {
         eq("guard crossed", false, ("update-" + "public" + ".json").equals(Ota.channelFile(b + "update-public-nogms.json")));
         // the Play 6's own channel: the fixed tag play6, never the Z9X tag z9x or releases/latest
         String p6 = "https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json";
-        eq("fallback on the tag play6", p6, Ota.DEFAULT_MANIFEST_URL);
-        eq("fallback file", "update-play6.json", Ota.channelFile(Ota.DEFAULT_MANIFEST_URL));
-        eq("device", "play6", Ota.DEVICE);
+        eq("fallback on the tag play6", p6, Target.SPEC.defaultManifest);
+        eq("fallback file", "update-play6.json", Ota.channelFile(Target.SPEC.defaultManifest));
+        eq("device", "play6", Ota.device());
         // no beta channel on any Play 6 edition: no switch, the image's own manifest only
         for (String img : new String[] {p6, b + "update-public-nogms.json", b + "update-stable.json"}) {
             eq("no channels " + img, null, Ota.channels(img));

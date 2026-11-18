@@ -21,7 +21,8 @@ appears at most once, unknown keys are an error; a list is space-separated. Keys
   package_tag        the per-version pre-release tag of the packages, with {version} (e.g. z9x-hb-{version})
   repo               the GitHub repository, owner/name
   ab_ota_partitions  the static partitions update_engine copies from the running slot (ro.product.ab_ota_partitions
-                     of the image, comma-separated there); never vbmeta, never mboot, never a dynamic partition
+                     of the image, comma-separated there): exactly the XGIMI set of the device's models in
+                     apps/core/lumen-fwcopy (fwset.py), never vbmeta, never a dynamic partition, no mboot on the HB
   stage_channel      optional: a channel that may also list the packages of another channel of this device
                      (staged rollout: test units first; the device itself only checks its own channel)
 The channels themselves are the registry's 'channel' list (devices/<codename>/device.conf); each starts with
@@ -56,16 +57,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TOOLS = os.path.dirname(HERE)                  # tools/devices
 ROOT = os.path.dirname(os.path.dirname(TOOLS))  # the tree
 sys.path.insert(0, TOOLS)
+sys.path.insert(0, HERE)
 import devices  # noqa: E402
+import fwset  # noqa: E402
 
 FOLDER = "tools/devices/ota"
 KEYS = ("wire_id", "super_group", "vabc", "sig_size", "scanner", "manifest_tag", "package_tag", "repo",
         "ab_ota_partitions")
 OPTIONAL = ("stage_channel",)
 LISTS = ("ab_ota_partitions",)
-# never in ab_ota_partitions: the AVB root (an update never writes vbmeta), the bootloader (design decision: mboot_a is
-# mboot_b in the dump, so no bootloader write) and the dynamic partitions (in super, not copied as static ones)
-NEVER_STATIC = ("vbmeta", "mboot", "system", "vendor", "product", "system_ext", "odm", "vendor_dlkm", "odm_dlkm",
+# never in ab_ota_partitions: the AVB root (an update never writes vbmeta) and the dynamic partitions (in super, not
+# copied as static ones). mboot is the model's data in apps/core/lumen-fwcopy (2026-11-15: the XGIMI set is
+# copied like XGIMI's own update; the HB keeps it out by design decision), checked by device() through fwset.py
+NEVER_STATIC = ("vbmeta", "system", "vendor", "product", "system_ext", "odm", "vendor_dlkm", "odm_dlkm",
                 "system_dlkm", "super", "userdata", "metadata", "misc")
 # the Z9X channels and its manifest files (tools/ota/make_manifest.py CHANNELS): never a channel of another device
 Z9X_CHANNELS = ("stable", "public", "public-nogms", "public-beta")
@@ -211,6 +215,10 @@ def device(root, codename, publish=False):
     if not os.path.isfile(os.path.join(root, rel)):
         raise OtaError("%s: no %s" % (d["name"], rel))
     c = parse(os.path.join(root, rel))
+    want = fwset.update_list(d["models"])
+    if want is None or c["ab_ota_partitions"] != want:
+        raise OtaError("%s: ab_ota_partitions=%s, the XGIMI set of %s (apps/core/lumen-fwcopy) is %s"
+                       % (rel, " ".join(c["ab_ota_partitions"]), " ".join(d["models"]), " ".join(want or ["none"])))
     if c["wire_id"] != d["installer_id"]:
         raise OtaError("%s: wire_id %s is not the installer_id %s" % (rel, c["wire_id"], d["installer_id"]))
     if d["ota_engine"] == "none":

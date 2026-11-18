@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">모델 코드</string>
+    <string name="lumen_about_dlp">DLP 컨트롤러</string>
+    <string name="lumen_about_part_firmware">%1$s, 펌웨어 %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI 펌웨어</string>
+    <string name="lumen_about_firmware_dated">%1$s (%2$s)</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, 보안 업데이트 %2$s</string>
+    <string name="lumen_about_kernel">커널</string>
+    <string name="lumen_about_boot_loader">시작 펌웨어</string>
+    <string name="lumen_about_gmui">XGIMI 인터페이스</string>
+    <string name="lumen_about_platform">MediaTek 플랫폼</string>
+    <string name="lumen_about_remote">리모컨</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">XGIMI 시스템으로 돌아가기</string>
+    <string name="lumen_about_back_summary_file">USB 메모리 파일: %1$s</string>
+    <string name="lumen_about_back_summary">XGIMI 복구 USB 메모리로</string>
+    <string name="lumen_about_intro">이 모델용 XGIMI 복구 USB 메모리로 XGIMI 시스템을 되돌릴 수 있습니다. 방법은 프로젝트 페이지의 가이드에 있습니다.</string>
+    <string name="lumen_about_usb_file">USB 메모리에 넣을 파일 이름</string>
+    <string name="lumen_about_official">XGIMI 공식 파일</string>
+    <string name="lumen_about_official_value">%1$s, %2$s바이트</string>
+    <string name="lumen_about_searching">이 펌웨어의 공식 파일을 찾는 중</string>
+    <string name="lumen_about_guide_files">XGIMI 공식 파일 목록은 프로젝트 페이지의 가이드에 있습니다.</string>
+    <string name="lumen_about_erases">USB 메모리는 프로젝터의 모든 것을 지웁니다: 앱, 계정, 설정, 파일.</string>
+    <string name="lumen_about_scan">휴대전화로 스캔하여 열기</string>
+    <string name="lumen_about_close">닫기</string>
+</resources>

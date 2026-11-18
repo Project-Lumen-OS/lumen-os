@@ -1,0 +1,21 @@
+# Play 6 G0058 chip volume table (apps/core/lumen-audio ChipTable). Stock V1.7.116 (Android 11) services.jar AudioService
+# VolumeStreamState.setDspVolumesForHal (decompile outp6_as 4693-4745: no ";device=" on bluetooth_volume), the
+# constructor's sets (527-528: fixed DGTL dock 0x1000, ANLG dock 0x800, AUX_LINE; full empty) and the
+# libxgimiaudiopolicy threadInit path table (switch_start / switch_end strings in the V1.7.116 library).
+# kind  type  key               device  path
+out     2     spk_volume        -       0     # builtin speaker 0x2
+out     3     headphone_volume  -       4     # wired headset 0x4
+out     4     headphone_volume  -       4     # wired headphones 0x8
+out     8     bluetooth_volume  -       3     # A2DP set
+out     11    usb_volume        -       6     # USB device 0x4000
+out     22    usb_volume        -       6     # USB headset 0x4000000
+out     6     xgimi_pcm_volume  -       -     # SPDIF 0x80000: a level, never a path
+out     10    -                 -       2     # HDMI ARC: no chip key
+out     29    -                 -       2     # HDMI eARC
+path    0                                     # every other output: the speaker path
+fixed   13                                    # DGTL_DOCK_HEADSET 0x1000
+fixed   31                                    # ANLG_DOCK_HEADSET 0x800
+fixed   19                                    # AUX_LINE 0x200000
+# The mt5889 HAL takes bluetooth_volume only while its sink is A2DP and keeps no level per sink ("doesn't set acap
+# volume! current sink device is not a2dp device", device log 2026-10-24): every level goes again after switch_end.
+levels  after-end

@@ -3,6 +3,7 @@ package org.lumen.projector.ui;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -52,6 +53,13 @@ public abstract class Panel {
     /** Every key event before the view hierarchy gets it. Return true to consume. */
     protected boolean onKeyEvent(KeyEvent ev) { return false; }
 
+    /**
+     * A tool panel (the fine corner adjustment, the zoom card): true = the remote's menu key, the gear, is this panel's
+     * KEYCODE_MENU (a short press reaches {@link #onKeyEvent} as one MENU press, a held gear does nothing) instead of
+     * opening the quick menu over it (org.lumen.menu.KeyTools).
+     */
+    protected boolean takesMenuKey() { return false; }
+
     /** Window added and laid out: start the enter animation. Default: slide in from the right. */
     protected void onShown(View root) {
         float dx = Theme.pxf(root.getContext(), Theme.PANEL_SLIDE);
@@ -89,6 +97,21 @@ public abstract class Panel {
     }
 
     public final View rootView() { return root; }
+
+    /**
+     * The remote's menu key while this panel is on screen (the host's KeyTools.Host#menuKey): a tool panel takes it, a
+     * short press arrives as one KEYCODE_MENU press through the panel's window (the host's key routing and auto-hide
+     * timer), a held gear does nothing. False when this is no tool panel.
+     */
+    final boolean menuKey(boolean held) {
+        if (!showing || root == null || !takesMenuKey()) return false;
+        if (!held) {
+            long t = SystemClock.uptimeMillis();
+            root.dispatchKeyEvent(new KeyEvent(t, t, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU, 0));
+            root.dispatchKeyEvent(new KeyEvent(t, t, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU, 0));
+        }
+        return true;
+    }
 
     /** Format helper: a translucent overlay window format. */
     static int format() { return PixelFormat.TRANSLUCENT; }

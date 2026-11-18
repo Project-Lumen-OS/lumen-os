@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">문제 보고서 보내기</string>
+    <string name="lumen_report_intro">Lumen OS 개발자가 무엇이 잘못되었는지 파악하는 데 도움이 됩니다. ‘보고서 보내기’를 누르기 전에는 아무것도 전송되지 않습니다.</string>
+    <string name="lumen_report_included">포함되는 항목</string>
+    <string name="lumen_report_inc_system">시스템 버전, 가동 시간, 사용 중인 시스템 사본</string>
+    <string name="lumen_report_inc_logs">최근 30분간의 시스템 및 Lumen 앱 로그</string>
+    <string name="lumen_report_inc_crashes">앱 이름이 포함된 비정상 종료, 멈춤, 재시작 기록</string>
+    <string name="lumen_report_inc_kernel">마지막 재시작의 커널 로그와 업데이트 로그</string>
+    <string name="lumen_report_inc_state">화면, 메모리, 네트워크 유형</string>
+    <string name="lumen_report_excluded">삭제되거나 포함되지 않는 항목</string>
+    <string name="lumen_report_exc_accounts">계정, 이메일 주소, 전화번호</string>
+    <string name="lumen_report_exc_network">Wi-Fi 네트워크 이름, IP 및 MAC 주소</string>
+    <string name="lumen_report_exc_serial">일련번호: 대신 이 프로젝터의 임의 ID 사용</string>
+    <string name="lumen_report_exc_apps">직접 설치한 앱의 로그</string>
+    <string name="lumen_report_exc_files">사진, 파일, 비밀번호</string>
+    <string name="lumen_report_footer">보고서는 30일 동안 보관됩니다. Lumen OS 개발자만 열어 볼 수 있습니다.</string>
+    <string name="lumen_report_last">마지막 보고서: %1$s, %2$s</string>
+    <string name="lumen_report_send">보고서 보내기</string>
+    <string name="lumen_report_collecting">정보 수집 중… (%1$d/%2$d)</string>
+    <string name="lumen_report_log_hint">Android에서 기기 로그 액세스를 허용할지 물으면 ‘허용’을 선택하세요.</string>
+    <string name="lumen_report_sending">보내는 중… %1$s/%2$s</string>
+    <string name="lumen_report_done_title">보고서를 보냈습니다</string>
+    <string name="lumen_report_done_text">이 코드를 문제에 대한 간단한 설명과 함께 Lumen OS 개발자에게 보내 주세요.</string>
+    <string name="lumen_report_failed_title">보고서를 보내지 못했습니다</string>
+    <string name="lumen_report_err_no_network">인터넷에 연결되어 있지 않습니다. 네트워크를 확인하고 다시 시도하세요.</string>
+    <string name="lumen_report_err_network">보고서 서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="lumen_report_err_rate">지금은 보고서가 너무 많습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="lumen_report_err_rejected">보고서 서버가 보고서를 받지 않았습니다.</string>
+    <string name="lumen_report_err_server">보고서 서버에 문제가 있습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="lumen_report_err_collect">보고서를 준비하지 못했습니다.</string>
+    <string name="lumen_report_retry">다시 시도</string>
+    <string name="lumen_report_close">닫기</string>
+    <string name="lumen_report_cancel">취소</string>
+    <string name="lumen_report_auto">문제 보고서 자동으로 보내기</string>
+    <string name="lumen_report_auto_note">시스템이나 Lumen 앱이 비정상 종료되거나 멈추면 짧은 보고서가 자동으로 전송됩니다. 직접 설치한 앱의 로그는 절대 포함되지 않습니다.</string>
+    <string name="lumen_report_queued_title">보고서는 나중에 전송됩니다</string>
+    <string name="lumen_report_queued_text">지금은 보고서 서버에 연결할 수 없습니다. 연결되는 대로 프로젝터가 보고서를 자동으로 보냅니다. 그러면 여기에 코드가 표시됩니다.</string>
+    <string name="lumen_report_last_auto">마지막 자동 보고서: %1$s, %2$s</string>
+</resources>

@@ -19,6 +19,7 @@ DisplayManager	4	setDlpLumensMode	setColorTemp [Z9X IGmpf 174]
 DisplayManager	5	getDlpLumensMode	getColorTemp [Z9X IGmpf 175]
 DisplayManager	6	setDlpLumensLevel	setLampLevel [Z9X IGmpf 176]
 DisplayManager	7	getDlpLumensLevel	getLampLevel [Z9X IGmpf 177]
+DisplayManager	10	isVideoPlaying	isVideoPlaying (lumen-aipq AiPqDriver, AiScenePolicy): read only, the stock AI picture quality's video-type monitor (XRMService AIPQ: GmDisplayManager.isVideoPlaying) [Z9X IGmpf 180]
 DisplayManager	15	setCorrectKeystoneFullPiont	applyKeystonePoints [Z9X IGmpf 185]
 DisplayManager	16	getCorrectKeystoneFullPiont	getKeystonePoints [Z9X IGmpf 186]
 DisplayManager	27	setScreenOnOff	setScreenOn [Z9X IGmpf 195]
@@ -65,6 +66,7 @@ GmAudioManager	15	SetPEQEnable	setPeqEnabled [Z9X IGmpf 51]
 GmAudioManager	16	SetPEQ	setPeqBand [Z9X IGmpf 50]
 GmFactoryManager	45	savePowerOnAKFlag	setPowerOnAk [Z9X IGmpf 552]; EXCEPTION row of banned.tsv (boot auto keystone switch)
 GmFactoryManager	46	getPowerOnAKFlag	getPowerOnAk [Z9X IGmpf 553]; EXCEPTION row of banned.tsv (boot auto keystone switch)
+GmTvManager	1	setGmTvCallback	setTvListener [Z9X IGmpf 702 setGmTvListener]
 GmTvManager	3	switchInputSource	switchInputSource [Z9X IGmpf 698] (hb-t9 HDMI black screen: Gmpf 25 switchInputSourceWithCallingPid is unimplemented on the HB vendor, never sent); 0 Android / 1 HDMI1 / 2 HDMI2 only (GmpfClient); stock xhplayer TV.switchInputSource TV.smali:1568 (inputToInt: HDMI1TVINPUTSERVICE 1, HDMI2TVINPUTSERVICE 2) and TV.switchToMM TV.smali:1603 (0); IGmTvManager$Stub$Proxy.switchInputSource writeInt, transact 3, readBoolean
 GmTvManager	4	getCurrentInputSource	getCurrentInputSource [Z9X IGmpf 696]
 GmTvManager	5	setContrast	setPq(CONTRAST) [Z9X IGmpf 695]
@@ -105,8 +107,10 @@ GmTvManager	63	setHdmiRange	setHdmiRange [Z9X IGmpf 635]
 GmTvManager	64	getHdmiRange	getHdmiRange [Z9X IGmpf 634]
 GmTvManager	65	setEARCEnable	setEarc [Z9X IGmpf 633]
 GmTvManager	66	getEARCEnableState	getEarc [Z9X IGmpf 632]
+GmTvManager	75	getDolbyVisionPicMode	getDolbyVisionPicMode [Z9X IGmpf 623, parked there: no Dolby Vision]; read only, signal panel (lumen-signal), shown only while getHdrType says Dolby Vision
 GmTvManager	78	getHdrType	getHdrType [Z9X IGmpf 620]
 GmTvManager	79	getEARCStatus	getEarcStatus (cec/EarcLink): read, stock XRMService SignalChangeReceiver.register (== 3 = eARC linked)
+GmTvManager	106	getSignalStatus	getSignalStatus (source/HdmiRelink, game/GameProfile): read, stock xhplayer InputActivity (== 3 = SignalStable) [Z9X IGmpf 592]
 GmTvManager	112	getHsyPictureModeEnable	getColorOptimization [Z9X IGmpf2 330]
 GmTvManager	113	setTvDynamicContrastEnable	setDynamicContrast [Z9X IGmpf2 329]
 GmTvManager	114	getTvDynamicContrastEnable	getDynamicContrast [Z9X IGmpf2 328]
@@ -124,9 +128,12 @@ GmTvManager	147	setGamePictureMode	setGamePicture [-]; game bar game picture, (0
 GmTvManager	148	getGamePictureMode	getGamePicture [-]; (HDMI 1 | 2), -1 read as 0, stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) GameModeApi.getPictureMode
 GmTvManager	149	setDarkBoostOnoff	setDarkBoost [-]; game bar dark enhance, (bool, game picture 0..4, HDMI 1 | 2), stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) OtherViewModel.setDarkEnhance
 GmTvManager	150	getDarkBoostState	getDarkBoost [-]; (game picture 0..4, HDMI 1 | 2), stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) OtherViewModel.getDarkEnhance
+GmTvManager	153	getHdmiHwConfig	getHdmiHwConfig [-]; read only by shape (no set counterpart), LumenInfo reads it already (allowed_lumeninfo.tsv); signal panel port row (CEC, ARC, physical address)
+GmTvManager	163	getExtDecInfo	getExtDecInfo [Z9X IGmpf2 279]; read only, keys "format&isimax" and "format&isfmm" only (Gmpf2Base refuses any other); signal panel IMAX Enhanced and Filmmaker Mode rows
 GmTvManager	164	ResetPictureToDefault	resetPicture [Z9X IGmpf2 278]
 GmTvManager	165	setOneOfMultiPointWB	setMultiPointWb [Z9X IGmpf2 282]
 GmTvManager	166	getOneOfMultiPointWB	getMultiPointWb [Z9X IGmpf2 281]
+GmTvManager	173	getAmdFreeSyncState	getFreeSync [Z9X IGmpf2 271]; read only, signal panel FreeSync row
 GmTvManager	174	ToggleHDRDyToneMapping	setHdrDynamicToneMapping [Z9X IGmpf2 270]
 GmTvManager	175	GetHDRDyToneMappingStatus	getHdrDynamicToneMapping [Z9X IGmpf2 269]
 GmTvManager	191	setHGiGMode	setHgig [-]; game bar HDR settings with 174, only while 78 reads HDR10, stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) OtherViewModel.setHdrMode

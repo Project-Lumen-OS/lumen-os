@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Memoria de la lente</string>
+    <string name="lumen_m_focus_guide">Enfoque con el mando</string>
+    <string name="lumen_qpd_tip_focus_guide">Pulse el botón de enfoque del lateral del mando y el proyector enfoca solo. Manténgalo pulsado para enfocar a mano.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Pulse el botón de enfoque del mando y el proyector enfoca solo. Manténgalo pulsado para enfocar a mano.</string>
+</resources>

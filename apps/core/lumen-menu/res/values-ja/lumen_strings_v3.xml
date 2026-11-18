@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">キャンセル</string>
     <string name="lumen_m_panel_boost_press_again">もう一度 → を押すと Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">もう一度 ← を押すと Boost を終了</string>
+    <string name="lumen_m_lamp_off_press_again">画面がオフになります。元に戻すには電源ボタンを押します。もう一度 ← を押すとオフになります。</string>
     <string name="lumen_m_toast_setup_running">先にセットアップを完了してください</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI 映像</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">色忠実</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">アンビエントスピーカー</string>
     <string name="lumen_m_ct_custom">カスタム</string>
     <string name="lumen_m_lamp_off">画面をオフ</string>
+    <string name="lumen_m_iris">絞り調整</string>
+    <string name="lumen_m_iris_dynamic">ダイナミック</string>
+    <string name="lumen_m_iris_lamp_dynamic">絞りがダイナミックのときは明るさを変更できません。</string>
+    <string name="lumen_m_iris_lamp_held">この絞りの設定では明るさを変更できません。</string>
 </resources>

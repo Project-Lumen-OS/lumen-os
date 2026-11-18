@@ -4,10 +4,12 @@
 # (the tree is then assembled first, into a temp dir, from the first devices/*/app/LumenUpdater.layers).
 #   1. recipe copies: every devices/*/app/LumenUpdater.layers is a byte copy of apps/LumenUpdater/LumenUpdater.layers
 #     
-#   2. strings: key parity of strings_lumen_ota.xml across all locales of the app (strings_parity.py)
-#   3. ChannelTest, PreflightHbTest, PreflightGateTest and BetaTest (Ota and Preflight with the SystemProperties
-#      stand-in of stubs/; the gate probe with a fake gate; the Beta updates switch and no downgrade), and the Z9X
-#      OutcomeTest unchanged
+#   2. the Target's compressed-snapshot wire ids equal devices/*/ota.conf vabc=yes of the models with this recipe
+#      (NeutralTargetTest compares);
+#   3. ChannelTest, PreflightHbTest, PreflightGateTest and BetaTest on the assembled neutral updater (Ota and
+#      Preflight with the SystemProperties stand-in of apps/core/lumen-updater/test/stubs; the gate probe with a fake
+#      gate; the Beta updates switch and no downgrade). The shared code (strings, Outcome, worker, parity) has its
+#      own checks: apps/core/lumen-updater/test/run.sh
 # Mac only, no device, no network. Writes only a temp dir.
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)
@@ -30,25 +32,30 @@ for r in "$G"/devices/*/app/LumenUpdater.layers; do
 done
 [ $n -gt 0 ] || { echo "FAIL no device copy devices/*/app/LumenUpdater.layers"; exit 1; }
 echo "recipe copies: $n identical to apps/LumenUpdater/LumenUpdater.layers"
+# the Target's compressed-snapshot table = the wire ids of devices/*/ota.conf vabc=yes among the models with this recipe
+VABC=$(python3 -B -c 'import glob, os, sys
+sys.path.insert(0, os.path.join(sys.argv[1], "tools/devices/ota"))
+import ota_conf
+ids = []
+for r in glob.glob(os.path.join(sys.argv[1], "devices/*/app/LumenUpdater.layers")):
+    c = ota_conf.parse(os.path.join(os.path.dirname(os.path.dirname(r)), "ota.conf"))
+    if c["vabc"] == "yes":
+        ids.append(c["wire_id"])
+print(",".join(sorted(ids)))' "$G")
+echo "ota.conf vabc=yes: ${VABC:-none}"
 
-T=$HERE
-if [ ! -f "$T/src/org/lumen/updater/Engine.java" ]; then
-  python3 -B "$G/tools/devices/assemble_app.py" --root "$G" "$RCP" --out "$OUT/tree" --quiet
-  T=$OUT/tree
-fi
+T=$OUT/tree
+python3 -B "$G/tools/devices/assemble_app.py" --root "$G" "$RCP" --out "$T" --quiet
 
-python3 -B "$T/test/ota/strings_parity.py" "$T" "$G/apps/Z9xUpdater/res"
-
-S=$T/src/org/lumen/updater
+STUB=$G/apps/core/lumen-updater/test/stubs/android/os/SystemProperties.java
 mkdir -p "$OUT/j"
-"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/j" -cp "$HJ:$AJ" \
-  "$T/test/ota/stubs/android/os/SystemProperties.java" "$S/Ota.java" "$S/Channels.java" "$S/Preflight.java" "$S/Engine.java" \
-  "$S/UpdateManifest.java" "$S/Outcome.java" "$S/BootVerdict.java" "$S/GateVerdict.java" "$S/GateReason.java" "$S/InstallError.java" "$T/test/org/lumen/updater/ChannelTest.java" \
-  "$T/test/org/lumen/updater/PreflightHbTest.java" "$T/test/org/lumen/updater/PreflightGateTest.java" \
-  "$T/test/org/lumen/updater/OutcomeTest.java" "$T/test/org/lumen/updater/BetaTest.java"
-"$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.OutcomeTest
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/j" -cp "$HJ:$AJ" -sourcepath "$T/src" "$STUB" \
+  "$HERE/test/org/lumen/updater/ChannelTest.java" "$HERE/test/org/lumen/updater/PreflightHbTest.java" \
+  "$HERE/test/org/lumen/updater/PreflightGateTest.java" "$HERE/test/org/lumen/updater/BetaTest.java" \
+  "$HERE/test/org/lumen/updater/NeutralTargetTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.ChannelTest
 "$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.PreflightHbTest
 "$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.PreflightGateTest
 "$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.BetaTest
+"$JAVA_HOME/bin/java" -cp "$OUT/j:$AJ:$HJ" org.lumen.updater.NeutralTargetTest "$VABC"
 echo "LumenUpdater host tests: green"

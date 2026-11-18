@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">色彩范围</string>
     <string name="lumen_m_hdmi_range_full">完整</string>
     <string name="lumen_m_hdmi_range_limited">限制</string>
+    <string name="lumen_m_hdmi_range_auto_full">自动 (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">自动 (Limited)</string>
     <string name="lumen_m_kst_more">其他</string>
+    <string name="lumen_m_kst_size_position">大小和位置</string>
+    <string name="lumen_m_kst_smart">智能</string>
     <string name="lumen_m_kst_restore">恢复原始画面</string>
     <string name="lumen_m_launcher_classic">Android TV（经典）</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">游戏模式</string>
     <string name="lumen_m_panel_game_speed">响应速度</string>
     <string name="lumen_m_panel_high">高</string>
-    <string name="lumen_m_panel_image_correction_settings">画面校正设置</string>
     <string name="lumen_m_panel_lamp">亮度</string>
     <string name="lumen_m_panel_lamp_hint">在 10 级时连按两次 → 开启 Boost。</string>
     <string name="lumen_m_panel_low">低</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">关</string>
     <string name="lumen_m_panel_on">开</string>
     <string name="lumen_m_panel_optical_zoom">光学变焦</string>
-    <string name="lumen_m_panel_optical_zoom_summary">改变画面大小，不损失清晰度。自动梯形校正和“对齐幕布”会再次调整变焦。</string>
     <string name="lumen_m_panel_picture_mode">图像模式</string>
     <string name="lumen_m_panel_picture_reset">重置图像设置</string>
     <string name="lumen_m_panel_pm_ai">AI 画质</string>
@@ -134,4 +136,11 @@
     <string name="lumen_m_remote">配对遥控器</string>
     <string name="lumen_m_ct_standard">标准</string>
     <string name="lumen_m_ct_movie">电影</string>
+    <string name="lumen_m_signal">信号</string>
+    <string name="lumen_m_signal_pin">信号卡片始终显示</string>
+    <string name="lumen_m_signal_refresh">信号卡片刷新</string>
+    <string name="lumen_m_signal_refresh_normal">普通</string>
+    <string name="lumen_m_signal_refresh_fast">快速</string>
+    <string name="lumen_m_signal_refresh_note">快速：画面偶尔可能卡顿</string>
+    <string name="lumen_m_hdr_developer">开发者</string>
 </resources>

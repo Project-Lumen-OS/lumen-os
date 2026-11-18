@@ -24,11 +24,6 @@
     <string name="val_off">Выкл.</string>
     <string name="val_unknown">Няма даных</string>
     <string name="val_not_ready">Праектар не гатовы</string>
-    <string name="key_slot3">Кнопка iQIYI</string>
-    <string name="key_slot4">Кнопка bilibili</string>
-    <string name="slot_default_fmt">%1$s (па змаўчанні)</string>
-    <string name="slot_default_item">Па змаўчанні: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: праграмы</string>
     <string name="cancel">Скасаваць</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Праграма для гэтай кнопкі не знойдзена</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Спачатку ўключыце «Упісваць у экран»</string>
     <string name="toast_not_ready">Праектар яшчэ не гатовы</string>
     <string name="toast_failed">Не ўдалося выканаць</string>
-    <string name="toast_curtain_offer">Відарыс зрушыўся: Праектар → Трапецыя → «Упісаць у экран зараз»</string>
+    <string name="toast_curtain_offer">Відарыс зрушыўся: Праектар › Трапецыя › «Упісаць у экран зараз»</string>
     <string name="toast_setup_running">Спачатку завяршыце наладжванне</string>
 </resources>

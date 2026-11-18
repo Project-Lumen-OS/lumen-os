@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">Колірний діапазон</string>
     <string name="lumen_m_hdmi_range_full">Повний</string>
     <string name="lumen_m_hdmi_range_limited">Обмежений</string>
+    <string name="lumen_m_hdmi_range_auto_full">Авто (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">Авто (Limited)</string>
     <string name="lumen_m_kst_more">Інше</string>
+    <string name="lumen_m_kst_size_position">Розмір і положення</string>
+    <string name="lumen_m_kst_smart">Розумний</string>
     <string name="lumen_m_kst_restore">Повернути початкове зображення</string>
     <string name="lumen_m_launcher_classic">Android TV (класичний)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">Ігровий режим</string>
     <string name="lumen_m_panel_game_speed">Швидкість відгуку</string>
     <string name="lumen_m_panel_high">Висока</string>
-    <string name="lumen_m_panel_image_correction_settings">Налаштування корекції</string>
     <string name="lumen_m_panel_lamp">Яскравість</string>
     <string name="lumen_m_panel_lamp_hint">На рівні 10 натисніть → двічі, щоб увімкнути Boost.</string>
     <string name="lumen_m_panel_low">Низька</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">Вимк.</string>
     <string name="lumen_m_panel_on">Увімк.</string>
     <string name="lumen_m_panel_optical_zoom">Оптичний зум</string>
-    <string name="lumen_m_panel_optical_zoom_summary">Розмір зображення без втрати чіткості. Автотрапеція і «Вписувати в екран» знову змінюють зум.</string>
     <string name="lumen_m_panel_picture_mode">Режим зображення</string>
     <string name="lumen_m_panel_picture_reset">Скидання налаштувань</string>
     <string name="lumen_m_panel_pm_ai">AI-якість</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">Кут по горизонталі</string>
     <string name="lumen_m_angle_v">Кут по вертикалі</string>
     <string name="lumen_m_dynamic_contrast">Динамічний контраст</string>
-    <string name="lumen_m_dynamic_black">Посилення чорного</string>
+    <string name="lumen_m_dynamic_black">Динамічне покращення рівня чорного</string>
     <string name="lumen_m_sleep_timer">Таймер сну</string>
     <string name="lumen_m_remote">Підключити пульт</string>
     <string name="lumen_m_ct_standard">Стандартна</string>
     <string name="lumen_m_ct_movie">Кіно</string>
+    <string name="lumen_m_signal">Сигнал</string>
+    <string name="lumen_m_signal_pin">Картка сигналу завжди на екрані</string>
+    <string name="lumen_m_signal_refresh">Оновлення картки сигналу</string>
+    <string name="lumen_m_signal_refresh_normal">Звичайне</string>
+    <string name="lumen_m_signal_refresh_fast">Швидке</string>
+    <string name="lumen_m_signal_refresh_note">Швидке: можливі рідкісні посмикування кадру</string>
+    <string name="lumen_m_hdr_developer">Для розробників</string>
 </resources>

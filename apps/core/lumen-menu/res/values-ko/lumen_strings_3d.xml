@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
+     locale ko) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">3D 설정</string>
+    <string name="lumen_m_3d_off">3D 비활성화</string>
+    <string name="lumen_m_3d_sbs">사이드 바이 사이드</string>
+    <string name="lumen_m_3d_tb">상하 (탑 앤 바텀)</string>
+    <string name="lumen_m_3d_sbs_2d">3D를 2D로 (사이드 바이 사이드)</string>
+    <string name="lumen_m_3d_tb_2d">3D를 2D로 (상하)</string>
+    <string name="lumen_m_3d_frame_packing">프레임 패킹</string>
+    <string name="lumen_m_3d_summary">동영상 재생 중에 사용합니다. 3D는 DLP-Link 액티브 안경이 필요합니다.</string>
+    <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale ko) -->
+    <string name="lumen_m_3d_game">게임 모드에서는 3D 설정이 지원되지 않습니다.</string>
+    <string name="lumen_m_3d_no_video">동영상을 재생하거나 신호 소스에 연결한 다음 다시 해보세요.</string>
+    <string name="lumen_m_3d_4k">4K 동영상에서는 3D 설정이 지원되지 않습니다.</string>
+    <string name="lumen_m_3d_hdr">HDR 동영상에서는 3D 설정이 지원되지 않습니다.</string>
+    <string name="lumen_m_3d_120hz">120Hz에서는 3D 재생이 비활성화됩니다.</string>
+    <string name="lumen_m_3d_high_fps">높은 프레임 속도에서는 3D 설정이 지원되지 않습니다.</string>
+</resources>

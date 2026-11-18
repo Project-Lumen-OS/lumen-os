@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
+     (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
+<resources>
+    <string name="lumen_corner_title">Ajuste fino dos cantos</string>
+    <string name="lumen_corner_circle">Ajuste até o círculo do meio ficar redondo</string>
+    <string name="lumen_corner_keys_move">Setas: mover canto · OK: próximo canto</string>
+    <string name="lumen_corner_keys_more">Segure a tecla de engrenagem: redefinir · Voltar: concluído</string>
+    <string name="lumen_corner_tl">Superior esquerdo</string>
+    <string name="lumen_corner_tr">Superior direito</string>
+    <string name="lumen_corner_br">Inferior direito</string>
+    <string name="lumen_corner_bl">Inferior esquerdo</string>
+</resources>

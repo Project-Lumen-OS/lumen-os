@@ -6,8 +6,12 @@
     <string name="lumen_qpd_zoom">Zoom</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Network</string>
+    <string name="lumen_qpd_theme">Theme</string>
+    <string name="lumen_qpd_theme_light">Light</string>
+    <string name="lumen_qpd_theme_dark">Dark</string>
+    <string name="lumen_qpd_theme_auto">Auto</string>
     <string name="lumen_qpd_usb">USB</string>
-    <!-- screen mirroring tile (org.lumen.miracast, 2026-11-11: in place of the USB tile) and its popup -->
+    <!-- screen mirroring tile (org.lumen.miracast) and its popup -->
     <string name="lumen_qpd_mirroring">Screen mirroring</string>
     <string name="lumen_qpd_mirror_on">Screen mirroring (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Ask before connecting</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Maximum brightness. The fans get louder.</string>
     <string name="lumen_qpd_tip_picture">Choose a mode for what you watch.</string>
     <string name="lumen_qpd_tip_rear">You and the projector are on opposite sides of the screen.</string>
+    <string name="lumen_qpd_tip_front">You and the projector are on the same side of the screen.</string>
+    <string name="lumen_qpd_tip_table">The projector stands on a table.</string>
+    <string name="lumen_qpd_tip_ceiling">The projector hangs upside down from the ceiling.</string>
+    <string name="lumen_qpd_tip_auto">The projector sees whether it stands or hangs and turns the picture by itself.</string>
 </resources>

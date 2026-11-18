@@ -7,10 +7,10 @@
 #       lumen_recovery.{rc,sh}). Off by default: it needs the recovery with the Lumen certificate, which is
 #       postponed (2026-10-13: updates over the USB cable for now).
 #       e.g. build_test.sh t12 --diag --usb-adb      (the options are compose.sh's, see there)
-#   --home-src: the image carries Lumen Home built from its source (apps/Z9xHome, Play 6 key) instead of the
+#   --home-src: the image carries Lumen Home built from its source (apps/LumenHome, Play 6 key) instead of the
 #       Z9X pin, for Home work that is newer than the pin.
-#   --tvinput-src: the same for the TV input app (apps/Z9xTvInput, Play 6 key, the pin's version).
-#   --setup-src: the same for Lumen Setup, the first-run flow (apps/Z9xSetup, Play 6 key, the version of its
+#   --tvinput-src: the same for the TV input app (apps/LumenTvInput, Play 6 key, the pin's version).
+#   --setup-src: the same for Lumen Setup, the first-run flow (apps/LumenSetup, Play 6 key, the version of its
 #       manifest). Without it the image carries the re-signed Z9X pin.
 #   --gms: the Google test edition (never a release, never an OTA source or target). This code path is
 #       public, but its inputs are not in the repository: tools/play6/gms/ and the MindTheGapps files stay
@@ -203,7 +203,7 @@ fi
 echo "== S: shared copies"
 python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Projector \
   || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble (a shared file copied into apps/Play6Projector, or an untracked fork)"
-sh "$G/apps/common/sync.sh" --check "$G/apps/Z9xProjector" hal projector || die "Z9xProjector shared copies differ from apps/common (Z9X lane: see apps/common/projector/README.txt)"
+sh "$G/apps/common/sync.sh" --check "$G/apps/ProjectorBase" hal projector || die "Z9xProjector shared copies differ from apps/common (Z9X lane: see apps/common/projector/README.txt)"
 sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys || die "Play6FrameworkOverlay key files differ from apps/common (run sync.sh)"
 echo "== P: publish audit"
 PM=$(mktemp "${TMPDIR:-/tmp}/play6_publish.XXXXXX")

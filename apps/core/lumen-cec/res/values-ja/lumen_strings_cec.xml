@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC は使用できません</string>
+    <string name="lumen_cec_master">HDMI-CEC 制御</string>
+    <string name="lumen_cec_master_note">HDMI-CEC がオフのときは、HDMI ARC で音声を出力できません。</string>
+    <string name="lumen_cec_wake">HDMI 機器で電源を入れる</string>
+    <string name="lumen_cec_wake_note">オンにすると、プロジェクターの電源を切ったときに HDMI 機器の電源も切れます。</string>
+    <string name="lumen_cec_night">夜間ガード</string>
+    <string name="lumen_cec_night_off">オフ</string>
+    <string name="lumen_cec_night_desc">この時間帯は、HDMI 機器からプロジェクターの電源を入れることはできません。</string>
+    <string name="lumen_cec_paused">映像のない起動が続いたため一時停止しています。リモコンを使うと再開します。</string>
+    <string name="lumen_cec_switch">機器の電源が入ったらその機器に切り替える</string>
+    <string name="lumen_cec_send_standby">プロジェクターと一緒に HDMI 機器の電源を切る</string>
+    <string name="lumen_cec_follow_info">視聴中の機器の電源が切れると、プロジェクターもスリープします。</string>
+    <string name="lumen_cec_soundbar">サウンドバーまたは AV アンプ (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">プロジェクターと一緒にサウンドバーの電源を入れる</string>
+    <string name="lumen_cec_control">このリモコンで HDMI 機器を操作する</string>
+    <string name="lumen_cec_internal_exit">HDMI から離れるときに機器に通知する</string>
+    <string name="lumen_cec_devices">接続されている機器</string>
+    <string name="lumen_cec_no_devices">HDMI-CEC 機器が見つかりません</string>
+    <string name="lumen_cec_state_on">オン</string>
+    <string name="lumen_cec_state_standby">スタンバイ</string>
+    <string name="lumen_cec_dev_unnamed">HDMI 機器</string>
+    <string name="lumen_cec_dev_soundbar">サウンドバー / AV アンプ</string>
+    <string name="lumen_cec_name_on_hdmi">HDMI での名前: %1$s</string>
+</resources>

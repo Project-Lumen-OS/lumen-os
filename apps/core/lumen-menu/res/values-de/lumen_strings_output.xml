@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The sound output page (owner variant C, 2026-11-18): the card, row lines and the Connect action.
+     Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
+<resources>
+    <string name="lumen_m_out_now">Der Ton läuft gerade über</string>
+    <string name="lumen_m_out_connect">Verbinden</string>
+    <string name="lumen_m_out_connecting">Wird verbunden</string>
+    <string name="lumen_m_out_connected">Verbunden</string>
+    <string name="lumen_m_out_offline">Nicht verbunden</string>
+    <string name="lumen_m_out_jack">3,5-mm-Buchse</string>
+    <string name="lumen_m_out_by_hand">Nur von Hand wählbar</string>
+    <string name="lumen_m_out_auto_picked">Automatisch gewählt</string>
+    <string name="lumen_m_out_hand_picked">Von Hand gewählt</string>
+    <string name="lumen_m_out_earc">HDMI eARC</string>
+</resources>

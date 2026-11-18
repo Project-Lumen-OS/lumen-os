@@ -43,11 +43,14 @@
     <string name="lumen_keystone">台形補正</string>
     <string name="lumen_later">後で</string>
     <string name="lumen_limited">リミテッド</string>
-    <string name="lumen_looking_for_the_remote">リモコンを探しています…</string>
     <string name="lumen_manual_focus">手動フォーカス</string>
     <string name="lumen_movie">映画</string>
     <string name="lumen_music">音楽</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Boost の明るさでは使用できません</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">AI 映像モードでは使用できません</string>
     <string name="lumen_not_available_in_the_office_mode">オフィスモードでは使用できません</string>
+    <string name="lumen_not_available_in_the_performance_mode">パフォーマンスモードでは使用できません</string>
+    <string name="lumen_not_available_while_game_mode_is_on">ゲームモードがオンの間は使用できません</string>
     <string name="lumen_obstacle_avoidance">障害物回避</string>
     <string name="lumen_off">オフ</string>
     <string name="lumen_office">オフィス</string>

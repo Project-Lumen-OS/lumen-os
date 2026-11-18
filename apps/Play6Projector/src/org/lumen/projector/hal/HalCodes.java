@@ -42,6 +42,7 @@ final class HalCodes {
     static final int GMPF_GET_DLP_LUMENS_LEVEL = 177;                 // getDlpLumensLevel  W= R=readUint8
     static final int GMPF_SET_DLP_LUMENS_COMPONENT_RGB_LEVEL = 178;   // setDlpLumensComponent_RGB_Level  W=writeBuffer R=
     static final int GMPF_GET_DLP_LUMENS_COMPONENT_RGB_LEVEL = 179;   // getDlpLumensComponent_RGB_Level  W= R=
+    static final int GMPF_IS_VIDEO_PLAYING = 180;                     // isVideoPlaying  W= R=readBool
     static final int GMPF_CORRECT_KEYSTONE_FULL_PIONT = 185;          // correctKeystoneFullPiont  W=writeBuffer R=readInt32
     static final int GMPF_GET_CORRECT_KEYSTONE_FULL_PIONT = 186;      // getCorrectKeystoneFullPiont  W=writeUint8 R=
     static final int GMPF_SET_SCREEN_ON_OFF = 195;                    // setScreenOnOff  W=writeBool R=
@@ -58,6 +59,7 @@ final class HalCodes {
     static final int GMPF_CONNECT_PROJECTOR_FOCUS_MANAGER = 298;      // connectProjectorFocusManager  W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=
     static final int GMPF_MANUAL_FOCUS = 300;                         // manualFocus  W=writeUint8 R=
     static final int GMPF_SET_PROJECTOR_FOCUS_LISTENER = 306;         // setProjectorFocusListener  W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=
+    static final int GMPF_SET_GM_TV_LISTENER = 702;                   // setGmTvListener  W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=
     static final int GMPF_SEND_FOCUS_STATUS = 307;                    // sendFocusStatus  W=writeUint8 R=
     static final int GMPF_AUTO_KST = 326;                             // autoKst  W= R=readInt8
     static final int GMPF_GET_ECO_STATE = 327;                        // getEcoState  W= R=readBool

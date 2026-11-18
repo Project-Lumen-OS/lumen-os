@@ -1,20 +1,20 @@
 device dragon_healthy model G0058
 card
-  top: round eye | round general
+  top: round theme | round general
   row 1: wide keystone.ak_now | small keystone | small zoom.digital
   row 2: wide picture | small sound | small focus
   row 3: wide input | small bluetooth | small network
-  row 4: wide game | small projection | small mirroring|usb_files
+  row 4: wide game | small projection (yields) | small mirroring | small eye
   slider: lamp 1..10
-section keystone
+section keystone  (stock order: settings_tree_product_dayao projection_screen (G0058 V1.7.116), test/stock/projection_screen.json)
+  toggle keystone.realtime
   action keystone.ak_now
+  -- auto_correction
+  toggle keystone.on_power
+  -- line
   screen keystone.manual
   screen zoom.digital
   screen keystone.rotation
-  -- image_correction
-  toggle keystone.realtime
-  toggle keystone.on_power
-  -- more
   action keystone.restore
 section focus
   action focus.af_now
@@ -38,7 +38,7 @@ section sound
   choice sound.mode [ai, music, movie, karaoke, sports, standard]
   screen sound.eq
   toggle sound.earc
-  choice sound.output [auto, speaker, arc, bt, usb]
+  output page sound.output [auto, speaker, arc, bt, usb]
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -52,8 +52,21 @@ section general
   screen settings.projector
   screen settings.recents
   screen settings.ambient_speaker
+  screen settings.sleep_timer
   toggle lamp.eco
   choice settings.launcher [lumen, classic]
+  screen settings.report
+  -- developer
+  screen signal.panel
+  toggle signal.pin
+popup keystone (rows with a tile of their own left out)
+  keystone.realtime
+  -- auto_correction
+  keystone.on_power
+  -- line
+  keystone.manual
+  keystone.rotation
+  keystone.restore
 all settings: keystone focus picture projection sound eye general
 keys: gear short quick_menu, gear long none, eye_gear_short restore
 game menu: none

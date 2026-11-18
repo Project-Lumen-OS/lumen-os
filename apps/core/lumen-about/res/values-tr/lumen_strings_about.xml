@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Model kodu</string>
+    <string name="lumen_about_dlp">DLP denetleyicisi</string>
+    <string name="lumen_about_part_firmware">%1$s, donanım yazılımı %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI donanım yazılımı</string>
+    <string name="lumen_about_firmware_dated">%1$s (%2$s)</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, güvenlik güncellemesi %2$s</string>
+    <string name="lumen_about_kernel">Çekirdek</string>
+    <string name="lumen_about_boot_loader">Başlatma yazılımı</string>
+    <string name="lumen_about_gmui">XGIMI arayüzü</string>
+    <string name="lumen_about_platform">MediaTek platformu</string>
+    <string name="lumen_about_remote">Kumanda</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">XGIMI sistemine dönüş</string>
+    <string name="lumen_about_back_summary_file">USB bellek dosyası: %1$s</string>
+    <string name="lumen_about_back_summary">XGIMI kurtarma USB belleğiyle</string>
+    <string name="lumen_about_intro">Bu modelin XGIMI kurtarma USB belleği XGIMI sistemini geri getirir. Nasıl yapılacağı proje sayfasındaki kılavuzda anlatılır.</string>
+    <string name="lumen_about_usb_file">USB bellek için dosya adı</string>
+    <string name="lumen_about_official">Resmî XGIMI dosyası</string>
+    <string name="lumen_about_official_value">%1$s, %2$s bayt</string>
+    <string name="lumen_about_searching">Bu donanım yazılımının resmî dosyası aranıyor</string>
+    <string name="lumen_about_guide_files">Resmî XGIMI dosyaları proje sayfasındaki kılavuzda listelenir.</string>
+    <string name="lumen_about_erases">USB bellek projektördeki her şeyi siler: uygulamalar, hesaplar, ayarlar ve dosyalar.</string>
+    <string name="lumen_about_scan">Açmak için telefonla tarayın</string>
+    <string name="lumen_about_close">Kapat</string>
+</resources>

@@ -11,12 +11,12 @@ import org.lumen.projector.hal.HbFeatures;
 import java.util.ArrayList;
 
 /**
- * Z9X HB: the read-only device state contract of Lumen Home (apps/Z9xHome ProjectorBridge, the same authority
+ * Z9X HB: the read-only device state contract of Lumen Home (apps/LumenHome ProjectorBridge, the same authority
  * and methods as apps/Play6Projector device/DeviceStateProvider). HB-only file, no HAL access.
  *
  * Contract:
  *  - call("caps") -> Bundle {unsupported: String[]}: the Lumen Home Projector tab tiles this projector does not
- *    offer, by tile intent of apps/Z9xHome InputSource.tiles, for Home to hide them. A tile is listed when the
+ *    offer, by tile intent of apps/LumenHome InputSource.tiles, for Home to hide them. A tile is listed when the
  *    quick panel would have no page for it: today "section:eye" (HbFeatures.F.EYE_PROTECTION is PENDING), and
  *    "section:hdmi" while F.GAME_MODE is not ON (no Home tile names it yet; listed so a later Home hides it too).
  *  - call("battery") -> Bundle {present false, level -1, ...}: the HB has no internal battery.

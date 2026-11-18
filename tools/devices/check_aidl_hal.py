@@ -35,7 +35,8 @@ same place.
 6. The Call list equals ALLOWED_TSV (service, code, method, signature, [args:SPEC,] reason; '-' as service for a meta
    call): every Call is a row, every row is a Call.
 8. Argument ranges (t20): a Call may carry a fourth enum argument, its argument spec (org.lumen.hal.ArgSpec grammar:
-   alternatives ';', words ',', INT | INT..INT | f:FLOAT | '-' for no word), which the shared transport enforces on
+   alternatives ';', words ',', INT | INT..INT | INT|INT... | f:FLOAT | bN:LO..HI (N packed bytes) | '-' for no
+   word), which the shared transport enforces on
    the device before the transact. The spec must be well formed and equal the row's 'args:' column (a row with the
    column needs the spec, a Call with a spec needs the column).
 --unbanned UNBANNED_TSV (rows: app, service, code, method, args:SPEC, reason): the maintainer's per-app exceptions to rule 4.
@@ -116,7 +117,9 @@ def call_params(params):
     return {p.split()[-1] for p in params.split(",") if p.strip() and p.split()[0] in CALL_TYPES}
 
 
-SPEC_WORD = re.compile(r"^(?:f:[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?|-?\d+(?:\.\.-?\d+)?)$")
+FLOAT = r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?"
+SPEC_WORD = re.compile(r"^(?:f:%s(?:\.\.%s)?|d:%s\.\.%s|s:\d+|-?\d+(?:\.\.-?\d+)?|-?\d+(?:\|-?\d+)+|b[1-4]:\d+\.\.\d+)$"
+                       % (FLOAT, FLOAT, FLOAT, FLOAT))
 
 
 def spec_error(spec):
@@ -131,11 +134,29 @@ def spec_error(spec):
         for w in alt.split(","):
             if not SPEC_WORD.match(w):
                 return "bad word %r in %r" % (w, spec)
-            if ".." in w and not w.startswith("f:"):
+            if w.startswith("s:"):
+                if int(w[2:]) <= 0 or int(w[2:]) >= 2**31:
+                    return "bad string length %r in %r" % (w, spec)
+            elif w.startswith("f:") and ".." in w:
+                a, b = (float(x) for x in w[2:].split(".."))
+                if a < 0 or b < a or str(a).startswith("-") or not all(abs(x) < 3.4e38 for x in (a, b)):
+                    return "bad float range %r in %r" % (w, spec)
+            elif w.startswith("d:"):
+                a, b = (float(x) for x in re.match(r"^d:(%s)\.\.(%s)$" % (FLOAT, FLOAT), w).groups())
+                if b < a or not all(abs(x) < 1.7e308 for x in (a, b)):
+                    return "bad double range %r in %r" % (w, spec)
+            elif w.startswith("b"):
+                a, b = w[3:].split("..")
+                if int(a) > int(b) or int(b) > 255:
+                    return "bad byte range %r in %r" % (w, spec)
+            elif "|" in w:
+                if any(not (-2**31 <= int(v) < 2**31) for v in w.split("|")):
+                    return "bad int %r in %r" % (w, spec)
+            elif ".." in w and not w.startswith(("f:", "d:")):
                 a, b = w.split("..")
                 if int(a) > int(b) or not (-2**31 <= int(a) and int(b) < 2**31):
                     return "bad range %r in %r" % (w, spec)
-            elif not w.startswith("f:") and not (-2**31 <= int(w) < 2**31):
+            elif not w.startswith(("f:", "d:")) and not (-2**31 <= int(w) < 2**31):
                 return "bad int %r in %r" % (w, spec)
     return None
 

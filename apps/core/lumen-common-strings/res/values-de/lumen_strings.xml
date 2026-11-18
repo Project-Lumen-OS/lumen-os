@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Trapezkorrektur</string>
     <string name="lumen_later">Später</string>
     <string name="lumen_limited">Begrenzt</string>
-    <string name="lumen_looking_for_the_remote">Fernbedienung wird gesucht…</string>
     <string name="lumen_manual_focus">Manueller Fokus</string>
     <string name="lumen_movie">Film</string>
     <string name="lumen_music">Musik</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Bei der Helligkeitsstufe Boost nicht verfügbar</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Im Modus KI-Bild nicht verfügbar</string>
     <string name="lumen_not_available_in_the_office_mode">Im Modus Büro nicht verfügbar</string>
+    <string name="lumen_not_available_in_the_performance_mode">Im Modus Leistung nicht verfügbar</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Nicht verfügbar, solange der Spielmodus an ist</string>
     <string name="lumen_obstacle_avoidance">Hindernisvermeidung</string>
     <string name="lumen_off">Aus</string>
     <string name="lumen_office">Büro</string>

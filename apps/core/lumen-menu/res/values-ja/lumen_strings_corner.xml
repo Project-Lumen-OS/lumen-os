@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
+     (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
+<resources>
+    <string name="lumen_corner_title">四隅の微調整</string>
+    <string name="lumen_corner_circle">中央の円が丸くなるまで調整します</string>
+    <string name="lumen_corner_keys_move">矢印：角を移動 · OK：次の角</string>
+    <string name="lumen_corner_keys_more">歯車キーを長押し：リセット · 戻る：完了</string>
+    <string name="lumen_corner_tl">左上</string>
+    <string name="lumen_corner_tr">右上</string>
+    <string name="lumen_corner_br">右下</string>
+    <string name="lumen_corner_bl">左下</string>
+</resources>

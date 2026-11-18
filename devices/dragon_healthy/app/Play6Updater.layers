@@ -1,13 +1,17 @@
-# Recipe of the Play 6 updater (decision 2026-11-10, Q1), read by
-# tools/devices/assemble_app.py. The Z9X updater is the base; apps/Play6Updater is only the Play 6 layer: the
-# recovery-block install (Engine, UpdateService, UpdateManifest, Preflight), the ro.lumen.* properties and the play6
-# channel without a beta channel (Ota), the consent texts of the recovery install (UpdaterActivity, strings), the
-# system uid and RECOVERY (AndroidManifest), its tests. Each of them has a row in tools/play6/forks.tsv. Statistics,
-# the one-time notice, the channel logic and the rest come from apps/Z9xUpdater unchanged.
+# Recipe of the Play 6 updater (decision 2026-11-10 Q1, one updater 2026-11-13), read by
+# tools/devices/assemble_app.py: the shared updater (apps/core/lumen-updater, with lumen-stats) and the Play 6 layer
+# apps/Play6Updater: its UpdateTarget (Target.java: the play6 channel, the recovery install on /cache) and its
+# AndroidManifest.xml (system uid and RECOVERY for /cache and the BCB, as AOSP's own non-A/B updaters run).
 # tools/play6/build_play6.sh and tools/arch/baseline.sh build the assembled tree.
 app       Play6Updater
-base      apps/Z9xUpdater
 module    lumen-stats
+# the Lumen icon set (apps/core/lumen-icons, its R class named in the top layer R_EXTRA_PACKAGES)
+module    lumen-icons
+# the XGIMI set update_engine copies, checked before an install (apps/core/lumen-fwcopy, one with the installer)
+module    lumen-fwcopy
+# the QR codes of the update screen (apps/core/lumen-qr)
+module    lumen-qr
+module    lumen-updater
 top       apps/Play6Updater
 skip      build/ tools/ *.apk CHANGES*.md README*.md .DS_Store
 identical error

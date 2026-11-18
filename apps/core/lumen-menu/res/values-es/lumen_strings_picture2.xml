@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's advanced picture rows (rs30-parity-picture2): the white balance and colour
+     correction pages reuse the Z9X app's pro_* texts and the HB app's pro_segmentation_hb / pro_reset_default_hb with
+     their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
+     filter and the original frame refusals are new texts -->
+<resources>
+    <string name="lumen_m_wb">Balance de blancos</string>
+    <string name="lumen_m_wb_2">2 puntos</string>
+    <string name="lumen_m_wb_11">11 puntos</string>
+    <string name="lumen_m_red_gain">Ganancia de rojo</string>
+    <string name="lumen_m_green_gain">Ganancia de verde</string>
+    <string name="lumen_m_blue_gain">Ganancia de azul</string>
+    <string name="lumen_m_red_offset">Desplazamiento de rojo</string>
+    <string name="lumen_m_green_offset">Desplazamiento de verde</string>
+    <string name="lumen_m_blue_offset">Desplazamiento de azul</string>
+    <string name="lumen_m_wb_level">%1$d %%</string>
+    <string name="lumen_m_red">Rojo</string>
+    <string name="lumen_m_green">Verde</string>
+    <string name="lumen_m_blue">Azul</string>
+    <string name="lumen_m_cyan">Cian</string>
+    <string name="lumen_m_magenta">Magenta</string>
+    <string name="lumen_m_yellow">Amarillo</string>
+    <string name="lumen_m_skin">Tono de piel</string>
+    <string name="lumen_m_cc">Corrección de color</string>
+    <string name="lumen_m_cc_color">Color</string>
+    <string name="lumen_m_hue">Tono</string>
+    <string name="lumen_m_memc_original">Frecuencia de imagen original</string>
+    <string name="lumen_m_reset_defaults">Volver a los valores de fábrica</string>
+    <string name="lumen_m_gray_level">Nivel de gris</string>
+    <string name="lumen_m_hdr_enh">Mejora HDR</string>
+    <string name="lumen_m_screen_size">Tamaño de pantalla</string>
+    <string name="lumen_m_screen_gain">Ganancia de pantalla</string>
+    <string name="lumen_m_dv_screen">Ajustes de Dolby Vision</string>
+    <string name="lumen_m_auto_switch">Cambio automático de modo</string>
+    <string name="lumen_m_style_filter">Filtro de estilo</string>
+    <string name="lumen_m_original">Original</string>
+    <string name="lumen_m_filter_custom">Filtro descargado</string>
+    <string name="lumen_m_inches">%1$d pulgadas</string>
+    <string name="lumen_m_original_120">No disponible con Ultra 120 Hz activado</string>
+    <string name="lumen_m_original_3d">No disponible en 3D</string>
+    <string name="lumen_m_imax_no_gain">No ajustable en IMAX Enhanced</string>
+    <string name="lumen_m_imax_no_filter">Los filtros de estilo no funcionan en IMAX Enhanced</string>
+</resources>

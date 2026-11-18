@@ -108,9 +108,16 @@ public class SliderRow extends Row {
         trackPaint.setColor(focused ? Theme.TRACK_FOCUSED : Theme.TRACK);
         c.drawRoundRect(r, barH / 2, barH / 2, trackPaint);
         if (known && max > min) {
-            float f = (value - min) / (float) (max - min);
-            r.right = padH + (right - padH) * f;
-            c.drawRoundRect(r, barH / 2, barH / 2, fillPaint);
+            float w = right - padH;
+            float at = padH + w * ((value - min) / (float) (max - min));
+            if (min < 0 && max > 0) {                 // a two-way slider (stock TwoTowardProgressComponent): from 0
+                float zero = padH + w * (-min / (float) (max - min));
+                r.left = Math.min(zero, at);
+                r.right = Math.max(zero, at);
+            } else {
+                r.right = at;
+            }
+            if (r.right > r.left) c.drawRoundRect(r, barH / 2, barH / 2, fillPaint);
         }
     }
 

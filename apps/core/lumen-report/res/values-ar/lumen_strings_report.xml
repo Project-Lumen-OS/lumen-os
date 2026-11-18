@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">إرسال تقرير عن مشكلة</string>
+    <string name="lumen_report_intro">يساعد مطوّر Lumen OS على معرفة سبب المشكلة. لا يُرسَل أي شيء قبل أن تضغط «إرسال التقرير».</string>
+    <string name="lumen_report_included">ما يتضمنه التقرير</string>
+    <string name="lumen_report_inc_system">إصدار النظام ومدة التشغيل وأي نسخة من النظام تعمل</string>
+    <string name="lumen_report_inc_logs">سجلات النظام وتطبيقات Lumen لآخر 30 دقيقة</string>
+    <string name="lumen_report_inc_crashes">سجلات الأعطال والتجمّد وإعادة التشغيل مع أسماء التطبيقات</string>
+    <string name="lumen_report_inc_kernel">سجل النواة لآخر إعادة تشغيل وسجل التحديث</string>
+    <string name="lumen_report_inc_state">الشاشة والذاكرة ونوع الشبكة</string>
+    <string name="lumen_report_excluded">ما يُحذف أو لا يُضمَّن</string>
+    <string name="lumen_report_exc_accounts">الحسابات وعناوين البريد الإلكتروني وأرقام الهواتف</string>
+    <string name="lumen_report_exc_network">أسماء شبكات Wi-Fi وعناوين IP وMAC</string>
+    <string name="lumen_report_exc_serial">الرقم التسلسلي: يُستخدم بدلًا منه معرّف عشوائي لجهاز العرض هذا</string>
+    <string name="lumen_report_exc_apps">سجلات التطبيقات التي ثبّتّها بنفسك</string>
+    <string name="lumen_report_exc_files">الصور والملفات وكلمات المرور</string>
+    <string name="lumen_report_footer">يُحتفَظ بالتقرير لمدة 30 يومًا، ولا يمكن فتحه إلا لمطوّر Lumen OS.</string>
+    <string name="lumen_report_last">آخر تقرير: %1$s، %2$s</string>
+    <string name="lumen_report_send">إرسال التقرير</string>
+    <string name="lumen_report_collecting">جارٍ جمع المعلومات… (%1$d من %2$d)</string>
+    <string name="lumen_report_log_hint">إذا سألك Android عن السماح بالوصول إلى سجلات الجهاز، فاختر «السماح».</string>
+    <string name="lumen_report_sending">جارٍ الإرسال… %1$s من %2$s</string>
+    <string name="lumen_report_done_title">تم إرسال التقرير</string>
+    <string name="lumen_report_done_text">أرسل هذا الرمز إلى مطوّر Lumen OS مع وصف قصير للمشكلة.</string>
+    <string name="lumen_report_failed_title">لم يُرسَل التقرير</string>
+    <string name="lumen_report_err_no_network">لا يوجد اتصال بالإنترنت. تحقّق من الشبكة وحاول مرة أخرى.</string>
+    <string name="lumen_report_err_network">يتعذّر الوصول إلى خادم التقارير. حاول مرة أخرى لاحقًا.</string>
+    <string name="lumen_report_err_rate">عدد التقارير كبير جدًا الآن. حاول مرة أخرى لاحقًا.</string>
+    <string name="lumen_report_err_rejected">لم يقبل خادم التقارير التقرير.</string>
+    <string name="lumen_report_err_server">حدثت مشكلة في خادم التقارير. حاول مرة أخرى لاحقًا.</string>
+    <string name="lumen_report_err_collect">تعذّر تجهيز التقرير.</string>
+    <string name="lumen_report_retry">إعادة المحاولة</string>
+    <string name="lumen_report_close">إغلاق</string>
+    <string name="lumen_report_cancel">إلغاء</string>
+    <string name="lumen_report_auto">إرسال تقارير المشكلات تلقائيًا</string>
+    <string name="lumen_report_auto_note">إذا تعطّل النظام أو أحد تطبيقات Lumen أو توقّف عن الاستجابة، يُرسَل تقرير قصير من تلقاء نفسه. ولا يحتوي أبدًا على سجلات التطبيقات التي ثبّتّها بنفسك.</string>
+    <string name="lumen_report_queued_title">سيُرسَل التقرير لاحقًا</string>
+    <string name="lumen_report_queued_text">يتعذّر الوصول إلى خادم التقارير الآن. سيرسل جهاز العرض التقرير من تلقاء نفسه عندما يستطيع. ثم يظهر رمزه هنا.</string>
+    <string name="lumen_report_last_auto">آخر تقرير تلقائي: %1$s، %2$s</string>
+</resources>

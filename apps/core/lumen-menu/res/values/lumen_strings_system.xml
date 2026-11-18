@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of stock rows the X50 family adds: the key sound switch and the HDMI app's
+     settings row (the Z9X app's cec_hdmi_options with its translations), the colour vision choice and
+     the system temperature (stock General and About rows, own wording) -->
+<resources>
+    <string name="lumen_m_sound_key_tone">Button sounds</string>
+    <string name="lumen_m_hdmi_options">HDMI input options</string>
+    <string name="lumen_m_colour_vision">Colour vision</string>
+    <string name="lumen_m_temperature">Temperature</string>
+    <string name="lumen_m_colour_vision_gray">Grayscale</string>
+    <string name="lumen_m_colour_vision_red_green">Red/green</string>
+    <string name="lumen_m_colour_vision_green_red">Green/red</string>
+    <string name="lumen_m_colour_vision_blue_yellow">Blue/yellow</string>
+</resources>

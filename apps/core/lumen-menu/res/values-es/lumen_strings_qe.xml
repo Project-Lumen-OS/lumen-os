@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Editar menú</string>
+    <string name="lumen_qe_your_menu">Tu menú</string>
+    <string name="lumen_qe_hint_select">OK: ajustar un mosaico</string>
+    <string name="lumen_qe_preview">Vista previa</string>
+    <string name="lumen_qe_subtitle">Solo lo que este proyector sabe hacer.</string>
+    <string name="lumen_qe_density">Aspecto del menú</string>
+    <string name="lumen_qe_tiles">Mosaicos</string>
+    <string name="lumen_qe_tiles_sub">Varios por fila</string>
+    <string name="lumen_qe_list">Lista</string>
+    <string name="lumen_qe_list_sub">Uno por fila</string>
+    <string name="lumen_qe_show">Qué mostrar</string>
+    <string name="lumen_qe_in_menu">En el menú</string>
+    <string name="lumen_qe_add">Añadir</string>
+    <string name="lumen_qe_new">Nuevo</string>
+    <string name="lumen_qe_reset">Restablecer</string>
+    <string name="lumen_qe_select">Elegir</string>
+    <string name="lumen_qe_done">Listo</string>
+    <string name="lumen_qe_back">Atrás</string>
+    <string name="lumen_qe_close_panel">Cerrar panel</string>
+    <string name="lumen_qe_how">Cómo mostrar</string>
+    <string name="lumen_qe_now" formatted="true">Ahora: %1$s</string>
+    <string name="lumen_qe_slider">Control deslizante</string>
+    <string name="lumen_qe_slider_sub">Se cambia en el propio menú</string>
+    <string name="lumen_qe_wide">Mosaico ancho</string>
+    <string name="lumen_qe_wide_sub">Nombre y valor</string>
+    <string name="lumen_qe_small">Mosaico</string>
+    <string name="lumen_qe_small_sub">Solo icono</string>
+    <string name="lumen_qe_round">Círculo</string>
+    <string name="lumen_qe_round_sub">En la fila de arriba</string>
+    <string name="lumen_qe_footer">Botón abajo</string>
+    <string name="lumen_qe_footer_sub">Bajo los mosaicos</string>
+    <string name="lumen_qe_panel_note">Un mosaico, un mosaico ancho y un círculo abren el panel a la derecha del menú.</string>
+    <string name="lumen_qe_place">Lugar</string>
+    <string name="lumen_qe_move">Mover</string>
+    <string name="lumen_qe_remove">Quitar del menú</string>
+    <string name="lumen_qe_moving">Moviendo</string>
+    <string name="lumen_qe_move_hint">Los círculos solo se mueven en la fila de arriba, los mosaicos entre las filas. Para que un mosaico sea un círculo, cambia su aspecto.</string>
+    <string name="lumen_qe_put">Dejar aquí</string>
+    <string name="lumen_qe_cancel">Cancelar</string>
+    <string name="lumen_qe_full">El menú está lleno. Elige un aspecto más pequeño o la lista.</string>
+    <string name="lumen_qe_list_full">Tantos elementos no caben en una lista. Quita algunos primero.</string>
+    <string name="lumen_qe_pinned">Este botón siempre se queda en el menú.</string>
+    <string name="lumen_m_volume">Volumen</string>
+    <string name="lumen_qe_pq_brightness">Brillo de la imagen</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s se mueve por el menú. Los demás dejan sitio.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s: nuevo lugar</string>
+    <string name="lumen_qe_move_keys">Mover</string>
+    <string name="lumen_qe_move_cancel">Cancelar, dejar como estaba</string>
+</resources>

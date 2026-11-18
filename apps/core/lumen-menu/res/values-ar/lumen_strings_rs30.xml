@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels (the row title is the Z9X app's pro_color_space with its translations) of the RS30 Ultra Max's own stock rows (colour gamut, rainbow reduction, screen shift) and its
+     game menu rule (VRR only with Turbo, the top speed) -->
+<resources>
+    <string name="lumen_m_gamut">مساحة الألوان</string>
+    <string name="lumen_m_gamut_native">الأصلي</string>
+    <string name="lumen_m_gamut_bt2020">BT.2020</string>
+    <string name="lumen_m_gamut_p3">DCI-P3</string>
+    <string name="lumen_m_gamut_bt709">BT.709</string>
+    <string name="lumen_m_gamut_adobe">Adobe RGB</string>
+    <string name="lumen_m_anti_rbe">تقليل تأثير قوس قزح</string>
+    <string name="lumen_m_zoom_move">إزاحة الصورة</string>
+    <string name="lumen_gm_rule_vrr_speed">شغّل التوربو أولًا</string>
+    <string name="lumen_m_move_hint">الأسهم تزيح الصورة. بعد الحافة يدور جهاز العرض.</string>
+</resources>

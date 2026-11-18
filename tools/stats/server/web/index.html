@@ -154,6 +154,12 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     </div>
 
     <div class="card c12">
+      <h2>Сведения о системе из Lumen Installer</h2>
+      <p class="hint">Кто отправил сведения о стоковой прошивке, за всё время. Проектор считается один раз</p>
+      <div id="dumps"></div>
+    </div>
+
+    <div class="card c12">
       <h2>Скачивания с GitHub</h2>
       <p class="hint">Всего по выпускам: образы и установщики, пакеты обновления, проверки обновлений</p>
       <div class="legend" id="lg-gh"></div>
@@ -367,6 +373,16 @@ footer { color: var(--text-3); font-size: 11.5px; margin-top: 22px; display: fle
     if (!mRows.length) empty(mdl, "Пока нет данных");
     else mdl.innerHTML = `<table><thead><tr><th>Модель</th><th>Код XGIMI</th><th class="n">Проекторов</th></tr></thead><tbody>` +
       mRows.map(r => `<tr><td>${esc(modelName(r.model))}</td><td class="m">${esc(r.xgimi_model || "–")}</td><td class="n">${fmt(r.units)}</td></tr>`).join("") + `</tbody></table>`;
+
+    // stock system info sent from Lumen Installer: projectors per XGIMI model code (all time, not filtered)
+    const dumpInfo = stats.dumps || { units: 0, sent: 0, by_model: [], by_version: [] };
+    const dBox = document.getElementById("dumps");
+    if (!dumpInfo.by_model.length) empty(dBox, "Пока никто не отправил");
+    else dBox.innerHTML = `<p class="hint">Отправили ${fmt(dumpInfo.units)} проекторов, всего отправок ${fmt(dumpInfo.sent)}, ${fmt(dumpInfo.mb || 0)} МБ</p>` +
+      `<table><thead><tr><th>Модель</th><th>Код XGIMI</th><th>Версии прошивки</th><th class="n">Проекторов</th><th class="n">Отправок</th><th class="n">МБ</th><th>Последняя</th></tr></thead><tbody>` +
+      dumpInfo.by_model.map(r => `<tr><td>${esc(r.name || "Неизвестная модель")}</td><td class="m">${esc(r.model.toUpperCase())}</td>` +
+        `<td class="m">${esc(dumpInfo.by_version.filter(v => v.model === r.model).map(v => v.version + " (" + v.units + ")").join(", "))}</td>` +
+        `<td class="n">${fmt(r.units)}</td><td class="n">${fmt(r.sent)}</td><td class="n">${fmt(r.mb || 0)}</td><td class="m">${esc(r.last)}</td></tr>`).join("") + `</tbody></table>`;
 
     // GitHub: latest snapshot per release, three measures stacked
     // tags: <slug>-<version> from 1.0.8, v<version> (Z9X) and hb-<version> (HB) before; z9x / z9x-hb / hb / play6 are

@@ -19,25 +19,29 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 
 | Проектор | Состояние | Последний релиз | Установка |
 |---|---|---|---|
-| XGIMI Z9X | стабильная | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [с проектора](docs/install/ru.md#easy) или [с компьютером](docs/install/z9x/ru.md) |
+| XGIMI Z9X | стабильная | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [с проектора](docs/install/z9x/ru.md) |
 | XGIMI Play 6 | стабильная | [Lumen OS 1.0.10 для Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [с компьютером](docs/install/play6/ru.md) |
-| XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/ru.md#easy) или [с компьютером](docs/install/hb/ru.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | бета, только проба | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta3), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta3) | [с проектора](docs/install/ru.md#easy) |
+| XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/hb/ru.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta8), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta8) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | бета, только проба | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta1), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta1) | [с проектора](docs/install/x50/ru.md) |
 
 У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
 проектора и прошивку XGIMI, которую он не знает.
 
-- XGIMI Z9X (модель G0082): прошивка XGIMI V6.15.58, V6.15.62 или V6.15.19. Обновления приходят по Wi-Fi.
+- XGIMI Z9X (модель G0082): прошивка XGIMI V6.15.58 или V6.15.62, на V6.15.19 только пробный запуск.
+  Обновления приходят по Wi-Fi.
 - XGIMI Play 6 (модель G0058): прошивка XGIMI V1.7.116 или V1.8.127. Play 6 с чипом Wi-Fi AIC (новые партии)
   нужна V1.8.127: не ставьте на него V1.7.116, Wi-Fi и Bluetooth после этого перестают работать. Новая версия
   ставится установщиком по кабелю USB, данные сохраняются. Обновления по Wi-Fi появятся позже. Сервисы Google
   можно добавить установщиком из своего файла MindTheGapps.
-- XGIMI Z9X HB (модель G0130): прошивка XGIMI V6.16.24 при установке с компьютером. С проектора бета для HB
-  ставится ещё на V6.17.12 и на G0148 с V6.17.12. Обновления приходят по Wi-Fi. Двух файлов XGIMI в образе нет:
-  установщик копирует их с вашего же проектора. Сервисы Google можно добавить установщиком из своего файла
-  MindTheGapps.
-- XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64 или V1.2.54. Бета,
-  которую можно попробовать с проектора: Lumen OS запускается один раз, система XGIMI остаётся как есть.
+- XGIMI Z9X HB (модели G0130 и G0148): прошивка XGIMI V6.16.24 или V6.17.12 на G0130, V6.17.12 на G0148.
+  Обновления приходят по Wi-Fi.
+- XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64 или V1.2.54. Бета.
+  Установить насовсем можно на X50 Ultra с V1.2.64. В остальных случаях это пробный запуск: Lumen OS
+  запускается один раз, система XGIMI остаётся как есть.
+- XGIMI RS30 Ultra Max (модель G0155, прошивка V1.1.42), TITAN Noir Pro и TITAN Noir Max (модели H0062 и
+  H0063, прошивка V1.2.99 или V1.2.54): бета, которую можно попробовать с проектора.
 
 Другие проекторы добавятся позже.
 
@@ -95,14 +99,13 @@ Lumen OS заменяет на проекторе только системны�
 В опубликованной версии нет приложений Google: Google Play, Chromecast built-in, голосового поиска
 Google. Не запустятся приложения, которым нужны сервисы Google Play. Приложения ставятся с флешки или из
 любого магазина, который вы выберете. Сервисы Google можно добавить самому. При установке с проектора
-ответьте «Да» на вопрос про сервисы Google, и установщик скачает их с официальной страницы. С компьютером они
-ставятся из своего файла MindTheGapps, см. раздел про Google в инструкции для [Z9X](docs/install/z9x/ru.md#google),
-[Z9X HB](docs/install/hb/ru.md#hb-google) или [Play 6](docs/install/play6/ru.md#play6-google).
+ответьте «Да» на вопрос про сервисы Google, и установщик скачает их с официальной страницы. На Play 6 их
+добавляет установщик для компьютера из вашего файла MindTheGapps, см. [«Сервисы Google»](docs/install/play6/ru.md#play6-google).
 
 ## Установка
 
-Одна инструкция для всех проекторов: [«Установка Lumen OS»](docs/install/ru.md)
-([in English](docs/install/en.md)). Установка Lumen OS насовсем один раз стирает все данные на проекторе.
+Инструкция начинается со страницы [«Установка Lumen OS»](docs/install/ru.md) ([in English](docs/install/en.md)),
+дальше у каждого проектора своя страница. Установка Lumen OS насовсем один раз стирает все данные на проекторе.
 
 Скачивайте только со [страницы релизов](https://github.com/Project-Lumen-OS/lumen-os/releases) этого
 репозитория и со [страницы релизов Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases).
@@ -111,7 +114,7 @@ Google. Не запустятся приложения, которым нужн�
 
 ### Простая установка: с проектора
 
-Без компьютера и без кабеля. Для Z9X, Z9X HB, а также пробный запуск на X50 Ultra и X50 Ultra Max.
+Без компьютера и без кабеля. Для всех проекторов из списка, кроме Play 6.
 
 1. Скачайте из [последнего релиза](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) файл Lumen Installer с окончанием `.apk1`
    и скопируйте его на флешку (FAT32 или exFAT).
@@ -126,8 +129,8 @@ Google. Не запустятся приложения, которым нужн�
 
 ### Для опытных: с компьютером
 
-Для Play 6 (приложение его пока не поддерживает) и для случаев, которые приложение не покрывает, см.
-[«Для опытных»](docs/install/ru.md#advanced).
+Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md). На Z9X и Z9X HB компьютер
+нужен только в редких случаях, см. [«С компьютером»](docs/install/ru.md#advanced).
 
 ## Обновления и откат
 
@@ -137,13 +140,12 @@ Lumen OS». Обновление ставится рядом с работающ
 
 На Play 6 обновлений по Wi-Fi пока нет. Скачайте новый релиз для Play 6 и запустите
 `bash lumen-install.sh --ip АДРЕС --keep-data flash`. Установщик запишет новую систему по кабелю USB и
-сохранит данные. Отладка должна быть включена, см. [шаг 6 для Play 6](docs/install/play6/ru.md#play6-verify).
+сохранит данные. Отладка должна быть включена, см. [«Проверьте установку»](docs/install/play6/ru.md#play6-verify).
 
-Во время пробного запуска, чтобы вернуться, просто перезапустите проектор. После установки с проектора
-откройте приложения в Lumen OS и выберите «Вернуться к системе XGIMI». Всё в Lumen OS при этом сотрётся.
-Официальная прошивка XGIMI с флешки тоже всегда работает и тоже стирает всё, см. «Откат на сток» для
-[Z9X](docs/install/z9x/ru.md#stock), [Z9X HB](docs/install/hb/ru.md#hb-stock) и
-[Play 6](docs/install/play6/ru.md#play6-stock).
+Во время пробного запуска, чтобы вернуться, просто перезапустите проектор. После установки систему XGIMI
+возвращает официальная прошивка XGIMI с флешки, при этом всё стирается, см. «Возврат к системе XGIMI» для
+[Z9X](docs/install/z9x/ru.md#stock), [Z9X HB](docs/install/hb/ru.md#stock),
+[X50 Ultra и X50 Ultra Max](docs/install/x50/ru.md#stock) и [Play 6](docs/install/play6/ru.md#play6-stock).
 
 ## Конфиденциальность
 
@@ -231,7 +233,7 @@ git clone --recurse-submodules https://github.com/Project-Lumen-OS/lumen-os.git
 
 ## Лицензия
 
-Apache License 2.0, кроме `apps/Z9xAirPlay` (GPL-3.0-only) и сторонних подмодулей в `apps/third_party`
+Apache License 2.0, кроме `apps/LumenAirPlay` (GPL-3.0-only) и сторонних подмодулей в `apps/third_party`
 со своими лицензиями. Подробнее в [LICENSE](LICENSE) и [NOTICE](NOTICE). В репозитории нет приложений
 Google, файлов MediaTek и XGIMI и ключей подписи.
 

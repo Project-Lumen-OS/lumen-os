@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">أزرار جهاز التحكم</string>
+    <string name="lumen_remote_keys_assign">تعيين زر</string>
+    <string name="lumen_remote_keys_press">اضغط على زر في جهاز التحكم</string>
+    <string name="lumen_remote_keys_leave">اضغط رجوع للخروج</string>
+    <string name="lumen_remote_keys_fixed">لا يمكن إعادة تعيين هذا الزر</string>
+    <string name="lumen_remote_keys_pick">ماذا يفعل الزر</string>
+    <string name="lumen_remote_keys_as_before">كما كان</string>
+    <string name="lumen_remote_keys_reset_all">إعادة تعيين الكل</string>
+    <string name="lumen_remote_keys_saved">تم الحفظ</string>
+    <string name="lumen_remote_keys_empty">لم يتم تعيين أي زر بعد</string>
+    <string name="lumen_remote_keys_gone">تمت إزالة التطبيق. يعمل الزر كما كان من قبل.</string>
+    <string name="lumen_remote_keys_name_youku">زر Youku</string>
+    <string name="lumen_remote_keys_name_tencent">زر Tencent Video</string>
+    <string name="lumen_remote_keys_name_iqiyi">زر iQIYI</string>
+    <string name="lumen_remote_keys_name_mango">زر Mango TV</string>
+    <string name="lumen_remote_keys_name_bilibili">زر bilibili</string>
+    <string name="lumen_remote_keys_name_ambient">زر شاشة التوقف</string>
+    <string name="lumen_remote_keys_name_shortcut">زر الوصول السريع</string>
+    <string name="lumen_remote_keys_name_custom">زر الوصول السريع %1$d</string>
+    <string name="lumen_remote_keys_name_f">مفتاح F%1$d</string>
+    <string name="lumen_remote_keys_name_browser">مفتاح المتصفح</string>
+    <string name="lumen_remote_keys_name_mail">مفتاح البريد</string>
+    <string name="lumen_remote_keys_name_music">مفتاح الموسيقى</string>
+    <string name="lumen_remote_keys_name_calculator">مفتاح الآلة الحاسبة</string>
+    <string name="lumen_remote_keys_name_contacts">مفتاح جهات الاتصال</string>
+    <string name="lumen_remote_keys_name_calendar">مفتاح التقويم</string>
+    <string name="lumen_remote_keys_name_bookmarks">مفتاح الإشارات المرجعية</string>
+    <string name="lumen_remote_keys_do_source">مصدر الإدخال</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">شبه المنحرف</string>
+    <string name="lumen_remote_keys_do_focus">التركيز</string>
+    <string name="lumen_remote_keys_do_quick">الإعدادات السريعة</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">الإشارة</string>
+</resources>

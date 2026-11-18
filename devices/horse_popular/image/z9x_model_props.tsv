@@ -1,0 +1,16 @@
+# The stock model property files of the Z9X (G0082) the image sets (tools/devices/model_props.py,
+# z9x_model_props.rc): one row per vendor firmware whose file the stock dumps have (Z19 = the v6.15.19 dump, Z58 =
+# the v6.15.58 dump, Z62 = the v6.15.62 dump, build.conf). v6.15.58 and v6.15.62 ship the same file, v6.15.19 differs
+# in one line the image does not set (persist.vendor.xgimi.animation.style is commented out there).
+# Only the lines a Lumen Z9X image reads (lines = read): /vendor/app and /vendor/priv-app are hidden at boot
+# (xgimi_compat.rc), the stock system is replaced, so a line read only by an XGIMI app, the stock XRMService,
+# libbootanimation or services.jar does nothing here. The seven '##trapezoid' lines are set by
+# overlay/v1/z9x_trapezoid.rc since 1.0.8 (model only, any firmware) and are not repeated here. The file has no
+# ro.xgimi.mem.policy, and nothing in the Z9X vendor reads persist.vendor.xgimi.hd_server (the vendor starts
+# hd_server1..3 by service name), so neither is set. the design notes lists every line.
+## The Z9X G0082 file on v6.15.19, v6.15.58 and v6.15.62: the lines a Lumen image reads, each with its reader in
+## devices/horse_popular/image/z9x_model_prop_dapeng.txt. The trapezoid lines are in z9x_trapezoid.rc.
+# model	firmware	prop file	stock sha256	dump	lines
+G0082	v6.15.19	z9x_model_prop_dapeng.txt	3ac178ea87d0d9e6167c5a148f090f1a3e2002a1fb7489e9185e888b959cf45c	Z19	read
+G0082	v6.15.58	z9x_model_prop_dapeng.txt	d858043dbfad702c834c04f58902a45972c4d808b76224ad45c00383393c7ab1	Z58	read
+G0082	v6.15.62	z9x_model_prop_dapeng.txt	d858043dbfad702c834c04f58902a45972c4d808b76224ad45c00383393c7ab1	Z62	read

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 """hb_audio_mutate.py: mutation check of the HB slider flicker fix (panel/SlideCoalescer and its wiring in ProPicture /
-HbMenuFeatures / SlideMain) and the 3.5 mm output (HbAudioRules jack rules, HbOutputRows jack row, HbWiredJack,
-AudioOutputChoice.apply order, AudioPathReporter switch_end=4, HbHeadphoneVolume, HbFeatures WIRED_HEADPHONE). Each
+HbMenuFeatures / SlideMain) and the 3.5 mm output (HbAudioRules jack rules, HbOutputRows jack row, HbWiredJack
+over lumen-audio JackOutput, AudioOutputChoice.apply order, the AudioPathReporter adapter of the shared switch, HbFeatures WIRED_HEADPHONE; the
+path switch and the chip levels are lumen-audio's, mutated by apps/core/lumen-audio/test/mutate.py). Each
 mutant breaks one rule in a scratch copy of apps/HbProjector; test/slider, test/audio and test/features must turn red,
 and the unmutated copy must pass.  python3 tools/devices/test/hb_audio_mutate.py   (MUT_ONLY="sc_ ar_" to filter)"""
 import os, shutil, subprocess, sys, tempfile
@@ -13,9 +14,14 @@ A = "src/org/lumen/projector/audio/"
 SC, SM, PP, QP = P + "SlideCoalescer.java", P + "SlideMain.java", P + "ProPicture.java", P + "HbMenuFeatures.java"
 QP_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 AR, ROWS, OPT, AOC = A + "HbAudioRules.java", A + "HbOutputRows.java", A + "HbOutputOptions.java", A + "AudioOutputChoice.java"
-APR, HP, JACK = A + "AudioPathReporter.java", A + "HbHeadphoneVolume.java", A + "HbWiredJack.java"
+APR, JACK = A + "AudioPathReporter.java", A + "HbWiredJack.java"
 FEAT = "src/org/lumen/projector/hal/HbFeatures.java"
+BTRC = "../../devices/goat_elegant/image/hb_bt.rc"
 MUT = [
+    # ---- the stock split lives in lumen-audio (StockVolume / PathSwitch, mutated by its own mutate.py); the HB adapter
+    ("apr_own_switch", APR, "        PathSwitch.install(sApp, VENDOR);\n", ""),
+    ("apr_policy_wait", APR, "        if (am != null) am.registerAudioDeviceCallback(cb, h);\n", ""),
+    ("rc_absvol_on", BTRC, "    setprop persist.bluetooth.disableabsvol true\n", "    setprop persist.bluetooth.disableabsvol false\n"),
     # ---- SlideCoalescer (flicker on a fast slide)
     ("sc_stock_gap_50", SC, "STOCK_GAP_MS = 100L;", "STOCK_GAP_MS = 50L;"),
     ("sc_no_gap", SC, "Math.max(0, lastStart + minGapMs - clock.now())", "0"),
@@ -40,38 +46,24 @@ MUT = [
     ("mf_pq_wrong_item", QP_HbPictureRows, 'case "contrast": it = PqItem.CONTRAST; break;', 'case "contrast": it = PqItem.BRIGHTNESS; break;'),
     ("sm_fire_and_forget", SM, "        Hal.query((g, g2) -> {", "        Hal.run((g, g2) -> {"),
     ("sm_ok_on_null", SM, "boolean ok = Boolean.TRUE.equals(r);", "boolean ok = !Boolean.FALSE.equals(r);"),
-    # ---- the 3.5 mm rules
-    ("ar_connect_when_listed", AR, "return wiredListed ? WiredOutputStep.NONE : WiredOutputStep.CONNECT;", "return WiredOutputStep.CONNECT;"),
-    ("ar_remove_real_jack", AR, "return ours && wiredListed ? WiredOutputStep.DISCONNECT", "return wiredListed ? WiredOutputStep.DISCONNECT"),
-    ("ar_never_remove", AR, "return ours && wiredListed ? WiredOutputStep.DISCONNECT : WiredOutputStep.NONE;", "return WiredOutputStep.NONE;"),
-    ("ar_no_interim", AR, "(\"AUTO\".equals(chosen) || chosen == null)", "(chosen == null)"),
-    ("ar_hp_unconfirmed", AR, "return target == PATH_WIRED && confirmed == PATH_WIRED;", "return target == PATH_WIRED;"),
-    ("ar_store_bt_too", AR, "    public static boolean storeHeadphoneBeforeEnd(int path) {\n        return path == PATH_WIRED;",
-     "    public static boolean storeHeadphoneBeforeEnd(int path) {\n        return path >= PATH_BT;"),
-    ("ar_sink_bt_only", AR, "(halSink == PATH_BT || halSink == PATH_WIRED) && target != halSink", "halSink == PATH_BT && target != halSink"),
-    ("ar_wire_5", AR, "PATH_WIRED = 4;", "PATH_WIRED = 5;"),
-    ("ar_hp_resend", AR, "        return speakerVolume(wired, music, sent, force);", "        return speakerVolume(wired, music, -1, force);"),
+    # ---- the 3.5 mm rows
     ("rows_no_jack", ROWS, "(WIRED.equals(k) && wiredJack)", "false"),
     ("rows_jack_everywhere", ROWS, "(WIRED.equals(k) && wiredJack)", "wiredJack"),
     ("rows_3arg_jack", ROWS, "return kinds(connected, soundbarKnown, chosen, false);", "return kinds(connected, soundbarKnown, chosen, true);"),
     ("opt_no_jack", OPT, "HbOutputRows.kinds(connected, known, chosen, HbWiredJack.offered())", "HbOutputRows.kinds(connected, known, chosen, false)"),
-    # ---- the 3.5 mm wiring
-    ("aoc_no_wait", AOC, "                HbWiredJack.connect(am, true, why);\n                return;", "                HbWiredJack.connect(am, true, why);"),
-    ("aoc_no_interim", AOC, "                d = find(am, AudioOutputKind.SPEAKER, \"\");", ""),
-    ("aoc_remove_first", AOC, "            boolean ok = am.setPreferredDeviceForStrategy(media, want);",
-     "            if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n            boolean ok = am.setPreferredDeviceForStrategy(media, want);"),
-    ("aoc_never_remove_unlisted", AOC, "                if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);\n                return;\n            }\n            AudioDeviceAttributes want",
-     "                return;\n            }\n            AudioDeviceAttributes want"),
-    ("jack_headset_type", JACK, "                    AudioDeviceInfo.TYPE_WIRED_HEADPHONES, \"\");", "                    AudioDeviceInfo.TYPE_WIRED_HEADSET, \"\");"),
-    ("jack_not_ours", JACK, "            sOurs = on;\n", ""),
+    # ---- the 3.5 mm wiring (the jack rule is lumen-audio JackOutput, mutated by its own mutate.py)
+    ("aoc_no_wait", AOC, "            if (HbWiredJack.keep(am, media, k, why)) return;", "            HbWiredJack.keep(am, media, k, why);"),
+    ("aoc_jack_after_device", AOC, [("            if (HbWiredJack.keep(am, media, k, why)) return;      // \"devices added\" evaluates again with the output listed\n", ""),
+                                    ("            if (route(am, media, app, k, why)) HbWiredJack.settle(am, media, k, why);\n",
+                                     "            if (route(am, media, app, k, why)) HbWiredJack.settle(am, media, k, why);\n            if (HbWiredJack.keep(am, media, k, why)) return;\n")], None),
+    ("aoc_no_settle", AOC, "if (route(am, media, app, k, why)) HbWiredJack.settle(am, media, k, why);", "route(am, media, app, k, why);"),
+    ("aoc_auto_with_jack", AOC, "AutoOutput.device(am, HbWiredJack.SENSED)", "AutoOutput.device(am, true)"),
+    ("jack_sensed", JACK, "static final boolean SENSED = false;", "static final boolean SENSED = true;"),
+    ("jack_always_chosen", JACK, "return offered() && JackOutput.keep(am, media, chosen == AudioOutputKind.WIRED, why);",
+     "return offered() && JackOutput.keep(am, media, true, why);"),
+    ("jack_settle_chosen", JACK, "if (offered()) JackOutput.settle(am, media, chosen == AudioOutputKind.WIRED, why);",
+     "if (offered()) JackOutput.settle(am, media, true, why);"),
     ("jack_ungated", JACK, "return HbFeatures.on(HbFeatures.F.WIRED_HEADPHONE);", "return true;"),
-    ("apr_no_hp_branch", APR, "} else if (HbAudioRules.storeHeadphoneBeforeEnd(target)) {", "} else if (false) {"),
-    ("apr_sink_bt_only", APR, "} else if (HbAudioRules.speakerSinkAfter(sHalSink, target)) {", "} else if (sHalSink == AudioPath.BT_A2DP.wire) {"),
-    ("apr_no_hp_install", APR, "            org.lumen.projector.Ui.main().post(() -> HbHeadphoneVolume.install(sApp));   // HB fork 2026-11-10\n", ""),
-    ("hp_end_without_level", HP, "        if (!send(am, v)) {", "        if (false) {"),
-    ("hp_unconfirmed", HP, "HbAudioRules.headphoneConfirmed(AudioPathReporter.targetPath(), AudioPathReporter.confirmedPath())",
-     "AudioPathReporter.targetPath() == HbAudioRules.PATH_WIRED"),
-    ("hp_wrong_key", HP, "am.setParameters(\"headphone_volume=\" + v);", "am.setParameters(\"spk_volume=\" + v);"),
     ("feat_off", FEAT, "WIRED_HEADPHONE(State.ON, \"support_wired_headphone\", \"false\"),", "WIRED_HEADPHONE(State.OFF, \"support_wired_headphone\", \"false\"),"),
     ("feat_key", FEAT, "WIRED_HEADPHONE(State.ON, \"support_wired_headphone\", \"false\"),", "WIRED_HEADPHONE(State.ON, \"support_wired_headphones\", \"false\"),"),
 ]
@@ -81,6 +73,15 @@ SUITES = ["test/slider/run.sh", "test/audio/run.sh", "test/features/run.sh"]
 def tree(dst):
     shutil.copytree(os.path.join(G, "apps/HbProjector"), os.path.join(dst, "apps/HbProjector"),
                     ignore=shutil.ignore_patterns("build"))
+    # HbAudioRules asks lumen-audio SoundbarMode, check_wiring reads PathSwitch
+    shutil.copytree(os.path.join(G, "apps/core/lumen-audio"), os.path.join(dst, "apps/core/lumen-audio"))
+    # test/audio/check_wiring.py reads the stock Bluetooth absolute volume line of hb_bt.rc
+    os.makedirs(os.path.join(dst, "devices/goat_elegant/image"))
+    shutil.copy(os.path.join(G, "devices/goat_elegant/image/hb_bt.rc"), os.path.join(dst, "devices/goat_elegant/image/hb_bt.rc"))
+    # and the HB chip volume table and the recipe that ships it
+    for rel in ("devices/goat_elegant/audio/chip_volume.tsv", "devices/goat_elegant/app/HbProjector.layers"):
+        os.makedirs(os.path.dirname(os.path.join(dst, rel)), exist_ok=True)
+        shutil.copy(os.path.join(G, rel), os.path.join(dst, rel))
 
 
 def run(root):

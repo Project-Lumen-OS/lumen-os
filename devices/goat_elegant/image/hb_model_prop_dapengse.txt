@@ -1,0 +1,27 @@
+# The stock model properties of G0130 (both firmwares) and G0118 on v6.16.24: the lines of vendor/etc/xgimimodelname/<model>/build.prop that
+# x50_props.py model_rule keeps (every line except the identity keys, persist.sys.* and the first-start keys), in
+# the stock order. hb_model_props.tsv names the model, firmware and stock sha256; tools/devices/model_props.py check
+# proves this file against the dump on the build host, hb_model_props.rc sets the lines at early-init.
+ro.xgimi.product.name=Product_dapengse
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_dapengse
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.vendor.xgimi.animation.style=blue
+persist.xgimi.bootanimation.style=blue
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9660+M-UHD003F000300030001000000010001+dapengse+ProjectorUHD_3
+persist.vendor.xgimi.enforce.volume=25
+vendor.mstar.trapezoid.secure.enable=1
+vendor.xgimi.disable_decorview_anti_aliasing=true
+ro.xgimi.stability.kernel.enabled=0
+ro.xgimi.mem.policy=2G
+vendor.xgimi.bootanim.delay=9000

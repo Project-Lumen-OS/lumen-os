@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">Wyślij raport o problemie</string>
+    <string name="lumen_report_intro">Pomaga twórcy Lumen OS ustalić, co poszło nie tak. Nic nie zostanie wysłane, dopóki nie naciśniesz „Wyślij raport”.</string>
+    <string name="lumen_report_included">W raporcie</string>
+    <string name="lumen_report_inc_system">Wersja systemu, czas działania i która kopia systemu działa</string>
+    <string name="lumen_report_inc_logs">Logi systemu i aplikacji Lumen z ostatnich 30 minut</string>
+    <string name="lumen_report_inc_crashes">Zapisy awarii, zawieszeń i ponownych uruchomień z nazwami aplikacji</string>
+    <string name="lumen_report_inc_kernel">Log jądra z ostatniego ponownego uruchomienia i log aktualizacji</string>
+    <string name="lumen_report_inc_state">Ekran, pamięć i typ sieci</string>
+    <string name="lumen_report_excluded">Usunięte lub pominięte</string>
+    <string name="lumen_report_exc_accounts">Konta, adresy e-mail i numery telefonów</string>
+    <string name="lumen_report_exc_network">Nazwy sieci Wi-Fi, adresy IP i MAC</string>
+    <string name="lumen_report_exc_serial">Numer seryjny: zamiast niego losowy identyfikator tego projektora</string>
+    <string name="lumen_report_exc_apps">Logi aplikacji zainstalowanych przez Ciebie</string>
+    <string name="lumen_report_exc_files">Zdjęcia, pliki i hasła</string>
+    <string name="lumen_report_footer">Raport jest przechowywany przez 30 dni. Otworzyć go może tylko twórca Lumen OS.</string>
+    <string name="lumen_report_last">Ostatni raport: %1$s, %2$s</string>
+    <string name="lumen_report_send">Wyślij raport</string>
+    <string name="lumen_report_collecting">Zbieranie informacji… (%1$d z %2$d)</string>
+    <string name="lumen_report_log_hint">Jeśli Android zapyta o zezwolenie na dostęp do logów urządzenia, wybierz „Zezwól”.</string>
+    <string name="lumen_report_sending">Wysyłanie… %1$s z %2$s</string>
+    <string name="lumen_report_done_title">Raport wysłany</string>
+    <string name="lumen_report_done_text">Wyślij ten kod twórcy Lumen OS razem z krótkim opisem problemu.</string>
+    <string name="lumen_report_failed_title">Raport nie został wysłany</string>
+    <string name="lumen_report_err_no_network">Brak połączenia z internetem. Sprawdź sieć i spróbuj ponownie.</string>
+    <string name="lumen_report_err_network">Serwer raportów jest nieosiągalny. Spróbuj później.</string>
+    <string name="lumen_report_err_rate">Zbyt wiele raportów w tej chwili. Spróbuj później.</string>
+    <string name="lumen_report_err_rejected">Serwer raportów nie przyjął raportu.</string>
+    <string name="lumen_report_err_server">Serwer raportów ma problem. Spróbuj później.</string>
+    <string name="lumen_report_err_collect">Nie udało się przygotować raportu.</string>
+    <string name="lumen_report_retry">Spróbuj ponownie</string>
+    <string name="lumen_report_close">Zamknij</string>
+    <string name="lumen_report_cancel">Anuluj</string>
+    <string name="lumen_report_auto">Wysyłaj raporty o problemach automatycznie</string>
+    <string name="lumen_report_auto_note">Gdy system lub aplikacja Lumen ulegnie awarii albo się zawiesi, krótki raport wyśle się sam. Nigdy nie zawiera logów aplikacji zainstalowanych przez Ciebie.</string>
+    <string name="lumen_report_queued_title">Raport zostanie wysłany później</string>
+    <string name="lumen_report_queued_text">Serwer raportów jest teraz nieosiągalny. Projektor sam wyśle raport, gdy tylko będzie mógł. Wtedy pojawi się tu jego kod.</string>
+    <string name="lumen_report_last_auto">Ostatni raport automatyczny: %1$s, %2$s</string>
+</resources>

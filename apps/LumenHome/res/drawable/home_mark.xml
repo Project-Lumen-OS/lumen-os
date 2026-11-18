@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen mark, paths of apps/common/brand/drawable/lumen_mark.xml (tools/brand/gen_drawables.py) unchanged,
+     colours from the theme: facet A, facet B, core (light theme: facet A = the text colour). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <path android:name="facet0"
+        android:fillColor="?attr/lumenMarkA"
+        android:pathData="M100,64 L159.37,29.72 A92,92 0 0,1 190.55,116.28 L131.18,82 Z" />
+    <path android:name="facet1"
+        android:fillColor="?attr/lumenMarkB"
+        android:pathData="M131.18,82 L190.55,116.28 A92,92 0 0,1 131.18,186.56 L131.18,118 Z" />
+    <path android:name="facet2"
+        android:fillColor="?attr/lumenMarkA"
+        android:pathData="M131.18,118 L131.18,186.56 A92,92 0 0,1 40.63,170.28 L100,136 Z" />
+    <path android:name="facet3"
+        android:fillColor="?attr/lumenMarkB"
+        android:pathData="M100,136 L40.63,170.28 A92,92 0 0,1 9.45,83.72 L68.82,118 Z" />
+    <path android:name="facet4"
+        android:fillColor="?attr/lumenMarkA"
+        android:pathData="M68.82,118 L9.45,83.72 A92,92 0 0,1 68.82,13.44 L68.82,82 Z" />
+    <path android:name="facet5"
+        android:fillColor="?attr/lumenMarkB"
+        android:pathData="M68.82,82 L68.82,13.44 A92,92 0 0,1 159.37,29.72 L100,64 Z" />
+    <group android:name="core" android:pivotX="100" android:pivotY="100">
+        <path android:name="core_light"
+            android:fillColor="?attr/lumenMarkCore"
+            android:pathData="M100,81 A19,19 0 0,1 100,119 A19,19 0 0,1 100,81 Z" />
+    </group>
+</vector>

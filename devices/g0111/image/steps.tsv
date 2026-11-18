@@ -1,13 +1,21 @@
-# The X50 recipe (g0111 X50 Ultra, g0100 X50 Ultra Max): steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS.
+# The X50 family recipe (every devices/<c>/build.conf with steps= this file: X50 Ultra, Ultra Max, TITAN Noir Pro and
+# Max, ...): steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS. No model is named here: the descriptor gives the
+# codename, MODEL, PREFIX, PCERT (its platform certificate) and stages the model's public certificates.
 # Base: the published Z9X 1.0.9 image; every kept file is the base's byte for byte with its owner, mode, label and
 # capability. What changes and why: devices/g0111/README.md; verify_tree_x50.py proves exactly that and nothing else.
 # Flags: test (tN) or pub (a release version), stage (--stage-only), image (--image-only).
-*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	x50_props.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	x50_blobs.sh	x50_blobs.rc	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	blobs_stock_dsu.sh	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml
-*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/X50TvInput.apk	stage/base_signed/base_signed.tsv
+*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc
+*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/base_signed/base_signed.tsv
+ota	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	ota_gate.conf	otacerts.zip	z9x-updater-default-permissions.xml	remove_ota.txt	stage/LumenUpdater.apk
+# the update client of a model with updates (build.conf derive=ota:pub): the neutral gate, its X50 data, the model's
+# OTA certificates (tools/devices/ota/make_otacerts.py), the base's default permission file of org.lumen.updater
+ota	line	lumen_ota.rc	    exec u:r:su:s0 root root -- /system/bin/sh /system/etc/lumen/lumen_ota.sh count
+ota	line	lumen_update_verifier.rc	service update_verifier /system/bin/sh /system/etc/lumen/lumen_ota.sh verifier
+ota	line	ota_gate.conf	hal=aidl
+ota	sha	z9x-updater-default-permissions.xml	8ffddb73368df23a6052a04a7002feec7e337f6a1d3582e1e2f93735e448fa51
 *	dsu_rc	lumen_dsu_install.rc
 *	out	mounts
-# the HAL app's calls against the allow lists of verify_tree_x50.py, with the model's own platform certificate
-*	set	PCERT	verify_tree_x50.py	PLATFORM_CERTS = \{[^}]*"{codename}": "([0-9a-f]{64})"
+# the HAL app's calls against the allow lists of verify_tree_x50.py, with the model's own platform certificate (PCERT)
 *	run	x50_apk_check.py	{in}/stage/X50EyeGuard.apk	--expect	{in}/verify_tree_x50.py	--cert	{PCERT}	>apk_check.log
 # the base, the stock model props of the dump, the X50 kernel (the base's ART boot image needs userfaultfd)
 *	base_pin
@@ -19,19 +27,25 @@
 *	base_mount
 *	base_line	system/product/etc/build.prop	ro.z9x.build_id={BASE_BUILD_ID}
 *	base_prefix	system/build.prop	ro.build.display.id=Lumen OS 1.0.9 (
-# the tree: root copy, removals, the platform set on the model's keys, otacerts without a certificate, props
+# the tree: root copy, removals, the platform set on the model's keys, otacerts without a certificate (a model with
+# updates: its OTA certificates, below), props
 !image	copy_base
 !image	remove	remove.txt	{root}
 !image	base_signed	stage/base_signed	{mb}	{root}	keep	system/framework/framework-res.apk	system/etc/selinux/plat_mac_permissions.xml	system/apex/com.android.permission.apex
-!image	zip_empty	{sys}/etc/security/otacerts.zip
+!image,!ota	zip_empty	{sys}/etc/security/otacerts.zip
 !image	run_root	x50_props.py	apply	{in}/{PROPF}	{in}/{MPROPF}	{sys}/build.prop	{sys}/product/etc/build.prop	{v}	{bid}
-# network adb (test images only), the X50 blobs reader with the eye-protection drawer and its placeholders
+# the one first-start setting of every image (devices/_image/first_start_prop.txt: English, the time zone from the
+# network) at the end of the product build.prop, and the base's stock-data block without the Z9X's own language and zone
+!image	run_root	first_start.py	apply	{in}/first_start_prop.txt	{sys}
+!image	place	z9x_setup.rc	{sys}/etc/init/z9x_setup.rc	0644	0	0	{LABEL}
+# network adb (test images only), the one blobs reader of every model over the base's Z9X copy, with the X50 family's
+# settings (blobs.conf: 16 MiB partition, the eye-protection drawer, in a trial run the stock slot) and placeholders
 test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
-!image	place	x50_blobs.rc	{sys}/etc/init/x50_blobs.rc	0644	0	0	{LABEL}
+!image	place	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc	0644	0	0	{LABEL}
 !image	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
-!image	place	x50_blobs.sh	{sys}/etc/z9x/x50_blobs.sh	0755	0	0	{LABEL}
+!image	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
+!image	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
 !image	place	x50_blobs_allow.txt	{sys}/etc/z9x/x50_blobs_allow.txt	0644	0	0	{LABEL}
-!image	place	blobs_stock_dsu.sh	{sys}/etc/z9x/blobs_stock_dsu.sh	0644	0	0	{LABEL}
 !image	place	-	{sys}/bin/nativeui	0755	0	2000	u:object_r:nativeui_main_exec:s0
 !image	place	-	{sys}/lib64/xgimi.hardware.gmpf-V1-ndk.so	0644	0	0	u:object_r:system_lib_file:s0
 # the eye-follow fail-safe (persistent system app), the power keys and their framework RRO
@@ -44,6 +58,10 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	place	stage/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
 !image	cleanup	{sys}/priv-app/Z9xHome/oat
 !image	place	stage/X50TvInput.apk	{sys}/app/Z9xTvInput/Z9xTvInput.apk	0644	0	0	{LABEL}
+# the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
+# languages and a language key) in LeanbackIME's place; the base's odex of the old APK goes
+!image	rm	{sys}/product/app/LeanbackIME/oat
+!image	place	stage/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
 !image	cleanup	{sys}/app/Z9xTvInput/oat
 !image	run_root	x50_diag.py	apply	{sys}/etc/xgimi/z9x_diag.sh
 # install from a DSU try: the app, its init rc and its root script
@@ -54,14 +72,31 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	place	stage/LumenDsuInstall.apk	{sys}/priv-app/LumenDsuInstall/LumenDsuInstall.apk	0644	0	0	{LABEL}
 !image	place	lumen_dsu_install.rc	{sys}/etc/init/lumen_dsu_install.rc	0644	0	0	{LABEL}
 !image	place	lumen_dsu_install.sh	{sys}/etc/lumen/lumen_dsu_install.sh	0755	0	0	{LABEL}
+# the update client of a model with updates (flag ota: a public image whose build.conf says derive=ota:pub; owner
+# 2026-11-14, rules.md 2.34): the base's Z9X gate out (remove_ota.txt), the neutral gate in (lumen_ota.rc, the
+# update_verifier.rc that runs it, lumen_ota.sh, ota_gate.conf), otacerts.zip with the model's OTA certificates, the
+# shared updater (signed with the model's platform key on the Mac) and the base's default permission file of
+# org.lumen.updater back at its path (remove.txt drops it with the Z9X updater)
+ota,!image	remove	remove_ota.txt	{root}
+ota,!image	place	otacerts.zip	{sys}/etc/security/otacerts.zip	0644	0	0	{LABEL}
+ota,!image	place	lumen_update_verifier.rc	{sys}/etc/init/update_verifier.rc	0644	0	0	{LABEL}
+ota,!image	place	lumen_ota.rc	{sys}/etc/init/lumen_ota.rc	0644	0	0	{LABEL}
+ota,!image	place	lumen_ota.sh	{sys}/etc/lumen/lumen_ota.sh	0755	0	0	{LABEL}
+ota,!image	place	ota_gate.conf	{sys}/etc/lumen/ota_gate.conf	0644	0	0	{LABEL}
+ota,!image	mkdir	0755	{sys}/app/LumenUpdater
+ota,!image	label	{sys}/app/LumenUpdater	{LABEL}
+ota,!image	place	stage/LumenUpdater.apk	{sys}/app/LumenUpdater/LumenUpdater.apk	0644	0	0	{LABEL}
+ota,!image	place	z9x-updater-default-permissions.xml	{sys}/product/etc/default-permissions/z9x-updater.xml	0644	0	0	{LABEL}
+ota,!image	echo	ota: neutral gate, otacerts.zip of {codename}, LumenUpdater and update_verifier.rc installed (channel {ota_channel})
 # the projector menu with the remote pairing
 !image	mkdir	0755	{sys}/priv-app/X50Projector
 !image	label	{sys}/priv-app/X50Projector	{LABEL}
 !image	place	stage/X50Projector.apk	{sys}/priv-app/X50Projector/X50Projector.apk	0644	0	0	{LABEL}
 !image	place	x50-projector.xml	{sys}/product/etc/default-permissions/x50-projector.xml	0644	0	0	{LABEL}
 # the staged tree against the base
-!image	run_root	verify_tree_x50.py	{mb}	{root}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	>verify_stage.log
-!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	public={public}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}	inputs_sha256=@catsha(base.sha256,remove.txt,{PROPF},{MPROPF},x50_props.py,x50_netadb.rc,verify_tree_x50.py,x50_blobs.sh,x50_blobs.rc,x50_blobs_allow.txt,x50_nui.rc,x50_apk_check.py,x50_kconfig.py,x50_power_keys.py,x50_perm_pkgs.py,apkinfo.py,x50_diag.py,blobs_stock_dsu.sh,lumen_dsu_install.rc,lumen_dsu_install.sh,x50-projector.xml,stage/X50EyeGuard.apk,stage/X50PowerOverlay.apk,stage/LumenDsuInstall.apk,stage/X50Projector.apk,stage/Z9xHome.apk,stage/X50TvInput.apk,stage/base_signed/base_signed.tsv)	kernel=boot_a,boot_b {BOOT_SHA} CONFIG_USERFAULTFD=y	art_gc=@first({t}/verify_stage.log,verify_tree_x50: ART )	blobs_set=@first(x50_blobs_allow.txt,set=)	app=system/app/X50EyeGuard/X50EyeGuard.apk @sha(stage/X50EyeGuard.apk)	overlay=system/product/overlay/X50PowerOverlay.apk @sha(stage/X50PowerOverlay.apk)	dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk @sha(stage/LumenDsuInstall.apk)	menu=system/priv-app/X50Projector/X50Projector.apk @sha(stage/X50Projector.apk)	home=system/priv-app/Z9xHome/Z9xHome.apk @sha(stage/Z9xHome.apk)	tvinput=system/app/Z9xTvInput/Z9xTvInput.apk @sha(stage/X50TvInput.apk)	platform_set={codename} @sha(stage/base_signed/base_signed.tsv)
+!image	run_root	first_start.py	check	{in}/first_start_prop.txt	{sys}	>first_start_stage.log
+!image	run_root	verify_tree_x50.py	{mb}	{root}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	{MODEL}	{PREFIX}	{PCERT}	>verify_stage.log
+!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	public={public}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}	inputs_sha256=@catsha(base.sha256,remove.txt,{PROPF},{MPROPF},platform.x509.pem,FINGERPRINTS.txt,x50_props.py,x50_netadb.rc,verify_tree_x50.py,z9x_blobs.sh,z9x_blobs.rc,blobs.conf,x50_blobs_allow.txt,x50_nui.rc,x50_apk_check.py,x50_kconfig.py,x50_power_keys.py,x50_perm_pkgs.py,apkinfo.py,x50_diag.py,lumen_dsu_install.rc,lumen_dsu_install.sh,x50-projector.xml,first_start_prop.txt,first_start.py,z9x_setup.rc,stage/X50EyeGuard.apk,stage/X50PowerOverlay.apk,stage/LumenDsuInstall.apk,stage/X50Projector.apk,stage/Z9xHome.apk,stage/X50TvInput.apk,stage/base_signed/base_signed.tsv)	kernel=boot_a,boot_b {BOOT_SHA} CONFIG_USERFAULTFD=y	art_gc=@first({t}/verify_stage.log,verify_tree_x50: ART )	blobs_set=@first(x50_blobs_allow.txt,set=)	app=system/app/X50EyeGuard/X50EyeGuard.apk @sha(stage/X50EyeGuard.apk)	overlay=system/product/overlay/X50PowerOverlay.apk @sha(stage/X50PowerOverlay.apk)	dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk @sha(stage/LumenDsuInstall.apk)	menu=system/priv-app/X50Projector/X50Projector.apk @sha(stage/X50Projector.apk)	home=system/priv-app/Z9xHome/Z9xHome.apk @sha(stage/Z9xHome.apk)	tvinput=system/app/Z9xTvInput/Z9xTvInput.apk @sha(stage/X50TvInput.apk)	platform_set={codename} @sha(stage/base_signed/base_signed.tsv)
 !image	echo	stage: OK {t}/STAGE_INFO.txt
 stage	stop
 # the image: 4 KiB blocks, lz4hc, no inline data (erofs_kcheck.py), one time for every file, a UUID from TAG,
@@ -70,7 +105,8 @@ stage	stop
 *	pack	{root}
 *	run	erofs_kcheck.py	{img}	>kcheck.log
 *	mount_image
-*	run_root	verify_tree_x50.py	{mb}	{mn}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	>verify.log
+*	run_root	first_start.py	check	{in}/first_start_prop.txt	{mn}/system	>first_start.log
+*	run_root	verify_tree_x50.py	{mb}	{mn}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	{MODEL}	{PREFIX}	{PCERT}	>verify.log
 # group_oem_a holds 4613734400 bytes; the system stays under 2.5 GB with room for z9x_blobs and z9x_gapps
 *	budget	2500000000
 *	sha256

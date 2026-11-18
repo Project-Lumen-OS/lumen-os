@@ -2,9 +2,8 @@
 # /product/etc/build.prop is read last by init (after vendor and odm), so these ro.* values replace the
 # vendor's (property_service.cpp: later partitions override earlier ones while build.props load).
 # A value already saved in /data wins for persist.*.
-# English is the product default; the user picks the language in the first-run setup (language step first).
-ro.product.locale=en-US
-persist.sys.timezone=Europe/Moscow
+# Language and time zone of the first start: devices/_image/first_start_prop.txt, the one setting of every model,
+# goes after the OTA lines at the end of this file (devices/horse_popular/image/z9x_props.py, tools/lumen_v1.sh).
 bluetooth.device.default_name=XGIMI Z9X
 # Product name and version (brand spec 5; the About rows come from ro.build.display.id and
 # ro.lineage.display.version, patched in system/build.prop). Display only, nothing gates on them.
@@ -36,13 +35,6 @@ persist.sys.usb.config=none
 # report server turns on the "Send a problem report" row in Projector settings;
 # empty = hidden, nothing collected or sent. A ro.* value cannot change at runtime: a later image sets it.
 ro.z9x.report.url=
-# ---- Bluetooth absolute volume (Lumen OS 1.0.6). The vendor build.prop sets persist.bluetooth.disableabsvol=true,
-# so the projector only scaled its own signal and a speaker kept its own volume. With it on, the remote's volume
-# keys set the speaker's volume and the speaker's knob moves Android's (AVRCP SetAbsoluteVolume / VOLUME_CHANGED),
-# as on a phone. Tested 2026-10-24 with a Yandex Station Street (BlueZ inside): it accepted the volume only after
-# re-pairing, because BlueZ keeps the projector's SDP record from the first pairing (a record without volume
-# category 2 makes it answer REJECTED / invalid parameter). A value saved in /data (developer option) still wins.
-persist.bluetooth.disableabsvol=false
 # ---- Vendor debug logging below INFO dropped at the source (as on the Play 6). Live Z9X 2026-11-12: these five tags
 # were 76 % of the main log buffer (about 150 lines/s with eye protection on), so it held only the last 70 s and no
 # app line of the evening was left to read. Re-enable one for a test with: setprop log.tag.Motion_det_ctl D

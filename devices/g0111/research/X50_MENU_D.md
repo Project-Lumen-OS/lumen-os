@@ -24,8 +24,9 @@ only after the owner's decision." t20 decision: light level, zoom, lens shift, f
 modes from Lumen are allowed.
 
 What that means in code today (45559d0):
-- Light level DM 6/7 + boost read DM 152 and DLBE DM 172/174: ONLY G0111 (`Menu.laserRows(bootModel)`, `Gmpf.laserGuard`
-  refuses before the transact on any other or unreadable model). Ultra Max: these rows and calls are absent.
+- Light level DM 6/7 + boost read DM 152, iris TV 199/200 and DLBE DM 172/174: where the model's stock has them
+  (`StockLight`, one row per family model, 2026-11-14 owner: open them where stock has them; `Gmpf.stockGuard`
+  refuses before the transact on any other or unreadable model). Evidence: LIGHT_ROWS_STOCK.md.
 - Never on any X50: DM 59 setALOnOff (BANNED), DM 60 getALOnOff, PF 50 getAmbientLight, laser current / RGB lumens
   tables (setDlpLumensComponentRGBLevel and friends), DM 151 setLensDispMode (boost setter), DM 177/178 lumens,
   DM 101 / 66 / 99 / 100 (eye), autoFocus 3 except (47) after optical zoom.
@@ -51,11 +52,11 @@ Mirroring|USB]; brightness slider.
 | Keystone popup: obstacle | yes | Row OBSTACLE | PF 34 | PF 33 | same | |
 | Keystone popup: screen align | yes | Row SCREEN_ALIGN | PF 36 | PF 35 | same | `curtain_projection_self_adapt_tips` (curtain_projection_self_adapt_diana) |
 | Keystone popup: level angles | yes (info) | Sequences.AngleWatch, 500 ms | MD 25 getMotionAttitude, MD 7 | MD 24(true every 5 s / false), MD 15(2,false/true) only if MD 7 on | same | |
-| Zoom (small) | yes: optical + digital zoom AND lens shift | LensActivity, Zoom, LensHold | DM 97, 98, 190, 63(11/12/13,10), 63(18,1), PF 94, PF 112(0..1) | DM 93(0), 94(0), 95(0..64), 96(-200..200), 189(-16..0), 185(0..1,1..2), PF 88(1..5,0f), PF 104, PF 105, SM 147(0..1), PF 3(47) after an optical change | same calls (vendor zoom math differs: libxgimi zoomTof list has no G0100) | none |
+| Zoom (small) | yes: optical + digital zoom AND lens shift | LensActivity, Zoom, LensHold | DM 97, 98, 190, 63(11/12/13,10), 63(18,1), PF 94, PF 112(0..1) | DM 93(0), 94(0), 95(0..200), 96(-200..200), 189(-16..0), 185(0..1,1..2), PF 88(1..5,0f), PF 104, PF 105, SM 147(0..1), PF 3(47) after an optical change | same calls (vendor zoom math differs: libxgimi zoomTof list has no G0100) | none |
 | Picture (wide) popup: mode radios | yes, X50 list AI 10, sport 9, soft 24, Filmmaker 27, ISF day 38, ISF night 39, colour accuracy 29, office 25 | Row PICTURE_MODE (LIST), Sequences.PICTURE_MODES | TV 34 getPictureMode(0) | TV 33 setPictureMode(0, id) | same | `picture_mode_tips_img` (image_mode_4_state) |
 | Picture "more": brightness / contrast / saturation / sharpness | yes | Rows BRIGHTNESS..SHARPNESS | TV 8 / 6 / 10 / 12 (0) | TV 7 / 5 / 9 / 11 (0, 0..100) | same | |
 | Picture "more": dynamic contrast | yes | Row DYNAMIC_CONTRAST | TV 114(0) | TV 113(0, bool) | same | |
-| Picture "more": dynamic black (DLBE) | yes | Row DYNAMIC_BLACK; not in PC 6 / office 25 / HDR Vivid 26 | DM 174 | DM 172(1/0) | ABSENT (laserRows) | `img_dynamic_black_bit_enhancement_tips` |
+| Picture "more": dynamic black (DLBE) | yes | Row DYNAMIC_BLACK; not in PC 6 / office 25 / HDR Vivid 26 | DM 174 | DM 172(1/0) | same (StockLight) | `img_dynamic_black_bit_enhancement_tips` |
 | Sound (small) popup: mode radios | yes: AI 3, music 2, movie 1, karaoke 4, sports 12, standard 20 (tree order) | Row SOUND_MODE, Sequences.SOUND_MODES | GA 7 getSoundeffect | GA 6 setSoundeffect(byte); never 5/21/22 | same | |
 | Sound "more": output / format / eARC | yes | SOUND_OUTPUT, AUDIO_FORMAT, EARC (AudioPath) | GA 3, TV 66, TV 79 | GA 2 (0,2,3,4,6,100; never 1), TV 65 | same | |
 | Focus (small) popup | yes: auto focus, manual focus, smart AF (only these three in the X50 tree) | AUTO_FOCUS, MANUAL_FOCUS (FocusActivity), SMART_AF | PF 86 | PF 8 sendFocusStatus(44); PF 2 manualFocus(17 open, 1, 0, 2 stop); PF 85 + MD 4 together | same | none |
@@ -114,8 +115,8 @@ KEYSTONE: AUTO_KEYSTONE (PF 27), MANUAL_KEYSTONE (DM 15/16/64), ZOOM_SHIFT (zoom
 HORIZONTAL_ANGLE / VERTICAL_ANGLE (MD 25, info), POWER_ON_AK (GF 45/46), MOVE_AK (MD 6/7), OBSTACLE (PF 33/34),
 SCREEN_ALIGN (PF 35/36).
 PROJECTION: PLACEMENT (DM 2/3, MD 8/9, SM 140), REAR.
-PICTURE: LIGHT (G0111 only), PICTURE_MODE, BRIGHTNESS, CONTRAST, SATURATION, SHARPNESS, DYNAMIC_CONTRAST, DYNAMIC_BLACK
-(G0111 only).
+PICTURE: LIGHT, PICTURE_MODE, BRIGHTNESS, CONTRAST, SATURATION, SHARPNESS, DYNAMIC_CONTRAST, DYNAMIC_BLACK (LIGHT and
+DYNAMIC_BLACK where StockLight has them, every family model since 2026-11-14).
 SOUND: SOUND_MODE, SOUND_OUTPUT, AUDIO_FORMAT, EARC.
 HDMI: HDMI_VERSION, HDMI_RANGE, GAME_MODE, ALLM, GAME_SPEED, HDMI_INPUTS.
 EYE: EYE, EYE_MODE. SYSTEM: SLEEP_TIMER, REMOTE, PERMISSIONS (info), ANDROID_SETTINGS.
@@ -143,7 +144,7 @@ The menu's eye rows only call DM 61/126 and read 62/127; the cover follows from 
 | keystone_non_inductive_real_time | tips_real_time_correction (zX.webp) | move AK row |
 | curtain_projection_self_adapt_diana | curtain_projection_self_adapt_tips (Qt.webp) | screen align row |
 | image_mode_4_state | picture_mode_tips_img (5l.webp) | picture mode |
-| image_dynamic_black_bit_enhancement | img_dynamic_black_bit_enhancement_tips (7P.png) | DLBE (G0111 only) |
+| image_dynamic_black_bit_enhancement | img_dynamic_black_bit_enhancement_tips (7P.png) | DLBE (StockLight) |
 | projection_settings.rearProject | rear_project_tips_img (i9.webp) | rear projection |
 | more_eye_project_follow_img | more_eye_follow_v5 (v5.webp) | eye follow |
 | more_eye_project_be_at_ease_img | more_be_at_ease (7k.webp) | eye be at ease |
@@ -155,11 +156,12 @@ these nodes only; no XGIMI artwork in the image.
 
 ## 6. Gating mutants the port must kill
 
-- LIGHT / DYNAMIC_BLACK row or slider built on G0100, unknown or empty model; laserGuard removed or inverted.
+- LIGHT / DYNAMIC_BLACK row or slider built on a model without a StockLight row (unknown or empty model), Gmpf
+  stockGuard / boostGuard removed or inverted.
 - Any Call for DM 59, DM 60, PF 50, DM 151, DM 177/178 or a laser-current method; any Call/row in the menu module for
   DM 101 / 66 / 99 / 100.
 - Eye policy moved into the menu (menu sends 61 outside the user row, or covers / uncovers by itself).
-- X50 profile accepted on a non-X50 pair (g0111+G0100, g0100+G0111, Z9X device), Ultra Max getting the Ultra light rows.
+- X50 profile accepted on a non-X50 pair (g0111+G0100, g0100+G0111, Z9X device).
 - New game calls sent before their getter answered in range; write not read back.
 
 ## 7. Not traced / open

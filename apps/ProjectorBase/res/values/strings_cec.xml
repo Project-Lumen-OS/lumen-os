@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Module "cec" (Lumen OS 1.0, HDMI-CEC phase 1): the texts of the Z9X / HB CEC power policy (CecPolicy). English
+     base, translations in apps/i18n/langs (gen.py). The HDMI-CEC page's texts are in apps/core/lumen-cec
+     (lumen_cec_*). Prefix every name with "cec_". -->
+<resources>
+    <!-- the source of the shared text lumen_hdmi_input_options (apps/core/lumen-common-strings/vocabulary.tsv) -->
+    <string name="cec_hdmi_options">HDMI input options</string>
+    <!-- Card after a wake by an HDMI device with no picture and no remote key -->
+    <string name="cec_unattended_title">Turned on by an HDMI device</string>
+    <!-- %1$s = the device's name, or cec_device_generic -->
+    <string name="cec_unattended_msg">%1$s turned the projector on, but there is no picture. The projector goes back to sleep in 30 seconds.</string>
+    <string name="cec_stay_on">Stay on</string>
+    <string name="cec_device_generic">An HDMI device</string>
+</resources>

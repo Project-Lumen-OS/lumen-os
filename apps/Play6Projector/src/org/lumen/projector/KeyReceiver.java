@@ -12,8 +12,8 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 
 import org.lumen.menu.GearPress;
+import org.lumen.menu.KeyTools;
 import org.lumen.projector.panel.QuickPanel;
-import org.lumen.projector.source.SourceOverlay;
 import org.lumen.projector.ui.OverlayHost;
 
 /**
@@ -40,7 +40,7 @@ import org.lumen.projector.ui.OverlayHost;
  *
  * Gear (KEYCODE_SETTINGS): UP without a long press -> QuickPanel.toggle; held (first repeated DOWN) ->
  * close panels and open Android TV Settings (after setup only). Never acts on a key that began while the
- * screen was off. Source (KEYCODE_TV_INPUT): UP -> SourceOverlay.toggle (after setup). KEYSTONE/LENS
+ * screen was off. Source (KEYCODE_TV_INPUT): first DOWN -> lumen-source SourceKey (after setup), as stock. KEYSTONE/LENS
  * (KEYCODE_TV_NETWORK): UP -> QuickPanel.show(projection section). Mic key (KEYCODE_SEARCH): Lumen Home
  * search, push-to-talk while held; a press that began with the display off wakes and opens search
  * without voice.
@@ -104,6 +104,11 @@ public final class KeyReceiver extends BroadcastReceiver {
         // otherwise everything we open below would stay hidden under the always-on-top dream.
         if (firstDown && code != Z9xKeys.AMBIENT) Ui.wakeFromDream(ctx);
 
+        // "Remote buttons" (apps/core/lumen-remote keys, the same handler on every model): a key the user gave an app
+        // opens it, a held one asks which app; while that screen waits for a key it gets every key. A key without an
+        // app goes on below exactly as before.
+        if (org.lumen.remote.keys.KeyBind.onGlobalKey(ctx, ev, isSetupComplete(ctx))) return;
+
         if (code == Z9xKeys.VOICE) {
             handleMic(ctx, intent, ev);                              // push-to-talk: DOWN starts, UP stops
             return;
@@ -151,7 +156,7 @@ public final class KeyReceiver extends BroadcastReceiver {
             return;
         }
         if (code == Z9xKeys.SOURCE) {
-            if (upOk && setupDone(ctx, "source")) SourceOverlay.toggle(ctx);
+            if (firstDown && setupDone(ctx, "source")) org.lumen.source.SourceKey.press(ctx, "key");
             return;
         }
         if (code == Z9xKeys.PROJECTOR_PANEL) {
@@ -173,19 +178,19 @@ public final class KeyReceiver extends BroadcastReceiver {
 
     /**
      * Gear (org.lumen.menu.GearPress): DOWN(repeat 0) arms; the first repeated DOWN of the same press = long press;
-     * UP without a long press = short press (quick panel). A canceled UP does nothing.
+     * UP without a long press = short press (quick panel). A canceled UP does nothing. While a Lumen tool is on screen
+     * (manual focus, the fine corner adjustment, the zoom card: org.lumen.menu.KeyTools) both presses are its menu key.
      */
     private static void handleGear(Context ctx, Intent intent, KeyEvent ev) {
         if (intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) return;
         int action = ev.getAction();
-        // the zoom and shift card: the gear is the remote's menu key there (stock ZoomDisplacementWind MENU = the side
-        // menu with Reset; 2026-10-24: "menu throws me into the quick panel instead of the reset")
-        if (org.lumen.projector.panel.Play6ZoomShiftPanel.onMenuKey(ev)) return;
         if (action == KeyEvent.ACTION_DOWN) {
             if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);
             return;
         }
-        if (action == KeyEvent.ACTION_UP && GEAR.up(ev.getDownTime(), ev.isCanceled())) QuickPanel.toggle(ctx);
+        if (action == KeyEvent.ACTION_UP && GEAR.up(ev.getDownTime(), ev.isCanceled()) && !KeyTools.menuKey(false)) {
+            QuickPanel.toggle(ctx);                                  // no tool on screen took the menu key
+        }
     }
 
     /**
@@ -193,6 +198,7 @@ public final class KeyReceiver extends BroadcastReceiver {
      * menu's profile decides (keys.gear_long; the Play 6 has no game menu: none = Android settings as before).
      */
     private static void gearLong(Context ctx) {
+        if (KeyTools.menuKey(true)) return;                          // a tool on screen took the menu key
         org.lumen.projector.panel.Play6Menu.gearLong(ctx, () -> {
             OverlayHost.get(ctx).dismissAll(false);
             if (setupDone(ctx, "gear long press")) openTvSettings(ctx);

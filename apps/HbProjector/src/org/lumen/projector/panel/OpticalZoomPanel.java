@@ -274,6 +274,13 @@ public final class OpticalZoomPanel extends Panel {
     @Override
     protected long autoHideMs() { return AUTO_HIDE_MS; }
 
+    /**
+     * The remote's gear is this card's MENU (zoom reset, its hint line): the shared tool rule (org.lumen.menu.KeyTools)
+     * hands a short press to onKeyEvent as KEYCODE_MENU instead of opening the quick menu over the card.
+     */
+    @Override
+    protected boolean takesMenuKey() { return true; }
+
     @Override
     protected boolean onKeyEvent(KeyEvent ev) {
         int code = ev.getKeyCode();

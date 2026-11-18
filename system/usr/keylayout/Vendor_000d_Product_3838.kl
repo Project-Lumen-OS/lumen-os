@@ -39,7 +39,7 @@ key 65         FOCUS  # XGIMI: FOCUS_AUTO_NEW; focus key short press -> org.lume
 key 62         TV_CONTENTS_MENU  # XGIMI: FOCUS_MAN_NEW; focus key long press -> org.lumen.projector manual-focus overlay
 # key 88       RC_LOW_BATTERY  (dropped: remote low-battery report, not a key)
 key 183        TV_SATELLITE_SERVICE  # XGIMI: AMBIENT; stock "screen saver" key -> org.lumen.projector starts Ambient mode
-key 184        ALL_APPS  # XGIMI: SHORTCUT; stock DIY shortcut key -> all apps
+key 184        FEATURED_APP_1  # XGIMI: SHORTCUT; stock custom shortcut key -> org.lumen.projector "Remote buttons" (the app or action the user gave it, else the app list)
 # key 185      SECONDARY_POWER  (not mapped yet: stock XgimiWindowManager handles it (2130) exactly
 #   like KPPOWER (2100): wake from sleep, swallow the waking press. Not mapped blindly: if one press
 #   sends both the main power scancode and 185, Android has no stock-like dedupe and one press would

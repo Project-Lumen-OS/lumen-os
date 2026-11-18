@@ -81,8 +81,6 @@
     <string name="panel_pm_performance_msg">Пераканайцеся, што вентыляцыйныя адтуліны не закрытыя, а ў пакоі не цяплей за 25 °C. Не карыстайцеся гэтым рэжымам доўга.</string>
     <string name="panel_lamp">Яркасць</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Націсніце → яшчэ раз для Boost</string>
-    <string name="panel_boost_leave_press_again">Націсніце ← яшчэ раз, каб выйсці з Boost</string>
     <string name="panel_boost_3d">Выключыце 3D і паспрабуйце зноў</string>
     <string name="panel_boost_hot">Праектар занадта нагрэўся для Boost. Паспрабуйце пазней</string>
     <string name="panel_ultra120">Ultra 120 Гц</string>
@@ -152,7 +150,6 @@
     <string name="panel_tile_hdmi_only">Толькі HDMI</string>
     <string name="panel_system_settings">Сістэмныя налады</string>
     <string name="panel_hdmi_settings">Налады HDMI</string>
-    <string name="panel_lamp_hint">На ўзроўні 10 націсніце → двойчы, каб уключыць Boost.</string>
     <string name="panel_eye_desc">Святло прыглушаецца, калі хтосьці перад аб\'ектывам.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Побач</string>

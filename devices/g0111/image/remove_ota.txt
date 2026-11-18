@@ -1,0 +1,6 @@
+# X50 family public image of a model with updates (steps.tsv flag ota, build.conf derive=ota:pub): paths of the Z9X
+# 1.0.9 base removed on top of remove.txt, one per line, <path><TAB><why>. The base's Z9X boot gate gives way to the
+# neutral gate of tools/devices/ota/image (lumen_ota.rc, lumen_ota.sh, update_verifier.rc), the one the shared updater
+# checks (apps/core/lumen-updater, InstallChecks.LUMEN_GATE). verify_tree_x50.py checks the exact set.
+system/etc/init/z9x_ota.rc	the Z9X boot gate (z9x_ota.sh count / watch / health with the Z9X gmpf_main health rule): the X50 gate is lumen_ota.rc with ota_gate.conf
+system/etc/z9x/z9x_ota.sh	its script

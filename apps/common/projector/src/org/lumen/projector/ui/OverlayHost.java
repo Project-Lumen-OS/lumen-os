@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import org.lumen.menu.KeyTools;
+
 import java.util.ArrayList;
 
 /**
@@ -38,10 +40,15 @@ import java.util.ArrayList;
  *  - static windows ({@link #addStatic}): non-focusable full-screen or small windows owned by a
  *    module (AK overlay, notification card, eye-protection layer). The module adds/removes them.
  *
+ * Tool screens (org.lumen.menu.KeyTools, every projector app): while a tool activity is in front (manual focus) the
+ * panel on screen steps aside ({@link #aside}), and the remote's menu key goes to a tool panel ({@link #menuKey}).
+ *
  * Main thread only (every public method checks and re-posts if needed where noted).
  */
-public final class OverlayHost {
+public final class OverlayHost implements KeyTools.Host {
     private static final String TAG = "Z9xOverlay";
+    /** A panel back from aside that has not got the window focus again by then closes (another window keeps it). */
+    static final long BACK_FOCUS_MS = 1_000;
     private static OverlayHost sInstance;
 
     private final Context app;
@@ -49,6 +56,10 @@ public final class OverlayHost {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ArrayList<View> statics = new ArrayList<>();
     private Panel current;
+    /** The panel that stepped aside for a tool screen (not focusable, not drawn, timer waiting), null when none. */
+    private Panel aside;
+    /** Its window flags before it stepped aside. */
+    private int asideFlags;
     private final Runnable autoHide = () -> {
         Panel p = current;
         if (p != null) {
@@ -65,6 +76,7 @@ public final class OverlayHost {
     private OverlayHost(Context app) {
         this.app = app;
         this.wm = app.getSystemService(WindowManager.class);
+        KeyTools.addHost(this);
         try {
             BroadcastReceiver close = new BroadcastReceiver() {
                 @Override public void onReceive(Context c, Intent i) {
@@ -124,7 +136,7 @@ public final class OverlayHost {
      */
     public int rightPanelWidth() {
         Panel p = current;
-        if (p == null || !p.showing || p.root == null) return 0;
+        if (p == null || !p.showing || p.root == null || p == aside) return 0;
         ViewGroup.LayoutParams vlp = p.root.getLayoutParams();
         if (!(vlp instanceof WindowManager.LayoutParams)) return 0;
         WindowManager.LayoutParams lp = (WindowManager.LayoutParams) vlp;
@@ -188,6 +200,7 @@ public final class OverlayHost {
         if (!onMain("dismiss")) { main.post(() -> dismiss(p, animate)); return; }
         if (!p.showing) return;
         p.showing = false;
+        if (aside == p) aside = null;
         if (current == p) {
             current = null;
             main.removeCallbacks(autoHide);
@@ -226,10 +239,59 @@ public final class OverlayHost {
     }
 
     void resetAutoHide(Panel p) {
-        if (p != current) return;
+        if (p != current || p == aside) return;
         main.removeCallbacks(autoHide);
         long ms = p.autoHideMs();
         if (ms > 0) main.postDelayed(autoHide, ms);
+    }
+
+    // ================================================================== tool screens (org.lumen.menu.KeyTools)
+    /**
+     * {@code on}: a tool screen came in front (manual focus). The panel on screen steps aside: not focusable and not
+     * drawn, its timer waiting. WindowManager gives the key focus to the topmost focusable window and this overlay
+     * window sits above every activity, so without this the tool's window below never had the keys (LEFT moved the
+     * menu). false: the same panel is back, on the same page and row, with the keys and a fresh timer.
+     */
+    @Override
+    public void aside(boolean on) {
+        if (!onMain("aside")) { main.post(() -> aside(on)); return; }
+        Panel p = on ? current : aside;
+        if (p == null || !p.showing || p.root == null || (on && aside != null)) return;
+        aside = on ? p : null;
+        try {
+            ViewGroup.LayoutParams vlp = p.root.getLayoutParams();
+            if (vlp instanceof WindowManager.LayoutParams) {
+                WindowManager.LayoutParams lp = (WindowManager.LayoutParams) vlp;
+                if (on) asideFlags = lp.flags;
+                lp.flags = on ? lp.flags | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE : asideFlags;
+                p.root.setVisibility(on ? View.INVISIBLE : View.VISIBLE);
+                wm.updateViewLayout(p.root, lp);
+            }
+        } catch (Throwable t) {
+            Log.w(TAG, "aside: " + t);
+        }
+        Log.i(TAG, p.getClass().getSimpleName() + (on ? " aside for a tool screen" : " back after the tool screen"));
+        if (on) {
+            main.removeCallbacks(autoHide);
+        } else {
+            resetAutoHide(p);
+            if (p.root instanceof PanelRoot) ((PanelRoot) p.root).graceAfterAside();
+        }
+        Notify.relayout(app, false);
+    }
+
+    /** A panel is on screen with the keys (not aside for a tool screen). */
+    @Override
+    public boolean panelOnScreen() {
+        Panel p = current;
+        return p != null && p.showing && p != aside;
+    }
+
+    /** The remote's menu key: the tool panel on screen takes it (Panel.takesMenuKey). */
+    @Override
+    public boolean menuKey(boolean held) {
+        Panel p = current;
+        return p != null && p != aside && p.menuKey(held);
     }
 
     /** Screen went off: close panels at once (App's SCREEN_OFF hook). */
@@ -296,7 +358,7 @@ public final class OverlayHost {
         private boolean hadFocus;
         private final Runnable focusLostCheck = new Runnable() {
             @Override public void run() {
-                if (panel.showing && !hasWindowFocus()) {
+                if (panel.showing && panel != aside && !hasWindowFocus()) {
                     Log.i(TAG, "focus lost: closing " + panel.getClass().getSimpleName());
                     dismiss(panel, true);
                 }
@@ -390,6 +452,12 @@ public final class OverlayHost {
                 removeCallbacks(focusLostCheck);
                 postDelayed(focusLostCheck, 300);
             }
+        }
+
+        /** Back from aside: the window focus comes back by itself; when another window keeps it, the panel closes. */
+        void graceAfterAside() {
+            removeCallbacks(focusLostCheck);
+            postDelayed(focusLostCheck, BACK_FOCUS_MS);
         }
 
         @Override

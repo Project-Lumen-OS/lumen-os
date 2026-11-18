@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """The two Z9X build.prop files of a release (the Mac staging step, before tools/build/build.py): the tail that
 tools/lumen_v1.sh prep appends (the snippets of this tree, the OTA props with the build id and MANIFEST, the variant
-lines, ro.lumen.dsu_install=1) in place of the tail the base tar carries, and the About line. Writes
+lines, ro.lumen.dsu_install=1, ro.lumen.models (devices/horse_popular/device.conf models: the codes the blobs reader
+takes the stock slot's files on in a trial run), then the one first-start setting of every image,
+devices/_image/first_start_prop.txt)
+in place of the tail the base tar carries, and the About line. Writes
 OUTDIR/system/build.prop and OUTDIR/system/product/etc/build.prop and prints a unified diff.
   z9x_props.py G OLD_SYSTEM_BUILD_PROP OLD_PRODUCT_BUILD_PROP OUTDIR BID MANIFEST
 """
@@ -19,10 +22,13 @@ ota, n2 = re.subn(r'^ro\.z9x\.ota\.manifest_url=.*/update-stable\.json$', f'ro.z
 assert n1 == 1 and n2 == 1, (n1, n2)
 pub = ('\n# ---- public image (tools/lumen_v1.sh VARIANT=public, tools/ota/image/HANDOFF.md section 2)\nro.z9x.variant=public'
        '\n# ---- no-Google edition (tools/lumen_v1.sh GMS=0)\nro.z9x.gms=0'
-       '\n# ---- install from the projector (apps/LumenDsuInstall, image/INTEGRATION.md): engine on\nro.lumen.dsu_install=1')
+       '\n# ---- install from the projector (apps/LumenDsuInstall, image/INTEGRATION.md): engine on\nro.lumen.dsu_install=1'
+       '\n# ---- the model codes of this image (devices/horse_popular/device.conf): a trial run\'s blobs reader\nro.lumen.models='
+       + re.search(r'^models=(\S+(?: \S+)*)$', open(f'{G}/devices/horse_popular/device.conf').read(), re.M).group(1))
 sys_tail = rd(f'{V1}/build_prop_v1.txt') + '\n# end of file'
 prod_tail = (rd(f'{V1}/product_prop_v1.txt') + '\n' + rd(f'{UIRES}/product_prop.txt')
-             + '\n# ---- OTA (tools/ota/image/ota_props.txt, L-OTA)\n' + ota + pub + '\n# end of file')
+             + '\n# ---- OTA (tools/ota/image/ota_props.txt, L-OTA)\n' + ota + pub
+             + '\n' + rd(f'{G}/devices/_image/first_start_prop.txt') + '\n# end of file')
 def retail(old, start, tail):
     s = open(old).read()
     i = s.index('\n' + start + '\n') + 1          # the first line of the appended snippet

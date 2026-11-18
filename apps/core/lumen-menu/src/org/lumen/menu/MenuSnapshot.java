@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * The menu of a profile as text: every tile, every row with its options, hint pictures,
- * Boost, keys and the game menu. test/run.sh compares it with test/snapshots/&lt;codename&gt;.txt for every
- * devices/&lt;codename&gt;/menu.json, so a profile change shows up as a reviewed text diff.
+ * The menu of a profile as text: every tile, every row with its options, hint pictures, the
+ * section popups that leave out rows with a tile of their own, Boost, keys and the game menu. test/run.sh compares it
+ * with test/snapshots/&lt;codename&gt;.txt for every devices/&lt;codename&gt;/menu.json, so a profile change shows up
+ * as a reviewed text diff.
  *
  *   java org.lumen.menu.MenuSnapshot devices/&lt;c&gt;/menu.json      prints the snapshot (problems: exit 1)
  */
@@ -42,23 +43,27 @@ public final class MenuSnapshot {
             if (m.boostLevel() > 0) b.append(", Boost at ").append(m.boostLevel()).append(" (hint: ").append(p.boostSummary()).append(')');
             b.append('\n');
         }
+        for (MenuSpec.Tile t : m.sliders) {                 // the slider tiles after the light level (the iris)
+            if (t.feature == FeatureId.LAMP) continue;
+            b.append("  slider: ").append(t.id).append(' ').append(p.options(t.feature)).append('\n');
+        }
         for (String sec : m.sections.keySet()) {
-            b.append("section ").append(sec).append('\n');
-            for (MenuSpec.Group g : m.sections.get(sec)) {
+            b.append("section ").append(sec);
+            String src = p.orderSource(sec);
+            if (src != null) b.append("  (stock order: ").append(src).append(')');
+            b.append('\n');
+            groups(b, p, m.sections.get(sec));
+        }
+        for (FeatureId pg : m.pages.keySet()) {
+            b.append("page ").append(pg).append('\n');
+            groups(b, p, m.pages.get(pg));
+        }
+        for (String sec : m.popups.keySet()) {
+            if (m.popupRowsOf(sec).equals(m.rowsOf(sec))) continue;
+            b.append("popup ").append(sec).append(" (rows with a tile of their own left out)\n");
+            for (MenuSpec.Group g : m.popups.get(sec)) {
                 if (g.header != null) b.append("  -- ").append(g.header).append('\n');
-                for (FeatureId f : g.rows) {
-                    b.append("  ").append(f.kind.name().toLowerCase()).append(' ').append(f);
-                    List<String> o = p.options(f);
-                    if (!o.isEmpty()) b.append(" ").append(o);
-                    List<String> it = p.items(f);
-                    if (!it.isEmpty()) b.append(" items ").append(it);
-                    if (f.kind == FeatureKind.SLIDER) {
-                        b.append(" ").append(p.number(f, "min", 0)).append("..").append(p.number(f, "max", 0));
-                    }
-                    String h = p.hint(f);
-                    if (h != null) b.append("  hint picture ").append(h);
-                    b.append('\n');
-                }
+                for (FeatureId f : g.rows) b.append("  ").append(f).append('\n');
             }
         }
         b.append("all settings: ").append(String.join(" ", m.allSettings)).append('\n');
@@ -76,6 +81,49 @@ public final class MenuSnapshot {
             b.append("game menu: none\n");
         }
         if (!p.pending().isEmpty()) b.append("pending (not shown): ").append(String.join(" ", p.pending())).append('\n');
+        return b.toString();
+    }
+
+    /** The rows of a section or page: header lines, then per row its kind, id, options, support, items, range, hint. */
+    private static void groups(StringBuilder b, MenuProfile p, List<MenuSpec.Group> groups) {
+        for (MenuSpec.Group g : groups) {
+            if (g.header != null) b.append("  -- ").append(g.header).append('\n');
+            for (FeatureId f : g.rows) {
+                if (MenuSpec.onOutputPage(f, p)) continue;
+                if (FeatureId.SOUND_OUTPUT == f) {
+                    b.append("  output page ").append(f).append(' ').append(p.options(f))
+                            .append(p.jackSensed() ? "" : " jack " + SoundJack.MANUAL).append('\n');
+                    if (MenuSpec.onOutputPage(FeatureId.SOUND_FORMAT, p) && p.has(FeatureId.SOUND_FORMAT)) {
+                        b.append("    at its bottom ").append(FeatureId.SOUND_FORMAT).append(' ')
+                                .append(p.options(FeatureId.SOUND_FORMAT)).append('\n');
+                    }
+                    continue;
+                }
+                b.append("  ").append(f.kind.name().toLowerCase()).append(' ').append(f);
+                List<String> o = p.options(f);
+                if (!o.isEmpty()) b.append(" ").append(o);
+                if (p.hasSupport(f)) b.append("  support").append(support(p, f));
+                List<String> it = p.items(f);
+                if (!it.isEmpty()) b.append(" items ").append(it);
+                if (f.kind == FeatureKind.SLIDER) {
+                    b.append(" ").append(p.number(f, "min", 0)).append("..").append(p.number(f, "max", 0));
+                }
+                String h = p.hint(f);
+                if (h != null) b.append("  hint picture ").append(h);
+                b.append('\n');
+            }
+        }
+    }
+
+    /** " hdr_vivid for hdr_vivid, color_accuracy for sdr hdr hdr10": the options offered only for some content. */
+    private static String support(MenuProfile p, FeatureId f) {
+        StringBuilder b = new StringBuilder();
+        for (String o : p.options(f)) {
+            List<Signal> on = p.support(f, o);
+            if (on.isEmpty()) continue;
+            b.append(b.length() == 0 ? " " : ", ").append(o).append(" for");
+            for (Signal s : on) b.append(' ').append(s.token);
+        }
         return b.toString();
     }
 

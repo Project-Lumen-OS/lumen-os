@@ -1,0 +1,955 @@
+[ 1495.478315] MARK_LUMEN_CAT2
+[ 1495.481198] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1495.481215] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1495.481225] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1495.491313] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1495.491330] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1495.491335] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1495.491340] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1495.501433] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136173)
+[ 1495.506993] LINE:15425, MDBCMD_GETINFO
+[ 1495.511527] ----------------  Mstar HDMI port0 Info -----------------
+[ 1495.511592] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136174)
+[ 1495.518835] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136174)
+[ 1495.518849] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1495.518877] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1495.519147] ** HDMI EDID From RAM 
+[ 1495.525384] 00: 00 FF FF FF FF FF FF 00 60 ED 30 00 01 00 00 00
+[ 1495.532081] 01: 01 23 01 03 80 73 41 78 0A CF 74 A3 57 4C B0 23
+[ 1495.532100] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1495.538735] 02: 09 48 4C 00 00 00 01 01 01 FF 01 FF FF 01 01 01
+[ 1495.538746] 03: 01 01 01 01 01 20 08 E8 00 30 F2 70 5A 80 B0 58
+[ 1495.538755] 04: 8A 00 C4 8E 21 00 00 1E 02 3A 80 18 71 38 2D 40
+[ 1495.538764] 05: 58 2C 45 00 C4 8E 21 00 00 1E 00 00 00 FC 00 58
+[ 1495.538773] 06: 47 49 4D 49 20 54 56 0A 20 20 20 20 00 00 00 FD
+[ 1495.538783] 07: 00 3B 46 1F 8C 3C 00 0A 20 20 20 20 20 20 01 C7
+[ 1495.538792] 08: 02 03 55 F2 57 05 84 03 01 12 13 14 90 1F 20 22
+[ 1495.538801] 09: 5D 5F 60 61 62 64 65 66 5E 63 02 21 29 09 7F 07
+[ 1495.538809] 0A: 15 07 50 51 06 00 83 01 00 00 E2 00 FF 6E 03 0C
+[ 1495.538818] 0B: 00 10 00 F8 44 20 00 80 01 02 03 04 6A D8 5D C4
+[ 1495.538827] 0C: 01 78 80 6F 02 00 00 E3 05 FF 81 E5 0F 00 60 06
+[ 1495.538836] 0D: 00 E3 06 0F 01 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.538844] 0E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.538853] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 D9
+[ 1495.538861] 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.538870] 11: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.538879] 12: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.546016] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1495.552170] 13: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552184] 14: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552192] 15: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552201] 16: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552210] 17: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552218] 18: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552227] 19: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552236] 1A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552244] 1B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552253] 1C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552261] 1D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552270] 1E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552279] 1F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.552284] Input clock stable, 5V cable detected: 1 
+[ 1495.552288] HDMI 1.4 timing
+[ 1495.552291] TMDS clock rate:0M
+[ 1495.552293] DVI mode
+[ 1495.552296] Active HDMI Port 1->(0 1 2 3)
+[ 1495.552305] Get XC To HDMI Status
+[ 1495.552308] PacketPortSel:  1(0 1 2 3)
+[ 1495.552311] IP MUX Sel:     HDMI2(1 2 3 4)
+[ 1495.552315] HDMI 420 : 0 
+[ 1495.552318] Auto no signal by htt&vtt change: 0
+[ 1495.552322] Auto no signal by hdmirx mute: 1
+[ 1495.552326] pkt or det mute status: 0x0
+[ 1495.552328] HDE: 1  VDE: 1
+[ 1495.552331] HTT: 1  VTT: 0
+[ 1495.552335] ucVPolarity: 0  ucHPolarity: 0 ucInterlace: 0
+[ 1495.552340] usHEDSWOverWrite: 16  usVEDSWOverWrite: 16
+[ 1495.559161] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1495.565634] ----------------  Mstar HDMI port1 Info -----------------
+[ 1495.565641] ** HDMI EDID From RAM 
+[ 1495.568043] 00: 00 FF FF FF FF FF FF 00 60 ED 30 00 01 00 00 00
+[ 1495.572851] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1495.579111] 01: 01 23 01 03 80 73 41 78 0A CF 74 A3 57 4C B0 23
+[ 1495.579123] 02: 09 48 4C 00 00 00 01 01 01 FF 01 FF FF 01 01 01
+[ 1495.579132] 03: 01 01 01 01 01 20 08 E8 00 30 F2 70 5A 80 B0 58
+[ 1495.579142] 04: 8A 00 C4 8E 21 00 00 1E 02 3A 80 18 71 38 2D 40
+[ 1495.579151] 05: 58 2C 45 00 C4 8E 21 00 00 1E 00 00 00 FC 00 58
+[ 1495.579160] 06: 47 49 4D 49 20 54 56 0A 20 20 20 20 00 00 00 FD
+[ 1495.579169] 07: 00 3B 46 1F 8C 3C 00 0A 20 20 20 20 20 20 01 C7
+[ 1495.579178] 08: 02 03 55 F2 57 05 84 03 01 12 13 14 90 1F 20 22
+[ 1495.579187] 09: 5D 5F 60 61 62 64 65 66 5E 63 02 21 29 09 7F 07
+[ 1495.579196] 0A: 15 07 50 51 06 00 83 01 00 00 E2 00 FF 6E 03 0C
+[ 1495.579205] 0B: 00 20 00 F8 44 20 00 80 01 02 03 04 6A D8 5D C4
+[ 1495.579214] 0C: 01 78 80 6F 02 00 00 E3 05 FF 81 E5 0F 00 60 06
+[ 1495.579223] 0D: 00 E3 06 0F 01 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.579232] 0E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.579241] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C9
+[ 1495.579249] 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.579258] 11: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.579266] 12: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.579275] 13: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.596246] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1495.599191] 14: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.599202] 15: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.599211] 16: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.599220] 17: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.599229] 18: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.606049] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1495.612547] 19: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612561] 1A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612570] 1B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612579] 1C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612588] 1D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612597] 1E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612606] 1F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1495.612611] Input clock stable, 5V cable detected: 1 
+[ 1495.612615] HDMI 2.0 timing 40x mode
+[ 1495.612619] TMDS clock rate:92M
+[ 1495.612621] HDMI mode
+[ 1495.612624] Active HDMI Port 1->(0 1 2 3)
+[ 1495.612633] Get XC To HDMI Status
+[ 1495.612636] PacketPortSel:  1(0 1 2 3)
+[ 1495.612640] IP MUX Sel:     HDMI2(1 2 3 4)
+[ 1495.612642] HDMI 420 : 0 
+[ 1495.612646] Auto no signal by htt&vtt change: 0
+[ 1495.612649] Auto no signal by hdmirx mute: 1
+[ 1495.612653] pkt or det mute status: 0x0
+[ 1495.612657] HDE: 1920  VDE: 2160
+[ 1495.612660] HTT: 2200  VTT: 2250
+[ 1495.612665] ucVPolarity: 1  ucHPolarity: 1 ucInterlace: 0
+[ 1495.612669] usHEDSWOverWrite: 1920  usVEDSWOverWrite: 2160
+[ 1495.612675] ----------------  Mstar HDMI port2 Info -----------------
+[ 1495.619636] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1495.626127] ** HDMI EDID From RAM 
+[ 1495.628575] 00: 83 E2 2C D0 A5 A3 4D A4 4A BF 41 18 61 35 BE AA
+[ 1495.633102] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1495.639504] 01: D5 50 B0 A0 A0 52 CF 6A 62 15 4C 51 7E BE B1 79
+[ 1495.639519] 02: E6 17 C2 2C 0A EF EB 72 56 15 07 3B 3F E4 01 B0
+[ 1495.639528] 03: 6D D6 2C 48 E6 1F 12 00 F8 69 49 04 C5 40 15 12
+[ 1495.639538] 04: DC 65 A4 22 2F E0 6F 86 51 8A 71 6C 22 0C 8B 17
+[ 1495.639547] 05: F5 36 3B BA 93 C0 9C 1B CA 34 F1 08 64 CC 5F CF
+[ 1495.639556] 06: C4 10 5C 5F A0 EC 3A EA 97 9C A7 89 4D 22 F7 A4
+[ 1495.639589] 07: 6D C7 C9 1D 01 D9 4A B3 08 E0 15 84 30 00 53 80
+[ 1496.170746] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136177)
+[ 1496.170841] 08: C6 22 7A 34 A1 F9 92 AD DE BF 6E 9E C9 CF 75 89
+[ 1496.170959] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 359ms(> 5ms); caller process HDMI Rx Mon
+[ 1496.177887] 09: AC 2F AF 8A E4 30 B5 35 BE 4E 40 95 50 19 4D 60
+[ 1496.184928] 0A: EE CC 37 F2 EB 9D C1 B7 BF 1F 8B 0A 00 69 C6 1D
+[ 1496.184937] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136178)
+[ 1496.184943] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136178)
+[ 1496.191792] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.191820] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.191929] 0B: CF 9C EA 91 F5 40 69 3C 38 2F E4 B3 3E BF CC 48
+[ 1496.198690] 0C: F1 D2 44 CF 3A D6 88 7C C1 4A 34 6E 56 E7 09 27
+[ 1496.205373] 0D: 1F 7E CA 9F 21 86 CD CD D5 F3 5B 76 C7 AA A7 0F
+[ 1496.205378] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.205385] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.212050] 0E: E7 65 29 5D 1B 48 A8 C4 21 0B 03 AE DE 9F 41 BF
+[ 1496.212095] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.218802] 0F: 8A 14 FC A9 CA CD DF 5B CC 42 5C 50 5C 0E 73 F1
+[ 1496.225484] 10: BD 63 B9 11 CA D3 73 8B 83 4B 08 F7 61 E6 1F D6
+[ 1496.228895] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.232174] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.232180] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.232234] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.232243] 11: 2A 4B DB 52 F9 23 3B DF CA 33 8F FB F5 32 03 20
+[ 1496.238911] 12: 4F 8F 74 73 76 D4 FA 6F 2B E7 6C 9F FC 1F 46 FF
+[ 1496.242310] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136181)
+[ 1496.245582] 13: 1A 49 85 8D 29 10 2C FE 15 D6 2B FE 68 88 43 90
+[ 1496.245647] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1496.252355] 14: 42 0D D5 35 70 61 66 68 2A 4A A9 B2 50 AB 85 3A
+[ 1496.259022] 15: F1 6B BF 8A BF 12 ED 68 42 D0 A2 34 29 AC 02 EC
+[ 1496.262386] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136182)
+[ 1496.265663] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136182)
+[ 1496.265672] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.265698] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.265763] 16: 3B 8D AB E1 AF 1C 4D AC B9 34 8E 36 D9 31 A4 35
+[ 1496.272423] 17: 69 BF 18 B0 72 96 69 11 29 B4 42 2E F9 55 45 9A
+[ 1496.275794] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.279072] 18: C4 86 10 42 77 C9 02 52 01 5A 8F EC 1D 8B 83 EE
+[ 1496.279083] 19: 24 C7 24 39 1D FC 5B 53 54 18 DA 4A 6A 65 51 4F
+[ 1496.279093] 1A: 36 B7 85 83 32 9C 28 D8 9D 8B 20 EE 9E 43 EA 60
+[ 1496.285783] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.292422] 1B: 22 33 34 BF 06 40 61 BF 56 4C 63 48 DA DF 75 45
+[ 1496.299135] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.305973] 1C: D5 0A 7A 24 C0 6C 4E 5F 9A 07 FE E2 72 49 36 3B
+[ 1496.313025] 1D: 3C 7B 2C 78 DB AA 97 F4 67 F4 E3 DB 70 A5 5A 3F
+[ 1496.316198] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.319727] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.319733] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.319737] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.320121] 1E: 01 43 66 56 1B 30 99 47 81 7A 41 B2 8C 1B 05 1C
+[ 1496.327081] 1F: CA 64 3C E0 4C F0 2B D0 10 6D 85 EA 6C C7 A7 79
+[ 1496.329821] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136185)
+[ 1496.333963] Input clock unstable, 5V cable detected: 0
+[ 1496.340166] ----------------  Mstar HDMI port3 Info -----------------
+[ 1496.347415] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136186)
+[ 1496.347426] ** HDMI EDID From RAM 
+[ 1496.347427] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136186)
+[ 1496.347437] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.351934] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.353663] 00: 48 20 FA C3 40 7E 64 D0 82 B5 78 B0 5E 82 8A 61
+[ 1496.360503] 01: 6C ED 16 44 AE 1E 3C 99 F3 10 A2 DC 3B 65 4E 5C
+[ 1496.362026] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.367347] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.367363] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.367398] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1496.367474] 02: 88 F3 67 74 69 50 A5 A0 C4 56 6F AF AF C0 B0 EC
+[ 1496.374233] 03: D9 01 1A 72 79 8C 1E FE A7 87 4A 57 E6 EA E3 30
+[ 1496.381044] 04: 47 19 A8 6D D1 9E 71 5A B6 12 3F 67 02 F9 9C F2
+[ 1496.387790] 05: A1 FC 20 87 A1 94 6D 01 ED FF B4 DF F2 30 FD 50
+[ 1496.390965] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.394440] 06: B9 BF 8C 3B 6D 5F 2C 2F 19 8F 81 57 8D CA 44 74
+[ 1496.394451] 07: FC FF 48 FB 8D 51 DC B5 26 F3 4E 83 5F FA F8 19
+[ 1496.394461] 08: 19 90 B4 C2 C6 B3 80 AB BC 32 45 34 A8 08 3E B7
+[ 1496.394470] 09: 3F C5 37 0D 0E 9B 45 99 82 99 F6 1F 14 1C 54 99
+[ 1496.401231] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.407870] 0A: 87 79 91 4F 21 E8 F6 0E 68 F2 3F 54 B3 27 D1 EB
+[ 1496.414461] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.421206] 0B: E7 94 00 07 5B CE 3B 08 F0 1B 16 B5 0B 6B 4D 66
+[ 1496.427795] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.434451] 0C: 6E B5 8D 43 26 FF F4 27 39 5A F0 7A 9A 35 92 15
+[ 1496.441127] 0D: 50 84 D6 D5 DC C2 3A F0 87 93 30 F3 87 E9 03 ED
+[ 1496.444477] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136190)
+[ 1496.447886] 0E: E8 59 0A D5 BC A8 09 6C 1A C7 DE 0F AB 61 68 CB
+[ 1496.454573] 0F: 16 B7 4F 64 2B EB E1 80 49 29 CE 96 64 0A 9C 1E
+[ 1496.457897] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136191)
+[ 1496.461204] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136191)
+[ 1496.461213] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.461236] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.461239] 10: DA 32 1A 93 CD 41 19 05 6C 56 6C 50 FC FD 0C F6
+[ 1496.467986] 11: AF A2 0C 52 6E 2B DE 2D F7 3F 5B 5C 1C C7 D7 A0
+[ 1496.471332] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.474614] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.474625] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.474656] 12: 5C 1B 83 91 08 BA 9D 95 01 B9 97 36 87 16 78 FC
+[ 1496.481387] 13: 34 CD F8 36 D5 F6 AE 12 58 64 51 17 7B 9D 7E CD
+[ 1496.484719] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.488042] 14: 1F 2F 60 4C C9 C1 AA 36 DE 54 68 E9 B0 3F 2B 8F
+[ 1496.488051] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.494668] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.494672] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.494690] 15: 0A F2 00 0B 47 1F 06 78 EE FA 80 21 D9 73 41 91
+[ 1496.501399] 16: 00 68 0C 26 C1 0C 65 37 28 C2 2E 71 D3 59 F9 CA
+[ 1496.504775] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136194)
+[ 1496.508069] 17: 5D 6B 1E 14 70 28 3A 03 36 B0 FD BA 90 E0 38 1D
+[ 1496.514794] 18: 1A 14 12 3B 64 05 19 40 A2 F7 DB AD 82 FA 19 54
+[ 1496.518246] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136195)
+[ 1496.521458] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136195)
+[ 1496.521471] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.521499] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.521539] 19: C2 1D 1A 3A FA BA 49 84 32 85 DB 2F 56 28 DE EB
+[ 1496.528209] 1A: BA 8A 56 0E 8C 8B 34 B3 BE DD F9 16 32 2D 72 3D
+[ 1496.531582] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.534894] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.534901] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.534904] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.534941] 1B: C3 39 D2 7A 6B B2 D1 9A 13 3B 8F 3D A6 8B 6E 8F
+[ 1496.541604] 1C: 18 AF 4C 3C A5 17 94 02 2F EC 3E A5 52 91 7D B9
+[ 1496.545303] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136197)
+[ 1496.548366] 1D: 40 66 18 3F 6E 4B 10 8E 15 6A F7 7F E0 D0 BB AF
+[ 1496.555045] 1E: 9B F7 D3 BB 1A E0 0B F7 FA 32 57 D6 BB 40 62 81
+[ 1496.558386] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136198)
+[ 1496.561716] 1F: 42 51 FF BB CD 1E BE 22 BA 14 AE F7 E5 AC 19 19
+[ 1496.561717] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136198)
+[ 1496.561727] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.568410] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.568456] Input clock unstable, 5V cable detected: 0
+[ 1496.574336] 
+
+[ 1496.578741] ----------------  Mstar HDMI IP0 Info -----------------
+[ 1496.578792] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.585814] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.585821] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.585824] Signal invalid
+[ 1496.585824] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.589277] ----------------  Mstar HDMI IP1 Info -----------------
+[ 1496.596083] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136200)
+[ 1496.596278] HDE: 1919
+[ 1496.599341] VDE: 9
+[ 1496.602077] HTT: 2200
+[ 1496.605085] VTT: 99
+[ 1496.606368] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136201)
+[ 1496.607913] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136201)
+[ 1496.607921] CRC_CHANNEL_R: 0x4e44 
+[ 1496.607922] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.607950] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.612127] CRC_CHANNEL_G: 0x83c5 
+[ 1496.612134] CRC_CHANNEL_B: 0x8ea1 
+[ 1496.612140] Interlace mode: 0 
+[ 1496.612144] Hfront: 89 
+[ 1496.612147] Hsync: 44 
+[ 1496.612152] Hback: 148 
+[ 1496.626508] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.627562] Vfront: 8 
+[ 1496.630609] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.630619] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.636976] Vsync: 10 
+[ 1496.640100] Vback: 72 
+[ 1496.643197] Clock Stable:   1
+[ 1496.646895] DE Stable:      1
+[ 1496.650601] FRL Rate:       9
+[ 1496.653280] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.654297] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.654307] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136204)
+[ 1496.654383] Ratio Detect:   9
+[ 1496.658242] Clock Count:    92 M
+[ 1496.662198] VIC:        56
+[ 1496.664540] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.665611] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.665616] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.665620] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.665628] 4K2KVIC:    5
+[ 1496.668956] Color space YUV420
+[ 1496.672720] Color depth not indicated or default as 8bit
+[ 1496.675725] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136206)
+[ 1496.678776] BCH error:0
+[ 1496.682004] AVMute:0
+[ 1496.684993] EMP DSC Enable: 0
+[ 1496.688689] EMP DSC VRR:	 0
+[ 1496.692212] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136207)
+[ 1496.692219] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136207)
+[ 1496.692228] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.692250] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.692352] EMP DSC VENDOR: 0
+[ 1496.696147] EMP DSC FVD:	 0
+[ 1496.699764] EMP DSC HDR:	 0
+[ 1496.702327] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1496.703292] FreeSync Support: 0  Enable: 0 Active: 0
+[ 1496.703298] Packet receive status: 0x1006e
+[ 1496.703305] Color space u8C10Value:0, u8EC210Value:50
+[ 1496.709016] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.713898] Color space No Data
+[ 1496.719610] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.723523] Receive AVI packet
+[ 1496.727313] AVI packet Byte 0: 0x72 
+[ 1496.731700] AVI packet Byte 1: 0xe8 
+[ 1496.734090] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.736000] AVI packet Byte 2: 0x60 
+[ 1496.736005] AVI packet Byte 3: 0x61 
+[ 1496.736009] AVI packet Byte 4: 0x0 
+[ 1496.740401] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.744687] AVI packet Byte 5: 0x0 
+[ 1496.748795] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.748800] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.753096] AVI packet Byte 6: 0x0 
+[ 1496.757379] AVI packet Byte 7: 0x0 
+[ 1496.759071] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136210)
+[ 1496.761602] AVI packet Byte 8: 0x0 
+[ 1496.765936] AVI packet Byte 9: 0x0 
+[ 1496.770186] AVI packet Byte 10: 0x0 
+[ 1496.771708] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136211)
+[ 1496.774467] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136211)
+[ 1496.774476] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.774498] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.774580] AVI packet Byte 11: 0x0 
+[ 1496.778869] AVI packet Byte 12: 0x0 
+[ 1496.783239] Receive HDR packet
+[ 1496.784596] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.786993] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.787003] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.787011] HDR packet Byte 0: 0x1a 
+[ 1496.791402] HDR packet Byte 1: 0x1 
+[ 1496.795615] HDR packet Byte 2: 0x2 
+[ 1496.799923] HDR packet Byte 3: 0xd 
+[ 1496.804225] HDR packet Byte 4: 0x34 
+[ 1496.807154] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.808503] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.808513] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136214)
+[ 1496.808528] HDR packet Byte 5: 0x0 
+[ 1496.812731] HDR packet Byte 6: 0xaa 
+[ 1496.817099] HDR packet Byte 7: 0x21 
+[ 1496.821499] HDR packet Byte 8: 0x96 
+[ 1496.825821] HDR packet Byte 9: 0x9b 
+[ 1496.830135] HDR packet Byte 10: 0xfc 
+[ 1496.834594] HDR packet Byte 11: 0x19 
+[ 1496.838769] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1496.839117] HDR packet Byte 12: 0x48 
+[ 1496.843512] HDR packet Byte 13: 0x8 
+[ 1496.847906] HDR packet Byte 14: 0x8 
+[ 1496.849021] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.852206] HDR packet Byte 15: 0x8a 
+[ 1496.852211] HDR packet Byte 16: 0x13 
+[ 1496.852215] HDR packet Byte 17: 0x39 
+[ 1496.852219] HDR packet Byte 18: 0x42 
+[ 1496.856638] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.861060] HDR packet Byte 19: 0x3d 
+[ 1496.865404] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.865411] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.874676] HDR packet Byte 20: 0xe8 
+[ 1496.875792] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136219)
+[ 1496.879397] HDR packet Byte 21: 0x40 
+[ 1496.883939] HDR packet Byte 22: 0x32 
+[ 1496.888456] HDR packet Byte 23: 0x3 
+[ 1496.889171] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136220)
+[ 1496.892765] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136220)
+[ 1496.892774] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.892797] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.892853] HDR packet Byte 24: 0x0 
+[ 1496.897465] HDR packet Byte 25: 0x0 
+[ 1496.901885] HDR packet Byte 26: 0x0 
+[ 1496.902879] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1496.906327] HDR packet Byte 27: 0x0 
+[ 1496.906528] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1496.910741] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1496.910761] Receive SPD packet
+[ 1496.914768] SPD packet Byte 0: 0x68 
+[ 1496.919204] SPD packet Byte 1: 0x52 
+[ 1496.920834] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.923512] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.923518] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.923522] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.923687] SPD packet Byte 2: 0x6a 
+[ 1496.928141] SPD packet Byte 3: 0x23 
+[ 1496.932689] SPD packet Byte 4: 0x51 
+[ 1496.933593] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136223)
+[ 1496.937150] SPD packet Byte 5: 0x1a 
+[ 1496.941579] SPD packet Byte 6: 0x23 
+[ 1496.945988] SPD packet Byte 7: 0x7c 
+[ 1496.947134] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136224)
+[ 1496.950293] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136224)
+[ 1496.950303] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.950327] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.950533] SPD packet Byte 8: 0x4c 
+[ 1496.954989] SPD packet Byte 9: 0x59 
+[ 1496.959448] SPD packet Byte 10: 0x1b 
+[ 1496.960407] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1496.963874] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1496.963880] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1496.963883] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1496.963939] SPD packet Byte 11: 0x59 
+[ 1496.968579] SPD packet Byte 12: 0x5e 
+[ 1496.973116] SPD packet Byte 13: 0x3f 
+[ 1496.974283] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136226)
+[ 1496.977616] SPD packet Byte 14: 0x63 
+[ 1496.982109] SPD packet Byte 15: 0x7e 
+[ 1496.986713] SPD packet Byte 16: 0x11 
+[ 1496.987628] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136227)
+[ 1496.991134] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136227)
+[ 1496.991144] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1496.991167] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1496.991252] SPD packet Byte 17: 0x2 
+[ 1496.995715] SPD packet Byte 18: 0x48 
+[ 1497.000208] SPD packet Byte 19: 0x52 
+[ 1497.001237] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.004616] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.004624] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.004628] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.004813] SPD packet Byte 20: 0x4c 
+[ 1497.009355] SPD packet Byte 21: 0x5e 
+[ 1497.013867] SPD packet Byte 22: 0x14 
+[ 1497.014699] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136229)
+[ 1497.018398] SPD packet Byte 23: 0x33 
+[ 1497.023033] SPD packet Byte 24: 0xeb 
+[ 1497.027531] CTS:26, N:3, FS: 4500 (48000), npcm: 0 
+[ 1497.028394] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136230)
+[ 1497.033239] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136230)
+[ 1497.033253] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.033284] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.033365] HDCP22 HW Control Status:0x0 bENC_EN 1
+[ 1497.038905] HDCP14 IRQ Status:0x15
+[ 1497.043045] HDCP status: HDMI mode: 1
+[ 1497.047454] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.047464] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.047467] HDCP status: avmute:    0
+[ 1497.047468] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.047471] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.051856] HDCP status: hdcp_en:   1
+[ 1497.051861] HDCP status: hdcp_dis:  0
+[ 1497.051864] HDCP status: Aksv_rcv:  0
+[ 1497.051868] HDCP status: An_rcv:    0
+[ 1497.051871] HDCP status: km_gen:    0
+[ 1497.051875] HDCP status: read_bksv: 0
+[ 1497.051878] HDCP status: read R0:   0
+[ 1497.051881] HDCP status: read Ri:   0
+[ 1497.051888] ---------------- HDMI Utopia PollingInfo HDMI IP 1 status ----------------
+[ 1497.051894] ucSourceVersion          HDMI_2.0
+[ 1497.051898] ucHDMIInfoSource         1->(0 1 2 3)
+[ 1497.051902] bHDMIModeFlag            1
+[ 1497.051905] bNoInputFlag             0
+[ 1497.051908] bHDMI20Flag              1
+[ 1497.051911] bYUV420Flag              1
+[ 1497.051915] u8Colordepth             10-bit
+[ 1497.051918] bAutoEQEnable            0
+[ 1497.051921] bTimingStableFlag        1
+[ 1497.051924] bClockStableFlag         1
+[ 1497.051927] bActiveCableFlag         1
+[ 1497.051931] ucHDCPState              HDCP2.2
+[ 1497.051934] ucHDCPInt                0
+[ 1497.051937] bOnlinePort              0
+[ 1497.051940] bPowerOnLane             1
+[ 1497.051943] bDCDRDoneFlag            0
+[ 1497.051947] bDDCEnableFlag           0
+[ 1497.051949] bFRLTrainingFlag         0
+[ 1497.051952] bFRLTrainDoneFlag        0
+[ 1497.051956] bFLTNoRetrainFlag        0
+[ 1497.051960] u8FRLRate      9   is   LEGACY_20
+[ 1497.066735] <UTPA_INFO>[Utopia][HDMIRX]: TMDS clk stable -> clk unstable
+[ 1497.069469] u8LaneCnt                0
+[ 1497.069474] u8FastTrainingState      29
+[ 1497.069478] u8ActiveCableState       0
+[ 1497.069482] u8RatioDetect  9   is   LEGACY_20
+[ 1497.069486] bDDCEnableFlag           0x0
+[ 1497.069489] u32TMDSPLLPFreq          0
+[ 1497.069492] u8PollingLinkTrainState  0
+[ 1497.069495] u32TimeLinkTrainStart    0
+[ 1497.069498] u8ErrorStatus            0
+[ 1497.069502] -------------------------------------------------------------------------
+[ 1497.069507] ----------------  Mstar HDMI IP2 Info -----------------
+[ 1497.069512] Signal invalid
+[ 1497.069516] ----------------  Mstar HDMI IP3 Info -----------------
+[ 1497.069520] Signal invalid
+[ 1497.069524] ============= eARC Start===============
+[ 1497.069543] ========== HDMI Utopia EARC status ==========
+[ 1497.069548] u8EARCOutputPort           0->(0 1 2 3)
+[ 1497.069551] bEnable5VDetectInvert      1
+[ 1497.069554] bEnableHPDInvert           0
+[ 1497.069557] u8EARCSupportMode          2
+[ 1497.069562] u8EARCTXConnectState       ARC_MODE
+[ 1497.069566] usPrePowerState            POWER_SUSPEND
+[ 1497.069569] bCapChangeFlag             0
+[ 1497.069572] bStatChangeFlag            0
+[ 1497.069575] bSetLatencyFlag            0
+[ 1497.069578] bCommonModeCapBusyFlag     0
+[ 1497.069581] bCommonModeStatBusyFlag    0
+[ 1497.069585] bCommonModeSetLatencyBusyFlag     0
+[ 1497.069588] bCapChangeUpdateDoneFlag          0
+[ 1497.069592] bStatChangeUpdateDoneFlag         0
+[ 1497.069595] u16OPCodeOffset            0x0
+[ 1497.069598] u8OPCodeDeviceID           0x0
+[ 1497.069601] u8TransactionState         10
+[ 1497.069604] u8TransactionResult        0
+[ 1497.084429] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136233)
+[ 1497.087143] u8TransactioinRetryCnt     0
+[ 1497.106377] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136234)
+[ 1497.110703] u8TransactionDataThreshold 0
+[ 1497.110709] u8LatencyContent           0
+[ 1497.110712] u8LatencyContent           0
+[ 1497.110716] u8SetLatencyValue          0
+[ 1497.110719] u8CapabilityContent
+[ 1497.110730] 00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110739] 01: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110748] 02: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110757] 03: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110765] 04: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110774] 05: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110783] 06: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.110792] 07: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.115669] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136234)
+[ 1497.119736] 08: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119748] 09: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119756] 0A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119765] 0B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119774] 0C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119782] 0D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119791] 0E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119800] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 1497.119827] ============= eARC End  ===============
+[ 1497.512810] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.512843] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.512984] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 393ms(> 5ms); caller process HDMI Rx Mon
+[ 1497.522984] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.522998] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.523003] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.523006] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.523044] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1497.533132] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136236)
+[ 1497.543250] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136237)
+[ 1497.543265] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136237)
+[ 1497.543274] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.543296] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.553376] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.553392] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.553404] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.573550] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.573566] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.573571] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.573576] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf800 
+[ 1497.583648] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136241)
+[ 1497.583737] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1497.593804] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136242)
+[ 1497.593820] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136242)
+[ 1497.593831] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.593856] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.603933] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1497.603949] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.603959] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.614029] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.614044] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.614050] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.614054] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.624137] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136245)
+[ 1497.634269] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136246)
+[ 1497.634286] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136246)
+[ 1497.634295] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.634318] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.644391] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.644408] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.644421] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.644446] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1497.664583] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.664598] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.664603] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.664607] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.674672] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136250)
+[ 1497.684806] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136251)
+[ 1497.684822] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136251)
+[ 1497.684832] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.684857] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.694932] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.694948] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.694958] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.705028] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.705045] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.705050] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.705055] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.715175] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136254)
+[ 1497.725302] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136255)
+[ 1497.725321] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136255)
+[ 1497.725331] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.725357] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.735449] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1497.735476] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.735489] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.755646] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.755665] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.755677] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136258)
+[ 1497.765777] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1497.795986] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.796000] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.796004] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.796008] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.806097] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136263)
+[ 1497.816234] <UTPA_INFO>[Utopia][HDMIRX]: TMDS clk stable -> clk unstable
+[ 1497.826304] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136265)
+[ 1497.836458] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136266)
+[ 1497.836472] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136266)
+[ 1497.836481] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.836504] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.846578] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1497.846594] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.846607] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.866749] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.866766] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.866772] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.866776] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.876846] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136270)
+[ 1497.886967] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136271)
+[ 1497.886980] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136271)
+[ 1497.886989] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.887011] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.887042] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1497.897162] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 1, 1, 0 port 0
+[ 1497.897179] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.897192] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.917350] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.917366] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.917378] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136274)
+[ 1497.927462] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.927476] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.927480] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.927484] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.937558] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136276)
+[ 1497.947697] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136277)
+[ 1497.947713] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136277)
+[ 1497.947722] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.947748] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1497.957849] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1497.957864] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1497.957874] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1497.978006] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1497.978021] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1497.978025] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1497.978029] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1497.988103] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136281)
+[ 1497.998232] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136282)
+[ 1497.998246] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136282)
+[ 1497.998255] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1497.998277] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.008358] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.008375] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.008387] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.018483] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.018496] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.018500] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.018504] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.028587] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136285)
+[ 1498.038728] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136286)
+[ 1498.038745] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136286)
+[ 1498.038754] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.038777] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.048872] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.048888] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.048901] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.069057] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.069076] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.069085] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136289)
+[ 1498.069115] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.109396] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.109413] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.109417] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.109420] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.119492] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136294)
+[ 1498.129619] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136295)
+[ 1498.129634] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136295)
+[ 1498.129643] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.129666] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.129694] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1498.139782] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.139799] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.139812] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.159956] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.159974] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.159979] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.159983] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.170071] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136299)
+[ 1498.180198] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136300)
+[ 1498.180212] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136300)
+[ 1498.180222] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.180243] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.190327] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.190344] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.190356] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.200450] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.200464] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.200468] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.200472] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.210543] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136303)
+[ 1498.220673] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136304)
+[ 1498.220687] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136304)
+[ 1498.220696] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.220719] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.230818] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.230834] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.230847] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.250998] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.251014] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.251026] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136307)
+[ 1498.251081] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.291362] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.291376] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.291380] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.291384] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.301456] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136312)
+[ 1498.311594] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136313)
+[ 1498.311609] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136313)
+[ 1498.311619] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.311642] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.311669] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1498.321745] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.321761] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.321774] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.341938] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1498.341956] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.341967] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136316)
+[ 1498.362122] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.362138] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.362143] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.362147] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.372222] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136319)
+[ 1498.372313] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.382374] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136320)
+[ 1498.382388] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136320)
+[ 1498.382399] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.382429] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.392535] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.392551] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.392561] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.412723] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1498.412740] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.412751] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136323)
+[ 1498.422830] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.422844] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.422849] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.422852] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.432929] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136325)
+[ 1498.443083] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136326)
+[ 1498.443098] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136326)
+[ 1498.443107] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.443130] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.453212] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.453228] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.453241] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.473390] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.473405] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.473410] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.473414] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.483492] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136330)
+[ 1498.493620] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136331)
+[ 1498.493636] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136331)
+[ 1498.493645] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.493670] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.493703] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1498.503779] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 1, 0 port 0
+[ 1498.503794] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.503804] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.523959] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.523976] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.523986] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136334)
+[ 1498.554233] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.564314] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.564328] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.564333] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.564337] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.574404] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136339)
+[ 1498.584537] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136340)
+[ 1498.584553] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136340)
+[ 1498.584564] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.584589] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.594679] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.594693] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.594703] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.604782] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.604798] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.604803] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.604807] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.614887] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136343)
+[ 1498.625044] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136344)
+[ 1498.625059] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136344)
+[ 1498.625068] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.625091] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.635181] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.635198] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.635211] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.655363] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.655379] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.655385] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.655389] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.665472] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136348)
+[ 1498.675610] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136349)
+[ 1498.675628] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136349)
+[ 1498.675638] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.675663] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.675697] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1498.685779] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.685794] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.685806] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.705971] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.705988] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.705999] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136352)
+[ 1498.716093] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.716105] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.716110] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.716113] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.726192] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136354)
+[ 1498.736335] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136355)
+[ 1498.736350] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136355)
+[ 1498.736359] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.736381] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.746492] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.746509] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.746513] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.746518] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.756588] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136357)
+[ 1498.766717] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136358)
+[ 1498.766734] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136358)
+[ 1498.766744] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.766769] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.776862] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.776879] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.776892] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.786957] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.786970] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.786974] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.786978] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.797051] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136361)
+[ 1498.797146] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.807212] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136362)
+[ 1498.807227] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136362)
+[ 1498.807236] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.807259] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.817339] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1498.817355] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.817368] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.837523] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.837541] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.837552] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136365)
+[ 1498.857693] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.857709] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.857714] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.857719] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.857758] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1498.867823] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136368)
+[ 1498.877951] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136369)
+[ 1498.877968] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136369)
+[ 1498.877978] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.878004] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.888086] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 1 port 0
+[ 1498.888102] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.888116] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.898217] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.898231] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.898235] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.898238] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.908317] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136372)
+[ 1498.918459] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136373)
+[ 1498.918473] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136373)
+[ 1498.918482] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.918505] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.928599] <UTPA_INFO>[Utopia][HDMIRX]: TMDS clk stable -> clk unstable
+[ 1498.928617] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.928624] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.928637] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock unstable port 0(136374)
+[ 1498.938699] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136375)
+[ 1498.948819] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136376)
+[ 1498.948835] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136376)
+[ 1498.948845] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.948870] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.958950] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.958966] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.958976] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1498.969043] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1498.969058] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1498.969063] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1498.969068] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1498.979144] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136379)
+[ 1498.979237] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1498.989304] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136380)
+[ 1498.989320] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136380)
+[ 1498.989413] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1498.989437] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1498.999515] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1498.999530] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1498.999543] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1499.009606] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1499.009621] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1499.009624] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1499.009628] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1499.019712] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136383)
+[ 1499.029839] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136384)
+[ 1499.029852] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136384)
+[ 1499.029861] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1499.029884] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1499.039965] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1499.039980] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1499.039985] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1499.039990] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1499.040029] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1499.050087] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136386)
+[ 1499.060248] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136387)
+[ 1499.060268] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136387)
+[ 1499.060278] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1499.060320] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1499.070403] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 1, 1 port 0
+[ 1499.070418] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1499.070428] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1499.090584] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1499.090601] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1499.090611] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136390)
+[ 1499.100727] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 00
+[ 1499.130938] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock changed, switch to no input port 0
+[ 1499.130953] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock change trigger FT port 0
+[ 1499.130958] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI _Hal_tmds_FTLNoRetrainRst
+[ 1499.130963] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/0/0xf801 
+[ 1499.141039] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 3.FRL Rate = 8, port 0, src 1(136395)
+[ 1499.151180] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI clock stable port 0(136396)
+[ 1499.151200] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI get version 1.4 port 0(136396)
+[ 1499.151211] <UTPA_INFO>[Utopia][HDMIRX]: [_Hal_HDMI_Fix_Analog_Setting] ** port/b_ov_en:80/1/0xf801 
+[ 1499.151238] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M disable auto EQ port 0
+[ 1499.161326] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1499.161342] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1499.161352] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI change PHY_H14_UNDER_75M case0 port 0
+[ 1499.161380] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI Port 0 TMDS error statue is 08
+[ 1499.181559] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M error happened, WB error: 0, 0, 0 port 0
+[ 1499.181579] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI 14 UNDER_75M retrigger stop, go to change phy case 0. decode error:0x8000, 0x8000, 0x8000 port 0
+[ 1499.181591] <UTPA_INFO>[Utopia][HDMIRX]: ** HDMI SW patch finish. EQ value: L0/L1/L2/L3 Gray(Binary) = 0x30(32)/0x30(32)/0x30(32)/0x30(32), port 0(136399)

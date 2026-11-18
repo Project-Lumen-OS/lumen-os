@@ -28,6 +28,26 @@ and 30 days by version, model and country, per day for 90 days, update events pe
 projectors. Test: `python3 tools/stats/server/test_lumen_stats.py`. Deploy or update:
 `sh tools/stats/server/deploy/deploy.sh` (private: holds the VPS address).
 
+## Problem reports (`server/lumen_reports.py`)
+
+The upload end of the projectors' problem reports (`apps/core/lumen-report`), served by `lumen_stats.py` on the same
+port: `POST /lumen/v1/report` with the report zip (at most 5 MiB) answers `201 {"code":"LR-XXXXXX"}`. No HTTP read
+path: reports are read over ssh (`lumen_reports.py list | show CODE | cat CODE | rm CODE | prune`, or from the Mac the
+private wrapper in `server/deploy/`). Stored in the state directory for 30 days, at most 2 GB, with the HMAC of the
+report install id, kind, model, version, size and sha256, never the address. Limits in memory: 6 an hour and 20 a
+day per address, 10 a day per projector, 300 a day in all. Kind `test` is checked and not stored (the deploy health
+check). Tests: `python3 tools/stats/server/test_lumen_reports.py`, mutants `mutate_lumen_reports.py`.
+
+Write only from the internet: nginx names every route (ping POST, stats GET, report POST, report/part POST) and
+answers 404 for anything else under `/lumen/`, and 403 to any peer that is not a Cloudflare edge (the ranges are
+refreshed weekly by `lumen-cf-ips.timer`), so a client always speaks TLS to Cloudflare and only an edge's
+CF-Connecting-IP counts for the limits. Dumps in parts: an upload is the pair (install id, upload id), both random
+secrets of the sender, so nobody can add to or ask about another sender's upload; at most 3 open uploads per sender
+(an IPv6 sender by its /64), 12 parts handled at once, idle uploads make room under pressure, the open uploads'
+missing bytes count against the 3 GiB disk floor. The store is the service's state directory (0700, files 0600,
+outside any web root); zips are listed, never unpacked on the server. Deploy: `deploy.sh` makes the VPS fetch the
+pushed commit from GitHub and run `install.sh` there (backup and `rollback.sh` in `/root/backup/lumen-stats-<UTC>/`).
+
 ## Dashboard
 
 "Lumen OS installs" (claude.ai artifact, private to the owner). Refresh:

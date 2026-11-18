@@ -1,0 +1,13 @@
+# APK name <TAB> source folder, for the apps whose folder was renamed after the APK had shipped (2026-11-18: the
+# shared apps of every model lost their misleading Z9x prefix). The APK name stays everywhere it is a file name: the
+# install path on every projector (/system/priv-app/Z9xHome/Z9xHome.apk, kept so updates replace the same file),
+# the pins in overlay/apps_v1, stage/ and signed_stage/, the recipes' app lines and device.conf apps lists.
+# Every other app lives in apps/<APK name>. Read by tools/devices/assemble_app.py app_dir (also --app-dir NAME for
+# shell scripts) and tools/play6/z9x_gate.sh.
+Z9xHome	apps/LumenHome
+Z9xSetup	apps/LumenSetup
+# the HB build of the same app keeps its own APK name (devices/goat_elegant/app/HbSetup.layers, no HB layer since 2026-11-18)
+HbSetup	apps/LumenSetup
+Z9xTvInput	apps/LumenTvInput
+Z9xAirPlay	apps/LumenAirPlay
+Z9xProjector	apps/ProjectorBase

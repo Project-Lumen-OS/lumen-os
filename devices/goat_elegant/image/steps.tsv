@@ -5,12 +5,13 @@
 # diagopt, otatest, dsutest; derived lumen (every image but t1), diag (diagopt or t1), info (LumenInfo: not in the
 # public release, 2026-11-04).
 # ---- inputs
-*	need	base.sha256	hb_prop.txt	hb_compat.rc	hb_netadb.rc	lumen_escape.rc	lumen_escape.sh	verify_tree.py
+*	need	base.sha256	hb_prop.txt	hb_compat.rc	hb_netadb.rc	lumen_escape.rc	lumen_escape.sh	verify_tree.py	first_start_prop.txt	first_start.py
 diag	need	z9x_earlylog.rc	z9x_earlylog.sh
 dsutest	need	hb_dsu_testadb.rc
-lumen	need	hb_lumen_prop.txt	privapp-permissions-hbprojector.xml	bootanimation.zip	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-airplay-default-permissions.xml	z9x-sysconfig-nogms.xml	hb_audio.rc	hb_audio_policy_engine_stream_volumes.xml	hb_audio_policy_configuration.xml	hb_audio_policy_check.py	hb_vendor_services.rc	z9x_nui.rc	z9x_nui.sh	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3841.idc	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	check_privapp.py	apkinfo.py	z9x_gapps.rc	z9x_gapps.sh	z9x-gapps-sysconfig.xml	gapps_allow.txt	hb_media.rc	privapp-permissions-lumeninfo.xml	hb_bt.rc	hb_bt_sbc.py	lumen_dsu_install.rc	lumen_dsu_install.sh
+lumen	need	hb_model_props.rc	hb_model_props.tsv	hb_model_prop_dapengse.txt	hb_model_prop_dapenghm.txt	hb_model_prop_dapengfhm.txt	model_props.py	x50_props.py
+lumen	need	hb_lumen_prop.txt	privapp-permissions-hbprojector.xml	bootanimation.zip	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-projector-default-permissions.xml	z9x-airplay-default-permissions.xml	z9x-sysconfig-nogms.xml	hb_audio.rc	hb_audio_policy_engine_stream_volumes.xml	hb_audio_policy_configuration.xml	hb_audio_policy_check.py	hb_vendor_services.rc	z9x_nui.rc	z9x_nui.sh	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3841.idc	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	check_privapp.py	apkinfo.py	z9x_gapps.rc	z9x_gapps.sh	z9x-gapps-sysconfig.xml	gapps_allow.txt	hb_media.rc	privapp-permissions-lumeninfo.xml	hb_bt.rc	hb_bt_sbc.py	lumen_dsu_install.rc	lumen_dsu_install.sh
 lumen	sums	signed_stage
-lumen	listed	signed_stage	pinned/Z9xHome.apk	apps/HbSetup.apk	pinned/Z9xTvInput.apk	pinned/Z9xLineagePlatformOverlay.apk	pinned/Z9xAirPlay.apk	apps/HbProjector.apk	apps/Z9xBtPair.apk	apps/HbFrameworkOverlay.apk	apps/LumenInfo.apk	apps/HbTvInput.apk	apps/LumenDsuInstall.apk	base_signed/base_signed.tsv
+lumen	listed	signed_stage	pinned/Z9xHome.apk	apps/HbSetup.apk	pinned/Z9xTvInput.apk	pinned/Z9xLineagePlatformOverlay.apk	pinned/Z9xAirPlay.apk	apps/HbProjector.apk	apps/HbFrameworkOverlay.apk	apps/LumenInfo.apk	apps/HbTvInput.apk	apps/LumenDsuInstall.apk	base_signed/base_signed.tsv	apps/LumenKeyboard.apk
 # the click volume file and the audio policy file, each against the pinned HB vendor file of the stock dump here
 lumen	run	audio_click.py	{V130}/vendor/etc/audio_policy_engine_stream_volumes.xml	{in}/hb_audio_policy_engine_stream_volumes.xml
 lumen	run	hb_audio_policy_check.py	{V130}/vendor/etc	{in}/hb_audio_policy_configuration.xml
@@ -30,10 +31,13 @@ lumen	line	hb_lumen_prop.txt	ro.lumen.hb.c2foundation=1
 lumen	dsu_rc	lumen_dsu_install.rc
 lumen	line	hb_lumen_prop.txt	ro.lumen.dsu_install=1
 lumen	sh_n	lumen_dsu_install.sh
-# the public release: the unchanged Z9X blobs reader binds the user's own copies (blobs_allow.txt names them)
-pub	need	z9x_blobs.rc	z9x_blobs.sh	blobs_allow.txt
-pub	sha	z9x_blobs.rc	40333ab318e13009cf82283fe2a3361683687a70af17063d104587783751d6e1
-pub	sha	z9x_blobs.sh	8ad31ef4fbcf91bb1ad14e9ac0610a80b0c36a822113af64885c80759a468832
+# the public release: the one blobs reader of every model (tools/ota/image/z9x_blobs.sh) with the HB's settings
+# (blobs.conf) binds the user's own copies (blobs_allow.txt names them) from the z9x_blobs partition, and in a trial run
+# reads them from the stock slot (else the vendor HWC waits forever for IInterTunnel on the first HDMI frame)
+pub	need	z9x_blobs.rc	z9x_blobs.sh	blobs.conf	blobs_allow.txt
+pub	sha	z9x_blobs.rc	534788c66bd582ac1f8d9eccb6b5b617897aad45c5e88fd5da7264a9207a8d89
+pub	sha	z9x_blobs.sh	a57e371b31c56c2a0aa0d25b6eb39f20a9ba155a893db6ffe1852b17a75c84d6
+pub	sha	blobs.conf	59d423f0b46ce2f8379eec868626906c9ccdee78d8454a61c92c9b62000908a0
 pub	run	blobs_allow.py	{in}/blobs_allow.txt	{SF_SHA}	{in}/hb_audio_policy_configuration.xml	{V130}/vendor/etc/audio_policy_configuration.xml	{V148}/vendor/etc/audio_policy_configuration.xml
 # the OTA client: gate files, HB gate data and props, bootctl, otacerts, updater
 pub	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	lumen_ota_escape.sh	ota_gate.conf	hb_ota_props.txt	otacerts.zip	bootctl	bootctl.sha256	z9x-updater-default-permissions.xml
@@ -83,17 +87,28 @@ pub	install	0755	lumen_ota_escape.sh	{sys}/etc/xgimi/lumen_escape.sh
 #   3c. network adb on the stick variant only
 !usbadb,!rel	install	0644	hb_netadb.rc	{sys}/etc/init/hb_netadb.rc
 #   3d. the Lumen part
-lumen	mkdir	0755	{sys}/product/usr/keylayout	{sys}/product/usr/idc	{sys}/etc/default-permissions	{sys}/priv-app/Z9xHome	{sys}/priv-app/Z9xSetup	{sys}/priv-app/HbProjector	{sys}/app/Z9xTvInput	{sys}/app/BtPair	{sys}/app/Z9xAirPlay	{sys}/priv-app/LumenDsuInstall	{sys}/etc/lumen
+lumen	mkdir	0755	{sys}/product/usr/keylayout	{sys}/product/usr/idc	{sys}/etc/default-permissions	{sys}/priv-app/Z9xHome	{sys}/priv-app/Z9xSetup	{sys}/priv-app/HbProjector	{sys}/app/Z9xTvInput	{sys}/app/Z9xAirPlay	{sys}/priv-app/LumenDsuInstall	{sys}/etc/lumen
 lumen,info	mkdir	0755	{sys}/priv-app/LumenInfo
 lumen	install	0644	Vendor_000d_Product_3841.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3841.kl
 lumen	install	0644	Vendor_3697_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0001.kl
 lumen	install	0644	Vendor_3697_Product_0002.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0002.kl
+lumen	install	0644	Vendor_0001_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_0001_Product_0001.kl
+lumen	install	0644	Vendor_000d_Product_3838.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3838.kl
+lumen	install	0644	Vendor_000d_Product_3839.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3839.kl
+lumen	install	0644	Vendor_000d_Product_3840.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl
+lumen	install	0644	Vendor_000d_Product_3842.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3842.kl
+lumen	install	0644	Vendor_000d_Product_3843.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3843.kl
+lumen	install	0644	Vendor_1d5a_Product_c081.kl	{sys}/product/usr/keylayout/Vendor_1d5a_Product_c081.kl
+lumen	install	0644	Vendor_26e3_Product_af02.kl	{sys}/product/usr/keylayout/Vendor_26e3_Product_af02.kl
+lumen	install	0644	Vendor_9999_Product_0666.kl	{sys}/product/usr/keylayout/Vendor_9999_Product_0666.kl
+lumen	install	0644	Vendor_9999_Product_0777.kl	{sys}/product/usr/keylayout/Vendor_9999_Product_0777.kl
 lumen	install	0644	Vendor_000d_Product_3841.idc	{sys}/product/usr/idc/Vendor_000d_Product_3841.idc
 lumen	link_is	{sys}/product/media/bootanimation-dark.zip	bootanimation.zip
 lumen	install	0644	bootanimation.zip	{sys}/product/media/bootanimation.zip
 lumen	install	0644	signed_stage/pinned/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk
 lumen	install	0644	privapp-permissions-z9xhome.xml	{sys}/etc/permissions/privapp-permissions-z9xhome.xml
 lumen	install	0644	z9x-home-default-permissions.xml	{sys}/etc/default-permissions/z9x-home-default-permissions.xml
+lumen	install	0644	z9x-projector-default-permissions.xml	{sys}/etc/default-permissions/z9x-projector-default-permissions.xml
 lumen	install	0644	signed_stage/apps/HbTvInput.apk	{sys}/app/Z9xTvInput/Z9xTvInput.apk
 lumen	install	0644	signed_stage/pinned/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
 lumen	install	0644	z9x-airplay-default-permissions.xml	{sys}/etc/default-permissions/z9x-airplay-default-permissions.xml
@@ -108,13 +123,20 @@ lumen	install	0644	privapp-permissions-hbprojector.xml	{sys}/etc/permissions/pri
 lumen	install	0644	signed_stage/apps/LumenDsuInstall.apk	{sys}/priv-app/LumenDsuInstall/LumenDsuInstall.apk
 lumen	install	0644	lumen_dsu_install.rc	{sys}/etc/init/lumen_dsu_install.rc
 lumen	install	0755	lumen_dsu_install.sh	{sys}/etc/lumen/lumen_dsu_install.sh
-lumen	install	0644	signed_stage/apps/Z9xBtPair.apk	{sys}/app/BtPair/BtPair.apk
 lumen,info	install	0644	signed_stage/apps/LumenInfo.apk	{sys}/priv-app/LumenInfo/LumenInfo.apk
+# the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
+# languages and a language key) in LeanbackIME's place; the base's odex of the old APK goes
+lumen	rm	{sys}/product/app/LeanbackIME/oat
+lumen	install	0644	signed_stage/apps/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk
 lumen,info	install	0644	privapp-permissions-lumeninfo.xml	{sys}/etc/permissions/privapp-permissions-lumeninfo.xml
 lumen	install	0644	hb_audio.rc	{sys}/etc/init/hb_audio.rc
 lumen	install	0644	hb_audio_policy_engine_stream_volumes.xml	{sys}/etc/xgimi/hb_audio_policy_engine_stream_volumes.xml
 lumen,!pub	install	0644	hb_audio_policy_configuration.xml	{sys}/etc/xgimi/hb_audio_policy_configuration.xml
 lumen	install	0644	hb_vendor_services.rc	{sys}/etc/init/hb_vendor_services.rc
+# the stock model properties (hb_model_props.rc: the XGIMI init loads vendor/etc/xgimimodelname/<model>/build.prop,
+# LineageOS init does not), one block per model and firmware, each file proven against its stock dump file
+lumen	run	model_props.py	check	{in}	hb_model_props.tsv	V130={V130}	V148={V148}
+lumen	install	0644	hb_model_props.rc	{sys}/etc/init/hb_model_props.rc
 lumen	install	0644	z9x_nui.rc	{sys}/etc/init/z9x_nui.rc
 lumen	install	0755	z9x_nui.sh	{sys}/etc/xgimi/z9x_nui.sh
 lumen	mkdir	0755	{sys}/etc/z9x	{sys}/etc/z9x/gapps	{sys}/etc/z9x/gapps/sysconfig
@@ -124,7 +146,7 @@ lumen	install	0644	gapps_allow.txt	{sys}/etc/z9x/gapps_allow.txt
 lumen	install	0644	z9x-gapps-sysconfig.xml	{sys}/etc/z9x/gapps/sysconfig/z9x-gapps.xml
 lumen	run_root	gapps_targets.py	{root}	{in}/gapps_allow.txt
 # Lumen Setup is HOME on wiped data; the projector app is the persistent system-uid app, no HbBoot
-lumen	apk_roles	{sys}	priv-app/Z9xSetup/Z9xSetup.apk:org.lumen.setup:setup	priv-app/Z9xHome/Z9xHome.apk:org.lumen.home:home	priv-app/HbProjector/HbProjector.apk:org.lumen.projector:persistent	app/BtPair/BtPair.apk:org.lumen.btpair:nohome	priv-app/LumenInfo/LumenInfo.apk:org.lumen.info:plain?	priv-app/LumenDsuInstall/LumenDsuInstall.apk:org.lumen.dsuinstall:plain
+lumen	apk_roles	{sys}	priv-app/Z9xSetup/Z9xSetup.apk:org.lumen.setup:setup	priv-app/Z9xHome/Z9xHome.apk:org.lumen.home:home	priv-app/HbProjector/HbProjector.apk:org.lumen.projector:persistent	priv-app/LumenInfo/LumenInfo.apk:org.lumen.info:plain?	priv-app/LumenDsuInstall/LumenDsuInstall.apk:org.lumen.dsuinstall:plain
 lumen	absent	{sys}/*/HbBoot
 lumen	absent	{sys}/*/*/HbBoot
 #   t10: MediaTek's VNDK copy for codec2 (test images); the public release binds the user's own copy instead
@@ -134,6 +156,7 @@ lumen,!pub	install	0644	{SF_STOCK}	{sys}/lib/hb_vndk33/libstagefright_foundation
 lumen,!pub	install	0644	hb_media.rc	{sys}/etc/init/hb_media.rc
 lumen,pub	install	0644	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc
 lumen,pub	install	0755	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh
+lumen,pub	install	0644	blobs.conf	{sys}/etc/z9x/blobs.conf
 lumen,pub	install	0644	blobs_allow.txt	{sys}/etc/z9x/blobs_allow.txt
 #   Bluetooth: the base's libbluetooth_jni.so with SBC at 44.1 kHz, bound over the APEX copy (hb_bt.rc)
 lumen	run	bt_lib.sh	{mb}	{t}	{in}
@@ -167,6 +190,32 @@ pub	install	0644	signed_stage/apps/LumenUpdater.apk	{sys}/app/LumenUpdater/Lumen
 pub	install	0644	z9x-updater-default-permissions.xml	{sys}/etc/default-permissions/z9x-updater-default-permissions.xml
 pub	apk_roles	{sys}	app/LumenUpdater/LumenUpdater.apk:org.lumen.updater:plain
 pub	echo	ota: gate, bootctl {BC_SHA}, otacerts.zip, LumenUpdater and update_verifier.rc installed (channel {ota_channel})
+#   3f. the Google sign-in helper (lineage/gmsprops, devices/_image/gmsprops): the 32-bit library and init helper
+#   built on the host by lineage/gmsprops/build.sh (pinned), its rc and data file; after the OTA block, whose 'only'
+#   check of /system/etc/lumen comes first. The rc must start the check-in service after boot
+lumen	need	lumen_gmsprops.rc	gms_props.conf	gmsprops_arm.sha256	liblumen_gmsprops.so	lumen_gmsprops
+lumen	set	GPL_SHA	gmsprops_arm.sha256	([0-9a-f]{64})  liblumen_gmsprops\.so\n
+lumen	set	GPB_SHA	gmsprops_arm.sha256	([0-9a-f]{64})  lumen_gmsprops\n
+lumen	sha	liblumen_gmsprops.so	{GPL_SHA}
+lumen	sha	lumen_gmsprops	{GPB_SHA}
+lumen	file_type	liblumen_gmsprops.so	^ELF 32-bit LSB shared object, ARM, 
+lumen	file_type	lumen_gmsprops	^ELF 32-bit LSB pie executable, ARM, 
+lumen	line	lumen_gmsprops.rc	    exec_background u:r:su:s0 root root -- /system/bin/lumen_gmsprops apply
+lumen	line	lumen_gmsprops.rc	    start lumen_gmsprops_checkin
+lumen	install	0644	liblumen_gmsprops.so	{sys}/lib/liblumen_gmsprops.so
+lumen	install	0755	lumen_gmsprops	{sys}/bin/lumen_gmsprops
+lumen	install	0644	lumen_gmsprops.rc	{sys}/etc/init/lumen_gmsprops.rc
+lumen	install	0644	gms_props.conf	{sys}/etc/lumen/gms_props.conf
+#   3g. the HDMI receiver bridge of the signal panel (apps/core/lumen-signal/image, devices/goat_elegant/signal.tsv
+#   hdmi_format): a root oneshot that asks the MStar receiver for its info dump and leaves the info lines for the app;
+#   after the OTA block like the sign-in helper, whose 'only' check of /system/etc/lumen comes first
+lumen	need	lumen_hdmirx.rc	lumen_hdmirx.sh
+lumen	sh_n	lumen_hdmirx.sh
+lumen	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
+lumen	line	lumen_hdmirx.sh	HELP=help
+lumen	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 "
+lumen	install	0644	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc
+lumen	install	0755	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh
 # 3z. --dsu-test: network adb during a DSU try with the build host's adb PUBLIC key
 dsutest	run	adb_key.py	{home}/.android/adbkey.pub
 dsutest	noline	hb_dsu_testadb.rc	^on (?!.*property:ro\.gsid\.image_running=1)
@@ -176,6 +225,8 @@ dsutest	install	0644	{home}/.android/adbkey.pub	{sys}/etc/lumen/dsu_test_adb_key
 *	run	hb_props.py	{in}	{t}/props_added.txt	{tag}	{vname}	{build_id}	{vcode}	{ota_channel}	{flags}
 *	line	{sys}/product/etc/build.prop	ro.build.characteristics=emulator
 *	append	{t}/props_added.txt	{sys}/product/etc/build.prop
+# the one first-start setting of every image (devices/_image/first_start_prop.txt: English, the time zone from the network)
+*	run_root	first_start.py	apply	{in}/first_start_prop.txt	{sys}
 # 4b. every APK and APEX of the finished tree, for the S1 check on the Mac (sign_device.py goat_elegant check-image)
 lumen	apk_apex_list	{t}/apk_apex.sha256
 # 5. erofs: labels from the system's own file contexts (plat + system_ext + product), one time, a UUID from TAG
@@ -183,6 +234,7 @@ lumen	apk_apex_list	{t}/apk_apex.sha256
 *	pack	{root}
 # 6. the image against the base: every entry, only the debloat, APEXes, added files and props may differ
 *	mount_image
+*	run_root	first_start.py	check	{in}/first_start_prop.txt	{mn}/system	>first_start.log
 lumen	run_root	verify_tree.py	{mb}	{mn}	{tag}	{in}	>verify.log
 t1	run_root	verify_tree.py	{mb}	{mn}	{tag}	>verify.log
 *	umount	{mn}

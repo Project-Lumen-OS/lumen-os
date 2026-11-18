@@ -4,7 +4,8 @@
 # mtimes (mkfs.erofs --mkfs-time), so an updated APK is newer than its cache entry and is re-parsed.
 # One-time en-US / Europe/Moscow on the first boot over stock data (see z9x_setup.rc).
 persist.z9x.firstrun=1
-# UI click volume follows the media volume (system group curve MM, see z9x_audio.rc).
+# UI clicks follow the media volume: Android plays them at 0 dB and the DSP applies the volume (lumen-audio StockVolume,
+# the stock split). The mark lets SystemFixes turn the click sounds on once.
 ro.z9x.clickcurve=1
 # Machine-readable OS version for our apps (internal ro.z9x.* names stay in v1; the product is Lumen OS).
 ro.z9x.version=1.0.10

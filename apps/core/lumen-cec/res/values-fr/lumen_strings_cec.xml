@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC n’est pas disponible</string>
+    <string name="lumen_cec_master">Contrôle HDMI-CEC</string>
+    <string name="lumen_cec_master_note">Quand HDMI-CEC est désactivé, le son via HDMI ARC n’est pas disponible.</string>
+    <string name="lumen_cec_wake">Allumer avec un appareil HDMI</string>
+    <string name="lumen_cec_wake_note">Si activé, les appareils HDMI s’éteignent aussi quand le projecteur s’éteint.</string>
+    <string name="lumen_cec_night">Protection nocturne</string>
+    <string name="lumen_cec_night_off">Désactivée</string>
+    <string name="lumen_cec_night_desc">Pendant ces heures, les appareils HDMI ne peuvent pas allumer le projecteur.</string>
+    <string name="lumen_cec_paused">En pause après plusieurs allumages sans image. Utiliser la télécommande la réactive.</string>
+    <string name="lumen_cec_switch">Basculer vers un appareil quand il s’allume</string>
+    <string name="lumen_cec_send_standby">Éteindre les appareils HDMI avec le projecteur</string>
+    <string name="lumen_cec_follow_info">Quand l’appareil que vous regardez s’éteint, le projecteur se met aussi en veille.</string>
+    <string name="lumen_cec_soundbar">Barre de son ou ampli AV (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Allumer la barre de son avec le projecteur</string>
+    <string name="lumen_cec_control">Commander les appareils HDMI avec cette télécommande</string>
+    <string name="lumen_cec_internal_exit">Prévenir l’appareil quand vous quittez HDMI</string>
+    <string name="lumen_cec_devices">Appareils connectés</string>
+    <string name="lumen_cec_no_devices">Aucun appareil HDMI-CEC trouvé</string>
+    <string name="lumen_cec_state_on">allumé</string>
+    <string name="lumen_cec_state_standby">veille</string>
+    <string name="lumen_cec_dev_unnamed">Appareil HDMI</string>
+    <string name="lumen_cec_dev_soundbar">Barre de son / ampli AV</string>
+    <string name="lumen_cec_name_on_hdmi">Nom sur HDMI : %1$s</string>
+</resources>

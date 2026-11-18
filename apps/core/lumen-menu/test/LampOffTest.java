@@ -36,83 +36,7 @@ public final class LampOffTest {
         return o.eats(LampOffKey.POWER, down, repeat, downTime);
     }
 
-    /**
-     * The brightness slider as SliderRow steps it (one step per press, the edge listener at min / max) with the
-     * MenuController edge rule on top: counts the light-off requests it sends to the "Turn off screen" path.
-     */
-    private static final class Slider {
-        final boolean offered;
-        final int min, max;
-        Integer value;
-        int offs;
-
-        Slider(boolean offered, int min, int max, Integer value) {
-            this.offered = offered;
-            this.min = min;
-            this.max = max;
-            this.value = value;
-        }
-
-        Slider press(int dir, int repeat) {
-            if (value == null) {
-                if (LampOff.offFromSlider(offered, null, min, dir, repeat)) offs++;
-                return this;
-            }
-            int nv = value + dir;
-            if (nv < min || nv > max) {
-                if (LampOff.offFromSlider(offered, value, min, dir, repeat)) offs++;
-                return this;
-            }
-            value = nv;
-            return this;
-        }
-    }
-
-    /** LEFT at the lowest level turns the light off where lamp.off is offered, every other press just steps. */
-    private static void slider(String devices) throws java.io.IOException {
-        Slider s = new Slider(true, 1, 10, 1).press(-1, 0);
-        check(s.offs == 1 && s.value == 1, "left at the minimum asks for the light-off once");
-        s.press(-1, 1).press(-1, 7);
-        check(s.offs == 1, "holding left at the minimum asks only once");
-        s.press(-1, 0);
-        check(s.offs == 2, "a new left press at the minimum asks again (the row does it again too)");
-        s = new Slider(true, 1, 10, 3).press(-1, 0);
-        check(s.offs == 0 && s.value == 2, "left above the minimum only steps down");
-        s = new Slider(true, 1, 10, 5);
-        for (int r = 0; r < 6; r++) s.press(-1, r);
-        check(s.value == 1 && s.offs == 0, "a held left that reaches the minimum never turns the light off");
-        s = new Slider(true, 1, 10, 1).press(1, 0);
-        check(s.offs == 0 && s.value == 2, "right at the minimum steps up, never a light-off");
-        s = new Slider(true, 1, 10, 10).press(1, 0).press(1, 1);
-        check(s.offs == 0 && s.value == 10, "right at the maximum never turns the light off");
-        check(!LampOff.offFromSlider(true, 1, 1, 1, 0), "right is never a light-off");
-        s = new Slider(false, 1, 10, 1).press(-1, 0);
-        check(s.offs == 0 && s.value == 1, "without lamp.off left at the minimum does nothing");
-        s = new Slider(true, 1, 10, null).press(-1, 0);
-        check(s.offs == 0, "an unread level never turns the light off");
-
-        // the real profiles: only the ones that offer lamp.off (Z9X, HB, Play 6) get it, every slider starts at 1
-        java.util.Set<String> want = java.util.Set.of("horse_popular", "goat_elegant", "dragon_healthy");
-        java.util.Set<String> got = new java.util.TreeSet<>();
-        java.io.File[] dirs = new java.io.File(devices).listFiles();
-        check(dirs != null && dirs.length > 0, "the device profiles are found in " + devices);
-        if (dirs == null) return;
-        for (java.io.File d : dirs) {
-            java.io.File j = new java.io.File(d, "menu.json");
-            if (!j.isFile()) continue;
-            MenuProfile p = MenuProfile.parse(new String(java.nio.file.Files.readAllBytes(j.toPath()), "UTF-8"));
-            if (!p.has(FeatureId.LAMP)) continue;
-            boolean offered = p.has(FeatureId.LAMP_OFF);
-            int min = p.number(FeatureId.LAMP, "min", 1), max = p.number(FeatureId.LAMP, "max", 10);
-            Slider t = new Slider(offered, min, max, min).press(-1, 0);
-            check(t.offs == (want.contains(d.getName()) ? 1 : 0) && t.value == min,
-                    d.getName() + ": left at the minimum " + (want.contains(d.getName()) ? "turns the light off" : "does nothing"));
-            if (offered) got.add(d.getName());
-        }
-        check(got.equals(new java.util.TreeSet<>(want)), "lamp.off is offered by exactly " + want + ", got " + got);
-    }
-
-    public static void main(String[] a) throws java.io.IOException {
+    public static void main(String[] a) {
         FakeLight l = new FakeLight();
         FakeMark m = new FakeMark();
         LampOff o = new LampOff(l, m);
@@ -173,8 +97,6 @@ public final class LampOffTest {
         check(!m.earlierBoot() && !m.thisBoot(), "...and is cleared");
         boot2.restore();
         check(l.calls.size() == n + 1, "only once");
-
-        slider(a.length > 0 ? a[0] + "/devices" : "devices");
 
         System.out.println("LampOffTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);

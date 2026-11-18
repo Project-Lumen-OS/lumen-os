@@ -62,14 +62,14 @@ MUT = [
 def tree(dst):
     shutil.copytree(os.path.join(G, "apps/HbProjector"), os.path.join(dst, "apps/HbProjector"),
                     ignore=shutil.ignore_patterns("build"))
-    hal = os.path.join(dst, "apps/Z9xProjector/src/org/lumen/projector")
+    hal = os.path.join(dst, "apps/ProjectorBase/src/org/lumen/projector")
     os.makedirs(hal)
-    shutil.copy2(os.path.join(G, "apps/Z9xProjector/src/org/lumen/projector/Hal.java"), hal)
+    shutil.copy2(os.path.join(G, "apps/ProjectorBase/src/org/lumen/projector/Hal.java"), hal)
     os.makedirs(os.path.join(hal, "power"))
-    shutil.copy2(os.path.join(G, "apps/Z9xProjector/src/org/lumen/projector/power/StrGate.java"), os.path.join(hal, "power"))
+    shutil.copy2(os.path.join(G, "apps/ProjectorBase/src/org/lumen/projector/power/StrGate.java"), os.path.join(hal, "power"))
 
 def path(root, rel):
-    if rel.startswith("@Z9X/"): return os.path.join(root, "apps/Z9xProjector", rel[5:])
+    if rel.startswith("@Z9X/"): return os.path.join(root, "apps/ProjectorBase", rel[5:])
     return os.path.join(root, "apps/HbProjector", rel)
 
 def run(root):

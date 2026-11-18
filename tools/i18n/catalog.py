@@ -15,7 +15,7 @@ translations live once.
                                   becomes an alias to it, and its copies in res/values-*/ go (--check: exit 1 if
                                   adopting would change anything, i.e. APP keeps a copy of a vocabulary text)
   catalog.py validate             the module: every key in all 17 locales, nothing else; every alias of every app
-                                  names an existing entry
+                                  names an existing entry (of the vocabulary or a core module's own res)
 
 vocabulary.tsv (apps/core/lumen-common-strings): key <TAB> source app <TAB> source key <TAB> note; '#' comments. The
 source must have the text in res/values and in all 17 locales. Keys are lumen_*; a key names a text in one grammatical
@@ -41,6 +41,10 @@ HEADER = ('<?xml version="1.0" encoding="utf-8"?>\n'
           '<resources>\n')
 
 
+# source modules that are a whole app body and keep the app's resource names (tools/devices/assemble_app.py rule 7b)
+BODY_MODULES = ("lumen-updater",)
+
+
 def git_files(pattern):
     out = subprocess.run(["git", "ls-files", pattern], cwd=ROOT, capture_output=True, text=True).stdout
     return [p for p in out.split("\n") if p]
@@ -62,8 +66,11 @@ def strings_in(path):
 def load_all():
     """{(app, key): {locale: raw text}} of every translatable string in apps/*/res (aliases included as raw text)."""
     data = {}
-    for f in git_files("apps/*/res/values*/*.xml"):
+    # an app is apps/<app>/res, or a body module that is a whole app (apps/core/<module>, module.conf body=yes)
+    for f in git_files("apps/*/res/values*/*.xml") + git_files("apps/core/*/res/values*/*.xml"):
         parts = f.split("/")
+        if len(parts) == 6 and parts[1] == "core" and parts[2] in BODY_MODULES:
+            parts = parts[1:]
         if len(parts) != 5:
             continue
         app, loc = parts[1], locale_of(parts[3])
@@ -251,11 +258,17 @@ def cmd_validate():
         p = os.path.join(ROOT, rel)
         if not os.path.isfile(p) or open(p, encoding="utf-8").read() != body:
             errors.append("%s is stale: run catalog.py module" % rel)
+    # a core module's own texts (apps/core/*/res, e.g. lumen-remote's lumen_remote_*) are aliased by the apps that
+    # carry the module (its recipe), like a vocabulary text
+    module_keys = set()
+    for f in git_files("apps/core/*/res/values/*.xml"):
+        if os.path.isfile(os.path.join(ROOT, f)):
+            module_keys |= {name for name, _, _, _ in strings_in(os.path.join(ROOT, f))}
     for (app, key), v in sorted(data.items()):
         en = v.get("en", "")
         m = re.match(r"^@string/(lumen_[a-z0-9_]+)$", en.strip())
-        if m and app != "core" and m.group(1) not in texts:
-            errors.append("apps/%s: %s aliases %s, which the vocabulary does not have" % (app, key, m.group(1)))
+        if m and app != "core" and m.group(1) not in texts and m.group(1) not in module_keys:
+            errors.append("apps/%s: %s aliases %s, which neither the vocabulary nor a core module has" % (app, key, m.group(1)))
     for e in errors:
         print("catalog: ERROR " + e)
     print("catalog: validate: %d vocabulary texts, %s" % (len(texts), "RED" if errors else "OK"))

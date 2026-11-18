@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Keystone</string>
     <string name="lumen_later">Later</string>
     <string name="lumen_limited">Limited</string>
-    <string name="lumen_looking_for_the_remote">Looking for the remote…</string>
     <string name="lumen_manual_focus">Manual focus</string>
     <string name="lumen_movie">Movie</string>
     <string name="lumen_music">Music</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Not available at the Boost brightness level</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Not available in the AI picture mode</string>
     <string name="lumen_not_available_in_the_office_mode">Not available in the Office mode</string>
+    <string name="lumen_not_available_in_the_performance_mode">Not available in the Performance mode</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Not available while game mode is on</string>
     <string name="lumen_obstacle_avoidance">Obstacle avoidance</string>
     <string name="lumen_off">Off</string>
     <string name="lumen_office">Office</string>

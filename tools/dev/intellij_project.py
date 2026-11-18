@@ -8,7 +8,7 @@ Then in IntelliJ: File > Open > the gsi folder. One module "gsi" shows the whole
 third-party sources excluded); every app with Java sources (apps/<App>/src) is its own module with src as sources,
 test as test sources, and the Android framework headers (apps/sdk/framework-full-headers.jar) as a library, so
 navigation and highlighting work. Nothing is built by IntelliJ: the apps are built by apps/build_apk.sh and the
-per-app scripts. apps/HbProjector holds only the HB forks; the full app is apps/Z9xProjector plus those
+per-app scripts. apps/HbProjector holds only the HB forks; the full app is apps/ProjectorBase plus those
 (devices/goat_elegant/app/HbProjector.layers).
 """
 import os

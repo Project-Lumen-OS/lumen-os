@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC를 사용할 수 없습니다</string>
+    <string name="lumen_cec_master">HDMI-CEC 제어</string>
+    <string name="lumen_cec_master_note">HDMI-CEC가 꺼져 있으면 HDMI ARC로 소리를 출력할 수 없습니다.</string>
+    <string name="lumen_cec_wake">HDMI 기기로 전원 켜기</string>
+    <string name="lumen_cec_wake_note">켜 두면 프로젝터를 끌 때 HDMI 기기도 함께 꺼집니다.</string>
+    <string name="lumen_cec_night">야간 보호</string>
+    <string name="lumen_cec_night_off">끄기</string>
+    <string name="lumen_cec_night_desc">이 시간에는 HDMI 기기가 프로젝터를 켤 수 없습니다.</string>
+    <string name="lumen_cec_paused">화면 없이 여러 번 켜져서 일시 중지되었습니다. 리모컨을 사용하면 다시 작동합니다.</string>
+    <string name="lumen_cec_switch">기기가 켜지면 해당 기기로 전환</string>
+    <string name="lumen_cec_send_standby">프로젝터와 함께 HDMI 기기 끄기</string>
+    <string name="lumen_cec_follow_info">보고 있는 기기가 꺼지면 프로젝터도 절전 모드로 전환됩니다.</string>
+    <string name="lumen_cec_soundbar">사운드바 또는 AV 리시버(HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">프로젝터와 함께 사운드바 켜기</string>
+    <string name="lumen_cec_control">이 리모컨으로 HDMI 기기 제어</string>
+    <string name="lumen_cec_internal_exit">HDMI를 나갈 때 기기에 알리기</string>
+    <string name="lumen_cec_devices">연결된 기기</string>
+    <string name="lumen_cec_no_devices">HDMI-CEC 기기를 찾을 수 없습니다</string>
+    <string name="lumen_cec_state_on">켜짐</string>
+    <string name="lumen_cec_state_standby">대기</string>
+    <string name="lumen_cec_dev_unnamed">HDMI 기기</string>
+    <string name="lumen_cec_dev_soundbar">사운드바 / AV 리시버</string>
+    <string name="lumen_cec_name_on_hdmi">HDMI 표시 이름: %1$s</string>
+</resources>

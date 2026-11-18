@@ -119,6 +119,7 @@ public final class PowerKey {
     /** SCREEN_ON, main thread. */
     private static void onScreenOn(Context c) {
         try { onScreenOnKey(); } catch (Throwable t) { Log.w(TAG, "key state: " + t); }
+        try { org.lumen.projector.AiScenePolicy.reassert("screen on"); } catch (Throwable t) { Log.w(TAG, "ai: " + t); }
         try { PowerActions.onScreenChanged(); } catch (Throwable t) { Log.w(TAG, "actions: " + t); }
         try {
             WakeCurtain.onScreenOn();

@@ -1,0 +1,2006 @@
+[
+ {
+  "tag_name": "hb",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "update-hb-nogms.json",
+    "size": 1939
+   },
+   {
+    "name": "update-hb-nogms.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-hb-test.json",
+    "size": 1938
+   },
+   {
+    "name": "update-hb-test.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.10",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.10-installer.zip",
+    "size": 723294
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-nogms-system.img",
+    "size": 1088929792
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.10-beta1-installer.zip",
+    "size": 251821
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-beta1-nogms-system.img",
+    "size": 1085284352
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 111
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.10-beta2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.10-beta2-installer.zip",
+    "size": 723298
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-beta2-nogms-system.img",
+    "size": 1085456384
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag2-installer.zip",
+    "size": 723299
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag2-nogms-system.img",
+    "size": 1085456384
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 222
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.10-beta3",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.10-beta3-installer.zip",
+    "size": 723299
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-beta3-nogms-system.img",
+    "size": 1085464576
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag3-installer.zip",
+    "size": 723299
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag3-nogms-system.img",
+    "size": 1085464576
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 222
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.10-beta4",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.10-beta4-installer.zip",
+    "size": 723299
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-beta4-nogms-system.img",
+    "size": 1088929792
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag4-installer.zip",
+    "size": 723299
+   },
+   {
+    "name": "lumen-os-play6-1.0.10-diag4-nogms-system.img",
+    "size": 1088929792
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 222
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.6",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.6-installer.zip",
+    "size": 126945
+   },
+   {
+    "name": "lumen-os-play6-1.0.6-nogms-system.img",
+    "size": 1078468608
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 104
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.7",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.7-installer.zip",
+    "size": 142459
+   },
+   {
+    "name": "lumen-os-play6-1.0.7-nogms-system.img",
+    "size": 1078468608
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 104
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.7-diag2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.7-diag2-installer.zip",
+    "size": 183875
+   },
+   {
+    "name": "lumen-os-play6-1.0.7-diag2-nogms-system.img",
+    "size": 1078468608
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 110
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-1.0.7-kst1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.7-kst1-installer.zip",
+    "size": 142577
+   },
+   {
+    "name": "lumen-os-play6-1.0.7-kst1-nogms-system.img",
+    "size": 1078468608
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "play6-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-play6-1.0.3-installer.zip",
+    "size": 107776
+   },
+   {
+    "name": "lumen-os-play6-1.0.3-nogms-system.img",
+    "size": 1076457472
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 104
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 719769600
+   },
+   {
+    "name": "trial.sh",
+    "size": 6047
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 719773696
+   },
+   {
+    "name": "trial.sh",
+    "size": 6047
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta3",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 720044032
+   },
+   {
+    "name": "trial.sh",
+    "size": 6047
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta4",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 720052224
+   },
+   {
+    "name": "trial.sh",
+    "size": 6047
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta5",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 720531456
+   },
+   {
+    "name": "trial.sh",
+    "size": 6052
+   }
+  ]
+ },
+ {
+  "tag_name": "rs30-1.0.10-beta6",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 720572416
+   },
+   {
+    "name": "trial.sh",
+    "size": 6052
+   }
+  ]
+ },
+ {
+  "tag_name": "titanmax-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 1021317120
+   },
+   {
+    "name": "trial.sh",
+    "size": 6102
+   }
+  ]
+ },
+ {
+  "tag_name": "titanpro-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "SHA256SUMS",
+    "size": 156
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "system_dsu.img",
+    "size": 1021317120
+   },
+   {
+    "name": "trial.sh",
+    "size": 6074
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.0",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.0-airplay-source.zip",
+    "size": 1699951
+   },
+   {
+    "name": "lumen-os-1.0.0-from-1.0-ota.zip",
+    "size": 3124993
+   },
+   {
+    "name": "lumen-os-1.0.0-from-1.0-payload_metadata.bin",
+    "size": 284226
+   },
+   {
+    "name": "update-stable.json",
+    "size": 2938
+   },
+   {
+    "name": "update-stable.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.1",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.1-airplay-source.zip",
+    "size": 216800
+   },
+   {
+    "name": "lumen-os-1.0.1-installer.zip",
+    "size": 57226
+   },
+   {
+    "name": "lumen-os-1.0.1-nogms-full-ota.zip",
+    "size": 696241268
+   },
+   {
+    "name": "lumen-os-1.0.1-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.1-nogms-system.img",
+    "size": 987975680
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 2675
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.2",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.2-airplay-source.zip",
+    "size": 216800
+   },
+   {
+    "name": "lumen-os-1.0.2-installer.zip",
+    "size": 57226
+   },
+   {
+    "name": "lumen-os-1.0.2-nogms-from-1.0.1-ota.zip",
+    "size": 176755
+   },
+   {
+    "name": "lumen-os-1.0.2-nogms-from-1.0.1-payload_metadata.bin",
+    "size": 76062
+   },
+   {
+    "name": "lumen-os-1.0.2-nogms-full-ota.zip",
+    "size": 696240892
+   },
+   {
+    "name": "lumen-os-1.0.2-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.2-nogms-system.img",
+    "size": 987975680
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 2523
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.3",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.3-airplay-source.zip",
+    "size": 221141
+   },
+   {
+    "name": "lumen-os-1.0.3-installer.zip",
+    "size": 108742
+   },
+   {
+    "name": "lumen-os-1.0.3-nogms-from-1.0.2-ota.zip",
+    "size": 2292154
+   },
+   {
+    "name": "lumen-os-1.0.3-nogms-from-1.0.2-payload_metadata.bin",
+    "size": 182835
+   },
+   {
+    "name": "lumen-os-1.0.3-nogms-full-ota.zip",
+    "size": 696403200
+   },
+   {
+    "name": "lumen-os-1.0.3-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.3-nogms-system.img",
+    "size": 988180480
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 3150
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.4",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.4-airplay-source.zip",
+    "size": 221141
+   },
+   {
+    "name": "lumen-os-1.0.4-installer.zip",
+    "size": 108742
+   },
+   {
+    "name": "lumen-os-1.0.4-nogms-from-1.0.3-ota.zip",
+    "size": 2123642
+   },
+   {
+    "name": "lumen-os-1.0.4-nogms-from-1.0.3-payload_metadata.bin",
+    "size": 124242
+   },
+   {
+    "name": "lumen-os-1.0.4-nogms-full-ota.zip",
+    "size": 696945690
+   },
+   {
+    "name": "lumen-os-1.0.4-nogms-full-payload_metadata.bin",
+    "size": 27403
+   },
+   {
+    "name": "lumen-os-1.0.4-nogms-system.img",
+    "size": 988590080
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 3243
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.5",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.5-airplay-source.zip",
+    "size": 241851
+   },
+   {
+    "name": "lumen-os-1.0.5-installer.zip",
+    "size": 127780
+   },
+   {
+    "name": "lumen-os-1.0.5-nogms-from-1.0.4-ota.zip",
+    "size": 2445120
+   },
+   {
+    "name": "lumen-os-1.0.5-nogms-from-1.0.4-payload_metadata.bin",
+    "size": 159220
+   },
+   {
+    "name": "lumen-os-1.0.5-nogms-full-ota.zip",
+    "size": 697214852
+   },
+   {
+    "name": "lumen-os-1.0.5-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.5-nogms-system.img",
+    "size": 988827648
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 3319
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.6",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.5-airplay-source.zip",
+    "size": 241851
+   },
+   {
+    "name": "lumen-os-1.0.6-installer.zip",
+    "size": 126946
+   },
+   {
+    "name": "lumen-os-1.0.6-nogms-from-1.0.5-ota.zip",
+    "size": 6464117
+   },
+   {
+    "name": "lumen-os-1.0.6-nogms-from-1.0.5-payload_metadata.bin",
+    "size": 2358906
+   },
+   {
+    "name": "lumen-os-1.0.6-nogms-full-ota.zip",
+    "size": 697518352
+   },
+   {
+    "name": "lumen-os-1.0.6-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.6-nogms-system.img",
+    "size": 989048832
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 3173
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "v1.0.7",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.5-airplay-source.zip",
+    "size": 241851
+   },
+   {
+    "name": "lumen-os-1.0.7-installer.zip",
+    "size": 142460
+   },
+   {
+    "name": "lumen-os-1.0.7-nogms-from-1.0.6-ota.zip",
+    "size": 151334
+   },
+   {
+    "name": "lumen-os-1.0.7-nogms-from-1.0.6-payload_metadata.bin",
+    "size": 74597
+   },
+   {
+    "name": "lumen-os-1.0.7-nogms-full-ota.zip",
+    "size": 697518672
+   },
+   {
+    "name": "lumen-os-1.0.7-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.7-nogms-system.img",
+    "size": 989048832
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 2684
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "update-x50-beta.json",
+    "size": 1788
+   },
+   {
+    "name": "update-x50-beta.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-x50-test.json",
+    "size": 2231
+   },
+   {
+    "name": "update-x50-test.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-x50max-beta.json",
+    "size": 1763
+   },
+   {
+    "name": "update-x50max-beta.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-x50max-test.json",
+    "size": 2260
+   },
+   {
+    "name": "update-x50max-test.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta1-nogms-system.img",
+    "size": 990601216
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta2-nogms-system.img",
+    "size": 990609408
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta3",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta3-nogms-system.img",
+    "size": 996073472
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta4",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta4-nogms-system.img",
+    "size": 996151296
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta5",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta5-nogms-full-ota.zip",
+    "size": 698856568
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta5-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta5-nogms-system.img",
+    "size": 996999168
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta6",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta6-nogms-full-ota.zip",
+    "size": 698838016
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta6-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta6-nogms-system.img",
+    "size": 997040128
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta7",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta7-nogms-full-ota.zip",
+    "size": 698789940
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta7-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta7-nogms-system.img",
+    "size": 997072896
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50-1.0.10-beta8",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50-1.0.10-beta8-nogms-full-ota.zip",
+    "size": 698789452
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta8-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50-1.0.10-beta8-nogms-system.img",
+    "size": 997076992
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta1-nogms-system.img",
+    "size": 990601216
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta2-nogms-system.img",
+    "size": 990609408
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta3",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta3-nogms-system.img",
+    "size": 996073472
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta4",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta4-nogms-system.img",
+    "size": 996151296
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta5",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta5-nogms-full-ota.zip",
+    "size": 698854954
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta5-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta5-nogms-system.img",
+    "size": 996999168
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta6",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta6-nogms-full-ota.zip",
+    "size": 698838330
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta6-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta6-nogms-system.img",
+    "size": 997040128
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta7",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta7-nogms-full-ota.zip",
+    "size": 698789062
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta7-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta7-nogms-system.img",
+    "size": 997076992
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "x50max-1.0.10-beta8",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-x50max-1.0.10-beta8-nogms-full-ota.zip",
+    "size": 698788006
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta8-nogms-full-payload_metadata.bin",
+    "size": 27622
+   },
+   {
+    "name": "lumen-os-x50max-1.0.10-beta8-nogms-system.img",
+    "size": 997076992
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 112
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "update-public-beta.json",
+    "size": 2373
+   },
+   {
+    "name": "update-public-beta.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 5154
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.10",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "erofs-utils-1.9.4.tar.gz",
+    "size": 273489
+   },
+   {
+    "name": "lumen-installer-0.5.apk",
+    "size": 279426
+   },
+   {
+    "name": "lumen-os-1.0.10-airplay-source.zip",
+    "size": 238816
+   },
+   {
+    "name": "lumen-os-1.0.10-installer.zip",
+    "size": 2593876
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-from-1.0.8-ota.zip",
+    "size": 6503528
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-from-1.0.8-payload_metadata.bin",
+    "size": 82834
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-from-1.0.9-ota.zip",
+    "size": 5692600
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-from-1.0.9-payload_metadata.bin",
+    "size": 80282
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-full-ota.zip",
+    "size": 701549169
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-full-payload_metadata.bin",
+    "size": 27572
+   },
+   {
+    "name": "lumen-os-1.0.10-nogms-system.img",
+    "size": 994709504
+   },
+   {
+    "name": "lz4-1.10.0.tar.gz",
+    "size": 387114
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 99
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 5154
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta1",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta1-nogms-full-ota.zip",
+    "size": 703371213
+   },
+   {
+    "name": "lumen-os-1.0.11-beta1-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta1-nogms-system.img",
+    "size": 996651008
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta2",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta2-nogms-full-ota.zip",
+    "size": 703372857
+   },
+   {
+    "name": "lumen-os-1.0.11-beta2-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta2-nogms-system.img",
+    "size": 996651008
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta3",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta3-nogms-full-ota.zip",
+    "size": 703502293
+   },
+   {
+    "name": "lumen-os-1.0.11-beta3-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta3-nogms-system.img",
+    "size": 996745216
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta4",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta4-nogms-full-ota.zip",
+    "size": 703547753
+   },
+   {
+    "name": "lumen-os-1.0.11-beta4-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta4-nogms-system.img",
+    "size": 996769792
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta5",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta5-nogms-full-ota.zip",
+    "size": 703530045
+   },
+   {
+    "name": "lumen-os-1.0.11-beta5-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta5-nogms-system.img",
+    "size": 996790272
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta6",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta6-nogms-full-ota.zip",
+    "size": 703525601
+   },
+   {
+    "name": "lumen-os-1.0.11-beta6-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta6-nogms-system.img",
+    "size": 996802560
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta7",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta7-nogms-full-ota.zip",
+    "size": 703577961
+   },
+   {
+    "name": "lumen-os-1.0.11-beta7-nogms-full-payload_metadata.bin",
+    "size": 27629
+   },
+   {
+    "name": "lumen-os-1.0.11-beta7-nogms-system.img",
+    "size": 996974592
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta8",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta8-nogms-full-ota.zip",
+    "size": 704580175
+   },
+   {
+    "name": "lumen-os-1.0.11-beta8-nogms-full-payload_metadata.bin",
+    "size": 27630
+   },
+   {
+    "name": "lumen-os-1.0.11-beta8-nogms-system.img",
+    "size": 997670912
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.11-beta9",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.11-beta9-nogms-full-ota.zip",
+    "size": 704261103
+   },
+   {
+    "name": "lumen-os-1.0.11-beta9-nogms-full-payload_metadata.bin",
+    "size": 27630
+   },
+   {
+    "name": "lumen-os-1.0.11-beta9-nogms-system.img",
+    "size": 997695488
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 105
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.8",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-1.0.8-airplay-source.zip",
+    "size": 246177
+   },
+   {
+    "name": "lumen-os-1.0.8-installer.zip",
+    "size": 232395
+   },
+   {
+    "name": "lumen-os-1.0.8-nogms-from-1.0.7-ota.zip",
+    "size": 3324104
+   },
+   {
+    "name": "lumen-os-1.0.8-nogms-from-1.0.7-payload_metadata.bin",
+    "size": 113269
+   },
+   {
+    "name": "lumen-os-1.0.8-nogms-full-ota.zip",
+    "size": 697612264
+   },
+   {
+    "name": "lumen-os-1.0.8-nogms-full-payload_metadata.bin",
+    "size": 27402
+   },
+   {
+    "name": "lumen-os-1.0.8-nogms-system.img",
+    "size": 989626368
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 4962
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-1.0.9",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "erofs-utils-1.9.4.tar.gz",
+    "size": 273489
+   },
+   {
+    "name": "lumen-os-1.0.9-airplay-source.zip",
+    "size": 238816
+   },
+   {
+    "name": "lumen-os-1.0.9-installer.zip",
+    "size": 2572261
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-from-1.0.7-ota.zip",
+    "size": 3760151
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-from-1.0.7-payload_metadata.bin",
+    "size": 104000
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-from-1.0.8-ota.zip",
+    "size": 2861146
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-from-1.0.8-payload_metadata.bin",
+    "size": 122581
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-full-ota.zip",
+    "size": 698109900
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-full-payload_metadata.bin",
+    "size": 27458
+   },
+   {
+    "name": "lumen-os-1.0.9-nogms-system.img",
+    "size": 990035968
+   },
+   {
+    "name": "lz4-1.10.0.tar.gz",
+    "size": 387114
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 98
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   },
+   {
+    "name": "update-public-nogms.json",
+    "size": 6348
+   },
+   {
+    "name": "update-public-nogms.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "update-hb-nogms.json",
+    "size": 3499
+   },
+   {
+    "name": "update-hb-nogms.json.sig",
+    "size": 512
+   },
+   {
+    "name": "update-hb-test.json",
+    "size": 2279
+   },
+   {
+    "name": "update-hb-test.json.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta10",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta10-nogms-full-ota.zip",
+    "size": 449482353
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta10-nogms-full-payload_metadata.bin",
+    "size": 17779
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta10-nogms-system.img",
+    "size": 637530112
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta11",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta11-nogms-full-ota.zip",
+    "size": 451180107
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta11-nogms-full-payload_metadata.bin",
+    "size": 17836
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta11-nogms-system.img",
+    "size": 639225856
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta12",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta12-nogms-full-ota.zip",
+    "size": 451182115
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta12-nogms-full-payload_metadata.bin",
+    "size": 17836
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta12-nogms-system.img",
+    "size": 639262720
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta13",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta13-nogms-full-ota.zip",
+    "size": 451343799
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta13-nogms-full-payload_metadata.bin",
+    "size": 17836
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta13-nogms-system.img",
+    "size": 639430656
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta14",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta14-nogms-full-ota.zip",
+    "size": 451604983
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta14-nogms-full-payload_metadata.bin",
+    "size": 17892
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta14-nogms-system.img",
+    "size": 639750144
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta15",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta15-nogms-full-ota.zip",
+    "size": 451648483
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta15-nogms-full-payload_metadata.bin",
+    "size": 17892
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta15-nogms-system.img",
+    "size": 639795200
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta16",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.10-beta16-nogms-full-ota.zip",
+    "size": 451657583
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta16-nogms-full-payload_metadata.bin",
+    "size": 17892
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta16-nogms-system.img",
+    "size": 639799296
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 109
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.10-beta9",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-installer-0.4.apk",
+    "size": 275330
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta9-nogms-full-ota.zip",
+    "size": 446711166
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta9-nogms-full-payload_metadata.bin",
+    "size": 17722
+   },
+   {
+    "name": "lumen-os-hb-1.0.10-beta9-nogms-system.img",
+    "size": 633909248
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 108
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.8",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.8-installer.zip",
+    "size": 2590020
+   },
+   {
+    "name": "lumen-os-hb-1.0.8-nogms-full-ota.zip",
+    "size": 441086417
+   },
+   {
+    "name": "lumen-os-hb-1.0.8-nogms-full-payload_metadata.bin",
+    "size": 17495
+   },
+   {
+    "name": "lumen-os-hb-1.0.8-nogms-system.img",
+    "size": 626470912
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 101
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ },
+ {
+  "tag_name": "z9x-hb-1.0.9",
+  "prerelease": false,
+  "draft": false,
+  "assets": [
+   {
+    "name": "lumen-os-hb-1.0.9-installer.zip",
+    "size": 2590012
+   },
+   {
+    "name": "lumen-os-hb-1.0.9-nogms-full-ota.zip",
+    "size": 446779685
+   },
+   {
+    "name": "lumen-os-hb-1.0.9-nogms-full-payload_metadata.bin",
+    "size": 17721
+   },
+   {
+    "name": "lumen-os-hb-1.0.9-nogms-system.img",
+    "size": 633720832
+   },
+   {
+    "name": "SHA256SUMS",
+    "size": 101
+   },
+   {
+    "name": "SHA256SUMS.sig",
+    "size": 512
+   }
+  ]
+ }
+]

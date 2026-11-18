@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">Звук кнопок</string>
+    <string name="lumen_m_hdmi_options">Настройки HDMI-входов</string>
+    <string name="lumen_m_colour_vision">Коррекция цвета</string>
+    <string name="lumen_m_temperature">Температура</string>
+    <string name="lumen_m_colour_vision_gray">Оттенки серого</string>
+    <string name="lumen_m_colour_vision_red_green">Красный/зелёный</string>
+    <string name="lumen_m_colour_vision_green_red">Зелёный/красный</string>
+    <string name="lumen_m_colour_vision_blue_yellow">Синий/жёлтый</string>
+</resources>

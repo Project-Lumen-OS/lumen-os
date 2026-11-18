@@ -7,10 +7,10 @@ import android.util.Log;
 
 import org.lumen.projector.Hal;
 import org.lumen.projector.SafeHandler;
-import org.lumen.projector.remote.RemoteAutoPair;
+import org.lumen.remote.RemotePairing;
 
 /**
- * The XGIMI Play 6 class behind the setup seam of the shared RemoteAutoPair (design notes
+ * The XGIMI Play 6 class behind the setup seam of the shared RemotePairing (design notes
  * 2.4) and the events of its SetupBridge (setup/SetupBridgeProvider
  * section 3): {@value #ACTION} with the same action, extras, targets and permission as the Z9X SetupEvents,
  * sent with {@code sendBroadcast(intent, SETUP_BRIDGE)} to org.lumen.setup and org.lumen.home only (explicit
@@ -22,7 +22,7 @@ import org.lumen.projector.remote.RemoteAutoPair;
  * {@link #install} (Play6App at the start gate, before the Hal facade connects): an IGmpf (re)connect sends
  * "hal", and the AF start (4, 8, 333-335) and end (2, 5) focus events send "af" 150 ms later, after the Hal
  * facade updated its AF busy window. Everything is sent from a small worker, never from p6-hal or the main
- * thread; before install a "remote" event is sent on the caller's thread (RemoteAutoPair's own).
+ * thread; before install a "remote" event is sent on the caller's thread (RemotePairing's own).
  */
 public final class SetupEvents {
     private static final String TAG = "P6Bridge";
@@ -57,13 +57,13 @@ public final class SetupEvents {
         });
     }
 
-    /** Bond / connection of a remote changed (RemoteAutoPair, its own thread, after its install). */
+    /** Bond / connection of a remote changed (RemotePairing, its own thread, after its install). */
     public static void remote(Context ctx) {
         if (ctx == null) return;
         final Context app = ctx.getApplicationContext();
         if (sApp == null) sApp = app;
-        // RemoteAutoPair is installed when it calls this, so its state is read directly
-        Runnable r = () -> send("remote", SetupBridgeProvider.remoteBundle(RemoteAutoPair.state(app)));
+        // RemotePairing is installed when it calls this, so its state is read directly
+        Runnable r = () -> send("remote", SetupBridgeProvider.remoteBundle(RemotePairing.state(app)));
         SafeHandler w = sWorker;
         if (w == null || !w.post(r)) r.run();
     }

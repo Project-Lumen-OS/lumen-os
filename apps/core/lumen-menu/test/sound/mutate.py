@@ -9,7 +9,7 @@ import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 import scratch  # noqa: E402
 
-Z9X = 'apps/Z9xProjector/'
+Z9X = 'apps/ProjectorBase/'
 PJ = Z9X + 'src/org/lumen/projector/'
 SS = 'apps/core/lumen-menu/src/org/lumen/projector/panel/SoundState.java'
 RULES = PJ + 'panel/Z9xMenuRules.java'

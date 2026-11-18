@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). -->
+<!-- lumen-menu v3 texts, copied from the Z9X and HB apps (their translations, no new ones). New here:
+     lumen_m_lamp_off_press_again, the brightness slider's light-off hint (test/run.sh checks every language). -->
 <resources>
     <string name="lumen_m_panel_move_ak">Auto keystone after moving</string>
     <string name="lumen_m_boost_effect_brighter">Boost: higher brightness. Leaving Boost gives more vivid colours.</string>
@@ -12,6 +13,7 @@
     <string name="lumen_m_cancel">Cancel</string>
     <string name="lumen_m_panel_boost_press_again">Press → again for Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Press ← again to leave Boost</string>
+    <string name="lumen_m_lamp_off_press_again">The picture will turn off. To turn it back on, press the power button. Press ← again to turn it off.</string>
     <string name="lumen_m_toast_setup_running">Finish the setup first</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI picture</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Color accuracy</string>
@@ -34,4 +36,13 @@
     <string name="lumen_m_ambient_speaker">Ambient speaker</string>
     <string name="lumen_m_ct_custom">Custom</string>
     <string name="lumen_m_lamp_off">Turn off screen</string>
+    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris_dynamic">Dynamic</string>
+    <string name="lumen_m_iris_lamp_dynamic">Brightness cannot be changed while IRIS is Dynamic.</string>
+    <string name="lumen_m_iris_lamp_held">Brightness cannot be changed at this IRIS setting.</string>
+    <string name="lumen_m_iris_f2" translatable="false">f/2.0</string>
+    <string name="lumen_m_iris_f3" translatable="false">f/3.0</string>
+    <string name="lumen_m_iris_f4" translatable="false">f/4.0</string>
+    <string name="lumen_m_iris_f5_5" translatable="false">f/5.5</string>
+    <string name="lumen_m_iris_f7" translatable="false">f/7.0</string>
 </resources>

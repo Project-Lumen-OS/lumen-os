@@ -118,6 +118,9 @@ public final class TvFocus {
         }
     }
 
+    /** The notice on screen: a newer one replaces it, as the stock tips do (the system would queue it behind). */
+    private static android.widget.Toast shown;
+
     /**
      * A short notice at the bottom, drawn by this app (a dark pill with white text) instead of the system text toast.
      * Main thread. A custom toast view is allowed from the background for this app because it runs as
@@ -137,6 +140,8 @@ public final class TvFocus {
         n.setView(t);
         n.setDuration(longer ? android.widget.Toast.LENGTH_LONG : android.widget.Toast.LENGTH_SHORT);
         n.setGravity(android.view.Gravity.BOTTOM | android.view.Gravity.CENTER_HORIZONTAL, 0, dp(t, 48));
+        if (shown != null) shown.cancel();
+        shown = n;
         n.show();
     }
 

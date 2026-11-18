@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels (the row title is the Z9X app's pro_color_space with its translations) of the RS30 Ultra Max's own stock rows (colour gamut, rainbow reduction, screen shift) and its
+     game menu rule (VRR only with Turbo, the top speed) -->
+<resources>
+    <string name="lumen_m_gamut">色彩空間</string>
+    <string name="lumen_m_gamut_native">原生</string>
+    <string name="lumen_m_gamut_bt2020">BT.2020</string>
+    <string name="lumen_m_gamut_p3">DCI-P3</string>
+    <string name="lumen_m_gamut_bt709">BT.709</string>
+    <string name="lumen_m_gamut_adobe">Adobe RGB</string>
+    <string name="lumen_m_anti_rbe">彩虹效應抑制</string>
+    <string name="lumen_m_zoom_move">畫面位移</string>
+    <string name="lumen_gm_rule_vrr_speed">請先開啟極速</string>
+    <string name="lumen_m_move_hint">方向鍵移動畫面，到達邊緣後投影機會轉動。</string>
+</resources>

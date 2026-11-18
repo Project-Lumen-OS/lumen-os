@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Трапеція</string>
     <string name="lumen_later">Пізніше</string>
     <string name="lumen_limited">Обмежений</string>
-    <string name="lumen_looking_for_the_remote">Пошук пульта…</string>
     <string name="lumen_manual_focus">Ручний фокус</string>
     <string name="lumen_movie">Фільм</string>
     <string name="lumen_music">Музика</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Недоступно на рівні яскравості Boost</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Недоступно в режимі «AI-якість»</string>
     <string name="lumen_not_available_in_the_office_mode">Недоступно в режимі «Офіс»</string>
+    <string name="lumen_not_available_in_the_performance_mode">Недоступно в режимі «Продуктивність»</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Недоступно, поки ввімкнено ігровий режим</string>
     <string name="lumen_obstacle_avoidance">Обхід перешкод</string>
     <string name="lumen_off">Вимк.</string>
     <string name="lumen_office">Офіс</string>

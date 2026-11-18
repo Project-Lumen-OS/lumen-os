@@ -64,6 +64,14 @@ public interface ProjectorFeatures {
     default Note blocked(FeatureId feature, String value, MenuState now) { return null; }
 
     /**
+     * A row stock keeps closed as a whole now (main thread, from the last read {@code now}, which may be null): the
+     * picture settings page rows in the AI or Performance picture mode or while the game mode runs (shared
+     * PictureSettingsRule). The menu draws such a row dimmed like a stock disabled row (its value stays, nothing can
+     * move it) and keeps it focusable, so a press answers the stock toast through {@link #blocked}. Null = open.
+     */
+    default Note locked(FeatureId feature, MenuState now) { return null; }
+
+    /**
      * The stock refusal of a whole section page ({@link MenuSpec} section id: the game page off HDMI), or null. By
      * default the refusal of the feature of the same name (the eye and lamp pages), else allowed.
      */
@@ -101,6 +109,13 @@ public interface ProjectorFeatures {
 
     /** A text line at the end of a section page (a string resource name), or null. */
     default String footer(String section) { return null; }
+
+    /**
+     * The kind of content on screen now, read alone (one getter) so the open menu follows a signal change: options
+     * with a {@code support} list grey and ungrey live ({@link SignalRule}). The callback runs on the main thread;
+     * null = not read (the default: such a device never polls).
+     */
+    default void readSignal(Consumer<Signal> cb) { cb.accept(null); }
 
     // ================================================================== value types
 

@@ -1,0 +1,2615 @@
+## rs30 ok
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 ok_again
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 partial_again
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 2cceee4c03920483
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 missing_partition
+[setprop.log]
+sys.z9x.blobs=missing
+sys.lumen.nui=missing
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing
+x50_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 missing_partition_gsid_off
+[setprop.log]
+sys.z9x.blobs=missing
+sys.lumen.nui=missing
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing
+x50_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 missing_slot
+[setprop.log]
+sys.z9x.blobs=missing
+sys.lumen.nui=missing
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing
+x50_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 odd_slot
+[setprop.log]
+sys.z9x.blobs=missing
+sys.lumen.nui=missing
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing
+x50_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 slot_a
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 other_slot_only
+[setprop.log]
+sys.z9x.blobs=missing
+sys.lumen.nui=missing
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing
+x50_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 partition_in_trial
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_hash_first
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 2cceee4c03920483
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_hash_place
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 2cceee4c03920483
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_hash_policy
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem bad:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 0516930984a544fc
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 missing_policy
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem missing:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 631 1e17a41bdee1a420
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 missing_first
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem missing:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 639 d41d08f7c434a25d
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 placeholder_not_empty
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem noplaceholder:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 placeholder_missing
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem noplaceholder:system_ext/lib/libc2plugin_store.so
+
+[binds]
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 target_missing
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem notarget:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 target_outside
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 target_apex_other
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_tar
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:tar
+sys.lumen.nui=bad:tar
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:tar
+x50_blobs: bad:tar
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/.img f 0644 16777216 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 empty_partition
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:manifest
+sys.lumen.nui=bad:manifest
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:manifest
+x50_blobs: bad:manifest
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 short_partition
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_symlink
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:entry
+sys.lumen.nui=bad:entry
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:entry
+x50_blobs: bad:entry: lrwxrwxrwx root/root         0 1970-01-01 00:00 system_ext/lib/libc2plugin_store.so -> <W>/fx/rs30/files/system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 16777216 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_sparse
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:entry
+sys.lumen.nui=bad:entry
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:entry
+x50_blobs: bad:entry: system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 67108864 3dfaf6f39afb0769
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 bad_dotdot
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:path
+sys.lumen.nui=bad:path
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:path
+x50_blobs: bad:path
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 16777216 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 set_mismatch
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=other-set-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'other-set-a' is not this image's 'rs30-v1142-a' (files still checked one by one)
+x50_blobs: ok: 7 files of set other-set-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 742 a7720623859053d8
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 mount_fail
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=mount:bin/nativeui
+sys.z9x.blobs=mount:system_ext/lib/libc2plugin_store.so
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: mount:bin/nativeui
+x50_blobs: mount:system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 mount_fail_policy
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: partial: 6 files bound, first problem mount:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 big_member
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs=bad:entry
+sys.lumen.nui=bad:entry
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:entry
+x50_blobs: bad:entry: bin/nativeui
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 748 333045bcba870433
+mnt/z9x_blobs/x/bin/nativeui f 0644 9437184 2809367229d9c816
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 z9x_style_partition
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=missing:bin/nativeui
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing:bin/nativeui
+x50_blobs: partial: 5 files bound, first problem missing:bin/nativeui
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 662 35eba89bd6e635c7
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_drawer_bad
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:bin/nativeui
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:bin/nativeui
+x50_blobs: partial: 5 files bound, first problem bad:bin/nativeui
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 c7f4772128c9b219
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_lib_bad
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:lib/xgimi.hardware.gmpf-V1-ndk.so
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: bad:lib/xgimi.hardware.gmpf-V1-ndk.so
+x50_blobs: partial: 5 files bound, first problem bad:lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 d79e311e0ffaec4f
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_lib_missing
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=missing:lib/xgimi.hardware.gmpf-V1-ndk.so
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing:lib/xgimi.hardware.gmpf-V1-ndk.so
+x50_blobs: partial: 5 files bound, first problem missing:lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 641 0924f1a28c3ec37f
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_drawer_missing
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=missing:bin/nativeui
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: missing:bin/nativeui
+x50_blobs: partial: 5 files bound, first problem missing:bin/nativeui
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 662 35eba89bd6e635c7
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_placeholder_not_empty
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=noplaceholder:bin/nativeui
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: noplaceholder:bin/nativeui
+x50_blobs: partial: 5 files bound, first problem noplaceholder:bin/nativeui
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_placeholder_missing
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=noplaceholder:lib/xgimi.hardware.gmpf-V1-ndk.so
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: noplaceholder:lib/xgimi.hardware.gmpf-V1-ndk.so
+x50_blobs: partial: 5 files bound, first problem noplaceholder:lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_second_bind_fails
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=mount:lib/xgimi.hardware.gmpf-V1-ndk.so
+sys.z9x.blobs=partial
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: eye-protection drawer nativeui not started: mount:lib/xgimi.hardware.gmpf-V1-ndk.so
+x50_blobs: partial: 5 files bound, first problem mount:lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+umount <R>/system/bin/nativeui
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_label_refused
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_mode_refused
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_mode_without_label
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_bind_refused
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 eye_lines_absent
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=bad:allow
+sys.z9x.blobs=bad:allow
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: blob set 'rs30-v1142-a' is not this image's '' (files still checked one by one)
+x50_blobs: eye-protection drawer nativeui not started: bad:allow
+x50_blobs: bad:allow
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+
+## rs30 once_per_boot
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+
+## rs30 only_fifos_removed
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo f 0644 2 73cb3858a687a849
+
+## rs30 fifo_dir
+[setprop.log]
+sys.z9x.blobs.src=partition
+sys.z9x.blobs.set=rs30-v1142-a
+sys.lumen.nui=ok
+sys.z9x.blobs=ok
+
+[logcat]
+x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
+x50_blobs: ok: 7 files of set rs30-v1142-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+00a485f2ceb40aac444350dfdf81d4e49d9d03c21c7f71f233fca20130c80b8e <R>/system/bin/nativeui
+190dea3fb5ef327fec4f2a4b749770161fa1f523c4624cfcfc305e6414e71b72 <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/bin/nativeui <R>/system/bin/nativeui
+mount --bind <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so <R>/system/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:nativeui_main_exec:s0 <R>/mnt/z9x_blobs/x/bin/nativeui
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/bin/nativeui
+root:root <R>/mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/bin d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 743 6edee90b384402ab
+mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib/xgimi.hardware.gmpf-V1-ndk.so f 0644 57 190dea3fb5ef327f
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+data/vendor/tmp/retnuififo d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf

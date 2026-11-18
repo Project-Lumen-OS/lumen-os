@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's advanced picture rows (rs30-parity-picture2): the white balance and colour
+     correction pages reuse the Z9X app's pro_* texts and the HB app's pro_segmentation_hb / pro_reset_default_hb with
+     their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
+     filter and the original frame refusals are new texts -->
+<resources>
+    <string name="lumen_m_wb">توازن الأبيض</string>
+    <string name="lumen_m_wb_2">نقطتان</string>
+    <string name="lumen_m_wb_11">11 نقطة</string>
+    <string name="lumen_m_red_gain">كسب الأحمر</string>
+    <string name="lumen_m_green_gain">كسب الأخضر</string>
+    <string name="lumen_m_blue_gain">كسب الأزرق</string>
+    <string name="lumen_m_red_offset">إزاحة الأحمر</string>
+    <string name="lumen_m_green_offset">إزاحة الأخضر</string>
+    <string name="lumen_m_blue_offset">إزاحة الأزرق</string>
+    <string name="lumen_m_wb_level">%1$d%%</string>
+    <string name="lumen_m_red">أحمر</string>
+    <string name="lumen_m_green">أخضر</string>
+    <string name="lumen_m_blue">أزرق</string>
+    <string name="lumen_m_cyan">سماوي</string>
+    <string name="lumen_m_magenta">أرجواني</string>
+    <string name="lumen_m_yellow">أصفر</string>
+    <string name="lumen_m_skin">لون البشرة</string>
+    <string name="lumen_m_cc">تصحيح الألوان</string>
+    <string name="lumen_m_cc_color">اللون</string>
+    <string name="lumen_m_hue">تدرج اللون</string>
+    <string name="lumen_m_memc_original">معدل الإطارات الأصلي</string>
+    <string name="lumen_m_reset_defaults">العودة إلى القيم الافتراضية</string>
+    <string name="lumen_m_gray_level">مستوى الرمادي</string>
+    <string name="lumen_m_hdr_enh">تحسين HDR</string>
+    <string name="lumen_m_screen_size">حجم الشاشة</string>
+    <string name="lumen_m_screen_gain">كسب الشاشة</string>
+    <string name="lumen_m_dv_screen">إعدادات Dolby Vision</string>
+    <string name="lumen_m_auto_switch">التبديل التلقائي للوضع</string>
+    <string name="lumen_m_style_filter">فلتر النمط</string>
+    <string name="lumen_m_original">الأصلي</string>
+    <string name="lumen_m_filter_custom">فلتر تم تنزيله</string>
+    <string name="lumen_m_inches">%1$d بوصة</string>
+    <string name="lumen_m_original_120">غير متاح أثناء تشغيل Ultra 120 هرتز</string>
+    <string name="lumen_m_original_3d">غير متاح في وضع 3D</string>
+    <string name="lumen_m_imax_no_gain">لا يمكن ضبطه في IMAX Enhanced</string>
+    <string name="lumen_m_imax_no_filter">فلاتر النمط لا تعمل في IMAX Enhanced</string>
+</resources>

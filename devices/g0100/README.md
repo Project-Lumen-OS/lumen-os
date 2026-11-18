@@ -9,10 +9,13 @@ temperature tables) and calibration files: gsi-research/X50_ULTRA_MAX_RU.md.
 - Image: the X50 recipe `devices/g0111/image/compose_x50.sh` with `X50_CODENAME=g0100` (identity `ro.lumen.device=g0100`,
   `ro.lumen.model=G0100`, the stock G0100 model properties), every APK and the platform set signed with the g0100 keys
   on the Mac (`~/.lumen-keys/g0100`, public certificates in `certs/`).
-- Trial only (owner, 2026-11-11): the trial starts; the install from the trial is refused (real and dry, no switch
-  opens it) until a dump of a real Ultra Max has been checked. The computer installer has no profile for it.
-- Light level (DisplayManager 6 / 7 / 152) and DLP dynamic black (172 / 174) are off on this model
-  (apps/X50Projector `Menu.laserRows`, `Gmpf.laserGuard`). No ambient light getter, no laser current call.
+- Trial only (owner, 2026-11-11, kept for beta4 on 2026-11-13): the trial starts, the install from the trial gets the
+  check and the dry run only (apps/LumenDsuInstall `Revisions.G0100_LIVE = false`) until a dump of a real Ultra Max
+  has been checked. The engine path is the X50 Ultra one (gsi-research/X50_INSTALL_OPEN.md). The computer installer
+  has no profile for it.
+- Light level (DisplayManager 6 / 7 / 152), iris (GmTvManager 199 / 200) and DLP dynamic black (172 / 174) as the
+  stock tree has them (apps/X50Projector `StockLight`, `Gmpf.stockGuard`, evidence in
+  devices/g0111/research/LIGHT_ROWS_STOCK.md). No ambient light getter, no laser current call.
 - `app/*.layers`: the same recipes as devices/g0111/app.
 - Published (2026-11-11, pre-release, public repo Project-Lumen-OS/lumen-os): `x50max-1.0.10-beta1`, image
   `lumen-os-x50max-1.0.10-beta1-nogms-system.img` sha256 4374b14ae2a0ef203bae0ed7e3114eed5f743ab11486a4cc2b16a852d90e39ec

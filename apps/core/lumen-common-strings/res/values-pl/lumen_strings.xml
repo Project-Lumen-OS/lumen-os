@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Trapez</string>
     <string name="lumen_later">Później</string>
     <string name="lumen_limited">Ograniczony</string>
-    <string name="lumen_looking_for_the_remote">Wyszukiwanie pilota…</string>
     <string name="lumen_manual_focus">Ręczna ostrość</string>
     <string name="lumen_movie">Film</string>
     <string name="lumen_music">Muzyka</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Niedostępne przy poziomie jasności Boost</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Niedostępne w trybie Obraz AI</string>
     <string name="lumen_not_available_in_the_office_mode">Niedostępne w trybie Biuro</string>
+    <string name="lumen_not_available_in_the_performance_mode">Niedostępne w trybie Wydajność</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Niedostępne, gdy włączony jest tryb gry</string>
     <string name="lumen_obstacle_avoidance">Omijanie przeszkód</string>
     <string name="lumen_off">Wył.</string>
     <string name="lumen_office">Biuro</string>

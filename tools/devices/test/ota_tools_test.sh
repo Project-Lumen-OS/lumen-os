@@ -150,6 +150,8 @@ if kind == "hb":
     prop = {"ro.adb.secure": "1", "persist.sys.usb.config": "none", "ro.lumen.device": "goat_elegant",
             "ro.lumen.version": ver, "ro.lumen.version_code": str(code), "ro.lumen.build_id": "lumen-hb-%s-%s" % (ver, seed),
             "ro.lumen.ota.device": "hb", "ro.lumen.ota.gate": "1",
+            "ro.lumen.models": [l for l in open(os.path.join(G, "devices/goat_elegant/device.conf"))
+                                if l.startswith("models=")][0].split("=", 1)[1].strip(),
             "ro.lumen.ota.manifest_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-%s.json" % chan,
             "ro.product.ab_ota_partitions": "armfw,boot,bootdata,dtbo,optee,tvconfig,tvservice,vbmeta_system,xgimiconfig"}
     for x in ("system/etc/lumen", "system/etc/xgimi", "system/etc/security", "system/etc/default-permissions",
@@ -158,6 +160,7 @@ if kind == "hb":
     OFX = os.environ["OFX"]
     for src, dst in (("tools/ota/image/z9x_blobs.rc", "system/etc/init/z9x_blobs.rc"),
                      ("tools/ota/image/z9x_blobs.sh", "system/etc/z9x/z9x_blobs.sh"),
+                     ("devices/goat_elegant/image/blobs.conf", "system/etc/z9x/blobs.conf"),
                      ("devices/goat_elegant/image/blobs_allow.txt", "system/etc/z9x/blobs_allow.txt"),
                      ("tools/devices/ota/image/lumen_ota.sh", "system/etc/lumen/lumen_ota.sh"),
                      ("tools/devices/ota/image/lumen_ota.rc", "system/etc/init/lumen_ota.rc"),

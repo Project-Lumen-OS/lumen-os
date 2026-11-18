@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "device": "z9x",
+  "channel": "public-beta",
+  "published_utc": 1794699878,
+  "version": "1.0.11-beta9",
+  "version_code": 1001109,
+  "build_utc": 1794699333,
+  "build_id": "lumen-1.0.11-beta9-20261115anp",
+  "requires": {
+    "vendor_incremental": [
+      "v6.15.58",
+      "v6.15.62",
+      "v6.15.19"
+    ],
+    "min_version_code": 10000,
+    "blobs_set": [
+      "z9x-v61558-b"
+    ]
+  },
+  "changelog": {
+    "en": "Lumen OS 1.0.11 beta 9\n• The AI picture mode keeps the setting for films as in the XGIMI system.\n• Picture rows closed in game, AI and Performance modes as in the XGIMI system.\n• One automatic HDMI reconnect when a device gives no picture.\n• Bluetooth speakers that connect right after pairing show success.\n• Help with Google sign-in when Google services are installed.",
+    "ru": "Lumen OS 1.0.11 бета 9\n• Режим AI держит настройку для фильмов, как в системе XGIMI.\n• Строки картинки закрыты в игровом режиме, AI и «Производительность», как в системе XGIMI.\n• Одно автоматическое переподключение HDMI, если устройство не даёт картинку.\n• Колонка Bluetooth, подключённая сразу после пары, показывает успех.\n• Помощь для входа в Google, если стоят сервисы Google."
+  },
+  "packages": [
+    {
+      "type": "full",
+      "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta9/lumen-os-1.0.11-beta9-nogms-full-ota.zip",
+      "size": 704261103,
+      "sha256": "ee44e0aa5df85396f536c8256863822a63d803145af0d6b16ec429faf52e9dde",
+      "payload_offset": 41,
+      "payload_size": 704232693,
+      "metadata_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta9/lumen-os-1.0.11-beta9-nogms-full-payload_metadata.bin",
+      "metadata_size": 27630,
+      "metadata_sha256": "973951ec73b2a998a66fdc952bf5d7c3d5ddb54b00f885a889548f914bfe3349",
+      "payload_properties": [
+        "FILE_HASH=lQkD0podaLcY/qJlZth3rKAVvx5wyK5gLhmOxFzydY4=",
+        "FILE_SIZE=704232693",
+        "METADATA_HASH=lWmZT5lADf8GWWHWiJhR48QTwLo2RMJt/t/AU/HL6rU=",
+        "METADATA_SIZE=27107"
+      ]
+    }
+  ]
+}

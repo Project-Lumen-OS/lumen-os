@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">游戏模式生效中</string>
+    <string name="lumen_m_ps_ai">AI画质图像模式下不支持专业设置</string>
+    <string name="lumen_m_ps_performance">性能图像模式下不支持专业设置</string>
+    <string name="lumen_m_ps_ai_basic">AI画质图像模式下不支持基础设置</string>
+    <string name="lumen_m_ps_performance_basic">性能图像模式下不支持基础设置</string>
+</resources>

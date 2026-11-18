@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Kod modelu</string>
+    <string name="lumen_about_dlp">Kontroler DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">Firmware XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s z %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, aktualizacja zabezpieczeń %2$s</string>
+    <string name="lumen_about_kernel">Jądro</string>
+    <string name="lumen_about_boot_loader">Firmware rozruchu</string>
+    <string name="lumen_about_gmui">Interfejs XGIMI</string>
+    <string name="lumen_about_platform">Platforma MediaTek</string>
+    <string name="lumen_about_remote">Pilot</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Powrót do systemu XGIMI</string>
+    <string name="lumen_about_back_summary_file">Plik na pendrive: %1$s</string>
+    <string name="lumen_about_back_summary">Za pomocą pendrive’a odzyskiwania XGIMI</string>
+    <string name="lumen_about_intro">Pendrive odzyskiwania XGIMI dla tego modelu przywraca system XGIMI. Instrukcja na stronie projektu pokazuje, jak to zrobić.</string>
+    <string name="lumen_about_usb_file">Nazwa pliku na pendrive</string>
+    <string name="lumen_about_official">Oficjalny plik XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s bajtów</string>
+    <string name="lumen_about_searching">Szukamy oficjalnego pliku dla tego firmware</string>
+    <string name="lumen_about_guide_files">Instrukcja na stronie projektu wymienia oficjalne pliki XGIMI.</string>
+    <string name="lumen_about_erases">Pendrive usuwa wszystko z projektora: aplikacje, konta, ustawienia i pliki.</string>
+    <string name="lumen_about_scan">Zeskanuj telefonem, aby otworzyć</string>
+    <string name="lumen_about_close">Zamknij</string>
+</resources>

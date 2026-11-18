@@ -63,17 +63,17 @@ public final class Device {
         return org.lumen.projector.hal.Play6Gmpf.nuiReaderReady();
     }
 
-    /** Lumen Home's Projector tab tile of eye protection (apps/Z9xHome data/InputSource.tiles: its intent). */
+    /** Lumen Home's Projector tab tile of eye protection (apps/LumenHome data/InputSource.tiles: its intent). */
     public static final String HOME_TILE_EYE = "section:eye";
 
-    /** Lumen Home's Projector tab tile of screen mirroring (apps/Z9xHome data/InputSource.tiles: its intent). */
+    /** Lumen Home's Projector tab tile of screen mirroring (apps/LumenHome data/InputSource.tiles: its intent). */
     public static final String HOME_TILE_MIRRORING = "miracast";
     /** The screen mirroring receiver's control provider (apps/LumenMiracast StateProvider). */
     static final String MIRRORING_AUTHORITY = "org.lumen.miracast";
 
     /**
      * The Lumen Home Projector tab tiles this projector does not support, by the tile's intent string of
-     * apps/Z9xHome InputSource.tiles ("section:eye", "action:autofocus", ...; the Card id is "tile:" + it),
+     * apps/LumenHome InputSource.tiles ("section:eye", "action:autofocus", ...; the Card id is "tile:" + it),
      * for device/DeviceStateProvider call("caps"): eye protection until the NUI reader exists, screen mirroring
      * where the receiver found no Wi-Fi Direct ({@link #screenMirroring}).
      */

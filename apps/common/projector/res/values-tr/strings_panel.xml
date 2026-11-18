@@ -77,8 +77,6 @@
     <string name="panel_pm_performance_msg">Havalandırma deliklerinin kapalı olmadığından ve oda sıcaklığının 25 °C\'yi aşmadığından emin olun. Bu modu uzun süre kullanmayın.</string>
     <string name="panel_lamp">Parlaklık</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Boost için tekrar → tuşuna basın</string>
-    <string name="panel_boost_leave_press_again">Boost\'tan çıkmak için tekrar ← tuşuna basın</string>
     <string name="panel_boost_3d">3D\'yi kapatıp tekrar deneyin</string>
     <string name="panel_boost_hot">Projektör Boost için fazla sıcak. Daha sonra tekrar deneyin</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -148,7 +146,6 @@
     <string name="panel_tile_hdmi_only">Yalnızca HDMI</string>
     <string name="panel_system_settings">Sistem ayarları</string>
     <string name="panel_hdmi_settings">HDMI ayarları</string>
-    <string name="panel_lamp_hint">10 seviyesinde Boost\'u açmak için → tuşuna iki kez basın.</string>
     <string name="panel_eye_desc">Merceğin önünde biri olduğunda ışık kısılır.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Yan yana</string>

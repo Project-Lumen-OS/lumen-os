@@ -25,11 +25,11 @@ import os, re, sys, glob
 import xml.etree.ElementTree as ET
 
 APPS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))     # gsi/apps (this file: apps/i18n/gen.py)
-RES = {"projector": APPS + "/Z9xProjector/res", "tvinput": APPS + "/Z9xTvInput/res",
-       "airplay": APPS + "/Z9xAirPlay/res",
+RES = {"projector": APPS + "/ProjectorBase/res", "tvinput": APPS + "/LumenTvInput/res",
+       "airplay": APPS + "/LumenAirPlay/res",
        # Lumen OS 1.0: new apps; every values-<locale>/strings.xml of these is generated
-       "home": APPS + "/Z9xHome/res", "setup": APPS + "/Z9xSetup/res",
-       "updater": APPS + "/Z9xUpdater/res",
+       "home": APPS + "/LumenHome/res", "setup": APPS + "/LumenSetup/res",
+       "updater": APPS + "/core/lumen-updater/res",
        # screen mirroring receiver (Miracast sink), every values-<locale>/strings.xml generated
        "miracast": APPS + "/LumenMiracast/res",
        # strings files shared by the projector apps (single source, copied by apps/common/sync.sh projector)

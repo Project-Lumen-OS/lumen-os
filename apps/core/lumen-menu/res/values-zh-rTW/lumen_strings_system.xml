@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">按鍵音</string>
+    <string name="lumen_m_hdmi_options">HDMI 輸入選項</string>
+    <string name="lumen_m_colour_vision">色覺優化</string>
+    <string name="lumen_m_temperature">溫度</string>
+    <string name="lumen_m_colour_vision_gray">灰階</string>
+    <string name="lumen_m_colour_vision_red_green">紅/綠</string>
+    <string name="lumen_m_colour_vision_green_red">綠/紅</string>
+    <string name="lumen_m_colour_vision_blue_yellow">藍/黃</string>
+</resources>

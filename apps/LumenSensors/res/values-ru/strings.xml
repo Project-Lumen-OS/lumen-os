@@ -24,7 +24,7 @@
     <string name="refresh_fmt">%1$d с</string>
     <string name="set_boot">Включать после загрузки</string>
     <string name="set_groups">Группы</string>
-    <string name="set_hint">Пульт: в приложении «Проектор» → Кнопки пульта назначьте кнопке iQIYI или bilibili приложение «Датчики». Кнопка откроет этот экран, а OK в первой строке включает и выключает показ.</string>
+    <string name="set_hint">Пульт: в приложении «Проектор» › Кнопки пульта назначьте кнопке iQIYI или bilibili приложение «Датчики». Кнопка откроет этот экран, а OK в первой строке включает и выключает показ.</string>
 
     <string name="notif_channel">Показ датчиков</string>
     <string name="notif_text">Показ датчиков включён</string>

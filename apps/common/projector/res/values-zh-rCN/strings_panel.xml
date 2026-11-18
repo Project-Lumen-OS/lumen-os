@@ -75,8 +75,6 @@
     <string name="panel_pm_performance_msg">请确保通风口无遮挡，且室温不超过 25 °C。请勿长时间使用此模式。</string>
     <string name="panel_lamp">亮度</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">再按一次 → 进入 Boost</string>
-    <string name="panel_boost_leave_press_again">再按一次 ← 退出 Boost</string>
     <string name="panel_boost_3d">请关闭 3D 后重试</string>
     <string name="panel_boost_hot">投影仪温度过高，暂不能使用 Boost，请稍后再试</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -146,7 +144,6 @@
     <string name="panel_tile_hdmi_only">仅限 HDMI</string>
     <string name="panel_system_settings">系统设置</string>
     <string name="panel_hdmi_settings">HDMI 设置</string>
-    <string name="panel_lamp_hint">在 10 级时连按两次 → 开启 Boost。</string>
     <string name="panel_eye_desc">有人位于镜头前方时，光线会自动调暗。</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">左右</string>

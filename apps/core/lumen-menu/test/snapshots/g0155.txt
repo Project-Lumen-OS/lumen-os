@@ -1,39 +1,60 @@
 device g0155 model G0155
 card
-  top: round eye | round general
+  top: round network | round theme | round general
   row 1: wide keystone.ak_now | small keystone | small zoom
   row 2: wide picture | small sound | small focus
-  row 3: wide input | small bluetooth | small network
-  row 4: wide game | small projection | small usb_files
-section keystone
+  row 3: wide input | small bluetooth | small picture.3d|network
+  row 4: wide game | small projection (yields) | small mirroring | small eye
+  slider: lamp 1..10
+  slider: picture.iris [f2, f3, f4, f5_5, f7, dynamic]
+section keystone  (stock order: settings_tree_product_athena35ultramax projection_screen (G0155 V1.1.42), test/stock/projection_screen.json)
   action keystone.ak_now
   screen keystone.manual
-  screen zoom
-  info keystone.angle_h
-  info keystone.angle_v
-  -- image_correction
+  -- auto_correction
   toggle keystone.realtime
   toggle keystone.on_power
-  toggle keystone.curtain  hint picture curtain_fit
   toggle keystone.obstacle
+  toggle keystone.curtain  hint picture curtain_fit
+  -- size_position
+  screen zoom
+  screen zoom.move
+  screen keystone.rotation
   -- more
   action keystone.restore
+  info keystone.angle_h
+  info keystone.angle_v
 section focus
   action focus.af_now
   screen focus.manual
   toggle focus.smart
-section picture
-  choice picture.mode [ai, sport, movie, color_accuracy, bright, performance]  hint picture picture_mode
-  slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
-  toggle picture.dynamic_contrast
+  info focus.guide  hint picture focus_guide_front
+section lamp
+  slider lamp 1..10
+section picture  (stock order: settings_tree_product_athena35ultramax image (G0155 V1.1.42), test/stock/picture_image.json)
+  -- projector_brightness
+  slider lamp 1..10
+  choice picture.iris [f2, f3, f4, f5_5, f7, dynamic]
+  -- image
+  choice picture.mode [ai, sport, movie, color_accuracy, bright, performance]  support color_accuracy for sdr hdr hdr10  hint picture picture_mode
+  page picture.dv_screen
+  page picture.settings
+  action picture.reset_all
+  -- image_more
+  choice picture.3d [off, sbs, tb, sbs_2d, tb_2d]
+  choice picture.style_filter [original, custom]
+  toggle picture.anti_rbe
   -- hdmi
   choice hdmi.range [auto, full, limited]
   choice hdmi.edid [hdmi_1_4, hdmi_2_0]
+  choice picture.aspect [auto, r4_3, r16_9, original]
 section sound
+  choice sound.enhancement [harman, dts_vx]
   choice sound.mode [ai, music, movie, karaoke, sports, standard]
+  toggle sound.leveling
   toggle sound.earc
-  choice sound.output [auto, speaker, arc, bt, wired, usb]
-  choice sound.format [pcm, passthrough, auto]
+  output page sound.output [auto, speaker, arc, wired, bt, usb]
+    at its bottom sound.format [pcm, passthrough, auto]
+  toggle sound.key_tone
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -44,10 +65,104 @@ section game
 section eye
   choice eye [off, on]
 section general
+  action lamp.off
   screen settings.system
+  choice eye.elder_color [off, low, medium, high]
+  info settings.temperature
+  screen settings.cec
+  screen settings.hdmi
+  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
   screen settings.sleep_timer
   screen settings.remote
+  screen settings.report
   screen settings.licences
+  -- developer
+  screen signal.panel
+  toggle signal.pin
+page picture.wb2
+  slider picture.wb2.red_gain 0..100
+  slider picture.wb2.green_gain 0..100
+  slider picture.wb2.blue_gain 0..100
+  slider picture.wb2.red_offset 0..100
+  slider picture.wb2.green_offset 0..100
+  slider picture.wb2.blue_offset 0..100
+  action picture.wb2.reset
+page picture.wb11
+  choice picture.wb11.level [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+  slider picture.wb11.red 0..100
+  slider picture.wb11.green 0..100
+  slider picture.wb11.blue 0..100
+  action picture.wb11.reset
+page picture.wb
+  page picture.wb2
+  page picture.wb11
+page picture.cc
+  choice picture.cc.color [red, green, blue, cyan, magenta, yellow, skin]
+  slider picture.cc.hue 0..100
+  slider picture.cc.saturation 0..100
+  slider picture.cc.lightness 0..100
+  action picture.cc.reset
+page picture.hdr
+  toggle picture.hdr_mapping
+  choice picture.hdr.screen_size [80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
+  choice picture.hdr.screen_gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+page picture.dv_screen
+  choice picture.dv_screen.size [80, 88, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
+  choice picture.dv_screen.gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+page picture.settings
+  -- basic
+  toggle picture.auto_switch
+  slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
+  choice picture.memc [off, low, medium, high, original]
+  -- colour
+  choice picture.color_temp [standard, movie, d65, balanced]
+  page picture.wb
+  choice picture.gamut [native, bt2020, adobe, p3, bt709]
+  toggle picture.color_opt
+  page picture.cc
+  -- contrast
+  choice picture.gamma [bt1886, st2084, hlg, manual]
+  choice picture.gamma_index [g1_8, g1_9, g2_0, g2_1, g2_2, g2_3, g2_4, g2_5, g2_6]
+  page picture.hdr
+  choice picture.local_contrast [off, low, medium, high]
+  toggle picture.dynamic_contrast
+  toggle picture.ai_contrast
+  toggle picture.dynamic_black  hint picture dynamic_black
+  -- clarity
+  choice picture.noise [off, low, medium, high, auto]
+  toggle picture.super_res
+  -- image_more
+  action picture.reset
+popup keystone (rows with a tile of their own left out)
+  keystone.manual
+  -- auto_correction
+  keystone.realtime
+  keystone.on_power
+  keystone.obstacle
+  keystone.curtain
+  -- size_position
+  zoom.move
+  keystone.rotation
+  -- more
+  keystone.restore
+  keystone.angle_h
+  keystone.angle_v
+popup picture (rows with a tile of their own left out)
+  -- projector_brightness
+  lamp
+  picture.iris
+  -- image
+  picture.mode
+  picture.dv_screen
+  picture.settings
+  picture.reset_all
+  -- image_more
+  picture.style_filter
+  picture.anti_rbe
+  -- hdmi
+  hdmi.range
+  hdmi.edid
+  picture.aspect
 all settings: keystone focus picture projection sound eye general
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)

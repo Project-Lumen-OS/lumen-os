@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">تكبير</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">الشبكة</string>
+    <string name="lumen_qpd_theme">المظهر</string>
+    <string name="lumen_qpd_theme_light">فاتح</string>
+    <string name="lumen_qpd_theme_dark">داكن</string>
+    <string name="lumen_qpd_theme_auto">تلقائي</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">عكس الشاشة</string>
     <string name="lumen_qpd_mirror_on">عكس الشاشة (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">أقصى سطوع. ستعلو أصوات المراوح.</string>
     <string name="lumen_qpd_tip_picture">اختر وضعًا يناسب ما تشاهده.</string>
     <string name="lumen_qpd_tip_rear">أنت وجهاز العرض على جانبين متقابلين من الشاشة.</string>
+    <string name="lumen_qpd_tip_front">أنت وجهاز العرض في الجانب نفسه من الشاشة.</string>
+    <string name="lumen_qpd_tip_table">جهاز العرض موضوع على طاولة.</string>
+    <string name="lumen_qpd_tip_ceiling">جهاز العرض معلّق بالسقف بشكل مقلوب.</string>
+    <string name="lumen_qpd_tip_auto">يعرف جهاز العرض بنفسه إن كان موضوعًا أو معلّقًا ويقلب الصورة تلقائيًا.</string>
 </resources>

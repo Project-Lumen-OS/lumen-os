@@ -24,11 +24,6 @@
     <string name="val_off">꺼짐</string>
     <string name="val_unknown">데이터 없음</string>
     <string name="val_not_ready">프로젝터가 준비되지 않음</string>
-    <string name="key_slot3">iQIYI 버튼</string>
-    <string name="key_slot4">bilibili 버튼</string>
-    <string name="slot_default_fmt">%1$s(기본값)</string>
-    <string name="slot_default_item">기본값: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: 앱</string>
     <string name="cancel">취소</string>
     <string name="ok">확인</string>
     <string name="app_not_found">이 버튼에 연결된 앱이 없습니다</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">먼저 ‘스크린에 맞추기’를 켜세요</string>
     <string name="toast_not_ready">프로젝터가 아직 준비되지 않았습니다</string>
     <string name="toast_failed">실행하지 못했습니다</string>
-    <string name="toast_curtain_offer">화면이 이동했습니다: 프로젝터 → 키스톤 보정 → ‘지금 스크린에 맞추기’</string>
+    <string name="toast_curtain_offer">화면이 이동했습니다: 프로젝터 › 키스톤 보정 › ‘지금 스크린에 맞추기’</string>
     <string name="toast_setup_running">먼저 설정을 완료하세요</string>
 </resources>

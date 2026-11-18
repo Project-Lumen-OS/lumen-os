@@ -10,5 +10,5 @@ apps/Play6Projector/src/org/lumen/projector/Play6App.java
 apps/Play6Projector/src/org/lumen/projector/SettingsActivity.java
 apps/Play6Projector/src/org/lumen/projector/battery/BatteryTestReceiver.java
 apps/Play6Projector/src/org/lumen/projector/game/HdmiEventReceiver.java
-apps/Z9xProjector/src/org/lumen/projector/fit/FitDevice.java
-apps/Z9xProjector/src/org/lumen/projector/fit/Z9xFitDevice.java
+apps/ProjectorBase/src/org/lumen/projector/fit/FitDevice.java
+apps/ProjectorBase/src/org/lumen/projector/fit/Z9xFitDevice.java

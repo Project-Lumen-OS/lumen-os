@@ -230,6 +230,34 @@ INSERT INTO updates2 VALUES ('2026-11-12', 'c', 's3', 'mt5877', '1.0.9', 10011, 
         self.assertEqual(con.execute("SELECT country FROM pings2").fetchall(), [("RU",)])
         self.assertNotIn(b"Omsk", open(db, "rb").read())
 
+    def test_dumps_counter(self):
+        """Dumps of Lumen Installer: one projector once by its serial HMAC (the ping's), per model and stock version,
+        the serial never stored, unknown model codes kept as they come."""
+        now = 1_794_000_000
+        for code, serial, model, version in (("LR-AAAAAA", SERIAL, "g0111", "6.17.12"), ("LR-BBBBBB", SERIAL, "g0111", "6.17.12"),
+                                             ("LR-CCCCCC", "OTHER12345", "g0111", "6.18.1"), ("LR-DDDDDD", "", "x0999", "1.2.3")):
+            self.store.add_dump({"code": code, "model": model, "version": version, "bytes": 25_000_000}, serial, now)
+        self.store.add_dump({"code": "LR-AAAAAA", "model": "g0111", "version": "6.17.12"}, SERIAL, now)   # once per code
+        d = json.loads(self.store.stats(now=now))["dumps"]
+        self.assertEqual((d["units"], d["sent"], d["mb"]), (3, 4, 100.0))
+        self.assertEqual(d["by_model"], [{"model": "g0111", "units": 2, "sent": 3, "last": ls.today(now).isoformat(),
+                                          "name": "XGIMI X50 Ultra", "mb": 75.0},
+                                         {"model": "x0999", "units": 1, "sent": 1, "last": ls.today(now).isoformat(),
+                                          "name": "", "mb": 25.0}])
+        self.assertEqual(d["by_version"], [{"model": "g0111", "version": "6.17.12", "units": 1},
+                                           {"model": "g0111", "version": "6.18.1", "units": 1},
+                                           {"model": "x0999", "version": "1.2.3", "units": 1}])
+        self.store.add(ls.validate(ping(model="horse_popular", xgimi_model="G0111")), "", now)
+        con = sqlite3.connect(self.db)
+        sh = {r[0] for r in con.execute("SELECT serial_hash FROM dumps")}
+        self.assertIn(con.execute("SELECT serial_hash FROM pings2").fetchone()[0], sh)   # the same unit as its pings
+        self.assertNotIn(SERIAL.encode(), open(self.db, "rb").read())
+        # kept DUMP_KEEP_DAYS
+        self.store.add_dump({"code": "LR-EEEEEE", "model": "g0100", "version": "1"}, "NEW1234567", now + ls.DUMP_KEEP_DAYS * DAY + DAY)
+        self.assertEqual(json.loads(self.store.stats(now=now + ls.DUMP_KEEP_DAYS * DAY + DAY))["dumps"]["sent"], 1)
+        self.assertEqual(ls.xgimi_name("G0082"), "XGIMI Z9X")
+        self.assertEqual(ls.xgimi_name("g0148"), "XGIMI Z9X HB")
+
     def test_http(self):
         srv = ThreadingHTTPServer(("127.0.0.1", 0), ls.make_handler(self.store, ls.RateLimit(), FakeGeo()))
         threading.Thread(target=srv.serve_forever, daemon=True).start()

@@ -24,22 +24,34 @@ import org.lumen.projector.ui.Theme;
 
 /**
  * One cell of the quick panel layout D: a wide tile (icon, title, value line; the title runs left and right when it
- * does not fit), a small tile (icon only, the label slides up on focus) or a round header button. Focus as stock:
- * scale 1.08 (round 1.12), accent colour, 300 ms ease-out, plus the icon's own animation (AnimatedVectorDrawable,
- * started on focus and reset on blur, so an idle panel draws static vectors only).
+ * does not fit), a small tile (icon only, the label slides up on focus: its state when it has one, else its title,
+ * smaller where that fits, else running like a wide tile's title; a dot in the corner while its feature is on) or a
+ * round header button. Focus as stock: scale 1.08 (round 1.12),
+ * accent colour, 300 ms ease-out, plus the icon's own animation (AnimatedVectorDrawable, started on focus and reset on
+ * blur, so an idle panel draws static vectors only; none while the system animations are off).
  */
 final class QpdTile extends View {
     private static final String TAG = "Z9xPanel";
     static final int WIDE = 0, SMALL = 1, ROUND = 2;
+    /** One row of the list look (pencil editor): icon, name, value on the right; All settings as a footer button too. */
+    static final int LIST = 3;
 
     final String key;
     final int kind;
     private final Runnable onOk;
+    /** A held OK (eye protection: its popup), run on the release. Null: a held OK is a plain OK. */
+    private Runnable onLongOk;
+    private boolean longOk;
     private QpdStyle.Icon icon;
     private CharSequence title;
     private CharSequence value;
+    /** A small tile whose feature is on now (the 3D tile in a 3D mode): the dot in its corner. */
+    private boolean active;
+    /** A small tile's state (the 3D mode): its label on focus instead of the title, null = the title. */
+    private CharSequence state;
 
     private final Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint dotP = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final TextPaint titleP, valueP, labelP;
     private final RectF rect = new RectF();
     private final float radius;
@@ -60,7 +72,7 @@ final class QpdTile extends View {
         setFocusableInTouchMode(false);
         setDefaultFocusHighlightEnabled(false);
         setContentDescription(this.title);
-        radius = Theme.pxf(c, kind == ROUND ? QpdLayout.ROUND / 2f : QpdLayout.TILE_RADIUS);
+        radius = Theme.pxf(c, kind == ROUND ? QpdLayout.ROUND / 2f : kind == LIST ? QpdLayout.ROW_RADIUS : QpdLayout.TILE_RADIUS);
         titleP = QpdStyle.text(c, 22, 600, QpdStyle.INK);
         titleP.setLetterSpacing(-0.2f / 22f);
         valueP = QpdStyle.text(c, 18, 450, QpdStyle.MUTE);
@@ -69,7 +81,7 @@ final class QpdTile extends View {
         setIcon(iconRes);
         setOutlineProvider(new ViewOutlineProvider() {
             @Override public void getOutline(View v, Outline o) {
-                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), radius);
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), kind == ROUND ? v.getHeight() / 2f : radius);
             }
         });
         setOutlineSpotShadowColor(QpdStyle.SHADOW_ACCENT);
@@ -100,6 +112,30 @@ final class QpdTile extends View {
 
     CharSequence value() { return value; }
 
+    /** The 3D tile: the mode on, shown as the focused label (other small tiles keep their title). */
+    void setState(CharSequence s) {
+        if (s == null ? state == null : state != null && s.toString().equals(state.toString())) return;
+        state = s;
+        invalidate();
+    }
+
+    CharSequence state() { return state; }
+
+    void setActive(boolean on) {
+        if (active == on) return;
+        active = on;
+        invalidate();
+    }
+
+    boolean active() { return active; }
+
+    /** The icon's motion once more (a new value on a focused or lit tile), never while animations are off. */
+    void playIcon() {
+        if (isFocused() || held) startIcon();
+    }
+
+    void setOnLongOk(Runnable r) { onLongOk = r; }
+
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return (icon != null && icon.is(who)) || super.verifyDrawable(who);
@@ -108,16 +144,23 @@ final class QpdTile extends View {
     // ------------------------------------------------------------------ keys
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent ev) {
-        if (isOk(keyCode)) return true;
+        if (isOk(keyCode)) {
+            // the first repeat marks a held OK; it acts on the release, so the UP never lands on a popup row
+            if (ev.getRepeatCount() == 0) longOk = false;
+            else if (ev.getRepeatCount() == 1 && onLongOk != null) longOk = true;
+            return true;
+        }
         return super.onKeyDown(keyCode, ev);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent ev) {
         if (isOk(keyCode)) {
-            if (!ev.isCanceled() && onOk != null) {
+            Runnable r = longOk ? onLongOk : onOk;
+            longOk = false;
+            if (!ev.isCanceled() && r != null) {
                 try {
-                    onOk.run();
+                    r.run();
                 } catch (Throwable t) {
                     Log.e(TAG, "tile " + key + " failed", t);
                 }
@@ -152,7 +195,7 @@ final class QpdTile extends View {
     private void animateFocus(boolean on) {
         focusAnim = run(focusAnim, focus, on ? 1f : 0f, QpdLayout.FOCUS_MS, QpdStyle.ease(), v -> {
             focus = v;
-            float s = 1f + ((kind == ROUND ? QpdLayout.ROUND_FOCUS_SCALE : QpdLayout.FOCUS_SCALE) - 1f) * v;
+            float s = 1f + (focusScale() - 1f) * v;
             setScaleX(s);
             setScaleY(s);
             setElevation(kind == ROUND ? 0f : Theme.pxf(getContext(), 14) * v);
@@ -170,6 +213,11 @@ final class QpdTile extends View {
             marqueeStart = -1;
         }
         invalidate();
+    }
+
+    /** Stock focus scale: 1.12 for a circle, 1.04 for a list row (it spans the card), 1.08 for a tile. */
+    private float focusScale() {
+        return kind == ROUND ? QpdLayout.ROUND_FOCUS_SCALE : kind == LIST ? QpdLayout.LIST_FOCUS_SCALE : QpdLayout.FOCUS_SCALE;
     }
 
     private interface F { void set(float v); }
@@ -207,7 +255,7 @@ final class QpdTile extends View {
         boolean f = isFocused();
         focus = f ? 1f : 0f;
         lift = label = kind == SMALL && f ? 1f : 0f;
-        float s = f ? (kind == ROUND ? QpdLayout.ROUND_FOCUS_SCALE : QpdLayout.FOCUS_SCALE) : 1f;
+        float s = f ? focusScale() : 1f;
         setScaleX(s);
         setScaleY(s);
         setElevation(f && kind != ROUND ? Theme.pxf(getContext(), 14) : 0f);
@@ -223,10 +271,78 @@ final class QpdTile extends View {
         int w = getWidth(), h = getHeight();
         bg.setColor(QpdStyle.lerp(QpdStyle.TILE, QpdStyle.ACCENT, focus));
         rect.set(0, 0, w, h);
-        c.drawRoundRect(rect, radius, radius, bg);
+        float rad = kind == ROUND ? h / 2f : radius;
+        c.drawRoundRect(rect, rad, rad, bg);
         if (kind == WIDE) drawWide(c, w, h);
         else if (kind == SMALL) drawSmall(c, w, h);
+        else if (kind == LIST) drawList(c, w, h);
         else drawIcon(c, w / 2f, h / 2f, px(28), 1f);
+        if (mark != 0) {                                   // the editor: the item chosen (ring) or moving (white ring)
+            markP.setColor(mark == MARK_MOVING ? 0xFFFFFFFF : QpdStyle.SELECTED);
+            float in = markP.getStrokeWidth() / 2f;
+            rect.set(in, in, w - in, h - in);
+            c.drawRoundRect(rect, rad - in, rad - in, markP);
+        }
+    }
+
+    static final int MARK_SELECTED = 1, MARK_MOVING = 2;
+    private int mark;
+    private final Paint markP = new Paint(Paint.ANTI_ALIAS_FLAG);
+    {
+        markP.setStyle(Paint.Style.STROKE);
+        markP.setStrokeWidth(Theme.pxf(getContext(), 3));
+    }
+
+    /** The pencil editor's mark on this tile: 0, {@link #MARK_SELECTED} or {@link #MARK_MOVING}. */
+    void setMark(int m) {
+        if (mark == m) return;
+        mark = m;
+        invalidate();
+    }
+
+    /** A list row: icon, name, the value right aligned (the list look of the pencil editor, All settings below). */
+    /** A row that opens a panel shows a chevron at its end (list look, mock 06). */
+    private boolean chevron;
+    private final Paint chevronP = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    void setChevron(boolean on) {
+        if (chevron == on) return;
+        chevron = on;
+        invalidate();
+    }
+
+    private void drawList(Canvas c, int w, int h) {
+        float pad = px(22), iconSize = px(30), gap = px(18);
+        if (chevron) {
+            chevronP.setStyle(Paint.Style.STROKE);
+            chevronP.setStrokeWidth(px(2.5f));
+            chevronP.setStrokeCap(Paint.Cap.ROUND);
+            chevronP.setStrokeJoin(Paint.Join.ROUND);
+            chevronP.setColor(QpdStyle.lerp(QpdStyle.MUTE, 0xFFFFFFFF, focus));
+            float cx = w - pad - px(4), cy = h / 2f, d = px(6);
+            boolean rtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+            float s = rtl ? -1f : 1f;
+            if (rtl) cx = pad + px(4);
+            c.drawLine(cx - s * d, cy - d, cx, cy, chevronP);
+            c.drawLine(cx, cy, cx - s * d, cy + d, chevronP);
+            pad += px(24);
+        }
+        drawIcon(c, pad + iconSize / 2f, h / 2f, iconSize, 1f);
+        float x0 = pad + iconSize + gap;
+        titleP.setColor(QpdStyle.lerp(QpdStyle.INK, 0xFFFFFFFF, focus));
+        float size = titleP.getTextSize();
+        titleP.setTextSize(px(21));
+        float base = h / 2f - (titleP.descent() + titleP.ascent()) / 2f;
+        float vw = 0f;
+        if (value != null && value.length() > 0) {
+            valueP.setColor(QpdStyle.lerp(QpdStyle.MUTE, QpdStyle.VALUE_FOCUSED, focus));
+            vw = Math.min(valueP.measureText(value, 0, value.length()), (w - x0 - pad) * 0.5f);
+            QpdStyle.drawFaded(c, value, valueP, w - pad - vw, vw, 0, h, h / 2f - (valueP.descent() + valueP.ascent()) / 2f,
+                    0f, px(QpdLayout.FADE));
+            vw += px(16);
+        }
+        QpdStyle.drawFaded(c, title, titleP, x0, Math.max(1f, w - pad - vw - x0), 0, h, base, 0f, px(QpdLayout.FADE));
+        titleP.setTextSize(size);
     }
 
     private void drawIcon(Canvas c, float cx, float cy, float size, float scale) {
@@ -234,6 +350,7 @@ final class QpdTile extends View {
         if (icon == null) return;
         int half = Math.round(size / 2f);
         icon.setBounds(0, 0, 2 * half, 2 * half);
+        icon.setTint(QpdStyle.lerp(QpdStyle.ICON, 0xFFFFFFFF, focus));
         int save = c.save();
         c.translate(cx, cy);
         if (scale != 1f) c.scale(scale, scale);
@@ -245,17 +362,34 @@ final class QpdTile extends View {
     private void drawSmall(Canvas c, int w, int h) {
         float iconSize = px(36);
         drawIcon(c, w / 2f, h / 2f - px(13) * lift, iconSize, 1f - 0.1f * lift);
+        if (active) {
+            dotP.setColor(QpdStyle.lerp(QpdStyle.ACCENT, 0xFFFFFFFF, focus));
+            c.drawCircle(w - px(QpdLayout.ACTIVE_DOT_INSET), px(QpdLayout.ACTIVE_DOT_INSET), px(QpdLayout.ACTIVE_DOT) / 2f, dotP);
+        }
         if (label <= 0.001f) return;
+        CharSequence title = state != null && state.length() > 0 ? state : this.title;
         float a = Math.min(1f, label * 300f / 220f);
         labelP.setAlpha(Math.round(255 * a));
-        // a long label (German "Trapezkorrektur") gets a smaller size before it would be cut (prototype: 15 px)
         float room = w - px(12);
-        labelP.setTextSize(px(15));
+        labelP.setTextSize(px(QpdLayout.LABEL));
         float tw = labelP.measureText(title, 0, title.length());
-        if (tw > room) labelP.setTextSize(Math.max(px(11), px(15) * room / tw));
+        labelP.setTextSize(px(QpdLayout.LABEL) * QpdLayout.labelScale(tw, room));
         float base = h - px(15) - labelP.descent() + px(10) * (1f - label);
-        CharSequence t = TextUtils.ellipsize(title, labelP, room, TextUtils.TruncateAt.END);
-        c.drawText(t, 0, t.length(), w / 2f, base, labelP);
+        if (!QpdLayout.labelRuns(tw, room)) {
+            c.drawText(title, 0, title.length(), w / 2f, base, labelP);
+            return;
+        }
+        float dx = 0f;
+        if (marqueeStart >= 0) {
+            long t = SystemClock.uptimeMillis() - marqueeStart;
+            dx = QpdLayout.marqueeShift(tw, room) * QpdLayout.marqueePhase(Math.max(0, t),
+                    QpdLayout.marqueeMs(tw, room, Theme.scale(getContext())));
+            postInvalidateOnAnimation();
+        }
+        labelP.setTextAlign(Paint.Align.LEFT);
+        QpdStyle.drawFaded(c, title, labelP, (w - room) / 2f, room, base + labelP.ascent() - px(4),
+                base + labelP.descent() + px(4), base, dx, px(QpdLayout.FADE));
+        labelP.setTextAlign(Paint.Align.CENTER);
     }
 
     private void drawWide(Canvas c, int w, int h) {

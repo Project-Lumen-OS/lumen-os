@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: stock XGIMI settings has no texts in this language (it shows English): Lumen's own words, the stock
+     order and meaning. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">3D параметрлері</string>
+    <string name="lumen_m_3d_off">3D өшіру</string>
+    <string name="lumen_m_3d_sbs">Қатар</string>
+    <string name="lumen_m_3d_tb">Жоғары және төмен</string>
+    <string name="lumen_m_3d_sbs_2d">Қатар, 2D ретінде</string>
+    <string name="lumen_m_3d_tb_2d">Жоғары және төмен, 2D ретінде</string>
+    <string name="lumen_m_3d_frame_packing">Blu-ray 3D</string>
+    <string name="lumen_m_3d_summary">Бейне ойнап тұрғанда. 3D үшін белсенді DLP-Link көзілдірігі керек.</string>
+    <!-- 3D refusals: stock has no texts in this language, Lumen's words for the stock notes -->
+    <string name="lumen_m_3d_game">Ойын режимінде 3D параметрлеріне қолдау көрсетілмейді</string>
+    <string name="lumen_m_3d_no_video">Бейнені қосыңыз немесе сигнал көзіне қосылып, қайталап көріңіз</string>
+    <string name="lumen_m_3d_4k">4K бейнеде 3D параметрлеріне қолдау көрсетілмейді</string>
+    <string name="lumen_m_3d_hdr">HDR бейнеде 3D параметрлеріне қолдау көрсетілмейді</string>
+    <string name="lumen_m_3d_120hz">120 Гц жиілігінде 3D ойнату өшірулі</string>
+    <string name="lumen_m_3d_high_fps">Жоғары кадр жиілігінде 3D параметрлеріне қолдау көрсетілмейді</string>
+</resources>

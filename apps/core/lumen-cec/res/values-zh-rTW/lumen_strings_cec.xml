@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">無法使用 HDMI-CEC</string>
+    <string name="lumen_cec_master">HDMI-CEC 控制</string>
+    <string name="lumen_cec_master_note">關閉 HDMI-CEC 後，無法透過 HDMI ARC 輸出聲音。</string>
+    <string name="lumen_cec_wake">由 HDMI 裝置開機</string>
+    <string name="lumen_cec_wake_note">開啟後，投影機關機時 HDMI 裝置也會一併關閉。</string>
+    <string name="lumen_cec_night">夜間保護</string>
+    <string name="lumen_cec_night_off">關閉</string>
+    <string name="lumen_cec_night_desc">在這些時段內，HDMI 裝置無法開啟投影機。</string>
+    <string name="lumen_cec_paused">多次開機都沒有畫面，已暫停。使用遙控器後即會恢復。</string>
+    <string name="lumen_cec_switch">裝置開機時切換到該裝置</string>
+    <string name="lumen_cec_send_standby">投影機關閉時一併關閉 HDMI 裝置</string>
+    <string name="lumen_cec_follow_info">當您正在觀看的裝置關閉時，投影機也會進入睡眠。</string>
+    <string name="lumen_cec_soundbar">聲霸或 AV 擴大機 (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">投影機開啟時一併開啟聲霸</string>
+    <string name="lumen_cec_control">用這支遙控器控制 HDMI 裝置</string>
+    <string name="lumen_cec_internal_exit">離開 HDMI 時通知裝置</string>
+    <string name="lumen_cec_devices">已連線的裝置</string>
+    <string name="lumen_cec_no_devices">找不到 HDMI-CEC 裝置</string>
+    <string name="lumen_cec_state_on">開啟</string>
+    <string name="lumen_cec_state_standby">待機</string>
+    <string name="lumen_cec_dev_unnamed">HDMI 裝置</string>
+    <string name="lumen_cec_dev_soundbar">聲霸 / AV 擴大機</string>
+    <string name="lumen_cec_name_on_hdmi">HDMI 上顯示的名稱：%1$s</string>
+</resources>

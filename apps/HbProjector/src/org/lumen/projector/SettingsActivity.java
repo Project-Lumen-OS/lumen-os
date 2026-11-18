@@ -49,7 +49,7 @@ public final class SettingsActivity extends Activity {
     private Kit.Row uiResRow;
     private final Map<HalToggle, Kit.Row> toggleRows = new EnumMap<>(HalToggle.class);
     private final Map<HalToggle, Boolean> toggleState = new EnumMap<>(HalToggle.class);
-    private Kit.Row slot3Row, slot4Row, launcherRow, bootSourceRow;
+    private Kit.Row launcherRow, bootSourceRow;
     private Kit.Row voiceLang, voiceSpeak, voiceKey;
     private Kit.Row statsRow;
     private LinearLayout diagBox;
@@ -90,7 +90,7 @@ public final class SettingsActivity extends Activity {
         resumed = true;
         hal.addListener(onHalState);
         refreshToggles();
-        refreshSlots();
+        refreshChoices();
         refreshUiRes();
         refreshDiagnostics();
         refreshStats();
@@ -175,11 +175,12 @@ public final class SettingsActivity extends Activity {
         LinearLayout remote = shell.section("remote", R.drawable.ic_s2_remote, getString(R.string.s2_sec_remote));
         Kit.heading(remote, null, getString(R.string.s2_sec_remote));
         LinearLayout rc = Kit.card(this);
-        slot3Row = valueRow(rc, R.string.key_slot3, R.string.s2_d_slot, v -> pickApp(3));
-        slot4Row = valueRow(rc, R.string.key_slot4, R.string.s2_d_slot, v -> pickApp(4));
-        // Pair a new / second / reset remote (120 s fast LE scan; RemoteAutoPair.startPairing).
-        actionRow(rc, R.string.remote_pair_action, R.string.s2_d_pair,
-                v -> org.lumen.projector.remote.RemoteAutoPair.startPairing(getApplicationContext()));
+        // "Remote buttons": give a remote key an app (apps/core/lumen-remote keys, the same screen on every model)
+        Kit.add(rc, Kit.actionRow(this, getString(R.string.lumen_remote_keys_title), null)
+                .onClick(v -> org.lumen.remote.keys.KeyBindActivity.open(this)));
+        // Pair a new / second / reset remote (120 s fast LE scan; RemotePairing.startPairing).
+        actionRow(rc, R.string.lumen_remote_pair_action, R.string.s2_d_pair,
+                v -> org.lumen.remote.RemotePairing.startPairing(getApplicationContext()));
         remote.addView(rc);
 
         // Lumen OS 1.0.5: the voice assistant (mic key), only where a speech recogniser exists
@@ -364,10 +365,8 @@ public final class SettingsActivity extends Activity {
         hal.setToggle(t, !cur, this::showToggles);
     }
 
-    // ------------------------------------------------------------------ remote app keys
-    private void refreshSlots() {
-        slot3Row.value.setText(slotText(3));
-        slot4Row.value.setText(slotText(4));
+    // ------------------------------------------------------------------ launcher and boot source
+    private void refreshChoices() {
         refreshLauncher();
         refreshBootSource();
     }
@@ -426,27 +425,7 @@ public final class SettingsActivity extends Activity {
                 .show();
     }
 
-    private String slotText(int slot) {
-        String chosen = AppSlots.chosenPackage(this, slot);
-        String eff = AppSlots.effectivePackage(this, slot);
-        String label = AppSlots.labelOf(this, eff);
-        return chosen == null ? getString(R.string.slot_default_fmt, label) : label;
-    }
 
-    private void pickApp(final int slot) {
-        final List<AppSlots.AppEntry> apps = AppSlots.launchableApps(this);
-        final CharSequence[] items = new CharSequence[apps.size() + 1];
-        items[0] = getString(R.string.slot_default_item, AppSlots.labelOf(this, AppSlots.defaultPackage(this, slot)));
-        for (int i = 0; i < apps.size(); i++) items[i + 1] = apps.get(i).label;
-        new AlertDialog.Builder(this)
-                .setTitle(slot == 3 ? R.string.key_slot3 : R.string.key_slot4)
-                .setItems(items, (d, which) -> {
-                    AppSlots.setPackage(this, slot, which == 0 ? null : apps.get(which - 1).pkg);
-                    refreshSlots();
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
 
     // ------------------------------------------------------------------ diagnostics
     private void refreshDiagnostics() {

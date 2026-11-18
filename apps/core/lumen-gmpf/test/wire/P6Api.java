@@ -139,6 +139,9 @@ final class P6Api {
         put("g.setPeqBand(int,int,int,int)", a -> g.setPeqBand(i(a, 0), i(a, 1), i(a, 2), i(a, 3)));
         put("g.setPeqEnabled(boolean)", a -> g.setPeqEnabled(b(a, 0)));
         put("g.setPictureMode(int)", a -> g.setPictureMode(Play6Values.pictureMode(i(a, 0))));
+        // ai-mode-stock: the AI scene of the stock AI picture quality and its GmTvManager event callback (IGmpf 702)
+        put("g.setAiScene(int)", a -> g.setAiScene(i(a, 0)));
+        put("g.setTvListener(TvEventSink)", a -> v(() -> g.setTvListener((org.lumen.hal.gmpf.TvEventSink) a[0])));
         put("g.setPictureStyle(int)", a -> v(() -> g.setColorTemp(Play6Values.pictureStyle(i(a, 0)))));
         put("g.setPowerListener(Play6PowerCallback)", a -> v(() -> g.setPowerListener((Play6PowerCallback) a[0])));
         put("g.setPowerOnAk(boolean)", a -> v(() -> g.setPowerOnAk(b(a, 0))));
@@ -222,6 +225,7 @@ final class P6Api {
                 return new Object[] {full, full.copy().set(Play6KstPoint.TL, 100, 120), null};
             }
             case "Play6FocusCallback": return new Object[] {FOCUS_CALLBACK, null};
+            case "TvEventSink": return new Object[] {proxy(org.lumen.hal.gmpf.TvEventSink.class)};
             case "Play6PowerCallback": return new Object[] {new Play6PowerCallback(proxy(Play6PowerCallback.Sink.class)), null};
             case "Play6MusicPlayerCallback":
                 return new Object[] {new Play6MusicPlayerCallback(proxy(Play6MusicPlayerCallback.Sink.class)), null};

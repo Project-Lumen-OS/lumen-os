@@ -1,0 +1,1752 @@
+## z9x ok
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 9 files of set z9x-v61558-b bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x ok_again
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 9 files of set z9x-v61558-b bound
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x partial_again
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+z9x_blobs: partial: 8 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 891804b449174206
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x missing_partition
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x missing_partition_gsid_off
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x missing_slot
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x odd_slot
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x slot_a
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 9 files of set z9x-v61558-b bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x other_slot_only
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x partition_in_trial
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 9 files of set z9x-v61558-b bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_hash_first
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 891804b449174206
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_hash_place
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem bad:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 891804b449174206
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_hash_policy
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem bad:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 2a4ebb073d31657b
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x missing_policy
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem missing:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 887 f50b86fab9c7a47a
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x missing_first
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem missing:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 895 195481fbdc64aedb
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x placeholder_not_empty
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem noplaceholder:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x placeholder_missing
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem noplaceholder:system_ext/lib/libc2plugin_store.so
+
+[binds]
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x target_missing
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem notarget:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x target_outside
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'z9x-v61558-b' is not this image's '' (files still checked one by one)
+z9x_blobs: ok: 0 files of set z9x-v61558-b bound
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x target_apex_other
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'z9x-v61558-b' is not this image's '' (files still checked one by one)
+z9x_blobs: ok: 0 files of set z9x-v61558-b bound
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_tar
+[setprop.log]
+sys.z9x.blobs=bad:tar
+
+[logcat]
+z9x_blobs: bad:tar
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x empty_partition
+[setprop.log]
+sys.z9x.blobs=bad:manifest
+
+[logcat]
+z9x_blobs: bad:manifest
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x short_partition
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 9 files of set z9x-v61558-b bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_symlink
+[setprop.log]
+sys.z9x.blobs=bad:entry
+
+[logcat]
+z9x_blobs: bad:entry: lrwxrwxrwx root/root         0 1970-01-01 00:00 system_ext/lib/libc2plugin_store.so -> <W>/fx/z9x/files/system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_sparse
+[setprop.log]
+sys.z9x.blobs=bad:entry
+
+[logcat]
+z9x_blobs: bad:entry: system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 67108864 3dfaf6f39afb0769
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x bad_dotdot
+[setprop.log]
+sys.z9x.blobs=bad:path
+
+[logcat]
+z9x_blobs: bad:path
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x set_mismatch
+[setprop.log]
+sys.z9x.blobs.set=other-set-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'other-set-a' is not this image's 'z9x-v61558-b' (files still checked one by one)
+z9x_blobs: ok: 9 files of set other-set-a bound
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+78adb2b609baa08a8aca86521e00daffc0a537e42279909687bffb2af0e1b510 <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 998 69f82dcb1bff758c
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x mount_fail
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=mount:system_ext/lib/libc2plugin_store.so
+
+[logcat]
+z9x_blobs: mount:system_ext/lib/libc2plugin_store.so
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## z9x mount_fail_policy
+[setprop.log]
+sys.z9x.blobs.set=z9x-v61558-b
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 8 files bound, first problem mount:etc/xgimi/audio_policy_configuration.xml
+
+[binds]
+6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
+24aa1eb6f1c5a5f0c68dda6ead27fcbd2c44c30b4fd55f71b0a73a9460b83523 <R>/system/system_ext/lib64/libc2plugin_store.so
+c76030b642588f3a749b2f737c4a12b1030e5fa53891134f9e3d68875fa2fe57 <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+6086ed816c85f6b3131dce87d7199ea0f823a73d75069856f6552afe3df84793 <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+cb79974b004fa7a76de6dd5e5a9b32e31deee1e5b937aa2ef2ee20f9ba68abe3 <R>/system/lib/libcodec2_soft_common.so
+039b3c9b72ce1c2a1ef986f6c4fd95a789d797b734c60d96d02f0d7056dd4703 <R>/system/lib64/libcodec2_soft_common.so
+3042e0b678db0bd3c540e7eead3a0c2028a85081bfc6cc6cf1fef2550ed4ba81 <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+9069ee6e673a007746187dfd194c2aa4fcfae1cd2690a38aeeea13b8823cb379 <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so <R>/system/system_ext/lib/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so <R>/system/system_ext/lib64/libc2plugin_store.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so <R>/system/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+mount --bind <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so <R>/system/lib/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so <R>/system/lib64/libcodec2_soft_common.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so <R>/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so <R>/apex/com.android.vndk.v34/lib64/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so
+root:root <R>/mnt/z9x_blobs/x/lib/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/lib64 d 0755
+mnt/z9x_blobs/x/system_ext d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 999 ac6377ef146b3461
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
+mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation64.so f 0644 64 9069ee6e673a0077
+mnt/z9x_blobs/x/lib/libcodec2_soft_common.so f 0644 52 cb79974b004fa7a7
+mnt/z9x_blobs/x/lib64/libcodec2_soft_common.so f 0644 54 039b3c9b72ce1c2a
+mnt/z9x_blobs/x/system_ext/lib d 0755
+mnt/z9x_blobs/x/system_ext/lib64 d 0755
+mnt/z9x_blobs/x/system_ext/lib/libc2plugin_store.so f 0644 59 6f4227ee5f78e6bb
+mnt/z9x_blobs/x/system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so f 0644 78 c76030b642588f3a
+mnt/z9x_blobs/x/system_ext/lib64/libc2plugin_store.so f 0644 61 24aa1eb6f1c5a5f0
+mnt/z9x_blobs/x/system_ext/lib64/vendor.mediatek.hardware.c2.info@1.0.so f 0644 80 6086ed816c85f6b3
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644

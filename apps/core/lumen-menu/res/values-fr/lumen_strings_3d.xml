@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
+     locale fr) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">Paramètres 3D</string>
+    <string name="lumen_m_3d_off">Désactiver 3D</string>
+    <string name="lumen_m_3d_sbs">Côte à côte</string>
+    <string name="lumen_m_3d_tb">Haut et bas</string>
+    <string name="lumen_m_3d_sbs_2d">3D vers 2D (Côte à côte)</string>
+    <string name="lumen_m_3d_tb_2d">3D vers 2D (Haut et bas)</string>
+    <string name="lumen_m_3d_frame_packing">Empaquetage de trames</string>
+    <string name="lumen_m_3d_summary">Pendant une vidéo. La 3D demande des lunettes actives DLP-Link.</string>
+    <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale fr) -->
+    <string name="lumen_m_3d_game">Les paramètres 3D ne sont pas pris en charge en mode Jeu</string>
+    <string name="lumen_m_3d_no_video">Lancez une vidéo ou connectez une source de signal, puis réessayez</string>
+    <string name="lumen_m_3d_4k">Les paramètres 3D ne sont pas pris en charge avec les vidéos 4K</string>
+    <string name="lumen_m_3d_hdr">Les paramètres 3D ne sont pas pris en charge avec les vidéos HDR</string>
+    <string name="lumen_m_3d_120hz">La lecture 3D est désactivée à 120 Hz</string>
+    <string name="lumen_m_3d_high_fps">Les paramètres 3D ne sont pas pris en charge à fréquence d’image élevée</string>
+</resources>

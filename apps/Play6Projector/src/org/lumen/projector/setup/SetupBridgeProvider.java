@@ -20,7 +20,8 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.ak.AkOverlay;
 import org.lumen.projector.home.LauncherSwitcher;
 import org.lumen.projector.panel.QuickPanel;
-import org.lumen.projector.remote.RemoteAutoPair;
+import org.lumen.remote.RemotePairing;
+import org.lumen.remote.RemoteState;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * (org.lumen.setup) asks this persistent app for the hardware work of its remote and picture steps, its device
  * name and its launcher choice. The Play 6 class of the same name as the Z9X provider (tools/play6/forks.tsv):
  * the same transport, methods, replies and log line, built only on the Play 6 Hal facade (start gate, p6-hal /
- * p6-long, its own busy gates and toasts), the shared RemoteAutoPair and the shared LauncherSwitcher.
+ * p6-long, its own busy gates and toasts), the shared RemotePairing and the shared LauncherSwitcher.
  *
  * <b>Transport</b>: authority {@value #AUTHORITY}, exported, permission {@value #PERMISSION} (signature,
  * defined by this app); only {@link #call} is used and it checks the permission itself (the framework enforces
@@ -44,7 +45,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *    decides from its first ping alone whether the bridge exists): version, projectorVersion(Code) and the
  *    optional {@code names}, this projector's own names for the Setup's name picker, from ro.product.model
  *    ("XGIMI Play 6", "Play 6"; that pair when the model is unset or names a Z9X);
- *  - remote_state: the shared RemoteAutoPair.state once Play6App installed it at the start gate
+ *  - remote_state: the shared RemotePairing.state once Play6App installed it at the start gate
  *    ({@link #remoteStarted}); until then a "starting" snapshot (bonded 0, nothing connected), so a binder
  *    thread never installs the module early and off the gate order;
  *  - hal_state: ready (Hal.isReady: gate open and IGmpf connected), kstRunning, afBusy, akOverlay and
@@ -77,7 +78,7 @@ public final class SetupBridgeProvider extends ContentProvider {
     private static final String[] NAMES = {"XGIMI Play 6", "Play 6"};
     private static final String BRAND = "XGIMI ";
 
-    /** Play6App installed RemoteAutoPair (main thread, start gate): remote_state may read it from now on. */
+    /** Play6App installed RemotePairing (main thread, start gate): remote_state may read it from now on. */
     private static volatile boolean sRemoteStarted;
 
     @Override
@@ -85,7 +86,7 @@ public final class SetupBridgeProvider extends ContentProvider {
         return true;
     }
 
-    /** Play6App, main thread, right after RemoteAutoPair.install at the start gate. */
+    /** Play6App, main thread, right after RemotePairing.install at the start gate. */
     public static void remoteStarted() {
         sRemoteStarted = true;
     }
@@ -211,7 +212,7 @@ public final class SetupBridgeProvider extends ContentProvider {
     /**
      * remote_state fields: bonded, connected, name, scanning, mode, pairing, found. connected = a bonded
      * XGIMI remote whose link AND HID input device are up (its keys work). Before the start gate installed
-     * RemoteAutoPair: the "starting" snapshot (the Setup shows "Searching for the remote"). Any thread.
+     * RemotePairing: the "starting" snapshot (the Setup shows "Searching for the remote"). Any thread.
      */
     static Bundle remoteBundle(Context app) {
         if (!sRemoteStarted) {
@@ -225,11 +226,11 @@ public final class SetupBridgeProvider extends ContentProvider {
             b.putString("found", "");
             return b;
         }
-        return remoteBundle(RemoteAutoPair.state(app));
+        return remoteBundle(RemotePairing.state(app));
     }
 
-    /** The remote_state fields of a RemoteAutoPair snapshot (SetupEvents' "remote" event too). */
-    static Bundle remoteBundle(RemoteAutoPair.State st) {
+    /** The remote_state fields of a RemotePairing snapshot (SetupEvents' "remote" event too). */
+    static Bundle remoteBundle(RemoteState st) {
         Bundle b = new Bundle();
         b.putInt("bonded", st.bonded);
         b.putBoolean("connected", st.connected);

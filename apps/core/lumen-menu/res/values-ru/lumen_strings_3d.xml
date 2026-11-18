@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
+     locale ru) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">Настройки 3D</string>
+    <string name="lumen_m_3d_off">Выключить 3D</string>
+    <string name="lumen_m_3d_sbs">Бок о бок</string>
+    <string name="lumen_m_3d_tb">Верх и низ</string>
+    <string name="lumen_m_3d_sbs_2d">3D в 2D (Бок о бок)</string>
+    <string name="lumen_m_3d_tb_2d">3D в 2D (Верх-низ)</string>
+    <string name="lumen_m_3d_frame_packing">Упаковка кадров</string>
+    <string name="lumen_m_3d_summary">Во время видео. Для 3D нужны активные очки DLP-Link.</string>
+    <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale ru) -->
+    <string name="lumen_m_3d_game">Настройки 3D не поддерживаются в режиме игры</string>
+    <string name="lumen_m_3d_no_video">Воспроизведите видео или подключитесь к источнику сигнала и повторите попытку</string>
+    <string name="lumen_m_3d_4k">Настройки 3D не поддерживаются в видео 4K</string>
+    <string name="lumen_m_3d_hdr">Настройки 3D не поддерживаются в видео HDR</string>
+    <string name="lumen_m_3d_120hz">Воспроизведение 3D отключено при 120 Гц</string>
+    <string name="lumen_m_3d_high_fps">Настройки 3D не поддерживаются при высокой частоте кадров</string>
+</resources>

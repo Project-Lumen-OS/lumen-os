@@ -1,0 +1,41 @@
+# Every XGIMI remote and remote-like input device known from the stock dumps (README.md: evidence and rules).
+# One row per device. Read by tools/remotes/gen_catalog.py, which writes apps/core/lumen-remote/src/org/lumen/remote/RemoteCatalog.java
+# (never edit that file by hand: edit this table and run the generator; --check is a test).
+# Columns (tab separated, '-' = none):
+#  id        stable name used in code, art and logs
+#  kind      ble_remote (paired over Bluetooth LE by lumen-remote), ble_music (XGIMI music controller, paired like a remote),
+#            usb_dongle (2.4 GHz remote with its own USB receiver, nothing to pair), ir (the projector's IR receiver),
+#            keypad (the projector's own keys), generic (vendor reference layout of a non XGIMI device)
+#  names     advertised Bluetooth names, '|' separated; a name matches when the advertised name contains it, case-sensitive,
+#            as the stock RcPair rule (BluRemConService.isXgimiRc: String.contains)
+#  vid_pid   HID vendor:product as the input device reports it (the key layout file Vendor_<vid>_Product_<pid>.kl)
+#  input     input device name seen on a unit ('-' = not seen live)
+#  combo     keys held to put the remote into pairing mode (HOME+BACK = Home and Back together until the light blinks)
+#  voice     mic path: hid_audio (voice over the HID audio report, vendor remote.txt), - none
+#  battery   gatt_bas (Battery Service 0x180F / 0x2A19, read by stock XgimiRcInfo), - none
+#  art       picture the pairing screens draw (lumen-remote res: lumen_remote_<art>*.xml)
+#  stock     stock models whose vendor ships this layout file (vendor/usr/keylayout), G code list
+#  lumen_kl  1 = every Lumen image must carry a Lumen copy in /system/product/usr/keylayout (the stock file uses labels
+#            Lineage cannot parse, so without our copy the device falls back to Generic.kl)
+#  evidence  where the row comes from
+id	kind	names	vid_pid	input	combo	voice	battery	art	stock	lumen_kl	evidence
+xgimi_rc_3838	ble_remote	XGIMI RC	000d:3838	-	HOME+BACK	hid_audio	gatt_bas	xgimi	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	vendor kl (AMBIENT, F5 mic, focus keys); vendor/etc/remote.txt voice remote 000D:3838; stock RcPair pairing advert manufacturer data 0x000D 3838 02
+xgimi_x_remote	ble_music	XGIMI X_Remote	000d:3839	-	-	-	gatt_bas	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	stock RcPair MUSIC_CONTROLLER_NAME + advert 0x000D 3839 02; vendor kl music keys (NFC_PENG, MUSICCT); not a remote: never auto-paired by Lumen, the system Bluetooth screen pairs it
+xgimi_rc_3840	ble_remote	XGIMI RC	000d:3840	XGIMI RC Keyboard	HOME+BACK	-	gatt_bas	xgimi	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	X50 Ultra remote: live Slava X50 (bonded LE <mac>, input XGIMI RC Keyboard 000d:3840 bus 5); RS30 vendor kl variant adds 172 PICTURE_MODE 135/136 SHORTCUT 217 PRO_SETTING 234 BRIGHTNESS
+xgimi_rc_3841	ble_remote	XGIMI RC	000d:3841	XGIMI RC Keyboard	HOME+BACK	-	gatt_bas	xgimi	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	Z9X remote (dev-z9x: XGIMI RC Keyboard, Back+Home, LE limited discoverable)
+xgimi_rc_3842	ble_remote	XGIMI RC	000d:3842	-	HOME+BACK	-	gatt_bas	xgimi	G0082,G0111,G0148,G0155,H0062	1	vendor kl = 3841 + SHORTCUT_AI key
+xgimi_rc_s3r	ble_remote	Xgimi-RC-S3R	000d:3843	-	HOME+BACK	-	gatt_bas	xgimi	G0082,G0111,G0130,G0148,G0155,H0062	1	live Slava X50: bonded LE <mac> Xgimi-RC-S3R; dsu.md (TvSettings pairs it); vendor kl picture modes + SHORTCUT_1..4; not matched by stock RcPair (no XGIMI RC in the name)
+xgimi_rc_ai	ble_remote	XGIMI RC	1d5a:c081	-	HOME+BACK	hid_audio	gatt_bas	xgimi	G0082,G0111,G0148,G0155,H0062	1	vendor kl (F5 mic, SHORTCUT_AI, STEM_1); vendor/etc/remote.txt voice remote 1D5A:C081
+xgimi_rc_bt40	ble_remote	BLuetooth 4.0 RC	-	-	HOME+BACK	-	-	xgimi	G0058,G0082,G0111,G0130,G0148,G0155,H0062	0	stock RcPair AUTO_PAIR_RC_NAME (all models), BluetoothService bluetooth_remote_control; HID ids unknown
+xgimi_rc_cn	ble_remote	极米遥控器	-	-	HOME+BACK	-	-	xgimi	G0155	0	stock bootwizard CP01_RC_REMOTE_DEVICE_NAME and newsettings XGIMI_RC_REMOTE_DEVICE_NEW_NAME (RS30); HID ids unknown
+movin_rc	ble_remote	MOVIN RC	-	-	HOME+BACK	-	-	xgimi	G0155	0	stock bootwizard MOVIN_RC_REMOTE_DEVICE_NAME (RS30); HID ids unknown
+aladdin_rc	ble_remote	Aladdin RC	-	-	HOME+BACK	-	-	xgimi	G0111,G0155	0	stock BluetoothService bluetooth_remote_control and bootwizard (partner brand)
+dangbei_rc	ble_remote	Dangbei	-	-	HOME+BACK	-	-	xgimi	G0111,G0155	0	stock RcPair DB_RC (only when persist.vendor.brand.simple=10) and BluetoothService list (partner brand)
+xgimi_2g4	usb_dongle	-	26e3:af02	-	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	vendor kl header 'Xgimi 2.4G key' (USB receiver, nothing to pair)
+xgimi_factory_666	generic	-	9999:0666	-	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	vendor kl (RESTART, FOCUS_AUTO, POWER): factory or test remote, never seen live
+xgimi_factory_777	generic	-	9999:0777	-	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	vendor kl (RESTART, FOCUS_AUTO, POWER): factory or test remote, never seen live
+ir_receiver	ir	-	3697:0001	MTK Smart TV IR Receiver	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	live Slava X50 (bus 0x18); IR decode = vendor mtk-ir.ko + tvconfig ir_config.ini (sha 2ac7cafe on G0082/G0111/G0155), never written by Lumen
+keypad	keypad	-	3697:0002	MTK TV KEYPAD	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	live Slava X50 (MTK TV KEYPAD bus 0x19, ucontrol_key bus 6)
+ir_tv	ir	-	3697:0003	Vendor_3697_Product_0003	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	0	live Slava X50 lists the device with no layout; vendor kl = MTK TV IR set (channels, teletext)
+virtual_keys	generic	-	0001:0001	-	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	1	vendor kl (KPPOWER, digits, colour keys); in overlay/v1/keylayout since 1.0.9
+mtk_ble_remote	generic	MTK BLE Remote|MTK BLE Remote V2	0046:3838	-	-	-	-	-	G0058,G0082,G0111,G0130,G0148,G0155,H0062	0	MTK reference remote (product/etc/bluetooth/auto_pair_config.xml manufacturer 0x0046), stock vendor kl only

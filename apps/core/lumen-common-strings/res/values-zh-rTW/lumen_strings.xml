@@ -43,11 +43,14 @@
     <string name="lumen_keystone">梯形校正</string>
     <string name="lumen_later">稍後</string>
     <string name="lumen_limited">限制</string>
-    <string name="lumen_looking_for_the_remote">正在搜尋遙控器…</string>
     <string name="lumen_manual_focus">手動對焦</string>
     <string name="lumen_movie">電影</string>
     <string name="lumen_music">音樂</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Boost 亮度等級下無法使用</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">AI 畫質模式下無法使用</string>
     <string name="lumen_not_available_in_the_office_mode">辦公模式下無法使用</string>
+    <string name="lumen_not_available_in_the_performance_mode">效能模式下無法使用</string>
+    <string name="lumen_not_available_while_game_mode_is_on">遊戲模式開啟時無法使用</string>
     <string name="lumen_obstacle_avoidance">智慧避障</string>
     <string name="lumen_off">關閉</string>
     <string name="lumen_office">辦公</string>

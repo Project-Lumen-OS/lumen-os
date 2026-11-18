@@ -9,7 +9,9 @@ import android.util.Log;
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuState;
+import org.lumen.menu.PictureSettingsRule;
 import org.lumen.menu.ProjectorFeatures;
+import org.lumen.menu.Signal;
 import org.lumen.projector.Hal;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
@@ -17,12 +19,13 @@ import org.lumen.projector.Ui;
 import org.lumen.projector.audio.AiSoundEngine;
 import org.lumen.projector.audio.AudioOutputChoice;
 import org.lumen.projector.audio.AudioPathReporter;
+import org.lumen.projector.audio.HbOutputOptions;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.HbFeatures;
 import org.lumen.projector.hal.PictureMode;
-import org.lumen.projector.source.SourceOverlay;
 import org.lumen.projector.source.TifHdmiState;
+import org.lumen.projector.power.HbSleepTimerPanel;
 import org.lumen.projector.ui.Notify;
 
 import java.util.Set;
@@ -39,6 +42,8 @@ import java.util.function.Consumer;
  *    152 read-back (BoostRules, stock ignores the boolean);
  *  - HDMI-only setters (game rows, aspect, HDMI range / EDID) re-check the input right before the write;
  *  - top-speed game refuses Auto keystone, zoom and the picture restore (stock common.json gameModeFast);
+ *  - the rows of the stock picture settings page refuse while the game mode is on, in the AI picture mode (raw 10)
+ *    and in Performance, with the stock text on the row (shared PictureSettingsRule);
  *  - the vendor turns dynamic black off after a light / lumens mode / Boost change: the stock notice says so;
  *  - sound: AI sound engine, equalizer repair after a mode change, eARC through EarcLink, outputs through
  *    AudioOutputChoice + CEC System Audio (HbSystemAudio), formats as stock.
@@ -46,7 +51,6 @@ import java.util.function.Consumer;
  */
 public final class HbMenuFeatures implements ProjectorFeatures {
     static final String TAG = "HbMenu";
-    private static final String HOME_PKG = "org.lumen.home", HOME_FILES = "org.lumen.home.FilesLauncher";
 
     final Context app;
     final SharedPreferences prefs;
@@ -97,6 +101,12 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         });
     }
 
+    /** The content kind alone (TV 78), for the picture modes that follow it while the menu is open. */
+    @Override
+    public void readSignal(Consumer<Signal> cb) {
+        Hal.query((g, g2) -> g.getHdrType(), hdr -> cb.accept(Signal.ofHdrType(hdr)));
+    }
+
     /** HAL thread. */
     private Snapshot snapshot(GmpfClient g, Gmpf2Client g2) {
         Snapshot sn = Snapshot.read(g, g2);
@@ -124,6 +134,7 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         // picture
         PictureMode pm = sn.pictureMode == null ? null : PictureMode.fromWire(sn.pictureMode);
         b.put(FeatureId.PICTURE_MODE, pm == null ? null : HbMenuGates.PICTURE_MODE.token(pm.wire));
+        b.signal(Signal.ofHdrType(sn.hdr));                     // the profile's support lists grey modes by it
         String[] items = {"brightness", "contrast", "saturation", "sharpness"};    // PqItem order
         for (int i = 0; i < items.length && i < sn.pq.length; i++) b.number(FeatureId.pq(items[i]), sn.pq[i]);
         if (HbFeatures.on(HbFeatures.F.COLOR_TEMP)) b.put(FeatureId.PICTURE_COLOR_TEMP, HbMenuGates.COLOR_TEMP.token(sn.colorTemp));
@@ -160,6 +171,11 @@ public final class HbMenuFeatures implements ProjectorFeatures {
     /** Main thread: the chosen output and format (HbOutputOptions / AudioOutputChoice, as the HB Sound page). */
     private void outputs(MenuState.Builder b) {
         try {
+            // the rows offered now (as the HB Sound page), so the row never steps onto an output it would refuse
+            java.util.List<String> kinds = new java.util.ArrayList<>();
+            for (AudioOutputChoice.Option o : HbOutputOptions.rows(app).options) kinds.add(o.kind.name());
+            java.util.List<String> tokens = HbMenuGates.outputTokens(kinds);
+            if (!tokens.isEmpty()) b.options(FeatureId.SOUND_OUTPUT, tokens);
             b.put(FeatureId.SOUND_OUTPUT, HbMenuGates.outputToken(AudioOutputChoice.kind(app).name()));
             b.put(FeatureId.SOUND_FORMAT, HbMenuGates.FORMAT.token(AudioOutputChoice.formatIndex(app)));
         } catch (Throwable t) {
@@ -231,6 +247,27 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         throw new IllegalArgumentException("no writer for " + feature);
     }
 
+    // ================================================================== refusals
+
+    /** The stock HB settings trees (dapengse, dapenghm, dapengfhm): one image_mode_setting page. */
+    static final PictureSettingsRule.Layout PICTURE_PAGES = PictureSettingsRule.ONE_PAGE;
+
+    /**
+     * Main thread, from the last read: the stock refusal of the picture settings page rows (PictureSettingsRule: game
+     * mode on, picture mode AI read as exactly 10, Performance; not with Dolby Vision), the stock text on the row.
+     */
+    @Override
+    public Note blocked(FeatureId feature, String value, MenuState now) {
+        return locked(feature, now);
+    }
+
+    /** The same rule as the look of the row: a picture settings page row is drawn closed while the page refuses. */
+    @Override
+    public Note locked(FeatureId feature, MenuState now) {
+        Snapshot sn = last;
+        return sn == null ? null : PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr);
+    }
+
     // ================================================================== run
 
     @Override
@@ -253,7 +290,7 @@ public final class HbMenuFeatures implements ProjectorFeatures {
                 return true;
             case INPUT:
                 if (!setupDone("input")) return false;
-                SourceOverlay.showFromQuickPanel(app);                      // the HB input list (HDMI 1 / 2, Android)
+                org.lumen.source.SourceKey.press(app, "quick_menu");          // the Source key's step and its card
                 return true;
             case ZOOM:
                 if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }
@@ -272,12 +309,14 @@ public final class HbMenuFeatures implements ProjectorFeatures {
                 if (!setupDone("recent apps")) return false;
                 org.lumen.projector.recents.RecentsActivity.open(app);
                 return true;
+            case SETTINGS_SLEEP_TIMER:
+                HbSleepTimerPanel.show(app);                                    // the timer card, as Home's tile on the HB
+                return true;
             case BLUETOOTH:
-                return setupDone("bluetooth") && start(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
             case NETWORK:
-                return setupDone("network") && start(new Intent(Settings.ACTION_WIFI_SETTINGS));
-            case USB_FILES:
-                return setupDone("usb files") && start(usbFilesIntent());
+                // the menu's own tiles: it opens their Android pages itself, never this adapter
+                Log.i(TAG, "open " + screen + ": a tile the menu opens itself, not a screen");
+                return false;
             case PICTURE_PRO:
             case SETTINGS_CEC:
                 // panel pages, not screens: ProPicture (expert picture pages) and CecPage go into the menu's popup
@@ -311,10 +350,6 @@ public final class HbMenuFeatures implements ProjectorFeatures {
             Ui.toast(app, R.string.toast_failed);
             return false;
         }
-    }
-
-    private static Intent usbFilesIntent() {
-        return new Intent(Intent.ACTION_MAIN).setClassName(HOME_PKG, HOME_FILES);
     }
 
 }

@@ -3,7 +3,7 @@
 # devices/goat_elegant/forks.tsv: the one-time BACK hint on). The Z9X folder is only read; the Z9X image keeps
 # its pinned Z9xTvInput.apk.
 app       HbTvInput
-base      apps/Z9xTvInput
+base      apps/LumenTvInput
 top       apps/HbTvInput
 # never part of an app tree: build output, APKs, notes, the build version (read by tools/devices/build_apps.sh)
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store BUILD_VERSION

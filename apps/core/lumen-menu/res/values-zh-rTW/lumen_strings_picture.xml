@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family stock picture rows (gamma, noise reduction, local contrast, colour
+     optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
+     the Z9X app's pro_* and panel_reset texts with their translations -->
+<resources>
+    <string name="lumen_m_gamma">Gamma</string>
+    <string name="lumen_m_gamma_manual">手動</string>
+    <string name="lumen_m_gamma_index">Gamma 指數</string>
+    <string name="lumen_m_noise">降噪</string>
+    <string name="lumen_m_local_contrast">局部對比度</string>
+    <string name="lumen_m_color_opt">色彩最佳化</string>
+    <string name="lumen_m_hdr_mapping">HDR 動態亮度映射</string>
+    <string name="lumen_m_ct_balanced">均衡</string>
+    <string name="lumen_m_elder_color">長輩色彩優化</string>
+    <string name="lumen_m_gamma_refused">Gamma 指數僅在手動 Gamma 下可用</string>
+    <string name="lumen_m_hdr10_only">僅對 HDR10 生效</string>
+    <string name="lumen_m_reset">重設</string>
+    <string name="lumen_m_picture_reset_all_msg">所有影像模式的設定都將恢復預設。是否繼續？</string>
+    <string name="lumen_m_level_low">低</string>
+    <string name="lumen_m_level_medium">中</string>
+    <string name="lumen_m_level_high">高</string>
+</resources>

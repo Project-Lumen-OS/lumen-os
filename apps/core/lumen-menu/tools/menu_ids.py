@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""menu_ids.py FEATURE_ID_JAVA MENU_JSON...: every feature and hint a lumen-menu profile names is an id of the
-module's FeatureId enum. apps/build_apk.sh runs it on every app tree with a menu profile, so
-a typo in devices/<codename>/menu.json fails the build instead of showing no menu on the device. Exit 1 on any
-unknown id."""
+"""menu_ids.py FEATURE_ID_JAVA MENU_JSON...: every feature, hint and section order row a lumen-menu profile names is
+an id of the module's FeatureId enum. apps/build_apk.sh runs it on every app tree with a menu
+profile, so a typo in devices/<codename>/menu.json fails the build instead of showing no menu on the device. Exit 1 on
+any unknown id."""
 import json
 import re
 import sys
@@ -18,11 +18,26 @@ def ids(java):
     return out
 
 
+def group_rows(groups):
+    """The rows of a stock order's groups; a {"page": id, "groups": [...]} row names its page and its own rows."""
+    out = []
+    for g in groups or []:
+        for r in g.get("rows") or []:
+            if isinstance(r, dict):
+                out.append(r.get("page"))
+                out += group_rows(r.get("groups"))
+            else:
+                out.append(r)
+    return out
+
+
 def unknown(known, path):
     with open(path, encoding="utf-8") as f:
         profile = json.load(f)
     named = list(profile.get("features") or {}) + list(profile.get("hints") or {})
-    return [i for i in named if i not in known]
+    for order in (profile.get("sections") or {}).values():              # rows of a section's stock order
+        named += group_rows(order.get("groups"))
+    return [i for i in named if not isinstance(i, str) or i not in known]
 
 
 def main(argv):

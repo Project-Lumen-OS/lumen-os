@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family stock picture rows (gamma, noise reduction, local contrast, colour
+     optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
+     the Z9X app's pro_* and panel_reset texts with their translations -->
+<resources>
+    <string name="lumen_m_gamma">Гамма</string>
+    <string name="lumen_m_gamma_manual">Вручную</string>
+    <string name="lumen_m_gamma_index">Значение гаммы</string>
+    <string name="lumen_m_noise">Шумоподавление</string>
+    <string name="lumen_m_local_contrast">Локальный контраст</string>
+    <string name="lumen_m_color_opt">Оптимизация цвета</string>
+    <string name="lumen_m_hdr_mapping">Динамическое отображение HDR</string>
+    <string name="lumen_m_ct_balanced">Сбалансированная</string>
+    <string name="lumen_m_elder_color">Цвета для пожилых</string>
+    <string name="lumen_m_gamma_refused">Значение гаммы работает только с ручной гаммой</string>
+    <string name="lumen_m_hdr10_only">Работает только с HDR10</string>
+    <string name="lumen_m_reset">Сбросить</string>
+    <string name="lumen_m_picture_reset_all_msg">Настройки всех режимов изображения вернутся к стандартным. Продолжить?</string>
+    <string name="lumen_m_level_low">Низкий</string>
+    <string name="lumen_m_level_medium">Средний</string>
+    <string name="lumen_m_level_high">Высокий</string>
+</resources>

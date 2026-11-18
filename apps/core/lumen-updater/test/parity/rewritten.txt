@@ -1,0 +1,12 @@
+# Texts rewritten on purpose after the goldens were recorded (one key per line, then the reason).
+# run.sh accepts a changed value line of such a key only while the key is still there with a new text in the same
+# values folder, so a rewritten text can never go missing. Any other changed text is still a parity failure.
+#
+# 2026-11-15, rule "no DSU, vbmeta or slot in what people see" (tools/i18n/ui_words.py): the consent and the
+# block texts in plain words, every language, no slot letters or technical detail on screen (the log keeps them).
+consent_title
+consent_body
+blk_vbmeta_body
+blk_vbmeta_unknown
+blk_active
+blk_partitions

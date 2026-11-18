@@ -1,6 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: Apache-2.0
-# Host tests of devices/g0111/image/x50_blobs.sh (the X50 image's blobs reader: the user's own codec / audio files
+# Host tests of the one blobs reader tools/ota/image/z9x_blobs.sh with the X50 family's data (devices/g0111/image/
+# blobs.conf and x50_blobs_allow.txt: the user's own codec / audio files
 # and the stock eye-protection drawer nativeui from z9x_blobs<slot> at post-fs-data), of x50_nui.rc and
 # x50_blobs.rc, and of the format of x50_blobs_allow.txt. POSIX sh, on the Mac, no projector:
 #   sh devices/g0111/test/x50_blobs_test.sh          every case under sh, dash and ksh (the ones installed)
@@ -17,6 +18,7 @@ set -u
 HERE=$(cd "$(dirname "$0")" && pwd)
 G=$(cd "$HERE/../../.." && pwd)
 IMG=$G/devices/g0111/image
+READER=$G/tools/ota/image/z9x_blobs.sh
 STUBS=$G/tools/ota/test/stubs
 INST=$G/installer
 ONLY=${1-}
@@ -91,14 +93,14 @@ fail() { echo "  FAIL [$CASE/$SHN] $*"; CFAIL=1; }
 lines() { awk '$1 !~ /^#/ && $1 !~ /^set=/ && NF >= 3 { t = "/system/" $2; e = 0
   for (i = 4; i <= NF; i++) { if ($i ~ /^bind=/) t = substr($i, 6); if ($i == "need=eye") e = 1 }
   print $1, $2, t, e }' "${1:-$ALLOW}"; }
-# the alt= sha256 of a path in the test allow-list
-alt_sha() { awk -v p="$1" '$2 == p { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$ALLOW"; }
+# the alt= sha256 of a path in the test allow-list for one firmware (default v1.2.54)
+alt_sha() { awk -v p="$1" -v fw="${2:-v1.2.54}" '$2 == p { for (i = 4; i <= NF; i++) if (index($i, "alt=" fw ":") == 1) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$ALLOW"; }
 
 begin() {  # case name [fixture options]: slot B, every placeholder and target in place, a good partition, stale fifos
   CASE=$1; CFAIL=0; shift
   T=$WORK/$SHN/$CASE; R=$T/root
   mkdir -p "$R/system/etc/z9x" "$R/dev/block/mapper" "$R/mnt" "$R/data/vendor/tmp"
-  cp "$ALLOW" "$R/system/etc/z9x/x50_blobs_allow.txt"
+  cp "$ALLOW" "$R/system/etc/z9x/x50_blobs_allow.txt"; cp "$IMG/blobs.conf" "$R/system/etc/z9x/blobs.conf"
   lines | while read -r h p t e; do
     mkdir -p "$(dirname "$R$t")"
     case "$t" in /system/*) : > "$R$t" ;; *) echo "the system's own $t" > "$R$t" ;; esac
@@ -111,10 +113,10 @@ begin() {  # case name [fixture options]: slot B, every placeholder and target i
 }
 mk() { python3 "$HERE/x50_fixture.py" tar "$WORK/files" "$ALLOW" "$R/dev/block/mapper/z9x_blobs_b" "$@"; }
 run() {  # the reader, with a 20 s watchdog
-  env Z9X_ROOT="$R" Z9X_T="$T" PATH="${XBIN:+$XBIN:}$BIN:$PATH" $SH "$IMG/x50_blobs.sh" >> "$T/out" 2>&1 &
+  env Z9X_ROOT="$R" Z9X_T="$T" PATH="${XBIN:+$XBIN:}$BIN:$PATH" $SH "$READER" >> "$T/out" 2>&1 &
   pid=$!; i=0
   while kill -0 $pid 2>/dev/null; do
-    i=$((i + 1)); [ $i -le 200 ] || { kill $pid 2>/dev/null; fail "x50_blobs.sh still runs after 20 s"; break; }
+    i=$((i + 1)); [ $i -le 200 ] || { kill $pid 2>/dev/null; fail "the reader still runs after 20 s"; break; }
     sleep 0.1
   done
   wait $pid 2>/dev/null
@@ -146,14 +148,13 @@ end() {
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   $SHN $CASE"
   else FAIL=$((FAIL + 1)); echo "FAIL $SHN $CASE"; sed 's/^/     | /' "$T/logcat" | tail -6; fi
 }
-# a DSU trial on stock: no z9x_blobs partition, ro.gsid.image_running=1, this model, the fake stock slot B
+# a trial run on stock: no z9x_blobs partition, ro.gsid.image_running=1, this model, the fake stock slot B
 # (dev/block/mapper/system_b and system_ext_b, tars here; the vendor's own files under vendor/) built with these
-# x50_fixture.py stock options, and the shared reader in place as in the image
+# x50_fixture.py stock options
 dsu_begin() {  # case name [stock fixture options]
   begin "$1"; shift; XBIN=
   rm -f "$R/dev/block/mapper/z9x_blobs_b"
-  cp "$G/tools/devices/image/blobs_stock_dsu.sh" "$R/system/etc/z9x/blobs_stock_dsu.sh"
-  printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0111 > "$T/props"
+  printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.models=G0111 > "$T/props"
   python3 "$HERE/x50_fixture.py" stock "$WORK/files" "$ALLOW" "$T/lp" "$R" "$@" || fail "stock fixture"
   mv "$T/lp/system.tar" "$T/lp/system_b"; mv "$T/lp/system_ext.tar" "$T/lp/system_ext_b"
   cp "$T/lp/system_b" "$T/lp/system_ext_b" "$R/dev/block/mapper/"
@@ -264,6 +265,24 @@ cases() {
     is_bound "$(alt_sha "$LIB")" "/system/$LIB" || fail "the v1.2.54 library is not bound"
     grep -q "^u:object_r:nativeui_main_exec:s0 .*/x/$NUI$" "$T/chcon.log" || fail "nativeui is not nativeui_main_exec"
     expect_log "ok: 11 files of set $SET bound"
+    end
+  fi
+  if want eye_alt_v1299; then
+    # the overseas v1.2.99 (TITAN Noir Pro / Max): its own pair (alt=v1.2.99:...), accepted only on that firmware
+    begin eye_alt_v1299 --alt "$NUI,$LIB" --altfw v1.2.99; echo ro.vendor.build.version.incremental=v1.2.99 >> "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_bound 11
+    expect_all_bound_but "$NUI" "$LIB"
+    is_bound "$(alt_sha "$NUI" v1.2.99)" "/system/$NUI" || fail "the v1.2.99 nativeui is not bound: $(cat "$T/binds")"
+    is_bound "$(alt_sha "$LIB" v1.2.99)" "/system/$LIB" || fail "the v1.2.99 library is not bound"
+    end
+  fi
+  if want eye_alt_v1299_on_v1254; then
+    # the v1.2.99 pair while a v1.2.54 vendor runs (and the v1.2.54 pair on v1.2.99): refused
+    begin eye_alt_v1299_on_v1254 --alt "$NUI,$LIB" --altfw v1.2.99; echo ro.vendor.build.version.incremental=v1.2.54 >> "$T/props"; run
+    expect_prop sys.z9x.blobs partial; expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
+    end
+    begin eye_alt_v1254_on_v1299 --alt "$NUI,$LIB"; echo ro.vendor.build.version.incremental=v1.2.99 >> "$T/props"; run
+    expect_prop sys.z9x.blobs partial; expect_prop sys.lumen.nui "bad:$NUI"; expect_bound 9; expect_eye_unbound
     end
   fi
   if want eye_alt_other_firmware; then
@@ -381,7 +400,7 @@ cases() {
     dsu_begin dsu_ok; run
     expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b
     expect_prop sys.z9x.blobs.set "$SET"; expect_bound 11; expect_all_bound_but
-    expect_log "DSU trial: no z9x_blobs_b, 11 files read-only from the stock slot _b"
+    expect_log "trial run: no z9x_blobs_b, 11 files read-only from the stock slot _b"
     expect_log "ok: 11 files of set $SET bound"
     grep -q "^u:object_r:nativeui_main_exec:s0 .*/x/$NUI$" "$T/chcon.log" || fail "nativeui is not nativeui_main_exec"
     [ "$(ls -l "$R/mnt/z9x_blobs/x/$NUI" | cut -c1-10)" = -rwxr-xr-x ] || fail "nativeui is not 0755"
@@ -401,6 +420,36 @@ cases() {
     is_bound "$(alt_sha "$LIB")" "/system/$LIB" || fail "the v1.2.54 library is not bound"
     expect_stock_untouched; expect_fifos_gone
     end
+  fi
+  if want dsu_titan_v1299; then
+    # the TITAN Noir Pro image (h0062, ro.lumen.model H0062) in a trial on an H0062 with stock v1.2.99: its own pair
+    dsu_begin dsu_titan_v1299 --alt "$NUI,$LIB" --altfw v1.2.99
+    printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=H0062 ro.lumen.models=H0062 \
+      ro.vendor.build.version.incremental=v1.2.99 > "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b
+    expect_bound 11; expect_all_bound_but "$NUI" "$LIB"
+    is_bound "$(alt_sha "$NUI" v1.2.99)" "/system/$NUI" || fail "the v1.2.99 nativeui is not bound: $(cat "$T/binds")"
+    expect_stock_untouched; expect_fifos_gone
+    end
+  fi
+  if want dsu_titan_max_image_on_pro; then
+    # the TITAN Noir Max image on a TITAN Noir Pro, an X50 image on a TITAN: not its model, nothing is read
+    dsu_begin dsu_titan_max_image_on_pro; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=H0062 ro.lumen.models=H0063 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
+    expect_log "missing: no z9x_blobs_b, and this image is not for H0062"; expect_no_stock_mount
+    end
+    dsu_begin dsu_x50_image_on_titan; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=H0062 ro.lumen.models=G0111 > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_bound 0; expect_no_stock_mount
+    end
+  fi
+  if want dsu_bad_image_model; then
+    # an image model that is no XGIMI code (lower case, a codename, a pattern): nothing is read, also when the unit says the same
+    for bad in h0062 g0111 'G01*' 'G01111'; do
+      dsu_begin "dsu_bad_image_model_$(echo "$bad" | tr -cd 'a-zA-Z0-9')"
+      printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 "ro.boot.xgimi.modelname=$bad" "ro.lumen.models=$bad" > "$T/props"; run
+      expect_prop sys.z9x.blobs missing; expect_bound 0; expect_no_stock_mount
+      end
+    done
   fi
   if want dsu_alt_on_v1264; then
     # the same v1.2.54 pair while a v1.2.64 vendor runs: refused, the picture stays covered by the guard
@@ -425,64 +474,77 @@ cases() {
   fi
   if want dsu_other_model; then
     # the shared reader is on for G0111 only: another model's DSU trial reads nothing
-    dsu_begin dsu_other_model; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0082 ro.lumen.model=G0111 > "$T/props"; run
+    dsu_begin dsu_other_model; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0082 ro.lumen.models=G0111 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0082"; expect_no_stock_mount
     end
   fi
   if want dsu_ultra_max; then
     # the X50 Ultra Max image (g0100, ro.lumen.model G0100) in a trial on a G0100: the same stock files, read the same way
-    dsu_begin dsu_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.model=G0100 > "$T/props"; run
+    dsu_begin dsu_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.models=G0100 > "$T/props"; run
     expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_prop sys.z9x.blobs.src stock_b; expect_bound 11
-    expect_log "DSU trial: no z9x_blobs_b, 11 files read-only from the stock slot _b"; expect_stock_untouched
+    expect_log "trial run: no z9x_blobs_b, 11 files read-only from the stock slot _b"; expect_stock_untouched
     end
   fi
   if want dsu_ultra_max_image_on_ultra; then
     # the Ultra Max image on an X50 Ultra: not its model, nothing is read
-    dsu_begin dsu_ultra_max_image_on_ultra; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0100 > "$T/props"; run
+    dsu_begin dsu_ultra_max_image_on_ultra; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.models=G0100 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0111"; expect_no_stock_mount
     end
   fi
   if want dsu_ultra_image_on_ultra_max; then
     # the Ultra image on an X50 Ultra Max: not its model, nothing is read
-    dsu_begin dsu_ultra_image_on_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.model=G0111 > "$T/props"; run
+    dsu_begin dsu_ultra_image_on_ultra_max; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 ro.lumen.models=G0111 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0100"; expect_no_stock_mount
     end
   fi
   if want dsu_rs30_image_on_x50; then
     # the RS30 Ultra Max image on an X50 Ultra: not its model, nothing is read
-    dsu_begin dsu_rs30_image_on_x50; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.model=G0155 > "$T/props"; run
+    dsu_begin dsu_rs30_image_on_x50; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 ro.lumen.models=G0155 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0111"; expect_no_stock_mount
     end
   fi
   if want dsu_x50_image_on_rs30; then
     # the X50 Ultra image on an RS30 Ultra Max: not its model, nothing is read
-    dsu_begin dsu_x50_image_on_rs30; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0155 ro.lumen.model=G0111 > "$T/props"; run
+    dsu_begin dsu_x50_image_on_rs30; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0155 ro.lumen.models=G0111 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "the stock slot _b of this DSU trial was not read (model)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0155"; expect_no_stock_mount
     end
   fi
   if want dsu_no_image_model; then
-    # an image that names no X50 model: nothing is read (fail closed)
+    # an image that names no model: nothing is read (fail closed)
     dsu_begin dsu_no_image_model; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0111 > "$T/props"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "this image names no X50 model (ro.lumen.model unset)"; expect_no_stock_mount
+    expect_log "missing: no z9x_blobs_b, and this image is not for G0111"; expect_no_stock_mount
     end
   fi
-  if want dsu_no_stock_reader; then
-    # an image without the shared reader: missing, as t5
-    dsu_begin dsu_no_stock_reader; rm -f "$R/system/etc/z9x/blobs_stock_dsu.sh"; run
-    expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0; expect_no_stock_mount
+  if want dsu_model_list; then
+    # an image for several codes (ro.lumen.models is a list, as on the HB): any of them, never a prefix of one
+    dsu_begin dsu_model_list; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 \
+      "ro.lumen.models=G0111 G0100" > "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.lumen.nui ok; expect_bound 11; expect_stock_untouched
+    end
+    dsu_begin dsu_model_list_prefix; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0100 \
+      "ro.lumen.models=G01000 XG0100" > "$T/props"; run
+    expect_prop sys.z9x.blobs missing; expect_bound 0; expect_no_stock_mount
+    end
+  fi
+  if want dsu_stock_apex_flat; then
+    # settings that say the stock APEX is a folder (the HB layout) on a stock slot with the .apex file: no VNDK lib
+    dsu_begin dsu_stock_apex_flat; sed -i.bak 's/^stock_apex=zip$/stock_apex=flat/' "$R/system/etc/z9x/blobs.conf"; run
+    expect_prop sys.z9x.blobs partial; expect_prop sys.lumen.nui ok; expect_bound 9
+    expect_all_bound_but etc/xgimi/libstagefright_foundation.so etc/xgimi/libstagefright_foundation64.so
+    expect_stock_untouched
     end
   fi
   if want dsu_no_stock; then
     # the stock partitions are not there (and no lpdump / dmctl): fail closed
     dsu_begin dsu_no_stock; rm -f "$R/dev/block/mapper/system_b" "$R/dev/block/mapper/system_ext_b"; run
     expect_prop sys.z9x.blobs missing; expect_prop sys.lumen.nui missing; expect_bound 0
-    expect_log "was not read (nostock)"; expect_stock_untouched
+    expect_log "the stock slot _b of this trial run was not read (nostock)"; expect_stock_untouched
     end
   fi
   if want dsu_nativeui_missing; then
@@ -540,6 +602,7 @@ cases() {
     grep -qx "dmctl create lumen_ro_system_b -ro linear 0 2048 $R/dev/block/by-name/super 2048 linear 2048 2048 $R/dev/block/by-name/super 10240" "$T/dm.log" \
       || fail "dmctl create: $(cat "$T/dm.log")"
     grep -qx "lpdump --slot=1" "$T/dm.log" || fail "lpdump not of slot 1"
+    [ "$(grep -c '^lpdump' "$T/dm.log")" = 1 ] || fail "lpdump run more than once: $(cat "$T/dm.log")"
     grep -qx "dmctl delete lumen_ro_system_b" "$T/dm.log" && grep -qx "dmctl delete lumen_ro_system_ext_b" "$T/dm.log" \
       || fail "the dm devices were not deleted: $(cat "$T/dm.log")"
     [ -z "$(ls "$T/dm" 2>/dev/null)" ] || fail "dm devices left: $(ls "$T/dm")"
@@ -576,12 +639,14 @@ for line in open(sys.argv[1]):
     if w[0].startswith("set="):
         sets.append(w[0]); continue
     assert re.fullmatch(r"[0-9a-f]{64}", w[0]) and len(w) >= 3, line
-    o = dict(x.split("=", 1) for x in w[3:])
-    assert set(o) <= {"bind", "from", "label", "mode", "need", "alt"}, line
-    if "alt" in o:
-        # another stock firmware's copy, only on the eye-protection pair (the codec / audio sources are equal)
-        assert re.fullmatch(r"v[0-9]+(\.[0-9]+)+:[0-9a-f]{64}", o["alt"]) and o.get("need") == "eye", line
-        assert o["alt"].split(":")[1] != w[0], line
+    alts = [x.split("=", 1)[1] for x in w[3:] if x.startswith("alt=")]
+    o = dict(x.split("=", 1) for x in w[3:] if not x.startswith("alt="))
+    assert set(o) <= {"bind", "from", "label", "mode", "need"}, line
+    # other stock firmwares' copies, only on the eye-protection pair (the codec / audio sources are equal), each
+    # firmware once, none the 1.2.64 copy and no two the same
+    assert len({a.split(":")[0] for a in alts}) == len(alts) and len({a.split(":")[1] for a in alts} | {w[0]}) == len(alts) + 1, line
+    for a in alts:
+        assert re.fullmatch(r"v[0-9]+(\.[0-9]+)+:[0-9a-f]{64}", a) and o.get("need") == "eye", line
         n["alt"] += 1
     if "bind" in o:
         assert re.fullmatch(r"/(vendor/etc|apex/com\.android\.vndk\.v\d+/lib(64)?)/[^/]+", o["bind"]), line
@@ -596,7 +661,7 @@ for line in open(sys.argv[1]):
         n["eye"] += 1
     if "label" in o:
         assert o["label"] == "nativeui_main_exec" and o.get("mode") == "0755" and w[1] == "bin/nativeui", line
-assert sets == ["set=x50-v1264-a"] and n == {"place": 8, "bind": 3, "eye": 2, "alt": 2}, (sets, n)
+assert sets == ["set=x50-v1264-b"] and n == {"place": 8, "bind": 3, "eye": 2, "alt": 4}, (sets, n)
 PY
       ;;
     rc)
@@ -613,25 +678,27 @@ PY
         grep -qx "    $l" "$WORK/stop" || fail "the stopped trigger lacks '$l'"
       done
       grep -E '^ *(user|group|seclabel|capabilities|exec|setenv) ' "$IMG/x50_nui.rc" && fail "x50_nui.rc changes the stock user, label or environment"
-      [ "$(grep -v '^#' "$IMG/x50_blobs.rc" | grep .)" = "$(printf '%s\n' 'on post-fs-data' '    exec u:r:su:s0 root root -- /system/bin/sh /system/etc/z9x/x50_blobs.sh')" ] \
-        || fail "x50_blobs.rc is not only the post-fs-data exec of x50_blobs.sh"
+      [ "$(grep -v '^#' "$G/tools/ota/image/z9x_blobs.rc" | grep .)" = "$(printf '%s\n' 'on post-fs-data' '    exec u:r:su:s0 root root -- /system/bin/sh /system/etc/z9x/z9x_blobs.sh')" ] \
+        || fail "z9x_blobs.rc is not only the post-fs-data exec of z9x_blobs.sh"
+      # the X50 family's reader settings: the 16 MiB partition (256 x 64 KiB), 8 MiB members, the eye group, the zip APEX
+      want="tag=x50_blobs allow=x50_blobs_allow.txt blocks=256 tmpfs=32m maxf=8388608 eye=1 src_partition=1 stock_apex=zip"
+      [ "$(grep -v '^#' "$IMG/blobs.conf" | tr '\n' ' ')" = "$want " ] || fail "blobs.conf: $(grep -v '^#' "$IMG/blobs.conf")"
       # nothing but rm and the reader names the fifo; no file of ours opens it
-      grep -nE 'nuififo' "$IMG/x50_blobs.sh" | grep -vE 'rm -f|for f in nuififo|^[0-9]+:#|say "removed' && fail "x50_blobs.sh uses the fifo other than to remove it"
-      grep -nE '(<|>)[^&]*nuififo|exec [0-9]' "$IMG/x50_blobs.sh" "$IMG/x50_nui.rc" && fail "a redirection to the fifo"
+      grep -nE 'nuififo' "$READER" | grep -vE 'rm -f|for f in nuififo|^[0-9]+:#|say "removed' && fail "the reader uses the fifo other than to remove it"
+      grep -nE '(<|>)[^&]*nuififo|exec [0-9]' "$READER" "$IMG/x50_nui.rc" && fail "a redirection to the fifo"
       # verify_tree_x50.py lets only these two /system/etc files name the fifo
-      grep -l nuififo "$IMG/x50_blobs_allow.txt" "$IMG/x50_blobs.rc" "$IMG/x50_netadb.rc" "$G/tools/devices/image/blobs_stock_dsu.sh" \
+      grep -l nuififo "$IMG/x50_blobs_allow.txt" "$G/tools/ota/image/z9x_blobs.rc" "$IMG/x50_netadb.rc" "$IMG/blobs.conf" \
         && fail "another staged file names the fifo"
-      # the shared DSU reader is on for the X50 only, and only the X50 reader sources it (the Z9X / HB readers do not)
-      [ "$(sed -n 's/^DSU_STOCK_MODELS=//p' "$G/tools/devices/image/blobs_stock_dsu.sh")" = '"G0111 G0100 G0155"' ] \
-        || fail "DSU_STOCK_MODELS is not exactly the X50 Ultra, Ultra Max and RS30 Ultra Max (G0111 G0100 G0155)"
-      grep -l blobs_stock_dsu "$G/tools/ota/image/z9x_blobs.sh" "$G"/devices/goat_elegant/image/* 2>/dev/null && fail "a Z9X / HB reader sources the DSU reader"
+      # no model list in the reader: the image's own codes (ro.lumen.models) on that very model, an XGIMI code
+      grep -nE 'G0[0-9]{3}|H0[0-9]{3}' "$READER" | grep -v ':[0-9]*: *#' && fail "the reader names a model code outside its comments"
+      grep -qF 'case $mdl in [A-Z][0-9][0-9][0-9][0-9]) ;;' "$READER" || fail "the unit's model is not checked for one capital letter and four digits"
       ;;
   esac
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   - $1"; else FAIL=$((FAIL + 1)); echo "FAIL - $1"; fi
 }
 for s in allowlist rc; do { [ -z "$ONLY" ] || [ "$ONLY" = "$s" ]; } && static "$s"; done
 
-for SH in sh dash ksh; do
+for SH in ${BLOBS_SHELLS:-sh dash ksh bash mksh}; do
   command -v $SH >/dev/null 2>&1 || continue
   SHN=$SH
   cases

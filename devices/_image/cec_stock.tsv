@@ -1,0 +1,43 @@
+# The stock HDMI-CEC defaults behind devices/_image/cec_defaults.tsv, read from the stock dumps on xgimi-builder
+# (~/devices/<model>_<chip>/.../system/framework/framework-res.apk, Play 6 ~/p6v18127/off18127) with
+# `tools/devices/cec_defaults.py stock APK...`. tools/devices/cec_defaults.py check holds every column and every set
+# line against the table: a model whose stock differs needs a device line there.
+#
+#   dump  ID  DEVICES  SHA256        one stock file (DEVICES: the Lumen devices that run that stock system, comma)
+#   cols  ID...                      the columns of the resource lines (lineage-21: frameworks/base core/res
+#                                    config.xml of the LineageOS 21 revision of lineage/manifests, for reference)
+#   RESOURCE  VALUE...               the config_cec*_default bool in each column
+#   set  ID  SETTING  VALUE          the value an Android 11 stock gives a TV (it has no HdmiCecConfig resources)
+#
+# G0100 runs the G0111 system (vendor/etc/xgimimodelname/G0100 in that dump), H0063 the H0062 one, G0118 the G0130 /
+# G0148 one. H0062 v1.2.99 and G0111 v1.2.64 carry the same framework-res bytes.
+dump  G0082-v6.15.62  horse_popular   c2c9f360792f246b57eaa289ab1a990367a8d51064865d60fba9491e4adac804
+dump  G0111-v1.2.64   g0111,g0100     35f469242fa716c17addd0c47491507c5a7719c45cbf91436b561ed361a969dc
+dump  H0062-v1.2.99   h0062,h0063     35f469242fa716c17addd0c47491507c5a7719c45cbf91436b561ed361a969dc
+dump  G0130-v6.16.24  goat_elegant    375fae007bd02f28285d4f2c201d71cfdbaa65aa74fbfcecb179bd6b9e7ab9e4
+dump  G0148-v6.17.12  goat_elegant    c546ebecab5b3a54461b76820ec2c90c21f720712c28764df98f89f90114b779
+dump  G0155-v1.1.42   g0155           b3e0b30b7a9584005d4c64e1a18adf3e2abb382e8d6c23f1d181401981ecea69
+# Play 6 v1.8.127: SettingsProvider.apk (services.jar 86fd98246d72db182080c4879695c3782bb035fd3f2abb06aa43e144064b2014)
+dump  G0058-v1.8.127  dragon_healthy  11c9c5251a1c96a3c329f9f50f1523c65a1082edfe18539a54c65d61c3aa3119
+cols  lineage-21  G0082-v6.15.62  G0111-v1.2.64  H0062-v1.2.99  G0130-v6.16.24  G0148-v6.17.12  G0155-v1.1.42
+config_cecHdmiCecControlDisabled_default                        false  false  false  false  false  false  false
+config_cecHdmiCecControlEnabled_default                         true   true   true   true   true   true   true
+config_cecPowerControlModeBroadcast_default                     true   false  false  false  false  false  false
+config_cecPowerControlModeNone_default                          false  false  false  false  false  false  false
+config_cecPowerControlModeTvAndAudioSystem_default              false  true   true   true   true   true   true
+config_cecPowerControlModeTv_default                            false  false  false  false  false  false  false
+config_cecPowerStateChangeOnActiveSourceLostNone_default        false  false  false  false  false  false  false
+config_cecPowerStateChangeOnActiveSourceLostStandbyNow_default  true   true   true   true   true   true   true
+config_cecSetMenuLanguageDisabled_default                       false  false  false  false  false  false  false
+config_cecSetMenuLanguageEnabled_default                        true   true   true   true   true   true   true
+config_cecTvSendStandbyOnSleepDisabled_default                  false  true   true   true   true   true   true
+config_cecTvSendStandbyOnSleepEnabled_default                   true   false  false  false  false  false  false
+config_cecTvWakeOnOneTouchPlayDisabled_default                  false  true   true   true   true   true   true
+config_cecTvWakeOnOneTouchPlayEnabled_default                   true   false  false  false  false  false  false
+# Play 6: HdmiControlService reads hdmi_control_enabled with default true; SettingsProvider settings upgrade 190
+# stores hdmi_control_auto_device_off_enabled = def_hdmiControlAutoDeviceOff = false; HdmiCecLocalDeviceTv reads
+# hdmi_control_auto_wakeup_enabled with default true and no stock code stores it at start (XgimiService
+# GimiCommonService and the settings rows write it only when the user switches them)
+set  G0058-v1.8.127  hdmi_cec_enabled           1
+set  G0058-v1.8.127  tv_send_standby_on_sleep   0
+set  G0058-v1.8.127  tv_wake_on_one_touch_play  1

@@ -32,7 +32,7 @@ import org.lumen.projector.battery.Battery;
  *  - notifyChange(content://org.lumen.projector.device/battery) whenever any of the six values changes
  *    (registerContentObserver on that Uri; one notification per change, never per read).
  *  - call("caps") -> Bundle {unsupported: String[]}: the Lumen Home Projector tab tiles this projector does
- *    not support, by the tile intent of apps/Z9xHome InputSource.tiles (Card id "tile:" + it), for Home to
+ *    not support, by the tile intent of apps/LumenHome InputSource.tiles (Card id "tile:" + it), for Home to
  *    hide them: "section:eye" while eye protection waits for the NUI reader (Device.hasEyeProtection),
  *    "miracast" where the receiver found no Wi-Fi Direct (Device.screenMirroring).
  *  - Any other method or Uri: null. Nothing can be written (insert / update / delete do nothing).

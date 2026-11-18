@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.lumen.menu.MenuRequest;
 import org.lumen.projector.Hal;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.Ui;
@@ -24,7 +25,8 @@ import org.lumen.projector.power.StandbyController;
  *     {@code lamp_standby} (the short POWER press: lamp off, then STR), {@code sleep_timer} (the power
  *     menu with the timer tile focused), {@code recents} (Recent apps).</li>
  * </ul>
- * Nothing here can reach a HAL code that the quick panel itself cannot.
+ * The remote's 3D key (lumen-remote key action, org.lumen.menu.MenuRequest.QUICK_3D, sent by this app to itself)
+ * opens the 3D popup the same way. Nothing here can reach a HAL code that the quick panel itself cannot.
  */
 public final class PanelRequestReceiver extends BroadcastReceiver {
     private static final String TAG = "Z9xPanel";
@@ -33,10 +35,10 @@ public final class PanelRequestReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context ctx, Intent i) {
         try {
-            if (i == null || !ACTION.equals(i.getAction())) return;
+            if (i == null || !(ACTION.equals(i.getAction()) || MenuRequest.ours(i.getAction()))) return;
             final Context app = ctx.getApplicationContext();
             final String action = i.getStringExtra("action");
-            final String section = i.getStringExtra("section");
+            final String section = MenuRequest.place(i.getAction(), i.getStringExtra("section"));
             Ui.main().post(() -> handle(app, action, section));
         } catch (Throwable t) {
             Log.w(TAG, "SHOW_PANEL: " + t);
@@ -68,7 +70,7 @@ public final class PanelRequestReceiver extends BroadcastReceiver {
                         return;
                 }
             }
-            QuickPanel.show(app, section == null || section.isEmpty() ? null : section);
+            QuickPanel.show(app, section);
         } catch (Throwable t) {
             Log.w(TAG, "SHOW_PANEL " + action + "/" + section + ": " + t);
         }

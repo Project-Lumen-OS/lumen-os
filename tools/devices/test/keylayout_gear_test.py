@@ -19,11 +19,11 @@ GEAR_HOLD = "TV_MEDIA_CONTEXT_MENU"
 LAYOUTS = ["overlay/v1/keylayout", "overlay/play6/keylayout"]
 GLOBAL_KEYS = ["apps/Z9xFrameworkKeysOverlay/res/xml/global_keys.xml", "apps/common/overlay/xml/global_keys.xml",
                "apps/HbFrameworkOverlay/res/xml/global_keys.xml", "apps/Play6FrameworkOverlay/res/xml/global_keys.xml"]
-RECEIVERS = ["apps/Z9xProjector/src/org/lumen/projector", "apps/HbProjector/src/org/lumen/projector",
+RECEIVERS = ["apps/ProjectorBase/src/org/lumen/projector", "apps/HbProjector/src/org/lumen/projector",
              "apps/Play6Projector/src/org/lumen/projector"]
 # the eye guard each of those apps runs: the HB app takes the Z9X one (no fork; its short gear press on the mask is
 # the profile's keys.eye_gear_short)
-EYE_GUARDS = {"apps/HbProjector/src/org/lumen/projector": "apps/Z9xProjector/src/org/lumen/projector"}
+EYE_GUARDS = {"apps/HbProjector/src/org/lumen/projector": "apps/ProjectorBase/src/org/lumen/projector"}
 LINE = re.compile(r"^key\s+(\d+)\s+(\S+)(.*)$")
 
 
@@ -91,7 +91,7 @@ def main():
         t = open(os.path.join(G, p), encoding="utf-8").read()
         if '<key keyCode="KEYCODE_%s" component="org.lumen.projector/.KeyReceiver" />' % GEAR_HOLD not in t:
             errs.append("%s: KEYCODE_%s is not routed to org.lumen.projector/.KeyReceiver" % (p, GEAR_HOLD))
-    for p in ["apps/common/projector/src/org/lumen/projector/Z9xKeys.java", "apps/Z9xProjector/src/org/lumen/projector/Z9xKeys.java"]:
+    for p in ["apps/common/projector/src/org/lumen/projector/Z9xKeys.java", "apps/ProjectorBase/src/org/lumen/projector/Z9xKeys.java"]:
         if "static final int GEAR_HOLD = KeyEvent.KEYCODE_%s;" % GEAR_HOLD not in open(os.path.join(G, p), encoding="utf-8").read():
             errs.append("%s: Z9xKeys.GEAR_HOLD is not KEYCODE_%s" % (p, GEAR_HOLD))
     for d in RECEIVERS:

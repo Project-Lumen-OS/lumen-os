@@ -15,6 +15,8 @@ public enum FeatureKind {
     ACTION,
     /** a row that opens a device screen in place of the menu */
     SCREEN,
+    /** a row that opens a page of the menu's own rows (MenuSpec.pages: an editor such as the white balance points) */
+    PAGE,
     /** a row that only shows a value the device reads (text) */
     INFO
 }

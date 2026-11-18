@@ -17,11 +17,8 @@ bluetooth.device.class_of_device=44,4,60
 # t3: the UI click volume follows the media volume (hb_audio.rc bind-mounts the HB copy of the vendor
 # audio_policy_engine_stream_volumes.xml with the 'system' group's SPEAKER and HEADSET refs on MM)
 ro.lumen.hb.clickcurve=1
-# t3: Russian by default. hb_prop.txt (t1) says en-US over the vendor's zh-CN; this later line wins (init keeps the
-# last value of a key). persist.sys.locale here is only the default: a language chosen in Setup or Settings is
-# stored in /data and stays.
-ro.product.locale=ru-RU
-persist.sys.locale=ru-RU
+# Language, time zone and the language lists of the first start: devices/_image/first_start_prop.txt, the one
+# setting of every model, which the recipe appends after this file (owner 2026-11-13: English, not Russian).
 # t7: sleep = STR, as stock HB (research/woble_wake.md 3.3: stock POWER -> XgimiWindowManagerDomestic.reallyGoToSleep
 # -> PowerManager.goToSleep, ro.vendor.mstar.str.enable=user_mode, the projector suspends to RAM, it never shuts
 # down). t5b / t6 had the StrGate kill switch 0: lamp-only standby, then a real power-off after 30 min, so every wake
@@ -53,13 +50,6 @@ vendor.xgimi.system.audio.digital_output_format=pcm
 # when system_server enables the adapter, long after that. Stock HB sets nothing (its libbluetooth_jni.so reads the same
 # property with the AOSP default, privacy on); why the stock remote still reconnected is not traced.
 bluetooth.core.gap.le.privacy.enabled=false
-# t8: no pseudo-locales in the language lists. TvSettings (LanguagePickerFragment -> LocaleStore.getLevelLocales) lists
-# framework-res supported_locales, which has en-XA ("[Ƥšéûðö-Åççéñţš one two]") and ar-XB, and shows those two whenever
-# Settings.Global development_settings_enabled=1 (it is 1 on the HB, survey_hb-t5b/settings.txt). LocalePicker
-# .getSupportedLocales keeps only the ids this regex finds (Pattern.asPredicate, find()); ro.localization.locale_filter is
-# localization_prop, readable by every coredomain app. A NEGATIVE filter on purpose: LocalePicker.updateLocales tests the
-# same regex against Locale.toString() ("ru_RU"), so an allow-list would drop the user's own locale there.
-ro.localization.locale_filter=^(?!en-XA$|ar-XB$)
 # t8d: Lumen OS without Google, the Z9X mark (tools/lumen_v1.sh GMS=0 writes the same line; a Google edition has none).
 # The unchanged Z9X Google services add-on reads it: /system/etc/z9x/z9x_gapps.sh acts only with ro.z9x.gms=0 (else
 # sys.z9x.gapps=skip), installer/lib/gapps_fill.sh refuses to fill without it (T8D_NOTES.md). No HB app reads it.

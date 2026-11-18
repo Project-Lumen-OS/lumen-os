@@ -17,7 +17,8 @@ import org.lumen.projector.eye.EyeGuard;
 import org.lumen.projector.hal.HbFeatures;
 import org.lumen.projector.panel.QuickPanel;
 import org.lumen.projector.power.PowerPolicy;
-import org.lumen.projector.remote.RemoteAutoPair;
+import org.lumen.projector.remote.ProjectorRemoteHost;
+import org.lumen.remote.RemotePairing;
 import org.lumen.projector.ui.OverlayHost;
 
 /**
@@ -32,7 +33,7 @@ import org.lumen.projector.ui.OverlayHost;
  * (support_3D=0).
  *
  * v6.1 wiring (v6.1 design): OverlayHost (overlay windows), module installs (AkOverlay,
- * PowerPolicy, RemoteAutoPair, EyeGuard), one SCREEN_ON/OFF receiver that fans out to the focus motor,
+ * PowerPolicy, RemotePairing, EyeGuard), one SCREEN_ON/OFF receiver that fans out to the focus motor,
  * OverlayHost and PowerPolicy. Each install is isolated: one failing module never stops the others.
  */
 public final class App extends Application {
@@ -89,6 +90,7 @@ public final class App extends Application {
         // ===== v6.4: equalizer re-apply triggers (SoC PEQ, IGmpf 50/51) and AI sound (61(3) + 63 per app) =====
         try { org.lumen.projector.audio.SoundEq.install(this); } catch (Throwable t) { Log.e(TAG, "SoundEq.install", t); }
         try { org.lumen.projector.audio.AiSoundEngine.install(this); } catch (Throwable t) { Log.e(TAG, "AiSoundEngine.install", t); }
+        try { AiScenePolicy.install(this); } catch (Throwable t) { Log.e(TAG, "AiScenePolicy.install", t); }
         // vendor sound-restore detector (re-apply EQ / AI sub-mode when the vendor actually wrote)
         try { org.lumen.projector.audio.VendorSoundWatch.install(this); } catch (Throwable t) { Log.e(TAG, "VendorSoundWatch.install", t); }
         try {
@@ -97,6 +99,7 @@ public final class App extends Application {
             Log.e(TAG, "OverlayHost", t);
         }
         try { AkOverlay.install(this); } catch (Throwable t) { Log.e(TAG, "AkOverlay.install", t); }
+        org.lumen.control.android.PhoneRemote.start(this);   // the stock XGIMI phone app's remote (apps/core/lumen-control: discovery, connect, commands on the LAN)
         try { PowerPolicy.install(this); } catch (Throwable t) { Log.e(TAG, "PowerPolicy.install", t); }
         // HB beta6: a computer on USB keeps the projector out of deep sleep: say so once per connection (StrNotice)
         try { org.lumen.projector.power.StrNotice.install(this); } catch (Throwable t) { Log.e(TAG, "StrNotice.install", t); }
@@ -106,7 +109,7 @@ public final class App extends Application {
         try { org.lumen.projector.cec.HbSystemAudio.install(this); } catch (Throwable t) { Log.e(TAG, "HbSystemAudio.install", t); }
         // 2026-11-04 (as the Z9X): eARC the stock way (the HDMI ARC output while the vendor reports the eARC link)
         try { org.lumen.projector.cec.EarcLink.install(this); } catch (Throwable t) { Log.e(TAG, "EarcLink.install", t); }
-        try { RemoteAutoPair.install(this); } catch (Throwable t) { Log.e(TAG, "RemoteAutoPair.install", t); }
+        try { RemotePairing.install(this, new ProjectorRemoteHost()); } catch (Throwable t) { Log.e(TAG, "RemotePairing.install", t); }
         try { EyeGuard.install(this); } catch (Throwable t) { Log.e(TAG, "EyeGuard.install", t); }
         try { org.lumen.projector.voice.Assistant.install(this, new org.lumen.projector.voice.AssistantHost()); } catch (Throwable t) { Log.e(TAG, "Assistant.install", t); }
         // ===== Lumen OS 1.0.2: optical zoom, close a session a dead process left open (connect hook) =====
@@ -125,9 +128,15 @@ public final class App extends Application {
             try { org.lumen.projector.game.GameProfile.install(this); } catch (Throwable t) { Log.e(TAG, "GameProfile.install", t); }
             // the shared game menu (apps/core/lumen-menu) with the HB io, when the profile and this unit have it
             try { org.lumen.projector.panel.HbMenu.install(this); } catch (Throwable t) { Log.e(TAG, "HbMenu.install", t); }
+            // the signal panel (apps/core/lumen-signal): this app's gmpf reader, a stable new HDMI signal may show the card
+            try {
+                org.lumen.signal.SignalPanel.install(this, new org.lumen.projector.panel.GmpfSignalReader());
+                AiScenePolicy.addTvEventSink(org.lumen.signal.SignalPanel::onTvEvent);
+            } catch (Throwable t) { Log.e(TAG, "SignalPanel.install", t); }
         }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }
+        try { org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost()); } catch (Throwable t) { Log.e(TAG, "HdmiRelink.install", t); }
         // ===== v6.3 manual keystone: resume real-time keystone if a session could not (paused marker) =====
         try { org.lumen.projector.panel.ManualKeystonePanel.install(this); } catch (Throwable t) { Log.e(TAG, "ManualKeystonePanel.install", t); }
         // ===== Lumen OS 1.0: SetupBridge events, Recents boot-clean at user unlock =====
@@ -218,6 +227,7 @@ public final class App extends Application {
                     try { org.lumen.projector.audio.AiSoundEngine.onScreenOn(); } catch (Throwable t) { Log.w(TAG, "AiSoundEngine.onScreenOn: " + t); }
                     try { org.lumen.projector.audio.VendorSoundWatch.onScreenOn(); } catch (Throwable t) { Log.w(TAG, "VendorSoundWatch.onScreenOn: " + t); }
                     try { org.lumen.projector.source.HdmiSource.onScreenOn(); } catch (Throwable t) { Log.w(TAG, "HdmiSource.onScreenOn: " + t); }
+                    try { AiScenePolicy.reassert("screen on"); } catch (Throwable t) { Log.w(TAG, "AiScenePolicy: " + t); }
                     try { org.lumen.projector.source.BootSource.onPowerOn(c, "screen on"); } catch (Throwable t) { Log.w(TAG, "BootSource: " + t); }
                 }
             }

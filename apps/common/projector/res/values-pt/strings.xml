@@ -24,11 +24,6 @@
     <string name="val_off">Desativado</string>
     <string name="val_unknown">Sem dados</string>
     <string name="val_not_ready">Projetor não está pronto</string>
-    <string name="key_slot3">Botão iQIYI</string>
-    <string name="key_slot4">Botão bilibili</string>
-    <string name="slot_default_fmt">%1$s (padrão)</string>
-    <string name="slot_default_item">Padrão: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: Apps</string>
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Nenhum app encontrado para este botão</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Primeiro ative “Ajustar à tela”</string>
     <string name="toast_not_ready">O projetor ainda não está pronto</string>
     <string name="toast_failed">Não foi possível fazer isso</string>
-    <string name="toast_curtain_offer">A imagem se moveu: Projetor → Correção trapezoidal → “Ajustar à tela agora”</string>
+    <string name="toast_curtain_offer">A imagem se moveu: Projetor › Correção trapezoidal › “Ajustar à tela agora”</string>
     <string name="toast_setup_running">Conclua a configuração primeiro</string>
 </resources>

@@ -73,16 +73,6 @@ public final class LampOff {
         turnOff(ok -> cb.accept(ok ? ProjectorFeatures.Result.done(null) : ProjectorFeatures.Result.failed(null)));
     }
 
-    /**
-     * The brightness slider (MenuController, SliderRow edge): a fresh press towards the start while the level is at
-     * its minimum turns the light off the way the "Turn off screen" row does, only where the profile offers lamp.off.
-     * Every other press just steps the level, a press towards the end never turns the light off, and only the power
-     * key gives the light back ({@link #eats}). {@code dir} -1 = towards the start, {@code value} null = not read yet.
-     */
-    public static boolean offFromSlider(boolean offered, Integer value, int min, int dir, int repeatCount) {
-        return offered && dir < 0 && repeatCount == 0 && value != null && value <= min;
-    }
-
     /** A remote key: true = eaten (the device does nothing else with it). */
     public synchronized boolean eats(LampOffKey key, boolean down, int repeatCount, long downTime) {
         if (key == LampOffKey.POWER && off && down && repeatCount == 0) {

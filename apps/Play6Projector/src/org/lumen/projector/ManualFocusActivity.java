@@ -1,6 +1,5 @@
 package org.lumen.projector;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+
+import org.lumen.projector.ui.ToolActivity;
 
 /**
  * Translucent manual-focus overlay of the XGIMI Play 6: small bottom panel "Manual focus  ◀ ▶   OK/Back:
@@ -20,9 +21,12 @@ import android.view.WindowManager;
  * Ported from the Z9X 1.0.8 (parity focus items 10, 11): "any other key closes" as stock FocusAdjust (every
  * key but LEFT / RIGHT / BACK and service keys hides it); an autofocus start (focus key, vendor AF start
  * event) closes it through {@link #closeForAutofocus} without manualFocus(2).
+ * A Lumen tool screen (ToolActivity, org.lumen.menu.KeyTools): while it is in front a menu panel on screen steps
+ * aside, so LEFT / RIGHT / OK / BACK reach this window only, and the panel has the keys again where it was when this
+ * closes; the remote's menu key (the gear) closes it like any other key.
  * All motor work goes through MotorController (its own thread p6-motor).
  */
-public final class ManualFocusActivity extends Activity {
+public final class ManualFocusActivity extends ToolActivity {
     private static final String TAG = "P6ManualFocus";
     /** Stock FocusAdjust: closes 3 s after opening and after each key up (audit 2026-10-24, A12). */
     private static final long IDLE_CLOSE_MS = 3_000;
@@ -122,6 +126,13 @@ public final class ManualFocusActivity extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (!hasFocus && motor != null) motor.stop();
+    }
+
+    /** The remote's menu key (org.lumen.menu.KeyTools): stop first, then close, as every other key (stock FocusAdjust). */
+    @Override
+    public void onMenuKey(boolean held) {
+        if (motor != null) motor.stop();
+        if (!isFinishing()) finish();
     }
 
     @Override

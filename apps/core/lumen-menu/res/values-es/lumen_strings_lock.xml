@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Modo Juego activado</string>
+    <string name="lumen_m_ps_ai">Los ajustes profesionales no pueden usarse en el modo Calidad de imagen con IA</string>
+    <string name="lumen_m_ps_performance">Los ajustes profesionales no están disponibles en el modo de rendimiento de imagen</string>
+    <string name="lumen_m_ps_ai_basic">Los ajustes estándar no pueden usarse en el modo Calidad de imagen con IA</string>
+    <string name="lumen_m_ps_performance_basic">Los ajustes estándar no están disponibles en el modo de rendimiento de imagen</string>
+</resources>

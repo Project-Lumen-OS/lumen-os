@@ -2,9 +2,11 @@ package org.lumen.projector.panel;
 
 import org.lumen.menu.FeatureId;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -63,7 +65,6 @@ public final class HbMenuGates {
             {FeatureId.INPUT, null},
             {FeatureId.BLUETOOTH, null},
             {FeatureId.NETWORK, null},
-            {FeatureId.USB_FILES, null},
             {FeatureId.GAME_MODE, "GAME_MODE"},
             {FeatureId.GAME_SPEED, "GAME_MODE"},
             {FeatureId.GAME_ALLM, "GAME_MODE"},
@@ -73,6 +74,7 @@ public final class HbMenuGates {
             {FeatureId.SETTINGS_PROJECTOR, null},
             {FeatureId.SETTINGS_CEC, null},
             {FeatureId.SETTINGS_RECENTS, null},
+            {FeatureId.SETTINGS_SLEEP_TIMER, null},
             {FeatureId.SETTINGS_LAUNCHER, null},
     };
 
@@ -154,7 +156,7 @@ public final class HbMenuGates {
     /** Projection: auto = MOTION 8 on; table / ceiling = put mode family (DISPLAY 2 / 3, front or rear kept). */
     static final Table PROJECTION = new Table(FeatureId.PROJECTION_MODE, "auto", 0, "table", 1, "ceiling", 2);
     /** Sound output kinds: the AudioOutputKind names in lower case (HbOutputRows order). */
-    static final Table OUTPUT = new Table(FeatureId.SOUND_OUTPUT, "auto", 0, "speaker", 1, "arc", 2, "bt", 3, "wired", 4, "usb", 5);
+    static final Table OUTPUT = new Table(FeatureId.SOUND_OUTPUT, "auto", 0, "speaker", 1, "arc", 2, "wired", 4, "bt", 3, "usb", 5);
     /** digital_output_format, stock order PCM, Passthrough, Auto (DigitalOutputFormat ordinals PCM 1, PASSTHROUGH 2, AUTO 0). */
     static final Table FORMAT = new Table(FeatureId.SOUND_FORMAT, "pcm", 1, "passthrough", 2, "auto", 0);
     /** Home screen choice. */
@@ -180,6 +182,22 @@ public final class HbMenuGates {
             case 4: return "WIRED";
             default: return "USB";
         }
+    }
+
+    /**
+     * The output row's options: the tokens of the rows the HB offers now (HbOutputOptions: connected outputs, the
+     * soundbar while known, Headphones, the stored choice), in that order, each once. 2026-11-14 (Slava): without them
+     * the row listed every profile option, so it stepped onto Bluetooth with none connected, the HB refused it and the
+     * row kept showing Bluetooth over the stored Headphones.
+     */
+    static List<String> outputTokens(List<String> kinds) {
+        List<String> out = new ArrayList<>();
+        if (kinds == null) return out;
+        for (String k : kinds) {
+            String t = outputToken(k);
+            if (t != null && !out.contains(t)) out.add(t);
+        }
+        return out;
     }
 
     /** Output token of an AudioOutputKind name, null when unknown. */

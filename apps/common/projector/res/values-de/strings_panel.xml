@@ -77,8 +77,6 @@
     <string name="panel_pm_performance_msg">Die Lüftungsöffnungen dürfen nicht verdeckt und der Raum nicht wärmer als 25 °C sein. Diesen Modus nicht lange verwenden.</string>
     <string name="panel_lamp">Helligkeit</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Für Boost noch einmal → drücken</string>
-    <string name="panel_boost_leave_press_again">Zum Beenden von Boost noch einmal ← drücken</string>
     <string name="panel_boost_3d">3D ausschalten und erneut versuchen</string>
     <string name="panel_boost_hot">Der Projektor ist für Boost zu warm. Später erneut versuchen</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -148,7 +146,6 @@
     <string name="panel_tile_hdmi_only">Nur HDMI</string>
     <string name="panel_system_settings">Systemeinstellungen</string>
     <string name="panel_hdmi_settings">HDMI-Einstellungen</string>
-    <string name="panel_lamp_hint">Bei 10 zweimal → drücken, um Boost einzuschalten.</string>
     <string name="panel_eye_desc">Das Licht wird gedimmt, wenn sich jemand vor dem Objektiv befindet.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Nebeneinander</string>

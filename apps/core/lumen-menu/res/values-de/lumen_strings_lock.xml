@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Gaming-Modus aktiv</string>
+    <string name="lumen_m_ps_ai">Professionelle Einstellungen können im Bildmodus KI-Qualität nicht verwendet werden.</string>
+    <string name="lumen_m_ps_performance">Professionelle Einstellungen werden im Performance-Bildmodus nicht unterstützt.</string>
+    <string name="lumen_m_ps_ai_basic">Die Standardeinstellungen können im Bildmodus KI-Qualität nicht verwendet werden.</string>
+    <string name="lumen_m_ps_performance_basic">Standardeinstellungen werden im Performance-Bildmodus nicht unterstützt.</string>
+</resources>

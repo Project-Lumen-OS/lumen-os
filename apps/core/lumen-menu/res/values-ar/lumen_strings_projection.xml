@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">ذاكرة العدسة</string>
+    <string name="lumen_m_focus_guide">التركيز بجهاز التحكم</string>
+    <string name="lumen_qpd_tip_focus_guide">اضغط زر التركيز على جانب جهاز التحكم وسيضبط جهاز العرض التركيز بنفسه. اضغط مطولا لضبط التركيز يدويا.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">اضغط زر التركيز في جهاز التحكم وسيضبط جهاز العرض التركيز بنفسه. اضغط مطولا لضبط التركيز يدويا.</string>
+</resources>

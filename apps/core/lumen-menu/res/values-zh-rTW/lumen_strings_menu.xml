@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">色彩範圍</string>
     <string name="lumen_m_hdmi_range_full">完整</string>
     <string name="lumen_m_hdmi_range_limited">限制</string>
+    <string name="lumen_m_hdmi_range_auto_full">自動 (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">自動 (Limited)</string>
     <string name="lumen_m_kst_more">其他</string>
+    <string name="lumen_m_kst_size_position">大小和位置</string>
+    <string name="lumen_m_kst_smart">智慧</string>
     <string name="lumen_m_kst_restore">回復原始畫面</string>
     <string name="lumen_m_launcher_classic">Android TV（經典）</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">遊戲模式</string>
     <string name="lumen_m_panel_game_speed">反應速度</string>
     <string name="lumen_m_panel_high">高</string>
-    <string name="lumen_m_panel_image_correction_settings">畫面校正設定</string>
     <string name="lumen_m_panel_lamp">亮度</string>
     <string name="lumen_m_panel_lamp_hint">在 10 級時連按兩次 → 開啟 Boost。</string>
     <string name="lumen_m_panel_low">低</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">關閉</string>
     <string name="lumen_m_panel_on">開啟</string>
     <string name="lumen_m_panel_optical_zoom">光學變焦</string>
-    <string name="lumen_m_panel_optical_zoom_summary">改變畫面大小，不損失清晰度。自動梯形校正和「對齊布幕」會再次調整變焦。</string>
     <string name="lumen_m_panel_picture_mode">影像模式</string>
     <string name="lumen_m_panel_picture_reset">重設影像設定</string>
     <string name="lumen_m_panel_pm_ai">AI 畫質</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">水平角度</string>
     <string name="lumen_m_angle_v">俯仰角度</string>
     <string name="lumen_m_dynamic_contrast">動態對比度</string>
-    <string name="lumen_m_dynamic_black">動態黑位增強</string>
+    <string name="lumen_m_dynamic_black">動態黑階增強</string>
     <string name="lumen_m_sleep_timer">睡眠定時</string>
     <string name="lumen_m_remote">配對遙控器</string>
     <string name="lumen_m_ct_standard">標準</string>
     <string name="lumen_m_ct_movie">電影</string>
+    <string name="lumen_m_signal">訊號</string>
+    <string name="lumen_m_signal_pin">訊號卡片持續顯示</string>
+    <string name="lumen_m_signal_refresh">訊號卡片更新</string>
+    <string name="lumen_m_signal_refresh_normal">一般</string>
+    <string name="lumen_m_signal_refresh_fast">快速</string>
+    <string name="lumen_m_signal_refresh_note">快速：畫面偶爾可能卡頓</string>
+    <string name="lumen_m_hdr_developer">開發人員</string>
 </resources>

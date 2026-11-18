@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Edit menu</string>
+    <string name="lumen_qe_your_menu">Your menu</string>
+    <string name="lumen_qe_hint_select">OK: set up a tile</string>
+    <string name="lumen_qe_preview">Preview</string>
+    <string name="lumen_qe_subtitle">Only what this projector can do.</string>
+    <string name="lumen_qe_density">Menu look</string>
+    <string name="lumen_qe_tiles">Tiles</string>
+    <string name="lumen_qe_tiles_sub">Several in a row</string>
+    <string name="lumen_qe_list">List</string>
+    <string name="lumen_qe_list_sub">One per row</string>
+    <string name="lumen_qe_show">What to show</string>
+    <string name="lumen_qe_in_menu">In menu</string>
+    <string name="lumen_qe_add">Add</string>
+    <string name="lumen_qe_new">New</string>
+    <string name="lumen_qe_reset">Reset to default</string>
+    <string name="lumen_qe_select">Select</string>
+    <string name="lumen_qe_done">Done</string>
+    <string name="lumen_qe_back">Back</string>
+    <string name="lumen_qe_close_panel">Close panel</string>
+    <string name="lumen_qe_how">How to show</string>
+    <string name="lumen_qe_now" formatted="true">Now: %1$s</string>
+    <string name="lumen_qe_slider">Slider</string>
+    <string name="lumen_qe_slider_sub">Changes right in the menu</string>
+    <string name="lumen_qe_wide">Wide tile</string>
+    <string name="lumen_qe_wide_sub">Name and value</string>
+    <string name="lumen_qe_small">Tile</string>
+    <string name="lumen_qe_small_sub">Icon only</string>
+    <string name="lumen_qe_round">Circle</string>
+    <string name="lumen_qe_round_sub">In the top row</string>
+    <string name="lumen_qe_footer">Button below</string>
+    <string name="lumen_qe_footer_sub">Under the tiles</string>
+    <string name="lumen_qe_panel_note">A tile, a wide tile and a circle open the panel to the right of the menu.</string>
+    <string name="lumen_qe_place">Place</string>
+    <string name="lumen_qe_move">Move</string>
+    <string name="lumen_qe_remove">Remove from menu</string>
+    <string name="lumen_qe_moving">Moving</string>
+    <string name="lumen_qe_move_hint">Circles move only in the top row, tiles only between the rows. To make a tile a circle, change its look.</string>
+    <string name="lumen_qe_put">Put here</string>
+    <string name="lumen_qe_cancel">Cancel</string>
+    <string name="lumen_qe_full">The menu is full. Choose a smaller look or the List look.</string>
+    <string name="lumen_qe_list_full">That many items do not fit in a list. Remove a few first.</string>
+    <string name="lumen_qe_pinned">This button always stays in the menu.</string>
+    <string name="lumen_m_volume">Volume</string>
+    <string name="lumen_qe_pq_brightness">Picture brightness</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s moves through the menu. The rest make room.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s: new place</string>
+    <string name="lumen_qe_move_keys">Move</string>
+    <string name="lumen_qe_move_cancel">Cancel, put it back</string>
+</resources>

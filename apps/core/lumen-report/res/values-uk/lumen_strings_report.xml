@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">Надіслати звіт про проблему</string>
+    <string name="lumen_report_intro">Допоможе розробнику Lumen OS зрозуміти, що пішло не так. Нічого не надсилається, доки ви не натиснете «Надіслати звіт».</string>
+    <string name="lumen_report_included">Що входить</string>
+    <string name="lumen_report_inc_system">Версія системи, час роботи та яка копія системи запущена</string>
+    <string name="lumen_report_inc_logs">Журнали системи та програм Lumen за останні 30 хвилин</string>
+    <string name="lumen_report_inc_crashes">Записи про збої, зависання та перезапуски з назвами програм</string>
+    <string name="lumen_report_inc_kernel">Журнал ядра останнього перезапуску та журнал оновлення</string>
+    <string name="lumen_report_inc_state">Екран, пам’ять і тип мережі</string>
+    <string name="lumen_report_excluded">Що видаляється або не входить</string>
+    <string name="lumen_report_exc_accounts">Облікові записи, адреси ел. пошти та номери телефонів</string>
+    <string name="lumen_report_exc_network">Назви мереж Wi-Fi, IP- та MAC-адреси</string>
+    <string name="lumen_report_exc_serial">Серійний номер: замість нього випадковий ID цього проєктора</string>
+    <string name="lumen_report_exc_apps">Журнали програм, які ви встановили самі</string>
+    <string name="lumen_report_exc_files">Фото, файли та паролі</string>
+    <string name="lumen_report_footer">Звіт зберігається 30 днів. Відкрити його може лише розробник Lumen OS.</string>
+    <string name="lumen_report_last">Останній звіт: %1$s, %2$s</string>
+    <string name="lumen_report_send">Надіслати звіт</string>
+    <string name="lumen_report_collecting">Збір відомостей… (%1$d з %2$d)</string>
+    <string name="lumen_report_log_hint">Якщо Android запитає, чи дозволити доступ до журналів пристрою, виберіть «Дозволити».</string>
+    <string name="lumen_report_sending">Надсилання… %1$s з %2$s</string>
+    <string name="lumen_report_done_title">Звіт надіслано</string>
+    <string name="lumen_report_done_text">Повідомте цей код розробнику Lumen OS разом із коротким описом проблеми.</string>
+    <string name="lumen_report_failed_title">Звіт не надіслано</string>
+    <string name="lumen_report_err_no_network">Немає підключення до інтернету. Перевірте мережу та спробуйте ще раз.</string>
+    <string name="lumen_report_err_network">Сервер звітів недоступний. Спробуйте пізніше.</string>
+    <string name="lumen_report_err_rate">Зараз забагато звітів. Спробуйте пізніше.</string>
+    <string name="lumen_report_err_rejected">Сервер звітів не прийняв звіт.</string>
+    <string name="lumen_report_err_server">На сервері звітів сталася помилка. Спробуйте пізніше.</string>
+    <string name="lumen_report_err_collect">Не вдалося підготувати звіт.</string>
+    <string name="lumen_report_retry">Повторити</string>
+    <string name="lumen_report_close">Закрити</string>
+    <string name="lumen_report_cancel">Скасувати</string>
+    <string name="lumen_report_auto">Надсилати звіти про проблеми автоматично</string>
+    <string name="lumen_report_auto_note">Якщо система або програма Lumen аварійно закриється чи зависне, короткий звіт надішлеться сам. Журналів програм, які ви встановили, у ньому немає.</string>
+    <string name="lumen_report_queued_title">Звіт буде надіслано пізніше</string>
+    <string name="lumen_report_queued_text">Сервер звітів зараз недоступний. Проєктор сам надішле звіт, щойно зможе. Тоді тут з’явиться його код.</string>
+    <string name="lumen_report_last_auto">Останній автоматичний звіт: %1$s, %2$s</string>
+</resources>

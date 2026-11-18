@@ -118,7 +118,6 @@ keys/public/platform.x509.pem	tools/sign/release_certs/platform.x509.pem
 keys/public/releasekey.x509.pem	tools/sign/release_certs/releasekey.x509.pem
 keys/public/sdk_sandbox.x509.pem	tools/sign/release_certs/sdk_sandbox.x509.pem
 keys/public/shared.x509.pem	tools/sign/release_certs/shared.x509.pem
-system/etc/audio_policy_engine_stream_volumes.xml	overlay/v1/audio_policy_engine_stream_volumes.xml
 system/etc/build_prop_v1.txt	overlay/v1/build_prop_v1.txt
 system/etc/legacy/xgimi_compat.rc	overlay/xgimi_compat.rc
 system/etc/legacy/z9x_build_prop.txt	overlay/z9x_build_prop.txt
@@ -133,7 +132,6 @@ system/etc/z9x-projector-default-permissions.xml	overlay/v1/z9x-projector-defaul
 system/etc/z9x-sysconfig-nogms.xml	overlay/v1/z9x-sysconfig-nogms.xml
 system/etc/z9x-sysconfig.xml	overlay/v1/z9x-sysconfig.xml
 system/etc/z9x_adb_net.rc	overlay/v1/z9x_adb_net.rc
-system/etc/z9x_audio.rc	overlay/v1/z9x_audio.rc
 system/etc/z9x_base.rc	overlay/v1/z9x_base.rc
 system/etc/z9x_bootinfo.rc	overlay/v1/z9x_bootinfo.rc
 system/etc/z9x_bootinfo.sh	overlay/v1/z9x_bootinfo.sh

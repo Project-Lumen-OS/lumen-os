@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "device": "hb",
+  "channel": "hb-test",
+  "published_utc": 1794775374,
+  "version": "1.0.10-beta16",
+  "version_code": 1001016,
+  "build_utc": 1792842929,
+  "build_id": "lumen-hb-1.0.10-beta16-202611152029",
+  "requires": {
+    "vendor_incremental": [
+      "v6.16.24",
+      "v6.17.12"
+    ],
+    "min_version_code": 1000000,
+    "blobs_set": [
+      "hb-v61624-a"
+    ]
+  },
+  "changelog": {
+    "en": "Lumen OS HB 1.0.10-beta16 (beta): the soundbar over HDMI ARC plays again after a start, HDMI input sound goes to the soundbar, the projector remote changes the soundbar volume and shows its level, Auto, Speaker and Headphones work as in the XGIMI system, volume as in the XGIMI system on every output, locked AI mode rows are grey. Smaller fixes.",
+    "ru": "Lumen OS HB 1.0.10-beta16 (бета): саундбар по HDMI ARC снова играет после включения, звук с HDMI входов идёт на саундбар, пульт проектора меняет громкость саундбара и показывает её уровень, «Авто», «Динамик» и «Наушники» работают как в системе XGIMI, громкость как в системе XGIMI на всех выходах, закрытые строки режима AI серые. Мелкие исправления."
+  },
+  "packages": [
+    {
+      "type": "full",
+      "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/lumen-os-hb-1.0.10-beta16-nogms-full-ota.zip",
+      "size": 451657583,
+      "sha256": "8efa2b1055e767f612c7ca63a6dff8bb0873bfc3abea23af1a9d128c9942f57b",
+      "payload_offset": 41,
+      "payload_size": 451638895,
+      "metadata_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta16/lumen-os-hb-1.0.10-beta16-nogms-full-payload_metadata.bin",
+      "metadata_size": 17892,
+      "metadata_sha256": "1237f5e0187f44b280e203a3f47b4e1455a703c99f7b7133247361e8c53a7b3d",
+      "payload_properties": [
+        "FILE_HASH=cFFmtwsCJXSsPQM52ia0pT7ZcoNdOXVHPBI+PQYirK8=",
+        "FILE_SIZE=451638895",
+        "METADATA_HASH=82S5qZjMqkUX/SX4FTdSUnvTb/UQagSRrU3M5qXtGoE=",
+        "METADATA_SIZE=17369"
+      ]
+    }
+  ]
+}

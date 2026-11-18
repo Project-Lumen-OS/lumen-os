@@ -202,6 +202,7 @@ public final class GameMenu {
             CAPS.allow(items(p.gameItems(), sHost.hasStaticLayers())); // only the items of devices/<c>/menu.json
             CAPS.gate(p.gameGated());          // and those its game_menu.gated names only once their getter answers
             GmModel.setSounds(p.gameSounds().size());       // the stock game sound values of this model
+            GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());    // VRR only at top speed where the stock says so
             if (Watch.sInstance == null) Watch.sInstance = new Watch(c.getApplicationContext());
         } catch (Throwable t) {
             Log.e(TAG, "install", t);

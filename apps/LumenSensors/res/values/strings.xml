@@ -27,7 +27,7 @@
     <string name="refresh_fmt">%1$d s</string>
     <string name="set_boot">Start at boot</string>
     <string name="set_groups">Groups</string>
-    <string name="set_hint">Remote: in Projector → Remote keys, give the iQIYI or bilibili key to Sensors. The key then opens this screen, and OK on the first row turns the overlay on or off.</string>
+    <string name="set_hint">Remote: in Projector › Remote keys, give the iQIYI or bilibili key to Sensors. The key then opens this screen, and OK on the first row turns the overlay on or off.</string>
 
     <!-- foreground service notification -->
     <string name="notif_channel">Sensor overlay</string>

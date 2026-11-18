@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">أصوات الأزرار</string>
+    <string name="lumen_m_hdmi_options">خيارات مداخل HDMI</string>
+    <string name="lumen_m_colour_vision">تحسين رؤية الألوان</string>
+    <string name="lumen_m_temperature">درجة الحرارة</string>
+    <string name="lumen_m_colour_vision_gray">تدرج الرمادي</string>
+    <string name="lumen_m_colour_vision_red_green">أحمر/أخضر</string>
+    <string name="lumen_m_colour_vision_green_red">أخضر/أحمر</string>
+    <string name="lumen_m_colour_vision_blue_yellow">أزرق/أصفر</string>
+</resources>

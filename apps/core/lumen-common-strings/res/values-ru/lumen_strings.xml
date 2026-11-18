@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Трапеция</string>
     <string name="lumen_later">Позже</string>
     <string name="lumen_limited">Ограниченный</string>
-    <string name="lumen_looking_for_the_remote">Ищу пульт…</string>
     <string name="lumen_manual_focus">Ручной фокус</string>
     <string name="lumen_movie">Кино</string>
     <string name="lumen_music">Музыка</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Недоступно на уровне яркости Boost</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">Недоступно в режиме «AI-качество»</string>
     <string name="lumen_not_available_in_the_office_mode">Недоступно в режиме «Офис»</string>
+    <string name="lumen_not_available_in_the_performance_mode">Недоступно в режиме «Производительность»</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Недоступно, пока включён игровой режим</string>
     <string name="lumen_obstacle_avoidance">Обход препятствий</string>
     <string name="lumen_off">Выкл</string>
     <string name="lumen_office">Офис</string>

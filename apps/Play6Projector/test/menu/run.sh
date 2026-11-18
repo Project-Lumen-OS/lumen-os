@@ -17,7 +17,7 @@ PROFILE=$GSI/devices/dragon_healthy/menu.json
 P=$HERE/src/org/lumen/projector
 # a hal source of the assembled tree, else of its layer (apps/Play6Projector, lumen-gmpf, the Z9X value types)
 hal() {
-  for d in "$P/hal" "$GSI/apps/core/lumen-gmpf/src/org/lumen/projector/hal" "$GSI/apps/Z9xProjector/src/org/lumen/projector/hal"; do
+  for d in "$P/hal" "$GSI/apps/core/lumen-gmpf/src/org/lumen/projector/hal" "$GSI/apps/ProjectorBase/src/org/lumen/projector/hal"; do
     [ -f "$d/$1.java" ] && { printf '%s' "$d/$1.java"; return; }
   done
   echo "menu: no hal source $1" >&2; exit 1

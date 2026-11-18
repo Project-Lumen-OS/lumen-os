@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
+     locale zh-rCN) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">3D设置</string>
+    <string name="lumen_m_3d_off">关闭3D</string>
+    <string name="lumen_m_3d_sbs">左右3D</string>
+    <string name="lumen_m_3d_tb">上下3D</string>
+    <string name="lumen_m_3d_sbs_2d">左右3D转2D</string>
+    <string name="lumen_m_3d_tb_2d">上下3D转2D</string>
+    <string name="lumen_m_3d_frame_packing">蓝光3D</string>
+    <string name="lumen_m_3d_summary">播放视频时可用。3D需要DLP-Link主动快门眼镜。</string>
+    <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale zh-rCN) -->
+    <string name="lumen_m_3d_game">游戏模式下不支持3D设置</string>
+    <string name="lumen_m_3d_no_video">请播放视频或接入信号源后重试</string>
+    <string name="lumen_m_3d_4k">4K视频下不支持3D设置</string>
+    <string name="lumen_m_3d_hdr">HDR视频下不支持3D设置</string>
+    <string name="lumen_m_3d_120hz">至臻120Hz下不能3D播放</string>
+    <string name="lumen_m_3d_high_fps">高帧率下不支持3D设置</string>
+</resources>

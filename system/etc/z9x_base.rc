@@ -15,10 +15,15 @@
 #    which blocks kernel suspend and therefore the vendor's lamp-off.
 #  - sys.z9x.feat=1: kept only for compatibility. The v6.1 Projector app no longer reads it
 #    (HalController.featureEnabled() is always true); the boot logger prints it.
+#  - persist.bluetooth.disableabsvol=true: no AVRCP absolute volume, as the stock vendor build.prop (line 187), so
+#    the projector's DSP sets the Bluetooth level from the volume (bluetooth_volume, lumen-audio StockVolume) and the
+#    headphones keep their own volume. A persistent prop: setprop here also replaces the false stored by 1.0.6..1.0.11
+#    (product build.prop then) or by the developer option, and early-boot runs before system_server starts Bluetooth.
 on early-boot
     setprop bluetooth.core.gap.le.privacy.enabled false
     setprop ro.audio.flinger_standbytime_ms 30000
     setprop sys.z9x.feat 1
+    setprop persist.bluetooth.disableabsvol true
 
 # ---- v6.5: the v6.4 AFBC workaround is removed (vendor.mtk.disable.layer.afbc /
 # vendor.mtk.enable.framebuffer.afbc are back to the vendor defaults). The block noise after a quick

@@ -136,6 +136,8 @@ vocabulary() {
   done
 }
 step i18n_vocabulary vocabulary
+# no user-visible string of any app carries DSU, vbmeta or slot, in any language (tools/i18n/ui_words.py)
+step i18n_ui_words python3 -B tools/i18n/test/ui_words_test.py
 # the gmpf AIDL code tables: every AIDL model's full table = devices/_hal/gmpf-aidl/base.tsv + its hal/codes.delta.tsv
 step hal_codes python3 -B tools/hal/gen_codes.py --check
 step publish_audit publish

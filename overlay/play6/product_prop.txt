@@ -23,12 +23,9 @@ bluetooth.device.default_name=XGIMI Play 6
 bluetooth.device.class_of_device=44,4,60
 # The base product build.prop says "emulator" (stock: tv). Check on the device that `wm density` stays 320.
 ro.build.characteristics=tv
-# First-boot language (t19, docs/play6/impl/setup-design.md section 8): the vendor sets ro.product.locale=zh-CN
-# (a China build), so wiped data, and with it Lumen Setup's first step and its preselected language, would start
-# in Chinese. English as on the Z9X image; the language the owner picks in the Setup is persist.sys.locale in
-# /data and wins from then on. The time zone has no default here (the vendor's Asia/Shanghai stays until the
-# Setup's IP lookup, or the owner in its Done step, sets one; a fixed default is an owner decision).
-ro.product.locale=en-US
+# First-boot language and time zone: devices/_image/first_start_prop.txt, the one setting of every model, appended
+# after these lines by the recipe (devices/dragon_healthy/image/steps.tsv). It replaced the Play 6 line of t19
+# (docs/play6/impl/setup-design.md section 8) and the vendor's Asia/Shanghai (owner 2026-11-13: no fixed zone).
 
 # ---- performance (docs/play6/inventory/D_play6_performance.md 6.1, plan section 4 items 7 and 8). The vendor
 # build.prop already sets ro.config.low_ram=true, the dalvik heap (8m/192m/512m, 0.75, 512k/2m), dex2oat

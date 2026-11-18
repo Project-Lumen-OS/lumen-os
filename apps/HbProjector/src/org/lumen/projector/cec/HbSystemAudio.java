@@ -15,10 +15,13 @@
  * to turn the soundbar on (HdmiTvClient.setSystemAudioMode), and never the persistent setting system_audio_control
  * (the CEC page's soundbar switch stays the user's).
  *
- * Rules (HbAudioRules.systemAudioFor / systemAudioChange): "Speaker" -> System Audio off; "Soundbar" (ARC) or "Auto"
- * -> on; other choices unchanged. Only with CEC on, System Audio Control on, an audio system known, and a mode that
- * differs. System Audio off ends ARC (AOSP HdmiCecLocalDeviceTv.setSystemAudioMode -> startArcAction(false)), so the
- * panel keeps a soundbar row while the soundbar is known (audio/HbOutputOptions, audio/HbOutputRows).
+ * Rules (lumen-audio SoundbarMode, through HbAudioRules): "Soundbar" (ARC) or "Auto" -> System Audio on; every other
+ * choice, "Speaker" too, leaves it unchanged. Only with CEC on, System Audio Control on, an audio system known, and a
+ * mode that differs; choosing "Soundbar" asks also while System Audio is on (2026-11-14, SoundbarMode.requestOnChoice:
+ * an LG soundbar moved to its Bluetooth input stays there until a &lt;System Audio Mode Request&gt;, the framework flag
+ * does not say which input it listens to). Speaker never turns System Audio off (2026-11-15, as stock): that ended ARC
+ * (AOSP HdmiCecLocalDeviceTv.setSystemAudioMode -> startArcAction(false)), and the soundbar or Auto chosen later
+ * initiated ARC again under a running stream, which the LG SK8 played silent until the stream restarted.
  *
  * CEC volume control (hb-t12 tester, 2026-11-01 15:53): "Speaker" was the stored choice since the boot, but nothing
  * turned System Audio off at the boot (the framework's auto initiation turned it on at 15:38:22, FOR_HDMI_SYSTEM_AUDIO
@@ -33,9 +36,6 @@
  *   <li>Applied on a choice, 10 s and 40 s after the start (CEC discovery and the auto initiation of the boot),
  *       10 s after SCREEN_ON (after CecPolicy's soundbar on, 4 s + 4 s fallback), when an ARC / eARC output appears
  *       (the soundbar or CecPolicy turned System Audio on), and when anyone changes volume control.</li>
- *   <li>With "Speaker" also System Audio off again on those events (HbAudioRules.autoSystemAudioOff, at most once in
- *       30 s): this covers CecPolicy's "turn on the soundbar with the projector" after a wake (shared Z9X file,
- *       unchanged).</li>
  * </ul>
  *
  * Binder work on the thread "z9x-hbsam". Log tag Z9xHbSam.
@@ -53,6 +53,7 @@ import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.util.Log;
 
+import org.lumen.audio.SoundbarMode;
 import org.lumen.projector.audio.AudioOutputChoice;
 import org.lumen.projector.audio.AudioOutputKind;
 import org.lumen.projector.audio.HbAudioRules;
@@ -66,8 +67,6 @@ public final class HbSystemAudio {
     private static final Object CHECK_TOKEN = new Object();
     private static Handler sH;
     private static Context sApp;
-    /** uptime of the last automatic System Audio switch-off, -1 = never (z9x-hbsam only). */
-    private static long sAutoOffAt = -1;
 
     private HbSystemAudio() {}
 
@@ -132,28 +131,14 @@ public final class HbSystemAudio {
         h.postAtTime(() -> enforce(why), CHECK_TOKEN, SystemClock.uptimeMillis() + Math.max(0, delayMs));
     }
 
-    /** z9x-hbsam: CEC volume control from the stored choice; with "Speaker" System Audio off again if on. */
+    /** z9x-hbsam: CEC volume control from the stored choice (System Audio stays as the soundbar and the choice left it). */
     private static void enforce(String why) {
         try {
             Context app = sApp;
             if (app == null) return;
             AudioOutputKind k = AudioOutputChoice.kind(app);
-            String kind = k == null ? null : k.name();
             HdmiControlManager m = CecSettings.hm(app);
-            if (m == null) return;
-            applyVolumeControl(m, app, kind, why);
-            boolean cecOn = Boolean.TRUE.equals(CecSettings.masterOn(app));
-            boolean controlOn = Boolean.TRUE.equals(CecSettings.soundbarOn(app));
-            boolean avr = CecDevices.audioSystem(app) != null;
-            boolean modeOn = m.getSystemAudioMode();
-            long now = SystemClock.uptimeMillis();
-            long since = sAutoOffAt < 0 ? -1 : now - sAutoOffAt;
-            if (!HbAudioRules.autoSystemAudioOff(kind, cecOn, controlOn, avr, modeOn, since)) return;
-            HdmiTvClient tv = m.getTvClient();
-            if (tv == null) return;
-            sAutoOffAt = now;
-            Log.i(TAG, why + ": " + kind + " chosen, system audio on -> off");
-            tv.setSystemAudioMode(false, result -> Log.i(TAG, "system audio off (" + why + ") -> " + result));
+            if (m != null) applyVolumeControl(m, app, k == null ? null : k.name(), why);
         } catch (Throwable t) {
             Log.w(TAG, "enforce (" + why + "): " + t);
         }
@@ -181,7 +166,7 @@ public final class HbSystemAudio {
         Handler h = handler();
         if (h == null) return;
         if (want == null) {
-            // BT / wired / USB: System Audio unchanged, CEC volume control off (HbAudioRules.cecVolumeFor)
+            // Speaker / BT / wired / USB: System Audio unchanged, CEC volume control off (HbAudioRules.cecVolumeFor)
             h.post(() -> {
                 HdmiControlManager m = CecSettings.hm(app);
                 if (m != null) applyVolumeControl(m, app, kind, "choice");
@@ -213,14 +198,15 @@ public final class HbSystemAudio {
             boolean controlOn = Boolean.TRUE.equals(CecSettings.soundbarOn(app));
             boolean avr = CecDevices.audioSystem(app) != null;
             boolean modeOn = m.getSystemAudioMode();
-            if (!HbAudioRules.systemAudioChange(want, cecOn, controlOn, avr, modeOn)) {
+            if (!SoundbarMode.requestOnChoice(kind, cecOn, controlOn, avr, modeOn)) {
                 Log.i(TAG, "choice " + kind + ": system audio stays " + (modeOn ? "on" : "off") + " (cec " + cecOn
                         + ", control " + controlOn + ", audio system " + avr + ")");
                 return;
             }
             HdmiTvClient tv = m.getTvClient();
             if (tv == null) return;
-            Log.i(TAG, "choice " + kind + ": system audio -> " + (want ? "on" : "off"));
+            Log.i(TAG, "choice " + kind + ": system audio -> " + (want ? "on" : "off")
+                    + (want == modeOn ? " (asked again: the soundbar may listen to another input)" : ""));
             tv.setSystemAudioMode(want, result -> Log.i(TAG, "system audio " + (want ? "on" : "off") + " -> " + result));
         } catch (Throwable t) {
             Log.w(TAG, "system audio for " + kind + ": " + t);

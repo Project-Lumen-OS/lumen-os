@@ -41,6 +41,7 @@ IGmpf	GMPF_SET_DLP_LUMENS_LEVEL	176	setDlpLumensLevel	W=writeUint8 R=	set	Play6P
 IGmpf	GMPF_GET_DLP_LUMENS_LEVEL	177	getDlpLumensLevel	W= R=readUint8	get	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 177); client Play6Gmpf
 IGmpf	GMPF_SET_DLP_LUMENS_COMPONENT_RGB_LEVEL	178	setDlpLumensComponent_RGB_Level	W=writeBuffer R=	set	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 178); client Play6Gmpf
 IGmpf	GMPF_GET_DLP_LUMENS_COMPONENT_RGB_LEVEL	179	getDlpLumensComponent_RGB_Level	W= R=	get	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 179); client Play6Gmpf
+IGmpf	GMPF_IS_VIDEO_PLAYING	180	isVideoPlaying	W= R=readBool	get	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 180); client Play6Gmpf
 IGmpf	GMPF_CORRECT_KEYSTONE_FULL_PIONT	185	correctKeystoneFullPiont	W=writeBuffer R=readInt32	call	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 185); client Play6Gmpf
 IGmpf	GMPF_GET_CORRECT_KEYSTONE_FULL_PIONT	186	getCorrectKeystoneFullPiont	W=writeUint8 R=	get	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 186); client Play6Gmpf
 IGmpf	GMPF_SET_SCREEN_ON_OFF	195	setScreenOnOff	W=writeBool R=	set	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 195); client Play6Gmpf
@@ -57,6 +58,7 @@ IGmpf	GMPF_SET_POWER_LISTENER	242	setPowerListener	W=writeInt32,writeStrongBinde
 IGmpf	GMPF_CONNECT_PROJECTOR_FOCUS_MANAGER	298	connectProjectorFocusManager	W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=	call	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 298); client Play6Gmpf
 IGmpf	GMPF_MANUAL_FOCUS	300	manualFocus	W=writeUint8 R=	call	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 300); client Play6Gmpf
 IGmpf	GMPF_SET_PROJECTOR_FOCUS_LISTENER	306	setProjectorFocusListener	W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=	set	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 306); client Play6Gmpf
+IGmpf	GMPF_SET_GM_TV_LISTENER	702	setGmTvListener	W=writeInt32,writeStrongBinderERKNS_2spINS0_7IBinderEE R=	set	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 702); client Play6Gmpf
 IGmpf	GMPF_SEND_FOCUS_STATUS	307	sendFocusStatus	W=writeUint8 R=	call	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 307); client Play6Gmpf
 IGmpf	GMPF_AUTO_KST	326	autoKst	W= R=readInt8	call	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 326); client Play6Gmpf
 IGmpf	GMPF_GET_ECO_STATE	327	getEcoState	W= R=readBool	get	Play6Projector	stock research/play6/gmpf_codes_play6.tsv BpHwGmpf (Z9X code 327); client Play6Gmpf

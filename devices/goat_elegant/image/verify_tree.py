@@ -14,8 +14,8 @@
 # product build.prop (the rc's gate).
 # t11 (with IN): LumenInfo in /system/priv-app/LumenInfo and privapp-permissions-lumeninfo.xml, byte-identical to the stage.
 # The public release (TAG hb-x.y.z[-mark]-release, with IN): the t10 lib with
-# hb_media.rc, hb_audio_policy_configuration.xml and their gate props absent; the Z9X blobs reader z9x_blobs.rc +
-# z9x_blobs.sh and the HB blobs_allow.txt present, each byte-identical to the stage; and NO file of the image has the
+# hb_media.rc, hb_audio_policy_configuration.xml and their gate props absent; the one blobs reader z9x_blobs.rc +
+# z9x_blobs.sh with the HB blobs.conf and blobs_allow.txt present, each byte-identical to the stage; and NO file of the image has the
 # sha256 of a blob (MediaTek's libstagefright_foundation.so, the stock or the Lumen audio policy).
 # Since 1.0.8 the public release also carries the OTA client, each file
 # byte-identical to the stage: the gate /system/etc/lumen/lumen_ota.sh + ota_gate.conf, /system/etc/init/lumen_ota.rc,
@@ -133,6 +133,7 @@ if IN:
         # /system/etc like z9x_gapps.sh (started as "/system/bin/sh FILE")
         lumen["system/etc/init/z9x_blobs.rc"] = os.path.join(IN, "z9x_blobs.rc")
         lumen["system/etc/z9x/z9x_blobs.sh"] = os.path.join(IN, "z9x_blobs.sh")
+        lumen["system/etc/z9x/blobs.conf"] = os.path.join(IN, "blobs.conf")
         lumen["system/etc/z9x/blobs_allow.txt"] = os.path.join(IN, "blobs_allow.txt")
         # the OTA client (compose_hb.sh step 3e)
         lumen["system/etc/lumen/lumen_ota.sh"] = os.path.join(IN, "lumen_ota.sh")

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "device": "hb",
+  "channel": "hb-test",
+  "published_utc": 1794580016,
+  "version": "1.0.10-beta12",
+  "version_code": 1001012,
+  "build_utc": 1792842929,
+  "build_id": "lumen-hb-1.0.10-beta12-202611131410",
+  "requires": {
+    "vendor_incremental": [
+      "v6.16.24",
+      "v6.17.12"
+    ],
+    "min_version_code": 1000000,
+    "blobs_set": [
+      "hb-v61624-a"
+    ]
+  },
+  "changelog": {
+    "en": "Lumen OS HB 1.0.10-beta12 (beta): a Bluetooth tile and eye protection tile in the quick menu, Sleep timer in All settings, the brightness slider asks before it turns the picture off, Bluetooth audio plays next to a soundbar on ARC, the audio format holds after an output switch. Smaller fixes.",
+    "ru": "Lumen OS HB 1.0.10-beta12 (бета): плитки Bluetooth и защиты глаз в быстром меню, таймер сна во «Всех настройках», ползунок яркости спрашивает, прежде чем отключить изображение, Bluetooth-звук играет рядом с саундбаром по ARC, формат звука сохраняется после смены выхода. Мелкие исправления."
+  },
+  "packages": [
+    {
+      "type": "full",
+      "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta12/lumen-os-hb-1.0.10-beta12-nogms-full-ota.zip",
+      "size": 451182115,
+      "sha256": "73f8090d09dadd44fefc121496d8a16d7e0877c318534ad17f078ddd657ed829",
+      "payload_offset": 41,
+      "payload_size": 451163483,
+      "metadata_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb-1.0.10-beta12/lumen-os-hb-1.0.10-beta12-nogms-full-payload_metadata.bin",
+      "metadata_size": 17836,
+      "metadata_sha256": "5225db6e69d029f2747e85ce0cc101a1bfa132dbc37d82717bfd504cca6c4529",
+      "payload_properties": [
+        "FILE_HASH=3fCPprEzX1ToOvrVXJZwN6n6vVVajwZdhh2ssM74mNA=",
+        "FILE_SIZE=451163483",
+        "METADATA_HASH=MB6JLVqOfIj85iRfi1UUXEPpin6yZSMU0aIR24DY0i8=",
+        "METADATA_SIZE=17313"
+      ]
+    }
+  ]
+}

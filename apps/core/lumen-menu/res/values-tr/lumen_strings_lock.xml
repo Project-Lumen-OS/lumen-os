@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Oyun Modu etkin</string>
+    <string name="lumen_m_ps_ai">Profesyonel ayarlar Yapay Zeka Görüntü Kalitesi modunda kullanılamaz</string>
+    <string name="lumen_m_ps_performance">Profesyonel ayarlar Performans görüntü modunda desteklenmez</string>
+    <string name="lumen_m_ps_ai_basic">Standart ayarlar Yapay Zeka Görüntü Kalitesi modunda kullanılamaz</string>
+    <string name="lumen_m_ps_performance_basic">Standart ayarlar Performans görüntü modunda desteklenmez</string>
+</resources>

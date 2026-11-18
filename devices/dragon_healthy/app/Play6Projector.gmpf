@@ -3,7 +3,7 @@
 # same values on the Play 6 (its picture modes and picture styles are its own: hal/PictureMode, hal/ColorTemp).
 src/org/lumen/projector/hal/HidlWire.java
 src/org/lumen/projector/hal/HidlFocusCallback.java
-src/org/lumen/projector/hal/AiScene.java
+src/org/lumen/projector/hal/HidlTvCallback.java
 src/org/lumen/projector/hal/AspectRatio.java
 src/org/lumen/projector/hal/AudioPath.java
 src/org/lumen/projector/hal/BootStage.java

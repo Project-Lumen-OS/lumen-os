@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's advanced picture rows (rs30-parity-picture2): the white balance and colour
+     correction pages reuse the Z9X app's pro_* texts and the HB app's pro_segmentation_hb / pro_reset_default_hb with
+     their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
+     filter and the original frame refusals are new texts -->
+<resources>
+    <string name="lumen_m_wb">Баланс белага</string>
+    <string name="lumen_m_wb_2">2 пункты</string>
+    <string name="lumen_m_wb_11">11 пунктаў</string>
+    <string name="lumen_m_red_gain">Узмацненне чырвонага</string>
+    <string name="lumen_m_green_gain">Узмацненне зялёнага</string>
+    <string name="lumen_m_blue_gain">Узмацненне сіняга</string>
+    <string name="lumen_m_red_offset">Зрух чырвонага</string>
+    <string name="lumen_m_green_offset">Зрух зялёнага</string>
+    <string name="lumen_m_blue_offset">Зрух сіняга</string>
+    <string name="lumen_m_wb_level">%1$d%%</string>
+    <string name="lumen_m_red">Чырвоны</string>
+    <string name="lumen_m_green">Зялёны</string>
+    <string name="lumen_m_blue">Сіні</string>
+    <string name="lumen_m_cyan">Блакітны</string>
+    <string name="lumen_m_magenta">Пурпурны</string>
+    <string name="lumen_m_yellow">Жоўты</string>
+    <string name="lumen_m_skin">Тон скуры</string>
+    <string name="lumen_m_cc">Карэкцыя колеру</string>
+    <string name="lumen_m_cc_color">Колер</string>
+    <string name="lumen_m_hue">Адценне</string>
+    <string name="lumen_m_memc_original">Зыходная частата кадраў</string>
+    <string name="lumen_m_reset_defaults">Вярнуць стандартныя значэнні</string>
+    <string name="lumen_m_gray_level">Узровень шэрага</string>
+    <string name="lumen_m_hdr_enh">Паляпшэнне HDR</string>
+    <string name="lumen_m_screen_size">Памер экрана</string>
+    <string name="lumen_m_screen_gain">Узмацненне экрана</string>
+    <string name="lumen_m_dv_screen">Налады Dolby Vision</string>
+    <string name="lumen_m_auto_switch">Аўтаматычная змена рэжыму</string>
+    <string name="lumen_m_style_filter">Фільтр стылю</string>
+    <string name="lumen_m_original">Арыгінал</string>
+    <string name="lumen_m_filter_custom">Спампаваны фільтр</string>
+    <string name="lumen_m_inches">%1$d цаляў</string>
+    <string name="lumen_m_original_120">Недаступна, пакуль уключаны Ultra 120 Гц</string>
+    <string name="lumen_m_original_3d">Недаступна ў 3D</string>
+    <string name="lumen_m_imax_no_gain">Не наладжваецца ў IMAX Enhanced</string>
+    <string name="lumen_m_imax_no_filter">Фільтры стылю не працуюць у IMAX Enhanced</string>
+</resources>

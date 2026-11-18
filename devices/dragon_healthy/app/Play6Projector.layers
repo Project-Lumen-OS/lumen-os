@@ -9,15 +9,39 @@ file      apps/common/hal/HidlCaller.java src/org/lumen/projector/hal/HidlCaller
 # the shared gmpf clients (apps/core/lumen-gmpf: GmpfBase / Gmpf2Base and their call layer) under Play6Gmpf / Play6Gmpf2,
 # with the Z9X HIDL transport and the vendor value types of the shared bodies (Play6Projector.gmpf)
 module    lumen-gmpf
-base      apps/Z9xProjector devices/dragon_healthy/app/Play6Projector.gmpf
+base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.gmpf
 file      apps/common/LumenImport.java src/org/lumen/common/LumenImport.java
 # the settings look of Lumen OS 1.0.9 from the Z9X app itself (Kit, Shell, fonts, icons, strings_settings2)
-base      apps/Z9xProjector devices/dragon_healthy/app/Play6Projector.settings2
+base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.settings2
+base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.aipq
 # the shared projector menu of every Lumen projector with the Play 6 profile; the
 # Play 6 adapter is apps/Play6Projector panel/Play6Features (+ Play6MenuGates, Play6MenuPages, Play6Menu)
+module    lumen-system
+module    lumen-aipq
+# the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
+module    lumen-icons
+# problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
+module    lumen-report
+# Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
+module    lumen-qr
+module    lumen-about
+# the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
+module    lumen-remote
+# the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
+# model's rows as data
+module    lumen-signal
+file      devices/dragon_healthy/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-ui
+module    lumen-source
+file      devices/dragon_healthy/source.tsv assets/lumen_source/source.tsv
 module    lumen-menu
 module    lumen-stats
+# the shared media route rules (apps/core/lumen-audio: MediaPath, ArcAside)
+module    lumen-audio
+# the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
+module    lumen-control
 file      devices/dragon_healthy/menu.json assets/lumen_menu/menu.json
+file      devices/dragon_healthy/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
 top       apps/Play6Projector
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store
 # a byte-identical copy of a shared file in apps/Play6Projector is red: delete it, the common layer gives it

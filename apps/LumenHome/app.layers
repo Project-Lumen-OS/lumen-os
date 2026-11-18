@@ -1,0 +1,8 @@
+# Recipe of Lumen Home (apps/LumenHome), read by tools/devices/assemble_app.py: the shared Lumen icon set
+# (apps/core/lumen-icons), the shared 2.0 look and theme switch (apps/core/lumen-ui) plus the app. Every build of Home assembles this recipe first (build_apps.sh, z9x_gate.sh
+# through assemble_app.find_recipe, build_play6.sh, build_home_x50.sh).
+app       Z9xHome
+module    lumen-icons
+module    lumen-ui
+top       apps/LumenHome
+skip      build/ test/ tools/ image/ *.apk CHANGES*.md README*.md DESIGN*.md .DS_Store app.layers

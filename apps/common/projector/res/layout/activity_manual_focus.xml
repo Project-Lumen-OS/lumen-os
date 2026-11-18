@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <!-- a key hint: its arrows are drawn as icons (apps/core/lumen-icons) -->
+    <org.lumen.icons.KeyHintView
         android:id="@+id/panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

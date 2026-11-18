@@ -186,6 +186,17 @@ public final class GmModelTest {
         eq(GmModel.refuse(GmModel.AR, 2, s), GmModel.R_NOT_OFFERED, "21:9 not offered on the Z9X yet");
         eq(GmModel.refuse(GmModel.PIC, 5, s), GmModel.R_NOT_OFFERED, "picture 5 not offered");
         eq(GmModel.refuse(GmModel.AIM, 0, s), GmModel.OK, "crosshair has no option list");
+        // the RS30 (profile game_menu.vrr_top_speed, stock support_vrr_only_at_top_speed): VRR goes on only at top speed
+        eq(GmModel.refuse(GmModel.VRR, 1, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "VRR on below top speed without the rule");
+        GmModel.setVrrTopSpeed(true);
+        eq(GmModel.refuse(GmModel.VRR, 1, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.R_VRR_SPEED, "VRR on refused below top speed");
+        eq(GmModel.refuse(GmModel.VRR, 1, state(GmModel.BAD, 0, 1, 0, 0, 0, 0, 0)), GmModel.R_VRR_SPEED, "VRR on refused at an unknown speed");
+        eq(GmModel.refuse(GmModel.VRR, 1, state(1, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "VRR on at top speed");
+        eq(GmModel.refuse(GmModel.VRR, 0, state(0, 1, 1, 0, 0, 0, 0, 0)), GmModel.OK, "VRR off below top speed allowed");
+        eq(GmModel.refuse(GmModel.LAT, 0, state(1, 1, 1, 0, 0, 0, 0, 0)), GmModel.OK, "leaving top speed with VRR on (stock keeps VRR)");
+        eq(GmModel.refuse(GmModel.HFR, 1, state(0, 1, 1, 0, 0, 0, 0, 0)), GmModel.OK, "the rule touches nothing but VRR on");
+        GmModel.setVrrTopSpeed(false);
+        eq(GmModel.refuse(GmModel.VRR, 1, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "the rule off again");
         // the wide-format 4K rule (holds once WIDE_WIRE is filled): checked on the rule order with a fake offered state
         ok(GmModel.askTurbo(0, 1, false), "turbo asks when the keystone is not the full frame");
         ok(GmModel.askTurbo(0, 1, null), "turbo asks when the keystone is unknown");

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Modellcode</string>
+    <string name="lumen_about_dlp">DLP-Controller</string>
+    <string name="lumen_about_part_firmware">%1$s, Firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI-Firmware</string>
+    <string name="lumen_about_firmware_dated">%1$s vom %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, Sicherheitsupdate %2$s</string>
+    <string name="lumen_about_kernel">Kernel</string>
+    <string name="lumen_about_boot_loader">Startfirmware</string>
+    <string name="lumen_about_gmui">XGIMI-Oberfläche</string>
+    <string name="lumen_about_platform">MediaTek-Plattform</string>
+    <string name="lumen_about_remote">Fernbedienung</string>
+    <string name="lumen_about_wifi">WLAN</string>
+    <string name="lumen_about_back">Zurück zum XGIMI-System</string>
+    <string name="lumen_about_back_summary_file">Datei für den USB-Stick: %1$s</string>
+    <string name="lumen_about_back_summary">Mit dem XGIMI-Wiederherstellungsstick</string>
+    <string name="lumen_about_intro">Der XGIMI-Wiederherstellungsstick für dieses Modell bringt das XGIMI-System zurück. Die Anleitung auf der Projektseite zeigt, wie.</string>
+    <string name="lumen_about_usb_file">Dateiname für den USB-Stick</string>
+    <string name="lumen_about_official">Offizielle XGIMI-Datei</string>
+    <string name="lumen_about_official_value">%1$s, %2$s Bytes</string>
+    <string name="lumen_about_searching">Die offizielle Datei für diese Firmware wird gesucht</string>
+    <string name="lumen_about_guide_files">Die Anleitung auf der Projektseite nennt die offiziellen XGIMI-Dateien.</string>
+    <string name="lumen_about_erases">Der Stick löscht alles auf dem Projektor: Apps, Konten, Einstellungen und Dateien.</string>
+    <string name="lumen_about_scan">Zum Öffnen mit dem Handy scannen</string>
+    <string name="lumen_about_close">Schließen</string>
+</resources>

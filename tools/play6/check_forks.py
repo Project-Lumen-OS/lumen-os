@@ -10,19 +10,20 @@ do not drift unnoticed, and every resource of the Z9X projector app has a place.
      .../KeyReceiver.java          the same handled key codes (Z9xKeys.*, KeyEvent.KEYCODE_*) and scancodes
      .../Play6KstPoint.java        WIRE_SIZE is 326 in the copy and in the origin (KstPoint.java)
      apps/Play6FrameworkOverlay/res/values/config.xml
-                                   config_defaultAssistant, every config_cec* item and
-                                   config_dreamsDefaultComponent equal the Z9X values (power-key items,
-                                   config_maxUiWidth and config_customizedMaxCachedProcesses may differ)
+                                   config_defaultAssistant and config_dreamsDefaultComponent equal the Z9X
+                                   values (power-key items, config_maxUiWidth and
+                                   config_customizedMaxCachedProcesses may differ; the HDMI-CEC defaults of
+                                   every framework RRO are res/values/lumen_cec.xml, tools/devices/cec_defaults.py)
      apps/Play6TvSettingsOverlay/res/values/switch.xml and .../layout/z9x_preference_widget_switch_compat.xml
                                    byte-identical to the Z9X switch fix
-2. Every file under apps/Z9xProjector/res is listed in apps/common/projector/FILES or matches a pattern of
+2. Every file under apps/ProjectorBase/res is listed in apps/common/projector/FILES or matches a pattern of
    tools/play6/res_not_shared.txt, never both; every pattern matches a file. Until FILES exists (plan steps
    5 and 7) the shared files are reported as pending and do not fail.
 3. apps/Play6Projector is the Play 6 layer of devices/dragon_healthy/app/Play6Projector.layers (docs/architecture/
    the design notes): the shared files (listed in FILES, hal/HidlCaller.java, common/LumenImport.java) come from
    apps/common, so a file of apps/Play6Projector at such a path is red unless forks.tsv has a row for it whose
    origin is that apps/common file (a deliberate fork). Any other file of apps/Play6Projector/{src,res} at the
-   same path as a file of apps/Z9xProjector is a row of forks.tsv: no untracked copy.
+   same path as a file of apps/ProjectorBase is a row of forks.tsv: no untracked copy.
 Exit 0 = F green, 1 = red.
 """
 import fnmatch
@@ -88,13 +89,12 @@ def check_row(root, play6, origin, errors, notes):
         except ET.ParseError as e:
             errors.append("%s: XML: %s" % (play6, e))
             return
-        names = set(CONFIG_EQUAL) | {n for n in a.keys() | b.keys() if n.startswith("config_cec")}
-        bad = sorted(n for n in names if a.get(n) != b.get(n))
+        bad = sorted(n for n in CONFIG_EQUAL if a.get(n) != b.get(n))
         if bad:
             errors.append("%s: differs from %s in %s" % (play6, origin, ", ".join(bad)))
         else:
-            notes.append("%s: %d CEC items, the assistant and the dream component equal the Z9X"
-                         % (play6, len([n for n in names if n.startswith("config_cec")])))
+            notes.append("%s: the assistant and the dream component equal the Z9X (HDMI-CEC defaults: "
+                         "tools/devices/cec_defaults.py)" % play6)
     elif play6.startswith("apps/Play6TvSettingsOverlay/"):
         rel = play6[len("apps/Play6TvSettingsOverlay/"):]
         if rel in SWITCH_FIX and sha(p6) != sha(og):
@@ -141,7 +141,7 @@ def main():
         check_row(root, play6, origin, errors, notes)
 
     # ---- 2. resources of the Z9X projector app
-    z9 = os.path.join(root, "apps/Z9xProjector")
+    z9 = os.path.join(root, "apps/ProjectorBase")
     res = sorted(os.path.relpath(os.path.join(d, f), z9)
                  for d, _, fs in os.walk(os.path.join(z9, "res")) for f in fs if f != ".DS_Store")
     patterns = []
@@ -169,7 +169,7 @@ def main():
             pending.append(r)
     for n, pat in patterns:
         if n not in used:
-            errors.append("res_not_shared.txt:%d: %s matches no file of apps/Z9xProjector" % (n, pat))
+            errors.append("res_not_shared.txt:%d: %s matches no file of apps/ProjectorBase" % (n, pat))
     # ---- 3. the Play 6 layer: no copy of a shared file, and a Play 6 file at a Z9X path is a listed fork
     p6app = os.path.join(root, "apps/Play6Projector")
     common = {"src/org/lumen/projector/hal/HidlCaller.java": "apps/common/hal/HidlCaller.java",

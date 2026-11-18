@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">줌</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">네트워크</string>
+    <string name="lumen_qpd_theme">테마</string>
+    <string name="lumen_qpd_theme_light">밝게</string>
+    <string name="lumen_qpd_theme_dark">어둡게</string>
+    <string name="lumen_qpd_theme_auto">자동</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">화면 미러링</string>
     <string name="lumen_qpd_mirror_on">화면 미러링(Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">최대 밝기입니다. 팬 소리가 커집니다.</string>
     <string name="lumen_qpd_tip_picture">보는 콘텐츠에 맞는 모드를 고르세요.</string>
     <string name="lumen_qpd_tip_rear">사용자와 프로젝터가 스크린의 서로 반대편에 있습니다.</string>
+    <string name="lumen_qpd_tip_front">사용자와 프로젝터가 스크린의 같은 쪽에 있습니다.</string>
+    <string name="lumen_qpd_tip_table">프로젝터가 테이블 위에 놓여 있습니다.</string>
+    <string name="lumen_qpd_tip_ceiling">프로젝터가 천장에 거꾸로 매달려 있습니다.</string>
+    <string name="lumen_qpd_tip_auto">프로젝터가 놓인 방향을 스스로 알아내고 화면을 돌립니다.</string>
 </resources>

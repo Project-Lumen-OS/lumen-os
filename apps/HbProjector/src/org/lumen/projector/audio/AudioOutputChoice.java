@@ -12,6 +12,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import org.lumen.audio.AutoOutput;
+import org.lumen.audio.BtA2dp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +29,12 @@ import java.util.List;
  * platform signature grants it from /system/app). The engine gives a preferred device that is available priority over
  * every other rule (also over the speaker + Spdif media pair Lumen routes to today), so getDevicesForAttributes(MEDIA)
  * changes and AudioPathReporter sends the stock switch (59(100), 1 s, 59(P)): the HDMI input sound follows the choice
- * through the vendor path, and HdmiVolume follows path 0.
+ * through the vendor path (lumen-audio PathSwitch), and that output's chip level follows its volume (StockVolume).
  *
  * Rows: Auto and Speaker always; ARC / eARC, Bluetooth A2DP, wired and USB only while such an output is connected.
  * HB fork (2026-11-10): the HB jack is never detected, so HbOutputOptions lists Headphones always (stock) and apply
- * connects the wired output while it is the choice (HbWiredJack, HbAudioRules.wiredStep).
+ * keeps the wired output connected, out of the default route unless chosen (HbWiredJack, lumen-audio JackOutput).
+ * Auto (2026-11-15): the stock last accessed output (lumen-audio AutoOutput) made the preferred device, as a choice.
  * Never Spdif (attached port in the Z9X policy, always "available", no jack) and never the XGIMI wireless speaker
  * ports (BUS, ECHO_CANCELLER). Bluetooth and USB are categories, like stock: the chosen address first, else the
  * first connected device of that kind.
@@ -85,8 +89,16 @@ public final class AudioOutputChoice {
             AudioManager am = sApp.getSystemService(AudioManager.class);
             if (am != null) {
                 am.registerAudioDeviceCallback(new AudioDeviceCallback() {
-                    @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) { apply("devices added"); arcFormat(); }
-                    @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) { apply("devices removed"); arcFormat(); }
+                    @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) {
+                        AutoOutput.added(d, kind(sApp) == AudioOutputKind.AUTO, HbWiredJack.SENSED);
+                        apply("devices added");
+                        arcFormat();
+                    }
+                    @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) {
+                        AutoOutput.removed(d);
+                        apply("devices removed");
+                        arcFormat();
+                    }
                 }, sH);
                 try {
                     am.addOnDevicesForAttributesChangedListener(MEDIA, sH::post,
@@ -95,6 +107,9 @@ public final class AudioOutputChoice {
                     Log.w(TAG, "routing listener not available: " + e);
                 }
             }
+            // a connected A2DP device that is not active is listed and made active on a Bluetooth choice (lumen-audio)
+            BtA2dp.install(sApp, () -> { Handler h = sH; if (h != null) h.post(() -> apply("bluetooth")); });
+            AutoOutput.chose(kind(sApp).name());                          // a stored manual choice, as stock's force use
             sH.post(() -> apply("process start"));
             Log.i(TAG, "installed, choice " + kind(sApp));
         } catch (Throwable t) {
@@ -116,6 +131,7 @@ public final class AudioOutputChoice {
     public static void choose(Context ctx, AudioOutputKind k, String addr) {
         prefs(ctx).edit().putString(KEY_KIND, k.name()).putString(KEY_ADDR, addr == null ? "" : addr).apply();
         Log.i(TAG, "user chose " + k + (addr == null || addr.isEmpty() ? "" : " " + addr));
+        AutoOutput.chose(k.name());
         install(ctx);
         Handler h = sH;
         if (h != null) h.post(() -> apply("user"));
@@ -157,6 +173,11 @@ public final class AudioOutputChoice {
         if (am == null) return out;
         String addr = prefs(ctx).getString(KEY_ADDR, "");
         for (AudioOutputKind k : new AudioOutputKind[] {AudioOutputKind.ARC, AudioOutputKind.BT, AudioOutputKind.WIRED, AudioOutputKind.USB}) {
+            if (k == AudioOutputKind.BT) {
+                Option bt = btOption(ctx, am, k == kind(ctx) ? addr : "");
+                if (bt != null) out.add(bt);
+                continue;
+            }
             AudioDeviceInfo d = find(am, k, k == kind(ctx) ? addr : "");
             if (d == null) continue;
             CharSequence label;
@@ -203,39 +224,40 @@ public final class AudioOutputChoice {
                 return;
             }
             AudioOutputKind k = kind(app);
-            // HB fork (2026-11-10, 4PDA: no 3.5 mm output): the jack is connected while it is the choice (HbWiredJack)
-            WiredOutputStep jack = HbWiredJack.step(am, k);
-            if (jack == WiredOutputStep.CONNECT) {
-                HbWiredJack.connect(am, true, why);
-                return;                                  // "devices added" evaluates again with the output listed
-            }
-            AudioDeviceInfo d = k == AudioOutputKind.AUTO ? null : find(am, k, prefs(app).getString(KEY_ADDR, ""));
-            if (d == null && HbAudioRules.speakerBeforeDisconnect(k.name(), jack)) {
-                d = find(am, AudioOutputKind.SPEAKER, "");          // routing off the jack first: no BECOMING_NOISY on the removal
-            }
-            List<AudioDeviceAttributes> cur = am.getPreferredDevicesForStrategy(media);
-            if (d == null) {
-                if (cur != null && !cur.isEmpty() && ours(cur)) {
-                    boolean ok = am.removePreferredDeviceForStrategy(media);
-                    Log.i(TAG, why + ": " + (k == AudioOutputKind.AUTO ? "auto" : k + " not connected, auto until it is back")
-                            + ", preferred " + cur + " removed" + (ok ? "" : " (REFUSED)"));
-                }
-                if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);
-                return;
-            }
-            AudioDeviceAttributes want = new AudioDeviceAttributes(d);
-            if (cur != null && cur.size() == 1 && same(cur.get(0), want)) {             // already set
-                if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);
-                return;
-            }
-            boolean ok = am.setPreferredDeviceForStrategy(media, want);
-            Log.i(TAG, why + ": media -> " + (jack == WiredOutputStep.DISCONNECT && k == AudioOutputKind.AUTO
-                    ? "SPEAKER before the 3.5 mm output goes (auto)" : k) + " (type " + want.getType() + " '"
-                    + want.getAddress() + "')" + (ok ? "" : " REFUSED"));
-            if (jack == WiredOutputStep.DISCONNECT) HbWiredJack.connect(am, false, why);
+            // the 3.5 mm jack: connected for good, out of the default route unless chosen (HbWiredJack, lumen-audio JackOutput)
+            if (HbWiredJack.keep(am, media, k, why)) return;      // "devices added" evaluates again with the output listed
+            if (route(am, media, app, k, why)) HbWiredJack.settle(am, media, k, why);
         } catch (Throwable t) {
             Log.w(TAG, why + ": " + t);
         }
+    }
+
+    /** The preferred media device for the choice; false while the Bluetooth stack is asked to activate a device first. */
+    private static boolean route(AudioManager am, AudioProductStrategy media, Context app, AudioOutputKind k, String why) {
+        String addr = prefs(app).getString(KEY_ADDR, "");
+        if (k == AudioOutputKind.BT) {
+            String pick = BtA2dp.pick(addr);                      // a stale stored address: the connected device
+            if (pick != null) {
+                if (BtA2dp.activateIfNeeded(pick, why)) return false;   // the stack adds its output, "devices added" applies again
+                addr = pick;
+            }
+        }
+        // Auto: the stock last accessed output (lumen-audio AutoOutput), preferred like a chosen one
+        AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, HbWiredJack.SENSED) : find(am, k, addr);
+        List<AudioDeviceAttributes> cur = am.getPreferredDevicesForStrategy(media);
+        if (d == null) {
+            if (cur != null && !cur.isEmpty() && ours(cur)) {
+                boolean ok = am.removePreferredDeviceForStrategy(media);
+                Log.i(TAG, why + ": " + (k == AudioOutputKind.AUTO ? "auto, no output" : k + " not connected, auto until it is back")
+                        + ", preferred " + cur + " removed" + (ok ? "" : " (REFUSED)"));
+            }
+            return true;
+        }
+        AudioDeviceAttributes want = new AudioDeviceAttributes(d);
+        if (cur != null && cur.size() == 1 && same(cur.get(0), want)) return true;             // already set
+        boolean ok = am.setPreferredDeviceForStrategy(media, want);
+        Log.i(TAG, why + ": media -> " + k + " (type " + want.getType() + " '" + want.getAddress() + "')" + (ok ? "" : " REFUSED"));
+        return true;
     }
 
     /** ARC appeared: send the stored format again (the HAL may have reset it). */
@@ -245,6 +267,15 @@ public final class AudioOutputChoice {
         boolean arc = arcConnected(app);
         if (arc && !sArcSeen) sendFormat("ARC connected");
         sArcSeen = arc;
+    }
+
+    /**
+     * The stored format again: after a media path switch (AudioPathReporter, stock libxgimiaudiopolicy sends it with
+     * every switch start) and an eARC link change (EarcLink). Any thread.
+     */
+    public static void resendFormat(String why) {
+        Handler h = sH;
+        if (h != null) h.post(() -> sendFormat(why));
     }
 
     private static void sendFormat(String why) {
@@ -267,6 +298,21 @@ public final class AudioOutputChoice {
             if (s.supportsAudioAttributes(MEDIA)) return s;
         }
         return null;
+    }
+
+    /**
+     * The Bluetooth row: the stored device while it is connected, else the first connected one (lumen-audio
+     * A2dpPick), also while the stack keeps it inactive (a wired output dropped it); AudioManager's A2DP output
+     * while the stack is not known yet.
+     */
+    private static Option btOption(Context ctx, AudioManager am, String stored) {
+        String pick = BtA2dp.pick(stored);
+        AudioDeviceInfo d = find(am, AudioOutputKind.BT, pick != null ? pick : stored);
+        if (pick == null && d == null) return null;
+        String addr = pick != null ? pick : d.getAddress();
+        CharSequence label = d != null && addr.equalsIgnoreCase(d.getAddress()) ? d.getProductName() : BtA2dp.name(addr);
+        if (label == null || label.length() == 0) label = ctx.getString(org.lumen.projector.R.string.sound_output_bt);
+        return new Option(AudioOutputKind.BT, addr, label);
     }
 
     /** A connected output of this kind: the given address first, else the first one. */

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import org.lumen.menu.KeyTools;
+
 /**
  * The activity host of the shared menu (PanelHost): the same {@link Panel} views the overlay
  * host puts into TYPE_APPLICATION_OVERLAY windows, here inside ONE translucent activity of the app
@@ -32,14 +34,20 @@ import android.widget.FrameLayout;
  * ({@link #addStatic} answers false: no game crosshair or frame counter in this host); notes go to the app's own
  * {@link Notes} (the overlay Notify card is an overlay window too).
  *
+ * <p>Tool screens (org.lumen.menu.KeyTools): while a tool activity is in front (the X50 manual focus) the panel stays
+ * under it instead of closing on the focus loss, its timer waiting, and has the keys again when the tool goes; the
+ * remote's menu key goes to a tool panel ({@link #menuKey}), as in the overlay host.
+ *
  * <p>Main thread only. One instance per process ({@link #install}); PanelActivity finds it through {@link #instance}.
  */
-public final class ActivityPanelHost implements PanelHost {
+public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
     private static final String TAG = "LumenMenuHost";
     /** A started PanelActivity that has not attached by then is given up (the show failed). */
     static final long ATTACH_TIMEOUT_MS = 3_000;
     /** Same grace as OverlayHost.PanelRoot: transient focus changes do not close the panel. */
     static final long FOCUS_LOST_MS = 300;
+    /** A panel back from aside that has not got the window focus again by then closes (another window keeps it). */
+    static final long BACK_FOCUS_MS = 1_000;
 
     /** How the app shows a short note and a toast (X50: its own TvFocus toast; never an overlay window). */
     public interface Notes {
@@ -63,6 +71,8 @@ public final class ActivityPanelHost implements PanelHost {
     private PanelActivity activity;
     private FrameLayout frame;
     private Panel current;
+    /** The panel that waits under a tool screen (no focus-loss close, timer waiting), null when none. */
+    private Panel aside;
     /** Shown but not on screen yet: waits for PanelActivity to start. */
     private Panel pending;
     private final Runnable autoHide = () -> {
@@ -99,6 +109,7 @@ public final class ActivityPanelHost implements PanelHost {
         this.app = app;
         this.notes = notes;
         this.gate = gate;
+        KeyTools.addHost(this);
     }
 
     // ================================================================== PanelHost
@@ -180,6 +191,40 @@ public final class ActivityPanelHost implements PanelHost {
     @Override public void toast(int res) {
         if (res == 0) return;
         note(app.getString(res));
+    }
+
+    // ================================================================== tool screens (org.lumen.menu.KeyTools)
+
+    /**
+     * {@code on}: a tool activity came over the menu activity (the X50 manual focus). The panel stays under it, seen as
+     * the stock X50 menu under its focus bar, and neither the focus loss nor the timer closes it. false: the tool went,
+     * the panel has the keys again where it was and a fresh timer.
+     */
+    @Override
+    public void aside(boolean on) {
+        if (!onMain("aside")) { main.post(() -> aside(on)); return; }
+        Panel p = on ? current : aside;
+        if (p == null || !p.showing || (on && aside != null)) return;
+        aside = on ? p : null;
+        Log.i(TAG, p.getClass().getSimpleName() + (on ? " waits under a tool screen" : " back after the tool screen"));
+        if (on) {
+            main.removeCallbacks(autoHide);
+        } else {
+            resetAutoHide(p);
+            if (p.root instanceof HostRoot) ((HostRoot) p.root).graceAfterAside();
+        }
+    }
+
+    @Override
+    public boolean panelOnScreen() {
+        Panel p = current;
+        return p != null && p.showing && p != aside;
+    }
+
+    @Override
+    public boolean menuKey(boolean held) {
+        Panel p = current;
+        return p != null && p != aside && p.menuKey(held);
     }
 
     // ================================================================== the activity
@@ -277,6 +322,7 @@ public final class ActivityPanelHost implements PanelHost {
         if (p == null || !p.showing) return;
         if (p == pending) { dropPending(); return; }
         p.showing = false;
+        if (aside == p) aside = null;
         if (current == p) {
             current = null;
             main.removeCallbacks(autoHide);
@@ -318,7 +364,7 @@ public final class ActivityPanelHost implements PanelHost {
     }
 
     void resetAutoHide(Panel p) {
-        if (p != current) return;
+        if (p != current || p == aside) return;
         main.removeCallbacks(autoHide);
         long ms = p.autoHideMs();
         if (ms > 0) main.postDelayed(autoHide, ms);
@@ -345,7 +391,7 @@ public final class ActivityPanelHost implements PanelHost {
         private boolean hadFocus;
         private final Runnable focusLostCheck = new Runnable() {
             @Override public void run() {
-                if (panel.showing && !hasWindowFocus()) {
+                if (panel.showing && panel != aside && !hasWindowFocus()) {
                     Log.i(TAG, "focus lost: closing " + panel.getClass().getSimpleName());
                     dismiss(panel, true);
                 }
@@ -440,6 +486,12 @@ public final class ActivityPanelHost implements PanelHost {
             super.onAttachedToWindow();
             // added to a window that already has the focus (a panel replacing another): no focus change comes
             if (hasWindowFocus()) hadFocus = true;
+        }
+
+        /** Back from aside: the window focus comes back by itself; when another window keeps it, the panel closes. */
+        void graceAfterAside() {
+            removeCallbacks(focusLostCheck);
+            postDelayed(focusLostCheck, BACK_FOCUS_MS);
         }
 
         @Override

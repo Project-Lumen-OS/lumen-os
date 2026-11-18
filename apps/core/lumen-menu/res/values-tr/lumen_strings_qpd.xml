@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Yakınlaştırma</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Ağ</string>
+    <string name="lumen_qpd_theme">Tema</string>
+    <string name="lumen_qpd_theme_light">Açık</string>
+    <string name="lumen_qpd_theme_dark">Koyu</string>
+    <string name="lumen_qpd_theme_auto">Otomatik</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Ekran yansıtma</string>
     <string name="lumen_qpd_mirror_on">Ekran yansıtma (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">En yüksek parlaklık. Fanlar daha sesli çalışır.</string>
     <string name="lumen_qpd_tip_picture">İzlediğiniz içeriğe göre bir mod seçin.</string>
     <string name="lumen_qpd_tip_rear">Siz ve projektör perdenin farklı taraflarındasınız.</string>
+    <string name="lumen_qpd_tip_front">Siz ve projektör perdenin aynı tarafındasınız.</string>
+    <string name="lumen_qpd_tip_table">Projektör bir masanın üzerinde duruyor.</string>
+    <string name="lumen_qpd_tip_ceiling">Projektör tavana ters asılı.</string>
+    <string name="lumen_qpd_tip_auto">Projektör durduğunu ya da asılı olduğunu kendisi anlar ve görüntüyü çevirir.</string>
 </resources>

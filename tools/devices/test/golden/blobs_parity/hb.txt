@@ -1,0 +1,939 @@
+## hb ok
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 2 files of set hb-v61624-a bound
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb ok_again
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 2 files of set hb-v61624-a bound
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb partial_again
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem bad:lib/hb_vndk33/libstagefright_foundation.so
+z9x_blobs: partial: 1 files bound, first problem bad:lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cebe7eb4ab009526
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb missing_partition
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb missing_partition_gsid_off
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb missing_slot
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb odd_slot
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no slot suffix
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb slot_a
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 2 files of set hb-v61624-a bound
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb other_slot_only
+[setprop.log]
+sys.z9x.blobs=missing
+
+[logcat]
+z9x_blobs: missing: no z9x_blobs_b
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb partition_in_trial
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 2 files of set hb-v61624-a bound
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_hash_first
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem bad:lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cebe7eb4ab009526
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_hash_policy
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem bad:etc/xgimi/hb_audio_policy_configuration.xml
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 2c4781f03c026c6b
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb missing_policy
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem missing:etc/xgimi/hb_audio_policy_configuration.xml
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 127 2a7e08829041968e
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb missing_first
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem missing:lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 131 c9fa56eedf04b0d4
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb target_missing
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem notarget:etc/xgimi/hb_audio_policy_configuration.xml
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb target_outside
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'hb-v61624-a' is not this image's '' (files still checked one by one)
+z9x_blobs: ok: 0 files of set hb-v61624-a bound
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb target_apex_other
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'hb-v61624-a' is not this image's '' (files still checked one by one)
+z9x_blobs: ok: 0 files of set hb-v61624-a bound
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_tar
+[setprop.log]
+sys.z9x.blobs=bad:tar
+
+[logcat]
+z9x_blobs: bad:tar
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb empty_partition
+[setprop.log]
+sys.z9x.blobs=bad:manifest
+
+[logcat]
+z9x_blobs: bad:manifest
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb short_partition
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: ok: 2 files of set hb-v61624-a bound
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_symlink
+[setprop.log]
+sys.z9x.blobs=bad:entry
+
+[logcat]
+z9x_blobs: bad:entry: lrwxrwxrwx root/root         0 1970-01-01 00:00 lib/hb_vndk33/libstagefright_foundation.so -> <W>/fx/hb/files/lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_sparse
+[setprop.log]
+sys.z9x.blobs=bad:entry
+
+[logcat]
+z9x_blobs: bad:entry: lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 67108864 3dfaf6f39afb0769
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb bad_dotdot
+[setprop.log]
+sys.z9x.blobs=bad:path
+
+[logcat]
+z9x_blobs: bad:path
+
+[binds]
+
+[mount.log]
+
+[umount.log]
+
+[chcon.log]
+
+[chown.log]
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/.img f 0644 4194304 (the partition copy)
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb set_mismatch
+[setprop.log]
+sys.z9x.blobs.set=other-set-a
+sys.z9x.blobs=ok
+
+[logcat]
+z9x_blobs: blob set 'other-set-a' is not this image's 'hb-v61624-a' (files still checked one by one)
+z9x_blobs: ok: 2 files of set other-set-a bound
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+bb97a8e41efe09b65328c02b645496a65f8eba48443b45b371a2be5327dc4d9c <R>/vendor/etc/audio_policy_configuration.xml
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 2eb00374234dca2d
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb mount_fail
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=mount:lib/hb_vndk33/libstagefright_foundation.so
+
+[logcat]
+z9x_blobs: mount:lib/hb_vndk33/libstagefright_foundation.so
+
+[binds]
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644
+
+## hb mount_fail_policy
+[setprop.log]
+sys.z9x.blobs.set=hb-v61624-a
+sys.z9x.blobs=partial
+
+[logcat]
+z9x_blobs: partial: 1 files bound, first problem mount:etc/xgimi/hb_audio_policy_configuration.xml
+
+[binds]
+dc43f63c340f6722ec61f1aedbd0d8f0c2f26ca643f6b49ccca5e5b613c12322 <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+
+[mount.log]
+mount --bind <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so <R>/apex/com.android.vndk.v33/lib/libstagefright_foundation.so
+mount --bind <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml <R>/vendor/etc/audio_policy_configuration.xml
+
+[umount.log]
+
+[chcon.log]
+u:object_r:system_lib_file:s0 <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+u:object_r:system_file:s0 <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[chown.log]
+root:root <R>/mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so
+root:root <R>/mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml
+
+[blockdev.log]
+
+[out]
+rc=0 
+[files]
+mnt/z9x_blobs d 0755
+mnt/z9x_blobs/x d 0755
+mnt/z9x_blobs/x/etc d 0755
+mnt/z9x_blobs/x/lib d 0755
+mnt/z9x_blobs/x/MANIFEST f 0644 242 cde37d6c887c5ebe
+mnt/z9x_blobs/x/etc/xgimi d 0755
+mnt/z9x_blobs/x/etc/xgimi/hb_audio_policy_configuration.xml f 0644 33414 bb97a8e41efe09b6
+mnt/z9x_blobs/x/lib/hb_vndk33 d 0755
+mnt/z9x_blobs/x/lib/hb_vndk33/libstagefright_foundation.so f 0644 66 dc43f63c340f6722
+data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
+data/vendor/tmp/nuififo p 0644
+data/vendor/tmp/retnuififo p 0644

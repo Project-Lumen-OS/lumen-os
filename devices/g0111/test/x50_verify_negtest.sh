@@ -51,7 +51,7 @@ for n in testkey fifth; do
 done
 cat > "$W/host.sh" <<'EOF'
 set -u
-RD=$1; V=$2
+RD=$1; V=$2; PC=$3
 O=$HOME/$RD; T=$O/x50-$V-net; N=$O/negtest-$V
 [ -f "$T/STAGE_INFO.txt" ] && [ -d "$T/root" ] || { echo "negtest: no staged tree $T (compose.sh g0111 $V stage first)"; exit 1; }
 BID=$(sed -n 's/^bid=//p' "$T/STAGE_INFO.txt")
@@ -69,7 +69,8 @@ setfile() {  # tree path src: one file replaced (a new inode) with the owner, mo
 prep() { sudo rm -rf "$N/c_$1"; mkdir -p "$N/c_$1"; cp -a "$O/in" "$N/c_$1/in"; sudo cp -al "$T/root" "$N/c_$1/root"; }
 check() {  # name want-rc text...
   local n=$1 want=$2 ok=1 t; shift 2
-  sudo python3 -I "$N/c_$n/in/verify_tree_x50.py" "$N/mnt_base" "$N/c_$n/root" "$N/c_$n/in" "$V" "$BID" > "$N/$n.log" 2>&1
+  sudo python3 -I "$N/c_$n/in/verify_tree_x50.py" "$N/mnt_base" "$N/c_$n/root" "$N/c_$n/in" "$V" "$BID" \
+    g0111 x50_prop.txt x50_model_prop.txt G0111 x50 "$PC" > "$N/$n.log" 2>&1
   local rc=$?
   [ "$rc" = "$want" ] || ok=0
   for t in "$@"; do grep -qF -- "$t" "$N/$n.log" || ok=0; done
@@ -121,4 +122,5 @@ echo "x50_verify_negtest: $PASS passed, $FAIL failed"
 EOF
 retry ssh "$SRV" "rm -rf ~/$RD/negtest-$V.in && mkdir -p ~/$RD/negtest-$V.in; exit 0" || { echo "cannot reach $SRV"; exit 1; }
 retry scp -q "$W/testkey.apk" "$W/fifth.apk" "$SRV:$RD/negtest-$V.in/" || { echo "cannot copy to $SRV"; exit 1; }
-ssh "$SRV" "bash -s $RD $V" < "$W/host.sh"
+PC=$(python3 -B "$G/devices/g0111/image/x50_family.py" get g0111 pcert) || exit 1
+ssh "$SRV" "bash -s $RD $V $PC" < "$W/host.sh"

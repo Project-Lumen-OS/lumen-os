@@ -244,7 +244,9 @@ public final class Play6MenuGatesTest {
                 check(Play6MenuGates.available(f, eye, l, bat), f + " available everywhere" + at);
             }
         }
-        for (FeatureId f : p.features()) check(on.contains(f), f + ": in the profile, not implemented");
+        for (FeatureId f : p.features()) {
+            if (!MenuSpec.module(f)) check(on.contains(f), f + ": in the profile, not implemented");
+        }
         Set<String> pend = new LinkedHashSet<>();
         for (String x : p.pending()) pend.add(x.contains(":") ? x.substring(0, x.indexOf(':')) : x);
         for (String f : pend) check(on.contains(FeatureId.of(f)), "pending " + f + ": not implemented");

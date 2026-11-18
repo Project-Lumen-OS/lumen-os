@@ -114,18 +114,6 @@ public final class Play6ZoomShiftPanel extends Panel {
 
     static boolean isOpen() { return sOpen != null; }
 
-    /**
-     * KeyReceiver, main thread: the remote's gear key while the card is open works as stock's MENU (the gear is a
-     * global key, so the card's window never sees it). True = taken (the quick panel does not open).
-     */
-    public static boolean onMenuKey(KeyEvent ev) {
-        Play6ZoomShiftPanel p = sOpen;
-        if (p == null || !p.isShowing()) return false;
-        if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled() && p.state == READY) {
-            p.showMenu(p.menu.getVisibility() != View.VISIBLE);
-        }
-        return true;
-    }
 
     /** The zoom replies were found unusable in this process (row hidden). */
     static boolean isUnsupported() { return sUnsupported; }
@@ -340,6 +328,14 @@ public final class Play6ZoomShiftPanel extends Panel {
     // =================================================================== keys and window (main thread)
     @Override
     protected long autoHideMs() { return AUTO_HIDE_MS; }
+
+    /**
+     * The remote's gear key while the card is open works as stock's MENU (2026-10-24: "menu throws me into the
+     * quick panel instead of the reset"): the shared tool rule (org.lumen.menu.KeyTools) hands a short press to
+     * onKeyEvent as KEYCODE_MENU.
+     */
+    @Override
+    protected boolean takesMenuKey() { return true; }
 
     @Override
     protected boolean onKeyEvent(KeyEvent ev) {

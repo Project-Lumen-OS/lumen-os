@@ -1,0 +1,1418 @@
+######## locale ar
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC غير متاح'
+    ToggleRow 'التحكم عبر HDMI-CEC' = true
+    TextRow 'عند إيقاف HDMI-CEC، لا يتوفر الصوت عبر HDMI ARC.'
+    ToggleRow 'التشغيل بواسطة جهاز HDMI' = true
+    TextRow 'عند تشغيل هذا الخيار، تُطفأ أجهزة HDMI أيضًا عند إيقاف جهاز العرض.'
+    ToggleRow 'التبديل إلى الجهاز عند تشغيله' = true
+######## locale be
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недаступны'
+    ToggleRow 'Кіраванне HDMI-CEC' = true
+    TextRow 'Калі HDMI-CEC выключаны, гук праз HDMI ARC недаступны.'
+    ToggleRow 'Уключацца ад HDMI-прылады' = true
+    TextRow 'Калі гэта ўключана, HDMI-прылады выключаюцца разам з праектарам.'
+    ToggleRow 'Пераключацца на прыладу, калі яна ўключаецца' = true
+######## locale de
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC ist nicht verfügbar'
+    ToggleRow 'HDMI-CEC-Steuerung' = true
+    TextRow 'Bei ausgeschaltetem HDMI-CEC ist Ton über HDMI ARC nicht verfügbar.'
+    ToggleRow 'Mit einem HDMI-Gerät einschalten' = true
+    TextRow 'Wenn aktiviert, werden HDMI-Geräte beim Ausschalten des Projektors ebenfalls ausgeschaltet.'
+    ToggleRow 'Zum Gerät wechseln, wenn es eingeschaltet wird' = true
+######## locale default
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario cec_off
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario no_service
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario throws
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = null
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = null
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' [grey] = null
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario no_tvinput
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = null
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = null
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = null
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=true}
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = null
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = null
+==== scenario paused
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario soundbar_off
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario setup_running
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = false
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = false
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = false
+==== scenario writes_fail
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'HDMI-CEC control'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Turn on with an HDMI device'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ flip 'Switch to a device when it turns on'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Could not do that"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC is not available'
+    ToggleRow 'HDMI-CEC control' = true
+    TextRow 'With HDMI-CEC off, sound over HDMI ARC is not available.'
+    ToggleRow 'Turn on with an HDMI device' = true
+    TextRow 'With this on, HDMI devices also turn off when the projector turns off.'
+    ToggleRow 'Switch to a device when it turns on' = true
+######## locale es
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC no está disponible'
+    ToggleRow 'Control HDMI-CEC' = true
+    TextRow 'Con HDMI-CEC desactivado, el sonido por HDMI ARC no está disponible.'
+    ToggleRow 'Encender con un dispositivo HDMI' = true
+    TextRow 'Si está activado, los dispositivos HDMI también se apagan al apagar el proyector.'
+    ToggleRow 'Cambiar a un dispositivo cuando se enciende' = true
+######## locale fr
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC n’est pas disponible'
+    ToggleRow 'Contrôle HDMI-CEC' = true
+    TextRow 'Quand HDMI-CEC est désactivé, le son via HDMI ARC n’est pas disponible.'
+    ToggleRow 'Allumer avec un appareil HDMI' = true
+    TextRow 'Si activé, les appareils HDMI s’éteignent aussi quand le projecteur s’éteint.'
+    ToggleRow 'Basculer vers un appareil quand il s’allume' = true
+######## locale it
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC non è disponibile'
+    ToggleRow 'Controllo HDMI-CEC' = true
+    TextRow 'Con HDMI-CEC disattivato, l’audio tramite HDMI ARC non è disponibile.'
+    ToggleRow 'Accendi con un dispositivo HDMI' = true
+    TextRow 'Se attivo, anche i dispositivi HDMI si spengono quando si spegne il proiettore.'
+    ToggleRow 'Passa a un dispositivo quando si accende' = true
+######## locale ja
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC は使用できません'
+    ToggleRow 'HDMI-CEC 制御' = true
+    TextRow 'HDMI-CEC がオフのときは、HDMI ARC で音声を出力できません。'
+    ToggleRow 'HDMI 機器で電源を入れる' = true
+    TextRow 'オンにすると、プロジェクターの電源を切ったときに HDMI 機器の電源も切れます。'
+    ToggleRow '機器の電源が入ったらその機器に切り替える' = true
+######## locale kk
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC қолжетімсіз'
+    ToggleRow 'HDMI-CEC басқаруы' = true
+    TextRow 'HDMI-CEC өшірулі болса, HDMI ARC арқылы дыбыс қолжетімсіз.'
+    ToggleRow 'HDMI құрылғысынан қосылу' = true
+    TextRow 'Бұл қосулы болса, проектор өшкенде HDMI құрылғылары да өшеді.'
+    ToggleRow 'Құрылғы қосылғанда соған ауысу' = true
+######## locale ko
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC를 사용할 수 없습니다'
+    ToggleRow 'HDMI-CEC 제어' = true
+    TextRow 'HDMI-CEC가 꺼져 있으면 HDMI ARC로 소리를 출력할 수 없습니다.'
+    ToggleRow 'HDMI 기기로 전원 켜기' = true
+    TextRow '켜 두면 프로젝터를 끌 때 HDMI 기기도 함께 꺼집니다.'
+    ToggleRow '기기가 켜지면 해당 기기로 전환' = true
+######## locale pl
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC jest niedostępne'
+    ToggleRow 'Sterowanie HDMI-CEC' = true
+    TextRow 'Gdy HDMI-CEC jest wyłączone, dźwięk przez HDMI ARC jest niedostępny.'
+    ToggleRow 'Włączaj urządzeniem HDMI' = true
+    TextRow 'Gdy ta opcja jest włączona, urządzenia HDMI wyłączają się razem z projektorem.'
+    ToggleRow 'Przełączaj na urządzenie, gdy się włącza' = true
+######## locale pt-rBR
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'O HDMI-CEC não está disponível'
+    ToggleRow 'Controle HDMI-CEC' = true
+    TextRow 'Com o HDMI-CEC desligado, o som pelo HDMI ARC não fica disponível.'
+    ToggleRow 'Ligar com um dispositivo HDMI' = true
+    TextRow 'Com esta opção ligada, os dispositivos HDMI também desligam quando o projetor desliga.'
+    ToggleRow 'Mudar para um dispositivo quando ele ligar' = true
+######## locale pt
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'O HDMI-CEC não está disponível'
+    ToggleRow 'Controle HDMI-CEC' = true
+    TextRow 'Com o HDMI-CEC desligado, o som pelo HDMI ARC não fica disponível.'
+    ToggleRow 'Ligar com um dispositivo HDMI' = true
+    TextRow 'Com esta opção ligada, os dispositivos HDMI também desligam quando o projetor desliga.'
+    ToggleRow 'Mudar para um dispositivo quando ele ligar' = true
+######## locale ru
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario cec_off
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario no_service
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario throws
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = null
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = null
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' [grey] = null
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario no_tvinput
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = null
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = null
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = null
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=true}
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = null
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = null
+==== scenario paused
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario soundbar_off
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario setup_running
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = false
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = false
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(true)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(1)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(1)
+  [x50-menu-d] hdmi.setHdmiCecEnabled(1)
+  [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = false
+==== scenario writes_fail
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Управление HDMI-CEC'
+  [x50-menu-d] hdmi.setHdmiCecEnabled(0)
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Включаться от HDMI-устройства'
+  [x50-menu-d] hal.setCecWakeUp(false)
+  [x50-menu-d] hdmi.setTvSendStandbyOnSleep(0)
+  [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ flip 'Переключаться на устройство при его включении'
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  [main] toast "Не удалось выполнить"
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+  [test] ~ shown again
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступен'
+    ToggleRow 'Управление HDMI-CEC' = true
+    TextRow 'Когда HDMI-CEC выключен, звук через HDMI ARC недоступен.'
+    ToggleRow 'Включаться от HDMI-устройства' = true
+    TextRow 'Когда это включено, HDMI-устройства выключаются вместе с проектором.'
+    ToggleRow 'Переключаться на устройство при его включении' = true
+######## locale tr
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC kullanılamıyor'
+    ToggleRow 'HDMI-CEC kontrolü' = true
+    TextRow 'HDMI-CEC kapalıyken HDMI ARC üzerinden ses kullanılamaz.'
+    ToggleRow 'Bir HDMI cihazıyla aç' = true
+    TextRow 'Bu açıkken projektör kapandığında HDMI cihazları da kapanır.'
+    ToggleRow 'Açıldığında cihaza geç' = true
+######## locale uk
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC недоступний'
+    ToggleRow 'Керування HDMI-CEC' = true
+    TextRow 'Коли HDMI-CEC вимкнено, звук через HDMI ARC недоступний.'
+    ToggleRow 'Вмикатися від HDMI-пристрою' = true
+    TextRow 'Коли це ввімкнено, HDMI-пристрої вимикаються разом із проєктором.'
+    ToggleRow 'Перемикатися на пристрій, коли він вмикається' = true
+######## locale zh-rCN
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow 'HDMI-CEC 不可用'
+    ToggleRow 'HDMI-CEC 控制' = true
+    TextRow '关闭 HDMI-CEC 后，无法通过 HDMI ARC 输出声音。'
+    ToggleRow '由 HDMI 设备开机' = true
+    TextRow '开启后，投影仪关机时 HDMI 设备也会一并关闭。'
+    ToggleRow '设备开机时切换到该设备' = true
+######## locale zh-rTW
+==== scenario all_on
+  [test] ~ build
+  [test] ~ shown
+  [x50-menu-d] hdmi.getHdmiCecEnabled()
+  [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
+  page 'HDMI-CEC'
+    (gone) TextRow '無法使用 HDMI-CEC'
+    ToggleRow 'HDMI-CEC 控制' = true
+    TextRow '關閉 HDMI-CEC 後，無法透過 HDMI ARC 輸出聲音。'
+    ToggleRow '由 HDMI 裝置開機' = true
+    TextRow '開啟後，投影機關機時 HDMI 裝置也會一併關閉。'
+    ToggleRow '裝置開機時切換到該裝置' = true

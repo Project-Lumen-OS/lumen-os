@@ -47,12 +47,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * result. Game mode (game/GameMode) is not touched here; it keeps checking 696 / tvinput before its writes,
  * and 696 now reads 1 while HDMI is shown.
  *
- * t15 (stock analysis): whenever a decision finds HDMI shown, HdmiVolume follows the
- * music volume (spk_volume), a stored aspect ratio above the vendor range (the 5 that t14 wrote) is repaired
+ * t15 (stock analysis): whenever a decision finds HDMI shown, a stored aspect ratio above
+ * the vendor range (the 5 that t14 wrote) is repaired
  * once with 665(2), and {@value #CEC_SETTLE_MS} ms later game/GameMode.onHdmiShown runs (default Auto once; in
  * Auto the console check sets the game state); while HDMI is shown a TV input rename (the CEC OSD name arriving after "Playback_1") or a CEC
- * device event ({@link #onCecEvent}) runs the console check again {@value #CEC_SETTLE_MS} ms later. When a
- * decision finds no HDMI shown, HdmiVolume sends spk_volume=100 (also at the IGmpf connect).
+ * device event ({@link #onCecEvent}) runs the console check again {@value #CEC_SETTLE_MS} ms later. The volume needs
+ * no step here: the chip level follows it on every source (lumen-audio StockVolume, as stock).
  *
  * Debug fallback (stock analysis 7.4 item 2), only when {@value #PROP_FALLBACK} is 1 (default 0): after a 698(1)
  * that returned true, IGmpf 592 is read every {@value #STABLE_POLL_MS} ms for up to {@value #STABLE_MAX_MS} ms;
@@ -116,8 +116,11 @@ public final class HdmiSource {
     }
 
     /** One line for Projector settings > Diagnostics. Main thread. */
+    /** HDMI is on screen (the last decision of this class). Any thread, no HAL call (the signal panel). */
+    public static boolean shown() { return sShown; }
+
     public static String describe() {
-        return sLastLine + "; " + HdmiVolume.describe() + (fallback() ? "; fallback " + PROP_FALLBACK + "=1" : "");
+        return sLastLine + "; " + org.lumen.audio.StockVolume.describe() + (fallback() ? "; fallback " + PROP_FALLBACK + "=1" : "");
     }
 
     // ================================================================== events (main thread)
@@ -193,24 +196,18 @@ public final class HdmiSource {
     }
 
     /**
-     * p6-hal, after every decision (t15): HDMI shown -> volume follows, aspect repair, game check; not shown
-     * -> spk_volume back to 100. The main-thread parts are posted.
+     * p6-hal, after every decision (t15): HDMI shown -> input watch, aspect repair, game check; not shown -> the
+     * input watch off. The main-thread parts are posted. The volume is the same on every source (lumen-audio StockVolume).
      */
     private static void onShown(Play6Gmpf g, Play6Gmpf2 g2, boolean shown, String why) {
         final Context app = sApp;
         if (app == null) return;
         sShown = shown;
         if (!shown) {
-            Ui.main().post(() -> {
-                HdmiVolume.stop(app, "no HDMI shown, " + why);
-                watchInputs(app, false);
-            });
+            Ui.main().post(() -> watchInputs(app, false));
             return;
         }
-        Ui.main().post(() -> {
-            HdmiVolume.start(app);
-            watchInputs(app, true);
-        });
+        Ui.main().post(() -> watchInputs(app, true));
         repairAspect(g);
         scheduleGameCheck(why);                                 // CEC names settle first (PS5: "Playback_1")
     }
@@ -275,10 +272,7 @@ public final class HdmiSource {
         send(g, Play6Gmpf.SOURCE_MEDIA, "self-heal on " + why + ": 696 reads 1, no HDMI session");
         sShown = false;
         final Context a = app;
-        Ui.main().post(() -> {
-            HdmiVolume.stop(a, "self-heal on " + why);
-            watchInputs(a, false);
-        });
+        Ui.main().post(() -> watchInputs(a, false));
     }
 
     /** p6-hal: one 698 call and its P6Hdmi line. */

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A remote with the focus key on its side (devices/_remotes/focus_guide.tsv token focus_guide_side: the B990C remote,
+     stock SystemUI ic_focus_guide_remote_b990c / newsettings anim_remote_focus_guide_b990c), drawn for the small hint
+     area of QpdTip FOCUS_SIDE: the view cropped to the remote, the side focus key with its two press rings in the accent
+     colour. No model ships this remote today (focus_guide.tsv model rows), kept for the B990C row of the table. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="720px"
+    android:width="300px"
+    android:viewportWidth="300"
+    android:viewportHeight="720">
+  <group android:translateX="-220" android:translateY="-52">
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M276,70L416,70A18,18 0,0 1,434 88L434,736A18,18 0,0 1,416 754L276,754A18,18 0,0 1,258 736L258,88A18,18 0,0 1,276 70z"
+        android:fillAlpha="0.32"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M276,68L416,68A20,20 0,0 1,436 88L436,736A20,20 0,0 1,416 756L276,756A20,20 0,0 1,256 736L256,88A20,20 0,0 1,276 68z"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="4"
+        android:strokeAlpha="0.6"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M372.917,506.157L372.917,506.157A19.042,19.042 120.575,0 1,379.887 532.169L343.729,594.795A19.042,19.042 120.575,0 1,317.717 601.765L317.717,601.765A19.042,19.042 120.575,0 1,310.748 575.753L346.905,513.127A19.042,19.042 120.575,0 1,372.917 506.157z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M346,119m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M295,457m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M346,457m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M397,457m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M346,342m-70,0a70,70 0,1 1,140 0a70,70 0,1 1,-140 0"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M346,340m-36,0a36,36 0,1 1,72 0a36,36 0,1 1,-72 0"
+        android:fillAlpha="0.4"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M346,154L346,154A19,19 0,0 1,365 173L365,187A19,19 0,0 1,346 206L346,206A19,19 0,0 1,327 187L327,173A19,19 0,0 1,346 154z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#4D8EFF"
+        android:pathData="M436,149H441.857C446.145,149 450,152.855 450,157.143V198.857C450,203.145 446.145,207 441.857,207H436V149Z"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M441,137.5L441,137.5A40.5,40.5 0,0 1,481.5 178L481.5,178A40.5,40.5 0,0 1,441 218.5L441,218.5A40.5,40.5 0,0 1,400.5 178L400.5,178A40.5,40.5 0,0 1,441 137.5z"
+        android:strokeColor="#4D8EFF"
+        android:strokeWidth="5"
+        android:strokeAlpha="0.9"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M441,118.5L441,118.5A59.5,59.5 0,0 1,500.5 178L500.5,178A59.5,59.5 0,0 1,441 237.5L441,237.5A59.5,59.5 0,0 1,381.5 178L381.5,178A59.5,59.5 0,0 1,441 118.5z"
+        android:strokeColor="#4D8EFF"
+        android:strokeWidth="3"
+        android:strokeAlpha="0.45"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M283,232L409,232A7,7 0,0 1,416 239L416,239A7,7 0,0 1,409 246L283,246A7,7 0,0 1,276 239L276,239A7,7 0,0 1,283 232z"
+        android:fillAlpha="0.34"/>
+  </group>
+</vector>

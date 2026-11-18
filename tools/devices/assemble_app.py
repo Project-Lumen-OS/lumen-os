@@ -51,7 +51,11 @@ Rules (fail-closed, exit 1):
      device code under another name) and never dropped;
   7. module Java sources live under src/<package path>/; module resources are prefixed: every file under res/
      other than res/values*/ is named lumen_*, every resource name in res/values*/*.xml starts with lumen_;
-  8. module.conf, README*.md, the design notes, *.tsv (module data) and test/ of a module are never part of an app tree.
+     7b. a body module (module.conf body=yes: the whole app is this module plus the device's data, lumen-updater)
+     keeps the app's own resource names; its resources are still res/<type>/<file>, and a device layer that gives
+     the same resource file is an error by rule 6;
+  8. module.conf, README*.md, the design notes, *.tsv (module data), test/, tools/ and image/ (init files an image recipe
+     ships, e.g. lumen-signal's root bridge) of a module are never part of an app tree.
 Output: one summary line, warnings and errors; exit 0 green, 1 red, 2 usage. Never writes outside --out and
 --list.
 """
@@ -175,7 +179,7 @@ def codename_of(root, recipe):
     return None
 
 
-MODULE_SKIPS = ["module.conf", "README*.md", "CONTRACT.md", "test/", "tools/", "*.tsv"]
+MODULE_SKIPS = ["module.conf", "README*.md", "CONTRACT.md", "test/", "tools/", "image/", "*.tsv"]
 RES_NAME = re.compile(r'<(?:string|string-array|plurals|color|dimen|integer|bool|style|array|integer-array|item|attr|'
                       r'declare-styleable|fraction|drawable|id)\b[^>]*\bname="([^"]+)"')
 
@@ -191,19 +195,22 @@ def module_conf(root, path, where):
         if not line or line.startswith("#"):
             continue
         k, eq, v = line.partition("=")
-        if not eq or k not in ("name", "package", "packages", "depends"):
+        if not eq or k not in ("name", "package", "packages", "depends", "body"):
             raise RecipeError("%s/module.conf:%d: cannot read %r" % (path, n, line))
         out[k] = v.strip()
     if out.get("name") != os.path.basename(path):
         raise RecipeError("%s/module.conf: name=%s, the folder is %s" % (path, out.get("name"), os.path.basename(path)))
     if not re.match(r"^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$", out.get("package", "")):
         raise RecipeError("%s/module.conf: package= is not a Java package" % path)
+    if out.get("body", "no") not in ("yes", "no"):
+        raise RecipeError("%s/module.conf: body= is yes or no" % path)
     return out
 
 
 def module_errors(path, files, conf):
-    """Rule 7 for one module: source places and prefixed resources."""
+    """Rule 7 for one module: source places and prefixed resources (not for a body module, rule 7b)."""
     errs = []
+    body = conf.get("body") == "yes"
     pkgs = tuple("src/" + p.replace(".", "/") + "/" for p in [conf["package"]] + conf.get("packages", "").split())
     for rel, src in sorted(files.items()):
         if rel.startswith("src/") and not (rel.startswith(pkgs) and "/" not in rel[len(max((p for p in pkgs if rel.startswith(p)), key=len)):]):
@@ -212,6 +219,8 @@ def module_errors(path, files, conf):
             parts = rel.split("/")
             if len(parts) != 3:
                 errs.append("module %s: %s is not res/<type>/<file>" % (path, rel))
+            elif body:
+                pass
             elif parts[1] == "values" or parts[1].startswith("values-"):
                 for name in RES_NAME.findall(open(src, encoding="utf-8").read()):
                     if not name.startswith("lumen_"):
@@ -378,7 +387,26 @@ def write(files, out):
         shutil.copy2(files[rel], dst)
 
 
+def app_dir(root, app):
+    """The source folder of the app APP (its APK name), relative to root: apps/<app> when that folder holds an app (an
+    older tree, before a rename), else the app's row of apps/app_dirs.tsv, else apps/<app>."""
+    own = os.path.join("apps", app)
+    if any(os.path.isfile(os.path.join(root, own, f)) for f in ("AndroidManifest.xml", "app.layers")):
+        return own
+    for table in (os.path.join(root, "apps", "app_dirs.tsv"), os.path.join(devices.ROOT, "apps", "app_dirs.tsv")):
+        if os.path.isfile(table):
+            for line in open(table, encoding="utf-8"):
+                p = line.rstrip("\n").split("\t")
+                if not line.startswith("#") and len(p) >= 2 and p[0] == app:
+                    return p[1]
+            break
+    return own
+
+
 def find_recipe(root, codename, app):
+    """The device's recipe of the app, else the app's own apps/<app>/app.layers (a stand-alone app that uses apps/core
+    modules, the same on every device), else None (the app builds from its folder as it is). apps/<app> is the
+    folder of app_dir."""
     folder = os.path.join(root, "devices", codename, "app")
     if os.path.isdir(folder):
         for n in sorted(os.listdir(folder)):
@@ -389,13 +417,17 @@ def find_recipe(root, codename, app):
                         return p
                 except RecipeError:
                     continue
-    return None
+    own = os.path.join(root, app_dir(root, app), "app.layers")
+    return own if os.path.isfile(own) else None
 
 
 def main(argv):
     root = devices.ROOT
     if argv[:1] == ["--root"] and len(argv) > 1:
         root, argv = os.path.abspath(argv[1]), argv[2:]
+    if argv[:1] == ["--app-dir"] and len(argv) == 2:
+        print(app_dir(root, argv[1]))
+        return 0
     opts, rest, i = {}, [], 0
     while i < len(argv):
         a = argv[i]

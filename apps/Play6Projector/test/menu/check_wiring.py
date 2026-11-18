@@ -144,10 +144,16 @@ consts = dict(re.findall(r'^    ([A-Z0-9_]+)\("([a-z0-9_.]+)", FeatureKind', rea
 consts.update(re.findall(r'([A-Z_]+) = "([a-z0-9_.]+)"', mg))
 by_id = {v: k for k, v in consts.items()}
 ids = set(prof["features"]) | {x.split(":")[0] for x in prof.get("pending", [])}
+# the module screens and settings (MenuSpec.module: MODULE_SCREENS, MODULE_SETTINGS) are the menu's own, no adapter
+# names them
+spec = read(os.path.join(GSI, "apps/core/lumen-menu/src/org/lumen/menu/MenuSpec.java"))
+module = set(re.findall(r"FeatureId\.([A-Z0-9_]+)", re.search(r"MODULE_SCREENS = [^;]*;", spec).group(0)))
+module |= set(re.findall(r"FeatureId\.([A-Z0-9_]+)", re.search(r"MODULE_SETTINGS = [^;]*;", spec).group(0)))
+ok("module screens found", len(module) >= 1)
 for i in sorted(ids):
     k = by_id.get(i)
     ok(i + ": a constant", k is not None)
-    if k: ok(i + ": named by the adapter or its pages", re.search(r"\b" + k + r"\b", mf + mp) is not None)
+    if k and k not in module: ok(i + ": named by the adapter or its pages", re.search(r"\b" + k + r"\b", mf + mp) is not None)
 ok("no game menu on the Play 6", not prof.get("game_menu", {}).get("enabled") and prof.get("keys", {}).get("gear_long") == "none")
 ok("Play 6 has no optical zoom / Boost", "zoom" not in prof["features"] and "boost" not in prof["features"])
 

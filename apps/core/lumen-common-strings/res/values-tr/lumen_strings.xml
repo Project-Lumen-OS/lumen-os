@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Yamuk</string>
     <string name="lumen_later">Daha sonra</string>
     <string name="lumen_limited">Sınırlı</string>
-    <string name="lumen_looking_for_the_remote">Kumanda aranıyor…</string>
     <string name="lumen_manual_focus">Manuel odak</string>
     <string name="lumen_movie">Film</string>
     <string name="lumen_music">Müzik</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Boost parlaklık seviyesinde kullanılamaz</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">AI görüntü modunda kullanılamaz</string>
     <string name="lumen_not_available_in_the_office_mode">Ofis modunda kullanılamaz</string>
+    <string name="lumen_not_available_in_the_performance_mode">Performans modunda kullanılamaz</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Oyun modu açıkken kullanılamaz</string>
     <string name="lumen_obstacle_avoidance">Engelden kaçınma</string>
     <string name="lumen_off">Kapalı</string>
     <string name="lumen_office">Ofis</string>

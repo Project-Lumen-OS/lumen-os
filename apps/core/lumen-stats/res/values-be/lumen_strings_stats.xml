@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: Apache-2.0
-     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/Z9xProjector res/values-be/strings_stats.xml
+     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/ProjectorBase res/values-be/strings_stats.xml
      under the module prefix. -->
 <resources>
     <string name="lumen_stats_row">Адпраўляць ананімную статыстыку</string>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Memória da lente</string>
+    <string name="lumen_m_focus_guide">Foco pelo controle remoto</string>
+    <string name="lumen_qpd_tip_focus_guide">Aperte o botão de foco na lateral do controle e o projetor ajusta o foco sozinho. Segure o botão para ajustar o foco à mão.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Aperte o botão de foco do controle e o projetor ajusta o foco sozinho. Segure o botão para ajustar o foco à mão.</string>
+</resources>

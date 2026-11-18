@@ -3,11 +3,14 @@
  * tester 16:48-16:50: the output rows collapsed while the soundbar kept playing). Free of Android classes so
  * test/audio/run.sh checks it on the host. HB-only file, no HAL access. Used by audio/HbOutputOptions.
  *
- * Kinds are AudioOutputKind names. What AudioManager reports is not stable on the HB: "Speaker" turns CEC System
- * Audio off, which ends ARC ("ARC terminate, Reset Aout Capability", hdmi_arc removed); "Soundbar" / "Auto" turn it on
- * again and hdmi_arc comes back about 4 s later (16:48:51.96 chose ARC, 16:48:55.84 media routing -> hdmi_arc). A panel
- * read inside that gap (16:48:52.98) saw no ARC device, so rows built from AudioManager alone dropped the soundbar
- * (and the "Audio format" row) while the soundbar was coming back and then played.
+ * Kinds are AudioOutputKind names. What AudioManager reports is not stable on the HB: ARC drops while the soundbar
+ * listens to another input or CEC System Audio is off ("ARC terminate, Reset Aout Capability", hdmi_arc removed), and
+ * hdmi_arc comes back about 4 s after the soundbar is asked again (16:48:51.96 chose ARC, 16:48:55.84 media routing ->
+ * hdmi_arc). Up to beta15 choosing "Speaker" itself turned System Audio off and so ended ARC; since 0ee458dd
+ * (2026-11-15) Speaker leaves System Audio and ARC alone, as stock (an output choice is only FOR_MEDIA,
+ * lumen-audio SoundbarMode.systemAudioFor(SPEAKER) == null). A panel read inside such a gap (16:48:52.98) saw no ARC
+ * device, so rows built from AudioManager alone dropped the soundbar (and the "Audio format" row) while the soundbar was
+ * coming back and then played.
  *
  * Rules:
  *   Auto first, Speaker always.

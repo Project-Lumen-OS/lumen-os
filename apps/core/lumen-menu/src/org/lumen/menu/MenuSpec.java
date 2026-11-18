@@ -3,16 +3,23 @@ package org.lumen.menu;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * What the shared menu shows for one profile: the quick panel D tiles, the rows of every
- * section page and popup, the All settings categories, the Boost step and the game menu items. The order and the
- * places are FIXED for every projector (never laid out per device); a feature the profile lacks is simply left out,
- * a header whose rows are all left out goes too, a section tile without rows goes too, and an empty tile row goes.
- * This class is the only place that decides presence; the views build exactly this list.
+ * section page and popup, the All settings categories, the Boost step and the game menu items. The card and the
+ * pages are FIXED for every projector; a section's row order and groups are this table's unless the profile gives
+ * its model's stock order ({@code sections} in menu.json, the Keystone page of each stock tree). A feature the profile
+ * lacks is simply left out, a header whose rows are all left out goes too, a section tile without popup rows goes
+ * too, and an empty tile row goes. A section popup leaves out the rows that have a tile of their own on the card;
+ * All settings keeps them. This class is the only place that decides presence; the views build exactly this list
+ * ({@link #cardRows} adds the runtime part of the card).
  */
 public final class MenuSpec {
 
@@ -21,26 +28,44 @@ public final class MenuSpec {
     /** Section ids (QuickPanel.SECTION_* use the same words). */
     public static final String KEYSTONE = "keystone", FOCUS = "focus", PICTURE = "picture", SOUND = "sound",
             GAME = "game", PROJECTION = "projection", EYE = "eye", GENERAL = "general", LAMP = "lamp";
+    /** The theme button of the top row (2026-11-18, in place of voice search): Светлая, Тёмная, Авто. */
+    public static final String THEME = "theme";
 
-    /** Tile sizes of layout D. */
-    public static final String ROUND = "round", WIDE = "wide", SMALL = "small";
+    /** Tile sizes of layout D; a slider tile spans the card under the tile rows. */
+    public static final String ROUND = "round", WIDE = "wide", SMALL = "small", SLIDER = "slider";
+    /** The group header that is a thin line, no text (stock setting_common_line between two groups). */
+    public static final String LINE = "line";
+    /**
+     * Group headers a section or a profile page may have: the stock small titles of the Keystone page (size_position,
+     * smart, more), its correction settings sub page shown in place (auto_correction), the stock small titles of the
+     * image page (projector_brightness, image, image_more: its More is another stock text than the keystone one) and
+     * of its picture settings page (basic, colour, contrast, clarity, image_more), the Picture HDMI group, the line.
+     */
+    public static final Set<String> HEADERS = Collections.unmodifiableSet(new HashSet<>(java.util.Arrays.asList(
+            "auto_correction", "size_position", "smart", "more", "hdmi", "projector_brightness", "image", "basic",
+            "colour", "contrast", "clarity", "image_more", LINE)));
 
     /** A tile: {@code id} is a feature id or a section id (a section tile exists when its section has rows). */
     public static final class Tile {
         public final String size, id;
         /** The feature of a feature tile, null for a section tile. */
         public final FeatureId feature;
-        /** For the last small slot: the second candidate (mirroring, else USB files), or null. */
+        /** The second candidate of the slot (zoom, else digital zoom), or null. */
         public final String orElse;
+        /** True when the tile gives its place to a later tile of its row once the row has more tiles than places. */
+        public final boolean yields;
 
-        Tile(String size, Object id, Object orElse) {
+        Tile(String size, Object id, Object orElse, boolean yields) {
             this.size = size;
             this.id = String.valueOf(id);
             this.feature = id instanceof FeatureId ? (FeatureId) id : null;
             this.orElse = orElse == null ? null : String.valueOf(orElse);
+            this.yields = yields;
         }
 
-        @Override public String toString() { return size + " " + id + (orElse == null ? "" : "|" + orElse); }
+        @Override public String toString() {
+            return size + " " + id + (orElse == null ? "" : "|" + orElse) + (yields ? " (yields)" : "");
+        }
     }
 
     /** A group of rows under an optional header (header null: no header). */
@@ -54,73 +79,206 @@ public final class MenuSpec {
         }
     }
 
-    private static final Object[][] ROUND_TILES = {{EYE, FeatureId.EYE}, {GENERAL, null}};
-    /** Rows of the card: one wide tile and two small ones each (stock structure), {size, feature or section, orElse}. */
+    /**
+     * The round buttons of the top row, left to right: a tile pushed off the card (below), the theme button (Светлая,
+     * Тёмная, Авто), the gear (All settings). Network is a round button only on a model whose 3D tile took its card place. The signal panel is a
+     * developer feature (2026-11-18): no round button, one row in All settings, General, "developer".
+     */
+    private static final Object[] ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};
+    /**
+     * {tile, the tile it pushes off the card}: on a model with stock 3D the 3D tile takes the network place on the card
+     * and network becomes a round button on top (a Z9X user, 2026-11-14: 3D for every film without the settings).
+     */
+    private static final FeatureId[][] PUSHES_UP = {{FeatureId.PICTURE_3D, FeatureId.NETWORK}};
+    /** Places of one card row: one wide tile and two small ones (stock structure). */
+    public static final int ROW_PLACES = 3;
+    private static final String YIELDS = "yields";
+    /**
+     * Rows of the card, {size, feature or section, orElse, YIELDS}. Row 4: projection gives its place to screen
+     * mirroring where both are there, so the row stays one wide and two small tiles. 2026-11-13: eye protection
+     * is a tile and the USB tile is gone (USB files stay in the Input popup and in Lumen Home).
+     */
     private static final Object[][][] TILE_ROWS = {
             {{WIDE, FeatureId.KEYSTONE_AK_NOW}, {SMALL, KEYSTONE}, {SMALL, FeatureId.ZOOM, FeatureId.ZOOM_DIGITAL}},
             {{WIDE, PICTURE}, {SMALL, SOUND}, {SMALL, FOCUS}},
-            {{WIDE, FeatureId.INPUT}, {SMALL, FeatureId.BLUETOOTH}, {SMALL, FeatureId.NETWORK}},
-            {{WIDE, GAME}, {SMALL, PROJECTION}, {SMALL, FeatureId.MIRRORING, FeatureId.USB_FILES}},
+            {{WIDE, FeatureId.INPUT}, {SMALL, FeatureId.BLUETOOTH}, {SMALL, FeatureId.PICTURE_3D, FeatureId.NETWORK}},
+            {{WIDE, GAME}, {SMALL, PROJECTION, null, YIELDS}, {SMALL, FeatureId.MIRRORING}, {SMALL, FeatureId.EYE}},
     };
-    /** Section pages: {section, header-or-null, rows...} groups in order. */
+    /**
+     * The slider tiles under the tile rows, top to bottom, each where the profile has its feature: the light level
+     * (brightness), then the lens iris right under it (X50 family tester request 2026-11-18: the stock iris row of the
+     * picture page, one step per stock option). A number slider spans the profile's range, a choice slider steps
+     * through the profile's options in their stock order.
+     */
+    private static final FeatureId[] SLIDER_TILES = {FeatureId.LAMP, FeatureId.PICTURE_IRIS};
+
+    /** True for a feature that can be a slider tile of the card. */
+    public static boolean isSliderTile(String id) {
+        for (FeatureId f : SLIDER_TILES) if (f.id.equals(id)) return true;
+        return false;
+    }
+    /**
+     * Section pages: {section, header-or-null, rows...} groups in order. A section's rows are the rows listed here (a
+     * profile's stock order may only name these); the order and groups here count where the profile gives none.
+     */
     private static final Object[][] SECTIONS = {
-            {KEYSTONE, new Object[][]{
+            {KEYSTONE, new Object[][]{                  // each profile names its stock order (sections.keystone)
                     {null, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL, FeatureId.ZOOM,
-                            FeatureId.ZOOM_DIGITAL,
-                            FeatureId.KEYSTONE_FIT_SCREEN, FeatureId.KEYSTONE_ROTATION, FeatureId.KEYSTONE_ANGLE_H,
-                            FeatureId.KEYSTONE_ANGLE_V},
-                    {"image_correction", FeatureId.KEYSTONE_REALTIME, FeatureId.KEYSTONE_ON_MOVE, FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_CURTAIN,
-                            FeatureId.KEYSTONE_OBSTACLE},
-                    {"more", FeatureId.KEYSTONE_RESTORE}}},
+                            FeatureId.ZOOM_DIGITAL, FeatureId.ZOOM_MOVE, FeatureId.KEYSTONE_FIT_SCREEN, FeatureId.KEYSTONE_ROTATION,
+                            FeatureId.ZOOM_MEMORY},
+                    {"auto_correction", FeatureId.KEYSTONE_REALTIME, FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_ON_MOVE,
+                            FeatureId.KEYSTONE_OBSTACLE, FeatureId.KEYSTONE_CURTAIN},
+                    {"more", FeatureId.KEYSTONE_RESTORE, FeatureId.KEYSTONE_ANGLE_H, FeatureId.KEYSTONE_ANGLE_V}}},
             {FOCUS, new Object[][]{
                     {null, FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART, FeatureId.FOCUS_ON_MOVE,
-                            FeatureId.FOCUS_ON_POWER}}},
+                            FeatureId.FOCUS_ON_POWER, FeatureId.FOCUS_GUIDE}}},
             {LAMP, new Object[][]{{null, FeatureId.LAMP, FeatureId.BOOST}}},
-            {PICTURE, new Object[][]{
-                    {null, FeatureId.PICTURE_MODE, FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP, FeatureId.PICTURE_MEMC,
-                            FeatureId.PICTURE_AI_CONTRAST, FeatureId.PICTURE_DYNAMIC_CONTRAST,
-                            FeatureId.PICTURE_DYNAMIC_BLACK, FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_ULTRA120,
-                            FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET, FeatureId.PICTURE_RESET_ALL},
+            {PICTURE, new Object[][]{                   // stock image page: the iris under the light level, then the mode
+                    {null, FeatureId.PICTURE_IRIS, FeatureId.PICTURE_MODE, FeatureId.PICTURE_DV_SCREEN,
+                            FeatureId.PICTURE_SETTINGS, FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP,
+                            FeatureId.PICTURE_MEMC, FeatureId.PICTURE_WB, FeatureId.PICTURE_GAMUT, FeatureId.PICTURE_COLOR_OPT,
+                            FeatureId.PICTURE_CC, FeatureId.PICTURE_GAMMA, FeatureId.PICTURE_GAMMA_INDEX, FeatureId.PICTURE_HDR,
+                            FeatureId.PICTURE_LOCAL_CONTRAST, FeatureId.PICTURE_DYNAMIC_CONTRAST, FeatureId.PICTURE_AI_CONTRAST,
+                            FeatureId.PICTURE_DYNAMIC_BLACK, FeatureId.PICTURE_BLACK_TUNING, FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES,
+                            FeatureId.PICTURE_ULTRA120, FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET,
+                            FeatureId.PICTURE_RESET_ALL, FeatureId.PICTURE_STYLE_FILTER,
+                            FeatureId.PICTURE_ANTI_RBE, FeatureId.PICTURE_3D},
                     {"hdmi", FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT}}},
             {SOUND, new Object[][]{
                     {null, FeatureId.SOUND_ENHANCEMENT, FeatureId.SOUND_MODE, FeatureId.SOUND_EQ, FeatureId.SOUND_LEVELING,
-                            FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT, FeatureId.SOUND_FORMAT}}},
+                            FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT, FeatureId.SOUND_FORMAT,
+                            FeatureId.SOUND_KEY_TONE}}},
             {PROJECTION, new Object[][]{{null, FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR}}},
             {GAME, new Object[][]{{null, FeatureId.GAME_MODE, FeatureId.GAME_SPEED, FeatureId.GAME_ALLM}}},
             {EYE, new Object[][]{{null, FeatureId.EYE}}},
             {GENERAL, new Object[][]{
-                    {null, FeatureId.LAMP_OFF, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC,
+                    {null, FeatureId.LAMP_OFF, FeatureId.SETTINGS_SYSTEM, FeatureId.EYE_ELDER_COLOR,
+                            FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC,
+                            FeatureId.SETTINGS_HDMI, FeatureId.SETTINGS_COLOUR_VISION,
                             FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER,
                             FeatureId.SETTINGS_REMOTE, FeatureId.LAMP_ECO, FeatureId.SETTINGS_LAUNCHER,
-                            FeatureId.SETTINGS_LICENCES}}},
+                            FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_LICENCES},
+                    {"developer", FeatureId.SIGNAL_PANEL, FeatureId.SIGNAL_PIN, FeatureId.SIGNAL_REFRESH}}},
     };
+    /**
+     * {section, row of another section}: a row a profile's stock order may also show on this section's page. The stock
+     * image page starts with the light level (brightness_adjustment), while the card keeps its brightness slider.
+     */
+    private static final Object[][] ALSO_IN = {{PICTURE, FeatureId.LAMP}};
+
+    /** True when a profile's stock order of {@code section} may also show {@code f}, a row of another section. */
+    public static boolean alsoIn(String section, FeatureId f) {
+        for (Object[] a : ALSO_IN) if (a[0].equals(section) && a[1] == f) return true;
+        return false;
+    }
+
+    /**
+     * Screens of shared modules that the menu opens itself (no adapter code, no per-device copy): a profile names
+     * them like any feature, so a model without the row has none, and the adapter does not implement them.
+     */
+    public static final Set<FeatureId> MODULE_SCREENS = Collections.unmodifiableSet(EnumSet.of(FeatureId.SETTINGS_REPORT,
+            FeatureId.SIGNAL_PANEL));
+
+    /**
+     * Settings of shared modules the menu reads and writes itself (ModuleScreens, no device adapter): a profile names
+     * them like any feature, the module decides whether the row is there on this model.
+     */
+    public static final Set<FeatureId> MODULE_SETTINGS = Collections.unmodifiableSet(EnumSet.of(FeatureId.SIGNAL_PIN,
+            FeatureId.SIGNAL_REFRESH));
+
+    /**
+     * Module settings every projector has, so no profile names them: the quick menu editor offers them (the volume,
+     * 2026-11-18: an optional item, never in the default menu). Nothing in the section pages, the snapshots or
+     * the device adapters.
+     */
+    public static final Set<FeatureId> EVERY_MODEL = Collections.unmodifiableSet(EnumSet.of(FeatureId.SOUND_VOLUME));
+
+    /** True for a module screen or setting: the menu handles it, the device adapter has no part in it. */
+    public static boolean module(FeatureId f) {
+        return MODULE_SCREENS.contains(f) || MODULE_SETTINGS.contains(f) || EVERY_MODEL.contains(f);
+    }
+
     /** All settings: the round category buttons, in this order. */
     private static final String[] ALL_SETTINGS = {KEYSTONE, FOCUS, PICTURE, PROJECTION, SOUND, EYE, GENERAL};
+    /**
+     * Pages of the menu's own rows ({@link FeatureKind#PAGE}): {page, header-or-null, rows...} groups, in the stock
+     * order of each page (newsettings image_mode_setting). A page is there when the profile names it and at least
+     * one of its rows (a page row counts when its own page is there); a row of a page needs that page in the profile
+     * (MenuProfile). A page that holds pages is listed after them.
+     */
+    private static final Object[][] PAGES = {
+            {FeatureId.PICTURE_WB2, new Object[][]{{null, FeatureId.PICTURE_WB2_RED_GAIN, FeatureId.PICTURE_WB2_GREEN_GAIN,
+                    FeatureId.PICTURE_WB2_BLUE_GAIN, FeatureId.PICTURE_WB2_RED_OFFSET, FeatureId.PICTURE_WB2_GREEN_OFFSET,
+                    FeatureId.PICTURE_WB2_BLUE_OFFSET, FeatureId.PICTURE_WB2_RESET}}},
+            {FeatureId.PICTURE_WB11, new Object[][]{{null, FeatureId.PICTURE_WB11_LEVEL, FeatureId.PICTURE_WB11_RED,
+                    FeatureId.PICTURE_WB11_GREEN, FeatureId.PICTURE_WB11_BLUE, FeatureId.PICTURE_WB11_RESET}}},
+            {FeatureId.PICTURE_WB, new Object[][]{{null, FeatureId.PICTURE_WB2, FeatureId.PICTURE_WB11}}},
+            {FeatureId.PICTURE_CC, new Object[][]{{null, FeatureId.PICTURE_CC_COLOR, FeatureId.PICTURE_CC_HUE,
+                    FeatureId.PICTURE_CC_SATURATION, FeatureId.PICTURE_CC_LIGHTNESS, FeatureId.PICTURE_CC_RESET}}},
+            {FeatureId.PICTURE_HDR, new Object[][]{{null, FeatureId.PICTURE_HDR_MAPPING, FeatureId.PICTURE_HDR_SCREEN_SIZE,
+                    FeatureId.PICTURE_HDR_SCREEN_GAIN}}},
+            {FeatureId.PICTURE_DV_SCREEN, new Object[][]{{null, FeatureId.PICTURE_DV_SCREEN_SIZE,
+                    FeatureId.PICTURE_DV_SCREEN_GAIN}}},
+    };
+
+    /** True when {@code f} is one of the fixed pages of {@link #PAGES} (not a page a profile gives itself). */
+    public static boolean isTablePage(FeatureId f) {
+        for (Object[] pg : PAGES) if (pg[0] == f) return true;
+        return false;
+    }
+
+    /** The page whose rows list {@code f}, or null for a row of a section. */
+    public static FeatureId pageOf(FeatureId f) {
+        for (Object[] pg : PAGES) {
+            for (Object[] g : (Object[][]) pg[1]) {
+                for (int i = 1; i < g.length; i++) if (g[i] == f) return (FeatureId) pg[0];
+            }
+        }
+        return null;
+    }
+
+    /** The section whose rows list {@code f}, or null for a feature that is no section row (a tile, a page row). */
+    public static String sectionOf(FeatureId f) {
+        for (Object[] s : SECTIONS) {
+            for (Object[] g : (Object[][]) s[1]) {
+                for (int i = 1; i < g.length; i++) if (g[i] == f) return (String) s[0];
+            }
+        }
+        return null;
+    }
+
+    /** True when {@code id} is a section of the section table. */
+    public static boolean isSection(String id) {
+        for (Object[] s : SECTIONS) if (s[0].equals(id)) return true;
+        return false;
+    }
 
     // ------------------------------------------------------------------ result for one profile
 
     public final MenuProfile profile;
     public final List<Tile> round;
     public final List<List<Tile>> rows;
+    /** The slider tiles of the card, top to bottom ({@link #SLIDER_TILES} the profile has). */
+    public final List<Tile> sliders;
+    /** Section pages in full: All settings shows these. */
     public final Map<String, List<Group>> sections;
+    /**
+     * The popup of a section tile: the section without the rows that are tiles of their own on the card (keystone
+     * without Auto keystone now and zoom), so the card reaches every row once.
+     */
+    public final Map<String, List<Group>> popups;
     public final List<String> allSettings;
+    /** The pages of the menu's own rows the profile has ({@link FeatureKind#PAGE} rows), in table order. */
+    public final Map<FeatureId, List<Group>> pages;
 
     private MenuSpec(MenuProfile p) {
         profile = p;
-        LinkedHashMap<String, List<Group>> secs = new LinkedHashMap<>();
-        for (Object[] s : SECTIONS) {
-            List<Group> groups = new ArrayList<>();
-            for (Object[] g : (Object[][]) s[1]) {
-                List<FeatureId> rs = new ArrayList<>();
-                for (int i = 1; i < g.length; i++) if (p.has((FeatureId) g[i])) rs.add((FeatureId) g[i]);
-                if (!rs.isEmpty()) groups.add(new Group((String) g[0], rs));
-            }
-            if (!groups.isEmpty()) secs.put((String) s[0], Collections.unmodifiableList(groups));
-        }
-        sections = Collections.unmodifiableMap(secs);
+        pages = pages(p);
+        sections = sections(p, Collections.emptySet(), pages);
+        popups = sections(p, cardFeatures(p), pages);
         List<Tile> rt = new ArrayList<>();
-        for (Object[] t : ROUND_TILES) {
-            if (t[1] == null || p.has((FeatureId) t[1])) rt.add(new Tile(ROUND, t[0], null));
+        for (Object t : ROUND_TILES) {
+            if (!(t instanceof FeatureId) || roundShown((FeatureId) t)) rt.add(new Tile(ROUND, t, null, false));
         }
         round = Collections.unmodifiableList(rt);
         List<List<Tile>> rws = new ArrayList<>();
@@ -128,32 +286,172 @@ public final class MenuSpec {
             List<Tile> r = new ArrayList<>();
             for (Object[] t : row) {
                 Object id = t[1], alt = t.length > 2 ? t[2] : null;
-                boolean a = present(id), b = alt != null && present(alt);
-                if (a) r.add(new Tile((String) t[0], id, b ? alt : null));
-                else if (b) r.add(new Tile((String) t[0], alt, null));
+                boolean a = present(id), b = alt != null && present(alt), yields = t.length > 3 && YIELDS.equals(t[3]);
+                if (a) r.add(new Tile((String) t[0], id, b ? alt : null, yields));
+                else if (b) r.add(new Tile((String) t[0], alt, null, yields));
             }
             if (!r.isEmpty()) rws.add(Collections.unmodifiableList(r));
         }
         rows = Collections.unmodifiableList(rws);
+        List<Tile> sl = new ArrayList<>();
+        for (FeatureId f : SLIDER_TILES) if (present(f) && sliderRange(f) != null) sl.add(new Tile(SLIDER, f, null, false));
+        sliders = Collections.unmodifiableList(sl);
         List<String> all = new ArrayList<>();
-        for (String c : ALL_SETTINGS) if (secs.containsKey(c) || GENERAL.equals(c)) all.add(c);
+        for (String c : ALL_SETTINGS) if (sections.containsKey(c) || GENERAL.equals(c)) all.add(c);
         allSettings = Collections.unmodifiableList(all);
     }
 
+    /**
+     * The section groups with the rows the profile has, minus {@code leaveOut}, in the profile's stock order where it
+     * gives one; empty groups and sections go.
+     */
+    private static Map<String, List<Group>> sections(MenuProfile p, Set<FeatureId> leaveOut, Map<FeatureId, List<Group>> pages) {
+        LinkedHashMap<String, List<Group>> secs = new LinkedHashMap<>();
+        for (Object[] s : SECTIONS) {
+            Object[][] order = p.order((String) s[0]);
+            List<Group> groups = groups(order != null ? order : (Object[][]) s[1], p, leaveOut, pages);
+            if (!groups.isEmpty()) secs.put((String) s[0], Collections.unmodifiableList(groups));
+        }
+        return Collections.unmodifiableMap(secs);
+    }
+
+    /**
+     * The pages with at least one row in the profile (pages holding pages come after them in PAGES); MenuProfile
+     * refuses a row whose page is missing, so a page with a row is always named.
+     */
+    private static Map<FeatureId, List<Group>> pages(MenuProfile p) {
+        LinkedHashMap<FeatureId, List<Group>> out = new LinkedHashMap<>();
+        for (Object[] pg : PAGES) {
+            FeatureId f = (FeatureId) pg[0];
+            List<Group> groups = groups((Object[][]) pg[1], p, Collections.emptySet(), out);
+            if (!groups.isEmpty()) out.put(f, Collections.unmodifiableList(groups));
+        }
+        for (FeatureId f : p.pageOrders().keySet()) {            // the profile's own pages (picture.settings) hold table pages
+            List<Group> groups = groups(p.pageOrders().get(f), p, Collections.emptySet(), out);
+            if (!groups.isEmpty()) out.put(f, Collections.unmodifiableList(groups));
+        }
+        return Collections.unmodifiableMap(out);
+    }
+
+    /**
+     * Groups with the rows the profile has (a page row only with its page), minus {@code leaveOut}; empty ones go, and
+     * a line that would open the page is no line (a line only stands between two groups).
+     */
+    private static List<Group> groups(Object[][] table, MenuProfile p, Set<FeatureId> leaveOut, Map<FeatureId, List<Group>> pages) {
+        List<Group> groups = new ArrayList<>();
+        for (Object[] g : table) {
+            List<FeatureId> rs = new ArrayList<>();
+            for (int i = 1; i < g.length; i++) {
+                FeatureId f = (FeatureId) g[i];
+                if (p.has(f) && !leaveOut.contains(f) && (f.kind != FeatureKind.PAGE || pages.containsKey(f))) rs.add(f);
+            }
+            if (!rs.isEmpty()) groups.add(new Group(groups.isEmpty() && LINE.equals(g[0]) ? null : (String) g[0], rs));
+        }
+        return groups;
+    }
+
+    /** The features with a feature tile on the card: per slot the first candidate the profile has, else the second. */
+    private static Set<FeatureId> cardFeatures(MenuProfile p) {
+        Set<FeatureId> out = new HashSet<>();
+        for (Object[][] row : TILE_ROWS) {
+            for (Object[] t : row) {
+                for (int i = 1; i < t.length; i++) {
+                    if (t[i] instanceof FeatureId && p.has((FeatureId) t[i])) {
+                        out.add((FeatureId) t[i]);
+                        break;
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    private static Object candidate(String id) {
+        FeatureId f = FeatureId.known(id);
+        return f != null ? f : id;
+    }
+
+    /** The feature whose card place {@code f} takes (it goes up to the round buttons then), else null. */
+    public static FeatureId pushesOff(FeatureId f) {
+        for (FeatureId[] p : PUSHES_UP) if (p[0] == f) return p[1];
+        return null;
+    }
+
+    /** True when {@code f} is there and a tile that pushes it off the card is there too. */
+    private static boolean pushedUp(FeatureId f, Predicate<Object> there) {
+        for (FeatureId[] p : PUSHES_UP) if (p[1] == f && there.test(p[0]) && there.test(f)) return true;
+        return false;
+    }
+
+    /** A feature tile needs its feature, a section tile a popup with rows. */
+    /** A feature's round button: a tile pushed off the card only when pushed, any other one when the profile has it. */
+    private boolean roundShown(FeatureId f) {
+        return pushTarget(f) ? pushedUp(f, this::present) : present(f);
+    }
+
+    /** True for a card tile that becomes a round button only when another tile takes its card place (network). */
+    private static boolean pushTarget(FeatureId f) {
+        for (FeatureId[] p : PUSHES_UP) if (p[1] == f) return true;
+        return false;
+    }
+
     private boolean present(Object id) {
-        return id instanceof FeatureId ? profile.has((FeatureId) id) : sections.containsKey(id);
+        return id instanceof FeatureId ? profile.has((FeatureId) id) : popups.containsKey(id);
     }
 
     /** The menu of a profile; an invalid profile gives an empty menu (only the gear, nothing to set). */
     public static MenuSpec of(MenuProfile p) { return new MenuSpec(p); }
 
+    /**
+     * The round buttons shown now: of {@link #round} the ones {@code usable} accepts, a pushed up tile only while the
+     * tile that took its card place is usable (else it stays on the card, {@link #cardRows}).
+     */
+    public List<Tile> roundRow(Predicate<String> usable) {
+        List<Tile> out = new ArrayList<>();
+        for (Tile t : round) {
+            if (!usable.test(t.id)) continue;
+            if (t.feature != null && pushTarget(t.feature) && !pushedUp(t.feature, o -> usable.test(String.valueOf(o)))) continue;
+            out.add(t);
+        }
+        return Collections.unmodifiableList(out);
+    }
+
+    /**
+     * The card rows shown now: of each slot the first candidate {@code usable} accepts (the runtime part: the
+     * receiver app, a usable feature), a row with more tiles than {@link #ROW_PLACES} drops its yielding tiles
+     * first, an empty row goes.
+     */
+    public List<List<Tile>> cardRows(Predicate<String> usable) {
+        List<List<Tile>> out = new ArrayList<>();
+        for (List<Tile> row : rows) {
+            List<Tile> r = new ArrayList<>();
+            for (Tile t : row) {
+                String id = usable.test(t.id) ? t.id : t.orElse != null && usable.test(t.orElse) ? t.orElse : null;
+                if (id != null) r.add(t.orElse == null ? t : new Tile(t.size, candidate(id), null, t.yields));
+            }
+            for (int i = 0; r.size() > ROW_PLACES && i < r.size(); ) {
+                if (r.get(i).yields) r.remove(i);
+                else i++;
+            }
+            if (!r.isEmpty()) out.add(Collections.unmodifiableList(r));
+        }
+        return Collections.unmodifiableList(out);
+    }
+
     /** True when the section has at least one row (its tile, popup and All settings category exist). */
     public boolean hasSection(String section) { return sections.containsKey(section); }
 
     /** Rows of a section in order (headers left out), empty when absent. */
-    public List<FeatureId> rowsOf(String section) {
+    public List<FeatureId> rowsOf(String section) { return flat(sections.get(section)); }
+
+    /** Rows of a section's popup in order (headers left out), empty when absent. */
+    public List<FeatureId> popupRowsOf(String section) { return flat(popups.get(section)); }
+
+    /** Rows of a page in order (headers left out), empty when the profile has no such page. */
+    public List<FeatureId> pageRowsOf(FeatureId page) { return flat(pages.get(page)); }
+
+    private static List<FeatureId> flat(List<Group> gs) {
         List<FeatureId> out = new ArrayList<>();
-        List<Group> gs = sections.get(section);
         if (gs != null) for (Group g : gs) out.addAll(g.rows);
         return out;
     }
@@ -165,6 +463,26 @@ public final class MenuSpec {
         return false;
     }
 
+    /** A header is on screen only while one of its rows is: never a header without rows. */
+    public boolean headerShown(List<FeatureId> rows, MenuState st) {
+        for (FeatureId f : rows) if (rowShown(f, st)) return true;
+        return false;
+    }
+
+    /** A line ({@link #LINE}) is on screen only with a shown row above it and one below: never at the top of a page. */
+    public boolean lineShown(List<FeatureId> above, List<FeatureId> rows, MenuState st) {
+        return headerShown(above, st) && headerShown(rows, st);
+    }
+
+    /** The row of {@code f} is on screen in {@code st}; the picture sliders count while one of them is. */
+    public boolean rowShown(FeatureId f, MenuState st) {
+        if (st == null) return true;
+        if (st.hidden(f)) return false;
+        if (FeatureId.PICTURE_PQ != f) return true;
+        for (String item : profile.items(f)) if (!st.hidden(FeatureId.pq(item))) return true;
+        return false;
+    }
+
     /** The Boost step of the light slider, or -1 when the model has no Boost. */
     public int boostLevel() { return profile.has(FeatureId.BOOST) ? profile.number(FeatureId.BOOST, "level", -1) : -1; }
 
@@ -172,6 +490,41 @@ public final class MenuSpec {
     public boolean hasTile(String id) {
         for (Tile t : round) if (t.id.equals(id)) return true;
         for (List<Tile> r : rows) for (Tile t : r) if (t.id.equals(id) || id.equals(t.orElse)) return true;
+        for (Tile t : sliders) if (t.id.equals(id)) return true;
         return false;
+    }
+
+    /**
+     * The steps of a slider tile: a number slider's profile range {min, max}, a choice slider's option indexes
+     * {0, options - 1}; null when the profile cannot draw it as a slider (a choice with fewer than two options).
+     */
+    public int[] sliderRange(FeatureId f) {
+        if (f.kind == FeatureKind.CHOICE) {
+            int n = profile.options(f).size();
+            return n < 2 ? null : new int[]{0, n - 1};
+        }
+        return new int[]{profile.number(f, "min", 0), profile.number(f, "max", 0)};
+    }
+
+    /**
+     * The step a choice slider shows for {@code token} in {@code options} (the options listed now), or null when the
+     * value is unknown or not one of them (the knob then shows nothing, never an invented step).
+     */
+    public static Integer sliderStep(List<String> options, String token) {
+        int i = token == null || options == null ? -1 : options.indexOf(token);
+        return i < 0 ? null : i;
+    }
+
+    /** The option token of step {@code step} of a choice slider, or null outside the options. */
+    public static String sliderToken(List<String> options, int step) {
+        return options == null || step < 0 || step >= options.size() ? null : options.get(step);
+    }
+
+    /**
+     * The audio format row sits at the bottom of the sound output page (owner variant C, 2026-11-18) wherever the profile
+     * has that page; without it, it stays a row of the sound section.
+     */
+    public static boolean onOutputPage(FeatureId f, MenuProfile p) {
+        return FeatureId.SOUND_FORMAT == f && p != null && p.has(FeatureId.SOUND_OUTPUT);
     }
 }

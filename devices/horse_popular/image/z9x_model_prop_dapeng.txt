@@ -1,0 +1,10 @@
+# The stock model properties of the Z9X G0082 (all three firmwares) a Lumen image reads: lines of
+# vendor/etc/xgimimodelname/G0082/build.prop that x50_props.py model_rule keeps, in the stock order, each below its
+# reader. z9x_model_props.tsv names the firmware and stock sha256; tools/devices/model_props.py check proves this file
+# against the dumps, z9x_model_props.rc sets the lines at early-init.
+# read by lumen-control in Z9xProjector: productName of the XGIMI phone remote reply (Replies, AndroidFacts); stock
+# answers Product_dapeng, Lumen answered nothing
+ro.xgimi.product.name=Product_dapeng
+# read by the vendor mtkhwcomposer and audio.primary.mt5877 (VendorProperties mstar_hwc_framebuffer_format); the
+# Z9X /vendor/build.prop sets the same 1 before init, so this keeps the stock order of the file and changes nothing
+vendor.mstar.hwc.framebuffer.format=1

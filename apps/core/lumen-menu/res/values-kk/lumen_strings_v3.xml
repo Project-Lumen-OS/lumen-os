@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">Бас тарту</string>
     <string name="lumen_m_panel_boost_press_again">Boost үшін → түймесін тағы басыңыз</string>
     <string name="lumen_m_panel_boost_leave_press_again">Boost режимінен шығу үшін ← түймесін тағы басыңыз</string>
+    <string name="lumen_m_lamp_off_press_again">Кескін өшеді. Қайта қосу үшін қуат түймесін басыңыз. Өшіру үшін ← түймесін тағы басыңыз.</string>
     <string name="lumen_m_toast_setup_running">Алдымен реттеуді аяқтаңыз</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI кескіні</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Түс дәлдігі</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Колонка және жарық</string>
     <string name="lumen_m_ct_custom">Пайдаланушы</string>
     <string name="lumen_m_lamp_off">Кескінді өшіру</string>
+    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris_dynamic">Динамикалық</string>
+    <string name="lumen_m_iris_lamp_dynamic">IRIS динамикалық болғанда жарықтықты өзгерту мүмкін емес.</string>
+    <string name="lumen_m_iris_lamp_held">Осы IRIS мәнінде жарықтықты өзгерту мүмкін емес.</string>
 </resources>

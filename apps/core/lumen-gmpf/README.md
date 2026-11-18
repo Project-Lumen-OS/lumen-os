@@ -26,3 +26,6 @@ was recorded with onto the shared one. Every transaction (interface, code, flags
 result must equal `golden/<codename>.txt`, recorded from the clients before they shared one body. `compare.py OLD NEW`
 tells wire and result changes (red) from message changes; `RECORD=1` writes a new golden after a reviewed change.
 `python3 test/wire/mutate.py`: mutants of the codes, wires, rules and guards, each must turn the golden red.
+
+`HdmiLink` and the HDMI relink moved to `apps/core/lumen-hdmi` (every model, X50 family too); this module keeps
+`getSignalStatus` and `edidVersions()`, the calls the gmpf apps' relink host (`source/GmpfRelinkHost`) makes.

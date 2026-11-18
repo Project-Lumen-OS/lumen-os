@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">型号代码</string>
+    <string name="lumen_about_dlp">DLP 控制器</string>
+    <string name="lumen_about_part_firmware">%1$s，固件 %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI 固件</string>
+    <string name="lumen_about_firmware_dated">%1$s（%2$s）</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s，安全更新 %2$s</string>
+    <string name="lumen_about_kernel">内核</string>
+    <string name="lumen_about_boot_loader">启动固件</string>
+    <string name="lumen_about_gmui">XGIMI 界面</string>
+    <string name="lumen_about_platform">MediaTek 平台</string>
+    <string name="lumen_about_remote">遥控器</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">恢复 XGIMI 系统</string>
+    <string name="lumen_about_back_summary_file">U 盘文件：%1$s</string>
+    <string name="lumen_about_back_summary">使用 XGIMI 恢复 U 盘</string>
+    <string name="lumen_about_intro">使用适用于此型号的 XGIMI 恢复 U 盘即可恢复 XGIMI 系统。具体方法见项目页面上的指南。</string>
+    <string name="lumen_about_usb_file">U 盘中的文件名</string>
+    <string name="lumen_about_official">XGIMI 官方文件</string>
+    <string name="lumen_about_official_value">%1$s，%2$s 字节</string>
+    <string name="lumen_about_searching">正在查找此固件的官方文件</string>
+    <string name="lumen_about_guide_files">项目页面上的指南列出了 XGIMI 官方文件。</string>
+    <string name="lumen_about_erases">U 盘会清除投影仪上的所有内容：应用、账号、设置和文件。</string>
+    <string name="lumen_about_scan">用手机扫描即可打开</string>
+    <string name="lumen_about_close">关闭</string>
+</resources>

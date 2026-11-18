@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "device": "hb",
+  "channel": "hb-nogms",
+  "published_utc": 1793996739,
+  "version": "1.0.9",
+  "version_code": 1000999,
+  "build_utc": 1792842929,
+  "build_id": "lumen-hb-1.0.9-202611061313",
+  "requires": {
+    "vendor_incremental": [
+      "v6.16.24"
+    ],
+    "min_version_code": 1000000,
+    "blobs_set": [
+      "hb-v61624-a"
+    ]
+  },
+  "changelog": {
+    "en": "Lumen OS 1.0.9\n• A new Projector app: sections on the left, large tiles for autofocus and keystone, settings in cards with a line that explains each.\n• Bluetooth headphones: clean sound, and the volume keys change the headphone volume. Pair headphones you used before again.\n• Anonymous statistics at every start and once a day: model, version, build, update details, country, a random install number and the serial number (the server keeps only its hash). No city, the IP address is not stored. Turn it off in the projector settings, Diagnostics.\n• eARC soundbars are picked up again after the screen turns on or after a restart of the soundbar.\n• Updater fixes: no stale \"Update ready\", follows an install that is running, keeps a downloaded update after a failed check.",
+    "ru": "Lumen OS 1.0.9\n• Новое приложение «Проектор»: разделы слева, крупные плитки для автофокуса и трапеции, настройки карточками с пояснением к каждой.\n• Bluetooth-наушники: чистый звук, кнопки громкости меняют громкость в наушниках. Наушники, подключённые раньше, подключите заново.\n• Анонимная статистика при каждом включении и раз в день: модель, версия, сборка, сведения об обновлении, страна, случайный номер установки и серийный номер (сервер хранит только его хеш). Без города, IP-адрес не сохраняется. Выключается в настройках проектора, раздел «Диагностика».\n• Саундбар по eARC подхватывается после включения экрана и после перезапуска саундбара.\n• Исправления обновлятора: нет лишнего «Обновление готово», он следит за идущей установкой и не прячет скачанное обновление после неудачной проверки."
+  },
+  "packages": [
+    {
+      "type": "full",
+      "url": "https://github.com/kmuradoff/lumen-os/releases/download/z9x-hb-1.0.9/lumen-os-hb-1.0.9-nogms-full-ota.zip",
+      "size": 446779685,
+      "sha256": "bce3885a42ca668663e51c2412ff5a791c86e326384ca0331df0931ed95e5184",
+      "payload_offset": 41,
+      "payload_size": 446761176,
+      "metadata_url": "https://github.com/kmuradoff/lumen-os/releases/download/z9x-hb-1.0.9/lumen-os-hb-1.0.9-nogms-full-payload_metadata.bin",
+      "metadata_size": 17721,
+      "metadata_sha256": "52e6fa697010855e28bd8c03539cc781f597bb22d4396a651cedc135f544871b",
+      "payload_properties": [
+        "FILE_HASH=Eb9vUaBI/ygaDS5q4iZ4PcoY/kOSWFoTuVqVyJgjJUI=",
+        "FILE_SIZE=446761176",
+        "METADATA_HASH=0tpMacI6+PyPwSEKswDLd4ofWBvHp/HmLT4h1aHxxq0=",
+        "METADATA_SIZE=17198"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# What else a key can do besides opening an app ("Remote buttons", apps/core/lumen-remote keys package): the projector
+# actions of the stock custom-key feature (X50, RS30, Titan: SystemUI RemoteCustomKeyUI, function list res/_i.json of
+# SystemUI_release_838 / 848) that Lumen has. An action presses the Lumen key that already does it (an injected key:
+# the model's own global-key route runs, so the action is the same as that key's on every model), or, for a function
+# no key has, sends an intent to the projector app that a shared screen of it answers.
+# Read by tools/remotes/gen_catalog.py into keys/KeyTable.java (ACTION_*). test/keys/check_keys.py checks that every
+# framework overlay routes each key.
+# Columns (tab separated, '-' = none):
+#  id       stored as do:<id> for the key (never rename: a saved choice names it)
+#  keycode  the key the action presses: never a key a user may give an app (keys.tsv), so a press cannot loop
+#  intent   instead of a key: the intent action sent to the projector app itself (KeyActions.run: its activity if one
+#           answers, else a broadcast), exactly one of keycode and intent
+#  feature  shown only on a model whose device profile (devices/<c>/menu.json "features", in the app as
+#           assets/lumen_menu/menu.json) has this feature: the per-model data of a function not every stock has
+#  name     the text: lumen_remote_keys_do_<name>, <name>_<N> = with N as its argument
+#  hdmi     shown only when the projector has at least this many HDMI inputs (TvInputManager), 0 = always
+#  icon     its Lumen icon on the screen: res/drawable/lumen_ic_<icon> of apps/core/lumen-icons (Material Symbols,
+#           tools/icons/icons.tsv), one per action, HDMI 1 and 2 share the HDMI port
+#  stock    stock function codes it stands for (_i.json functionCode: title)
+#  note     why
+id	keycode	intent	feature	name	hdmi	icon	stock	note
+source	TV_INPUT	-	-	source	0	input	-	the input chooser (the stock Source key 2115)
+hdmi_1	TV_INPUT_HDMI_1	-	-	hdmi_1	1	hdmi	1001: HDMI 1	switches to HDMI 1 (org.lumen.tvinput)
+hdmi_2	TV_INPUT_HDMI_2	-	-	hdmi_2	2	hdmi	1002: HDMI 2	switches to HDMI 2 (stock 1003 HDMI 3: no Lumen model has a third input)
+keystone	TV_NETWORK	-	-	keystone	0	keystone	1004: Auto Keystone Correction, 1005: Manual Keystone Correction, 1006: Optical Zoom & Lens Shift, 1015: Lens Memory	the keystone key of the projector panel (each model's keystone and lens page)
+focus	FOCUS	-	-	focus	0	focus	-	the focus key (autofocus)
+quick	SETTINGS	-	-	quick	0	settings	1008: Brightness Adjustment, 1010: picture pro settings	the gear: quick settings with brightness and picture
+3d	-	org.lumen.projector.action.QUICK_3D	picture.3d	3d	0	3d	1011: 3D Settings (three_d_settings)	the small 3D mode window (Off, Side by side, Top and bottom, 3D to 2D): branch quick-3d registers the intent and gives picture.3d to the models whose stock has 3D
+signal	-	org.lumen.projector.action.SIGNAL_PANEL	signal.panel	signal	0	info	-	the signal panel of apps/core/lumen-signal (the stock Titan has a signal panel too): card, full panel, hidden, the user can give it any remote key in Remote buttons (the Shortcut key keeps its stock app list default)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Codice modello</string>
+    <string name="lumen_about_dlp">Controller DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">Firmware XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s del %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, aggiornamento di sicurezza %2$s</string>
+    <string name="lumen_about_kernel">Kernel</string>
+    <string name="lumen_about_boot_loader">Firmware di avvio</string>
+    <string name="lumen_about_gmui">Interfaccia XGIMI</string>
+    <string name="lumen_about_platform">Piattaforma MediaTek</string>
+    <string name="lumen_about_remote">Telecomando</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Torna al sistema XGIMI</string>
+    <string name="lumen_about_back_summary_file">File per la chiavetta USB: %1$s</string>
+    <string name="lumen_about_back_summary">Con la chiavetta USB di ripristino XGIMI</string>
+    <string name="lumen_about_intro">La chiavetta USB di ripristino XGIMI per questo modello riporta il sistema XGIMI. La guida nella pagina del progetto spiega come.</string>
+    <string name="lumen_about_usb_file">Nome del file per la chiavetta USB</string>
+    <string name="lumen_about_official">File ufficiale XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s byte</string>
+    <string name="lumen_about_searching">Ricerca del file ufficiale per questo firmware</string>
+    <string name="lumen_about_guide_files">La guida nella pagina del progetto elenca i file ufficiali XGIMI.</string>
+    <string name="lumen_about_erases">La chiavetta cancella tutto sul proiettore: app, account, impostazioni e file.</string>
+    <string name="lumen_about_scan">Scansiona con il telefono per aprire</string>
+    <string name="lumen_about_close">Chiudi</string>
+</resources>

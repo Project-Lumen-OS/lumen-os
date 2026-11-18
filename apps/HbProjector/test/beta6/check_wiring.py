@@ -14,7 +14,7 @@ OZ = os.path.join(HB, "src/org/lumen/projector/panel/OpticalZoomPanel.java")
 SA = os.path.join(HB, "src/org/lumen/projector/SettingsActivity.java")
 HAL = os.path.join(HB, "src/org/lumen/projector/Hal.java")
 if not os.path.exists(HAL):                       # the HB app takes Hal.java from its recipe base
-    HAL = os.path.join(APPS, "Z9xProjector/src/org/lumen/projector/Hal.java")
+    HAL = os.path.join(APPS, "ProjectorBase/src/org/lumen/projector/Hal.java")
 LOCALES = ["values", "values-ar", "values-be", "values-de", "values-es", "values-fr", "values-it", "values-ja",
            "values-kk", "values-ko", "values-pl", "values-pt", "values-pt-rBR", "values-ru", "values-tr", "values-uk",
            "values-zh-rCN", "values-zh-rTW"]

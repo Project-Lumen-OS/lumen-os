@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Код мадэлі</string>
+    <string name="lumen_about_dlp">Кантролер DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, прашыўка %2$s</string>
+    <string name="lumen_about_fpga">ПЛІС (FPGA)</string>
+    <string name="lumen_about_firmware">Прашыўка XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s ад %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, абнаўленне бяспекі %2$s</string>
+    <string name="lumen_about_kernel">Ядро</string>
+    <string name="lumen_about_boot_loader">Прашыўка запуску</string>
+    <string name="lumen_about_gmui">Інтэрфейс XGIMI</string>
+    <string name="lumen_about_platform">Платформа MediaTek</string>
+    <string name="lumen_about_remote">Пульт</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Вяртанне да сістэмы XGIMI</string>
+    <string name="lumen_about_back_summary_file">Файл для флэшкі: %1$s</string>
+    <string name="lumen_about_back_summary">З флэшкай аднаўлення XGIMI</string>
+    <string name="lumen_about_intro">Флэшка аднаўлення XGIMI для гэтай мадэлі вяртае сістэму XGIMI. Як гэта зрабіць, напісана ў інструкцыі на старонцы праекта.</string>
+    <string name="lumen_about_usb_file">Імя файла для флэшкі</string>
+    <string name="lumen_about_official">Афіцыйны файл XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s байт</string>
+    <string name="lumen_about_searching">Шукаем афіцыйны файл для гэтай прашыўкі</string>
+    <string name="lumen_about_guide_files">Афіцыйныя файлы XGIMI пералічаны ў інструкцыі на старонцы праекта.</string>
+    <string name="lumen_about_erases">Флэшка сцірае ўсё на праектары: праграмы, акаўнты, налады і файлы.</string>
+    <string name="lumen_about_scan">Адскануйце тэлефонам, каб адкрыць</string>
+    <string name="lumen_about_close">Закрыць</string>
+</resources>

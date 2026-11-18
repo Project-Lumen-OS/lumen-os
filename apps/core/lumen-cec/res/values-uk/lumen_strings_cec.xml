@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC недоступний</string>
+    <string name="lumen_cec_master">Керування HDMI-CEC</string>
+    <string name="lumen_cec_master_note">Коли HDMI-CEC вимкнено, звук через HDMI ARC недоступний.</string>
+    <string name="lumen_cec_wake">Вмикатися від HDMI-пристрою</string>
+    <string name="lumen_cec_wake_note">Коли це ввімкнено, HDMI-пристрої вимикаються разом із проєктором.</string>
+    <string name="lumen_cec_night">Нічний захист</string>
+    <string name="lumen_cec_night_off">Вимк.</string>
+    <string name="lumen_cec_night_desc">У ці години HDMI-пристрої не можуть увімкнути проєктор.</string>
+    <string name="lumen_cec_paused">Призупинено після кількох увімкнень без зображення. Відновиться, коли ви скористаєтеся пультом.</string>
+    <string name="lumen_cec_switch">Перемикатися на пристрій, коли він вмикається</string>
+    <string name="lumen_cec_send_standby">Вимикати HDMI-пристрої разом із проєктором</string>
+    <string name="lumen_cec_follow_info">Коли пристрій, який ви дивитеся, вимикається, проєктор теж засинає.</string>
+    <string name="lumen_cec_soundbar">Саундбар або AV-ресивер (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Вмикати саундбар разом із проєктором</string>
+    <string name="lumen_cec_control">Керувати HDMI-пристроями цим пультом</string>
+    <string name="lumen_cec_internal_exit">Повідомляти пристрій про вихід з HDMI</string>
+    <string name="lumen_cec_devices">Підключені пристрої</string>
+    <string name="lumen_cec_no_devices">HDMI-CEC-пристроїв не знайдено</string>
+    <string name="lumen_cec_state_on">увімкнено</string>
+    <string name="lumen_cec_state_standby">очікування</string>
+    <string name="lumen_cec_dev_unnamed">HDMI-пристрій</string>
+    <string name="lumen_cec_dev_soundbar">Саундбар / AV-ресивер</string>
+    <string name="lumen_cec_name_on_hdmi">Ім’я в HDMI: %1$s</string>
+</resources>

@@ -1,0 +1,12 @@
+# The signal panel rows of this model (apps/core/lumen-signal README.md), in the app as assets/lumen_signal/items.tsv.
+# One row per vendor read the panel may make here, read only while the panel is on screen, at most 2 calls per second.
+# A model without a row never shows that line. Columns (tab separated): item (SignalItem token), call, note.
+# Play 6: no checked getter of the picture on the chip, so no chip row and no judder line.
+item	call	note
+hdmi_info	IGmpf 662 getHdmiInfo	input size, scan, HDMI or DVI, frame rate
+hdr	IGmpf 620 getHdrType	SDR, HDR10, HDR10+, HLG, Dolby Vision, HDR Vivid (each named exactly)
+range	IGmpf 634 getHdmiRange	the colour range setting
+edid	IGmpf 661 getEdidVersion	the HDMI mode the input announces
+allm	IGmpf2 212 getAllmStatus	ALLM sent by the source on the HDMI port
+temp_system	IGmpf 438 getSystemTemperature	temperature inside
+aspect	IGmpf 664 getAspectRatio	the aspect setting (the signal's own aspect comes from its size)

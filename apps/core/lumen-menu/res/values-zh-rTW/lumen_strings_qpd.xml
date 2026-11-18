@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">縮放</string>
     <string name="lumen_qpd_bluetooth">藍牙</string>
     <string name="lumen_qpd_network">網路</string>
+    <string name="lumen_qpd_theme">主題</string>
+    <string name="lumen_qpd_theme_light">淺色</string>
+    <string name="lumen_qpd_theme_dark">深色</string>
+    <string name="lumen_qpd_theme_auto">自動</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">螢幕鏡像</string>
     <string name="lumen_qpd_mirror_on">螢幕鏡像（Miracast）</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">最高亮度。風扇聲音會變大。</string>
     <string name="lumen_qpd_tip_picture">根據觀看內容選擇模式。</string>
     <string name="lumen_qpd_tip_rear">您和投影機位於螢幕兩側。</string>
+    <string name="lumen_qpd_tip_front">您和投影機位於螢幕同一側。</string>
+    <string name="lumen_qpd_tip_table">投影機放在桌面上。</string>
+    <string name="lumen_qpd_tip_ceiling">投影機倒掛在天花板上。</string>
+    <string name="lumen_qpd_tip_auto">投影機自動識別正放還是倒掛，並翻轉畫面。</string>
 </resources>

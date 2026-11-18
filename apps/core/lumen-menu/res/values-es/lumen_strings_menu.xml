@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">Rango de color</string>
     <string name="lumen_m_hdmi_range_full">Completo</string>
     <string name="lumen_m_hdmi_range_limited">Limitado</string>
+    <string name="lumen_m_hdmi_range_auto_full">Automático (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">Automático (Limited)</string>
     <string name="lumen_m_kst_more">Otros</string>
+    <string name="lumen_m_kst_size_position">Tamaño y posición</string>
+    <string name="lumen_m_kst_smart">Inteligente</string>
     <string name="lumen_m_kst_restore">Volver a la imagen original</string>
     <string name="lumen_m_launcher_classic">Android TV (clásica)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">Modo de juego</string>
     <string name="lumen_m_panel_game_speed">Velocidad de juego</string>
     <string name="lumen_m_panel_high">Alto</string>
-    <string name="lumen_m_panel_image_correction_settings">Ajustes de corrección</string>
     <string name="lumen_m_panel_lamp">Brillo</string>
     <string name="lumen_m_panel_lamp_hint">En 10, pulsa → dos veces para activar Boost.</string>
     <string name="lumen_m_panel_low">Bajo</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">Desactivado</string>
     <string name="lumen_m_panel_on">Activado</string>
     <string name="lumen_m_panel_optical_zoom">Zoom óptico</string>
-    <string name="lumen_m_panel_optical_zoom_summary">Tamaño de la imagen sin perder nitidez. La corrección trapezoidal automática y «Ajustar a la pantalla» vuelven a mover el zoom.</string>
     <string name="lumen_m_panel_picture_mode">Modo de imagen</string>
     <string name="lumen_m_panel_picture_reset">Restablecer imagen</string>
     <string name="lumen_m_panel_pm_ai">Imagen IA</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">Ángulo horizontal</string>
     <string name="lumen_m_angle_v">Ángulo vertical</string>
     <string name="lumen_m_dynamic_contrast">Contraste dinámico</string>
-    <string name="lumen_m_dynamic_black">Mejora dinámica del negro</string>
+    <string name="lumen_m_dynamic_black">Mejora dinámica de nivel de negro</string>
     <string name="lumen_m_sleep_timer">Temporizador</string>
     <string name="lumen_m_remote">Vincular el mando</string>
     <string name="lumen_m_ct_standard">Estándar</string>
     <string name="lumen_m_ct_movie">Película</string>
+    <string name="lumen_m_signal">Señal</string>
+    <string name="lumen_m_signal_pin">Mantener la tarjeta de señal en pantalla</string>
+    <string name="lumen_m_signal_refresh">Actualización de la tarjeta de señal</string>
+    <string name="lumen_m_signal_refresh_normal">Normal</string>
+    <string name="lumen_m_signal_refresh_fast">Rápida</string>
+    <string name="lumen_m_signal_refresh_note">Rápida: puede haber tirones raros de la imagen</string>
+    <string name="lumen_m_hdr_developer">Para desarrolladores</string>
 </resources>

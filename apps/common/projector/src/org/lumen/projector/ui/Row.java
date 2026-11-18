@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
+import org.lumen.icons.IconText;
+
 /**
  * Base of every list row of the XGIMI-style panels: ONE View per row, drawn with Canvas (no nested
  * layouts, no XML), hardware accelerated, invalidate() on change only.
@@ -188,13 +190,13 @@ public abstract class Row extends View {
     protected void drawTextAt(Canvas c, CharSequence text, float x, float base, Paint p) {
         if (text == null || text.length() == 0) return;
         if (!mirrored) {
-            c.drawText(text, 0, text.length(), x, base, p);
+            IconText.draw(c, text, x, base, p);                  // a key hint's arrows as icons (lumen-icons)
             return;
         }
-        float w = p.measureText(text, 0, text.length());
+        float w = IconText.measure(text, p);
         c.save();
         c.scale(-1f, 1f, x + w / 2f, 0f);
-        c.drawText(text, 0, text.length(), x, base, p);
+        IconText.draw(c, text, x, base, p);
         c.restore();
     }
 

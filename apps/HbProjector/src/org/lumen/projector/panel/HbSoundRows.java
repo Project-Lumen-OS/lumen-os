@@ -49,7 +49,7 @@ final class HbSoundRows extends HbRows {
         return null;
     }
 
-    /** Sound output: AudioOutputChoice + CEC System Audio (off for the speaker, on for the soundbar / Auto). Main thread. */
+    /** Sound output: AudioOutputChoice + CEC System Audio (unchanged for the speaker as stock, on for the soundbar / Auto). */
     void setOutput(String value, Consumer<Result> cb) {
         String kind = HbMenuGates.outputKind(value);
         if (kind == null) { refuse(cb, null); return; }

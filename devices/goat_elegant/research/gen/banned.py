@@ -75,7 +75,7 @@ RULES = [  # (rule id, regex on method name, service or None, writes only, reaso
     ('R-cmd', r'^(extendCmd|setCommonCmd|SetCommonCmd)$', None, False, 'opaque command pass-through, cannot be reviewed'),
     ('R-fan', r'^(setFanMode|setFanRotationRate|setFanDuty|setFanStandMode)$', None, False, 'manual fan control (Play 6 rule; thermal safety)'),
     ('R-pantilt', r'Pantilt|pantilt', None, True, 'Pantilt writer (Play 6 rule)'),
-    ('R-nimble', r'NimbleOpticalPos', None, True, 'stores lens positions for the nimble wall feature (support_nimblewall=0 on HB)'),
+    ('R-nimble', r'NimbleOpticalPos', None, True, "lens memory writers: two vendor Env keys (nimble_opt_cri_memory, nimble_opt_current_pos_id) and a lens move by the vendor's own zoom and shift control, no calibration (libxgimi, 2026-11-14); off on HB (no such stock row), X50Projector only by unbanned_x50projector.tsv"),
     ('R-wb', r'WBSample|WBVerify|setWbConfigs|WhiteBalanceFlag|dlpWhiteBalance|controlWBDevice', None, True,
      'factory white balance (Play 6 rule)'),
 ]
@@ -104,7 +104,9 @@ EXCEPTIONS = {
     # the Z9X IGmpf2 18 setKstPrepareForZoom value. Gmpf2Client sends type 2 only; type 0 and 1 stay refused.
     ('DisplayManager', 'setKstPrepare'): '9.3 zoom case (hb-t5): Lumen calls it on the Z9X (IGmpf2 18, '
         'setKstPrepareForZoom); allowed on HB only as (true, 2) / (false, 2) around the optical zoom session '
-        '(stock G0130 newsettings ZoomStateView), enforced in Gmpf2Client',
+        '(stock G0130 newsettings ZoomStateView), enforced in Gmpf2Client; the X50 family menu: (true / false, 0..2) '
+        'by its allowed_x50projector.tsv range (zoom 2, shift 1, the corner and rotation windows 0, stock KeyStoneWind / '
+        'RotateWind)',
     # hb-t6 (test of hb-t5b, 2026-10-29: zoom counter one off). The HB lens has one "limit" position beyond
     # optical index 0 (63(12,10) = 1 on the device, vendor "Get Zoom Limit Total Step = 1"): stock ZoomStateView
     # walks it with ZoomUtils.setOpticalZoomLimitStep = GetCurrentZoomLimitStep() -1 (right) / +1 (left), only while

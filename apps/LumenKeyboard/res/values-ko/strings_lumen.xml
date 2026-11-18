@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Lumen 키보드</string>
+    <string name="ime_service_name">Lumen 키보드</string>
+    <string name="keyboardview_keycode_language">언어</string>
+    <string name="lumen_languages_title">키보드 언어</string>
+    <string name="lumen_languages_hint">OK를 눌러 언어를 켜거나 끕니다. 키보드에서는 지구본 키로 언어를 바꿉니다.</string>
+    <string name="lumen_languages_last">언어 하나는 항상 켜져 있습니다.</string>
+</resources>

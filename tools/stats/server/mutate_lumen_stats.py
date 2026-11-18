@@ -43,6 +43,7 @@ def main():
     tmp = tempfile.mkdtemp()
     try:
         shutil.copy(os.path.join(HERE, "test_lumen_stats.py"), tmp)
+        shutil.copy(os.path.join(HERE, "lumen_reports.py"), tmp)
         alive = []
         for n, a, b in [("unmutated", "", "")] + MUTANTS:
             open(os.path.join(tmp, "lumen_stats.py"), "w").write(src.replace(a, b, 1) if a else src)

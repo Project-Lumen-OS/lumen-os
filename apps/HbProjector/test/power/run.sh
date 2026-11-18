@@ -9,7 +9,7 @@ GSI=${LUMEN_GSI:-$(cd "$HERE/../.." && pwd)}
 T=$HERE/test/power
 # StrGate has no HB copy: run from apps/HbProjector (not the assembled tree), take the file the recipe takes
 SRC=$HERE/src/org/lumen/projector/power/StrGate.java
-[ -f "$SRC" ] || SRC=$GSI/apps/Z9xProjector/src/org/lumen/projector/power/StrGate.java
+[ -f "$SRC" ] || SRC=$GSI/apps/ProjectorBase/src/org/lumen/projector/power/StrGate.java
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT

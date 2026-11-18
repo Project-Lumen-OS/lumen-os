@@ -10,13 +10,14 @@ import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
 import org.lumen.projector.cec.CecPage;
+import org.lumen.projector.cec.CecPolicyDriver;
 import org.lumen.projector.ui.Page;
 import org.lumen.projector.ui.Theme;
 
 /**
  * Z9X HB (goat_elegant): the device pages shown INSIDE the shared menu (MenuController.Pages):
  * picture.pro = the HB professional picture pages (ProPicture: white balance, colour, gamma, contrast, noise reduction,
- * each row behind its HbFeatures key), settings.cec = the CEC page of the cec module. Built once per menu (the menu is
+ * each row behind its HbFeatures key), settings.cec = the shared HDMI-CEC page (apps/core/lumen-cec) over this app's power policy (CecPolicyDriver). Built once per menu (the menu is
  * rebuilt on a locale change, HbMenu.reset). Everything else is a screen of HbMenuFeatures.open or nothing.
  */
 final class HbMenuPages implements MenuController.Pages {
@@ -83,7 +84,7 @@ final class HbMenuPages implements MenuController.Pages {
                     Ui.toast(app, R.string.toast_setup_running);
                     return false;
                 }
-            });
+            }, new CecPolicyDriver());
         }
         return cec;
     }

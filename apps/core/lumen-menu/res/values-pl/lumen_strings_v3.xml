@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">Anuluj</string>
     <string name="lumen_m_panel_boost_press_again">Naciśnij → jeszcze raz, aby włączyć Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Naciśnij ← jeszcze raz, aby wyjść z Boost</string>
+    <string name="lumen_m_lamp_off_press_again">Obraz się wyłączy. Aby włączyć go ponownie, naciśnij przycisk zasilania. Naciśnij ← jeszcze raz, aby wyłączyć.</string>
     <string name="lumen_m_toast_setup_running">Najpierw dokończ konfigurację</string>
     <string name="lumen_m_panel_tileval_pm_ai">Obraz AI</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Wierne kolory</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Głośnik z nastrojowym światłem</string>
     <string name="lumen_m_ct_custom">Własna</string>
     <string name="lumen_m_lamp_off">Wyłącz obraz</string>
+    <string name="lumen_m_iris">Przysłona</string>
+    <string name="lumen_m_iris_dynamic">Dynamiczna</string>
+    <string name="lumen_m_iris_lamp_dynamic">Przy dynamicznej przysłonie nie można zmienić jasności.</string>
+    <string name="lumen_m_iris_lamp_held">Przy tym ustawieniu przysłony nie można zmienić jasności.</string>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">Sons dos botões</string>
+    <string name="lumen_m_hdmi_options">Opções das entradas HDMI</string>
+    <string name="lumen_m_colour_vision">Visão das cores</string>
+    <string name="lumen_m_temperature">Temperatura</string>
+    <string name="lumen_m_colour_vision_gray">Tons de cinzento</string>
+    <string name="lumen_m_colour_vision_red_green">Vermelho/verde</string>
+    <string name="lumen_m_colour_vision_green_red">Verde/vermelho</string>
+    <string name="lumen_m_colour_vision_blue_yellow">Azul/amarelo</string>
+</resources>

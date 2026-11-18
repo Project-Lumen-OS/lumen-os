@@ -9,7 +9,7 @@
 #     (MediaTek's libstagefright_foundation.so, the XGIMI vendor audio policy, our copy of it without XGIMI SUB Out)
 #     or of any MTK_SHA entry of tools/sign/check_image.py (the Z9X blob set; imported read only);
 #   - the blobs reader present and byte-identical to the repo copies: /system/etc/init/z9x_blobs.rc and
-#     /system/etc/z9x/z9x_blobs.sh = tools/ota/image, /system/etc/z9x/blobs_allow.txt = this folder's
+#     /system/etc/z9x/z9x_blobs.sh = tools/ota/image, /system/etc/z9x/blobs.conf and blobs_allow.txt = this folder's
 #     blobs_allow.txt (and = installer/lib/hb/blobs_allow.txt when that copy exists), owner root;
 #   - the test-build files absent (/system/lib/hb_vndk33, hb_media.rc, hb_audio_policy_configuration.xml,
 #     hb_netadb.rc, the boot logger);
@@ -55,6 +55,7 @@ BLOB_SHA = {
 BLOBS_FILES = {
     "/system/etc/init/z9x_blobs.rc": os.path.join(GSI, "tools", "ota", "image", "z9x_blobs.rc"),
     "/system/etc/z9x/z9x_blobs.sh": os.path.join(GSI, "tools", "ota", "image", "z9x_blobs.sh"),
+    "/system/etc/z9x/blobs.conf": os.path.join(HERE, "blobs.conf"),
     "/system/etc/z9x/blobs_allow.txt": os.path.join(HERE, "blobs_allow.txt"),
 }
 INSTALLER_ALLOW = os.path.join(GSI, "installer", "lib", "hb", "blobs_allow.txt")

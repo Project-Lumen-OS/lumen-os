@@ -14,5 +14,7 @@
         <permission name="android.permission.WRITE_SECURE_SETTINGS" />
         <!-- 1.0.1: Apps > Install from USB (a trusted installer; every install still asks the user) -->
         <permission name="android.permission.INSTALL_PACKAGES" />
+        <!-- Google Play without a Google account: the Google sign-in first (PlayGate) -->
+        <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED" />
     </privapp-permissions>
 </permissions>

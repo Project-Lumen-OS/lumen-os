@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">Tasti del telecomando</string>
+    <string name="lumen_remote_keys_assign">Assegna un tasto</string>
+    <string name="lumen_remote_keys_press">Premi un tasto del telecomando</string>
+    <string name="lumen_remote_keys_leave">Premi Indietro per uscire</string>
+    <string name="lumen_remote_keys_fixed">Questo tasto non si può riassegnare</string>
+    <string name="lumen_remote_keys_pick">Cosa fa il tasto</string>
+    <string name="lumen_remote_keys_as_before">Come prima</string>
+    <string name="lumen_remote_keys_reset_all">Ripristina tutto</string>
+    <string name="lumen_remote_keys_saved">Salvato</string>
+    <string name="lumen_remote_keys_empty">Nessun tasto assegnato per ora</string>
+    <string name="lumen_remote_keys_gone">L\'app è stata rimossa. Il tasto funziona di nuovo come prima.</string>
+    <string name="lumen_remote_keys_name_youku">Tasto Youku</string>
+    <string name="lumen_remote_keys_name_tencent">Tasto Tencent Video</string>
+    <string name="lumen_remote_keys_name_iqiyi">Tasto iQIYI</string>
+    <string name="lumen_remote_keys_name_mango">Tasto Mango TV</string>
+    <string name="lumen_remote_keys_name_bilibili">Tasto bilibili</string>
+    <string name="lumen_remote_keys_name_ambient">Tasto salvaschermo</string>
+    <string name="lumen_remote_keys_name_shortcut">Tasto di accesso rapido</string>
+    <string name="lumen_remote_keys_name_custom">Tasto di accesso rapido %1$d</string>
+    <string name="lumen_remote_keys_name_f">Tasto F%1$d</string>
+    <string name="lumen_remote_keys_name_browser">Tasto browser</string>
+    <string name="lumen_remote_keys_name_mail">Tasto posta</string>
+    <string name="lumen_remote_keys_name_music">Tasto musica</string>
+    <string name="lumen_remote_keys_name_calculator">Tasto calcolatrice</string>
+    <string name="lumen_remote_keys_name_contacts">Tasto contatti</string>
+    <string name="lumen_remote_keys_name_calendar">Tasto calendario</string>
+    <string name="lumen_remote_keys_name_bookmarks">Tasto segnalibri</string>
+    <string name="lumen_remote_keys_do_source">Ingresso</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">Trapezio</string>
+    <string name="lumen_remote_keys_do_focus">Messa a fuoco</string>
+    <string name="lumen_remote_keys_do_quick">Impostazioni rapide</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">Segnale</string>
+</resources>

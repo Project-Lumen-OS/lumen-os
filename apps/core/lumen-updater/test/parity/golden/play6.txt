@@ -1,0 +1,536 @@
+## constants
+TAG=LumenUpdater VERSION=1.0 REPO=Project-Lumen-OS/lumen-os UA=Lumen-OS-Updater/1.0 OTACERTS=/system/etc/security/otacerts.zip
+PERM=org.lumen.updater.permission.OTA_STATE ACTION=org.lumen.updater.action.OTA_STATE REBOOT=z9x-ota NOTIF=updates PROJ=org.lumen.projector org.lumen.projector.action.OTA_STATE
+UE 012345678911 ERR 0,60,52,51,48
+## channels
+[empty beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=? code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[empty beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[empty beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-stable beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=? code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[z9x-stable beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-stable beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-beta-image beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=? code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[z9x-beta-image beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-beta-image beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-http beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=? code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[z9x-http beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-http beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-public-gms beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=? code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[z9x-public-gms beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[z9x-public-gms beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[hb-stable beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.10-beta12 code=1001012 build=lumen-hb-1.0.10-beta12-202611131410
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[hb-stable beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-stable beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-test-image beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 file=update-hb-test.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1] files=[update-hb-test.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=true play6=false x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.10-beta12 code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[hb-test-image beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 file=update-hb-test.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1] files=[update-hb-test.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=true play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-test-image beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1 file=update-hb-test.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-test.json?x=1] files=[update-hb-test.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=true play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-no-device beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.10 code=10010 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[hb-no-device beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-no-device beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json file=update-hb-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-hb-nogms.json] files=[update-hb-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=true hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-odd-device beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json file=update-other.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json] files=[update-other.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.10-rc2 code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[hb-odd-device beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json file=update-other.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json] files=[update-other.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[hb-odd-device beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json file=update-other.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-hb/update-other.json] files=[update-other.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=false ''=false update=false
+[play6 beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.10 code=10010 build=lumen-play6-1.0.10
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[play6 beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[play6 beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[play6-no-url beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=1.0.9 code=10009 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[play6-no-url beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[play6-no-url beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[mixed beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json file=update-x50-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json] files=[update-x50-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=true ''=false update=false
+  version=1.0.10-beta4 code=1001004 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[mixed beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json file=update-x50-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json] files=[update-x50-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=true ''=false update=false
+[mixed beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json file=update-x50-nogms.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-nogms.json] files=[update-x50-nogms.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=false x50-beta=false x50-nogms=true ''=false update=false
+[x50-beta4 beta=null]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+  version=x50-1.0.10-beta4 code=0 build=
+  guides=https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#vbmeta https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#rescue https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#rescue
+[x50-beta4 beta=true]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+[x50-beta4 beta=false]
+  image=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json file=update-play6.json
+  betaAvailable=false betaOn=false
+  read=[https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6/update-play6.json] files=[update-play6.json]
+  accepts public-nogms=false public-beta=false public=false stable=false hb-nogms=false hb-test=false play6=true x50-beta=false x50-nogms=false ''=false update=false
+channelFile(null)=update-play6.json
+channelFile()=update-play6.json
+channelFile(x)=update-play6.json
+channelFile(https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x/update-public-nogms.json)=update-public-nogms.json
+channelFile(https://github.com/Project-Lumen-OS/lumen-os/releases/download/a/update-x.json?q=1)=update-x.json
+channelFile(https://github.com/Project-Lumen-OS/lumen-os/releases/download/a/update-.json)=update-.json
+channelFile(https://github.com/Project-Lumen-OS/lumen-os/releases/download/a/update-hb-test.json)=update-hb-test.json
+channelFile(https://github.com/Project-Lumen-OS/lumen-os/releases/download/a/notes.txt)=update-play6.json
+channelFile(update-a.json)=update-a.json
+pick -1 1 1 0 0
+## versions
+versionCode(null)=0
+versionCode()=0
+versionCode(1)=10000
+versionCode(1.0)=10000
+versionCode(1.0.9)=10009
+versionCode(1.0.10)=10010
+versionCode(1.0.11-beta3)=0
+versionCode(1.0.8-rc2)=0
+versionCode(1.0.8-rc49)=0
+versionCode(1.0.8-beta50)=0
+versionCode(1.0.10-beta0)=0
+versionCode(1.0.10-beta99)=0
+versionCode(x50-1.0.10-beta4)=0
+versionCode(1.2.3.4)=10203
+versionCode(1.100.0)=20000
+versionCode(1.0.100)=10100
+versionCode(-1.0.0)=-10000
+versionCode(abc)=0
+versionCode( 1.0.7 )=10007
+versionCode(1.0.9-final)=0
+versionCode(2.0)=20000
+current ro.z9x.version_code=10012 -> 0 ?
+current ro.z9x.version_code= 10012  -> 0 ?
+current ro.z9x.version_code=x -> 0 ?
+current ro.z9x.version=1.0.9 -> 0 ?
+current ro.lumen.version_code=1001012 -> 1001012 ?
+current ro.lumen.version=1.0.10-beta12 -> 0 1.0.10-beta12
+current ro.lumen.version=1.0.10 -> 10010 1.0.10
+## slots
+[] slot= other= letter=? flags=-1
+[ro.boot.slot_suffix, _a] slot=_a other=_b letter=A flags=-1
+[ro.boot.slot_suffix, _b] slot=_b other=_a letter=B flags=-1
+[sys.z9x.slot, _b] slot=_b other=_a letter=B flags=-1
+[ro.boot.slot_suffix, _c] slot=_c other= letter=C flags=-1
+[ro.boot.slot_suffix, _a, sys.z9x.vbmeta_other.flags, 3] slot=_a other=_b letter=A flags=3
+[sys.z9x.vbmeta_other.flags,  2 ] slot= other= letter=? flags=2
+[sys.z9x.vbmeta_other.flags, x] slot= other= letter=? flags=-1
+slotLetter(null)=?
+slotLetter()=?
+slotLetter(_a)=A
+slotLetter(_b)=B
+slotLetter(a)=?
+slotLetter(_ab)=?
+## manifest parsing
+[0] EXC JSONException: bad type delta
+[1] schema=1 device=play6 channel=play6 version=9.9.9 vc=10011 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/play6-1.0.10/lumen-play6-ota.zip size=1000 sha=01234567 off=0 psize=0 meta= msize=0 msha= props=[] file=lumen-play6-ota.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[2] schema=1 device=hb channel=stable version=9.9.9 vc=1001013 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.10/lumen-os-1.0.10-ota-full.zip size=1000 sha=01234567 off=100 psize=800 meta=https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.10/payload_metadata.bin msize=77 msha=01234567 props=[FILE_HASH=x, FILE_SIZE=9, METADATA_HASH=y, METADATA_SIZE=7, OTHER=1] file=lumen-os-1.0.10-ota-full.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[3] EXC JSONException: unsupported schema 2
+[4] schema=1 device=z9x channel=public-nogms version=9.9.9 vc=1 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    choose null null null
+    changelog English|Русский|Português|English
+[5] EXC JSONException: No value for version_code
+[6] schema=1 device=z9x channel=stable version=1 vc=12 min=0 build=b utc=0 vendors=[] blobs=[]
+    choose null null null
+    changelog |||
+[7] EXC JSONException: not https
+[8] schema=1 device=z9x channel=x version=9.9.9 vc=1 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/a.zip size=1000 sha=01234567 off=100 psize=800 meta=http://m msize=77 msha=01234567 props=[FILE_HASH=x, FILE_SIZE=9, METADATA_HASH=y, METADATA_SIZE=7, OTHER=1] file=a.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[9] schema=1 device=z9x channel=x version=9.9.9 vc=1 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/a.zip size=1000 sha=01234567 off=900 psize=800 meta=https://github.com/Project-Lumen-OS/lumen-os/releases/download/m msize=77 msha=01234567 props=[FILE_HASH=x, FILE_SIZE=9, METADATA_HASH=y, METADATA_SIZE=7, OTHER=1] file=a.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[10] schema=1 device=z9x channel=x version=9.9.9 vc=1 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/a.zip size=1000 sha=01234567 off=0 psize=800 meta=https://github.com/Project-Lumen-OS/lumen-os/releases/download/m msize=77 msha=01234567 props=[FILE_HASH=x, FILE_SIZE=9, METADATA_HASH=y, METADATA_SIZE=7, OTHER=1] file=a.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[11] EXC JSONException: bad type partial
+[12] EXC JSONException: bad size
+[13] EXC JSONException: bad size
+[14] schema=1 device=z9x channel=x version=9.9.9 vc=1 min=0 build=lumen-new utc=1793911544 vendors=[] blobs=[]
+    pkg type=full from= url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/a.zip size=1000 sha=01234567 off=100 psize=800 meta=https://github.com/Project-Lumen-OS/lumen-os/releases/download/m msize=77 msha=01234567 props=[] file=a.zip delta=false
+    choose full full full
+    changelog English|Русский|Português|English
+[15] EXC JSONException: bad sha256
+[16] EXC JSONException: Value not of type java.lang.String cannot be converted to JSONObject
+## applicable
+[z9x-stable beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[z9x-stable beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[z9x-beta-image beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[z9x-beta-image beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-stable beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=null play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-stable beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=null play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-test-image beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=null play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-test-image beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=null play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-no-device beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=null play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[hb-no-device beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=null play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[play6 beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[play6 beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[mixed beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[mixed beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=Block(blk_channel, play6) play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[empty beta=null] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[empty beta=true] z9x/public-nogms=Block(err_signature, ) z9x/public-beta=Block(err_signature, ) z9x/hb-nogms=Block(err_signature, ) z9x/hb-test=Block(err_signature, ) z9x/play6=Block(err_signature, ) z9x/null=Block(err_signature, ) hb/public-nogms=Block(err_signature, ) hb/public-beta=Block(err_signature, ) hb/hb-nogms=Block(err_signature, ) hb/hb-test=Block(err_signature, ) hb/play6=Block(err_signature, ) hb/null=Block(err_signature, ) play6/public-nogms=Block(blk_channel, public-nogms) play6/public-beta=Block(blk_channel, public-beta) play6/hb-nogms=Block(blk_channel, hb-nogms) play6/hb-test=Block(blk_channel, hb-test) play6/play6=null play6/null=Block(blk_channel, stable) x50/public-nogms=Block(err_signature, ) x50/public-beta=Block(err_signature, ) x50/hb-nogms=Block(err_signature, ) x50/hb-test=Block(err_signature, ) x50/play6=Block(err_signature, ) x50/null=Block(err_signature, ) ''/public-nogms=Block(err_signature, ) ''/public-beta=Block(err_signature, ) ''/hb-nogms=Block(err_signature, ) ''/hb-test=Block(err_signature, ) ''/play6=Block(err_signature, ) ''/null=Block(err_signature, )
+[z9x-stable vc=10012 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10011 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10013 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10013 min=10012] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10013 min=10013] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10013 min=10101] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=1001013 min=1001012] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=1001013 min=1001013] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=1001013 min=1001099] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=1000000 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=1001012 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10010 min=10010] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=10011 min=10011] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[z9x-stable vc=99999999 min=1000852] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10012 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10011 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10013 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10013 min=10012] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10013 min=10013] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10013 min=10101] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=1001013 min=1001012] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=1001013 min=1001013] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=1001013 min=1001099] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=1000000 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=1001012 min=0] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10010 min=10010] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=10011 min=10011] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[hb-stable vc=99999999 min=1000852] null=Block(err_signature, ) []=Block(err_signature, ) ["v6.15.58"]=Block(err_signature, ) ["v6.17.12","v6.16.24"]=Block(err_signature, ) ["v1.2.64"]=Block(err_signature, )
+[play6 vc=10012 min=0] null=null []=null ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10011 min=0] null=null []=null ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10013 min=0] null=null []=null ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10013 min=10012] null=Block(blk_min_version, 1.0.12) []=Block(blk_min_version, 1.0.12) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10013 min=10013] null=Block(blk_min_version, 1.0.13) []=Block(blk_min_version, 1.0.13) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10013 min=10101] null=Block(blk_min_version, 1.1.1) []=Block(blk_min_version, 1.1.1) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=1001013 min=1001012] null=Block(blk_min_version, 100.10.12) []=Block(blk_min_version, 100.10.12) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=1001013 min=1001013] null=Block(blk_min_version, 100.10.13) []=Block(blk_min_version, 100.10.13) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=1001013 min=1001099] null=Block(blk_min_version, 100.10.99) []=Block(blk_min_version, 100.10.99) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=1000000 min=0] null=null []=null ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=1001012 min=0] null=null []=null ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10010 min=10010] null=Block(uptodate, ) []=Block(uptodate, ) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=10011 min=10011] null=Block(blk_min_version, 1.0.11) []=Block(blk_min_version, 1.0.11) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+[play6 vc=99999999 min=1000852] null=Block(blk_min_version, 100.8.52) []=Block(blk_min_version, 100.8.52) ["v6.15.58"]=Block(blk_vendor, ?) ["v6.17.12","v6.16.24"]=Block(blk_vendor, ?) ["v1.2.64"]=Block(blk_vendor, ?)
+## blobs
+[] sets=[] missing=false
+[] sets=["z9x-v61558-b"] missing=true
+[sys.z9x.blobs, ok, sys.z9x.blobs.set, z9x-v61558-b] sets=[] missing=false
+[sys.z9x.blobs, ok, sys.z9x.blobs.set, z9x-v61558-b] sets=["z9x-v61558-b"] missing=false
+[sys.z9x.blobs, ok, sys.z9x.blobs.set, other] sets=[] missing=false
+[sys.z9x.blobs, ok, sys.z9x.blobs.set, other] sets=["z9x-v61558-b"] missing=true
+[sys.z9x.blobs, missing, sys.z9x.blobs.set, z9x-v61558-b] sets=[] missing=false
+[sys.z9x.blobs, missing, sys.z9x.blobs.set, z9x-v61558-b] sets=["z9x-v61558-b"] missing=true
+## install
+[none thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[none thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[none thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[none thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[none thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[none thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-unknown thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-off thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vbmeta-off-b thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[pending thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[pending thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[pending thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[pending thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[pending thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[pending thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vab-off thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vabc thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vabc thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vabc thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vabc thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vabc thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vabc thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=-1 battery=0]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=-1 battery=1]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=-1 battery=2]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=3 battery=0]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=3 battery=1]
+  -> Block(blk_recovery, ?)
+[vendor-list thermal=3 battery=2]
+  -> Block(blk_recovery, ?)
+[recovery-stock thermal=-1 battery=0]
+  -> Block(blk_recovery, stock)
+[recovery-stock thermal=-1 battery=1]
+  -> Block(blk_recovery, stock)
+[recovery-stock thermal=-1 battery=2]
+  -> Block(blk_recovery, stock)
+[recovery-stock thermal=3 battery=0]
+  -> Block(blk_recovery, stock)
+[recovery-stock thermal=3 battery=1]
+  -> Block(blk_recovery, stock)
+[recovery-stock thermal=3 battery=2]
+  -> Block(blk_recovery, stock)
+[recovery-ok thermal=-1 battery=0]
+  -> null
+[recovery-ok thermal=-1 battery=1]
+  -> Block(blk_power, )
+[recovery-ok thermal=-1 battery=2]
+  -> null
+[recovery-ok thermal=3 battery=0]
+  -> Block(blk_thermal, )
+[recovery-ok thermal=3 battery=1]
+  -> Block(blk_power, )
+[recovery-ok thermal=3 battery=2]
+  -> Block(blk_thermal, )
+[all-ok thermal=-1 battery=0]
+  -> null
+[all-ok thermal=-1 battery=1]
+  -> Block(blk_power, )
+[all-ok thermal=-1 battery=2]
+  -> null
+[all-ok thermal=3 battery=0]
+  -> Block(blk_thermal, )
+[all-ok thermal=3 battery=1]
+  -> Block(blk_power, )
+[all-ok thermal=3 battery=2]
+  -> Block(blk_thermal, )
+[gate ok]
+  -> null
+  request=null hal=null
+[gate bad]
+  -> null
+  request=null hal=null
+[gate silent]
+  -> null
+  request=null hal=null
+[gate refused]
+  -> null
+  request=null hal=null
+## download space
+dir=/cache/lumen_ota
+space small=false huge=blk_space

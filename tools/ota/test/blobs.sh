@@ -1,11 +1,13 @@
 #!/bin/sh
 # SPDX-License-Identifier: Apache-2.0
-# Host tests of tools/ota/image/z9x_blobs.sh (public images: binds the user's own MediaTek / XGIMI files
-# from z9x_blobs<slot> at post-fs-data) and of the format of tools/ota/image/blobs_allow.txt. POSIX sh, on
-# the Mac, no projector:
+# Host tests of tools/ota/image/z9x_blobs.sh, the one blobs reader of every model, with the Z9X's data (its settings
+# tools/ota/image/blobs.conf: binds the user's own MediaTek / XGIMI files from z9x_blobs<slot> at post-fs-data), of
+# its refusal of odd settings and of the format of tools/ota/image/blobs_allow.txt and blobs.conf. POSIX sh, no
+# projector (the other models' data: devices/g0111/test/x50_blobs_test.sh, tools/devices/test/blobs_trial_test.sh;
+# every model's installed path against the readers before the move: tools/devices/test/blobs_parity.py):
 #   sh tools/ota/test/blobs.sh          every case under sh, dash and ksh (the ones installed)
 #   sh tools/ota/test/blobs.sh bad_     only the cases whose name starts with this
-# Every case gets a fake root (Z9X_ROOT): system/etc/z9x/blobs_allow.txt is a TEST allow-list with the
+# Every case gets a fake root (Z9X_ROOT): system/etc/z9x/blobs.conf is the Z9X's, blobs_allow.txt a TEST allow-list with the
 # real one's structure and made-up files (blobs_fixture.py; no proprietary file is ever used),
 # 0-byte placeholders under system/, the bind= targets under vendor/ and apex/, and the partition as a
 # plain file dev/block/mapper/z9x_blobs_b. stubs/ stand in for getprop, setprop, log, timeout, mount
@@ -36,7 +38,7 @@ begin() {  # case name: slot B, every placeholder and target in place, a good pa
   CASE=$1; CFAIL=0
   T=$WORK/$SHN/$1; R=$T/root
   mkdir -p "$R/system/etc/z9x" "$R/dev/block/mapper" "$R/mnt"
-  cp "$ALLOW" "$R/system/etc/z9x/blobs_allow.txt"
+  cp "$ALLOW" "$R/system/etc/z9x/blobs_allow.txt"; cp "$IMG/blobs.conf" "$R/system/etc/z9x/blobs.conf"
   lines | while read -r h p t; do
     mkdir -p "$(dirname "$R$t")"
     case "$t" in /system/*) : > "$R$t" ;; *) echo "the system's own $t" > "$R$t" ;; esac
@@ -188,6 +190,50 @@ cases() {
     expect_prop sys.z9x.blobs "mount:system_ext/lib/libc2plugin_store.so"; expect_bound 0
     end
   fi
+  if want trial_on_installed; then
+    # a trial run on a unit with Lumen OS installed: the partition, the stock slot is never looked at
+    begin trial_on_installed; printf '%s\n' ro.boot.slot_suffix=_b ro.gsid.image_running=1 ro.boot.xgimi.modelname=G0082 \
+      ro.lumen.models=G0082 > "$T/props"; run
+    expect_prop sys.z9x.blobs ok; expect_prop sys.z9x.blobs.src ""; expect_bound 9
+    grep -q -- '-t ' "$T/mount.log" && fail "a stock mount: $(cat "$T/mount.log")"
+    end
+  fi
+  if want conf_missing; then
+    # no settings file (a broken image): nothing read, nothing bound, the reason in the log
+    begin conf_missing; rm -f "$R/system/etc/z9x/blobs.conf"; run
+    expect_prop sys.z9x.blobs bad:conf; expect_bound 0; expect_log "bad:conf: no .*/blobs.conf"
+    [ ! -e "$R/mnt/z9x_blobs" ] || fail "the reader went on without its settings"
+    end
+  fi
+  if want conf_odd; then
+    # every key is required and checked: a missing or odd value is refused before anything is read
+    for kv in 'tag=Z9X' 'tag=' 'allow=../x_allow.txt' 'allow=blobs.txt' 'allow=/system/etc/z9x/blobs_allow.txt' \
+              'blocks=0' 'blocks=64x' 'blocks=1000' 'tmpfs=8' 'tmpfs=100m' 'maxf=4096' 'maxf=4194304 ' 'eye=2' \
+              'src_partition=yes' 'stock_apex=dir' 'stock_apex='; do
+      k=${kv%%=*}
+      begin "conf_odd_$(echo "$kv" | tr -c 'a-z0-9' _)"
+      { grep -v "^$k=" "$IMG/blobs.conf"; echo "$kv"; } > "$R/system/etc/z9x/blobs.conf"; run
+      expect_prop sys.z9x.blobs bad:conf; expect_bound 0; expect_log "bad:conf: .*: $k"
+      end
+    done
+    for k in tag allow blocks tmpfs maxf eye src_partition stock_apex; do
+      begin "conf_without_$k"; grep -v "^$k=" "$IMG/blobs.conf" > "$R/system/etc/z9x/blobs.conf"; run
+      expect_prop sys.z9x.blobs bad:conf; expect_bound 0; expect_log "bad:conf: .*: $k"
+      end
+    done
+    # a key the reader does not know (a setting it would silently ignore) is refused too
+    begin conf_unknown_key; { cat "$IMG/blobs.conf"; echo 'stock_fw=v6.15.62'; } > "$R/system/etc/z9x/blobs.conf"; run
+    expect_prop sys.z9x.blobs bad:conf; expect_bound 0; expect_log "bad:conf: .*: key:stock_fw"
+    end
+  fi
+  if want need_eye_refused; then
+    # a need=eye line on a model without the eye-protection group (eye=0) is never bound
+    begin need_eye_refused
+    sed 's#^\(.* lib64/libcodec2_soft_common.so .*\)$#\1 need=eye#' "$ALLOW" > "$R/system/etc/z9x/blobs_allow.txt"; run
+    expect_prop sys.z9x.blobs partial; expect_bound 8; expect_all_bound_but lib64/libcodec2_soft_common.so
+    expect_log "first problem option:lib64/libcodec2_soft_common.so"; expect_prop sys.lumen.nui ""
+    end
+  fi
 }
 
 # the real allow-list: the installer's copy is the same file; 6 placeholder lines + 3 bind= lines with
@@ -216,10 +262,13 @@ for line in open(sys.argv[1]):
         assert re.fullmatch(r"[0-9a-f]{64}:\d+(,\d+)?d(;\d+(,\d+)?d)*", o["from"]), line
 assert sets == 1 and n == {"place": 6, "bind": 3}, (sets, n)
 PY
+  # the Z9X's reader settings: its 4 MiB partition (64 x 64 KiB), no eye-protection group, the zip VNDK APEX
+  want="tag=z9x_blobs allow=blobs_allow.txt blocks=64 tmpfs=8m maxf=4194304 eye=0 src_partition=0 stock_apex=zip"
+  [ "$(grep -v '^#' "$IMG/blobs.conf" | tr '\n' ' ')" = "$want " ] || fail "blobs.conf: $(grep -v '^#' "$IMG/blobs.conf")"
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   - allowlist"; else FAIL=$((FAIL + 1)); echo "FAIL - allowlist"; fi
 fi
 
-for SH in sh dash ksh; do
+for SH in ${BLOBS_SHELLS:-sh dash ksh bash mksh}; do
   command -v $SH >/dev/null 2>&1 || continue
   SHN=$SH
   cases

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: stock XGIMI settings has no texts in this language (it shows English): Lumen's own words, the stock
+     order and meaning. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">Налаштування 3D</string>
+    <string name="lumen_m_3d_off">Вимкнути 3D</string>
+    <string name="lumen_m_3d_sbs">Пліч-о-пліч</string>
+    <string name="lumen_m_3d_tb">Зверху і знизу</string>
+    <string name="lumen_m_3d_sbs_2d">Пліч-о-пліч як 2D</string>
+    <string name="lumen_m_3d_tb_2d">Зверху і знизу як 2D</string>
+    <string name="lumen_m_3d_frame_packing">Blu-ray 3D</string>
+    <string name="lumen_m_3d_summary">Під час відео. Для 3D потрібні активні окуляри DLP-Link.</string>
+    <!-- 3D refusals: stock has no texts in this language, Lumen's words for the stock notes -->
+    <string name="lumen_m_3d_game">Налаштування 3D не підтримуються в ігровому режимі</string>
+    <string name="lumen_m_3d_no_video">Увімкніть відео або підключіть джерело сигналу й повторіть спробу</string>
+    <string name="lumen_m_3d_4k">Налаштування 3D не підтримуються для відео 4K</string>
+    <string name="lumen_m_3d_hdr">Налаштування 3D не підтримуються для відео HDR</string>
+    <string name="lumen_m_3d_120hz">Відтворення 3D вимкнено за 120 Гц</string>
+    <string name="lumen_m_3d_high_fps">Налаштування 3D не підтримуються за високої частоти кадрів</string>
+</resources>

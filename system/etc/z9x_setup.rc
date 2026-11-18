@@ -1,4 +1,5 @@
-# Z9X first boot over stock XGIMI data (install as /system/etc/init/z9x_setup.rc). v6.1.
+# Z9X first boot over stock XGIMI data (install as /system/etc/init/z9x_setup.rc). v6.1, block 3
+# since the first-start setting of 2026-11-13.
 #
 # Everything here is init builtins only (no exec, no wait), runs before zygote / system_server,
 # and is idempotent: each block does its work on the first boot only and fails harmlessly
@@ -81,17 +82,17 @@ on post-fs-data
     mkdir /data/system/z9x_netpolicy_reset 0700 system system
 
 # ---------------------------------------------------------------------------------------------
-# 3) Language and time zone, once per /data.
+# 3) Language and time zone of stock data, once per /data.
 #
-# The stock wizard persisted persist.sys.locale=zh-CN and Asia/Shanghai, which beat the defaults
-# in /product/etc/build.prop. Set English (the product default, V61_REQUIREMENTS 7a) and
-# Europe/Moscow once before zygote starts (persist props are already loaded at
-# load_bpf_programs; setup/check-in corrects the time zone by IP and the user picks the language
-# in the first-run setup). The user's later choice is kept because persist.z9x.firstrun
-# (default 1 from /system/build.prop) is then saved as 0. A /data that already ran v6 has 0, so
-# flashing v6.1 over v6 data keeps the user's language (ru-RU on the live device) and does not
-# re-run the setup wizard (block 1 is a no-op there too); see apps/V61_IMAGE_PLAN.md section 5.
+# The stock wizard persisted its own persist.sys.locale (zh-CN) and persist.sys.timezone (Asia/Shanghai)
+# in /data, which beat every build.prop default. Both are emptied once before zygote starts (persist
+# props are already loaded at load_bpf_programs), so the one first-start setting of every Lumen image,
+# devices/_image/first_start_prop.txt at the end of /product/etc/build.prop, applies: English, the time
+# zone from the network (Lumen Setup), no fixed zone. No language or zone of its own here (owner
+# 2026-11-13). The user's later choice is kept because persist.z9x.firstrun (default 1 from
+# /system/build.prop) is then saved as 0. A /data that already ran Lumen has 0 and keeps its language
+# (see apps/V61_IMAGE_PLAN.md section 5).
 on load_bpf_programs && property:persist.z9x.firstrun=1
-    setprop persist.sys.locale en-US
-    setprop persist.sys.timezone Europe/Moscow
+    setprop persist.sys.locale ""
+    setprop persist.sys.timezone ""
     setprop persist.z9x.firstrun 0

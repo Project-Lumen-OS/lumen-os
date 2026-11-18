@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">型號代碼</string>
+    <string name="lumen_about_dlp">DLP 控制器</string>
+    <string name="lumen_about_part_firmware">%1$s，韌體 %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI 韌體</string>
+    <string name="lumen_about_firmware_dated">%1$s（%2$s）</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s，安全性更新 %2$s</string>
+    <string name="lumen_about_kernel">核心</string>
+    <string name="lumen_about_boot_loader">開機韌體</string>
+    <string name="lumen_about_gmui">XGIMI 介面</string>
+    <string name="lumen_about_platform">MediaTek 平台</string>
+    <string name="lumen_about_remote">遙控器</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">恢復 XGIMI 系統</string>
+    <string name="lumen_about_back_summary_file">USB 隨身碟檔案：%1$s</string>
+    <string name="lumen_about_back_summary">使用 XGIMI 復原 USB 隨身碟</string>
+    <string name="lumen_about_intro">使用此型號的 XGIMI 復原 USB 隨身碟即可恢復 XGIMI 系統。方法請見專案頁面上的指南。</string>
+    <string name="lumen_about_usb_file">USB 隨身碟中的檔案名稱</string>
+    <string name="lumen_about_official">XGIMI 官方檔案</string>
+    <string name="lumen_about_official_value">%1$s，%2$s 位元組</string>
+    <string name="lumen_about_searching">正在尋找此韌體的官方檔案</string>
+    <string name="lumen_about_guide_files">專案頁面上的指南列出了 XGIMI 官方檔案。</string>
+    <string name="lumen_about_erases">USB 隨身碟會清除投影機上的所有內容：應用程式、帳戶、設定和檔案。</string>
+    <string name="lumen_about_scan">用手機掃描即可開啟</string>
+    <string name="lumen_about_close">關閉</string>
+</resources>

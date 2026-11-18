@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Клавіатура Lumen</string>
+    <string name="ime_service_name">Клавіатура Lumen</string>
+    <string name="keyboardview_keycode_language">Мова</string>
+    <string name="lumen_languages_title">Мови клавіатури</string>
+    <string name="lumen_languages_hint">Натисніть OK, щоб увімкнути або вимкнути мову. На клавіатурі мову змінює клавіша з глобусом.</string>
+    <string name="lumen_languages_last">Одна мова завжди залишається увімкненою.</string>
+</resources>

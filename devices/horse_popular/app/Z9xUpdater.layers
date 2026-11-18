@@ -1,7 +1,16 @@
 # Recipe of the Z9X updater, read by tools/devices/assemble_app.py, tools/devices/build_apps.sh and the Z9X gate
-# (tools/play6/z9x_gate.sh): the app plus the shared statistics client lumen-stats (apps/core/lumen-stats, the one
-# client of every projector; Stats in the app is only its adapter to the updater's Store).
+# (tools/play6/z9x_gate.sh): the shared updater (apps/core/lumen-updater, with the shared statistics client
+# lumen-stats) and the Z9X layer apps/Z9xUpdater: its UpdateTarget (Target.java) and its AndroidManifest.xml.
 app       Z9xUpdater
 module    lumen-stats
+# the Lumen icon set (apps/core/lumen-icons, its R class named in the top layer R_EXTRA_PACKAGES)
+module    lumen-icons
+# the XGIMI set update_engine copies, checked before an install (apps/core/lumen-fwcopy, one with the installer)
+module    lumen-fwcopy
+# the QR codes of the update screen (apps/core/lumen-qr)
+module    lumen-qr
+module    lumen-updater
+# the update_engine manifest of every A/B updater, kept once in the neutral updater apps/LumenUpdater
+file      apps/LumenUpdater/AndroidManifest.xml AndroidManifest.xml
 top       apps/Z9xUpdater
 skip      build/ test/ tools/ *.apk CHANGES*.md README*.md .DS_Store

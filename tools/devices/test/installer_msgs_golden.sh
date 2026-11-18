@@ -67,9 +67,11 @@ case "${1:-}" in
     a=$2; b=$3; bad=0
     T=$(mktemp "${TMPDIR:-/tmp}/lumen-golden-cmp.XXXXXX") || exit 1
     trap 'rm -f "$T" "$T.a" "$T.b"' EXIT
-    norm() { sed -E -e 's/[0-9]{8}-[0-9]{6}/<date>/g' -e 's/[0-9]{2}:[0-9]{2}:[0-9]{2}/HH:MM:SS/g' -e 's/[0-9a-f]{16,}/<hex>/g' \
-      -e 's/lumen-golden\.[A-Za-z0-9]+/lumen-golden.X/g' -e 's/(tmp|pack|packchk)\.[A-Za-z0-9]{6,}/\1.X/g' \
-      -e 's/lumen-[0-9]{14}-[0-9]+/lumen-<stamp>/g' "$1"; }
+    # the Play 6 wipe token (lumen-<yyyymmddHHMMSS>-<pid>) first: the date rule below would eat half of it and leave
+    # the pid's last digits
+    norm() { sed -E -e 's/lumen-[0-9]{14}-[0-9]+/lumen-<stamp>/g' -e 's/[0-9]{8}-[0-9]{6}/<date>/g' \
+      -e 's/[0-9]{2}:[0-9]{2}:[0-9]{2}/HH:MM:SS/g' -e 's/[0-9a-f]{16,}/<hex>/g' \
+      -e 's/lumen-golden\.[A-Za-z0-9]+/lumen-golden.X/g' -e 's/(tmp|pack|packchk)\.[A-Za-z0-9]{6,}/\1.X/g' "$1"; }
     for d in "$a"/*/; do
       n=$(basename "$d")
       [ -d "$b/$n" ] || { echo "FAIL $n: not captured in $b"; bad=1; continue; }

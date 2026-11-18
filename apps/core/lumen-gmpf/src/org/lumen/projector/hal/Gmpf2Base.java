@@ -90,6 +90,32 @@ public abstract class Gmpf2Base<K> extends GmpfCaller<K> {
     }
 
     public boolean getAllmAutoSwitch() throws RemoteException { return wire.retBool(key(GET_ALLM_ENABLE_STATE)); }
+    // ------------------------------------------------------------------ signal panel reads (lumen-signal)
+    /** getExtDecInfo keys: IMAX Enhanced and Filmmaker Mode content (1 = yes). Only these two are ever sent. */
+    public static final String EXT_IMAX = "format&isimax", EXT_FILMMAKER = "format&isfmm";
+
+    /** Z9X IGmpf2 271, HB TV 173 getAmdFreeSyncState(). */
+    public boolean getFreeSync() throws RemoteException {
+        wire.ready();
+        return wire.retBool(key(GET_AMD_FREE_SYNC_STATE));
+    }
+
+    /** Z9X IGmpf2 279, HB TV 163 getExtDecInfo(EXT_IMAX | EXT_FILMMAKER) -> 1 when the content has it. */
+    public int getExtDecInfo(String what) throws RemoteException {
+        if (!EXT_IMAX.equals(what) && !EXT_FILMMAKER.equals(what)) throw new IllegalArgumentException("ext dec key " + what);
+        wire.ready();
+        return wire.strRetI32(key(GET_EXT_DEC_INFO), what);
+    }
+
+    /** HB TV 192 getHGiGMode(). */
+    public boolean getHgig() throws RemoteException {
+        wire.ready();
+        return wire.retBool(key(GET_HGIG_MODE));
+    }
+
+    /** getVRREnableState(hdmi) == 1 (stock reads -1 as off). */
+    public boolean vrrOn(int hdmi) throws RemoteException { return readVrr(hdmi) == ON; }
+
     /** setAllmEnable(bool): true = switch to game mode on ALLM content. */
     public boolean setAllmAutoSwitch(boolean on) throws RemoteException { return wire.boolRetBool(key(SET_ALLM_ENABLE), on); }
 

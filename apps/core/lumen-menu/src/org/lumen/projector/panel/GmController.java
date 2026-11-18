@@ -415,6 +415,7 @@ final class GmController {
             case GmModel.R_AR_VRR: return app.getString(R.string.lumen_gm_rule_ar_vrr);
             case GmModel.R_AR_4K: return app.getString(R.string.lumen_gm_rule_ar_4k);
             case GmModel.R_HFR_VRR: return app.getString(R.string.lumen_gm_rule_hfr_vrr);
+            case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);
             default: return app.getString(R.string.lumen_gm_failed_soft);
         }
     }

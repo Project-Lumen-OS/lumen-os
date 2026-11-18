@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.lumen.projector.R;
 import org.lumen.projector.ui.ChoiceRow;
 import org.lumen.projector.ui.EqBandsRow;
 import org.lumen.projector.ui.OverlayHost;
@@ -71,6 +72,12 @@ final class QpdPanel extends PagedPanel {
         String anchorFor(Page sectionPage);
         boolean hasPopup(String key);
         void openPopup(String key);
+        /** The icon of a page's panel header (its tile's icon), 0 for none. */
+        int iconFor(Page p);
+        /** The value line under a page's panel title (its tile's value), or null. */
+        CharSequence valueFor(Page p);
+        /** BACK while the pencil editor shows: its own step back (true), false when it is not shown. */
+        boolean onSideBack();
     }
 
     /** One All settings category: a section page with its rail label and icon. */
@@ -96,6 +103,9 @@ final class QpdPanel extends PagedPanel {
     private Context ctx;
     private FrameLayout root;
     private Popup popup;
+    private OutputSheet sheet;
+    /** The pencil editor's sheet in the panel's place (showSide), or null. */
+    private View side;
     private QpdAll all;
     private View accentRow;
     private QpdTile held;
@@ -167,14 +177,19 @@ final class QpdPanel extends PagedPanel {
     }
 
     @Override
-    public void refreshPage() {
+    public void refreshPage() { refreshPage(-1); }
+
+    /** Repaints the shown page with the focus on row {@code focusIndex}, or where it is now (-1). */
+    void refreshPage(int focusIndex) {
         if (root == null || stack.size() <= 1) return;
-        PageAccess.setFocusIndex(stack.peek(), focusedIndex());
+        PageAccess.setFocusIndex(stack.peek(), focusIndex >= 0 ? focusIndex : focusedIndex());
         render(0);
     }
 
     @Override
     protected boolean onBack() {
+        if (side != null && host.onSideBack()) return true;
+        if (stack.peek() instanceof SheetPage) return pop();
         if (isAllMode() && root != null) {
             if (all.inList(root.findFocus())) {
                 if (stack.size() > 2) return pop();
@@ -282,7 +297,7 @@ final class QpdPanel extends PagedPanel {
         popup.setVisibility(View.GONE);
         FrameLayout.LayoutParams pp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        pp.leftMargin = px(QpdLayout.POP_X);
+        pp.leftMargin = px(QpdLayout.SIDE_X);
         pp.topMargin = px(QpdLayout.MARGIN);
         root.addView(popup, pp);
         if (!bar) {
@@ -335,6 +350,7 @@ final class QpdPanel extends PagedPanel {
         Page cur = stack.peek();
         PageAccess.hidden(cur);
         if (popup != null) popup.list.removeAllViews();
+        hideSheet();
         if (all != null) all.clear();
         if (held != null) { held.setHeld(false); held = null; }
         if (card.getParent() == root) root.removeView(card);
@@ -356,6 +372,10 @@ final class QpdPanel extends PagedPanel {
         if (dir < 0) return false;
         if (bar) return dir == QpdLayout.UP || dir == QpdLayout.DOWN;   // LEFT / RIGHT go to the slider
         boolean down = ev.getAction() == KeyEvent.ACTION_DOWN;
+        if (stack.peek() instanceof SheetPage) {                   // UP / DOWN: its rows, LEFT: back
+            if (dir == QpdLayout.LEFT && down && ev.getRepeatCount() == 0) pop();
+            return dir != QpdLayout.UP && dir != QpdLayout.DOWN;
+        }
         if (isAllMode() && all != null) return allKey(dir, down, ev.getRepeatCount());
         if (stack.size() > 1) {
             View f = popup.findFocus();
@@ -373,9 +393,9 @@ final class QpdPanel extends PagedPanel {
         }
         List<List<String>> rows = card.rows();
         String key = rows.get(cell[0]).get(cell[1]);
-        if (QpdLayout.SLIDER.equals(key) && (dir == QpdLayout.LEFT || dir == QpdLayout.RIGHT)) return false;
+        if (card.isSlider(key) && (dir == QpdLayout.LEFT || dir == QpdLayout.RIGHT)) return false;
         if (!down) return true;
-        int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup);
+        int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider);
         if (to == null) return true;
         if (to[2] == QpdLayout.OPEN) {
             if (ev.getRepeatCount() == 0) host.openPopup(key);
@@ -437,6 +457,43 @@ final class QpdPanel extends PagedPanel {
         }
     }
 
+    // ------------------------------------------------------------------ the pencil editor's sheet
+    /** Puts {@code v} (the pencil editor's sheet) in the side panel's place; the card stays and keeps its focus map. */
+    void showSide(View v) {
+        if (root == null || v == null) return;
+        if (side != null && side != v) hideSide();
+        hidePopup();
+        if (v.getParent() instanceof ViewGroup && v.getParent() != root) ((ViewGroup) v.getParent()).removeView(v);
+        if (v.getParent() == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(px(QpdLayout.SIDE_W), px(QpdLayout.SIDE_H));
+            lp.leftMargin = px(QpdLayout.SIDE_X);
+            lp.topMargin = px(QpdLayout.MARGIN);
+            root.addView(v, lp);
+            v.setAlpha(0f);
+            v.setTranslationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT));
+            v.animate().alpha(1f).translationX(0f).setDuration(QpdLayout.POP_GROW_MS).setInterpolator(QpdStyle.ease()).start();
+        }
+        side = v;
+        card.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+    }
+
+    void hideSide() {
+        if (side == null) return;
+        View v = side;
+        side = null;
+        v.animate().cancel();
+        if (v.getParent() instanceof ViewGroup) ((ViewGroup) v.getParent()).removeView(v);
+    }
+
+    boolean hasSide() { return side != null; }
+
+    /** The theme changed while the panel shows: the card, the popup and their rows redraw in the new colours. */
+    void retheme() {
+        card.retheme();
+        if (popup != null) popup.retheme();
+        if (root != null) root.invalidate();
+    }
+
     // ------------------------------------------------------------------ render
     private int focusedIndex() {
         LinearLayout l = isAllMode() && all != null ? all.list() : popup == null ? null : popup.list;
@@ -448,6 +505,11 @@ final class QpdPanel extends PagedPanel {
     private void render(int direction) {
         Page top = stack.peek();
         if (top == null) return;
+        if (top instanceof SheetPage && stack.size() > 1 && !bar) {
+            renderSheet((SheetPage) top, direction);
+            return;
+        }
+        hideSheet();
         if (isAllMode() && all != null) {
             renderAll(top, direction);
             return;
@@ -511,6 +573,42 @@ final class QpdPanel extends PagedPanel {
         }
     }
 
+    /** A sheet page (the sound output page): its own surface beside the card, the popup and All settings put away. */
+    private void renderSheet(SheetPage top, int direction) {
+        clearAccent();
+        if (popup.getVisibility() == View.VISIBLE) {                // gone at once: BACK shows it again with its own entry
+            popup.animate().cancel();
+            popup.setVisibility(View.GONE);
+        }
+        if (all != null && all.getVisibility() == View.VISIBLE) all.setVisibility(View.INVISIBLE);
+        card.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        OutputSheet v = top.sheet;
+        boolean fresh = v != sheet || v.getParent() != root;
+        if (fresh) {
+            hideSheet();
+            if (v.getParent() instanceof ViewGroup) ((ViewGroup) v.getParent()).removeView(v);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.leftMargin = px(isAllMode() ? QpdLayout.ALL_X : QpdLayout.SIDE_X);
+            lp.topMargin = px(QpdLayout.MARGIN);
+            root.addView(v, lp);
+            sheet = v;
+            v.setAlpha(0f);
+            v.setTranslationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT) * (direction < 0 ? -1 : 1));
+            v.animate().alpha(1f).translationX(0f).setDuration(QpdLayout.POP_GROW_MS).setInterpolator(QpdStyle.ease()).start();
+        }
+        safeShown(top);
+        v.post(() -> { if (v.isAttachedToWindow() && stack.peek() == top && !v.hasFocus()) v.focusFirst(); });
+    }
+
+    private void hideSheet() {
+        if (sheet == null) return;
+        OutputSheet v = sheet;
+        sheet = null;
+        v.animate().cancel();
+        if (v.getParent() instanceof ViewGroup) ((ViewGroup) v.getParent()).removeView(v);
+    }
+
     private void renderAll(Page top, int direction) {
         hidePopup();
         if (held != null) { held.setHeld(false); held = null; }
@@ -571,16 +669,10 @@ final class QpdPanel extends PagedPanel {
         int screenH = root.getHeight() > 0 ? root.getHeight() : ctx.getResources().getDisplayMetrics().heightPixels;
         int maxH = Math.min(px(QpdLayout.popupMaxH()), screenH - 2 * px(QpdLayout.MARGIN));
         popup.setMaxHeight(maxH);
-        popup.measure(View.MeasureSpec.makeMeasureSpec(px(QpdLayout.POP_W_MAX), View.MeasureSpec.AT_MOST),
+        popup.measure(View.MeasureSpec.makeMeasureSpec(px(QpdLayout.SIDE_W), View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(maxH, View.MeasureSpec.AT_MOST));
         int h = popup.getMeasuredHeight();
-        int tileTop = anchor == null ? px(QpdLayout.MARGIN + QpdLayout.POP_TOP_OFFSET)
-                : px(QpdLayout.CARD_Y) + anchor.getTop();
-        // QpdLayout.popupTop in real px (the same clamp; the host test checks it in design px)
-        int top = tileTop - px(QpdLayout.POP_TOP_OFFSET);
-        int max = screenH - px(QpdLayout.MARGIN) - h;
-        if (top > max) top = max;
-        if (top < px(QpdLayout.MARGIN)) top = px(QpdLayout.MARGIN);
+        int top = px(QpdLayout.MARGIN);                  // the full height side panel: always at the top margin
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) popup.getLayoutParams();
         if (lp.topMargin != top) {
             lp.topMargin = top;
@@ -682,14 +774,17 @@ final class QpdPanel extends PagedPanel {
             return f;
         }
 
-        /** Fills {@code list} with the frames of {@code rows}; a link row right after a radio list gets a divider. */
+        /**
+         * Fills {@code list} with the frames of {@code rows}; a link row right after a radio list gets a divider, and so
+         * does a line header (the stock line between two groups).
+         */
         void fill(Context c, LinearLayout list, List<View> rows) {
             list.removeAllViews();
             int prev = -1;
             for (View v : rows) {
                 QpdRowFrame f = of(c, v);
                 if (f.getParent() instanceof ViewGroup) ((ViewGroup) f.getParent()).removeView(f);
-                f.setDivider(prev == QpdRowFrame.RADIO && f.kind == QpdRowFrame.NAV);
+                f.setDivider(prev == QpdRowFrame.RADIO && f.kind == QpdRowFrame.NAV || f.isLine());
                 f.setTranslationX(0f);
                 f.setAlpha(1f);
                 list.addView(f, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -713,39 +808,34 @@ final class QpdPanel extends PagedPanel {
     }
 
     /**
-     * The popup card: optional hint, the page title (small, muted), then the page's rows in the prototype look
-     * (QpdRowFrame) inside a scroll view, so long pages scroll. 440 px wide, up to 520 when a row needs it.
+     * The side panel (2026-11-18, decision 1: every popup is the full height panel right of the card): optional
+     * header (the tile's icon, the page title, its value), the hint, the page's rows in the prototype look
+     * (QpdRowFrame) inside a scroll view, the key hints at the bottom. 600 x 1000 px at 1920 x 1080.
      */
     private final class Popup extends ViewGroup {
         final LinearLayout body;
-        final TextView title;
+        final QpdSide.Header head;
         final ScrollView scroll;
         final LinearLayout list;
+        final QpdSide.Keys keys;
         final Frames frames = new Frames(QpdRowFrame.POPUP);
+        final GradientDrawable bg = new GradientDrawable();
         View tip;
         int maxH = Integer.MAX_VALUE;
 
         Popup(Context c) {
             super(c);
-            GradientDrawable bg = new GradientDrawable();
             bg.setColor(QpdStyle.PANEL);
-            bg.setCornerRadius(Theme.pxf(c, QpdLayout.POP_RADIUS));
+            bg.setCornerRadius(Theme.pxf(c, QpdLayout.SIDE_RADIUS));
             setBackground(bg);
             setElevation(Theme.pxf(c, 30));
-            int pad = Theme.px(c, QpdLayout.POP_PAD);
-            setPadding(pad, pad, pad, pad);
+            setPadding(Theme.px(c, QpdLayout.SIDE_PAD_H), Theme.px(c, QpdLayout.SIDE_PAD_TOP), Theme.px(c, QpdLayout.SIDE_PAD_H),
+                    Theme.px(c, QpdLayout.SIDE_PAD_BOTTOM));
             setFocusable(false);
             setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
             body = new LinearLayout(c);
             body.setOrientation(LinearLayout.VERTICAL);
-            title = new TextView(c);
-            title.setTypeface(QpdStyle.inter(c, 600, 18));
-            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, Theme.pxf(c, 18));
-            title.setTextColor(QpdStyle.MUTE);
-            title.setLetterSpacing(0.2f / 18f);
-            title.setMaxLines(2);
-            title.setIncludeFontPadding(false);
-            title.setPadding(Theme.px(c, 18), Theme.px(c, 10), Theme.px(c, 18), Theme.px(c, 12));
+            head = new QpdSide.Header(c);
             list = new LinearLayout(c);
             list.setOrientation(LinearLayout.VERTICAL);
             scroll = new ScrollView(c);
@@ -756,24 +846,38 @@ final class QpdPanel extends PagedPanel {
             scroll.setClipChildren(false);
             scroll.addView(list, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            body.addView(title, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            keys = new QpdSide.Keys(c);
+            keys.set(c.getText(R.string.lumen_qe_select), c.getText(R.string.lumen_qe_close_panel));
+            body.addView(head, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            body.addView(scroll, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            FrameLayout clip = new FrameLayout(c);          // the scrolled rows never draw over the header or the hints
+            clip.setClipChildren(true);
+            clip.addView(scroll, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            body.addView(clip, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+            body.addView(keys, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             addView(body);
         }
 
         void setMaxHeight(int h) { maxH = h; }
 
+        void retheme() {
+            bg.setColor(QpdStyle.PANEL);
+            head.invalidate();
+            keys.invalidate();
+            for (int i = 0; i < list.getChildCount(); i++) list.getChildAt(i).invalidate();
+        }
+
         void fill(Page page, View newTip) {
             if (tip != null && tip != newTip) body.removeView(tip);
             if (newTip != null && newTip.getParent() != body) {
                 if (newTip.getParent() instanceof ViewGroup) ((ViewGroup) newTip.getParent()).removeView(newTip);
-                body.addView(newTip, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                body.addView(newTip, 1, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));      // under the header (mock 08)
             }
             tip = newTip;
-            title.setText(page.getTitle());
+            bg.setColor(QpdStyle.PANEL);
+            head.set(host.iconFor(page), page.getTitle(), host.valueFor(page), null);
             clearAccent();
             frames.fill(getContext(), list, page.rows());
             scroll.scrollTo(0, 0);
@@ -783,37 +887,12 @@ final class QpdPanel extends PagedPanel {
 
         void staggerRows() { stagger(list, getContext()); }
 
-        /** Popup width (real px): the prototype's 440 or what the widest row needs on one line, 520 at most. */
-        private int naturalWidth() {
-            float need = 0f;
-            for (int i = 0; i < list.getChildCount(); i++) {
-                View v = list.getChildAt(i);
-                if (v instanceof QpdRowFrame) need = Math.max(need, ((QpdRowFrame) v).naturalWidth());
-            }
-            float s = Theme.scale(getContext());
-            return Math.round(QpdLayout.popupWidth(need / s) * s);
-        }
-
         @Override
         protected void onMeasure(int wSpec, int hSpec) {
-            int w = naturalWidth();
-            if (MeasureSpec.getMode(wSpec) == MeasureSpec.EXACTLY) w = MeasureSpec.getSize(wSpec);
-            else if (MeasureSpec.getMode(wSpec) == MeasureSpec.AT_MOST) w = Math.min(w, MeasureSpec.getSize(wSpec));
-            int limit = Math.min(maxH, MeasureSpec.getMode(hSpec) == MeasureSpec.UNSPECIFIED ? Integer.MAX_VALUE
-                    : MeasureSpec.getSize(hSpec));
-            int inner = w - getPaddingLeft() - getPaddingRight();
-            int vpad = getPaddingTop() + getPaddingBottom();
-            LinearLayout.LayoutParams sp = (LinearLayout.LayoutParams) scroll.getLayoutParams();
-            sp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            body.measure(MeasureSpec.makeMeasureSpec(inner, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            int h = body.getMeasuredHeight() + vpad;
-            if (h > limit) {
-                // the rows scroll: give them what is left under the hint and the title
-                int fixed = body.getMeasuredHeight() - scroll.getMeasuredHeight();
-                sp.height = Math.max(0, limit - vpad - fixed);
-                body.measure(MeasureSpec.makeMeasureSpec(inner, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                h = Math.min(limit, body.getMeasuredHeight() + vpad);
-            }
+            int w = Theme.px(getContext(), QpdLayout.SIDE_W);
+            int h = Math.min(maxH, Theme.px(getContext(), QpdLayout.SIDE_H));
+            body.measure(MeasureSpec.makeMeasureSpec(w - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(h - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));
             setMeasuredDimension(w, h);
         }
 

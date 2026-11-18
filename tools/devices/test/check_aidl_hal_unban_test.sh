@@ -49,10 +49,14 @@ menu() { rm -rf "$W/X50Projector"; mkdir -p "$W/X50Projector"; cp -R "$G/apps/X5
 GM=src/org/lumen/x50/projector/GmpfCall.java
 UN=$W/unbanned_x50projector.tsv
 
-menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 101 calls"
+menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 203 calls"
 menu; chk "$W/X50Projector" "$W/allowed.tsv"; RC=$?; expect menu_without_list_11 1 "Call.CORRECT_KEYSTONE: DisplayManager 11 correctKeystone is banned"
 grep -qF "Call.SET_TILT_SHIFT_MOVE: ProjectorFocusManager 88 setTiltShiftMove is banned" "$W/out" && grep -qF "Call.AUTO_FOCUS: ProjectorFocusManager 3 autoFocus is banned" "$W/out" \
   && ok menu_without_list_88_3 || bad menu_without_list_88_3
+for c in "107 executeNimbleOpticalPos" "108 updateNimbleOpticalPos" "109 createNimbleOpticalPos" "110 deleteNimbleOpticalPos"; do
+  grep -qF "ProjectorFocusManager $c is banned" "$W/out" || { bad "menu_without_list_${c%% *}"; continue; }
+  ok "menu_without_list_${c%% *}"
+done
 
 # the eye guard with a 11 Call, its own allow row and the menu's list: refused (the list names another app)
 rm -rf "$W/X50EyeGuard"; mkdir -p "$W/X50EyeGuard"; cp -R "$G/apps/X50EyeGuard/src" "$W/X50EyeGuard/src"
@@ -94,13 +98,44 @@ chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect unused_row_refused 1
 menu; printf 'apps/X50EyeGuard\tDisplayManager\t11\tcorrectKeystone\targs:50\ttest\n' >> "$UN"
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect mixed_app_list_refused 1 "is for apps/X50EyeGuard, not for X50Projector"
 # rule 8: ranges well formed and equal to the allow list
-menu; sub "$W/X50Projector/$GM" '"setDlpLumensLevel", "1..10")' '"setDlpLumensLevel", "10..1")'
-sub "$W/allowed.tsv" $'setDlpLumensLevel\tvoid(byte)\targs:1..10\t' $'setDlpLumensLevel\tvoid(byte)\targs:10..1\t'
+menu; sub "$W/X50Projector/$GM" '"setDlpLumensLevel", "1..11")' '"setDlpLumensLevel", "11..1")'
+sub "$W/allowed.tsv" $'setDlpLumensLevel\tvoid(byte)\targs:1..11\t' $'setDlpLumensLevel\tvoid(byte)\targs:11..1\t'
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect malformed_range_refused 1 "rule 8: Call.SET_DLP_LUMENS_LEVEL: bad range"
-menu; sub "$W/X50Projector/$GM" '"setDlpLumensLevel", "1..10")' '"setDlpLumensLevel", "1..11")'
-chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect range_differs_from_row 1 "rule 8: Call.SET_DLP_LUMENS_LEVEL: args '1..11', the allowed.tsv row has '1..10'"
+# picture2: packed bytes beyond 255 and a one-value set are malformed
+menu; sub "$W/X50Projector/$GM" '"setHsyColorModel", "0,0..2,7,b4:0..100,b3:0..100")' '"setHsyColorModel", "0,0..2,7,b4:0..300,b3:0..100")'
+sub "$W/allowed.tsv" $'args:0,0..2,7,b4:0..100,b3:0..100\t' $'args:0,0..2,7,b4:0..300,b3:0..100\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect malformed_byte_range_refused 1 "rule 8: Call.SET_HSY_COLOR_MODEL: bad byte range"
+menu; sub "$W/X50Projector/$GM" '"toggleFDBoost", "0,0..1")' '"toggleFDBoost", "0,0|")'
+sub "$W/allowed.tsv" $'toggleFDBoost\tboolean(int, int)\targs:0,0..1\t' $'toggleFDBoost\tboolean(int, int)\targs:0,0|\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect one_value_set_refused 1 "rule 8: Call.TOGGLE_FD_BOOST: bad word"
+menu; sub "$W/X50Projector/$GM" '"setDlpLumensLevel", "1..11")' '"setDlpLumensLevel", "1..12")'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect range_differs_from_row 1 "rule 8: Call.SET_DLP_LUMENS_LEVEL: args '1..12', the allowed.tsv row has '1..11'"
+# x50-picture-stock: a double range (d:A..B, the dynamic black level tuning 193) reversed is malformed, a wider one differs
+menu; sub "$W/X50Projector/$GM" '"setVibrantHDRXCoeff", "d:-0.02..0.02")' '"setVibrantHDRXCoeff", "d:0.02..-0.02")'
+sub "$W/allowed.tsv" $'args:d:-0.02..0.02\t' $'args:d:0.02..-0.02\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect malformed_double_range_refused 1 "rule 8: Call.SET_VIBRANT_HDRX_COEFF: bad double range"
+menu; sub "$W/X50Projector/$GM" '"setVibrantHDRXCoeff", "d:-0.02..0.02")' '"setVibrantHDRXCoeff", "d:-1..1")'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect double_range_differs_from_row 1 "rule 8: Call.SET_VIBRANT_HDRX_COEFF: args 'd:-1..1', the allowed.tsv row has 'd:-0.02..0.02'"
 menu; sub "$W/allowed.tsv" $'zoomStart\tint(int)\targs:0\t' $'zoomStart\tint(int)\t'
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect row_without_range_refused 1 "rule 8: Call.ZOOM_START: args '0', the allowed.tsv row has None"
+
+# rs30-parity-projection: the float range and string words, and the lens memory rows (R-nimble) unbanned with ranges
+menu; sub "$W/X50Projector/$GM" '"setScreenRotation", "5..6,f:0.5..90")' '"setScreenRotation", "5..6,f:90..0.5")'
+sub "$W/allowed.tsv" $'setScreenRotation\tboolean(int, float)\targs:5..6,f:0.5..90\t' $'setScreenRotation\tboolean(int, float)\targs:5..6,f:90..0.5\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect float_range_reversed_refused 1 "rule 8: Call.SET_SCREEN_ROTATION: bad float range"
+menu; sub "$W/X50Projector/$GM" '"setScreenRotation", "5..6,f:0.5..90")' '"setScreenRotation", "5..6,f:-1..90")'
+sub "$W/allowed.tsv" $'setScreenRotation\tboolean(int, float)\targs:5..6,f:0.5..90\t' $'setScreenRotation\tboolean(int, float)\targs:5..6,f:-1..90\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect float_range_negative_refused 1 "rule 8: Call.SET_SCREEN_ROTATION: bad"
+menu; sub "$W/X50Projector/$GM" '"setScreenRotation", "5..6,f:0.5..90")' '"setScreenRotation", "5..6,f:0.5..180")'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect float_range_differs_refused 1 "rule 8: Call.SET_SCREEN_ROTATION: args '5..6,f:0.5..180', the allowed.tsv row has '5..6,f:0.5..90'"
+menu; sub "$W/X50Projector/$GM" '"createNimbleOpticalPos", "1..999,s:512")' '"createNimbleOpticalPos", "1..999,s:0")'
+sub "$W/allowed.tsv" $'createNimbleOpticalPos\tboolean(int, String)\targs:1..999,s:512\t' $'createNimbleOpticalPos\tboolean(int, String)\targs:1..999,s:0\t'
+sub "$UN" $'createNimbleOpticalPos\targs:1..999,s:512\t' $'createNimbleOpticalPos\targs:1..999,s:0\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect string_length_zero_refused 1 "rule 8: Call.CREATE_NIMBLE_OPTICAL_POS: bad string length"
+menu; sub "$UN" $'executeNimbleOpticalPos\targs:1..999\t' $'executeNimbleOpticalPos\targs:0..999\t'
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect lens_unban_range_not_allow_range 1 "args '0..999' is not the allow list's args '1..999'"
+menu; grep -v $'\t107\texecuteNimbleOpticalPos\t' "$UN" > "$W/un2" && cp "$W/un2" "$UN"
+chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect lens_107_without_unban_refused 1 "Call.EXECUTE_NIMBLE_OPTICAL_POS: ProjectorFocusManager 107 executeNimbleOpticalPos is banned"
 
 # registry: check_hal passes the list to the menu only; devices.py refuses a misplaced entry
 python3 -B - "$G" > "$W/out" 2>&1 <<'PY'
@@ -118,9 +153,9 @@ if "--unbanned" not in cm or not cm[cm.index("--unbanned") + 1].endswith("device
     bad.append("the menu's check gets no --unbanned: %s" % cm)
 if "--unbanned" in ce:
     bad.append("the eye guard's check gets --unbanned: %s" % ce)
-# the X50 family apps: the X50 Ultra Max g0100 (2026-11-11) and the RS30 Ultra Max g0155 (2026-11-12) run the same menu
-# with the same exceptions, row for row
-X50 = ("g0111", "g0100", "g0155")
+# the X50 family apps: the X50 Ultra Max g0100 (2026-11-11), the RS30 Ultra Max g0155 (2026-11-12) and the TITAN Noir
+# Pro h0062 and Max h0063 (2026-11-13) run the same menu with the same exceptions, row for row
+X50 = ("g0111", "g0100", "g0155", "h0062", "h0063")
 rows = lambda f: [l for l in open(os.path.join(G, f), encoding="utf-8").read().splitlines() if l.strip() and not l.startswith("#")]
 for c in X50[1:]:
     if rows("devices/%s/research/unbanned_x50projector.tsv" % c) != rows("devices/g0111/research/unbanned_x50projector.tsv"):

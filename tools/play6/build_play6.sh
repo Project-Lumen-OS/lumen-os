@@ -24,10 +24,10 @@
 # build_apk.sh verifies after signing that the APK's signer is exactly KEY_PEM.
 # OUT_DIR (default build/play6) takes the APKs; each app builds in OUT_DIR/apk/<App> (wiped by build_apk.sh),
 # so apps/Play6*/build is not used. OUT_DIR/tree/Play6Projector is the assembled projector tree (rewritten each run).
-# HOME_SRC=1 also builds Lumen Home from its source (apps/Z9xHome) with the Play 6 key -> OUT_DIR/Z9xHome.apk,
+# HOME_SRC=1 also builds Lumen Home from its source (apps/LumenHome) with the Play 6 key -> OUT_DIR/Z9xHome.apk,
 # for a test image that carries a Home newer than the Z9X pin (build_test.sh --home-src); TVINPUT_SRC=1 the same
-# for the TV input app (apps/Z9xTvInput -> OUT_DIR/Z9xTvInput.apk, build_test.sh --tvinput-src), SETUP_SRC=1 for
-# Lumen Setup (apps/Z9xSetup -> OUT_DIR/Z9xSetup.apk, build_test.sh --setup-src). Such a source
+# for the TV input app (apps/LumenTvInput -> OUT_DIR/Z9xTvInput.apk, build_test.sh --tvinput-src), SETUP_SRC=1 for
+# Lumen Setup (apps/LumenSetup -> OUT_DIR/Z9xSetup.apk, build_test.sh --setup-src). Such a source
 # build keeps the version of its pin: a manifest without versionCode / versionName (Z9xTvInput) gets the pin's
 # (aapt2 dump badging of overlay/apps_v1/<App>.apk, as z9x_gate.sh rebuilds it); a manifest that has them keeps
 # them. The Z9X pins in overlay/apps_v1 and the Z9X image are not touched.
@@ -69,7 +69,8 @@ for app in Play6Projector Play6FrameworkOverlay Play6TvSettingsOverlay Play6Upda
   [ -d "$G/apps/$app" ] || continue
   src=$G/apps/$app
   [ "$app" = Play6Projector ] && src=$TREE
-  # the updater is assembled from its recipe too (devices/dragon_healthy/app/Play6Updater.layers, base apps/Z9xUpdater)
+  # the updater is assembled from its recipe too (devices/dragon_healthy/app/Play6Updater.layers, the shared module
+  # apps/core/lumen-updater plus the Play 6 Target and manifest)
   if [ "$app" = Play6Updater ]; then
     src=$OUT/tree/Play6Updater
     python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Updater --out "$src" --quiet \
@@ -78,11 +79,16 @@ for app in Play6Projector Play6FrameworkOverlay Play6TvSettingsOverlay Play6Upda
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
     sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
-# the receivers of every Lumen projector, no per-model copy (AirPlay is the re-signed pin: sign_play6.py pinned)
-BUILD_DIR="$OUT/apk/LumenMiracast" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE=111 VERSION_NAME=1.0.11 \
+# the receivers of every Lumen projector, no per-model copy (AirPlay is the re-signed pin: sign_play6.py pinned); the
+# receiver's version line is apps/LumenMiracast/BUILD_VERSION, as tools/devices/build_apps.sh reads it
+read -r MC_VC MC_VN < "$G/apps/LumenMiracast/BUILD_VERSION" || die "no apps/LumenMiracast/BUILD_VERSION"
+BUILD_DIR="$OUT/apk/LumenMiracast" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE=$MC_VC VERSION_NAME=$MC_VN \
   sh "$G/apps/build_apk.sh" "$G/apps/LumenMiracast" "$OUT/LumenMiracast.apk"
 BUILD_DIR="$OUT/apk/LumenWifiP2pOverlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
   sh "$G/apps/build_apk.sh" "$G/apps/LumenWifiP2pOverlay" "$OUT/LumenWifiP2pOverlay.apk"
+# the on-screen keyboard of every model (apps/LumenKeyboard: keyboard languages, the language key), in LeanbackIME's place
+BUILD_DIR="$OUT/apk/LumenKeyboard" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
+  sh "$G/apps/build_apk.sh" "$G/apps/LumenKeyboard" "$OUT/LumenKeyboard.apk"
 SRC=
 [ "${HOME_SRC:-0}" = 1 ] && SRC="$SRC Z9xHome"
 [ "${TVINPUT_SRC:-0}" = 1 ] && SRC="$SRC Z9xTvInput"
@@ -96,8 +102,15 @@ for app in $SRC; do
   [ -n "$vc" ] && [ -n "$vn" ] || die "cannot read the version of $pin"
   key=   # Lumen Home: the TMDB key file when the pin carries one (z9x_gate.sh does the same)
   if [ "$app" = Z9xHome ] && unzip -l "$pin" assets/tmdb_key >/dev/null 2>&1; then key=${TMDB_KEY_FILE:-$HOME/.lumen-keys/tmdb.txt}; fi
+  # an app with a recipe (Lumen Home: apps/LumenHome/app.layers, the shared icon set) is assembled first
+  src=$G/$(python3 -B "$G/tools/devices/assemble_app.py" --app-dir "$app")   # apps/app_dirs.tsv: a renamed folder
+  if [ -f "$src/app.layers" ]; then
+    src=$OUT/tree/$app
+    python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app "$app" --out "$src" --quiet \
+      || die "the $app recipe does not assemble"
+  fi
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE="$vc" VERSION_NAME="$vn" TMDB_KEY_FILE="$key" \
-    sh "$G/apps/build_apk.sh" "$G/apps/$app" "$OUT/$app.apk"
+    sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
 # Lumen OS 1.0.8 bridges under the Play 6's pre-1.0.8 names (apps/LumenBridge), Play 6 key: OUT_DIR/LumenBridge_<app>.apk
 KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" sh "$G/apps/LumenBridge/build_bridges.sh" "$OUT" play6

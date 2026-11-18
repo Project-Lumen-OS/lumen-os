@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">رمز الطراز</string>
+    <string name="lumen_about_dlp">وحدة تحكم DLP</string>
+    <string name="lumen_about_part_firmware">%1$s، البرنامج الثابت %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">برنامج XGIMI الثابت</string>
+    <string name="lumen_about_firmware_dated">%1$s بتاريخ %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s، تحديث الأمان %2$s</string>
+    <string name="lumen_about_kernel">النواة</string>
+    <string name="lumen_about_boot_loader">برنامج بدء التشغيل</string>
+    <string name="lumen_about_gmui">واجهة XGIMI</string>
+    <string name="lumen_about_platform">منصة MediaTek</string>
+    <string name="lumen_about_remote">جهاز التحكم عن بُعد</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">العودة إلى نظام XGIMI</string>
+    <string name="lumen_about_back_summary_file">ملف ذاكرة USB: %1$s</string>
+    <string name="lumen_about_back_summary">باستخدام ذاكرة USB للاستعادة من XGIMI</string>
+    <string name="lumen_about_intro">تعيد ذاكرة USB للاستعادة من XGIMI الخاصة بهذا الطراز نظام XGIMI. يشرح الدليل في صفحة المشروع الطريقة.</string>
+    <string name="lumen_about_usb_file">اسم الملف على ذاكرة USB</string>
+    <string name="lumen_about_official">ملف XGIMI الرسمي</string>
+    <string name="lumen_about_official_value">%1$s، %2$s بايت</string>
+    <string name="lumen_about_searching">جارٍ البحث عن الملف الرسمي لهذا البرنامج الثابت</string>
+    <string name="lumen_about_guide_files">يسرد الدليل في صفحة المشروع ملفات XGIMI الرسمية.</string>
+    <string name="lumen_about_erases">تمسح الذاكرة كل شيء على جهاز العرض: التطبيقات والحسابات والإعدادات والملفات.</string>
+    <string name="lumen_about_scan">امسح الرمز بالهاتف لفتحه</string>
+    <string name="lumen_about_close">إغلاق</string>
+</resources>

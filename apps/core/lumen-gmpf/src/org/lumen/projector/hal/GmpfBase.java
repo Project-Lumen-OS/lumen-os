@@ -16,6 +16,7 @@ import org.lumen.hal.gmpf.GmpfGate;
 import org.lumen.hal.gmpf.GmpfOp;
 import org.lumen.hal.gmpf.GmpfRules;
 import org.lumen.hal.gmpf.GmpfWire;
+import org.lumen.hal.gmpf.TvEventSink;
 import org.lumen.hal.gmpf.ZoomGuard;
 import org.lumen.hal.gmpf.utils.ReadBudget;
 
@@ -45,6 +46,8 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
 
     /** Picture calls address window 0, as stock XgimiVideo. */
     static final int WINDOW_MAIN = 0;
+    /** EN_XGIMI_PICTURE_MODE AI scenes: tv 10 .. football 17 (stock XRMService defaultvideoinfo). */
+    static final int AI_SCENE_FIRST = 10, AI_SCENE_LAST = 17;
     private static final int PERCENT_MAX = 100;
     private static final int FOCUS_STATUS_REMOTE_AF = 44;      // stock FocusUIV2.autoFocus (remote key)
     private static final int FOCUS_STATUS_UI_READY = 17;       // stock FocusUIV2.start: the power-on AF flow
@@ -59,6 +62,8 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
     /** getCurrentKeystoneMode value after which stock setIChipReset sends switchKeystoneMode(0, 0). */
     private static final int KEYSTONE_MODE_LEAVE_ON_RESET = 6;
     private static final int LAMP_MIN = 1, LAMP_MAX = 10;
+    /** getHdmiHwConfig fields; temperature sensor indexes 1..12 (0 is the system slot of 438). */
+    private static final int HDMI_HW_FIELDS = 4, SENSOR_MAX = 12;
     private static final int UCD_MAX = 3, SOURCE_MAX = 3, PICTURE_MODE_MAX = 40;
     private static final int HEARTBEAT_MIN_MS = 500, HEARTBEAT_MAX_MS = 10_000;
     private static final int DIGITAL_ZOOM_LIMIT = 200;
@@ -117,6 +122,19 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
             sFoldLogged = true;
             Log.i(TAG, "setFocusListener: folded into the focus callback registration, nothing sent");
         }
+    }
+
+    // ------------------------------------------------------------------ TV event listener
+    /** True where this HAL can send the GmTvManager events (event 5, picturemode:N, of the AI picture quality). */
+    public boolean hasTvListener() { return has(SET_GM_TV_CALLBACK) || has(SET_GM_TV_LISTENER); }
+
+    /**
+     * The stock GmTvManagerWrapper registration of the TV event callback: setGmTvCallback(callback) on the AIDL HALs,
+     * setGmTvListener(pid, callback) on the HIDL ones (libgmpftvmanager_hidl HIDLconnect passes getpid()). The events
+     * go to sink on a binder thread (the transport's one callback object, so a second call only moves the sink).
+     */
+    public void setTvListener(TvEventSink sink) throws RemoteException {
+        wire.tvCallback(key(has(SET_GM_TV_CALLBACK) ? SET_GM_TV_CALLBACK : SET_GM_TV_LISTENER), sink);
     }
 
     // ------------------------------------------------------------------ boot handshake
@@ -306,10 +324,17 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
         if (m == PictureMode.OFFICE) gate(GmpfGate.OFFICE_MODE, "setPictureMode(OFFICE)");
         return wire.i32I32RetBool(key(SET_PICTURE_MODE), WINDOW_MAIN, m.wire);
     }
-    /** setPictureMode(0, 10..17): AI scene refinement, only while the current mode is AI. */
-    public boolean setAiScene(AiScene s) throws RemoteException {
-        return wire.i32I32RetBool(key(SET_PICTURE_MODE), WINDOW_MAIN, s.wire);
+    /**
+     * setPictureMode(0, scene) of the AI picture quality (org.lumen.aipq.AiPq): an AI scene 10..17 only, the one
+     * stock XRMService writes over the menu's AI 10 (the Youku bluray modes 19 / 20 of stock AIPQ are refused: no
+     * Youku app on Lumen).
+     */
+    public boolean setAiScene(int scene) throws RemoteException {
+        return wire.i32I32RetBool(key(SET_PICTURE_MODE), WINDOW_MAIN,
+                checkRange("ai scene", scene, AI_SCENE_FIRST, AI_SCENE_LAST));
     }
+    /** isVideoPlaying() where this HAL has it, else false (the AI video types then fall back to the default scene). */
+    public boolean isVideoPlayingOrFalse() throws RemoteException { return has(IS_VIDEO_PLAYING) && isVideoPlaying(); }
 
     public int getPq(PqItem item) throws RemoteException {
         switch (item) {
@@ -389,7 +414,24 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
 
     public int getHdrType() throws RemoteException { return wire.retI32(key(GET_HDR_TYPE)); }
 
+    // ------------------------------------------------------------------ signal panel reads (lumen-signal)
+    /** HB TV 75 getDolbyVisionPicMode(): 0 bright, 1 dark (stock image_mode_picture_dolby_bright / _soft). */
+    public int getDolbyVisionPicMode() throws RemoteException { return wire.retI32(key(GET_DOLBY_VISION_PIC_MODE)); }
+
+    /** HB TV 153 getHdmiHwConfig(port 1 | 2) -> {hwPortId, cecEnable, arcEnable, physicalAddr}. */
+    public int[] getHdmiHwConfig(int hdmi) throws RemoteException {
+        return wire.i32RetObject(key(GET_HDMI_HW_CONFIG), checkRange("hdmi port", hdmi, 1, 2), HDMI_HW_FIELDS);
+    }
+
+    /** Z9X 439 getTemperatureFromSensor(index 1..12) -> degrees C, 0 = no such sensor (LumenSensors reads the same). */
+    public float getSensorTemperature(int index) throws RemoteException {
+        return wire.u8RetF32(key(GET_TEMPERATURE_FROM_SENSOR), checkRange("sensor", index, 1, SENSOR_MAX));
+    }
+
     public int getCurrentInputSource() throws RemoteException { return wire.retI32(key(GET_CURRENT_INPUT_SOURCE)); }
+
+    /** getSignalStatus(): the lock of the HDMI input on screen, 3 = a stable picture (lumen-hdmi HdmiLink.STABLE). Read-only. */
+    public int getSignalStatus() throws RemoteException { return wire.retI32(key(GET_SIGNAL_STATUS)); }
 
     /**
      * Connects HDMI 1 / 2 to the main video window, or gives it back to Android (SOURCE_MEDIA), as the stock HDMI player.
@@ -410,6 +452,8 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
     /** setHdmiRange(r): saved by the vendor per input. Caller checks HDMI is on screen. */
     public boolean setHdmiRange(HdmiRange r) throws RemoteException { return wire.u8RetBool(key(SET_HDMI_RANGE), r.wire); }
 
+    /** The EDID versions {@link #setEdidVersion} may send on this projector (a copy). */
+    public int[] edidVersions() { return rules().edidVersions().clone(); }
     public int getEdidVersion() throws RemoteException { return wire.retI32(key(GET_EDID_VERSION)); }
     /** setEdidVersion(v), this projector's stock values only: the source sees a new EDID and reconnects. */
     public boolean setEdidVersion(int v) throws RemoteException {

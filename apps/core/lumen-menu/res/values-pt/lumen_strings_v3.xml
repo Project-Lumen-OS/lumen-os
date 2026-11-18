@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">Cancelar</string>
     <string name="lumen_m_panel_boost_press_again">Pressione → de novo para Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Pressione ← de novo para sair do Boost</string>
+    <string name="lumen_m_lamp_off_press_again">A imagem vai desligar. Para ligá-la de novo, pressione o botão liga/desliga. Pressione ← de novo para desligar.</string>
     <string name="lumen_m_toast_setup_running">Conclua a configuração primeiro</string>
     <string name="lumen_m_panel_tileval_pm_ai">Imagem IA</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Cores precisas</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Coluna ambiente</string>
     <string name="lumen_m_ct_custom">Personalizada</string>
     <string name="lumen_m_lamp_off">Desligar a imagem</string>
+    <string name="lumen_m_iris">Abertura</string>
+    <string name="lumen_m_iris_dynamic">Dinâmico</string>
+    <string name="lumen_m_iris_lamp_dynamic">Com a abertura dinâmica não é possível alterar o brilho.</string>
+    <string name="lumen_m_iris_lamp_held">Com esta definição de abertura não é possível alterar o brilho.</string>
 </resources>

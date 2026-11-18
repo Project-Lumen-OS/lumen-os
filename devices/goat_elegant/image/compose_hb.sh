@@ -40,7 +40,7 @@
 #        Lumen image of the tN builds WITHOUT the two XGIMI-derived files (MediaTek's libstagefright_foundation.so in
 #        /system/lib/hb_vndk33 with hb_media.rc, and hb_audio_policy_configuration.xml) and without their gate props
 #        ro.lumen.hb.c2foundation / ro.lumen.hb.audiopolicy (the hb_audio.rc audio policy action stays inert). Instead
-#        the unchanged Z9X blobs reader (tools/ota/image/z9x_blobs.rc + .sh, pinned by sha256 below) and the HB
+#        the one blobs reader (tools/ota/image/z9x_blobs.rc + .sh, pinned by sha256 below, with the HB blobs.conf) and the HB
 #        allow-list blobs_allow.txt: at post-fs-data it binds the user's own copies of those two files from the
 #        z9x_blobs<slot> partition the installer makes (sys.z9x.blobs). The c2 and audio policy checks of the stock
 #        dump on this server still run (build-time proof of what the allow-list names), nothing of it is installed.
@@ -274,11 +274,12 @@ if [ $PUB = 1 ]; then
   # the public release: the two files above stay out of the image; the unchanged Z9X blobs reader binds the user's
   # own copies. Its two files must be the very bytes of tools/ota/image the Z9X gate recorded (as the gapps files
   # above); a change on the Z9X side has to be looked at for the HB before it gets here
-  for f in z9x_blobs.rc z9x_blobs.sh blobs_allow.txt; do
+  for f in z9x_blobs.rc z9x_blobs.sh blobs.conf blobs_allow.txt; do
     [ -s "$IN/$f" ] || die "missing $IN/$f (tools/image/compose.sh stages it)"
   done
-  for kv in z9x_blobs.rc:40333ab318e13009cf82283fe2a3361683687a70af17063d104587783751d6e1 \
-            z9x_blobs.sh:8ad31ef4fbcf91bb1ad14e9ac0610a80b0c36a822113af64885c80759a468832; do
+  for kv in z9x_blobs.rc:534788c66bd582ac1f8d9eccb6b5b617897aad45c5e88fd5da7264a9207a8d89 \
+            z9x_blobs.sh:a57e371b31c56c2a0aa0d25b6eb39f20a9ba155a893db6ffe1852b17a75c84d6 \
+            blobs.conf:59d423f0b46ce2f8379eec868626906c9ccdee78d8454a61c92c9b62000908a0; do
     [ "$(sha256sum "$IN/${kv%%:*}" | awk '{print $1}')" = "${kv#*:}" ] || die "blobs: $IN/${kv%%:*} is not the pinned Z9X file"
   done
   # the HB allow-list names exactly the two files the test builds carry: the pinned stock libstagefright_foundation.so
@@ -699,7 +700,7 @@ AIRPY
   inst 0644 "$IN/z9x-sysconfig-nogms.xml" "$S/etc/sysconfig/z9x.xml"
   #   Lumen Setup, the first-run flow: priv-app (its HOME priority 10 is not capped), privileged allow-list; it
   #   provisions the device at its end, makes Lumen Home HOME and disables itself
-  #   since 1.0.8-beta5 built from apps/Z9xSetup with the HB platform key (build_apps.sh), not the pinned copy
+  #   since 1.0.8-beta5 built from apps/LumenSetup with the HB platform key (build_apps.sh), not the pinned copy
   inst 0644 "$SG/apps/Z9xSetup.apk" "$S/priv-app/Z9xSetup/Z9xSetup.apk"
   inst 0644 "$IN/privapp-permissions-z9xsetup.xml" "$S/etc/permissions/privapp-permissions-z9xsetup.xml"
   #   HbProjector (apps/HbProjector, org.lumen.projector): the projector app, which
@@ -852,13 +853,14 @@ SETUPPY
     inst 0644 "$SF_STOCK" "$S/lib/hb_vndk33/libstagefright_foundation.so"
     inst 0644 "$IN/hb_media.rc" "$S/etc/init/hb_media.rc"
   else
-    #   the public release: the unchanged Z9X blobs reader and the HB allow-list (checked above). z9x_blobs.rc execs
+    #   the public release: the one blobs reader, the HB settings and allow-list (checked above). z9x_blobs.rc execs
     #   z9x_blobs.sh at post-fs-data (su domain, as z9x_gapps.rc), the same trigger the hb_media.rc and hb_audio.rc
     #   binds use, before 'on boot' starts the codec2 HAL and audioserver. Started as "/system/bin/sh FILE", so the
     #   fs_config 0644 under /system/etc does not matter. Both lines of the list have bind=, so no placeholder file
     #   goes into the image; the GSI v33 copy checked above and the vendor file are the bind targets.
     inst 0644 "$IN/z9x_blobs.rc" "$S/etc/init/z9x_blobs.rc"
     inst 0755 "$IN/z9x_blobs.sh" "$S/etc/z9x/z9x_blobs.sh"
+    inst 0644 "$IN/blobs.conf" "$S/etc/z9x/blobs.conf"
     inst 0644 "$IN/blobs_allow.txt" "$S/etc/z9x/blobs_allow.txt"
   fi
   #   Bluetooth (hb_bt.rc): the base's libbluetooth_jni.so with SBC fed at 44.1 kHz (hb_bt_sbc.py: the

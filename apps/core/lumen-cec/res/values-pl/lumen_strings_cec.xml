@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC jest niedostępne</string>
+    <string name="lumen_cec_master">Sterowanie HDMI-CEC</string>
+    <string name="lumen_cec_master_note">Gdy HDMI-CEC jest wyłączone, dźwięk przez HDMI ARC jest niedostępny.</string>
+    <string name="lumen_cec_wake">Włączaj urządzeniem HDMI</string>
+    <string name="lumen_cec_wake_note">Gdy ta opcja jest włączona, urządzenia HDMI wyłączają się razem z projektorem.</string>
+    <string name="lumen_cec_night">Ochrona nocna</string>
+    <string name="lumen_cec_night_off">Wył.</string>
+    <string name="lumen_cec_night_desc">W tych godzinach urządzenia HDMI nie mogą włączyć projektora.</string>
+    <string name="lumen_cec_paused">Wstrzymano po kilku włączeniach bez obrazu. Użycie pilota przywróci tę funkcję.</string>
+    <string name="lumen_cec_switch">Przełączaj na urządzenie, gdy się włącza</string>
+    <string name="lumen_cec_send_standby">Wyłączaj urządzenia HDMI razem z projektorem</string>
+    <string name="lumen_cec_follow_info">Gdy oglądane urządzenie się wyłączy, projektor też przejdzie w uśpienie.</string>
+    <string name="lumen_cec_soundbar">Soundbar lub amplituner AV (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Włączaj soundbar razem z projektorem</string>
+    <string name="lumen_cec_control">Steruj urządzeniami HDMI tym pilotem</string>
+    <string name="lumen_cec_internal_exit">Powiadamiaj urządzenie o wyjściu z HDMI</string>
+    <string name="lumen_cec_devices">Podłączone urządzenia</string>
+    <string name="lumen_cec_no_devices">Nie znaleziono urządzeń HDMI-CEC</string>
+    <string name="lumen_cec_state_on">włączone</string>
+    <string name="lumen_cec_state_standby">czuwanie</string>
+    <string name="lumen_cec_dev_unnamed">Urządzenie HDMI</string>
+    <string name="lumen_cec_dev_soundbar">Soundbar / amplituner AV</string>
+    <string name="lumen_cec_name_on_hdmi">Nazwa w HDMI: %1$s</string>
+</resources>

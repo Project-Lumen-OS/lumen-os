@@ -24,11 +24,6 @@
     <string name="val_off">Kapalı</string>
     <string name="val_unknown">Veri yok</string>
     <string name="val_not_ready">Projektör hazır değil</string>
-    <string name="key_slot3">iQIYI tuşu</string>
-    <string name="key_slot4">bilibili tuşu</string>
-    <string name="slot_default_fmt">%1$s (varsayılan)</string>
-    <string name="slot_default_item">Varsayılan: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: Uygulamalar</string>
     <string name="cancel">İptal</string>
     <string name="ok">Tamam</string>
     <string name="app_not_found">Bu tuş için uygulama bulunamadı</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Önce “Ekrana sığdır” seçeneğini açın</string>
     <string name="toast_not_ready">Projektör henüz hazır değil</string>
     <string name="toast_failed">İşlem yapılamadı</string>
-    <string name="toast_curtain_offer">Görüntü kaydı: Projektör → Yamuk düzeltme → “Şimdi ekrana sığdır”</string>
+    <string name="toast_curtain_offer">Görüntü kaydı: Projektör › Yamuk düzeltme › “Şimdi ekrana sığdır”</string>
     <string name="toast_setup_running">Önce kurulumu tamamlayın</string>
 </resources>

@@ -1,0 +1,204 @@
+{
+  "note": "The stock Keystone page of each model: children of projection_screen in the model's own newsettings tree (node ids, a sub page with its children), read from the stock dumps on 2026-11-14. stock_order.py derives the Keystone section order of every devices/*/menu.json from it.",
+  "dapeng": {
+    "source": "G0082 V6.15.62 release_838_newsettings.apk (sha256 505908cb95166a50...) raw/settings_tree_product_dapeng",
+    "projection_screen": [
+      "keystone_non_inductive_real_time",
+      "auto_keystone_ak3",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "setting_common_line", "projection_area_self_adapt", "curtain_projection_self_adapt"]},
+      "setting_common_line",
+      "manual_keystone",
+      "zoom_and_move",
+      "picture_screen_rotation",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "setting_common_line", "remote_focus_img_guide"]},
+      "wall_color_calibration",
+      "reset_keystone",
+      "setting_common_line",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "setting_common_line", "projection_settings.rearProject"]}
+    ]
+  },
+  "dapengse": {
+    "source": "G0130 V6.16.24 release_838_newsettings.apk (sha256 a43a023178669702...) raw/settings_tree_product_dapengse",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt", "curtain_projection_self_adapt"]},
+      "title_size_and_location",
+      "zoom_and_move",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dapenghm": {
+    "source": "G0148 V6.17.12 release_838_newsettings.apk (sha256 c7bdefe5a619d3f5...) raw/settings_tree_product_dapenghm",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt", "curtain_projection_self_adapt"]},
+      "title_size_and_location",
+      "zoom_and_move",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dapengfhm": {
+    "source": "G0148 V6.17.12 release_838_newsettings.apk (sha256 c7bdefe5a619d3f5...) raw/settings_tree_product_dapengfhm",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt", "curtain_projection_self_adapt"]},
+      "title_size_and_location",
+      "zoom_and_move",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dayao": {
+    "source": "G0058 V1.7.116 release_838_newsettings.apk (sha256 15a871680fef952e...) raw/settings_tree_product_dayao",
+    "projection_screen": [
+      "keystone_non_inductive_real_time",
+      "auto_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5"]},
+      "setting_common_line",
+      "manual_keystone",
+      "zoom_and_displacement",
+      "picture_screen_rotation",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "setting_common_line", "remote_focus_img_guide"]},
+      "reset_keystone",
+      "setting_common_line",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "setting_common_line", "projection_settings.rearProject"]}
+    ]
+  },
+  "dianapro": {
+    "source": "G0111 V1.2.64 release_838_newsettings.apk (sha256 a0e77bcc8f665905...) raw/settings_tree_product_dianapro",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dianamax": {
+    "source": "G0111 V1.2.64 release_838_newsettings.apk (sha256 a0e77bcc8f665905...) raw/settings_tree_product_dianamax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "athena35ultramax": {
+    "source": "G0155 V1.1.42 release_838_newsettings.apk (sha256 f3c91fb51e65c7c4...) raw/settings_tree_product_athena35ultramax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dianahypro": {
+    "source": "H0062 V1.2.99 release_838_newsettings.apk (sha256 7a46048ed513b4f7...) raw/settings_tree_product_dianahypro",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "color_uniformity_adjustment",
+      {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "dianahymax": {
+    "source": "H0062 V1.2.99 release_838_newsettings.apk (sha256 7a46048ed513b4f7...) raw/settings_tree_product_dianahymax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "color_uniformity_adjustment",
+      {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  }
+}

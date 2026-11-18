@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">Түс ауқымы</string>
     <string name="lumen_m_hdmi_range_full">Толық</string>
     <string name="lumen_m_hdmi_range_limited">Шектеулі</string>
+    <string name="lumen_m_hdmi_range_auto_full">Авто (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">Авто (Limited)</string>
     <string name="lumen_m_kst_more">Басқа</string>
+    <string name="lumen_m_kst_size_position">Өлшемі мен орны</string>
+    <string name="lumen_m_kst_smart">Ақылды</string>
     <string name="lumen_m_kst_restore">Бастапқы суретті қайтару</string>
     <string name="lumen_m_launcher_classic">Android TV (классикалық)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">Ойын режимі</string>
     <string name="lumen_m_panel_game_speed">Жауап жылдамдығы</string>
     <string name="lumen_m_panel_high">Жоғары</string>
-    <string name="lumen_m_panel_image_correction_settings">Түзету параметрлері</string>
     <string name="lumen_m_panel_lamp">Жарықтық</string>
     <string name="lumen_m_panel_lamp_hint">10 деңгейінде Boost қосу үшін → түймесін екі рет басыңыз.</string>
     <string name="lumen_m_panel_low">Төмен</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">Өшірулі</string>
     <string name="lumen_m_panel_on">Қосулы</string>
     <string name="lumen_m_panel_optical_zoom">Оптикалық зум</string>
-    <string name="lumen_m_panel_optical_zoom_summary">Анықтықты жоғалтпай сурет өлшемі. Автотрапеция және «Экранға сыйғызу» зумды қайта өзгертеді.</string>
     <string name="lumen_m_panel_picture_mode">Кескін режимі</string>
     <string name="lumen_m_panel_picture_reset">Кескінді қалпына келтіру</string>
     <string name="lumen_m_panel_pm_ai">AI кескіні</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">Көлденең бұрыш</string>
     <string name="lumen_m_angle_v">Тік бұрыш</string>
     <string name="lumen_m_dynamic_contrast">Динамикалық контраст</string>
-    <string name="lumen_m_dynamic_black">Қараны күшейту</string>
+    <string name="lumen_m_dynamic_black">Қара деңгейін динамикалық жақсарту</string>
     <string name="lumen_m_sleep_timer">Ұйқы таймері</string>
     <string name="lumen_m_remote">Пультті қосу</string>
     <string name="lumen_m_ct_standard">Стандартты</string>
     <string name="lumen_m_ct_movie">Кино</string>
+    <string name="lumen_m_signal">Сигнал</string>
+    <string name="lumen_m_signal_pin">Сигнал картасы әрқашан экранда</string>
+    <string name="lumen_m_signal_refresh">Сигнал картасын жаңарту</string>
+    <string name="lumen_m_signal_refresh_normal">Қалыпты</string>
+    <string name="lumen_m_signal_refresh_fast">Жылдам</string>
+    <string name="lumen_m_signal_refresh_note">Жылдам: кадр сирек дірілдеуі мүмкін</string>
+    <string name="lumen_m_hdr_developer">Әзірлеушілерге</string>
 </resources>

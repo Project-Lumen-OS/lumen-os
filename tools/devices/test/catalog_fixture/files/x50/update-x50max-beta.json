@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "device": "x50max",
+  "channel": "x50max-beta",
+  "published_utc": 1794445244,
+  "version": "1.0.10-beta3",
+  "version_code": 1001003,
+  "build_utc": 1794445080,
+  "build_id": "lumen-x50max-1.0.10-beta3-202611120058",
+  "requires": {
+    "vendor_incremental": [
+      "v1.2.64",
+      "v1.2.54"
+    ],
+    "min_version_code": 0,
+    "blobs_set": [
+      "x50-v1264-a"
+    ]
+  },
+  "model": "G0100",
+  "trial_only": true,
+  "image": {
+    "name": "lumen-os-x50max-1.0.10-beta3-nogms-system.img",
+    "size": 996073472,
+    "sha256": "71f1dc6b9b37623b437f81cf49b4ff8aba1d3b8c2612a56e1f06e63015362243",
+    "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50max-1.0.10-beta3/lumen-os-x50max-1.0.10-beta3-nogms-system.img"
+  },
+  "changelog": {
+    "en": "Lumen OS for the XGIMI X50 Ultra Max, beta 1.0.10-beta3. A new quick menu, a game menu and a licences screen. Trial only: the XGIMI system does not change, a restart brings it back. Needs XGIMI firmware V1.2.64 or V1.2.54. The laser light level and DLBE stay off on the Ultra Max for now.",
+    "ru": "Lumen OS для XGIMI X50 Ultra Max, бета 1.0.10-beta3. Новое быстрое меню, игровое меню и экран лицензий. Только пробный запуск: система XGIMI не меняется, перезагрузка возвращает её. Нужна прошивка XGIMI V1.2.64 или V1.2.54. Уровень яркости лазера и DLBE на Ultra Max пока выключены."
+  },
+  "packages": []
+}

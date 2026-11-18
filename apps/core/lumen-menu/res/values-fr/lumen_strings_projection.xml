@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Mémoire de l\'objectif</string>
+    <string name="lumen_m_focus_guide">Mise au point avec la télécommande</string>
+    <string name="lumen_qpd_tip_focus_guide">Appuyez sur la touche de mise au point sur le côté de la télécommande et le projecteur fait la mise au point seul. Maintenez la touche pour régler à la main.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Appuyez sur la touche de mise au point de la télécommande et le projecteur fait la mise au point seul. Maintenez la touche pour régler à la main.</string>
+</resources>

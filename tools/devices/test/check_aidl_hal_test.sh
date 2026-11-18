@@ -12,7 +12,7 @@
 # allowlist row; newAutoKst left REVIEW on 2026-10-29, 9.1), a wrong code (getBootAnimState 34), a second '.transact(' in GmpfClient.java, Parcel used in
 # KstPoint.java, a raw integer transact code, a reflection bypass (Class.forName + getMethod + invoke on ServiceManager
 # outside the transport), an integer code passed to a typed helper of the gmpf transport (AidlWire), a Call that no allowlist row names (DisplayManager
-# 10 isVideoPlaying), an allowlist row that is no Call, and a run without --allowed (fail-closed: usage, exit 2).
+# 9 getDlpLumensComponent_RGB_Level; 10 isVideoPlaying is an HB row since x50-parity-core), an allowlist row that is no Call, and a run without --allowed (fail-closed: usage, exit 2).
 # Dex level (rule 7): the clean copy is compiled in the scratch dir with a throwaway key
 # (apps/build_apk.sh) and must pass; a fake dexdump then adds one forbidden instruction to the real dump each time
 # (Method.invoke, a second IBinder.transact, a const-string "ServiceManager" outside the transport class) and
@@ -194,15 +194,15 @@ expect p2_subclass_own_overload 1
 reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*callI32(36, 1) passes no Call'
 
 copy
-edit $H/GmpfCall.java "$LAST" "$LAST_OPEN IS_VIDEO_PLAYING(GmpfIface.DISPLAY, 10, \"isVideoPlaying\");"
+edit $H/GmpfCall.java "$LAST" "$LAST_OPEN GET_DLP_LUMENS_COMPONENT_RGB_LEVEL(GmpfIface.DISPLAY, 9, \"getDlpLumensComponent_RGB_Level\");"
 expect p2_not_allowlisted 1
-reported p2_not_allowlisted 'rule 6: Call.IS_VIDEO_PLAYING: DisplayManager 10 isVideoPlaying is not a row'
+reported p2_not_allowlisted 'rule 6: Call.GET_DLP_LUMENS_COMPONENT_RGB_LEVEL: DisplayManager 9 getDlpLumensComponent_RGB_Level is not a row'
 if grep -q 'rule [1-5]:' "$W/out"; then FAIL=$((FAIL + 1)); echo "FAIL p2_not_allowlisted: refused by another rule too"; fi
 
 copy
-printf 'DisplayManager\t10\tisVideoPlaying\tnot a call\n' >> "$W/allowed.tsv"
+printf 'DisplayManager\t9\tgetDlpLumensComponent_RGB_Level\tnot a call\n' >> "$W/allowed.tsv"
 expect p2_stale_allowlist_row 1
-reported p2_stale_allowlist_row 'rule 6: .*DisplayManager 10 isVideoPlaying is no Call'
+reported p2_stale_allowlist_row 'rule 6: .*DisplayManager 9 getDlpLumensComponent_RGB_Level is no Call'
 
 copy
 run; result p2_no_allowed_option 2 $?
@@ -210,6 +210,8 @@ run; result p2_no_allowed_option 2 $?
 copy
 cp "$APP/AndroidManifest.xml" "$W/app/"
 cp -R "$APP/res" "$W/app/res"
+# the R classes of shared module code (lumen-icons: org.lumen.icons.R), as build_apk.sh reads them from the app root
+[ -f "$APP/R_EXTRA_PACKAGES" ] && cp "$APP/R_EXTRA_PACKAGES" "$W/app/"
 if build build2; then
   expect p2_dex_clean 0 --dex "$W/app.apk"
   reported p2_dex_clean "$WANT_OK"

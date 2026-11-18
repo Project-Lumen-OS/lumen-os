@@ -272,7 +272,8 @@ public final class P6WireTrace {
     private static void callbacks() throws Exception {
         String[][] regs = {{"focus", "g.connectFocusManager(Play6FocusCallback)", "Play6FocusCallback"},
                 {"power", "g.connectPowerManager(Play6PowerCallback)", "Play6PowerCallback"},
-                {"music", "g.connectMusicPlayer(Play6MusicPlayerCallback)", "Play6MusicPlayerCallback"}};
+                {"music", "g.connectMusicPlayer(Play6MusicPlayerCallback)", "Play6MusicPlayerCallback"},
+                {"tv", "g.setTvListener(TvEventSink)", "TvEventSink"}};
         for (String[] reg : regs) {
             Wire.lastBinder = null;
             step("callback " + reg[0], r(), reg[1], P6Api.values(reg[2])[0]);

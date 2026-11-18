@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
+<resources>
+    <string name="lumen_m_lens_memory">Lens belleği</string>
+    <string name="lumen_m_focus_guide">Kumandayla odaklama</string>
+    <string name="lumen_qpd_tip_focus_guide">Kumandanın yanındaki odak tuşuna basın, projektör kendisi odaklar. Elle odaklamak için tuşu basılı tutun.</string>
+    <string name="lumen_qpd_tip_focus_guide_front">Kumandadaki odak tuşuna basın, projektör kendisi odaklar. Elle odaklamak için tuşu basılı tutun.</string>
+</resources>

@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">색 범위</string>
     <string name="lumen_m_hdmi_range_full">전체</string>
     <string name="lumen_m_hdmi_range_limited">제한</string>
+    <string name="lumen_m_hdmi_range_auto_full">자동 (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">자동 (Limited)</string>
     <string name="lumen_m_kst_more">기타</string>
+    <string name="lumen_m_kst_size_position">크기와 위치</string>
+    <string name="lumen_m_kst_smart">스마트</string>
     <string name="lumen_m_kst_restore">원래 화면으로 되돌리기</string>
     <string name="lumen_m_launcher_classic">Android TV(클래식)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">게임 모드</string>
     <string name="lumen_m_panel_game_speed">응답 속도</string>
     <string name="lumen_m_panel_high">높음</string>
-    <string name="lumen_m_panel_image_correction_settings">화면 보정 설정</string>
     <string name="lumen_m_panel_lamp">밝기</string>
     <string name="lumen_m_panel_lamp_hint">10에서 →를 두 번 누르면 Boost가 켜집니다.</string>
     <string name="lumen_m_panel_low">낮음</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">꺼짐</string>
     <string name="lumen_m_panel_on">켜짐</string>
     <string name="lumen_m_panel_optical_zoom">광학 줌</string>
-    <string name="lumen_m_panel_optical_zoom_summary">선명도 손실 없이 화면 크기를 바꿉니다. 자동 키스톤과 ‘스크린에 맞추기’은(는) 줌을 다시 조정합니다.</string>
     <string name="lumen_m_panel_picture_mode">화질 모드</string>
     <string name="lumen_m_panel_picture_reset">화질 설정 초기화</string>
     <string name="lumen_m_panel_pm_ai">AI 화질</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">수평 각도</string>
     <string name="lumen_m_angle_v">수직 각도</string>
     <string name="lumen_m_dynamic_contrast">다이내믹 명암비</string>
-    <string name="lumen_m_dynamic_black">다이내믹 블랙 강화</string>
+    <string name="lumen_m_dynamic_black">다이내믹 블랙 레벨 향상</string>
     <string name="lumen_m_sleep_timer">취침 타이머</string>
     <string name="lumen_m_remote">리모컨 페어링</string>
     <string name="lumen_m_ct_standard">표준</string>
     <string name="lumen_m_ct_movie">영화</string>
+    <string name="lumen_m_signal">신호</string>
+    <string name="lumen_m_signal_pin">신호 카드 항상 표시</string>
+    <string name="lumen_m_signal_refresh">신호 카드 새로 고침</string>
+    <string name="lumen_m_signal_refresh_normal">보통</string>
+    <string name="lumen_m_signal_refresh_fast">빠름</string>
+    <string name="lumen_m_signal_refresh_note">빠름: 드물게 화면이 끊길 수 있습니다</string>
+    <string name="lumen_m_hdr_developer">개발자용</string>
 </resources>

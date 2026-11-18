@@ -24,26 +24,29 @@ public final class QpdLayoutTest {
         check(name, ok);
     }
 
+    private static String span(float[] s) { return s[0] + ".." + s[1]; }
+
     private static String at(List<List<String>> rows, int[] rc) {
         return rc == null ? "STAY" : (rc[2] == QpdLayout.OPEN ? "OPEN:" : "") + rows.get(rc[0]).get(rc[1]);
     }
 
-    /** The Z9X grid: header eye + gear, four rows of one wide and two small tiles, the slider. */
-    static List<List<String>> z9x(boolean usb) {
-        return z9xWith(usb ? "usb" : null);
+    /**
+     * The Z9X grid (MenuSpec.cardRows, 2026-11-13): header theme button + gear, four rows of one wide and two
+     * small tiles, the slider; {@code mirroring}: the receiver is installed and takes projection's place.
+     */
+    static List<List<String>> z9x(boolean mirroring) {
+        return grid(Arrays.asList("theme", "general"), mirroring ? "mirroring" : "projection_mode");
     }
 
-    /** The Z9X grid with {@code last} (QpdLayout.lastSmallTile) as the last small tile, none when null. */
-    static List<List<String>> z9xWith(String last) {
+    /** The grid with {@code header} buttons and {@code beforeEye} in the middle of the last row. */
+    static List<List<String>> grid(List<String> header, String beforeEye) {
         List<String> smalls = new java.util.ArrayList<>(
-                Arrays.asList("keystone", "zoom", "sound", "focus", "bluetooth", "network", "projection_mode"));
-        if (last != null) smalls.add(last);
-        return QpdLayout.rows(Arrays.asList("eye", "general"),
-                Arrays.asList("autocorrect", "picture", "input", "hdmi"), smalls, true);
+                Arrays.asList("keystone", "zoom", "sound", "focus", "bluetooth", "network", beforeEye, "eye"));
+        return QpdLayout.rows(header, Arrays.asList("autocorrect", "picture", "input", "hdmi"), smalls, true);
     }
 
     static final java.util.Set<String> POPUPS = new java.util.HashSet<>(Arrays.asList(
-            "eye", "general", "keystone", "picture", "sound", "focus", "hdmi", "projection_mode", "mirroring"));
+            "general", "keystone", "picture", "sound", "focus", "hdmi", "projection_mode", "mirroring"));
 
     private static String mv(List<List<String>> rows, String from, int dir) {
         for (int r = 0; r < rows.size(); r++) {
@@ -53,49 +56,72 @@ public final class QpdLayoutTest {
         return "NOT FOUND " + from;
     }
 
+    private static List<Integer> box(int[] m) {
+        return m == null ? null : Arrays.asList(m[0], m[1], m[2]);
+    }
+
     public static void main(String[] a) {
-        List<List<String>> g = z9x(true);
+        List<List<String>> g = z9x(false);
         // ---- rows: the requested order, no hole
         eq("rows count", 6, g.size());
-        eq("row0", Arrays.asList("eye", "general"), g.get(0));
+        eq("row0", Arrays.asList("theme", "general"), g.get(0));
         eq("row1", Arrays.asList("autocorrect", "keystone", "zoom"), g.get(1));
         eq("row2", Arrays.asList("picture", "sound", "focus"), g.get(2));
         eq("row3", Arrays.asList("input", "bluetooth", "network"), g.get(3));
-        eq("row4", Arrays.asList("hdmi", "projection_mode", "usb"), g.get(4));
+        eq("row4", Arrays.asList("hdmi", "projection_mode", "eye"), g.get(4));
         eq("row5", Arrays.asList("lamp"), g.get(5));
         check("slider row", QpdLayout.isSliderRow(g));
-        List<List<String>> nu = z9x(false);
-        eq("no usb: row4 shorter, no placeholder", Arrays.asList("hdmi", "projection_mode"), nu.get(4));
+        check("no USB tile anywhere", g.stream().noneMatch(r -> r.contains("usb")));
 
-        // ---- last small slot (2026-11-11): screen mirroring in place of USB
-        eq("mirroring installed: its tile", "mirroring", QpdLayout.lastSmallTile(true, true));
-        eq("mirroring installed, no Files: still its tile", "mirroring", QpdLayout.lastSmallTile(true, false));
-        eq("no mirroring: USB where Files exists", "usb", QpdLayout.lastSmallTile(false, true));
-        eq("neither: no tile", null, QpdLayout.lastSmallTile(false, false));
-        eq("tile keys", "mirroring", QpdLayout.TILE_MIRROR);
-        eq("tile keys usb", "usb", QpdLayout.TILE_USB);
-        List<List<String>> gm = z9xWith(QpdLayout.lastSmallTile(true, true));
-        eq("mirroring: row4", Arrays.asList("hdmi", "projection_mode", "mirroring"), gm.get(4));
-        check("mirroring: no USB tile anywhere", gm.stream().noneMatch(r -> r.contains("usb")));
-        eq("mirroring: right on the tile opens its popup", "OPEN:mirroring", mv(gm, "mirroring", QpdLayout.RIGHT));
-        eq("mirroring: left goes to projection", "projection_mode", mv(gm, "mirroring", QpdLayout.LEFT));
-        eq("mirroring: up goes to network", "network", mv(gm, "mirroring", QpdLayout.UP));
+        // ---- screen mirroring in projection's place, eye protection stays the last tile
+        List<List<String>> gm = z9x(true);
+        eq("mirroring: row4", Arrays.asList("hdmi", "mirroring", "eye"), gm.get(4));
+        eq("mirroring: right goes on to eye protection", "eye", mv(gm, "mirroring", QpdLayout.RIGHT));
+        eq("mirroring: left goes to the game tile", "hdmi", mv(gm, "mirroring", QpdLayout.LEFT));
+        eq("mirroring: up goes to bluetooth", "bluetooth", mv(gm, "mirroring", QpdLayout.UP));
         eq("mirroring: down to the slider", "lamp", mv(gm, "mirroring", QpdLayout.DOWN));
-        eq("mirroring: down from network lands on it", "mirroring", mv(gm, "network", QpdLayout.DOWN));
         eq("settled: the read back wins", Boolean.TRUE, QpdLayout.settled(Boolean.TRUE, Boolean.FALSE));
         eq("settled: a read back off wins", Boolean.FALSE, QpdLayout.settled(Boolean.FALSE, Boolean.TRUE));
         eq("settled: no answer keeps the old value", Boolean.FALSE, QpdLayout.settled(null, Boolean.FALSE));
         eq("settled: no answer, nothing known", null, QpdLayout.settled(null, null));
 
+        // ---- eye protection tile: OK switches, the mode used last comes back, RIGHT / held OK only with modes
+        List<String> sw = Arrays.asList("off", "on"), modes = Arrays.asList("off", "follow", "rest");
+        eq("switch on -> off", "off", QpdLayout.eyeToggle("on", sw, null));
+        eq("switch off -> on", "on", QpdLayout.eyeToggle("off", sw, null));
+        eq("switch off -> on, a stale mode ignored", "on", QpdLayout.eyeToggle("off", sw, "rest"));
+        eq("modes: follow -> off", "off", QpdLayout.eyeToggle("follow", modes, null));
+        eq("modes: rest -> off", "off", QpdLayout.eyeToggle("rest", modes, "follow"));
+        eq("modes: off -> the mode used last", "rest", QpdLayout.eyeToggle("off", modes, "rest"));
+        eq("modes: off, nothing used yet -> the first mode", "follow", QpdLayout.eyeToggle("off", modes, null));
+        eq("modes: off, last mode off -> the first mode", "follow", QpdLayout.eyeToggle("off", modes, "off"));
+        eq("unknown value: nothing sent", null, QpdLayout.eyeToggle(null, sw, null));
+        eq("a value outside the options: nothing sent", null, QpdLayout.eyeToggle("2", sw, null));
+        eq("no options: nothing sent", null, QpdLayout.eyeToggle("on", java.util.Collections.emptyList(), null));
+        check("switch: no popup", !QpdLayout.eyeHasPopup(sw));
+        check("modes: popup", QpdLayout.eyeHasPopup(modes));
+        java.util.Set<String> withEye = new java.util.HashSet<>(POPUPS);
+        withEye.add("eye");
+        eq("eye: right without modes stays", "STAY", mv(g, "eye", QpdLayout.RIGHT));
+        int[] eyeCell = {4, 2};
+        eq("eye: right with modes opens its popup", "OPEN:eye",
+                at(g, QpdLayout.move(g, eyeCell[0], eyeCell[1], QpdLayout.RIGHT, withEye::contains)));
+
+        // ---- header with the gear only (no recogniser on the image): every column goes up to it
+        List<List<String>> ng = grid(Arrays.asList("general"), "projection_mode");
+        eq("no theme: up from the wide tile -> gear", "general", mv(ng, "autocorrect", QpdLayout.UP));
+        eq("no theme: up from a small tile -> gear", "general", mv(ng, "zoom", QpdLayout.UP));
+        eq("no theme: down from the gear -> col 0", "autocorrect", mv(ng, "general", QpdLayout.DOWN));
+
         // ---- focus map (prototype keydown handler)
-        eq("down from eye -> wide", "autocorrect", mv(g, "eye", QpdLayout.DOWN));
+        eq("down from theme -> wide", "autocorrect", mv(g, "theme", QpdLayout.DOWN));
         eq("down from gear -> col 1", "keystone", mv(g, "general", QpdLayout.DOWN));
-        eq("up from wide -> eye", "eye", mv(g, "autocorrect", QpdLayout.UP));
+        eq("up from wide -> theme", "theme", mv(g, "autocorrect", QpdLayout.UP));
         eq("up from small col1 -> gear", "general", mv(g, "keystone", QpdLayout.UP));
         eq("up from small col2 -> gear", "general", mv(g, "zoom", QpdLayout.UP));
-        eq("up from header stays", "STAY", mv(g, "eye", QpdLayout.UP));
+        eq("up from header stays", "STAY", mv(g, "theme", QpdLayout.UP));
         eq("down in column", "focus", mv(g, "zoom", QpdLayout.DOWN));
-        eq("down to slider", "lamp", mv(g, "usb", QpdLayout.DOWN));
+        eq("down to slider", "lamp", mv(g, "eye", QpdLayout.DOWN));
         eq("down from wide to slider", "lamp", mv(g, "hdmi", QpdLayout.DOWN));
         eq("up from slider -> wide of the last row", "hdmi", mv(g, "lamp", QpdLayout.UP));
         eq("down from slider stays", "STAY", mv(g, "lamp", QpdLayout.DOWN));
@@ -111,10 +137,11 @@ public final class QpdLayoutTest {
         eq("right on last cell with popup opens it", "OPEN:focus", mv(g, "focus", QpdLayout.RIGHT));
         eq("right on last cell without popup stays", "STAY", mv(g, "zoom", QpdLayout.RIGHT));
         eq("right on gear opens all settings", "OPEN:general", mv(g, "general", QpdLayout.RIGHT));
-        eq("right on eye -> gear", "general", mv(g, "eye", QpdLayout.RIGHT));
-        eq("no usb: down from network to the shorter row keeps the column in range", "projection_mode",
-                mv(nu, "network", QpdLayout.DOWN));
-        eq("no usb: right on projection opens", "OPEN:projection_mode", mv(nu, "projection_mode", QpdLayout.RIGHT));
+        eq("right on theme -> gear", "general", mv(g, "theme", QpdLayout.RIGHT));
+        List<List<String>> nu = QpdLayout.rows(Arrays.asList("general"), Arrays.asList("autocorrect", "hdmi"),
+                Arrays.asList("keystone", "zoom", "projection_mode"), true);
+        eq("short last row: down from zoom keeps the column in range", "projection_mode", mv(nu, "zoom", QpdLayout.DOWN));
+        eq("short last row: right on projection opens", "OPEN:projection_mode", mv(nu, "projection_mode", QpdLayout.RIGHT));
         check("bad row stays", QpdLayout.move(g, 9, 0, QpdLayout.UP, null) == null);
         check("bad col stays", QpdLayout.move(g, 1, 7, QpdLayout.UP, null) == null);
         // every cell can reach the slider and back to the header with UP / DOWN only
@@ -142,6 +169,28 @@ public final class QpdLayoutTest {
         check("half way", Math.abs(QpdLayout.marqueePhase(600 + 1000, 2000) - 0.5f) < 0.01f);
         check("comes back (alternate)", Math.abs(QpdLayout.marqueePhase(600 + 3000, 2000) - 0.5f) < 0.01f);
         eq("back at the start", 0f, QpdLayout.marqueePhase(600 + 3950, 2000));
+
+        // ---- small tile label: 15 px, smaller down to 11 px where that fits, else full size and it runs (no ellipsis)
+        eq("label that fits: full size", 1f, QpdLayout.labelScale(100f, 108f));
+        check("label that fits does not run", !QpdLayout.labelRuns(108f, 108f));
+        eq("a little too long: smaller to fit", 108f / 120f, QpdLayout.labelScale(120f, 108f));
+        check("a little too long: does not run", !QpdLayout.labelRuns(120f, 108f));
+        float edge = 108f * QpdLayout.LABEL / QpdLayout.LABEL_MIN;      // fits exactly at 11 px
+        check("fits at 11 px: shrunk to 11, not running", Math.abs(QpdLayout.labelScale(edge, 108f) * QpdLayout.LABEL - 11f) < 0.01f
+                && !QpdLayout.labelRuns(edge, 108f));
+        eq("too long even at 11 px: full size", 1f, QpdLayout.labelScale(edge + 1f, 108f));
+        check("too long even at 11 px: it runs", QpdLayout.labelRuns(edge + 1f, 108f));
+        check("never below 11 px", QpdLayout.labelScale(edge * 0.999f, 108f) * QpdLayout.LABEL >= QpdLayout.LABEL_MIN - 0.001f);
+        eq("prototype size 15, smallest 11", "15/11", QpdLayout.LABEL + "/" + QpdLayout.LABEL_MIN);
+        // English "3D to 2D (Top and Bottom)" (about 196 px at 15 px in a 108 px label box) runs instead of an ellipsis
+        check("the long English 3D mode runs, at full size", QpdLayout.labelRuns(196f, 108f) && QpdLayout.labelScale(196f, 108f) == 1f);
+        check("a running label really overflows its box (the marquee moves it)", QpdLayout.marqueeShift(196f, 108f) < 0f);
+
+        // ---- popup focus: radio lists land on the checked row, also when it is read after the open
+        eq("untouched popup: the checked row", 3, QpdLayout.popupFocus(true, 3, 0));
+        eq("untouched popup, nothing checked yet: where it is", 0, QpdLayout.popupFocus(true, -1, 0));
+        eq("after a key: where the user put it", 0, QpdLayout.popupFocus(false, 3, 0));
+        eq("after a key, focus unknown: where it is", -1, QpdLayout.popupFocus(false, 3, -1));
 
         // ---- popup placement (design px, screen 1080, margin 40)
         eq("beside the tile, 20 px above", 280, QpdLayout.popupTop(300, 400));
@@ -184,6 +233,16 @@ public final class QpdLayoutTest {
         eq("rail bottom stays", -1, QpdLayout.railMove(6, 7, QpdLayout.DOWN));
         eq("rail empty", -1, QpdLayout.railMove(0, 0, QpdLayout.DOWN));
         eq("rail left is not a move", -1, QpdLayout.railMove(2, 7, QpdLayout.LEFT));
+        // ---- All settings list: greyed rows never take focus, the list shows its end at the last usable row
+        boolean[] hb = {false, true, true, true, false, false, false, false};   // note, 3 rows, header, 3 greyed rows
+        eq("list down to the next usable row", 2, QpdLayout.listTarget(hb, 1, true));
+        eq("list down at the last usable row stays", 3, QpdLayout.listTarget(hb, 3, true));
+        eq("list up at the first usable row stays", 1, QpdLayout.listTarget(hb, 1, false));
+        eq("list skips greyed rows", 4, QpdLayout.listTarget(new boolean[]{true, false, false, false, true}, 0, true));
+        check("the last usable row shows the end below it", QpdLayout.listEnd(hb, 3, true));
+        check("a middle row does not jump to the end", !QpdLayout.listEnd(hb, 2, true));
+        check("the first usable row shows the top above it", QpdLayout.listEnd(hb, 1, false));
+        check("a middle row does not jump to the top", !QpdLayout.listEnd(hb, 2, false));
         // ---- prototype sizes (proto_d3.py .po / .tg / .dot / #pop)
         eq("row 72 / 24 px / radius 22 / padding 18", "72/24/22/18",
                 QpdLayout.ROW_MIN_H + "/" + QpdLayout.ROW_TITLE + "/" + QpdLayout.ROW_RADIUS + "/" + QpdLayout.ROW_PAD);
@@ -202,6 +261,18 @@ public final class QpdLayoutTest {
         eq("above the range stays full", 1f, QpdLayout.fill(12, 1, 10));
         eq("an empty range draws nothing", 0f, QpdLayout.fill(5, 5, 5));
         eq("level 0 of 0..5 = left edge", 0f, QpdLayout.fill(0, 0, 5));
+        // x50-picture-stock: a two-way slider (dynamic black level tuning -40..40, stock TwoTowardProgressComponent)
+        // fills from 0 towards the knob, a one-way slider from the left edge
+        eq("one-way: from the left edge", "0.0..0.33333334", span(QpdLayout.fillSpan(4, 1, 10)));
+        eq("one-way 0..5: from the left edge", "0.0..0.4", span(QpdLayout.fillSpan(2, 0, 5)));
+        eq("two-way 0: nothing filled", "0.5..0.5", span(QpdLayout.fillSpan(0, -40, 40)));
+        eq("two-way -20: from the knob to 0", "0.25..0.5", span(QpdLayout.fillSpan(-20, -40, 40)));
+        eq("two-way +20: from 0 to the knob", "0.5..0.75", span(QpdLayout.fillSpan(20, -40, 40)));
+        eq("two-way -40: from the left edge to 0", "0.0..0.5", span(QpdLayout.fillSpan(-40, -40, 40)));
+        eq("two-way +40: from 0 to the right edge", "0.5..1.0", span(QpdLayout.fillSpan(40, -40, 40)));
+        eq("two-way out of range clamps", "0.5..1.0", span(QpdLayout.fillSpan(99, -40, 40)));
+        eq("all below 0 is one-way", "0.0..0.5", span(QpdLayout.fillSpan(-5, -10, 0)));
+        eq("two-way unknown: nothing filled", "0.0..0.0", span(QpdLayout.fillSpan(null, -40, 40)));
         eq("label level", "7", QpdLayout.label(7, 1, 10, 11, "Boost"));
         eq("label 10", "10", QpdLayout.label(10, 1, 10, 11, "Boost"));
         eq("label below the range", "1", QpdLayout.label(0, 1, 10, 11, "Boost"));
@@ -229,6 +300,28 @@ public final class QpdLayoutTest {
         check("no notice while it stays on", !QpdLayout.boostNoticeDue(true, true));
         check("no notice when it turns off", !QpdLayout.boostNoticeDue(true, false));
         check("no notice on a failed read", !QpdLayout.boostNoticeDue(false, null));
+
+        // ---- x50-iris-quick: the iris slider tile right under the brightness slider, each slider its own row
+        List<String> sl = Arrays.asList("lamp", "picture.iris");
+        java.util.function.Predicate<String> isSlider = sl::contains;
+        List<List<String>> gi = QpdLayout.rows(Arrays.asList("theme", "general"), Arrays.asList("autocorrect", "picture"),
+                Arrays.asList("keystone", "zoom", "sound", "focus"), sl);
+        eq("iris: the brightness row", Arrays.asList("lamp"), gi.get(gi.size() - 2));
+        eq("iris: the iris row under it", Arrays.asList("picture.iris"), gi.get(gi.size() - 1));
+        int li = gi.size() - 2, ii = gi.size() - 1;
+        eq("iris: DOWN from the brightness slider", Arrays.asList(ii, 0, 0), box(QpdLayout.move(gi, li, 0, QpdLayout.DOWN, POPUPS::contains, isSlider)));
+        eq("iris: UP back to the brightness slider", Arrays.asList(li, 0, 0), box(QpdLayout.move(gi, ii, 0, QpdLayout.UP, POPUPS::contains, isSlider)));
+        check("iris: LEFT steps the slider itself", QpdLayout.move(gi, ii, 0, QpdLayout.LEFT, POPUPS::contains, isSlider) == null);
+        check("iris: RIGHT steps the slider itself, no popup", QpdLayout.move(gi, ii, 0, QpdLayout.RIGHT, k -> true, isSlider) == null);
+        check("iris: brightness LEFT / RIGHT still its own", QpdLayout.move(gi, li, 0, QpdLayout.RIGHT, k -> true, isSlider) == null
+                && QpdLayout.move(gi, li, 0, QpdLayout.LEFT, k -> true, isSlider) == null);
+        check("iris: DOWN at the iris stays (the last row)", QpdLayout.move(gi, ii, 0, QpdLayout.DOWN, POPUPS::contains, isSlider) == null);
+        eq("iris: DOWN from a tile row lands on the brightness slider", Arrays.asList(li, 0, 0),
+                box(QpdLayout.move(gi, li - 1, 1, QpdLayout.DOWN, POPUPS::contains, isSlider)));
+        eq("one slider list = the old boolean grid", QpdLayout.rows(Arrays.asList("general"), Arrays.asList("a"), Arrays.asList("b"), true),
+                QpdLayout.rows(Arrays.asList("general"), Arrays.asList("a"), Arrays.asList("b"), Arrays.asList("lamp")));
+        eq("label box: the prototype's 64 for a level", 64f, QpdLayout.labelBox(40f, 1f));
+        eq("label box: wider for a long option name", 150f, QpdLayout.labelBox(300f, 2f));
 
         System.out.println("QpdLayoutTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Modalità Gioco attiva</string>
+    <string name="lumen_m_ps_ai">Le impostazioni professionali non possono essere utilizzate in modalità immagine di qualità AI</string>
+    <string name="lumen_m_ps_performance">Le impostazioni professionali non sono supportate in modalità Performance immagine</string>
+    <string name="lumen_m_ps_ai_basic">Le impostazioni standard non possono essere utilizzate in modalità immagine di qualità AI</string>
+    <string name="lumen_m_ps_performance_basic">Le impostazioni standard non sono supportate in modalità Performance immagine</string>
+</resources>

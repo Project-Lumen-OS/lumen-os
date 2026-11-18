@@ -24,11 +24,6 @@
     <string name="val_off">Désactivé</string>
     <string name="val_unknown">Aucune donnée</string>
     <string name="val_not_ready">Projecteur pas prêt</string>
-    <string name="key_slot3">Touche iQIYI</string>
-    <string name="key_slot4">Touche bilibili</string>
-    <string name="slot_default_fmt">%1$s (par défaut)</string>
-    <string name="slot_default_item">Par défaut : %1$s</string>
-    <string name="slot_home_apps">Lumen Home : Applis</string>
     <string name="cancel">Annuler</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Aucune application trouvée pour cette touche</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Activez d\'abord « Ajuster à l\'écran »</string>
     <string name="toast_not_ready">Le projecteur n\'est pas encore prêt</string>
     <string name="toast_failed">Impossible d\'effectuer l\'action</string>
-    <string name="toast_curtain_offer">L\'image a bougé : Projecteur → Trapèze → « Ajuster à l\'écran maintenant »</string>
+    <string name="toast_curtain_offer">L\'image a bougé : Projecteur › Trapèze › « Ajuster à l\'écran maintenant »</string>
     <string name="toast_setup_running">Terminez d\'abord la configuration</string>
 </resources>

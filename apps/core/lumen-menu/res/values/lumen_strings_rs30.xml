@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels (the row title is the Z9X app's pro_color_space with its translations) of the RS30 Ultra Max's own stock rows (colour gamut, rainbow reduction, screen shift) and its
+     game menu rule (VRR only with Turbo, the top speed) -->
+<resources>
+    <string name="lumen_m_gamut">Color space</string>
+    <string name="lumen_m_gamut_native">Native</string>
+    <string name="lumen_m_gamut_bt2020">BT.2020</string>
+    <string name="lumen_m_gamut_p3">DCI-P3</string>
+    <string name="lumen_m_gamut_bt709">BT.709</string>
+    <string name="lumen_m_gamut_adobe">Adobe RGB</string>
+    <string name="lumen_m_anti_rbe">Rainbow reduction</string>
+    <string name="lumen_m_zoom_move">Screen shift</string>
+    <string name="lumen_gm_rule_vrr_speed">First turn Turbo on</string>
+    <string name="lumen_m_move_hint">The arrows shift the picture. Past the edge the projector turns.</string>
+</resources>

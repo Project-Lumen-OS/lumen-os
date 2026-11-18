@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family stock picture rows (gamma, noise reduction, local contrast, colour
+     optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
+     the Z9X app's pro_* and panel_reset texts with their translations, the level words (noise reduction, local
+     contrast, senior colour) the HB app's pro_weak_hb / pro_medium_hb / pro_strong_hb -->
+<resources>
+    <string name="lumen_m_gamma">Gamma</string>
+    <string name="lumen_m_gamma_manual">Manual</string>
+    <string name="lumen_m_gamma_index">Gamma value</string>
+    <string name="lumen_m_noise">Noise reduction</string>
+    <string name="lumen_m_local_contrast">Local contrast</string>
+    <string name="lumen_m_color_opt">Color optimization</string>
+    <string name="lumen_m_hdr_mapping">HDR dynamic tone mapping</string>
+    <string name="lumen_m_ct_balanced">Balanced</string>
+    <string name="lumen_m_elder_color">Colors for older eyes</string>
+    <string name="lumen_m_gamma_refused">Gamma value works only with the manual gamma</string>
+    <string name="lumen_m_hdr10_only">Works only with HDR10 content</string>
+    <string name="lumen_m_gamma_bt1886" translatable="false">BT.1886</string>
+    <string name="lumen_m_gamma_st2084" translatable="false">ST 2084</string>
+    <string name="lumen_m_gamma_hlg" translatable="false">HLG</string>
+    <string name="lumen_m_gamma_1_8" translatable="false">1.8</string>
+    <string name="lumen_m_gamma_1_9" translatable="false">1.9</string>
+    <string name="lumen_m_gamma_2_0" translatable="false">2.0</string>
+    <string name="lumen_m_gamma_2_1" translatable="false">2.1</string>
+    <string name="lumen_m_gamma_2_2" translatable="false">2.2</string>
+    <string name="lumen_m_gamma_2_3" translatable="false">2.3</string>
+    <string name="lumen_m_gamma_2_4" translatable="false">2.4</string>
+    <string name="lumen_m_gamma_2_5" translatable="false">2.5</string>
+    <string name="lumen_m_gamma_2_6" translatable="false">2.6</string>
+    <string name="lumen_m_reset">Reset</string>
+    <string name="lumen_m_picture_reset_all_msg">The settings of every picture mode go back to their defaults. Continue?</string>
+    <string name="lumen_m_level_low">Low</string>
+    <string name="lumen_m_level_medium">Mid</string>
+    <string name="lumen_m_level_high">High</string>
+</resources>

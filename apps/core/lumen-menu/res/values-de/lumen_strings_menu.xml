@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">Farbbereich</string>
     <string name="lumen_m_hdmi_range_full">Voll</string>
     <string name="lumen_m_hdmi_range_limited">Begrenzt</string>
+    <string name="lumen_m_hdmi_range_auto_full">Auto (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">Auto (Limited)</string>
     <string name="lumen_m_kst_more">Weiteres</string>
+    <string name="lumen_m_kst_size_position">Größe und Position</string>
+    <string name="lumen_m_kst_smart">Intelligent</string>
     <string name="lumen_m_kst_restore">Bild auf Ausgangszustand</string>
     <string name="lumen_m_launcher_classic">Android TV (klassisch)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">Spielmodus</string>
     <string name="lumen_m_panel_game_speed">Reaktionszeit</string>
     <string name="lumen_m_panel_high">Hoch</string>
-    <string name="lumen_m_panel_image_correction_settings">Bildkorrektur-Einstellungen</string>
     <string name="lumen_m_panel_lamp">Helligkeit</string>
     <string name="lumen_m_panel_lamp_hint">Bei 10 zweimal → drücken, um Boost einzuschalten.</string>
     <string name="lumen_m_panel_low">Niedrig</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">Aus</string>
     <string name="lumen_m_panel_on">Ein</string>
     <string name="lumen_m_panel_optical_zoom">Optischer Zoom</string>
-    <string name="lumen_m_panel_optical_zoom_summary">Bildgröße ohne Schärfeverlust. Die automatische Trapezkorrektur und „An Leinwand anpassen“ verstellen den Zoom wieder.</string>
     <string name="lumen_m_panel_picture_mode">Bildmodus</string>
     <string name="lumen_m_panel_picture_reset">Bildeinstellungen zurücksetzen</string>
     <string name="lumen_m_panel_pm_ai">KI-Bild</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">Horizontaler Winkel</string>
     <string name="lumen_m_angle_v">Vertikaler Winkel</string>
     <string name="lumen_m_dynamic_contrast">Dynamischer Kontrast</string>
-    <string name="lumen_m_dynamic_black">Dynamische Schwarzverstärkung</string>
+    <string name="lumen_m_dynamic_black">Dynamische Schwarzwertverbesserung</string>
     <string name="lumen_m_sleep_timer">Sleep-Timer</string>
     <string name="lumen_m_remote">Fernbedienung koppeln</string>
     <string name="lumen_m_ct_standard">Standard</string>
     <string name="lumen_m_ct_movie">Film</string>
+    <string name="lumen_m_signal">Signal</string>
+    <string name="lumen_m_signal_pin">Signalkarte immer anzeigen</string>
+    <string name="lumen_m_signal_refresh">Aktualisierung der Signalkarte</string>
+    <string name="lumen_m_signal_refresh_normal">Normal</string>
+    <string name="lumen_m_signal_refresh_fast">Schnell</string>
+    <string name="lumen_m_signal_refresh_note">Schnell: seltenes Ruckeln des Bildes möglich</string>
+    <string name="lumen_m_hdr_developer">Für Entwickler</string>
 </resources>

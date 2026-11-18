@@ -12,13 +12,16 @@
 #    a framework restart): 3 underflows at the stream start, clean sound.
 #    This post-fs-data action runs after init.rc's (apexd has activated the APEXes, init is in the default mount
 #    namespace) and before zygote starts, so every app process, com.android.bluetooth among them, sees the bind.
-# 2. AVRCP absolute volume on, as on the Z9X (overlay/v1/product_prop_v1.txt) and the Play 6 (play6_base.rc). The
-#    HB audio HAL plays A2DP from its DSP at bluetooth_volume=100 (BtDspVolume), so without it the remote's volume
-#    keys moved the slider and nothing else; with it they set the headphones' own volume. Something on the HB sets
-#    persist.bluetooth.disableabsvol=true at runtime (seen on hb 1.0.8-beta5), so it is set again at early-boot,
-#    before system_server starts Bluetooth. Headphones paired before may need to be paired again.
+# 2. AVRCP absolute volume off, as on stock (volume-levels, 2026-11-14). The stock vendor build.prop sets
+#    persist.bluetooth.disableabsvol=true (G0130 6.16.24 and G0148 6.17.12, vendor/build.prop): stock keeps the
+#    headphones' own volume and its audio HAL applies the index (bluetooth_volume=N for A2DP, Android at full scale).
+#    Lumen turned absolute volume on from hb-sound to beta14 with the HAL at a neutral 100, so the remote moved the
+#    headphones' own volume instead of the HAL level (an index gave another loudness than on stock). Now HbProjector
+#    sends the index as stock (audio/HbBtVolume, Android at full scale through lumen-audio DspOwned). The property
+#    is persistent: an installed unit keeps the false written by older builds over the vendor value, so it is set
+#    again at early-boot, before system_server starts Bluetooth.
 on post-fs-data
     mount none /system/lib/hb_bt/libbluetooth_jni.so /apex/com.android.btservices/lib/libbluetooth_jni.so bind
 
 on early-boot
-    setprop persist.bluetooth.disableabsvol false
+    setprop persist.bluetooth.disableabsvol true

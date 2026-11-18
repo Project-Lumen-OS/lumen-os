@@ -16,8 +16,9 @@
 # of each pinned APK) and the input list are read at run time. The Z9X tree is only read: every build runs
 # in a scratch dir under TMPDIR (BUILD_DIR set, so no apps/Z9x*/build is touched). On red the script exits 1
 # with the report and never edits, reverts or re-records anything; the scratch dir is kept for a look.
-# Z9X inputs: apps/Z9x*/{AndroidManifest.xml,src,res,assets,lib,stub,jni}, apps/common, apps/core (the modules a Z9X
-# recipe devices/horse_popular/app/*.layers assembles, with tools/devices/assemble_app.py), apps/i18n,
+# Z9X inputs: apps/Z9x*/ and the renamed folders of apps/app_dirs.tsv {AndroidManifest.xml,src,res,assets,lib,stub,jni}, apps/common, apps/core (the modules a Z9X
+# recipe devices/horse_popular/app/*.layers assembles, with tools/devices/assemble_app.py, and the files it ships:
+# devices/horse_popular/menu.json, devices/horse_popular/audio), apps/i18n,
 # apps/build_apk.sh, apps/check_hal_callers.py, apps/check_global_keys.py, apps/sdk, overlay/v1,
 # overlay/apps_v1, overlay/debug (Z9X DIAG images; without lumen_escape.*, a Play 6 test-build helper),
 # overlay/v65 (tools/lumen_v1.sh compares z9x_setup.rc with it), tools/lumen_v1.sh, tools/compose_tv.py,
@@ -70,7 +71,8 @@ say "z9x_gate: $(date '+%Y-%m-%d %H:%M:%S') full=$FULL record=$RECORD scratch=$W
 # ---------------------------------------------------------------- 1. inputs
 list_inputs() {
   {
-    for a in apps/Z9x*/; do
+    # the Z9X apps: apps/Z9x*, the renamed folders of apps/app_dirs.tsv and the updater manifest of apps/LumenUpdater
+    for a in apps/Z9x*/ $(grep -v '^#' apps/app_dirs.tsv | cut -f2); do
       a=${a%/}
       [ -f "$a/AndroidManifest.xml" ] && echo "$a/AndroidManifest.xml"
       for s in src res assets lib stub jni; do
@@ -78,9 +80,10 @@ list_inputs() {
       done
     done
     find apps/common apps/core apps/i18n apps/sdk apps/LumenBridge overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
-      tools/lumen tools/sign tools/ota devices/horse_popular/app -type f
+      tools/lumen tools/sign tools/ota devices/horse_popular/app devices/horse_popular/audio -type f
     for f in apps/build_apk.sh apps/check_hal_callers.py apps/check_global_keys.py tools/lumen_v1.sh tools/compose_tv.py \
-        tools/play6/z9x_next.tsv tools/devices/assemble_app.py tools/devices/devices.py devices/horse_popular/menu.json; do
+        tools/play6/z9x_next.tsv tools/devices/assemble_app.py tools/devices/devices.py devices/horse_popular/menu.json \
+        apps/app_dirs.tsv apps/LumenUpdater/AndroidManifest.xml; do
       echo "$f"
     done
   } | grep -v -E '(^|/)__pycache__/|\.pyc$|(^|/)\.DS_Store$|^overlay/debug/lumen_escape\.' | LC_ALL=C sort -u
@@ -101,6 +104,15 @@ fi
 APKS=$(cd overlay/apps_v1 && ls *.apk 2>/dev/null | sed 's/\.apk$//' | LC_ALL=C sort)
 is_pinned() { printf '%s\n' "$APKS" | grep -qx "$1"; }
 REBUILD=""
+path_as_apk() { # path -> the same path under apps/<APK name> for a renamed folder (apps/app_dirs.tsv), else itself
+  case $1 in
+    apps/LumenUpdater/AndroidManifest.xml) echo apps/Z9xUpdater/AndroidManifest.xml; return ;;   # Z9xUpdater's manifest
+    apps/*/*) f=${1#apps/}
+      n=$(awk -F'\t' -v d="apps/${f%%/*}" '$2 == d { print $1; exit }' apps/app_dirs.tsv 2>/dev/null)   # first row: the Z9X APK name
+      [ -n "$n" ] && { echo "apps/$n/${f#*/}"; return; } ;;
+  esac
+  echo "$1"
+}
 add() { case " $REBUILD " in *" $1 "*) ;; *) REBUILD="$REBUILD $1" ;; esac; }
 
 if [ -f "$OK_FILE" ]; then
@@ -112,7 +124,8 @@ if [ -f "$OK_FILE" ]; then
   say "changed since the recorded green run ($(head -1 "$OK_FILE" | sed 's/^# //')): $NCH"
   ALL=0
   while read -r st p; do
-    case $p in
+    q=$(path_as_apk "$p")
+    case $q in
       apps/common/*|apps/i18n/*|apps/sdk/*|apps/build_apk.sh|apps/check_hal_callers.py|apps/check_global_keys.py)
         say "  $st $p  (shared build input: every pinned APK is rebuilt)"; ALL=1 ;;
       overlay/apps_v1/*.apk)
@@ -123,18 +136,18 @@ if [ -f "$OK_FILE" ]; then
       overlay/apps_v1/*)
         say "  $st $p  (pin list: every pinned APK is rebuilt, for the report)"; ALL=1
         red "pin list changed since the recorded green run: $p (the owner confirms it, then re-record)" ;;
-      apps/core/*|devices/horse_popular/app/*|devices/horse_popular/menu.json|tools/devices/assemble_app.py|tools/devices/devices.py)
+      apps/core/*|devices/horse_popular/app/*|devices/horse_popular/audio/*|devices/horse_popular/menu.json|tools/devices/assemble_app.py|tools/devices/devices.py|apps/app_dirs.tsv)
         say "  $st $p  (build input of the assembled apps: every pinned APK is rebuilt)"; ALL=1 ;;
       apps/LumenBridge/*)
         say "  $st $p  (rebuild every LumenBridge*)"
         for n in $APKS; do case $n in LumenBridge*) add "$n" ;; esac; done ;;
       apps/Z9x*/jni/*)
-        n=${p#apps/}; n=${n%%/*}
+        n=${q#apps/}; n=${n%%/*}
         if is_pinned "$n"; then say "  $st $p"
           red "native source of $n changed, no rebuild can prove it (build_apk.sh never compiles jni/): $p"
         else say "  $st $p  (not a pinned APK, not in the image)"; fi ;;
       apps/Z9x*/*)
-        n=${p#apps/}; n=${n%%/*}
+        n=${q#apps/}; n=${n%%/*}
         if is_pinned "$n"; then say "  $st $p  (rebuild $n)"; add "$n"
         else say "  $st $p  (not a pinned APK, not in the image)"; fi ;;
       *)
@@ -164,7 +177,7 @@ src_of() { # tree name scratch
 import assemble_app as a
 r = a.find_recipe(".", "horse_popular", sys.argv[1])
 print(r if r and a.parse(".", r)["identical"] != "allow" else "")' "$2") || return 1
-  if [ -z "$r" ]; then echo "$1/apps/$2"; return 0; fi
+  if [ -z "$r" ]; then echo "$1/$(python3 -B "$G/tools/devices/assemble_app.py" --root "$1" --app-dir "$2")"; return 0; fi
   ( cd "$1" && python3 -B tools/devices/assemble_app.py "$r" --out "$3" --quiet ) > "$3.log" 2>&1 || return 1
   echo "$3"
 }
@@ -173,7 +186,8 @@ pin_at_commit() { # name commit version_code version_name tmdb_key -> sha256 of 
   if [ ! -d "$d" ]; then
     mkdir -p "$d" && git archive "$2" apps tools/devices devices/horse_popular | tar -x -C "$d" || return 1
     # ignored inputs of a pinned app (the AirPlay native libs) come from this checkout, as for the HEAD build
-    [ -d apps/Z9xAirPlay/lib ] && [ -d "$d/apps/Z9xAirPlay" ] && cp -R apps/Z9xAirPlay/lib "$d/apps/Z9xAirPlay/"
+    a=$(python3 -B tools/devices/assemble_app.py --root "$d" --app-dir Z9xAirPlay)   # its folder at that commit
+    [ -d apps/LumenAirPlay/lib ] && [ -d "$d/$a" ] && cp -R apps/LumenAirPlay/lib "$d/$a/"
   fi
   src=$(src_of "$d" "$1" "$W/at_tree_$1") || return 1
   ( cd "$d" && BUILD_DIR="$W/at_$1" VERSION_CODE="$3" VERSION_NAME="$4" TMDB_KEY_FILE="$5" \
@@ -202,18 +216,27 @@ for n in $REBUILD; do
       else red "$n: rebuilt ${got:-nothing}, pinned $have"; fi
       continue ;;
   esac
-  if [ ! -f "apps/$n/AndroidManifest.xml" ]; then red "$n: no source tree apps/$n"; continue; fi
+  D=$(python3 -B tools/devices/assemble_app.py --app-dir "$n")
+  if [ ! -f "$D/AndroidManifest.xml" ] && [ ! -f "$D/app.layers" ] && [ ! -f "devices/horse_popular/app/$n.layers" ]; then
+    red "$n: no source tree $D"; continue
+  fi
   badge=$("$AAPT2" dump badging "$pin" 2>/dev/null | head -1)
   vc=$(printf '%s' "$badge" | sed -n "s/.* versionCode='\([^']*\)'.*/\1/p")
   vn=$(printf '%s' "$badge" | sed -n "s/.* versionName='\([^']*\)'.*/\1/p")
   if [ -z "$vc" ] || [ -z "$vn" ]; then red "$n: cannot read the version of $pin"; continue; fi
   out=$W/$n.apk
   # Lumen Home 1.0.5 carries the TMDB key as an asset (build_apk.sh TMDB_KEY_FILE; the key never enters the
-  # tree): a pin with that asset is rebuilt with the same key file, so it can match byte for byte.
-  key=
+  # tree): a pin with that asset is rebuilt with the same key file, so it can match byte for byte. From 1.0.11 on
+  # HEAD builds Home with the key again (hero art for a Continue item that has only a frame grab, the weekly
+  # showcase): every pin since 1.0.9 was built without it, so TMDB was off on the Z9X. The pin rebuilds as pinned.
+  key= pinkey=
   if [ "$n" = Z9xHome ] && unzip -l "$pin" assets/tmdb_key >/dev/null 2>&1; then
+    pinkey=${TMDB_KEY_FILE:-$HOME/.lumen-keys/tmdb.txt}
+    [ -r "$pinkey" ] || { red "$n: the pin carries a TMDB key, but $pinkey is not readable"; continue; }
+  fi
+  if [ "$n" = Z9xHome ]; then
     key=${TMDB_KEY_FILE:-$HOME/.lumen-keys/tmdb.txt}
-    [ -r "$key" ] || { red "$n: the pin carries a TMDB key, but $key is not readable"; continue; }
+    [ -r "$key" ] || { red "$n: Lumen Home ships with the TMDB key, but $key is not readable"; continue; }
   fi
   if ! src=$(src_of "$G" "$n" "$W/tree_$n"); then red "$n: its recipe does not assemble ($W/tree_$n.log)"; continue; fi
   if ! BUILD_DIR="$W/$n" VERSION_CODE="$vc" VERSION_NAME="$vn" TMDB_KEY_FILE="$key" sh apps/build_apk.sh "$src" "$out" > "$W/$n.log" 2>&1; then
@@ -228,7 +251,7 @@ for n in $REBUILD; do
     say "  $n $vn/$vc: identical to the pin ($got)${want:+, PINS.sha256 too}"
     [ -n "$nxt" ] && red "$n: HEAD rebuilds the pin again, its tools/play6/z9x_next.tsv row is stale (remove it, re-record)"
   elif [ -n "$nxt" ] && [ "$got" = "$nxt" ]; then
-    at=$(pin_at_commit "$n" "$ncm" "$vc" "$vn" "$key")
+    at=$(pin_at_commit "$n" "$ncm" "$vc" "$vn" "$pinkey")
     if [ -n "$at" ] && [ "$at" = "$have" ] && { [ -z "$want" ] || [ "$at" = "$want" ]; }; then
       say "  $n $vn/$vc: HEAD builds the accepted next-release APK ($got, z9x_next.tsv); the pin rebuilds from $ncm ($at)"
     else
@@ -254,7 +277,7 @@ sync_check() { # app items...
 }
 PITEMS=hal
 [ -f apps/common/projector/FILES ] && PITEMS="hal projector"
-sync_check apps/Z9xProjector $PITEMS
+sync_check apps/ProjectorBase $PITEMS
 # the Play 6 projector app holds no shared copies since the design notes: it is assembled from
 # devices/dragon_healthy/app/Play6Projector.layers, which refuses a copy of a shared file
 out=$(python3 -B tools/devices/assemble_app.py --device dragon_healthy --app Play6Projector 2>&1); rc=$?
@@ -270,7 +293,7 @@ fi
 # ---------------------------------------------------------------- 4. languages, 5. Z9X HAL callers
 out=$(python3 -B apps/i18n/gen.py --check-only 2>&1); rc=$?
 if [ $rc = 0 ]; then say "  gen.py --check-only: $(printf '%s' "$out" | tail -1)"; else red "gen.py --check-only: $out"; fi
-out=$(python3 -B apps/check_hal_callers.py apps/Z9xProjector/src 2>&1); rc=$?
+out=$(python3 -B apps/check_hal_callers.py apps/ProjectorBase/src 2>&1); rc=$?
 if [ $rc = 0 ]; then say "  $out"; else red "$out"; fi
 
 # ---------------------------------------------------------------- inputs unchanged during the run

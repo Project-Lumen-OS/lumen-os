@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Teclado Lumen</string>
+    <string name="ime_service_name">Teclado Lumen</string>
+    <string name="keyboardview_keycode_language">Idioma</string>
+    <string name="lumen_languages_title">Idiomas del teclado</string>
+    <string name="lumen_languages_hint">Pulsa OK para activar o desactivar un idioma. En el teclado, la tecla del globo cambia el idioma.</string>
+    <string name="lumen_languages_last">Siempre queda un idioma activado.</string>
+</resources>

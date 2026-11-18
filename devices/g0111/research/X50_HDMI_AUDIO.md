@@ -1,7 +1,7 @@
 # X50 (G0111): HDMI, sound output, ARC / eARC, CEC, EDID, game mode, source at power-on
 
 Stock X50 v1.2.64 against the Lumen X50 image (branch `x50-hdmi`, apps/X50Projector), ported from what works on the HB
-(G0130, apps/HbProjector = apps/Z9xProjector + HB layer). Offline from the dump; nothing was sent to a projector.
+(G0130, apps/HbProjector = apps/ProjectorBase + HB layer). Offline from the dump; nothing was sent to a projector.
 
 Sources (on xgimi-builder, never copied into git):
 - dump `~/devices/g0111_mt9681/work/fs` (system_root, vendor, mnt/vendor/xgimiconfig/G0111/feature/feature.xml);
@@ -23,7 +23,7 @@ them is BANNED or REVIEW in `devices/goat_elegant/research/banned.tsv`.
 | same audio HAL parameters as the Z9X / HB | `vendor/lib64/hw/audio.primary.mt5877.so` strings: `digital_output_format`, `spk_volume`, `xgimi_audiopath_switch_start`, `xgimi_audiopath_switch_end`, `bluetooth_volume` |
 | the stock audio server reports the media path to the vendor | `system/lib64/libxgimiaudiopolicy.so`: AIDL IGmAudioManager, `threadInit`, `setXgimiPathForDeviceDelay`, `Egn_getDeviceForMedia`, `xgimi_audiopath_switch_start=%d` / `_end=%d`, `digital_output_format=pcm` |
 | Lumen's AOSP audio server does not: the vendor never gets a path | stock `vender.xgimi.audio.ready=1`; t7 Lumen: the property is absent |
-| EDID values | feature.xml `edid_2_version_val=1` -> NS signal/SignalEnum: HDMI 1.4 = 1, HDMI 2.0 = 2 (4 only for value 3) |
+| EDID values | feature.xml `edid_2_version_val=1` -> NS signal/SignalEnum: HDMI 1.4 = 1, HDMI 2.0 = 2 (4 only for value 3); gmuiapi GmTvManager.setEDIDVersion sends value - 1, so TV 40 gets 0 / 1 (corrected 2026-11-15, `X50_EDID_STOCK.md`: Lumen up to beta 7 sent 1 / 2) |
 | game mode 3.0 with ALLM and game enhancement, HFR | feature.xml `display_gamemode_version=3`, `support_hfr=true`, `hgig_mode=1`, `support_amd_free_sync_premium=true` |
 | ARC volume optimisation | feature.xml `support_arc_volume_adjust_optimization=1` |
 | screen off during a source switch | feature.xml `support_screen_on_off_when_switchsource=true` |
@@ -48,7 +48,7 @@ the X50 image through org.lumen.tvinput or the framework; **not ported** = with 
 | CEC on / off, power with the projector, wake by the device | NS signal/SignalManager.setCecSwitch -> `hdmi_control_enabled`; XS GimiCommonService `tv_send_standby_on_sleep`, `tv_wake_on_one_touch_play` | framework settings, shown in org.lumen.tvinput settings (link row "HDMI inputs") | as before |
 | Input switching by the device (One Touch Play), BACK / keys to the CEC device | XR SignalService.initActiveSource (`persist.vendor.xgimi.onetouchplay.enable`), xhplayer key forwarding | org.lumen.tvinput (CEC child inputs, key forwarding, switch on device power-on); X50 has no `isatv` prop, so the one-time BACK hint stays off as on the Z9X | as before |
 | HDMI picture: video window follows the shown input | XP utils/TV.switchInputSource: TV 3 switchInputSource(1..3) when InputActivity tunes, switchToMM = (0) when it leaves | `HdmiSource`: the Z9X / HB HdmiSource, ports 1..3 from org.lumen.tvinput's HdmiStateProvider (TV 3, read TV 4 getCurrentInputSource) | ported |
-| EDID version per input (1.4 / 2.0) | NS signal/SignalManager.setHdmiVersion -> GmDeviceManager.setEDIDVersion -> TV 40 (1 or 2); read TV 39 (2 = "2.0", else "1.4"); the call has no port: the vendor applies it to the input on screen (the stock row lives on the input's signal page) | row "HDMI version" (TV 39 / 40, values 1 and 2 only), shown and changed only while an HDMI input is on screen (TV 4 reads 1..3) | ported |
+| EDID version per input (1.4 / 2.0) | NS signal/SignalManager.setHdmiVersion -> GmDeviceManager.setEDIDVersion -> gmuiapi GmTvManager (value - 1) -> TV 40 (0 or 1); read TV 39 + 1 (1 = "2.0", else "1.4"; `X50_EDID_STOCK.md`); the call has no port: the vendor applies it to the input on screen (the stock row lives on the input's signal page) | row "HDMI version" (TV 39 / 40, values 0 and 1 only since x50-edid-stock, lumen-hdmi EdidModes), shown and changed only while an HDMI input is on screen (TV 4 reads 1..3) | ported |
 | HDMI colour range Auto / Full / Limited | NS signal/SignalManager.getHdmiColorRange / SignalViewModel: TV 63 / 64 (0, 1, 2) | row "HDMI colour range" (TV 63 / 64), HDMI on screen only | ported |
 | Game mode Off / On / Auto | NS picture/PictureViewModel setGameMode (147 setGameModeType + 146 setGameModeState, read 148), game speed 76 setGameModeOption (normal 1 with HFR, top speed 3 with HFR), read 77 | row "Game mode" (Off: 147(0) + 146(1); On: 77 read, 76 re-sent, 147(0) + 146(0); Auto: 147(1)), the HB QuickPanelController.onGameMode sequence; read 148 | ported |
 | ALLM: when Auto game mode switches on (game enhance timing) | NS picture/PictureRepository.setGameEnhanceTiming: TV 129 setAllmEnable(type == 0), type 0 = on game content (ALLM), 1 = on a game device; read 130 (timing = !130 ? 1 : 0); both choices shown only while the game mode is Auto (PictureFactory); store `allm_enable_state`, default 1:1:1:1 (CustomerEnvTbl.xml); XP api/GameModeApi.getAllmStatus TV 131 | row "Auto game mode: On ALLM signal / On game console" (TV 129 / 130), only in Auto (t16; X50_MENU_STOCK.md t16) | ported |

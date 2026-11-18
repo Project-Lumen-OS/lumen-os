@@ -3,6 +3,7 @@ package org.lumen.projector.hal;
 import android.os.RemoteException;
 
 import org.lumen.hal.gmpf.GmpfWire;
+import org.lumen.hal.gmpf.TvEventSink;
 
 /**
  * The gmpf transport of the Z9X HB: the allow-list Calls over AidlCaller, laid out as the stock Java proxies do (int32
@@ -57,7 +58,20 @@ final class AidlWire extends AidlCaller implements GmpfWire<GmpfCall> {
 
     @Override public byte strRetI8(GmpfCall k, String s) throws RemoteException { return call(k, o -> o.str(s), RET_I8); }
 
+    /** int(String): GmTvManager 163 getExtDecInfo. */
+    @Override public int strRetI32(GmpfCall k, String s) throws RemoteException { return call(k, o -> o.str(s), RET_I32); }
+
+    /** A parcelable returned after one int argument, n int words (bool fields are int words): TV 153 getHdmiHwConfig. */
+    @Override public int[] i32RetObject(GmpfCall k, int a, int n) throws RemoteException {
+        return call(k, o -> o.i32(a), r -> r.object(q -> ints(q, n)));
+    }
+
     @Override public void focusCallback(GmpfCall k) throws RemoteException { callRegisterFocusCallback(k); }
+
+    @Override public void tvCallback(GmpfCall k, TvEventSink sink) throws RemoteException {
+        setTvSink(sink);
+        callRegisterTvCallback(k);
+    }
 
     @Override public int[] i32Struct(GmpfCall k, int n) throws RemoteException {
         return call(k, null, r -> {

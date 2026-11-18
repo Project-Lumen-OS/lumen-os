@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The knob under lumen_ic_toggle_on (its round hole at 680, 480, radius 120 of the 960 box), so the switch that is on
+     looks like the Lumen menu's: a white knob on the accent track, an accent knob on the white track of a focused row. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M680,350a130,130 0,1 1,0 260a130,130 0,1 1,0 -260Z" />
+</vector>

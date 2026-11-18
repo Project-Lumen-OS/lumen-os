@@ -38,3 +38,7 @@ key 358        VOLUME_MUTE
 # key 130      PATTERN  (dropped: XGIMI-only label, no AOSP keycode)
 key 133        FOCUS  # XGIMI: FOCUS_AUTO_NEW; focus key short press -> org.lumen.projector autofocus
 key 430        TV_INPUT  # XGIMI: SINGAL; Source -> org.lumen.projector input overlay
+key 135        MACRO_1  # XGIMI: SHORTCUT_1; stock custom key 1 -> org.lumen.projector "Remote buttons" (the app or action the user gave it, else it asks which)
+key 136        MACRO_2  # XGIMI: SHORTCUT_2; stock custom key 2 -> org.lumen.projector "Remote buttons" (the app or action the user gave it, else it asks which)
+key 217        MACRO_3  # XGIMI: SHORTCUT_3; stock custom key 3 -> org.lumen.projector "Remote buttons" (the app or action the user gave it, else it asks which)
+key 354        MACRO_4  # XGIMI: SHORTCUT_4; stock custom key 4 -> org.lumen.projector "Remote buttons" (the app or action the user gave it, else it asks which)

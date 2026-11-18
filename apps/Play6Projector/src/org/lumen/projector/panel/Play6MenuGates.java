@@ -192,10 +192,10 @@ public final class Play6MenuGates {
             FeatureId.PICTURE_DYNAMIC_CONTRAST, FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET,
             FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT,
             FeatureId.SOUND_MODE, FeatureId.SOUND_EQ, FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT,
-            FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK, FeatureId.MIRRORING, FeatureId.USB_FILES,
+            FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK, FeatureId.MIRRORING,
             FeatureId.GAME_MODE, FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR,
             FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER,
-            FeatureId.SETTINGS_AMBIENT_SPEAKER,
+            FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER,
     };
 
     /**

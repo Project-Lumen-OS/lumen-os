@@ -17,6 +17,7 @@ enum GmpfCall {
     GET_DLP_LUMENS_MODE(GmpfIface.DISPLAY, HalCodes.DM_GET_DLP_LUMENS_MODE, "getDlpLumensMode"),
     SET_DLP_LUMENS_LEVEL(GmpfIface.DISPLAY, HalCodes.DM_SET_DLP_LUMENS_LEVEL, "setDlpLumensLevel"),
     GET_DLP_LUMENS_LEVEL(GmpfIface.DISPLAY, HalCodes.DM_GET_DLP_LUMENS_LEVEL, "getDlpLumensLevel"),
+    IS_VIDEO_PLAYING(GmpfIface.DISPLAY, HalCodes.DM_IS_VIDEO_PLAYING, "isVideoPlaying"),
     SET_CORRECT_KEYSTONE_FULL_PIONT(GmpfIface.DISPLAY, HalCodes.DM_SET_CORRECT_KEYSTONE_FULL_PIONT, "setCorrectKeystoneFullPiont"),
     GET_CORRECT_KEYSTONE_FULL_PIONT(GmpfIface.DISPLAY, HalCodes.DM_GET_CORRECT_KEYSTONE_FULL_PIONT, "getCorrectKeystoneFullPiont"),
     SET_SCREEN_ON_OFF(GmpfIface.DISPLAY, HalCodes.DM_SET_SCREEN_ON_OFF, "setScreenOnOff"),
@@ -94,6 +95,7 @@ enum GmpfCall {
     SET_ASPECT_RATIO(GmpfIface.TV, HalCodes.TV_SET_ASPECT_RATIO, "setAspectRatio"),
     GET_ASPECT_RATIO(GmpfIface.TV, HalCodes.TV_GET_ASPECT_RATIO, "getAspectRatio"),
     GET_HDMI_INFO(GmpfIface.TV, HalCodes.TV_GET_HDMI_INFO, "getHdmiInfo"),
+    GET_SIGNAL_STATUS(GmpfIface.TV, HalCodes.TV_GET_SIGNAL_STATUS, "getSignalStatus"),
     GET_EDID_VERSION(GmpfIface.TV, HalCodes.TV_GET_EDID_VERSION, "getEdidVersion"),
     SET_EDID_VERSION(GmpfIface.TV, HalCodes.TV_SET_EDID_VERSION, "setEdidVersion"),
     SET_UCD_LEVEL(GmpfIface.TV, HalCodes.TV_SET_UCD_LEVEL, "setUcdLevel"),
@@ -104,6 +106,7 @@ enum GmpfCall {
     SET_EARC_ENABLE(GmpfIface.TV, HalCodes.TV_SET_EARC_ENABLE, "setEARCEnable"),
     GET_EARC_ENABLE_STATE(GmpfIface.TV, HalCodes.TV_GET_EARC_ENABLE_STATE, "getEARCEnableState"),
     GET_HDR_TYPE(GmpfIface.TV, HalCodes.TV_GET_HDR_TYPE, "getHdrType"),
+    SET_GM_TV_CALLBACK(GmpfIface.TV, HalCodes.TV_SET_GM_TV_CALLBACK, "setGmTvCallback"),
     GET_EARC_STATUS(GmpfIface.TV, HalCodes.TV_GET_EARC_STATUS, "getEARCStatus"),
     GET_HSY_PICTURE_MODE_ENABLE(GmpfIface.TV, HalCodes.TV_GET_HSY_PICTURE_MODE_ENABLE, "getHsyPictureModeEnable"),
     SET_TV_DYNAMIC_CONTRAST_ENABLE(GmpfIface.TV, HalCodes.TV_SET_TV_DYNAMIC_CONTRAST_ENABLE, "setTvDynamicContrastEnable"),
@@ -128,7 +131,11 @@ enum GmpfCall {
     TOGGLE_HDR_DY_TONE_MAPPING(GmpfIface.TV, HalCodes.TV_TOGGLE_HDR_DY_TONE_MAPPING, "ToggleHDRDyToneMapping"),
     GET_HDR_DY_TONE_MAPPING_STATUS(GmpfIface.TV, HalCodes.TV_GET_HDR_DY_TONE_MAPPING_STATUS, "GetHDRDyToneMappingStatus"),
     SET_HGIG_MODE(GmpfIface.TV, HalCodes.TV_SET_HGIG_MODE, "setHGiGMode"),                            // game bar HDR settings
-    GET_HGIG_MODE(GmpfIface.TV, HalCodes.TV_GET_HGIG_MODE, "getHGiGMode"),
+    GET_HGIG_MODE(GmpfIface.TV, HalCodes.TV_GET_HGIG_MODE, "getHGiGMode"),                               // signal panel
+    GET_AMD_FREE_SYNC_STATE(GmpfIface.TV, HalCodes.TV_GET_AMD_FREE_SYNC_STATE, "getAmdFreeSyncState"),   // signal panel
+    GET_DOLBY_VISION_PIC_MODE(GmpfIface.TV, HalCodes.TV_GET_DOLBY_VISION_PIC_MODE, "getDolbyVisionPicMode"), // signal panel
+    GET_EXT_DEC_INFO(GmpfIface.TV, HalCodes.TV_GET_EXT_DEC_INFO, "getExtDecInfo"),                       // signal panel
+    GET_HDMI_HW_CONFIG(GmpfIface.TV, HalCodes.TV_GET_HDMI_HW_CONFIG, "getHdmiHwConfig"),                 // signal panel
     GET_MOTION_DETECTION(GmpfIface.MOTION, HalCodes.MD_GET_MOTION_DETECTION, "getMotionDetection"),   // fit to screen size: the tilt (read)
     SET_ANG_TRIGGER_AF(GmpfIface.MOTION, HalCodes.MD_SET_ANG_TRIGGER_AF, "setAngTriggerAF"),
     GET_ANG_TRIGGER_AF(GmpfIface.MOTION, HalCodes.MD_GET_ANG_TRIGGER_AF, "getAngTriggerAF"),

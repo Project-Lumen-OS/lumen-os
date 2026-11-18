@@ -9,8 +9,10 @@
     <string name="lumen_m_panel_speed_top_note">توربو: تصحيح شبه المنحرف متوقف</string>
     <string name="lumen_m_ok">حسنًا</string>
     <string name="lumen_m_cancel">إلغاء</string>
-    <string name="lumen_m_panel_boost_press_again">اضغط → مرة أخرى لتفعيل Boost</string>
-    <string name="lumen_m_panel_boost_leave_press_again">اضغط ← مرة أخرى للخروج من Boost</string>
+    <!-- right to left: the slider starts on the right, so the press towards its end (Boost) is ← and towards its start is → -->
+    <string name="lumen_m_panel_boost_press_again">اضغط ← مرة أخرى لتفعيل Boost</string>
+    <string name="lumen_m_panel_boost_leave_press_again">اضغط → مرة أخرى للخروج من Boost</string>
+    <string name="lumen_m_lamp_off_press_again">ستنطفئ الصورة. لتشغيلها مرة أخرى، اضغط زر التشغيل. اضغط → مرة أخرى لإيقافها.</string>
     <string name="lumen_m_toast_setup_running">أكمل الإعداد أولاً</string>
     <string name="lumen_m_panel_tileval_pm_ai">ذكاء اصطناعي</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">دقة الألوان</string>
@@ -28,4 +30,8 @@
     <string name="lumen_m_ambient_speaker">مكبر الصوت المحيطي</string>
     <string name="lumen_m_ct_custom">مخصصة</string>
     <string name="lumen_m_lamp_off">إيقاف الصورة</string>
+    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris_dynamic">ديناميكي</string>
+    <string name="lumen_m_iris_lamp_dynamic">لا يمكن تغيير السطوع عندما يكون IRIS ديناميكيًا.</string>
+    <string name="lumen_m_iris_lamp_held">لا يمكن تغيير السطوع مع إعداد IRIS هذا.</string>
 </resources>

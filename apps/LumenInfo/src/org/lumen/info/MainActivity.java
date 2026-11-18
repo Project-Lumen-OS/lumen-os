@@ -312,7 +312,7 @@ public final class MainActivity extends Activity implements Collector.Listener {
         final String[] shown = new String[names.length];
         for (int i = 0; i < names.length; i++) {
             String l = s.builtinLinks == null ? null : s.builtinLinks.get(names[i]);
-            shown[i] = l == null ? names[i] : names[i] + "  \u2192 " + l;
+            shown[i] = l == null ? names[i] : names[i] + "  \u2192 " + l;  // lumen-icons: not an icon (a link target)
         }
         new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                 .setTitle(s.edidDir == null ? getString(R.string.builtin_title) : getString(R.string.builtin_title) + ": " + s.edidDir)

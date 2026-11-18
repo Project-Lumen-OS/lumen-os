@@ -1,0 +1,183 @@
+== S01 trial first boot, empty data: the Z9X remote (000d:3841) held in pairing mode
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 confirm <mac> true
+     5.7 aborted PAIRING_REQUEST
+     6.1 hid-allow <mac>
+    25.0 check 20s: scan off, connected=true bonded=1 mode=off
+   setup events: yes
+== S02 trial first boot: the X50 / RS30 remote (000d:3840)
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 confirm <mac> true
+     5.7 aborted PAIRING_REQUEST
+     6.1 hid-allow <mac>
+    25.0 check 20s: scan off, connected=true bonded=1 mode=off
+   setup events: yes
+== S03 trial first boot: the RC-S3R remote (000d:3843, name Xgimi-RC-S3R)
+     0.0 scan low_latency
+    25.0 check 20s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S04 trial first boot: an XGIMI remote named BLuetooth 4.0 RC (stock name list)
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 confirm <mac> true
+     5.7 aborted PAIRING_REQUEST
+     6.1 hid-allow <mac>
+    25.0 check 20s: scan off, connected=true bonded=1 mode=off
+   setup events: yes
+== S05 first boot: another XGIMI product discoverable nearby (never a remote)
+     0.0 scan low_latency
+    25.0 check 20s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S06 first boot: an advertiser carrying this projector's own adapter name
+     0.0 scan low_latency
+    25.0 check 20s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S07 first boot: a remote name in a non-connectable advertisement
+     0.0 scan low_latency
+    25.0 check 20s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S08 after setup, nothing bonded: remote advertising LE General Discoverable
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 confirm <mac> true
+     5.7 aborted PAIRING_REQUEST
+     6.1 hid-allow <mac>
+    25.0 check 20s: scan off, connected=true bonded=1 mode=off
+   setup events: no
+== S09 after setup, nothing bonded: remote advertising no flags but the HID service
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 confirm <mac> true
+     5.7 aborted PAIRING_REQUEST
+     6.1 hid-allow <mac>
+    25.0 check 20s: scan off, connected=true bonded=1 mode=off
+   setup events: no
+== S10 after setup, a remote is bonded: the user asks to pair, a remote named XGIMI Remote
+    26.0 check 26s: scan off, connected=true bonded=1 mode=off
+   setup events: no
+== S11 after setup, the bonded remote is asleep: a NEW remote in pairing mode in the boot window
+     0.0 scan low_latency
+    11.0 hid-allow <mac>
+    22.0 hid-allow <mac>
+    33.0 hid-allow <mac>
+    44.0 hid-allow <mac>
+    45.0 check 45s: scan low_latency, connected=false bonded=1 mode=recover
+   setup events: no
+== S12 after setup, the bonded remote was reset (lost its keys): it advertises pairing mode
+     0.0 scan low_latency
+    11.0 hid-allow <mac>
+    12.2 hid-allow <mac>
+    13.2 hid-allow <mac>
+    14.2 hid-allow <mac>
+    15.2 hid-allow <mac>
+    16.2 hid-allow <mac>
+    17.2 hid-allow <mac>
+    18.2 hid-allow <mac>
+    19.2 hid-allow <mac>
+    20.2 hid-allow <mac>
+    21.2 hid-allow <mac>
+    22.0 hid-allow <mac>
+    22.2 hid-allow <mac>
+    23.2 hid-allow <mac>
+    24.2 hid-allow <mac>
+    25.2 hid-allow <mac>
+    26.2 hid-allow <mac>
+    27.2 hid-allow <mac>
+    28.2 hid-allow <mac>
+    29.2 hid-allow <mac>
+    30.2 hid-allow <mac>
+    31.2 hid-allow <mac>
+    32.2 hid-allow <mac>
+    33.0 hid-allow <mac>
+    33.2 hid-allow <mac>
+    34.2 hid-allow <mac>
+    35.2 hid-allow <mac>
+    36.2 hid-allow <mac>
+    37.2 hid-allow <mac>
+    38.2 hid-allow <mac>
+    39.2 hid-allow <mac>
+    40.2 hid-allow <mac>
+    41.2 hid-allow <mac>
+    42.0 check 42s: scan low_latency, connected=false bonded=1 mode=recover
+   setup events: no
+== S13 after setup, no remote anywhere: the scan budget (fast, then balanced, then off)
+     0.0 scan low_latency
+    60.0 check 1min: scan low_latency, connected=false bonded=0 mode=new
+   120.0 scan stop
+   120.0 scan balanced
+   180.0 check 3min: scan balanced, connected=false bonded=0 mode=new
+  1620.0 scan stop
+  1620.0 scan balanced
+  3120.0 scan stop
+  3120.0 scan balanced
+  3600.0 scan stop
+  3660.0 check 61min: scan off, connected=false bonded=0 mode=off
+   setup events: no
+== S14 after setup, nothing bonded, Bluetooth headphones connected: radio sharing
+     0.0 scan low_latency
+    10.0 check 10s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: no
+== S15 first boot: the remote asks for a PIN (variant 0): left to the system dialog
+     0.0 scan low_latency
+     5.2 scan stop
+     5.2 createBond <mac> LE
+     5.7 system-pairing-dialog
+    13.0 check 13s: scan off, connected=false bonded=0 mode=off
+   setup events: yes
+== S16 after setup: the user removes the only remote's bond (remote lost)
+    10.0 removeBond <mac>
+    10.0 scan low_latency
+    30.0 check 30s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: no
+== S17 trial: Bluetooth runtime permissions missing at first start (no default grant)
+    25.0 check 25s: scan off, connected=false bonded=0 mode=new
+   setup events: yes
+== S18 reboot with a bonded remote that is awake: it must come back by itself, no prompt
+     0.0 scan low_latency
+     5.0 scan stop
+    93.0 check 93s: scan off, connected=true bonded=1 mode=off
+   setup events: no
+== S19 Bluetooth off, then on again (first boot, no remote)
+     0.0 scan low_latency
+     5.0 scan stop (adapter off)
+    10.0 check off: scan off, connected=false bonded=0 mode=off
+    10.0 scan low_latency
+    20.0 check on: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S20 screen off and on (first boot, no remote)
+     0.0 scan low_latency
+    10.0 check off: scan low_latency, connected=false bonded=0 mode=new
+    20.0 check on: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S21 trial first boot: an XGIMI remote named in Chinese (RS30 stock name 极米遥控器)
+     0.0 scan low_latency
+    25.0 check 25s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S22 after setup: the user asks to pair, a Bluetooth LE keyboard in pairing mode
+     0.0 scan low_latency
+    26.0 check 26s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: no
+== S23 first boot: the same keyboard in pairing mode, nobody asked: never bonded unattended
+     0.0 scan low_latency
+    25.0 check 25s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S24 first boot: the XGIMI music controller (X_Remote) in pairing mode: not a remote
+     0.0 scan low_latency
+    25.0 check 25s: scan low_latency, connected=false bonded=0 mode=new
+   setup events: yes
+== S25 trial on a Z9X with an X50 remote, permissions not granted by default, self-grant works
+    25.0 check 25s: scan off, connected=false bonded=0 mode=new
+   setup events: yes
+== S26 the app process restarts 30 min after boot (not a boot), the bonded remote is awake, the stack does not reconnect it
+  1799.0 scan low_latency
+  1810.0 hid-allow <mac>
+  1811.3 scan stop
+  1814.0 check 15s: scan off, connected=true bonded=1 mode=off
+   setup events: no

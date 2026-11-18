@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Code du modèle</string>
+    <string name="lumen_about_dlp">Contrôleur DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">Firmware XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s du %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, mise à jour de sécurité %2$s</string>
+    <string name="lumen_about_kernel">Noyau</string>
+    <string name="lumen_about_boot_loader">Firmware de démarrage</string>
+    <string name="lumen_about_gmui">Interface XGIMI</string>
+    <string name="lumen_about_platform">Plateforme MediaTek</string>
+    <string name="lumen_about_remote">Télécommande</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Retour au système XGIMI</string>
+    <string name="lumen_about_back_summary_file">Fichier pour la clé USB : %1$s</string>
+    <string name="lumen_about_back_summary">Avec la clé USB de restauration XGIMI</string>
+    <string name="lumen_about_intro">La clé USB de restauration XGIMI de ce modèle remet le système XGIMI en place. Le guide de la page du projet explique comment.</string>
+    <string name="lumen_about_usb_file">Nom du fichier pour la clé USB</string>
+    <string name="lumen_about_official">Fichier officiel XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s octets</string>
+    <string name="lumen_about_searching">Recherche du fichier officiel de ce firmware</string>
+    <string name="lumen_about_guide_files">Le guide de la page du projet liste les fichiers officiels XGIMI.</string>
+    <string name="lumen_about_erases">La clé efface tout sur le projecteur : applications, comptes, réglages et fichiers.</string>
+    <string name="lumen_about_scan">Scannez avec un téléphone pour ouvrir</string>
+    <string name="lumen_about_close">Fermer</string>
+</resources>

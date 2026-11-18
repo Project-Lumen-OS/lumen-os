@@ -23,7 +23,7 @@ import org.lumen.projector.hal.Play6Gmpf2;
 import org.lumen.projector.hal.Play6Gmpf;
 import org.lumen.projector.hal.Play6Values;
 import org.lumen.projector.hal.PqItem;
-import org.lumen.projector.source.SourceOverlay;
+import org.lumen.projector.power.PowerMenu;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -52,7 +52,6 @@ public final class Play6Features implements ProjectorFeatures {
             | Play6Snapshot.EYE;
     /** boolean: the user confirmed turning power saving on (off) once; stock asks the first time only. */
     private static final String KEY_ECO_ON_CONFIRMED = "eco_on_confirmed", KEY_ECO_OFF_CONFIRMED = "eco_off_confirmed";
-    private static final String HOME_PKG = "org.lumen.home", HOME_FILES = "org.lumen.home.FilesLauncher";
 
     final Context app;
     final SharedPreferences prefs;
@@ -295,7 +294,7 @@ public final class Play6Features implements ProjectorFeatures {
                 return true;
             case INPUT:
                 if (!setupDone("input")) return false;
-                SourceOverlay.showFromQuickPanel(app);                               // BACK there opens the card again
+                org.lumen.source.SourceKey.press(app, "quick_menu");                   // the Source key's step and its card
                 return true;
             case SETTINGS_SYSTEM:
                 return setupDone("system settings") && start(new Intent(Settings.ACTION_SETTINGS));
@@ -307,12 +306,14 @@ public final class Play6Features implements ProjectorFeatures {
                 if (!setupDone("recent apps")) return false;
                 org.lumen.projector.recents.RecentsActivity.open(app);
                 return true;
+            case SETTINGS_SLEEP_TIMER:
+                PowerMenu.show(app, true);                                          // as Home's Sleep timer tile
+                return true;
             case BLUETOOTH:
-                return setupDone("bluetooth") && start(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
             case NETWORK:
-                return setupDone("network") && start(new Intent(Settings.ACTION_WIFI_SETTINGS));
-            case USB_FILES:
-                return setupDone("usb files") && start(new Intent(Intent.ACTION_MAIN).setClassName(HOME_PKG, HOME_FILES));
+                // the menu's own tiles: it opens their Android pages itself, never this adapter
+                Log.i(TAG, "open " + screen + ": a tile the menu opens itself, not a screen");
+                return false;
             case PICTURE_PRO:
             case SOUND_EQ:
             case SETTINGS_AMBIENT_SPEAKER:

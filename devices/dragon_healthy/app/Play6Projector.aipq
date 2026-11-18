@@ -1,0 +1,3 @@
+# The stock AI picture quality on the Play 6 (org.lumen.aipq.AiPq): the one glue file of the gmpf projectors, taken
+# from the Z9X app as is (its Hal is the Play 6 Hal, its client the shared GmpfBase of Play6Gmpf).
+src/org/lumen/projector/AiScenePolicy.java

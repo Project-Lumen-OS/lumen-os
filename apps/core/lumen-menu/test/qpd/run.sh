@@ -27,6 +27,12 @@ print(",".join(out))
 EOF
 )
 "$JAVA_HOME/bin/java" -Dlamp.ranges="$RANGES" -cp "$OUT" org.lumen.projector.panel.QpdLayoutTest
+# All settings pages of every profile as list models: greyed rows at the end come into view, headers never alone
+FP=$(mktemp -d)
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$FP" "$HERE/src/org/lumen/projector/panel/QpdLayout.java" \
+  "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$T/FullPageTest.java"
+"$JAVA_HOME/bin/java" -cp "$FP" org.lumen.projector.panel.FullPageTest "$G" || { rm -rf "$FP"; exit 1; }
+rm -rf "$FP"
 # the controller is the shared engine (MenuController + MenuSpec + the device profile)
 C="$HERE/src/org/lumen/projector/panel/MenuController.java"
 SP="$HERE/src/org/lumen/menu/MenuSpec.java"
@@ -40,26 +46,71 @@ if [ "$DEV" = horse_popular ]; then
   [ "$lvl" = 11 ] || { echo "FAIL profile: Z9X boost level $lvl (want 11)"; bad=1; }
 fi
 want 'final int bl = spec.boostLevel();' "Boost level from the profile"
-want 'lamp.setBoostLevel(bl);' "the slider gets the profile's Boost level"
-want 'new QpdLampRow(app, s(MenuLabels.title(FeatureId.LAMP)), lampMin(), lampMax(),' "the slider spans the profile's range"
-grep -q 'QpdLayout.fill(lv, getMin(), getMax())' "$HERE/src/org/lumen/projector/panel/QpdLampRow.java" \
+want 'lamp.setBoostLevel(spec.boostLevel());' "the slider gets the profile's Boost level"
+want 'lamp = new QpdSliderRow(app, s(MenuLabels.title(FeatureId.LAMP)), lampMin(), lampMax(), lampSlide(),' "the slider spans the profile's range"
+# x50-iris-quick: the slider tiles come from MenuSpec.sliders (the iris under the brightness slider, a choice slider over
+# the profile's options that commits through choose, the stock refusal first), the card steps them itself
+want 'for (MenuSpec.Tile t : spec.sliders) {' "slider tiles from MenuSpec.sliders"
+want 'if (token != null) choose(f, token);' "a choice slider step commits as a pick of its page row"
+want 'if (!sliderBusy(r)) r.setValue(step);' "a choice slider shows the step of the value read"
+want 'if (r.isRowEnabled()) r.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));' "a choice slider is dimmed while stock keeps its row closed"
+grep -qF 'int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider);' "$HERE/src/org/lumen/projector/panel/QpdPanel.java" \
+  || { echo "FAIL card: the grid move does not know the slider tiles"; bad=1; }
+grep -q 'QpdLayout.fill(lv, getMin(), getMax())' "$HERE/src/org/lumen/projector/panel/QpdSliderRow.java" \
   || { echo "FAIL slider: the fill does not use the row's range"; bad=1; }
+# x50-picture-stock: a page slider row draws its fill with fillSpan (a two-way slider from 0, tested in QpdLayoutTest)
+grep -q 'float\[\] on = QpdLayout.fillSpan(s.getValue(), s.getMin(), s.getMax());' "$HERE/src/org/lumen/projector/panel/QpdRowFrame.java" \
+  || { echo "FAIL slider: a page slider row does not draw a two-way fill from 0"; bad=1; }
 want '!boostOn() && state != null && state.on(FeatureId.BOOST) != null' "Boost step only where 51 reads"
-# tile order of the owner's layout: round eye and gear; wide autocorrect, picture, input, game; small keystone, zoom,
-# sound, focus, bluetooth, network, projection, then screen mirroring (or USB)
-grep -q 'ROUND_TILES = {{EYE, FeatureId.EYE}, {GENERAL, null}};' "$SP" || { echo "FAIL controller: round tiles"; bad=1; }
-order=$(sed -n '/TILE_ROWS = {/,/^    };/p' "$SP" | grep -o '{SMALL, [A-Za-z_.]*\(, [A-Za-z_.]*\)\?}\|{WIDE, [A-Za-z_.]*}' | tr '\n' ' ')
-exp='{WIDE, FeatureId.KEYSTONE_AK_NOW} {SMALL, KEYSTONE} {SMALL, FeatureId.ZOOM, FeatureId.ZOOM_DIGITAL} {WIDE, PICTURE} {SMALL, SOUND} {SMALL, FOCUS} {WIDE, FeatureId.INPUT} {SMALL, FeatureId.BLUETOOTH} {SMALL, FeatureId.NETWORK} {WIDE, GAME} {SMALL, PROJECTION} {SMALL, FeatureId.MIRRORING, FeatureId.USB_FILES} '
+# tile order of the owner's layout (2026-11-13): round theme button (voice search until 2026-11-18) and gear, wide
+# autocorrect, picture, input, game, small keystone, zoom, sound, focus, bluetooth, network, projection (gives its place to screen mirroring), eye protection.
+# 2026-11-14 (a Z9X user): on a model with stock 3D the 3D tile takes the network place, network goes up as a round
+# button left of the theme button. 2026-11-18: the signal panel is a developer feature, no round button (its one
+# row is in All settings, General, "developer")
+grep -q 'ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};' "$SP" || { echo "FAIL controller: round tiles"; bad=1; }
+grep -q 'PUSHES_UP = {{FeatureId.PICTURE_3D, FeatureId.NETWORK}};' "$SP" || { echo "FAIL controller: 3D pushes network up"; bad=1; }
+# the card is the user's quick menu (pencil, 2026-11-18); nothing stored = QuickDefaults over the spec's runtime rule
+want 'quickDefaults = QuickDefaults.of(spec, this::tilePresent);' "the default card from the spec's runtime rule (QuickDefaults)"
+want 'quickShown = QuickLayoutJson.reconcile(quickStored, quickCatalog, quickDefaults);' "the stored menu repaired on every read"
+QD="$HERE/src/org/lumen/menu/quick/QuickDefaults.java"
+grep -qF 'for (MenuSpec.Tile t : spec.roundRow(usable)) {' "$QD" || { echo "FAIL controller: round row from the spec's runtime rule"; bad=1; }
+want 'if (has(FeatureId.PICTURE_3D)) threeDPopup();' "the 3D popup only with the feature"
+order=$(sed -n '/TILE_ROWS = {/,/^    };/p' "$SP" | grep -o '{SMALL, [A-Za-z0-9_.]*\(, [A-Za-z0-9_.]*\)*}\|{WIDE, [A-Za-z0-9_.]*}' | tr '\n' ' ')
+exp='{WIDE, FeatureId.KEYSTONE_AK_NOW} {SMALL, KEYSTONE} {SMALL, FeatureId.ZOOM, FeatureId.ZOOM_DIGITAL} {WIDE, PICTURE} {SMALL, SOUND} {SMALL, FOCUS} {WIDE, FeatureId.INPUT} {SMALL, FeatureId.BLUETOOTH} {SMALL, FeatureId.PICTURE_3D, FeatureId.NETWORK} {WIDE, GAME} {SMALL, PROJECTION, null, YIELDS} {SMALL, FeatureId.MIRRORING} {SMALL, FeatureId.EYE} '
 [ "$order" = "$exp" ] || { echo "FAIL controller: tile order"; echo "$order"; bad=1; }
-# last small slot (2026-11-11): screen mirroring in place of USB, from QpdLayout.lastSmallTile; USB only as the
-# fallback where the receiver is missing, and only with Lumen Home's Files
-want 'String l = QpdLayout.lastSmallTile(mirror != null, has(FeatureId.USB_FILES) && usbFilesAvailable());' "last small tile from QpdLayout.lastSmallTile"
+grep -q 'USB_FILES\|usb_files' "$SP" && { echo "FAIL MenuSpec: a USB tile"; bad=1; }
+# the card is MenuSpec.cardRows over what is usable now: mirroring only with its receiver; the theme button always
+grep -qF 'for (List<MenuSpec.Tile> row : spec.cardRows(usable)) {' "$QD" || { echo "FAIL controller: card rows from MenuSpec.cardRows"; bad=1; }
 want 'if (has(FeatureId.MIRRORING) && QpdMirror.installed(app)) {' "mirroring popup gated on the receiver"
-want 'return QpdLayout.TILE_MIRROR.equals(l) ? FeatureId.MIRRORING.id : QpdLayout.TILE_USB.equals(l) ? FeatureId.USB_FILES.id : null;' \
-  "the last small tile is the one QpdLayout chose"
+want 'if (FeatureId.MIRRORING.id.equals(id)) return mirror != null;' "mirroring tile only with the receiver"
+want 'if (MenuSpec.GENERAL.equals(id) || MenuSpec.THEME.equals(id) || QuickCatalog.EDIT.equals(id)) return true;' \
+  "theme button and pencil on every model"
+want 'if (MenuSpec.THEME.equals(id)) { cycleTheme(); return; }' "theme button cycles the theme in place, the menu stays open"
+want 'ThemeMode next = LumenTheme.mode(app).next();' "theme button goes Светлая, Тёмная, Авто"
+want 'if (!LumenTheme.setMode(app, next)) {' "theme button writes the shared switch and says when it cannot"
+[ -f "$HERE/src/org/lumen/projector/panel/QpdVoice.java" ] && { echo "FAIL voice: QpdVoice is back"; bad=1; }
+# eye protection tile: OK switches it (QpdLayout.eyeToggle through the row's own path), its popup only with modes
+want 'case EYE: toggleEye(); return;' "eye tile OK switches eye protection"
+want 'choose(FeatureId.EYE, to);' "eye tile goes the row's way (refusal, question, read back)"
+want 'if (FeatureId.EYE.id.equals(key) && !eyeHasPopup()) return false;' "eye tile: RIGHT opens nothing on a switch-only model"
+want 'if (FeatureId.EYE.id.equals(id) && eyeHasPopup()) t.setOnLongOk(' "eye tile: held OK opens the popup on a model with modes"
+grep -q 'Runnable r = longOk ? onLongOk : onOk;' "$HERE/src/org/lumen/projector/panel/QpdTile.java" \
+  || { echo "FAIL tile: a held OK does not run on the release"; bad=1; }
+for m in light dark auto; do
+  [ -f "$HERE/res/drawable/lumen_qpd_ic_theme_$m.xml" ] || { echo "FAIL res: no theme icon $m"; bad=1; }
+done
+[ -f "$HERE/res/drawable/lumen_qpd_ic_usb.xml" ] && { echo "FAIL res: the USB tile icon is back"; bad=1; }
 # All settings (gear) is its own screen: the gear tile opens it, never a popup
 want 'if (MenuSpec.GENERAL.equals(id)) { openAll(null, null); return; }' "gear opens All settings"
-want '@Override public boolean hasPopup(String key) { return !MenuSpec.GENERAL.equals(key) && popupPage(key) != null; }' "gear not a popup"
+want 'return !MenuSpec.GENERAL.equals(key) && popupPage(key) != null;' "gear not a popup"
+# a section tile's popup leaves out the rows with a tile of their own (MenuSpec.popups): the full page's views minus
+# those, built after the extension rows and again when an extension adds rows; All settings keeps the full page
+want '        for (String sec : spec.popups.keySet()) tilePopup(sec);' "section popups without the card's own tiles"
+want '        List<FeatureId> keep = spec.popupRowsOf(sec);' "popup rows from MenuSpec.popupRowsOf"
+want '            if (f != null && !keep.contains(f.parent != null ? f.parent : f)) continue;' "popup leaves out the tiled rows"
+want '            if (v instanceof HeaderRow && Collections.disjoint(headers.get(v), keep)) continue;' "popup drops a header without rows"
+want '        tilePopup(sec);' "extension rows reach the popup"
+want '        if (sum != 0) featureOf.put(p.add(new TextRow(app, s(sum))), f);' "a summary goes with its row"
 # Input tile: the device's input popup (pages API)
 want 'if (FeatureId.INPUT.id.equals(key)) return devicePages == null ? null : devicePages.page(FeatureId.INPUT, this);' "Input tile popup from the device pages"
 want 'if (FeatureId.MIRRORING.id.equals(key)) return mirror == null ? null : mirror.page;' "mirroring tile opens its popup"
@@ -73,8 +124,6 @@ if f.get("eye", {}).get("options", ["off", "on"]) != ["off", "on"]: print("FAIL 
 if sorted(p.get("hints", {})) != ["picture.mode", "projection.rear"]: print("FAIL profile: Z9X hint blocks", sorted(p.get("hints", {}))); bad = 1
 sys.exit(bad)
 EOF
-  P9="$HERE/src/org/lumen/projector/panel/Z9xMenuPages.java"
-  grep -q 'case INPUT: return source().page;' "$P9" || { echo "FAIL Z9X: Input tile has no popup"; bad=1; }
 fi
 M="$HERE/src/org/lumen/projector/panel/QpdMirror.java"
 # the receiver owns the values: the popup only calls its provider, off the main thread, and shows the read back
@@ -91,13 +140,13 @@ if grep -q '"mirroring"' "$PJ"; then                # the profile has the mirror
     || { echo "FAIL manifest: no org.lumen.miracast.permission.CONTROL"; bad=1; }
 fi
 [ -f "$HERE/res/drawable/lumen_qpd_ic_mirror.xml" ] || { echo "FAIL res: no qpd_ic_mirror icon"; bad=1; }
-# Input popup: picking does what the Source overlay does (openPort, HOME intent)
-S="$HERE/src/org/lumen/projector/panel/QpdSource.java"
-if [ -f "$S" ]; then                                # the device has an input popup of its own (the Z9X)
-  grep -q 'SourceOverlay.openPort(app, r.port, "quick_panel")' "$S" || { echo "FAIL source popup: HDMI not opened like the overlay"; bad=1; }
-  # the source popup only reads the vendor (696); no setter
-  n=$(grep -c 'gm\.set\|g\.set\|g2\.set' "$S" || true)
-  [ "$n" = 0 ] || { echo "FAIL source popup: $n vendor setter call(s)"; bad=1; }
+# Input tile: the Source key's step on every model (apps/core/lumen-source), no input popup of a device
+[ -f "$HERE/src/org/lumen/projector/panel/QpdSource.java" ] && { echo "FAIL input: a device input popup (QpdSource) is back"; bad=1; }
+Z="$HERE/src/org/lumen/projector/panel/Z9xFeatures.java"
+if [ -f "$Z" ]; then
+  grep -qF 'case INPUT: org.lumen.source.SourceKey.press(app, "quick_menu"); return true;' "$Z" \
+    || { echo "FAIL input: the Z9X Input tile does not run the Source key step"; bad=1; }
+  grep -q 'case INPUT' "$HERE/src/org/lumen/projector/panel/Z9xMenuPages.java" && { echo "FAIL input: the Z9X input popup page is back"; bad=1; }
 fi
 # rows: radio dot on the left for every CheckRow, prototype switch for ToggleRow
 F="$HERE/src/org/lumen/projector/panel/QpdRowFrame.java"
@@ -115,5 +164,36 @@ done
 fields=$(grep -o '"[A-Za-z]*Row\.[a-z]*"' "$UI/PageAccess.java" | sort | tr '\n' ' ' || true)
 [ "$fields" = '"ChoiceRow.options" "ChoiceRow.placeholder" "HeaderRow.text" "NavRow.chevron" "SliderRow.formatter" "TextRow.text" ' ] \
   || { echo "FAIL PageAccess: field list changed ($fields), update this check"; bad=1; }
+# All settings list: UP / DOWN through QpdLayout's list rules, the list scrolls to the end at the last usable row
+A="$HERE/src/org/lumen/projector/panel/QpdAll.java"
+grep -qF 'int to = QpdLayout.listTarget(focusable, at, down);' "$A" \
+  && grep -qF 'if (QpdLayout.listEnd(focusable, to, down)) scroll.smoothScrollTo(0, down ? list.getHeight() : 0);' "$A" \
+  && grep -qF 'focusable[i] = ((QpdRowFrame) c).isFocusableRow();' "$A" \
+  || { echo "FAIL All settings list: moveInList does not run QpdLayout.listTarget / listEnd"; bad=1; }
+grep -qF 'if (down) all.moveInList(f, dir == QpdLayout.DOWN);' "$HERE/src/org/lumen/projector/panel/QpdPanel.java" \
+  || { echo "FAIL All settings list: UP / DOWN no longer go through moveInList"; bad=1; }
+# radio popups land on the checked row (stock Android TV lists), also when the value is read after the popup opened
+# (the remote's 3D key on a menu just built): QpdLayout.popupFocus in apply() until the first key
+want '        popupUntouched = target != null && focusRow == null;' "a direct popup open follows its checked row"
+want '        popupUntouched = true;' "a tile's popup follows its checked row"
+want '        if (down) popupUntouched = false; ' "a key ends the follow"
+want 'panel.refreshPage(QpdLayout.popupFocus(popupUntouched && !panel.isAllMode(), checkedIndex(panel.currentPage()), -1));' \
+  "apply puts the focus by QpdLayout.popupFocus"
+first=$(awk '/private boolean onKey\(KeyEvent ev\) \{/ { on = 1 } on && /popupUntouched = false;/ { print "key"; exit } on && /return / { print "return"; exit }' "$C")
+[ "$first" = key ] || { echo "FAIL popup focus: a key can leave onKey before it ends the follow"; bad=1; }
+[ "$(grep -A1 -xF '    private void openAll(String category, View focusRow) {' "$C" | tail -1)" = '        popupUntouched = false;' ] \
+  || { echo "FAIL popup focus: All settings follows a popup's checked row"; bad=1; }
+QP="$HERE/src/org/lumen/projector/panel/QpdPanel.java"
+grep -qxF '    public void refreshPage() { refreshPage(-1); }' "$QP" \
+  && grep -qF 'PageAccess.setFocusIndex(stack.peek(), focusIndex >= 0 ? focusIndex : focusedIndex());' "$QP" \
+  || { echo "FAIL popup focus: QpdPanel.refreshPage moves the focus by itself"; bad=1; }
+# a small tile's label: smaller down to 11 px where that fits, else full size and running like the wide tiles (QpdLayout)
+QT="$HERE/src/org/lumen/projector/panel/QpdTile.java"
+grep -qF 'labelP.setTextSize(px(QpdLayout.LABEL) * QpdLayout.labelScale(tw, room));' "$QT" \
+  && grep -qF 'if (!QpdLayout.labelRuns(tw, room)) {' "$QT" \
+  && grep -qF 'dx = QpdLayout.marqueeShift(tw, room) * QpdLayout.marqueePhase(Math.max(0, t),' "$QT" \
+  && grep -qF 'QpdStyle.drawFaded(c, title, labelP, (w - room) / 2f, room, base + labelP.ascent() - px(4),' "$QT" \
+  && ! grep -q 'ellipsize' "$QT" \
+  || { echo "FAIL small tile label: not QpdLayout.labelScale / labelRuns with the wide tiles' marquee, or an ellipsis"; bad=1; }
 [ $bad = 0 ] && echo "controller wiring: ok"
 exit $bad

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">وضع الألعاب مفعّل</string>
+    <string name="lumen_m_ps_ai">الإعدادات الاحترافية غير مدعومة في وضع جودة الصورة بالذكاء الاصطناعي</string>
+    <string name="lumen_m_ps_performance">الإعدادات الاحترافية غير مدعومة في وضع صورة الأداء</string>
+    <string name="lumen_m_ps_ai_basic">الإعدادات القياسية غير مدعومة في وضع جودة الصورة بالذكاء الاصطناعي</string>
+    <string name="lumen_m_ps_performance_basic">الإعدادات القياسية غير مدعومة في وضع صورة الأداء</string>
+</resources>

@@ -37,7 +37,6 @@
     "bluetooth": {},
     "network": {},
     "mirroring": {},
-    "usb_files": {},
     "game.mode": {"options": ["off", "on", "auto"]},
     "projection.mode": {"options": ["auto", "table", "ceiling"]},
     "projection.rear": {},
@@ -45,10 +44,24 @@
     "settings.projector": {},
     "settings.recents": {},
     "settings.ambient_speaker": {},
-    "settings.launcher": {"options": ["lumen", "classic"]}
+    "settings.sleep_timer": {},
+    "settings.launcher": {"options": ["lumen", "classic"]},
+    "settings.report": {},
+    "signal.panel": {},
+    "signal.pin": {}
   },
   "hints": {"picture.mode": "picture_mode", "projection.rear": "rear_projection", "game.mode": "game_mode"},
   "keys": {"gear_short": "quick_menu", "gear_long": "none", "eye_gear_short": "restore"},
   "game_menu": {"enabled": false},
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_dayao projection_screen (G0058 V1.7.116), test/stock/projection_screen.json",
+      "groups": [
+        {"rows": ["keystone.realtime", "keystone.ak_now", "keystone.fit_now"]},
+        {"header": "auto_correction", "rows": ["keystone.on_power"]},
+        {"header": "line", "rows": ["keystone.manual", "zoom.digital", "keystone.rotation", "keystone.restore"]}
+      ]
+    }
+  },
   "pending": []
 }

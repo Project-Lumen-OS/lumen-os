@@ -81,8 +81,6 @@
     <string name="panel_pm_performance_msg">Убедитесь, что вентиляционные отверстия не закрыты, а в комнате не теплее 25 °C. Не используйте этот режим долго.</string>
     <string name="panel_lamp">Яркость</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Нажмите → ещё раз для Boost</string>
-    <string name="panel_boost_leave_press_again">Нажмите ← ещё раз, чтобы выйти из Boost</string>
     <string name="panel_boost_3d">Выключите 3D и повторите</string>
     <string name="panel_boost_hot">Проектор слишком нагрелся для Boost. Повторите позже</string>
     <string name="panel_ultra120">Ultra 120 Гц</string>
@@ -152,7 +150,6 @@
     <string name="panel_tile_hdmi_only">Только HDMI</string>
     <string name="panel_system_settings">Системные настройки</string>
     <string name="panel_hdmi_settings">Настройки HDMI</string>
-    <string name="panel_lamp_hint">На уровне 10 нажмите → дважды, чтобы включить Boost.</string>
     <string name="panel_eye_desc">Свет приглушается, когда перед объективом кто-то есть.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Бок о бок</string>

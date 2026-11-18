@@ -1,0 +1,50 @@
+# Property edits of the PUBLIC XGIMI TITAN Noir Pro image (h0062, the X50 family recipe with a release version, x50_props.py;
+# 2026-11-13 first trial build). The X50 Ultra Max file with this model's names and identity. Sections name the file:
+#   [system]   /system/build.prop          [product]  /system/product/etc/build.prop
+# KEY=VALUE replaces the one line of KEY in that file (it must be there exactly once), +KEY=VALUE appends a new
+# key (it must not be in the file), -KEY deletes the one line of KEY. @V@ is the variant (t1), @BID@ the build id
+# date part (UTC yyyymmddHHMM), @UTC@ / @DATE@ that minute as epoch seconds / as the build.prop date text. Nothing else of either file changes (verify_tree_x50.py compares line by line).
+[system]
+ro.product.system.model=XGIMI TITAN Noir Pro
+ro.build.display.id=Lumen OS titanpro-@V@ (AP2A.240905.003, @BID@)
+# Setup shows it; Lumen Setup is the only reader in the image
+ro.z9x.version=titanpro-@V@
+# t12 (t11 review P0.1b): every test build has its own identity. Android re-runs the default permission grants and
+# rescans packages only when the build fingerprint differs from the one stored in /data (a reused DSU /data with the
+# previous tN's fingerprint never granted the new package). ro.build.fingerprint is derived by init from these.
+ro.build.version.incremental=eng.root.20261003.104216.lumen10.titanpro.@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261003.104216.titanpro.@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.240905.003/eng.root.20261003.104216.titanpro.@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
+[product]
+# Bluetooth as stock (x50-parity-core): the stock vendor build.prop sets persist.bluetooth.disableabsvol=true (X50 G0111
+# line 184), the Z9X base's product build.prop false; true again here, so the HAL applies the index (lumen-audio BtVolume)
+persist.bluetooth.disableabsvol=true
+ro.product.product.model=XGIMI TITAN Noir Pro
+bluetooth.device.default_name=XGIMI TITAN Noir Pro
+ro.lumen.version=titanpro-@V@
+# no OTA on the X50: no partition list, no manifest, the Z9X device id gone, no Z9X build id or version code
+-ro.product.ab_ota_partitions
+-ro.z9x.ota.manifest_url
+ro.z9x.device=x50
+ro.z9x.build_id=lumen-titanpro-@V@-@BID@
+ro.z9x.version_code=0
+# the OTA boot gate behaves like stock update_verifier (no update can be pending without an updater)
+ro.z9x.ota.gate=0
+# no rescue reboot to fastbootd (z9x_rescue.rc is removed too)
+ro.z9x.rescue=0
+# public image: adb stays as the base (Lumen OS 1.0.9) has it; no network adb, no adb without confirmation
+# identity of the image (registry devices/h0062: family horse_popular, model H0062); ro.z9x.device=x50 above is the X50
+# family image (Lumen Home's projector app, LumenDsuInstall's X50 profiles)
++ro.lumen.device=h0062
++ro.lumen.model=H0062
++ro.lumen.models=H0062
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-titanpro-@V@-@BID@
++ro.lumen.base_build_id=lumen-1.0.9-20261106anp
+# install from a DSU try (apps/LumenDsuInstall, t8): on; 0 is the kill switch. The owner switch for a real X50 write,
+# ro.lumen.dsu_install.x50_write, is never set by the image (verify_tree_x50.py refuses it)
++ro.lumen.dsu_install=1

@@ -1,0 +1,11 @@
+ro.boot.xgimi.modelname=G0111
+ro.vendor.build.version.incremental=v1.2.64
+ro.vendor.build.date=Mon Jun 29 13:03:16 CST 2026
+ro.build.version.incremental=v1.2.64
+ro.build.version.release=14
+ro.build.version.security_patch=2026-04-05
+ro.bootloader=01.01.260629
+ro.xgimi.gmui.version=6.18.202.04
+persist.xgimi.rc.version=B970C_CY07_CY_V1.0.4
+vendor.wlan.firmware.version=t-neptune-main-sta-2017-MT7920_2034_L_x86_Gen4m_AT-20240902122656
+kernel=5.15.192-android14-11-gc245c06d4331-dirty

@@ -1036,6 +1036,14 @@ public final class ManualKeystonePanel extends Panel {
     @Override
     protected long autoHideMs() { return AUTO_HIDE_MS; }
 
+    /**
+     * The remote's gear is this screen's MENU (the hint "Menu: grid / over the picture / test quad"; 2026-11-13:
+     * the gear threw him into the quick menu): the shared tool rule (org.lumen.menu.KeyTools) hands a short press to
+     * onKeyEvent as KEYCODE_MENU, a held gear does nothing here.
+     */
+    @Override
+    protected boolean takesMenuKey() { return true; }
+
     @Override
     protected boolean onKeyEvent(KeyEvent ev) {
         int code = ev.getKeyCode();

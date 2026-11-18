@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "device": "x50",
+  "channel": "x50-beta",
+  "published_utc": 1794445244,
+  "version": "1.0.10-beta3",
+  "version_code": 1001003,
+  "build_utc": 1794445080,
+  "build_id": "lumen-x50-1.0.10-beta3-202611120058",
+  "requires": {
+    "vendor_incremental": [
+      "v1.2.64",
+      "v1.2.54"
+    ],
+    "min_version_code": 0,
+    "blobs_set": [
+      "x50-v1264-a"
+    ]
+  },
+  "model": "G0111",
+  "trial_only": true,
+  "image": {
+    "name": "lumen-os-x50-1.0.10-beta3-nogms-system.img",
+    "size": 996073472,
+    "sha256": "e491895767db0e2e7f334d9a237d80f5733f48537d35dac8f4b12b9b0fa210ad",
+    "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50-1.0.10-beta3/lumen-os-x50-1.0.10-beta3-nogms-system.img"
+  },
+  "changelog": {
+    "en": "Lumen OS for the XGIMI X50 Ultra, beta 1.0.10-beta3. A new quick menu, a game menu and a licences screen. Trial only: the XGIMI system does not change, a restart brings it back. Needs XGIMI firmware V1.2.64 or V1.2.54.",
+    "ru": "Lumen OS для XGIMI X50 Ultra, бета 1.0.10-beta3. Новое быстрое меню, игровое меню и экран лицензий. Только пробный запуск: система XGIMI не меняется, перезагрузка возвращает её. Нужна прошивка XGIMI V1.2.64 или V1.2.54."
+  },
+  "packages": []
+}

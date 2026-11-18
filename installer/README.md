@@ -118,7 +118,7 @@ Options:
 
 Only `system`, `z9x_blobs` and, with `gapps`, `z9x_gapps` of the current slot. It formats `userdata`,
 `metadata` and `cache`, and deletes XGIMI's unused `product` and `system_ext` of the current slot and
-leftover `*-cow` partitions of unfinished updates.
+the `*-cow` partitions a finished update left for that slot. Any other `*-cow` stops it before it writes.
 
 It never touches vbmeta, boot, vendor, dtbo, mboot, persist, xgimi*, tvconfig, misc, frp or the other
 slot, and never runs `fastboot -w` or `fastboot erase`, which hang the Z9X at boot. Every partition

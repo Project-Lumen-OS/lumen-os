@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The sound output page (owner variant C, 2026-11-18): the card, row lines and the Connect action.
+     Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
+<resources>
+    <string name="lumen_m_out_now">現在の音声の出力先</string>
+    <string name="lumen_m_out_connect">接続</string>
+    <string name="lumen_m_out_connecting">接続中</string>
+    <string name="lumen_m_out_connected">接続済み</string>
+    <string name="lumen_m_out_offline">未接続</string>
+    <string name="lumen_m_out_jack">3.5mmジャック</string>
+    <string name="lumen_m_out_by_hand">手動でのみ選択</string>
+    <string name="lumen_m_out_auto_picked">自動で選択</string>
+    <string name="lumen_m_out_hand_picked">手動で選択済み</string>
+    <string name="lumen_m_out_earc">HDMI eARC</string>
+</resources>

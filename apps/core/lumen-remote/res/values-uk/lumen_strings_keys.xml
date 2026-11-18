@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">Кнопки пульта</string>
+    <string name="lumen_remote_keys_assign">Призначити кнопку</string>
+    <string name="lumen_remote_keys_press">Натисніть кнопку на пульті</string>
+    <string name="lumen_remote_keys_leave">Щоб вийти, натисніть Назад</string>
+    <string name="lumen_remote_keys_fixed">Цю кнопку перепризначити не можна</string>
+    <string name="lumen_remote_keys_pick">Що робитиме кнопка</string>
+    <string name="lumen_remote_keys_as_before">Як було</string>
+    <string name="lumen_remote_keys_reset_all">Скинути все</string>
+    <string name="lumen_remote_keys_saved">Збережено</string>
+    <string name="lumen_remote_keys_empty">Поки жодну кнопку не призначено</string>
+    <string name="lumen_remote_keys_gone">Застосунок видалено. Кнопка знову працює як раніше.</string>
+    <string name="lumen_remote_keys_name_youku">Кнопка Youku</string>
+    <string name="lumen_remote_keys_name_tencent">Кнопка Tencent Video</string>
+    <string name="lumen_remote_keys_name_iqiyi">Кнопка iQIYI</string>
+    <string name="lumen_remote_keys_name_mango">Кнопка Mango TV</string>
+    <string name="lumen_remote_keys_name_bilibili">Кнопка bilibili</string>
+    <string name="lumen_remote_keys_name_ambient">Кнопка заставки</string>
+    <string name="lumen_remote_keys_name_shortcut">Кнопка швидкого доступу</string>
+    <string name="lumen_remote_keys_name_custom">Кнопка швидкого доступу %1$d</string>
+    <string name="lumen_remote_keys_name_f">Клавіша F%1$d</string>
+    <string name="lumen_remote_keys_name_browser">Клавіша браузера</string>
+    <string name="lumen_remote_keys_name_mail">Клавіша пошти</string>
+    <string name="lumen_remote_keys_name_music">Клавіша музики</string>
+    <string name="lumen_remote_keys_name_calculator">Клавіша калькулятора</string>
+    <string name="lumen_remote_keys_name_contacts">Клавіша контактів</string>
+    <string name="lumen_remote_keys_name_calendar">Клавіша календаря</string>
+    <string name="lumen_remote_keys_name_bookmarks">Клавіша закладок</string>
+    <string name="lumen_remote_keys_do_source">Джерело сигналу</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">Трапеція</string>
+    <string name="lumen_remote_keys_do_focus">Фокус</string>
+    <string name="lumen_remote_keys_do_quick">Швидкі налаштування</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">Сигнал</string>
+</resources>

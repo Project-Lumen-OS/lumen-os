@@ -24,11 +24,6 @@
     <string name="val_off">Aus</string>
     <string name="val_unknown">Keine Daten</string>
     <string name="val_not_ready">Projektor nicht bereit</string>
-    <string name="key_slot3">iQIYI-Taste</string>
-    <string name="key_slot4">bilibili-Taste</string>
-    <string name="slot_default_fmt">%1$s (Standard)</string>
-    <string name="slot_default_item">Standard: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: Apps</string>
     <string name="cancel">Abbrechen</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Keine App für diese Taste gefunden</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Zuerst „An Leinwand anpassen“ einschalten</string>
     <string name="toast_not_ready">Der Projektor ist noch nicht bereit</string>
     <string name="toast_failed">Das hat nicht geklappt</string>
-    <string name="toast_curtain_offer">Das Bild hat sich verschoben: Projektor → Trapezkorrektur → „Jetzt an Leinwand anpassen“</string>
+    <string name="toast_curtain_offer">Das Bild hat sich verschoben: Projektor › Trapezkorrektur › „Jetzt an Leinwand anpassen“</string>
     <string name="toast_setup_running">Zuerst die Einrichtung abschließen</string>
 </resources>

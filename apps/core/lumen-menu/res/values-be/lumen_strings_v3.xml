@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">Скасаваць</string>
     <string name="lumen_m_panel_boost_press_again">Націсніце → яшчэ раз для Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Націсніце ← яшчэ раз, каб выйсці з Boost</string>
+    <string name="lumen_m_lamp_off_press_again">Выява адключыцца. Каб уключыць яе зноў, націсніце кнопку сілкавання. Націсніце ← яшчэ раз, каб адключыць.</string>
     <string name="lumen_m_toast_setup_running">Спачатку завяршыце наладжванне</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI-якасць</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Дакладны колер</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Калонка і святло</string>
     <string name="lumen_m_ct_custom">Карыстальніцкая</string>
     <string name="lumen_m_lamp_off">Адключыць выяву</string>
+    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris_dynamic">Дынамічны</string>
+    <string name="lumen_m_iris_lamp_dynamic">Пры дынамічным IRIS яркасць не мяняецца.</string>
+    <string name="lumen_m_iris_lamp_held">Пры гэтым значэнні IRIS яркасць не мяняецца.</string>
 </resources>

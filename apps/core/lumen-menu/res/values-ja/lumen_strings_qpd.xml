@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">ズーム</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">ネットワーク</string>
+    <string name="lumen_qpd_theme">テーマ</string>
+    <string name="lumen_qpd_theme_light">ライト</string>
+    <string name="lumen_qpd_theme_dark">ダーク</string>
+    <string name="lumen_qpd_theme_auto">自動</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">画面ミラーリング</string>
     <string name="lumen_qpd_mirror_on">画面ミラーリング（Miracast）</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">最大の明るさです。ファンの音が大きくなります。</string>
     <string name="lumen_qpd_tip_picture">見る内容に合わせてモードを選んでください。</string>
     <string name="lumen_qpd_tip_rear">あなたとプロジェクターはスクリーンの反対側にいます。</string>
+    <string name="lumen_qpd_tip_front">あなたとプロジェクターはスクリーンの同じ側にいます。</string>
+    <string name="lumen_qpd_tip_table">プロジェクターはテーブルに置かれています。</string>
+    <string name="lumen_qpd_tip_ceiling">プロジェクターは天井に逆さまに吊るされています。</string>
+    <string name="lumen_qpd_tip_auto">プロジェクターが置き方を自分で判断し、映像の向きを切り替えます。</string>
 </resources>

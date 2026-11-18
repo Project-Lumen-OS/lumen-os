@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Zoom</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Netzwerk</string>
+    <string name="lumen_qpd_theme">Design</string>
+    <string name="lumen_qpd_theme_light">Hell</string>
+    <string name="lumen_qpd_theme_dark">Dunkel</string>
+    <string name="lumen_qpd_theme_auto">Automatisch</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Bildschirmspiegelung</string>
     <string name="lumen_qpd_mirror_on">Bildschirmspiegelung (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Maximale Helligkeit. Die Lüfter werden lauter.</string>
     <string name="lumen_qpd_tip_picture">Wählen Sie einen Modus für das, was Sie sehen.</string>
     <string name="lumen_qpd_tip_rear">Sie und der Projektor sind auf verschiedenen Seiten der Leinwand.</string>
+    <string name="lumen_qpd_tip_front">Sie und der Projektor sind auf derselben Seite der Leinwand.</string>
+    <string name="lumen_qpd_tip_table">Der Projektor steht auf einem Tisch.</string>
+    <string name="lumen_qpd_tip_ceiling">Der Projektor hängt kopfüber an der Decke.</string>
+    <string name="lumen_qpd_tip_auto">Der Projektor erkennt selbst, ob er steht oder hängt, und dreht das Bild.</string>
 </resources>

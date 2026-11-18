@@ -24,7 +24,10 @@ public final class GmLicences {
             + "\"Xbox One Controller Free\" by paxillop, https://sketchfab.com/3d-models/xbox-one-controller-free-97fb54c001f84a6896b6ce8eb7a1814d, CC BY 4.0. Changed: logo and letters removed, recoloured, reduced and converted to a real-time model, rendered to images.\n\n"
             + "\"Nintendo Switch OLED\" by Wille Evensson, https://sketchfab.com/3d-models/nintendo-switch-oled-aa2c7d815a104accae7709eb39ac2184, CC BY 4.0. Changed: only the controllers, recoloured, markings removed, reduced and converted to a real-time model, rendered to images.\n\n"
             + "Licence: https://creativecommons.org/licenses/by/4.0/. These are independent fan models, not official Sony, Microsoft or Nintendo material, and do not imply endorsement.\n\n"
-            + "Inter typeface by Rasmus Andersson, SIL Open Font License 1.1.";
+            + "Inter typeface by Rasmus Andersson, SIL Open Font License 1.1.\n\n"
+            + "The home screen preview in Lumen Setup shows stills from the Blender open movies Cosmos Laundromat, Spring, "
+            + "Big Buck Bunny, Sintel, Caminandes, Sprite Fright, Tears of Steel and Coffee Run, (c) Blender Foundation, "
+            + "https://www.blender.org, CC BY 3.0 and CC BY 4.0.";
 
     /** The Licences dialog over {@code a} (Projector settings, Help on the Z9X, HB and Play 6). */
     public static void show(Activity a) {

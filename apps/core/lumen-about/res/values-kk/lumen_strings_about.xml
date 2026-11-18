@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Модель коды</string>
+    <string name="lumen_about_dlp">DLP контроллері</string>
+    <string name="lumen_about_part_firmware">%1$s, микробағдарлама %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI микробағдарламасы</string>
+    <string name="lumen_about_firmware_dated">%1$s, %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, қауіпсіздік жаңартуы %2$s</string>
+    <string name="lumen_about_kernel">Ядро</string>
+    <string name="lumen_about_boot_loader">Іске қосу микробағдарламасы</string>
+    <string name="lumen_about_gmui">XGIMI интерфейсі</string>
+    <string name="lumen_about_platform">MediaTek платформасы</string>
+    <string name="lumen_about_remote">Пульт</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">XGIMI жүйесіне оралу</string>
+    <string name="lumen_about_back_summary_file">Флешкаға арналған файл: %1$s</string>
+    <string name="lumen_about_back_summary">XGIMI қалпына келтіру флешкасымен</string>
+    <string name="lumen_about_intro">Осы модельге арналған XGIMI қалпына келтіру флешкасы XGIMI жүйесін қайтарады. Қалай жасау керектігі жоба бетіндегі нұсқаулықта жазылған.</string>
+    <string name="lumen_about_usb_file">Флешкаға арналған файл аты</string>
+    <string name="lumen_about_official">XGIMI ресми файлы</string>
+    <string name="lumen_about_official_value">%1$s, %2$s байт</string>
+    <string name="lumen_about_searching">Осы микробағдарламаның ресми файлы ізделуде</string>
+    <string name="lumen_about_guide_files">XGIMI ресми файлдары жоба бетіндегі нұсқаулықта көрсетілген.</string>
+    <string name="lumen_about_erases">Флешка проектордағы бәрін өшіреді: қолданбаларды, аккаунттарды, баптауларды және файлдарды.</string>
+    <string name="lumen_about_scan">Ашу үшін телефонмен сканерлеңіз</string>
+    <string name="lumen_about_close">Жабу</string>
+</resources>

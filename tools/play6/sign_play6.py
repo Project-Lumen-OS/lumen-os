@@ -124,8 +124,10 @@ G = os.path.dirname(os.path.dirname(HERE))
 SIGN = os.path.join(G, "tools", "sign")
 sys.path.insert(0, SIGN)
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), "base_patch"))
 import apex_sign  # noqa: E402  (read only: rebuild_zip, sign_container, same_entries)
 import apexlib  # noqa: E402  (read only)
+import base_patch  # noqa: E402  (the fixes carried in base APKs, tools/base_patch/patches.tsv)
 import check_signers  # noqa: E402  (the S1 sets)
 import sign_tar  # noqa: E402  (read only)
 
@@ -822,7 +824,8 @@ def stage_base(a, tools, env, km, test, key, tp, openssl):
             for r in todo:
                 r["out_file"] = os.path.join(part, r["path"])
                 os.makedirs(os.path.dirname(r["out_file"]), exist_ok=True)
-                futs.append(ex.submit(sign_tar.resign_apk, r["file"], r["out_file"], key, r["info"]["schemes"],
+                futs.append(ex.submit(sign_tar.resign_apk, base_patch.patched_apk(r["path"], r["file"], work) or r["file"],
+                                      r["out_file"], key, r["info"]["schemes"],
                                       tools, env))
             for f in cf.as_completed(futs):
                 f.result()

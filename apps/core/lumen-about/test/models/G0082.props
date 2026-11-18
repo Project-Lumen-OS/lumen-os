@@ -1,0 +1,11 @@
+ro.boot.xgimi.modelname=G0082
+ro.vendor.build.version.incremental=v6.15.62
+ro.vendor.build.date=Wed Mar 25 15:55:23 HKT 2026
+ro.build.version.incremental=v6.15.62
+ro.build.version.release=14
+ro.build.version.security_patch=2025-07-05
+ro.bootloader=01.01.260325
+ro.xgimi.gmui.version=6.17.200.03
+persist.xgimi.rc.version=B940D_CY06_CY_V1.0.3
+vendor.wlan.firmware.version=t-neptune-main-sta-2017-MT7920_2034_L_x86_Gen4m_AT-20240902122656
+kernel=5.15.167-android14-11-g6af14f615a75-dirty

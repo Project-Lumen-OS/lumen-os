@@ -18,7 +18,7 @@
   providers and activities never run before the user unlocked.
 
   Components: the contract of plan 2.3 as far as its classes exist. Not declared on the Play 6:
-  OTA_STATE receiver (no updater; the permission is still defined), problem reports, the lamp-only standby
+  OTA_STATE receiver (no updater; the permission is still defined), the lamp-only standby
   screen (the Play 6 standby uses an overlay key catcher). t19: Lumen Setup (org.lumen.setup) is the first-run
   flow of the image, so the setupbridge provider is declared
   (setup.SetupBridgeProvider, the Play 6 class of the same name) and this app requests SETUP_BRIDGE itself:
@@ -34,8 +34,7 @@
   apps/common/projector/FILES are synced copies (apps/common/sync.sh); never edit a copy.
 
   Permissions: the Z9X projector set (protection levels checked in the Lineage 21 source, see
-  apps/Z9xProjector/AndroidManifest.xml) minus the problem-report ones (INTERNET, READ_LOGS, DUMP,
-  ACCESS_WIFI_STATE) and the AI-sound ones (MEDIA_CONTENT_CONTROL, QUERY_ALL_PACKAGES); MODIFY_AUDIO_ROUTING
+  apps/ProjectorBase/AndroidManifest.xml) with the problem-report ones (apps/core/lumen-report), minus the AI-sound ones (MEDIA_CONTENT_CONTROL, QUERY_ALL_PACKAGES); MODIFY_AUDIO_ROUTING
   came back in 1.0.6 for the sound output choice. A platform-signed APK gets every "signature" permission also from /system/app.
   The two "dangerous" Bluetooth ones are pre-granted by /system/product/etc/default-permissions/
   z9x-projector.xml (the Z9X file, package org.lumen.projector) and self-granted at runtime as a fallback.
@@ -75,6 +74,14 @@
         android:protectionLevel="signature" />
 
     <!-- Ask org.lumen.tvinput whether an HDMI TIF session is open (its HdmiStateProvider). -->
+    <!-- Problem reports (apps/core/lumen-report, protection levels as in the Lineage 21 source): INTERNET (the
+         upload), READ_LOGS (signature|privileged|development: logcat of other processes and DropBox, with
+         PACKAGE_USAGE_STATS), DUMP (signature|privileged|development: exit reasons of other apps), ACCESS_WIFI_STATE
+         (saved Wi-Fi names, read only to remove them from a report), ACCESS_NETWORK_STATE (send when online). -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.DUMP" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <uses-permission android:name="org.lumen.tvinput.permission.HDMI_STATE" />
     <!-- HdmiControlManager (console recognition, CEC page: plan P2 / P3). -->
     <uses-permission android:name="android.permission.HDMI_CEC" />
@@ -119,6 +126,9 @@
     <!-- apps/core/lumen-stats: the statistics ping (HTTPS) with the serial (Build.getSerial, signature|privileged) -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+    <!-- apps/core/lumen-control, the stock XGIMI phone remote: INTERNET (its LAN sockets), INJECT_EVENTS (signature,
+         declared once with the remote buttons below: autofocus and keys without a vendor keypad scancode go in as
+         Android key codes) -->
 
     <!-- launches from the key receiver; Ambient key -->
     <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
@@ -131,6 +141,8 @@
 
     <!-- Settings.Global device_name (Play6App, once), Settings.System, stale uid network policies. -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <!-- Remote buttons: a key given a projector action presses that action's key (apps/core/lumen-remote KeyActions) -->
+    <uses-permission android:name="android.permission.INJECT_EVENTS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MANAGE_NETWORK_POLICY" />
 
@@ -139,7 +151,7 @@
     <uses-permission android:name="android.permission.DEVICE_POWER" />
     <uses-permission android:name="android.permission.REBOOT" />
 
-    <!-- remote: BLE remote auto-pairing (RemoteAutoPair). -->
+    <!-- remote: BLE remote auto-pairing (the shared module apps/core/lumen-remote, RemotePairing). -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -253,7 +265,7 @@
             android:permission="org.lumen.projector.permission.STANDBY_STATE" />
 
         <!-- Lumen Setup's SetupBridge (call() only; it checks SETUP_BRIDGE itself): remote, picture, device name
-             and launcher steps through the Hal facade, RemoteAutoPair and LauncherSwitcher
+             and launcher steps through the Hal facade, RemotePairing and LauncherSwitcher
             . -->
         <provider
             android:name=".setup.SetupBridgeProvider"
@@ -344,5 +356,79 @@
             android:directBootAware="false"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <!-- Problem reports (apps/core/lumen-report): the screen of the shared General row, the background scan
+             and send jobs (job ids 0x4c52000N), the boot and DropBox trigger. -->
+        <activity
+            android:name="org.lumen.report.ReportActivity"
+            android:directBootAware="false"
+            android:exported="false"
+            android:label="@string/lumen_report_title"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:launchMode="singleTop"
+            android:configChanges="keyboard|keyboardHidden|navigation" />
+        <service
+            android:name="org.lumen.report.ReportService"
+            android:directBootAware="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver
+            android:name="org.lumen.report.ReportBoot"
+            android:directBootAware="false"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DROPBOX_ENTRY_ADDED" />
+            </intent-filter>
+        </receiver>
+        <!-- Starts the unexpected-stop watch of problem reports at every process start (lumen-report README). -->
+        <provider
+            android:name="org.lumen.report.AliveStart"
+            android:authorities="org.lumen.projector.alive"
+            android:directBootAware="false"
+            android:exported="false" />
+        <!-- Settings > About (apps/core/lumen-about): the rows Model code, XGIMI firmware and Back to the XGIMI system
+             that TvSettings' About page asks for (method rows, read only), and the screen of the last row, which
+             TvSettings opens (so both are exported). -->
+        <provider
+            android:name="org.lumen.about.AboutProvider"
+            android:authorities="org.lumen.about"
+            android:directBootAware="false"
+            android:exported="true" />
+        <activity
+            android:name="org.lumen.about.XgimiSystemActivity"
+            android:directBootAware="false"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="@string/lumen_about_back"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|navigation" />
+        <!-- "Remote buttons" (apps/core/lumen-remote keys package, the same screen on every model): give a remote or
+             keyboard key an app. KeyFilterService runs only while a keyboard key has an app or the screen waits for
+             a key (KeyFilter turns it on and off in the enabled accessibility services). -->
+        <activity
+            android:name="org.lumen.remote.keys.KeyBindActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
+        <service
+            android:name="org.lumen.remote.keys.KeyFilterService"
+            android:exported="true"
+            android:label="@string/lumen_remote_keys_title"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/lumen_remote_key_filter" />
+        </service>
+        <!-- the signal panel of every projector (apps/core/lumen-signal): the remote action "signal" (lumen-remote,
+             also the Shortcut key's default) and the menu's round button send this app SIGNAL_PANEL; not exported -->
+        <receiver android:name="org.lumen.signal.SignalReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="org.lumen.projector.action.SIGNAL_PANEL" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -10,7 +10,8 @@
 # a TEST one made by devices/g0111/test/x50_fixture.py from the real one (its structure, made-up files; the fake
 # drawer is 5 MiB, so a 4 MiB partition is too small; no proprietary file is ever used). The projector is the
 # fake network adb of tools/devices/test/installer_hb.sh, reduced to what 'blobs' asks ('adb pull' reads $DEV).
-# Cases: the 16 MiB tar from a stock projector and its round trip through the real devices/g0111/image/x50_blobs.sh
+# Cases: the 16 MiB tar from a stock projector and its round trip through the real blobs reader z9x_blobs.sh with the
+# X50 family's blobs.conf
 # (sys.z9x.blobs=ok, sys.lumen.nui=ok, every file bound, the drawer nativeui_main_exec); the drawer or its library
 # wrong or missing, a codec file wrong: STOP with the eye-protection text, no tar, never the --no-blobs advice;
 # --no-blobs and --blobs=embedded refused before adb is used; BLOBS_SIZE not whole MiB, too small, too large;
@@ -21,7 +22,8 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 G=$(cd "$HERE/../../.." && pwd)
 INST=$G/installer
 OTEST=$G/tools/ota/test
-READER=$G/devices/g0111/image/x50_blobs.sh
+READER=$G/tools/ota/image/z9x_blobs.sh
+RCONF=$G/devices/g0111/image/blobs.conf
 DCONF=$G/devices/g0111/device.conf
 W=$(mktemp -d "${TMPDIR:-/tmp}/lumen_x50b.XXXXXX") && W=$(cd "$W" && pwd) || exit 1
 trap 'rm -rf "$W"' EXIT
@@ -161,20 +163,21 @@ end() {
   if [ "$CFAIL" = 0 ]; then PASS=$((PASS + 1)); echo "ok   $CASE"
   else FAIL=$((FAIL + 1)); echo "FAIL $CASE"; sed 's/^/     | /' "$C/out" | tail -8; fi
 }
-roundtrip() {  # the tar the installer wrote, read by the real x50_blobs.sh with the test allow-list
+roundtrip() {  # the tar the installer wrote, read by the real blobs reader with the test allow-list
   local R=$C/root T=$C/dt img; img=$(BLOBF)
   mkdir -p "$R/system/etc/z9x" "$R/dev/block/mapper" "$R/mnt" "$R/data/vendor/tmp" "$T"
-  cp "$W/allow.txt" "$R/system/etc/z9x/x50_blobs_allow.txt"; cp "$img" "$R/dev/block/mapper/z9x_blobs_$SL"
+  cp "$W/allow.txt" "$R/system/etc/z9x/x50_blobs_allow.txt"; cp "$RCONF" "$R/system/etc/z9x/blobs.conf"
+  cp "$img" "$R/dev/block/mapper/z9x_blobs_$SL"
   awk '$1 !~ /^#/ && $1 !~ /^set=/ && NF >= 3 { t = "/system/" $2; for (i = 4; i <= NF; i++) if ($i ~ /^bind=/) t = substr($i, 6); print $1, t }' \
     "$W/allow.txt" > "$T/want"
   while read -r h t; do mkdir -p "$(dirname "$R$t")"; case "$t" in /system/*) : > "$R$t" ;; *) echo own > "$R$t" ;; esac; done < "$T/want"
   printf '%s\n' "ro.boot.slot_suffix=_$SL" "ro.vendor.build.version.incremental=${RTFW:-$FW}" > "$T/props"; : > "$T/binds"
   env Z9X_ROOT="$R" Z9X_T="$T" PATH="$W/dbin:$PATH" sh "$READER" > "$T/out" 2>&1
-  [ ! -s "$T/out" ] || fail "x50_blobs.sh output: $(cat "$T/out")"
+  [ ! -s "$T/out" ] || fail "z9x_blobs.sh output: $(cat "$T/out")"
   grep -qx 'sys.z9x.blobs=ok' "$T/props" || fail "round trip: $(grep sys.z9x.blobs "$T/props") $(cat "$T/logcat" 2>/dev/null)"
   grep -qx 'sys.lumen.nui=ok' "$T/props" || fail "round trip: $(grep sys.lumen.nui "$T/props")"
   while read -r h t; do
-    case " ${RTALT-} " in *" $t "*) h=$(awk -v t="$t" '"/system/" $2 == t { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt") ;; esac
+    case " ${RTALT-} " in *" $t "*) h=$(awk -v t="$t" '"/system/" $2 == t { for (i = 4; i <= NF; i++) if ($i ~ /^alt=v1\.2\.54:/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt") ;; esac
     grep -qx "$h $R$t" "$T/binds" || fail "round trip: $t not bound with its file"
   done < "$T/want"
   grep -q "^u:object_r:nativeui_main_exec:s0 .*/$NUI$" "$T/chcon.log" || fail "round trip: the drawer is not nativeui_main_exec"
@@ -202,7 +205,7 @@ cp "$W/files/$NUI.alt" "$DEV/system/$NUI"; cp "$W/files/$LIB.alt" "$DEV/system/$
 inst --ip "$ADDR" blobs
 expect_rc 0; expect_out "$NB MediaTek / XGIMI files from your projector, set $SET"
 tar -xOf "$(BLOBF)" MANIFEST > "$C/manifest" 2>/dev/null
-alt() { awk -v p="$1" '$2 == p { for (i = 4; i <= NF; i++) if ($i ~ /^alt=/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt"; }
+alt() { awk -v p="$1" '$2 == p { for (i = 4; i <= NF; i++) if ($i ~ /^alt=v1\.2\.54:/) { sub(/^alt=[^:]*:/, "", $i); print $i } }' "$W/allow.txt"; }
 grep -q "^$NUI $(alt "$NUI") " "$C/manifest" && grep -q "^$LIB $(alt "$LIB") " "$C/manifest" || fail "MANIFEST: $(cat "$C/manifest")"
 RTFW=v1.2.54 RTALT="/system/$NUI /system/$LIB" roundtrip
 end

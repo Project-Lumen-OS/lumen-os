@@ -44,6 +44,9 @@ HC="$SRC/hal/HalCodes.java"          # the named codes, generated from devices/h
 bad=0
 fail() { echo "FAIL $1"; bad=1; }
 has() { grep -qF -- "$2" "$1" || fail "$3"; }
+# rs30-menu: the profile's VRR rule (game_menu.vrr_top_speed) reaches GmModel, and its refusal has its own text
+has "$GM" 'GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());' "GameMenu: the profile's VRR rule is not installed"
+has "$SRC/panel/GmController.java" 'case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);' "GmController: no text for the VRR speed rule"
 # the Z9X wiring (its KeyReceiver, App, Z9xGameIo and IGmpf2 client) only on the Z9X; other devices check their own
 # side in their suites (HB: apps/HbProjector/test/menu, X50: apps/X50Projector/test)
 Z9X=0; [ "${MENU_DEVICE:-horse_popular}" = horse_popular ] && Z9X=1
@@ -59,7 +62,7 @@ grep -qF 'if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);' 
   || fail "KeyReceiver: game menu not on the first repeated DOWN of the gear"
 grep -A2 -F 'if (code == Z9xKeys.GEAR_HOLD) {' "$K" | grep -qF 'gearLong(ctx);' \
   || fail "KeyReceiver: the remote's own gear hold (stock MENU 127 / 139) does not open the game menu"
-grep -A1 -F 'private static void gearLong(Context ctx) {' "$K" | grep -qF 'GameMenu.onGearLong(ctx, () -> {' \
+grep -A2 -F 'private static void gearLong(Context ctx) {' "$K" | grep -qF 'GameMenu.onGearLong(ctx, () -> {' \
   || fail "KeyReceiver: gearLong is not the game menu"
 fi
 has "$GM" 'if (!hdmiPort(port)) { fallback.run(); return; }' "onGearLong: shows off HDMI"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Ойын режимі қосулы</string>
+    <string name="lumen_m_ps_ai">Кәсіби параметрлер ЖИ сурет сапасы режимінде қолжетімсіз</string>
+    <string name="lumen_m_ps_performance">Кәсіби параметрлерге өнімділік сурет режимінде қолдау көрсетілмейді</string>
+    <string name="lumen_m_ps_ai_basic">Стандартты параметрлер ЖИ сурет сапасы режимінде қолжетімсіз</string>
+    <string name="lumen_m_ps_performance_basic">Стандартты параметрлерге өнімділік сурет режимінде қолдау көрсетілмейді</string>
+</resources>

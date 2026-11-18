@@ -26,7 +26,7 @@ import org.lumen.projector.panel.ManualKeystonePanel;
 import org.lumen.projector.power.PowerKey;
 import org.lumen.projector.power.SleepTimer;
 import org.lumen.projector.power.UiReady17;
-import org.lumen.projector.remote.RemoteAutoPair;
+import org.lumen.remote.RemotePairing;
 import org.lumen.projector.setup.SetupBridgeProvider;
 import org.lumen.projector.setup.SetupEvents;
 
@@ -50,7 +50,7 @@ import java.util.List;
  * the Hal facade (IGmpf connect with a death recipient, IGmpf2 identity, the focus listener 298 / 306, the
  * vendor power listener 235 / 242, a stale manual focus stop, then power/UiReady17 307(17) once per
  * boot_id, then the connected hooks);
- * MemoryGuard.onBoot; RemoteAutoPair.install (then the SetupBridge's remote_state reads it); the setup
+ * MemoryGuard.onBoot; RemotePairing.install (then the SetupBridge's remote_state reads it); the setup
  * hand-off check ({@link #resumeSetupIfNotHome}); the one-time device-name and speaker-volume fixes; the
  * sleep timer's volume restore; LauncherSwitcher.ensure (as the Z9X BootReceiver: a no-op until the
  * first-run setup is finished, then it repairs the recorded launcher choice). The focus listener comes before
@@ -64,7 +64,7 @@ import java.util.List;
  *
  * Direct boot: only the application and org.lumen.play6.BootReceiver run before unlock. This class keeps
  * its one-shot flags in device-protected prefs ({@link #PREFS}); the shared code that uses
- * credential-protected prefs (RemoteAutoPair, MemoryGuard, AppSlots) starts only after the unlock check.
+ * credential-protected prefs (RemotePairing, MemoryGuard, AppSlots) starts only after the unlock check.
  */
 public final class Play6App {
     private static final String TAG = "P6Hal";
@@ -119,6 +119,9 @@ public final class Play6App {
             // the power key, the wake curtain and the screen hooks: receivers only, no HAL, no prefs
             Ui.main().post(() -> PowerKey.install(app));
             Hal.worker().post(() -> gateTick(app));
+            // the stock XGIMI phone app's remote (apps/core/lumen-control: discovery, connect, commands on the LAN):
+            // its own thread, no HAL, here and not in App.java, which keeps the one Play6App line (check K)
+            org.lumen.control.android.PhoneRemote.start(app);
         } catch (Throwable t) {
             Log.e(TAG, "onProcessStart", t);
         }
@@ -189,7 +192,8 @@ public final class Play6App {
         step("LensWatcher.install", () -> org.lumen.projector.lens.LensWatcher.install(app));
         // connected hook, power event hook, screen hooks (no HAL call here): the battery, plan 3.2
         step("Battery.install", () -> Battery.install(app));
-        // Lumen 1.0.5: Bluetooth headphones get the media route and a non-zero vendor A2DP volume (no HAL call)
+        // the vendor path switch and the chip levels (lumen-audio PathSwitch / StockVolume), the A2DP force-use fix (no HAL call).
+        // After the start gate, so sys.boot_completed is 1: PathSwitch.install runs its boot step itself (no receiver)
         step("BtAudio.install", () -> org.lumen.projector.audio.BtAudio.install(app));
         // Lumen 1.0.6: the manual sound output of Sound (AudioManager only, no HAL call)
         step("AudioOutputChoice.install", () -> org.lumen.projector.audio.AudioOutputChoice.install(app));
@@ -197,14 +201,17 @@ public final class Play6App {
         step("Assistant.install", () -> org.lumen.projector.voice.Assistant.install(app, new org.lumen.projector.voice.AssistantHost()));
         // connected hook + SCREEN_ON hook (no HAL call here): IGmpf 698 follows tvinput's HDMI sessions (t14)
         step("HdmiSource.install", () -> org.lumen.projector.source.HdmiSource.install(app));
+        step("SignalPanel.install", () -> org.lumen.signal.SignalPanel.install(app, new org.lumen.projector.panel.Play6SignalReader()));
         // connected hook + focus listener (no HAL call here): the SetupBridge's "hal" / "af" events for Lumen Setup
         step("SetupEvents.install", () -> SetupEvents.install(app));
+        // connected hook (no HAL call here): the stock AI picture quality, scene 16 over AI (XRMService AIPQ)
+        step("AiScenePolicy.install", () -> AiScenePolicy.install(app));
         step("Hal", () -> Hal.openGate(() -> UiReady17.sendOnce(app)));
         step("MemoryGuard.onBoot", () -> MemoryGuard.onBoot(app, "start gate"));
         step("BootSource.onPowerOn", () -> org.lumen.projector.source.BootSource.onPowerOn(app, "boot"));
-        // the SetupBridge answers remote_state from RemoteAutoPair only once it is installed here, in gate order
-        step("RemoteAutoPair.install", () -> Ui.main().post(() -> {
-            RemoteAutoPair.install(app);
+        // the SetupBridge answers remote_state from RemotePairing only once it is installed here, in gate order
+        step("RemotePairing.install", () -> Ui.main().post(() -> {
+            RemotePairing.install(app, new org.lumen.projector.remote.ProjectorRemoteHost());
             SetupBridgeProvider.remoteStarted();
         }));
         // flags still 0, Lumen Setup enabled, HOME resolves elsewhere: an interrupted finish, the Setup goes on

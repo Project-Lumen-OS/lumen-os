@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">Адправіць справаздачу пра праблему</string>
+    <string name="lumen_report_intro">Дапаможа распрацоўшчыку Lumen OS зразумець, што пайшло не так. Нічога не адпраўляецца, пакуль вы не націснеце «Адправіць справаздачу».</string>
+    <string name="lumen_report_included">Што ўваходзіць</string>
+    <string name="lumen_report_inc_system">Версія сістэмы, час працы і якая копія сістэмы працуе</string>
+    <string name="lumen_report_inc_logs">Журналы сістэмы і праграм Lumen за апошнія 30 хвілін</string>
+    <string name="lumen_report_inc_crashes">Запісы пра збоі, завісанні і перазапускі з назвамі праграм</string>
+    <string name="lumen_report_inc_kernel">Журнал ядра апошняга перазапуску і журнал абнаўлення</string>
+    <string name="lumen_report_inc_state">Экран, памяць і тып сеткі</string>
+    <string name="lumen_report_excluded">Што выдаляецца або не ўваходзіць</string>
+    <string name="lumen_report_exc_accounts">Уліковыя запісы, адрасы эл. пошты і нумары тэлефонаў</string>
+    <string name="lumen_report_exc_network">Назвы сетак Wi-Fi, IP- і MAC-адрасы</string>
+    <string name="lumen_report_exc_serial">Серыйны нумар: замест яго выпадковы ID гэтага праектара</string>
+    <string name="lumen_report_exc_apps">Журналы праграм, якія вы ўсталявалі самі</string>
+    <string name="lumen_report_exc_files">Фота, файлы і паролі</string>
+    <string name="lumen_report_footer">Справаздача захоўваецца 30 дзён. Адкрыць яе можа толькі распрацоўшчык Lumen OS.</string>
+    <string name="lumen_report_last">Апошняя справаздача: %1$s, %2$s</string>
+    <string name="lumen_report_send">Адправіць справаздачу</string>
+    <string name="lumen_report_collecting">Збор звестак… (%1$d з %2$d)</string>
+    <string name="lumen_report_log_hint">Калі Android спытае, ці дазволіць доступ да журналаў прылады, выберыце «Дазволіць».</string>
+    <string name="lumen_report_sending">Адпраўка… %1$s з %2$s</string>
+    <string name="lumen_report_done_title">Справаздача адпраўлена</string>
+    <string name="lumen_report_done_text">Паведаміце гэты код распрацоўшчыку Lumen OS разам з кароткім апісаннем праблемы.</string>
+    <string name="lumen_report_failed_title">Справаздача не адпраўлена</string>
+    <string name="lumen_report_err_no_network">Няма падключэння да інтэрнэту. Праверце сетку і паспрабуйце яшчэ раз.</string>
+    <string name="lumen_report_err_network">Сервер справаздач недаступны. Паспрабуйце пазней.</string>
+    <string name="lumen_report_err_rate">Цяпер занадта шмат справаздач. Паспрабуйце пазней.</string>
+    <string name="lumen_report_err_rejected">Сервер справаздач не прыняў справаздачу.</string>
+    <string name="lumen_report_err_server">На серверы справаздач адбылася памылка. Паспрабуйце пазней.</string>
+    <string name="lumen_report_err_collect">Не ўдалося падрыхтаваць справаздачу.</string>
+    <string name="lumen_report_retry">Паўтарыць</string>
+    <string name="lumen_report_close">Закрыць</string>
+    <string name="lumen_report_cancel">Скасаваць</string>
+    <string name="lumen_report_auto">Адпраўляць справаздачы пра праблемы аўтаматычна</string>
+    <string name="lumen_report_auto_note">Калі сістэма або праграма Lumen аварыйна закрыецца ці завісне, кароткая справаздача адправіцца сама. Журналаў праграм, якія вы ўсталявалі, у ёй няма.</string>
+    <string name="lumen_report_queued_title">Справаздача адправіцца пазней</string>
+    <string name="lumen_report_queued_text">Сервер справаздач зараз недаступны. Праектар сам адправіць справаздачу, як толькі зможа. Тады тут з’явіцца яе код.</string>
+    <string name="lumen_report_last_auto">Апошняя аўтаматычная справаздача: %1$s, %2$s</string>
+</resources>

@@ -16,6 +16,8 @@ final class Models {
             case "G0130": return "goat_elegant";
             case "G0148": return "goat_elegant";
             case "G0155": return "g0155";
+            case "H0062": return "h0062";
+            case "H0063": return "h0063";
             default: return "";
         }
     }

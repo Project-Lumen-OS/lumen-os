@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">取消</string>
     <string name="lumen_m_panel_boost_press_again">再按一次 → 进入 Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">再按一次 ← 退出 Boost</string>
+    <string name="lumen_m_lamp_off_press_again">画面将关闭。按电源键可重新打开。再按一次 ← 关闭画面。</string>
     <string name="lumen_m_toast_setup_running">请先完成设置</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI 画质</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">精准色彩</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">氛围音箱</string>
     <string name="lumen_m_ct_custom">自定义</string>
     <string name="lumen_m_lamp_off">关屏</string>
+    <string name="lumen_m_iris">光圈调节</string>
+    <string name="lumen_m_iris_dynamic">动态</string>
+    <string name="lumen_m_iris_lamp_dynamic">光圈为动态时无法调节亮度。</string>
+    <string name="lumen_m_iris_lamp_held">此光圈设置下无法调节亮度。</string>
 </resources>

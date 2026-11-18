@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Lumen-Tastatur</string>
+    <string name="ime_service_name">Lumen-Tastatur</string>
+    <string name="keyboardview_keycode_language">Sprache</string>
+    <string name="lumen_languages_title">Tastatursprachen</string>
+    <string name="lumen_languages_hint">Mit OK schalten Sie eine Sprache ein oder aus. Auf der Tastatur wechselt die Globustaste die Sprache.</string>
+    <string name="lumen_languages_last">Eine Sprache bleibt immer eingeschaltet.</string>
+</resources>

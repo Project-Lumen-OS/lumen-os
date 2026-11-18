@@ -4,8 +4,8 @@
 # (devices/g0111/image/x50_apex_modules.txt). Mac only. Modeled on gen_apex() of tools/play6/gen_play6_keys.sh.
 #
 #   OPENSSL=/opt/homebrew/bin/openssl [X50_CODENAME=g0100] bash devices/g0111/image/gen_x50_apex_keys.sh
-# X50_CODENAME: the X50 model whose key set this is, g0111 (X50 Ultra, the default) or g0100 (X50 Ultra Max, its own
-# keys since 2026-11-11); every path below names that codename.
+# X50_CODENAME: the X50 family model whose key set this is, g0111 (X50 Ultra) by default; any model whose
+# devices/<c>/build.conf takes the X50 recipe (x50_family.py); every path below names that codename.
 #
 # Private files go to ~/.lumen-keys/g0111/apex (dir mode 700, pem/pk8 mode 600) and never leave the Mac; the public
 # files (<m>.x509.pem, <m>.avbpubkey, <m>.pubkey.pem, FINGERPRINTS.txt) are copied to devices/g0111/certs/apex.
@@ -23,7 +23,7 @@ G=$(cd "$H/../../.." && pwd)
 OPENSSL=${OPENSSL:-/opt/homebrew/bin/openssl}
 [ -x "$OPENSSL" ] || die "no $OPENSSL (OpenSSL 3, not LibreSSL)"
 C=${X50_CODENAME:-g0111}
-case $C in g0111|g0100) ;; *) die "X50_CODENAME $C is not an X50 model (g0111, g0100)" ;; esac
+python3 -B "$G/devices/g0111/image/x50_family.py" check "$C" || die "X50_CODENAME $C is not an X50 family model (devices/<c>/build.conf with the X50 recipe)"
 KD=$HOME/.lumen-keys/$C
 [ -f "$KD/platform.pk8" ] && [ -f "$KD/FINGERPRINTS.txt" ] || die "$KD is not the $C key dir (tools/devices/gen_device_keys.sh $C)"
 cmp -s <("$OPENSSL" x509 -in "$KD/platform.x509.pem" -outform DER) <("$OPENSSL" x509 -in "$G/devices/$C/certs/platform.x509.pem" -outform DER) \

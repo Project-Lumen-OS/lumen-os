@@ -1,0 +1,103 @@
+# The shortcut keys of every remote in remotes.tsv and the keyboard keys a user may give an app ("Remote buttons",
+# apps/core/lumen-remote keys package, README.md "Rebind a button"). One row per key a remote sends that is neither a
+# control key (fixed_keys.tsv) nor a plain picture or system key. Read by tools/remotes/gen_catalog.py, which writes
+# apps/core/lumen-remote/src/org/lumen/remote/keys/KeyTable.java (never edit that file: edit this table, run the script).
+# Columns (tab separated, '-' = none):
+#  remote        id of a remotes.tsv row, or 'keyboard' (any Bluetooth or USB keyboard)
+#  scancode      what the remote sends (the stock vendor .kl line), '-' for keyboard rows
+#  stock_label   the stock label of that scancode (vendor/usr/keylayout of the models in the remote's stock column)
+#  stock_action  what the stock XGIMI system does with it (xgimi_action_config.xml, XRMService XrmDoAction,
+#                SystemUI RemoteCustomKeyUI / ShortCutRepository)
+#  keycode       the Android key after the Lumen key layout (overlay/v1/keylayout, X50 and RS30 via
+#                devices/g0111/image/x50_power_keys.py), '-' = not mapped by Lumen
+#  bind          app = the user may give it an app, no = never rebound (see note)
+#  unbound       what the key does while no app is given: host = its normal action, unchanged (a remote key: the
+#                projector app's KeyReceiver, a keyboard key: the app in front or Android), all_apps = the launcher's
+#                app list, signal = the signal panel (apps/core/lumen-signal), pick = asks which app to open (stock: an unbound custom key opens its edit dialog), - for
+#                bind=no
+#  name          the key's name on the screen, by what is printed on it: lumen_remote_keys_name_<name>. A logo key is
+#                named by its logo (youku, tencent, iqiyi, mango, bilibili: XRMService XrmDoAction appName_new2024,
+#                the stock default when the remote does not say its version, versions that print another logo are
+#                in note), a function key by its stock name (ambient = remote_screen_saver_button, shortcut = the
+#                stock "Shortcut Key", custom_N = the stock "Shortcut Keys N"), f = the F key's own label, - for bind=no
+#  note          why
+remote	scancode	stock_label	stock_action	keycode	bind	unbound	name	note
+xgimi_rc_3838	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
+xgimi_rc_3838	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function (sound mode, source, smart screen, my apps)	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Lumen 1.0 mapped it to ALL_APPS, the app list stays its default
+xgimi_rc_3838	64	MUSIC_SOUNDERMODE	Bluetooth speaker mode	-	no	-	-	no Lumen function (PARITY_KEYS row 21)
+xgimi_rc_3838	185	SECONDARY_POWER	second power key	-	no	-	-	power key
+xgimi_rc_3840	240	VIDEO0	app key 2118: youkutv (CIBN Youku)	TV_TERRESTRIAL_ANALOG	app	host	youku	printed: the Youku logo (VIDEO0 = youkutv on every stock remote version). Lumen default: AppSlots slot 1 (Z9X, HB, Play 6), the app list (X50 family)
+xgimi_rc_3840	230	VIDEO1	app key 2119: tencenttv (Tencent Video)	TV_TERRESTRIAL_DIGITAL	app	host	tencent	printed: the Tencent Video logo (VIDEO1 = tencenttv on every version, the owner's Z9X remote sends it, getevent 2026-11-05)
+xgimi_rc_3840	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iqiyi	printed: iQIYI on the default remote B992C (B992B: bilibili, B995C has no such key)
+xgimi_rc_3840	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
+xgimi_rc_3840	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
+xgimi_rc_3840	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
+xgimi_rc_3840	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
+xgimi_rc_3840	135	SHORTCUT_1	custom key 2320: stock "Shortcut Keys 1" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key1_text)	MACRO_1	app	pick	custom_1	stock customisable key of remote B870C / B872C (RS30, 2 keys)
+xgimi_rc_3840	136	SHORTCUT_2	custom key 2321: stock "Shortcut Keys 2" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key2_text)	MACRO_2	app	pick	custom_2	stock customisable key of remote B870C / B872C (RS30, 2 keys)
+xgimi_rc_3840	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
+xgimi_rc_3840	172	PICTURE_MODE	picture mode menu (RS30)	-	no	-	-	picture key (rs30-full)
+xgimi_rc_3840	217	PRO_SETTING	professional picture settings (RS30)	-	no	-	-	picture key (rs30-full)
+xgimi_rc_3840	234	BRIGHTNESS	brightness (RS30)	-	no	-	-	picture key (rs30-full)
+xgimi_rc_3840	186	SHORTCUT_A	Play 6 remote variant, stock action not found	-	no	-	-	not mapped by Lumen yet
+xgimi_rc_3840	187	SHORTCUT_B	Play 6 remote variant, stock action not found	-	no	-	-	not mapped by Lumen yet
+xgimi_rc_3840	188	SHORTCUT_C	Play 6 remote variant, stock action not found	-	no	-	-	not mapped by Lumen yet
+xgimi_rc_3840	64	MUSIC_SOUNDERMODE	Bluetooth speaker mode	-	no	-	-	no Lumen function (the X50 image adds it as TV_AUDIO_DESCRIPTION: a notice only)
+xgimi_rc_3841	240	VIDEO0	app key 2118: youkutv (CIBN Youku)	TV_TERRESTRIAL_ANALOG	app	host	youku	printed: the Youku logo (VIDEO0 = youkutv on every stock remote version)
+xgimi_rc_3841	230	VIDEO1	app key 2119: tencenttv (Tencent Video)	TV_TERRESTRIAL_DIGITAL	app	host	tencent	printed: the Tencent Video logo (VIDEO1 = tencenttv on every version, the owner's Z9X remote sends it, getevent 2026-11-05)
+xgimi_rc_3841	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iqiyi	printed: iQIYI on the default remote B992C (B992B: bilibili, B995C has no such key)
+xgimi_rc_3841	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
+xgimi_rc_3841	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
+xgimi_rc_3841	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
+xgimi_rc_3841	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function, Play 6 default: ambient light	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Play 6 keeps its own layout (ambient speaker light, overlay/play6)
+xgimi_rc_3841	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
+xgimi_rc_3841	64	MUSIC_SOUNDERMODE	Bluetooth speaker mode	-	no	-	-	no Lumen function
+xgimi_rc_3842	240	VIDEO0	app key 2118: youkutv (CIBN Youku)	TV_TERRESTRIAL_ANALOG	app	host	youku	printed: the Youku logo (VIDEO0 = youkutv on every stock remote version)
+xgimi_rc_3842	230	VIDEO1	app key 2119: tencenttv (Tencent Video)	TV_TERRESTRIAL_DIGITAL	app	host	tencent	printed: the Tencent Video logo (VIDEO1 = tencenttv on every version, the owner's Z9X remote sends it, getevent 2026-11-05)
+xgimi_rc_3842	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iqiyi	printed: iQIYI on the default remote B992C (B992B: bilibili, B995C has no such key)
+xgimi_rc_3842	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
+xgimi_rc_3842	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
+xgimi_rc_3842	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
+xgimi_rc_3842	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
+xgimi_rc_3842	137	SHORTCUT_AI	AI voice key	SEARCH	no	-	-	the voice key (microphone)
+xgimi_rc_3842	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
+xgimi_rc_s3r	135	SHORTCUT_1	custom key 2320: stock "Shortcut Keys 1" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key1_text)	MACRO_1	app	pick	custom_1	stock customisable key of remote B975D_CY03 (X50 Ultra family, 4 keys)
+xgimi_rc_s3r	136	SHORTCUT_2	custom key 2321: stock "Shortcut Keys 2" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key2_text)	MACRO_2	app	pick	custom_2	stock customisable key of remote B975D_CY03 (X50 Ultra family, 4 keys)
+xgimi_rc_s3r	217	SHORTCUT_3	custom key 2322: stock "Shortcut Keys 3" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key3_text)	MACRO_3	app	pick	custom_3	stock customisable key of remote B975D_CY03 (X50 Ultra family, 4 keys)
+xgimi_rc_s3r	354	SHORTCUT_4	custom key 2323: stock "Shortcut Keys 4" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key4_text)	MACRO_4	app	pick	custom_4	stock customisable key of remote B975D_CY03 (X50 Ultra family, 4 keys)
+xgimi_rc_s3r	430	SINGAL	input source	TV_INPUT	no	-	-	system key: the input chooser
+xgimi_rc_s3r	172	PICTURE_MODE	picture mode menu	-	no	-	-	picture key
+xgimi_rc_s3r	206	STANDARD_HW	picture mode Standard	-	no	-	-	picture key
+xgimi_rc_s3r	174	MOVIE	picture mode Movie	-	no	-	-	picture key
+xgimi_rc_s3r	234	VIVID	picture mode Vivid	-	no	-	-	picture key
+xgimi_rc_s3r	210	TV_HW	picture mode TV	-	no	-	-	picture key
+xgimi_rc_s3r	130	PATTERN	test pattern	-	no	-	-	picture key
+xgimi_rc_ai	137	SHORTCUT_AI	AI voice key	SEARCH	no	-	-	the voice key (microphone)
+xgimi_rc_ai	65	STEM_1	unknown	-	no	-	-	meaning unknown, wakes the system by itself
+ir_receiver	183	LENS	keystone and lens panel	TV_NETWORK	no	-	-	system key: projector picture panel
+ir_receiver	64	KEYSTONE	keystone panel	TV_NETWORK	no	-	-	system key: projector picture panel
+ir_receiver	88	SINGAL	input source	TV_INPUT	no	-	-	system key: the input chooser
+ir_receiver	68	HDMI1	HDMI 1	TV_INPUT_HDMI_1	no	-	-	system key: input
+ir_receiver	82	HDMI2	HDMI 2	TV_INPUT_HDMI_2	no	-	-	system key: input
+ir_receiver	189	CAST	screen mirroring	-	no	-	-	not mapped by Lumen
+keypad	267	LENS	keystone and lens panel	TV_NETWORK	no	-	-	system key: projector picture panel
+keypad	225	SINGAL	input source	TV_INPUT	no	-	-	system key: the input chooser
+keyboard	-	F1	-	F1	app	host	f	keyboard function key: reaches the app in front while no app is given
+keyboard	-	F2	-	F2	app	host	f	keyboard function key
+keyboard	-	F3	-	F3	app	host	f	keyboard function key
+keyboard	-	F4	-	F4	app	host	f	keyboard function key
+keyboard	-	F5	-	F5	app	host	f	keyboard function key
+keyboard	-	F6	-	F6	app	host	f	keyboard function key
+keyboard	-	F7	-	F7	app	host	f	keyboard function key
+keyboard	-	F8	-	F8	app	host	f	keyboard function key
+keyboard	-	F9	-	F9	app	host	f	keyboard function key
+keyboard	-	F10	-	F10	app	host	f	keyboard function key
+keyboard	-	F11	-	F11	app	host	f	keyboard function key
+keyboard	-	F12	-	F12	app	host	f	keyboard function key
+keyboard	-	EXPLORER	-	EXPLORER	app	host	browser	keyboard launch key: Android opens the browser while no app is given
+keyboard	-	ENVELOPE	-	ENVELOPE	app	host	mail	keyboard launch key: Android opens the mail app
+keyboard	-	MUSIC	-	MUSIC	app	host	music	keyboard launch key: Android opens the music app
+keyboard	-	CALCULATOR	-	CALCULATOR	app	host	calculator	keyboard launch key
+keyboard	-	CONTACTS	-	CONTACTS	app	host	contacts	keyboard launch key
+keyboard	-	CALENDAR	-	CALENDAR	app	host	calendar	keyboard launch key
+keyboard	-	BOOKMARK	-	BOOKMARK	app	host	bookmarks	keyboard launch key

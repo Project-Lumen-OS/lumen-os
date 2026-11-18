@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">モデルコード</string>
+    <string name="lumen_about_dlp">DLP コントローラー</string>
+    <string name="lumen_about_part_firmware">%1$s、ファームウェア %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">XGIMI ファームウェア</string>
+    <string name="lumen_about_firmware_dated">%1$s（%2$s）</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s、セキュリティ アップデート %2$s</string>
+    <string name="lumen_about_kernel">カーネル</string>
+    <string name="lumen_about_boot_loader">起動ファームウェア</string>
+    <string name="lumen_about_gmui">XGIMI インターフェース</string>
+    <string name="lumen_about_platform">MediaTek プラットフォーム</string>
+    <string name="lumen_about_remote">リモコン</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">XGIMI システムに戻す</string>
+    <string name="lumen_about_back_summary_file">USB メモリのファイル：%1$s</string>
+    <string name="lumen_about_back_summary">XGIMI の復元用 USB メモリで</string>
+    <string name="lumen_about_intro">このモデル用の XGIMI 復元用 USB メモリで XGIMI システムに戻せます。手順はプロジェクトページのガイドにあります。</string>
+    <string name="lumen_about_usb_file">USB メモリに入れるファイル名</string>
+    <string name="lumen_about_official">XGIMI 公式ファイル</string>
+    <string name="lumen_about_official_value">%1$s、%2$s バイト</string>
+    <string name="lumen_about_searching">このファームウェアの公式ファイルを探しています</string>
+    <string name="lumen_about_guide_files">XGIMI の公式ファイルはプロジェクトページのガイドに載っています。</string>
+    <string name="lumen_about_erases">USB メモリはプロジェクターのすべてを消去します：アプリ、アカウント、設定、ファイル。</string>
+    <string name="lumen_about_scan">スマートフォンでスキャンして開く</string>
+    <string name="lumen_about_close">閉じる</string>
+</resources>

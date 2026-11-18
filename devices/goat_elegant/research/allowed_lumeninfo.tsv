@@ -18,10 +18,8 @@
 # service	code	method	signature	reason
 GmTvManager	51	getHdrEnable	boolean()	HDR switch state; proxy writes token only, reads boolean; stock gmuiapi V3GmTvManager.getHdrEnable (GlobalConfig api3:544) reads it; setter is hdrEnable(boolean), not sent
 GmTvManager	70	getHdmiConnectStatus	boolean(byte)	cable on an HDMI port; proxy writeByte(port), reads boolean; stock GmTvManagerWrapper.getHdmiConnectStatus (SystemUI middle:333)
-GmTvManager	106	getSignalStatus	int()	signal state code; proxy reads int; stock V3GmTvManager.getSignalStatus (SystemUI api3:540), GmDisplayManager.getSignalStatus (shutdown:4706)
 GmTvManager	122	getVideoInfo	boolean(stVideoInfo)	out struct width/height/frameRate/bHdmiOrDvi/videoType; proxy writes token only, reads boolean then flag + stVideoInfo.readFromParcel; stock gmuiapi GmTvManager.getVideoInfo (SystemUI manager:742) reads the fields
 GmTvManager	135	isHdrVividPlaying	boolean()	HDR Vivid playing flag; proxy reads boolean; stock MiddlewareManager (newsettings:268) via GmDisplayManager.isHdrVividPlaying
-GmTvManager	153	getHdmiHwConfig	stHdmiHwCfg(int)	port hardware config hwPortId/cecEnable/arcEnable/physicalAddr; proxy writeInt(port), readTypedObject(stHdmiHwCfg); no stock caller outside the proxy, read-only by shape (no set counterpart in aidl_codes.tsv)
 DisplayManager	31	getScreenResolution	ScreenResolution()	digital zoom/shift state Center/Horizontal/verticality; proxy readTypedObject(ScreenResolution); stock KeyStoneManager.getScreenResolution (newsettings keystone:220) reads Center
 DisplayManager	57	getOutputTimingInfo	boolean(OutputTimingInfo)	out struct user_timing_idx/disp_width/disp_height/curr_timing_idx/curr_hres/curr_vres/vfreq; proxy reads boolean then flag + struct; stock GmTrapzoidUtils (newsettings utils:96), V3DisplayManager.isHighFrameRateOn / getOutputTiming (newsettings api3:247/259)
 DisplayManager	145	getColorSpaceInfo	boolean(int, int, ColorSpaceInfo_st)	out struct colorSpaceType/colorSpaceLevel for (source, picture mode); proxy writeInt x2, reads boolean then flag + struct; stock V3DisplayManager.getColorSpaceInfo (newsettings api3:578-593)

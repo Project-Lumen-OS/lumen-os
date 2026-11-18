@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A remote with the focus key on its front, above the D-pad (devices/_remotes/focus_guide.tsv token focus_guide_front:
+     the remotes of the X50 family and RS30, stock newsettings RemoteFocusCell anim_remote_focus_guide_b940d). Our own
+     drawing in the style of lumen_focus_guide_remote_side.xml (same viewport, so QpdTip scales both alike): the body
+     cropped at the bottom as the stock picture, the keys faint, the focus key and its two press rings in the accent. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="720px"
+    android:width="300px"
+    android:viewportWidth="300"
+    android:viewportHeight="720">
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M100,22L200,22A42,42 0,0 1,242 64L242,760L58,760L58,64A42,42 0,0 1,100 22z"
+        android:fillAlpha="0.32"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M100,20L200,20A44,44 0,0 1,244 64L244,760M56,760L56,64A44,44 0,0 1,100 20"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="4"
+        android:strokeAlpha="0.6"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M137,58L163,58A5,5 0,0 1,163 68L137,68A5,5 0,0 1,137 58z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M150,108.5A40.5,40.5 0,1 1,149.99 108.5z"
+        android:strokeColor="#4D8EFF"
+        android:strokeWidth="5"
+        android:strokeAlpha="0.9"/>
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M150,89.5A59.5,59.5 0,1 1,149.99 89.5z"
+        android:strokeColor="#4D8EFF"
+        android:strokeWidth="3"
+        android:strokeAlpha="0.45"/>
+    <path
+        android:fillColor="#4D8EFF"
+        android:pathData="M150,127A22,22 0,1 1,149.99 127z"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M150,262A74,74 0,1 1,149.99 262z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M150,298A38,38 0,1 1,149.99 298z"
+        android:fillAlpha="0.4"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M100,462A19,19 0,1 1,99.99 462z M150,462A19,19 0,1 1,149.99 462z M200,462A19,19 0,1 1,199.99 462z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M150,548A19,19 0,1 1,149.99 548z"
+        android:fillAlpha="0.34"/>
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M131,640L169,640A12,12 0,0 1,169 664L131,664A12,12 0,0 1,131 640z"
+        android:fillAlpha="0.34"/>
+</vector>

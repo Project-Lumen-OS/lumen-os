@@ -20,16 +20,22 @@ ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.2
 ro.system.build.date=@DATE@
 ro.system.build.date.utc=@UTC@
 [product]
+# Bluetooth as stock (x50-parity-core): the stock vendor build.prop sets persist.bluetooth.disableabsvol=true (X50 G0111
+# line 184), the Z9X base's product build.prop false; true again here, so the HAL applies the index (lumen-audio BtVolume)
+persist.bluetooth.disableabsvol=true
 ro.product.product.model=XGIMI X50 Ultra
 bluetooth.device.default_name=XGIMI X50 Ultra
-ro.lumen.version=x50-@V@
-# no OTA on the X50: no partition list, no manifest, the Z9X device id gone, no Z9X build id or version code
--ro.product.ab_ota_partitions
+# the release name the shared updater compares by its O1 code (ro.lumen.version_code below); Setup shows ro.z9x.version
+ro.lumen.version=@V@
+# updates (owner 2026-11-14): update_engine copies these static partitions from the running slot into the other one
+# (the XGIMI set of apps/core/lumen-fwcopy = devices/g0111/ota.conf ab_ota_partitions, never vbmeta); the
+# Z9X manifest and device id gone, no Z9X build id or version code
+ro.product.ab_ota_partitions=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig
 -ro.z9x.ota.manifest_url
 ro.z9x.device=x50
 ro.z9x.build_id=lumen-x50-@V@-@BID@
 ro.z9x.version_code=0
-# the OTA boot gate behaves like stock update_verifier (no update can be pending without an updater)
+# the base's Z9X boot gate is not in this image (remove_ota.txt): the neutral gate below (lumen_ota.rc)
 ro.z9x.ota.gate=0
 # no rescue reboot to fastbootd (z9x_rescue.rc is removed too)
 ro.z9x.rescue=0
@@ -37,9 +43,18 @@ ro.z9x.rescue=0
 # identity of the image (registry devices/g0111: family horse_popular, model G0111)
 +ro.lumen.device=g0111
 +ro.lumen.model=G0111
++ro.lumen.models=G0111
 +ro.lumen.family=horse_popular
 +ro.lumen.build_id=lumen-x50-@V@-@BID@
 +ro.lumen.base_build_id=lumen-1.0.9-20261106anp
 # install from a DSU try (apps/LumenDsuInstall, t8): on; 0 is the kill switch. The owner switch for a real X50 write,
 # ro.lumen.dsu_install.x50_write, is never set by the image (verify_tree_x50.py refuses it)
 +ro.lumen.dsu_install=1
+# updates (owner 2026-11-14, rules.md 2.34): the shared updater org.lumen.updater (apps/core/lumen-updater) reads these.
+# The O1 version code of this release, the neutral boot gate on, the wire id (the manifest's device and the payload's
+# pre-device), the beta channel of the updater's pair on the tag x50 (update-x50-test.json; never the installer's
+# update-x50-beta.json, never releases/latest)
++ro.lumen.version_code=@VC@
++ro.lumen.ota.gate=1
++ro.lumen.ota.device=x50
++ro.lumen.ota.manifest_url=https://github.com/Project-Lumen-OS/lumen-os/releases/download/x50/update-x50-test.json

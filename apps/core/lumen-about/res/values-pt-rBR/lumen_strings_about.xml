@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Código do modelo</string>
+    <string name="lumen_about_dlp">Controlador DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">Firmware da XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s de %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, atualização de segurança %2$s</string>
+    <string name="lumen_about_kernel">Kernel</string>
+    <string name="lumen_about_boot_loader">Firmware de inicialização</string>
+    <string name="lumen_about_gmui">Interface da XGIMI</string>
+    <string name="lumen_about_platform">Plataforma MediaTek</string>
+    <string name="lumen_about_remote">Controle remoto</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Voltar ao sistema da XGIMI</string>
+    <string name="lumen_about_back_summary_file">Arquivo para o pendrive: %1$s</string>
+    <string name="lumen_about_back_summary">Com o pendrive de recuperação da XGIMI</string>
+    <string name="lumen_about_intro">O pendrive de recuperação da XGIMI para este modelo traz o sistema da XGIMI de volta. O guia na página do projeto mostra como.</string>
+    <string name="lumen_about_usb_file">Nome do arquivo para o pendrive</string>
+    <string name="lumen_about_official">Arquivo oficial da XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s bytes</string>
+    <string name="lumen_about_searching">Procurando o arquivo oficial deste firmware</string>
+    <string name="lumen_about_guide_files">O guia na página do projeto lista os arquivos oficiais da XGIMI.</string>
+    <string name="lumen_about_erases">O pendrive apaga tudo no projetor: apps, contas, configurações e arquivos.</string>
+    <string name="lumen_about_scan">Leia com o celular para abrir</string>
+    <string name="lumen_about_close">Fechar</string>
+</resources>

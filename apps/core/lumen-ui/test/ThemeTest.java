@@ -1,0 +1,160 @@
+package org.lumen.ui;
+
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/** Host checks of the shared theme: the choice, the Авто rule, tokens.xml equal to Palette, WCAG AA of every pair. */
+public final class ThemeTest {
+    private static int fails, checks;
+    private static final TimeZone MSK = TimeZone.getTimeZone("Europe/Moscow");
+
+    public static void main(String[] a) throws Exception {
+        choice();
+        autoWithoutPlace();
+        autoWithPlace();
+        geo();
+        xmlEqualsPalette(a[0]);
+        contrast("light", Palette.light());
+        contrast("dark", Palette.dark());
+        mix();
+        System.out.println((fails == 0 ? "ok   " : "FAIL ") + "lumen-ui ThemeTest: " + checks + " checks, " + fails + " failed");
+        System.exit(fails == 0 ? 0 : 1);
+    }
+
+    static void check(boolean ok, String what) {
+        checks++;
+        if (!ok) {
+            fails++;
+            System.out.println("FAIL " + what);
+        }
+    }
+
+    static long msk(int y, int mo, int d, int h, int mi) {
+        Calendar c = Calendar.getInstance(MSK);
+        c.clear();
+        c.set(y, mo - 1, d, h, mi, 0);
+        return c.getTimeInMillis();
+    }
+
+    static void choice() {
+        check(ThemeMode.parse(null) == ThemeMode.LIGHT, "missing choice is light");
+        check(ThemeMode.parse("junk") == ThemeMode.LIGHT, "unknown choice is light");
+        check(ThemeMode.parse("dark") == ThemeMode.DARK && ThemeMode.parse(" auto ") == ThemeMode.AUTO, "parse");
+        check(ThemeMode.LIGHT.next() == ThemeMode.DARK && ThemeMode.DARK.next() == ThemeMode.AUTO
+                && ThemeMode.AUTO.next() == ThemeMode.LIGHT, "gear menu theme button cycles light, dark, auto");
+        for (ThemeMode m : ThemeMode.values()) check(ThemeMode.parse(m.id) == m, "round trip " + m);
+        long noon = msk(2026, 11, 18, 12, 0), night = msk(2026, 11, 18, 23, 0);
+        check(!ThemeRule.dark(ThemeMode.LIGHT, night, MSK, null), "light stays light at night");
+        check(ThemeRule.dark(ThemeMode.DARK, noon, MSK, null), "dark stays dark at noon");
+        check(ThemeRule.nextChange(ThemeMode.LIGHT, noon, MSK, null) == Long.MAX_VALUE, "fixed choice never flips");
+    }
+
+    static void autoWithoutPlace() {
+        check(ThemeRule.dark(ThemeMode.AUTO, msk(2026, 11, 18, 6, 59), MSK, null), "06:59 dark");
+        check(!ThemeRule.dark(ThemeMode.AUTO, msk(2026, 11, 18, 7, 0), MSK, null), "07:00 light");
+        check(!ThemeRule.dark(ThemeMode.AUTO, msk(2026, 11, 18, 18, 59), MSK, null), "18:59 light");
+        check(ThemeRule.dark(ThemeMode.AUTO, msk(2026, 11, 18, 19, 0), MSK, null), "19:00 dark");
+        check(ThemeRule.nextChange(ThemeMode.AUTO, msk(2026, 11, 18, 12, 0) + 1234, MSK, null)
+                == msk(2026, 11, 18, 19, 0), "next flip at 19:00");
+    }
+
+    static void autoWithPlace() {
+        double[] moscow = { 55.75, 37.62 };
+        check(!ThemeRule.dark(ThemeMode.AUTO, msk(2026, 6, 21, 12, 0), MSK, moscow), "Moscow June noon light");
+        check(!ThemeRule.dark(ThemeMode.AUTO, msk(2026, 6, 21, 20, 30), MSK, moscow), "Moscow June 20:30 still light");
+        check(ThemeRule.dark(ThemeMode.AUTO, msk(2026, 6, 21, 23, 30), MSK, moscow), "Moscow June 23:30 dark");
+        check(ThemeRule.dark(ThemeMode.AUTO, msk(2026, 12, 21, 17, 0), MSK, moscow), "Moscow December 17:00 dark");
+        long next = ThemeRule.nextChange(ThemeMode.AUTO, msk(2026, 6, 21, 12, 0), MSK, moscow);
+        check(next > msk(2026, 6, 21, 21, 0) && next < msk(2026, 6, 21, 21, 30), "Moscow June sunset 21:00..21:30");
+        check(ThemeRule.dark(ThemeMode.AUTO, next, MSK, moscow) && !ThemeRule.dark(ThemeMode.AUTO, next - 60_000, MSK, moscow),
+                "flip lands on the first dark minute");
+        double[] polar = { 69.0, 33.1 };
+        long dec = msk(2026, 12, 21, 12, 0);
+        check(ThemeRule.dark(ThemeMode.AUTO, dec, MSK, polar), "polar night noon dark");
+        long pn = ThemeRule.nextChange(ThemeMode.AUTO, dec, MSK, polar);
+        check(pn > dec && pn - dec <= 27L * 3_600_000L, "polar night: check again within a day");
+    }
+
+    static void geo() {
+        check(ThemeRule.parseGeo(null) == null && ThemeRule.parseGeo("") == null && ThemeRule.parseGeo("x,y") == null, "bad geo");
+        check(ThemeRule.parseGeo("91,0") == null && ThemeRule.parseGeo("0,181") == null, "geo range");
+        double[] g = ThemeRule.parseGeo(ThemeRule.geo(55.7512, 37.6184));
+        check(g != null && g[0] == 55.75 && g[1] == 37.62, "geo round trip two decimals");
+    }
+
+    static void xmlEqualsPalette(String xmlPath) throws Exception {
+        String xml = new String(Files.readAllBytes(Paths.get(xmlPath)), StandardCharsets.UTF_8);
+        Matcher m = Pattern.compile("<(color|integer) name=\"lumen_(light|dark)_([a-z0-9_]+)\">#?([0-9A-Fa-f]+)</").matcher(xml);
+        int n = 0;
+        int fields = 0;
+        for (Field f : Palette.class.getFields()) if (f.getType() == int.class) fields++;
+        while (m.find()) {
+            n++;
+            Palette p = m.group(2).equals("light") ? Palette.light() : Palette.dark();
+            String camel = camel(m.group(3));
+            int want = m.group(1).equals("color") ? (int) Long.parseLong(m.group(4), 16) : Integer.parseInt(m.group(4));
+            try {
+                Field f = Palette.class.getField(camel);
+                check(f.getInt(p) == want, "tokens.xml lumen_" + m.group(2) + "_" + m.group(3) + " equals Palette." + camel);
+            } catch (NoSuchFieldException e) {
+                check(false, "tokens.xml lumen_" + m.group(2) + "_" + m.group(3) + " has no Palette field");
+            }
+        }
+        check(n == 2 * fields, "tokens.xml carries every Palette value of both themes (" + n + " of " + 2 * fields + ")");
+    }
+
+    static String camel(String s) {
+        StringBuilder b = new StringBuilder();
+        boolean up = false;
+        for (char c : s.toCharArray()) {
+            if (c == '_') up = true;
+            else {
+                b.append(up ? Character.toUpperCase(c) : c);
+                up = false;
+            }
+        }
+        return b.toString();
+    }
+
+    static void contrast(String t, Palette p) {
+        int[][] pairs = {
+                { p.text1, p.bg }, { p.text2, p.bg }, { p.text3, p.bg }, { p.text1, p.surface }, { p.text2, p.surface },
+                { p.text3, p.surface }, { p.onFocus, p.focus }, { p.ptext1, p.panel }, { p.ptext2, p.panel },
+                { p.ptext3, p.panel }, { p.onPfocus, p.pfocus }, { p.accent, p.panel }, { p.accentOnBg, p.bg },
+                { p.error, p.bg }, { p.errorPanel, p.panel }, { p.ok, p.bg }, { p.text1, p.bgGlow }, { p.navText, p.bg },
+        };
+        for (int i = 0; i < pairs.length; i++) {
+            double r = ratio(pairs[i][0], pairs[i][1]);
+            check(r >= 4.5, t + " pair " + i + " contrast " + String.format("%.2f", r) + " >= 4.5");
+        }
+    }
+
+    static double lum(int c) {
+        double[] ch = { (c >> 16) & 255, (c >> 8) & 255, c & 255 };
+        double l = 0, w[] = { 0.2126, 0.7152, 0.0722 };
+        for (int i = 0; i < 3; i++) {
+            double s = ch[i] / 255.0;
+            l += w[i] * (s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4));
+        }
+        return l;
+    }
+
+    static double ratio(int a, int b) {
+        double x = lum(a), y = lum(b);
+        return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+    }
+
+    static void mix() {
+        check(Palette.mix(0xFF000000, 0xFFFFFFFF, 0f) == 0xFF000000, "mix 0");
+        check(Palette.mix(0xFF000000, 0xFFFFFFFF, 1f) == 0xFFFFFFFF, "mix 1");
+        check(Palette.mix(0xFF000000, 0xFFFFFFFF, 0.5f) == 0xFF808080, "mix half");
+        check(Palette.alpha(0xFF123456, 0.5f) == 0x80123456, "alpha");
+        check(Palette.light().heroCard && !Palette.dark().heroCard, "hero card only in light");
+    }
+}

@@ -8,16 +8,16 @@ mode= / need= options) with the fake files' hashes.
 
     x50_fixture.py allow REAL_ALLOW OUT_ALLOW FILES_DIR
         as blobs_fixture.py allow (FILES_DIR/<path> = the fake file of every line, <path>.stock for from=), and
-        for an alt=<firmware>:<sha256> option FILES_DIR/<path>.alt, that firmware's fake copy (its sha256 in the
-        test allow-list)
+        for every alt=<firmware>:<sha256> option FILES_DIR/<path>.alt.<firmware>, that firmware's fake copy (its
+        sha256 in the test allow-list), and FILES_DIR/<path>.alt = the copy of the line's first alt= firmware
     x50_fixture.py tar FILES_DIR ALLOW OUT_IMG [--set ID] [--corrupt PATH] [--drop PATH] [--symlink PATH]
                    [--sparse PATH] [--dotdot NAME] [--big PATH] [--alt PATH[,PATH]]
         the z9x_blobs partition image the installer makes for the X50 (ustar, MANIFEST + files, padded to 16 MiB);
-        the crafted ones of blobs_fixture.py, --big PATH: that member is 9 MiB (more than x50_blobs.sh takes),
-        --alt: those members are the alt= firmware's copies (<path>.alt)
+        the crafted ones of blobs_fixture.py, --big PATH: that member is 9 MiB (more than the X50 maxf),
+        --alt: those members are the alt= firmware's copies (<path>.alt, or <path>.alt.<FW> with --altfw FW)
     x50_fixture.py stock FILES_DIR ALLOW OUT_DIR ROOT [--drop PATH] [--corrupt PATH] [--symlink PATH] [--no-apex]
-                   [--alt PATH[,PATH]]
-        a fake stock slot for the DSU-trial path (tools/devices/image/blobs_stock_dsu.sh): OUT_DIR/system.tar and
+                   [--alt PATH[,PATH]] [--altfw FW]
+        a fake stock slot for the trial-run path of tools/ota/image/z9x_blobs.sh: OUT_DIR/system.tar and
         OUT_DIR/system_ext.tar stand for the stock partitions (the test's mount stub extracts them), each file at
         its stock source path (system-as-root: system/...), the stock VNDK APEX system/apex/
         com.android.vndk.current.apex as a zip whose stored apex_payload.img is a tar of the /apex/... files, and
@@ -64,7 +64,8 @@ def cmd_stock(files, allow, out, root, opt):
         if opt.get("--drop") == rel:
             continue
         alt = rel in (opt.get("--alt") or "").split(",")
-        data = open(os.path.join(files, rel + (".alt" if alt else ".stock" if "from" in opts else "")), "rb").read()
+        asuf = ".alt" + ("." + opt["--altfw"] if opt.get("--altfw") else "")
+        data = open(os.path.join(files, rel + (asuf if alt else ".stock" if "from" in opts else "")), "rb").read()
         if opt.get("--corrupt") == rel:
             data = bytes([data[0] ^ 1]) + data[1:]
         if src.startswith("/system_ext/"):
@@ -101,17 +102,29 @@ def cmd_stock(files, allow, out, root, opt):
                     _add(tf, m, d)
 
 
-def cmd_alt(out, files):
-    """the alt=<firmware>:<sha256> options of the test allow-list OUT: a fake copy FILES_DIR/<path>.alt each"""
+def cmd_alt(out, files, real):
+    """the alt=<firmware>:<sha256> options of the real allow-list REAL (each firmware of a line, which the shared
+    fixture's option dict keeps only one of) in the test allow-list OUT: a fake copy FILES_DIR/<path>.alt.<firmware>
+    each, FILES_DIR/<path>.alt = the first one's"""
+    alts = {}
+    for line in open(real).read().splitlines():
+        w = line.split()
+        if len(w) >= 3 and re.fullmatch(r"[0-9a-f]{64}", w[0]):
+            alts[w[1]] = [o for o in w[3:] if o.startswith("alt=")]
     lines = []
     for line in open(out).read().splitlines():
         w = line.split()
         if len(w) >= 3 and re.fullmatch(r"[0-9a-f]{64}", w[0]):
+            w = w[:3] + [o for o in w[3:] if not o.startswith("alt=")] + alts.get(w[1], [])
+            first = True
             for i, o in enumerate(w[3:], 3):
                 m = re.fullmatch(r"alt=(v[0-9.]+):[0-9a-f]{64}", o)
                 if m:
                     data = b"fake %s of firmware %s for the host test\n" % (w[1].encode(), m.group(1).encode())
-                    open(os.path.join(files, w[1] + ".alt"), "wb").write(data)
+                    open(os.path.join(files, w[1] + ".alt." + m.group(1)), "wb").write(data)
+                    if first:
+                        open(os.path.join(files, w[1] + ".alt"), "wb").write(data)
+                        first = False
                     w[i] = "alt=%s:%s" % (m.group(1), hashlib.sha256(data).hexdigest())
             line = " ".join(w)
         lines.append(line)
@@ -121,7 +134,7 @@ def cmd_alt(out, files):
 def main(a):
     if a[:1] == ["allow"] and len(a) == 4:
         bf.cmd_allow(a[1], a[2], a[3], False)
-        cmd_alt(a[2], a[3])
+        cmd_alt(a[2], a[3], a[1])
     elif a[:1] == ["tar"] and len(a) >= 4:
         opt = dict(zip(a[4::2], a[5::2]))
         files = a[1]
@@ -135,7 +148,8 @@ def main(a):
                     f.write(b"b" * (9 << 20))
             for rel in (opt.get("--alt") or "").split(","):
                 if rel:
-                    shutil.copyfile(os.path.join(files, rel + ".alt"), os.path.join(files, rel))
+                    asuf = ".alt" + ("." + opt["--altfw"] if opt.get("--altfw") else "")
+                    shutil.copyfile(os.path.join(files, rel + asuf), os.path.join(files, rel))
         try:
             bf.cmd_tar(files, a[2], a[3], opt.get("--set"), opt.get("--corrupt"), opt.get("--drop"), opt.get("--symlink"),
                        opt.get("--sparse"), opt.get("--dotdot"))

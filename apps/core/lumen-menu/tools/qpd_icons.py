@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Generates the quick panel (layout D) icons: res/drawable/qpd_ic_<name>.xml (animated-vector) from the approved
-prototype's 24x24 SVG icons and their CSS focus animations (qp_design/proto_d3.py). Run from apps/Z9xProjector:
+"""Generates the quick panel (layout D) icons: res/drawable/lumen_qpd_ic_<name>.xml (animated-vector) from the approved
+prototype's 24x24 SVG icons and their CSS focus animations (qp_design/proto_d3.py). Run from apps/core/lumen-menu:
     python3 tools/qpd_icons.py
 The output is committed; this script only documents and repeats the port.
 
@@ -168,15 +168,7 @@ ICONS['proj'] = ([
     A('p_beam', 'fillAlpha', 0, 0.55, 700), A('g_beam', 'scaleX', 0, 1, 700),
 ])
 
-# USB: the stick plugs in
-ICONS['usb'] = ([
-    G('g_st', 0, 0, [
-        P('p_uf', rrect(8, 9, 8, 12, 2), 'fill', fa=0.18), P('p_us', rrect(8, 9, 8, 12, 2)),
-        P('p_uh', 'M9.5,9V4.5h5V9'), P('p_ud', 'M11,6.2h0.01M13,6.2h0.01', sw='2.6'),
-    ]),
-], [A('g_st', 'translateY', 5, 0, 560, 0, 'spring')])
-
-# Screen mirroring (2026-11-11, this tile replaces USB; not in the prototype, drawn in its style): the screen
+# Screen mirroring (2026-11-11, not in the prototype, drawn in its style): the screen
 # with a cast corner (Material cast proportions). Focus: the signal pops out of the corner, ring after ring, then the
 # screen draws itself round and its face lights up. The face is cut along y = x + 3.5, which only touches the outer
 # ring, so the fill never sits behind the signal; every stroke end keeps 1.2 px or more of air.
@@ -217,6 +209,23 @@ GEAR = ('M12.22,2h-0.44a2,2 0 0 0 -2,2v0.18a2,2 0 0 1 -1,1.73l-0.43,0.25a2,2 0 0
         'a2,2 0 0 0 2,-2v-0.18a2,2 0 0 1 1,-1.73l0.43,-0.25a2,2 0 0 1 2,0l0.15,0.08a2,2 0 0 0 2.73,-0.73l0.22,-0.39a2,2 0 0 0 '
         '-0.73,-2.73l-0.15,-0.08a2,2 0 0 1 -1,-1.74v-0.5a2,2 0 0 1 1,-1.74l0.15,-0.09a2,2 0 0 0 0.73,-2.73l-0.22,-0.38'
         'a2,2 0 0 0 -2.73,-0.73l-0.15,0.08a2,2 0 0 1 -2,0l-0.43,-0.25a2,2 0 0 1 -1,-1.73V4a2,2 0 0 0 -2,-2z')
+# 3D (2026-11-14, not in the prototype, drawn in its style, Material Symbols "3d" meaning: a screen with 3D in it):
+# the two eye pictures, apart left and right, slide into one screen, then the letters settle (480 ms in all). At rest
+# and with animations off: one screen with 3D.
+FRAME3D = rrect(2.5, 4.5, 19, 15, 3)
+THREE = 'M6.2,8.6h2.5a1.7,1.7 0 0 1 0,3.4h-1.1M7.6,12h1.3a1.75,1.75 0 0 1 0,3.5h-2.7'
+DEE = 'M13.4,8.6v6.9h1.6a2.6,2.6 0 0 0 2.6,-2.6v-1.7a2.6,2.6 0 0 0 -2.6,-2.6z'
+ICONS['3d'] = ([
+    G('g_dl', 12, 12, [P('p_dl', FRAME3D, sa=0.0)]),
+    G('g_dr', 12, 12, [P('p_df', FRAME3D, 'fill', fa=0.18), P('p_ds', FRAME3D)]),
+    G('g_dt', 12, 12, [P('p_d3', THREE, sw='2'), P('p_dd', DEE, sw='2')]),
+], [
+    hold('p_dl', 'strokeAlpha', 0.55), A('p_dl', 'strokeAlpha', 0.55, 0, 360, 0, 'ease'),
+    A('g_dl', 'translateX', -2.4, 0, 360, 0, 'ease'), A('g_dr', 'translateX', 2.4, 0, 360, 0, 'ease'),
+    hold('g_dt', 'scaleX', 0.82), hold('g_dt', 'scaleY', 0.82),
+    A('g_dt', 'scaleX', 0.82, 1, 380, 100, 'spring'), A('g_dt', 'scaleY', 0.82, 1, 380, 100, 'spring'),
+])
+
 # All settings: the gear turns
 ICONS['gear'] = ([G('g_gr', 12, 12, [P('p_gr', GEAR), P('p_gc', circ(12, 12, 3))])],
                  [A('g_gr', 'rotation', -60, 0, 700, 0, 'spring')])
@@ -231,6 +240,56 @@ ICONS['sun'] = ([
     A('g_sr', 'rotation', -45, 0, 700, 0, 'spring'),
     A('g_sr', 'scaleX', 0.7, 1, 700, 0, 'spring'), A('g_sr', 'scaleY', 0.7, 1, 700, 0, 'spring'),
     A('p_sr', 'strokeAlpha', 0.3, 1, 700, 0, 'spring'),
+])
+
+# Iris (the slider under the brightness slider, 2026-11-18): the ring stays, the six blades turn in and open
+def _iris_blades(r_in=3.4, r_out=8.5):
+    import math
+    pts = [(12 + r_in * math.cos(math.radians(60 * i - 90)), 12 + r_in * math.sin(math.radians(60 * i - 90)))
+           for i in range(6)]
+    d = ''
+    for i in range(6):
+        (x0, y0), (x1, y1) = pts[i], pts[(i + 1) % 6]
+        dx, dy = x1 - x0, y1 - y0
+        n = math.hypot(dx, dy)
+        dx, dy = dx / n, dy / n
+        b = (x0 - 12) * dx + (y0 - 12) * dy                 # from the hexagon corner along its edge to the ring
+        t = -b + math.sqrt(b * b - ((x0 - 12) ** 2 + (y0 - 12) ** 2 - r_out ** 2))
+        d += f'M{x0:.2f},{y0:.2f}L{x0 + dx * t:.2f},{y0 + dy * t:.2f}'
+    return d
+
+
+ICONS['iris'] = ([
+    P('p_ir', circ(12, 12, 8.5)),
+    G('g_ib', 12, 12, [P('p_ib', _iris_blades())]),
+], [
+    A('g_ib', 'rotation', -60, 0, 700, 0, 'spring'),
+    A('g_ib', 'scaleX', 0.7, 1, 700, 0, 'spring'), A('g_ib', 'scaleY', 0.7, 1, 700, 0, 'spring'),
+    A('p_ib', 'strokeAlpha', 0.3, 1, 700, 0, 'spring'),
+])
+
+# Theme (gear menu top row, 2026-11-18, in place of voice search): the mode in force, one icon each
+# light: an outlined sun whose rays spin in; dark: a crescent that tilts and fills; auto: a disc whose lit half turns
+ICONS['theme_light'] = ([
+    G('g_tc', 12, 12, [P('p_tc', circ(12, 12, 4.2))]),
+    G('g_tr', 12, 12, [P('p_tr', 'M12,2.5v2M12,19.5v2M2.5,12h2M19.5,12h2M5.3,5.3l1.4,1.4M17.3,17.3l1.4,1.4M5.3,18.7l1.4,-1.4'
+                             'M17.3,6.7l1.4,-1.4')]),
+], [
+    A('g_tc', 'scaleX', 0.8, 1, 500, 0, 'spring'), A('g_tc', 'scaleY', 0.8, 1, 500, 0, 'spring'),
+    A('g_tr', 'rotation', -90, 0, 700, 0, 'spring'),
+    A('p_tr', 'strokeAlpha', 0.2, 1, 700, 0, 'spring'),
+])
+ICONS['theme_dark'] = ([
+    G('g_tm', 12, 12, [P('p_tm', 'M20,14.5A8.5,8.5 0 1,1 9.5,4A7,7 0 0,0 20,14.5z', 'both', fa=0.35)]),
+], [
+    A('g_tm', 'rotation', -30, 0, 600, 0, 'spring'),
+    A('p_tm', 'fillAlpha', 0, 0.35, 600, 0, 'ease'),
+])
+ICONS['theme_auto'] = ([
+    P('p_ta', circ(12, 12, 8.5)),
+    G('g_th', 12, 12, [P('p_th', 'M12,3.5a8.5,8.5 0 0,0 0,17z', 'fill')]),
+], [
+    A('g_th', 'rotation', -180, 0, 700, 0, 'spring'),
 ])
 
 INTERP = {'ease': '@interpolator/lumen_qpd_ease', 'spring': '@interpolator/lumen_qpd_spring',
@@ -281,9 +340,9 @@ def main():
     os.makedirs(os.path.join(RES, 'drawable'), exist_ok=True)
     os.makedirs(os.path.join(RES, 'interpolator'), exist_ok=True)
     for name, (elems, anims) in ICONS.items():
-        with open(os.path.join(RES, 'drawable', f'qpd_ic_{name}.xml'), 'w') as f:
+        with open(os.path.join(RES, 'drawable', f'lumen_qpd_ic_{name}.xml'), 'w') as f:
             f.write(avd(elems, anims))
-    for n, c in (('qpd_spring', (0.3, 1.45, 0.55, 1)), ('qpd_ease', (0, 0, 0.58, 1))):
+    for n, c in (('lumen_qpd_spring', (0.3, 1.45, 0.55, 1)), ('lumen_qpd_ease', (0, 0, 0.58, 1))):
         with open(os.path.join(RES, 'interpolator', n + '.xml'), 'w') as f:
             f.write('<?xml version="1.0" encoding="utf-8"?>\n<!-- Generated by tools/qpd_icons.py -->\n'
                     '<pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"\n'

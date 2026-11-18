@@ -1,0 +1,10 @@
+ro.boot.xgimi.modelname=G0148
+ro.vendor.build.version.incremental=v6.17.12
+ro.vendor.build.date=Tue Jul 28 20:22:33 CST 2026
+ro.build.version.incremental=v6.17.12
+ro.build.version.release=13
+ro.build.version.security_patch=2026-04-05
+ro.bootloader=123456789
+ro.xgimi.gmui.version=6.18.202.05
+persist.xgimi.rc.version=B940D_CY06_CY_V1.0.3
+kernel=5.15.189-android13-8-g1fd17f3f89af-dirty

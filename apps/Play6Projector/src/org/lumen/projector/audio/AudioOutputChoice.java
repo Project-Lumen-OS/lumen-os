@@ -12,6 +12,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import org.lumen.audio.AutoOutput;
+import org.lumen.audio.BtA2dp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,8 @@ import java.util.List;
  */
 public final class AudioOutputChoice {
     private static final String TAG = "P6AudioOut";
+    /** A plug of the 3.5 mm jack is reported by the kernel: the wired output is an Auto candidate (lumen-audio AutoOutput). */
+    private static final boolean JACK_SENSED = true;
     static final String PREFS = "audio_output";
     static final String KEY_KIND = "kind";
     static final String KEY_ADDR = "addr";
@@ -67,8 +72,14 @@ public final class AudioOutputChoice {
             AudioManager am = sApp.getSystemService(AudioManager.class);
             if (am != null) {
                 am.registerAudioDeviceCallback(new AudioDeviceCallback() {
-                    @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) { apply("devices added"); }
-                    @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) { apply("devices removed"); }
+                    @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) {
+                        AutoOutput.added(d, kind(sApp) == AudioOutputKind.AUTO, JACK_SENSED);
+                        apply("devices added");
+                    }
+                    @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) {
+                        AutoOutput.removed(d);
+                        apply("devices removed");
+                    }
                 }, sH);
                 try {
                     am.addOnDevicesForAttributesChangedListener(MEDIA, sH::post,
@@ -77,6 +88,9 @@ public final class AudioOutputChoice {
                     Log.w(TAG, "routing listener not available: " + e);
                 }
             }
+            // a connected A2DP device that is not active is listed and made active on a Bluetooth choice (lumen-audio)
+            BtA2dp.install(sApp, () -> { Handler h = sH; if (h != null) h.post(() -> apply("bluetooth")); });
+            AutoOutput.chose(kind(sApp).name());                          // a stored manual choice, as stock's force use
             sH.post(() -> apply("process start"));
             // the Play 6 boot receiver is frozen (check_handshake): the boot-time re-apply is timed instead
             sH.postDelayed(() -> apply("after boot"), 30_000L);
@@ -99,6 +113,7 @@ public final class AudioOutputChoice {
     public static void choose(Context ctx, AudioOutputKind k, String addr) {
         prefs(ctx).edit().putString(KEY_KIND, k.name()).putString(KEY_ADDR, addr == null ? "" : addr).apply();
         Log.i(TAG, "user chose " + k + (addr == null || addr.isEmpty() ? "" : " " + addr));
+        AutoOutput.chose(k.name());
         install(ctx);
         Handler h = sH;
         if (h != null) h.post(() -> apply("user"));
@@ -122,6 +137,11 @@ public final class AudioOutputChoice {
         if (am == null) return out;
         String addr = prefs(ctx).getString(KEY_ADDR, "");
         for (AudioOutputKind k : new AudioOutputKind[] {AudioOutputKind.ARC, AudioOutputKind.BT, AudioOutputKind.WIRED, AudioOutputKind.USB}) {
+            if (k == AudioOutputKind.BT) {
+                Option bt = btOption(ctx, am, k == kind(ctx) ? addr : "");
+                if (bt != null) out.add(bt);
+                continue;
+            }
             AudioDeviceInfo d = find(am, k, k == kind(ctx) ? addr : "");
             if (d == null) continue;
             CharSequence label;
@@ -159,12 +179,21 @@ public final class AudioOutputChoice {
                 return;
             }
             AudioOutputKind k = kind(app);
-            AudioDeviceInfo d = k == AudioOutputKind.AUTO ? null : find(am, k, prefs(app).getString(KEY_ADDR, ""));
+            String addr = prefs(app).getString(KEY_ADDR, "");
+            if (k == AudioOutputKind.BT) {
+                String pick = BtA2dp.pick(addr);                      // a stale stored address: the connected device
+                if (pick != null) {
+                    if (BtA2dp.activateIfNeeded(pick, why)) return;     // the stack adds its output, "devices added" applies again
+                    addr = pick;
+                }
+            }
+            // Auto: the stock last accessed output (lumen-audio AutoOutput), preferred like a chosen one
+            AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, JACK_SENSED) : find(am, k, addr);
             List<AudioDeviceAttributes> cur = am.getPreferredDevicesForStrategy(media);
             if (d == null) {
                 if (cur != null && !cur.isEmpty() && ours(cur)) {
                     boolean ok = am.removePreferredDeviceForStrategy(media);
-                    Log.i(TAG, why + ": " + (k == AudioOutputKind.AUTO ? "auto" : k + " not connected, auto until it is back")
+                    Log.i(TAG, why + ": " + (k == AudioOutputKind.AUTO ? "auto, no output" : k + " not connected, auto until it is back")
                             + ", preferred " + cur + " removed" + (ok ? "" : " (REFUSED)"));
                 }
                 return;
@@ -185,6 +214,21 @@ public final class AudioOutputChoice {
             if (s.supportsAudioAttributes(MEDIA)) return s;
         }
         return null;
+    }
+
+    /**
+     * The Bluetooth row: the stored device while it is connected, else the first connected one (lumen-audio
+     * A2dpPick), also while the stack keeps it inactive (a wired output dropped it); AudioManager's A2DP output
+     * while the stack is not known yet.
+     */
+    private static Option btOption(Context ctx, AudioManager am, String stored) {
+        String pick = BtA2dp.pick(stored);
+        AudioDeviceInfo d = find(am, AudioOutputKind.BT, pick != null ? pick : stored);
+        if (pick == null && d == null) return null;
+        String addr = pick != null ? pick : d.getAddress();
+        CharSequence label = d != null && addr.equalsIgnoreCase(d.getAddress()) ? d.getProductName() : BtA2dp.name(addr);
+        if (label == null || label.length() == 0) label = ctx.getString(org.lumen.projector.R.string.sound_output_bt);
+        return new Option(AudioOutputKind.BT, addr, label);
     }
 
     /** A connected output of this kind: the given address first, else the first one. */

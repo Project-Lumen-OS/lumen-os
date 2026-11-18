@@ -16,7 +16,7 @@ Rules
   Z9X release.
 - Copy mode runs only from here outward, by hand, at a shared-code change. Builds and checks run
   `sync.sh --check` only. Z9X release preflight:
-      sh apps/common/sync.sh --check apps/Z9xProjector hal projector
+      sh apps/common/sync.sh --check apps/ProjectorBase hal projector
 - An edit made to a copy instead of here shows up in that check (the copy is newer than this file): move
   it here, never overwrite it with copy mode.
 
@@ -24,6 +24,6 @@ Languages
 - The strings files listed in FILES belong to the `common` target of apps/i18n/gen.py: their translations
   are the @common/<file> sections of apps/i18n/langs (never @projector/<file>), and the `projector` target
   skips them. gen.py --write writes their locale files here; then copy them outward with sync.sh.
-- Hand-written locale files (values-ru/strings.xml, strings_power.xml, strings_remote.xml,
-  strings_source.xml, strings_pair.xml, and strings_pair.xml in every locale dir) are plain files in FILES:
+- Hand-written locale files (values-ru/strings.xml, strings_power.xml, strings_source.xml; the remote pairing texts
+  live in apps/core/lumen-remote since the shared remote module) are plain files in FILES:
   edit them here.

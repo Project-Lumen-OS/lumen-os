@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: stock XGIMI settings has no texts in this language (it shows English): Lumen's own words, the stock
+     order and meaning. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">إعدادات 3D</string>
+    <string name="lumen_m_3d_off">إيقاف 3D</string>
+    <string name="lumen_m_3d_sbs">جنبًا إلى جنب</string>
+    <string name="lumen_m_3d_tb">أعلى وأسفل</string>
+    <string name="lumen_m_3d_sbs_2d">جنبًا إلى جنب كصورة 2D</string>
+    <string name="lumen_m_3d_tb_2d">أعلى وأسفل كصورة 2D</string>
+    <string name="lumen_m_3d_frame_packing">Blu-ray 3D</string>
+    <string name="lumen_m_3d_summary">أثناء تشغيل فيديو. يحتاج 3D إلى نظارات نشطة DLP-Link.</string>
+    <!-- 3D refusals: stock has no texts in this language, Lumen's words for the stock notes -->
+    <string name="lumen_m_3d_game">لا تتوفر إعدادات 3D في وضع الألعاب</string>
+    <string name="lumen_m_3d_no_video">شغّل فيديو أو اتصل بمصدر إشارة ثم حاول مرة أخرى</string>
+    <string name="lumen_m_3d_4k">لا تتوفر إعدادات 3D مع فيديو 4K</string>
+    <string name="lumen_m_3d_hdr">لا تتوفر إعدادات 3D مع فيديو HDR</string>
+    <string name="lumen_m_3d_120hz">تشغيل 3D غير متاح عند 120 هرتز</string>
+    <string name="lumen_m_3d_high_fps">لا تتوفر إعدادات 3D مع معدل الإطارات العالي</string>
+</resources>

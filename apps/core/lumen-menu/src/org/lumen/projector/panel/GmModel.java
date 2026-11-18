@@ -245,16 +245,25 @@ final class GmModel {
         boolean signal4k() { return width == 3840 && height == 2160; }
     }
 
-    static final int OK = 0, R_VRR_WIDE = 1, R_AR_VRR = 2, R_AR_4K = 3, R_HFR_VRR = 4, R_NOT_OFFERED = 5;
+    static final int OK = 0, R_VRR_WIDE = 1, R_AR_VRR = 2, R_AR_4K = 3, R_HFR_VRR = 4, R_NOT_OFFERED = 5, R_VRR_SPEED = 6;
+
+    /** The device's stock allows VRR only at top speed (profile game_menu.vrr_top_speed, the RS30). */
+    private static boolean vrrTopSpeed;
+
+    /** GameMenu.install: the device profile's VRR rule. */
+    static void setVrrTopSpeed(boolean on) { vrrTopSpeed = on; }
 
     /**
      * Stock refusal (xhplayer MutexManager / OtherViewModel, prototype setItem): OK or the reason a change is refused.
      *  VRR on while a wide format is shown; any aspect change while VRR is on; a wide format without a 3840 x 2160
-     *  signal; HFR off while VRR is on; a value the Z9X does not offer.
+     *  signal; HFR off while VRR is on; a value the Z9X does not offer; VRR on below top speed where the stock allows it
+     *  only there (xhplayer MutexManager: Feature.getVrrRequiresTopSpeed() and not isTopSpeedMode, toast
+     *  vrr_requires_top_speed).
      */
     static int refuse(String k, int v, State s) {
         if (!optionOffered(k, v) && !AIM.equals(k)) return R_NOT_OFFERED;
         int vrr = s.get(VRR), ar = s.get(AR);
+        if (vrrTopSpeed && VRR.equals(k) && v == 1 && s.get(LAT) != 1) return R_VRR_SPEED;
         if (VRR.equals(k) && v == 1 && ar >= 2) return R_VRR_WIDE;
         if (AR.equals(k) && vrr == 1 && v != ar) return R_AR_VRR;
         if (AR.equals(k) && v >= 2 && !s.signal4k()) return R_AR_4K;

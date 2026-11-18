@@ -22,6 +22,8 @@ import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
+import org.lumen.icons.IconText;
+
 import java.util.Locale;
 
 /**
@@ -318,7 +320,8 @@ public final class Notify {
          * direction ("HDMI-CEC" over an Arabic description); the text keeps its own direction. Balanced lines,
          * except for text past maxLines: full lines then, so the ellipsis comes as late as possible.
          */
-        private StaticLayout layout(CharSequence s, TextPaint p, int width, int maxLines) {
+        private StaticLayout layout(CharSequence text, TextPaint p, int width, int maxLines) {
+            CharSequence s = IconText.keys(getContext(), text);      // remote key arrows as icons (lumen-icons)
             TextDirectionHeuristic dir = rtl ? TextDirectionHeuristics.FIRSTSTRONG_RTL
                     : TextDirectionHeuristics.FIRSTSTRONG_LTR;
             boolean textRtl = dir.isRtl(s, 0, s.length());

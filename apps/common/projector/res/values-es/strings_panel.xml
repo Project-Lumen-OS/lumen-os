@@ -79,8 +79,6 @@
     <string name="panel_pm_performance_msg">Comprueba que las rejillas de ventilación no estén tapadas y que la habitación no supere los 25 °C. No uses este modo durante mucho tiempo.</string>
     <string name="panel_lamp">Brillo</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Pulsa → otra vez para Boost</string>
-    <string name="panel_boost_leave_press_again">Pulsa ← otra vez para salir de Boost</string>
     <string name="panel_boost_3d">Desactiva el 3D y vuelve a intentarlo</string>
     <string name="panel_boost_hot">El proyector está demasiado caliente para Boost. Inténtalo más tarde</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -150,7 +148,6 @@
     <string name="panel_tile_hdmi_only">Solo HDMI</string>
     <string name="panel_system_settings">Ajustes del sistema</string>
     <string name="panel_hdmi_settings">Ajustes de HDMI</string>
-    <string name="panel_lamp_hint">En 10, pulsa → dos veces para activar Boost.</string>
     <string name="panel_eye_desc">La luz se atenúa cuando hay alguien delante del objetivo.</string>
     <string name="panel_3d">3D</string>
     <string name="panel_3d_sbs">Lado a lado</string>

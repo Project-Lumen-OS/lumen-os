@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Zoom</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Rede</string>
+    <string name="lumen_qpd_theme">Tema</string>
+    <string name="lumen_qpd_theme_light">Claro</string>
+    <string name="lumen_qpd_theme_dark">Escuro</string>
+    <string name="lumen_qpd_theme_auto">Automático</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Espelhamento de tela</string>
     <string name="lumen_qpd_mirror_on">Espelhamento de tela (Miracast)</string>
@@ -17,5 +21,9 @@
     <string name="lumen_qpd_sound_more">Todas as definições de som</string>
     <string name="lumen_qpd_boost_note">Brilho máximo. As ventoinhas ficam mais ruidosas.</string>
     <string name="lumen_qpd_tip_picture">Escolha um modo para o que está a ver.</string>
-    <string name="lumen_qpd_tip_rear">Você e o projetor estão em lados opostos do ecrã.</string>
+    <string name="lumen_qpd_tip_rear">Você e o projetor estão em lados opostos da tela.</string>
+    <string name="lumen_qpd_tip_front">Você e o projetor estão do mesmo lado da tela.</string>
+    <string name="lumen_qpd_tip_table">O projetor está apoiado em uma mesa.</string>
+    <string name="lumen_qpd_tip_ceiling">O projetor está pendurado no teto, de cabeça para baixo.</string>
+    <string name="lumen_qpd_tip_auto">O projetor detecta sozinho se está apoiado ou pendurado e gira a imagem.</string>
 </resources>

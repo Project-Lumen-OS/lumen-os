@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">色範囲</string>
     <string name="lumen_m_hdmi_range_full">フル</string>
     <string name="lumen_m_hdmi_range_limited">リミテッド</string>
+    <string name="lumen_m_hdmi_range_auto_full">自動 (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">自動 (Limited)</string>
     <string name="lumen_m_kst_more">その他</string>
+    <string name="lumen_m_kst_size_position">サイズと位置</string>
+    <string name="lumen_m_kst_smart">スマート</string>
     <string name="lumen_m_kst_restore">元の画面に戻す</string>
     <string name="lumen_m_launcher_classic">Android TV（クラシック）</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,7 +42,6 @@
     <string name="lumen_m_panel_game_mode">ゲームモード</string>
     <string name="lumen_m_panel_game_speed">応答速度</string>
     <string name="lumen_m_panel_high">強</string>
-    <string name="lumen_m_panel_image_correction_settings">映像補正の設定</string>
     <string name="lumen_m_panel_lamp">明るさ</string>
     <string name="lumen_m_panel_lamp_hint">10 のときに → を 2 回押すと Boost がオンになります。</string>
     <string name="lumen_m_panel_low">弱</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">オフ</string>
     <string name="lumen_m_panel_on">オン</string>
     <string name="lumen_m_panel_optical_zoom">光学ズーム</string>
-    <string name="lumen_m_panel_optical_zoom_summary">画質を落とさずに画面サイズを変えます。自動台形補正と「スクリーンに合わせる」はズームを再調整します。</string>
     <string name="lumen_m_panel_picture_mode">映像モード</string>
     <string name="lumen_m_panel_picture_reset">映像の設定をリセット</string>
     <string name="lumen_m_panel_pm_ai">AI 映像</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">水平角度</string>
     <string name="lumen_m_angle_v">垂直角度</string>
     <string name="lumen_m_dynamic_contrast">ダイナミックコントラスト</string>
-    <string name="lumen_m_dynamic_black">ダイナミック黒強調</string>
+    <string name="lumen_m_dynamic_black">ダイナミックブラックレベルの強調</string>
     <string name="lumen_m_sleep_timer">オフタイマー</string>
     <string name="lumen_m_remote">リモコンをペアリング</string>
     <string name="lumen_m_ct_standard">標準</string>
     <string name="lumen_m_ct_movie">映画</string>
+    <string name="lumen_m_signal">信号</string>
+    <string name="lumen_m_signal_pin">信号カードを常に表示</string>
+    <string name="lumen_m_signal_refresh">信号カードの更新</string>
+    <string name="lumen_m_signal_refresh_normal">標準</string>
+    <string name="lumen_m_signal_refresh_fast">高速</string>
+    <string name="lumen_m_signal_refresh_note">高速: まれに映像がカクつくことがあります</string>
+    <string name="lumen_m_hdr_developer">開発者向け</string>
 </resources>

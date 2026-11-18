@@ -7,6 +7,10 @@ every model: the updater on the Z9X and the HB, the projector app on the Play 6,
                            "version_code":..,"build":..,"channel":..,"trial":true|false,"prev_version":..,
                            "prev_version_code":..,"method":..}  (v 1 and v 2 bodies are still taken) -> 204
     GET  /lumen/v1/stats   -> JSON aggregates (see Store.stats)
+    POST /lumen/v1/report  a problem report zip -> 201 {"code": ...} (lumen_reports.py, stored in the state directory)
+    POST /lumen/v1/report/part  the same zip in parts that pass the Russian choke on Cloudflare (lumen_reports.py);
+                           a stored dump (kind dump, Lumen Installer's stock system info) is counted in the dumps
+                           table: one row per dump, the projector by the HMAC of its serial, kept DUMP_KEEP_DAYS
 
 Stored per install and UTC day: HMAC of the install id, HMAC of the serial (server secret; SERIAL_RAW keeps the
 serial itself), model (the Lumen codename of the device registry, from the model and the XGIMI model the client
@@ -19,7 +23,7 @@ DB-IP", https://db-ip.com); no city is derived and the address itself is never s
 lives in memory only and nginx logs nothing for /lumen/v1/. A version change reported by the client (prev_version_code) is also kept as
 an update event (from, to, method). Python 3 standard library, plus python3-maxminddb for the GeoIP lookup
 (without it the country stays empty). Runs on 127.0.0.1 behind nginx.
-Usage: lumen_stats.py [--db PATH] [--salt PATH] [--geoip PATH] [--port N]
+Usage: lumen_stats.py [--db PATH] [--salt PATH] [--geoip PATH] [--port N] [--reports DIR]
 """
 import argparse
 import datetime
@@ -30,9 +34,13 @@ import json
 import os
 import re
 import sqlite3
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import lumen_reports  # noqa: E402
 
 try:
     import maxminddb
@@ -50,16 +58,19 @@ MODEL_ALIASES = {"mt5877": "horse_popular", "play6": "dragon_healthy"}
 # name), copied here because the server has no checkout; test_lumen_stats.py proves it equals the registry. XGIMI
 # builds several models from one product image, so the family alone does not name the projector.
 FAMILIES = {
-    "horse_popular": {"G0082": "horse_popular", "G0100": "g0100", "G0111": "g0111", "G0155": "g0155"},
+    "horse_popular": {"G0082": "horse_popular", "G0100": "g0100", "G0111": "g0111", "G0155": "g0155",
+                      "H0062": "h0062", "H0063": "h0063"},
     "goat_elegant": {"G0130": "goat_elegant", "G0148": "goat_elegant"},
     "dragon_healthy": {"G0058": "dragon_healthy"},
 }
 NAMES = {"horse_popular": "XGIMI Z9X", "goat_elegant": "XGIMI Z9X HB", "dragon_healthy": "XGIMI Play 6",
-         "g0111": "XGIMI X50 Ultra", "g0100": "XGIMI X50 Ultra Max", "g0155": "XGIMI RS30 Ultra Max"}
+         "g0111": "XGIMI X50 Ultra", "g0100": "XGIMI X50 Ultra Max", "g0155": "XGIMI RS30 Ultra Max",
+         "h0062": "XGIMI TITAN Noir Pro", "h0063": "XGIMI TITAN Noir Max"}
 CODENAMES = {c for m in FAMILIES.values() for c in m.values()}
 PRERELEASE_RE = re.compile(r"-(beta|rc)[0-9]*$")
 KINDS = ("", "trial", "installed")
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
+DUMP_KEEP_DAYS = 730
 METHODS = ("", "first", "ota_full", "ota_delta", "ota", "usb", "installer")
 
 UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
@@ -84,6 +95,8 @@ CREATE TABLE IF NOT EXISTS pings2 (day TEXT NOT NULL, id_hash TEXT NOT NULL, ser
 CREATE TABLE IF NOT EXISTS updates2 (day TEXT NOT NULL, id_hash TEXT NOT NULL, serial_hash TEXT NOT NULL,
   model TEXT NOT NULL, from_version TEXT NOT NULL, from_code INTEGER NOT NULL, to_version TEXT NOT NULL,
   to_code INTEGER NOT NULL, method TEXT NOT NULL, PRIMARY KEY (id_hash, from_code, to_code));
+CREATE TABLE IF NOT EXISTS dumps (day TEXT NOT NULL, code TEXT NOT NULL PRIMARY KEY, serial_hash TEXT NOT NULL,
+  model TEXT NOT NULL, version TEXT NOT NULL, bytes INTEGER NOT NULL DEFAULT 0);
 DROP TABLE IF EXISTS pings;
 DROP TABLE IF EXISTS updates;
 """
@@ -101,6 +114,15 @@ def codename(model, xgimi_model):
     if m in FAMILIES:
         return FAMILIES[m].get(xgimi_model, m)
     return m
+
+
+def xgimi_name(code):
+    """The name of an XGIMI model code (g0111 or G0111) from the registry copy, "" for a code we do not know."""
+    c = code.upper()
+    for m in FAMILIES.values():
+        if c in m:
+            return NAMES.get(m[c], "")
+    return ""
 
 
 def channel_of(version):
@@ -221,7 +243,8 @@ class Store:
 
     def _migrate(self):
         """Schema 3 (2026-11-13): the kind column, and the rows of older clients corrected in place: channel from
-        the version (they sent the beta switch), model as the registry codename (no row count changes)."""
+        the version (they sent the beta switch), model as the registry codename (no row count changes). Schema 4
+        (2026-11-17): the dumps table (created by SCHEMA, nothing to move)."""
         if self.db.execute("PRAGMA user_version").fetchone()[0] >= SCHEMA_VERSION:
             return
         before = [self.db.execute("SELECT COUNT(*) FROM %s" % t).fetchone()[0] for t in ("pings2", "updates2")]
@@ -266,6 +289,19 @@ class Store:
                 self.db.execute("DELETE FROM pings2 WHERE day < ?", (old,))
                 self.db.execute("DELETE FROM updates2 WHERE day < ?", (old,))
                 self.pruned = d
+            self.db.commit()
+            self.cache = (0.0, b"")
+
+    def add_dump(self, meta, serial, now=None):
+        """A dump stored by lumen_reports (Reports.on_dump): its code, the projector by the serial HMAC (the ping's,
+        so a dump and a later Lumen install of one projector are one unit), the XGIMI model code and stock version."""
+        d = today(now).isoformat()
+        sh = serial if SERIAL_RAW else self.h("serial", serial)
+        with self.lock:
+            self.db.execute("INSERT OR IGNORE INTO dumps (day, code, serial_hash, model, version, bytes) VALUES (?, ?, ?, ?, ?, ?)",
+                            (d, meta["code"], sh, meta["model"], meta["version"], int(meta.get("bytes") or 0)))
+            old = (today(now) - datetime.timedelta(days=DUMP_KEEP_DAYS)).isoformat()
+            self.db.execute("DELETE FROM dumps WHERE day < ?", (old,))
             self.db.commit()
             self.cache = (0.0, b"")
 
@@ -325,6 +361,15 @@ class Store:
             out["reinstalled"] = self.db.execute(
                 "SELECT COUNT(*) FROM (SELECT serial_hash FROM pings2 WHERE day >= ? AND serial_hash != '' "
                 "GROUP BY serial_hash HAVING COUNT(DISTINCT id_hash) > 1)", (since,)).fetchone()[0]
+            # dumps of Lumen Installer (stock system info): each projector once, by model code and stock version
+            dev = "COALESCE(NULLIF(serial_hash, ''), code)"
+            tot = self.db.execute("SELECT COUNT(DISTINCT " + dev + "), COUNT(*), COALESCE(SUM(bytes), 0) FROM dumps").fetchone()
+            out["dumps"] = {"units": tot[0], "sent": tot[1], "mb": round(tot[2] / 1e6, 1),
+                            "by_model": [dict(r, name=xgimi_name(r["model"]), mb=round(r["mb"] / 1e6, 1)) for r in self._rows(
+                                "SELECT model, COUNT(DISTINCT " + dev + "), COUNT(*), MAX(day), COALESCE(SUM(bytes), 0) FROM dumps "
+                                "GROUP BY 1 ORDER BY 2 DESC, 1", (), ("model", "units", "sent", "last", "mb"))],
+                            "by_version": self._rows("SELECT model, version, COUNT(DISTINCT " + dev + ") FROM dumps "
+                                                     "GROUP BY 1, 2 ORDER BY 3 DESC, 1, 2", (), ("model", "version", "units"))}
             body = json.dumps(out, separators=(",", ":")).encode()
             if now is None:
                 self.cache = (t, body)
@@ -361,7 +406,7 @@ class RateLimit:
             return True
 
 
-def make_handler(store, limit, geo):
+def make_handler(store, limit, geo, reports=None):
     class H(BaseHTTPRequestHandler):
         server_version = "lumen-stats"
         sys_version = ""
@@ -383,7 +428,8 @@ def make_handler(store, limit, geo):
                 self.wfile.write(body)
 
         def client(self):
-            # nginx: X-Lumen-CF = Cloudflare's CF-Connecting-IP (through the site), else X-Lumen-Remote = the peer
+            # nginx: X-Lumen-CF = CF-Connecting-IP, set only when the peer is a Cloudflare edge (geo $lumen_peer in
+            # conf.d/lumen-limits.conf: a client on the bare address can not choose its own), else X-Lumen-Remote
             return (self.headers.get("X-Lumen-CF") or self.headers.get("X-Lumen-Remote")
                     or self.client_address[0]).strip()
 
@@ -394,10 +440,12 @@ def make_handler(store, limit, geo):
                 self.send(404)
 
         def do_POST(self):
+            if self.path in ("/lumen/v1/report", "/lumen/v1/report/part") and reports is not None:
+                return self.report(self.path.endswith("/part"))
             if self.path != "/lumen/v1/ping":
                 return self.send(404)
             addr = self.client()
-            if not limit.allow(addr):
+            if not limit.allow(lumen_reports.sender(addr)):     # an IPv6 sender by its /64
                 return self.send(429)
             try:
                 n = int(self.headers.get("Content-Length", "-1"))
@@ -411,6 +459,22 @@ def make_handler(store, limit, geo):
                 return self.send(400)
             store.add(p, geo.lookup(addr))
             self.send(204)
+
+        def report(self, part=False):
+            self.connection.settimeout(60)
+            code, body, extra = (reports.handle_part if part else reports.handle)(self.headers, self.rfile, self.client())
+            data = json.dumps(body, separators=(",", ":")).encode() if body is not None else b""
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            for k, v in extra.items():
+                self.send_header(k, v)
+            if code >= 400:
+                self.send_header("Connection", "close")
+                self.close_connection = True
+            self.end_headers()
+            self.wfile.write(data)
 
     return H
 
@@ -431,9 +495,13 @@ def main():
     ap.add_argument("--salt", default=os.path.join(state, "salt"))
     ap.add_argument("--geoip", default="/opt/lumen-stats/geo/dbip-country-lite.mmdb")
     ap.add_argument("--port", type=int, default=8095)
+    ap.add_argument("--reports", default="", help="problem report store (default: <state>/reports)")
     a = ap.parse_args()
-    store = Store(a.db, load_salt(a.salt))
-    srv = ThreadingHTTPServer(("127.0.0.1", a.port), make_handler(store, RateLimit(), Geo(a.geoip)))
+    salt = load_salt(a.salt)
+    store = Store(a.db, salt)
+    reports = lumen_reports.Reports(a.reports or os.path.join(state, "reports"), salt, on_dump=store.add_dump)
+    reports.start_pruner()
+    srv = ThreadingHTTPServer(("127.0.0.1", a.port), make_handler(store, RateLimit(), Geo(a.geoip), reports))
     srv.daemon_threads = True
     srv.serve_forever()
 

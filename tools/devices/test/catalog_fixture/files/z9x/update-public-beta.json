@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "device": "z9x",
+  "channel": "public-beta",
+  "published_utc": 1794579250,
+  "version": "1.0.11-beta3",
+  "version_code": 1001103,
+  "build_utc": 1794578983,
+  "build_id": "lumen-1.0.11-beta3-20261113anp",
+  "requires": {
+    "vendor_incremental": [
+      "v6.15.58",
+      "v6.15.62",
+      "v6.15.19"
+    ],
+    "min_version_code": 10000,
+    "blobs_set": [
+      "z9x-v61558-b"
+    ]
+  },
+  "changelog": {
+    "en": "Lumen OS 1.0.11 beta 3\n• The brightness slider asks before it turns the picture off: at the lowest level press Left twice. The power button brings the picture back.\n• Quick menu: Eye protection as a tile, voice search at the top with the Google services, no USB tile.\n• The Bluetooth tile opens Remotes & Accessories.\n• The Keystone window no longer repeats the rows that have their own tile.\n• Picture modes follow the signal, a mode only for HDR is greyed out on a normal picture.\n• Lumen Home: no Projector tab, each app once in Apps, Sleep timer in All settings, General.\n• Google Play without a Google account opens the sign in first.\n• Bluetooth headphones play next to a soundbar on HDMI ARC.\n• Smaller fixes.",
+    "ru": "Lumen OS 1.0.11 бета 3\n• Ползунок яркости спрашивает, прежде чем выключить картинку: на самом низком уровне нажмите «Влево» два раза. Кнопка питания возвращает картинку.\n• Быстрое меню: «Защита глаз» стала плиткой, голосовой поиск наверху при сервисах Google, плитки USB больше нет.\n• Плитка Bluetooth открывает «Пульты и аксессуары».\n• В окне трапеции больше нет строк, у которых есть своя плитка.\n• Режимы изображения следуют за сигналом, режим только для HDR виден серым на обычной картинке.\n• Lumen Home: нет вкладки «Проектор», каждое приложение один раз, «Таймер сна» в «Все настройки», «Общие».\n• Google Play без аккаунта Google сначала открывает вход.\n• Наушники Bluetooth играют рядом с саундбаром на HDMI ARC.\n• Мелкие исправления."
+  },
+  "packages": [
+    {
+      "type": "full",
+      "url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta3/lumen-os-1.0.11-beta3-nogms-full-ota.zip",
+      "size": 703502293,
+      "sha256": "eb45546352feddea854cd25e7e0490cbbbb1f41150d47187f1c877d66bdfec65",
+      "payload_offset": 41,
+      "payload_size": 703473884,
+      "metadata_url": "https://github.com/Project-Lumen-OS/lumen-os/releases/download/z9x-1.0.11-beta3/lumen-os-1.0.11-beta3-nogms-full-payload_metadata.bin",
+      "metadata_size": 27629,
+      "metadata_sha256": "6955a8c8887cdc5a4ed8067c2daab91989df93701df2e4b3babf9b4c991a42bd",
+      "payload_properties": [
+        "FILE_HASH=FsOQDYTPgxavTriE6bop7j5R+zVBhTegfFg4yZ7KLqA=",
+        "FILE_SIZE=703473884",
+        "METADATA_HASH=fWhc7TMJ/Zto6NwlaFDGChYTgsUqLv633JCBQaBcFqU=",
+        "METADATA_SIZE=27106"
+      ]
+    }
+  ]
+}

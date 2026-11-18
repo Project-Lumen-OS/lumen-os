@@ -12,6 +12,7 @@
     <string name="lumen_m_cancel">Отмена</string>
     <string name="lumen_m_panel_boost_press_again">Нажмите → ещё раз для Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Нажмите ← ещё раз, чтобы выйти из Boost</string>
+    <string name="lumen_m_lamp_off_press_again">Изображение отключится. Чтобы включить его снова, нажмите кнопку питания. Нажмите ← ещё раз, чтобы отключить.</string>
     <string name="lumen_m_toast_setup_running">Сначала завершите настройку</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI-качество</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Точные цвета</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Колонка и свет</string>
     <string name="lumen_m_ct_custom">Пользовательская</string>
     <string name="lumen_m_lamp_off">Отключить изображение</string>
+    <string name="lumen_m_iris">Диафрагма</string>
+    <string name="lumen_m_iris_dynamic">Динамический</string>
+    <string name="lumen_m_iris_lamp_dynamic">При динамической диафрагме яркость не меняется.</string>
+    <string name="lumen_m_iris_lamp_held">При этом значении диафрагмы яркость не меняется.</string>
 </resources>

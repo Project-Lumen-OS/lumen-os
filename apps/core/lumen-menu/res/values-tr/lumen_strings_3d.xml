@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D: stock XGIMI settings has no texts in this language (it shows English): Lumen's own words, the stock
+     order and meaning. The tile name and the summary are Lumen's. -->
+<resources>
+    <string name="lumen_m_3d">3D</string>
+    <string name="lumen_m_3d_title">3D Ayarları</string>
+    <string name="lumen_m_3d_off">3D\'yi kapat</string>
+    <string name="lumen_m_3d_sbs">Yan yana</string>
+    <string name="lumen_m_3d_tb">Üst ve alt</string>
+    <string name="lumen_m_3d_sbs_2d">Yan yana, 2D olarak</string>
+    <string name="lumen_m_3d_tb_2d">Üst ve alt, 2D olarak</string>
+    <string name="lumen_m_3d_frame_packing">Blu-ray 3D</string>
+    <string name="lumen_m_3d_summary">Bir video oynarken. 3D için aktif DLP-Link gözlük gerekir.</string>
+    <!-- 3D refusals: stock has no texts in this language, Lumen's words for the stock notes -->
+    <string name="lumen_m_3d_game">3D ayarları Oyun Modunda desteklenmiyor</string>
+    <string name="lumen_m_3d_no_video">Bir video oynatın veya bir sinyal kaynağına bağlanıp tekrar deneyin</string>
+    <string name="lumen_m_3d_4k">3D ayarları 4K videoda desteklenmiyor</string>
+    <string name="lumen_m_3d_hdr">3D ayarları HDR videoda desteklenmiyor</string>
+    <string name="lumen_m_3d_120hz">3D oynatma 120 Hz\'de devre dışıdır</string>
+    <string name="lumen_m_3d_high_fps">3D ayarları yüksek kare hızında desteklenmiyor</string>
+</resources>

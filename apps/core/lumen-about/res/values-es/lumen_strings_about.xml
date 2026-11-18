@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_about_model_code">Código de modelo</string>
+    <string name="lumen_about_dlp">Controlador DLP</string>
+    <string name="lumen_about_part_firmware">%1$s, firmware %2$s</string>
+    <string name="lumen_about_fpga">FPGA</string>
+    <string name="lumen_about_firmware">Firmware de XGIMI</string>
+    <string name="lumen_about_firmware_dated">%1$s del %2$s</string>
+    <string name="lumen_about_android">Android</string>
+    <string name="lumen_about_android_patch">%1$s, actualización de seguridad %2$s</string>
+    <string name="lumen_about_kernel">Kernel</string>
+    <string name="lumen_about_boot_loader">Firmware de arranque</string>
+    <string name="lumen_about_gmui">Interfaz de XGIMI</string>
+    <string name="lumen_about_platform">Plataforma MediaTek</string>
+    <string name="lumen_about_remote">Mando a distancia</string>
+    <string name="lumen_about_wifi">Wi-Fi</string>
+    <string name="lumen_about_back">Volver al sistema de XGIMI</string>
+    <string name="lumen_about_back_summary_file">Archivo para la memoria USB: %1$s</string>
+    <string name="lumen_about_back_summary">Con la memoria USB de recuperación de XGIMI</string>
+    <string name="lumen_about_intro">La memoria USB de recuperación de XGIMI para este modelo devuelve el sistema de XGIMI. La guía de la página del proyecto explica cómo.</string>
+    <string name="lumen_about_usb_file">Nombre del archivo para la memoria USB</string>
+    <string name="lumen_about_official">Archivo oficial de XGIMI</string>
+    <string name="lumen_about_official_value">%1$s, %2$s bytes</string>
+    <string name="lumen_about_searching">Buscando el archivo oficial de este firmware</string>
+    <string name="lumen_about_guide_files">La guía de la página del proyecto enumera los archivos oficiales de XGIMI.</string>
+    <string name="lumen_about_erases">La memoria borra todo lo que hay en el proyector: aplicaciones, cuentas, ajustes y archivos.</string>
+    <string name="lumen_about_scan">Escanea con el móvil para abrir</string>
+    <string name="lumen_about_close">Cerrar</string>
+</resources>

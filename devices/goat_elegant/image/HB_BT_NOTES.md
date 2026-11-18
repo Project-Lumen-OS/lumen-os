@@ -26,7 +26,7 @@ Found on the tester's HB (lumen-hb-1.0.8-beta5, UGREEN Studio Max5s, SBC) and fi
 - `setprop persist.bluetooth.disableabsvol false` and a Bluetooth restart: `avrcpSupportsAbsoluteVolume ... support=true`.
   hb_bt.rc sets it at early-boot, as play6_base.rc does.
 
-## 3. Auto sent the sound to the headphones and the soundbar at once (open)
+## 3. Auto sent the sound to the headphones and the soundbar at once (fixed in apps/core/lumen-audio, 2026-11-13)
 
 - With a CEC soundbar (System Audio on) and the headphones connected, Auto routed media to `bt_a2dp(80), hdmi_arc(40000)`:
   AOSP adds the ARC output to every media route while System Audio is forced. The volume keys then set the ARC
@@ -34,3 +34,17 @@ Found on the tester's HB (lumen-hb-1.0.8-beta5, UGREEN Studio Max5s, SBC) and fi
 - Fix to do in the HB copy of AudioOutputChoice (after the z9x-1.0.9 merge): in Auto, with a connected Bluetooth /
   wired / USB output, prefer that device alone; while a chosen ARC is coming back (about 4 s after Speaker), hold the
   speaker instead of Auto (Auto picked the headphones).
+
+## 4. Headphones connected and silent next to a soundbar on ARC (2026-11-13, tester report on beta11)
+
+- Same route as section 3: `bt_a2dp, hdmi_arc`. getDevicesForAttributes returns a DeviceVector, a SortedVector of
+  descriptor pointers, so the order of the two is heap order. AudioPathReporter took the first device that was not the
+  speaker and sent the vendor path 2 (ARC) whenever the soundbar's descriptor came first. The vendor HAL plays on one
+  sink and its Bluetooth loopback writes A2DP only on path 3: the headphones showed connected and stayed silent,
+  forget and pair again changed nothing (the soundbar stays connected).
+- Fix (every projector, apps/core/lumen-audio): the path of a route is `MediaPath.heard` (Bluetooth, 3.5 mm, USB,
+  ARC, speaker) and in Auto `ArcAside` makes HDMI ARC / eARC a non-default media device while a personal output is
+  connected (the SpdifOff role), so media and the volume keys go to the headphones alone. A chosen Soundbar output
+  still wins (preferred device).
+- Check on the device: `logcat -s Z9xAudioPath LumenArcAside` shows `media output -> path 3 (BT_A2DP)` and
+  `HDMI ARC out of the media route`, `dumpsys audio` media route `bt_a2dp` only.

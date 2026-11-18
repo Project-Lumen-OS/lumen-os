@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Активирован режим игры</string>
+    <string name="lumen_m_ps_ai">Профессиональные настройки недоступны в режиме качества изображения ИИ</string>
+    <string name="lumen_m_ps_performance">Профессиональные настройки не поддерживаются в режиме производительности изображения</string>
+    <string name="lumen_m_ps_ai_basic">Стандартные настройки недоступны в режиме качества изображения ИИ</string>
+    <string name="lumen_m_ps_performance_basic">Стандартные настройки не поддерживаются в режиме производительности изображения</string>
+</resources>

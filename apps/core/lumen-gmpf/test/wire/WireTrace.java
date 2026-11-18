@@ -315,6 +315,20 @@ public final class WireTrace {
         }
         step("callback", new Object[0], "connectFocusManager");
         callback();
+        // ai-mode-stock: the GmTvManager event callback (Z9X IGmpf 702 setGmTvListener(pid, cb), HB TV 1 setGmTvCallback)
+        Wire.lastBinder = null;
+        step("callback", new Object[0], "setTvListener", tvSink());
+        callback();
+    }
+
+    /** The AI picture quality's event sink: every event the callback delivers is written into the trace. */
+    private static Object tvSink() throws Exception {
+        Class<?> s = Class.forName("org.lumen.hal.gmpf.TvEventSink");
+        return java.lang.reflect.Proxy.newProxyInstance(s.getClassLoader(), new Class<?>[] {s}, (p, m, a) -> {
+            if (m.getDeclaringClass() == Object.class) return m.getName().equals("hashCode") ? 7 : "TvEventSink";
+            android.os.Wire.log("EVENT onTvEvent[" + a[0] + ", " + a[1] + "]");
+            return null;
+        });
     }
 
     private static byte[] floats(float... v) {

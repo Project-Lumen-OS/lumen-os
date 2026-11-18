@@ -1,0 +1,5 @@
+# Fixes carried in the code of a base APK (README.md). One row per fix: the fixes of one file apply in this order, each
+# on the result of the one above (its base pin is the result pin of that row).
+# image path	id	class replaced (with its nested classes)	base classes.dex sha256	patched classes.dex sha256
+system/system_ext/priv-app/TvSettingsTwoPanel/TvSettingsTwoPanel.apk	tvsettings_a2dp	Lcom/android/tv/settings/accessories/BluetoothA2dpConnector;	a28b16be8a858f70cd58811a02b325a797d7c48cd3148a9ebb90eef4297a0034	3753686b0b114f93a3e44e812e0e45ad766d0cac4efb12c83b656d4d9e169f83
+system/system_ext/priv-app/TvSettingsTwoPanel/TvSettingsTwoPanel.apk	tvsettings_about	Lcom/android/tv/settings/about/AboutFragment;	3753686b0b114f93a3e44e812e0e45ad766d0cac4efb12c83b656d4d9e169f83	16c4aa9a3d911291072f9ab58c4507aa4309f9d9437d1efb9f9339b61be5b12c

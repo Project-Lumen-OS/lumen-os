@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">Пульт түймелері</string>
+    <string name="lumen_remote_keys_assign">Түйме тағайындау</string>
+    <string name="lumen_remote_keys_press">Пульттегі түймені басыңыз</string>
+    <string name="lumen_remote_keys_leave">Шығу үшін Артқа түймесін басыңыз</string>
+    <string name="lumen_remote_keys_fixed">Бұл түймені қайта тағайындау мүмкін емес</string>
+    <string name="lumen_remote_keys_pick">Түйме не істейді</string>
+    <string name="lumen_remote_keys_as_before">Бұрынғыдай</string>
+    <string name="lumen_remote_keys_reset_all">Барлығын қалпына келтіру</string>
+    <string name="lumen_remote_keys_saved">Сақталды</string>
+    <string name="lumen_remote_keys_empty">Әзірге ешбір түйме тағайындалмаған</string>
+    <string name="lumen_remote_keys_gone">Қолданба жойылды. Түйме бұрынғыдай жұмыс істейді.</string>
+    <string name="lumen_remote_keys_name_youku">Youku түймесі</string>
+    <string name="lumen_remote_keys_name_tencent">Tencent Video түймесі</string>
+    <string name="lumen_remote_keys_name_iqiyi">iQIYI түймесі</string>
+    <string name="lumen_remote_keys_name_mango">Mango TV түймесі</string>
+    <string name="lumen_remote_keys_name_bilibili">bilibili түймесі</string>
+    <string name="lumen_remote_keys_name_ambient">Заставка түймесі</string>
+    <string name="lumen_remote_keys_name_shortcut">Жылдам қатынау түймесі</string>
+    <string name="lumen_remote_keys_name_custom">Жылдам қатынау түймесі %1$d</string>
+    <string name="lumen_remote_keys_name_f">F%1$d пернесі</string>
+    <string name="lumen_remote_keys_name_browser">Браузер пернесі</string>
+    <string name="lumen_remote_keys_name_mail">Пошта пернесі</string>
+    <string name="lumen_remote_keys_name_music">Музыка пернесі</string>
+    <string name="lumen_remote_keys_name_calculator">Калькулятор пернесі</string>
+    <string name="lumen_remote_keys_name_contacts">Контактілер пернесі</string>
+    <string name="lumen_remote_keys_name_calendar">Күнтізбе пернесі</string>
+    <string name="lumen_remote_keys_name_bookmarks">Бетбелгілер пернесі</string>
+    <string name="lumen_remote_keys_do_source">Кіріс көзі</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">Трапеция</string>
+    <string name="lumen_remote_keys_do_focus">Фокус</string>
+    <string name="lumen_remote_keys_do_quick">Жылдам параметрлер</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">Сигнал</string>
+</resources>

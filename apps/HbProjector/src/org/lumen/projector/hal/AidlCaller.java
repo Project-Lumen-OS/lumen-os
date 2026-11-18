@@ -44,6 +44,8 @@ import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.util.Log;
 
+import org.lumen.hal.gmpf.TvEventSink;
+
 abstract class AidlCaller {
     static final String TAG = "Z9xGmpf";
 
@@ -459,39 +461,72 @@ abstract class AidlCaller {
     interface FocusSink { void onFocusEvent(int type, String value); }
 
     private static volatile FocusSink sFocusSink;
-    /** Strong static reference: the vendor keeps only a binder reference to our callback. */
-    private static FocusCallback sCallback;
+    /** Strong static references: the vendor keeps only a binder reference to our callbacks. */
+    private static EventCallback sCallback;
+    private static EventCallback sTvCallback;
+    private static volatile TvEventSink sTvSink;
 
     static void setFocusSink(FocusSink s) {
         sFocusSink = s;
     }
 
+    static void setTvSink(TvEventSink s) {
+        sTvSink = s;
+    }
+
     /** FOCUS 1 setFocusCallback(cb), the stock registration (ProjectorFocusManagerWrapper.initCallback). */
     static void callRegisterFocusCallback(GmpfCall c) throws RemoteException {
-        final FocusCallback cb;
+        final EventCallback cb;
         synchronized (AidlCaller.class) {
-            if (sCallback == null) sCallback = new FocusCallback();
+            if (sCallback == null) sCallback = new EventCallback(PKG + "IProjectorFocusCallback", "focusEvent", (t, v) -> {
+                FocusSink s = sFocusSink;
+                if (s != null) s.onFocusEvent(t, v);
+            });
             cb = sCallback;
         }
         call(c, o -> o.p.writeStrongBinder(cb), RET_VOID);
     }
 
     /**
-     * Java xgimi.hardware.gmpf.IProjectorFocusCallback, answered as the stock $Stub (com.xgimi.middle.jar):
-     * markVintfStability in the constructor (the vendor process may only call a VINTF binder), code 1
-     * oneway focusEvent(int, String) with enforceInterface and enforceNoDataAvail, 0x00FFFFFF version 1,
-     * 0x00FFFFFE the hash the guard accepted (that firmware's stub), everything else to Binder.onTransact.
-     * Never calls the HAL, never blocks: the event goes to the sink, which posts it.
+     * TV 1 setGmTvCallback(cb), the stock registration of the GmTvManager events (GmTvManagerWrapper.setGmTvListener):
+     * event 5 "picturemode:N" drives the AI picture quality (org.lumen.aipq.AiPq).
      */
-    private static final class FocusCallback extends Binder implements IInterface {
-        static final String DESCRIPTOR = PKG + "IProjectorFocusCallback";
-        static final int FOCUS_EVENT = 1;
+    static void callRegisterTvCallback(GmpfCall c) throws RemoteException {
+        final EventCallback cb;
+        synchronized (AidlCaller.class) {
+            if (sTvCallback == null) sTvCallback = new EventCallback(PKG + "IGmTvCallback", "gmTvEvent", (t, v) -> {
+                TvEventSink s = sTvSink;
+                if (s != null) s.onTvEvent(t, v);
+            });
+            cb = sTvCallback;
+        }
+        call(c, o -> o.p.writeStrongBinder(cb), RET_VOID);
+    }
+
+    private interface Deliver { void deliver(int type, String value); }
+
+    /**
+     * Java xgimi.hardware.gmpf.IProjectorFocusCallback and IGmTvCallback, answered as the stock $Stub
+     * (com.xgimi.middle.jar): markVintfStability in the constructor (the vendor process may only call a VINTF binder),
+     * code 1 event(int, String) with enforceInterface and enforceNoDataAvail, 0x00FFFFFF version 1, 0x00FFFFFE the
+     * hash the guard accepted (that firmware's stub, one hash per package version), everything else to
+     * Binder.onTransact. A two-way event gets the empty success reply. Never calls the HAL, never blocks: the event
+     * goes to the sink, which posts it.
+     */
+    private static final class EventCallback extends Binder implements IInterface {
+        static final int EVENT = 1;
         static final int META_VERSION = 0x00FFFFFF;
         static final int META_HASH = 0x00FFFFFE;
+        private final String descriptor;
+        private final String method;
+        private final Deliver deliver;
 
-        FocusCallback() {
+        EventCallback(String descriptor, String method, Deliver deliver) {
+            this.descriptor = descriptor;
+            this.method = method;
+            this.deliver = deliver;
             markVintfStability();
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, descriptor);
         }
 
         @Override public IBinder asBinder() { return this; }
@@ -499,27 +534,25 @@ abstract class AidlCaller {
         @Override
         protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
             if (code == META_VERSION || code == META_HASH) {
-                data.enforceInterface(DESCRIPTOR);
+                data.enforceInterface(descriptor);
                 reply.writeNoException();
                 if (code == META_VERSION) reply.writeInt(VERSION); else reply.writeString(sAcceptedHash);
                 return true;
             }
-            if (code != FOCUS_EVENT) return super.onTransact(code, data, reply, flags);
+            if (code != EVENT) return super.onTransact(code, data, reply, flags);
             int type;
             String value;
             try {
-                data.enforceInterface(DESCRIPTOR);
+                data.enforceInterface(descriptor);
                 type = data.readInt();
                 value = data.readString();
                 data.enforceNoDataAvail();
             } catch (Throwable t) {
-                Log.w(TAG, "focusEvent parse: " + t);   // oneway: nothing to answer, the event is dropped
+                Log.w(TAG, method + " parse: " + t);   // the event is dropped
                 return true;
             }
-            FocusSink s = sFocusSink;
-            if (s != null) {
-                try { s.onFocusEvent(type, value); } catch (Throwable t) { Log.w(TAG, "sink: " + t); }
-            }
+            if ((flags & FLAG_ONEWAY) == 0 && reply != null) reply.writeNoException();
+            try { deliver.deliver(type, value); } catch (Throwable t) { Log.w(TAG, "sink: " + t); }
             return true;
         }
     }

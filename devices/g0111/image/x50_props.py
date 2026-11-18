@@ -2,19 +2,28 @@
 """x50_props.py: the property edits of the X50 test image (compose_x50.sh step 5).
 
   x50_props.py apply  EDITS MODEL SYSTEM_PROP PRODUCT_PROP V BID      edit both files in place
-  x50_props.py check  EDITS MODEL BASE_SYSTEM BASE_PRODUCT NEW_SYSTEM NEW_PRODUCT V BID
+  x50_props.py check  EDITS MODEL BASE_SYSTEM BASE_PRODUCT NEW_SYSTEM NEW_PRODUCT V BID [FIRST_START]
                                                                        the new files are exactly the base files
-                                                                       with the edits (verify_tree_x50.py runs it)
+                                                                       with the edits (verify_tree_x50.py runs it);
+                                                                       with FIRST_START (first_start_prop.txt) the
+                                                                       product file then went through
+                                                                       first_start.py apply (the one first-start
+                                                                       setting of every image)
   x50_props.py model  MODEL STOCK_MODEL_PROP                           MODEL is exactly the rule's subset of the
                                                                        stock file (on the build server, the dump)
 
 EDITS is x50_prop.txt (format in its header), MODEL x50_model_prop.txt (appended to the product file under one
-comment line). V is the variant (t1), BID the date part of the build id. Standard library only.
+comment line). V is the variant (t1), BID the date part of the build id; @VC@ in an edit is the O1 version code of a
+release V (the public image of a model with updates). Standard library only.
 """
+import os
 import re
 import sys
 
 sys.dont_write_bytecode = True
+# first_start.py: next to this file when staged (flat), devices/_image/checks in the repository
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path[:0] = [HERE, os.path.join(HERE, "..", "..", "_image", "checks")]
 KEY = re.compile(r"^[A-Za-z0-9_.\-]+$")
 MARK = "# ---- XGIMI X50 Ultra (G0111) test image: devices/g0111/image/x50_prop.txt, x50_model_prop.txt"
 
@@ -44,6 +53,22 @@ def bid_time(bid):
     return str(utc), text
 
 
+VERSION = re.compile(r"(\d+)\.(\d{1,2})\.(\d{1,2})(?:-(beta|rc)(\d{1,2}))?")
+
+
+def version_code(v):
+    """@VC@: the O1 version code of a release version (x*1000000 + y*10000 + z*100 + n; betaN n = N, rcN n = 50 + N,
+    the release 99), as tools/devices/ota/ota_conf.py version_code and the shared updater read it"""
+    m = VERSION.fullmatch(v)
+    if not m:
+        die("@VC@ needs a release version (x.y.z, x.y.z-betaN, x.y.z-rcN), not %r" % v)
+    x, y, z, kind, n = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+    if kind == "beta" and not 1 <= int(n) <= 49 or kind == "rc" and not 1 <= int(n) <= 48:
+        die("@VC@: %s has no O1 code (beta 1..49, rc 1..48)" % v)
+    k = int(n) if kind == "beta" else 50 + int(n) if kind == "rc" else 99
+    return int(x) * 1000000 + int(y) * 10000 + int(z) * 100 + k
+
+
 def read_edits(path, v, bid):
     out = {"system": [], "product": []}
     sec = None
@@ -56,6 +81,8 @@ def read_edits(path, v, bid):
             continue
         if sec is None:
             die("%s:%d: an edit before [system] or [product]" % (path, n))
+        if "@VC@" in line:
+            line = line.replace("@VC@", str(version_code(v)))
         line = line.replace("@V@", v).replace("@BID@", bid)
         if "@UTC@" in line or "@DATE@" in line:
             utc, text = bid_time(bid)
@@ -131,9 +158,14 @@ IDENTITY = {"ro.product.device", "ro.product.model", "ro.product.brand", "ro.pro
             "ro.product.board", "ro.product.name", "ro.build.product"}
 
 
+# the first-start keys (devices/_image/first_start_prop.txt) never come from a stock model file: the language and time
+# zone are one setting of every image (the overseas TITAN files and a stock file such as H0046's set ro.product.locale)
+FIRST_START = ("ro.product.locale", "ro.localization.")
+
+
 def model_rule(line):
     k = keyof(line)
-    return k is not None and k not in IDENTITY and not k.startswith("persist.sys.")
+    return k is not None and k not in IDENTITY and not k.startswith(("persist.sys.",) + FIRST_START)
 
 
 def main(a):
@@ -149,8 +181,8 @@ def main(a):
         print("x50_props: applied %d system and %d product edits and %d model props"
               % (len(e["system"]), len(e["product"]), len(m)))
         return 0
-    if len(a) == 9 and a[0] == "check":
-        _, ed, mo, bs, bp, ns, np_, v, bid = a
+    if len(a) in (9, 10) and a[0] == "check":
+        _, ed, mo, bs, bp, ns, np_, v, bid = a[:9]
         e = read_edits(ed, v, bid)
         m = read_model(mo)
         bad = 0
@@ -158,7 +190,12 @@ def main(a):
             base = load(b)
             if base and base[-1] == "":
                 base = base[:-1]
-            want = dump(edited(base, e[sec], mod))
+            lines = edited(base, e[sec], mod)
+            if sec == "product" and len(a) == 10:
+                import first_start
+                prop = first_start.read_prop(a[9])
+                lines = first_start.transform(lines, first_start.block_lines(a[9]), first_start.all_keys(prop))
+            want = dump(lines)
             got = open(n, encoding="utf-8").read()
             if want != got:
                 bad = 1

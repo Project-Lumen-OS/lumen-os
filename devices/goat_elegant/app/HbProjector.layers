@@ -2,21 +2,50 @@
 # The HB app is the Z9X app minus the Z9X-only files below, plus the HB layer (apps/HbProjector: the real forks,
 # each with a row in devices/goat_elegant/forks.tsv, and the HB-only files). The Z9X folder is only read.
 app       HbProjector
-base      apps/Z9xProjector
+base      apps/ProjectorBase
 # the shared projector menu of every Lumen projector with the HB profile; the
 # HB adapters are apps/HbProjector panel/HbMenuFeatures (+ HbMenuGates) and the game menu io
+module    lumen-system
+module    lumen-aipq
+module    lumen-hdmi
+# the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
+module    lumen-icons
+# problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
+module    lumen-report
+# Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
+module    lumen-qr
+module    lumen-about
+# the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
+module    lumen-remote
+# the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
+# model's rows as data
+module    lumen-signal
+file      devices/goat_elegant/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-ui
+module    lumen-source
+file      devices/goat_elegant/source.tsv assets/lumen_source/source.tsv
 module    lumen-menu
+# the HDMI-CEC page of every projector (apps/core/lumen-cec), driven by this app's CecPolicyDriver
+module    lumen-cec
+# the stock HDMI-CEC defaults of every model (devices/_image/cec_defaults.tsv) for lumen-cec CecDefaults
+file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv
 file      devices/goat_elegant/menu.json assets/lumen_menu/menu.json
+file      devices/goat_elegant/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
 # the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer); the HB clients, its AIDL transport, its codes
 # and rules are apps/HbProjector hal/ (GmpfClient, Gmpf2Client, AidlWire, HbCodes, HbRules)
 module    lumen-gmpf
+# the shared media route rules (apps/core/lumen-audio: MediaPath, ArcAside)
+module    lumen-audio
+# the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
+module    lumen-stats
+module    lumen-control
 # the Z9X quick panel controller: on the HB QuickPanel drives the shared MenuController through the HB-only
 # panel/QuickPanelController (HbMenu); the old HB fork of the Z9X controller and the HB game bar are gone
 drop      src/org/lumen/projector/panel/QuickPanelController.java
-# Z9X-only: the report screen, 3D, the Z9X fit adapter, the HIDL transport and focus callback (the HB is AIDL), the Z9X
+# Z9X-only: 3D, the Z9X fit adapter, the HIDL transport and focus callback (the HB is AIDL), the Z9X
 # gmpf codes and rules, the 1.0.8 import
-drop      src/org/lumen/projector/report/
 drop      src/org/lumen/projector/display/ThreeD.java
+drop      src/org/lumen/projector/display/ThreeDCall.java
 drop      src/org/lumen/projector/fit/Z9xFitDevice.java
 drop      src/org/lumen/projector/hal/Hidl*.java
 drop      src/org/lumen/projector/hal/Z9x*.java
@@ -38,12 +67,8 @@ drop      test/lamp3d/
 drop      src/org/lumen/projector/panel/PanelRules.java
 drop      src/org/lumen/projector/panel/RefusalReason.java
 drop      src/org/lumen/projector/panel/RuleNotes.java
-drop      src/org/lumen/projector/AiScenePolicy.java
 drop      res/values*/strings_rules.xml
 drop      test/rules/
-# Z9X quick panel layout D (2026-11-11): its device-only part (the Input popup over the Z9X HAL); the shared menu
-# itself is the lumen-menu module above; the HB drives it through panel/HbMenu (no fork of it)
-drop      src/org/lumen/projector/panel/QpdSource.java
 # Z9X menu adapters (Z9X HAL): every device brings its own
 drop      src/org/lumen/projector/panel/Z9x*.java
 drop      src/org/lumen/projector/utils/Z9x*.java
@@ -59,6 +84,8 @@ drop      src/org/lumen/projector/sys/InstallGuard.java
 drop      test/install/
 # Z9X-only: the render parity of the Z9X quick menu against the Z9X 1.0.10 panel (its ROOT is the repo, not this tree)
 drop      test/render/
+# Z9X-only: the Quick 3D host checks (no 3D on the HB stock, its ROOT is the repo, not this tree)
+drop      test/threed/
 top       apps/HbProjector
 # never part of an app tree: build output, APKs, notes
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

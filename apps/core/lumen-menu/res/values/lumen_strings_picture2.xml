@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's advanced picture rows (rs30-parity-picture2): the white balance and colour
+     correction pages reuse the Z9X app's pro_* texts and the HB app's pro_segmentation_hb / pro_reset_default_hb with
+     their translations; the HDR and Dolby Vision screen rows, the auto switch, the style filter and the original frame
+     refusals are new texts -->
+<resources>
+    <string name="lumen_m_wb">White balance</string>
+    <string name="lumen_m_wb_2">2-point</string>
+    <string name="lumen_m_wb_11">11-point</string>
+    <string name="lumen_m_red_gain">Red gain</string>
+    <string name="lumen_m_green_gain">Green gain</string>
+    <string name="lumen_m_blue_gain">Blue gain</string>
+    <string name="lumen_m_red_offset">Red offset</string>
+    <string name="lumen_m_green_offset">Green offset</string>
+    <string name="lumen_m_blue_offset">Blue offset</string>
+    <string name="lumen_m_wb_level">%1$d%%</string>
+    <string name="lumen_m_red">Red</string>
+    <string name="lumen_m_green">Green</string>
+    <string name="lumen_m_blue">Blue</string>
+    <string name="lumen_m_cyan">Cyan</string>
+    <string name="lumen_m_magenta">Magenta</string>
+    <string name="lumen_m_yellow">Yellow</string>
+    <string name="lumen_m_skin">Skin tone</string>
+    <string name="lumen_m_cc">Color correction</string>
+    <string name="lumen_m_cc_color">Color</string>
+    <string name="lumen_m_hue">Hue</string>
+    <string name="lumen_m_memc_original">Original frame rate</string>
+    <string name="lumen_m_reset_defaults">Reset to defaults</string>
+    <string name="lumen_m_gray_level">Gray level</string>
+    <string name="lumen_m_hdr_enh">HDR enhancement</string>
+    <string name="lumen_m_screen_size">Screen size</string>
+    <string name="lumen_m_screen_gain">Screen gain</string>
+    <string name="lumen_m_dv_screen">Dolby Vision settings</string>
+    <string name="lumen_m_auto_switch">Auto mode switch</string>
+    <string name="lumen_m_style_filter">Style filter</string>
+    <string name="lumen_m_original">Original</string>
+    <string name="lumen_m_filter_custom">Downloaded filter</string>
+    <string name="lumen_m_inches">%1$d inches</string>
+    <string name="lumen_m_original_120">Not available while Ultra 120 Hz is on</string>
+    <string name="lumen_m_original_3d">Not available in 3D</string>
+    <string name="lumen_m_imax_no_gain">Not adjustable in IMAX Enhanced</string>
+    <string name="lumen_m_imax_no_filter">Style filters do not work in IMAX Enhanced</string>
+    <string name="lumen_m_gain_0_5" translatable="false">0.5</string>
+    <string name="lumen_m_gain_0_6" translatable="false">0.6</string>
+    <string name="lumen_m_gain_0_7" translatable="false">0.7</string>
+    <string name="lumen_m_gain_0_8" translatable="false">0.8</string>
+    <string name="lumen_m_gain_0_9" translatable="false">0.9</string>
+    <string name="lumen_m_gain_1_0" translatable="false">1.0</string>
+    <string name="lumen_m_gain_1_1" translatable="false">1.1</string>
+    <string name="lumen_m_gain_1_2" translatable="false">1.2</string>
+    <string name="lumen_m_gain_1_3" translatable="false">1.3</string>
+    <string name="lumen_m_gain_1_4" translatable="false">1.4</string>
+    <string name="lumen_m_gain_1_5" translatable="false">1.5</string>
+    <string name="lumen_m_gain_1_6" translatable="false">1.6</string>
+    <string name="lumen_m_gain_1_7" translatable="false">1.7</string>
+    <string name="lumen_m_gain_1_8" translatable="false">1.8</string>
+    <string name="lumen_m_gain_1_9" translatable="false">1.9</string>
+    <string name="lumen_m_gain_2_0" translatable="false">2.0</string>
+</resources>

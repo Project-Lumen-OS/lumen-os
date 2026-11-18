@@ -5,8 +5,8 @@
 # the release keys), dex/ (odex and vdex against the base's boot image), props/ (the two build.prop files of
 # devices/horse_popular/image/z9x_props.py). No test adb of any kind goes into this image. check_image.py and
 # lumen_checks.py run from the repository ({REPO}: they read tools/sign, tools/lumen, tools/ota/image, overlay/v1).
-*	need	patch_tar.py	erofs_kcheck.py	lumen_dsu_install.rc	lumen_dsu_install.sh	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-sysconfig-nogms.xml	z9x_gapps.sh	z9x_nui.sh	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl
-*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/props/system/build.prop	stage/props/system/product/etc/build.prop
+*	need	patch_tar.py	erofs_kcheck.py	lumen_dsu_install.rc	lumen_dsu_install.sh	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-sysconfig-nogms.xml	z9x_gapps.sh	z9x_nui.sh	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	z9x_setup.rc	first_start_prop.txt	first_start.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	z9x_model_props.rc	z9x_model_props.tsv	z9x_model_prop_dapeng.txt	model_props.py	x50_props.py
+*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk
 *	sh_n	lumen_dsu_install.sh
 *	sh_n	z9x_nui.sh
 *	base_pin
@@ -21,12 +21,25 @@
 *	tar_add	system/app/Z9xAirPlay/Z9xAirPlay.apk	stage/apk/Z9xAirPlay.apk	644
 *	tar_add	system/app/Z9xAirPlay/oat/arm64/Z9xAirPlay.odex	stage/dex/Z9xAirPlay.odex	644
 *	tar_add	system/app/Z9xAirPlay/oat/arm64/Z9xAirPlay.vdex	stage/dex/Z9xAirPlay.vdex	644
+# the HDMI input app (org.lumen.tvinput: the TV input service, the HDMI viewer, HDMI-CEC; apps/LumenTvInput) over the
+# 1.0.9 copy at the same path, with its odex and vdex: the Source key card reads its viewer's manifest mark
+*	tar_add	system/app/Z9xTvInput/Z9xTvInput.apk	stage/apk/Z9xTvInput.apk	644
+*	tar_add	system/app/Z9xTvInput/oat/arm64/Z9xTvInput.odex	stage/dex/Z9xTvInput.odex	644
+*	tar_add	system/app/Z9xTvInput/oat/arm64/Z9xTvInput.vdex	stage/dex/Z9xTvInput.vdex	644
 *	tar_mkdir	system/priv-app/Z9xHome	755
 *	tar_mkdir	system/priv-app/Z9xHome/oat	755
 *	tar_mkdir	system/priv-app/Z9xHome/oat/arm64	755
 *	tar_add	system/priv-app/Z9xHome/Z9xHome.apk	stage/apk/Z9xHome.apk	644
 *	tar_add	system/priv-app/Z9xHome/oat/arm64/Z9xHome.odex	stage/dex/Z9xHome.odex	644
 *	tar_add	system/priv-app/Z9xHome/oat/arm64/Z9xHome.vdex	stage/dex/Z9xHome.vdex	644
+# the first-run app (Lumen Setup, apps/LumenSetup through devices/horse_popular/app/Z9xSetup.layers) over the 1.0.9
+# copy at the same path, with its odex and vdex
+*	tar_mkdir	system/priv-app/Z9xSetup	755
+*	tar_mkdir	system/priv-app/Z9xSetup/oat	755
+*	tar_mkdir	system/priv-app/Z9xSetup/oat/arm64	755
+*	tar_add	system/priv-app/Z9xSetup/Z9xSetup.apk	stage/apk/Z9xSetup.apk	644
+*	tar_add	system/priv-app/Z9xSetup/oat/arm64/Z9xSetup.odex	stage/dex/Z9xSetup.odex	644
+*	tar_add	system/priv-app/Z9xSetup/oat/arm64/Z9xSetup.vdex	stage/dex/Z9xSetup.vdex	644
 *	tar_mkdir	system/priv-app/LumenMiracast	755
 *	tar_mkdir	system/priv-app/LumenMiracast/oat	755
 *	tar_mkdir	system/priv-app/LumenMiracast/oat/arm64	755
@@ -39,6 +52,17 @@
 *	tar_add	system/priv-app/LumenDsuInstall/LumenDsuInstall.apk	stage/apk/LumenDsuInstall.apk	644
 *	tar_add	system/priv-app/LumenDsuInstall/oat/arm64/LumenDsuInstall.odex	stage/dex/LumenDsuInstall.odex	644
 *	tar_add	system/priv-app/LumenDsuInstall/oat/arm64/LumenDsuInstall.vdex	stage/dex/LumenDsuInstall.vdex	644
+# the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
+# languages and a language key) in LeanbackIME's place; its odex and vdex against the base's boot image
+*	tar_add	system/product/app/LeanbackIME/LeanbackIME.apk	stage/apk/LumenKeyboard.apk	644
+*	tar_add	system/product/app/LeanbackIME/oat/arm64/LeanbackIME.odex	stage/dex/LumenKeyboard.odex	644
+*	tar_add	system/product/app/LeanbackIME/oat/arm64/LeanbackIME.vdex	stage/dex/LumenKeyboard.vdex	644
+# Add accessory says Paired for a speaker that connects before the screen listens, About shows the projector's model
+# code, XGIMI firmware and Back to the XGIMI system: the base TvSettings with the fixes of tools/base_patch (the
+# Android 15 BluetoothA2dpConnector, the About rows), swapped in on the Mac and signed with the release platform key;
+# its base odex and vdex are for the old dex, ART would refuse them, so they go and ART compiles the app itself
+*	tar_add	system/system_ext/priv-app/TvSettingsTwoPanel/TvSettingsTwoPanel.apk	stage/apk/TvSettingsTwoPanel.apk	644
+*	tar_rm	system/system_ext/priv-app/TvSettingsTwoPanel/oat
 # screen mirroring: the Wi-Fi Direct device type "television" for Windows (apps/LumenWifiP2pOverlay, static RRO, no dex)
 *	tar_add	system/product/overlay/LumenWifiP2pOverlay.apk	stage/apk/LumenWifiP2pOverlay.apk	644
 # the framework keys overlay and the remote key layouts: the gear held on the XGIMI remotes opens the game menu
@@ -58,25 +82,83 @@
 *	tar_mkdir	system/etc/lumen	755
 *	tar_add	system/etc/init/lumen_dsu_install.rc	lumen_dsu_install.rc	644
 *	tar_add	system/etc/lumen/lumen_dsu_install.sh	lumen_dsu_install.sh	755
+# the HDMI receiver bridge of the signal panel (apps/core/lumen-signal/image, devices/horse_popular/signal.tsv
+# hdmi_format): a root oneshot that asks the MStar receiver for its info dump and leaves the info lines for the app
+*	need	lumen_hdmirx.rc	lumen_hdmirx.sh
+*	sh_n	lumen_hdmirx.sh
+*	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
+*	line	lumen_hdmirx.sh	HELP=help
+*	tar_add	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc	644
+*	tar_add	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh	755
 *	tar_add	system/etc/permissions/privapp-permissions-lumen-miracast.xml	privapp-permissions-lumen-miracast.xml	644
 *	tar_add	system/product/etc/default-permissions/lumen-miracast.xml	lumen-miracast-default-permissions.xml	644
 *	tar_add	system/etc/sysconfig/z9x.xml	z9x-sysconfig-nogms.xml	644
 *	tar_add	system/etc/z9x/z9x_gapps.sh	z9x_gapps.sh	755
-# the two build.prop files (z9x_props.py on the Mac)
+# the one blobs reader of every model (tools/ota/image) over the 1.0.9 copy, with the Z9X's settings: the installed
+# path as before (tools/devices/test/blobs_parity.py), and in a trial run the codec and audio files read-only from the
+# stock slot (sound and secure video in a trial); ro.lumen.models (z9x_props.py) names the model it does that on
+*	tar_add	system/etc/z9x/z9x_blobs.sh	z9x_blobs.sh	755
+*	tar_add	system/etc/init/z9x_blobs.rc	z9x_blobs.rc	644
+*	tar_add	system/etc/z9x/blobs.conf	blobs.conf	644
+# the first boot over stock data without a language and time zone of its own (block 3 empties the stock wizard's)
+*	tar_add	system/etc/init/z9x_setup.rc	z9x_setup.rc	644
+# the stock volume split (lumen-audio StockVolume): the tree's z9x_base.rc turns AVRCP absolute volume off at
+# early-boot as the stock vendor build.prop, and the 1.0.9 click curve copy goes (Android plays clicks at 0 dB, the DSP
+# applies the volume)
+*	need	z9x_base.rc
+*	tar_add	system/etc/init/z9x_base.rc	z9x_base.rc	644
+*	tar_rm	system/etc/init/z9x_audio.rc
+*	tar_rm	system/etc/xgimi/audio_policy_engine_stream_volumes.xml
+# the stock model properties a Lumen Z9X reads (z9x_model_props.rc: the XGIMI init loads
+# vendor/etc/xgimimodelname/G0082/build.prop, LineageOS init does not; the trapezoid lines stay in z9x_trapezoid.rc),
+# one block per vendor firmware, the prop file proven against each pinned stock file first
+*	run	model_props.py	check	{in}	z9x_model_props.tsv	Z19={Z19}	Z58={Z58}	Z62={Z62}
+*	tar_add	system/etc/init/z9x_model_props.rc	z9x_model_props.rc	644
+# the Google sign-in helper (lineage/gmsprops, devices/_image/gmsprops, as on the HB): the arm64 library and init helper,
+# the 32-bit library for the 32-bit zygote, its rc and data file. It acts only while Google services are there
+# (sys.z9x.gapps), persist.sys.lumen.gms_compat=0 turns it off. Binaries built on the builder (lineage/gmsprops/build.sh),
+# staged by the release kit into stage/gms, pinned here
+*	need	lumen_gmsprops.rc	gms_props.conf	gmsprops_arm.sha256	gmsprops_arm64.sha256	stage/gms/arm/liblumen_gmsprops.so	stage/gms/arm64/liblumen_gmsprops.so	stage/gms/arm64/lumen_gmsprops
+*	set	GPL_SHA	gmsprops_arm.sha256	([0-9a-f]{64})  liblumen_gmsprops\.so\n
+*	set	GPL64_SHA	gmsprops_arm64.sha256	([0-9a-f]{64})  liblumen_gmsprops\.so\n
+*	set	GPB64_SHA	gmsprops_arm64.sha256	([0-9a-f]{64})  lumen_gmsprops\n
+*	sha	stage/gms/arm/liblumen_gmsprops.so	{GPL_SHA}
+*	sha	stage/gms/arm64/liblumen_gmsprops.so	{GPL64_SHA}
+*	sha	stage/gms/arm64/lumen_gmsprops	{GPB64_SHA}
+*	file_type	stage/gms/arm/liblumen_gmsprops.so	^ELF 32-bit LSB shared object, ARM, 
+*	file_type	stage/gms/arm64/liblumen_gmsprops.so	^ELF 64-bit LSB shared object, ARM aarch64, 
+*	file_type	stage/gms/arm64/lumen_gmsprops	^ELF 64-bit LSB pie executable, ARM aarch64, 
+*	line	lumen_gmsprops.rc	    exec_background u:r:su:s0 root root -- /system/bin/lumen_gmsprops apply
+*	line	lumen_gmsprops.rc	    start lumen_gmsprops_checkin
+*	tar_add	system/lib/liblumen_gmsprops.so	stage/gms/arm/liblumen_gmsprops.so	644
+*	tar_add	system/lib64/liblumen_gmsprops.so	stage/gms/arm64/liblumen_gmsprops.so	644
+*	tar_add	system/bin/lumen_gmsprops	stage/gms/arm64/lumen_gmsprops	755
+*	tar_add	system/etc/init/lumen_gmsprops.rc	lumen_gmsprops.rc	644
+*	tar_add	system/etc/lumen/gms_props.conf	gms_props.conf	644
+# the two build.prop files (z9x_props.py on the Mac; the product one ends with devices/_image/first_start_prop.txt)
 *	tar_sub	system/build.prop	stage/props/system/build.prop
 *	tar_sub	system/product/etc/build.prop	stage/props/system/product/etc/build.prop
 *	tar_patch	{tar}
 *	tar_same	{tar}	system/build.prop	stage/props/system/build.prop
 *	tar_same	{tar}	system/product/etc/build.prop	stage/props/system/product/etc/build.prop
+*	tar_same	{tar}	system/etc/init/z9x_model_props.rc	z9x_model_props.rc
+*	tar_same	{tar}	system/etc/init/z9x_base.rc	z9x_base.rc
+*	tar_same	{tar}	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc
+*	tar_same	{tar}	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.build_id={build_id}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.version_code={vcode}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.version={v}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.variant=public
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.gms=0
 *	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.dsu_install=1
+*	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.models=G0082
+*	tar_same	{tar}	system/etc/z9x/z9x_blobs.sh	z9x_blobs.sh
+*	tar_same	{tar}	system/etc/z9x/blobs.conf	blobs.conf
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.ota.manifest_url={MANIFEST}
 *	tar_line	{tar}	system/build.prop	ro.z9x.version={v}
 *	tar_line	{tar}	system/build.prop	ro.build.version.incremental={INCREMENTAL}
+# the one first-start setting of every image decides the language and time zone with any vendor
+*	run	first_start.py	check	{in}/first_start_prop.txt	--tar	{tar}	>first_start.log
 *	tar_noname	{tar}	dsu_test|testadb|adb_keys
 *	tar_noline	{tar}	^(persist\.adb\.tcp\.port|service\.adb\.tcp\.port|ro\.adb\.secure=0|persist\.sys\.usb\.config=.*adb)	system/product/etc/build.prop	system/build.prop	system/system_ext/etc/build.prop
 # erofs (4 KiB blocks, lz4hc, no inline data, the fixed 2009 time), fsck, extract, every changed member read back

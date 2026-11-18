@@ -59,6 +59,17 @@ for sig, guard in (("public void set(FeatureId feature, String value, Consumer<R
 gm = body(mf, "public static Set<String> gameItems()")
 ok("gameItems() = HbMenuGates read against HbFeatures", "HbMenuGates.gameItems(" in gm and "HbFeatures.on(" in gm)
 
+# ---- the stock picture settings page refusal: the shared rule with the raw reads of the last snapshot
+bk = body(mf, "public Note blocked(FeatureId feature, String value, MenuState now)")
+lk = body(mf, "public Note locked(FeatureId feature, MenuState now)")
+ok("blocked: the same rule as the closed look of the row (locked)", "return locked(feature, now);" in bk)
+ok("locked: the shared PictureSettingsRule with game state, raw picture mode and content kind",
+   "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr)" in lk)
+ok("blocked: the HB stock trees are one image_mode_setting page",
+   "static final PictureSettingsRule.Layout PICTURE_PAGES = PictureSettingsRule.ONE_PAGE;" in mf)
+ok("locked: from the last snapshot, nothing read = open", "Snapshot sn = last;" in lk and "sn == null ? null" in lk)
+ok("blocked: no own picture lock in the HB adapter", "rules_not_ai" not in mf and "MODE_AI" not in mf)
+
 # ---- Boost: refused without a vendor call where the picture mode holds it; judged by the 152 read-back
 sb = body(mf, "private String setBoost(boolean on, GmpfClient g, Gmpf2Client g2)")
 i_explain = sb.find("BoostLeave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);")
@@ -76,7 +87,15 @@ ok("light in Boost: leaves Boost first by the same rules", lamp.find("setBoost(f
 pm = body(mf, "private String setPictureMode(String value, GmpfClient g, Gmpf2Client g2)")
 ok("colour accuracy: BoostRules", "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)" in pm)
 ok("picture mode: refused in game mode", 'if (gameModeOn(g, raw)) return "blocked_game";' in pm)
-ok("picture mode: stock visibility for the content", "if (!offered(w, hdr)) return EXPLAINED;" in pm)
+# the modes this content does not allow: greyed by the profile's stock support lists (SignalRule), from the content
+# kind the adapter reads (TV 78), never a rule of the adapter's own
+ok("picture mode: no content rule of the adapter's own", "offered(" not in mf and "getHdrType" not in pm)
+ok("picture mode: the content kind in every read", "b.signal(Signal.ofHdrType(sn.hdr));" in body(mf, "MenuState state(Snapshot sn)"))
+ok("picture mode: the content kind alone while the menu is open",
+   "Hal.query((g, g2) -> g.getHdrType(), hdr -> cb.accept(Signal.ofHdrType(hdr)));" in body(mf, "public void readSignal(Consumer<Signal> cb)"))
+prof = read(os.path.join(GSI, "devices/goat_elegant/menu.json")) or read(os.path.join(HB, "assets/lumen_menu/menu.json"))
+ok("picture mode: the stock dapengse support lists in the profile",
+   '"support": {"color_accuracy": ["sdr", "hdr", "hdr10"], "hdr_vivid": ["hdr_vivid"]}' in prof)
 
 # ---- HDMI-only setters re-check the input
 for case in ("case HDMI_RANGE: {", "case HDMI_EDID: {", "case PICTURE_ASPECT: {", "case GAME_ALLM: {"):
@@ -97,7 +116,8 @@ ok("eye: no NUI reader, nothing sent", 'if (!GmpfClient.nuiReaderReady()) return
 
 # ---- refusal notes exist as strings (the menu shows them by name)
 res = set()
-for d in (os.path.join(HB, "res"), os.path.join(GSI, "apps/Z9xProjector/res"), os.path.join(GSI, "apps/core/lumen-menu/res")):
+for d in (os.path.join(HB, "res"), os.path.join(GSI, "apps/ProjectorBase/res"), os.path.join(GSI, "apps/core/lumen-menu/res"),
+          os.path.join(GSI, "apps/core/lumen-remote/res")):
     for f in glob.glob(os.path.join(d, "values", "*.xml")):
         res.update(re.findall(r'<string name="([a-z0-9_]+)"', read(f)))
 reasons = set(re.findall(r'return "([a-z0-9_]+)";', mf)) | set(re.findall(r'refuse\(cb, "([a-z0-9_]+)"\)', mf)) \
@@ -141,6 +161,14 @@ if recipe:
 forks = read(os.path.join(GSI, "devices/goat_elegant/forks.tsv"))
 if forks:
     ok("forks: no QuickPanelController row", "apps/HbProjector/src/org/lumen/projector/panel/QuickPanelController.java\t" not in forks)
+
+# the output row lists the rows the HB offers now (2026-11-14: a refused Bluetooth row stayed on screen)
+hbf = read(os.path.join(P, "panel/HbMenuFeatures.java"))
+outs = body(hbf, "private void outputs(MenuState.Builder b)")
+ok("output row: options from HbOutputOptions.rows", "for (AudioOutputChoice.Option o : HbOutputOptions.rows(app).options) kinds.add(o.kind.name());" in outs
+   and "java.util.List<String> tokens = HbMenuGates.outputTokens(kinds);" in outs
+   and "if (!tokens.isEmpty()) b.options(FeatureId.SOUND_OUTPUT, tokens);" in outs)
+ok("output row: the stored choice is the value", "b.put(FeatureId.SOUND_OUTPUT, HbMenuGates.outputToken(AudioOutputChoice.kind(app).name()));" in outs)
 
 if bad:
     print("check_wiring (menu): %d of %d FAILED" % (bad, n)); sys.exit(1)

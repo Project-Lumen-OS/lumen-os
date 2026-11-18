@@ -408,8 +408,9 @@ function Fb-Allowed($act, $part) {
     return (@("flash:system", "create:lumen_gapps", "resize:lumen_gapps", "delete:lumen_gapps") -ccontains "${act}:$part")
   }
   # FLOW=ab-fastbootd: system and z9x_blobs of the slot Abf-Fbd-Check found running ($script:AbfS, one of SLOTS), the
-  # Google services add-on z9x_gapps of that slot when the profile has GAPPS_ALLOW (the only delete), and the
-  # format of userdata and metadata when WIPE_PARTS names them. No erase, vbmeta, KEEP partition or other slot.
+  # Google services add-on z9x_gapps of that slot when the profile has GAPPS_ALLOW, the format of userdata and
+  # metadata when WIPE_PARTS names them, and the delete of a *-cow leftover of a finished update of that slot
+  # (Cow-Leftover, lib\cow_rules.conf). No erase, vbmeta, KEEP partition or other slot.
   if ($script:Prof["FLOW"] -ceq "ab-fastbootd") {
     $sx = $script:AbfS
     if (-not $sx -or (@("$($script:Prof['SLOTS'])" -split " ") -cnotcontains $sx.TrimStart('_'))) { return $false }
@@ -418,13 +419,16 @@ function Fb-Allowed($act, $part) {
     # the format: never while an update is staged or merging (the last getvar all)
     if ((@("format:userdata", "format:metadata") -ccontains "${act}:$part") -and (@("$($script:Prof['WIPE_PARTS'])" -split " ") -ccontains $part) -and
         (Gv-Val $script:AbfGv "snapshot-update-status") -ceq "none") { return $true }
+    # a leftover of a finished update (Abf-Cow-Clear)
+    if ($act -ceq "delete" -and "$part".EndsWith("-cow", [StringComparison]::Ordinal) -and (Cow-Leftover $script:AbfGv $part $sx)) { return $true }
     return $false
   }
   $s = State-Get slot
   $ok = @("flash:system", "flash:z9x_blobs$s", "create:z9x_blobs$s", "resize:z9x_blobs$s",
           "create:z9x_gapps$s", "resize:z9x_gapps$s", "format:z9x_gapps$s", "delete:z9x_gapps$s", "flash:z9x_gapps$s",
           "delete:product$s", "delete:system_ext$s", "format:userdata", "format:metadata", "format:cache")
-  return ($ok -contains "${act}:$part") -or ($act -eq "delete" -and $part -like "*-cow")
+  return ($ok -contains "${act}:$part") -or
+         ($act -ceq "delete" -and "$part".EndsWith("-cow", [StringComparison]::Ordinal) -and (Cow-Leftover $script:FlashGv $part $s))
 }
 function Fb-Do($act, $part, $arg) {
   if (-not (Fb-Allowed $act $part)) { Die "internal: $act $part is not on the allow-list" }
@@ -800,8 +804,13 @@ function Cmd-Flash {
   if ((Val unlocked) -ne "yes") { Fb reboot | Out-Null; Die (M bootloader_locked) }
   if ((Val current-slot) -ne $S.TrimStart('_')) { Fb reboot | Out-Null; Die "slot mismatch" }
   if ((Val snapshot-update-status) -ne "none") { Fb reboot | Out-Null; Die (M update_still_being_finished_let) }
-  $cows = $gv | ForEach-Object { if ($_ -match "partition-size:([a-z0-9_]+-cow):") { $Matches[1] } } | Sort-Object -Unique
-  foreach ($p in $cows) { Say ((M removing_update_leftover) + " $p"); if (-not (Fb-Do delete $p)) { Fb reboot | Out-Null; Die "delete $p" } }
+  # *-cow left by a finished update: deleted by the rule of lib\cow_rules.conf (Cow-Leftover, as lumen-install.sh),
+  # any other *-cow is STOP before the first write
+  Cow-Load
+  $script:FlashGv = $gv
+  $p = Cow-Odd $gv $S
+  if ($p) { Fb reboot | Out-Null; Die (M cow_partition_not_slot $p $S.TrimStart('_')) }
+  foreach ($p in (Cow-Parts $gv)) { Say ((M removing_update_leftover) + " $p"); if (-not (Fb-Do delete $p)) { Fb reboot | Out-Null; Die "delete $p" } }
   foreach ($p in @("product$S", "system_ext$S")) { if ($gv -match "partition-size:${p}:") { Say ((M removing_unused_xgimi_partition) + " $p"); $null = Fb-Do delete $p } }
   if (-not $GappsZip -and $gv -match "partition-size:z9x_gapps${S}:") { Say (M z9x_gapps_google_services_added_2 "$S") }
   Say (M writing_system_about_40_s)
@@ -905,10 +914,71 @@ $script:GappsAllowF = Join-Path $Here "lib\gapps_allow.txt"; $script:GappsAllowR
 $script:GappsImagesF = Join-Path $Here "lib\gapps_images.txt"; $script:GappsImagesRel = "lib\gapps_images.txt"
 function Gapps-Line($sha) { $af = if ($script:GappsAllowF) { $script:GappsAllowF } else { Join-Path $Here "lib\gapps_allow.txt" }; Get-Content $af | Where-Object { $_ -like "zip=$sha *" } | Select-Object -First 1 }
 function Gapps-Field($line, $key) { foreach ($w in ("$line" -split " ")) { if ($w.StartsWith("$key=")) { return $w.Substring($key.Length + 1) } }; return "" }
-function Gv-Size($gv, $name) {
-  $l = $gv | Where-Object { $_ -like "(bootloader) partition-size:${name}:*" } | Select-Object -First 1
+function Gv-Size($gv, $name) {  # case-sensitive, as gv_size in lumen-install.sh (fastbootd's names are lowercase)
+  $l = $gv | Where-Object { "$_" -clike "(bootloader) partition-size:${name}:*" } | Select-Object -First 1
   if (-not $l) { return $null }
   return [Convert]::ToInt64(($l.Substring(("(bootloader) partition-size:${name}:").Length)).Trim(), 16)
+}
+# *-cow partitions in super: the working space of a Virtual A/B update, kept after its merge until the next update
+# starts (libsnapshot UnmapAndDeleteCowPartition). Deleted only as the leftovers of a finished update, by the rule
+# data of lib\cow_rules.conf (Cow-Load), as lumen-install.sh (cow_load); tools/devices/test/cow_rules_parity.py and
+# installer_cow_rules.ps1 keep the two equal.
+$script:CowSfx = ""; $script:CowBase = ""; $script:CowStatus = ""
+$script:CowAdb = ""   # an update in use as adb showed it before fastbootd (Cow-Adb-Seen), "" = none seen: no *-cow is deleted then
+function Cow-Load {  # the rule data into $script:Cow*; a missing file or key stops the installer
+  $f = Join-Path (Join-Path $Here "lib") "cow_rules.conf"
+  $rows = if (Test-Path -LiteralPath $f) { @(Get-Content -LiteralPath $f) } else { @() }
+  foreach ($k in @("suffix", "base", "status")) {
+    $l = $rows | Where-Object { "$_" -clike "$k=*" } | Select-Object -First 1
+    $v = if ($l) { "$l".Substring($k.Length + 1).Trim() } else { "" }
+    if (-not $v) { Die "lib\cow_rules.conf has no ${k}: download the installer again" }
+    switch -CaseSensitive ($k) { "suffix" { $script:CowSfx = $v } "base" { $script:CowBase = $v } "status" { $script:CowStatus = $v } }
+  }
+}
+function Cow-Parts($gv) {  # the *-cow partitions of the table in getvar all, however spelled
+  if (-not $script:CowSfx) { return @() }
+  $re = "^\(bootloader\) partition-size:([^:]*$([regex]::Escape($script:CowSfx))):"
+  return @($gv | ForEach-Object { if ("$_" -cmatch $re) { $Matches[1] } } | Sort-Object -Unique -CaseSensitive)
+}
+function Cow-Leftover($gv, $name, $sx) {  # a leftover of a finished update of slot $sx (_a/_b), which may be deleted
+  if (-not $script:CowSfx -or -not $script:CowBase -or -not $sx) { return $false }
+  if ($script:CowAdb) { return $false }
+  if ((Gv-Val $gv "snapshot-update-status") -cne $script:CowStatus) { return $false }
+  if (-not "$name".EndsWith($script:CowSfx, [StringComparison]::Ordinal)) { return $false }
+  $b = "$name".Substring(0, "$name".Length - $script:CowSfx.Length)
+  if ($b -cnotmatch "^(?:$($script:CowBase))$") { return $false }
+  if (-not $b.EndsWith($sx, [StringComparison]::Ordinal)) { return $false }
+  $sz = Gv-Size $gv $b
+  return ($null -ne $sz -and $sz -gt 0)
+}
+function Cow-Odd($gv, $sx) {  # the first *-cow that is no leftover of a finished update of slot $sx ("" = none)
+  if (-not $script:CowSfx) { return "lib\cow_rules.conf" }
+  foreach ($p in (Cow-Parts $gv)) { if (-not (Cow-Leftover $gv $p $sx)) { return $p } }
+  return ""
+}
+# fastbootd's snapshot-update-status is the one signal 'getvar all' gives. Before 'adb reboot fastboot' the running
+# system shows two more, read only, as lumen-install.sh reads them (cow_adb_seen): the snapshot devices of an update in
+# /dev/block/mapper and, with a root shell (Lumen OS), libsnapshot's boot indicator and state file. Either one keeps
+# every *-cow (Cow-Leftover) and stops the ab-fastbootd visit before the first write (the Z9X flow reads only fastbootd's word).
+function Cow-Dm-Busy($lines) {  # the /dev/block/mapper listing: the first device of a partition with a snapshot ("" = none)
+  foreach ($d in (((@($lines) -join " ") -split "\s+") | Where-Object { $_ })) {
+    $n = ("$d" -split "/")[-1]
+    foreach ($x in @("-base", "-src", "-cow-img", "-user-cow", "-user-cow-init")) { if ($n.EndsWith($x, [StringComparison]::Ordinal)) { return "/dev/block/mapper/$n" } }
+  }
+  return ""
+}
+function Cow-Ota-Busy($ls, $state) {  # 'ls' of /metadata/ota and its state file as 'od -An -tx1' prints it: "" = no update
+  # in use, else what shows one (the boot indicator, a state other than none or merge-completed: empty, 08 00, 08 05)
+  if (((@($ls) -join " ") -split "\s+") -ccontains "snapshot-boot") { return "/metadata/ota/snapshot-boot" }
+  $h = ((@($state) -join " ") -replace "\s+", " ").Trim()
+  if (@("", "08 00", "08 05") -ccontains $h) { return "" }
+  return "/metadata/ota/state $h"
+}
+function Cow-Adb-Seen {  # adb, right before 'adb reboot fastboot': an update in use as the running system shows it ("" = none)
+  $s = Cow-Dm-Busy @(Adb shell ls /dev/block/mapper/)
+  if ($s) { return $s }
+  if (((Adb shell id -u) | Out-String).Trim() -ne "0") { return "" }
+  return (Cow-Ota-Busy @(Adb shell "ls /metadata/ota/ 2>/dev/null") @(Adb shell "od -An -tx1 /metadata/ota/state 2>/dev/null"))
 }
 function Super-Free($gv) {  # bytes of super no logical partition uses: each rounded up to 1 MiB, 2 MiB for metadata
   $sup = Gv-Size $gv "super"
@@ -2915,12 +2985,13 @@ function P6-Gapps-Fill-Step {  # on the first start (old data): lumen_gapps fill
 # resize, flash) and system<slot> of the running slot when SLOTS has it, then 'fastboot format:<WIPE_FS>' of
 # WIPE_PARTS (fastbootd reports them as raw, so the type is always given: ext4 made by mke2fs of the Platform-Tools,
 # or f2fs by its make_f2fs, with casefold and projid for userdata as on the Z9X), and with
-# GAPPS_ALLOW z9x_gapps<slot> (create, resize, flash, delete: the Google services add-on). Never vbmeta (the user
-# types that step: 'vbmeta'), never -w, erase, another delete, --slot, set_active, a KEEP partition or the
-# other slot. The slot is the one the system runs from and fastbootd reports (a or b: after a Lumen OS update it is
+# GAPPS_ALLOW z9x_gapps<slot> (create, resize, flash, delete: the Google services add-on), and the delete of a *-cow
+# leftover of a finished update of that slot (Cow-Leftover). Never vbmeta (the user types that step: 'vbmeta'), never
+# -w, erase, another delete, --slot, set_active, a KEEP partition or the other slot. The slot is the one the system runs from and fastbootd reports (a or b: after a Lumen OS update it is
 # the other one). fastbootd has no idle timeout, so one visit writes and wipes. A staged or merging update (stock or
-# Lumen OS) shows in fastbootd (snapshot-update-status, *-cow): 'flash' stops there, nothing written, so userdata and
-# metadata are never formatted while one exists. Steps: check -> backup (asked) -> vbmeta (asked) -> blobs -> flash;
+# Lumen OS) shows in fastbootd (snapshot-update-status): 'flash' stops there, nothing written, so userdata and
+# metadata are never formatted while one exists. The *-cow a finished update left are deleted before the first write
+# (Abf-Cow-Clear, lib\cow_rules.conf), any other *-cow stops it the same way. Steps: check -> backup (asked) -> vbmeta (asked) -> blobs -> flash;
 # verify later, after the setup with debugging on again. Progress: $StateDir\<id>\state (step_system: started |
 # done, so a write cut off in the middle is never followed by a restart that would start half a system; step_zblobs:
 # z9x_blobs written in this visit, so a resumed run needs no blobs file). The image content is read with a
@@ -3363,9 +3434,7 @@ function Abf-Fbd-Check {  # fastbootd, one getvar all: this projector, its runni
   elseif ((Gv-Val $gv "slot-successful:$cs") -ne "yes") { $why = "slot-successful:$cs '$(Gv-Val $gv "slot-successful:$cs")'" }
   # a Lumen OS update: it finishes only while Lumen OS runs
   elseif ($lum -and (Gv-Val $gv "snapshot-update-status") -ne "none") { $why = (M update_finishing) + " (snapshot-update-status $(Gv-Val $gv 'snapshot-update-status')): " + (M start_lumen_os_wait_10) }
-  elseif ($lum -and @($gv | Where-Object { "$_" -cmatch ':[a-z0-9_]+-cow(:|$)' }).Count -gt 0) { $why = M cow_partitions_update_finishing }
   elseif ((Gv-Val $gv "snapshot-update-status") -ne "none") { $why = (M xgimi_update_staged_not_finished) + " (snapshot-update-status $(Gv-Val $gv 'snapshot-update-status')): " + (M let_projector_start_turn_automatic) }
-  elseif (@($gv | Where-Object { "$_" -cmatch ':[a-z0-9_]+-cow(:|$)' }).Count -gt 0) { $why = M cow_partitions_xgimi_update_not }
   elseif ((Gv-Val $gv "super-partition-name") -cne "super") { $why = "super-partition-name '$(Gv-Val $gv 'super-partition-name')'" }
   elseif ((Gv-Val $gv "is-logical:system_$cs") -ne "yes") { $why = "is-logical:system_$cs '$(Gv-Val $gv "is-logical:system_$cs")'" }
   else {
@@ -3375,8 +3444,35 @@ function Abf-Fbd-Check {  # fastbootd, one getvar all: this projector, its runni
     }
   }
   if ($why) { Abf-Fb-Stop ((M fastboot_mode_check_failed) + ": $why.") }
+  # *-cow left by a finished update (stock's or Lumen OS's) are deleted before the first write of the visit
+  # (Abf-Cow-Clear), as on the Z9X: any other *-cow is STOP here
+  Cow-Load
+  if ($script:CowAdb -and @(Cow-Parts $gv).Count) {
+    if ($lum) { $why = (M update_finishing) + " ($($script:CowAdb)): " + (M start_lumen_os_wait_10) }
+    else { $why = (M xgimi_update_staged_not_finished) + " ($($script:CowAdb)): " + (M let_projector_start_turn_automatic) }
+    Abf-Fb-Stop ((M fastboot_mode_check_failed) + ": $why.")
+  }
+  $c = Cow-Odd $gv "_$cs"
+  if ($c) {
+    if ($lum) { $why = M cow_partitions_update_finishing "$c" "$cs" } else { $why = M cow_partitions_xgimi_update_not "$c" "$cs" }
+    Abf-Fb-Stop ((M fastboot_mode_check_failed) + ": $why.")
+  }
   $script:AbfS = "_$cs"
   Ok (M fastboot_mode_slot "$nm" "$($script:Serial)" "$cs")
+}
+function Abf-Cow-Clear {  # fastbootd: the *-cow leftovers Abf-Fbd-Check let through deleted, then 'getvar all' read again
+  $n = 0
+  foreach ($p in (Cow-Parts $script:AbfGv)) {
+    Say ((M removing_update_leftover) + " $p")
+    if (-not (Fb-Do delete $p)) { Abf-Fb-Stop "delete $p" }
+    $n++
+  }
+  if ($n -eq 0) { return }
+  # the free space of super now; the slot marks a fastbootd leaves out of 'getvar all' (Abf-Fbd-Check) kept
+  $keep = @($script:AbfGv | Where-Object { "$_" -like "(bootloader) slot-successful:*" })
+  $gv = @(Fb getvar all)
+  if (-not @($gv | Where-Object { "$_" -like "(bootloader) slot-successful:*" }).Count) { $gv = @($gv) + $keep }
+  $script:AbfGv = $gv
 }
 function Abf-Room($bf) {  # [blobs file]: the new z9x_blobs and the image (and the add-on of AbfGneed) fit into super; else STOP
   $gv = $script:AbfGv; $sx = $script:AbfS; $res = [int64]$script:Prof["SUPER_RESERVE"]; $blob = [int64]0
@@ -3509,6 +3605,7 @@ function Abf-Write {  # stock or Lumen OS running: checks, ERASE, cable, fastboo
     Write-Host ""
     Write-Host (M connect_projectors_usb_port)
     $null = Read-Host (M press_enter_when_cable)
+    $script:CowAdb = Cow-Adb-Seen
     Say (M restarting_fastboot_mode_about_30)
     # saved first: a restart that happens although adb reports an error is still continued by the next run
     State-Set step_fastboot (Get-Date -Format "yyyyMMdd-HHmmss")
@@ -3527,6 +3624,7 @@ function Abf-Write {  # stock or Lumen OS running: checks, ERASE, cable, fastboo
   }
   if ((State-Get step_system) -ne "done") {
     if ($script:Prof["SLOT_CHECK"] -ceq "yes") { Abf-Slot-Check before }
+    Abf-Cow-Clear
     Abf-Room $bf
     if ($bf) {
       if ($null -ne (Gv-Size $script:AbfGv "z9x_blobs$sx")) { $made = Fb-Do resize "z9x_blobs$sx" $BlobSize }
@@ -3613,6 +3711,7 @@ function Abf-Gapps-Cable {  # Lumen OS runs: cable in, restart into fastboot mod
   Write-Host ""
   Write-Host (M connect_projectors_usb_port)
   $null = Read-Host (M press_enter_when_cable)
+  $script:CowAdb = Cow-Adb-Seen
   Say (M restarting_fastboot_mode_about_30)
   State-Set gapps_fastboot (Get-Date -Format "yyyyMMdd-HHmmss")
   Adb reboot fastboot | Out-Null
@@ -3678,6 +3777,7 @@ function Abf-Gapps-Install {
   if (-not $infb) { Abf-Gapps-Cable }
   Abf-Fbd-Check
   $p = "z9x_gapps$($script:AbfS)"
+  Abf-Cow-Clear
   # room: super's free space and what the partition has now
   $need = Abf-MiB $script:GiSize; $res = [int64]$script:Prof["SUPER_RESERVE"]
   $free = [int64](Super-Free $script:AbfGv); $cur = Gv-Size $script:AbfGv $p; if ($null -eq $cur) { $cur = [int64]0 }

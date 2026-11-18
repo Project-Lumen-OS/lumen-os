@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_sound_key_tone">ボタンの操作音</string>
+    <string name="lumen_m_hdmi_options">HDMI 入力のオプション</string>
+    <string name="lumen_m_colour_vision">色覚サポート</string>
+    <string name="lumen_m_temperature">温度</string>
+    <string name="lumen_m_colour_vision_gray">グレースケール</string>
+    <string name="lumen_m_colour_vision_red_green">赤/緑</string>
+    <string name="lumen_m_colour_vision_green_red">緑/赤</string>
+    <string name="lumen_m_colour_vision_blue_yellow">青/黄</string>
+</resources>

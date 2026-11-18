@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Масштаб</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Желі</string>
+    <string name="lumen_qpd_theme">Безендіру</string>
+    <string name="lumen_qpd_theme_light">Ашық</string>
+    <string name="lumen_qpd_theme_dark">Күңгірт</string>
+    <string name="lumen_qpd_theme_auto">Авто</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Экранды қайталау</string>
     <string name="lumen_qpd_mirror_on">Экранды қайталау (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Ең жоғары жарықтық. Желдеткіштер қаттырақ болады.</string>
     <string name="lumen_qpd_tip_picture">Не көретініңізге қарай режим таңдаңыз.</string>
     <string name="lumen_qpd_tip_rear">Сіз бен проектор экранның екі жағындасыз.</string>
+    <string name="lumen_qpd_tip_front">Сіз бен проектор экранның бір жағындасыз.</string>
+    <string name="lumen_qpd_tip_table">Проектор үстелде тұр.</string>
+    <string name="lumen_qpd_tip_ceiling">Проектор төбеге төңкеріліп ілінген.</string>
+    <string name="lumen_qpd_tip_auto">Проектор тұр ма, ілулі ме, өзі анықтап, суретті өзі аударады.</string>
 </resources>

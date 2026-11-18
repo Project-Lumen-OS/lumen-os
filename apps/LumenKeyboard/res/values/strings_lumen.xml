@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Lumen Keyboard</string>
+    <string name="ime_service_name">Lumen Keyboard</string>
+    <string name="keyboardview_keycode_language">Language</string>
+    <string name="lumen_languages_title">Keyboard languages</string>
+    <string name="lumen_languages_hint">Press OK to turn a language on or off. On the keyboard, the globe key changes the language.</string>
+    <string name="lumen_languages_last">One language always stays on.</string>
+</resources>

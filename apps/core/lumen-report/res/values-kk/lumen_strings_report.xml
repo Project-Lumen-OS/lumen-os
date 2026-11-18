@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0
+     Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
+     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
+     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+<resources>
+    <string name="lumen_report_title">Ақау туралы есеп жіберу</string>
+    <string name="lumen_report_intro">Lumen OS әзірлеушісіне не дұрыс болмағанын түсінуге көмектеседі. «Есепті жіберу» түймесін баспайынша, ештеңе жіберілмейді.</string>
+    <string name="lumen_report_included">Құрамында</string>
+    <string name="lumen_report_inc_system">Жүйе нұсқасы, жұмыс уақыты және жүйенің қай көшірмесі іске қосылғаны</string>
+    <string name="lumen_report_inc_logs">Соңғы 30 минуттағы жүйе мен Lumen қолданбаларының журналдары</string>
+    <string name="lumen_report_inc_crashes">Қолданба атаулары бар ақау, қатып қалу және қайта іске қосу жазбалары</string>
+    <string name="lumen_report_inc_kernel">Соңғы қайта іске қосудың ядро журналы және жаңарту журналы</string>
+    <string name="lumen_report_inc_state">Экран, жад және желі түрі</string>
+    <string name="lumen_report_excluded">Жойылады немесе кірмейді</string>
+    <string name="lumen_report_exc_accounts">Аккаунттар, электрондық пошта мекенжайлары және телефон нөмірлері</string>
+    <string name="lumen_report_exc_network">Wi-Fi желі атаулары, IP және MAC мекенжайлары</string>
+    <string name="lumen_report_exc_serial">Сериялық нөмір: оның орнына осы проектордың кездейсоқ ID-і</string>
+    <string name="lumen_report_exc_apps">Өзіңіз орнатқан қолданбалардың журналдары</string>
+    <string name="lumen_report_exc_files">Фотолар, файлдар және құпия сөздер</string>
+    <string name="lumen_report_footer">Есеп 30 күн сақталады. Оны тек Lumen OS әзірлеушісі аша алады.</string>
+    <string name="lumen_report_last">Соңғы есеп: %1$s, %2$s</string>
+    <string name="lumen_report_send">Есепті жіберу</string>
+    <string name="lumen_report_collecting">Мәліметтер жиналуда… (%1$d / %2$d)</string>
+    <string name="lumen_report_log_hint">Android құрылғы журналдарына кіруге рұқсат беру туралы сұраса, «Рұқсат ету» опциясын таңдаңыз.</string>
+    <string name="lumen_report_sending">Жіберілуде… %1$s / %2$s</string>
+    <string name="lumen_report_done_title">Есеп жіберілді</string>
+    <string name="lumen_report_done_text">Осы кодты мәселенің қысқаша сипаттамасымен бірге Lumen OS әзірлеушісіне жіберіңіз.</string>
+    <string name="lumen_report_failed_title">Есеп жіберілмеді</string>
+    <string name="lumen_report_err_no_network">Интернет байланысы жоқ. Желіні тексеріп, қайталап көріңіз.</string>
+    <string name="lumen_report_err_network">Есеп серверіне қосылу мүмкін емес. Кейінірек қайталап көріңіз.</string>
+    <string name="lumen_report_err_rate">Қазір есептер тым көп. Кейінірек қайталап көріңіз.</string>
+    <string name="lumen_report_err_rejected">Есеп сервері есепті қабылдамады.</string>
+    <string name="lumen_report_err_server">Есеп серверінде қате шықты. Кейінірек қайталап көріңіз.</string>
+    <string name="lumen_report_err_collect">Есепті дайындау мүмкін болмады.</string>
+    <string name="lumen_report_retry">Қайталау</string>
+    <string name="lumen_report_close">Жабу</string>
+    <string name="lumen_report_cancel">Бас тарту</string>
+    <string name="lumen_report_auto">Ақау туралы есептерді автоматты түрде жіберу</string>
+    <string name="lumen_report_auto_note">Жүйе немесе Lumen қолданбасы кенет жабылса не қатып қалса, қысқа есеп өзі жіберіледі. Онда өзіңіз орнатқан қолданбалардың журналдары болмайды.</string>
+    <string name="lumen_report_queued_title">Есеп кейінірек жіберіледі</string>
+    <string name="lumen_report_queued_text">Есеп серверіне қазір қосылу мүмкін емес. Проектор мүмкіндік болғанда есепті өзі жібереді. Сонда оның коды осы жерде шығады.</string>
+    <string name="lumen_report_last_auto">Соңғы автоматты есеп: %1$s, %2$s</string>
+</resources>

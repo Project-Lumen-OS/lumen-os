@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family stock picture rows (gamma, noise reduction, local contrast, colour
+     optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
+     the Z9X app's pro_* and panel_reset texts with their translations -->
+<resources>
+    <string name="lumen_m_gamma">Гамма</string>
+    <string name="lumen_m_gamma_manual">Қолмен</string>
+    <string name="lumen_m_gamma_index">Гамма мәні</string>
+    <string name="lumen_m_noise">Шуды азайту</string>
+    <string name="lumen_m_local_contrast">Жергілікті контраст</string>
+    <string name="lumen_m_color_opt">Түсті оңтайландыру</string>
+    <string name="lumen_m_hdr_mapping">HDR динамикалық бейнелеу</string>
+    <string name="lumen_m_ct_balanced">Теңгерімді</string>
+    <string name="lumen_m_elder_color">Егде жастағыларға арналған түстер</string>
+    <string name="lumen_m_gamma_refused">Гамма мәні тек қолмен гаммада жұмыс істейді</string>
+    <string name="lumen_m_hdr10_only">Тек HDR10 мазмұнымен жұмыс істейді</string>
+    <string name="lumen_m_reset">Қалпына келтіру</string>
+    <string name="lumen_m_picture_reset_all_msg">Барлық сурет режимдерінің параметрлері стандартқа қайтады. Жалғастыру керек пе?</string>
+    <string name="lumen_m_level_low">Төмен</string>
+    <string name="lumen_m_level_medium">Орташа</string>
+    <string name="lumen_m_level_high">Жоғары</string>
+</resources>

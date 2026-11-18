@@ -3,7 +3,7 @@
 # (android.hardware.tv.input-service.xgimi, running on stock) and HDMI CEC / connection HALs as the X50. compose_rs30.sh
 # installs the build (stage/X50TvInput.apk) as /system/app/X50TvInput/X50TvInput.apk.
 app       X50TvInput
-base      apps/Z9xTvInput
+base      apps/LumenTvInput
 module    lumen-ui
 top       apps/X50TvInput
 # never part of an app tree: build output, APKs, notes, the build version (read by tools/devices/build_apps.sh)

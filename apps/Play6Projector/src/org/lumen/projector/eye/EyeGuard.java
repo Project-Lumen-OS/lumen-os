@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /*
- * XGIMI Play 6 port of the Z9X eye protection runtime (apps/Z9xProjector eye/EyeGuard, stock parity 2026-10-21,
+ * XGIMI Play 6 port of the Z9X eye protection runtime (apps/ProjectorBase eye/EyeGuard, stock parity 2026-10-21,
  * design notes 1.7): the same focus events, mask, keys and 148(true) path, WITHOUT the vendor UI
  * watchdog 114 / 115 (banned on the Play 6 until its own review, Note A). So if this process dies while the mask
  * is up, the light stays dimmed until the next 148(true): the next lamp-on after a wake sends it (onLampOn), and

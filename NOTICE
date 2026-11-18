@@ -8,8 +8,8 @@ affiliated with, endorsed by or sponsored by XGIMI, Google, MediaTek or the Line
 Licensing of this repository:
   - Everything is licensed under the Apache License, Version 2.0 (LICENSE), unless a file or a
     directory says otherwise.
-  - apps/Z9xAirPlay is licensed under the GNU General Public License, version 3 only
-    (apps/Z9xAirPlay/LICENSE), because it adapts code from android-airplay-server (GPL-3.0).
+  - apps/LumenAirPlay is licensed under the GNU General Public License, version 3 only
+    (apps/LumenAirPlay/LICENSE), because it adapts code from android-airplay-server (GPL-3.0).
   - Git submodules keep their own licenses: UxPlay (GPL-3.0), libplist (LGPL-2.1),
     Apple ALAC (Apache-2.0), BoringSSL (Apache-2.0 / ISC / OpenSSL), android-airplay-server (GPL-3.0).
 
@@ -31,6 +31,6 @@ projects, unmodified unless a patch in lineage/patches says otherwise):
     /system/etc/NOTICE.xml.gz.
   - LineageOS 21, Apache License 2.0 (and the licenses of its components).
   - Prata (Copyright 2011 The Prata Project Authors) and Onest (Copyright 2021 The Onest Project
-    Authors) fonts, SIL Open Font License 1.1, inside Lumen Home (apps/Z9xHome/assets/fonts, with
+    Authors) fonts, SIL Open Font License 1.1, inside Lumen Home (apps/LumenHome/assets/fonts, with
     their OFL texts). The boot animation (tools/brand/gen_bootanim.py) is drawn from geometry and
     uses no font.

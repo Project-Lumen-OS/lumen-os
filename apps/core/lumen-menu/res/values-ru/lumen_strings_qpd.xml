@@ -7,6 +7,10 @@
     <string name="lumen_qpd_zoom">Зум</string>
     <string name="lumen_qpd_bluetooth">Bluetooth</string>
     <string name="lumen_qpd_network">Сеть</string>
+    <string name="lumen_qpd_theme">Оформление</string>
+    <string name="lumen_qpd_theme_light">Светлая</string>
+    <string name="lumen_qpd_theme_dark">Тёмная</string>
+    <string name="lumen_qpd_theme_auto">Авто</string>
     <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Повтор экрана</string>
     <string name="lumen_qpd_mirror_on">Повтор экрана (Miracast)</string>
@@ -18,4 +22,8 @@
     <string name="lumen_qpd_boost_note">Максимум яркости. Вентиляторы будут громче.</string>
     <string name="lumen_qpd_tip_picture">Выберите режим под то, что смотрите.</string>
     <string name="lumen_qpd_tip_rear">Вы и проектор по разные стороны экрана.</string>
+    <string name="lumen_qpd_tip_front">Вы и проектор по одну сторону экрана.</string>
+    <string name="lumen_qpd_tip_table">Проектор стоит на столе.</string>
+    <string name="lumen_qpd_tip_ceiling">Проектор перевёрнут и висит на потолке.</string>
+    <string name="lumen_qpd_tip_auto">Проектор сам понимает, стоит он или висит, и переворачивает картинку.</string>
 </resources>

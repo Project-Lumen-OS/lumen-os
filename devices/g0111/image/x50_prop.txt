@@ -19,6 +19,9 @@ ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.2
 ro.system.build.date=@DATE@
 ro.system.build.date.utc=@UTC@
 [product]
+# Bluetooth as stock (x50-parity-core): the stock vendor build.prop sets persist.bluetooth.disableabsvol=true (X50 G0111
+# line 184), the Z9X base's product build.prop false; true again here, so the HAL applies the index (lumen-audio BtVolume)
+persist.bluetooth.disableabsvol=true
 ro.product.product.model=XGIMI X50 Ultra
 bluetooth.device.default_name=XGIMI X50 Ultra
 ro.lumen.version=x50-@V@
@@ -39,6 +42,7 @@ persist.sys.usb.config=adb
 # identity of the X50 image (registry devices/g0111: family horse_popular, model G0111)
 +ro.lumen.device=g0111
 +ro.lumen.model=G0111
++ro.lumen.models=G0111
 +ro.lumen.family=horse_popular
 +ro.lumen.build_id=lumen-x50-@V@-@BID@
 +ro.lumen.base_build_id=lumen-1.0.9-20261106anp

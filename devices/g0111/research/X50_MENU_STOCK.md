@@ -709,7 +709,7 @@ app's `sources/`. Key sequences quoted in apps/X50Projector/README.md were read 
   setSmartAutoFocus = setPowerOnAFUseDistance(z) (PF 85) + setDisplacementFocus(z) (MD 4). Lumen t17 has only the smart
   AF switch; powerOnAFEnable / isPowerOnAFEnabled (PF 4 / 5) and getAngTriggerAF (MD 5) left the allow list (67 rows);
   MD 4 is sent only inside smart AF (`Hal.moveAfSet`).
-- Setup (B3). apps/Z9xSetup PictureStep shows the POWER_ON_AF switch only when toggles_get returns that name; the X50
+- Setup (B3). apps/LumenSetup PictureStep shows the POWER_ON_AF switch only when toggles_get returns that name; the X50
   bridge returns MOVE_AK only and refuses toggle_set POWER_ON_AF, so the shared Setup (unchanged) hides the row on the
   X50. Smart AF was not put behind Setup's "auto focus at power on" label: it also switches AF-when-moved on.
 - Key 64 (B4). Stock 3840.kl 64 MUSIC_SOUNDERMODE -> com.xgimi.soundermodeservice (NewSounderMode) = Bluetooth speaker
@@ -730,7 +730,7 @@ app's `sources/`. Key sequences quoted in apps/X50Projector/README.md were read 
   starts it only at load_persist_props_action).
 - Source picker (t16 live BUG C). The X50 image has no org.lumen.projector, so the SOURCE key always lands on
   org.lumen.tvinput InputPickerActivity (DeviceDefault dialog buttons: focus not visible). t17 builds org.lumen.tvinput
-  from devices/g0111/app/X50TvInput.layers (apps/Z9xTvInput 1.0.8 = the pinned Z9X 1.0.9 APK's sources + the X50
+  from devices/g0111/app/X50TvInput.layers (apps/LumenTvInput 1.0.8 = the pinned Z9X 1.0.9 APK's sources + the X50
   layer: the picker with TvFocus, a copy of the X50 menu's) as 109 / 1.0.8 on the g0111 platform key, in place of the
   base's Z9xTvInput.apk (compose_x50.sh, verify_tree_x50.py TVIN_APP). Z9X and HB images keep their APKs.
 - B5 projection "Auto" (MD 8 true): done in t18 with the owner's OK, see the next section.

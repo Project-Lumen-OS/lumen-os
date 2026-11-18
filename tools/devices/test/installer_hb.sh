@@ -334,6 +334,7 @@ roundtrip() {  # the z9x_blobs partition the installer flashed, read by the real
   [ "$(wc -c < "$img" | tr -d ' ')" = 4194304 ] || fail "blobs image is not 4 MiB"
   mkdir -p "$R/system/etc/z9x" "$R/dev/block/mapper" "$R/mnt" "$T"
   cp "$W/allow.txt" "$R/system/etc/z9x/blobs_allow.txt"; cp "$img" "$R/dev/block/mapper/z9x_blobs_$CSL"
+  cp "$G/devices/goat_elegant/image/blobs.conf" "$R/system/etc/z9x/blobs.conf"   # the HB reader settings
   awk '$1 !~ /^#/ && $1 !~ /^set=/ && NF >= 3 { t = "/system/" $2; for (i = 4; i <= NF; i++) if ($i ~ /^bind=/) t = substr($i, 6); print $1, t }' \
     "$W/allow.txt" > "$T/want"
   while read -r h t; do mkdir -p "$(dirname "$R$t")"; case "$t" in /system/*) : > "$R$t" ;; *) echo own > "$R$t" ;; esac; done < "$T/want"

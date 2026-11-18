@@ -212,7 +212,8 @@ mkimg() {  # file: a 1 MiB image with the erofs magic at byte 1024
   printf '\342\341\365\340' | dd of="$1" bs=1 seek=1024 conv=notrunc 2>/dev/null
 }
 sign() {  # dir key: SHA256SUMS of the images in dir, signed with the key (z or x)
-  (cd "$1" && for f in lumen-os-*-system.img; do { sha256sum "$f" 2>/dev/null || shasum -a 256 "$f"; }; done > SHA256SUMS
+  (cd "$1" || exit 1   # never in the caller's folder: a missing dir left an empty SHA256SUMS.sig in the tree root
+   for f in lumen-os-*-system.img; do { sha256sum "$f" 2>/dev/null || shasum -a 256 "$f"; }; done > SHA256SUMS
    openssl dgst -sha256 -sign "$W/keys/$2.key" -out SHA256SUMS.sig SHA256SUMS)
 }
 content() {  # props-lines...: the fake image's product build.prop

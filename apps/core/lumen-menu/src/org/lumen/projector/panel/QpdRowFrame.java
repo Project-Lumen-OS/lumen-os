@@ -170,6 +170,11 @@ final class QpdRowFrame extends ViewGroup {
         return row.getVisibility() == VISIBLE && row.isFocusable() && kind != HEADER && kind != TEXT;
     }
 
+    /** A header without text: the stock line between two groups (MenuSpec.LINE), drawn as the divider alone. */
+    boolean isLine() {
+        return kind == HEADER && PageAccess.headerText((HeaderRow) row).length() == 0;
+    }
+
     // ------------------------------------------------------------------ sizes
     private float px(float d) { return Theme.pxf(getContext(), d); }
 
@@ -407,7 +412,8 @@ final class QpdRowFrame extends ViewGroup {
     protected void onDetachedFromWindow() {
         if (focusAnim != null) focusAnim.cancel();
         if (knobAnim != null) knobAnim.cancel();
-        focusT = row.isFocused() ? 1f : 0f;
+        wasFocused = row.isFocused();       // the look and its state together, or a focus back while away never shows
+        focusT = wasFocused ? 1f : 0f;
         if (kind == TOGGLE) {
             Boolean on = ((ToggleRow) row).isChecked();
             knobT = on != null && on ? 1f : 0f;
@@ -664,10 +670,12 @@ final class QpdRowFrame extends ViewGroup {
         r.set(pad, cy - th / 2f, w - pad, cy + th / 2f);
         c.drawRoundRect(r, th / 2f, th / 2f, fill);
         if (!s.isKnown() || s.getMax() <= s.getMin()) return;
-        float frac = (s.getValue() - s.getMin()) / (float) (s.getMax() - s.getMin());
-        float x = pad + (w - 2 * pad) * frac;
+        float span = w - 2 * pad;
+        float x = pad + span * QpdLayout.fill(s.getValue(), s.getMin(), s.getMax());
+        float[] on = QpdLayout.fillSpan(s.getValue(), s.getMin(), s.getMax());   // a two-way slider fills from 0
         fill.setColor(QpdStyle.lerp(QpdStyle.ACCENT, 0xFFFFFFFF, f));
-        r.set(pad, cy - th / 2f, Math.max(pad + th, x), cy + th / 2f);
+        if (on[0] > 0f) r.set(pad + span * on[0] - th / 2f, cy - th / 2f, pad + span * on[1] + th / 2f, cy + th / 2f);
+        else r.set(pad, cy - th / 2f, Math.max(pad + th, pad + span * on[1]), cy + th / 2f);
         c.drawRoundRect(r, th / 2f, th / 2f, fill);
         if (f > 0.001f) {
             knobP.setColor(0xFFFFFFFF);

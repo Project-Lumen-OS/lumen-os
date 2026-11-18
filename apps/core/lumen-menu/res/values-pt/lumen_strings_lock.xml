@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Modo de jogo ativado</string>
+    <string name="lumen_m_ps_ai">As definições profissionais não podem ser usadas no modo de imagem com qualidade IA</string>
+    <string name="lumen_m_ps_performance">As definições profissionais não são suportadas no modo de imagem de desempenho</string>
+    <string name="lumen_m_ps_ai_basic">As definições padrão não podem ser usadas no modo de imagem com qualidade IA</string>
+    <string name="lumen_m_ps_performance_basic">As definições padrão não são suportadas no modo de imagem de desempenho</string>
+</resources>

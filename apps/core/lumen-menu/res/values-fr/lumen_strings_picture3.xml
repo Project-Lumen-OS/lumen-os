@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-picture-stock: the small titles of the stock image page and its picture settings page, the page and the dynamic
+     black level tuning (newsettings projector_brightness_text, image_title_text, small_title_basic, color_title,
+     image_set_mode_constrast_ratio_text, image_clarity_text, brightness_more_text, image_mode_prof_setting_text,
+     image_mode_vibrant_correct_text; the stock texts where the stock build has the language) -->
+<resources>
+    <string name="lumen_m_hdr_projector_brightness">Luminosité de la projection</string>
+    <string name="lumen_m_hdr_image">Image</string>
+    <string name="lumen_m_hdr_basic">Basique</string>
+    <string name="lumen_m_hdr_colour">Couleur</string>
+    <string name="lumen_m_hdr_contrast">Contraste</string>
+    <string name="lumen_m_hdr_clarity">Netteté</string>
+    <string name="lumen_m_hdr_image_more">Plus</string>
+    <string name="lumen_m_picture_settings">Paramètres professionnels</string>
+    <string name="lumen_m_black_tuning">Réglage dynamique du niveau de noir</string>
+</resources>

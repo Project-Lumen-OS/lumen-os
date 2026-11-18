@@ -1,5 +1,5 @@
 # The settings look of Lumen OS 1.0.9 (settings.Kit, settings.Shell, fonts, icons, texts) that the Play 6 projector takes
-# from apps/Z9xProjector (devices/dragon_healthy/app/Play6Projector.layers; decision 2026-11-10, Q1).
+# from apps/ProjectorBase (devices/dragon_healthy/app/Play6Projector.layers; decision 2026-11-10, Q1).
 src/org/lumen/projector/settings/Kit.java
 src/org/lumen/projector/settings/Shell.java
 assets/fonts/OFL-Onest.txt

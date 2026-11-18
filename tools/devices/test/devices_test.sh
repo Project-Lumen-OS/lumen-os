@@ -258,9 +258,10 @@ expect real_identify_z9x 0 test "$(cd "$G" && py identify horse_popular G0082)" 
 expect real_identify_x50 0 test "$(cd "$G" && py identify horse_popular G0111)" = "$(printf 'g0111\tsupported')"
 # since 2026-11-07 the X50 is a supported device of its own (test images only): never the Z9X's entry
 expect real_x50_family 0 test "$(py get g0111 family)" = horse_popular
+# since 2026-11-14 (maintainer order) with updates: wire id = installer id, the updater's pair plus the installer's file
 expect real_x50_own_ids 0 sh -c 'test "$(python3 -B "$1/devices.py" get g0111 installer_id)" = x50 &&
-  test "$(python3 -B "$1/devices.py" get g0111 ota_wire_id)" = none &&
-  test "$(python3 -B "$1/devices.py" get g0111 channel)" = none &&
+  test "$(python3 -B "$1/devices.py" get g0111 ota_wire_id)" = x50 &&
+  test "$(python3 -B "$1/devices.py" get g0111 channel)" = "x50-nogms x50-test x50-beta" &&
   test "$(python3 -B "$1/devices.py" image g0111 remote_dir)" = x50-out' sh "$D"
 expect real_x50_listed 0 sh -c 'python3 -B "$1/devices.py" list | cut -f1 | grep -qx g0111' sh "$D"
 expect real_x50_by_model 0 python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import devices

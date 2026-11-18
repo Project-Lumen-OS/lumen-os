@@ -189,23 +189,24 @@ final class QpdAll extends ViewGroup {
         });
     }
 
-    /** UP / DOWN in the list: the next row that takes focus, never out of the list (the rail is LEFT). */
+    /**
+     * UP / DOWN in the list: the next row that takes focus, never out of the list (the rail is LEFT). At the last row
+     * that takes focus the list scrolls to its end, so greyed rows and notes below it (or headers above the first)
+     * are always reachable to the eye.
+     */
     void moveInList(View focused, boolean down) {
-        int at = -1;
-        for (int i = 0; i < list.getChildCount(); i++) {
+        int n = list.getChildCount(), at = -1;
+        boolean[] focusable = new boolean[n];
+        for (int i = 0; i < n; i++) {
             View c = list.getChildAt(i);
-            if (c instanceof QpdRowFrame && ((QpdRowFrame) c).row == focused) { at = i; break; }
+            if (!(c instanceof QpdRowFrame)) continue;
+            focusable[i] = ((QpdRowFrame) c).isFocusableRow();
+            if (((QpdRowFrame) c).row == focused) at = i;
         }
         if (at < 0) return;
-        for (int i = at + (down ? 1 : -1); i >= 0 && i < list.getChildCount(); i += down ? 1 : -1) {
-            View c = list.getChildAt(i);
-            if (c instanceof QpdRowFrame && ((QpdRowFrame) c).isFocusableRow()) {
-                ((QpdRowFrame) c).row.requestFocus();
-                if (!down && i <= 1) scroll.smoothScrollTo(0, 0);    // headers above the first row stay in view
-                return;
-            }
-        }
-        if (!down) scroll.smoothScrollTo(0, 0);
+        int to = QpdLayout.listTarget(focusable, at, down);
+        if (to != at) ((QpdRowFrame) list.getChildAt(to)).row.requestFocus();
+        if (QpdLayout.listEnd(focusable, to, down)) scroll.smoothScrollTo(0, down ? list.getHeight() : 0);
     }
 
     void setListFocused(boolean on) {
@@ -214,9 +215,9 @@ final class QpdAll extends ViewGroup {
         for (RailItem it : items) it.setCurrent(it.index == current && on);
     }
 
-    /** Hint card of the focused row ({@code popupTip} = its popup hint, a QpdTip), or none. */
+    /** Hint card of the focused row ({@code popupTip} = its popup hint, a QpdTip), or none; the card follows its hint. */
     void showTip(View popupTip, CharSequence rowTitle) {
-        if (!(popupTip instanceof QpdTip)) {
+        if (!(popupTip instanceof QpdTip) || popupTip.getVisibility() == GONE) {
             if (tipShown != null) {
                 tipCard.animate().cancel();
                 tipCard.setVisibility(GONE);
@@ -228,7 +229,7 @@ final class QpdAll extends ViewGroup {
         QpdTip src = (QpdTip) popupTip;
         if (tipShown instanceof QpdTip && ((QpdTip) tipShown).kind() == src.kind()) return;
         tipCard.removeAllViews();
-        QpdTip t = new QpdTip(getContext(), src.kind(), src.text(), rowTitle);
+        QpdTip t = src.copyFor(rowTitle);
         tipCard.addView(t, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         tipShown = t;

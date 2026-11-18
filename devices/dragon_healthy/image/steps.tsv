@@ -5,7 +5,7 @@
 # Flags: test (tN), diag, usbadb, nodex (--no-dexpreopt), expall/exp (--exp, --exp=N,...), gms (the Google test
 # edition, never a release), ota (the updater and the recovery certificate).
 # ---- inputs
-*	need	Play6FrameworkOverlay.apk	Play6TvSettingsOverlay.apk	Play6Projector.apk	Z9xHome.apk	Z9xTvInput.apk	Z9xLineagePlatformOverlay.apk	Z9xSetup.apk	LumenBridge_projector.apk	LumenBridge_home.apk	LumenBridge_setup.apk	LumenBridge_tvinput.apk	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-projector-default-permissions.xml	z9x-sysconfig-nogms.xml	bootanimation.zip	product_prop.txt	play6_compat.rc	play6_base.rc	Vendor_000d_Product_3841.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_000d_Product_3841.idc	base_id.txt	base_signed/base_signed.tsv	base_export.sh	check_privapp.py	apkinfo.py	lumen_gapps.rc	lumen_gapps.sh	z9x_nui.rc	z9x_nui.sh	play6_early_mik.rc	LumenMiracast.apk	LumenWifiP2pOverlay.apk	Z9xAirPlay.apk	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	airplay_libs.py
+*	need	Play6FrameworkOverlay.apk	Play6TvSettingsOverlay.apk	Play6Projector.apk	Z9xHome.apk	Z9xTvInput.apk	Z9xLineagePlatformOverlay.apk	Z9xSetup.apk	LumenBridge_projector.apk	LumenBridge_home.apk	LumenBridge_setup.apk	LumenBridge_tvinput.apk	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-projector-default-permissions.xml	z9x-sysconfig-nogms.xml	bootanimation.zip	product_prop.txt	play6_compat.rc	play6_base.rc	Vendor_000d_Product_3841.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3841.idc	base_id.txt	base_signed/base_signed.tsv	base_export.sh	check_privapp.py	apkinfo.py	lumen_gapps.rc	lumen_gapps.sh	z9x_nui.rc	z9x_nui.sh	play6_early_mik.rc	LumenMiracast.apk	LumenWifiP2pOverlay.apk	Z9xAirPlay.apk	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	airplay_libs.py	LumenKeyboard.apk	first_start_prop.txt	first_start.py
 ota	need	Play6Updater.apk	LumenBridge_updater.apk	lumen_recovery.rc	lumen_recovery.sh	lumen_play6_ota.x509
 !nodex	need	dexpreopt_play6.sh	lumen_checks.py
 diag	need	z9x_earlylog.rc	z9x_earlylog.sh	earlylog_usb.sh	lumen_escape.rc	lumen_escape.sh	play6_boottiming.rc	play6_boottiming.sh
@@ -38,6 +38,17 @@ gms	need	gms/members.txt	gms/lumen-gapps.xml	gms/gms.tsv
 *	install	0644	Vendor_000d_Product_3841.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3841.kl
 *	install	0644	Vendor_3697_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0001.kl
 *	install	0644	Vendor_3697_Product_0002.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0002.kl
+# every XGIMI remote of devices/_remotes/remotes.tsv (lumen_kl=1) has its Lumen layout in every image: any remote on any projector
+*	install	0644	Vendor_0001_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_0001_Product_0001.kl
+*	install	0644	Vendor_000d_Product_3838.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3838.kl
+*	install	0644	Vendor_000d_Product_3839.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3839.kl
+*	install	0644	Vendor_000d_Product_3840.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl
+*	install	0644	Vendor_000d_Product_3842.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3842.kl
+*	install	0644	Vendor_000d_Product_3843.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3843.kl
+*	install	0644	Vendor_1d5a_Product_c081.kl	{sys}/product/usr/keylayout/Vendor_1d5a_Product_c081.kl
+*	install	0644	Vendor_26e3_Product_af02.kl	{sys}/product/usr/keylayout/Vendor_26e3_Product_af02.kl
+*	install	0644	Vendor_9999_Product_0666.kl	{sys}/product/usr/keylayout/Vendor_9999_Product_0666.kl
+*	install	0644	Vendor_9999_Product_0777.kl	{sys}/product/usr/keylayout/Vendor_9999_Product_0777.kl
 *	install	0644	Vendor_000d_Product_3841.idc	{sys}/product/usr/idc/Vendor_000d_Product_3841.idc
 # 1a. vendor compatibility (bind mounts at boot), the lens-mode mount point, always-on settings
 *	install	0644	play6_compat.rc	{sys}/etc/init/play6_compat.rc
@@ -89,6 +100,10 @@ gms	need	gms/members.txt	gms/lumen-gapps.xml	gms/gms.tsv
 *	install	0644	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml
 *	install	0644	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml
 *	install	0644	LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk
+# the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
+# languages and a language key) in LeanbackIME's place; the base's odex of the old APK goes
+*	rm	{sys}/product/app/LeanbackIME/oat
+*	install	0644	LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk
 *	install	0644	Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
 *	install	0644	z9x-airplay-default-permissions.xml	{sys}/etc/default-permissions/z9x-airplay-default-permissions.xml
 *	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
@@ -153,10 +168,14 @@ gms	install	0644	gms/lumen-gapps.xml	{sys}/etc/sysconfig/lumen-gapps.xml
 !nodex	install	0644	{t}/odex/Z9xAirPlay/oat/arm/Z9xAirPlay.odex	{sys}/app/Z9xAirPlay/oat/arm/Z9xAirPlay.odex
 !nodex	install	0644	{t}/odex/Z9xAirPlay/oat/arm/Z9xAirPlay.vdex	{sys}/app/Z9xAirPlay/oat/arm/Z9xAirPlay.vdex
 nodex	echo	WARN --no-dexpreopt: no build-time AOT (Lumen Home, the projector app, Lumen Setup and the two receivers run JIT)
-# 7. properties and D's experiments
+# 7. properties and D's experiments, then the one first-start setting of every image (devices/_image/first_start_prop.txt:
+# English, the time zone from the network, over the vendor's Chinese and Asia/Shanghai)
 *	run	play6_props.py	{in}	{sys}	{vname}	{vcode}	{build_id}	{EXPS}	{flags}
+*	run	first_start.py	apply	{in}/first_start_prop.txt	{sys}
 # 8. every priv-app has its privapp-permissions entries (the vendor enforces them)
 *	run	check_privapp.py	{sys}
+# the tree that becomes the image: the first-start setting decides with any vendor
+*	run	first_start.py	check	{in}/first_start_prop.txt	{sys}	>first_start.log
 # ext4 by the base build's own build_image (the Play 6 kernel has no erofs)
 *	pack	{sys}
 *	sha256

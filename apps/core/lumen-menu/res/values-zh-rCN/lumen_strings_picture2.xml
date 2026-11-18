@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the X50 family's advanced picture rows (rs30-parity-picture2): the white balance and colour
+     correction pages reuse the Z9X app's pro_* texts and the HB app's pro_segmentation_hb / pro_reset_default_hb with
+     their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
+     filter and the original frame refusals are new texts -->
+<resources>
+    <string name="lumen_m_wb">白平衡</string>
+    <string name="lumen_m_wb_2">2 点</string>
+    <string name="lumen_m_wb_11">11 点</string>
+    <string name="lumen_m_red_gain">红色增益</string>
+    <string name="lumen_m_green_gain">绿色增益</string>
+    <string name="lumen_m_blue_gain">蓝色增益</string>
+    <string name="lumen_m_red_offset">红色偏移</string>
+    <string name="lumen_m_green_offset">绿色偏移</string>
+    <string name="lumen_m_blue_offset">蓝色偏移</string>
+    <string name="lumen_m_wb_level">%1$d%%</string>
+    <string name="lumen_m_red">红色</string>
+    <string name="lumen_m_green">绿色</string>
+    <string name="lumen_m_blue">蓝色</string>
+    <string name="lumen_m_cyan">青色</string>
+    <string name="lumen_m_magenta">品红</string>
+    <string name="lumen_m_yellow">黄色</string>
+    <string name="lumen_m_skin">肤色</string>
+    <string name="lumen_m_cc">色彩校正</string>
+    <string name="lumen_m_cc_color">颜色</string>
+    <string name="lumen_m_hue">色相</string>
+    <string name="lumen_m_memc_original">原帧显示</string>
+    <string name="lumen_m_reset_defaults">恢复默认值</string>
+    <string name="lumen_m_gray_level">灰阶</string>
+    <string name="lumen_m_hdr_enh">HDR增强</string>
+    <string name="lumen_m_screen_size">幕布尺寸</string>
+    <string name="lumen_m_screen_gain">幕布增益</string>
+    <string name="lumen_m_dv_screen">杜比视界设置</string>
+    <string name="lumen_m_auto_switch">自动切换</string>
+    <string name="lumen_m_style_filter">风格滤镜</string>
+    <string name="lumen_m_original">原图</string>
+    <string name="lumen_m_filter_custom">已下载的滤镜</string>
+    <string name="lumen_m_inches">%1$d英寸</string>
+    <string name="lumen_m_original_120">开启 Ultra 120 Hz 时不可用</string>
+    <string name="lumen_m_original_3d">3D 模式下不可用</string>
+    <string name="lumen_m_imax_no_gain">IMAX Enhanced 下不可调节</string>
+    <string name="lumen_m_imax_no_filter">IMAX Enhanced 下不支持风格滤镜</string>
+</resources>

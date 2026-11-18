@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">リモコンのボタン</string>
+    <string name="lumen_remote_keys_assign">ボタンを割り当てる</string>
+    <string name="lumen_remote_keys_press">リモコンのボタンを押してください</string>
+    <string name="lumen_remote_keys_leave">戻るボタンで終了します</string>
+    <string name="lumen_remote_keys_fixed">このボタンは割り当てを変更できません</string>
+    <string name="lumen_remote_keys_pick">ボタンの動作</string>
+    <string name="lumen_remote_keys_as_before">元のまま</string>
+    <string name="lumen_remote_keys_reset_all">すべてリセット</string>
+    <string name="lumen_remote_keys_saved">保存しました</string>
+    <string name="lumen_remote_keys_empty">まだ割り当てたボタンはありません</string>
+    <string name="lumen_remote_keys_gone">アプリが削除されました。ボタンは元の動作に戻りました。</string>
+    <string name="lumen_remote_keys_name_youku">Youku ボタン</string>
+    <string name="lumen_remote_keys_name_tencent">Tencent Video ボタン</string>
+    <string name="lumen_remote_keys_name_iqiyi">iQIYI ボタン</string>
+    <string name="lumen_remote_keys_name_mango">Mango TV ボタン</string>
+    <string name="lumen_remote_keys_name_bilibili">bilibili ボタン</string>
+    <string name="lumen_remote_keys_name_ambient">スクリーンセーバーボタン</string>
+    <string name="lumen_remote_keys_name_shortcut">クイックアクセスボタン</string>
+    <string name="lumen_remote_keys_name_custom">クイックアクセスボタン %1$d</string>
+    <string name="lumen_remote_keys_name_f">F%1$d キー</string>
+    <string name="lumen_remote_keys_name_browser">ブラウザキー</string>
+    <string name="lumen_remote_keys_name_mail">メールキー</string>
+    <string name="lumen_remote_keys_name_music">音楽キー</string>
+    <string name="lumen_remote_keys_name_calculator">電卓キー</string>
+    <string name="lumen_remote_keys_name_contacts">連絡先キー</string>
+    <string name="lumen_remote_keys_name_calendar">カレンダーキー</string>
+    <string name="lumen_remote_keys_name_bookmarks">ブックマークキー</string>
+    <string name="lumen_remote_keys_do_source">入力切替</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">台形補正</string>
+    <string name="lumen_remote_keys_do_focus">フォーカス</string>
+    <string name="lumen_remote_keys_do_quick">クイック設定</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">信号</string>
+</resources>

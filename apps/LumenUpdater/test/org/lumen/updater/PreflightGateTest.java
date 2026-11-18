@@ -15,7 +15,8 @@ import java.util.Arrays;
  * <li>probe(): the request sequence ("", hal cleared, then "probe"), a fresh answer only after the request,
  *     a run still going (init ignores the start: waited for, or asked once more), the 20 s limit, a refused
  *     setprop, pending, an interrupt; then slotState() on what the fake gate published;</li>
- * <li>storage() and partitions(): Virtual A/B on without compression, the vendor list empty, the product list
+ * <li>storage() and partitions(): Virtual A/B on, without compression for an image whose wire id is not in the
+ *     compressed-snapshot table (NeutralTargetTest has the X50 family), the vendor list empty, the product list
  *     the build's own, no vbmeta or mboot; buildList() of a build.prop.</li>
  * </ul>
  * The fake gate runs in Preflight.pause: it sees the request in the stand-in's set log and answers after a few
@@ -239,7 +240,7 @@ public final class PreflightGateTest {
         eq("interrupted", "interrupted", arg(b));
         eq("interrupt flag kept", true, Thread.interrupted());
 
-        // storage(): Virtual A/B on, compression off
+        // storage(): Virtual A/B on, compression off (no wire id here: legacy snapshots)
         staleBoot();
         put("ro.virtual_ab.enabled", "true");
         put("ro.virtual_ab.compression.enabled", "false");
@@ -258,20 +259,28 @@ public final class PreflightGateTest {
         eq("compression unset", "no build list", arg(Preflight.storage()));
 
         // partitions(): what update_engine copies to the other slot
-        eq("HB list", "ok", res(Preflight.partitions("", HB_LIST, HB_LIST)));
-        eq("vendor list set", "vendor list", arg(Preflight.partitions(HB_LIST, HB_LIST, HB_LIST)));
-        eq("vendor list blank", "ok", res(Preflight.partitions(" ", HB_LIST, HB_LIST)));
-        eq("no build list", "no build list", arg(Preflight.partitions("", HB_LIST, null)));
-        eq("stock product list wins", "not the build's list", arg(Preflight.partitions("", STOCK_LIST, HB_LIST)));
-        eq("blk_partitions", "blk_partitions", res(Preflight.partitions("", STOCK_LIST, HB_LIST)));
-        eq("no list at all", "not the build's list", arg(Preflight.partitions("", "", "")));
-        eq("vbmeta in the build", "vbmeta", arg(Preflight.partitions("", "boot,vbmeta", "boot,vbmeta")));
-        eq("vbmeta_b", "vbmeta", arg(Preflight.partitions("", "boot,vbmeta_b", "boot,vbmeta_b")));
-        eq("mboot in the build", "mboot", arg(Preflight.partitions("", "mboot,boot", "mboot,boot")));
-        eq("stock list as the build's", "mboot", arg(Preflight.partitions("", STOCK_LIST, STOCK_LIST)));
-        eq("vbmeta_system only", "ok", res(Preflight.partitions("", "vbmeta_system", "vbmeta_system")));
-        eq("empty entry", "bad entry", arg(Preflight.partitions("", "boot,,dtbo", "boot,,dtbo")));
-        eq("space list", "bad entry", arg(Preflight.partitions("", "boot dtbo", "boot dtbo")));
+        // the list must be exactly the model's XGIMI set (apps/core/lumen-fwcopy): the HB without mboot
+        String hb = "G0130";
+        eq("HB list", "ok", res(Preflight.partitions("", HB_LIST, HB_LIST, hb)));
+        eq("HB list on the G0148", "ok", res(Preflight.partitions("", HB_LIST, HB_LIST, "G0148")));
+        eq("vendor list set", "vendor list", arg(Preflight.partitions(HB_LIST, HB_LIST, HB_LIST, hb)));
+        eq("vendor list blank", "ok", res(Preflight.partitions(" ", HB_LIST, HB_LIST, hb)));
+        eq("no build list", "no build list", arg(Preflight.partitions("", HB_LIST, null, hb)));
+        eq("stock product list wins", "not the build's list", arg(Preflight.partitions("", STOCK_LIST, HB_LIST, hb)));
+        eq("blk_partitions", "blk_partitions", res(Preflight.partitions("", STOCK_LIST, HB_LIST, hb)));
+        eq("no list at all", "not the build's list", arg(Preflight.partitions("", "", "", hb)));
+        eq("vbmeta in the build", "vbmeta", arg(Preflight.partitions("", HB_LIST + ",vbmeta", HB_LIST + ",vbmeta", hb)));
+        eq("vbmeta_b", "vbmeta", arg(Preflight.partitions("", HB_LIST + ",vbmeta_b", HB_LIST + ",vbmeta_b", hb)));
+        eq("mboot in the build", "mboot", arg(Preflight.partitions("", "mboot," + HB_LIST, "mboot," + HB_LIST, hb)));
+        eq("stock list as the build's", "mboot", arg(Preflight.partitions("", STOCK_LIST, STOCK_LIST, hb)));
+        eq("vbmeta_system only", "no armfw", arg(Preflight.partitions("", "vbmeta_system", "vbmeta_system", hb)));
+        eq("the Z9X set on the HB", "mboot", arg(Preflight.partitions("", NeutralTargetTest.X50_LIST, NeutralTargetTest.X50_LIST, hb)));
+        eq("the HB set on an X50", "armfw", arg(Preflight.partitions("", HB_LIST, HB_LIST, "G0111")));
+        eq("an unknown model", "model G9999", arg(Preflight.partitions("", HB_LIST, HB_LIST, "G9999")));
+        eq("no model", "model ?", arg(Preflight.partitions("", HB_LIST, HB_LIST, "")));
+        eq("the set in another order", "order", arg(Preflight.partitions("", "boot,armfw" + HB_LIST.substring(10), "boot,armfw" + HB_LIST.substring(10), hb)));
+        eq("empty entry", "bad entry", arg(Preflight.partitions("", "boot,,dtbo", "boot,,dtbo", hb)));
+        eq("space list", "bad entry", arg(Preflight.partitions("", "boot dtbo", "boot dtbo", hb)));
 
         // buildList(): the last line of the key, comments and other keys ignored
         File dir = Files.createTempDirectory("lumen_preflight").toFile();

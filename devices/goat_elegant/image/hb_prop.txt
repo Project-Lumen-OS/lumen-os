@@ -4,6 +4,9 @@
 # the vendor. compose_hb.sh adds ro.lumen.version, ro.lumen.build_id and, with --usb-adb, persist.sys.usb.config=adb.
 # Comment lines are dropped when appended.
 ro.lumen.device=goat_elegant
+# the model codes this image is for (= device.conf models; check_public_hb.py and tools/devices/test/blobs_trial_test.sh
+# check that): in a trial run the blobs reader takes the codec and audio files from the stock slot only on one of them
+ro.lumen.models=G0130 G0148
 # adb without the key prompt (the HB vendor build.prop already has ro.adb.secure=0; kept here so the image does not
 # depend on it) and adb on TCP 5555 as stock runs it (getprop.txt service.adb.tcp.port=5555)
 ro.adb.secure=0
@@ -14,8 +17,6 @@ service.adb.tcp.port=5555
 ro.hardware.egl=mali
 # the base product build.prop says "emulator"; stock and every Lumen image say tv
 ro.build.characteristics=tv
-# the vendor sets ro.product.locale=zh-CN (a China build); English as on the Z9X and Play 6 images
-ro.product.locale=en-US
 # test builds: logcat without the SELinux audit flood (still in dmesg) and 2 MB buffers, so the boot's own errors
 # stay in the USB-stick log (the Play 6 --diag lines)
 ro.logd.auditd=false

@@ -1,0 +1,91 @@
+package org.lumen.projector.cec;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import org.lumen.cec.CecDefaults;
+import org.lumen.cec.CecRow;
+import org.lumen.cec.CecSetting;
+import org.lumen.menu.MenuJson;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Once per unit, after the update that brought the stock HDMI-CEC defaults (devices/_image/cec_defaults.tsv): a
+ * switch the device's reset lines name gets its stock value back unless the user switched its row in the Lumen menu
+ * (CecSettings.userChose, recorded since this version). The table is the app asset {@link CecDefaults#ASSET}, the
+ * device its menu profile names. A value nobody stored needs nothing: the image's framework RRO has the stock
+ * default. Off the main thread (binder calls), at the start of the projector app. Never throws.
+ */
+public final class CecStockDefaults {
+    private static final String TAG = "Z9xCec";
+    static final String K_DONE = "cec_stock_defaults";
+    /** The menu profile of the app (lumen-menu MenuController.PROFILE_ASSET): its "device" picks the table lines. */
+    static final String MENU_ASSET = "lumen_menu/menu.json";
+
+    private CecStockDefaults() {}
+
+    public static void applyOnce(Context c) {
+        try {
+            SharedPreferences p = CecSettings.prefs(c);
+            if (p.getInt(K_DONE, 0) >= CecDefaults.VERSION) return;
+            CecDefaults table = CecDefaults.parse(asset(c, CecDefaults.ASSET));
+            String device = device(c);
+            List<String> log = new ArrayList<>();
+            boolean done = table.apply(device, new FrameworkUnit(c), log);
+            for (String l : log) Log.i(TAG, "stock defaults (" + device + "): " + l);
+            if (done) p.edit().putInt(K_DONE, CecDefaults.VERSION).commit();
+        } catch (Throwable t) {
+            Log.w(TAG, "stock defaults: " + t);
+        }
+    }
+
+    /** The device codename of the app's menu profile (devices/&lt;c&gt;/menu.json "device"). */
+    private static String device(Context c) throws IOException {
+        Object j = MenuJson.parse(asset(c, MENU_ASSET));
+        Object d = j instanceof Map ? ((Map<?, ?>) j).get("device") : null;
+        if (!(d instanceof String)) throw new IOException("no device in " + MENU_ASSET);
+        return (String) d;
+    }
+
+    private static String asset(Context c, String name) throws IOException {
+        try (InputStream in = c.getApplicationContext().getAssets().open(name)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] b = new byte[4096];
+            for (int n; (n = in.read(b)) > 0; ) out.write(b, 0, n);
+            return new String(out.toByteArray(), StandardCharsets.UTF_8);
+        }
+    }
+
+    /** The two switches through CecSettings (HdmiControlManager), the power policy's held wake through its pref. */
+    private static final class FrameworkUnit implements CecDefaults.Unit {
+        private final Context c;
+
+        FrameworkUnit(Context c) { this.c = c; }
+
+        @Override public Boolean on(CecSetting s) {
+            return s == CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY ? CecSettings.wakeOn(c) : CecSettings.sendStandbyOn(c);
+        }
+
+        @Override public boolean set(CecSetting s, boolean on) {
+            return s == CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY ? CecSettings.setWake(c, on) : CecSettings.setSendStandby(c, on);
+        }
+
+        @Override public boolean heldOff(CecSetting s) {
+            return s == CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY && CecSettings.restoreOtpPending(c);
+        }
+
+        @Override public void dropHold(CecSetting s) {
+            if (s == CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY) CecSettings.setRestoreOtpPending(c, false);
+        }
+
+        @Override public boolean userChose(CecRow row) { return CecSettings.userChose(c, row); }
+    }
+}

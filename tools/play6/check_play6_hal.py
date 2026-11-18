@@ -185,9 +185,10 @@ VALUE_RULES = {
                             senders={"sendRemoteAutofocus": [{44}], "sendPowerOnUiReady": [{17}]},
                             forbidden={"sendAfUiOpen", "sendAfCardClosed", "sendAfStop"},
                             callers={"sendPowerOnUiReady": r"/power/UiReady17\.java$"}),
-    # t15 (stock analysis hdmi_volume_game.md 3.3): never 4, the vendor refuses 667(0,4) in its independent game mode
-    ("BpHwGmpf", 667): dict(name="setPictureMode", args=[{0}, {10, 1, 9, 7, 3, 25, 5}],
-                            senders={"setPictureMode": None}, forbidden={"setAiScene"}),
+    # t15 (stock analysis hdmi_volume_game.md 3.3): never 4, the vendor refuses 667(0,4) in its independent game mode;
+    # ai-mode-stock: the AI scenes 10..17 only from setAiScene (stock XRMService AIPQ over the menu's AI 10)
+    ("BpHwGmpf", 667): dict(name="setPictureMode", args=[{0}, {10, 1, 9, 7, 3, 25, 5} | U(10, 17)],
+                            senders={"setPictureMode": [{0}, {10, 1, 9, 7, 3, 25, 5}], "setAiScene": [{0}, U(10, 17)]}),
     # t15 (stock analysis 4.1): 0 4:3, 1 16:9, 2 full screen, 4 original; 3 and 5+ are not sent
     ("BpHwGmpf", 665): dict(name="setAspectRatio", args=[{0, 1, 2, 4}], senders={"setAspectRatio": None}),
     ("BpHwGmpf", 648): dict(name="setGameModeOption", args=[("read", 647)], senders={"applyGameModeOption": None},

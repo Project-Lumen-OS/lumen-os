@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: Apache-2.0
+# Lumen OS Google sign-in helper, the PlayIntegrityFix port (source lineage/gmsprops, stock analysis
+# the design notes, private). Image paths: /system/etc/init/lumen_gmsprops.rc (this file),
+# /system/bin/lumen_gmsprops (the init helper), /system/lib/liblumen_gmsprops.so (and /system/lib64 on a 64-bit
+# userspace), /system/etc/lumen/gms_props.conf 0644; signed data updates in /data/system/lumen/gms_props.conf.
+# ON by default while Google services are there (sys.z9x.gapps ok = the user's add-on, skip = the Google edition;
+# Play 6 sys.lumen.gapps mounted:N); persist.sys.lumen.gms_compat=0 turns it off. The helper then sets
+# wrap.<process> only for the Google processes the data file lists (never any other app), zygote starts those
+# through app_process with the library preloaded, and the library checks the switch, the process and the data
+# again. A switch change stops the affected processes, so it takes effect at once.
+# After boot the check-in service asks Google for one check-in when the device verdict needs it (not allowed,
+# missing, never checked in with this identity, expired), once the network is up. It only reads Google's data.
+
+# signed data updates (Lumen updater, system uid) land here; world-readable like the image copy
+on post-fs-data
+    mkdir /data/system/lumen 0755 system system
+
+on property:sys.z9x.gapps=*
+    exec_background u:r:su:s0 root root -- /system/bin/lumen_gmsprops apply
+
+on property:sys.lumen.gapps=*
+    exec_background u:r:su:s0 root root -- /system/bin/lumen_gmsprops apply
+
+on property:persist.sys.lumen.gms_compat=*
+    exec_background u:r:su:s0 root root -- /system/bin/lumen_gmsprops restart
+
+on property:sys.boot_completed=1
+    start lumen_gmsprops_checkin
+
+service lumen_gmsprops_checkin /system/bin/lumen_gmsprops checkin
+    user root
+    group root inet
+    seclabel u:r:su:s0
+    oneshot
+    disabled

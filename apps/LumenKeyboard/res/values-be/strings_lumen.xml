@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Клавіятура Lumen</string>
+    <string name="ime_service_name">Клавіятура Lumen</string>
+    <string name="keyboardview_keycode_language">Мова</string>
+    <string name="lumen_languages_title">Мовы клавіятуры</string>
+    <string name="lumen_languages_hint">Націсніце OK, каб уключыць або выключыць мову. На клавіятуры мову мяняе клавіша з глобусам.</string>
+    <string name="lumen_languages_last">Адна мова заўсёды застаецца ўключанай.</string>
+</resources>

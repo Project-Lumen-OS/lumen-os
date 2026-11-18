@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeyFilterService (apps/core/lumen-remote keys package): sees keyboard keys before the app in front, only while a
+     keyboard key has an app or "Remote buttons" waits for a key (KeyFilter turns it on and off). No events, no
+     feedback: it only filters keys. -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeAnnouncement"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRequestFilterKeyEvents"
+    android:canRequestFilterKeyEvents="true"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/lumen_remote_keys_title"
+    android:notificationTimeout="0" />

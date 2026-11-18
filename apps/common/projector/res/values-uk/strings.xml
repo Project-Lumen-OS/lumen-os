@@ -24,11 +24,6 @@
     <string name="val_off">Вимк.</string>
     <string name="val_unknown">Немає даних</string>
     <string name="val_not_ready">Проєктор не готовий</string>
-    <string name="key_slot3">Кнопка iQIYI</string>
-    <string name="key_slot4">Кнопка bilibili</string>
-    <string name="slot_default_fmt">%1$s (за замовчуванням)</string>
-    <string name="slot_default_item">За замовчуванням: %1$s</string>
-    <string name="slot_home_apps">Lumen Home: застосунки</string>
     <string name="cancel">Скасувати</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Не знайдено програму для цієї кнопки</string>
@@ -44,6 +39,6 @@
     <string name="toast_need_curtain">Спершу ввімкніть «Вписувати в екран»</string>
     <string name="toast_not_ready">Проєктор ще не готовий</string>
     <string name="toast_failed">Не вдалося виконати</string>
-    <string name="toast_curtain_offer">Зображення зсунулося: Проєктор → Трапеція → «Вписати в екран зараз»</string>
+    <string name="toast_curtain_offer">Зображення зсунулося: Проєктор › Трапеція › «Вписати в екран зараз»</string>
     <string name="toast_setup_running">Спершу завершіть налаштування</string>
 </resources>

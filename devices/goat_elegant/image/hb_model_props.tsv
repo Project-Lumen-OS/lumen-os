@@ -1,0 +1,14 @@
+# The stock model property files of the Z9X HB the image sets (tools/devices/model_props.py, hb_model_props.rc): one
+# row per model code and vendor firmware whose file the stock dumps have (V130 = the G0130 v6.16.24 dump, V148 = the
+# G0148 v6.17.12 dump on the build host, build.conf). G0148 on v6.16.24 has no file (that firmware has no G0148 config).
+# Every line of the model rule (lines = rule), as the X50, RS30 and Titan images append them.
+## One HB image serves G0130, G0148 and G0118 on two vendor firmwares, and G0118's file differs between them. Among
+## the lines: vendor.mstar.hwc.framebuffer.format (vendor hwcomposer), ro.xgimi.mem.policy (vendor init.fusion.rc
+## memory watermark), persist.vendor.xgimi.hd_server (the human detection server of the eye protection),
+## ro.xgimi.default.aipq (the default AI scene).
+# model	firmware	prop file	stock sha256	dump	lines
+G0130	v6.16.24	hb_model_prop_dapengse.txt	931b67bba055b3be438c0da71706c5625891e01bc7d2c4199f0c5c3b403f2cb4	V130	rule
+G0130	v6.17.12	hb_model_prop_dapengse.txt	931b67bba055b3be438c0da71706c5625891e01bc7d2c4199f0c5c3b403f2cb4	V148	rule
+G0148	v6.17.12	hb_model_prop_dapengfhm.txt	217db48a54bc2b82fc81640e93cb4fbc5dc6a519def024bd367efc6bc5fec730	V148	rule
+G0118	v6.16.24	hb_model_prop_dapengse.txt	931b67bba055b3be438c0da71706c5625891e01bc7d2c4199f0c5c3b403f2cb4	V130	rule
+G0118	v6.17.12	hb_model_prop_dapenghm.txt	a882fe285dad1a95441a4f0e1ce6ad762fe39a6fb56eff78597958275d85bca9	V148	rule

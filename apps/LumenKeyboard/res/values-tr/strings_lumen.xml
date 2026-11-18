@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen Keyboard texts (apps/LumenKeyboard/README.md): the languages of apps/i18n/langs, the rest falls back to English -->
+<resources>
+    <string name="ime_name">Lumen Klavye</string>
+    <string name="ime_service_name">Lumen Klavye</string>
+    <string name="keyboardview_keycode_language">Dil</string>
+    <string name="lumen_languages_title">Klavye dilleri</string>
+    <string name="lumen_languages_hint">Bir dili açmak veya kapatmak için OK tuşuna basın. Klavyede dili küre tuşu değiştirir.</string>
+    <string name="lumen_languages_last">Bir dil her zaman açık kalır.</string>
+</resources>

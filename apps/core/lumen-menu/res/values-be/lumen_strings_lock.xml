@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Уключаны гульнявы рэжым</string>
+    <string name="lumen_m_ps_ai">Прафесійныя налады недаступныя ў рэжыме якасці выявы ШІ</string>
+    <string name="lumen_m_ps_performance">Прафесійныя налады не падтрымліваюцца ў рэжыме прадукцыйнасці выявы</string>
+    <string name="lumen_m_ps_ai_basic">Стандартныя налады недаступныя ў рэжыме якасці выявы ШІ</string>
+    <string name="lumen_m_ps_performance_basic">Стандартныя налады не падтрымліваюцца ў рэжыме прадукцыйнасці выявы</string>
+</resources>

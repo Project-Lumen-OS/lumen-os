@@ -1,0 +1,11 @@
+# Strings that name a remote key with its arrow character (IconText.KEYS) and the place that draws them through the
+# shared icon set (apps/core/lumen-icons: IconText.keys, KeyHintView, Notify and Row draw keyed text). check_glyphs.py
+# accepts a key arrow in a string only for a name listed here, and only while the file still holds the anchor text.
+# name	file that draws it	anchor text in that file
+manual_focus_panel	apps/common/projector/res/layout/activity_manual_focus.xml	<org.lumen.icons.KeyHintView
+eq_hint_select	apps/core/lumen-menu/src/org/lumen/projector/ui/EqBandsRow.java	hintIdle = idle == null ? "" : IconText.keys(getContext(), idle);
+eq_hint_adjust	apps/core/lumen-menu/src/org/lumen/projector/ui/EqBandsRow.java	hintEdit = edit == null ? "" : IconText.keys(getContext(), edit);
+lumen_m_panel_boost_press_again	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	host.note(IconText.keys(app, s(dir > 0 ? R.string.lumen_m_panel_boost_press_again
+lumen_m_panel_boost_leave_press_again	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	: R.string.lumen_m_panel_boost_leave_press_again)));
+lumen_m_lamp_off_press_again	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	host.note(IconText.keys(app, s(R.string.lumen_m_lamp_off_press_again)));
+lumen_m_panel_lamp_hint	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	new TextRow(app, IconText.keys(app, s(MenuLabels.summary(f))))

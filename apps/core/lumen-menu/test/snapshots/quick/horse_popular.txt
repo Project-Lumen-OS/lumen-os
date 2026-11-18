@@ -1,0 +1,45 @@
+quick menu of horse_popular (every runtime check passing)
+catalogue
+  picture
+    picture section wide/small/round
+    picture.3d choice wide/small/round
+    lamp slider slider/wide/small/round
+    picture.mode choice wide/small/round
+    picture.aspect choice wide/small/round
+    picture.pq.brightness slider slider/wide/small/round
+    picture.pq.contrast slider slider/wide/small/round
+    picture.pq.saturation slider slider/wide/small/round
+    picture.pq.sharpness slider slider/wide/small/round
+  sound
+    sound section wide/small/round
+    sound.volume slider slider/wide/small/round
+    sound.mode choice wide/small/round
+    sound.output choice wide/small/round
+  keystone
+    keystone.ak_now action wide/small/round
+    keystone section wide/small/round
+    zoom action wide/small/round
+  focus
+    focus section wide/small/round
+    focus.af_now action wide/small/round
+  projection
+    projection section wide/small/round
+  game
+    game section wide/small/round
+  general
+    network action wide/small/round
+    theme theme round/small/wide
+    general pinned round/footer
+    edit pinned round/footer
+    input action wide/small/round
+    bluetooth action wide/small/round
+    mirroring action wide/small/round
+    eye choice wide/small/round
+default tiles [network round, theme round, edit round, general round, keystone.ak_now wide, keystone small, zoom small, picture wide, sound small, focus small, input wide, bluetooth small, picture.3d small, game wide, mirroring small, eye small, lamp slider]
+top [network round, theme round, edit round, general round]
+148+120 tiles [keystone.ak_now wide, keystone small, zoom small]
+284+120 tiles [picture wide, sound small, focus small]
+420+120 tiles [input wide, bluetooth small, picture.3d small]
+556+120 tiles [game wide, mirroring small, eye small]
+698+96 slider [lamp slider]
+height 836

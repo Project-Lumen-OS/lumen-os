@@ -84,6 +84,14 @@ C disableVolumeBalance()() s2
 C disableVolumeBalance()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 42 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
+C edidVersions()() s0
+  = [0, 1, 3]
+C edidVersions()() s1
+  = [0, 1, 3]
+C edidVersions()() s2
+  = [0, 1, 3]
+C edidVersions()() s3
+  = [0, 1, 3]
 C gameModeOf(int[],int)(null,-1) s0
   = -1
 C gameModeOf(int[],int)(null,-1) s2
@@ -1390,6 +1398,14 @@ C getDarkScenes(int,int)(160,160) s0
   ! IllegalArgumentException: game picture 160 not in 0..4
 C getDarkScenes(int,int)(160,160) s2
   ! IllegalArgumentException: game picture 160 not in 0..4
+C getDolbyVisionPicMode()() s0
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s1
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s2
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s3
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
 C getDtsEffects()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 43 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -1462,6 +1478,18 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 661 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getExtDecInfo(String)(NativeUIWatch) s0
+  ! IllegalArgumentException: ext dec key NativeUIWatch
+C getExtDecInfo(String)(NativeUIWatch) s2
+  ! IllegalArgumentException: ext dec key NativeUIWatch
+C getExtDecInfo(String)(bad name) s0
+  ! IllegalArgumentException: ext dec key bad name
+C getExtDecInfo(String)(bad name) s2
+  ! IllegalArgumentException: ext dec key bad name
+C getExtDecInfo(String)(null) s0
+  ! IllegalArgumentException: ext dec key null
+C getExtDecInfo(String)(null) s2
+  ! IllegalArgumentException: ext dec key null
 C getEyeProtection()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 151 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -1485,6 +1513,18 @@ C getEyeProtectionScreenOn()() s2
   = true
 C getEyeProtectionScreenOn()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 147 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C getFreeSync()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = true
+C getFreeSync()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = false
+C getFreeSync()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = true
+C getFreeSync()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   = true
 C getGameModeOption()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 647 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
@@ -1618,6 +1658,86 @@ C getGamma()() s2
 C getGamma()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 326 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0
   = 5
+C getHdmiHwConfig(int)(-1) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(-1) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(0) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(0) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(1) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(1) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(2) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(2) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(3) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(3) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(5) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(5) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(6) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(6) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(10) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(10) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(12) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(12) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(13) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(13) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(17) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(17) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(44) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(44) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(50) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(50) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(100) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(100) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(101) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(101) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(106) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(106) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(160) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(160) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(192) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(192) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(500) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(500) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(20000) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(20000) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
 C getHdmiInfo()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 662 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 1x10i@5.14 dvi raw=010000000a0000004900000002020000
@@ -1666,6 +1786,14 @@ C getHdrType()() s2
 C getHdrType()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 620 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getHgig()() s0
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s1
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s2
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s3
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
 C getHsyColorModel(HsyType)(HUE) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 324 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0 i32:0
   = [1, 0, 0, 0, 10, 10, 10]
@@ -2032,6 +2160,112 @@ C getScreenRotation()() s2
 C getScreenRotation()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 199 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   ! ReplyException: reply of 199: java.lang.IllegalStateException: 199 struct 1.4E-44,1.02E-43,7.2E-43,5.046E-42
+C getSensorTemperature(int)(-1) s0
+  ! IllegalArgumentException: sensor -1 not in 1..12
+C getSensorTemperature(int)(-1) s2
+  ! IllegalArgumentException: sensor -1 not in 1..12
+C getSensorTemperature(int)(0) s0
+  ! IllegalArgumentException: sensor 0 not in 1..12
+C getSensorTemperature(int)(0) s2
+  ! IllegalArgumentException: sensor 0 not in 1..12
+C getSensorTemperature(int)(1) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = 1.0
+C getSensorTemperature(int)(1) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = 400.0
+C getSensorTemperature(int)(2) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:2
+  = 1.0
+C getSensorTemperature(int)(2) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:2
+  = 400.0
+C getSensorTemperature(int)(3) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:3
+  = 1.0
+C getSensorTemperature(int)(3) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:3
+  = 400.0
+C getSensorTemperature(int)(5) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:5
+  = 1.0
+C getSensorTemperature(int)(5) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:5
+  = 400.0
+C getSensorTemperature(int)(6) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:6
+  = 1.0
+C getSensorTemperature(int)(6) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:6
+  = 400.0
+C getSensorTemperature(int)(10) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:10
+  = 1.0
+C getSensorTemperature(int)(10) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:10
+  = 400.0
+C getSensorTemperature(int)(12) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:12
+  = 1.0
+C getSensorTemperature(int)(12) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:12
+  = 400.0
+C getSensorTemperature(int)(13) s0
+  ! IllegalArgumentException: sensor 13 not in 1..12
+C getSensorTemperature(int)(13) s2
+  ! IllegalArgumentException: sensor 13 not in 1..12
+C getSensorTemperature(int)(17) s0
+  ! IllegalArgumentException: sensor 17 not in 1..12
+C getSensorTemperature(int)(17) s2
+  ! IllegalArgumentException: sensor 17 not in 1..12
+C getSensorTemperature(int)(44) s0
+  ! IllegalArgumentException: sensor 44 not in 1..12
+C getSensorTemperature(int)(44) s2
+  ! IllegalArgumentException: sensor 44 not in 1..12
+C getSensorTemperature(int)(50) s0
+  ! IllegalArgumentException: sensor 50 not in 1..12
+C getSensorTemperature(int)(50) s2
+  ! IllegalArgumentException: sensor 50 not in 1..12
+C getSensorTemperature(int)(100) s0
+  ! IllegalArgumentException: sensor 100 not in 1..12
+C getSensorTemperature(int)(100) s2
+  ! IllegalArgumentException: sensor 100 not in 1..12
+C getSensorTemperature(int)(101) s0
+  ! IllegalArgumentException: sensor 101 not in 1..12
+C getSensorTemperature(int)(101) s2
+  ! IllegalArgumentException: sensor 101 not in 1..12
+C getSensorTemperature(int)(106) s0
+  ! IllegalArgumentException: sensor 106 not in 1..12
+C getSensorTemperature(int)(106) s2
+  ! IllegalArgumentException: sensor 106 not in 1..12
+C getSensorTemperature(int)(160) s0
+  ! IllegalArgumentException: sensor 160 not in 1..12
+C getSensorTemperature(int)(160) s2
+  ! IllegalArgumentException: sensor 160 not in 1..12
+C getSensorTemperature(int)(192) s0
+  ! IllegalArgumentException: sensor 192 not in 1..12
+C getSensorTemperature(int)(192) s2
+  ! IllegalArgumentException: sensor 192 not in 1..12
+C getSensorTemperature(int)(500) s0
+  ! IllegalArgumentException: sensor 500 not in 1..12
+C getSensorTemperature(int)(500) s2
+  ! IllegalArgumentException: sensor 500 not in 1..12
+C getSensorTemperature(int)(20000) s0
+  ! IllegalArgumentException: sensor 20000 not in 1..12
+C getSensorTemperature(int)(20000) s2
+  ! IllegalArgumentException: sensor 20000 not in 1..12
+C getSignalStatus()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 1
+C getSignalStatus()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 0
+C getSignalStatus()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 400
+C getSignalStatus()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 5
 C getSmartAutofocus()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 90 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   = true
@@ -2340,6 +2574,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasTvListener()() s0
+  = true
+C hasTvListener()() s1
+  = true
+C hasTvListener()() s2
+  = true
+C hasTvListener()() s3
+  = true
 C is3DTo2DEnabled()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 193 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -2462,6 +2704,18 @@ C isVideoPlaying()() s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
 C isVideoPlaying()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C isVideoPlayingOrFalse()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
 C manualFocus(ManualFocus)(ENTER) s0
@@ -2794,58 +3048,94 @@ C setAiContrast(boolean)(true) s0
 C setAiContrast(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf2 288 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0 i32:1
   = true
-C setAiScene(AiScene)(TV) s0
+C setAiScene(int)(-1) s0
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C setAiScene(int)(-1) s2
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C setAiScene(int)(0) s0
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C setAiScene(int)(0) s2
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C setAiScene(int)(1) s0
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C setAiScene(int)(1) s2
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C setAiScene(int)(2) s0
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C setAiScene(int)(2) s2
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C setAiScene(int)(3) s0
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C setAiScene(int)(3) s2
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C setAiScene(int)(5) s0
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C setAiScene(int)(5) s2
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C setAiScene(int)(6) s0
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C setAiScene(int)(6) s2
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C setAiScene(int)(10) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
   = true
-C setAiScene(AiScene)(TV) s2
+C setAiScene(int)(10) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
   = true
-C setAiScene(AiScene)(VARIETY) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
-  = true
-C setAiScene(AiScene)(VARIETY) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
-  = true
-C setAiScene(AiScene)(CHILDREN) s0
+C setAiScene(int)(12) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
   = true
-C setAiScene(AiScene)(CHILDREN) s2
+C setAiScene(int)(12) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
   = true
-C setAiScene(AiScene)(CONCERT) s0
+C setAiScene(int)(13) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
   = true
-C setAiScene(AiScene)(CONCERT) s2
+C setAiScene(int)(13) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
   = true
-C setAiScene(AiScene)(DOCUMENTARY) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:14
-  = true
-C setAiScene(AiScene)(DOCUMENTARY) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:14
-  = true
-C setAiScene(AiScene)(ANIME) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:15
-  = true
-C setAiScene(AiScene)(ANIME) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:15
-  = true
-C setAiScene(AiScene)(FILM) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
-  = true
-C setAiScene(AiScene)(FILM) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
-  = true
-C setAiScene(AiScene)(FOOTBALL) s0
+C setAiScene(int)(17) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
   = true
-C setAiScene(AiScene)(FOOTBALL) s2
+C setAiScene(int)(17) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
   = true
-C setAiScene(AiScene)(null) s0
-  ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
-C setAiScene(AiScene)(null) s2
-  ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAiScene(int)(44) s0
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C setAiScene(int)(44) s2
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C setAiScene(int)(50) s0
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C setAiScene(int)(50) s2
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C setAiScene(int)(100) s0
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C setAiScene(int)(100) s2
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C setAiScene(int)(101) s0
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C setAiScene(int)(101) s2
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C setAiScene(int)(106) s0
+  ! IllegalArgumentException: ai scene 106 not in 10..17
+C setAiScene(int)(106) s2
+  ! IllegalArgumentException: ai scene 106 not in 10..17
+C setAiScene(int)(160) s0
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C setAiScene(int)(160) s2
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C setAiScene(int)(192) s0
+  ! IllegalArgumentException: ai scene 192 not in 10..17
+C setAiScene(int)(192) s2
+  ! IllegalArgumentException: ai scene 192 not in 10..17
+C setAiScene(int)(500) s0
+  ! IllegalArgumentException: ai scene 500 not in 10..17
+C setAiScene(int)(500) s2
+  ! IllegalArgumentException: ai scene 500 not in 10..17
+C setAiScene(int)(20000) s0
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C setAiScene(int)(20000) s2
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
 C setAllmAutoSwitch(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 312 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
   = true
@@ -3897,9 +4187,9 @@ C setEarc(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 633 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = true
 C setEdidVersion(int)(-1) s0
-  ! IllegalArgumentException: edid -1
+  ! IllegalArgumentException: edid -1: not a stock value here
 C setEdidVersion(int)(-1) s2
-  ! IllegalArgumentException: edid -1
+  ! IllegalArgumentException: edid -1: not a stock value here
 C setEdidVersion(int)(0) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0
   = true
@@ -3913,9 +4203,9 @@ C setEdidVersion(int)(1) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:1
   = true
 C setEdidVersion(int)(2) s0
-  ! IllegalArgumentException: edid 2
+  ! IllegalArgumentException: edid 2: not a stock value here
 C setEdidVersion(int)(2) s2
-  ! IllegalArgumentException: edid 2
+  ! IllegalArgumentException: edid 2: not a stock value here
 C setEdidVersion(int)(3) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:3
   = true
@@ -3923,65 +4213,65 @@ C setEdidVersion(int)(3) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:3
   = true
 C setEdidVersion(int)(5) s0
-  ! IllegalArgumentException: edid 5
+  ! IllegalArgumentException: edid 5: not a stock value here
 C setEdidVersion(int)(5) s2
-  ! IllegalArgumentException: edid 5
+  ! IllegalArgumentException: edid 5: not a stock value here
 C setEdidVersion(int)(6) s0
-  ! IllegalArgumentException: edid 6
+  ! IllegalArgumentException: edid 6: not a stock value here
 C setEdidVersion(int)(6) s2
-  ! IllegalArgumentException: edid 6
+  ! IllegalArgumentException: edid 6: not a stock value here
 C setEdidVersion(int)(10) s0
-  ! IllegalArgumentException: edid 10
+  ! IllegalArgumentException: edid 10: not a stock value here
 C setEdidVersion(int)(10) s2
-  ! IllegalArgumentException: edid 10
+  ! IllegalArgumentException: edid 10: not a stock value here
 C setEdidVersion(int)(12) s0
-  ! IllegalArgumentException: edid 12
+  ! IllegalArgumentException: edid 12: not a stock value here
 C setEdidVersion(int)(12) s2
-  ! IllegalArgumentException: edid 12
+  ! IllegalArgumentException: edid 12: not a stock value here
 C setEdidVersion(int)(13) s0
-  ! IllegalArgumentException: edid 13
+  ! IllegalArgumentException: edid 13: not a stock value here
 C setEdidVersion(int)(13) s2
-  ! IllegalArgumentException: edid 13
+  ! IllegalArgumentException: edid 13: not a stock value here
 C setEdidVersion(int)(17) s0
-  ! IllegalArgumentException: edid 17
+  ! IllegalArgumentException: edid 17: not a stock value here
 C setEdidVersion(int)(17) s2
-  ! IllegalArgumentException: edid 17
+  ! IllegalArgumentException: edid 17: not a stock value here
 C setEdidVersion(int)(44) s0
-  ! IllegalArgumentException: edid 44
+  ! IllegalArgumentException: edid 44: not a stock value here
 C setEdidVersion(int)(44) s2
-  ! IllegalArgumentException: edid 44
+  ! IllegalArgumentException: edid 44: not a stock value here
 C setEdidVersion(int)(50) s0
-  ! IllegalArgumentException: edid 50
+  ! IllegalArgumentException: edid 50: not a stock value here
 C setEdidVersion(int)(50) s2
-  ! IllegalArgumentException: edid 50
+  ! IllegalArgumentException: edid 50: not a stock value here
 C setEdidVersion(int)(100) s0
-  ! IllegalArgumentException: edid 100
+  ! IllegalArgumentException: edid 100: not a stock value here
 C setEdidVersion(int)(100) s2
-  ! IllegalArgumentException: edid 100
+  ! IllegalArgumentException: edid 100: not a stock value here
 C setEdidVersion(int)(101) s0
-  ! IllegalArgumentException: edid 101
+  ! IllegalArgumentException: edid 101: not a stock value here
 C setEdidVersion(int)(101) s2
-  ! IllegalArgumentException: edid 101
+  ! IllegalArgumentException: edid 101: not a stock value here
 C setEdidVersion(int)(106) s0
-  ! IllegalArgumentException: edid 106
+  ! IllegalArgumentException: edid 106: not a stock value here
 C setEdidVersion(int)(106) s2
-  ! IllegalArgumentException: edid 106
+  ! IllegalArgumentException: edid 106: not a stock value here
 C setEdidVersion(int)(160) s0
-  ! IllegalArgumentException: edid 160
+  ! IllegalArgumentException: edid 160: not a stock value here
 C setEdidVersion(int)(160) s2
-  ! IllegalArgumentException: edid 160
+  ! IllegalArgumentException: edid 160: not a stock value here
 C setEdidVersion(int)(192) s0
-  ! IllegalArgumentException: edid 192
+  ! IllegalArgumentException: edid 192: not a stock value here
 C setEdidVersion(int)(192) s2
-  ! IllegalArgumentException: edid 192
+  ! IllegalArgumentException: edid 192: not a stock value here
 C setEdidVersion(int)(500) s0
-  ! IllegalArgumentException: edid 500
+  ! IllegalArgumentException: edid 500: not a stock value here
 C setEdidVersion(int)(500) s2
-  ! IllegalArgumentException: edid 500
+  ! IllegalArgumentException: edid 500: not a stock value here
 C setEdidVersion(int)(20000) s0
-  ! IllegalArgumentException: edid 20000
+  ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
-  ! IllegalArgumentException: edid 20000
+  ! IllegalArgumentException: edid 20000: not a stock value here
 C setEyeProtection(boolean)(false) s0
   ! NuiNotReadyException: IGmpf 152 not sent: no NUI fifo reader (sys.z9x.nui != ready)
 C setEyeProtection(boolean)(false) s2
@@ -6355,13 +6645,13 @@ C setObstacleAvoid(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 292 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
 C setOpticalZoomLimitStep(int)(-1) s0
-  ! IllegalStateException: IGmpf2 14 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf2 14 outside a prepared zoom session
 C setOpticalZoomLimitStep(int)(-1) s2
-  ! IllegalStateException: IGmpf2 14 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf2 14 outside a prepared zoom session
 C setOpticalZoomLimitStep(int)(0) s0
-  ! IllegalStateException: IGmpf2 14 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf2 14 outside a prepared zoom session
 C setOpticalZoomLimitStep(int)(0) s2
-  ! IllegalStateException: IGmpf2 14 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf2 14 outside a prepared zoom session
 C setOpticalZoomLimitStep(int)(1) s0
   ! IllegalArgumentException: zoom limit step 1 not in -4..0
 C setOpticalZoomLimitStep(int)(1) s2
@@ -6439,53 +6729,53 @@ C setOpticalZoomStep(int)(-1) s0
 C setOpticalZoomStep(int)(-1) s2
   ! IllegalArgumentException: optical zoom step -1 not in 0..64
 C setOpticalZoomStep(int)(0) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(0) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(1) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(1) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(2) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(2) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(3) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(3) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(5) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(5) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(6) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(6) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(10) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(10) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(12) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(12) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(13) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(13) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(17) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(17) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(44) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(44) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(50) s0
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(50) s2
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C setOpticalZoomStep(int)(100) s0
   ! IllegalArgumentException: optical zoom step 100 not in 0..64
 C setOpticalZoomStep(int)(100) s2
@@ -9464,6 +9754,90 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C vrrOn(int)(-1) s0
+  ! IllegalArgumentException: hdmi source -1 not in 1..2
+C vrrOn(int)(-1) s2
+  ! IllegalArgumentException: hdmi source -1 not in 1..2
+C vrrOn(int)(0) s0
+  ! IllegalArgumentException: hdmi source 0 not in 1..2
+C vrrOn(int)(0) s2
+  ! IllegalArgumentException: hdmi source 0 not in 1..2
+C vrrOn(int)(1) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:1
+  = true
+C vrrOn(int)(1) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:1
+  = false
+C vrrOn(int)(2) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:2
+  = true
+C vrrOn(int)(2) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:2
+  = false
+C vrrOn(int)(3) s0
+  ! IllegalArgumentException: hdmi source 3 not in 1..2
+C vrrOn(int)(3) s2
+  ! IllegalArgumentException: hdmi source 3 not in 1..2
+C vrrOn(int)(5) s0
+  ! IllegalArgumentException: hdmi source 5 not in 1..2
+C vrrOn(int)(5) s2
+  ! IllegalArgumentException: hdmi source 5 not in 1..2
+C vrrOn(int)(6) s0
+  ! IllegalArgumentException: hdmi source 6 not in 1..2
+C vrrOn(int)(6) s2
+  ! IllegalArgumentException: hdmi source 6 not in 1..2
+C vrrOn(int)(10) s0
+  ! IllegalArgumentException: hdmi source 10 not in 1..2
+C vrrOn(int)(10) s2
+  ! IllegalArgumentException: hdmi source 10 not in 1..2
+C vrrOn(int)(12) s0
+  ! IllegalArgumentException: hdmi source 12 not in 1..2
+C vrrOn(int)(12) s2
+  ! IllegalArgumentException: hdmi source 12 not in 1..2
+C vrrOn(int)(13) s0
+  ! IllegalArgumentException: hdmi source 13 not in 1..2
+C vrrOn(int)(13) s2
+  ! IllegalArgumentException: hdmi source 13 not in 1..2
+C vrrOn(int)(17) s0
+  ! IllegalArgumentException: hdmi source 17 not in 1..2
+C vrrOn(int)(17) s2
+  ! IllegalArgumentException: hdmi source 17 not in 1..2
+C vrrOn(int)(44) s0
+  ! IllegalArgumentException: hdmi source 44 not in 1..2
+C vrrOn(int)(44) s2
+  ! IllegalArgumentException: hdmi source 44 not in 1..2
+C vrrOn(int)(50) s0
+  ! IllegalArgumentException: hdmi source 50 not in 1..2
+C vrrOn(int)(50) s2
+  ! IllegalArgumentException: hdmi source 50 not in 1..2
+C vrrOn(int)(100) s0
+  ! IllegalArgumentException: hdmi source 100 not in 1..2
+C vrrOn(int)(100) s2
+  ! IllegalArgumentException: hdmi source 100 not in 1..2
+C vrrOn(int)(101) s0
+  ! IllegalArgumentException: hdmi source 101 not in 1..2
+C vrrOn(int)(101) s2
+  ! IllegalArgumentException: hdmi source 101 not in 1..2
+C vrrOn(int)(106) s0
+  ! IllegalArgumentException: hdmi source 106 not in 1..2
+C vrrOn(int)(106) s2
+  ! IllegalArgumentException: hdmi source 106 not in 1..2
+C vrrOn(int)(160) s0
+  ! IllegalArgumentException: hdmi source 160 not in 1..2
+C vrrOn(int)(160) s2
+  ! IllegalArgumentException: hdmi source 160 not in 1..2
+C vrrOn(int)(192) s0
+  ! IllegalArgumentException: hdmi source 192 not in 1..2
+C vrrOn(int)(192) s2
+  ! IllegalArgumentException: hdmi source 192 not in 1..2
+C vrrOn(int)(500) s0
+  ! IllegalArgumentException: hdmi source 500 not in 1..2
+C vrrOn(int)(500) s2
+  ! IllegalArgumentException: hdmi source 500 not in 1..2
+C vrrOn(int)(20000) s0
+  ! IllegalArgumentException: hdmi source 20000 not in 1..2
+C vrrOn(int)(20000) s2
+  ! IllegalArgumentException: hdmi source 20000 not in 1..2
 C zoomHome()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 153 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:5 i32:10
   = 1
@@ -9581,6 +9955,14 @@ C disableVolumeBalance()() s2
 C disableVolumeBalance()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 42 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
+C edidVersions()() s0
+  = [0, 1, 3]
+C edidVersions()() s1
+  = [0, 1, 3]
+C edidVersions()() s2
+  = [0, 1, 3]
+C edidVersions()() s3
+  = [0, 1, 3]
 C gameModeOf(int[],int)(null,-1) s0
   = -1
 C gameModeOf(int[],int)(null,-1) s2
@@ -10887,6 +11269,14 @@ C getDarkScenes(int,int)(160,160) s0
   ! IllegalArgumentException: game picture 160 not in 0..4
 C getDarkScenes(int,int)(160,160) s2
   ! IllegalArgumentException: game picture 160 not in 0..4
+C getDolbyVisionPicMode()() s0
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s1
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s2
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
+C getDolbyVisionPicMode()() s3
+  ! RemoteException: getDolbyVisionPicMode: not on the Z9X, nothing sent
 C getDtsEffects()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 43 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -10959,6 +11349,18 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 661 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getExtDecInfo(String)(NativeUIWatch) s0
+  ! IllegalArgumentException: ext dec key NativeUIWatch
+C getExtDecInfo(String)(NativeUIWatch) s2
+  ! IllegalArgumentException: ext dec key NativeUIWatch
+C getExtDecInfo(String)(bad name) s0
+  ! IllegalArgumentException: ext dec key bad name
+C getExtDecInfo(String)(bad name) s2
+  ! IllegalArgumentException: ext dec key bad name
+C getExtDecInfo(String)(null) s0
+  ! IllegalArgumentException: ext dec key null
+C getExtDecInfo(String)(null) s2
+  ! IllegalArgumentException: ext dec key null
 C getEyeProtection()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 151 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -10982,6 +11384,18 @@ C getEyeProtectionScreenOn()() s2
   = true
 C getEyeProtectionScreenOn()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 147 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C getFreeSync()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = true
+C getFreeSync()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = false
+C getFreeSync()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
+  = true
+C getFreeSync()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 271 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   = true
 C getGameModeOption()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 647 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
@@ -11115,6 +11529,86 @@ C getGamma()() s2
 C getGamma()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 326 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0
   = 5
+C getHdmiHwConfig(int)(-1) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(-1) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(0) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(0) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(1) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(1) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(2) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(2) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(3) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(3) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(5) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(5) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(6) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(6) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(10) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(10) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(12) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(12) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(13) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(13) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(17) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(17) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(44) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(44) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(50) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(50) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(100) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(100) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(101) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(101) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(106) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(106) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(160) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(160) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(192) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(192) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(500) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(500) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(20000) s0
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
+C getHdmiHwConfig(int)(20000) s2
+  ! RemoteException: getHdmiHwConfig: not on the Z9X, nothing sent
 C getHdmiInfo()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 662 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 1x10i@5.14 dvi raw=010000000a0000004900000002020000
@@ -11163,6 +11657,14 @@ C getHdrType()() s2
 C getHdrType()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 620 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getHgig()() s0
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s1
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s2
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
+C getHgig()() s3
+  ! RemoteException: getHGiGMode: not on the Z9X, nothing sent
 C getHsyColorModel(HsyType)(HUE) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 324 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0 i32:0
   = [1, 0, 0, 0, 10, 10, 10]
@@ -11529,6 +12031,112 @@ C getScreenRotation()() s2
 C getScreenRotation()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 199 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   ! ReplyException: reply of 199: java.lang.IllegalStateException: 199 struct 1.4E-44,1.02E-43,7.2E-43,5.046E-42
+C getSensorTemperature(int)(-1) s0
+  ! IllegalArgumentException: sensor -1 not in 1..12
+C getSensorTemperature(int)(-1) s2
+  ! IllegalArgumentException: sensor -1 not in 1..12
+C getSensorTemperature(int)(0) s0
+  ! IllegalArgumentException: sensor 0 not in 1..12
+C getSensorTemperature(int)(0) s2
+  ! IllegalArgumentException: sensor 0 not in 1..12
+C getSensorTemperature(int)(1) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = 1.0
+C getSensorTemperature(int)(1) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = 400.0
+C getSensorTemperature(int)(2) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:2
+  = 1.0
+C getSensorTemperature(int)(2) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:2
+  = 400.0
+C getSensorTemperature(int)(3) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:3
+  = 1.0
+C getSensorTemperature(int)(3) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:3
+  = 400.0
+C getSensorTemperature(int)(5) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:5
+  = 1.0
+C getSensorTemperature(int)(5) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:5
+  = 400.0
+C getSensorTemperature(int)(6) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:6
+  = 1.0
+C getSensorTemperature(int)(6) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:6
+  = 400.0
+C getSensorTemperature(int)(10) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:10
+  = 1.0
+C getSensorTemperature(int)(10) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:10
+  = 400.0
+C getSensorTemperature(int)(12) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:12
+  = 1.0
+C getSensorTemperature(int)(12) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 439 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:12
+  = 400.0
+C getSensorTemperature(int)(13) s0
+  ! IllegalArgumentException: sensor 13 not in 1..12
+C getSensorTemperature(int)(13) s2
+  ! IllegalArgumentException: sensor 13 not in 1..12
+C getSensorTemperature(int)(17) s0
+  ! IllegalArgumentException: sensor 17 not in 1..12
+C getSensorTemperature(int)(17) s2
+  ! IllegalArgumentException: sensor 17 not in 1..12
+C getSensorTemperature(int)(44) s0
+  ! IllegalArgumentException: sensor 44 not in 1..12
+C getSensorTemperature(int)(44) s2
+  ! IllegalArgumentException: sensor 44 not in 1..12
+C getSensorTemperature(int)(50) s0
+  ! IllegalArgumentException: sensor 50 not in 1..12
+C getSensorTemperature(int)(50) s2
+  ! IllegalArgumentException: sensor 50 not in 1..12
+C getSensorTemperature(int)(100) s0
+  ! IllegalArgumentException: sensor 100 not in 1..12
+C getSensorTemperature(int)(100) s2
+  ! IllegalArgumentException: sensor 100 not in 1..12
+C getSensorTemperature(int)(101) s0
+  ! IllegalArgumentException: sensor 101 not in 1..12
+C getSensorTemperature(int)(101) s2
+  ! IllegalArgumentException: sensor 101 not in 1..12
+C getSensorTemperature(int)(106) s0
+  ! IllegalArgumentException: sensor 106 not in 1..12
+C getSensorTemperature(int)(106) s2
+  ! IllegalArgumentException: sensor 106 not in 1..12
+C getSensorTemperature(int)(160) s0
+  ! IllegalArgumentException: sensor 160 not in 1..12
+C getSensorTemperature(int)(160) s2
+  ! IllegalArgumentException: sensor 160 not in 1..12
+C getSensorTemperature(int)(192) s0
+  ! IllegalArgumentException: sensor 192 not in 1..12
+C getSensorTemperature(int)(192) s2
+  ! IllegalArgumentException: sensor 192 not in 1..12
+C getSensorTemperature(int)(500) s0
+  ! IllegalArgumentException: sensor 500 not in 1..12
+C getSensorTemperature(int)(500) s2
+  ! IllegalArgumentException: sensor 500 not in 1..12
+C getSensorTemperature(int)(20000) s0
+  ! IllegalArgumentException: sensor 20000 not in 1..12
+C getSensorTemperature(int)(20000) s2
+  ! IllegalArgumentException: sensor 20000 not in 1..12
+C getSignalStatus()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 1
+C getSignalStatus()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 0
+C getSignalStatus()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 400
+C getSignalStatus()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 592 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = 5
 C getSmartAutofocus()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 90 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   = true
@@ -11837,6 +12445,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasTvListener()() s0
+  = true
+C hasTvListener()() s1
+  = true
+C hasTvListener()() s2
+  = true
+C hasTvListener()() s3
+  = true
 C is3DTo2DEnabled()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 193 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -11959,6 +12575,18 @@ C isVideoPlaying()() s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
 C isVideoPlaying()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C isVideoPlayingOrFalse()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C isVideoPlayingOrFalse()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 180 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
 C manualFocus(ManualFocus)(ENTER) s0
@@ -12295,58 +12923,94 @@ C setAiContrast(boolean)(true) s0
 C setAiContrast(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf2 288 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0 i32:1
   = true
-C setAiScene(AiScene)(TV) s0
+C setAiScene(int)(-1) s0
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C setAiScene(int)(-1) s2
+  ! IllegalArgumentException: ai scene -1 not in 10..17
+C setAiScene(int)(0) s0
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C setAiScene(int)(0) s2
+  ! IllegalArgumentException: ai scene 0 not in 10..17
+C setAiScene(int)(1) s0
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C setAiScene(int)(1) s2
+  ! IllegalArgumentException: ai scene 1 not in 10..17
+C setAiScene(int)(2) s0
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C setAiScene(int)(2) s2
+  ! IllegalArgumentException: ai scene 2 not in 10..17
+C setAiScene(int)(3) s0
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C setAiScene(int)(3) s2
+  ! IllegalArgumentException: ai scene 3 not in 10..17
+C setAiScene(int)(5) s0
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C setAiScene(int)(5) s2
+  ! IllegalArgumentException: ai scene 5 not in 10..17
+C setAiScene(int)(6) s0
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C setAiScene(int)(6) s2
+  ! IllegalArgumentException: ai scene 6 not in 10..17
+C setAiScene(int)(10) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
   = true
-C setAiScene(AiScene)(TV) s2
+C setAiScene(int)(10) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:10
   = true
-C setAiScene(AiScene)(VARIETY) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
-  = true
-C setAiScene(AiScene)(VARIETY) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:11
-  = true
-C setAiScene(AiScene)(CHILDREN) s0
+C setAiScene(int)(12) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
   = true
-C setAiScene(AiScene)(CHILDREN) s2
+C setAiScene(int)(12) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:12
   = true
-C setAiScene(AiScene)(CONCERT) s0
+C setAiScene(int)(13) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
   = true
-C setAiScene(AiScene)(CONCERT) s2
+C setAiScene(int)(13) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:13
   = true
-C setAiScene(AiScene)(DOCUMENTARY) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:14
-  = true
-C setAiScene(AiScene)(DOCUMENTARY) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:14
-  = true
-C setAiScene(AiScene)(ANIME) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:15
-  = true
-C setAiScene(AiScene)(ANIME) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:15
-  = true
-C setAiScene(AiScene)(FILM) s0
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
-  = true
-C setAiScene(AiScene)(FILM) s2
-  TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:16
-  = true
-C setAiScene(AiScene)(FOOTBALL) s0
+C setAiScene(int)(17) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
   = true
-C setAiScene(AiScene)(FOOTBALL) s2
+C setAiScene(int)(17) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 667 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:17
   = true
-C setAiScene(AiScene)(null) s0
-  ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
-C setAiScene(AiScene)(null) s2
-  ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAiScene(int)(44) s0
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C setAiScene(int)(44) s2
+  ! IllegalArgumentException: ai scene 44 not in 10..17
+C setAiScene(int)(50) s0
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C setAiScene(int)(50) s2
+  ! IllegalArgumentException: ai scene 50 not in 10..17
+C setAiScene(int)(100) s0
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C setAiScene(int)(100) s2
+  ! IllegalArgumentException: ai scene 100 not in 10..17
+C setAiScene(int)(101) s0
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C setAiScene(int)(101) s2
+  ! IllegalArgumentException: ai scene 101 not in 10..17
+C setAiScene(int)(106) s0
+  ! IllegalArgumentException: ai scene 106 not in 10..17
+C setAiScene(int)(106) s2
+  ! IllegalArgumentException: ai scene 106 not in 10..17
+C setAiScene(int)(160) s0
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C setAiScene(int)(160) s2
+  ! IllegalArgumentException: ai scene 160 not in 10..17
+C setAiScene(int)(192) s0
+  ! IllegalArgumentException: ai scene 192 not in 10..17
+C setAiScene(int)(192) s2
+  ! IllegalArgumentException: ai scene 192 not in 10..17
+C setAiScene(int)(500) s0
+  ! IllegalArgumentException: ai scene 500 not in 10..17
+C setAiScene(int)(500) s2
+  ! IllegalArgumentException: ai scene 500 not in 10..17
+C setAiScene(int)(20000) s0
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
+C setAiScene(int)(20000) s2
+  ! IllegalArgumentException: ai scene 20000 not in 10..17
 C setAllmAutoSwitch(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 312 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
   = true
@@ -13398,9 +14062,9 @@ C setEarc(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 633 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = true
 C setEdidVersion(int)(-1) s0
-  ! IllegalArgumentException: edid -1
+  ! IllegalArgumentException: edid -1: not a stock value here
 C setEdidVersion(int)(-1) s2
-  ! IllegalArgumentException: edid -1
+  ! IllegalArgumentException: edid -1: not a stock value here
 C setEdidVersion(int)(0) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0
   = true
@@ -13414,9 +14078,9 @@ C setEdidVersion(int)(1) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:1
   = true
 C setEdidVersion(int)(2) s0
-  ! IllegalArgumentException: edid 2
+  ! IllegalArgumentException: edid 2: not a stock value here
 C setEdidVersion(int)(2) s2
-  ! IllegalArgumentException: edid 2
+  ! IllegalArgumentException: edid 2: not a stock value here
 C setEdidVersion(int)(3) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:3
   = true
@@ -13424,65 +14088,65 @@ C setEdidVersion(int)(3) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 660 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:3
   = true
 C setEdidVersion(int)(5) s0
-  ! IllegalArgumentException: edid 5
+  ! IllegalArgumentException: edid 5: not a stock value here
 C setEdidVersion(int)(5) s2
-  ! IllegalArgumentException: edid 5
+  ! IllegalArgumentException: edid 5: not a stock value here
 C setEdidVersion(int)(6) s0
-  ! IllegalArgumentException: edid 6
+  ! IllegalArgumentException: edid 6: not a stock value here
 C setEdidVersion(int)(6) s2
-  ! IllegalArgumentException: edid 6
+  ! IllegalArgumentException: edid 6: not a stock value here
 C setEdidVersion(int)(10) s0
-  ! IllegalArgumentException: edid 10
+  ! IllegalArgumentException: edid 10: not a stock value here
 C setEdidVersion(int)(10) s2
-  ! IllegalArgumentException: edid 10
+  ! IllegalArgumentException: edid 10: not a stock value here
 C setEdidVersion(int)(12) s0
-  ! IllegalArgumentException: edid 12
+  ! IllegalArgumentException: edid 12: not a stock value here
 C setEdidVersion(int)(12) s2
-  ! IllegalArgumentException: edid 12
+  ! IllegalArgumentException: edid 12: not a stock value here
 C setEdidVersion(int)(13) s0
-  ! IllegalArgumentException: edid 13
+  ! IllegalArgumentException: edid 13: not a stock value here
 C setEdidVersion(int)(13) s2
-  ! IllegalArgumentException: edid 13
+  ! IllegalArgumentException: edid 13: not a stock value here
 C setEdidVersion(int)(17) s0
-  ! IllegalArgumentException: edid 17
+  ! IllegalArgumentException: edid 17: not a stock value here
 C setEdidVersion(int)(17) s2
-  ! IllegalArgumentException: edid 17
+  ! IllegalArgumentException: edid 17: not a stock value here
 C setEdidVersion(int)(44) s0
-  ! IllegalArgumentException: edid 44
+  ! IllegalArgumentException: edid 44: not a stock value here
 C setEdidVersion(int)(44) s2
-  ! IllegalArgumentException: edid 44
+  ! IllegalArgumentException: edid 44: not a stock value here
 C setEdidVersion(int)(50) s0
-  ! IllegalArgumentException: edid 50
+  ! IllegalArgumentException: edid 50: not a stock value here
 C setEdidVersion(int)(50) s2
-  ! IllegalArgumentException: edid 50
+  ! IllegalArgumentException: edid 50: not a stock value here
 C setEdidVersion(int)(100) s0
-  ! IllegalArgumentException: edid 100
+  ! IllegalArgumentException: edid 100: not a stock value here
 C setEdidVersion(int)(100) s2
-  ! IllegalArgumentException: edid 100
+  ! IllegalArgumentException: edid 100: not a stock value here
 C setEdidVersion(int)(101) s0
-  ! IllegalArgumentException: edid 101
+  ! IllegalArgumentException: edid 101: not a stock value here
 C setEdidVersion(int)(101) s2
-  ! IllegalArgumentException: edid 101
+  ! IllegalArgumentException: edid 101: not a stock value here
 C setEdidVersion(int)(106) s0
-  ! IllegalArgumentException: edid 106
+  ! IllegalArgumentException: edid 106: not a stock value here
 C setEdidVersion(int)(106) s2
-  ! IllegalArgumentException: edid 106
+  ! IllegalArgumentException: edid 106: not a stock value here
 C setEdidVersion(int)(160) s0
-  ! IllegalArgumentException: edid 160
+  ! IllegalArgumentException: edid 160: not a stock value here
 C setEdidVersion(int)(160) s2
-  ! IllegalArgumentException: edid 160
+  ! IllegalArgumentException: edid 160: not a stock value here
 C setEdidVersion(int)(192) s0
-  ! IllegalArgumentException: edid 192
+  ! IllegalArgumentException: edid 192: not a stock value here
 C setEdidVersion(int)(192) s2
-  ! IllegalArgumentException: edid 192
+  ! IllegalArgumentException: edid 192: not a stock value here
 C setEdidVersion(int)(500) s0
-  ! IllegalArgumentException: edid 500
+  ! IllegalArgumentException: edid 500: not a stock value here
 C setEdidVersion(int)(500) s2
-  ! IllegalArgumentException: edid 500
+  ! IllegalArgumentException: edid 500: not a stock value here
 C setEdidVersion(int)(20000) s0
-  ! IllegalArgumentException: edid 20000
+  ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
-  ! IllegalArgumentException: edid 20000
+  ! IllegalArgumentException: edid 20000: not a stock value here
 C setEyeProtection(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 152 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
@@ -15860,13 +16524,13 @@ C setObstacleAvoid(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 292 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
 C setOpticalZoomLimitStep(int)(-1) s0
-  ! IllegalStateException: IGmpf2 14 without a 153(12,10) count and an IGmpf2 13 read
+  ! IllegalStateException: IGmpf2 14 without a limit count and a limit read
 C setOpticalZoomLimitStep(int)(-1) s2
-  ! IllegalStateException: IGmpf2 14 without a 153(12,10) count and an IGmpf2 13 read
+  ! IllegalStateException: IGmpf2 14 without a limit count and a limit read
 C setOpticalZoomLimitStep(int)(0) s0
-  ! IllegalStateException: IGmpf2 14 without a 153(12,10) count and an IGmpf2 13 read
+  ! IllegalStateException: IGmpf2 14 without a limit count and a limit read
 C setOpticalZoomLimitStep(int)(0) s2
-  ! IllegalStateException: IGmpf2 14 without a 153(12,10) count and an IGmpf2 13 read
+  ! IllegalStateException: IGmpf2 14 without a limit count and a limit read
 C setOpticalZoomLimitStep(int)(1) s0
   ! IllegalArgumentException: zoom limit step 1 not in -4..0
 C setOpticalZoomLimitStep(int)(1) s2
@@ -15944,53 +16608,53 @@ C setOpticalZoomStep(int)(-1) s0
 C setOpticalZoomStep(int)(-1) s2
   ! IllegalArgumentException: optical zoom step -1 not in 0..64
 C setOpticalZoomStep(int)(0) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(0) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(1) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(1) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(2) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(2) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(3) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(3) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(5) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(5) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(6) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(6) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(10) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(10) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(12) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(12) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(13) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(13) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(17) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(17) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(44) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(44) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(50) s0
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(50) s2
-  ! IllegalStateException: 119 without a 117 range and a fresh 116 read
+  ! IllegalStateException: IGmpf 119 without a range and a fresh step read
 C setOpticalZoomStep(int)(100) s0
   ! IllegalArgumentException: optical zoom step 100 not in 0..64
 C setOpticalZoomStep(int)(100) s2
@@ -18971,6 +19635,90 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C vrrOn(int)(-1) s0
+  ! IllegalArgumentException: hdmi source -1 not in 1..2
+C vrrOn(int)(-1) s2
+  ! IllegalArgumentException: hdmi source -1 not in 1..2
+C vrrOn(int)(0) s0
+  ! IllegalArgumentException: hdmi source 0 not in 1..2
+C vrrOn(int)(0) s2
+  ! IllegalArgumentException: hdmi source 0 not in 1..2
+C vrrOn(int)(1) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:1
+  = true
+C vrrOn(int)(1) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:1
+  = false
+C vrrOn(int)(2) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:2
+  = true
+C vrrOn(int)(2) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 300 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:2
+  = false
+C vrrOn(int)(3) s0
+  ! IllegalArgumentException: hdmi source 3 not in 1..2
+C vrrOn(int)(3) s2
+  ! IllegalArgumentException: hdmi source 3 not in 1..2
+C vrrOn(int)(5) s0
+  ! IllegalArgumentException: hdmi source 5 not in 1..2
+C vrrOn(int)(5) s2
+  ! IllegalArgumentException: hdmi source 5 not in 1..2
+C vrrOn(int)(6) s0
+  ! IllegalArgumentException: hdmi source 6 not in 1..2
+C vrrOn(int)(6) s2
+  ! IllegalArgumentException: hdmi source 6 not in 1..2
+C vrrOn(int)(10) s0
+  ! IllegalArgumentException: hdmi source 10 not in 1..2
+C vrrOn(int)(10) s2
+  ! IllegalArgumentException: hdmi source 10 not in 1..2
+C vrrOn(int)(12) s0
+  ! IllegalArgumentException: hdmi source 12 not in 1..2
+C vrrOn(int)(12) s2
+  ! IllegalArgumentException: hdmi source 12 not in 1..2
+C vrrOn(int)(13) s0
+  ! IllegalArgumentException: hdmi source 13 not in 1..2
+C vrrOn(int)(13) s2
+  ! IllegalArgumentException: hdmi source 13 not in 1..2
+C vrrOn(int)(17) s0
+  ! IllegalArgumentException: hdmi source 17 not in 1..2
+C vrrOn(int)(17) s2
+  ! IllegalArgumentException: hdmi source 17 not in 1..2
+C vrrOn(int)(44) s0
+  ! IllegalArgumentException: hdmi source 44 not in 1..2
+C vrrOn(int)(44) s2
+  ! IllegalArgumentException: hdmi source 44 not in 1..2
+C vrrOn(int)(50) s0
+  ! IllegalArgumentException: hdmi source 50 not in 1..2
+C vrrOn(int)(50) s2
+  ! IllegalArgumentException: hdmi source 50 not in 1..2
+C vrrOn(int)(100) s0
+  ! IllegalArgumentException: hdmi source 100 not in 1..2
+C vrrOn(int)(100) s2
+  ! IllegalArgumentException: hdmi source 100 not in 1..2
+C vrrOn(int)(101) s0
+  ! IllegalArgumentException: hdmi source 101 not in 1..2
+C vrrOn(int)(101) s2
+  ! IllegalArgumentException: hdmi source 101 not in 1..2
+C vrrOn(int)(106) s0
+  ! IllegalArgumentException: hdmi source 106 not in 1..2
+C vrrOn(int)(106) s2
+  ! IllegalArgumentException: hdmi source 106 not in 1..2
+C vrrOn(int)(160) s0
+  ! IllegalArgumentException: hdmi source 160 not in 1..2
+C vrrOn(int)(160) s2
+  ! IllegalArgumentException: hdmi source 160 not in 1..2
+C vrrOn(int)(192) s0
+  ! IllegalArgumentException: hdmi source 192 not in 1..2
+C vrrOn(int)(192) s2
+  ! IllegalArgumentException: hdmi source 192 not in 1..2
+C vrrOn(int)(500) s0
+  ! IllegalArgumentException: hdmi source 500 not in 1..2
+C vrrOn(int)(500) s2
+  ! IllegalArgumentException: hdmi source 500 not in 1..2
+C vrrOn(int)(20000) s0
+  ! IllegalArgumentException: hdmi source 20000 not in 1..2
+C vrrOn(int)(20000) s2
+  ! IllegalArgumentException: hdmi source 20000 not in 1..2
 C zoomHome()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 153 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:5 i32:10
   = 1
@@ -19024,9 +19772,9 @@ C zoom getZoomStep()
   TX xgimi.hardware.gmpf@1.0::IGmpf 116 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = [0, 5, 0]
 C zoom setOpticalZoomStep(4)
-  ! IllegalStateException: 119 while the lens may be in the limit zone (13 read none, count 1)
+  ! IllegalStateException: IGmpf 119 while the lens may be in the limit zone (limit read none, count 1)
 C zoom setOpticalZoomStep(3)
-  ! IllegalArgumentException: 119(3) is not next to the 116 position 5
+  ! IllegalArgumentException: IGmpf 119(3) is not next to the read position 5
 C zoom getZoomStep()
   TX xgimi.hardware.gmpf@1.0::IGmpf 116 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = [0, 5, 0]
@@ -19052,7 +19800,7 @@ C zoom getZoomLimitStep()
   TX xgimi.hardware.gmpf@1.0::IGmpf2 13 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2
   = [0, -1, 0]
 C zoom setOpticalZoomStep(1)
-  ! IllegalStateException: 119 while the lens may be in the limit zone (13 read -1, count 1)
+  ! IllegalStateException: IGmpf 119 while the lens may be in the limit zone (limit read -1, count 1)
 C zoom setOpticalZoomLimitStep(0)
   TX xgimi.hardware.gmpf@1.0::IGmpf2 14 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 i32:0
   = 0
@@ -19060,7 +19808,7 @@ C zoom getZoomStep()
   TX xgimi.hardware.gmpf@1.0::IGmpf 116 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = [0, 1, 0]
 C zoom setOpticalZoomStep(0)
-  ! IllegalStateException: 119 while the lens may be in the limit zone (13 read none, count 1)
+  ! IllegalStateException: IGmpf 119 while the lens may be in the limit zone (limit read none, count 1)
 C zoom zoomHome()
   TX xgimi.hardware.gmpf@1.0::IGmpf 153 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:5 i32:10
   = 0
@@ -19071,7 +19819,7 @@ C zoom setKstPrepareForZoom(false)
   TX xgimi.hardware.gmpf@1.0::IGmpf2 18 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false i32:2
   = true
 C zoom setOpticalZoomStep(1)
-  ! IllegalStateException: 119 outside an 18(true,2) + 121 session
+  ! IllegalStateException: IGmpf 119 outside a prepared zoom session
 C option setGameModeOption(TOP_SPEED_HFR)
   TX xgimi.hardware.gmpf@1.0::IGmpf 648 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:2
   = true
@@ -19197,6 +19945,35 @@ C callback onTransact 256067662
   = null
 C callback onTransact 256136003
   REPLY status:0 s:xgimi.hardware.gmpf@1.0::IProjectorFocusCallback
+  = null
+C callback onTransact 256921159
+  REPLY status:0
+  = null
+C callback onTransact 256398152
+  REPLY status:0 blob:00000000000000000200000000000000
+  = null
+C callback onTransact 257049926
+  REPLY status:0 blob:921000000000000000000000000000000000000000000000
+  = null
+C callback onTransact 256131655
+  REPLY status:0
+  = null
+C callback onTransact 256462420
+  = null
+C callback onTransact 99
+  = null
+C callback setTvListener(TvEventSink)
+  TX xgimi.hardware.gmpf@1.0::IGmpf 702 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
+  = null
+C callback onTransact 1
+  REPLY status:0 b:true
+  EVENT onTvEvent[5, value]
+  = null
+C callback onTransact 256067662
+  REPLY status:0 sv:[xgimi.hardware.gmpf@1.0::IGmTvCallback, android.hidl.base@1.0::IBase]
+  = null
+C callback onTransact 256136003
+  REPLY status:0 s:xgimi.hardware.gmpf@1.0::IGmTvCallback
   = null
 C callback onTransact 256921159
   REPLY status:0

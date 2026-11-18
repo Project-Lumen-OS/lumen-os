@@ -15,7 +15,8 @@ import java.util.TreeSet;
  * <p>v3 runtime parts (the profile says the MODEL has a feature, these say what is usable
  * NOW): {@link #hidden} rows (the Lumen rule: hide, never a disabled row: HDMI rows off HDMI, a row whose getter
  * failed), {@link #options} subsets of a choice (picture modes of this content, the connected sound outputs),
- * {@link #label} texts of runtime tokens (an output's device name, "AI · Music"), a {@link #placeholder} for a choice
+ * {@link #label} texts of runtime tokens (an output's device name, "AI · Music"), {@link #shownAs} module labels of
+ * another token for an option (Auto of the HDMI colour range with the range in use), a {@link #placeholder} for a choice
  * whose value matches no option, {@link #tile} value lines of the card and {@link #note} lines under a row.
  */
 public final class MenuState {
@@ -23,20 +24,24 @@ public final class MenuState {
     private final Set<String> hidden;
     private final Map<String, List<String>> options;
     private final Map<String, String> labels;
+    private final Map<String, String> shown;
     private final Map<String, String> placeholders;
     private final Map<String, String> tiles;
     private final Map<String, String> notes;
     private final Set<String> disabled;
+    private final Signal signal;
 
     private MenuState(Builder b) {
         values = Collections.unmodifiableMap(new TreeMap<>(b.v));
         hidden = Collections.unmodifiableSet(new TreeSet<>(b.hidden));
         options = Collections.unmodifiableMap(new TreeMap<>(b.options));
         labels = Collections.unmodifiableMap(new TreeMap<>(b.labels));
+        shown = Collections.unmodifiableMap(new TreeMap<>(b.shown));
         placeholders = Collections.unmodifiableMap(new TreeMap<>(b.placeholders));
         tiles = Collections.unmodifiableMap(new TreeMap<>(b.tiles));
         notes = Collections.unmodifiableMap(new TreeMap<>(b.notes));
         disabled = Collections.unmodifiableSet(new TreeSet<>(b.disabled));
+        signal = b.signal;
     }
 
     public static Builder builder() { return new Builder(); }
@@ -74,6 +79,9 @@ public final class MenuState {
     /** The text of a runtime option token (key "feature|token"), or null = the module's label. */
     public String label(FeatureId feature, String token) { return labels.get(feature + "|" + token); }
 
+    /** The token whose module label an option shows now (key "feature|token"), or null = its own label. */
+    public String shownAs(FeatureId feature, String token) { return shown.get(feature + "|" + token); }
+
     /** Text a choice shows when its value matches none of the options (stock "Colour temp 3"), or null. */
     public String placeholder(FeatureId feature) { return placeholders.get(key(feature)); }
 
@@ -89,6 +97,9 @@ public final class MenuState {
     /** True: the row is shown but cannot be used now (only where stock greys it too, e.g. the equalizer entry). */
     public boolean disabled(FeatureId feature) { return disabled.contains(key(feature)); }
 
+    /** The kind of content on screen ({@link SignalRule}), or null when the device did not read it. */
+    public Signal signal() { return signal; }
+
     /** The values by id text. */
     public Map<String, String> asMap() { return values; }
 
@@ -96,7 +107,8 @@ public final class MenuState {
 
     @Override public String toString() {
         return values + (hidden.isEmpty() ? "" : " hidden " + hidden) + (options.isEmpty() ? "" : " options " + options)
-                + (tiles.isEmpty() ? "" : " tiles " + tiles) + (notes.isEmpty() ? "" : " notes " + notes);
+                + (tiles.isEmpty() ? "" : " tiles " + tiles) + (notes.isEmpty() ? "" : " notes " + notes)
+                + (signal == null ? "" : " signal " + signal.token);
     }
     /**
      * This state with {@code part} on top (a live update, ProjectorFeatures.Live: only the values and runtime parts
@@ -113,6 +125,8 @@ public final class MenuState {
         b.options.putAll(part.options);
         b.labels.putAll(labels);
         b.labels.putAll(part.labels);
+        b.shown.putAll(shown);
+        b.shown.putAll(part.shown);
         b.placeholders.putAll(placeholders);
         b.placeholders.putAll(part.placeholders);
         b.tiles.putAll(tiles);
@@ -121,6 +135,7 @@ public final class MenuState {
         b.notes.putAll(part.notes);
         b.disabled.addAll(disabled);
         b.disabled.addAll(part.disabled);
+        b.signal = part.signal != null ? part.signal : signal;
         return b.build();
     }
 
@@ -130,10 +145,12 @@ public final class MenuState {
         private final TreeSet<String> hidden = new TreeSet<>();
         private final TreeMap<String, List<String>> options = new TreeMap<>();
         private final TreeMap<String, String> labels = new TreeMap<>();
+        private final TreeMap<String, String> shown = new TreeMap<>();
         private final TreeMap<String, String> placeholders = new TreeMap<>();
         private final TreeMap<String, String> tiles = new TreeMap<>();
         private final TreeMap<String, String> notes = new TreeMap<>();
         private final TreeSet<String> disabled = new TreeSet<>();
+        private Signal signal;
 
         public Builder put(FeatureId feature, String value) {
             if (feature != null && value != null) v.put(feature.id, value);
@@ -168,6 +185,12 @@ public final class MenuState {
             return this;
         }
 
+        /** The option {@code token} shows the module label of {@code as} (the value written stays {@code token}). */
+        public Builder shownAs(FeatureId feature, String token, String as) {
+            if (feature != null && token != null && as != null) shown.put(feature + "|" + token, as);
+            return this;
+        }
+
         public Builder placeholder(FeatureId feature, String text) {
             if (feature != null && text != null) placeholders.put(feature.id, text);
             return this;
@@ -190,6 +213,12 @@ public final class MenuState {
 
         public Builder disable(FeatureId feature) {
             if (feature != null) disabled.add(feature.id);
+            return this;
+        }
+
+        /** The kind of content on screen (null: not read). */
+        public Builder signal(Signal s) {
+            signal = s;
             return this;
         }
 

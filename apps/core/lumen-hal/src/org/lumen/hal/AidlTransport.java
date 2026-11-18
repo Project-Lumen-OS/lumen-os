@@ -1,6 +1,8 @@
 package org.lumen.hal;
 
+import android.os.Binder;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.RemoteException;
@@ -10,7 +12,9 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * lumen-hal: the one raw Binder path from a Lumen app to XGIMI's stable AIDL vendor services
@@ -31,6 +35,10 @@ import java.util.Map;
  * own firmware); a mismatch closes that interface for the process (a model whose hash differs, or a later firmware,
  * gets nothing). checkService only (never the blocking getService); calls on the main thread are refused. Every call gets a
  * paced INFO line under the app's tag (HalLog).
+ *
+ * Callbacks (ai-mode-stock): {@link #registerCallback} sends the stock setXxxCallback(cb) of a Call of the list with the
+ * process's one callback object of a vendor callback interface (IGmTvCallback: the GmTvManager events of the stock AI
+ * picture quality), once per vendor binder, so a vendor restart gets it again.
  */
 public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
     /** A vendor interface: the app's enum Iface implements it. */
@@ -52,6 +60,11 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
 
     protected interface Args { void write(Parcel p); }
     protected interface Ret<T> { T read(Parcel p); }
+    /** Arguments that carry a binder object: the call log names it instead of reading words over the object. */
+    private interface BinderArgs extends Args { }
+
+    /** A vendor event (type, message) of a registered callback, on a binder thread: it may only post. */
+    public interface EventSink { void onEvent(int type, String msg); }
 
     static final int META_VERSION = 0x00FFFFFF, META_HASH = 0x00FFFFFE;
 
@@ -59,9 +72,13 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
     private static final class State {
         IBinder binder;
         boolean verified, refused;
+        String hash = "";
+        /** The callback descriptors registered on this binder (empty again once the binder is replaced). */
+        final Set<String> callbacks = new HashSet<>();
     }
 
     private static final Map<String, State> STATES = new HashMap<>();
+    private static final Map<String, EventCallback> CALLBACKS = new HashMap<>();
     private static final HalLog LOG = new HalLog();
 
     private final String tag;
@@ -96,6 +113,36 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         need(s);
     }
 
+    /**
+     * Call c with one argument, the process's one callback object of the vendor interface descriptor (the stock
+     * setXxxCallback(cb)), whose code 1 event(int, String) goes to sink. Sent once per vendor binder: true when sent
+     * now, false when this binder already has it (only the sink moves). Off the main thread, through the guard.
+     */
+    protected final boolean registerCallback(C c, String descriptor, EventSink sink) throws RemoteException {
+        if (Looper.myLooper() == Looper.getMainLooper()) throw new RemoteException("callback registration on the main thread refused");
+        IBinder b = need(c.iface());
+        final EventCallback cb;
+        synchronized (AidlTransport.class) {
+            EventCallback x = CALLBACKS.get(descriptor);
+            if (x == null) {
+                x = new EventCallback(tag, descriptor);
+                CALLBACKS.put(descriptor, x);
+            }
+            x.sink = sink;
+            x.version = version;
+            x.hash = state(c.iface()).hash;
+            if (state(c.iface()).callbacks.contains(descriptor)) return false;
+            cb = x;
+        }
+        BinderArgs a = p -> p.writeStrongBinder(cb);
+        deliver(b, c.iface(), c, a, p -> null);
+        synchronized (AidlTransport.class) {
+            State st = state(c.iface());
+            if (st.binder == b) st.callbacks.add(descriptor);
+        }
+        return true;
+    }
+
     /** The result as the call log shows it (null = done; arrays element by element). */
     protected String show(Object v) {
         if (v == null) return "done";
@@ -122,6 +169,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
             if (st.binder == null || !st.binder.isBinderAlive()) {
                 st.binder = null;
                 st.verified = false;
+                st.callbacks.clear();
                 IBinder b;
                 try {
                     b = ServiceManager.checkService(instance);
@@ -150,6 +198,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                     throw new RemoteException(i.descriptor() + " version/hash mismatch");
                 }
                 st.verified = true;
+                st.hash = h;
             }
             return st.binder;
         }
@@ -163,7 +212,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
             data.writeInterfaceToken(i.descriptor());
             int start = data.dataPosition();
             if (a != null) a.write(data);
-            String args = argWords(data, start);
+            String args = a instanceof BinderArgs ? "(binder)" : argWords(data, start);
             String spec = c.args();
             if (spec != null && !ArgSpec.matches(spec, words(data, start))) {
                 logCall(c, args, "refused: outside " + spec);
@@ -234,7 +283,61 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
             if (st.binder == b) {
                 st.binder = null;
                 st.verified = false;
+                st.callbacks.clear();
             }
+        }
+    }
+
+    /**
+     * The process's one Java object of a vendor callback interface, answered as the stock $Stub (com.xgimi.middle.jar,
+     * the same shape as the HB AidlCaller callbacks): markVintfStability in the constructor (the vendor process may only
+     * call a VINTF binder), code 1 event(int, String) with enforceInterface and enforceNoDataAvail, 0x00FFFFFF the app's
+     * version, 0x00FFFFFE the hash the guard accepted, everything else to Binder.onTransact. A two-way event gets the
+     * empty success reply. Never calls the vendor, never blocks: the event goes to the sink, which posts it.
+     */
+    private static final class EventCallback extends Binder implements IInterface {
+        static final int EVENT = 1;
+        private final String tag;
+        private final String descriptor;
+        volatile EventSink sink;
+        volatile int version;
+        volatile String hash = "";
+
+        EventCallback(String tag, String descriptor) {
+            this.tag = tag;
+            this.descriptor = descriptor;
+            markVintfStability();
+            attachInterface(this, descriptor);
+        }
+
+        @Override public IBinder asBinder() { return this; }
+
+        @Override
+        protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+            if (code == META_VERSION || code == META_HASH) {
+                data.enforceInterface(descriptor);
+                reply.writeNoException();
+                if (code == META_VERSION) reply.writeInt(version); else reply.writeString(hash);
+                return true;
+            }
+            if (code != EVENT) return super.onTransact(code, data, reply, flags);
+            int type;
+            String msg;
+            try {
+                data.enforceInterface(descriptor);
+                type = data.readInt();
+                msg = data.readString();
+                data.enforceNoDataAvail();
+            } catch (Throwable t) {
+                Log.w(tag, descriptor + " event parse: " + t);   // the event is dropped
+                return true;
+            }
+            if ((flags & FLAG_ONEWAY) == 0 && reply != null) reply.writeNoException();
+            EventSink s = sink;
+            if (s != null) {
+                try { s.onEvent(type, msg); } catch (Throwable t) { Log.w(tag, descriptor + " sink: " + t); }
+            }
+            return true;
         }
     }
 }

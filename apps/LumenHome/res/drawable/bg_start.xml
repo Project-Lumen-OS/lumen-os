@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Starting window: the light field of Home 2.0 with its soft light in the top right corner. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item><color android:color="@color/lumen_light_bg" /></item>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:type="radial" android:centerX="0.9" android:centerY="0.0"
+                android:gradientRadius="80%p" android:startColor="@color/lumen_light_bg_glow" android:endColor="#00F4F5F8" />
+        </shape>
+    </item>
+</layer-list>

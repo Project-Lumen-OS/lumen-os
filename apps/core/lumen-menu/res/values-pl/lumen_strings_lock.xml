@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="lumen_m_ps_game">Tryb gry włączony</string>
+    <string name="lumen_m_ps_ai">W trybie obrazu o jakości SI nie można używać ustawień profesjonalnych</string>
+    <string name="lumen_m_ps_performance">Ustawienia profesjonalne nie są obsługiwane w trybie obrazu wydajnościowego</string>
+    <string name="lumen_m_ps_ai_basic">Ustawień standardowych nie można używać w trybie obrazu o jakości SI</string>
+    <string name="lumen_m_ps_performance_basic">Ustawienia standardowe nie są obsługiwane w trybie obrazu o wysokiej wydajności</string>
+</resources>

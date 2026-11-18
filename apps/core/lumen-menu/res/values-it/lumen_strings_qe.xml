@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The quick menu editor (pencil, 2026-11-18) and the volume item: lumen-menu QuickEditMode, QpdPanel. -->
+<resources>
+    <string name="lumen_qe_edit">Modifica menu</string>
+    <string name="lumen_qe_your_menu">Il tuo menu</string>
+    <string name="lumen_qe_hint_select">OK: imposta un riquadro</string>
+    <string name="lumen_qe_preview">Anteprima</string>
+    <string name="lumen_qe_subtitle">Solo ciò che questo proiettore sa fare.</string>
+    <string name="lumen_qe_density">Aspetto del menu</string>
+    <string name="lumen_qe_tiles">Riquadri</string>
+    <string name="lumen_qe_tiles_sub">Più per riga</string>
+    <string name="lumen_qe_list">Elenco</string>
+    <string name="lumen_qe_list_sub">Uno per riga</string>
+    <string name="lumen_qe_show">Cosa mostrare</string>
+    <string name="lumen_qe_in_menu">Nel menu</string>
+    <string name="lumen_qe_add">Aggiungi</string>
+    <string name="lumen_qe_new">Nuovo</string>
+    <string name="lumen_qe_reset">Ripristina</string>
+    <string name="lumen_qe_select">Scegli</string>
+    <string name="lumen_qe_done">Fatto</string>
+    <string name="lumen_qe_back">Indietro</string>
+    <string name="lumen_qe_close_panel">Chiudi pannello</string>
+    <string name="lumen_qe_how">Come mostrare</string>
+    <string name="lumen_qe_now" formatted="true">Ora: %1$s</string>
+    <string name="lumen_qe_slider">Cursore</string>
+    <string name="lumen_qe_slider_sub">Si regola nel menu</string>
+    <string name="lumen_qe_wide">Riquadro largo</string>
+    <string name="lumen_qe_wide_sub">Nome e valore</string>
+    <string name="lumen_qe_small">Riquadro</string>
+    <string name="lumen_qe_small_sub">Solo icona</string>
+    <string name="lumen_qe_round">Cerchio</string>
+    <string name="lumen_qe_round_sub">Nella riga in alto</string>
+    <string name="lumen_qe_footer">Pulsante in basso</string>
+    <string name="lumen_qe_footer_sub">Sotto i riquadri</string>
+    <string name="lumen_qe_panel_note">Un riquadro, un riquadro largo e un cerchio aprono il pannello a destra del menu.</string>
+    <string name="lumen_qe_place">Posto</string>
+    <string name="lumen_qe_move">Sposta</string>
+    <string name="lumen_qe_remove">Togli dal menu</string>
+    <string name="lumen_qe_moving">Spostamento</string>
+    <string name="lumen_qe_move_hint">I cerchi si spostano solo nella riga in alto, i riquadri tra le righe. Per fare di un riquadro un cerchio, cambiane l\'aspetto.</string>
+    <string name="lumen_qe_put">Metti qui</string>
+    <string name="lumen_qe_cancel">Annulla</string>
+    <string name="lumen_qe_full">Il menu è pieno. Scegli un aspetto più piccolo o l\'elenco.</string>
+    <string name="lumen_qe_list_full">Tante voci non stanno in un elenco. Togline prima alcune.</string>
+    <string name="lumen_qe_pinned">Questo pulsante resta sempre nel menu.</string>
+    <string name="lumen_m_volume">Volume</string>
+    <string name="lumen_qe_pq_brightness">Luminosità dell\'immagine</string>
+    <string name="lumen_qe_move_line" formatted="true">%1$s si sposta nel menu. Gli altri fanno spazio.</string>
+    <string name="lumen_qe_move_new_place" formatted="true">%1$s: nuovo posto</string>
+    <string name="lumen_qe_move_keys">Spostare</string>
+    <string name="lumen_qe_move_cancel">Annulla, rimetti com\'era</string>
+</resources>

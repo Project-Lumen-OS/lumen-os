@@ -15,7 +15,7 @@ GM = PJ + 'panel/GameMenu.java'
 CTL = PJ + 'panel/GmController.java'
 VIEW = PJ + 'panel/GmView.java'
 LIC = PJ + 'panel/GmLicences.java'
-ZJ = 'apps/Z9xProjector/src/org/lumen/projector/'
+ZJ = 'apps/ProjectorBase/src/org/lumen/projector/'
 KEY = ZJ + 'KeyReceiver.java'
 G2 = ZJ + 'hal/Gmpf2Client.java'
 B2 = 'apps/core/lumen-gmpf/src/org/lumen/projector/hal/Gmpf2Base.java'   # the shared IGmpf2 body
@@ -27,6 +27,15 @@ DE = M + 'res/values-de/lumen_strings_gm.xml'
 HB = 'devices/goat_elegant/app/HbProjector.layers'
 
 MUTANTS = [
+    # ---- rs30-menu: VRR only at top speed where the profile says so (stock support_vrr_only_at_top_speed)
+    ('VRR speed rule never applied', MOD, 'if (vrrTopSpeed && VRR.equals(k) && v == 1 && s.get(LAT) != 1) return R_VRR_SPEED;', ''),
+    ('VRR refused at top speed too', MOD, '&& v == 1 && s.get(LAT) != 1) return R_VRR_SPEED;', '&& v == 1) return R_VRR_SPEED;'),
+    ('VRR off refused below top speed', MOD, 'VRR.equals(k) && v == 1 && s.get(LAT) != 1) return R_VRR_SPEED;',
+     'VRR.equals(k) && s.get(LAT) != 1) return R_VRR_SPEED;'),
+    ('VRR speed rule on for every device', MOD, 'static void setVrrTopSpeed(boolean on) { vrrTopSpeed = on; }',
+     'static void setVrrTopSpeed(boolean on) { vrrTopSpeed = true; }'),
+    ('profile VRR rule not installed', GM, '            GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());', '            GmModel.setVrrTopSpeed(false);'),
+    ('VRR speed refusal without its text', CTL, 'case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);', ''),
     # ---- capability gating
     ('gated item shown before any read', MOD, 'for (String g : GATED) cap.put(g, CAP_UNKNOWN);', ''),
     ('read outside the stock range shows the item', MOD, "cap.put(k, plain(k, raw) == BAD ? CAP_UNKNOWN : CAP_OK);",

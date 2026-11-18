@@ -1,0 +1,461 @@
+[ 9001.008478] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.025156] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.041861] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.058521] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.073244] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.075212] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.091892] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.105247] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.105262] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.108575] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.125275] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.141971] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.149241] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.158633] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.175309] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.191978] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.208683] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.209282] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.209295] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.225426] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.225565] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.242098] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.248835] u32CmdSize: 5
+[ 9001.252220] LINE:16388, MDBCMD_CMDLINE
+[ 9001.256701] pcCmdLine: help
+[ 9001.262587] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.262695] pString[0]:help
+[ 9001.268419] u8MdCmdLength:1 
+[ 9001.272010] ----------------  Mstar HDMI Rx help -----------------
+[ 9001.279064] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.279162] Support fixed EQ echo function
+[ 9001.283981] ex: echo fixedeq port0 eq=8 :port0~3, eq=0~31
+[ 9001.290096] Support set hdmiloglevel function
+[ 9001.295338] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.295436] ex: echo hdmiloglevel REGEN/TOGGLEPINFLOW/DEFAULT
+[ 9001.301896] Support set hpd delay time function
+[ 9001.307136] ex: echo hpddelay xx
+[ 9001.311258] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.311368] Support reset hdmi function
+[ 9001.315921] ex: echo rst x1 x2
+[ 9001.319671] x1=all:0xffff; avmute:0x100 ycolor:0x200 pr:0x400 fr:0x800 gcp:0x1000 dp:0x2000 rve:0x4000 hdmista:0x8000
+[ 9001.331159] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.331189] x2=all:0xffff; rst_dvi:0x10 hdcp:0x20 hdmi:0x40 dvi2miu:0x400 aud fifo:0x8000
+[ 9001.340316] Support set hdmi pattern
+[ 9001.342158] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.344662] ex: echo ptg [portID 1 2 3 4] [Enable] [PatSel (0:colomn 1:line 2:full color)
+[ 9001.353567] Support set edid
+[ 9001.357155] ex: echo set_edid [path/edid.bin] [portID 0/1/2/3]
+[ 9001.358820] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.363738] ------------------------------------------------------
+[ 9001.371024] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.371044] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.371051] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.371170] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 65ms(> 5ms); caller process HDMI Rx Mon
+[ 9001.375646] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.387129] LINE:16709, MDBCMD_GETINFO
+[ 9001.391640] ----------------  Mstar HDMI port0 Info -----------------
+[ 9001.398991] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.399104] ** HDMI EDID From RAM 
+[ 9001.404133] 00: 00 FF FF FF FF FF FF 00 60 ED 30 00 01 00 00 00
+[ 9001.411014] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.411095] 01: 01 23 01 03 80 73 41 78 0A CF 74 A3 57 4C B0 23
+[ 9001.417940] 02: 09 48 4C 00 00 00 01 01 01 FF 01 FF FF 01 01 01
+[ 9001.424775] 03: 01 01 01 01 01 20 08 E8 00 30 F2 70 5A 80 B0 58
+[ 9001.432528] 04: 8A 00 C4 8E 21 00 00 1E 02 3A 80 18 71 38 2D 40
+[ 9001.433011] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.439375] 05: 58 2C 45 00 C4 8E 21 00 00 1E 00 00 00 FC 00 58
+[ 9001.442283] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.446263] 06: 47 49 4D 49 20 54 56 0A 20 20 20 20 00 00 00 FD
+[ 9001.446307] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.452964] 07: 00 3B 46 1F 8C 3C 00 0A 20 20 20 20 20 20 01 C7
+[ 9001.453133] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 7ms(> 5ms); caller process HDMI Rx Mon
+[ 9001.459641] 08: 02 03 68 F2 57 05 84 03 01 12 13 14 90 1F 20 22
+[ 9001.459652] 09: 5D 5F 60 61 62 64 65 66 5E 63 02 21 32 09 7F 07
+[ 9001.459658] 0A: 15 07 50 3D 07 C0 5F 7E 07 51 06 00 67 04 00 83
+[ 9001.459663] 0B: 01 00 00 E2 00 FF 72 03 0C 00 20 00 F8 44 20 C0
+[ 9001.459669] 0C: 84 01 02 03 04 01 41 00 00 6A D8 5D C4 01 78 80
+[ 9001.459674] 0D: 6F 02 00 00 E3 05 FF 81 E5 0F 00 60 06 00 E3 06
+[ 9001.467894] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.473037] 0E: 0F 01 E5 01 8B 84 90 01 00 00 00 00 00 00 00 00
+[ 9001.473338] <MI3_INFO>[MI_AUDIO_GetHandle:11224]pszName:XGIMI Audio HDMI RX
+[ 9001.473345] <MI3_INFO>[MI_AUDIO_GetHandle:11274]*phAudio:0x19000000, u32ErrCode:0x0
+[ 9001.479773] [MUTEX_INFO] MI_DISP_IMPL_XC_GetOutputFrequency hold _msAPI_XC_Mutex for 7ms(> 5ms); caller process hwcVsyncThread
+[ 9001.479940] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.480113] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.480119] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.486381] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 CA
+[ 9001.486396] 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486402] 11: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486407] 12: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486413] 13: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486418] 14: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486424] 15: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486429] 16: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486434] 17: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486439] 18: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486444] 19: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486511] 1A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486518] 1B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486524] 1C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486529] 1D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486534] 1E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486539] 1F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.486545] Input clock unstable, 5V cable detected: 0
+[ 9001.486548] ----------------  Mstar HDMI port1 Info -----------------
+[ 9001.486551] ** HDMI EDID From RAM 
+[ 9001.486861] type=1400 audit(1795005740.403:2610): avc:  denied  { search } for  comm="temp_pid_run" name="thermal" dev="sysfs" ino=20325 scontext=u:r:gmpf_main:s0 tcontext=u:object_r:sysfs_thermal:s0 tclass=dir permissive=1
+[ 9001.492359] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.504870] 00: 0F F0 9E F4 1D 78 9F FF 1F F1 4B A1 07 F4 07 E0
+[ 9001.549263] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.553202] 01: BF D1 2F D3 5F F1 0F 40 5D B4 97 D0 0F F2 BF B1
+[ 9001.553296] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.559845] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 10ms(> 5ms); caller process HDMI Rx Mon
+[ 9001.566726] 02: 7D F0 2F 7A 5B 70 8F F0 CF FA 2F F1 0F B1 17 E0
+[ 9001.585298] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.587084] 03: 2F F2 2E D3 6F F0 2F B9 0F E5 03 E0 4F D0 0F F0
+[ 9001.587221] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.593518] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.600027] 04: 97 31 9F 8C 8D DB 9E F4 1F 30 1D B0 DF B1 EA 9A
+[ 9001.606805] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.613347] 05: 2E 10 CF F0 8F 98 17 D1 4F E0 5D C0 9F 79 5F 61
+[ 9001.619966] [MUTEX_INFO] MI_DISP_IMPL_XC_GetOutputFrequency hold _msAPI_XC_Mutex for 10ms(> 5ms); caller process hwcVsyncThread
+[ 9001.620137] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.625740] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.625786] 06: 05 74 46 70 4E F0 1F F0 8B A0 4F 18 5D B8 9D 98
+[ 9001.625793] 07: 37 92 E7 F1 2B D2 8F F8 D7 F0 9B F1 0A EB 39 B4
+[ 9001.625798] 08: 17 B0 4E B0 19 50 3D E2 3D B0 1F F0 47 A2 2E 50
+[ 9001.625804] 09: 07 40 2B D2 AD 60 CE B0 55 42 2F E0 0F 90 0B E0
+[ 9001.625810] 0A: 6E 00 0B F1 6F B2 5F F4 AD 93 7F 79 AB E1 01 D0
+[ 9001.625815] 0B: 8F 32 0F F0 2F FA 4F D0 0B F2 9F 51 5B 60 4F E4
+[ 9001.625820] 0C: 3D F2 1F 20 4F 71 CD 63 07 B4 0E A4 8B 30 1E 70
+[ 9001.625825] 0D: 97 70 17 F2 87 F2 8D B2 0F F4 0F 20 0F D4 28 C0
+[ 9001.625831] 0E: E4 E4 6C 70 4B D0 0F F0 17 F0 0F 42 0F B4 92 90
+[ 9001.625836] 0F: 4F B0 4B F0 0B D0 0B BA 0A E0 AC F4 0E DE 0E C8
+[ 9001.625841] 10: 0E E0 4F D0 AE F3 0F D0 C7 80 63 B2 9B DA 0F B0
+[ 9001.625846] 11: 0C 40 6F B0 29 52 7E F1 1D B8 8B F1 3D E2 2C A0
+[ 9001.625851] 12: 57 E0 77 62 3F 3D 8F B2 0F E1 FE 63 06 E0 C6 D0
+[ 9001.625856] 13: 7F 42 C9 EA 4F D0 EE E2 96 AC AB F0 23 11 0E E0
+[ 9001.625862] 14: 4C 20 0D F0 0B 71 3F E0 6F F0 2F F0 8F F9 47 F0
+[ 9001.625867] 15: A5 B9 0B F1 BF FB 2F F1 1F 78 27 F2 0D 93 07 D2
+[ 9001.625872] 16: 1F F2 9E B0 8F 32 0F F4 85 F8 0B 73 4F F8 CE FB
+[ 9001.625877] 17: DF E2 0F 61 1D F9 35 DA C7 E0 23 B0 E7 FC 8F A5
+[ 9001.625882] 18: 8F F2 9E 38 5B D0 D3 D8 0D 72 0D D2 DF B2 96 E4
+[ 9001.625887] 19: 0D CC 1B FC 3B D0 CF D0 0D D2 2F F4 CD 98 07 F0
+[ 9001.625893] 1A: 1B FA 6B F0 4D 50 2F 74 0E D0 07 A0 0F 64 0D 20
+[ 9001.625898] 1B: 1C F0 8F 79 8E B4 4F 6C 2F 78 0C E6 D8 B0 2C 92
+[ 9001.625903] 1C: 17 70 4F E0 AC 50 DD A0 0D 70 0F A5 4F F2 7E B0
+[ 9001.625908] 1D: 26 10 1F 20 DD E2 4F F0 97 70 0F D0 3D D0 1F B0
+[ 9001.625913] 1E: 3B B4 8D F1 87 54 DB FD 5D E0 0B F0 0E E1 6E B4
+[ 9001.625918] 1F: 5D C0 0D C0 2E 70 1D E0 3D A1 4E E1 6D B0 07 C4
+[ 9001.625923] Input clock unstable, 5V cable detected: 1
+[ 9001.625926] ----------------  Mstar HDMI port2 Info -----------------
+[ 9001.625928] ** HDMI EDID From RAM 
+[ 9001.641159] 00: 00 FF FF FF FF FF FF 00 60 ED 30 00 01 00 00 00
+[ 9001.642451] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.659129] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.664219] 01: 01 23 01 03 80 73 41 78 0A CF 74 A3 57 4C B0 23
+[ 9001.670904] [MUTEX_INFO] MI_DISP_IMPL_XC_GetOutputFrequency hold _msAPI_XC_Mutex for 11ms(> 5ms); caller process hwcVsyncThread
+[ 9001.675801] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.677457] 02: 09 48 4C 00 00 00 01 01 01 FF 01 FF FF 01 01 01
+[ 9001.677470] 03: 01 01 01 01 01 20 08 E8 00 30 F2 70 5A 80 B0 58
+[ 9001.677477] 04: 8A 00 C4 8E 21 00 00 1E 02 3A 80 18 71 38 2D 40
+[ 9001.677482] 05: 58 2C 45 00 C4 8E 21 00 00 1E 00 00 00 FC 00 58
+[ 9001.677487] 06: 47 49 4D 49 20 54 56 0A 20 20 20 20 00 00 00 FD
+[ 9001.677492] 07: 00 3B 46 1F 8C 3C 00 0A 20 20 20 20 20 20 01 C7
+[ 9001.677497] 08: 02 03 68 F2 57 05 84 03 01 12 13 14 90 1F 20 22
+[ 9001.677503] 09: 5D 5F 60 61 62 64 65 66 5E 63 02 21 32 09 7F 07
+[ 9001.677508] 0A: 15 07 50 3D 07 C0 5F 7E 07 51 06 00 67 04 00 83
+[ 9001.677513] 0B: 01 00 00 E2 00 FF 72 03 0C 00 10 00 F8 44 20 C0
+[ 9001.677518] 0C: 84 01 02 03 04 01 41 00 00 6A D8 5D C4 01 78 80
+[ 9001.677523] 0D: 6F 02 00 00 E3 05 FF 81 E5 0F 00 60 06 00 E3 06
+[ 9001.677528] 0E: 0F 01 E5 01 8B 84 90 01 00 00 00 00 00 00 00 00
+[ 9001.677533] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 DA
+[ 9001.677538] 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677544] 11: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677549] 12: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677553] 13: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677558] 14: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677563] 15: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677568] 16: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677573] 17: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677578] 18: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677583] 19: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677588] 1A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677593] 1B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677597] 1C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677608] 1D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677614] 1E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677619] 1F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.677623] Input clock stable, 5V cable detected: 1 
+[ 9001.677626] HDMI 2.1 timing
+[ 9001.677629] TMDS clock rate:889M
+[ 9001.677631] HDMI mode
+[ 9001.677633] Active HDMI Port 2->(0 1 2 3)
+[ 9001.677638] Get HDMI Timing Detect HDMI2.1 link status
+[ 9001.677641] HDE: 5760  VDE: 2160
+[ 9001.677643] HTT: 6600  VTT: 2250
+[ 9001.677645] Hsy: 132  Vsy: 10
+[ 9001.677648] HFP: 264  VFP: 8
+[ 9001.677650] HBP: 444  VBP: 72
+[ 9001.677654] Get HDMI Timing Detect HDMI2.1 TMDS Status
+[ 9001.677656] HDE: 3840  VDE: 2160
+[ 9001.677658] HTT: 4400  VTT: 2250
+[ 9001.677660] Hsy: 88  Vsy: 10
+[ 9001.677662] HFP: 176  VFP: 8
+[ 9001.677664] HBP: 296  VBP: 72
+[ 9001.677668] Get HDMI Timing Detect DTop/FRLTop Status
+[ 9001.677670] HDE: 3840  VDE: 2160
+[ 9001.677672] HTT: 4400  VTT: 2250
+[ 9001.677675] ----------------  Mstar HDMI port3 Info -----------------
+[ 9001.677677] ** HDMI EDID From RAM 
+[ 9001.692501] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.694376] 00: 07 00 27 B0 99 90 6F F0 8E D8 0F 70 8A 31 4F D0
+[ 9001.694389] 01: 2E A0 CF F9 49 51 09 F0 0F 38 0F DA AB B8 21 58
+[ 9001.694395] 02: 87 28 4B B0 4F BC 0B D6 97 B4 0F F1 0B D5 0B E0
+[ 9001.694400] 03: 5B C1 2D 70 9B B0 1F 70 17 F0 09 F0 3D 70 17 F8
+[ 9001.694405] 04: 9A F1 17 D0 AF D8 4D F1 1F E1 0F FB 75 90 2F D0
+[ 9001.694411] 05: CF CB 8D F0 4F F1 8F 70 CF 80 0B F2 2F 60 43 BA
+[ 9001.694416] 06: 77 F8 D7 E0 0F E1 5F F0 0F 70 0F E1 19 B9 2F B0
+[ 9001.694421] 07: DF F0 03 D2 4F B0 0F 94 25 20 4F 74 0E 50 0D B0
+[ 9001.694426] 08: 0F 31 2F D0 4F 28 0D B0 5D D0 19 44 5A 80 CF B0
+[ 9001.694431] 09: 9F 98 DF F0 83 EC 6E F0 1F E3 BF 72 FD B2 0F B0
+[ 9001.694437] 0A: 2F D4 4F F0 1D F0 2F E1 9F F0 1F 95 DD F0 17 60
+[ 9001.694442] 0B: 4F A0 4F 18 85 70 8F F0 0F 90 0F 18 0E 70 2E D0
+[ 9001.694447] 0C: DE D0 5F 62 5F F8 59 F8 47 77 8F F3 4F D0 2F C4
+[ 9001.694452] 0D: 1E 75 0F 7A AF D8 0F C1 47 A0 8F D0 1E 70 0D 62
+[ 9001.694457] 0E: 1F F0 0B FA 0E F1 04 30 5E F0 0C 96 27 D2 CF B0
+[ 9001.694462] 0F: 1F E0 6E 30 8F 90 8F E2 57 38 4F F0 7F 68 47 FC
+[ 9001.694467] 10: 98 5E 2F 74 B7 E2 2D F6 9E B0 3B 90 0F F8 07 F0
+[ 9001.694472] 11: 2B F0 2A F4 01 B0 1F F8 1B B0 07 C0 6E F0 4D D4
+[ 9001.694477] 12: 2F E2 09 55 2D 30 0B F0 2F 40 4F D0 73 E0 9C 30
+[ 9001.694482] 13: 0D C5 47 B8 6D F0 8F B8 0B 74 0F 59 C7 80 2F 70
+[ 9001.694487] 14: 9F 31 9F B8 5F F0 0F F0 87 B0 8F B7 7E A2 9F 7C
+[ 9001.694493] 15: 1F F3 CC F8 25 F0 2F 00 17 F3 46 A0 4F E4 0D F2
+[ 9001.694498] 16: DF D4 2F D4 1F F3 0E F1 0F D1 2F D0 8D D0 9F 70
+[ 9001.694503] 17: C5 52 4F F0 7F B0 BF 90 1E B1 1F 50 67 F0 CF E8
+[ 9001.694508] 18: 27 F3 E9 50 9D B3 4F FA 0B 70 7F F4 8D A2 0D 6C
+[ 9001.694513] 19: 5F F8 4F F2 17 70 8D B0 BF F0 4D F0 2F B0 2F F8
+[ 9001.694518] 1A: 0F D1 07 F8 0F BA 0E B8 5F 72 67 41 2D B0 BB D8
+[ 9001.694523] 1B: 4F 70 97 70 8F A2 4F 70 3B 70 17 E0 2D E0 8D F0
+[ 9001.694528] 1C: 3F B1 9F E2 2F A8 1F 70 07 00 FF 98 8D 74 3D 11
+[ 9001.694533] 1D: 4F 50 0F F0 CE 71 6D F8 4B 73 FF F2 4B 71 1D D0
+[ 9001.694538] 1E: 0B E0 0E F4 CD F2 0D E0 0F D0 0D D3 14 70 97 E8
+[ 9001.694543] 1F: CF F4 0D D1 4F F9 9F 31 9F 38 2F D1 79 88 57 50
+[ 9001.694547] Input clock unstable, 5V cable detected: 1
+[ 9001.694549] 
+[ 9001.694552] ----------------  Mstar HDMI IP0 Info -----------------
+[ 9001.694556] Signal invalid
+[ 9001.694558] ----------------  Mstar HDMI IP1 Info -----------------
+[ 9001.694559] Signal invalid
+[ 9001.694562] ----------------  Mstar HDMI IP2 Info -----------------
+[ 9001.694569] HDE: 3840
+[ 9001.694570] VDE: 2160
+[ 9001.694572] HTT: 4400
+[ 9001.694575] VTT: 2250
+[ 9001.694577] CRC_CHANNEL_R: 0x841b 
+[ 9001.694580] CRC_CHANNEL_G: 0x7cb9 
+[ 9001.694582] CRC_CHANNEL_B: 0x1d5c 
+[ 9001.694585] Interlace mode: 0 
+[ 9001.694587] Hfront: 176 
+[ 9001.694589] Hsync: 88 
+[ 9001.694591] Hback: 296 
+[ 9001.694593] Vfront: 8 
+[ 9001.694595] Vsync: 10 
+[ 9001.694597] Vback: 72 
+[ 9001.694599] Clock Stable:   1
+[ 9001.694602] DE Stable:      1
+[ 9001.694606] FRL Rate:       4
+[ 9001.694611] Ratio Detect:   8
+[ 9001.694614] Clock Count:    889 M
+[ 9001.694616] pixClock Count: 592 M
+[ 9001.694618] VIC:        0
+[ 9001.694619] 4K2KVIC:    0
+[ 9001.694622] Color space RGB444
+[ 9001.694626] Color depth 12bit
+[ 9001.694627] BCH error:0
+[ 9001.694629] AVMute:0
+[ 9001.694631] EMP DSC Enable: 0
+[ 9001.694634] EMP DSC VRR:	 0
+[ 9001.694635] EMP DSC VENDOR: 0
+[ 9001.694637] EMP DSC FVD:	 0
+[ 9001.694639] EMP DSC HDR:	 0
+[ 9001.694641] FreeSync Support: 0  Enable: 0 Active: 0
+[ 9001.694644] Packet receive status: 0x1fe
+[ 9001.694647] Color space u8C10Value:0, u8EC210Value:0
+[ 9001.694648] Color space No Data
+[ 9001.694650] Receive AVI packet
+[ 9001.694653] AVI packet Byte 0: 0x0 
+[ 9001.694655] AVI packet Byte 1: 0x28 
+[ 9001.694658] AVI packet Byte 2: 0x8 
+[ 9001.694660] AVI packet Byte 3: 0x61 
+[ 9001.694662] AVI packet Byte 4: 0x40 
+[ 9001.694664] AVI packet Byte 5: 0x0 
+[ 9001.694666] AVI packet Byte 6: 0x0 
+[ 9001.694668] AVI packet Byte 7: 0x0 
+[ 9001.694671] AVI packet Byte 8: 0x0 
+[ 9001.694673] AVI packet Byte 9: 0x0 
+[ 9001.694675] AVI packet Byte 10: 0x0 
+[ 9001.694677] AVI packet Byte 11: 0x0 
+[ 9001.694679] AVI packet Byte 12: 0x0 
+[ 9001.694681] Receive VS packet
+[ 9001.694683] VS packet Byte 0: 0x81 
+[ 9001.694686] VS packet Byte 1: 0x1 
+[ 9001.694688] VS packet Byte 2: 0x5 
+[ 9001.694690] VS packet Byte 3: 0x0 
+[ 9001.694692] VS packet Byte 4: 0x7d 
+[ 9001.694694] VS packet Byte 5: 0xd8 
+[ 9001.694696] VS packet Byte 6: 0x5d 
+[ 9001.694698] VS packet Byte 7: 0xc4 
+[ 9001.694700] VS packet Byte 8: 0x1 
+[ 9001.694703] VS packet Byte 9: 0x2 
+[ 9001.694705] VS packet Byte 10: 0x0 
+[ 9001.694707] VS packet Byte 11: 0x0 
+[ 9001.694709] VS packet Byte 12: 0x0 
+[ 9001.694711] VS packet Byte 13: 0x0 
+[ 9001.694713] VS packet Byte 14: 0x0 
+[ 9001.694716] VS packet Byte 15: 0x0 
+[ 9001.694718] VS packet Byte 16: 0x0 
+[ 9001.694720] VS packet Byte 17: 0x0 
+[ 9001.694722] VS packet Byte 18: 0x0 
+[ 9001.694724] VS packet Byte 19: 0x0 
+[ 9001.694726] VS packet Byte 20: 0x0 
+[ 9001.694729] VS packet Byte 21: 0x0 
+[ 9001.694731] VS packet Byte 22: 0x0 
+[ 9001.694733] VS packet Byte 23: 0x0 
+[ 9001.694735] VS packet Byte 24: 0x0 
+[ 9001.694737] VS packet Byte 25: 0x0 
+[ 9001.694739] VS packet Byte 26: 0x0 
+[ 9001.694742] VS packet Byte 27: 0x0 
+[ 9001.694743] 
+[ 9001.694746] Receive GC packet
+[ 9001.694748] GC packet Byte 0: 0x4a 
+[ 9001.694750] GC packet Byte 1: 0x26 
+[ 9001.694752] Receive SPD packet
+[ 9001.694754] SPD packet Byte 0: 0x53 
+[ 9001.694756] SPD packet Byte 1: 0x43 
+[ 9001.694759] SPD packet Byte 2: 0x45 
+[ 9001.694761] SPD packet Byte 3: 0x49 
+[ 9001.694763] SPD packet Byte 4: 0x0 
+[ 9001.694765] SPD packet Byte 5: 0x0 
+[ 9001.694767] SPD packet Byte 6: 0x0 
+[ 9001.694769] SPD packet Byte 7: 0x0 
+[ 9001.694771] SPD packet Byte 8: 0x50 
+[ 9001.694774] SPD packet Byte 9: 0x53 
+[ 9001.694776] SPD packet Byte 10: 0x35 
+[ 9001.694778] SPD packet Byte 11: 0x0 
+[ 9001.694780] SPD packet Byte 12: 0x0 
+[ 9001.694782] SPD packet Byte 13: 0x0 
+[ 9001.694784] SPD packet Byte 14: 0x0 
+[ 9001.694787] SPD packet Byte 15: 0x0 
+[ 9001.694789] SPD packet Byte 16: 0x0 
+[ 9001.694791] SPD packet Byte 17: 0x0 
+[ 9001.694793] SPD packet Byte 18: 0x0 
+[ 9001.694795] SPD packet Byte 19: 0x0 
+[ 9001.694797] SPD packet Byte 20: 0x0 
+[ 9001.694800] SPD packet Byte 21: 0x0 
+[ 9001.694802] SPD packet Byte 22: 0x0 
+[ 9001.694804] SPD packet Byte 23: 0x0 
+[ 9001.694806] SPD packet Byte 24: 0x8 
+[ 9001.694809] CTS:0, N:0, FS: 0 (-1971398336), npcm: 0 
+[ 9001.694815] HDCP22 HW Control Status:0x0 bENC_EN 1
+[ 9001.694817] HDCP14 IRQ Status:0x14
+[ 9001.694819] HDCP status: HDMI mode: 0
+[ 9001.694820] HDCP status: avmute:    0
+[ 9001.694823] HDCP status: hdcp_en:   1
+[ 9001.694824] HDCP status: hdcp_dis:  0
+[ 9001.694826] HDCP status: Aksv_rcv:  0
+[ 9001.694828] HDCP status: An_rcv:    0
+[ 9001.694830] HDCP status: km_gen:    0
+[ 9001.694832] HDCP status: read_bksv: 0
+[ 9001.694833] HDCP status: read R0:   0
+[ 9001.694835] HDCP status: read Ri:   0
+[ 9001.694840] ---------------- HDMI Utopia PollingInfo HDMI IP 2 status ----------------
+[ 9001.694845] ucSourceVersion          HDMI_2.1
+[ 9001.694847] ucHDMIInfoSource         2->(0 1 2 3)
+[ 9001.694849] bHDMIModeFlag            1
+[ 9001.694851] bNoInputFlag             0
+[ 9001.694853] bHDMI20Flag              0
+[ 9001.694855] bYUV420Flag              0
+[ 9001.694858] u8Colordepth             Unknow
+[ 9001.694860] bAutoEQEnable            0
+[ 9001.694862] bTimingStableFlag        1
+[ 9001.694863] bClockStableFlag         1
+[ 9001.694865] bActiveCableFlag         0
+[ 9001.694868] ucHDCPState              HDCP2.2
+[ 9001.694869] ucHDCPInt                0
+[ 9001.694871] bOnlinePort              0
+[ 9001.694873] bPowerOnLane             1
+[ 9001.694875] bDCDRDoneFlag            0
+[ 9001.694877] bDDCEnableFlag           0
+[ 9001.694879] bFRLTrainingFlag         0
+[ 9001.694881] bFRLTrainDoneFlag        1
+[ 9001.694883] bFLTNoRetrainFlag        0
+[ 9001.694886] u8FRLRate      4   is   FRL_8G_4L
+[ 9001.694888] u8LaneCnt                4
+[ 9001.694889] u8FastTrainingState      36
+[ 9001.694891] u8ActiveCableState       1
+[ 9001.694893] u8RatioDetect  0   is   LEGACY
+[ 9001.694895] bDDCEnableFlag           0x0
+[ 9001.694897] u32TMDSPLLPFreq          75
+[ 9001.694899] u8PollingLinkTrainState  0
+[ 9001.694901] u32TimeLinkTrainStart    0
+[ 9001.694903] u8ErrorStatus            0
+[ 9001.694905] loglevl                  5
+[ 9001.694907] -------------------------------------------------------------------------
+[ 9001.694910] ----------------  Mstar HDMI IP3 Info -----------------
+[ 9001.694912] Signal invalid
+[ 9001.694914] ============= eARC Start===============
+[ 9001.694920] ========== HDMI Utopia EARC status ==========
+[ 9001.694922] u8EARCOutputPort           2->(0 1 2 3)
+[ 9001.694925] bEnable5VDetectInvert      1
+[ 9001.694927] bEnableHPDInvert           1
+[ 9001.694928] u8EARCSupportMode          0
+[ 9001.694931] u8EARCTXConnectState       LOST_5V
+[ 9001.694934] usPrePowerState            POWER_SUSPEND
+[ 9001.694936] bCapChangeFlag             0
+[ 9001.694938] bStatChangeFlag            0
+[ 9001.694940] bSetLatencyFlag            0
+[ 9001.694942] bCommonModeCapBusyFlag     0
+[ 9001.694944] bCommonModeStatBusyFlag    0
+[ 9001.694946] bCommonModeSetLatencyBusyFlag     0
+[ 9001.694948] bCapChangeUpdateDoneFlag          0
+[ 9001.694951] bStatChangeUpdateDoneFlag         0
+[ 9001.694953] u16OPCodeOffset            0x0
+[ 9001.694955] u8OPCodeDeviceID           0x0
+[ 9001.694957] u8TransactionState         10
+[ 9001.694959] u8TransactionResult        0
+[ 9001.694961] u8TransactioinRetryCnt     0
+[ 9001.694963] u8TransactionDataThreshold 0
+[ 9001.694965] u8LatencyContent           0
+[ 9001.694967] u8LatencyContent           0
+[ 9001.694969] u8SetLatencyValue          0
+[ 9001.694971] u8CapabilityContent
+[ 9001.694976] 00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.694981] 01: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.694986] 02: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.694991] 03: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.694997] 04: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695002] 05: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695007] 06: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695012] 07: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695017] 08: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695022] 09: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695027] 0A: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695032] 0B: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695037] 0C: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695042] 0D: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695047] 0E: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695052] 0F: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[ 9001.695055] ============= eARC End  ===============
+[ 9001.732473] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5
+[ 9001.738111] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.745362] <MI3_ERR>_MI_AEXTIN_CheckHdmiAudioStatus[2339]: [_MI_AEXTIN_CheckHdmiAudioStatus:2339]Error 0x8: _MI_AEXTIN_UpdateAudioCodec failed!
+[ 9001.751585] [HDMI Rx Monitor] Monitor status 1,port:2, win:0 
+[ 9001.751728] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.759235] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.825204] [VCP]R2 PPC 0x2c43 NPC 0x0
+[ 9001.830832] [MUTEX_INFO] _msAPI_XC_HDMIRx_Monitor hold _msAPI_XC_Mutex for 117ms(> 5ms); caller process HDMI Rx Mon
+[ 9001.830992] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.838748] [PQ] PQ_DBG_ERROR [MDrv_PQ_GetStatusEx_U2,23641]: No status existed, please pass  statusEx and length by calling  MDrv_PQ_GetStatusEx first
+[ 9001.863392] <MI3_ERR>_MI_AEXTIN_UpdateAudioCodec[2263]: [_MI_AEXTIN_UpdateAudioCodec:2263]Unknown HDMI RX codec:5

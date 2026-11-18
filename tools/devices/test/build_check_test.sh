@@ -28,6 +28,20 @@ t z9x_beta1_published 0 has version_code=10013 horse_popular 1.0.11-beta1
 t z9x_beta_o1 0 has version_code=1001102 horse_popular 1.0.11-beta2
 t z9x_final_o1 0 has version_code=1001199 horse_popular 1.0.11
 t play6_gms_tag 0 has tag=t40_gms dragon_healthy t40 --gms
+# a run step's environment is only its leading NAME=value words (horse_popular GMS=0), an argument such as
+# x50_kconfig.py's --need CONFIG_USERFAULTFD=y stays an argument
+envsplit() { python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); from engine import Engine
+w = Engine.split_env
+ok = (w(["GMS=0", "packages", "T"]) == (["GMS=0"], ["packages", "T"])
+      and w(["B.img", "--need", "CONFIG_USERFAULTFD=y", "--need", "CONFIG_COMPAT=y"]) == ([], ["B.img", "--need", "CONFIG_USERFAULTFD=y", "--need", "CONFIG_COMPAT=y"])
+      and w(["A=1", "B_C=2", "x", "D=3"]) == (["A=1", "B_C=2"], ["x", "D=3"]) and w([]) == ([], []))
+sys.exit(0 if ok else 1)' "$G/tools/build"; }
+t engine_env_leading_only 0 envsplit
+# the RS30 image dates its files at the build id, not at a fixed 2009 epoch
+t rs30_epoch_is_bid 0 python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1] + "/tools/build"); import build
+d = build.descriptor(sys.argv[1], "g0155")
+v = d.resolve("t3", [], env={"BUILD_ID": "202611130203"}, home="~", out="~/rs30-out")
+sys.exit(0 if v.vals["ts"] == "1794535380" and v.vals["bid"] == "202611130203" else 1)' "$G"
 t refuse_pub_without_release 1 b plan goat_elegant 1.0.10
 t refuse_usbadb_release 1 b plan goat_elegant t20 --usb-adb --release
 t refuse_unknown_option 1 b plan goat_elegant t20 --no-such-option
@@ -43,7 +57,7 @@ import re, sys
 allow = {l.split()[1] for l in open(sys.argv[1]) if re.match(r"^[0-9a-f]{64}\s", l) and " bind=" not in l}
 rows = [l.rstrip("\n").split("\t") for l in open(sys.argv[2]) if not l.startswith("#") and l.strip()]
 placed = {r[3][len("{sys}/"):] for r in rows if r[1] == "place" and r[2] == "-"}
-absent = {r[2][len("{sys}/"):] for r in rows if r[1] == "absent"}
+absent = {r[2][len("{sys}/"):] for r in rows if r[1] == "absent" and r[2].startswith("{sys}/")}  # tree rows, not image checks
 first = {r[2]: i for i, r in reversed(list(enumerate(rows))) if r[1] in ("place", "absent")}
 order = all(first["{sys}/" + p] < max(i for i, r in enumerate(rows) if r[1] == "place" and r[3] == "{sys}/" + p) for p in placed)
 print("allow", sorted(allow), "placed", sorted(placed), "absent", sorted(absent))

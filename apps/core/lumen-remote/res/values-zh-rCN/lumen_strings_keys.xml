@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Remote buttons" of apps/core/lumen-remote (keys package): the screen that gives a remote key an app. -->
+<resources>
+    <string name="lumen_remote_keys_title">遥控器按键</string>
+    <string name="lumen_remote_keys_assign">设置按键</string>
+    <string name="lumen_remote_keys_press">请按遥控器上的按键</string>
+    <string name="lumen_remote_keys_leave">按返回键退出</string>
+    <string name="lumen_remote_keys_fixed">此按键无法重新设置</string>
+    <string name="lumen_remote_keys_pick">按键功能</string>
+    <string name="lumen_remote_keys_as_before">保持原样</string>
+    <string name="lumen_remote_keys_reset_all">全部重置</string>
+    <string name="lumen_remote_keys_saved">已保存</string>
+    <string name="lumen_remote_keys_empty">尚未设置任何按键</string>
+    <string name="lumen_remote_keys_gone">应用已被删除。按键已恢复原来的功能。</string>
+    <string name="lumen_remote_keys_name_youku">优酷键</string>
+    <string name="lumen_remote_keys_name_tencent">腾讯视频键</string>
+    <string name="lumen_remote_keys_name_iqiyi">爱奇艺键</string>
+    <string name="lumen_remote_keys_name_mango">芒果TV键</string>
+    <string name="lumen_remote_keys_name_bilibili">哔哩哔哩键</string>
+    <string name="lumen_remote_keys_name_ambient">屏保键</string>
+    <string name="lumen_remote_keys_name_shortcut">快捷键</string>
+    <string name="lumen_remote_keys_name_custom">快捷键 %1$d</string>
+    <string name="lumen_remote_keys_name_f">F%1$d 键</string>
+    <string name="lumen_remote_keys_name_browser">浏览器键</string>
+    <string name="lumen_remote_keys_name_mail">邮件键</string>
+    <string name="lumen_remote_keys_name_music">音乐键</string>
+    <string name="lumen_remote_keys_name_calculator">计算器键</string>
+    <string name="lumen_remote_keys_name_contacts">联系人键</string>
+    <string name="lumen_remote_keys_name_calendar">日历键</string>
+    <string name="lumen_remote_keys_name_bookmarks">书签键</string>
+    <string name="lumen_remote_keys_do_source">信号源</string>
+    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
+    <string name="lumen_remote_keys_do_keystone">梯形校正</string>
+    <string name="lumen_remote_keys_do_focus">对焦</string>
+    <string name="lumen_remote_keys_do_quick">快捷设置</string>
+    <string name="lumen_remote_keys_do_3d">3D</string>
+    <string name="lumen_remote_keys_do_signal">信号</string>
+</resources>

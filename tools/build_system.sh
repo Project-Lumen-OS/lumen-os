@@ -124,7 +124,8 @@
 #     keystone at 4K with anti-alias and the protected DRM path, as stock.
 #     Preflight locks its exact content.
 # Kept from v6.5 (same checks as z9x_v65.sh): keylayouts (STB_POWER WAKE, factory remotes POWER),
-# Generic.kl (base + key 142), idc, z9x_audio (click curve), z9x_setup.rc (byte-identical, C25),
+# Generic.kl (base + key 142), idc, z9x_setup.rc (byte-identical, C25, until block 3
+# stopped setting its own language and time zone: devices/_image/first_start_prop.txt, 2026-11-13),
 # z9x_nui, z9x_bootinfo, z9x_poweroff, z9x_diag (passive), the MTK Codec2 store plugin (6 stock libs,
 # pinned) + our libcodec2_vndk rebuild (pinned), audio stream volumes, the bluetooth class fix,
 # ro.setupwizard.mode removal, persist.z9x.firstrun. Since 1.0.3 the same kind of pinned rebuild for system
@@ -213,6 +214,8 @@ APPS=${APPS:-$TOOLS/../overlay/apps_v1}
 OTAIMG=${OTAIMG:-$TOOLS/ota/image}
 # 1.0.1 UI resolution (overlay/v1/z9x_uires/README.md section 1)
 UIRES=$V1/z9x_uires
+# the one first-start setting of every Lumen image (language, time zone): the last snippet of the product build.prop
+FIRST=${FIRST:-$TOOLS/../devices/_image/first_start_prop.txt}
 UIRES_RC=system/product/etc/init/init.lineage.atv.scaling.rc
 LT=$TOOLS/lumen
 CHK=$LT/lumen_checks.py
@@ -310,7 +313,7 @@ KL=(Vendor_0001_Product_0001 Vendor_000d_Product_3838 Vendor_000d_Product_3839 V
 IDC=(Vendor_000d_Product_3838 Vendor_000d_Product_3839 Vendor_000d_Product_3840 Vendor_000d_Product_3841
      Vendor_000d_Product_3842 Vendor_000d_Product_3843 Vendor_1d5a_Product_c081 Vendor_26e3_Product_af02)
 # init files of ours (overlay/v1) -> system/etc/init; z9x_power*.rc of the projector app are added on top
-RCS=(z9x_base.rc z9x_audio.rc z9x_setup.rc z9x_poweroff.rc z9x_nui.rc z9x_bootinfo.rc z9x_speed.rc z9x_adb_net.rc
+RCS=(z9x_base.rc z9x_setup.rc z9x_poweroff.rc z9x_nui.rc z9x_bootinfo.rc z9x_speed.rc z9x_adb_net.rc
      z9x_trapezoid.rc)
 SCRIPTS=(z9x_diag.sh z9x_poweroff.sh z9x_nui.sh z9x_bootinfo.sh)
 # OTA plumbing of OTA (tools/ota/image/README.md section 1), byte-identical
@@ -318,8 +321,6 @@ OTA_RC=z9x_ota.rc; OTA_SH=z9x_ota.sh; OTA_UV=update_verifier.rc; OTA_PERM=z9x-up
 # 1.0.1 boot rescue (tools/ota/image/README.md section 1): 3 failed starts in a row -> fastbootd, byte-identical too
 RESCUE_RC=z9x_rescue.rc; RESCUE_SH=z9x_rescue.sh
 AB_OTA=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig
-# z9x_setup.rc must stay byte-identical to v6.5 (setup spec 6, plan C25: locale default stays en-US)
-SETUPRC_SHA=$(sha256 "$TOOLS/../overlay/v65/z9x_setup.rc" 2>/dev/null || echo none)
 
 REMOVE=(
   # v6: sample launcher
@@ -408,7 +409,7 @@ c2dest() { case $1 in system_ext/*) echo "system/$1" ;; *) echo "$1" ;; esac; }
 # (blobs_allow.txt lines with bind=), xgimi_compat_public.rc replaces xgimi_compat.rc
 XGIMI_FILES=(system/etc/xgimi/audio_policy_configuration.xml system/etc/xgimi/libstagefright_foundation.so
              system/etc/xgimi/libstagefright_foundation64.so)
-BLOBS_SH=z9x_blobs.sh; BLOBS_RC=z9x_blobs.rc; BLOBS_ALLOW=blobs_allow.txt; COMPAT_PUB=xgimi_compat_public.rc
+BLOBS_SH=z9x_blobs.sh; BLOBS_RC=z9x_blobs.rc; BLOBS_CONF=blobs.conf; BLOBS_ALLOW=blobs_allow.txt; COMPAT_PUB=xgimi_compat_public.rc
 # VARIANT=public: the boot side of the Google services add-on (tools/ota/image/README.md section 2b)
 GAPPS_SH=z9x_gapps.sh; GAPPS_RC=z9x_gapps.rc; GAPPS_ALLOW=gapps_allow.txt; GAPPS_XML=z9x-gapps-sysconfig.xml
 if [ "$VARIANT" = public ]; then REMOVE+=("${XGIMI_FILES[@]}"); fi
@@ -447,13 +448,14 @@ preflight() {
   [ "$MTIME_EPOCH" -gt 1700000000 ] || die "MTIME_EPOCH $MTIME_EPOCH is before 2023 (the parse cache would keep stale entries)"
 
   for f in "${RCS[@]}" "${SCRIPTS[@]}" z9x_diag.rc z9x-sysconfig.xml build_prop_v1.txt product_prop_v1.txt \
-           audio_policy_engine_stream_volumes.xml z9x-projector-default-permissions.xml \
+           z9x-projector-default-permissions.xml \
            z9x-airplay-default-permissions.xml z9x-home-default-permissions.xml \
            privapp-permissions-z9xhome.xml privapp-permissions-z9xsetup.xml bootanimation.zip LineageCustomizer.apk \
            z9x-sysconfig-nogms.xml privapp-permissions-lumen-miracast.xml lumen-miracast-default-permissions.xml; do
     need "$V1/$f"
   done
   need "$LT/gen_customizer.py"
+  need "$FIRST"
   nogms_preflight
   for f in "$OTA_RC" "$OTA_SH" "$RESCUE_RC" "$RESCUE_SH" "$OTA_UV" "$OTA_PERM" ota_props.txt "$GAPPS_XML"; do need "$OTAIMG/$f"; done
   for f in z9x_uires.sh init.lineage.atv.scaling.rc product_prop.txt test/run.sh; do need "$UIRES/$f"; done
@@ -521,8 +523,12 @@ preflight() {
        ' setprop vendor.mstar.trapezoid.video.gop 0' ' setprop vendor.mstar.hwc.tcvideo.format 1' \
        ' setprop vendor.mstar.trapezoid.resolution.switch 1')" ] \
     || die "z9x_trapezoid.rc: unexpected content (only the 7 G0082 trapezoid setprops at early-init, G0082 only)"
-  # ---- z9x_setup.rc byte-identical to v6.5
-  [ "$(sha256 "$V1/z9x_setup.rc")" = "$SETUPRC_SHA" ] || die "z9x_setup.rc differs from overlay/v65 (must stay byte-identical, C25)"
+  # ---- z9x_setup.rc: v6.5 blocks 1 and 2; block 3 only empties the stock wizard's language and time zone (the one
+  # first-start setting is $FIRST, 2026-11-13; it was byte-identical to overlay/v65 before, C25)
+  [ "$(nocomment "$V1/z9x_setup.rc" | grep -cE '^ ?setprop persist\.sys\.(locale|timezone) ""$')" = 2 ] \
+    || die "z9x_setup.rc: block 3 must empty persist.sys.locale and persist.sys.timezone (setprop KEY \"\")"
+  if nocomment "$V1/z9x_setup.rc" | grep -E 'setprop (persist\.sys\.(locale|language|country|localevar|timezone)|ro\.product\.locale)' \
+      | grep -vqE ' ""$'; then die "z9x_setup.rc sets a language or time zone of its own (only $FIRST may)"; fi
   # ---- z9x_bootinfo (v6.5, unchanged rules)
   [ "$(nocomment "$V1/z9x_bootinfo.rc")" = \
     "$(printf '%s\n' 'on boot' ' start z9x_bootinfo' 'service z9x_bootinfo /system/bin/sh /system/etc/xgimi/z9x_bootinfo.sh' \
@@ -687,7 +693,12 @@ preflight() {
   if grep -q '^pm\.boot\.disable_package_cache' "$V1/build_prop_v1.txt" "$V1/product_prop_v1.txt"; then
     die "pm.boot.disable_package_cache must stay off (parse cache on, member mtimes carry the build time)"
   fi
-  for l in 'ro.product.locale=en-US' 'persist.sys.timezone=Europe/Moscow' 'bluetooth.device.default_name=XGIMI Z9X' \
+  grep -qE '^ro\.product\.locale=.' "$FIRST" || die "$FIRST: no ro.product.locale line"
+  if cat "$V1/build_prop_v1.txt" "$V1/product_prop_v1.txt" "$UIRES/product_prop.txt" "$OTAIMG/ota_props.txt" | grep -v '^#' \
+      | grep -qE '^(ro\.product\.locale|persist\.sys\.(locale|language|country|localevar|timezone)|ro\.localization\.)'; then
+    die "a prop snippet sets a language or time zone key (only $FIRST may)"
+  fi
+  for l in 'bluetooth.device.default_name=XGIMI Z9X' \
            "ro.lumen.version=$VER" 'ro.lmk.swap_free_low_percentage=10' 'ro.lmk.thrashing_limit=30' \
            'ro.lmk.psi_complete_stall_ms=700' 'dalvik.vm.dex2oat-threads=4' 'dalvik.vm.background-dex2oat-threads=2' \
            'ro.adb.secure=1' 'persist.sys.usb.config=none' 'ro.z9x.report.url='; do
@@ -726,7 +737,7 @@ preflight() {
   fi
   [ "$(grep -c '^ro\.z9x\.ota\.manifest_url=https://github\.com/Project-Lumen-OS/lumen-os/releases/download/z9x/update-stable\.json$' "$OTAIMG/ota_props.txt")" = 1 ] \
     || die "ota_props.txt: expected one ro.z9x.ota.manifest_url=.../update-stable.json line (VARIANT=public replaces it)"
-  dup=$(cat "$V1/build_prop_v1.txt" "$V1/product_prop_v1.txt" "$UIRES/product_prop.txt" "$OTAIMG/ota_props.txt" | grep -v '^#' | grep '=' | cut -d= -f1 | sort | uniq -d)
+  dup=$(cat "$V1/build_prop_v1.txt" "$V1/product_prop_v1.txt" "$UIRES/product_prop.txt" "$OTAIMG/ota_props.txt" "$FIRST" | grep -v '^#' | grep '=' | cut -d= -f1 | sort | uniq -d)
   [ -z "$dup" ] || die "prop set twice across the snippets: $dup"
   if grep -qE 'featblock|persist\.z9x\.strike|persist\.z9x\.lastfeat|persist\.z9x\.lastboot' \
       <(cat "$V1/build_prop_v1.txt"; for r in "${RCS[@]}" z9x_diag.rc; do nocomment "$V1/$r"; done); then
@@ -817,10 +828,7 @@ assert [e.get('package') for e in ET.parse(otaperm).getroot().findall('exception
 for f, pkg in (('privapp-permissions-z9xhome.xml', 'org.lumen.home'), ('privapp-permissions-z9xsetup.xml', 'org.lumen.setup'),
                ('privapp-permissions-lumen-miracast.xml', 'org.lumen.miracast')):
     assert [e.get('package') for e in ET.parse(os.path.join(d, f)).getroot().findall('privapp-permissions')] == [pkg], f
-r = ET.parse(os.path.join(d, 'audio_policy_engine_stream_volumes.xml')).getroot()
-g = {x.findtext('name'): {v.get('deviceCategory'): v.get('ref') for v in x.findall('volume')} for x in r.findall('volumeGroup')}
-assert len(g) == 12 and g['system']['DEVICE_CATEGORY_SPEAKER'] == 'MM' and g['system']['DEVICE_CATEGORY_HEADSET'] == 'MM'
-print('xml ok: sysconfig (7 org.lumen + 4 Google packages not stopped, SetupWraith + LineageOS stats overrides; nogms: the 7 + the 3 stats), permissions, stream volumes')
+print('xml ok: sysconfig (7 org.lumen + 4 Google packages not stopped, SetupWraith + LineageOS stats overrides; nogms: the 7 + the 3 stats), permissions')
 PY
   # the Google services add-on's sysconfig layer (tools/ota/image, both public editions) = exactly the Google
   # entries of the Google edition's z9x.xml (main minus nogms), so the three files cannot drift apart
@@ -955,7 +963,7 @@ syslib_preflight() {
 # xgimi_compat_public.rc; the allow-list must name exactly the files the public image does not carry
 public_preflight() {
   local f um
-  for f in "$BLOBS_SH" "$BLOBS_RC" "$BLOBS_ALLOW" "$COMPAT_PUB"; do need "$OTAIMG/$f"; done
+  for f in "$BLOBS_SH" "$BLOBS_RC" "$BLOBS_CONF" "$BLOBS_ALLOW" "$COMPAT_PUB"; do need "$OTAIMG/$f"; done
   [ "$(head -n1 "$OTAIMG/$BLOBS_SH")" = '#!/system/bin/sh' ] || die "$BLOBS_SH: first line"
   shlint "$OTAIMG/$BLOBS_SH"
   # exactly one exec at post-fs-data: after init.rc's part of it (default mount namespace, APEXes active),
@@ -963,30 +971,44 @@ public_preflight() {
   [ "$(nocomment "$OTAIMG/$BLOBS_RC")" = \
     "$(printf '%s\n' 'on post-fs-data' ' exec u:r:su:s0 root root -- /system/bin/sh /system/etc/z9x/z9x_blobs.sh')" ] \
     || die "$BLOBS_RC: expected only the post-fs-data exec of /system/etc/z9x/z9x_blobs.sh"
-  # reads its partition, writes none; no lpdump (a binder client of lpdumpd, which init cannot start while
-  # it waits for this exec: every boot would stall); no reboot, no persist prop
+  # reads its partition, writes none; no reboot, no persist prop. lpdump (a binder client of lpdumpd, which init
+  # cannot start while it waits for this exec) and dmctl only on the trial-run path, each call bounded (timeout 3),
+  # lpdump at most once, only where first stage did not map a stock partition
   if grep -v '^[[:space:]]*#' "$OTAIMG/$BLOBS_SH" \
-      | grep -qE '>[[:space:]]*"?[$A-Za-z_]*/dev/block|of=[^ ]*/dev/|avbtool|vbmeta|lpdump|sys\.powerctl|setprop persist\.|(^|[^a-z])reboot'; then
-    die "$BLOBS_SH: block-device write / lpdump / reboot / persist prop (never allowed)"
+      | grep -qE '>[[:space:]]*"?[$A-Za-z_]*/dev/block|of=[^ ]*/dev/|avbtool|vbmeta|sys\.powerctl|setprop persist\.|(^|[^a-z])reboot'; then
+    die "$BLOBS_SH: block-device write / reboot / persist prop (never allowed)"
   fi
-  grep -qE '^timeout [1-5] dd if="\$dev" of=\$img bs=65536 count=64 ' "$OTAIMG/$BLOBS_SH" \
-    || die "$BLOBS_SH: the partition read must be one bounded dd (timeout <= 5 s, 4 MiB)"
+  if grep -v '^[[:space:]]*#' "$OTAIMG/$BLOBS_SH" | grep -E 'lpdump|dmctl' | grep -vE \
+      '^  (command -v lpdump >/dev/null 2>&1 && command -v dmctl |\[ -n "\$_lpdone" \] \|\| \{ _lp=\$\(timeout 3 lpdump --slot=|timeout 3 dmctl create "lumen_ro_\$1" -ro |STOCK_DEV=\$\(timeout 3 dmctl getpath |for _d in \$_dms; do timeout 3 dmctl delete )' \
+      | grep -q .; then
+    die "$BLOBS_SH: lpdump / dmctl outside the bounded trial-run calls"
+  fi
+  # the Z9X settings (blobs.conf): its 4 MiB partition, 4 MiB members, its 8 MiB tmpfs
+  [ "$(nocomment "$OTAIMG/$BLOBS_CONF" | tr '\n' ' ')" = \
+    'tag=z9x_blobs allow=blobs_allow.txt blocks=64 tmpfs=8m maxf=4194304 eye=0 src_partition=0 stock_apex=zip ' ] \
+    || die "$BLOBS_CONF: not the Z9X reader settings"
+  grep -qE '^  timeout [1-5] dd if="\$dev" of=\$img bs=65536 count=\$BLOCKS ' "$OTAIMG/$BLOBS_SH" \
+    || die "$BLOBS_SH: the partition read must be one bounded dd (timeout <= 5 s, blocks of blobs.conf)"
   # the untar is bounded too; before it: no absolute or '..' name, no link / device / fifo member (nothing
   # written outside the tmpfs); after it, before anything is hashed: only directories and regular files
-  # <= 4 MiB (no link out of the tmpfs, no sparse giant to hash)
-  grep -qE '^\( cd \$M/x && timeout [1-5] tar -xf \$img \) ' "$OTAIMG/$BLOBS_SH" \
-    && grep -qE '^timeout [1-5] tar -tf \$img .*&& fail bad:path$' "$OTAIMG/$BLOBS_SH" \
+  # <= maxf of blobs.conf (no link out of the tmpfs, no sparse giant to hash)
+  grep -qE '^  \( cd \$M/x && timeout [1-5] tar -xf \$img \) ' "$OTAIMG/$BLOBS_SH" \
+    && grep -qE '^  timeout [1-5] tar -tf \$img .*&& fail bad:path$' "$OTAIMG/$BLOBS_SH" \
     && grep -qF "odd=\$(timeout 3 tar -tvf \$img 2>/dev/null | grep '^[lhcbps]' | head -n 1)" "$OTAIMG/$BLOBS_SH" \
-    && grep -qF 'odd=$(find $M/x ! -type d \( ! -type f -o -size +4194304c \)' "$OTAIMG/$BLOBS_SH" \
+    && grep -qF 'odd=$(find $M/x ! -type d \( ! -type f -o -size +${MAXF}c \)' "$OTAIMG/$BLOBS_SH" \
     || die "$BLOBS_SH: the untar must be bounded and followed by the name and entry checks"
   # its only mounts: its own tmpfs (required on the device: /mnt is noexec, and a bind keeps the flags of
-  # its source mount), the binds of the checked copies, and the tmpfs read-only afterwards
+  # its source mount), the binds of the checked copies, the tmpfs read-only afterwards, and on the trial-run path the
+  # stock partitions and APEX payload (erofs or ext4, read-only), its scratch tmpfs and their umounts
   grep -qE '^\[ -n "\$R" \] \|\| mount -t tmpfs .*\|\| fail bad:tmpfs$' "$OTAIMG/$BLOBS_SH" \
     || die "$BLOBS_SH: its tmpfs must be required (|| fail bad:tmpfs)"
   um=$(grep -v '^[[:space:]]*#' "$OTAIMG/$BLOBS_SH" | grep -oE '(^|[^A-Za-z0-9_.-])u?mount +[^;&|)]*' \
     | sed -E -e 's/^[^a-z]//' -e 's/ *2>\/dev\/null.*//' -e 's/[[:space:]]+$//' | sort -u) || true
-  [ "$um" = "$(printf '%s\n' 'mount --bind "$f" "$R$dst"' 'mount -t tmpfs -o mode=0750,uid=0,gid=0,size=8m,nosuid,nodev tmpfs $M' \
-      'mount -o remount,ro $M' | sort -u)" ] \
+  [ "$um" = "$(printf '%s\n' 'mount --bind "$f" "$R$dst"' 'mount --bind "$f" "$dst"' 'mount -o remount,ro $M' \
+      'mount -t erofs -o "$_o" "$1" "$2"' 'mount -t ext4 -o "$_o,noload" "$1" "$2"' \
+      'mount -t tmpfs -o mode=0700,uid=0,gid=0,size=64m,nosuid,nodev,noexec tmpfs "$_s"' \
+      'mount -t tmpfs -o mode=0750,uid=0,gid=0,size=$TMPFS,nosuid,nodev tmpfs $M' \
+      'umount "$_d"' 'umount "$_s"' 'umount "$dst"' 'umount failed' | sort -u)" ] \
     || die "$BLOBS_SH: unexpected mounts: $um"
   # the image's allow-list and the installer's are one file (the installer dir is not on the laptop; the
   # host test's OTAIMG is a copy with test hashes)
@@ -1190,6 +1212,7 @@ codec_members() {
     # base's xgimi_compat.rc without the binds of the XGIMI_FILES (removed with REMOVE)
     add system/etc/z9x/z9x_blobs.sh "$OTAIMG/$BLOBS_SH" 755
     add system/etc/init/z9x_blobs.rc "$OTAIMG/$BLOBS_RC" 644
+    add system/etc/z9x/blobs.conf "$OTAIMG/$BLOBS_CONF" 644
     add system/etc/z9x/blobs_allow.txt "$OTAIMG/$BLOBS_ALLOW" 644
     repl system/etc/init/xgimi_compat.rc "$OTAIMG/$COMPAT_PUB" 644 u:object_r:system_file:s0
   fi
@@ -1269,7 +1292,7 @@ stage_prep() {
       system/etc/permissions/privapp-permissions-lumen-miracast.xml system/product/etc/default-permissions/lumen-miracast.xml \
       system/product/etc/default-permissions/z9x-projector.xml system/product/etc/default-permissions/z9x-airplay.xml \
       system/product/etc/default-permissions/z9x-home.xml system/product/etc/default-permissions/z9x-updater.xml \
-      system/etc/xgimi/audio_policy_engine_stream_volumes.xml system/etc/init/z9x_features.rc \
+      system/etc/init/z9x_features.rc \
       "${RCS[@]/#/system/etc/init/}" "${SCRIPTS[@]/#/system/etc/xgimi/}" system/etc/init/z9x_diag.rc \
       ${POWERRC[@]+"${POWERRC[@]/#/system/etc/init/}"} ${POWERSH[@]+"${POWERSH[@]/#/system/etc/xgimi/}"} \
       system/product/overlay/Z9xFrameworkKeysOverlay.apk system/product/overlay/Z9xLineagePlatformOverlay.apk \
@@ -1358,7 +1381,6 @@ PY
   add system/etc/permissions/privapp-permissions-z9xhome.xml "$V1/privapp-permissions-z9xhome.xml" 644
   add system/etc/permissions/privapp-permissions-z9xsetup.xml "$V1/privapp-permissions-z9xsetup.xml" 644
   add system/etc/permissions/privapp-permissions-lumen-miracast.xml "$V1/privapp-permissions-lumen-miracast.xml" 644
-  add system/etc/xgimi/audio_policy_engine_stream_volumes.xml "$V1/audio_policy_engine_stream_volumes.xml" 644
   add system/product/etc/default-permissions/z9x-projector.xml "$V1/z9x-projector-default-permissions.xml" 644
   add system/product/etc/default-permissions/z9x-airplay.xml "$V1/z9x-airplay-default-permissions.xml" 644
   add system/product/etc/default-permissions/z9x-home.xml "$V1/z9x-home-default-permissions.xml" 644
@@ -1417,6 +1439,7 @@ PY
 $(cat "$UIRES/product_prop.txt")
 # ---- OTA (tools/ota/image/ota_props.txt, OTA)
 $OTAPROPS$PUBPROPS
+$(cat "$FIRST")
 # end of file"
         --sub system/product/etc/build.prop '^bluetooth\.device\.class_of_device=90,2,12$' 'bluetooth.device.class_of_device=44,4,60'
         --sub system/system_ext/etc/build.prop '^ro\.setupwizard\.mode=DISABLED\n' ''
@@ -1431,7 +1454,6 @@ ro.adb.secure=1'
     'X system/build.prop pm.boot.disable_package_cache=true' 'T system/build.prop persist.z9x.firstrun=1' \
     "T system/build.prop ro.build.display.id=$DISPLAY_ID" "T system/build.prop ro.lineage.display.version=$LINEAGE_DISPLAY" \
     'T system/build.prop ro.build.type=userdebug' 'T system/build.prop ro.build.tags=test-keys' \
-    'T system/product/etc/build.prop ro.product.locale=en-US' 'T system/product/etc/build.prop persist.sys.timezone=Europe/Moscow' \
     'T system/product/etc/build.prop bluetooth.device.class_of_device=44,4,60' \
     'T system/product/etc/build.prop bluetooth.device.default_name=XGIMI Z9X' \
     "T system/product/etc/build.prop ro.lumen.version=$VER" \
@@ -1451,6 +1473,8 @@ ro.adb.secure=1'
     'T system/system_ext/etc/build.prop persist.sys.usb.config=none' 'X system/system_ext/etc/build.prop persist.sys.usb.config=adb' \
     'T system/product/etc/build.prop ro.adb.secure=1' 'T system/product/etc/build.prop persist.sys.usb.config=none' \
     "K system/build.prop $COMPAT_SYS" "K system/product/etc/build.prop $COMPAT_PRODUCT" >> "$S"
+  # the one first-start setting, every line of it in the product build.prop
+  grep -v '^#' "$FIRST" | grep . | sed 's#^#T system/product/etc/build.prop #' >> "$S"
   # exactly this edition's manifest URL, none of the other three
   for u in stable public stable-nogms public-nogms; do
     if [ "$u" = "$CHANNEL" ]; then k=T; else k=X; fi
@@ -1670,7 +1694,7 @@ stage_remote() {
   log "[remote] 1/6 lint on the Mac"
   ( WORK=$(mktemp -d); trap 'rm -rf "$WORK"' EXIT; preflight ) || die "lint failed"
   log "[remote] 2/6 inputs -> laptop (no keys)"
-  "${SSH[@]}" 'mkdir -p ~/z9x/tools/lumen ~/z9x/tools/ota/image ~/z9x/tools/sign/testcerts ~/z9x/tools/sign/release_certs ~/z9x/overlay/v1 ~/z9x/overlay/apps_v1 ~/z9x/overlay/v65'
+  "${SSH[@]}" 'mkdir -p ~/z9x/tools/lumen ~/z9x/tools/ota/image ~/z9x/tools/sign/testcerts ~/z9x/tools/sign/release_certs ~/z9x/overlay/v1 ~/z9x/overlay/apps_v1 ~/z9x/devices/_image'
   "${RS[@]}" -a "$TOOLS/lumen_v1.sh" "$TOOLS/patch_tar.py" "$TOOLS/erofs_kcheck.py" "$BUILDER:z9x/tools/"
   "${RS[@]}" -a --delete "$LT/" "$BUILDER:z9x/tools/lumen/"
   "${RS[@]}" -a --delete "$OTAIMG/" "$BUILDER:z9x/tools/ota/image/"
@@ -1682,7 +1706,7 @@ stage_remote() {
   "${RS[@]}" -a "$TOOLS/sign/check_image.py" "$TOOLS/sign/sign_tar.py" "$TOOLS/sign/keymap.json" \
     "$TOOLS/sign/apexlib.py" "$TOOLS/sign/apex_laptop.py" "$BUILDER:z9x/tools/sign/"
   "${RS[@]}" -a "$TOOLS/sign/third_party/avbtool.py" "$TOOLS/sign/third_party/README.md" "$BUILDER:z9x/tools/sign/third_party/"
-  "${RS[@]}" -a "$GSI/overlay/v65/z9x_setup.rc" "$BUILDER:z9x/overlay/v65/"
+  "${RS[@]}" -a "$FIRST" "$BUILDER:z9x/devices/_image/"
   # a public build never reads overlay/v1/c2store (the MediaTek Codec2 libs): not sent (an exclude also
   # keeps --delete off the laptop's copy, which private builds use)
   if [ "$VARIANT" = public ]; then

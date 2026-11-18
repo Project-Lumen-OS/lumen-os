@@ -8,7 +8,11 @@ keys did nothing (the design notes/B16). The stock X50 has these scancodes as th
 (vendor .kl: POWER or XGIMI's KPPOWER), and its PhoneWindowManager ends a short press in a plain
 PowerManager.goToSleep (XgimiWindowManager.xgimiGotoSleep, no projector HAL call). So the X50 image turns exactly
 those lines back into KEYCODE_POWER WAKE; apps/X50PowerOverlay makes the framework sleep on a short press and open
-the power menu on a long one. t12 adds stock scancodes the base drops (ADD); GEAR_HOLD names the stock MENU scancodes
+the power menu on a long one. rs30-power: the XGIMI BT remotes' own power keys (stock KPPOWER 113 and SECONDARY_POWER
+185, services.jar XgimiWindowManagerDomestic.kPPowerPress: short = power menu, held = standby, with the light off = the
+light back) stay or become KEYCODE_STB_POWER WAKE (REMOTE, ADD), which apps/X50PowerOverlay sends to
+org.lumen.x50.projector/.KeyReceiver also while asleep; IR, keypad and the other remotes keep the system power key as
+the fallback. t12 adds stock scancodes the base drops (ADD); GEAR_HOLD names the stock MENU scancodes
 (the gear held): ALL_APPS in the published 1.0.9 base becomes the gear hold key, a gear hold line is kept as it is.
 
     x50_power_keys.py apply KL_DIR      edit the .kl files of KL_DIR in place (inode, owner, mode, label kept)
@@ -28,27 +32,46 @@ import sys
 TABLE = {
     "Vendor_3697_Product_0001.kl": (116, 190, 75),   # IR: 116 POWER, 190 KPPOWER, 75 DORMANCY (sleep key)
     "Vendor_3697_Product_0002.kl": (30, 116, 260),   # body keypad: 30 POWER, 116 POWER, 260 KPPOWER
-    "Vendor_000d_Product_3838.kl": (113,),           # XGIMI BT remotes: 113 KPPOWER
-    "Vendor_000d_Product_3840.kl": (113,),           # the X50's own remote "XGIMI RC Keyboard" (000d:3840)
-    "Vendor_000d_Product_3841.kl": (113,),
-    "Vendor_000d_Product_3842.kl": (113,),
-    "Vendor_000d_Product_3843.kl": (113,),
     "Vendor_1d5a_Product_c081.kl": (116,),           # other XGIMI BT remotes: 116 KPPOWER
     "Vendor_26e3_Product_af02.kl": (116,),
     "Vendor_0001_Product_0001.kl": (116, 183),       # TV-style remote: 116 POWER, 183 KPPOWER
     "Generic.kl": (142,),                            # KEY_SLEEP of any other keyboard (stock Generic: SLEEP)
 }
+# rs30-power: file -> scancodes that must be "STB_POWER WAKE" in the base and stay so, the line's note rewritten: the
+# stock KPPOWER of the XGIMI BT remotes (stock X50 / RS30 vendor .kl, the same lines on both), the remote power key of
+# org.lumen.x50.projector KeyReceiver (lumen-menu PowerPress, the Z9X HB rule: short = sleep, held = the power menu).
+REMOTE = {
+    "Vendor_000d_Product_3838.kl": (113,),           # XGIMI BT remotes: 113 KPPOWER
+    "Vendor_000d_Product_3840.kl": (113,),           # the X50 / RS30 remote "XGIMI RC Keyboard" (000d:3840)
+    "Vendor_000d_Product_3841.kl": (113,),
+    "Vendor_000d_Product_3842.kl": (113,),
+    "Vendor_000d_Product_3843.kl": (113,),
+}
+REMOTE_NOTE = "  # XGIMI: KPPOWER (BT remote); the remote power key -> org.lumen.x50.projector (devices/g0111/image/x50_power_keys.py)"
+SECONDARY = (185, "STB_POWER WAKE", "XGIMI: SECONDARY_POWER (BT remote); the remote power key, as KPPOWER (stock kPPowerPress)")
 # t12: stock X50 scancodes the Z9X base layouts drop, added at the end of the file (the scancode must be absent in the
 # base): file -> (scancode, Android key, comment). Routed by apps/X50PowerOverlay global_keys.xml to
-# org.lumen.x50.projector/.KeyReceiver. Left unmapped on purpose (stock handler not proven or no Lumen function):
-# 3840 185 SECONDARY_POWER, IR 0001 60/87 OSD, 63 ROTATE, 65 ZOOM_SHIFT, 79 SOURCE_USB, 184-189 picture / CAST keys,
-# 3843 picture and SHORTCUT keys.
+# org.lumen.x50.projector/.KeyReceiver; rs30-power: 185 SECONDARY_POWER of the 000d remotes (stock 3838 / 3840 / 3841 /
+# 3842) as the remote power key. Left unmapped on purpose (stock handler not proven or no Lumen function):
+# 1d5a:c081 185 SECONDARY_POWER (its power key stays the system one), IR 0001 60/87 OSD, 63 ROTATE, 65 ZOOM_SHIFT,
+# 79 SOURCE_USB, 184-189 picture / CAST keys, 3843 picture keys. The custom keys SHORTCUT_1..4 (3843, and 135 / 136 of
+# the RS30's 3840) are MACRO_1..4 for "Remote buttons" (devices/_remotes/keys.tsv, stock X50 / RS30 / Titan bind a
+# function to them); a later base that already has the same line (overlay/v1/keylayout) keeps it as it is.
 ADD = {
     "Vendor_000d_Product_3840.kl": ((64, "TV_AUDIO_DESCRIPTION", "XGIMI: MUSIC_SOUNDERMODE; stock Bluetooth speaker mode, not ported: a notice only"),
-                                    (88, "TV_DATA_SERVICE", "XGIMI: RC_LOW_BATTERY; remote battery notice")),
+                                    (88, "TV_DATA_SERVICE", "XGIMI: RC_LOW_BATTERY; remote battery notice"),
+                                    (135, "MACRO_1", "XGIMI: SHORTCUT_1 (RS30 remote); custom key 1, Remote buttons"),
+                                    (136, "MACRO_2", "XGIMI: SHORTCUT_2 (RS30 remote); custom key 2, Remote buttons"), SECONDARY),
+    "Vendor_000d_Product_3838.kl": (SECONDARY,),
+    "Vendor_000d_Product_3841.kl": (SECONDARY,),
+    "Vendor_000d_Product_3842.kl": (SECONDARY,),
     "Vendor_3697_Product_0001.kl": ((81, "TV_DATA_SERVICE", "XGIMI: IR_LOW_BATTERY; remote battery notice"),),
     "Vendor_000d_Product_3843.kl": ((87, "FOCUS", "XGIMI: FOCUS_AUTO_NEW; auto focus"),
-                                    (62, "TV_CONTENTS_MENU", "XGIMI: FOCUS_MAN_NEW; manual focus")),
+                                    (62, "TV_CONTENTS_MENU", "XGIMI: FOCUS_MAN_NEW; manual focus"),
+                                    (135, "MACRO_1", "XGIMI: SHORTCUT_1; custom key 1, Remote buttons"),
+                                    (136, "MACRO_2", "XGIMI: SHORTCUT_2; custom key 2, Remote buttons"),
+                                    (217, "MACRO_3", "XGIMI: SHORTCUT_3; custom key 3, Remote buttons"),
+                                    (354, "MACRO_4", "XGIMI: SHORTCUT_4; custom key 4, Remote buttons")),
 }
 # The gear held: the X50 remotes detect the hold themselves and send the stock MENU scancode once (stock X50 v1.2.64
 # vendor/usr/keylayout: 000d:3840 / 3838 / 3843 "key 127 MENU", IR 3697:0001 and keypad 3697:0002 "key 139 MENU"; the
@@ -70,29 +93,57 @@ GEAR_HOLD = {
     "Vendor_3697_Product_0001.kl": (139,),
     "Vendor_3697_Product_0002.kl": (139,),
 }
+# The stock custom shortcut key (BT 184 SHORTCUT): ALL_APPS in the 1.0.9 base (PhoneWindowManager consumed it), the
+# global key FEATURED_APP_1 since "Remote buttons" (overlay/v1/keylayout): the app or action the user gave it, else the app list.
+SHORTCUT_KEY = "FEATURED_APP_1"
+SHORTCUT_BASE109 = "ALL_APPS"
+SHORTCUT_WHY = "XGIMI: SHORTCUT; stock custom shortcut key, Remote buttons (the app or action the user gave it, else the app list)"
+SHORTCUT = {
+    "Vendor_000d_Product_3838.kl": (184,),
+    "Vendor_000d_Product_3840.kl": (184,),
+    "Vendor_000d_Product_3841.kl": (184,),
+    "Vendor_000d_Product_3842.kl": (184,),
+}
 ADD_NOTE = " -> org.lumen.x50.projector (devices/g0111/image/x50_power_keys.py)"
+# The base's note above an unmapped 185 ("# key 185 SECONDARY_POWER (not mapped yet ... getevent ...)" plus its "#   "
+# lines, overlay/v1/keylayout) is wrong once SECONDARY maps it: it goes with the addition (the design notes
+# P3-4). Files that keep 185 unmapped (1d5a:c081) keep the note.
+STALE_185 = re.compile(r"^#[ \t]*key[ \t]+185[ \t]+SECONDARY_POWER\b")
+STALE_185_MORE = "#   "
+# every file the edit touches (each ADD and GEAR_HOLD file is one of them)
+FILES = sorted(set(TABLE) | set(REMOTE))
+assert set(ADD) <= set(FILES) and set(GEAR_HOLD) <= set(FILES)
 ANY_LINE = re.compile(r"^key([ \t]+)(\d+)([ \t]+)(\S+)")
-ANY_KEY = re.compile(r"^key[ \t]+(\d+)[ \t]")
 KEY = re.compile(r"^key[ \t]+(\d+)([ \t]+)STB_POWER([ \t]+WAKE)([ \t#].*)?$")
 NOTE = "  # X50: system power key (devices/g0111/image/x50_power_keys.py)"
 
 
 def edit(text, name):
     """Return (new text, problems) for one file."""
-    want = set(TABLE[name])
-    hold = set(GEAR_HOLD.get(name, ()))
+    want = set(TABLE.get(name, ()))
+    keep = set(REMOTE.get(name, ()))
+    # scancode -> (key, the 1.0.9 base's key, why, what): remapped in the 1.0.9 base, kept in a later base
+    remap = {sc: (GEAR_HOLD_KEY, GEAR_HOLD_BASE109, GEAR_HOLD_WHY, "the X50 gear hold") for sc in GEAR_HOLD.get(name, ())}
+    remap.update({sc: (SHORTCUT_KEY, SHORTCUT_BASE109, SHORTCUT_WHY, "the shortcut key") for sc in SHORTCUT.get(name, ())})
     out, seen, bad, held = [], set(), [], set()
+    drop_185 = SECONDARY in ADD.get(name, ())
+    stale = False
     for line in text.split("\n"):
+        if drop_185 and (STALE_185.match(line) or (stale and line.startswith(STALE_185_MORE))):
+            stale = True
+            continue
+        stale = False
         r = ANY_LINE.match(line)
-        if r and int(r.group(2)) in hold:
+        if r and int(r.group(2)) in remap:
             sc = int(r.group(2))
-            if r.group(4) not in (GEAR_HOLD_KEY, GEAR_HOLD_BASE109) or sc in held:
-                bad.append("%s: scancode %d is '%s', the X50 gear hold needs '%s' (or the 1.0.9 base's '%s') once"
-                           % (name, sc, r.group(4), GEAR_HOLD_KEY, GEAR_HOLD_BASE109))
-            elif r.group(4) == GEAR_HOLD_BASE109:                # the published 1.0.9 base: remapped in place
-                line = "key%s%d%s%s  # %s%s" % (r.group(1), sc, r.group(3), GEAR_HOLD_KEY, GEAR_HOLD_WHY, ADD_NOTE)
+            key, base, why, what = remap[sc]
+            if r.group(4) not in (key, base) or sc in held:
+                bad.append("%s: scancode %d is '%s', %s needs '%s' (or the 1.0.9 base's '%s') once"
+                           % (name, sc, r.group(4), what, key, base))
+            elif r.group(4) == base:                             # the published 1.0.9 base: remapped in place
+                line = "key%s%d%s%s  # %s%s" % (r.group(1), sc, r.group(3), key, why, ADD_NOTE)
             held.add(sc)
-            out.append(line)                                     # a gear hold line of the base: kept as it is
+            out.append(line)                                     # a line of a later base: kept as it is
             continue
         m = KEY.match(line)
         if m and int(m.group(1)) in want:
@@ -101,19 +152,27 @@ def edit(text, name):
                 bad.append("%s: scancode %d twice" % (name, sc))
             seen.add(sc)
             line = "key %s%sPOWER%s%s" % (m.group(1), m.group(2), m.group(3), NOTE)
+        elif m and int(m.group(1)) in keep:
+            sc = int(m.group(1))
+            if sc in seen:
+                bad.append("%s: scancode %d twice" % (name, sc))
+            seen.add(sc)
+            line = "key %s%sSTB_POWER%s%s" % (m.group(1), m.group(2), m.group(3), REMOTE_NOTE)
         elif m:
             bad.append("%s: key %s is STB_POWER but not in the X50 table" % (name, m.group(1)))
         out.append(line)
-    for sc in sorted(want - seen):
+    for sc in sorted((want | keep) - seen):
         bad.append("%s: no 'key %d STB_POWER WAKE' line in the base" % (name, sc))
-    for sc in sorted(hold - held):
-        bad.append("%s: no 'key %d %s' (or '%s') line in the base (the gear hold)" % (name, sc, GEAR_HOLD_KEY, GEAR_HOLD_BASE109))
+    for sc in sorted(set(remap) - held):
+        bad.append("%s: no 'key %d %s' (or '%s') line in the base (%s)" % (name, sc, remap[sc][0], remap[sc][1], remap[sc][3]))
     if name in ADD:
-        mapped = {int(m.group(1)) for m in (ANY_KEY.match(l.split("#", 1)[0]) for l in out) if m}
+        mapped = {int(m.group(2)): m.group(4) for m in (ANY_LINE.match(l.split("#", 1)[0]) for l in out) if m}
         tail = []
         while out and out[-1] == "":
             tail.append(out.pop())
         for sc, key, why in ADD[name]:
+            if sc in mapped and mapped[sc] == key:              # a later base has the line already: kept
+                continue
             if sc in mapped:
                 bad.append("%s: scancode %d already mapped in the base (the X50 addition expects it absent)" % (name, sc))
                 continue
@@ -124,7 +183,7 @@ def edit(text, name):
 
 def apply(d):
     bad = []
-    for name in sorted(TABLE):
+    for name in FILES:
         p = os.path.join(d, name)
         if not os.path.isfile(p):
             bad.append("missing " + p)
@@ -137,7 +196,7 @@ def apply(d):
                 f.write(new)
     # no other file of the folder may keep STB_POWER (it would go to the absent org.lumen.projector)
     for name in sorted(os.listdir(d)):
-        if name.endswith(".kl") and name not in TABLE and "STB_POWER" in strip_comments(os.path.join(d, name)):
+        if name.endswith(".kl") and name not in FILES and "STB_POWER" in strip_comments(os.path.join(d, name)):
             bad.append("%s maps STB_POWER, not in the X50 table" % name)
     return bad
 
@@ -155,7 +214,7 @@ def check(base, new):
             bad.append("%s is not in both trees" % name)
             continue
         tb, tn = open(pb, encoding="utf-8").read(), open(pn, encoding="utf-8").read()
-        if name not in TABLE:
+        if name not in FILES:
             if tb != tn:
                 bad.append("%s differs from the base but is not in the X50 table" % name)
             continue
@@ -165,22 +224,32 @@ def check(base, new):
             bad.append("%s is not the base with exactly the X50 power-key edit" % name)
     for name in names:
         p = os.path.join(new, name)
-        if os.path.isfile(p) and re.search(r"(?m)^key[ \t]+\d+[ \t]+STB_POWER\b", strip_comments(p)):
-            bad.append("%s still maps STB_POWER" % name)
+        if not os.path.isfile(p):
+            continue
+        for sc in re.findall(r"(?m)^key[ \t]+(\d+)[ \t]+STB_POWER\b", strip_comments(p)):
+            if int(sc) not in remote_keys(name):
+                bad.append("%s still maps STB_POWER on %s (only the remote power keys may)" % (name, sc))
     return bad
+
+
+def remote_keys(name):
+    """The scancodes of a file that are the remote power key (STB_POWER) after the edit."""
+    return set(REMOTE.get(name, ())) | {sc for sc, key, _ in ADD.get(name, ()) if key.split()[0] == "STB_POWER"}
 
 
 def main(a):
     if a == ["files"]:
-        print("\n".join(sorted(TABLE)))
+        print("\n".join(FILES))
         return 0
     if len(a) == 2 and a[0] == "apply":
         bad = apply(a[1])
-        what = "applied to %d files" % len(TABLE)
+        what = "applied to %d files" % len(FILES)
     elif len(a) == 3 and a[0] == "check":
         bad = check(a[1], a[2])
-        what = "%d files are the base with the power-key edit (and %d added stock keys, %d gear-hold keys), the rest unchanged" % (
-            len(TABLE), sum(len(v) for v in ADD.values()), sum(len(v) for v in GEAR_HOLD.values()))
+        what = ("%d files are the base with the power-key edit (%d remote power keys kept, %d added stock keys, %d gear-hold keys, "
+                "%d shortcut keys), the rest unchanged") % (len(FILES), sum(len(v) for v in REMOTE.values()),
+                                                           sum(len(v) for v in ADD.values()), sum(len(v) for v in GEAR_HOLD.values()),
+                                                           sum(len(v) for v in SHORTCUT.values()))
     else:
         print((__doc__ or "usage: see the source").strip(), file=sys.stderr)
         return 2

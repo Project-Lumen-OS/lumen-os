@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-cec: translation of res/values/lumen_strings_cec.xml (moved from the Z9X app's strings_cec.xml). -->
+<resources>
+    <string name="lumen_cec_unavailable">HDMI-CEC kullanılamıyor</string>
+    <string name="lumen_cec_master">HDMI-CEC kontrolü</string>
+    <string name="lumen_cec_master_note">HDMI-CEC kapalıyken HDMI ARC üzerinden ses kullanılamaz.</string>
+    <string name="lumen_cec_wake">Bir HDMI cihazıyla aç</string>
+    <string name="lumen_cec_wake_note">Bu açıkken projektör kapandığında HDMI cihazları da kapanır.</string>
+    <string name="lumen_cec_night">Gece koruması</string>
+    <string name="lumen_cec_night_off">Kapalı</string>
+    <string name="lumen_cec_night_desc">Bu saatlerde HDMI cihazları projektörü açamaz.</string>
+    <string name="lumen_cec_paused">Görüntü olmadan birkaç kez açıldığı için duraklatıldı. Kumandayı kullandığınızda yeniden etkinleşir.</string>
+    <string name="lumen_cec_switch">Açıldığında cihaza geç</string>
+    <string name="lumen_cec_send_standby">HDMI cihazlarını projektörle birlikte kapat</string>
+    <string name="lumen_cec_follow_info">İzlediğiniz cihaz kapandığında projektör de uyku moduna geçer.</string>
+    <string name="lumen_cec_soundbar">Soundbar veya AV alıcı (HDMI ARC)</string>
+    <string name="lumen_cec_avr_on">Soundbar’ı projektörle birlikte aç</string>
+    <string name="lumen_cec_control">HDMI cihazlarını bu kumandayla kontrol et</string>
+    <string name="lumen_cec_internal_exit">HDMI’dan çıkarken cihaza bildir</string>
+    <string name="lumen_cec_devices">Bağlı cihazlar</string>
+    <string name="lumen_cec_no_devices">HDMI-CEC cihazı bulunamadı</string>
+    <string name="lumen_cec_state_on">açık</string>
+    <string name="lumen_cec_state_standby">bekleme</string>
+    <string name="lumen_cec_dev_unnamed">HDMI cihazı</string>
+    <string name="lumen_cec_dev_soundbar">Soundbar / AV alıcı</string>
+    <string name="lumen_cec_name_on_hdmi">HDMI’daki ad: %1$s</string>
+</resources>

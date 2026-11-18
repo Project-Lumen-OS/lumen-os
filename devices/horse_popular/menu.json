@@ -2,8 +2,8 @@
   "schema": 1,
   "device": "horse_popular",
   "model": "G0082",
-  "adapter": "apps/Z9xProjector/src/org/lumen/projector/panel/Z9xFeatures.java",
-  "note": "Z9X (G0082): the reference profile, layout D and the game menu as in Z9X 1.0.10. Eye protection is one switch (no follow mode on this model). Hint pictures: only the two the Z9X stock tree has (picture mode, rear projection).",
+  "adapter": "apps/ProjectorBase/src/org/lumen/projector/panel/Z9xFeatures.java",
+  "note": "Z9X (G0082): the reference profile, layout D and the game menu as in Z9X 1.0.10. Eye protection is one switch (no follow mode on this model). Hint pictures: only the two the Z9X stock tree has (picture mode, rear projection). 3D: the five modes of the stock tree (image_3d_info_state: close, lr, tb, lrTo2d, tbTo2d), so the 3D tile takes the network place and network goes to the top row.",
   "features": {
     "eye": {"options": ["off", "on"]},
     "keystone.ak_now": {},
@@ -25,7 +25,7 @@
     "lamp": {"min": 1, "max": 10},
     "boost": {"level": 11},
     "lamp.off": {},
-    "picture.mode": {"options": ["ai", "standard", "sport", "hdr_vivid", "color_accuracy", "office", "performance"]},
+    "picture.mode": {"options": ["ai", "standard", "sport", "hdr_vivid", "color_accuracy", "office", "performance"], "support": {"hdr_vivid": ["hdr_vivid"], "color_accuracy": ["sdr", "hdr", "hdr10"]}},
     "picture.pq": {"items": ["brightness", "contrast", "saturation", "sharpness"], "min": 0, "max": 100},
     "picture.color_temp": {"options": ["d65", "color_temp_1"]},
     "picture.memc": {"options": ["off", "low", "medium", "high"]},
@@ -35,6 +35,7 @@
     "picture.pro": {},
     "picture.reset": {},
     "picture.reset_all": {},
+    "picture.3d": {"options": ["off", "sbs", "tb", "sbs_2d", "tb_2d"]},
     "hdmi.range": {"options": ["auto", "full", "limited"]},
     "hdmi.edid": {"options": ["compat", "enhanced"]},
     "picture.aspect": {"options": ["auto", "r4_3", "r16_9", "original"]},
@@ -43,13 +44,12 @@
     "sound.eq": {},
     "sound.leveling": {},
     "sound.earc": {},
-    "sound.output": {"options": ["auto", "speaker"]},
+    "sound.output": {"options": ["auto", "speaker", "arc", "wired", "bt", "usb"]},
     "sound.format": {"options": ["auto", "pcm", "passthrough"]},
     "input": {},
     "bluetooth": {},
     "network": {},
     "mirroring": {},
-    "usb_files": {},
     "game.mode": {"options": ["off", "on", "auto"]},
     "game.speed": {"options": ["basic", "basic_hfr", "top_speed", "top_speed_hfr"]},
     "game.allm": {"options": ["signal", "device"]},
@@ -59,9 +59,24 @@
     "settings.projector": {},
     "settings.cec": {},
     "settings.recents": {},
-    "settings.launcher": {"options": ["lumen", "classic"]}
+    "settings.sleep_timer": {},
+    "settings.launcher": {"options": ["lumen", "classic"]},
+    "settings.report": {},
+    "signal.panel": {},
+    "signal.pin": {},
+    "signal.refresh": {"options": ["normal", "fast"]}
   },
   "hints": {"picture.mode": "picture_mode", "projection.rear": "rear_projection"},
   "keys": {"gear_short": "quick_menu", "gear_long": "game_menu", "eye_gear_short": "restore"},
-  "game_menu": {"enabled": true, "items": ["lat", "vrr", "hfr", "pic", "dark", "sr", "ar", "snd", "aim", "fps"], "themes": ["ps", "xbox", "switch", "pad", "apple", "windows", "computer"], "cec_detect": true}
+  "game_menu": {"enabled": true, "items": ["lat", "vrr", "hfr", "pic", "dark", "sr", "ar", "snd", "aim", "fps"], "themes": ["ps", "xbox", "switch", "pad", "apple", "windows", "computer"], "cec_detect": true},
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_dapeng projection_screen (G0082 V6.15.62), test/stock/projection_screen.json",
+      "groups": [
+        {"rows": ["keystone.realtime", "keystone.ak_now", "keystone.fit_now"]},
+        {"header": "auto_correction", "rows": ["keystone.on_power", "keystone.obstacle", "keystone.curtain"]},
+        {"header": "line", "rows": ["keystone.manual", "zoom", "keystone.fit_screen", "keystone.rotation", "keystone.restore"]}
+      ]
+    }
+  }
 }

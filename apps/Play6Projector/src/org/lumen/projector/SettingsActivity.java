@@ -24,7 +24,6 @@ import org.lumen.projector.settings.Kit;
 import org.lumen.projector.settings.Shell;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,7 +45,7 @@ import java.util.Map;
  *    Device.hasBattery()).
  * Lumen OS 1.0.9 look (decision 2026-11-10, Q1: the Z9X change of 0e3f9252 ported): sections in a rail on
  * the left, the "now" actions as large tiles, settings in cards (settings.Kit, settings.Shell, taken from
- * apps/Z9xProjector by the recipe); the rows, HAL calls and rules of the Play 6 stay as they were.
+ * apps/ProjectorBase by the recipe); the rows, HAL calls and rules of the Play 6 stay as they were.
  * All HAL I/O goes through the Hal facade (p6-hal / p6-long); results come back on the main thread.
  * Toggles are read on open and written ONLY on click. Not on the Play 6: interface resolution, problem
  * reports, fit to screen and obstacle avoidance, autofocus at power-on.
@@ -60,7 +59,7 @@ public final class SettingsActivity extends Activity {
     private View keystoneAnchor;
     private final Map<AutomationToggle, Kit.Row> toggleRows = new EnumMap<>(AutomationToggle.class);
     private final Map<AutomationToggle, Boolean> toggleState = new EnumMap<>(AutomationToggle.class);
-    private Kit.Row slot3Row, slot4Row, launcherRow, bootSourceRow, cecWakeRow;
+    private Kit.Row launcherRow, bootSourceRow, cecWakeRow;
     private Kit.Row voiceLang, voiceSpeak, voiceKey;
     private LinearLayout diagBox;
     private int diagGen;
@@ -102,7 +101,7 @@ public final class SettingsActivity extends Activity {
         super.onResume();
         refreshToggles();
         refreshTemperature();
-        refreshSlots();
+        refreshChoices();
         refreshDiagnostics();
     }
 
@@ -149,11 +148,12 @@ public final class SettingsActivity extends Activity {
         LinearLayout remote = shell.section("remote", R.drawable.ic_s2_remote, getString(R.string.s2_sec_remote));
         Kit.heading(remote, null, getString(R.string.s2_sec_remote));
         LinearLayout rc = Kit.card(this);
-        slot3Row = valueRow(rc, R.string.key_slot3, R.string.s2_d_slot, v -> pickApp(3));
-        slot4Row = valueRow(rc, R.string.key_slot4, R.string.s2_d_slot, v -> pickApp(4));
-        // Pair a new / second / reset remote (120 s fast LE scan; RemoteAutoPair.startPairing).
-        actionRow(rc, R.string.remote_pair_action, R.string.s2_d_pair,
-                v -> org.lumen.projector.remote.RemoteAutoPair.startPairing(getApplicationContext()));
+        // "Remote buttons": give a remote key an app (apps/core/lumen-remote keys, the same screen on every model)
+        Kit.add(rc, Kit.actionRow(this, getString(R.string.lumen_remote_keys_title), null)
+                .onClick(v -> org.lumen.remote.keys.KeyBindActivity.open(this)));
+        // Pair a new / second / reset remote (120 s fast LE scan; RemotePairing.startPairing).
+        actionRow(rc, R.string.lumen_remote_pair_action, R.string.s2_d_pair,
+                v -> org.lumen.remote.RemotePairing.startPairing(getApplicationContext()));
         remote.addView(rc);
 
         // Lumen OS 1.0.5: the voice assistant (mic key), only where a speech recogniser exists
@@ -324,7 +324,7 @@ public final class SettingsActivity extends Activity {
         refreshToggles();                               // FIFO: the read-back runs after the write
     }
 
-    // ------------------------------------------------------------------ remote app keys
+    // ------------------------------------------------------------------ launcher and boot source
     private Kit.Row tempRow;
 
     /** IGmpf 438 getSystemTemperature() -> °C, as stock Device info; the row stays hidden without an answer. */
@@ -338,9 +338,7 @@ public final class SettingsActivity extends Activity {
         });
     }
 
-    private void refreshSlots() {
-        slot3Row.value.setText(slotText(3));
-        slot4Row.value.setText(slotText(4));
+    private void refreshChoices() {
         refreshLauncher();
     }
 
@@ -416,27 +414,7 @@ public final class SettingsActivity extends Activity {
                 .show();
     }
 
-    private String slotText(int slot) {
-        String chosen = AppSlots.chosenPackage(this, slot);
-        String eff = AppSlots.effectivePackage(this, slot);
-        String label = AppSlots.labelOf(this, eff);
-        return chosen == null ? getString(R.string.slot_default_fmt, label) : label;
-    }
 
-    private void pickApp(final int slot) {
-        final List<AppSlots.AppEntry> apps = AppSlots.launchableApps(this);
-        final CharSequence[] items = new CharSequence[apps.size() + 1];
-        items[0] = getString(R.string.slot_default_item, AppSlots.labelOf(this, AppSlots.defaultPackage(this, slot)));
-        for (int i = 0; i < apps.size(); i++) items[i + 1] = apps.get(i).label;
-        new AlertDialog.Builder(this)
-                .setTitle(slot == 3 ? R.string.key_slot3 : R.string.key_slot4)
-                .setItems(items, (d, which) -> {
-                    AppSlots.setPackage(this, slot, which == 0 ? null : apps.get(which - 1).pkg);
-                    refreshSlots();
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
 
     // ------------------------------------------------------------------ diagnostics
     /**

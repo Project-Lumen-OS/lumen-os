@@ -43,11 +43,14 @@
     <string name="lumen_keystone">Трапеция</string>
     <string name="lumen_later">Кейінірек</string>
     <string name="lumen_limited">Шектеулі</string>
-    <string name="lumen_looking_for_the_remote">Пульт ізделуде…</string>
     <string name="lumen_manual_focus">Қолмен фокустау</string>
     <string name="lumen_movie">Фильм</string>
     <string name="lumen_music">Музыка</string>
+    <string name="lumen_not_available_at_the_boost_brightness_level">Boost жарықтық деңгейінде қолжетімсіз</string>
+    <string name="lumen_not_available_in_the_ai_picture_mode">«AI кескіні» режимінде қолжетімсіз</string>
     <string name="lumen_not_available_in_the_office_mode">«Кеңсе» режимінде қолжетімсіз</string>
+    <string name="lumen_not_available_in_the_performance_mode">«Өнімділік» режимінде қолжетімсіз</string>
+    <string name="lumen_not_available_while_game_mode_is_on">Ойын режимі қосулы кезде қолжетімсіз</string>
     <string name="lumen_obstacle_avoidance">Кедергіні айналып өту</string>
     <string name="lumen_off">Өшірулі</string>
     <string name="lumen_office">Кеңсе</string>

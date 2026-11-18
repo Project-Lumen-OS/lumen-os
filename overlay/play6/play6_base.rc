@@ -25,13 +25,12 @@ on early-boot
     # The speaker mode switches the role itself (the triggers at the end of this file, speaker/BtRole). Opt in to
     # both roles again: setprop persist.lumen.p6.bt_coexist 1 and reboot.
 
-# Play 6 only, Lumen OS 1.0.6: Bluetooth absolute volume on (the Z9X gets it from product_prop_v1.txt). The Play 6
-# vendor init sets persist.bluetooth.disableabsvol=true very early (vendor_init audit on stock and on Lumen), so a
-# build.prop line would lose; early-boot runs after it and before system_server starts Bluetooth. With it on, the
-# remote's volume keys set the speaker's own volume (AVRCP), as on a phone. Speakers paired before keep their old
-# record of the projector and may need to be paired again (BlueZ speakers cache it).
+# No AVRCP absolute volume, as stock (vendor build.prop line 160, V1.7.116 and V1.8.127): the DSP sets the Bluetooth
+# level from the volume (bluetooth_volume, lumen-audio StockVolume) and the headphones keep their own volume. A
+# persistent prop: setprop at early-boot (after vendor init, before system_server starts Bluetooth) also replaces the
+# false that Lumen OS 1.0.6..1.0.10 stored here.
 on early-boot
-    setprop persist.bluetooth.disableabsvol false
+    setprop persist.bluetooth.disableabsvol true
 
 on early-boot && property:persist.lumen.p6.bt_coexist=1
     setprop bluetooth.a2dp.src_sink_coexist.enabled true

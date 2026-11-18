@@ -11,6 +11,7 @@
     <string name="lumen_m_cancel">İptal</string>
     <string name="lumen_m_panel_boost_press_again">Boost için tekrar → tuşuna basın</string>
     <string name="lumen_m_panel_boost_leave_press_again">Boost\'tan çıkmak için tekrar ← tuşuna basın</string>
+    <string name="lumen_m_lamp_off_press_again">Görüntü kapanacak. Tekrar açmak için güç tuşuna basın. Kapatmak için tekrar ← tuşuna basın.</string>
     <string name="lumen_m_toast_setup_running">Önce kurulumu tamamlayın</string>
     <string name="lumen_m_panel_tileval_pm_ai">AI görüntü</string>
     <string name="lumen_m_panel_tileval_pm_color_accuracy">Doğru renk</string>
@@ -28,4 +29,8 @@
     <string name="lumen_m_ambient_speaker">Ortam hoparlörü</string>
     <string name="lumen_m_ct_custom">Özel</string>
     <string name="lumen_m_lamp_off">Görüntüyü kapat</string>
+    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris_dynamic">Dinamik</string>
+    <string name="lumen_m_iris_lamp_dynamic">IRIS dinamikken parlaklık değiştirilemez.</string>
+    <string name="lumen_m_iris_lamp_held">Bu IRIS ayarında parlaklık değiştirilemez.</string>
 </resources>

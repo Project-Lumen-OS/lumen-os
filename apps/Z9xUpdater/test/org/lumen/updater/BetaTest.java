@@ -61,7 +61,7 @@ public final class BetaTest {
         eq("url off", NOGMS, Ota.manifestUrl(NOGMS, false));
         eq("url private on", LATEST + "update-stable.json", Ota.manifestUrl(LATEST + "update-stable.json", true));
         eq("beta file", "update-public-beta.json", Ota.channelFile(BETA));
-        eq("beta beside stable on the tag z9x", BETA, Ota.BETA_MANIFEST_URL);
+        eq("beta beside stable on the tag z9x", BETA, Target.SPEC.betaUrl);
 
         // pure: what one check reads, and which manifest it offers
         eq("read off", NOGMS, String.join(" ", Channels.read(NOGMS, false)));

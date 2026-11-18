@@ -4,7 +4,8 @@ Status (2026-11-12): TEST images only (`rs30-tN-net`), trial only. Nothing has b
 
 Owner decisions (2026-11-12): Lumen OS reaches this model only as a trial, like the X50 (no computer installer, no
 install for good); features exist in its menu only where its stock has them; the pan-tilt head, 3D and the 29 calls
-new against the X50 come later.
+new against the X50 come later. 3D is in the menu since branch quick-3d-x50 (the X50 calls, its five stock
+modes).
 
 ## Identity
 `ro.boot.xgimi.modelname` G0155, `ro.product.name` Product_athena35ultramax, `ro.product.device` horse_popular (as the

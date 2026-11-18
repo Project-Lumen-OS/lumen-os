@@ -63,7 +63,7 @@
 # XGIMI Z9X, what it writes, ever: system_<slot>, z9x_blobs_<slot> (create/resize/flash), z9x_gapps_<slot>
 # (--gapps-zip: create/resize/flash of the erofs image built here, 'gapps': create/resize/format, filled over adb as
 # root, delete), and formats userdata, metadata and cache. It may
-# delete only *-cow leftovers and XGIMI's unused product_<slot> and system_ext_<slot>. Every other
+# delete only *-cow leftovers of a finished update of that slot and XGIMI's unused product_<slot> and system_ext_<slot>. Every other
 # partition name is refused by fb_allowed(). It NEVER touches vbmeta,
 # boot, vendor, dtbo, mboot, persist, xgimi*, tvconfig, misc, frp or the other slot, and never runs
 # 'fastboot -w' or 'fastboot erase' (proven boot hang on this projector).
@@ -400,8 +400,9 @@ fb_allowed() {  # action partition -> 0 if the installer may touch it
     return 1
   fi
   # FLOW=ab-fastbootd: system and z9x_blobs of the slot abf_fbd_check found running (ABF_S, one of SLOTS), the
-  # Google services add-on z9x_gapps of that slot when the profile has GAPPS_ALLOW (the only delete), and the
-  # format of userdata and metadata when WIPE_PARTS names them. No erase, vbmeta, KEEP partition or other slot.
+  # Google services add-on z9x_gapps of that slot when the profile has GAPPS_ALLOW, the format of userdata and
+  # metadata when WIPE_PARTS names them, and the delete of a *-cow leftover of a finished update of that slot
+  # (cow_leftover, lib/cow_rules.conf). No erase, vbmeta, KEEP partition or other slot.
   if [ "$P_FLOW" = ab-fastbootd ]; then
     case " $P_SLOTS " in *" ${ABF_S#_} "*) ;; *) return 1 ;; esac
     case "$1:$2" in
@@ -411,6 +412,7 @@ fb_allowed() {  # action partition -> 0 if the installer may touch it
       format:userdata|format:metadata)   # never while an update is staged or merging (the last getvar all)
         [ "$(abf_gv snapshot-update-status)" = none ] || return 1
         case " $P_WIPE " in *" $2 "*) return 0 ;; esac ;;
+      delete:*-cow) cow_leftover "$2" "$ABF_S" && return 0 ;;   # a leftover of a finished update (abf_cow_clear)
     esac
     return 1
   fi
@@ -419,7 +421,7 @@ fb_allowed() {  # action partition -> 0 if the installer may touch it
     flash:system|flash:"system$s") return 0 ;;
     flash:"z9x_blobs$s"|create:"z9x_blobs$s"|resize:"z9x_blobs$s") return 0 ;;
     create:"z9x_gapps$s"|resize:"z9x_gapps$s"|format:"z9x_gapps$s"|delete:"z9x_gapps$s"|flash:"z9x_gapps$s") return 0 ;;
-    delete:*-cow) return 0 ;;
+    delete:*-cow) cow_leftover "$2" "$s" && return 0 ;;
     delete:"product$s"|delete:"system_ext$s") return 0 ;;
     format:userdata|format:metadata|format:cache) return 0 ;;
   esac
@@ -834,7 +836,15 @@ cmd_flash() {
     fb reboot
     die "$(m xgimi_lumen_update_still_being "$(gv_val snapshot-update-status)")"
   fi
-  for p in $(printf '%s\n' "$GV" | grep -oE 'partition-size:[a-z0-9_]+-cow' | cut -d: -f2 | sort -u); do
+  # *-cow left by a finished update (snapshot-update-status none: no merge pending, the running slot's data is whole in
+  # its own extents) are deleted, as libsnapshot's UnmapAndDeleteCowPartition drops them when the next update starts,
+  # by the rule of lib/cow_rules.conf (cow_leftover: <partition><running slot>-cow of a partition of the table with a
+  # size): any other *-cow is STOP before the first write. fastbootd writes the table without them to every metadata
+  # slot (UpdateAllPartitionMetadata).
+  cow_load
+  p=$(cow_odd "$S")
+  [ -z "$p" ] || { fb reboot; die "$(m cow_partition_not_slot "$p" "${S#_}")"; }
+  for p in $(cow_parts); do
     say "$(m removing_update_leftover) $p"; fb_do delete "$p" || { fb reboot; die "delete $p"; }
   done
   for p in "product$S" "system_ext$S"; do
@@ -1014,6 +1024,68 @@ GAPPS_DIR=/data/local/tmp/lumen-gapps
 gapps_line() { awk -v z="zip=$1" '$1 == z' "$GAPPS_ALLOW_F" | head -n 1; }   # zip sha256 -> its zip= line
 gapps_field() { printf '%s\n' "$1" | tr ' ' '\n' | sed -n "s/^$2=//p" | head -n 1; }    # zip= line, key -> value
 gv_size() { printf '%s\n' "$GV" | sed -n "s/^(bootloader) partition-size:$1: *\(0x[0-9a-fA-F]*\).*/\1/p" | head -n 1; }
+# *-cow partitions in super: the working space of a Virtual A/B update, kept after its merge until the next update
+# starts (libsnapshot UnmapAndDeleteCowPartition). Deleted only as the leftovers of a finished update, by the rule
+# data of lib/cow_rules.conf (read, never sourced; cow_load): libsnapshot's rule as far as fastbootd's 'getvar all'
+# shows it. tools/devices/test/cow_rules_parity.py checks the file, installer_cow_rules.sh / .ps1 run both installers
+# on its cases (cow_cases.tsv).
+COW_SFX=""; COW_BASE=""; COW_STATUS=""
+COW_ADB=""   # an update in use as adb showed it before fastbootd (cow_adb_seen), '' = none seen: no *-cow is deleted then
+cow_load() {  # the rule data into COW_*; a missing file or key stops the installer (call it outside $(...))
+  local k v
+  for k in suffix base status; do
+    v=$(sed -n "s/^$k=//p" "$HERE/lib/cow_rules.conf" 2>/dev/null | tr -d '\r' | head -n 1)
+    [ -n "$v" ] || die "lib/cow_rules.conf has no $k: download the installer again"
+    case $k in suffix) COW_SFX=$v ;; base) COW_BASE=$v ;; status) COW_STATUS=$v ;; esac
+  done
+}
+cow_parts() {  # the *-cow partitions of the table in $GV, however spelled, one per line
+  [ -n "$COW_SFX" ] || return 0
+  printf '%s\n' "$GV" | tr -d '\r' | sed -n "s/^(bootloader) partition-size:\([^:]*$COW_SFX\):.*/\1/p" | LC_ALL=C sort -u
+}
+cow_leftover() {  # name slot(_a/_b): 0 = a leftover of a finished update of that slot, which may be deleted
+  local b sz
+  [ -n "$COW_SFX" ] && [ -n "$COW_BASE" ] && [ -n "$2" ] || return 1
+  [ -z "${COW_ADB-}" ] || return 1
+  [ "$(gv_val snapshot-update-status)" = "$COW_STATUS" ] || return 1
+  case "$1" in *"$COW_SFX") b=${1%"$COW_SFX"} ;; *) return 1 ;; esac
+  printf '%s\n' "$b" | LC_ALL=C grep -Eqx -- "$COW_BASE" || return 1
+  case "$b" in *"$2") ;; *) return 1 ;; esac
+  sz=$(gv_size "$b")
+  [ -n "$sz" ] && [ $((sz)) -gt 0 ]
+}
+cow_odd() {  # slot: the first *-cow in $GV that is no leftover of a finished update of that slot ('' = none)
+  local p
+  [ -n "$COW_SFX" ] || { echo lib/cow_rules.conf; return 0; }
+  for p in $(cow_parts); do cow_leftover "$p" "$1" || { echo "$p"; return 0; }; done
+}
+# fastbootd's snapshot-update-status is the one signal 'getvar all' gives. Before 'adb reboot fastboot' the running
+# system shows two more, read only: the snapshot devices of an update in /dev/block/mapper (any shell may list it on
+# stock, the vbmeta check reads it too) and, with a root shell (Lumen OS), libsnapshot's boot indicator and state file.
+# Either one keeps every *-cow (cow_leftover) and stops the ab-fastbootd visit before the first write (the Z9X flow
+# reads only fastbootd's word).
+cow_dm_busy() {  # the /dev/block/mapper listing: the first device of a partition with a snapshot ('' = none)
+  local d
+  for d in $1; do
+    case "${d##*/}" in *-base|*-src|*-cow-img|*-user-cow|*-user-cow-init) echo "/dev/block/mapper/${d##*/}"; return 0 ;; esac
+  done
+}
+cow_ota_busy() {  # 'ls' of /metadata/ota and its state file as 'od -An -tx1' prints it: '' = no update in use, else what
+  # shows one (the boot indicator, a state other than none or merge-completed: empty, 08 00, 08 05)
+  case " $(printf '%s' "$1" | tr '\r\n\t' '   ') " in *" snapshot-boot "*) echo /metadata/ota/snapshot-boot; return 0 ;; esac
+  case "$(printf '%s' "$2" | tr -d ' \r\n\t')" in
+    ''|0800|0805) ;;
+    *) echo "/metadata/ota/state $(printf '%s' "$2" | tr -s ' \r\n\t' ' ' | sed 's/^ //; s/ $//')" ;;
+  esac
+}
+cow_adb_seen() {  # adb, right before 'adb reboot fastboot': an update in use as the running system shows it ('' = none)
+  local l s
+  l=$(adbs shell ls /dev/block/mapper/ 2>/dev/null | tr -d '\r')
+  s=$(cow_dm_busy "$l")
+  [ -z "$s" ] || { echo "$s"; return 0; }
+  [ "$(adbs shell id -u 2>/dev/null | tr -d '\r')" = 0 ] || return 0
+  cow_ota_busy "$(adbs shell 'ls /metadata/ota/ 2>/dev/null' 2>/dev/null)" "$(adbs shell 'od -An -tx1 /metadata/ota/state 2>/dev/null' 2>/dev/null)"
+}
 super_free() {  # bytes of super that no logical partition uses: each rounded up to 1 MiB, 2 MiB for metadata
   local sup p sz used=0
   sup=$(gv_size super)
@@ -3222,15 +3294,17 @@ p6_gapps_fill_step() {  # step 3: on the first start (old data), fill lumen_gapp
 # system<slot> of the running slot when SLOTS has it, then 'fastboot format:<WIPE_FS>' of WIPE_PARTS (fastbootd
 # reports them as raw, so the type is always given: ext4 made by the host's mke2fs, or f2fs by its make_f2fs, with
 # casefold and projid for userdata as on the Z9X), and with GAPPS_ALLOW z9x_gapps<slot>
-# (create, resize, flash, delete: the Google services add-on). Never vbmeta (the user types that step: 'vbmeta'),
-# never -w, erase, another delete, --slot, set_active, a KEEP partition or the other slot. The slot is the one
+# (create, resize, flash, delete: the Google services add-on), and the delete of a *-cow leftover of a finished
+# update of that slot (cow_leftover). Never vbmeta (the user types that step: 'vbmeta'), never -w, erase, another
+# delete, --slot, set_active, a KEEP partition or the other slot. The slot is the one
 # the system runs from and fastbootd reports (a or b: after a Lumen OS update it is the other one). With SLOT_CHECK
 # (abf_slot_check) the other slot is shown before the first write (asked when it holds no system: a fall to it starts
 # nothing) and the slots are read again after system (still the written slot, not unbootable, the other slot as it
 # was, else STOP before the wipe). fastbootd has no
 # idle timeout, so one visit writes and wipes. A staged or merging update (stock or Lumen OS) shows in fastbootd
-# (snapshot-update-status, *-cow): 'flash' stops there, nothing written, so userdata and metadata are never
-# formatted while one exists. Steps: check -> backup (asked) -> vbmeta (asked) -> blobs -> flash; verify later, after
+# (snapshot-update-status): 'flash' stops there, nothing written, so userdata and metadata are never formatted while
+# one exists. The *-cow a finished update left are deleted before the first write (abf_cow_clear, lib/cow_rules.conf),
+# any other *-cow stops it the same way. Steps: check -> backup (asked) -> vbmeta (asked) -> blobs -> flash; verify later, after
 # the setup with debugging on again. Progress: $STATE_DIR/<id>/state (step_system: started | done, so a write cut
 # off in the middle is never followed by a restart that would start half a system; step_zblobs: z9x_blobs written
 # in this visit, so a resumed run needs no blobs file).
@@ -3682,7 +3756,7 @@ abf_blobs() {
 }
 
 abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot and the known layout; else STOP
-  local why="" cs k sz s v
+  local why="" cs k sz s v c
   ABF_S=""
   GV=$(fb getvar all 2>&1)
   # the HB fastbootd answers 'getvar slot-successful:<slot>' but may leave it out of 'getvar all' (2026-11-05, a
@@ -3706,14 +3780,8 @@ abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot
   if [ -n "$why" ]; then :
   elif [ "$(state_get dev_lumen)" = 1 ]; then   # a Lumen OS update: it finishes only while Lumen OS runs
     [ "$(abf_gv snapshot-update-status)" = none ] || why="$(m update_finishing) (snapshot-update-status $(abf_gv snapshot-update-status)): $(m start_lumen_os_wait_10)"
-    if [ -z "$why" ] && printf '%s\n' "$GV" | grep -qE ':[a-z0-9_]+-cow(:|$)'; then
-      why="$(m cow_partitions_update_finishing)"
-    fi
   else
     [ "$(abf_gv snapshot-update-status)" = none ] || why="$(m xgimi_update_staged_not_finished) (snapshot-update-status $(abf_gv snapshot-update-status)): $(m let_projector_start_turn_automatic)"
-    if [ -z "$why" ] && printf '%s\n' "$GV" | grep -qE ':[a-z0-9_]+-cow(:|$)'; then
-      why="$(m cow_partitions_xgimi_update_not)"
-    fi
   fi
   [ -n "$why" ] || [ "$(abf_gv super-partition-name)" = super ] || why="super-partition-name '$(abf_gv super-partition-name)'"
   [ -n "$why" ] || [ "$(abf_gv "is-logical:system_$cs")" = yes ] || why="is-logical:system_$cs '$(abf_gv "is-logical:system_$cs")'"
@@ -3723,8 +3791,36 @@ abf_fbd_check() {  # fastbootd, one getvar all: this projector, its running slot
     [ -n "$sz" ] && [ $((sz)) -gt 0 ] || why="$(m partition_missing "$k" "$cs") (partition-size '$sz')"
   done
   [ -z "$why" ] || abf_fb_stop "$(m fastboot_mode_check_failed): $why."
+  # *-cow left by a finished update (stock's or Lumen OS's) are deleted before the first write of the visit
+  # (abf_cow_clear), as on the Z9X: any other *-cow is STOP here
+  cow_load
+  if [ -n "$COW_ADB" ] && [ -n "$(cow_parts)" ]; then
+    if [ "$(state_get dev_lumen)" = 1 ]; then why="$(m update_finishing) ($COW_ADB): $(m start_lumen_os_wait_10)"
+    else why="$(m xgimi_update_staged_not_finished) ($COW_ADB): $(m let_projector_start_turn_automatic)"; fi
+    abf_fb_stop "$(m fastboot_mode_check_failed): $why."
+  fi
+  c=$(cow_odd "_$cs")
+  if [ -n "$c" ]; then
+    if [ "$(state_get dev_lumen)" = 1 ]; then why=$(m cow_partitions_update_finishing "$c" "$cs")
+    else why=$(m cow_partitions_xgimi_update_not "$c" "$cs"); fi
+    abf_fb_stop "$(m fastboot_mode_check_failed): $why."
+  fi
   ABF_S=_$cs
   ok "$(m fastboot_mode_slot "$P_NAME" "$SERIAL" "$cs")"
+}
+abf_cow_clear() {  # fastbootd: the *-cow leftovers abf_fbd_check let through deleted, then 'getvar all' read again
+  local p n=0 keep
+  for p in $(cow_parts); do
+    say "$(m removing_update_leftover) $p"
+    fb_do delete "$p" || abf_fb_stop "delete $p"
+    n=$((n + 1))
+  done
+  [ "$n" -gt 0 ] || return 0
+  # the free space of super now; the slot marks a fastbootd leaves out of 'getvar all' (abf_fbd_check) kept
+  keep=$(printf '%s\n' "$GV" | grep '^(bootloader) slot-successful:')
+  GV=$(fb getvar all 2>&1)
+  printf '%s\n' "$GV" | grep -q '^(bootloader) slot-successful:' || GV="$GV
+$keep"
 }
 abf_room() {  # [blobs file]: the new z9x_blobs and the image (and the add-on of ABF_GNEED) fit into super; else STOP
   local free sys old img room need blob=0 gold g
@@ -3869,6 +3965,7 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
     m connect_projectors_usb_port; echo
     printf '%s ' "$(m press_enter_when_cable)"
     read -r a
+    COW_ADB=$(cow_adb_seen)
     say "$(m restarting_fastboot_mode_about_30)"
     # saved first: a restart that happens although adb reports an error is still continued by the next run
     state_set step_fastboot "$(date +%Y%m%d-%H%M%S)"
@@ -3885,6 +3982,7 @@ abf_write() {  # stock or Lumen OS running: checks, ERASE, cable, fastbootd: z9x
   fi
   if [ "$(state_get step_system)" != done ]; then
     [ "$P_SLOT_CHECK" != yes ] || abf_slot_check before
+    abf_cow_clear
     abf_room "$blobs"
     if [ -n "$blobs" ]; then
       if [ -n "$(gv_size "z9x_blobs$ABF_S")" ]; then fb_do resize "z9x_blobs$ABF_S" "$BLOB_SIZE"
@@ -3972,6 +4070,7 @@ abf_gapps_cable() {  # Lumen OS runs: cable in, restart into fastboot mode for t
   m connect_projectors_usb_port; echo
   printf '%s ' "$(m press_enter_when_cable)"
   read -r a
+  COW_ADB=$(cow_adb_seen)
   say "$(m restarting_fastboot_mode_about_30)"
   state_set gapps_fastboot "$(date +%Y%m%d-%H%M%S)"
   if ! adbs reboot fastboot >/dev/null 2>&1 && p6_alive; then
@@ -4039,6 +4138,7 @@ abf_gapps_install() {
   [ "$infb" = 1 ] || abf_gapps_cable
   abf_fbd_check
   p=z9x_gapps$ABF_S
+  abf_cow_clear
   # room: super's free space and what the partition has now
   local need free cur
   need=$(( (GI_SIZE + 1048575) / 1048576 * 1048576 ))

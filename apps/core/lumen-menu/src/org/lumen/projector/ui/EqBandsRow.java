@@ -11,6 +11,8 @@ import android.os.Looper;
 import android.text.TextPaint;
 import android.view.KeyEvent;
 
+import org.lumen.icons.IconText;
+
 /**
  * v6.4: the equalizer bands as vertical sliders in one row (D-pad driven).
  *
@@ -78,8 +80,8 @@ public class EqBandsRow extends Row {
     // ------------------------------------------------------------------ API
     /** Hints shown as the title: idle (select / OK to adjust) and while adjusting. */
     public EqBandsRow setHints(CharSequence idle, CharSequence edit) {
-        hintIdle = idle == null ? "" : idle;
-        hintEdit = edit == null ? "" : edit;
+        hintIdle = idle == null ? "" : IconText.keys(getContext(), idle);
+        hintEdit = edit == null ? "" : IconText.keys(getContext(), edit);
         setTitle(editing ? hintEdit : hintIdle);
         return this;
     }

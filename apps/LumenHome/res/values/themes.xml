@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home 2.0: the starting window is the light field (the default theme); Home paints the theme on screen at once. -->
+    <style name="Theme.Lumen.Home" parent="@android:style/Theme.Material.Light.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@drawable/bg_start</item>
+        <item name="android:colorBackground">@color/lumen_light_bg</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorAccent">@color/lumen_light_accent</item>
+        <item name="android:textColorHighlight">#662A5CC4</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBackground">@color/lumen_light_bg</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+    </style>
+    <!-- Search: its own task, same look. -->
+    <style name="Theme.Lumen.Search" parent="Theme.Lumen.Home" />
+    <!-- Files and Install from USB over Home: translucent, the side panel brings its own scrim. -->
+    <style name="Theme.Lumen.Panel" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorAccent">@color/lumen_light_accent</item>
+        <item name="android:defaultFocusHighlightEnabled">false</item>
+    </style>
+    <!-- brand mark colours (ui/MarkView inflates the mark through one of these) -->
+    <style name="Lumen.Mark.Light" parent="">
+        <item name="lumenMarkA">@color/lumen_light_mark_a</item>
+        <item name="lumenMarkB">@color/lumen_light_mark_b</item>
+        <item name="lumenMarkCore">@color/lumen_light_mark_core</item>
+        <item name="lumenWord">@color/lumen_light_word</item>
+    </style>
+    <style name="Lumen.Mark.Dark" parent="">
+        <item name="lumenMarkA">@color/lumen_dark_mark_a</item>
+        <item name="lumenMarkB">@color/lumen_dark_mark_b</item>
+        <item name="lumenMarkCore">@color/lumen_dark_mark_core</item>
+        <item name="lumenWord">@color/lumen_dark_word</item>
+    </style>
+</resources>

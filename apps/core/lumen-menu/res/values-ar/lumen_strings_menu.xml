@@ -13,7 +13,11 @@
     <string name="lumen_m_hdmi_range">نطاق الألوان</string>
     <string name="lumen_m_hdmi_range_full">كامل</string>
     <string name="lumen_m_hdmi_range_limited">محدود</string>
+    <string name="lumen_m_hdmi_range_auto_full">تلقائي (Full)</string>
+    <string name="lumen_m_hdmi_range_auto_limited">تلقائي (Limited)</string>
     <string name="lumen_m_kst_more">أخرى</string>
+    <string name="lumen_m_kst_size_position">الحجم والموضع</string>
+    <string name="lumen_m_kst_smart">ذكي</string>
     <string name="lumen_m_kst_restore">العودة إلى الصورة الأصلية</string>
     <string name="lumen_m_launcher_classic">Android TV (الكلاسيكية)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
@@ -38,9 +42,8 @@
     <string name="lumen_m_panel_game_mode">وضع اللعب</string>
     <string name="lumen_m_panel_game_speed">سرعة الاستجابة</string>
     <string name="lumen_m_panel_high">مرتفع</string>
-    <string name="lumen_m_panel_image_correction_settings">إعدادات تصحيح الصورة</string>
     <string name="lumen_m_panel_lamp">السطوع</string>
-    <string name="lumen_m_panel_lamp_hint">عند المستوى 10، اضغط → مرتين لتفعيل Boost.</string>
+    <string name="lumen_m_panel_lamp_hint">عند المستوى 10، اضغط ← مرتين لتفعيل Boost.</string>
     <string name="lumen_m_panel_low">منخفض</string>
     <string name="lumen_m_panel_manual_focus">تركيز يدوي</string>
     <string name="lumen_m_panel_manual_keystone">تصحيح شبه المنحرف يدويًا</string>
@@ -51,7 +54,6 @@
     <string name="lumen_m_panel_off">إيقاف</string>
     <string name="lumen_m_panel_on">تشغيل</string>
     <string name="lumen_m_panel_optical_zoom">تكبير بصري</string>
-    <string name="lumen_m_panel_optical_zoom_summary">حجم الصورة دون فقدان الوضوح. التصحيح التلقائي للتشوه و«ملاءمة الشاشة» يغيّران التكبير مجددًا.</string>
     <string name="lumen_m_panel_picture_mode">وضع الصورة</string>
     <string name="lumen_m_panel_picture_reset">إعادة ضبط إعدادات الصورة</string>
     <string name="lumen_m_panel_pm_ai">صورة بالذكاء الاصطناعي</string>
@@ -129,9 +131,16 @@
     <string name="lumen_m_angle_h">الزاوية الأفقية</string>
     <string name="lumen_m_angle_v">الزاوية الرأسية</string>
     <string name="lumen_m_dynamic_contrast">التباين الديناميكي</string>
-    <string name="lumen_m_dynamic_black">تعزيز الأسود الديناميكي</string>
+    <string name="lumen_m_dynamic_black">تحسين مستوى الأسود الديناميكي</string>
     <string name="lumen_m_sleep_timer">مؤقت السكون</string>
     <string name="lumen_m_remote">إقران جهاز التحكم</string>
     <string name="lumen_m_ct_standard">قياسي</string>
     <string name="lumen_m_ct_movie">فيلم</string>
+    <string name="lumen_m_signal">الإشارة</string>
+    <string name="lumen_m_signal_pin">إبقاء بطاقة الإشارة على الشاشة</string>
+    <string name="lumen_m_signal_refresh">تحديث بطاقة الإشارة</string>
+    <string name="lumen_m_signal_refresh_normal">عادي</string>
+    <string name="lumen_m_signal_refresh_fast">سريع</string>
+    <string name="lumen_m_signal_refresh_note">سريع: قد يحدث تقطع نادر في الصورة</string>
+    <string name="lumen_m_hdr_developer">للمطورين</string>
 </resources>

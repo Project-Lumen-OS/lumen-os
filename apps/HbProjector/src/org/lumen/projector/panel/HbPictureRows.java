@@ -6,7 +6,6 @@ import org.lumen.menu.FeatureId;
 import org.lumen.menu.ProjectorFeatures.Result;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
-import org.lumen.projector.hal.AiScene;
 import org.lumen.projector.hal.ColorTemp;
 import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
@@ -121,37 +120,23 @@ final class HbPictureRows extends HbRows {
         return EXPLAINED;
     }
 
-    /** HAL thread: picture mode with the stock refusals (game mode, Colour accuracy in the user's Boost). */
+    /**
+     * HAL thread: picture mode with the stock refusals (game mode, Colour accuracy in the user's Boost). The modes this
+     * content does not allow are greyed by the profile's support lists (SignalRule) and never reach here.
+     */
     private String setPictureMode(String value, GmpfClient g, Gmpf2Client g2) throws Exception {
         Integer w = HbMenuGates.PICTURE_MODE.wire(value);
         if (w == null) throw new IllegalArgumentException("picture mode " + value);
         PictureMode m = PictureMode.fromWire(w);
         Integer raw = g.getPictureModeRaw();
         if (raw != null && PictureMode.fromWire(raw) == m) return null;
-        Integer hdr;
-        try { hdr = g.getHdrType(); } catch (Throwable t) { hdr = null; }
-        if (!offered(w, hdr)) return EXPLAINED;                         // stock hides it for this content
         if (gameModeOn(g, raw)) return "blocked_game";
         if (m == PictureMode.COLOR_ACCURACY && BoostRules.blocksColorAccuracy(safeBoost(g2), raw)) {
             return "boost_blocks_change";
         }
         if (!g.setPictureMode(m)) throw new IllegalStateException("TV 33 false");
-        if (m == PictureMode.AI) g.setAiScene(AiScene.FILM);
+        org.lumen.projector.AiScenePolicy.afterOwnWrite(g, m.wire);
         return null;
-    }
-
-    /**
-     * Stock visibility of a picture mode for the content on screen (dapengse support lists): HDR Vivid only with HDR
-     * Vivid content, colour accuracy for SDR, HDR10, HLG and HDR10+; every other mode always. Unknown content = SDR.
-     */
-    static boolean offered(int pictureModeWire, Integer hdrType) {
-        int hdr = hdrType == null ? GmpfClient.HDR_SDR : hdrType;
-        if (pictureModeWire == PictureMode.HDR_VIVID.wire) return hdr == GmpfClient.HDR_VIVID;
-        if (pictureModeWire == PictureMode.COLOR_ACCURACY.wire) {
-            return hdr == GmpfClient.HDR_SDR || hdr == GmpfClient.HDR_HDR10 || hdr == GmpfClient.HDR_HLG
-                    || hdr == GmpfClient.HDR_HDR10_PLUS;
-        }
-        return true;
     }
 
     /** Picture sliders: through the HB slide coalescer (newest value, one write in flight), as the HB panel did. */

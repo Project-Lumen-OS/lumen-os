@@ -61,8 +61,10 @@ SIGN = os.path.join(G, "tools", "sign")
 sys.path.insert(0, SIGN)
 sys.path.insert(0, os.path.join(G, "tools", "play6"))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(G, "tools", "base_patch"))
 import apex_sign  # noqa: E402  (read only)
 import apexlib  # noqa: E402  (read only)
+import base_patch  # noqa: E402
 import check_device_signers  # noqa: E402
 import devices  # noqa: E402
 import sign_play6  # noqa: E402  (read only: the helpers named in the header)
@@ -699,8 +701,8 @@ def stage_base(x):
             for r in todo:
                 r["out_file"] = os.path.join(part, r["path"])
                 os.makedirs(os.path.dirname(r["out_file"]), exist_ok=True)
-                futs.append(ex.submit(sign_tar.resign_apk, r["file"], r["out_file"], key, r["info"]["schemes"],
-                                      x.tools, x.env))
+                futs.append(ex.submit(sign_tar.resign_apk, resign_input(r, work), r["out_file"], key,
+                                      r["info"]["schemes"], x.tools, x.env))
             for f in cf.as_completed(futs):
                 f.result()
         for norm, a in sorted(apex_final.items()):
@@ -776,6 +778,19 @@ def stage_base(x):
         return 0
     finally:
         shutil.rmtree(work, ignore_errors=True)
+
+
+def resign_input(r, work):
+    """What is signed for the base APK row r: the base file, or its copy with the fixes of tools/base_patch
+    (patches.tsv: TvSettings Add accessory reports Paired when the speaker connects before it listens, its About page
+    shows the projector's model code, XGIMI firmware and Back to the XGIMI system)."""
+    try:
+        p = base_patch.patched_apk(r["path"], r["file"], work)
+    except base_patch.Stop as e:
+        die(f"base_patch: {e}")
+    if p:
+        log(f"{r['path']}: signed with the base_patch fixes {' '.join(x['id'] for x in base_patch.chain(r['path']))}")
+    return p or r["file"]
 
 
 # ------------------------------------------------------------------ stage, check-image

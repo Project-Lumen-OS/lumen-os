@@ -99,8 +99,6 @@
     <string name="panel_pm_performance_msg">Make sure the vents are not blocked and the room is not warmer than 25 °C. Do not use this mode for a long time.</string>
     <string name="panel_lamp">Brightness</string>
     <string name="panel_boost">Boost</string>
-    <string name="panel_boost_press_again">Press → again for Boost</string>
-    <string name="panel_boost_leave_press_again">Press ← again to leave Boost</string>
     <string name="panel_boost_3d">Turn off 3D and try again</string>
     <string name="panel_boost_hot">The projector is too warm for Boost. Try again later</string>
     <string name="panel_ultra120">Ultra 120 Hz</string>
@@ -187,7 +185,6 @@
     <string name="panel_src_hdmi" translatable="false">HDMI</string>
     <string name="panel_system_settings">System settings</string>
     <string name="panel_hdmi_settings">HDMI settings</string>
-    <string name="panel_lamp_hint">At 10, press → twice to turn on Boost.</string>
     <string name="panel_eye_desc">The light is dimmed when someone is in front of the lens.</string>
     <!-- Lumen OS 1.0.2: 3D on the Picture page (display.ThreeD; the stock 3D modes) -->
     <string name="panel_3d">3D</string>
