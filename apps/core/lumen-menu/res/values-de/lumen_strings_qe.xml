@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Verschieben</string>
     <string name="lumen_qe_move_hint">Kreise bewegen sich nur in der oberen Reihe, Kacheln nur zwischen den Zeilen. Für einen Kreis die Ansicht der Kachel ändern.</string>
     <string name="lumen_qe_put">Hier ablegen</string>
-    <string name="lumen_qe_cancel">Abbrechen</string>
     <string name="lumen_qe_full">Das Menü ist voll. Wählen Sie eine kleinere Ansicht oder die Liste.</string>
     <string name="lumen_qe_list_full">So viele Einträge passen nicht in eine Liste. Entfernen Sie zuerst einige.</string>
     <string name="lumen_qe_pinned">Dieser Knopf bleibt immer im Menü.</string>

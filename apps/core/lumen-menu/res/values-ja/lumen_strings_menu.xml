@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost で映像は明るくなりますが、色が淡くなります。色空間は変わりません。</string>
     <string name="lumen_m_cec_entry">HDMI 機器 (CEC)</string>
     <string name="lumen_m_eq_title">イコライザー</string>
-    <string name="lumen_m_fit_row">スクリーンサイズに合わせる</string>
-    <string name="lumen_m_fit_row_summary">スクリーンまでの距離とサイズからズームを設定します</string>
     <string name="lumen_m_hdmi_mode">HDMI モード</string>
     <string name="lumen_m_hdmi_mode_compat">互換 (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">拡張 (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">高速</string>
     <string name="lumen_m_signal_refresh_note">高速: まれに映像がカクつくことがあります</string>
     <string name="lumen_m_hdr_developer">開発者向け</string>
+    <string name="lumen_m_hdr_power">電源オン</string>
+    <string name="lumen_m_power_on_ac">電源オンで自動スタート</string>
+    <string name="lumen_m_power_on_ac_tip">電源をオンにすると、プロジェクターは自動的に始動します</string>
+    <string name="lumen_m_custom_base">基準</string>
+    <string name="lumen_m_custom_delete">カスタム画質設定を削除</string>
+    <string name="lumen_m_custom_delete_ask">カスタム画像モードを削除しますか？</string>
+    <string name="lumen_m_custom_confirm">確定</string>
+    <string name="lumen_m_custom_name">画像名を入力してください</string>
+    <string name="lumen_m_custom_name_empty">画像名は必須です</string>
+    <string name="lumen_m_custom_name_taken">この名前はすでに使用されています。別の名前を入力してください</string>
+    <string name="lumen_m_custom_name_max">これ以上は入力できません</string>
 </resources>

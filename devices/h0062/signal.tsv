@@ -18,6 +18,6 @@ port_hw	GmTvManager 153 getHdmiHwConfig	CEC, ARC and physical address of the por
 dv_mode	GmTvManager 75 getDolbyVisionPicMode	Dolby Vision bright or dark, shown only with Dolby Vision
 hgig	GmTvManager 192 getHGiGMode	HGiG
 tone_map	GmTvManager 175 GetHDRDyToneMappingStatus	HDR dynamic tone mapping switch
-temp_light	TemperatureManager 7 getTemperatureFromSensor	sensor 5 only, the red laser (LumenSensors reads the same)
+temp_light	TemperatureManager 7 getTemperatureFromSensor	sensor 5 only, the red laser (the sensor card reads the same)
 temp_system	TemperatureManager 6 getSystemTemperature	temperature inside
 aspect	GmTvManager 36 getAspectRatio	the aspect setting, only where the model has it (the signal's own aspect comes from its size)

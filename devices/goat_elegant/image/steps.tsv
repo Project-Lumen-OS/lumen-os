@@ -11,7 +11,7 @@ dsutest	need	hb_dsu_testadb.rc
 lumen	need	hb_model_props.rc	hb_model_props.tsv	hb_model_prop_dapengse.txt	hb_model_prop_dapenghm.txt	hb_model_prop_dapengfhm.txt	model_props.py	x50_props.py
 lumen	need	hb_lumen_prop.txt	privapp-permissions-hbprojector.xml	bootanimation.zip	privapp-permissions-z9xhome.xml	privapp-permissions-z9xsetup.xml	z9x-home-default-permissions.xml	z9x-projector-default-permissions.xml	z9x-airplay-default-permissions.xml	z9x-sysconfig-nogms.xml	hb_audio.rc	hb_audio_policy_engine_stream_volumes.xml	hb_audio_policy_configuration.xml	hb_audio_policy_check.py	hb_vendor_services.rc	z9x_nui.rc	z9x_nui.sh	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3841.idc	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	check_privapp.py	apkinfo.py	z9x_gapps.rc	z9x_gapps.sh	z9x-gapps-sysconfig.xml	gapps_allow.txt	hb_media.rc	privapp-permissions-lumeninfo.xml	hb_bt.rc	hb_bt_sbc.py	lumen_dsu_install.rc	lumen_dsu_install.sh
 lumen	sums	signed_stage
-lumen	listed	signed_stage	pinned/Z9xHome.apk	apps/HbSetup.apk	pinned/Z9xTvInput.apk	pinned/Z9xLineagePlatformOverlay.apk	pinned/Z9xAirPlay.apk	apps/HbProjector.apk	apps/HbFrameworkOverlay.apk	apps/LumenInfo.apk	apps/HbTvInput.apk	apps/LumenDsuInstall.apk	base_signed/base_signed.tsv	apps/LumenKeyboard.apk
+lumen	listed	signed_stage	pinned/Z9xHome.apk	apps/HbSetup.apk	pinned/Z9xTvInput.apk	pinned/Z9xLineagePlatformOverlay.apk	pinned/Z9xAirPlay.apk	apps/HbProjector.apk	apps/HbFrameworkOverlay.apk	apps/LumenInfo.apk	apps/HbTvInput.apk	apps/LumenDsuInstall.apk	base_signed/base_signed.tsv	apps/LumenKeyboard.apk	apps/LumenPackageInstallerOverlay.apk
 # the click volume file and the audio policy file, each against the pinned HB vendor file of the stock dump here
 lumen	run	audio_click.py	{V130}/vendor/etc/audio_policy_engine_stream_volumes.xml	{in}/hb_audio_policy_engine_stream_volumes.xml
 lumen	run	hb_audio_policy_check.py	{V130}/vendor/etc	{in}/hb_audio_policy_configuration.xml
@@ -115,6 +115,9 @@ lumen	install	0644	z9x-airplay-default-permissions.xml	{sys}/etc/default-permiss
 lumen	run_root	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
 lumen	install	0644	signed_stage/pinned/Z9xLineagePlatformOverlay.apk	{sys}/product/overlay/Z9xLineagePlatformOverlay.apk
 lumen	install	0644	signed_stage/apps/HbFrameworkOverlay.apk	{sys}/product/overlay/HbFrameworkOverlay.apk
+# the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
+# theme puts the uninstall guided step into a floating dialog (one letter per line), this overlay fixes it for every model
+lumen	install	0644	signed_stage/apps/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk
 lumen	install	0644	z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml
 lumen	install	0644	signed_stage/apps/HbSetup.apk	{sys}/priv-app/Z9xSetup/Z9xSetup.apk
 lumen	install	0644	privapp-permissions-z9xsetup.xml	{sys}/etc/permissions/privapp-permissions-z9xsetup.xml
@@ -216,6 +219,9 @@ lumen	line	lumen_hdmirx.sh	HELP=help
 lumen	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 "
 lumen	install	0644	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc
 lumen	install	0755	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh
+# Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)
+lumen	need	lumen_boot_sound.rc
+lumen	install	0644	lumen_boot_sound.rc	{sys}/etc/init/lumen_boot_sound.rc
 # 3z. --dsu-test: network adb during a DSU try with the build host's adb PUBLIC key
 dsutest	run	adb_key.py	{home}/.android/adbkey.pub
 dsutest	noline	hb_dsu_testadb.rc	^on (?!.*property:ro\.gsid\.image_running=1)

@@ -39,6 +39,7 @@ section sound
   screen sound.eq
   toggle sound.earc
   output page sound.output [auto, speaker, arc, bt, usb]
+  toggle sound.key_tone
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -49,16 +50,33 @@ section eye
 section general
   action lamp.off
   screen settings.system
-  screen settings.projector
+  info settings.temperature
+  screen settings.parental
   screen settings.recents
   screen settings.ambient_speaker
   screen settings.sleep_timer
+  screen settings.remote
+  screen settings.remote_keys
   toggle lamp.eco
   choice settings.launcher [lumen, classic]
   screen settings.report
-  -- developer
+  toggle settings.stats
+  screen settings.licences
+  -- screensaver
+  screen settings.screensaver_now
+  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
+  -- power
+  toggle power.on_music
+  choice power.boot_source [home, hdmi]
+  -- voice
+  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
+  toggle voice.speak
+  screen voice.key
+section developer
   screen signal.panel
+  screen sensors.panel
   toggle signal.pin
+  screen settings.diagnostics
 popup keystone (rows with a tile of their own left out)
   keystone.realtime
   -- auto_correction
@@ -67,6 +85,6 @@ popup keystone (rows with a tile of their own left out)
   keystone.manual
   keystone.rotation
   keystone.restore
-all settings: keystone focus picture projection sound eye general
+all settings: keystone focus picture projection sound eye general developer
 keys: gear short quick_menu, gear long none, eye_gear_short restore
 game menu: none

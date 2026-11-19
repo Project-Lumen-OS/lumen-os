@@ -47,6 +47,8 @@ final class Play6Snapshot {
     // LAMP
     /** IGmpf 327 power saving. */
     Boolean eco;
+    /** IGmpf 438 system temperature, deg C (the General row, as stock Device info); null = read failed. */
+    Integer temperature;
     /** org.lumen.tvinput: an HDMI TIF session is open (TifHdmiState.read; null = unknown). Not a HAL read. */
     Boolean tifHdmi;
     // PICTURE
@@ -113,6 +115,7 @@ final class Play6Snapshot {
         s.gmpf2 = g2.isIdentityOpen();
         if (any(parts, ROOT | GAME)) s.source = opt("696", g::getCurrentInputSource);
         if (any(parts, ROOT)) s.hdr = opt("620", g::getHdrType);
+        if (any(parts, ROOT)) s.temperature = opt("438", g::getSystemTemperature);
         if (any(parts, ROOT | PICTURE | GAME)) s.pictureMode = opt("666", g::getPictureModeRaw);
         if (any(parts, ROOT | LAMP)) s.lamp = opt("177", g::getLampLevel);
         if (any(parts, LAMP) && Device.hasBattery()) {

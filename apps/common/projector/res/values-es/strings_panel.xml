@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">Ajustes rápidos</string>
-    <string name="panel_sec_image_correction">Corrección de imagen</string>
     <string name="panel_sec_picture">Imagen</string>
     <string name="panel_sec_game">Juegos (HDMI)</string>
     <string name="panel_sec_sound">Sonido</string>
@@ -18,16 +17,6 @@
     <string name="panel_reset">Restablecer</string>
     <string name="panel_turn_on">Activar</string>
     <string name="panel_turn_off">Desactivar</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d min</item>
-        <item quantity="many">%d min</item>
-        <item quantity="other">%d min</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d hora</item>
-        <item quantity="many">%d horas</item>
-        <item quantity="other">%d horas</item>
-    </plurals>
     <string name="panel_ak_now">Corregir trapecio ahora</string>
     <string name="panel_fit_now">Ajustar a la pantalla ahora</string>
     <string name="panel_af_now">Enfocar ahora</string>
@@ -45,23 +34,19 @@
     <string name="panel_reset_keystone_msg">La imagen volverá al encuadre completo sin corregir. ¿Continuar?</string>
     <string name="panel_reset_keystone_done">Trapecio restablecido</string>
     <string name="panel_kst_manual">Trapecio manual</string>
-    <string name="panel_kst_hint">Flechas: mover esquina · OK: siguiente esquina · Atrás: listo</string>
     <string name="panel_kst_wait">Leyendo las esquinas…</string>
     <string name="panel_kst_corner_tl">Arriba a la izquierda</string>
     <string name="panel_kst_corner_tr">Arriba a la derecha</string>
     <string name="panel_kst_corner_br">Abajo a la derecha</string>
     <string name="panel_kst_corner_bl">Abajo a la izquierda</string>
     <string name="panel_kst_limit">Esta esquina no se puede mover más</string>
-    <string name="panel_kst_unavailable">El trapecio manual no está disponible ahora</string>
     <string name="panel_kst_game_mode">El trapecio está desactivado en el modo de juego Turbo</string>
     <string name="panel_projection_mode">Modo de proyección</string>
     <string name="panel_proj_auto">Automático</string>
     <string name="panel_proj_table">Mesa</string>
     <string name="panel_proj_ceiling">Techo</string>
     <string name="panel_proj_rear">Retroproyección</string>
-    <string name="panel_proj_front_table">Frontal, mesa</string>
     <string name="panel_proj_front_ceiling">Frontal, techo</string>
-    <string name="panel_proj_rear_table">Trasera, mesa</string>
     <string name="panel_proj_rear_ceiling">Trasera, techo</string>
     <string name="panel_proj_confirm_flip">La imagen se invertirá. ¿Continuar?</string>
     <string name="panel_proj_confirm_ceiling">¿Cambiar a montaje en techo? La imagen se invertirá y algunas funciones, como el trapecio en tiempo real, no estarán disponibles.</string>
@@ -75,7 +60,6 @@
     <string name="panel_tileval_pm_ai">Imagen IA</string>
     <string name="panel_tileval_pm_color_accuracy">Color preciso</string>
     <string name="panel_tileval_pm_performance">Rendimiento</string>
-    <string name="panel_tileval_sound_ai">Sonido IA</string>
     <string name="panel_pm_performance_msg">Comprueba que las rejillas de ventilación no estén tapadas y que la habitación no supere los 25 °C. No uses este modo durante mucho tiempo.</string>
     <string name="panel_lamp">Brillo</string>
     <string name="panel_boost">Boost</string>
@@ -86,15 +70,11 @@
     <string name="panel_ultra120_3d">No disponible en 3D</string>
     <string name="panel_ultra120_hdmi">No disponible para entradas HDMI. Usa el modo de juego</string>
     <string name="panel_ultra120_refused">Ultra 120 Hz no está disponible para este contenido</string>
-    <string name="panel_ultra120_unverified">Aún no se ha probado en este proyector.</string>
     <string name="panel_game_hdmi_only">Solo disponible mientras se muestra una entrada HDMI</string>
-    <string name="panel_picture_settings">Ajustes de imagen</string>
     <string name="panel_pq_brightness">Brillo</string>
     <string name="panel_pq_contrast">Contraste</string>
     <string name="panel_pq_saturation">Saturación</string>
     <string name="panel_pq_sharpness">Nitidez</string>
-    <string name="panel_pq_blocked_ai">Los ajustes básicos no están disponibles en el modo Imagen IA</string>
-    <string name="panel_pq_blocked_performance">Los ajustes básicos no están disponibles en el modo Rendimiento</string>
     <string name="panel_ct_blocked_office">La temperatura de color no está disponible en el modo Oficina</string>
     <string name="panel_color_temp">Temperatura de color</string>
     <string name="panel_ct_1">Temp. color 1</string>
@@ -135,8 +115,6 @@
     <string name="eye_off_done">Protección ocular desactivada</string>
     <string name="eye_bright_reduced">Distancia de proyección corta: brillo reducido automáticamente</string>
     <string name="eye_unavailable">La protección ocular aún no está lista. Reinicia el proyector y vuelve a intentarlo.</string>
-    <string name="panel_standby_off_after">Reposo, luego apagar tras</string>
-    <string name="panel_input">Entrada</string>
     <string name="panel_projector_settings">Ajustes del proyector</string>
     <string name="panel_all_settings">Todos los ajustes</string>
     <string name="panel_tile_focus">Enfoque</string>
@@ -150,11 +128,6 @@
     <string name="panel_hdmi_settings">Ajustes de HDMI</string>
     <string name="panel_eye_desc">La luz se atenúa cuando hay alguien delante del objetivo.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Lado a lado</string>
-    <string name="panel_3d_tb">Arriba y abajo</string>
-    <string name="panel_3d_sbs_2d">Lado a lado como 2D</string>
-    <string name="panel_3d_tb_2d">Arriba y abajo como 2D</string>
-    <string name="panel_3d_summary">Mientras se reproduce un vídeo. El 3D necesita gafas activas DLP-Link; «como 2D» muestra un archivo 3D en plano, sin gafas.</string>
     <string name="panel_3d_need_video">El 3D funciona mientras se reproduce un vídeo: inícialo primero</string>
     <string name="panel_3d_not_now">El 3D no está disponible ahora (vídeo HDR, modo juego o 120 Hz)</string>
 </resources>

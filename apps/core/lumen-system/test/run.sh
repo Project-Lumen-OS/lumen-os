@@ -19,6 +19,35 @@ mkdir -p "$OUT/cv"
   "$HERE/test/stubs/android/content/Context.java" "$HERE/test/stubs/android/content/ContentResolver.java" \
   "$HERE/test/stubs/android/provider/Settings.java" "$HERE/test/stubs/android/util/Log.java" "$HERE/test/ColourVisionTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/cv" org.lumen.system.ColourVisionTest || bad=1
+mkdir -p "$OUT/sd"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/sd" "$HERE/src/org/lumen/system/ScreensaverDelay.java" \
+  "$HERE/test/stubs/android/content/Context.java" "$HERE/test/stubs/android/content/ContentResolver.java" \
+  "$HERE/test/stubs/android/provider/Settings.java" "$HERE/test/stubs/android/util/Log.java" "$HERE/test/ScreensaverDelayTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/sd" org.lumen.system.ScreensaverDelayTest || bad=1
+mkdir -p "$OUT/hs"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/hs" "$HERE/src/org/lumen/system/HotspotRules.java" \
+  "$HERE/src/org/lumen/system/HotspotProblem.java" "$HERE/test/HotspotRulesTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/hs" org.lumen.system.HotspotRulesTest || bad=1
+# Hotspot is the Android glue of HotspotRules: its lines that decide behaviour are pinned (no Android on the host)
+HS="$HERE/src/org/lumen/system/Hotspot.java"
+for w in '            return w != null && t != null && w.isPortableHotspotSupported() && t.isTetheringSupported()' \
+         '                    && HotspotRules.tetherable(t.getTetherableWifiRegexs(), iface);' \
+         '            return w != null && HotspotRules.on(w.getWifiApState());' \
+         '        if (HotspotRules.name(name) != null || HotspotRules.password(password) != null) return false;' \
+         '        boolean running = on(c);' \
+         '        if (running) restart(c, d);' \
+         '                    .setPassphrase(password, SoftApConfiguration.SECURITY_TYPE_WPA2_PSK).build());' \
+         '        if (!Arrays.equals(f, cur) && !write(c, f[0], f[1])) return null;' \
+         '        if (n != null && pw != null) return new String[]{n, pw};' \
+         '                if (i != null && !HotspotRules.stopped(i.getIntExtra(WifiManager.EXTRA_WIFI_AP_STATE, -1))) return;' \
+         '        h.postDelayed(() -> r.onReceive(app, null), RESTART_WAIT_MS);' \
+         '            TetheringManager.TetheringRequest r = new TetheringManager.TetheringRequest.Builder(TetheringManager.TETHERING_WIFI)' \
+         '            tethering(c).stopTethering(TetheringManager.TETHERING_WIFI);'; do
+  grep -qxF -- "$w" "$HS" || { echo "FAIL hotspot: Hotspot.java lost: $w"; bad=1; }
+done
+n=$(grep -c '^        } catch (RuntimeException e) {$' "$HS")
+[ "$n" -ge 8 ] && echo "ok   hotspot: every Android call of Hotspot catches what Android throws ($n)" \
+  || { echo "FAIL hotspot: an Android call of Hotspot can crash the menu ($n catches)"; bad=1; }
 cat > "$OUT/open.exp" <<'EXP'
     public static boolean open(Context ctx, SettingsPage page) {
         for (SystemIntent w : SystemIntent.chain(page)) {

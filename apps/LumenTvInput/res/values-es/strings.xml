@@ -29,9 +29,6 @@
     <string name="picker_empty">No se han encontrado entradas HDMI</string>
     <string name="pref_auto_switch">Cambiar a HDMI automáticamente al conectar un dispositivo</string>
     <string name="pref_return_home">Volver a la pantalla de inicio al desconectar la fuente</string>
-    <string name="pref_cec_otp">HDMI-CEC: cambiar a HDMI cuando lo pida el dispositivo (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: controlar el dispositivo con el mando</string>
-    <string name="pref_cec_exit">HDMI-CEC: avisar al dispositivo al salir de HDMI</string>
     <string name="pref_boot_source">Fuente al encender: %1$s</string>
     <string name="boot_source_home">Pantalla de inicio</string>
     <string name="pref_boot_source_note">Si un dispositivo enciende el proyector por HDMI-CEC, se abre su entrada.</string>

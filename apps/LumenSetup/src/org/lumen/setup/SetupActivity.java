@@ -37,6 +37,7 @@ import org.lumen.setup.steps.NetworkStep;
 import org.lumen.setup.steps.PictureStep;
 import org.lumen.setup.steps.RemoteStep;
 import org.lumen.setup.steps.Step;
+import org.lumen.setup.steps.ThemeStep;
 import org.lumen.setup.steps.WelcomeStep;
 import org.lumen.setup.ui.AuroraView;
 import org.lumen.setup.ui.Dots;
@@ -44,6 +45,9 @@ import org.lumen.setup.ui.Icon;
 import org.lumen.setup.ui.Sheet;
 import org.lumen.setup.ui.Ui;
 import org.lumen.setup.ui.Wordmark;
+import org.lumen.ui.LumenTheme;
+import org.lumen.ui.Palette;
+import org.lumen.ui.ThemeFade;
 import org.lumen.ui.Tokens;
 
 import java.util.ArrayDeque;
@@ -85,6 +89,8 @@ public class SetupActivity extends Activity implements NetMon.Listener {
     private boolean mGeoStarted;
 
     // views
+    /** The window's content: holds the skeleton, two of them for a moment while a new theme fades in. */
+    private FrameLayout mFrame;
     private FrameLayout mRoot;
     private AuroraView mAurora;
     private Wordmark mWordmark;
@@ -110,6 +116,8 @@ public class SetupActivity extends Activity implements NetMon.Listener {
     private boolean mFinishing;
     /** Between onResume and onPause: the steps built late (first-start locale switch) start what onResume would. */
     private boolean mResumed;
+    /** Follows the shared theme live (lumen-ui ThemeFade): Home, the quick menu and the wizard switch together. */
+    private ThemeFade mTheme;
     private boolean mReduced;
     private boolean mUiBuilt;
     private boolean mStarted;
@@ -137,7 +145,7 @@ public class SetupActivity extends Activity implements NetMon.Listener {
             Step s = current();
             if (s == null || mFinishing || !Boolean.TRUE.equals(bridgeOk)) return;
             String id = s.id();
-            if (!WelcomeStep.ID.equals(id) && !NetworkStep.ID.equals(id)) return;
+            if (!WelcomeStep.ID.equals(id) && !ThemeStep.ID.equals(id) && !NetworkStep.ID.equals(id)) return;
             Bridge.remoteState(SetupActivity.this, r -> {
                 if (Bridge.ok(r)) setRemoteConnected(r.getBoolean("connected", false));
             });
@@ -170,6 +178,7 @@ public class SetupActivity extends Activity implements NetMon.Listener {
         super.onCreate(null);
         Ui.init(this);
         mReduced = Ui.reduced(this);
+        mTheme = ThemeFade.activity(this, this::restyle);
         state = new SetupState(this);
         mLocales = getResources().getConfiguration().getLocales();
         L.i("create t=" + L.sinceStart() + " state=" + state.state() + " step=" + state.step());
@@ -247,6 +256,8 @@ public class SetupActivity extends Activity implements NetMon.Listener {
         // any) and the remote step is drawn in the first-start language (FirstLocale above).
         mSteps.add(new RemoteStep(this));
         mSteps.add(new WelcomeStep(this));
+        // the theme right after the language (2026-11-19): Светлая by default, Тёмная, Авто, with a live preview
+        mSteps.add(new ThemeStep(this));
         mSteps.add(new NetworkStep(this));
         mSteps.add(new GoogleStep(this));
         mSteps.add(new PictureStep(this));
@@ -287,6 +298,18 @@ public class SetupActivity extends Activity implements NetMon.Listener {
             // the launching uid of a running singleTask instance is the original one: use am start -S
             L.w("safe_finish on a running instance ignored; use: am start -S -n org.lumen.setup/.SetupActivity --ez safe_finish true");
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mTheme.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mTheme.stop();
+        super.onStop();
     }
 
     @Override
@@ -495,7 +518,11 @@ public class SetupActivity extends Activity implements NetMon.Listener {
         lf.setMarginStart(Ui.px(Tokens.MARGIN));
         lf.bottomMargin = Ui.px(56);
         mRoot.addView(mFoot, lf);
-        setContentView(mRoot);
+        if (mFrame == null) {
+            mFrame = new FrameLayout(this);
+            setContentView(mFrame);
+        }
+        mFrame.addView(mRoot, match());
     }
 
     private static FrameLayout.LayoutParams match() {
@@ -907,6 +934,48 @@ public class SetupActivity extends Activity implements NetMon.Listener {
             mLocaleThen = null;
             main.postDelayed(r, 280);
         }
+    }
+
+    /**
+     * The theme step stored a choice: the wizard takes it at once through the shared cross fade, then {@code then}
+     * runs (the next step comes in the new colours). Home and the quick menu follow the same setting.
+     */
+    public void retheme(Runnable then) {
+        mTheme.apply(LumenTheme.palette(this));
+        then.run();
+    }
+
+    /**
+     * The theme changed (lumen-ui ThemeFade, under the frozen old picture while shown): the palette is read again and
+     * the skeleton and the current step are built anew in it, without their entry animations. The focus goes back to
+     * the view at the same place, else to the step's first one.
+     */
+    private void restyle(Palette p) {
+        Ui.init(this);
+        if (!mUiBuilt || mFinishing || mRoot == null) return;
+        Step s = current();
+        if (s == null) return;
+        int[] focus = ThemeFade.focusPath(mRoot);
+        dismissSheet();
+        s.onExit();
+        mContent = null;
+        FrameLayout old = mRoot;
+        buildUi();
+        if (mFrame != null) mFrame.removeView(old);
+        L.i("theme on screen -> " + (Ui.P.dark ? "dark" : "light"));
+        View content = s.createContent();
+        int mode = s.layout();
+        applyMode(mode);
+        setTitles(s, false);
+        swapContent(content, mode == Step.FULL ? mFull : mRight, mode == Step.FULL ? -1 : s.rightTop(), true, false);
+        updateDots();
+        s.onEnter();
+        content.post(() -> {
+            if (mContent != content || ThemeFade.refocus(mRoot, focus)) return;
+            View f = s.initialFocus();
+            if (f != null && f.isAttachedToWindow()) f.requestFocus();
+            else content.requestFocus();
+        });
     }
 
     /** Rebuild the current step's views in the new language with a 200 ms cross-fade. */

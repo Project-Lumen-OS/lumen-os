@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Adaptación al color de la pared</string>
+    <string name="lumen_wallcolor_desc">Ajusta los colores de la imagen al color de tu pared para que sean más precisos.</string>
+    <string name="lumen_wallcolor_desc_ambient">Para el mejor resultado, la imagen pasa al brillo máximo y el brillo automático se apaga.</string>
+    <string name="lumen_wallcolor_start">Empezar</string>
+    <string name="lumen_wallcolor_reset">Restaurar colores originales</string>
+    <string name="lumen_wallcolor_running">Adaptando al color de la pared</string>
+    <string name="lumen_wallcolor_matched">Colores adaptados</string>
+    <string name="lumen_wallcolor_original">Colores originales</string>
+    <string name="lumen_wallcolor_save_title">¿Conservar los colores adaptados?</string>
+    <string name="lumen_wallcolor_save_desc">Los colores adaptados son los que mejor encajan con el color de esta pared.</string>
+    <string name="lumen_wallcolor_fail_camera">La cámara no se inició. Inténtalo de nuevo.</string>
+    <string name="lumen_wallcolor_fail_start">No se pudo iniciar la adaptación. Si vuelve a pasar, envía un informe de problema.</string>
+    <string name="lumen_wallcolor_fail_distance">No se pudo adaptar. Cambia la distancia a la pared o el ángulo del proyector.</string>
+    <string name="lumen_wallcolor_fail_light">No se pudo adaptar. La luz de la habitación cambió. Inténtalo con luz estable.</string>
+    <string name="lumen_wallcolor_fail_custom">No disponible en el modo de color personalizado.</string>
+    <string name="lumen_wallcolor_fail_performance">No disponible en el modo rendimiento.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Apaga el brillo automático e inténtalo de nuevo.</string>
+    <string name="lumen_wallcolor_fail_3d">No disponible en modo 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">En el modo pantalla gigante solo está disponible la corrección trapezoidal manual.</string>
+    <string name="lumen_wallcolor_fail_range">No se pudo adaptar. El color de la pared está fuera del rango ajustable.</string>
+    <string name="lumen_wallcolor_fail_not_started">El proyector no inició la adaptación. Inténtalo de nuevo.</string>
+</resources>

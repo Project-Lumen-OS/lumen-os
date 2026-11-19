@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light parents. values-night swaps them for the dark ones, so LumenPkg.Window and LumenPkg.Dialog follow the
+     system night mode without a second copy of their items. -->
+<resources>
+    <style name="LumenPkg.WindowParent" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
+    <style name="LumenPkg.DialogParent" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert" />
+
+    <!-- every installer activity: full screen, translucent, the Lumen scrim, no title bar -->
+    <style name="LumenPkg.Window" parent="@style/LumenPkg.WindowParent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/lumen_pkg_scrim</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:colorAccent">@color/lumen_pkg_accent</item>
+        <item name="android:colorControlActivated">@color/lumen_pkg_ring</item>
+        <item name="android:textColorPrimary">@color/lumen_pkg_text1</item>
+        <item name="android:textColorSecondary">@color/lumen_pkg_text2</item>
+        <item name="android:fontFamily">@font/lumen_inter</item>
+        <item name="android:alertDialogTheme">@style/LumenPkg.Dialog</item>
+        <item name="android:buttonBarButtonStyle">@style/LumenPkg.Button</item>
+        <item name="android:buttonStyle">@style/LumenPkg.Button</item>
+    </style>
+</resources>

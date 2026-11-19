@@ -6,7 +6,6 @@
     <string name="power_standby_never">Asla</string>
     <string name="power_quick_wake_minutes">%1$d dk</string>
     <string name="power_quick_wake_hours">%1$d sa</string>
-    <string name="power_standby_summary">Güç tuşuna kısa basmak ışığı kapatır ve projektör anında açılmaya hazır kalır. Bu süreden sonra tamamen kapanır.</string>
     <string name="power_sleep_summary">Güç tuşu, uyku zamanlayıcısı ve hareketsizlik ışığı kapatır ve projektörü uyku moduna alır. Güç tuşuna basın, saniyeler içinde kaldığınız yerden devam eder.</string>
     <string name="power_menu_sleep">Uyku</string>
     <string name="power_menu_off">Kapat</string>

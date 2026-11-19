@@ -26,4 +26,24 @@ public final class Settings {
             return true;
         }
     }
+
+    public static final class System {
+        public static final String SCREEN_OFF_TIMEOUT = "screen_off_timeout";
+        public static final Map<String, Long> VALUES = new HashMap<>();
+        public static boolean FAIL;
+
+        private System() { }
+
+        public static long getLong(ContentResolver cr, String key, long def) {
+            if (FAIL) throw new SecurityException("refused");
+            Long v = VALUES.get(key);
+            return v == null ? def : v;
+        }
+
+        public static boolean putLong(ContentResolver cr, String key, long value) {
+            if (FAIL) throw new SecurityException("refused");
+            VALUES.put(key, value);
+            return true;
+        }
+    }
 }

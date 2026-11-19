@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">벽 색상 맞춤</string>
+    <string name="lumen_wallcolor_desc">벽 색상에 맞춰 화면 색을 조정해 더 정확한 색을 보여 줍니다.</string>
+    <string name="lumen_wallcolor_desc_ambient">가장 좋은 결과를 위해 화면이 최대 밝기가 되고 자동 밝기가 꺼집니다.</string>
+    <string name="lumen_wallcolor_start">시작</string>
+    <string name="lumen_wallcolor_reset">원래 색상으로 되돌리기</string>
+    <string name="lumen_wallcolor_running">벽 색상에 맞추는 중</string>
+    <string name="lumen_wallcolor_matched">맞춘 색상</string>
+    <string name="lumen_wallcolor_original">원래 색상</string>
+    <string name="lumen_wallcolor_save_title">맞춘 색상을 유지할까요?</string>
+    <string name="lumen_wallcolor_save_desc">맞춘 색상이 이 벽의 색상에 가장 잘 어울립니다.</string>
+    <string name="lumen_wallcolor_fail_camera">카메라가 시작되지 않았습니다. 다시 시도하세요.</string>
+    <string name="lumen_wallcolor_fail_start">맞춤을 시작할 수 없습니다. 다시 발생하면 문제 보고서를 보내 주세요.</string>
+    <string name="lumen_wallcolor_fail_distance">맞춤에 실패했습니다. 벽까지의 거리나 프로젝터 각도를 바꿔 보세요.</string>
+    <string name="lumen_wallcolor_fail_light">맞춤에 실패했습니다. 방 조명이 바뀌었습니다. 조명이 일정할 때 다시 시도하세요.</string>
+    <string name="lumen_wallcolor_fail_custom">사용자 지정 색상 모드에서는 사용할 수 없습니다.</string>
+    <string name="lumen_wallcolor_fail_performance">성능 모드에서는 사용할 수 없습니다.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">자동 밝기를 끄고 다시 시도하세요.</string>
+    <string name="lumen_wallcolor_fail_3d">3D 모드에서는 사용할 수 없습니다.</string>
+    <string name="lumen_wallcolor_fail_big_screen">대형 화면 모드에서는 수동 사다리꼴 보정만 사용할 수 있습니다.</string>
+    <string name="lumen_wallcolor_fail_range">맞춤에 실패했습니다. 벽 색상이 조정 가능한 범위를 벗어났습니다.</string>
+    <string name="lumen_wallcolor_fail_not_started">프로젝터가 맞춤을 시작하지 않았습니다. 다시 시도하세요.</string>
+</resources>

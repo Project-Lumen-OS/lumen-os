@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Włączanie Wi-Fi…</string>
     <string name="net_none_found">Nie znaleziono sieci</string>
     <string name="net_add_manual">Dodaj sieć ręcznie</string>
-    <string name="net_other">Inne opcje</string>
     <string name="net_password_title">Hasło do sieci %1$s</string>
     <string name="net_password_hint">Hasło</string>
     <string name="net_show_password">Pokaż hasło</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Znaleziono pilot %1$s</string>
     <string name="remote_connected">Pilot połączony</string>
     <string name="remote_other">Inne urządzenie</string>
-    <string name="remote_skip_hint">Możesz go sparować później w panelu szybkich ustawień (przycisk z kołem zębatym).</string>
     <string name="google_title">Zaloguj się przez Google</string>
     <string name="google_subtitle">Zaloguj się, aby instalować aplikacje z Google Play i korzystać z subskrypcji.</string>
     <string name="google_sign_in">Zaloguj się</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Nazwa projektora</string>
     <string name="done_home">Ekran główny</string>
     <string name="done_stats">Wysyłaj anonimowe statystyki</string>
-    <string name="done_stats_note">Przy każdym uruchomieniu i raz dziennie: model, wersja, kompilacja, dane o aktualizacji, kraj, losowy numer instalacji i numer seryjny (serwer przechowuje tylko jego skrót). Twój adres IP nie jest zapisywany.</string>
     <string name="done_start">Zaczynamy</string>
     <string name="done_offline_hint">Brak internetu: zaloguj się w Google i ustaw strefę czasową później w ustawieniach.</string>
     <string name="done_offline_hint_nogms">Brak internetu: ustaw strefę czasową później w ustawieniach.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Potrzebny będzie telefon lub hasło</string>
     <string name="google_help_sub">Co zrobić, gdy Google prosi o rejestrację</string>
     <string name="done_stats_short">Model, wersja i kraj. Adres IP nie jest zapisywany.</string>
+    <string name="theme_title">Motyw</string>
+    <string name="theme_subtitle">Jak będzie wyglądać Lumen. Możesz to później zmienić w szybkim menu.</string>
+    <string name="theme_light">Jasny</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="theme_auto">Automatyczny</string>
+    <string name="theme_auto_sub">Jasny w dzień, ciemny po zachodzie słońca</string>
 </resources>

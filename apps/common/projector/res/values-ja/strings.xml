@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">プロジェクター</string>
     <string name="version_line">バージョン %1$s</string>
-    <string name="sec_focus">フォーカス</string>
-    <string name="sec_keystone">台形補正</string>
     <string name="sec_auto">自動機能</string>
-    <string name="sec_keys">リモコンボタン</string>
     <string name="sec_diag">診断</string>
-    <string name="act_af_now">今すぐオートフォーカス</string>
     <string name="act_manual_focus">手動フォーカス</string>
     <string name="act_kst_now">今すぐ自動台形補正</string>
-    <string name="act_fit_now">今すぐスクリーンに合わせる</string>
     <string name="act_refresh">更新</string>
     <string name="tg_power_on_af">電源オン時にオートフォーカス</string>
     <string name="tg_power_on_ak">電源オン時に自動台形補正</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">移動後に自動台形補正</string>
     <string name="tg_curtain">スクリーンに合わせる</string>
     <string name="tg_obstacle">障害物回避</string>
-    <string name="val_on">オン</string>
-    <string name="val_off">オフ</string>
-    <string name="val_unknown">データなし</string>
-    <string name="val_not_ready">プロジェクターの準備ができていません</string>
     <string name="cancel">キャンセル</string>
     <string name="ok">OK</string>
     <string name="app_not_found">このボタンに対応するアプリが見つかりません</string>

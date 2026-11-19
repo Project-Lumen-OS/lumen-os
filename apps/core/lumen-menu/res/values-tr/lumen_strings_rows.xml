@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
+     statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
+<resources>
+    <string name="lumen_m_power_music">Açılış sesi</string>
+    <string name="lumen_m_boot_source">Açılışta aç</string>
+    <string name="lumen_m_boot_home">Ana ekran</string>
+    <string name="lumen_m_hdr_voice">Sesli asistan</string>
+    <string name="lumen_m_voice_language">Konuşma dili</string>
+    <string name="lumen_m_voice_lang_system">Sistem dili</string>
+    <string name="lumen_m_voice_speak">Yanıtları seslendir</string>
+    <string name="lumen_m_voice_key">Gemini sesi</string>
+    <string name="lumen_m_uires">Arayüz çözünürlüğü</string>
+    <string name="lumen_m_stats">Anonim istatistik gönder</string>
+    <string name="lumen_m_diag">Tanılama</string>
+    <string name="lumen_m_sensors">Sensörler</string>
+</resources>

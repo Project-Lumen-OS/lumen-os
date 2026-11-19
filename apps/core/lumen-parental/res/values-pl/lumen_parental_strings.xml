@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Kontrola rodzicielska</string>
+    <string name="lumen_lp_intro">Ogranicz, co dzieci mogą otwierać i jak długo oglądają.</string>
+    <string name="lumen_lp_lock">Blokada dziecięca</string>
+    <string name="lumen_lp_lock_desc">Gdy włączona, można ustawić zakres kontroli, czas oglądania i więcej</string>
+    <string name="lumen_lp_lock_off_title">Wyłączyć blokadę dziecięcą?</string>
+    <string name="lumen_lp_lock_off_text">Limity czasu i hasło przy włączaniu przestaną działać. Ustawienia rodzicielskie otworzą się bez hasła.</string>
+    <string name="lumen_lp_turn_off">Wyłącz</string>
+    <string name="lumen_lp_cancel">Anuluj</string>
+    <string name="lumen_lp_child_mode">Tryb dziecięcy</string>
+    <string name="lumen_lp_child_apps">Aplikacje trybu dziecięcego</string>
+    <string name="lumen_lp_child_apps_count">Wybrano: %1$d</string>
+    <string name="lumen_lp_range">Zakres kontroli</string>
+    <string name="lumen_lp_range_child">Tylko tryb dziecięcy</string>
+    <string name="lumen_lp_range_global">Wszędzie</string>
+    <string name="lumen_lp_session">Czas jednej sesji</string>
+    <string name="lumen_lp_session_desc">Potem 10 minut przerwy</string>
+    <string name="lumen_lp_daily">Czas dziennie</string>
+    <string name="lumen_lp_no_limit">Bez limitu</string>
+    <string name="lumen_lp_minutes">%1$d min</string>
+    <string name="lumen_lp_hours">%1$s godz.</string>
+    <string name="lumen_lp_boot_pin">Hasło przy włączaniu</string>
+    <string name="lumen_lp_boot_child">Tryb dziecięcy przy włączaniu</string>
+    <string name="lumen_lp_change_pin">Zmień hasło</string>
+    <string name="lumen_lp_eye">Ochrona oczu</string>
+    <string name="lumen_lp_eye_desc">Ochronę oczu ustawia się w ustawieniach projektora</string>
+    <string name="lumen_lp_pin_enter">Wpisz hasło blokady dziecięcej</string>
+    <string name="lumen_lp_pin_hint">Naciskaj przyciski strzałek na pilocie</string>
+    <string name="lumen_lp_pin_set">Ustaw hasło blokady dziecięcej</string>
+    <string name="lumen_lp_pin_again">Wpisz hasło jeszcze raz</string>
+    <string name="lumen_lp_pin_mismatch">Hasła się różnią. Ustaw hasło ponownie</string>
+    <string name="lumen_lp_pin_wrong">Złe hasło</string>
+    <string name="lumen_lp_pin_forgot">Nie pamiętasz hasła? Naciśnij OK</string>
+    <string name="lumen_lp_quiz">Ile to %1$d × %2$d?</string>
+    <string name="lumen_lp_quiz_wrong">Źle. Oto inne pytanie</string>
+    <string name="lumen_lp_rest_title">Czas na przerwę</string>
+    <string name="lumen_lp_rest_session">Sesja się skończyła. Odpocznij 10 minut</string>
+    <string name="lumen_lp_rest_daily">Dzisiejszy czas oglądania się skończył</string>
+    <string name="lumen_lp_rest_unlock">Odblokuj</string>
+    <string name="lumen_lp_on">Wł.</string>
+    <string name="lumen_lp_off">Wył.</string>
+</resources>

@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">Быстрые настройки</string>
-    <string name="panel_sec_image_correction">Коррекция изображения</string>
     <string name="panel_sec_picture">Изображение</string>
     <string name="panel_sec_game">Игры (HDMI)</string>
     <string name="panel_sec_sound">Звук</string>
@@ -18,18 +17,6 @@
     <string name="panel_reset">Сбросить</string>
     <string name="panel_turn_on">Включить</string>
     <string name="panel_turn_off">Выключить</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d мин</item>
-        <item quantity="few">%d мин</item>
-        <item quantity="many">%d мин</item>
-        <item quantity="other">%d мин</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d час</item>
-        <item quantity="few">%d часа</item>
-        <item quantity="many">%d часов</item>
-        <item quantity="other">%d часа</item>
-    </plurals>
     <string name="panel_ak_now">Автотрапеция сейчас</string>
     <string name="panel_fit_now">Вписать в экран сейчас</string>
     <string name="panel_af_now">Автофокус сейчас</string>
@@ -47,23 +34,19 @@
     <string name="panel_reset_keystone_msg">Изображение вернётся к полному кадру без коррекции. Продолжить?</string>
     <string name="panel_reset_keystone_done">Трапеция сброшена</string>
     <string name="panel_kst_manual">Ручная коррекция трапеции</string>
-    <string name="panel_kst_hint">Стрелки: сдвиг угла · OK: следующий угол · Назад: готово</string>
     <string name="panel_kst_wait">Считываю углы…</string>
     <string name="panel_kst_corner_tl">Левый верхний</string>
     <string name="panel_kst_corner_tr">Правый верхний</string>
     <string name="panel_kst_corner_br">Правый нижний</string>
     <string name="panel_kst_corner_bl">Левый нижний</string>
     <string name="panel_kst_limit">Этот угол дальше не сдвигается</string>
-    <string name="panel_kst_unavailable">Ручная коррекция трапеции сейчас недоступна</string>
     <string name="panel_kst_game_mode">В игровом режиме «Турбо» коррекция трапеции выключена</string>
     <string name="panel_projection_mode">Режим проекции</string>
     <string name="panel_proj_auto">Авто</string>
     <string name="panel_proj_table">Стол</string>
     <string name="panel_proj_ceiling">Потолок</string>
     <string name="panel_proj_rear">Обратная проекция</string>
-    <string name="panel_proj_front_table">Спереди, стол</string>
     <string name="panel_proj_front_ceiling">Спереди, потолок</string>
-    <string name="panel_proj_rear_table">Сзади, стол</string>
     <string name="panel_proj_rear_ceiling">Сзади, потолок</string>
     <string name="panel_proj_confirm_flip">Изображение будет перевёрнуто. Продолжить?</string>
     <string name="panel_proj_confirm_ceiling">Перейти на потолочную установку? Изображение перевернётся, а некоторые функции, например трапеция в реальном времени, станут недоступны.</string>
@@ -77,7 +60,6 @@
     <string name="panel_tileval_pm_ai">AI-качество</string>
     <string name="panel_tileval_pm_color_accuracy">Точные цвета</string>
     <string name="panel_tileval_pm_performance">Производит.</string>
-    <string name="panel_tileval_sound_ai">AI-звук</string>
     <string name="panel_pm_performance_msg">Убедитесь, что вентиляционные отверстия не закрыты, а в комнате не теплее 25 °C. Не используйте этот режим долго.</string>
     <string name="panel_lamp">Яркость</string>
     <string name="panel_boost">Boost</string>
@@ -88,15 +70,11 @@
     <string name="panel_ultra120_3d">Недоступно в режиме 3D</string>
     <string name="panel_ultra120_hdmi">Недоступно для входа HDMI. Используйте игровой режим</string>
     <string name="panel_ultra120_refused">Ultra 120 Гц недоступен для этого контента</string>
-    <string name="panel_ultra120_unverified">Ещё не проверено на этом проекторе.</string>
     <string name="panel_game_hdmi_only">Доступно только при просмотре входа HDMI</string>
-    <string name="panel_picture_settings">Настройки изображения</string>
     <string name="panel_pq_brightness">Яркость</string>
     <string name="panel_pq_contrast">Контрастность</string>
     <string name="panel_pq_saturation">Насыщенность</string>
     <string name="panel_pq_sharpness">Чёткость</string>
-    <string name="panel_pq_blocked_ai">Основные настройки недоступны в режиме «AI-качество»</string>
-    <string name="panel_pq_blocked_performance">Основные настройки недоступны в режиме «Производительность»</string>
     <string name="panel_ct_blocked_office">Цветовая температура недоступна в режиме «Офис»</string>
     <string name="panel_color_temp">Цветовая температура</string>
     <string name="panel_ct_1">Температура 1</string>
@@ -137,8 +115,6 @@
     <string name="eye_off_done">Защита глаз выключена</string>
     <string name="eye_bright_reduced">Короткое расстояние проекции: яркость снижена автоматически</string>
     <string name="eye_unavailable">Защита глаз пока не готова. Перезапустите проектор и попробуйте снова.</string>
-    <string name="panel_standby_off_after">Режим ожидания, затем выключение через</string>
-    <string name="panel_input">Источник сигнала</string>
     <string name="panel_projector_settings">Настройки проектора</string>
     <string name="panel_all_settings">Все настройки</string>
     <string name="panel_tile_focus">Фокус</string>
@@ -152,11 +128,6 @@
     <string name="panel_hdmi_settings">Настройки HDMI</string>
     <string name="panel_eye_desc">Свет приглушается, когда перед объективом кто-то есть.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Бок о бок</string>
-    <string name="panel_3d_tb">Сверху и снизу</string>
-    <string name="panel_3d_sbs_2d">Бок о бок как 2D</string>
-    <string name="panel_3d_tb_2d">Сверху и снизу как 2D</string>
-    <string name="panel_3d_summary">Во время видео. Для 3D нужны активные очки DLP-Link. «Как 2D» показывает 3D-файл обычной картинкой, без очков.</string>
     <string name="panel_3d_need_video">3D работает во время видео: сначала включите его</string>
     <string name="panel_3d_not_now">3D сейчас недоступно (HDR-видео, игровой режим или 120 Гц)</string>
 </resources>

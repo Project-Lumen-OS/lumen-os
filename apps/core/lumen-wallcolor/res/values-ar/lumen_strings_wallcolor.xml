@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">التكيف مع لون الجدار</string>
+    <string name="lumen_wallcolor_desc">يضبط ألوان الصورة على لون جدارك لتكون الألوان أدق.</string>
+    <string name="lumen_wallcolor_desc_ambient">للحصول على أفضل نتيجة تصبح الصورة بأقصى سطوع ويتوقف السطوع التلقائي.</string>
+    <string name="lumen_wallcolor_start">ابدأ</string>
+    <string name="lumen_wallcolor_reset">استعادة الألوان الأصلية</string>
+    <string name="lumen_wallcolor_running">جارٍ التكيف مع لون الجدار</string>
+    <string name="lumen_wallcolor_matched">الألوان المطابقة</string>
+    <string name="lumen_wallcolor_original">الألوان الأصلية</string>
+    <string name="lumen_wallcolor_save_title">هل تريد الاحتفاظ بالألوان المطابقة؟</string>
+    <string name="lumen_wallcolor_save_desc">الألوان المطابقة هي الأنسب للون هذا الجدار.</string>
+    <string name="lumen_wallcolor_fail_camera">لم تبدأ الكاميرا. حاول مرة أخرى.</string>
+    <string name="lumen_wallcolor_fail_start">تعذر بدء التكيف. إذا تكرر ذلك فأرسل تقريرًا عن المشكلة.</string>
+    <string name="lumen_wallcolor_fail_distance">فشل التكيف. غيّر المسافة إلى الجدار أو زاوية جهاز العرض.</string>
+    <string name="lumen_wallcolor_fail_light">فشل التكيف. تغيّر ضوء الغرفة. حاول مرة أخرى في ضوء ثابت.</string>
+    <string name="lumen_wallcolor_fail_custom">غير متاح في وضع الألوان المخصص.</string>
+    <string name="lumen_wallcolor_fail_performance">غير متاح في وضع الأداء.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">أوقف السطوع التلقائي وحاول مرة أخرى.</string>
+    <string name="lumen_wallcolor_fail_3d">غير متاح في وضع ثلاثي الأبعاد.</string>
+    <string name="lumen_wallcolor_fail_big_screen">في وضع الشاشة العملاقة يتوفر تصحيح شبه المنحرف اليدوي فقط.</string>
+    <string name="lumen_wallcolor_fail_range">فشل التكيف. لون الجدار خارج النطاق القابل للضبط.</string>
+    <string name="lumen_wallcolor_fail_not_started">لم يبدأ جهاز العرض التكيف. حاول مرة أخرى.</string>
+</resources>

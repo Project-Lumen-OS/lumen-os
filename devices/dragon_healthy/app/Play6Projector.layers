@@ -11,17 +11,19 @@ file      apps/common/hal/HidlCaller.java src/org/lumen/projector/hal/HidlCaller
 module    lumen-gmpf
 base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.gmpf
 file      apps/common/LumenImport.java src/org/lumen/common/LumenImport.java
-# the settings look of Lumen OS 1.0.9 from the Z9X app itself (Kit, Shell, fonts, icons, strings_settings2)
-base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.settings2
 base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.aipq
 # the shared projector menu of every Lumen projector with the Play 6 profile; the
 # Play 6 adapter is apps/Play6Projector panel/Play6Features (+ Play6MenuGates, Play6MenuPages, Play6Menu)
 module    lumen-system
+# the wall colour module (apps/core/lumen-wallcolor): lumen-menu depends on it, the Play 6 stock has no such row
+module    lumen-wallcolor
 module    lumen-aipq
 # the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
 module    lumen-icons
 # problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
 module    lumen-report
+# all files access for Lumen Play signed with its release key (apps/core/lumen-files-access)
+module    lumen-files-access
 # Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
 module    lumen-qr
 module    lumen-about
@@ -31,6 +33,8 @@ module    lumen-remote
 # model's rows as data
 module    lumen-signal
 file      devices/dragon_healthy/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-sensors
+file      devices/dragon_healthy/sensors.tsv assets/lumen_sensors/items.tsv
 module    lumen-ui
 module    lumen-source
 file      devices/dragon_healthy/source.tsv assets/lumen_source/source.tsv

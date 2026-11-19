@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS: static RRO on the system package installer (com.android.packageinstaller, the GSI's
+     PackageInstaller_tv). Every Lumen image runs in UI mode television + night (TvFrameworkOverlay:
+     config_defaultUiModeType 4, config_defaultNightMode 2), where the installer's own TV theme
+     Theme.AlertDialogActivity (values-television, and the GSI's auto generated RRO in
+     values-television-night) is a FLOATING Dialog.Alert window with a window title. UninstallerActivity puts
+     the full-screen leanback GuidedStepFragment (UninstallAlertFragment, ErrorFragment) into that wrap-content
+     dialog window, so the guidance column collapses: a huge icon, the app name cut to one letter, the question
+     wrapped letter by letter, the app label "Package installer" as a title bar.
+     This overlay gives the installer's activities a full-screen translucent window on a Lumen scrim (the
+     guided step then lays out as designed), restyles the guided step in the Lumen 2.0 look (96 px icon, app
+     name and a one-line question in Inter, stacked pill buttons with the blue focus ring) and draws the
+     framework alert dialogs of the install flow (confirm, unknown sources, errors) as a Lumen card.
+     Colours follow the system night mode (values-night), the only theme switch an overlay can see.
+     No code, no strings: the texts stay the installer's own translations.
+     Install: /system/product/overlay/LumenPackageInstallerOverlay.apk (0644), priority above the GSI's
+     auto generated RRO (priority 1). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lumen.overlay.packageinstaller"
+    android:versionCode="111"
+    android:versionName="1.0.11">
+    <overlay
+        android:targetPackage="com.android.packageinstaller"
+        android:isStatic="true"
+        android:priority="2000" />
+    <application android:hasCode="false" />
+</manifest>

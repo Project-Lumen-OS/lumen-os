@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Dopasowanie do koloru ściany</string>
+    <string name="lumen_wallcolor_desc">Dopasowuje kolory obrazu do koloru Twojej ściany, aby były wierniejsze.</string>
+    <string name="lumen_wallcolor_desc_ambient">Dla najlepszego wyniku obraz przejdzie na pełną jasność, a automatyczna jasność się wyłączy.</string>
+    <string name="lumen_wallcolor_start">Rozpocznij</string>
+    <string name="lumen_wallcolor_reset">Przywróć oryginalne kolory</string>
+    <string name="lumen_wallcolor_running">Dopasowujemy kolory do ściany</string>
+    <string name="lumen_wallcolor_matched">Dopasowane kolory</string>
+    <string name="lumen_wallcolor_original">Oryginalne kolory</string>
+    <string name="lumen_wallcolor_save_title">Zachować dopasowane kolory?</string>
+    <string name="lumen_wallcolor_save_desc">Dopasowane kolory najlepiej pasują do koloru tej ściany.</string>
+    <string name="lumen_wallcolor_fail_camera">Kamera się nie uruchomiła. Spróbuj ponownie.</string>
+    <string name="lumen_wallcolor_fail_start">Nie udało się uruchomić dopasowania. Jeśli to się powtórzy, wyślij zgłoszenie problemu.</string>
+    <string name="lumen_wallcolor_fail_distance">Nie udało się. Zmień odległość od ściany lub kąt projektora.</string>
+    <string name="lumen_wallcolor_fail_light">Nie udało się. Światło w pokoju się zmieniło. Spróbuj przy stałym świetle.</string>
+    <string name="lumen_wallcolor_fail_custom">Niedostępne w niestandardowym trybie koloru.</string>
+    <string name="lumen_wallcolor_fail_performance">Niedostępne w trybie wydajności.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Wyłącz automatyczną jasność i spróbuj ponownie.</string>
+    <string name="lumen_wallcolor_fail_3d">Niedostępne w trybie 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">W trybie ogromnego ekranu dostępna jest tylko ręczna korekcja trapezu.</string>
+    <string name="lumen_wallcolor_fail_range">Nie udało się. Kolor ściany jest poza zakresem dopasowania.</string>
+    <string name="lumen_wallcolor_fail_not_started">Projektor nie rozpoczął dopasowania. Spróbuj ponownie.</string>
+</resources>

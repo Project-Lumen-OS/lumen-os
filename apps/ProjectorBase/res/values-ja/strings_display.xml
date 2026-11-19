@@ -2,7 +2,6 @@
 <!-- Japanese translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">表示</string>
     <string name="uires_row">インターフェースの解像度</string>
     <string name="uires_default_fmt">%1$s（標準）</string>
     <string name="uires_summary">4K は文字が最も鮮明です。1080p は XGIMI と同じで、グラフィックの負荷が最も軽くなります。変更するとプロジェクターが再起動します。</string>

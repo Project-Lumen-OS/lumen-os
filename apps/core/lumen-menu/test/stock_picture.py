@@ -30,7 +30,7 @@ NODES = {
     "picture_iris_ring_adjustment_diana": (ROW, ["picture.iris"]),
     "picture_iris_ring_adjustment_athena3ultramax": (ROW, ["picture.iris"]),
     "image_title_v4": (HEADER, "image"),
-    "image_mode_4_state": (ROW, ["picture.mode"]),
+    "image_mode_4_state": (ROW, ["picture.mode", "picture.custom_new"]),   # the list ends with the "Custom" entry
     "image_mode_setting": (PAGE, "picture.settings"),
     "reset_image_mode_all_setting": (ROW, ["picture.reset_all"]),
     "brightness_more_title": (HEADER, "image_more"),
@@ -42,9 +42,9 @@ NODES = {
     # the picture settings page (image_mode_setting)
     "image_setting_title": (ELSEWHERE, "the page title"),
     "image_mode_two_title": (ELSEWHERE, "the page title (the picture mode's name)"),
-    "image_mode_custom_base_diana": (ELSEWHERE, "no Lumen row (custom picture modes)"),
-    "image_mode_custom_base_dianahy": (ELSEWHERE, "no Lumen row (custom picture modes)"),
-    "image_mode_custom_base_athena3": (ELSEWHERE, "no Lumen row (custom picture modes)"),
+    "image_mode_custom_base_diana": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
+    "image_mode_custom_base_dianahy": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
+    "image_mode_custom_base_athena3": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
     "small_title_basic": (HEADER, "basic"),
     "image_set_mode_auto_switch": (ROW, ["picture.auto_switch"]),
     "image_mode_bright": (ROW, ["picture.pq"]),
@@ -74,7 +74,7 @@ NODES = {
     "picture_super_resolution_switch": (ROW, ["picture.super_res"]),
     "small_title_more": (HEADER, "image_more"),
     "reset_image_mode_setting": (ROW, ["picture.reset"]),
-    "delete_image_mode_user_setting": (ELSEWHERE, "no Lumen row (custom picture modes)"),
+    "delete_image_mode_user_setting": (ROW, ["picture.custom_delete"]),
 }
 # Lumen rows the stock image page does not hold: each stands right after the row it belongs with
 #  - picture.dv_screen: stock picture_dolby_curtain, the last node inside the picture mode list (image_mode_4_state)

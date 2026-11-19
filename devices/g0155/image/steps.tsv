@@ -15,7 +15,7 @@
 # Flags: test (tN), unsigned (--unsigned: the same tree without the stage, a host build check only).
 *	need	base.sha256	rs30_prop.txt	rs30_model_prop.txt	rs30_blobs_allow.txt	x50_props.py	x50_kconfig.py	x50_netadb.rc	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_nui.rc	xgimi_compat_public.rc	debloat.txt	x50_power_keys.py	rs30_menu_keys.py	Generic.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3838.idc	Vendor_000d_Product_3839.idc	Vendor_000d_Product_3840.idc	Vendor_000d_Product_3841.idc	Vendor_000d_Product_3842.idc	Vendor_000d_Product_3843.idc	Vendor_1d5a_Product_c081.idc	Vendor_26e3_Product_af02.idc	erofs_kcheck.py	lumen_checks.py	apkinfo.py	x50-projector.xml	debloat_launcher.txt	rs30-sysconfig.xml	z9x-sysconfig-nogms.xml	privapp-permissions-z9xhome.xml	z9x-home-default-permissions.xml	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	bootanimation.zip	airplay_libs.py	first_start_prop.txt	first_start.py	privapp-permissions-z9xsetup.xml
 !unsigned	need	signed_stage/SHA256SUMS	signed_stage/apps/X50EyeGuard.apk	signed_stage/apps/X50Projector.apk	signed_stage/apps/X50PowerOverlay.apk	signed_stage/apps/X50TvInput.apk	signed_stage/apps/LumenKeyboard.apk	signed_stage/base_signed/base_signed.tsv
-!unsigned	need	signed_stage/apps/Z9xSetup.apk	signed_stage/apps/Z9xHome.apk	signed_stage/apps/LumenMiracast.apk	signed_stage/apps/LumenWifiP2pOverlay.apk	signed_stage/pinned/Z9xAirPlay.apk
+!unsigned	need	signed_stage/apps/Z9xSetup.apk	signed_stage/apps/Z9xHome.apk	signed_stage/apps/LumenMiracast.apk	signed_stage/apps/LumenWifiP2pOverlay.apk	signed_stage/apps/LumenPackageInstallerOverlay.apk	signed_stage/pinned/Z9xAirPlay.apk
 !unsigned	sums	signed_stage
 *	out	fresh	mounts
 # the stock kernel of the dump has what the base needs: the userfaultfd GC and 32-bit compat
@@ -54,6 +54,9 @@
 *	place	xgimi_compat_public.rc	{sys}/etc/init/xgimi_compat.rc	0644	0	0	{LABEL}
 *	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 *	place	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc	0644	0	0	{LABEL}
+# Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)
+*	need	lumen_boot_sound.rc
+*	place	lumen_boot_sound.rc	{sys}/etc/init/lumen_boot_sound.rc	0644	0	0	{LABEL}
 *	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
 *	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
 *	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
@@ -146,6 +149,9 @@
 !unsigned	place	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml	0644	0	0	{LABEL}
 !unsigned	place	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml	0644	0	0	{LABEL}
 !unsigned	place	signed_stage/apps/LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk	0644	0	0	{LABEL}
+# the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
+# theme puts the uninstall guided step into a floating dialog (one letter per line), this overlay fixes it for every model
+!unsigned	place	signed_stage/apps/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk	0644	0	0	{LABEL}
 !unsigned	place	signed_stage/pinned/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}
 !unsigned	place	z9x-airplay-default-permissions.xml	{sys}/product/etc/default-permissions/z9x-airplay.xml	0644	0	0	{LABEL}
 !unsigned	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
@@ -215,6 +221,7 @@ unsigned	is_dir	{mn}/system/product/priv-app/TVLauncherNoGMS
 *	same	{mn}/system/etc/z9x/z9x_blobs.sh	z9x_blobs.sh
 *	same	{mn}/system/etc/z9x/blobs.conf	blobs.conf
 *	same	{mn}/system/etc/init/z9x_blobs.rc	z9x_blobs.rc
+*	same	{mn}/system/etc/init/lumen_boot_sound.rc	lumen_boot_sound.rc
 !unsigned	same	{mn}/system/app/X50EyeGuard/X50EyeGuard.apk	signed_stage/apps/X50EyeGuard.apk
 !unsigned	same	{mn}/system/priv-app/X50Projector/X50Projector.apk	signed_stage/apps/X50Projector.apk
 !unsigned	same	{mn}/system/product/overlay/X50PowerOverlay.apk	signed_stage/apps/X50PowerOverlay.apk
@@ -224,6 +231,7 @@ unsigned	is_dir	{mn}/system/product/priv-app/TVLauncherNoGMS
 !unsigned	same	{mn}/system/priv-app/Z9xHome/Z9xHome.apk	signed_stage/apps/Z9xHome.apk
 !unsigned	same	{mn}/system/priv-app/LumenMiracast/LumenMiracast.apk	signed_stage/apps/LumenMiracast.apk
 !unsigned	same	{mn}/system/product/overlay/LumenWifiP2pOverlay.apk	signed_stage/apps/LumenWifiP2pOverlay.apk
+!unsigned	same	{mn}/system/product/overlay/LumenPackageInstallerOverlay.apk	signed_stage/apps/LumenPackageInstallerOverlay.apk
 !unsigned	same	{mn}/system/app/Z9xAirPlay/Z9xAirPlay.apk	signed_stage/pinned/Z9xAirPlay.apk
 !unsigned	same	{mn}/system/etc/permissions/privapp-permissions-lumen-miracast.xml	privapp-permissions-lumen-miracast.xml
 !unsigned	same	{mn}/system/product/etc/default-permissions/z9x-home.xml	z9x-home-default-permissions.xml

@@ -24,6 +24,9 @@ final class HalCodes {
     static final int GMPF_SET_SOUND_EFFECT = 61;                      // setSoundeffect  W=writeUint8 R=
     static final int GMPF_GET_SOUND_EFFECT = 62;                      // getSoundeffect  W= R=readUint8
     static final int GMPF_SET_AUTO_SOUND_EFFECT = 63;                 // setAutoSoundeffect  W=writeUint8 R=
+    static final int GMPF_SET_AUTO_COLOR_CALIBRATION = 99;            // setAutoColorCalibration  W= R=readBool
+    static final int GMPF_SET_AUTO_COLOR_DEFAULT = 100;               // setAutoColorDefault  W= R=readBool
+    static final int GMPF_START_AUTO_COLOR = 106;                     // startAutoColor  W= R=readBool
     static final int GMPF_GET_DISP_COLOR_SPACE = 111;                 // getDispColorSpace  W=writeInt32,writeInt32 R=readInt32
     static final int GMPF_SWITCH_DISP_COLOR_SPACE = 112;              // switchDispColorSpace  W=writeInt32 R=readInt32
     static final int GMPF_UI_HEART_BEAT_DO = 114;                     // uiHeartBeatDo  W=writeBuffer R=readInt8
@@ -88,6 +91,8 @@ final class HalCodes {
     static final int GMPF_IS_POWER_ON_MUSIC_ENABLED = 420;            // isPowerOnMusicEnabled  W= R=readBool
     static final int GMPF_GET_SYSTEM_TEMPERATURE = 438;               // getSystemTemperature  W= R=readUint8
     static final int GMPF_GET_TEMPERATURE_FROM_SENSOR = 439;          // getTemperatureFromSensor  W=writeUint8 R=readFloat
+    static final int GMPF_SET_POWER_ON_MODE = 543;                    // setPowerOnMode  W=writeUint8 R=
+    static final int GMPF_GET_POWER_ON_MODE = 544;                    // getPowerOnMode  W= R=readUint8
     static final int GMPF_SAVE_POWER_ON_AK_FLAG = 552;                // savePowerOnAKFlag  W=writeBool R=
     static final int GMPF_GET_POWER_ON_AK_FLAG = 553;                 // getPowerOnAKFlag  W= R=readBool
     static final int GMPF_TEMPORARY_SWITCH_TRIGGER = 573;             // temporarySwitchTrigger  W=writeInt32,writeBool R=readBool
@@ -156,6 +161,7 @@ final class HalCodes {
     static final int GMPF2_DO_KEYSTONE_RATIO = 46;                    // doKeystoneRatio  W=writeInt32 R=readBool
     static final int GMPF2_GET_LENS_DISP_MODE = 51;                   // getLensDispMode  W= R=readInt32
     static final int GMPF2_SET_LENS_DISP_MODE = 52;                   // setLensDispMode  W=writeInt32 R=readBool
+    static final int GMPF2_SET_AE_ON_OFF = 53;                        // setAEOnOff  W=writeBool R=readInt32
     static final int GMPF2_GET_GAME_MODE_PROP = 55;                   // getGameModeProp  W= R=
     static final int GMPF2_SET_GAME_MODE_TYPE = 56;                   // setGameModeType  W=writeInt32 R=readBool
     static final int GMPF2_SET_GAME_MODE_STATE = 57;                  // setGameModeState  W=writeInt32 R=readBool

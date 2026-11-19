@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost 让画面更亮，但颜色会变淡。色彩空间保持不变。</string>
     <string name="lumen_m_cec_entry">HDMI 设备 (CEC)</string>
     <string name="lumen_m_eq_title">均衡器</string>
-    <string name="lumen_m_fit_row">按幕布尺寸适配</string>
-    <string name="lumen_m_fit_row_summary">根据到幕布的距离和幕布尺寸设置变焦</string>
     <string name="lumen_m_hdmi_mode">HDMI 模式</string>
     <string name="lumen_m_hdmi_mode_compat">兼容模式 (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">增强模式 (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">快速</string>
     <string name="lumen_m_signal_refresh_note">快速：画面偶尔可能卡顿</string>
     <string name="lumen_m_hdr_developer">开发者</string>
+    <string name="lumen_m_hdr_power">开机</string>
+    <string name="lumen_m_power_on_ac">通电自动开机</string>
+    <string name="lumen_m_power_on_ac_tip">接通电源后投影仪自动开机</string>
+    <string name="lumen_m_custom_base">基于预设模式</string>
+    <string name="lumen_m_custom_delete">删除自定义</string>
+    <string name="lumen_m_custom_delete_ask">删除自定义图像模式？</string>
+    <string name="lumen_m_custom_confirm">确认</string>
+    <string name="lumen_m_custom_name">请输入自定义名称</string>
+    <string name="lumen_m_custom_name_empty">自定义名称不能为空</string>
+    <string name="lumen_m_custom_name_taken">名称已重复，请重新输入</string>
+    <string name="lumen_m_custom_name_max">输入已达最大限制</string>
 </resources>

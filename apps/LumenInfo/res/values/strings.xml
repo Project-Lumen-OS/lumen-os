@@ -11,7 +11,6 @@
     <string name="sec_overlay">Overlay</string>
 
     <string name="na">not available</string>
-    <string name="none_playing">nothing playing</string>
     <string name="on">on</string>
     <string name="off">off</string>
     <string name="yes">yes</string>
@@ -63,7 +62,6 @@
     <string name="v_sdr_only">SDR only</string>
     <string name="v_layer_sideband">hardware path (SIDEBAND)</string>
     <string name="v_up_to_nits">up to %1$s nits</string>
-    <string name="v_root_only">readable only with root, not shown</string>
 
     <!-- audio -->
     <string name="r_audio_out">Audio output</string>

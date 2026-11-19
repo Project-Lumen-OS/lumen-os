@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Link-time stub of com.android.packageinstaller (see build_apk.sh, stub/). Never installed. The ids are the
+     same in the PackageInstaller_tv of every Lumen base (resources.arsc sha256 36602b27... on the Z9X 1.0.9 base the
+     X50 family builds on, the HB and Play 6 lineage_gsi_tv_arm bases and RS30). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.packageinstaller" />

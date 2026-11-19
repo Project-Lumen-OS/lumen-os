@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">자녀 보호</string>
+    <string name="lumen_lp_intro">아이가 열 수 있는 항목과 시청 시간을 제한합니다.</string>
+    <string name="lumen_lp_lock">어린이 잠금</string>
+    <string name="lumen_lp_lock_desc">켜면 관리 범위, 시청 시간 등을 설정할 수 있습니다</string>
+    <string name="lumen_lp_lock_off_title">어린이 잠금을 끌까요?</string>
+    <string name="lumen_lp_lock_off_text">시간 제한과 전원 켤 때 비밀번호가 작동하지 않습니다. 보호자 설정은 비밀번호 없이 열립니다.</string>
+    <string name="lumen_lp_turn_off">끄기</string>
+    <string name="lumen_lp_cancel">취소</string>
+    <string name="lumen_lp_child_mode">어린이 모드</string>
+    <string name="lumen_lp_child_apps">어린이 모드 앱</string>
+    <string name="lumen_lp_child_apps_count">%1$d개 선택됨</string>
+    <string name="lumen_lp_range">관리 범위</string>
+    <string name="lumen_lp_range_child">어린이 모드만</string>
+    <string name="lumen_lp_range_global">전체</string>
+    <string name="lumen_lp_session">1회 사용 시간</string>
+    <string name="lumen_lp_session_desc">그 후 10분 휴식</string>
+    <string name="lumen_lp_daily">하루 사용 시간</string>
+    <string name="lumen_lp_no_limit">제한 없음</string>
+    <string name="lumen_lp_minutes">%1$d분</string>
+    <string name="lumen_lp_hours">%1$s시간</string>
+    <string name="lumen_lp_boot_pin">전원 켤 때 비밀번호</string>
+    <string name="lumen_lp_boot_child">전원 켤 때 어린이 모드</string>
+    <string name="lumen_lp_change_pin">비밀번호 변경</string>
+    <string name="lumen_lp_eye">눈 보호</string>
+    <string name="lumen_lp_eye_desc">눈 보호는 프로젝터 설정에서 바꿉니다</string>
+    <string name="lumen_lp_pin_enter">어린이 잠금 비밀번호 입력</string>
+    <string name="lumen_lp_pin_hint">리모컨의 화살표 버튼을 누르세요</string>
+    <string name="lumen_lp_pin_set">어린이 잠금 비밀번호 설정</string>
+    <string name="lumen_lp_pin_again">비밀번호를 다시 입력하세요</string>
+    <string name="lumen_lp_pin_mismatch">비밀번호가 다릅니다. 다시 설정하세요</string>
+    <string name="lumen_lp_pin_wrong">비밀번호가 틀렸습니다</string>
+    <string name="lumen_lp_pin_forgot">비밀번호를 잊으셨나요? OK를 누르세요</string>
+    <string name="lumen_lp_quiz">%1$d × %2$d는 얼마일까요?</string>
+    <string name="lumen_lp_quiz_wrong">틀렸습니다. 다른 문제입니다</string>
+    <string name="lumen_lp_rest_title">쉬는 시간입니다</string>
+    <string name="lumen_lp_rest_session">사용 시간이 끝났습니다. 10분 쉬세요</string>
+    <string name="lumen_lp_rest_daily">오늘 시청 시간이 끝났습니다</string>
+    <string name="lumen_lp_rest_unlock">잠금 해제</string>
+    <string name="lumen_lp_on">켜짐</string>
+    <string name="lumen_lp_off">꺼짐</string>
+</resources>

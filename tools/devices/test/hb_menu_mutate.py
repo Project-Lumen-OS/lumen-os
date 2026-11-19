@@ -93,6 +93,7 @@ def tree(dst):
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/src"), os.path.join(dst, "apps/core/lumen-menu/src"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/res/values"), os.path.join(dst, "apps/core/lumen-menu/res/values"))
     shutil.copytree(os.path.join(G, "apps/ProjectorBase/res/values"), os.path.join(dst, "apps/ProjectorBase/res/values"))
+    shutil.copytree(os.path.join(G, "apps/common/projector/res/values"), os.path.join(dst, "apps/common/projector/res/values"))
     os.makedirs(os.path.join(dst, "devices/goat_elegant/app"))
     for f in ("menu.json", "forks.tsv", "app/HbProjector.layers"):
         shutil.copy2(os.path.join(G, "devices/goat_elegant", f), os.path.join(dst, "devices/goat_elegant", f))

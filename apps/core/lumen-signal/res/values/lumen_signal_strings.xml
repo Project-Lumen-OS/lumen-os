@@ -83,7 +83,8 @@
     <string name="lumen_signal_fmt_manual">Manual</string>
     <string name="lumen_signal_sound_line">Sound: %1$s</string>
     <string name="lumen_signal_popup_row">Show when the signal changes</string>
-    <string name="lumen_signal_hint_more">again: more</string>
+    <string name="lumen_signal_hint_hold">Hold OK to expand</string>
+    <string name="lumen_signal_hint_fold">Collapse</string>
     <string name="lumen_signal_hint_hide">again: hide</string>
     <string name="lumen_signal_hint_close">close</string>
     <string name="lumen_signal_r_color_format">Colour format</string>

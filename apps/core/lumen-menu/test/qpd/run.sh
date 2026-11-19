@@ -66,9 +66,12 @@ want '!boostOn() && state != null && state.on(FeatureId.BOOST) != null' "Boost s
 # autocorrect, picture, input, game, small keystone, zoom, sound, focus, bluetooth, network, projection (gives its place to screen mirroring), eye protection.
 # 2026-11-14 (a Z9X user): on a model with stock 3D the 3D tile takes the network place, network goes up as a round
 # button left of the theme button. 2026-11-18: the signal panel is a developer feature, no round button (its one
-# row is in All settings, General, "developer")
+# row is on the For developers page, the last of All settings, 2026-11-19)
 grep -q 'ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};' "$SP" || { echo "FAIL controller: round tiles"; bad=1; }
 grep -q 'PUSHES_UP = {{FeatureId.PICTURE_3D, FeatureId.NETWORK}};' "$SP" || { echo "FAIL controller: 3D pushes network up"; bad=1; }
+# For developers opens only inside All settings (2026-11-19), like General: never as a side popup
+want 'if (MenuSpec.allSettingsOnly(section)) { openAll(section, focusRow); return; }' "For developers opens in All settings"
+want 'if (MenuSpec.LAMP.equals(key) || MenuSpec.allSettingsOnly(key)) return null;' "no popup page for the All settings only pages"
 # the card is the user's quick menu (pencil, 2026-11-18); nothing stored = QuickDefaults over the spec's runtime rule
 want 'quickDefaults = QuickDefaults.of(spec, this::tilePresent);' "the default card from the spec's runtime rule (QuickDefaults)"
 want 'quickShown = QuickLayoutJson.reconcile(quickStored, quickCatalog, quickDefaults);' "the stored menu repaired on every read"
@@ -102,7 +105,7 @@ done
 [ -f "$HERE/res/drawable/lumen_qpd_ic_usb.xml" ] && { echo "FAIL res: the USB tile icon is back"; bad=1; }
 # All settings (gear) is its own screen: the gear tile opens it, never a popup
 want 'if (MenuSpec.GENERAL.equals(id)) { openAll(null, null); return; }' "gear opens All settings"
-want 'return !MenuSpec.GENERAL.equals(key) && popupPage(key) != null;' "gear not a popup"
+want 'return !MenuSpec.allSettingsOnly(key) && popupPage(key) != null;' "gear and For developers not a popup"
 # a section tile's popup leaves out the rows with a tile of their own (MenuSpec.popups): the full page's views minus
 # those, built after the extension rows and again when an extension adds rows; All settings keeps the full page
 want '        for (String sec : spec.popups.keySet()) tilePopup(sec);' "section popups without the card's own tiles"

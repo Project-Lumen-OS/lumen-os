@@ -47,14 +47,14 @@ NODES = {
     "small_title_focus": (ELSEWHERE, "the Focus section"),
     "focus_tab": (ELSEWHERE, "the Focus section"),
     "projection_settings": (ELSEWHERE, "the Projection section"),
-    "wall_color_calibration": (ELSEWHERE, "no Lumen row"),
+    "wall_color_calibration": (ROW, ["keystone.wall_color"]),        # lumen-wallcolor, 2026-11-19
     "color_uniformity_adjustment": (ELSEWHERE, "no Lumen row"),
     "setting_common_back": (ELSEWHERE, "the back key"),
 }
 # inside a sub page shown in place: its back row, lines and small titles are not drawn (it is one group)
 IN_SUBPAGE_SKIP = {"setting_common_back", "setting_common_line", "picture_adjustment_enhancement_title"}
 # Lumen rows no stock tree has: each stands right after the row it belongs with, where that row is on the page
-LUMEN_ONLY = [("keystone.fit_now", "keystone.ak_now"), ("keystone.fit_screen", "zoom")]
+LUMEN_ONLY = [("keystone.fit_now", "keystone.ak_now")]
 
 
 def derive(tree, nodes):

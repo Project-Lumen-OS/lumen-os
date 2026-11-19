@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost makes the picture brighter, but colors look paler. The color space stays as it is.</string>
     <string name="lumen_m_cec_entry">HDMI devices (CEC)</string>
     <string name="lumen_m_eq_title">Equalizer</string>
-    <string name="lumen_m_fit_row">Fit to screen size</string>
-    <string name="lumen_m_fit_row_summary">The zoom is set from the distance to your screen and its size</string>
     <string name="lumen_m_hdmi_mode">HDMI mode</string>
     <string name="lumen_m_hdmi_mode_compat">Compatible (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Enhanced (HDMI 2.0)</string>
@@ -151,4 +149,15 @@
     <string name="lumen_m_signal_refresh_fast">Fast</string>
     <string name="lumen_m_signal_refresh_note">Fast: rare frame stutter is possible</string>
     <string name="lumen_m_hdr_developer">For developers</string>
+    <string name="lumen_m_hdr_power">Power on</string>
+    <string name="lumen_m_power_on_ac">Power On Auto Boot</string>
+    <string name="lumen_m_power_on_ac_tip">Projector automatically boots after power is connected</string>
+    <string name="lumen_m_custom_base">Based on</string>
+    <string name="lumen_m_custom_delete">Delete Custom</string>
+    <string name="lumen_m_custom_delete_ask">Delete custom picture mode?</string>
+    <string name="lumen_m_custom_confirm">Confirm</string>
+    <string name="lumen_m_custom_name">Please enter a custom name</string>
+    <string name="lumen_m_custom_name_empty">Custom name cannot be empty</string>
+    <string name="lumen_m_custom_name_taken">Name already exists, please try another</string>
+    <string name="lumen_m_custom_name_max">Max input reached</string>
 </resources>

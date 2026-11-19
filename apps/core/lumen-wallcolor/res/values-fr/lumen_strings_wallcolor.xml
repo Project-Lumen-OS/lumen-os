@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Adaptation à la couleur du mur</string>
+    <string name="lumen_wallcolor_desc">Adapte les couleurs de l\'image à la couleur de votre mur pour des couleurs plus justes.</string>
+    <string name="lumen_wallcolor_desc_ambient">Pour un meilleur résultat, l\'image passe à la luminosité maximale et la luminosité automatique se désactive.</string>
+    <string name="lumen_wallcolor_start">Démarrer</string>
+    <string name="lumen_wallcolor_reset">Rétablir les couleurs d\'origine</string>
+    <string name="lumen_wallcolor_running">Adaptation à la couleur du mur</string>
+    <string name="lumen_wallcolor_matched">Couleurs adaptées</string>
+    <string name="lumen_wallcolor_original">Couleurs d\'origine</string>
+    <string name="lumen_wallcolor_save_title">Garder les couleurs adaptées ?</string>
+    <string name="lumen_wallcolor_save_desc">Les couleurs adaptées conviennent le mieux à la couleur de ce mur.</string>
+    <string name="lumen_wallcolor_fail_camera">La caméra n\'a pas démarré. Réessayez.</string>
+    <string name="lumen_wallcolor_fail_start">L\'adaptation n\'a pas pu démarrer. Si cela se reproduit, envoyez un rapport de problème.</string>
+    <string name="lumen_wallcolor_fail_distance">Échec de l\'adaptation. Changez la distance au mur ou l\'angle du projecteur.</string>
+    <string name="lumen_wallcolor_fail_light">Échec de l\'adaptation. La lumière de la pièce a changé. Réessayez avec une lumière stable.</string>
+    <string name="lumen_wallcolor_fail_custom">Indisponible dans le mode couleur personnalisé.</string>
+    <string name="lumen_wallcolor_fail_performance">Indisponible dans le mode performance.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Désactivez la luminosité automatique et réessayez.</string>
+    <string name="lumen_wallcolor_fail_3d">Indisponible en mode 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">En mode écran géant, seule la correction manuelle du trapèze est disponible.</string>
+    <string name="lumen_wallcolor_fail_range">Échec de l\'adaptation. La couleur du mur est hors de la plage réglable.</string>
+    <string name="lumen_wallcolor_fail_not_started">Le projecteur n\'a pas démarré l\'adaptation. Réessayez.</string>
+</resources>

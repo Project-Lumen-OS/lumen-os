@@ -62,6 +62,9 @@ SettingsActivity, X50 family `X50MenuPages` remote page).
   UP, a held remote key opens its choice. A key with nothing keeps its normal action (the stock shortcut key 184 the
   app list, the custom keys 1 to 4 ask which app). An app that is gone loses the key, which works as before again.
   While the screen is open keys run nothing, while it waits for a key it gets every key except power.
+- Module hook (`KeyHook`): a module that must see keys while something of its own is on screen (lumen-signal
+  `CardHold`: holding OK on a developer card) sets one hook. While it is set KeyFilterService runs and asks the hook
+  first, a key it does not take goes on unchanged; cleared, the filter runs only for the keyboard binds again.
 - Stock: X50, RS30 and Titan have the same feature (SystemUI `RemoteCustomKeyUI`, `shortcut_function_bind_list`,
   custom keys 1 to 4 of the B975D remote, 1 and 2 of the RS30 remote; function list `res/_i.json`). Lumen offers at
   least the same keys and, of the stock functions, the ones Lumen has (keystone and lens, HDMI, brightness and

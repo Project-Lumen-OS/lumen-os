@@ -43,6 +43,8 @@ ProjectorFocusManager	86	getPowerOnAFUseDistance	boolean()	read of that switch
 MotionDetectionManager	4	setAngTriggerAF	boolean(boolean)	the second call of 'smart auto focus' only (Sequences.toggle, right after ProjectorFocusManager 85): stock newsettings FocusRepository.setSmartAutoFocus -> FocusFunctionManager.setDisplacementFocus -> GmDeviceManager.setFocusAutoOnOff; t17: no row of its own (the X50 tree focus_tab has no 'auto focus when moved' node), so no getter 5
 MotionDetectionManager	6	setAccTriggerAK	boolean(boolean)	switch 'auto keystone when moved': stock newsettings FocusFunctionManager / CalibrationManager GmDisplayManager.setAccTriggerAK, Home KeyStoneManager:543
 MotionDetectionManager	7	getAccTriggerAK	boolean()	read of that switch
+GmFactoryManager	36	setPowerOnMode	void(byte)	switch 'Power On Auto Boot': stock newsettings HideRepository.setElectrify GmFactoryManager.setPowerOnMode(on ? 1 : 0), only on the user's flip; EXCEPTION row of banned.tsv (owner 2026-11-19, as HB allowed 36)
+GmFactoryManager	37	getPowerOnMode	byte()	read of that switch (getPowerOnMode() == 1); EXCEPTION row of banned.tsv
 GmFactoryManager	45	savePowerOnAKFlag	void(boolean)	switch 'auto keystone at power on': stock newsettings KeyStoneManager.setBootAk GmDisplayManager.savePowerOnAKFlag; EXCEPTION row of banned.tsv (as HB allowed 45)
 GmFactoryManager	46	getPowerOnAKFlag	boolean()	read of that switch (KeyStoneManager.getBootAk); EXCEPTION row of banned.tsv
 DisplayManager	61	setHumanDetectOnOff	boolean(boolean)	args:0..1	user row only: stock newsettings MoreRepository.setHumandetect(z) on the X50 (support_human_detect_mode true): GmDisplayManager.setHumanDetectOnOff(z) = V3DisplayManager -> 61, then GmSystemManager.setProp("persist.sys.humandetect.enable", z); the off confirm dialog of MoreRepository.setHumanDetectOnOff (close: 300 ms, off again; cancel / back: on); Sequences.eyeSet
@@ -92,6 +94,11 @@ MotionDetectionManager	24	setMotionACalEnable	boolean(boolean)	by Sequences.Angl
 # t14 picture page: newsettings com/xgimi/picture, X50 settings tree res raw/settings_tree_product_dianapro
 # ai-mode-stock: the stock AI picture quality (XRMService AIPQ, org.lumen.aipq.AiPq): its GmTvManager events and scene write
 GmTvManager	1	setGmTvCallback	void(IGmTvCallback)	(the process's one IGmTvCallback object): stock GmTvManagerWrapper.setGmTvListener of XRMService (SignalChangeReceiver), event 5 "picturemode:N" drives the AI scene; X50AiPq at start and once per vendor binder (AidlTransport.registerCallback)
+ProjectorFocusManager	1	setFocusCallback	void(IProjectorFocusCallback)	(the process's one IProjectorFocusCallback object): stock ProjectorFocusManagerWrapper.initCallback; the wall colour events 11001 (owner 2026-11-19)
+DisplayManager	108	startAutoColor	boolean()	stock newsettings brightnessWallColorCalibration GmDisplayManager.startAutoColor (owner 2026-11-19, wall colour adaptation)
+DisplayManager	114	setAutoColorDefault	boolean()	stock OverWindowV2.autoColorDefault and the card reset; EXCEPTION row of banned.tsv (owner 2026-11-19)
+DisplayManager	115	setAutoColorCalibration	boolean()	stock OverWindowV2.autoColorCalibration (use the matched colour); EXCEPTION row of banned.tsv (owner 2026-11-19)
+DisplayManager	150	setAEOnOff	int(boolean)	stock GmDisplayManager.setAEOnOff(false) right before startAutoColor (owner 2026-11-19)
 GmTvManager	33	setPictureMode	boolean(int, int)	(0, id) with id of the X50 tree node image_mode_4_state (other: AI 10, sport 9, soft 24, Filmmaker 27, ISF 38 / 39, colour accuracy 29, office 25) only: PictureRepository.setImageMode (skip when id == getPictureMode) -> choiceLedMode -> GmDisplayManager.setPictureMode -> MstPictureManager (XgimiService) -> MtkVideo.setPictureMode = GmTvManager.setPictureMode(0, i); ai-mode-stock: also (0, 10..17), the AI scene of the stock AI picture quality (XRMService AIPQ over the menu's AI 10, Gmpf.aiSceneSet, org.lumen.aipq.AiPq)
 GmTvManager	34	getPictureMode	int(int)	(0): GmDisplayManager.getPictureMode -> XgimiService MtkVideo.getPictureMode = GmTvManager.getPictureMode(0); read before a set and after it
 DisplayManager	172	setDynamicBlackType	boolean(int)	(1 | 0) only: PictureViewModel switch case PICTURE_IMAGE_DYNAMIC_BLACK_BIT_ENHANCEMENT (X50 tree node image_dynamic_black_bit_enhancement) GmDisplayManager.setDynamicBlackType(isCheck ? 1 : 0) -> gmpf.api DisplayManager -> DisplayManagerWrapper -> 172; not sent in the PC 6 / office 25 / HDR Vivid 26 picture modes (the vendor refuses it there)
@@ -276,3 +283,21 @@ ProjectorFocusManager	110	deleteNimbleOpticalPos	boolean(int)	args:1..999	delete
 ProjectorFocusManager	107	executeNimbleOpticalPos	boolean(int)	args:1..999	move the lens back to a stored position (DataRepository.executeNimbleOpticalPos); BANNED R-nimble, unbanned for this app only; refused off zoom.memory
 ProjectorFocusManager	98	getTiltShiftMovePositionPercentage	String(int)	args:0..1	read: where the lens shift stands on the shift page, stock DisplacementUtils.getPercentOffsetList (orientation 0 horizontal, 1 vertical; "a,b" the two side fractions 0..1, flipped by the put mode) drawn as the stock DisplacementCell range picture (x50-feedback1)
 GmTvManager	106	getSignalStatus	int()	args:-	read only: the HDMI relink (lumen-hdmi HdmiRelink over X50RelinkHost) every 2 s while tvinput shows an HDMI port, 3 = a stable picture, the value the stock HDMI player waits for (xhplayer InputActivity SignalStable, the same GmTvManager table as the HB G0148)
+SystemManager	226	setHighAltitudeMode	boolean(boolean)	args:0..1	the General page high altitude switch: stock MoreRepository.setHighAltitudeMode -> GmSystemManager.setHighAltitudeMode -> SystemManager 226, then the read (X50 Ultra, Ultra Max, TITAN trees: high_altitude_mode under more_setting; refused where ModelMenu does not name settings.high_altitude)
+SystemManager	227	getHighAltitudeMode	boolean()	args:-	read only: the high altitude switch (stock MoreRepository.getHighAltitudeMode)
+GmTvManager	195	CreateNewCustomImageMode	int(int)	(-1): the stock "Custom" entry of the mode list (PictureViewModel picture_customize), the new id is selected by 33
+GmTvManager	196	DeleteCustomImageMode	int(int)	(id) of the user mode in use: stock delete_image_mode_user_setting, 1 = deleted
+GmTvManager	197	SwitchCustomImageModeMapping	int(int, int)	(id, base) stock image_mode_custom_base_*: base = a stock mode of the model, read back by 198
+GmTvManager	198	GetCustomImageModeMapping	int(int)	(id): the based-on row while a user mode is in use
+SystemManager	1	setSystemCallback	void(ISystemCallback)	(the process's one ISystemCallback object): stock newsettings SystemManagerService.setSystemCallback (MiddleListenerManager), event 29 is the serial console's command (SerialPortControlRepository.observeRS232Listener); X50Serial, only on a model whose ModelMenu names serial.switch, once the switch is on
+SystemManager	208	setConsoleID	boolean(String, int)	args:s:1,0..20	the serial ID: stock SerialPortControlRepository.setConsoleID(group A..Z, number 0..20), then the read 209
+SystemManager	209	getConsoleID	String()	args:-	read only: the serial ID "group,number" (stock V3SystemManager.getConsoleID)
+SystemManager	210	setConsoleGroupAckEnable	boolean(boolean)	args:0..1	the group reply switch: stock SerialPortControlRepository.setConsoleGroupAckEnable, then the read 211
+SystemManager	211	getConsoleGroupAckEnable	boolean()	args:-	read only: the group reply switch
+SystemManager	212	setConsoleAllAckEnable	boolean(boolean)	args:0..1	the all reply switch: stock SerialPortControlRepository.setConsoleAllAckEnable, then the read 213
+SystemManager	213	getConsoleAllAckEnable	boolean()	args:-	read only: the all reply switch
+SystemManager	218	setConsoleSeriesHost	boolean(boolean)	args:0..1	master mode: stock MiddleWareApi.setConsoleSeriesHost, then the read 219
+SystemManager	219	getConsoleSeriesHost	boolean()	args:-	read only: master mode
+SystemManager	220	setConsoleEnable	boolean(boolean)	args:0..1	the serial port control switch: stock MiddleWareApi.setConsoleEnable, then the read 221 (X50 Ultra, Ultra Max, TITAN trees: serial_port_control_state_diana)
+SystemManager	221	getConsoleEnable	boolean()	args:-	read only: the serial port control switch
+SystemManager	230	setConsoleCmd	boolean(int, int)	args:3,0..63;4,0..63;5,1..10;14,0..2	the report of a menu change to the port: stock MiddlewareManager syncPictureMode 3, syncSoundMode 4, syncBrightness 5, syncSuperFrame 14

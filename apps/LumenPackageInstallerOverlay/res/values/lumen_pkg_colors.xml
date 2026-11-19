@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen 2.0 tokens (apps/common/tokens.xml, Светлая = Песок): the light set. values-night holds the dark set.
+     A static overlay runs no code, so these are the palette's numbers; lumen-ui ThemeTest checks they equal Palette
+     (scrim = bg at .96, card = surface, button = pill, focused button = surface2, ring = focusRing). -->
+<resources>
+    <color name="lumen_pkg_scrim">#F5CFC4B0</color>
+    <color name="lumen_pkg_card">#FFDBD2C2</color>
+    <color name="lumen_pkg_button">#0F211C13</color>
+    <color name="lumen_pkg_button_focus">#FFE4DDD0</color>
+    <color name="lumen_pkg_text1">#FF211C13</color>
+    <color name="lumen_pkg_text2">#FF463F33</color>
+    <color name="lumen_pkg_ring">#FF2F62D0</color>
+    <color name="lumen_pkg_accent">#FF1D4AA3</color>
+</resources>

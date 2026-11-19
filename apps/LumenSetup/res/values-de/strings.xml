@@ -20,7 +20,6 @@
     <string name="net_wifi_on">WLAN wird eingeschaltet…</string>
     <string name="net_none_found">Keine Netzwerke gefunden</string>
     <string name="net_add_manual">Netzwerk manuell hinzufügen</string>
-    <string name="net_other">Weitere Optionen</string>
     <string name="net_password_title">Passwort für %1$s</string>
     <string name="net_password_hint">Passwort</string>
     <string name="net_show_password">Passwort anzeigen</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Fernbedienung %1$s gefunden</string>
     <string name="remote_connected">Fernbedienung verbunden</string>
     <string name="remote_other">Anderes Gerät</string>
-    <string name="remote_skip_hint">Du kannst sie auch später über das Schnellmenü (Zahnradtaste) koppeln.</string>
     <string name="google_title">Mit Google anmelden</string>
     <string name="google_subtitle">Melde dich an, um Apps aus Google Play zu installieren und deine Abos zu nutzen.</string>
     <string name="google_sign_in">Anmelden</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Projektorname</string>
     <string name="done_home">Startbildschirm</string>
     <string name="done_stats">Anonyme Statistik senden</string>
-    <string name="done_stats_note">Bei jedem Start und einmal am Tag: Modell, Version, Build, Update-Angaben, Land, eine zufällige Installationsnummer und die Seriennummer (der Server speichert nur ihren Hash). Deine IP-Adresse wird nicht gespeichert.</string>
     <string name="done_start">Los geht’s</string>
     <string name="done_offline_hint">Kein Internet: Google-Anmeldung und Zeitzone später in den Einstellungen.</string>
     <string name="done_offline_hint_nogms">Kein Internet: Zeitzone später in den Einstellungen festlegen.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Du brauchst dein Smartphone oder dein Passwort</string>
     <string name="google_help_sub">Was tun, wenn Google eine Registrierung verlangt</string>
     <string name="done_stats_short">Modell, Version und Land. Die IP-Adresse wird nicht gespeichert.</string>
+    <string name="theme_title">Design</string>
+    <string name="theme_subtitle">So sieht Lumen aus. Du kannst es später im Schnellmenü ändern.</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_auto">Automatisch</string>
+    <string name="theme_auto_sub">Tagsüber hell, nach Sonnenuntergang dunkel</string>
 </resources>

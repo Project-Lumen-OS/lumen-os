@@ -12,7 +12,7 @@ game	IGmpf2 55 getGameModeProp	the game mode runs now
 vrr	IGmpf2 300 getVRREnableState	VRR on this HDMI port
 freesync	IGmpf2 271 getAmdFreeSyncState	FreeSync state
 tone_map	IGmpf2 269 GetHDRDyToneMappingStatus	HDR dynamic tone mapping switch
-temp_light	IGmpf 439 getTemperatureFromSensor	LED board sensor 5 only (LumenSensors reads the same)
+temp_light	IGmpf 439 getTemperatureFromSensor	LED board sensor 5 only (the sensor card reads the same)
 temp_system	IGmpf 438 getSystemTemperature	temperature inside
 aspect	IGmpf 664 getAspectRatio	the aspect setting (the signal's own aspect comes from its size)
 hdmi_format	MDB HDMIRX bridge ports=1:2,2:0	colour format, depth, colorimetry, range the signal asks for, from the receiver itself (image lumen_hdmirx, root); HDMI 1 = MStar port 2 (EDID physical address 1.0.0.0, eARC port), HDMI 2 = port 0 (2.0.0.0)

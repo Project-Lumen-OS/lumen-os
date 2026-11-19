@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">A mover</string>
     <string name="lumen_qe_move_hint">Os círculos só se movem na linha de cima, os mosaicos entre as linhas. Para um mosaico virar círculo, mude o aspeto.</string>
     <string name="lumen_qe_put">Colocar aqui</string>
-    <string name="lumen_qe_cancel">Cancelar</string>
     <string name="lumen_qe_full">O menu está cheio. Escolha um aspeto mais pequeno ou a lista.</string>
     <string name="lumen_qe_list_full">Tantos itens não cabem numa lista. Tire alguns primeiro.</string>
     <string name="lumen_qe_pinned">Este botão fica sempre no menu.</string>

@@ -110,7 +110,6 @@
     <string name="ch_updates">系统更新</string>
     <string name="n_available_body">打开即可下载并安装。</string>
     <string name="n_ready_title">重启以完成更新</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">这台投影仪还不能通过网络安装更新:尚未完成一次性设置。请在电脑上用 lumen-install 更新。</string>
     <string name="blk_power">请连接电源适配器:更新需要几分钟。</string>
     <string name="consent_title_recovery">要安装更新吗?</string>

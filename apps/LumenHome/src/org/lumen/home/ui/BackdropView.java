@@ -19,6 +19,8 @@ import android.widget.FrameLayout;
 
 import org.lumen.home.model.ArtRule;
 import org.lumen.ui.Grid;
+import org.lumen.ui.Motion;
+import org.lumen.ui.Tokens;
 
 /**
  * The Витрина's art (Home A, the approved mock home-v3 A_vitrina): the whole screen behind the shelf, chosen by
@@ -31,7 +33,9 @@ import org.lumen.ui.Grid;
  *   and the art itself sits sharp at its size on the right (column 9, 16:9, radius 20) with the progress bar.</li>
  *   <li>NONE: the plain field; the shelf then writes in the theme's ink.</li>
  * </ul>
- * New art cross fades over the old in 400 ms. The Apps page lays the field over it ({@link #setVeil}).
+ * New art comes with one plain cross fade on every model (800 ms, ease in and out): the new face fades in over the
+ * old one, which stays opaque underneath, so the two pictures dissolve into each other without a dip to the field.
+ * The Apps page lays the field over it ({@link #setVeil}).
  */
 public class BackdropView extends FrameLayout {
     /** The left scrim: rgba(8, 9, 11) from 80 % to nothing at 70 % of the width (FRAME: 62 % to 20 %). */
@@ -81,8 +85,7 @@ public class BackdropView extends FrameLayout {
             front.setProgress(progress);
             return;
         }
-        front.animate().cancel();
-        back.animate().cancel();
+        finishChange();
         if (!animate || !Theme.animations()) {
             front.set(mode, sharp, blur, frameW, frameH, progress);
             front.setAlpha(1f);
@@ -92,10 +95,26 @@ public class BackdropView extends FrameLayout {
         }
         back.set(mode, sharp, blur, frameW, frameH, progress);
         back.bringToFront();
-        back.setAlpha(0f);
-        back.animate().alpha(1f).setDuration(Theme.BACKDROP_MS).setInterpolator(Theme.LINEAR).withLayer()
-                .withEndAction(() -> front.setAlpha(0f)).start();
         mFront = 1 - mFront;
+        crossFade(front, back);
+    }
+
+    /**
+     * The page change: the new face fades in over the old one, which stays opaque underneath until the end (a true
+     * cross dissolve, never both faces half transparent over the field). The standard curve, cubic-bezier(0.4, 0,
+     * 0.2, 1): a gentle start and a soft landing. One layer for the new face while it runs.
+     */
+    private void crossFade(Face out, Face in) {
+        in.setAlpha(0f);
+        in.animate().alpha(1f).setDuration(Tokens.MS_HERO_FADE).setInterpolator(Motion.STANDARD).withLayer()
+                .withEndAction(() -> out.setAlpha(0f)).start();
+    }
+
+    /** A running change jumps to its end (a new page came first). */
+    private void finishChange() {
+        for (Face f : mFace) f.animate().cancel();
+        mFace[mFront].setAlpha(1f);
+        mFace[1 - mFront].setAlpha(0f);
     }
 
     /** Top of the sharp frame (design px): lower with the hero buttons, higher above a Continue row. */

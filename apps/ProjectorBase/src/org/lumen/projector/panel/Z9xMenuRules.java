@@ -2,6 +2,7 @@
 package org.lumen.projector.panel;
 
 import org.lumen.menu.FeatureId;
+import org.lumen.menu.TemperatureText;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.PictureSettingsRule;
@@ -58,8 +59,10 @@ final class Z9xMenuRules {
         Integer source, hdr, pictureMode, lamp, lumensMode, memc, fmt3d, gameOption, aspect, soundEffect, soundProcess,
                 putMode, hdmiRange, edid, gameMode55;
         final Integer[] pq = new Integer[4];
-        Boolean is3dTo2d, dtsOn, eye, curtain, obstacle, powerOnAk, moveAk, moveAf, powerOnAf, smartAf, autoReverse,
-                boost, aiContrast, superRes, ultra120, nativeFps, volumeBalance, earc, allm, gameActive55, tifHdmi;
+        Boolean is3dTo2d, dtsOn, eye, curtain, obstacle, powerOnAk, moveAk, smartAf, autoReverse, boost,
+                aiContrast, superRes, ultra120, nativeFps, volumeBalance, earc, allm, gameActive55, tifHdmi, powerOnAc;
+        /** IGmpf 438 system temperature, deg C (null = read failed). */
+        Integer temperature;
         /** 662 plausible: its frame rate in 1/100 Hz, else null. */
         Integer hdmiFpsCenti;
         boolean soundPathActive;
@@ -221,10 +224,11 @@ final class Z9xMenuRules {
         // ---- eye protection, home screen
         b.on(FeatureId.EYE, in.eye);
         b.put(FeatureId.SETTINGS_LAUNCHER, in.launcherClassic ? "classic" : "lumen");
+        b.on(FeatureId.POWER_ON_AC, in.powerOnAc);
+        b.put(FeatureId.SETTINGS_TEMPERATURE, TemperatureText.of(in.temperature));
         // ---- focus + keystone
         b.on(FeatureId.KEYSTONE_REALTIME, in.moveAk).on(FeatureId.KEYSTONE_ON_POWER, in.powerOnAk)
                 .on(FeatureId.KEYSTONE_CURTAIN, in.curtain).on(FeatureId.KEYSTONE_OBSTACLE, in.obstacle)
-                .on(FeatureId.FOCUS_ON_MOVE, in.moveAf).on(FeatureId.FOCUS_ON_POWER, in.powerOnAf)
                 .on(FeatureId.FOCUS_SMART, in.smartAf);
         // ---- projection
         if (in.putMode != null && in.autoReverse != null) {
@@ -433,8 +437,6 @@ final class Z9xMenuRules {
                 return in == null ? null : rule(PanelRules.realtimeKeystone(in.rules()), false);
             case KEYSTONE_ROTATION:                           // QPC:973
                 return in == null ? null : rule(PanelRules.keystone(in.rules()), false);
-            case KEYSTONE_FIT_SCREEN:                         // QPC:965
-                return in != null && in.isTopSpeedGame() ? Note.of("panel_kst_game_mode") : null;
             case PROJECTION_MODE:                             // QPC:2023
                 return in == null || in.putMode == null || in.autoReverse == null ? SILENT : null;
             case PROJECTION_REAR:                             // QPC:2043

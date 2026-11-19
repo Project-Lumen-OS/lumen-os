@@ -1,0 +1,36 @@
+# Where to watch: the apps Lumen Home offers for a showcase title (Смотреть в ...) and in search (Искать в).
+# Read by org.lumen.home.watch.WatchApps. One row per app, tab separated:
+#   packages   every package name of the app (TV and phone builds, forks), comma separated
+#   name       the name shown on the button and the tile
+#   in_ru      the Russian phrase after "Смотреть" (в Кинопоиске)
+#   kind       provider = official service, the title must be in its TMDB watch providers for the region
+#              catalog  = universal catalogue app that plays almost any title (offered for every released title)
+#              platform = video platform (search only, never on the hero button)
+#   tmdb       TMDB watch provider ids of the service (- = none known), see /watch/providers/movie
+#   open       tmdb   = VIEW https://www.themoviedb.org/<movie|tv>/<id> in the app (Lampa: MainActivity.parseUriData)
+#              search = ACTION_SEARCH with SearchManager.QUERY (used only when the app really declares it)
+#              url:T  = VIEW of the url T in the app, {q} = the query
+#              launch = no reliable intent: the app opens, the query stays in Lumen search
+# Order matters: inside a kind the first installed app wins. Priority on the hero: a provider that has the title,
+# then catalog apps (Lampa first), then Lumen search.
+top.rootu.lampa	Lampa	в Lampa	catalog	-	tmdb
+mobi.zona	ZONA	в ZONA	catalog	-	search
+com.seena.app	SEENA	в SEENA	catalog	-	search
+dkc.video.hdbox,dkc.video.beta_vbox	HD VideoBox	в HD VideoBox	catalog	-	search
+net.filmix.filmix	Filmix	в Filmix	catalog	-	search
+com.falcofemoralis.hdrezkaapp	HDrezka	в HDrezka	catalog	-	search
+com.yoku.marumovie	Cinema HD	в Cinema HD	catalog	-	search
+ru.kinopoisk.tv	Кинопоиск	в Кинопоиске	provider	117	search
+ru.more.play	Okko	в Okko	provider	115	search
+ru.ivi.client	Иви	в Иви	provider	113	search
+ru.rt.video.app.tv,ru.rt.video.app.mobile	Wink	в Wink	provider	-	search
+ru.start.androidmobile	START	в START	provider	-	search
+gpm.tnt_premier	PREMIER	в PREMIER	provider	570	search
+ru.mts.mtstv	KION	в KION	provider	-	search
+com.megogo.application	MEGOGO	в MEGOGO	provider	-	search
+com.amdteka	Амедиатека	в Амедиатеке	provider	116	search
+com.ctcmediagroup.videomore	more.tv	в more.tv	provider	557	search
+com.netflix.ninja	Netflix	в Netflix	provider	8,175,1796	search
+com.google.android.youtube.tv	YouTube	в YouTube	platform	-	url:https://www.youtube.com/results?search_query={q}
+org.smarttube.stable,org.smarttube.beta,com.liskovsoft.smarttubetv.beta,com.liskovsoft.smarttubetv	SmartTube	в SmartTube	platform	-	url:https://www.youtube.com/results?search_query={q}
+com.vk.tv,com.vk.vkvideo	VK Видео	в VK Видео	platform	-	search

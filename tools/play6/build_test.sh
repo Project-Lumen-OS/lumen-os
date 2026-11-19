@@ -203,7 +203,8 @@ fi
 echo "== S: shared copies"
 python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Projector \
   || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble (a shared file copied into apps/Play6Projector, or an untracked fork)"
-sh "$G/apps/common/sync.sh" --check "$G/apps/ProjectorBase" hal projector || die "Z9xProjector shared copies differ from apps/common (Z9X lane: see apps/common/projector/README.txt)"
+python3 -B "$G/tools/devices/assemble_app.py" --device horse_popular --app Z9xProjector \
+  || die "devices/horse_popular/app/Z9xProjector.layers does not assemble (a shared file copied into apps/ProjectorBase)"
 sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys || die "Play6FrameworkOverlay key files differ from apps/common (run sync.sh)"
 echo "== P: publish audit"
 PM=$(mktemp "${TMPDIR:-/tmp}/play6_publish.XXXXXX")

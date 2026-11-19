@@ -19,13 +19,6 @@ final class Z9xFocusRows extends Z9xRows {
                 StandbyController.noteUserMoveAf();
                 write("IGmpf2 91 + 587 smart AF " + on, (g, g2) -> { g2.setSmartAutofocus(on); g.setMoveAf(on); return null; }, cb);
                 return true;
-            case FOCUS_ON_MOVE:
-                StandbyController.noteUserMoveAf();
-                write("587 AF after moving " + on, (g, g2) -> { g.setMoveAf(on); return null; }, cb);
-                return true;
-            case FOCUS_ON_POWER:
-                write("302 AF at power-on " + on, (g, g2) -> { g.setPowerOnAf(on); return null; }, cb);
-                return true;
             default:
                 return false;
         }

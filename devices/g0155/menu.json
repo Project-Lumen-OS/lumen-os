@@ -17,6 +17,7 @@
     "keystone.curtain": {},
     "keystone.obstacle": {},
     "keystone.restore": {},
+    "keystone.wall_color": {},
     "keystone.angle_h": {},
     "keystone.angle_v": {},
     "focus.af_now": {},
@@ -44,6 +45,9 @@
     "picture.local_contrast": {"options": ["off", "low", "medium", "high"]},
     "picture.noise": {"options": ["off", "low", "medium", "high", "auto"]},
     "picture.reset": {},
+    "picture.custom_new": {},
+    "picture.custom_base": {"options": ["sport", "movie", "color_accuracy"]},
+    "picture.custom_delete": {},
     "picture.reset_all": {},
     "picture.dv_screen": {},
     "picture.dv_screen.size": {"options": ["80", "88", "90", "100", "110", "120", "130", "140", "150", "160", "170", "180", "190", "200", "250", "300"]},
@@ -88,6 +92,11 @@
     "input": {},
     "bluetooth": {},
     "network": {},
+    "network.wifi": {},
+    "network.hotspot": {"name": "Lumen RS30 Ultra Max", "iface": "ap0"},
+    "network.hotspot_name": {},
+    "network.hotspot_password": {},
+    "network.hotspot_reset": {},
     "mirroring": {},
     "game.mode": {"options": ["off", "on", "auto"]},
     "game.speed": {"options": ["basic", "top_speed"]},
@@ -100,10 +109,16 @@
     "settings.colour_vision": {"options": ["off", "gray", "red_green", "green_red", "blue_yellow"]},
     "settings.temperature": {},
     "settings.sleep_timer": {},
+    "settings.screensaver_now": {},
+    "settings.screensaver_delay": {"options": ["never", "m1", "m5", "m10", "m30", "m60"]},
     "settings.remote": {},
     "settings.licences": {},
+    "power.on_ac": {},
+    "power.on_music": {},
+    "settings.parental": {},
     "settings.report": {},
     "signal.panel": {},
+    "sensors.panel": {},
     "signal.pin": {}
   },
   "hints": {"focus.guide": "focus_guide_front", "picture.mode": "picture_mode", "keystone.curtain": "curtain_fit", "projection.rear": "rear_projection", "picture.dynamic_black": "dynamic_black"},
@@ -115,7 +130,8 @@
       "groups": [
         {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual"]},
         {"header": "auto_correction", "rows": ["keystone.realtime", "keystone.on_power", "keystone.obstacle", "keystone.curtain"]},
-        {"header": "size_position", "rows": ["zoom", "keystone.fit_screen", "zoom.move", "keystone.rotation"]},
+        {"header": "size_position", "rows": ["zoom", "zoom.move", "keystone.rotation"]},
+        {"header": "smart", "rows": ["keystone.wall_color"]},
         {"header": "more", "rows": ["keystone.restore", "keystone.angle_h", "keystone.angle_v"]}
       ]
     },
@@ -123,13 +139,14 @@
       "stock": "settings_tree_product_athena35ultramax image (G0155 V1.1.42), test/stock/picture_image.json",
       "groups": [
         {"header": "projector_brightness", "rows": ["lamp", "picture.iris"]},
-        {"header": "image", "rows": ["picture.mode", "picture.dv_screen",
+        {"header": "image", "rows": ["picture.mode", "picture.dv_screen", "picture.custom_new",
           {"page": "picture.settings", "groups": [
+            {"rows": ["picture.custom_base"]},
             {"header": "basic", "rows": ["picture.auto_switch", "picture.pq", "picture.memc"]},
             {"header": "colour", "rows": ["picture.color_temp", "picture.wb", "picture.gamut", "picture.color_opt", "picture.cc"]},
             {"header": "contrast", "rows": ["picture.gamma", "picture.gamma_index", "picture.hdr", "picture.local_contrast", "picture.dynamic_contrast", "picture.ai_contrast", "picture.dynamic_black"]},
             {"header": "clarity", "rows": ["picture.noise", "picture.super_res"]},
-            {"header": "image_more", "rows": ["picture.reset"]}
+            {"header": "image_more", "rows": ["picture.reset", "picture.custom_delete"]}
           ]}, "picture.reset_all"]},
         {"header": "image_more", "rows": ["picture.3d", "picture.style_filter", "picture.anti_rbe"]},
         {"header": "hdmi", "rows": ["hdmi.range", "hdmi.edid", "picture.aspect"]}

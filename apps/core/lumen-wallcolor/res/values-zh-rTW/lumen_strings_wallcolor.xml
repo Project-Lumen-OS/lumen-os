@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">牆面顏色適配</string>
+    <string name="lumen_wallcolor_desc">智慧匹配投影牆面顏色，以達到最佳色彩效果。</string>
+    <string name="lumen_wallcolor_desc_ambient">為獲得最佳色彩效果，畫面將自動升至最高亮度，並關閉亮度自動調節。</string>
+    <string name="lumen_wallcolor_start">開始適配</string>
+    <string name="lumen_wallcolor_reset">恢復原始色彩</string>
+    <string name="lumen_wallcolor_running">牆面顏色適配中</string>
+    <string name="lumen_wallcolor_matched">使用適配色彩</string>
+    <string name="lumen_wallcolor_original">使用原始色彩</string>
+    <string name="lumen_wallcolor_save_title">保留本次適配結果？</string>
+    <string name="lumen_wallcolor_save_desc">適配色彩已為目前牆面顏色匹配最佳效果。</string>
+    <string name="lumen_wallcolor_fail_camera">攝影機初始化失敗，請重試。</string>
+    <string name="lumen_wallcolor_fail_start">牆面顏色適配無法啟動。如再次出現，請傳送問題報告。</string>
+    <string name="lumen_wallcolor_fail_distance">適配失敗，請調整投影距離或角度。</string>
+    <string name="lumen_wallcolor_fail_light">適配失敗，請確保環境光穩定後重試。</string>
+    <string name="lumen_wallcolor_fail_custom">自訂色彩模式下不支援牆面顏色適配。</string>
+    <string name="lumen_wallcolor_fail_performance">效能模式下不支援牆面顏色適配。</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">請關閉亮度自動調節後重試。</string>
+    <string name="lumen_wallcolor_fail_3d">3D模式下不支援。</string>
+    <string name="lumen_wallcolor_fail_big_screen">巨幕模式下僅支援手動梯形校正。</string>
+    <string name="lumen_wallcolor_fail_range">適配失敗，牆面顏色超出校準範圍。</string>
+    <string name="lumen_wallcolor_fail_not_started">投影機未開始適配，請重試。</string>
+</resources>

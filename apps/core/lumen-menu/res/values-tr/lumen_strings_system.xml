@@ -5,6 +5,7 @@
     <string name="lumen_m_hdmi_options">HDMI girişi seçenekleri</string>
     <string name="lumen_m_colour_vision">Renk görme</string>
     <string name="lumen_m_temperature">Sıcaklık</string>
+    <string name="lumen_m_high_altitude">Yüksek rakım modu</string>
     <string name="lumen_m_colour_vision_gray">Gri tonlama</string>
     <string name="lumen_m_colour_vision_red_green">Kırmızı/yeşil</string>
     <string name="lumen_m_colour_vision_green_red">Yeşil/kırmızı</string>

@@ -204,4 +204,6 @@ src/org/lumen/projector/voice/Speaker.java
 src/org/lumen/projector/voice/OrbView.java
 src/org/lumen/projector/voice/Assistant.java
 src/org/lumen/projector/voice/VoiceSettings.java
+src/org/lumen/projector/voice/VoiceKeyActivity.java
 src/org/lumen/projector/voice/Chime.java
+src/org/lumen/projector/panel/SettingsRows.java

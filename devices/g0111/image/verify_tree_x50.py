@@ -169,7 +169,8 @@ MENU_APP = {
                "xgimi.hardware.gmpf.IMotionDetectionManager",
                "xgimi.hardware.gmpf.IProjectorFocusManager", "xgimi.hardware.gmpf.ISystemManager",
                "xgimi.hardware.gmpf.ITemperatureManager"],
-    "callbacks": ["xgimi.hardware.gmpf.IGmTvCallback"],
+    "callbacks": ["xgimi.hardware.gmpf.IGmTvCallback", "xgimi.hardware.gmpf.IProjectorFocusCallback",
+                  "xgimi.hardware.gmpf.ISystemCallback"],
     "calls": [["-", 0x00FFFFFF, "getInterfaceVersion"],
               ["-", 0x00FFFFFE, "getInterfaceHash"],
               ["DisplayManager", 38, "correctKeystoneReset"],
@@ -234,6 +235,12 @@ MENU_APP = {
               ["MotionDetectionManager", 15, "temporarySwitchTrigger"],
               ["MotionDetectionManager", 24, "setMotionACalEnable"],
               ["GmTvManager", 1, "setGmTvCallback"],
+              # wall-color (2026-11-19): the stock wall colour adaptation, its four calls and the focus events
+              ["ProjectorFocusManager", 1, "setFocusCallback"],
+              ["DisplayManager", 108, "startAutoColor"],
+              ["DisplayManager", 114, "setAutoColorDefault"],
+              ["DisplayManager", 115, "setAutoColorCalibration"],
+              ["DisplayManager", 150, "setAEOnOff"],
               ["GmTvManager", 33, "setPictureMode"],
               ["GmTvManager", 34, "getPictureMode"],
               ["DisplayManager", 172, "setDynamicBlackType"],
@@ -391,7 +398,25 @@ MENU_APP = {
               ["GmTvManager", 155, "getCustomized3DLut", "-"],
               ["ProjectorFocusManager", 98, "getTiltShiftMovePositionPercentage", "0..1"],
               # x50-parity-core: the HDMI relink's read (lumen-hdmi HdmiRelink over X50RelinkHost)
-              ["GmTvManager", 106, "getSignalStatus", "-"]],
+              ["GmTvManager", 106, "getSignalStatus", "-"],
+              # stock-gaps-1: the stock General page high altitude switch of the X50 Ultra, Ultra Max and TITAN (Gmpf
+              # refuses it where ModelMenu does not name settings.high_altitude, the RS30)
+              ["SystemManager", 226, "setHighAltitudeMode", "0..1"],
+              ["SystemManager", 227, "getHighAltitudeMode", "-"],
+              # rs232-parental: the stock serial port control page and its console events (X50Serial). Gmpf refuses
+              # them where ModelMenu does not name serial.switch (the RS30)
+              ["SystemManager", 1, "setSystemCallback"],
+              ["SystemManager", 208, "setConsoleID", "s:1,0..20"],
+              ["SystemManager", 209, "getConsoleID", "-"],
+              ["SystemManager", 210, "setConsoleGroupAckEnable", "0..1"],
+              ["SystemManager", 211, "getConsoleGroupAckEnable", "-"],
+              ["SystemManager", 212, "setConsoleAllAckEnable", "0..1"],
+              ["SystemManager", 213, "getConsoleAllAckEnable", "-"],
+              ["SystemManager", 218, "setConsoleSeriesHost", "0..1"],
+              ["SystemManager", 219, "getConsoleSeriesHost", "-"],
+              ["SystemManager", 220, "setConsoleEnable", "0..1"],
+              ["SystemManager", 221, "getConsoleEnable", "-"],
+              ["SystemManager", 230, "setConsoleCmd", "3,0..63;4,0..63;5,1..10;14,0..2"]],
 }
 
 
@@ -532,6 +557,8 @@ HAL_APP["cert"] = MENU_APP["cert"] = PCERT
 DIR = "/"
 ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
          "system/etc/init/x50_nui.rc": (0, 0, 0o644, SYSF, "x50_nui.rc"),
+         # Lumen's power-on sound gate (apps/core/lumen-audio/image, BootSound)
+         "system/etc/init/lumen_boot_sound.rc": (0, 0, 0o644, SYSF, "lumen_boot_sound.rc"),
          "system/etc/z9x/blobs.conf": (0, 0, 0o644, SYSF, "blobs.conf"),
          "system/etc/z9x/x50_blobs_allow.txt": (0, 0, 0o644, SYSF, "x50_blobs_allow.txt"),
          "system/bin/nativeui": (0, 2000, 0o755, b"u:object_r:nativeui_main_exec:s0\x00", None),
@@ -540,6 +567,8 @@ ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
          HAL_APP["path"]: (0, 0, 0o644, SYSF, HAL_APP["staged"]),
          # the X50 power-key RRO (apps/X50PowerOverlay: resources only, no dex), the staged bytes
          "system/product/overlay/X50PowerOverlay.apk": (0, 0, 0o644, SYSF, "stage/X50PowerOverlay.apk"),
+         # the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay: resources only, no dex)
+         "system/product/overlay/LumenPackageInstallerOverlay.apk": (0, 0, 0o644, SYSF, "stage/LumenPackageInstallerOverlay.apk"),
          # install from a DSU try (t8, apps/LumenDsuInstall): the app, its init rc (gated, checked below), its script
          "system/priv-app/LumenDsuInstall": (0, 0, 0o755, SYSF, DIR),
          "system/priv-app/LumenDsuInstall/LumenDsuInstall.apk": (0, 0, 0o644, SYSF, "stage/LumenDsuInstall.apk"),

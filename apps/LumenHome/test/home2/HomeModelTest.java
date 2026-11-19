@@ -1,6 +1,7 @@
 package org.lumen.home.model;
 
 import org.lumen.home.data.Card;
+import org.lumen.home.data.HomeData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +11,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.lumen.ui.FocusRing;
 import org.lumen.ui.Grid;
 
 /**
  * Host tests of Home's pure rules: rows (Витрина: 1, 2, 3 and many Continue items), Continue texts, one item per
- * series, app order, the D-pad map, which element shows the focus (exactly one, through leaving and returning),
+ * series, app order, the D-pad map, which element shows the focus and the accent ring (exactly one, through leaving
+ * and returning),
  * greeting, the Витрина's layout, the art rule, the hero binding.
  */
 public final class HomeModelTest {
@@ -47,6 +50,8 @@ public final class HomeModelTest {
         continueRules();
         rowPlan();
         appOrder();
+        appPick();
+        appPickWiring();
         focusMap();
         focusPaint();
         focusWiring();
@@ -55,6 +60,9 @@ public final class HomeModelTest {
         vitrina();
         artRule();
         heroBind();
+        lanes();
+        snapshot();
+        startupWiring();
         System.out.println((fails == 0 ? "ok   " : "FAIL ") + "Home model: " + checks + " checks, " + fails + " failed");
         System.exit(fails == 0 ? 0 : 1);
     }
@@ -148,7 +156,7 @@ public final class HomeModelTest {
     }
 
     static AppOrder.App app(String pkg, String label) {
-        return new AppOrder.App(pkg + "/.Main", pkg, label);
+        return new AppOrder.App(pkg, label);
     }
 
     static void appOrder() {
@@ -168,6 +176,129 @@ public final class HomeModelTest {
         eq(AppOrder.move(Arrays.asList("a", "b", "c", "d"), 0, 2), Arrays.asList("b", "c", "a", "d"), "move right");
         eq(AppOrder.move(Arrays.asList("a", "b", "c", "d"), 3, 0), Arrays.asList("d", "a", "b", "c"), "move to front");
         eq(AppOrder.move(Arrays.asList("a", "b"), 1, 9), Arrays.asList("a", "b"), "clamped");
+        defaultHidden();
+    }
+
+    static final String INCY = "llc.itdev.incy", MAIN = INCY + "/llc.itdev.incy.MainActivity",
+            ALIAS = INCY + "/llc.itdev.incy.MainActivityDefault";
+
+    static AppPick.Activity act(String component, boolean leanback) {
+        return new AppPick.Activity(AppPick.pkgOf(component), component, leanback);
+    }
+
+    /** PackageManager's launch intents as a map: package -> leanback component, main component. */
+    static AppPick.Launch sys(String... pkgLeanbackMain) {
+        java.util.Map<String, String[]> m = new java.util.HashMap<>();
+        for (int i = 0; i < pkgLeanbackMain.length; i += 3) {
+            m.put(pkgLeanbackMain[i], new String[] {pkgLeanbackMain[i + 1], pkgLeanbackMain[i + 2]});
+        }
+        return new AppPick.Launch() {
+            public String leanback(String pkg) { return m.containsKey(pkg) ? m.get(pkg)[0] : null; }
+            public String main(String pkg) { return m.containsKey(pkg) ? m.get(pkg)[1] : null; }
+        };
+    }
+
+    static List<String> comps(List<AppPick.Activity> l) {
+        ArrayList<String> out = new ArrayList<>();
+        for (AppPick.Activity a : l) out.add(a.component + (a.leanback ? "" : " phone"));
+        return out;
+    }
+
+    /** One entry per package (INCY VPN: two MAIN + LEANBACK_LAUNCHER activities showed two tiles on a test Z9X). */
+    static void appPick() {
+        List<AppPick.Activity> both = Arrays.asList(act("yt/yt.Main", true), act(MAIN, true), act(ALIAS, true),
+                act("phone/phone.Main", false));
+        List<AppPick.Activity> o = AppPick.onePerPackage(both, sys(INCY, ALIAS, ALIAS, "yt", "yt/yt.Main", null));
+        eq(comps(o), Arrays.asList("yt/yt.Main", ALIAS, "phone/phone.Main phone"),
+                "two leanback activities in one package: one entry, on the system's leanback launch activity");
+        o = AppPick.onePerPackage(both, sys());
+        eq(comps(o), Arrays.asList("yt/yt.Main", MAIN, "phone/phone.Main phone"), "no launch intent: the first resolved");
+        o = AppPick.onePerPackage(Arrays.asList(act(MAIN, true), act(ALIAS, true)), sys(INCY, null, ALIAS));
+        eq(comps(o), Arrays.asList(ALIAS), "no leanback launch intent: the main launch intent");
+        o = AppPick.onePerPackage(Arrays.asList(act("p/p.A", false)), sys("p", null, "p/p.Info"));
+        eq(comps(o), Arrays.asList("p/p.Info phone"), "the system's choice wins even when it is not in the list");
+        // the app switches its icon: the alias is disabled, the other activity enabled (and back)
+        List<String> keep = Arrays.asList("yt", INCY);
+        for (String on : new String[] {MAIN, ALIAS, MAIN}) {
+            o = AppPick.onePerPackage(Arrays.asList(act("yt/yt.Main", true), act(on, true)), sys(INCY, on, on));
+            eq(comps(o), Arrays.asList("yt/yt.Main", on), "icon switch to " + on + ": still one entry, the enabled one");
+            ArrayList<AppOrder.App> apps = new ArrayList<>();
+            for (AppPick.Activity a : o) apps.add(new AppOrder.App(a.pkg, a.pkg));
+            ArrayList<String> pk = new ArrayList<>();
+            for (AppOrder.App a : AppOrder.order(apps, Arrays.asList(INCY, "yt"), new HashSet<>(), new HashSet<>(),
+                    new HashSet<>(), Collections.emptyList(), Locale.ROOT)) pk.add(a.pkg);
+            eq(pk, Arrays.asList(INCY, "yt"), "icon switch to " + on + ": the user's order holds");
+            check(AppOrder.order(apps, Collections.emptyList(), new HashSet<>(Arrays.asList(INCY)), new HashSet<>(),
+                    new HashSet<>(), Collections.emptyList(), Locale.ROOT).size() == 1, "icon switch: hidden stays hidden");
+        }
+        // stored keys of Home before this change: flattened components
+        List<String> old = Arrays.asList("a/a.X", MAIN, "b/b.Y", ALIAS, "c");
+        check(AppPick.oldKeys(old) && !AppPick.oldKeys(Arrays.asList("a", INCY)), "component keys are found");
+        eq(AppPick.order(old), Arrays.asList("a", INCY, "b", "c"), "migrated order: every app keeps its first place");
+        eq(AppPick.order(AppPick.order(old)), AppPick.order(old), "migration runs once, a second pass changes nothing");
+        List<AppPick.Activity> now = Arrays.asList(act(MAIN, true), act(ALIAS, true), act("v/v.Main", true));
+        eq(AppPick.hidden(new HashSet<>(Arrays.asList(MAIN)), now), new HashSet<String>(),
+                "one of two duplicate tiles hidden: the app stays, once");
+        eq(AppPick.hidden(new HashSet<>(Arrays.asList(MAIN, ALIAS)), now), new HashSet<>(Arrays.asList(INCY)),
+                "every tile of the app hidden: the app is hidden");
+        eq(AppPick.hidden(new HashSet<>(Arrays.asList("v/v.Main", "gone/gone.Main", "pkg")), now),
+                new HashSet<>(Arrays.asList("v", "gone", "pkg")), "single tile, uninstalled app and package keys");
+        eq(AppPick.shown(new HashSet<>(Arrays.asList("s/s.A", "t"))), new HashSet<>(Arrays.asList("s", "t")),
+                "shown again: by package");
+        ArrayList<String> pk = new ArrayList<>();
+        for (AppOrder.App a : AppOrder.order(Arrays.asList(app("b", "B"), app(INCY, "INCY")), Arrays.asList(ALIAS, "b/b.Y"),
+                new HashSet<>(), new HashSet<>(), new HashSet<>(), Collections.emptyList(), Locale.ROOT)) pk.add(a.pkg);
+        eq(pk, Arrays.asList(INCY, "b"), "an order not yet migrated still places each app");
+    }
+
+    /** Home lists apps through AppPick, keys cards, hiding and the order by package and migrates stored keys. */
+    static void appPickWiring() {
+        String dir = System.getProperty("home.src");
+        if (dir == null) return;
+        String src = read(dir + "/data/AppSource.java"), loader = read(dir + "/data/HomeLoader.java"),
+                act = read(dir + "/HomeActivity.java"), safe = read(dir + "/SafeModeView.java");
+        check(src.contains("AppPick.onePerPackage(") && src.contains("getLeanbackLaunchIntentForPackage(")
+                && src.contains("getLaunchIntentForPackage("), "wiring: AppSource picks one activity per package");
+        check(loader.contains("migrateAppKeys(p, found.resolved);") && loader.contains("new Card(Card.APP, a.cn.getPackageName(),"),
+                "wiring: HomeLoader migrates stored keys and keys app cards by package");
+        check(act.contains("toggleInSet(Prefs.K_HIDDEN_APPS, k.pkg, true)") && !act.contains("K_HIDDEN_APPS, k.intent")
+                && act.contains("order.add(k.pkg)"), "wiring: hide and move store packages");
+        check(safe.contains("AppSource.load(c)") && !safe.contains("queryIntentActivities"),
+                "wiring: safe mode lists the same one-per-package apps");
+    }
+
+    /** The real default list (2026-11-19): Google's Android TV Remote Service tile is off Home, the user decides. */
+    static void defaultHidden() {
+        Set<String> d = AppOrder.DEFAULT_HIDDEN, none = new HashSet<>();
+        String remote = "com.google.android.tv.remote.service";
+        for (String p : new String[] {remote, "org.lumen.home", "org.lumen.setup", "org.lumen.updater",
+                "com.google.android.tungsten.setupwraith", "com.google.android.katniss", "com.google.android.gms",
+                "com.google.android.gsf", "com.google.android.backdrop"}) {
+            check(d.contains(p), "hidden by default: " + p);
+        }
+        for (String p : new String[] {"com.android.vending", "com.google.android.youtube.tv", "ru.kinopoisk.tv",
+                "com.xgimiru.player", "top.rootu.lampa"}) {
+            check(!d.contains(p), "a user app stays on Home: " + p);
+        }
+        List<AppOrder.App> apps = Arrays.asList(app(remote, "Android TV Remote Service"), app("com.android.vending", "Google Play"),
+                app("com.google.android.youtube.tv", "YouTube"));
+        List<AppOrder.App> o = AppOrder.order(apps, Collections.emptyList(), none, none, d, Collections.emptyList(), new Locale("ru"));
+        check(o.size() == 2 && !o.get(0).pkg.equals(remote) && !o.get(1).pkg.equals(remote), "no remote service tile by default");
+        eq(AppOrder.hiddenOnes(apps, none, none, d, new Locale("ru")).size(), 1, "the remote service is in Hidden apps to show again");
+        o = AppOrder.order(apps, Collections.emptyList(), none, new HashSet<>(Arrays.asList(remote)), d,
+                Collections.emptyList(), new Locale("ru"));
+        check(o.size() == 3, "shown again by the user: the tile comes back and stays");
+        o = AppOrder.order(apps, Collections.emptyList(), new HashSet<>(Arrays.asList("com.android.vending")), none, d,
+                Collections.emptyList(), new Locale("ru"));
+        check(o.size() == 1, "the user's own hidden apps stay hidden");
+        boolean ro;
+        try {
+            d.add("x");
+            ro = false;
+        } catch (UnsupportedOperationException e) {
+            ro = true;
+        }
+        check(ro, "the default list cannot be changed at run time");
     }
 
     static FocusMap.Row cards(int n) { return new FocusMap.Row(n, 248, 40); }
@@ -264,6 +395,24 @@ public final class HomeModelTest {
         return n;
     }
 
+    /**
+     * Elements wearing the focus ring at rest (FocusRing.alpha with the full focus value, as TileView and ShelfView call
+     * it); -1 when any ring sits on an element that is not the focused one, or the focused one lacks it.
+     */
+    static int rings(FocusMap f, int gridIndex) {
+        ArrayList<Boolean> focused = new ArrayList<>();
+        for (int b = 0; b < 2; b++) focused.add(f.heroFocus() == b);
+        for (int r = 0; r < SIZES.length; r++) for (int i = 0; i < SIZES[r]; i++) focused.add(f.itemFocused(r, i));
+        for (int i = 0; i < GRID; i++) focused.add(f.gridFocused(i, gridIndex));
+        int n = 0;
+        for (boolean on : focused) {
+            boolean ring = FocusRing.alpha(on, 1f) > 0f;
+            if (ring != on) return -1;
+            if (ring) n++;
+        }
+        return n;
+    }
+
     static final int ALL_APPS = 2 + Vitrina.ROUND_APPS, GEAR = 2 + Vitrina.ROUND_SETTINGS;
 
     static void focusPaint() {
@@ -277,20 +426,24 @@ public final class HomeModelTest {
         check(lit(f, 0) == 1 && f.heroFocus() == -1 && f.itemFocused(0, 0), "paint: the dock, no hero button");
         f.move(FocusMap.DOWN);
         check(lit(f, 0) == 1 && f.itemFocused(1, 0), "paint: HDMI 1 chip alone");
+        check(rings(f, 0) == 1, "ring: on the HDMI 1 chip only");
         f.move(FocusMap.RIGHT);
         check(lit(f, 0) == 1 && f.itemFocused(1, 1) && !f.itemFocused(1, 0), "paint: HDMI 2 chip, HDMI 1 off");
         f.move(FocusMap.RIGHT);
         check(lit(f, 0) == 1 && f.itemFocused(1, ALL_APPS), "paint: All apps alone");
+        check(rings(f, 0) == 1, "ring: on All apps only");
         // OK on All apps: the Apps page (HomeActivity.setPage), only its first tile
         f.page = FocusMap.H_APPS;
         check(lit(f, 0) == 1 && f.gridFocused(0, 0) && !f.itemFocused(1, ALL_APPS), "paint: Apps page, All apps off");
         check(lit(f, 3) == 1 && f.gridFocused(3, 3), "paint: Apps page tile 3");
+        check(rings(f, 3) == 1, "ring: Apps page tile 3 only, not All apps");
         // BACK (HomeActivity.backFromApps): Home, the focus on All apps
         f.page = FocusMap.H_HOME;
         f.focusItem(1, ALL_APPS);
         check(lit(f, 3) == 1 && f.itemFocused(1, ALL_APPS) && !f.gridFocused(3, 3), "paint: back on All apps alone");
         f.move(FocusMap.RIGHT);
         check(lit(f, 3) == 1 && f.itemFocused(1, GEAR) && !f.itemFocused(1, ALL_APPS), "paint: the gear, All apps off");
+        check(rings(f, 3) == 1, "ring: on the gear only");
         // leaving and returning (onPause / onResume repaint) and a theme change change nothing in the map
         FocusMap before = f;
         check(lit(before, 3) == 1 && before.itemFocused(1, GEAR), "paint: after onResume the gear alone");
@@ -301,6 +454,7 @@ public final class HomeModelTest {
         f.page = FocusMap.H_APPS;
         f.home();
         check(lit(f, 3) == 1 && f.heroFocus() == 0, "paint: HOME from Apps, Продолжить alone");
+        check(rings(f, 3) == 1, "ring: on Продолжить only");
         // a reload that takes the hero buttons away (3 Continue items) moves the focus into the rows, still one
         f.setLayout(0, new FocusMap.Row[] { dock(6), bottom(2) });
         check(lit(f, 3) == 1 && f.heroFocus() == -1, "paint: hero buttons gone, one row item");
@@ -314,9 +468,15 @@ public final class HomeModelTest {
         boolean one = true;
         for (int k : keys) {
             w.move(k);
-            one &= lit(w, 0) == 1;
+            one &= lit(w, 0) == 1 && rings(w, 0) == 1;
         }
-        check(one, "paint: exactly one lit after every key of a walk over all zones");
+        check(one, "paint: exactly one lit and one ring after every key of a walk over all zones");
+        // mid move: the element that lost the focus drops its ring at once, the new one fades in, never two rings
+        check(FocusRing.alpha(false, 0.6f) == 0f && FocusRing.alpha(true, 0.4f) == 0.4f
+                && FocusRing.alpha(true, 0f) == 0f && FocusRing.alpha(true, 1.2f) == 1f, "ring: one ring during a focus move");
+        // the ring keeps 3 px on screen over the 1.06 focus scale, the 3 px gap stays clear
+        float px = 1f, s = 1.06f, rw = FocusRing.width(3, px, s), out = FocusRing.outset(3, 3, px, s);
+        check(Math.abs(rw * s - 3f) < 1e-4 && Math.abs((out - rw / 2f) * s - 3f) < 1e-4, "ring: 3 px wide, 3 px gap on screen");
     }
 
     /** The view half (Android, not on the host): the wiring that makes the paint follow the map. */
@@ -335,6 +495,221 @@ public final class HomeModelTest {
         String ab = af < 0 ? "" : act.substring(af, act.indexOf("\n    }", af));
         check(ab.contains("mMap.gridFocused(") && ab.contains("mMap.heroFocus()") && ab.contains("mMap.itemFocused(")
                 && ab.indexOf("mMap.itemFocused(") < ab.indexOf("H_APPS"), "wiring: applyFocus paints all elements on both pages");
+        // the accent ring: every tile kind draws it in both paths, only by its own focus state; the hero buttons by mFocus
+        int rd = tile.indexOf("private void ring(Canvas c");
+        String rb = rd < 0 ? "" : tile.substring(rd, tile.indexOf("\n    }", rd));
+        int dd = tile.indexOf("protected void dispatchDraw("), sd = tile.indexOf("private void drawShowcase(");
+        String db = dd < 0 ? "" : tile.substring(dd, tile.indexOf("\n    }", dd));
+        String sb = sd < 0 ? "" : tile.substring(sd, tile.indexOf("\n    }", sd));
+        check(rb.contains("FocusRing.alpha(mFocused, mFocus)") && db.contains("ring(c, w, h, r);") && sb.contains("ring(c, w, h, r);"),
+                "wiring: TileView rings every kind (cards, banners, inputs, dock, chips, round buttons) by its focus state");
+        check(!tile.contains("Theme.RING_GAP") && !tile.contains("Tokens.RING_W"), "wiring: TileView has no second ring");
+        String shelf = read(dir + "/ui/ShelfView.java");
+        int bf = shelf.indexOf("public void setButtonFocus(");
+        String bb = bf < 0 ? "" : shelf.substring(bf, shelf.indexOf("\n    }", bf));
+        check(shelf.contains("FocusRing.alpha(k == mFocus, 1f)") && bb.contains("b.invalidate();"),
+                "wiring: the hero buttons ring only the focused one and redraw on every focus change");
+    }
+
+    // ------------------------------------------------------------------ startup (home-startup)
+
+    /**
+     * A weather (or TMDB) server that never answers must not delay the screen's data: the network lane hangs, the data
+     * lane publishes at once, a second fetch of the same kind is not stacked behind the hanging one.
+     */
+    static void lanes() {
+        Lanes l = Lanes.plain();
+        java.util.concurrent.CountDownLatch never = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.CountDownLatch weatherIn = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.atomic.AtomicInteger weatherRuns = new java.util.concurrent.atomic.AtomicInteger();
+        Runnable hangingWeather = () -> {
+            weatherRuns.incrementAndGet();
+            weatherIn.countDown();
+            try {
+                never.await();
+            } catch (InterruptedException ignored) {
+            }
+        };
+        check(l.once(Lanes.NET, "weather", hangingWeather), "lanes: the weather fetch is queued");
+        try {
+            check(weatherIn.await(2, java.util.concurrent.TimeUnit.SECONDS), "lanes: the weather fetch runs (and hangs)");
+        } catch (InterruptedException e) {
+            check(false, "lanes: interrupted");
+        }
+        check(!l.once(Lanes.NET, "weather", hangingWeather), "lanes: a second weather fetch is not stacked behind the hanging one");
+        check(l.busy(Lanes.NET, "weather"), "lanes: the hanging fetch counts as busy");
+        l.once(Lanes.NET, "trending", () -> { });
+        java.util.concurrent.atomic.AtomicReference<HomeData> published = new java.util.concurrent.atomic.AtomicReference<>();
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        long t0 = System.nanoTime();
+        l.post(Lanes.LOAD, () -> {
+            HomeData d = new HomeData();
+            d.apps.add(new Card(Card.APP, "a/b", "App"));
+            d.plan = RowPlan.of(0, 0, 1);
+            published.set(d);
+            done.countDown();
+        });
+        boolean in = false;
+        try {
+            in = done.await(1, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (InterruptedException ignored) {
+        }
+        long ms = (System.nanoTime() - t0) / 1_000_000;
+        check(in && published.get() != null && published.get().apps.size() == 1,
+                "lanes: the screen's data is published while the weather server hangs (" + ms + " ms)");
+        check(ms < 500, "lanes: published within 500 ms while the weather hangs, took " + ms);
+        check(weatherRuns.get() == 1, "lanes: the weather fetch ran once, got " + weatherRuns.get());
+        never.countDown();
+        for (int i = 0; i < 100 && l.busy(Lanes.NET, "weather"); i++) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ignored) {
+            }
+        }
+        check(!l.busy(Lanes.NET, "weather"), "lanes: the key is free again once the fetch ended");
+        check(l.once(Lanes.NET, "weather", () -> { }), "lanes: a new weather fetch is queued after the old one ended");
+    }
+
+    /** Every Card field set to something not default, so a field the codec forgets fails here. */
+    static Card fullCard(int salt) {
+        Card k = new Card();
+        int i = 0;
+        for (java.lang.reflect.Field f : Card.class.getDeclaredFields()) {
+            int m = f.getModifiers();
+            if (java.lang.reflect.Modifier.isStatic(m) || java.lang.reflect.Modifier.isFinal(m)) continue;
+            i++;
+            try {
+                Class<?> t = f.getType();
+                if (t == int.class) f.setInt(k, 1000 * salt + i);
+                else if (t == long.class) f.setLong(k, 1_000_000L * salt + i);
+                else if (t == boolean.class) f.setBoolean(k, ((salt + i) & 1) == 0);
+                else if (t == String.class) f.set(k, "v" + salt + "_" + i + "_\u0451");
+                else check(false, "snapshot: Card field of an unknown type " + f.getName());
+            } catch (IllegalAccessException e) {
+                check(false, "snapshot: " + e);
+            }
+        }
+        return k;
+    }
+
+    static String dump(Card k) {
+        StringBuilder sb = new StringBuilder();
+        for (java.lang.reflect.Field f : Card.class.getDeclaredFields()) {
+            int m = f.getModifiers();
+            if (java.lang.reflect.Modifier.isStatic(m) || java.lang.reflect.Modifier.isFinal(m)) continue;
+            try {
+                sb.append(f.getName()).append('=').append(f.get(k)).append(';');
+            } catch (IllegalAccessException e) {
+                sb.append("?");
+            }
+        }
+        return sb.toString();
+    }
+
+    static HomeData fullData() {
+        HomeData d = new HomeData();
+        int s = 1;
+        for (int i = 0; i < 6; i++) d.apps.add(fullCard(s++));
+        d.hidden.add(fullCard(s++));
+        d.cont.add(fullCard(s++));
+        for (int i = 0; i < 3; i++) d.hero.add(fullCard(s++));
+        d.inputs.add(fullCard(s++));
+        d.inputs.add(fullCard(s++));
+        Card nulls = new Card(Card.TILE, "miracast", "Mirror");
+        nulls.image = null;
+        nulls.intent = null;
+        d.inputs.add(nulls);
+        d.online = true;
+        d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.apps.size());
+        return d;
+    }
+
+    static void snapshot() {
+        HomeData d = fullData();
+        byte[] b = HomeSnapshot.encode(d, 42L, "ru-RU");
+        HomeData r = HomeSnapshot.decode(b, 42L, "ru-RU");
+        check(r != null, "snapshot: reads back");
+        if (r == null) return;
+        List<List<Card>> a = Arrays.asList(d.apps, d.hidden, d.cont, d.hero, d.inputs);
+        List<List<Card>> z = Arrays.asList(r.apps, r.hidden, r.cont, r.hero, r.inputs);
+        for (int i = 0; i < a.size(); i++) {
+            eq(z.get(i).size(), a.get(i).size(), "snapshot: list " + i + " size");
+            for (int j = 0; j < Math.min(a.get(i).size(), z.get(i).size()); j++) {
+                eq(dump(z.get(i).get(j)), dump(a.get(i).get(j)), "snapshot: list " + i + " card " + j + " every field");
+            }
+        }
+        eq(r.online, true, "snapshot: online");
+        check(r.plan != null && r.plan.rows.equals(d.plan.rows) && r.plan.calm == d.plan.calm
+                && r.plan.heroContinue == d.plan.heroContinue, "snapshot: the plan is the loader's plan");
+        check(HomeSnapshot.same(d, r), "snapshot: the data read back is the same as shown");
+        check(HomeSnapshot.decode(b, 43L, "ru-RU") == null, "snapshot: another APK build is not used (resource ids)");
+        check(HomeSnapshot.decode(b, 42L, "en-US") == null, "snapshot: another locale is not used");
+        check(HomeSnapshot.decode(Arrays.copyOf(b, b.length - 3), 42L, "ru-RU") == null, "snapshot: a cut file is not used");
+        byte[] more = Arrays.copyOf(b, b.length + 1);
+        check(HomeSnapshot.decode(more, 42L, "ru-RU") == null, "snapshot: trailing bytes are not used");
+        byte[] junk = b.clone();
+        junk[0] ^= 0x55;
+        check(HomeSnapshot.decode(junk, 42L, "ru-RU") == null, "snapshot: a foreign file is not used");
+        check(HomeSnapshot.decode(new byte[0], 42L, "ru-RU") == null && HomeSnapshot.decode(null, 42L, "ru-RU") == null,
+                "snapshot: empty or none");
+        // same(): any one field of any one card changes it
+        int changed = 0, fields = 0;
+        for (java.lang.reflect.Field f : Card.class.getDeclaredFields()) {
+            int m = f.getModifiers();
+            if (java.lang.reflect.Modifier.isStatic(m) || java.lang.reflect.Modifier.isFinal(m)) continue;
+            fields++;
+            HomeData e = HomeSnapshot.decode(b, 42L, "ru-RU");
+            Card k = e.cont.get(0);
+            try {
+                Class<?> t = f.getType();
+                if (t == int.class) f.setInt(k, f.getInt(k) + 1);
+                else if (t == long.class) f.setLong(k, f.getLong(k) + 1);
+                else if (t == boolean.class) f.setBoolean(k, !f.getBoolean(k));
+                else f.set(k, f.get(k) + "x");
+            } catch (IllegalAccessException ex) {
+                check(false, "snapshot: " + ex);
+            }
+            if (!HomeSnapshot.same(d, e)) changed++;
+            else check(false, "snapshot: same() misses a change of Card." + f.getName());
+        }
+        check(fields > 30 && changed == fields, "snapshot: same() sees every card field (" + changed + "/" + fields + ")");
+        HomeData o = HomeSnapshot.decode(b, 42L, "ru-RU");
+        o.online = false;
+        check(!HomeSnapshot.same(d, o), "snapshot: same() sees online");
+        HomeData moved = HomeSnapshot.decode(b, 42L, "ru-RU");
+        Collections.swap(moved.apps, 0, 1);
+        check(!HomeSnapshot.same(d, moved), "snapshot: same() sees a new app order");
+        check(!HomeSnapshot.same(null, d) && HomeSnapshot.same(null, null), "snapshot: same() with nothing shown");
+        Card big = new Card(Card.PROGRAM, "p", "T");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 30000; i++) sb.append('\u0416');
+        big.desc = sb.toString();
+        HomeData bd = new HomeData();
+        bd.cont.add(big);
+        HomeData br = HomeSnapshot.decode(HomeSnapshot.encode(bd, 1L, "ru"), 1L, "ru");
+        check(br != null && br.cont.get(0).desc.length() == 8000, "snapshot: a huge text is cut, the save never fails");
+    }
+
+    /** The view half: the first frame waits for the snapshot (bounded), the data and the network lanes are apart. */
+    static void startupWiring() {
+        String dir = System.getProperty("home.src");
+        if (dir == null) return;
+        String act = read(dir + "/HomeActivity.java"), loader = read(dir + "/data/HomeLoader.java");
+        int oc = act.indexOf("protected void onCreate(");
+        String ob = oc < 0 ? "" : act.substring(oc, act.indexOf("\n    }", oc));
+        check(ob.indexOf("readStart();") > 0 && ob.indexOf("readStart();") < ob.indexOf("build();")
+                && ob.indexOf("showStart();") > ob.indexOf("build();"), "startup: the snapshot is read while the views are built, shown before the first frame");
+        check(act.contains("mStart.get(SNAPSHOT_WAIT_MS, TimeUnit.MILLISECONDS)"), "startup: the main thread waits for the snapshot only a bounded time");
+        int ld = act.indexOf("private void load(boolean network) {");
+        String lb = ld < 0 ? "" : act.substring(ld, act.indexOf("\n    }", ld));
+        check(lb.contains("lanes().post(Lanes.LOAD") && !lb.contains("io()"), "startup: the screen's data loads on its own lane");
+        int rw = act.indexOf("private void refreshWeather(boolean force) {");
+        String wb = rw < 0 ? "" : act.substring(rw, act.indexOf("\n    }", rw));
+        check(wb.contains("once(Lanes.NET, \"weather\"") && !wb.contains("io()"), "startup: the weather fetch runs on the network lane, never stacked");
+        check(!loader.contains("TmdbNet") && !loader.contains("Trending.refresh") && !loader.contains("Weather.")
+                && loader.contains("Trending.load(c)"), "startup: the loader reads caches only, no server");
+        check(act.contains("HomeSnapshot.same(mData, d)"), "startup: data equal to the shown screen is not bound again");
+        check(act.contains("reportFullyDrawn()"), "startup: the first real content reports fully drawn");
     }
 
     static String read(String p) {

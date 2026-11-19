@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">壁の色に合わせる</string>
+    <string name="lumen_wallcolor_desc">壁の色に合わせて映像の色を調整し、より正確な色にします。</string>
+    <string name="lumen_wallcolor_desc_ambient">最良の結果のため、映像は最大の明るさになり、明るさの自動調整はオフになります。</string>
+    <string name="lumen_wallcolor_start">開始</string>
+    <string name="lumen_wallcolor_reset">元の色に戻す</string>
+    <string name="lumen_wallcolor_running">壁の色に合わせています</string>
+    <string name="lumen_wallcolor_matched">調整後の色</string>
+    <string name="lumen_wallcolor_original">元の色</string>
+    <string name="lumen_wallcolor_save_title">調整後の色を保存しますか?</string>
+    <string name="lumen_wallcolor_save_desc">調整後の色はこの壁の色に最も合っています。</string>
+    <string name="lumen_wallcolor_fail_camera">カメラが起動しませんでした。もう一度お試しください。</string>
+    <string name="lumen_wallcolor_fail_start">調整を開始できませんでした。繰り返す場合は問題レポートを送信してください。</string>
+    <string name="lumen_wallcolor_fail_distance">調整できませんでした。壁までの距離かプロジェクターの角度を変えてください。</string>
+    <string name="lumen_wallcolor_fail_light">調整できませんでした。部屋の明るさが変わりました。明るさが安定した状態でお試しください。</string>
+    <string name="lumen_wallcolor_fail_custom">カスタムカラーモードでは使用できません。</string>
+    <string name="lumen_wallcolor_fail_performance">パフォーマンスモードでは使用できません。</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">明るさの自動調整をオフにしてもう一度お試しください。</string>
+    <string name="lumen_wallcolor_fail_3d">3Dモードでは使用できません。</string>
+    <string name="lumen_wallcolor_fail_big_screen">巨大スクリーンモードでは手動の台形補正のみ使用できます。</string>
+    <string name="lumen_wallcolor_fail_range">調整できませんでした。壁の色が調整できる範囲外です。</string>
+    <string name="lumen_wallcolor_fail_not_started">プロジェクターが調整を開始しませんでした。もう一度お試しください。</string>
+</resources>

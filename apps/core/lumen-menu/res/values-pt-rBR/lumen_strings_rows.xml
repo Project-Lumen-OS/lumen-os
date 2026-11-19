@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
+     statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
+<resources>
+    <string name="lumen_m_power_music">Som ao ligar</string>
+    <string name="lumen_m_boot_source">Abrir ao ligar</string>
+    <string name="lumen_m_boot_home">Tela inicial</string>
+    <string name="lumen_m_hdr_voice">Assistente de voz</string>
+    <string name="lumen_m_voice_language">Idioma da fala</string>
+    <string name="lumen_m_voice_lang_system">Idioma do sistema</string>
+    <string name="lumen_m_voice_speak">Responder com voz</string>
+    <string name="lumen_m_voice_key">Voz do Gemini</string>
+    <string name="lumen_m_uires">Resolução da interface</string>
+    <string name="lumen_m_stats">Enviar estatísticas anônimas</string>
+    <string name="lumen_m_diag">Diagnóstico</string>
+    <string name="lumen_m_sensors">Sensores</string>
+</resources>

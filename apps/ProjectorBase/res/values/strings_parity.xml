@@ -2,8 +2,6 @@
 <!-- Lumen OS 1.0.8: the stock parity fixes of the Z9X. Z9X only (not a shared file of
      apps/common/projector). English base; translations: gsi/apps/i18n/langs/<locale>.txt @projector/strings_parity.xml. -->
 <resources>
-    <!-- Brightness page, under the Boost hint: what Boost gives and costs (stock boost_title / boost_close_desc). -->
-    <string name="boost_effect">Boost makes the picture brighter, but colors look paler. The color space stays as it is.</string>
     <!-- Notification: color space or Color accuracy chosen while Boost is on (stock lumenLevelBoost rule). -->
     <string name="boost_blocks_change">Turn off Boost and try again</string>
     <!-- Notification: picture mode or aspect ratio chosen while game mode is on (stock gameModeBasic rule). -->

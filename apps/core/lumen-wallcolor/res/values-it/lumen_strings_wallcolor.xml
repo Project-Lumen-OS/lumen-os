@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Adattamento al colore della parete</string>
+    <string name="lumen_wallcolor_desc">Adatta i colori dell\'immagine al colore della tua parete per colori più fedeli.</string>
+    <string name="lumen_wallcolor_desc_ambient">Per il risultato migliore l\'immagine va alla luminosità massima e la luminosità automatica si spegne.</string>
+    <string name="lumen_wallcolor_start">Avvia</string>
+    <string name="lumen_wallcolor_reset">Ripristina i colori originali</string>
+    <string name="lumen_wallcolor_running">Adattamento al colore della parete</string>
+    <string name="lumen_wallcolor_matched">Colori adattati</string>
+    <string name="lumen_wallcolor_original">Colori originali</string>
+    <string name="lumen_wallcolor_save_title">Tenere i colori adattati?</string>
+    <string name="lumen_wallcolor_save_desc">I colori adattati si abbinano meglio al colore di questa parete.</string>
+    <string name="lumen_wallcolor_fail_camera">La fotocamera non si è avviata. Riprova.</string>
+    <string name="lumen_wallcolor_fail_start">Non è stato possibile avviare l\'adattamento. Se succede di nuovo, invia una segnalazione.</string>
+    <string name="lumen_wallcolor_fail_distance">Adattamento non riuscito. Cambia la distanza dalla parete o l\'angolo del proiettore.</string>
+    <string name="lumen_wallcolor_fail_light">Adattamento non riuscito. La luce della stanza è cambiata. Riprova con luce stabile.</string>
+    <string name="lumen_wallcolor_fail_custom">Non disponibile nella modalità colore personalizzata.</string>
+    <string name="lumen_wallcolor_fail_performance">Non disponibile nella modalità prestazioni.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Disattiva la luminosità automatica e riprova.</string>
+    <string name="lumen_wallcolor_fail_3d">Non disponibile in modalità 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">In modalità schermo gigante è disponibile solo la correzione trapezoidale manuale.</string>
+    <string name="lumen_wallcolor_fail_range">Adattamento non riuscito. Il colore della parete è fuori dall\'intervallo regolabile.</string>
+    <string name="lumen_wallcolor_fail_not_started">Il proiettore non ha avviato l\'adattamento. Riprova.</string>
+</resources>

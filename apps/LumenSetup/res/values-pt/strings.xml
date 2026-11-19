@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Ativando o Wi-Fi…</string>
     <string name="net_none_found">Nenhuma rede encontrada</string>
     <string name="net_add_manual">Adicionar rede manualmente</string>
-    <string name="net_other">Outras opções</string>
     <string name="net_password_title">Senha de %1$s</string>
     <string name="net_password_hint">Senha</string>
     <string name="net_show_password">Mostrar senha</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Controle %1$s encontrado</string>
     <string name="remote_connected">Controle conectado</string>
     <string name="remote_other">Outro dispositivo</string>
-    <string name="remote_skip_hint">Você pode pareá-lo depois pelo painel rápido (botão de engrenagem).</string>
     <string name="google_title">Fazer login com o Google</string>
     <string name="google_subtitle">Faça login para instalar apps do Google Play e usar suas assinaturas.</string>
     <string name="google_sign_in">Fazer login</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Nome do projetor</string>
     <string name="done_home">Tela inicial</string>
     <string name="done_stats">Enviar estatísticas anônimas</string>
-    <string name="done_stats_note">A cada inicialização e uma vez por dia: modelo, versão, build, dados da atualização, país, um número de instalação aleatório e o número de série (o servidor guarda só o hash dele). Seu endereço IP não é armazenado.</string>
     <string name="done_start">Começar</string>
     <string name="done_offline_hint">Sem internet: faça login no Google e defina o fuso horário depois nas configurações.</string>
     <string name="done_offline_hint_nogms">Sem internet: defina o fuso horário depois nas configurações.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Você vai precisar do celular ou da senha</string>
     <string name="google_help_sub">O que fazer se o Google pedir um registro</string>
     <string name="done_stats_short">Modelo, versão e país. O endereço IP não é armazenado.</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_subtitle">Como o Lumen vai ficar. Você pode mudar isso depois no menu rápido.</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_auto">Automático</string>
+    <string name="theme_auto_sub">Claro de dia, escuro depois do pôr do sol</string>
 </resources>

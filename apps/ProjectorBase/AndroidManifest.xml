@@ -186,6 +186,8 @@
     <!-- the quick menu's screen mirroring tile (layout D, 2026-11-11): org.lumen.miracast StateProvider
          (signature permission; only granted while the receiver, signed with the same key, is installed) -->
     <uses-permission android:name="org.lumen.miracast.permission.CONTROL" />
+    <!-- apps/core/lumen-files-access: sets the all files access app op of Lumen Play (system API setUidMode) -->
+    <uses-permission android:name="android.permission.MANAGE_APP_OPS_MODES" />
     <!-- ===== v6.4 AI sound END ===== -->
 
     <!-- Package visibility for the remote app keys (launch + app picker). -->
@@ -212,6 +214,12 @@
         </intent>
     </queries>
 
+    <!-- The Network popup's hotspot (apps/core/lumen-system Hotspot, all signature level): start and stop Android's
+         hotspot (TETHER_PRIVILEGED), read and write its name and password (OVERRIDE_WIFI_CONFIG, NETWORK_SETTINGS),
+         its state and the Wi-Fi network's name (ACCESS_WIFI_STATE, CHANGE_WIFI_STATE). -->
+    <uses-permission android:name="android.permission.TETHER_PRIVILEGED" />
+    <uses-permission android:name="android.permission.OVERRIDE_WIFI_CONFIG" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <application
         android:name=".App"
         android:label="@string/app_name"
@@ -222,19 +230,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Z9x.Settings">
 
-        <!-- v6.2 (v6.2 requirements 4): no launcher tile any more. Opened only from inside the app
-             (quick panel > All settings > Projector settings, Hal.openProjectorSettings).
-             1.0.9: a BLE remote that reconnects changes keyboard / navigation; that used to recreate the
-             activity and close an open chooser (the bilibili key choice was lost). Density, screen size and
-             locale still recreate it (UI resolution, language). -->
+        <!-- The shared Licences screen (apps/core/lumen-menu GmLicences: the CC BY credits of the game menu's controller
+             models), from the menu's General page (menu.json settings.licences); own task, finishes with its dialog. -->
         <activity
-            android:name=".SettingsActivity"
+            android:name="org.lumen.projector.ui.LicencesActivity"
             android:exported="false"
-            android:label="@string/app_name"
-            android:banner="@drawable/brand_banner_projector"
-            android:launchMode="singleTask"
-            android:configChanges="keyboard|keyboardHidden|navigation|uiMode"
-            android:theme="@style/Theme.Z9x.Settings" />
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity="org.lumen.projector.licences"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- The voice key's text field (All settings, General, Voice assistant, VoiceKeyActivity): the menu is an
+             overlay and cannot hold a text field with the keyboard. Not exported, no launcher entry. -->
+        <activity
+            android:name=".voice.VoiceKeyActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity
             android:name=".ManualFocusActivity"
@@ -429,6 +440,13 @@
             android:authorities="org.lumen.projector.alive"
             android:directBootAware="false"
             android:exported="false" />
+        <!-- All files access for Lumen Play signed with its release key, on install, update and every process start
+             (apps/core/lumen-files-access README). -->
+        <provider
+            android:name="org.lumen.filesaccess.FilesAccessStart"
+            android:authorities="org.lumen.projector.filesaccess"
+            android:directBootAware="false"
+            android:exported="false" />
         <!-- Settings > About (apps/core/lumen-about): the rows Model code, XGIMI firmware and Back to the XGIMI system
              that TvSettings' About page asks for (method rows, read only), and the screen of the last row, which
              TvSettings opens (so both are exported). -->
@@ -466,12 +484,27 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/lumen_remote_key_filter" />
         </service>
-        <!-- the signal panel of every projector (apps/core/lumen-signal): the remote action "signal" (lumen-remote,
-             also the Shortcut key's default) and the menu's round button send this app SIGNAL_PANEL; not exported -->
+        <!-- the signal panel of every projector (apps/core/lumen-signal): the remote action "signal" (lumen-remote, any
+             key the user gives it) and the For developers page of All settings send this app SIGNAL_PANEL; not exported -->
         <receiver android:name="org.lumen.signal.SignalReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="org.lumen.projector.action.SIGNAL_PANEL" />
             </intent-filter>
         </receiver>
+        <receiver android:name="org.lumen.sensors.SensorReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="org.lumen.projector.action.SENSORS_PANEL" />
+            </intent-filter>
+        </receiver>
+        <!-- The menu's text edit screen (apps/core/lumen-menu TextEditActivity: the hotspot name and password): a tool
+             screen over the menu, typed with Lumen Keyboard. -->
+        <activity
+            android:name="org.lumen.projector.panel.TextEditActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity="org.lumen.projector.textedit"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
     </application>
 </manifest>

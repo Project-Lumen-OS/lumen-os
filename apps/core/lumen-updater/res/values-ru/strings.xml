@@ -113,7 +113,6 @@
     <string name="ch_updates">Обновления системы</string>
     <string name="n_available_body">Откройте, чтобы загрузить и установить.</string>
     <string name="n_ready_title">Перезапустите, чтобы завершить обновление</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Этот проектор пока не может обновляться по воздуху: не выполнена разовая настройка. Обновите его с компьютера через lumen-install.</string>
     <string name="blk_power">Подключите блок питания: обновление займёт несколько минут.</string>
     <string name="consent_title_recovery">Установить обновление?</string>

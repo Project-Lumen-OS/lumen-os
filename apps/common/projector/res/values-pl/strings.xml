@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Projektor</string>
     <string name="version_line">Wersja %1$s</string>
-    <string name="sec_focus">Ostrość</string>
-    <string name="sec_keystone">Korekcja trapezu</string>
     <string name="sec_auto">Automatyka</string>
-    <string name="sec_keys">Przyciski pilota</string>
     <string name="sec_diag">Diagnostyka</string>
-    <string name="act_af_now">Ustaw ostrość teraz</string>
     <string name="act_manual_focus">Ręczna ostrość</string>
     <string name="act_kst_now">Koryguj trapez teraz</string>
-    <string name="act_fit_now">Dopasuj do ekranu teraz</string>
     <string name="act_refresh">Odśwież</string>
     <string name="tg_power_on_af">Autofokus po włączeniu</string>
     <string name="tg_power_on_ak">Korekcja trapezu po włączeniu</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Korekcja trapezu po przesunięciu</string>
     <string name="tg_curtain">Dopasowanie do ekranu</string>
     <string name="tg_obstacle">Omijanie przeszkód</string>
-    <string name="val_on">Wł.</string>
-    <string name="val_off">Wył.</string>
-    <string name="val_unknown">Brak danych</string>
-    <string name="val_not_ready">Projektor nie jest gotowy</string>
     <string name="cancel">Anuluj</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Nie znaleziono aplikacji dla tego przycisku</string>

@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">移動中</string>
     <string name="lumen_qe_move_hint">円は上の列の中だけ、タイルは行の間だけ動きます。タイルを円にするには表示を変えてください。</string>
     <string name="lumen_qe_put">ここに置く</string>
-    <string name="lumen_qe_cancel">キャンセル</string>
     <string name="lumen_qe_full">メニューがいっぱいです。小さい表示かリスト表示を選んでください。</string>
     <string name="lumen_qe_list_full">この数の項目はリストに収まりません。先にいくつか外してください。</string>
     <string name="lumen_qe_pinned">このボタンは常にメニューに残ります。</string>

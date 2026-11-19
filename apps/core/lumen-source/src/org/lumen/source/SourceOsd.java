@@ -25,6 +25,7 @@ import android.widget.TextView;
 import org.lumen.ui.LumenTheme;
 import org.lumen.ui.Motion;
 import org.lumen.ui.Palette;
+import org.lumen.ui.ThemeFade;
 import org.lumen.ui.Tokens;
 
 /**
@@ -135,6 +136,8 @@ final class SourceOsd {
         cl.setMarginStart(d(X));
         root.addView(card, cl);
         paint(p);
+        // a theme change while the card is up: the shared cross fade, the colours re-painted in place under it
+        ThemeFade.follow(root, q -> { if (card != null && q != palette) paint(q); });
         try {
             wm.addView(root, params());
             return true;
@@ -157,7 +160,7 @@ final class SourceOsd {
         tile.setShape(GradientDrawable.OVAL);
         tile.setColor(p.accent);
         icon.setBackground(tile);
-        icon.setImageTintList(android.content.res.ColorStateList.valueOf(p.dark ? p.onPfocus : 0xFFFFFFFF));
+        icon.setImageTintList(android.content.res.ColorStateList.valueOf(p.onPfocus));
         text.setTextColor(p.ptext2);
     }
 

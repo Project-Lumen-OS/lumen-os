@@ -1,0 +1,7 @@
+app       LumenPackageInstallerOverlay
+# The Lumen look of the system package installer (static RRO, no code). The font is the one Inter file of the
+# shared menu (apps/core/lumen-menu), copied in at build time instead of a second copy in git, with its licence.
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf res/font/lumen_inter.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/OFL-Inter.txt
+top       apps/LumenPackageInstallerOverlay
+skip      build/ test/ *.apk README*.md .DS_Store app.layers

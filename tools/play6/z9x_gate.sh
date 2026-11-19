@@ -275,13 +275,12 @@ sync_check() { # app items...
   out=$(sh apps/common/sync.sh --check "$@" 2>&1); rc=$?
   if [ $rc = 0 ]; then say "  sync --check $*: OK"; else red "sync --check $*: $out"; fi
 }
-PITEMS=hal
-[ -f apps/common/projector/FILES ] && PITEMS="hal projector"
-sync_check apps/ProjectorBase $PITEMS
-# the Play 6 projector app holds no shared copies since the design notes: it is assembled from
-# devices/dragon_healthy/app/Play6Projector.layers, which refuses a copy of a shared file
-out=$(python3 -B tools/devices/assemble_app.py --device dragon_healthy --app Play6Projector 2>&1); rc=$?
-if [ $rc = 0 ]; then say "  assemble Play6Projector: OK"; else red "assemble Play6Projector: $out"; fi
+# no projector app holds shared copies: the Z9X, HB and Play 6 apps are assembled from their recipes, which take
+# apps/common/projector, apps/common/hal and apps/common/LumenImport.java as bases and refuse a copy of a shared file
+for r in horse_popular:Z9xProjector goat_elegant:HbProjector dragon_healthy:Play6Projector; do
+  out=$(python3 -B tools/devices/assemble_app.py --device "${r%%:*}" --app "${r#*:}" 2>&1); rc=$?
+  if [ $rc = 0 ]; then say "  assemble ${r#*:}: OK"; else red "assemble ${r#*:}: $out"; fi
+done
 if [ -d apps/common/overlay ]; then
   sync_check apps/Z9xFrameworkKeysOverlay keys
   sync_check apps/Play6FrameworkOverlay keys

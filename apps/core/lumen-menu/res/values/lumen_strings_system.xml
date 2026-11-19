@@ -8,6 +8,7 @@
     <string name="lumen_m_hdmi_options">HDMI input options</string>
     <string name="lumen_m_colour_vision">Colour vision</string>
     <string name="lumen_m_temperature">Temperature</string>
+    <string name="lumen_m_high_altitude">High altitude mode</string>
     <string name="lumen_m_colour_vision_gray">Grayscale</string>
     <string name="lumen_m_colour_vision_red_green">Red/green</string>
     <string name="lumen_m_colour_vision_green_red">Green/red</string>

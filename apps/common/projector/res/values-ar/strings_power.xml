@@ -6,7 +6,6 @@
     <string name="power_standby_never">أبدًا</string>
     <string name="power_quick_wake_minutes">%1$d د</string>
     <string name="power_quick_wake_hours">%1$d س</string>
-    <string name="power_standby_summary">الضغط القصير على زر التشغيل يطفئ الضوء ويبقي جهاز العرض جاهزًا للتشغيل الفوري. بعد هذه المدة يُطفأ بالكامل.</string>
     <string name="power_sleep_summary">زر التشغيل ومؤقت النوم وفترة الخمول تطفئ الضوء وتضع جهاز العرض في وضع السكون. اضغط زر التشغيل ليستيقظ خلال ثوانٍ من حيث توقفت.</string>
     <string name="power_menu_sleep">سكون</string>
     <string name="power_menu_off">إيقاف التشغيل</string>

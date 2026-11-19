@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Spostamento</string>
     <string name="lumen_qe_move_hint">I cerchi si spostano solo nella riga in alto, i riquadri tra le righe. Per fare di un riquadro un cerchio, cambiane l\'aspetto.</string>
     <string name="lumen_qe_put">Metti qui</string>
-    <string name="lumen_qe_cancel">Annulla</string>
     <string name="lumen_qe_full">Il menu è pieno. Scegli un aspetto più piccolo o l\'elenco.</string>
     <string name="lumen_qe_list_full">Tante voci non stanno in un elenco. Togline prima alcune.</string>
     <string name="lumen_qe_pinned">Questo pulsante resta sempre nel menu.</string>

@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Wi-Fi açılıyor…</string>
     <string name="net_none_found">Ağ bulunamadı</string>
     <string name="net_add_manual">Ağı elle ekle</string>
-    <string name="net_other">Diğer seçenekler</string>
     <string name="net_password_title">%1$s için şifre</string>
     <string name="net_password_hint">Şifre</string>
     <string name="net_show_password">Şifreyi göster</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">%1$s kumandası bulundu</string>
     <string name="remote_connected">Kumanda bağlandı</string>
     <string name="remote_other">Başka cihaz</string>
-    <string name="remote_skip_hint">Kumandayı daha sonra hızlı panelden (dişli tuşu) de eşleyebilirsiniz.</string>
     <string name="google_title">Google ile oturum açın</string>
     <string name="google_subtitle">Google Play’den uygulama yüklemek ve aboneliklerinizi kullanmak için oturum açın.</string>
     <string name="google_sign_in">Oturum aç</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Projektör adı</string>
     <string name="done_home">Ana ekran</string>
     <string name="done_stats">Anonim istatistik gönder</string>
-    <string name="done_stats_note">Her açılışta ve günde bir kez: model, sürüm, derleme, güncelleme bilgileri, ülke, rastgele bir kurulum numarası ve seri numarası (sunucu yalnızca karma değerini saklar). IP adresiniz saklanmaz.</string>
     <string name="done_start">Başla</string>
     <string name="done_offline_hint">İnternet yok: Google’da oturum açmayı ve saat dilimini daha sonra Ayarlar’dan yapın.</string>
     <string name="done_offline_hint_nogms">İnternet yok: saat dilimini daha sonra Ayarlar’dan seçin.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Telefonunuz veya şifreniz gerekecek</string>
     <string name="google_help_sub">Google kayıt isterse ne yapmalı</string>
     <string name="done_stats_short">Model, sürüm ve ülke. IP adresi saklanmaz.</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_subtitle">Lumen nasıl görünecek. Bunu daha sonra hızlı menüden değiştirebilirsiniz.</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <string name="theme_auto">Otomatik</string>
+    <string name="theme_auto_sub">Gündüz açık, gün batımından sonra koyu</string>
 </resources>

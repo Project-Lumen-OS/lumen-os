@@ -2,7 +2,6 @@
 <!-- Kazakh translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Экран</string>
     <string name="uires_row">Интерфейс ажыратымдылығы</string>
     <string name="uires_default_fmt">%1$s (әдепкі)</string>
     <string name="uires_summary">4K ең анық мәтін береді; 1080p, XGIMI-дегідей, графикаға ең жеңіл. Өзгерту үшін проектор қайта қосылады.</string>

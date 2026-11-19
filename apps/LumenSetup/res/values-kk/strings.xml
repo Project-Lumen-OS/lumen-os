@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Wi-Fi қосылуда…</string>
     <string name="net_none_found">Желілер табылмады</string>
     <string name="net_add_manual">Желіні қолмен қосу</string>
-    <string name="net_other">Басқа нұсқалар</string>
     <string name="net_password_title">%1$s желісінің құпия сөзі</string>
     <string name="net_password_hint">Құпия сөз</string>
     <string name="net_show_password">Құпия сөзді көрсету</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Пульт табылды: %1$s</string>
     <string name="remote_connected">Пульт қосылды</string>
     <string name="remote_other">Басқа құрылғы</string>
-    <string name="remote_skip_hint">Пультті кейін жылдам панельден де қосуға болады (тісті доңғалақ түймесі).</string>
     <string name="google_title">Google аккаунтына кіру</string>
     <string name="google_subtitle">Google Play-ден қолданбалар орнату және жазылымдарды пайдалану үшін кіріңіз.</string>
     <string name="google_sign_in">Кіру</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Проектор атауы</string>
     <string name="done_home">Басты экран</string>
     <string name="done_stats">Анонимді статистика жіберу</string>
-    <string name="done_stats_note">Әр қосылған сайын және күніне бір рет: модель, нұсқа, жинақ, жаңарту туралы мәлімет, ел, кездейсоқ орнату нөмірі және сериялық нөмір (сервер тек оның хэшін сақтайды). IP мекенжайыңыз сақталмайды.</string>
     <string name="done_start">Бастау</string>
     <string name="done_offline_hint">Интернет жоқ: Google-ға кіруді және уақыт белдеуін кейін параметрлерде орнатуға болады.</string>
     <string name="done_offline_hint_nogms">Интернет жоқ: уақыт белдеуін кейін параметрлерде орнатуға болады.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Телефон немесе құпия сөз керек болады</string>
     <string name="google_help_sub">Google тіркеуді сұраса не істеу керек</string>
     <string name="done_stats_short">Модель, нұсқа және ел. IP мекенжайы сақталмайды.</string>
+    <string name="theme_title">Безендіру</string>
+    <string name="theme_subtitle">Lumen қалай көрінеді. Кейін мұны жылдам мәзірде өзгертуге болады.</string>
+    <string name="theme_light">Ашық</string>
+    <string name="theme_dark">Күңгірт</string>
+    <string name="theme_auto">Авто</string>
+    <string name="theme_auto_sub">Күндіз ашық, күн батқан соң күңгірт</string>
 </resources>

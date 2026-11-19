@@ -20,7 +20,6 @@
     <string name="net_wifi_on">جارٍ تشغيل Wi-Fi…</string>
     <string name="net_none_found">لم يتم العثور على شبكات</string>
     <string name="net_add_manual">إضافة شبكة يدويًا</string>
-    <string name="net_other">خيارات أخرى</string>
     <string name="net_password_title">كلمة مرور %1$s</string>
     <string name="net_password_hint">كلمة المرور</string>
     <string name="net_show_password">إظهار كلمة المرور</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">تم العثور على جهاز التحكم %1$s</string>
     <string name="remote_connected">تم توصيل جهاز التحكم</string>
     <string name="remote_other">جهاز آخر</string>
-    <string name="remote_skip_hint">يمكنك إقرانه لاحقًا من اللوحة السريعة (زر الترس).</string>
     <string name="google_title">تسجيل الدخول باستخدام Google</string>
     <string name="google_subtitle">سجّل الدخول لتثبيت التطبيقات من Google Play واستخدام اشتراكاتك.</string>
     <string name="google_sign_in">تسجيل الدخول</string>
@@ -100,7 +98,6 @@
     <string name="done_name">اسم جهاز العرض</string>
     <string name="done_home">الشاشة الرئيسية</string>
     <string name="done_stats">إرسال إحصاءات مجهولة الهوية</string>
-    <string name="done_stats_note">عند كل تشغيل ومرة واحدة يوميًا: الطراز والإصدار والبنية ومعلومات التحديث والبلد ورقم تثبيت عشوائي والرقم التسلسلي (يحتفظ الخادم بقيمته المُجزّأة فقط). لا يتم حفظ عنوان IP الخاص بك.</string>
     <string name="done_start">ابدأ</string>
     <string name="done_offline_hint">لا يوجد إنترنت: سجّل الدخول إلى Google واضبط المنطقة الزمنية لاحقًا من الإعدادات.</string>
     <string name="done_offline_hint_nogms">لا يوجد إنترنت: اضبط المنطقة الزمنية لاحقًا من الإعدادات.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">ستحتاج إلى هاتفك أو كلمة المرور</string>
     <string name="google_help_sub">ماذا تفعل إذا طلبت Google التسجيل</string>
     <string name="done_stats_short">الطراز والإصدار والبلد. لا يتم حفظ عنوان IP.</string>
+    <string name="theme_title">المظهر</string>
+    <string name="theme_subtitle">مظهر Lumen. يمكنك تغييره لاحقًا من القائمة السريعة.</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="theme_auto">تلقائي</string>
+    <string name="theme_auto_sub">فاتح نهارًا وداكن بعد الغروب</string>
 </resources>

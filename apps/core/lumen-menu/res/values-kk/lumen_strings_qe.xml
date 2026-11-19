@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Жылжыту</string>
     <string name="lumen_qe_move_hint">Дөңгелектер тек жоғарғы қатарда, тақталар тек жолдар арасында жылжиды. Тақта дөңгелек болуы үшін оның түрін өзгертіңіз.</string>
     <string name="lumen_qe_put">Осында қою</string>
-    <string name="lumen_qe_cancel">Болдырмау</string>
     <string name="lumen_qe_full">Мәзір толы. Кішірек түрді немесе Тізім түрін таңдаңыз.</string>
     <string name="lumen_qe_list_full">Мұнша тармақ тізімге сыймайды. Алдымен бірнешеуін алып тастаңыз.</string>
     <string name="lumen_qe_pinned">Бұл түйме әрқашан мәзірде қалады.</string>

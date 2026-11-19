@@ -29,7 +29,8 @@ public final class SignalText {
             OUT_EARC = "out_earc", OUT_BT = "out_bt", OUT_USB = "out_usb", OUT_WIRED = "out_wired",
             OUT_HDMI = "out_hdmi", OUT_OTHER = "out_other", R_SOUND_FORMAT = "r_sound_format", FMT_AUTO = "fmt_auto",
             FMT_PCM = "fmt_pcm", FMT_PASS = "fmt_pass", FMT_MANUAL = "fmt_manual", SOUND_LINE = "sound_line",
-            POPUP_ROW = "popup_row", HINT_MORE = "hint_more", HINT_HIDE = "hint_hide", HINT_CLOSE = "hint_close",
+            POPUP_ROW = "popup_row", HINT_HOLD = "hint_hold", HINT_FOLD = "hint_fold", HINT_HIDE = "hint_hide",
+            HINT_CLOSE = "hint_close",
             R_COLOR_FORMAT = "r_color_format", R_COLORIMETRY = "r_colorimetry", COLOR_DEFAULT = "color_default",
             R_DEPTH = "r_depth", DEPTH_BITS = "depth_bits", RANGE_AUTO_FULL = "range_auto_full",
             RANGE_AUTO_LIMITED = "range_auto_limited";
@@ -43,8 +44,8 @@ public final class SignalText {
             R_VRR, R_FREESYNC, YES, NO, R_SOURCE, SOURCE_APPS, R_SCREEN, R_CHIP, R_MOTION, MOTION_SMOOTH, MOTION_JUDDER,
             VERDICT_SMOOTH, VERDICT_JUDDER, R_GAME_MODE, R_HGIG, R_TONE_MAP, R_DV_MODE, DV_BRIGHT, DV_DARK, R_TEMP_LIGHT,
             R_TEMP_SYSTEM, DEGREES, ON, OFF, R_OUT, OUT_SPEAKER, OUT_ARC, OUT_EARC, OUT_BT, OUT_USB, OUT_WIRED, OUT_HDMI,
-            OUT_OTHER, R_SOUND_FORMAT, FMT_AUTO, FMT_PCM, FMT_PASS, FMT_MANUAL, SOUND_LINE, POPUP_ROW, HINT_MORE,
-            HINT_HIDE, HINT_CLOSE, R_COLOR_FORMAT, R_COLORIMETRY, COLOR_DEFAULT, R_DEPTH, DEPTH_BITS, RANGE_AUTO_FULL,
+            OUT_OTHER, R_SOUND_FORMAT, FMT_AUTO, FMT_PCM, FMT_PASS, FMT_MANUAL, SOUND_LINE, POPUP_ROW, HINT_HOLD,
+            HINT_FOLD, HINT_HIDE, HINT_CLOSE, R_COLOR_FORMAT, R_COLORIMETRY, COLOR_DEFAULT, R_DEPTH, DEPTH_BITS, RANGE_AUTO_FULL,
             RANGE_AUTO_LIMITED};
 
     /** The texts of the current language. */

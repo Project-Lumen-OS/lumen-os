@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the stock serial port control page (X50 Ultra, Ultra Max, TITAN) and the parental controls
+     row (own wording) -->
+<resources>
+    <string name="lumen_m_serial">직렬 포트 제어</string>
+    <string name="lumen_m_serial_switch">RS-232로 제어</string>
+    <string name="lumen_m_serial_id_group">ID 그룹</string>
+    <string name="lumen_m_serial_id_number">ID 번호</string>
+    <string name="lumen_m_serial_ack_group">그룹 명령에 응답</string>
+    <string name="lumen_m_serial_ack_all">전체 명령에 응답</string>
+    <string name="lumen_m_serial_master">마스터 모드</string>
+    <string name="lumen_m_parental">자녀 보호</string>
+</resources>

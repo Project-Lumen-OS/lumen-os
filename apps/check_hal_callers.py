@@ -36,13 +36,14 @@ import re
 import sys
 
 CLIENTS = ("GmpfClient.java", "Gmpf2Client.java")
-# codes that never leave this app, per interface (IGmpf = GmpfClient, IGmpf2 = Gmpf2Client)
+# codes that never leave this app, per interface (IGmpf = GmpfClient, IGmpf2 = Gmpf2Client). 99 setAutoColorCalibration
+# left this list on 2026-11-19 (wall colour adaptation as stock, it is the result bar's use the matched colour).
 BANNED = {
     "GmpfClient.java": {
         24: "newAutoKst", 80: "no sensor", 155: "no sensor",
         94: "factory white balance", 95: "factory white balance", 533: "factory white balance",
-        556: "factory white balance", 99: "auto-colour calibration", 101: "auto-colour calibration",
-        102: "auto-colour calibration", 229: "power", 233: "power", 241: "power", 422: "power", 543: "power",
+        556: "factory white balance", 101: "auto-colour calibration",
+        102: "auto-colour calibration", 229: "power", 233: "power", 241: "power", 422: "power",
         299: "autofocus", 301: "autoFocus", 400: "reset", 421: "reset", 453: "factoryControlMotor",
         583: "gyroscopeCorrection",
         297: "controlZoomMotor (large zoom move)", 283: "zoom (factory move)", 457: "zoom (factory move)",

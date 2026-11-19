@@ -8,7 +8,6 @@
     <string name="lumen_gm_hdr_1">Динамическое тональное отображение</string>
     <string name="lumen_gm_chip_hz">%1$d Гц</string>
     <string name="lumen_m_panel_speed_top_note">Турбо: коррекция трапеции выключена</string>
-    <string name="lumen_m_ok">OK</string>
     <string name="lumen_m_cancel">Отмена</string>
     <string name="lumen_m_panel_boost_press_again">Нажмите → ещё раз для Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Нажмите ← ещё раз, чтобы выйти из Boost</string>

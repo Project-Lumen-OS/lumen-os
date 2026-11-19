@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Przenoszenie</string>
     <string name="lumen_qe_move_hint">Kółka przesuwają się tylko w górnym rzędzie, kafelki tylko między wierszami. Aby kafelek stał się kółkiem, zmień jego wygląd.</string>
     <string name="lumen_qe_put">Postaw tutaj</string>
-    <string name="lumen_qe_cancel">Anuluj</string>
     <string name="lumen_qe_full">Menu jest pełne. Wybierz mniejszy wygląd albo listę.</string>
     <string name="lumen_qe_list_full">Tyle pozycji nie mieści się na liście. Najpierw usuń kilka.</string>
     <string name="lumen_qe_pinned">Ten przycisk zawsze zostaje w menu.</string>

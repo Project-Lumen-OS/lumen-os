@@ -11,8 +11,9 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 
+import org.lumen.menu.GearPress;
+import org.lumen.menu.KeyTools;
 import org.lumen.projector.panel.QuickPanel;
-import org.lumen.projector.source.SourceOverlay;
 import org.lumen.projector.ui.OverlayHost;
 
 /**
@@ -41,7 +42,7 @@ import org.lumen.projector.ui.OverlayHost;
  *    game mode runs on HDMI (panel.GameMenu, 2026-11-11), else close panels and open Android TV Settings
  *    (after setup only, like LineageParts KeyHandler did).
  *    Never acts on a key that began while the screen was off (EXTRA_BEGAN_FROM_NON_INTERACTIVE).
- *  - Source (KEYCODE_TV_INPUT): UP -> SourceOverlay.toggle (after setup).
+ *  - Source (KEYCODE_TV_INPUT): first DOWN -> lumen-source SourceKey (after setup), as stock.
  *  - KEYSTONE/LENS (KEYCODE_TV_NETWORK): UP -> QuickPanel.show(projection section).
  *
  * Lumen OS 1.0 (Google Assistant removed): the mic key (KEYCODE_SEARCH) opens Lumen Home
@@ -54,9 +55,8 @@ public final class KeyReceiver extends BroadcastReceiver {
     /** GlobalKeyIntent's extra (Lineage services/.../policy/GlobalKeyIntent.java:29-30, literal key). */
     private static final String EXTRA_BEGAN_FROM_NON_INTERACTIVE = "EXTRA_BEGAN_FROM_NON_INTERACTIVE";
 
-    /** Gear long press already fired for the current hold (main thread only). */
-    private static boolean sGearLongFired;
-    private static long sGearDownTime = -1;
+    /** The gear key's press (short = quick menu, held = the long action), the rule every projector app shares. */
+    private static final GearPress GEAR = new GearPress();
     /** Mic press that started voice search (its UP sends MIC_UP); main thread only. */
     private static long sMicDownTime = -1;
 
@@ -83,6 +83,11 @@ public final class KeyReceiver extends BroadcastReceiver {
         if (firstDown && code != Z9xKeys.FOCUS_STEP_LEFT && code != Z9xKeys.FOCUS_STEP_RIGHT) {
             HalController.get(ctx).motor().stop();                   // posts; sends 2 only if moving
         }
+
+        // the stock "Turn off screen" (lamp.off, org.lumen.menu.LampOff): while the light is off the power key gives it
+        // back and does nothing else (no sleep, no power menu), the focus keys are eaten, any other key goes on
+        if (org.lumen.projector.power.LampOffHal.get(ctx).eats(Z9xKeys.lampOffKey(code), down, ev.getRepeatCount(),
+                ev.getDownTime())) return;
 
         // ===== v6.2 module "power" BEGIN =====
         // BT remote power key (KEYCODE_STB_POWER, BT .kl "STB_POWER WAKE") -> own short press (fade +
@@ -113,6 +118,11 @@ public final class KeyReceiver extends BroadcastReceiver {
         // Global keys never reach the screensaver window, so wake it like any other key would;
         // otherwise everything we open below would stay hidden under the always-on-top dream.
         if (firstDown && code != Z9xKeys.AMBIENT) Ui.wakeFromDream(ctx);
+
+        // "Remote buttons" (apps/core/lumen-remote keys, the same handler on every model): a key the user gave an app
+        // opens it, a held one asks which app; while that screen waits for a key it gets every key. A key without an
+        // app goes on below exactly as before.
+        if (org.lumen.remote.keys.KeyBind.onGlobalKey(ctx, ev, isSetupComplete(ctx))) return;
 
         if (code == Z9xKeys.VOICE) {
             handleMic(ctx, intent, ev);                              // push-to-talk: DOWN starts, UP stops
@@ -145,12 +155,17 @@ public final class KeyReceiver extends BroadcastReceiver {
             if (upOk && setupDone(ctx, "ambient")) startAmbient(ctx);
             return;
         }
+        if (code == Z9xKeys.GEAR_HOLD) {
+            // the remote's own gear hold: one short press of the stock MENU scancode (BT 127, IR / keypad 139)
+            if (firstDown && !intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) gearLong(ctx);
+            return;
+        }
         if (code == Z9xKeys.GEAR) {
             handleGear(ctx, intent, ev);
             return;
         }
         if (code == Z9xKeys.SOURCE) {
-            if (upOk && setupDone(ctx, "source")) SourceOverlay.toggle(ctx);
+            if (firstDown && setupDone(ctx, "source")) org.lumen.source.SourceKey.press(ctx, "key");
             return;
         }
         if (code == Z9xKeys.PROJECTOR_PANEL) {
@@ -166,33 +181,33 @@ public final class KeyReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Gear: DOWN(repeat 0) arms; the first repeated DOWN of the same press = long press (TvSettings);
-     * UP without a long press = short press (quick panel). A canceled UP does nothing.
+     * Gear (org.lumen.menu.GearPress): DOWN(repeat 0) arms; the first repeated DOWN of the same press = long press;
+     * UP without a long press = short press (quick panel). A canceled UP does nothing. While a Lumen tool is on screen
+     * (manual focus, the fine corner adjustment, the zoom card: org.lumen.menu.KeyTools) both presses are its menu key.
      */
     private static void handleGear(Context ctx, Intent intent, KeyEvent ev) {
         if (intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) return;
         int action = ev.getAction();
         if (action == KeyEvent.ACTION_DOWN) {
-            if (ev.getRepeatCount() == 0) {
-                sGearLongFired = false;
-                sGearDownTime = ev.getDownTime();
-            } else if (!sGearLongFired && ev.getDownTime() == sGearDownTime) {
-                sGearLongFired = true;
-                // Lumen game menu (2026-11-11, as stock xhplayer): while game mode runs on the HDMI input on
-                // screen the long press opens the game menu (again: closes it); otherwise Android settings as before
-                org.lumen.projector.panel.GameMenu.onGearLong(ctx, () -> {
-                    OverlayHost.get(ctx).dismissAll(false);
-                    if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
-                });
-            }
+            if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);
             return;
         }
-        if (action == KeyEvent.ACTION_UP) {
-            boolean shortPress = !sGearLongFired && !ev.isCanceled() && ev.getDownTime() == sGearDownTime;
-            sGearLongFired = false;
-            sGearDownTime = -1;
-            if (shortPress) QuickPanel.toggle(ctx);
+        if (action == KeyEvent.ACTION_UP && GEAR.up(ev.getDownTime(), ev.isCanceled()) && !KeyTools.menuKey(false)) {
+            QuickPanel.toggle(ctx);                                  // no tool on screen took the menu key
         }
+    }
+
+    /**
+     * The gear long press (a held gear: its first repeated DOWN, or the remote's own Z9xKeys.GEAR_HOLD). Lumen game
+     * menu (2026-11-11, as stock xhplayer): while game mode runs on the HDMI input on screen the game menu
+     * (again: closes it); otherwise Android settings as before.
+     */
+    private static void gearLong(Context ctx) {
+        if (KeyTools.menuKey(true)) return;                          // a tool on screen took the menu key
+        org.lumen.projector.panel.GameMenu.onGearLong(ctx, () -> {
+            OverlayHost.get(ctx).dismissAll(false);
+            if (setupDone(ctx, "gear long press")) openTvSettings(ctx);
+        });
     }
 
     /** Android TV Settings (what LineageParts KeyHandler opened for KEYCODE_SETTINGS). */

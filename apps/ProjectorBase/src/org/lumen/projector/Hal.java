@@ -269,13 +269,9 @@ public final class Hal {
         ManualFocusActivity.open(ctx);
     }
 
-    /** Opens the full "Projector" settings activity, optionally at a section. */
-    public static void openProjectorSettings(Context ctx, String section) {
-        SettingsActivity.open(ctx, section);
-    }
 
     // ------------------------------------------------------------------ projection flags
-    // One sequence for every UI that writes these flags (quick panel and SettingsActivity), with
+    // One sequence for every UI that writes these flags (the quick panel), with
     // the stock interlocks. HAL thread only (inside a Task); the clients refuse the main thread.
 
     /** 290 fit to screen; ON also turns 292 obstacle avoidance on (stock spec 2.3). */

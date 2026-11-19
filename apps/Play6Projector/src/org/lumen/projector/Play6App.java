@@ -202,6 +202,7 @@ public final class Play6App {
         // connected hook + SCREEN_ON hook (no HAL call here): IGmpf 698 follows tvinput's HDMI sessions (t14)
         step("HdmiSource.install", () -> org.lumen.projector.source.HdmiSource.install(app));
         step("SignalPanel.install", () -> org.lumen.signal.SignalPanel.install(app, new org.lumen.projector.panel.Play6SignalReader()));
+        step("SensorPanel.install", () -> org.lumen.sensors.SensorPanel.install(app, new org.lumen.projector.panel.Play6SensorReader()));
         // connected hook + focus listener (no HAL call here): the SetupBridge's "hal" / "af" events for Lumen Setup
         step("SetupEvents.install", () -> SetupEvents.install(app));
         // connected hook (no HAL call here): the stock AI picture quality, scene 16 over AI (XRMService AIPQ)

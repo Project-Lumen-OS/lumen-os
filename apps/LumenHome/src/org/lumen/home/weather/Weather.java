@@ -30,7 +30,11 @@ public final class Weather {
 
     public static final String FILE = "weather";
     private static final String UA = "Lumen-Home/1.0";
-    private static final int TIMEOUT = 4000;
+    /** Connect and read limit per request: a blocked server (open-meteo from some Russian lines) costs 3 s, not more. */
+    private static final int TIMEOUT = 3000;
+    /** After a request that timed out no new try for this long (unless forced): a blocked server is not asked again on every start. */
+    static final long FAIL_PAUSE_MS = 5 * 60_000L;
+    private static volatile long sFailedAt;
     private static final long GEO_MAX_AGE = 6 * 3600_000L;
     private static final long GEO_NET_AGE = 3600_000L;
     private static final long FC_MAX_AGE = 30 * 60_000L;
@@ -153,12 +157,26 @@ public final class Weather {
     }
 
     /**
-     * Refreshes what is due (io thread only). {@code networkChanged}: a new network may mean a new IP
+     * Refreshes what is due (network lane only). {@code networkChanged}: a new network may mean a new IP
      * location (geo older than 1 h is redone). Returns true if the shown reading changed.
      */
     public static boolean refresh(Context c, boolean networkChanged, boolean force) {
         Prefs p = App.get().prefs();
         if (!p.weatherOn()) return false;
+        long up = SystemClock.elapsedRealtime();
+        if (!force && sFailedAt != 0 && up - sFailedAt < FAIL_PAUSE_MS) return false;
+        long t0 = SystemClock.uptimeMillis();
+        boolean[] failed = {false};
+        boolean r = refresh(c, networkChanged, force, failed);
+        long ms = SystemClock.uptimeMillis() - t0;
+        // only a server that let us wait (a timeout) pauses the tries: a quick failure (no network yet) tries again soon
+        boolean pause = failed[0] && ms >= TIMEOUT;
+        sFailedAt = pause ? up : 0;
+        if (failed[0] || ms > 1000) Log.i(App.TAG, "weather refresh ms=" + ms + (pause ? " failed, next try in 5 min" : failed[0] ? " failed" : ""));
+        return r;
+    }
+
+    private static boolean refresh(Context c, boolean networkChanged, boolean force, boolean[] failed) {
         SharedPreferences s = sp(c);
         long now = System.currentTimeMillis();
         double lat, lon;
@@ -186,6 +204,7 @@ public final class Weather {
                     Log.i(App.TAG, "weather geo src=" + r.source + " city=" + r.city + " ok");
                 } else {
                     Log.w(App.TAG, "weather geo failed");
+                    failed[0] = true;
                     if (geoT == 0) return false;
                 }
             }
@@ -216,6 +235,7 @@ public final class Weather {
             JSONObject fc = GeoIp.getJson(url, TIMEOUT, UA);
             if (fc == null || !fc.has("current")) {
                 Log.w(App.TAG, "weather fc failed");
+                failed[0] = true;
                 return false;
             }
             s.edit().putString("fc", fc.toString()).putLong("fc_time", now).putString("fc_units", unitKey).apply();
@@ -223,6 +243,7 @@ public final class Weather {
             return true;
         } catch (Throwable t) {
             Log.w(App.TAG, "weather fc: " + t);
+            failed[0] = true;
             return false;
         }
     }

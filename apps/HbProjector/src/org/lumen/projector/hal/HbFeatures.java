@@ -118,11 +118,15 @@ public final class HbFeatures {
         /** Brightness levels and Boost: support_brightness_boost=2 (G0130). G0148 has 0: no Boost on its stock. */
         BOOST(State.ON, "support_brightness_boost", "0"),
         /**
-         * User picture modes (stock image_mode_custom_base_*, CustomizeDataManager): not built in Lumen
-         * (stock analysis, NEW). G0148 stock has support_custom_picture_mode=false, so it stays hidden there
-         * even after a port (MODEL_SENSITIVE).
+         * User picture modes (stock image_mode_custom_base_dapengse, CustomizeDataManager; TV 195 / 196 / 197 / 198):
+         * the G0130 newsettings lists them with no feature switch; G0148 stock has support_custom_picture_mode=false
+         * and shows no "Custom" entry (MODEL_SENSITIVE).
          */
-        CUSTOM_PICTURE_MODE(State.PENDING, "support_custom_picture_mode", "false"),
+        CUSTOM_PICTURE_MODE(State.ON, "support_custom_picture_mode", "false"),
+        /** Senior colour: more_elderly_color_enhancement on dapengse and dapengfhm, feature.xml support_elder_color (true on both). */
+        ELDER_COLOR(State.ON, "support_elder_color", "false"),
+        /** Rainbow reduction: picture_anti_rbe only in the G0148 tree (dapengfhm), DisplayManager 203 / 205; model data. */
+        ANTI_RBE(State.ON, null),
         /** Sound modes: HB SoundEnum values equal the Z9X ones (S0). */
         SOUND_MODES(State.ON, null),
         /**
@@ -178,12 +182,10 @@ public final class HbFeatures {
         /** Interface resolution row (Projector settings): the HB panel and UI sizes are not checked yet. */
         UI_RESOLUTION(State.PENDING, null),
         /**
-         * Fit to my screen size: the quick panel row "Fit to screen size" and
-         * the two reads it adds, FOCUS 46 getTofDistance and MOTION 2 getMotionDetection (allowed.tsv). PENDING until
-         * design notes H1 passes on the device (both reads plausible: ToF against a tape, the
-         * accelerometer axes and the sign of the tilt on a ceiling and a desk); then this line changes to ON.
+         * The motion reads FOCUS 46 getTofDistance and MOTION 2 getMotionDetection (allowed.tsv): PENDING until both
+         * answer plausibly on the device (ToF against a tape, the tilt sign on a ceiling and a desk).
          */
-        FIT_SCREEN(State.PENDING, null);
+        MOTION(State.PENDING, null);
 
         final State table;
         final String key;
@@ -204,11 +206,11 @@ public final class HbFeatures {
      * support_custom_picture_mode=false) and the colour temperature list (dapengse 0 Standard / 16 Movie,
      * dapengfhm 16 Movie / 17 Balance: Lumen's 0 is not in the G0148 list, and the vendor stores it).
      */
-    static final F[] MODEL_SENSITIVE = {F.BOOST, F.CUSTOM_PICTURE_MODE, F.COLOR_TEMP};
+    static final F[] MODEL_SENSITIVE = {F.BOOST, F.CUSTOM_PICTURE_MODE, F.COLOR_TEMP, F.ANTI_RBE};
 
     /** Model codes whose stock tree the menu was checked against, and what each of them hides. */
     static F[] modelOff(String model) {
-        if ("G0130".equals(model)) return new F[0];
+        if ("G0130".equals(model)) return new F[] {F.ANTI_RBE};
         if ("G0148".equals(model)) return new F[] {F.BOOST, F.CUSTOM_PICTURE_MODE, F.COLOR_TEMP};
         return MODEL_SENSITIVE;                                     // unknown model: hide every model-dependent row
     }

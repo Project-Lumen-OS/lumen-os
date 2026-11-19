@@ -112,7 +112,6 @@
     <string name="ch_updates">Aggiornamenti di sistema</string>
     <string name="n_available_body">Apri per scaricare e installare.</string>
     <string name="n_ready_title">Riavvia per completare l’aggiornamento</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Questo proiettore non può ancora installare aggiornamenti via Internet: manca la configurazione una tantum. Aggiornalo da un computer con lumen-install.</string>
     <string name="blk_power">Collega l\'alimentatore: l\'aggiornamento richiede alcuni minuti.</string>
     <string name="consent_title_recovery">Installare l\'aggiornamento?</string>

@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">Configurações rápidas</string>
-    <string name="panel_sec_image_correction">Correção de imagem</string>
     <string name="panel_sec_picture">Imagem</string>
     <string name="panel_sec_game">Jogos (HDMI)</string>
     <string name="panel_sec_sound">Som</string>
@@ -18,16 +17,6 @@
     <string name="panel_reset">Redefinir</string>
     <string name="panel_turn_on">Ativar</string>
     <string name="panel_turn_off">Desativar</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d min</item>
-        <item quantity="many">%d min</item>
-        <item quantity="other">%d min</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d hora</item>
-        <item quantity="many">%d horas</item>
-        <item quantity="other">%d horas</item>
-    </plurals>
     <string name="panel_ak_now">Corrigir trapézio agora</string>
     <string name="panel_fit_now">Ajustar à tela agora</string>
     <string name="panel_af_now">Focar agora</string>
@@ -45,23 +34,19 @@
     <string name="panel_reset_keystone_msg">A imagem volta ao quadro completo, sem correção. Continuar?</string>
     <string name="panel_reset_keystone_done">Trapézio redefinido</string>
     <string name="panel_kst_manual">Trapézio manual</string>
-    <string name="panel_kst_hint">Setas: mover canto · OK: próximo canto · Voltar: concluir</string>
     <string name="panel_kst_wait">Lendo os cantos…</string>
     <string name="panel_kst_corner_tl">Superior esquerdo</string>
     <string name="panel_kst_corner_tr">Superior direito</string>
     <string name="panel_kst_corner_br">Inferior direito</string>
     <string name="panel_kst_corner_bl">Inferior esquerdo</string>
     <string name="panel_kst_limit">Este canto não pode ir mais longe</string>
-    <string name="panel_kst_unavailable">O trapézio manual não está disponível agora</string>
     <string name="panel_kst_game_mode">O trapézio fica desativado no modo de jogo Turbo</string>
     <string name="panel_projection_mode">Modo de projeção</string>
     <string name="panel_proj_auto">Automático</string>
     <string name="panel_proj_table">Mesa</string>
     <string name="panel_proj_ceiling">Teto</string>
     <string name="panel_proj_rear">Retroprojeção</string>
-    <string name="panel_proj_front_table">Frontal, mesa</string>
     <string name="panel_proj_front_ceiling">Frontal, teto</string>
-    <string name="panel_proj_rear_table">Traseira, mesa</string>
     <string name="panel_proj_rear_ceiling">Traseira, teto</string>
     <string name="panel_proj_confirm_flip">A imagem será invertida. Continuar?</string>
     <string name="panel_proj_confirm_ceiling">Mudar para montagem no teto? A imagem será invertida e algumas funções, como o trapézio em tempo real, ficarão indisponíveis.</string>
@@ -75,7 +60,6 @@
     <string name="panel_tileval_pm_ai">Imagem IA</string>
     <string name="panel_tileval_pm_color_accuracy">Cores precisas</string>
     <string name="panel_tileval_pm_performance">Desempenho</string>
-    <string name="panel_tileval_sound_ai">Som IA</string>
     <string name="panel_pm_performance_msg">Verifique se as saídas de ar não estão bloqueadas e se o ambiente não passa de 25 °C. Não use este modo por muito tempo.</string>
     <string name="panel_lamp">Brilho</string>
     <string name="panel_boost">Boost</string>
@@ -86,15 +70,11 @@
     <string name="panel_ultra120_3d">Indisponível em 3D</string>
     <string name="panel_ultra120_hdmi">Indisponível para entradas HDMI. Use o modo de jogo</string>
     <string name="panel_ultra120_refused">Ultra 120 Hz não está disponível para este conteúdo</string>
-    <string name="panel_ultra120_unverified">Ainda não testado neste projetor.</string>
     <string name="panel_game_hdmi_only">Disponível apenas enquanto uma entrada HDMI é exibida</string>
-    <string name="panel_picture_settings">Configurações de imagem</string>
     <string name="panel_pq_brightness">Brilho</string>
     <string name="panel_pq_contrast">Contraste</string>
     <string name="panel_pq_saturation">Saturação</string>
     <string name="panel_pq_sharpness">Nitidez</string>
-    <string name="panel_pq_blocked_ai">Configurações básicas indisponíveis no modo Imagem IA</string>
-    <string name="panel_pq_blocked_performance">Configurações básicas indisponíveis no modo Desempenho</string>
     <string name="panel_ct_blocked_office">Temperatura de cor indisponível no modo Escritório</string>
     <string name="panel_color_temp">Temperatura de cor</string>
     <string name="panel_ct_1">Temp. de cor 1</string>
@@ -135,8 +115,6 @@
     <string name="eye_off_done">Proteção ocular desativada</string>
     <string name="eye_bright_reduced">Distância de projeção curta: brilho reduzido automaticamente</string>
     <string name="eye_unavailable">A proteção ocular ainda não está pronta. Reinicie o projetor e tente novamente.</string>
-    <string name="panel_standby_off_after">Espera, depois desligar após</string>
-    <string name="panel_input">Entrada</string>
     <string name="panel_projector_settings">Configurações do projetor</string>
     <string name="panel_all_settings">Todas as configurações</string>
     <string name="panel_tile_focus">Foco</string>
@@ -150,11 +128,6 @@
     <string name="panel_hdmi_settings">Configurações de HDMI</string>
     <string name="panel_eye_desc">A luz diminui quando alguém está na frente da lente.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Lado a lado</string>
-    <string name="panel_3d_tb">Cima e baixo</string>
-    <string name="panel_3d_sbs_2d">Lado a lado como 2D</string>
-    <string name="panel_3d_tb_2d">Cima e baixo como 2D</string>
-    <string name="panel_3d_summary">Durante um vídeo. O 3D precisa de óculos ativos DLP-Link; “como 2D” mostra um arquivo 3D plano, sem óculos.</string>
     <string name="panel_3d_need_video">O 3D funciona durante um vídeo: inicie-o primeiro</string>
     <string name="panel_3d_not_now">O 3D não está disponível agora (vídeo HDR, modo de jogo ou 120 Hz)</string>
 </resources>

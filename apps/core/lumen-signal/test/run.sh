@@ -2,6 +2,8 @@
 # lumen-signal host tests: bash apps/core/lumen-signal/test/run.sh
 #  1. SignalTest: formatting (3840×2160 @ 60 Hz), judder line, the button's states, the HAL budget, row hiding, items,
 #     the place (title safe, below the header, smaller than before), light and dark from the Lumen 2.0 palette;
+#     OkHoldTest: holding OK on a card (a short press passes once and unchanged, a held one opens the panel, timing
+#     edges, the full panel's own OK, nothing taken without a card), PanelToggle open and fold;
 #  2. check_signal.py: texts in English and Russian, per-model data (signal.tsv), recipes, readers without banned calls;
 #  3. hdmirx_bridge_test.sh + HdmiRxTest + check_hdmirx.py: the HDMI receiver bridge on a fake root with the real Z9X
 #     and Z9X HB captures, the parser, the refresh and stale rules, the pinned card, and that the bridge only ever reads
@@ -16,10 +18,12 @@ S="$HERE/src/org/lumen/signal"
   "$S/SignalItem.java" "$S/SignalValues.java" "$S/SignalReader.java" "$S/SignalBudget.java" "$S/PanelMode.java" \
   "$S/PanelToggle.java" "$S/Judder.java" "$S/SignalFormat.java" "$S/SignalText.java" "$S/SignalSheet.java" \
   "$S/RowTone.java" "$S/SignalItems.java" "$S/SignalLook.java" "$S/ReadSpeed.java" "$S/SignalPlace.java" \
-  "$S/HdmiRxInfo.java" "$S/FormatWatch.java" "$S/SignalRefresh.java" \
-  "$HERE/../lumen-ui/src/org/lumen/ui/Palette.java" "$HERE/test/SignalTest.java" "$HERE/test/HdmiRxTest.java"
+  "$S/HdmiRxInfo.java" "$S/FormatWatch.java" "$S/SignalRefresh.java" "$S/OkHold.java" \
+  "$HERE/../lumen-ui/src/org/lumen/ui/Palette.java" "$HERE/test/SignalTest.java" "$HERE/test/HdmiRxTest.java" \
+  "$HERE/test/OkHoldTest.java"
 bad=0
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.signal.SignalTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.signal.OkHoldTest || bad=1
 bash "$HERE/test/hdmirx_bridge_test.sh" "$OUT/bridge_info.txt" "$OUT/bridge_info_hb.txt" || bad=1
 "$JAVA_HOME/bin/java" -Dfixture="$HERE/test/fixtures/z9x_hdmirx_ps5_4k60.txt" -Dbridge.out="$OUT/bridge_info.txt" \
   -Dhb.fixture="$HERE/test/fixtures/hb_hdmirx_yuv420_4k60.txt" -Dhb.bridge.out="$OUT/bridge_info_hb.txt" \

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Duvar rengine uyum</string>
+    <string name="lumen_wallcolor_desc">Renklerin daha doğru olması için görüntü renklerini duvarınızın rengine uyarlar.</string>
+    <string name="lumen_wallcolor_desc_ambient">En iyi sonuç için görüntü en yüksek parlaklığa çıkar ve otomatik parlaklık kapanır.</string>
+    <string name="lumen_wallcolor_start">Başlat</string>
+    <string name="lumen_wallcolor_reset">Orijinal renklere dön</string>
+    <string name="lumen_wallcolor_running">Duvar rengine uyarlanıyor</string>
+    <string name="lumen_wallcolor_matched">Uyarlanmış renkler</string>
+    <string name="lumen_wallcolor_original">Orijinal renkler</string>
+    <string name="lumen_wallcolor_save_title">Uyarlanmış renkler kalsın mı?</string>
+    <string name="lumen_wallcolor_save_desc">Uyarlanmış renkler bu duvarın rengine en iyi uyan renklerdir.</string>
+    <string name="lumen_wallcolor_fail_camera">Kamera başlamadı. Tekrar deneyin.</string>
+    <string name="lumen_wallcolor_fail_start">Uyum başlatılamadı. Tekrarlarsa bir sorun raporu gönderin.</string>
+    <string name="lumen_wallcolor_fail_distance">Uyum başarısız. Duvara olan mesafeyi veya projektörün açısını değiştirin.</string>
+    <string name="lumen_wallcolor_fail_light">Uyum başarısız. Odadaki ışık değişti. Sabit ışıkta tekrar deneyin.</string>
+    <string name="lumen_wallcolor_fail_custom">Özel renk modunda kullanılamaz.</string>
+    <string name="lumen_wallcolor_fail_performance">Performans modunda kullanılamaz.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Otomatik parlaklığı kapatıp tekrar deneyin.</string>
+    <string name="lumen_wallcolor_fail_3d">3D modunda kullanılamaz.</string>
+    <string name="lumen_wallcolor_fail_big_screen">Dev ekran modunda yalnızca elle trapez düzeltme kullanılabilir.</string>
+    <string name="lumen_wallcolor_fail_range">Uyum başarısız. Duvar rengi uyarlanabilir aralığın dışında.</string>
+    <string name="lumen_wallcolor_fail_not_started">Projektör uyumu başlatmadı. Tekrar deneyin.</string>
+</resources>

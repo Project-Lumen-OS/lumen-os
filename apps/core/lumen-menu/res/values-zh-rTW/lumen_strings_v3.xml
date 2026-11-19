@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">動態色調映射</string>
     <string name="lumen_gm_chip_hz">%1$d Hz</string>
     <string name="lumen_m_panel_speed_top_note">極速：梯形校正已關閉</string>
-    <string name="lumen_m_ok">確定</string>
     <string name="lumen_m_cancel">取消</string>
     <string name="lumen_m_panel_boost_press_again">再按一次 → 進入 Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">再按一次 ← 退出 Boost</string>

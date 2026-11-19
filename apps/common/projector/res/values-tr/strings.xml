@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Projektör</string>
     <string name="version_line">Sürüm %1$s</string>
-    <string name="sec_focus">Odak</string>
-    <string name="sec_keystone">Yamuk düzeltme</string>
     <string name="sec_auto">Otomasyon</string>
-    <string name="sec_keys">Kumanda tuşları</string>
     <string name="sec_diag">Tanılama</string>
-    <string name="act_af_now">Şimdi odakla</string>
     <string name="act_manual_focus">Manuel odak</string>
     <string name="act_kst_now">Şimdi yamuk düzelt</string>
-    <string name="act_fit_now">Şimdi ekrana sığdır</string>
     <string name="act_refresh">Yenile</string>
     <string name="tg_power_on_af">Açılışta otomatik odak</string>
     <string name="tg_power_on_ak">Açılışta otomatik yamuk düzeltme</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Taşıdıktan sonra yamuk düzeltme</string>
     <string name="tg_curtain">Ekrana sığdır</string>
     <string name="tg_obstacle">Engelden kaçınma</string>
-    <string name="val_on">Açık</string>
-    <string name="val_off">Kapalı</string>
-    <string name="val_unknown">Veri yok</string>
-    <string name="val_not_ready">Projektör hazır değil</string>
     <string name="cancel">İptal</string>
     <string name="ok">Tamam</string>
     <string name="app_not_found">Bu tuş için uygulama bulunamadı</string>

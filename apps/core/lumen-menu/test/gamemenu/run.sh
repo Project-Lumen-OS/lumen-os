@@ -177,18 +177,12 @@ has "$GM" 'marked = sIo.isConsolePort(port);' "the user's console mark is not a 
 has "$CTL" 'boolean hint = consolePort || (snap != null && Boolean.TRUE.equals(snap.allm));' "ALLM is not a console hint"
 
 # ---- licences (CC BY 4.0 credit of the controller models and frames): every app that ships them shows the shared
-#      Licences screen GmLicences, in Projector settings, Help (an app with a SettingsActivity: Z9X, HB, Play 6) or,
-#      in an app without one (X50), from the menu's General page (profile settings.licences -> LicencesActivity)
-if [ -f "$SRC/SettingsActivity.java" ]; then
-  has "$SRC/SettingsActivity.java" 'actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));' \
-    "no Licences row"
-else
-  grep -qF '"settings.licences": {}' "$G/devices/${MENU_DEVICE:-horse_popular}/menu.json" \
-    || fail "no Licences row: no SettingsActivity and the profile has no settings.licences"
-  grep -qF 'android:name="org.lumen.projector.ui.LicencesActivity"' "$HERE/AndroidManifest.xml" \
-    || fail "no Licences row: the app does not declare org.lumen.projector.ui.LicencesActivity"
-  grep -rqF 'return LicencesActivity.open(app);' "$HERE/src" || fail "no Licences row: the app never opens LicencesActivity"
-fi
+#      Licences screen GmLicences from the menu's General page (profile settings.licences -> LicencesActivity)
+grep -qF '"settings.licences": {}' "$G/devices/${MENU_DEVICE:-horse_popular}/menu.json" \
+  || fail "no Licences row: the profile has no settings.licences"
+grep -qF 'android:name="org.lumen.projector.ui.LicencesActivity"' "$HERE/AndroidManifest.xml" \
+  || fail "no Licences row: the app does not declare org.lumen.projector.ui.LicencesActivity"
+grep -rqF 'return LicencesActivity.open(app);' "$HERE/src" || fail "no Licences row: the app never opens LicencesActivity"
 has "$SRC/ui/LicencesActivity.java" 'AlertDialog d = GmLicences.open(this);' "the Licences screen does not show GmLicences"
 has "$SRC/ui/LicencesActivity.java" 'd.setOnDismissListener(x -> finish());' "the Licences screen stays after its dialog"
 L="$SRC/panel/GmLicences.java"

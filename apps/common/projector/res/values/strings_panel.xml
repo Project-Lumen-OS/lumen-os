@@ -3,12 +3,10 @@
      values-<lang>/strings_panel.xml. Prefix every name with "panel_".
      Stock XGIMI has no English/Russian texts for these items (stock spec 1.4): all wording is ours. -->
 <resources>
-    <string name="panel_placeholder" translatable="false">panel</string>
 
     <string name="panel_title">Quick settings</string>
 
     <!-- section headers -->
-    <string name="panel_sec_image_correction">Image correction</string>
     <string name="panel_sec_picture">Picture</string>
     <string name="panel_sec_game">Game (HDMI)</string>
     <string name="panel_sec_sound">Sound</string>
@@ -30,14 +28,6 @@
     <string name="panel_reset">Reset</string>
     <string name="panel_turn_on">Turn on</string>
     <string name="panel_turn_off">Turn off</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d min</item>
-        <item quantity="other">%d min</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d hour</item>
-        <item quantity="other">%d hours</item>
-    </plurals>
 
     <!-- image correction -->
     <string name="panel_ak_now">Auto keystone now</string>
@@ -59,14 +49,12 @@
 
     <!-- manual keystone card -->
     <string name="panel_kst_manual">Manual keystone</string>
-    <string name="panel_kst_hint">Arrows: move corner · OK: next corner · Back: done</string>
     <string name="panel_kst_wait">Reading the corners…</string>
     <string name="panel_kst_corner_tl">Top left</string>
     <string name="panel_kst_corner_tr">Top right</string>
     <string name="panel_kst_corner_br">Bottom right</string>
     <string name="panel_kst_corner_bl">Bottom left</string>
     <string name="panel_kst_limit">This corner cannot move further</string>
-    <string name="panel_kst_unavailable">Manual keystone is not available right now</string>
     <string name="panel_kst_game_mode">Keystone is off in the top-speed game mode</string>
 
     <!-- projection mode -->
@@ -75,9 +63,7 @@
     <string name="panel_proj_table">Table</string>
     <string name="panel_proj_ceiling">Ceiling</string>
     <string name="panel_proj_rear">Rear projection</string>
-    <string name="panel_proj_front_table">Front, table</string>
     <string name="panel_proj_front_ceiling">Front, ceiling</string>
-    <string name="panel_proj_rear_table">Rear, table</string>
     <string name="panel_proj_rear_ceiling">Rear, ceiling</string>
     <string name="panel_proj_confirm_flip">The picture will be flipped. Continue?</string>
     <string name="panel_proj_confirm_ceiling">Switch to ceiling mounting? The picture will be flipped and some functions, such as real-time keystone, will not be available.</string>
@@ -95,7 +81,6 @@
     <string name="panel_tileval_pm_ai">AI picture</string>
     <string name="panel_tileval_pm_color_accuracy">Color accuracy</string>
     <string name="panel_tileval_pm_performance">Performance</string>
-    <string name="panel_tileval_sound_ai">AI sound</string>
     <string name="panel_pm_performance_msg">Make sure the vents are not blocked and the room is not warmer than 25 °C. Do not use this mode for a long time.</string>
     <string name="panel_lamp">Brightness</string>
     <string name="panel_boost">Boost</string>
@@ -106,15 +91,11 @@
     <string name="panel_ultra120_3d">Not available in 3D</string>
     <string name="panel_ultra120_hdmi">Not available for an HDMI input. Use the game mode</string>
     <string name="panel_ultra120_refused">Ultra 120 Hz is not available for this content</string>
-    <string name="panel_ultra120_unverified">Not yet tested on this projector.</string>
     <string name="panel_game_hdmi_only">Available only while an HDMI input is shown</string>
-    <string name="panel_picture_settings">Picture settings</string>
     <string name="panel_pq_brightness">Brightness</string>
     <string name="panel_pq_contrast">Contrast</string>
     <string name="panel_pq_saturation">Saturation</string>
     <string name="panel_pq_sharpness">Sharpness</string>
-    <string name="panel_pq_blocked_ai">Basic settings are not available in the AI picture mode</string>
-    <string name="panel_pq_blocked_performance">Basic settings are not available in the Performance mode</string>
     <string name="panel_ct_blocked_office">Color temperature is not available in the Office mode</string>
     <string name="panel_color_temp">Color temperature</string>
     <string name="panel_ct_d65" translatable="false">D65</string>
@@ -167,8 +148,6 @@
     <string name="eye_off_done">Eye protection is off</string>
     <string name="eye_bright_reduced">Short projection distance: brightness lowered automatically</string>
     <string name="eye_unavailable">Eye protection is not ready. Restart the projector and try again.</string>
-    <string name="panel_standby_off_after">Standby, then power off after</string>
-    <string name="panel_input">Input</string>
     <string name="panel_projector_settings">Projector settings</string>
     <string name="panel_all_settings">All settings</string>
 
@@ -188,11 +167,6 @@
     <string name="panel_eye_desc">The light is dimmed when someone is in front of the lens.</string>
     <!-- Lumen OS 1.0.2: 3D on the Picture page (display.ThreeD; the stock 3D modes) -->
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Side by side</string>
-    <string name="panel_3d_tb">Top and bottom</string>
-    <string name="panel_3d_sbs_2d">Side by side as 2D</string>
-    <string name="panel_3d_tb_2d">Top and bottom as 2D</string>
-    <string name="panel_3d_summary">While a video plays. 3D needs active DLP-Link glasses; “as 2D” shows a 3D file flat, without glasses.</string>
     <string name="panel_3d_need_video">3D works while a video plays: start the video first</string>
     <string name="panel_3d_not_now">3D is not available now (HDR video, game mode or 120 Hz)</string>
 </resources>

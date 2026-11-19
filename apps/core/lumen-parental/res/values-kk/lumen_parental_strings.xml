@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Ата-ана бақылауы</string>
+    <string name="lumen_lp_intro">Балалар не аша алатынын және қанша уақыт көретінін шектеңіз.</string>
+    <string name="lumen_lp_lock">Балалар құлпы</string>
+    <string name="lumen_lp_lock_desc">Қосулы болса, бақылау аясын, көру уақытын және басқасын орнатуға болады</string>
+    <string name="lumen_lp_lock_off_title">Балалар құлпын өшіру керек пе?</string>
+    <string name="lumen_lp_lock_off_text">Уақыт шектеулері мен қосқандағы құпия сөз жұмыс істемейді. Ата-ана параметрлері құпия сөзсіз ашылады.</string>
+    <string name="lumen_lp_turn_off">Өшіру</string>
+    <string name="lumen_lp_cancel">Бас тарту</string>
+    <string name="lumen_lp_child_mode">Балалар режимі</string>
+    <string name="lumen_lp_child_apps">Балалар режимінің қолданбалары</string>
+    <string name="lumen_lp_child_apps_count">Таңдалды: %1$d</string>
+    <string name="lumen_lp_range">Бақылау аясы</string>
+    <string name="lumen_lp_range_child">Тек балалар режимі</string>
+    <string name="lumen_lp_range_global">Барлық жерде</string>
+    <string name="lumen_lp_session">Бір реттік уақыт</string>
+    <string name="lumen_lp_session_desc">Одан кейін 10 минут үзіліс</string>
+    <string name="lumen_lp_daily">Күндік уақыт</string>
+    <string name="lumen_lp_no_limit">Шектеусіз</string>
+    <string name="lumen_lp_minutes">%1$d мин</string>
+    <string name="lumen_lp_hours">%1$s сағ</string>
+    <string name="lumen_lp_boot_pin">Қосқанда құпия сөз</string>
+    <string name="lumen_lp_boot_child">Қосқанда балалар режимі</string>
+    <string name="lumen_lp_change_pin">Құпия сөзді өзгерту</string>
+    <string name="lumen_lp_eye">Көзді қорғау</string>
+    <string name="lumen_lp_eye_desc">Көзді қорғау проектор параметрлерінде реттеледі</string>
+    <string name="lumen_lp_pin_enter">Балалар құлпының құпия сөзін енгізіңіз</string>
+    <string name="lumen_lp_pin_hint">Пульттегі көрсеткі түймелерін басыңыз</string>
+    <string name="lumen_lp_pin_set">Балалар құлпының құпия сөзін орнатыңыз</string>
+    <string name="lumen_lp_pin_again">Құпия сөзді қайта енгізіңіз</string>
+    <string name="lumen_lp_pin_mismatch">Құпия сөздер сәйкес емес. Құпия сөзді қайта орнатыңыз</string>
+    <string name="lumen_lp_pin_wrong">Құпия сөз қате</string>
+    <string name="lumen_lp_pin_forgot">Құпия сөзді ұмыттыңыз ба? OK басыңыз</string>
+    <string name="lumen_lp_quiz">%1$d × %2$d неше болады?</string>
+    <string name="lumen_lp_quiz_wrong">Қате. Міне басқа сұрақ</string>
+    <string name="lumen_lp_rest_title">Демалатын уақыт</string>
+    <string name="lumen_lp_rest_session">Сеанс уақыты бітті. 10 минут демалыңыз</string>
+    <string name="lumen_lp_rest_daily">Бүгінгі көру уақыты бітті</string>
+    <string name="lumen_lp_rest_unlock">Құлыпты ашу</string>
+    <string name="lumen_lp_on">Қосулы</string>
+    <string name="lumen_lp_off">Өшірулі</string>
+</resources>

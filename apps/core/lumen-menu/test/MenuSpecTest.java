@@ -76,9 +76,12 @@ public final class MenuSpecTest {
                     "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuLabels.java")), StandardCharsets.UTF_8);
             int fs = labels.indexOf("static int optionFormat(");
             String formats = fs < 0 ? "" : labels.substring(fs, labels.indexOf("\n    }\n", fs));
+            int os = labels.indexOf("static boolean ownLabels(");
+            String own = os < 0 ? "" : labels.substring(os, labels.indexOf("\n    }\n", os));
             for (FeatureId id : p.features()) {
                 for (String o : p.options(id)) check(labels.contains("case \"" + id + "|" + o + "\":")
-                                || o.matches("[0-9]{1,6}") && formats.contains("case \"" + id + "\":"),
+                                || o.matches("[0-9]{1,6}") && formats.contains("case \"" + id + "\":")
+                                || o.matches("[a-z]|[0-9]{1,2}") && own.contains("case \"" + id + "\": return true;"),
                         dev + ": no label for " + id + " option " + o);
                 FeatureKind kind = id.kind;
                 if (kind != FeatureKind.TILE && FeatureId.LAMP != id && FeatureId.PICTURE_PQ != id) {
@@ -96,6 +99,35 @@ public final class MenuSpecTest {
                     check(headerLabels.contains("case \"" + g.header + "\":"), dev + ": no text for the header " + g.header);
                 }
             }
+            // 2026-11-19: the developer tools are one page of their own, the last of All settings (as on Android),
+            // never rows of General or another page, a tile or a popup; the page has its title and its rail icon
+            MenuSpec dm = MenuSpec.of(p);
+            List<FeatureId> devRows = new ArrayList<>();
+            for (FeatureId d : new FeatureId[]{FeatureId.SIGNAL_PANEL, FeatureId.SENSORS_PANEL, FeatureId.SIGNAL_PIN,
+                    FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS}) {
+                if (p.has(d)) devRows.add(d);
+            }
+            check(dm.rowsOf(MenuSpec.DEVELOPER).equals(devRows),
+                    dev + ": For developers rows " + dm.rowsOf(MenuSpec.DEVELOPER) + ", want " + devRows);
+            String lastPage = dm.allSettings.get(dm.allSettings.size() - 1);
+            check(devRows.isEmpty() ? !dm.allSettings.contains(MenuSpec.DEVELOPER) : MenuSpec.DEVELOPER.equals(lastPage),
+                    dev + ": For developers is not the last page of All settings " + dm.allSettings);
+            for (FeatureId d : devRows) {
+                check(MenuSpec.DEVELOPER.equals(MenuSpec.sectionOf(d)), dev + ": " + d + " is a row of " + MenuSpec.sectionOf(d));
+                for (String sec : dm.sections.keySet()) {
+                    check(MenuSpec.DEVELOPER.equals(sec) || !dm.rowsOf(sec).contains(d), dev + ": " + d + " also on page " + sec);
+                }
+                check(!dm.hasTile(d.id), dev + ": developer row " + d + " is a tile of the card");
+            }
+            check(!dm.hasTile(MenuSpec.DEVELOPER) && MenuSpec.allSettingsOnly(MenuSpec.DEVELOPER)
+                            && MenuSpec.allSettingsOnly(MenuSpec.GENERAL) && !MenuSpec.allSettingsOnly(MenuSpec.PICTURE),
+                    dev + ": For developers is a tile or a popup");
+            int ss = labels.indexOf("static int section(");
+            String sectionLabels = ss < 0 ? "" : labels.substring(ss, labels.indexOf("\n    }\n", ss));
+            check(sectionLabels.contains("case \"developer\": return R.string.lumen_m_hdr_developer;")
+                            && labels.contains("case \"developer\": return R.drawable.lumen_qpd_ic_dev;")
+                            && Files.isRegularFile(root.resolve("apps/core/lumen-menu/res/drawable/lumen_qpd_ic_dev.xml")),
+                    dev + ": For developers has no page title or rail icon");
             // x50-iris-quick: the slider tiles of the card are the brightness slider, then the iris right under it, each
             // only where the profile has its feature (model data only); the iris steps through the profile's options in
             // their stock order, one step per option, and a step and its token map both ways (the card slider and the
@@ -221,6 +253,7 @@ public final class MenuSpecTest {
             check(m.sections.isEmpty() && m.rows.isEmpty(), "broken profile has a menu: " + b);
         }
         stockOrders();
+        hotspotProfile(root);
         // game_menu.sound: the default three without it, the named list with it (X50: five)
         String gs = "{\"schema\": 1, \"device\": \"x\", \"model\": \"m\", \"adapter\": \"a\", \"features\": {}, \"keys\": {\"gear_short\": \"quick_menu\", \"gear_long\": \"none\"}, \"game_menu\": {\"enabled\": true, \"items\": [\"lat\", \"snd\"], %s\"themes\": [], \"cec_detect\": false}}";
         MenuProfile g3 = MenuProfile.parse(String.format(gs, ""));
@@ -288,8 +321,51 @@ public final class MenuSpecTest {
                 "no iris in the profile: the brightness slider only");
         check(!MenuSpec.isSliderTile("picture.mode") && !MenuSpec.isSliderTile("picture") && MenuSpec.isSliderTile("lamp"),
                 "only the registered features are slider tiles");
+        moduleRows(root);
         System.out.println("menu spec: " + pass + " passed, " + fail + " failed");
         System.exit(fail == 0 && pass > 0 ? 0 : 1);
+    }
+
+    /**
+     * The key sounds, colour vision and the focus picture are the menu's own rows on every model whose stock tree has
+     * them: Android settings through lumen-system with a read back, the picture from the profile hint.
+     */
+    static void moduleRows(Path root) throws Exception {
+        check(MenuSpec.MODULE_SETTINGS.contains(FeatureId.SOUND_KEY_TONE)
+                && MenuSpec.MODULE_SETTINGS.contains(FeatureId.SETTINGS_COLOUR_VISION)
+                && MenuSpec.MODULE_INFO.contains(FeatureId.FOCUS_GUIDE) && MenuSpec.module(FeatureId.FOCUS_GUIDE),
+                "key sounds, colour vision and the focus picture are module rows");
+        check(!MenuSpec.MODULE_SETTINGS.contains(FeatureId.FOCUS_GUIDE) && !MenuSpec.MODULE_INFO.contains(FeatureId.SOUND_KEY_TONE),
+                "the focus picture takes no value, the key sounds are a setting");
+        String ms = new String(Files.readAllBytes(root.resolve(
+                "apps/core/lumen-menu/src/org/lumen/projector/panel/ModuleScreens.java")), StandardCharsets.UTF_8);
+        check(ms.contains("if (f == FeatureId.SOUND_KEY_TONE) return KeyTone.on(c) ? ON : OFF;")
+                && ms.contains("if (f == FeatureId.SETTINGS_COLOUR_VISION) return ColourVision.get(c);"),
+                "module rows: key sounds and colour vision read from lumen-system");
+        check(ms.contains("            KeyTone.set(c, ON.equals(value));\n            return KeyTone.on(c) == ON.equals(value);")
+                && ms.contains("return ColourVision.set(c, value) && value.equals(ColourVision.get(c));"),
+                "module rows: every write reads back");
+        check(ms.contains("if (f == FeatureId.SOUND_KEY_TONE || f == FeatureId.SETTINGS_COLOUR_VISION) return true;")
+                && ms.contains("if (MenuSpec.MODULE_INFO.contains(f)) return true;"),
+                "module rows: shown wherever the profile names them");
+        check(MenuSpec.MODULE_SCREENS.contains(FeatureId.SETTINGS_SCREENSAVER_NOW)
+                && MenuSpec.MODULE_SETTINGS.contains(FeatureId.SETTINGS_SCREENSAVER_DELAY), "the screensaver rows are module rows");
+        check(ms.contains("if (f == FeatureId.SETTINGS_SCREENSAVER_NOW) return ScreensaverStart.now(c);")
+                && ms.contains("if (f == FeatureId.SETTINGS_SCREENSAVER_DELAY) return ScreensaverDelay.get(c);")
+                && ms.contains("            return ScreensaverDelay.set(c, value);"), "screensaver rows: lumen-system start, read, write with read back");
+        // stock trees (gsi-stock analysis): screen_saver_simple on Z9X, HB, X50, X50 Max, RS30, Play 6, not
+        // TITAN; the Z9X and HB keep their own screensaver page in Projector settings
+        String[][] saver = {{"g0111", "1"}, {"g0100", "1"}, {"g0155", "1"}, {"dragon_healthy", "1"}, {"h0062", "0"},
+                {"h0063", "0"}, {"horse_popular", "0"}, {"goat_elegant", "0"}};
+        for (String[] d : saver) {
+            MenuProfile p = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/" + d[0] + "/menu.json")),
+                    StandardCharsets.UTF_8));
+            boolean has = p.features().contains(FeatureId.SETTINGS_SCREENSAVER_NOW) && p.features().contains(FeatureId.SETTINGS_SCREENSAVER_DELAY);
+            check(has == "1".equals(d[1]), d[0] + ": screensaver rows only where the stock tree has them");
+            if (has) check(p.options(FeatureId.SETTINGS_SCREENSAVER_DELAY).equals(java.util.Arrays.asList("never", "m1", "m5", "m10", "m30", "m60")),
+                    d[0] + ": the stock start after list");
+            check(p.features().contains(FeatureId.SETTINGS_TEMPERATURE), d[0] + ": the system temperature row (sys_tempe, every tree)");
+        }
     }
 
     /**
@@ -414,6 +490,48 @@ public final class MenuSpecTest {
         String keystoneLamp = ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"lamp\"]}]}, "
                 + ok.substring(", \"sections\": {".length());
         check(!MenuProfile.parse(String.format(base, "", keystoneLamp)).ok(), "stock page: the light level in another section accepted");
+    }
+
+    /**
+     * The Network popup (owner variant A, 2026-11-19): Wi-Fi, a line, the four stock hotspot rows, opened by the
+     * network tile and its round button; a profile names all five rows or none, with the network tile, and
+     * network.hotspot carries the default name and the vendor AP interface. Play 6 has none until a live check.
+     */
+    private static void hotspotProfile(Path root) throws java.io.IOException {
+        MenuProfile z = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/horse_popular/menu.json")),
+                StandardCharsets.UTF_8));
+        MenuSpec m = MenuSpec.of(z);
+        check(m.popupRowsOf(MenuSpec.NETWORK).equals(java.util.Arrays.asList(FeatureId.NETWORK_WIFI, FeatureId.NETWORK_HOTSPOT,
+                FeatureId.NETWORK_HOTSPOT_NAME, FeatureId.NETWORK_HOTSPOT_PASSWORD, FeatureId.NETWORK_HOTSPOT_RESET)),
+                "hotspot: the Network popup is Wi-Fi, switch, name, password, restore " + m.popupRowsOf(MenuSpec.NETWORK));
+        List<MenuSpec.Group> g = m.popups.get(MenuSpec.NETWORK);
+        check(g != null && g.size() == 2 && g.get(0).header == null && MenuSpec.LINE.equals(g.get(1).header),
+                "hotspot: a line parts Wi-Fi from the hotspot rows");
+        check(!m.allSettings.contains(MenuSpec.NETWORK), "hotspot: no All settings category for the popup");
+        check("Lumen Z9X".equals(z.text(FeatureId.NETWORK_HOTSPOT, "name")) && "ap0".equals(z.text(FeatureId.NETWORK_HOTSPOT, "iface")),
+                "hotspot: the Z9X default name and AP interface");
+        for (FeatureId f : MenuSpec.HOTSPOT_ROWS) check(MenuSpec.module(f), "hotspot: " + f + " is a module row");
+        MenuProfile p6 = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/dragon_healthy/menu.json")),
+                StandardCharsets.UTF_8));
+        check(!p6.has(FeatureId.NETWORK_HOTSPOT) && !MenuSpec.of(p6).hasSection(MenuSpec.NETWORK),
+                "hotspot: Play 6 has no hotspot rows until its live check");
+        String head = "{\"schema\": 1, \"device\": \"x\", \"model\": \"m\", \"adapter\": \"a\", \"features\": {\"eye\": {\"options\": [\"off\",\"on\"]}, ";
+        String rows = "\"network.wifi\": {}, \"network.hotspot\": {\"name\": \"Lumen X\", \"iface\": \"ap0\"}, \"network.hotspot_name\": {}, "
+                + "\"network.hotspot_password\": {}, \"network.hotspot_reset\": {}";
+        String tail = "}, \"keys\": {\"gear_short\": \"quick_menu\", \"gear_long\": \"none\"}, \"game_menu\": {\"enabled\": false}}";
+        MenuProfile good = MenuProfile.parse(head + "\"network\": {}, " + rows + tail);
+        check(good.ok() && MenuSpec.of(good).hasSection(MenuSpec.NETWORK), "hotspot: the five rows with the tile are a profile " + good.problems());
+        check(!MenuProfile.parse(head + rows + tail).ok(), "hotspot: the rows without the network tile are refused");
+        check(!MenuProfile.parse(head + "\"network\": {}, " + rows.replace(", \"network.hotspot_reset\": {}", "") + tail).ok(),
+                "hotspot: four of the five rows are refused");
+        check(!MenuProfile.parse(head + "\"network\": {}, " + rows.replace("\"iface\": \"ap0\"", "\"iface\": \"ap\"") + tail).ok(),
+                "hotspot: an iface without its number is refused");
+        check(!MenuProfile.parse(head + "\"network\": {}, " + rows.replace("\"name\": \"Lumen X\", ", "") + tail).ok(),
+                "hotspot: no default name is refused");
+        check(!MenuProfile.parse(head + "\"network\": {}, " + rows.replace("Lumen X", "x".repeat(33)) + tail).ok(),
+                "hotspot: a default name over 32 bytes is refused");
+        check(!MenuProfile.parse(head + "\"network\": {\"name\": \"x\"}, " + rows + tail).ok(),
+                "hotspot: a name on another feature is refused");
     }
 
     /** (5) every row of a section tile is reached from the card once: its own tile or the popup, never both. */
@@ -544,6 +662,14 @@ public final class MenuSpecTest {
         StringBuilder b = new StringBuilder();
         try (java.nio.file.DirectoryStream<Path> d = Files.newDirectoryStream(adapter.getParent(), "*Rows.java")) {
             for (Path f : d) b.append(new String(Files.readAllBytes(f), StandardCharsets.UTF_8));
+        }
+        // the rows of the old Projector settings page every Z9X-family adapter delegates to (apps/common/projector)
+        String own = new String(Files.readAllBytes(adapter), StandardCharsets.UTF_8);
+        Path shared = adapter.getParent();
+        while (shared != null && !shared.endsWith("apps")) shared = shared.getParent();
+        if (own.contains("new SettingsRows(") && shared != null) {
+            Path rows = shared.resolve("common/projector/src/org/lumen/projector/panel/SettingsRows.java");
+            if (Files.isRegularFile(rows)) b.append(new String(Files.readAllBytes(rows), StandardCharsets.UTF_8));
         }
         return b.toString();
     }

@@ -40,6 +40,12 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
     public static final int HDR_SDR = 0, HDR_HDR10 = 1, HDR_DOLBY_VISION = 2, HDR_HLG = 4, HDR_HDR10_PLUS = 5, HDR_VIVID = 6;
     /** SetPEQ bands 1..13 (MTK basic-sound PEQ); our gain limits in 0.1 dB: boosts up to +6 dB, cuts down to -12 dB. */
     public static final int PEQ_BANDS = 13;
+    /** setPowerOnMode / getPowerOnMode values: start on mains (1) or stay in standby (0). */
+    static final int POWER_ON_MODE_ON = 1, POWER_ON_MODE_OFF = 0;
+    /** CreateNewCustomImageMode argument of the stock menu: the new mode copies the mode in use. */
+    static final int CUSTOM_FROM_CURRENT = -1;
+    /** The top senior colour strength the vendor takes. */
+    static final int ELDER_LEVEL_MAX = 2;
     public static final int PEQ_GAIN_MIN = -120, PEQ_GAIN_MAX = 60;
     /** Set to "ready" by the reader service of the vendor native-UI fifos (Z9X z9x_nui.sh); empty until then. */
     public static final String NUI_READY_PROP = "sys.z9x.nui";
@@ -245,6 +251,30 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
     /** Auto keystone at power-on. */
     public boolean getPowerOnAk() throws RemoteException { return wire.retBool(key(GET_POWER_ON_AK_FLAG)); }
     public void setPowerOnAk(boolean on) throws RemoteException { wire.bool(key(SAVE_POWER_ON_AK_FLAG), on); }
+
+    /**
+     * Power On Auto Boot (stock 通电自动开机): the projector starts when the mains comes on. Stock newsettings
+     * GmDeviceManager.setPowerOnMode(on ? 1 : 0) and getPowerOnMode() == 1; the vendor keeps it in its boot loader
+     * environment. Read with the menu, written only when the user flips the row (2026-11-19).
+     */
+    public boolean getPowerOnMode() throws RemoteException { return wire.retU8(key(GET_POWER_ON_MODE)) == POWER_ON_MODE_ON; }
+
+    public void setPowerOnMode(boolean on) throws RemoteException {
+        wire.u8(key(SET_POWER_ON_MODE), on ? POWER_ON_MODE_ON : POWER_ON_MODE_OFF);
+    }
+    // ------------------------------------------------------------------ wall colour adaptation (apps/core/lumen-wallcolor)
+    /**
+     * startAutoColor(): the vendor runs the stock wall colour adaptation (camera through V4L2, ac_server, the result
+     * as the display's colour point) and reports through focus event 11001. Stock calls setAEOnOff(false) first.
+     */
+    public boolean startAutoColor() throws RemoteException { return wire.retBool(key(START_AUTO_COLOR)); }
+
+    /** setAutoColorCalibration(): the stock use the matched colour of the result bar (libxgimi: select the effect after AC). */
+    public boolean useAutoColorMatched() throws RemoteException { return wire.retBool(key(SET_AUTO_COLOR_CALIBRATION)); }
+
+    /** setAutoColorDefault(): the stock use the original colour and the card's reset (select the effect before AC). */
+    public boolean useAutoColorOriginal() throws RemoteException { return wire.retBool(key(SET_AUTO_COLOR_DEFAULT)); }
+
     /** Real-time keystone (auto keystone after the projector was moved). */
     public boolean getMoveAk() throws RemoteException { return wire.retBool(key(GET_ACC_TRIGGER_AK)); }
     public boolean setMoveAk(boolean on) throws RemoteException { return wire.boolRetBool(key(SET_ACC_TRIGGER_AK), on); }
@@ -313,6 +343,25 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
         if (name == null || !name.matches("[A-Za-z0-9_]{1,31}")) throw new IllegalArgumentException("bad watchdog name: " + name);
     }
 
+    /** Senior colour switch: GmTvManager 179 getElderColorTone() (1 = on); only on the Z9X HB here. */
+    public int getElderColorTone() throws RemoteException { return wire.retI32(key(GET_ELDER_COLOR_TONE)); }
+    /** GmTvManager 180 setElderColorTone(on ? 1 : 0). */
+    public boolean setElderColorTone(boolean on) throws RemoteException {
+        return wire.i32RetBool(key(SET_ELDER_COLOR_TONE), on ? 1 : 0);
+    }
+    /** Senior colour strength: GmTvManager 181 getElderColorLevel() (0..2). */
+    public int getElderColorLevel() throws RemoteException { return wire.retI32(key(GET_ELDER_COLOR_LEVEL)); }
+    /** GmTvManager 182 setElderColorLevel(level), level 0..2 only (stock ElderlyColorDialog levelMap). */
+    public boolean setElderColorLevel(int level) throws RemoteException {
+        return wire.i32RetBool(key(SET_ELDER_COLOR_LEVEL), checkRange("senior colour", level, 0, ELDER_LEVEL_MAX));
+    }
+    /** Rainbow reduction switch: DisplayManager 203 getRainbowReductionStatus() (1 = on); Z9X HB G0148 only. */
+    public int getRainbowReductionStatus() throws RemoteException { return wire.retI32(key(GET_RAINBOW_REDUCTION_STATUS)); }
+    /** DisplayManager 205 setRainbowReductionStatus(on ? 1 : 0). */
+    public boolean setRainbowReductionStatus(boolean on) throws RemoteException {
+        return wire.i32RetBool(key(SET_RAINBOW_REDUCTION_STATUS), on ? 1 : 0);
+    }
+
     /** getSystemTemperature() -> deg C. */
     public int getSystemTemperature() throws RemoteException { return wire.retU8(key(GET_SYSTEM_TEMPERATURE)); }
 
@@ -332,6 +381,30 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
     public boolean setAiScene(int scene) throws RemoteException {
         return wire.i32I32RetBool(key(SET_PICTURE_MODE), WINDOW_MAIN,
                 checkRange("ai scene", scene, AI_SCENE_FIRST, AI_SCENE_LAST));
+    }
+    /**
+     * User picture modes (stock newsettings CustomizeDataManager, Z9X HB G0130 and the X50 family): TV 195
+     * CreateNewCustomImageMode(-1) makes one from the mode in use and returns its id (-1 = none).
+     */
+    public int createCustomPictureMode() throws RemoteException {
+        return wire.i32RetI32(key(CREATE_NEW_CUSTOM_IMAGE_MODE), CUSTOM_FROM_CURRENT);
+    }
+    /** TV 196 DeleteCustomImageMode(id): 1 = deleted (stock checks == 1). */
+    public int deleteCustomPictureMode(int id) throws RemoteException {
+        return wire.i32RetI32(key(DELETE_CUSTOM_IMAGE_MODE), checkRange("custom picture mode", id, 0, Integer.MAX_VALUE));
+    }
+    /** TV 198 GetCustomImageModeMapping(id): the stock mode a user mode is based on. */
+    public int customPictureBase(int id) throws RemoteException {
+        return wire.i32RetI32(key(GET_CUSTOM_IMAGE_MODE_MAPPING), checkRange("custom picture mode", id, 0, Integer.MAX_VALUE));
+    }
+    /** TV 197 SwitchCustomImageModeMapping(id, base): the user mode takes the stock mode {@code base} as its base. */
+    public int setCustomPictureBase(int id, int base) throws RemoteException {
+        return wire.i32I32RetI32(key(SWITCH_CUSTOM_IMAGE_MODE_MAPPING), checkRange("custom picture mode", id, 0, Integer.MAX_VALUE),
+                checkRange("custom base", base, 0, Integer.MAX_VALUE));
+    }
+    /** setPictureMode(0, id) of a user mode (an id CreateNewCustomImageMode gave, never a stock or AI id). */
+    public boolean setCustomPictureMode(int id) throws RemoteException {
+        return wire.i32I32RetBool(key(SET_CUSTOM_PICTURE_MODE), WINDOW_MAIN, checkRange("custom picture mode", id, 0, Integer.MAX_VALUE));
     }
     /** isVideoPlaying() where this HAL has it, else false (the AI video types then fall back to the default scene). */
     public boolean isVideoPlayingOrFalse() throws RemoteException { return has(IS_VIDEO_PLAYING) && isVideoPlaying(); }
@@ -544,10 +617,10 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
         return wire.i32RetI32(key(SET_DIGITAL_ZOOM_STEP), checkRange("digital zoom step", step, -DIGITAL_ZOOM_LIMIT, DIGITAL_ZOOM_LIMIT));
     }
 
-    // ------------------------------------------------------------------ fit to my screen size: sensor reads, rate-limited
+    // ------------------------------------------------------------------ motion sensor reads, rate-limited
     /** getTofDistance() -> mm, one active measurement (about 0.6 s). Never in a loop or a timer. */
     public int getTofDistance() throws RemoteException {
-        gate(GmpfGate.FIT_SCREEN, "getTofDistance");
+        gate(GmpfGate.MOTION, "getTofDistance");
         K k = key(GET_TOF_DISTANCE);
         TOF.take(wire.code(k) + " getTofDistance");
         return wire.retI32(k);
@@ -555,7 +628,7 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
 
     /** getMotionDetection() -> {acc x, y, z, gyro x, y, z, type}; axis order and signs UNVERIFIED for the pitch. */
     public int[] getMotionDetection() throws RemoteException {
-        gate(GmpfGate.FIT_SCREEN, "getMotionDetection");
+        gate(GmpfGate.MOTION, "getMotionDetection");
         K k = key(GET_MOTION_DETECTION);
         MOTION.take(wire.code(k) + " getMotionDetection");
         return wire.motion(k);

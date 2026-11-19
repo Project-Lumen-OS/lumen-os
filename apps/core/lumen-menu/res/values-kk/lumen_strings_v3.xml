@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">Динамикалық тон бейнелеу</string>
     <string name="lumen_gm_chip_hz">%1$d Гц</string>
     <string name="lumen_m_panel_speed_top_note">Турбо: трапецияны түзету өшірулі</string>
-    <string name="lumen_m_ok">Жарайды</string>
     <string name="lumen_m_cancel">Бас тарту</string>
     <string name="lumen_m_panel_boost_press_again">Boost үшін → түймесін тағы басыңыз</string>
     <string name="lumen_m_panel_boost_leave_press_again">Boost режимінен шығу үшін ← түймесін тағы басыңыз</string>

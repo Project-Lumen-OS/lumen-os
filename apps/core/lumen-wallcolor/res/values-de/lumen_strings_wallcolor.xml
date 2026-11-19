@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Wandfarbenanpassung</string>
+    <string name="lumen_wallcolor_desc">Passt die Bildfarben an die Farbe Ihrer Wand an, damit sie genauer wirken.</string>
+    <string name="lumen_wallcolor_desc_ambient">Für das beste Ergebnis wird das Bild maximal hell und die automatische Helligkeit schaltet sich aus.</string>
+    <string name="lumen_wallcolor_start">Starten</string>
+    <string name="lumen_wallcolor_reset">Originalfarben wiederherstellen</string>
+    <string name="lumen_wallcolor_running">Farben werden an die Wand angepasst</string>
+    <string name="lumen_wallcolor_matched">Angepasste Farben</string>
+    <string name="lumen_wallcolor_original">Originalfarben</string>
+    <string name="lumen_wallcolor_save_title">Angepasste Farben behalten?</string>
+    <string name="lumen_wallcolor_save_desc">Die angepassten Farben passen am besten zur Farbe dieser Wand.</string>
+    <string name="lumen_wallcolor_fail_camera">Die Kamera ist nicht gestartet. Bitte erneut versuchen.</string>
+    <string name="lumen_wallcolor_fail_start">Die Anpassung konnte nicht starten. Passiert das wieder, senden Sie einen Problembericht.</string>
+    <string name="lumen_wallcolor_fail_distance">Anpassung fehlgeschlagen. Ändern Sie den Abstand zur Wand oder den Winkel des Projektors.</string>
+    <string name="lumen_wallcolor_fail_light">Anpassung fehlgeschlagen. Das Raumlicht hat sich geändert. Bei gleichmäßigem Licht erneut versuchen.</string>
+    <string name="lumen_wallcolor_fail_custom">Im benutzerdefinierten Farbmodus nicht verfügbar.</string>
+    <string name="lumen_wallcolor_fail_performance">Im Leistungsmodus nicht verfügbar.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Schalten Sie die automatische Helligkeit aus und versuchen Sie es erneut.</string>
+    <string name="lumen_wallcolor_fail_3d">Im 3D Modus nicht verfügbar.</string>
+    <string name="lumen_wallcolor_fail_big_screen">Im Riesenbildmodus ist nur die manuelle Trapezkorrektur verfügbar.</string>
+    <string name="lumen_wallcolor_fail_range">Anpassung fehlgeschlagen. Die Wandfarbe liegt außerhalb des anpassbaren Bereichs.</string>
+    <string name="lumen_wallcolor_fail_not_started">Der Projektor hat die Anpassung nicht gestartet. Bitte erneut versuchen.</string>
+</resources>

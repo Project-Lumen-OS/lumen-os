@@ -27,7 +27,13 @@ public final class MenuSpec {
 
     /** Section ids (QuickPanel.SECTION_* use the same words). */
     public static final String KEYSTONE = "keystone", FOCUS = "focus", PICTURE = "picture", SOUND = "sound",
-            GAME = "game", PROJECTION = "projection", EYE = "eye", GENERAL = "general", LAMP = "lamp";
+            GAME = "game", PROJECTION = "projection", EYE = "eye", GENERAL = "general", LAMP = "lamp",
+            DEVELOPER = "developer";
+    /**
+     * The Network tile's popup (owner variant A, 2026-11-19): a section with the tile's own id, so the tile and its
+     * round button open it like any popup. No section tile, no All settings category.
+     */
+    public static final String NETWORK = "network";
     /** The theme button of the top row (2026-11-18, in place of voice search): Светлая, Тёмная, Авто. */
     public static final String THEME = "theme";
 
@@ -82,7 +88,7 @@ public final class MenuSpec {
     /**
      * The round buttons of the top row, left to right: a tile pushed off the card (below), the theme button (Светлая,
      * Тёмная, Авто), the gear (All settings). Network is a round button only on a model whose 3D tile took its card place. The signal panel is a
-     * developer feature (2026-11-18): no round button, one row in All settings, General, "developer".
+     * developer feature (2026-11-18): no round button, one row of the For developers page of All settings.
      */
     private static final Object[] ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};
     /**
@@ -124,23 +130,23 @@ public final class MenuSpec {
     private static final Object[][] SECTIONS = {
             {KEYSTONE, new Object[][]{                  // each profile names its stock order (sections.keystone)
                     {null, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL, FeatureId.ZOOM,
-                            FeatureId.ZOOM_DIGITAL, FeatureId.ZOOM_MOVE, FeatureId.KEYSTONE_FIT_SCREEN, FeatureId.KEYSTONE_ROTATION,
-                            FeatureId.ZOOM_MEMORY},
+                            FeatureId.ZOOM_DIGITAL, FeatureId.ZOOM_MOVE, FeatureId.KEYSTONE_ROTATION,
+                            FeatureId.KEYSTONE_WALL_COLOR, FeatureId.ZOOM_MEMORY},
                     {"auto_correction", FeatureId.KEYSTONE_REALTIME, FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_ON_MOVE,
                             FeatureId.KEYSTONE_OBSTACLE, FeatureId.KEYSTONE_CURTAIN},
                     {"more", FeatureId.KEYSTONE_RESTORE, FeatureId.KEYSTONE_ANGLE_H, FeatureId.KEYSTONE_ANGLE_V}}},
             {FOCUS, new Object[][]{
-                    {null, FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART, FeatureId.FOCUS_ON_MOVE,
-                            FeatureId.FOCUS_ON_POWER, FeatureId.FOCUS_GUIDE}}},
+                    {null, FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART,
+                            FeatureId.FOCUS_GUIDE}}},
             {LAMP, new Object[][]{{null, FeatureId.LAMP, FeatureId.BOOST}}},
             {PICTURE, new Object[][]{                   // stock image page: the iris under the light level, then the mode
-                    {null, FeatureId.PICTURE_IRIS, FeatureId.PICTURE_MODE, FeatureId.PICTURE_DV_SCREEN,
-                            FeatureId.PICTURE_SETTINGS, FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP,
+                    {null, FeatureId.PICTURE_IRIS, FeatureId.PICTURE_MODE, FeatureId.PICTURE_DV_SCREEN, FeatureId.PICTURE_CUSTOM_NEW,
+                            FeatureId.PICTURE_SETTINGS, FeatureId.PICTURE_CUSTOM_BASE, FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP,
                             FeatureId.PICTURE_MEMC, FeatureId.PICTURE_WB, FeatureId.PICTURE_GAMUT, FeatureId.PICTURE_COLOR_OPT,
                             FeatureId.PICTURE_CC, FeatureId.PICTURE_GAMMA, FeatureId.PICTURE_GAMMA_INDEX, FeatureId.PICTURE_HDR,
                             FeatureId.PICTURE_LOCAL_CONTRAST, FeatureId.PICTURE_DYNAMIC_CONTRAST, FeatureId.PICTURE_AI_CONTRAST,
                             FeatureId.PICTURE_DYNAMIC_BLACK, FeatureId.PICTURE_BLACK_TUNING, FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES,
-                            FeatureId.PICTURE_ULTRA120, FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET,
+                            FeatureId.PICTURE_ULTRA120, FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET, FeatureId.PICTURE_CUSTOM_DELETE,
                             FeatureId.PICTURE_RESET_ALL, FeatureId.PICTURE_STYLE_FILTER,
                             FeatureId.PICTURE_ANTI_RBE, FeatureId.PICTURE_3D},
                     {"hdmi", FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT}}},
@@ -151,14 +157,26 @@ public final class MenuSpec {
             {PROJECTION, new Object[][]{{null, FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR}}},
             {GAME, new Object[][]{{null, FeatureId.GAME_MODE, FeatureId.GAME_SPEED, FeatureId.GAME_ALLM}}},
             {EYE, new Object[][]{{null, FeatureId.EYE}}},
+            {NETWORK, new Object[][]{                   // stock Settings > Network: Wi-Fi, a line, the hotspot rows
+                    {null, FeatureId.NETWORK_WIFI},
+                    {LINE, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME, FeatureId.NETWORK_HOTSPOT_PASSWORD,
+                            FeatureId.NETWORK_HOTSPOT_RESET}}},
             {GENERAL, new Object[][]{
                     {null, FeatureId.LAMP_OFF, FeatureId.SETTINGS_SYSTEM, FeatureId.EYE_ELDER_COLOR,
-                            FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC,
-                            FeatureId.SETTINGS_HDMI, FeatureId.SETTINGS_COLOUR_VISION,
+                            FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_HIGH_ALTITUDE, FeatureId.SETTINGS_CEC,
+                            FeatureId.SETTINGS_HDMI, FeatureId.SETTINGS_COLOUR_VISION, FeatureId.SETTINGS_SERIAL,
+                            FeatureId.SETTINGS_PARENTAL,
                             FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER,
-                            FeatureId.SETTINGS_REMOTE, FeatureId.LAMP_ECO, FeatureId.SETTINGS_LAUNCHER,
-                            FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_LICENCES},
-                    {"developer", FeatureId.SIGNAL_PANEL, FeatureId.SIGNAL_PIN, FeatureId.SIGNAL_REFRESH}}},
+                            FeatureId.SETTINGS_REMOTE, FeatureId.SETTINGS_REMOTE_KEYS, FeatureId.LAMP_ECO,
+                            FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_STATS,
+                            FeatureId.SETTINGS_LICENCES},
+                    {"screensaver", FeatureId.SETTINGS_SCREENSAVER_NOW, FeatureId.SETTINGS_SCREENSAVER_DELAY},
+                    {"power", FeatureId.POWER_ON_AC, FeatureId.POWER_ON_MUSIC, FeatureId.POWER_BOOT_SOURCE},
+                    {"voice", FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK, FeatureId.VOICE_KEY}}},
+            // 2026-11-19: the developer tools are one page of their own, the last of All settings (as on Android),
+            // never rows of General, a section tile or a round button
+            {DEVELOPER, new Object[][]{{null, FeatureId.SIGNAL_PANEL, FeatureId.SENSORS_PANEL, FeatureId.SIGNAL_PIN,
+                    FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS}}},
     };
     /**
      * {section, row of another section}: a row a profile's stock order may also show on this section's page. The stock
@@ -177,14 +195,31 @@ public final class MenuSpec {
      * them like any feature, so a model without the row has none, and the adapter does not implement them.
      */
     public static final Set<FeatureId> MODULE_SCREENS = Collections.unmodifiableSet(EnumSet.of(FeatureId.SETTINGS_REPORT,
-            FeatureId.SIGNAL_PANEL));
+            FeatureId.SIGNAL_PANEL, FeatureId.SENSORS_PANEL, FeatureId.SETTINGS_SCREENSAVER_NOW,
+            FeatureId.KEYSTONE_WALL_COLOR, FeatureId.SETTINGS_PARENTAL, FeatureId.NETWORK_WIFI, FeatureId.NETWORK_HOTSPOT_NAME,
+            FeatureId.NETWORK_HOTSPOT_PASSWORD, FeatureId.NETWORK_HOTSPOT_RESET));
 
     /**
      * Settings of shared modules the menu reads and writes itself (ModuleScreens, no device adapter): a profile names
-     * them like any feature, the module decides whether the row is there on this model.
+     * them like any feature, the module decides whether the row is there on this model. The key sounds and colour
+     * vision are Android settings (lumen-system), the same on every projector whose stock tree has the row, and so is
+     * the hotspot switch (lumen-system Hotspot). The power-on melody is Lumen's own sound (lumen-audio BootSound), the
+     * same on every projector.
      */
     public static final Set<FeatureId> MODULE_SETTINGS = Collections.unmodifiableSet(EnumSet.of(FeatureId.SIGNAL_PIN,
-            FeatureId.SIGNAL_REFRESH));
+            FeatureId.SIGNAL_REFRESH, FeatureId.SOUND_KEY_TONE, FeatureId.SETTINGS_COLOUR_VISION,
+            FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT, FeatureId.POWER_ON_MUSIC));
+
+    /** The Network popup's rows: a profile names all of them or none (MenuProfile), with the Network tile. */
+    public static final Set<FeatureId> HOTSPOT_ROWS = Collections.unmodifiableSet(EnumSet.of(FeatureId.NETWORK_WIFI,
+            FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME, FeatureId.NETWORK_HOTSPOT_PASSWORD,
+            FeatureId.NETWORK_HOTSPOT_RESET));
+
+    /**
+     * Rows that only show the profile's own data (the focus page's remote picture: the profile hint), so no device
+     * adapter has a part in them.
+     */
+    public static final Set<FeatureId> MODULE_INFO = Collections.unmodifiableSet(EnumSet.of(FeatureId.FOCUS_GUIDE));
 
     /**
      * Module settings every projector has, so no profile names them: the quick menu editor offers them (the volume,
@@ -195,11 +230,17 @@ public final class MenuSpec {
 
     /** True for a module screen or setting: the menu handles it, the device adapter has no part in it. */
     public static boolean module(FeatureId f) {
-        return MODULE_SCREENS.contains(f) || MODULE_SETTINGS.contains(f) || EVERY_MODEL.contains(f);
+        return MODULE_SCREENS.contains(f) || MODULE_SETTINGS.contains(f) || MODULE_INFO.contains(f)
+                || EVERY_MODEL.contains(f);
     }
 
     /** All settings: the round category buttons, in this order. */
-    private static final String[] ALL_SETTINGS = {KEYSTONE, FOCUS, PICTURE, PROJECTION, SOUND, EYE, GENERAL};
+    private static final String[] ALL_SETTINGS = {KEYSTONE, FOCUS, PICTURE, PROJECTION, SOUND, EYE, GENERAL, DEVELOPER};
+
+    /** True for a section that is only a page of All settings (General, For developers): never a tile or a popup. */
+    public static boolean allSettingsOnly(String section) {
+        return GENERAL.equals(section) || DEVELOPER.equals(section);
+    }
     /**
      * Pages of the menu's own rows ({@link FeatureKind#PAGE}): {page, header-or-null, rows...} groups, in the stock
      * order of each page (newsettings image_mode_setting). A page is there when the profile names it and at least
@@ -207,6 +248,8 @@ public final class MenuSpec {
      * (MenuProfile). A page that holds pages is listed after them.
      */
     private static final Object[][] PAGES = {
+            {FeatureId.SETTINGS_SERIAL, new Object[][]{{null, FeatureId.SERIAL_SWITCH, FeatureId.SERIAL_ID_GROUP,
+                    FeatureId.SERIAL_ID_NUMBER, FeatureId.SERIAL_ACK_GROUP, FeatureId.SERIAL_ACK_ALL, FeatureId.SERIAL_MASTER}}},
             {FeatureId.PICTURE_WB2, new Object[][]{{null, FeatureId.PICTURE_WB2_RED_GAIN, FeatureId.PICTURE_WB2_GREEN_GAIN,
                     FeatureId.PICTURE_WB2_BLUE_GAIN, FeatureId.PICTURE_WB2_RED_OFFSET, FeatureId.PICTURE_WB2_GREEN_OFFSET,
                     FeatureId.PICTURE_WB2_BLUE_OFFSET, FeatureId.PICTURE_WB2_RESET}}},

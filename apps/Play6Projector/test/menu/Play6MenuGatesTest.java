@@ -2,6 +2,7 @@ package org.lumen.projector.panel;
 
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.FeatureKind;
+import org.lumen.menu.GeneralChoices;
 import org.lumen.menu.MenuProfile;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
@@ -167,13 +168,16 @@ public final class Play6MenuGatesTest {
             case SOUND_OUTPUT: return Play6MenuGates.outputKind(token) != null;
             case PROJECTION_MODE: return "auto".equals(token) || Play6MenuGates.putModeFor(token, 0) >= 0;
             case EYE: return "on".equals(token) || "off".equals(token);
+            // the shared settings rows (SettingsRows over Play6SettingsDevice, check_wiring.py): one HDMI input
+            case POWER_BOOT_SOURCE: return Arrays.asList(GeneralChoices.BOOT_ONE_HDMI).contains(token);
+            case VOICE_LANGUAGE: return Arrays.asList(GeneralChoices.VOICE).contains(token);
             default: return false;
         }
     }
 
     private static void tokens(MenuProfile p) {
         for (FeatureId f : p.features()) {
-            if (f.kind != FeatureKind.CHOICE) continue;
+            if (f.kind != FeatureKind.CHOICE || org.lumen.menu.MenuSpec.module(f)) continue;   // module settings: the menu writes them
             List<String> opts = p.options(f);
             check(!opts.isEmpty(), f + ": options");
             for (String o : opts) check(writable(f, o), f + ": the adapter has no wire for option " + o);

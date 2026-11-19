@@ -164,17 +164,5 @@ public final class GmpfClient extends GmpfBase<Integer> {
     //
     // (420 / 419 power-on sound: un-parked in Lumen OS 1.0.4, see the sound section.)
     //
-    // /**
-    //  * 106 startAutoColor() -> bool. Stock sequence (FS 2.8): IGmpf2 53 setAEOnOff(false) first
-    //  * (Gmpf2Client.disableAutoExposureForWallColor), then this. Never 99/101/102 (calibration).
-    //  */
-    // public boolean startWallColorAdaptation() throws RemoteException { return callRetBool(START_AUTO_COLOR); }
-    //
-    // /** 100 setAutoColorDefault() -> bool ("Default" button of the wall colour dialog). */
-    // public boolean resetWallColorAdaptation() throws RemoteException { return callRetBool(SET_AUTO_COLOR_DEFAULT); }
-    //
-    // /** 249 / 250: auto colour after AK (advanced switch only). TSV 250 W=writeBool R=. */
-    // public boolean getAutoColorAfterAk() throws RemoteException { return callRetBool(GET_PICTURE_ADJUST_AUTO_COLOR); }
-    //
-    // public void setAutoColorAfterAk(boolean on) throws RemoteException { callBool(SET_PICTURE_ADJUST_AUTO_COLOR, on); }
+    // (106 / 99 / 100 and IGmpf2 53, the wall colour adaptation: un-parked on 2026-11-19 into GmpfBase / Gmpf2Base.)
 }

@@ -29,9 +29,6 @@
     <string name="picker_empty">لم يتم العثور على مداخل HDMI</string>
     <string name="pref_auto_switch">التبديل إلى HDMI تلقائيًا عند توصيل جهاز</string>
     <string name="pref_return_home">الرجوع إلى الشاشة الرئيسية عند فصل المصدر</string>
-    <string name="pref_cec_otp">HDMI-CEC: التبديل إلى HDMI عندما يطلب الجهاز ذلك (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: التحكم في الجهاز باستخدام جهاز التحكم عن بُعد</string>
-    <string name="pref_cec_exit">HDMI-CEC: إعلام الجهاز عند الخروج من HDMI</string>
     <string name="pref_boot_source">المصدر عند التشغيل: %1$s</string>
     <string name="boot_source_home">الشاشة الرئيسية</string>
     <string name="pref_boot_source_note">إذا شغّل جهاز ما جهاز العرض عبر HDMI-CEC، يُفتح مدخله بدلًا من ذلك.</string>

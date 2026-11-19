@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Перемещение</string>
     <string name="lumen_qe_move_hint">Кружки двигаются только в верхнем ряду, плитки только между строками. Чтобы плитка стала кружком, смените её вид.</string>
     <string name="lumen_qe_put">Поставить сюда</string>
-    <string name="lumen_qe_cancel">Отменить</string>
     <string name="lumen_qe_full">Меню заполнено. Выберите вид поменьше или вид Список.</string>
     <string name="lumen_qe_list_full">Столько пунктов не помещается списком. Сначала уберите несколько.</string>
     <string name="lumen_qe_pinned">Эта кнопка всегда остаётся в меню.</string>

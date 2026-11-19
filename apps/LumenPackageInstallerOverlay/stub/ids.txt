@@ -1,0 +1,3 @@
+com.android.packageinstaller:id/guidance_breadcrumb = 0x0009009f
+com.android.packageinstaller:id/guidance_icon = 0x000900a2
+com.android.packageinstaller:id/guidance_title = 0x000900a3

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Controlo parental</string>
+    <string name="lumen_lp_intro">Limite o que as crianças podem abrir e quanto tempo veem.</string>
+    <string name="lumen_lp_lock">Bloqueio infantil</string>
+    <string name="lumen_lp_lock_desc">Ativo, pode definir o alcance, o tempo de visualização e mais</string>
+    <string name="lumen_lp_lock_off_title">Desativar o bloqueio infantil?</string>
+    <string name="lumen_lp_lock_off_text">Os limites de tempo e a palavra passe ao ligar deixam de funcionar. As definições parentais abrem sem palavra passe.</string>
+    <string name="lumen_lp_turn_off">Desativar</string>
+    <string name="lumen_lp_cancel">Cancelar</string>
+    <string name="lumen_lp_child_mode">Modo infantil</string>
+    <string name="lumen_lp_child_apps">Apps do modo infantil</string>
+    <string name="lumen_lp_child_apps_count">%1$d selecionadas</string>
+    <string name="lumen_lp_range">Alcance do controlo</string>
+    <string name="lumen_lp_range_child">Só modo infantil</string>
+    <string name="lumen_lp_range_global">Em todo o lado</string>
+    <string name="lumen_lp_session">Tempo por sessão</string>
+    <string name="lumen_lp_session_desc">Depois, 10 minutos de pausa</string>
+    <string name="lumen_lp_daily">Tempo por dia</string>
+    <string name="lumen_lp_no_limit">Sem limite</string>
+    <string name="lumen_lp_minutes">%1$d min</string>
+    <string name="lumen_lp_hours">%1$s h</string>
+    <string name="lumen_lp_boot_pin">Palavra passe ao ligar</string>
+    <string name="lumen_lp_boot_child">Modo infantil ao ligar</string>
+    <string name="lumen_lp_change_pin">Alterar palavra passe</string>
+    <string name="lumen_lp_eye">Proteção ocular</string>
+    <string name="lumen_lp_eye_desc">A proteção ocular define se nas definições do projetor</string>
+    <string name="lumen_lp_pin_enter">Introduza a palavra passe do bloqueio infantil</string>
+    <string name="lumen_lp_pin_hint">Prima os botões de seta do comando</string>
+    <string name="lumen_lp_pin_set">Defina a palavra passe do bloqueio infantil</string>
+    <string name="lumen_lp_pin_again">Introduza a palavra passe outra vez</string>
+    <string name="lumen_lp_pin_mismatch">As palavras passe são diferentes. Defina a palavra passe de novo</string>
+    <string name="lumen_lp_pin_wrong">Palavra passe errada</string>
+    <string name="lumen_lp_pin_forgot">Esqueceu a palavra passe? Prima OK</string>
+    <string name="lumen_lp_quiz">Quanto é %1$d × %2$d?</string>
+    <string name="lumen_lp_quiz_wrong">Não está certo. Eis outra pergunta</string>
+    <string name="lumen_lp_rest_title">Hora de uma pausa</string>
+    <string name="lumen_lp_rest_session">A sessão terminou. Descanse 10 minutos</string>
+    <string name="lumen_lp_rest_daily">O tempo de hoje terminou</string>
+    <string name="lumen_lp_rest_unlock">Desbloquear</string>
+    <string name="lumen_lp_on">Sim</string>
+    <string name="lumen_lp_off">Não</string>
+</resources>

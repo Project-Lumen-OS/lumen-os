@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Proiettore</string>
     <string name="version_line">Versione %1$s</string>
-    <string name="sec_focus">Messa a fuoco</string>
-    <string name="sec_keystone">Correzione trapezoidale</string>
     <string name="sec_auto">Automatismi</string>
-    <string name="sec_keys">Tasti del telecomando</string>
     <string name="sec_diag">Diagnostica</string>
-    <string name="act_af_now">Metti a fuoco ora</string>
     <string name="act_manual_focus">Messa a fuoco manuale</string>
     <string name="act_kst_now">Correggi trapezio ora</string>
-    <string name="act_fit_now">Adatta allo schermo ora</string>
     <string name="act_refresh">Aggiorna</string>
     <string name="tg_power_on_af">Autofocus all\'accensione</string>
     <string name="tg_power_on_ak">Trapezio auto all\'accensione</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Trapezio auto dopo lo spostamento</string>
     <string name="tg_curtain">Adatta allo schermo</string>
     <string name="tg_obstacle">Evita ostacoli</string>
-    <string name="val_on">Attivo</string>
-    <string name="val_off">Disattivato</string>
-    <string name="val_unknown">Nessun dato</string>
-    <string name="val_not_ready">Proiettore non pronto</string>
     <string name="cancel">Annulla</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Nessuna app trovata per questo tasto</string>

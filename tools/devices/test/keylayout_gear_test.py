@@ -91,7 +91,7 @@ def main():
         t = open(os.path.join(G, p), encoding="utf-8").read()
         if '<key keyCode="KEYCODE_%s" component="org.lumen.projector/.KeyReceiver" />' % GEAR_HOLD not in t:
             errs.append("%s: KEYCODE_%s is not routed to org.lumen.projector/.KeyReceiver" % (p, GEAR_HOLD))
-    for p in ["apps/common/projector/src/org/lumen/projector/Z9xKeys.java", "apps/ProjectorBase/src/org/lumen/projector/Z9xKeys.java"]:
+    for p in ["apps/common/projector/src/org/lumen/projector/Z9xKeys.java"]:
         if "static final int GEAR_HOLD = KeyEvent.KEYCODE_%s;" % GEAR_HOLD not in open(os.path.join(G, p), encoding="utf-8").read():
             errs.append("%s: Z9xKeys.GEAR_HOLD is not KEYCODE_%s" % (p, GEAR_HOLD))
     for d in RECEIVERS:

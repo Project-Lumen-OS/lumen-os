@@ -11,7 +11,6 @@ QP = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuFeatures.java")      
 QPS = [QP] + sorted(glob.glob(os.path.join(HB, "src/org/lumen/projector/panel/Hb*Rows.java")))   # and its sections
 GATES = os.path.join(HB, "src/org/lumen/projector/panel/HbMenuGates.java")
 OZ = os.path.join(HB, "src/org/lumen/projector/panel/OpticalZoomPanel.java")
-SA = os.path.join(HB, "src/org/lumen/projector/SettingsActivity.java")
 HAL = os.path.join(HB, "src/org/lumen/projector/Hal.java")
 if not os.path.exists(HAL):                       # the HB app takes Hal.java from its recipe base
     HAL = os.path.join(APPS, "ProjectorBase/src/org/lumen/projector/Hal.java")
@@ -124,10 +123,10 @@ for loc in LOCALES:
         ok(loc + " " + nm, m is not None and len(m.group(1).strip()) > 3)
     m = re.search(r'<string name="hb_str_blocked_usb">([^<]+)</string>', x)
     ok(loc + " usb text names USB", m is not None and "USB" in m.group(1))
-# ---- fit / obstacle coupling: the panel rows and SettingsActivity use only the coupled setters
+# ---- fit / obstacle coupling: the panel rows use only the coupled setters
 ok("menu obstacle switch coupled", "Hal.setObstacleAvoidCoupled(g, on)" in qp)
 ok("menu fit switch coupled", "Hal.setCurtainFitCoupled(g, on)" in qp)
-for name, path in [("menu", f) for f in QPS] + [("settings", SA)]:
+for name, path in [("menu", f) for f in QPS]:
     s = open(path, encoding="utf-8").read()
     ok(name + ": no direct 290 / 292 writes", re.search(r"\.set(CurtainFit|ObstacleAvoid)\(", s) is None)
 hal = open(HAL, encoding="utf-8").read()

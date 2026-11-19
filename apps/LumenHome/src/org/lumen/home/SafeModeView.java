@@ -2,8 +2,6 @@ package org.lumen.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.TypedValue;
@@ -14,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.lumen.home.data.AppSource;
 import org.lumen.home.data.HomeLoader;
 import org.lumen.home.proj.ProjectorBridge;
 
@@ -52,16 +51,13 @@ final class SafeModeView extends ScrollView {
         if (HomeLoader.classicAvailable(c)) {
             button(c, col, c.getString(R.string.safe_mode_classic), v -> ProjectorBridge.setLauncher(c, "classic"));
         }
-        PackageManager pm = c.getPackageManager();
-        List<ResolveInfo> l = new ArrayList<>(pm.queryIntentActivities(
-                new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER), 0));
+        List<AppSource.Entry> l = new ArrayList<>(AppSource.load(c).entries);
         Collator col2 = Collator.getInstance();
-        l.sort((a, b) -> col2.compare(String.valueOf(a.loadLabel(pm)), String.valueOf(b.loadLabel(pm))));
-        for (ResolveInfo ri : l) {
-            if (ri.activityInfo == null || c.getPackageName().equals(ri.activityInfo.packageName)) continue;
-            final Intent i = new Intent(Intent.ACTION_MAIN).setClassName(ri.activityInfo.packageName, ri.activityInfo.name)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            button(c, col, String.valueOf(ri.loadLabel(pm)), v -> Launch.start(c, i, "safe-mode app"));
+        l.sort((a, b) -> col2.compare(a.label, b.label));
+        for (AppSource.Entry a : l) {
+            if (!a.leanback || c.getPackageName().equals(a.cn.getPackageName())) continue;
+            final Intent i = new Intent(Intent.ACTION_MAIN).setComponent(a.cn).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            button(c, col, a.label, v -> Launch.start(c, i, "safe-mode app"));
         }
         first.requestFocus();
     }

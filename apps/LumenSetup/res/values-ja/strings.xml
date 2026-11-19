@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Wi-Fi をオンにしています…</string>
     <string name="net_none_found">ネットワークが見つかりません</string>
     <string name="net_add_manual">ネットワークを手動で追加</string>
-    <string name="net_other">その他のオプション</string>
     <string name="net_password_title">%1$s のパスワード</string>
     <string name="net_password_hint">パスワード</string>
     <string name="net_show_password">パスワードを表示</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">リモコン %1$s が見つかりました</string>
     <string name="remote_connected">リモコンが接続されました</string>
     <string name="remote_other">ほかのデバイス</string>
-    <string name="remote_skip_hint">後でクイックパネル（歯車ボタン）からペア設定することもできます。</string>
     <string name="google_title">Google でログイン</string>
     <string name="google_subtitle">ログインすると、Google Play からアプリをインストールしたり、定期購入を利用したりできます。</string>
     <string name="google_sign_in">ログイン</string>
@@ -100,7 +98,6 @@
     <string name="done_name">プロジェクター名</string>
     <string name="done_home">ホーム画面</string>
     <string name="done_stats">匿名の統計情報を送信</string>
-    <string name="done_stats_note">起動するたびと1日1回：モデル、バージョン、ビルド、アップデート情報、国、ランダムなインストール番号、シリアル番号（サーバーはハッシュのみ保存）。IP アドレスは保存されません。</string>
     <string name="done_start">開始</string>
     <string name="done_offline_hint">インターネットなし: Google へのログインとタイムゾーンの設定は、後で設定から行えます。</string>
     <string name="done_offline_hint_nogms">インターネットなし: タイムゾーンは後で設定から指定できます。</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">スマートフォンかパスワードが必要です</string>
     <string name="google_help_sub">Google から登録を求められたときは</string>
     <string name="done_stats_short">モデル、バージョン、国。IP アドレスは保存されません。</string>
+    <string name="theme_title">テーマ</string>
+    <string name="theme_subtitle">Lumen の見た目です。あとでクイックメニューから変更できます。</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="theme_auto">自動</string>
+    <string name="theme_auto_sub">日中はライト、日没後はダーク</string>
 </resources>

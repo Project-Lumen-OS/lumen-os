@@ -11,7 +11,6 @@
     <string name="lumen_qpd_theme_light">Ашық</string>
     <string name="lumen_qpd_theme_dark">Күңгірт</string>
     <string name="lumen_qpd_theme_auto">Авто</string>
-    <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Экранды қайталау</string>
     <string name="lumen_qpd_mirror_on">Экранды қайталау (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Қосылмас бұрын сұрау</string>

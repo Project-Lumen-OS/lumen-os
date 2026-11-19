@@ -110,7 +110,6 @@
     <string name="ch_updates">システム アップデート</string>
     <string name="n_available_body">開いてダウンロードとインストールを行います。</string>
     <string name="n_ready_title">再起動してアップデートを完了</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">このプロジェクターはまだインターネット経由でアップデートをインストールできません。1回限りの設定が済んでいません。パソコンから lumen-install でアップデートしてください。</string>
     <string name="blk_power">電源アダプターを接続してください。アップデートには数分かかります。</string>
     <string name="consent_title_recovery">アップデートをインストールしますか?</string>

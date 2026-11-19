@@ -11,7 +11,6 @@
     <string name="lumen_qpd_theme_light">浅色</string>
     <string name="lumen_qpd_theme_dark">深色</string>
     <string name="lumen_qpd_theme_auto">自动</string>
-    <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">屏幕镜像</string>
     <string name="lumen_qpd_mirror_on">屏幕镜像（Miracast）</string>
     <string name="lumen_qpd_mirror_ask">连接前询问</string>

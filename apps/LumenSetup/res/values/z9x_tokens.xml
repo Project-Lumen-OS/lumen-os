@@ -3,7 +3,8 @@
   Lumen OS brand tokens: ONE palette set for Lumen Home, Lumen Setup and the projector UI.
   SINGLE SOURCE: gsi/apps/common/tokens.xml. Do not edit the copies: apps/common/sync.sh copies this file
   to <App>/res/values/z9x_tokens.xml.
-  2.0: lumen_light_* (Светлая, the default) and lumen_dark_* (Тёмная), switched from
+  2.0: lumen_light_* (Светлая, the default, the Песок palette he picked on 2026-11-19)
+  and lumen_dark_* (Тёмная), switched from
   code by org.lumen.ui.LumenTheme (Светлая, Тёмная, Авто), never by values-night. The same numbers live in
   apps/core/lumen-ui/src/org/lumen/ui/Palette.java (apps/core/lumen-ui/test checks both are equal). Sizes, type,
   radii and motion: org.lumen.ui.Tokens.
@@ -11,46 +12,49 @@
 -->
 <resources>
     <!-- 2.0 Светлая (default) -->
-    <color name="lumen_light_bg">#FFF1F2F4</color>
-    <color name="lumen_light_bg_glow">#FFFFFFFF</color>
-    <color name="lumen_light_bg_low">#FFE6E8EC</color>
-    <color name="lumen_light_surface">#FFFFFFFF</color>
-    <color name="lumen_light_surface2">#FFF6F7F9</color>
-    <color name="lumen_light_panel">#FFFFFFFF</color>
-    <color name="lumen_light_panel_line">#FFE3E6EC</color>
-    <color name="lumen_light_text1">#FF12151B</color>
-    <color name="lumen_light_text2">#FF424955</color>
-    <color name="lumen_light_text3">#FF5B6270</color>
-    <color name="lumen_light_ptext1">#FF12151B</color>
-    <color name="lumen_light_ptext2">#FF424955</color>
-    <color name="lumen_light_ptext3">#FF5B6270</color>
-    <color name="lumen_light_focus">#FF12151B</color>
-    <color name="lumen_light_on_focus">#FFFFFFFF</color>
+    <color name="lumen_light_bg">#FFCFC4B0</color>
+    <color name="lumen_light_bg_glow">#FFD8CEBB</color>
+    <color name="lumen_light_bg_low">#FFC5BAA6</color>
+    <color name="lumen_light_surface">#FFDBD2C2</color>
+    <color name="lumen_light_surface2">#FFE4DDD0</color>
+    <color name="lumen_light_panel">#FFD6CDBD</color>
+    <color name="lumen_light_panel_line">#FFB8AD99</color>
+    <color name="lumen_light_text1">#FF211C13</color>
+    <color name="lumen_light_text2">#FF463F33</color>
+    <color name="lumen_light_text3">#FF544C3F</color>
+    <color name="lumen_light_ptext1">#FF211C13</color>
+    <color name="lumen_light_ptext2">#FF463F33</color>
+    <color name="lumen_light_ptext3">#FF544C3F</color>
+    <color name="lumen_light_focus">#FF211C13</color>
+    <color name="lumen_light_on_focus">#FFE4DDD0</color>
     <color name="lumen_light_pfocus">#FF2F62D0</color>
     <color name="lumen_light_on_pfocus">#FFFFFFFF</color>
-    <color name="lumen_light_ring">#FF12151B</color>
-    <color name="lumen_light_ring_gap">#FFF1F2F4</color>
-    <color name="lumen_light_accent">#FF2A5CC4</color>
-    <color name="lumen_light_accent_on_bg">#FF2A5CC4</color>
+    <color name="lumen_light_ring">#FF2F62D0</color>
+    <color name="lumen_light_ring_gap">#FFCFC4B0</color>
+    <color name="lumen_light_accent">#FF1D4AA3</color>
+    <color name="lumen_light_accent_on_bg">#FF1D4AA3</color>
     <color name="lumen_light_progress">#FF3B78E7</color>
     <color name="lumen_light_track">#66FFFFFF</color>
-    <color name="lumen_light_error">#FFB3261E</color>
-    <color name="lumen_light_error_panel">#FFB3261E</color>
-    <color name="lumen_light_ok">#FF1E7A3C</color>
-    <color name="lumen_light_ok_panel">#FF1E7A3C</color>
-    <color name="lumen_light_shadow">#3D101828</color>
-    <integer name="lumen_light_shadow_y">20</integer>
-    <integer name="lumen_light_shadow_blur">44</integer>
-    <color name="lumen_light_scrim">#FF090C14</color>
-    <color name="lumen_light_mark_a">#FF12151B</color>
-    <color name="lumen_light_mark_b">#FF4A505C</color>
+    <color name="lumen_light_error">#FF962019</color>
+    <color name="lumen_light_error_panel">#FF962019</color>
+    <color name="lumen_light_ok">#FF155A2C</color>
+    <color name="lumen_light_ok_panel">#FF155A2C</color>
+    <color name="lumen_light_shadow">#421E1810</color>
+    <integer name="lumen_light_shadow_y">18</integer>
+    <integer name="lumen_light_shadow_blur">40</integer>
+    <color name="lumen_light_scrim">#FF0E0B07</color>
+    <color name="lumen_light_mark_a">#FF211C13</color>
+    <color name="lumen_light_mark_b">#FF5E5545</color>
     <color name="lumen_light_mark_core">#FFF2B26B</color>
-    <color name="lumen_light_word">#FF12151B</color>
-    <color name="lumen_light_banner_line">#1412151B</color>
-    <color name="lumen_light_pill">#0F12151B</color>
-    <color name="lumen_light_nav_active">#1412151B</color>
-    <color name="lumen_light_nav_text">#FF424955</color>
-    <color name="lumen_light_nav_active_text">#FF12151B</color>
+    <color name="lumen_light_word">#FF211C13</color>
+    <color name="lumen_light_banner_line">#14000000</color>
+    <color name="lumen_light_pill">#0F211C13</color>
+    <color name="lumen_light_nav_active">#14211C13</color>
+    <color name="lumen_light_nav_text">#FF463F33</color>
+    <color name="lumen_light_nav_active_text">#FF211C13</color>
+    <color name="lumen_light_focus_ring">#FF2F62D0</color>
+    <color name="lumen_light_warn">#FF754400</color>
+    <color name="lumen_light_elevation">#1C1E1810</color>
     <!-- 2.0 Тёмная -->
     <color name="lumen_dark_bg">#FF0E1014</color>
     <color name="lumen_dark_bg_glow">#FF161A21</color>
@@ -92,6 +96,9 @@
     <color name="lumen_dark_nav_active">#2EFFFFFF</color>
     <color name="lumen_dark_nav_text">#C7FFFFFF</color>
     <color name="lumen_dark_nav_active_text">#FFFFFFFF</color>
+    <color name="lumen_dark_focus_ring">#FF3B78E7</color>
+    <color name="lumen_dark_warn">#FFF2B544</color>
+    <color name="lumen_dark_elevation">#00000000</color>
     <!-- 1.x -->
     <color name="z9x_black">#FF000000</color>
     <color name="z9x_bg">#FF0F1115</color>

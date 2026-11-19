@@ -109,6 +109,10 @@ public final class App extends Application {
             org.lumen.signal.SignalPanel.install(this, new org.lumen.projector.panel.GmpfSignalReader());
             AiScenePolicy.addTvEventSink(org.lumen.signal.SignalPanel::onTvEvent);
         } catch (Throwable t) { Log.e(TAG, "SignalPanel.install", t); }
+        // the sensor card (apps/core/lumen-sensors, a developer overlay): this app's gmpf reader
+        try { org.lumen.sensors.SensorPanel.install(this, new org.lumen.projector.panel.GmpfSensorReader()); } catch (Throwable t) { Log.e(TAG, "SensorPanel.install", t); }
+        // the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar over this app's HAL
+        try { GmpfWallColor.install(this); } catch (Throwable t) { Log.e(TAG, "WallColor.install", t); }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }
         try { org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost()); } catch (Throwable t) { Log.e(TAG, "HdmiRelink.install", t); }

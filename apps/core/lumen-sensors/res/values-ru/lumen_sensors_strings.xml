@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-sensors texts, Russian -->
+<resources>
+    <string name="lumen_sensors_title">Датчики</string>
+    <string name="lumen_sensors_sec_temp">Температура</string>
+    <string name="lumen_sensors_sec_position">Положение</string>
+    <string name="lumen_sensors_sec_system">Система</string>
+    <string name="lumen_sensors_temp_system">Внутри проектора</string>
+    <string name="lumen_sensors_temp_light">Источник света</string>
+    <string name="lumen_sensors_temp_soc">Процессор</string>
+    <string name="lumen_sensors_tof">Расстояние до стены</string>
+    <string name="lumen_sensors_accel">Акселерометр, g</string>
+    <string name="lumen_sensors_gyro">Гироскоп</string>
+    <string name="lumen_sensors_cpu">Загрузка процессора</string>
+    <string name="lumen_sensors_ram">Занято памяти</string>
+    <string name="lumen_sensors_degrees">%1$s °C</string>
+    <string name="lumen_sensors_percent">%1$s %%</string>
+    <string name="lumen_sensors_metres">%1$s м</string>
+    <string name="lumen_sensors_none">Значений пока нет</string>
+    <string name="lumen_sensors_hint_hide">Скрыть</string>
+    <string name="lumen_sensors_hint_close">Закрыть</string>
+    <string name="lumen_sensors_hint_refresh">Обновить</string>
+</resources>

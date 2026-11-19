@@ -127,8 +127,8 @@ public final class PingTest {
         String xb = read(g.resolve("apps/X50Projector/src/org/lumen/x50/projector/BootReceiver.java"));
         int sched = xb.indexOf("org.lumen.stats.StatsJob.schedule(c);"), gate = xb.indexOf("if (!App.isX50()) return;");
         eq("X50 family schedules at boot, before the model gate", true, sched > 0 && gate > sched);
-        eq("Play 6 switch", true, read(g.resolve("apps/Play6Projector/src/org/lumen/projector/SettingsActivity.java"))
-                .contains("stats.setOn(!stats.on());"));
+        eq("Play 6 switch", true, read(g.resolve("apps/Play6Projector/src/org/lumen/projector/Play6SettingsDevice.java"))
+                .contains("stats.setOn(on);"));
         eq("X50 switch", true, read(g.resolve("apps/X50Projector/src/org/lumen/x50/projector/MenuActivity.java"))
                 .contains("st.setOn(!st.on());"));
         System.out.println(fails == 0 ? "PingTest: " + checks + " passed" : "PingTest: " + fails + " of " + checks + " failed");

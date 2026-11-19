@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the stock serial port control page (X50 Ultra, Ultra Max, TITAN) and the parental controls
+     row (own wording) -->
+<resources>
+    <string name="lumen_m_serial">Управление по последовательному порту</string>
+    <string name="lumen_m_serial_switch">Управление через RS-232</string>
+    <string name="lumen_m_serial_id_group">Группа ID</string>
+    <string name="lumen_m_serial_id_number">Номер ID</string>
+    <string name="lumen_m_serial_ack_group">Ответ на команды группы</string>
+    <string name="lumen_m_serial_ack_all">Ответ на команды для всех</string>
+    <string name="lumen_m_serial_master">Ведущий проектор</string>
+    <string name="lumen_m_parental">Родительский контроль</string>
+</resources>

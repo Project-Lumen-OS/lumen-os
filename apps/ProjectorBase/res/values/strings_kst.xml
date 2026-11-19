@@ -3,7 +3,6 @@
      translations: gsi/apps/i18n/langs/<locale>.txt @projector/strings_kst.xml. Reasons are the
      description line of the Notify card (max 2 lines of about 30 characters). -->
 <resources>
-    <string name="kst_tile">Manual keystone</string>
     <string name="kst_hint_move">Arrows: move the corner · OK: next corner</string>
     <string name="kst_hint_more">Hold OK: reset · Back: save and exit</string>
     <string name="kst_refused">Manual keystone unavailable</string>

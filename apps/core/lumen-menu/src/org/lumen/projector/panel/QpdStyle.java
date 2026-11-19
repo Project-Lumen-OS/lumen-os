@@ -11,6 +11,7 @@ import android.util.SparseArray;
 import android.view.animation.PathInterpolator;
 
 import org.lumen.projector.ui.Theme;
+import org.lumen.ui.Palette;
 
 /**
  * Look of the quick panel layout D (prototype qp_design/proto_d3.py): colours, the Inter font (assets/fonts/
@@ -32,15 +33,28 @@ final class QpdStyle {
     static final int ROW_TRACK_FOCUSED = 0x4DFFFFFF, RAIL_CIRCLE_FOCUSED = 0x33FFFFFF;
     /**
      * The colours of the light and the dark menu (2026-11-18: the menu follows the theme button, the shared
-     * lumen-ui theme; the dark one is the approved layout D look): {PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING,
-     * DOT_OFF, SWITCH_OFF, DIVIDER, ROW_TRACK, RAIL_CIRCLE, RAIL_CURRENT, ICON, FILL, SELECTED, FAINT}.
+     * lumen-ui theme; the dark one is the approved layout D look, the light one is made from the lumen-ui light
+     * palette, see {@link #light}): {PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING, DOT_OFF, SWITCH_OFF, DIVIDER,
+     * ROW_TRACK, RAIL_CIRCLE, RAIL_CURRENT, ICON, FILL, SELECTED, FAINT}.
      */
     private static final int[] DARK = {0xF016171A, 0xFF34353A, 0xFF3E3F45, 0xFFF4F4F6, 0x8FF4F4F6, 0x24FFFFFF, 0xD9FFFFFF,
             0x73FFFFFF, 0x33FFFFFF, 0x14FFFFFF, 0x33FFFFFF, 0x14FFFFFF, 0x14FFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFF8FB4FF,
             0x57F4F4F6};
-    private static final int[] LIGHT = {0xF7ECEEF2, 0xFFFFFFFF, 0xFFFFFFFF, 0xFF17181B, 0x8F17181B, 0x1F17181B, 0xFF1D1E22,
-            0x7317181B, 0x3317181B, 0x1417181B, 0x3317181B, 0x1417181B, 0x0F17181B, 0xFF17181B, 0xFF1D1E22, ACCENT,
-            0x5717181B};
+    private static final int[] LIGHT = light(Palette.of(false));
+
+    /**
+     * The light menu from the shared palette (the approved Sand mock, light-palette/gen.py menu()): the card is the
+     * panel at .97 over video, tiles the surface, a lit slider row the raised surface, ink the panel text, quiet texts
+     * and lines are that ink at fixed strengths (MUTE .68 keeps 4.5:1 on the card), ring and selection the light
+     * focus ring blue.
+     */
+    static int[] light(Palette p) {
+        int ink = p.ptext1;
+        return new int[] {Palette.alpha(p.panel, 0.97f), p.surface, p.surface2, ink, Palette.alpha(ink, 0.68f),
+                Palette.alpha(ink, 0.14f), p.focusRing, Palette.alpha(ink, 0.45f), Palette.alpha(ink, 0.2f),
+                Palette.alpha(ink, 0.08f), Palette.alpha(ink, 0.2f), Palette.alpha(ink, 0.08f), Palette.alpha(ink, 0.06f),
+                ink, ink, p.focusRing, Palette.alpha(ink, 0.4f)};
+    }
     // the menu's colours now (theme()): popup and list rows (prototype .po / .r / .dot / .tg / .ln), All settings rail (.it)
     static int PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING, DOT_OFF, SWITCH_OFF, DIVIDER, ROW_TRACK, RAIL_CIRCLE,
             RAIL_CURRENT, ICON, FILL, SELECTED, FAINT;

@@ -206,9 +206,9 @@ public final class PictureSettingsRuleTest {
         if (g == null || !new File(g, "devices").isDirectory()) return;
         java.util.Set<String> x50Off = new java.util.HashSet<>(java.util.Arrays.asList("picture.mode", "picture.3d",
                 "picture.anti_rbe", "picture.aspect", "picture.dv_screen", "picture.dv_screen.gain", "picture.dv_screen.size",
-                "picture.iris", "picture.reset_all", "picture.settings", "picture.style_filter"));
+                "picture.iris", "picture.reset_all", "picture.settings", "picture.style_filter", "picture.custom_new"));
         java.util.Set<String> hbOff = new java.util.HashSet<>(java.util.Arrays.asList("picture.mode", "picture.aspect",
-                "picture.reset_all"));
+                "picture.reset_all", "picture.anti_rbe", "picture.custom_new"));
         java.util.Set<String> z9xOff = new java.util.HashSet<>(java.util.Arrays.asList("picture.mode", "picture.3d",
                 "picture.aspect", "picture.reset_all"));
         java.util.Set<String> z9xBasic = new java.util.HashSet<>(java.util.Arrays.asList("picture.pq", "picture.color_temp",

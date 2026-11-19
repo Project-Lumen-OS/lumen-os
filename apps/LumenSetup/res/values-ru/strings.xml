@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Включение Wi-Fi…</string>
     <string name="net_none_found">Сети не найдены</string>
     <string name="net_add_manual">Добавить сеть вручную</string>
-    <string name="net_other">Другие варианты</string>
     <string name="net_password_title">Пароль для сети %1$s</string>
     <string name="net_password_hint">Пароль</string>
     <string name="net_show_password">Показать пароль</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Найден пульт %1$s</string>
     <string name="remote_connected">Пульт подключён</string>
     <string name="remote_other">Другое устройство</string>
-    <string name="remote_skip_hint">Пульт можно подключить и позже из быстрой панели (кнопка-шестерёнка).</string>
     <string name="google_title">Вход в аккаунт Google</string>
     <string name="google_subtitle">Войдите, чтобы устанавливать приложения из Google Play и пользоваться подписками.</string>
     <string name="google_sign_in">Войти</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Имя проектора</string>
     <string name="done_home">Главный экран</string>
     <string name="done_stats">Отправлять анонимную статистику</string>
-    <string name="done_stats_note">При каждом включении и раз в день: модель, версия, сборка, сведения об обновлении, страна, случайный номер установки и серийный номер (сервер хранит только его хеш). Ваш IP-адрес не сохраняется.</string>
     <string name="done_start">Начать</string>
     <string name="done_offline_hint">Нет интернета: войти в Google и выбрать часовой пояс можно позже в настройках.</string>
     <string name="done_offline_hint_nogms">Нет интернета: часовой пояс можно выбрать позже в настройках.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Понадобится телефон или пароль</string>
     <string name="google_help_sub">Что делать, если Google просит регистрацию</string>
     <string name="done_stats_short">Модель, версия и страна. IP-адрес не хранится.</string>
+    <string name="theme_title">Оформление</string>
+    <string name="theme_subtitle">Как будет выглядеть Lumen. Потом это можно поменять в быстром меню.</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_auto">Авто</string>
+    <string name="theme_auto_sub">Светлая днём, тёмная после заката</string>
 </resources>

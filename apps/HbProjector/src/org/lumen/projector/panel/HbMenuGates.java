@@ -39,6 +39,7 @@ public final class HbMenuGates {
             {FeatureId.KEYSTONE_MANUAL, "MANUAL_KEYSTONE"},
             {FeatureId.ZOOM, "OPTICAL_ZOOM"},
             {FeatureId.KEYSTONE_ON_POWER, "AUTO_KEYSTONE"},
+            {FeatureId.KEYSTONE_ON_MOVE, "MOVE_AK"},
             {FeatureId.KEYSTONE_CURTAIN, "CURTAIN_FIT"},
             {FeatureId.KEYSTONE_OBSTACLE, "OBSTACLE_AVOID"},
             {FeatureId.KEYSTONE_RESTORE, "KEYSTONE_RESET"},
@@ -54,7 +55,11 @@ public final class HbMenuGates {
             {FeatureId.PICTURE_MEMC, "PICTURE"},
             {FeatureId.PICTURE_PRO, "PICTURE"},
             {FeatureId.PICTURE_RESET, "PICTURE"},
+            {FeatureId.PICTURE_CUSTOM_NEW, "CUSTOM_PICTURE_MODE"},
+            {FeatureId.PICTURE_CUSTOM_BASE, "CUSTOM_PICTURE_MODE"},
+            {FeatureId.PICTURE_CUSTOM_DELETE, "CUSTOM_PICTURE_MODE"},
             {FeatureId.PICTURE_RESET_ALL, "PICTURE"},
+            {FeatureId.PICTURE_ANTI_RBE, "ANTI_RBE"},
             {FeatureId.HDMI_RANGE, "HDMI"},
             {FeatureId.HDMI_EDID, "HDMI"},
             {FeatureId.PICTURE_ASPECT, null},
@@ -71,11 +76,23 @@ public final class HbMenuGates {
             {FeatureId.PROJECTION_MODE, null},
             {FeatureId.PROJECTION_REAR, null},
             {FeatureId.SETTINGS_SYSTEM, null},
-            {FeatureId.SETTINGS_PROJECTOR, null},
+            {FeatureId.EYE_ELDER_COLOR, "ELDER_COLOR"},
+            {FeatureId.SETTINGS_TEMPERATURE, null},
             {FeatureId.SETTINGS_CEC, null},
             {FeatureId.SETTINGS_RECENTS, null},
             {FeatureId.SETTINGS_SLEEP_TIMER, null},
             {FeatureId.SETTINGS_LAUNCHER, null},
+            {FeatureId.POWER_ON_AC, null},
+            {FeatureId.SETTINGS_LICENCES, null},
+            {FeatureId.SETTINGS_REMOTE, null},
+            {FeatureId.SETTINGS_REMOTE_KEYS, null},
+            {FeatureId.POWER_BOOT_SOURCE, null},
+            {FeatureId.VOICE_LANGUAGE, null},
+            {FeatureId.VOICE_SPEAK, null},
+            {FeatureId.VOICE_KEY, null},
+            {FeatureId.SETTINGS_UI_RESOLUTION, "UI_RESOLUTION"},
+            {FeatureId.SETTINGS_STATS, null},
+            {FeatureId.SETTINGS_DIAGNOSTICS, null},
     };
 
     /** Game menu items (profile game_menu.items) and their HbFeatures switch; sr and snd are not on the HB stock. */
@@ -135,6 +152,8 @@ public final class HbMenuGates {
     /** TV 33 / 34 picture mode (PictureMode): stock image_mode_4_state order; no Office, no Dolby Vision. */
     static final Table PICTURE_MODE = new Table(FeatureId.PICTURE_MODE,
             "ai", 10, "standard", 1, "sport", 9, "color_accuracy", 29, "hdr_vivid", 26, "performance", 5);
+    /** TV 197 / 198 base of a user picture mode, the dapengse list (image_mode_custom_base_dapengse map 1 / 9 / 29). */
+    static final Table CUSTOM_BASE = new Table(FeatureId.PICTURE_CUSTOM_BASE, "standard", 1, "sport", 9, "color_accuracy", 29);
     /** DISPLAY 4 / 5 lumens mode, the dapengse list (image_mode_4_color_temp_dapengse map 0 / 16). */
     static final Table COLOR_TEMP = new Table(FeatureId.PICTURE_COLOR_TEMP, "standard", 0, "movie", 16);
     /** TV 31 / 32 MEMC. */
@@ -162,8 +181,8 @@ public final class HbMenuGates {
     /** Home screen choice. */
     static final Table LAUNCHER = new Table(FeatureId.SETTINGS_LAUNCHER, "lumen", 0, "classic", 1);
 
-    static final Table[] TABLES = {PICTURE_MODE, COLOR_TEMP, MEMC, ASPECT, HDMI_RANGE, EDID, SOUND_MODE, GAME_SPEED,
-            GAME_MODE, ALLM, PROJECTION, OUTPUT, FORMAT, LAUNCHER};
+    static final Table[] TABLES = {PICTURE_MODE, COLOR_TEMP, CUSTOM_BASE, MEMC, ASPECT, HDMI_RANGE, EDID, SOUND_MODE,
+            GAME_SPEED, GAME_MODE, ALLM, PROJECTION, OUTPUT, FORMAT, LAUNCHER};
 
     static Table table(FeatureId feature) {
         for (Table t : TABLES) if (t.feature == feature) return t;

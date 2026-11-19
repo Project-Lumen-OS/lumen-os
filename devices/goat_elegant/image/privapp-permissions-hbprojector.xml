@@ -21,6 +21,9 @@
         <permission name="android.permission.REBOOT" />
         <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
         <permission name="android.permission.START_TASKS_FROM_RECENTS" />
+        <!-- the Wi-Fi hotspot of the Network popup (apps/core/lumen-system Hotspot): start and stop it, its name and password -->
+        <permission name="android.permission.TETHER_PRIVILEGED" />
+        <permission name="android.permission.OVERRIDE_WIFI_CONFIG" />
         <permission name="android.permission.WRITE_DREAM_STATE" />
         <permission name="android.permission.WRITE_SECURE_SETTINGS" />
     </privapp-permissions>

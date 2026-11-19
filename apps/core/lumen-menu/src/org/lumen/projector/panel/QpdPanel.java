@@ -33,6 +33,8 @@ import org.lumen.projector.ui.PageAccess;
 import org.lumen.projector.ui.PagedPanel;
 import org.lumen.projector.ui.SliderRow;
 import org.lumen.projector.ui.Theme;
+import org.lumen.ui.Palette;
+import org.lumen.ui.ThemeFade;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -64,6 +66,8 @@ final class QpdPanel extends PagedPanel {
     interface Host {
         boolean onKey(KeyEvent ev);
         void onClosed(QpdPanel p);
+        /** The shared theme changed while this window shows: re-style card and popup in {@code p} (under the fade). */
+        void onTheme(Palette p);
         /** Hint block for a popup page, or null (no picture for that item). */
         View tipFor(Page p);
         /** Hint block of a row in the All settings list (the popup hint of the same item), or null. */
@@ -102,6 +106,8 @@ final class QpdPanel extends PagedPanel {
     private final Handler main = new Handler(Looper.getMainLooper());
     private Context ctx;
     private FrameLayout root;
+    /** Follows the shared theme live while the window shows (lumen-ui ThemeFade cross fade). */
+    private ThemeFade fade;
     private Popup popup;
     private OutputSheet sheet;
     /** The pencil editor's sheet in the panel's place (showSide), or null. */
@@ -271,6 +277,7 @@ final class QpdPanel extends PagedPanel {
         root = new FrameLayout(c);
         root.setClipChildren(false);
         root.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        fade = ThemeFade.follow(root, host::onTheme);
         if (!bar) {
             // scrim: the video darkens towards the panel (prototype .scrim, 0 % .5, 40 % .18, 60 % 0 of the screen)
             final float scrimW = Theme.pxf(c, QpdLayout.SCRIM_W);
@@ -486,6 +493,9 @@ final class QpdPanel extends PagedPanel {
     }
 
     boolean hasSide() { return side != null; }
+
+    /** This window's theme follower (null before the window exists): the theme button switches through it. */
+    ThemeFade fade() { return fade; }
 
     /** The theme changed while the panel shows: the card, the popup and their rows redraw in the new colours. */
     void retheme() {

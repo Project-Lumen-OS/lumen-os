@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
+    <string name="lumen_m_hotspot_hotspot">Точка доступа</string>
+    <string name="lumen_m_hotspot_name">Имя сети</string>
+    <string name="lumen_m_hotspot_password">Пароль</string>
+    <string name="lumen_m_hotspot_reset">Сбросить имя и пароль</string>
+    <string name="lumen_m_hotspot_on" formatted="true">Точка доступа %s включена</string>
+    <string name="lumen_m_hotspot_off">Точка доступа отключена</string>
+    <string name="lumen_m_hotspot_failed">Неизвестная ошибка. Повторите попытку позже</string>
+    <string name="lumen_m_hotspot_saved">Текущая конфигурация сохранена</string>
+    <string name="lumen_m_hotspot_name_title">Имя точки доступа</string>
+    <string name="lumen_m_hotspot_password_title">Пароль точки доступа</string>
+    <string name="lumen_m_hotspot_password_hint">Не менее 8 символов</string>
+    <string name="lumen_m_hotspot_name_empty">Введите имя сети</string>
+    <string name="lumen_m_hotspot_name_long">Слишком длинное имя</string>
+    <string name="lumen_m_hotspot_password_short">Введите как минимум 8 символов</string>
+    <string name="lumen_m_hotspot_password_long">Не более 63 символов</string>
+    <string name="lumen_m_hotspot_password_chars">Только латинские буквы, цифры и знаки</string>
+</resources>

@@ -6,7 +6,6 @@
     <string name="power_standby_never">Nie</string>
     <string name="power_quick_wake_minutes">%1$d Min.</string>
     <string name="power_quick_wake_hours">%1$d Std.</string>
-    <string name="power_standby_summary">Ein kurzer Druck auf die Ein/Aus-Taste schaltet das Licht aus, der Projektor bleibt für ein sofortiges Einschalten bereit. Nach dieser Zeit schaltet er sich ganz aus.</string>
     <string name="power_sleep_summary">Ein/Aus-Taste, Sleep-Timer und Inaktivität schalten das Licht aus und versetzen den Projektor in den Ruhemodus. Ein Druck auf Ein/Aus weckt ihn in Sekunden, genau dort, wo er aufgehört hat.</string>
     <string name="power_menu_sleep">Ruhemodus</string>
     <string name="power_menu_off">Ausschalten</string>

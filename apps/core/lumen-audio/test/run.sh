@@ -15,7 +15,8 @@ mkdir -p "$OUT/glue" "$OUT/rules"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/glue" -cp "$HJ:$AJ" "$S/MediaPath.java" "$S/AutoPick.java" "$S/AutoOutput.java" "$S/JackOutput.java" \
   "$S/SinkOrder.java" "$S/HalSink.java" "$S/A2dpPick.java" "$S/BtA2dp.java" "$S/DspOwned.java" "$S/SoundbarMode.java" \
   "$S/ChipKey.java" "$S/ChipTable.java" "$S/ChipLevels.java" "$S/StockVolume.java" "$S/VendorOutput.java" "$S/VendorCall.java" \
-  "$S/VendorAudio.java" "$S/PathSwitch.java" "$S/OutputDevice.java" "$S/OutputScan.java"
+  "$S/VendorAudio.java" "$S/PathSwitch.java" "$S/OutputDevice.java" "$S/OutputScan.java" "$S/BootSoundRules.java" \
+  "$S/BootSound.java"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/rules" "$S/MediaPath.java" "$S/AutoPick.java" \
   "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/org/lumen/audio/MediaPathTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/rules" org.lumen.audio.MediaPathTest "$G"
@@ -41,3 +42,9 @@ mkdir -p "$OUT/soundbar"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/soundbar" "$S/SoundbarMode.java" \
   "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/org/lumen/audio/SoundbarModeTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/soundbar" org.lumen.audio.SoundbarModeTest "$G"
+# the power-on sound (BootSoundRules on the shipped asset) and its wiring: the module row of every profile, the stock
+# switch off in the Z9X / HB / Play 6 adapters, BootSound installed with PathSwitch, the rc in every image recipe
+mkdir -p "$OUT/boot"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/boot" "$S/BootSoundRules.java" \
+  "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/org/lumen/audio/BootSoundTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/boot" org.lumen.audio.BootSoundTest "$G"

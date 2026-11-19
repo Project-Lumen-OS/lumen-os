@@ -5,6 +5,7 @@
     <string name="lumen_m_hdmi_options">HDMI 입력 옵션</string>
     <string name="lumen_m_colour_vision">색각 보정</string>
     <string name="lumen_m_temperature">온도</string>
+    <string name="lumen_m_high_altitude">고고도 모드</string>
     <string name="lumen_m_colour_vision_gray">회색조</string>
     <string name="lumen_m_colour_vision_red_green">적/녹</string>
     <string name="lumen_m_colour_vision_green_red">녹/적</string>

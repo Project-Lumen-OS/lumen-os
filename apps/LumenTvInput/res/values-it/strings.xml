@@ -29,9 +29,6 @@
     <string name="picker_empty">Nessun ingresso HDMI trovato</string>
     <string name="pref_auto_switch">Passa automaticamente a HDMI quando si collega un dispositivo</string>
     <string name="pref_return_home">Torna alla schermata Home quando la sorgente viene scollegata</string>
-    <string name="pref_cec_otp">HDMI-CEC: passa a HDMI su richiesta del dispositivo (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: controlla il dispositivo con il telecomando</string>
-    <string name="pref_cec_exit">HDMI-CEC: avvisa il dispositivo quando esci da HDMI</string>
     <string name="pref_boot_source">Sorgente all\'accensione: %1$s</string>
     <string name="boot_source_home">Schermata Home</string>
     <string name="pref_boot_source_note">Se un dispositivo accende il proiettore tramite HDMI-CEC, si apre il suo ingresso.</string>

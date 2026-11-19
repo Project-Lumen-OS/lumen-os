@@ -33,9 +33,6 @@
 
     <string name="pref_auto_switch">Автопереключение при подключении HDMI</string>
     <string name="pref_return_home">Возврат на главный экран при отключении источника</string>
-    <string name="pref_cec_otp">HDMI-CEC: включать HDMI по команде устройства (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: управлять устройством с пульта</string>
-    <string name="pref_cec_exit">HDMI-CEC: сообщать устройству о выходе из HDMI</string>
     <string name="pref_boot_source">Источник при включении: %1$s</string>
     <string name="boot_source_home">Главный экран</string>
     <string name="pref_boot_source_note">Если проектор включило устройство по HDMI-CEC, откроется его вход.</string>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Қабырға түсіне бейімдеу</string>
+    <string name="lumen_wallcolor_desc">Түстер дәлірек болуы үшін сурет түстерін қабырғаңыздың түсіне бейімдейді.</string>
+    <string name="lumen_wallcolor_desc_ambient">Ең жақсы нәтиже үшін сурет ең жарық болады, ал автожарықтық өшеді.</string>
+    <string name="lumen_wallcolor_start">Бастау</string>
+    <string name="lumen_wallcolor_reset">Бастапқы түстерді қайтару</string>
+    <string name="lumen_wallcolor_running">Түстерді қабырғаға бейімдеп жатырмыз</string>
+    <string name="lumen_wallcolor_matched">Жаңа түстер</string>
+    <string name="lumen_wallcolor_original">Бастапқы түстер</string>
+    <string name="lumen_wallcolor_save_title">Жаңа түстерді қалдыру керек пе?</string>
+    <string name="lumen_wallcolor_save_desc">Жаңа түстер осы қабырғаның түсіне ең жақсы сәйкес келеді.</string>
+    <string name="lumen_wallcolor_fail_camera">Камера іске қосылмады. Қайталап көріңіз.</string>
+    <string name="lumen_wallcolor_fail_start">Бейімдеу іске қосылмады. Қайталанса, ақау туралы есеп жіберіңіз.</string>
+    <string name="lumen_wallcolor_fail_distance">Болмады. Қабырғаға дейінгі қашықтықты немесе проектордың бұрышын өзгертіңіз.</string>
+    <string name="lumen_wallcolor_fail_light">Болмады. Бөлмедегі жарық өзгерді. Біркелкі жарықта қайталап көріңіз.</string>
+    <string name="lumen_wallcolor_fail_custom">Пайдаланушы түс режимінде қолжетімсіз.</string>
+    <string name="lumen_wallcolor_fail_performance">Өнімділік режимінде қолжетімсіз.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Автожарықтықты өшіріп, қайталап көріңіз.</string>
+    <string name="lumen_wallcolor_fail_3d">3D режимінде қолжетімсіз.</string>
+    <string name="lumen_wallcolor_fail_big_screen">Үлкен экран режимінде тек қолмен трапеция түзету бар.</string>
+    <string name="lumen_wallcolor_fail_range">Болмады. Қабырға түсі бейімдеу ауқымынан тыс.</string>
+    <string name="lumen_wallcolor_fail_not_started">Проектор бейімдеуді бастамады. Қайталап көріңіз.</string>
+</resources>

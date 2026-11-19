@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Projektor</string>
     <string name="version_line">Version %1$s</string>
-    <string name="sec_focus">Fokus</string>
-    <string name="sec_keystone">Trapezkorrektur</string>
     <string name="sec_auto">Automatik</string>
-    <string name="sec_keys">Fernbedienungstasten</string>
     <string name="sec_diag">Diagnose</string>
-    <string name="act_af_now">Autofokus starten</string>
     <string name="act_manual_focus">Manueller Fokus</string>
     <string name="act_kst_now">Trapezkorrektur starten</string>
-    <string name="act_fit_now">Jetzt an Leinwand anpassen</string>
     <string name="act_refresh">Aktualisieren</string>
     <string name="tg_power_on_af">Autofokus beim Einschalten</string>
     <string name="tg_power_on_ak">Trapezkorrektur beim Einschalten</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Trapezkorrektur nach Bewegen</string>
     <string name="tg_curtain">An Leinwand anpassen</string>
     <string name="tg_obstacle">Hindernisvermeidung</string>
-    <string name="val_on">Ein</string>
-    <string name="val_off">Aus</string>
-    <string name="val_unknown">Keine Daten</string>
-    <string name="val_not_ready">Projektor nicht bereit</string>
     <string name="cancel">Abbrechen</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Keine App für diese Taste gefunden</string>

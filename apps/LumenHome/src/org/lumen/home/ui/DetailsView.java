@@ -12,12 +12,13 @@ import org.lumen.home.R;
 import org.lumen.ui.Tokens;
 
 /**
- * "Подробнее" over the showcase: the whole description, the facts line, Смотреть and the TMDB notice the data source
- * asks for. LEFT and RIGHT move between the two buttons, OK acts, BACK closes.
+ * "Подробнее" over the showcase: the whole description, the facts line (year, genres, length, age), the TMDB rating
+ * and where to watch, the watch button (the app it opens in, or Найти) and the TMDB notice the data source asks for.
+ * LEFT and RIGHT move between the two buttons, OK acts, BACK closes.
  */
 public class DetailsView extends FrameLayout {
     private final LinearLayout mCol;
-    private final TextView mTitle, mMeta, mBody, mNote;
+    private final TextView mTitle, mMeta, mFacts, mBody, mNote;
     private final TextView[] mBtn = new TextView[2];
     private int mFocus;
     private boolean mOpen;
@@ -33,6 +34,7 @@ public class DetailsView extends FrameLayout {
         addView(mCol, lp);
         mTitle = add(c, 0);
         mMeta = add(c, 18);
+        mFacts = add(c, 10);
         mBody = add(c, 24);
         LinearLayout btns = new LinearLayout(c);
         btns.setClipChildren(false);
@@ -71,12 +73,16 @@ public class DetailsView extends FrameLayout {
         return mOpen;
     }
 
-    public void open(String title, String meta, String body, Runnable watch) {
+    /** {@code rating} and {@code where} are whole lines ("" = none), {@code watchLabel} the button (null = Смотреть). */
+    public void open(String title, String meta, String body, String rating, String where, String watchLabel, Runnable watch) {
         setBackgroundColor(Theme.alpha(Theme.SCRIM, 0.92f));
         Theme.style(mTitle, Tokens.TYPE_SETUP_TITLE, 700, 0xFFFFFFFF, -1.2f);
         mTitle.setMaxLines(2);
         mTitle.setEllipsize(TextUtils.TruncateAt.END);
         Theme.style(mMeta, Tokens.TYPE_BODY, 520, 0xD6FFFFFF, 0);
+        Theme.style(mFacts, Tokens.TYPE_BODY, 520, 0xD6FFFFFF, 0);
+        mFacts.setMaxLines(2);
+        mFacts.setEllipsize(TextUtils.TruncateAt.END);
         Theme.style(mBody, Tokens.TYPE_BODY_L, Tokens.W_BODY_L, 0xEBFFFFFF, 0);
         mBody.setLineHeight(Math.round(Theme.pxf(Tokens.TYPE_BODY_L) * 1.45f));
         mBody.setMaxLines(9);
@@ -84,7 +90,12 @@ public class DetailsView extends FrameLayout {
         Theme.style(mNote, Tokens.TYPE_CAPTION, 520, 0x99FFFFFF, 0);
         mTitle.setText(title);
         mMeta.setText(meta);
+        String facts = rating.isEmpty() ? where : where.isEmpty() ? rating : rating + "\n" + where;
+        mFacts.setText(facts);
+        mFacts.setVisibility(facts.isEmpty() ? GONE : VISIBLE);
         mBody.setText(body);
+        if (watchLabel == null || watchLabel.isEmpty()) mBtn[0].setText(R.string.hero_watch);
+        else mBtn[0].setText(watchLabel);
         mNote.setText(R.string.tmdb_attribution);
         mWatch = watch;
         mFocus = 0;

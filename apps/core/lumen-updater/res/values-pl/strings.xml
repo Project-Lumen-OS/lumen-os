@@ -113,7 +113,6 @@
     <string name="ch_updates">Aktualizacje systemu</string>
     <string name="n_available_body">Otwórz, aby pobrać i zainstalować.</string>
     <string name="n_ready_title">Uruchom ponownie, aby dokończyć aktualizację</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Ten projektor nie może jeszcze instalować aktualizacji przez Internet: brakuje jednorazowej konfiguracji. Zaktualizuj go z komputera za pomocą lumen-install.</string>
     <string name="blk_power">Podłącz zasilacz: aktualizacja potrwa kilka minut.</string>
     <string name="consent_title_recovery">Zainstalować aktualizację?</string>

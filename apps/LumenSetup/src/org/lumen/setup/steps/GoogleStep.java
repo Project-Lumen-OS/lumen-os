@@ -214,7 +214,7 @@ public class GoogleStep extends Step {
         v.setGravity(Gravity.TOP);
         QrView qr = new QrView(ctx(), UNCERTIFIED_URL);
         FrameLayout qrCard = new FrameLayout(ctx());
-        qrCard.setBackground(Ui.roundRect(0xFFFFFFFF, 24));
+        qrCard.setBackground(Ui.roundRect(org.lumen.ui.Tokens.QR_CARD, 24));
         qrCard.setPadding(Ui.px(20), Ui.px(20), Ui.px(20), Ui.px(20));
         qrCard.addView(qr, new FrameLayout.LayoutParams(Ui.px(260), Ui.px(260)));
         v.addView(qrCard, new LinearLayout.LayoutParams(Ui.px(300), Ui.px(300)));

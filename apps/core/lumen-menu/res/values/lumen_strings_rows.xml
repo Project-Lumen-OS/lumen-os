@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
+     statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
+<resources>
+    <string name="lumen_m_power_music">Sound at power-on</string>
+    <string name="lumen_m_boot_source">Open at power-on</string>
+    <string name="lumen_m_boot_home">Home screen</string>
+    <string name="lumen_m_hdr_voice">Voice assistant</string>
+    <string name="lumen_m_voice_language">Speech language</string>
+    <string name="lumen_m_voice_lang_system">System language</string>
+    <string name="lumen_m_voice_speak">Speak replies</string>
+    <string name="lumen_m_voice_key">Gemini voice</string>
+    <string name="lumen_m_uires">Interface resolution</string>
+    <string name="lumen_m_stats">Send anonymous statistics</string>
+    <string name="lumen_m_diag">Diagnostics</string>
+    <string name="lumen_m_sensors">Sensors</string>
+    <string name="lumen_m_boot_hdmi" translatable="false">HDMI</string>
+    <string name="lumen_m_boot_hdmi1" translatable="false">HDMI 1</string>
+    <string name="lumen_m_boot_hdmi2" translatable="false">HDMI 2</string>
+    <string name="lumen_m_lang_ru" translatable="false">Русский</string>
+    <string name="lumen_m_lang_en" translatable="false">English</string>
+    <string name="lumen_m_lang_uk" translatable="false">Українська</string>
+    <string name="lumen_m_lang_kk" translatable="false">Қазақ тілі</string>
+    <string name="lumen_m_lang_de" translatable="false">Deutsch</string>
+    <string name="lumen_m_lang_fr" translatable="false">Français</string>
+    <string name="lumen_m_lang_es" translatable="false">Español</string>
+    <string name="lumen_m_lang_it" translatable="false">Italiano</string>
+    <string name="lumen_m_lang_pt" translatable="false">Português</string>
+    <string name="lumen_m_lang_pl" translatable="false">Polski</string>
+    <string name="lumen_m_lang_tr" translatable="false">Türkçe</string>
+    <string name="lumen_m_lang_zh" translatable="false">中文</string>
+    <string name="lumen_m_lang_ja" translatable="false">日本語</string>
+    <string name="lumen_m_lang_ko" translatable="false">한국어</string>
+    <string name="lumen_m_lang_ar" translatable="false">العربية</string>
+</resources>

@@ -18,6 +18,7 @@ app/BasicDreams
 app/WallpaperBackup
 system_ext/priv-app/EmulatorRadioConfig
 system_ext/priv-app/TvFeedbackConsent
+product/overlay/EmulatorTetheringConfigOverlay.apk
 product/overlay/EmulationPixel2XL
 product/overlay/EmulationPixel3
 product/overlay/EmulationPixel3XL

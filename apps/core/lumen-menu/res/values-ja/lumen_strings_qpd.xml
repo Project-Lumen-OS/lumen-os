@@ -11,7 +11,6 @@
     <string name="lumen_qpd_theme_light">ライト</string>
     <string name="lumen_qpd_theme_dark">ダーク</string>
     <string name="lumen_qpd_theme_auto">自動</string>
-    <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">画面ミラーリング</string>
     <string name="lumen_qpd_mirror_on">画面ミラーリング（Miracast）</string>
     <string name="lumen_qpd_mirror_ask">接続前に確認する</string>

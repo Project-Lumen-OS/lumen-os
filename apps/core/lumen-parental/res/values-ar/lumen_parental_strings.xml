@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">الرقابة الأبوية</string>
+    <string name="lumen_lp_intro">حدد ما يمكن للأطفال فتحه وكم يشاهدون.</string>
+    <string name="lumen_lp_lock">قفل الأطفال</string>
+    <string name="lumen_lp_lock_desc">عند التشغيل يمكنك ضبط نطاق الرقابة ووقت المشاهدة وغير ذلك</string>
+    <string name="lumen_lp_lock_off_title">إيقاف قفل الأطفال؟</string>
+    <string name="lumen_lp_lock_off_text">ستتوقف حدود الوقت وكلمة المرور عند التشغيل. ستفتح إعدادات الوالدين بلا كلمة مرور.</string>
+    <string name="lumen_lp_turn_off">إيقاف</string>
+    <string name="lumen_lp_cancel">إلغاء</string>
+    <string name="lumen_lp_child_mode">وضع الأطفال</string>
+    <string name="lumen_lp_child_apps">تطبيقات وضع الأطفال</string>
+    <string name="lumen_lp_child_apps_count">المحدد: %1$d</string>
+    <string name="lumen_lp_range">نطاق الرقابة</string>
+    <string name="lumen_lp_range_child">وضع الأطفال فقط</string>
+    <string name="lumen_lp_range_global">في كل مكان</string>
+    <string name="lumen_lp_session">الوقت لكل جلسة</string>
+    <string name="lumen_lp_session_desc">بعدها استراحة 10 دقائق</string>
+    <string name="lumen_lp_daily">الوقت في اليوم</string>
+    <string name="lumen_lp_no_limit">بلا حد</string>
+    <string name="lumen_lp_minutes">%1$d دقيقة</string>
+    <string name="lumen_lp_hours">%1$s ساعة</string>
+    <string name="lumen_lp_boot_pin">كلمة مرور عند التشغيل</string>
+    <string name="lumen_lp_boot_child">وضع الأطفال عند التشغيل</string>
+    <string name="lumen_lp_change_pin">تغيير كلمة المرور</string>
+    <string name="lumen_lp_eye">حماية العين</string>
+    <string name="lumen_lp_eye_desc">تُضبط حماية العين في إعدادات جهاز العرض</string>
+    <string name="lumen_lp_pin_enter">أدخل كلمة مرور قفل الأطفال</string>
+    <string name="lumen_lp_pin_hint">اضغط أزرار الأسهم في جهاز التحكم</string>
+    <string name="lumen_lp_pin_set">عيّن كلمة مرور قفل الأطفال</string>
+    <string name="lumen_lp_pin_again">أدخل كلمة المرور مرة أخرى</string>
+    <string name="lumen_lp_pin_mismatch">كلمتا المرور مختلفتان. عيّن كلمة المرور من جديد</string>
+    <string name="lumen_lp_pin_wrong">كلمة مرور خاطئة</string>
+    <string name="lumen_lp_pin_forgot">نسيت كلمة المرور؟ اضغط OK</string>
+    <string name="lumen_lp_quiz">كم يساوي %1$d × %2$d؟</string>
+    <string name="lumen_lp_quiz_wrong">غير صحيح. إليك سؤالًا آخر</string>
+    <string name="lumen_lp_rest_title">وقت الاستراحة</string>
+    <string name="lumen_lp_rest_session">انتهت الجلسة. استرح 10 دقائق</string>
+    <string name="lumen_lp_rest_daily">انتهى وقت المشاهدة لهذا اليوم</string>
+    <string name="lumen_lp_rest_unlock">فتح القفل</string>
+    <string name="lumen_lp_on">تشغيل</string>
+    <string name="lumen_lp_off">إيقاف</string>
+</resources>

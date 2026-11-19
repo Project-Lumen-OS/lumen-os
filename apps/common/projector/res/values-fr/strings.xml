@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Projecteur</string>
     <string name="version_line">Version %1$s</string>
-    <string name="sec_focus">Mise au point</string>
-    <string name="sec_keystone">Trapèze</string>
     <string name="sec_auto">Automatismes</string>
-    <string name="sec_keys">Touches de la télécommande</string>
     <string name="sec_diag">Diagnostic</string>
-    <string name="act_af_now">Mise au point maintenant</string>
     <string name="act_manual_focus">Mise au point manuelle</string>
     <string name="act_kst_now">Trapèze auto maintenant</string>
-    <string name="act_fit_now">Ajuster à l\'écran maintenant</string>
     <string name="act_refresh">Actualiser</string>
     <string name="tg_power_on_af">Mise au point auto au démarrage</string>
     <string name="tg_power_on_ak">Trapèze auto au démarrage</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Trapèze auto après déplacement</string>
     <string name="tg_curtain">Ajuster à l\'écran</string>
     <string name="tg_obstacle">Évitement d\'obstacles</string>
-    <string name="val_on">Activé</string>
-    <string name="val_off">Désactivé</string>
-    <string name="val_unknown">Aucune donnée</string>
-    <string name="val_not_ready">Projecteur pas prêt</string>
     <string name="cancel">Annuler</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Aucune application trouvée pour cette touche</string>

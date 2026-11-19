@@ -10,7 +10,6 @@
     <string name="lumen_qpd_theme_light">Light</string>
     <string name="lumen_qpd_theme_dark">Dark</string>
     <string name="lumen_qpd_theme_auto">Auto</string>
-    <string name="lumen_qpd_usb">USB</string>
     <!-- screen mirroring tile (org.lumen.miracast) and its popup -->
     <string name="lumen_qpd_mirroring">Screen mirroring</string>
     <string name="lumen_qpd_mirror_on">Screen mirroring (Miracast)</string>

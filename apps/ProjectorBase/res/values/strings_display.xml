@@ -6,8 +6,6 @@
      English base; translations in values-<lang>/strings_display.xml (hand-written, checked by
      i18n/gen.py). "1080p", "2K", "4K" and the pixel sizes are not translated (code). -->
 <resources>
-    <!-- Projector settings section header -->
-    <string name="uires_section">Display</string>
     <!-- Row title (settings, quick panel) and title of the chooser -->
     <string name="uires_row">Interface resolution</string>
     <!-- %1$s = "4K" -->

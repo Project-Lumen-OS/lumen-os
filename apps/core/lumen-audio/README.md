@@ -67,3 +67,11 @@ Hosts: every model's vendor adapter installs `PathSwitch` (which installs `Stock
 `BtA2dp` and takes Auto from `AutoOutput` (the HB also keeps its jack with `JackOutput`), the output choices with CEC (HB `cec/HbSystemAudio` through `HbAudioRules`, X50
 `AudioOutput` through `AudioRules`) ask `SoundbarMode`. Tests: `bash apps/core/lumen-audio/test/run.sh` (every model's
 chip table against its stock rows included), mutants: `python3 apps/core/lumen-audio/test/mutate.py` (on a frozen copy).
+- `BootSound` (Android) and `BootSoundRules` (plain Java): Lumen's power-on sound on every model
+  (`assets/lumen_audio/poweron.wav`, own work, `tools/brand/boot_sound`). A cold boot plays it from the shared
+  `bootanimation.zip` (`part0/audio.wav`, the same bytes) while `persist.sys.bootanim.play_sound` is not 0: the app
+  writes the gate `persist.lumen.boot_sound.play` (switch on and the music audible) and `image/lumen_boot_sound.rc`
+  copies it. A wake from standby plays it from the persistent projector process 3.5 s after SCREEN_ON (after the
+  vendor path check) on the music stream, never while muted, at 0 or over a playing app. The switch is the lumen-menu
+  module row `power.on_music` (`persist.lumen.boot_sound`, unset = on as the stock default); the Z9X, HB and Play 6
+  adapters give it the unit's stock switch as the first value and turn the stock music off.

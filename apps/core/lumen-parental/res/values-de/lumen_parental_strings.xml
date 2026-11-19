@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Jugendschutz</string>
+    <string name="lumen_lp_intro">Legen Sie fest, was Kinder öffnen dürfen und wie lange sie schauen.</string>
+    <string name="lumen_lp_lock">Kindersperre</string>
+    <string name="lumen_lp_lock_desc">Wenn an, lassen sich Geltungsbereich, Sehzeit und mehr festlegen</string>
+    <string name="lumen_lp_lock_off_title">Kindersperre ausschalten?</string>
+    <string name="lumen_lp_lock_off_text">Zeitgrenzen und das Passwort beim Einschalten gelten dann nicht mehr. Die Jugendschutzeinstellungen öffnen ohne Passwort.</string>
+    <string name="lumen_lp_turn_off">Ausschalten</string>
+    <string name="lumen_lp_cancel">Abbrechen</string>
+    <string name="lumen_lp_child_mode">Kindermodus</string>
+    <string name="lumen_lp_child_apps">Apps im Kindermodus</string>
+    <string name="lumen_lp_child_apps_count">%1$d ausgewählt</string>
+    <string name="lumen_lp_range">Geltungsbereich</string>
+    <string name="lumen_lp_range_child">Nur Kindermodus</string>
+    <string name="lumen_lp_range_global">Überall</string>
+    <string name="lumen_lp_session">Zeit pro Sitzung</string>
+    <string name="lumen_lp_session_desc">Danach 10 Minuten Pause</string>
+    <string name="lumen_lp_daily">Zeit pro Tag</string>
+    <string name="lumen_lp_no_limit">Ohne Grenze</string>
+    <string name="lumen_lp_minutes">%1$d Min.</string>
+    <string name="lumen_lp_hours">%1$s Std.</string>
+    <string name="lumen_lp_boot_pin">Passwort beim Einschalten</string>
+    <string name="lumen_lp_boot_child">Kindermodus beim Einschalten</string>
+    <string name="lumen_lp_change_pin">Passwort ändern</string>
+    <string name="lumen_lp_eye">Augenschutz</string>
+    <string name="lumen_lp_eye_desc">Der Augenschutz wird in den Projektoreinstellungen eingestellt</string>
+    <string name="lumen_lp_pin_enter">Passwort der Kindersperre eingeben</string>
+    <string name="lumen_lp_pin_hint">Drücken Sie die Pfeiltasten der Fernbedienung</string>
+    <string name="lumen_lp_pin_set">Passwort der Kindersperre festlegen</string>
+    <string name="lumen_lp_pin_again">Passwort noch einmal eingeben</string>
+    <string name="lumen_lp_pin_mismatch">Die Passwörter sind verschieden. Legen Sie das Passwort neu fest</string>
+    <string name="lumen_lp_pin_wrong">Falsches Passwort</string>
+    <string name="lumen_lp_pin_forgot">Passwort vergessen? OK drücken</string>
+    <string name="lumen_lp_quiz">Wie viel ist %1$d × %2$d?</string>
+    <string name="lumen_lp_quiz_wrong">Nicht richtig. Hier ist eine andere Frage</string>
+    <string name="lumen_lp_rest_title">Zeit für eine Pause</string>
+    <string name="lumen_lp_rest_session">Die Sitzung ist vorbei. 10 Minuten Pause</string>
+    <string name="lumen_lp_rest_daily">Die Sehzeit für heute ist aufgebraucht</string>
+    <string name="lumen_lp_rest_unlock">Entsperren</string>
+    <string name="lumen_lp_on">An</string>
+    <string name="lumen_lp_off">Aus</string>
+</resources>

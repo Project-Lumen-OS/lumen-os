@@ -29,9 +29,6 @@
     <string name="picker_empty">HDMI girişi bulunamadı</string>
     <string name="pref_auto_switch">Bir cihaz bağlandığında otomatik olarak HDMI\'ya geç</string>
     <string name="pref_return_home">Kaynak bağlantısı kesildiğinde ana ekrana dön</string>
-    <string name="pref_cec_otp">HDMI-CEC: cihaz istediğinde HDMI\'ya geç (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: cihazı kumandayla kontrol et</string>
-    <string name="pref_cec_exit">HDMI-CEC: HDMI\'dan çıkarken cihaza bildir</string>
     <string name="pref_boot_source">Açılışta kaynak: %1$s</string>
     <string name="boot_source_home">Ana ekran</string>
     <string name="pref_boot_source_note">Projektörü HDMI-CEC ile bir cihaz açarsa onun girişi açılır.</string>

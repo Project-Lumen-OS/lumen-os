@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">ペアレンタルコントロール</string>
+    <string name="lumen_lp_intro">子どもが開けるものと視聴時間を制限します。</string>
+    <string name="lumen_lp_lock">チャイルドロック</string>
+    <string name="lumen_lp_lock_desc">オンにすると、管理範囲や視聴時間などを設定できます</string>
+    <string name="lumen_lp_lock_off_title">チャイルドロックをオフにしますか?</string>
+    <string name="lumen_lp_lock_off_text">時間制限と起動時のパスワードが無効になります。保護者設定はパスワードなしで開きます。</string>
+    <string name="lumen_lp_turn_off">オフにする</string>
+    <string name="lumen_lp_cancel">キャンセル</string>
+    <string name="lumen_lp_child_mode">キッズモード</string>
+    <string name="lumen_lp_child_apps">キッズモードのアプリ</string>
+    <string name="lumen_lp_child_apps_count">%1$d 個選択</string>
+    <string name="lumen_lp_range">管理範囲</string>
+    <string name="lumen_lp_range_child">キッズモードのみ</string>
+    <string name="lumen_lp_range_global">すべて</string>
+    <string name="lumen_lp_session">1 回の視聴時間</string>
+    <string name="lumen_lp_session_desc">その後 10 分休憩</string>
+    <string name="lumen_lp_daily">1 日の視聴時間</string>
+    <string name="lumen_lp_no_limit">制限なし</string>
+    <string name="lumen_lp_minutes">%1$d 分</string>
+    <string name="lumen_lp_hours">%1$s 時間</string>
+    <string name="lumen_lp_boot_pin">起動時のパスワード</string>
+    <string name="lumen_lp_boot_child">起動時にキッズモード</string>
+    <string name="lumen_lp_change_pin">パスワードを変更</string>
+    <string name="lumen_lp_eye">目の保護</string>
+    <string name="lumen_lp_eye_desc">目の保護はプロジェクターの設定で変更します</string>
+    <string name="lumen_lp_pin_enter">チャイルドロックのパスワードを入力</string>
+    <string name="lumen_lp_pin_hint">リモコンの矢印ボタンを押してください</string>
+    <string name="lumen_lp_pin_set">チャイルドロックのパスワードを設定</string>
+    <string name="lumen_lp_pin_again">もう一度パスワードを入力</string>
+    <string name="lumen_lp_pin_mismatch">パスワードが一致しません。もう一度設定してください</string>
+    <string name="lumen_lp_pin_wrong">パスワードが違います</string>
+    <string name="lumen_lp_pin_forgot">パスワードを忘れた場合は OK を押してください</string>
+    <string name="lumen_lp_quiz">%1$d × %2$d はいくつ?</string>
+    <string name="lumen_lp_quiz_wrong">違います。別の問題です</string>
+    <string name="lumen_lp_rest_title">休憩の時間です</string>
+    <string name="lumen_lp_rest_session">視聴時間が終わりました。10 分休憩してください</string>
+    <string name="lumen_lp_rest_daily">今日の視聴時間は終わりました</string>
+    <string name="lumen_lp_rest_unlock">ロック解除</string>
+    <string name="lumen_lp_on">オン</string>
+    <string name="lumen_lp_off">オフ</string>
+</resources>

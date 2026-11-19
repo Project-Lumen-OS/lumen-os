@@ -20,3 +20,4 @@ model	G0100	B970C	no G0100 dump: the X50 Ultra firmware and remote, assumed
 model	G0155	B870C_CY07_CY_V1.0.5	xgimi-builder ~/devices/g0155_mt9681/dump/getprop.txt
 model	H0062	B970C	no getprop in the Titan OTA dump: the overseas X50 Ultra, assumed
 model	H0063	B970C	no getprop in the Titan OTA dump: the overseas X50 Ultra Max, assumed
+model	G0130	B940D_CY06_CY_V1.0.3	xgimi-builder ~/devices/g0130_mt9660/getprop.txt (Slava's Z9X HB on stock; G0148 and G0118 share the HB profile and its picture)

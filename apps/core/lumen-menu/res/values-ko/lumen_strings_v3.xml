@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">동적 톤 매핑</string>
     <string name="lumen_gm_chip_hz">%1$d Hz</string>
     <string name="lumen_m_panel_speed_top_note">터보: 키스톤 보정이 꺼집니다</string>
-    <string name="lumen_m_ok">확인</string>
     <string name="lumen_m_cancel">취소</string>
     <string name="lumen_m_panel_boost_press_again">→를 한 번 더 누르면 Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">←를 한 번 더 누르면 Boost 종료</string>

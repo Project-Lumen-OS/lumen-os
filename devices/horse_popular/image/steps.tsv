@@ -6,7 +6,7 @@
 # devices/horse_popular/image/z9x_props.py). No test adb of any kind goes into this image. check_image.py and
 # lumen_checks.py run from the repository ({REPO}: they read tools/sign, tools/lumen, tools/ota/image, overlay/v1).
 *	need	patch_tar.py	erofs_kcheck.py	lumen_dsu_install.rc	lumen_dsu_install.sh	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-sysconfig-nogms.xml	z9x_gapps.sh	z9x_nui.sh	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	z9x_setup.rc	first_start_prop.txt	first_start.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	z9x_model_props.rc	z9x_model_props.tsv	z9x_model_prop_dapeng.txt	model_props.py	x50_props.py
-*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk
+*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenPackageInstallerOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk
 *	sh_n	lumen_dsu_install.sh
 *	sh_n	z9x_nui.sh
 *	base_pin
@@ -65,6 +65,9 @@
 *	tar_rm	system/system_ext/priv-app/TvSettingsTwoPanel/oat
 # screen mirroring: the Wi-Fi Direct device type "television" for Windows (apps/LumenWifiP2pOverlay, static RRO, no dex)
 *	tar_add	system/product/overlay/LumenWifiP2pOverlay.apk	stage/apk/LumenWifiP2pOverlay.apk	644
+# the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
+# theme puts the uninstall guided step into a floating dialog (one letter per line), this overlay fixes it for every model
+*	tar_add	system/product/overlay/LumenPackageInstallerOverlay.apk	stage/apk/LumenPackageInstallerOverlay.apk	644
 # the framework keys overlay and the remote key layouts: the gear held on the XGIMI remotes opens the game menu
 *	tar_add	system/product/overlay/Z9xFrameworkKeysOverlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	644
 *	tar_add	system/product/usr/keylayout/Vendor_000d_Product_3838.kl	Vendor_000d_Product_3838.kl	644
@@ -90,6 +93,13 @@
 *	line	lumen_hdmirx.sh	HELP=help
 *	tar_add	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc	644
 *	tar_add	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh	755
+# Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)
+*	need	lumen_boot_sound.rc
+*	tar_add	system/etc/init/lumen_boot_sound.rc	lumen_boot_sound.rc	644
+# the shared boot animation with the power-on sound part0/audio.wav (tools/brand/gen_bootanim.py --add-audio over the
+# 1.0.9 zip, frames unchanged): the 1.0.9 member has no sound, the bootanimation-dark.zip symlink stays
+*	need	bootanimation.zip
+*	tar_add	system/product/media/bootanimation.zip	bootanimation.zip	644
 *	tar_add	system/etc/permissions/privapp-permissions-lumen-miracast.xml	privapp-permissions-lumen-miracast.xml	644
 *	tar_add	system/product/etc/default-permissions/lumen-miracast.xml	lumen-miracast-default-permissions.xml	644
 *	tar_add	system/etc/sysconfig/z9x.xml	z9x-sysconfig-nogms.xml	644
@@ -107,6 +117,9 @@
 # applies the volume)
 *	need	z9x_base.rc
 *	tar_add	system/etc/init/z9x_base.rc	z9x_base.rc	644
+# the emulator's tether list (wlan only) outranks the vendor TetheringRROOverlay (ap0): it goes, so the hotspot of the
+# Network popup (lumen-system Hotspot) hands phones an address
+*	tar_rm	system/product/overlay/EmulatorTetheringConfigOverlay.apk
 *	tar_rm	system/etc/init/z9x_audio.rc
 *	tar_rm	system/etc/xgimi/audio_policy_engine_stream_volumes.xml
 # the stock model properties a Lumen Z9X reads (z9x_model_props.rc: the XGIMI init loads
@@ -145,6 +158,8 @@
 *	tar_same	{tar}	system/etc/init/z9x_base.rc	z9x_base.rc
 *	tar_same	{tar}	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc
 *	tar_same	{tar}	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh
+*	tar_same	{tar}	system/etc/init/lumen_boot_sound.rc	lumen_boot_sound.rc
+*	tar_same	{tar}	system/product/media/bootanimation.zip	bootanimation.zip
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.build_id={build_id}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.version_code={vcode}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.version={v}

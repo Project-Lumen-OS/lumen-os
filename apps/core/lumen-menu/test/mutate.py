@@ -14,7 +14,62 @@ G = os.path.dirname(os.path.dirname(os.path.dirname(MOD)))
 S = "src/org/lumen/menu/"
 MC = "src/org/lumen/projector/panel/MenuController.java"
 UI = "src/org/lumen/projector/ui/"
+MS = "src/org/lumen/projector/panel/ModuleScreens.java"
 MUTANTS = [
+    # ---- user picture modes (stock CustomizeDataManager, user-picture-modes)
+    ("custom: ten modes not full", S + "CustomModes.java", "return modes.size() >= MAX;", "return modes.size() > MAX;"),
+    ("custom: duplicate id taken", S + "CustomModes.java", "of(m.value) != null || ", ""),
+    ("custom: duplicate name taken", S + "CustomModes.java", " || check(m.name) != NameCheck.OK) return this;", ") return this;"),
+    ("custom: empty name taken", S + "CustomModes.java", "if (name == null || name.isEmpty()) return NameCheck.EMPTY;", "if (name == null) return NameCheck.EMPTY;"),
+    ("custom: wide character counts 1", S + "CustomModes.java", "                n += 3;\n", "                n += 1;\n"),
+    ("custom: wide character eats no bytes", S + "CustomModes.java", "                i += 2;\n", ""),
+    ("custom: name limit off by one", S + "CustomModes.java", "return nameLength(s) <= NAME_MAX;", "return nameLength(s) < NAME_MAX;"),
+    ("custom: limit 9", S + "CustomModes.java", "public static final int MAX = 10;", "public static final int MAX = 9;"),
+    ("custom: name limit 32", S + "CustomModes.java", "public static final int NAME_MAX = 24;", "public static final int NAME_MAX = 32;"),
+    ("custom: other setting key", S + "CustomModes.java", "\"customize_data_key\"", "\"lumen_custom_modes\""),
+    ("custom: modes before the stock modes", S + "CustomModes.java", "            opts.add(t);\n", "            opts.add(0, t);\n"),
+    ("custom: no labels", S + "CustomModes.java", "            b.label(FeatureId.PICTURE_MODE, t, m.name);\n", ""),
+    ("custom: base always shown", S + "CustomModes.java", "b.hideIf(FeatureId.PICTURE_CUSTOM_BASE, !inUse);", ""),
+    ("custom: delete always shown", S + "CustomModes.java", "b.hideIf(FeatureId.PICTURE_CUSTOM_DELETE, !inUse);", ""),
+    ("custom: entry kept when full", S + "CustomModes.java", "b.hideIf(FeatureId.PICTURE_CUSTOM_NEW, full());", ""),
+    ("custom: runtime subset ignored", S + "CustomModes.java", "new ArrayList<>(runtime != null ? runtime : profileModes)", "new ArrayList<>(profileModes)"),
+    ("custom: negative token value", S + "CustomModes.java", "!n.chars().allMatch(Character::isDigit)", "!n.chars().allMatch(ch -> ch == '-' || Character.isDigit(ch))"),
+    ("custom: name escapes dropped", S + "CustomModes.java", "if (c == '\"' || c == '\\\\') b.append('\\\\').append(c);", "if (c == '\\\\') b.append('\\\\').append(c);"),
+    ("custom: unicode escape ignored", S + "CustomModes.java", "b.append((char) Integer.parseInt(s.substring(i, i + 4), 16));", "b.append('?');"),
+    ("custom: unknown key not skipped", S + "CustomModes.java", "                    else other();\n", ""),
+    # ---- module rows: key sounds, colour vision, the focus picture (stock-gaps-1)
+    ("module rows: key sounds written inverted", MS, "            KeyTone.set(c, ON.equals(value));", "            KeyTone.set(c, !ON.equals(value));"),
+    ("module rows: key sounds without read back", MS, "return KeyTone.on(c) == ON.equals(value);", "return true;"),
+    ("module rows: colour vision without read back", MS, "return ColourVision.set(c, value) && value.equals(ColourVision.get(c));",
+     "return ColourVision.set(c, value);"),
+    ("module rows: key sounds left to the adapter", S + "MenuSpec.java",
+     "FeatureId.SIGNAL_REFRESH, FeatureId.SOUND_KEY_TONE, FeatureId.SETTINGS_COLOUR_VISION,",
+     "FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_COLOUR_VISION,"),
+    # ---- the Network popup and the hotspot (owner variant A, 2026-11-19)
+    ("hotspot: no line in the popup", S + "MenuSpec.java", "                    {LINE, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME",
+     "                    {null, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME"),
+    ("hotspot: name before the switch", S + "MenuSpec.java", "{LINE, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME,",
+     "{LINE, FeatureId.NETWORK_HOTSPOT_NAME, FeatureId.NETWORK_HOTSPOT,"),
+    ("hotspot: the switch left to the adapter", S + "MenuSpec.java", "FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT));",
+     "FeatureId.SETTINGS_SCREENSAVER_DELAY));"),
+    ("hotspot: part of the rows accepted", S + "MenuProfile.java", "if (hotspot != 0 && hotspot != MenuSpec.HOTSPOT_ROWS.size()) {", "if (false) {"),
+    ("hotspot: rows without the tile accepted", S + "MenuProfile.java",
+     "if (hotspot != 0 && !features.containsKey(FeatureId.NETWORK)) problem(", "if (false) problem("),
+    ("hotspot: any iface accepted", S + "MenuProfile.java", "|| !IFACE.matcher((String) ifc).matches()) {", ") {"),
+    ("hotspot: a long name accepted", S + "MenuProfile.java", ".getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 32) {", ".length() > 64) {"),
+    ("hotspot: a name anywhere", S + "MenuProfile.java", "} else if (par.containsKey(\"name\") || par.containsKey(\"iface\")) {", "} else if (false) {"),
+    ("hotspot: Wi-Fi alone opens a popup", MC, "        if (MenuSpec.NETWORK.equals(key) && !rows.containsKey(FeatureId.NETWORK_HOTSPOT)) return null;   // Wi-Fi alone: no popup\n", ""),
+    ("hotspot: the action goes to the adapter", MC, "        if (MenuSpec.module(f)) {                             // a module's own action (the hotspot restore default)",
+     "        if (false) {"),
+    ("hotspot: the text screen closes the menu", MS, "        return f == FeatureId.NETWORK_HOTSPOT_NAME || f == FeatureId.NETWORK_HOTSPOT_PASSWORD;", "        return false;"),
+    ("hotspot: name editable while off", MS, "        b.disable(FeatureId.NETWORK_HOTSPOT_NAME).disable(FeatureId.NETWORK_HOTSPOT_PASSWORD);\n", ""),
+    ("hotspot: restore shown while off", MS, "        b.hide(FeatureId.NETWORK_HOTSPOT_RESET);\n", ""),
+    ("hotspot: rows without the tether check", MS, "return Hotspot.supported(c, p.text(FeatureId.NETWORK_HOTSPOT, \"iface\"));", "return true;"),
+    ("hotspot: switch inverted", MS, "            if (ON.equals(value)) Hotspot.start(c, hotspotNotes(c));", "            if (!ON.equals(value)) Hotspot.start(c, hotspotNotes(c));"),
+    ("hotspot: Android read where the rows are not there", MS, "        if (hotspotRows) hotspot(c, p, b);", "        hotspot(c, p, b);"),
+    ("hotspot: a refused text saved", "src/org/lumen/projector/panel/TextEditActivity.java", "        if (problem != 0) {", "        if (false) {"),
+    ("module rows: the focus picture left to the adapter", S + "MenuSpec.java",
+     "EnumSet.of(FeatureId.FOCUS_GUIDE));", "EnumSet.noneOf(FeatureId.class));"),
     # ---- a stepped choice the device refused (ChoiceStep, HB output row 2026-11-14)
     ("choice step: a refused step stays", S + "ChoiceStep.java", "return answer == ResultKind.REFUSED || ", "return "),
     ("choice step: a failed step stays", S + "ChoiceStep.java", "|| answer == ResultKind.FAILED ", ""),
@@ -203,6 +258,17 @@ MUTANTS = [
     ("both candidates of a slot count as card tiles", S + "MenuSpec.java",
      "                        out.add((FeatureId) t[i]);\n                        break;", "                        out.add((FeatureId) t[i]);"),
     ("header kept without rows", S + "MenuSpec.java", "if (!rs.isEmpty()) groups.add", "groups.add"),
+    # ---- dev-page (2026-11-19): For developers is its own page, the last of All settings
+    ("developer page not in All settings", S + "MenuSpec.java", "SOUND, EYE, GENERAL, DEVELOPER};", "SOUND, EYE, GENERAL};"),
+    ("developer page before General", S + "MenuSpec.java", "SOUND, EYE, GENERAL, DEVELOPER};", "SOUND, EYE, DEVELOPER, GENERAL};"),
+    ("developer rows back in General", S + "MenuSpec.java",
+     "FeatureId.VOICE_KEY}}},\n", "FeatureId.VOICE_KEY},\n                    {\"developer\", FeatureId.SIGNAL_PANEL}}},\n"),
+    ("developer page without the diagnostics", S + "MenuSpec.java",
+     "FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS}}},", "FeatureId.SIGNAL_REFRESH}}},"),
+    ("developer page opens as a popup", S + "MenuSpec.java",
+     "return GENERAL.equals(section) || DEVELOPER.equals(section);", "return GENERAL.equals(section);"),
+    ("developer page without its title", "src/org/lumen/projector/panel/MenuLabels.java",
+     "            case \"developer\": return R.string.lumen_m_hdr_developer;\n", ""),
     ("tile without the feature", S + "MenuSpec.java", "if (a) r.add(new Tile((String) t[0], id, b ? alt : null, yields));",
      "r.add(new Tile((String) t[0], id, b ? alt : null, yields));"),
     # the card rows of 2026-11-13: voice search and the gear on top, projection yields to mirroring, eye protection last
@@ -506,7 +572,7 @@ MUTANTS = [
     ("keystone order: X50 lens memory without the Smart title", "../../../devices/g0111/menu.json",
      '{"header": "smart", "rows": ["zoom.memory"]}', '{"rows": ["zoom.memory"]}'),
     ("keystone order: RS30 rotation before zoom", "../../../devices/g0155/menu.json",
-     '["zoom", "keystone.fit_screen", "zoom.move", "keystone.rotation"]', '["keystone.rotation", "zoom", "keystone.fit_screen", "zoom.move"]'),
+     '["zoom", "zoom.move", "keystone.rotation"]', '["keystone.rotation", "zoom", "zoom.move"]'),
     ("keystone order: Play 6 without its line", "../../../devices/dragon_healthy/menu.json", '{"header": "line", ', "{"),
     ("keystone order: the stock map moves More to Smart", "test/stock_order.py",
      '"brightness_more_title": (HEADER, "more"),', '"brightness_more_title": (HEADER, "smart"),'),
@@ -617,6 +683,12 @@ def main():
                     os.makedirs(os.path.join(root, d), exist_ok=True)
                     for f in [ad] + glob.glob(os.path.join(G, d, "*Rows.java")):
                         shutil.copy(os.path.join(G, f), os.path.join(root, d))
+            # the shared settings rows the Z9X-family adapters delegate to (MenuSpecTest.sections reads them too), else
+            # every mutant is red on their rows and a mutant that the tests miss counts as killed
+            rows = os.path.join("apps", "common", "projector", "src", "org", "lumen", "projector", "panel", "SettingsRows.java")
+            if os.path.isfile(os.path.join(G, rows)):
+                os.makedirs(os.path.dirname(os.path.join(root, rows)), exist_ok=True)
+                shutil.copy(os.path.join(G, rows), os.path.join(root, rows))
             p = os.path.join(dst, rel)
             src = open(p, encoding="utf-8").read()
             if src.count(old) != 1:

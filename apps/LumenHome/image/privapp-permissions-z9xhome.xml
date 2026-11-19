@@ -16,5 +16,7 @@
         <permission name="android.permission.INSTALL_PACKAGES" />
         <!-- Google Play without a Google account: the Google sign-in first (PlayGate) -->
         <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED" />
+        <!-- parental controls (apps/core/lumen-parental): the PIN and rest screens open from the usage service -->
+        <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
     </privapp-permissions>
 </permissions>

@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">نقل</string>
     <string name="lumen_qe_move_hint">الدوائر تتحرك في الصف العلوي فقط، والمربعات بين الصفوف فقط. لتصبح المربع دائرة غير شكله.</string>
     <string name="lumen_qe_put">ضعه هنا</string>
-    <string name="lumen_qe_cancel">إلغاء</string>
     <string name="lumen_qe_full">القائمة ممتلئة. اختر شكلا أصغر أو شكل القائمة.</string>
     <string name="lumen_qe_list_full">هذا العدد من العناصر لا يتسع في قائمة. أزل بعضها أولا.</string>
     <string name="lumen_qe_pinned">هذا الزر يبقى دائما في القائمة.</string>

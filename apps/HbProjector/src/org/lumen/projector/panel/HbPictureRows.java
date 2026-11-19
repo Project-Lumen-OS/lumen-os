@@ -2,6 +2,7 @@ package org.lumen.projector.panel;
 
 import android.util.Log;
 
+import org.lumen.menu.CustomModes;
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.ProjectorFeatures.Result;
 import org.lumen.projector.R;
@@ -64,6 +65,18 @@ final class HbPictureRows extends HbRows {
                 if (!g.setMemcLevel(MemcLevel.values()[w])) throw new IllegalStateException("TV 31 false");
                 return null;
             }
+            case PICTURE_CUSTOM_BASE: {                                         // stock PictureRepository.setCustomBasePictureMode
+                Integer w = HbMenuGates.CUSTOM_BASE.wire(value);
+                if (w == null) throw new IllegalArgumentException("custom base " + value);
+                int mode = userModeNow(g);
+                g.setCustomPictureBase(mode, w);                                // TV 197
+                if (g.customPictureBase(mode) != w) throw new IllegalStateException("198 read back differs");
+                return null;
+            }
+            case PICTURE_ANTI_RBE:                                              // stock dapengfhm picture_anti_rbe
+                g.setRainbowReductionStatus(on);                                // DISPLAY 205
+                if ((g.getRainbowReductionStatus() == HbMenuFeatures.ON) != on) throw new IllegalStateException("203 read back differs");
+                return null;
             default:
                 return OTHER;
         }
@@ -76,6 +89,23 @@ final class HbPictureRows extends HbRows {
                 write("TV 164 reset basic + professional", cb, (g, g2) -> {
                     if (!g2.resetPicture(PictureReset.BASIC)) throw new IllegalStateException("164 basic false");
                     if (!g2.resetPicture(PictureReset.PROFESSIONAL)) throw new IllegalStateException("164 professional false");
+                    return null;
+                });
+                return true;
+            case PICTURE_CUSTOM_NEW:                                            // stock picture_customize: create, select
+                write("TV 195 new user picture mode", cb, (g, g2) -> {
+                    int id = g.createCustomPictureMode();                       // TV 195 (-1: from the mode in use)
+                    if (id < 0 || !HbMenuFeatures.userMode(id)) throw new IllegalStateException("195 returned " + id);
+                    selectUserMode(id, g);
+                    return null;
+                });
+                return true;
+            case PICTURE_CUSTOM_DELETE:                                         // stock delete_image_mode_user_setting
+                write("TV 196 delete the user picture mode", cb, (g, g2) -> {
+                    int mode = userModeNow(g);
+                    int r = g.deleteCustomPictureMode(mode);                    // TV 196, stock: 1 = deleted
+                    if (r != 1) throw new IllegalStateException("196 returned " + r);
+                    Log.i(TAG, "196(" + mode + ") -> 1, picture mode now " + g.getPictureModeRaw());
                     return null;
                 });
                 return true;
@@ -110,6 +140,20 @@ final class HbPictureRows extends HbRows {
         return null;
     }
 
+    /** HAL thread: setPictureMode(0, id) of a user mode, read back by TV 34. */
+    private static void selectUserMode(int id, GmpfClient g) throws Exception {
+        if (!g.setCustomPictureMode(id)) Log.w(TAG, "33(" + id + ") returned false");    // TV 33
+        int now = g.getPictureModeRaw();
+        if (now != id) throw new IllegalStateException("34 reads " + now + ", not " + id);
+    }
+
+    /** HAL thread: the user picture mode in use; the rows of one are shown only then. */
+    private static int userModeNow(GmpfClient g) throws Exception {
+        int mode = g.getPictureModeRaw();
+        if (!HbMenuFeatures.userMode(mode)) throw new IllegalStateException("picture mode " + mode + " is not a user mode");
+        return mode;
+    }
+
     /** "Boost belongs to <picture mode>: choose another picture mode" (Performance / Office), stock HB text. */
     private String boostLocked(Integer pictureModeWire) {
         String tok = pictureModeWire == null ? null : HbMenuGates.PICTURE_MODE.token(pictureModeWire);
@@ -125,6 +169,15 @@ final class HbPictureRows extends HbRows {
      * content does not allow are greyed by the profile's support lists (SignalRule) and never reach here.
      */
     private String setPictureMode(String value, GmpfClient g, Gmpf2Client g2) throws Exception {
+        Integer user = CustomModes.value(value);
+        if (user != null) {                                                     // stock picture_customize_<id>
+            if (!HbMenuFeatures.userMode(user)) throw new IllegalArgumentException("picture mode " + value);
+            Integer raw = g.getPictureModeRaw();
+            if (raw != null && raw.equals(user)) return null;
+            if (gameModeOn(g, raw)) return "blocked_game";
+            selectUserMode(user, g);
+            return null;
+        }
         Integer w = HbMenuGates.PICTURE_MODE.wire(value);
         if (w == null) throw new IllegalArgumentException("picture mode " + value);
         PictureMode m = PictureMode.fromWire(w);

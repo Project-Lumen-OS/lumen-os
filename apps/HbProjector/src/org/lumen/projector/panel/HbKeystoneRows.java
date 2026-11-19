@@ -28,6 +28,10 @@ final class HbKeystoneRows extends HbRows {
             case KEYSTONE_ON_POWER:
                 g.setPowerOnAk(on);                                             // FACT 45
                 return null;
+            case KEYSTONE_ON_MOVE:                                              // stock displacement_autoKeystone_v5
+                g.setMoveAk(on);                                                // MOTION 6
+                if (g.getMoveAk() != on) throw new IllegalStateException("7 read back differs");
+                return null;
             case KEYSTONE_CURTAIN:
                 Hal.setCurtainFitCoupled(g, on);                                // FOCUS 35 (+ 33 on)
                 return null;

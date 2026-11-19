@@ -165,7 +165,6 @@ public final class OldWalk {
         p.add(nav(s("panel_manual_keystone")));
         p.add(nav(s("panel_optical_zoom")));
         p.add(text(s("panel_optical_zoom_summary")));
-        if (Boolean.TRUE.equals(env.get("fit"))) { p.add(nav(s("fit_row"))); p.add(text(s("fit_row_summary"))); }
         p.add(nav(s("rot_title")));
         p.add(new WalkLib.Row("header", s("panel_image_correction_settings")));
         p.add(toggle("panel_rt_keystone", ok ? sn.moveAk : null));
@@ -520,7 +519,6 @@ public final class OldWalk {
                 if (r != null) return r;
                 return Boolean.TRUE.equals(sn.nativeFps) ? "note " + s("panel_memc") + " | " + s("pro_memc_blocked") : "go";
             }
-            case "keystone.fit_screen": return ok && sn.isTopSpeedGame() ? "note " + s("panel_kst_game_mode") : "go";
             case "lamp": {                                                // QPC:421 + 584 lampRefusal
                 if (!ok || !(Lamp3d.blocks(sn.fmt3d, sn.is3dTo2d) || Lamp3d.modeLocks(sn.lumensMode))) return "go";
                 int b = PanelRules.brightness(rin());
@@ -595,7 +593,6 @@ public final class OldWalk {
                     @SuppressWarnings("unchecked") List<Object> p = (List<Object>) po;
                     String f = (String) p.get(0), v = (String) p.get(1);
                     if ("settings.launcher".equals(f) && !Boolean.TRUE.equals(env.get("launcher"))) continue;
-                    if ("keystone.fit_screen".equals(f) && !Boolean.TRUE.equals(env.get("fit"))) continue;
                     out.append("probe ").append(f).append('=').append(v).append(": ").append(probe(f, v)).append('\n');
                 }
             }

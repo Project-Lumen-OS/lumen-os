@@ -5,7 +5,7 @@
 # capability. What changes and why: devices/g0111/README.md; verify_tree_x50.py proves exactly that and nothing else.
 # Flags: test (tN) or pub (a release version), stage (--stage-only), image (--image-only).
 *	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc
-*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/base_signed/base_signed.tsv
+*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/base_signed/base_signed.tsv
 ota	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	ota_gate.conf	otacerts.zip	z9x-updater-default-permissions.xml	remove_ota.txt	stage/LumenUpdater.apk
 # the update client of a model with updates (build.conf derive=ota:pub): the neutral gate, its X50 data, the model's
 # OTA certificates (tools/devices/ota/make_otacerts.py), the base's default permission file of org.lumen.updater
@@ -42,6 +42,9 @@ ota	sha	z9x-updater-default-permissions.xml	8ffddb73368df23a6052a04a7002feec7e33
 # settings (blobs.conf: 16 MiB partition, the eye-protection drawer, in a trial run the stock slot) and placeholders
 test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	place	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc	0644	0	0	{LABEL}
+# Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)
+*	need	lumen_boot_sound.rc
+!image	place	lumen_boot_sound.rc	{sys}/etc/init/lumen_boot_sound.rc	0644	0	0	{LABEL}
 !image	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
 !image	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
 !image	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
@@ -54,6 +57,9 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	place	stage/X50EyeGuard.apk	{sys}/app/X50EyeGuard/X50EyeGuard.apk	0644	0	0	{LABEL}
 !image	run_root	x50_power_keys.py	apply	{sys}/product/usr/keylayout
 !image	place	stage/X50PowerOverlay.apk	{sys}/product/overlay/X50PowerOverlay.apk	0644	0	0	{LABEL}
+# the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
+# theme puts the uninstall guided step into a floating dialog (one letter per line), this overlay fixes it for every model
+!image	place	stage/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk	0644	0	0	{LABEL}
 # Lumen Home and the HDMI input of this tree over the base's (their oat files were compiled for the base APKs)
 !image	place	stage/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
 !image	cleanup	{sys}/priv-app/Z9xHome/oat

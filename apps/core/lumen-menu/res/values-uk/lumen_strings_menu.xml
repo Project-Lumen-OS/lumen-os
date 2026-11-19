@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost робить картинку яскравішою, але кольори стають блідішими. Колірний простір не змінюється.</string>
     <string name="lumen_m_cec_entry">HDMI-пристрої (CEC)</string>
     <string name="lumen_m_eq_title">Еквалайзер</string>
-    <string name="lumen_m_fit_row">Вписати за розміром полотна</string>
-    <string name="lumen_m_fit_row_summary">Зум підбирається за відстанню до полотна та його розміром</string>
     <string name="lumen_m_hdmi_mode">Режим HDMI</string>
     <string name="lumen_m_hdmi_mode_compat">Сумісний (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Покращений (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Швидке</string>
     <string name="lumen_m_signal_refresh_note">Швидке: можливі рідкісні посмикування кадру</string>
     <string name="lumen_m_hdr_developer">Для розробників</string>
+    <string name="lumen_m_hdr_power">Увімкнення</string>
+    <string name="lumen_m_power_on_ac">Увімкнення живлення й автозапуск</string>
+    <string name="lumen_m_power_on_ac_tip">Після ввімкнення живлення проєктор запускається автоматично</string>
+    <string name="lumen_m_custom_base">На основі</string>
+    <string name="lumen_m_custom_delete">Видалити користувацький</string>
+    <string name="lumen_m_custom_delete_ask">Видалити користувацький режим зображення?</string>
+    <string name="lumen_m_custom_confirm">Підтвердити</string>
+    <string name="lumen_m_custom_name">Введіть назву режиму</string>
+    <string name="lumen_m_custom_name_empty">Назва не може бути порожньою</string>
+    <string name="lumen_m_custom_name_taken">Така назва вже є, спробуйте іншу</string>
+    <string name="lumen_m_custom_name_max">Досягнуто максимальної довжини</string>
 </resources>

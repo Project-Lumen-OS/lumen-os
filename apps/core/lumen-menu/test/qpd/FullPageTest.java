@@ -200,22 +200,30 @@ public final class FullPageTest {
         }
         check(pages > 30, "pages walked: " + pages);
 
-        // the owner's photo: Z9X HB All settings, Picture, off HDMI: the three HDMI rows are greyed under the header
+        // the owner's photo: Z9X HB All settings, Picture, off HDMI: the three HDMI rows are greyed under the header.
+        // The profile also names the G0148 tree's rainbow reduction (picture.anti_rbe, stock dapengfhm: the last
+        // picture row, right after Reset all), which the adapter hides on the G0130 of the photo (HbFeatures)
         MenuProfile hb = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/goat_elegant/menu.json")),
                 StandardCharsets.UTF_8));
         MenuSpec spec = MenuSpec.of(hb);
-        List<Line> ls = lines(hb, spec, MenuSpec.PICTURE);
         Set<FeatureId> offHdmi = new HashSet<>(Arrays.asList(FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT));
-        boolean[] can = new boolean[ls.size()];
-        int resetAll = -1;
-        for (int i = 0; i < ls.size(); i++) {
-            can[i] = ls.get(i).kind == ROW && !offHdmi.contains(ls.get(i).feature);
-            if (ls.get(i).feature == FeatureId.PICTURE_RESET_ALL) resetAll = i;
+        for (FeatureId last : new FeatureId[] {FeatureId.PICTURE_RESET_ALL, FeatureId.PICTURE_ANTI_RBE}) {
+            String unit = last == FeatureId.PICTURE_RESET_ALL ? "HB G0130 picture: " : "HB G0148 picture: ";
+            List<Line> ls = lines(hb, spec, MenuSpec.PICTURE);
+            if (last == FeatureId.PICTURE_RESET_ALL) ls.removeIf(l -> l.feature == FeatureId.PICTURE_ANTI_RBE);
+            boolean[] can = new boolean[ls.size()];
+            int at = -1;
+            for (int i = 0; i < ls.size(); i++) {
+                can[i] = ls.get(i).kind == ROW && !offHdmi.contains(ls.get(i).feature);
+                if (ls.get(i).feature == last) at = i;
+            }
+            check(at > 0 && ls.get(at + 1).kind == HEADER && ls.size() == at + 5,
+                    unit + last + ", then the HDMI header and its three rows " + ls);
+            check(last == FeatureId.PICTURE_RESET_ALL || at > 0 && ls.get(at - 1).feature == FeatureId.PICTURE_RESET_ALL,
+                    unit + "rainbow reduction right after Reset all, as the stock dapengfhm tree " + ls);
+            check(at > 0 && QpdLayout.listTarget(can, at - 1, true) == at && QpdLayout.listEnd(can, at, true),
+                    unit + "DOWN onto " + last + " scrolls to the end, the greyed HDMI rows come into view");
         }
-        check(resetAll >= 0 && ls.get(resetAll + 1).kind == HEADER && ls.size() == resetAll + 5,
-                "HB picture: Reset all, then the HDMI header and its three rows " + ls);
-        check(QpdLayout.listTarget(can, resetAll - 1, true) == resetAll && QpdLayout.listEnd(can, resetAll, true),
-                "HB picture: DOWN onto Reset all scrolls to the end, the greyed HDMI rows come into view");
         MenuState off = MenuState.builder().disable(FeatureId.HDMI_RANGE).build();
         check(spec.headerShown(spec.sections.get(MenuSpec.PICTURE).get(1).rows, off), "HB picture: greyed HDMI rows keep their header");
 

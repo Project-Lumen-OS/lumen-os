@@ -52,6 +52,7 @@ import org.lumen.projector.ui.Row;
 import org.lumen.projector.ui.SliderRow;
 import org.lumen.projector.ui.TextRow;
 import org.lumen.ui.LumenTheme;
+import org.lumen.ui.Palette;
 import org.lumen.ui.ThemeMode;
 import org.lumen.projector.ui.Theme;
 import org.lumen.projector.ui.ToggleRow;
@@ -111,16 +112,16 @@ public final class MenuController {
             FeatureId.PICTURE_3D);
     /** These close the menu first and act when it is gone (they show their own overlay or leave the menu). */
     static final Set<FeatureId> CLOSE_FIRST = set(FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.FOCUS_AF_NOW,
-            FeatureId.FOCUS_MANUAL, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_HDMI,
+            FeatureId.FOCUS_MANUAL, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_HDMI,
             FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.SETTINGS_REMOTE,
-            FeatureId.SETTINGS_LICENCES,
+            FeatureId.SETTINGS_LICENCES, FeatureId.VOICE_KEY, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE_KEYS,
             FeatureId.LAMP_OFF);
     /** A closed panel's exit animation and a frame more: then the action behind it runs. */
     static final long AFTER_CLOSE_MS = Theme.PANEL_EXIT_MS + 60;
     /** These leave the menu for another app or screen: refused while the first-run setup runs. */
     static final Set<FeatureId> SETUP_GATED = set(FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK,
-            FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI,
-            FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER);
+            FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI,
+            FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.VOICE_KEY, FeatureId.SETTINGS_REMOTE_KEYS);
 
     /** Device pages shown inside the panel (null: none, the menu then asks ProjectorFeatures.open). */
     public interface Pages {
@@ -153,6 +154,8 @@ public final class MenuController {
     private final Pages devicePages;
     private final PanelHost host;
     private final Map<String, Page> pages = new LinkedHashMap<>();       // section -> full page
+    private final Map<FeatureId, Page> subPages = new HashMap<>();       // PAGE row -> its page
+    private final CustomPictures custom;
     private final Map<String, Page> popups = new HashMap<>();            // wide tile -> radio popup, section tile -> popup
     private final Set<String> tilePopups = new HashSet<>();               // popups of tilePopup
     private final Map<FeatureId, View> rows = new LinkedHashMap<>();        // feature (picture.pq.<item>) -> row
@@ -241,6 +244,7 @@ public final class MenuController {
         this.signal = new SignalWatch(dev, this::ours, () -> state, this::refresh);
         this.quickStore = new SecureQuickStore(app);
         this.devicePages = devicePages;
+        this.custom = new CustomPictures(c.getApplicationContext() != null ? c.getApplicationContext() : c, customHost());
         this.host = host != null ? host : OverlayPanelHost.get(app);
         this.profile = profile(app);
         this.spec = MenuSpec.of(profile);
@@ -276,7 +280,7 @@ public final class MenuController {
 
     private boolean has(FeatureId f) {
         if (MenuSpec.EVERY_MODEL.contains(f)) return ModuleScreens.available(app, f);
-        if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, f);
+        if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, profile, f);
         if (!profile.has(f) || !dev.implemented().contains(f)) return false;
         try {
             return dev.available(f);
@@ -399,6 +403,7 @@ public final class MenuController {
 
     private void addRow(Page p, FeatureId f) {
         if (MenuSpec.onOutputPage(f, profile)) return;     // drawn at the bottom of the sound output page
+        if (FeatureId.PICTURE_CUSTOM_NEW == f) return;     // an entry of the picture mode lists (customEntry)
         if (FeatureId.BOOST == f) {                        // Boost is the slider's top step; here only its hint
             p.add(new TextRow(app, s(MenuLabels.boostSummary(profile.boostSummary()))));
             return;
@@ -474,6 +479,7 @@ public final class MenuController {
             case PAGE: {
                 Page sub = buildPage(f);
                 if (sub.rows().isEmpty()) return;                // no row of it the adapter implements: no row
+                subPages.put(f, sub);
                 row = p.add(new NavRow(app, title, () -> safe("page " + f, () -> openPage(f, sub))));
                 break;
             }
@@ -562,6 +568,7 @@ public final class MenuController {
         if (r == 0) r = MenuLabels.option(f, token);
         int fmt = r == 0 && token.matches("[0-9]{1,6}") ? MenuLabels.optionFormat(f.id) : 0;
         if (fmt != 0) return app.getString(fmt, Integer.parseInt(token));
+        if (r == 0 && MenuLabels.ownLabels(f.id)) return token.toUpperCase(java.util.Locale.ROOT);
         if (r == 0) Log.w(TAG, "no label for " + f + " option " + token);
         return r == 0 ? token : s(r);
     }
@@ -636,6 +643,7 @@ public final class MenuController {
         for (String o : opts) {
             list.add(p.add(new CheckRow(app, optionLabel(f, o), o.equals(cur), () -> safe("radio " + f, () -> choose(f, o)))));
         }
+        if (FeatureId.PICTURE_MODE == f) customEntry(p, false);
         p.add(new NavRow(app, s(moreRes), () -> safe("more " + sec, () -> push(pages.get(sec)))));
         View tip = tip(f);
         if (tip != null) pageTips.put(p, tip);
@@ -942,7 +950,12 @@ public final class MenuController {
 
     /** The menu's colours follow the theme button (the shared lumen-ui theme): light or dark. */
     private void followTheme() {
-        if (QpdStyle.theme(!LumenTheme.dark(app))) {
+        restyle(LumenTheme.palette(app));
+    }
+
+    /** Card, popup and rows in {@code p}: at a fresh open, or live under the window's cross fade (ThemeFade). */
+    private void restyle(Palette p) {
+        if (QpdStyle.theme(!p.dark)) {
             card.retheme();
             if (panel != null) panel.retheme();
         }
@@ -987,8 +1000,10 @@ public final class MenuController {
             host.toast(R.string.lumen_m_toast_failed);
             return;
         }
+        // the same cross fade as Home and Setup: the old look freezes, the new one is drawn under it and shows through
+        if (panel != null && panel.fade() != null) panel.fade().apply(LumenTheme.palette(app));
+        else followTheme();
         showTheme();
-        followTheme();
         QpdTile t = card.tile(MenuSpec.THEME);
         if (t != null) t.playIcon();
     }
@@ -1102,7 +1117,7 @@ public final class MenuController {
 
     /** {@code section}'s popup with the focus on {@code focusRow} (a row of that page), or on its first row. */
     private void show(String section, View focusRow) {
-        if (MenuSpec.GENERAL.equals(section)) { openAll(section, focusRow); return; }
+        if (MenuSpec.allSettingsOnly(section)) { openAll(section, focusRow); return; }
         if (MenuSpec.LAMP.equals(section)) { showBar(); return; }
         if (FeatureId.MIRRORING.id.equals(section) && mirror == null) section = null;
         openSection(section, focusRow);
@@ -1112,7 +1127,8 @@ public final class MenuController {
         if (key == null) return null;
         if (FeatureId.INPUT.id.equals(key)) return devicePages == null ? null : devicePages.page(FeatureId.INPUT, this);
         if (FeatureId.MIRRORING.id.equals(key)) return mirror == null ? null : mirror.page;
-        if (MenuSpec.LAMP.equals(key) || MenuSpec.GENERAL.equals(key)) return null;
+        if (MenuSpec.LAMP.equals(key) || MenuSpec.allSettingsOnly(key)) return null;
+        if (MenuSpec.NETWORK.equals(key) && !rows.containsKey(FeatureId.NETWORK_HOTSPOT)) return null;   // Wi-Fi alone: no popup
         Page p = popups.get(key);
         return p != null ? p : pages.get(key);
     }
@@ -1227,10 +1243,16 @@ public final class MenuController {
                 case BLUETOOTH:
                     if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));
                     return;
-                case NETWORK:
-                    if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.NETWORK));
-                    return;
+                case NETWORK:                                 // the popup with the hotspot where it works, else Wi-Fi
+                    if (!setupDone(id)) return;
+                    if (popupPage(id) == null) {
+                        closeThen(() -> openSystemPage(SettingsPage.NETWORK));
+                        return;
+                    }
+                    watchHotspot();
+                    break;
                 case SIGNAL_PANEL:
+                case SENSORS_PANEL:
                     screen(f);
                     return;
                 case INPUT:
@@ -1246,6 +1268,8 @@ public final class MenuController {
         }
         openPopup(id);
     }
+
+    private android.content.BroadcastReceiver hotspotWatch;
 
     /** The tile's popup beside it (RIGHT on the last tile of a row, a tile's OK, eye protection's held OK). */
     private void openPopup(String id) {
@@ -1294,6 +1318,37 @@ public final class MenuController {
         return -1;
     }
 
+    /** The stock "Custom" entry at the end of a picture mode list while a user mode can still be made. */
+    private void customEntry(Page p, boolean popFirst) {
+        if (!has(FeatureId.PICTURE_CUSTOM_NEW) || state != null && state.hidden(FeatureId.PICTURE_CUSTOM_NEW)) return;
+        p.add(new NavRow(app, s(MenuLabels.title(FeatureId.PICTURE_CUSTOM_NEW)), () -> safe("custom new", () -> {
+            if (popFirst && panel != null) panel.pop();
+            action(FeatureId.PICTURE_CUSTOM_NEW);
+        })));
+    }
+
+    private CustomPictures.Host customHost() {
+        return new CustomPictures.Host() {
+            @Override public boolean ready() { return dev.ready(); }
+            @Override public void run(FeatureId f, java.util.function.Consumer<ProjectorFeatures.Result> cb) {
+                dev.run(f, r -> safe("custom " + f, () -> cb.accept(r)));
+            }
+            @Override public void confirm(CharSequence title, CharSequence msg, CharSequence ok, Runnable onOk) {
+                MenuController.this.confirm(title, msg, ok, onOk);
+            }
+            @Override public void toast(int res) { host.toast(res); }
+            @Override public void openSettings() {
+                if (panel == null || !panel.isShowing()) return;
+                Page sp = subPages.get(FeatureId.PICTURE_SETTINGS);
+                if (sp != null) openPage(FeatureId.PICTURE_SETTINGS, sp);
+                else if (pages.get(MenuSpec.PICTURE) != null) push(pages.get(MenuSpec.PICTURE));
+            }
+            @Override public void back() { if (panel != null && panel.isShowing()) panel.pop(); }
+            @Override public void refresh() { MenuController.this.refresh(); }
+            @Override public MenuState state() { return state; }
+        };
+    }
+
     /** The picture mode list (OK on the stepping row): the modes of this content, the current one marked. */
     private void openModeList() {
         FeatureId f = FeatureId.PICTURE_MODE;
@@ -1311,6 +1366,7 @@ public final class MenuController {
                 choose(f, o);
             }))).setRowEnabled(!greyed.contains(o));
         }
+        customEntry(p, true);
         p.setInitialFocus(focus);
         push(p);
     }
@@ -1552,6 +1608,13 @@ public final class MenuController {
     }
 
     private void action(FeatureId f) {
+        if (FeatureId.PICTURE_CUSTOM_NEW == f) { custom.create(); return; }
+        if (FeatureId.PICTURE_CUSTOM_DELETE == f) { custom.delete(); return; }
+        if (MenuSpec.module(f)) {                             // a module's own action (the hotspot restore default)
+            if (!ModuleScreens.run(app, profile, f)) host.toast(R.string.lumen_m_toast_failed);
+            refresh();
+            return;
+        }
         Note n = dev.blocked(f, null, state);
         if (n != null) { note(n, f); return; }
         ProjectorFeatures.Confirm c = dev.confirm(f, null, state);
@@ -1564,6 +1627,10 @@ public final class MenuController {
     }
 
     private void screen(FeatureId f) {
+        if (MenuSpec.MODULE_SCREENS.contains(f) && ModuleScreens.overMenu(f)) {   // the menu steps aside (KeyTools)
+            if (!ModuleScreens.open(app, f)) host.toast(R.string.lumen_m_toast_failed);
+            return;
+        }
         if (MenuSpec.MODULE_SCREENS.contains(f)) {
             closeThen(() -> { if (!ModuleScreens.open(app, f)) host.toast(R.string.lumen_m_toast_failed); });
             return;
@@ -1693,11 +1760,33 @@ public final class MenuController {
         if (!dev.ready()) { apply(null); return; }
         final int gen = ++refreshGen;
         dev.read(st -> {
-            if (gen == refreshGen) apply(ModuleScreens.merge(app, st));
+            if (gen == refreshGen) apply(ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT)));
         });
     }
 
+    /**
+     * While the Network popup can be on screen, Android's hotspot state and a saved name or password read the rows
+     * again (the switch follows a start that ends late or fails, the new name shows after the text screen). The
+     * watch ends at the first change after the menu closed.
+     */
+    private void watchHotspot() {
+        if (hotspotWatch != null) return;
+        hotspotWatch = new android.content.BroadcastReceiver() {
+            @Override public void onReceive(android.content.Context c, android.content.Intent i) {
+                if (panel != null && panel.isShowing()) { refresh(); return; }
+                try {
+                    app.unregisterReceiver(this);
+                } catch (RuntimeException e) {
+                    Log.w(TAG, "hotspot watch: " + e);
+                }
+                hotspotWatch = null;
+            }
+        };
+        app.registerReceiver(hotspotWatch, org.lumen.system.Hotspot.changes(), android.content.Context.RECEIVER_NOT_EXPORTED);
+    }
+
     private void apply(MenuState st) {
+        if (has(FeatureId.PICTURE_CUSTOM_NEW)) st = CustomPictures.merge(app, profile, st);
         state = st;
         boolean ok = st != null;
         for (Map.Entry<FeatureId, View> e : rows.entrySet()) {
@@ -1983,6 +2072,7 @@ public final class MenuController {
             }
             if (panel == null && onClosed != null) safe("on closed", onClosed);   // no menu window left
         }
+        @Override public void onTheme(Palette p) { safe("theme", () -> { restyle(p); showTheme(); }); }
         @Override public View tipFor(Page p) { return pageTips.get(p); }
         @Override public View tipForRow(View row) { return tips.get(row); }
         @Override public String anchorFor(Page sectionPage) {
@@ -2002,7 +2092,7 @@ public final class MenuController {
         @Override public boolean hasPopup(String key) {
             if (FeatureId.EYE.id.equals(key) && !eyeHasPopup()) return false;   // a switch only: OK is all it does
             if (quickItem(key)) return FeatureId.of(key).kind != FeatureKind.ACTION && quickPage(key) != null;
-            return !MenuSpec.GENERAL.equals(key) && popupPage(key) != null;
+            return !MenuSpec.allSettingsOnly(key) && popupPage(key) != null;
         }
         @Override public void openPopup(String key) {
             if (FeatureId.EYE.id.equals(key)) MenuController.this.openPopup(key);

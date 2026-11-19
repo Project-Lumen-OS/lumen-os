@@ -6,7 +6,6 @@
     <string name="power_standby_never">永不</string>
     <string name="power_quick_wake_minutes">%1$d 分鐘</string>
     <string name="power_quick_wake_hours">%1$d 小時</string>
-    <string name="power_standby_summary">短按電源鍵會關閉光源，投影機保持隨時可立即喚醒。超過此時間後將完全關機。</string>
     <string name="power_sleep_summary">電源鍵、睡眠定時器和閒置時間會關閉光源並讓投影機進入睡眠。按下電源鍵，幾秒內就能從上次停下的地方繼續。</string>
     <string name="power_menu_sleep">睡眠</string>
     <string name="power_menu_off">關機</string>

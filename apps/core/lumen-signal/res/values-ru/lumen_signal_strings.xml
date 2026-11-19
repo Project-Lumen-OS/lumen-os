@@ -83,7 +83,8 @@
     <string name="lumen_signal_fmt_manual">Вручную</string>
     <string name="lumen_signal_sound_line">Звук: %1$s</string>
     <string name="lumen_signal_popup_row">Показывать при смене сигнала</string>
-    <string name="lumen_signal_hint_more">ещё раз: подробнее</string>
+    <string name="lumen_signal_hint_hold">Удерживайте OK, чтобы раскрыть</string>
+    <string name="lumen_signal_hint_fold">Свернуть</string>
     <string name="lumen_signal_hint_hide">ещё раз: скрыть</string>
     <string name="lumen_signal_hint_close">закрыть</string>
     <string name="lumen_signal_r_color_format">Формат цвета</string>

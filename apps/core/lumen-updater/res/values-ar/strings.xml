@@ -115,7 +115,6 @@
     <string name="ch_updates">تحديثات النظام</string>
     <string name="n_available_body">افتح للتنزيل والتثبيت.</string>
     <string name="n_ready_title">أعِد التشغيل لإكمال التحديث</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">لا يمكن لهذا الجهاز تثبيت التحديثات عبر الإنترنت بعد: الإعداد لمرة واحدة غير مكتمل. حدّثه من جهاز كمبيوتر باستخدام lumen-install.</string>
     <string name="blk_power">وصّل محوّل الطاقة: يستغرق التحديث بضع دقائق.</string>
     <string name="consent_title_recovery">هل تريد تثبيت التحديث؟</string>

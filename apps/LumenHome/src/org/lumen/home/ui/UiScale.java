@@ -83,6 +83,15 @@ public final class UiScale {
         return Math.max(IMAGE_MEM_1080, Math.min(IMAGE_MEM_MAX, b));
     }
 
+    /**
+     * Budget of the hero pages' decoded art, apart from the cards' LRU: {@code pages} full screen pictures at most
+     * as big as a master (3 pages: 25 MB at 1080p, 44 MB at 2K and 4K).
+     */
+    public static long heroMemBytes(int w, int h, int pages) {
+        long px = (long) Math.min(ART_MAX_W, Math.max(w, h)) * Math.min(ART_MAX_H, Math.min(w, h));
+        return pages * px * 4 + MB;
+    }
+
     /** Budget of the disk cache: 64 MB at 1080p, 114 MB at 2K and 4K (the masters stop at 2560x1440). */
     public static long diskBytes(int w, int h) {
         double a = Math.min(area(w, h), area(ART_MAX_W, ART_MAX_H));

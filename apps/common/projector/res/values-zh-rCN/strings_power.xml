@@ -6,7 +6,6 @@
     <string name="power_standby_never">永不</string>
     <string name="power_quick_wake_minutes">%1$d 分钟</string>
     <string name="power_quick_wake_hours">%1$d 小时</string>
-    <string name="power_standby_summary">短按电源键会关闭光源，投影仪保持随时可立即唤醒。超过此时间后将完全关机。</string>
     <string name="power_sleep_summary">电源键、睡眠定时器和闲置时间会关闭光源并让投影仪进入睡眠。按电源键，几秒内即可从上次停下的地方继续。</string>
     <string name="power_menu_sleep">睡眠</string>
     <string name="power_menu_off">关机</string>

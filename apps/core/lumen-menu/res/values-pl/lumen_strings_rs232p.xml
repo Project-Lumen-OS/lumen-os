@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the stock serial port control page (X50 Ultra, Ultra Max, TITAN) and the parental controls
+     row (own wording) -->
+<resources>
+    <string name="lumen_m_serial">Sterowanie przez port szeregowy</string>
+    <string name="lumen_m_serial_switch">Sterowanie przez RS-232</string>
+    <string name="lumen_m_serial_id_group">Grupa ID</string>
+    <string name="lumen_m_serial_id_number">Numer ID</string>
+    <string name="lumen_m_serial_ack_group">Odpowiedź na polecenia grupy</string>
+    <string name="lumen_m_serial_ack_all">Odpowiedź na polecenia do wszystkich</string>
+    <string name="lumen_m_serial_master">Tryb główny</string>
+    <string name="lumen_m_parental">Kontrola rodzicielska</string>
+</resources>

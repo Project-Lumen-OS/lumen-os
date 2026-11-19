@@ -131,6 +131,19 @@ def menu_cases(c, mc, iid, prod, twin, *_):
     want = dict(b.pop("picture.memc", {}))
     want["options"] = [o for o in want.get("options", []) if o != "original"]
     check(a.pop("picture.memc", None) == want, "%s: motion compensation as on %s without the original frame" % (c, twin))
+    # the stock TITAN trees (dianahypro, dianahymax) have no screensaver rows and no parental page, the X50 ones do
+    # (stock-gaps-2, rs232-parental, X50FeaturesTest holds the same rule)
+    for k in ("settings.screensaver_now", "settings.screensaver_delay", "settings.parental"):
+        check(k in b and k not in a, "%s: no %s, as the stock TITAN tree (%s has it)" % (c, k, twin))
+        b.pop(k, None)
+    # Based on of a user picture mode lists the model's own stock modes (user-picture-modes, image_mode_custom_base_*)
+    base = a.pop("picture.custom_base", {}).get("options", [])
+    check(b.pop("picture.custom_base", None) is not None and base and set(base) <= set(TITAN_MODES),
+          "%s: Based on lists TITAN picture modes only %s" % (c, base))
+    # the hotspot name is each model's own (hotspot, 5b81d69f), everything else of the row as on the X50
+    ha, hb = dict(a.pop("network.hotspot", {})), dict(b.pop("network.hotspot", {}))
+    check(ha.pop("name", "").startswith("Lumen TITAN Noir ") and hb.pop("name", None) and ha == hb,
+          "%s: the hotspot row as on %s, with its own TITAN name" % (c, twin))
     check(a == b and m.get("hints") == mx.get("hints") and m.get("keys") == mx.get("keys"),
           "%s: every other row, hint and key as on its X50 counterpart %s" % (c, twin))
     check(all(k in a for k in ("lamp", "picture.iris", "picture.dynamic_black")),

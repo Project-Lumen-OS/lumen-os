@@ -2,7 +2,6 @@
 <!-- Korean translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">디스플레이</string>
     <string name="uires_row">인터페이스 해상도</string>
     <string name="uires_default_fmt">%1$s(기본값)</string>
     <string name="uires_summary">4K는 글자가 가장 선명하고, 1080p는 XGIMI와 같아 그래픽 부담이 가장 적습니다. 변경하면 프로젝터가 다시 시작됩니다.</string>

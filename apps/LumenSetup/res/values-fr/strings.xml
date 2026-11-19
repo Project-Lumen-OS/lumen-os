@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Activation du Wi-Fi…</string>
     <string name="net_none_found">Aucun réseau trouvé</string>
     <string name="net_add_manual">Ajouter un réseau manuellement</string>
-    <string name="net_other">Autres options</string>
     <string name="net_password_title">Mot de passe pour %1$s</string>
     <string name="net_password_hint">Mot de passe</string>
     <string name="net_show_password">Afficher le mot de passe</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Télécommande %1$s trouvée</string>
     <string name="remote_connected">Télécommande connectée</string>
     <string name="remote_other">Autre appareil</string>
-    <string name="remote_skip_hint">Vous pourrez l’associer plus tard depuis le panneau rapide (touche engrenage).</string>
     <string name="google_title">Se connecter avec Google</string>
     <string name="google_subtitle">Connectez-vous pour installer des applis depuis Google Play et profiter de vos abonnements.</string>
     <string name="google_sign_in">Se connecter</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Nom du projecteur</string>
     <string name="done_home">Écran d’accueil</string>
     <string name="done_stats">Envoyer des statistiques anonymes</string>
-    <string name="done_stats_note">À chaque démarrage et une fois par jour : modèle, version, build, informations de mise à jour, pays, un numéro d\'installation aléatoire et le numéro de série (le serveur n\'en garde que le hachage). Votre adresse IP n\'est pas conservée.</string>
     <string name="done_start">Commencer</string>
     <string name="done_offline_hint">Pas d’Internet : connectez-vous à Google et réglez le fuseau horaire plus tard dans les paramètres.</string>
     <string name="done_offline_hint_nogms">Pas d’Internet : réglez le fuseau horaire plus tard dans les paramètres.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Vous aurez besoin de votre téléphone ou de votre mot de passe</string>
     <string name="google_help_sub">Que faire si Google demande un enregistrement</string>
     <string name="done_stats_short">Modèle, version et pays. L’adresse IP n’est pas conservée.</string>
+    <string name="theme_title">Thème</string>
+    <string name="theme_subtitle">L’apparence de Lumen. Vous pourrez la changer plus tard dans le menu rapide.</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_auto_sub">Clair le jour, sombre après le coucher du soleil</string>
 </resources>

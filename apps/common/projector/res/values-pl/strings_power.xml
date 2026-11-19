@@ -6,7 +6,6 @@
     <string name="power_standby_never">Nigdy</string>
     <string name="power_quick_wake_minutes">%1$d min</string>
     <string name="power_quick_wake_hours">%1$d godz.</string>
-    <string name="power_standby_summary">Krótkie naciśnięcie przycisku zasilania gasi światło, a projektor pozostaje gotowy do natychmiastowego włączenia. Po tym czasie wyłącza się całkowicie.</string>
     <string name="power_sleep_summary">Przycisk zasilania, wyłącznik czasowy i bezczynność gaszą światło i usypiają projektor. Naciśnij zasilanie, a w kilka sekund wróci dokładnie tam, gdzie skończyłeś.</string>
     <string name="power_menu_sleep">Uśpij</string>
     <string name="power_menu_off">Wyłącz</string>

@@ -94,7 +94,7 @@ final class TimerLamp {
         Hal.query((g, g2) -> {
             int boost;
             try { boost = g2.isBoost() ? 1 : 0; } catch (Throwable t) { boost = -1; }
-            // 2026-11-04 (as the HB fork): a 176 turns dynamic black off (Z9X libxgimi DB_OFF:setlumenslevel)
+            // 2026-11-04: a 176 turns dynamic black off for good (vendor libxgimi DB_OFF:setlumenslevel)
             int db;
             try { db = g2.getDynamicBlack() ? 1 : 0; } catch (Throwable t) { db = -1; }
             return new int[]{g.getLampLevel(), boost, db};

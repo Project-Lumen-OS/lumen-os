@@ -1,2 +1,4 @@
 # the Lumen icon set module (apps/core/lumen-icons) uses its own R class
 org.lumen.icons
+# the parental controls module (apps/core/lumen-parental) uses its own R class
+org.lumen.parental

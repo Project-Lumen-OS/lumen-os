@@ -1,0 +1,11 @@
+# Recipe of Lumen Setup (org.lumen.setup) for every model without its own one, read by tools/devices/assemble_app.py
+# (find_recipe falls back to it): the shared modules the app imports plus the app, as the Z9X, RS30 and HB recipes build
+# it (devices/<model>/app/*Setup.layers). Play 6 builds Z9xSetup from source through it (build_play6.sh SETUP_SRC=1).
+# The folder alone does not compile since Setup imports org.lumen.system, org.lumen.ui, org.lumen.icons and org.lumen.qr.
+app       Z9xSetup
+module    lumen-system
+module    lumen-ui
+module    lumen-icons
+module    lumen-qr
+top       apps/LumenSetup
+skip      build/ test/ tools/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store BUILD_VERSION app.layers

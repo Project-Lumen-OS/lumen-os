@@ -6,7 +6,6 @@
     <string name="power_standby_never">Ешқашан</string>
     <string name="power_quick_wake_minutes">%1$d мин</string>
     <string name="power_quick_wake_hours">%1$d сағ</string>
-    <string name="power_standby_summary">Қуат түймесін қысқа басу жарықты өшіреді, ал проектор лезде қосылуға дайын тұрады. Осы уақыттан кейін ол толығымен өшеді.</string>
     <string name="power_sleep_summary">Қуат түймесі, ұйқы таймері және әрекетсіздік жарықты сөндіріп, проекторды ұйқы режиміне ауыстырады. Қуат түймесін басыңыз: ол бірнеше секундта тоқтаған жерден жалғастырады.</string>
     <string name="power_menu_sleep">Ұйқы</string>
     <string name="power_menu_off">Өшіру</string>

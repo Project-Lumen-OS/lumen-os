@@ -1,0 +1,7 @@
+# The sensor card rows of this model (apps/core/lumen-sensors README.md), in the app as assets/lumen_sensors/items.tsv.
+# One row per vendor read the card may make here, only while it is on screen, at most 2 calls per second. Processor
+# temperature, load and memory come from kernel files on every model. Never IGmpf 194, 275 or IGmpf2 252.
+# Columns (tab separated): item (SensorItem token), call, note.
+item	call	note
+temp_system	TemperatureManager 6 getSystemTemperature	temperature inside
+temp_light	TemperatureManager 7 getTemperatureFromSensor	red laser sensor 5 (the signal panel reads the same)

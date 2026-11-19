@@ -6,7 +6,6 @@
     <string name="power_standby_never">Mai</string>
     <string name="power_quick_wake_minutes">%1$d min</string>
     <string name="power_quick_wake_hours">%1$d h</string>
-    <string name="power_standby_summary">Una breve pressione del tasto di accensione spegne la luce e il proiettore resta pronto a riaccendersi all\'istante. Trascorso questo tempo, si spegne del tutto.</string>
     <string name="power_sleep_summary">Il tasto di accensione, il timer di spegnimento e l\'inattività spengono la luce e sospendono il proiettore. Premi accensione: si riattiva in pochi secondi, esattamente dove eri rimasto.</string>
     <string name="power_menu_sleep">Sospensione</string>
     <string name="power_menu_off">Spegni</string>

@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Перамяшчэнне</string>
     <string name="lumen_qe_move_hint">Кружкі рухаюцца толькі ў верхнім радзе, пліткі толькі паміж радкамі. Каб плітка стала кружком, змяніце яе выгляд.</string>
     <string name="lumen_qe_put">Паставіць сюды</string>
-    <string name="lumen_qe_cancel">Адмяніць</string>
     <string name="lumen_qe_full">Меню запоўнена. Выберыце выгляд меншы або выгляд Спіс.</string>
     <string name="lumen_qe_list_full">Столькі пунктаў не змяшчаецца спісам. Спачатку прыбярыце некалькі.</string>
     <string name="lumen_qe_pinned">Гэта кнопка заўсёды застаецца ў меню.</string>

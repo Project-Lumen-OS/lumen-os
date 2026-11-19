@@ -21,11 +21,13 @@ import android.widget.TextView;
 
 import org.lumen.projector.R;
 import org.lumen.ui.LumenTheme;
+import org.lumen.ui.ThemeFade;
 
 /**
  * The panel's overlay window (TYPE_APPLICATION_OVERLAY, like the projector menus): the small card top right that
- * never takes a key, or the full panel on the right side that takes the keys while open (BACK closes, OK switches
- * the option row, up and down scroll a long list). Places are SignalPlace's (title safe, below an app's header),
+ * never takes a key, or the full panel on the right side that takes the keys while open (BACK closes or folds a panel
+ * opened by holding OK, OK switches the option row, up and down scroll a long list). The full panel grows out of the
+ * card and folds back into it (PanelMotion). Places are SignalPlace's (title safe, below an app's header),
  * sizes are design px at 1920x1080 scaled to the screen, colours the shared Lumen 2.0 palette (SignalLook).
  */
 final class SignalWindow {
@@ -34,6 +36,9 @@ final class SignalWindow {
         void back();
 
         void switchPopup();
+
+        /** OK held in the full panel while the key filter was not running (CardHold folds it otherwise). */
+        void collapse();
     }
 
     private static final String FONT = "fonts/InterVariable.ttf";
@@ -49,6 +54,16 @@ final class SignalWindow {
     private FrameLayout root;
     private ScrollView scroll;
     private PanelMode shownMode = PanelMode.HIDDEN;
+    /** What is drawn now, drawn again in the new colours when the theme changes while the window shows. */
+    private SignalSheet shownSheet;
+    private boolean shownPopup, shownHint, shownHeld;
+    /** the window's own OK: its DOWN came here (not the press that opened the panel) */
+    private boolean okDown;
+    /** a grow or fold runs: a redraw waits for its end ({@link #later}) */
+    private boolean moving;
+    private Runnable later;
+    /** the small card's last size (px), where the full panel grows from and folds into */
+    private int cardW, cardH;
     private float px = 1f;
     private Typeface regular, medium, bold;
 
@@ -61,6 +76,8 @@ final class SignalWindow {
     boolean shown() { return root != null && root.getParent() != null; }
 
     void hide() {
+        moving = false;
+        later = null;
         if (root != null && root.getParent() != null) {
             try {
                 wm.removeViewImmediate(root);
@@ -73,16 +90,39 @@ final class SignalWindow {
         shownMode = PanelMode.HIDDEN;
     }
 
-    /** Draws {@code s} in the look of {@code mode} (a new window when the look changes). */
-    void show(PanelMode mode, SignalSheet s, boolean popupOn) {
+    /**
+     * Draws {@code s} in the look of {@code mode} (a new window when the look changes): {@code hint} the hold hint on
+     * the small card, {@code held} a full panel opened by holding OK (BACK folds it back).
+     */
+    void show(PanelMode mode, SignalSheet s, boolean popupOn, boolean hint, boolean held) {
         if (!mode.visible()) { hide(); return; }
+        if (moving) {
+            later = () -> show(mode, s, popupOn, hint, held);
+            return;
+        }
         SignalLook look = SignalLook.of(LumenTheme.palette(c));
         boolean detail = mode == PanelMode.DETAIL;
+        if (root != null && shownMode == PanelMode.DETAIL && mode.card() && PanelMotion.on() && root.getChildCount() > 0) {
+            fold(() -> show(mode, s, popupOn, hint, held));
+            return;
+        }
+        boolean grow = false;
         if (root == null || shownMode.card() != mode.card()) {
+            if (root != null && shownMode.card() && root.getHeight() > 0) {
+                cardW = root.getWidth();
+                cardH = root.getHeight();
+                grow = detail && PanelMotion.on();
+            }
             hide();
             px = Math.max(0.5f, c.getResources().getDisplayMetrics().widthPixels / (float) SignalPlace.SCREEN_W);
             root = new FrameLayout(c);
             root.setClipChildren(false);
+            final FrameLayout r = root;
+            ThemeFade.follow(r, p -> {
+                if (root == r && shownSheet != null && shownMode.visible()) {
+                    show(shownMode, shownSheet, shownPopup, shownHint, shownHeld);
+                }
+            });
             if (detail) {
                 root.setFocusable(true);
                 root.setFocusableInTouchMode(true);
@@ -97,13 +137,57 @@ final class SignalWindow {
                 return;
             }
             if (detail) root.requestFocus();
+            okDown = false;
         }
         shownMode = mode;
+        shownSheet = s;
+        shownPopup = popupOn;
+        shownHint = hint;
+        shownHeld = held;
         int y = scroll == null ? 0 : scroll.getScrollY();
         root.removeAllViews();
-        root.addView(detail ? sheet(s, look, popupOn) : card(s, look),
+        View box = detail ? sheet(s, look, popupOn, held) : card(s, look, hint);
+        root.addView(box,
                 new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (detail && scroll != null && y > 0) scroll.post(() -> { if (scroll != null) scroll.scrollTo(0, y); });
+        if (grow) {
+            moving = true;
+            final FrameLayout r = root;
+            PanelMotion.grow(box, cardRect(), RADIUS * px, () -> { if (root == r) moved(); });
+        }
+    }
+
+    /** The full panel folds into the card's place, the keys go back to the film at once; {@code then} swaps windows. */
+    private void fold(Runnable then) {
+        moving = true;
+        later = then;
+        try {
+            WindowManager.LayoutParams p = (WindowManager.LayoutParams) root.getLayoutParams();
+            p.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            wm.updateViewLayout(root, p);
+        } catch (Throwable t) {
+            Log.w(SignalPanel.TAG, "fold: " + t);
+        }
+        final FrameLayout r = root;
+        PanelMotion.fold(root.getChildAt(0), cardRect(), RADIUS * px, () -> {
+            if (root != r) return;
+            Runnable next = later;
+            hide();
+            if (next != null) next.run();
+        });
+    }
+
+    private void moved() {
+        moving = false;
+        Runnable next = later;
+        later = null;
+        if (next != null) next.run();
+    }
+
+    /** The small card's place in the full panel's box (the card and the panel share the right edge). */
+    private android.graphics.Rect cardRect() {
+        int w = cardW > 0 ? cardW : d(SignalPlace.CARD_W), h = cardH > 0 ? cardH : d(220);
+        return PanelMotion.cardIn(d(SignalPlace.SHEET_W), w, h, d(SignalPlace.CARD_TOP - SignalPlace.SHEET_TOP));
     }
 
     private boolean onKey(View v, int code, KeyEvent e) {
@@ -111,8 +195,15 @@ final class SignalWindow {
             if (e.getAction() == KeyEvent.ACTION_UP) keys.back();
             return true;
         }
-        if (code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER) {
-            if (e.getAction() == KeyEvent.ACTION_UP) keys.switchPopup();
+        if (CardHold.ok(code)) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN) {
+                if (e.getRepeatCount() == 0) okDown = true;
+                return true;
+            }
+            OkHold.Act a = OkHold.windowUp(okDown, e.isCanceled(), e.getEventTime() - e.getDownTime());
+            okDown = false;
+            if (a == OkHold.Act.SHEET_OK) keys.switchPopup();
+            else if (a == OkHold.Act.COLLAPSE) keys.collapse();
             return true;
         }
         if ((code == KeyEvent.KEYCODE_DPAD_UP || code == KeyEvent.KEYCODE_DPAD_DOWN) && scroll != null
@@ -142,7 +233,7 @@ final class SignalWindow {
 
     // ------------------------------------------------------------------ the small card (design A1 / A3, smaller)
 
-    private View card(SignalSheet s, SignalLook look) {
+    private View card(SignalSheet s, SignalLook look, boolean hint) {
         LinearLayout box = column(look);
         box.setPadding(d(22), d(18), d(22), d(18));
         box.addView(iconLine(R.drawable.lumen_ic_hdmi, s.port, CARD_PORT, medium(), look.mute, look.mute));
@@ -153,14 +244,14 @@ final class SignalWindow {
         }
         for (SignalSheet.Row r : s.cardRows) box.addView(cardRow(r, look), fill(0, 0));
         if (s.judder == Judder.JUDDER) box.addView(status(s, look), fill(12, 0));
-        box.addView(hints(look, new int[] {R.drawable.lumen_ic_info},
-                new String[] {SignalPanel.words(c).get(SignalText.HINT_MORE)}), margins(0, 14, 0, 0));
+        if (hint) box.addView(text(SignalPanel.words(c).get(SignalText.HINT_HOLD), HINT, regular(), look.mute),
+                margins(0, 14, 0, 0));
         return box;
     }
 
     // ------------------------------------------------------------------ the full panel (design A2 / A4, smaller)
 
-    private View sheet(SignalSheet s, SignalLook look, boolean popupOn) {
+    private View sheet(SignalSheet s, SignalLook look, boolean popupOn, boolean held) {
         SignalText.Words w = SignalPanel.words(c);
         LinearLayout box = column(look);
         box.setPadding(d(28), d(24), d(28), d(20));
@@ -179,8 +270,9 @@ final class SignalWindow {
         scroll.addView(list);
         box.addView(scroll, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
         box.addView(popupRow(w, look, popupOn), fill(12, 10));
-        box.addView(hints(look, new int[] {R.drawable.lumen_ic_info, R.drawable.lumen_ic_arrow_back},
-                new String[] {w.get(SignalText.HINT_HIDE), w.get(SignalText.HINT_CLOSE)}));
+        box.addView(held ? hints(look, new int[] {R.drawable.lumen_ic_arrow_back}, new String[] {w.get(SignalText.HINT_FOLD)})
+                : hints(look, new int[] {R.drawable.lumen_ic_info, R.drawable.lumen_ic_arrow_back},
+                        new String[] {w.get(SignalText.HINT_HIDE), w.get(SignalText.HINT_CLOSE)}));
         return box;
     }
 

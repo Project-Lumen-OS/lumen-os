@@ -106,17 +106,16 @@
     <string name="lic_aosp">Android Open Source Project et LineageOS : Apache License 2.0 et les licences de leurs composants.</string>
     <string name="lic_gapps">Applications et services Google : conditions propres à Google. Ne font pas partie de Lumen OS.</string>
     <string name="lic_thirdparty">UxPlay (GPL 3.0), libplist (LGPL 2.1), Apple ALAC (Apache 2.0), BoringSSL, police Roboto (Apache 2.0).</string>
-    <string name="lic_icons">Icônes : Material Symbols de Google (Apache 2.0).</string>
+    <string name="lic_icons">Icônes : Material Symbols de Google (Apache 2.0).</string>
     <string name="lic_full">Textes complets des licences et code source : sur la page du projet.</string>
     <string name="lic_disclaimer">Lumen OS est un projet indépendant, sans lien avec XGIMI, Google ou LineageOS.</string>
     <string name="ch_updates">Mises à jour système</string>
     <string name="n_available_body">Ouvrez pour télécharger et installer.</string>
     <string name="n_ready_title">Redémarrez pour terminer la mise à jour</string>
-    <!-- Play 6 (recovery install) -->
-    <string name="blk_recovery">Ce projecteur ne peut pas encore installer de mises à jour par Internet : la configuration unique manque. Mettez-le à jour depuis un ordinateur avec lumen-install.</string>
-    <string name="blk_power">Branchez l\'adaptateur secteur : la mise à jour prend quelques minutes.</string>
-    <string name="consent_title_recovery">Installer la mise à jour ?</string>
-    <string name="consent_body_recovery">Le projecteur redémarre sur l\'écran de mise à jour pendant environ 5 minutes, puis Lumen OS redémarre. Laissez l\'adaptateur secteur branché et n\'éteignez pas le projecteur. Seul le système Lumen OS est remplacé : vos applications, vos réglages et le micrologiciel XGIMI restent tels quels.</string>
+    <string name="blk_recovery">Ce projecteur ne peut pas encore installer de mises à jour par Internet : la configuration unique manque. Mettez-le à jour depuis un ordinateur avec lumen-install.</string>
+    <string name="blk_power">Branchez l\'adaptateur secteur : la mise à jour prend quelques minutes.</string>
+    <string name="consent_title_recovery">Installer la mise à jour ?</string>
+    <string name="consent_body_recovery">Le projecteur redémarre sur l\'écran de mise à jour pendant environ 5 minutes, puis Lumen OS redémarre. Laissez l\'adaptateur secteur branché et n\'éteignez pas le projecteur. Seul le système Lumen OS est remplacé : vos applications, vos réglages et le micrologiciel XGIMI restent tels quels.</string>
     <string name="ready_title_recovery">Redémarrage pour la mise à jour</string>
     <string name="ready_body_recovery">Le projecteur redémarre maintenant et installe Lumen OS %1$s, environ 5 minutes. Laissez l\'adaptateur secteur branché.</string>
 </resources>

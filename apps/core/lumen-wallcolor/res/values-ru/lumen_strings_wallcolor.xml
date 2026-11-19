@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Адаптация к цвету стены</string>
+    <string name="lumen_wallcolor_desc">Подстраивает цвета изображения под цвет вашей стены, чтобы они были точнее.</string>
+    <string name="lumen_wallcolor_desc_ambient">Для лучшего результата изображение станет максимально ярким, а автояркость выключится.</string>
+    <string name="lumen_wallcolor_start">Начать</string>
+    <string name="lumen_wallcolor_reset">Вернуть исходные цвета</string>
+    <string name="lumen_wallcolor_running">Подстраиваем цвета под стену</string>
+    <string name="lumen_wallcolor_matched">Новые цвета</string>
+    <string name="lumen_wallcolor_original">Исходные цвета</string>
+    <string name="lumen_wallcolor_save_title">Оставить новые цвета?</string>
+    <string name="lumen_wallcolor_save_desc">Новые цвета лучше всего подходят к цвету этой стены.</string>
+    <string name="lumen_wallcolor_fail_camera">Камера не запустилась. Попробуйте ещё раз.</string>
+    <string name="lumen_wallcolor_fail_start">Адаптация не запустилась. Если это повторится, отправьте отчёт о проблеме.</string>
+    <string name="lumen_wallcolor_fail_distance">Не получилось. Измените расстояние до стены или угол проектора.</string>
+    <string name="lumen_wallcolor_fail_light">Не получилось. Свет в комнате менялся. Попробуйте при ровном свете.</string>
+    <string name="lumen_wallcolor_fail_custom">Недоступно в пользовательском режиме цвета.</string>
+    <string name="lumen_wallcolor_fail_performance">Недоступно в режиме производительности.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Выключите автояркость и попробуйте снова.</string>
+    <string name="lumen_wallcolor_fail_3d">Недоступно в режиме 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">В режиме огромного экрана доступна только ручная трапеция.</string>
+    <string name="lumen_wallcolor_fail_range">Не получилось. Цвет стены вне диапазона подстройки.</string>
+    <string name="lumen_wallcolor_fail_not_started">Проектор не начал адаптацию. Попробуйте ещё раз.</string>
+</resources>

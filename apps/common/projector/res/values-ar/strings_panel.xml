@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">الإعدادات السريعة</string>
-    <string name="panel_sec_image_correction">تصحيح الصورة</string>
     <string name="panel_sec_picture">الصورة</string>
     <string name="panel_sec_game">الألعاب (HDMI)</string>
     <string name="panel_sec_sound">الصوت</string>
@@ -18,22 +17,6 @@
     <string name="panel_reset">إعادة ضبط</string>
     <string name="panel_turn_on">تفعيل</string>
     <string name="panel_turn_off">إيقاف</string>
-    <plurals name="panel_minutes">
-        <item quantity="zero">%d دقيقة</item>
-        <item quantity="one">دقيقة واحدة</item>
-        <item quantity="two">دقيقتان</item>
-        <item quantity="few">%d دقائق</item>
-        <item quantity="many">%d دقيقة</item>
-        <item quantity="other">%d دقيقة</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="zero">%d ساعة</item>
-        <item quantity="one">ساعة واحدة</item>
-        <item quantity="two">ساعتان</item>
-        <item quantity="few">%d ساعات</item>
-        <item quantity="many">%d ساعة</item>
-        <item quantity="other">%d ساعة</item>
-    </plurals>
     <string name="panel_ak_now">تصحيح شبه المنحرف الآن</string>
     <string name="panel_fit_now">ملاءمة الشاشة الآن</string>
     <string name="panel_af_now">تركيز تلقائي الآن</string>
@@ -51,23 +34,19 @@
     <string name="panel_reset_keystone_msg">ستعود الصورة إلى الإطار الكامل دون تصحيح. هل تريد المتابعة؟</string>
     <string name="panel_reset_keystone_done">تمت إعادة ضبط شبه المنحرف</string>
     <string name="panel_kst_manual">تصحيح شبه المنحرف يدويًا</string>
-    <string name="panel_kst_hint">الأسهم: تحريك الزاوية · OK: الزاوية التالية · رجوع: تم</string>
     <string name="panel_kst_wait">جارٍ قراءة الزوايا…</string>
     <string name="panel_kst_corner_tl">أعلى اليسار</string>
     <string name="panel_kst_corner_tr">أعلى اليمين</string>
     <string name="panel_kst_corner_br">أسفل اليمين</string>
     <string name="panel_kst_corner_bl">أسفل اليسار</string>
     <string name="panel_kst_limit">لا يمكن تحريك هذه الزاوية أكثر</string>
-    <string name="panel_kst_unavailable">تصحيح شبه المنحرف اليدوي غير متاح الآن</string>
     <string name="panel_kst_game_mode">تصحيح شبه المنحرف متوقف في وضع اللعب «توربو»</string>
     <string name="panel_projection_mode">وضع العرض</string>
     <string name="panel_proj_auto">تلقائي</string>
     <string name="panel_proj_table">طاولة</string>
     <string name="panel_proj_ceiling">سقف</string>
     <string name="panel_proj_rear">عرض خلفي</string>
-    <string name="panel_proj_front_table">أمامي، طاولة</string>
     <string name="panel_proj_front_ceiling">أمامي، سقف</string>
-    <string name="panel_proj_rear_table">خلفي، طاولة</string>
     <string name="panel_proj_rear_ceiling">خلفي، سقف</string>
     <string name="panel_proj_confirm_flip">سيتم قلب الصورة. هل تريد المتابعة؟</string>
     <string name="panel_proj_confirm_ceiling">هل تريد التبديل إلى التثبيت في السقف؟ سيتم قلب الصورة ولن تتوفر بعض الميزات، مثل تصحيح شبه المنحرف الفوري.</string>
@@ -81,7 +60,6 @@
     <string name="panel_tileval_pm_ai">ذكاء اصطناعي</string>
     <string name="panel_tileval_pm_color_accuracy">دقة الألوان</string>
     <string name="panel_tileval_pm_performance">الأداء</string>
-    <string name="panel_tileval_sound_ai">ذكاء اصطناعي</string>
     <string name="panel_pm_performance_msg">تأكّد من أن فتحات التهوية غير مسدودة وأن حرارة الغرفة لا تتجاوز 25 °C. لا تستخدم هذا الوضع لفترة طويلة.</string>
     <string name="panel_lamp">السطوع</string>
     <string name="panel_boost">Boost</string>
@@ -92,15 +70,11 @@
     <string name="panel_ultra120_3d">غير متاح في وضع 3D</string>
     <string name="panel_ultra120_hdmi">غير متاح لمدخل HDMI. استخدم وضع اللعب</string>
     <string name="panel_ultra120_refused">Ultra 120 Hz غير متاح لهذا المحتوى</string>
-    <string name="panel_ultra120_unverified">لم يُختبر بعد على جهاز العرض هذا.</string>
     <string name="panel_game_hdmi_only">متاح فقط أثناء عرض دخل HDMI</string>
-    <string name="panel_picture_settings">إعدادات الصورة</string>
     <string name="panel_pq_brightness">السطوع</string>
     <string name="panel_pq_contrast">التباين</string>
     <string name="panel_pq_saturation">التشبع</string>
     <string name="panel_pq_sharpness">الحدة</string>
-    <string name="panel_pq_blocked_ai">الإعدادات الأساسية غير متاحة في وضع «صورة بالذكاء الاصطناعي»</string>
-    <string name="panel_pq_blocked_performance">الإعدادات الأساسية غير متاحة في وضع «الأداء»</string>
     <string name="panel_ct_blocked_office">درجة حرارة اللون غير متاحة في وضع «مكتب»</string>
     <string name="panel_color_temp">درجة حرارة اللون</string>
     <string name="panel_ct_1">درجة الحرارة 1</string>
@@ -141,8 +115,6 @@
     <string name="eye_off_done">تم إيقاف حماية العين</string>
     <string name="eye_bright_reduced">مسافة الإسقاط قصيرة: خُفِّض السطوع تلقائيًا</string>
     <string name="eye_unavailable">حماية العين غير جاهزة بعد. أعد تشغيل جهاز العرض وحاول مرة أخرى.</string>
-    <string name="panel_standby_off_after">وضع الاستعداد، ثم إيقاف التشغيل بعد</string>
-    <string name="panel_input">مصدر الإدخال</string>
     <string name="panel_projector_settings">إعدادات جهاز العرض</string>
     <string name="panel_all_settings">كل الإعدادات</string>
     <string name="panel_tile_focus">التركيز</string>
@@ -156,11 +128,6 @@
     <string name="panel_hdmi_settings">إعدادات HDMI</string>
     <string name="panel_eye_desc">يُخفَّض الضوء عند وجود شخص أمام العدسة.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">جنبًا إلى جنب</string>
-    <string name="panel_3d_tb">أعلى وأسفل</string>
-    <string name="panel_3d_sbs_2d">جنبًا إلى جنب كصورة 2D</string>
-    <string name="panel_3d_tb_2d">أعلى وأسفل كصورة 2D</string>
-    <string name="panel_3d_summary">أثناء تشغيل فيديو. يحتاج 3D إلى نظارات نشطة DLP-Link، وخيار «كصورة 2D» يعرض ملف 3D مسطحًا بلا نظارات.</string>
     <string name="panel_3d_need_video">يعمل 3D أثناء تشغيل فيديو: شغّله أولًا</string>
     <string name="panel_3d_not_now">3D غير متاح الآن (فيديو HDR أو وضع الألعاب أو 120 هرتز)</string>
 </resources>

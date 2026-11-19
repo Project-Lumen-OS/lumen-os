@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">Dynamisches Tone Mapping</string>
     <string name="lumen_gm_chip_hz">%1$d Hz</string>
     <string name="lumen_m_panel_speed_top_note">Turbo: Trapezkorrektur ist aus</string>
-    <string name="lumen_m_ok">OK</string>
     <string name="lumen_m_cancel">Abbrechen</string>
     <string name="lumen_m_panel_boost_press_again">Für Boost noch einmal → drücken</string>
     <string name="lumen_m_panel_boost_leave_press_again">Zum Beenden von Boost noch einmal ← drücken</string>

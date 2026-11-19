@@ -5,7 +5,6 @@
     <string name="power_standby_never">Никогда</string>
     <string name="power_quick_wake_minutes">%1$d мин</string>
     <string name="power_quick_wake_hours">%1$d ч</string>
-    <string name="power_standby_summary">Кнопка питания, таймер сна и время бездействия гасят свет, а проектор остаётся готовым к мгновенному включению. По истечении этого времени он выключается полностью.</string>
     <!-- v6.2 power UI (own power key, power menu, sleep timer, wake curtain; PowerMenu / SleepTimer / PowerKey) -->
     <string name="power_menu_off">Выключить</string>
     <string name="power_menu_restart">Перезагрузить</string>

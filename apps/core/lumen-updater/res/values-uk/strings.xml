@@ -113,7 +113,6 @@
     <string name="ch_updates">Оновлення системи</string>
     <string name="n_available_body">Відкрийте, щоб завантажити й установити.</string>
     <string name="n_ready_title">Перезапустіть, щоб завершити оновлення</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Цей проєктор поки не може оновлюватися через інтернет: не виконано одноразове налаштування. Оновіть його з комп\'ютера через lumen-install.</string>
     <string name="blk_power">Підключіть блок живлення: оновлення триватиме кілька хвилин.</string>
     <string name="consent_title_recovery">Встановити оновлення?</string>

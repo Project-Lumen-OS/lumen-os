@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
+     statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
+<resources>
+    <string name="lumen_m_power_music">Мелодія під час увімкнення</string>
+    <string name="lumen_m_boot_source">Відкривати під час увімкнення</string>
+    <string name="lumen_m_boot_home">Головний екран</string>
+    <string name="lumen_m_hdr_voice">Голосовий асистент</string>
+    <string name="lumen_m_voice_language">Мова мовлення</string>
+    <string name="lumen_m_voice_lang_system">Мова системи</string>
+    <string name="lumen_m_voice_speak">Відповідати голосом</string>
+    <string name="lumen_m_voice_key">Голос Gemini</string>
+    <string name="lumen_m_uires">Роздільна здатність інтерфейсу</string>
+    <string name="lumen_m_stats">Надсилати анонімну статистику</string>
+    <string name="lumen_m_diag">Діагностика</string>
+    <string name="lumen_m_sensors">Датчики</string>
+</resources>

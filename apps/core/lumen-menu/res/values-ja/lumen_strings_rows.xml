@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
+     statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
+<resources>
+    <string name="lumen_m_power_music">起動音</string>
+    <string name="lumen_m_boot_source">電源オン時に開く</string>
+    <string name="lumen_m_boot_home">ホーム画面</string>
+    <string name="lumen_m_hdr_voice">音声アシスタント</string>
+    <string name="lumen_m_voice_language">音声の言語</string>
+    <string name="lumen_m_voice_lang_system">システムの言語</string>
+    <string name="lumen_m_voice_speak">音声で応答</string>
+    <string name="lumen_m_voice_key">Gemini の声</string>
+    <string name="lumen_m_uires">インターフェースの解像度</string>
+    <string name="lumen_m_stats">匿名の統計情報を送信</string>
+    <string name="lumen_m_diag">診断</string>
+    <string name="lumen_m_sensors">センサー</string>
+</resources>

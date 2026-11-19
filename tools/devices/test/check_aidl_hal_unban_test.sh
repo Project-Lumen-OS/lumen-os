@@ -49,7 +49,7 @@ menu() { rm -rf "$W/X50Projector"; mkdir -p "$W/X50Projector"; cp -R "$G/apps/X5
 GM=src/org/lumen/x50/projector/GmpfCall.java
 UN=$W/unbanned_x50projector.tsv
 
-menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 203 calls"
+menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 228 calls"
 menu; chk "$W/X50Projector" "$W/allowed.tsv"; RC=$?; expect menu_without_list_11 1 "Call.CORRECT_KEYSTONE: DisplayManager 11 correctKeystone is banned"
 grep -qF "Call.SET_TILT_SHIFT_MOVE: ProjectorFocusManager 88 setTiltShiftMove is banned" "$W/out" && grep -qF "Call.AUTO_FOCUS: ProjectorFocusManager 3 autoFocus is banned" "$W/out" \
   && ok menu_without_list_88_3 || bad menu_without_list_88_3

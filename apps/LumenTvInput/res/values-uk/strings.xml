@@ -29,9 +29,6 @@
     <string name="picker_empty">Входи HDMI не знайдено</string>
     <string name="pref_auto_switch">Автоматично перемикати на HDMI після підключення пристрою</string>
     <string name="pref_return_home">Повертатися на головний екран, коли джерело відключено</string>
-    <string name="pref_cec_otp">HDMI-CEC: вмикати HDMI за командою пристрою (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: керувати пристроєм із пульта</string>
-    <string name="pref_cec_exit">HDMI-CEC: повідомляти пристрій про вихід з HDMI</string>
     <string name="pref_boot_source">Джерело під час увімкнення: %1$s</string>
     <string name="boot_source_home">Головний екран</string>
     <string name="pref_boot_source_note">Якщо проєктор увімкнув пристрій через HDMI-CEC, відкриється його вхід.</string>

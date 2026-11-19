@@ -14,17 +14,19 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
+import org.lumen.ui.FocusRing;
 import org.lumen.ui.Grid;
 import org.lumen.ui.Motion;
 import org.lumen.ui.Palette;
+import org.lumen.ui.RingPaint;
 import org.lumen.ui.Tokens;
 
 /**
  * One focusable item of a Home row: a "Continue" card (art, app badge, ONE progress bar or a
  * "Next episode" tag), a "Popular" card (caption under it while focused), an app banner (hairline, never cropped
- * text), an input tile (icon, name, state). Focus: lift to 1.07 / 1.08 / 1.06 in 160 ms, a 4 px gap in the field
- * colour plus a 4 px ring, the theme's shadow; 120 ms back. Ring, shadow and caption are drawn outside the bounds:
- * every parent keeps setClipChildren(false).
+ * text), an input tile (icon, name, state). Focus: lift to 1.07 / 1.08 / 1.06 in 160 ms, the theme's shadow; 120 ms
+ * back. Every kind wears the accent focus ring ({@link FocusRing}) around its face while focused. Ring, shadow and
+ * caption are drawn outside the bounds: every parent keeps setClipChildren(false).
  *
  * <p>The Витрина (Home A) kinds: DOCK, an app tile of the dock (248 x 152, radius 22) and UPNEXT, a Continue card of the
  * shelf (248 x 140, radius 18), lift their face to 1.12 and 6 px up with a deep shadow and a sheen, the dock tile
@@ -40,13 +42,14 @@ public class TileView extends FrameLayout {
     private final float mScale;
     private final Art mArt;
     private final Paint mShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint mRing = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RingPaint mRing = new RingPaint();
     private final RectF mR = new RectF();
     private float mFocus;           // 0..1, animated
     private boolean mFocused, mMoving;
     private CharSequence mTitle = "", mSub = "", mTagText = "";
     private Bitmap mBitmap, mBadge;
     private int mProgress = -1, mPlaceholder = 0xFF2A2F38;
+    private boolean mTintIcon = true;
     private Drawable mIcon;
     private boolean mOff;
     private android.animation.ValueAnimator mAnim;
@@ -81,7 +84,6 @@ public class TileView extends FrameLayout {
         setClipToPadding(false);
         mArt = new Art(c);
         addView(mArt, new LayoutParams(Theme.px(mW), Theme.px(mH)));
-        mRing.setStyle(Paint.Style.STROKE);
         setClickable(true);
         setFocusable(false);
     }
@@ -159,6 +161,14 @@ public class TileView extends FrameLayout {
 
     public void setIcon(Drawable d) {
         mIcon = d;
+        mTintIcon = true;
+        mArt.invalidate();
+    }
+
+    /** An app's own icon in its own colours (search \"Искать в\"): never tinted into a grey silhouette. */
+    public void setAppIcon(Drawable d) {
+        mIcon = d;
+        mTintIcon = false;
         mArt.invalidate();
     }
 
@@ -237,21 +247,13 @@ public class TileView extends FrameLayout {
         } else if (!Theme.dark()) {
             // resting elevation e1 of the light theme: the depth of the field comes from here
             mShadow.setColor(Theme.SURFACE);
-            mShadow.setShadowLayer(Theme.pxf(Tokens.E1_BLUR) / 2f, 0, Theme.pxf(Tokens.E1_Y), Tokens.E1_COLOR);
+            mShadow.setShadowLayer(Theme.pxf(Tokens.E1_BLUR) / 2f, 0, Theme.pxf(Tokens.E1_Y), Theme.P.elevation);
             mR.set(0, 0, w, h);
             c.drawRoundRect(mR, r, r, mShadow);
         }
         super.dispatchDraw(c);
+        ring(c, w, h, r);
         if (mFocus > 0f) {
-            float gap = Theme.pxf(Tokens.RING_GAP), rw = Theme.pxf(Tokens.RING_W);
-            mRing.setStrokeWidth(gap);
-            mRing.setColor(Theme.alpha(Theme.RING_GAP, mFocus));
-            mR.set(-gap / 2, -gap / 2, w + gap / 2, h + gap / 2);
-            c.drawRoundRect(mR, r + gap / 2, r + gap / 2, mRing);
-            mRing.setStrokeWidth(rw);
-            mRing.setColor(Theme.alpha(Theme.RING, mFocus));
-            mR.set(-gap - rw / 2, -gap - rw / 2, w + gap + rw / 2, h + gap + rw / 2);
-            c.drawRoundRect(mR, r + gap + rw / 2, r + gap + rw / 2, mRing);
             if (kind == REC && mTitle.length() > 0) caption(c, w, h);
             if (mMoving) arrows(c, w, h);
         }
@@ -282,12 +284,24 @@ public class TileView extends FrameLayout {
             c.restore();
         }
         super.dispatchDraw(c);
+        ring(c, w, h, r);
         if (kind == DOCK && f > 0f && mTitle.length() > 0) {
             TextPaint t = Ink.paint(24, 600, Theme.alpha(Theme.TEXT1, f));
             float tw = Math.min(t.measureText(mTitle.toString()), w + Theme.pxf(80));
             Ink.line(c, mTitle, (w - tw) / 2f, h + Theme.pxf(Grid.DOCK_LABEL_GAP) + Theme.pxf(24), w + Theme.pxf(80), t);
         }
         if (mMoving && f > 0f) arrows(c, w, h);
+    }
+
+    /**
+     * The accent ring around the face, only while this tile holds the focus ({@link FocusRing#alpha}): around the
+     * lifted face of a dock tile or card (its scale and lift), else around the tile (whose own scale it undoes).
+     */
+    private void ring(Canvas c, float w, float h, float r) {
+        float s = lifts() ? mArt.getScaleX() : 1f, ty = lifts() ? mArt.getTranslationY() : 0f;
+        float hw = w * s / 2f, hh = h * s / 2f;
+        mRing.draw(c, Theme.P.focusRing, w / 2f - hw, h / 2f - hh + ty, w / 2f + hw, h / 2f + hh + ty, r * s, Theme.pxf(1f), getScaleX(),
+                FocusRing.alpha(mFocused, mFocus));
     }
 
     private void caption(Canvas c, float w, float h) {
@@ -354,6 +368,7 @@ public class TileView extends FrameLayout {
                 float tw = Math.min(t.measureText(mTitle.toString()), w - Theme.pxf(32));
                 Ink.line(c, mTitle, (w - tw) / 2f, h / 2f + Theme.pxf(8), w - Theme.pxf(32), t);
             }
+            if (kind == REC && mBadge != null) badge(c);
             if (kind == CARD) {
                 if (mBadge != null || mProgress >= 0 || mTagText.length() > 0) {
                     mPaint.setShader(new android.graphics.LinearGradient(0, h * 0.58f, 0, h, 0x00000000, 0x8C000000,
@@ -361,16 +376,7 @@ public class TileView extends FrameLayout {
                     c.drawRect(0, h * 0.58f, w, h, mPaint);
                     mPaint.setShader(null);
                 }
-                if (mBadge != null) {
-                    float b = Theme.pxf(40), x = Theme.pxf(14);
-                    mRr.set(x, x, x + b, x + b);
-                    android.graphics.Path clip = new android.graphics.Path();
-                    clip.addRoundRect(mRr, Theme.pxf(10), Theme.pxf(10), android.graphics.Path.Direction.CW);
-                    c.save();
-                    c.clipPath(clip);
-                    c.drawBitmap(mBadge, null, mRr, mPaint);
-                    c.restore();
-                }
+                if (mBadge != null) badge(c);
                 if (mProgress >= 0) {
                     float l = Theme.pxf(18), bh = Theme.pxf(6), y = h - Theme.pxf(18) - bh, rr = bh / 2;
                     mPaint.setColor(Theme.TRACK);
@@ -399,6 +405,18 @@ public class TileView extends FrameLayout {
                 mRr.set(i, i, w - i, h - i);
                 c.drawRoundRect(mRr, r, r, line);
             }
+        }
+
+        /** The app's icon in the top left corner (a Continue card, a search result: where it comes from). */
+        private void badge(Canvas c) {
+            float b = Theme.pxf(40), x = Theme.pxf(14);
+            mRr.set(x, x, x + b, x + b);
+            android.graphics.Path clip = new android.graphics.Path();
+            clip.addRoundRect(mRr, Theme.pxf(10), Theme.pxf(10), android.graphics.Path.Direction.CW);
+            c.save();
+            c.clipPath(clip);
+            c.drawBitmap(mBadge, null, mRr, mPaint);
+            c.restore();
         }
 
         /**
@@ -454,14 +472,16 @@ public class TileView extends FrameLayout {
 
         /**
          * An input chip (icon 32, port 24/620, device 22/480) or a round button (icon 32): the chip colour at rest
-         * (white .07 dark, the surface light), white when focused; an input with nothing on it in the quiet ink.
+         * (white .07 dark, the surface light), focused white in the dark theme and the raised surface in the light one
+         * (Sand mock: hi with the field ink); an input with nothing on it in the quiet ink.
          */
         private void drawPill(Canvas c, float w, float h) {
             float f = mFocus;
-            int rest = Theme.dark() ? 0xFF1A1C20 : Theme.SURFACE;
-            c.drawColor(Theme.dark() ? Palette.mix(rest, 0xFFFFFFFF, f) : rest);
-            int t1 = Palette.mix(mOff ? Theme.TEXT3 : Theme.TEXT1, 0xFF0E1116, f);
-            int t3 = Palette.mix(Theme.TEXT3, 0xFF5A6170, f);
+            boolean dark = Theme.dark();
+            int rest = dark ? 0xFF1A1C20 : Theme.SURFACE;
+            c.drawColor(Palette.mix(rest, dark ? 0xFFFFFFFF : Theme.SURFACE2, f));
+            int t1 = Palette.mix(mOff ? Theme.TEXT3 : Theme.TEXT1, dark ? 0xFF0E1116 : Theme.TEXT1, f);
+            int t3 = Palette.mix(Theme.TEXT3, dark ? 0xFF5A6170 : Theme.TEXT3, f);
             float icon = Theme.pxf(32);
             if (kind == ROUND) {
                 if (mIcon != null) {
@@ -497,7 +517,7 @@ public class TileView extends FrameLayout {
             float pad = Theme.pxf(28), icon = Theme.pxf(40), x = pad;
             if (mIcon != null) {
                 int s = Math.round(icon), y = Math.round((h - icon) / 2f);
-                mIcon.setTint(Theme.TEXT2);
+                if (mTintIcon) mIcon.setTint(Theme.TEXT2);
                 mIcon.setBounds(Math.round(pad), y, Math.round(pad) + s, y + s);
                 mIcon.draw(c);
                 x = pad + icon + Theme.pxf(20);

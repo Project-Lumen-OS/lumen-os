@@ -30,18 +30,20 @@ public final class Launch {
                     if (cn == null) return true;
                     Intent i = new Intent(Intent.ACTION_MAIN).setComponent(cn)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    if (org.lumen.parental.Parental.guard(c, cn.getPackageName(), i)) return true;
                     start(c, i, "app " + cn.getPackageName());
                     return true;
                 }
                 case Card.PROGRAM: {
                     Intent i = IntentGuard.forRow(c, k.intent, k.pkg);
                     if (i == null) i = IntentGuard.appLaunch(c, k.pkg);
-                    if (i != null) start(c, i, "program pkg=" + k.pkg);
+                    if (i != null && !org.lumen.parental.Parental.guard(c, k.pkg, i)) start(c, i, "program pkg=" + k.pkg);
                     return true;
                 }
                 case Card.INPUT: {
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(k.intent)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     if (InputSource.TVINPUT_PKG.equals(k.pkg)) i.setPackage(InputSource.TVINPUT_PKG);
+                    if (org.lumen.parental.Parental.guard(c, org.lumen.parental.Parental.INPUT_PREFIX + k.id, i)) return true;
                     start(c, i, "input " + k.id);
                     return true;
                 }
@@ -74,7 +76,7 @@ public final class Launch {
 
     public static void openApp(Context c, String pkg) {
         Intent i = IntentGuard.appLaunch(c, pkg);
-        if (i != null) start(c, i, "app " + pkg);
+        if (i != null && !org.lumen.parental.Parental.guard(c, pkg, i)) start(c, i, "app " + pkg);
     }
 
     public static void start(Context c, Intent i, String what) {

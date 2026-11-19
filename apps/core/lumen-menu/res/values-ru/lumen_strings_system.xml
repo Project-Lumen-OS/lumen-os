@@ -5,6 +5,7 @@
     <string name="lumen_m_hdmi_options">Настройки HDMI-входов</string>
     <string name="lumen_m_colour_vision">Коррекция цвета</string>
     <string name="lumen_m_temperature">Температура</string>
+    <string name="lumen_m_high_altitude">Режим большой высоты</string>
     <string name="lumen_m_colour_vision_gray">Оттенки серого</string>
     <string name="lumen_m_colour_vision_red_green">Красный/зелёный</string>
     <string name="lumen_m_colour_vision_green_red">Зелёный/красный</string>

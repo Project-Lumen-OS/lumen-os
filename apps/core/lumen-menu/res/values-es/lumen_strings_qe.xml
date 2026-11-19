@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Moviendo</string>
     <string name="lumen_qe_move_hint">Los círculos solo se mueven en la fila de arriba, los mosaicos entre las filas. Para que un mosaico sea un círculo, cambia su aspecto.</string>
     <string name="lumen_qe_put">Dejar aquí</string>
-    <string name="lumen_qe_cancel">Cancelar</string>
     <string name="lumen_qe_full">El menú está lleno. Elige un aspecto más pequeño o la lista.</string>
     <string name="lumen_qe_list_full">Tantos elementos no caben en una lista. Quita algunos primero.</string>
     <string name="lumen_qe_pinned">Este botón siempre se queda en el menú.</string>

@@ -29,9 +29,6 @@
     <string name="picker_empty">Keine HDMI-Eingänge gefunden</string>
     <string name="pref_auto_switch">Automatisch zu HDMI wechseln, wenn ein Gerät angeschlossen wird</string>
     <string name="pref_return_home">Zum Startbildschirm zurückkehren, wenn die Quelle getrennt wird</string>
-    <string name="pref_cec_otp">HDMI-CEC: zu HDMI wechseln, wenn das Gerät es anfordert (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: Gerät mit der Fernbedienung steuern</string>
-    <string name="pref_cec_exit">HDMI-CEC: Gerät beim Verlassen von HDMI informieren</string>
     <string name="pref_boot_source">Quelle beim Einschalten: %1$s</string>
     <string name="boot_source_home">Startbildschirm</string>
     <string name="pref_boot_source_note">Schaltet ein Gerät den Projektor über HDMI-CEC ein, öffnet sich stattdessen dessen Eingang.</string>

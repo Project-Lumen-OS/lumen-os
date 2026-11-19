@@ -7,7 +7,8 @@ package org.lumen.signal;
  * by itself for {@link #POPUP_MS} and it hides again. With the option "keep the card on screen" on (2026-11-18,
  * for people who film the screen) the small card stays over any HDMI input, through signal changes and input switches;
  * it goes only when the option is turned off or the user presses the key (then it waits for the next time an HDMI input
- * comes on screen). Pure state machine, host tested.
+ * comes on screen). Holding OK on the small card opens the full panel (OkHold, 2026-11-19); holding it again or
+ * BACK folds it back into the card it came from. Pure state machine, host tested.
  */
 public final class PanelToggle {
     public static final long POPUP_MS = 5_000L;
@@ -19,6 +20,9 @@ public final class PanelToggle {
     private boolean pinned, dismissed, byPin;
     /** since when no HDMI input is on screen, -1 = one is */
     private long goneAt = -1;
+    /** the full panel was opened by holding OK, from this card (POPUP or COMPACT) */
+    private boolean held;
+    private PanelMode from = PanelMode.COMPACT;
 
     public PanelMode mode() { return mode; }
 
@@ -31,18 +35,40 @@ public final class PanelToggle {
             default: mode = PanelMode.HIDDEN; break;
         }
         byPin = false;
+        held = false;
         if (mode == PanelMode.HIDDEN && pinned) dismissed = true;
         return mode;
     }
 
-    /** BACK reaches the panel only while the full panel has the keys. */
+    /** BACK reaches the panel only while the full panel has the keys: it folds a held-open panel back, else closes. */
     public PanelMode back() {
+        if (mode == PanelMode.DETAIL && held) return collapse();
         if (mode == PanelMode.DETAIL) {
             mode = PanelMode.HIDDEN;
             if (pinned) dismissed = true;
         }
         return mode;
     }
+
+    /** OK held on the small card: the full panel. Nothing happens without a card on screen. */
+    public PanelMode expand() {
+        if (!mode.card()) return mode;
+        from = mode;
+        mode = PanelMode.DETAIL;
+        held = true;
+        return mode;
+    }
+
+    /** OK held again (or BACK) in a panel opened by holding OK: back to the card it came from. */
+    public PanelMode collapse() {
+        if (mode != PanelMode.DETAIL || !held) return mode;
+        mode = from;
+        held = false;
+        return mode;
+    }
+
+    /** The full panel on screen was opened by holding OK (BACK folds it back instead of closing). */
+    public boolean held() { return held && mode == PanelMode.DETAIL; }
 
     /** The option "keep the card on screen" changed: on shows the card over an HDMI input now, off takes it away. */
     public PanelMode pin(boolean on, boolean hdmiOnScreen) {
@@ -102,6 +128,7 @@ public final class PanelToggle {
     public PanelMode hide() {
         mode = PanelMode.HIDDEN;
         byPin = false;
+        held = false;
         return mode;
     }
 }

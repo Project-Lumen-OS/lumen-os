@@ -5,6 +5,7 @@
     <string name="lumen_m_hdmi_options">Opções das entradas HDMI</string>
     <string name="lumen_m_colour_vision">Visão de cores</string>
     <string name="lumen_m_temperature">Temperatura</string>
+    <string name="lumen_m_high_altitude">Modo de alta altitude</string>
     <string name="lumen_m_colour_vision_gray">Tons de cinza</string>
     <string name="lumen_m_colour_vision_red_green">Vermelho/verde</string>
     <string name="lumen_m_colour_vision_green_red">Verde/vermelho</string>

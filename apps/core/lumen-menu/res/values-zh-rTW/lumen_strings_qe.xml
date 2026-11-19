@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">正在移動</string>
     <string name="lumen_qe_move_hint">圓形只能在最上列移動，圖塊只能在各列之間移動。要把圖塊變成圓形，請變更樣式。</string>
     <string name="lumen_qe_put">放在這裡</string>
-    <string name="lumen_qe_cancel">取消</string>
     <string name="lumen_qe_full">選單已滿。請選擇較小的樣式或清單樣式。</string>
     <string name="lumen_qe_list_full">這麼多項目放不進清單。請先移除幾個。</string>
     <string name="lumen_qe_pinned">此按鈕一律保留在選單中。</string>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-wallcolor: the wall colour adaptation (README.md). Stock meanings: newsettings brightnessWallColorCalibration
+     dialog, SystemUI WallColorCore toasts and OverWindowV2; Lumen wording, every locale of the projector apps. -->
+<resources>
+    <string name="lumen_wallcolor_title">Wall colour adaptation</string>
+    <string name="lumen_wallcolor_desc">Matches the picture to the colour of your wall for the most accurate colours.</string>
+    <string name="lumen_wallcolor_desc_ambient">For the best result the picture goes to full brightness and automatic brightness turns off.</string>
+    <string name="lumen_wallcolor_start">Start</string>
+    <string name="lumen_wallcolor_reset">Reset to original colours</string>
+    <string name="lumen_wallcolor_running">Adapting to the wall colour</string>
+    <string name="lumen_wallcolor_matched">Matched colours</string>
+    <string name="lumen_wallcolor_original">Original colours</string>
+    <string name="lumen_wallcolor_save_title">Keep the matched colours?</string>
+    <string name="lumen_wallcolor_save_desc">The matched colours suit the colour of this wall best.</string>
+    <string name="lumen_wallcolor_fail_camera">The camera did not start. Try again.</string>
+    <string name="lumen_wallcolor_fail_start">The adaptation could not start. If this happens again, send a problem report.</string>
+    <string name="lumen_wallcolor_fail_distance">Adaptation failed. Change the distance to the wall or the angle of the projector.</string>
+    <string name="lumen_wallcolor_fail_light">Adaptation failed. The room light changed. Try again in steady light.</string>
+    <string name="lumen_wallcolor_fail_custom">Not available in the custom colour mode.</string>
+    <string name="lumen_wallcolor_fail_performance">Not available in the performance mode.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Turn off automatic brightness and try again.</string>
+    <string name="lumen_wallcolor_fail_3d">Not available in 3D mode.</string>
+    <string name="lumen_wallcolor_fail_big_screen">In giant screen mode only manual keystone is available.</string>
+    <string name="lumen_wallcolor_fail_range">Adaptation failed. The wall colour is outside the range that can be matched.</string>
+    <string name="lumen_wallcolor_fail_not_started">The projector did not start the adaptation. Try again.</string>
+</resources>

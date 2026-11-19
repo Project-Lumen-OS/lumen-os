@@ -19,7 +19,7 @@ ZJ = 'apps/ProjectorBase/src/org/lumen/projector/'
 KEY = ZJ + 'KeyReceiver.java'
 G2 = ZJ + 'hal/Gmpf2Client.java'
 B2 = 'apps/core/lumen-gmpf/src/org/lumen/projector/hal/Gmpf2Base.java'   # the shared IGmpf2 body
-SET = ZJ + 'SettingsActivity.java'
+Z9F = ZJ + 'panel/Z9xFeatures.java'
 APPJ = ZJ + 'App.java'
 IO = ZJ + 'panel/Z9xGameIo.java'   # the Z9X side of the shared game menu: its reads, writes and read-backs
 RU = M + 'res/values-ru/lumen_strings_gm.xml'
@@ -159,7 +159,7 @@ MUTANTS = [
     ('dock shows every item', CTL, 'List<String> tiles() { return GmModel.visibleOrder(GameMenu.CAPS); }',
      'List<String> tiles() { return java.util.Arrays.asList(GmModel.ORDER); }'),
     # ---- licences, strings, HB
-    ('no Licences row', SET, '        actionRow(gc, R.string.lumen_gm_licences, R.string.lumen_gm_licences_d, v -> org.lumen.projector.panel.GmLicences.show(this));\n', ''),
+    ('no Licences row', Z9F, '                case SETTINGS_LICENCES: return LicencesActivity.open(app);\n', ''),
     ('licences screen stays after its dialog', PJ + 'ui/LicencesActivity.java', '        d.setOnDismissListener(x -> finish());\n', ''),
     ('licences screen without the credits', PJ + 'ui/LicencesActivity.java', 'AlertDialog d = GmLicences.open(this);', 'AlertDialog d = null;'),
     ('Xbox credit missing', LIC, '"\\"Xbox One Controller Free\\" by paxillop, ', '"\\"Xbox One Controller\\", '),

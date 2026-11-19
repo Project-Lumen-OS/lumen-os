@@ -5,6 +5,7 @@
     <string name="lumen_m_hdmi_options">HDMI кірістерінің параметрлері</string>
     <string name="lumen_m_colour_vision">Түсті түзету</string>
     <string name="lumen_m_temperature">Температура</string>
+    <string name="lumen_m_high_altitude">Үлкен биіктік режимі</string>
     <string name="lumen_m_colour_vision_gray">Сұр реңктер</string>
     <string name="lumen_m_colour_vision_red_green">Қызыл/жасыл</string>
     <string name="lumen_m_colour_vision_green_red">Жасыл/қызыл</string>

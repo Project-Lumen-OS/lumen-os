@@ -8,12 +8,17 @@ file      devices/g0100/source.tsv assets/lumen_source/source.tsv
 module    lumen-hal
 module    lumen-common-strings
 module    lumen-system
+# the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar, this model's data
+module    lumen-wallcolor
+file      devices/g0100/wallcolor.conf assets/lumen_wallcolor/model.conf
 module    lumen-aipq
 module    lumen-hdmi
 # the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
 module    lumen-icons
 # problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
 module    lumen-report
+# all files access for Lumen Play signed with its release key (apps/core/lumen-files-access)
+module    lumen-files-access
 # Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
 module    lumen-qr
 module    lumen-about
@@ -23,6 +28,8 @@ module    lumen-remote
 # model's rows as data
 module    lumen-signal
 file      devices/g0100/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-sensors
+file      devices/g0100/sensors.tsv assets/lumen_sensors/items.tsv
 module    lumen-menu
 module    lumen-cec
 # the stock HDMI-CEC defaults of every model (devices/_image/cec_defaults.tsv) for lumen-cec CecDefaults

@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Уключэнне Wi-Fi…</string>
     <string name="net_none_found">Сеткі не знойдзены</string>
     <string name="net_add_manual">Дадаць сетку ўручную</string>
-    <string name="net_other">Іншыя варыянты</string>
     <string name="net_password_title">Пароль для сеткі %1$s</string>
     <string name="net_password_hint">Пароль</string>
     <string name="net_show_password">Паказаць пароль</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Знойдзены пульт %1$s</string>
     <string name="remote_connected">Пульт падключаны</string>
     <string name="remote_other">Іншая прылада</string>
-    <string name="remote_skip_hint">Пульт можна падключыць і пазней з хуткай панэлі (кнопка-шасцярэнька).</string>
     <string name="google_title">Уваход у акаўнт Google</string>
     <string name="google_subtitle">Увайдзіце, каб усталёўваць праграмы з Google Play і карыстацца падпіскамі.</string>
     <string name="google_sign_in">Увайсці</string>
@@ -100,7 +98,6 @@
     <string name="done_name">Назва праектара</string>
     <string name="done_home">Галоўны экран</string>
     <string name="done_stats">Адпраўляць ананімную статыстыку</string>
-    <string name="done_stats_note">Пры кожным уключэнні і раз на дзень: мадэль, версія, зборка, звесткі пра абнаўленне, краіна, выпадковы нумар усталёўкі і серыйны нумар (сервер захоўвае толькі яго хэш). Ваш IP-адрас не захоўваецца.</string>
     <string name="done_start">Пачаць</string>
     <string name="done_offline_hint">Няма інтэрнэту: увайсці ў Google і выбраць часавы пояс можна пазней у наладах.</string>
     <string name="done_offline_hint_nogms">Няма інтэрнэту: выбраць часавы пояс можна пазней у наладах.</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">Спатрэбіцца тэлефон або пароль</string>
     <string name="google_help_sub">Што рабіць, калі Google просіць рэгістрацыю</string>
     <string name="done_stats_short">Мадэль, версія і краіна. IP-адрас не захоўваецца.</string>
+    <string name="theme_title">Афармленне</string>
+    <string name="theme_subtitle">Як будзе выглядаць Lumen. Потым гэта можна змяніць у хуткім меню.</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Цёмная</string>
+    <string name="theme_auto">Аўта</string>
+    <string name="theme_auto_sub">Светлая ўдзень, цёмная пасля заходу сонца</string>
 </resources>

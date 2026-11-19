@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The installer's leanback guidance ids the overlay's guidance styles point at (layout_toEndOf, layout_below).
+     Their real ids come from ../ids.txt. -->
+<resources>
+    <item type="id" name="guidance_icon" />
+    <item type="id" name="guidance_title" />
+    <item type="id" name="guidance_breadcrumb" />
+</resources>

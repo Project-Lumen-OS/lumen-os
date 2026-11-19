@@ -230,6 +230,14 @@ ICONS['3d'] = ([
 ICONS['gear'] = ([G('g_gr', 12, 12, [P('p_gr', GEAR), P('p_gc', circ(12, 12, 3))])],
                  [A('g_gr', 'rotation', -60, 0, 700, 0, 'spring')])
 
+# For developers (All settings, last page, 2026-11-19): the two braces spring open
+ICONS['dev'] = ([
+    G('g_dl', 5.5, 12, [P('p_dl', 'M8,3H7a2,2 0 0 0 -2,2v5a2,2 0 0 1 -2,2a2,2 0 0 1 2,2v5a2,2 0 0 0 2,2h1')]),
+    G('g_dr', 18.5, 12, [P('p_dr', 'M16,21h1a2,2 0 0 0 2,-2v-5a2,2 0 0 1 2,-2a2,2 0 0 1 -2,-2V5a2,2 0 0 0 -2,-2h-1')]),
+], [
+    A('g_dl', 'translateX', 2.5, 0, 600, 0, 'spring'), A('g_dr', 'translateX', -2.5, 0, 600, 0, 'spring'),
+])
+
 # Brightness: the core springs, the rays turn in
 ICONS['sun'] = ([
     G('g_sc', 12, 12, [P('p_sc', circ(12, 12, 4.2), 'fill')]),

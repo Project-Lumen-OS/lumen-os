@@ -5,6 +5,7 @@ import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -12,8 +13,10 @@ import android.content.pm.ResolveInfo;
 import android.util.Log;
 
 import org.lumen.home.App;
+import org.lumen.home.model.AppPick;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,18 +24,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Installed apps: every MAIN+LEANBACK_LAUNCHER activity, plus MAIN+LAUNCHER for packages
- * without a leanback entry, so phone-only apps (LocalSend, ByeDPI) stay reachable. One entry per
- * activity. Runs on the io thread.
+ * Installed apps: packages with a MAIN+LEANBACK_LAUNCHER activity, plus MAIN+LAUNCHER for packages
+ * without a leanback entry, so phone-only apps (LocalSend, ByeDPI) stay reachable. One entry per package, on the
+ * activity the system launches ({@link AppPick}), label from that activity. Runs on the io thread.
  */
 public final class AppSource {
     private AppSource() {}
-
-    /** Hidden unless the user un-hides them in Customize. */
-    public static final Set<String> HIDDEN_BY_DEFAULT = new HashSet<>(java.util.Arrays.asList(
-            "org.lumen.home", "com.android.tv.settings", "org.lumen.tvinput", "org.lumen.setup",
-            "com.android.tv.frameworkpackagestubs", "com.google.android.tungsten.setupwraith",
-            "org.lineageos.setupwizard", "com.google.android.katniss", "org.lumen.updater"));
 
     public static final String PKG_YOUTUBE = "com.google.android.youtube.tv";
     public static final String PKG_KINOPOISK = "ru.kinopoisk.tv";
@@ -47,56 +44,75 @@ public final class AppSource {
         public long installed;
     }
 
-    public static List<Entry> load(Context c) {
+    /** The apps (one per package) and every launcher activity they were picked from. */
+    public static final class Apps {
+        public final List<Entry> entries = new ArrayList<>();
+        public final List<AppPick.Activity> resolved = new ArrayList<>();
+    }
+
+    public static Apps load(Context c) {
         PackageManager pm = c.getPackageManager();
-        ArrayList<Entry> out = new ArrayList<>();
+        Apps out = new Apps();
+        Map<String, ResolveInfo> infos = new HashMap<>();
         HashSet<String> lbPkgs = new HashSet<>();
-        HashSet<String> seen = new HashSet<>();
+        query(pm, Intent.CATEGORY_LEANBACK_LAUNCHER, Collections.emptySet(), infos, out.resolved);
+        for (AppPick.Activity a : out.resolved) lbPkgs.add(a.pkg);
+        query(pm, Intent.CATEGORY_LAUNCHER, lbPkgs, infos, out.resolved);
         Map<String, long[]> times = new HashMap<>();
-        Intent lb = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER);
-        for (ResolveInfo ri : pm.queryIntentActivities(lb, 0)) {
-            Entry a = make(pm, ri, true, times);
-            if (a != null && seen.add(a.cn.flattenToShortString())) {
-                out.add(a);
-                lbPkgs.add(a.cn.getPackageName());
-            }
-        }
-        Intent la = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
-        for (ResolveInfo ri : pm.queryIntentActivities(la, 0)) {
-            if (ri.activityInfo == null || lbPkgs.contains(ri.activityInfo.packageName)) continue;
-            Entry a = make(pm, ri, false, times);
-            if (a != null && seen.add(a.cn.flattenToShortString())) out.add(a);
+        for (AppPick.Activity a : AppPick.onePerPackage(out.resolved, new AppPick.Launch() {
+            public String leanback(String pkg) { return flat(pm.getLeanbackLaunchIntentForPackage(pkg)); }
+            public String main(String pkg) { return flat(pm.getLaunchIntentForPackage(pkg)); }
+        })) {
+            Entry e = make(pm, a, infos.get(a.component), times);
+            if (e != null) out.entries.add(e);
         }
         return out;
     }
 
-    private static Entry make(PackageManager pm, ResolveInfo ri, boolean leanback, Map<String, long[]> times) {
-        if (ri.activityInfo == null) return null;
+    private static void query(PackageManager pm, String category, Set<String> skip, Map<String, ResolveInfo> infos,
+                              List<AppPick.Activity> out) {
+        boolean leanback = Intent.CATEGORY_LEANBACK_LAUNCHER.equals(category);
+        for (ResolveInfo ri : pm.queryIntentActivities(new Intent(Intent.ACTION_MAIN).addCategory(category), 0)) {
+            ActivityInfo ai = ri.activityInfo;
+            if (ai == null || skip.contains(ai.packageName)) continue;
+            String cn = new ComponentName(ai.packageName, ai.name).flattenToString();
+            if (infos.putIfAbsent(cn, ri) == null) out.add(new AppPick.Activity(ai.packageName, cn, leanback));
+        }
+    }
+
+    private static String flat(Intent i) {
+        ComponentName cn = i == null ? null : i.getComponent();
+        return cn == null ? null : cn.flattenToString();
+    }
+
+    /** The entry of the picked activity: label from it (a resolved one, else its ActivityInfo, else the app's). */
+    private static Entry make(PackageManager pm, AppPick.Activity pick, ResolveInfo ri, Map<String, long[]> times) {
         try {
             Entry a = new Entry();
-            a.cn = new ComponentName(ri.activityInfo.packageName, ri.activityInfo.name);
-            CharSequence l = ri.loadLabel(pm);
-            a.label = l == null ? ri.activityInfo.packageName : l.toString().trim();
+            a.cn = ComponentName.unflattenFromString(pick.component);
+            ActivityInfo ai = ri != null ? ri.activityInfo : pm.getActivityInfo(a.cn, 0);
+            CharSequence l = ri != null ? ri.loadLabel(pm) : ai.loadLabel(pm);
+            a.label = l == null ? pick.pkg : l.toString().trim();
             if (a.label.length() > 120) a.label = a.label.substring(0, 120);
-            a.leanback = leanback;
-            ApplicationInfo ai = ri.activityInfo.applicationInfo;
-            a.system = ai != null && (ai.flags & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
-            long[] t = times.get(a.cn.getPackageName());
+            a.leanback = pick.leanback;
+            ApplicationInfo app = ai.applicationInfo;
+            a.system = app != null && (app.flags & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
+            long[] t = times.get(pick.pkg);
             if (t == null) {
                 t = new long[]{0, 0};
                 try {
-                    PackageInfo pi = pm.getPackageInfo(a.cn.getPackageName(), 0);
+                    PackageInfo pi = pm.getPackageInfo(pick.pkg, 0);
                     t[0] = pi.lastUpdateTime;
                     t[1] = pi.firstInstallTime;
                 } catch (PackageManager.NameNotFoundException ignored) {
                 }
-                times.put(a.cn.getPackageName(), t);
+                times.put(pick.pkg, t);
             }
             a.updated = t[0];
             a.installed = t[1];
             return a;
         } catch (Throwable t) {
-            Log.w(App.TAG, "app entry " + ri.activityInfo.packageName + ": " + t);
+            Log.w(App.TAG, "app entry " + pick.component + ": " + t);
             return null;
         }
     }

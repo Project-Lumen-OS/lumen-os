@@ -16,6 +16,7 @@ import android.util.Log;
 
 import org.lumen.home.App;
 import org.lumen.home.data.IntentGuard;
+import org.lumen.home.model.HeroWindow;
 import org.lumen.home.ui.UiScale;
 
 import java.io.ByteArrayOutputStream;
@@ -39,8 +40,9 @@ import java.util.concurrent.LinkedBlockingDeque;
  *  - disk: one downscaled "master" per source URI (landscape art covers the screen, at most 2560x1440,
  *    {@link UiScale#masterW}; portrait 640x960), so the card and the full-screen hero share one
  *    download (1080p keeps 1.0.1's 1920x1080 "m2:" masters, 2K and 4K get their own); cards decode from
- *    it with ImageDecoder target size + crop at exactly their pixels; hero art (KIND_HERO, its own memory
- *    keys) is never enlarged by the decoder and is cropped from the top (1.0.1 follow-up: a centre crop
+ *    it with ImageDecoder target size + crop at exactly their pixels; hero art (KIND_HERO, its own small LRU of
+ *    {@link HeroWindow#SLOTS} screens, {@link UiScale#heroMemBytes}, so preloaded pages never push cards out) is
+ *    never enlarged by the decoder and is cropped from the top (1.0.1 follow-up: a centre crop
  *    cut the top of the picture), and {@link #probe} reads a master's real size (bounds only) so the
  *    hero can decide between full-bleed art and a framed card ({@link HeroArt});
  *  - fetch: https/http, content:// and android.resource:// of the row's own package only (IntentGuard),
@@ -160,6 +162,7 @@ public final class ImageLoader {
                 rs = new ArrayList<>(reqs);
                 if (result != null) {
                     if (blur) putBlur(key, result);
+                    else if (kind == KIND_HERO) putHero(key, result);
                     else putMem(key, result, kind);
                 }
             }
@@ -216,6 +219,8 @@ public final class ImageLoader {
     private final DiskCache mDisk;
     private final LinkedHashMap<String, Entry> mMem = new LinkedHashMap<>(64, 0.75f, true);
     private final LinkedHashMap<String, Bitmap> mBlur = new LinkedHashMap<>(16, 0.75f, true);
+    private final LinkedHashMap<String, Bitmap> mHero = new LinkedHashMap<>(8, 0.75f, true);
+    private long mHeroBytes;
     private final HashMap<String, Job> mJobs = new HashMap<>();
     private final LinkedBlockingDeque<Job> mQueue = new LinkedBlockingDeque<>();
     private final HashMap<String, Integer> mColors = new HashMap<>();
@@ -226,7 +231,9 @@ public final class ImageLoader {
     public ImageLoader(App app) {
         mApp = app;
         DisplayMetrics dm = app.getResources().getDisplayMetrics();
-        mDisk = new DiskCache(app.getCacheDir(), UiScale.diskBytes(dm.widthPixels, dm.heightPixels));
+        mDisk = new DiskCache(UiScale.diskBytes(dm.widthPixels, dm.heightPixels));
+        // before the unlock: memory only, app art from PackageManager, nothing fetched (model/BootGate)
+        app.gate().whenUnlocked("image cache", () -> mDisk.open(app.getCacheDir()));
         for (int i = 0; i < 3; i++) {
             Thread t = new Thread(this::worker, "z9x-home-img" + i);
             t.setDaemon(true);
@@ -236,10 +243,11 @@ public final class ImageLoader {
 
     private void worker() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND + Process.THREAD_PRIORITY_MORE_FAVORABLE);
-        if (mTrimmed.compareAndSet(false, true)) mDisk.trim(); // once per process, off the lock
         while (true) {
             try {
-                mQueue.takeLast().run();
+                Job j = mQueue.takeLast();
+                if (mDisk.isOpen() && mTrimmed.compareAndSet(false, true)) mDisk.trim(); // once per process, off the lock
+                j.run();
             } catch (InterruptedException e) {
                 return;
             } catch (Throwable t) {
@@ -263,8 +271,7 @@ public final class ImageLoader {
 
     /** Hero art (top crop, never enlarged) already in memory at exactly this box, or null. */
     public synchronized Bitmap peekHero(String uri, int w, int h) {
-        Entry e = mMem.get(heroKey(uri, w, h));
-        return e != null ? e.bmp : null;
+        return mHero.get(heroKey(uri, w, h));
     }
 
     /** Real pixels {w, h} of the art's master if a probe already read them, else null. */
@@ -366,6 +373,22 @@ public final class ImageLoader {
         }
     }
 
+    /** Hero pages: the newest ones within {@link UiScale#heroMemBytes}, the one just put always stays. */
+    private void putHero(String key, Bitmap b) {
+        Bitmap old = mHero.put(key, b);
+        if (old != null) mHeroBytes -= old.getAllocationByteCount();
+        mHeroBytes += b.getAllocationByteCount();
+        DisplayMetrics dm = mApp.getResources().getDisplayMetrics();
+        long budget = UiScale.heroMemBytes(dm.widthPixels, dm.heightPixels, HeroWindow.SLOTS);
+        Iterator<Map.Entry<String, Bitmap>> it = mHero.entrySet().iterator();
+        while (mHeroBytes > budget && it.hasNext()) {
+            Map.Entry<String, Bitmap> e = it.next();
+            if (e.getKey().equals(key)) continue;
+            mHeroBytes -= e.getValue().getAllocationByteCount();
+            it.remove();
+        }
+    }
+
     private void putBlur(String key, Bitmap b) {
         mBlur.put(key.substring(5), b);
         while (mBlur.size() > 16) {
@@ -386,6 +409,8 @@ public final class ImageLoader {
             }
         }
         mBlur.clear();
+        mHero.clear();
+        mHeroBytes = 0;
     }
 
     public synchronized void trim(int level) {
@@ -393,7 +418,9 @@ public final class ImageLoader {
                 || level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL) {
             mMem.clear();
             mBlur.clear();
+            mHero.clear();
             mMemBytes = 0;
+            mHeroBytes = 0;
         } else if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN
                 || level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) {
             trimToBanners();
@@ -455,6 +482,7 @@ public final class ImageLoader {
 
     /** Disk master of a remote/provider URI for this UI mode; downloads and downscales it on a miss. */
     private File master(Job j, int[] color) throws Exception {
+        if (!mDisk.isOpen()) return null; // before the unlock: no place to keep it, other apps' providers are not there
         String mkey = masterKey(j.uri);
         File f = mDisk.get(mkey, false);
         if (f != null) return f;

@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">يجعل Boost الصورة أكثر سطوعًا، لكن الألوان تبدو باهتة أكثر. تبقى مساحة الألوان كما هي.</string>
     <string name="lumen_m_cec_entry">أجهزة HDMI ‏(CEC)</string>
     <string name="lumen_m_eq_title">المعادل الصوتي</string>
-    <string name="lumen_m_fit_row">الملاءمة لحجم الشاشة</string>
-    <string name="lumen_m_fit_row_summary">يُضبط التكبير حسب المسافة إلى الشاشة وحجمها</string>
     <string name="lumen_m_hdmi_mode">وضع HDMI</string>
     <string name="lumen_m_hdmi_mode_compat">متوافق (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">محسّن (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">سريع</string>
     <string name="lumen_m_signal_refresh_note">سريع: قد يحدث تقطع نادر في الصورة</string>
     <string name="lumen_m_hdr_developer">للمطورين</string>
+    <string name="lumen_m_hdr_power">التشغيل</string>
+    <string name="lumen_m_power_on_ac">التشغيل التلقائي عند توصيل الكهرباء</string>
+    <string name="lumen_m_power_on_ac_tip">يعمل جهاز العرض تلقائيًا بعد توصيل الكهرباء</string>
+    <string name="lumen_m_custom_base">استنادًا إلى</string>
+    <string name="lumen_m_custom_delete">حذف المخصص</string>
+    <string name="lumen_m_custom_delete_ask">هل تريد حذف وضع الصورة المخصص؟</string>
+    <string name="lumen_m_custom_confirm">تأكيد</string>
+    <string name="lumen_m_custom_name">أدخل اسمًا</string>
+    <string name="lumen_m_custom_name_empty">لا يمكن أن يكون الاسم فارغًا</string>
+    <string name="lumen_m_custom_name_taken">هذا الاسم موجود، جرّب اسمًا آخر</string>
+    <string name="lumen_m_custom_name_max">تم بلوغ الحد الأقصى للطول</string>
 </resources>

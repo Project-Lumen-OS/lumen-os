@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">正在移动</string>
     <string name="lumen_qe_move_hint">圆形只能在顶行移动，磁贴只能在各行之间移动。要把磁贴变成圆形，请更改样式。</string>
     <string name="lumen_qe_put">放在这里</string>
-    <string name="lumen_qe_cancel">取消</string>
     <string name="lumen_qe_full">菜单已满。请选择更小的样式或列表样式。</string>
     <string name="lumen_qe_list_full">这么多项目放不进列表。请先移除几个。</string>
     <string name="lumen_qe_pinned">此按钮始终保留在菜单中。</string>

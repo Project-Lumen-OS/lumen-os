@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Values of the installer's leanback copy, overridden by name: the guided step panels (no darker action panel, no
+     shadow) and the action list paddings (stacked pills, not full width). -->
+<resources>
+    <color name="lb_guidedactions_background">@android:color/transparent</color>
+    <color name="lb_guidedactions_background_dark">@android:color/transparent</color>
+    <color name="lb_guidedactions_item_unselected_text_color">@color/lumen_pkg_text1</color>
+
+    <dimen name="lb_guidedactions_elevation">0dp</dimen>
+    <dimen name="lb_guidedactions_section_shadow_width">0dp</dimen>
+    <dimen name="lb_guidedactions_list_padding_start">24dp</dimen>
+    <dimen name="lb_guidedactions_list_padding_end">120dp</dimen>
+    <dimen name="lb_guidedactions_list_vertical_spacing">6dp</dimen>
+
+    <!-- card width of the framework dialogs (half the screen) -->
+    <item name="lumen_pkg_dialog_width" type="dimen" format="fraction">50%</item>
+</resources>

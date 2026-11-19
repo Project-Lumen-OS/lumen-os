@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- dialog card: R_CARD 20 px, the Lumen surface colour -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android" android:inset="16dp">
+    <shape android:shape="rectangle">
+        <corners android:radius="10dp" />
+        <solid android:color="@color/lumen_pkg_card" />
+    </shape>
+</inset>

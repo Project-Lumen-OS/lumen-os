@@ -847,12 +847,17 @@ assert stg == st - stn and len(stg) == 4, stg
 assert cog == co - con and len(cog) == 3, cog
 print('gapps sysconfig ok: %d package states + %d overrides = the Google entries of z9x-sysconfig.xml' % (len(stg), len(cog)))
 PY
-  # ---- boot animation (brand spec 4.4): STORED, small box, 'c' intro + 'f' fading loop, <= 1 MB
+  # ---- boot animation (brand spec 4.4): STORED, small box, 'c' intro + 'f' fading loop, frames <= 1 MB, the power-on
+  # sound part0/audio.wav (tools/brand/boot_sound, PCM 16 bit 48 kHz stereo, at most 640 KiB)
   python3 - "$V1/bootanimation.zip" <<'PY' || die "bootanimation.zip check failed"
 import sys, zipfile, os
 p = sys.argv[1]
-assert os.path.getsize(p) <= 1 << 20, 'bigger than 1 MiB'
 z = zipfile.ZipFile(p)
+snd = [i for i in z.infolist() if i.filename.endswith('audio.wav')]
+assert [i.filename for i in snd] == ['part0/audio.wav'] and snd[0].file_size <= 640 << 10, 'power-on sound: %s' % snd
+wav = z.read('part0/audio.wav')
+assert wav[:4] == b'RIFF' and wav[8:12] == b'WAVE' and wav[20:24] == b'\x01\x00\x02\x00' and wav[24:28] == (48000).to_bytes(4, 'little') and wav[34:36] == b'\x10\x00', 'power-on sound is not PCM 16 bit 48 kHz stereo'
+assert os.path.getsize(p) - snd[0].file_size <= 1 << 20, 'frames bigger than 1 MiB'
 bad = [i.filename for i in z.infolist() if i.compress_type != zipfile.ZIP_STORED]
 assert not bad, 'compressed entries: %s' % bad[:3]
 d = z.read('desc.txt').decode().split('\n')
@@ -865,7 +870,7 @@ for _, _, _, part, *_ in parts:
     fr = [n for n in names if n.startswith(part + '/') and n.endswith('.png')]
     assert fr, 'no frames in ' + part
     assert all(z.read(n)[:8] == b'\x89PNG\r\n\x1a\n' for n in fr), part
-assert not any(n.endswith(('audio.wav', 'trim.txt')) for n in names)
+assert not any(n.endswith('trim.txt') for n in names)
 frames = sum(1 for n in names if n.endswith('.png'))
 print('bootanimation ok: %dx%d@%d, %d frames, %.1f MB GL peak, %d bytes' % (w, h, fps, frames, frames * w * h * 4 / 1e6, os.path.getsize(p)))
 PY

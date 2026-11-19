@@ -11,7 +11,6 @@
     <string name="lumen_qpd_theme_light">Clair</string>
     <string name="lumen_qpd_theme_dark">Sombre</string>
     <string name="lumen_qpd_theme_auto">Auto</string>
-    <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Duplication d\'écran</string>
     <string name="lumen_qpd_mirror_on">Duplication d\'écran (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Demander avant la connexion</string>

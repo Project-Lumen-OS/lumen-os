@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Contrôle parental</string>
+    <string name="lumen_lp_intro">Limitez ce que les enfants peuvent ouvrir et combien de temps ils regardent.</string>
+    <string name="lumen_lp_lock">Verrou enfant</string>
+    <string name="lumen_lp_lock_desc">Activé, vous pouvez régler la portée, le temps de visionnage et plus</string>
+    <string name="lumen_lp_lock_off_title">Désactiver le verrou enfant ?</string>
+    <string name="lumen_lp_lock_off_text">Les limites de temps et le mot de passe au démarrage ne s\'appliquent plus. Les réglages parentaux s\'ouvrent sans mot de passe.</string>
+    <string name="lumen_lp_turn_off">Désactiver</string>
+    <string name="lumen_lp_cancel">Annuler</string>
+    <string name="lumen_lp_child_mode">Mode enfant</string>
+    <string name="lumen_lp_child_apps">Applis du mode enfant</string>
+    <string name="lumen_lp_child_apps_count">%1$d sélectionnées</string>
+    <string name="lumen_lp_range">Portée du contrôle</string>
+    <string name="lumen_lp_range_child">Mode enfant seulement</string>
+    <string name="lumen_lp_range_global">Partout</string>
+    <string name="lumen_lp_session">Temps par séance</string>
+    <string name="lumen_lp_session_desc">Ensuite, 10 minutes de pause</string>
+    <string name="lumen_lp_daily">Temps par jour</string>
+    <string name="lumen_lp_no_limit">Sans limite</string>
+    <string name="lumen_lp_minutes">%1$d min</string>
+    <string name="lumen_lp_hours">%1$s h</string>
+    <string name="lumen_lp_boot_pin">Mot de passe au démarrage</string>
+    <string name="lumen_lp_boot_child">Mode enfant au démarrage</string>
+    <string name="lumen_lp_change_pin">Changer le mot de passe</string>
+    <string name="lumen_lp_eye">Protection des yeux</string>
+    <string name="lumen_lp_eye_desc">La protection des yeux se règle dans les réglages du projecteur</string>
+    <string name="lumen_lp_pin_enter">Saisissez le mot de passe du verrou enfant</string>
+    <string name="lumen_lp_pin_hint">Appuyez sur les flèches de la télécommande</string>
+    <string name="lumen_lp_pin_set">Définissez le mot de passe du verrou enfant</string>
+    <string name="lumen_lp_pin_again">Saisissez à nouveau le mot de passe</string>
+    <string name="lumen_lp_pin_mismatch">Les mots de passe diffèrent. Définissez à nouveau le mot de passe</string>
+    <string name="lumen_lp_pin_wrong">Mot de passe incorrect</string>
+    <string name="lumen_lp_pin_forgot">Mot de passe oublié ? Appuyez sur OK</string>
+    <string name="lumen_lp_quiz">Combien font %1$d × %2$d ?</string>
+    <string name="lumen_lp_quiz_wrong">Ce n\'est pas juste. Voici une autre question</string>
+    <string name="lumen_lp_rest_title">C\'est l\'heure d\'une pause</string>
+    <string name="lumen_lp_rest_session">La séance est finie. Reposez vous 10 minutes</string>
+    <string name="lumen_lp_rest_daily">Le temps du jour est écoulé</string>
+    <string name="lumen_lp_rest_unlock">Déverrouiller</string>
+    <string name="lumen_lp_on">Oui</string>
+    <string name="lumen_lp_off">Non</string>
+</resources>

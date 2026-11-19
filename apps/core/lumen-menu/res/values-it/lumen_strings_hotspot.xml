@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
+    <string name="lumen_m_hotspot_hotspot">Hotspot</string>
+    <string name="lumen_m_hotspot_name">Nome rete</string>
+    <string name="lumen_m_hotspot_password">Password</string>
+    <string name="lumen_m_hotspot_reset">Ripristina valore predefinito</string>
+    <string name="lumen_m_hotspot_on" formatted="true">L\'hotspot di %s è attivato</string>
+    <string name="lumen_m_hotspot_off">L\'hotspot è disattivato</string>
+    <string name="lumen_m_hotspot_failed">Errore sconosciuto. Riprovare più tardi</string>
+    <string name="lumen_m_hotspot_saved">Configurazione attuale salvata</string>
+    <string name="lumen_m_hotspot_name_title">Nome hotspot</string>
+    <string name="lumen_m_hotspot_password_title">Password hotspot</string>
+    <string name="lumen_m_hotspot_password_hint">Almeno 8 caratteri</string>
+    <string name="lumen_m_hotspot_name_empty">Inserire un nome di rete</string>
+    <string name="lumen_m_hotspot_name_long">Il nome è troppo lungo</string>
+    <string name="lumen_m_hotspot_password_short">Inserire almeno 8 caratteri</string>
+    <string name="lumen_m_hotspot_password_long">Non più di 63 caratteri</string>
+    <string name="lumen_m_hotspot_password_chars">Solo lettere latine, cifre e simboli</string>
+</resources>

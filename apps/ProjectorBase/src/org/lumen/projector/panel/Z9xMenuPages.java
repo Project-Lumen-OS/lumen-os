@@ -22,9 +22,8 @@ import org.lumen.projector.ui.TextRow;
 /**
  * Z9X: the device pages shown INSIDE the shared menu (MenuController.Pages), the ones the Z9X
  * 1.0.10 quick panel had: the professional picture pages (ProPicture), HDMI-CEC
- * (CecPage), the fit page (FitScreenPage, only where a fit device is supported) and the equalizer of the current
- * sound mode (the module's EqBandsRow; values per sound mode in audio.SoundEq). Built once per menu (the menu is
- * rebuilt on a locale change), except the fit page, built at every open so it shows the stored values.
+ * (CecPage) and the equalizer of the current sound mode (the module's EqBandsRow; values per sound mode in
+ * audio.SoundEq). Built once per menu (the menu is rebuilt on a locale change).
  */
 final class Z9xMenuPages implements MenuController.Pages {
     private static final String TAG = "Z9xMenu";
@@ -64,7 +63,6 @@ final class Z9xMenuPages implements MenuController.Pages {
         switch (id) {
             case PICTURE_PRO: return pro().page;
             case SETTINGS_CEC: return cec();
-            case KEYSTONE_FIT_SCREEN: return fitPage();
             case SOUND_EQ: return eq();
             default: return null;
         }
@@ -102,14 +100,6 @@ final class Z9xMenuPages implements MenuController.Pages {
             }, new org.lumen.projector.cec.CecPolicyDriver());
         }
         return cec;
-    }
-
-    private Page fitPage() {
-        return org.lumen.projector.fit.FitScreenPage.build(app, new org.lumen.projector.fit.FitScreenPage.Host() {
-            @Override public void push(Page page) { if (menu != null) menu.push(page); }
-            @Override public void refreshPage(Page page) { if (menu != null) menu.refreshPage(page); }
-            @Override public void closeThen(Runnable r) { if (menu != null) menu.closeThen(r); }
-        });
     }
 
     // ================================================================== equalizer (v6.4, not in stock; QPC:1264)

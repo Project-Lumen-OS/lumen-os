@@ -35,9 +35,6 @@
 
     <string name="pref_auto_switch">Switch to HDMI automatically when a device is connected</string>
     <string name="pref_return_home">Return to the home screen when the source is disconnected</string>
-    <string name="pref_cec_otp">HDMI-CEC: switch to HDMI when the device asks (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: control the device with the remote</string>
-    <string name="pref_cec_exit">HDMI-CEC: tell the device when leaving HDMI</string>
     <string name="pref_boot_source">Source at power-on: %1$s</string>
     <string name="boot_source_home">Home screen</string>
     <string name="pref_boot_source_note">If a device turns the projector on over HDMI-CEC, its input opens instead.</string>

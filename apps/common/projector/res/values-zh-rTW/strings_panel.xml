@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">快速設定</string>
-    <string name="panel_sec_image_correction">畫面校正</string>
     <string name="panel_sec_picture">影像</string>
     <string name="panel_sec_game">遊戲（HDMI）</string>
     <string name="panel_sec_sound">聲音</string>
@@ -18,12 +17,6 @@
     <string name="panel_reset">重設</string>
     <string name="panel_turn_on">開啟</string>
     <string name="panel_turn_off">關閉</string>
-    <plurals name="panel_minutes">
-        <item quantity="other">%d 分鐘</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="other">%d 小時</item>
-    </plurals>
     <string name="panel_ak_now">立即自動梯形校正</string>
     <string name="panel_fit_now">立即對齊布幕</string>
     <string name="panel_af_now">立即自動對焦</string>
@@ -41,23 +34,19 @@
     <string name="panel_reset_keystone_msg">畫面將恢復為未校正的完整畫面。要繼續嗎？</string>
     <string name="panel_reset_keystone_done">已重設梯形校正</string>
     <string name="panel_kst_manual">手動梯形校正</string>
-    <string name="panel_kst_hint">方向鍵：移動角落 · OK：下一個角落 · 返回：完成</string>
     <string name="panel_kst_wait">正在讀取角落位置…</string>
     <string name="panel_kst_corner_tl">左上</string>
     <string name="panel_kst_corner_tr">右上</string>
     <string name="panel_kst_corner_br">右下</string>
     <string name="panel_kst_corner_bl">左下</string>
     <string name="panel_kst_limit">這個角落無法再移動</string>
-    <string name="panel_kst_unavailable">目前無法使用手動梯形校正</string>
     <string name="panel_kst_game_mode">極速遊戲模式下梯形校正已關閉</string>
     <string name="panel_projection_mode">投影方式</string>
     <string name="panel_proj_auto">自動</string>
     <string name="panel_proj_table">桌面</string>
     <string name="panel_proj_ceiling">吊掛</string>
     <string name="panel_proj_rear">背投</string>
-    <string name="panel_proj_front_table">正投桌面</string>
     <string name="panel_proj_front_ceiling">正投吊掛</string>
-    <string name="panel_proj_rear_table">背投桌面</string>
     <string name="panel_proj_rear_ceiling">背投吊掛</string>
     <string name="panel_proj_confirm_flip">畫面將會翻轉。要繼續嗎？</string>
     <string name="panel_proj_confirm_ceiling">要切換為吊掛安裝嗎？畫面將會翻轉，即時梯形校正等部分功能將無法使用。</string>
@@ -71,7 +60,6 @@
     <string name="panel_tileval_pm_ai">AI 畫質</string>
     <string name="panel_tileval_pm_color_accuracy">精準色彩</string>
     <string name="panel_tileval_pm_performance">效能</string>
-    <string name="panel_tileval_sound_ai">AI 音效</string>
     <string name="panel_pm_performance_msg">請確認通風口沒有遮擋，且室溫不超過 25 °C。請勿長時間使用此模式。</string>
     <string name="panel_lamp">亮度</string>
     <string name="panel_boost">Boost</string>
@@ -82,15 +70,11 @@
     <string name="panel_ultra120_3d">3D 模式下無法使用</string>
     <string name="panel_ultra120_hdmi">HDMI 輸入無法使用，請使用遊戲模式</string>
     <string name="panel_ultra120_refused">目前內容不支援 Ultra 120 Hz</string>
-    <string name="panel_ultra120_unverified">尚未在此投影機上測試。</string>
     <string name="panel_game_hdmi_only">僅在顯示 HDMI 輸入時可用</string>
-    <string name="panel_picture_settings">影像設定</string>
     <string name="panel_pq_brightness">亮度</string>
     <string name="panel_pq_contrast">對比</string>
     <string name="panel_pq_saturation">飽和度</string>
     <string name="panel_pq_sharpness">銳利度</string>
-    <string name="panel_pq_blocked_ai">AI 畫質模式下無法調整基本設定</string>
-    <string name="panel_pq_blocked_performance">效能模式下無法調整基本設定</string>
     <string name="panel_ct_blocked_office">辦公模式下無法調整色溫</string>
     <string name="panel_color_temp">色溫</string>
     <string name="panel_ct_1">色溫 1</string>
@@ -131,8 +115,6 @@
     <string name="eye_off_done">人眼保護已關閉</string>
     <string name="eye_bright_reduced">投影距離過近：已自動降低亮度</string>
     <string name="eye_unavailable">人眼保護尚未就緒。請重新啟動投影機後再試一次。</string>
-    <string name="panel_standby_off_after">待機後自動關機時間</string>
-    <string name="panel_input">訊號來源</string>
     <string name="panel_projector_settings">投影機設定</string>
     <string name="panel_all_settings">所有設定</string>
     <string name="panel_tile_focus">對焦</string>
@@ -146,11 +128,6 @@
     <string name="panel_hdmi_settings">HDMI 設定</string>
     <string name="panel_eye_desc">有人位於鏡頭前方時，光線會自動調暗。</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">左右</string>
-    <string name="panel_3d_tb">上下</string>
-    <string name="panel_3d_sbs_2d">左右轉2D</string>
-    <string name="panel_3d_tb_2d">上下轉2D</string>
-    <string name="panel_3d_summary">播放影片時可用。3D需要DLP-Link主動式快門眼鏡；「轉2D」可不戴眼鏡以平面方式觀看3D片源。</string>
     <string name="panel_3d_need_video">3D需在播放影片時使用，請先播放影片</string>
     <string name="panel_3d_not_now">目前無法使用3D（HDR影片、遊戲模式或120 Hz）</string>
 </resources>

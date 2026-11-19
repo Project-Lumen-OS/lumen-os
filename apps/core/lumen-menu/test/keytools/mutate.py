@@ -80,8 +80,6 @@ MUTANTS += [
     ("X50: manual focus is no tool screen", X + "FocusActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
     ("X50: the corner screen is no tool screen", X + "CornerActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
     ("X50: the lens screen is no tool screen", X + "LensActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
-    ("Z9X copy of the overlay host left behind", "apps/ProjectorBase/src/org/lumen/projector/ui/OverlayHost.java",
-     "        KeyTools.addHost(this);\n", ""),
 ]
 
 

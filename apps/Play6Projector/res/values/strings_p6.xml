@@ -27,8 +27,6 @@
     <string name="p6_card_eco_on">Power saving is on</string>
     <string name="p6_card_eco_off">Power saving is off</string>
     <!-- quick panel: picture modes of the Play 6 (plan 1.4) -->
-    <string name="p6_pm_movie">Movie</string>
-    <string name="p6_pm_tv">TV</string>
     <string name="p6_pm_custom">Custom</string>
     <string name="p6_pm_game">Game</string>
     <string name="p6_pic_game_hint">Game mode sets the picture. Turn game mode off to choose another picture mode.</string>
@@ -37,8 +35,6 @@
          console has gone -->
     <string name="p6_game_on">Game mode on</string>
     <string name="p6_game_off">Game mode off</string>
-    <!-- quick panel: focus -->
-    <string name="p6_smart_af_desc">The picture is focused again after the projector is moved.</string>
     <!-- after a remote-key autofocus (focus event 18 "AF_Success_Into_Adjust"), as stock does; not with the
          starry sky lens in -->
     <string name="p6_af_fine_tune">Focus done. Hold the focus key to fine-tune it.</string>
@@ -92,8 +88,6 @@
     <string name="rot_limit">This is the largest angle</string>
     <string name="rot_refused">The projector did not rotate the picture</string>
     <!-- ambient light (ambient/AmbientLight, quick panel Ambient light page; stock colors and effects) -->
-    <string name="p6_amb_title">Ambient light</string>
-    <string name="p6_amb_on">Turn on ambient light</string>
     <string name="p6_amb_color">Light color</string>
     <string name="p6_amb_c_orange">Orange</string>
     <string name="p6_amb_c_blue">Blue</string>
@@ -108,13 +102,8 @@
     <string name="p6_amb_e_rhythm">Rhythm</string>
     <string name="p6_amb_level">Brightness</string>
     <string name="p6_amb_level_same">As set</string>
-    <string name="p6_amb_desc">The projector fills the wall with soft colored light, also as a night light. Up / Down: color · Left / Right: previous / next track · OK: play / pause · Back: exit.</string>
     <!-- Bluetooth speaker mode (speaker/SpeakerMode, quick panel Bluetooth speaker page) -->
     <string name="p6_spk_title">Bluetooth speaker</string>
-    <string name="p6_spk_on">Turn on speaker mode</string>
-    <string name="p6_spk_light">Light</string>
-    <string name="p6_spk_light_ambient">Ambient light</string>
-    <string name="p6_spk_desc">The picture turns off and the projector plays music from your phone over Bluetooth. Bluetooth headphones cannot be used while speaker mode is on.</string>
     <string name="p6_spk_starting">Starting speaker mode…</string>
     <string name="p6_spk_pair">On your phone, open Bluetooth and connect to %1$s</string>
     <string name="p6_spk_connected">Connected: %1$s</string>
@@ -122,7 +111,6 @@
     <string name="p6_spk_ending">Leaving speaker mode…</string>
     <string name="p6_spk_failed">Speaker mode could not start. Bluetooth headphones work as before.</string>
     <!-- stock parity (2026-10-21): the Speaker tile and page, the lid row, the picture and HDMI rows of the stock dayao tree -->
-    <string name="p6_tile_speaker">Ambient speaker</string>
     <string name="p6_spk_page">Ambient speaker</string>
     <string name="p6_ambsp_on">Turn on</string>
     <string name="p6_amb_desc_one">The picture turns off and the projector glows with soft colored light; your phone can play music to it over Bluetooth (\"XGIMI Play 6\"). Up / Down: color · Left / Right: track · OK: play / pause · Back: exit. Hold OK on the tile for these settings.</string>
@@ -130,8 +118,6 @@
     <string name="p6_lid">When closed</string>
     <string name="p6_lid_off">Shut down</string>
     <string name="p6_lid_speaker">Ambient speaker</string>
-    <string name="p6_ct_cool">Cool</string>
-    <string name="p6_ct_warm">Warm</string>
     <string name="p6_hdr">HDR</string>
     <string name="p6_hdr_hdmi_compat">HDR is not available in HDMI 1.4 mode. Choose HDMI 2.0 in the HDMI settings first.</string>
     <string name="p6_style">Picture style</string>
@@ -169,9 +155,6 @@
     <string name="p6_temperature">Projector temperature</string>
     <string name="p6_temperature_value">%1$d °C</string>
     <!-- 2026-10-21: the Night light tile and page -->
-    <string name="p6_tile_night">Night light</string>
-    <string name="p6_night_on">Turn on night light</string>
-    <string name="p6_night_desc">A calm colored light from the projector. OK on the tile turns it on, Back turns it off. Hold OK or press Menu on the tile for these settings.</string>
     <!-- 2026-10-21: the equalizer, the texts of the Z9X rows with the same names -->
     <string name="eq_title">Equalizer</string>
     <string name="eq_preset_flat">Flat</string>

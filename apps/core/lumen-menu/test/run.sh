@@ -13,8 +13,9 @@ trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" \
   "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
-  "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ChoiceStepTest.java" \
-  "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" \
+  "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ElderColorRuleTest.java" "$HERE/test/ChoiceStepTest.java" \
+  "$HERE/test/GeneralChoicesTest.java" \
+  "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" \
   "$HERE"/src/org/lumen/menu/quick/*.java "$HERE/test/quick/QuickTest.java"
 bad=0
 n=0
@@ -55,6 +56,8 @@ if [ "${1:-}" = "--update" ]; then "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.me
 else "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.quick.QuickTest "$G" || bad=1; fi
 # the gear key: one shared press rule (GearPress); that every app runs it is checked by tools/devices/test/keylayout_gear_test.py
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GearPressTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.ElderColorRuleTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GeneralChoicesTest || bad=1
 # the focus page's remote picture: the model's own remote (devices/_remotes/focus_guide.tsv, stock RemoteFocusCell)
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.FocusGuideTest "$G" || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.utils.MenuValuesTest || bad=1
@@ -135,6 +138,7 @@ done
 # stock disabled alpha while the adapter's locked hook (the shared PictureSettingsRule) closes it, keeps its focus
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.LockedRowTest || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.HdmiRangeRuleTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.CustomModesTest || bad=1
 grep -qxF '            if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));' "$SMC" \
   || { echo "FAIL locked row: MenuController.apply does not draw closed rows dimmed"; bad=1; }
 [ "$(awk '/    private void apply\(MenuState st\) \{/ { on = 1 } on && /for \(Map.Entry<FeatureId, View> e : rows.entrySet\(\)\)/ { n++ } on && /LockedRow.alpha\(/ { print n; exit }' "$SMC")" = 1 ] \
@@ -257,7 +261,7 @@ grep -qF 'String as = state == null ? null : state.shownAs(f, token);' "$LMC" \
   && echo "ok   hdmi range: option labels follow MenuState.shownAs" || { echo "FAIL option labels ignore MenuState.shownAs"; bad=1; }
 # a row that leaves the menu for another app's page waits for the first-run setup and closes the panel first
 leave=0
-for id in SETTINGS_SYSTEM SETTINGS_PROJECTOR SETTINGS_HDMI SETTINGS_RECENTS SETTINGS_LAUNCHER; do
+for id in SETTINGS_SYSTEM SETTINGS_UI_RESOLUTION SETTINGS_HDMI SETTINGS_RECENTS SETTINGS_LAUNCHER VOICE_KEY; do
   for set in SETUP_GATED CLOSE_FIRST; do
     if ! sed -n "/static final Set<FeatureId> $set = set(/,/);/p" "$LMC" | grep -q "FeatureId\.$id[,)]"; then
       echo "FAIL leave the menu: $id not in MenuController.$set"; leave=1; bad=1
@@ -268,15 +272,17 @@ done
 # the Bluetooth and Network tiles: each opens its page through the shared lumen-system module (SystemPages walks the
 # ways of SystemIntent.chain, apps/core/lumen-system/test/run.sh), a note when no way starts
 printf '%s\n' '                case BLUETOOTH:' '                    if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));' \
-  '                    return;' '                case NETWORK:' \
-  '                    if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.NETWORK));' > "$OUT/tiles.exp"
+  '                    return;' '                case NETWORK:                                 // the popup with the hotspot where it works, else Wi-Fi' \
+  '                    if (!setupDone(id)) return;' '                    if (popupPage(id) == null) {' \
+  '                        closeThen(() -> openSystemPage(SettingsPage.NETWORK));' '                        return;' \
+  '                    }' '                    watchHotspot();' '                    break;' > "$OUT/tiles.exp"
 cat > "$OUT/sys.exp" <<'EOF'
     private void openSystemPage(SettingsPage page) {
         Ui.wakeFromDream(app);
         if (!SystemPages.open(app, page)) host.toast(R.string.lumen_m_toast_failed);
     }
 EOF
-grep -A4 -xF '                case BLUETOOTH:' "$LMC" > "$OUT/tiles.got" || true
+grep -A10 -xF '                case BLUETOOTH:' "$LMC" > "$OUT/tiles.got" || true
 sed -n '/^    private void openSystemPage(SettingsPage page) {$/,/^    }$/p' "$LMC" > "$OUT/sys.got"
 if cmp -s "$OUT/tiles.exp" "$OUT/tiles.got" && cmp -s "$OUT/sys.exp" "$OUT/sys.got" \
   && [ -z "$(grep -nE 'Settings\.ACTION_|"android\.settings\.' "$LMC" || true)" ] && grep -qE '^depends=(.* )?lumen-system( .*)?$' "$HERE/module.conf"; then
@@ -284,6 +290,43 @@ if cmp -s "$OUT/tiles.exp" "$OUT/tiles.got" && cmp -s "$OUT/sys.exp" "$OUT/sys.g
 else
   echo "FAIL system tiles: MenuController does not open bluetooth / network through lumen-system"; bad=1
 fi
+# the Network popup: no popup without a built hotspot row (the tile opens Wi-Fi then), the module's
+# own action and its text screens over the menu, the hotspot values only where the profile has them
+MSC="$HERE/src/org/lumen/projector/panel/ModuleScreens.java"
+for w in '        if (MenuSpec.NETWORK.equals(key) && !rows.containsKey(FeatureId.NETWORK_HOTSPOT)) return null;   // Wi-Fi alone: no popup' \
+         '            if (!ModuleScreens.run(app, profile, f)) host.toast(R.string.lumen_m_toast_failed);' \
+         '        if (MenuSpec.MODULE_SCREENS.contains(f) && ModuleScreens.overMenu(f)) {   // the menu steps aside (KeyTools)' \
+         '            if (gen == refreshGen) apply(ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT)));' \
+         '        if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, profile, f);' \
+         '                if (panel != null && panel.isShowing()) { refresh(); return; }'; do
+  grep -qxF -- "$w" "$LMC" || { echo "FAIL hotspot: MenuController lost: $w"; bad=1; }
+done
+for w in '        if (MenuSpec.HOTSPOT_ROWS.contains(f)) return Hotspot.supported(c, p.text(FeatureId.NETWORK_HOTSPOT, "iface"));' \
+         '        if (hotspotRows) hotspot(c, p, b);' \
+         '        if (on) return;' \
+         '        b.disable(FeatureId.NETWORK_HOTSPOT_NAME).disable(FeatureId.NETWORK_HOTSPOT_PASSWORD);' \
+         '        b.hide(FeatureId.NETWORK_HOTSPOT_RESET);' \
+         '        Hotspot.first(c, p.text(FeatureId.NETWORK_HOTSPOT, "name"));' \
+         '            if (ON.equals(value)) Hotspot.start(c, hotspotNotes(c));' \
+         '            else Hotspot.stop(c, hotspotNotes(c));' \
+         '        return f == FeatureId.NETWORK_HOTSPOT_NAME || f == FeatureId.NETWORK_HOTSPOT_PASSWORD;' \
+         '        if (f == FeatureId.NETWORK_WIFI) return SystemPages.open(c, SettingsPage.NETWORK);'; do
+  grep -qxF -- "$w" "$MSC" || { echo "FAIL hotspot: ModuleScreens lost: $w"; bad=1; }
+done
+TE="$HERE/src/org/lumen/projector/panel/TextEditActivity.java"
+for w in '        if (problem != 0) {' '            showProblem(problem);' '        if (!field.save(this, t)) {' \
+         'public final class TextEditActivity extends ToolActivity {'; do
+  grep -qxF -- "$w" "$TE" || { echo "FAIL hotspot: TextEditActivity lost: $w"; bad=1; }
+done
+for m in "$G"/apps/ProjectorBase "$G"/apps/HbProjector "$G"/apps/Play6Projector "$G"/apps/X50Projector; do
+  for w in TETHER_PRIVILEGED OVERRIDE_WIFI_CONFIG NETWORK_SETTINGS ACCESS_WIFI_STATE; do
+    grep -q "<uses-permission android:name=\"android.permission.$w\" />" "$m/AndroidManifest.xml" \
+      || { echo "FAIL hotspot: $(basename "$m") lacks $w"; bad=1; }
+  done
+  grep -q 'android:name="org.lumen.projector.panel.TextEditActivity"' "$m/AndroidManifest.xml" \
+    || { echo "FAIL hotspot: $(basename "$m") does not declare TextEditActivity"; bad=1; }
+done
+[ "$bad" = 0 ] && echo "ok   hotspot: popup, module rows, text screen and manifests wired"
 # the module never touches a HAL or a device class: device code lives in the adapters
 leak=$(grep -rnE 'import org\.lumen\.projector\.(Hal|HalController|hal\.|game\.|source\.|cec\.|audio\.|fit\.)|[^a-zA-Z]Hal\.(query|run|is)|GmpfClient|Gmpf2Client|PanelRules|KstPoint' "$HERE/src" | grep -vE '^[^:]*:[0-9]+: *(\*|//|/\*)' || true)
 [ -z "$leak" ] || { echo "FAIL device code in the module: $leak"; bad=1; }
@@ -341,6 +384,8 @@ mkdir -p "$OUT/outputs"
   "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/src/org/lumen/menu/sound/SoundOutputs.java" "$A/OutputDevice.java" \
   "$A/SoundbarMode.java" "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/outputs/SoundOutputsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/outputs" org.lumen.menu.sound.SoundOutputsTest "$G" || bad=1
+# Power On Auto Boot (2026-11-19): model data, the stock call per model, no write without the user's flip
+python3 -B "$HERE/test/power_on_ac_test.py" "$G" || bad=1
 # snapshots without a profile are stale
 for s in "$HERE"/test/snapshots/*.txt; do
   [ -f "$s" ] || continue

@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">O Boost deixa a imagem mais brilhante, mas as cores ficam mais pálidas. O espaço de cor não muda.</string>
     <string name="lumen_m_cec_entry">Dispositivos HDMI (CEC)</string>
     <string name="lumen_m_eq_title">Equalizador</string>
-    <string name="lumen_m_fit_row">Ajustar ao tamanho da tela</string>
-    <string name="lumen_m_fit_row_summary">O zoom é ajustado pela distância até a tela e pelo tamanho dela</string>
     <string name="lumen_m_hdmi_mode">Modo HDMI</string>
     <string name="lumen_m_hdmi_mode_compat">Compatível (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Aprimorado (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Rápida</string>
     <string name="lumen_m_signal_refresh_note">Rápida: podem ocorrer raros travamentos da imagem</string>
     <string name="lumen_m_hdr_developer">Para desenvolvedores</string>
+    <string name="lumen_m_hdr_power">Ligar</string>
+    <string name="lumen_m_power_on_ac">Ligar e iniciar automaticamente</string>
+    <string name="lumen_m_power_on_ac_tip">Depois de ligar na energia, o projetor inicia automaticamente</string>
+    <string name="lumen_m_custom_base">Baseado em</string>
+    <string name="lumen_m_custom_delete">Eliminar personalizado</string>
+    <string name="lumen_m_custom_delete_ask">Eliminar modo de imagem personalizado?</string>
+    <string name="lumen_m_custom_confirm">Confirmar</string>
+    <string name="lumen_m_custom_name">Introduza um nome personalizado</string>
+    <string name="lumen_m_custom_name_empty">O nome personalizado não pode estar vazio</string>
+    <string name="lumen_m_custom_name_taken">O nome já existe, experimente outro</string>
+    <string name="lumen_m_custom_name_max">Entrada máxima alcançada</string>
 </resources>

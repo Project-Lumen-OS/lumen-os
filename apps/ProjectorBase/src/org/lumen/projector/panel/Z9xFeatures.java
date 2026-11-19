@@ -23,6 +23,7 @@ import org.lumen.projector.hal.Gmpf2Client;
 import org.lumen.projector.hal.GmpfClient;
 import org.lumen.projector.hal.SoundEffect;
 import org.lumen.projector.power.PowerMenu;
+import org.lumen.projector.ui.LicencesActivity;
 import org.lumen.projector.source.TifHdmiState;
 
 import java.util.Collections;
@@ -52,10 +53,9 @@ public final class Z9xFeatures implements ProjectorFeatures {
      */
     static final Set<FeatureId> FEATURES = Collections.unmodifiableSet(new HashSet<>(java.util.Arrays.asList(
             FeatureId.EYE, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL,
-            FeatureId.ZOOM, FeatureId.KEYSTONE_FIT_SCREEN, FeatureId.KEYSTONE_ROTATION, FeatureId.KEYSTONE_REALTIME,
+            FeatureId.ZOOM, FeatureId.KEYSTONE_ROTATION, FeatureId.KEYSTONE_REALTIME,
             FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_CURTAIN, FeatureId.KEYSTONE_OBSTACLE, FeatureId.KEYSTONE_RESTORE,
-            FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART, FeatureId.FOCUS_ON_MOVE,
-            FeatureId.FOCUS_ON_POWER, FeatureId.LAMP, FeatureId.BOOST, FeatureId.PICTURE_MODE,
+            FeatureId.FOCUS_AF_NOW, FeatureId.FOCUS_MANUAL, FeatureId.FOCUS_SMART, FeatureId.LAMP, FeatureId.BOOST, FeatureId.PICTURE_MODE,
             FeatureId.PICTURE_PQ, FeatureId.PICTURE_COLOR_TEMP, FeatureId.PICTURE_MEMC, FeatureId.PICTURE_AI_CONTRAST,
             FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_ULTRA120, FeatureId.PICTURE_PRO, FeatureId.PICTURE_RESET,
             FeatureId.PICTURE_RESET_ALL, FeatureId.PICTURE_3D, FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID, FeatureId.PICTURE_ASPECT,
@@ -63,9 +63,12 @@ public final class Z9xFeatures implements ProjectorFeatures {
             FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT, FeatureId.SOUND_FORMAT, FeatureId.INPUT,
             FeatureId.BLUETOOTH, FeatureId.NETWORK, FeatureId.MIRRORING,
             FeatureId.GAME_MODE, FeatureId.GAME_SPEED, FeatureId.GAME_ALLM, FeatureId.PROJECTION_MODE,
-            FeatureId.PROJECTION_REAR, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_CEC,
+            FeatureId.PROJECTION_REAR, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_CEC,
             FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.LAMP_OFF,
-            FeatureId.SETTINGS_SLEEP_TIMER)));
+            FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.POWER_ON_AC, FeatureId.SETTINGS_LICENCES,
+            FeatureId.POWER_BOOT_SOURCE, FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK, FeatureId.VOICE_KEY,
+            FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE,
+            FeatureId.SETTINGS_REMOTE_KEYS, FeatureId.SETTINGS_TEMPERATURE)));
 
     final Context app;
     final SharedPreferences prefs;
@@ -78,6 +81,8 @@ public final class Z9xFeatures implements ProjectorFeatures {
     private final Z9xGameRows game;
     /** The sections a write or an action goes to; each answers false for a feature that is not its own. */
     private final Z9xRows[] sections;
+    /** The rows of the old Projector settings page (power-on, voice, resolution, statistics, diagnostics). */
+    private final SettingsRows rows;
 
     public Z9xFeatures(Context c) {
         app = c.getApplicationContext();
@@ -86,6 +91,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
         game = new Z9xGameRows(this);
         sections = new Z9xRows[]{new Z9xGeneralRows(this), new Z9xKeystoneRows(this), new Z9xFocusRows(this),
                 new Z9xPictureRows(this), new Z9xHdmiRows(this), new Z9xSoundRows(this), game, new Z9xProjectionRows(this)};
+        rows = new SettingsRows(app, new org.lumen.projector.SettingsDevice(app));
     }
 
     void setEqListener(Consumer<Z9xMenuRules.In> l) { eqListener = l; }
@@ -99,9 +105,9 @@ public final class Z9xFeatures implements ProjectorFeatures {
     @Override public boolean ready() { return Hal.isReady(); }
 
     @Override public boolean available(FeatureId f) {
+        if (SettingsRows.mine(f)) return rows.available(f);
         switch (f) {
             case SETTINGS_LAUNCHER: return org.lumen.projector.home.LauncherSwitcher.choiceAvailable(app);
-            case KEYSTONE_FIT_SCREEN: return org.lumen.projector.fit.FitDevices.supported(app);  // QPC:963
             default: return true;
         }
     }
@@ -115,7 +121,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
     // ================================================================== read
 
     @Override public void read(Consumer<MenuState> cb) {
-        Hal.query(this::readNow, in -> cb.accept(stateOf(in)));
+        Hal.query(this::readNow, in -> rows.read(stateOf(in), cb));
     }
 
     /** The content kind alone (620), for the picture modes that follow it while the menu is open. */
@@ -146,7 +152,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
             try { eqListener.accept(last); } catch (Throwable t) { Log.e(TAG, "equalizer", t); }
         }
         if (ok) AiSoundEngine.noteMode(in.soundEffect, "panel read-back");
-        return Z9xMenuRules.state(in, this::text);
+        return rows.with(Z9xMenuRules.state(in, this::text));
     }
 
     String text(String name, Object... args) {
@@ -179,9 +185,9 @@ public final class Z9xFeatures implements ProjectorFeatures {
         in.curtain = sn.curtain;
         in.obstacle = sn.obstacle;
         in.powerOnAk = sn.powerOnAk;
+        in.powerOnAc = sn.powerOnAc;
+        in.temperature = sn.temperature;
         in.moveAk = sn.moveAk;
-        in.moveAf = sn.moveAf;
-        in.powerOnAf = sn.powerOnAf;
         in.smartAf = sn.smartAf;
         in.autoReverse = sn.autoReverse;
         in.boost = sn.boost;
@@ -312,6 +318,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
     @Override public void setConfirmed(FeatureId f, String v, Consumer<Result> cb) { set(f, v, true, cb); }
 
     private void set(FeatureId f, String v, boolean confirmed, Consumer<Result> cb) {
+        if (rows.set(f, v, this, cb)) return;
         for (Z9xRows s : sections) if (s.set(f, v, confirmed, cb)) return;
         Log.w(TAG, "set " + f + "=" + v + ": not a Z9X feature or token");
         cb.accept(Result.failed(null));
@@ -332,7 +339,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
                 case ZOOM: OpticalZoomPanel.open(app, back); return true;
                 case KEYSTONE_ROTATION: RotatePanel.open(app, back); return true;
                 case FOCUS_MANUAL: Hal.openManualFocus(app); return true;
-                case SETTINGS_PROJECTOR: Hal.openProjectorSettings(app, null); return true;
+                case SETTINGS_LICENCES: return LicencesActivity.open(app);
                 case SETTINGS_RECENTS: org.lumen.projector.recents.RecentsActivity.open(app); return true;
                 case SETTINGS_SLEEP_TIMER: PowerMenu.show(app, true); return true;   // as Home's Sleep timer tile
                 case INPUT: org.lumen.source.SourceKey.press(app, "quick_menu"); return true;   // the Source key's step
@@ -341,7 +348,7 @@ public final class Z9xFeatures implements ProjectorFeatures {
                     app.startActivity(new Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     return true;
                 default:
-                    return false;
+                    return rows.open(s);
             }
         } catch (RuntimeException e) {
             Log.w(TAG, "open " + s + ": " + e);

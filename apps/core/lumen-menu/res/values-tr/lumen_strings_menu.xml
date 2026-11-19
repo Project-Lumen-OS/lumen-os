@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost görüntüyü daha parlak yapar, ancak renkler daha soluk görünür. Renk alanı değişmez.</string>
     <string name="lumen_m_cec_entry">HDMI cihazları (CEC)</string>
     <string name="lumen_m_eq_title">Ekolayzer</string>
-    <string name="lumen_m_fit_row">Perde boyutuna sığdır</string>
-    <string name="lumen_m_fit_row_summary">Zum, perdeye olan mesafeye ve perdenin boyutuna göre ayarlanır</string>
     <string name="lumen_m_hdmi_mode">HDMI modu</string>
     <string name="lumen_m_hdmi_mode_compat">Uyumlu (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Gelişmiş (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Hızlı</string>
     <string name="lumen_m_signal_refresh_note">Hızlı: nadiren görüntü takılması olabilir</string>
     <string name="lumen_m_hdr_developer">Geliştiriciler için</string>
+    <string name="lumen_m_hdr_power">Açılış</string>
+    <string name="lumen_m_power_on_ac">Elektrik gelince otomatik açılış</string>
+    <string name="lumen_m_power_on_ac_tip">Elektrik bağlandıktan sonra projektör otomatik olarak açılır</string>
+    <string name="lumen_m_custom_base">Temel</string>
+    <string name="lumen_m_custom_delete">Özeli sil</string>
+    <string name="lumen_m_custom_delete_ask">Özel resim modu silinsin mi?</string>
+    <string name="lumen_m_custom_confirm">Onayla</string>
+    <string name="lumen_m_custom_name">Bir ad girin</string>
+    <string name="lumen_m_custom_name_empty">Ad boş olamaz</string>
+    <string name="lumen_m_custom_name_taken">Bu ad zaten var, başka bir ad deneyin</string>
+    <string name="lumen_m_custom_name_max">En fazla uzunluğa ulaşıldı</string>
 </resources>

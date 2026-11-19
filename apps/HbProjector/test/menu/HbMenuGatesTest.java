@@ -2,6 +2,7 @@ package org.lumen.projector.panel;
 
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.FeatureKind;
+import org.lumen.menu.GeneralChoices;
 import org.lumen.menu.MenuProfile;
 import org.lumen.menu.MenuSpec;
 
@@ -44,6 +45,9 @@ public final class HbMenuGatesTest {
         for (FeatureId f : fs) out.add(f.id);
         return out;
     }
+
+    /** CHOICE rows of the shared settings rows (SettingsRows), checked against GeneralChoices instead of a gates table. */
+    private static final Set<FeatureId> GENERAL = new HashSet<>(Arrays.asList(FeatureId.POWER_BOOT_SOURCE, FeatureId.VOICE_LANGUAGE));
 
     private static final Predicate<String> G0148 = f -> !f.equals("BOOST") && !f.equals("COLOR_TEMP");
 
@@ -139,8 +143,19 @@ public final class HbMenuGatesTest {
             eq("tokens of " + t.feature, p.options(t.feature), new ArrayList<>(t.wire.keySet()));
             for (String tok : t.wire.keySet()) eq("round trip " + t.feature + " " + tok, tok, t.token(t.wire(tok)));
         }
+        // source at power-on and speech language: the shared settings rows write them (SettingsRows over the Z9X and HB
+        // SettingsDevice: two HDMI inputs, the index is the stored BootSource value)
+        eq("source at power-on: the tokens SettingsDevice gives (GeneralChoices.BOOT_TWO_HDMI)",
+                Arrays.asList(GeneralChoices.BOOT_TWO_HDMI), p.options(FeatureId.POWER_BOOT_SOURCE));
+        eq("speech language: the tokens VoiceSettings writes (GeneralChoices.VOICE)", Arrays.asList(GeneralChoices.VOICE),
+                p.options(FeatureId.VOICE_LANGUAGE));
+        eq("senior colour: the shared rule's tokens (ElderColorRule)", java.util.Arrays.asList(org.lumen.menu.ElderColorRule.TOKENS),
+                p.options(FeatureId.EYE_ELDER_COLOR));
         for (FeatureId f : p.features()) {
-            if (f.kind == FeatureKind.CHOICE && f != FeatureId.EYE && !MenuSpec.module(f)) check("table for choice " + f, HbMenuGates.table(f) != null);
+            if (f.kind == FeatureKind.CHOICE && f != FeatureId.EYE && f != FeatureId.EYE_ELDER_COLOR && !MenuSpec.module(f)
+                    && !GENERAL.contains(f)) {
+                check("table for choice " + f, HbMenuGates.table(f) != null);
+            }
         }
 
         // ---- HB wire values (stock tree order, GmpfClient enums, allowed.tsv)

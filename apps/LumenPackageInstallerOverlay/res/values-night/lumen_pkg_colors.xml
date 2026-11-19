@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen 2.0 tokens (apps/common/tokens.xml, Тёмная), checked equal to Palette by lumen-ui ThemeTest. -->
+<resources>
+    <color name="lumen_pkg_scrim">#F50E1014</color>
+    <color name="lumen_pkg_card">#FF1B1E25</color>
+    <color name="lumen_pkg_button">#FF242830</color>
+    <color name="lumen_pkg_button_focus">#FF2E333C</color>
+    <color name="lumen_pkg_text1">#FFF2F4F7</color>
+    <color name="lumen_pkg_text2">#FFB9BFC9</color>
+    <color name="lumen_pkg_ring">#FF3B78E7</color>
+    <color name="lumen_pkg_accent">#FF6E9BF2</color>
+</resources>

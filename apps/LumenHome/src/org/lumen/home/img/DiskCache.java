@@ -20,23 +20,35 @@ import java.util.Arrays;
  */
 final class DiskCache {
     private static final long TOUCH_AFTER_MS = 24L * 3600_000L;
-    private final File mDir;
     private final long mMax;
+    /** Credential protected cache folder: null until the user is unlocked (Home starts before, model/BootGate). */
+    private volatile File mDir;
 
-    DiskCache(File cacheDir, long maxBytes) {
+    DiskCache(long maxBytes) {
         mMax = maxBytes;
-        mDir = new File(cacheDir, "img");
+    }
+
+    /** The folder can be used from now on (the app's cache dir once the user is unlocked). */
+    void open(File cacheDir) {
+        File d = new File(cacheDir, "img");
         //noinspection ResultOfMethodCallIgnored
-        mDir.mkdirs();
+        d.mkdirs();
+        mDir = d;
     }
 
-    File file(String key, boolean png) {
-        return new File(mDir, hash(key) + (png ? ".png" : ".jpg"));
+    boolean isOpen() {
+        return mDir != null;
     }
 
-    /** Returns the cached file or null; refreshes its LRU time at most once a day. */
+    private File file(File dir, String key, boolean png) {
+        return new File(dir, hash(key) + (png ? ".png" : ".jpg"));
+    }
+
+    /** Returns the cached file or null (also before the unlock); refreshes its LRU time at most once a day. */
     File get(String key, boolean png) {
-        File f = file(key, png);
+        File dir = mDir;
+        if (dir == null) return null;
+        File f = file(dir, key, png);
         if (!f.isFile() || f.length() == 0) return null;
         long now = System.currentTimeMillis();
         if (now - f.lastModified() > TOUCH_AFTER_MS) {
@@ -46,9 +58,12 @@ final class DiskCache {
         return f;
     }
 
+    /** Keeps {@code sw} on disk; null when it could not (also before the unlock: nothing is written then). */
     File put(String key, Bitmap sw, boolean png) {
-        File f = file(key, png);
-        File tmp = new File(mDir, f.getName() + ".tmp" + Thread.currentThread().getId());
+        File dir = mDir;
+        if (dir == null) return null;
+        File f = file(dir, key, png);
+        File tmp = new File(dir, f.getName() + ".tmp" + Thread.currentThread().getId());
         try (FileOutputStream out = new FileOutputStream(tmp)) {
             sw.compress(png ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, png ? 100 : 88, out);
         } catch (Throwable t) {
@@ -66,7 +81,8 @@ final class DiskCache {
     }
 
     void trim() {
-        File[] fs = mDir.listFiles();
+        File dir = mDir;
+        File[] fs = dir == null ? null : dir.listFiles();
         if (fs == null) return;
         long total = 0;
         for (File f : fs) {

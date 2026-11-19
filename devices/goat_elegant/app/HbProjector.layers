@@ -2,16 +2,22 @@
 # The HB app is the Z9X app minus the Z9X-only files below, plus the HB layer (apps/HbProjector: the real forks,
 # each with a row in devices/goat_elegant/forks.tsv, and the HB-only files). The Z9X folder is only read.
 app       HbProjector
+base      apps/common/projector apps/common/projector/FILES
 base      apps/ProjectorBase
 # the shared projector menu of every Lumen projector with the HB profile; the
 # HB adapters are apps/HbProjector panel/HbMenuFeatures (+ HbMenuGates) and the game menu io
 module    lumen-system
+# the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar, this model's data
+module    lumen-wallcolor
+file      devices/goat_elegant/wallcolor.conf assets/lumen_wallcolor/model.conf
 module    lumen-aipq
 module    lumen-hdmi
 # the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
 module    lumen-icons
 # problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
 module    lumen-report
+# all files access for Lumen Play signed with its release key (apps/core/lumen-files-access)
+module    lumen-files-access
 # Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
 module    lumen-qr
 module    lumen-about
@@ -21,6 +27,8 @@ module    lumen-remote
 # model's rows as data
 module    lumen-signal
 file      devices/goat_elegant/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-sensors
+file      devices/goat_elegant/sensors.tsv assets/lumen_sensors/items.tsv
 module    lumen-ui
 module    lumen-source
 file      devices/goat_elegant/source.tsv assets/lumen_source/source.tsv
@@ -42,16 +50,14 @@ module    lumen-control
 # the Z9X quick panel controller: on the HB QuickPanel drives the shared MenuController through the HB-only
 # panel/QuickPanelController (HbMenu); the old HB fork of the Z9X controller and the HB game bar are gone
 drop      src/org/lumen/projector/panel/QuickPanelController.java
-# Z9X-only: 3D, the Z9X fit adapter, the HIDL transport and focus callback (the HB is AIDL), the Z9X
+# Z9X-only: 3D, the HIDL transport and focus callback (the HB is AIDL), the Z9X
 # gmpf codes and rules, the 1.0.8 import
 drop      src/org/lumen/projector/display/ThreeD.java
 drop      src/org/lumen/projector/display/ThreeDCall.java
-drop      src/org/lumen/projector/fit/Z9xFitDevice.java
 drop      src/org/lumen/projector/hal/Hidl*.java
 drop      src/org/lumen/projector/hal/Z9x*.java
 # the Z9X HIDL code table; the HB has its own HalCodes (devices/goat_elegant/hal/codes.tsv)
 drop      src/org/lumen/projector/hal/HalCodes.java
-drop      src/org/lumen/common/LumenImport.java
 # Z9X-only strings of the keystone page's last section (the HB has its own, strings_hb.xml)
 drop      res/values*/strings_kst_restore.xml
 # Z9X-only 1.0.8 rules: the HB quick panel and keystone page are its own forks with their own colour temperature,

@@ -2,7 +2,6 @@
 <!-- Arabic translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">الشاشة</string>
     <string name="uires_row">دقة الواجهة</string>
     <string name="uires_default_fmt">%1$s (افتراضي)</string>
     <string name="uires_summary">تمنح 4K أوضح نص، و1080p، كما في XGIMI، هي الأخف على المعالج الرسومي. يُعاد تشغيل جهاز العرض لتغييرها.</string>

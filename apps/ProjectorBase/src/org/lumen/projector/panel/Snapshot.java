@@ -48,7 +48,14 @@ final class Snapshot {
     Boolean volumeBalance, earc;
     Integer hdmiRange, edid;
     Boolean boost, aiContrast, superRes, is3dTo2d, allm, dtsOn, eye, curtain, obstacle, powerOnAk,
-            moveAk, moveAf, powerOnAf, smartAf, autoReverse;
+            moveAk, smartAf, autoReverse;
+    /** Power On Auto Boot (Z9X IGmpf 544, HB GmFactoryManager 37): read only, the menu row writes it. */
+    Boolean powerOnAc;
+    /** System temperature, deg C (Z9X IGmpf 438, HB TemperatureManager 6): the General row; null = read failed. */
+    Integer temperature;
+    /** HB only, set by HbMenuFeatures where its gate is on: senior colour token (TV 179 / 181), rainbow reduction (DM 203). */
+    String elderColor;
+    Boolean antiRbe;
     /** IGmpf 157: Ultra 120 Hz on (user timing 4); null = read failed. */
     Boolean ultra120;
     /** IGmpf 662: the HDMI signal (the last one when no HDMI is on screen); null = read failed. */
@@ -107,9 +114,9 @@ final class Snapshot {
         s.curtain = opt("289", g::getCurtainFit);
         s.obstacle = opt("291", g::getObstacleAvoid);
         s.powerOnAk = opt("553", g::getPowerOnAk);
+        s.powerOnAc = opt("544 power on mode", g::getPowerOnMode);
+        s.temperature = opt("438 temperature", g::getSystemTemperature);
         s.moveAk = opt("586", g::getMoveAk);
-        s.moveAf = opt("588", g::getMoveAf);
-        s.powerOnAf = opt("303", g::getPowerOnAf);
         s.putMode = opt("173", () -> {
             PutMode m = g.getPutMode();
             return m == null ? null : m.wire;

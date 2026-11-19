@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">جهاز العرض</string>
     <string name="version_line">الإصدار %1$s</string>
-    <string name="sec_focus">التركيز</string>
-    <string name="sec_keystone">تصحيح شبه المنحرف</string>
     <string name="sec_auto">الأتمتة</string>
-    <string name="sec_keys">أزرار جهاز التحكم</string>
     <string name="sec_diag">التشخيص</string>
-    <string name="act_af_now">تركيز تلقائي الآن</string>
     <string name="act_manual_focus">تركيز يدوي</string>
     <string name="act_kst_now">تصحيح شبه المنحرف الآن</string>
-    <string name="act_fit_now">ملاءمة الشاشة الآن</string>
     <string name="act_refresh">تحديث</string>
     <string name="tg_power_on_af">تركيز تلقائي عند التشغيل</string>
     <string name="tg_power_on_ak">تصحيح شبه المنحرف عند التشغيل</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">تصحيح شبه المنحرف بعد التحريك</string>
     <string name="tg_curtain">ملاءمة الشاشة</string>
     <string name="tg_obstacle">تجنّب العوائق</string>
-    <string name="val_on">مفعّل</string>
-    <string name="val_off">متوقف</string>
-    <string name="val_unknown">لا توجد بيانات</string>
-    <string name="val_not_ready">جهاز العرض غير جاهز</string>
     <string name="cancel">إلغاء</string>
     <string name="ok">حسنًا</string>
     <string name="app_not_found">لم يتم العثور على تطبيق لهذا الزر</string>

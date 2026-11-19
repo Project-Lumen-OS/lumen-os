@@ -498,13 +498,16 @@ public class ListPanel extends ViewGroup {
             float tw = Theme.pxf(64), th = Theme.pxf(32);
             float x1 = rtl ? rx + tw : rx, x0 = x1 - tw;
             mR.set(x0, cy - th / 2, x1, cy + th / 2);
-            int track = mIt.on ? Theme.ACCENT_STRONG : (focused ? 0x33000000 : 0x4DFFFFFF);
+            // off: a quiet ink track and thumb from the palette (the focused row is filled with FOCUS, ink ON_FOCUS)
+            int track = mIt.on ? Theme.ACCENT_STRONG
+                    : focused ? Theme.alpha(Theme.ON_FOCUS, 0.2f) : Theme.alpha(Theme.TEXT1, Theme.dark() ? 0.3f : 0.16f);
             mFill.setColor(track);
             c.drawRoundRect(mR, th / 2, th / 2, mFill);
             float r = th / 2 - Theme.pxf(4);
             boolean right = mIt.on != rtl;
             float cx = right ? x1 - th / 2 : x0 + th / 2;
-            mFill.setColor(mIt.on ? 0xFFFFFFFF : (focused ? 0xFF5F6368 : 0xFFDADCE0));
+            mFill.setColor(mIt.on ? 0xFFFFFFFF : focused ? org.lumen.ui.Palette.mix(Theme.FOCUS, Theme.ON_FOCUS, 0.6f)
+                    : Theme.dark() ? org.lumen.ui.Palette.mix(Theme.SURFACE, Theme.TEXT1, 0.85f) : Theme.TEXT3);
             c.drawCircle(cx, cy, r, mFill);
         }
     }

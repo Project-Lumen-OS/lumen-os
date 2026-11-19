@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Праектар</string>
     <string name="version_line">Версія %1$s</string>
-    <string name="sec_focus">Фокус</string>
-    <string name="sec_keystone">Трапецыя</string>
     <string name="sec_auto">Аўтаматыка</string>
-    <string name="sec_keys">Кнопкі пульта</string>
     <string name="sec_diag">Дыягностыка</string>
-    <string name="act_af_now">Аўтафокус зараз</string>
     <string name="act_manual_focus">Ручны фокус</string>
     <string name="act_kst_now">Аўтатрапецыя зараз</string>
-    <string name="act_fit_now">Упісаць у экран зараз</string>
     <string name="act_refresh">Абнавіць</string>
     <string name="tg_power_on_af">Аўтафокус пры ўключэнні</string>
     <string name="tg_power_on_ak">Аўтатрапецыя пры ўключэнні</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Аўтатрапецыя пасля перамяшчэння</string>
     <string name="tg_curtain">Упісваць у экран</string>
     <string name="tg_obstacle">Абыход перашкод</string>
-    <string name="val_on">Укл.</string>
-    <string name="val_off">Выкл.</string>
-    <string name="val_unknown">Няма даных</string>
-    <string name="val_not_ready">Праектар не гатовы</string>
     <string name="cancel">Скасаваць</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Праграма для гэтай кнопкі не знойдзена</string>

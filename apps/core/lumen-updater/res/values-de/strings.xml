@@ -111,7 +111,6 @@
     <string name="ch_updates">Systemupdates</string>
     <string name="n_available_body">Öffnen, um herunterzuladen und zu installieren.</string>
     <string name="n_ready_title">Zum Abschließen des Updates neu starten</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Dieser Projektor kann noch keine Updates über das Internet installieren: die einmalige Einrichtung fehlt. Aktualisiere ihn vom Computer mit lumen-install.</string>
     <string name="blk_power">Schließe das Netzteil an: das Update dauert einige Minuten.</string>
     <string name="consent_title_recovery">Update installieren?</string>

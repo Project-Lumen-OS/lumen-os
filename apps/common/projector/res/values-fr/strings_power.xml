@@ -6,7 +6,6 @@
     <string name="power_standby_never">Jamais</string>
     <string name="power_quick_wake_minutes">%1$d min</string>
     <string name="power_quick_wake_hours">%1$d h</string>
-    <string name="power_standby_summary">Un appui court sur la touche marche/arrêt éteint la lumière ; le projecteur reste prêt à se rallumer instantanément. Passé ce délai, il s\'éteint complètement.</string>
     <string name="power_sleep_summary">Le bouton marche, la minuterie de veille et l\'inactivité éteignent la lumière et mettent le projecteur en veille. Un appui sur marche le réveille en quelques secondes, là où vous en étiez.</string>
     <string name="power_menu_sleep">Veille</string>
     <string name="power_menu_off">Éteindre</string>

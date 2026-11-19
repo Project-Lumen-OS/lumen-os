@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen pill: 3 dp kept free around it for the focus ring (the accent, 1.5 dp = 3 px, outside a 3 px gap) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="20dp" />
+                    <stroke android:width="1.5dp" android:color="@color/lumen_pkg_ring" />
+                </shape>
+            </item>
+            <item android:top="3dp" android:bottom="3dp" android:left="3dp" android:right="3dp">
+                <shape android:shape="rectangle">
+                    <corners android:radius="17dp" />
+                    <solid android:color="@color/lumen_pkg_button_focus" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <inset android:inset="3dp">
+            <shape android:shape="rectangle">
+                <corners android:radius="17dp" />
+                <solid android:color="@color/lumen_pkg_button" />
+            </shape>
+        </inset>
+    </item>
+</selector>

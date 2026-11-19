@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Проєктор</string>
     <string name="version_line">Версія %1$s</string>
-    <string name="sec_focus">Фокус</string>
-    <string name="sec_keystone">Трапеція</string>
     <string name="sec_auto">Автоматика</string>
-    <string name="sec_keys">Кнопки пульта</string>
     <string name="sec_diag">Діагностика</string>
-    <string name="act_af_now">Автофокус зараз</string>
     <string name="act_manual_focus">Ручний фокус</string>
     <string name="act_kst_now">Автотрапеція зараз</string>
-    <string name="act_fit_now">Вписати в екран зараз</string>
     <string name="act_refresh">Оновити</string>
     <string name="tg_power_on_af">Автофокус під час увімкнення</string>
     <string name="tg_power_on_ak">Автотрапеція під час увімкнення</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Автотрапеція після переміщення</string>
     <string name="tg_curtain">Вписувати в екран</string>
     <string name="tg_obstacle">Обхід перешкод</string>
-    <string name="val_on">Увімк.</string>
-    <string name="val_off">Вимк.</string>
-    <string name="val_unknown">Немає даних</string>
-    <string name="val_not_ready">Проєктор не готовий</string>
     <string name="cancel">Скасувати</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Не знайдено програму для цієї кнопки</string>

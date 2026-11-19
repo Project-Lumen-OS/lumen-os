@@ -31,7 +31,8 @@ def ban(row, rule, why):
 
 # 1. Play 6 Note A, by name
 src = open(os.path.join(G, 'tools/play6/check_play6_hal.py')).read()
-body = src[src.index('BAN = ['):src.index('if not O3_KEYSTONE_RESET')]   # O3 taken: 207/129 allowed with stock values
+start = src.index('BAN = [')
+body = src[start:src.index('\n]', start)]   # the Note A list only (O3: 207/129 allowed with stock values, not in it)
 p6 = {}
 for cls, code, name, why in re.findall(r'\("(BpHwGmpf2?)",\s*(None|\d+),\s*"(\w+)",\s*"([^"]*)"\)', body):
     p6.setdefault(name.lower(), []).append('%s %s %s: %s' % ('IGmpf2' if cls.endswith('2') else 'IGmpf', code, name, why))
@@ -90,6 +91,15 @@ for row in hb:
         if re.search(rx, m, flags=re.I): ban(row, rid, why)
 
 EXCEPTIONS = {
+    # Design decision 2026-11-19: the stock wall colour adaptation on every model whose stock has it (Z9X IGmpf 99 / 100,
+    # HB, X50 family). Both are the result bar's choices (libxgimi: select the effect after / before AC), not the factory
+    # calibration (111 / 112 / 113 / 122 stay BANNED).
+    ('DisplayManager', 'setAutoColorCalibration'): 'owner decision 2026-11-19: wall colour adaptation as stock, use the matched colour (newsettings / SystemUI OverWindowV2 -> setAutoColorCalibration, libxgimi select the effect after AC); not the factory calibration',
+    ('DisplayManager', 'setAutoColorDefault'): 'owner decision 2026-11-19: wall colour adaptation as stock, use the original colour and the card reset (setAutoColorDefault, libxgimi select the effect before AC)',
+    # Design decision 2026-11-19: the stock Power On Auto Boot row (newsettings HideRepository.setElectrify) on every
+    # model whose stock has it (Z9X IGmpf 543 / 544, HB, X50 family), never Play 6; written only on the user's flip.
+    ('GmFactoryManager', 'setPowerOnMode'): 'owner decision 2026-11-19: Power On Auto Boot row (stock HideRepository.setElectrify -> setPowerOnMode(on ? 1 : 0)) on Z9X (IGmpf 543), HB, X50, X50 Max, RS30, Titan, not Play 6; written only when the user flips the row, never at boot; the vendor stores factory_poweron_mode in the boot loader environment',
+    ('GmFactoryManager', 'getPowerOnMode'): 'owner decision 2026-11-19: read of the Power On Auto Boot row (stock getPowerOnMode() == 1, Z9X IGmpf 544)',
     ('GmFactoryManager', 'getPowerOnAKFlag'): 'Lumen reads it on Z9X / Play 6 (IGmpf 553) for the boot auto keystone switch',
     ('GmFactoryManager', 'savePowerOnAKFlag'): 'Lumen writes it on Z9X / Play 6 (IGmpf 552) for the boot auto keystone switch; same boolean only',
     # Design decision 2026-10-29 Values: stock G0130 callers in SystemUI_release_838 and
@@ -97,6 +107,7 @@ EXCEPTIONS = {
     # 11 CurtainAdaptManager.autoKeystone), the Z9X AutoKstMode enum. GmpfClient refuses every other value.
     ('ProjectorFocusManager', 'newAutoKst'): 'owner approved 2026-10-29 (PROJECTOR_DESIGN.md 9.1): Lumen calls it on '
         'the Z9X (IGmpf 272); allowed on HB only with mode 9, 10 or 11 (stock G0130 SystemUI / newsettings callers), '
+        'and 12 since hb-t7 (owner 2026-10-30, stock SystemUI AuxiliaryCurtainAlignDialog.onKeyUp OK -> newAutoKst(12)), '
         'enforced in GmpfClient',
     # hb-t5 (test of hb-t4, 2026-10-29: no optical zoom) zoom case. Values: stock G0130
     # newsettings ZoomStateView.dispatchKeyEvent (true, 2) [classes3 22bdb0 +0x2b], ZoomStateView.release /

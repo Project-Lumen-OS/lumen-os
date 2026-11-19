@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The installer's TV themes (values-television of PackageInstaller_tv). The light set: dark system bar icons.
+     values-television-night must not be byte-identical to this file, or aapt2 dedupes it away and the GSI's auto
+     generated RRO keeps winning in television + night. -->
+<resources>
+    <style name="Theme.AlertDialogActivity" parent="@style/LumenPkg.Window">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    <style name="Theme.AlertDialogActivity.NoActionBar" parent="@style/LumenPkg.Window">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

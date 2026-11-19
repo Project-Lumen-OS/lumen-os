@@ -110,7 +110,6 @@
     <string name="ch_updates">시스템 업데이트</string>
     <string name="n_available_body">열어서 다운로드하고 설치하세요.</string>
     <string name="n_ready_title">다시 시작하여 업데이트 완료</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">이 프로젝터는 아직 인터넷으로 업데이트를 설치할 수 없습니다. 한 번만 하는 설정이 되어 있지 않습니다. 컴퓨터에서 lumen-install로 업데이트하세요.</string>
     <string name="blk_power">전원 어댑터를 연결하세요. 업데이트는 몇 분 걸립니다.</string>
     <string name="consent_title_recovery">업데이트를 설치할까요?</string>

@@ -45,6 +45,10 @@ DisplayManager	97	getZoomStepRange	getZoomStepRange [Z9X IGmpf 117]
 DisplayManager	98	getCurrentZoomStep2	getZoomStep [Z9X IGmpf 116]
 DisplayManager	102	switchDispColorSpace	setColorSpace [Z9X IGmpf 112]
 DisplayManager	103	getDispColorSpace	getColorSpaceRaw [Z9X IGmpf 111]
+DisplayManager	108	startAutoColor	startAutoColor [Z9X IGmpf 106]; owner 2026-11-19 wall colour adaptation
+DisplayManager	114	setAutoColorDefault	useAutoColorOriginal [Z9X IGmpf 100]; EXCEPTION row of banned.tsv (owner 2026-11-19)
+DisplayManager	115	setAutoColorCalibration	useAutoColorMatched [Z9X IGmpf 99]; EXCEPTION row of banned.tsv (owner 2026-11-19)
+DisplayManager	150	setAEOnOff	setAutoExposure(false) [Z9X IGmpf2 53]; owner 2026-11-19 wall colour adaptation
 DisplayManager	146	setGameModeState	setGameModeState [Z9X IGmpf2 57]
 DisplayManager	147	setGameModeType	setGameModeType [Z9X IGmpf2 56]
 DisplayManager	148	getGameModeProp	getGameModeProp [Z9X IGmpf2 55]
@@ -57,6 +61,8 @@ DisplayManager	179	getDispOutputFps	getDispOutputFps [-]; game bar FPS overlay w
 DisplayManager	185	setKstPrepare	setKstPrepareForZoom [Z9X IGmpf2 18]; EXCEPTION row of banned.tsv (9.3, zoom case, hb-t5); (true, 2) / (false, 2) only, stock ZoomStateView.dispatchKeyEvent (newsettings classes3 22bdb0 +0x2b) / release (22cc04 +0x78) via MiddleWareApi.notifyKeystone
 DisplayManager	189	SetOpticalZoomLimitStep	-; hb-t6: EXCEPTION row of banned.tsv; GetCurrentZoomLimitStep() +-1 inside [-limitTotal, 0] at optical index 0 inside a 185(true, 2) + 93 session, stock ZoomUtils.setOpticalZoomLimitStep from ZoomStateView.setZoom (newsettings)
 DisplayManager	190	GetCurrentZoomLimitStep	-; hb-t6: read, stock ZoomUtils.getCurrentZoomLimitStep (ZoomStateView.initZoom, setOpticalZoomLimitStep)
+DisplayManager	203	getRainbowReductionStatus	getRainbowReductionStatus [-]; rainbow reduction row, G0148 only (stock dapengfhm picture_anti_rbe, PictureRepository)
+DisplayManager	205	setRainbowReductionStatus	setRainbowReductionStatus [-]; rainbow reduction row, G0148 only, only on the user's flip
 GmAudioManager	2	setAudioOutput	setAudioOutput [Z9X IGmpf 59]
 GmAudioManager	3	getAudioOutput	getAudioOutputRaw [Z9X IGmpf 60]
 GmAudioManager	6	setSoundeffect	setSoundEffect [Z9X IGmpf 61]
@@ -64,6 +70,8 @@ GmAudioManager	7	getSoundeffect	getSoundEffectRaw [Z9X IGmpf 62]
 GmAudioManager	8	setAutoSoundeffect	setAutoSoundEffect [Z9X IGmpf 63]
 GmAudioManager	15	SetPEQEnable	setPeqEnabled [Z9X IGmpf 51]
 GmAudioManager	16	SetPEQ	setPeqBand [Z9X IGmpf 50]
+GmFactoryManager	36	setPowerOnMode	setPowerOnMode [Z9X IGmpf 543]; EXCEPTION row of banned.tsv (owner 2026-11-19, Power On Auto Boot row, written only on the user's flip)
+GmFactoryManager	37	getPowerOnMode	getPowerOnMode [Z9X IGmpf 544]; EXCEPTION row of banned.tsv (read of that row with the menu)
 GmFactoryManager	45	savePowerOnAKFlag	setPowerOnAk [Z9X IGmpf 552]; EXCEPTION row of banned.tsv (boot auto keystone switch)
 GmFactoryManager	46	getPowerOnAKFlag	getPowerOnAk [Z9X IGmpf 553]; EXCEPTION row of banned.tsv (boot auto keystone switch)
 GmTvManager	1	setGmTvCallback	setTvListener [Z9X IGmpf 702 setGmTvListener]
@@ -136,6 +144,10 @@ GmTvManager	166	getOneOfMultiPointWB	getMultiPointWb [Z9X IGmpf2 281]
 GmTvManager	173	getAmdFreeSyncState	getFreeSync [Z9X IGmpf2 271]; read only, signal panel FreeSync row
 GmTvManager	174	ToggleHDRDyToneMapping	setHdrDynamicToneMapping [Z9X IGmpf2 270]
 GmTvManager	175	GetHDRDyToneMappingStatus	getHdrDynamicToneMapping [Z9X IGmpf2 269]
+GmTvManager	179	getElderColorTone	getElderColorTone [-]; senior colour row, stock MoreManager.getElderColorTone
+GmTvManager	180	setElderColorTone	setElderColorTone [-]; senior colour row, stock MoreManager.setElderColorTone, only on the user's choice
+GmTvManager	181	getElderColorLevel	getElderColorLevel [-]; senior colour row, stock MoreManager.getElderColorLevel
+GmTvManager	182	setElderColorLevel	setElderColorLevel [-]; senior colour row, 0..2 only while the switch is on (stock ElderlyColorDialog)
 GmTvManager	191	setHGiGMode	setHgig [-]; game bar HDR settings with 174, only while 78 reads HDR10, stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) OtherViewModel.setHdrMode
 GmTvManager	192	getHGiGMode	getHgig [-]; stock HB xhplayer GameMenuActivity (research/GAME_BAR.md) OtherViewModel.getCurrentHdrMode
 MotionDetectionManager	2	getMotionDetection	getMotionDetection [Z9X IGmpf 584]; fit to my screen size (docs/fit_screen/DESIGN.md 9.3), read only, FIT_SCREEN gate, at most 20 per minute 80 ms apart (GmpfClient), 5 per fit; stock newsettings MotionDetectionManagerWrapper.getMotionDetection:41 (IMotionDetectionManager proxy readTypedObject MsensorDataStruct)
@@ -172,3 +184,7 @@ SystemManager	140	setPushPullScreenOnOff	disablePushPullScreenForCeiling [Z9X IG
 SystemManager	142	getScreenRotationInfo	getScreenRotation [Z9X IGmpf2 199]
 SystemManager	147	setPushPullScreenState	setAdjustScreenOpen [Z9X IGmpf2 194]
 TemperatureManager	6	getSystemTemperature	getSystemTemperature [Z9X IGmpf 438]
+GmTvManager	195	CreateNewCustomImageMode	createCustomPictureMode [-]; (-1), the stock "Custom" entry of the mode list on G0130 (PictureViewModel picture_customize)
+GmTvManager	196	DeleteCustomImageMode	deleteCustomPictureMode [-]; stock delete_image_mode_user_setting, the user mode in use
+GmTvManager	197	SwitchCustomImageModeMapping	setCustomPictureBase [-]; stock image_mode_custom_base_dapengse, read back by 198
+GmTvManager	198	GetCustomImageModeMapping	customPictureBase [-]; read of the based-on row while a user mode is in use

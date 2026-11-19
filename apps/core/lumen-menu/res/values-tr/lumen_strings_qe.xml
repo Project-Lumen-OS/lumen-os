@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Taşınıyor</string>
     <string name="lumen_qe_move_hint">Daireler yalnızca üst sırada, kutucuklar satırlar arasında hareket eder. Kutucuğu daire yapmak için görünümünü değiştirin.</string>
     <string name="lumen_qe_put">Buraya koy</string>
-    <string name="lumen_qe_cancel">İptal</string>
     <string name="lumen_qe_full">Menü dolu. Daha küçük bir görünüm ya da Liste seçin.</string>
     <string name="lumen_qe_list_full">Bu kadar öğe listeye sığmaz. Önce birkaçını kaldırın.</string>
     <string name="lumen_qe_pinned">Bu düğme her zaman menüde kalır.</string>

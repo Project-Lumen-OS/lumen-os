@@ -8,12 +8,22 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
 - One button, three states (`PanelToggle`): first press the small card in the top right corner (keys stay with the
   film or the console), second press the full panel on the right side (keys are the panel's: BACK closes, OK switches
   the option row), third press hides it.
+- Hold OK on the small card (owner 2026-11-19, `OkHold`, `CardHold`): held for 600 ms it opens the full panel, which
+  grows out of the card (`PanelMotion`, 280 ms, none when Android's animations are removed); OK held again or BACK
+  folds it back into the card it came from (a popup card gets its 5 s again). Only while a card is on screen does the
+  key filter run (lumen-remote `KeyHook` over KeyFilterService, the accessibility key filter of the Remote buttons);
+  with no card nothing sits between the remote and the app. A short OK on the card goes on at once and unchanged: its
+  DOWN is not held back until the release, its UP follows, each exactly once (the filter answers "not mine" at once,
+  Android passes the same event on). A held OK's DOWN has reached the app too (nothing can know at DOWN that the press
+  will be long); when the panel takes the keys Android sends the app that press's UP as cancelled. In the full panel OK
+  is the panel's: short = its own OK, held = fold back. The first three cards show "Hold OK to expand", never again
+  once the user held OK. The pinned card follows the same rule. Host test `test/OkHoldTest.java`.
 - A developer feature (owner 2026-11-18): opened by the remote action "signal" of "Remote buttons"
-  (`devices/_remotes/key_actions.tsv`, any key the user gives it) and by its one row in All settings, General, group
-  "For developers" (lumen-menu `FeatureId.SIGNAL_PANEL`, a module screen). No round button on the quick menu.
+  (`devices/_remotes/key_actions.tsv`, any key the user gives it) and by its one row on the For developers page,
+  the last page of All settings (lumen-menu `FeatureId.SIGNAL_PANEL`, a module screen). No round button on the quick menu.
 - "Show when the signal changes": off by default, switched in the full panel. When on, a stable new HDMI signal
   (vendor event 0 `status:3`) shows the card for 5 s, only while an HDMI input is on screen (never over Home or apps).
-- "Keep the signal card on screen" (All settings, General, For developers, off by default, owner 2026-11-18 for people
+- "Keep the signal card on screen" (All settings, For developers, off by default, owner 2026-11-18 for people
   who film the screen): the small card stays over every HDMI input, through signal changes and input switches (no HDMI
   input for 3 s takes it away, the next one brings it back); the panel's key or the option closes it (`PanelToggle.pin`).
 - Values change in place: the card window stays, only the changed line is redrawn.
@@ -76,6 +86,7 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
 | `SignalSheet`, `SignalFormat`, `SignalText` | what to draw, numbers and texts, a row this model cannot read is not there |
 | `SignalItems` | the model's rows as data: `devices/<c>/signal.tsv`, in the app as `assets/lumen_signal/items.tsv` |
 | `SignalPanel`, `SignalWindow`, `SignalReceiver` | the Android side: controller, overlay window, the intent `SIGNAL_PANEL` |
+| `OkHold`, `CardHold`, `PanelMotion` | holding OK on a card (pure rules, the key filter hook, the grow and fold motion), shared with lumen-sensors |
 
 Readers (no new HAL client, the apps' own getters): `apps/ProjectorBase/.../panel/GmpfSignalReader` (Z9X and, through
 the base layer, the HB), `apps/X50Projector/.../X50SignalReader` (X50 family), `apps/Play6Projector/.../panel/Play6SignalReader`.

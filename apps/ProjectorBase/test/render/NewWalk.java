@@ -70,7 +70,6 @@ public final class NewWalk {
     static boolean has(FeatureId f) {
         if (!prof.has(f)) return false;
         if (FeatureId.SETTINGS_LAUNCHER == f) return Boolean.TRUE.equals(env.get("launcher"));
-        if (FeatureId.KEYSTONE_FIT_SCREEN == f) return Boolean.TRUE.equals(env.get("fit"));
         return Z9xFeatures_FEATURES_contains(f);
     }
 
@@ -356,11 +355,15 @@ public final class NewWalk {
         out.append(cats).append('\n');
     }
 
+    /** Scenario values only the 1.0.10 walk reads: the Z9X-only autofocus rows the owner removed (rules 2.31, 2026-11-13). */
+    static final java.util.Set<String> DROPPED = new java.util.HashSet<>(Arrays.asList("moveAf", "powerOnAf"));
+
     static Z9xMenuRules.In toIn(Object o) throws Exception {
         if (o == null) return null;
         @SuppressWarnings("unchecked") Map<String, Object> m = (Map<String, Object>) o;
         Z9xMenuRules.In in = new Z9xMenuRules.In();
         for (Map.Entry<String, Object> e : m.entrySet()) {
+            if (DROPPED.contains(e.getKey())) continue;
             Field f = Z9xMenuRules.In.class.getDeclaredField(e.getKey());
             f.setAccessible(true);
             Object v = e.getValue();

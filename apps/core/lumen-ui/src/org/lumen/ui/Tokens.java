@@ -50,20 +50,32 @@ public final class Tokens {
     public static final float SCALE_CARD = 1.06f, SCALE_BANNER = 1.06f, SCALE_TILE = 1.06f, SCALE_BUTTON = 1.05f,
             SCALE_HERO_BUTTON = 1.04f, SCALE_ICON = 1.06f, SCALE_ROW = 1.02f;
     public static final int RING_W = 4, RING_GAP = 4;
-    /** Resting elevation of tiles in the light theme (the dark theme draws a hairline): colour, offset, blur. */
-    public static final int E1_COLOR = 0x17101828, E1_Y = 6, E1_BLUR = 16;
-    /** The hero card's shadow in the light theme. */
-    public static final int EHERO_COLOR = 0x38101828, EHERO_Y = 24, EHERO_BLUR = 56;
+    /**
+     * The focus ring of Home (2026-11-19, both themes): 3 px wide, 3 px clear gap to the element, on top of the
+     * focus scale and shadow, in {@link Palette#focusRing} (#3B78E7 dark, #2F62D0 light for 3:1 on the light field).
+     * {@link FocusRing} says who wears it, {@link RingPaint} draws it.
+     */
+    public static final int FOCUS_RING_W = 3, FOCUS_RING_GAP = 3;
+    /** Resting elevation of tiles in the light theme (colour {@link Palette#elevation}): offset, blur. */
+    public static final int E1_Y = 6, E1_BLUR = 16;
+    /** The card under a QR code stays white in both themes: phone cameras read black on white best. */
+    public static final int QR_CARD = 0xFFFFFFFF;
 
     // ------------------------------------------------------------------ 2.0 motion (ms; curves in Motion)
     public static final int MS_FOCUS_IN = 160, MS_FOCUS_OUT = 120, MS_ROW_SCROLL = 200, MS_KEY_REPEAT = 90,
             MS_PAGE_SCROLL = 280, MS_BACKDROP_DWELL = 250, MS_BACKDROP_FADE = 400, MS_HERO_IN = 600,
-            MS_HEADER = 180, MS_PANEL = 280, MS_SETUP_STEP = 320, MS_THEME = 400, MS_REDUCED = 120;
+            MS_HEADER = 180, MS_PANEL = 280, MS_SETUP_STEP = 320, MS_THEME = 350, MS_REDUCED = 120;
     public static final int PANEL_SLIDE = 24, STEP_SLIDE = 24;
     /** Home A "Витрина": focus, lift and colour changes (Motion.SHOWCASE). */
     public static final int MS_SHOWCASE = 260;
-    /** The hero pages itself this often while focus is elsewhere. */
-    public static final int MS_HERO_PAGE = 10_000;
+    /**
+     * A hero page stays this long after it appeared or after the last key press before the next one comes (8 s:
+     * Baymard 5 to 7 s for a title with a few labels, NN/g 3 words a second plus the picture, a full screen picture
+     * changes less often than a card carousel's 5 s).
+     */
+    public static final int MS_HERO_PAGE = 8_000;
+    /** The hero page change: one cross fade of the picture, the shelf text out and in within it. */
+    public static final int MS_HERO_FADE = 800, MS_HERO_TEXT_OUT = 220, MS_HERO_TEXT_IN = 480;
 
     // ------------------------------------------------------------------ 1.x (installers, X50 apps)
     /** The accent: focused buttons and rows, progress, selection. */

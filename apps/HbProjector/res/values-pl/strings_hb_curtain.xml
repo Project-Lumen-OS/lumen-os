@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Z9X HB hb-t7: the stock curtain alignment hint window (HB SystemUI auxiliary_curtain_alignment, HAL event 105
+     AK_Curtain_Fit_Guide of Fit to curtain), drawn by CurtainAlignOverlay. Texts written by Lumen (clean-room rewrite
+     2026-10-31). Shown as btn1 + the OK key + btn2. -->
+<resources>
+    <string name="hb_fit_guide_title">Dopasowanie do ekranu</string>
+    <string name="hb_fit_guide_desc">Ustaw projektor tak, by obraz lekko wychodził poza każdą krawędź ekranu.</string>
+    <string name="hb_fit_guide_btn1">Gdy wszystko gotowe, naciśnij</string>
+    <string name="hb_fit_guide_btn2">aby kontynuować</string>
+</resources>

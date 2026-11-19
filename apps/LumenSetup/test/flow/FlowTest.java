@@ -38,14 +38,36 @@ public final class FlowTest {
         Path root = app.getParent().getParent();
         String src = "src/org/lumen/setup/";
 
-        // ---- step order (the design notes: Remote, Language, Network, Google, Picture, Launcher, Alice, Done)
+        // ---- step order (the design notes: Remote, Language, then the theme (2026-11-19), Network, Google, Picture,
+        // Launcher, Alice, Done)
         String act = read(app.resolve(src + "SetupActivity.java"));
         Matcher m = Pattern.compile("mSteps\\.add\\(new (\\w+)Step\\(this\\)\\);").matcher(
                 act.substring(act.indexOf("private void startSteps()")));
         List<String> order = new ArrayList<>();
-        while (m.find() && order.size() < 8) order.add(m.group(1));
-        ok(order.toString().equals("[Remote, Welcome, Network, Google, Picture, Launcher, Alice, Done]"),
+        while (m.find() && order.size() < 9) order.add(m.group(1));
+        ok(order.toString().equals("[Remote, Welcome, Theme, Network, Google, Picture, Launcher, Alice, Done]"),
                 "step order " + order);
+
+        // ---- the theme step: Светлая first and the default, the preview follows the focus, OK writes lumen_ui_theme
+        ok(java.util.Arrays.asList(ThemeChoice.ORDER).equals(java.util.Arrays.asList(org.lumen.ui.ThemeMode.LIGHT,
+                org.lumen.ui.ThemeMode.DARK, org.lumen.ui.ThemeMode.AUTO)), "theme rows: Светлая, Тёмная, Авто");
+        ok(ThemeChoice.initialRow(org.lumen.ui.ThemeMode.parse(null)) == 0, "nothing stored yet: Светлая focused");
+        ok(ThemeChoice.initialRow(org.lumen.ui.ThemeMode.DARK) == 1 && ThemeChoice.initialRow(org.lumen.ui.ThemeMode.AUTO) == 2,
+                "a stored choice is focused when the step comes back");
+        ok(ThemeChoice.lightShare(org.lumen.ui.ThemeMode.LIGHT) == 1f && ThemeChoice.lightShare(org.lumen.ui.ThemeMode.DARK) == 0f
+                && ThemeChoice.lightShare(org.lumen.ui.ThemeMode.AUTO) == 0.5f, "preview: all light, all dark, half for Авто");
+        ok(ThemeChoice.needsRetheme(false, true) && ThemeChoice.needsRetheme(true, false)
+                && !ThemeChoice.needsRetheme(false, false) && !ThemeChoice.needsRetheme(true, true),
+                "the wizard redraws only when the chosen colours differ from the screen's");
+        String ts = read(app.resolve(src + "steps/ThemeStep.java"));
+        ok(ts.contains("LumenTheme.setMode(host, m)") && !ts.contains("Settings.Secure"),
+                "the pick writes the shared lumen_ui_theme through lumen-ui, no own copy of the key");
+        ok(ts.contains("setOnFocusChangeListener") && ts.contains("mPreview.show(ThemeChoice.lightShare(m), true)"),
+                "a focus move changes the preview at once");
+        ok(ts.contains("host.retheme(() -> host.next(\"next\"))"), "a changed theme redraws the wizard before the next step");
+        ok(act.contains("mTheme.apply(LumenTheme.palette(this));") && act.contains("ThemeFade.activity(this, this::restyle)")
+                        && act.contains("buildUi();\n        if (mFrame != null) mFrame.removeView(old);"),
+                "retheme goes through the shared lumen-ui cross fade, the wizard rebuilt in the new colours under it");
 
         // ---- the counter
         boolean[] all = {true, true, true, true, true, true, true, true};
@@ -211,7 +233,8 @@ public final class FlowTest {
         for (String f : new String[] {"ui/Ui.java", "ui/FocusFill.java", "ui/Ring.java", "ui/Dots.java", "ui/Row.java",
                 "ui/Pill.java", "ui/Field.java", "ui/Tile.java", "ui/Wordmark.java", "ui/AuroraView.java", "ui/GridArt.java",
                 "ui/Sheet.java", "steps/NetworkStep.java", "steps/RemoteStep.java", "steps/WelcomeStep.java",
-                "steps/GoogleStep.java", "steps/PictureStep.java", "steps/DoneStep.java"}) {
+                "steps/GoogleStep.java", "steps/PictureStep.java", "steps/DoneStep.java", "steps/ThemeStep.java",
+                "ui/ThemePreview.java"}) {
             Matcher lm = lit.matcher(read(app.resolve(src + f)));
             List<String> found = new ArrayList<>();
             // transparent, and pure white under a QR code (scanned on any theme)

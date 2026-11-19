@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stock gap rows, round 2: the screensaver rows reuse the Z9X / HB screensaver page texts (apps/ProjectorBase
+     res strings_dream.xml), the senior colour lock means the stock cur_mode_not_support_elder_adjustment. -->
+<resources>
+    <string name="lumen_m_hdr_screensaver">Ekran koruyucu</string>
+    <string name="lumen_m_dream_now">Ekran koruyucuyu başlat</string>
+    <string name="lumen_m_dream_delay">Başlama süresi</string>
+    <string name="lumen_m_dream_never">Hiçbir zaman</string>
+    <string name="lumen_m_dream_minutes">%1$d dk</string>
+    <string name="lumen_m_dream_hours">%1$d sa</string>
+    <string name="lumen_m_dream_m1">1 dk</string>
+    <string name="lumen_m_dream_m5">5 dk</string>
+    <string name="lumen_m_dream_m10">10 dk</string>
+    <string name="lumen_m_dream_m30">30 dk</string>
+    <string name="lumen_m_dream_m60">1 sa</string>
+    <string name="lumen_m_elder_mode_lock">Bu görüntü modunda kullanılamaz</string>
+</resources>

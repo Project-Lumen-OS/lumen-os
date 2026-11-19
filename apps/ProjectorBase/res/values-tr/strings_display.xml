@@ -2,7 +2,6 @@
 <!-- Turkish translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Ekran</string>
     <string name="uires_row">Arayüz çözünürlüğü</string>
     <string name="uires_default_fmt">%1$s (varsayılan)</string>
     <string name="uires_summary">4K en net metni verir; 1080p, XGIMI’deki gibi, grafik için en hafifidir. Değiştirmek için projektör yeniden başlar.</string>

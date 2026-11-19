@@ -29,9 +29,6 @@
     <string name="picker_empty">Nie znaleziono wejść HDMI</string>
     <string name="pref_auto_switch">Automatycznie przełączaj na HDMI po podłączeniu urządzenia</string>
     <string name="pref_return_home">Wracaj do ekranu głównego po odłączeniu źródła</string>
-    <string name="pref_cec_otp">HDMI-CEC: przełączaj na HDMI na żądanie urządzenia (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: steruj urządzeniem pilotem</string>
-    <string name="pref_cec_exit">HDMI-CEC: informuj urządzenie o wyjściu z HDMI</string>
     <string name="pref_boot_source">Źródło po włączeniu: %1$s</string>
     <string name="boot_source_home">Ekran główny</string>
     <string name="pref_boot_source_note">Jeśli urządzenie włączy projektor przez HDMI-CEC, otworzy się jego wejście.</string>

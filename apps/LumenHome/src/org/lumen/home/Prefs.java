@@ -23,9 +23,9 @@ import java.util.Set;
 public final class Prefs {
     public static final String FILE = "home";
 
-    public static final String K_FAVORITES = "favorites";          // ordered component list
+    public static final String K_FAVORITES = "favorites";          // ordered package list
     public static final String K_FAVORITES_SET = "favorites_set";  // the user pinned something
-    public static final String K_HIDDEN_APPS = "hidden_apps";      // component or package
+    public static final String K_HIDDEN_APPS = "hidden_apps";      // packages
     public static final String K_ROW_ORDER = "row_order";          // ordered row ids (manual order)
     public static final String K_HIDDEN_ROWS = "hidden_rows";      // row ids
     public static final String K_SHOWN_ROWS = "shown_rows";        // rows hidden by default the user enabled

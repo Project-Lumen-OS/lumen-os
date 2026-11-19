@@ -41,6 +41,11 @@ public final class SuggestProviders {
     public static final String EXTRA_SUGGEST_INTENT = "suggest";
 
     public static List<Card> query(Context c, String q) {
+        return query(c, q, null);
+    }
+
+    /** The results of the apps that publish them, only of {@code onlyPkg} when it is not null. */
+    public static List<Card> query(Context c, String q, String onlyPkg) {
         ArrayList<Card> out = new ArrayList<>();
         if (q == null || q.trim().length() < 2) return out;
         List<SearchableInfo> list;
@@ -57,6 +62,7 @@ public final class SuggestProviders {
             if (si == null || si.getSuggestAuthority() == null) continue;
             ComponentName act = si.getSearchActivity();
             if (act == null || c.getPackageName().equals(act.getPackageName())) continue;
+            if (onlyPkg != null && !onlyPkg.equals(act.getPackageName())) continue;
             fs.add(POOL.submit(() -> one(c, sm, si, q)));
         }
         long deadline = SystemClock.uptimeMillis() + BUDGET_MS;

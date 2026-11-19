@@ -56,6 +56,27 @@ public final class SignalPanel {
     /** the HDMI receiver report (HDMI_FORMAT): when to ask, what may show; the model's HDMI input to MStar port map */
     private static final FormatWatch FORMAT = new FormatWatch();
     private static int[] sPorts = SignalItems.ports(null);
+    /** Another developer overlay that closes when the panel opens (lumen-sensors: the two never show together). */
+    private static Runnable sOnOpen;
+    /** the small card shows the hold hint this time (CardHold: the first few cards only) */
+    private static boolean sHint;
+
+    /** Holding OK on the card (CardHold): open, fold back, the panel's own OK. */
+    private static final CardHold.Card CARD = new CardHold.Card() {
+        @Override public PanelMode mode() { return TOGGLE.mode(); }
+
+        @Override public void expand() {
+            sHint = false;
+            apply(TOGGLE.expand());
+        }
+
+        @Override public void collapse() { apply(TOGGLE.collapse()); }
+
+        @Override public void sheetOk() { switchPopup(); }
+    };
+
+    /** A card shown by a signal change goes after POPUP_MS (again after the full panel folded back into it). */
+    private static final Runnable POPUP_OVER = () -> { if (TOGGLE.mode() == PanelMode.POPUP) show(TOGGLE.popupOver()); };
 
     private SignalPanel() {}
 
@@ -63,6 +84,7 @@ public final class SignalPanel {
     public static void install(Context c, SignalReader reader) {
         sApp = c.getApplicationContext();
         sReader = reader;
+        CardHold.start(sApp);
         String tsv = asset(sApp, SignalItems.ASSET);
         Set<SignalItem> model = SignalItems.parse(tsv);
         sItems = reader == null ? EnumSet.noneOf(SignalItem.class) : SignalItems.shown(model, reader.items());
@@ -80,6 +102,9 @@ public final class SignalPanel {
         }
         if (available(sApp) && pinned(sApp)) pinChanged(true);
     }
+
+    /** Registers the overlay that closes when this panel opens (one, the sensor card). */
+    public static void onOpen(Runnable r) { sOnOpen = r; }
 
     /** True where the model reads the HDMI receiver itself (colour format, depth, colorimetry): the refresh choice. */
     public static boolean receiverInfo(Context c) {
@@ -150,10 +175,26 @@ public final class SignalPanel {
             Context c = sApp;
             if (c == null || !available(c) || TOGGLE.mode() != PanelMode.HIDDEN) return;
             if (TOGGLE.signalChanged(popupOn(c), sReader.hdmiPort() > 0) != PanelMode.POPUP) return;
-            show(PanelMode.POPUP);
-            MAIN.postDelayed(() -> { if (TOGGLE.mode() == PanelMode.POPUP) show(TOGGLE.popupOver()); }, PanelToggle.POPUP_MS);
+            apply(PanelMode.POPUP);
         });
     }
+
+    /** Shows {@code mode}; a popup card gets its time again. */
+    private static void apply(PanelMode mode) {
+        show(mode);
+        MAIN.removeCallbacks(POPUP_OVER);
+        if (mode == PanelMode.POPUP) MAIN.postDelayed(POPUP_OVER, PanelToggle.POPUP_MS);
+    }
+
+    private static void switchPopup() {
+        boolean on = !popupOn(sApp);
+        prefs(sApp).edit().putBoolean(POPUP, on).apply();
+        Log.i(TAG, "show on signal change: " + on);
+        draw(true);
+    }
+
+    /** A text of the panel's language (lumen-sensors shows the same hold hint). */
+    public static String text(Context c, String key) { return words(c).get(key); }
 
     static boolean popupOn(Context c) {
         return prefs(c).getBoolean(POPUP, false);
@@ -163,6 +204,7 @@ public final class SignalPanel {
 
     private static void show(PanelMode mode) {
         MAIN.removeCallbacks(TICK);
+        if (sApp != null) CardHold.shown(sApp, CARD, mode);
         if (!mode.visible()) {
             if (sWindow != null) sWindow.hide();
             sDrawn = null;
@@ -170,16 +212,16 @@ public final class SignalPanel {
             return;
         }
         if (sWindow == null) sWindow = new SignalWindow(sApp, new SignalWindow.Keys() {
-            @Override public void back() { show(TOGGLE.back()); }
+            @Override public void back() { apply(TOGGLE.back()); }
 
-            @Override public void switchPopup() {
-                boolean on = !popupOn(sApp);
-                prefs(sApp).edit().putBoolean(POPUP, on).apply();
-                Log.i(TAG, "show on signal change: " + on);
-                draw(true);
-            }
+            @Override public void switchPopup() { SignalPanel.switchPopup(); }
+
+            @Override public void collapse() { CARD.collapse(); }
         });
         if (!sWindow.shown()) {
+            sHint = mode.card() && CardHold.hint(sApp);
+            if (sHint) CardHold.hintShown(sApp);
+            if (sOnOpen != null) sOnOpen.run();
             sValues = new SignalValues();
             sValues.port = sReader == null ? 0 : sReader.hdmiPort();
             sBudget.reset();
@@ -246,10 +288,12 @@ public final class SignalPanel {
     private static void draw(boolean force) {
         PanelMode mode = TOGGLE.mode();
         SignalSheet s = SignalSheet.build(sValues, sItems, words(sApp));
-        String key = mode + "|" + popupOn(sApp) + "|" + s.port + s.big + s.chips + s.verdict + s.sound + s.rows;
+        boolean hint = sHint && mode.card(), held = TOGGLE.held();
+        String key = mode + "|" + popupOn(sApp) + "|" + hint + held + "|" + s.port + s.big + s.chips + s.verdict + s.sound
+                + s.rows;
         if (!force && key.equals(sDrawn)) return;
         sDrawn = key;
-        sWindow.show(mode, s, popupOn(sApp));
+        sWindow.show(mode, s, popupOn(sApp), hint, held);
     }
 
     /** The Android items: display mode and the media output, no vendor call. */

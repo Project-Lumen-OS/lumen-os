@@ -59,6 +59,174 @@ C connectFocusManager()() s2
 C connectFocusManager()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 298 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
   = null
+C createCustomPictureMode()() s0
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s1
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s2
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s3
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C customPictureBase(int)(-1) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(-1) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(0) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(0) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(1) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(1) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(2) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(2) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(3) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(3) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(5) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(5) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(6) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(6) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(10) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(10) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(12) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(12) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(13) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(13) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(17) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(17) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(44) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(44) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(50) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(50) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(100) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(100) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(101) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(101) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(106) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(106) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(160) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(160) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(192) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(192) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(500) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(500) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(20000) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(20000) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(-1) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(-1) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(0) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(0) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(1) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(1) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(2) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(2) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(3) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(3) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(5) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(5) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(6) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(6) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(10) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(10) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(12) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(12) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(13) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(13) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(17) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(17) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(44) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(44) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(50) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(50) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(100) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(100) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(101) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(101) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(106) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(106) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(160) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(160) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(192) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(192) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(500) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(500) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(20000) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(20000) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
 C disablePushPullScreenForCeiling()() s0
   GETSERVICE xgimi.hardware.gmpf@1.0::IGmpf2/default false
   TX xgimi.hardware.gmpf@1.0::IGmpf2 201 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
@@ -1478,6 +1646,22 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 661 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getElderColorLevel()() s0
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s1
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s2
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s3
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorTone()() s0
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s1
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s2
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s3
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
 C getExtDecInfo(String)(NativeUIWatch) s0
   ! IllegalArgumentException: ext dec key NativeUIWatch
 C getExtDecInfo(String)(NativeUIWatch) s2
@@ -2084,6 +2268,18 @@ C getPowerOnAk()() s2
 C getPowerOnAk()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 553 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
+C getPowerOnMode()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C getPowerOnMode()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C getPowerOnMode()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C getPowerOnMode()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
 C getPowerOnMusic()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 420 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -2136,6 +2332,14 @@ C getPutMode()() s2
 C getPutMode()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 173 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = null
+C getRainbowReductionStatus()() s0
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s1
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s2
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s3
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
 C getScreenOn()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 196 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -3216,6 +3420,18 @@ C setAudioOutput(AudioPath)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setAudioOutput(AudioPath)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAutoExposure(boolean)(false) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
+  = 1
+C setAutoExposure(boolean)(false) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
+  = 400
+C setAutoExposure(boolean)(true) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:true
+  = 1
+C setAutoExposure(boolean)(true) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:true
+  = 400
 C setAutoReverse(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 580 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
@@ -3362,6 +3578,410 @@ C setCurtainFit(boolean)(true) s0
 C setCurtainFit(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 290 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
+C setCustomPictureBase(int,int)(-1,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(-1) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(-1) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(0) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(0) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(1) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(1) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(2) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(2) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(3) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(3) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(5) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(5) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(6) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(6) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(10) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(10) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(12) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(12) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(13) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(13) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(17) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(17) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(44) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(44) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(50) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(50) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(100) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(100) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(101) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(101) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(106) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(106) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(160) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(160) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(192) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(192) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(500) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(500) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(20000) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(20000) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
 C setDarkScenes(boolean,int,int)(false,-1,-1) s0
   ! IllegalArgumentException: game picture -1 not in 0..4
 C setDarkScenes(boolean,int,int)(false,-1,-1) s2
@@ -4272,6 +4892,94 @@ C setEdidVersion(int)(20000) s0
   ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
   ! IllegalArgumentException: edid 20000: not a stock value here
+C setElderColorLevel(int)(-1) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(-1) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(0) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(0) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(1) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(1) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(2) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(2) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(3) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(3) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(5) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(5) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(6) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(6) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(10) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(10) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(12) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(12) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(13) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(13) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(17) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(17) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(44) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(44) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(50) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(50) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(100) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(100) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(101) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(101) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(106) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(106) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(160) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(160) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(192) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(192) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(500) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(500) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(20000) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(20000) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(false) s0
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(false) s2
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(true) s0
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(true) s2
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
 C setEyeProtection(boolean)(false) s0
   ! NuiNotReadyException: IGmpf 152 not sent: no NUI fifo reader (sys.z9x.nui != ready)
 C setEyeProtection(boolean)(false) s2
@@ -8110,6 +8818,18 @@ C setPowerOnAk(boolean)(true) s0
 C setPowerOnAk(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 552 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
+C setPowerOnMode(boolean)(false) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:0
+  = null
+C setPowerOnMode(boolean)(false) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:0
+  = null
+C setPowerOnMode(boolean)(true) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = null
+C setPowerOnMode(boolean)(true) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = null
 C setPowerOnMusic(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 419 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = null
@@ -8654,6 +9374,14 @@ C setPutMode(PutMode)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setPutMode(PutMode)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setRainbowReductionStatus(boolean)(false) s0
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(false) s2
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(true) s0
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(true) s2
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
 C setRealtimeAkTemporarily(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 573 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:2 b:false
   = true
@@ -9358,6 +10086,18 @@ C shutScreen()() s2
 C shutScreen()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 35 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false i32:1
   = true
+C startAutoColor()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C startAutoColor()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C startAutoColor()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C startAutoColor()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -9754,6 +10494,30 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C useAutoColorMatched()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorMatched()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C useAutoColorMatched()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorMatched()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C useAutoColorOriginal()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
 C vrrOn(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C vrrOn(int)(-1) s2
@@ -9931,6 +10695,174 @@ C connectFocusManager()() s2
 C connectFocusManager()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 298 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:4242 binder:cb
   = null
+C createCustomPictureMode()() s0
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s1
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s2
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C createCustomPictureMode()() s3
+  ! RemoteException: CreateNewCustomImageMode: not on the Z9X, nothing sent
+C customPictureBase(int)(-1) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(-1) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(0) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(0) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(1) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(1) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(2) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(2) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(3) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(3) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(5) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(5) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(6) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(6) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(10) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(10) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(12) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(12) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(13) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(13) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(17) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(17) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(44) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(44) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(50) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(50) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(100) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(100) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(101) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(101) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(106) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(106) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(160) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(160) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(192) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(192) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(500) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(500) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(20000) s0
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C customPictureBase(int)(20000) s2
+  ! RemoteException: GetCustomImageModeMapping: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(-1) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(-1) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(0) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(0) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(1) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(1) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(2) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(2) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(3) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(3) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(5) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(5) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(6) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(6) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(10) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(10) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(12) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(12) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(13) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(13) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(17) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(17) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(44) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(44) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(50) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(50) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(100) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(100) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(101) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(101) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(106) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(106) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(160) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(160) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(192) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(192) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(500) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(500) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(20000) s0
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
+C deleteCustomPictureMode(int)(20000) s2
+  ! RemoteException: DeleteCustomImageMode: not on the Z9X, nothing sent
 C disablePushPullScreenForCeiling()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf2 201 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
   = true
@@ -11349,6 +12281,22 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 661 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = 5
+C getElderColorLevel()() s0
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s1
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s2
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorLevel()() s3
+  ! RemoteException: getElderColorLevel: not on the Z9X, nothing sent
+C getElderColorTone()() s0
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s1
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s2
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
+C getElderColorTone()() s3
+  ! RemoteException: getElderColorTone: not on the Z9X, nothing sent
 C getExtDecInfo(String)(NativeUIWatch) s0
   ! IllegalArgumentException: ext dec key NativeUIWatch
 C getExtDecInfo(String)(NativeUIWatch) s2
@@ -11955,6 +12903,18 @@ C getPowerOnAk()() s2
 C getPowerOnAk()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 553 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
+C getPowerOnMode()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C getPowerOnMode()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C getPowerOnMode()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C getPowerOnMode()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 544 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
 C getPowerOnMusic()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 420 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -12007,6 +12967,14 @@ C getPutMode()() s2
 C getPutMode()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 173 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = null
+C getRainbowReductionStatus()() s0
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s1
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s2
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
+C getRainbowReductionStatus()() s3
+  ! RemoteException: getRainbowReductionStatus: not on the Z9X, nothing sent
 C getScreenOn()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 196 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -13091,6 +14059,18 @@ C setAudioOutput(AudioPath)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setAudioOutput(AudioPath)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAutoExposure(boolean)(false) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
+  = 1
+C setAutoExposure(boolean)(false) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false
+  = 400
+C setAutoExposure(boolean)(true) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:true
+  = 1
+C setAutoExposure(boolean)(true) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf2 53 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:true
+  = 400
 C setAutoReverse(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 580 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
@@ -13237,6 +14217,410 @@ C setCurtainFit(boolean)(true) s0
 C setCurtainFit(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 290 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
+C setCustomPictureBase(int,int)(-1,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(-1,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(0,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(1,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(2,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(5,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(13,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(50,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(100,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,-1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,-1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,0) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,0) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,1) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,1) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,2) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,2) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,5) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,5) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,13) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,13) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,50) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,50) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,100) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,100) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,160) s0
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureBase(int,int)(160,160) s2
+  ! RemoteException: SwitchCustomImageModeMapping: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(-1) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(-1) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(0) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(0) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(1) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(1) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(2) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(2) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(3) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(3) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(5) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(5) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(6) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(6) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(10) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(10) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(12) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(12) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(13) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(13) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(17) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(17) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(44) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(44) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(50) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(50) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(100) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(100) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(101) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(101) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(106) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(106) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(160) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(160) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(192) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(192) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(500) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(500) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(20000) s0
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
+C setCustomPictureMode(int)(20000) s2
+  ! RemoteException: setPictureMode: not on the Z9X, nothing sent
 C setDarkScenes(boolean,int,int)(false,-1,-1) s0
   ! IllegalArgumentException: game picture -1 not in 0..4
 C setDarkScenes(boolean,int,int)(false,-1,-1) s2
@@ -14147,6 +15531,94 @@ C setEdidVersion(int)(20000) s0
   ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
   ! IllegalArgumentException: edid 20000: not a stock value here
+C setElderColorLevel(int)(-1) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(-1) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(0) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(0) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(1) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(1) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(2) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(2) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(3) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(3) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(5) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(5) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(6) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(6) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(10) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(10) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(12) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(12) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(13) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(13) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(17) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(17) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(44) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(44) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(50) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(50) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(100) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(100) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(101) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(101) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(106) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(106) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(160) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(160) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(192) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(192) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(500) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(500) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(20000) s0
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorLevel(int)(20000) s2
+  ! RemoteException: setElderColorLevel: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(false) s0
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(false) s2
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(true) s0
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
+C setElderColorTone(boolean)(true) s2
+  ! RemoteException: setElderColorTone: not on the Z9X, nothing sent
 C setEyeProtection(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 152 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = true
@@ -17989,6 +19461,18 @@ C setPowerOnAk(boolean)(true) s0
 C setPowerOnAk(boolean)(true) s2
   TX xgimi.hardware.gmpf@1.0::IGmpf 552 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:true
   = null
+C setPowerOnMode(boolean)(false) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:0
+  = null
+C setPowerOnMode(boolean)(false) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:0
+  = null
+C setPowerOnMode(boolean)(true) s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = null
+C setPowerOnMode(boolean)(true) s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 543 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i8:1
+  = null
 C setPowerOnMusic(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 419 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf b:false
   = null
@@ -18533,6 +20017,14 @@ C setPutMode(PutMode)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setPutMode(PutMode)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setRainbowReductionStatus(boolean)(false) s0
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(false) s2
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(true) s0
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
+C setRainbowReductionStatus(boolean)(true) s2
+  ! RemoteException: setRainbowReductionStatus: not on the Z9X, nothing sent
 C setRealtimeAkTemporarily(boolean)(false) s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 573 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:2 b:false
   = true
@@ -19237,6 +20729,18 @@ C shutScreen()() s2
 C shutScreen()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf2 35 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf2 b:false i32:1
   = true
+C startAutoColor()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C startAutoColor()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C startAutoColor()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C startAutoColor()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -19635,6 +21139,30 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C useAutoColorMatched()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorMatched()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C useAutoColorMatched()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorMatched()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 99 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = false
+C useAutoColorOriginal()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
+C useAutoColorOriginal()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 100 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
+  = true
 C vrrOn(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C vrrOn(int)(-1) s2

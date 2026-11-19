@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
+    <string name="lumen_m_hotspot_hotspot">نقطة الاتصال</string>
+    <string name="lumen_m_hotspot_name">اسم الشبكة</string>
+    <string name="lumen_m_hotspot_password">كلمة المرور</string>
+    <string name="lumen_m_hotspot_reset">استعادة الإعدادات الافتراضية</string>
+    <string name="lumen_m_hotspot_on" formatted="true">تم تفعيل نقطة الاتصال %s</string>
+    <string name="lumen_m_hotspot_off">تم إيقاف نقطة الاتصال</string>
+    <string name="lumen_m_hotspot_failed">خطأ غير معروف. أعد المحاولة لاحقًا</string>
+    <string name="lumen_m_hotspot_saved">تم حفظ الإعدادات الحالية</string>
+    <string name="lumen_m_hotspot_name_title">اسم نقطة الاتصال</string>
+    <string name="lumen_m_hotspot_password_title">كلمة مرور نقطة الاتصال</string>
+    <string name="lumen_m_hotspot_password_hint">8 أحرف على الأقل</string>
+    <string name="lumen_m_hotspot_name_empty">أدخل اسم الشبكة</string>
+    <string name="lumen_m_hotspot_name_long">الاسم طويل جدًا</string>
+    <string name="lumen_m_hotspot_password_short">أدخل 8 أحرف على الأقل</string>
+    <string name="lumen_m_hotspot_password_long">63 حرفًا على الأكثر</string>
+    <string name="lumen_m_hotspot_password_chars">أحرف لاتينية وأرقام ورموز فقط</string>
+</resources>

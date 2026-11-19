@@ -88,7 +88,7 @@ public final class PictureSettingsRule {
             FeatureId.PICTURE_CC, FeatureId.PICTURE_CC_COLOR, FeatureId.PICTURE_CC_HUE, FeatureId.PICTURE_CC_SATURATION,
             FeatureId.PICTURE_CC_LIGHTNESS, FeatureId.PICTURE_CC_RESET,
             FeatureId.PICTURE_HDR, FeatureId.PICTURE_HDR_SCREEN_SIZE, FeatureId.PICTURE_HDR_SCREEN_GAIN,
-            FeatureId.PICTURE_AUTO_SWITCH));
+            FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_CUSTOM_BASE, FeatureId.PICTURE_CUSTOM_DELETE));
 
     /**
      * Picture mode 3.0, two pages with their own texts (the Z9X dapeng tree). image_mode_basic_setting: the auto mode

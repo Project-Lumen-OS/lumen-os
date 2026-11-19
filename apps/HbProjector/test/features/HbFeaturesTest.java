@@ -42,9 +42,12 @@ public final class HbFeaturesTest {
         HbFeatures.init("G0130", xml);
         HbFeatures.State[] after = snapshot();
         for (int i = 0; i < before.length; i++) {
+            if (HbFeatures.F.values()[i] == HbFeatures.F.ANTI_RBE) continue;      // the G0148 tree's own row, below
             check(before[i] == after[i], "stock feature.xml changed " + HbFeatures.F.values()[i] + " " + before[i] + " -> " + after[i]);
         }
-        check(android.util.Log.warnings == 0, "stock feature.xml logged " + android.util.Log.warnings + " off switches");
+        check(!HbFeatures.on(HbFeatures.F.ANTI_RBE) && HbFeatures.F.ANTI_RBE.offByModel && !HbFeatures.F.ANTI_RBE.offByFile,
+                "G0130: rainbow reduction hidden by the model rule (no picture_anti_rbe in dapengse)");
+        check(android.util.Log.warnings <= 1, "stock feature.xml logged " + android.util.Log.warnings + " off switches (the model rule may log one)");
         // 2. the states the image relies on
         check(HbFeatures.on(HbFeatures.F.AUTO_KEYSTONE), "AUTO_KEYSTONE ON");
         check(HbFeatures.on(HbFeatures.F.MOVE_AK), "MOVE_AK ON");
@@ -65,7 +68,7 @@ public final class HbFeaturesTest {
         check(HbFeatures.on(HbFeatures.F.GAME_MODE), "GAME_MODE ON");
         check(HbFeatures.on(HbFeatures.F.EYE_PROTECTION), "EYE_PROTECTION ON");
         for (HbFeatures.F f : new HbFeatures.F[] {HbFeatures.F.ZOOM_SHIFT, HbFeatures.F.ROTATION,
-                HbFeatures.F.EQUALIZER, HbFeatures.F.UI_RESOLUTION, HbFeatures.F.FIT_SCREEN}) {
+                HbFeatures.F.EQUALIZER, HbFeatures.F.UI_RESOLUTION, HbFeatures.F.MOTION}) {
             check(HbFeatures.state(f) == HbFeatures.State.PENDING, f + " PENDING");
             check(!HbFeatures.on(f), f + " not on");
         }
@@ -119,6 +122,8 @@ public final class HbFeaturesTest {
         check(HbFeatures.F.BOOST.offByFile, "G0148: BOOST off by its feature.xml (support_brightness_boost=0)");
         check(!HbFeatures.on(HbFeatures.F.CUSTOM_PICTURE_MODE), "G0148: CUSTOM_PICTURE_MODE hidden");
         check(!HbFeatures.on(HbFeatures.F.COLOR_TEMP), "G0148: COLOR_TEMP hidden");
+        check(HbFeatures.on(HbFeatures.F.ANTI_RBE), "G0148: ANTI_RBE shown (dapengfhm picture_anti_rbe)");
+        check(HbFeatures.on(HbFeatures.F.ELDER_COLOR), "G0148: ELDER_COLOR shown (support_elder_color=true)");
         boolean threw = false;
         try { HbFeatures.require(HbFeatures.F.BOOST, "setBoost(true)"); } catch (AidlCaller.NotOnHbException e) { threw = true; }
         check(threw, "G0148: require(BOOST) throws, setBoost(true) sends nothing");
@@ -126,6 +131,10 @@ public final class HbFeaturesTest {
         for (int i = 0; i < before.length; i++) {
             HbFeatures.F f = HbFeatures.F.values()[i];
             if (f == HbFeatures.F.BOOST || f == HbFeatures.F.CUSTOM_PICTURE_MODE || f == HbFeatures.F.COLOR_TEMP) continue;
+            if (f == HbFeatures.F.ANTI_RBE) {
+                check(g148[i] == HbFeatures.State.ON, "ANTI_RBE: on on G0148 (dapengfhm picture_anti_rbe)");
+                continue;
+            }
             check(before[i] == g148[i], "G0148 changed " + f + " " + before[i] + " -> " + g148[i]);
         }
         // 7b. the model rule alone hides them, even with the G0130 file (a G0148 that reads a wrong folder)

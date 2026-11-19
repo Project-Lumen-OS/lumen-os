@@ -1,0 +1,10 @@
+# Lumen power-on sound (apps/core/lumen-audio BootSound), every model: install as /system/etc/init/lumen_boot_sound.rc.
+# The AOSP boot animation plays part0/audio.wav of bootanimation.zip unless persist.sys.bootanim.play_sound is 0. That
+# prop is system_prop, which the Z9X and Play 6 projector apps (platform_app) may not set, so every projector app
+# writes persist.lumen.boot_sound.play (1 = switch on and the music audible, 0 = silent) and init copies it here.
+# Unset (first boot of an image) keeps the AOSP default: the sound plays, as the stock switch's default.
+on property:persist.lumen.boot_sound.play=1
+    setprop persist.sys.bootanim.play_sound 1
+
+on property:persist.lumen.boot_sound.play=0
+    setprop persist.sys.bootanim.play_sound 0

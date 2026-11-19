@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost는 화면을 더 밝게 하지만 색이 옅어집니다. 색 공간은 그대로 유지됩니다.</string>
     <string name="lumen_m_cec_entry">HDMI 기기(CEC)</string>
     <string name="lumen_m_eq_title">이퀄라이저</string>
-    <string name="lumen_m_fit_row">스크린 크기에 맞추기</string>
-    <string name="lumen_m_fit_row_summary">스크린까지의 거리와 스크린 크기로 줌을 설정합니다</string>
     <string name="lumen_m_hdmi_mode">HDMI 모드</string>
     <string name="lumen_m_hdmi_mode_compat">호환 (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">향상 (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">빠름</string>
     <string name="lumen_m_signal_refresh_note">빠름: 드물게 화면이 끊길 수 있습니다</string>
     <string name="lumen_m_hdr_developer">개발자용</string>
+    <string name="lumen_m_hdr_power">전원 켜기</string>
+    <string name="lumen_m_power_on_ac">전원 켜기 및 자동 시작</string>
+    <string name="lumen_m_power_on_ac_tip">전원을 켜면 프로젝터가 자동으로 시작됩니다.</string>
+    <string name="lumen_m_custom_base">다음에 근거하여</string>
+    <string name="lumen_m_custom_delete">사용자 지정 삭제</string>
+    <string name="lumen_m_custom_delete_ask">사용자 지정 사진 모드를 삭제하시겠습니까?</string>
+    <string name="lumen_m_custom_confirm">확인</string>
+    <string name="lumen_m_custom_name">사용자 지정 이름을 입력하세요.</string>
+    <string name="lumen_m_custom_name_empty">사용자 지정 이름은 비워두면 안 됩니다.</string>
+    <string name="lumen_m_custom_name_taken">이 이름은 이미 사용 중입니다. 다른 이름을 입력해 주세요.</string>
+    <string name="lumen_m_custom_name_max">최대 입력 한도에 도달</string>
 </resources>

@@ -6,7 +6,9 @@
 # APP_DIR layout:
 #   AndroidManifest.xml   required (package="..."; versionCode/Name optional, defaults 1 / 1.0)
 #   res/                  optional Android resources
-#   assets/               optional
+#   assets/               optional. Fonts (.ttf .otf .ttc) are stored uncompressed: Typeface.Builder then maps
+#                         them from the APK (one shared, clean copy) instead of inflating a private copy for
+#                         every typeface it builds (Font.Builder createBuffer: openFd works only on stored entries)
 #   src/**/*.java         optional; without Java sources the APK is resource-only (RRO etc.),
 #                         and the manifest must then say <application android:hasCode="false"/>
 #   stub/                 optional, RRO only: AndroidManifest.xml + res/ + ids.txt (aapt2 stable ids)
@@ -161,7 +163,7 @@ fi
 log "aapt2 link (min $MIN_SDK, target $TARGET_SDK)"
 set -- link -o "$B/base.apk" -I "$AJ" --manifest "$APP/AndroidManifest.xml" \
   --min-sdk-version "$MIN_SDK" --target-sdk-version "$TARGET_SDK" \
-  --version-code "${VERSION_CODE:-1}" --version-name "${VERSION_NAME:-1.0}"
+  --version-code "${VERSION_CODE:-1}" --version-name "${VERSION_NAME:-1.0}" -0 .ttf -0 .otf -0 .ttc
 [ -n "$STUB" ] && set -- "$@" -I "$STUB"
 [ -d "$APP/assets" ] && set -- "$@" -A "$APP/assets"
 [ -d "$B/secret-assets" ] && set -- "$@" -A "$B/secret-assets"
@@ -266,6 +268,12 @@ if [ $HAS_LIBS = 1 ]; then
   GOTABI=$("$BUILD_TOOLS/aapt2" dump badging "$OUT" | sed -n "s/^native-code: //p" | tr -d "'" | tr ' ' '\n' | LC_ALL=C sort | tr '\n' ' ' | sed 's/ $//')
   [ "$WANTABI" = "$GOTABI" ] || die "native-code is '$GOTABI', expected '$WANTABI'"
   log "native-code: $GOTABI ($NLIB libraries stored, 16 KB aligned)"
+fi
+NFONT=$(unzip -Z1 "$OUT" | grep -ciE '\.(ttf|otf|ttc)$' || true)
+if [ "$NFONT" -gt 0 ]; then
+  NFSTORED=$(unzip -Z "$OUT" | grep -iE '\.(ttf|otf|ttc)$' | grep -c ' stor ' || true)
+  [ "$NFSTORED" = "$NFONT" ] || die "expected $NFONT stored font entries, found $NFSTORED"
+  log "fonts: $NFONT stored"
 fi
 "$BUILD_TOOLS/apksigner" verify --min-sdk-version "$MIN_SDK" "$OUT" || die "apksigner verify failed"
 WANT=$(openssl x509 -in "$KEY_PEM" -outform DER | shasum -a 256 | cut -d' ' -f1)

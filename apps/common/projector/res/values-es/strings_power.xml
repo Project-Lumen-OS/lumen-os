@@ -6,7 +6,6 @@
     <string name="power_standby_never">Nunca</string>
     <string name="power_quick_wake_minutes">%1$d min</string>
     <string name="power_quick_wake_hours">%1$d h</string>
-    <string name="power_standby_summary">Una pulsación corta del botón de encendido apaga la luz y el proyector queda listo para encenderse al instante. Pasado este tiempo, se apaga por completo.</string>
     <string name="power_sleep_summary">El botón de encendido, el temporizador y la inactividad apagan la luz y ponen el proyector en reposo. Pulsa encendido y vuelve en segundos, justo donde lo dejaste.</string>
     <string name="power_menu_sleep">Reposo</string>
     <string name="power_menu_off">Apagar</string>

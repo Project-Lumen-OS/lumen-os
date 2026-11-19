@@ -111,7 +111,6 @@
     <string name="ch_updates">Жүйе жаңартулары</string>
     <string name="n_available_body">Жүктеп, орнату үшін ашыңыз.</string>
     <string name="n_ready_title">Жаңартуды аяқтау үшін қайта іске қосыңыз</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Бұл проектор әзірге интернет арқылы жаңартыла алмайды: бір реттік баптау жасалмаған. Оны компьютерден lumen-install арқылы жаңартыңыз.</string>
     <string name="blk_power">Қуат адаптерін қосыңыз: жаңарту бірнеше минутқа созылады.</string>
     <string name="consent_title_recovery">Жаңартуды орнату керек пе?</string>

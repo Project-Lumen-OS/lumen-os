@@ -31,7 +31,7 @@ OSSL=${OPENSSL:-$(command -v openssl)}
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum | cut -d' ' -f1; else shasum -a 256 | cut -d' ' -f1; fi; }
 der() { "$OSSL" x509 -in "$1" -outform DER | sha; }
 spk() { "$OSSL" x509 -in "$1" -pubkey -noout | "$OSSL" pkey -pubin -outform DER | sha; }
-mode() { stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1"; }
+mode() { stat -c '%a' "$1" 2>/dev/null || stat -f '%Lp' "$1"; }   # GNU first: GNU stat -f reads the file system and succeeds
 
 begin() {  # case: a fresh scratch registry ($R) and HOME ($HM)
   CASE=$1; CFAIL=0

@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Projetor</string>
     <string name="version_line">Versão %1$s</string>
-    <string name="sec_focus">Foco</string>
-    <string name="sec_keystone">Correção trapezoidal</string>
     <string name="sec_auto">Automação</string>
-    <string name="sec_keys">Botões do controle</string>
     <string name="sec_diag">Diagnóstico</string>
-    <string name="act_af_now">Focar agora</string>
     <string name="act_manual_focus">Foco manual</string>
     <string name="act_kst_now">Corrigir trapézio agora</string>
-    <string name="act_fit_now">Ajustar à tela agora</string>
     <string name="act_refresh">Atualizar</string>
     <string name="tg_power_on_af">Foco automático ao ligar</string>
     <string name="tg_power_on_ak">Trapézio automático ao ligar</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Trapézio automático após mover</string>
     <string name="tg_curtain">Ajustar à tela</string>
     <string name="tg_obstacle">Desvio de obstáculos</string>
-    <string name="val_on">Ativado</string>
-    <string name="val_off">Desativado</string>
-    <string name="val_unknown">Sem dados</string>
-    <string name="val_not_ready">Projetor não está pronto</string>
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>
     <string name="app_not_found">Nenhum app encontrado para este botão</string>

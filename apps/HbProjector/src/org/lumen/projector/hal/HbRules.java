@@ -32,7 +32,7 @@ final class HbRules implements GmpfRules {
             case AUTO_KEYSTONE: return HbFeatures.F.AUTO_KEYSTONE;
             case CURTAIN_FIT: return HbFeatures.F.CURTAIN_FIT;
             case OBSTACLE_AVOID: return HbFeatures.F.OBSTACLE_AVOID;
-            case FIT_SCREEN: return HbFeatures.F.FIT_SCREEN;
+            case MOTION: return HbFeatures.F.MOTION;
             case ZOOM_SHIFT: return HbFeatures.F.ZOOM_SHIFT;
             case OPTICAL_ZOOM: return HbFeatures.F.OPTICAL_ZOOM;
             case OFFICE_MODE: return HbFeatures.F.OFFICE_MODE;

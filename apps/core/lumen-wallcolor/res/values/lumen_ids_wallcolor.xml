@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-wallcolor: the tag that carries a window's BACK action (WallColorWindows.BackFrame) -->
+<resources>
+    <item type="id" name="lumen_wallcolor_back"/>
+</resources>

@@ -4,8 +4,8 @@
 compact per-language sources (langs/<locale>.txt), and validate every locale dir
 (including hand-written ones such as values-ru) against the English base.
 Target common = apps/common/projector/res: the strings files that the projector apps share (listed in
-apps/common/projector/FILES); the projector target skips them, and apps/common/sync.sh copies the
-generated files into each app.
+apps/common/projector/FILES); the projector target skips them, and every projector recipe takes them
+from there as a base layer.
 
 Source format (UTF-8):
     @<app>/<file>          app = projector | common | tvinput | airplay | home | setup | updater | miracast, file = strings_panel.xml ...

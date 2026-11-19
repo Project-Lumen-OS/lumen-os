@@ -2,7 +2,6 @@
 <!-- Module "game" strings (v6.2). English base; translations go to
      values-<lang>/strings_game.xml. Prefix every name with "game_". -->
 <resources>
-    <string name="game_placeholder" translatable="false">game</string>
 
     <!-- Quick panel, Game section: automatic game settings when a console is recognised on HDMI. -->
     <string name="game_auto_console">Auto game mode for consoles</string>

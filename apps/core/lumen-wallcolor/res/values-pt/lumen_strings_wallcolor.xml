@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_wallcolor_title">Adaptação à cor da parede</string>
+    <string name="lumen_wallcolor_desc">Ajusta as cores da imagem à cor da sua parede para cores mais fiéis.</string>
+    <string name="lumen_wallcolor_desc_ambient">Para o melhor resultado, a imagem passa ao brilho máximo e o brilho automático desliga.</string>
+    <string name="lumen_wallcolor_start">Iniciar</string>
+    <string name="lumen_wallcolor_reset">Repor as cores originais</string>
+    <string name="lumen_wallcolor_running">A adaptar à cor da parede</string>
+    <string name="lumen_wallcolor_matched">Cores adaptadas</string>
+    <string name="lumen_wallcolor_original">Cores originais</string>
+    <string name="lumen_wallcolor_save_title">Manter as cores adaptadas?</string>
+    <string name="lumen_wallcolor_save_desc">As cores adaptadas são as que melhor combinam com a cor desta parede.</string>
+    <string name="lumen_wallcolor_fail_camera">A câmara não iniciou. Tente novamente.</string>
+    <string name="lumen_wallcolor_fail_start">Não foi possível iniciar a adaptação. Se voltar a acontecer, envie um relatório de problema.</string>
+    <string name="lumen_wallcolor_fail_distance">A adaptação falhou. Mude a distância à parede ou o ângulo do projetor.</string>
+    <string name="lumen_wallcolor_fail_light">A adaptação falhou. A luz da sala mudou. Tente novamente com luz estável.</string>
+    <string name="lumen_wallcolor_fail_custom">Indisponível no modo de cor personalizado.</string>
+    <string name="lumen_wallcolor_fail_performance">Indisponível no modo desempenho.</string>
+    <string name="lumen_wallcolor_fail_auto_brightness">Desligue o brilho automático e tente novamente.</string>
+    <string name="lumen_wallcolor_fail_3d">Indisponível no modo 3D.</string>
+    <string name="lumen_wallcolor_fail_big_screen">No modo ecrã gigante só está disponível a correção trapezoidal manual.</string>
+    <string name="lumen_wallcolor_fail_range">A adaptação falhou. A cor da parede está fora do intervalo ajustável.</string>
+    <string name="lumen_wallcolor_fail_not_started">O projetor não iniciou a adaptação. Tente novamente.</string>
+</resources>

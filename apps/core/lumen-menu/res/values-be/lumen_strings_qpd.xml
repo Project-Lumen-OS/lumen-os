@@ -11,7 +11,6 @@
     <string name="lumen_qpd_theme_light">Светлая</string>
     <string name="lumen_qpd_theme_dark">Цёмная</string>
     <string name="lumen_qpd_theme_auto">Аўта</string>
-    <string name="lumen_qpd_usb">USB</string>
     <string name="lumen_qpd_mirroring">Паўтор экрана</string>
     <string name="lumen_qpd_mirror_on">Паўтор экрана (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Пытацца перад падключэннем</string>

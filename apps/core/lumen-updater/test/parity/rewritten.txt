@@ -10,3 +10,11 @@ blk_vbmeta_body
 blk_vbmeta_unknown
 blk_active
 blk_partitions
+#
+# 2026-11-19, Brazilian Portuguese from gen.py (apps/i18n/langs/pt.txt is the Brazilian source): the Play 6 recovery
+# texts of values-pt are the same Brazilian texts as values-pt-rBR now.
+blk_power
+blk_recovery
+consent_body_recovery
+ready_title_recovery
+ready_body_recovery

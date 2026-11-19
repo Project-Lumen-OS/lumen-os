@@ -20,7 +20,6 @@
     <string name="net_wifi_on">Turning on Wi-Fi…</string>
     <string name="net_none_found">No networks found</string>
     <string name="net_add_manual">Add network manually</string>
-    <string name="net_other">Other options</string>
     <string name="net_password_title">Password for %1$s</string>
     <string name="net_password_hint">Password</string>
     <string name="net_show_password">Show password</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">Found remote %1$s</string>
     <string name="remote_connected">Remote connected</string>
     <string name="remote_other">Other device</string>
-    <string name="remote_skip_hint">You can pair it later from the quick panel (gear key).</string>
     <string name="google_title">Sign in with Google</string>
     <string name="google_subtitle">Sign in to install apps from Google Play and use your subscriptions.</string>
     <string name="google_sign_in">Sign in</string>
@@ -101,7 +99,6 @@
     <string name="done_home">Home screen</string>
     <!-- the anonymous statistics switch (shared with the updater, which owns it); the note is the disclosure -->
     <string name="done_stats">Send anonymous statistics</string>
-    <string name="done_stats_note">At every start and once a day: model, version, build, update details, country, a random install number and the serial number (the server keeps only its hash). Your IP address is not stored.</string>
     <string name="done_start">Start</string>
     <string name="done_offline_hint">No internet: sign in to Google and set the time zone later in Settings.</string>
     <string name="done_offline_hint_nogms">No internet: set the time zone later in Settings.</string>
@@ -136,4 +133,11 @@
     <string name="google_sign_in_sub">You will need your phone or your password</string>
     <string name="google_help_sub">What to do if Google asks you to register</string>
     <string name="done_stats_short">Model, version and country. The IP address is not stored.</string>
+    <!-- theme step (after the language): the names reuse the quick menu's lumen_qpd_theme* and Lumen Home's theme_auto_sub translations -->
+    <string name="theme_title">Theme</string>
+    <string name="theme_subtitle">How Lumen looks. You can change it later in the quick menu.</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_auto_sub">Light by day, dark after sunset</string>
 </resources>

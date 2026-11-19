@@ -6,11 +6,15 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Log;
 
+import org.lumen.menu.CustomModes;
+import org.lumen.menu.ElderColorRule;
 import org.lumen.menu.FeatureId;
+import org.lumen.menu.TemperatureText;
 import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.PictureSettingsRule;
 import org.lumen.menu.ProjectorFeatures;
+import org.lumen.projector.ui.LicencesActivity;
 import org.lumen.menu.Signal;
 import org.lumen.projector.Hal;
 import org.lumen.projector.KeyReceiver;
@@ -51,6 +55,8 @@ import java.util.function.Consumer;
  */
 public final class HbMenuFeatures implements ProjectorFeatures {
     static final String TAG = "HbMenu";
+    /** The vendor's on value of a status getter (DISPLAY 203). */
+    static final int ON = 1;
 
     final Context app;
     final SharedPreferences prefs;
@@ -62,6 +68,8 @@ public final class HbMenuFeatures implements ProjectorFeatures {
     private final HbGameRows game;
     /** The sections a write or an action goes to; each answers {@link HbRows#OTHER} / false for another's feature. */
     private final HbRows[] sections;
+    /** The rows of the old Projector settings page (power-on, voice, resolution, statistics, diagnostics). */
+    private final SettingsRows rows;
 
     public HbMenuFeatures(Context ctx) {
         app = ctx.getApplicationContext();
@@ -72,6 +80,7 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         game = new HbGameRows(this);
         sections = new HbRows[]{general, new HbKeystoneRows(this), new HbFocusRows(this), picture, new HbHdmiRows(this),
                 sound, game, new HbProjectionRows(this)};
+        rows = new SettingsRows(app, new org.lumen.projector.SettingsDevice(app));
     }
 
     Snapshot last() { return last; }
@@ -91,13 +100,16 @@ public final class HbMenuFeatures implements ProjectorFeatures {
     @Override
     public boolean ready() { return Hal.isReady(); }
 
+    @Override
+    public boolean available(FeatureId f) { return !SettingsRows.mine(f) || rows.available(f); }
+
     // ================================================================== read
 
     @Override
     public void read(Consumer<MenuState> cb) {
         Hal.query(this::snapshot, sn -> {
             last = sn;
-            cb.accept(state(sn));
+            rows.read(state(sn), cb);
         });
     }
 
@@ -107,17 +119,37 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         Hal.query((g, g2) -> g.getHdrType(), hdr -> cb.accept(Signal.ofHdrType(hdr)));
     }
 
+    /** The base of the user picture mode of the last snapshot (TV 198), null outside one; HAL thread writes it. */
+    private volatile Integer customBase;
+
+    /** A picture mode id the vendor enum does not name: one CreateNewCustomImageMode made (TV 34 reads it back). */
+    static boolean userMode(Integer raw) { return raw != null && raw >= 0 && PictureMode.fromWire(raw) == null; }
+
     /** HAL thread. */
     private Snapshot snapshot(GmpfClient g, Gmpf2Client g2) {
         Snapshot sn = Snapshot.read(g, g2);
         sn.tifHdmi = TifHdmiState.read(app);
+        Set<FeatureId> on = implemented();
+        if (on.contains(FeatureId.EYE_ELDER_COLOR)) {
+            try { sn.elderColor = ElderColorRule.read(HbGeneralRows.elderPort(g)); } catch (Throwable t) { Log.d(TAG, "read elder: " + t); }
+        }
+        if (on.contains(FeatureId.PICTURE_ANTI_RBE)) {
+            try { sn.antiRbe = g.getRainbowReductionStatus() == ON; } catch (Throwable t) { Log.d(TAG, "read 203: " + t); }
+        }
+        Integer base = null;
+        if (on.contains(FeatureId.PICTURE_CUSTOM_BASE) && userMode(sn.pictureMode)) {
+            try { base = g.customPictureBase(sn.pictureMode); } catch (Throwable t) { Log.d(TAG, "read 198: " + t); }
+        }
+        customBase = base;
         sn.soundPathActive = AudioPathReporter.isActive(g);
         sn.soundPath = AudioPathReporter.confirmedPath();
         return sn;
     }
 
     /** Main thread: the menu state of a snapshot (null = nothing read: an empty state). */
-    MenuState state(Snapshot sn) {
+    MenuState state(Snapshot sn) { return rows.with(deviceState(sn)); }
+
+    private MenuState deviceState(Snapshot sn) {
         MenuState.Builder b = MenuState.builder();
         if (sn == null) return b.build();
         boolean hdmi = sn.hdmiConfirmed();
@@ -125,6 +157,8 @@ public final class HbMenuFeatures implements ProjectorFeatures {
                 : sn.source == GmpfClient.SOURCE_HDMI1 ? "hdmi1" : sn.source == GmpfClient.SOURCE_HDMI2 ? "hdmi2" : "android");
         b.on(FeatureId.EYE, sn.eye);
         b.on(FeatureId.KEYSTONE_ON_POWER, sn.powerOnAk);
+        b.on(FeatureId.KEYSTONE_ON_MOVE, sn.moveAk);
+        b.on(FeatureId.POWER_ON_AC, sn.powerOnAc);
         b.on(FeatureId.KEYSTONE_CURTAIN, sn.curtain);
         b.on(FeatureId.KEYSTONE_OBSTACLE, sn.obstacle);
         b.on(FeatureId.FOCUS_SMART, sn.smartAf);
@@ -133,12 +167,18 @@ public final class HbMenuFeatures implements ProjectorFeatures {
         if (HbFeatures.on(HbFeatures.F.BOOST)) b.on(FeatureId.BOOST, sn.boost);
         // picture
         PictureMode pm = sn.pictureMode == null ? null : PictureMode.fromWire(sn.pictureMode);
-        b.put(FeatureId.PICTURE_MODE, pm == null ? null : HbMenuGates.PICTURE_MODE.token(pm.wire));
+        boolean user = userMode(sn.pictureMode) && implemented().contains(FeatureId.PICTURE_CUSTOM_NEW);
+        b.put(FeatureId.PICTURE_MODE, user ? CustomModes.token(sn.pictureMode) : pm == null ? null : HbMenuGates.PICTURE_MODE.token(pm.wire));
+        Integer base = customBase;
+        if (user && base != null) b.put(FeatureId.PICTURE_CUSTOM_BASE, HbMenuGates.CUSTOM_BASE.token(base));
         b.signal(Signal.ofHdrType(sn.hdr));                     // the profile's support lists grey modes by it
         String[] items = {"brightness", "contrast", "saturation", "sharpness"};    // PqItem order
         for (int i = 0; i < items.length && i < sn.pq.length; i++) b.number(FeatureId.pq(items[i]), sn.pq[i]);
         if (HbFeatures.on(HbFeatures.F.COLOR_TEMP)) b.put(FeatureId.PICTURE_COLOR_TEMP, HbMenuGates.COLOR_TEMP.token(sn.colorTemp));
         b.put(FeatureId.PICTURE_MEMC, HbMenuGates.MEMC.token(sn.memc));
+        b.on(FeatureId.PICTURE_ANTI_RBE, sn.antiRbe);
+        b.put(FeatureId.EYE_ELDER_COLOR, sn.elderColor);
+        b.put(FeatureId.SETTINGS_TEMPERATURE, TemperatureText.of(sn.temperature));
         // HDMI rows: values only while an HDMI input is on screen (they belong to that input): without a value the
         // menu shows the row without a choice (a runtime hide is a module request, REQUESTS-hb.md)
         if (hdmi) {
@@ -188,6 +228,7 @@ public final class HbMenuFeatures implements ProjectorFeatures {
     @Override
     public void set(FeatureId feature, String value, Consumer<Result> cb) {
         if (!implemented().contains(feature)) { refuse(cb, null); return; }
+        if (rows.set(feature, value, this, cb)) return;
         switch (feature) {
             case SOUND_OUTPUT: sound.setOutput(value, cb); return;
             case SOUND_FORMAT: sound.setFormat(value, cb); return;
@@ -301,10 +342,8 @@ public final class HbMenuFeatures implements ProjectorFeatures {
                 return true;
             case SETTINGS_SYSTEM:
                 return setupDone("system settings") && start(new Intent(Settings.ACTION_SETTINGS));
-            case SETTINGS_PROJECTOR:
-                if (!setupDone("projector settings")) return false;
-                Hal.openProjectorSettings(app, null);
-                return true;
+            case SETTINGS_LICENCES:
+                return LicencesActivity.open(app);
             case SETTINGS_RECENTS:
                 if (!setupDone("recent apps")) return false;
                 org.lumen.projector.recents.RecentsActivity.open(app);
@@ -324,6 +363,7 @@ public final class HbMenuFeatures implements ProjectorFeatures {
                 Log.i(TAG, "open " + screen + ": a page of the menu, not a screen");
                 return false;
             default:
+                if (SettingsRows.mine(screen)) return rows.open(screen);
                 Log.i(TAG, "open " + screen + ": not a screen of the HB adapter");
                 return false;
         }

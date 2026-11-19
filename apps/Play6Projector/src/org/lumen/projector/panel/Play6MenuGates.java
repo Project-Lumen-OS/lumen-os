@@ -1,6 +1,7 @@
 package org.lumen.projector.panel;
 
 import org.lumen.menu.FeatureId;
+import org.lumen.menu.TemperatureText;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.ProjectorFeatures.Confirm;
@@ -194,8 +195,11 @@ public final class Play6MenuGates {
             FeatureId.SOUND_MODE, FeatureId.SOUND_EQ, FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT,
             FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK, FeatureId.MIRRORING,
             FeatureId.GAME_MODE, FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR,
-            FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_PROJECTOR, FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER,
-            FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER,
+            FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER,
+            FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.SETTINGS_LICENCES,
+            FeatureId.POWER_BOOT_SOURCE, FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK,
+            FeatureId.VOICE_KEY, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE,
+            FeatureId.SETTINGS_REMOTE_KEYS, FeatureId.SETTINGS_TEMPERATURE,
     };
 
     /**
@@ -230,6 +234,8 @@ public final class Play6MenuGates {
     /** One read of the Play 6 values (Play6Snapshot fields, copied by the adapter; null = not read / failed). */
     static final class Read {
         Integer source, pictureMode, lamp, soundEffect, putMode, memc, colorTemp, aspect, hdmiRange, edid;
+        /** IGmpf 438, deg C. */
+        Integer temperature;
         Boolean eye, eco, powerOnAk, moveAk, autoReverse, smartAf, dynContrast, earc;
         final Integer[] pq = new Integer[4];
         int[] hdmiInfo;
@@ -268,7 +274,7 @@ public final class Play6MenuGates {
             FeatureId.FOCUS_SMART, FeatureId.LAMP, FeatureId.LAMP_ECO, FeatureId.PICTURE_MODE, FeatureId.PICTURE_COLOR_TEMP,
             FeatureId.PICTURE_MEMC, FeatureId.PICTURE_DYNAMIC_CONTRAST, FeatureId.HDMI_RANGE, FeatureId.HDMI_EDID,
             FeatureId.PICTURE_ASPECT, FeatureId.SOUND_MODE, FeatureId.SOUND_EARC, FeatureId.SOUND_OUTPUT, FeatureId.GAME_MODE,
-            FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR, FeatureId.SETTINGS_LAUNCHER};
+            FeatureId.PROJECTION_MODE, FeatureId.PROJECTION_REAR, FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_TEMPERATURE};
 
     /**
      * The menu state of one read: the values the current mode and input have, every other row hidden (rule).
@@ -330,6 +336,7 @@ public final class Play6MenuGates {
             b.on(FeatureId.PROJECTION_REAR, r.putMode == PUT_REAR_TABLE || r.putMode == PUT_REAR_CEILING);
         }
         b.put(FeatureId.SETTINGS_LAUNCHER, r.launcher);
+        b.put(FeatureId.SETTINGS_TEMPERATURE, TemperatureText.of(r.temperature));
         // every value row without a value now: hidden (another mode or input, or its getter failed)
         MenuState probe = b.build();
         for (FeatureId f : VALUE_ROWS) if (!probe.has(f)) b.hide(f);

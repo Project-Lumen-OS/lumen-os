@@ -49,7 +49,7 @@ public final class HeroBind<B> {
 
     /** A showcase page (no app line); true when the hero changed. */
     public boolean feature(Card k, int page, int pages) {
-        String key = key('f', k, true, page, pages) + '\u0001' + k.desc;
+        String key = key('f', k, true, page, pages) + '\u0001' + k.desc + '\u0001' + k.watchLabel;
         if (key.equals(mShown)) return false;
         mShown = key;
         mPkg = null;

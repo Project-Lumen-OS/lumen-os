@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the stock serial port control page (X50 Ultra, Ultra Max, TITAN) and the parental controls
+     row (own wording) -->
+<resources>
+    <string name="lumen_m_serial">序列埠控制</string>
+    <string name="lumen_m_serial_switch">RS-232 控制</string>
+    <string name="lumen_m_serial_id_group">ID 群組</string>
+    <string name="lumen_m_serial_id_number">ID 編號</string>
+    <string name="lumen_m_serial_ack_group">回應群組指令</string>
+    <string name="lumen_m_serial_ack_all">回應全部指令</string>
+    <string name="lumen_m_serial_master">主控模式</string>
+    <string name="lumen_m_parental">家長設定</string>
+</resources>

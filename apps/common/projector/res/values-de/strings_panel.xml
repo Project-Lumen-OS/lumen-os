@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">Schnelleinstellungen</string>
-    <string name="panel_sec_image_correction">Bildkorrektur</string>
     <string name="panel_sec_picture">Bild</string>
     <string name="panel_sec_game">Spiele (HDMI)</string>
     <string name="panel_sec_sound">Ton</string>
@@ -18,14 +17,6 @@
     <string name="panel_reset">Zurücksetzen</string>
     <string name="panel_turn_on">Einschalten</string>
     <string name="panel_turn_off">Ausschalten</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d Min.</item>
-        <item quantity="other">%d Min.</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d Stunde</item>
-        <item quantity="other">%d Stunden</item>
-    </plurals>
     <string name="panel_ak_now">Trapezkorrektur starten</string>
     <string name="panel_fit_now">Jetzt an Leinwand anpassen</string>
     <string name="panel_af_now">Autofokus starten</string>
@@ -43,23 +34,19 @@
     <string name="panel_reset_keystone_msg">Das Bild wird wieder ohne Korrektur im vollen Format angezeigt. Fortfahren?</string>
     <string name="panel_reset_keystone_done">Trapezkorrektur zurückgesetzt</string>
     <string name="panel_kst_manual">Manuelle Trapezkorrektur</string>
-    <string name="panel_kst_hint">Pfeile: Ecke verschieben · OK: nächste Ecke · Zurück: fertig</string>
     <string name="panel_kst_wait">Ecken werden gelesen…</string>
     <string name="panel_kst_corner_tl">Oben links</string>
     <string name="panel_kst_corner_tr">Oben rechts</string>
     <string name="panel_kst_corner_br">Unten rechts</string>
     <string name="panel_kst_corner_bl">Unten links</string>
     <string name="panel_kst_limit">Diese Ecke lässt sich nicht weiter verschieben</string>
-    <string name="panel_kst_unavailable">Manuelle Trapezkorrektur ist gerade nicht verfügbar</string>
     <string name="panel_kst_game_mode">Im Spielmodus „Turbo“ ist die Trapezkorrektur aus</string>
     <string name="panel_projection_mode">Projektionsmodus</string>
     <string name="panel_proj_auto">Auto</string>
     <string name="panel_proj_table">Tisch</string>
     <string name="panel_proj_ceiling">Decke</string>
     <string name="panel_proj_rear">Rückprojektion</string>
-    <string name="panel_proj_front_table">Vorne, Tisch</string>
     <string name="panel_proj_front_ceiling">Vorne, Decke</string>
-    <string name="panel_proj_rear_table">Hinten, Tisch</string>
     <string name="panel_proj_rear_ceiling">Hinten, Decke</string>
     <string name="panel_proj_confirm_flip">Das Bild wird umgedreht. Fortfahren?</string>
     <string name="panel_proj_confirm_ceiling">Zur Deckenmontage wechseln? Das Bild wird umgedreht, und einige Funktionen wie die Echtzeit-Trapezkorrektur sind dann nicht verfügbar.</string>
@@ -73,7 +60,6 @@
     <string name="panel_tileval_pm_ai">KI-Bild</string>
     <string name="panel_tileval_pm_color_accuracy">Farbgenau</string>
     <string name="panel_tileval_pm_performance">Leistung</string>
-    <string name="panel_tileval_sound_ai">KI-Ton</string>
     <string name="panel_pm_performance_msg">Die Lüftungsöffnungen dürfen nicht verdeckt und der Raum nicht wärmer als 25 °C sein. Diesen Modus nicht lange verwenden.</string>
     <string name="panel_lamp">Helligkeit</string>
     <string name="panel_boost">Boost</string>
@@ -84,15 +70,11 @@
     <string name="panel_ultra120_3d">In 3D nicht verfügbar</string>
     <string name="panel_ultra120_hdmi">Für HDMI-Eingänge nicht verfügbar. Den Spielmodus verwenden</string>
     <string name="panel_ultra120_refused">Ultra 120 Hz ist für diesen Inhalt nicht verfügbar</string>
-    <string name="panel_ultra120_unverified">Auf diesem Projektor noch nicht getestet.</string>
     <string name="panel_game_hdmi_only">Nur verfügbar, während ein HDMI-Eingang angezeigt wird</string>
-    <string name="panel_picture_settings">Bildeinstellungen</string>
     <string name="panel_pq_brightness">Helligkeit</string>
     <string name="panel_pq_contrast">Kontrast</string>
     <string name="panel_pq_saturation">Sättigung</string>
     <string name="panel_pq_sharpness">Schärfe</string>
-    <string name="panel_pq_blocked_ai">Grundeinstellungen sind im Modus „KI-Bild“ nicht verfügbar</string>
-    <string name="panel_pq_blocked_performance">Grundeinstellungen sind im Modus „Leistung“ nicht verfügbar</string>
     <string name="panel_ct_blocked_office">Farbtemperatur ist im Modus „Büro“ nicht verfügbar</string>
     <string name="panel_color_temp">Farbtemperatur</string>
     <string name="panel_ct_1">Farbtemp. 1</string>
@@ -133,8 +115,6 @@
     <string name="eye_off_done">Augenschutz ist aus</string>
     <string name="eye_bright_reduced">Kurzer Projektionsabstand: Helligkeit automatisch verringert</string>
     <string name="eye_unavailable">Augenschutz ist noch nicht bereit. Projektor neu starten und erneut versuchen.</string>
-    <string name="panel_standby_off_after">Standby, dann ausschalten nach</string>
-    <string name="panel_input">Eingang</string>
     <string name="panel_projector_settings">Projektoreinstellungen</string>
     <string name="panel_all_settings">Alle Einstellungen</string>
     <string name="panel_tile_focus">Fokus</string>
@@ -148,11 +128,6 @@
     <string name="panel_hdmi_settings">HDMI-Einstellungen</string>
     <string name="panel_eye_desc">Das Licht wird gedimmt, wenn sich jemand vor dem Objektiv befindet.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Nebeneinander</string>
-    <string name="panel_3d_tb">Übereinander</string>
-    <string name="panel_3d_sbs_2d">Nebeneinander als 2D</string>
-    <string name="panel_3d_tb_2d">Übereinander als 2D</string>
-    <string name="panel_3d_summary">Während ein Video läuft. 3D braucht aktive DLP-Link-Brillen; „als 2D“ zeigt eine 3D-Datei flach, ohne Brille.</string>
     <string name="panel_3d_need_video">3D funktioniert, während ein Video läuft: zuerst das Video starten</string>
     <string name="panel_3d_not_now">3D ist gerade nicht verfügbar (HDR-Video, Spielmodus oder 120 Hz)</string>
 </resources>

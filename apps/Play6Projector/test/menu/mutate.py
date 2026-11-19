@@ -21,6 +21,7 @@ PG = A + "Play6MenuPages.java"
 OW = A + "Play6Menu.java"
 MJ = "devices/dragon_healthy/menu.json"
 DV = "apps/Play6Projector/src/org/lumen/projector/Device.java"
+SD = "apps/Play6Projector/src/org/lumen/projector/Play6SettingsDevice.java"
 LY = "devices/dragon_healthy/app/Play6Projector.layers"
 MUTANTS = [
     # ---- rule: values (Play6MenuGates.state)
@@ -116,12 +117,20 @@ MUTANTS = [
      "Log.i(TAG, \"open \" + screen + \": the menu's screen mirroring popup, not a screen\");\n                return true;"),
     ("Home keeps the mirroring tile without Wi-Fi Direct", DV, "        if (!screenMirroring(c)) off.add(HOME_TILE_MIRRORING);\n", ""),
     ("Home caps without the receiver's provider", DV, "resolveContentProvider(MIRRORING_AUTHORITY, 0) != null", "true"),
+    # ---- the shared settings rows: source at power-on and speech language through SettingsRows
+    ("Play 6 boot tokens of two HDMI inputs", SD, "GeneralChoices.BOOT_ONE_HDMI.clone()", "GeneralChoices.BOOT_TWO_HDMI.clone()"),
+    ("settings rows never handed over", FT, "        if (rows.set(feature, value, this, cb)) return;\n", ""),
+    ("profile boot source the adapter cannot store", MJ, '"power.boot_source": {"options": ["home", "hdmi"]}',
+     '"power.boot_source": {"options": ["home", "hdmi2"]}'),
+    ("profile speech language the rows cannot write", MJ, '"system", "ru", "en", "uk",', '"system", "ru", "en", "ua",'),
 ]
 
 # the hal sources test/menu/run.sh reads the wire values from: the shared GmpfBase and the Z9X value enums of the recipe
 ZH = "apps/ProjectorBase/src/org/lumen/projector/hal/"
 COPY = ["apps/Play6Projector/src", "apps/Play6Projector/test", "apps/Play6Projector/res", "apps/common/projector/res",
         "apps/core/lumen-menu/src", "apps/core/lumen-menu/res", MJ, LY, "tools/play6/forks.tsv",
+        "apps/common/projector/src/org/lumen/projector/panel/SettingsRows.java",
+        "apps/common/projector/src/org/lumen/projector/voice/VoiceSettings.java",
         "apps/core/lumen-gmpf/src/org/lumen/projector/hal/GmpfBase.java",
         ZH + "AspectRatio.java", ZH + "HdmiRange.java", ZH + "SoundEffect.java"]
 

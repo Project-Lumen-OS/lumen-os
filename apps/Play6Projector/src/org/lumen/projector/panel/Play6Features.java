@@ -11,6 +11,7 @@ import org.lumen.menu.FeatureKind;
 import org.lumen.menu.MenuSpec;
 import org.lumen.menu.MenuState;
 import org.lumen.menu.ProjectorFeatures;
+import org.lumen.projector.ui.LicencesActivity;
 import org.lumen.projector.home.LauncherSwitcher;
 import org.lumen.projector.Device;
 import org.lumen.projector.Hal;
@@ -65,6 +66,8 @@ public final class Play6Features implements ProjectorFeatures {
     private final Play6ProjectionRows projection;
     /** The sections a write or an action goes to; each answers {@link Play6Rows#OTHER} / false for another's feature. */
     private final Play6Rows[] sections;
+    /** The rows of the old Projector settings page (power-on, voice, statistics, diagnostics). */
+    private final SettingsRows rows;
 
     public Play6Features(Context ctx, boolean eyeReady) {
         app = ctx.getApplicationContext();
@@ -77,6 +80,7 @@ public final class Play6Features implements ProjectorFeatures {
         projection = new Play6ProjectionRows(this);
         sections = new Play6Rows[]{general, new Play6KeystoneRows(this), new Play6FocusRows(this), picture, hdmi, sound,
                 new Play6GameRows(this), projection};
+        rows = new SettingsRows(app, new org.lumen.projector.Play6SettingsDevice(app));
     }
 
     Play6MenuGates.Read last() { return last; }
@@ -91,6 +95,7 @@ public final class Play6Features implements ProjectorFeatures {
 
     @Override
     public boolean available(FeatureId feature) {
+        if (SettingsRows.mine(feature)) return rows.available(feature);
         boolean launcher = false;
         if (FeatureId.SETTINGS_LAUNCHER == feature) {
             try {
@@ -135,7 +140,7 @@ public final class Play6Features implements ProjectorFeatures {
         Hal.query((g, g2) -> Play6Snapshot.read(g, g2, PARTS), sn -> {
             Play6MenuGates.Read r = sn == null || !Hal.isReady() ? null : convert(sn);
             last = r;
-            cb.accept(state());
+            rows.read(state(), cb);
         });
     }
 
@@ -146,6 +151,7 @@ public final class Play6Features implements ProjectorFeatures {
         r.pictureMode = sn.pictureMode;
         r.lamp = sn.lamp;
         r.eco = sn.eco;
+        r.temperature = sn.temperature;                 // FeatureId.SETTINGS_TEMPERATURE, Play6MenuGates.state
         r.soundEffect = sn.soundEffect;
         r.putMode = sn.putMode;
         r.autoReverse = sn.autoReverse;
@@ -186,7 +192,9 @@ public final class Play6Features implements ProjectorFeatures {
         return r;
     }
 
-    MenuState state() { return Play6MenuGates.state(last, this::text); }
+    MenuState state() { return rows.with(deviceState()); }
+
+    private MenuState deviceState() { return Play6MenuGates.state(last, this::text); }
 
     /** A string of the app by resource name (the name itself when it does not exist: never a crash). */
     private String text(String name) {
@@ -199,6 +207,7 @@ public final class Play6Features implements ProjectorFeatures {
     @Override
     public void set(FeatureId feature, String value, Consumer<Result> cb) {
         if (!implemented().contains(feature) && feature.parent != FeatureId.PICTURE_PQ) { refuse(cb, null); return; }
+        if (rows.set(feature, value, this, cb)) return;
         if (!Hal.isReady()) { Ui.main().post(() -> cb.accept(Result.notReady())); return; }
         Play6MenuGates.Read r = last;
         if (r == null) { refuse(cb, "toast_not_ready"); return; }
@@ -298,10 +307,8 @@ public final class Play6Features implements ProjectorFeatures {
                 return true;
             case SETTINGS_SYSTEM:
                 return setupDone("system settings") && start(new Intent(Settings.ACTION_SETTINGS));
-            case SETTINGS_PROJECTOR:
-                if (!setupDone("projector settings")) return false;
-                Hal.openProjectorSettings(app, null);
-                return true;
+            case SETTINGS_LICENCES:
+                return LicencesActivity.open(app);
             case SETTINGS_RECENTS:
                 if (!setupDone("recent apps")) return false;
                 org.lumen.projector.recents.RecentsActivity.open(app);
@@ -326,6 +333,7 @@ public final class Play6Features implements ProjectorFeatures {
                 Log.i(TAG, "open " + screen + ": the menu's screen mirroring popup, not a screen");
                 return false;
             default:
+                if (SettingsRows.mine(screen)) return rows.open(screen);
                 Log.i(TAG, "open " + screen + ": not a screen of the Play 6 adapter");
                 return false;
         }

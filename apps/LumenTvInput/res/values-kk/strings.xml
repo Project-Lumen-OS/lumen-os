@@ -29,9 +29,6 @@
     <string name="picker_empty">HDMI кірістері табылмады</string>
     <string name="pref_auto_switch">Құрылғы жалғанғанда HDMI-ға автоматты ауысу</string>
     <string name="pref_return_home">Көз ажыратылғанда негізгі экранға оралу</string>
-    <string name="pref_cec_otp">HDMI-CEC: құрылғы сұрағанда HDMI-ға ауысу (One Touch Play)</string>
-    <string name="pref_cec_control">HDMI-CEC: құрылғыны пультпен басқару</string>
-    <string name="pref_cec_exit">HDMI-CEC: HDMI-дан шыққанда құрылғыға хабарлау</string>
     <string name="pref_boot_source">Қосылғандағы көз: %1$s</string>
     <string name="boot_source_home">Басты экран</string>
     <string name="pref_boot_source_note">Проекторды құрылғы HDMI-CEC арқылы қосса, оның кірісі ашылады.</string>

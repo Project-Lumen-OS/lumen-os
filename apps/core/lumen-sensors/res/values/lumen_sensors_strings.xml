@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-sensors texts (English base); Russian in values-ru, as lumen-signal -->
+<resources>
+    <string name="lumen_sensors_title">Sensors</string>
+    <string name="lumen_sensors_sec_temp">Temperature</string>
+    <string name="lumen_sensors_sec_position">Position</string>
+    <string name="lumen_sensors_sec_system">System</string>
+    <string name="lumen_sensors_temp_system">Inside the projector</string>
+    <string name="lumen_sensors_temp_light">Light source</string>
+    <string name="lumen_sensors_temp_soc">Processor</string>
+    <string name="lumen_sensors_tof">Distance to the wall</string>
+    <string name="lumen_sensors_accel">Accelerometer, g</string>
+    <string name="lumen_sensors_gyro">Gyroscope</string>
+    <string name="lumen_sensors_cpu">Processor load</string>
+    <string name="lumen_sensors_ram">Memory in use</string>
+    <string name="lumen_sensors_degrees">%1$s °C</string>
+    <string name="lumen_sensors_percent">%1$s %%</string>
+    <string name="lumen_sensors_metres">%1$s m</string>
+    <string name="lumen_sensors_none">No values yet</string>
+    <string name="lumen_sensors_hint_hide">Hide</string>
+    <string name="lumen_sensors_hint_close">Close</string>
+    <string name="lumen_sensors_hint_refresh">Refresh</string>
+</resources>

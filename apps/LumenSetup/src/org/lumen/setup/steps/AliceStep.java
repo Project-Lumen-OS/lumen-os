@@ -62,7 +62,7 @@ public class AliceStep extends Step {
         LinearLayout v = Ui.hbox(ctx());
         v.setGravity(Gravity.TOP);
         FrameLayout card = new FrameLayout(ctx());
-        card.setBackground(Ui.roundRect(0xFFFFFFFF, 28));
+        card.setBackground(Ui.roundRect(org.lumen.ui.Tokens.QR_CARD, 28));
         card.setElevation(Ui.pxf(Ui.P.shadowBlur) / 4f);
         String url = b == null ? null : b.getString("url");
         if (url != null) {

@@ -11,6 +11,8 @@ MOD = os.path.dirname(HERE)
 SI = "src/org/lumen/system/SystemIntent.java"
 SP = "src/org/lumen/system/SystemPages.java"
 CV = "src/org/lumen/system/ColourVision.java"
+HR = "src/org/lumen/system/HotspotRules.java"
+HS = "src/org/lumen/system/Hotspot.java"
 MUTANTS = [
     ("bluetooth: Bluetooth settings before Remotes & Accessories", SI,
      "return Arrays.asList(new SystemIntent(SLICE_SETTINGS, TV_SETTINGS, SLICE_URI, ACCESSORIES),\n                        of(BLUETOOTH), of(ROOT));",
@@ -30,6 +32,30 @@ MUTANTS = [
     ("the slice page without its slice", SP, "                if (w.extra != null) i.putExtra(w.extra, w.value);\n", ""),
     ("a started way reports nothing started", SP, "                ctx.startActivity(i);\n                return true;", "                ctx.startActivity(i);\n                return false;"),
     ("no way started reports a start", SP, "        }\n        return false;\n    }", "        }\n        return true;\n    }"),
+    ("hotspot: an empty name accepted", HR, "if (name == null || name.trim().isEmpty()) return HotspotProblem.NAME_EMPTY;", "if (name == null) return HotspotProblem.NAME_EMPTY;"),
+    ("hotspot: the name counted in characters", HR, "name.getBytes(StandardCharsets.UTF_8).length > NAME_MAX_BYTES", "name.length() > NAME_MAX_BYTES"),
+    ("hotspot: 7 characters accepted", HR, "password.length() < PASSWORD_MIN", "password.length() < PASSWORD_MIN - 1"),
+    ("hotspot: 64 characters accepted", HR, "password.length() > PASSWORD_MAX", "password.length() > PASSWORD_MAX + 1"),
+    ("hotspot: Cyrillic accepted", HR, "if (ch < 0x20 || ch > 0x7E) return HotspotProblem.PASSWORD_CHARS;", "if (ch < 0x20) return HotspotProblem.PASSWORD_CHARS;"),
+    ("hotspot: control characters accepted", HR, "if (ch < 0x20 || ch > 0x7E) return HotspotProblem.PASSWORD_CHARS;", "if (ch > 0x7E) return HotspotProblem.PASSWORD_CHARS;"),
+    ("hotspot: a new password without a digit", HR, "            if (letter && digit) return b.toString();", "            return b.toString();"),
+    ("hotspot: a 7 character new password", HR, "NEW_PASSWORD = 8;", "NEW_PASSWORD = 7;"),
+    ("hotspot: the alphabet with l and 1", HR, "ALPHABET = \"abcdefghjkmnpqrstuvwxyz23456789\";", "ALPHABET = \"abcdefghjklmnpqrstuvwxyz123456789\";"),
+    ("hotspot: Android's name kept", HR, "if (androidDefault(ssid) && name(modelName) == null) return new String[]{modelName, newPassword(r)};", ""),
+    ("hotspot: a refused name kept", HR, "if (name(ssid) != null) return new String[]{modelName, newPassword(r)};", ""),
+    ("hotspot: a refused password kept", HR, "password(password) == null ? password : newPassword(r)", "password"),
+    ("hotspot: the user's password replaced", HR, "password(password) == null ? password : newPassword(r)", "newPassword(r)"),
+    ("hotspot: enabling shows off", HR, "apState == AP_ENABLED || apState == AP_ENABLING;", "apState == AP_ENABLED;"),
+    ("hotspot: restart while disabling", HR, "apState == AP_DISABLED || apState == AP_FAILED;", "apState != AP_ENABLED;"),
+    ("hotspot: a failed stop never restarts", HR, "apState == AP_DISABLED || apState == AP_FAILED;", "apState == AP_DISABLED;"),
+    ("hotspot: any interface tethered", HR, "if (re != null && Pattern.matches(re, iface)) return true;", "if (re != null) return true;"),
+    ("hotspot: a part of the name tethered", HR, "Pattern.matches(re, iface)", "Pattern.compile(re).matcher(iface).find()"),
+    ("hotspot: quotes kept", HR, "if (raw.length() >= 2 && raw.startsWith(\"\\\"\") && raw.endsWith(\"\\\"\")) raw = raw.substring(1, raw.length() - 1);", ""),
+    ("hotspot: unknown ssid shown", HR, "if (raw == null || raw.isEmpty() || UNKNOWN_SSID.equals(raw)) return null;", "if (raw == null || raw.isEmpty()) return null;"),
+    ("hotspot: WPA3 only", HS, "SoftApConfiguration.SECURITY_TYPE_WPA2_PSK", "SoftApConfiguration.SECURITY_TYPE_WPA3_SAE"),
+    ("hotspot: no restart after a save", HS, "        if (running) restart(c, d);\n", ""),
+    ("hotspot: the tether check dropped", HS, "                    && HotspotRules.tetherable(t.getTetherableWifiRegexs(), iface);", "                    ;"),
+    ("hotspot: a crash on a refused call", HS, "        } catch (RuntimeException e) {\n            Log.w(TAG, \"state: \" + e);\n            return false;\n        }", "        } finally {}"),
     ("colour vision: red-green on deuteranomaly", CV, "static final int[] MODES = {0, 11, 12, 13};", "static final int[] MODES = {0, 12, 11, 13};"),
     ("colour vision: off forgets nothing but the switch stays on", CV, "ENABLED, mode >= 0 ? 1 : 0);", "ENABLED, 1);"),
     ("colour vision: a filter without the switch", CV, "ENABLED, mode >= 0 ? 1 : 0);", "ENABLED, 0);"),

@@ -90,7 +90,9 @@ ok("picture mode: refused in game mode", 'if (gameModeOn(g, raw)) return "blocke
 # the modes this content does not allow: greyed by the profile's stock support lists (SignalRule), from the content
 # kind the adapter reads (TV 78), never a rule of the adapter's own
 ok("picture mode: no content rule of the adapter's own", "offered(" not in mf and "getHdrType" not in pm)
-ok("picture mode: the content kind in every read", "b.signal(Signal.ofHdrType(sn.hdr));" in body(mf, "MenuState state(Snapshot sn)"))
+# state() = the device rows (deviceState) under the shared settings rows (cleanup-1119b)
+ok("picture mode: the content kind in every read", "MenuState state(Snapshot sn) { return rows.with(deviceState(sn)); }" in mf
+   and "b.signal(Signal.ofHdrType(sn.hdr));" in body(mf, "private MenuState deviceState(Snapshot sn)"))
 ok("picture mode: the content kind alone while the menu is open",
    "Hal.query((g, g2) -> g.getHdrType(), hdr -> cb.accept(Signal.ofHdrType(hdr)));" in body(mf, "public void readSignal(Consumer<Signal> cb)"))
 prof = read(os.path.join(GSI, "devices/goat_elegant/menu.json")) or read(os.path.join(HB, "assets/lumen_menu/menu.json"))
@@ -116,7 +118,8 @@ ok("eye: no NUI reader, nothing sent", 'if (!GmpfClient.nuiReaderReady()) return
 
 # ---- refusal notes exist as strings (the menu shows them by name)
 res = set()
-for d in (os.path.join(HB, "res"), os.path.join(GSI, "apps/ProjectorBase/res"), os.path.join(GSI, "apps/core/lumen-menu/res"),
+for d in (os.path.join(HB, "res"), os.path.join(GSI, "apps/ProjectorBase/res"), os.path.join(GSI, "apps/common/projector/res"),
+          os.path.join(GSI, "apps/core/lumen-menu/res"),
           os.path.join(GSI, "apps/core/lumen-remote/res")):
     for f in glob.glob(os.path.join(d, "values", "*.xml")):
         res.update(re.findall(r'<string name="([a-z0-9_]+)"', read(f)))
@@ -169,6 +172,23 @@ ok("output row: options from HbOutputOptions.rows", "for (AudioOutputChoice.Opti
    and "java.util.List<String> tokens = HbMenuGates.outputTokens(kinds);" in outs
    and "if (!tokens.isEmpty()) b.options(FeatureId.SOUND_OUTPUT, tokens);" in outs)
 ok("output row: the stored choice is the value", "b.put(FeatureId.SOUND_OUTPUT, HbMenuGates.outputToken(AudioOutputChoice.kind(app).name()));" in outs)
+
+# the shared settings rows (All settings, General) write the source at power-on and the speech language: the adapter
+# hands them to SettingsRows before its own rows, over the Z9X SettingsDevice (recipe base) with two HDMI inputs
+def shared(rel, base):
+    return read(os.path.join(HB, rel)) or read(os.path.join(GSI, base, rel))
+hbset = body(hbf, "public void set(FeatureId feature, String value, Consumer<Result> cb)")
+ok("settings rows: HbMenuFeatures builds SettingsRows over SettingsDevice",
+   "rows = new SettingsRows(app, new org.lumen.projector.SettingsDevice(app));" in hbf)
+ok("settings rows: set() hands them over before its own rows", 0 <= hbset.find("if (rows.set(feature, value, this, cb)) return;")
+   < hbset.find("switch (feature)"))
+ok("settings rows: the HB boot tokens are GeneralChoices.BOOT_TWO_HDMI",
+   "@Override public String[] bootTokens() { return GeneralChoices.BOOT_TWO_HDMI.clone(); }"
+   in shared("src/org/lumen/projector/SettingsDevice.java", "apps/ProjectorBase"))
+ok("settings rows: the token index is the BootSource value (HOME 0, HDMI1 1, HDMI2 2)",
+   "public static final int HOME = 0, HDMI1 = 1, HDMI2 = 2;" in shared("src/org/lumen/projector/source/BootSource.java", "apps/ProjectorBase"))
+ok("settings rows: the speech language goes through GeneralChoices",
+   "return GeneralChoices.voiceTag(token);" in shared("src/org/lumen/projector/voice/VoiceSettings.java", "apps/common/projector"))
 
 if bad:
     print("check_wiring (menu): %d of %d FAILED" % (bad, n)); sys.exit(1)

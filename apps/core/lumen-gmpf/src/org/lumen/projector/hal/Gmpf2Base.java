@@ -56,6 +56,10 @@ public abstract class Gmpf2Base<K> extends GmpfCaller<K> {
         return (g >= 0 && g <= GAMMA_INDEX_MAX) || (g >= GAMMA_CURVE_MIN && g <= GAMMA_CURVE_MAX);
     }
 
+    // ------------------------------------------------------------------ wall colour adaptation (apps/core/lumen-wallcolor)
+    /** setAEOnOff(on): the camera's auto exposure; stock turns it off right before startAutoColor. The int is not judged (stock). */
+    public int setAutoExposure(boolean on) throws RemoteException { return wire.boolRetI32(key(SET_AE_ON_OFF), on); }
+
     // ------------------------------------------------------------------ brightness Boost
     /** getLensDispMode() -> 1 = Boost. */
     public boolean isBoost() throws RemoteException { return wire.retI32(key(GET_LENS_DISP_MODE)) == ON; }

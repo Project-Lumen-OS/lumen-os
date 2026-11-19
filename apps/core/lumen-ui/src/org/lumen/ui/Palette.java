@@ -1,8 +1,9 @@
 package org.lumen.ui;
 
 /**
- * One colour set of the Lumen 2.0 look (Home, Setup, menus): the design notes, the Светлая (light, the default)
- * and Тёмная (dark) columns. ARGB ints, plain Java, so code without resources and host tests use the same values.
+ * One colour set of the Lumen 2.0 look (Home, Setup, menus): the Светлая (light, the default) set is the owner's pick
+ * Песок (Sand, 2026-11-19, ~/lumen-build-tmp/light-palette: a warm field at L* 80, never white, because a projector
+ * throws a white field at full power), Тёмная (dark) is the design notes ARGB ints, plain Java, so code without resources and host tests use the same values.
  * apps/common/tokens.xml carries the same numbers as lumen_light_* and lumen_dark_* colours (test/ThemeTest checks
  * both stay equal). Pick the set with {@link LumenTheme#palette}.
  */
@@ -34,6 +35,12 @@ public final class Palette {
     public final int scrim, markA, markB, markCore, word;
     /** Hairline around app banners, the header pill, the active nav item and the nav texts. */
     public final int bannerLine, pill, navActive, navText, navActiveText;
+    /**
+     * The focus ring every focusable of Home and the quick menu wears (Lumen blue: #3B78E7 on the dark field, the deeper
+     * #2F62D0 on the light one, where the brighter blue gives only 2.4:1), the warning amber of overlays, the resting
+     * elevation shadow of light tiles (the dark theme draws a hairline instead, 0).
+     */
+    public final int focusRing, warn, elevation;
     /** True: the hero is a rounded card on the field (light). False: full bleed, melting into the field (dark). */
     public final boolean heroCard;
 
@@ -46,7 +53,8 @@ public final class Palette {
         ringGap = v[i++]; accent = v[i++]; accentOnBg = v[i++]; progress = v[i++]; track = v[i++]; error = v[i++];
         errorPanel = v[i++]; ok = v[i++]; okPanel = v[i++]; shadow = v[i++]; shadowY = v[i++]; shadowBlur = v[i++];
         scrim = v[i++]; markA = v[i++]; markB = v[i++]; markCore = v[i++]; word = v[i++]; bannerLine = v[i++];
-        pill = v[i++]; navActive = v[i++]; navText = v[i++]; navActiveText = v[i++];
+        pill = v[i++]; navActive = v[i++]; navText = v[i++]; navActiveText = v[i++]; focusRing = v[i++]; warn = v[i++];
+        elevation = v[i++];
         heroCard = !dark;
         if (i != v.length) throw new IllegalStateException("palette size " + v.length);
     }
@@ -56,19 +64,20 @@ public final class Palette {
 
     static Palette light() {
         return new Palette(false, new int[] {
-                0xFFF1F2F4, 0xFFFFFFFF, 0xFFE6E8EC,             // bg, bgGlow, bgLow
-                0xFFFFFFFF, 0xFFF6F7F9,                         // surface, surface2
-                0xFFFFFFFF, 0xFFE3E6EC,                         // panel, panelLine
-                0xFF12151B, 0xFF424955, 0xFF5B6270,             // text1..3
-                0xFF12151B, 0xFF424955, 0xFF5B6270,             // ptext1..3
-                0xFF12151B, 0xFFFFFFFF, 0xFF2F62D0, 0xFFFFFFFF, // focus, onFocus, pfocus, onPfocus
-                0xFF12151B, 0xFFF1F2F4,                         // ring, ringGap
-                0xFF2A5CC4, 0xFF2A5CC4,                         // accent, accentOnBg
+                0xFFCFC4B0, 0xFFD8CEBB, 0xFFC5BAA6,             // bg, bgGlow, bgLow
+                0xFFDBD2C2, 0xFFE4DDD0,                         // surface, surface2
+                0xFFD6CDBD, 0xFFB8AD99,                         // panel, panelLine
+                0xFF211C13, 0xFF463F33, 0xFF544C3F,             // text1..3
+                0xFF211C13, 0xFF463F33, 0xFF544C3F,             // ptext1..3
+                0xFF211C13, 0xFFE4DDD0, 0xFF2F62D0, 0xFFFFFFFF, // focus, onFocus, pfocus, onPfocus
+                0xFF2F62D0, 0xFFCFC4B0,                         // ring, ringGap
+                0xFF1D4AA3, 0xFF1D4AA3,                         // accent, accentOnBg (AA on the field and panel)
                 0xFF3B78E7, 0x66FFFFFF,                         // progress, track
-                0xFFB3261E, 0xFFB3261E, 0xFF1E7A3C, 0xFF1E7A3C, // error, errorPanel, ok, okPanel
-                0x3D101828, 20, 44,                             // shadow rgba(16,24,40,.24), y, blur
-                0xFF090C14, 0xFF12151B, 0xFF4A505C, 0xFFF2B26B, 0xFF12151B, // scrim, mark A, B, core, word
-                0x1412151B, 0x0F12151B, 0x1412151B, 0xFF424955, 0xFF12151B, // bannerLine, pill, navActive, navText(s)
+                0xFF962019, 0xFF962019, 0xFF155A2C, 0xFF155A2C, // error, errorPanel, ok, okPanel
+                0x421E1810, 18, 40,                             // shadow rgba(30,24,16,.26), y, blur
+                0xFF0E0B07, 0xFF211C13, 0xFF5E5545, 0xFFF2B26B, 0xFF211C13, // scrim, mark A, B, core, word
+                0x14000000, 0x0F211C13, 0x14211C13, 0xFF463F33, 0xFF211C13, // bannerLine, pill, navActive, navText(s)
+                0xFF2F62D0, 0xFF754400, 0x1C1E1810,             // focusRing, warn, elevation rgba(30,24,16,.11)
         });
     }
 
@@ -87,6 +96,7 @@ public final class Palette {
                 0x8C000000, 26, 56,                             // rgba(0,0,0,.55)
                 0xFF07080A, 0xFFF4EFE6, 0xFFCFC7BA, 0xFFF2B26B, 0xFFF4EFE6,
                 0x1AFFFFFF, 0x21FFFFFF, 0x2EFFFFFF, 0xC7FFFFFF, 0xFFFFFFFF,
+                0xFF3B78E7, 0xFFF2B544, 0x00000000,
         });
     }
 

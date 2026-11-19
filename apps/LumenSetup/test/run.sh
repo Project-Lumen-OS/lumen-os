@@ -2,7 +2,7 @@
 # Lumen Setup fast host tests (no device, no emulator): the 2.0 flow (test/flow: step order, step counter, the remote
 # step's 60 s not found, Wi-Fi list states and the row each state focuses, the language order, the QR grid, the kept
 # wrong password, the install offer gate, icons and colours from the shared modules), every
-# string key in every locale with no semicolon or long dash in the 2.0 texts, and the pointer checks (test/pointer).
+# string key in every locale with no semicolon or long dash in the 2.0 texts (the theme step's too), and the pointer checks (test/pointer).
 #   sh apps/LumenSetup/test/run.sh        (JAVA_HOME, ANDROID_SDK; run on a builder, never on the Mac)
 set -eu
 HERE=$(cd "$(dirname "$0")/.." && pwd)
@@ -17,6 +17,7 @@ RC=0
   "$HERE/src/org/lumen/setup/Progress.java" "$HERE/src/org/lumen/setup/RemoteSearch.java" \
   "$HERE/src/org/lumen/setup/net/ListState.java" "$HERE/src/org/lumen/setup/InstallOffer.java" \
   "$HERE/src/org/lumen/setup/Langs.java" "$G/apps/core/lumen-qr/src/org/lumen/qr/QrCode.java" \
+  "$HERE/src/org/lumen/setup/ThemeChoice.java" "$G/apps/core/lumen-ui/src/org/lumen/ui/ThemeMode.java" \
   "$G/apps/core/lumen-qr/src/org/lumen/qr/QrView.java" \
   "$HERE/test/flow/FlowTest.java" 2>&1 | grep -v "^Note:" || true
 "$JAVA_HOME/bin/java" -Dsetup.dir="$HERE" -cp "$OUT:$AJ:$HJ" org.lumen.setup.FlowTest || RC=1
@@ -35,7 +36,7 @@ base = keys("values")
 NEW = ["setup_step_of", "remote_not_found", "remote_not_found_hint", "action_search_again", "remote_other", "net_nearby",
        "net_secured", "net_open", "net_none_hint", "net_wrong_password", "net_password_rule", "google_skip_hint",
        "google_sign_in_sub", "google_help_sub", "done_stats_short", "alice_code_label", "alice_note", "remote_found",
-       "remote_press_ok"]
+       "remote_press_ok", "theme_title", "theme_subtitle", "theme_light", "theme_dark", "theme_auto", "theme_auto_sub"]
 bad = n = 0
 locs = sorted(d for d in os.listdir(res) if d.startswith("values"))
 for d in locs:

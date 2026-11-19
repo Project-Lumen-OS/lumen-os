@@ -66,6 +66,11 @@ public final class Card {
     public String season = "", episode = "", episodeTitle = "";
     public long durationMs, positionMs;
     public String year = "";          // program: has a season or episode (TMDB lookup hint; not in snapshots)
+    // showcase (TMDB) titles: where Смотреть opens them (watch/WatchPick), facts for Подробнее
+    public String watchPkg = "";      // the app the title opens in, "" = Lumen search with the title
+    public String watchLabel = "";    // the watch button: "Смотреть в Lampa", "Найти"
+    public String rating = "";        // TMDB rating, "7.8"
+    public String where = "";         // where to watch in the user's region: "Кинопоиск, Okko"
 
     public Card() {}
 
@@ -82,7 +87,8 @@ public final class Card {
                 && aspect2 == o.aspect2 && progress == o.progress
                 && live == o.live && isNew == o.isNew && Objects.equals(intent, o.intent) && icon == o.icon
                 && state == o.state && showing == o.showing && desc.equals(o.desc) && appLabel.equals(o.appLabel)
-                && pkg.equals(o.pkg) && left.equals(o.left) && wnType == o.wnType;
+                && pkg.equals(o.pkg) && left.equals(o.left) && wnType == o.wnType && watchPkg.equals(o.watchPkg)
+                && watchLabel.equals(o.watchLabel) && rating.equals(o.rating) && where.equals(o.where);
     }
 
     public boolean isProgram() {

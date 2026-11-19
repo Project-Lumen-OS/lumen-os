@@ -133,6 +133,10 @@ public final class App extends Application {
                 org.lumen.signal.SignalPanel.install(this, new org.lumen.projector.panel.GmpfSignalReader());
                 AiScenePolicy.addTvEventSink(org.lumen.signal.SignalPanel::onTvEvent);
             } catch (Throwable t) { Log.e(TAG, "SignalPanel.install", t); }
+            // the sensor card (apps/core/lumen-sensors, a developer overlay): this app's gmpf reader
+            try { org.lumen.sensors.SensorPanel.install(this, new org.lumen.projector.panel.GmpfSensorReader()); } catch (Throwable t) { Log.e(TAG, "SensorPanel.install", t); }
+            // the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar over this app's HAL
+            try { GmpfWallColor.install(this); } catch (Throwable t) { Log.e(TAG, "WallColor.install", t); }
         }
         // ===== Lumen OS 1.0.3: the HDMI picture, IGmpf 698 follows tvinput's HDMI sessions (connect hook) =====
         try { org.lumen.projector.source.HdmiSource.install(this); } catch (Throwable t) { Log.e(TAG, "HdmiSource.install", t); }
@@ -143,7 +147,7 @@ public final class App extends Application {
         try { org.lumen.projector.setup.SetupEvents.install(this); } catch (Throwable t) { Log.e(TAG, "SetupEvents.install", t); }
         // ===== Lumen OS 1.0.1: interface resolution (quick panel row, "Keep this resolution?" after a change) =====
         // Z9X HB fork: the interface resolution row (quick panel extension) only with F.UI_RESOLUTION ON (PENDING), as
-        // in SettingsActivity; the property gate inside UiResolution stays as well
+        // in the shared menu (SettingsRows); the property gate inside UiResolution stays as well
         if (HbFeatures.on(HbFeatures.F.UI_RESOLUTION)) {
             try { org.lumen.projector.display.UiResolution.install(this); } catch (Throwable t) { Log.e(TAG, "UiResolution.install", t); }
         }

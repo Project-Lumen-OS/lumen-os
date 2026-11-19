@@ -11,7 +11,6 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import org.lumen.ui.LumenTheme;
@@ -48,12 +47,10 @@ public final class Theme {
     // ------------------------------------------------------------------ motion
     public static final Interpolator EMPHASIZED = Motion.EMPHASIZED;
     public static final Interpolator DECEL = Motion.ENTER;
-    public static final Interpolator LINEAR = new LinearInterpolator();
     public static final long FOCUS_IN_MS = Tokens.MS_FOCUS_IN, FOCUS_OUT_MS = Tokens.MS_FOCUS_OUT,
             ROW_SCROLL_MS = Tokens.MS_ROW_SCROLL, ROW_REPEAT_MS = Tokens.MS_KEY_REPEAT,
             PAGE_SCROLL_MS = Tokens.MS_PAGE_SCROLL, BAR_FADE_MS = Tokens.MS_HEADER, PANEL_MS = Tokens.MS_PANEL,
-            BACKDROP_MS = Tokens.MS_BACKDROP_FADE, BACKDROP_DWELL_MS = Tokens.MS_BACKDROP_DWELL,
-            HERO_FADE_MS = Tokens.MS_HERO_IN, THEME_MS = Tokens.MS_THEME;
+            BACKDROP_DWELL_MS = Tokens.MS_BACKDROP_DWELL;
 
     private static final String FONT = "fonts/InterVariable.ttf";
     private static final SparseArray<Typeface> sFonts = new SparseArray<>();

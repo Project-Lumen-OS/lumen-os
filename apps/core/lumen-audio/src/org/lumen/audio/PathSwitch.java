@@ -92,6 +92,7 @@ public final class PathSwitch {
             sH = new Handler(t.getLooper());
             HalSink.routeFrom(() -> sTarget);
             StockVolume.install(sApp);
+            BootSound.install(sApp);
             StockVolume.onAudioServerUp(() -> sH.post(() -> resink("audio server up")));
             vendor.registerDevices(sApp, new AudioDeviceCallback() {
                 @Override public void onAudioDevicesAdded(AudioDeviceInfo[] added) {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
+    <string name="lumen_m_hotspot_hotspot">熱點</string>
+    <string name="lumen_m_hotspot_name">網路名稱</string>
+    <string name="lumen_m_hotspot_password">密碼</string>
+    <string name="lumen_m_hotspot_reset">還原預設值</string>
+    <string name="lumen_m_hotspot_on" formatted="true">%s 的熱點已啟用</string>
+    <string name="lumen_m_hotspot_off">熱點已停用</string>
+    <string name="lumen_m_hotspot_failed">未知的錯誤。請稍後再試一次</string>
+    <string name="lumen_m_hotspot_saved">目前組態已儲存</string>
+    <string name="lumen_m_hotspot_name_title">熱點名稱</string>
+    <string name="lumen_m_hotspot_password_title">熱點密碼</string>
+    <string name="lumen_m_hotspot_password_hint">至少 8 個字元</string>
+    <string name="lumen_m_hotspot_name_empty">請輸入網路名稱</string>
+    <string name="lumen_m_hotspot_name_long">名稱過長</string>
+    <string name="lumen_m_hotspot_password_short">至少輸入 8 個字元</string>
+    <string name="lumen_m_hotspot_password_long">不超過 63 個字元</string>
+    <string name="lumen_m_hotspot_password_chars">僅限英文字母、數字和符號</string>
+</resources>

@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost macht das Bild heller, aber die Farben wirken blasser. Der Farbraum bleibt unverändert.</string>
     <string name="lumen_m_cec_entry">HDMI-Geräte (CEC)</string>
     <string name="lumen_m_eq_title">Equalizer</string>
-    <string name="lumen_m_fit_row">An die Leinwandgröße anpassen</string>
-    <string name="lumen_m_fit_row_summary">Der Zoom wird aus dem Abstand zur Leinwand und ihrer Größe bestimmt</string>
     <string name="lumen_m_hdmi_mode">HDMI-Modus</string>
     <string name="lumen_m_hdmi_mode_compat">Kompatibel (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Erweitert (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Schnell</string>
     <string name="lumen_m_signal_refresh_note">Schnell: seltenes Ruckeln des Bildes möglich</string>
     <string name="lumen_m_hdr_developer">Für Entwickler</string>
+    <string name="lumen_m_hdr_power">Einschalten</string>
+    <string name="lumen_m_power_on_ac">Einschalten und automatischer Start</string>
+    <string name="lumen_m_power_on_ac_tip">Nach dem Einschalten startet der Projektor automatisch</string>
+    <string name="lumen_m_custom_base">Basierend auf</string>
+    <string name="lumen_m_custom_delete">Benutzerdefiniertes Löschen</string>
+    <string name="lumen_m_custom_delete_ask">Benutzerdefinierten Bildmodus löschen?</string>
+    <string name="lumen_m_custom_confirm">Bestätigen</string>
+    <string name="lumen_m_custom_name">Bitte benutzerdefinierten Namen eingeben</string>
+    <string name="lumen_m_custom_name_empty">Benutzerdefinierter Name darf nicht leer sein</string>
+    <string name="lumen_m_custom_name_taken">Der Name existiert bereits, bitte versuchen Sie es mit einem anderen</string>
+    <string name="lumen_m_custom_name_max">Max. Eingang erreicht</string>
 </resources>

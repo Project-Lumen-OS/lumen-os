@@ -4,7 +4,6 @@
      Texts marked "stock" are the English strings of the stock XGIMI SystemUI for the same vendor
      result value (FocusUIV2.onProjectorFocusEventAkCall); the others are ours. -->
 <resources>
-    <string name="ak_placeholder" translatable="false">ak</string>
 
     <!-- Caption drawn under the test pattern (stock image text: 自动梯形校正中 / 光学变焦中). -->
     <string name="ak_caption_keystone">Auto keystone correction in progress</string>

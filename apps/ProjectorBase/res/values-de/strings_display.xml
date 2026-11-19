@@ -2,7 +2,6 @@
 <!-- German translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Anzeige</string>
     <string name="uires_row">Auflösung der Oberfläche</string>
     <string name="uires_default_fmt">%1$s (Standard)</string>
     <string name="uires_summary">4K liefert den schärfsten Text; 1080p, wie bei XGIMI, ist für die Grafik am leichtesten. Zum Ändern startet der Projektor neu.</string>

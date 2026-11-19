@@ -46,8 +46,7 @@ ok('<key keyCode="KEYCODE_TV_INPUT" component="org.lumen.x50.projector/.KeyRecei
 for f in ("Z9xFrameworkKeysOverlay", "HbFrameworkOverlay", "Play6FrameworkOverlay"):
     ok('<key keyCode="KEYCODE_TV_INPUT" component="org.lumen.projector/.KeyReceiver" />' in read("apps", f, "res", "xml", "global_keys.xml"),
        f + ": Source to org.lumen.projector")
-for rel in ("apps/ProjectorBase/src/org/lumen/projector/source/SourceRequestReceiver.java",
-            "apps/common/projector/src/org/lumen/projector/source/SourceRequestReceiver.java"):
+for rel in ("apps/common/projector/src/org/lumen/projector/source/SourceRequestReceiver.java",):
     ok('org.lumen.source.SourceKey.press(ctx, "show_source");' in read(*rel.split("/")), rel + ": Source request = the key's step")
 ok('SourceKey.press(c, why);' in read("apps", "X50Projector", "src", "org", "lumen", "x50", "projector", "SourceReceiver.java"),
    "X50 Source request = the key's step")
@@ -83,7 +82,7 @@ for p in glob.glob(os.path.join(G, "apps", "**", "*.java"), recursive=True):
 
 # texts: the old list's own words, every locale, plain
 base = {}
-for f in glob.glob(os.path.join(G, "apps", "ProjectorBase", "res", "values*", "strings_source.xml")):
+for f in glob.glob(os.path.join(G, "apps", "common", "projector", "res", "values*", "strings_source.xml")):
     t = open(f, encoding="utf-8").read()
     base[os.path.basename(os.path.dirname(f))] = dict(re.findall(r'<string name="(source_home|source_hdmi)">(.*?)</string>', t))
 mod = {}

@@ -19,6 +19,8 @@ section keystone  (stock order: settings_tree_product_athena35ultramax projectio
   screen zoom
   screen zoom.move
   screen keystone.rotation
+  -- smart
+  screen keystone.wall_color
   -- more
   action keystone.restore
   info keystone.angle_h
@@ -37,6 +39,7 @@ section picture  (stock order: settings_tree_product_athena35ultramax image (G01
   -- image
   choice picture.mode [ai, sport, movie, color_accuracy, bright, performance]  support color_accuracy for sdr hdr hdr10  hint picture picture_mode
   page picture.dv_screen
+  action picture.custom_new
   page picture.settings
   action picture.reset_all
   -- image_more
@@ -64,6 +67,13 @@ section game
   choice game.allm [signal, device]
 section eye
   choice eye [off, on]
+section network
+  screen network.wifi
+  -- line
+  toggle network.hotspot
+  screen network.hotspot_name
+  screen network.hotspot_password
+  action network.hotspot_reset
 section general
   action lamp.off
   screen settings.system
@@ -72,12 +82,20 @@ section general
   screen settings.cec
   screen settings.hdmi
   choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
+  screen settings.parental
   screen settings.sleep_timer
   screen settings.remote
   screen settings.report
   screen settings.licences
-  -- developer
+  -- screensaver
+  screen settings.screensaver_now
+  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
+  -- power
+  toggle power.on_ac
+  toggle power.on_music
+section developer
   screen signal.panel
+  screen sensors.panel
   toggle signal.pin
 page picture.wb2
   slider picture.wb2.red_gain 0..100
@@ -110,6 +128,7 @@ page picture.dv_screen
   choice picture.dv_screen.size [80, 88, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
   choice picture.dv_screen.gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 page picture.settings
+  choice picture.custom_base [sport, movie, color_accuracy]
   -- basic
   toggle picture.auto_switch
   slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
@@ -133,6 +152,7 @@ page picture.settings
   toggle picture.super_res
   -- image_more
   action picture.reset
+  action picture.custom_delete
 popup keystone (rows with a tile of their own left out)
   keystone.manual
   -- auto_correction
@@ -143,6 +163,8 @@ popup keystone (rows with a tile of their own left out)
   -- size_position
   zoom.move
   keystone.rotation
+  -- smart
+  keystone.wall_color
   -- more
   keystone.restore
   keystone.angle_h
@@ -154,6 +176,7 @@ popup picture (rows with a tile of their own left out)
   -- image
   picture.mode
   picture.dv_screen
+  picture.custom_new
   picture.settings
   picture.reset_all
   -- image_more
@@ -163,7 +186,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone focus picture projection sound eye general
+all settings: keystone focus picture projection sound eye general developer
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)
   game sound: off surround story clarity balanced

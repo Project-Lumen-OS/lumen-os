@@ -20,9 +20,10 @@
 #   keys:  common/overlay/xml/global_keys.xml -> APP_DIR/res/xml/global_keys.xml and
 #          common/overlay/layout/shutdown_dialog.xml -> APP_DIR/res/layout/shutdown_dialog.xml: every device
 #                      framework key RRO
-# Never edit the copies; edit apps/common/* and re-run this for Z9xHome, Z9xSetup (and Z9xProjector
-# once it adopts the tokens), with `hal projector` for every device projector app and with `keys` for every
-# device framework key RRO.
+# Never edit the copies; edit apps/common/* and re-run this for the apps that still keep copies (Lumen Home,
+# Setup, TV input, AirPlay, the updater module: tokens, geoip, migrate) and with `keys` for every device
+# framework key RRO. No projector app keeps copies of `hal` or `projector` any more: their recipes take
+# apps/common/projector, apps/common/hal and apps/common/LumenImport.java as base layers.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
 CHECK=0

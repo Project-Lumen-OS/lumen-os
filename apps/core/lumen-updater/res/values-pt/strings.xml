@@ -112,11 +112,10 @@
     <string name="ch_updates">Atualizações do sistema</string>
     <string name="n_available_body">Abra para baixar e instalar.</string>
     <string name="n_ready_title">Reinicie para concluir a atualização</string>
-    <!-- Play 6 (recovery install) -->
-    <string name="blk_recovery">Este projetor ainda não pode instalar atualizações pela Internet: falta a configuração única. Atualize-o a partir de um computador com lumen-install.</string>
-    <string name="blk_power">Ligue o transformador: a atualização demora alguns minutos.</string>
+    <string name="blk_recovery">Este projetor ainda não pode instalar atualizações pela internet: falta a configuração única. Atualize-o a partir de um computador com lumen-install.</string>
+    <string name="blk_power">Conecte o adaptador de energia: a atualização leva alguns minutos.</string>
     <string name="consent_title_recovery">Instalar a atualização?</string>
-    <string name="consent_body_recovery">O projetor reinicia no ecrã de atualização durante cerca de 5 minutos e depois o Lumen OS volta a iniciar. Mantenha o transformador ligado e não desligue o projetor. Só o sistema Lumen OS é substituído: as suas apps, definições e o firmware XGIMI ficam como estão.</string>
-    <string name="ready_title_recovery">A reiniciar para atualizar</string>
-    <string name="ready_body_recovery">O projetor reinicia agora e instala o Lumen OS %1$s, cerca de 5 minutos. Mantenha o transformador ligado.</string>
+    <string name="consent_body_recovery">O projetor reinicia na tela de atualização por cerca de 5 minutos e depois o Lumen OS inicia de novo. Mantenha o adaptador de energia conectado e não desligue o projetor. Só o sistema Lumen OS é substituído: seus apps, configurações e o firmware da XGIMI continuam como estão.</string>
+    <string name="ready_title_recovery">Reiniciando para atualizar</string>
+    <string name="ready_body_recovery">O projetor reinicia agora e instala o Lumen OS %1$s, cerca de 5 minutos. Mantenha o adaptador de energia conectado.</string>
 </resources>

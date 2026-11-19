@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">WLAN</string>
+    <string name="lumen_m_hotspot_hotspot">热点</string>
+    <string name="lumen_m_hotspot_name">网络名称</string>
+    <string name="lumen_m_hotspot_password">密码</string>
+    <string name="lumen_m_hotspot_reset">恢复默认</string>
+    <string name="lumen_m_hotspot_on" formatted="true">成功打开 %s 热点</string>
+    <string name="lumen_m_hotspot_off">热点已关闭</string>
+    <string name="lumen_m_hotspot_failed">未知异常，请稍后再试</string>
+    <string name="lumen_m_hotspot_saved">当前配置已保存</string>
+    <string name="lumen_m_hotspot_name_title">热点名称</string>
+    <string name="lumen_m_hotspot_password_title">热点密码</string>
+    <string name="lumen_m_hotspot_password_hint">至少 8 个字符</string>
+    <string name="lumen_m_hotspot_name_empty">请输入网络名称</string>
+    <string name="lumen_m_hotspot_name_long">名称过长</string>
+    <string name="lumen_m_hotspot_password_short">至少输入8个字符</string>
+    <string name="lumen_m_hotspot_password_long">不超过 63 个字符</string>
+    <string name="lumen_m_hotspot_password_chars">仅限英文字母、数字和符号</string>
+</resources>

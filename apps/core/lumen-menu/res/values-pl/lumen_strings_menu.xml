@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost rozjaśnia obraz, ale kolory stają się bledsze. Przestrzeń barw się nie zmienia.</string>
     <string name="lumen_m_cec_entry">Urządzenia HDMI (CEC)</string>
     <string name="lumen_m_eq_title">Korektor</string>
-    <string name="lumen_m_fit_row">Dopasuj do rozmiaru ekranu</string>
-    <string name="lumen_m_fit_row_summary">Zoom dobierany jest na podstawie odległości od ekranu i jego rozmiaru</string>
     <string name="lumen_m_hdmi_mode">Tryb HDMI</string>
     <string name="lumen_m_hdmi_mode_compat">Zgodny (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Rozszerzony (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Szybkie</string>
     <string name="lumen_m_signal_refresh_note">Szybkie: możliwe rzadkie szarpnięcia obrazu</string>
     <string name="lumen_m_hdr_developer">Dla programistów</string>
+    <string name="lumen_m_hdr_power">Włączanie</string>
+    <string name="lumen_m_power_on_ac">Włącz zasilanie i uruchom automatycznie</string>
+    <string name="lumen_m_power_on_ac_tip">Po włączeniu projektor uruchamia się automatycznie</string>
+    <string name="lumen_m_custom_base">Na podstawie</string>
+    <string name="lumen_m_custom_delete">Usuń niestandardowe</string>
+    <string name="lumen_m_custom_delete_ask">Usunąć tryb obrazu niestandardowego?</string>
+    <string name="lumen_m_custom_confirm">Potwierdź</string>
+    <string name="lumen_m_custom_name">Wprowadź nazwę niestandardową</string>
+    <string name="lumen_m_custom_name_empty">Nazwa niestandardowa nie może być pusta</string>
+    <string name="lumen_m_custom_name_taken">Nazwa już istnieje, spróbuj innej</string>
+    <string name="lumen_m_custom_name_max">Osiągnięto maks. liczbę wejść</string>
 </resources>

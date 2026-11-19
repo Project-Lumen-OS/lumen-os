@@ -20,7 +20,6 @@
     <string name="net_wifi_on">正在开启 Wi-Fi…</string>
     <string name="net_none_found">未找到网络</string>
     <string name="net_add_manual">手动添加网络</string>
-    <string name="net_other">其他选项</string>
     <string name="net_password_title">%1$s 的密码</string>
     <string name="net_password_hint">密码</string>
     <string name="net_show_password">显示密码</string>
@@ -48,7 +47,6 @@
     <string name="remote_found">已找到遥控器 %1$s</string>
     <string name="remote_connected">遥控器已连接</string>
     <string name="remote_other">其他设备</string>
-    <string name="remote_skip_hint">也可以稍后在快捷面板（齿轮键）中配对。</string>
     <string name="google_title">使用 Google 账号登录</string>
     <string name="google_subtitle">登录后即可从 Google Play 安装应用并使用您的订阅。</string>
     <string name="google_sign_in">登录</string>
@@ -100,7 +98,6 @@
     <string name="done_name">投影仪名称</string>
     <string name="done_home">主屏幕</string>
     <string name="done_stats">发送匿名统计信息</string>
-    <string name="done_stats_note">每次开机时及每天一次：型号、版本、构建、更新信息、国家、随机安装编号和序列号（服务器只保存其哈希值）。不会保存您的 IP 地址。</string>
     <string name="done_start">开始使用</string>
     <string name="done_offline_hint">无互联网：可稍后在设置中登录 Google 并设置时区。</string>
     <string name="done_offline_hint_nogms">无互联网：可稍后在设置中设置时区。</string>
@@ -135,4 +132,10 @@
     <string name="google_sign_in_sub">需要用到手机或密码</string>
     <string name="google_help_sub">Google 要求注册时该怎么办</string>
     <string name="done_stats_short">型号、版本和国家或地区。不保存 IP 地址。</string>
+    <string name="theme_title">主题</string>
+    <string name="theme_subtitle">Lumen 的外观。之后可以在快捷菜单中更改。</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_auto">自动</string>
+    <string name="theme_auto_sub">白天浅色，日落后深色</string>
 </resources>

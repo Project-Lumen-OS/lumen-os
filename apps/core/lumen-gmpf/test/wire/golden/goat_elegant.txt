@@ -89,6 +89,258 @@ C connectFocusManager()() s2
 C connectFocusManager()() s3
   TX xgimi.hardware.gmpf.IProjectorFocusManager 1 f0 1651076708
   = null
+C createCustomPictureMode()() s0
+  CHECKSERVICE xgimi.hardware.gmpf.IGmTvManager/default
+  LINK xgimi.hardware.gmpf.IGmTvManager/default
+  TX xgimi.hardware.gmpf.IGmTvManager 16777215 f0 
+  TX xgimi.hardware.gmpf.IGmTvManager 16777214 f0 
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 1
+C createCustomPictureMode()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 0
+C createCustomPictureMode()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 400
+C createCustomPictureMode()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 5
+C customPictureBase(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 1
+C customPictureBase(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 400
+C customPictureBase(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 1
+C customPictureBase(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 400
+C customPictureBase(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 1
+C customPictureBase(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 400
+C customPictureBase(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 1
+C customPictureBase(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 400
+C customPictureBase(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 1
+C customPictureBase(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 400
+C customPictureBase(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 1
+C customPictureBase(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 400
+C customPictureBase(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 1
+C customPictureBase(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 400
+C customPictureBase(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 1
+C customPictureBase(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 400
+C customPictureBase(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 1
+C customPictureBase(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 400
+C customPictureBase(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 1
+C customPictureBase(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 400
+C customPictureBase(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 1
+C customPictureBase(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 400
+C customPictureBase(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 1
+C customPictureBase(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 400
+C customPictureBase(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 1
+C customPictureBase(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 400
+C customPictureBase(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 1
+C customPictureBase(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 400
+C customPictureBase(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 1
+C customPictureBase(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 400
+C customPictureBase(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 1
+C customPictureBase(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 400
+C customPictureBase(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 1
+C customPictureBase(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 400
+C customPictureBase(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 1
+C customPictureBase(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 400
+C customPictureBase(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 1
+C customPictureBase(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 400
+C deleteCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 1
+C deleteCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 400
+C deleteCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 1
+C deleteCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 400
+C deleteCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 1
+C deleteCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 400
+C deleteCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 1
+C deleteCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 400
+C deleteCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 1
+C deleteCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 400
+C deleteCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 1
+C deleteCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 400
+C deleteCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 1
+C deleteCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 400
+C deleteCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 1
+C deleteCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 400
+C deleteCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 1
+C deleteCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 400
+C deleteCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 1
+C deleteCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 400
+C deleteCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 1
+C deleteCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 400
+C deleteCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 1
+C deleteCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 400
+C deleteCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 1
+C deleteCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 400
+C deleteCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 1
+C deleteCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 400
+C deleteCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 1
+C deleteCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 400
+C deleteCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 1
+C deleteCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 400
+C deleteCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 1
+C deleteCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 400
+C deleteCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 1
+C deleteCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 400
+C deleteCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 1
+C deleteCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 400
 C disablePushPullScreenForCeiling()() s0
   TX xgimi.hardware.gmpf.ISystemManager 140 f0 0
   = true
@@ -526,10 +778,6 @@ C getAiContrast()() s2
 C getAiContrast()() s3
   ! NotOnHbException: getAIContrastStatus: not on the Z9X HB, nothing sent
 C getAllmAutoSwitch()() s0
-  CHECKSERVICE xgimi.hardware.gmpf.IGmTvManager/default
-  LINK xgimi.hardware.gmpf.IGmTvManager/default
-  TX xgimi.hardware.gmpf.IGmTvManager 16777215 f0 
-  TX xgimi.hardware.gmpf.IGmTvManager 16777214 f0 
   TX xgimi.hardware.gmpf.IGmTvManager 130 f0 
   = true
 C getAllmAutoSwitch()() s1
@@ -1503,6 +1751,30 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 39 f0 
   = 5
+C getElderColorLevel()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 1
+C getElderColorLevel()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 0
+C getElderColorLevel()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 400
+C getElderColorLevel()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 5
+C getElderColorTone()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 1
+C getElderColorTone()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 0
+C getElderColorTone()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 400
+C getElderColorTone()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 5
 C getExtDecInfo(String)(NativeUIWatch) s0
   ! IllegalArgumentException: ext dec key NativeUIWatch
 C getExtDecInfo(String)(NativeUIWatch) s2
@@ -1902,19 +2174,19 @@ C getMemcLevel()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 32 f0 0
   = 5
 C getMotionDetection()() s0
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
 C getMotionDetection()() s1
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
 C getMotionDetection()() s2
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
 C getMotionDetection()() s3
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
 C getMoveAf()() s0
@@ -2121,6 +2393,18 @@ C getPowerOnAk()() s2
 C getPowerOnAk()() s3
   TX xgimi.hardware.gmpf.IGmFactoryManager 46 f0 
   = true
+C getPowerOnMode()() s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = true
+C getPowerOnMode()() s1
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s3
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
 C getPowerOnMusic()() s0
   TX xgimi.hardware.gmpf.ISystemManager 6 f0 
   = true
@@ -2173,6 +2457,18 @@ C getPutMode()() s2
 C getPutMode()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 3 f0 
   = null
+C getRainbowReductionStatus()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 1
+C getRainbowReductionStatus()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 0
+C getRainbowReductionStatus()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 400
+C getRainbowReductionStatus()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 5
 C getScreenOn()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 28 f0 
   = true
@@ -2374,19 +2670,19 @@ C getSystemUiState()() s3
   TX xgimi.hardware.gmpf.ISystemManager 37 f0 
   = 5
 C getTofDistance()() s0
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1
 C getTofDistance()() s1
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 0
 C getTofDistance()() s2
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 400
 C getTofDistance()() s3
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 5
 C getVolumeBalance()() s0
@@ -3277,6 +3573,18 @@ C setAudioOutput(AudioPath)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setAudioOutput(AudioPath)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAutoExposure(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 1
+C setAutoExposure(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 400
+C setAutoExposure(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 1
+C setAutoExposure(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 400
 C setAutoReverse(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 8 f0 0
   = true
@@ -3447,6 +3755,576 @@ C setCurtainFit(boolean)(true) s2
   GATE CURTAIN_FIT setProjCurtainAdp
   TX xgimi.hardware.gmpf.IProjectorFocusManager 35 f0 1
   = null
+C setCustomPictureBase(int,int)(-1,-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 1
+C setCustomPictureBase(int,int)(0,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 400
+C setCustomPictureBase(int,int)(0,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 1
+C setCustomPictureBase(int,int)(0,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 400
+C setCustomPictureBase(int,int)(0,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 1
+C setCustomPictureBase(int,int)(0,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 400
+C setCustomPictureBase(int,int)(0,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 1
+C setCustomPictureBase(int,int)(0,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 400
+C setCustomPictureBase(int,int)(0,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 1
+C setCustomPictureBase(int,int)(0,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 400
+C setCustomPictureBase(int,int)(0,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 1
+C setCustomPictureBase(int,int)(0,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 400
+C setCustomPictureBase(int,int)(0,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 1
+C setCustomPictureBase(int,int)(0,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 400
+C setCustomPictureBase(int,int)(0,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 1
+C setCustomPictureBase(int,int)(0,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 400
+C setCustomPictureBase(int,int)(1,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 1
+C setCustomPictureBase(int,int)(1,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 400
+C setCustomPictureBase(int,int)(1,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 1
+C setCustomPictureBase(int,int)(1,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 400
+C setCustomPictureBase(int,int)(1,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 1
+C setCustomPictureBase(int,int)(1,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 400
+C setCustomPictureBase(int,int)(1,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 1
+C setCustomPictureBase(int,int)(1,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 400
+C setCustomPictureBase(int,int)(1,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 1
+C setCustomPictureBase(int,int)(1,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 400
+C setCustomPictureBase(int,int)(1,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 1
+C setCustomPictureBase(int,int)(1,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 400
+C setCustomPictureBase(int,int)(1,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 1
+C setCustomPictureBase(int,int)(1,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 400
+C setCustomPictureBase(int,int)(1,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 1
+C setCustomPictureBase(int,int)(1,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 400
+C setCustomPictureBase(int,int)(2,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 1
+C setCustomPictureBase(int,int)(2,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 400
+C setCustomPictureBase(int,int)(2,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 1
+C setCustomPictureBase(int,int)(2,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 400
+C setCustomPictureBase(int,int)(2,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 1
+C setCustomPictureBase(int,int)(2,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 400
+C setCustomPictureBase(int,int)(2,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 1
+C setCustomPictureBase(int,int)(2,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 400
+C setCustomPictureBase(int,int)(2,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 1
+C setCustomPictureBase(int,int)(2,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 400
+C setCustomPictureBase(int,int)(2,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 1
+C setCustomPictureBase(int,int)(2,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 400
+C setCustomPictureBase(int,int)(2,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 1
+C setCustomPictureBase(int,int)(2,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 400
+C setCustomPictureBase(int,int)(2,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 1
+C setCustomPictureBase(int,int)(2,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 400
+C setCustomPictureBase(int,int)(5,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 1
+C setCustomPictureBase(int,int)(5,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 400
+C setCustomPictureBase(int,int)(5,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 1
+C setCustomPictureBase(int,int)(5,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 400
+C setCustomPictureBase(int,int)(5,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 1
+C setCustomPictureBase(int,int)(5,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 400
+C setCustomPictureBase(int,int)(5,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 1
+C setCustomPictureBase(int,int)(5,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 400
+C setCustomPictureBase(int,int)(5,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 1
+C setCustomPictureBase(int,int)(5,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 400
+C setCustomPictureBase(int,int)(5,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 1
+C setCustomPictureBase(int,int)(5,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 400
+C setCustomPictureBase(int,int)(5,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 1
+C setCustomPictureBase(int,int)(5,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 400
+C setCustomPictureBase(int,int)(5,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 1
+C setCustomPictureBase(int,int)(5,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 400
+C setCustomPictureBase(int,int)(13,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 1
+C setCustomPictureBase(int,int)(13,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 400
+C setCustomPictureBase(int,int)(13,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 1
+C setCustomPictureBase(int,int)(13,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 400
+C setCustomPictureBase(int,int)(13,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 1
+C setCustomPictureBase(int,int)(13,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 400
+C setCustomPictureBase(int,int)(13,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 1
+C setCustomPictureBase(int,int)(13,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 400
+C setCustomPictureBase(int,int)(13,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 1
+C setCustomPictureBase(int,int)(13,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 400
+C setCustomPictureBase(int,int)(13,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 1
+C setCustomPictureBase(int,int)(13,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 400
+C setCustomPictureBase(int,int)(13,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 1
+C setCustomPictureBase(int,int)(13,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 400
+C setCustomPictureBase(int,int)(13,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 1
+C setCustomPictureBase(int,int)(13,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 400
+C setCustomPictureBase(int,int)(50,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 1
+C setCustomPictureBase(int,int)(50,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 400
+C setCustomPictureBase(int,int)(50,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 1
+C setCustomPictureBase(int,int)(50,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 400
+C setCustomPictureBase(int,int)(50,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 1
+C setCustomPictureBase(int,int)(50,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 400
+C setCustomPictureBase(int,int)(50,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 1
+C setCustomPictureBase(int,int)(50,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 400
+C setCustomPictureBase(int,int)(50,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 1
+C setCustomPictureBase(int,int)(50,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 400
+C setCustomPictureBase(int,int)(50,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 1
+C setCustomPictureBase(int,int)(50,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 400
+C setCustomPictureBase(int,int)(50,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 1
+C setCustomPictureBase(int,int)(50,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 400
+C setCustomPictureBase(int,int)(50,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 1
+C setCustomPictureBase(int,int)(50,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 400
+C setCustomPictureBase(int,int)(100,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 1
+C setCustomPictureBase(int,int)(100,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 400
+C setCustomPictureBase(int,int)(100,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 1
+C setCustomPictureBase(int,int)(100,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 400
+C setCustomPictureBase(int,int)(100,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 1
+C setCustomPictureBase(int,int)(100,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 400
+C setCustomPictureBase(int,int)(100,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 1
+C setCustomPictureBase(int,int)(100,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 400
+C setCustomPictureBase(int,int)(100,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 1
+C setCustomPictureBase(int,int)(100,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 400
+C setCustomPictureBase(int,int)(100,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 1
+C setCustomPictureBase(int,int)(100,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 400
+C setCustomPictureBase(int,int)(100,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 1
+C setCustomPictureBase(int,int)(100,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 400
+C setCustomPictureBase(int,int)(100,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 1
+C setCustomPictureBase(int,int)(100,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 400
+C setCustomPictureBase(int,int)(160,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 1
+C setCustomPictureBase(int,int)(160,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 400
+C setCustomPictureBase(int,int)(160,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 1
+C setCustomPictureBase(int,int)(160,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 400
+C setCustomPictureBase(int,int)(160,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 1
+C setCustomPictureBase(int,int)(160,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 400
+C setCustomPictureBase(int,int)(160,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 1
+C setCustomPictureBase(int,int)(160,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 400
+C setCustomPictureBase(int,int)(160,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 1
+C setCustomPictureBase(int,int)(160,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 400
+C setCustomPictureBase(int,int)(160,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 1
+C setCustomPictureBase(int,int)(160,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 400
+C setCustomPictureBase(int,int)(160,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 1
+C setCustomPictureBase(int,int)(160,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 400
+C setCustomPictureBase(int,int)(160,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 1
+C setCustomPictureBase(int,int)(160,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 400
+C setCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
+C setCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
 C setDarkScenes(boolean,int,int)(false,-1,-1) s0
   ! IllegalArgumentException: game picture -1 not in 0..4
 C setDarkScenes(boolean,int,int)(false,-1,-1) s2
@@ -4395,6 +5273,104 @@ C setEdidVersion(int)(20000) s0
   ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
   ! IllegalArgumentException: edid 20000: not a stock value here
+C setElderColorLevel(int)(-1) s0
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(-1) s2
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(3) s0
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(3) s2
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(5) s0
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(5) s2
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(6) s0
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(6) s2
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(10) s0
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(10) s2
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(12) s0
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(12) s2
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(13) s0
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(13) s2
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(17) s0
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(17) s2
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(44) s0
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(44) s2
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(50) s0
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(50) s2
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(100) s0
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(100) s2
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(101) s0
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(101) s2
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(106) s0
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(106) s2
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(160) s0
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(160) s2
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(192) s0
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(192) s2
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(500) s0
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(500) s2
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(20000) s0
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorLevel(int)(20000) s2
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorTone(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
+C setElderColorTone(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
 C setEyeProtection(boolean)(false) s0
   ! NuiNotReadyException: DISPLAY 61 setHumanDetectOnOff not sent: no NUI fifo reader (sys.z9x.nui != ready)
 C setEyeProtection(boolean)(false) s2
@@ -8225,6 +9201,18 @@ C setPowerOnAk(boolean)(true) s0
 C setPowerOnAk(boolean)(true) s2
   TX xgimi.hardware.gmpf.IGmFactoryManager 45 f0 1
   = null
+C setPowerOnMode(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
+C setPowerOnMode(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
 C setPowerOnMusic(boolean)(false) s0
   TX xgimi.hardware.gmpf.ISystemManager 5 f0 0
   = null
@@ -8769,6 +9757,18 @@ C setPutMode(PutMode)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setPutMode(PutMode)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setRainbowReductionStatus(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
+C setRainbowReductionStatus(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
 C setRealtimeAkTemporarily(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 15 f0 2 0
   = true
@@ -9475,6 +10475,18 @@ C shutScreen()() s2
 C shutScreen()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 168 f0 0 1
   = true
+C startAutoColor()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = false
+C startAutoColor()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -9871,6 +10883,30 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C useAutoColorMatched()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = false
+C useAutoColorMatched()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorOriginal()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = false
+C useAutoColorOriginal()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
 C vrrOn(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C vrrOn(int)(-1) s2
@@ -10068,6 +11104,254 @@ C connectFocusManager()() s2
 C connectFocusManager()() s3
   TX xgimi.hardware.gmpf.IProjectorFocusManager 1 f0 1651076708
   = null
+C createCustomPictureMode()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 1
+C createCustomPictureMode()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 0
+C createCustomPictureMode()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 400
+C createCustomPictureMode()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 5
+C customPictureBase(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 1
+C customPictureBase(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 400
+C customPictureBase(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 1
+C customPictureBase(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 400
+C customPictureBase(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 1
+C customPictureBase(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 400
+C customPictureBase(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 1
+C customPictureBase(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 400
+C customPictureBase(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 1
+C customPictureBase(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 400
+C customPictureBase(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 1
+C customPictureBase(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 400
+C customPictureBase(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 1
+C customPictureBase(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 400
+C customPictureBase(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 1
+C customPictureBase(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 400
+C customPictureBase(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 1
+C customPictureBase(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 400
+C customPictureBase(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 1
+C customPictureBase(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 400
+C customPictureBase(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 1
+C customPictureBase(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 400
+C customPictureBase(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 1
+C customPictureBase(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 400
+C customPictureBase(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 1
+C customPictureBase(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 400
+C customPictureBase(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 1
+C customPictureBase(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 400
+C customPictureBase(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 1
+C customPictureBase(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 400
+C customPictureBase(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 1
+C customPictureBase(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 400
+C customPictureBase(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 1
+C customPictureBase(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 400
+C customPictureBase(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 1
+C customPictureBase(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 400
+C customPictureBase(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 1
+C customPictureBase(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 400
+C deleteCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 1
+C deleteCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 400
+C deleteCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 1
+C deleteCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 400
+C deleteCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 1
+C deleteCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 400
+C deleteCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 1
+C deleteCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 400
+C deleteCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 1
+C deleteCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 400
+C deleteCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 1
+C deleteCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 400
+C deleteCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 1
+C deleteCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 400
+C deleteCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 1
+C deleteCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 400
+C deleteCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 1
+C deleteCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 400
+C deleteCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 1
+C deleteCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 400
+C deleteCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 1
+C deleteCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 400
+C deleteCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 1
+C deleteCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 400
+C deleteCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 1
+C deleteCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 400
+C deleteCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 1
+C deleteCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 400
+C deleteCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 1
+C deleteCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 400
+C deleteCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 1
+C deleteCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 400
+C deleteCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 1
+C deleteCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 400
+C deleteCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 1
+C deleteCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 400
+C deleteCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 1
+C deleteCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 400
 C disablePushPullScreenForCeiling()() s0
   TX xgimi.hardware.gmpf.ISystemManager 140 f0 0
   = true
@@ -11469,6 +12753,30 @@ C getEdidVersion()() s2
   = 400
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 39 f0 
+  = 5
+C getElderColorLevel()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 1
+C getElderColorLevel()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 0
+C getElderColorLevel()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 400
+C getElderColorLevel()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 5
+C getElderColorTone()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 1
+C getElderColorTone()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 0
+C getElderColorTone()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 400
+C getElderColorTone()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
   = 5
 C getExtDecInfo(String)(NativeUIWatch) s0
   ! IllegalArgumentException: ext dec key NativeUIWatch
@@ -11869,19 +13177,19 @@ C getMemcLevel()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 32 f0 0
   = 5
 C getMotionDetection()() s0
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
 C getMotionDetection()() s1
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
 C getMotionDetection()() s2
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
 C getMotionDetection()() s3
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
 C getMoveAf()() s0
@@ -12084,6 +13392,18 @@ C getPowerOnAk()() s2
 C getPowerOnAk()() s3
   TX xgimi.hardware.gmpf.IGmFactoryManager 46 f0 
   = true
+C getPowerOnMode()() s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = true
+C getPowerOnMode()() s1
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s3
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
 C getPowerOnMusic()() s0
   TX xgimi.hardware.gmpf.ISystemManager 6 f0 
   = true
@@ -12136,6 +13456,18 @@ C getPutMode()() s2
 C getPutMode()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 3 f0 
   = null
+C getRainbowReductionStatus()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 1
+C getRainbowReductionStatus()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 0
+C getRainbowReductionStatus()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 400
+C getRainbowReductionStatus()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 5
 C getScreenOn()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 28 f0 
   = true
@@ -12333,19 +13665,19 @@ C getSystemUiState()() s3
   TX xgimi.hardware.gmpf.ISystemManager 37 f0 
   = 5
 C getTofDistance()() s0
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1
 C getTofDistance()() s1
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 0
 C getTofDistance()() s2
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 400
 C getTofDistance()() s3
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 5
 C getVolumeBalance()() s0
@@ -13240,6 +14572,18 @@ C setAudioOutput(AudioPath)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setAudioOutput(AudioPath)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAutoExposure(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 1
+C setAutoExposure(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 400
+C setAutoExposure(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 1
+C setAutoExposure(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 400
 C setAutoReverse(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 8 f0 0
   = true
@@ -13410,6 +14754,576 @@ C setCurtainFit(boolean)(true) s2
   GATE CURTAIN_FIT setProjCurtainAdp
   TX xgimi.hardware.gmpf.IProjectorFocusManager 35 f0 1
   = null
+C setCustomPictureBase(int,int)(-1,-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 1
+C setCustomPictureBase(int,int)(0,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 400
+C setCustomPictureBase(int,int)(0,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 1
+C setCustomPictureBase(int,int)(0,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 400
+C setCustomPictureBase(int,int)(0,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 1
+C setCustomPictureBase(int,int)(0,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 400
+C setCustomPictureBase(int,int)(0,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 1
+C setCustomPictureBase(int,int)(0,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 400
+C setCustomPictureBase(int,int)(0,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 1
+C setCustomPictureBase(int,int)(0,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 400
+C setCustomPictureBase(int,int)(0,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 1
+C setCustomPictureBase(int,int)(0,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 400
+C setCustomPictureBase(int,int)(0,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 1
+C setCustomPictureBase(int,int)(0,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 400
+C setCustomPictureBase(int,int)(0,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 1
+C setCustomPictureBase(int,int)(0,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 400
+C setCustomPictureBase(int,int)(1,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 1
+C setCustomPictureBase(int,int)(1,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 400
+C setCustomPictureBase(int,int)(1,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 1
+C setCustomPictureBase(int,int)(1,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 400
+C setCustomPictureBase(int,int)(1,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 1
+C setCustomPictureBase(int,int)(1,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 400
+C setCustomPictureBase(int,int)(1,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 1
+C setCustomPictureBase(int,int)(1,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 400
+C setCustomPictureBase(int,int)(1,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 1
+C setCustomPictureBase(int,int)(1,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 400
+C setCustomPictureBase(int,int)(1,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 1
+C setCustomPictureBase(int,int)(1,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 400
+C setCustomPictureBase(int,int)(1,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 1
+C setCustomPictureBase(int,int)(1,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 400
+C setCustomPictureBase(int,int)(1,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 1
+C setCustomPictureBase(int,int)(1,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 400
+C setCustomPictureBase(int,int)(2,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 1
+C setCustomPictureBase(int,int)(2,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 400
+C setCustomPictureBase(int,int)(2,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 1
+C setCustomPictureBase(int,int)(2,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 400
+C setCustomPictureBase(int,int)(2,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 1
+C setCustomPictureBase(int,int)(2,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 400
+C setCustomPictureBase(int,int)(2,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 1
+C setCustomPictureBase(int,int)(2,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 400
+C setCustomPictureBase(int,int)(2,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 1
+C setCustomPictureBase(int,int)(2,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 400
+C setCustomPictureBase(int,int)(2,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 1
+C setCustomPictureBase(int,int)(2,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 400
+C setCustomPictureBase(int,int)(2,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 1
+C setCustomPictureBase(int,int)(2,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 400
+C setCustomPictureBase(int,int)(2,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 1
+C setCustomPictureBase(int,int)(2,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 400
+C setCustomPictureBase(int,int)(5,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 1
+C setCustomPictureBase(int,int)(5,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 400
+C setCustomPictureBase(int,int)(5,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 1
+C setCustomPictureBase(int,int)(5,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 400
+C setCustomPictureBase(int,int)(5,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 1
+C setCustomPictureBase(int,int)(5,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 400
+C setCustomPictureBase(int,int)(5,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 1
+C setCustomPictureBase(int,int)(5,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 400
+C setCustomPictureBase(int,int)(5,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 1
+C setCustomPictureBase(int,int)(5,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 400
+C setCustomPictureBase(int,int)(5,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 1
+C setCustomPictureBase(int,int)(5,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 400
+C setCustomPictureBase(int,int)(5,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 1
+C setCustomPictureBase(int,int)(5,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 400
+C setCustomPictureBase(int,int)(5,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 1
+C setCustomPictureBase(int,int)(5,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 400
+C setCustomPictureBase(int,int)(13,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 1
+C setCustomPictureBase(int,int)(13,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 400
+C setCustomPictureBase(int,int)(13,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 1
+C setCustomPictureBase(int,int)(13,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 400
+C setCustomPictureBase(int,int)(13,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 1
+C setCustomPictureBase(int,int)(13,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 400
+C setCustomPictureBase(int,int)(13,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 1
+C setCustomPictureBase(int,int)(13,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 400
+C setCustomPictureBase(int,int)(13,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 1
+C setCustomPictureBase(int,int)(13,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 400
+C setCustomPictureBase(int,int)(13,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 1
+C setCustomPictureBase(int,int)(13,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 400
+C setCustomPictureBase(int,int)(13,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 1
+C setCustomPictureBase(int,int)(13,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 400
+C setCustomPictureBase(int,int)(13,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 1
+C setCustomPictureBase(int,int)(13,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 400
+C setCustomPictureBase(int,int)(50,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 1
+C setCustomPictureBase(int,int)(50,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 400
+C setCustomPictureBase(int,int)(50,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 1
+C setCustomPictureBase(int,int)(50,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 400
+C setCustomPictureBase(int,int)(50,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 1
+C setCustomPictureBase(int,int)(50,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 400
+C setCustomPictureBase(int,int)(50,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 1
+C setCustomPictureBase(int,int)(50,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 400
+C setCustomPictureBase(int,int)(50,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 1
+C setCustomPictureBase(int,int)(50,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 400
+C setCustomPictureBase(int,int)(50,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 1
+C setCustomPictureBase(int,int)(50,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 400
+C setCustomPictureBase(int,int)(50,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 1
+C setCustomPictureBase(int,int)(50,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 400
+C setCustomPictureBase(int,int)(50,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 1
+C setCustomPictureBase(int,int)(50,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 400
+C setCustomPictureBase(int,int)(100,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 1
+C setCustomPictureBase(int,int)(100,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 400
+C setCustomPictureBase(int,int)(100,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 1
+C setCustomPictureBase(int,int)(100,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 400
+C setCustomPictureBase(int,int)(100,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 1
+C setCustomPictureBase(int,int)(100,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 400
+C setCustomPictureBase(int,int)(100,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 1
+C setCustomPictureBase(int,int)(100,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 400
+C setCustomPictureBase(int,int)(100,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 1
+C setCustomPictureBase(int,int)(100,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 400
+C setCustomPictureBase(int,int)(100,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 1
+C setCustomPictureBase(int,int)(100,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 400
+C setCustomPictureBase(int,int)(100,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 1
+C setCustomPictureBase(int,int)(100,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 400
+C setCustomPictureBase(int,int)(100,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 1
+C setCustomPictureBase(int,int)(100,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 400
+C setCustomPictureBase(int,int)(160,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 1
+C setCustomPictureBase(int,int)(160,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 400
+C setCustomPictureBase(int,int)(160,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 1
+C setCustomPictureBase(int,int)(160,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 400
+C setCustomPictureBase(int,int)(160,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 1
+C setCustomPictureBase(int,int)(160,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 400
+C setCustomPictureBase(int,int)(160,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 1
+C setCustomPictureBase(int,int)(160,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 400
+C setCustomPictureBase(int,int)(160,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 1
+C setCustomPictureBase(int,int)(160,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 400
+C setCustomPictureBase(int,int)(160,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 1
+C setCustomPictureBase(int,int)(160,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 400
+C setCustomPictureBase(int,int)(160,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 1
+C setCustomPictureBase(int,int)(160,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 400
+C setCustomPictureBase(int,int)(160,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 1
+C setCustomPictureBase(int,int)(160,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 400
+C setCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
+C setCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
 C setDarkScenes(boolean,int,int)(false,-1,-1) s0
   ! IllegalArgumentException: game picture -1 not in 0..4
 C setDarkScenes(boolean,int,int)(false,-1,-1) s2
@@ -14358,6 +16272,104 @@ C setEdidVersion(int)(20000) s0
   ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
   ! IllegalArgumentException: edid 20000: not a stock value here
+C setElderColorLevel(int)(-1) s0
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(-1) s2
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(3) s0
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(3) s2
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(5) s0
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(5) s2
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(6) s0
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(6) s2
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(10) s0
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(10) s2
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(12) s0
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(12) s2
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(13) s0
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(13) s2
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(17) s0
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(17) s2
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(44) s0
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(44) s2
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(50) s0
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(50) s2
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(100) s0
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(100) s2
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(101) s0
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(101) s2
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(106) s0
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(106) s2
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(160) s0
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(160) s2
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(192) s0
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(192) s2
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(500) s0
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(500) s2
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(20000) s0
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorLevel(int)(20000) s2
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorTone(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
+C setElderColorTone(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
 C setEyeProtection(boolean)(false) s0
   TX xgimi.hardware.gmpf.IDisplayManager 61 f0 0
   = true
@@ -18192,6 +20204,18 @@ C setPowerOnAk(boolean)(true) s0
 C setPowerOnAk(boolean)(true) s2
   TX xgimi.hardware.gmpf.IGmFactoryManager 45 f0 1
   = null
+C setPowerOnMode(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
+C setPowerOnMode(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
 C setPowerOnMusic(boolean)(false) s0
   TX xgimi.hardware.gmpf.ISystemManager 5 f0 0
   = null
@@ -18736,6 +20760,18 @@ C setPutMode(PutMode)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setPutMode(PutMode)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setRainbowReductionStatus(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
+C setRainbowReductionStatus(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
 C setRealtimeAkTemporarily(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 15 f0 2 0
   = true
@@ -19442,6 +21478,18 @@ C shutScreen()() s2
 C shutScreen()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 168 f0 0 1
   = true
+C startAutoColor()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = false
+C startAutoColor()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -19838,6 +21886,30 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C useAutoColorMatched()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = false
+C useAutoColorMatched()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorOriginal()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = false
+C useAutoColorOriginal()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
 C vrrOn(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C vrrOn(int)(-1) s2
@@ -20023,6 +22095,254 @@ C connectFocusManager()() s2
 C connectFocusManager()() s3
   TX xgimi.hardware.gmpf.IProjectorFocusManager 1 f0 1651076708
   = null
+C createCustomPictureMode()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 1
+C createCustomPictureMode()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 0
+C createCustomPictureMode()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 400
+C createCustomPictureMode()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 195 f0 -1
+  = 5
+C customPictureBase(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C customPictureBase(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 1
+C customPictureBase(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 0
+  = 400
+C customPictureBase(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 1
+C customPictureBase(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 1
+  = 400
+C customPictureBase(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 1
+C customPictureBase(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 2
+  = 400
+C customPictureBase(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 1
+C customPictureBase(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 3
+  = 400
+C customPictureBase(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 1
+C customPictureBase(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 5
+  = 400
+C customPictureBase(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 1
+C customPictureBase(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 6
+  = 400
+C customPictureBase(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 1
+C customPictureBase(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 10
+  = 400
+C customPictureBase(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 1
+C customPictureBase(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 12
+  = 400
+C customPictureBase(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 1
+C customPictureBase(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 13
+  = 400
+C customPictureBase(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 1
+C customPictureBase(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 17
+  = 400
+C customPictureBase(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 1
+C customPictureBase(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 44
+  = 400
+C customPictureBase(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 1
+C customPictureBase(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 50
+  = 400
+C customPictureBase(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 1
+C customPictureBase(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 100
+  = 400
+C customPictureBase(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 1
+C customPictureBase(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 101
+  = 400
+C customPictureBase(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 1
+C customPictureBase(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 106
+  = 400
+C customPictureBase(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 1
+C customPictureBase(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 160
+  = 400
+C customPictureBase(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 1
+C customPictureBase(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 192
+  = 400
+C customPictureBase(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 1
+C customPictureBase(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 500
+  = 400
+C customPictureBase(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 1
+C customPictureBase(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 198 f0 20000
+  = 400
+C deleteCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C deleteCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 1
+C deleteCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 0
+  = 400
+C deleteCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 1
+C deleteCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 1
+  = 400
+C deleteCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 1
+C deleteCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 2
+  = 400
+C deleteCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 1
+C deleteCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 3
+  = 400
+C deleteCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 1
+C deleteCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 5
+  = 400
+C deleteCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 1
+C deleteCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 6
+  = 400
+C deleteCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 1
+C deleteCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 10
+  = 400
+C deleteCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 1
+C deleteCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 12
+  = 400
+C deleteCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 1
+C deleteCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 13
+  = 400
+C deleteCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 1
+C deleteCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 17
+  = 400
+C deleteCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 1
+C deleteCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 44
+  = 400
+C deleteCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 1
+C deleteCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 50
+  = 400
+C deleteCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 1
+C deleteCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 100
+  = 400
+C deleteCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 1
+C deleteCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 101
+  = 400
+C deleteCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 1
+C deleteCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 106
+  = 400
+C deleteCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 1
+C deleteCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 160
+  = 400
+C deleteCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 1
+C deleteCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 192
+  = 400
+C deleteCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 1
+C deleteCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 500
+  = 400
+C deleteCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 1
+C deleteCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 196 f0 20000
+  = 400
 C disablePushPullScreenForCeiling()() s0
   TX xgimi.hardware.gmpf.ISystemManager 140 f0 0
   = true
@@ -21425,6 +23745,30 @@ C getEdidVersion()() s2
 C getEdidVersion()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 39 f0 
   = 5
+C getElderColorLevel()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 1
+C getElderColorLevel()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 0
+C getElderColorLevel()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 400
+C getElderColorLevel()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 181 f0 
+  = 5
+C getElderColorTone()() s0
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 1
+C getElderColorTone()() s1
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 0
+C getElderColorTone()() s2
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 400
+C getElderColorTone()() s3
+  TX xgimi.hardware.gmpf.IGmTvManager 179 f0 
+  = 5
 C getExtDecInfo(String)(NativeUIWatch) s0
   ! IllegalArgumentException: ext dec key NativeUIWatch
 C getExtDecInfo(String)(NativeUIWatch) s2
@@ -21820,17 +24164,17 @@ C getMemcLevel()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 32 f0 0
   = 5
 C getMotionDetection()() s0
-  GATE FIT_SCREEN getMotionDetection
-  ! NotOnHbException: getMotionDetection (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getMotionDetection
+  ! NotOnHbException: getMotionDetection (MOTION is OFF): not on the Z9X HB, nothing sent
 C getMotionDetection()() s1
-  GATE FIT_SCREEN getMotionDetection
-  ! NotOnHbException: getMotionDetection (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getMotionDetection
+  ! NotOnHbException: getMotionDetection (MOTION is OFF): not on the Z9X HB, nothing sent
 C getMotionDetection()() s2
-  GATE FIT_SCREEN getMotionDetection
-  ! NotOnHbException: getMotionDetection (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getMotionDetection
+  ! NotOnHbException: getMotionDetection (MOTION is OFF): not on the Z9X HB, nothing sent
 C getMotionDetection()() s3
-  GATE FIT_SCREEN getMotionDetection
-  ! NotOnHbException: getMotionDetection (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getMotionDetection
+  ! NotOnHbException: getMotionDetection (MOTION is OFF): not on the Z9X HB, nothing sent
 C getMoveAf()() s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 5 f0 
   = true
@@ -22031,6 +24375,18 @@ C getPowerOnAk()() s2
 C getPowerOnAk()() s3
   TX xgimi.hardware.gmpf.IGmFactoryManager 46 f0 
   = true
+C getPowerOnMode()() s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = true
+C getPowerOnMode()() s1
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
+C getPowerOnMode()() s3
+  TX xgimi.hardware.gmpf.IGmFactoryManager 37 f0 
+  = false
 C getPowerOnMusic()() s0
   TX xgimi.hardware.gmpf.ISystemManager 6 f0 
   = true
@@ -22083,6 +24439,18 @@ C getPutMode()() s2
 C getPutMode()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 3 f0 
   = null
+C getRainbowReductionStatus()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 1
+C getRainbowReductionStatus()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 0
+C getRainbowReductionStatus()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 400
+C getRainbowReductionStatus()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 203 f0 
+  = 5
 C getScreenOn()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 28 f0 
   = true
@@ -22276,17 +24644,17 @@ C getSystemUiState()() s3
   TX xgimi.hardware.gmpf.ISystemManager 37 f0 
   = 5
 C getTofDistance()() s0
-  GATE FIT_SCREEN getTofDistance
-  ! NotOnHbException: getTofDistance (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getTofDistance
+  ! NotOnHbException: getTofDistance (MOTION is OFF): not on the Z9X HB, nothing sent
 C getTofDistance()() s1
-  GATE FIT_SCREEN getTofDistance
-  ! NotOnHbException: getTofDistance (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getTofDistance
+  ! NotOnHbException: getTofDistance (MOTION is OFF): not on the Z9X HB, nothing sent
 C getTofDistance()() s2
-  GATE FIT_SCREEN getTofDistance
-  ! NotOnHbException: getTofDistance (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getTofDistance
+  ! NotOnHbException: getTofDistance (MOTION is OFF): not on the Z9X HB, nothing sent
 C getTofDistance()() s3
-  GATE FIT_SCREEN getTofDistance
-  ! NotOnHbException: getTofDistance (FIT_SCREEN is OFF): not on the Z9X HB, nothing sent
+  GATE MOTION getTofDistance
+  ! NotOnHbException: getTofDistance (MOTION is OFF): not on the Z9X HB, nothing sent
 C getVolumeBalance()() s0
   ! NotOnHbException: getVolumeBalanceEnable: not on the Z9X HB, nothing sent
 C getVolumeBalance()() s1
@@ -23143,6 +25511,18 @@ C setAudioOutput(AudioPath)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setAudioOutput(AudioPath)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setAutoExposure(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 1
+C setAutoExposure(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 0
+  = 400
+C setAutoExposure(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 1
+C setAutoExposure(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 150 f0 1
+  = 400
 C setAutoReverse(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 8 f0 0
   = true
@@ -23303,6 +25683,576 @@ C setCurtainFit(boolean)(true) s0
 C setCurtainFit(boolean)(true) s2
   GATE CURTAIN_FIT setProjCurtainAdp
   ! NotOnHbException: setProjCurtainAdp (CURTAIN_FIT is OFF): not on the Z9X HB, nothing sent
+C setCustomPictureBase(int,int)(-1,-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,0) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,2) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,5) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,13) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,50) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,100) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(-1,160) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(0,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 1
+C setCustomPictureBase(int,int)(0,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 0
+  = 400
+C setCustomPictureBase(int,int)(0,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 1
+C setCustomPictureBase(int,int)(0,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 1
+  = 400
+C setCustomPictureBase(int,int)(0,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 1
+C setCustomPictureBase(int,int)(0,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 2
+  = 400
+C setCustomPictureBase(int,int)(0,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 1
+C setCustomPictureBase(int,int)(0,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 5
+  = 400
+C setCustomPictureBase(int,int)(0,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 1
+C setCustomPictureBase(int,int)(0,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 13
+  = 400
+C setCustomPictureBase(int,int)(0,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 1
+C setCustomPictureBase(int,int)(0,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 50
+  = 400
+C setCustomPictureBase(int,int)(0,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 1
+C setCustomPictureBase(int,int)(0,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 100
+  = 400
+C setCustomPictureBase(int,int)(0,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 1
+C setCustomPictureBase(int,int)(0,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 0 160
+  = 400
+C setCustomPictureBase(int,int)(1,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(1,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 1
+C setCustomPictureBase(int,int)(1,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 0
+  = 400
+C setCustomPictureBase(int,int)(1,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 1
+C setCustomPictureBase(int,int)(1,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 1
+  = 400
+C setCustomPictureBase(int,int)(1,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 1
+C setCustomPictureBase(int,int)(1,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 2
+  = 400
+C setCustomPictureBase(int,int)(1,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 1
+C setCustomPictureBase(int,int)(1,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 5
+  = 400
+C setCustomPictureBase(int,int)(1,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 1
+C setCustomPictureBase(int,int)(1,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 13
+  = 400
+C setCustomPictureBase(int,int)(1,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 1
+C setCustomPictureBase(int,int)(1,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 50
+  = 400
+C setCustomPictureBase(int,int)(1,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 1
+C setCustomPictureBase(int,int)(1,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 100
+  = 400
+C setCustomPictureBase(int,int)(1,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 1
+C setCustomPictureBase(int,int)(1,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 1 160
+  = 400
+C setCustomPictureBase(int,int)(2,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(2,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 1
+C setCustomPictureBase(int,int)(2,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 0
+  = 400
+C setCustomPictureBase(int,int)(2,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 1
+C setCustomPictureBase(int,int)(2,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 1
+  = 400
+C setCustomPictureBase(int,int)(2,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 1
+C setCustomPictureBase(int,int)(2,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 2
+  = 400
+C setCustomPictureBase(int,int)(2,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 1
+C setCustomPictureBase(int,int)(2,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 5
+  = 400
+C setCustomPictureBase(int,int)(2,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 1
+C setCustomPictureBase(int,int)(2,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 13
+  = 400
+C setCustomPictureBase(int,int)(2,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 1
+C setCustomPictureBase(int,int)(2,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 50
+  = 400
+C setCustomPictureBase(int,int)(2,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 1
+C setCustomPictureBase(int,int)(2,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 100
+  = 400
+C setCustomPictureBase(int,int)(2,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 1
+C setCustomPictureBase(int,int)(2,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 2 160
+  = 400
+C setCustomPictureBase(int,int)(5,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(5,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 1
+C setCustomPictureBase(int,int)(5,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 0
+  = 400
+C setCustomPictureBase(int,int)(5,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 1
+C setCustomPictureBase(int,int)(5,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 1
+  = 400
+C setCustomPictureBase(int,int)(5,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 1
+C setCustomPictureBase(int,int)(5,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 2
+  = 400
+C setCustomPictureBase(int,int)(5,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 1
+C setCustomPictureBase(int,int)(5,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 5
+  = 400
+C setCustomPictureBase(int,int)(5,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 1
+C setCustomPictureBase(int,int)(5,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 13
+  = 400
+C setCustomPictureBase(int,int)(5,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 1
+C setCustomPictureBase(int,int)(5,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 50
+  = 400
+C setCustomPictureBase(int,int)(5,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 1
+C setCustomPictureBase(int,int)(5,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 100
+  = 400
+C setCustomPictureBase(int,int)(5,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 1
+C setCustomPictureBase(int,int)(5,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 5 160
+  = 400
+C setCustomPictureBase(int,int)(13,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(13,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 1
+C setCustomPictureBase(int,int)(13,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 0
+  = 400
+C setCustomPictureBase(int,int)(13,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 1
+C setCustomPictureBase(int,int)(13,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 1
+  = 400
+C setCustomPictureBase(int,int)(13,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 1
+C setCustomPictureBase(int,int)(13,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 2
+  = 400
+C setCustomPictureBase(int,int)(13,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 1
+C setCustomPictureBase(int,int)(13,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 5
+  = 400
+C setCustomPictureBase(int,int)(13,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 1
+C setCustomPictureBase(int,int)(13,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 13
+  = 400
+C setCustomPictureBase(int,int)(13,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 1
+C setCustomPictureBase(int,int)(13,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 50
+  = 400
+C setCustomPictureBase(int,int)(13,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 1
+C setCustomPictureBase(int,int)(13,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 100
+  = 400
+C setCustomPictureBase(int,int)(13,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 1
+C setCustomPictureBase(int,int)(13,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 13 160
+  = 400
+C setCustomPictureBase(int,int)(50,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(50,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 1
+C setCustomPictureBase(int,int)(50,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 0
+  = 400
+C setCustomPictureBase(int,int)(50,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 1
+C setCustomPictureBase(int,int)(50,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 1
+  = 400
+C setCustomPictureBase(int,int)(50,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 1
+C setCustomPictureBase(int,int)(50,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 2
+  = 400
+C setCustomPictureBase(int,int)(50,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 1
+C setCustomPictureBase(int,int)(50,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 5
+  = 400
+C setCustomPictureBase(int,int)(50,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 1
+C setCustomPictureBase(int,int)(50,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 13
+  = 400
+C setCustomPictureBase(int,int)(50,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 1
+C setCustomPictureBase(int,int)(50,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 50
+  = 400
+C setCustomPictureBase(int,int)(50,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 1
+C setCustomPictureBase(int,int)(50,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 100
+  = 400
+C setCustomPictureBase(int,int)(50,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 1
+C setCustomPictureBase(int,int)(50,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 50 160
+  = 400
+C setCustomPictureBase(int,int)(100,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(100,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 1
+C setCustomPictureBase(int,int)(100,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 0
+  = 400
+C setCustomPictureBase(int,int)(100,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 1
+C setCustomPictureBase(int,int)(100,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 1
+  = 400
+C setCustomPictureBase(int,int)(100,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 1
+C setCustomPictureBase(int,int)(100,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 2
+  = 400
+C setCustomPictureBase(int,int)(100,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 1
+C setCustomPictureBase(int,int)(100,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 5
+  = 400
+C setCustomPictureBase(int,int)(100,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 1
+C setCustomPictureBase(int,int)(100,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 13
+  = 400
+C setCustomPictureBase(int,int)(100,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 1
+C setCustomPictureBase(int,int)(100,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 50
+  = 400
+C setCustomPictureBase(int,int)(100,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 1
+C setCustomPictureBase(int,int)(100,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 100
+  = 400
+C setCustomPictureBase(int,int)(100,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 1
+C setCustomPictureBase(int,int)(100,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 100 160
+  = 400
+C setCustomPictureBase(int,int)(160,-1) s0
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,-1) s2
+  ! IllegalArgumentException: custom base -1 not in 0..2147483647
+C setCustomPictureBase(int,int)(160,0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 1
+C setCustomPictureBase(int,int)(160,0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 0
+  = 400
+C setCustomPictureBase(int,int)(160,1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 1
+C setCustomPictureBase(int,int)(160,1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 1
+  = 400
+C setCustomPictureBase(int,int)(160,2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 1
+C setCustomPictureBase(int,int)(160,2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 2
+  = 400
+C setCustomPictureBase(int,int)(160,5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 1
+C setCustomPictureBase(int,int)(160,5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 5
+  = 400
+C setCustomPictureBase(int,int)(160,13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 1
+C setCustomPictureBase(int,int)(160,13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 13
+  = 400
+C setCustomPictureBase(int,int)(160,50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 1
+C setCustomPictureBase(int,int)(160,50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 50
+  = 400
+C setCustomPictureBase(int,int)(160,100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 1
+C setCustomPictureBase(int,int)(160,100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 100
+  = 400
+C setCustomPictureBase(int,int)(160,160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 1
+C setCustomPictureBase(int,int)(160,160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 197 f0 160 160
+  = 400
+C setCustomPictureMode(int)(-1) s0
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(-1) s2
+  ! IllegalArgumentException: custom picture mode -1 not in 0..2147483647
+C setCustomPictureMode(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 0
+  = true
+C setCustomPictureMode(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 1
+  = true
+C setCustomPictureMode(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 2
+  = true
+C setCustomPictureMode(int)(3) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(3) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 3
+  = true
+C setCustomPictureMode(int)(5) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(5) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 5
+  = true
+C setCustomPictureMode(int)(6) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(6) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 6
+  = true
+C setCustomPictureMode(int)(10) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(10) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 10
+  = true
+C setCustomPictureMode(int)(12) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(12) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 12
+  = true
+C setCustomPictureMode(int)(13) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(13) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 13
+  = true
+C setCustomPictureMode(int)(17) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(17) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 17
+  = true
+C setCustomPictureMode(int)(44) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(44) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 44
+  = true
+C setCustomPictureMode(int)(50) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(50) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 50
+  = true
+C setCustomPictureMode(int)(100) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(100) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 100
+  = true
+C setCustomPictureMode(int)(101) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(101) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 101
+  = true
+C setCustomPictureMode(int)(106) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(106) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 106
+  = true
+C setCustomPictureMode(int)(160) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(160) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 160
+  = true
+C setCustomPictureMode(int)(192) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(192) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 192
+  = true
+C setCustomPictureMode(int)(500) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(500) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 500
+  = true
+C setCustomPictureMode(int)(20000) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
+C setCustomPictureMode(int)(20000) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 33 f0 0 20000
+  = true
 C setDarkScenes(boolean,int,int)(false,-1,-1) s0
   ! IllegalArgumentException: game picture -1 not in 0..4
 C setDarkScenes(boolean,int,int)(false,-1,-1) s2
@@ -24215,6 +27165,104 @@ C setEdidVersion(int)(20000) s0
   ! IllegalArgumentException: edid 20000: not a stock value here
 C setEdidVersion(int)(20000) s2
   ! IllegalArgumentException: edid 20000: not a stock value here
+C setElderColorLevel(int)(-1) s0
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(-1) s2
+  ! IllegalArgumentException: senior colour -1 not in 0..2
+C setElderColorLevel(int)(0) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(0) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 0
+  = true
+C setElderColorLevel(int)(1) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(1) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 1
+  = true
+C setElderColorLevel(int)(2) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(2) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 182 f0 2
+  = true
+C setElderColorLevel(int)(3) s0
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(3) s2
+  ! IllegalArgumentException: senior colour 3 not in 0..2
+C setElderColorLevel(int)(5) s0
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(5) s2
+  ! IllegalArgumentException: senior colour 5 not in 0..2
+C setElderColorLevel(int)(6) s0
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(6) s2
+  ! IllegalArgumentException: senior colour 6 not in 0..2
+C setElderColorLevel(int)(10) s0
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(10) s2
+  ! IllegalArgumentException: senior colour 10 not in 0..2
+C setElderColorLevel(int)(12) s0
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(12) s2
+  ! IllegalArgumentException: senior colour 12 not in 0..2
+C setElderColorLevel(int)(13) s0
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(13) s2
+  ! IllegalArgumentException: senior colour 13 not in 0..2
+C setElderColorLevel(int)(17) s0
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(17) s2
+  ! IllegalArgumentException: senior colour 17 not in 0..2
+C setElderColorLevel(int)(44) s0
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(44) s2
+  ! IllegalArgumentException: senior colour 44 not in 0..2
+C setElderColorLevel(int)(50) s0
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(50) s2
+  ! IllegalArgumentException: senior colour 50 not in 0..2
+C setElderColorLevel(int)(100) s0
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(100) s2
+  ! IllegalArgumentException: senior colour 100 not in 0..2
+C setElderColorLevel(int)(101) s0
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(101) s2
+  ! IllegalArgumentException: senior colour 101 not in 0..2
+C setElderColorLevel(int)(106) s0
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(106) s2
+  ! IllegalArgumentException: senior colour 106 not in 0..2
+C setElderColorLevel(int)(160) s0
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(160) s2
+  ! IllegalArgumentException: senior colour 160 not in 0..2
+C setElderColorLevel(int)(192) s0
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(192) s2
+  ! IllegalArgumentException: senior colour 192 not in 0..2
+C setElderColorLevel(int)(500) s0
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(500) s2
+  ! IllegalArgumentException: senior colour 500 not in 0..2
+C setElderColorLevel(int)(20000) s0
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorLevel(int)(20000) s2
+  ! IllegalArgumentException: senior colour 20000 not in 0..2
+C setElderColorTone(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 0
+  = true
+C setElderColorTone(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
+C setElderColorTone(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmTvManager 180 f0 1
+  = true
 C setEyeProtection(boolean)(false) s0
   TX xgimi.hardware.gmpf.IDisplayManager 61 f0 0
   = true
@@ -28039,6 +31087,18 @@ C setPowerOnAk(boolean)(true) s0
 C setPowerOnAk(boolean)(true) s2
   TX xgimi.hardware.gmpf.IGmFactoryManager 45 f0 1
   = null
+C setPowerOnMode(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 0
+  = null
+C setPowerOnMode(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
+C setPowerOnMode(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IGmFactoryManager 36 f0 1
+  = null
 C setPowerOnMusic(boolean)(false) s0
   TX xgimi.hardware.gmpf.ISystemManager 5 f0 0
   = null
@@ -28583,6 +31643,18 @@ C setPutMode(PutMode)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C setPutMode(PutMode)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C setRainbowReductionStatus(boolean)(false) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(false) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 0
+  = true
+C setRainbowReductionStatus(boolean)(true) s0
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
+C setRainbowReductionStatus(boolean)(true) s2
+  TX xgimi.hardware.gmpf.IDisplayManager 205 f0 1
+  = true
 C setRealtimeAkTemporarily(boolean)(false) s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 15 f0 2 0
   = true
@@ -29273,6 +32345,18 @@ C shutScreen()() s2
 C shutScreen()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 168 f0 0 1
   = true
+C startAutoColor()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = false
+C startAutoColor()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
+C startAutoColor()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
+  = true
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -29669,6 +32753,30 @@ C uiHeartBeatSet(String,boolean,int)(null,true,160) s0
   ! IllegalArgumentException: bad watchdog name: null
 C uiHeartBeatSet(String,boolean,int)(null,true,160) s2
   ! IllegalArgumentException: bad watchdog name: null
+C useAutoColorMatched()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = false
+C useAutoColorMatched()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorMatched()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 115 f0 
+  = true
+C useAutoColorOriginal()() s0
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s1
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = false
+C useAutoColorOriginal()() s2
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
+C useAutoColorOriginal()() s3
+  TX xgimi.hardware.gmpf.IDisplayManager 114 f0 
+  = true
 C vrrOn(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C vrrOn(int)(-1) s2
@@ -29892,44 +33000,44 @@ C option getGameModeOption()
   TX xgimi.hardware.gmpf.IDisplayManager 77 f0 
   = BASIC_HFR
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   ! IllegalStateException: 46 getTofDistance within 1000 ms of the last one
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   TX xgimi.hardware.gmpf.IProjectorFocusManager 46 f0 
   = 1234
 C tof getTofDistance()
-  GATE FIT_SCREEN getTofDistance
+  GATE MOTION getTofDistance
   ! IllegalStateException: 46 getTofDistance: 6 reads in the last minute already
 C motion getMotionDetection()
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   = [1, 2, -1, 4, 5, 6, 3]
 C motion getMotionDetection()
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   ! IllegalStateException: 2 getMotionDetection within 80 ms of the last one
 C motion getMotionDetection()
-  GATE FIT_SCREEN getMotionDetection
+  GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
   ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: MsensorDataStruct arrays 2 / 3
 C struct getScreenRotation()

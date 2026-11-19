@@ -46,6 +46,11 @@ import org.lumen.home.ui.RowView;
 import org.lumen.home.ui.Theme;
 import org.lumen.home.ui.TileView;
 import org.lumen.home.usb.UsbInstallActivity;
+import org.lumen.home.watch.WatchApps;
+import org.lumen.home.watch.WatchLaunch;
+import org.lumen.home.watch.WatchPick;
+import org.lumen.ui.FocusRing;
+import org.lumen.ui.RingPaint;
 import org.lumen.ui.Tokens;
 
 import java.util.ArrayList;
@@ -71,10 +76,14 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
     private static final String YT = AppSource.PKG_YOUTUBE;
     /** Zones: the mic, the field, then the visible result rows. */
     private static final int Z_MIC = -1, Z_FIELD = 0;
+    /** The field's text and the mic sit above the field box, whose own elevation (up to 10) once hid the query. */
+    static final int FIELD_Z = 12;
+    /** Gap between result rows, and the room under a row of results for the focused tile's two caption lines. */
+    static final int ROW_GAP = 76, CAPTION_H = 64;
 
     private FrameLayout mRoot, mResults;
     private EditText mField;
-    private View mFieldBg;
+    private FieldBox mFieldBg;
     private Mic mMic;
     private TextView mStatus;
     private TvKeyboard mKb;
@@ -87,7 +96,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
     private final ArrayList<List<Runnable>> mActs = new ArrayList<>();
     private final ArrayList<Integer> mItem = new ArrayList<>();
     private volatile List<Card> mApps;
-    private List<Object[]> mSearchIn;
+    private List<SearchIn> mSearchIn;
     private final Runnable mRun = () -> runSearch(mField.getText().toString());
 
     @Override
@@ -177,7 +186,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         mRoot = new FrameLayout(this);
         mRoot.setClipChildren(false);
         mRoot.addView(new FieldView(this), new FrameLayout.LayoutParams(-1, -1));
-        mFieldBg = new View(this);
+        mFieldBg = new FieldBox(this);
         FrameLayout.LayoutParams fb = new FrameLayout.LayoutParams(Theme.px(1728), Theme.px(88));
         fb.leftMargin = Theme.px(Tokens.MARGIN);
         fb.topMargin = Theme.px(72);
@@ -190,6 +199,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
             setZone(Z_MIC);
             startVoice(0);
         });
+        mMic.setElevation(Theme.pxf(FIELD_Z));
         mRoot.addView(mMic, ml);
         mField = new EditText(this);
         mField.setBackground(null);
@@ -224,6 +234,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(Theme.px(1560), Theme.px(88));
         fl.leftMargin = Theme.px(Tokens.MARGIN + 100);
         fl.topMargin = Theme.px(72);
+        mField.setElevation(Theme.pxf(FIELD_Z));
         mRoot.addView(mField, fl);
         mStatus = new TextView(this);
         Theme.style(mStatus, Tokens.TYPE_BODY, 450, Theme.TEXT2, 0);
@@ -253,11 +264,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
 
     private void setZone(int z) {
         mZone = z;
-        GradientDrawable g = new GradientDrawable();
-        g.setCornerRadius(Theme.pxf(44));
-        g.setColor(Theme.SURFACE);
-        if (z == Z_FIELD) g.setStroke(Theme.px(Tokens.RING_W), Theme.RING);
-        mFieldBg.setBackground(g);
+        mFieldBg.setRing(z == Z_FIELD);
         mFieldBg.setElevation(z == Z_FIELD ? Theme.pxf(10) : Theme.pxf(2));
         mMic.setFocusedState(z == Z_MIC);
         if (z == Z_FIELD) mField.requestFocus();
@@ -271,19 +278,26 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         layoutRows();
     }
 
+    /** A row's height plus the gap; a row of results also keeps room for the focused tile's caption (title, app). */
+    private float pitch(int r) {
+        RowView rv = mRows.get(r);
+        boolean caption = !rv.tiles().isEmpty() && rv.tiles().get(0).kind == TileView.REC;
+        return rv.designHeight() + ROW_GAP + (caption ? CAPTION_H : 0);
+    }
+
     private void layoutRows() {
         float y = 240;
         int focus = mZone - 1;
         for (int r = 0; r < mRows.size(); r++) {
             RowView rv = mRows.get(r);
-            float pitch = rv.designHeight() + 76;
+            float pitch = pitch(r);
             rv.animate().translationY(Theme.pxf(y)).setDuration(Theme.PAGE_SCROLL_MS).setInterpolator(Theme.EMPHASIZED).start();
             y += pitch;
         }
         float shift = 0;
         if (focus >= 0) {
             float top = 240;
-            for (int r = 0; r < focus; r++) top += mRows.get(r).designHeight() + 76;
+            for (int r = 0; r < focus; r++) top += pitch(r);
             float bottom = top + mRows.get(focus).designHeight();
             if (bottom > 1000) shift = 1000 - bottom;
         }
@@ -372,11 +386,11 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         final Context c = getApplicationContext();
         App.get().io().post(() -> Safe.run("search", () -> {
             if (mApps == null) {
-                HomeData d = HomeLoader.load(c, App.get(), false);
+                HomeData d = HomeLoader.load(c, App.get());
                 mApps = d.apps;
             }
             List<Card> apps = AppMatcher.match(mApps, fq, null, 12);
-            List<Object[]> in = searchIn(c);
+            List<SearchIn> in = searchIn(c);
             runOnUiThread(() -> {
                 if (seq == mSeq) bindResults(fq, apps, new ArrayList<>(), in, false);
             });
@@ -387,7 +401,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         }));
     }
 
-    private void bindResults(String q, List<Card> apps, List<Card> content, List<Object[]> in, boolean done) {
+    private void bindResults(String q, List<Card> apps, List<Card> content, List<SearchIn> in, boolean done) {
         clearRows();
         if (!apps.isEmpty()) {
             ArrayList<TileView> t = new ArrayList<>();
@@ -401,6 +415,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
             }
             addRow(getString(R.string.search_apps), null, t, a);
         }
+        content = Relevance.rank(content, k -> k.title, q);
         if (!content.isEmpty()) {
             ArrayList<String> labels = new ArrayList<>();
             for (Card k : content) if (!k.appLabel.isEmpty() && !labels.contains(k.appLabel)) labels.add(k.appLabel);
@@ -412,6 +427,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
                 v.setPlaceholder(k.color != 0 ? k.color : 0xFF2A2F38);
                 String u = k.image != null && ArtUrl.isKeyArt(k.image) ? ArtUrl.landscapeCard(k.image) : k.image;
                 load(v, u, ImageLoader.KIND_POSTER, k.pkg, k.title);
+                badge(v, k.pkg);
                 t.add(v);
                 a.add(() -> open(k));
             }
@@ -420,10 +436,10 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         if (!in.isEmpty()) {
             ArrayList<TileView> t = new ArrayList<>();
             ArrayList<Runnable> a = new ArrayList<>();
-            for (Object[] o : in) {
+            for (SearchIn o : in) {
                 TileView v = new TileView(this, TileView.INPUT);
-                v.setTitle((String) o[1], q);
-                if (o[2] != null) v.setIcon(((Drawable) o[2]).mutate());
+                v.setTitle(o.label, o.searches ? q : getString(R.string.search_open_app));
+                if (o.icon != null) v.setAppIcon(o.icon);
                 t.add(v);
                 a.add(() -> searchInApp(o, q));
             }
@@ -527,50 +543,70 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         p.putList(Prefs.K_RECENT_SEARCH, l);
     }
 
-    /** Leanback apps that handle ACTION_SEARCH (Kinopoisk, Spotify, Play Store), plus YouTube: {cn, label, icon, pkg}. */
-    private List<Object[]> searchIn(Context c) {
-        if (mSearchIn != null) return mSearchIn;
-        ArrayList<Object[]> out = new ArrayList<>();
-        PackageManager pm = c.getPackageManager();
-        try {
-            out.add(new Object[] { null, pm.getApplicationLabel(pm.getApplicationInfo(YT, 0)).toString(), pm.getApplicationIcon(YT), YT });
-        } catch (Throwable ignored) {
+    /** One "Искать в" tile: the app, its real icon (never tinted), and whether the query goes along. */
+    static final class SearchIn {
+        final String pkg, label;
+        final Drawable icon;
+        final boolean searches;
+
+        SearchIn(String pkg, String label, Drawable icon, boolean searches) {
+            this.pkg = pkg;
+            this.label = label;
+            this.icon = icon;
+            this.searches = searches;
         }
-        java.util.HashSet<String> seen = new java.util.HashSet<>();
+    }
+
+    /**
+     * "Искать в": the installed apps of the watch table (catalogue apps, Lampa first, then official services, then video
+     * platforms, {@link WatchPick#searchOrder}), then the other TV apps that declare search (Play Store, Spotify). An app
+     * without a search intent still gets a tile: it opens, the query stays here.
+     */
+    private List<SearchIn> searchIn(Context c) {
+        if (mSearchIn != null) return mSearchIn;
+        PackageManager pm = c.getPackageManager();
+        ArrayList<String> others = new ArrayList<>();
         for (ResolveInfo ri : pm.queryIntentActivities(new Intent(Intent.ACTION_SEARCH), 0)) {
             if (ri.activityInfo == null || !ri.activityInfo.exported) continue;
             String pkg = ri.activityInfo.packageName;
-            if (pkg.equals(c.getPackageName()) || pkg.equals(YT) || !seen.add(pkg)) continue;
+            if (pkg.equals(c.getPackageName()) || others.contains(pkg)) continue;
             if (pm.getLeanbackLaunchIntentForPackage(pkg) == null) continue;
-            String label = ri.loadLabel(pm).toString();
+            others.add(pkg);
+        }
+        WatchApps table = WatchLaunch.table(c);
+        ArrayList<SearchIn> out = new ArrayList<>();
+        for (String pkg : WatchPick.searchOrder(table, WatchLaunch.device(c), others)) {
+            String label = pkg;
             Drawable icon = null;
             try {
                 label = pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
                 icon = pm.getApplicationIcon(pkg);
             } catch (Throwable ignored) {
             }
-            out.add(new Object[] { new ComponentName(pkg, ri.activityInfo.name), label, icon, pkg });
+            WatchApps.Row r = table.of(pkg);
+            if (r != null) label = r.name;
+            boolean launchable = pm.getLeanbackLaunchIntentForPackage(pkg) != null || pm.getLaunchIntentForPackage(pkg) != null;
+            boolean searches = WatchLaunch.searchIn(c, pkg, "x") != null;
+            if (searches || launchable) out.add(new SearchIn(pkg, label, icon, searches));
         }
         mSearchIn = out;
         return out;
     }
 
-    private void searchInApp(Object[] o, String q) {
+    private void searchInApp(SearchIn o, String q) {
         if (q.isEmpty()) return;
         remember(q);
-        if (YT.equals(o[3])) {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/results?search_query=" + Uri.encode(q)))
-                    .setPackage(YT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (getPackageManager().resolveActivity(i, 0) == null) {
-                i = new Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH).setPackage(YT)
-                        .putExtra(SearchManager.QUERY, q).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            Launch.start(this, i, "search-in youtube");
-            return;
-        }
-        Intent i = new Intent(Intent.ACTION_SEARCH).setComponent((ComponentName) o[0]).putExtra(SearchManager.QUERY, q)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Launch.start(this, i, "search-in " + o[3]);
+        Intent i = WatchLaunch.searchIn(this, o.pkg, q);
+        if (i != null) Launch.start(this, i, "search-in " + o.pkg);
+        else Launch.openApp(this, o.pkg);
+    }
+
+    /** The icon of the app a result comes from, on the result's tile. */
+    private void badge(TileView v, String pkg) {
+        if (pkg == null || pkg.isEmpty()) return;
+        App.get().images().load("icon:" + pkg, Theme.px(40), Theme.px(40), ImageLoader.KIND_ICON, pkg, null, (b, c) -> {
+            if (b != null) v.setBadge(b);
+        });
     }
 
     private void openKeyboardApp() {
@@ -725,6 +761,32 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         } else {
             int r = mZone - 1;
             mActs.get(r).get(mItem.get(r)).run();
+        }
+    }
+
+    /** The search field's box: the surface, and the Lumen focus ring (accent, gap) like every Home element. */
+    private static final class FieldBox extends View {
+        private final RingPaint mRing = new RingPaint();
+        private boolean mOn;
+
+        FieldBox(Context c) {
+            super(c);
+            GradientDrawable g = new GradientDrawable();
+            g.setCornerRadius(Theme.pxf(44));
+            g.setColor(Theme.SURFACE);
+            setBackground(g);
+        }
+
+        void setRing(boolean on) {
+            mOn = on;
+            invalidate();
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            super.onDraw(c);
+            mRing.draw(c, Theme.P.focusRing, 0, 0, getWidth(), getHeight(), Theme.pxf(44), Theme.pxf(1f), getScaleX(),
+                    FocusRing.alpha(mOn, 1f));
         }
     }
 

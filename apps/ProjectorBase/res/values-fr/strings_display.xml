@@ -2,7 +2,6 @@
 <!-- French translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Affichage</string>
     <string name="uires_row">Résolution de l’interface</string>
     <string name="uires_default_fmt">%1$s (par défaut)</string>
     <string name="uires_summary">4K donne le texte le plus net ; 1080p, comme chez XGIMI, est la plus légère pour la partie graphique. Le projecteur redémarre pour la changer.</string>

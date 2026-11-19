@@ -17,15 +17,13 @@ section keystone  (stock order: settings_tree_product_dapeng projection_screen (
   -- line
   screen keystone.manual
   screen zoom
-  screen keystone.fit_screen
   screen keystone.rotation
+  screen keystone.wall_color
   action keystone.restore
 section focus
   action focus.af_now
   screen focus.manual
   toggle focus.smart
-  toggle focus.on_move
-  toggle focus.on_power
 section lamp
   slider lamp 1..10
   toggle boost
@@ -53,6 +51,7 @@ section sound
   toggle sound.earc
   output page sound.output [auto, speaker, arc, wired, bt, usb]
     at its bottom sound.format [auto, pcm, passthrough]
+  toggle sound.key_tone
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -62,19 +61,42 @@ section game
   choice game.allm [signal, device]
 section eye
   choice eye [off, on]
+section network
+  screen network.wifi
+  -- line
+  toggle network.hotspot
+  screen network.hotspot_name
+  screen network.hotspot_password
+  action network.hotspot_reset
 section general
   action lamp.off
   screen settings.system
-  screen settings.projector
+  info settings.temperature
   screen settings.cec
+  screen settings.parental
   screen settings.recents
   screen settings.sleep_timer
+  screen settings.remote
+  screen settings.remote_keys
   choice settings.launcher [lumen, classic]
+  screen settings.ui_resolution
   screen settings.report
-  -- developer
+  toggle settings.stats
+  screen settings.licences
+  -- power
+  toggle power.on_ac
+  toggle power.on_music
+  choice power.boot_source [home, hdmi1, hdmi2]
+  -- voice
+  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
+  toggle voice.speak
+  screen voice.key
+section developer
   screen signal.panel
+  screen sensors.panel
   toggle signal.pin
   choice signal.refresh [normal, fast]
+  screen settings.diagnostics
 popup keystone (rows with a tile of their own left out)
   keystone.realtime
   keystone.fit_now
@@ -84,8 +106,8 @@ popup keystone (rows with a tile of their own left out)
   keystone.curtain
   -- line
   keystone.manual
-  keystone.fit_screen
   keystone.rotation
+  keystone.wall_color
   keystone.restore
 popup picture (rows with a tile of their own left out)
   picture.mode
@@ -102,7 +124,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone focus picture projection sound eye general
+all settings: keystone focus picture projection sound eye general developer
 keys: gear short quick_menu, gear long game_menu, eye_gear_short restore
 game menu: lat vrr hfr pic dark sr ar snd aim fps
   themes: ps xbox switch pad apple windows computer, CEC detection on

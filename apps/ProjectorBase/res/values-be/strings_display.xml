@@ -2,7 +2,6 @@
 <!-- Belarusian translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Экран</string>
     <string name="uires_row">Раздзяляльнасць інтэрфейсу</string>
     <string name="uires_default_fmt">%1$s (па змаўчанні)</string>
     <string name="uires_summary">4K дае самы выразны тэкст; 1080p, як у XGIMI, найменш нагружае графіку. Для змены праектар перазапусціцца.</string>

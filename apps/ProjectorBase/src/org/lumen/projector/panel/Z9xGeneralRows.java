@@ -10,7 +10,7 @@ import org.lumen.projector.power.LampOffHal;
 
 import java.util.function.Consumer;
 
-/** Eye protection (152) and the home screen choice. */
+/** Eye protection (152), Power On Auto Boot (543 / 544) and the home screen choice. */
 final class Z9xGeneralRows extends Z9xRows {
     Z9xGeneralRows(Z9xFeatures menu) { super(menu); }
 
@@ -21,6 +21,14 @@ final class Z9xGeneralRows extends Z9xRows {
                 write("152 eye protection " + on, (g, g2) -> {
                     if (!g.setEyeProtection(on)) throw new IllegalStateException("152 returned false");
                     return null;
+                }, cb);
+                return true;
+            }
+            case POWER_ON_AC: {                                           // stock HideRepository.setElectrify
+                final boolean on = "on".equals(v);
+                write("543 power on auto boot " + on, (g, g2) -> {
+                    g.setPowerOnMode(on);
+                    return g.getPowerOnMode() == on ? null : Result.failed(null);
                 }, cb);
                 return true;
             }

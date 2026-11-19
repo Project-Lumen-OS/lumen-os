@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Déplacement</string>
     <string name="lumen_qe_move_hint">Les cercles bougent seulement dans la rangée du haut, les tuiles entre les lignes. Pour qu\'une tuile devienne un cercle, changez son aspect.</string>
     <string name="lumen_qe_put">Poser ici</string>
-    <string name="lumen_qe_cancel">Annuler</string>
     <string name="lumen_qe_full">Le menu est plein. Choisissez un aspect plus petit ou la liste.</string>
     <string name="lumen_qe_list_full">Autant d\'éléments ne tiennent pas dans une liste. Retirez-en quelques-uns d\'abord.</string>
     <string name="lumen_qe_pinned">Ce bouton reste toujours dans le menu.</string>

@@ -7,16 +7,11 @@
     <string name="app_name">Projector</string>
     <string name="version_line">Version %1$s</string>
 
-    <string name="sec_focus">Focus</string>
-    <string name="sec_keystone">Keystone</string>
     <string name="sec_auto">Automation</string>
-    <string name="sec_keys">Remote keys</string>
     <string name="sec_diag">Diagnostics</string>
 
-    <string name="act_af_now">Autofocus now</string>
     <string name="act_manual_focus">Manual focus</string>
     <string name="act_kst_now">Auto keystone now</string>
-    <string name="act_fit_now">Fit to screen now</string>
     <string name="act_refresh">Refresh</string>
 
     <string name="tg_power_on_af">Autofocus at power-on</string>
@@ -26,10 +21,6 @@
     <string name="tg_curtain">Fit to the screen</string>
     <string name="tg_obstacle">Obstacle avoidance</string>
 
-    <string name="val_on">On</string>
-    <string name="val_off">Off</string>
-    <string name="val_unknown">No data</string>
-    <string name="val_not_ready">Projector not ready</string>
 
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>

@@ -2,7 +2,6 @@
 <!-- Simplified Chinese translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">显示</string>
     <string name="uires_row">界面分辨率</string>
     <string name="uires_default_fmt">%1$s（默认）</string>
     <string name="uires_summary">4K 文字最清晰；1080p 与 XGIMI 原厂相同，图形负担最轻。更改后投影仪会重启。</string>

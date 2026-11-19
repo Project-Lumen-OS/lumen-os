@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Movendo</string>
     <string name="lumen_qe_move_hint">Os círculos só se movem na linha de cima, os blocos entre as linhas. Para um bloco virar círculo, mude a aparência.</string>
     <string name="lumen_qe_put">Colocar aqui</string>
-    <string name="lumen_qe_cancel">Cancelar</string>
     <string name="lumen_qe_full">O menu está cheio. Escolha uma aparência menor ou a lista.</string>
     <string name="lumen_qe_list_full">Tantos itens não cabem em uma lista. Tire alguns primeiro.</string>
     <string name="lumen_qe_pinned">Este botão sempre fica no menu.</string>

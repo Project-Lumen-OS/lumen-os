@@ -34,14 +34,15 @@ final class AppArt {
         if (cn == null) return null;
         ActivityInfo ai;
         try {
-            ai = pm.getActivityInfo(cn, 0);
+            // both flags: before the user is unlocked PackageManager otherwise hides every activity that is not direct
+            // boot aware (Home draws the saved screen then, model/BootGate); after it they are the default
+            ai = pm.getActivityInfo(cn, PackageManager.MATCH_DIRECT_BOOT_AWARE | PackageManager.MATCH_DIRECT_BOOT_UNAWARE);
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
         Drawable banner = null;
         try {
-            banner = pm.getActivityBanner(cn);
-            if (banner == null) banner = pm.getApplicationBanner(cn.getPackageName());
+            banner = ai.loadBanner(pm); // the activity's banner, else the app's (PackageManager.getActivityBanner)
         } catch (Throwable ignored) {
         }
         Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);

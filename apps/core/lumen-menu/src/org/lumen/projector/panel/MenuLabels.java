@@ -24,13 +24,39 @@ final class MenuLabels {
 
     static int title(String id) {
         switch (id) {
+            case "network.wifi": return R.string.lumen_m_hotspot_wifi;
+            case "network.hotspot": return R.string.lumen_m_hotspot_hotspot;
+            case "network.hotspot_name": return R.string.lumen_m_hotspot_name;
+            case "network.hotspot_password": return R.string.lumen_m_hotspot_password;
+            case "network.hotspot_reset": return R.string.lumen_m_hotspot_reset;
             case "keystone.angle_h": return R.string.lumen_m_angle_h;
             case "signal.panel": return R.string.lumen_m_signal;
+            case "sensors.panel": return R.string.lumen_m_sensors;
+            case "power.on_music": return R.string.lumen_m_power_music;
+            case "power.boot_source": return R.string.lumen_m_boot_source;
+            case "voice.language": return R.string.lumen_m_voice_language;
+            case "voice.speak": return R.string.lumen_m_voice_speak;
+            case "voice.key": return R.string.lumen_m_voice_key;
+            case "settings.ui_resolution": return R.string.lumen_m_uires;
+            case "settings.stats": return R.string.lumen_m_stats;
+            case "settings.diagnostics": return R.string.lumen_m_diag;
             case "signal.pin": return R.string.lumen_m_signal_pin;
             case "sound.volume": return R.string.lumen_m_volume;
             case "signal.refresh": return R.string.lumen_m_signal_refresh;
             case "zoom.digital": return R.string.lumen_m_zs_title;
             case "lamp.eco": return R.string.lumen_m_eco;
+            case "power.on_ac": return R.string.lumen_m_power_on_ac;
+            case "picture.custom_new": return R.string.lumen_m_pm_custom;
+            case "picture.custom_base": return R.string.lumen_m_custom_base;
+            case "picture.custom_delete": return R.string.lumen_m_custom_delete;
+            case "settings.serial": return R.string.lumen_m_serial;
+            case "serial.switch": return R.string.lumen_m_serial_switch;
+            case "serial.id_group": return R.string.lumen_m_serial_id_group;
+            case "serial.id_number": return R.string.lumen_m_serial_id_number;
+            case "serial.ack_group": return R.string.lumen_m_serial_ack_group;
+            case "serial.ack_all": return R.string.lumen_m_serial_ack_all;
+            case "serial.master": return R.string.lumen_m_serial_master;
+            case "settings.parental": return R.string.lumen_m_parental;
             case "lamp.off": return R.string.lumen_m_lamp_off;
             case "picture.gamut": return R.string.lumen_m_gamut;
             case "picture.anti_rbe": return R.string.lumen_m_anti_rbe;
@@ -82,6 +108,7 @@ final class MenuLabels {
             case "picture.iris": return R.string.lumen_m_iris;
             case "settings.sleep_timer": return R.string.lumen_m_sleep_timer;
             case "settings.remote": return R.string.lumen_m_remote;
+            case "settings.remote_keys": return R.string.lumen_remote_keys_title;
             case "settings.licences": return R.string.lumen_gm_licences;
             case "settings.report": return R.string.lumen_report_title;
             case "sound.earc": return R.string.lumen_m_earc;
@@ -89,8 +116,6 @@ final class MenuLabels {
             case "eye": return R.string.lumen_m_panel_eye;
             case "focus.af_now": return R.string.lumen_m_panel_af_now;
             case "focus.manual": return R.string.lumen_m_panel_manual_focus;
-            case "focus.on_move": return R.string.lumen_m_panel_move_af;
-            case "focus.on_power": return R.string.lumen_m_panel_power_on_af;
             case "focus.smart": return R.string.lumen_m_panel_smart_af;
             case "game.allm": return R.string.lumen_m_panel_allm;
             case "game.mode": return R.string.lumen_m_panel_game_mode;
@@ -100,7 +125,6 @@ final class MenuLabels {
             case "keystone.ak_now": return R.string.lumen_m_panel_ak_now;
             case "keystone.curtain": return R.string.lumen_m_panel_fit_screen;
             case "keystone.fit_now": return R.string.lumen_m_panel_fit_now;
-            case "keystone.fit_screen": return R.string.lumen_m_fit_row;
             case "keystone.manual": return R.string.lumen_m_panel_manual_keystone;
             case "keystone.obstacle": return R.string.lumen_m_panel_obstacle;
             case "keystone.on_power": return R.string.lumen_m_panel_power_on_keystone;
@@ -108,6 +132,7 @@ final class MenuLabels {
             case "keystone.on_move": return R.string.lumen_m_panel_move_ak;
             case "keystone.restore": return R.string.lumen_m_kst_restore;
             case "keystone.rotation": return R.string.lumen_m_rot_title;
+            case "keystone.wall_color": return R.string.lumen_wallcolor_title;
             case "lamp": return R.string.lumen_m_panel_lamp;
             case "picture.3d": return R.string.lumen_m_3d_title;
             case "picture.ai_contrast": return R.string.lumen_m_panel_ai_contrast;
@@ -126,8 +151,10 @@ final class MenuLabels {
             case "settings.hdmi": return R.string.lumen_m_hdmi_options;
             case "settings.colour_vision": return R.string.lumen_m_colour_vision;
             case "settings.temperature": return R.string.lumen_m_temperature;
+            case "settings.screensaver_now": return R.string.lumen_m_dream_now;
+            case "settings.screensaver_delay": return R.string.lumen_m_dream_delay;
+            case "settings.high_altitude": return R.string.lumen_m_high_altitude;
             case "settings.launcher": return R.string.lumen_m_launcher_row;
-            case "settings.projector": return R.string.lumen_m_panel_projector_settings;
             case "settings.recents": return R.string.lumen_m_recents_title;
             case "settings.system": return R.string.lumen_m_panel_system_settings;
             case "sound.enhancement": return R.string.lumen_m_panel_sound_enhancement;
@@ -147,9 +174,9 @@ final class MenuLabels {
         switch (id) {
             case "boost": return R.string.lumen_m_boost_effect;
             case "eye": return R.string.lumen_m_panel_eye_desc;
-            case "keystone.fit_screen": return R.string.lumen_m_fit_row_summary;
             case "lamp": return R.string.lumen_m_panel_lamp_hint;
             case "picture.3d": return R.string.lumen_m_3d_summary;
+            case "power.on_ac": return R.string.lumen_m_power_on_ac_tip;
             case "signal.refresh": return R.string.lumen_m_signal_refresh_note;
             default: return 0;
         }
@@ -180,7 +207,9 @@ final class MenuLabels {
             case "contrast": return R.string.lumen_m_hdr_contrast;
             case "clarity": return R.string.lumen_m_hdr_clarity;
             case "image_more": return R.string.lumen_m_hdr_image_more;
-            case "developer": return R.string.lumen_m_hdr_developer;
+            case "screensaver": return R.string.lumen_m_hdr_screensaver;
+            case "power": return R.string.lumen_m_hdr_power;
+            case "voice": return R.string.lumen_m_hdr_voice;
             default: return 0;
         }
     }
@@ -191,9 +220,11 @@ final class MenuLabels {
             case "eye": return R.string.lumen_m_panel_eye;
             case "focus": return R.string.lumen_m_panel_tile_focus;
             case "game": return R.string.lumen_m_panel_sec_game;
+            case "developer": return R.string.lumen_m_hdr_developer;
             case "general": return R.string.lumen_m_panel_sec_general;
             case "keystone": return R.string.lumen_m_panel_tile_keystone;
             case "lamp": return R.string.lumen_m_panel_lamp;
+            case "network": return R.string.lumen_qpd_network;
             case "picture": return R.string.lumen_m_panel_sec_picture;
             case "projection": return R.string.lumen_m_panel_projection_mode;
             case "sound": return R.string.lumen_m_panel_sec_sound;
@@ -236,6 +267,15 @@ final class MenuLabels {
             case "picture.3d": return R.string.lumen_m_3d;
             case "theme": return R.string.lumen_qpd_theme;
             case "signal.panel": return R.string.lumen_m_signal;
+            case "sensors.panel": return R.string.lumen_m_sensors;
+            case "power.on_music": return R.string.lumen_m_power_music;
+            case "power.boot_source": return R.string.lumen_m_boot_source;
+            case "voice.language": return R.string.lumen_m_voice_language;
+            case "voice.speak": return R.string.lumen_m_voice_speak;
+            case "voice.key": return R.string.lumen_m_voice_key;
+            case "settings.ui_resolution": return R.string.lumen_m_uires;
+            case "settings.stats": return R.string.lumen_m_stats;
+            case "settings.diagnostics": return R.string.lumen_m_diag;
             case "zoom": return R.string.lumen_qpd_zoom;
             case "zoom.digital": return R.string.lumen_qpd_zoom;
             default: return 0;
@@ -246,6 +286,7 @@ final class MenuLabels {
     static int icon(String id) {
         switch (id) {
             case "bluetooth": return R.drawable.lumen_qpd_ic_bt;
+            case "developer": return R.drawable.lumen_qpd_ic_dev;
             case "eye": return R.drawable.lumen_qpd_ic_eye;
             case "focus": return R.drawable.lumen_qpd_ic_focus;
             case "game": return R.drawable.lumen_qpd_ic_game;
@@ -319,6 +360,14 @@ final class MenuLabels {
             case "picture.mode|isf_night": return R.string.lumen_m_pm_isf_night;
             case "picture.mode|bright": return R.string.lumen_m_pm_bright;
             case "picture.mode|soft": return R.string.lumen_m_pm_soft;
+            case "picture.custom_base|standard": return R.string.lumen_m_panel_pm_standard;
+            case "picture.custom_base|sport": return R.string.lumen_m_panel_pm_sport;
+            case "picture.custom_base|color_accuracy": return R.string.lumen_m_panel_pm_color_accuracy;
+            case "picture.custom_base|soft": return R.string.lumen_m_pm_soft;
+            case "picture.custom_base|filmmaker": return R.string.lumen_m_pm_filmmaker;
+            case "picture.custom_base|isf_day": return R.string.lumen_m_pm_isf_day;
+            case "picture.custom_base|isf_night": return R.string.lumen_m_pm_isf_night;
+            case "picture.custom_base|movie": return R.string.lumen_m_pm_movie;
             case "sound.output|arc": return R.string.lumen_m_out_arc;
             case "sound.output|bt": return R.string.lumen_m_out_bt;
             case "sound.output|usb": return R.string.lumen_m_out_usb;
@@ -336,6 +385,26 @@ final class MenuLabels {
             case "game.speed|top_speed_hfr": return R.string.lumen_m_panel_speed_top_hfr;
             case "hdmi.edid|compat": return R.string.lumen_m_hdmi_mode_compat;
             case "hdmi.edid|enhanced": return R.string.lumen_m_hdmi_mode_enhanced;
+            case "power.boot_source|home": return R.string.lumen_m_boot_home;
+            case "power.boot_source|hdmi": return R.string.lumen_m_boot_hdmi;
+            case "power.boot_source|hdmi1": return R.string.lumen_m_boot_hdmi1;
+            case "power.boot_source|hdmi2": return R.string.lumen_m_boot_hdmi2;
+            case "voice.language|system": return R.string.lumen_m_voice_lang_system;
+            case "voice.language|ru": return R.string.lumen_m_lang_ru;
+            case "voice.language|en": return R.string.lumen_m_lang_en;
+            case "voice.language|uk": return R.string.lumen_m_lang_uk;
+            case "voice.language|kk": return R.string.lumen_m_lang_kk;
+            case "voice.language|de": return R.string.lumen_m_lang_de;
+            case "voice.language|fr": return R.string.lumen_m_lang_fr;
+            case "voice.language|es": return R.string.lumen_m_lang_es;
+            case "voice.language|it": return R.string.lumen_m_lang_it;
+            case "voice.language|pt": return R.string.lumen_m_lang_pt;
+            case "voice.language|pl": return R.string.lumen_m_lang_pl;
+            case "voice.language|tr": return R.string.lumen_m_lang_tr;
+            case "voice.language|zh": return R.string.lumen_m_lang_zh;
+            case "voice.language|ja": return R.string.lumen_m_lang_ja;
+            case "voice.language|ko": return R.string.lumen_m_lang_ko;
+            case "voice.language|ar": return R.string.lumen_m_lang_ar;
             case "signal.refresh|normal": return R.string.lumen_m_signal_refresh_normal;
             case "signal.refresh|fast": return R.string.lumen_m_signal_refresh_fast;
             case "hdmi.range|auto": return R.string.lumen_m_panel_auto;
@@ -443,6 +512,12 @@ final class MenuLabels {
             case "projection.mode|auto": return R.string.lumen_m_panel_proj_auto;
             case "projection.mode|ceiling": return R.string.lumen_m_panel_proj_ceiling;
             case "projection.mode|table": return R.string.lumen_m_panel_proj_table;
+            case "settings.screensaver_delay|never": return R.string.lumen_m_dream_never;
+            case "settings.screensaver_delay|m1": return R.string.lumen_m_dream_m1;
+            case "settings.screensaver_delay|m5": return R.string.lumen_m_dream_m5;
+            case "settings.screensaver_delay|m10": return R.string.lumen_m_dream_m10;
+            case "settings.screensaver_delay|m30": return R.string.lumen_m_dream_m30;
+            case "settings.screensaver_delay|m60": return R.string.lumen_m_dream_m60;
             case "settings.colour_vision|off": return R.string.lumen_m_panel_off;
             case "settings.colour_vision|gray": return R.string.lumen_m_colour_vision_gray;
             case "settings.colour_vision|red_green": return R.string.lumen_m_colour_vision_red_green;
@@ -477,6 +552,15 @@ final class MenuLabels {
      * optionFormat: the label of every number token of a choice feature, a format with the number as %1$d (the screen
      * sizes in inches, the white balance grey levels in percent), 0 when its tokens have labels of their own.
      */
+    /** Rows whose option tokens are their own label: the serial ID's letter a..z (shown as A..Z) and number 0..20. */
+    static boolean ownLabels(String feature) {
+        switch (feature) {
+            case "serial.id_group": return true;
+            case "serial.id_number": return true;
+            default: return false;
+        }
+    }
+
     static int optionFormat(String feature) {
         switch (feature) {
             case "picture.hdr.screen_size": return R.string.lumen_m_inches;

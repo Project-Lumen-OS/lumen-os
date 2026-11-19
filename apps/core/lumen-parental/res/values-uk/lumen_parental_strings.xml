@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Батьківський контроль</string>
+    <string name="lumen_lp_intro">Обмежте, що діти можуть відкривати і скільки часу дивитися.</string>
+    <string name="lumen_lp_lock">Дитячий замок</string>
+    <string name="lumen_lp_lock_desc">Коли увімкнено, можна задати область контролю, час перегляду та інше</string>
+    <string name="lumen_lp_lock_off_title">Вимкнути дитячий замок?</string>
+    <string name="lumen_lp_lock_off_text">Перестануть діяти обмеження часу і пароль під час увімкнення. Батьківські налаштування відкриватимуться без пароля.</string>
+    <string name="lumen_lp_turn_off">Вимкнути</string>
+    <string name="lumen_lp_cancel">Скасувати</string>
+    <string name="lumen_lp_child_mode">Дитячий режим</string>
+    <string name="lumen_lp_child_apps">Застосунки дитячого режиму</string>
+    <string name="lumen_lp_child_apps_count">Вибрано: %1$d</string>
+    <string name="lumen_lp_range">Область контролю</string>
+    <string name="lumen_lp_range_child">Лише дитячий режим</string>
+    <string name="lumen_lp_range_global">Скрізь</string>
+    <string name="lumen_lp_session">Час за один раз</string>
+    <string name="lumen_lp_session_desc">Після цього перерва 10 хвилин</string>
+    <string name="lumen_lp_daily">Час за день</string>
+    <string name="lumen_lp_no_limit">Без обмеження</string>
+    <string name="lumen_lp_minutes">%1$d хв</string>
+    <string name="lumen_lp_hours">%1$s год</string>
+    <string name="lumen_lp_boot_pin">Пароль під час увімкнення</string>
+    <string name="lumen_lp_boot_child">Дитячий режим під час увімкнення</string>
+    <string name="lumen_lp_change_pin">Змінити пароль</string>
+    <string name="lumen_lp_eye">Захист очей</string>
+    <string name="lumen_lp_eye_desc">Захист очей налаштовується в налаштуваннях проєктора</string>
+    <string name="lumen_lp_pin_enter">Введіть пароль дитячого замка</string>
+    <string name="lumen_lp_pin_hint">Натискайте кнопки зі стрілками на пульті</string>
+    <string name="lumen_lp_pin_set">Задайте пароль дитячого замка</string>
+    <string name="lumen_lp_pin_again">Введіть пароль ще раз</string>
+    <string name="lumen_lp_pin_mismatch">Паролі не збігаються. Задайте пароль знову</string>
+    <string name="lumen_lp_pin_wrong">Неправильний пароль</string>
+    <string name="lumen_lp_pin_forgot">Забули пароль? Натисніть OK</string>
+    <string name="lumen_lp_quiz">Скільки буде %1$d × %2$d?</string>
+    <string name="lumen_lp_quiz_wrong">Неправильно. Ось інше питання</string>
+    <string name="lumen_lp_rest_title">Час відпочити</string>
+    <string name="lumen_lp_rest_session">Час сеансу закінчився. Відпочиньте 10 хвилин</string>
+    <string name="lumen_lp_rest_daily">Час перегляду на сьогодні закінчився</string>
+    <string name="lumen_lp_rest_unlock">Розблокувати</string>
+    <string name="lumen_lp_on">Увімк.</string>
+    <string name="lumen_lp_off">Вимк.</string>
+</resources>

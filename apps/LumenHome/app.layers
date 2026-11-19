@@ -4,5 +4,7 @@
 app       Z9xHome
 module    lumen-icons
 module    lumen-ui
+# the parental controls of the models whose stock has the parent page (apps/core/lumen-parental)
+module    lumen-parental
 top       apps/LumenHome
 skip      build/ test/ tools/ image/ *.apk CHANGES*.md README*.md DESIGN*.md .DS_Store app.layers

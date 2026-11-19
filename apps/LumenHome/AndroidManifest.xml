@@ -26,6 +26,7 @@
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
     <!-- TvProvider -->
+    <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
     <uses-permission android:name="com.android.providers.tv.permission.READ_EPG_DATA" />
     <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA" />
     <!-- signature|privileged against TvProvider's own cert: granted only because we are a priv-app -->
@@ -96,9 +97,13 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.Lumen.Home">
 
-        <!-- [launcher] HOME -->
+        <!-- [launcher] HOME. directBootAware: Android starts it right after the boot animation instead of the system's
+             FallbackHome, before the user is unlocked. Only this activity is: the app's providers, receivers and
+             other activities come with the unlock, and HomeActivity reads nothing but the saved screen
+             (device protected) until then (model/BootGate). -->
         <activity
             android:name=".HomeActivity"
+            android:directBootAware="true"
             android:exported="true"
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
@@ -293,5 +298,30 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+            <!-- the parental controls (apps/core/lumen-parental): the parent page of the projector menu's General row -->
+        <activity
+            android:name="org.lumen.parental.ParentalActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="org.lumen.parental.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.lumen.parental.PinActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name="org.lumen.parental.RestActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true" />
+        <service
+            android:name="org.lumen.parental.UsageService"
+            android:exported="false" />
     </application>
 </manifest>

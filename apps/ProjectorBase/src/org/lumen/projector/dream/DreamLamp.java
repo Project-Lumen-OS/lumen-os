@@ -643,7 +643,7 @@ public final class DreamLamp {
     // =================================================================== helpers
 
     /** IGmpf2 51: 1 = Boost on, 0 = off, -1 = unknown (never throws). z9x-hal. */
-    /** IGmpf2 29 getDynamicBlackType: 1 = on, 0 = off, -1 = unknown (never throws). z9x-hal. */
+    /** Gmpf2Client.getDynamicBlack, the model's own call: 1 = on, 0 = off, -1 = unknown (never throws). z9x-hal. */
     private static int dynamicBlackState(org.lumen.projector.hal.Gmpf2Client g2) {
         try {
             return g2 == null ? -1 : g2.getDynamicBlack() ? 1 : 0;

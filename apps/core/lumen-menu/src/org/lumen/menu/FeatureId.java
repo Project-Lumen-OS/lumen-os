@@ -20,10 +20,14 @@ public enum FeatureId {
     KEYSTONE_FIT_NOW("keystone.fit_now", FeatureKind.ACTION),
     /** manual keystone corners */
     KEYSTONE_MANUAL("keystone.manual", FeatureKind.SCREEN),
-    /** fit to a screen with a frame (curtain fit page) */
-    KEYSTONE_FIT_SCREEN("keystone.fit_screen", FeatureKind.SCREEN),
     /** picture rotation */
     KEYSTONE_ROTATION("keystone.rotation", FeatureKind.SCREEN),
+    /**
+     * Wall colour adaptation (stock wall_color_calibration, 2026-11-19): the card of apps/core/lumen-wallcolor on
+     * every model whose stock has it. A module screen ({@link MenuSpec#MODULE_SCREENS}): the menu opens it itself, the
+     * device's part is its WallColorHal and devices/&lt;c&gt;/wallcolor.conf
+     */
+    KEYSTONE_WALL_COLOR("keystone.wall_color", FeatureKind.SCREEN),
     /** real-time keystone (Auto keystone when moved) */
     KEYSTONE_REALTIME("keystone.realtime", FeatureKind.TOGGLE),
     /** keystone at power on */
@@ -42,10 +46,6 @@ public enum FeatureId {
     FOCUS_MANUAL("focus.manual", FeatureKind.SCREEN),
     /** smart autofocus */
     FOCUS_SMART("focus.smart", FeatureKind.TOGGLE),
-    /** autofocus when moved */
-    FOCUS_ON_MOVE("focus.on_move", FeatureKind.TOGGLE),
-    /** autofocus at power on */
-    FOCUS_ON_POWER("focus.on_power", FeatureKind.TOGGLE),
     /** brightness of the light (bottom slider); min, max */
     LAMP("lamp", FeatureKind.SLIDER),
     /** Boost above the top light level (yellow); level = the slider step that means Boost */
@@ -70,6 +70,12 @@ public enum FeatureId {
     PICTURE_RESET("picture.reset", FeatureKind.ACTION),
     /** reset every picture setting */
     PICTURE_RESET_ALL("picture.reset_all", FeatureKind.ACTION),
+    /** User picture modes (stock image_mode_custom_base_*, CustomizeDataManager): the mode list's "Custom" entry. */
+    PICTURE_CUSTOM_NEW("picture.custom_new", FeatureKind.ACTION),
+    /** The stock mode a user mode is based on (Switch / GetCustomImageModeMapping), shown in a user mode only. */
+    PICTURE_CUSTOM_BASE("picture.custom_base", FeatureKind.CHOICE),
+    /** Delete the user mode in use (stock delete_image_mode_user_setting), shown in a user mode only. */
+    PICTURE_CUSTOM_DELETE("picture.custom_delete", FeatureKind.ACTION),
     /**
      * 3D: the stock 3D modes of the model ({@link ThreeDMode} tokens, in its stock order); the small 3D tile in the
      * network slot of the card (network becomes a round button on top), its popup and the last Picture row
@@ -101,6 +107,20 @@ public enum FeatureId {
     BLUETOOTH("bluetooth", FeatureKind.TILE),
     /** network settings */
     NETWORK("network", FeatureKind.TILE),
+    /**
+     * The Network tile's popup (owner variant A, 2026-11-19), stock Settings > Network order: the Wi-Fi row (the
+     * network the projector is on, opens Android's Wi-Fi page), a line, the stock Wireless Hotspot rows. Module rows
+     * (lumen-system Hotspot), every model whose stock tree has the hotspot names all five.
+     */
+    NETWORK_WIFI("network.wifi", FeatureKind.SCREEN),
+    /** the stock hotspot switch (network_ap): start or stop Android's hotspot */
+    NETWORK_HOTSPOT("network.hotspot", FeatureKind.TOGGLE),
+    /** the stock hotspot name (network_ap_ssid): the text edit screen, greyed while the hotspot is off */
+    NETWORK_HOTSPOT_NAME("network.hotspot_name", FeatureKind.SCREEN),
+    /** the stock hotspot password (network_ap_password): the text edit screen, greyed while the hotspot is off */
+    NETWORK_HOTSPOT_PASSWORD("network.hotspot_password", FeatureKind.SCREEN),
+    /** the stock restore default (network_ap_reset): the first name and password again, hidden while the hotspot is off */
+    NETWORK_HOTSPOT_RESET("network.hotspot_reset", FeatureKind.ACTION),
     /** screen mirroring receiver (shown only when the receiver app is installed) */
     MIRRORING("mirroring", FeatureKind.TILE),
     /** game mode; options */
@@ -115,8 +135,6 @@ public enum FeatureId {
     PROJECTION_REAR("projection.rear", FeatureKind.TOGGLE),
     /** Android settings */
     SETTINGS_SYSTEM("settings.system", FeatureKind.SCREEN),
-    /** Projector settings (two-pane SettingsActivity) */
-    SETTINGS_PROJECTOR("settings.projector", FeatureKind.SCREEN),
     /** HDMI-CEC page */
     SETTINGS_CEC("settings.cec", FeatureKind.SCREEN),
     /** recent apps */
@@ -138,6 +156,12 @@ public enum FeatureId {
     PICTURE_IRIS("picture.iris", FeatureKind.CHOICE),
     /** sleep timer */
     SETTINGS_SLEEP_TIMER("settings.sleep_timer", FeatureKind.SCREEN),
+    /**
+     * Power On Auto Boot (stock 通电自动开机, General, Advanced, Power on/off): the projector starts by itself when the
+     * mains comes on. The vendor stores it for its own boot loader; the adapter reads it with the menu and writes it
+     * only when the user flips the row, never at boot (2026-11-19)
+     */
+    POWER_ON_AC("power.on_ac", FeatureKind.TOGGLE),
     /** pair the remote */
     SETTINGS_REMOTE("settings.remote", FeatureKind.SCREEN),
     /** auto keystone after the projector was moved (a row of its own where the stock lists it apart from focus) */
@@ -177,6 +201,29 @@ public enum FeatureId {
      * module setting ({@link MenuSpec#MODULE_SETTINGS})
      */
     SIGNAL_REFRESH("signal.refresh", FeatureKind.CHOICE),
+    /**
+     * The sensor card of apps/core/lumen-sensors (2026-11-19: the old LumenSensors app as an overlay): a row of
+     * the For developers page of All settings; each press goes card, full sheet, hidden. A module screen ({@link MenuSpec#MODULE_SCREENS})
+     */
+    SENSORS_PANEL("sensors.panel", FeatureKind.SCREEN),
+    /** "Remote buttons": give a remote key an app or an action (apps/core/lumen-remote keys, KeyBindActivity) */
+    SETTINGS_REMOTE_KEYS("settings.remote_keys", FeatureKind.SCREEN),
+    /** the stock power-on melody (IGmpf 420 / 419 on Z9X, HB and Play 6), from the old Projector settings page */
+    POWER_ON_MUSIC("power.on_music", FeatureKind.TOGGLE),
+    /** what opens at power-on: options home, hdmi (one input) or home, hdmi1, hdmi2 (source.BootSource) */
+    POWER_BOOT_SOURCE("power.boot_source", FeatureKind.CHOICE),
+    /** the voice assistant's speech language (mic key), only where a speech recogniser exists; options system, ru, en ... */
+    VOICE_LANGUAGE("voice.language", FeatureKind.CHOICE),
+    /** the voice assistant speaks its answers */
+    VOICE_SPEAK("voice.speak", FeatureKind.TOGGLE),
+    /** the optional voice key of the assistant: a text field on its own small screen */
+    VOICE_KEY("voice.key", FeatureKind.SCREEN),
+    /** the interface resolution chooser (4K / 1080p, display.UiResolution), only where the image allows it */
+    SETTINGS_UI_RESOLUTION("settings.ui_resolution", FeatureKind.SCREEN),
+    /** the anonymous statistics switch (rules 2.19: the only one), hidden where nobody owns it on this unit */
+    SETTINGS_STATS("settings.stats", FeatureKind.TOGGLE),
+    /** the app's diagnostic lines (HAL state, versions) in the developer sheet of apps/core/lumen-sensors */
+    SETTINGS_DIAGNOSTICS("settings.diagnostics", FeatureKind.SCREEN),
     /**
      * The sound volume (the music stream, the level the remote's volume keys move): an item the quick menu editor
      * offers on every model (2026-11-18), never in the default menu. A module setting of every model
@@ -287,6 +334,43 @@ public enum FeatureId {
     SETTINGS_COLOUR_VISION("settings.colour_vision", FeatureKind.CHOICE),
     /** the system temperature the vendor reports, as text (the stock About page's sys_tempe row) */
     SETTINGS_TEMPERATURE("settings.temperature", FeatureKind.INFO),
+    /**
+     * the stock screensaver page's start now row (screen_saver_simple enter_screen_saver_text): Android's screensaver
+     * (lumen-system ScreensaverStart), a module screen
+     */
+    SETTINGS_SCREENSAVER_NOW("settings.screensaver_now", FeatureKind.SCREEN),
+    /**
+     * the stock screensaver page's start after row (screen_waiting_time_close: never, m1, m5, m10, m30, m60): Android's
+     * idle time (lumen-system ScreensaverDelay), a module setting
+     */
+    SETTINGS_SCREENSAVER_DELAY("settings.screensaver_delay", FeatureKind.CHOICE),
+    /**
+     * high altitude mode: the fans run faster for thin air (the stock General advanced page high_altitude_mode switch,
+     * MoreRepository.setHighAltitudeMode: SystemManager setHighAltitudeMode / getHighAltitudeMode)
+     */
+    SETTINGS_HIGH_ALTITUDE("settings.high_altitude", FeatureKind.TOGGLE),
+    /**
+     * the stock General page serial port control (serial_port_control_state_diana, X50 Ultra, Ultra Max, TITAN): a USB
+     * to RS-232 adapter drives the projector; the vendor service owns the port, the rows are its stock switches
+     */
+    SETTINGS_SERIAL("settings.serial", FeatureKind.PAGE),
+    /** serial_port_control.switch: SystemManager setConsoleEnable / getConsoleEnable */
+    SERIAL_SWITCH("serial.switch", FeatureKind.TOGGLE),
+    /** serial_port_control.id_group A..Z: SystemManager setConsoleID(group, number) / getConsoleID "group,number" */
+    SERIAL_ID_GROUP("serial.id_group", FeatureKind.CHOICE),
+    /** serial_port_control.id_number 0..20: the same call as the group */
+    SERIAL_ID_NUMBER("serial.id_number", FeatureKind.CHOICE),
+    /** serial_port_control.response_group: SystemManager setConsoleGroupAckEnable / getConsoleGroupAckEnable */
+    SERIAL_ACK_GROUP("serial.ack_group", FeatureKind.TOGGLE),
+    /** serial_port_control.response_all: SystemManager setConsoleAllAckEnable / getConsoleAllAckEnable */
+    SERIAL_ACK_ALL("serial.ack_all", FeatureKind.TOGGLE),
+    /** serial_port_control.master_mode: SystemManager setConsoleSeriesHost / getConsoleSeriesHost */
+    SERIAL_MASTER("serial.master", FeatureKind.TOGGLE),
+    /**
+     * the stock General row parental settings (parental_settings, data.backup.parental_settings: XGIMI Home's parent
+     * page): the shared parental controls of apps/core/lumen-parental, hosted by Lumen Home. A module screen
+     */
+    SETTINGS_PARENTAL("settings.parental", FeatureKind.SCREEN),
     /**
      * lens memory: stored zoom and lens shift positions to go back to, save, rename and delete (the X50 stock
      * lens_memory list)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The same themes for television + night, the UI mode of every Lumen image: the GSI's auto generated RRO
+     (PackageInstaller_tv__lineage_gsi_tv_*__auto_generated_rro_product, priority 1) sets these two styles to bare
+     floating dialog themes here, and this overlay (priority 2000) wins over it. The dark set: light bar icons. -->
+<resources>
+    <style name="Theme.AlertDialogActivity" parent="@style/LumenPkg.Window">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+    <style name="Theme.AlertDialogActivity.NoActionBar" parent="@style/LumenPkg.Window">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

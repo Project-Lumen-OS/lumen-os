@@ -4,15 +4,10 @@
 <resources>
     <string name="app_name">Проектор</string>
     <string name="version_line">Нұсқа %1$s</string>
-    <string name="sec_focus">Фокус</string>
-    <string name="sec_keystone">Трапеция</string>
     <string name="sec_auto">Автоматика</string>
-    <string name="sec_keys">Пульт түймелері</string>
     <string name="sec_diag">Диагностика</string>
-    <string name="act_af_now">Қазір автофокус</string>
     <string name="act_manual_focus">Қолмен фокустау</string>
     <string name="act_kst_now">Қазір трапецияны түзету</string>
-    <string name="act_fit_now">Қазір экранға сыйғызу</string>
     <string name="act_refresh">Жаңарту</string>
     <string name="tg_power_on_af">Қосқанда автофокус</string>
     <string name="tg_power_on_ak">Қосқанда трапецияны автотүзету</string>
@@ -20,10 +15,6 @@
     <string name="tg_move_ak">Жылжытқаннан кейін трапецияны түзету</string>
     <string name="tg_curtain">Экранға сыйғызу</string>
     <string name="tg_obstacle">Кедергіні айналып өту</string>
-    <string name="val_on">Қосулы</string>
-    <string name="val_off">Өшірулі</string>
-    <string name="val_unknown">Дерек жоқ</string>
-    <string name="val_not_ready">Проектор дайын емес</string>
     <string name="cancel">Бас тарту</string>
     <string name="ok">Жарайды</string>
     <string name="app_not_found">Бұл түймеге қолданба табылмады</string>

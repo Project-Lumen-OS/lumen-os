@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">Mappage dynamique des tons</string>
     <string name="lumen_gm_chip_hz">%1$d Hz</string>
     <string name="lumen_m_panel_speed_top_note">Turbo : correction du trapèze désactivée</string>
-    <string name="lumen_m_ok">OK</string>
     <string name="lumen_m_cancel">Annuler</string>
     <string name="lumen_m_panel_boost_press_again">Appuyez encore sur → pour Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Appuyez encore sur ← pour quitter Boost</string>

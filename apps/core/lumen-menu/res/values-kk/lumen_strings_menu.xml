@@ -5,8 +5,6 @@
     <string name="lumen_m_boost_effect">Boost суретті жарығырақ етеді, бірақ түстер солғындайды. Түс кеңістігі өзгермейді.</string>
     <string name="lumen_m_cec_entry">HDMI құрылғылары (CEC)</string>
     <string name="lumen_m_eq_title">Эквалайзер</string>
-    <string name="lumen_m_fit_row">Экран өлшеміне сыйдыру</string>
-    <string name="lumen_m_fit_row_summary">Зум экранға дейінгі қашықтық пен оның өлшемі бойынша таңдалады</string>
     <string name="lumen_m_hdmi_mode">HDMI режимі</string>
     <string name="lumen_m_hdmi_mode_compat">Үйлесімді (HDMI 1.4)</string>
     <string name="lumen_m_hdmi_mode_enhanced">Жақсартылған (HDMI 2.0)</string>
@@ -143,4 +141,15 @@
     <string name="lumen_m_signal_refresh_fast">Жылдам</string>
     <string name="lumen_m_signal_refresh_note">Жылдам: кадр сирек дірілдеуі мүмкін</string>
     <string name="lumen_m_hdr_developer">Әзірлеушілерге</string>
+    <string name="lumen_m_hdr_power">Қосылу</string>
+    <string name="lumen_m_power_on_ac">Қуат қосылғанда автоматты іске қосу</string>
+    <string name="lumen_m_power_on_ac_tip">Қуат қосылғаннан кейін проектор автоматты түрде іске қосылады</string>
+    <string name="lumen_m_custom_base">Негізі</string>
+    <string name="lumen_m_custom_delete">Пайдаланушы режимін жою</string>
+    <string name="lumen_m_custom_delete_ask">Пайдаланушы сурет режимін жою керек пе?</string>
+    <string name="lumen_m_custom_confirm">Растау</string>
+    <string name="lumen_m_custom_name">Режим атауын енгізіңіз</string>
+    <string name="lumen_m_custom_name_empty">Атау бос болмауы керек</string>
+    <string name="lumen_m_custom_name_taken">Бұл атау бар, басқасын енгізіңіз</string>
+    <string name="lumen_m_custom_name_max">Ең ұзын ұзындыққа жетті</string>
 </resources>

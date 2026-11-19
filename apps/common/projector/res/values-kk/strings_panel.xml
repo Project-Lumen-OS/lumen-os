@@ -3,7 +3,6 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="panel_title">Жылдам параметрлер</string>
-    <string name="panel_sec_image_correction">Кескінді түзету</string>
     <string name="panel_sec_picture">Кескін</string>
     <string name="panel_sec_game">Ойындар (HDMI)</string>
     <string name="panel_sec_sound">Дыбыс</string>
@@ -18,14 +17,6 @@
     <string name="panel_reset">Қалпына келтіру</string>
     <string name="panel_turn_on">Қосу</string>
     <string name="panel_turn_off">Өшіру</string>
-    <plurals name="panel_minutes">
-        <item quantity="one">%d мин</item>
-        <item quantity="other">%d мин</item>
-    </plurals>
-    <plurals name="panel_hours">
-        <item quantity="one">%d сағат</item>
-        <item quantity="other">%d сағат</item>
-    </plurals>
     <string name="panel_ak_now">Қазір трапецияны түзету</string>
     <string name="panel_fit_now">Қазір экранға сыйғызу</string>
     <string name="panel_af_now">Қазір автофокус</string>
@@ -43,23 +34,19 @@
     <string name="panel_reset_keystone_msg">Кескін түзетусіз толық кадрға оралады. Жалғастыру керек пе?</string>
     <string name="panel_reset_keystone_done">Трапеция қалпына келтірілді</string>
     <string name="panel_kst_manual">Трапецияны қолмен түзету</string>
-    <string name="panel_kst_hint">Көрсеткілер: бұрышты жылжыту · OK: келесі бұрыш · Артқа: дайын</string>
     <string name="panel_kst_wait">Бұрыштар оқылуда…</string>
     <string name="panel_kst_corner_tl">Сол жақ жоғарғы</string>
     <string name="panel_kst_corner_tr">Оң жақ жоғарғы</string>
     <string name="panel_kst_corner_br">Оң жақ төменгі</string>
     <string name="panel_kst_corner_bl">Сол жақ төменгі</string>
     <string name="panel_kst_limit">Бұл бұрышты бұдан әрі жылжыту мүмкін емес</string>
-    <string name="panel_kst_unavailable">Трапецияны қолмен түзету қазір қолжетімсіз</string>
     <string name="panel_kst_game_mode">«Турбо» ойын режимінде трапецияны түзету өшірулі</string>
     <string name="panel_projection_mode">Проекция режимі</string>
     <string name="panel_proj_auto">Авто</string>
     <string name="panel_proj_table">Үстел</string>
     <string name="panel_proj_ceiling">Төбе</string>
     <string name="panel_proj_rear">Артқы проекция</string>
-    <string name="panel_proj_front_table">Алдыңғы, үстел</string>
     <string name="panel_proj_front_ceiling">Алдыңғы, төбе</string>
-    <string name="panel_proj_rear_table">Артқы, үстел</string>
     <string name="panel_proj_rear_ceiling">Артқы, төбе</string>
     <string name="panel_proj_confirm_flip">Кескін аударылады. Жалғастыру керек пе?</string>
     <string name="panel_proj_confirm_ceiling">Төбеге орнату режиміне ауысу керек пе? Кескін аударылады және кейбір функциялар, мысалы, трапецияны нақты уақытта түзету, қолжетімсіз болады.</string>
@@ -73,7 +60,6 @@
     <string name="panel_tileval_pm_ai">AI кескіні</string>
     <string name="panel_tileval_pm_color_accuracy">Түс дәлдігі</string>
     <string name="panel_tileval_pm_performance">Өнімділік</string>
-    <string name="panel_tileval_sound_ai">AI дыбыс</string>
     <string name="panel_pm_performance_msg">Желдету саңылаулары жабылмағанына және бөлме температурасы 25 °C-тан аспайтынына көз жеткізіңіз. Бұл режимді ұзақ пайдаланбаңыз.</string>
     <string name="panel_lamp">Жарықтық</string>
     <string name="panel_boost">Boost</string>
@@ -84,15 +70,11 @@
     <string name="panel_ultra120_3d">3D режимінде қолжетімсіз</string>
     <string name="panel_ultra120_hdmi">HDMI кірісі үшін қолжетімсіз. Ойын режимін пайдаланыңыз</string>
     <string name="panel_ultra120_refused">Ultra 120 Гц бұл мазмұн үшін қолжетімсіз</string>
-    <string name="panel_ultra120_unverified">Бұл проекторда әлі тексерілмеген.</string>
     <string name="panel_game_hdmi_only">Тек HDMI кірісі көрсетіліп тұрғанда қолжетімді</string>
-    <string name="panel_picture_settings">Кескін параметрлері</string>
     <string name="panel_pq_brightness">Жарықтық</string>
     <string name="panel_pq_contrast">Контраст</string>
     <string name="panel_pq_saturation">Қанықтық</string>
     <string name="panel_pq_sharpness">Анықтық</string>
-    <string name="panel_pq_blocked_ai">«AI кескіні» режимінде негізгі параметрлер қолжетімсіз</string>
-    <string name="panel_pq_blocked_performance">«Өнімділік» режимінде негізгі параметрлер қолжетімсіз</string>
     <string name="panel_ct_blocked_office">«Кеңсе» режимінде түс температурасы қолжетімсіз</string>
     <string name="panel_color_temp">Түс температурасы</string>
     <string name="panel_ct_1">Температура 1</string>
@@ -133,8 +115,6 @@
     <string name="eye_off_done">Көзді қорғау өшірілді</string>
     <string name="eye_bright_reduced">Проекция қашықтығы қысқа: жарықтық автоматты түрде төмендетілді</string>
     <string name="eye_unavailable">Көзді қорғау әлі дайын емес. Проекторды қайта іске қосып, қайталап көріңіз.</string>
-    <string name="panel_standby_off_after">Күту режимінен толық өшіруге дейін</string>
-    <string name="panel_input">Кіріс көзі</string>
     <string name="panel_projector_settings">Проектор параметрлері</string>
     <string name="panel_all_settings">Барлық параметрлер</string>
     <string name="panel_tile_focus">Фокус</string>
@@ -148,11 +128,6 @@
     <string name="panel_hdmi_settings">HDMI параметрлері</string>
     <string name="panel_eye_desc">Объектив алдында адам болғанда жарық күңгірттеледі.</string>
     <string name="panel_3d">3D</string>
-    <string name="panel_3d_sbs">Қатар</string>
-    <string name="panel_3d_tb">Жоғары және төмен</string>
-    <string name="panel_3d_sbs_2d">Қатар, 2D ретінде</string>
-    <string name="panel_3d_tb_2d">Жоғары және төмен, 2D ретінде</string>
-    <string name="panel_3d_summary">Бейне ойнап тұрғанда. 3D үшін белсенді DLP-Link көзілдірігі керек. «2D ретінде» 3D файлды көзілдіріксіз кәдімгі сурет етіп көрсетеді.</string>
     <string name="panel_3d_need_video">3D бейне ойнап тұрғанда жұмыс істейді: алдымен оны қосыңыз</string>
     <string name="panel_3d_not_now">3D қазір қолжетімсіз (HDR бейне, ойын режимі немесе 120 Гц)</string>
 </resources>

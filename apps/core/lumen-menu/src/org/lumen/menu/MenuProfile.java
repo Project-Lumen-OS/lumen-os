@@ -50,7 +50,10 @@ public final class MenuProfile {
 
     private static final Set<String> TOP = set("schema", "device", "model", "adapter", "features", "hints", "keys",
             "game_menu", "sections", "pending", "note");
-    private static final Set<String> PARAMS = set("options", "min", "max", "level", "items", "note", "summary", "support", "jack");
+    private static final Set<String> PARAMS = set("options", "min", "max", "level", "items", "note", "summary", "support", "jack",
+            "name", "iface");
+    /** The vendor hotspot interface of network.hotspot (ro.vendor.wifi.sap.interface of the stock dumps: ap0). */
+    private static final java.util.regex.Pattern IFACE = java.util.regex.Pattern.compile("[a-z]+[0-9]+");
     private static final Set<String> GAME_KEYS = set("enabled", "items", "themes", "cec_detect", "note", "gated", "sound",
             "vrr_top_speed");
 
@@ -156,8 +159,26 @@ public final class MenuProfile {
                 long mn = num(par.get("min"), "picture.pq.min"), mx = num(par.get("max"), "picture.pq.max");
                 if (mn >= mx) problem("picture.pq: min must be below max");
             }
+            if (FeatureId.NETWORK_HOTSPOT == id) {
+                Object nm = par.get("name"), ifc = par.get("iface");
+                if (!(nm instanceof String) || ((String) nm).trim().isEmpty()
+                        || ((String) nm).getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 32) {
+                    problem("network.hotspot: name must be the default hotspot name, 1 to 32 bytes");
+                }
+                if (!(ifc instanceof String) || !IFACE.matcher((String) ifc).matches()) {
+                    problem("network.hotspot: iface must be the vendor hotspot interface (ap0)");
+                }
+            } else if (par.containsKey("name") || par.containsKey("iface")) {
+                problem(id + ": only network.hotspot has a name and an iface");
+            }
             features.put(id, Collections.unmodifiableMap(new LinkedHashMap<>(par)));
         }
+        int hotspot = 0;
+        for (FeatureId f : MenuSpec.HOTSPOT_ROWS) if (features.containsKey(f)) hotspot++;
+        if (hotspot != 0 && hotspot != MenuSpec.HOTSPOT_ROWS.size()) {
+            problem("the Network popup rows come together: " + MenuSpec.HOTSPOT_ROWS);
+        }
+        if (hotspot != 0 && !features.containsKey(FeatureId.NETWORK)) problem("the Network popup rows need the network tile");
         if (features.containsKey(FeatureId.BOOST)) {
             if (!features.containsKey(FeatureId.LAMP)) problem("boost needs lamp");
             else if (num(features.get(FeatureId.BOOST).get("level"), "boost.level")
@@ -453,6 +474,12 @@ public final class MenuProfile {
      */
     public boolean jackSensed() {
         return !has(FeatureId.SOUND_OUTPUT) || !SoundJack.MANUAL.equals(features.get(FeatureId.SOUND_OUTPUT).get("jack"));
+    }
+
+    /** A text parameter of a feature (network.hotspot name and iface), or null. */
+    public String text(FeatureId feature, String key) {
+        Object v = has(feature) ? features.get(feature).get(key) : null;
+        return v instanceof String ? (String) v : null;
     }
 
     /** The hint picture of a row, or null: a picture is drawn only where the profile names one. */

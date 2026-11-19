@@ -14,14 +14,18 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.PathInterpolator;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.lumen.home.R;
+import org.lumen.ui.FocusRing;
 import org.lumen.ui.Grid;
 import org.lumen.ui.Motion;
+import org.lumen.ui.RingPaint;
 import org.lumen.ui.Tokens;
 
 /**
@@ -29,7 +33,7 @@ import org.lumen.ui.Tokens;
  * Продолжить просмотр\", 22/600), the title once (80/88, 700, one line), the season line (28/36, 600), the progress
  * bar with the time left (24/32), the buttons Продолжить / Подробнее (64 high, pill). Over art every text is white
  * with a soft shadow; on the bare field (no art) it takes the theme's ink. A focused button turns white (on the bare
- * field the theme's focus colour), grows to 1.06 and casts a shadow, in 260 ms.
+ * field the theme's focus colour), grows to 1.06, casts a shadow and wears the accent ring, in 260 ms.
  */
 public class ShelfView extends LinearLayout {
     public static final int BUTTON_H = 64;
@@ -41,6 +45,7 @@ public class ShelfView extends LinearLayout {
     private final ImageView mBadge;
     private final TextView mEyebrowText, mTitle, mMeta, mLeft;
     private final TextView[] mBtn = new TextView[2];
+    private final RingPaint mRing = new RingPaint();
     private final Bar mBar;
     private final Dots mDots;
     private static final int DOTS_W = 200;
@@ -99,7 +104,16 @@ public class ShelfView extends LinearLayout {
         int[] icons = { org.lumen.icons.R.drawable.lumen_ic_play, org.lumen.icons.R.drawable.lumen_ic_info };
         int[] labels = { R.string.hero_resume, R.string.hero_more };
         for (int i = 0; i < 2; i++) {
-            TextView b = new TextView(c);
+            final int k = i;
+            TextView b = new TextView(c) {
+                @Override
+                public void draw(Canvas cv) {
+                    super.draw(cv);
+                    float r = Theme.pxf(BUTTON_H / 2f);
+                    mRing.draw(cv, Theme.P.focusRing, 0, 0, getWidth(), getHeight(), r, Theme.pxf(1f), getScaleX(),
+                            FocusRing.alpha(k == mFocus, 1f));
+                }
+            };
             b.setGravity(Gravity.CENTER_VERTICAL);
             b.setText(labels[i]);
             b.setSingleLine(true);
@@ -204,8 +218,8 @@ public class ShelfView extends LinearLayout {
         mButtons.setVisibility(buttons ? VISIBLE : GONE);
     }
 
-    /** A showcase page (TMDB trending): \"Сейчас популярно\", the title, its line, Смотреть / Подробнее. */
-    public void showFeature(String eyebrow, String title, String meta) {
+    /** A showcase page (TMDB): \"Сейчас популярно\", the title, its line, the watch button ({@code watch}) / Подробнее. */
+    public void showFeature(String eyebrow, String title, String meta, String watch) {
         mEyebrowApp = "";
         mEyebrowTail = eyebrow == null ? "" : eyebrow;
         setEyebrowText();
@@ -213,7 +227,8 @@ public class ShelfView extends LinearLayout {
         mMeta.setText(meta);
         mMeta.setVisibility(meta == null || meta.isEmpty() ? GONE : VISIBLE);
         mProgressLine.setVisibility(GONE);
-        mBtn[0].setText(R.string.hero_watch);
+        if (watch == null || watch.isEmpty()) mBtn[0].setText(R.string.hero_watch);
+        else mBtn[0].setText(watch);
         mButtons.setVisibility(VISIBLE);
     }
 
@@ -252,6 +267,7 @@ public class ShelfView extends LinearLayout {
             Drawable d = b.getCompoundDrawablesRelative()[0];
             if (d != null) d.setTint(fg);
             b.setElevation(f ? Theme.pxf(14) : !mOnArt && !Theme.dark() ? Theme.pxf(2) : 0);
+            b.invalidate(); // the accent ring (draw) follows mFocus
             float s = f && Theme.animations() ? FOCUS_SCALE : 1f;
             b.animate().scaleX(s).scaleY(s).setDuration(animate ? Tokens.MS_SHOWCASE : 0).setInterpolator(Motion.SHOWCASE)
                     .start();
@@ -269,12 +285,33 @@ public class ShelfView extends LinearLayout {
         mDots.set(page, pages);
     }
 
-    /** The text appears in 600 ms (a new page). */
-    public void fadeInText() {
-        if (!Theme.animations()) return;
-        setAlpha(0f);
-        animate().alpha(1f).setDuration(Theme.HERO_FADE_MS).setInterpolator(Theme.DECEL).start();
+    /**
+     * A new page's text, apart from the art's change: the old text fades out (220 ms), {@code bind} puts the new one
+     * in, it fades in (480 ms). At once without animations or before the first layout. While it runs
+     * {@link #swapping} is true: the caller must not bind meanwhile, the end binds the page current then.
+     */
+    public void swapText(Runnable bind) {
+        animate().cancel();
+        if (!Theme.animations() || !isLaidOut() || getVisibility() != VISIBLE) {
+            mSwapping = false;
+            bind.run();
+            setAlpha(1f);
+            return;
+        }
+        mSwapping = true;
+        animate().alpha(0f).setDuration(Tokens.MS_HERO_TEXT_OUT).setInterpolator(TEXT_OUT).withEndAction(() -> {
+            mSwapping = false;
+            bind.run();
+            animate().alpha(1f).setDuration(Tokens.MS_HERO_TEXT_IN).setInterpolator(Theme.DECEL).start();
+        }).start();
     }
+
+    public boolean swapping() {
+        return mSwapping;
+    }
+
+    private static final Interpolator TEXT_OUT = new PathInterpolator(0.3f, 0f, 1f, 1f);
+    private boolean mSwapping;
 
     /** Design height of the shelf with its buttons (for the Continue row variant without them, minus the buttons). */
     public static int designHeight(boolean buttons) {

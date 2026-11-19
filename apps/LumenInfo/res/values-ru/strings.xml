@@ -11,7 +11,6 @@
     <string name="sec_overlay">Оверлей</string>
 
     <string name="na">недоступно</string>
-    <string name="none_playing">ничего не играет</string>
     <string name="on">вкл</string>
     <string name="off">выкл</string>
     <string name="yes">да</string>
@@ -62,7 +61,6 @@
     <string name="v_sdr_only">только SDR</string>
     <string name="v_layer_sideband">аппаратный тракт (SIDEBAND)</string>
     <string name="v_up_to_nits">до %1$s нит</string>
-    <string name="v_root_only">читается только с root, не показываем</string>
 
     <string name="r_audio_out">Аудиовыход</string>
     <string name="r_audio_format">Формат звука</string>

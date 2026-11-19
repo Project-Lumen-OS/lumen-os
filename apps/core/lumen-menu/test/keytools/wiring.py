@@ -53,9 +53,7 @@ CHECKS += [
     ("apps/common/projector/src/org/lumen/projector/ui/OverlayHost.java", "the overlay host joins the rule",
      ["        KeyTools.addHost(this);", "public final class OverlayHost implements KeyTools.Host {"], []),
 ]
-SAME = [("apps/common/projector/src/org/lumen/projector/ui/OverlayHost.java", "apps/ProjectorBase/src/org/lumen/projector/ui/OverlayHost.java"),
-        ("apps/common/projector/src/org/lumen/projector/ui/Panel.java", "apps/ProjectorBase/src/org/lumen/projector/ui/Panel.java")]
-FILES = sorted({c[0] for c in CHECKS} | {p for s in SAME for p in s})
+FILES = sorted({c[0] for c in CHECKS})
 
 
 def main(g):
@@ -72,11 +70,7 @@ def main(g):
             print("FAIL %s: %s (missing %s%s)" % (f, what, miss, (", still there %s" % left) if left else ""))
         else:
             print("ok   %s: %s" % (f.split("/src/")[0].split("/")[-1] + "/" + os.path.basename(f), what))
-    for a, b in SAME:
-        if open(os.path.join(g, a), "rb").read() != open(os.path.join(g, b), "rb").read():
-            bad += 1
-            print("FAIL %s differs from %s (sh apps/common/sync.sh apps/ProjectorBase projector)" % (b, a))
-    print("keytools wiring: %d checks, %s" % (len(CHECKS) + len(SAME), "all green" if not bad else "%d RED" % bad))
+    print("keytools wiring: %d checks, %s" % (len(CHECKS), "all green" if not bad else "%d RED" % bad))
     return 1 if bad else 0
 
 

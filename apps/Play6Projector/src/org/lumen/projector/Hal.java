@@ -694,10 +694,6 @@ public final class Hal {
         ManualFocusActivity.open(ctx);
     }
 
-    /** Opens the "Projector" settings activity, optionally at a section. Main thread. */
-    public static void openProjectorSettings(Context ctx, String section) {
-        SettingsActivity.open(ctx, section);
-    }
 
     /**
      * Smart autofocus (plan 1.2): one switch, the stock order of FocusRepository.setSmartAutoFocus: IGmpf2

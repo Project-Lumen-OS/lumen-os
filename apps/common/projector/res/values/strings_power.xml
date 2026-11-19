@@ -2,7 +2,6 @@
 <!-- Module "power" strings. English base; translations go to
      values-<lang>/strings_power.xml. Prefix every name with "power_". -->
 <resources>
-    <string name="power_placeholder" translatable="false">power</string>
 
     <!-- Quick panel item (All settings, panel_standby_off_after): v6.5 a short POWER press puts the
          projector in standby (light off, ready to wake instantly); after the chosen time it powers
@@ -16,7 +15,6 @@
     <string name="power_standby_never">Never</string>
     <string name="power_quick_wake_minutes">%1$d min</string>
     <string name="power_quick_wake_hours">%1$d h</string>
-    <string name="power_standby_summary">The power key, the sleep timer and the idle time turn the light off and keep the projector ready to wake instantly. After this time it powers off completely.</string>
     <!-- Lumen OS 1.0 (real STR): replaces power_standby_summary in the quick panel's All settings page
          (the standby window row is gone; power_standby_* stay only for the allow_str=0 kill switch). -->
     <string name="power_sleep_summary">The power key, the sleep timer and the idle time turn the light off and put the projector to sleep. Press power to wake it within seconds, right where you left off.</string>

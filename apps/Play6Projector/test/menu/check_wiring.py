@@ -84,8 +84,11 @@ st = body(mf, "public void set(FeatureId feature, String value, Consumer<Result>
 ok("set: Play6MenuGates.refusal before any write", before(st, "Play6MenuGates.refusal(feature, r)", "switch (")
    and before(st, "Play6MenuGates.refusal(feature, r)", "write("))
 ok("set: not ready answers without a call", before(st, "if (!Hal.isReady())", "Play6MenuGates.refusal("))
-ok("read: the state is Play6MenuGates.state", "cb.accept(state());" in body(mf, "public void read(Consumer<MenuState> cb)")
-   and "Play6MenuGates.state(last, this::text)" in body(mf, "MenuState state()"))
+# state() = the device rows (deviceState) under the shared settings rows, which read their own rows on top and answer
+# (cleanup-1119b)
+ok("read: the state is Play6MenuGates.state", "rows.read(state(), cb);" in body(mf, "public void read(Consumer<MenuState> cb)")
+   and "MenuState state() { return rows.with(deviceState()); }" in mf
+   and "Play6MenuGates.state(last, this::text)" in body(mf, "private MenuState deviceState()"))
 ok("write: every write reads everything back", "Play6Snapshot.read(g, g2, PARTS)" in body(mf, "void write(String what, Consumer<Result> cb, Write w)"))
 
 # ---- p6-hal re-checks right before the setter (the menu's read may be old)
@@ -135,7 +138,12 @@ for q in asks:
     for x in q: ok("question text " + x + " is a string", x in names)
 ok("the Game hint is a string", "p6_pic_game_hint" in names and 'text.apply("p6_pic_game_hint")' in mg)
 
-# ---- the profile: every id is named by the adapter or its pages
+# ---- the profile: every id is named by the adapter, its pages or the shared settings rows it hands its General rows
+# to (SettingsRows, as lumen-menu MenuSpecTest)
+def shared(rel):
+    return read(os.path.join(APP, rel)) or read(os.path.join(GSI, "apps/common/projector", rel))
+if "new SettingsRows(" in mf:
+    mp += shared("src/org/lumen/projector/panel/SettingsRows.java")
 prof = json.load(open(os.path.join(GSI, "devices/dragon_healthy/menu.json"))) if os.path.exists(os.path.join(GSI, "devices/dragon_healthy/menu.json")) \
     else json.load(open(os.path.join(APP, "assets/lumen_menu/menu.json")))
 FID = "src/org/lumen/menu/FeatureId.java"
@@ -144,11 +152,13 @@ consts = dict(re.findall(r'^    ([A-Z0-9_]+)\("([a-z0-9_.]+)", FeatureKind', rea
 consts.update(re.findall(r'([A-Z_]+) = "([a-z0-9_.]+)"', mg))
 by_id = {v: k for k, v in consts.items()}
 ids = set(prof["features"]) | {x.split(":")[0] for x in prof.get("pending", [])}
-# the module screens and settings (MenuSpec.module: MODULE_SCREENS, MODULE_SETTINGS) are the menu's own, no adapter
+# the module screens, settings and info rows (MenuSpec.module: MODULE_SCREENS, MODULE_SETTINGS, MODULE_INFO) are the
+# menu's own, no adapter
 # names them
 spec = read(os.path.join(GSI, "apps/core/lumen-menu/src/org/lumen/menu/MenuSpec.java"))
 module = set(re.findall(r"FeatureId\.([A-Z0-9_]+)", re.search(r"MODULE_SCREENS = [^;]*;", spec).group(0)))
 module |= set(re.findall(r"FeatureId\.([A-Z0-9_]+)", re.search(r"MODULE_SETTINGS = [^;]*;", spec).group(0)))
+module |= set(re.findall(r"FeatureId\.([A-Z0-9_]+)", re.search(r"MODULE_INFO = [^;]*;", spec).group(0)))
 ok("module screens found", len(module) >= 1)
 for i in sorted(ids):
     k = by_id.get(i)
@@ -203,6 +213,25 @@ ok("Home caps: the mirroring tile goes with the receiver's provider",
    "if (!screenMirroring(c)) off.add(HOME_TILE_MIRRORING);" in dv and 'MIRRORING_AUTHORITY = "org.lumen.miracast"' in dv
    and "resolveContentProvider(MIRRORING_AUTHORITY, 0) != null" in dv and 'HOME_TILE_MIRRORING = "miracast"' in dv
    and "Device.unsupportedHomeTiles(getContext())" in ds)
+
+# ---- the shared settings rows (All settings, General) write the source at power-on and the speech language: the
+# adapter hands them to SettingsRows before its own rows, over Play6SettingsDevice with the one HDMI input table
+p6f = read(os.path.join(P, "panel/Play6Features.java"))
+p6set = body(p6f, "public void set(FeatureId feature, String value, Consumer<Result> cb)")
+ok("settings rows: Play6Features builds SettingsRows over Play6SettingsDevice",
+   "rows = new SettingsRows(app, new org.lumen.projector.Play6SettingsDevice(app));" in p6f)
+ok("settings rows: set() hands them over before any p6-hal step", 0 <= p6set.find("if (rows.set(feature, value, this, cb)) return;")
+   < p6set.find("Hal.isReady()"))
+ok("settings rows: the Play 6 boot tokens are GeneralChoices.BOOT_ONE_HDMI",
+   "@Override public String[] bootTokens() { return GeneralChoices.BOOT_ONE_HDMI.clone(); }" in read(os.path.join(P, "Play6SettingsDevice.java")))
+ok("settings rows: the token index is the Play 6 BootSource value (HOME 0, HDMI 1)",
+   "public static final int HOME = 0, HDMI = 1;" in read(os.path.join(P, "source/BootSource.java")))
+sr = shared("src/org/lumen/projector/panel/SettingsRows.java")
+vs = shared("src/org/lumen/projector/voice/VoiceSettings.java")
+ok("settings rows: the source is stored by its token index", "int i = Arrays.asList(dev.bootTokens()).indexOf(v);" in sr
+   and "BootSource.set(app, i);" in sr and "b.put(FeatureId.POWER_BOOT_SOURCE, boot[src]);" in sr)
+ok("settings rows: the speech language goes through GeneralChoices", "Assistant.setLanguage(app, VoiceSettings.tagOf(v));" in sr
+   and "return GeneralChoices.voiceTag(token);" in vs and "GeneralChoices.voiceToken(" in vs)
 
 # ---- the old panel is gone, the recipe takes the module
 ok("old panel dropped", not os.path.exists(os.path.join(P, "panel/Play6PanelController.java")))

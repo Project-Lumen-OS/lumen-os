@@ -26,14 +26,17 @@ mark and wordmark shimmer at 60 fps), and the intro frames that already equal th
 frame use the loop palette, so the part0 -> part1 hand-over is pixel-exact (checked).
 
 Budgets (the ones tools/lumen/gen_bootanim.py and tools/lumen_v1.sh enforce, plus this tool's):
-  zip <= ZIP_MAX (~2x the 481 KB "Beam" zip it replaces; lumen_v1.sh refuses > 1 MiB),
+  zip minus the sound <= ZIP_MAX (~2x the 481 KB "Beam" zip it replaces; lumen_v1.sh refuses > 1 MiB of frames),
   GL textures <= 40 MB counting every frame (AOSP 14 keeps a texture per frame until the exit),
   desc.txt "W H 60" with an even box that libbootanimation centres on the 1920x1080 surface,
-  no trim.txt / audio.wav. The run fails if one is missed.
+  no trim.txt, one sound: part0/audio.wav, Stored, the exact bytes of apps/core/lumen-audio/assets/lumen_audio/poweron.wav (RIFF PCM 16 bit,
+  48 kHz, stereo, 2.0 to 3.5 s, <= AUDIO_MAX), which the AOSP player (audioplay.cpp) plays when part0 starts while
+  persist.sys.bootanim.play_sound is not 0 (boot_sound/README.md). The run fails if one is missed.
 
 Usage:
   gen_bootanim.py [--out overlay/v1/bootanimation.zip] [--preview DIR] [--mp4]
   gen_bootanim.py --check ZIP          only validate an existing zip
+  gen_bootanim.py --add-audio ZIP      put the power-on sound into a zip rendered before it (frames unchanged)
 Requires: Python 3.8+, Pillow >= 9.1, numpy; ffmpeg for --mp4.
 """
 import argparse
@@ -72,6 +75,10 @@ BOX_W, BOX_H = 152, 248                   # even; content keeps >= 2 px from eve
 
 ZIP_MAX = 960 * 1024
 TEX_MAX_MB = 40.0
+AUDIO = os.path.join(GSI, "apps", "core", "lumen-audio", "assets", "lumen_audio", "poweron.wav")
+AUDIO_ENTRY = "part0/audio.wav"
+AUDIO_MAX = 640 * 1024
+AUDIO_SECONDS = (2.0, 3.5)
 
 GROUND = np.array(B.rgb(B.GROUND), np.float32) / 255.0
 FACET_A = np.array(B.rgb(B.FACET_A), np.float32) / 255.0
@@ -252,6 +259,52 @@ def check_frames(frames):
     return margin
 
 
+def wav_info(data):
+    """The fmt of a RIFF WAVE the way AOSP 14 audioplay.cpp parseClipBuf walks it (chunks until "data"), plus the
+    length. Raises ValueError when the player would refuse it."""
+    import struct
+    if len(data) < 12 or data[:4] != b"RIFF" or data[8:12] != b"WAVE":
+        raise ValueError("not a riff/wave file")
+    pos, fmt = 12, None
+    while pos + 8 <= len(data):
+        cid, size = data[pos:pos + 4], struct.unpack_from("<I", data, pos + 4)[0]
+        pos += 8
+        if cid == b"fmt ":
+            fmt = struct.unpack_from("<HHIIHH", data, pos)
+        elif cid == b"data":
+            if fmt is None:
+                raise ValueError("no fmt chunk before data")
+            tag, ch, rate, _, align, bits = fmt
+            if size > len(data) - pos:
+                raise ValueError("data chunk runs past the file")
+            return dict(tag=tag, channels=ch, rate=rate, bits=bits, seconds=size / float(align * rate))
+        pos += size
+    raise ValueError("no data chunk")
+
+
+def audio_errors(z, names):
+    """The sound entry: exactly part0/audio.wav, Stored, PCM 16 bit 48 kHz stereo, 2.0..3.5 s, the repository file."""
+    errs = []
+    sounds = [n for n in names if n.endswith("audio.wav")]
+    if sounds != [AUDIO_ENTRY]:
+        return ["sound entries %s, expected exactly %s" % (sounds, AUDIO_ENTRY)], 0
+    data = z.read(AUDIO_ENTRY)
+    try:
+        w = wav_info(data)
+    except ValueError as e:
+        return ["%s: %s" % (AUDIO_ENTRY, e)], len(data)
+    if (w["tag"], w["bits"], w["rate"], w["channels"]) != (1, 16, 48000, 2):
+        errs.append("%s is not PCM 16 bit 48 kHz stereo: %s" % (AUDIO_ENTRY, w))
+    if not AUDIO_SECONDS[0] <= w["seconds"] <= AUDIO_SECONDS[1]:
+        errs.append("%s lasts %.2f s, allowed %s" % (AUDIO_ENTRY, w["seconds"], AUDIO_SECONDS))
+    if len(data) > AUDIO_MAX:
+        errs.append("%s is %d bytes, budget %d" % (AUDIO_ENTRY, len(data), AUDIO_MAX))
+    with open(AUDIO, "rb") as f:
+        if f.read() != data:
+            errs.append("%s is not the bytes of %s" % (AUDIO_ENTRY, os.path.relpath(AUDIO, GSI)))
+    return errs, len(data)
+
+
 def check_zip(path, verbose=True):
     """Validates the zip the way libbootanimation (AOSP 14) reads it. Returns a summary dict."""
     errs = []
@@ -264,8 +317,10 @@ def check_zip(path, verbose=True):
     bad = [i.filename for i in infos if i.compress_type != zipfile.ZIP_STORED]
     if bad:
         errs.append("compressed entries: %s" % bad[:3])
-    if any(n.endswith(("trim.txt", "audio.wav")) for n in names):
-        errs.append("trim.txt / audio.wav present")
+    if any(n.endswith("trim.txt") for n in names):
+        errs.append("trim.txt present")
+    sound_errs, sound = audio_errors(z, names)
+    errs += sound_errs
     lines = [l for l in z.read("desc.txt").decode("ascii").split("\n") if l.strip()]
     head = lines[0].split()
     if len(head) != 3 or not all(x.isdigit() for x in head):
@@ -290,7 +345,7 @@ def check_zip(path, verbose=True):
         fr = sorted(n for n in names if n.startswith(t[3] + "/") and n.endswith(".png"))
         if not fr:
             errs.append("no frames in %s" % t[3])
-        stray = [n for n in names if n.startswith(t[3] + "/") and not n.endswith(".png")]
+        stray = [n for n in names if n.startswith(t[3] + "/") and not n.endswith(".png") and n != AUDIO_ENTRY]
         if stray:
             errs.append("non-PNG entries in %s: %s" % (t[3], stray[:3]))
         for n in fr:
@@ -306,8 +361,8 @@ def check_zip(path, verbose=True):
     if parts and (parts[0][:4] != ("c", 1, 0, "part0") or parts[-1][0] != "f" or parts[-1][3] != "part1"):
         errs.append("lumen_v1.sh expects 'c 1 0 part0' first and an 'f ... part1' last: %s" % parts)
     tex = frames_total * w * h * 4 / 1e6
-    if size > ZIP_MAX:
-        errs.append("zip is %d bytes, budget %d" % (size, ZIP_MAX))
+    if size - sound > ZIP_MAX:
+        errs.append("zip without the sound is %d bytes, budget %d" % (size - sound, ZIP_MAX))
     if tex > TEX_MAX_MB:
         errs.append("GL textures %.1f MB, budget %.1f MB" % (tex, TEX_MAX_MB))
     if errs:
@@ -317,7 +372,30 @@ def check_zip(path, verbose=True):
     if verbose:
         print("check ok: %s, %d bytes, box %dx%d@%d, parts %s, %d frames, %.1f MB GL textures"
               % (path, size, w, h, fps, ["%s %d %d %s (%d)" % p for p in parts], frames_total, tex))
-    return dict(size=size, w=w, h=h, frames=frames_total, tex=tex)
+    return dict(size=size, w=w, h=h, frames=frames_total, tex=tex, sound=sound)
+
+
+def add_audio(path):
+    """Copies every entry of a zip rendered before the sound existed (same order, dates, modes, Stored) and puts
+    part0/audio.wav right after the last part0 frame, then checks the result."""
+    tmp = path + ".tmp"
+    with zipfile.ZipFile(path) as src, zipfile.ZipFile(tmp, "w", compression=zipfile.ZIP_STORED) as dst:
+        infos = [i for i in src.infolist() if i.filename != AUDIO_ENTRY]
+        last0 = max(k for k, i in enumerate(infos) if i.filename.startswith("part0/"))
+        for k, i in enumerate(infos):
+            dst.writestr(i, src.read(i.filename))
+            if k == last0:
+                zi = zipfile.ZipInfo(AUDIO_ENTRY, date_time=(2008, 1, 1, 0, 0, 0))
+                zi.compress_type = zipfile.ZIP_STORED
+                zi.external_attr = 0o644 << 16
+                with open(AUDIO, "rb") as f:
+                    dst.writestr(zi, f.read())
+    try:
+        check_zip(tmp)
+    except SystemExit:
+        os.remove(tmp)
+        raise
+    os.replace(tmp, path)
 
 
 def main():
@@ -326,9 +404,13 @@ def main():
     ap.add_argument("--preview", default=None, help="write preview PNGs (full 1920x1080) here")
     ap.add_argument("--mp4", action="store_true", help="also write preview.mp4 (needs ffmpeg)")
     ap.add_argument("--check", default=None, metavar="ZIP", help="only validate ZIP")
+    ap.add_argument("--add-audio", default=None, metavar="ZIP", help="put the power-on sound into ZIP, frames unchanged")
     args = ap.parse_args()
     if args.check:
         check_zip(args.check)
+        return
+    if args.add_audio:
+        add_audio(args.add_audio)
         return
 
     sc = Scene()
@@ -360,6 +442,9 @@ def main():
                 b = png_bytes(im, pal)
                 total += len(b)
                 put("%s/%03d.png" % (part, i), b)
+            if part == "part0":
+                with open(AUDIO, "rb") as f:
+                    put(AUDIO_ENTRY, f.read())
     try:
         info = check_zip(tmp, verbose=False)
         # the decoded palette frames still have an exact-ground border, and part0 hands over to

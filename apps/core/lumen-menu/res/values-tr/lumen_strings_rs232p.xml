@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-menu labels of the stock serial port control page (X50 Ultra, Ultra Max, TITAN) and the parental controls
+     row (own wording) -->
+<resources>
+    <string name="lumen_m_serial">Seri bağlantı noktasıyla kontrol</string>
+    <string name="lumen_m_serial_switch">RS-232 ile kontrol</string>
+    <string name="lumen_m_serial_id_group">Kimlik grubu</string>
+    <string name="lumen_m_serial_id_number">Kimlik numarası</string>
+    <string name="lumen_m_serial_ack_group">Grup komutlarına yanıt ver</string>
+    <string name="lumen_m_serial_ack_all">Herkese giden komutlara yanıt ver</string>
+    <string name="lumen_m_serial_master">Ana cihaz modu</string>
+    <string name="lumen_m_parental">Ebeveyn denetimi</string>
+</resources>

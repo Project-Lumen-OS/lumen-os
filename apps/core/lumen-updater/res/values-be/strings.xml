@@ -113,7 +113,6 @@
     <string name="ch_updates">Абнаўленні сістэмы</string>
     <string name="n_available_body">Адкрыйце, каб спампаваць і ўсталяваць.</string>
     <string name="n_ready_title">Перазапусціце, каб завяршыць абнаўленне</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Гэты праектар пакуль не можа абнаўляцца праз інтэрнэт: не зроблена аднаразовая наладка. Абнавіце яго з камп\'ютара праз lumen-install.</string>
     <string name="blk_power">Падключыце блок жыўлення: абнаўленне зойме некалькі хвілін.</string>
     <string name="consent_title_recovery">Усталяваць абнаўленне?</string>

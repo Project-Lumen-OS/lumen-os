@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Parental controls</string>
+    <string name="lumen_lp_intro">Limit what children can open and how long they watch.</string>
+    <string name="lumen_lp_lock">Child lock</string>
+    <string name="lumen_lp_lock_desc">When on, you can set the control range, viewing time and more</string>
+    <string name="lumen_lp_lock_off_title">Turn off the child lock?</string>
+    <string name="lumen_lp_lock_off_text">Time limits and the power on password stop working. The parental settings open without a password.</string>
+    <string name="lumen_lp_turn_off">Turn off</string>
+    <string name="lumen_lp_cancel">Cancel</string>
+    <string name="lumen_lp_child_mode">Child mode</string>
+    <string name="lumen_lp_child_apps">Apps in child mode</string>
+    <string name="lumen_lp_child_apps_count">%1$d selected</string>
+    <string name="lumen_lp_range">Control range</string>
+    <string name="lumen_lp_range_child">Child mode only</string>
+    <string name="lumen_lp_range_global">Everywhere</string>
+    <string name="lumen_lp_session">Time per session</string>
+    <string name="lumen_lp_session_desc">After it, a 10 minute break</string>
+    <string name="lumen_lp_daily">Time per day</string>
+    <string name="lumen_lp_no_limit">No limit</string>
+    <string name="lumen_lp_minutes">%1$d min</string>
+    <string name="lumen_lp_hours">%1$s h</string>
+    <string name="lumen_lp_boot_pin">Password at power on</string>
+    <string name="lumen_lp_boot_child">Child mode at power on</string>
+    <string name="lumen_lp_change_pin">Change password</string>
+    <string name="lumen_lp_eye">Eye protection</string>
+    <string name="lumen_lp_eye_desc">Eye protection is set in the projector settings</string>
+    <string name="lumen_lp_pin_enter">Enter the child lock password</string>
+    <string name="lumen_lp_pin_hint">Press the arrow buttons on the remote</string>
+    <string name="lumen_lp_pin_set">Set the child lock password</string>
+    <string name="lumen_lp_pin_again">Enter the password again</string>
+    <string name="lumen_lp_pin_mismatch">The passwords differ. Set the password again</string>
+    <string name="lumen_lp_pin_wrong">Wrong password</string>
+    <string name="lumen_lp_pin_forgot">Forgot the password? Press OK</string>
+    <string name="lumen_lp_quiz">How much is %1$d × %2$d?</string>
+    <string name="lumen_lp_quiz_wrong">Not right. Here is another question</string>
+    <string name="lumen_lp_rest_title">Time for a break</string>
+    <string name="lumen_lp_rest_session">The session is over. Rest for 10 minutes</string>
+    <string name="lumen_lp_rest_daily">Today\'s viewing time is used up</string>
+    <string name="lumen_lp_rest_unlock">Unlock</string>
+    <string name="lumen_lp_on">On</string>
+    <string name="lumen_lp_off">Off</string>
+</resources>

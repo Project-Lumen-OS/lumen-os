@@ -111,7 +111,6 @@
     <string name="ch_updates">Sistem güncellemeleri</string>
     <string name="n_available_body">İndirip yüklemek için açın.</string>
     <string name="n_ready_title">Güncellemeyi bitirmek için yeniden başlatın</string>
-    <!-- Play 6 (recovery install) -->
     <string name="blk_recovery">Bu projektör henüz internet üzerinden güncelleme yükleyemiyor: tek seferlik kurulum eksik. Bir bilgisayardan lumen-install ile güncelleyin.</string>
     <string name="blk_power">Güç adaptörünü takın: güncelleme birkaç dakika sürer.</string>
     <string name="consent_title_recovery">Güncelleme yüklensin mi?</string>

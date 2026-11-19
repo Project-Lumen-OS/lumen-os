@@ -4,16 +4,11 @@
     <string name="app_name">Проектор</string>
     <string name="version_line">Версия %1$s</string>
 
-    <string name="sec_focus">Фокус</string>
-    <string name="sec_keystone">Трапеция</string>
     <string name="sec_auto">Автоматика</string>
-    <string name="sec_keys">Кнопки пульта</string>
     <string name="sec_diag">Диагностика</string>
 
-    <string name="act_af_now">Автофокус сейчас</string>
     <string name="act_manual_focus">Ручной фокус</string>
     <string name="act_kst_now">Автотрапеция сейчас</string>
-    <string name="act_fit_now">Вписать в экран сейчас</string>
     <string name="act_refresh">Обновить</string>
 
     <string name="tg_power_on_af">Автофокус при включении</string>
@@ -23,10 +18,6 @@
     <string name="tg_curtain">Вписывать в экран</string>
     <string name="tg_obstacle">Обход препятствий</string>
 
-    <string name="val_on">Вкл</string>
-    <string name="val_off">Выкл</string>
-    <string name="val_unknown">Нет данных</string>
-    <string name="val_not_ready">Проектор не готов</string>
 
     <string name="cancel">Отмена</string>
     <string name="ok">OK</string>

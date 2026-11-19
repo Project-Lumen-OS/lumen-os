@@ -55,6 +55,13 @@ enum GmpfCall {
     SET_KST_PREPARE(GmpfIface.DISPLAY, HalCodes.DM_SET_KST_PREPARE, "setKstPrepare"),
     SET_OPTICAL_ZOOM_LIMIT_STEP(GmpfIface.DISPLAY, HalCodes.DM_SET_OPTICAL_ZOOM_LIMIT_STEP, "SetOpticalZoomLimitStep"),
     GET_CURRENT_ZOOM_LIMIT_STEP(GmpfIface.DISPLAY, HalCodes.DM_GET_CURRENT_ZOOM_LIMIT_STEP, "GetCurrentZoomLimitStep"),
+    GET_RAINBOW_REDUCTION_STATUS(GmpfIface.DISPLAY, HalCodes.DM_GET_RAINBOW_REDUCTION_STATUS, "getRainbowReductionStatus"), // G0148
+    SET_RAINBOW_REDUCTION_STATUS(GmpfIface.DISPLAY, HalCodes.DM_SET_RAINBOW_REDUCTION_STATUS, "setRainbowReductionStatus"),
+    // the wall colour adaptation (apps/core/lumen-wallcolor, 2026-11-19): the four stock calls, never 111 / 112 / 113 / 122
+    START_AUTO_COLOR(GmpfIface.DISPLAY, HalCodes.DM_START_AUTO_COLOR, "startAutoColor"),
+    SET_AUTO_COLOR_DEFAULT(GmpfIface.DISPLAY, HalCodes.DM_SET_AUTO_COLOR_DEFAULT, "setAutoColorDefault"),
+    SET_AUTO_COLOR_CALIBRATION(GmpfIface.DISPLAY, HalCodes.DM_SET_AUTO_COLOR_CALIBRATION, "setAutoColorCalibration"),
+    SET_AE_ON_OFF(GmpfIface.DISPLAY, HalCodes.DM_SET_AE_ON_OFF, "setAEOnOff"),
     SET_AUDIO_OUTPUT(GmpfIface.AUDIO, HalCodes.AM_SET_AUDIO_OUTPUT, "setAudioOutput"),
     GET_AUDIO_OUTPUT(GmpfIface.AUDIO, HalCodes.AM_GET_AUDIO_OUTPUT, "getAudioOutput"),
     SET_SOUNDEFFECT(GmpfIface.AUDIO, HalCodes.AM_SET_SOUNDEFFECT, "setSoundeffect"),
@@ -62,6 +69,8 @@ enum GmpfCall {
     SET_AUTO_SOUNDEFFECT(GmpfIface.AUDIO, HalCodes.AM_SET_AUTO_SOUNDEFFECT, "setAutoSoundeffect"),
     SET_PEQ_ENABLE(GmpfIface.AUDIO, HalCodes.AM_SET_PEQ_ENABLE, "SetPEQEnable"),
     SET_PEQ(GmpfIface.AUDIO, HalCodes.AM_SET_PEQ, "SetPEQ"),
+    SET_POWER_ON_MODE(GmpfIface.FACTORY, HalCodes.FM_SET_POWER_ON_MODE, "setPowerOnMode"),
+    GET_POWER_ON_MODE(GmpfIface.FACTORY, HalCodes.FM_GET_POWER_ON_MODE, "getPowerOnMode"),
     SAVE_POWER_ON_AK_FLAG(GmpfIface.FACTORY, HalCodes.FM_SAVE_POWER_ON_AK_FLAG, "savePowerOnAKFlag"),
     GET_POWER_ON_AK_FLAG(GmpfIface.FACTORY, HalCodes.FM_GET_POWER_ON_AK_FLAG, "getPowerOnAKFlag"),
     SWITCH_INPUT_SOURCE(GmpfIface.TV, HalCodes.TV_SWITCH_INPUT_SOURCE, "switchInputSource"),
@@ -92,6 +101,10 @@ enum GmpfCall {
     GET_MEMC_LEVEL(GmpfIface.TV, HalCodes.TV_GET_MEMC_LEVEL, "getMemcLevel"),
     SET_PICTURE_MODE(GmpfIface.TV, HalCodes.TV_SET_PICTURE_MODE, "setPictureMode"),
     GET_PICTURE_MODE(GmpfIface.TV, HalCodes.TV_GET_PICTURE_MODE, "getPictureMode"),
+    CREATE_NEW_CUSTOM_IMAGE_MODE(GmpfIface.TV, HalCodes.TV_CREATE_NEW_CUSTOM_IMAGE_MODE, "CreateNewCustomImageMode"), // G0130
+    DELETE_CUSTOM_IMAGE_MODE(GmpfIface.TV, HalCodes.TV_DELETE_CUSTOM_IMAGE_MODE, "DeleteCustomImageMode"),
+    SWITCH_CUSTOM_IMAGE_MODE_MAPPING(GmpfIface.TV, HalCodes.TV_SWITCH_CUSTOM_IMAGE_MODE_MAPPING, "SwitchCustomImageModeMapping"),
+    GET_CUSTOM_IMAGE_MODE_MAPPING(GmpfIface.TV, HalCodes.TV_GET_CUSTOM_IMAGE_MODE_MAPPING, "GetCustomImageModeMapping"),
     SET_ASPECT_RATIO(GmpfIface.TV, HalCodes.TV_SET_ASPECT_RATIO, "setAspectRatio"),
     GET_ASPECT_RATIO(GmpfIface.TV, HalCodes.TV_GET_ASPECT_RATIO, "getAspectRatio"),
     GET_HDMI_INFO(GmpfIface.TV, HalCodes.TV_GET_HDMI_INFO, "getHdmiInfo"),
@@ -136,6 +149,10 @@ enum GmpfCall {
     GET_DOLBY_VISION_PIC_MODE(GmpfIface.TV, HalCodes.TV_GET_DOLBY_VISION_PIC_MODE, "getDolbyVisionPicMode"), // signal panel
     GET_EXT_DEC_INFO(GmpfIface.TV, HalCodes.TV_GET_EXT_DEC_INFO, "getExtDecInfo"),                       // signal panel
     GET_HDMI_HW_CONFIG(GmpfIface.TV, HalCodes.TV_GET_HDMI_HW_CONFIG, "getHdmiHwConfig"),                 // signal panel
+    GET_ELDER_COLOR_TONE(GmpfIface.TV, HalCodes.TV_GET_ELDER_COLOR_TONE, "getElderColorTone"),        // senior colour
+    SET_ELDER_COLOR_TONE(GmpfIface.TV, HalCodes.TV_SET_ELDER_COLOR_TONE, "setElderColorTone"),
+    GET_ELDER_COLOR_LEVEL(GmpfIface.TV, HalCodes.TV_GET_ELDER_COLOR_LEVEL, "getElderColorLevel"),
+    SET_ELDER_COLOR_LEVEL(GmpfIface.TV, HalCodes.TV_SET_ELDER_COLOR_LEVEL, "setElderColorLevel"),
     GET_MOTION_DETECTION(GmpfIface.MOTION, HalCodes.MD_GET_MOTION_DETECTION, "getMotionDetection"),   // fit to screen size: the tilt (read)
     SET_ANG_TRIGGER_AF(GmpfIface.MOTION, HalCodes.MD_SET_ANG_TRIGGER_AF, "setAngTriggerAF"),
     GET_ANG_TRIGGER_AF(GmpfIface.MOTION, HalCodes.MD_GET_ANG_TRIGGER_AF, "getAngTriggerAF"),

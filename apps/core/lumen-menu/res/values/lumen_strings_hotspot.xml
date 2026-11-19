@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Network popup and the hotspot (lumen-system Hotspot): the stock newsettings wording where the stock
+     has the language (network_ap_*, network_wifiap_pwdshort, network_save_ap_tip), the setup texts for the name
+     and password rows. -->
+<resources>
+    <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
+    <string name="lumen_m_hotspot_hotspot">Hotspot</string>
+    <string name="lumen_m_hotspot_name">Network name</string>
+    <string name="lumen_m_hotspot_password">Password</string>
+    <string name="lumen_m_hotspot_reset">Restore default</string>
+    <string name="lumen_m_hotspot_on" formatted="true">Hotspot of %s is enabled</string>
+    <string name="lumen_m_hotspot_off">The hotspot is disabled</string>
+    <string name="lumen_m_hotspot_failed">Unknown error. Try again later</string>
+    <string name="lumen_m_hotspot_saved">Current configuration saved</string>
+    <string name="lumen_m_hotspot_name_title">Hotspot name</string>
+    <string name="lumen_m_hotspot_password_title">Hotspot password</string>
+    <string name="lumen_m_hotspot_password_hint">At least 8 characters</string>
+    <string name="lumen_m_hotspot_name_empty">Enter a network name</string>
+    <string name="lumen_m_hotspot_name_long">The name is too long</string>
+    <string name="lumen_m_hotspot_password_short">Enter at least 8 characters</string>
+    <string name="lumen_m_hotspot_password_long">No more than 63 characters</string>
+    <string name="lumen_m_hotspot_password_chars">Only Latin letters, digits and symbols</string>
+</resources>

@@ -7,7 +7,6 @@
     <string name="lumen_gm_hdr_1">تعيين النغمات الديناميكي</string>
     <string name="lumen_gm_chip_hz">%1$d هرتز</string>
     <string name="lumen_m_panel_speed_top_note">توربو: تصحيح شبه المنحرف متوقف</string>
-    <string name="lumen_m_ok">حسنًا</string>
     <string name="lumen_m_cancel">إلغاء</string>
     <!-- right to left: the slider starts on the right, so the press towards its end (Boost) is ← and towards its start is → -->
     <string name="lumen_m_panel_boost_press_again">اضغط ← مرة أخرى لتفعيل Boost</string>

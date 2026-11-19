@@ -105,7 +105,8 @@ for p in profiles:
     if os.path.isfile(ad) and "SETTINGS_REPORT" in read(ad):
         fail("%s: the adapter handles settings.report (the menu opens module screens itself)" % j["device"])
 MC = read(os.path.join(G, "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java"))
-for w in ["if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, f);",
+# ModuleScreens.available takes the profile since hotspot (5b81d69f): a module row may read its profile options
+for w in ["if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, profile, f);",
           "closeThen(() -> { if (!ModuleScreens.open(app, f)) host.toast(R.string.lumen_m_toast_failed); });"]:
     if w not in MC:
         fail("MenuController lost: " + w)

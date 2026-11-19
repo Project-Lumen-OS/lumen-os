@@ -17,3 +17,4 @@ system/etc/xgimi/z9x_nui.sh	its script
 # the base's z9x_blobs.rc and z9x_blobs.sh stay: steps.tsv puts the one blobs reader of every model over them (with
 # the X50 family's blobs.conf)
 system/etc/z9x/blobs_allow.txt	the Z9X allow-list (set z9x-v61558-b): x50_blobs_allow.txt holds the same nine lines plus the two need=eye lines
+system/product/overlay/EmulatorTetheringConfigOverlay.apk	the emulator's tether list (wlan only) outranks the vendor TetheringRROOverlay (ap0): the hotspot would hand phones no address

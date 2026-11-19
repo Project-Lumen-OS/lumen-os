@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- lumen-parental: the parental controls page, the password screen and the break screen (own wording after the
+     stock XGIMI Home parent page) -->
+<resources>
+    <string name="lumen_lp_title">Ebeveyn denetimi</string>
+    <string name="lumen_lp_intro">Çocukların neleri açabileceğini ve ne kadar izleyeceğini sınırlayın.</string>
+    <string name="lumen_lp_lock">Çocuk kilidi</string>
+    <string name="lumen_lp_lock_desc">Açıkken denetim alanını, izleme süresini ve daha fazlasını ayarlayabilirsiniz</string>
+    <string name="lumen_lp_lock_off_title">Çocuk kilidi kapatılsın mı?</string>
+    <string name="lumen_lp_lock_off_text">Süre sınırları ve açılış şifresi çalışmaz. Ebeveyn ayarları şifresiz açılır.</string>
+    <string name="lumen_lp_turn_off">Kapat</string>
+    <string name="lumen_lp_cancel">İptal</string>
+    <string name="lumen_lp_child_mode">Çocuk modu</string>
+    <string name="lumen_lp_child_apps">Çocuk modundaki uygulamalar</string>
+    <string name="lumen_lp_child_apps_count">%1$d seçildi</string>
+    <string name="lumen_lp_range">Denetim alanı</string>
+    <string name="lumen_lp_range_child">Yalnızca çocuk modu</string>
+    <string name="lumen_lp_range_global">Her yerde</string>
+    <string name="lumen_lp_session">Oturum başına süre</string>
+    <string name="lumen_lp_session_desc">Sonra 10 dakika mola</string>
+    <string name="lumen_lp_daily">Günlük süre</string>
+    <string name="lumen_lp_no_limit">Sınırsız</string>
+    <string name="lumen_lp_minutes">%1$d dk</string>
+    <string name="lumen_lp_hours">%1$s sa</string>
+    <string name="lumen_lp_boot_pin">Açılışta şifre</string>
+    <string name="lumen_lp_boot_child">Açılışta çocuk modu</string>
+    <string name="lumen_lp_change_pin">Şifreyi değiştir</string>
+    <string name="lumen_lp_eye">Göz koruması</string>
+    <string name="lumen_lp_eye_desc">Göz koruması projektör ayarlarından yapılır</string>
+    <string name="lumen_lp_pin_enter">Çocuk kilidi şifresini girin</string>
+    <string name="lumen_lp_pin_hint">Kumandadaki ok tuşlarına basın</string>
+    <string name="lumen_lp_pin_set">Çocuk kilidi şifresini belirleyin</string>
+    <string name="lumen_lp_pin_again">Şifreyi tekrar girin</string>
+    <string name="lumen_lp_pin_mismatch">Şifreler farklı. Şifreyi yeniden belirleyin</string>
+    <string name="lumen_lp_pin_wrong">Yanlış şifre</string>
+    <string name="lumen_lp_pin_forgot">Şifreyi mi unuttunuz? OK tuşuna basın</string>
+    <string name="lumen_lp_quiz">%1$d × %2$d kaç eder?</string>
+    <string name="lumen_lp_quiz_wrong">Doğru değil. İşte başka bir soru</string>
+    <string name="lumen_lp_rest_title">Mola zamanı</string>
+    <string name="lumen_lp_rest_session">Oturum bitti. 10 dakika dinlenin</string>
+    <string name="lumen_lp_rest_daily">Bugünün izleme süresi doldu</string>
+    <string name="lumen_lp_rest_unlock">Kilidi aç</string>
+    <string name="lumen_lp_on">Açık</string>
+    <string name="lumen_lp_off">Kapalı</string>
+</resources>

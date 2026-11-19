@@ -2,7 +2,6 @@
 <!-- Russian translation of res/values/strings_display.xml (English base), Lumen OS 1.0.1.
      Hand-written (not in i18n/langs); checked by i18n/gen.py. Keep names/placeholders. -->
 <resources>
-    <string name="uires_section">Экран</string>
     <string name="uires_row">Разрешение интерфейса</string>
     <string name="uires_default_fmt">%1$s (по умолчанию)</string>
     <string name="uires_summary">4K даёт самый чёткий текст; 1080p, как у XGIMI, меньше всего нагружает графику. Для смены проектор перезагрузится.</string>

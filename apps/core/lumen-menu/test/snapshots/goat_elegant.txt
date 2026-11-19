@@ -12,27 +12,35 @@ section keystone  (stock order: settings_tree_product_dapengse = settings_tree_p
   screen keystone.manual
   -- auto_correction
   toggle keystone.on_power
+  toggle keystone.on_move
   toggle keystone.obstacle
   toggle keystone.curtain  hint picture curtain_fit
   -- size_position
   screen zoom
+  -- smart
+  screen keystone.wall_color
   -- more
   action keystone.restore
 section focus
   action focus.af_now
   screen focus.manual
   toggle focus.smart
+  info focus.guide  hint picture focus_guide_front
 section lamp
   slider lamp 1..10
   toggle boost
 section picture
   choice picture.mode [ai, standard, sport, color_accuracy, hdr_vivid, performance]  support color_accuracy for sdr hdr hdr10, hdr_vivid for hdr_vivid  hint picture picture_mode
+  action picture.custom_new
+  choice picture.custom_base [standard, sport, color_accuracy]
   slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
   choice picture.color_temp [standard, movie]
   choice picture.memc [off, low, medium, high]
   screen picture.pro
   action picture.reset
+  action picture.custom_delete
   action picture.reset_all
+  toggle picture.anti_rbe
   -- hdmi
   choice hdmi.range [auto, full, limited]
   choice hdmi.edid [compat, enhanced]
@@ -42,6 +50,7 @@ section sound
   toggle sound.earc
   output page sound.output [auto, speaker, arc, wired, bt, usb] jack manual
     at its bottom sound.format [pcm, passthrough, auto]
+  toggle sound.key_tone
 section projection
   choice projection.mode [auto, table, ceiling]
   toggle projection.rear  hint picture rear_projection
@@ -51,29 +60,57 @@ section game
   choice game.allm [signal, device]
 section eye
   choice eye [off, on]
+section network
+  screen network.wifi
+  -- line
+  toggle network.hotspot
+  screen network.hotspot_name
+  screen network.hotspot_password
+  action network.hotspot_reset
 section general
   action lamp.off
   screen settings.system
-  screen settings.projector
+  choice eye.elder_color [off, low, medium, high]
+  info settings.temperature
   screen settings.cec
+  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
+  screen settings.parental
   screen settings.recents
   screen settings.sleep_timer
+  screen settings.remote
+  screen settings.remote_keys
   choice settings.launcher [lumen, classic]
+  screen settings.ui_resolution
   screen settings.report
-  -- developer
+  toggle settings.stats
+  screen settings.licences
+  -- power
+  toggle power.on_ac
+  toggle power.on_music
+  choice power.boot_source [home, hdmi1, hdmi2]
+  -- voice
+  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
+  toggle voice.speak
+  screen voice.key
+section developer
   screen signal.panel
+  screen sensors.panel
   toggle signal.pin
   choice signal.refresh [normal, fast]
+  screen settings.diagnostics
 popup keystone (rows with a tile of their own left out)
   keystone.fit_now
   keystone.manual
   -- auto_correction
   keystone.on_power
+  keystone.on_move
   keystone.obstacle
   keystone.curtain
+  -- smart
+  keystone.wall_color
   -- more
   keystone.restore
-all settings: keystone focus picture projection sound eye general
+all settings: keystone focus picture projection sound eye general developer
 keys: gear short quick_menu, gear long game_menu, eye_gear_short restore_off
 game menu: lat vrr hfr pic dark ar aim fps
   themes: ps xbox switch pad apple windows computer, CEC detection on

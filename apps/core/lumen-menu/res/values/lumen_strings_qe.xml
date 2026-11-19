@@ -39,7 +39,6 @@
     <string name="lumen_qe_moving">Moving</string>
     <string name="lumen_qe_move_hint">Circles move only in the top row, tiles only between the rows. To make a tile a circle, change its look.</string>
     <string name="lumen_qe_put">Put here</string>
-    <string name="lumen_qe_cancel">Cancel</string>
     <string name="lumen_qe_full">The menu is full. Choose a smaller look or the List look.</string>
     <string name="lumen_qe_list_full">That many items do not fit in a list. Remove a few first.</string>
     <string name="lumen_qe_pinned">This button always stays in the menu.</string>

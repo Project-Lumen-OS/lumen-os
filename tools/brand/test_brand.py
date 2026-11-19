@@ -7,6 +7,8 @@
   - the committed drawables are exactly what gen_drawables.py writes now, and parse as XML
   - overlay/v1/bootanimation.zip passes gen_bootanim.py --check, hands part0 over to part1 without
     a step and keeps its still pixels still during the loop
+  - its power-on sound part0/audio.wav is Stored, PCM 16 bit 48 kHz stereo, 2.0 to 3.5 s, the bytes of
+    apps/core/lumen-audio/assets/lumen_audio/poweron.wav, and the checker refuses a compressed, mono, 44.1 kHz or too long one
 """
 import math
 import os
@@ -103,6 +105,64 @@ class BootAnimationTest(unittest.TestCase):
         below = int(gen_bootanim.Scene().cy + gen_bootanim.MARK_PX) + 2     # rows under the mark
         for i, f in enumerate(loop[1:], 1):
             self.assertTrue((f[below:] == loop[0][below:]).all(), "part1/%03d.png" % i)
+
+
+class BootSoundTest(unittest.TestCase):
+    def test_entry_stored_format_length(self):
+        import zipfile
+        with zipfile.ZipFile(gen_bootanim.OUT_DEFAULT) as z:
+            info = z.getinfo(gen_bootanim.AUDIO_ENTRY)
+            data = z.read(gen_bootanim.AUDIO_ENTRY)
+            names = z.namelist()
+        self.assertEqual(info.compress_type, zipfile.ZIP_STORED)
+        self.assertEqual(info.compress_size, info.file_size)
+        self.assertEqual(names.index(gen_bootanim.AUDIO_ENTRY), gen_bootanim.INTRO_FRAMES + 1)   # after part0's frames
+        w = gen_bootanim.wav_info(data)
+        self.assertEqual((w["tag"], w["bits"], w["rate"], w["channels"]), (1, 16, 48000, 2))
+        self.assertAlmostEqual(w["seconds"], 3.0, places=3)
+        with open(gen_bootanim.AUDIO, "rb") as f:
+            self.assertEqual(f.read(), data)
+
+    def test_level_and_edges(self):
+        # -18 LUFS master, peak at most -6 dBFS, the first and last sample exactly zero (no click)
+        import array
+        with open(gen_bootanim.AUDIO, "rb") as f:
+            data = f.read()
+        pcm = array.array("h", data[data.index(b"data") + 8:])
+        peak = max(abs(v) for v in pcm) / 32768.0
+        self.assertLess(20 * math.log10(peak), -6.0)
+        self.assertEqual((pcm[0], pcm[1], pcm[-2], pcm[-1]), (0, 0, 0, 0))
+
+    def test_checker_refuses_bad_sounds(self):
+        import struct
+        import tempfile
+        import zipfile
+        with open(gen_bootanim.AUDIO, "rb") as f:
+            good = f.read()
+
+        def wav(ch=2, rate=48000, bits=16, seconds=3.0):
+            body = b"\0" * int(ch * bits // 8 * rate * seconds)
+            fmt = struct.pack("<HHIIHH", 1, ch, rate, rate * ch * bits // 8, ch * bits // 8, bits)
+            return b"RIFF" + struct.pack("<I", 36 + len(body)) + b"WAVEfmt " + struct.pack("<I", 16) + fmt + \
+                b"data" + struct.pack("<I", len(body)) + body
+
+        cases = {"mono": (wav(ch=1), zipfile.ZIP_STORED), "44.1 kHz": (wav(rate=44100), zipfile.ZIP_STORED),
+                 "too long": (wav(seconds=4.0), zipfile.ZIP_STORED), "compressed": (good, zipfile.ZIP_DEFLATED),
+                 "other bytes": (wav(), zipfile.ZIP_STORED)}
+        import copy
+        with zipfile.ZipFile(gen_bootanim.OUT_DEFAULT) as src:
+            entries = [(i, src.read(i.filename)) for i in src.infolist()]
+        with tempfile.TemporaryDirectory() as d:
+            for name, (data, method) in cases.items():
+                p = os.path.join(d, "x.zip")
+                with zipfile.ZipFile(p, "w", compression=zipfile.ZIP_STORED) as z:
+                    for i, b in entries:        # writestr moves a ZipInfo's offset: write copies
+                        if i.filename == gen_bootanim.AUDIO_ENTRY:
+                            z.writestr(zipfile.ZipInfo(i.filename, i.date_time), data, compress_type=method)
+                        else:
+                            z.writestr(copy.copy(i), b)
+                with self.assertRaises(SystemExit, msg=name):
+                    gen_bootanim.check_zip(p, verbose=False)
 
 
 if __name__ == "__main__":
