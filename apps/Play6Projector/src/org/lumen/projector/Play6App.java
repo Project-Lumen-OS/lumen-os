@@ -201,7 +201,8 @@ public final class Play6App {
         step("Assistant.install", () -> org.lumen.projector.voice.Assistant.install(app, new org.lumen.projector.voice.AssistantHost()));
         // connected hook + SCREEN_ON hook (no HAL call here): IGmpf 698 follows tvinput's HDMI sessions (t14)
         step("HdmiSource.install", () -> org.lumen.projector.source.HdmiSource.install(app));
-        step("SignalPanel.install", () -> org.lumen.signal.SignalPanel.install(app, new org.lumen.projector.panel.Play6SignalReader()));
+        step("SignalPanel.install", () -> org.lumen.signal.SignalPanel.install(app, new org.lumen.projector.panel.Play6SignalReader(),
+                new org.lumen.projector.panel.MenuSignalText()));
         step("SensorPanel.install", () -> org.lumen.sensors.SensorPanel.install(app, new org.lumen.projector.panel.Play6SensorReader()));
         // connected hook + focus listener (no HAL call here): the SetupBridge's "hal" / "af" events for Lumen Setup
         step("SetupEvents.install", () -> SetupEvents.install(app));

@@ -22,9 +22,9 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 | XGIMI Z9X | стабильная | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [с проектора](docs/install/z9x/ru.md) |
 | XGIMI Play 6 | стабильная | [Lumen OS 1.0.10 для Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [с компьютером](docs/install/play6/ru.md) |
 | XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/hb/ru.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta8), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta8) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta10), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta10) | [с проектора](docs/install/x50/ru.md) |
 | XGIMI RS30 Ultra Max | бета, только проба | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta1), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta1) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta2), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta3), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta3) | [с проектора](docs/install/x50/ru.md) |
 
 У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
 проектора и прошивку XGIMI, которую он не знает.

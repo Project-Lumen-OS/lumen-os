@@ -129,7 +129,8 @@ public final class MenuSpec {
      */
     private static final Object[][] SECTIONS = {
             {KEYSTONE, new Object[][]{                  // each profile names its stock order (sections.keystone)
-                    {null, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL, FeatureId.ZOOM,
+                    {null, FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.KEYSTONE_MANUAL,
+                            FeatureId.FOCUS_SETTINGS, FeatureId.ZOOM,
                             FeatureId.ZOOM_DIGITAL, FeatureId.ZOOM_MOVE, FeatureId.KEYSTONE_ROTATION,
                             FeatureId.KEYSTONE_WALL_COLOR, FeatureId.ZOOM_MEMORY},
                     {"auto_correction", FeatureId.KEYSTONE_REALTIME, FeatureId.KEYSTONE_ON_POWER, FeatureId.KEYSTONE_ON_MOVE,
@@ -172,6 +173,7 @@ public final class MenuSpec {
                             FeatureId.SETTINGS_LICENCES},
                     {"screensaver", FeatureId.SETTINGS_SCREENSAVER_NOW, FeatureId.SETTINGS_SCREENSAVER_DELAY},
                     {"power", FeatureId.POWER_ON_AC, FeatureId.POWER_ON_MUSIC, FeatureId.POWER_BOOT_SOURCE},
+                    {"menu", FeatureId.SETTINGS_MENU_SIDE, FeatureId.SETTINGS_MENU_DENSITY},
                     {"voice", FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK, FeatureId.VOICE_KEY}}},
             // 2026-11-19: the developer tools are one page of their own, the last of All settings (as on Android),
             // never rows of General, a section tile or a round button
@@ -182,7 +184,15 @@ public final class MenuSpec {
      * {section, row of another section}: a row a profile's stock order may also show on this section's page. The stock
      * image page starts with the light level (brightness_adjustment), while the card keeps its brightness slider.
      */
-    private static final Object[][] ALSO_IN = {{PICTURE, FeatureId.LAMP}};
+    private static final Object[][] ALSO_IN = {{PICTURE, FeatureId.LAMP}, {KEYSTONE, FeatureId.FOCUS_AF_NOW},
+            {KEYSTONE, FeatureId.FOCUS_MANUAL}, {KEYSTONE, FeatureId.FOCUS_SMART}, {KEYSTONE, FeatureId.FOCUS_GUIDE}};
+    /**
+     * Sections whose rows a profile may move onto another section's page (TITAN testers 2026-11-19: auto and manual
+     * focus on the Image correction page with a smart focus sub page, as the keystone rows). The section keeps its card
+     * tile and popup, the other popup leaves the moved rows out (the card reaches each row once), and All settings
+     * drops the section's own category once every row of it stands on the other page.
+     */
+    private static final String[] MOVABLE = {FOCUS};
 
     /** True when a profile's stock order of {@code section} may also show {@code f}, a row of another section. */
     public static boolean alsoIn(String section, FeatureId f) {
@@ -208,7 +218,8 @@ public final class MenuSpec {
      */
     public static final Set<FeatureId> MODULE_SETTINGS = Collections.unmodifiableSet(EnumSet.of(FeatureId.SIGNAL_PIN,
             FeatureId.SIGNAL_REFRESH, FeatureId.SOUND_KEY_TONE, FeatureId.SETTINGS_COLOUR_VISION,
-            FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT, FeatureId.POWER_ON_MUSIC));
+            FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT, FeatureId.POWER_ON_MUSIC,
+            FeatureId.SETTINGS_MENU_SIDE, FeatureId.SETTINGS_MENU_DENSITY));
 
     /** The Network popup's rows: a profile names all of them or none (MenuProfile), with the Network tile. */
     public static final Set<FeatureId> HOTSPOT_ROWS = Collections.unmodifiableSet(EnumSet.of(FeatureId.NETWORK_WIFI,
@@ -222,6 +233,12 @@ public final class MenuSpec {
     public static final Set<FeatureId> MODULE_INFO = Collections.unmodifiableSet(EnumSet.of(FeatureId.FOCUS_GUIDE));
 
     /**
+     * Pages of the menu's own grouping (the smart focus page of the Image correction page): only rows of other features
+     * open behind them, so no device adapter has a part in the page row itself.
+     */
+    public static final Set<FeatureId> MODULE_PAGES = Collections.unmodifiableSet(EnumSet.of(FeatureId.FOCUS_SETTINGS));
+
+    /**
      * Module settings every projector has, so no profile names them: the quick menu editor offers them (the volume,
      * 2026-11-18: an optional item, never in the default menu). Nothing in the section pages, the snapshots or
      * the device adapters.
@@ -231,7 +248,7 @@ public final class MenuSpec {
     /** True for a module screen or setting: the menu handles it, the device adapter has no part in it. */
     public static boolean module(FeatureId f) {
         return MODULE_SCREENS.contains(f) || MODULE_SETTINGS.contains(f) || MODULE_INFO.contains(f)
-                || EVERY_MODEL.contains(f);
+                || MODULE_PAGES.contains(f) || EVERY_MODEL.contains(f);
     }
 
     /** All settings: the round category buttons, in this order. */
@@ -313,12 +330,23 @@ public final class MenuSpec {
     public final List<String> allSettings;
     /** The pages of the menu's own rows the profile has ({@link FeatureKind#PAGE} rows), in table order. */
     public final Map<FeatureId, List<Group>> pages;
+    /**
+     * Rows a profile shows on another section's page ({@link #MOVABLE}: the focus rows on the Image correction page),
+     * each with its own section: only that section's popup has it, the other page's popup leaves it out.
+     */
+    public final Map<FeatureId, String> moved;
 
     private MenuSpec(MenuProfile p) {
         profile = p;
         pages = pages(p);
-        sections = sections(p, Collections.emptySet(), pages);
-        popups = sections(p, cardFeatures(p), pages);
+        sections = sections(p, sec -> Collections.emptySet(), pages);
+        Set<FeatureId> card = cardFeatures(p);
+        moved = Collections.unmodifiableMap(moved(p));
+        popups = sections(p, sec -> {                          // a moved row stays only in its own section's popup
+            Set<FeatureId> leave = new HashSet<>(card);
+            for (Map.Entry<FeatureId, String> e : moved.entrySet()) if (!sec.equals(e.getValue())) leave.add(e.getKey());
+            return leave;
+        }, pages);
         List<Tile> rt = new ArrayList<>();
         for (Object t : ROUND_TILES) {
             if (!(t instanceof FeatureId) || roundShown((FeatureId) t)) rt.add(new Tile(ROUND, t, null, false));
@@ -340,7 +368,9 @@ public final class MenuSpec {
         for (FeatureId f : SLIDER_TILES) if (present(f) && sliderRange(f) != null) sl.add(new Tile(SLIDER, f, null, false));
         sliders = Collections.unmodifiableList(sl);
         List<String> all = new ArrayList<>();
-        for (String c : ALL_SETTINGS) if (sections.containsKey(c) || GENERAL.equals(c)) all.add(c);
+        for (String c : ALL_SETTINGS) {
+            if ((sections.containsKey(c) || GENERAL.equals(c)) && !allMoved(c, sections, pages)) all.add(c);
+        }
         allSettings = Collections.unmodifiableList(all);
     }
 
@@ -348,11 +378,69 @@ public final class MenuSpec {
      * The section groups with the rows the profile has, minus {@code leaveOut}, in the profile's stock order where it
      * gives one; empty groups and sections go.
      */
-    private static Map<String, List<Group>> sections(MenuProfile p, Set<FeatureId> leaveOut, Map<FeatureId, List<Group>> pages) {
+    /**
+     * The rows of a {@link #MOVABLE} section the profile shows on another section's page, and a page of the profile
+     * whose rows all moved (focus.settings), each with the section it came from: only that section's popup keeps it.
+     */
+    private static Map<FeatureId, String> moved(MenuProfile p) {
+        Map<FeatureId, String> out = new java.util.HashMap<>();
+        for (Object[] s : SECTIONS) {
+            Object[][] order = p.order((String) s[0]);
+            if (order == null) continue;
+            for (Object[] g : order) {
+                for (int i = 1; i < g.length; i++) {
+                    FeatureId f = (FeatureId) g[i];
+                    if (movable(sectionOf(f)) && !s[0].equals(sectionOf(f))) out.put(f, sectionOf(f));
+                }
+            }
+        }
+        for (Map.Entry<FeatureId, Object[][]> e : p.pageOrders().entrySet()) {
+            String home = null;
+            boolean all = true;
+            for (Object[] g : e.getValue()) {
+                for (int i = 1; i < g.length; i++) {
+                    String sec = sectionOf((FeatureId) g[i]);
+                    if (!movable(sec) || home != null && !home.equals(sec)) all = false;
+                    else home = sec;
+                }
+            }
+            if (all && home != null) {
+                for (Object[] g : e.getValue()) for (int i = 1; i < g.length; i++) out.put((FeatureId) g[i], home);
+                out.put(e.getKey(), home);
+            }
+        }
+        return out;
+    }
+
+    private static boolean movable(String section) {
+        for (String m : MOVABLE) if (m.equals(section)) return true;
+        return false;
+    }
+
+    /** True when every row of {@link #MOVABLE} section {@code c} stands on another section's page (no own category). */
+    private static boolean allMoved(String c, Map<String, List<Group>> sections, Map<FeatureId, List<Group>> pages) {
+        if (!movable(c) || !sections.containsKey(c)) return false;
+        Set<FeatureId> elsewhere = new HashSet<>();
+        for (Map.Entry<String, List<Group>> e : sections.entrySet()) {
+            if (e.getKey().equals(c)) continue;
+            for (Group g : e.getValue()) {
+                for (FeatureId f : g.rows) {
+                    elsewhere.add(f);
+                    List<Group> sub = pages.get(f);
+                    if (sub != null) for (Group sg : sub) elsewhere.addAll(sg.rows);
+                }
+            }
+        }
+        for (Group g : sections.get(c)) for (FeatureId f : g.rows) if (!elsewhere.contains(f)) return false;
+        return true;
+    }
+
+    private static Map<String, List<Group>> sections(MenuProfile p, java.util.function.Function<String, Set<FeatureId>> leaveOut,
+                                                     Map<FeatureId, List<Group>> pages) {
         LinkedHashMap<String, List<Group>> secs = new LinkedHashMap<>();
         for (Object[] s : SECTIONS) {
             Object[][] order = p.order((String) s[0]);
-            List<Group> groups = groups(order != null ? order : (Object[][]) s[1], p, leaveOut, pages);
+            List<Group> groups = groups(order != null ? order : (Object[][]) s[1], p, leaveOut.apply((String) s[0]), pages);
             if (!groups.isEmpty()) secs.put((String) s[0], Collections.unmodifiableList(groups));
         }
         return Collections.unmodifiableMap(secs);

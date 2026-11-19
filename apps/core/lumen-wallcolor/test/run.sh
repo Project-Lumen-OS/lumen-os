@@ -19,7 +19,8 @@ S=$HERE/src/org/lumen/wallcolor
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.wallcolor.WallColorTest \
   "$G/devices/horse_popular/wallcolor.conf" false 3 "$G/devices/goat_elegant/wallcolor.conf" false 3 \
   "$G/devices/g0111/wallcolor.conf" true 3 "$G/devices/g0100/wallcolor.conf" true 3 \
-  "$G/devices/g0155/wallcolor.conf" true 5 "$G/devices/h0062/wallcolor.conf" true 3 \
+  "$G/devices/g0155/wallcolor.conf" true 5 "$G/devices/h0061/wallcolor.conf" true 3 \
+  "$G/devices/h0062/wallcolor.conf" true 3 \
   "$G/devices/h0063/wallcolor.conf" true 3 || bad=1
 python3 - "$HERE" <<'PY' || bad=1
 import os, re, sys

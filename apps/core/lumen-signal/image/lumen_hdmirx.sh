@@ -16,10 +16,14 @@
 # 5 s, or every 1 s when the user chose Fast); this script refuses requests closer than MIN_GAP_CS on its own.
 # The node has no cheaper read: its help lists only write commands (fixedeq, hdmiloglevel, hpddelay, rst, ptg) and a
 # read always prints every port and every receiver (MDBCMD_GETINFO), on the Z9X and on the HB.
+# The X50 family (X50 Ultra G0111, Ultra Max G0100, RS30 Ultra Max G0155, Titan H0061 / H0062 / H0063) runs the Z9X's MT5877
+# platform with the same receiver driver: its vendor utpa2k.ko carries the same node, dump lines and help text
+# (gsi-stock analysis), so the same two steps run there. Its cost per dump is not measured yet.
 #
 # Output /dev/lumen_hdmirx/info.txt 0644 (tmpfs, gone at reboot): "token <t>", "trigger read|help", then only the
-# whitelisted info lines without the time stamps (receiver blocks, colour space and depth, AVI / VS / GC packet bytes,
-# the port on screen and its size, the receiver's own depth). No EDID bytes, no HDCP lines, nothing of other drivers.
+# whitelisted info lines without the time stamps (receiver blocks, colour space and depth, AVI / VS / GC / HDR / SPD
+# packet bytes, the port on screen and its size, the receiver's own depth and link rate). No EDID bytes, no HDCP lines,
+# nothing of other drivers.
 # mksh + toybox only, no number above 2^31 in $(( )).
 
 # R is empty on the device (init gives services a clean environment); the host test sets it.
@@ -31,8 +35,8 @@ KMSG=$R/dev/kmsg
 MIN_GAP_CS=90
 # 0.1 s steps: the Z9X dump ends in about 0.3 s, the HB dump in 1.6 s
 WAIT_STEPS=30
-MODELS=" G0082 G0130 G0148 "
-KEEP='^-+ +Mstar HDMI (IP|port)[0-9] Info|^Signal invalid|^Active HDMI Port [0-9]|^HDE: *[0-9]+ *$|^VDE: *[0-9]+ *$|^Interlace mode: *[0-9]|^Color space |^Color depth |^AVMute:[0-9]|^(AVI|VS|GC) packet Byte [0-9]+: 0x[0-9a-fA-F]+ *$|^-+ HDMI Utopia PollingInfo HDMI IP [0-9]|^ucHDMIInfoSource |^bYUV420Flag |^u8Colordepth |^HDE: *[0-9]+ +VDE: *[0-9]+ *$|^=+ eARC Start'
+MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "
+KEEP='^-+ +Mstar HDMI (IP|port)[0-9] Info|^Signal invalid|^Active HDMI Port [0-9]|^HDE: *[0-9]+ *$|^VDE: *[0-9]+ *$|^Interlace mode: *[0-9]|^Color space |^Color depth |^AVMute:[0-9]|^(AVI|VS|GC|HDR|SPD) packet Byte [0-9]+: 0x[0-9a-fA-F]+ *$|^u8FRLRate +[0-9]+ +is +[A-Z0-9_]+ *$|^-+ HDMI Utopia PollingInfo HDMI IP [0-9]|^ucHDMIInfoSource |^bYUV420Flag |^u8Colordepth |^HDE: *[0-9]+ +VDE: *[0-9]+ *$|^=+ eARC Start'
 
 req=$(getprop sys.lumen.hdmirx.req)
 case "$req" in ''|*[!0-9a-z-]*) exit 0 ;; esac

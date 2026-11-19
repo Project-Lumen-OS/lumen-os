@@ -220,6 +220,14 @@ final class ProPicture {
                 }
                 Boolean db = opt("g2 29", g2::getDynamicBlack);
                 g.setColorSpace(cs);
+                Integer hdr = opt("620", g::getHdrType);
+                Integer src = opt("696", g::getCurrentInputSource);
+                Integer pm = opt("666", g::getPictureModeRaw);
+                Integer back = src == null || pm == null ? null : opt("111", () -> g.getColorSpaceRaw(source(src), pm));
+                if (ColorSpaceRule.hdrRefused(hdr != null && hdr != GmpfClient.HDR_SDR, cs.wire, back)) {
+                    Log.i(TAG, "112 not kept under HDR " + hdr + ": reads " + back);
+                    Notify.show(app, title, s(R.string.pro_cs_hdr_hb));
+                }
                 // Z9X HB fork: stock re-reads dynamic black after a colour space change (PictureViewModel :4623
                 // refreshBlackEnhance) and SystemUI shows "Colour space disables dynamic black enhancement" for the
                 // vendor's DB_OFF:switchCS (DynamicBlackToastHelper)
@@ -304,6 +312,11 @@ final class ProPicture {
         });
     }
 
+    /** The vendor's source of the per-input picture tables: HDMI 1 / 2 as is, every other input 0 (stock PictureManager). */
+    private static int source(int src) {
+        return src == GmpfClient.SOURCE_HDMI1 || src == GmpfClient.SOURCE_HDMI2 ? src : 0;
+    }
+
     /** HAL thread. Never throws. */
     private static State read(GmpfClient g, Gmpf2Client g2, int point) {
         State s = new State();
@@ -311,7 +324,7 @@ final class ProPicture {
         Integer src = opt("696", g::getCurrentInputSource);
         Integer pm = opt("666", g::getPictureModeRaw);
         if (src != null && pm != null) {
-            final int source = src == GmpfClient.SOURCE_HDMI1 || src == GmpfClient.SOURCE_HDMI2 ? src : 0;
+            final int source = source(src);
             final int mode = pm;
             s.pictureMode = pm;
             s.source = source;
@@ -347,11 +360,9 @@ final class ProPicture {
         int cs = -1;
         if (ok && st.colorSpace != null) for (int i = 0; i < CS_ORDER.length; i++) if (CS_ORDER[i].wire == st.colorSpace) cs = i;
         // hb-t6: the vendor refuses 112 in the AI picture modes 10..17 ("cs not support change for 0-0-16-0", device
-        // log 2026-10-29; 112 answers but 111 stays) and stock locks the row under an HDR source
-        // (picture_gamut_athenaultra_mutex): the row is hidden there instead of jumping back after every choice.
-        boolean csLocked = ok && ((st.pictureMode != null && st.pictureMode >= 10 && st.pictureMode <= 17)
-                || (st.hdr != null && st.hdr != GmpfClient.HDR_SDR));
-        showChoice(colorSpace, cs, ok && st.colorSpace != null && !csLocked);
+        // log 2026-10-29; 112 answers but 111 stays): the row is hidden there instead of jumping back after every
+        // choice. Under an HDR source it stays, as stock shows it (ColorSpaceRule)
+        showChoice(colorSpace, cs, ok && ColorSpaceRule.shown(st.pictureMode, st.colorSpace));
         // Z9X HB fork: stock hides colour optimisation, local contrast and dynamic contrast while an HDR signal plays
         // (PictureFactory.bindPicture :4890, :5304, :4677, PictureUtils.isPlayingHdr); 620 stands for the banned
         // isPlayingHDRVideo (DISPLAY 26) here, as for the HDR tone mapping row

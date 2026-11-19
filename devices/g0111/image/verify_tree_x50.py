@@ -108,6 +108,7 @@ import x50_apk_check  # noqa: E402  (IN/x50_apk_check.py, staged with this scrip
 import x50_power_keys  # noqa: E402  (IN/x50_power_keys.py, staged with this script)
 import x50_diag  # noqa: E402  (IN/x50_diag.py, staged with this script)
 import x50_perm_pkgs  # noqa: E402  (IN/x50_perm_pkgs.py + IN/apkinfo.py, staged with this script)
+import bootanim_check  # noqa: E402  (IN/bootanim_check.py, tools/brand, staged with this script)
 
 # The one APK of the X50 image that may name the gmpf HAL (maintainer's decision 2026-11-07, X50 work approved;
 # the design notes): the eye-follow fail-safe apps/X50EyeGuard, built and signed on the
@@ -393,7 +394,7 @@ MENU_APP = {
               ["GmTvManager", 76, "getDolbyVisionTmaxSize", "-"],
               ["GmTvManager", 77, "getDolbyVisionTmaxGain", "-"],
               ["GmTvManager", 162, "toggleAutoMode", "0,0..1"],
-              ["GmTvManager", 163, "getExtDecInfo", "22,7667814,6488174,6881396,7209071,6357030,7602293,6226031,7798899,7602281,6815843,7471205,0"],
+              ["GmTvManager", 163, "getExtDecInfo", "22,7667814,6488174,6881396,7209071,6357030,7602293,6226031,7798899,7602281,6815843,7471205,0;13,7274598,7143538,7602273,6881318,6881395,6357101,120;12,7274598,7143538,7602273,6881318,6684787,7143533,0"],
               ["GmTvManager", 154, "setCustomized3DLut", "45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3473457,3080245,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101;45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3211313,3080241,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101;45,7143471,7602286,7733295,7209061,7274596,3080306,6750328,7143529,6488169,7209071,6881382,3080295,3145799,3145777,3080240,4456520,3080274,6553651,7667820,3145844,6488110,6422645,101"],
               ["GmTvManager", 155, "getCustomized3DLut", "-"],
               ["ProjectorFocusManager", 98, "getTiltShiftMovePositionPercentage", "0..1"],
@@ -416,7 +417,21 @@ MENU_APP = {
               ["SystemManager", 219, "getConsoleSeriesHost", "-"],
               ["SystemManager", 220, "setConsoleEnable", "0..1"],
               ["SystemManager", 221, "getConsoleEnable", "-"],
-              ["SystemManager", 230, "setConsoleCmd", "3,0..63;4,0..63;5,1..10;14,0..2"]],
+              ["SystemManager", 230, "setConsoleCmd", "3,0..63;4,0..63;5,1..10;14,0..2"],
+              # x50b9: the rows power-on-ac (36 / 37), user-picture-modes (195..198) and the signal panel merges added to
+              # allowed_x50projector.tsv, each with the argument range the built APK passes
+              ["GmFactoryManager", 36, "setPowerOnMode"],
+              ["GmFactoryManager", 37, "getPowerOnMode"],
+              ["GmTvManager", 131, "getAllmStatus", "1..3"],
+              ["GmTvManager", 153, "getHdmiHwConfig", "1..3"],
+              ["GmTvManager", 173, "getAmdFreeSyncState", "-"],
+              ["GmTvManager", 192, "getHGiGMode", "-"],
+              ["GmTvManager", 195, "CreateNewCustomImageMode"],
+              ["GmTvManager", 196, "DeleteCustomImageMode"],
+              ["GmTvManager", 197, "SwitchCustomImageModeMapping"],
+              ["GmTvManager", 198, "GetCustomImageModeMapping"],
+              ["GmTvManager", 75, "getDolbyVisionPicMode", "-"],
+              ["TemperatureManager", 7, "getTemperatureFromSensor", "5"]],
 }
 
 
@@ -538,6 +553,18 @@ KBD_APP = {"path": "system/product/app/LeanbackIME/LeanbackIME.apk", "staged": "
 KBD_OAT = "system/product/app/LeanbackIME/oat"
 CHANGED.add(KBD_APP["path"])
 removed |= {k for k in B if k == KBD_OAT or k.startswith(KBD_OAT + "/")}
+# Lumen Setup of this tree (apps/LumenSetup through apps/LumenSetup/app.layers), built and signed with the model's
+# platform key on the Mac (tools/devices/build_apps.sh, staged as IN/stage/Z9xSetup.apk), in place of the base's
+# re-signed 1.0.9 copy (no theme step); its base oat files go
+SETUP_APP = {"path": "system/priv-app/Z9xSetup/Z9xSetup.apk", "staged": "stage/Z9xSetup.apk"}
+SETUP_OAT = "system/priv-app/Z9xSetup/oat"
+CHANGED.add(SETUP_APP["path"])
+removed |= {k for k in B if k == SETUP_OAT or k.startswith(SETUP_OAT + "/")}
+# the shared boot animation with the power-on sound (overlay/v1/bootanimation.zip, staged as IN/bootanimation.zip) over
+# the base's 1.0.9 member, which has none; owner, mode and label stay the base's, the frames too (checked below)
+BOOTANIM = "system/product/media/bootanimation.zip"
+REPLACED[BOOTANIM] = "bootanimation.zip"
+CHANGED.add(BOOTANIM)
 SYSF = b"u:object_r:system_file:s0\x00"
 # the platform certificate of the model: var.PCERT of its descriptor (sha256 of the DER), equal to the staged
 # IN/platform.x509.pem (devices/<C>/certs); HAL_APP and MENU_APP above carry the g0111 one as the literal
@@ -575,6 +602,8 @@ ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
          "system/etc/init/lumen_dsu_install.rc": (0, 0, 0o644, SYSF, "lumen_dsu_install.rc"),
          "system/etc/lumen": (0, 0, 0o755, SYSF, DIR),
          "system/etc/lumen/lumen_dsu_install.sh": (0, 0, 0o755, SYSF, "lumen_dsu_install.sh"),
+         "system/etc/init/lumen_hdmirx.rc": (0, 0, 0o644, SYSF, "lumen_hdmirx.rc"),
+         "system/etc/lumen/lumen_hdmirx.sh": (0, 0, 0o755, SYSF, "lumen_hdmirx.sh"),
          # the projector menu with the remote pairing (t11, apps/X50Projector; t10 had the pairing alone as X50Remote):
          # priv-app (privileged permissions with privapp control off) and its runtime Bluetooth permissions; the second
          # HAL app, MENU_APP below
@@ -914,8 +943,8 @@ if len(APEX_CERTS) != 4:
 for k, (kind, old, new, rep) in sorted(SIGNED.items()):
     if rep in B and sha(B[rep]) != old:
         bad.append("base_signed.tsv: %s is not the base file the Mac signed" % rep)
-    if k in (HOME_APP["path"], TVIN_APP["path"], KBD_APP["path"]):
-        continue   # replaced by this tree's Home / TV input / keyboard below
+    if k in (HOME_APP["path"], TVIN_APP["path"], KBD_APP["path"], SETUP_APP["path"]):
+        continue   # replaced by this tree's Home / TV input / keyboard / Setup below
     if k not in N or sha(N[k]) != new:
         bad.append("%s is not the file sign_x50_base.py signed" % k)
     elif kind == "apex":
@@ -937,6 +966,29 @@ else:
 kp = KBD_APP["path"]
 if kp not in N or sha(N[kp]) != sha(os.path.join(IN, KBD_APP["staged"])):
     bad.append("%s is not IN/%s (tools/devices/build_apps.sh)" % (kp, KBD_APP["staged"]))
+sp = SETUP_APP["path"]
+if sp not in N or sha(N[sp]) != sha(os.path.join(IN, SETUP_APP["staged"])):
+    bad.append("%s is not IN/%s (tools/devices/build_apps.sh, apps/LumenSetup/app.layers)" % (sp, SETUP_APP["staged"]))
+else:
+    import apkinfo  # noqa: E402  (IN/apkinfo.py, staged with this script)
+    with zipfile.ZipFile(N[sp]) as z:
+        su_pkg = apkinfo.manifest_facts(z.read("AndroidManifest.xml")).get("package")
+        su_dex = b"".join(z.read(n) for n in z.namelist() if re.fullmatch(r"classes\d*\.dex", n))
+    ss = x50_apk_check.signers(open(N[sp], "rb").read())
+    if not ss or any(set(c) != {HAL_APP["cert"]} for c in ss.values()):
+        bad.append("%s is not signed by the %s platform certificate alone: %s" % (sp, C, ss))
+    elif su_pkg != "org.lumen.setup":
+        bad.append("%s is package %r, not org.lumen.setup (the base app's package)" % (sp, su_pkg))
+    elif b"Lorg/lumen/setup/steps/ThemeStep;" not in su_dex or b"Lorg/lumen/ui/" not in su_dex:
+        # the 1.0.9 copy has no theme step and no lumen-ui module (Setup 2.0 look, the Sand theme)
+        bad.append("%s has no theme step and no org.lumen.ui module: not the Lumen Setup of this tree" % sp)
+    else:
+        print("verify_tree_x50: Setup %s sha256 %s on the %s key, theme step, oat removed" % (sp, sha(N[sp]), C))
+if BOOTANIM in N and BOOTANIM in B:
+    ba_bad, ba_sum = bootanim_check.problems(N[BOOTANIM], B[BOOTANIM])
+    bad += ["%s: %s" % (BOOTANIM, e) for e in ba_bad]
+    if not ba_bad:
+        print("verify_tree_x50: boot animation %s sha256 %s: %s" % (BOOTANIM, sha(N[BOOTANIM]), ba_sum))
 tp = TVIN_APP["path"]
 if tp not in N or sha(N[tp]) != sha(os.path.join(IN, TVIN_APP["staged"])):
     bad.append("%s is not IN/%s (tools/devices/build_apps.sh g0111)" % (tp, TVIN_APP["staged"]))

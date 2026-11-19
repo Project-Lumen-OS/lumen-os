@@ -92,5 +92,13 @@ for p in readers:
 for b in bad:
     if "not plain" in b or "arguments" in b:
         print("FAIL " + b)
+# the hold hint on a card opened by the remote key the user gave it (OkHold.hint byKey)
+ka = read(os.path.join(G, "apps/core/lumen-remote/src/org/lumen/remote/keys/KeyActions.java"))
+sr = read(os.path.join(MOD, "src/org/lumen/signal/SignalReceiver.java"))
+ok("KeyActions marks the intent of a key action", ".putExtra(EXTRA_BY_KEY, true)" in ka)
+ok("SignalReceiver passes the key mark to the panel",
+   "getBooleanExtra(KeyActions.EXTRA_BY_KEY, false)" in sr and "SignalPanel.press(app, byKey)" in sr)
+ok("SignalPanel asks the hint with the key mark",
+   "CardHold.hint(sApp, sByKey)" in read(os.path.join(MOD, "src/org/lumen/signal/SignalPanel.java")))
 print(("ok   " if not bad else "FAIL ") + "check_signal: %d problem(s)" % len(bad))
 sys.exit(1 if bad else 0)

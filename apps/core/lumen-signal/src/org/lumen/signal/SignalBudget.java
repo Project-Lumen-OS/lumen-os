@@ -25,6 +25,12 @@ public final class SignalBudget {
     /** {@code items}: the HAL items of this model (the reader's intersected with items.tsv). */
     public SignalBudget(Set<SignalItem> items) { this.items = items; }
 
+    /** {@code item} (a card item) is due again {@code ms} after {@code now}, sooner than its period (a rate to confirm). */
+    public void soon(SignalItem item, long now, long ms) {
+        Long t = last.get(item);
+        if (t != null && item.speed == ReadSpeed.CARD) last.put(item, Math.min(t, now + ms - FAST_MS));
+    }
+
     /** Forget every read time (the panel opened again or the input changed: read everything soon). */
     public void reset() {
         last.clear();

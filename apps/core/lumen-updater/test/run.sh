@@ -5,8 +5,9 @@
 #      service), the gate block strings in every locale (strings_parity.py);
 #   2. per updater recipe (Z9X, HB, Play 6), assembled: the statistics adapter (StatsTest), the facts of the two
 #      install ways (KindTest), the model table of README.md (TargetFactsTest), the service wiring (one UpdateService, the install drop of each InstallWay);
-#   3. parity with the three updaters it replaced (test/parity/run.sh: behaviour transcript + static face).
-# Host only, no device, no network. Writes only a temp dir. The model checks stay with each model's layer
+#   3. PackageDownload over the shared download (test/download.sh; the download itself: apps/core/lumen-download/test/run.sh);
+#   4. parity with the three updaters it replaced (test/parity/run.sh: behaviour transcript + static face).
+# Host only, no device, no network (the download test talks to its own server on loopback). Writes only a temp dir. The model checks stay with each model's layer
 # (apps/Z9xUpdater/test/run.sh, apps/LumenUpdater/test/ota/run.sh, apps/Play6Updater/test/run.sh).
 set -eu
 HERE=$(cd "$(dirname "$0")/.." && pwd)
@@ -87,5 +88,6 @@ if grep -nE '"(z9x|hb|play6|x50|x50max|G0[0-9]{3}|horse_popular|goat_elegant|dra
 fi
 echo "service wiring passed=3 failed=0"
 
+sh "$HERE/test/download.sh"
 sh "$HERE/test/parity/run.sh"
 echo "lumen-updater host tests: green"

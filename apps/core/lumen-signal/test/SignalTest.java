@@ -41,6 +41,8 @@ public final class SignalTest {
         hiding();
         items();
         look();
+        steady();
+        menuRows();
         System.out.println((fails == 0 ? "ok   " : "FAIL ") + "SignalTest: " + oks + " ok, " + fails + " failed");
         System.exit(fails == 0 ? 0 : 1);
     }
@@ -315,6 +317,8 @@ public final class SignalTest {
         own.put(SignalItem.SCREEN, List.of());
         own.put(SignalItem.AUDIO_OUT, List.of("r_out"));
         own.put(SignalItem.HDMI_FORMAT, List.of());   // no receiver report in full(): its rows are in HdmiRxTest
+        own.put(SignalItem.PICTURE_MODE, List.of());  // WORDS has no menu words: those rows are in menuRows()
+        own.put(SignalItem.MEMC, List.of());
         List<String> base = keys(SignalSheet.build(full(), allItems(), WORDS));
         for (SignalItem i : SignalItem.values()) {
             Set<SignalItem> items = allItems();
@@ -345,6 +349,131 @@ public final class SignalTest {
         eq("merge input", 1920, v.width);
         ok("changed: new size", SignalValues.changed(full(), v));
         ok("changed: same", !SignalValues.changed(full(), full()));
+    }
+
+    /** WORDS plus the menu's words: row "M:feature", option "feature=token" ("x" has no word in the menu). */
+    static final SignalText.Words MENU = new SignalText.Words() {
+        @Override public String get(String key, Object... args) { return WORDS.get(key, args); }
+
+        @Override public char decimal() { return ','; }
+
+        @Override public String menuTitle(String feature) { return "M:" + feature; }
+
+        @Override public String menuOption(String feature, String token) {
+            return "x".equals(token) ? null : feature + "=" + token;
+        }
+    };
+
+    /** Picture mode and motion smoothing (2026-11-19): the menu's reads and words, the card's last line. */
+    static void menuRows() {
+        SignalValues v = full();
+        v.pictureMode = "standard";
+        v.memc = "low";
+        SignalSheet s = SignalSheet.build(v, allItems(), MENU);
+        eq("card: picture mode last, after HDR (the stock RS30 card's order)", "[r_aspect = 16:9 (aspect_setting|aspect_auto), "
+                + "r_range = range_auto, r_hdr = hdr_dolby, M:picture.mode = picture.mode=standard]", s.cardRows.toString());
+        List<String> k = keys(s);
+        int sec = -1;
+        for (int i = 0; i < s.rows.size(); i++) if (s.rows.get(i).section && SignalText.SEC_PROJECTOR.equals(s.rows.get(i).key)) sec = i;
+        eq("full panel: the projector section starts with picture mode and MEMC",
+                "[[sec_projector], M:picture.mode = picture.mode=standard, M:picture.memc = picture.memc=low]",
+                s.rows.subList(sec, sec + 3).toString());
+        ok("no picture mode among the input rows", k.indexOf("picture_mode") > k.indexOf("r_freesync"));
+        eq("without menu words: no rows (never a raw token)", false, keys(SignalSheet.build(v, allItems(), WORDS)).contains("picture_mode"));
+        v.pictureMode = "x";
+        v.memc = null;
+        s = SignalSheet.build(v, allItems(), MENU);
+        ok("a token the menu cannot name or a value not read: no row", !keys(s).contains("picture_mode") && !keys(s).contains("memc"));
+        v = full();
+        v.pictureMode = "ai";
+        v.memc = "high";
+        Set<SignalItem> items = allItems();
+        items.remove(SignalItem.MEMC);
+        s = SignalSheet.build(v, items, MENU);
+        ok("a model without the MEMC item: picture mode only", keys(s).contains("picture_mode") && !keys(s).contains("memc"));
+        v.port = 0;
+        s = SignalSheet.build(v, allItems(), MENU);
+        eq("over apps too: the card line and both rows", "[M:picture.mode = picture.mode=ai]", s.cardRows.toString());
+        ok("apps: both rows in the projector section", keys(s).contains("picture_mode") && keys(s).contains("memc"));
+        ok("picture mode on the card, MEMC only in the full panel", SignalItem.PICTURE_MODE.card() && !SignalItem.MEMC.card()
+                && !SignalItem.PICTURE_MODE.hdmiOnly && SignalItem.PICTURE_MODE.hal && SignalItem.MEMC.hal);
+        SignalValues fresh = new SignalValues();
+        fresh.pictureMode = "sport";
+        v.merge(fresh, List.of(SignalItem.PICTURE_MODE), 1);
+        eq("merge picture mode", "sport", v.pictureMode);
+        eq("merge leaves MEMC", "high", v.memc);
+    }
+
+    /** One read of the input: w x h at centi (VRR on or off), the shown rate back. */
+    static int read(SignalValues v, int w, int h, int centi, Boolean vrr, long at) {
+        SignalValues f = new SignalValues();
+        f.width = w; f.height = h; f.rateCenti = centi; f.vrr = vrr;
+        v.merge(f, List.of(SignalItem.VRR, SignalItem.HDMI_INFO), at);
+        return v.rateCenti;
+    }
+
+    static String big(SignalValues v) {
+        v.port = 1;
+        return SignalSheet.build(v, EnumSet.of(SignalItem.HDMI_INFO), WORDS).big;
+    }
+
+    /** SteadyRate: the tester's 133 Hz in game mode (Z9X HB, 2026-11-19) and the rules around it. */
+    static void steady() {
+        eq("nominal 60", 6000, SteadyRate.nominal(6000));
+        eq("nominal 59.94 measured 5995", 5994, SteadyRate.nominal(5995));
+        eq("nominal 23.976", 2397, SteadyRate.nominal(2398));
+        eq("nominal 120 measured 12030", 12000, SteadyRate.nominal(12030));
+        eq("133 Hz is no table rate", 0, SteadyRate.nominal(13300));
+        eq("133.4 Hz is no table rate", 0, SteadyRate.nominal(13342));
+        eq("300 Hz is no table rate", 0, SteadyRate.nominal(30000));
+        eq("20 Hz is no table rate", 0, SteadyRate.nominal(2000));
+        // the bad sample: 60 Hz steady, one read of 133 Hz, 60 Hz again: 60 all along
+        SignalValues v = new SignalValues();
+        eq("first read 60: shown at once", 6000, read(v, 3840, 2160, 6000, false, 1));
+        eq("133 Hz once: 60 stays", 6000, read(v, 3840, 2160, 13300, false, 2));
+        ok("133 Hz once: a confirming read is asked", v.ratePending());
+        eq("card line keeps 60", "3840×2160 @ hz|60", big(v));
+        eq("60 again", 6000, read(v, 3840, 2160, 6000, false, 3));
+        ok("60 again: nothing pending", !v.ratePending());
+        // the same during the mode switch to 1080p 120 (size changed): size alone until two reads agree
+        eq("switch: 133 Hz with the new size: no rate", 0, read(v, 1920, 1080, 13342, false, 4));
+        eq("switch: size alone", "1920×1080", big(v));
+        eq("switch: 120 once: not yet", 0, read(v, 1920, 1080, 12000, false, 5));
+        eq("switch: 120 twice: 120", 12000, read(v, 1920, 1080, 12000, false, 6));
+        eq("switch: card line", "1920×1080 @ hz|120", big(v));
+        // a new table rate at the same size: the old one stays until confirmed
+        eq("50 once at the same size: 120 stays", 12000, read(v, 1920, 1080, 5000, false, 7));
+        eq("50 twice: 50", 5000, read(v, 1920, 1080, 5000, false, 8));
+        // 133 Hz three times in a row (no VRR): a PC timing the table lacks shows after three reads
+        SignalValues pc = new SignalValues();
+        eq("pc first 133: nothing", 0, read(pc, 1920, 1080, 13300, false, 1));
+        eq("pc second 133: nothing", 0, read(pc, 1920, 1080, 13300, false, 2));
+        eq("pc third 133: shown", 13300, read(pc, 1920, 1080, 13300, false, 3));
+        // VRR: moving reads say VRR, a rate that holds for two reads shows
+        SignalValues g = new SignalValues();
+        eq("vrr first read: no number", 0, read(g, 1920, 1080, 11988, true, 1));
+        ok("vrr first read: VRR", g.vrrMoving);
+        eq("vrr card line", "1920×1080 @ VRR", big(g));
+        eq("vrr 119.88 twice: shown", 11988, read(g, 1920, 1080, 11988, true, 2));
+        ok("vrr held: no VRR text", !g.vrrMoving);
+        eq("vrr 133 once: VRR", 0, read(g, 1920, 1080, 13300, true, 3));
+        ok("vrr 133 once: moving", g.vrrMoving);
+        eq("vrr 97 once: still VRR", 0, read(g, 1920, 1080, 9700, true, 4));
+        eq("vrr 133 twice (no table rate): still VRR", 0, read(g, 1920, 1080, 13300, true, 5));
+        eq("vrr 120 twice: 120", 12000, read(g, 1920, 1080, 12000, true, 7) == 0 ? read(g, 1920, 1080, 12000, true, 8) : -1);
+        // no signal resets; after it a new signal waits for two reads (mid-session switch)
+        eq("no signal", 0, read(v, 0, 0, 0, false, 9));
+        ok("no signal: no input", !v.hasInput());
+        eq("back at 60 once: not yet", 0, read(v, 3840, 2160, 6000, false, 10));
+        ok("back at 60 once: input shown (size alone)", v.hasInput() && "3840×2160".equals(big(v)));
+        eq("back at 60 twice: 60", 6000, read(v, 3840, 2160, 6000, false, 11));
+        // the budget asks the confirming read sooner than the card period
+        SignalBudget b = new SignalBudget(EnumSet.of(SignalItem.HDMI_INFO));
+        eq("budget: first read", List.of(SignalItem.HDMI_INFO), b.due(0, PanelMode.COMPACT, true));
+        b.soon(SignalItem.HDMI_INFO, 100, SteadyRate.CONFIRM_MS);
+        ok("budget: not due before the confirm time", b.due(100 + SteadyRate.CONFIRM_MS - 1, PanelMode.COMPACT, true).isEmpty());
+        eq("budget: due at the confirm time", List.of(SignalItem.HDMI_INFO),
+                b.due(100 + SteadyRate.CONFIRM_MS, PanelMode.COMPACT, true));
     }
 
     static void items() {

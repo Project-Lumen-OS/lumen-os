@@ -317,6 +317,7 @@ public final class VcontrolTest {
         want.put("G0100", "horse_popular 20500408 v2.5.4.8");
         want.put("G0155", "horse_popular 20500502 v2.5.5.2");
         want.put("H0062", "horse_popular 20500408 v2.5.4.8");
+        want.put("H0061", "horse_popular 20500408 v2.5.4.8");
         want.put("H0063", "horse_popular 20500408 v2.5.4.8");
         for (Map.Entry<String, String> e : want.entrySet()) {
             VcontrolModels m = VcontrolModels.of(e.getKey());

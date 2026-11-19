@@ -55,6 +55,26 @@ NODES = {
 IN_SUBPAGE_SKIP = {"setting_common_back", "setting_common_line", "picture_adjustment_enhancement_title"}
 # Lumen rows no stock tree has: each stands right after the row it belongs with, where that row is on the page
 LUMEN_ONLY = [("keystone.fit_now", "keystone.ak_now")]
+# stock rows Lumen shows in another group of the same page, each right after its anchor (TITAN testers 2026-11-19: the
+# level angles, stock "Horizontal Auxiliary Installation", belong with the size and position rows)
+MOVED = [("keystone.angle_h", "keystone.rotation"), ("keystone.angle_v", "keystone.angle_h")]
+
+
+def focus_up(groups, features):
+    """Lumen's focus rows right after manual keystone (TITAN testers 2026-11-19): auto focus now, manual focus, then
+    the focus.settings sub page with smart focus and the remote picture, each where the profile has it. The stock focus
+    group (small_title_focus, focus_tab) stays ELSEWHERE in NODES."""
+    rows = [f for f in ("focus.af_now", "focus.manual") if f in features]
+    sub = [f for f in ("focus.smart", "focus.guide") if f in features]
+    if sub:
+        rows.append({"page": "focus.settings", "groups": [{"rows": sub}]})
+    out = [(h, list(r)) for h, r in groups]
+    for h, r in out:
+        if "keystone.manual" in r:
+            i = r.index("keystone.manual") + 1
+            r[i:i] = rows
+            break
+    return out
 
 
 def derive(tree, nodes):
@@ -95,6 +115,12 @@ def derive(tree, nodes):
         for g in groups:
             if anchor in g[1]:
                 g[1].insert(g[1].index(anchor) + 1, row)
+    for row, anchor in MOVED:
+        src = next((g for g in groups if row in g[1]), None)
+        dst = next((g for g in groups if anchor in g[1]), None)
+        if src is not None and dst is not None:
+            src[1].remove(row)
+            dst[1].insert(dst[1].index(anchor) + 1, row)
     out = []
     for h, rows in groups:
         if rows:
@@ -139,7 +165,7 @@ def main(argv):
         have = [(g.get("header"), g["rows"]) for g in order["groups"]]
         same = True
         for t in names:
-            want = derive(t, trees[t])
+            want = focus_up(derive(t, trees[t]), prof.get("features", {}))
             if have != want:
                 print("FAIL stock order %s: sections.keystone is not the %s page\n  profile %s\n  stock   %s" % (dev, t, have, want))
                 same = False

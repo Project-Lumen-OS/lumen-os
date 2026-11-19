@@ -28,6 +28,7 @@ public final class ThemeTest {
         ring("light", Palette.light());
         ring("dark", Palette.dark());
         sand(Palette.light());
+        fill(Palette.light(), Palette.dark());
         String gsi = Paths.get(a[0]).toAbsolutePath().getParent().getParent().getParent().toString();
         overlay(gsi + "/apps/LumenPackageInstallerOverlay/res/values/lumen_pkg_colors.xml", Palette.light());
         overlay(gsi + "/apps/LumenPackageInstallerOverlay/res/values-night/lumen_pkg_colors.xml", Palette.dark());
@@ -200,6 +201,19 @@ public final class ThemeTest {
 
     static final int Tokens_ACCENT = 0xFF3B78E7;
 
+    /**
+     * The quick menu's filled focus (2026-11-19): on the light menu white text and the value lines (.88 white,
+     * lumen-menu QpdStyle.LIGHT_VALUE_FOCUSED) on the deeper Lumen blue reach AA; the dark menu keeps #3B78E7.
+     */
+    static void fill(Palette light, Palette dark) {
+        check(light.focusFill == 0xFF2F62D0, "light focus fill is the deeper Lumen blue #2F62D0");
+        check(dark.focusFill == Tokens_ACCENT, "dark focus fill keeps #3B78E7");
+        double white = ratio(0xFFFFFFFF, light.focusFill);
+        check(white >= 4.5, "light white on the focus fill " + String.format("%.2f", white) + " >= 4.5");
+        double value = ratio(over(0xFFFFFFFF, 0xE0, light.focusFill), light.focusFill);
+        check(value >= 4.5, "light focused value line on the focus fill " + String.format("%.2f", value) + " >= 4.5");
+    }
+
     /** The package installer overlay (a static RRO, no code) carries the palette's numbers: checked here. */
     static void overlay(String path, Palette p) throws Exception {
         String xml = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
@@ -231,6 +245,8 @@ public final class ThemeTest {
         }
         String qpd = new String(Files.readAllBytes(Paths.get(gsi, files[0][0])), StandardCharsets.UTF_8);
         check(qpd.contains("LIGHT = light(Palette.of(false))"), "the light quick menu is made from the lumen-ui palette");
+        check(!qpd.contains("ACCENT = Theme.ACCENT") && qpd.contains("p.focusFill, LIGHT_VALUE_FOCUSED")
+                && qpd.contains("LIGHT_VALUE_FOCUSED = 0xE0FFFFFF"), "the quick menu's filled focus follows the theme (Palette.focusFill)");
     }
 
     static void mix() {

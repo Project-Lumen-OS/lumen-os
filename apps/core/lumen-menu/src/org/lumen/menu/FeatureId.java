@@ -379,6 +379,11 @@ public enum FeatureId {
     /** how the remote focuses (the stock remote_focus_img_guide row: a picture and one sentence, nothing to set) */
     FOCUS_GUIDE("focus.guide", FeatureKind.INFO),
     /**
+     * the focus rows of the Image correction page (TITAN testers 2026-11-19, mirroring the keystone rows): auto focus
+     * now and manual focus on the page itself, smart auto focus and the remote picture on this sub page of the profile
+     */
+    FOCUS_SETTINGS("focus.settings", FeatureKind.PAGE),
+    /**
      * the stock picture settings page (newsettings image_mode_setting, Professional settings): a page whose rows and
      * groups the profile gives (sections.picture, a {"page": ..., "groups": ...} row), on the models whose stock has it
      */
@@ -388,6 +393,10 @@ public enum FeatureId {
      * while it is on): a two-way slider, min and max in the profile (stock -40..40, 0 in the middle)
      */
     PICTURE_BLACK_TUNING("picture.black_tuning", FeatureKind.SLIDER),
+    /** which side of the screen the menu sits on (General, MenuLook: left / right), a module setting of every model */
+    SETTINGS_MENU_SIDE("settings.menu_side", FeatureKind.CHOICE),
+    /** the menu's size (General, MenuLook: normal / compact, more rows on a page), a module setting of every model */
+    SETTINGS_MENU_DENSITY("settings.menu_density", FeatureKind.CHOICE),
     /** the brightness slider of {@link #PICTURE_PQ} */
     PQ_BRIGHTNESS(PICTURE_PQ, "brightness"),
     /** the contrast slider of {@link #PICTURE_PQ} */

@@ -13,7 +13,7 @@
 # sysconfig that lets every Lumen package run from the first boot. Since beta3 Lumen Setup runs the first start (as on
 # the X50, the HB and the Play 6) and TvProvision goes from the signed variants.
 # Flags: test (tN), unsigned (--unsigned: the same tree without the stage, a host build check only).
-*	need	base.sha256	rs30_prop.txt	rs30_model_prop.txt	rs30_blobs_allow.txt	x50_props.py	x50_kconfig.py	x50_netadb.rc	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_nui.rc	xgimi_compat_public.rc	debloat.txt	x50_power_keys.py	rs30_menu_keys.py	Generic.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3838.idc	Vendor_000d_Product_3839.idc	Vendor_000d_Product_3840.idc	Vendor_000d_Product_3841.idc	Vendor_000d_Product_3842.idc	Vendor_000d_Product_3843.idc	Vendor_1d5a_Product_c081.idc	Vendor_26e3_Product_af02.idc	erofs_kcheck.py	lumen_checks.py	apkinfo.py	x50-projector.xml	debloat_launcher.txt	rs30-sysconfig.xml	z9x-sysconfig-nogms.xml	privapp-permissions-z9xhome.xml	z9x-home-default-permissions.xml	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	bootanimation.zip	airplay_libs.py	first_start_prop.txt	first_start.py	privapp-permissions-z9xsetup.xml
+*	need	base.sha256	rs30_prop.txt	rs30_model_prop.txt	rs30_blobs_allow.txt	x50_props.py	x50_kconfig.py	x50_netadb.rc	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_nui.rc	xgimi_compat_public.rc	debloat.txt	x50_power_keys.py	rs30_menu_keys.py	Generic.kl	Vendor_0001_Product_0001.kl	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3839.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	Vendor_9999_Product_0666.kl	Vendor_9999_Product_0777.kl	Vendor_000d_Product_3838.idc	Vendor_000d_Product_3839.idc	Vendor_000d_Product_3840.idc	Vendor_000d_Product_3841.idc	Vendor_000d_Product_3842.idc	Vendor_000d_Product_3843.idc	Vendor_1d5a_Product_c081.idc	Vendor_26e3_Product_af02.idc	erofs_kcheck.py	lumen_checks.py	apkinfo.py	x50-projector.xml	debloat_launcher.txt	rs30-sysconfig.xml	z9x-sysconfig-nogms.xml	privapp-permissions-z9xhome.xml	z9x-home-default-permissions.xml	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-airplay-default-permissions.xml	bootanimation.zip	airplay_libs.py	first_start_prop.txt	first_start.py	privapp-permissions-z9xsetup.xml	bootanim_check.py
 !unsigned	need	signed_stage/SHA256SUMS	signed_stage/apps/X50EyeGuard.apk	signed_stage/apps/X50Projector.apk	signed_stage/apps/X50PowerOverlay.apk	signed_stage/apps/X50TvInput.apk	signed_stage/apps/LumenKeyboard.apk	signed_stage/base_signed/base_signed.tsv
 !unsigned	need	signed_stage/apps/Z9xSetup.apk	signed_stage/apps/Z9xHome.apk	signed_stage/apps/LumenMiracast.apk	signed_stage/apps/LumenWifiP2pOverlay.apk	signed_stage/apps/LumenPackageInstallerOverlay.apk	signed_stage/pinned/Z9xAirPlay.apk
 !unsigned	sums	signed_stage
@@ -58,6 +58,17 @@
 *	need	lumen_boot_sound.rc
 *	place	lumen_boot_sound.rc	{sys}/etc/init/lumen_boot_sound.rc	0644	0	0	{LABEL}
 *	place	x50_nui.rc	{sys}/etc/init/x50_nui.rc	0644	0	0	{LABEL}
+# the signal panel's HDMI receiver bridge (apps/core/lumen-signal/image, signal.tsv hdmi_format), the same script as
+# the Z9X, the Z9X HB and the other X50 models
+*	need	lumen_hdmirx.rc	lumen_hdmirx.sh
+*	sh_n	lumen_hdmirx.sh
+*	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
+*	line	lumen_hdmirx.sh	HELP=help
+*	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "
+*	mkdir	0755	{sys}/etc/lumen
+*	label	{sys}/etc/lumen	{LABEL}
+*	place	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc	0644	0	0	{LABEL}
+*	place	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh	0755	0	0	{LABEL}
 *	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
 *	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
 *	place	rs30_blobs_allow.txt	{sys}/etc/z9x/x50_blobs_allow.txt	0644	0	0	{LABEL}
@@ -161,6 +172,8 @@
 # Lumen boot animation (the base's -dark link points at it)
 *	place	z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml	0644	0	0	{LABEL}
 *	place	rs30-sysconfig.xml	{sys}/etc/sysconfig/rs30.xml	0644	0	0	{LABEL}
+# the staged animation carries the power-on sound part0/audio.wav, every entry Stored (tools/brand/bootanim_check.py)
+*	run	bootanim_check.py	{in}/bootanimation.zip	>bootanim_check.log
 *	place	bootanimation.zip	{sys}/product/media/bootanimation.zip	0644	0	0	{LABEL}
 !unsigned	apk_apex_list	{t}/apk_apex.sha256
 # the image: the X50 image's erofs flags, one time for every file, a UUID from TAG, the build id and the base sha256

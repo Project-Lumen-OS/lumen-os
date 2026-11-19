@@ -16,7 +16,7 @@ import java.nio.file.Files;
 public final class BootSoundTest {
     private static final Check C = new Check("lumen-audio boot sound");
     private static final String[] PROFILES = {"horse_popular", "goat_elegant", "dragon_healthy", "g0111", "g0100",
-            "g0155", "h0062", "h0063"};
+            "g0155", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);

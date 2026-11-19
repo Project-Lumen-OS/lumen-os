@@ -5,7 +5,7 @@
 #   sources   MENU_APP holds to its sources: calls = research/allowed_x50projector.tsv, ifaces = the Iface list of
 #             apps/X50Projector GmpfIface.java, cert = devices/g0111/certs/platform.x509.pem, path = /system/priv-app/
 #             X50Projector, an app of the registry, installed by devices/g0111/image/steps.tsv, checked by verify_tree_x50.py
-#   real      the built APK passes x50_apk_check against MENU_APP (197 calls; t17: 70 - power-on AF 4 / 5 - MD 5 = 67;
+#   real      the built APK passes x50_apk_check against MENU_APP (228 calls; t17: 70 - power-on AF 4 / 5 - MD 5 = 67;
 #             t18: + MD 9 getAutoReverse for the projection Auto radio; t20: + 21 with their argument ranges = 89; core-menu-x50game: + 12 game menu calls = 101; rs30-power: + 5 light calls = 106; rs30-menu: + the RS30 rows 12 = 118; x50-iris: + 199 / 200 = 120; quick-3d-x50: + the nine 3D calls = 129; rs30-parity-picture: + 18 picture rows less 78 of quick-3d-x50 = 146; rs30-parity-system: + 6 sound = 152; rs30-parity-system2: + TemperatureManager 6 = 153; cec-core: + GmTvManager 52 / 53 = 155; rs30-parity-projection: + rotation 2, lens memory 6 = 163; x50-parity-gaps: + aspect ratio 35 / 36 = 165; rs30-parity-picture2: + 25 colour and screen calls = 190; x50-feedback1: + the shift position 98 = 191; x50-picture-stock: + the Boost switch 151, its IMAX read 127, the tuning 192 / 193 = 195; ai-mode-stock: + GmTvManager 1 = 196; x50-parity-core: + GmTvManager 106 = 197)
 #   crossed   the menu APK against HAL_APP and the eye guard APK against MENU_APP: both refused
 set -u
@@ -112,7 +112,7 @@ PY
 RC=$?; expect sources 0 "sources: OK"
 
 if [ -f "$APK" ]; then
-  run "$APK" --expect "$VER" --name MENU_APP; expect real_menu_apk 0 "OK: 197 calls"
+  run "$APK" --expect "$VER" --name MENU_APP; expect real_menu_apk 0 "OK: 228 calls"
   run "$APK" --expect "$VER"; expect menu_apk_is_not_the_eye_guard 1 "FAILED"
 else
   bad "no menu APK $APK (build it: sh tools/devices/build_apps.sh g0111 build/g0111/stage)"

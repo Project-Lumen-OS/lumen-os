@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">È in corso l\'installazione di un aggiornamento: la sospensione profonda tornerà al termine.</string>
     <string name="hb_str_blocked_update_check">Il sistema aggiornato viene verificato dopo l\'avvio: la sospensione profonda tornerà tra pochi minuti.</string>
     <string name="hb_str_blocked_off">La sospensione profonda è disattivata su questo proiettore (impostazione di servizio).</string>
+    <string name="pro_cs_hdr_hb">Lo spazio colore non è supportato nei contenuti HDR</string>
 </resources>

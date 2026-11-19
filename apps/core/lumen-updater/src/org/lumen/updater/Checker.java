@@ -8,6 +8,7 @@ import android.os.storage.StorageVolume;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.lumen.download.HttpError;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public final class Checker {
         // nothing usable: the main manifest decides, as with one channel (an unverified one is recorded as such)
         if (k < 0 && json[0] != null) k = 0;
         if (k >= 0) return accept(c, json[k], sig[k], false, "", before);
-        if (mainError instanceof Http.HttpException && ((Http.HttpException) mainError).code == 404) {
+        if (mainError instanceof HttpError && ((HttpError) mainError).code == 404) {
             // no release published yet (or none for this channel): nothing to install
             Log.i(Ota.TAG, "no update manifest published (404)");
             st.setLastCheck(System.currentTimeMillis());
@@ -93,7 +94,7 @@ public final class Checker {
             byte[] json = Http.fetch(c[1], MAX_MANIFEST);
             st.setBetaPublished(verified(json, Http.fetch(c[1] + ".sig", 4096)) != null);
         } catch (IOException e) {
-            if (e instanceof Http.HttpException && ((Http.HttpException) e).code == 404) st.setBetaPublished(false);
+            if (e instanceof HttpError && ((HttpError) e).code == 404) st.setBetaPublished(false);
         }
     }
 

@@ -64,7 +64,7 @@ def red(name, want, mutate):
 
 TABLE, STOCK = "devices/_image/cec_defaults.tsv", "devices/_image/cec_stock.tsv"
 rc, out = run(G, "check")
-ok("the tree: green", rc == 0 and "4 framework RROs" in out and "7 app recipes" in out, out)
+ok("the tree: green", rc == 0 and "4 framework RROs" in out and "8 app recipes" in out, out)
 rc, out = run(T, "check")
 ok("the scratch copy: green", rc == 0, out)
 rc, out = run(T, "nonsense")
@@ -111,7 +111,7 @@ red("recipe: the HB app without the table asset", "devices/goat_elegant/app/HbPr
                  "file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv\n", ""))
 red("image: the RS30 without its framework RRO", "devices/g0155/build.conf: 0 framework RROs",
     lambda: edit("devices/g0155/build.conf", "X50PowerOverlay ", ""))
-red("RRO: two devices of one overlay with different stock", "apps/X50PowerOverlay serves g0100 g0111 g0155 h0062 h0063",
+red("RRO: two devices of one overlay with different stock", "apps/X50PowerOverlay serves g0100 g0111 g0155 h0061 h0062 h0063",
     lambda: edit(TABLE, "reset    goat_elegant", "device   g0155  tv_wake_on_one_touch_play  1\nreset    goat_elegant"))
 
 # write restores a lost file byte for byte

@@ -24,7 +24,7 @@ RECIPES = {
     "g0155": ("devices/g0155/image/debloat.txt", "product/overlay/" + OVERLAY,
               ("devices/g0155/image/steps.tsv", "\tremove\tdebloat.txt\t{sys}")),
 }
-for x50 in ("g0111", "g0100", "h0062", "h0063"):
+for x50 in ("g0111", "g0100", "h0061", "h0062", "h0063"):
     RECIPES[x50] = ("devices/g0111/image/remove.txt", "system/product/overlay/" + OVERLAY,
                     ("devices/%s/build.conf" % x50, "devices/g0111/image/remove.txt"))
 

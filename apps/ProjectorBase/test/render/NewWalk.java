@@ -195,6 +195,14 @@ public final class NewWalk {
                 r.enabled = st == null || !st.disabled(f);
                 break;
             case INFO: r = new WalkLib.Row("info", title); r.value = val; break;
+            case PAGE: {                                       // MenuController.addRow: a page of the menu's own rows,
+                boolean any = false;                           // only when a row of it is there, greyed as a SCREEN row
+                for (MenuSpec.Group g : spec.pages.get(f)) for (FeatureId x : g.rows) if (has(x)) any = true;
+                if (!any) return;
+                r = new WalkLib.Row("nav", title);
+                r.enabled = st == null || !st.disabled(f);
+                break;
+            }
             default: return;
         }
         if (ok && st.hidden(f)) r.visible = false;

@@ -155,7 +155,7 @@ if "--unbanned" in ce:
     bad.append("the eye guard's check gets --unbanned: %s" % ce)
 # the X50 family apps: the X50 Ultra Max g0100 (2026-11-11), the RS30 Ultra Max g0155 (2026-11-12) and the TITAN Noir
 # Pro h0062 and Max h0063 (2026-11-13) run the same menu with the same exceptions, row for row
-X50 = ("g0111", "g0100", "g0155", "h0062", "h0063")
+X50 = ("g0111", "g0100", "g0155", "h0061", "h0062", "h0063")
 rows = lambda f: [l for l in open(os.path.join(G, f), encoding="utf-8").read().splitlines() if l.strip() and not l.startswith("#")]
 for c in X50[1:]:
     if rows("devices/%s/research/unbanned_x50projector.tsv" % c) != rows("devices/g0111/research/unbanned_x50projector.tsv"):

@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">正在安装更新：安装完成后恢复深度休眠。</string>
     <string name="hb_str_blocked_update_check">更新后的系统正在启动后检查：几分钟后恢复深度休眠。</string>
     <string name="hb_str_blocked_off">此投影仪已关闭深度休眠（服务设置）。</string>
+    <string name="pro_cs_hdr_hb">HDR片源下不支持色彩空间</string>
 </resources>

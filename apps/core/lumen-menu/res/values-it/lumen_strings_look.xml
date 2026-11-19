@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menu's side and size (MenuLook) and the focus page of the Image correction page: TITAN testers 2026-11-19. -->
+<resources>
+    <string name="lumen_m_menu_side">Posizione del menu</string>
+    <string name="lumen_m_menu_left">Sinistra</string>
+    <string name="lumen_m_menu_right">Destra</string>
+    <string name="lumen_m_menu_density">Dimensione del menu</string>
+    <string name="lumen_m_menu_normal">Normale</string>
+    <string name="lumen_m_menu_compact">Compatto</string>
+    <string name="lumen_m_hdr_menu">Menu</string>
+    <string name="lumen_m_focus_settings">Impostazioni della messa a fuoco intelligente</string>
+</resources>

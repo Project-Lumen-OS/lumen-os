@@ -38,7 +38,7 @@ def codes(dev):
     return out
 
 
-WITH = ['horse_popular', 'goat_elegant', 'g0111', 'g0100', 'g0155', 'h0062', 'h0063']
+WITH = ['horse_popular', 'goat_elegant', 'g0111', 'g0100', 'g0155', 'h0061', 'h0062', 'h0063']
 for d in WITH:
     ok('%s names power.on_ac' % d, '"power.on_ac": {}' in read('devices/%s/menu.json' % d))
 ok('dragon_healthy (Play 6) has no power.on_ac', 'power.on_ac' not in read('devices/dragon_healthy/menu.json'))

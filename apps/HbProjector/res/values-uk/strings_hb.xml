@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">Встановлюється оновлення: повний сон повернеться після встановлення.</string>
     <string name="hb_str_blocked_update_check">Оновлена система перевіряється після запуску: повний сон повернеться за кілька хвилин.</string>
     <string name="hb_str_blocked_off">Повний сон вимкнено на цьому проєкторі (сервісне налаштування).</string>
+    <string name="pro_cs_hdr_hb">Колірний простір не підтримується для вмісту HDR</string>
 </resources>

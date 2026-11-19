@@ -36,7 +36,8 @@ import java.util.regex.Pattern;
  * PB1.. give RGB, 16:9, full range, VIC 97 (3840x2160p60), which is what the receiver prints itself; read as PB0.. they
  * would give YUV 4:2:2 and VIC 64 (1920x1080p100). PB14 (ACE, the DCI-P3 code) is not printed, so P3 shows only when a
  * dump carries "Byte 13". VS "Byte k" has the header in front (Byte 0 = type 0x81, Byte 4 = PB0 checksum, Byte 5..7 =
- * OUI): the capture's HDMI Forum VSIF checks out with that layout.
+ * OUI): the capture's HDMI Forum VSIF checks out with that layout. The HDR and SPD packets: InfoFrames. The link
+ * ("u8FRLRate 4 is FRL_8G_4L", "LEGACY_20" = TMDS above 3.4 Gbit/s) comes from the receiver's polling state.
  */
 public final class HdmiRxInfo {
     /** colour format tokens */
@@ -47,8 +48,10 @@ public final class HdmiRxInfo {
             P3 = "p3";
     /** quantization tokens */
     public static final String FULL = "full", LIMITED = "limited";
-    /** the MStar HDMI receiver prints 13 AVI data bytes (PB1..PB13), PB14 only if a newer driver adds it */
-    static final int AVI_BYTES = 14, VS_BYTES = 32, GC_BYTES = 4;
+    /** the MStar HDMI receiver prints 13 AVI data bytes (PB1..PB13), PB14 only if a newer driver adds it; HDR and SPD 28 */
+    static final int AVI_BYTES = 14, VS_BYTES = 32, GC_BYTES = 4, HDR_BYTES = 32, SPD_BYTES = 32;
+    /** link tokens: FRL (frlGbps x frlLanes), TMDS above 3.4 Gbit/s (HDMI 2.0 scrambling), TMDS */
+    public static final String LINK_FRL = "frl", LINK_TMDS20 = "tmds20", LINK_TMDS = "tmds";
     /** CTA-861 VIC 1 (640x480) is an IT format: RGB there defaults to full range like a PC signal */
     private static final int VIC_VGA = 1;
     /** HDMI 1.4 VSIF: OUI 0x000C03, HDMI_Video_Format 1 = an extended resolution (HDMI_VIC, a CE format) */
@@ -71,6 +74,18 @@ public final class HdmiRxInfo {
     public int vic = -1;
     /** the picture aspect the AVI InfoFrame names (M): "4:3" or "16:9", null = none */
     public String aspect;
+    /** HDR static metadata (InfoFrames.hdr): EOTF 0 SDR, 1 HDR gamma, 2 PQ, 3 HLG; -1 = no packet a layout proves */
+    public int eotf = -1;
+    /** mastering display peak and black in cd/m2 and 1/10000 cd/m2, content light MaxCLL and MaxFALL in cd/m2; 0 = not told */
+    public int masterMax, masterMin, maxCll, maxFall;
+    /** the mastering display's primaries: BT2020, P3, BT709, null = other or not told */
+    public String masterPrimaries;
+    /** the source's own name (SPD InfoFrame, InfoFrames.spd), null = none; its kind (CTA-861 source information, 0 unknown) */
+    public String sourceVendor, sourceProduct;
+    public int sourceKind;
+    /** the HDMI link: LINK_FRL with frlGbps per lane and frlLanes, LINK_TMDS20, LINK_TMDS; null = unknown */
+    public String link;
+    public int frlGbps, frlLanes;
 
     /** True when there is something to show. */
     public boolean usable() {
@@ -86,7 +101,11 @@ public final class HdmiRxInfo {
 
     @Override public String toString() {
         return "port=" + port + " " + width + "x" + height + " " + format + " " + depth + "bit " + colorimetry
-                + (colorimetryDefault ? "(default)" : "") + " " + quant + " vic=" + vic + " aspect=" + aspect;
+                + (colorimetryDefault ? "(default)" : "") + " " + quant + " vic=" + vic + " aspect=" + aspect
+                + (eotf < 0 ? "" : " eotf=" + eotf + " master=" + masterMax + "/" + masterMin + " " + masterPrimaries
+                + " cll=" + maxCll + " fall=" + maxFall) + (sourceVendor == null ? "" : " spd=" + sourceVendor + "/"
+                + sourceProduct + "/" + sourceKind) + (link == null ? "" : " link=" + link
+                + (LINK_FRL.equals(link) ? frlGbps + "x" + frlLanes : ""));
     }
 
     // ------------------------------------------------------------------ parsing
@@ -103,7 +122,9 @@ public final class HdmiRxInfo {
             Pattern.CASE_INSENSITIVE);
     private static final Pattern CEC = Pattern.compile("^Color space u8C10Value:(\\d+),\\s*u8EC210Value:(\\d+)");
     private static final Pattern DEPTH = Pattern.compile("^Color depth (\\d+)\\s*bit", Pattern.CASE_INSENSITIVE);
-    private static final Pattern PACKET = Pattern.compile("^(AVI|VS|GC) packet Byte (\\d+): 0x([0-9a-fA-F]{1,2})\\s*$");
+    private static final Pattern PACKET = Pattern.compile("^(AVI|VS|GC|HDR|SPD) packet Byte (\\d+): 0x([0-9a-fA-F]{1,2})\\s*$");
+    /** the receiver's link state, "u8FRLRate      4   is   FRL_8G_4L" (LEGACY, LEGACY_14, LEGACY_20 = TMDS) */
+    private static final Pattern FRL = Pattern.compile("^u8FRLRate\\s+\\d+\\s+is\\s+(FRL_(\\d+)G_(\\d)L|LEGACY(?:_14|_20)?)\\s*$");
     private static final Pattern YUV420_FLAG = Pattern.compile("^bYUV420Flag\\s+(\\d)");
     private static final Pattern RX_DEPTH = Pattern.compile("^u8Colordepth\\s+(\\d+)-bit");
     /** a size line of a port section, "HDE: 3840  VDE: 2160" */
@@ -116,8 +137,10 @@ public final class HdmiRxInfo {
         final int ip;
         boolean invalid;
         int hde, vde, source = -1, c = -1, ec = -1, depth, rxDepth, yuv420 = -1;
-        String space;
-        final int[] avi = filled(AVI_BYTES), vs = filled(VS_BYTES), gc = filled(GC_BYTES);
+        String space, link;
+        int frlGbps, frlLanes;
+        final int[] avi = filled(AVI_BYTES), vs = filled(VS_BYTES), gc = filled(GC_BYTES), hdr = filled(HDR_BYTES),
+                spd = filled(SPD_BYTES);
 
         Block(int ip) { this.ip = ip; }
 
@@ -132,14 +155,35 @@ public final class HdmiRxInfo {
             else if ((m = SOURCE.matcher(s)).find()) source = Integer.parseInt(m.group(1));
             else if ((m = YUV420_FLAG.matcher(s)).find()) yuv420 = Integer.parseInt(m.group(1));
             else if ((m = RX_DEPTH.matcher(s)).find()) rxDepth = Integer.parseInt(m.group(1));
+            else if ((m = FRL.matcher(s)).find()) frl(m);
             else if ((m = PACKET.matcher(s)).find()) {
-                int[] to = "AVI".equals(m.group(1)) ? avi : "VS".equals(m.group(1)) ? vs : gc;
+                int[] to = packet(m.group(1));
                 int k = Integer.parseInt(m.group(2));
                 if (k < to.length) to[k] = Integer.parseInt(m.group(3), 16);
             }
         }
 
         boolean active() { return !invalid && hde > 0 && vde > 0; }
+
+        private int[] packet(String kind) {
+            switch (kind) {
+                case "AVI": return avi;
+                case "VS": return vs;
+                case "HDR": return hdr;
+                case "SPD": return spd;
+                default: return gc;
+            }
+        }
+
+        private void frl(Matcher m) {
+            if (m.group(2) != null) {
+                link = LINK_FRL;
+                frlGbps = Integer.parseInt(m.group(2));
+                frlLanes = Integer.parseInt(m.group(3));
+            } else {
+                link = m.group(1).endsWith("_20") ? LINK_TMDS20 : LINK_TMDS;
+            }
+        }
     }
 
     /**
@@ -219,6 +263,11 @@ public final class HdmiRxInfo {
         int c = avi ? (a[1] >> 6) & 3 : b.c, ec = avi ? (a[2] >> 4) & 7 : b.ec;
         if (c >= 0) colorimetry(i, c, ec, a[13]);
         if (avi && i.format != null) i.quant = quant(i, a, b.vs);
+        InfoFrames.hdr(b.hdr, i);
+        InfoFrames.spd(b.spd, i);
+        i.link = b.link;
+        i.frlGbps = b.frlGbps;
+        i.frlLanes = b.frlLanes;
         return i;
     }
 

@@ -13,6 +13,13 @@ public final class SignalValues {
     public int port;
     /** input timing (HDMI_INFO) */
     public int width, height, rateCenti;
+    /**
+     * The receiver's last measured rate; rateCenti is what the card shows (SteadyRate: the nominal table rate once the
+     * reads agree, 0 while a new one waits). vrrMoving: VRR runs and the reads move, the card says "VRR".
+     */
+    public int measuredCenti;
+    public boolean vrrMoving;
+    private final SteadyRate steady = new SteadyRate();
     public Boolean interlaced, dvi;
     /** vendor getHdrType: 0 SDR, 1 HDR10, 2 Dolby Vision, 4 HLG, 5 HDR10+, 6 HDR Vivid */
     public Integer hdrType;
@@ -28,6 +35,11 @@ public final class SignalValues {
     public int physicalAddress;
     /** Dolby Vision picture mode: 0 bright, 1 dark (DV_MODE) */
     public Integer dvMode;
+    /**
+     * the menu's option tokens of the picture mode (PICTURE_MODE, devices/&lt;c&gt;/menu.json "picture.mode") and of
+     * motion smoothing (MEMC, "picture.memc"); the panel names them with the menu's own words
+     */
+    public String pictureMode, memc;
     /** degrees C (TEMP_LIGHT, TEMP_SYSTEM) */
     public Integer tempLight, tempSystem;
     /** Android display mode (SCREEN) */
@@ -39,7 +51,10 @@ public final class SignalValues {
 
     private final Map<SignalItem, Long> readAt = new EnumMap<>(SignalItem.class);
 
-    public boolean hasInput() { return width > 0 && height > 0 && rateCenti > 0; }
+    public boolean hasInput() { return width > 0 && height > 0 && (rateCenti > 0 || measuredCenti > 0); }
+
+    /** A new input rate waits for the read that confirms it (SteadyRate.CONFIRM_MS). */
+    public boolean ratePending() { return steady.pending(); }
 
     public boolean hasChip() { return chipRateCenti > 0; }
 
@@ -49,7 +64,9 @@ public final class SignalValues {
             readAt.put(i, now);
             switch (i) {
                 case HDMI_INFO:
-                    width = fresh.width; height = fresh.height; rateCenti = fresh.rateCenti;
+                    width = fresh.width; height = fresh.height; measuredCenti = fresh.rateCenti;
+                    rateCenti = steady.next(fresh.width, fresh.height, fresh.rateCenti, Boolean.TRUE.equals(vrr));
+                    vrrMoving = steady.vrrMoving();
                     interlaced = fresh.interlaced; dvi = fresh.dvi;
                     break;
                 case HDR: hdrType = fresh.hdrType; break;
@@ -73,6 +90,8 @@ public final class SignalValues {
                 case TONE_MAP: toneMap = fresh.toneMap; break;
                 case TEMP_LIGHT: tempLight = fresh.tempLight; break;
                 case TEMP_SYSTEM: tempSystem = fresh.tempSystem; break;
+                case PICTURE_MODE: pictureMode = fresh.pictureMode; break;
+                case MEMC: memc = fresh.memc; break;
                 case SCREEN:
                     screenWidth = fresh.screenWidth; screenHeight = fresh.screenHeight;
                     screenRateCenti = fresh.screenRateCenti;

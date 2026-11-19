@@ -146,7 +146,7 @@ MUTANTS = [
 
 COPY = ['apps/core/lumen-hdmi', 'apps/sdk/framework-full-headers.jar'] + ['devices/%s.layers' % r for r in (
     'horse_popular/app/Z9xProjector', 'goat_elegant/app/HbProjector', 'g0111/app/X50Projector', 'g0100/app/X50Projector',
-    'g0155/app/X50Projector', 'h0062/app/X50Projector', 'h0063/app/X50Projector')]
+    'g0155/app/X50Projector', 'h0061/app/X50Projector', 'h0062/app/X50Projector', 'h0063/app/X50Projector')]
 
 
 def main():

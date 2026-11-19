@@ -43,7 +43,7 @@ public final class QuickTest {
         List<String> devs = new ArrayList<>();
         for (File d : new File(gsi, "devices").listFiles()) if (new File(d, "menu.json").isFile()) devs.add(d.getName());
         Collections.sort(devs);
-        ok("eight profiles", devs.size() == 8);
+        ok("nine profiles", devs.size() == 9);
         for (String dev : devs) {
             MenuSpec spec = spec(gsi, dev);
             parity(dev, spec, ALL);

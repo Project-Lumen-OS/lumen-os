@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">업데이트를 설치하는 중입니다. 완료되면 딥 슬립이 돌아옵니다.</string>
     <string name="hb_str_blocked_update_check">업데이트된 시스템을 시작 후 확인하는 중입니다. 몇 분 후 딥 슬립이 돌아옵니다.</string>
     <string name="hb_str_blocked_off">이 프로젝터에서 딥 슬립이 꺼져 있습니다(서비스 설정).</string>
+    <string name="pro_cs_hdr_hb">HDR 콘텐츠에서는 색 공간이 지원되지 않습니다.</string>
 </resources>

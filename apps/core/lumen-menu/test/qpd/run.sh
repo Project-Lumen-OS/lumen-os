@@ -54,8 +54,36 @@ want 'for (MenuSpec.Tile t : spec.sliders) {' "slider tiles from MenuSpec.slider
 want 'if (token != null) choose(f, token);' "a choice slider step commits as a pick of its page row"
 want 'if (!sliderBusy(r)) r.setValue(step);' "a choice slider shows the step of the value read"
 want 'if (r.isRowEnabled()) r.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));' "a choice slider is dimmed while stock keeps its row closed"
-grep -qF 'int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider);' "$HERE/src/org/lumen/projector/panel/QpdPanel.java" \
-  || { echo "FAIL card: the grid move does not know the slider tiles"; bad=1; }
+grep -qF 'int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider, right);' "$HERE/src/org/lumen/projector/panel/QpdPanel.java" \
+  || { echo "FAIL card: the grid move does not know the slider tiles or the menu's side"; bad=1; }
+# menu on the right (MenuLook): every pane is placed from the menu's side, slides start at that edge, keys between
+# panes are mirrored, All settings lays out hint card, list, rail from the left
+QP="$HERE/src/org/lumen/projector/panel/QpdPanel.java"
+n=$(grep -c 'leftMargin = px(' "$QP" || true)
+[ "$n" = 1 ] || { echo "FAIL side: $n left margins in QpdPanel (only side() may set one)"; bad=1; }
+n=$(grep -c 'side(.*, .*QpdLayout\.\(CARD_X\|SIDE_X\|ALL_X\)' "$QP" || true)
+[ "$n" = 5 ] || { echo "FAIL side: $n panes placed by side() (want card, popup, All settings, side sheet, sheet page)"; bad=1; }
+grep -q 'translationX(-Theme\|TranslationX(-Theme' "$QP" && { echo "FAIL side: a slide that ignores the menu's side"; bad=1; }
+grep -qF 'int pane = QpdLayout.toward(dir, right);' "$QP" || { echo "FAIL side: pane keys not mirrored"; bad=1; }
+n=$(grep -c 'pane == QpdLayout.LEFT' "$QP" || true)
+[ "$n" = 2 ] || { echo "FAIL side: $n pane LEFT checks (want the sheet page and the popup)"; bad=1; }
+grep -qF 'return allKey(pane, down, ev.getRepeatCount());' "$QP" || { echo "FAIL side: All settings keys not mirrored"; bad=1; }
+QE="$HERE/src/org/lumen/projector/panel/QuickEditMode.java"
+grep -qF 'if (QpdLayout.toward(dir, right()) == QpdLayout.RIGHT) focusSheet(null);' "$QE" \
+  || { echo "FAIL side: the editor's card does not reach its sheet on the menu's side"; bad=1; }
+grep -qF 'if (QpdLayout.toward(dir, right()) == QpdLayout.LEFT) {' "$QE" \
+  || { echo "FAIL side: the editor's sheet does not go back to the card on the menu's side"; bad=1; }
+grep -qF 'private boolean right() { return host.panel().isRight(); }' "$QE" \
+  || { echo "FAIL side: the editor does not read the menu's side"; bad=1; }
+grep -qF 'float fit = QpdLayout.clockFit(time.measureText(t), getWidth());' "$HERE/src/org/lumen/projector/panel/QpdCard.java" \
+  || { echo "FAIL card: the clock is not fitted to its box"; bad=1; }
+grep -qF 'c.scale(fit, fit, 0, clockBase);' "$HERE/src/org/lumen/projector/panel/QpdCard.java" \
+  || { echo "FAIL card: the clock fit is not applied"; bad=1; }
+grep -qF 'popup.setPivotX(right ? px(QpdLayout.SIDE_W) : 0f);' "$QP" || { echo "FAIL side: the popup grows from the wrong edge"; bad=1; }
+grep -qF 'View[] order = panel.isRight() ? new View[]{tipCard, listCard, railCard} : new View[]{railCard, listCard, tipCard};' \
+  "$HERE/src/org/lumen/projector/panel/QpdAll.java" || { echo "FAIL side: All settings panes not mirrored"; bad=1; }
+grep -qF 'tipCard.setTranslationX(panel.isRight() ? px(14) : -px(14));' "$HERE/src/org/lumen/projector/panel/QpdAll.java" \
+  || { echo "FAIL side: the hint card slides in from the wrong side"; bad=1; }
 grep -q 'QpdLayout.fill(lv, getMin(), getMax())' "$HERE/src/org/lumen/projector/panel/QpdSliderRow.java" \
   || { echo "FAIL slider: the fill does not use the row's range"; bad=1; }
 # x50-picture-stock: a page slider row draws its fill with fillSpan (a two-way slider from 0, tested in QpdLayoutTest)

@@ -23,7 +23,8 @@ import java.util.function.Consumer;
 /**
  * The signal panel's reader (apps/core/lumen-signal) over this app's own gmpf clients: Z9X HIDL IGmpf 662 / 620 / 157 /
  * 634 / 661 / 438 / 439 (LED sensor), IGmpf2 310 / 300 / 271 / 279 / 55 / 269, and on the HB the same client methods
- * over its AIDL codes (TV 38 / 78, DM 57, TV 64 / 39 / 131 / 146 / 173 / 163 / 153 / 192 / 175, DM 148, TEMPERATURE 6).
+ * over its AIDL codes (TV 38 / 78, DM 57, TV 64 / 39 / 131 / 146 / 173 / 163 / 153 / 192 / 175, DM 148, TEMPERATURE 6),
+ * and the menu's own picture mode and MEMC reads (Z9X IGmpf 666 / 668, HB TV 34 / 32) named by {@link SignalMenuTokens}.
  * A call a model's code table lacks throws before anything is sent, so its row stays hidden. Never IGmpf 194, 275 or
  * IGmpf2 252. Which of these a model shows is its devices/&lt;c&gt;/signal.tsv.
  */
@@ -32,22 +33,28 @@ public final class GmpfSignalReader implements SignalReader {
     private static final Set<SignalItem> ITEMS = Collections.unmodifiableSet(EnumSet.of(SignalItem.HDMI_INFO,
             SignalItem.HDR, SignalItem.CHIP, SignalItem.RANGE, SignalItem.ASPECT, SignalItem.EDID, SignalItem.ALLM, SignalItem.VRR,
             SignalItem.FREESYNC, SignalItem.IMAX, SignalItem.FILMMAKER, SignalItem.PORT_HW, SignalItem.DV_MODE,
-            SignalItem.GAME, SignalItem.HGIG, SignalItem.TONE_MAP, SignalItem.TEMP_LIGHT, SignalItem.TEMP_SYSTEM));
+            SignalItem.GAME, SignalItem.HGIG, SignalItem.TONE_MAP, SignalItem.TEMP_LIGHT, SignalItem.TEMP_SYSTEM,
+            SignalItem.PICTURE_MODE, SignalItem.MEMC));
     private static final int CENTI = 100;
     /** Z9X 439 sensor 5: the LED board (LumenSensors Z9xHalSource folds 4 and 8 into it). */
     private static final int LED_SENSOR = 5;
     /** getHdmiHwConfig fields: hwPortId, cecEnable, arcEnable, physicalAddr. */
     private static final int HW_CEC = 1, HW_ARC = 2, HW_ADDRESS = 3, HW_FIELDS = 4;
 
+    private final SignalMenuTokens tokens;
+
+    /** {@code tokens}: this model's menu tables for the picture mode and motion smoothing rows. */
+    public GmpfSignalReader(SignalMenuTokens tokens) { this.tokens = tokens; }
+
     @Override public Set<SignalItem> items() { return ITEMS; }
 
     @Override public int hdmiPort() { return Math.max(0, GameProfile.activePort()); }
 
     @Override public void read(List<SignalItem> items, int port, Consumer<SignalValues> cb) {
-        Hal.query((g, g2) -> readOnHal(g, g2, items, port), cb::accept);
+        Hal.query((g, g2) -> readOnHal(g, g2, items, port, tokens), cb::accept);
     }
 
-    static SignalValues readOnHal(GmpfClient g, Gmpf2Client g2, List<SignalItem> items, int port) {
+    static SignalValues readOnHal(GmpfClient g, Gmpf2Client g2, List<SignalItem> items, int port, SignalMenuTokens tokens) {
         SignalValues v = new SignalValues();
         for (SignalItem i : items) {
             try {
@@ -95,6 +102,9 @@ public final class GmpfSignalReader implements SignalReader {
                     case TONE_MAP: v.toneMap = g2.getHdrDynamicToneMapping(); break;
                     case TEMP_LIGHT: v.tempLight = SignalFormat.temp(g.getSensorTemperature(LED_SENSOR)); break;
                     case TEMP_SYSTEM: v.tempSystem = SignalFormat.temp(g.getSystemTemperature()); break;
+                    // the menu's own reads (Snapshot: 666 picture mode, 668 MEMC) named with the menu's tokens
+                    case PICTURE_MODE: v.pictureMode = tokens.pictureMode(g.getPictureModeRaw()); break;
+                    case MEMC: v.memc = tokens.memc(g.getMemcLevel()); break;
                     case GAME: {
                         int[] p = g2.getGameModeProp();
                         if (p != null && p.length >= 1) v.game = p[0] == 0;

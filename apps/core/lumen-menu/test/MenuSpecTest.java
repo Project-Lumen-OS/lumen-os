@@ -198,9 +198,11 @@ public final class MenuSpecTest {
                 for (String sec : m1.sections.keySet()) {
                     List<FeatureId> want = new ArrayList<>(m1.rowsOf(sec));
                     want.remove(id);
+                    want.removeIf(pg -> java.util.Collections.singletonList(id).equals(m1.pageRowsOf(pg)));   // a page emptied by it goes
                     check(want.equals(m2.rowsOf(sec)), dev + " -" + id + ": section " + sec + " changed beyond it");
                     List<FeatureId> wantPopup = new ArrayList<>(m1.popupRowsOf(sec));
                     wantPopup.remove(id);
+                    wantPopup.removeIf(pg -> java.util.Collections.singletonList(id).equals(m1.pageRowsOf(pg)));
                     check(wantPopup.equals(m2.popupRowsOf(sec)), dev + " -" + id + ": popup " + sec + " changed beyond it");
                 }
                 // the pages of the menu's own rows: the same rows in the same order, minus it
@@ -355,8 +357,8 @@ public final class MenuSpecTest {
                 && ms.contains("            return ScreensaverDelay.set(c, value);"), "screensaver rows: lumen-system start, read, write with read back");
         // stock trees (gsi-stock analysis): screen_saver_simple on Z9X, HB, X50, X50 Max, RS30, Play 6, not
         // TITAN; the Z9X and HB keep their own screensaver page in Projector settings
-        String[][] saver = {{"g0111", "1"}, {"g0100", "1"}, {"g0155", "1"}, {"dragon_healthy", "1"}, {"h0062", "0"},
-                {"h0063", "0"}, {"horse_popular", "0"}, {"goat_elegant", "0"}};
+        String[][] saver = {{"g0111", "1"}, {"g0100", "1"}, {"g0155", "1"}, {"dragon_healthy", "1"}, {"h0061", "0"},
+                {"h0062", "0"}, {"h0063", "0"}, {"horse_popular", "0"}, {"goat_elegant", "0"}};
         for (String[] d : saver) {
             MenuProfile p = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/" + d[0] + "/menu.json")),
                     StandardCharsets.UTF_8));
@@ -414,7 +416,7 @@ public final class MenuSpecTest {
         String[] broken = {
                 ", \"sections\": {\"lens\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"keystone.manual\"]}]}}",                       // no such section
                 ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\"]}]}}", // restore has no place
-                ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\", \"keystone.restore\", \"focus.manual\"]}]}}", // a Focus row
+                ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\", \"keystone.restore\", \"eye\"]}]}}", // an Eye protection row (focus rows may stand here: MenuSpec.MOVABLE)
                 ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\", \"keystone.restore\", \"keystone.ak_now\"]}]}}", // twice
                 ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"header\": \"line\", \"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\", \"keystone.restore\"]}]}}", // a line opens it
                 ", \"sections\": {\"keystone\": {\"stock\": \"t\", \"groups\": [{\"header\": \"lens\", \"rows\": [\"keystone.ak_now\", \"keystone.manual\", \"keystone.on_power\", \"keystone.restore\"]}]}}", // unknown header
@@ -548,9 +550,11 @@ public final class MenuSpecTest {
         for (String sec : sectionTiles) {
             List<FeatureId> popup = m.popupRowsOf(sec), want = new ArrayList<>(m.rowsOf(sec));
             want.removeAll(tiles);
+            want.removeIf(f -> m.moved.containsKey(f) && !sec.equals(m.moved.get(f)));   // reached through its own section's tile
             check(!popup.isEmpty(), dev + ": tile " + sec + " opens an empty popup");
             check(popup.equals(want), dev + ": popup " + sec + " " + popup + ", want the section without the card tiles " + want);
             for (FeatureId f : m.rowsOf(sec)) {
+                if (m.moved.containsKey(f) && !sec.equals(m.moved.get(f))) continue;
                 int n = (tiles.contains(f) ? 1 : 0) + (popup.contains(f) ? 1 : 0);
                 check(n == 1, dev + ": " + f + " reached " + n + " times from the card");
             }

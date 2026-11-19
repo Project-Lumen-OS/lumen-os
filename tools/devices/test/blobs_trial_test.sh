@@ -377,11 +377,11 @@ if want static; then
   # one reader for every model: no recipe names another one, every image's ro.lumen.models is its device.conf models
   grep -n -E 'hb_blobs_trial|blobs_stock_dsu|x50_blobs\.(sh|rc)' "$G"/devices/*/build.conf "$G"/devices/*/image/steps.tsv \
     && fail "a second blobs reader in a recipe"
-  for c in g0111 g0100 h0062 h0063 g0155 horse_popular goat_elegant; do
+  for c in g0111 g0100 h0061 h0062 h0063 g0155 horse_popular goat_elegant; do
     grep -q 'tools/ota/image/z9x_blobs.sh' "$G/devices/$c/build.conf" || fail "$c build.conf lacks the one reader"
   done
   for pc in g0111/image/x50_prop.txt:g0111 g0111/image/x50_prop_pub.txt:g0111 g0111/image/x50max_prop_pub.txt:g0100 \
-            g0155/image/rs30_prop.txt:g0155 h0062/image/h0062_prop_pub.txt:h0062 h0063/image/h0063_prop_pub.txt:h0063; do
+            g0155/image/rs30_prop.txt:g0155 h0061/image/h0061_prop_pub.txt:h0061 h0062/image/h0062_prop_pub.txt:h0062 h0063/image/h0063_prop_pub.txt:h0063; do
     dm=$(sed -n 's/^models=//p' "$G/devices/${pc#*:}/device.conf")
     grep -qx "+ro.lumen.models=$dm" "$G/devices/${pc%%:*}" || fail "${pc%%:*}: ro.lumen.models is not '$dm'"
   done

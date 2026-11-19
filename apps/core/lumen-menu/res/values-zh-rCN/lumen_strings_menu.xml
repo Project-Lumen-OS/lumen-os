@@ -16,7 +16,7 @@
     <string name="lumen_m_kst_more">其他</string>
     <string name="lumen_m_kst_size_position">大小和位置</string>
     <string name="lumen_m_kst_smart">智能</string>
-    <string name="lumen_m_kst_restore">恢复原始画面</string>
+    <string name="lumen_m_kst_restore">恢复默认画面</string>
     <string name="lumen_m_launcher_classic">Android TV（经典）</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
     <string name="lumen_m_launcher_row">主屏幕</string>

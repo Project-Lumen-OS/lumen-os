@@ -60,6 +60,10 @@ public final class SignalPanel {
     private static Runnable sOnOpen;
     /** the small card shows the hold hint this time (CardHold: the first few cards only) */
     private static boolean sHint;
+    /** the card coming up now was asked for by the remote key the user gave it */
+    private static boolean sByKey;
+    /** the menu's words for the rows shared with it (picture mode, motion smoothing), null = those rows stay hidden */
+    private static MenuWords sMenu;
 
     /** Holding OK on the card (CardHold): open, fold back, the panel's own OK. */
     private static final CardHold.Card CARD = new CardHold.Card() {
@@ -80,10 +84,14 @@ public final class SignalPanel {
 
     private SignalPanel() {}
 
-    /** App start, once: the model's reader (null = no panel on this model). */
-    public static void install(Context c, SignalReader reader) {
+    /**
+     * App start, once: the model's reader (null = no panel on this model) and the menu's words for the rows the panel
+     * shares with the menu (lumen-menu MenuSignalText).
+     */
+    public static void install(Context c, SignalReader reader, MenuWords menu) {
         sApp = c.getApplicationContext();
         sReader = reader;
+        sMenu = menu;
         CardHold.start(sApp);
         String tsv = asset(sApp, SignalItems.ASSET);
         Set<SignalItem> model = SignalItems.parse(tsv);
@@ -156,9 +164,14 @@ public final class SignalPanel {
     }
 
     /** The one button: card, full panel, hidden. False when this model has no panel. */
-    public static boolean press(Context c) {
+    public static boolean press(Context c) { return press(c, false); }
+
+    /** {@code byKey}: the remote key the user gave the signal action (the card then shows the hold hint, OkHold.hint). */
+    public static boolean press(Context c, boolean byKey) {
         if (!available(c)) return false;
+        sByKey = byKey;
         show(TOGGLE.press());
+        sByKey = false;
         return true;
     }
 
@@ -219,7 +232,7 @@ public final class SignalPanel {
             @Override public void collapse() { CARD.collapse(); }
         });
         if (!sWindow.shown()) {
-            sHint = mode.card() && CardHold.hint(sApp);
+            sHint = mode.card() && CardHold.hint(sApp, sByKey);
             if (sHint) CardHold.hintShown(sApp);
             if (sOnOpen != null) sOnOpen.run();
             sValues = new SignalValues();
@@ -256,7 +269,9 @@ public final class SignalPanel {
                 sReader.read(asked, port, fresh -> {
                     sReading = false;
                     if (fresh != null && TOGGLE.mode().visible()) {
-                        sValues.merge(fresh, asked, SystemClock.uptimeMillis());
+                        long at = SystemClock.uptimeMillis();
+                        sValues.merge(fresh, asked, at);
+                        if (sValues.ratePending()) sBudget.soon(SignalItem.HDMI_INFO, at, SteadyRate.CONFIRM_MS);
                         draw(false);
                     }
                 });
@@ -354,13 +369,31 @@ public final class SignalPanel {
         }
     }
 
-    /** The texts of the current language (string resources lumen_signal_*). */
+    /**
+     * The texts of the current language (string resources lumen_signal_*). The menu's words come in the panel's own
+     * language: the system one when the panel is translated into it, else English (one language on the panel).
+     */
     static SignalText.Words words(Context c) {
         return new SignalText.Words() {
+            private Context menuCtx;
+
             @Override public String get(String key, Object... args) {
                 int id = c.getResources().getIdentifier("lumen_signal_" + key, "string", c.getPackageName());
                 if (id == 0) return key;
                 return args.length == 0 ? c.getString(id) : c.getString(id, args);
+            }
+
+            @Override public String menuTitle(String feature) {
+                return sMenu == null ? null : sMenu.title(menuContext(), feature);
+            }
+
+            @Override public String menuOption(String feature, String token) {
+                return sMenu == null ? null : sMenu.option(menuContext(), feature, token);
+            }
+
+            private Context menuContext() {
+                if (menuCtx == null) menuCtx = panelLanguage(c);
+                return menuCtx;
             }
 
             @Override public char decimal() {
@@ -368,6 +401,18 @@ public final class SignalPanel {
                 return new java.text.DecimalFormatSymbols(l).getDecimalSeparator();
             }
         };
+    }
+
+    /** {@code c} when the panel's own texts are in its language, else {@code c} in English (the panel's fallback). */
+    private static Context panelLanguage(Context c) {
+        Locale l = c.getResources().getConfiguration().getLocales().get(0);
+        if (l == null || "en".equals(l.getLanguage())) return c;
+        android.content.res.Configuration en = new android.content.res.Configuration(c.getResources().getConfiguration());
+        en.setLocale(Locale.ENGLISH);
+        Context english = c.createConfigurationContext(en);
+        int id = c.getResources().getIdentifier("lumen_signal_" + SignalText.TITLE, "string", c.getPackageName());
+        if (id == 0) return english;
+        return c.getString(id).equals(english.getString(id)) ? english : c;
     }
 
     private static String asset(Context c, String name) {

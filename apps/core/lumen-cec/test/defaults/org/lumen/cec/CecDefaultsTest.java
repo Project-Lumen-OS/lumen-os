@@ -65,7 +65,7 @@ public final class CecDefaultsTest {
         CecSetting wake = CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY, standby = CecSetting.TV_SEND_STANDBY_ON_SLEEP;
 
         // ---- the real table: the stock values every image gets
-        for (String d : new String[]{"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0062", "h0063"}) {
+        for (String d : new String[]{"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063"}) {
             C.eq(d + ": no <Standby> to the HDMI devices when it sleeps (stock)", "0", t.stock(d, standby));
             C.eq(d + ": no wake on <Image View On> (stock)", "0", t.stock(d, wake));
             C.eq(d + ": HDMI-CEC on (stock)", "1", t.stock(d, CecSetting.HDMI_CEC_ENABLED));
@@ -75,7 +75,7 @@ public final class CecDefaultsTest {
         C.eq("Play 6 (Android 11 stock): wakes on <Image View On>", "1", t.stock("dragon_healthy", wake));
         C.eq("Play 6: no <Standby> when it sleeps", "0", t.stock("dragon_healthy", standby));
         C.eq("HB: the wake switch goes back to stock once", Arrays.asList(wake), t.resets("goat_elegant"));
-        for (String d : new String[]{"horse_popular", "g0111", "g0100", "g0155", "h0062", "h0063", "dragon_healthy"}) {
+        for (String d : new String[]{"horse_popular", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063", "dragon_healthy"}) {
             C.eq(d + ": nothing to reset (a stored value is the user's)", 0, t.resets(d).size());
         }
 

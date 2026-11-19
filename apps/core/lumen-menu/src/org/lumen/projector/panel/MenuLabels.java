@@ -30,6 +30,9 @@ final class MenuLabels {
             case "network.hotspot_password": return R.string.lumen_m_hotspot_password;
             case "network.hotspot_reset": return R.string.lumen_m_hotspot_reset;
             case "keystone.angle_h": return R.string.lumen_m_angle_h;
+            case "settings.menu_side": return R.string.lumen_m_menu_side;
+            case "focus.settings": return R.string.lumen_m_focus_settings;
+            case "settings.menu_density": return R.string.lumen_m_menu_density;
             case "signal.panel": return R.string.lumen_m_signal;
             case "sensors.panel": return R.string.lumen_m_sensors;
             case "power.on_music": return R.string.lumen_m_power_music;
@@ -210,6 +213,7 @@ final class MenuLabels {
             case "screensaver": return R.string.lumen_m_hdr_screensaver;
             case "power": return R.string.lumen_m_hdr_power;
             case "voice": return R.string.lumen_m_hdr_voice;
+            case "menu": return R.string.lumen_m_hdr_menu;
             default: return 0;
         }
     }
@@ -344,6 +348,10 @@ final class MenuLabels {
     static int option(String feature, String token) {
         switch (feature + "|" + token) {
             case "picture.color_temp|standard": return R.string.lumen_m_ct_standard;
+            case "settings.menu_side|left": return R.string.lumen_m_menu_left;
+            case "settings.menu_side|right": return R.string.lumen_m_menu_right;
+            case "settings.menu_density|normal": return R.string.lumen_m_menu_normal;
+            case "settings.menu_density|compact": return R.string.lumen_m_menu_compact;
             case "picture.color_temp|cool": return R.string.lumen_m_ct_cool;
             case "picture.color_temp|warm": return R.string.lumen_m_ct_warm;
             case "picture.color_temp|custom": return R.string.lumen_m_ct_custom;

@@ -11,7 +11,7 @@ every step, Google services, updates, what to do if something goes wrong and the
 | XGIMI Z9X HB | G0130, G0148 | from the projector | [Z9X HB](hb/en.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | from the projector, beta | [X50, RS30 and TITAN](x50/en.md) |
 | XGIMI RS30 Ultra Max | G0155 | from the projector, beta, trial only | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI TITAN Noir Pro, TITAN Noir Max | H0062, H0063 | from the projector, beta, trial only | [X50, RS30 and TITAN](x50/en.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | from the projector, beta, trial only | [X50, RS30 and TITAN](x50/en.md) |
 | XGIMI Play 6 | G0058 | with a computer | [Play 6](play6/en.md) |
 
 Lumen Installer shows the model code and the XGIMI firmware of your projector at the top of its screen, and on the

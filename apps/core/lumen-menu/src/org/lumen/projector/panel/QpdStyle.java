@@ -22,12 +22,9 @@ final class QpdStyle {
 
     private QpdStyle() {}
 
-    static final int ACCENT = Theme.ACCENT;       // #3B78E7
-    static final int VALUE_FOCUSED = 0xD1FFFFFF;  // rgba(255,255,255,.82)
     static final int SHADOW_ACCENT = 0x731E50BE;  // rgba(30,80,190,.45)
     static final int BOOST_A = 0xFFFFE07A, BOOST_B = 0xFFFFB300, BOOST_KNOB = 0xFFFFD24A, BOOST_TEXT = 0xFFFFC93A,
             BOOST_RING = 0xFFFFC21A;
-    static final int ROW_VALUE_FOCUSED = 0xD9FFFFFF;  // rgba(255,255,255,.85)
     static final int SWITCH_ON_FOCUSED = 0xF2FFFFFF;  // rgba(255,255,255,.95)
     static final int KNOB_SHADOW = 0x4D000000;        // rgba(0,0,0,.3)
     static final int ROW_TRACK_FOCUSED = 0x4DFFFFFF, RAIL_CIRCLE_FOCUSED = 0x33FFFFFF;
@@ -35,29 +32,34 @@ final class QpdStyle {
      * The colours of the light and the dark menu (2026-11-18: the menu follows the theme button, the shared
      * lumen-ui theme; the dark one is the approved layout D look, the light one is made from the lumen-ui light
      * palette, see {@link #light}): {PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING, DOT_OFF, SWITCH_OFF, DIVIDER,
-     * ROW_TRACK, RAIL_CIRCLE, RAIL_CURRENT, ICON, FILL, SELECTED, FAINT}.
+     * ROW_TRACK, RAIL_CIRCLE, RAIL_CURRENT, ICON, FILL, SELECTED, FAINT, ACCENT, VALUE_FOCUSED, ROW_VALUE_FOCUSED}.
+     * ACCENT is the filled focus under white text (lumen-ui Palette.focusFill: #3B78E7 dark, #2F62D0 light).
      */
     private static final int[] DARK = {0xF016171A, 0xFF34353A, 0xFF3E3F45, 0xFFF4F4F6, 0x8FF4F4F6, 0x24FFFFFF, 0xD9FFFFFF,
             0x73FFFFFF, 0x33FFFFFF, 0x14FFFFFF, 0x33FFFFFF, 0x14FFFFFF, 0x14FFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFF8FB4FF,
-            0x57F4F4F6};
+            0x57F4F4F6, Palette.of(true).focusFill, 0xD1FFFFFF, 0xD9FFFFFF};   // values .82 / .85 white
     private static final int[] LIGHT = light(Palette.of(false));
 
     /**
      * The light menu from the shared palette (the approved Sand mock, light-palette/gen.py menu()): the card is the
      * panel at .97 over video, tiles the surface, a lit slider row the raised surface, ink the panel text, quiet texts
      * and lines are that ink at fixed strengths (MUTE .68 keeps 4.5:1 on the card), ring and selection the light
-     * focus ring blue.
+     * focus ring blue, the filled focus the deeper Lumen blue (white on it 5.6:1) with its value lines at .88 white
+     * (4.7:1, the dark menu's .82 / .85 would give 4.3 / 4.5).
      */
     static int[] light(Palette p) {
         int ink = p.ptext1;
         return new int[] {Palette.alpha(p.panel, 0.97f), p.surface, p.surface2, ink, Palette.alpha(ink, 0.68f),
                 Palette.alpha(ink, 0.14f), p.focusRing, Palette.alpha(ink, 0.45f), Palette.alpha(ink, 0.2f),
                 Palette.alpha(ink, 0.08f), Palette.alpha(ink, 0.2f), Palette.alpha(ink, 0.08f), Palette.alpha(ink, 0.06f),
-                ink, ink, p.focusRing, Palette.alpha(ink, 0.4f)};
+                ink, ink, p.focusRing, Palette.alpha(ink, 0.4f), p.focusFill, LIGHT_VALUE_FOCUSED, LIGHT_VALUE_FOCUSED};
     }
+
+    /** White at .88: the value lines on the light menu's filled focus. */
+    static final int LIGHT_VALUE_FOCUSED = 0xE0FFFFFF;
     // the menu's colours now (theme()): popup and list rows (prototype .po / .r / .dot / .tg / .ln), All settings rail (.it)
     static int PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING, DOT_OFF, SWITCH_OFF, DIVIDER, ROW_TRACK, RAIL_CIRCLE,
-            RAIL_CURRENT, ICON, FILL, SELECTED, FAINT;
+            RAIL_CURRENT, ICON, FILL, SELECTED, FAINT, ACCENT, VALUE_FOCUSED, ROW_VALUE_FOCUSED;
     private static boolean light;
 
     static {
@@ -71,7 +73,7 @@ final class QpdStyle {
         light = lightNow;
         PANEL = p[0]; TILE = p[1]; TILE_HI = p[2]; INK = p[3]; MUTE = p[4]; TRACK = p[5]; RING = p[6]; DOT_OFF = p[7];
         SWITCH_OFF = p[8]; DIVIDER = p[9]; ROW_TRACK = p[10]; RAIL_CIRCLE = p[11]; RAIL_CURRENT = p[12]; ICON = p[13];
-        FILL = p[14]; SELECTED = p[15]; FAINT = p[16];
+        FILL = p[14]; SELECTED = p[15]; FAINT = p[16]; ACCENT = p[17]; VALUE_FOCUSED = p[18]; ROW_VALUE_FOCUSED = p[19];
         return changed;
     }
 

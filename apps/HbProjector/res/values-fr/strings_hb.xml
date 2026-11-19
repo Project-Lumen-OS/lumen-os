@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">Une mise à jour est en cours d\'installation : la veille profonde reviendra ensuite.</string>
     <string name="hb_str_blocked_update_check">Le système mis à jour est vérifié après le démarrage : la veille profonde reviendra dans quelques minutes.</string>
     <string name="hb_str_blocked_off">La veille profonde est désactivée sur ce projecteur (réglage de service).</string>
+    <string name="pro_cs_hdr_hb">L’espace colorimétrique n’est pas pris en charge dans les contenus HDR</string>
 </resources>

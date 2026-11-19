@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">Se está instalando una actualización: la suspensión profunda volverá al terminar.</string>
     <string name="hb_str_blocked_update_check">El sistema actualizado se está comprobando tras el inicio: la suspensión profunda volverá en unos minutos.</string>
     <string name="hb_str_blocked_off">La suspensión profunda está desactivada en este proyector (ajuste de servicio).</string>
+    <string name="pro_cs_hdr_hb">El espacio de color no es compatible con el contenido HDR</string>
 </resources>

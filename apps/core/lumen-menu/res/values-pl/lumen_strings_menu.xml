@@ -16,7 +16,7 @@
     <string name="lumen_m_kst_more">Inne</string>
     <string name="lumen_m_kst_size_position">Rozmiar i położenie</string>
     <string name="lumen_m_kst_smart">Smart</string>
-    <string name="lumen_m_kst_restore">Przywróć pierwotny obraz</string>
+    <string name="lumen_m_kst_restore">Przywróć domyślny ekran</string>
     <string name="lumen_m_launcher_classic">Android TV (klasyczny)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
     <string name="lumen_m_launcher_row">Ekran główny</string>

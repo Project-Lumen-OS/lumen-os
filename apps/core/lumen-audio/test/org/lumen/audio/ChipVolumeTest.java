@@ -28,7 +28,7 @@ public final class ChipVolumeTest {
     private static final List<String> A11 = Arrays.asList("2 spk_volume -1 0", "3 headphone_volume -1 4",
             "4 headphone_volume -1 4", "8 bluetooth_volume -1 3", "11 usb_volume -1 6", "22 usb_volume -1 6",
             "6 xgimi_pcm_volume -1 -1", "10 null -1 2", "29 null -1 2");
-    private static final String[] A14_MODELS = {"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0062", "h0063"};
+    private static final String[] A14_MODELS = {"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);
@@ -239,7 +239,7 @@ public final class ChipVolumeTest {
         C.ok("HB: no AVRCP absolute volume at early-boot", Check.read(new File(g, "devices/goat_elegant/image/hb_bt.rc"))
                 .contains("setprop persist.bluetooth.disableabsvol true"));
         for (String pf : new String[] {"devices/g0111/image/x50_prop.txt", "devices/g0111/image/x50_prop_pub.txt",
-                "devices/g0111/image/x50max_prop_pub.txt", "devices/h0062/image/h0062_prop_pub.txt", "devices/h0063/image/h0063_prop_pub.txt"}) {
+                "devices/g0111/image/x50max_prop_pub.txt", "devices/h0061/image/h0061_prop_pub.txt", "devices/h0062/image/h0062_prop_pub.txt", "devices/h0063/image/h0063_prop_pub.txt"}) {
             String t = Check.read(new File(g, pf));
             C.ok(pf + ": no AVRCP absolute volume (stock)", t.contains("\npersist.bluetooth.disableabsvol=true\n") && !t.contains("disableabsvol=false"));
         }

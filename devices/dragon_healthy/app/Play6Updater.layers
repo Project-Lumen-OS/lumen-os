@@ -11,6 +11,8 @@ module    lumen-icons
 module    lumen-fwcopy
 # the QR codes of the update screen (apps/core/lumen-qr)
 module    lumen-qr
+# the parallel resumable download of the OTA zip, one with Lumen Installer (apps/core/lumen-download)
+module    lumen-download
 module    lumen-updater
 top       apps/Play6Updater
 skip      build/ tools/ *.apk CHANGES*.md README*.md .DS_Store

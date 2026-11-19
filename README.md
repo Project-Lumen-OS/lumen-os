@@ -22,9 +22,9 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 | XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/z9x/en.md) |
 | XGIMI Play 6 | stable | [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [with a computer](docs/install/play6/en.md) |
 | XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/hb/en.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta8), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta8) | [from the projector](docs/install/x50/en.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta10), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta10) | [from the projector](docs/install/x50/en.md) |
 | XGIMI RS30 Ultra Max | beta, trial only | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [from the projector](docs/install/x50/en.md) |
-| XGIMI TITAN Noir Pro, TITAN Noir Max | beta, trial only | [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta1), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta1) | [from the projector](docs/install/x50/en.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | beta, trial only | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta2), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta3), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta3) | [from the projector](docs/install/x50/en.md) |
 
 Each projector has its own release files, signed with its own key. The installer refuses an image for
 another projector and any XGIMI firmware it does not know.

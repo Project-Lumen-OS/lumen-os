@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menu's side and size (MenuLook) and the focus page of the Image correction page: TITAN testers 2026-11-19. -->
+<resources>
+    <string name="lumen_m_menu_side">選單位置</string>
+    <string name="lumen_m_menu_left">左側</string>
+    <string name="lumen_m_menu_right">右側</string>
+    <string name="lumen_m_menu_density">選單大小</string>
+    <string name="lumen_m_menu_normal">標準</string>
+    <string name="lumen_m_menu_compact">緊湊</string>
+    <string name="lumen_m_hdr_menu">選單</string>
+    <string name="lumen_m_focus_settings">智慧自動對焦設定</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menu's side and size (MenuLook) and the focus page of the Image correction page: TITAN testers 2026-11-19. -->
+<resources>
+    <string name="lumen_m_menu_side">Месца меню</string>
+    <string name="lumen_m_menu_left">Злева</string>
+    <string name="lumen_m_menu_right">Справа</string>
+    <string name="lumen_m_menu_density">Памер меню</string>
+    <string name="lumen_m_menu_normal">Звычайны</string>
+    <string name="lumen_m_menu_compact">Кампактны</string>
+    <string name="lumen_m_hdr_menu">Меню</string>
+    <string name="lumen_m_focus_settings">Налады разумнага аўтафокусу</string>
+</resources>

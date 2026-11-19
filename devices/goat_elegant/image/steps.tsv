@@ -216,7 +216,7 @@ lumen	need	lumen_hdmirx.rc	lumen_hdmirx.sh
 lumen	sh_n	lumen_hdmirx.sh
 lumen	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
 lumen	line	lumen_hdmirx.sh	HELP=help
-lumen	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 "
+lumen	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "
 lumen	install	0644	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc
 lumen	install	0755	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh
 # Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)

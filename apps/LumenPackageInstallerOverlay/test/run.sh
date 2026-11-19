@@ -18,7 +18,7 @@ bad() { echo "FAIL $*"; F=$((F + 1)); }
 ok() { echo "ok   $*"; }
 
 # 1. wiring
-for c in horse_popular goat_elegant dragon_healthy g0155 g0111 g0100 h0062 h0063; do
+for c in horse_popular goat_elegant dragon_healthy g0155 g0111 g0100 h0061 h0062 h0063; do
   grep -qE "^apps=.*\b$APP\b" "$G/devices/$c/build.conf" && ok "$c build.conf" || bad "$c build.conf apps= lacks $APP"
   if grep -q '^apps=' "$G/devices/$c/device.conf"; then
     grep -qE "^apps=.*\b$APP\b" "$G/devices/$c/device.conf" && ok "$c device.conf" || bad "$c device.conf apps= lacks $APP"

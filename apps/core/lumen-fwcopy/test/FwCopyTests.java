@@ -266,7 +266,7 @@ public final class FwCopyTests {
         });
         t("x50 family: the Z9X set (one XGIMI product image), all four model codes", () -> {
             eq(FwSet.updateList(FwModel.X50), FwSet.updateList(FwModel.Z9X), "list");
-            for (String c : new String[] {"G0111", "G0100", "H0062", "H0063"}) eq(FwModel.of(c).family, "x50", c);
+            for (String c : new String[] {"G0111", "G0100", "H0061", "H0062", "H0063"}) eq(FwModel.of(c).family, "x50", c);
         });
         t("every model code is in one row only; the HB has three; unknown codes have none", () -> {
             List<String> seen = new ArrayList<>();

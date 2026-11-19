@@ -94,4 +94,21 @@
     <string name="lumen_signal_depth_bits">%1$s-bit</string>
     <string name="lumen_signal_range_auto_full">Auto (Full)</string>
     <string name="lumen_signal_range_auto_limited">Auto (Limited)</string>
+    <string name="lumen_signal_r_device">Source device</string>
+    <string name="lumen_signal_kind_stb">set-top box</string>
+    <string name="lumen_signal_kind_dvd">DVD player</string>
+    <string name="lumen_signal_kind_game">game console</string>
+    <string name="lumen_signal_kind_pc">computer</string>
+    <string name="lumen_signal_kind_bluray">Blu-ray player</string>
+    <string name="lumen_signal_kind_player">media player</string>
+    <string name="lumen_signal_link_frl">FRL %1$s Gbit/s × %2$s</string>
+    <string name="lumen_signal_link_tmds">TMDS</string>
+    <string name="lumen_signal_link_tmds20">TMDS, HDMI 2.0</string>
+    <string name="lumen_signal_r_mastering">Mastering display</string>
+    <string name="lumen_signal_nits">%1$s nits</string>
+    <string name="lumen_signal_master_min">black %1$s nits</string>
+    <string name="lumen_signal_r_light">Content light</string>
+    <string name="lumen_signal_light_both">MaxCLL %1$s, MaxFALL %2$s nits</string>
+    <string name="lumen_signal_light_cll">MaxCLL %1$s nits</string>
+    <string name="lumen_signal_light_fall">MaxFALL %1$s nits</string>
 </resources>

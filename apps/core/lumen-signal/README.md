@@ -46,14 +46,18 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
 | picture on the chip size @ rate, judder line | 157 | DM 57 | DM 179 (rate) | no |
 | game mode, HGiG, HDR tone mapping | IGmpf2 55, no, 269 | DM 148, TV 192, 175 | DM 148, TV 192, 175 | no |
 | Dolby Vision mode (with Dolby Vision only) | no (no Dolby Vision) | no (no Dolby Vision) | TV 75 | no |
+| picture mode (on the small card too, last line), motion smoothing (MEMC), the menu's own reads and words | 666, 668 | TV 34, 32 | TV 34, 32 (MEMC with FD boost 161 for Original, where the menu has MEMC) | 666, 668 (MEMC only in Movie, TV, Custom) |
 | light source temperature, temperature inside | 439 sensor 5, 438 | no, TEMPERATURE 6 | TEMPERATURE 7 sensor 5, 6 | no, 438 |
 | sound output, sound format | Android | Android | Android | Android |
-| colour format and chroma, colour depth, colorimetry, range in use with Auto | HDMI receiver bridge | HDMI receiver bridge | no | no |
+| colour format and chroma, colour depth, colorimetry, range in use with Auto | HDMI receiver bridge | HDMI receiver bridge | HDMI receiver bridge | no |
+| HDR mastering display and MaxCLL / MaxFALL (HDR10, HDR10+) | HDMI receiver bridge | HDMI receiver bridge | HDMI receiver bridge | no |
+| source device name and kind (SPD InfoFrame), HDMI link rate (FRL or TMDS) | HDMI receiver bridge | HDMI receiver bridge | HDMI receiver bridge | no |
 
-### The HDMI receiver report (Z9X and Z9X HB, item `hdmi_format`)
+### The HDMI receiver report (Z9X, Z9X HB and the X50 family, item `hdmi_format`)
 
 - Source: the MStar receiver's debug node `/proc/utopia_mdb/HDMIRX` (0600 root) prints its info dump into the kernel
-  log. The image's root oneshot `image/lumen_hdmirx.rc` + `.sh` (Z9X and HB recipes, models G0082, G0130, G0148)
+  log. The image's root oneshot `image/lumen_hdmirx.rc` + `.sh` (Z9X, HB and X50 family recipes, models G0082, G0130, G0148, G0111, G0100,
+  G0155, H0062, H0063: the X50 family runs the Z9X's MT5877 platform and its vendor `utpa2k.ko` prints the same dump, `gsi-research/SIGNAL_X50.md`)
   asks it on request
   (`sys.lumen.hdmirx.req` = token): first the stock XGIMI log collector's plain read, only if no dump follows the exact
   bytes `help` (proven live), never any other command (`test/check_hdmirx.py`). It keeps only the info lines
@@ -74,6 +78,17 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
   2026-11-18), the HB map is `ports=1:0,2:1` (HDMI 1 = MStar port 0, EDID 1.0.0.0, eARC port). No cheaper read exists:
   the node's help lists only write commands and every read prints all ports and receivers.
 
+- More of the same dump (`InfoFrames`, `PacketLayout`): the HDR packet (CTA-861.3 static metadata: EOTF, mastering
+  primaries, peak and black, MaxCLL, MaxFALL), the SPD packet (the source's vendor and product name and its kind) and the
+  receiver's link state (`u8FRLRate .. is FRL_8G_4L`, `LEGACY_20` = TMDS above 3.4 Gbit/s). The receivers print packets
+  in different byte layouts (the HB its HDR packet as byte-swapped words from header byte 1, the Z9X its SPD packet from
+  PB1 and its VS packet with the header in front). A packet counts only in a layout its header bytes, checksum (when
+  every byte is printed) and field ranges prove. Mastering and light rows show only beside an HDR kind the HAL reports
+  and a PQ packet. The HB capture proves BT.2020, 1000 and 0.005 cd/m2, the Z9X capture "SCEI PS5", a game console.
+- Port maps (`signal.tsv` `ports=`): the stock `tbl_Hdmi_Hardware_Mapping` of each model (xgimiconfig `tv/tvconfig.sql`,
+  HDMI index to MStar port): Z9X `1:2,2:0` (the same table gives the map proven live), X50 Ultra, Ultra Max, Titan
+  `1:2,2:1,3:0`, RS30 `1:2,2:0,3:1`.
+
 ## Pieces
 
 | file | role |
@@ -83,6 +98,7 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
 | `SignalBudget` | at most 2 vendor calls per second, none while hidden, card items every 2 s, the rest every 10 s or once (`ReadSpeed`) |
 | `SignalPlace` | where the card and the full panel sit (title safe, below the header) |
 | `Judder` | the judder line: chip rate a whole multiple of the source rate or not |
+| `SteadyRate` | the input rate on the card: the nominal timing table rate once two reads agree (three outside the table), "VRR" while VRR reads move, the size alone while a new mode settles (a tester saw 133 Hz once in game mode on the HB) |
 | `SignalSheet`, `SignalFormat`, `SignalText` | what to draw, numbers and texts, a row this model cannot read is not there |
 | `SignalItems` | the model's rows as data: `devices/<c>/signal.tsv`, in the app as `assets/lumen_signal/items.tsv` |
 | `SignalPanel`, `SignalWindow`, `SignalReceiver` | the Android side: controller, overlay window, the intent `SIGNAL_PANEL` |

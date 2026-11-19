@@ -46,6 +46,9 @@ public final class SignalSheet {
         @Override public String toString() { return accent ? "*" + text : text; }
     }
 
+    /** The menu feature ids of the rows the panel shares with the menu (named with the menu's own words). */
+    static final String MENU_PICTURE_MODE = "picture.mode", MENU_MEMC = "picture.memc";
+
     /** Fixed badge names (brands, not translated). */
     static final String ALLM = "ALLM", VRR = "VRR", FREESYNC = "FreeSync", IMAX = "IMAX Enhanced",
             FILMMAKER = "Filmmaker Mode";
@@ -61,8 +64,9 @@ public final class SignalSheet {
     public final List<Row> rows = new ArrayList<>();
     /**
      * The small card's lines under the input line, in the owner's order (2026-11-18): aspect, colour format and chroma,
-     * range, colorimetry, bit depth, HDR kind. A line this model cannot read is not there (colour format, colorimetry
-     * and bit depth only where the image has the HDMI receiver bridge, HDMI_FORMAT: Z9X).
+     * range, colorimetry, bit depth, HDR kind, then the picture mode (last, as on the stock RS30 card). A line this model
+     * cannot read is not there (colour format, colorimetry and bit depth only where the image has the HDMI receiver
+     * bridge, HDMI_FORMAT).
      */
     public final List<Row> cardRows = new ArrayList<>();
 
@@ -79,7 +83,9 @@ public final class SignalSheet {
         String inputMode = null;
         if (input) {
             String size = SignalFormat.size(v.width, v.height) + (Boolean.TRUE.equals(v.interlaced) ? "i" : "");
-            inputMode = SignalFormat.mode(size, w.get(SignalText.HZ, SignalFormat.rate(v.rateCenti, dec)));
+            String rate = v.rateCenti > 0 ? w.get(SignalText.HZ, SignalFormat.rate(v.rateCenti, dec))
+                    : v.vrrMoving ? VRR : null;
+            inputMode = SignalFormat.mode(size, rate);
             s.big = inputMode;
         } else if (hdmi && items.contains(SignalItem.HDMI_INFO)) {
             s.big = w.get(SignalText.NO_SIGNAL);
@@ -129,6 +135,10 @@ public final class SignalSheet {
         if (space != null) s.cardRows.add(row(w, SignalText.R_COLORIMETRY, space, null, RowTone.PLAIN));
         if (depth != null) s.cardRows.add(row(w, SignalText.R_DEPTH, depth, null, RowTone.PLAIN));
         if (hdr != null) s.cardRows.add(row(w, SignalText.R_HDR, w.get(hdr), null, RowTone.PLAIN));
+        // the picture mode and motion smoothing as the menu reads and names them (over apps too)
+        Row picture = menuRow(w, items, SignalItem.PICTURE_MODE, MENU_PICTURE_MODE, v.pictureMode);
+        Row memc = menuRow(w, items, SignalItem.MEMC, MENU_MEMC, v.memc);
+        if (picture != null) s.cardRows.add(picture);
 
         // ---- the full panel
         List<Row> in = new ArrayList<>();
@@ -138,9 +148,11 @@ public final class SignalSheet {
                         : w.get(v.interlaced ? SignalText.INTERLACED : SignalText.PROGRESSIVE);
                 in.add(row(w, SignalText.R_INPUT, inputMode, scan, RowTone.PLAIN));
                 if (v.dvi != null) {
-                    in.add(row(w, SignalText.R_LINK, w.get(v.dvi ? SignalText.LINK_DVI : SignalText.LINK_HDMI), null,
-                            RowTone.PLAIN));
+                    in.add(row(w, SignalText.R_LINK, w.get(v.dvi ? SignalText.LINK_DVI : SignalText.LINK_HDMI),
+                            v.dvi ? null : linkText(rx, w), RowTone.PLAIN));
                 }
+                String device = rx == null ? null : SignalFormat.device(rx.sourceVendor, rx.sourceProduct);
+                if (device != null) in.add(row(w, SignalText.R_DEVICE, device, kindName(rx.sourceKind, w), RowTone.PLAIN));
             } else if (items.contains(SignalItem.HDMI_INFO)) {
                 in.add(row(w, SignalText.R_INPUT, s.big, null, RowTone.WARN));
             }
@@ -150,6 +162,16 @@ public final class SignalSheet {
             if (space != null) in.add(row(w, SignalText.R_COLORIMETRY, space, spaceNote, RowTone.PLAIN));
             if (depth != null) in.add(row(w, SignalText.R_DEPTH, depth, null, RowTone.PLAIN));
             if (hdr != null) in.add(row(w, SignalText.R_HDR, w.get(hdr), null, RowTone.PLAIN));
+            // the HDR packet's static metadata, only beside an HDR kind the HAL reports and a PQ packet
+            boolean pq = rx != null && hdr != null && SignalFormat.isHdr(v.hdrType) && rx.eotf == InfoFrames.EOTF_PQ;
+            if (pq && rx.masterMax > 0) {
+                String prim = SignalFormat.colorimetry(rx.masterPrimaries);
+                in.add(row(w, SignalText.R_MASTERING, w.get(SignalText.NITS, rx.masterMax) + (prim == null ? "" : ", " + prim),
+                        rx.masterMin > 0 ? w.get(SignalText.MASTER_MIN, SignalFormat.minNits(rx.masterMin, dec)) : null,
+                        RowTone.PLAIN));
+            }
+            String light = pq ? lightText(rx, w) : null;
+            if (light != null) in.add(row(w, SignalText.R_LIGHT, light, null, RowTone.PLAIN));
             yesNo(in, w, SignalText.R_IMAX, imax);
             yesNo(in, w, SignalText.R_FILMMAKER, filmmaker);
             if (edid != null) in.add(row(w, SignalText.R_EDID, w.get(edid), null, RowTone.PLAIN));
@@ -165,6 +187,8 @@ public final class SignalSheet {
             }
         }
         List<Row> proj = new ArrayList<>();
+        if (picture != null) proj.add(picture);
+        if (memc != null) proj.add(memc);
         if (chip) {
             String rate = w.get(SignalText.HZ, SignalFormat.rate(v.chipRateCenti, dec));
             String size = v.chipWidth > 0 && v.chipHeight > 0 ? SignalFormat.size(v.chipWidth, v.chipHeight) : null;
@@ -218,6 +242,40 @@ public final class SignalSheet {
         if (SignalFormat.ASPECT_AUTO.equals(token)) return w.get(SignalText.ASPECT_AUTO);
         if (SignalFormat.ASPECT_ORIGINAL.equals(token)) return w.get(SignalText.ASPECT_ORIGINAL);
         return token;
+    }
+
+    /** "FRL 8 Gbit/s × 4", "TMDS, HDMI 2.0", "TMDS" from the receiver's report; null when it has none. */
+    private static String linkText(HdmiRxInfo rx, SignalText.Words w) {
+        if (rx == null || rx.link == null) return null;
+        if (HdmiRxInfo.LINK_FRL.equals(rx.link)) return w.get(SignalText.LINK_FRL, rx.frlGbps, rx.frlLanes);
+        return w.get(HdmiRxInfo.LINK_TMDS20.equals(rx.link) ? SignalText.LINK_TMDS20 : SignalText.LINK_TMDS);
+    }
+
+    /** CTA-861 source information of the SPD InfoFrame: the kinds a projector meets, null for the rest. */
+    private static String kindName(int kind, SignalText.Words w) {
+        switch (kind) {
+            case 1: return w.get(SignalText.KIND_STB);
+            case 2: return w.get(SignalText.KIND_DVD);
+            case 8: return w.get(SignalText.KIND_GAME);
+            case 9: return w.get(SignalText.KIND_PC);
+            case 10: return w.get(SignalText.KIND_BLURAY);
+            case 13: return w.get(SignalText.KIND_PLAYER);
+            default: return null;
+        }
+    }
+
+    /** MaxCLL and MaxFALL, the ones the source told; null when it told neither. */
+    private static String lightText(HdmiRxInfo rx, SignalText.Words w) {
+        if (rx.maxCll > 0 && rx.maxFall > 0) return w.get(SignalText.LIGHT_BOTH, rx.maxCll, rx.maxFall);
+        if (rx.maxCll > 0) return w.get(SignalText.LIGHT_CLL, rx.maxCll);
+        return rx.maxFall > 0 ? w.get(SignalText.LIGHT_FALL, rx.maxFall) : null;
+    }
+
+    /** A row named and valued with the menu's own words; none when not read or the menu has no word for it. */
+    private static Row menuRow(SignalText.Words w, Set<SignalItem> items, SignalItem i, String feature, String token) {
+        if (!items.contains(i) || token == null) return null;
+        String label = w.menuTitle(feature), value = w.menuOption(feature, token);
+        return label == null || value == null ? null : new Row(false, i.token, label, value, null, RowTone.PLAIN);
     }
 
     private static Boolean flag(boolean hdmi, Set<SignalItem> items, SignalItem i, Boolean value) {

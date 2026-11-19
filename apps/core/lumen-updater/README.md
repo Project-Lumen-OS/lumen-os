@@ -2,7 +2,7 @@
 
 `org.lumen.updater` ("Lumen OS update", the TvSettings About entry through `android.settings.SYSTEM_UPDATE_SETTINGS`)
 is one app on every model. This module holds all of it: the signed channel manifests (Channels, Trust, Checker,
-CheckJob), the download and its checks (UpdateService, Http), the checks before an install (Preflight), the two ways an
+CheckJob), the download and its checks (UpdateService, PackageDownload over the shared apps/core/lumen-download, Http), the checks before an install (Preflight), the two ways an
 update is installed (InstallWay: ViaUpdateEngine, ViaRecovery), the update screen (UpdaterActivity, Ui; its QR codes come from apps/core/lumen-qr), the
 result after the restart (BootReceiver, Outcome), the one-time notice and the statistics adapter (Notice, Stats over
 lumen-stats), the strings in 18 languages.
@@ -81,9 +81,26 @@ payload on the X50 Ultra (beta4 to beta5, 2026-11-14: VABC partition writer, 984
 booted and the merge ended (MergeCompleted in 20 s, no COW in /data). 1.0.10-beta5 and beta6 shipped the HB's storage
 check, which refuses compression: their cloud and USB stick installs stop at "compression on". A unit on them takes
 the fixed updater as an update of the system app (adb install), then updates over the cloud. The updater's
-versionCode (apps/LumenUpdater/BUILD_VERSION) was 2 with that fix and is 3 since the plain-words texts (the X50 Ultra
-of the beta tests carries a hand-installed 2): raise it with every later change of the updater, or a copy installed
+versionCode (apps/LumenUpdater/BUILD_VERSION) was 2 with that fix, 3 since the plain-words texts (the X50 Ultra
+of the beta tests carries a hand-installed 2) and is 4 since the parallel download: raise it with every later change of the updater, or a copy installed
 that way stays in front of the image's own.
+
+## The download
+
+`PackageDownload` waits for the network, runs `ParallelDownload`, tries again after a growing pause (404 or 410 from
+the stable URL ends it) and checks the sha256 of the whole zip against the signed manifest, the same check a zip on the
+USB stick gets. After a mismatch the zip is deleted and downloaded once more from the start, then `err_hash`.
+
+`ParallelDownload` is the shared download of apps/core/lumen-download (its README: 4 to 8 range connections against
+the per-connection shaping of GitHub, resume per range from `<zip>.part.state`, the CDN link renewed when refused,
+`If-Range` with the ETag), the one Lumen Installer uses for its images too. The speed on screen and the time left
+come from its last 10 s.
+
+update_engine can also fetch the payload from a URL itself (applyPayload with an https URL, offset and size). That
+would save the ~700 MB in the app's folder, but update_engine downloads over one connection (no gain against
+per-connection shaping), keeps one signed CDN link that expires, and writes the other slot before the whole file was
+checked against the manifest's sha256 (only the payload signature and update_engine's per-operation hashes guard it).
+The updater keeps downloading the zip first. The zip is the payload plus about 28 KB of zip entries, nothing more.
 
 ## Tests
 
@@ -93,6 +110,9 @@ that way stays in front of the image's own.
   applicable, blob sets, install checks with a fake boot gate, download folder) and the static face (`static.py`:
   manifest, resources, every string) of each assembled updater must equal `golden/`, recorded from the three updaters
   of integ 389dc716 before this module existed. Strings may only be added.
-- `test/jobs_mutate.py`, `test/mutate.py`: mutants of the worker and of the model data and rules (27 targeted mutants).
+- `test/download.sh`: PackageDownload over the shared download against the GitHub-like server of
+  apps/core/lumen-download's test (the network wait, a corrupt first pass for the sha256 retry, 404 ends it, a
+  complete file is checked without network). The download itself: `sh apps/core/lumen-download/test/run.sh`.
+- `test/jobs_mutate.py`, `test/mutate.py`: mutants of the worker, the download and of the model data and rules.
 - `test/run.sh` also pins the model table above per recipe (TargetFactsTest) and the two install ways (KindTest).
 - Model data: `apps/Z9xUpdater/test/run.sh`, `apps/LumenUpdater/test/ota/run.sh`, `apps/Play6Updater/test/run.sh`.

@@ -88,6 +88,7 @@ public final class ThreeDTest {
                 {"dragon_healthy", ""},                                // Play 6 dayao: no image_3d nodes
                 {"g0111", "off sbs tb sbs_2d tb_2d frame_packing"},   // X50 Ultra dianapro (X50Projector X50ThreeD)
                 {"g0100", "off sbs tb sbs_2d tb_2d frame_packing"},   // X50 Ultra Max dianamax
+                {"h0061", "off sbs tb sbs_2d tb_2d frame_packing"},   // TITAN Noir dianahy
                 {"h0062", "off sbs tb sbs_2d tb_2d frame_packing"},   // TITAN Noir Pro dianahypro
                 {"h0063", "off sbs tb sbs_2d tb_2d frame_packing"},   // TITAN Noir Max dianahymax
                 {"g0155", "off sbs tb sbs_2d tb_2d"},                 // RS30 Ultra Max athena35ultramax: no frame packing

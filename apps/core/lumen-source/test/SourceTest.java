@@ -16,7 +16,7 @@ public final class SourceTest {
 
     public static void main(String[] a) throws Exception {
         TreeMap<String, SourceRule> models = models(new File(System.getProperty("gsi"), "devices"));
-        ok(models.size() == 8, "8 projector models carry source.tsv: " + models.keySet());
+        ok(models.size() == 9, "9 projector models carry source.tsv: " + models.keySet());
         for (String c : models.keySet()) {
             SourceRule r = models.get(c);
             boolean play6 = c.equals("dragon_healthy");

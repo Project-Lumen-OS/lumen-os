@@ -58,6 +58,8 @@ final class ModuleScreens {
         if (f == FeatureId.KEYSTONE_WALL_COLOR) return WallColor.available(c);
         if (f == FeatureId.SOUND_KEY_TONE || f == FeatureId.SETTINGS_COLOUR_VISION) return true;
         if (f == FeatureId.SETTINGS_SCREENSAVER_NOW || f == FeatureId.SETTINGS_SCREENSAVER_DELAY) return true;
+        if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) return true;
+        if (MenuSpec.MODULE_PAGES.contains(f)) return true;           // the page row shows when a row of it is there
         if (MenuSpec.MODULE_INFO.contains(f)) return true;
         if (f == FeatureId.SENSORS_PANEL) return SensorPanel.available(c);
         if (f == FeatureId.SETTINGS_PARENTAL) return parental(c).resolveActivity(c.getPackageManager()) != null;
@@ -123,6 +125,7 @@ final class ModuleScreens {
         if (f == FeatureId.POWER_ON_MUSIC) return BootSound.on() ? ON : OFF;
         if (f == FeatureId.SETTINGS_COLOUR_VISION) return ColourVision.get(c);
         if (f == FeatureId.SETTINGS_SCREENSAVER_DELAY) return ScreensaverDelay.get(c);
+        if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) return MenuLookPrefs.get(c, f);
         if (f == FeatureId.SOUND_VOLUME) {
             android.media.AudioManager a = audio(c);
             return a == null ? null : Integer.toString(a.getStreamVolume(android.media.AudioManager.STREAM_MUSIC));
@@ -147,6 +150,9 @@ final class ModuleScreens {
         }
         else if (f == FeatureId.SETTINGS_SCREENSAVER_DELAY) {      // Android's idle time, then the read
             return ScreensaverDelay.set(c, value);
+        }
+        else if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) {   // the menu's look, read back
+            return MenuLookPrefs.set(c, f, value) && value.equals(MenuLookPrefs.get(c, f));
         }
         else if (f == FeatureId.NETWORK_HOTSPOT) {                 // stock startTethering / stopTethering, a note at the end
             if (ON.equals(value)) Hotspot.start(c, hotspotNotes(c));

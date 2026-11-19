@@ -10,6 +10,9 @@ card
 section keystone  (stock order: settings_tree_product_athena35ultramax projection_screen (G0155 V1.1.42), test/stock/projection_screen.json)
   action keystone.ak_now
   screen keystone.manual
+  action focus.af_now
+  screen focus.manual
+  page focus.settings
   -- auto_correction
   toggle keystone.realtime
   toggle keystone.on_power
@@ -19,12 +22,12 @@ section keystone  (stock order: settings_tree_product_athena35ultramax projectio
   screen zoom
   screen zoom.move
   screen keystone.rotation
+  info keystone.angle_h
+  info keystone.angle_v
   -- smart
   screen keystone.wall_color
   -- more
   action keystone.restore
-  info keystone.angle_h
-  info keystone.angle_v
 section focus
   action focus.af_now
   screen focus.manual
@@ -93,6 +96,9 @@ section general
   -- power
   toggle power.on_ac
   toggle power.on_music
+  -- menu
+  choice settings.menu_side [left, right]
+  choice settings.menu_density [normal, compact]
 section developer
   screen signal.panel
   screen sensors.panel
@@ -127,6 +133,9 @@ page picture.hdr
 page picture.dv_screen
   choice picture.dv_screen.size [80, 88, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
   choice picture.dv_screen.gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+page focus.settings
+  toggle focus.smart
+  info focus.guide  hint picture focus_guide_front
 page picture.settings
   choice picture.custom_base [sport, movie, color_accuracy]
   -- basic
@@ -163,12 +172,12 @@ popup keystone (rows with a tile of their own left out)
   -- size_position
   zoom.move
   keystone.rotation
+  keystone.angle_h
+  keystone.angle_v
   -- smart
   keystone.wall_color
   -- more
   keystone.restore
-  keystone.angle_h
-  keystone.angle_v
 popup picture (rows with a tile of their own left out)
   -- projector_brightness
   lamp
@@ -186,7 +195,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone focus picture projection sound eye general developer
+all settings: keystone picture projection sound eye general developer
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)
   game sound: off surround story clarity balanced

@@ -56,6 +56,15 @@ public final class QpdLayoutTest {
         return "NOT FOUND " + from;
     }
 
+    /** The same move on a menu placed on the right side (MenuLook). */
+    private static String mvRight(List<List<String>> rows, String from, int dir) {
+        for (int r = 0; r < rows.size(); r++) {
+            int c = rows.get(r).indexOf(from);
+            if (c >= 0) return at(rows, QpdLayout.move(rows, r, c, dir, POPUPS::contains, QpdLayout.SLIDER::equals, true));
+        }
+        return "NOT FOUND " + from;
+    }
+
     private static List<Integer> box(int[] m) {
         return m == null ? null : Arrays.asList(m[0], m[1], m[2]);
     }
@@ -138,6 +147,30 @@ public final class QpdLayoutTest {
         eq("right on last cell without popup stays", "STAY", mv(g, "zoom", QpdLayout.RIGHT));
         eq("right on gear opens all settings", "OPEN:general", mv(g, "general", QpdLayout.RIGHT));
         eq("right on theme -> gear", "general", mv(g, "theme", QpdLayout.RIGHT));
+        // a menu on the right side (MenuLook): the tiles keep their order, the popup opens towards the screen middle
+        eq("right side: right in row", "keystone", mvRight(g, "autocorrect", QpdLayout.RIGHT));
+        eq("right side: left in row", "picture", mvRight(g, "sound", QpdLayout.LEFT));
+        eq("right side: left on the first cell with a popup opens it", "OPEN:picture", mvRight(g, "picture", QpdLayout.LEFT));
+        eq("right side: left on the first cell without a popup stays", "STAY", mvRight(g, "autocorrect", QpdLayout.LEFT));
+        eq("right side: right on the last cell with a popup stays", "STAY", mvRight(g, "focus", QpdLayout.RIGHT));
+        eq("right side: left on the theme button opens nothing", "STAY", mvRight(g, "theme", QpdLayout.LEFT));
+        eq("right side: left on the slider steps it", "STAY", mvRight(g, "lamp", QpdLayout.LEFT));
+        eq("right side: up and down as on the left", mv(g, "picture", QpdLayout.DOWN), mvRight(g, "picture", QpdLayout.DOWN));
+        eq("right side: the open cell is the cell itself", Arrays.asList(2, 0, QpdLayout.OPEN),
+                box(QpdLayout.move(g, 2, 0, QpdLayout.LEFT, POPUPS::contains, QpdLayout.SLIDER::equals, true)));
+        eq("left side: the open cell is the cell itself", Arrays.asList(2, 2, QpdLayout.OPEN),
+                box(QpdLayout.move(g, 2, 2, QpdLayout.RIGHT, POPUPS::contains, QpdLayout.SLIDER::equals, false)));
+        eq("pane keys on the left: LEFT", QpdLayout.LEFT, QpdLayout.toward(QpdLayout.LEFT, false));
+        eq("pane keys on the left: RIGHT", QpdLayout.RIGHT, QpdLayout.toward(QpdLayout.RIGHT, false));
+        eq("pane keys on the right: LEFT is RIGHT", QpdLayout.RIGHT, QpdLayout.toward(QpdLayout.LEFT, true));
+        eq("pane keys on the right: RIGHT is LEFT", QpdLayout.LEFT, QpdLayout.toward(QpdLayout.RIGHT, true));
+        eq("pane keys on the right: UP stays", QpdLayout.UP, QpdLayout.toward(QpdLayout.UP, true));
+        eq("pane keys on the right: DOWN stays", QpdLayout.DOWN, QpdLayout.toward(QpdLayout.DOWN, true));
+        // the card clock fits its box (a 12 hour time next to four round buttons): it shrinks, never grows
+        eq("clock: a time that fits keeps its size", 1f, QpdLayout.clockFit(200f, 252f));
+        eq("clock: a time as wide as the box keeps its size", 1f, QpdLayout.clockFit(252f, 252f));
+        eq("clock: a wide time shrinks to the box", 0.9f, QpdLayout.clockFit(280f, 252f));
+        eq("clock: no box yet draws at the design size", 1f, QpdLayout.clockFit(280f, 0f));
         List<List<String>> nu = QpdLayout.rows(Arrays.asList("general"), Arrays.asList("autocorrect", "hdmi"),
                 Arrays.asList("keystone", "zoom", "projection_mode"), true);
         eq("short last row: down from zoom keeps the column in range", "projection_mode", mv(nu, "zoom", QpdLayout.DOWN));

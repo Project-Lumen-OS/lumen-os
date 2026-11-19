@@ -3,6 +3,10 @@ package org.lumen.menu;
 
 import org.lumen.menu.ProjectorFeatures.Note;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 /**
  * The stock picture settings page refusal of every XGIMI newsettings (SettingMutexManager.mutex; dexdump of the HB
  * G0148 v6.17.12, the Z9X G0082 v6.15.62 and the X50 v1.2.64 newsettings, the same bytecode in the RS30 and Titan
@@ -117,6 +121,20 @@ public final class PictureSettingsRule {
         T get() throws E;
     }
 
+    /**
+     * The rows that stay closed while the game mode runs (TITAN testers 2026-11-19: the picture settings open in game
+     * mode): the ones that add frames of delay, motion compensation, noise reduction, super resolution and Ultra 120 Hz.
+     * Every other row of the page is written in game mode like any time and read back, so a value the vendor does not
+     * take shows as not applied. Stock refuses the whole page (image_mode_mutex_game_run).
+     */
+    public static final Set<FeatureId> GAME_LATENCY = Collections.unmodifiableSet(EnumSet.of(FeatureId.PICTURE_MEMC,
+            FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_ULTRA120));
+
+    /** True for a row (or a slider of a row) that stays closed in game mode, {@link #GAME_LATENCY}. */
+    public static boolean gameLatency(FeatureId f) {
+        return f != null && GAME_LATENCY.contains(f.parent != null ? f.parent : f);
+    }
+
     /** Is {@code f} (or the picture.pq row of a slider) on a stock picture settings page of {@code layout}? */
     public static boolean onPage(Layout layout, FeatureId f) {
         return layout.pageOf(f) != null;
@@ -131,7 +149,7 @@ public final class PictureSettingsRule {
             Read<Integer, E> pictureMode, Read<Integer, E> hdrType) throws E {
         Page page = layout.pageOf(f);
         if (page == null) return null;
-        if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;
+        if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;
         Integer mode = pictureMode.get();
         if (mode == null || mode != MODE_AI && mode != MODE_PERFORMANCE) return null;
         Integer hdr = hdrType.get();
@@ -166,11 +184,13 @@ public final class PictureSettingsRule {
             this.hdrType = hdrType;
         }
 
-        /** Reads as stock does: the game state, the picture mode only with the game off, the content only in AI and Performance. */
+        /**
+         * Reads as stock does, the game state first, then the picture mode (also in game mode now, the page opens there
+         * except the {@link #GAME_LATENCY} rows), the content only in AI and Performance.
+         */
         public static <E extends Exception> Reads read(Read<Boolean, E> gameOn, Read<Integer, E> pictureMode,
                 Read<Integer, E> hdrType) throws E {
             Boolean game = gameOn.get();
-            if (Boolean.TRUE.equals(game)) return new Reads(game, null, null);
             Integer mode = pictureMode.get();
             if (mode == null || mode != MODE_AI && mode != MODE_PERFORMANCE) return new Reads(game, mode, null);
             return new Reads(game, mode, hdrType.get());

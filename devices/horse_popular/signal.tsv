@@ -16,3 +16,5 @@ temp_light	IGmpf 439 getTemperatureFromSensor	LED board sensor 5 only (the senso
 temp_system	IGmpf 438 getSystemTemperature	temperature inside
 aspect	IGmpf 664 getAspectRatio	the aspect setting (the signal's own aspect comes from its size)
 hdmi_format	MDB HDMIRX bridge ports=1:2,2:0	colour format, depth, colorimetry, range the signal asks for, from the receiver itself (image lumen_hdmirx, root); HDMI 1 = MStar port 2 (EDID physical address 1.0.0.0, eARC port), HDMI 2 = port 0 (2.0.0.0)
+picture_mode	IGmpf 666 getPictureMode	the picture mode, the menu's own read and names (AI scenes read as AI), on the small card too
+memc	IGmpf 668 getMemcLevel	motion smoothing, the menu's own read and names

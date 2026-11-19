@@ -94,4 +94,21 @@
     <string name="lumen_signal_depth_bits">%1$s бит</string>
     <string name="lumen_signal_range_auto_full">Авто (Full)</string>
     <string name="lumen_signal_range_auto_limited">Авто (Limited)</string>
+    <string name="lumen_signal_r_device">Устройство</string>
+    <string name="lumen_signal_kind_stb">приставка</string>
+    <string name="lumen_signal_kind_dvd">проигрыватель DVD</string>
+    <string name="lumen_signal_kind_game">игровая консоль</string>
+    <string name="lumen_signal_kind_pc">компьютер</string>
+    <string name="lumen_signal_kind_bluray">проигрыватель Blu-ray</string>
+    <string name="lumen_signal_kind_player">медиаплеер</string>
+    <string name="lumen_signal_link_frl">FRL %1$s Гбит/с × %2$s</string>
+    <string name="lumen_signal_link_tmds">TMDS</string>
+    <string name="lumen_signal_link_tmds20">TMDS, HDMI 2.0</string>
+    <string name="lumen_signal_r_mastering">Мастеринг</string>
+    <string name="lumen_signal_nits">%1$s нит</string>
+    <string name="lumen_signal_master_min">чёрный %1$s нит</string>
+    <string name="lumen_signal_r_light">Яркость контента</string>
+    <string name="lumen_signal_light_both">MaxCLL %1$s, MaxFALL %2$s нит</string>
+    <string name="lumen_signal_light_cll">MaxCLL %1$s нит</string>
+    <string name="lumen_signal_light_fall">MaxFALL %1$s нит</string>
 </resources>

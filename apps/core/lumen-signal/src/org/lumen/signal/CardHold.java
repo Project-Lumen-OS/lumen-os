@@ -83,9 +83,12 @@ public final class CardHold {
     };
 
     /** True when the small card should show the hint now (the first few cards, until the user held OK once). */
-    public static boolean hint(Context c) {
+    public static boolean hint(Context c) { return hint(c, false); }
+
+    /** {@code byKey}: opened by the remote key the user gave it (OkHold.hint). */
+    public static boolean hint(Context c, boolean byKey) {
         SharedPreferences p = prefs(c);
-        return OkHold.hint(p.getInt(SEEN, 0), p.getBoolean(LEARNED, false));
+        return OkHold.hint(p.getInt(SEEN, 0), p.getBoolean(LEARNED, false), byKey);
     }
 
     /** A small card came on screen with the hint: one of the few times is used. */

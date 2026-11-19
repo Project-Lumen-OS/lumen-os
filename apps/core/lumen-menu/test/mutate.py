@@ -16,6 +16,40 @@ MC = "src/org/lumen/projector/panel/MenuController.java"
 UI = "src/org/lumen/projector/ui/"
 MS = "src/org/lumen/projector/panel/ModuleScreens.java"
 MUTANTS = [
+    # ---- TITAN testers: the menu's side and size (MenuLook), the menu kept across the input's restart (Rehost),
+    # the picture settings open in game mode except the delay rows (PictureSettingsRule.GAME_LATENCY)
+    ("look: junk side is right", S + "MenuLook.java", "return RIGHT.equals(stored) ? RIGHT : LEFT;", "return LEFT.equals(stored) ? LEFT : RIGHT;"),
+    ("look: right never", S + "MenuLook.java", "public static boolean right(String stored) { return RIGHT.equals(side(stored)); }",
+     "public static boolean right(String stored) { return false; }"),
+    ("look: junk size is compact", S + "MenuLook.java", "return COMPACT.equals(stored) ? COMPACT : NORMAL;", "return NORMAL.equals(stored) ? NORMAL : COMPACT;"),
+    ("look: compact at full size", S + "MenuLook.java", "return COMPACT.equals(density(stored)) ? COMPACT_SCALE : 1f;", "return 1f;"),
+    ("look: compact scale 0.7", S + "MenuLook.java", "COMPACT_SCALE = 0.85f;", "COMPACT_SCALE = 0.7f;"),
+    ("look: any side value", S + "MenuLook.java", "if (f == FeatureId.SETTINGS_MENU_SIDE) return SIDES.contains(value);",
+     "if (f == FeatureId.SETTINGS_MENU_SIDE) return true;"),
+    ("look: any size value", S + "MenuLook.java", "if (f == FeatureId.SETTINGS_MENU_DENSITY) return DENSITIES.contains(value);",
+     "if (f == FeatureId.SETTINGS_MENU_DENSITY) return SIDES.contains(value);"),
+    ("look: other settings valid", S + "MenuLook.java", "        return false;\n    }\n}", "        return true;\n    }\n}"),
+    ("look: right first", S + "MenuLook.java", "Arrays.asList(LEFT, RIGHT)", "Arrays.asList(RIGHT, LEFT)"),
+    ("look prefs: any value stored", "src/org/lumen/projector/panel/MenuLookPrefs.java", "        if (!MenuLook.valid(f, value)) return false;\n", ""),
+    ("look prefs: side read raw", "src/org/lumen/projector/panel/MenuLookPrefs.java",
+     "return MenuLook.side(prefs(c).getString(K_SIDE, null));", "return prefs(c).getString(K_SIDE, MenuLook.LEFT);"),
+    ("look prefs: size under the side key", "src/org/lumen/projector/panel/MenuLookPrefs.java",
+     "f == FeatureId.SETTINGS_MENU_SIDE ? K_SIDE : K_DENSITY", "K_SIDE"),
+    ("look prefs: written without read back", MS, "return MenuLookPrefs.set(c, f, value) && value.equals(MenuLookPrefs.get(c, f));",
+     "return MenuLookPrefs.set(c, f, value);"),
+    ("rehost: kept with the screen off", S + "Rehost.java", "return interactive && frontAtShow != null", "return frontAtShow != null"),
+    ("rehost: kept over another app", S + "Rehost.java", " && frontAtShow.equals(frontNow)", ""),
+    ("rehost: kept over the menu's own app", S + "Rehost.java", "\n                && !frontAtShow.equals(own);", ";"),
+    ("rehost: empty front kept", S + "Rehost.java", " && !frontAtShow.isEmpty()", ""),
+    ("rehost: focus waits forever", S + "Rehost.java", "return keep && nowMs - lostAtMs < FOCUS_GRACE_MS;", "return keep;"),
+    ("rehost: focus waits when closed", S + "Rehost.java", "return keep && nowMs - lostAtMs < FOCUS_GRACE_MS;", "return nowMs - lostAtMs < FOCUS_GRACE_MS;"),
+    ("rehost: grace one tick longer", S + "Rehost.java", "return keep && nowMs - lostAtMs < FOCUS_GRACE_MS;", "return keep && nowMs - lostAtMs <= FOCUS_GRACE_MS;"),
+    ("game: whole page closed again", S + "PictureSettingsRule.java", "if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;",
+     "if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;"),
+    ("game: delay rows open", S + "PictureSettingsRule.java", "if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;", ""),
+    ("game: memc open", S + "PictureSettingsRule.java", "EnumSet.of(FeatureId.PICTURE_MEMC,\n            FeatureId.PICTURE_NOISE,", "EnumSet.of(\n            FeatureId.PICTURE_NOISE,"),
+    ("game: ultra120 open", S + "PictureSettingsRule.java", ", FeatureId.PICTURE_ULTRA120));", "));"),
+    ("game: a slider of a delay row open", S + "PictureSettingsRule.java", "GAME_LATENCY.contains(f.parent != null ? f.parent : f)", "GAME_LATENCY.contains(f)"),
     # ---- user picture modes (stock CustomizeDataManager, user-picture-modes)
     ("custom: ten modes not full", S + "CustomModes.java", "return modes.size() >= MAX;", "return modes.size() > MAX;"),
     ("custom: duplicate id taken", S + "CustomModes.java", "of(m.value) != null || ", ""),
@@ -50,8 +84,8 @@ MUTANTS = [
      "                    {null, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME"),
     ("hotspot: name before the switch", S + "MenuSpec.java", "{LINE, FeatureId.NETWORK_HOTSPOT, FeatureId.NETWORK_HOTSPOT_NAME,",
      "{LINE, FeatureId.NETWORK_HOTSPOT_NAME, FeatureId.NETWORK_HOTSPOT,"),
-    ("hotspot: the switch left to the adapter", S + "MenuSpec.java", "FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT));",
-     "FeatureId.SETTINGS_SCREENSAVER_DELAY));"),
+    ("hotspot: the switch left to the adapter", S + "MenuSpec.java", "FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT, FeatureId.POWER_ON_MUSIC,",
+     "FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.POWER_ON_MUSIC,"),
     ("hotspot: part of the rows accepted", S + "MenuProfile.java", "if (hotspot != 0 && hotspot != MenuSpec.HOTSPOT_ROWS.size()) {", "if (false) {"),
     ("hotspot: rows without the tile accepted", S + "MenuProfile.java",
      "if (hotspot != 0 && !features.containsKey(FeatureId.NETWORK)) problem(", "if (false) problem("),
@@ -178,25 +212,9 @@ MUTANTS = [
      "if (down) sliderOff.key(onLamp && k == towardsStart);", "if (down) sliderOff.key(true);"),
     ("lamp slider: OK on the slider keeps the question", MC,
      "if (down) sliderOff.key(onLamp && k == towardsStart);", "if (down) sliderOff.key(onLamp);"),
-    ("lamp slider: the question is dropped after the early returns", MC,
-     "        if (down) sliderOff.key(onLamp && k == towardsStart);    // any other key drops the light-off question\n"
-     "        int towardsEnd = towardsStart == KeyEvent.KEYCODE_DPAD_LEFT ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;\n"
-     "        int sliderDir = !onLamp ? 0 : k == towardsEnd ? 1 : k == towardsStart ? -1 : 0;\n"
-     "        if (down) boostAsk.key(sliderDir);    // any other key drops the Boost question too\n"
-     "        // BACK while an equalizer band is being adjusted only ends adjusting\n"
-     "        if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {\n"
-     "            if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled()) ((EqBandsRow) f).stopEditing();\n"
-     "            return true;\n"
-     "        }\n",
-     "        int towardsEnd = towardsStart == KeyEvent.KEYCODE_DPAD_LEFT ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;\n"
-     "        int sliderDir = !onLamp ? 0 : k == towardsEnd ? 1 : k == towardsStart ? -1 : 0;\n"
-     "        if (down) boostAsk.key(sliderDir);    // any other key drops the Boost question too\n"
-     "        // BACK while an equalizer band is being adjusted only ends adjusting\n"
-     "        if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {\n"
-     "            if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled()) ((EqBandsRow) f).stopEditing();\n"
-     "            return true;\n"
-     "        }\n"
-     "        if (down) sliderOff.key(onLamp && k == towardsStart);    // any other key drops the light-off question\n"),
+    ('lamp slider: the question is dropped after the early returns', 'src/org/lumen/projector/panel/MenuController.java',
+     "        if (down) sliderOff.key(onLamp && k == towardsStart);    // any other key drops the light-off question\n        int towardsEnd = towardsStart == KeyEvent.KEYCODE_DPAD_LEFT ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;\n        int sliderDir = !onLamp ? 0 : k == towardsEnd ? 1 : k == towardsStart ? -1 : 0;\n        if (down) boostAsk.key(sliderDir);    // any other key drops the Boost question too\n        if (edit != null && panel != null && panel.hasSide()) return edit.onKey(ev);   // the pencil editor's keys\n        // BACK while an equalizer band is being adjusted only ends adjusting\n        if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {\n            if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled()) ((EqBandsRow) f).stopEditing();\n            return true;\n        }\n",
+     "        int towardsEnd = towardsStart == KeyEvent.KEYCODE_DPAD_LEFT ? KeyEvent.KEYCODE_DPAD_RIGHT : KeyEvent.KEYCODE_DPAD_LEFT;\n        int sliderDir = !onLamp ? 0 : k == towardsEnd ? 1 : k == towardsStart ? -1 : 0;\n        if (down) boostAsk.key(sliderDir);    // any other key drops the Boost question too\n        if (edit != null && panel != null && panel.hasSide()) return edit.onKey(ev);   // the pencil editor's keys\n        // BACK while an equalizer band is being adjusted only ends adjusting\n        if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {\n            if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled()) ((EqBandsRow) f).stopEditing();\n            return true;\n        }\n        if (down) sliderOff.key(onLamp && k == towardsStart);    // any other key drops the light-off question\n"),
     ("lamp slider: a closed menu keeps the question (menu)", MC, "            boostAsk.cancel();\n            sliderOff.cancel();\n",
      "            boostAsk.cancel();\n"),
     ("lamp slider: the hint counts only Boost's 3 s", MC, "new SliderOff(Theme.NOTIFY_SLIDE_MS + Theme.NOTIFY_HOLD_MS)",
@@ -249,8 +267,9 @@ MUTANTS = [
      "FeatureId.KEYSTONE_CURTAIN, FeatureId.KEYSTONE_OBSTACLE}"),
     ("angles back among the actions", S + "MenuSpec.java",
      "FeatureId.ZOOM_MEMORY},", "FeatureId.ZOOM_MEMORY, FeatureId.KEYSTONE_ANGLE_H},"),
-    ("popup keeps the rows with a tile of their own", S + "MenuSpec.java", "popups = sections(p, cardFeatures(p), pages);",
-     "popups = sections(p, Collections.emptySet(), pages);"),
+    ('popup keeps the rows with a tile of their own', 'src/org/lumen/menu/MenuSpec.java',
+     "popups = sections(p, sec -> {                          // a moved row stays only in its own section's popup\n            Set<FeatureId> leave = new HashSet<>(card);\n            for (Map.Entry<FeatureId, String> e : moved.entrySet()) if (!sec.equals(e.getValue())) leave.add(e.getKey());\n            return leave;\n        }, pages);",
+     'popups = sections(p, sec -> Collections.emptySet(), pages);'),
     ("popup leaves out the whole section", S + "MenuSpec.java", "if (p.has(f) && !leaveOut.contains(f) && (f.kind",
      "if (p.has(f) && leaveOut.isEmpty() && (f.kind"),
     ("card tile of a feature the profile lacks", S + "MenuSpec.java",
@@ -272,10 +291,12 @@ MUTANTS = [
     ("tile without the feature", S + "MenuSpec.java", "if (a) r.add(new Tile((String) t[0], id, b ? alt : null, yields));",
      "r.add(new Tile((String) t[0], id, b ? alt : null, yields));"),
     # the card rows of 2026-11-13: voice search and the gear on top, projection yields to mirroring, eye protection last
-    ("voice search button dropped", S + "MenuSpec.java", "ROUND_TILES = {FeatureId.NETWORK, VOICE, GENERAL};",
-     "ROUND_TILES = {FeatureId.NETWORK, GENERAL};"),
-    ("network never a round button", S + "MenuSpec.java", "ROUND_TILES = {FeatureId.NETWORK, VOICE, GENERAL};",
-     "ROUND_TILES = {VOICE, GENERAL};"),
+    ('theme button dropped', 'src/org/lumen/menu/MenuSpec.java',
+     'ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};',
+     'ROUND_TILES = {FeatureId.NETWORK, GENERAL};'),
+    ('network never a round button', 'src/org/lumen/menu/MenuSpec.java',
+     'ROUND_TILES = {FeatureId.NETWORK, THEME, GENERAL};',
+     'ROUND_TILES = {THEME, GENERAL};'),
     ("a full row keeps its yielding tile", S + "MenuSpec.java", "if (r.get(i).yields) r.remove(i);", "if (false) r.remove(i);"),
     ("a full row drops a tile that does not yield", S + "MenuSpec.java", "if (r.get(i).yields) r.remove(i);", "if (true) r.remove(i);"),
     ("a row with room drops its yielding tile", S + "MenuSpec.java", "r.size() > ROW_PLACES && i < r.size()", "i < r.size()"),
@@ -287,10 +308,12 @@ MUTANTS = [
      "b = alt != null"),
     ("section tile without rows", S + "MenuSpec.java", ": popups.containsKey(id);", ": true;"),
     ("section tile with an empty popup", S + "MenuSpec.java", ": popups.containsKey(id);", ": sections.containsKey(id);"),
-    ("All settings category without rows", S + "MenuSpec.java", "if (sections.containsKey(c) || GENERAL.equals(c))",
-     "if (true)"),
-    ("All settings loses a section whose rows are all tiles", S + "MenuSpec.java",
-     "if (sections.containsKey(c) || GENERAL.equals(c))", "if (popups.containsKey(c) || GENERAL.equals(c))"),
+    ('All settings category without rows', 'src/org/lumen/menu/MenuSpec.java',
+     'if ((sections.containsKey(c) || GENERAL.equals(c)) && !allMoved',
+     'if ((true) && !allMoved'),
+    ('All settings loses a section whose rows are all tiles', 'src/org/lumen/menu/MenuSpec.java',
+     'if ((sections.containsKey(c) || GENERAL.equals(c)) && !allMoved',
+     'if ((popups.containsKey(c) || GENERAL.equals(c)) && !allMoved'),
     ("empty tile row kept", S + "MenuSpec.java", "if (!r.isEmpty()) rws.add", "rws.add"),
     ("parameters of an absent feature", S + "MenuProfile.java",
      "public int number(FeatureId feature, String key, int fallback) {\n        if (!has(feature)) return fallback;",
@@ -389,13 +412,15 @@ MUTANTS = [
     ("the watch polls with the menu closed", "src/org/lumen/projector/panel/SignalWatch.java",
      "        if (!open.getAsBoolean()) return;\n", ""),
     # ---- the stock picture settings page refusal (PictureSettingsRule)
-    ("picture settings: game mode lets the rows move", S + "PictureSettingsRule.java",
-     "if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;", "if (false) return NOTE_GAME;"),
-    ("picture settings: a game read failure refuses", S + "PictureSettingsRule.java",
-     "if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;", "if (!Boolean.FALSE.equals(gameOn.get())) return NOTE_GAME;"),
-    ("picture settings: the game state read after the mode", S + "PictureSettingsRule.java",
-     "        if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;\n        Integer mode = pictureMode.get();\n",
-     "        Integer mode = pictureMode.get();\n        if (Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;\n"),
+    ('picture settings: game mode lets the delay rows move', 'src/org/lumen/menu/PictureSettingsRule.java',
+     'if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;',
+     'if (false) return NOTE_GAME;'),
+    ('picture settings: a game read failure refuses', 'src/org/lumen/menu/PictureSettingsRule.java',
+     'if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;',
+     'if (gameLatency(f) && !Boolean.FALSE.equals(gameOn.get())) return NOTE_GAME;'),
+    ('picture settings: the game state read after the mode', 'src/org/lumen/menu/PictureSettingsRule.java',
+     '        if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;\n        Integer mode = pictureMode.get();\n',
+     '        Integer mode = pictureMode.get();\n        if (gameLatency(f) && Boolean.TRUE.equals(gameOn.get())) return NOTE_GAME;\n'),
     ("picture settings: every AI scene refuses", S + "PictureSettingsRule.java",
      "if (mode == null || mode != MODE_AI && mode != MODE_PERFORMANCE) return null;",
      "if (mode == null || (mode < MODE_AI || mode > 17) && mode != MODE_PERFORMANCE) return null;"),
@@ -417,8 +442,6 @@ MUTANTS = [
     ("picture settings: the rule refuses every row", S + "PictureSettingsRule.java", "        if (page == null) return null;\n",
      "        if (page == null) page = layout.pages[0];\n"),
     ("picture settings: a row note instead of the stock toast", S + "PictureSettingsRule.java", "Note.toast(why)", "Note.titled(why)"),
-    ("picture settings: kept reads read the mode with the game on", S + "PictureSettingsRule.java",
-     "            if (Boolean.TRUE.equals(game)) return new Reads(game, null, null);\n", ""),
     ("picture settings: kept reads read the content in every mode", S + "PictureSettingsRule.java",
      "            if (mode == null || mode != MODE_AI && mode != MODE_PERFORMANCE) return new Reads(game, mode, null);\n", ""),
     ("picture settings: kept reads drop the content", S + "PictureSettingsRule.java",
@@ -443,7 +466,7 @@ MUTANTS = [
      "            steppedAt.remove(f);                              // a refused step shows the device value at once\n", ""),
     ("locked row: drawn full", MC, "v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));", "v.setAlpha(1f);"),
     ("locked row: the closed look off the row loop", MC,
-     "            if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));\n", ""),
+     "        if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));\n", ""),
     ("locked row: the stock alpha changed", S + "LockedRow.java", "ALPHA = 110f / 255f;", "ALPHA = 0.8f;"),
     ("locked row: a closed row drawn full", S + "LockedRow.java", "return locked ? ALPHA : 1f;", "return 1f;"),
     ("locked row: nothing read closes", S + "LockedRow.java", "dev != null && f != null && now != null && ", "dev != null && f != null && "),
@@ -458,8 +481,9 @@ MUTANTS = [
      "            FeatureId.PICTURE_GAMUT, FeatureId.PICTURE_COLOR_OPT, FeatureId.PICTURE_GAMMA,"),
     ("picture settings: reset not on image_mode_setting", S + "PictureSettingsRule.java",
      "FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_RESET,", "FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES,"),
-    ("picture settings: reset all on image_mode_setting", S + "PictureSettingsRule.java",
-     "            FeatureId.PICTURE_AUTO_SWITCH));", "            FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_RESET_ALL));"),
+    ('picture settings: reset all on image_mode_setting', 'src/org/lumen/menu/PictureSettingsRule.java',
+     '            FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_CUSTOM_BASE, FeatureId.PICTURE_CUSTOM_DELETE));',
+     '            FeatureId.PICTURE_AUTO_SWITCH, FeatureId.PICTURE_CUSTOM_BASE, FeatureId.PICTURE_CUSTOM_DELETE, FeatureId.PICTURE_RESET_ALL));'),
     ("picture settings: the basic page with the professional texts", S + "PictureSettingsRule.java",
      "new Page(NOTE_AI_BASIC, NOTE_PERFORMANCE_BASIC, FeatureId.PICTURE_AUTO_SWITCH,", "new Page(NOTE_AI, NOTE_PERFORMANCE, FeatureId.PICTURE_AUTO_SWITCH,"),
     ("picture settings: the basic AI and Performance texts swapped", S + "PictureSettingsRule.java",
@@ -529,8 +553,9 @@ MUTANTS = [
     ("a greyed page row stays usable", MC, "boolean opens = f.kind == FeatureKind.SCREEN || f.kind == FeatureKind.PAGE;",
      "boolean opens = f.kind == FeatureKind.SCREEN;"),
     # ---- keystone-order: every model's Keystone page in its stock order (sections, MenuSpec.LINE, stock_order.py)
-    ("keystone order: the profile's order ignored", S + "MenuSpec.java",
-     "Object[][] order = p.order((String) s[0]);", "Object[][] order = null;"),
+    ("keystone order: the profile's order ignored", 'src/org/lumen/menu/MenuSpec.java',
+     '        Map<FeatureId, String> out = new java.util.HashMap<>();\n        for (Object[] s : SECTIONS) {\n            Object[][] order = p.order((String) s[0]);',
+     '        Map<FeatureId, String> out = new java.util.HashMap<>();\n        for (Object[] s : SECTIONS) {\n            Object[][] order = null;'),
     ("keystone order: a line opens the popup", S + "MenuSpec.java",
      "groups.isEmpty() && LINE.equals(g[0]) ? null : (String) g[0]", "(String) g[0]"),
     ("keystone order: a line on top of a page", S + "MenuSpec.java",
@@ -569,25 +594,30 @@ MUTANTS = [
      '{"rows": ["keystone.realtime", "keystone.ak_now", "keystone.fit_now"]}', '{"rows": ["keystone.ak_now", "keystone.realtime", "keystone.fit_now"]}'),
     ("keystone order: HB zoom under the Smart title", "../../../devices/goat_elegant/menu.json",
      '{"header": "size_position", "rows": ["zoom"', '{"header": "smart", "rows": ["zoom"'),
-    ("keystone order: X50 lens memory without the Smart title", "../../../devices/g0111/menu.json",
-     '{"header": "smart", "rows": ["zoom.memory"]}', '{"rows": ["zoom.memory"]}'),
-    ("keystone order: RS30 rotation before zoom", "../../../devices/g0155/menu.json",
-     '["zoom", "zoom.move", "keystone.rotation"]', '["keystone.rotation", "zoom", "zoom.move"]'),
+    ('keystone order: X50 lens memory without the Smart title', '../../../devices/g0111/menu.json',
+     '{"header": "smart", "rows": ["keystone.wall_color", "zoom.memory"]}',
+     '{"rows": ["keystone.wall_color", "zoom.memory"]}'),
+    ('keystone order: RS30 rotation before zoom', '../../../devices/g0155/menu.json',
+     '["zoom", "zoom.move", "keystone.rotation", "keystone.angle_h", "keystone.angle_v"]',
+     '["keystone.rotation", "zoom", "zoom.move", "keystone.angle_h", "keystone.angle_v"]'),
     ("keystone order: Play 6 without its line", "../../../devices/dragon_healthy/menu.json", '{"header": "line", ', "{"),
     ("keystone order: the stock map moves More to Smart", "test/stock_order.py",
      '"brightness_more_title": (HEADER, "more"),', '"brightness_more_title": (HEADER, "smart"),'),
-    ("keystone order: Fit to screen now anywhere", "test/stock_order.py",
-     'LUMEN_ONLY = [("keystone.fit_now", "keystone.ak_now"), ', "LUMEN_ONLY = ["),
+    ('keystone order: Fit to screen now anywhere', 'test/stock_order.py',
+     'LUMEN_ONLY = [("keystone.fit_now", "keystone.ak_now")]',
+     'LUMEN_ONLY = []'),
     ("keystone order: a typo in an order row passes the build check", "tools/menu_ids.py",
      "            else:\n                out.append(r)\n", "            else:\n                pass\n"),
     # ---- x50-picture-stock: the X50 family Picture page in its stock order, its picture settings page, the light
     # level on it (the card slider's twin), the two-way dynamic black level tuning slider, stock_picture.py
-    ("picture stock: the light level not allowed on the Picture page", S + "MenuSpec.java",
-     "ALSO_IN = {{PICTURE, FeatureId.LAMP}};", "ALSO_IN = {};"),
+    ('picture stock: the light level not allowed on the Picture page', 'src/org/lumen/menu/MenuSpec.java',
+     'ALSO_IN = {{PICTURE, FeatureId.LAMP}, {KEYSTONE, FeatureId.FOCUS_AF_NOW},',
+     'ALSO_IN = {{KEYSTONE, FeatureId.FOCUS_AF_NOW},'),
     ("picture stock: the light level allowed in every section", S + "MenuSpec.java",
      "if (a[0].equals(section) && a[1] == f) return true;", "if (a[1] == f) return true;"),
-    ("picture stock: another row also on the Picture page", S + "MenuSpec.java",
-     "ALSO_IN = {{PICTURE, FeatureId.LAMP}};", "ALSO_IN = {{PICTURE, FeatureId.LAMP}, {PICTURE, FeatureId.EYE}};"),
+    ('picture stock: another row also on the Picture page', 'src/org/lumen/menu/MenuSpec.java',
+     'ALSO_IN = {{PICTURE, FeatureId.LAMP}, {KEYSTONE, FeatureId.FOCUS_AF_NOW},',
+     'ALSO_IN = {{PICTURE, FeatureId.LAMP}, {PICTURE, FeatureId.EYE}, {KEYSTONE, FeatureId.FOCUS_AF_NOW},'),
     ("picture stock: the page keeps no groups", S + "MenuProfile.java",
      'pageOrders.put(f, readGroups(sec, at + "." + f, pm.get("groups"), named));',
      'readGroups(sec, at + "." + f, pm.get("groups"), named);'),
@@ -673,6 +703,10 @@ def main():
             # the focus page's remote table (FocusGuideTest)
             os.makedirs(os.path.join(root, "devices", "_remotes"))
             shutil.copy(os.path.join(G, "devices", "_remotes", "focus_guide.tsv"), os.path.join(root, "devices", "_remotes"))
+            # the hotspot permission check reads every projector app's manifest
+            for app in ("ProjectorBase", "HbProjector", "Play6Projector", "X50Projector"):
+                os.makedirs(os.path.join(root, "apps", app), exist_ok=True)
+                shutil.copy(os.path.join(G, "apps", app, "AndroidManifest.xml"), os.path.join(root, "apps", app))
             # the adapters the profiles name and their *Rows sections (read by the contract test)
             for c in os.listdir(os.path.join(root, "devices")):
                 if not os.path.isfile(os.path.join(root, "devices", c, "menu.json")):

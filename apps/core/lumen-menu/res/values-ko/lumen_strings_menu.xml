@@ -16,7 +16,7 @@
     <string name="lumen_m_kst_more">기타</string>
     <string name="lumen_m_kst_size_position">크기와 위치</string>
     <string name="lumen_m_kst_smart">스마트</string>
-    <string name="lumen_m_kst_restore">원래 화면으로 되돌리기</string>
+    <string name="lumen_m_kst_restore">화면을 기본값으로 복원</string>
     <string name="lumen_m_launcher_classic">Android TV(클래식)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
     <string name="lumen_m_launcher_row">홈 화면</string>

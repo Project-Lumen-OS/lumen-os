@@ -148,6 +148,61 @@ final class QpdPanel extends PagedPanel {
 
     boolean isBar() { return bar; }
 
+    /** The menu sits on the right side (MenuLook, read when the view is built). */
+    private boolean right;
+
+    /** A child placed {@code design} px in from the menu's side: the left edge, or the right one (MenuLook). */
+    private void side(FrameLayout.LayoutParams lp, float design) {
+        lp.gravity = Gravity.TOP | (right ? Gravity.RIGHT : Gravity.LEFT);
+        if (right) lp.rightMargin = px(design);
+        else lp.leftMargin = px(design);
+    }
+
+    /** True when the menu sits on the right side (MenuLook): the panes, slides and hint card are mirrored. */
+    boolean isRight() { return right; }
+
+    /** {@code d} px towards the screen edge the menu sits on (a slide in or out starts there). */
+    private float edge(float d) { return right ? d : -d; }
+
+    /** A page level change slides in from the deeper side: right of the menu, left of a mirrored one. */
+    private int deeper(int direction) { return right ? -direction : direction; }
+
+    /**
+     * The compact menu (MenuLook): the page is laid out larger by 1 / scale and drawn at the scale from the menu's side,
+     * so the same rows take less room and more of them fit. Keys and focus are untouched.
+     */
+    static final class LookFrame extends FrameLayout {
+        private final View inner;
+        private final float scale;
+        private final boolean right;
+
+        LookFrame(Context c, View inner, float scale, boolean right) {
+            super(c);
+            this.inner = inner;
+            this.scale = scale;
+            this.right = right;
+            setClipChildren(false);
+            addView(inner);
+        }
+
+        @Override protected void onMeasure(int wSpec, int hSpec) {
+            int w = MeasureSpec.getSize(wSpec), h = MeasureSpec.getSize(hSpec);
+            inner.measure(MeasureSpec.makeMeasureSpec(Math.round(w / scale), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(Math.round(h / scale), MeasureSpec.EXACTLY));
+            setMeasuredDimension(w, h);
+        }
+
+        @Override protected void onLayout(boolean changed, int l, int t, int r, int b) {
+            int iw = inner.getMeasuredWidth(), ih = inner.getMeasuredHeight();
+            int left = right ? (r - l) - iw : 0;
+            inner.layout(left, 0, left + iw, ih);
+            inner.setPivotX(right ? iw : 0);
+            inner.setPivotY(0);
+            inner.setScaleX(scale);
+            inner.setScaleY(scale);
+        }
+    }
+
     /** True while All settings is shown (or about to be). */
     boolean isAllMode() { return cats != null && stack.size() > 1; }
 
@@ -214,7 +269,8 @@ final class QpdPanel extends PagedPanel {
     @Override
     protected WindowManager.LayoutParams onCreateLayoutParams(Context c) {
         int w = Math.min(c.getResources().getDisplayMetrics().widthPixels, Theme.px(c, QpdLayout.WINDOW_W));
-        return OverlayHost.params(true, w, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.LEFT | Gravity.TOP);
+        int side = MenuLookPrefs.right(c) ? Gravity.RIGHT : Gravity.LEFT;     // the user's side (MenuLook)
+        return OverlayHost.params(true, w, ViewGroup.LayoutParams.MATCH_PARENT, side | Gravity.TOP);
     }
 
     // ------------------------------------------------------------------ All settings
@@ -274,6 +330,7 @@ final class QpdPanel extends PagedPanel {
     @Override
     protected View onCreateView(Context c) {
         ctx = c;
+        right = MenuLookPrefs.right(c);
         root = new FrameLayout(c);
         root.setClipChildren(false);
         root.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
@@ -284,7 +341,8 @@ final class QpdPanel extends PagedPanel {
             ShapeDrawable sd = new ShapeDrawable(new RectShape());
             sd.setShaderFactory(new ShapeDrawable.ShaderFactory() {
                 @Override public Shader resize(int w, int h) {
-                    return new LinearGradient(0, 0, scrimW, 0, new int[]{0x80000000, 0x2E000000, 0x00000000},
+                    float from = right ? w : 0, to = right ? w - scrimW : scrimW;   // darker towards the menu's side
+                    return new LinearGradient(from, 0, to, 0, new int[]{0x80000000, 0x2E000000, 0x00000000},
                             new float[]{0f, 0.667f, 1f}, Shader.TileMode.CLAMP);
                 }
             });
@@ -297,14 +355,14 @@ final class QpdPanel extends PagedPanel {
         card.setTranslationX(0f);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = px(QpdLayout.CARD_X);
+        side(lp, QpdLayout.CARD_X);
         lp.topMargin = px(QpdLayout.CARD_Y);
         root.addView(card, lp);
         popup = new Popup(c);
         popup.setVisibility(View.GONE);
         FrameLayout.LayoutParams pp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        pp.leftMargin = px(QpdLayout.SIDE_X);
+        side(pp, QpdLayout.SIDE_X);
         pp.topMargin = px(QpdLayout.MARGIN);
         root.addView(popup, pp);
         if (!bar) {
@@ -312,22 +370,23 @@ final class QpdPanel extends PagedPanel {
             all.setVisibility(View.GONE);
             FrameLayout.LayoutParams ap = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
-            ap.leftMargin = px(QpdLayout.ALL_X);
+            side(ap, QpdLayout.ALL_X);
             ap.topMargin = px(QpdLayout.ALL_Y);
             ap.bottomMargin = px(QpdLayout.ALL_Y);
             root.addView(all, ap);
         }
         root.getViewTreeObserver().addOnGlobalFocusChangeListener(focusWatch);
         render(0);
-        return root;
+        float scale = MenuLookPrefs.scale(c);
+        return scale < 1f ? new LookFrame(c, root, scale, right) : root;
     }
 
     @Override
     protected void onShown(View v) {
         if (!isAllMode()) {
-            card.setPivotX(0f);
+            card.setPivotX(right ? card.getWidth() : 0f);
             card.setAlpha(0f);
-            card.setTranslationX(-Theme.pxf(ctx, 30));
+            card.setTranslationX(edge(Theme.pxf(ctx, 30)));
             card.animate().alpha(1f).translationX(0f).setDuration(OPEN_MS).setInterpolator(QpdStyle.ease()).start();
         }
         if (root.getBackground() != null) {
@@ -344,7 +403,7 @@ final class QpdPanel extends PagedPanel {
     @Override
     protected void animateOut(View v, Runnable end) {
         v.animate().cancel();
-        v.animate().alpha(0f).translationX(-Theme.pxf(v.getContext(), 30)).setDuration(CLOSE_MS)
+        v.animate().alpha(0f).translationX(edge(Theme.pxf(v.getContext(), 30))).setDuration(CLOSE_MS)
                 .setInterpolator(new android.view.animation.PathInterpolator(0.4f, 0f, 1f, 1f))
                 .withLayer().withEndAction(end).start();
     }
@@ -379,16 +438,17 @@ final class QpdPanel extends PagedPanel {
         if (dir < 0) return false;
         if (bar) return dir == QpdLayout.UP || dir == QpdLayout.DOWN;   // LEFT / RIGHT go to the slider
         boolean down = ev.getAction() == KeyEvent.ACTION_DOWN;
+        int pane = QpdLayout.toward(dir, right);                   // between the panes a mirrored menu swaps LEFT / RIGHT
         if (stack.peek() instanceof SheetPage) {                   // UP / DOWN: its rows, LEFT: back
-            if (dir == QpdLayout.LEFT && down && ev.getRepeatCount() == 0) pop();
+            if (pane == QpdLayout.LEFT && down && ev.getRepeatCount() == 0) pop();
             return dir != QpdLayout.UP && dir != QpdLayout.DOWN;
         }
-        if (isAllMode() && all != null) return allKey(dir, down, ev.getRepeatCount());
+        if (isAllMode() && all != null) return allKey(pane, down, ev.getRepeatCount());
         if (stack.size() > 1) {
             View f = popup.findFocus();
             if (dir == QpdLayout.LEFT || dir == QpdLayout.RIGHT) {
                 if (stepsItself(f)) return false;
-                if (dir == QpdLayout.LEFT && down && ev.getRepeatCount() == 0) pop();
+                if (pane == QpdLayout.LEFT && down && ev.getRepeatCount() == 0) pop();
                 return true;
             }
             return false;                                      // UP / DOWN: rows of the popup
@@ -402,7 +462,7 @@ final class QpdPanel extends PagedPanel {
         String key = rows.get(cell[0]).get(cell[1]);
         if (card.isSlider(key) && (dir == QpdLayout.LEFT || dir == QpdLayout.RIGHT)) return false;
         if (!down) return true;
-        int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider);
+        int[] to = QpdLayout.move(rows, cell[0], cell[1], dir, host::hasPopup, card::isSlider, right);
         if (to == null) return true;
         if (to[2] == QpdLayout.OPEN) {
             if (ev.getRepeatCount() == 0) host.openPopup(key);
@@ -473,11 +533,11 @@ final class QpdPanel extends PagedPanel {
         if (v.getParent() instanceof ViewGroup && v.getParent() != root) ((ViewGroup) v.getParent()).removeView(v);
         if (v.getParent() == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(px(QpdLayout.SIDE_W), px(QpdLayout.SIDE_H));
-            lp.leftMargin = px(QpdLayout.SIDE_X);
+            side(lp, QpdLayout.SIDE_X);
             lp.topMargin = px(QpdLayout.MARGIN);
             root.addView(v, lp);
             v.setAlpha(0f);
-            v.setTranslationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT));
+            v.setTranslationX(edge(Theme.pxf(ctx, QpdLayout.POP_SHIFT)));
             v.animate().alpha(1f).translationX(0f).setDuration(QpdLayout.POP_GROW_MS).setInterpolator(QpdStyle.ease()).start();
         }
         side = v;
@@ -575,7 +635,7 @@ final class QpdPanel extends PagedPanel {
         });
         if (!wasOpen) showPopup();
         else if (direction != 0) {
-            float dx = Theme.pxf(ctx, 40) * direction;
+            float dx = Theme.pxf(ctx, 40) * deeper(direction);
             popup.body.setTranslationX(dx);
             popup.body.setAlpha(0f);
             popup.body.animate().translationX(0f).alpha(1f).setDuration(Theme.PAGE_SWITCH_MS)
@@ -599,12 +659,12 @@ final class QpdPanel extends PagedPanel {
             if (v.getParent() instanceof ViewGroup) ((ViewGroup) v.getParent()).removeView(v);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.leftMargin = px(isAllMode() ? QpdLayout.ALL_X : QpdLayout.SIDE_X);
+            side(lp, isAllMode() ? QpdLayout.ALL_X : QpdLayout.SIDE_X);
             lp.topMargin = px(QpdLayout.MARGIN);
             root.addView(v, lp);
             sheet = v;
             v.setAlpha(0f);
-            v.setTranslationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT) * (direction < 0 ? -1 : 1));
+            v.setTranslationX(edge(Theme.pxf(ctx, QpdLayout.POP_SHIFT)) * (direction < 0 ? -1 : 1));
             v.animate().alpha(1f).translationX(0f).setDuration(QpdLayout.POP_GROW_MS).setInterpolator(QpdStyle.ease()).start();
         }
         safeShown(top);
@@ -641,20 +701,20 @@ final class QpdPanel extends PagedPanel {
 
     private void showAll() {
         card.animate().cancel();
-        card.animate().alpha(0f).translationX(-Theme.pxf(ctx, 30)).setDuration(QpdLayout.POP_FADE_MS)
+        card.animate().alpha(0f).translationX(edge(Theme.pxf(ctx, 30))).setDuration(QpdLayout.POP_FADE_MS)
                 .setInterpolator(QpdStyle.ease()).withEndAction(() -> {
                     if (isAllMode()) card.setVisibility(View.INVISIBLE);
                 }).start();
         all.animate().cancel();
         all.setVisibility(View.VISIBLE);
         all.setAlpha(0f);
-        all.setTranslationX(-Theme.pxf(ctx, 30));
+        all.setTranslationX(edge(Theme.pxf(ctx, 30)));
         all.animate().alpha(1f).translationX(0f).setDuration(OPEN_MS).setInterpolator(QpdStyle.ease()).start();
     }
 
     private void hideAll() {
         all.animate().cancel();
-        all.animate().alpha(0f).translationX(-Theme.pxf(ctx, 30)).setDuration(QpdLayout.POP_FADE_MS)
+        all.animate().alpha(0f).translationX(edge(Theme.pxf(ctx, 30))).setDuration(QpdLayout.POP_FADE_MS)
                 .setInterpolator(QpdStyle.ease()).withEndAction(() -> {
                     if (!isAllMode()) {
                         all.setVisibility(View.GONE);
@@ -688,9 +748,9 @@ final class QpdPanel extends PagedPanel {
             lp.topMargin = top;
             popup.setLayoutParams(lp);
         }
-        // grows out of its tile: pivot on the tile's left edge centre
+        // grows out of its tile: pivot on the edge next to the card, at the tile's centre
         float tileMid = anchor == null ? 0f : px(QpdLayout.CARD_Y) + anchor.getTop() + anchor.getHeight() / 2f;
-        popup.setPivotX(0f);
+        popup.setPivotX(right ? px(QpdLayout.SIDE_W) : 0f);
         popup.setPivotY(QpdLayout.popupPivotY(tileMid, top, h, anchor != null));
     }
 
@@ -698,7 +758,7 @@ final class QpdPanel extends PagedPanel {
         popup.animate().cancel();
         popup.setVisibility(View.VISIBLE);
         popup.setAlpha(0f);
-        popup.setTranslationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT));
+        popup.setTranslationX(edge(Theme.pxf(ctx, QpdLayout.POP_SHIFT)));
         popup.setScaleX(QpdLayout.POP_SCALE_FROM);
         popup.setScaleY(QpdLayout.POP_SCALE_FROM);
         popup.animate().translationX(0f).scaleX(1f).scaleY(1f).setDuration(QpdLayout.POP_GROW_MS)
@@ -715,7 +775,7 @@ final class QpdPanel extends PagedPanel {
         clearAccent();
         if (popup.getVisibility() != View.VISIBLE) return;
         popup.animate().cancel();
-        popup.animate().alpha(0f).translationX(-Theme.pxf(ctx, QpdLayout.POP_SHIFT)).setDuration(CLOSE_MS)
+        popup.animate().alpha(0f).translationX(edge(Theme.pxf(ctx, QpdLayout.POP_SHIFT))).setDuration(CLOSE_MS)
                 .withEndAction(() -> {
                     if (stack.size() <= 1 || isAllMode()) {
                         popup.setVisibility(View.GONE);
@@ -725,8 +785,8 @@ final class QpdPanel extends PagedPanel {
     }
 
     /** Rows of a new popup or list come in one after the other (prototype rowin: 260 ms, 22 ms apart, 8 px). */
-    static void stagger(LinearLayout list, Context c) {
-        float dx = -Theme.pxf(c, QpdLayout.ROW_SHIFT);
+    static void stagger(LinearLayout list, Context c, boolean right) {
+        float dx = (right ? 1 : -1) * Theme.pxf(c, QpdLayout.ROW_SHIFT);
         int k = 0;
         for (int i = 0; i < list.getChildCount(); i++) {
             View r = list.getChildAt(i);
@@ -895,7 +955,7 @@ final class QpdPanel extends PagedPanel {
 
         View target(int idx) { return QpdPanel.target(list, idx); }
 
-        void staggerRows() { stagger(list, getContext()); }
+        void staggerRows() { stagger(list, getContext(), right); }
 
         @Override
         protected void onMeasure(int wSpec, int hSpec) {

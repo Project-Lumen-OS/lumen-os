@@ -44,7 +44,7 @@ ok("script: the node is otherwise only tested and read",
 WRITE_CMDS = re.compile(r"\b(fixedeq|hdmiloglevel|hpddelay|rst|ptg|set_edid|output=|riuinfo|WordW|dd)\b")
 ok("script: no receiver write command outside comments", not any(WRITE_CMDS.search(l) for l in code))
 ok("script: the floor between dumps is 0.9 s", "MIN_GAP_CS=90" in code)
-ok("script: Z9X and Z9X HB only", 'MODELS=" G0082 G0130 G0148 "' in code)
+ok("script: Z9X, Z9X HB and the X50 family only", 'MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "' in code)
 ok("script: token checked before use", code.index('case "$req" in \'\'|*[!0-9a-z-]*) exit 0 ;; esac') < 
    min(i for i, l in enumerate(code) if "answer()" in l))
 rc = read(os.path.join(MOD, "image/lumen_hdmirx.rc"))
@@ -69,15 +69,20 @@ for tsv in glob.glob(os.path.join(G, "devices/*/signal.tsv")):
     c = tsv.split(os.sep)[-2]
     has = re.search(r"^hdmi_format\t", read(tsv), re.M) is not None
     conf = os.path.join(G, "devices", c, "build.conf")
-    steps = os.path.join(G, "devices", c, "image/steps.tsv")
+    cf = read(conf) if os.path.exists(conf) else ""
+    # the steps file the build.conf names (the X50 family shares devices/g0111/image/steps.tsv)
+    m = re.search(r"^steps=(\S+)", cf, re.M)
+    steps = os.path.join(G, m.group(1) if m else "devices/%s/image/steps.tsv" % c)
     st = read(steps) if os.path.exists(steps) else ""
-    # the tar recipe (Z9X: tar_add PATH FILE MODE) or the tree recipe (HB: install MODE FILE {sys}/PATH)
-    ships = os.path.exists(conf) and "apps/core/lumen-signal/image/lumen_hdmirx.rc" in read(conf) \
-        and "apps/core/lumen-signal/image/lumen_hdmirx.sh" in read(conf) \
+    # the tar recipe (Z9X: tar_add PATH FILE MODE), the tree recipe (HB: install MODE FILE {sys}/PATH) or the place
+    # recipe (X50 family: place FILE {sys}/PATH MODE)
+    ships = "apps/core/lumen-signal/image/lumen_hdmirx.rc" in cf and "apps/core/lumen-signal/image/lumen_hdmirx.sh" in cf \
         and ("system/etc/init/lumen_hdmirx.rc\tlumen_hdmirx.rc" in st
-             or "\tinstall\t0644\tlumen_hdmirx.rc\t{sys}/etc/init/lumen_hdmirx.rc" in st) \
+             or "\tinstall\t0644\tlumen_hdmirx.rc\t{sys}/etc/init/lumen_hdmirx.rc" in st
+             or "\tplace\tlumen_hdmirx.rc\t{sys}/etc/init/lumen_hdmirx.rc\t0644\t" in st) \
         and ("system/etc/lumen/lumen_hdmirx.sh\tlumen_hdmirx.sh\t755" in st
-             or "\tinstall\t0755\tlumen_hdmirx.sh\t{sys}/etc/lumen/lumen_hdmirx.sh" in st)
+             or "\tinstall\t0755\tlumen_hdmirx.sh\t{sys}/etc/lumen/lumen_hdmirx.sh" in st
+             or "\tplace\tlumen_hdmirx.sh\t{sys}/etc/lumen/lumen_hdmirx.sh\t0755\t" in st)
     ok("%s: hdmi_format %s and the image %s the bridge" % (c, "listed" if has else "not listed",
                                                            "ships" if ships else "does not ship"), has == ships)
     if has:

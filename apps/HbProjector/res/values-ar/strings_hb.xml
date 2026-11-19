@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">يجري تثبيت تحديث: يعود السكون العميق بعد انتهائه.</string>
     <string name="hb_str_blocked_update_check">يجري فحص النظام المحدَّث بعد التشغيل: يعود السكون العميق خلال بضع دقائق.</string>
     <string name="hb_str_blocked_off">السكون العميق متوقف على جهاز العرض هذا (إعداد خدمة).</string>
+    <string name="pro_cs_hdr_hb">مساحة الألوان غير مدعومة في محتوى HDR</string>
 </resources>

@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">Bir güncelleme yükleniyor: derin uyku bittiğinde geri gelir.</string>
     <string name="hb_str_blocked_update_check">Güncellenen sistem başlatmadan sonra denetleniyor: derin uyku birkaç dakika içinde geri gelir.</string>
     <string name="hb_str_blocked_off">Bu projektörde derin uyku kapalı (servis ayarı).</string>
+    <string name="pro_cs_hdr_hb">Renk alanı HDR içerikte desteklenmiyor</string>
 </resources>

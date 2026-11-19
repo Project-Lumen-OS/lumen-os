@@ -10,6 +10,7 @@ public enum GmpfModel {
     X50_ULTRA("g0111", "G0111", GmpfHash.X50_RULE, "hd_server2"),
     X50_ULTRA_MAX("g0100", "G0100", GmpfHash.X50_RULE, "hd_server2"),
     RS30_ULTRA_MAX("g0155", "G0155", GmpfHash.RS30_RULE, ""),
+    TITAN_NOIR("h0061", "H0061", GmpfHash.TITAN_RULE, "hd_server2"),
     TITAN_NOIR_PRO("h0062", "H0062", GmpfHash.TITAN_RULE, "hd_server2"),
     TITAN_NOIR_MAX("h0063", "H0063", GmpfHash.TITAN_RULE, "hd_server2");
 
@@ -27,7 +28,8 @@ public enum GmpfModel {
      * v1.1.42 dump has the switch on (Env HumanDetect_OnOff=1) with nativeui running and no hd_server2 at all.
      * TITAN Noir Pro and Max: hd_server2, their xgimiconfig H0062 / H0063 xlab/HumanDetect.ini are the G0111 / G0100
      * files but for the folder name in one path (SOURCE_MODE 5, every *DETECT_START 0) in the overseas V1.2.99 and
-     * V1.2.54 OTAs (one build for both models, the model chosen at boot).
+     * V1.2.54 OTAs (one build for every TITAN Noir, the model chosen at boot). TITAN Noir H0061: its file is the H0062
+     * one but for the folder name, so hd_server2.
      */
     public final String detector;
 

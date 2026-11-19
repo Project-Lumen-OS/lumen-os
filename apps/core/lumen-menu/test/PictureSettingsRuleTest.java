@@ -42,9 +42,19 @@ public final class PictureSettingsRuleTest {
                 PERF_B = PictureSettingsRule.NOTE_PERFORMANCE_BASIC;
         // the stock order: game, then AI (exactly 10), then Performance (5); AI / Performance not with Dolby Vision
         eq(null, why(false, 1, 0), "standard SDR opens");
-        eq(G, why(true, 1, 0), "game mode on refuses");
-        eq(G, why(true, 10, 0), "game before AI");
-        eq(G, why(true, 5, 2), "game even with Dolby Vision");
+        // TITAN testers 2026-11-19: in game mode only the rows that add delay stay closed (stock closes the whole page)
+        eq(null, why(true, 1, 0), "game mode on: brightness opens");
+        eq(AI, why(true, 10, 0), "game mode on in AI: the AI lock");
+        eq(null, why(true, 5, 2), "game mode on in Performance with Dolby Vision: opens");
+        FeatureId memc = FeatureId.PICTURE_MEMC;
+        eq(G, PictureSettingsRule.why(ONE, memc, true, 1, 0), "game mode on: motion compensation refused");
+        eq(G, PictureSettingsRule.why(ONE, memc, true, 10, 0), "game before AI for a row that adds delay");
+        eq(G, PictureSettingsRule.why(ONE, memc, true, 5, 2), "game even with Dolby Vision for a row that adds delay");
+        for (FeatureId f : FeatureId.values()) {
+            boolean slow = f == memc || f == FeatureId.PICTURE_NOISE || f == FeatureId.PICTURE_SUPER_RES
+                    || f == FeatureId.PICTURE_ULTRA120 || f.parent == memc;
+            check(PictureSettingsRule.gameLatency(f) == slow, f + (slow ? " adds delay" : " adds no delay"));
+        }
         eq(AI, why(false, 10, 0), "AI 10 refuses");
         eq(AI, why(null, 10, 0), "AI 10 with the game read missing");
         eq(AI, why(false, 10, null), "AI 10 with the content read missing");
@@ -102,13 +112,16 @@ public final class PictureSettingsRuleTest {
                 FeatureId.PICTURE_ULTRA120, FeatureId.PICTURE_WB2_RED_GAIN, FeatureId.PICTURE_GAMUT, FeatureId.PICTURE_GAMMA,
                 FeatureId.PICTURE_NOISE, FeatureId.PICTURE_DYNAMIC_BLACK, FeatureId.PICTURE_CC_HUE};
         // the Z9X 1.0.10 PanelRules.basicOrPro cases (test/rules PanelRulesTest), the same decisions with the stock texts
-        Object[][] pins = {{false, 1, 0, null, null}, {true, 1, 0, G, G}, {true, 10, 0, G, G}, {false, 10, 0, AI_B, AI},
-                {false, 16, 0, null, null}, {false, 10, 2, null, null}, {false, 5, 0, PERF_B, PERF}, {false, 5, 2, null, null},
-                {null, 1, 0, null, null}, {false, null, 0, null, null}};
+        // (game mode on: the rows that add delay take the game text, the others decide as with the game off)
+        Object[][] pins = {{false, 1, 0, null, null}, {true, 1, 0, G, G, null, null}, {true, 10, 0, G, G, AI_B, AI},
+                {false, 10, 0, AI_B, AI}, {false, 16, 0, null, null}, {false, 10, 2, null, null}, {false, 5, 0, PERF_B, PERF},
+                {false, 5, 2, null, null}, {null, 1, 0, null, null}, {false, null, 0, null, null}};
         for (Object[] p : pins) {
             String what = " game " + p[0] + " mode " + p[1] + " content " + p[2];
-            for (FeatureId f : basic) eq(p[3], note(Z9X, f, (Boolean) p[0], (Integer) p[1], (Integer) p[2]), f + what);
-            for (FeatureId f : pro) eq(p[4], note(Z9X, f, (Boolean) p[0], (Integer) p[1], (Integer) p[2]), f + what);
+            for (FeatureId f : basic) eq(p.length > 5 && !PictureSettingsRule.gameLatency(f) ? p[5] : p[3],
+                    note(Z9X, f, (Boolean) p[0], (Integer) p[1], (Integer) p[2]), f + what);
+            for (FeatureId f : pro) eq(p.length > 5 && !PictureSettingsRule.gameLatency(f) ? p[6] : p[4],
+                    note(Z9X, f, (Boolean) p[0], (Integer) p[1], (Integer) p[2]), f + what);
         }
         check(!PictureSettingsRule.onPage(Z9X, FeatureId.PICTURE_HDR), "the Z9X tree has no HDR enhancement page");
 
@@ -130,12 +143,14 @@ public final class PictureSettingsRuleTest {
 
         // a kept read (an adapter that checks the press before anything moves from its last state read): read as stock
         // reads, the game state first, the picture mode only with the game off, the content only in AI / Performance
+        // (the picture mode is read with the game on too: the rows without delay open in game mode)
+        String[][] kept = {{"game", "mode", "hdr"}, {"game", "mode"}, {"game", "mode", "hdr"}, {"game", "mode", "hdr"}};
         for (int i = 0; i < cases.length; i++) {
             int[] c = cases[i];
             log.clear();
             PictureSettingsRule.Reads r = PictureSettingsRule.Reads.read(() -> { log.add("game"); return c[0] == 1; },
                     () -> { log.add("mode"); return c[1]; }, () -> { log.add("hdr"); return c[2]; });
-            eq(String.join(",", reads[i]), String.join(",", log), "kept reads of game " + c[0] + " mode " + c[1]);
+            eq(String.join(",", kept[i]), String.join(",", log), "kept reads of game " + c[0] + " mode " + c[1]);
             String want = PictureSettingsRule.why(ONE, FeatureId.PICTURE_COLOR_TEMP, c[0] == 1, c[1], c[2]);
             ProjectorFeatures.Note k = PictureSettingsRule.blocked(ONE, FeatureId.PICTURE_COLOR_TEMP, r);
             eq(want, k == null ? null : k.res, "kept reads decide as the fresh ones, game " + c[0] + " mode " + c[1]);
@@ -213,7 +228,7 @@ public final class PictureSettingsRuleTest {
                 "picture.aspect", "picture.reset_all"));
         java.util.Set<String> z9xBasic = new java.util.HashSet<>(java.util.Arrays.asList("picture.pq", "picture.color_temp",
                 "picture.memc", "picture.reset", "picture.auto_switch"));
-        String[][] models = {{"g0111", "x50"}, {"g0100", "x50"}, {"g0155", "x50"}, {"h0062", "x50"}, {"h0063", "x50"},
+        String[][] models = {{"g0111", "x50"}, {"g0100", "x50"}, {"g0155", "x50"}, {"h0061", "x50"}, {"h0062", "x50"}, {"h0063", "x50"},
                 {"goat_elegant", "hb"}, {"horse_popular", "z9x"}};
         Pattern key = Pattern.compile("\"((?:picture|sound|lamp|boost|game)[a-z0-9_.]*)\"\\s*:\\s*\\{");
         for (String[] m : models) {
@@ -288,8 +303,9 @@ public final class PictureSettingsRuleTest {
                         String at = model + " " + id + " in Colour accuracy, hdr type " + hdr;
                         eq(null, note(l, id, false, COLOR_ACCURACY, hdr), at + ", game off");
                         eq(null, note(l, id, null, COLOR_ACCURACY, hdr), at + ", game not read");
-                        eq(PictureSettingsRule.onPage(l, id) ? game : null, note(l, id, true, COLOR_ACCURACY, hdr),
-                                at + ", game mode on (stock image_mode_mutex_game_run)");
+                        eq(PictureSettingsRule.onPage(l, id) && PictureSettingsRule.gameLatency(id) ? game : null,
+                                note(l, id, true, COLOR_ACCURACY, hdr),
+                                at + ", game mode on (only the rows that add delay stay closed, TITAN testers 2026-11-19)");
                     }
                     PictureSettingsRule.Reads r = PictureSettingsRule.Reads.read(() -> false, () -> COLOR_ACCURACY,
                             () -> { throw new IllegalStateException("content read outside AI and Performance"); });

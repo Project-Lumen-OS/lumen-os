@@ -26,6 +26,7 @@ T_WIRE = "python3 -B tools/devices/devices.py check-wire"
 RES = "apps/core/lumen-updater/res/"
 T_WORDS = "python3 -B tools/i18n/test/ui_words_test.py"
 T_PARITY = "sh apps/core/lumen-updater/test/parity/run.sh"
+T_DL = "sh apps/core/lumen-updater/test/download.sh"
 # the parity run must turn red with the German consent text gone (only the "key still there" rule catches it):
 # green when it does, red when the rewritten-text rule lets a missing text through
 T_PARITY_GONE = ("cp " + RES + "values-de/strings.xml /tmp/lumen_mut_de.xml && "
@@ -111,6 +112,10 @@ MUTANTS = [
      [T_PARITY]),
     ("consent_args_back", RES + "values/strings.xml", "Your calibration and settings stay untouched.",
      "Your calibration and settings stay untouched (%1$s).", [T_CORE]),
+    # PACKAGE DOWNLOAD: the sha256 pass and the bad file (the download itself: apps/core/lumen-download/test/mutate.py)
+    ("dl_no_hash_retry", CORE + "PackageDownload.java", "static final int HASH_RETRIES = 1;",
+     "static final int HASH_RETRIES = 0;", [T_DL]),
+    ("dl_keep_bad_file", CORE + "PackageDownload.java", "            ParallelDownload.discard(dst);\n", "", [T_DL]),
 ]
 
 

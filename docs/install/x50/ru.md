@@ -12,6 +12,7 @@
 | X50 Ultra | G0111 | V1.2.64 или V1.2.54 |
 | X50 Ultra Max | G0100 | V1.2.64 или V1.2.54 |
 | RS30 Ultra Max | G0155 | V1.1.42 |
+| TITAN Noir | H0061 | V1.2.99 или V1.2.54 |
 | TITAN Noir Pro | H0062 | V1.2.99 или V1.2.54 |
 | TITAN Noir Max | H0063 | V1.2.99 или V1.2.54 |
 

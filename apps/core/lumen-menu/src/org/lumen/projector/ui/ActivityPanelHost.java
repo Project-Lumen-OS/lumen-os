@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import org.lumen.menu.KeyTools;
+import org.lumen.menu.Rehost;
 
 /**
  * The activity host of the shared menu (PanelHost): the same {@link Panel} views the overlay
@@ -60,6 +63,12 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
      */
     public interface Gate {
         boolean mayShow();
+
+        /**
+         * The package in front now (main thread, cheap), null when the device does not know it: then a menu whose window
+         * stops simply closes (lumen-menu Rehost).
+         */
+        default String front() { return null; }
     }
 
     private static ActivityPanelHost sInstance;
@@ -75,6 +84,20 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
     private Panel aside;
     /** Shown but not on screen yet: waits for PanelActivity to start. */
     private Panel pending;
+    /** The package in front when the shown panel opened (Gate.front), for Rehost. */
+    private String frontAtShow;
+    /** A panel whose window stopped while the same app stayed in front: it comes back after Rehost.WAIT_MS. */
+    private final Runnable rehost = () -> {
+        Panel p = pending;
+        if (p == null || !p.showing || usable()) return;
+        if (keepOnScreen() && allowed()) {
+            Log.i(TAG, p.getClass().getSimpleName() + " back over the restarted screen of " + frontAtShow);
+            if (!launch()) dropPending();
+        } else {
+            Log.i(TAG, "not back (screen off or another app in front): " + p.getClass().getSimpleName());
+            dropPending();
+        }
+    };
     private final Runnable autoHide = () -> {
         Panel p = current;
         if (p != null) {
@@ -126,6 +149,8 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         }
         if (current != null) dismiss(current, false);
         if (pending != null && pending != p) dropPending();
+        main.removeCallbacks(rehost);
+        frontAtShow = front();
         p.showSerial++;
         p.showing = true;
         if (usable()) {
@@ -245,12 +270,61 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         }
     }
 
-    /** PanelActivity.onStop: the menu leaves with its window (HOME, screen off, another app in front). */
+    /**
+     * PanelActivity.onStop: the menu leaves with its window (HOME, screen off, another app in front), except when the
+     * same app stays in front with the screen on (the TV input restarting its screen on a new HDMI signal): then the
+     * panel waits and comes back where it was (Rehost).
+     */
     void detach(PanelActivity a) {
         if (activity != a) return;
+        Panel p = current;
+        if (p != null && p.showing && p != aside && keepOnScreen()) {
+            current = null;
+            main.removeCallbacks(autoHide);
+            unmount(p);
+            pending = p;
+            activity = null;
+            frame = null;
+            if (!a.isFinishing()) a.finish();                    // the new window comes on top of the input screen
+            main.removeCallbacks(rehost);
+            main.postDelayed(rehost, Rehost.WAIT_MS);
+            return;
+        }
         if (current != null) dismiss(current, false);
         activity = null;
         frame = null;
+    }
+
+    /** Takes a kept panel's view out of the stopped window (the new window builds it again). */
+    private static void unmount(Panel p) {
+        try {
+            View root = p.root;
+            if (root != null && root.getParent() instanceof ViewGroup) ((ViewGroup) root.getParent()).removeView(root);
+        } catch (Throwable t) {
+            Log.w(TAG, "unmount: " + t);
+        }
+    }
+
+    /** The device's front package (Gate.front), null when unknown or failing. */
+    private String front() {
+        if (gate == null) return null;
+        try {
+            return gate.front();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** Rehost.keep on what is read now: the screen on and the app that was in front at the show still there. */
+    private boolean keepOnScreen() {
+        boolean on;
+        try {
+            PowerManager pm = (PowerManager) app.getSystemService(Context.POWER_SERVICE);
+            on = pm != null && pm.isInteractive();
+        } catch (Throwable t) {
+            on = false;
+        }
+        return Rehost.keep(on, frontAtShow, front(), app.getPackageName());
     }
 
     private boolean usable() {
@@ -389,9 +463,15 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         /** downTime of the OK press whose DOWN reached this window, -1 when none. */
         private long okDownTime = -1;
         private boolean hadFocus;
+        /** uptime when the window focus went, for Rehost.waitFocus. */
+        private long lostAt;
         private final Runnable focusLostCheck = new Runnable() {
             @Override public void run() {
                 if (panel.showing && panel != aside && !hasWindowFocus()) {
+                    if (Rehost.waitFocus(keepOnScreen(), lostAt, SystemClock.uptimeMillis())) {
+                        postDelayed(this, FOCUS_LOST_MS);       // the input app's own window for a moment
+                        return;
+                    }
                     Log.i(TAG, "focus lost: closing " + panel.getClass().getSimpleName());
                     dismiss(panel, true);
                 }
@@ -477,6 +557,7 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
                 removeCallbacks(focusLostCheck);
             } else if (hadFocus) {
                 removeCallbacks(focusLostCheck);
+                lostAt = SystemClock.uptimeMillis();
                 postDelayed(focusLostCheck, FOCUS_LOST_MS);
             }
         }
@@ -491,6 +572,7 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         /** Back from aside: the window focus comes back by itself; when another window keeps it, the panel closes. */
         void graceAfterAside() {
             removeCallbacks(focusLostCheck);
+            lostAt = SystemClock.uptimeMillis();
             postDelayed(focusLostCheck, BACK_FOCUS_MS);
         }
 

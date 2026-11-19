@@ -16,7 +16,7 @@
     <string name="lumen_m_kst_more">Diğer</string>
     <string name="lumen_m_kst_size_position">Boyut ve konum</string>
     <string name="lumen_m_kst_smart">Akıllı</string>
-    <string name="lumen_m_kst_restore">Özgün görüntüye dön</string>
+    <string name="lumen_m_kst_restore">Ekranı varsayılana döndür</string>
     <string name="lumen_m_launcher_classic">Android TV (klasik)</string>
     <string name="lumen_m_launcher_lumen">Lumen Home</string>
     <string name="lumen_m_launcher_row">Ana ekran</string>

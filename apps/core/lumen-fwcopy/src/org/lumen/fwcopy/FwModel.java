@@ -74,10 +74,10 @@ public final class FwModel {
             "G0130 6.16.24 and G0148 6.17.12: work/fs/product/etc/build.prop, by-name.txt; a G0130 after its stock update "
             + "to 6.17.12 (2026-11-17): mboot_b is the mboot.img of that update, rom_emmc_boot_b its rom_emmc_boot.bin",
             list("mboot"), PostWrite.HB_FIRST_STAGE);
-    public static final FwModel X50 = new FwModel("x50", list("G0111,G0100,H0062,H0063"), MT5877_STOCK, MT5877_PAIRS,
-            list(""), null, "G0111 1.2.64 full dump 2026-11-08: getprop.txt, parts.txt (G0100, H0062, H0063: the same "
-            + "XGIMI build line, XR03E/XR04E/XR03EOS). First stage: postinst_mtk of G0111 1.2.64 and H0062 1.2.54 / 1.2.99, "
-            + "rom_emmc_boot_a/_b of the G0111 dump (G0100, H0063: no dump, the writer's sha256 is checked on the unit)",
+    public static final FwModel X50 = new FwModel("x50", list("G0111,G0100,H0061,H0062,H0063"), MT5877_STOCK, MT5877_PAIRS,
+            list(""), null, "G0111 1.2.64 full dump 2026-11-08: getprop.txt, parts.txt (G0100, H0061, H0062, H0063: the same "
+            + "XGIMI build line, XR03E/XR04E/XR03EOS/XR04EOS/XR06EOS). First stage: postinst_mtk of G0111 1.2.64 and H0062 1.2.54 / 1.2.99, "
+            + "rom_emmc_boot_a/_b of the G0111 dump (G0100, H0061, H0063: no dump, the writer's sha256 is checked on the unit)",
             list(""), PostWrite.MT5877_FIRST_STAGE);
     /**
      * Its stock writes the first stage the same way (postinst_mtk 288c51e8, the HB's code built again, and the area of the

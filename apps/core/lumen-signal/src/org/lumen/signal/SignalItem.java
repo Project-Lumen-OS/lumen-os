@@ -47,6 +47,13 @@ public enum SignalItem {
     /** temperature inside the projector in degrees C (Z9X / Play 6 438, HB / X50 TEMPERATURE 6) */
     TEMP_SYSTEM("temp_system", true, ReadSpeed.DETAIL, false),
     /**
+     * the projector's picture mode as the menu reads it (Z9X / Play 6 IGmpf 666, HB / X50 family TV 34), its menu.json
+     * option token; on the small card too, last line (the stock RS30 card's order)
+     */
+    PICTURE_MODE("picture_mode", true, ReadSpeed.CARD_SLOW, false),
+    /** motion smoothing (MEMC) as the menu reads it (Z9X / Play 6 IGmpf 668, HB / X50 family TV 32), its option token */
+    MEMC("memc", true, ReadSpeed.DETAIL, false),
+    /**
      * colour format and chroma, bit depth, colorimetry and the range the signal asks for, from the HDMI receiver itself
      * (MStar /proc/utopia_mdb/HDMIRX through the image's root bridge lumen_hdmirx, HdmiRxBridge, HdmiRxInfo): no vendor
      * HAL call, its own pace (FormatWatch). Only a model whose image ships the bridge lists it (Z9X).

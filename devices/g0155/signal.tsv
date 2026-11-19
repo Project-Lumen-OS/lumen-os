@@ -21,3 +21,6 @@ tone_map	GmTvManager 175 GetHDRDyToneMappingStatus	HDR dynamic tone mapping swit
 temp_light	TemperatureManager 7 getTemperatureFromSensor	sensor 5 only, the red laser (the sensor card reads the same)
 temp_system	TemperatureManager 6 getSystemTemperature	temperature inside
 aspect	GmTvManager 36 getAspectRatio	the aspect setting, only where the model has it (the signal's own aspect comes from its size)
+hdmi_format	MDB HDMIRX bridge ports=1:2,2:0,3:1	colour format, depth, colorimetry, range the signal asks for, HDR static metadata, source name, link rate, from the receiver itself (image lumen_hdmirx, root); HDMI 1 = MStar port 2 (eARC), HDMI 2 = port 0, HDMI 3 = port 1: stock tbl_Hdmi_Hardware_Mapping of this model (xgimiconfig tv/tvconfig.sql, the same table gives the Z9X map proven live)
+picture_mode	GmTvManager 34 getPictureMode	the picture mode, the menu's own read and names (ModelMenu), on the small card too
+memc	GmTvManager 32 getMemcLevel	motion smoothing, the menu's own read and names: Original when FD boost runs (GmTvManager 161 getFDBoostStatus first, as the menu reads it)

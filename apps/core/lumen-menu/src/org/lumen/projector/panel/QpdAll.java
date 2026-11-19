@@ -145,7 +145,7 @@ final class QpdAll extends ViewGroup {
         scroll.scrollTo(0, 0);
         showTip(null, null);
         if (direction != 0) {
-            float dx = px(40) * direction;
+            float dx = px(40) * (panel.isRight() ? -direction : direction);   // a mirrored menu goes deeper to the left
             list.setTranslationX(dx);
             list.setAlpha(0f);
             list.animate().translationX(0f).alpha(1f).setDuration(Theme.PAGE_SWITCH_MS)
@@ -154,7 +154,7 @@ final class QpdAll extends ViewGroup {
             list.animate().cancel();
             list.setTranslationX(0f);
             list.setAlpha(1f);
-            QpdPanel.stagger(list, getContext());
+            QpdPanel.stagger(list, getContext(), panel.isRight());
         }
     }
 
@@ -235,7 +235,7 @@ final class QpdAll extends ViewGroup {
         tipShown = t;
         tipCard.setVisibility(VISIBLE);
         tipCard.setAlpha(0f);
-        tipCard.setTranslationX(-px(14));
+        tipCard.setTranslationX(panel.isRight() ? px(14) : -px(14));
         tipCard.animate().alpha(1f).translationX(0f).setDuration(320).setInterpolator(QpdStyle.ease()).start();
     }
 
@@ -257,12 +257,13 @@ final class QpdAll extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int gap = Math.round(px(QpdLayout.ALL_GAP));
+        // rail, list, hint card from the menu's side: from the left, or mirrored from the right edge (MenuLook)
+        View[] order = panel.isRight() ? new View[]{tipCard, listCard, railCard} : new View[]{railCard, listCard, tipCard};
         int x = 0;
-        railCard.layout(x, 0, x + railCard.getMeasuredWidth(), railCard.getMeasuredHeight());
-        x += railCard.getMeasuredWidth() + gap;
-        listCard.layout(x, 0, x + listCard.getMeasuredWidth(), listCard.getMeasuredHeight());
-        x += listCard.getMeasuredWidth() + gap;
-        tipCard.layout(x, 0, x + tipCard.getMeasuredWidth(), tipCard.getMeasuredHeight());
+        for (View v : order) {
+            v.layout(x, 0, x + v.getMeasuredWidth(), v.getMeasuredHeight());
+            x += v.getMeasuredWidth() + gap;
+        }
     }
 
     /**

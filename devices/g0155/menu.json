@@ -22,6 +22,7 @@
     "keystone.angle_v": {},
     "focus.af_now": {},
     "focus.manual": {},
+    "focus.settings": {},
     "focus.smart": {},
     "focus.guide": {},
     "lamp": {"min": 1, "max": 10},
@@ -113,6 +114,8 @@
     "settings.screensaver_delay": {"options": ["never", "m1", "m5", "m10", "m30", "m60"]},
     "settings.remote": {},
     "settings.licences": {},
+    "settings.menu_side": {"options": ["left", "right"]},
+    "settings.menu_density": {"options": ["normal", "compact"]},
     "power.on_ac": {},
     "power.on_music": {},
     "settings.parental": {},
@@ -128,11 +131,11 @@
     "keystone": {
       "stock": "settings_tree_product_athena35ultramax projection_screen (G0155 V1.1.42), test/stock/projection_screen.json",
       "groups": [
-        {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual"]},
+        {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual", "focus.af_now", "focus.manual", {"page": "focus.settings", "groups": [{"rows": ["focus.smart", "focus.guide"]}]}]},
         {"header": "auto_correction", "rows": ["keystone.realtime", "keystone.on_power", "keystone.obstacle", "keystone.curtain"]},
-        {"header": "size_position", "rows": ["zoom", "zoom.move", "keystone.rotation"]},
+        {"header": "size_position", "rows": ["zoom", "zoom.move", "keystone.rotation", "keystone.angle_h", "keystone.angle_v"]},
         {"header": "smart", "rows": ["keystone.wall_color"]},
-        {"header": "more", "rows": ["keystone.restore", "keystone.angle_h", "keystone.angle_v"]}
+        {"header": "more", "rows": ["keystone.restore"]}
       ]
     },
     "picture": {

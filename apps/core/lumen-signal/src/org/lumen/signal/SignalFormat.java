@@ -188,6 +188,17 @@ public final class SignalFormat {
     }
 
     /** HdmiRxInfo colorimetry -> its standard name (not translated); null for unknown. */
+    /** "0.005" for a mastering black of 50 (1/10000 cd/m2), with the language's decimal separator. */
+    public static String minNits(int tenThousandths, char dec) {
+        return java.math.BigDecimal.valueOf(tenThousandths, 4).stripTrailingZeros().toPlainString().replace('.', dec);
+    }
+
+    /** The source's name from its SPD InfoFrame, "SCEI PS5"; null when it sent none. */
+    public static String device(String vendor, String product) {
+        if (vendor == null) return product;
+        return product == null ? vendor : vendor + " " + product;
+    }
+
     public static String colorimetry(String token) {
         if (token == null) return null;
         switch (token) {

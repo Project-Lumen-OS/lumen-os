@@ -15,7 +15,7 @@ trap 'rm -rf "$OUT"' EXIT
   "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
   "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ElderColorRuleTest.java" "$HERE/test/ChoiceStepTest.java" \
   "$HERE/test/GeneralChoicesTest.java" \
-  "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" \
+  "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" "$HERE/test/TitanUxMenuTest.java" \
   "$HERE"/src/org/lumen/menu/quick/*.java "$HERE/test/quick/QuickTest.java"
 bad=0
 n=0
@@ -103,8 +103,8 @@ done
 # greyed and hidden like a SCREEN row
 for w in '                if (sub.rows().isEmpty()) return;                // no row of it the adapter implements: no row' \
          '                row = p.add(new NavRow(app, title, () -> safe("page " + f, () -> openPage(f, sub))));' \
-         '                boolean opens = f.kind == FeatureKind.SCREEN || f.kind == FeatureKind.PAGE;' \
-         '                if (opens) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));'; do
+         '            boolean opens = f.kind == FeatureKind.SCREEN || f.kind == FeatureKind.PAGE;' \
+         '            if (opens) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));'; do
   grep -qF -- "$w" "$SMC" || { echo "FAIL pages: MenuController lost: $w"; bad=1; }
 done
 [ "$(awk '/private void openPage\(FeatureId f, Page page\) \{/ {getline; print; exit}' "$SMC")" = '        Note n = dev.blocked(f, null, state);' ] \
@@ -139,9 +139,12 @@ done
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.LockedRowTest || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.HdmiRangeRuleTest || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.CustomModesTest || bad=1
-grep -qxF '            if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));' "$SMC" \
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.TitanUxMenuTest "$G" || bad=1
+grep -qxF '        if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));' "$SMC" \
   || { echo "FAIL locked row: MenuController.apply does not draw closed rows dimmed"; bad=1; }
-[ "$(awk '/    private void apply\(MenuState st\) \{/ { on = 1 } on && /for \(Map.Entry<FeatureId, View> e : rows.entrySet\(\)\)/ { n++ } on && /LockedRow.alpha\(/ { print n; exit }' "$SMC")" = 1 ] \
+# (one row's look in applyRow, called for every row and every twin of a row moved onto a second page)
+grep -qxF '        for (Map.Entry<FeatureId, View> e : rows.entrySet()) applyRow(e.getKey(), e.getValue(), st);' "$SMC" \
+  && [ "$(awk '/    private void applyRow\(FeatureId f, View v, MenuState st\) \{/ { on = 1 } on && /LockedRow.alpha\(/ { print "in"; exit } on && /^    }$/ { exit }' "$SMC")" = in ] \
   || { echo "FAIL locked row: the closed look is not in the loop over every row"; bad=1; }
 # the stock "Turn off screen" (LampOff): one key and recovery rule for every app that offers lamp.off
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.LampOffTest || bad=1
@@ -384,9 +387,23 @@ mkdir -p "$OUT/outputs"
   "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/src/org/lumen/menu/sound/SoundOutputs.java" "$A/OutputDevice.java" \
   "$A/SoundbarMode.java" "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/outputs/SoundOutputsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/outputs" org.lumen.menu.sound.SoundOutputsTest "$G" || bad=1
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/outputs" -cp "$OUT/outputs" \
+  "$HERE/src/org/lumen/menu/sound/OutputRefresh.java" "$HERE/test/outputs/OutputRefreshTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/outputs" org.lumen.menu.sound.OutputRefreshTest "$G" || bad=1
 # Power On Auto Boot (2026-11-19): model data, the stock call per model, no write without the user's flip
 python3 -B "$HERE/test/power_on_ac_test.py" "$G" || bad=1
 # snapshots without a profile are stale
+# the menu's look (MenuLook) as the app stores it: only valid tokens, read through MenuLook, each under its own key,
+# and the General row shows what was read back after a write
+LP="$HERE/src/org/lumen/projector/panel/MenuLookPrefs.java"
+for w in '        if (!MenuLook.valid(f, value)) return false;' \
+  '            if (f == FeatureId.SETTINGS_MENU_SIDE) return MenuLook.side(prefs(c).getString(K_SIDE, null));' \
+  '            if (f == FeatureId.SETTINGS_MENU_DENSITY) return MenuLook.density(prefs(c).getString(K_DENSITY, null));' \
+  '            return prefs(c).edit().putString(f == FeatureId.SETTINGS_MENU_SIDE ? K_SIDE : K_DENSITY, value).commit();'; do
+  grep -qxF -- "$w" "$LP" || { echo "FAIL menu look: MenuLookPrefs lost: $w"; bad=1; }
+done
+grep -qxF '            return MenuLookPrefs.set(c, f, value) && value.equals(MenuLookPrefs.get(c, f));' \
+  "$HERE/src/org/lumen/projector/panel/ModuleScreens.java" || { echo "FAIL menu look: the row is not read back after a write"; bad=1; }
 for s in "$HERE"/test/snapshots/*.txt; do
   [ -f "$s" ] || continue
   c=$(basename "$s" .txt)

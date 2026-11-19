@@ -18,6 +18,7 @@
     <string name="panel_picture_reset_all_hb">Reset all picture modes</string>
     <string name="panel_picture_reset_all_msg_hb">The settings of every picture mode go back to their defaults. Continue?</string>
     <string name="pro_dynamic_black_off_hb">%1$s turns off dynamic black enhancement</string>
+    <string name="pro_cs_hdr_hb">Color space is not supported in HDR content</string>
     <!-- hb-t8b (2026-10-30): HB keystone and picture labels at the places of the stock rows; texts
          written by Lumen (clean-room rewrite 2026-10-31): stock strings only told us the meaning -->
     <string name="kst_restore_hb">Reset picture to original</string>

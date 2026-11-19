@@ -178,6 +178,29 @@
       {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
     ]
   },
+  "dianahy": {
+    "source": "H0062 V1.2.99 release_838_newsettings.apk (sha256 7a46048ed513b4f7...) raw/settings_tree_product_dianahy",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "color_uniformity_adjustment",
+      {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
   "dianahymax": {
     "source": "H0062 V1.2.99 release_838_newsettings.apk (sha256 7a46048ed513b4f7...) raw/settings_tree_product_dianahymax",
     "projection_screen": [

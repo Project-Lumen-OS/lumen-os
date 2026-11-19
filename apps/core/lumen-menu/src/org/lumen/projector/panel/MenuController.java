@@ -34,6 +34,7 @@ import org.lumen.menu.quick.QuickLayout;
 import org.lumen.menu.quick.QuickLayoutJson;
 import org.lumen.menu.quick.QuickPacker;
 import org.lumen.menu.quick.QuickStore;
+import org.lumen.menu.sound.OutputRefresh;
 import org.lumen.menu.utils.Texts;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
@@ -160,6 +161,11 @@ public final class MenuController {
     private final Set<String> tilePopups = new HashSet<>();               // popups of tilePopup
     private final Map<FeatureId, View> rows = new LinkedHashMap<>();        // feature (picture.pq.<item>) -> row
     private final Map<View, FeatureId> featureOf = new HashMap<>();
+    /**
+     * The same feature's row built on a second page (the focus rows on the Image correction page and in the Focus
+     * popup, MenuSpec.MOVABLE): shown with every state read like the first one.
+     */
+    private final Map<FeatureId, List<View>> twins = new HashMap<>();
     private final Map<FeatureId, List<CheckRow>> radios = new HashMap<>();  // choice feature -> its popup radios
     private final Map<FeatureId, List<CheckRow>> inline = new HashMap<>();  // inline radio choice -> its rows
     private final Map<String, TextRow> notes = new HashMap<>();          // feature or section -> its note line
@@ -201,6 +207,8 @@ public final class MenuController {
     private String liveSection;
     private int liveGen;
     private final SignalWatch signal;
+    /** the sound rows read again on audio device changes while the menu is open (OutputRefresh) */
+    private final OutputWatch outputWatch;
     // the user's quick menu (pencil editor, 2026-11-18): catalogue, layout D as the default, the stored one
     private final QuickStore quickStore;
     private QuickCatalog quickCatalog;
@@ -242,6 +250,7 @@ public final class MenuController {
         this.prefs = app.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         this.dev = dev;
         this.signal = new SignalWatch(dev, this::ours, () -> state, this::refresh);
+        this.outputWatch = new OutputWatch(app, this::ours, this::refresh);
         this.quickStore = new SecureQuickStore(app);
         this.devicePages = devicePages;
         this.custom = new CustomPictures(c.getApplicationContext() != null ? c.getApplicationContext() : c, customHost());
@@ -333,6 +342,7 @@ public final class MenuController {
         refresh();
         live(sec);
         watchSignal();
+        watchOutputs();
         for (Extension x : extensions(sec)) {
             try {
                 x.onPageShown();
@@ -489,7 +499,8 @@ public final class MenuController {
             default:
                 return;
         }
-        rows.put(f, row);
+        if (rows.containsKey(f)) twins.computeIfAbsent(f, k -> new ArrayList<>()).add(row);   // a moved row's second page
+        else rows.put(f, row);
         featureOf.put(row, f);
         int sum = MenuLabels.summary(f);
         if (sum != 0) featureOf.put(p.add(new TextRow(app, s(sum))), f);
@@ -1679,7 +1690,14 @@ public final class MenuController {
     /** A module setting: the module stores it, the row shows it at once (no device call). */
     private void setModule(FeatureId f, String value) {
         if (!ModuleScreens.set(app, f, value)) host.toast(R.string.lumen_m_toast_failed);
+        else if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) { relook(f); return; }
         refresh();
+    }
+
+    /** The menu's side or size changed: it opens again at once in the new look, on the same row of General. */
+    private void relook(FeatureId f) {
+        View row = rows.get(f);
+        closeThen(() -> openAll(MenuSpec.GENERAL, row));
     }
 
     private void setConfirmed(FeatureId f, String value) {
@@ -1696,6 +1714,7 @@ public final class MenuController {
     private void after(FeatureId f, ProjectorFeatures.Result r) { after(f, null, r); }
 
     private void after(FeatureId f, String value, ProjectorFeatures.Result r) {
+        outputWatch.after(f);                                         // eARC or output: the link comes up later
         if (r == null) { refresh(); return; }
         if (ChoiceStep.forget(r.kind)) steppedAt.remove(f);           // a step the device did not take: its value at once
         switch (r.kind) {
@@ -1785,35 +1804,38 @@ public final class MenuController {
         app.registerReceiver(hotspotWatch, org.lumen.system.Hotspot.changes(), android.content.Context.RECEIVER_NOT_EXPORTED);
     }
 
+    /** One row of {@code f} shown with the state read (the row, or its twin on another page). */
+    private void applyRow(FeatureId f, View v, MenuState st) {
+        boolean ok = st != null;
+        if (ok) v.setVisibility(st.hidden(f) ? View.GONE : View.VISIBLE);
+        boolean usable = ok && !st.disabled(f);
+        String val = ok ? st.get(f) : null;
+        if (v instanceof ToggleRow) {
+            Boolean on = !ok ? null : switchChoice(f) ? (val == null ? null : "on".equals(val)) : st.on(f);
+            ((ToggleRow) v).setChecked(on);
+            ((ToggleRow) v).setRowEnabled(usable && on != null);
+        } else if (v instanceof ChoiceRow) {
+            applyChoice(f, (ChoiceRow) v, st, usable);
+        } else if (v instanceof SliderRow) {
+            Integer n = ok ? st.number(f) : null;
+            if (!sliderBusy((SliderRow) v)) ((SliderRow) v).setValue(n);
+            ((SliderRow) v).setRowEnabled(usable && n != null);
+        } else if (v instanceof NavRow) {
+            boolean opens = f.kind == FeatureKind.SCREEN || f.kind == FeatureKind.PAGE;
+            if (f.kind == FeatureKind.INFO || opens) ((NavRow) v).setValue(val);
+            if (opens) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));
+        }
+        // a row stock keeps closed now (the picture settings page in AI): dimmed like a stock disabled cell, its
+        // value kept, still focusable so a press says why. A disabled row keeps its own dimming
+        if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));
+    }
+
     private void apply(MenuState st) {
         if (has(FeatureId.PICTURE_CUSTOM_NEW)) st = CustomPictures.merge(app, profile, st);
         state = st;
         boolean ok = st != null;
-        for (Map.Entry<FeatureId, View> e : rows.entrySet()) {
-            FeatureId f = e.getKey();
-            View v = e.getValue();
-            if (ok) v.setVisibility(st.hidden(f) ? View.GONE : View.VISIBLE);
-            boolean usable = ok && !st.disabled(f);
-            String val = ok ? st.get(f) : null;
-            if (v instanceof ToggleRow) {
-                Boolean on = !ok ? null : switchChoice(f) ? (val == null ? null : "on".equals(val)) : st.on(f);
-                ((ToggleRow) v).setChecked(on);
-                ((ToggleRow) v).setRowEnabled(usable && on != null);
-            } else if (v instanceof ChoiceRow) {
-                applyChoice(f, (ChoiceRow) v, st, usable);
-            } else if (v instanceof SliderRow) {
-                Integer n = ok ? st.number(f) : null;
-                if (!sliderBusy((SliderRow) v)) ((SliderRow) v).setValue(n);
-                ((SliderRow) v).setRowEnabled(usable && n != null);
-            } else if (v instanceof NavRow) {
-                boolean opens = f.kind == FeatureKind.SCREEN || f.kind == FeatureKind.PAGE;
-                if (f.kind == FeatureKind.INFO || opens) ((NavRow) v).setValue(val);
-                if (opens) ((NavRow) v).setRowEnabled(st == null || !st.disabled(f));
-            }
-            // a row stock keeps closed now (the picture settings page in AI): dimmed like a stock disabled cell, its
-            // value kept, still focusable so a press says why. A disabled row keeps its own dimming
-            if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));
-        }
+        for (Map.Entry<FeatureId, View> e : rows.entrySet()) applyRow(e.getKey(), e.getValue(), st);
+        for (Map.Entry<FeatureId, List<View>> e : twins.entrySet()) for (View v : e.getValue()) applyRow(e.getKey(), v, st);
         for (Map.Entry<FeatureId, List<CheckRow>> e : inline.entrySet()) {
             String val = ok ? st.get(e.getKey()) : null;
             List<String> opts = profile.options(e.getKey());
@@ -1861,6 +1883,13 @@ public final class MenuController {
     /** The options a choice lists now: the device's runtime subset, else the profile's. */
     private List<String> listed(FeatureId f, MenuState st) {
         return st == null || st.options(f) == null ? profile.options(f) : st.options(f);
+    }
+
+    /** The sound rows follow the audio devices while the menu is open (OutputWatch, OutputRefresh). */
+    private void watchOutputs() {
+        if (OutputRefresh.watch(rows.containsKey(FeatureId.SOUND_OUTPUT), rows.containsKey(FeatureId.SOUND_EARC))) {
+            outputWatch.start();
+        }
     }
 
     /** Options with a stock support list follow the content kind while the menu is open (SignalWatch). */
@@ -2069,6 +2098,7 @@ public final class MenuController {
             if (panel == p) {
                 panel = null;
                 live(null);
+                outputWatch.stop();
             }
             if (panel == null && onClosed != null) safe("on closed", onClosed);   // no menu window left
         }

@@ -1,0 +1,4 @@
+# Lumen OS h0061 certificates (public). SHA-256 of the DER certificate.
+platform      84a69942218749e93265ba907d31af48e5d6a2d4f5957bb874a5975a1c7e7097
+ota/ota       090a5d945c41712f6e3c9bc2de155fdeceaf529de18b9262df0968a740650a3d
+ota/ota_next  cc6a4e7a21199c5a62989c0435ad664daf4ba91a204b1e06221f1cc1671427b0

@@ -29,6 +29,7 @@ public final class VcontrolModels {
             case "G0130": return new VcontrolModels("goat_elegant", 20500406, "v2.5.4.6", true);
             case "G0148": return new VcontrolModels("goat_elegant", 20500502, "v2.5.5.2", true);
             case "G0155": return new VcontrolModels("horse_popular", 20500502, "v2.5.5.2", true);
+            case "H0061": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "H0062": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "H0063": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             default: return null;

@@ -130,7 +130,9 @@ public final class App extends Application {
             try { org.lumen.projector.panel.HbMenu.install(this); } catch (Throwable t) { Log.e(TAG, "HbMenu.install", t); }
             // the signal panel (apps/core/lumen-signal): this app's gmpf reader, a stable new HDMI signal may show the card
             try {
-                org.lumen.signal.SignalPanel.install(this, new org.lumen.projector.panel.GmpfSignalReader());
+                org.lumen.signal.SignalPanel.install(this,
+                        new org.lumen.projector.panel.GmpfSignalReader(new org.lumen.projector.panel.HbSignalTokens()),
+                        new org.lumen.projector.panel.MenuSignalText());
                 AiScenePolicy.addTvEventSink(org.lumen.signal.SignalPanel::onTvEvent);
             } catch (Throwable t) { Log.e(TAG, "SignalPanel.install", t); }
             // the sensor card (apps/core/lumen-sensors, a developer overlay): this app's gmpf reader

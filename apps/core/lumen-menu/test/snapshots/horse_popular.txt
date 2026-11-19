@@ -16,6 +16,9 @@ section keystone  (stock order: settings_tree_product_dapeng projection_screen (
   toggle keystone.curtain
   -- line
   screen keystone.manual
+  action focus.af_now
+  screen focus.manual
+  page focus.settings
   screen zoom
   screen keystone.rotation
   screen keystone.wall_color
@@ -87,6 +90,9 @@ section general
   toggle power.on_ac
   toggle power.on_music
   choice power.boot_source [home, hdmi1, hdmi2]
+  -- menu
+  choice settings.menu_side [left, right]
+  choice settings.menu_density [normal, compact]
   -- voice
   choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
   toggle voice.speak
@@ -97,6 +103,8 @@ section developer
   toggle signal.pin
   choice signal.refresh [normal, fast]
   screen settings.diagnostics
+page focus.settings
+  toggle focus.smart
 popup keystone (rows with a tile of their own left out)
   keystone.realtime
   keystone.fit_now
@@ -124,7 +132,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone focus picture projection sound eye general developer
+all settings: keystone picture projection sound eye general developer
 keys: gear short quick_menu, gear long game_menu, eye_gear_short restore
 game menu: lat vrr hfr pic dark sr ar snd aim fps
   themes: ps xbox switch pad apple windows computer, CEC detection on

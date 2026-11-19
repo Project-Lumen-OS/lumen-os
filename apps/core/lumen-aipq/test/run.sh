@@ -39,7 +39,7 @@ fi
 # the projector apps: the module in every recipe, the own writes handed over (the files exist in a full tree only)
 if [ -d "$G/devices/horse_popular" ]; then
   for r in horse_popular/app/Z9xProjector goat_elegant/app/HbProjector dragon_healthy/app/Play6Projector \
-      g0111/app/X50Projector g0100/app/X50Projector g0155/app/X50Projector h0062/app/X50Projector h0063/app/X50Projector; do
+      g0111/app/X50Projector g0100/app/X50Projector g0155/app/X50Projector h0061/app/X50Projector h0062/app/X50Projector h0063/app/X50Projector; do
     grep -q '^module *lumen-aipq$' "$G/devices/$r.layers" || { echo "FAIL recipe $r.layers does not name lumen-aipq"; bad=1; }
   done
   for f in apps/ProjectorBase/src/org/lumen/projector/panel/Z9xPictureRows.java \

@@ -18,7 +18,8 @@ S="$HERE/src/org/lumen/signal"
   "$S/SignalItem.java" "$S/SignalValues.java" "$S/SignalReader.java" "$S/SignalBudget.java" "$S/PanelMode.java" \
   "$S/PanelToggle.java" "$S/Judder.java" "$S/SignalFormat.java" "$S/SignalText.java" "$S/SignalSheet.java" \
   "$S/RowTone.java" "$S/SignalItems.java" "$S/SignalLook.java" "$S/ReadSpeed.java" "$S/SignalPlace.java" \
-  "$S/HdmiRxInfo.java" "$S/FormatWatch.java" "$S/SignalRefresh.java" "$S/OkHold.java" \
+  "$S/HdmiRxInfo.java" "$S/InfoFrames.java" "$S/PacketLayout.java" "$S/FormatWatch.java" "$S/SignalRefresh.java" \
+  "$S/OkHold.java" "$S/SteadyRate.java" \
   "$HERE/../lumen-ui/src/org/lumen/ui/Palette.java" "$HERE/test/SignalTest.java" "$HERE/test/HdmiRxTest.java" \
   "$HERE/test/OkHoldTest.java"
 bad=0

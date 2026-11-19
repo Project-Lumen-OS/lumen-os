@@ -70,6 +70,9 @@ final class QuickEditMode {
 
     private QpdCard card() { return host.card(); }
 
+    /** The menu sits on the right (MenuLook): the sheet is left of the card, so LEFT / RIGHT swap between them. */
+    private boolean right() { return host.panel().isRight(); }
+
     // ------------------------------------------------------------------ keys
     private static int dirOf(int k) {
         switch (k) {
@@ -113,7 +116,7 @@ final class QuickEditMode {
         if (at == null) { c.focusRemembered(); return; }
         int[] to = QpdLayout.move(c.rows(), at[0], at[1], dir, k -> false, k -> false);
         if (to == null) {
-            if (dir == QpdLayout.RIGHT) focusSheet(null);
+            if (QpdLayout.toward(dir, right()) == QpdLayout.RIGHT) focusSheet(null);   // the key towards the sheet
             return;
         }
         View v = c.cell(c.rows().get(to[0]).get(to[1]));
@@ -127,7 +130,7 @@ final class QuickEditMode {
                 : dir == QpdLayout.LEFT ? View.FOCUS_LEFT : View.FOCUS_RIGHT;
         View n = android.view.FocusFinder.getInstance().findNextFocus(sheet, f, fd);   // inside the sheet only
         if (n != null) { n.requestFocus(fd); return; }
-        if (dir == QpdLayout.LEFT) {
+        if (QpdLayout.toward(dir, right()) == QpdLayout.LEFT) {         // the key towards the card
             if (selected != null && card().cell(selected) != null) card().cell(selected).requestFocus();
             else card().focusRemembered();
         }

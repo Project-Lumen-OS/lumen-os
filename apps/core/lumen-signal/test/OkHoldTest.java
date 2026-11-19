@@ -174,6 +174,10 @@ public final class OkHoldTest {
         ok("hint: cards 1 to 3", OkHold.hint(0, false) && OkHold.hint(1, false) && OkHold.hint(2, false));
         ok("hint: not the fourth", !OkHold.hint(3, false));
         ok("hint: never once learned", !OkHold.hint(0, true));
+        // opened by the remote key the user gave it: every time until the user expanded a card once
+        ok("hint by key: the fourth card too", OkHold.hint(3, false, true) && OkHold.hint(40, false, true));
+        ok("hint by key: never once learned", !OkHold.hint(3, true, true) && !OkHold.hint(0, true, true));
+        ok("hint not by key: the old rule", !OkHold.hint(3, false, false) && OkHold.hint(2, false, false));
         // PanelToggle: open by holding, fold back into the card it came from
         {
             PanelToggle t = new PanelToggle();

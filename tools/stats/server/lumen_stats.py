@@ -59,13 +59,14 @@ MODEL_ALIASES = {"mt5877": "horse_popular", "play6": "dragon_healthy"}
 # builds several models from one product image, so the family alone does not name the projector.
 FAMILIES = {
     "horse_popular": {"G0082": "horse_popular", "G0100": "g0100", "G0111": "g0111", "G0155": "g0155",
-                      "H0062": "h0062", "H0063": "h0063"},
+                      "H0061": "h0061", "H0062": "h0062", "H0063": "h0063"},
     "goat_elegant": {"G0130": "goat_elegant", "G0148": "goat_elegant"},
     "dragon_healthy": {"G0058": "dragon_healthy"},
 }
 NAMES = {"horse_popular": "XGIMI Z9X", "goat_elegant": "XGIMI Z9X HB", "dragon_healthy": "XGIMI Play 6",
          "g0111": "XGIMI X50 Ultra", "g0100": "XGIMI X50 Ultra Max", "g0155": "XGIMI RS30 Ultra Max",
-         "h0062": "XGIMI TITAN Noir Pro", "h0063": "XGIMI TITAN Noir Max"}
+         "h0061": "XGIMI TITAN Noir", "h0062": "XGIMI TITAN Noir Pro",
+         "h0063": "XGIMI TITAN Noir Max"}
 CODENAMES = {c for m in FAMILIES.values() for c in m.values()}
 PRERELEASE_RE = re.compile(r"-(beta|rc)[0-9]*$")
 KINDS = ("", "trial", "installed")

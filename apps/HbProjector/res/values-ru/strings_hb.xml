@@ -15,6 +15,7 @@
     <string name="panel_picture_reset_all_hb">Сбросить все режимы изображения</string>
     <string name="panel_picture_reset_all_msg_hb">Настройки всех режимов изображения вернутся к стандартным. Продолжить?</string>
     <string name="pro_dynamic_black_off_hb">%1$s отключает динамическое улучшение уровня чёрного</string>
+    <string name="pro_cs_hdr_hb">Цветовое пространство не поддерживается для контента HDR</string>
     <!-- hb-t8b (2026-10-30): HB keystone and picture labels at the places of the stock rows; texts
          written by Lumen (clean-room rewrite 2026-10-31): stock strings only told us the meaning -->
     <string name="kst_restore_hb">Вернуть исходное изображение</string>

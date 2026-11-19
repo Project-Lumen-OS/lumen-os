@@ -32,7 +32,9 @@ import x50_family  # noqa: E402
 
 # codename, model, installer id, stock product, X50 counterpart (its HumanDetect.ini and laser tables), GmpfModel row,
 # update file of xgimiconfig/<model>/system.ini, sha256 of the stock vendor/etc/xgimimodelname/<model>/build.prop
-TITANS = (("h0062", "H0062", "titanpro", "Product_dianahypro", "g0111", "TITAN_NOIR_PRO", "XGIMI_HORSEPOPULAR_XR04EOS.bin",
+TITANS = (("h0061", "H0061", "titannoir", "Product_dianahy", "g0111", "TITAN_NOIR", "XGIMI_HORSEPOPULAR_XR06EOS.bin",
+           "59f03b0e0958df6c4b5ef3a172489d61ad4289ab0c062fafe364f545df8795b3"),
+          ("h0062", "H0062", "titanpro", "Product_dianahypro", "g0111", "TITAN_NOIR_PRO", "XGIMI_HORSEPOPULAR_XR04EOS.bin",
            "a75145a19fb35f7133ecbbbc66946b973577c95ca2a896d39a778c84344f9daf"),
           ("h0063", "H0063", "titanmax", "Product_dianahymax", "g0100", "TITAN_NOIR_MAX", "XGIMI_HORSEPOPULAR_XR03EOS.bin",
            "e6ba90c3f999ad4aaf209f85076517de549cbc9402e0253e0372c9feb5f5f64b"))
@@ -70,7 +72,7 @@ def registry_cases(c, mc, iid, prod, twin, row, upd, msha):
     for m, cc in (("G0111", "g0111"), ("G0100", "g0100"), ("G0082", "horse_popular")):
         e = registry.identify(root, "horse_popular", m)
         check(e is not None and e["codename"] == cc, "(horse_popular, %s) is still %s" % (m, cc))
-    for m in ("H0061", "H0064", mc.lower()):
+    for m in ("H0060", "H0064", mc.lower()):
         check(registry.identify(root, "horse_popular", m) is None, "%s names no entry" % m)
     others = [x for cc, x in registry.load(root).items() if cc != c]
     check(all(mc not in x["models"] for x in others), "no other entry holds " + mc)
@@ -142,7 +144,7 @@ def menu_cases(c, mc, iid, prod, twin, *_):
           "%s: Based on lists TITAN picture modes only %s" % (c, base))
     # the hotspot name is each model's own (hotspot, 5b81d69f), everything else of the row as on the X50
     ha, hb = dict(a.pop("network.hotspot", {})), dict(b.pop("network.hotspot", {}))
-    check(ha.pop("name", "").startswith("Lumen TITAN Noir ") and hb.pop("name", None) and ha == hb,
+    check(ha.pop("name", "") in ("Lumen TITAN Noir", "Lumen TITAN Noir Pro", "Lumen TITAN Noir Max") and hb.pop("name", None) and ha == hb,
           "%s: the hotspot row as on %s, with its own TITAN name" % (c, twin))
     check(a == b and m.get("hints") == mx.get("hints") and m.get("keys") == mx.get("keys"),
           "%s: every other row, hint and key as on its X50 counterpart %s" % (c, twin))

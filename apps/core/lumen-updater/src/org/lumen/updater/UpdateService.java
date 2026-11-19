@@ -16,6 +16,8 @@ import android.os.Process;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.lumen.download.HttpError;
+import org.lumen.download.ParallelDownload;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Foreground service (dataSync) for the two long jobs: download (resumable, sha256-checked) and
- * install (update_engine writes the other slot). Background priority, one thread, 1 MB buffers.
+ * Foreground service (dataSync) for the two long jobs: download (parallel range connections, resumable,
+ * sha256-checked: PackageDownload, ParallelDownload) and install (update_engine writes the other slot). Background
+ * priority.
  * Stops itself when idle, so the app keeps 0 MB resident.
  */
 public final class UpdateService extends Service implements Engine.Listener, ServiceHost {
@@ -241,8 +244,12 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
         try {
             if (st.fromUsb()) {
                 if (kind.needsMetadata(p)) copyUsbMetadata(st, p, meta);
+                if (!verified(src, p)) {
+                    st.setError("err_hash", "");
+                    return false;
+                }
             } else {
-                Preflight.Block b = Preflight.downloadSpace(this, p, src.isFile() ? src.length() : 0);
+                Preflight.Block b = Preflight.downloadSpace(this, p, ParallelDownload.have(src, p.size));
                 if (b != null) {
                     st.setError(b.res, b.arg);
                     return false;
@@ -257,55 +264,19 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
                         o.write(m);
                     }
                 }
-                long t0 = System.nanoTime(), b0 = src.isFile() ? src.length() : 0;
-                int attempt = 0;
-                while (true) {
-                    if (jobs.stopRequested()) return false;
-                    if (kind.skipsCompleteFile && src.isFile() && src.length() == p.size) break;   // complete: straight to the checks
-                    if (!online()) {
-                        st.setDownload(src.isFile() ? src.length() : 0, p.size, st.dlEtag(), 0);
-                        notifyProgress(getString(R.string.dl_waiting_network), -1);
-                        sleep(5000);
-                        continue;
-                    }
-                    try {
-                        final long tStart = t0, bStart = b0;
-                        String tag = Http.download(p.url, src, p.size, st.dlEtag(), (bytes, total) -> {
-                            long dt = System.nanoTime() - tStart;
-                            long speed = dt > 0 ? (bytes - bStart) * 1_000_000_000L / dt : 0;
-                            st.setDownload(bytes, total, st.dlEtag(), speed);
-                            notifyProgress(getString(R.string.dl_title, ver), total > 0 ? (int) (bytes * 100 / total) : -1);
-                            return !jobs.stopRequested();
-                        });
-                        st.setDownload(p.size, p.size, tag, 0);
-                        break;
-                    } catch (Http.InterruptedIOException2 e) {
-                        return false;
-                    } catch (Http.HttpException e) {
-                        if (e.code == 404 || e.code == 410) throw e;
-                        attempt++;
-                    } catch (IOException e) {
-                        Log.w(Ota.TAG, "download: " + e);
-                        attempt++;
-                    }
-                    sleep(Math.min(60000, 5000L * attempt));
-                    t0 = System.nanoTime();
-                    b0 = src.isFile() ? src.length() : 0;
-                }
+                String tag = new PackageDownload(downloader(), downloadHost(st, p, ver))
+                        .fetch(p.url, src, p.size, p.sha256, kind.skipsCompleteFile);
+                if (tag == null) return false;
+                st.setDownload(p.size, p.size, tag, 0);
             }
-            // verify: whole-zip sha256, then the way's own check (metadata = payload prefix, or the package signature)
-            notifyProgress(getString(R.string.dl_verifying), -1);
-            String h = Trust.sha256(src, -1, jobs::stopRequested);
-            if (!h.equals(p.sha256)) {
-                Log.w(Ota.TAG, "zip sha256 " + h + " != " + p.sha256);
-                if (!st.fromUsb()) src.delete();
-                st.setError("err_hash", "");
-                return false;
-            }
+            // the way's own check: metadata = payload prefix, or the package signature
             if (!InstallWay.current().verifyDownload(st, src, p, meta)) return false;
             st.setState(UpdateState.DOWNLOADED);
             Log.i(Ota.TAG, "download verified: " + p.fileName());
             return true;
+        } catch (PackageDownload.HashMismatch e) {
+            st.setError("err_hash", "");
+            return false;
         } catch (IOException e) {
             Log.w(Ota.TAG, "download failed", e);
             if (!jobs.stopRequested()) st.setError(st.fromUsb() ? "usb_none" : "err_network", "");
@@ -314,6 +285,52 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
             if (jobs.stopRequested() && st.state() == UpdateState.DOWNLOADING) st.setState(UpdateState.PAUSED);
             Ota.setBusy(this, false, st.state().name().toLowerCase());
         }
+    }
+
+    /** The whole zip against the manifest's sha256: the same check for a download and a file on the USB stick. */
+    private boolean verified(File f, UpdateManifest.Pkg p) throws IOException {
+        notifyProgress(getString(R.string.dl_verifying), -1);
+        String h = Trust.sha256(f, -1, jobs::stopRequested);
+        if (h.equals(p.sha256)) return true;
+        Log.w(Ota.TAG, "zip sha256 " + h + " != " + p.sha256);
+        return false;
+    }
+
+    /** Parallel range connections over HTTPS, on background threads. */
+    private static ParallelDownload downloader() {
+        return new ParallelDownload(Http::open, r -> new Thread(() -> {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+            r.run();
+        }, "lumen-download"), ParallelDownload.Tuning.DEFAULT, m -> Log.i(Ota.TAG, m));
+    }
+
+    private PackageDownload.Host downloadHost(Store st, UpdateManifest.Pkg p, String ver) {
+        return new PackageDownload.Host() {
+            @Override
+            public boolean online() { return UpdateService.this.online(); }
+
+            @Override
+            public boolean stopRequested() { return jobs.stopRequested(); }
+
+            @Override
+            public void sleep(long ms) { UpdateService.this.sleep(ms); }
+
+            @Override
+            public void offline(long have, long total) {
+                st.setDownload(have, total, st.dlEtag(), 0);
+                notifyProgress(getString(R.string.dl_waiting_network), -1);
+            }
+
+            @Override
+            public boolean progress(long bytes, long total, long speed) {
+                st.setDownload(bytes, total, st.dlEtag(), speed);
+                notifyProgress(getString(R.string.dl_title, ver), total > 0 ? (int) (bytes * 100 / total) : -1);
+                return !jobs.stopRequested();
+            }
+
+            @Override
+            public boolean verified(File f) throws IOException { return UpdateService.this.verified(f, p); }
+        };
     }
 
     private void copyUsbMetadata(Store st, UpdateManifest.Pkg p, File meta) throws IOException {
@@ -331,7 +348,7 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
             if (jobs.stopRequested()) return null;
             try {
                 return Http.fetch(url, 8 << 20);
-            } catch (Http.HttpException e) {
+            } catch (HttpError e) {
                 if (e.code == 404 || e.code == 410) throw e;
             } catch (IOException e) {
                 if (i > 20) throw e;

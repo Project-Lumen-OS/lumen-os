@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">アップデートをインストール中です。完了するとディープスリープに戻ります。</string>
     <string name="hb_str_blocked_update_check">更新されたシステムを起動後に確認中です。数分でディープスリープに戻ります。</string>
     <string name="hb_str_blocked_off">このプロジェクターではディープスリープがオフになっています（サービス設定）。</string>
+    <string name="pro_cs_hdr_hb">HDRコンテンツでは、カラースペースはサポートされていません</string>
 </resources>

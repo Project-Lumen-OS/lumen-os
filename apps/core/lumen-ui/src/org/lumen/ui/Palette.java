@@ -41,6 +41,12 @@ public final class Palette {
      * elevation shadow of light tiles (the dark theme draws a hairline instead, 0).
      */
     public final int focusRing, warn, elevation;
+    /**
+     * The filled focus of the quick menu (a focused tile, popup row, rail item, the editor's chips) under white text:
+     * the Lumen blue #3B78E7 on the dark menu, the deeper #2F62D0 on the light one, where white on the brighter blue
+     * gives only 4.18:1 (2026-11-19: AA there, the dark menu unchanged).
+     */
+    public final int focusFill;
     /** True: the hero is a rounded card on the field (light). False: full bleed, melting into the field (dark). */
     public final boolean heroCard;
 
@@ -54,7 +60,7 @@ public final class Palette {
         errorPanel = v[i++]; ok = v[i++]; okPanel = v[i++]; shadow = v[i++]; shadowY = v[i++]; shadowBlur = v[i++];
         scrim = v[i++]; markA = v[i++]; markB = v[i++]; markCore = v[i++]; word = v[i++]; bannerLine = v[i++];
         pill = v[i++]; navActive = v[i++]; navText = v[i++]; navActiveText = v[i++]; focusRing = v[i++]; warn = v[i++];
-        elevation = v[i++];
+        elevation = v[i++]; focusFill = v[i++];
         heroCard = !dark;
         if (i != v.length) throw new IllegalStateException("palette size " + v.length);
     }
@@ -78,6 +84,7 @@ public final class Palette {
                 0xFF0E0B07, 0xFF211C13, 0xFF5E5545, 0xFFF2B26B, 0xFF211C13, // scrim, mark A, B, core, word
                 0x14000000, 0x0F211C13, 0x14211C13, 0xFF463F33, 0xFF211C13, // bannerLine, pill, navActive, navText(s)
                 0xFF2F62D0, 0xFF754400, 0x1C1E1810,             // focusRing, warn, elevation rgba(30,24,16,.11)
+                0xFF2F62D0,                                     // focusFill (white on it 5.6:1)
         });
     }
 
@@ -97,6 +104,7 @@ public final class Palette {
                 0xFF07080A, 0xFFF4EFE6, 0xFFCFC7BA, 0xFFF2B26B, 0xFFF4EFE6,
                 0x1AFFFFFF, 0x21FFFFFF, 0x2EFFFFFF, 0xC7FFFFFF, 0xFFFFFFFF,
                 0xFF3B78E7, 0xFFF2B544, 0x00000000,
+                0xFF3B78E7,
         });
     }
 

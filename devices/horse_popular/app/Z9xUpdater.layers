@@ -9,6 +9,8 @@ module    lumen-icons
 module    lumen-fwcopy
 # the QR codes of the update screen (apps/core/lumen-qr)
 module    lumen-qr
+# the parallel resumable download of the OTA zip, one with Lumen Installer (apps/core/lumen-download)
+module    lumen-download
 module    lumen-updater
 # the update_engine manifest of every A/B updater, kept once in the neutral updater apps/LumenUpdater
 file      apps/LumenUpdater/AndroidManifest.xml AndroidManifest.xml

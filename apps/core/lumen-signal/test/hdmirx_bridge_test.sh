@@ -87,9 +87,9 @@ ask ghi-1
 check "no dump at all: none" '[ "$(done_)" = "ghi-1 none" ]'
 check "no dump: help written once, nothing else" '[ "$(node)" = help ]'
 
-setup model read G0111
+setup model read G0058
 ask jkl-1
-check "another model: refused" '[ "$(done_)" = "jkl-1 refused" ] && [ -z "$(node)" ] && [ ! -f "$R/was_read" ]'
+check "another model (Play 6, no bridge): refused" '[ "$(done_)" = "jkl-1 refused" ] && [ -z "$(node)" ] && [ ! -f "$R/was_read" ]'
 
 setup token read
 ask 'x;reboot'
@@ -111,8 +111,18 @@ for model in G0130 G0148; do
   check "HB $model: the node was never written" '[ -z "$(node)" ]'
 done
 check "HB: colour space, both depth lines, the port size and the receiver's depth kept" 'grep -qx "Color space YUV420" "$R/dev/lumen_hdmirx/info.txt" && grep -qx "Color depth not indicated or default as 8bit" "$R/dev/lumen_hdmirx/info.txt" && grep -qE "^u8Colordepth +10-bit$" "$R/dev/lumen_hdmirx/info.txt" && grep -qx "HDE: 1920  VDE: 2160" "$R/dev/lumen_hdmirx/info.txt"'
+check "HB: the HDR packet and the link state kept" 'grep -qE "^HDR packet Byte 3: 0xd *$" "$R/dev/lumen_hdmirx/info.txt" && grep -qE "^HDR packet Byte 27: 0x0 *$" "$R/dev/lumen_hdmirx/info.txt" && grep -qE "^u8FRLRate +9 +is +LEGACY_20 *$" "$R/dev/lumen_hdmirx/info.txt"'
 check "HB: no EDID rows, no HDCP, no driver noise, no time stamps" '! grep -qE "^[0-9A-F]{2}: |HDCP|UTPA_INFO|MUTEX_INFO|MI3_ERR|^\[" "$R/dev/lumen_hdmirx/info.txt"'
 [ -n "$HB_OUT" ] && cp "$R/dev/lumen_hdmirx/info.txt" "$HB_OUT"
+# the X50 family (the Z9X's MT5877 platform, the same receiver driver): the same read path on the Z9X capture
+for model in G0111 G0100 G0155 H0061 H0062 H0063; do
+  setup "x50_$model" read "$model"
+  tok="x50-$(echo "$model" | tr A-Z a-z)"
+  ask "$tok"
+  check "X50 family $model: answered ok by the read" '[ "$(done_)" = "$tok ok" ] && grep -qx "trigger read" "$R/dev/lumen_hdmirx/info.txt"'
+  check "X50 family $model: the node was never written" '[ -z "$(node)" ]'
+done
+check "Z9X capture: the SPD packet and the link state kept" 'grep -qE "^SPD packet Byte 0: 0x53 *$" "$R/dev/lumen_hdmirx/info.txt" && grep -qE "^SPD packet Byte 24: 0x8 *$" "$R/dev/lumen_hdmirx/info.txt" && grep -qE "^u8FRLRate +4 +is +FRL_8G_4L *$" "$R/dev/lumen_hdmirx/info.txt"'
 setup hb_g0118 read G0118 "$HB_DUMP"
 ask hb-g0118
 check "HB G0118 (another amplifier, no dump yet): refused" '[ "$(done_)" = "hb-g0118 refused" ] && [ ! -f "$R/was_read" ]'

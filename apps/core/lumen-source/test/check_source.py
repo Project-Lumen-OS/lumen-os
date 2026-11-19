@@ -21,7 +21,7 @@ def read(*p):
 
 
 APPS = {"horse_popular": "Z9xProjector", "goat_elegant": "HbProjector", "g0111": "X50Projector", "g0100": "X50Projector",
-        "g0155": "X50Projector", "h0062": "X50Projector", "h0063": "X50Projector", "dragon_healthy": "Play6Projector"}
+        "g0155": "X50Projector", "h0061": "X50Projector", "h0062": "X50Projector", "h0063": "X50Projector", "dragon_healthy": "Play6Projector"}
 for c, app in APPS.items():
     r = read("devices", c, "app", app + ".layers")
     ok(re.search(r"^module\s+lumen-source\s*$", r, re.M), c + ": recipe names module lumen-source")

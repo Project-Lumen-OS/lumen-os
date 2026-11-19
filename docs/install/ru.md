@@ -11,7 +11,7 @@ Lumen OS это Android TV 14 для проекторов XGIMI. Найдите 
 | XGIMI Z9X HB | G0130, G0148 | с проектора | [Z9X HB](hb/ru.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | с проектора, бета | [X50, RS30 и TITAN](x50/ru.md) |
 | XGIMI RS30 Ultra Max | G0155 | с проектора, бета, только проба | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI TITAN Noir Pro, TITAN Noir Max | H0062, H0063 | с проектора, бета, только проба | [X50, RS30 и TITAN](x50/ru.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | с проектора, бета, только проба | [X50, RS30 и TITAN](x50/ru.md) |
 | XGIMI Play 6 | G0058 | с компьютера | [Play 6](play6/ru.md) |
 
 Код модели и прошивку XGIMI вашего проектора Lumen Installer показывает вверху своего экрана, а справа в карточке

@@ -22,6 +22,10 @@
 #   logd_reinit  (t17) x50_netadb.rc (tree and IN) gets t16's size properties + logd --reinit back: refused (Android
 #                14 logd ignores the properties and a reinit sets 256 KiB again)
 #   tvinput_base (t17) the base's re-signed Z9xTvInput.apk instead of the X50 build: refused, not IN/stage/X50TvInput.apk
+#   setup_base   the base's re-signed 1.0.9 Z9xSetup.apk instead of the tree's Lumen Setup: refused, not IN/stage/Z9xSetup.apk
+#   setup_old    the same 1.0.9 copy also staged as IN/stage/Z9xSetup.apk: refused, no theme step (not this tree's Setup)
+#   bootanim_base  the base's 1.0.9 boot animation (no sound) in tree and IN: refused, no part0/audio.wav
+#   bootanim_deflated  the animation re-zipped with deflated entries (tree and IN): refused, entries not Stored
 # No key is read (test key only), nothing signed with the X50 key leaves the Mac, nothing of the X50 image changes.
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -117,6 +121,26 @@ check logd_reinit 1 "no logd size property (Android 14 logd ignores them" "no lo
 TVA=system/app/Z9xTvInput/Z9xTvInput.apk
 prep tvinput_base; setfile "$N/c_tvinput_base/root" "$TVA" "$O/in/stage/base_signed/$TVA"
 check tvinput_base 1 "$TVA is not IN/stage/X50TvInput.apk"
+# the base's re-signed 1.0.9 Setup instead of the tree's Lumen Setup: refused, in the tree alone and staged too
+SUA=system/priv-app/Z9xSetup/Z9xSetup.apk
+prep setup_base; setfile "$N/c_setup_base/root" "$SUA" "$O/in/stage/base_signed/$SUA"
+check setup_base 1 "$SUA is not IN/stage/Z9xSetup.apk"
+prep setup_old; setfile "$N/c_setup_old/root" "$SUA" "$O/in/stage/base_signed/$SUA"; cp "$O/in/stage/base_signed/$SUA" "$N/c_setup_old/in/stage/Z9xSetup.apk"
+check setup_old 1 "$SUA has no theme step and no org.lumen.ui module"
+# the base's silent 1.0.9 animation, and the sounding one with deflated entries: refused (tree and IN changed alike)
+BA=system/product/media/bootanimation.zip
+prep bootanim_base; setfile "$N/c_bootanim_base/root" "$BA" "$N/mnt_base/$BA"; cp "$N/mnt_base/$BA" "$N/c_bootanim_base/in/bootanimation.zip"
+check bootanim_base 1 "$BA: sound entries [], expected exactly part0/audio.wav"
+prep bootanim_deflated; DZ=$N/c_bootanim_deflated/in/bootanimation.zip
+python3 -I -c 'import sys, zipfile
+src, dst = sys.argv[1], sys.argv[2]
+with zipfile.ZipFile(src) as a, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as b:
+    for i in a.infolist():
+        d = a.read(i.filename)
+        i.compress_type = zipfile.ZIP_DEFLATED
+        b.writestr(i, d)' "$O/in/bootanimation.zip" "$DZ.new" && mv "$DZ.new" "$DZ"
+setfile "$N/c_bootanim_deflated/root" "$BA" "$DZ"
+check bootanim_deflated 1 "$BA: entries not Stored"
 echo "x50_verify_negtest: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]
 EOF

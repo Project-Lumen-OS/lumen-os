@@ -42,7 +42,8 @@ public final class LockedRowTest {
                 FeatureId.PQ_SHARPNESS, FeatureId.PICTURE_COLOR_TEMP, FeatureId.PICTURE_MEMC, FeatureId.PICTURE_PRO,
                 FeatureId.PICTURE_RESET}) {
             ok(f + " closed in AI", LockedRow.locked(ai, f, read));
-            ok(f + " closed while the game mode runs", LockedRow.locked(game, f, read));
+            boolean slow = PictureSettingsRule.gameLatency(f);    // TITAN testers 2026-11-19: only the rows that add delay
+            ok(f + (slow ? " closed" : " open") + " while the game mode runs", LockedRow.locked(game, f, read) == slow);
             ok(f + " open in sport", !LockedRow.locked(sport, f, read));
         }
         for (FeatureId f : new FeatureId[]{FeatureId.PICTURE_MODE, FeatureId.LAMP, FeatureId.PICTURE_RESET_ALL,

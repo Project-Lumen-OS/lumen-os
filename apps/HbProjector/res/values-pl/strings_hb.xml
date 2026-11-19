@@ -36,4 +36,5 @@
     <string name="hb_str_blocked_update">Trwa instalacja aktualizacji: głęboki sen wróci po jej zakończeniu.</string>
     <string name="hb_str_blocked_update_check">Zaktualizowany system jest sprawdzany po uruchomieniu: głęboki sen wróci za kilka minut.</string>
     <string name="hb_str_blocked_off">Głęboki sen jest wyłączony na tym projektorze (ustawienie serwisowe).</string>
+    <string name="pro_cs_hdr_hb">Przestrzeń kolorów nie jest obsługiwana w przypadku treści HDR</string>
 </resources>

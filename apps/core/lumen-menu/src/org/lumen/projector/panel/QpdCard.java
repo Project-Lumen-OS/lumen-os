@@ -384,7 +384,11 @@ final class QpdCard extends ViewGroup {
             // CSS line box of the prototype clock (64 px, line-height .95): baseline = half-leading + ascent
             float asc = -time.ascent(), desc = time.descent();
             float clockBase = (0.95f * time.getTextSize() - (asc + desc)) / 2f + asc;
+            float fit = QpdLayout.clockFit(time.measureText(t), getWidth());
+            c.save();
+            c.scale(fit, fit, 0, clockBase);
             c.drawText(t, 0, clockBase, time);
+            c.restore();
             float dateBase = asc * 0.95f + desc * 0.4f + Theme.pxf(ctx, 10) - date.ascent();
             CharSequence under = focusLine != null ? focusLine : d;
             TextPaint p = focusLine != null ? line : date;

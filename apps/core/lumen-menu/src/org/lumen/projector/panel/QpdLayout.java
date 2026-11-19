@@ -101,6 +101,15 @@ final class QpdLayout {
      */
     static int[] move(List<List<String>> rows, int r, int c, int dir, java.util.function.Predicate<String> hasPopup,
                       java.util.function.Predicate<String> slider) {
+        return move(rows, r, c, dir, hasPopup, slider, false);
+    }
+
+    /**
+     * The grid move of a menu on the {@code right} side (MenuLook): the tiles keep their order, only the popup opens
+     * towards it, so LEFT on the first cell of a row asks for that cell's popup and RIGHT on the last one does not.
+     */
+    static int[] move(List<List<String>> rows, int r, int c, int dir, java.util.function.Predicate<String> hasPopup,
+                      java.util.function.Predicate<String> slider, boolean right) {
         if (rows == null || r < 0 || r >= rows.size()) return STAY;
         List<String> row = rows.get(r);
         if (c < 0 || c >= row.size()) return STAY;
@@ -124,14 +133,29 @@ final class QpdLayout {
             }
             case LEFT:
                 if (slider.test(row.get(c))) return STAY;            // a slider steps itself
-                return c > 0 ? new int[]{r, c - 1, 0} : STAY;
+                if (c > 0) return new int[]{r, c - 1, 0};
+                return right ? opens(r, c, row, hasPopup) : STAY;
             case RIGHT:
                 if (slider.test(row.get(c))) return STAY;
                 if (c < row.size() - 1) return new int[]{r, c + 1, 0};
-                return hasPopup != null && hasPopup.test(row.get(c)) ? new int[]{r, c, OPEN} : STAY;
+                return right ? STAY : opens(r, c, row, hasPopup);
             default:
                 return STAY;
         }
+    }
+
+    /** The cell's popup on a key towards it, when the cell has one. */
+    private static int[] opens(int r, int c, List<String> row, java.util.function.Predicate<String> hasPopup) {
+        return hasPopup != null && hasPopup.test(row.get(c)) ? new int[]{r, c, OPEN} : STAY;
+    }
+
+    /**
+     * A key between the menu's panes (card, popup, All settings rail and list) on a menu on the {@code right} side
+     * (MenuLook): the panes are mirrored, so LEFT and RIGHT swap. Rows that step a value keep the plain keys.
+     */
+    static int toward(int dir, boolean right) {
+        if (!right) return dir;
+        return dir == LEFT ? RIGHT : dir == RIGHT ? LEFT : dir;
     }
 
     static final String SLIDER = "lamp";
@@ -140,6 +164,14 @@ final class QpdLayout {
     static int clockWidth(int buttons) {
         int n = Math.max(2, buttons);
         return CARD_W - 2 * CARD_PAD - n * ROUND - (n - 1) * ROUND_GAP - 16;
+    }
+
+    /**
+     * The clock's size factor: a time wider than its box (a 12 hour "10:59 AM" next to four round buttons) shrinks
+     * until it fits, so it never runs under the buttons; a time that fits keeps the design size.
+     */
+    static float clockFit(float textW, float boxW) {
+        return textW > boxW && boxW > 0 ? boxW / textW : 1f;
     }
 
     static boolean isSliderRow(List<List<String>> rows) {

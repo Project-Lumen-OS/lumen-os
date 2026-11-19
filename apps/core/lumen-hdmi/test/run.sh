@@ -39,7 +39,7 @@ copies=$(grep -rlF --include=*.java "class HdmiRelink" "$G/apps" | grep -v "/bui
 if [ -n "$copies" ]; then echo "FAIL a per-app HdmiRelink copy: $copies"; fail=1; fi
 # every app that installs the relink carries the module
 for r in horse_popular/app/Z9xProjector goat_elegant/app/HbProjector g0111/app/X50Projector g0100/app/X50Projector \
-         g0155/app/X50Projector h0062/app/X50Projector h0063/app/X50Projector; do
+         g0155/app/X50Projector h0061/app/X50Projector h0062/app/X50Projector h0063/app/X50Projector; do
   grep -q '^module    lumen-hdmi$' "$G/devices/$r.layers" || { echo "FAIL devices/$r.layers lacks lumen-hdmi"; fail=1; }
 done
 [ $fail -eq 0 ] || exit 1

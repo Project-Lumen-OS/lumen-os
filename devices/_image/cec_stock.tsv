@@ -9,11 +9,11 @@
 #   RESOURCE  VALUE...               the config_cec*_default bool in each column
 #   set  ID  SETTING  VALUE          the value an Android 11 stock gives a TV (it has no HdmiCecConfig resources)
 #
-# G0100 runs the G0111 system (vendor/etc/xgimimodelname/G0100 in that dump), H0063 the H0062 one, G0118 the G0130 /
+# G0100 runs the G0111 system (vendor/etc/xgimimodelname/G0100 in that dump), H0061 and H0063 the H0062 one, G0118 the G0130 /
 # G0148 one. H0062 v1.2.99 and G0111 v1.2.64 carry the same framework-res bytes.
 dump  G0082-v6.15.62  horse_popular   c2c9f360792f246b57eaa289ab1a990367a8d51064865d60fba9491e4adac804
 dump  G0111-v1.2.64   g0111,g0100     35f469242fa716c17addd0c47491507c5a7719c45cbf91436b561ed361a969dc
-dump  H0062-v1.2.99   h0062,h0063     35f469242fa716c17addd0c47491507c5a7719c45cbf91436b561ed361a969dc
+dump  H0062-v1.2.99   h0061,h0062,h0063 35f469242fa716c17addd0c47491507c5a7719c45cbf91436b561ed361a969dc
 dump  G0130-v6.16.24  goat_elegant    375fae007bd02f28285d4f2c201d71cfdbaa65aa74fbfcecb179bd6b9e7ab9e4
 dump  G0148-v6.17.12  goat_elegant    c546ebecab5b3a54461b76820ec2c90c21f720712c28764df98f89f90114b779
 dump  G0155-v1.1.42   g0155           b3e0b30b7a9584005d4c64e1a18adf3e2abb382e8d6c23f1d181401981ecea69

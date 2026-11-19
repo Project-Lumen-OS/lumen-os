@@ -93,6 +93,14 @@ public final class OkHold {
 
     /** The hint on the small card: the first few times, never again once the user held OK. */
     public static boolean hint(int seen, boolean learned) {
-        return !learned && seen < HINT_TIMES;
+        return hint(seen, learned, false);
+    }
+
+    /**
+     * {@code byKey}: the card was opened by the remote key the user gave it; then the hint shows every time until the
+     * user expanded a card once (he asked for the card by name, so he is the one who needs to know the hold).
+     */
+    public static boolean hint(int seen, boolean learned, boolean byKey) {
+        return !learned && (byKey || seen < HINT_TIMES);
     }
 }

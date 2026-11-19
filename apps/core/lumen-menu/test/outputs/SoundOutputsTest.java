@@ -158,7 +158,7 @@ public final class SoundOutputsTest {
             C.ok(d.getName() + ": Auto and Speaker first", model.size() >= 2 && model.get(0).equals("auto") && model.get(1).equals("speaker"));
             C.ok(d.getName() + ": the jack is manual only on the HB", p.jackSensed() == !"goat_elegant".equals(d.getName()));
         }
-        C.ok("profiles with an output page: 8", n == 8);
+        C.ok("profiles with an output page: 9", n == 9);
         C.ok("Play 6 has no jack (stock dayao tree)", !profile(g, "dragon_healthy").options(FeatureId.SOUND_OUTPUT).contains("wired"));
         C.ok("Z9X lists ARC, headphones, Bluetooth, USB (stock voice_output)",
                 profile(g, "horse_popular").options(FeatureId.SOUND_OUTPUT).equals(ALL));

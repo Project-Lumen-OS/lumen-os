@@ -35,7 +35,9 @@ public final class HdmiRxTest {
             hbCapture(hbCapture);
             bridgeOutput(hbCapture, "hb.bridge.out");
             hbSheet(hbCapture);
+            infoFrames(capture, hbCapture);
         }
+        layouts();
         depthRule();
         synthetic();
         watch();
@@ -120,6 +122,138 @@ public final class HdmiRxTest {
     static int num(String text, String from, String rx) {
         java.util.regex.Matcher m = java.util.regex.Pattern.compile(rx).matcher(text.substring(text.indexOf(from)));
         return m.find() ? Integer.parseInt(m.group(1)) : -1;
+    }
+
+    /**
+     * The HDR packet (HB: byte-swapped words, BT.2020 / D65 / 1000 and 0.005 cd/m2, checksum 0x0d), the SPD packet (Z9X:
+     * "SCEI" "PS5", a game console; HB: no layout explains its bytes, so nothing) and the link (Z9X FRL 8G x 4, HB TMDS
+     * above 3.4 Gbit/s), from the two real captures, then the rows the full panel shows for them.
+     */
+    static void infoFrames(String z9x, String hb) {
+        HdmiRxInfo h = HdmiRxInfo.parse(hb);
+        eq("HB HDR packet: EOTF PQ", 2, h.eotf);
+        eq("HB mastering peak 1000 cd/m2", 1000, h.masterMax);
+        eq("HB mastering black 0.005 cd/m2", 50, h.masterMin);
+        eq("HB mastering primaries BT.2020", HdmiRxInfo.BT2020, h.masterPrimaries);
+        eq("HB MaxCLL not told", 0, h.maxCll);
+        eq("HB MaxFALL not told (its high byte solved from the checksum)", 0, h.maxFall);
+        eq("HB SPD bytes explained by no layout: no device", null, h.sourceVendor);
+        eq("HB link: TMDS above 3.4 Gbit/s", HdmiRxInfo.LINK_TMDS20, h.link);
+        HdmiRxInfo z = HdmiRxInfo.parse(z9x);
+        eq("Z9X SDR capture: no HDR packet", -1, z.eotf);
+        eq("Z9X SPD vendor", "SCEI", z.sourceVendor);
+        eq("Z9X SPD product", "PS5", z.sourceProduct);
+        eq("Z9X SPD kind: game", 8, z.sourceKind);
+        eq("Z9X link FRL", HdmiRxInfo.LINK_FRL, z.link);
+        eq("Z9X link 8 Gbit/s x 4", "8x4", z.frlGbps + "x" + z.frlLanes);
+
+        Set<SignalItem> items = EnumSet.of(SignalItem.HDMI_INFO, SignalItem.HDR, SignalItem.HDMI_FORMAT);
+        SignalValues v = new SignalValues();
+        v.port = 2; v.width = 3840; v.height = 2160; v.rateCenti = 6000; v.dvi = false; v.hdrType = 1; v.rx = h;
+        String rows = SignalSheet.build(v, items, SignalTest.WORDS).valueRows().toString();
+        ok("HB panel: mastering 1000 nits BT.2020, black 0.005 (" + rows + ")",
+                rows.contains("r_mastering = nits|1000, BT.2020 (master_min|0" + SignalTest.WORDS.decimal() + "005)"));
+        ok("HB panel: no content light row when the source told none", !rows.contains("r_light"));
+        ok("HB panel: link on the connection row", rows.contains("r_link = link_hdmi (link_tmds20)"));
+        v.hdrType = 0;
+        ok("HAL says SDR: no mastering row from an old HDR packet",
+                !SignalSheet.build(v, items, SignalTest.WORDS).valueRows().toString().contains("r_mastering"));
+        SignalValues zv = new SignalValues();
+        zv.port = 1; zv.width = 3840; zv.height = 2160; zv.rateCenti = 6000; zv.dvi = false; zv.hdrType = 0; zv.rx = z;
+        String zr = SignalSheet.build(zv, items, SignalTest.WORDS).valueRows().toString();
+        ok("Z9X panel: source device SCEI PS5, a game console (" + zr + ")", zr.contains("r_device = SCEI PS5 (kind_game)"));
+        ok("Z9X panel: link FRL 8 x 4", zr.contains("r_link = link_hdmi (link_frl|8|4)"));
+        ok("Z9X panel: no mastering row for SDR", !zr.contains("r_mastering"));
+    }
+
+    /** A DCI-P3 HDR10 packet with MaxCLL 1200 and MaxFALL 400: PB0 checksum, PB1 EOTF 2, PB2 0, PB3..PB26. */
+    static int[] drmPacket() {
+        int[] pb = new int[27];
+        pb[1] = 2;
+        int[] f = {13250, 34500, 7500, 3000, 34000, 16000, 15635, 16450, 1000, 50, 1200, 400};
+        for (int i = 0; i < f.length; i++) { pb[3 + 2 * i] = f[i] & 0xFF; pb[4 + 2 * i] = f[i] >> 8; }
+        int sum = 0x87 + 1 + 26;
+        for (int k = 1; k < pb.length; k++) sum += pb[k];
+        pb[0] = (256 - (sum & 0xFF)) & 0xFF;
+        return pb;
+    }
+
+    /** 28 printed bytes of a 26-byte packet in {@code layout}: HB0..HB2 = 0x87, 1, 26. */
+    static int[] print(int[] pb, PacketLayout layout) { return print(pb, layout, 28); }
+
+    /** {@code n} printed bytes (a driver that prints more than the 28 of the HB). */
+    static int[] print(int[] pb, PacketLayout layout, int n) {
+        int[] stream;
+        switch (layout) {
+            case SWAPPED: case FROM_HB1: stream = cat(new int[] {1, 26}, pb); break;
+            case HEADER_PAD: stream = cat(new int[] {0x87, 1, 26, 0}, pb); break;
+            default: stream = java.util.Arrays.copyOfRange(pb, 1, pb.length); break;
+        }
+        int[] out = new int[n];
+        for (int j = 0; j < out.length; j++) {
+            int from = layout == PacketLayout.SWAPPED ? j ^ 1 : j;
+            out[j] = from < stream.length ? stream[from] : 0;
+        }
+        return out;
+    }
+
+    static int[] cat(int[] a, int[] b) {
+        int[] c = java.util.Arrays.copyOf(a, a.length + b.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+    }
+
+    static String hdrDump(int[] printed) {
+        StringBuilder b = new StringBuilder();
+        for (int k = 0; k < printed.length; k++) {
+            b.append("[ 1.1] HDR packet Byte ").append(k).append(": 0x").append(Integer.toHexString(printed[k])).append(" \n");
+        }
+        return b.toString();
+    }
+
+    /**
+     * No HDR capture of the Z9X or the X50 family exists: whatever layout their receiver prints, the packet decodes
+     * only when it proves that layout, and to the same values; a broken checksum or a foreign buffer gives nothing.
+     */
+    static void layouts() {
+        String base = dump(2, "YUV444", "10bit", 0x40, 0xE8, 0x60, 0x61, 0x00);
+        for (PacketLayout l : PacketLayout.values()) {
+            HdmiRxInfo i = HdmiRxInfo.parse(base.replace("[ 1.1] Receive AVI packet", hdrDump(print(drmPacket(), l))
+                    + "[ 1.1] Receive AVI packet"));
+            eq(l + ": EOTF PQ", 2, i.eotf);
+            eq(l + ": primaries DCI-P3", HdmiRxInfo.P3, i.masterPrimaries);
+            eq(l + ": mastering 1000 / 0.005", "1000/50", i.masterMax + "/" + i.masterMin);
+            // the header-and-pad layout prints PB0..PB23 only: MaxCLL and MaxFALL stay untold
+            eq(l + ": content light", l == PacketLayout.HEADER_PAD ? "0/0" : "1200/400", i.maxCll + "/" + i.maxFall);
+        }
+        // with every byte printed the checksum is tested (28 bytes leave one byte to solve from it, nothing to test)
+        HdmiRxInfo full = HdmiRxInfo.parse(base.replace("[ 1.1] Receive AVI packet",
+                hdrDump(print(drmPacket(), PacketLayout.FROM_HB1, 29)) + "[ 1.1] Receive AVI packet"));
+        eq("29 bytes from HB1, checksum right: MaxFALL", 400, full.maxFall);
+        int[] bad = drmPacket();
+        bad[0] ^= 1;
+        for (PacketLayout l : new PacketLayout[] {PacketLayout.SWAPPED, PacketLayout.FROM_HB1}) {
+            HdmiRxInfo broken = HdmiRxInfo.parse(base.replace("[ 1.1] Receive AVI packet", hdrDump(print(bad, l, 30))
+                    + "[ 1.1] Receive AVI packet"));
+            eq(l + ", all bytes printed, a wrong checksum: no metadata", -1, broken.eotf);
+        }
+        int[] junk = new int[28];
+        for (int k = 0; k < junk.length; k++) junk[k] = (k * 73 + 41) & 0xFF;
+        eq("a foreign buffer: no metadata", -1, HdmiRxInfo.parse(base.replace("[ 1.1] Receive AVI packet", hdrDump(junk)
+                + "[ 1.1] Receive AVI packet")).eotf);
+        String spd = "[ 1.1] SPD packet Byte 0: 0x4e \n[ 1.1] SPD packet Byte 1: 0x56 \n[ 1.1] SPD packet Byte 2: 0x0 \n";
+        StringBuilder rest = new StringBuilder();
+        String product = "SHIELD";
+        for (int k = 3; k <= 24; k++) {
+            int c = k == 24 ? 1 : k >= 8 && k - 8 < product.length() ? product.charAt(k - 8) : 0;
+            rest.append("[ 1.1] SPD packet Byte ").append(k).append(": 0x").append(Integer.toHexString(c)).append(" \n");
+        }
+        HdmiRxInfo sh = HdmiRxInfo.parse(base.replace("[ 1.1] Receive AVI packet", spd + rest + "[ 1.1] Receive AVI packet"));
+        eq("SPD from PB1: NV SHIELD, a set-top box", "NV/SHIELD/1", sh.sourceVendor + "/" + sh.sourceProduct + "/" + sh.sourceKind);
+        HdmiRxInfo tm = HdmiRxInfo.parse(base.replace("[ 1.2] =", "[ 1.1] u8FRLRate      0   is   LEGACY\n[ 1.2] ="));
+        eq("LEGACY: TMDS", HdmiRxInfo.LINK_TMDS, tm.link);
+        HdmiRxInfo fr = HdmiRxInfo.parse(base.replace("[ 1.2] =", "[ 1.1] u8FRLRate      6   is   FRL_12G_4L\n[ 1.2] ="));
+        eq("FRL_12G_4L", "frl 12x4", fr.link + " " + fr.frlGbps + "x" + fr.frlLanes);
     }
 
     /** The HB card: the owner's order with the HB receiver's values. */

@@ -27,9 +27,17 @@ of these:
     without its .sig, one that fails verify_manifest.check with devices/<codename>/certs/ota.x509.pem (device and
     channel = the tag's device and the file's channel, O1 version code, package URLs https on the version's tag),
     or a package or side-car that is not an asset of that version's release with the manifest's size;
-  - on the manifest tag: a manifest (or its .sig) of a channel other than stage_channel while
-    devices/<codename>/install/OTA_RESULTS.tsv does not record T7 as passed (T5 / T6 are not required);
+  - on the manifest tag: a manifest (or its .sig) of an updater channel other than stage_channel while
+    devices/<codename>/install/OTA_RESULTS.tsv does not record T7 as passed (T5 / T6 are not required): a real OTA
+    a to b must have passed on the model before units take updates from a public channel;
   - the manifest tag is missing while a version release exists.
+A fixed tag shared by a model family (the X50 Ultra and Ultra Max on x50): the files of a sibling device (its registry
+channels, same repo and manifest_tag) are left to that device's own audit, any other name stays an error. The Lumen
+Installer's file (installer.conf beta_channel when it is not an updater channel: the updater reads only
+update-<id>-nogms.json and update-<id>-test.json, apps/core/lumen-updater ChannelRule) is a signed pointer to a
+system image that the user installs on purpose, never an OTA package, so the T7 gate does not apply to it; it must
+verify with a certificate of installer.conf, be the device, channel and a model of the registry, list no package, and
+name an image that is an asset of <package_tag> of its version with the manifest's size.
 Nothing is uploaded, edited or deleted.
 """
 import argparse
@@ -62,6 +70,10 @@ Z9X_BETA_VERSION = re.compile(r"\d+\.\d{1,2}\.\d{1,2}-beta[1-9]\d?")
 Z9X_MANIFEST = "update-public-nogms.json"
 Z9X_CERT = "installer/certs/ota.x509.pem"
 Z9X_NAMES = re.compile(r"update-(stable|public)")
+# the two files the shared updater reads (apps/core/lumen-updater ChannelRule: update-<id>-nogms.json stable,
+# update-<id>-test.json beta); any other channel of a device is not read by units for updates
+UPDATER_CHANNELS = ("nogms", "test")
+INSTALLER_VERSION = re.compile(r"\d+\.\d{1,2}\.\d{1,2}(-(beta|rc)[1-9]\d?)?")
 
 
 class Gh:
@@ -142,11 +154,20 @@ def audit(dev, gh, errs, notes):
             return
         allowed = {"update-%s.json%s" % (ch, s) for ch in dev["channels"] for s in ("", ".sig")}
         names = {a["name"]: a for a in mt.get("assets", [])}
+        sib = siblings(dev)
+        inst = installer_channel(dev)
         for n in sorted(names):
             if n not in allowed:
+                o = sib.get(channel_of(n))
+                if o:
+                    notes.append("%s: %s belongs to %s (check_release.py --device %s audits it)"
+                                 % (c["manifest_tag"], n, o[1], o[0]))
+                    continue
                 errs.append("%s: asset %s is not update-<channel>.json(.sig) of %s" % (c["manifest_tag"], n,
                                                                                        " ".join(dev["channels"])))
-        for ch in sorted({n[len("update-"):].split(".json")[0] for n in names if n in allowed}):
+        for ch in sorted({channel_of(n) for n in names if n in allowed}):
+            if ch == inst:
+                continue   # the installer's file: no update reads it (installer_manifest below)
             try:
                 ota_conf.channel_open(dev, ch)
             except ota_conf.OtaError as e:
@@ -159,6 +180,9 @@ def audit(dev, gh, errs, notes):
             os.makedirs(d)
             gh.download(c["manifest_tag"], [n, n + ".sig"], d)
             mf = os.path.join(d, n)
+            if channel_of(n) == inst:
+                installer_manifest(dev, mine, mf, errs, notes)
+                continue
             e2, m = vm.check(dev, mf, mf + ".sig", ota_conf.tree_cert(dev))
             errs += ["%s/%s: %s" % (c["manifest_tag"], n, e) for e in e2]
             if e2:
@@ -181,6 +205,99 @@ def audit(dev, gh, errs, notes):
                                                                      m["version_code"], len(m["packages"]), vt))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def channel_of(name):
+    """update-<channel>.json(.sig) -> channel"""
+    return name[len("update-"):].split(".json")[0] if name.startswith("update-") else ""
+
+
+def siblings(dev):
+    """{channel: (codename, name)} of the other registry devices whose ota.conf names the same repo and manifest tag
+    (a model family on one fixed tag)."""
+    root, c, out = dev["root"], dev["ota"], {}
+    for code, o in sorted(ota_conf.devices.load(root).items()):
+        conf = os.path.join(root, "devices", code, "ota.conf")
+        if code == dev["codename"] or not os.path.isfile(conf):
+            continue
+        oc = ota_conf.parse(conf)
+        if oc["manifest_tag"] == c["manifest_tag"] and oc["repo"] == c["repo"]:
+            for ch in o["channel"]:
+                if ch != "none":
+                    out[ch] = (code, o["name"])
+    return out
+
+
+def installer_conf(dev):
+    path = os.path.join(dev["root"], "devices", dev["codename"], "installer.conf")
+    out = {}
+    if os.path.isfile(path):
+        for raw in open(path, encoding="utf-8"):
+            if "=" in raw and not raw.lstrip().startswith("#"):
+                k, v = raw.rstrip("\n").split("=", 1)
+                out[k.strip()] = v.strip()
+    return out
+
+
+def installer_channel(dev):
+    """The Lumen Installer's own channel of the device (installer.conf beta_channel) when no updater reads it, else
+    None (the HB's installer reads hb-test, the updater's stage channel, which keeps every OTA check)."""
+    ch = installer_conf(dev).get("beta_channel")
+    wid = dev["ota"]["wire_id"]
+    if not ch or ch not in dev["channels"] or ch in ["%s-%s" % (wid, x) for x in UPDATER_CHANNELS]:
+        return None
+    return ch
+
+
+def installer_manifest(dev, mine, mf, errs, notes):
+    """The installer's file on the manifest tag: signed with a certificate of installer.conf (the device's OTA key or
+    the next one), device, channel and model of the registry, an x.y.z(-betaN) version, no OTA package, and an image
+    that is an asset of the version's release (package_tag) with the manifest's size, under installer.conf beta_image."""
+    c, ic = dev["ota"], installer_conf(dev)
+    tag, n = c["manifest_tag"], os.path.basename(mf)
+    certs = ic.get("certs", "").split() or [os.path.relpath(ota_conf.tree_cert(dev), dev["root"])]
+    if not any(vm.signature_ok(mf, mf + ".sig", os.path.join(dev["root"], x)) for x in certs):
+        errs.append("%s/%s does not verify with %s" % (tag, n, " or ".join(certs)))
+        return
+    try:
+        m = json.load(open(mf, encoding="utf-8"))
+    except ValueError as e:
+        errs.append("%s/%s is not JSON: %s" % (tag, n, e))
+        return
+    ch, ver, img = channel_of(n), str(m.get("version", "")), m.get("image")
+    bad = []
+    if m.get("device") != c["wire_id"] or m.get("channel") != ch:
+        bad.append("device %r channel %r, not %s %s" % (m.get("device"), m.get("channel"), c["wire_id"], ch))
+    if m.get("model") not in dev["models"]:
+        bad.append("model %r is not one of %s" % (m.get("model"), " ".join(dev["models"])))
+    if not INSTALLER_VERSION.fullmatch(ver):
+        bad.append("version %r is not x.y.z or x.y.z-betaN" % ver)
+    if m.get("packages"):
+        bad.append("lists %d OTA package(s): the installer's file points at an image only" % len(m["packages"]))
+    if not isinstance(img, dict) or not re.fullmatch(r"[0-9a-f]{64}", str(img.get("sha256", ""))) \
+            or not isinstance(img.get("size"), int):
+        bad.append("image %r has no name, size and sha256" % (img,))
+    if bad:
+        errs += ["%s/%s: %s" % (tag, n, b) for b in bad]
+        return
+    vt = c["package_tag"].replace("{version}", ver)
+    want = ic.get("beta_image", "").replace("{version}", ver)
+    url = "https://github.com/%s/releases/download/%s/%s" % (c["repo"], vt, img.get("name"))
+    assets = {a["name"]: a for a in mine.get(vt, {}).get("assets", [])}
+    if vt not in mine:
+        errs.append("%s/%s: version %s has no release %s" % (tag, n, ver, vt))
+    elif want and img.get("name") != want:
+        errs.append("%s/%s: image %s is not %s (installer.conf beta_image)" % (tag, n, img.get("name"), want))
+    elif img.get("url") != url:
+        errs.append("%s/%s: image url %s is not %s" % (tag, n, img.get("url"), url))
+    elif img["name"] not in assets:
+        errs.append("%s/%s: %s is not an asset of %s" % (tag, n, img["name"], vt))
+    elif assets[img["name"]].get("size") != img["size"]:
+        errs.append("%s/%s: %s is %s bytes on %s, the manifest says %s"
+                    % (tag, n, img["name"], assets[img["name"]].get("size"), vt, img["size"]))
+    else:
+        notes.append("%s/%s: the installer's %s %s (%s) %s, image %s on %s (no updater reads it: no T7 gate)"
+                     % (tag, n, ch, ver, m.get("version_code"), m.get("model"), img["name"], vt))
 
 
 def z9x_channel(dev, gh, rels, latest, tmp, errs, notes):

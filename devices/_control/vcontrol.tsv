@@ -19,5 +19,6 @@ G0058	20500319	v2.5.3.19	stock Play 6 v1.7.116 packages.txt (versionCode 2050031
 G0111	20500408	v2.5.4.8	stock dump g0111 v1.2.64 vendor/priv-app/vcontrol_release838 (apk sha256 500503a8)
 G0100	20500408	v2.5.4.8	assumed = G0111 (same X50 firmware family, no G0100 dump yet)
 G0155	20500502	v2.5.5.2	stock dump g0155 v1.1.42 vendor/priv-app/vcontrol_release838 (apk sha256 350d0640)
+H0061	20500408	v2.5.4.8	the build of H0062 and H0063 (XR03EOS v1.2.54 / v1.2.99 carry its config folder): the same vendor/priv-app/vcontrol_release838 apk
 H0062	20500408	v2.5.4.8	same vendor as XR03EOS v1.2.54 full OTA: vendor/priv-app/vcontrol_release838 apk unchanged against the G0111 v1.2.64 dump (only its odex differs), v1.2.99 not read
 H0063	20500408	v2.5.4.8	same vendor as XR03EOS v1.2.54 full OTA: vendor/priv-app/vcontrol_release838 apk unchanged against the G0111 v1.2.64 dump (only its odex differs), v1.2.99 not read

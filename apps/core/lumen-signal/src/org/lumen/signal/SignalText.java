@@ -33,7 +33,12 @@ public final class SignalText {
             HINT_CLOSE = "hint_close",
             R_COLOR_FORMAT = "r_color_format", R_COLORIMETRY = "r_colorimetry", COLOR_DEFAULT = "color_default",
             R_DEPTH = "r_depth", DEPTH_BITS = "depth_bits", RANGE_AUTO_FULL = "range_auto_full",
-            RANGE_AUTO_LIMITED = "range_auto_limited";
+            RANGE_AUTO_LIMITED = "range_auto_limited",
+            R_DEVICE = "r_device", KIND_STB = "kind_stb", KIND_DVD = "kind_dvd", KIND_GAME = "kind_game",
+            KIND_PC = "kind_pc", KIND_BLURAY = "kind_bluray", KIND_PLAYER = "kind_player", LINK_FRL = "link_frl",
+            LINK_TMDS = "link_tmds", LINK_TMDS20 = "link_tmds20", R_MASTERING = "r_mastering", NITS = "nits",
+            MASTER_MIN = "master_min", R_LIGHT = "r_light", LIGHT_BOTH = "light_both", LIGHT_CLL = "light_cll",
+            LIGHT_FALL = "light_fall";
 
     /** Every key, for the resource check. */
     public static final String[] ALL = {TITLE, PORT_HDMI, PORT_APPS, NO_SIGNAL, SEC_INPUT, SEC_PROJECTOR, SEC_SOUND,
@@ -46,7 +51,8 @@ public final class SignalText {
             R_TEMP_SYSTEM, DEGREES, ON, OFF, R_OUT, OUT_SPEAKER, OUT_ARC, OUT_EARC, OUT_BT, OUT_USB, OUT_WIRED, OUT_HDMI,
             OUT_OTHER, R_SOUND_FORMAT, FMT_AUTO, FMT_PCM, FMT_PASS, FMT_MANUAL, SOUND_LINE, POPUP_ROW, HINT_HOLD,
             HINT_FOLD, HINT_HIDE, HINT_CLOSE, R_COLOR_FORMAT, R_COLORIMETRY, COLOR_DEFAULT, R_DEPTH, DEPTH_BITS, RANGE_AUTO_FULL,
-            RANGE_AUTO_LIMITED};
+            RANGE_AUTO_LIMITED, R_DEVICE, KIND_STB, KIND_DVD, KIND_GAME, KIND_PC, KIND_BLURAY, KIND_PLAYER, LINK_FRL,
+            LINK_TMDS, LINK_TMDS20, R_MASTERING, NITS, MASTER_MIN, R_LIGHT, LIGHT_BOTH, LIGHT_CLL, LIGHT_FALL};
 
     /** The texts of the current language. */
     public interface Words {
@@ -55,5 +61,12 @@ public final class SignalText {
 
         /** The decimal separator of the current language ('.' English, ',' Russian). */
         char decimal();
+
+        /** The menu's own name of a menu row ("picture.mode": Picture mode), null when the app gives none. */
+        default String menuTitle(String feature) { return null; }
+
+        /** The menu's own name of one option of that row ("picture.mode", "standard": Standard), null = none. */
+        default String menuOption(String feature, String token) { return null; }
     }
+
 }
