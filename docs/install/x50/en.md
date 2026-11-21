@@ -1,30 +1,32 @@
 <a name="x50"></a>
 
-# Lumen OS on the XGIMI X50 Ultra, X50 Ultra Max, RS30 Ultra Max and TITAN
+# Lumen OS on the XGIMI X50 Ultra, X50 Ultra Max, RS30 and TITAN
 
 [Русская версия](ru.md). Other projectors: [Installing Lumen OS](../en.md).
 
 This page is for these XGIMI projectors. You install Lumen OS from the projector itself, with the Lumen
-Installer app. You do not need a computer.
+Installer app. Lumen OS downloads over the projector's own internet connection, Wi-Fi or Ethernet. You need no
+computer and no USB cable, and there is no other way to install it.
 
 | Projector | Model code | XGIMI firmware |
 |---|---|---|
-| X50 Ultra | G0111 | V1.2.64 or V1.2.54 |
-| X50 Ultra Max | G0100 | V1.2.64 or V1.2.54 |
+| X50 Ultra | G0111 | V1.2.64, V1.3.38 or V1.2.54 |
+| X50 Ultra Max | G0100 | V1.2.64, V1.3.38 or V1.2.54 |
 | RS30 Ultra Max | G0155 | V1.1.42 |
+| RS30 Ultra | G0170 | V1.2.5 |
 | TITAN Noir | H0061 | V1.2.99 or V1.2.54 |
 | TITAN Noir Pro | H0062 | V1.2.99 or V1.2.54 |
 | TITAN Noir Max | H0063 | V1.2.99 or V1.2.54 |
 
 Lumen OS for these models is a beta. First it starts once as a trial. Your XGIMI system and your files stay as
-they are. Installing for good is open on the X50 Ultra with V1.2.64. On the other models and versions only the
+they are. Installing for good is open on the X50 Ultra with V1.2.64 or V1.3.38. On the other models and versions only the
 trial works for now. Lumen Installer tells you which applies before you start. Installing erases everything on
 the projector once. Lumen OS replaces only the system: the XGIMI firmware and calibration stay as they are.
 
 ## What you need
 
-- The projector on its XGIMI system, connected to Wi-Fi with internet.
-- A USB stick with FAT32 or exFAT.
+- The projector on its XGIMI system, connected to the internet over Wi-Fi or Ethernet.
+- A USB stick with FAT32 or exFAT. It only carries the Lumen Installer app to the projector.
 - Free space in the projector's memory. Lumen Installer tells you how much it needs.
 - The projector plugged in the whole time.
 
@@ -62,7 +64,8 @@ as XGIMI's own updates do.
 
 Lumen OS comes without Google. To get Google Play, YouTube and your Google account, choose **Yes** at step 8.
 Lumen OS then downloads Google services from their official page, about 400 MB. Updates and a factory reset
-keep them.
+keep them. You choose them only at the install. To add them later, install Lumen OS again from the
+projector: first put back the XGIMI system with the recovery stick.
 
 Chromecast built-in does not work, with or without Google: Google gives it only to the models it has certified.
 Use AirPlay from an iPhone, iPad or Mac, or DLNA (send to TV) from a phone app.
@@ -88,10 +91,8 @@ installs only after your OK. Your apps, settings and files stay.
 - Lumen Installer stops with a message. Do what it says. It always tells you when nothing was changed.
 - Your XGIMI firmware is not in the list. To only try Lumen OS on your version, tick
   **Start the trial anyway**. Installing for good from that version is not possible.
-- The download keeps failing. Lumen Installer names the version under About (the round "i"), in the line
-  Lumen OS to try. On a computer, download the image, `SHA256SUMS` and `SHA256SUMS.sig` of that version from
-  the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases). Put them into a folder `LumenOS`
-  at the top of a USB stick. In Lumen Installer switch to **Get Lumen OS: USB stick or LumenOS folder**.
+- The download keeps failing. Check that the projector is online and press **Get the trial ready** again.
+  The download goes on from where it stopped.
 - The trial does not work right. Restart the projector. It goes back to the XGIMI system. To free the space,
   open Lumen Installer and press **Remove the trial**.
 - The install stopped with **Installing stopped**. Your XGIMI system has not changed. You can try again.

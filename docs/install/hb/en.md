@@ -5,7 +5,8 @@
 [Русская версия](ru.md). Other projectors: [Installing Lumen OS](../en.md).
 
 This page is for the XGIMI Z9X HB, model codes G0130 and G0148. You install Lumen OS from the projector itself,
-with the Lumen Installer app. You do not need a computer.
+with the Lumen Installer app. Lumen OS downloads over the projector's own internet connection, Wi-Fi or Ethernet. You need no
+computer and no USB cable, and there is no other way to install it.
 
 First Lumen OS starts once as a trial. Your XGIMI system and your files stay as they are. If you like it,
 you install it for good from inside the trial. Installing erases everything on the projector once. Lumen OS
@@ -15,9 +16,9 @@ replaces only the system: the XGIMI firmware, calibration, focus, keystone and l
 
 ## What you need
 
-- The Z9X HB on its XGIMI system, connected to Wi-Fi with internet.
+- The Z9X HB on its XGIMI system, connected to the internet over Wi-Fi or Ethernet.
 - XGIMI firmware V6.16.24 or V6.17.12 on the G0130, V6.17.12 on the G0148. The G0118 is not supported yet.
-- A USB stick with FAT32 or exFAT.
+- A USB stick with FAT32 or exFAT. It only carries the Lumen Installer app to the projector.
 - Free space in the projector's memory. Lumen Installer tells you how much it needs.
 - The projector plugged in the whole time.
 
@@ -57,7 +58,8 @@ as XGIMI's own updates do.
 
 Lumen OS comes without Google. To get Google Play, YouTube and your Google account, choose **Yes** at step 8.
 Lumen OS then downloads Google services from their official page, about 400 MB. Updates and a factory reset
-keep them.
+keep them. You choose them only at the install. To add them later, install Lumen OS again from the
+projector: first put back the XGIMI system with the recovery stick.
 
 Chromecast built-in does not work, with or without Google: Google gives it only to the models it has certified.
 Use AirPlay from an iPhone, iPad or Mac, or DLNA (send to TV) from a phone app.
@@ -74,17 +76,15 @@ installs only after your OK. Your apps, settings and files stay.
 - While an update installs, until the projector asks you to restart, do not change the picture settings or
   the keystone. A change made during that time is lost.
 
-<a name="problems"></a><a name="hb-problems"></a><a name="rescue"></a><a name="hb-rescue"></a>
+<a name="problems"></a><a name="hb-problems"></a><a name="rescue"></a><a name="hb-rescue"></a><a name="advanced"></a><a name="vbmeta"></a><a name="hb-vbmeta"></a><a name="hb-files"></a><a name="hb-check"></a><a name="hb-blobs"></a><a name="hb-verify"></a><a name="hb-gsf"></a>
 
 ## Something went wrong
 
 - Lumen Installer stops with a message. Do what it says. It always tells you when nothing was changed.
 - Your XGIMI firmware is not in the list. To only try Lumen OS on your version, tick
   **Start the trial anyway**. Installing for good from that version is not possible.
-- The download keeps failing. Lumen Installer names the version under About (the round "i"), in the line
-  Lumen OS to try. On a computer, download the image, `SHA256SUMS` and `SHA256SUMS.sig` of that version from
-  the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases). Put them into a folder `LumenOS`
-  at the top of a USB stick. In Lumen Installer switch to **Get Lumen OS: USB stick or LumenOS folder**.
+- The download keeps failing. Check that the projector is online and press **Get the trial ready** again.
+  The download goes on from where it stopped.
 - The trial does not work right. Restart the projector. It goes back to the XGIMI system. To free the space,
   open Lumen Installer and press **Remove the trial**.
 - The install stopped with **Installing stopped**. Your XGIMI system has not changed. You can try again.
@@ -93,7 +93,10 @@ installs only after your OK. Your apps, settings and files stay.
 - After the install the picture stays dark for more than 15 minutes. Unplug the projector, plug it in again
   and switch it on with a short press. If Lumen OS does not start, the projector goes back to the XGIMI system
   by itself after a few tries.
-- Google refuses the sign-in. Usually it just works. If not, see [Google refuses the sign-in](#hb-gsf).
+- Lumen OS shows **One-time step needed for updates**. Only a projector that got Lumen OS from a computer
+  long ago shows it. Put back the XGIMI system with the recovery stick, see Back to the XGIMI system below.
+  Then install Lumen OS again from the projector.
+- Google refuses the sign-in. Usually it just works. If not, write to us (below) and name your Lumen OS version.
 
 Ask in the Telegram channel [@projector_lumenos](https://t.me/projector_lumenos) or in
 [GitHub issues](https://github.com/Project-Lumen-OS/lumen-os/issues). Say your model, the XGIMI firmware and
@@ -135,81 +138,6 @@ Settings > Device Preferences > About > Back to the XGIMI system.
 6. The restore takes a few minutes. Do not cut the power. If the power does go off, leave the stick in and
    switch the projector on again. Then the XGIMI system starts as it came from the factory.
 7. Take the stick out and delete `factory.txt` from it, so it does not restore again by accident.
-
-<a name="advanced"></a><a name="vbmeta"></a><a name="hb-vbmeta"></a><a name="hb-files"></a><a name="hb-check"></a><a name="hb-blobs"></a>
-
-## With a computer
-
-Most people never need this. You need a computer only to:
-
-- add Google services to a Lumen OS that is already installed without them.
-- get past the screen **One-time step needed for updates**. Only a Z9X HB installed from a computer long ago
-  shows it.
-- register the projector with Google when Google refuses the sign-in.
-- install Lumen OS from a computer instead of Lumen Installer.
-
-You need a Mac or a Linux computer (the Windows version `lumen-install.cmd` is not tested yet), one Wi-Fi
-network for the projector and the computer, and a USB A-to-A cable. The computer talks to the projector over
-Wi-Fi. The cable goes into the projector's USB port only when a step asks for it. From the newest Z9X HB
-release on the [Releases page](https://github.com/Project-Lumen-OS/lumen-os/releases) (its name starts with
-`z9x-hb-`) download the image `lumen-os-hb-…-nogms-system.img`, `SHA256SUMS`, `SHA256SUMS.sig` and
-`lumen-os-hb-…-installer.zip`. Unpack the zip and put the other files next to `lumen-install.sh`. The installer
-checks the signature itself and writes nothing that does not match.
-
-**1. Turn on debugging.** On the XGIMI system open Settings > About and press OK on the build number until
-Developer options open. There turn on USB debugging. On Lumen OS open Settings > Device Preferences > About,
-press OK on Build 7 times, then turn on Developer options > USB debugging. On the HB this opens debugging over
-Wi-Fi. Note the projector's address from the page of your Wi-Fi network. Below it is `192.168.x.y`.
-
-**2. The one step you do by hand.** The projector must be allowed once to start a system that XGIMI did not
-sign. The installer never does this itself. Your data stays. Run `bash lumen-install.sh --ip 192.168.x.y check`
-once: it downloads the tools the commands below use. Then take `vbmeta.img` out of any arm64 archive on
-[Google's page](https://developer.android.com/topic/generic-system-image/releases), for example `aosp_arm64`,
-and put it into the installer folder. Connect the projector's USB port to the computer with the cable and run:
-
-```
-tools/platform-tools/adb connect 192.168.x.y:5555
-```
-
-```
-tools/platform-tools/adb -s 192.168.x.y:5555 reboot fastboot
-```
-
-```
-tools/platform-tools/fastboot --disable-verity --disable-verification --slot=all flash vbmeta vbmeta.img
-```
-
-```
-tools/platform-tools/fastboot reboot
-```
-
-If the projector asks **Allow USB debugging?**, tick Always allow, press OK and run the command again. Both
-write lines must end in `OKAY`. Then pull the cable. If the start hangs with the cable in, pull it and press
-the power button. On Windows write `tools\platform-tools\adb.exe` and `tools\platform-tools\fastboot.exe`. On an
-installed Lumen OS, open Lumen OS update again afterwards.
-
-**3. Install.** Run `bash lumen-install.sh --ip 192.168.x.y`. It checks everything, copies two XGIMI files from
-your projector, asks you to type `ERASE`, asks for the cable when it needs it and writes Lumen OS. When it says
-everything is written, pull the cable. To get Google services in the same run, add
-`--gapps-zip MindTheGapps-14.0.0-arm-ATV-full-20240523_191930.zip` (Mac and Linux only).
-
-**Adding Google services later.** On the installed Lumen OS turn on debugging as in item 1. Download exactly
-[MindTheGapps-14.0.0-arm-ATV-full-20240523_191930.zip](https://github.com/MindTheGapps/14.0.0-arm-ATV/releases/download/MindTheGapps-14.0.0-arm-ATV-20240523_192108/MindTheGapps-14.0.0-arm-ATV-full-20240523_191930.zip)
-and run `bash lumen-install.sh --ip 192.168.x.y gapps --zip MindTheGapps-14.0.0-arm-ATV-full-20240523_191930.zip`.
-Connect the cable when it asks. This erases everything on the projector once more.
-
-<a name="hb-verify"></a>
-**Check the install.** Turn on debugging as in item 1 and run `bash lumen-install.sh --ip 192.168.x.y verify`.
-Lines with `✓` are fine. Send the lines with `!` with your question.
-
-<a name="hb-gsf"></a>
-**Google refuses the sign-in.** Turn on debugging as in item 1 and, in the same Developer options, Rooted
-debugging. Run `bash lumen-install.sh --ip 192.168.x.y gsf` and register the ID it shows at
-[google.com/android/uncertified](https://www.google.com/android/uncertified) with the same Google account. Wait
-10 to 30 minutes, then sign in again.
-
-If the installer stops, fix what it says and run the same command again. It goes on where it stopped. Every
-command is in the [installer description](https://github.com/Project-Lumen-OS/lumen-os/blob/main/installer/README.md).
 
 Lumen OS is an independent project. XGIMI, Google and LineageOS have nothing to do with it. You install it at
 your own risk.

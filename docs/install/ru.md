@@ -21,19 +21,20 @@ Lumen OS это Android TV 14 для проекторов XGIMI. Найдите 
 
 ## С проектора
 
-На всех проекторах из списка, кроме Play 6, Lumen OS ставится приложением Lumen Installer, без компьютера.
-Скачайте из [последнего выпуска Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
-файл Lumen Installer с окончанием `.apk1` и скопируйте его на флешку. Сначала Lumen Installer запускает Lumen OS
-один раз на пробу. Система XGIMI и ваши файлы остаются как есть. Чтобы оставить Lumen OS, её ставят прямо из
-пробного запуска. Это один раз стирает всё на проекторе. Шаги есть на странице вашего проектора.
+На всех проекторах из списка, кроме Play 6, Lumen OS ставится одним способом: приложением Lumen Installer на
+самом проекторе. Оно скачивает Lumen OS через интернет проектора, по Wi-Fi или Ethernet. Компьютер и кабель
+USB не нужны. Скачайте из [последнего выпуска Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
+файл Lumen Installer с окончанием `.apk1` и скопируйте его на флешку. Флешка нужна только для приложения.
+Сначала Lumen Installer запускает Lumen OS один раз на пробу. Система XGIMI и ваши файлы остаются как есть.
+Чтобы оставить Lumen OS, её ставят прямо из пробного запуска. Это один раз стирает всё на проекторе. Шаги
+есть на странице вашего проектора.
 
 <a name="advanced"></a><a name="flash"></a><a name="verify"></a><a name="play6"></a><a name="play6-need"></a><a name="play6-prepare"></a><a name="play6-files"></a><a name="play6-check"></a><a name="play6-install"></a><a name="play6-wifi"></a><a name="play6-verify"></a><a name="play6-google"></a><a name="play6-problems"></a><a name="play6-rescue"></a><a name="play6-stock"></a><a name="play6-changes"></a>
 
-## С компьютером
+## Play 6
 
-Play 6 ставится с компьютера, см. [страницу Play 6](play6/ru.md). На Z9X и Z9X HB компьютер нужен только в
-редких случаях. Они описаны в конце [страницы Z9X](z9x/ru.md#advanced) и
-[страницы Z9X HB](hb/ru.md#advanced).
+Только Play 6 ставится с компьютера, см. [страницу Play 6](play6/ru.md). Все остальные проекторы
+ставятся только с самого проектора, как описано выше.
 
 <a name="new-model"></a>
 

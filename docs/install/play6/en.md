@@ -5,7 +5,8 @@
 [Русская версия](ru.md). Other projectors: [Installing Lumen OS](../en.md).
 
 This page is for the XGIMI Play 6, model code G0058. The Play 6 installs with a computer. Lumen Installer on the
-projector does not support it.
+projector does not support it. Every other projector installs only from the projector itself, over the
+network.
 
 The install takes about 30 minutes and erases everything on the projector. Lumen OS replaces only the system:
 XGIMI's firmware, calibration and factory data stay as they are. Lumen OS for the Play 6 comes without Google.

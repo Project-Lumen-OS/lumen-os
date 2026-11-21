@@ -21,20 +21,20 @@ right, in the Firmware versions card, the version of every firmware part the pro
 
 ## From the projector
 
-On every projector in the list except the Play 6 you install Lumen OS with the Lumen Installer app, without a
-computer. Download the Lumen Installer file that ends in `.apk1` from the
+On every projector in the list except the Play 6 there is one way to install Lumen OS: the Lumen Installer app
+on the projector. It downloads Lumen OS over the projector's own internet connection, Wi-Fi or Ethernet. You
+need no computer and no USB cable. Download the Lumen Installer file that ends in `.apk1` from the
 [latest Lumen Installer release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) and copy
-it to a USB stick. Lumen Installer first starts Lumen OS once as a trial. Your XGIMI system and your files stay
-as they are. To keep Lumen OS, you install it from inside the trial. That erases everything on the projector
-once. The steps are on your projector's page.
+it to a USB stick. The stick only carries the app. Lumen Installer first starts Lumen OS once as a trial. Your
+XGIMI system and your files stay as they are. To keep Lumen OS, you install it from inside the trial. That
+erases everything on the projector once. The steps are on your projector's page.
 
 <a name="advanced"></a><a name="flash"></a><a name="verify"></a><a name="play6"></a><a name="play6-need"></a><a name="play6-prepare"></a><a name="play6-files"></a><a name="play6-check"></a><a name="play6-install"></a><a name="play6-wifi"></a><a name="play6-verify"></a><a name="play6-google"></a><a name="play6-problems"></a><a name="play6-rescue"></a><a name="play6-stock"></a><a name="play6-changes"></a>
 
-## With a computer
+## Play 6
 
-The Play 6 installs with a computer, see the [Play 6 page](play6/en.md). On the Z9X and the Z9X HB a computer
-is needed only in rare cases. They are at the end of the [Z9X page](z9x/en.md#advanced) and the
-[Z9X HB page](hb/en.md#advanced).
+Only the Play 6 installs with a computer, see the [Play 6 page](play6/en.md). Every other projector
+installs only from the projector itself, as above.
 
 <a name="new-model"></a>
 

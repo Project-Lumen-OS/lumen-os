@@ -22,9 +22,10 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 | XGIMI Z9X | стабильная | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [с проектора](docs/install/z9x/ru.md) |
 | XGIMI Play 6 | стабильная | [Lumen OS 1.0.10 для Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [с компьютером](docs/install/play6/ru.md) |
 | XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/hb/ru.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta10), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta10) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Max | бета, только проба | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta2), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta3), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta3) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta12), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta12) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | бета, только проба | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra | бета, только проба | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [с проектора](docs/install/x50/ru.md) |
 
 У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
 проектора и прошивку XGIMI, которую он не знает.
@@ -37,11 +38,12 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
   можно добавить установщиком из своего файла MindTheGapps.
 - XGIMI Z9X HB (модели G0130 и G0148): прошивка XGIMI V6.16.24 или V6.17.12 на G0130, V6.17.12 на G0148.
   Обновления приходят по Wi-Fi.
-- XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64 или V1.2.54. Бета.
-  Установить насовсем можно на X50 Ultra с V1.2.64. В остальных случаях это пробный запуск: Lumen OS
+- XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64, V1.3.38 или
+  V1.2.54. Бета. Установить насовсем можно на X50 Ultra с V1.2.64 или V1.3.38. В остальных случаях это пробный запуск: Lumen OS
   запускается один раз, система XGIMI остаётся как есть.
-- XGIMI RS30 Ultra Max (модель G0155, прошивка V1.1.42), TITAN Noir Pro и TITAN Noir Max (модели H0062 и
-  H0063, прошивка V1.2.99 или V1.2.54): бета, которую можно попробовать с проектора.
+- XGIMI RS30 Ultra Max (модель G0155, прошивка V1.1.42), RS30 Ultra (модель G0170, прошивка V1.2.5), TITAN
+  Noir, TITAN Noir Pro и TITAN Noir Max (модели H0061, H0062 и H0063, прошивка V1.2.99 или V1.2.54): бета,
+  которую можно попробовать с проектора.
 
 Другие проекторы добавятся позже.
 
@@ -109,28 +111,26 @@ Google. Не запустятся приложения, которым нужн�
 
 Скачивайте только со [страницы релизов](https://github.com/Project-Lumen-OS/lumen-os/releases) этого
 репозитория и со [страницы релизов Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases).
-Релиз с пометкой «Latest» для Z9X. В каждом релизе Lumen OS есть `SHA256SUMS` и `SHA256SUMS.sig`, оба установщика
-их проверяют и другой образ не примут. Копии на форумах и файлообменниках я не проверяю.
+Релиз с пометкой «Latest» для Z9X. В каждом релизе Lumen OS есть `SHA256SUMS` и `SHA256SUMS.sig`, Lumen Installer
+их проверяет и другой образ не примет. Копии на форумах и файлообменниках я не проверяю.
 
-### Простая установка: с проектора
+### С проектора
 
-Без компьютера и без кабеля. Для всех проекторов из списка, кроме Play 6.
+Единственный способ для всех проекторов из списка, кроме Play 6. Lumen OS скачивается через интернет самого
+проектора, по Wi-Fi или Ethernet. Компьютер и кабель USB не нужны.
 
 1. Скачайте из [последнего релиза](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) файл Lumen Installer с окончанием `.apk1`
-   и скопируйте его на флешку (FAT32 или exFAT).
+   и скопируйте его на флешку (FAT32 или exFAT). Флешка нужна только для приложения.
 2. Вставьте флешку в проектор, откройте файл в файловом менеджере XGIMI и подтвердите установку.
-3. Откройте Lumen Installer. Он узнает модель и скачает нужный релиз Lumen OS.
+3. Подключите проектор к интернету и откройте Lumen Installer. Он узнает модель и скачает нужный релиз Lumen OS.
 4. Сначала попробуйте Lumen OS. Она запустится один раз, система XGIMI и ваши файлы останутся как есть.
    Перезапуск возвращает систему XGIMI.
 5. Чтобы оставить Lumen OS, откройте внутри пробного запуска «Установить Lumen OS» и выберите, нужны ли сервисы
    Google.
 
----
+### Play 6
 
-### Для опытных: с компьютером
-
-Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md). На Z9X и Z9X HB компьютер
-нужен только в редких случаях, см. [«С компьютером»](docs/install/ru.md#advanced).
+Только Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md).
 
 ## Обновления и откат
 
@@ -164,9 +164,6 @@ IP Geolocation by [DB-IP](https://db-ip.com).
 
 ## Известные проблемы
 
-- Установщик для Windows ещё не проверялся.
-- На Z9X, пока кабель USB подключён к компьютеру, проектор не засыпает по-настоящему. После установки
-  отключите кабель.
 - Play 6: пока нет обновлений по Wi-Fi, и Lumen Installer на проекторе его пока не ставит.
 
 ## Помощь и сообщения об ошибках

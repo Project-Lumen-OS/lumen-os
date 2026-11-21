@@ -1,11 +1,14 @@
 # Lumen OS installer
 
-Installs Lumen OS from a computer on an XGIMI Z9X (G0082, XGIMI firmware V6.15.58, V6.15.62 or V6.15.19) or an
-XGIMI Play 6 (G0058, XGIMI firmware V1.7.116 or V1.8.127). Follow the install guide of your projector, it has every step in order. XGIMI Z9X:
-[English](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/z9x/en.md),
-[Русский](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/z9x/ru.md). XGIMI Play 6:
+Installs Lumen OS from a computer on an XGIMI Play 6 (G0058, XGIMI firmware V1.7.116 or V1.8.127), the only
+projector that needs a computer. Follow its install guide, it has every step in order:
 [English](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/play6/en.md),
 [Русский](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/play6/ru.md).
+
+Every other projector, the XGIMI Z9X included, installs only from the projector itself: Lumen Installer downloads
+Lumen OS over the network. See the install guide:
+[English](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md),
+[Русский](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md).
 
 ## Files
 

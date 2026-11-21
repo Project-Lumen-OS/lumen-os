@@ -22,9 +22,10 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 | XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/z9x/en.md) |
 | XGIMI Play 6 | stable | [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [with a computer](docs/install/play6/en.md) |
 | XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/hb/en.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta10), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta10) | [from the projector](docs/install/x50/en.md) |
-| XGIMI RS30 Ultra Max | beta, trial only | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta6) | [from the projector](docs/install/x50/en.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | beta, trial only | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta2), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta3), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta3) | [from the projector](docs/install/x50/en.md) |
+| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta12), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta12) | [from the projector](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra Max | beta, trial only | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [from the projector](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra | beta, trial only | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [from the projector](docs/install/x50/en.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | beta, trial only | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [from the projector](docs/install/x50/en.md) |
 
 Each projector has its own release files, signed with its own key. The installer refuses an image for
 another projector and any XGIMI firmware it does not know.
@@ -37,11 +38,12 @@ another projector and any XGIMI firmware it does not know.
   services can be added with the installer from your own MindTheGapps download.
 - XGIMI Z9X HB (model codes G0130 and G0148): XGIMI firmware V6.16.24 or V6.17.12 on the G0130, V6.17.12 on
   the G0148. Updates come over Wi-Fi.
-- XGIMI X50 Ultra (model code G0111) and X50 Ultra Max (model code G0100): XGIMI firmware V1.2.64 or V1.2.54. A
-  beta. Installing for good is open on the X50 Ultra with V1.2.64. Otherwise it is a trial: Lumen OS starts once
+- XGIMI X50 Ultra (model code G0111) and X50 Ultra Max (model code G0100): XGIMI firmware V1.2.64, V1.3.38 or
+  V1.2.54. A beta. Installing for good is open on the X50 Ultra with V1.2.64 or V1.3.38. Otherwise it is a trial: Lumen OS starts once
   and the XGIMI system stays as it is.
-- XGIMI RS30 Ultra Max (model code G0155, firmware V1.1.42), TITAN Noir Pro and TITAN Noir Max (model codes
-  H0062 and H0063, firmware V1.2.99 or V1.2.54): a beta to try from the projector.
+- XGIMI RS30 Ultra Max (model code G0155, firmware V1.1.42), RS30 Ultra (model code G0170, firmware V1.2.5),
+  TITAN Noir, TITAN Noir Pro and TITAN Noir Max (model codes H0061, H0062 and H0063, firmware V1.2.99 or
+  V1.2.54): a beta to try from the projector.
 
 More projectors will come later.
 
@@ -106,27 +108,25 @@ page for each projector. Installing Lumen OS for good erases all data on the pro
 
 Download only from this repository's [Releases](https://github.com/Project-Lumen-OS/lumen-os/releases) and the
 [Lumen Installer releases](https://github.com/Project-Lumen-OS/lumen-installer/releases). The release marked
-Latest is for the Z9X. Every Lumen OS release has `SHA256SUMS` and `SHA256SUMS.sig`. Both installers check them
-and refuse anything else. Copies on forums and file hosts are not ours.
+Latest is for the Z9X. Every Lumen OS release has `SHA256SUMS` and `SHA256SUMS.sig`. Lumen Installer checks them
+and refuses anything else. Copies on forums and file hosts are not ours.
 
-### Easy install: from the projector
+### From the projector
 
-No computer and no cable. For every projector in the list except the Play 6.
+The only way for every projector in the list except the Play 6. Lumen OS downloads over the projector's own
+internet connection, Wi-Fi or Ethernet. No computer and no USB cable.
 
 1. Download the Lumen Installer file that ends in `.apk1` from the [latest release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
-   and copy it to a USB stick (FAT32 or exFAT).
+   and copy it to a USB stick (FAT32 or exFAT). The stick only carries the app.
 2. Plug the stick into the projector, open the file in the XGIMI file manager and confirm.
-3. Open Lumen Installer. It finds your model and downloads the right Lumen OS release.
+3. Connect the projector to the internet and open Lumen Installer. It finds your model and downloads the right Lumen OS release.
 4. Try Lumen OS first. It starts once, and the XGIMI system and your files stay as they are. A restart brings
    the XGIMI system back.
 5. To keep it, open Install Lumen OS inside the trial and choose whether you want Google services.
 
----
+### Play 6
 
-### Advanced: with a computer
-
-The Play 6 installs with a computer, see the [Play 6 guide](docs/install/play6/en.md). On the Z9X and the
-Z9X HB a computer is needed only in rare cases, see [With a computer](docs/install/en.md#advanced).
+Only the Play 6 installs with a computer, see the [Play 6 guide](docs/install/play6/en.md).
 
 ## Updates and going back
 
@@ -159,9 +159,6 @@ also deletes the install id. Turning it on again starts with a new one.
 
 ## Known issues
 
-- The Windows installer has not been tested yet.
-- On the Z9X, while a USB cable to a computer is connected, the projector does not really sleep. Unplug
-  it after the install.
 - Play 6: no updates over Wi-Fi yet, and Lumen Installer on the projector does not install it yet.
 
 ## Help and bug reports
