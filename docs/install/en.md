@@ -10,8 +10,8 @@ every step, Google services, updates, what to do if something goes wrong and the
 | XGIMI Z9X | G0082 | from the projector | [Z9X](z9x/en.md) |
 | XGIMI Z9X HB | G0130, G0148 | from the projector | [Z9X HB](hb/en.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | from the projector, beta | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI RS30 Ultra Max | G0155 | from the projector, beta, trial only | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | from the projector, beta, trial only | [X50, RS30 and TITAN](x50/en.md) |
+| XGIMI RS30 Ultra Max | G0155 | from the projector, beta, Lumen OS Live only | [X50, RS30 and TITAN](x50/en.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | from the projector, beta, Lumen OS Live only | [X50, RS30 and TITAN](x50/en.md) |
 | XGIMI Play 6 | G0058 | with a computer | [Play 6](play6/en.md) |
 
 Lumen Installer shows the model code and the XGIMI firmware of your projector at the top of its screen, and on the
@@ -25,8 +25,8 @@ On every projector in the list except the Play 6 there is one way to install Lum
 on the projector. It downloads Lumen OS over the projector's own internet connection, Wi-Fi or Ethernet. You
 need no computer and no USB cable. Download the Lumen Installer file that ends in `.apk1` from the
 [latest Lumen Installer release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) and copy
-it to a USB stick. The stick only carries the app. Lumen Installer first starts Lumen OS once as a trial. Your
-XGIMI system and your files stay as they are. To keep Lumen OS, you install it from inside the trial. That
+it to a USB stick. The stick only carries the app. Lumen Installer first starts Lumen OS once as Lumen OS Live. Your
+XGIMI system and your files stay as they are. To keep Lumen OS, you install it from inside Lumen OS Live. That
 erases everything on the projector once. The steps are on your projector's page.
 
 <a name="advanced"></a><a name="flash"></a><a name="verify"></a><a name="play6"></a><a name="play6-need"></a><a name="play6-prepare"></a><a name="play6-files"></a><a name="play6-check"></a><a name="play6-install"></a><a name="play6-wifi"></a><a name="play6-verify"></a><a name="play6-google"></a><a name="play6-problems"></a><a name="play6-rescue"></a><a name="play6-stock"></a><a name="play6-changes"></a>
@@ -41,7 +41,7 @@ installs only from the projector itself, as above.
 ## Your projector or firmware is not in the list
 
 Lumen Installer tells you so. If the model is known and only the XGIMI firmware is not in the list, you can
-tick **Start the trial anyway**. Then only the trial is possible, not the install.
+tick **Start Lumen OS Live anyway**. Then only Lumen OS Live is possible, not the install.
 
 You can also help us make Lumen OS for your projector. The button works only on the XGIMI system and changes
 nothing on the projector.
@@ -74,7 +74,7 @@ page.
 
 ## Something went wrong
 
-- During a trial, restart the projector. It goes back to the XGIMI system.
+- In Lumen OS Live, restart the projector. It goes back to the XGIMI system.
 - What to do in each case is on your projector's page: [Z9X](z9x/en.md#problems),
   [Z9X HB](hb/en.md#problems), [X50, RS30 and TITAN](x50/en.md#problems), [Play 6](play6/en.md#play6-problems).
 - Ask in the Telegram channel [@projector_lumenos](https://t.me/projector_lumenos) or in
@@ -85,7 +85,7 @@ page.
 
 ## Back to the XGIMI system
 
-- During a trial, restart the projector.
+- In Lumen OS Live, restart the projector.
 - After an install, the XGIMI recovery USB stick with the official XGIMI file for your model brings the XGIMI
   system back. It erases everything on the projector. Lumen OS shows the file name for the stick in
   Settings > Device Preferences > About > Back to the XGIMI system.

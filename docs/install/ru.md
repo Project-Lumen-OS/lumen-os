@@ -10,8 +10,8 @@ Lumen OS это Android TV 14 для проекторов XGIMI. Найдите 
 | XGIMI Z9X | G0082 | с проектора | [Z9X](z9x/ru.md) |
 | XGIMI Z9X HB | G0130, G0148 | с проектора | [Z9X HB](hb/ru.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | с проектора, бета | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI RS30 Ultra Max | G0155 | с проектора, бета, только проба | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | с проектора, бета, только проба | [X50, RS30 и TITAN](x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0155 | с проектора, бета, только Lumen OS Live | [X50, RS30 и TITAN](x50/ru.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | с проектора, бета, только Lumen OS Live | [X50, RS30 и TITAN](x50/ru.md) |
 | XGIMI Play 6 | G0058 | с компьютера | [Play 6](play6/ru.md) |
 
 Код модели и прошивку XGIMI вашего проектора Lumen Installer показывает вверху своего экрана, а справа в карточке
@@ -25,8 +25,8 @@ Lumen OS это Android TV 14 для проекторов XGIMI. Найдите 
 самом проекторе. Оно скачивает Lumen OS через интернет проектора, по Wi-Fi или Ethernet. Компьютер и кабель
 USB не нужны. Скачайте из [последнего выпуска Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest)
 файл Lumen Installer с окончанием `.apk1` и скопируйте его на флешку. Флешка нужна только для приложения.
-Сначала Lumen Installer запускает Lumen OS один раз на пробу. Система XGIMI и ваши файлы остаются как есть.
-Чтобы оставить Lumen OS, её ставят прямо из пробного запуска. Это один раз стирает всё на проекторе. Шаги
+Сначала Lumen Installer запускает Lumen OS один раз как Lumen OS Live. Система XGIMI и ваши файлы остаются как есть.
+Чтобы оставить Lumen OS, её ставят прямо из Lumen OS Live. Это один раз стирает всё на проекторе. Шаги
 есть на странице вашего проектора.
 
 <a name="advanced"></a><a name="flash"></a><a name="verify"></a><a name="play6"></a><a name="play6-need"></a><a name="play6-prepare"></a><a name="play6-files"></a><a name="play6-check"></a><a name="play6-install"></a><a name="play6-wifi"></a><a name="play6-verify"></a><a name="play6-google"></a><a name="play6-problems"></a><a name="play6-rescue"></a><a name="play6-stock"></a><a name="play6-changes"></a>
@@ -41,7 +41,7 @@ USB не нужны. Скачайте из [последнего выпуска 
 ## Вашего проектора или прошивки нет в списке
 
 Lumen Installer скажет об этом. Если модель известна и нет в списке только прошивки XGIMI, можно поставить
-галочку **Запустить пробную версию всё равно**. Тогда возможен только пробный запуск, установить нельзя.
+галочку **Запустить Lumen OS Live всё равно**. Тогда работает только Lumen OS Live, установить нельзя.
 
 Ещё вы можете помочь нам сделать Lumen OS для своего проектора. Кнопка работает только на системе XGIMI и ничего
 на проекторе не меняет.
@@ -74,7 +74,7 @@ OS. Приложения, настройки и файлы сохраняютс�
 
 ## Если что-то пошло не так
 
-- Во время пробного запуска перезапустите проектор. Он вернётся к системе XGIMI.
+- В Lumen OS Live перезапустите проектор. Он вернётся к системе XGIMI.
 - Что делать в каждом случае, написано на странице вашего проектора: [Z9X](z9x/ru.md#problems),
   [Z9X HB](hb/ru.md#problems), [X50, RS30 и TITAN](x50/ru.md#problems), [Play 6](play6/ru.md#play6-problems).
 - Спрашивайте в Telegram-канале [@projector_lumenos](https://t.me/projector_lumenos) или в
@@ -86,7 +86,7 @@ OS. Приложения, настройки и файлы сохраняютс�
 
 ## Возврат к системе XGIMI
 
-- Во время пробного запуска перезапустите проектор.
+- В Lumen OS Live перезапустите проектор.
 - После установки систему XGIMI возвращает флешка восстановления XGIMI с официальным файлом XGIMI для вашей
   модели. Она стирает всё на проекторе. Имя файла для флешки Lumen OS показывает в Настройки > Настройки
   устройства > Об устройстве > Возврат к системе XGIMI.

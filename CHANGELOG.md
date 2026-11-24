@@ -431,7 +431,7 @@ away, no version in between is needed. Your data stays.
   and the projector asks before every connection.
 - Sound enhancement shows the real choice again, DTS and Harman Kardon switch both ways.
 - Install straight from the projector, no computer needed: the Lumen Installer app (`lumen-installer-0.5.apk`). Try
-  Lumen OS first, the XGIMI system stays as it is, then install it for good, with or without Google services.
+  Lumen OS first, the XGIMI system stays as it is, then install it permanently, with or without Google services.
 - Google services no longer turn off after an unlucky first start of an update.
 - Smaller fixes.
 

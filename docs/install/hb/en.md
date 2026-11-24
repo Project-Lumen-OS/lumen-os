@@ -8,8 +8,8 @@ This page is for the XGIMI Z9X HB, model codes G0130 and G0148. You install Lume
 with the Lumen Installer app. Lumen OS downloads over the projector's own internet connection, Wi-Fi or Ethernet. You need no
 computer and no USB cable, and there is no other way to install it.
 
-First Lumen OS starts once as a trial. Your XGIMI system and your files stay as they are. If you like it,
-you install it for good from inside the trial. Installing erases everything on the projector once. Lumen OS
+First Lumen OS starts once as Lumen OS Live. Your XGIMI system and your files stay as they are. If you like it,
+you install it permanently from inside Lumen OS Live. Installing erases everything on the projector once. Lumen OS
 replaces only the system: the XGIMI firmware, calibration, focus, keystone and lamp stay as they are.
 
 <a name="hb-need"></a><a name="hb-prepare"></a>
@@ -34,13 +34,13 @@ Never put V6.16.24 on a G0148, or on any projector that came with V6.17.12. It i
 2. Plug the stick into the projector. Open the file in the XGIMI file manager and confirm the install.
 3. Open Lumen Installer. At the top it shows your model and its XGIMI firmware. Below it says whether Lumen OS
    works on this projector.
-4. Press **Get the trial ready**. The app checks the projector, downloads Lumen OS, checks the download and
-   prepares the trial. This takes about 10 minutes. Most of it is the download. You can press **Pause** and
+4. Press **Prepare Lumen OS Live**. The app checks the projector, downloads Lumen OS, checks the download and
+   prepares Lumen OS Live. This takes about 10 minutes. Most of it is the download. You can press **Pause** and
    continue later.
-5. Press **Start Lumen OS** and confirm. Then press **Restart now**. Lumen OS starts once as a trial.
+5. Press **Start Lumen OS Live** and confirm. Then press **Restart now**. Lumen OS starts once as Lumen OS Live.
 6. Go through the setup on the screen and try Lumen OS. To go back, just restart the projector.
-7. To keep Lumen OS, open **Install Lumen OS**. It is the top line of the language step in the setup, and it is
-   on the home screen of the trial too.
+7. To keep Lumen OS, open **Install Lumen OS permanently**. It is the top line of the language step in the setup, and it is
+   on the home screen of Lumen OS Live too.
 8. Choose Google services: press OK on that line to switch between **Yes** and **No**. Then press
    **Continue**. The app checks the projector. Nothing changes yet.
 9. When it says **All set**, press **Install**. If the app asks **Allow copying the XGIMI files?**, choose
@@ -82,11 +82,11 @@ installs only after your OK. Your apps, settings and files stay.
 
 - Lumen Installer stops with a message. Do what it says. It always tells you when nothing was changed.
 - Your XGIMI firmware is not in the list. To only try Lumen OS on your version, tick
-  **Start the trial anyway**. Installing for good from that version is not possible.
-- The download keeps failing. Check that the projector is online and press **Get the trial ready** again.
+  **Start Lumen OS Live anyway**. Installing permanently from that version is not possible.
+- The download keeps failing. Check that the projector is online and press **Prepare Lumen OS Live** again.
   The download goes on from where it stopped.
-- The trial does not work right. Restart the projector. It goes back to the XGIMI system. To free the space,
-  open Lumen Installer and press **Remove the trial**.
+- Lumen OS Live does not work right. Restart the projector. It goes back to the XGIMI system. To free the space,
+  open Lumen Installer and press **Remove Lumen OS Live**.
 - The install stopped with **Installing stopped**. Your XGIMI system has not changed. You can try again.
 - The app says **Something went wrong after the switch to Lumen OS**. Do not restart. Take a photo of the
   screen with the help code and ask us.
@@ -106,7 +106,7 @@ what you did. It helps if you also press **Send info** in Lumen Installer and te
 
 ## Back to the XGIMI system
 
-During the trial, just restart the projector. After an install, the XGIMI recovery USB stick brings the XGIMI
+In Lumen OS Live, just restart the projector. After an install, the XGIMI recovery USB stick brings the XGIMI
 system back. It erases everything on the projector. Lumen OS shows the file name for the stick in
 Settings > Device Preferences > About > Back to the XGIMI system.
 

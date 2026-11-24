@@ -23,14 +23,14 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 | XGIMI Play 6 | стабильная | [Lumen OS 1.0.10 для Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [с компьютером](docs/install/play6/ru.md) |
 | XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/hb/ru.md) |
 | XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta12), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta12) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Max | бета, только проба | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra | бета, только проба | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только проба | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | бета, только Lumen OS Live | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra | бета, только Lumen OS Live | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [с проектора](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только Lumen OS Live | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [с проектора](docs/install/x50/ru.md) |
 
 У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
 проектора и прошивку XGIMI, которую он не знает.
 
-- XGIMI Z9X (модель G0082): прошивка XGIMI V6.15.58 или V6.15.62, на V6.15.19 только пробный запуск.
+- XGIMI Z9X (модель G0082): прошивка XGIMI V6.15.58 или V6.15.62, на V6.15.19 только Lumen OS Live.
   Обновления приходят по Wi-Fi.
 - XGIMI Play 6 (модель G0058): прошивка XGIMI V1.7.116 или V1.8.127. Play 6 с чипом Wi-Fi AIC (новые партии)
   нужна V1.8.127: не ставьте на него V1.7.116, Wi-Fi и Bluetooth после этого перестают работать. Новая версия
@@ -39,7 +39,7 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 - XGIMI Z9X HB (модели G0130 и G0148): прошивка XGIMI V6.16.24 или V6.17.12 на G0130, V6.17.12 на G0148.
   Обновления приходят по Wi-Fi.
 - XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64, V1.3.38 или
-  V1.2.54. Бета. Установить насовсем можно на X50 Ultra с V1.2.64 или V1.3.38. В остальных случаях это пробный запуск: Lumen OS
+  V1.2.54. Бета. Установить насовсем можно на X50 Ultra с V1.2.64 или V1.3.38. В остальных случаях это Lumen OS Live: Lumen OS
   запускается один раз, система XGIMI остаётся как есть.
 - XGIMI RS30 Ultra Max (модель G0155, прошивка V1.1.42), RS30 Ultra (модель G0170, прошивка V1.2.5), TITAN
   Noir, TITAN Noir Pro и TITAN Noir Max (модели H0061, H0062 и H0063, прошивка V1.2.99 или V1.2.54): бета,
@@ -125,7 +125,7 @@ Google. Не запустятся приложения, которым нужн�
 3. Подключите проектор к интернету и откройте Lumen Installer. Он узнает модель и скачает нужный релиз Lumen OS.
 4. Сначала попробуйте Lumen OS. Она запустится один раз, система XGIMI и ваши файлы останутся как есть.
    Перезапуск возвращает систему XGIMI.
-5. Чтобы оставить Lumen OS, откройте внутри пробного запуска «Установить Lumen OS» и выберите, нужны ли сервисы
+5. Чтобы оставить Lumen OS, откройте внутри Lumen OS Live «Установить Lumen OS насовсем» и выберите, нужны ли сервисы
    Google.
 
 ### Play 6
@@ -142,7 +142,7 @@ Lumen OS». Обновление ставится рядом с работающ
 `bash lumen-install.sh --ip АДРЕС --keep-data flash`. Установщик запишет новую систему по кабелю USB и
 сохранит данные. Отладка должна быть включена, см. [«Проверьте установку»](docs/install/play6/ru.md#play6-verify).
 
-Во время пробного запуска, чтобы вернуться, просто перезапустите проектор. После установки систему XGIMI
+В Lumen OS Live, чтобы вернуться, просто перезапустите проектор. После установки систему XGIMI
 возвращает официальная прошивка XGIMI с флешки, при этом всё стирается, см. «Возврат к системе XGIMI» для
 [Z9X](docs/install/z9x/ru.md#stock), [Z9X HB](docs/install/hb/ru.md#stock),
 [X50 Ultra и X50 Ultra Max](docs/install/x50/ru.md#stock) и [Play 6](docs/install/play6/ru.md#play6-stock).
