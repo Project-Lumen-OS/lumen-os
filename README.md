@@ -3,12 +3,12 @@
 English | [Русский](README.ru.md)
 
 <p align="center">
-  <a href="#-support-the-project"><img src="docs/repo/support/banner-en.svg" width="100%" alt="Support Lumen OS: every donation goes to a faster build computer"></a>
+  <a href="#support-the-project"><img src="docs/repo/support/banner-en.svg" width="100%" alt="Support Lumen OS: every donation goes to a faster build computer"></a>
 </p>
 <p align="center">
-  <a href="https://send.leobank.az/moneybox/W8IoNRjea6"><img src="https://img.shields.io/badge/💳_Any_card-Donate-ff3d8b?style=for-the-badge" alt="Donate by any card"></a>
+  <a href="https://send.leobank.az/moneybox/W8IoNRjea6"><img src="https://img.shields.io/badge/Any_card-Donate-ff3d8b?style=for-the-badge" alt="Donate by any card"></a>
   <a href="https://pay.cloudtips.ru/p/723aaba1"><img src="https://img.shields.io/badge/🇷🇺_Russian_cards_·_SBP-Donate-0f9d58?style=for-the-badge" alt="Donate with a Russian card or SBP"></a>
-  <a href="#-support-the-project"><img src="https://img.shields.io/badge/🪙_USDT_·_TON-Crypto-6d4dff?style=for-the-badge" alt="Donate in crypto"></a>
+  <a href="#support-the-project"><img src="https://img.shields.io/badge/USDT_·_TON-Crypto-6d4dff?style=for-the-badge" alt="Donate in crypto"></a>
 </p>
 
 Android TV 14 for XGIMI projectors, built on LineageOS 21.
@@ -17,15 +17,27 @@ News, new versions and answers to questions: the Telegram channel [@projector_lu
 
 ## Supported projectors
 
-| Projector | Status | Latest release | Install |
-|---|---|---|---|
-| XGIMI Z9X | stable | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [from the projector](docs/install/z9x/en.md) |
-| XGIMI Play 6 | stable | [Lumen OS 1.0.10 for the Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [with a computer](docs/install/play6/en.md) |
-| XGIMI Z9X HB | stable | [Lumen OS 1.0.9 for the Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [from the projector](docs/install/hb/en.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | beta | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta12), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta12) | [from the projector](docs/install/x50/en.md) |
-| XGIMI RS30 Ultra Max | beta, Lumen OS Live only | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [from the projector](docs/install/x50/en.md) |
-| XGIMI RS30 Ultra | beta, Lumen OS Live only | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [from the projector](docs/install/x50/en.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | beta, Lumen OS Live only | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [from the projector](docs/install/x50/en.md) |
+<!-- models:readme:begin -->
+| Projector | Model code | What you can do | Stable | Beta | Guide |
+|---|---|---|---|---|---|
+| XGIMI Z9X | G0082 | Lumen OS Live, Install Lumen OS permanently | [Lumen OS 1.0.10 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [Lumen OS 1.1.0-beta4 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.1.0-beta4) | [guide](docs/install/z9x/en.md) |
+| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Install Lumen OS permanently | [Lumen OS 1.0.9 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [Lumen OS 1.0.10-beta24 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.10-beta24) | [guide](docs/install/hb/en.md) |
+| XGIMI X50 Ultra | G0111 | Lumen OS Live, Install Lumen OS permanently, beta | not yet | [Lumen OS 1.0.10-beta14 · X50 Ultra (G0111)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta14) | [guide](docs/install/x50/en.md) |
+| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Install Lumen OS permanently, beta | not yet | [Lumen OS 1.0.10-beta14 · X50 Ultra Max (G0100)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta14) | [guide](docs/install/x50max/en.md) |
+| XGIMI Play 6 | G0058 | Install with a computer | [Lumen OS 1.0.10 · Play 6 (G0058)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | not yet | [guide](docs/install/play6/en.md) |
+| XGIMI AURA 3 Max | G0104 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · AURA 3 Max (G0104) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0104-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI MIRA 4K | G0109 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · MIRA 4K (G0109) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0109-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI MIRA 4K Pro | G0110 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · MIRA 4K Pro (G0110) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0110-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Pro | G0125 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · RS30 Pro (G0125) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0125-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Pro Max | G0124 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · RS30 Pro Max (G0124) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0124-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra | G0114 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · RS30 Ultra (G0114) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0114-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra | G0170 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta4 · RS30 Ultra (G0170) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta4) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra Max | G0115 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta1 · RS30 Ultra Max (G0115) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0115-1.0.10-beta1) | [guide](docs/install/x50/en.md) |
+| XGIMI RS30 Ultra Max | G0155 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta9 · RS30 Ultra Max (G0155) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta9) | [guide](docs/install/x50/en.md) |
+| XGIMI TITAN Noir | H0061 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta6 · TITAN Noir (H0061) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta6) | [guide](docs/install/x50/en.md) |
+| XGIMI TITAN Noir Max | H0063 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta7 · TITAN Noir Max (H0063) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta7) | [guide](docs/install/x50/en.md) |
+| XGIMI TITAN Noir Pro | H0062 | Lumen OS Live only, beta | not yet | [Lumen OS 1.0.10-beta7 · TITAN Noir Pro (H0062) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta7) | [guide](docs/install/x50/en.md) |
+<!-- models:end -->
 
 Each projector has its own release files, signed with its own key. The installer refuses an image for
 another projector and any XGIMI firmware it does not know.
@@ -49,7 +61,7 @@ More projectors will come later.
 
 > [!TIP]
 > **Lumen OS is free: no ads, no tracking, nothing to buy.** It is built in spare time on a slow computer, where one
-> image takes hours. If it gave your projector a second life, please [💖 support the project](#-support-the-project):
+> image takes hours. If it gave your projector a second life, please [support the project](#support-the-project):
 > every donation goes to a faster build computer, so updates and new projectors come sooner.
 
 > [!WARNING]
@@ -192,7 +204,7 @@ who helped make this project happen.
 To the LineageOS, UxPlay, android-airplay-server and MindTheGapps projects, and to everyone who tests
 Lumen OS and reports back.
 
-## 💖 Support the project
+## Support the project
 
 <div align="center">
 
@@ -205,14 +217,14 @@ Today one image takes hours to build. A powerful mini PC means faster updates an
 
 <br>
 
-### 💳 Donate by card
+### Donate by card
 
-[![Any bank card](https://img.shields.io/badge/💳_Any_card-Moneybox-ff69b4?style=for-the-badge)](https://send.leobank.az/moneybox/W8IoNRjea6)
+[![Any bank card](https://img.shields.io/badge/Any_card-Moneybox-ff69b4?style=for-the-badge)](https://send.leobank.az/moneybox/W8IoNRjea6)
 [![Russian cards and SBP](https://img.shields.io/badge/🇷🇺_Russian_cards_·_SBP-CloudTips-0f9d58?style=for-the-badge)](https://pay.cloudtips.ru/p/723aaba1)
 
 <br>
 
-### 🪙 Or send crypto
+### Or send crypto
 
 | Currency | Network | Address | QR |
 |:--------:|:-------:|:--------|:--:|
@@ -221,7 +233,7 @@ Today one image takes hours to build. A powerful mini PC means faster updates an
 
 Check the network before you send: USDT sent to the TRON address over ERC20 or BEP20 is lost.
 
-**Thank you!** 🙏
+**Thank you!**
 
 </div>
 

@@ -5,14 +5,27 @@
 Lumen OS это Android TV 14 для проекторов XGIMI. Найдите свой проектор ниже и откройте его страницу. На каждой
 странице все шаги, сервисы Google, обновления, что делать, если что-то пошло не так, и возврат к системе XGIMI.
 
-| Проектор | Код модели | Как ставится | Инструкция |
+<!-- models:install:begin -->
+| Проектор | Код модели | Что можно | Инструкция |
 |---|---|---|---|
-| XGIMI Z9X | G0082 | с проектора | [Z9X](z9x/ru.md) |
-| XGIMI Z9X HB | G0130, G0148 | с проектора | [Z9X HB](hb/ru.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | с проектора, бета | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI RS30 Ultra Max | G0155 | с проектора, бета, только Lumen OS Live | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | с проектора, бета, только Lumen OS Live | [X50, RS30 и TITAN](x50/ru.md) |
-| XGIMI Play 6 | G0058 | с компьютера | [Play 6](play6/ru.md) |
+| XGIMI Z9X | G0082 | Lumen OS Live, Установить Lumen OS насовсем | [инструкция](z9x/ru.md) |
+| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Установить Lumen OS насовсем | [инструкция](hb/ru.md) |
+| XGIMI X50 Ultra | G0111 | Lumen OS Live, Установить Lumen OS насовсем, бета | [инструкция](x50/ru.md) |
+| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Установить Lumen OS насовсем, бета | [инструкция](x50max/ru.md) |
+| XGIMI Play 6 | G0058 | Установка с компьютера | [инструкция](play6/ru.md) |
+| XGIMI AURA 3 Max | G0104 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI MIRA 4K | G0109 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI MIRA 4K Pro | G0110 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Pro | G0125 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Pro Max | G0124 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra | G0114 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra | G0170 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0115 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0155 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI TITAN Noir | H0061 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI TITAN Noir Max | H0063 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI TITAN Noir Pro | H0062 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+<!-- models:end -->
 
 Код модели и прошивку XGIMI вашего проектора Lumen Installer показывает вверху своего экрана, а справа в карточке
 «Версии прошивки» версии всех частей прошивки, которые называет проектор.

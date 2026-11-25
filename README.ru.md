@@ -3,12 +3,12 @@
 [English](README.md) | Русский
 
 <p align="center">
-  <a href="#-поддержать-проект"><img src="docs/repo/support/banner-ru.svg" width="100%" alt="Поддержать Lumen OS: все донаты идут на быстрый компьютер для сборки"></a>
+  <a href="#поддержать-проект"><img src="docs/repo/support/banner-ru.svg" width="100%" alt="Поддержать Lumen OS: все донаты идут на быстрый компьютер для сборки"></a>
 </p>
 <p align="center">
-  <a href="https://send.leobank.az/moneybox/W8IoNRjea6"><img src="https://img.shields.io/badge/💳_Любая_карта-Поддержать-ff3d8b?style=for-the-badge" alt="Поддержать любой картой"></a>
+  <a href="https://send.leobank.az/moneybox/W8IoNRjea6"><img src="https://img.shields.io/badge/Любая_карта-Поддержать-ff3d8b?style=for-the-badge" alt="Поддержать любой картой"></a>
   <a href="https://pay.cloudtips.ru/p/723aaba1"><img src="https://img.shields.io/badge/🇷🇺_Карты_РФ_·_СБП-Поддержать-0f9d58?style=for-the-badge" alt="Поддержать картой РФ или через СБП"></a>
-  <a href="#-поддержать-проект"><img src="https://img.shields.io/badge/🪙_USDT_·_TON-Крипта-6d4dff?style=for-the-badge" alt="Поддержать криптой"></a>
+  <a href="#поддержать-проект"><img src="https://img.shields.io/badge/USDT_·_TON-Крипта-6d4dff?style=for-the-badge" alt="Поддержать криптой"></a>
 </p>
 
 Android TV 14 для проекторов XGIMI на основе LineageOS 21.
@@ -17,15 +17,27 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 
 ## Какие проекторы подходят
 
-| Проектор | Состояние | Последний релиз | Установка |
-|---|---|---|---|
-| XGIMI Z9X | стабильная | [Lumen OS 1.0.10](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [с проектора](docs/install/z9x/ru.md) |
-| XGIMI Play 6 | стабильная | [Lumen OS 1.0.10 для Play 6](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | [с компьютером](docs/install/play6/ru.md) |
-| XGIMI Z9X HB | стабильная | [Lumen OS 1.0.9 для Z9X HB](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [с проектора](docs/install/hb/ru.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | бета | [X50 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta12), [X50 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta12) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Max | бета, только Lumen OS Live | [RS30 Ultra Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta7) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra | бета, только Lumen OS Live | [RS30 Ultra](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta2) | [с проектора](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | бета, только Lumen OS Live | [TITAN Noir](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta4), [TITAN Noir Pro](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta5), [TITAN Noir Max](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta5) | [с проектора](docs/install/x50/ru.md) |
+<!-- models:readme:begin -->
+| Проектор | Код модели | Что можно | Стабильная | Бета | Инструкция |
+|---|---|---|---|---|---|
+| XGIMI Z9X | G0082 | Lumen OS Live, Установить Lumen OS насовсем | [Lumen OS 1.0.10 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [Lumen OS 1.1.0-beta4 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.1.0-beta4) | [инструкция](docs/install/z9x/ru.md) |
+| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Установить Lumen OS насовсем | [Lumen OS 1.0.9 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [Lumen OS 1.0.10-beta24 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.10-beta24) | [инструкция](docs/install/hb/ru.md) |
+| XGIMI X50 Ultra | G0111 | Lumen OS Live, Установить Lumen OS насовсем, бета | пока нет | [Lumen OS 1.0.10-beta14 · X50 Ultra (G0111)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta14) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Установить Lumen OS насовсем, бета | пока нет | [Lumen OS 1.0.10-beta14 · X50 Ultra Max (G0100)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta14) | [инструкция](docs/install/x50max/ru.md) |
+| XGIMI Play 6 | G0058 | Установка с компьютера | [Lumen OS 1.0.10 · Play 6 (G0058)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | пока нет | [инструкция](docs/install/play6/ru.md) |
+| XGIMI AURA 3 Max | G0104 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · AURA 3 Max (G0104) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0104-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI MIRA 4K | G0109 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · MIRA 4K (G0109) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0109-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI MIRA 4K Pro | G0110 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · MIRA 4K Pro (G0110) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0110-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Pro | G0125 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Pro (G0125) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0125-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Pro Max | G0124 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Pro Max (G0124) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0124-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra | G0114 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Ultra (G0114) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0114-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra | G0170 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta4 · RS30 Ultra (G0170) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta4) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0115 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Ultra Max (G0115) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0115-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0155 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta9 · RS30 Ultra Max (G0155) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta9) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir | H0061 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta6 · TITAN Noir (H0061) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta6) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir Max | H0063 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta7 · TITAN Noir Max (H0063) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta7) | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir Pro | H0062 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta7 · TITAN Noir Pro (H0062) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta7) | [инструкция](docs/install/x50/ru.md) |
+<!-- models:end -->
 
 У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
 проектора и прошивку XGIMI, которую он не знает.
@@ -50,7 +62,7 @@ Android TV 14 для проекторов XGIMI на основе LineageOS 21.
 > [!TIP]
 > **Lumen OS бесплатна: без рекламы, без слежки, ничего не нужно покупать.** Я делаю её в свободное время на слабом
 > компьютере, один образ собирается часами. Если Lumen OS подарила вашему проектору вторую жизнь,
-> [💖 поддержите проект](#-поддержать-проект): все донаты идут на быстрый компьютер для сборки, и обновления
+> [поддержите проект](#поддержать-проект): все донаты идут на быстрый компьютер для сборки, и обновления
 > с новыми проекторами выйдут быстрее.
 
 > [!WARNING]
@@ -134,7 +146,7 @@ Google. Не запустятся приложения, которым нужн�
 
 ## Обновления и откат
 
-На Z9X Lumen OS обновляется по Wi-Fi: «Настройки → Настройки устройства → Об устройстве → Обновление
+На Z9X Lumen OS обновляется по Wi-Fi: «Настройки > Настройки устройства > Об устройстве > Обновление
 Lumen OS». Обновление ставится рядом с работающей системой, сохраняет данные и ждёт вашего согласия. Подробнее в
 разделе [«Обновления»](docs/install/z9x/ru.md#updates), список изменений в [CHANGELOG.md](CHANGELOG.md).
 
@@ -170,7 +182,7 @@ IP Geolocation by [DB-IP](https://db-ip.com).
 
 Пишите в [Telegram-канал](https://t.me/projector_lumenos), в [тему XGIMI Z9X на 4PDA](https://4pda.to/forum/index.php?showtopic=1121837) или в
 [issues на GitHub](https://github.com/Project-Lumen-OS/lumen-os/issues). Укажите модель проектора, версию
-прошивки XGIMI, версию Lumen OS («Настройки → Настройки устройства → Об устройстве») и что вы делали
+прошивки XGIMI, версию Lumen OS («Настройки > Настройки устройства > Об устройстве») и что вы делали
 перед проблемой, и приложите весь текст из терминала (в Lumen Installer: «О программе», «Подробности для
 помощи»).
 
@@ -195,7 +207,7 @@ git clone --recurse-submodules https://github.com/Project-Lumen-OS/lumen-os.git
 Спасибо проектам LineageOS, UxPlay, android-airplay-server и MindTheGapps, а также всем, кто
 тестирует Lumen OS и пишет в теме на 4PDA.
 
-## 💖 Поддержать проект
+## Поддержать проект
 
 <div align="center">
 
@@ -208,14 +220,14 @@ git clone --recurse-submodules https://github.com/Project-Lumen-OS/lumen-os.git
 
 <br>
 
-### 💳 Картой
+### Картой
 
-[![Любой банковской картой](https://img.shields.io/badge/💳_Любая_карта-Копилка-ff69b4?style=for-the-badge)](https://send.leobank.az/moneybox/W8IoNRjea6)
+[![Любой банковской картой](https://img.shields.io/badge/Любая_карта-Копилка-ff69b4?style=for-the-badge)](https://send.leobank.az/moneybox/W8IoNRjea6)
 [![Карты РФ и СБП](https://img.shields.io/badge/🇷🇺_Карты_РФ_·_СБП-CloudTips-0f9d58?style=for-the-badge)](https://pay.cloudtips.ru/p/723aaba1)
 
 <br>
 
-### 🪙 Или криптой
+### Или криптой
 
 | Валюта | Сеть | Адрес | QR |
 |:------:|:----:|:------|:--:|
@@ -224,7 +236,7 @@ git clone --recurse-submodules https://github.com/Project-Lumen-OS/lumen-os.git
 
 Проверьте сеть перед отправкой: USDT, отправленные на адрес TRON через ERC20 или BEP20, пропадут.
 
-**Спасибо!** 🙏
+**Спасибо!**
 
 </div>
 

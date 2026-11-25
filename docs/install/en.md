@@ -5,14 +5,27 @@
 Lumen OS is Android TV 14 for XGIMI projectors. Find your projector below and open its page. Each page has
 every step, Google services, updates, what to do if something goes wrong and the way back to the XGIMI system.
 
-| Projector | Model code | How you install | Guide |
+<!-- models:install:begin -->
+| Projector | Model code | What you can do | Guide |
 |---|---|---|---|
-| XGIMI Z9X | G0082 | from the projector | [Z9X](z9x/en.md) |
-| XGIMI Z9X HB | G0130, G0148 | from the projector | [Z9X HB](hb/en.md) |
-| XGIMI X50 Ultra, X50 Ultra Max | G0111, G0100 | from the projector, beta | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI RS30 Ultra Max | G0155 | from the projector, beta, Lumen OS Live only | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI TITAN Noir, TITAN Noir Pro, TITAN Noir Max | H0061, H0062, H0063 | from the projector, beta, Lumen OS Live only | [X50, RS30 and TITAN](x50/en.md) |
-| XGIMI Play 6 | G0058 | with a computer | [Play 6](play6/en.md) |
+| XGIMI Z9X | G0082 | Lumen OS Live, Install Lumen OS permanently | [guide](z9x/en.md) |
+| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Install Lumen OS permanently | [guide](hb/en.md) |
+| XGIMI X50 Ultra | G0111 | Lumen OS Live, Install Lumen OS permanently, beta | [guide](x50/en.md) |
+| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Install Lumen OS permanently, beta | [guide](x50max/en.md) |
+| XGIMI Play 6 | G0058 | Install with a computer | [guide](play6/en.md) |
+| XGIMI AURA 3 Max | G0104 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI MIRA 4K | G0109 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI MIRA 4K Pro | G0110 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Pro | G0125 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Pro Max | G0124 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra | G0114 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra | G0170 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra Max | G0115 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra Max | G0155 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI TITAN Noir | H0061 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI TITAN Noir Max | H0063 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI TITAN Noir Pro | H0062 | Lumen OS Live only, beta | [guide](x50/en.md) |
+<!-- models:end -->
 
 Lumen Installer shows the model code and the XGIMI firmware of your projector at the top of its screen, and on the
 right, in the Firmware versions card, the version of every firmware part the projector names.
