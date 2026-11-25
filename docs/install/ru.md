@@ -19,9 +19,9 @@ Lumen OS это Android TV 14 для проекторов XGIMI. Найдите 
 | XGIMI RS30 Pro | G0125 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI RS30 Pro Max | G0124 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI RS30 Ultra | G0114 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
-| XGIMI RS30 Ultra | G0170 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra Highlight | G0170 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI RS30 Ultra Max | G0115 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
-| XGIMI RS30 Ultra Max | G0155 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
+| XGIMI RS30 Ultra Max Flagship | G0155 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI TITAN Noir | H0061 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI TITAN Noir Max | H0063 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |
 | XGIMI TITAN Noir Pro | H0062 | только Lumen OS Live, бета | [инструкция](x50/ru.md) |

@@ -19,9 +19,9 @@ every step, Google services, updates, what to do if something goes wrong and the
 | XGIMI RS30 Pro | G0125 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI RS30 Pro Max | G0124 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI RS30 Ultra | G0114 | Lumen OS Live only, beta | [guide](x50/en.md) |
-| XGIMI RS30 Ultra | G0170 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra Highlight | G0170 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI RS30 Ultra Max | G0115 | Lumen OS Live only, beta | [guide](x50/en.md) |
-| XGIMI RS30 Ultra Max | G0155 | Lumen OS Live only, beta | [guide](x50/en.md) |
+| XGIMI RS30 Ultra Max Flagship | G0155 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI TITAN Noir | H0061 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI TITAN Noir Max | H0063 | Lumen OS Live only, beta | [guide](x50/en.md) |
 | XGIMI TITAN Noir Pro | H0062 | Lumen OS Live only, beta | [guide](x50/en.md) |
