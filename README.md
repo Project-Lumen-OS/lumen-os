@@ -26,6 +26,15 @@ see the list below. Website and install guide: [lumen-os.net](https://lumen-os.n
 | XGIMI AURA 3 Max | G0104 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
 | XGIMI MIRA 4K | G0109 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
 | XGIMI MIRA 4K Pro | G0110 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
+| XGIMI RS 20 | G0087 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Plus | G0063 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Plus Highlight | G0079 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Plus New | G0086 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Pro | G0088 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Pro Master | G0077 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Pro Max Highlight | G0089 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Ultra | G0067 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
+| XGIMI RS 20 Ultra Master | G0078 | Lumen OS Live only, beta | [guide](docs/install/z9x/en.md) |
 | XGIMI RS30 Pro | G0125 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
 | XGIMI RS30 Pro Max | G0124 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
 | XGIMI RS30 Ultra | G0114 | Lumen OS Live only, beta | [guide](docs/install/x50/en.md) |
