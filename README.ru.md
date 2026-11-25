@@ -1,250 +1,84 @@
-# Lumen OS
+# Lumen OS: кастомная прошивка для проекторов XGIMI
 
 [English](README.md) | Русский
 
+Lumen OS это бесплатная кастомная прошивка для проекторов XGIMI: Android TV 14 на основе LineageOS 21, на русском языке,
+со своим главным экраном, быстрым меню и настройками проектора. Работает на XGIMI Z9X, Z9X HB, X50 Ultra, Play 6, RS30,
+TITAN, MIRA и AURA, список ниже. Сайт и инструкция по установке: [lumen-os.net](https://lumen-os.net/).
+
 <p align="center">
-  <a href="#поддержать-проект"><img src="docs/repo/support/banner-ru.svg" width="100%" alt="Поддержать Lumen OS: все донаты идут на быстрый компьютер для сборки"></a>
-</p>
-<p align="center">
-  <a href="https://send.leobank.az/moneybox/W8IoNRjea6"><img src="https://img.shields.io/badge/Любая_карта-Поддержать-ff3d8b?style=for-the-badge" alt="Поддержать любой картой"></a>
-  <a href="https://pay.cloudtips.ru/p/723aaba1"><img src="https://img.shields.io/badge/🇷🇺_Карты_РФ_·_СБП-Поддержать-0f9d58?style=for-the-badge" alt="Поддержать картой РФ или через СБП"></a>
-  <a href="#поддержать-проект"><img src="https://img.shields.io/badge/USDT_·_TON-Крипта-6d4dff?style=for-the-badge" alt="Поддержать криптой"></a>
+<img src="docs/images/readme/home-ru.webp" width="49%" alt="Lumen Home на проекторе XGIMI: продолжить просмотр, часы, погода и плитки приложений">
+<img src="docs/images/readme/quick-menu-ru.webp" width="49%" alt="Быстрое меню Lumen OS: автокоррекция трапеции, режим изображения, источник, игровой режим, Bluetooth и яркость">
+<img src="docs/images/readme/all-settings-ru.webp" width="49%" alt="Все настройки проектора, страница Трапеция с автотрапецией, обходом препятствий и фокусом">
+<img src="docs/images/readme/screen-casting-ru.webp" width="49%" alt="Трансляция экрана: AirPlay для iPhone и Mac, повтор экрана для Android и Windows, DLNA">
 </p>
 
-Android TV 14 для проекторов XGIMI на основе LineageOS 21.
+## Поддерживаемые проекторы
 
-Новости, новые версии и ответы на вопросы: Telegram-канал [@projector_lumenos](https://t.me/projector_lumenos).
-
-## Какие проекторы подходят
-
-<!-- models:readme:begin -->
-| Проектор | Код модели | Что можно | Стабильная | Бета | Инструкция |
-|---|---|---|---|---|---|
-| XGIMI Z9X | G0082 | Lumen OS Live, Установить Lumen OS насовсем | [Lumen OS 1.0.10 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.0.10) | [Lumen OS 1.1.0-beta4 · Z9X (G0082)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-1.1.0-beta4) | [инструкция](docs/install/z9x/ru.md) |
-| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Установить Lumen OS насовсем | [Lumen OS 1.0.9 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.9) | [Lumen OS 1.0.10-beta24 · Z9X HB (G0130, G0148)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/z9x-hb-1.0.10-beta24) | [инструкция](docs/install/hb/ru.md) |
-| XGIMI X50 Ultra | G0111 | Lumen OS Live, Установить Lumen OS насовсем, бета | пока нет | [Lumen OS 1.0.10-beta14 · X50 Ultra (G0111)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50-1.0.10-beta14) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Установить Lumen OS насовсем, бета | пока нет | [Lumen OS 1.0.10-beta14 · X50 Ultra Max (G0100)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/x50max-1.0.10-beta14) | [инструкция](docs/install/x50max/ru.md) |
-| XGIMI Play 6 | G0058 | Установка с компьютера | [Lumen OS 1.0.10 · Play 6 (G0058)](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/play6-1.0.10) | пока нет | [инструкция](docs/install/play6/ru.md) |
-| XGIMI AURA 3 Max | G0104 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · AURA 3 Max (G0104) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0104-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI MIRA 4K | G0109 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · MIRA 4K (G0109) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0109-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI MIRA 4K Pro | G0110 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · MIRA 4K Pro (G0110) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0110-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Pro | G0125 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Pro (G0125) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0125-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Pro Max | G0124 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Pro Max (G0124) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0124-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra | G0114 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Ultra (G0114) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0114-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Highlight | G0170 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta4 · RS30 Ultra Highlight (G0170) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30ultra-1.0.10-beta4) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Max | G0115 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta1 · RS30 Ultra Max (G0115) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/g0115-1.0.10-beta1) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI RS30 Ultra Max Flagship | G0155 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta9 · RS30 Ultra Max Flagship (G0155) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/rs30-1.0.10-beta9) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir | H0061 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta6 · TITAN Noir (H0061) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titannoir-1.0.10-beta6) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir Max | H0063 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta7 · TITAN Noir Max (H0063) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanmax-1.0.10-beta7) | [инструкция](docs/install/x50/ru.md) |
-| XGIMI TITAN Noir Pro | H0062 | только Lumen OS Live, бета | пока нет | [Lumen OS 1.0.10-beta7 · TITAN Noir Pro (H0062) · Live](https://github.com/Project-Lumen-OS/lumen-os/releases/tag/titanpro-1.0.10-beta7) | [инструкция](docs/install/x50/ru.md) |
+<!-- models:install:begin -->
+| Проектор | Код модели | Что можно | Инструкция |
+|---|---|---|---|
+| XGIMI Z9X | G0082 | Lumen OS Live, Установить Lumen OS насовсем | [инструкция](docs/install/z9x/ru.md) |
+| XGIMI Z9X HB | G0130, G0148 | Lumen OS Live, Установить Lumen OS насовсем | [инструкция](docs/install/hb/ru.md) |
+| XGIMI X50 Ultra | G0111 | Lumen OS Live, Установить Lumen OS насовсем, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI X50 Ultra Max | G0100 | Lumen OS Live, Установить Lumen OS насовсем, бета | [инструкция](docs/install/x50max/ru.md) |
+| XGIMI Play 6 | G0058 | Установка с компьютера | [инструкция](docs/install/play6/ru.md) |
+| XGIMI AURA 3 Max | G0104 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI MIRA 4K | G0109 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI MIRA 4K Pro | G0110 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Pro | G0125 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Pro Max | G0124 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra | G0114 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Highlight | G0170 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max | G0115 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI RS30 Ultra Max Flagship | G0155 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir | H0061 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir Max | H0063 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
+| XGIMI TITAN Noir Pro | H0062 | только Lumen OS Live, бета | [инструкция](docs/install/x50/ru.md) |
 <!-- models:end -->
 
-У каждого проектора свои файлы релиза, подписанные своим ключом. Установщик не примет образ для другого
-проектора и прошивку XGIMI, которую он не знает.
+Lumen OS Live запускает Lumen OS с проектора и не трогает систему XGIMI. Установить Lumen OS насовсем значит заменить
+систему XGIMI, при этом данные на проекторе один раз стираются.
 
-- XGIMI Z9X (модель G0082): прошивка XGIMI V6.15.58 или V6.15.62, на V6.15.19 только Lumen OS Live.
-  Обновления приходят по Wi-Fi.
-- XGIMI Play 6 (модель G0058): прошивка XGIMI V1.7.116 или V1.8.127. Play 6 с чипом Wi-Fi AIC (новые партии)
-  нужна V1.8.127: не ставьте на него V1.7.116, Wi-Fi и Bluetooth после этого перестают работать. Новая версия
-  ставится установщиком по кабелю USB, данные сохраняются. Обновления по Wi-Fi появятся позже. Сервисы Google
-  можно добавить установщиком из своего файла MindTheGapps.
-- XGIMI Z9X HB (модели G0130 и G0148): прошивка XGIMI V6.16.24 или V6.17.12 на G0130, V6.17.12 на G0148.
-  Обновления приходят по Wi-Fi.
-- XGIMI X50 Ultra (модель G0111) и X50 Ultra Max (модель G0100): прошивка XGIMI V1.2.64, V1.3.38 или
-  V1.2.54. Бета. Установить насовсем можно на X50 Ultra с V1.2.64 или V1.3.38. В остальных случаях это Lumen OS Live: Lumen OS
-  запускается один раз, система XGIMI остаётся как есть.
-- XGIMI RS30 Ultra Max (модель G0155, прошивка V1.1.42), RS30 Ultra (модель G0170, прошивка V1.2.5), TITAN
-  Noir, TITAN Noir Pro и TITAN Noir Max (модели H0061, H0062 и H0063, прошивка V1.2.99 или V1.2.54): бета,
-  которую можно попробовать с проектора.
+## Как установить
 
-Другие проекторы добавятся позже.
+Всё делается на самом проекторе через его интернет, компьютер не нужен. Подробно по шагам:
+[инструкция на lumen-os.net](https://lumen-os.net/install/).
 
-> [!TIP]
-> **Lumen OS бесплатна: без рекламы, без слежки, ничего не нужно покупать.** Я делаю её в свободное время на слабом
-> компьютере, один образ собирается часами. Если Lumen OS подарила вашему проектору вторую жизнь,
-> [поддержите проект](#поддержать-проект): все донаты идут на быстрый компьютер для сборки, и обновления
-> с новыми проекторами выйдут быстрее.
+1. Скачайте файл Lumen Installer с окончанием `.apk1` из
+   [последнего выпуска](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) и скопируйте его на флешку.
+2. Вставьте флешку в проектор и откройте файл в файловом менеджере XGIMI.
+3. Подключите проектор к интернету, откройте Lumen Installer и запустите Lumen OS Live.
+4. Если понравилось, внутри Lumen OS Live откройте «Установить Lumen OS насовсем».
 
-> [!WARNING]
-> **Lumen OS не продаётся.** Мы ничего не продаём: ни систему, ни проекторы с ней, ни лицензии, ни «активации».
-> Если вам продали Lumen OS или проектор «с Lumen OS» за деньги, это были не мы, и за такую покупку мы не отвечаем.
-> Официально её можно скачать только бесплатно, на странице Releases этого репозитория.
+Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md).
 
-<p>
-<img src="docs/screenshots/en_01_projector.jpg" width="49%" alt="Настройки проектора в Lumen Home">
-<img src="docs/screenshots/en_03_pro.jpg" width="49%" alt="Профессиональные настройки изображения">
-<img src="docs/screenshots/en_04_keystone.jpg" width="49%" alt="Трапеция, оптический зум и поворот изображения">
-<img src="docs/screenshots/en_05_sound.jpg" width="49%" alt="Настройки звука с выбором вывода">
-<img src="docs/screenshots/en_06_files.jpg" width="49%" alt="Приложение «Файлы»">
-<img src="docs/screenshots/en_07_update.jpg" width="49%" alt="Экран обновления Lumen OS">
-</p>
+## Обновления и возврат
 
-## Что это
+Lumen OS обновляется сама. Программа обновления показывает новую версию и ставит её, когда вы согласитесь.
+В Lumen OS Live систему XGIMI возвращает обычный перезапуск.
+После установки насовсем пункт Настройки > Настройки устройства > Об устройстве > Возврат к системе XGIMI назовёт нужный
+файл, а на странице [Вернуть систему XGIMI](https://lumen-os.net/restore/) есть шаги для каждой модели.
 
-Lumen OS заменяет на проекторе только системный раздел. Прошивка XGIMI, boot, калибровка, лампа, фокус и
-трапеция остаются как были, а приложения Lumen OS управляют ими через родную службу XGIMI. На Z9X
-интерфейс работает в 1080p.
+## Ссылки
 
-- Lumen Home: часы на фоне живого неба с настоящими солнцем и луной для вашего города (оно же
-  заставка), погода, «Продолжить просмотр» из установленных приложений, все приложения с избранным и
-  по алфавиту.
-- Приложение «Проектор»: автофокус, ручная и автоматическая трапеция, режимы изображения и звука,
-  защита глаз, сон, быстрая панель.
-- Настоящий сон: лампа гаснет сразу, проектор засыпает. Пульт будит его в том же приложении.
-- Приёмник AirPlay.
-- HDMI-CEC: на входе HDMI видно имя приставки или консоли, и пульт ею управляет.
-- 17 языков, русский в том числе. Пульт XGIMI подключается в первой настройке.
-- Обновления по Wi-Fi, подписанные ключом проекта. Если новая версия не загрузится, проектор вернётся
-  к прежней.
-- «Файлы»: память проектора и флешки, встроенный плеер, установка любого `.apk` прямо оттуда.
-- Нет рекламы и фоновых сервисов Google. В фоне держится не больше 10 приложений.
-
-Этот список для Z9X. На Play 6 есть Lumen Home, своё приложение «Проектор» со всеми настройками стока,
-вход HDMI, повтор экрана (Miracast) и AirPlay, голосовой ассистент и первая настройка, но пока нет
-обновлений по Wi-Fi.
-
-Аккаунт для Lumen OS не нужен, данные о вас не собираются, кроме анонимного счётчика версий, который можно
-выключить (см. [Конфиденциальность](#конфиденциальность)). В сеть система ходит только за часовым поясом и
-городом (ip-api.com без шифрования, ipapi.co или ipwho.is), погодой (Open-Meteo), обновлениями (GitHub) и для
-этого счётчика.
-
-## Без Google
-
-В опубликованной версии нет приложений Google: Google Play, Chromecast built-in, голосового поиска
-Google. Не запустятся приложения, которым нужны сервисы Google Play. Приложения ставятся с флешки или из
-любого магазина, который вы выберете. Сервисы Google можно добавить самому. При установке с проектора
-ответьте «Да» на вопрос про сервисы Google, и установщик скачает их с официальной страницы. На Play 6 их
-добавляет установщик для компьютера из вашего файла MindTheGapps, см. [«Сервисы Google»](docs/install/play6/ru.md#play6-google).
-
-## Установка
-
-Инструкция начинается со страницы [«Установка Lumen OS»](docs/install/ru.md) ([in English](docs/install/en.md)),
-дальше у каждого проектора своя страница. Установка Lumen OS насовсем один раз стирает все данные на проекторе.
-
-Скачивайте только со [страницы релизов](https://github.com/Project-Lumen-OS/lumen-os/releases) этого
-репозитория и со [страницы релизов Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer/releases).
-Релиз с пометкой «Latest» для Z9X. В каждом релизе Lumen OS есть `SHA256SUMS` и `SHA256SUMS.sig`, Lumen Installer
-их проверяет и другой образ не примет. Копии на форумах и файлообменниках я не проверяю.
-
-### С проектора
-
-Единственный способ для всех проекторов из списка, кроме Play 6. Lumen OS скачивается через интернет самого
-проектора, по Wi-Fi или Ethernet. Компьютер и кабель USB не нужны.
-
-1. Скачайте из [последнего релиза](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) файл Lumen Installer с окончанием `.apk1`
-   и скопируйте его на флешку (FAT32 или exFAT). Флешка нужна только для приложения.
-2. Вставьте флешку в проектор, откройте файл в файловом менеджере XGIMI и подтвердите установку.
-3. Подключите проектор к интернету и откройте Lumen Installer. Он узнает модель и скачает нужный релиз Lumen OS.
-4. Сначала попробуйте Lumen OS. Она запустится один раз, система XGIMI и ваши файлы останутся как есть.
-   Перезапуск возвращает систему XGIMI.
-5. Чтобы оставить Lumen OS, откройте внутри Lumen OS Live «Установить Lumen OS насовсем» и выберите, нужны ли сервисы
-   Google.
-
-### Play 6
-
-Только Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md).
-
-## Обновления и откат
-
-На Z9X Lumen OS обновляется по Wi-Fi: «Настройки > Настройки устройства > Об устройстве > Обновление
-Lumen OS». Обновление ставится рядом с работающей системой, сохраняет данные и ждёт вашего согласия. Подробнее в
-разделе [«Обновления»](docs/install/z9x/ru.md#updates), список изменений в [CHANGELOG.md](CHANGELOG.md).
-
-На Play 6 обновлений по Wi-Fi пока нет. Скачайте новый релиз для Play 6 и запустите
-`bash lumen-install.sh --ip АДРЕС --keep-data flash`. Установщик запишет новую систему по кабелю USB и
-сохранит данные. Отладка должна быть включена, см. [«Проверьте установку»](docs/install/play6/ru.md#play6-verify).
-
-В Lumen OS Live, чтобы вернуться, просто перезапустите проектор. После установки систему XGIMI
-возвращает официальная прошивка XGIMI с флешки, при этом всё стирается, см. «Возврат к системе XGIMI» для
-[Z9X](docs/install/z9x/ru.md#stock), [Z9X HB](docs/install/hb/ru.md#stock),
-[X50 Ultra и X50 Ultra Max](docs/install/x50/ru.md#stock) и [Play 6](docs/install/play6/ru.md#play6-stock).
-
-## Конфиденциальность
-
-Без рекламы и без слежки: только анонимный счётчик версий, который можно выключить. При каждом включении и раз
-в день отправляются модель, версия и серийный номер (сервер хранит только его хеш), а по подключению сервер
-определяет страну.
-Ваш IP-адрес не сохраняется. Подробно: модель проектора (кодовое имя и модель XGIMI), версия Lumen OS, её
-код и номер сборки, канал обновлений, случайный номер установки, а после обновления прежняя версия и способ
-установки. Серийный номер и номер установки хранятся только в виде хеша с секретным ключом, записи удаляются через
-400 дней, больше ничего не отправляется: ни MAC-адреса, ни аккаунта, ни списка приложений, ни того, что вы
-смотрите. Это нужно только чтобы знать, сколько проекторов работает на каждой версии и сколько обновилось. Страна:
-IP Geolocation by [DB-IP](https://db-ip.com).
-
-Как выключить: переключатель «Отправлять анонимную статистику» в настройках проектора (раздел «Диагностика»).
-При выключении номер установки удаляется, при повторном включении создаётся новый.
-
-## Известные проблемы
-
-- Play 6: пока нет обновлений по Wi-Fi, и Lumen Installer на проекторе его пока не ставит.
-
-## Помощь и сообщения об ошибках
-
-Пишите в [Telegram-канал](https://t.me/projector_lumenos), в [тему XGIMI Z9X на 4PDA](https://4pda.to/forum/index.php?showtopic=1121837) или в
-[issues на GitHub](https://github.com/Project-Lumen-OS/lumen-os/issues). Укажите модель проектора, версию
-прошивки XGIMI, версию Lumen OS («Настройки > Настройки устройства > Об устройстве») и что вы делали
-перед проблемой, и приложите весь текст из терминала (в Lumen Installer: «О программе», «Подробности для
-помощи»).
-
-## Lumen Play
-
-Видеоплеер, который я сделал для Lumen OS, лежит в [отдельном репозитории](https://github.com/kmuradoff/kino-player).
-
-## Сборка
-
-Lumen OS собирается из TV GSI LineageOS 21, приложений Lumen OS (`apps/`), системных файлов (`system/`) и
-инструментов для образа (`tools/`). Всё это можно собрать самому, от исходников LineageOS в тех же
-версиях до подписанного образа, своими ключами: [docs/selfbuild](docs/selfbuild/ru.md). Эта инструкция
-для Z9X. Скрипты сборки для Play 6 лежат в `tools/play6` и `lineage/patches/play6`, пошаговой инструкции к
-ним пока нет.
-
-```
-git clone --recurse-submodules https://github.com/Project-Lumen-OS/lumen-os.git
-```
-
-## Благодарности
-
-Спасибо проектам LineageOS, UxPlay, android-airplay-server и MindTheGapps, а также всем, кто
-тестирует Lumen OS и пишет в теме на 4PDA.
+- Сайт: [lumen-os.net](https://lumen-os.net/)
+- Новости и вопросы: [канал в Telegram](https://t.me/projector_lumenos) и
+  [тема XGIMI Z9X на 4PDA](https://4pda.to/forum/index.php?showtopic=1121837)
+- [Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer)
+- [Сообщить о проблеме](https://github.com/Project-Lumen-OS/lumen-os/issues)
+- [Что нового в каждой версии](CHANGELOG.md)
+- [Собрать Lumen OS самому](docs/selfbuild/ru.md)
 
 ## Поддержать проект
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Hearts.png" alt="Спасибо" width="80" />
-
-**Если Lumen OS подарила вашему проектору вторую жизнь, поддержите проект!**
-
-Все пожертвования идут на одну цель: **компьютер для сборки (Beelink HX series), около $1 300.**<br>
-Сейчас один образ собирается часами. Мощный мини-ПК значит более быстрые обновления и больше проекторов.
-
-<br>
-
-### Картой
-
-[![Любой банковской картой](https://img.shields.io/badge/Любая_карта-Копилка-ff69b4?style=for-the-badge)](https://send.leobank.az/moneybox/W8IoNRjea6)
-[![Карты РФ и СБП](https://img.shields.io/badge/🇷🇺_Карты_РФ_·_СБП-CloudTips-0f9d58?style=for-the-badge)](https://pay.cloudtips.ru/p/723aaba1)
-
-<br>
-
-### Или криптой
-
-| Валюта | Сеть | Адрес | QR |
-|:------:|:----:|:------|:--:|
-| **USDT** | TRC20 (только TRON) | `TRjBAWuPa7WjdsATNkgwy955imhobH6sQV` | <img src="docs/repo/support/usdt-trc20.png" width="110" alt="QR USDT TRC20"> |
-| **TON**, **USDT** | TON | `UQA2yAApJyyZ_vOYwrM6E0K2hwmn_35Y7m68UbCN6Y_A1L6x` | <img src="docs/repo/support/ton.png" width="110" alt="QR TON"> |
-
-Проверьте сеть перед отправкой: USDT, отправленные на адрес TRON через ERC20 или BEP20, пропадут.
-
-**Спасибо!**
-
-</div>
+Lumen OS бесплатна и никогда не продаётся. Если она дала проектору вторую жизнь,
+[поддержите проект картой или криптой](https://lumen-os.net/#donate).
 
 ## Лицензия
 
-Apache License 2.0, кроме `apps/LumenAirPlay` (GPL-3.0-only) и сторонних подмодулей в `apps/third_party`
-со своими лицензиями. Подробнее в [LICENSE](LICENSE) и [NOTICE](NOTICE). В репозитории нет приложений
-Google, файлов MediaTek и XGIMI и ключей подписи.
+Apache License 2.0, кроме `apps/LumenAirPlay` (только GPL 3.0) и сторонних подмодулей в `apps/third_party`, у которых
+свои лицензии. См. [LICENSE](LICENSE) и [NOTICE](NOTICE).
 
-Lumen OS я делаю сам. XGIMI, Google, MediaTek и LineageOS к ней отношения не имеют. Товарные знаки
-XGIMI, Android, Google и LineageOS принадлежат их владельцам.
+Lumen OS это независимый проект, он не связан с XGIMI, Google, MediaTek и LineageOS. Их названия принадлежат их
+владельцам. На снимках экрана кадр из фильма Sintel, Blender Foundation, CC BY 3.0.
