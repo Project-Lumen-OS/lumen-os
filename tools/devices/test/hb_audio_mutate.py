@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """hb_audio_mutate.py: mutation check of the HB slider flicker fix (panel/SlideCoalescer and its wiring in ProPicture /
 HbMenuFeatures / SlideMain) and the 3.5 mm output (HbAudioRules jack rules, HbOutputRows jack row, HbWiredJack
 over lumen-audio JackOutput, AudioOutputChoice.apply order, the AudioPathReporter adapter of the shared switch, HbFeatures WIRED_HEADPHONE; the

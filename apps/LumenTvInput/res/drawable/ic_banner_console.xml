@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Viewer banner glyph: a game controller (consoles). Our own drawing, white on the banner's accent tile
      (PassthroughActivity); one even-odd path, cut-outs show the tile. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"

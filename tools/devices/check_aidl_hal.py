@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_aidl_hal.py: build-time guard for an app that talks to a stable AIDL gmpf HAL through one hand-written
 transport. Run through tools/devices/check_hal.py for devices with hal_check=aidl-table.
 

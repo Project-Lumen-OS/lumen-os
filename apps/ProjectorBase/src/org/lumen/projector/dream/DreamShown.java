@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.dream;
 
 /** Which of our two screensavers the quick panel's "Show" row marks (Lumen OS 1.0.1). */

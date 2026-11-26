@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Compare the composed HB image (mounted) with the base image (mounted), entry by entry: type, owner, group,
 # mode, file content (sha256), link target, SELinux label, file capability. Run as root by compose_hb.sh step 6:
 #   python3 -I verify_tree.py BASE_MOUNT NEW_MOUNT TAG [IN]

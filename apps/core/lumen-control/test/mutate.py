@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of lumen-control (the command core and its phone remote adapter): each one change to the module,
 its model table or a projector app's wiring must turn test/run.sh red.
   python3 apps/core/lumen-control/test/mutate.py [-j N] [NAME...]      (scratch copies, JDK 17+, python3)

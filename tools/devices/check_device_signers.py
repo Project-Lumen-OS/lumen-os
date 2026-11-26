@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_device_signers.py: rule S1 for any device
 of the registry. No image of one projector, and no APK in it, carries a certificate that another projector's image
 trusts. Generic form of tools/play6/check_signers.py (imported read only for its S1 sets and certs_of).

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The RS30 Ultra Max composer (g0155) on the build host: the one image builder with the staged descriptor
 # (devices/g0155/build.conf, steps devices/g0155/image/steps.tsv), staged by tools/build/build.py run
 # (tools/image/compose.sh g0155 tN net|unsigned from the Mac).

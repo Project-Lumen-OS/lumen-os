@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apk_roles_test.py: the image builder's HOME rule (tools/build/tree.py apk-roles, live_home_priorities, home_clashes).
 
 Lumen Setup (HOME 10) runs the first start, Lumen Home (HOME 3) is the one launcher after it. Any other priv-app whose

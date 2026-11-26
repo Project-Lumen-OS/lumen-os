@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen OS 1.0: LineageCustomizer without Play Movies (brand spec 18, user decision: Play Movies removed).
 
 LineageCustomizer (org.lineageos.tvcustomizer, LineageOS, Apache-2.0) is the classic launcher's partner

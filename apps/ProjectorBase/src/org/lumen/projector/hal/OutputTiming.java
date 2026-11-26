@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** "Ultra 120 Hz" output timing (DS VERIFIED stock newsettings): 4 = on (1080p120), 6 = off (4K60). *

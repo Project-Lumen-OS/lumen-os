@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of problem reports (apps/core/lumen-report) that test/run.sh must kill: redaction rules, which incidents
 are reported, consent and limits of automatic reports, the queue, the address, and the consent wiring of the Android
 side, the unexpected stop (Alive, AliveState, AliveFile and the watch wiring). Mutates the files IN PLACE and

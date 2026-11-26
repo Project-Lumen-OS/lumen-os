@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
   org.lumen.updater ("Lumen OS update") for Lumen OS 1.0 on the XGIMI Z9X.
   Install: /system/app/Z9xUpdater/Z9xUpdater.apk (NOT priv-app), platform-signed, not persistent:
   0 MB resident while idle (JobScheduler wakes it at most twice a day).

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-wallcolor host tests: sh apps/core/lumen-wallcolor/test/run.sh
 #  1. WallColorTest: the vendor's 11001 messages, the stock flow and its HAL order, the pattern geometry and timing,
 #     every model file (devices/*/wallcolor.conf: card text variant, pattern type);

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Home host tests (plain JDK, no android.jar): rows and the calm screen (1, 2, 3 and many Continue items),
 # Continue texts, one item per series, app order, the D-pad map, the greeting, the Витрина's layout, the art rule and
 # the hero binding, the focus ring, the startup lanes and the snapshot of the last screen, the hero's page motion

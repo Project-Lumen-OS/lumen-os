@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apex_sign.py: re-sign every APEX of a Lumen OS system tar with the Lumen APEX keys (Mac only).
 
     apex_sign.py run IN.tar OUTDIR [--keys ~/.lumen-keys] [--builder user@host] [--ssh-key KEY]

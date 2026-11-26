@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS: when the boot does not complete, reboot into fastbootd. Fork of overlay/debug/lumen_escape.sh for the
 # projectors with the neutral OTA gate (tools/devices/ota/image/lumen_ota.sh); same image path
 # /system/etc/xgimi/lumen_escape.sh, started by the unchanged lumen_escape.rc at post-fs-data. Its own file name

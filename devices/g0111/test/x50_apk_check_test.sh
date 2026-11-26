@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_apk_check_test.sh: the one exception of the X50 image check (devices/g0111/image/verify_tree_x50.py HAL_APP:
 # apps/X50EyeGuard may name the gmpf HAL) and its reader devices/g0111/image/x50_apk_check.py. On the Mac (Android
 # SDK and JDK as apps/build_apk.sh), no projector, no network, never reads a private key:

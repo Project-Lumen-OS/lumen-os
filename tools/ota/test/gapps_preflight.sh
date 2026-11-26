@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of tools/lumen_v1.sh gapps_preflight (the image rule for the boot side of the Google services
 # add-on) on its own, without a full 'lint': the function and its helpers are cut out of lumen_v1.sh and run on
 # the tree's z9x_gapps.sh, then on copies with one forbidden change each. The tree's script must pass, every

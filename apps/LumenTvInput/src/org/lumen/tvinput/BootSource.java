@@ -1,5 +1,6 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
- * Copyright (C) 2026 Lumen OS. Licensed under the Apache License, Version 2.0.
+ * Copyright (C) 2026 Lumen OS.
  */
 package org.lumen.tvinput;
 

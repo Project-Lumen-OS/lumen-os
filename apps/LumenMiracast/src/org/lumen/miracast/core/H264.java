@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.miracast.core;
 
 /** Small H.264 Annex B helpers: which NAL unit types an access unit carries. */

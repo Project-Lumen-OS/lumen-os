@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Projector put mode (FS 2.9 VERIFIED ProjectionRepository): 0 desk front .. 3 ceiling rear. *

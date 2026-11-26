@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS images of every model (image path /system/etc/init/z9x_blobs.rc; the one blobs reader
 # /system/etc/z9x/z9x_blobs.sh 0755, its settings /system/etc/z9x/blobs.conf and the allow-list they name 0644, plus
 # the 0-byte placeholders listed there, label system_lib_file for a .so). See z9x_blobs.sh.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """HB slider wiring (source level): every picture slider of the advanced picture page (panel/ProPicture: 2-point and
 11-point white balance, colour correction) writes through its own SlideCoalescer (SlideMain.of), on every step, with no
 direct change() per commit and no page re-read while a slide is in flight (4PDA report 2026-11-10: flicker on a fast

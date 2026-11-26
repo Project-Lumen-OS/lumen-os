@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-parental host tests: the state format, the rules, the time limits, the password (plain Java, no Android).
 set -eu
 HERE=$(cd "$(dirname "$0")/.." && pwd)

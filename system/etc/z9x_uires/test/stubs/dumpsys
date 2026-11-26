@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of dumpsys: the n-th 'dumpsys SurfaceFlinger' of a start prints $Z9X_T/sf.<n> when it exists,
 # else $Z9X_T/sf; neither = no output and exit 1 (SurfaceFlinger not answering). Calls go to
 # $Z9X_T/dumpsys.log (run.sh empties it at every start).

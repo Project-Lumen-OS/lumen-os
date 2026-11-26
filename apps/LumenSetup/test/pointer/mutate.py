@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of Lumen Setup's pointer and "other" page wiring: each must turn test/pointer red.
 python3 test/pointer/mutate.py [NAME...]"""
 import os, shutil, subprocess, sys, tempfile

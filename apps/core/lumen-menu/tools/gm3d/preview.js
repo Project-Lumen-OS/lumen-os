@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /* Game menu 3D preview (tools/gm3d/README.md): renders a baked controller (.lgm + env.lge) with the device shaders
    (assets/gm3d/model.vert / model.frag) in WebGL2, through the same pipeline as Gm3dRenderer (MSAA 4x at SS x the
    size, resolve, linear 2:1 blit), at the yaw angles of the frame strip, for side-by-side checks with the frames.

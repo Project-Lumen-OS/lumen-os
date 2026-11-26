@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Power On Auto Boot (power.on_ac, decision 2026-11-19), static checks over the tree.
 
   python3 apps/core/lumen-menu/test/power_on_ac_test.py GSI_ROOT

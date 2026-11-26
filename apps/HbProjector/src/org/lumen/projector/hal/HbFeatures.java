@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbFeatures: the compile-time feature table of the Z9X HB.
  * HB-only file, no HAL access.

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Bluetooth (hb_bt.rc): the base's libbluetooth_jni.so with SBC fed at 44.1 kHz (hb_bt_sbc.py: the
 # pinned base copy in, the pinned HB copy out) into WORKDIR/btchk/libbluetooth_jni.so. Our own build, no XGIMI file.
 #   bt_lib.sh BASE_MOUNT WORKDIR IN

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gen_icons.py: the Lumen icon set (apps/core/lumen-icons) from Material Symbols, the official Google source.
 
   gen_icons.py write [--cache DIR]     fetch the pinned SVGs, write res/drawable/lumen_ic_*.xml, record each SVG's

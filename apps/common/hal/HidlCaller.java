@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HidlCaller: the single transact path to XGIMI's vendor HAL (xgimi.hardware.gmpf@1.0), shared by every
  * Lumen device app, each with its own typed clients (Z9xProjector: GmpfClient = IGmpf, Gmpf2Client = IGmpf2).

@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox ls: 'ls -Zd FILE' prints "CONTEXT FILE" from $Z9X_T/labels like the stat stub
 # ($Z9X_T/ls.fail: nothing, exit 1); anything else is the host's ls.
 if [ "${1-}" = -Zd ] && [ $# -eq 2 ]; then

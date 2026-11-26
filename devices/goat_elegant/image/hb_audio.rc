@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130), test builds from t3 on: the UI click volume (installed as
 # /system/etc/init/hb_audio.rc by compose_hb.sh). The HB copy of the Z9X fix overlay/v1/z9x_audio.rc. From t7 also the
 # audio policy (below).

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Play 6: memory and speed experiments (docs/play6/inventory/D_play6_performance.md
 # 6.2, docs/play6/SETTINGS_PLAN.md section 4), test builds only. tools/play6/compose.sh installs it as
 # /system/product/etc/init/play6_perf.rc only with --exp naming 2 or 3, and removes the '#expN ' prefix of

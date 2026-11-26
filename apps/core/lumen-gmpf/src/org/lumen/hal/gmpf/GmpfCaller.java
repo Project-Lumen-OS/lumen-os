@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.hal.gmpf;
 
 import static org.lumen.hal.gmpf.GmpfOp.GET_CURRENT_ZOOM_LIMIT_STEP;

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Colour space (FS 3.5): 4 Native, 1 BT.2020, 7 Adobe RGB, 2 DCI-P3, 3 Rec.709. *

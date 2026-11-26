@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.control.vcontrol;
 
 /** The ports a {@link VcontrolServer} uses; {@link #STOCK} on a projector, free ports in tests. */

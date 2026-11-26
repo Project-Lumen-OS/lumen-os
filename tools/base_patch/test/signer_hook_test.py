@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The signers sign a base APK with its base_patch fix: HB, RS30 and Titan (tools/devices/sign_device.py), the X50
 family (devices/g0111/image/sign_x50_base.py) and the Play 6 (tools/play6/sign_play6.py)."""
 import hashlib

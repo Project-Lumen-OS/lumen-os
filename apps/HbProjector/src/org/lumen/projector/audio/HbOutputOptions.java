@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbOutputOptions: the sound output rows of the Z9X HB panel (2026-11-01). HB-only file, no HAL access. In the audio
  * package for the package-private AudioOutputChoice.Option constructor and prefs keys.

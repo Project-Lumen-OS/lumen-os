@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-aipq host tests: sh apps/core/lumen-aipq/test/run.sh
 #  1. AiPqTest: the stock AI picture quality (XRMService AIPQ) on a recording vendor, every path with its writes;
 #  2. AiPqDriver (Android): every AiPq call under the one lock with the Android reads, the stock properties and broadcasts;

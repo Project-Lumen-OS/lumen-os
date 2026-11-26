@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the members tools/lumen_v1.sh VARIANT=public builds differently from the maintainer's private
 # image (Codec2 placeholders, z9x_blobs pieces, xgimi_compat.rc, the XGIMI audio files dropped), on the
 # Mac, no base tar, no proprietary file:

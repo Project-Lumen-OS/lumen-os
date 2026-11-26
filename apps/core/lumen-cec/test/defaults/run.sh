@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the stock HDMI-CEC defaults (apps/core/lumen-cec CecDefaults, CecSetting, CecStockDefaults): the real
 # table of every image, the parser, the one-time step over a fake unit, the same settings as the image tool
 # (tools/devices/cec_defaults.py) and the wiring; the Android glue (CecStockDefaults, CecSettings) compiles against the

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 // Game menu 3D bake, step 2 (tools/gm3d/README.md): merge the exported parts per material, weld, simplify with
 // meshoptimizer (absolute error in model units, borders locked, normals weighted), reorder for the vertex cache.
 //   node bake_mesh.mjs EXPORT/<theme> OUT.json ERROR MESHOPT_DIR

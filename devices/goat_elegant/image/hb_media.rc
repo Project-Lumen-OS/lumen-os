@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130), test builds from t10 on: MediaTek's VNDK
 # libstagefright_foundation.so for the vendor codec2 HAL (installed as /system/etc/init/hb_media.rc by compose_hb.sh;
 # HB only, the Z9X and Play 6 images do not change). RESULTS_hb-t9_playback_hdmi_standby.md, T10_NOTES.md.

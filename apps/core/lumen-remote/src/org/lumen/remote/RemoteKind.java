@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.remote;
 
 /** What a row of the remote table is (devices/_remotes/remotes.tsv, column kind). */

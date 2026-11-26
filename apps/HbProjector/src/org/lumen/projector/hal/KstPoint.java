@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * KstPoint: xgimi.hardware.gmpf.IDisplayType.KstPoint of the Z9X HB (stable AIDL), the manual keystone corner set.
  * Same public API as the Z9X class (4 corners in DLP panel space 3840x2160); only the wire differs.

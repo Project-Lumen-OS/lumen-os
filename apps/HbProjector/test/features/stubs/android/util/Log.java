@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.util;
 
 /** Host stub of android.util.Log for test/features: prints nothing, counts warnings. */

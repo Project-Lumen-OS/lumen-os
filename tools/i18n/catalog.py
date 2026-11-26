@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """catalog.py: the shared translation vocabulary of Lumen (module apps/core/lumen-common-strings, tools/arch/README.md).
 
 Every Lumen TV app ships English plus the same 17 locales. Before this module each app kept its own copy of every

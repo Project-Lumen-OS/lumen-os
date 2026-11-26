@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.source;
 
 /** One press: switch to {@link #go} ({@link SourceCycle#NONE} = stay), the card names {@link #shown}. Pure. */

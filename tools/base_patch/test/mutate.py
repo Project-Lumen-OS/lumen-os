@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the A2DP and About fixes and of base_patch.py: each one must turn test/run.sh red (run.sh green first).
   python3 tools/base_patch/test/mutate.py"""
 import os

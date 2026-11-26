@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS, XGIMI Z9X system library rebuilds: our source patches WITHOUT touching the read-only LineageOS tree.
 # Same mechanism as play6_overrides.sh, for ~/lineage-docker/patches/z9x (= gsi/lineage/patches/z9x on the Mac):
 # copy the original file(s) from ~/lineage to ~/z9x-lib-out/overrides/<same path>, apply the patch there, and print one

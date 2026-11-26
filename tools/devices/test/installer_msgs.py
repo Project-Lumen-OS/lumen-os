@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The installers' message catalog (installer/lib/messages.tsv) and the calls of its ids, read from the sources.
 
 lumen-install.sh (m ID value...) and lumen-install.ps1 (M ID value...) show the user only texts of the catalog:

@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox mount, only the three forms z9x_uires.sh may use (paths in $Z9X_ROOT; the lines added
 # to $Z9X_ROOT/proc/self/mountinfo carry the paths without $Z9X_ROOT, in the shape of the Z9X's own lines):
 #   mount -t tmpfs -o OPTS NAME DIR  a fresh, empty, writable tmpfs at DIR (an existing directory; its own

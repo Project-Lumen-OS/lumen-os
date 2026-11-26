@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """model_props_mutate.py: mutation check of the stock model props (tools/devices/model_props.py, the HB and Z9X data,
 the recipe lines, the HB app's AI scene). Each mutant breaks one rule in a scratch copy of the files the test reads;
 model_props_test.py must turn red, and the unmutated copy must pass. The stock dumps of the environment are used when

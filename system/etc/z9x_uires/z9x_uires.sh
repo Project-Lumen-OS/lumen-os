@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS UI resolution (image path /system/etc/z9x/z9x_uires.sh, 0755 root:root; run only by
 # /system/product/etc/init/init.lineage.atv.scaling.rc, Lumen's replacement of the LineageOS ATV file of
 # that name, as root, u:r:su:s0). Since 1.0.1 (2026-10-09): the Android UI runs at 4K (3840x2160,

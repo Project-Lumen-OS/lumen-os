@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * KstPoint: xgimi.hardware.gmpf@1.0::IDisplayType::KstPoint, the manual keystone corner set.
  *

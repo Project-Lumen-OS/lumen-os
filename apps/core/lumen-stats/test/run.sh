@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the shared statistics client (apps/core/lumen-stats): the protocol (Ping: body, rules, channel,
 # version code, update fields), the model from the device registry (Models is the registry's, Device.model) and the
 # release an image without an updater reports (Device.release), the wiring of every host (the updaters' Stats

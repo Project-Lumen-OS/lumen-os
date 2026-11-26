@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # MediaTek's VNDK libstagefright_foundation.so for the vendor codec2 HAL (hb_media.rc): the base's
 # com.android.vndk.v33.apex must hold the pinned GSI copy hb_media.rc covers, and the stock copy must export every
 # dynamic symbol of the GSI copy plus the 11 MEDIA_MIMETYPE_VIDEO_* that libcodec2.MTK.so needs.

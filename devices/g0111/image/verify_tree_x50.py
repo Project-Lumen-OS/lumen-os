@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """verify_tree_x50.py: the X50 test tree (or image, mounted) against the Z9X 1.0.9 base image (mounted), entry by
 entry: type, owner, group, mode (not of symlinks), file content (sha256), link target, SELinux label, file capability. Run as root
 by compose_x50.sh (step 7 on the staged tree, step 9 on the mounted image):

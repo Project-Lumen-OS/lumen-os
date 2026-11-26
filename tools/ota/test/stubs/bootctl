@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of /system/bin/bootctl (not in the Lumen image; run.sh copies it into the fake root only for
 # the fallback cases). Same state as stubs/service ($Z9X_T/hal). Like the real tool, a "no" answer is
 # a silent exit 70 (EX_SOFTWARE); $Z9X_T/hal/bootctl_fail makes every call print an error and exit 70.

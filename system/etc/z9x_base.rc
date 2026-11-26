@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X v6.1 / Lumen OS 1.0 always-on settings (install as /system/etc/init/z9x_base.rc).
 # Replaces v6's z9x_features.rc: there is no kill switch any more.
 # Nothing here reads or writes persist.z9x.featblock / strike / lastfeat / lastboot; values that a

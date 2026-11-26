@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gapps_fixture.py: a fake MindTheGapps zip and its test allow-list for the host tests of the Google services
 add-on (tools/ota/test/gapps.sh, installer_gapps.sh). Never reads or writes a Google file: every member is
 made-up text; the zip has the real block's file name and member paths (plus members the add-on must leave out:

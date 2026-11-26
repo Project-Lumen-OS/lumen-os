@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package lumen.subject;
 import org.lumen.remote.RemoteHost;
 import org.lumen.remote.RemotePairing;

@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_verify_negtest.sh: verify_tree_x50.py's HAL-app exception, end to end on a REAL staged X50 tree on the build
 # host (image.conf host; Linux: the xattrs and labels are real there). Run on the Mac after
 # 'bash tools/image/compose.sh g0111 tN stage':

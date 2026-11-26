@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # z9x_gate.sh: check G of the design notes (2.5). Proves that Play 6 work left the Z9X build of
 # Lumen OS unchanged: every pinned Z9X APK still rebuilds byte for byte from its sources, the synced
 # copies match apps/common, and the Z9X language and HAL caller checks pass.

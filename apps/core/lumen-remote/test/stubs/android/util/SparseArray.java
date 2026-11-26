@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.util;
 public class SparseArray<E> { private final java.util.TreeMap<Integer, E> m = new java.util.TreeMap<>();
     public void put(int k, E v) { m.put(k, v); } public E get(int k) { return m.get(k); } public int size() { return m.size(); }

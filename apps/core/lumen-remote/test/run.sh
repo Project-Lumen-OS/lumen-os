@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-remote host tests (no device): the remote table, RemoteMatch, and the parity of the shared engine with the two
 # implementations it replaced (traces recorded by parity/record_old.sh from the old code, before the move).
 #   sh apps/core/lumen-remote/test/run.sh        (JDK 17+: JAVA_HOME or javac on PATH; python3)

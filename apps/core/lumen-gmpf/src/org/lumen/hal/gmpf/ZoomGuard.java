@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.hal.gmpf;
 
 import static org.lumen.hal.gmpf.utils.Args.checkRange;

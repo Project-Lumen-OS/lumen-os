@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Play 6: show the Google add-on partition (lumen_gapps in super, made by
 # tools/play6/gms/make_gapps_img.sh and written once by fastbootd) inside /system with read-only overlay
 # mounts: for every listed folder of the add-on, /system/<dir> = add-on files over Lumen's. Nothing is written.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of the Z9X rows of the shared picture settings rule (Z9xMenuRules over lumen-menu
 PictureSettingsRule): each mutant must turn sh apps/ProjectorBase/test/rules/run.sh red. Works on a scratch copy.
 

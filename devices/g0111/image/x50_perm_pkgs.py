@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_perm_pkgs.py: every permission file of the X50 image names packages the image has (t11 review P0.1d).
 
   x50_perm_pkgs.py NEW_ROOT [BASE_ROOT]     NEW_ROOT / BASE_ROOT = trees holding system/ (staged tree or mounted image)

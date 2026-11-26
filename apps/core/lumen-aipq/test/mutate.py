@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of lumen-aipq (the stock AI picture quality): each breaks one path of AiPq (XRMService AIPQ) or the lock,
 the Android reads or a stock name of AiPqDriver; test/run.sh must turn red for every one. Works on a scratch copy of
 the module, never in place.

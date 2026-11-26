@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # LineageOS 21 gsi_tv_arm: build ONLY /system/bin/surfaceflinger for the XGIMI Play 6, with our play6 patches,
 # in the lineage-builder container. For a SurfaceFlinger fix on top of an existing Play 6 image (debugfs swap,
 # tools/play6/swap_system_file.sh) instead of a full base rebuild. Same flags as play6_build_loop.sh, so the

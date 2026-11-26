@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """codes_table.py: the per-device HAL code tables devices/<codename>/hal/codes.tsv (library of tools/hal/gen_codes.py
 and tools/hal/check_codes.py, no main).
 

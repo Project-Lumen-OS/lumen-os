@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """first_start.py: the one first-start setting of every Lumen OS image: language, time and time zone.
 
 The setting is devices/_image/first_start_prop.txt (2026-11-13: English, time and time zone from the network,

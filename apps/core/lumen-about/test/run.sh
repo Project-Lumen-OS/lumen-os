@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the XGIMI side in Settings > About (apps/core/lumen-about): sh apps/core/lumen-about/test/run.sh
 #  1. AboutTest: the facts (model code, firmware, stick name), the About rows, the catalog (signature, frame, official
 #     addresses, version mapping, the published catalog with the real list certificate), the screen's choice;

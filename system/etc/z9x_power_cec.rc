@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0 HDMI-CEC wake from STR (install as /system/etc/init/z9x_power_cec.rc), driven by the CEC part of
 # org.lumen.projector (cec.CecPolicy). Only init builtins: one sysfs write per trigger.
 #

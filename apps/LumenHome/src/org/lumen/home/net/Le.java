@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.net;
 
 /** Little-endian field access for the SMB2, NTLMSSP and DCE/RPC (NDR) buffers of the network folders. */

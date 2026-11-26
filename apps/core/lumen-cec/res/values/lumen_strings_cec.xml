@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <!-- lumen-cec: the HDMI-CEC page of every projector (CecPage). English base, moved byte for byte from the Z9X
      app's strings_cec.xml (cec_* there, lumen_cec_* here) with all 16 translations. -->
 <resources>

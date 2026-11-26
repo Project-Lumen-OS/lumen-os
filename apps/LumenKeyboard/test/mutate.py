@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of Lumen Keyboard: each must make test/run.sh fail (python3 test/mutate.py [NAME...]).
 
 REGEN mutants edit the layout table and write the pages again, so the pages agree with the table and only the

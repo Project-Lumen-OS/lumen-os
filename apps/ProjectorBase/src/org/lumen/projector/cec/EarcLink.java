@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * EarcLink: eARC the stock way on the Z9X and the Z9X HB (2026-11-04, devices/goat_elegant/stock analysis). Both
  * vendors run the same libxgimi flow and both stock frameworks carry the same patch. Calls: setEARCEnable = HB TV 65 /

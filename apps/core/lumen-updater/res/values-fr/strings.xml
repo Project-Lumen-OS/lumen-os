@@ -102,7 +102,7 @@
     <string name="about_project">Page du projet</string>
     <string name="about_licenses">Licences</string>
     <string name="about_scan">Scannez avec un téléphone pour ouvrir</string>
-    <string name="lic_lumen">Lumen OS : Apache License 2.0. Le récepteur AirPlay : GNU GPL 3.0.</string>
+    <string name="lic_lumen">Lumen OS : PolyForm Noncommercial License 1.0.0. Le récepteur AirPlay : GNU GPL 3.0.</string>
     <string name="lic_aosp">Android Open Source Project et LineageOS : Apache License 2.0 et les licences de leurs composants.</string>
     <string name="lic_gapps">Applications et services Google : conditions propres à Google. Ne font pas partie de Lumen OS.</string>
     <string name="lic_thirdparty">UxPlay (GPL 3.0), libplist (LGPL 2.1), Apple ALAC (Apache 2.0), BoringSSL, police Roboto (Apache 2.0).</string>

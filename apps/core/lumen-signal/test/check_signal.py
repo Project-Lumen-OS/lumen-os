@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """lumen-signal checks that need the files, not the JVM (test/run.sh runs it):
 1. texts: res/values and res/values-ru hold exactly the SignalText keys, with the same %N$s arguments; plain words
    (no semicolon, no long dash, never DSU, vbmeta or slot);

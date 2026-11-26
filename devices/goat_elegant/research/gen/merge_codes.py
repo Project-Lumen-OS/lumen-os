@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """merge_codes.py NDK_TSV JAVA_TSV OUT_TSV
 
 Joins the two independent decodings of the xgimi.hardware.gmpf V1 interface:

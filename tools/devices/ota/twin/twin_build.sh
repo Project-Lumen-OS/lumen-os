@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # twin_build.sh: the storage twin of a Virtual A/B projector with Lumen OS installed, built from its stock dump on
 # the build host (the first one is the XGIMI Z9X HB:
 # the design notes). No projector, no root, no git. Run on the build host from a copy of

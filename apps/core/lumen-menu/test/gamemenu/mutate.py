@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the Lumen game menu (GmModel logic + the wiring run.sh pins): each must turn test/gamemenu red.
 python3 test/gamemenu/mutate.py [-k substring]"""
 import os, sys

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.os;
 public final class SystemProperties {
     public static String get(String k, String d) { String v = lumen.fake.World.props.get(k); return v == null ? d : v; }

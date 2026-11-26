@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Game menu 3D bake, step 1: export each controller scene from three.js (tools/gm3d/README.md).
 
   python3 export.py --models ~/lumen-build-tmp/qp_design/models --three .../render/three_bundle.js \

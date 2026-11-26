@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS pre-push guard (install: git config core.hooksPath .githooks).
 # git passes "<local ref> <local sha> <remote ref> <remote sha>" lines on stdin: every blob the push
 # would add to the remote (ALL pushed commits, also files committed and deleted again) is checked by

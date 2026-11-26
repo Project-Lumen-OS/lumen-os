@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # render.sh: PNGs of Lumen Keyboard on an Android TV 14 emulator (1920x1080, 320 dpi) for review, D-pad only.
 #   ADB="adb -s emulator-5554" bash render.sh KEYBOARD.apk PREVIEW.apk OUTDIR
 # The emulator image's own keyboard is Gboard, so the APK installs next to it as a user app (same package as on the

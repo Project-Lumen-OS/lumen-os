@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
 /** Minimal assertion helper so the tests run on the Mac JDK without JUnit (no network, no Gradle). */

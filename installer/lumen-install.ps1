@@ -1,4 +1,4 @@
-﻿# SPDX-License-Identifier: Apache-2.0
+﻿# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS installer for the XGIMI Z9X and the XGIMI Play 6 - Windows (PowerShell 5.1+). BETA: not yet tested on
 # Windows. Same steps and the same safety rules as lumen-install.sh (macOS/Linux):
 #

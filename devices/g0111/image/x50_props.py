@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_props.py: the property edits of the X50 test image (compose_x50.sh step 5).
 
   x50_props.py apply  EDITS MODEL SYSTEM_PROP PRODUCT_PROP V BID      edit both files in place

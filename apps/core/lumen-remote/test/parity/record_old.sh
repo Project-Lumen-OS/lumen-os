@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Records the remote pairing traces of the OLD implementations, read from git at BASE (default: the integ commit
 # remote-core started from), into test/parity/golden_<subject>.txt: the parity pin taken BEFORE the move.
 #   sh apps/core/lumen-remote/test/parity/record_old.sh [BASE]

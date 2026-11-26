@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of 'lumen-install.sh gapps' (installer/): the Google services add-on of Lumen OS without Google.
 # On the Mac, no projector, no network, no Google file:
 #   bash tools/ota/test/installer_gapps.sh

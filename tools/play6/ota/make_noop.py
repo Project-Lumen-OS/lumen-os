@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_noop.py: the unsigned no-op package of the Play 6 recovery trust test.
 
     make_noop.py OUT.zip [--timestamp UTC_SECONDS]

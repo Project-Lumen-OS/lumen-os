@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Host test of lumen_stats.py: python3 tools/stats/server/test_lumen_stats.py"""
 import json
 import os

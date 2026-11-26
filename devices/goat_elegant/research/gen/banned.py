@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """banned.py GSI_ROOT AIDL_CODES_TSV NAME_MAP_TSV OUT_TSV
 
 Builds banned.tsv: HB (G0130 AIDL V1) methods Lumen must never call, with the rule that bans each one.

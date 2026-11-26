@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """aosp_verify.py: what XGIMI's Android 11 recovery does with otacerts.zip and a whole-file signature,
 re-implemented for the Mac. Library for recovery_trust.py, sign_ota.py,
 verify_ota.py and their tests; no device access, no private key.

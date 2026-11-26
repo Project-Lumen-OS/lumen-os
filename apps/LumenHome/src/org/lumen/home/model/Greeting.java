@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.model;
 
 /** The calm screen's greeting by the local hour. Pure. */

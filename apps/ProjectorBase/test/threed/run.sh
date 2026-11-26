@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Quick 3D host checks: the stock call of each mode (display/ThreeDCall), the read-back (lumen-menu ThreeDMode), the
 # remote's 3D request (MenuRequest), the profiles, labels and the receiver: sh test/threed/run.sh
 set -eu

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Сборка LineageOS 21 gsi_tv_arm64 (systemimage) на ноутбуке, в контейнере lineage-builder:
 #   docker run -d --name z9x-build -v ~/lineage:/src -v ~/lineage-docker/z9x_build_loop.sh:/z9x_build_loop.sh:ro \
 #     -e JOBS=12 lineage-builder bash /z9x_build_loop.sh

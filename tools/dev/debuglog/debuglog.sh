@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X: временный журнал загрузки на флешку. Каждые 5 с: dmesg, свойства, процессы,
 # этапы загрузки MediaTek и logcat. Работает 15 минут.
 M=/dev/z9xlog

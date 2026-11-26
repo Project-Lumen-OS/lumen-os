@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 import org.lumen.remote.RemoteAdvert;
 import org.lumen.remote.RemoteCatalog;
 import org.lumen.remote.RemoteKind;

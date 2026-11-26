@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """titan_test.py: the data of the XGIMI TITAN Noir Pro and Max (devices/h0062, devices/h0063,
 the design notes).
 

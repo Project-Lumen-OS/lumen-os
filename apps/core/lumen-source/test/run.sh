@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-source host tests: bash apps/core/lumen-source/test/run.sh
 #  1. SourceTest: the stock cycle per model (devices/*/source.tsv), quick presses, the card's text, bad data;
 #  2. check_source.py: recipes, key receivers on the first DOWN, the X50 key route, the card's one-time slide, texts

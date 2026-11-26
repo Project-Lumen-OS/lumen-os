@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI RS30 Ultra Max (G0155): the MediaTek / XGIMI files the image needs from the user's own stock
 # system. Hashes only; the files themselves are proprietary and are never in git or in an image. This model runs Lumen OS
 # only as a trial (devices/g0155/README.md), so the reader takes them read only from the stock slot

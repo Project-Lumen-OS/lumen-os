@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # LineageOS 21 gsi_tv_arm64 (the Z9X base) single-module rebuilds with our patches (lineage/patches/z9x), for system
 # libraries the Lumen Z9X image replaces at compose time (tools/lumen_v1.sh). ~/lineage is mounted READ-ONLY and the
 # Z9X tree's own out/ is never used: everything goes to ~/z9x-lib-out.

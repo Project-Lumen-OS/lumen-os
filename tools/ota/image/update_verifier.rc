@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS: replaces /system/etc/init/update_verifier.rc of the base image (same service name, so
 # init.rc's 'exec_start update_verifier' at zygote-start runs this). On every normal boot it runs the
 # stock /system/bin/update_verifier unchanged (z9x_ota.sh 'verifier' execs it). Only while z9x_ota.sh

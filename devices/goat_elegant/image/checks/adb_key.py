@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """--dsu-test: the build host's adb PUBLIC key is one key line (never a private key).
   adb_key.py ADBKEY_PUB
 """

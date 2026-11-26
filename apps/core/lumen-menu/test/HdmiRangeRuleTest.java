@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu;
 
 /** HdmiRangeRule: Auto names the range in use only when it is known and Auto is chosen. java org.lumen.menu.HdmiRangeRuleTest */

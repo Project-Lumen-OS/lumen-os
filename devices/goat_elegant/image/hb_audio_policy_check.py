@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130), test builds from t7 on: the audio policy gate of compose_hb.sh
 #. Read only. Usage:
 #   python3 -I hb_audio_policy_check.py VENDOR_ETC STAGED_XML

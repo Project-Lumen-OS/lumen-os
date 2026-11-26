@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of lumen-remote: each one change to the module code must turn test/run.sh red.
   python3 apps/core/lumen-remote/test/mutate.py [NAME...]      (runs on a scratch copy, JDK 17+, python3)
 """

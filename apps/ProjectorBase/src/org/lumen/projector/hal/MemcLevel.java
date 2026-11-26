@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** MEMC (motion compensation) 0 Off, 1 Low, 2 Medium, 3 High (FS 3.4). *

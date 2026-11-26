@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """bootanim_check.py: the boot animation an image ships plays Lumen's power-on sound (read only, stdlib only).
 
     bootanim_check.py ZIP [--base BASE_ZIP]

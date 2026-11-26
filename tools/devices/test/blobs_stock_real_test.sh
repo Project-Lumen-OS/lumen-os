@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The trial-run path of the one blobs reader tools/ota/image/z9x_blobs.sh on the REAL stock dumps of every model, with
 # each model's real settings and allow-list: Z9X G0082 6.15.19 / 6.15.58 / 6.15.62, Z9X HB G0130 6.16.24 and G0148
 # 6.17.12, X50 Ultra G0111 1.2.64, RS30 Ultra Max G0155 1.1.42, TITAN Noir Pro H0062 1.2.99 and 1.2.54. Runs where

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbAudioRules: the HB decisions of the CEC System Audio of an output choice (cec/HbSystemAudio, through lumen-audio
  * SoundbarMode), kept free of Android classes so test/audio/run.sh checks them on the host. The 3.5 mm output the HB

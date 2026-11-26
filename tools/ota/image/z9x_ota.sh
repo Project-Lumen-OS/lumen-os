@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS OTA boot gate (image path /system/etc/z9x/z9x_ota.sh, 0755 root:root; run only by
 # /system/etc/init/z9x_ota.rc and /system/etc/init/update_verifier.rc as root, u:r:su:s0).
 #

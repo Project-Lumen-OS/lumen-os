@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * AidlCaller: the single transact path from HbProjector to XGIMI's vendor service on the Z9X HB (goat_elegant,
  * G0130). HB-only file (the design notes to 6), the HB twin of HidlCaller.

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.hal.gmpf.utils;
 
 /** Argument checks of the vendor calls: a refused value throws IllegalArgumentException before anything is sent. */

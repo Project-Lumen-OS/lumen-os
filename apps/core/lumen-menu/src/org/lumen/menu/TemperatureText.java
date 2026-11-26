@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu;
 
 /** The settings.temperature row text of every model: the vendor's system temperature, an unsigned byte of whole degrees C. */

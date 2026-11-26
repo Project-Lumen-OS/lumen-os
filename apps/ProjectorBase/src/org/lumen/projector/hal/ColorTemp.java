@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Colour temperature = DLP lumens mode; Z9X offers ONLY 16 and 17 (7/8/15 are max/min/test, FS 3.4).

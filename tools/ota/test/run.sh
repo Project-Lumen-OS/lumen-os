@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test harness for the Lumen OS boot gate (tools/ota/image/z9x_ota.sh) and boot rescue
 # (tools/ota/image/z9x_rescue.sh). POSIX sh, runs on the Mac:
 #   sh tools/ota/test/run.sh              every case, the scripts under 'sh'

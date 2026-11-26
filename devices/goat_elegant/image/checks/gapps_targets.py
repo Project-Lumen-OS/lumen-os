@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The Google add-on targets: each overlaid tree is a real directory, /product and /system_ext link into /system,
 unzip is there, and no allow-listed path is already in the image.
   gapps_targets.py ROOT GAPPS_ALLOW

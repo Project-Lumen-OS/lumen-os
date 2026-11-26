@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host check of the shared parallel download (ParallelDownload, Segments, ConnectionScaler, Rate) against a local
 # server that behaves like GitHub releases (redirect to a signed link that expires, Range with ETag and If-Range, a
 # throttle per connection, cut connections, a server that ignores Range). Loopback only, writes only a temp dir:

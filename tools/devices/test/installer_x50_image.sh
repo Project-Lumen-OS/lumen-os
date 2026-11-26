@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # installer_x50_image.sh: the installer (installer/lumen-install.sh, this tree, a copy) against a REAL signed X50
 # test image: the X50 profile accepts it, the Z9X way refuses it. Fake projectors only (adb / fastboot stubs as
 # tools/devices/test/installer_x50.sh), nothing is written anywhere but a temp dir. On the Mac or Linux:

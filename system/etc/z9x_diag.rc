@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X boot logger (install as /system/etc/init/z9x_diag.rc; script /system/etc/xgimi/z9x_diag.sh 0755).
 #
 # Started at 'on boot', i.e. after early-boot (pwmchip8, z9x_base.rc) has been processed; nothing

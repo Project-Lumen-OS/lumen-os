@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of overlay/play6/play6_boottiming.sh (DIAG images only) on a fake root: /proc, /sys, /dev and the
 # boot logger's stick are folders in a temp dir; getprop and sleep are stubs. The sleep stub moves the fake
 # uptime on and plays a scripted boot (stages, a module, a pwm chip, vendor services, boot_completed).

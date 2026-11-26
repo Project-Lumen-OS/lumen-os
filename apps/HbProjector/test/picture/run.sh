@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The Z9X HB colour space row (panel/ColorSpaceRule, plain Java): shown under an HDR source as stock shows it, hidden
 # only in the AI picture modes the vendor refuses, the HDR note only when the read-back disagrees; and ProPicture uses
 # the rule. sh test/picture/run.sh

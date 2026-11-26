@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_tvsettings_stub.sh TVSETTINGS_APK
 # The switch fix in apps/Z9xTvSettingsHdrOverlay points at TvSettings resources by number only
 # (stub/ids.txt, linked as a stub library by apps/build_apk.sh). Those numbers must be the real ids

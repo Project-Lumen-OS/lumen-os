@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """None of the HB OTA certificates is one of the base otacerts.zip (the AOSP test key).
   otacerts_base.py BASE_OTACERTS OURS
 """

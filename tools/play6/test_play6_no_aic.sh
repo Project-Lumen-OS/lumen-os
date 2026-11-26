@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test: the Play 6 image carries no Wi-Fi or Bluetooth driver of our own (decision 2026-11-12).
 # XGIMI's V1.8.127 drives both chips itself (MediaTek MT7663 and the AIC8800 of the newer batches, its own
 # aic8800 modules, dongle.cfg and libbt-vendor-aic.so), and the installer refuses an AIC unit on V1.7.116

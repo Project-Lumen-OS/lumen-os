@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS X50 Ultra (g0111) images (image path /system/etc/init/x50_nui.rc): the stock eye-protection drawer.
 # On stock (v1.2.64) /system/etc/init/nativeui.rc (64 bytes, sha256 6d289394ea73e2130ac7e1caf2c1761372acc4464...)
 # is the service nativeui /system/bin/nativeui, class main, oneshot: started once by class_start main (init.rc

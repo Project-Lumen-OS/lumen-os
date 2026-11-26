@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_glyphs_test.py: tools/icons/check_glyphs.py on small fixture trees, each rule both ways, then the real tree
 green, the real tree of the commit before the icon set red, and gen_icons.py check --offline.
 

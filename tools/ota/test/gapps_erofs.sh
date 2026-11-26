@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the erofs Google services add-on of the one-pass install (lumen-install.sh --gapps-zip, XGIMI Z9X):
 # the installer's OWN code (the section "XGIMI Z9X: Lumen OS and Google services in one pass" of
 # installer/lumen-install.sh, sourced: eu_setup, gi_tar, gi_build) builds the image from a zip with the shipped

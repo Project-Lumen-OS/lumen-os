@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen HDMI receiver bridge (/system/etc/lumen/lumen_hdmirx.sh 0755, started by lumen_hdmirx.rc as a root oneshot).
 # The signal panel (apps/core/lumen-signal HdmiRxBridge, system uid) cannot open the MStar receiver's debug node
 # /proc/utopia_mdb/HDMIRX (0600 root). It sets sys.lumen.hdmirx.req to a fresh token; this script asks the receiver

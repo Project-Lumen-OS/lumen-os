@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # picture_state_test.sh: the read-only proof of tools/devices/diag/picture_state/PictureState.java.
 # Every row of its READS table must be a getter of the stock Z9X proxy table (research/play6/z9x_gmpf_codes.txt):
 # same interface, code and method name, a name that starts with get / is / Get, int32-only arguments in the same

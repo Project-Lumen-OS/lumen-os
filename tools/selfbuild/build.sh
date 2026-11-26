@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build.sh: build Lumen OS (the no-Google edition) yourself, from this repository and your own LineageOS 21
 # build, signed with your own keys, on one Linux x86-64 machine. Guide: docs/selfbuild/en.md (ru.md).
 #

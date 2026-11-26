@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # dexpreopt_lumen.sh: build-time AOT ("speed") of one of our /system APKs, on the build laptop,
 # against the SAME boot image that ships in the base tar (plan C10, speed spec 4).
 #

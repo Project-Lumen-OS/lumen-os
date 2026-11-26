@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """hb_gapps_allow.py: tools/ota/gapps_allow.py for the XGIMI Z9X HB (goat_elegant, 32-bit userspace).
 
     python3 -I hb_gapps_allow.py gen ZIP --url URL       the block of one MindTheGapps arm ATV zip

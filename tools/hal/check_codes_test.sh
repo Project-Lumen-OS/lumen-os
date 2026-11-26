@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_codes_test.sh: tools/hal/check_codes.py and tools/hal/gen_codes.py java on a small synthetic tree (one HIDL app,
 # one AIDL app, one table each) and on broken copies of it, each of which must be red: a literal code, a local
 # constant, a forwarder fed a literal, a literal in an allow-list enum, an enum naming another method, a code-carrying

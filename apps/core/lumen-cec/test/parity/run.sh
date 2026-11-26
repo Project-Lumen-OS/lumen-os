@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The CEC page parity pins (lumen-cec): every device app that shows the HDMI-CEC page is assembled from its recipe,
 # its page code is compiled against the stubs and driven by CecParity in every scenario and locale; the transcript
 # must equal golden/<codename>.txt byte for byte. The Z9X and HB goldens were pinned BEFORE the page moved into this

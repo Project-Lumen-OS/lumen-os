@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Play 6: after the boot, tell the updater (apps/Play6Updater, Preflight.install) whether
 # the recovery partition trusts the Lumen Play 6 OTA certificate (install as /system/etc/init/lumen_recovery.rc,
 # tools/play6/compose.sh). Reads the partition only; writes nothing but two properties.

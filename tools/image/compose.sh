@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # compose.sh: stage a device's image inputs on its build host and build the image variants there, with the one
 # image builder (tools/build/README.md). Kept for its old command lines:
 #   bash tools/image/compose.sh CODENAME VERSION [VARIANT]    every variant of devices/<codename>/build.conf, or one

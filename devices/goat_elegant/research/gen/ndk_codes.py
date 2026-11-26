@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """aidl_codes.py LLVM_BIN LIB OUT_TSV: NDK AIDL proxy (Bp*) transaction codes of a 32-bit ARM lib.
 code = immediate last written to r1 before the blx to the AIBinder_transact PLT stub."""
 import re, subprocess, sys, struct

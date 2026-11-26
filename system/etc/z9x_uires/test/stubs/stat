@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox stat, only 'stat -c %C FILE' (the SELinux context): the last "FILE CONTEXT" line of
 # $Z9X_T/labels, else u:object_r:device:s0 for a file under $Z9X_ROOT/dev (tmpfs /dev). $Z9X_T/stat.fail:
 # prints nothing, exit 1 (an older toybox without %C).

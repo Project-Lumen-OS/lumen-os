@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_menu_apk_check_test.sh: the second HAL exception of the X50 image (t11): MENU_APP of
 # devices/g0111/image/verify_tree_x50.py, the projector menu apps/X50Projector.
 #   sh devices/g0111/test/x50_menu_apk_check_test.sh [X50Projector.apk] [X50EyeGuard.apk]

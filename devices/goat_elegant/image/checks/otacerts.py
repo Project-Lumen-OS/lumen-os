@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """otacerts.zip (make_otacerts.py on the Mac): exactly ota.x509.pem then ota_next.x509.pem, stored, each one
 RSA-4096 certificate, the two different.
   otacerts.py OTACERTS_ZIP

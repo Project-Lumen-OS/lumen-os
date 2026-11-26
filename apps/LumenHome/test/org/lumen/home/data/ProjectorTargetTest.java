@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
 import org.lumen.home.proj.ProjectorTarget;

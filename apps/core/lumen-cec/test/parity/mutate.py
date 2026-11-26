@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """mutate.py: targeted mutants of the HDMI-CEC page (lumen-cec), its Z9X / HB driver and the X50 family driver.
 Each mutant changes one line of the code or data the tests pin; the named suites must then fail (the mutant is
 killed). The tree is restored after every mutant, also on error.

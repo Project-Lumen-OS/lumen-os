@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutation check of the Google services add-on's boot script (tools/ota/image/z9x_gapps.sh) against its host
 test (tools/ota/test/gapps.sh): every mutant below changes one rule of the update-slot exception or of the boot
 log, and the cases named with it must turn red. A mutant that stays green means the test does not hold that

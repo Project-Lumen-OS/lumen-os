@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """blobs_fixture.py: fake z9x_blobs files for the host tests (tools/ota/test/blobs.sh, installer_blobs.sh,
 public_members.sh). Never reads or writes a real MediaTek / XGIMI file: every file is made-up text, and the
 test allow-list keeps the real one's structure (paths, sources, bind= targets, from= line ranges) with the

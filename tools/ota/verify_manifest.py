@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """verify_manifest.py: check an update manifest exactly like the updater does (public cert only).
 
     verify_manifest.py update-stable.json [--sig update-stable.json.sig] [--cert ota.x509.pem]

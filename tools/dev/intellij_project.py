@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """intellij_project.py: write an IntelliJ IDEA project for the gsi/ tree (local only, .idea/ is git-ignored).
 
     python3 tools/dev/intellij_project.py        (run from anywhere; writes gsi/.idea, replacing it)

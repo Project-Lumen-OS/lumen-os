@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Picture shift direction for 141 translationKst (FS 2.5): 1 up, 2 down, 3 left, 4 right. *

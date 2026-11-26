@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # fwsim.sh: the shared firmware copy (apps/core/lumen-fwcopy) on real XGIMI partition images, on a computer.
 #
 #   bash apps/core/lumen-fwcopy/test/fwsim.sh DUMP OTA_IMG [WORK]

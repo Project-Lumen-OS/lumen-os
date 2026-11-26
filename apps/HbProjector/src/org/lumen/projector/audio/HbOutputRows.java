@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbOutputRows: which rows the HB panel's "Sound output" row lists and when the row is shown (2026-11-01, hb-t12
  * tester 16:48-16:50: the output rows collapsed while the soundbar kept playing). Free of Android classes so

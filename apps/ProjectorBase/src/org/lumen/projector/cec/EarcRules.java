@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * EarcRules: the decisions of cec/EarcLink (eARC the stock way, devices/goat_elegant/stock analysis), kept free of
  * Android classes so test/earc/run.sh checks them on the host. Same vendor flow on the Z9X and the Z9X HB.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """javascan.py: a small Java source scanner for the Play 6 checks (check_handshake.py, check_play6_hal.py).
 
 Not a parser: it masks comments, strings and char literals, then splits the body of the file's first

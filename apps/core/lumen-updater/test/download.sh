@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host check of the updater's PackageDownload (the network wait, retries, the whole-file sha256 with one more pass,
 # 404 ends it) over the shared download of apps/core/lumen-download, against that module's GitHub-like test server.
 # Loopback only, writes only a temp dir: sh apps/core/lumen-updater/test/download.sh

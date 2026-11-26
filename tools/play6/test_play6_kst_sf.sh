@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the keystone SurfaceFlinger in every Play 6 image (devices/dragon_healthy/image/steps.tsv step 1d,
 # the design notes). The base build in /out predates lineage/patches/play6/0002 with stock sampling
 # (GL_LINEAR on every layer, edge AA, 4x MSAA), so its own /system/bin/surfaceflinger warps the UI with nearest

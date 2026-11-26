@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """recovery_trust.py: add the Lumen Play 6 OTA certificate to XGIMI's recovery image, on the Mac only.
 
     recovery_trust.py patch INPUT --out DIR [--cert PEM ...] [--reference IMG] [--allow-unknown]

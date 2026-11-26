@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_privapp.py: every priv-app of a composed Play 6 system tree has its privapp-permissions entries
 . Run by tools/play6/compose.sh on the finished tree, before the image is
 packed; runs on the Mac as well (a copy of an image's /system).

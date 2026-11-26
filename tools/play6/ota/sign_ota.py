@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_ota.py: whole-file signature of a Play 6 OTA zip, as AOSP 'signapk -w' writes it (Mac only).
 
     sign_ota.py IN.zip OUT.zip [--key ~/.lumen-keys/play6/ota/ota.pk8] [--cert ~/.lumen-keys/play6/ota/ota.x509.pem]

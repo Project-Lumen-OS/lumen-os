@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_release_x50_test.py: tools/devices/ota/check_release.py on the X50 family's shared tag x50 (no network).
 
     python3 -B tools/devices/test/check_release_x50_test.py

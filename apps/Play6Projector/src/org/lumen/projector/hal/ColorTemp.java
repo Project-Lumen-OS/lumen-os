@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** setDlpLumensMode values of the Play 6: the picture style of the Custom picture mode (stock color_style_*). */

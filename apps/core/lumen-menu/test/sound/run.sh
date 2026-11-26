@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Sound page state and audio port rules (a test Z9X trial 2026-11-11): sh test/sound/run.sh
 # SoundStateTest: the Sound enhancement row shows the STORED process as stock does (DTS stays DTS before the output
 # path is reported, so Harman Kardon is always a way out), hints and the equalizer agree with it; AudioPortRules:

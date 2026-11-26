@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_apk.sh: build a signed APK on the Mac without Gradle and without network.
 #
 #   sh build_apk.sh APP_DIR [OUT_APK]

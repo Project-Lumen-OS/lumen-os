@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Play 6 (G0058): compatibility with XGIMI's vendor partition, which is never modified;
 # everything here swaps something in at boot with a bind mount (the same approach as the Z9X's xgimi_compat.rc).
 # 1) XGIMI ships system apps signed with its own platform key under sharedUserId android.uid.system in

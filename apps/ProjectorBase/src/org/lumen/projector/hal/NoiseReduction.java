@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Noise reduction 0 Off, 1 Low, 2 Medium, 3 High, 4 Auto (FS 3.5). *

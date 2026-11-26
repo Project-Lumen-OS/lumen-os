@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The shared tool key rule (org.lumen.menu.KeyTools): sh apps/core/lumen-menu/test/keytools/run.sh
 #  1. KeyToolsTest: the rule alone, then the REAL window hosts (OverlayHost and Panel of apps/common/projector,
 #     ActivityPanelHost, PanelActivity and ToolActivity of lumen-menu) on host stubs of android.* over a fake screen that

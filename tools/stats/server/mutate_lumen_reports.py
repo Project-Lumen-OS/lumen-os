@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the problem report end that test_lumen_reports.py must kill (each one a rule of the upload: headers,
 size, zip checks, limits, privacy of the metadata, the store): python3 tools/stats/server/mutate_lumen_reports.py.
 Works on copies in a temporary folder; every anchor must be in its file once; exit 1 on a surviving mutant."""

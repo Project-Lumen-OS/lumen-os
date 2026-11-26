@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_ota.py: build a Lumen OS OTA package (partial, system-only, Virtual A/B compressed payload).
 
 Runs where the OTA host tools are (the build laptop or any Linux box with otatools.tar; see

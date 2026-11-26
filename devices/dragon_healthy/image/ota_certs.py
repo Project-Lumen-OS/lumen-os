@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """--ota only: /system/etc/security/otacerts.zip = the Play 6 OTA certificate only (the one the patched recovery
 adds), stored with a fixed time, mode 0644.
   ota_certs.py CERT OTACERTS_ZIP

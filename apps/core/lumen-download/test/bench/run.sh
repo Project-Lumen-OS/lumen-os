@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Real GitHub through a per-connection throttle (throttle_proxy.py, RATE bytes/s per connection, default 1.1 MB/s as
 # measured on a projector in Russia): one connection for ONE_S seconds, then the shared parallel download of the whole
 # asset with a spoiled CDN link after 5 s (+403), then its sha256 against the manifest. Downloads the asset about

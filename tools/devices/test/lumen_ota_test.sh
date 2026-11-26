@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the neutral OTA boot gate tools/devices/ota/image/lumen_ota.sh and its lumen_escape.sh fork
 # (tools/devices/ota/image/lumen_ota_escape.sh), with the HB data devices/goat_elegant/image/ota_gate.conf
 #.

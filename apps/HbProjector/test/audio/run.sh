@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # CEC System Audio decisions (audio/HbAudioRules) and the sound output rows (audio/HbOutputRows), plain Java, no stubs,
 # 2026-11-01; the 3.5 mm output wiring (lumen-audio JackOutput through HbWiredJack, check_wiring.py): sh test/audio/run.sh
 set -eu

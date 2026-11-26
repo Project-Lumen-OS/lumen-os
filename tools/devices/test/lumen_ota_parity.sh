@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Parity test: the Z9X gate scenarios of tools/ota/test/run.sh, each run twice from the same start, once against
 # the Z9X gate tools/ota/image/z9x_ota.sh (unchanged, read only) and once against the neutral fork
 # tools/devices/ota/image/lumen_ota.sh with the Z9X data (ota_gate.conf hal=aidl, health=zygote surfaceflinger

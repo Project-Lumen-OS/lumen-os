@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <!-- lumen-menu labels: the Z9X projector app's own texts and translations, copied under lumen_m_ names -->
 <resources>
     <string name="lumen_m_boost_effect">يجعل Boost الصورة أكثر سطوعًا، لكن الألوان تبدو باهتة أكثر. تبقى مساحة الألوان كما هي.</string>

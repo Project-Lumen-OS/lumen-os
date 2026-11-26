@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Play 6 menu checks (the shared projector menu on the Play 6, apps/core/lumen-menu the design notes): Play6MenuGates
 # against the real profile devices/dragon_healthy/menu.json read by the module's parser and the wire values of the
 # Play 6 HAL clients (Play6Gmpf, the shared GmpfBase, the value enums) and game/GameMode, then the wiring of the

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lineage_gsi_tv_arm systemimage for the RS30 (g0155): lineage/play6_build_loop.sh with uffd GC ON.
 cd /src
 export OUT_DIR=/out PYTHONDONTWRITEBYTECODE=1

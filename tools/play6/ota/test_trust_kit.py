@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """test_trust_kit.py: host tests of recovery_trust.py, sign_ota.py, verify_ota.py/aosp_verify.py and
 make_noop.py on SYNTHETIC inputs (no XGIMI file, no device).
 

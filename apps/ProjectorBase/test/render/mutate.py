@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the Z9X render parity walk: each one changes what the Z9X shows on the shared menu (a rule, a label, a
 string, the profile, the section layout); test/render/run.sh must turn red for every one. Works on a scratch copy of
 the assembled app tree, never in place.

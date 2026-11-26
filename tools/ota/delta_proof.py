@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """delta_proof.py: prove that a delta payload between two PRIVATE images carries no MediaTek / XGIMI byte.
 
     delta_proof.py PAYLOAD_OR_OTA_ZIP --new NEW_SYSTEM.img --old OLD_SYSTEM.img

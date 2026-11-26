@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * SlideCoalescer: the vendor writes of one picture slider while a remote key is held (HB-only file, no HAL access,
  * free of Android classes so test/slider/run.sh checks it on the host). Used by panel/ProPicture (white balance and

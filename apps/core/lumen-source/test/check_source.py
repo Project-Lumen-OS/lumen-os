@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """lumen-source wiring checks: check_source.py GSI. Exit 1 on any red line."""
 import glob, os, re, sys
 

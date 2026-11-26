@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gapps_allow.py: the allow-list of the Google services add-on of Lumen OS without Google
 (tools/ota/image/gapps_allow.txt = installer/lib/gapps_allow.txt, image path /system/etc/z9x/gapps_allow.txt).
 

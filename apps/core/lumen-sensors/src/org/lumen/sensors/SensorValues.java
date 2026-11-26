@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.sensors;
 
 /** What the last reads gave. A read that failed or answered out of range leaves its field empty: no row. Pure. */

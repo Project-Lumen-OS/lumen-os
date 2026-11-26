@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """play6_tree.py: the default APP_DIR of the Play 6 projector checks (check_play6_hal.py, check_handshake.py).
 
 apps/Play6Projector is only the Play 6 layer since the design notes; the full source tree is

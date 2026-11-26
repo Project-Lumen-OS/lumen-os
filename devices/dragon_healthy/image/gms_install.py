@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """--gms only, the Google test edition: the MindTheGapps files of IN/gms installed as
 the zip's own installer does (dirs 0755, files 0644, 0755 for *.sh and files without an extension), each checked
 against gms/members.txt first; nothing may already be at its path.

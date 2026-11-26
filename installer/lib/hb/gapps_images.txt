@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, 32-bit userspace), never in an image: the Google services add-on
 # images that may be written into z9x_gapps_<slot> on the HB. HB ONLY: the Z9X file is installer/lib/gapps_images.txt
 # (arm64 zip) and must never get this line, nor this file a Z9X one. Same format, same profile, same rules as that

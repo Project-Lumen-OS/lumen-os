@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """base_patch.py host tests without Android tools: the zip swap keeps every other entry byte for byte, the pins
 refuse a foreign base or result, compare() passes a dexlib2 relayout and stops on a real change, the fixes of one
 file apply in their order, link() stops on a reference that does not resolve, the About fix only adds to LineageOS."""

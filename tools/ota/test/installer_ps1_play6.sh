@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test: the Windows installer (installer/lumen-install.ps1) and the shell installer (installer/lumen-install.sh)
 # do the same in the XGIMI Play 6 pre-checks and the erase request of the light first start (2026-10-31):
 #   - the whole ps1 parses;

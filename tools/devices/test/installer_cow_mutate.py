@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutation test of the PC installer's *-cow rule (installer/lumen-install.sh and lumen-install.ps1).
 
 Each mutant breaks one clause of the rule in a copy of the installer (the script, lib/cow_rules.conf) and

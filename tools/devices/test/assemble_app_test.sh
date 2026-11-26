@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # assemble_app_test.sh: tests of tools/devices/assemble_app.py.
 #
 #   sh tools/devices/test/assemble_app_test.sh

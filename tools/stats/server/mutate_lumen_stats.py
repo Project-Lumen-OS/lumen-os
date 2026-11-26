@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of lumen_stats.py that test_lumen_stats.py must kill (each one a counting rule of the server): python3
 tools/stats/server/mutate_lumen_stats.py. Every anchor must be in the file once; exit 1 on a surviving mutant."""
 import os

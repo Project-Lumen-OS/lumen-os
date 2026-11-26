@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The Play 6 props, read last by init, and D's experiments (6.2):
 product_prop.txt with the '#expN ' lines of the chosen experiments live, the version, version code and build id,
 ro.lumen.p6.exp, adb over USB, the test-build log props; EXP-2 and EXP-3 also install play6_perf.rc.

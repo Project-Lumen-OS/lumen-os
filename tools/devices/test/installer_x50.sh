@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test: the XGIMI Z9X (G0082) and the XGIMI X50 Ultra (G0111) never mix in the installer
 # (installer/lumen-install.sh). Both run XGIMI's horse_popular product image: ro.product.device, the board platform
 # and the fastbootd 'product' are the same, so only the model (ro.boot.xgimi.modelname), the board

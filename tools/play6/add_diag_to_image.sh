@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # add_diag_to_image.sh: make a Play 6 DIAGNOSTIC image from a published release or pre-release image (play6-1.0.7
 # and later), the way the AIC tool (removed with the AIC files) made play6-1.0.6-aic2 with --diag: debugfs of Homebrew
 # e2fsprogs on the Mac (E2FS=/usr/sbin on a Linux build host), nothing else in the image changes (the vendor fstab

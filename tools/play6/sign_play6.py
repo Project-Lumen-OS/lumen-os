@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_play6.py: the Play 6 sign stage of rule S1. Mac only: no network,
 no device, no build laptop. Re-signs, with the Play 6 keys, every APK of a Play 6 image that would otherwise
 carry a platform certificate a Z9X image trusts, and every APEX that holds such an APK.

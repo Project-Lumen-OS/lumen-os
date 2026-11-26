@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.updater;
 
 /** The two decisions of the one-time statistics notice (Notice), plain Java for the host test (NoticeTest). */

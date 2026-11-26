@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the Play 6 updater data (apps/Play6Updater/src/org/lumen/updater/Target.java) on the assembled
 # Play 6 updater (devices/dragon_healthy/app/Play6Updater.layers): the edition's manifest file and no beta channel
 # (ChannelTest). The shared code has its own checks: apps/core/lumen-updater/test/run.sh. sh test/run.sh

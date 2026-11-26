@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gen_codes.py: the gmpf AIDL code tables of every AIDL projector from one shared base and a delta per model
 (lumen-hal tables phase 3, tools/arch/README.md).
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """twin_lp.py: the LP (dynamic partition) metadata of a storage twin's super image, and a model of what a Lumen OS
 OTA does to it on a Virtual A/B device (devices/goat_elegant/research/
 the design notes). Build host only, no projector, no root. Every rule below is the AOSP 14 (Lineage 21) source, cited

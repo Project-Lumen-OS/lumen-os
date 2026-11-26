@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_family.py: the X50 family of the registry, read from the device descriptors. No model is named here.
 
 A device is a member when its build descriptor devices/<codename>/build.conf takes the X50 recipe

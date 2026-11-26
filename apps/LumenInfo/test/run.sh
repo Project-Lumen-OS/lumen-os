@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # LumenInfo host tests (plain Java, no android.jar): EDID decoder, dump parsers, HB facts, the HAL allow list
 # against devices/goat_elegant/research/*.tsv, static checks of src/.   sh test/run.sh
 set -eu

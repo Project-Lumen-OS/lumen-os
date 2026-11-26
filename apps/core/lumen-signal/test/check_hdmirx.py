@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The HDMI receiver bridge may only ever read the node or write the exact bytes "help" (2026-11-18): every other
 command of /proc/utopia_mdb/HDMIRX (fixedeq, hdmiloglevel, hpddelay, rst, ptg, set_edid) and its conf node write the
 hardware. Checks the script, its rc, the app side and the model data that ship it. test/run.sh runs it."""

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Colour temperature row host checks (panel/ColorTempRule is plain Java): sh test/picture/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

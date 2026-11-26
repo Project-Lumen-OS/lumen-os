@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_codes.py: no HAL call of any Lumen app carries a number of its own; every code is a named constant of the
 generated HalCodes class of that app, and every table those classes come from is proven against the stock tables.
 

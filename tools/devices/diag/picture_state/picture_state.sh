@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # picture_state.sh: runs the read-only picture state dump (PictureState.java) on a Z9X over adb and saves its text.
 #   sh picture_state.sh [-s SERIAL] OUT.txt
 # Works on the stock system and on Lumen OS, as the plain adb shell user: no root, nothing installed, no key or

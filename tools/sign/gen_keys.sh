@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # gen_keys.sh: generate the Lumen OS release keys on the Mac (maintainer only, run once).
 #
 #   bash gen_keys.sh [KEYS_DIR]          default KEYS_DIR = ~/.lumen-keys

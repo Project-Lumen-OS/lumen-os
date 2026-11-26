@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Game menu 3D preview: render baked controllers with the device shaders (preview.js in an offscreen WKWebView via
 framesnap) at the frame strip's poses and put them next to the shipped frames.
 

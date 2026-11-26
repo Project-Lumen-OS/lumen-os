@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu.quick;
 
 /** What an item of the quick menu is, the key of the one presentation table ({@link Presentations}). */

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.bluetooth.le;
 public abstract class ScanCallback {
     public static final int SCAN_FAILED_ALREADY_STARTED = 1;

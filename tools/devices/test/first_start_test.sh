@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # first_start_test.sh: the one first-start setting of every image (devices/_image/first_start_prop.txt, owner
 # 2026-11-13: English, the time and time zone from the network, no fixed zone) and its tools: the repository lint (no
 # descriptor, recipe, prop file, init file or overlay sets a language or time zone of its own), the build.py rule (every

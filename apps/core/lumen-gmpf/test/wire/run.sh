@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Wire golden of the gmpf clients (GmpfClient, Gmpf2Client and their shared base): the HAL sources of the assembled
 # app are compiled against recording stubs of android.os and driven by WireTrace (every public member with fixed
 # arguments and reply patterns, then scripted sessions). The trace (every transaction: interface, code, flags, each

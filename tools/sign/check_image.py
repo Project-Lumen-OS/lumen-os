@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_image.py: release gate for a signed Lumen OS system tar and the erofs image built from it.
 
     check_image.py --tar SIGNED.tar [--img system.img] [--variant private|public] [--gms 1|0]

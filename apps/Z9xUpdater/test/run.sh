@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the Z9X updater data (apps/Z9xUpdater/src/org/lumen/updater/Target.java) on the assembled Z9X
 # updater (devices/horse_popular/app/Z9xUpdater.layers): the edition's manifest file (ChannelTest) and the Beta
 # updates switch (BetaTest: the channels read, the higher one offered, no downgrade when it is turned off).

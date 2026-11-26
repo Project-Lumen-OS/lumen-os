@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_aidl_hal_module_test.sh: tools/devices/check_aidl_hal.py on an app whose transport is the shared source module
 # apps/core/lumen-hal (org.lumen.hal.AidlTransport; the X50 eye guard, devices/g0111/app/X50EyeGuard.layers).
 #

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_check_test.sh: the image builder's dry run (tools/build/build.py check, no build): every descriptor of the
 # tree checks, a plan resolves to the published names, and broken descriptors and variants are refused.
 #   bash tools/devices/test/build_check_test.sh

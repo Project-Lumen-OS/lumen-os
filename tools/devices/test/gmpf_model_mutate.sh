@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mutation check of the X50 family model table (apps/core/lumen-hal GmpfModel / GmpfHash) and its two users,
 # X50EyeGuard (Device, Gmpf) and X50Projector (Gmpf, its remote pairing starts behind App.isX50 since lumen-remote):
 # each edit below lets one model's image run on another

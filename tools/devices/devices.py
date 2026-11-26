@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """devices.py: the Lumen OS device registry, devices/<codename>/device.conf.
 
   devices.py [--root DIR] list                      codename, installer id and name of each supported device,

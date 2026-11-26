@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
 /** What a LEFT press at "Boost" does: arm / send 52(0), or only explain (no vendor call). */

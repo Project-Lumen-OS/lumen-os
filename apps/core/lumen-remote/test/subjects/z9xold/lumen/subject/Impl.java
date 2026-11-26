@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package lumen.subject;
 import org.lumen.projector.remote.RemoteAutoPair;
 /** The Z9X / HB / Play 6 RemoteAutoPair (apps/common/projector, before the shared module). */

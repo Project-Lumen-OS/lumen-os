@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """erofs_kcheck.py: check an erofs system image against the inline-data rule of the Z9X kernel.
 
     erofs_kcheck.py IMAGE [--max-report N]

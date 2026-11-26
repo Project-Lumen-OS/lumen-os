@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS without Google: the Google services add-on ('lumen-install gapps --zip FILE'). The user downloads
 # the MindTheGapps zip himself from its official URL (url= below); no Google file is in any Lumen OS image or
 # release. Hashes, sizes and paths only. The installer accepts only a zip whose sha256 has a zip= line here,

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_hal_callers.py: build-time guard for the typed HAL whitelist of org.lumen.projector.
 
 Fails (exit 1) when a method of hal/GmpfClient.java or hal/Gmpf2Client.java that performs a HAL

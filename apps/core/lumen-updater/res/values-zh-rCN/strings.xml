@@ -100,7 +100,7 @@
     <string name="about_project">项目主页</string>
     <string name="about_licenses">许可</string>
     <string name="about_scan">用手机扫描即可打开</string>
-    <string name="lic_lumen">Lumen OS：Apache License 2.0。AirPlay 接收器：GNU GPL 3.0。</string>
+    <string name="lic_lumen">Lumen OS：PolyForm Noncommercial License 1.0.0。AirPlay 接收器：GNU GPL 3.0。</string>
     <string name="lic_aosp">Android 开源项目和 LineageOS：Apache License 2.0 及其组件的许可。</string>
     <string name="lic_gapps">Google 应用和服务：适用 Google 自己的条款，不属于 Lumen OS。</string>
     <string name="lic_thirdparty">UxPlay（GPL 3.0）、libplist（LGPL 2.1）、Apple ALAC（Apache 2.0）、BoringSSL、Roboto 字体（Apache 2.0）。</string>

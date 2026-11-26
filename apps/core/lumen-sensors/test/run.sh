@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-sensors host tests: bash apps/core/lumen-sensors/test/run.sh
 #  1. SensorTest: items, the HAL budget (2 calls a second, none while hidden, the distance once a minute), rows, parser;
 #  2. check_sensors.py: per-model tables, recipes, readers without forbidden calls, texts, the old app gone.

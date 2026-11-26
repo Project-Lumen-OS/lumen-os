@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package lumen.a2dp;
 
 import android.bluetooth.BluetoothA2dp;

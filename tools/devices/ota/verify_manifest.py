@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """verify_manifest.py: check a device's update manifest like its updater does (public certificate only). Fork of
 tools/ota/verify_manifest.py for the devices of tools/devices/ota.
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0 power: real STR (install as /system/etc/init/z9x_power.rc), driven by org.lumen.projector.
 # Only init builtins (write, setprop): nothing here can block early boot; every write to a node that
 # does not exist fails harmlessly with one init log line.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the 1.0.11 receiver fixes (M3 reply, Wi-Fi Direct rules, stage diagnostics, Android wiring): each one
 must turn sh test/run_core.sh red. python3 test/mutate_fix.py (uses the tree runner of mutate_control.py)"""
 import os

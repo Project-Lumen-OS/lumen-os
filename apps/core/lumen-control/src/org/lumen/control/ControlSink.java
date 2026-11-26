@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.control;
 
 /** The host's driver: runs core commands on this projector. The Android one is org.lumen.control.android.AndroidSink. */

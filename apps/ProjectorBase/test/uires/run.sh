@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Interface resolution, boot reason and AK 109 unit host checks (display/UiRes, sys/BootReason and
 # ak/AkPatternSpec are plain Java): sh test/uires/run.sh
 set -eu

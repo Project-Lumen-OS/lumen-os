@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.hardware.input;
 public class InputManager {
     public int[] getInputDeviceIds() { return lumen.fake.World.inputIds(); }

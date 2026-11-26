@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS PUBLIC images, both editions; only Lumen OS without Google (ro.z9x.gms=0) uses it (image path
 # /system/etc/init/z9x_gapps.rc; script /system/etc/z9x/z9x_gapps.sh 0755, allow-list
 # /system/etc/z9x/gapps_allow.txt 0644, sysconfig layer /system/etc/z9x/gapps/sysconfig/z9x-gapps.xml 0644).

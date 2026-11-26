@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """HB beta6 wiring checks (source level, the HB app tree): Boost rules used where the vendor refuses 151(0) (in the HB
 adapter of the shared menu, panel/HbMenuFeatures), the stock HB Boost texts in every locale, the optical zoom tile, the zoom screen on ZoomScale, and the one-way fit / obstacle
 coupling (stock spec 2.3, stock KeyStoneRepository.java:506-521) in all four directions, run on the real Hal source."""

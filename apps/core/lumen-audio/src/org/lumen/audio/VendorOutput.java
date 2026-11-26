@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.audio;
 
 /** A model's vendor audio path call, on its HAL thread (Z9X / HB IGmpf 59 / 60, X50 AUDIO 2 / 3, Play 6 IGmpf 59 / 60). */

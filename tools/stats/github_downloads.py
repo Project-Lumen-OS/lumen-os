@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Download counts of the public Lumen OS releases (GitHub API through `gh api`: the token stays in gh, never in
 a file). Counts are totals since each asset was uploaded; GitHub keeps no history, so a curve over time needs
 snapshots (--json rows carry the snapshot date, the dashboard stores one set per run).

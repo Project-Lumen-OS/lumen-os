@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """mutate.py: targeted mutants of the shared updater and its model data (apps/core/lumen-updater). Each mutant
 changes one line of the module or of a model's Target, runs the tests that own it and must make them fail; the
 file is restored after every mutant, also on an error. Run from the tree root:

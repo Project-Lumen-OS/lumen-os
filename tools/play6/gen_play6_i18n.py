@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gen_play6_i18n.py: languages of the Play 6 projector app (the design notes and check I).
 
   gen_play6_i18n.py [--write] [--check-only]

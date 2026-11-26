@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Data files for the "Lumen OS installs" dashboard (tools/stats/README.md):
 
     python3 tools/stats/refresh.py [OUT_DIR]     default build/stats/dash

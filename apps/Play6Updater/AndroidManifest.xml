@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
   org.lumen.updater ("Lumen OS update") for Lumen OS on the XGIMI Play 6: fork of apps/Z9xUpdater
   (tools/play6/forks.tsv; the Z9X app and its pin stay as they are).
   Install: /system/app/Play6Updater/Play6Updater.apk, signed with the Play 6 platform key.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.system;
 
 /** The Android settings screens Lumen apps open; {@link SystemIntent#chain} gives the ways to each. */

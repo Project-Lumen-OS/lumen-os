@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """java_codes.py DEXDUMP_TXT OUT_TSV
 
 Reads `dexdump -f -d` style output of com.xgimi.middle.jar (classes.dex) and writes

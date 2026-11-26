@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test of tools/devices/gen_device_keys.sh (one key set per projector, rule S1), on a scratch registry and a scratch
 # HOME: never the maintainer's ~/.lumen-keys, never the project tree. On the Mac or Linux:
 #   bash tools/devices/test/gen_device_keys_test.sh

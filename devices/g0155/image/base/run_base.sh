@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # builder-llm: the RS30 (g0155) arm32 base = LineageOS 21 lineage_gsi_tv_arm from the pinned Lumen manifest,
 # the HB/Play 6 patch set (lineage/patches/play6 0001-0006) plus the MTK Codec2 store patch, built WITH uffd GC
 # (the RS30 kernel is arm64 with CONFIG_USERFAULTFD=y; ART 14 then always runs CMC, so a CC boot image would

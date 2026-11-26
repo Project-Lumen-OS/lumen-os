@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_play6_hal.py: check H of the design notes (Notes A, B, C). The HAL guard of the Play 6
 projector app: only the Play 6 gmpf clients talk to the vendor HAL, every code they can send is a reviewed Play 6
 code (research/play6/gmpf_codes_play6.tsv, by name), nothing banned (Note A) is reachable, and the special values

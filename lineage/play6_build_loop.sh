@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # LineageOS 21 gsi_tv_arm (32-bit armv7, 64-bit binder) systemimage for the XGIMI Play 6 (G0058, mt5889).
 # Runs on the laptop in the lineage-builder container. ~/lineage is mounted READ-ONLY, so the Z9X tree
 # and its out/ stay untouched; everything goes to ~/play6-out.

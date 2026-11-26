@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """GitHub download counts for the private statistics page on the VPS (tools/stats/server/web): reads the public
 releases of Project-Lumen-OS/lumen-os and of the Lumen Installer without a token (two requests per run, an hourly
 timer) and writes

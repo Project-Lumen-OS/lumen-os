@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Home weather city search (CitySearch: Latin and Cyrillic names whatever the UI language, transliterations,
 # no IP location involved). sh test/weather/run.sh (plain JDK, no R.java). LIVE=1 also asks the real Open-Meteo
 # service the way Weather.search does (network). The python part pins Weather.search and the manual city's units.

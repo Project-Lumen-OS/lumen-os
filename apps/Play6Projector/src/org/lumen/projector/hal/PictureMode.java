@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** setPictureMode values of the Play 6 (stock dayao tree); the MStar Game mode 4 is set by the vendor only, never sent. */

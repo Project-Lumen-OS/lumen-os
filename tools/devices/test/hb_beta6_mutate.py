@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """hb_beta6_mutate.py: mutation check of the HB beta6 changes (vendor-held Boost in Performance / Office in the HB
 adapter of the shared menu, the stock HB Boost texts, the optical zoom tile, ZoomScale, one-way fit / obstacle coupling, the manual-focus chart). Each mutant breaks one rule in a scratch
 copy of apps/HbProjector (+ the Z9X Hal.java the HB app takes from its recipe); apps/HbProjector/test/beta6/run.sh must

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # gen_codes_test.sh: tools/hal/gen_codes.py on this tree (every AIDL model's table = base + its delta) and on broken
 # scratch copies, each of which must be red: a changed base row, a delta row lost, a removal of a row the base lacks,
 # an unreadable delta line.

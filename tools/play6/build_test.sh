@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Build a Lumen OS test system image for the XGIMI Play 6 in one go from the Mac, check B of
 # the design notes (section 5, step 15):
 #   tools/play6/build_test.sh VARIANT [--diag] [--usb-adb] [--exp[=N,...]] [--no-dexpreopt] [--home-src]

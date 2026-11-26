@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Generate values-<locale>/strings*.xml for org.lumen.projector, .tvinput, .airplay, .home, .setup and
 .updater from
 compact per-language sources (langs/<locale>.txt), and validate every locale dir

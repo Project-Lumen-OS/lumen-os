@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS OTA boot gate for the projectors with the neutral update client (image path
 # /system/etc/lumen/lumen_ota.sh, 0755 root:root; run only by /system/etc/init/lumen_ota.rc and the replaced
 # /system/etc/init/update_verifier.rc (lumen_update_verifier.rc) as root, u:r:su:s0). Fork of the Z9X gate

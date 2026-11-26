@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gapps_allow.py (XGIMI Play 6): the allow-list of the Google services add-on of the Play 6,
 installer/lib/play6/gapps_allow.txt. Play 6 fork of tools/ota/gapps_allow.py (the Z9X list and tool stay as
 they are). Hashes, sizes, paths and the official URL only: no Google file is in the repository or a release.

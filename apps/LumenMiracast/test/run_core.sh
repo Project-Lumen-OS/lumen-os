@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Miracast core host checks (plain Java, no android.jar): RTSP framing, WFD parameters and
 # formats, the sink session state machine, RTP reorder, MPEG-TS demux, audio payloads, the media
 # pipeline, the source locator, and one end-to-end run against a scripted source over real

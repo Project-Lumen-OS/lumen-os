@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """bootanim_check_test.py: tools/brand/bootanim_check.py and the recipes that ship the boot animation (stdlib only).
 
     python3 -B tools/brand/bootanim_check_test.py

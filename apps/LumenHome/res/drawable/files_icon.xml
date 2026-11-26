@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      App icon of Files (org.lumen.home .FilesLauncher, Lumen OS 1.0.4): the banner's folder on a #17181B tile. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"

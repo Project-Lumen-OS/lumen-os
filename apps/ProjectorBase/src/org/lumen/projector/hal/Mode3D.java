@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** 3D (FS 3.6): enable3D 1 off, 2 side-by-side, 3 top-bottom; enable3DTo2D 2 / 3. *

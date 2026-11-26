@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the Wi-Fi Direct capability gate (core/P2pCapability, its Android wiring) and the decoder start without
 low-latency: each one must turn sh test/run_core.sh red. python3 test/mutate_capability.py (tree runner of
 mutate_control.py)"""

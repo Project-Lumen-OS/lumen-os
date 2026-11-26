@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # XGIMI Z9X compatibility for a framework not signed by XGIMI. Vendor itself is not modified;
 # every fix below swaps something in at boot with a bind mount.
 #

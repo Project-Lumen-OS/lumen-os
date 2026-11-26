@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Compose the final Z9X system tar: LineageOS TV GSI + MindTheGapps ATV + XGIMI fixes.
 
 Usage: compose_tv.py base.tar out.tar gapps_system_dir overlay_dir

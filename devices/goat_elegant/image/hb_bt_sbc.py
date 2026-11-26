@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """HB Bluetooth: the base's libbluetooth_jni.so with SBC fed at 44.1 kHz (hb_bt.rc).
 
     python3 -I hb_bt_sbc.py IN_SO OUT_SO

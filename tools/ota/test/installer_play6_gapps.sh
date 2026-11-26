@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of 'lumen-install.sh gapps' and 'gsf' on the XGIMI Play 6 (installer/, profile play6): the Google
 # services add-on in the logical partition lumen_gapps. On the Mac or Linux, no projector, no network, no
 # Google file:

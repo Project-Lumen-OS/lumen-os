@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # image_version.sh: the version rules shared by the Play 6 image tools (sourced by release_image.sh,
 # swap_sf_into_image.sh, add_diag_to_image.sh). The installer accepts an image only when its file name, the
 # installer's release.conf VERSION and the image's ro.lumen.version are one string (lumen-install.sh / .ps1,

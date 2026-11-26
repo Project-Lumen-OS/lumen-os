@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Flash a Lumen OS system image onto an XGIMI Play 6 (G0058, fastboot product mt5889).
 # Writes ONLY the logical 'system' partition in super (fastbootd resizes it inside super's free space).
 # Nothing else: no vbmeta (the Play 6 has none), no boot, recovery, MBOOT or vendor. It cannot wipe: XGIMI's

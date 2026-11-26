@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox chcon: 'chcon CONTEXT FILE' records "FILE CONTEXT" in $Z9X_T/labels (read by the stat
 # and ls stubs). $Z9X_T/chcon.fail: fails. A file whose directory is not writable is on a read-only
 # filesystem in the fake root (the vendor tree, a stub tmpfs after its remount): fails. Calls go to

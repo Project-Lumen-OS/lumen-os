@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """compare.py OLD NEW: two wire traces of run.sh, call by call.
 
 An "Unrepresentable" result of the new trace (a call shape its typed API cannot express) matches an old exception of a

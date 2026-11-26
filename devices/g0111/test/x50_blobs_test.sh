@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of the one blobs reader tools/ota/image/z9x_blobs.sh with the X50 family's data (devices/g0111/image/
 # blobs.conf and x50_blobs_allow.txt: the user's own codec / audio files
 # and the stock eye-protection drawer nativeui from z9x_blobs<slot> at post-fs-data), of x50_nui.rc and

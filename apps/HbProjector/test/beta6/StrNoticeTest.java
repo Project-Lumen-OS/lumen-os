@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.power;
 
 /** Host test of StrNoticeRules (HB beta6: why deep sleep is blocked) against the real StrGate blocker texts. */

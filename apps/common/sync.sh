@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS: copy rule for the shared sources (tokens, C13 GeoIp, XGIMI HAL transport, projector app
 # code and resources, framework key RRO files). No shared runtime library:
 # each app carries a byte-identical copy, so build_apk.sh needs no change and every APK stays standalone.

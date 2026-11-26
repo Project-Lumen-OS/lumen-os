@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the shared updater (apps/core/lumen-updater): sh apps/core/lumen-updater/test/run.sh
 #   1. the model-free parts on the module sources: Outcome (the result after a restart), the one-time statistics
 #      notice, UpdateService's worker (JobRunner: a second "Install now" is dropped, only the newest job ends the

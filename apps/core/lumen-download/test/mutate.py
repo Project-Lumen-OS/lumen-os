@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """mutate.py: targeted mutants of the shared download (apps/core/lumen-download). Each mutant changes one line, runs
 the module's test (and the apps' download tests that own the line) and must make it fail; the file is restored after
 every mutant, also on an error. Run from the tree root:

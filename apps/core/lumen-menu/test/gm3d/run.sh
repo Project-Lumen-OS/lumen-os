@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Real-time game menu controller (Gm3dModel / Gm3dMotion / Gm3dGate are plain Java): sh test/gm3d/run.sh
 # Gm3dTest reads the shipped models (assets/gm3d) and checks the reader, framing, motion and the model/strip gate.
 # The checks below pin the Android wiring the gate relies on: the strip is drawn only when the gate says so, every

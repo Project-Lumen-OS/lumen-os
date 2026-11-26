@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * Lumen OS (author kmuradoff). SINGLE SOURCE: gsi/apps/common/GeoIp.java.
  * Copied unchanged into each app as src/org/lumen/common/GeoIp.java by gsi/apps/common/sync.sh;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Host test of lumen_reports.py (the problem report upload end): python3 tools/stats/server/test_lumen_reports.py
 Headers, limits, size and zip checks, the store (codes, metadata without an address, retention, size cap), the ssh
 commands, and the HTTP route through lumen_stats.make_handler with a real server."""

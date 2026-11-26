@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-hdmi host tests: HdmiLink (the HDMI picture rules: signal status, game profile gate, relink decision, EDID
 # flip), EdidModes (the stock HDMI mode rows and their vendor values), HdmiRelink and RelinkHost compiled against the
 # platform headers, and the wiring of every model (Z9X and HB through source/GmpfRelinkHost, the X50 family through

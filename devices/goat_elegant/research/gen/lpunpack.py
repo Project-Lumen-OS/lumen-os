@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 import struct, sys, os
 img, out = sys.argv[1], sys.argv[2]
 only = sys.argv[3:]

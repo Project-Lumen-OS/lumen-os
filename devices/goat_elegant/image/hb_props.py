@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The HB props appended to /system/product/etc/build.prop, which init reads last (it wins over the vendor):
 hb_prop.txt (a release swaps its test lines for adb secured), the version and build id, hb_lumen_prop.txt (a public
 release drops the gates of the two files it does not ship), the version code, the OTA lines, the About rows.

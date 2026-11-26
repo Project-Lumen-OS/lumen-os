@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of Android's setprop: updates $Z9X_T/props and appends to $Z9X_T/setprop.log.
 # Like the real one it refuses a value longer than 91 bytes (PROP_VALUE_MAX - 1).
 k=$1; v=${2-}

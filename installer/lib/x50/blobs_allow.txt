@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI X50 Ultra: the MediaTek / XGIMI files the image takes at boot from the user's own
 # z9x_blobs partition (16 MiB on this projector). Hashes only; the files themselves are proprietary and are never
 # in git or in an image. The installer copies them from the user's own stock (or Lumen OS) system with adb and

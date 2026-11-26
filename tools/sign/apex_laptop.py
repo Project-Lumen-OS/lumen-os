@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apex_laptop.py: the KEY-FREE half of the Lumen OS APEX re-signing (build laptop only).
 
     apex_laptop.py repack   --tar T --plan PLAN --apks DIR --out DIR

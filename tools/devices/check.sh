@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check.sh: the one command that runs every check of the device tree.
 #
 #   sh tools/devices/check.sh [--release] (CODENAME | all)

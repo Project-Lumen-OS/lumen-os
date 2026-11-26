@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The UI click volume file: the pinned HB vendor audio_policy_engine_stream_volumes.xml with exactly the system
 group's HEADSET and SPEAKER refs on MM (hb_audio.rc).
   audio_click.py VENDOR_FILE STAGED_FILE

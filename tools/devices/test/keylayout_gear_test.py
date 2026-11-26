@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Key layouts of the XGIMI remotes against their stock files: the gear hold.
 
 The XGIMI remotes detect a held gear themselves and send the stock MENU scancode once (BT 127 = KEY_COMPOSE on the

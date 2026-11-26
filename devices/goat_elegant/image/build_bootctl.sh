@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_bootctl.sh: build the AOSP 14 /system/bin/bootctl (system/extras/bootctl) for the XGIMI Z9X HB
 # (goat_elegant), 32-bit ARM, from the HB base tree: LineageOS 21 lineage_gsi_tv_arm userdebug, the tree of the
 # base system.img pinned in base.sha256 (the design notes says what it links and

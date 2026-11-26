@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the shared gmpf clients (apps/core/lumen-gmpf and each device's wire, codes and rules): each must turn
 the wire golden (test/wire/run.sh) red. python3 apps/core/lumen-gmpf/test/wire/mutate.py [-k substring]
 

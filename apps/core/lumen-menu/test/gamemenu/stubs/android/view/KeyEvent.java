@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.view;
 
 /** Host stub (test/gamemenu): the key codes and fields GmController reads (values of android.view.KeyEvent). */

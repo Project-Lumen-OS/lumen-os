@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The Play 6 composer in the lineage-builder container: the one image builder with the staged descriptor
 # (devices/dragon_healthy/build.conf, steps devices/dragon_healthy/image/steps.tsv). Staged by tools/play6/build_test.sh
 # (or tools/build/build.py run dragon_healthy):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutation test of the shared firmware copy (apps/core/lumen-fwcopy).
 
 Every mutant breaks one safety rule of the copy (consent, the other half unbootable first, the second read, the

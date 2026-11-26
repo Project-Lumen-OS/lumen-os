@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apk_strings.py: the resolved string table of an APK, per locale (aapt2 dump resources), and a diff of two APKs.
 
   apk_strings.py dump APK            "name<TAB>locale<TAB>text" for every string, references (aliases) resolved

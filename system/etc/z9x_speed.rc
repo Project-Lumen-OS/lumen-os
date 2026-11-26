@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0 memory tuning (install as /system/etc/init/z9x_speed.rc). Speed spec v7 section 5.
 # Init builtins only (write): no exec, no service, nothing that can block or fail the boot.
 # Runs at sys.boot_completed=1, i.e. after the vendor's init.fusion.rc 'on boot' writes

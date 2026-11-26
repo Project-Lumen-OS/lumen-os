@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.audio;
 
 /** Stock wire values of digital_output_format (MtkAudio.setAudioDataFormatAndNoSave). UI order. */

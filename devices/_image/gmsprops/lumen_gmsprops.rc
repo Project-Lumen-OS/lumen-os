@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS Google sign-in helper, the PlayIntegrityFix port (source lineage/gmsprops, stock analysis
 # the design notes, private). Image paths: /system/etc/init/lumen_gmsprops.rc (this file),
 # /system/bin/lumen_gmsprops (the init helper), /system/lib/liblumen_gmsprops.so (and /system/lib64 on a 64-bit

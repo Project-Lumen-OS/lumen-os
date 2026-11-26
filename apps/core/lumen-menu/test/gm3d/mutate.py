@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the real-time game menu controller and its fallback to the frame strip: each must turn test/gm3d red.
 python3 test/gm3d/mutate.py [-k substring]"""
 import os, shutil, subprocess, sys, tempfile

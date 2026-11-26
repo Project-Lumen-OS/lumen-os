@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.miracast.core;
 
 /** Can this unit do Wi-Fi Direct: proven yes, proven no, or not known yet ({@link P2pCapability}). */

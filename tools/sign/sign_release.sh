@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # sign_release.sh: turn the laptop's test-key system tar into the flashable release-key image (Mac).
 #
 #   bash sign_release.sh VERSION [REMOTE_TAR]        e.g.  bash sign_release.sh 1.0

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_handshake.py: check K of the design notes. The stock boot handshake of the Play 6
 projector app stays exactly as it was tested (t1..t11): BootHandshake.java, BootReceiver.java with at most the
 added statistics line, App.java with at most the one added Play6App line, and the handshake calls of the IGmpf client.
@@ -54,7 +55,7 @@ GOLDEN = os.path.join(G, "apps/core/lumen-gmpf/test/wire/golden/dragon_healthy.t
 # sha256 of the baseline copies (plan section 5, check K); re-pinned 2026-10-29 for the org.z9x -> org.lumen
 # rename (each copy differs from the t1..t11 baseline only by that rename: org/lumen, org.lumen)
 BASELINE_SHA = {
-    "BootHandshake.java": "13da0f11bdd437da111ab41c55cc3643e8bd8004b53ea017533616f3b5ca1461",
+    "BootHandshake.java": "4e2faa0c83057ee21ab7b3c2f25227a0422b0813c7907673ea001bfa54b60439",
     "BootReceiver.java": "2fcbe4ce33217930c5c4efb104f67636e67473fe88421f92e6170c4b24a33dd1",
     "App.java": "be8e9ee665514f1a5d9bad4f50ffa56b5ff2a5fd5c6f9cf7792337199b923e9a",
 }

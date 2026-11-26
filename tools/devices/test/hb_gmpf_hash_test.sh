@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # hb_gmpf_hash_test.sh: the gmpf V1 hash rule of the Z9X HB apps (GmpfHash.java in apps/HbProjector and apps/LumenInfo;
 # apps/HbBoot, which had a third copy, is gone on this branch: it left the HB image in S7 and was removed as dead code,
 # design decision). On the Mac or Linux, javac only:

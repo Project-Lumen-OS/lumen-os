@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.ui;
 
 /** The user's theme choice, shared by Home, Setup and the menus: Светлая (default), Тёмная, Авто. */

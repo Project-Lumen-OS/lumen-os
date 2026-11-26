@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Compares the shared engine's trace with the goldens of the old implementations (test/parity/README in run.sh):
 - z9xold (Z9X, HB, Play 6 RemoteAutoPair): every decision line must be the same, except the hid-allow lines (the
   shared engine also asks the HID host to connect, from the X50 code; Z9X_HID: where that ends connected), and the

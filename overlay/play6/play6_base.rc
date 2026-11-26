@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS for the XGIMI Play 6 (G0058): always-on settings (install as /system/etc/init/play6_base.rc,
 # tools/play6/compose.sh). A fork of the Z9X's overlay/v1/z9x_base.rc with only its Bluetooth line
 # (docs/play6/SETTINGS_PLAN.md step 13; tools/play6/forks.tsv, check F). Left out on purpose:

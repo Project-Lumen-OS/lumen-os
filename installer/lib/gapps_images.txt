@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS installer only (never in an image): the Google services add-on images the one-pass install
 # (--gapps-zip, XGIMI Z9X) may write into z9x_gapps_<slot>. The installer builds the image on the computer from
 # the user's own MindTheGapps zip (its files checked against lib/gapps_allow.txt) with its own erofs-utils, and

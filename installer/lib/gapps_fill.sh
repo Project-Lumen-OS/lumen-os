@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS installer, 'gapps --zip FILE' (lumen-install.sh / lumen-install.ps1): runs ON the projector as
 # root (adb root on Lumen OS without Google), pushed to /data/local/tmp/lumen-gapps/fill.sh next to the
 # user's zip (gapps.zip). The allow-list is the RUNNING image's /system/etc/z9x/gapps_allow.txt: the very

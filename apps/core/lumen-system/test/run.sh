@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-system host tests: sh apps/core/lumen-system/test/run.sh
 #  1. SystemIntentTest: the ways of every SettingsPage in order, each chain ends on the settings root;
 #  2. SystemPages.open walks the chain: a missing or refusing way goes on, true only when a way started;

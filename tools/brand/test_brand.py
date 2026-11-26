@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Tests of the brand tools (no device, no network):  python3 tools/brand/test_brand.py
 
   - the mark's facets equal the approved SVG of the board (D_Mark, column 2A) to 0.06 units

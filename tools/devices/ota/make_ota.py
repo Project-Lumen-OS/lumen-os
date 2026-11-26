@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_ota.py: build a device's Lumen OS OTA package (partial, system-only Virtual A/B payload). Fork of
 tools/ota/make_ota.py for the devices of tools/devices/ota; the Z9X keeps
 tools/ota/make_ota.py, which this program refuses to stand in for.

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_forks_test.sh: tests of tools/devices/check_forks.py. Each case builds a
 # small registry in a scratch dir (two made-up projectors, no real device values): beta_two keeps a forks table
 # with one 'same:' row (a byte-identical copy) and one ordinary fork row of files of alpha_one.

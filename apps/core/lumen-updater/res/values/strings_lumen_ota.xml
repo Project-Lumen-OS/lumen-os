@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      org.lumen.updater, device-neutral layer (apps/LumenUpdater): English base
      of the install blocks of the boot gate and the build checks (Preflight.slotState, probe, storage). The rest
      of the strings come from apps/Z9xUpdater. Translations in res/values-*/strings_lumen_ota.xml, written by us

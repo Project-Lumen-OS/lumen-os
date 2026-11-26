@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The two Z9X build.prop files of a release (the Mac staging step, before tools/build/build.py): the tail that
 tools/lumen_v1.sh prep appends (the snippets of this tree, the OTA props with the build id and MANIFEST, the variant
 lines, ro.lumen.dsu_install=1, ro.lumen.models (devices/horse_popular/device.conf models: the codes the blobs reader

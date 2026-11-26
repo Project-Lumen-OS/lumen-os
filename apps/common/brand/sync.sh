@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS brand drawables: copy rule (same model as apps/common/sync.sh: no shared library, each app
 # carries byte-identical copies, build_apk.sh needs no change).
 #

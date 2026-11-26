@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_manifest.py: write and sign the Lumen OS update manifest (Mac only; uses the OTA key).
 
     make_manifest.py --version 1.0.1 --version-code 10002 --build-id lumen-1.0.1-20261020 \

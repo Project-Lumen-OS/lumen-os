@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Validate a res/xml/global_keys.xml for the framework RRO before it goes into the image.
 
   check_global_keys.py global_keys.xml [aosp14_keycodes.txt]

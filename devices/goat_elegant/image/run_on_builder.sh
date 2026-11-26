@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Stage the inputs of compose_hb.sh on the build server and compose the HB first-boot test images there. Kept for
 # its old command lines; the descriptor is devices/goat_elegant/build.conf, run by tools/image/compose.sh:
 #   bash "devices/goat_elegant/image/run_on_builder.sh" t1            # both variants: hb-t1-adb and hb-t1-stick

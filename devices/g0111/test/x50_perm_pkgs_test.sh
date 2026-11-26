@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_perm_pkgs_test.sh: host tests of devices/g0111/image/x50_perm_pkgs.py (t11 review P0.1d) on small trees built
 # from the real X50Projector APK and its real default-permissions file, and its hook in verify_tree_x50.py.
 #   sh devices/g0111/test/x50_perm_pkgs_test.sh [X50Projector.apk]     (default build/g0111/stage/X50Projector.apk)

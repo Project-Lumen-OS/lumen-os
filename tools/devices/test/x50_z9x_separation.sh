@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Static test: the XGIMI Z9X (registry horse_popular, model G0082) and the XGIMI X50 Ultra (registry g0111, model
 # G0111) stay apart everywhere the tree names them. Both report ro.product.device horse_popular and their fastbootd
 # answers the same product, so every tool must key on the model (ro.boot.xgimi.modelname), never on those. Reads the

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.view;
 public class InputDevice {
     public final String name, address; public final int vendor, product; public final boolean external;

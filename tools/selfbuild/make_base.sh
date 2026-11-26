@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # make_base.sh: the Lumen OS base system tar from your own LineageOS 21 TV GSI build.
 #
 #   bash tools/selfbuild/make_base.sh SYSTEM_IMG GAPPS_ZIP BLOBS_TAR OUT_TAR

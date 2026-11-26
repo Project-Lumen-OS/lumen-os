@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Game menu 3D bake, step 3 (tools/gm3d/README.md): pack one controller into assets/gm3d/<theme>.lgm and the room
 environment into assets/gm3d/env.lge (formats: Gm3dModel.java, the one reader on the device).
 

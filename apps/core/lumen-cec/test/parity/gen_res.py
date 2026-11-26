@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gen_res.py TREE OUT: the string resources of an assembled app tree for the CEC parity harness.
 
 Writes OUT/org/lumen/projector/R.java (every string name, ids in name order) and OUT/strings/<locale>.tsv (name TAB

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.remote;
 /** Harness stand-in for the full-screen prompt of the old code: records that it would show. */
 final class RemotePrompt {

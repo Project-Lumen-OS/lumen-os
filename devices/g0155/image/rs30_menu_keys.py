@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """rs30_menu_keys.py: the RS30 Ultra Max remote's picture keys in the image's key layout (devices/g0155/README.md).
 
 The RS30's B870C remote (HID 000d:3840, stock vendor/usr/keylayout/Vendor_000d_Product_3840.kl of v1.1.42) sends three

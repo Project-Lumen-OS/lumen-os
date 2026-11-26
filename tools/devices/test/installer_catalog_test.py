@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """installer_catalog_test.py: the catalog of Lumen Installer against the published releases.
 
     python3 tools/devices/test/installer_catalog_test.py           the recorded snapshots (catalog_fixture*/)

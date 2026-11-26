@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_kconfig_test.sh: devices/g0111/image/x50_kconfig.py on made-up boot images (no X50 file, no kernel of
 # anyone's: a few bytes with the arm64 Image magic, a version string and a gzip configuration). On the Mac or Linux:
 #   sh devices/g0111/test/x50_kconfig_test.sh

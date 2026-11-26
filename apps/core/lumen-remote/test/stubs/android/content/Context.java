@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.content;
 /** Host stub of the app context: everything is answered by lumen.fake.World. */
 public class Context {

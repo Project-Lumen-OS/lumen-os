@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Gate mutants of lumen-system: each mutant breaks a way of SystemIntent.chain or the walk of SystemPages.open;
 test/run.sh must turn red for every one. Works on a scratch copy of the module, never in place.
 

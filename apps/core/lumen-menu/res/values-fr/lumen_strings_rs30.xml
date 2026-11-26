@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <!-- lumen-menu labels (the row title is the Z9X app's pro_color_space with its translations) of the RS30 Ultra Max's own stock rows (colour gamut, rainbow reduction, screen shift) and its
      game menu rule (VRR only with Turbo, the top speed) -->
 <resources>

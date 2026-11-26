@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox mount (tools/ota/test/blobs.sh, gapps.sh, installer_gapps.sh): logs every call to
 # $Z9X_T/mount.log; fails every call when $Z9X_T/mount_fail exists.
 #   '--bind SRC DST' / '-o bind SRC DST' (z9x_blobs.sh): records "<sha256 of SRC> DST" in $Z9X_T/binds; fails

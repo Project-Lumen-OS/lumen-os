@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Host test of the edition rules of the OTA tools, on the Mac:
 
     python3 tools/ota/test/nogms_ota.py

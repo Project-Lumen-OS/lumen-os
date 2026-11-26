@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of the device-neutral updater layer. tools/devices/check.sh
 # runs this in the assembled tree (test/*/run.sh, LUMEN_GSI = gsi/); by hand: sh apps/LumenUpdater/test/ota/run.sh
 # (the tree is then assembled first, into a temp dir, from the first devices/*/app/LumenUpdater.layers).

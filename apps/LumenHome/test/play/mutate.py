@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of Lumen Home's Google Play gate (PlayGate, its call in Launch.start, the permission in the manifest and in
 both privapp lists): each must turn test/play red. python3 test/play/mutate.py"""
 import os, shutil, subprocess, sys, tempfile

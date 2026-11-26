@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The assistant's offline parts (voice/Commands, voice/AppMatcher) on the Mac JDK, no Android classes.
 set -eu
 H=$(cd "$(dirname "$0")/.." && pwd)

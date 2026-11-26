@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * Play6MusicPlayerCallback: our Java xgimi.hardware.gmpf@1.0::IMusicPlayerCallback for IGmpf 215 / 227 on the
  * XGIMI Play 6 (stock parity: the "device closed / opened" event of the ambient speaker).

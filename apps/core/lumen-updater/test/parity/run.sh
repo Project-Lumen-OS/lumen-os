@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Parity of every updater with the app it replaced (2026-11-13: one shared updater, exact parity per model).
 #   sh apps/core/lumen-updater/test/parity/run.sh            compare with golden/
 #   sh apps/core/lumen-updater/test/parity/run.sh --record   write golden/ (only from the trees BEFORE the move)

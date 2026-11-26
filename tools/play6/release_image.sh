@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # release_image.sh: turn a tested Play 6 image (tools/play6/build_test.sh tN, no Google) into the public release
 # image, the way tools/lumen_v1.sh finishes a Z9X release: only build.prop lines change, nothing else in the image.
 #

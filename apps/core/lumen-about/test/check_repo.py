@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Repository checks of the XGIMI side in Settings > About (run by test/run.sh):
   1. strings: every res/values*/lumen_strings_about.xml has the keys of the English base, the same placeholders and
      plain text (no semicolon, no em or en dash), 18 files; the Russian file is a translation, not the English text;

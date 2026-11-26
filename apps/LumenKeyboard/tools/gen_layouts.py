@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Keyboard layouts of Lumen Keyboard as data (apps/LumenKeyboard/README.md).
 
   gen_layouts.py write    write res/xml/lumen_*.xml and put the language key into every AOSP letter and symbol page

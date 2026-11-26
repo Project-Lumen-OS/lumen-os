@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_hb.sh: LumenInfo signed with the platform key of the Z9X HB (goat_elegant), the build that works there.
 #
 #   sh build_hb.sh [OUT_APK]     default: build/LumenInfo-goat_elegant.apk

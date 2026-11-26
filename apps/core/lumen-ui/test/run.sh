@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-ui host tests: sh apps/core/lumen-ui/test/run.sh
 #  ThemeTest: the theme choice (Светлая default, Тёмная, Авто by sunrise and sunset), apps/common/tokens.xml equal to
 #  Palette.java for both themes, WCAG AA (4.5:1) of every text pair, colour helpers.

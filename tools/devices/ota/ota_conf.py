@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """ota_conf.py: the OTA data of a device, devices/<codename>/ota.conf, and what every tool of tools/devices/ota
 shares. As a program:
 

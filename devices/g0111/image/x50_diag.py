@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_diag.py: the X50 edit of the base's boot logger /system/etc/xgimi/z9x_diag.sh (compose_x50.sh step 6b).
 
   x50_diag.py apply FILE          edit the base script in place (inode, owner, mode and label kept)

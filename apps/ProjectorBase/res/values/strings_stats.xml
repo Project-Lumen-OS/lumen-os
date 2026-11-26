@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      The anonymous statistics switch in the projector settings (sys/UpdaterStats: the updater owns the value, the
      setup wizard and the updater show the same switch). stats_note is the disclosure, the same list everywhere. -->
 <resources>

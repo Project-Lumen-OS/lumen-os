@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """dsu_x50_mutate.py: mutants of the X50 family's install from the trial (apps/LumenDsuInstall: the x50 / x50max /
 titanpro / titanmax rows of Revisions, Profile.X50 / X50MAX / TITAN_PRO / TITAN_MAX, the eye and stock-vbmeta rules of Engine, the write guard of vbmeta_s, the image
 check). Each mutant breaks one rule in a scratch copy of the app; the "x50" cases of DsuTests (X50Tests.java and the

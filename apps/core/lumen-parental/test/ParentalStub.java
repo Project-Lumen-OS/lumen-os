@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.parental;
 
 /** Host stand-in for the Android Parental class: only its key constant. */

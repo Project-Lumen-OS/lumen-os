@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """hb_menu_mutate.py: mutation check of the HB side of the shared projector menu (apps/core/lumen-menu): the gates of
 panel/HbMenuGates (per model, per feature.xml key, the game menu items), the HB wire tables, the light range without
 the Boost step, the adapter's entry gates and refusals (panel/HbMenuFeatures), the game menu io (panel/HbGameIo), the

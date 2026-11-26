@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """stock_picture.py GSI_ROOT [--print TREE]: the Picture section of every X50 family devices/*/menu.json is its model's
 stock image page.
 

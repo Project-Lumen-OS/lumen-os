@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Controller frames of the Lumen game menu: every theme has its 30 turn + 24 sway frames, each a static WebP with
 alpha (VP8X alpha flag, no animation flag, no ANIM/ANMF chunk) of 600 x 360, decodable with a visible controller in it
 (Pillow, when installed). With --apk the built APK must hold every frame byte-identical to assets/ (a missing or

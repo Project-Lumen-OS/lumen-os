@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_public_play6.py: the check of a public XGIMI Play 6 system image before its SHA256SUMS is signed
 (the Play 6 counterpart of devices/goat_elegant/image/check_public_hb.py).
 

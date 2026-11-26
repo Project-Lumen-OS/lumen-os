@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbWiredJack: the 3.5 mm jack of the HB as a sound output (2026-11-10, 4PDA report: an HDMI stick played only on the
  * projector speaker, never on a soundbar or headphones on the jack, and the output menu offered only Auto / Projector /

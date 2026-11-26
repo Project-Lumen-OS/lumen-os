@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the release / pre-release packaging: tools/ota/pack_installer.sh (installer zip made for one image,
 # with the pair check), tools/play6/image_version.sh and the image tools that use it (tools/play6/release_image.sh,
 # tools/play6/swap_sf_into_image.sh). On the Mac (e2fsprogs from Homebrew; erofs-utils for the Z9X case), no

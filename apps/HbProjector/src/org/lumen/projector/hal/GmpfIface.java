@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * GmpfIface: the vendor interfaces of HbProjector (AidlCaller.java), a top-level type since the HAL codes became HalCodes constants
  * (devices/goat_elegant/hal/codes.tsv). The transport keeps the binder and guard state it always had.

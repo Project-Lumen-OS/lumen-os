@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # HB menu checks (the shared projector menu on the HB, apps/core/lumen-menu the design notes): HbMenuGates against the real
 # profile devices/goat_elegant/menu.json read by the module's parser (gates per model, game items, tokens, HB wires),
 # then the wiring of the adapter, the game menu io, the owner, the keys and the recipe.  sh test/menu/run.sh

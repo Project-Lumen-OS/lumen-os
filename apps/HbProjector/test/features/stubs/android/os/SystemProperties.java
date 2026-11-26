@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.os;
 
 /** Host stub: HbFeatures.init() reads the model code; the test calls init(model, xml) directly. */

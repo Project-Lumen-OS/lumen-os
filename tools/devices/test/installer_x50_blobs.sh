@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the installer's blobs step (installer/lumen-install.sh abf_blobs, FLOW=ab-fastbootd) for a profile
 # whose allow-list has need=eye lines and whose z9x_blobs partition is not 4 MiB: the X50 Ultra one
 # (installer/lib/x50/blobs_allow.txt, devices/g0111). On the Mac or Linux, no projector, no network:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_release_assets.py: the last gate before ANY GitHub release upload (Mac, read only).
 
     check_release_assets.py [--clean-delta NEW.img OLD.img] ASSET_OR_DIR [...]

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The native-UI fifo stub (overlay/v1/z9x_nui.sh) answers "ok" only on the models whose mask is the Projector
 app's own window (Z9X, Z9X HB, Play 6) and refuses on every other model, above all the X50 family, whose vendor
 expects the stock nativeui to draw the mask. Each rule must also fail on a broken copy of the script.

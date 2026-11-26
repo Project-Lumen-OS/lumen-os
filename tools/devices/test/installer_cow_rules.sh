@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The *-cow rule of installer/lumen-install.sh, executed (not grepped) on every case of cow_cases.tsv, for both slots:
 #   - cow_odd / cow_leftover / fb_allowed with the rule data of the real lib/cow_rules.conf;
 #   - the Z9X block of cmd_flash (the real lines, from its cow_load to its delete loop) with a fake fastboot;

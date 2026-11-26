@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the Sound page state and the audio port gate: each must turn test/sound red (scratch copies, never in
 place: test/scratch.py).
 

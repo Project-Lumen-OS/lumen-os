@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_aidl_hal_unban_test.sh: the per-app unban list and the argument ranges of tools/devices/check_aidl_hal.py
 # (t20, decision 2026-11-10: the X50 menu apps/X50Projector may send correctKeystone 11, setTiltShiftMove 88 and
 # autoFocus 3, BANNED rows of devices/goat_elegant/research/banned.tsv, each only with its argument range;

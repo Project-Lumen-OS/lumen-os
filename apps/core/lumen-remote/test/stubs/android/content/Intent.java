@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.content;
 public class Intent {
     public static final String ACTION_SCREEN_ON = "android.intent.action.SCREEN_ON";

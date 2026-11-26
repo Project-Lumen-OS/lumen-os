@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_kconfig.py: kernel options of the X50's own boot images (the dump on the build server, read only).
 
   x50_kconfig.py BOOT_IMG... --need CONFIG_X=y [--need ...]

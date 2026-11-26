@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS OTA gate for the projectors with the neutral update client (image path /system/etc/init/lumen_ota.rc;
 # script /system/etc/lumen/lumen_ota.sh 0755, data /system/etc/lumen/ota_gate.conf 0644). Fork of the Z9X
 # tools/ota/image/z9x_ota.rc (docs/architecture/OTA_CLIENT.md section 3). The service names stay z9x_ota_*:

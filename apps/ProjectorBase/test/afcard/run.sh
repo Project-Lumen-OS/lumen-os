@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # AF "after" queue host checks (AfAfter is plain Java): sh test/afcard/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

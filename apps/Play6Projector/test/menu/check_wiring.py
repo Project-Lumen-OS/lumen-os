@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Play 6 menu wiring (source level): the Play 6 adapter of the shared menu (panel/Play6Features) gates every entry
 with implemented() = Play6MenuGates, takes the v3 hooks (blocked, confirm, available, setupDone) from Play6MenuGates
 and asks nothing itself, refuses with Play6MenuGates.refusal before any p6-hal call, re-reads the mode or the input

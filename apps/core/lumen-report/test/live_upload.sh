@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Live check of the real upload path (ReportUploader.uploadAny) from this host: one test zip of KB kilobytes to the
 # given addresses in turn, as the projector sends it. Not part of run.sh. Run it on a host in Russia to see what
 # Russian networks let through:

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of Quick 3D (the 3D tile, the network round button, the 3D popup, the stock calls, the remote's
 3D request): every mutant must turn test/threed, lumen-menu test/run.sh, test/qpd or test/render red. Works on a
 hard-linked scratch copy of the tree, never in place (a mutated file is written as a new file, its link broken).

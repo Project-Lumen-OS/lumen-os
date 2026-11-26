@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0 (CEC wake): started by z9x_power_cec.rc whenever org.lumen.projector sets
 # sys.z9x.wake_query (every SCREEN_OFF / SCREEN_ON). Copies the PM51 wake source name and the kernel's
 # last resume reason (read-only sysfs, each read bounded by 'timeout 1') into sys.z9x.wake_now, prefixed

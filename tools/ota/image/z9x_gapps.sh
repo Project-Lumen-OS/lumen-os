@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS PUBLIC images (image path /system/etc/z9x/z9x_gapps.sh 0755; z9x_gapps.rc runs it as an exec
 # at post-fs-data, like z9x_blobs.sh: default mount namespace, before zygote-start, so PackageManager and
 # SystemConfig see the add-on at their first scan). Only Lumen OS without Google (ro.z9x.gms=0) uses it.

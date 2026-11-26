@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The Projection hint picture (owner tester photo 2026-11-13: always the rear picture and text, whatever was chosen):
 #   sh apps/core/lumen-menu/test/projection/run.sh [PNG_DIR]
 #  1. ProjectionTipTest: the REAL QpdTip drawn offscreen (host stubs of android.graphics / android.text over Java2D):

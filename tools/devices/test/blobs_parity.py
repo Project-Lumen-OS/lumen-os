@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """blobs_parity.py: pins what the image's blobs reader does on an INSTALLED unit (the z9x_blobs partition path) for
 every model, so that one shared reader can stand in for the per-model copies without changing anything there.
 

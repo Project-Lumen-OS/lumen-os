@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The one blobs reader of every Lumen OS image (Z9X, Z9X HB, X50 Ultra and Ultra Max, TITAN Noir Pro and Max, RS30
 # Ultra Max). Image path /system/etc/z9x/z9x_blobs.sh 0755; z9x_blobs.rc runs it as an exec at post-fs-data, after
 # init.rc's part of that trigger (default mount namespace, APEXes active), before the vendor's part (system rc files

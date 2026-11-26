@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Checks of apps/LumenPackageInstallerOverlay (run with bash, on xgimi-llm or wherever the SDK is):
 #   1. wiring: every image recipe ships it (build.conf apps=, device.conf apps= where a model lists apps, the steps file
 #      installs it into product/overlay, the HB and X50 tree verifiers allow the added file, the Play 6 build script

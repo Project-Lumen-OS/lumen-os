@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # cec_defaults_test.sh: the stock HDMI-CEC defaults of every image (tools/devices/cec_defaults.py, the table
 # devices/_image/cec_defaults.tsv, the evidence devices/_image/cec_stock.tsv): green on the tree, and red, naming the
 # cause, for every way the defaults can drift on a scratch copy (a table value, a stock column, a framework RRO file,

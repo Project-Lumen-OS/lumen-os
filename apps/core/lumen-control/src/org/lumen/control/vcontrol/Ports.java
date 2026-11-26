@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.control.vcontrol;
 
 /** The ports of the stock phone remote (com.xgimi.vcontrol and the vendor daemon ucontrolMDNS). */

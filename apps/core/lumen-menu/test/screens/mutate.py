@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of x50-feedback1 (focus picture per remote, the corner page, the lens shift range): each weakens one
 rule; the suite named with it must turn red. Scratch copies of the repo parts the suites read, never in place.
 

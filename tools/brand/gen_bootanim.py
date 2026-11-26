@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen OS boot animation "Aperture": renders overlay/v1/bootanimation.zip from lumen_brand.py.
 
 The approved mark (2A, six facets around a hexagonal opening with a warm core) on the Lumen ground

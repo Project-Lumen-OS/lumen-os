@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Resource and wiring checks of Lumen Keyboard (test/run.sh). Exit 1 on the first list of problems."""
 import os
 import re

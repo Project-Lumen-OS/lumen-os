@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu.quick;
 
 /** How one item of the quick menu is drawn (2026-11-18, the pencil editor): its token is what the stored layout keeps. */

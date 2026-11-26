@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Wiring of the shared tool key rule (org.lumen.menu.KeyTools) in every projector app (Z9X, HB, Play 6, X50 / RS30).
 
 KeyToolsTest proves the rule and the window hosts; this checks the device glue it relies on, by exact source lines:

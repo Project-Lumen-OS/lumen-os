@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_publish.py: content guard for the public Lumen OS repository (pre-push hook + release step).
 
     check_publish.py [REPO_DIR]            default: the git work tree containing the current dir
@@ -31,6 +31,9 @@ Fails (exit 1) on any of:
     private IP addresses, e-mail addresses (except no-reply/test ones), absolute home paths, and the
     regexes of the local, never published ~/.config/lumen/personal_patterns (see LOCAL_PATTERNS_FILE)
   - a path on the never-publish list (backup/, logs/, research/, vendor dumps, c2store, keys dirs)
+  - in a repository whose NOTICE has the 'Required Notice:' line: every licence problem of
+    tools/ota/licences.py (an own source without the own SPDX header, a third-party file with it, a missing
+    or wrong LICENSE / NOTICE / THIRD_PARTY_NOTICES.md / TRADEMARKS.md)
 Only the paths/patterns are printed, never matching secret content.
 """
 import hashlib
@@ -38,6 +41,9 @@ import os
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import licences  # noqa: E402
 
 MTK_SHA = {
     "4d848dec4b480ed37690095d67702466bb1d17e924c6af42fa7e2c50e784b0ea",
@@ -190,8 +196,9 @@ def is_aosp_test_key(data, rel):
     return False
 
 
-def check(root, rels, reader=None):
-    """reader(rel) -> bytes (git objects for a push); default: the file in root."""
+def check(root, rels, reader=None, lic=False):
+    """reader(rel) -> bytes (git objects for a push); default: the file in root. lic: the licence checks of
+    tools/ota/licences.py too (a repository whose NOTICE has the 'Required Notice:' line)."""
     bad = []
     for rel in sorted(rels):
         if reader is None:
@@ -231,14 +238,17 @@ def check(root, rels, reader=None):
             why.append("MediaTek/XGIMI proprietary binary (by sha256)")
         if PRIVKEY.search(data) and not testkey:
             why.append("PRIVATE KEY block (not a published AOSP test key)")
+        pdata = licences.without_licensor(name, data) if lic else data   # the Required Notice names the licensor
         for rx, what in PERSONAL:
-            if rx.search(data):
+            if rx.search(pdata):
                 why.append("personal data: " + what)
-        for m in EMAIL.finditer(data):
+        for m in EMAIL.finditer(pdata):
             if not EMAIL_OK.match(m.group(0)):
                 why.append("e-mail address")
                 break
-        why += ["personal data: " + w for w in sorted(token_hits(data))]
+        why += ["personal data: " + w for w in sorted(token_hits(pdata))]
+        if lic:
+            why += ["licence: " + w for w in licences.problems(name, data)]
         if why:
             bad.append((rel, why))
     return bad
@@ -341,7 +351,8 @@ def main():
     if args and args[0] == "--push-stdin":
         root = git(os.getcwd(), "rev-parse", "--show-toplevel").decode().strip()
         blobs, commits = pushed_objects(root, sys.stdin.read().splitlines())
-        bad = check(root, blobs.keys(), reader=lambda k: git(root, "cat-file", "blob", blobs[k]))
+        bad = check(root, blobs.keys(), reader=lambda k: git(root, "cat-file", "blob", blobs[k]),
+                    lic=licences.applies(root))
         bad = [(rel.rsplit("@", 1)[0] + " (blob " + rel.rsplit("@", 1)[1] + ")", why) for rel, why in bad]
         for c in commits:
             kind = git(root, "cat-file", "-t", c).decode().strip()
@@ -357,7 +368,8 @@ def main():
     else:
         root = os.path.abspath(args[0]) if args else os.getcwd()
         rels = files_of(root)
-    bad = check(root, rels)
+    lic = licences.applies(root)
+    bad = check(root, rels, lic=lic) + ([(r, [w]) for r, w in licences.root_problems(root)] if lic and args[:1] != ["--files"] else [])
     for rel, why in bad:
         print(f"BLOCKED {rel}: {'; '.join(why)}")
     print(f"check_publish: {len(rels)} files, {len(bad)} blocked")

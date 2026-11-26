@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_ps_game">게임 모드 활성화 중</string>
     <string name="lumen_m_ps_ai">AI 품질 사진 모드에서는 전문가 설정을 할 수 없습니다.</string>

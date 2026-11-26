@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # apex_job.sh: the laptop half of the Play 6 APEX stage (tools/play6/sign_play6.py
 # Finding A), inside the lineage-builder container on the build laptop. Key-free: it only runs the Z9X
 # tools/sign/apex_laptop.py, unchanged, on what build_test.sh staged in /work/apex_sign (~/play6-work/apex_sign):

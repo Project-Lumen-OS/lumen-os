@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X first boot over stock XGIMI data (install as /system/etc/init/z9x_setup.rc). v6.1, block 3
 # since the first-start setting of 2026-11-13.
 #

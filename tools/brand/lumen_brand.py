@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen brand geometry: the single source of the mark, the "lumen" wordmark and the app glyphs.
 
 Everything is built here from lines and circular arcs (own drawing, no font and no third-party

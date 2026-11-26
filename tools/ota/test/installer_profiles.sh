@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the installer's device profiles (installer/lib/devices.conf) and of the XGIMI Z9X path, which
 # must stay exactly as it was before the profiles came in. On the Mac or Linux, no projector, no network:
 #   bash tools/ota/test/installer_profiles.sh            run every case
@@ -402,8 +402,12 @@ begin ps1_own_platform_tools
 # Windows: adb/fastboot only through Pt-Adb / Pt-Fastboot. PowerShell names ignore case: '& adb' called the helper
 # function Adb instead of adb.exe, an endless recursion (fixed 2026-10-29), so no call by name may come back.
 PS1=$INST/lumen-install.ps1
+# one value of the ps1 ($Name = "value" on a line of its own). A copy with Windows line ends must match too
+# (the public repository checks *.ps1 out with CRLF), so the CR at the end of a line is cut off first
+ps1_value() { awk -v k="$1" '{ sub(/\r$/, "") } index($0, k " = \"") == 1 && substr($0, length($0)) == "\"" {
+  print substr($0, length(k) + 5, length($0) - length(k) - 5) }' "$PS1"; }
 grep -nE '&[[:space:]]*"?(adb|fastboot)(\.exe)?"?([[:space:]]|$)' "$PS1" && fail "the ps1 calls adb or fastboot by name"
-[ "$(tr -d '\r' < "$PS1" | sed -n 's/^\$PtVer = "\(.*\)"$/\1/p')" = "$(sed -n 's/^PT_VER=\([0-9.]*\).*/\1/p' "$INST/lumen-install.sh")" ] || fail "Platform-Tools versions differ"   # CRLF, as above
+[ "$(ps1_value '$PtVer')" = "$(sed -n 's/^PT_VER=\([0-9.]*\).*/\1/p' "$INST/lumen-install.sh")" ] || fail "Platform-Tools versions differ"
 for os in darwin linux; do
   grep -q "$(sed -n "s/^PT_SHA_$os=//p" "$INST/lumen-install.sh")" "$PS1" || fail "the $os sha256 differs between the scripts"
 done

@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of Android's 'service call' for the AIDL boot HAL android.hardware.boot.IBootControl/default.
 # Replies have the exact shape measured on a Z9X (logs/friend_<serial>/for_101/bootcontrol_getters.txt).
 # State in $Z9X_T/hal: current, active (slot numbers), marked0/1, bootable0/1 (0/1), merge (MergeStatus).

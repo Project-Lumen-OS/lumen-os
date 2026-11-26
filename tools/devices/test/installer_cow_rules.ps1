@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The *-cow rule of installer/lumen-install.ps1, executed on every case of cow_cases.tsv for both slots, as
 # installer_cow_rules.sh does for lumen-install.sh: Cow-Odd / Cow-Leftover / Fb-Allowed with the real
 # lib\cow_rules.conf, the Z9X block of Cmd-Flash (the real lines, from its Cow-Load to its delete loop), the

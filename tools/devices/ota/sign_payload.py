@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_payload.py: sign a device's OTA payload with that device's OTA key (Mac only), after checking it HERE.
 Fork of tools/ota/sign_payload.py for the devices of tools/devices/ota.
 

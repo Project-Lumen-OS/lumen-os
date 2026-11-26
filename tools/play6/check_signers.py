@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_signers.py: rule S1 of the design notes (2.1) on the APKs and APEXes of a Play 6 image. No
 Play 6 image and no APK in it is ever signed with a certificate a Z9X image trusts.
 

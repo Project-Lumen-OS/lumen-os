@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the installer's XGIMI Play 6 profile (installer/lumen-install.sh, profile play6 of
 # installer/lib/devices.conf). On the Mac or Linux, no projector, no network:
 #   bash tools/ota/test/installer_play6.sh

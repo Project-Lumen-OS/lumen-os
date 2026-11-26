@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu;
 
 /** One user picture mode: the name the user gave it and the vendor picture mode id it got at creation. */

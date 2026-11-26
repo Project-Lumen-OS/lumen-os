@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the command core and its phone remote adapter (apps/core/lumen-control): the per-model table is the
 # generator's, the stock protocol answers replayed field for field, the key tables, TCP framing, the ucontrolMDNS key
 # text, the LAN filter and the sockets end to end on loopback; the Android driver compiles against the SDK.

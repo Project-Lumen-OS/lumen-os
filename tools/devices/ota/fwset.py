@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """fwset.py: the XGIMI set of a model for the Python tools, read from the one place it is kept, the Java module
 apps/core/lumen-fwcopy (FwModel rows, FwSet.NEVER and FwSet.DYNAMIC). The installer and the updater compile that
 module; this reader lets ota_conf.py check devices/<codename>/ota.conf ab_ota_partitions against the same data instead

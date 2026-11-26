@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.sky;
 
 /** Tiny seeded xorshift: the same seed gives the same landscape, stars and particles on every run. */

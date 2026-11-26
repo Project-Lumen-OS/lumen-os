@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Writes the class the About rows test runs: AboutFragment with only its Lumen part, the constants and the nested
 class LumenRows taken word for word from tvsettings_about/AboutFragment.java (the rest of the page needs all of
 TvSettings). Usage: about_extract.py <AboutFragment.java> <out.java>"""

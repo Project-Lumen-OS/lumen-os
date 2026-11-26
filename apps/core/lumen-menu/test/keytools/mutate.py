@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the shared tool key rule (org.lumen.menu.KeyTools): each one weakens the rule, a window host or the
 glue of one projector app; test/keytools/run.sh must turn red for every one. Works on a scratch copy, never in place.
 

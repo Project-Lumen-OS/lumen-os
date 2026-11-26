@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.system;
 
 /** Why a hotspot name or password is refused (HotspotRules), each with its own message on the edit screen. */

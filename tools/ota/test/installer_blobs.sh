@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the installer's 'blobs' and 'check' steps for a PUBLIC image (installer/lumen-install.sh),
 # on the Mac, no projector, no network:
 #   bash tools/ota/test/installer_blobs.sh

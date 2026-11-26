@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of the weather city search: each must make test/weather/run.sh fail
 (python3 apps/LumenHome/test/weather/mutate.py [NAME...])."""
 import os

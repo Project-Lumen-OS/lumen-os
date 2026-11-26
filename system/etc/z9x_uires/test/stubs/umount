@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox umount for the stub mount's mounts: 'umount PATH' undoes the last stub mount at PATH
 # and drops the last mountinfo line of PATH. A bind: PATH reads its own bytes again. A tmpfs: its files are
 # gone (a bind made from one of them keeps its bytes, as the kernel keeps the superblock for it) and the

@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS DIAG images only (never in a release image): boot log on a USB stick from the very start
 # of the boot, for a boot that never reaches 'on boot' (no adb, no z9x_diag). Started at 'on init' by
 # z9x_earlylog.rc. It loads the USB host modules itself (the vendor loads them only at

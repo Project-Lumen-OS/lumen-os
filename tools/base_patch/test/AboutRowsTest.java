@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package com.android.tv.settings.about;
 
 import android.content.ContentResolver;

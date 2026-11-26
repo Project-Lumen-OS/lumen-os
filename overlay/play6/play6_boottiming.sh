@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS for the XGIMI Play 6, DIAG images only (never in a release image): boot timing record, started by
 # /system/etc/init/play6_boottiming.rc.
 #   play6_boottiming.sh mark STAGE   appends "STAGE uptime=<s> boottime_last=[<last /proc/boottime line>]"

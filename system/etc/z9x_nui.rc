@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X NUI fifo server (install as /system/etc/init/z9x_nui.rc; script /system/etc/xgimi/z9x_nui.sh 0755). v6.2b.
 #
 # Replaces the reader side of stock "service nativeui /system/bin/nativeui / class main / oneshot"

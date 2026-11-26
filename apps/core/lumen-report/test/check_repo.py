@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Repository checks of problem reports (run by test/run.sh): the texts and the wiring of every projector app.
   1. strings: every res/values*/lumen_strings_report.xml has the keys of the English base, the same placeholders,
      and plain text (no semicolon, no em or en dash: the plain text rule of user texts); 18 files (17 languages + pt-rBR);

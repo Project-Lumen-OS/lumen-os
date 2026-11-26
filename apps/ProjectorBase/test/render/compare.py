@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Compare the two render walks block by block (locale + scenario); deltas.txt lists the decided 1.1 changes:
    '- <line>' a 1.0.10 line that is gone, '+ <line>' a line that is new, '~ <old> => <new>' a changed line,
    '= <start>' a line starting so that moved within its block (same lines, other place);

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen power-on sound variants A-F.
 
 Everything is synthesised here (additive / FM tones, formant choir, STFT-shaped

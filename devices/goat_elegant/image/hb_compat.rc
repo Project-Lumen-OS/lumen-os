@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130), first-boot test builds: XGIMI's vendor partition is never
 # modified; its app folders are hidden with bind mounts before the package scan. Same reason as the Play 6's
 # play6_compat.rc part 1: XGIMI system apps under android.uid.system signed with XGIMI's platform key abort

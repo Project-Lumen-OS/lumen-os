@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """image_diff.py: compare two Play 6 system images entry by entry, metadata first (the proof that a new build host
 composes like the old one: every path both images share keeps its type, mode, owner, SELinux label, file
 capabilities and link target), then content.

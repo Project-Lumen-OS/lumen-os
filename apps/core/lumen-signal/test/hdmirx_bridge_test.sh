@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the HDMI receiver bridge (image/lumen_hdmirx.sh) on a fake root: the real Z9X and Z9X HB captures as
 # the dump, stub getprop / setprop / dmesg / cat in PATH.
 # bash apps/core/lumen-signal/test/hdmirx_bridge_test.sh [OUT_FILE [HB_OUT_FILE]]

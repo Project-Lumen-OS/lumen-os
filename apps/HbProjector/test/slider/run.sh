@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Picture slider writes while a key is held (panel/SlideCoalescer: one write in flight, newest value wins, 100 ms apart,
 # one page re-read after the slide) and its wiring into the HB picture pages. sh test/slider/run.sh
 set -eu

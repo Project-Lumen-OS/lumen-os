@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_images.py: every Lumen image carries what the shared remote pairing (apps/core/lumen-remote) needs, read from
 the image recipes of the tree (no image, no device). Per model (MODELS below, data only):
   - the projector app's recipe names the module lumen-remote and its manifest requests the Bluetooth permissions the

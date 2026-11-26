@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_play6.sh: build the APKs of the Play 6 port with the Play 6 platform key (the design notes
 # 2.1 rule S1, section 5 check B). Mac only, no device, no network.
 #

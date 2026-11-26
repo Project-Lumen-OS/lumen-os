@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the quick panel layout D logic and the controller wiring: each one must turn test/qpd red (scratch
 copies, never in place: test/scratch.py).
 

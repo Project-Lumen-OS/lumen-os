@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Play 6: sys.lumen.recovery_cert = ok (a recovery made by tools/play6/recovery_trust.py:
 # XGIMI's recovery with the Lumen Play 6 OTA certificate added), stock (XGIMI's own, refuses Lumen packages),
 # unknown or unreadable; sys.lumen.recovery_sha = the partition's SHA-256. Read only.

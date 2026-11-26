@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """static.py TREE: the static face of one assembled updater, one line per fact, for test/parity/run.sh.
 
   manifest  the AndroidManifest.xml without comments and with whitespace collapsed (package, uid, permissions,

@@ -86,8 +86,23 @@ Lumen OS is free and never sold. If it gave your projector a second life, you ca
 
 ## License
 
-Apache License 2.0, except `apps/LumenAirPlay` (GPL 3.0 only) and the third party submodules under `apps/third_party`,
-which keep their own licenses. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+<!-- licence:begin -->
+Lumen OS is the work of Kamal Muradov. Its own code is under the [PolyForm Noncommercial License 1.0.0](LICENSE). In plain words:
+
+- You may use it for free at home, for study, as a hobby and in non-profit organisations such as schools and
+  charities.
+- You may change it for yourself and learn from it.
+- You may share the official builds unchanged, together with the licence and the [NOTICE](NOTICE).
+- You may not use it for anything commercial: no selling it, no paid installation, no use in a business, no paid
+  add-ons or services built on it.
+
+This licence covers the whole repository, its earlier versions included. Copies obtained under the Apache License
+2.0 before 26 November 2026 keep the rights that licence gave.
+
+Parts written by other people keep their own licences (Apache 2.0, GPL 3.0 for the AirPlay receiver, ISC, OFL, CC BY): [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The name and the logo: [TRADEMARKS.md](TRADEMARKS.md).
+
+This is a short summary. The licence text in [LICENSE](LICENSE) is what counts.
+<!-- licence:end -->
 
 Lumen OS is an independent project, not affiliated with XGIMI, Google, MediaTek or LineageOS. Their names are
 trademarks of their owners. The screenshots show the film Sintel by Blender Foundation, CC BY 3.0.

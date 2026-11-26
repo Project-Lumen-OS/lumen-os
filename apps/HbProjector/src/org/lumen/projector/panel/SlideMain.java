@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * SlideMain: panel/SlideCoalescer on the device (HB-only file): the main-thread scheduler and the vendor write of one
  * slider value on the HAL thread. Used by panel/ProPicture and panel/QuickPanelController for their picture sliders.

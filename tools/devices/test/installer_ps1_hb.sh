@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the Windows installer's FLOW=ab-fastbootd way (installer/lumen-install.ps1, the Abf-* functions), the
 # twin of tools/devices/test/installer_hb.sh for lumen-install.sh: the same fake projector (its fake adb, fastboot and
 # dump.erofs are taken out of installer_hb.sh, so both tests drive one and the same fake), the same cases and the

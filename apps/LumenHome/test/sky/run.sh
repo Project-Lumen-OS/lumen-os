@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Live sky host checks (SolarCalc of lumen-ui + SkyLook are plain Java): sh test/sky/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS UI resolution. Image path /system/product/etc/init/init.lineage.atv.scaling.rc: it REPLACES the
 # LineageOS ATV file of that path (which set ro.config.size_override 1920,1080 and
 # ro.config.density_override 320 'on fs'), so these two are set exactly once, here. Script

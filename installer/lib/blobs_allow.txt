@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS: the MediaTek / XGIMI files a PUBLIC image takes at boot from the user's own z9x_blobs
 # partition: the Codec2 libs (secure video, e.g. Kinopoisk HD) and the two files the audio needs
 # (MediaTek's VNDK libstagefright_foundation for the vendor audio HAL, the vendor audio policy without

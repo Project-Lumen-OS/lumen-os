@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_device.py: the sign stage of rule S1 for a device of the registry, on the
 model of tools/play6/sign_play6.py, which it imports read only (read_base, scan, apex_needs, normalized,
 write_apex_tsv, tar_members, sign_one) and never edits. Mac only for everything that touches the device key; the

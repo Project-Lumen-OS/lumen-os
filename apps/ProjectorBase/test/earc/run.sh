@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # eARC decisions (cec/EarcRules is plain Java): sh test/earc/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

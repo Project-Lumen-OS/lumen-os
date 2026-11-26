@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen OS: generates the remote catalog and the key table of the shared remote module from the remote tables.
 
   python3 tools/remotes/gen_catalog.py            write RemoteCatalog.java and keys/KeyTable.java

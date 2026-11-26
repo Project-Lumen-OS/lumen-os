@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The hotspot image rule (tools/devices/test/hotspot_image.py) and its mutants: dropping the overlay line from any
 # recipe, a wrong iface or a wrong default name must turn it red. Run from the repository root (check.sh does).
 set -u

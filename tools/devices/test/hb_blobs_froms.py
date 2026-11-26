@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """hb_blobs_froms.py REAL_ALLOW TEST_ALLOW FILES_DIR: several from= sources on one line of a test allow-list.
 
 tools/ota/test/blobs_fixture.py (a Z9X gate input, unchanged) keeps one from= per line. A real line with several from=

@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of overlay/play6/play6_early_mik.rc (every Play 6 image):
 #   - rc syntax: comments, one 'on' block, 4-space commands, only insmod of /vendor/lib/modules/*.ko and two
 #     'write /proc/boottime' marks, no service, no exec, no setprop, no other trigger

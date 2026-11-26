@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130), test builds from t8c on: two vendor services that can never
 # link on this model are not left in init's 5 s restart loop (installed as /system/etc/init/hb_vendor_services.rc by
 # compose_hb.sh; HB only, no other device stages this file, the Z9X and Play 6 images do not change).

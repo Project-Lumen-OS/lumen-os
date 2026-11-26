@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.hal.gmpf;
 
 /** The features a shared call needs where a projector's feature table can switch them off (GmpfRules.require). */

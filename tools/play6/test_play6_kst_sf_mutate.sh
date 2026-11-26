@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mutation check of tools/play6/test_play6_kst_sf.sh: each edit below would let a Play 6 image ship without the keystone
 # SurfaceFlinger with stock sampling (or swap it over a base it was not built for, or let check_public_play6.py pass
 # such an image). The test must turn red on each, and pass unmutated.

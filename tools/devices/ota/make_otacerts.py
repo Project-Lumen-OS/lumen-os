@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_otacerts.py: a device's /system/etc/security/otacerts.zip = [ota, ota_next], public certificates only
 . It replaces the GSI file in the device's image: the updater trusts
 its FIRST entry for the manifest signature (Trust), update_engine every entry for the payload signature, so an

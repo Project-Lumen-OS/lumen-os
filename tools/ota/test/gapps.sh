@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of the Google services add-on of Lumen OS without Google: tools/ota/image/z9x_gapps.sh (checks
 # and overlays the user's z9x_gapps<slot> at post-fs-data, or 'check' for the installer) together with
 # installer/lib/gapps_fill.sh (fills the partition on the projector), and the allow-list

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """A local HTTPS proxy that limits every connection on its own, like the per-connection shaping of GitHub by
 providers in Russia: CONNECT tunnels only, the download direction of each tunnel at most RATE bytes/s, the upload
 direction free. Prints a line per tunnel with the open and the peak count.

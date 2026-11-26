@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build.sh: compile check of HbProjector with a THROWAWAY test key (never the image keys).
 #
 #   sh build.sh [OUT_APK]        default: build/HbProjector-testkey.apk

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # gen_x50_apex_keys.sh: the X50 (g0111) APEX keys, one payload key and one container key per APEX module that
 # devices/g0111/image/sign_x50_base.py re-signs because its payload holds an APK on the platform certificate
 # (devices/g0111/image/x50_apex_modules.txt). Mac only. Modeled on gen_apex() of tools/play6/gen_play6_keys.sh.

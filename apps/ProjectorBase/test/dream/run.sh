@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Screensaver default host checks (dream/DreamDefaults is plain Java): sh test/dream/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

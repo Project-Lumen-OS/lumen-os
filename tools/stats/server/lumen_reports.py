@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen OS problem reports: the upload end on our statistics server (the projector side is apps/core/lumen-report,
 served by lumen_stats.py on the same port, behind the same nginx and Cloudflare).
 

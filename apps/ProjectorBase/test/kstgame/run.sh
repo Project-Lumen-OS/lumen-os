@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Manual keystone top-speed game lock host checks (panel/KstGameLock is plain Java): sh test/kstgame/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

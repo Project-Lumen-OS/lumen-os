@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * Play6PowerCallback: our Java xgimi.hardware.gmpf@1.0::IPowerCallback for IGmpf 235 / 242 on the XGIMI
  * Play 6, built like the Z9X HidlFocusCallback (stock analysis 1.1 and 6.1 B1;

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Android ext4 system.img (raw) -> POSIX tar with PAX xattrs for `mkfs.erofs --tar=f`.
 
 The projector mounts /system only as EROFS, while Google's GSI ships ext4.

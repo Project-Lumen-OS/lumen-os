@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector;
 
 /** Host stub: the resource ids the module views name (QpdTip's remote pictures, CornerView's texts). */

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """bootctl_twin: a fake /system/bin/bootctl for tools/devices/test/lumen_ota_test.sh that keeps the slot state the
 way the HB keeps it: an AOSP bootloader_control struct at offset 0x800 of misc (libboot_control, the vendor's
 boot@1.2 HAL; research/OTA_TWIN.md section 4: misc read at 0x800 with a valid CRC), so the state lasts between

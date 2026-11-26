@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The per-model table of the phone remote (apps/core/lumen-control, org.lumen.control.vcontrol.VcontrolModels): what
 the stock XGIMI phone remote (com.xgimi.vcontrol) of each model told the phone, from devices/_control/vcontrol.tsv
 plus two registry facts: the stock Build.DEVICE (the entry's family, tools/devices/devices.py) and autofocus

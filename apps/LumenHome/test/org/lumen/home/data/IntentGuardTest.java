@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
 /** SPEC T12: crafted intents and art URIs from foreign TvProvider rows must be rejected. */

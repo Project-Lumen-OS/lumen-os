@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """gen_lineage_rro.py: generate gsi/apps/Z9xLineagePlatformOverlay (static RRO on lineageos.platform,
 plan C8: the speed and brand RROs merged into one) from the target APK of the base image.
 

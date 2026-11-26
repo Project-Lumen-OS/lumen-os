@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X v6.2: called by init 'on shutdown' (root). Power-off only.
 # init runs this as a blocking 'exec' with no time limit, and its shutdown_done (DoReboot, which
 # starts init's shutdown watchdog) waits behind it. So only the watchdog stop runs synchronously;

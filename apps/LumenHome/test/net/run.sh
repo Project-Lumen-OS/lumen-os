@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Network folders host checks (org.lumen.home.net SMB2 client: plain Java, no android.jar): sh test/net/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

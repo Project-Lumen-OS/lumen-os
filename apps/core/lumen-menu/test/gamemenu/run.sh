@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen game menu, design A (panel/GmModel is plain Java): sh test/gamemenu/run.sh
 # GmModelTest covers the focus map, presets, stock mutex rules, console mapping, frame player timing, capability
 # gating and timers. The checks below pin the wiring the tests assume: gear long press, auto show once, HAL calls

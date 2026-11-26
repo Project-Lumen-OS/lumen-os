@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS without Google (tools/lumen_v1.sh GMS=0): the base tar members
 # a no-Google image drops (MindTheGapps ATV and the two LineageOS helpers that exist only for it), on top
 # of the static REMOVE list. One tar path per line (a directory removes everything under it), '#' starts a

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
 /** Runs the plain-JVM tests: sh tools/run_tests.sh */

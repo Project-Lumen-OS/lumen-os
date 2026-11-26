@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Eye protection mode (FS 5.1): 0 follow, 1 safe. The stock wrapper rejects >= 2. *

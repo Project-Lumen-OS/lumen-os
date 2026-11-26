@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
 /** The Z9X menu's tokens (Z9xMenuRules) for the signal panel's picture mode and motion smoothing rows. */

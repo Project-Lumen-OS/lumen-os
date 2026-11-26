@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_public_x50.py: may this X50 family system image be published? (2026-11-11, the public X50 beta)
 
   sudo python3 -I check_public_x50.py IMAGE_ROOT BASE_ROOT DUMP_FS [CACHE]

@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_home_x50.sh: Lumen Home (apps/LumenHome) for an X50 family image, built from this tree and signed with that
 # model's platform key on the Mac (t12, t11 review P0.3). The Z9X 1.0.9 base's Home talks only to org.lumen.projector,
 # which the X50 image does not have; this tree's Home picks org.lumen.x50.projector on an X50 family image

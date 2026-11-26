@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen HDMI receiver bridge (install as /system/etc/init/lumen_hdmirx.rc; script /system/etc/lumen/lumen_hdmirx.sh
 # 0755). Shipped only in images whose model lists hdmi_format in devices/<c>/signal.tsv (Z9X, Z9X HB, the X50
 # family); the script checks the model code as well.

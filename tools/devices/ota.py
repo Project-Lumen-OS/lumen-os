@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """ota.py: the OTA tools, entered by device.
 
   ota.py [--root DIR] [--device CODENAME] [--dry-run] payload ARGS...     <ota_tools>/make_ota.py unsigned ARGS...

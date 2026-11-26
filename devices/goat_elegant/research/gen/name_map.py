@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """name_map.py GSI_ROOT AIDL_CODES_TSV REPLACEMENTS_TSV OUT_TSV
 
 One row per HAL method name that Lumen's Z9X client or Play 6 client sends today, with its code on each

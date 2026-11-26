@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Setup with a mouse or a touch screen, and its two "other" buttons (every model).
 #   sh test/pointer/run.sh          (python3 only)
 # Setup is made of standard clickable views (Pill, Row, cards with click listeners), so a tap is a click: nothing in

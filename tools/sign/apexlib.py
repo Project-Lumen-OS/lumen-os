@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apexlib.py: shared, key-free helpers for the Lumen OS APEX re-signing (Mac and laptop).
 
 Used by apex_sign.py (Mac, holds the keys), apex_laptop.py (build laptop, never sees a key) and

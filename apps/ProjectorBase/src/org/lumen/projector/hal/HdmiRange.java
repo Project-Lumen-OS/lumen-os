@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** Lumen OS 1.0.4: HDMI colour range of the current HDMI input (stock SignalEnum): 0 auto, 1 full, 2 limited. *

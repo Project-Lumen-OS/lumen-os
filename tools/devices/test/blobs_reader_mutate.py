@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """blobs_reader_mutate.py: every mutant of the one blobs reader and of its per-model data must turn a test red.
 
     python3 tools/devices/test/blobs_reader_mutate.py [-j N] [NAME_PREFIX]

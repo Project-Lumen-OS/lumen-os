@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector;
 
 /** Lumen OS 1.0.4: POWER_ON_MUSIC (IGmpf 420 / 419, the stock power-on music). */

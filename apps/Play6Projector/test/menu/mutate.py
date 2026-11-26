@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Play 6 menu gate mutants: each mutant weakens one rule of the Play 6 adapter of the shared menu (rule in
 Play6MenuGates, the p6-hal re-checks and entry gates of Play6Features, the device pages, the owner, the recipe and the
 profile); test/menu/run.sh must turn red for every one. Works on a scratch copy, never in place.

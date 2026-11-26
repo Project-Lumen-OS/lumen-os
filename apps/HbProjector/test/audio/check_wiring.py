@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """HB 3.5 mm output wiring (source level, 2026-11-10, 4PDA: HDMI sound only on the speaker, no Headphones row):
 the jack row in the panel rows, the jack kept connected by AudioOutputChoice.apply, the HB reporter as a pure vendor
 adapter of lumen-audio PathSwitch (switch_end=4 with headphone_volume stored first is the shared rule) and the jack row

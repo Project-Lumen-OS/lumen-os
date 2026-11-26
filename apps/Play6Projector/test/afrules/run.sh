@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Play 6 focus rules host checks (P6AfRules is plain Java): sh test/afrules/run.sh
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)

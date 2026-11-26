@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Play 6 focus rule mutants: each mutant weakens one rule of P6AfRules (the manual move start order, the close stop)
 or the MotorController wiring to it; test/afrules/run.sh must turn red for every one. Works on a scratch copy, never
 in place.

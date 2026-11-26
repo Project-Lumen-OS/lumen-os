@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Lumen OS palette (the brand spec), app-local names so a shared
      tokens.xml copied in later (z9x_*) cannot collide. Same values as the brand tokens. -->
 <resources>

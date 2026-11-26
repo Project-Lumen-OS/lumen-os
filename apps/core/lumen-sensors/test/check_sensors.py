@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """lumen-sensors data and wiring checks: every devices/*/sensors.tsv names only SensorItem tokens and never a forbidden
 vendor call (IGmpf 194, IGmpf 275, IGmpf2 252), every recipe with the signal panel also has the sensor card and its
 table, every reader stays off the forbidden getters, English and Russian texts have the same keys, the old LumenSensors

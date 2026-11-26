@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # apply_check.sh: apply a signed Lumen OS OTA package of a device of tools/devices/ota to its storage twin on the
 # build host and check the result byte for byte. No projector, no root,
 # no key.

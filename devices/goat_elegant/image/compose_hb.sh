@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Compose a system image for the XGIMI "Z9X HB" (codename goat_elegant, model G0130, MT9660 / mt5873, 32-bit
 # userspace, Android 13 vendor with VNDK 33): the test builds tN and, with a version VARIANT and --release, the
 # public release image.

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Stock Z9X refusal rules and wire mappings of the quick panel (panel/PanelRules is plain Java) and the Z9X rows of
 # the shared picture settings rule (Z9xMenuRules over lumen-menu): sh test/rules/run.sh
 set -eu

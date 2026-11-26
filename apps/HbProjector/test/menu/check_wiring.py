@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """HB menu wiring (source level): the HB adapter of the shared menu (panel/HbMenuFeatures) gates every entry with
 implemented() = HbMenuGates read against HbFeatures, refuses Boost without a vendor call where the picture mode holds
 it, never sends the Boost step as a light level, re-checks HDMI before the HDMI-only setters, gives only refusal notes

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.os;
 /** Host stub: every handler of the test runs on the one virtual-time loop of World. */
 public class Handler {

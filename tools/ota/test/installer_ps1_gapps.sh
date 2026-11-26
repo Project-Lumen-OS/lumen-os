@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test of the Windows installer's one-pass add-on code (installer/lumen-install.ps1): the whole script must
 # parse, and its OWN tar writer (Gi-Tar with Gi-Hdr, Gi-Entry, Gi-Pad, Gi-Lines, taken out of the parsed script, the
 # installer's main part not run) must give, with the mkfs.erofs of installer/tools/erofs-utils and the 'plain'

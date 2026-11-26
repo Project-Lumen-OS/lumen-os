@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the shared QR code (apps/core/lumen-qr): sh apps/core/lumen-qr/test/run.sh
 #  1. QrCodeTest: versions, the length limit, the matrices of 58 texts pinned (the first-run app's former encoder drew
 #     the same), whole-pixel module geometry of QrView;

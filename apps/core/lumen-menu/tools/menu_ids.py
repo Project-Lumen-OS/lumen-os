@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """menu_ids.py FEATURE_ID_JAVA MENU_JSON...: every feature, hint and section order row a lumen-menu profile names is
 an id of the module's FeatureId enum. apps/build_apk.sh runs it on every app tree with a menu
 profile, so a typo in devices/<codename>/menu.json fails the build instead of showing no menu on the device. Exit 1 on

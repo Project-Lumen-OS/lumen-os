@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_block_ota.py: the unsigned full OTA package of a Lumen OS Play 6 system image.
 
     make_block_ota.py SYSTEM.img OUT.zip --updater build/play6/ota_tools/updater

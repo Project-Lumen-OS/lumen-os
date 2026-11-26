@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * HbSystemAudio: CEC System Audio follows the panel's sound output choice on the Z9X HB (2026-11-01, ARC volume spike,
  * device tests, cause 3). HB-only file, no HAL access.

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector;
 
 /** Host test of FocusPattern against the stock HB manual-focus chart (SystemUI cp01_focus_bk, 1920x1080). */

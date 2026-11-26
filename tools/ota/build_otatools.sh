@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_otatools.sh: one-time build of the OTA host tools on the build laptop (NOT run in v1; run it
 # only when the first OTA is prepared, with the maintainer's OK, because it is a ~10-20 min build).
 #

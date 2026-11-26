@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <!-- lumen-menu labels of the X50 family's projection rows (lens memory, the remote focus picture) -->
 <resources>
     <string name="lumen_m_lens_memory">Memória da lente</string>

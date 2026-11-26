@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_fixture.py: fake X50 z9x_blobs files for the host tests (devices/g0111/test/x50_blobs_test.sh,
 tools/devices/test/installer_x50_blobs.sh). A thin wrapper of tools/ota/test/blobs_fixture.py (unchanged, a Z9X
 gate input) with the X50 partition size, 16 MiB. Never reads or writes a real MediaTek / XGIMI file: every file is

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0.4: ADB over network was off after every restart. LineageOS TV's "ADB over network"
 # (Developer options) only sets the non-persistent service.adb.tcp.port (product init.lineage.atv.rc restarts adbd
 # on 5555 / -1), so every reboot turned it off. Remember the user's own choice and restore it once the system is up.

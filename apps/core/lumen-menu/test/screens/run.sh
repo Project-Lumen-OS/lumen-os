@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50-feedback1 screens on host stubs (no device): sh apps/core/lumen-menu/test/screens/run.sh [PNG_DIR]
 #  1. ScreensTest: the REAL QpdTip (focus page remote picture per remote kind), CornerView (four-corner keystone page,
 #     stock KeyStoneWind look) and ShiftRangeView over ShiftRange (lens shift range, stock DisplacementCell), drawn

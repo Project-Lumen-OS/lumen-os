@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X v6.5: started once by z9x_bootinfo.rc at 'on boot'. Copies the PM boot reason, the wake source
 # and the PM watchdog reset flag (read-only sysfs, each read bounded by 'timeout 1') into
 # sys.z9x.wake_name / sys.z9x.wdt_reset_chk / sys.z9x.boot_reason for org.lumen.projector (boot-dark

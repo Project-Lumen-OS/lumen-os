@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Every letter of every keyboard language can be typed, lower and upper case (test/run.sh).
 
 Reads the shipped pages (res/xml), not the generator's table. A letter is typed by a key of its language's page, or

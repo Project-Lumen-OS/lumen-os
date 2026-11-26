@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * GmpfCall: the allow list (every transaction the app can produce) of HbProjector (AidlCaller.java), a top-level type since the HAL codes became HalCodes constants
  * (devices/goat_elegant/hal/codes.tsv). Each code is a HalCodes constant; tools/hal/check_codes.py proves it is the stock method named here.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen OS usage statistics: the server end of the projector's daily ping (apps/core/lumen-stats, the one client of
 every model: the updater on the Z9X and the HB, the projector app on the Play 6, the X50 and the RS30).
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_tar.py: re-sign a Lumen OS system tar with the Lumen release keys (Mac only).
 
     sign_tar.py --inventory IN.tar [--report-dir DIR]

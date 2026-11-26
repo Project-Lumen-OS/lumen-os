@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS for the XGIMI Play 6 (G0058, MT5889), test builds with --diag only: the device hook of the
 # USB-stick boot logger overlay/debug/z9x_earlylog.sh, installed as /system/etc/xgimi/earlylog_usb.sh by
 # tools/play6/compose.sh. The logger's optional device hook (owner decision O8, applied 2026-10-13) sources

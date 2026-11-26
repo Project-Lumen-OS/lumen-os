@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # check_aidl_hal_test.sh: tests of tools/devices/check_aidl_hal.py on the HB apps.
 #
 #   bash tools/devices/test/check_aidl_hal_test.sh

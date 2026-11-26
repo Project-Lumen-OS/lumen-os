@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the screen mirroring control API (core/Control + StateProvider / manifest wiring): each one must turn
 sh test/run_core.sh red. python3 test/mutate_control.py"""
 import os, shutil, subprocess, sys, tempfile

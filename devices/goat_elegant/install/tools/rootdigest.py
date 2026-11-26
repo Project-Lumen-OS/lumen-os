@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Independent dm-verity v1 root digest (AVB style: salt prepended, 4096-byte blocks, padded levels). Read-only.
 import hashlib, sys
 def root(path, size, salt):

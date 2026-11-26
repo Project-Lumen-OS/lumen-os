@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package lumen.fake;
 /** One pairing implementation under test, driven through its public entry points only. */
 public interface Subject {

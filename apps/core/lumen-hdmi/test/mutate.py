@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Targeted mutants of the HDMI relink, the stock HDMI mode values (EdidModes) and the game profile gate: each one
 change must turn test/run.sh red.
   python3 apps/core/lumen-hdmi/test/mutate.py [-k substring]

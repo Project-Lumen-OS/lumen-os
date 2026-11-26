@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X render parity (core-menu): the Z9X on the shared menu against the Z9X 1.0.10 quick panel.
 #   NewWalk: the lumen-menu tables (MenuSpec, MenuProfile, MenuLabels) + Z9xMenuRules, resolved with the assembled app res/
 #   OldWalk: the 1.0.10 QuickPanelController build / apply / handler rules (transcribed, QPC:line) on the 1.0.10

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Patch a composed system tar (from compose_tv.py) without redoing the whole pipeline.
 
 Usage: patch_tar.py in.tar out.tar ACTION...

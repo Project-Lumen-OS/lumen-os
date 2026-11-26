@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # base_patch host tests (README.md). JDK 17+ (JAVA_HOME or javac on PATH), python3.
 #   sh tools/base_patch/test/run.sh                  the A2DP race on the shipped and the fixed connector, the About
 #                                                    rows, base_patch.py

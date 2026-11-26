@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of the trial-run path of the one blobs reader tools/ota/image/z9x_blobs.sh with the data of the Z9X HB
 # (devices/goat_elegant/image/blobs.conf: the flattened VNDK APEX of Android 13, two from= rules for the audio policy of
 # stock 6.16.24 and 6.17.12) and of the Z9X (tools/ota/image/blobs.conf: the com.android.vndk.current.apex file, lib and

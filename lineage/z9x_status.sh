@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Одна строка состояния сборки на ноутбуке (для наблюдения с Мака):
 #   статус|сделано/всего|попыток|EXIT|°C|охрана|cpus|память ГБ|подкачка ГБ|последний FAILED STEP
 st=$(docker inspect -f '{{.State.Status}}' z9x-build 2>/dev/null || echo none)

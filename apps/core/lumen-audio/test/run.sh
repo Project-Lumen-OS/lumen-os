@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host checks of the shared media route rules (apps/core/lumen-audio): MediaPath (the path a route plays on, the format
 # again on a path switch), AutoPick (the stock Auto output), the Android glue compiles against the platform headers, and
 # every projector's path picker, output choice and recipe use the module. sh apps/core/lumen-audio/test/run.sh

@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_diag_test.sh: host tests of devices/g0111/image/x50_diag.py on a copy of the Z9X boot logger
 # (overlay/v1/z9x_diag.sh = the base image's /system/etc/xgimi/z9x_diag.sh): the edit, its check, refusals.
 set -u

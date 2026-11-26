@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Golden test of the installers' messages (installer/lib/messages.tsv): the installer suites print the same thing,
 # byte for byte, before and after a change that moves texts around.
 #

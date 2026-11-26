@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """twin_misc.py: the slot state in a copy of a projector's misc partition (the HB first), and the OTA boot gate run
 on it ("twin_misc.py with bootctl_twin: the gate runs on the real misc
 layout").

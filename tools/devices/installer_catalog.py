@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """installer_catalog.py: the signed catalog of Lumen Installer (apps/LumenInstaller, 1.0.3 and later).
 
 A projector can take Lumen OS from the app when, and only when, this catalog lists a build for its model code. The

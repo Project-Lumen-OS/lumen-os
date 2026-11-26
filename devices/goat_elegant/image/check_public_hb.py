@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mac-side check of a public Z9X HB system image before signing:
 #   python3 -B devices/goat_elegant/image/check_public_hb.py IMAGE [--dump dump.erofs]
 # IMAGE is lumen-os-hb-<version>-nogms-system.img (the published name) or system_hb-<version>-release.img (the

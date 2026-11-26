@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # ota_tools_test.sh: host test of tools/devices/ota (make_ota, sign_payload, make_manifest, verify_manifest,
 # make_otacerts, check_release, ota_conf) and of the separation from the Z9X tools (the design notes,
 # step S6). Runs on the Mac or the build host:

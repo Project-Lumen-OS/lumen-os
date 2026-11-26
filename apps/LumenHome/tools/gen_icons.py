@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Lumen Home: generate our own vector icons (res/drawable/ic_*.xml) on a 24x24 grid.
 
 All shapes are drawn here from scratch (stroke style, round caps/joins, in the spirit of Material

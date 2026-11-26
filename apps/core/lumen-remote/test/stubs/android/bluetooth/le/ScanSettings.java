@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.bluetooth.le;
 public final class ScanSettings {
     public static final int SCAN_MODE_OPPORTUNISTIC = -1, SCAN_MODE_LOW_POWER = 0, SCAN_MODE_BALANCED = 1, SCAN_MODE_LOW_LATENCY = 2;

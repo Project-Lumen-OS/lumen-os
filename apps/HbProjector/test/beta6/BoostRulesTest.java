@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
 /** Host test of BoostRules (HB beta6, live beta5 bug "Boost cannot be turned off" in Performance). */

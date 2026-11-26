@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_ps_game">遊戲模式生效中</string>
     <string name="lumen_m_ps_ai">專業設定不能用於 AI 品質畫面模式</string>

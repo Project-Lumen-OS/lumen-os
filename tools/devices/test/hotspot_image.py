@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The hotspot in every image (lumen-system Hotspot, the Network popup): a model whose profile has network.hotspot
 must drop the emulator's tether overlay (EmulatorTetheringConfigOverlay: Wi-Fi tether list wlan only, a product
 overlay that outranks the vendor TetheringRROOverlay with ap0), else Android starts the hotspot on ap0 and hands the

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Generates the Lumen game menu icons: res/drawable/gm_ic_<name>.xml (animated-vector) from the approved prototype's
 24x24 SVG icons and their CSS focus animations (qp_design/game_menu.py, design A). Run from apps/ProjectorBase:
     python3 tools/gm_icons.py

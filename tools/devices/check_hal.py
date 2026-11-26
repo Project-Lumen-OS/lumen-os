@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_hal.py: the HAL caller check of a device, chosen by hal_check in devices/<codename>/device.conf
 .
 

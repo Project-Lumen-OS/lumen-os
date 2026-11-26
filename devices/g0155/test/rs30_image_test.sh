@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # rs30_image_test.sh: host checks of the RS30 Ultra Max trial recipe (devices/g0155/build.conf and image/steps.tsv of
 # the one image builder): every APEX uncompressed before the signed set and
 # none left in the image, the debloat list removed and checked gone, USB host mode and the TV props, the remote keys

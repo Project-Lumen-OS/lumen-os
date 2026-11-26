@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X boot logger (/system/etc/xgimi/z9x_diag.sh, 0755). Started by z9x_diag.rc at 'on boot' as a
 # background oneshot service (after early-boot), so it can never block init.
 # mksh + toybox only: no bashisms, and no number above 2^31 in $(( )) (mksh arithmetic is 32-bit).

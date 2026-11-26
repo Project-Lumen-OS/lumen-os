@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the Projection hint picture: each one must turn test/projection red (scratch copies, never in place:
 test/scratch.py).
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB (goat_elegant, G0130): Bluetooth audio (installed as /system/etc/init/hb_bt.rc by
 # compose_hb.sh; HB only, the Z9X and Play 6 images do not change). HB_BT_NOTES.md.
 #

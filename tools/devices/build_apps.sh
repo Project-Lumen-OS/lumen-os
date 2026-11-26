@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build_apps.sh: build the device-only apps of a device of the registry (the apps key of
 # devices/<codename>/device.conf), signed with that device's platform key. 
 #

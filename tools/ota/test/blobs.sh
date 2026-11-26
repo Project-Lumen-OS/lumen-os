@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of tools/ota/image/z9x_blobs.sh, the one blobs reader of every model, with the Z9X's data (its settings
 # tools/ota/image/blobs.conf: binds the user's own MediaTek / XGIMI files from z9x_blobs<slot> at post-fs-data), of
 # its refusal of odd settings and of the format of tools/ota/image/blobs_allow.txt and blobs.conf. POSIX sh, no

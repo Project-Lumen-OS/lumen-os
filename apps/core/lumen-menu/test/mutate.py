@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Gate mutants of lumen-menu: each mutant weakens the "absent feature = no row" rule, the
 profile checks or the window hosts (section 11); test/run.sh must turn red for every one. Works on a scratch copy of
 the module, never in place.

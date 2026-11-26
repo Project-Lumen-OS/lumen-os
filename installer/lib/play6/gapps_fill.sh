@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS installer, XGIMI Play 6, 'gapps --zip FILE' (lumen-install.sh / lumen-install.ps1): runs ON the
 # projector as root (adb root over Wi-Fi), pushed to /data/local/tmp/lumen-gapps/fill.sh together with
 # allow.txt (the installer's lib/play6/gapps_allow.txt), lumen-gapps.xml (lib/play6/lumen-gapps.xml) and, for

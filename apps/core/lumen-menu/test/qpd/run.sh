@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Quick panel layout D logic (panel/QpdLayout is plain Java): sh test/qpd/run.sh
 # Also checks that the controller wires what the tests assume (tile order, Boost level, Boost gate).
 set -eu

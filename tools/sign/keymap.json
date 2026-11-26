@@ -1,5 +1,5 @@
 {
-  "_comment": "SPDX-License-Identifier: Apache-2.0. Lumen OS: SHA-256 of the DER of each PUBLIC AOSP test certificate (build/make/target/product/security/*.x509.pem, Lineage 21 uses them unchanged; copies in tools/sign/testcerts) -> the Lumen release key (~/.lumen-keys/<name>.pk8 + .x509.pem) that replaces it. sign_tar.py re-signs every APK whose signer is a key here, rewrites the SELinux mac_permissions certs, and fails on any APK signed by an unmapped Android test-looking certificate.",
+  "_comment": "SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0. Lumen OS: SHA-256 of the DER of each PUBLIC AOSP test certificate (build/make/target/product/security/*.x509.pem, Lineage 21 uses them unchanged; copies in tools/sign/testcerts) -> the Lumen release key (~/.lumen-keys/<name>.pk8 + .x509.pem) that replaces it. sign_tar.py re-signs every APK whose signer is a key here, rewrites the SELinux mac_permissions certs, and fails on any APK signed by an unmapped Android test-looking certificate.",
   "test_certs": {
     "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8": {
       "aosp": "platform",

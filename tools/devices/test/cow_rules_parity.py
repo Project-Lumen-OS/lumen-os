@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The rules for the *-cow leftovers of a finished update, kept the same in every installer (reads only).
 
 The in-trial installer (apps/LumenDsuInstall Snapshots.java) is the reference: it reads /metadata/ota like stock

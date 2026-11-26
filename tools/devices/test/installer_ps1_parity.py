@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Static parity of the FLOW=ab-fastbootd way in the two installers.
 
 installer/lumen-install.sh (the abf_* section) and installer/lumen-install.ps1 (the Abf-* section) must do the

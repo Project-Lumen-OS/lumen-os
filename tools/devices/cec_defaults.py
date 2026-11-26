@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """cec_defaults.py: the HDMI-CEC defaults of every Lumen image are the stock XGIMI ones, one table for all models
 (2026-11-15: do it the way stock does it; stock sends no <Standby> to the HDMI devices when it sleeps).
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.miracast.core;
 
 /** Which diagnostics stage a finished session failed at, from how it ended (host tested). */

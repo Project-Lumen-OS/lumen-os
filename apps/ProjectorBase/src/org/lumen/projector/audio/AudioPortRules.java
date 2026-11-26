@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.audio;
 
 /** Plain rules of {@link AudioPorts} (host tested by sh test/sound/run.sh). */

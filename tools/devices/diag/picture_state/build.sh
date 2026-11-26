@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build.sh: compiles PictureState.java into picture_state.jar (a dex jar for app_process) next to it.
 #   sh tools/devices/diag/picture_state/build.sh [OUT.jar]
 # Needs a JDK 17+ (javac on PATH or JAVA_HOME) and d8 of the Android SDK build tools

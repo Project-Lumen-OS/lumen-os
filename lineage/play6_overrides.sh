@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS, XGIMI Play 6 base build: our source patches WITHOUT touching the read-only LineageOS tree.
 # For each ~/lineage-docker/patches/play6/*.patch (= gsi/lineage/patches/play6 on the Mac): copy the
 # original file(s) from ~/lineage to ~/play6-out/overrides/<same path>, apply the patch there, and print one

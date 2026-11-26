@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """ui_words.py: no app shows people the technical words of the install machinery (maintainer rule, "we are not robots":
 DSU, vbmeta and slot become plain words, such as "trial run", "the current system stays as it is", "the projector
 must be prepared once").

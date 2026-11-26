@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.content;
 public interface SharedPreferences {
     java.util.Set<String> getStringSet(String k, java.util.Set<String> d);

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # build.sh: compile check of LumenInfo with a THROWAWAY test key, then the host tests.
 #
 #   sh build.sh [OUT_APK]        default: build/LumenInfo-testkey.apk

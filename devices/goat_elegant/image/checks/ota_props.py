@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The HB OTA props: exactly the four lines of hb_ota_props.txt in order (ota.conf list, design decision: no mboot,
 no vbmeta), the manifest on the tag z9x-hb; CHANNEL hb-test reads update-hb-test.json there instead. OUT gets
 the four lines for CHANNEL.

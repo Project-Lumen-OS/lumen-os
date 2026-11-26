@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0.8 GPU keystone path of the Z9X (install as /system/etc/init/z9x_trapezoid.rc).
 # Parity report docs/z9x/parity/keystone.md item 13 and docs/z9x/KEYSTONE_STOCK_VS_LUMEN.md, section 4 step 1.
 #

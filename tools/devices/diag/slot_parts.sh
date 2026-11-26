@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # slot_parts.sh: read-only snapshot of a projector's static per-slot partitions, for support. For every partition of
 # the XGIMI sets of apps/core/lumen-fwcopy (boot, dtbo, mboot, tvconfig, tvservice, bootdata, optee, owl, satf, armfw,
 # xgimiconfig, vbmeta_system) and vbmeta of both slots it writes size, sha256 and the first 4 KiB in hex (PART lines in

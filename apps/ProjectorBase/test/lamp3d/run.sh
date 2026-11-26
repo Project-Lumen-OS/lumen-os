@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Brightness in 3D, the stock dlpLumensLevel / iRISDeviceNotThreeDimension rule (panel/Lamp3d is plain Java):
 # sh test/lamp3d/run.sh
 set -eu

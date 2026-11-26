@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # gen_device_keys.sh: generate the platform key and the OTA key of a device of the registry on the Mac (maintainer
 # only, once per device). the design notes; rule S1 of the design notes for every
 # device: no image of one projector, and no APK in it, is signed with a certificate another projector trusts.

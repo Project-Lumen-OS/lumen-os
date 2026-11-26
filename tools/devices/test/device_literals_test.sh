@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # device_literals_test.sh: no new Java source names a projector ("no new
 # isPlay6()-style identity checks"). Every app source (tests excluded) that holds a codename, a model number
 # or isPlay6() / isHb() must be listed in tools/devices/device_literals.txt, and every listed file must still

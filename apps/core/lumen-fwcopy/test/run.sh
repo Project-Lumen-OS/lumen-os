@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host tests of the shared firmware copy (apps/core/lumen-fwcopy): sh apps/core/lumen-fwcopy/test/run.sh
 #   1. FwCopyTests: the per-model sets, the plan, every branch of a copy on fake partitions (power cuts included);
 #   2. FwListsTest: every list of the XGIMI set in the tree (the images' ro.product.ab_ota_partitions, ota.conf, the

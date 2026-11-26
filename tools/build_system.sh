@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0 system image ("for XGIMI projectors", author kmuradoff), built from the exact
 # known-good system_tv_v4.tar (LineageOS 21 TV GSI + MindTheGapps ATV) like z9x_v65.sh, plus our
 # overlays and the APKs of every app. Successor of tools/z9x_v65.sh (v6.5.2); every v6.x fix that

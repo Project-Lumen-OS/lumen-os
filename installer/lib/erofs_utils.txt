@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # sha256 of the erofs-utils 1.9.4 programs in installer/tools/erofs-utils/<platform>/ (made by tools/ota/build_erofs_utils.sh).
 # The installer runs a program only when its sha256 is the one here. <sha256>  <platform>/<file>
 49821b606f66b933d8ed4829c8f4c2e9d67a9b41eafcc478846d45c560c0d212  darwin/mkfs.erofs

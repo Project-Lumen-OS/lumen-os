@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_release.py: the publish audit of a device of tools/devices/ota, run after EVERY publish (read only;
 the design notes).
 

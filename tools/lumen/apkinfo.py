@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """apkinfo.py: tool-free facts about an APK (no aapt2 / apksigner needed, runs on the Mac and on
 the Linux build laptop alike). Used by lumen_v1.sh and its helpers.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # pack_installer.sh: make the installer zip of a release or pre-release FOR ONE IMAGE, so the image and the
 # installer of a download always belong together (docs/release.md, "Before publishing").
 #

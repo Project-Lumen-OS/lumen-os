@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # dexpreopt_play6.sh: build-time AOT ("speed") of one of the Play 6 image's /system APKs, inside the
 # lineage-builder container on the build laptop (run by tools/play6/compose.sh), against the SAME boot image
 # that the Play 6 base build put into its system image (the design notes,

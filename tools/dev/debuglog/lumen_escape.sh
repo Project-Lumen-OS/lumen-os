@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS DIAG/test images only: when the boot does not complete, reboot into fastbootd.
 # Triggers: system_server started 8 times without sys.boot_completed=1, or 15 min of uptime without it.
 # Waits 15 s before the reboot so the USB boot logger (z9x_earlylog) writes one more round.

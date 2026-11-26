@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_glyphs.py: no text glyph stands in for an icon in a Lumen app (the icons are apps/core/lumen-icons).
 
   check_glyphs.py [--root GSI] [--quiet]      exit 0 green, 1 red (one line per finding: file:line, glyph, rule)

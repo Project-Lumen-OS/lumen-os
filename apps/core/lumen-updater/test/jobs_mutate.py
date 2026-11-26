@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """jobs_mutate.py: each mutant of UpdateService's worker (JobRunner, ServiceJob) must make JobRunnerTest fail.
 
   python3 apps/core/lumen-updater/test/jobs_mutate.py

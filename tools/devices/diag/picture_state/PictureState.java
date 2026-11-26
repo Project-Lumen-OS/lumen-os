@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * PictureState: a READ-ONLY dump of the picture and light state of an XGIMI Z9X (G0082), the same text on the
  * stock system and on Lumen OS, so that `diff` of two runs shows what differs. It runs as the adb shell user

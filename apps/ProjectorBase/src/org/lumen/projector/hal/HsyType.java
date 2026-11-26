@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
 /** HSY colour correction: what one 7-colour array holds (stock ColorCorrection: 0 hue, 1 saturation, 2 lightness). *

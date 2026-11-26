@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # HbFeatures host check (hal/HbFeatures is plain Java but for android.util.Log, android.os.SystemProperties and
 # AidlCaller.NotOnHbException, all stubbed here): the table against the stock G0130 and G0148 feature.xml keys, the
 # model rule (G0148, unknown model, no file), off wins, require(). sh test/features/run.sh

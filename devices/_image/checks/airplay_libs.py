@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The 32-bit userspace loads the AirPlay receiver's native code from the APK: its armeabi-v7a libraries must be
 stored uncompressed and page-aligned (4096).
   airplay_libs.py APK

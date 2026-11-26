@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.util;
 /** Host stub: Android logs go to World.log only when World.verbose (the decisions are traced by the fakes). */
 public final class Log {

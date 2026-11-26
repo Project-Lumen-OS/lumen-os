@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS for the XGIMI Play 6, DIAG images only (tools/play6/add_diag_to_image.sh, compose.sh --diag; never in a
 # release image): a boot timing record, /system/etc/xgimi/play6_boottiming.sh. It answers one question: is this
 # boot late? (BOOTLOOP_INVESTIGATION.md H1: the Play 6 switches itself off when the vendor's projector parts come

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X v6.5 boot reason for the Projector app (install as /system/etc/init/z9x_bootinfo.rc;
 # script /system/etc/xgimi/z9x_bootinfo.sh 0755 root:root).
 #

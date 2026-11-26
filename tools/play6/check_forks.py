@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_forks.py: check F of the design notes (2.4, 2.7). Deliberate Play 6 copies of Z9X files
 do not drift unnoticed, and every resource of the Z9X projector app has a place.
 

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Setup fast host tests (no device, no emulator): the 2.0 flow (test/flow: step order, step counter, the remote
 # step's 60 s not found, Wi-Fi list states and the row each state focuses, the language order, the QR grid, the kept
 # wrong password, the install offer gate, icons and colours from the shared modules), every

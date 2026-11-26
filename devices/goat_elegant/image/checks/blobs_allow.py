@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The HB blobs allow-list names exactly the two files the test builds carry (the pinned stock
 libstagefright_foundation.so, the staged audio policy file), with one from= per stock vendor file.
   blobs_allow.py BLOBS_ALLOW SF_SHA AUDIO_POLICY VENDOR_AUDIO_POLICY...

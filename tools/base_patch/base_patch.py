@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """base_patch.py: fixes carried in the code of a base APK (README.md), one row per file in patches.tsv.
 
   base_patch.py build ID BASE.apk [--out DIR]     the patched classes.dex of fix ID made from the base APK

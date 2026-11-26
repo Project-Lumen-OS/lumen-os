@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
 /** Why a change is refused. The caller picks the note (stock meaning, our own words). */

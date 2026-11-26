@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """ui_words_test.py: tools/i18n/ui_words.py finds every forbidden word in every place a text can sit (string, plural
 item, array item, any res/values* folder of apps/, overlay/ or devices/), lets plain texts, references and build output
 pass, and the real tree is clean.

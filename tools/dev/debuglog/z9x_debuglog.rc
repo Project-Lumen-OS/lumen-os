@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X: временный журнал загрузки на флешку (FAT32 в синем порту USB 3.0), см. debuglog.sh.
 # Модули USB подгружает сам скрипт: по плану vendor они грузятся только на load_bpf_programs.
 on init

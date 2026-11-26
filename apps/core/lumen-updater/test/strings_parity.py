@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """strings_parity.py: the key-parity test of the gate block strings of the shared updater (test/run.sh).
 
   strings_parity.py APP_TREE BASE_RES

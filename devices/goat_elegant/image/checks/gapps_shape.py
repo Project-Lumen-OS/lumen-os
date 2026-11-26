@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """The HB Google add-on allow-list has the shape of a 32-bit arm list (made and fully checked on the Mac by
 hb_gapps_allow.py): zip= lines name only arm ATV zips, every file line has three fields under the five trees.
   gapps_shape.py GAPPS_ALLOW

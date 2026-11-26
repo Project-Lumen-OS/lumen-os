@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-files-access host tests: sh apps/core/lumen-files-access/test/run.sh
 #  1. FilesAccessPolicyTest: who gets all files access and when;
 #  2. every projector recipe names the module, every projector manifest declares the permission and the provider;

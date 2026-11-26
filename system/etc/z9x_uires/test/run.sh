@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Host test harness for the Lumen OS UI resolution (overlay/v1/z9x_uires: z9x_uires.sh and the
 # init.lineage.atv.scaling.rc that replaces LineageOS's). POSIX sh, runs on the Mac:
 #   sh overlay/v1/z9x_uires/test/run.sh           every case, the script under 'sh'

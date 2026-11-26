@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_apk_check.py: what one APK can do with the X50's gmpf HAL, read from its bytes with the Python standard
 library only (the build host has no Android tool). verify_tree_x50.py uses it for the one APK of the X50 image that
 may name the HAL (its HAL_APP: apps/X50EyeGuard); the host tests run it on the built APK and on mutants

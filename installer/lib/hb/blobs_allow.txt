@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS on the XGIMI Z9X HB: the MediaTek / XGIMI files a PUBLIC image takes at boot from the user's own
 # z9x_blobs partition: MediaTek's VNDK libstagefright_foundation (the vendor codec2 plugin libcodec2.MTK.so needs
 # it: c2.mtk.* decoders, IInterTunnel for the HDMI sideband) and the vendor audio policy without XGIMI's

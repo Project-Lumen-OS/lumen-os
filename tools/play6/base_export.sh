@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # base_export.sh: the Play 6 base build's system tree for the Mac's sign stage (tools/play6/sign_play6.py base and
 # apex-prepare and step 15), inside the lineage-builder container on the build
 # laptop. Key-free and read-only on the base: /out is mounted read-only, only /work/base/export is written.

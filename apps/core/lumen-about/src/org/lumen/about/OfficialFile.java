@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.about;
 
 /** The official XGIMI file that puts this unit's XGIMI system back: its version, size in bytes and address. */

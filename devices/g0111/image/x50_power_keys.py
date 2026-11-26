@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """x50_power_keys.py: the X50's power keys in the key layouts of the image (devices/g0111/README.md, "Power key").
 
 The Z9X base maps every user power and sleep key to KEYCODE_STB_POWER WAKE, a global key that the framework RRO of

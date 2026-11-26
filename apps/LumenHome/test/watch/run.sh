@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Home showcase and search (plain JDK, no android.jar): the shipped "where to watch" table (assets/watch/apps.tsv),
 # released and watchable titles only, the hero order, which app Смотреть opens, the "Искать в" order, the region, the
 # relevance of search results, the hero rebinding on a new button. sh apps/LumenHome/test/watch/run.sh

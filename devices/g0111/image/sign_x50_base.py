@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """sign_x50_base.py: an X50 family image's platform set on that model's keys (t12; g0111 below stands for the model). Mac only for every step that
 reads a key; the two key-free APEX steps run on the build host (image.conf host) with tools/sign/apex_laptop.py.
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # The X50 composer (g0111 X50 Ultra, g0100 X50 Ultra Max) on the build host: the one image builder with the staged
 # descriptor (devices/<codename>/build.conf, steps devices/g0111/image/steps.tsv), staged by tools/build/build.py run.
 #   bash ~/x50-out/in/compose_x50.sh tN|X.Y.Z[-betaN] [--stage-only|--image-only] [--dry-run]

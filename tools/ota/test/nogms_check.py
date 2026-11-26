@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Host test of the no-Google release gate (tools/sign/check_image.py check_nogms + check_variant,
 the design notes), on the Mac, no base tar, no Google file:
 

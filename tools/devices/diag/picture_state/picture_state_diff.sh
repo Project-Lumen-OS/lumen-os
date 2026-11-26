@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # picture_state_diff.sh: what differs between two dumps of picture_state.sh (for example stock and Lumen OS).
 #   sh picture_state_diff.sh STOCK.txt LUMEN.txt
 # Compares the stable sections ([hal] [props] [surfaceflinger] [settings] [xgimiconfig]) one by one and prints

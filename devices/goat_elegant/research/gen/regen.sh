@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Regenerate the HB (goat_elegant) reference tables in ../ from a stock dump.
 # Run on the Mac from anywhere. Reads the dump on xgimi-builder (read-only), never touches a device.
 #   gen/regen.sh            all tables from the G0130 V6.16.24 dump (aidl_codes.tsv, name_map.tsv, banned.tsv)

@@ -1,4 +1,5 @@
 #!/system/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Z9X NUI fifo server (/system/etc/xgimi/z9x_nui.sh, 0755). v6.2b. Started by z9x_nui.rc as two
 # background root services (class main, never 'exec'), so it cannot block init.
 # mksh + toybox only (on the device /system/bin/sh is mksh: 'read -n' and 'print' are mksh builtins).

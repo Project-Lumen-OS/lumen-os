@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # sign_x50_test.sh: the signed SHA256SUMS of an X50 test image, made on the Mac (devices/g0111/README.md, "Signed
 # test image"). The image stays where the composer wrote it (image.conf host, ~/<remote_dir>/x50-tN-net/); the ota
 # key of the X50 never leaves the Mac and is never printed.

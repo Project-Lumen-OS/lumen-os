@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # make_trust_kit.sh: build and check the Play 6 recovery trust-test kit (OTA phase 1, T4 of
 # the design notes; steps in the design notes). Mac only: no device, no flashing,
 # no build laptop.

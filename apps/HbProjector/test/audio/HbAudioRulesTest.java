@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.audio;
 
 /** Host test of the HB CEC System Audio decisions (the volume rules moved to lumen-audio StockVolume, the jack to JackOutput). */

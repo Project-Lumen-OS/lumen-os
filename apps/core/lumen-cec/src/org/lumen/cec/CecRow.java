@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.cec;
 
 /** The rows of the HDMI-CEC page (CecPage), in page order; a CecDriver names the ones its projector has. */

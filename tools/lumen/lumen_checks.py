@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """lumen_checks.py: the Python checks of tools/lumen_v1.sh (Lumen OS 1.0 system image).
 
 Subcommands (every one exits non-zero with 'ERROR ...' lines on a failure):

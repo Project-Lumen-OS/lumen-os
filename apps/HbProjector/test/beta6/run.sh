@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # HB beta6 host checks: BoostRules (vendor-held Boost in Performance / Office), ZoomScale (stock dial, G0130 table,
 # refused ends), wiring + the four fit / obstacle coupling directions. sh test/beta6/run.sh
 set -eu

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.miracast.core;
 
 /** RTP fixed header (RFC 3550 5.1) of one received datagram; payload bounds point into the caller's buffer. */

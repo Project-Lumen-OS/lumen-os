@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # x50_power_keys_test.sh: host tests of the X50 power key (devices/g0111/README.md, "Power key"):
 # devices/g0111/image/x50_power_keys.py on copies of the base's key layouts (devices/g0111/test/base109_keylayout = the
 # published Z9X 1.0.9 image's /system/product/usr/keylayout, the pinned base; overlay/v1/keylayout = a later base with

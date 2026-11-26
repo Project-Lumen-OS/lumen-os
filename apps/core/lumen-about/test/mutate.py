@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of lumen-about and its wiring: each one must turn test/run.sh red (run.sh green first).
   JAVA_HOME=... ANDROID_SDK=... python3 apps/core/lumen-about/test/mutate.py"""
 import os

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen OS 1.0.8: build the bridge APKs (one per pre-1.0.8 package name) with apps/build_apk.sh.
 #   sh apps/LumenBridge/build_bridges.sh OUT_DIR [z9x|play6]
 # Writes OUT_DIR/LumenBridge_<app>.apk, signed with build_apk.sh's key (the release signing step re-signs them

@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # fwsim_hb.sh: the shared firmware copy (apps/core/lumen-fwcopy) on the two real halves of a Z9X HB after XGIMI's own
 # update, on a computer.
 #

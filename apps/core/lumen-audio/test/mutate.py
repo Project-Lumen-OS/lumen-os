@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of the shared media route rules and their wiring that test/run.sh must kill. Mutates the files IN PLACE
 and restores them: run it on a frozen snapshot (a builder clone or a detached worktree), never on a tree someone edits.
     python3 apps/core/lumen-audio/test/mutate.py"""

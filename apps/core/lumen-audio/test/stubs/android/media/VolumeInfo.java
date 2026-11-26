@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.media;
 
 /** Host stub: the stream and whether an index was given (DspOwned must leave the stored indexes alone). */

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Home and Google Play without a Google account (PlayGate): Play's TV build crashes then on a projector that is
 # not Play Protect certified ("GMS compliance not supported on this form factor"), so Home opens the Google sign-in
 # first. sh test/play/run.sh (plain JDK, no R.java)

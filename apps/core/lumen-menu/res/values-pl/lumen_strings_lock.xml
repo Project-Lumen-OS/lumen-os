@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_ps_game">Tryb gry włączony</string>
     <string name="lumen_m_ps_ai">W trybie obrazu o jakości SI nie można używać ustawień profesjonalnych</string>

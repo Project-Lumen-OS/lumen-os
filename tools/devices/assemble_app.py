@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """assemble_app.py: build the full source tree of a device app from its recipe (the design notes
 and 3). A device app stops being a full copy: the recipe says "start from this base, drop these files, put my
 files on top", and this script writes the full tree into a scratch folder for the unchanged apps/build_apk.sh.

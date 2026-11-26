@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """installer_catalog_mutate.py: mutants of the two catalog files (catalog.json for Lumen Installer 1.0.3, G codes only,
 catalog-v2.json for 1.0.4 and later), their serial rules, the trial from the newest beta and the vendor file reader
 guard in tools/devices/installer_catalog.py. Every one must turn installer_catalog_test.py red.

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * Play6KstPoint: xgimi.hardware.gmpf@1.0::IDisplayType::KstPoint on the XGIMI Play 6, the manual
  * keystone corner set of IGmpf 150 / 185 / 186. A fork of Z9xProjector hal/KstPoint.java

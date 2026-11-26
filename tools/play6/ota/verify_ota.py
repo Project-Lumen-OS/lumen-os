@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """verify_ota.py: check OTA zips the way XGIMI's Android 11 recovery does (aosp_verify.py), on the Mac.
 
     verify_ota.py ZIP... (--recovery IMG | --otacerts ZIP | --cert PEM ...) [--expect accept|reject] [--openssl]

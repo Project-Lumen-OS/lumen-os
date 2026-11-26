@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # run.sh: host tests of Lumen Keyboard (no device). Pure rules and the D-pad on every page (KeyboardTest), every
 # letter of every language (alphabet_check.py), then pages, subtypes, texts and wiring (check_res.py).
 # Optional: APK=1 also builds the APK with apps/build_apk.sh (needs the Android SDK).

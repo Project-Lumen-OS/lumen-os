@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Lumen mark "2A Aperture, facets": six facets #F4EFE6 / #CFC7BA around a hexagonal
      opening with the warm core #F2B26B (viewport = the board's -100..100 box). Paths are named
      facet0..facet5 and core_light (group "core", pivot at the centre) for animated vectors.

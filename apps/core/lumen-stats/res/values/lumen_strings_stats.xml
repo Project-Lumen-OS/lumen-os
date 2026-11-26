@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/ProjectorBase res/values/strings_stats.xml
      under the module prefix. -->
 <resources>

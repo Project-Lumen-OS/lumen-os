@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Offline reader for Android LP (dynamic partition) metadata. Read-only.
 import struct, sys, hashlib
 img = sys.argv[1]

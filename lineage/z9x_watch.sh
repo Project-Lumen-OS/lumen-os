@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Наблюдение с Мака за сборкой на ноутбуке. Выходит через 30 минут с отчётом
 # или сразу, если сборка остановилась, упала, застряла, перегрелась или пропала связь.
 # Ноутбук: BUILDER=user@host и BUILDER_KEY (ssh-ключ) из окружения или ~/.config/lumen/builder.env (личный файл, не в git).

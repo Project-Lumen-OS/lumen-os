@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-signal host tests: bash apps/core/lumen-signal/test/run.sh
 #  1. SignalTest: formatting (3840×2160 @ 60 Hz), judder line, the button's states, the HAL budget, row hiding, items,
 #     the place (title safe, below the header, smaller than before), light and dark from the Lumen 2.0 palette;

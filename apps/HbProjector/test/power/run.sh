@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # hb-t7 sleep decision host check (power/StrGate with stubs for the few Android classes it uses) against the image
 # props devices/goat_elegant/image/hb_lumen_prop.txt: sh test/power/run.sh
 set -eu

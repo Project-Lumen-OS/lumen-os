@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      org.lumen.updater English base. Translations: apps/i18n/pending/<set>/<locale>.txt (@updater/strings.xml),
      merged by gen.py. "Lumen OS" is a name: never translated. -->
 <resources>
@@ -133,7 +133,7 @@
     <string name="about_project">Project page</string>
     <string name="about_licenses">Licenses</string>
     <string name="about_scan">Scan with a phone to open</string>
-    <string name="lic_lumen">Lumen OS: Apache License 2.0. The AirPlay receiver: GNU GPL 3.0.</string>
+    <string name="lic_lumen">Lumen OS: PolyForm Noncommercial License 1.0.0. The AirPlay receiver: GNU GPL 3.0.</string>
     <string name="lic_aosp">Android Open Source Project and LineageOS: Apache License 2.0 and the licenses of their components.</string>
     <string name="lic_gapps">Google apps and services: Google’s own terms. Not part of Lumen OS.</string>
     <string name="lic_thirdparty">UxPlay (GPL 3.0), libplist (LGPL 2.1), Apple ALAC (Apache 2.0), BoringSSL, Roboto font (Apache 2.0).</string>

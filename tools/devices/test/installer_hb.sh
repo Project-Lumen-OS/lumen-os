@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Mock test of the installer's FLOW=ab-fastbootd way (installer/lumen-install.sh, the abf_* functions), for the
 # first projector of installer/lib/devices.conf with that FLOW. On the Mac or Linux, no projector, no network:
 #   bash tools/devices/test/installer_hb.sh

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """stock_order.py GSI_ROOT [--print TREE]: the Keystone section of every devices/*/menu.json is its model's stock page.
 
 test/stock/projection_screen.json holds the stock Keystone page of each model (the children of projection_screen in

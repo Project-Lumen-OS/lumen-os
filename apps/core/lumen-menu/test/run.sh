@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # lumen-menu host tests: sh apps/core/lumen-menu/test/run.sh [--update]
 #  1. every devices/*/menu.json is a valid profile whose adapter names every feature it declares;
 #  2. the menu snapshot of every profile equals test/snapshots/<codename>.txt (--update rewrites them: review the diff);

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # gen_play6_keys.sh: generate the Play 6 platform key and the Play 6 APEX keys on the Mac (maintainer only).
 # the design notes rule S1 and design decision.
 #

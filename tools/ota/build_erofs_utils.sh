@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Builds the erofs-utils programs the Lumen OS installer ships (installer/tools/erofs-utils/): mkfs.erofs,
 # fsck.erofs and dump.erofs of ONE upstream tag, for each computer the installer runs on. The installer builds
 # the Google services add-on image (z9x_gapps_<slot>, erofs) on the computer with them; see

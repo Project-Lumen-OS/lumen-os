@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # devices_test.sh: tests of tools/devices/devices.py. Each case builds a small
 # registry in a scratch dir (made-up projectors, no real device values) and runs one command on it.
 #

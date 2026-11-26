@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """model_props_test.py: the stock model properties of the images that set them by an init rc (one loader,
 tools/devices/model_props.py, the data per model: devices/goat_elegant/image/hb_model_props.*, devices/horse_popular/
 image/z9x_model_props.*).

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
 /** Host stub (test/gamemenu): the crosshair and frame counter settings in memory. */

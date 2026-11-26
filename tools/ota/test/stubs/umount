@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Test stub of toybox umount for the mounts of stubs/mount: logs "umount DIR" to $Z9X_T/umount.log; DIR must
 # be in $Z9X_T/mounts (else exit 1, "not mounted"). An ext4 mount with 'rw' is copied back into its partition
 # directory first; an ext4 mount point is emptied (as the real directory under the mount).

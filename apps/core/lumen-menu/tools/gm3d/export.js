@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /* Game menu 3D bake, step 1 (tools/gm3d/README.md): the scene of the pre-rendered controller frames, built by the SAME
    code as qp_design/models/render/render.js (load, hide, drop, paint, cap, recolour, normalise, framing), exported for
    the real-time renderer: meshes in the tilt group's space, materials, textures, the framing table and the room

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Lumen Home JVM tests (SPEC T12 IntentGuard; 1.0.1: hero art layout,
 # UI modes 1080p / 2K / 4K, the files Install from USB offers; 1.0.6: the network folders' SMB client)
 # on the Mac JDK; android.jar only to link.

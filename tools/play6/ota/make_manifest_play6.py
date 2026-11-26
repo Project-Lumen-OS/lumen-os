@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """make_manifest_play6.py: write and sign the Play 6 update manifest (Mac only; uses the Play 6 OTA key).
 
     make_manifest_play6.py --package lumen-play6-<ver>-full.zip --version 1.0.0 --version-code 10000

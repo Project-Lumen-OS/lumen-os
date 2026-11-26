@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package android.bluetooth.le;
 public final class ScanRecord {
     final String name; final int flags; final java.util.List<android.os.ParcelUuid> uuids; final android.util.SparseArray<byte[]> mfr;

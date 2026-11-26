@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """check_forks.py: deliberate copies of one device's files in another device's port do not drift unnoticed
 . Reads the table named by the device's 'forks' key in devices/<codename>/device.conf.
 

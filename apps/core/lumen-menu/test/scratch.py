@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutation runner for the lumen-menu suites that assemble a device app (test/<suite>/run.sh): every mutant runs in a
 scratch gsi/ whose files are symlinks to the repo's, only the mutated file is a copy, so the repo is never written.
 A mutant is (name, path relative to gsi/, old text, new text); old must occur exactly once."""
