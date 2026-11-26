@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.updater;
 
-/** Which manifest an image reads and how its beta channel sits beside it. */
+/**
+ * Which manifest an image reads and how its beta channel sits beside it. Which file of the pair a check reads when
+ * the user never chose is the build type's (Ota.betaOn), not the image URL's.
+ */
 public enum ChannelRule {
     /**
      * A fixed address: the image's &lt;props&gt;.ota.manifest_url when it is https, else the model's default. A beta
@@ -19,9 +22,6 @@ public enum ChannelRule {
         String[] pair(UpdateTarget t, String image) {
             return t.betaUrl != null && t.stableFile.equals(Ota.channelFile(image)) ? new String[] {image, t.betaUrl} : null;
         }
-
-        @Override
-        boolean betaByDefault(String[] c, String image) { return c[1].equals(image); }
 
         @Override
         String file(UpdateTarget t, String f) { return f.startsWith("update-") && f.endsWith(".json") ? f : t.fallbackFile; }
@@ -52,9 +52,6 @@ public enum ChannelRule {
         }
 
         @Override
-        boolean betaByDefault(String[] c, String image) { return Ota.channelFile(c[1]).equals(Ota.channelFile(image)); }
-
-        @Override
         String file(UpdateTarget t, String f) {
             return f.startsWith("update-") && f.endsWith(".json") && f.length() > 12 ? f : "";
         }
@@ -65,9 +62,6 @@ public enum ChannelRule {
 
     /** {stable, beta} URLs of the channel pair of an image URL, or null when it has no beta channel. */
     abstract String[] pair(UpdateTarget t, String image);
-
-    /** Whether beta is on when the user never chose: the image itself reads the beta channel. */
-    abstract boolean betaByDefault(String[] c, String image);
 
     /** The manifest file name of a URL's last path element {@code f}: f itself, or the rule's answer for others. */
     abstract String file(UpdateTarget t, String f);

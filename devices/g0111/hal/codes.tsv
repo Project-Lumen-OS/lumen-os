@@ -10,9 +10,13 @@
 #   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
 # columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
 # args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
-java	X50Projector	apps/X50Projector/src/org/lumen/x50/projector/HalCodes.java
+java	X50Projector	apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HalCodes.java
 java	X50EyeGuard	apps/X50EyeGuard/src/org/lumen/x50/eyeguard/HalCodes.java
-stock	*	devices/g0111/research/aidl_codes.tsv
+java	LumenInstaller	apps/LumenInstaller/src/org/lumen/installer/HalCodes.java
+# the X50 rows are proven against the v1.3.38 table: it holds every v1.2.64 row unchanged (code, method, signature) and
+# 53 appended ones, which firmware may receive a call is each app's check (tools/devices/check_aidl_hal.py, one --codes per
+# firmware, fw: rows for the calls of only some firmwares, org.lumen.hal.GmpfFirmware at run time)
+stock	*	devices/g0111/research/aidl_codes_v1338.tsv
 stock	*	devices/g0155/research/aidl_codes.tsv
 # interface	NAME	code	method	args	kind	apps	source
 -	META_GET_INTERFACE_HASH	0x00FFFFFE	getInterfaceHash	String()	meta	X50Projector,X50EyeGuard	AIDL meta transaction (android.os.IBinder); client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50eyeguard.tsv, allowed_x50projector.tsv
@@ -33,6 +37,7 @@ DisplayManager	DM_GET_CURRENT_3D_FORMAT	24	getCurrent3DFormat	byte()	get	X50Proj
 DisplayManager	DM_IS_3D_TO_2D_ENABLED	25	is3DTo2DEnabled	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_SET_SCREEN_ON_OFF	27	setScreenOnOff	void(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; GmDisplayManager.setScreenOnOffWithAction fallback (false) and kPPowerPress light on (true); client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_GET_SCREEN_ON_OFF	28	getScreenOnOff	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+DisplayManager	DM_GET_DLP_IMAGE_VERSION	37	getDlpImageVersion	String()	get	X50Projector,LumenInstaller	stock devices/g0111/research/aidl_codes.tsv (the same code in devices/_hal/gmpf-aidl/base.tsv, every AIDL model); the light engine line of the XGIMI config, CRISubType:255,ext-fpga version:1.3.5.8 flash version:9.4.128 on the X50 Ultra G0111 v1.3.38 (read 2026-11-21); client AndroidHost.dlpImageVersion (read only on stock), Gmpf.dlpImageVersion (the About FPGA row of lumen-about, AboutHost); allow allowed_x50projector.tsv
 DisplayManager	DM_CORRECT_KEYSTONE_RESET	38	correctKeystoneReset	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_IS_3D_FORMAT_SUPPORTED	48	is3DFormatSupported	boolean(byte)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_GET_OUTPUT_TIMING_INFO	57	getOutputTimingInfo	boolean(OutputTimingInfo)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
@@ -69,6 +74,19 @@ DisplayManager	DM_GET_LENS_DISP_MODE	152	getLensDispMode	int()	get	X50Projector	
 DisplayManager	DM_SET_SCREEN_ON_OFF_WITH_ACTION	168	setScreenOnOffWithAction	boolean(boolean, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; com.xgimi.shutdown PowerUtils.shutScreen -> GmDisplayManager.setScreenOnOffWithAction; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_SET_DYNAMIC_BLACK_TYPE	172	setDynamicBlackType	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_GET_DYNAMIC_BLACK_TYPE	174	getDynamicBlackType	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_DYNAMIC_BLACK_LEVEL	173	setDynamicBlackLevel	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv (sent only on v1.3.38, GmpfFirmware)
+DisplayManager	DM_GET_DYNAMIC_BLACK_LEVEL	175	getDynamicBlackLevel	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv (sent only on v1.3.38, GmpfFirmware)
+DisplayManager	DM_SET_DYNAMIC_BLACK_SUBTITLE_REGION	233	setDynamicBlackSubtitleRegion	int(int, PointCoordinate[])	set	X50Projector	stock devices/g0111/research/aidl_codes_v1338.tsv (XGIMI v1.3.38 only, GmpfFirmware); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_DYNAMIC_BLACK_SUBTITLE_REGION	234	getDynamicBlackSubtitleRegion	int(int, PointCoordinate[])	get	X50Projector	stock devices/g0111/research/aidl_codes_v1338.tsv (XGIMI v1.3.38 only, GmpfFirmware); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_RESET_DYNAMIC_BLACK_SUBTITLE_REGION	235	resetDynamicBlackSubtitleRegion	int()	call	X50Projector	stock devices/g0111/research/aidl_codes_v1338.tsv (XGIMI v1.3.38 only, GmpfFirmware); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_IS_KEYSTONE_ADJUSTED	207	isKeystoneAdjusted	KeystoneAdjustedResult_st(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; com.xgimi.utils.GmTrapzoidUtils.isTrapzoid (the colour uniformity entry check); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_USER_COLOR_UNIFORMITY_INFO	217	getUserColorUniformityInfo	int(GMHAL_COLOR_UNIF_INFO_st)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_USER_COLOR_UNIFORMITY_CELL	218	getUserColorUniformityCell	int(int, byte, byte, GMHAL_COLOR_UNIF_CELL_INFO_st)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_USER_COLOR_UNIFORMITY_CELL	219	setUserColorUniformityCell	int(int, GMHAL_COLOR_UNIF_CELL_st)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_GET_USER_COLOR_UNIFORMITY_GRID	220	getUserColorUniformityGrid	int(int, GMHAL_COLOR_UNIF_GRID_INFO_st)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SET_USER_COLOR_UNIFORMITY_GRID	221	setUserColorUniformityGrid	int(int, GMHAL_COLOR_UNIF_GRID_st)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_SWITCH_USER_COLOR_UNIFORMITY_MODE	222	switchUserColorUniformityMode	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
+DisplayManager	DM_RESET_USER_COLOR_UNIFORMITY	223	resetUserColorUniformity	int(int, int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv (X50 v1.2.64, v1.3.38, TITAN v1.2.99, GmpfFirmware.COLOR_UNIFORMITY); client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_GET_DISP_OUTPUT_FPS	179	getDispOutputFps	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
 DisplayManager	DM_SET_KST_PREPARE	185	setKstPrepare	boolean(boolean, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 DisplayManager	DM_SET_OPTICAL_ZOOM_LIMIT_STEP	189	SetOpticalZoomLimitStep	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
@@ -137,10 +155,12 @@ GmTvManager	TV_GET_HDMI_RANGE	64	getHdmiRange	byte()	get	X50Projector	stock devi
 GmTvManager	TV_SET_EARC_ENABLE	65	setEARCEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_EARC_ENABLE_STATE	66	getEARCEnableState	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_SET_DOLBY_VISION_TMAX	73	setDolbyVisionTmax	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_DOLBY_VISION_PIC_MODE	74	setDolbyVisionPicMode	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_DOLBY_VISION_PIC_MODE	75	getDolbyVisionPicMode	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_DOLBY_VISION_TMAX_SIZE	76	getDolbyVisionTmaxSize	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_DOLBY_VISION_TMAX_GAIN	77	getDolbyVisionTmaxGain	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_HDR_TYPE	78	getHdrType	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
+GmTvManager	TV_GET_HDMI_COLOR_SPACE_INFO	204	getHdmiColorSpaceInfo	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes_v1338.tsv (XGIMI v1.3.38 only, GmpfFirmware); client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_EARC_STATUS	79	getEARCStatus	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_SIGNAL_STATUS	106	getSignalStatus	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_HSY_PICTURE_MODE_ENABLE	112	getHsyPictureModeEnable	boolean(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
@@ -201,6 +221,8 @@ MotionDetectionManager	MD_TEMPORARY_SWITCH_TRIGGER	15	temporarySwitchTrigger	boo
 MotionDetectionManager	MD_SET_MOTION_A_CAL_ENABLE	24	setMotionACalEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 MotionDetectionManager	MD_GET_MOTION_ATTITUDE	25	getMotionAttitude	boolean(stAttitudeInfo)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 PowerManager	PM_GO_TO_BOOT_COMPLETED	2	goToBootCompleted	boolean(int)	call	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
+PowerManager	PM_GO_TO_SLEEP	6	goToSleep	void(int, int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; services.jar PowerManagerService.xgimiPrepareSleep -> XgimiSmsController.gotoSleep(0, 0) (G0111 1.3.38, G0082, G0148); client Gmpf; allow allowed_x50projector.tsv
+PowerManager	PM_WAKE_UP	12	wakeUp	int(int)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; services.jar XgimiWindowManagerDomestic SleepThread -> XgimiSmsController.wakeUp(2), the end of the light standby (G0111 1.3.38); client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_MANUAL_FOCUS	2	manualFocus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_AUTO_FOCUS	3	autoFocus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_SEND_FOCUS_STATUS	8	sendFocusStatus	void(byte)	call	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
@@ -222,6 +244,7 @@ ProjectorFocusManager	PF_CREATE_NIMBLE_OPTICAL_POS	109	createNimbleOpticalPos	bo
 ProjectorFocusManager	PF_DELETE_NIMBLE_OPTICAL_POS	110	deleteNimbleOpticalPos	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_GET_NIMBLE_OPTICAL_POS_LIST	111	getNimbleOpticalPosList	String()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_GET_UITILT_SHIFT_SWITH_STATUS	112	getUitiltShiftSwithStatus	void(boolean)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+ProjectorFocusManager	PF_GET_UITILT_SHIFT_SWITH_STATUS_V125	107	getUitiltShiftSwithStatus	void(boolean)	get	X50Projector	stock devices/g0170/research/aidl_codes_v125.tsv (the RS30 Ultra v1.2.5, before the lens memory); client Gmpf; allow allowed_x50projector.tsv
 ProjectorFocusManager	PF_GET_CUR_NIMBLE_OPTICAL_STATUS	121	getCurNimbleOpticalStatus	String()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 SystemManager	SM_SET_BOOT_ANIM_STATE	32	setBootAnimState	void(int)	set	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
 SystemManager	SM_GET_BOOT_ANIM_STATE	33	getBootAnimState	int()	get	X50EyeGuard	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50eyeguard.tsv
@@ -243,6 +266,9 @@ SystemManager	SM_SET_CONSOLE_SERIES_HOST	218	setConsoleSeriesHost	boolean(boolea
 SystemManager	SM_GET_CONSOLE_SERIES_HOST	219	getConsoleSeriesHost	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 SystemManager	SM_SET_CONSOLE_ENABLE	220	setConsoleEnable	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 SystemManager	SM_GET_CONSOLE_ENABLE	221	getConsoleEnable	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+SystemManager	SM_GET_BOOT_MODE	48	getBootMode	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; services.jar XgimiWindowManagerDomestic.needGotoSleep (G0111 1.3.38); client Gmpf; allow allowed_x50projector.tsv
+SystemManager	SM_GET_PJLINK_ENABLE	225	getPJlinkEnable	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; services.jar XgimiWindowManagerDomestic.needGotoSleep (G0111 1.3.38); client Gmpf; allow allowed_x50projector.tsv
+SystemManager	SM_GET_CONSOLE_TYPE	248	getConsoleType	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; services.jar XgimiWindowManagerDomestic.needGotoSleep (G0111 1.3.38); client Gmpf; allow allowed_x50projector.tsv
 SystemManager	SM_SET_CONSOLE_CMD	230	setConsoleCmd	boolean(int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 SystemManager	SM_SET_PUSH_PULL_SCREEN_STATE	147	setPushPullScreenState	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 TemperatureManager	TM_GET_SYSTEM_TEMPERATURE	6	getSystemTemperature	byte()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv

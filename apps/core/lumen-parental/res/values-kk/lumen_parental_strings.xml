@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Ата-ана бақылауы</string>
-    <string name="lumen_lp_intro">Балалар не аша алатынын және қанша уақыт көретінін шектеңіз.</string>
     <string name="lumen_lp_lock">Балалар құлпы</string>
-    <string name="lumen_lp_lock_desc">Қосулы болса, бақылау аясын, көру уақытын және басқасын орнатуға болады</string>
     <string name="lumen_lp_lock_off_title">Балалар құлпын өшіру керек пе?</string>
     <string name="lumen_lp_lock_off_text">Уақыт шектеулері мен қосқандағы құпия сөз жұмыс істемейді. Ата-ана параметрлері құпия сөзсіз ашылады.</string>
-    <string name="lumen_lp_turn_off">Өшіру</string>
-    <string name="lumen_lp_cancel">Бас тарту</string>
     <string name="lumen_lp_child_mode">Балалар режимі</string>
     <string name="lumen_lp_child_apps">Балалар режимінің қолданбалары</string>
     <string name="lumen_lp_child_apps_count">Таңдалды: %1$d</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Тек балалар режимі</string>
     <string name="lumen_lp_range_global">Барлық жерде</string>
     <string name="lumen_lp_session">Бір реттік уақыт</string>
-    <string name="lumen_lp_session_desc">Одан кейін 10 минут үзіліс</string>
     <string name="lumen_lp_daily">Күндік уақыт</string>
     <string name="lumen_lp_no_limit">Шектеусіз</string>
     <string name="lumen_lp_minutes">%1$d мин</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">Сеанс уақыты бітті. 10 минут демалыңыз</string>
     <string name="lumen_lp_rest_daily">Бүгінгі көру уақыты бітті</string>
     <string name="lumen_lp_rest_unlock">Құлыпты ашу</string>
-    <string name="lumen_lp_on">Қосулы</string>
-    <string name="lumen_lp_off">Өшірулі</string>
 </resources>

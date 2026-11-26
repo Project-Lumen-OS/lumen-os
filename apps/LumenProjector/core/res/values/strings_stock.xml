@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS 1.0.4: stock Z9X settings brought over (stock analysis): the HDMI settings of the input
+     on screen (quick panel Picture page), volume leveling (Sound page), power-on music and "Open at power-on"
+     (Projector settings, source.BootSource). English base; translations: gsi/apps/i18n/langs/<locale>.txt
+     @projector/strings_stock.xml. -->
+<resources>
+    <string name="hdmi_range">@string/lumen_color_range</string>
+    <string name="hdmi_range_full">@string/lumen_full</string>
+    <string name="hdmi_range_limited">@string/lumen_limited</string>
+    <string name="hdmi_mode">@string/lumen_hdmi_mode</string>
+    <string name="hdmi_mode_compat">@string/lumen_compatible_hdmi_1_4</string>
+    <string name="hdmi_mode_enhanced">@string/lumen_enhanced_hdmi_2_0</string>
+    <string name="hdmi_mode_note">@string/lumen_the_source_reconnects_if_the</string>
+    <string name="sound_volume_leveling">@string/lumen_volume_leveling</string>
+    <string name="sec_power_on">@string/lumen_power_on</string>
+    <string name="tg_power_on_music">@string/lumen_sound_at_power_on</string>
+    <string name="boot_source">@string/lumen_open_at_power_on</string>
+    <string name="boot_source_home">@string/lumen_home_screen_3</string>
+    <!-- Keystone page: Zoom and shift (panel.ZoomShiftPanel) and Picture rotation (panel.RotatePanel) -->
+    <string name="zs_title">@string/lumen_zoom_and_shift</string>
+    <string name="zs_unavailable">@string/lumen_zoom_and_shift_is_not</string>
+    <string name="zs_mode_size">@string/lumen_size</string>
+    <string name="zs_mode_shift">@string/lumen_position</string>
+    <string name="zs_hint_size">@string/lumen_right_bigger_left_smaller_ok</string>
+    <string name="zs_hint_shift">@string/lumen_arrows_move_the_picture_ok</string>
+    <string name="zs_hint_shift_only">@string/lumen_arrows_move_the_picture_back</string>
+    <string name="zs_edge">@string/lumen_the_picture_is_at_the</string>
+    <string name="zs_refused">@string/lumen_the_projector_did_not_move</string>
+    <string name="rot_title">@string/lumen_picture_rotation</string>
+    <string name="rot_unavailable">@string/lumen_picture_rotation_is_not_available</string>
+    <string name="rot_hint">@string/lumen_right_left_rotate_ok_back</string>
+    <string name="rot_limit">@string/lumen_this_is_the_largest_angle</string>
+    <string name="rot_refused">@string/lumen_the_projector_did_not_rotate</string>
+    <!-- 1.0.4 Sound page: manual sound output (audio.AudioOutputChoice) -->
+    <string name="sound_output">@string/lumen_sound_output</string>
+    <string name="sound_output_auto">@string/lumen_auto_output</string>
+    <string name="sound_output_speaker">@string/lumen_projector_speaker</string>
+    <string name="sound_output_arc">@string/lumen_hdmi_arc</string>
+    <string name="sound_output_earc">@string/lumen_hdmi_earc</string>
+    <string name="sound_output_bt">@string/lumen_bluetooth</string>
+    <string name="sound_output_wired">@string/lumen_headphones</string>
+    <string name="sound_output_usb">@string/lumen_usb_audio</string>
+    <string name="sound_format">@string/lumen_audio_format</string>
+    <string name="sound_format_auto">@string/lumen_auto</string>
+    <string name="sound_format_pcm">@string/lumen_pcm</string>
+    <string name="sound_format_passthrough">@string/lumen_passthrough</string>
+</resources>

@@ -82,6 +82,31 @@ public final class ParentalTest {
             if (right != 1 || q.choices.length != 4) { ok("quiz has one right answer of four", false); break; }
         }
         ok("quiz ok", true);
+        // the writes of the menu's page through ParentalProvider (ParentalSettings)
+        ParentalState w = new ParentalState();
+        ok("settings: nothing but the lock changes while it is off", !ParentalSettings.apply(w, ParentalSettings.CHILD, "1")
+                && !w.childMode && !ParentalSettings.apply(w, ParentalSettings.LOCK_OFF, "1"));
+        w.setPin("UUDD");
+        w.lockOn = true;
+        ok("settings: a stock session time", ParentalSettings.apply(w, ParentalSettings.SESSION, "30") && w.sessionMin == 30);
+        ok("settings: a time off the stock list changes nothing", !ParentalSettings.apply(w, ParentalSettings.DAILY, "45")
+                && w.dailyMin == 0 && !ParentalSettings.apply(w, ParentalSettings.SESSION, "x") && w.sessionMin == 30);
+        ok("settings: the range by its token only", ParentalSettings.apply(w, ParentalSettings.RANGE, "global")
+                && w.range == ControlRange.GLOBAL && !ParentalSettings.apply(w, ParentalSettings.RANGE, "nowhere")
+                && w.range == ControlRange.GLOBAL);
+        ok("settings: switches take 1 and 0 only", ParentalSettings.apply(w, ParentalSettings.BOOT_PIN, "1") && w.bootPin
+                && !ParentalSettings.apply(w, ParentalSettings.BOOT_CHILD, "yes") && !w.bootChild);
+        ok("settings: apps of child mode", ParentalSettings.apply(w, ParentalSettings.ALLOW, "com.kids")
+                && w.allowed.contains("com.kids") && ParentalSettings.apply(w, ParentalSettings.DENY, "com.kids")
+                && w.allowed.isEmpty() && !ParentalSettings.apply(w, ParentalSettings.DENY, "com.kids"));
+        String shown = ParentalSettings.shown(w);
+        ok("settings: the shown state has no password", !("\n" + shown).contains("\nsalt=")
+                && !("\n" + shown).contains("\npin=") && !shown.contains(w.pinHash) && !shown.contains(w.salt));
+        ParentalState back = ParentalSettings.read(shown);
+        ok("settings: the shown state reads back with the lock", back.lockOn && back.sessionMin == 30
+                && back.range == ControlRange.GLOBAL && back.bootPin && !back.hasPin());
+        ok("settings: turning the lock off drops every control", ParentalSettings.apply(w, ParentalSettings.LOCK_OFF, "1")
+                && !w.lockOn && !ParentalSettings.read(ParentalSettings.shown(w)).lockOn);
         System.out.println("ParentalTest: " + oks + " ok, " + fails + " failed");
         if (fails > 0) System.exit(1);
     }

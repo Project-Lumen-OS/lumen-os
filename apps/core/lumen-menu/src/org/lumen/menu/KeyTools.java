@@ -27,6 +27,12 @@ public final class KeyTools {
     public interface Tool {
         /** The remote's menu key while this tool is in front: the gear pressed short ({@code held} false) or held. */
         void onMenuKey(boolean held);
+
+        /**
+         * Stock shows this screen without its menu (the X50 subtitle mask editor: the picture must be seen whole), so
+         * the panel that waits under it is not seen either. false (manual focus): the menu stays seen under it.
+         */
+        default boolean hidesMenu() { return false; }
     }
 
     /** A window host of panels (the overlay host, the activity host). */
@@ -67,6 +73,12 @@ public final class KeyTools {
 
     /** The tool screen in front, null when none. */
     public static Tool front() { return FRONT.isEmpty() ? null : FRONT.get(FRONT.size() - 1); }
+
+    /** A tool screen in front wants the menu that waits under it out of sight ({@link Tool#hidesMenu}). */
+    public static boolean frontHidesMenu() {
+        Tool t = front();
+        return t != null && t.hidesMenu();
+    }
 
     /**
      * The remote's menu key (KeyReceiver: the gear's short press, its long press, the remote's own gear hold): true when

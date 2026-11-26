@@ -1,0 +1,11 @@
+# Recipe of Files (apps/LumenFiles), read by tools/devices/assemble_app.py: the shared Lumen icon set
+# (apps/core/lumen-icons), the shared look and theme switch (apps/core/lumen-ui) plus the app. One APK for every model
+# (no per-model part), signed with the model's platform key by each image recipe.
+app       LumenFiles
+# the Inter font of apps/core/lumen-menu, its one source (AirPlay and the package installer take it the same way)
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/fonts/OFL-Inter.txt
+module    lumen-icons
+module    lumen-ui
+top       apps/LumenFiles
+skip      build/ test/ tools/ *.apk CHANGES*.md README*.md DESIGN*.md .DS_Store app.layers

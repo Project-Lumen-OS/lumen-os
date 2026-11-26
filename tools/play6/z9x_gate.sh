@@ -80,7 +80,7 @@ list_inputs() {
         [ -d "$a/$s" ] && find "$a/$s" -type f
       done
     done
-    find apps/common apps/core apps/i18n apps/sdk apps/LumenBridge overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
+    find apps/common apps/core apps/LumenProjector apps/i18n apps/sdk overlay/v1 overlay/apps_v1 overlay/debug overlay/v65 \
       tools/lumen tools/sign tools/ota devices/horse_popular/app devices/horse_popular/audio -type f
     for f in apps/build_apk.sh apps/check_hal_callers.py apps/check_global_keys.py tools/lumen_v1.sh tools/compose_tv.py \
         tools/play6/z9x_next.tsv tools/devices/assemble_app.py tools/devices/devices.py devices/horse_popular/menu.json \
@@ -137,11 +137,8 @@ if [ -f "$OK_FILE" ]; then
       overlay/apps_v1/*)
         say "  $st $p  (pin list: every pinned APK is rebuilt, for the report)"; ALL=1
         red "pin list changed since the recorded green run: $p (the owner confirms it, then re-record)" ;;
-      apps/core/*|devices/horse_popular/app/*|devices/horse_popular/audio/*|devices/horse_popular/menu.json|tools/devices/assemble_app.py|tools/devices/devices.py|apps/app_dirs.tsv)
+      apps/core/*|apps/LumenProjector/*|devices/horse_popular/app/*|devices/horse_popular/audio/*|devices/horse_popular/menu.json|tools/devices/assemble_app.py|tools/devices/devices.py|apps/app_dirs.tsv)
         say "  $st $p  (build input of the assembled apps: every pinned APK is rebuilt)"; ALL=1 ;;
-      apps/LumenBridge/*)
-        say "  $st $p  (rebuild every LumenBridge*)"
-        for n in $APKS; do case $n in LumenBridge*) add "$n" ;; esac; done ;;
       apps/Z9x*/jni/*)
         n=${q#apps/}; n=${n%%/*}
         if is_pinned "$n"; then say "  $st $p"
@@ -205,17 +202,8 @@ NB=0
 for n in $REBUILD; do
   pin=overlay/apps_v1/$n.apk
   case $n in
-    LumenBridge*)   # the 1.0.8 bridges: one source (apps/LumenBridge), one APK per old name
-      if [ ! -d "$W/bridges" ] && ! sh apps/LumenBridge/build_bridges.sh "$W/bridges" z9x > "$W/bridges.log" 2>&1; then
-        red "$n: build_bridges.sh failed ($W/bridges.log)"; continue
-      fi
-      b=$(printf '%s' "${n#LumenBridge}" | tr 'A-Z' 'a-z')
-      NB=$((NB + 1))
-      got=$(shasum -a 256 "$W/bridges/LumenBridge_$b.apk" 2>/dev/null | cut -d' ' -f1)
-      have=$(shasum -a 256 "$pin" | cut -d' ' -f1)
-      if [ -n "$got" ] && [ "$got" = "$have" ]; then say "  $n: identical to the pin ($got)"
-      else red "$n: rebuilt ${got:-nothing}, pinned $have"; fi
-      continue ;;
+    LumenBridge*)   # the 1.0.8 bridges are gone since 1.1.0: a stale ignored file of an old checkout
+      red "$n: the 1.0.8 bridges are gone since 1.1.0, delete $pin"; continue ;;
   esac
   D=$(python3 -B tools/devices/assemble_app.py --app-dir "$n")
   if [ ! -f "$D/AndroidManifest.xml" ] && [ ! -f "$D/app.layers" ] && [ ! -f "devices/horse_popular/app/$n.layers" ]; then
@@ -277,7 +265,7 @@ sync_check() { # app items...
   if [ $rc = 0 ]; then say "  sync --check $*: OK"; else red "sync --check $*: $out"; fi
 }
 # no projector app holds shared copies: the Z9X, HB and Play 6 apps are assembled from their recipes, which take
-# apps/common/projector, apps/common/hal and apps/common/LumenImport.java as bases and refuse a copy of a shared file
+# apps/common/projector and apps/common/hal as bases and refuse a copy of a shared file
 for r in horse_popular:Z9xProjector goat_elegant:HbProjector dragon_healthy:Play6Projector; do
   out=$(python3 -B tools/devices/assemble_app.py --device "${r%%:*}" --app "${r#*:}" 2>&1); rc=$?
   if [ $rc = 0 ]; then say "  assemble ${r#*:}: OK"; else red "assemble ${r#*:}: $out"; fi
@@ -293,7 +281,8 @@ fi
 # ---------------------------------------------------------------- 4. languages, 5. Z9X HAL callers
 out=$(python3 -B apps/i18n/gen.py --check-only 2>&1); rc=$?
 if [ $rc = 0 ]; then say "  gen.py --check-only: $(printf '%s' "$out" | tail -1)"; else red "gen.py --check-only: $out"; fi
-out=$(python3 -B apps/check_hal_callers.py apps/ProjectorBase/src 2>&1); rc=$?
+out=$(python3 -B tools/devices/assemble_app.py --device horse_popular --app Z9xProjector --out "$W/hal_tree" --quiet 2>&1 &&
+  python3 -B apps/check_hal_callers.py "$W/hal_tree/src" 2>&1); rc=$?
 if [ $rc = 0 ]; then say "  $out"; else red "$out"; fi
 
 # ---------------------------------------------------------------- inputs unchanged during the run

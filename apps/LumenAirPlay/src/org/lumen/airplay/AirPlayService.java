@@ -5,7 +5,7 @@
  * and the MediaSession for the remote's media keys.
  *
  * Foreground service of type connectedDevice (prerequisite CHANGE_WIFI_MULTICAST_STATE),
- * started at boot (BootReceiver), by SettingsActivity and by WatchdogJob (which brings it
+ * started at boot (BootReceiver), by the casting page (CastActivity) and by WatchdogJob (which brings it
  * back when its process is gone but not marked "bad"; see WatchdogJob for what it cannot
  * do). Not android:persistent on purpose (no endless crash loop; see AndroidManifest.xml).
  * The native server is health-checked (network changes, every minute) and restarted if its
@@ -1190,7 +1190,7 @@ public final class AirPlayService extends Service {
 
     private Notification buildNotification(String text) {
         PendingIntent pi = PendingIntent.getActivity(this, 0,
-                new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                new Intent(this, CastActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new Notification.Builder(this, CHANNEL)
                 .setSmallIcon(R.drawable.ic_airplay)

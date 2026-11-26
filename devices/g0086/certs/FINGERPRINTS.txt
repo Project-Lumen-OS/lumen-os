@@ -1,0 +1,4 @@
+# Lumen OS g0086 certificates (public). SHA-256 of the DER certificate.
+platform      cc599564782a26940036ee30ce99e33100858cdbcf4c2a8f75c0ca6845b730b0
+ota/ota       54737867687662a78787e0676f14d86a45d5de108c9442d208dd52230c018c20
+ota/ota_next  543cfb2bc4f39985f88ce785b0f4b87d153faed697a085e8d0b3573e783ef9a2

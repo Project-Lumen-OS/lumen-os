@@ -94,8 +94,9 @@ GEAR_HOLD = {
     "Vendor_3697_Product_0002.kl": (139,),
 }
 # The stock custom shortcut key (BT 184 SHORTCUT): ALL_APPS in the 1.0.9 base (PhoneWindowManager consumed it), the
-# global key FEATURED_APP_1 since "Remote buttons" (overlay/v1/keylayout): the app or action the user gave it, else the app list.
-SHORTCUT_KEY = "FEATURED_APP_1"
+# global key TV_RADIO_SERVICE since "Remote buttons" (overlay/v1/keylayout): the app or action the user gave it, else the app list
+# (not FEATURED_APP_1: Android 14 PhoneWindowManager eats it before the global keys, apps/core/lumen-remote/test/keys/check_keys.py).
+SHORTCUT_KEY = "TV_RADIO_SERVICE"
 SHORTCUT_BASE109 = "ALL_APPS"
 SHORTCUT_WHY = "XGIMI: SHORTCUT; stock custom shortcut key, Remote buttons (the app or action the user gave it, else the app list)"
 SHORTCUT = {

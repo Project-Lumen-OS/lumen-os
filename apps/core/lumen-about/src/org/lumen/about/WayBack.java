@@ -25,6 +25,6 @@ public final class WayBack {
         String file = f.usbFile.isEmpty() && catalog != null ? catalog.usbFile(f.model) : f.usbFile;
         OfficialFile o = catalog == null ? null : catalog.file(f.model, f.firmware);
         if (o != null && !o.name.equals(file)) o = null;
-        return new WayBack(f.model, f.firmwareShown(), file, o, o != null ? o.url : Guide.backToStock(language));
+        return new WayBack(f.model, f.firmwareShown(), file, o, o != null ? o.url : Guide.backToStock(language, f.model));
     }
 }

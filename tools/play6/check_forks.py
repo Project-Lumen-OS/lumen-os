@@ -17,14 +17,15 @@ do not drift unnoticed, and every resource of the Z9X projector app has a place.
                                    every framework RRO are res/values/lumen_cec.xml, tools/devices/cec_defaults.py)
      apps/Play6TvSettingsOverlay/res/values/switch.xml and .../layout/z9x_preference_widget_switch_compat.xml
                                    byte-identical to the Z9X switch fix
-2. Every file under apps/ProjectorBase/res is listed in apps/common/projector/FILES or matches a pattern of
+2. Every file under apps/LumenProjector/core/res is listed in apps/common/projector/FILES or in the core list of the
+   Play 6 recipe (devices/dragon_healthy/app/Play6Projector.aipq) or matches a pattern of
    tools/play6/res_not_shared.txt, never both; every pattern matches a file. Until FILES exists (plan steps
    5 and 7) the shared files are reported as pending and do not fail.
 3. apps/Play6Projector is the Play 6 layer of devices/dragon_healthy/app/Play6Projector.layers (docs/architecture/
-   the design notes): the shared files (listed in FILES, hal/HidlCaller.java, common/LumenImport.java) come from
+   the design notes): the shared files (listed in FILES, hal/HidlCaller.java) come from
    apps/common, so a file of apps/Play6Projector at such a path is red unless forks.tsv has a row for it whose
    origin is that apps/common file (a deliberate fork). Any other file of apps/Play6Projector/{src,res} at the
-   same path as a file of apps/ProjectorBase is a row of forks.tsv: no untracked copy.
+   same path as a file of apps/LumenProjector/core is a row of forks.tsv: no untracked copy.
 Exit 0 = F green, 1 = red.
 """
 import fnmatch
@@ -142,7 +143,7 @@ def main():
         check_row(root, play6, origin, errors, notes)
 
     # ---- 2. resources of the Z9X projector app
-    z9 = os.path.join(root, "apps/ProjectorBase")
+    z9 = os.path.join(root, "apps/LumenProjector/core")
     res = sorted(os.path.relpath(os.path.join(d, f), z9)
                  for d, _, fs in os.walk(os.path.join(z9, "res")) for f in fs if f != ".DS_Store")
     patterns = []
@@ -157,6 +158,10 @@ def main():
     shared = None
     if os.path.isfile(files_path):
         shared = {l.split("#", 1)[0].strip() for l in open(files_path, encoding="utf-8")} - {""}
+        # the core files the Play 6 recipe takes from the one projector app itself
+        core_list = os.path.join(root, "devices/dragon_healthy/app/Play6Projector.aipq")
+        if os.path.isfile(core_list):
+            shared |= {l.split("#", 1)[0].strip() for l in open(core_list, encoding="utf-8")} - {""}
     used = set()
     pending = []
     for r in res:
@@ -165,16 +170,16 @@ def main():
         if shared is not None and r in shared and hit:
             errors.append("%s is in FILES and in res_not_shared.txt (line %s)" % (r, hit[0]))
         elif shared is not None and r not in shared and not hit:
-            errors.append("%s is neither in apps/common/projector/FILES nor in res_not_shared.txt" % r)
+            errors.append("%s is neither in apps/common/projector/FILES (or the Play 6 core list) nor in "
+                          "res_not_shared.txt" % r)
         elif shared is None and not hit:
             pending.append(r)
     for n, pat in patterns:
         if n not in used:
-            errors.append("res_not_shared.txt:%d: %s matches no file of apps/ProjectorBase" % (n, pat))
+            errors.append("res_not_shared.txt:%d: %s matches no file of apps/LumenProjector/core" % (n, pat))
     # ---- 3. the Play 6 layer: no copy of a shared file, and a Play 6 file at a Z9X path is a listed fork
     p6app = os.path.join(root, "apps/Play6Projector")
-    common = {"src/org/lumen/projector/hal/HidlCaller.java": "apps/common/hal/HidlCaller.java",
-              "src/org/lumen/common/LumenImport.java": "apps/common/LumenImport.java"}
+    common = {"src/org/lumen/projector/hal/HidlCaller.java": "apps/common/hal/HidlCaller.java"}
     for rel in shared or ():
         common[rel] = "apps/common/projector/" + rel
     origin_of = {}
@@ -201,7 +206,7 @@ def main():
                 continue
             if copy not in seen:
                 errors.append("%s has the path of a Z9X file but is not listed in forks.tsv" % copy)
-    notes.append("apps/Play6Projector: %d shared file(s) given by apps/common (FILES, HidlCaller, LumenImport), "
+    notes.append("apps/Play6Projector: %d shared file(s) given by apps/common (FILES, HidlCaller), "
                  "%d of them shadowed by a fork" % (len(common), ncommon))
     notes.append("forks.tsv: %d row(s)" % rows)
     if shared is None:

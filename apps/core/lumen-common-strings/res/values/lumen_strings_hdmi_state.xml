@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The words of an HDMI port's state (lumen-hdmiports HdmiPort): Lumen Home's chips and the menu's HDMI page. -->
+<resources>
+    <string name="lumen_asleep">Asleep</string>
+    <string name="lumen_no_signal">No signal</string>
+</resources>

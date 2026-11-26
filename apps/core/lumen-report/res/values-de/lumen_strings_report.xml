@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
-     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
-     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+     under the module prefix, plus the automatic reports. lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
 <resources>
     <string name="lumen_report_title">Problembericht senden</string>
-    <string name="lumen_report_intro">Hilft dem Lumen OS-Entwickler herauszufinden, was schiefgelaufen ist. Gesendet wird erst nach „Bericht senden“.</string>
-    <string name="lumen_report_included">Enthalten</string>
-    <string name="lumen_report_inc_system">Systemversion, Laufzeit und welche Systemkopie läuft</string>
-    <string name="lumen_report_inc_logs">Protokolle des Systems und der Lumen-Apps der letzten 30 Minuten</string>
-    <string name="lumen_report_inc_crashes">Einträge zu Abstürzen, Hängern und Neustarts mit App-Namen</string>
-    <string name="lumen_report_inc_kernel">Kernel-Protokoll des letzten Neustarts und das Update-Protokoll</string>
-    <string name="lumen_report_inc_state">Bildschirm, Speicher und Netzwerktyp</string>
-    <string name="lumen_report_excluded">Entfernt oder nicht enthalten</string>
+    <string name="lumen_report_intro">Wenn etwas nicht richtig funktioniert, sende einen Bericht. Der Entwickler sieht die Protokolle des Projektors und findet die Ursache schneller.</string>
+    <string name="lumen_report_included">Ein Bericht enthält</string>
+    <string name="lumen_report_inc_system">Systemversion, Bildschirm, Speicher und Netzwerktyp</string>
+    <string name="lumen_report_inc_logs">Protokolle des Systems und der Lumen-Apps</string>
+    <string name="lumen_report_inc_crashes">Abstürze, Hänger und Neustarts</string>
+    <string name="lumen_report_inc_kernel">Kernel- und Update-Protokolle</string>
+    <string name="lumen_report_excluded">Wird nie gesendet</string>
     <string name="lumen_report_exc_accounts">Konten, E-Mail-Adressen und Telefonnummern</string>
     <string name="lumen_report_exc_network">WLAN-Namen, IP- und MAC-Adressen</string>
     <string name="lumen_report_exc_serial">Seriennummer: stattdessen eine zufällige ID dieses Projektors</string>
     <string name="lumen_report_exc_apps">Protokolle selbst installierter Apps</string>
     <string name="lumen_report_exc_files">Fotos, Dateien und Passwörter</string>
     <string name="lumen_report_footer">Der Bericht wird 30 Tage aufbewahrt. Nur der Lumen OS-Entwickler kann ihn öffnen.</string>
-    <string name="lumen_report_last">Letzter Bericht: %1$s, %2$s</string>
+    <string name="lumen_report_last">Letzter Bericht</string>
     <string name="lumen_report_send">Bericht senden</string>
-    <string name="lumen_report_collecting">Informationen werden gesammelt… (%1$d von %2$d)</string>
-    <string name="lumen_report_log_hint">Fragt Android nach dem Zugriff auf Geräteprotokolle, „Zulassen“ wählen.</string>
-    <string name="lumen_report_sending">Wird gesendet… %1$s von %2$s</string>
+    <string name="lumen_report_collecting">Protokolle werden gesammelt</string>
+    <string name="lumen_report_sending">Bericht wird gesendet</string>
     <string name="lumen_report_done_title">Bericht gesendet</string>
     <string name="lumen_report_done_text">Diesen Code mit einer kurzen Beschreibung des Problems an den Lumen OS-Entwickler senden.</string>
     <string name="lumen_report_failed_title">Der Bericht wurde nicht gesendet</string>
@@ -34,11 +31,16 @@
     <string name="lumen_report_err_server">Fehler beim Berichtsserver. Bitte später erneut versuchen.</string>
     <string name="lumen_report_err_collect">Der Bericht konnte nicht erstellt werden.</string>
     <string name="lumen_report_retry">Erneut versuchen</string>
-    <string name="lumen_report_close">Schließen</string>
-    <string name="lumen_report_cancel">Abbrechen</string>
-    <string name="lumen_report_auto">Problemberichte automatisch senden</string>
-    <string name="lumen_report_auto_note">Stürzt das System oder eine Lumen App ab oder hängt sie, wird von selbst ein kurzer Bericht gesendet. Protokolle selbst installierter Apps sind nie dabei.</string>
+    <string name="lumen_report_auto">Automatisch senden</string>
     <string name="lumen_report_queued_title">Der Bericht wird später gesendet</string>
     <string name="lumen_report_queued_text">Der Berichtsserver ist gerade nicht erreichbar. Der Projektor sendet den Bericht von selbst, sobald es geht. Dann erscheint hier sein Code.</string>
-    <string name="lumen_report_last_auto">Letzter automatischer Bericht: %1$s, %2$s</string>
+    <string name="lumen_report_last_auto">Letzter automatischer Bericht</string>
+    <string name="lumen_report_heading">Problembericht</string>
+    <string name="lumen_report_send_sub">Protokolle und Zustand des Projektors</string>
+    <string name="lumen_report_auto_sub">Wenn das System oder eine Lumen-App ausfällt</string>
+    <string name="lumen_report_what">Was ein Bericht enthält</string>
+    <string name="lumen_report_what_sub">Und was nie gesendet wird</string>
+    <string name="lumen_report_inc_devices">HDMI, Ton und Strom: Geräte und CEC-Nachrichten</string>
+    <string name="lumen_report_bytes">%1$s von %2$s gesendet</string>
+    <string name="lumen_report_code">Berichtscode</string>
 </resources>

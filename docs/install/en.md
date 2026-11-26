@@ -36,18 +36,18 @@ every step, Google services, updates, what to do if something goes wrong and the
 | XGIMI TITAN Noir Pro | H0062 | Lumen OS Live only, beta | [guide](x50/en.md) |
 <!-- models:end -->
 
-Lumen Installer shows the model code and the XGIMI firmware of your projector at the top of its screen, and on the
+Lumen OS Live shows the model code and the XGIMI firmware of your projector at the top of its screen, and on the
 right, in the Firmware versions card, the version of every firmware part the projector names.
 
 <a name="easy"></a>
 
 ## From the projector
 
-On every projector in the list except the Play 6 there is one way to install Lumen OS: the Lumen Installer app
+On every projector in the list except the Play 6 there is one way to install Lumen OS: the Lumen OS Live app
 on the projector. It downloads Lumen OS over the projector's own internet connection, Wi-Fi or Ethernet. You
-need no computer and no USB cable. Download the Lumen Installer file that ends in `.apk1` from the
-[latest Lumen Installer release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) and copy
-it to a USB stick. The stick only carries the app. Lumen Installer first starts Lumen OS once as Lumen OS Live. Your
+need no computer and no USB cable. Download the Lumen OS Live file that ends in `.apk1` from the
+[latest Lumen OS Live release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) and copy
+it to a USB stick. The stick only carries the app. The Lumen OS Live app first starts Lumen OS once as Lumen OS Live. Your
 XGIMI system and your files stay as they are. To keep Lumen OS, you install it from inside Lumen OS Live. That
 erases everything on the projector once. The steps are on your projector's page.
 
@@ -62,7 +62,7 @@ installs only from the projector itself, as above.
 
 ## Your projector or firmware is not in the list
 
-Lumen Installer tells you so. If the model is known and only the XGIMI firmware is not in the list, you can
+Lumen OS Live tells you so. If the model is known and only the XGIMI firmware is not in the list, you can
 tick **Start Lumen OS Live anyway**. Then only Lumen OS Live is possible, not the install.
 
 You can also help us make Lumen OS for your projector. The button works only on the XGIMI system and changes
@@ -101,7 +101,7 @@ page.
   [Z9X HB](hb/en.md#problems), [X50, RS30 and TITAN](x50/en.md#problems), [Play 6](play6/en.md#play6-problems).
 - Ask in the Telegram channel [@projector_lumenos](https://t.me/projector_lumenos) or in
   [GitHub issues](https://github.com/Project-Lumen-OS/lumen-os/issues). Say your model, the XGIMI firmware,
-  the Lumen OS version and what you did. Lumen Installer shows the details for us under About, Details for help.
+  the Lumen OS version and what you did. Lumen OS Live shows the details for us under About, Details for help.
 
 <a name="stock"></a>
 

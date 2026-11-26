@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">HDMI-CEC は使用できません</string>
     <string name="lumen_cec_master">HDMI-CEC 制御</string>
     <string name="lumen_cec_master_note">HDMI-CEC がオフのときは、HDMI ARC で音声を出力できません。</string>
-    <string name="lumen_cec_wake">HDMI 機器で電源を入れる</string>
     <string name="lumen_cec_wake_note">オンにすると、プロジェクターの電源を切ったときに HDMI 機器の電源も切れます。</string>
     <string name="lumen_cec_night">夜間ガード</string>
     <string name="lumen_cec_night_off">オフ</string>

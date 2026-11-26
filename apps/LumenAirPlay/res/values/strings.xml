@@ -3,7 +3,7 @@
      gsi/apps/i18n/gen.py from i18n/langs/<locale>.txt (@airplay/strings.xml). -->
 <resources>
     <!-- Notification (foreground service) -->
-    <string name="notif_channel">AirPlay receiver</string>
+    <string name="notif_channel">@string/lumen_airplay_receiver</string>
     <string name="notif_ready">Ready for AirPlay as “%1$s”</string>
     <string name="notif_session">AirPlay is in use</string>
     <string name="notif_pin">AirPlay code: %1$s</string>
@@ -21,18 +21,7 @@
     <string name="video_failed">This video can\'t be played here. Use screen mirroring instead.</string>
 
     <!-- Settings -->
-    <string name="settings_title">AirPlay settings</string>
-    <string name="set_enabled">AirPlay receiver</string>
-    <string name="on">On</string>
-    <string name="off">Off</string>
-    <string name="set_status">Status</string>
-    <string name="status_ready">Visible as “%1$s”</string>
-    <string name="status_off">Turned off</string>
-    <string name="status_error">Could not start. Trying again automatically. Check the network connection.</string>
-    <string name="status_not_visible">Not visible on the network. Trying again automatically. Check the network connection.</string>
-    <string name="status_in_use">In use</string>
     <string name="set_name">Device name</string>
-    <string name="set_access">Access</string>
     <string name="access_off">Anyone on this network</string>
     <string name="access_pin">Code on first connection</string>
     <string name="access_fixed">Fixed code</string>
@@ -50,8 +39,35 @@
     <string name="latency_smooth">Smooth (500 ms)</string>
     <string name="set_takeover">New device can take over</string>
     <string name="set_video_links">Video links (YouTube)</string>
-    <string name="video_links_summary">Play videos sent from the YouTube app directly instead of mirroring them</string>
     <string name="set_music_screen">Show music screen</string>
-    <string name="set_licenses">Open-source licences</string>
-    <string name="version">Version</string>
+    <string name="set_licenses">Open-source licenses</string>
+
+    <!-- Screen casting (CastActivity, 2026-11-21) -->
+    <string name="cast_title">@string/lumen_screen_casting</string>
+    <string name="cast_subtitle">Show a phone, tablet or computer on the wall. Pick this projector on your device.</string>
+    <string name="cast_name_caption">Name on your devices</string>
+    <string name="cast_pick_hint">Ready. Pick this name in the list of screens on your device.</string>
+    <string name="cast_none_ready">Casting is off. Turn on AirPlay or screen mirroring below.</string>
+    <string name="cast_busy_airplay">In use: AirPlay</string>
+    <string name="cast_busy_mirroring">In use: screen mirroring</string>
+    <string name="cast_airplay_title">iPhone, iPad and Mac</string>
+    <string name="cast_airplay_how">iPhone or iPad: open Control Center, tap Screen Mirroring and pick %1$s. Mac: Screen Mirroring in Control Center, or the AirPlay button of a video.</string>
+    <string name="cast_mirroring_title">Android and Windows</string>
+    <string name="cast_mirroring_how">Android: Smart View, Cast or Wireless display in the quick settings. Windows: press Win and K together, then pick %1$s.</string>
+    <string name="cast_dlna">DLNA</string>
+    <string name="cast_dlna_title">Videos from apps</string>
+    <string name="cast_dlna_how">In an app with Play to or DLNA, pick %1$s. Lumen Play shows the video.</string>
+    <string name="cast_dlna_off">Lumen Play receives these videos. Turn on DLNA in its settings.</string>
+    <string name="cast_state_off">Off</string>
+    <string name="cast_state_starting">Starting</string>
+    <string name="cast_state_ready">Ready</string>
+    <string name="cast_state_not_visible">Not visible on the network</string>
+    <string name="cast_state_connected">Connected</string>
+    <string name="cast_state_no_wifi">Needs Wi-Fi</string>
+    <string name="cast_state_error">Not working</string>
+    <string name="cast_airplay">@string/lumen_airplay</string>
+    <string name="cast_miracast" translatable="false">Miracast</string>
+    <string name="cast_row_code">On-screen code</string>
+    <string name="cast_row_ask">Ask before connecting</string>
+    <string name="cast_row_licences">Licenses and source code</string>
 </resources>

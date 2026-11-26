@@ -14,21 +14,20 @@ BASE = CORE + 'projector/hal/GmpfBase.java'
 BASE2 = CORE + 'projector/hal/Gmpf2Base.java'
 ZOOM = CORE + 'hal/gmpf/ZoomGuard.java'
 BUDGET = CORE + 'hal/gmpf/utils/ReadBudget.java'
-ZH = 'apps/ProjectorBase/src/org/lumen/projector/hal/'
-HH = 'apps/HbProjector/src/org/lumen/projector/hal/'
-PH = 'apps/Play6Projector/src/org/lumen/projector/hal/'
+HH = 'apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/'
+PH = 'apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/hal/'
 Z, H, P = 'horse_popular', 'goat_elegant', 'dragon_healthy'
 
 MUTANTS = [
     # name, device, file, old, new
-    ('Z9X code row of another method', Z, ZH + 'Z9xCodes.java', '.put(GET_BRIGHTNESS, HalCodes.GMPF_GET_BRIGHTNESS)',
+    ('Z9X code row of another method', Z, 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Z9xCodes.java', '.put(GET_BRIGHTNESS, HalCodes.GMPF_GET_BRIGHTNESS)',
      '.put(GET_BRIGHTNESS, HalCodes.GMPF_SET_BRIGHTNESS)'),
     ('HB code row of another method', H, HH + 'HbCodes.java', '.put(GET_BRIGHTNESS, GmpfCall.GET_BRIGHTNESS)',
      '.put(GET_BRIGHTNESS, GmpfCall.SET_BRIGHTNESS)'),
     ('HB call dropped from its table', H, HH + 'HbCodes.java', '            .put(SET_OPTICAL_ZOOM_STEP, GmpfCall.SET_OPTICAL_ZOOM_STEP)\n', ''),
-    ('HIDL int8 sent as int32', Z, ZH + 'HidlWire.java', 'Req withI8(int v) { p.writeInt8((byte) v); return this; }',
+    ('HIDL int8 sent as int32', Z, 'apps/LumenProjector/vendor/xgimi/hidl/src/org/lumen/projector/hal/HidlWire.java', 'Req withI8(int v) { p.writeInt8((byte) v); return this; }',
      'Req withI8(int v) { p.writeInt32(v); return this; }'),
-    ('HIDL false reply accepted', Z, ZH + 'HidlWire.java',
+    ('HIDL false reply accepted', Z, 'apps/LumenProjector/vendor/xgimi/hidl/src/org/lumen/projector/hal/HidlWire.java',
      'if (!r.readBool()) throw new IllegalStateException(code + " returned false");', 'r.readBool();'),
     ('AIDL motion axes swapped', H, HH + 'AidlWire.java', 'return new int[] {acc[0], acc[1], acc[2], ang[0], ang[1], ang[2], type};',
      'return new int[] {ang[0], ang[1], ang[2], acc[0], acc[1], acc[2], type};'),
@@ -42,7 +41,7 @@ MUTANTS = [
      'if (Math.abs(step - sOptCur) > 2) {'),
     ('sensor read budget gap ignored', Z, BUDGET, 'if (last != 0 && now - last < gapMs)', 'if (false)'),
     ('HB EDID 2.0 refused', H, HH + 'HbRules.java', '{GmpfBase.EDID_14, GmpfBase.EDID_20}', '{GmpfBase.EDID_14}'),
-    ('HDMI mode byte misread', Z, ZH + 'GmpfClient.java', 'HDMI_MODE_AT = 9', 'HDMI_MODE_AT = 8'),
+    ('HDMI mode byte misread', Z, 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/GmpfClient.java', 'HDMI_MODE_AT = 9', 'HDMI_MODE_AT = 8'),
     ('game menu HDMI 3 allowed', H, BASE2, 'HDMI_1 = 1, HDMI_2 = 2;', 'HDMI_1 = 1, HDMI_2 = 3;'),
     # the Play 6: its codes, its IGmpf2 identity guard and vendor tables, its own calls and value rules
     ('Play 6 code row of another method', P, PH + 'Play6Codes.java', '.put(GET_BRIGHTNESS, HalCodes.GMPF_GET_BRIGHTNESS)',

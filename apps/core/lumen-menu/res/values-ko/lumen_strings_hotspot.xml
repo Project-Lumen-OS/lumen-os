@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">핫스팟</string>
-    <string name="lumen_m_hotspot_name">네트워크 이름</string>
     <string name="lumen_m_hotspot_password">비밀번호</string>
     <string name="lumen_m_hotspot_reset">기본값으로 복원</string>
     <string name="lumen_m_hotspot_on" formatted="true">%s의 핫스팟이 활성화되었습니다.</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">현재 구성 저장됨</string>
     <string name="lumen_m_hotspot_name_title">핫스팟 이름</string>
     <string name="lumen_m_hotspot_password_title">핫스팟 비밀번호</string>
-    <string name="lumen_m_hotspot_password_hint">8자 이상</string>
     <string name="lumen_m_hotspot_name_empty">네트워크 이름을 입력하세요</string>
     <string name="lumen_m_hotspot_name_long">이름이 너무 깁니다</string>
     <string name="lumen_m_hotspot_password_short">8자 이상 입력</string>

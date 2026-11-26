@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">预设</string>
     <string name="lumen_gm_preset_compete">竞技</string>
     <string name="lumen_gm_preset_balance">均衡</string>
-    <string name="lumen_gm_preset_story">剧情</string>
     <string name="lumen_gm_preset_on">已开启预设“%1$s”</string>
     <string name="lumen_gm_preset_partly">已开启预设“%1$s”，但部分项目未能更改</string>
     <string name="lumen_gm_lat">响应速度</string>
-    <string name="lumen_gm_lat_0">标准</string>
     <string name="lumen_gm_lat_1">极速</string>
     <string name="lumen_gm_lat_d0">普通延迟。梯形校正和画面调整可用。</string>
     <string name="lumen_gm_lat_d1">最低延迟。梯形校正和画面调整不可用。</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">开</string>
     <string name="lumen_gm_auto">自动</string>
     <string name="lumen_gm_pic">画面模式</string>
-    <string name="lumen_gm_pic_0">标准</string>
     <string name="lumen_gm_pic_4">运动</string>
     <string name="lumen_gm_pic_d0">适合任何游戏。</string>
     <string name="lumen_gm_pic_d1">适合射击游戏。</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">普通屏幕。</string>
     <string name="lumen_gm_snd">游戏音效</string>
     <string name="lumen_gm_snd_1">环绕</string>
-    <string name="lumen_gm_snd_2">剧情</string>
     <string name="lumen_gm_snd_3">清晰</string>
     <string name="lumen_gm_snd_4">均衡</string>
     <string name="lumen_gm_snd_d0">声音保持游戏原样。</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">更快</string>
     <string name="lumen_gm_turbo_title">开启极速？</string>
     <string name="lumen_gm_turbo_msg">极速会关闭梯形校正，并让画面回到完整画幅。延迟最低。</string>
-    <string name="lumen_gm_turbo_ok">开启</string>
     <string name="lumen_gm_rule_vrr_wide">请先选择 16:9 或自动</string>
     <string name="lumen_gm_rule_ar_vrr">请先关闭 VRR</string>
     <string name="lumen_gm_rule_ar_4k">宽画幅只支持 3840 × 2160 信号</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">游戏时长按设置键可打开此菜单</string>
     <string name="lumen_gm_kind_console">游戏机</string>
     <string name="lumen_gm_kind_computer">电脑</string>
-    <string name="lumen_gm_licences">许可</string>
     <string name="lumen_gm_licences_d">Lumen OS 所用素材的作者</string>
     <string name="lumen_gm_credits_intro">游戏菜单中的手柄图片来自以下 3D 模型：</string>
 </resources>

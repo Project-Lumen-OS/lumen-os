@@ -3,13 +3,9 @@
      Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
 <resources>
     <string name="lumen_m_out_now">Ses şu anda burada çalıyor</string>
-    <string name="lumen_m_out_connect">Bağlan</string>
     <string name="lumen_m_out_connecting">Bağlanıyor</string>
-    <string name="lumen_m_out_connected">Bağlı</string>
-    <string name="lumen_m_out_offline">Bağlı değil</string>
     <string name="lumen_m_out_jack">3,5 mm jak</string>
     <string name="lumen_m_out_by_hand">Elle seçilir</string>
     <string name="lumen_m_out_auto_picked">Otomatik seçildi</string>
     <string name="lumen_m_out_hand_picked">Elle seçildi</string>
-    <string name="lumen_m_out_earc">HDMI eARC</string>
 </resources>

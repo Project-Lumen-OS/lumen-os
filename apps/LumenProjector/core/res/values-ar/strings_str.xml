@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">السكون العميق متوقف</string>
+    <string name="hb_str_blocked_usb">حاسوب متصل عبر USB: في وضع الاستعداد لن ينام جهاز العرض بالكامل وستستمر المراوح في العمل. افصل كابل USB لاستعادة السكون العميق.</string>
+    <string name="hb_str_blocked_update">يجري تثبيت تحديث: يعود السكون العميق بعد انتهائه.</string>
+    <string name="hb_str_blocked_update_check">يجري فحص النظام المحدَّث بعد التشغيل: يعود السكون العميق خلال بضع دقائق.</string>
+    <string name="hb_str_blocked_off">السكون العميق متوقف على جهاز العرض هذا (إعداد خدمة).</string>
+</resources>

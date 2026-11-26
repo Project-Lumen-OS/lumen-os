@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">Dinamik siyah</string>
+    <string name="lumen_m_db_level">Dinamik siyah seviyesi</string>
+    <string name="lumen_m_db_subtitle_top">Üstte altyazı maskesi</string>
+    <string name="lumen_m_db_subtitle_bottom">Altta altyazı maskesi</string>
+    <string name="lumen_m_db_reset">Altyazı maskelerini sıfırla</string>
+    <string name="lumen_m_color_uniformity">Renk tekdüzeliği ayarı</string>
+</resources>

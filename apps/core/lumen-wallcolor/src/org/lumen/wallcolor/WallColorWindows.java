@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.lumen.projector.R;
+import org.lumen.remote.keys.KeyHook;
 import org.lumen.ui.LumenTheme;
 import org.lumen.ui.Palette;
 import org.lumen.ui.TvFocus;
@@ -287,6 +288,8 @@ final class WallColorWindows implements WallColorView {
         BackFrame host = new BackFrame(c, v);
         try {
             wm.addView(host, lp);
+            // a wall colour screen with the keys is a Lumen panel in front: no developer overlay takes them under it
+            if (focusable) KeyHook.front(host, true);
         } catch (Throwable t) {
             Log.w(WallColor.TAG, "window: " + t);
         }
@@ -295,6 +298,7 @@ final class WallColorWindows implements WallColorView {
     private <V extends View> V remove(V v) {
         if (v == null) return null;
         View host = (View) v.getParent();
+        if (host != null) KeyHook.front(host, false);
         try {
             if (host != null && host.isAttachedToWindow()) wm.removeViewImmediate(host);
         } catch (Throwable t) {

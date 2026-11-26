@@ -3,29 +3,19 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="app_name">Duplicar pantalla</string>
-    <string name="settings_title">Duplicar pantalla</string>
-    <string name="on">Sí</string>
-    <string name="off">No</string>
-    <string name="ok">Aceptar</string>
-    <string name="cancel">Cancelar</string>
-    <string name="status_title">Estado</string>
     <string name="status_off">Desactivado. Los teléfonos y ordenadores no ven este proyector.</string>
     <string name="status_starting">Iniciando</string>
     <string name="status_ready">Listo. Los teléfonos y ordenadores ven este proyector como %1$s.</string>
     <string name="status_no_wifi">El Wi‑Fi está desactivado. Actívalo para recibir una pantalla.</string>
     <string name="status_unsupported">Wi‑Fi Direct no está disponible en este proyector.</string>
+    <string name="status_waiting_wifi">Esperando a que se conecte el Wi‑Fi.</string>
+    <string name="status_restarting">Wi‑Fi Direct dejó de responder. Se está reiniciando.</string>
+    <string name="status_no_answer">Wi‑Fi Direct no responde. Reinicia el proyector. AirPlay y DLNA siguen funcionando.</string>
+    <string name="status_connect_broken">Los teléfonos ven este proyector, pero esta versión del sistema aún no puede completar la conexión. AirPlay y DLNA funcionan.</string>
     <string name="status_in_use">Mostrando la pantalla de %1$s</string>
-    <string name="row_enabled">Duplicar pantalla (Miracast)</string>
-    <string name="row_name">Nombre</string>
-    <string name="row_ask">Preguntar antes de conectar</string>
-    <string name="row_quality">Calidad de imagen</string>
     <string name="quality_1080_60">Hasta 1080p, 60 fotogramas por segundo</string>
     <string name="quality_1080_30">Hasta 1080p, 30 fotogramas por segundo</string>
     <string name="quality_720">Hasta 720p</string>
-    <string name="howto_title">Cómo conectarse</string>
-    <string name="howto_android">Android: abre Enviar o Smart View en los ajustes rápidos y elige %1$s.</string>
-    <string name="howto_windows">Windows: pulsa Win y K a la vez y elige %1$s.</string>
-    <string name="name_dialog_title">Nombre de este proyector</string>
     <string name="notif_ready">Listo para recibir una pantalla como %1$s</string>
     <string name="notif_in_use">Mostrando la pantalla de %1$s</string>
     <string name="prompt_title">%1$s quiere mostrar su pantalla</string>

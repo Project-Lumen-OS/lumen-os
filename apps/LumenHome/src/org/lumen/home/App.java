@@ -33,19 +33,12 @@ import java.nio.file.Files;
  */
 public final class App extends Application {
 
-    /**
-     * Lumen OS 1.0.8 bridge: the pre-1.0.8 org.z9x data comes over before any prefs are read. Home may start before the
-     * user is unlocked (direct boot, model/BootGate): then both run at the unlock, ahead of every other step.
-     */
+    /** Home may start before the user is unlocked (direct boot, model/BootGate): the credential protected steps wait for it. */
     @Override
     protected void attachBaseContext(android.content.Context base) {
         super.attachBaseContext(base);
         UserManager um = base.getSystemService(UserManager.class);
         mGate = new BootGate(um == null || um.isUserUnlocked(), (step, t) -> Log.w(TAG, "after unlock, " + step + ": " + t));
-        mGate.whenUnlocked("import", () -> {
-            org.lumen.common.LumenImport.run(base);
-            org.lumen.home.net.NetServers.reencryptImported(base);
-        });
     }
 
     public static final String TAG = "Z9xHome";
@@ -166,6 +159,14 @@ public final class App extends Application {
     public void homeChanged() {
         Runnable r = mHomeChanged;
         if (r != null) main().post(r);
+    }
+
+    private org.lumen.home.data.LayoutStore mLayout;
+
+    /** Home's layout (Settings.Secure, readable before the unlock; the old settings it starts from only after it). */
+    public synchronized org.lumen.home.data.LayoutStore layout() {
+        if (mLayout == null) mLayout = new org.lumen.home.data.LayoutStore(this, () -> gate().unlocked() ? prefs() : null);
+        return mLayout;
     }
 
     /** Credential protected: never before the unlock ({@link #gate}). */

@@ -75,7 +75,8 @@ public final class PictureSettingsRule {
      * trees, the same children. Brightness / contrast / saturation / sharpness, motion compensation, colour
      * temperature, white balance and its pages, gamut, colour optimisation, colour correction and its rows, gamma and
      * its value, HDR tone mapping, local and dynamic contrast, AI contrast, dynamic black and its level tuning
-     * (image_mode_vibrant_correct, X50 family), noise reduction, super resolution, the auto mode switch, reset this picture mode; and the professional page that holds such rows on
+     * (image_mode_vibrant_correct, X50 family), the dynamic black page and its rows (dynamic_black_setting, X50 family
+     * on v1.3.38), noise reduction, super resolution, the auto mode switch, reset this picture mode, and the professional page that holds such rows on
      * the HB. Not on it: the picture mode, the light, Boost, reset all, aspect ratio, the HDMI rows.
      */
     public static final Layout ONE_PAGE = new Layout(new Page(NOTE_AI, NOTE_PERFORMANCE,
@@ -83,6 +84,8 @@ public final class PictureSettingsRule {
             FeatureId.PICTURE_PRO, FeatureId.PICTURE_GAMUT, FeatureId.PICTURE_COLOR_OPT, FeatureId.PICTURE_GAMMA,
             FeatureId.PICTURE_GAMMA_INDEX, FeatureId.PICTURE_HDR_MAPPING, FeatureId.PICTURE_LOCAL_CONTRAST,
             FeatureId.PICTURE_DYNAMIC_CONTRAST, FeatureId.PICTURE_AI_CONTRAST, FeatureId.PICTURE_DYNAMIC_BLACK,
+            FeatureId.PICTURE_DB_PAGE, FeatureId.PICTURE_DB_SWITCH, FeatureId.PICTURE_DB_LEVEL,
+            FeatureId.PICTURE_DB_SUBTITLE_TOP, FeatureId.PICTURE_DB_SUBTITLE_BOTTOM, FeatureId.PICTURE_DB_RESET,
             FeatureId.PICTURE_BLACK_TUNING, FeatureId.PICTURE_NOISE, FeatureId.PICTURE_SUPER_RES, FeatureId.PICTURE_RESET,
             FeatureId.PICTURE_WB, FeatureId.PICTURE_WB2, FeatureId.PICTURE_WB2_RED_GAIN, FeatureId.PICTURE_WB2_GREEN_GAIN,
             FeatureId.PICTURE_WB2_BLUE_GAIN, FeatureId.PICTURE_WB2_RED_OFFSET, FeatureId.PICTURE_WB2_GREEN_OFFSET,

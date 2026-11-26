@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Input source and Bluetooth pages of All settings (stock 1.3.38 root/signal, root/bluetooth). -->
+<resources>
+    <string name="lumen_m_sec_source">入力ソース</string>
+    <string name="lumen_m_source_list">ソース</string>
+    <string name="lumen_m_bt_add">デバイスを追加</string>
+    <string name="lumen_m_bt_mine">マイデバイス</string>
+    <string name="lumen_m_bt_disconnect">切断</string>
+    <string name="lumen_m_bt_forget">登録解除</string>
+    <string name="lumen_m_bt_searching">デバイスを検索中…</string>
+    <string name="lumen_m_bt_none">デバイスが見つかりません</string>
+    <string name="lumen_m_bt_pairing">ペアリング中…</string>
+</resources>

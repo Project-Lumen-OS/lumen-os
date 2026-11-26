@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">Tastentöne</string>
-    <string name="lumen_m_hdmi_options">HDMI-Eingangsoptionen</string>
     <string name="lumen_m_colour_vision">Farbsehen</string>
     <string name="lumen_m_temperature">Temperatur</string>
     <string name="lumen_m_high_altitude">Modus für große Höhen</string>

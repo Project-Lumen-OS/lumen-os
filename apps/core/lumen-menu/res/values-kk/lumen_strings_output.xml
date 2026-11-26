@@ -3,13 +3,9 @@
      Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
 <resources>
     <string name="lumen_m_out_now">Дыбыс қазір шығатын құрылғы</string>
-    <string name="lumen_m_out_connect">Қосылу</string>
     <string name="lumen_m_out_connecting">Қосылуда</string>
-    <string name="lumen_m_out_connected">Қосылған</string>
-    <string name="lumen_m_out_offline">Қосылмаған</string>
     <string name="lumen_m_out_jack">3,5 мм ұяшығы</string>
     <string name="lumen_m_out_by_hand">Қолмен таңдалады</string>
     <string name="lumen_m_out_auto_picked">Автоматты түрде таңдалды</string>
     <string name="lumen_m_out_hand_picked">Қолмен таңдалды</string>
-    <string name="lumen_m_out_earc">HDMI eARC</string>
 </resources>

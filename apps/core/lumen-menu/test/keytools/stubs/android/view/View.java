@@ -24,6 +24,12 @@ public class View {
 
     public int getVisibility() { return visibility; }
 
+    private float alpha = 1f;
+
+    public void setAlpha(float a) { alpha = a; }
+
+    public float getAlpha() { return alpha; }
+
     public ViewGroup.LayoutParams getLayoutParams() { return params; }
 
     public void setLayoutParams(ViewGroup.LayoutParams p) { params = p; }
@@ -69,7 +75,6 @@ public class View {
 
     public void setTranslationX(float v) { }
 
-    public void setAlpha(float v) { }
 
     public void invalidate() { }
 }

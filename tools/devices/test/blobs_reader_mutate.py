@@ -84,12 +84,13 @@ MUTANTS = [
     ("x50_models_gone", [("devices/g0111/image/x50_prop_pub.txt", "+ro.lumen.models=G0111\n", "")]),
     ("x50max_models_x50", [("devices/g0111/image/x50max_prop_pub.txt", "+ro.lumen.models=G0100\n", "+ro.lumen.models=G0111\n")]),
     ("titan_models_gone", [("devices/h0062/image/h0062_prop_pub.txt", "+ro.lumen.models=H0062\n", "")]),
-    ("rs30_models_gone", [("devices/g0155/image/steps.tsv", "*\tline\t{mn}/system/product/etc/build.prop\tro.lumen.models=G0155\n", "")]),
+    ("rs30_models_gone", [("devices/g0155/image/steps.tsv", "*\tline\t{mn}/system/product/etc/build.prop\tro.lumen.models={MODEL}\n", "")]),
+    ("rs30u_model_other", [("devices/g0170/build.conf", "var.MODEL=G0170\n", "var.MODEL=G0155\n")]),
     ("z9x_models_gone", [("devices/horse_popular/image/steps.tsv",
                           "*\ttar_line\t{tar}\tsystem/product/etc/build.prop\tro.lumen.models=G0082\n", "")]),
     ("z9x_reader_not_added", [("devices/horse_popular/image/steps.tsv", "*\ttar_add\tsystem/etc/z9x/blobs.conf\tblobs.conf\t644\n", "")]),
     ("hb_steps_no_conf", [("devices/goat_elegant/image/steps.tsv", "lumen,pub\tinstall\t0644\tblobs.conf\t{sys}/etc/z9x/blobs.conf\n", "")]),
-    ("titan_old_reader", [("devices/h0062/build.conf", "tools/ota/image/z9x_blobs.sh", "devices/g0111/image/x50_blobs.sh")]),
+    ("titan_old_reader", [("devices/_family/titan/titan.build.conf", "tools/ota/image/z9x_blobs.sh", "devices/g0111/image/x50_blobs.sh")]),
 ]
 EQUIVALENT = {
     "the final remount ro of the tmpfs": "the tmpfs is not mounted in the host tests (Z9X_ROOT set), as before the move",

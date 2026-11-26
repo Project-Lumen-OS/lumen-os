@@ -18,5 +18,8 @@
         <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED" />
         <!-- parental controls (apps/core/lumen-parental): the PIN and rest screens open from the usage service -->
         <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
+        <!-- Customize Home, Free up memory: other apps' processes and closing their background ones -->
+        <permission name="android.permission.REAL_GET_TASKS" />
+        <permission name="android.permission.FORCE_STOP_PACKAGES" />
     </privapp-permissions>
 </permissions>

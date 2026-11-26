@@ -159,7 +159,8 @@ final class Prefs {
             if (pm != NativeBridge.PIN_RANDOM && pm != NativeBridge.PIN_FIXED) pm = NativeBridge.PIN_OFF;
             pinMode = pm;
             fixedPin = validPin(fp) ? Integer.parseInt(fp) : 0;
-            hevc4k = p.getBoolean(QUALITY_4K, DEF_QUALITY_4K);
+            // 4K (HEVC) mirroring only where this model offers it (cast models table: a 1080p projector does not)
+            hevc4k = p.getBoolean(QUALITY_4K, DEF_QUALITY_4K) && ModelData.get(c).mirror4k;
             nohold = p.getBoolean(NOHOLD, DEF_NOHOLD);
             videoUrl = p.getBoolean(VIDEO_URL, DEF_VIDEO_URL);
             latencyMs = latencyMs(p);

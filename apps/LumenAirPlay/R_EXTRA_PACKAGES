@@ -1,0 +1,2 @@
+# R classes of the shared modules whose code reads their own resources (apps/build_apk.sh)
+org.lumen.icons

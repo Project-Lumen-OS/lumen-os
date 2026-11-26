@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">深度休眠已关闭</string>
+    <string name="hb_str_blocked_usb">已通过 USB 连接电脑：待机时投影仪不会完全休眠，风扇会继续运转。拔下 USB 线即可恢复深度休眠。</string>
+    <string name="hb_str_blocked_update">正在安装更新：安装完成后恢复深度休眠。</string>
+    <string name="hb_str_blocked_update_check">更新后的系统正在启动后检查：几分钟后恢复深度休眠。</string>
+    <string name="hb_str_blocked_off">此投影仪已关闭深度休眠（服务设置）。</string>
+</resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_asleep">절전 중</string>
+    <string name="lumen_no_signal">신호 없음</string>
+</resources>

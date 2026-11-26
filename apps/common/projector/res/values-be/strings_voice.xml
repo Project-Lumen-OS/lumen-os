@@ -21,11 +21,6 @@
     <string name="voice_keystone">Выраўноўваю карцінку</string>
     <string name="voice_downloading">Спампоўваю мову для распазнавання маўлення, паспрабуйце праз хвіліну</string>
     <string name="voice_hold_hint">Заціскайце кнопку мікрафона і гаварыце</string>
-    <string name="voice_settings">Галасавы асістэнт</string>
-    <string name="voice_language">Мова маўлення</string>
-    <string name="voice_lang_system">Мова сістэмы</string>
-    <string name="voice_speak">Адказваць голасам</string>
-    <string name="voice_key">Голас Gemini</string>
     <string name="voice_key_off">Голас прылады</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">Устаўце ключ Gemini API з сайта aistudio.google.com. У Google трапляе толькі тэкст адказу. Пустое поле: голас прылады.</string>

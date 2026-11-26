@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">编辑全部设置</string>
+    <string name="lumen_fe_show_hint">OK：显示或隐藏一行</string>
+    <string name="lumen_fe_order">更改顺序</string>
+    <string name="lumen_fe_move_hint">按 OK 选中一行，上下键在组内移动，按 OK 或返回放下。</string>
+</resources>

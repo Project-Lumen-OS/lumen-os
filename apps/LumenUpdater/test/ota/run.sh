@@ -36,10 +36,13 @@ echo "recipe copies: $n identical to apps/LumenUpdater/LumenUpdater.layers"
 # the Target's compressed-snapshot table = the wire ids of devices/*/ota.conf vabc=yes among the models with this recipe
 VABC=$(python3 -B -c 'import glob, os, sys
 sys.path.insert(0, os.path.join(sys.argv[1], "tools/devices/ota"))
-import ota_conf
+sys.path.insert(0, os.path.join(sys.argv[1], "tools/devices"))
+import ota_conf, assemble_app
 ids = []
-for r in glob.glob(os.path.join(sys.argv[1], "devices/*/app/LumenUpdater.layers")):
-    c = ota_conf.parse(os.path.join(os.path.dirname(os.path.dirname(r)), "ota.conf"))
+for d, app, r in assemble_app.all_recipes(sys.argv[1]):
+    if app != "LumenUpdater":
+        continue
+    c = ota_conf.parse(os.path.join(sys.argv[1], "devices", d, "ota.conf"))
     if c["vabc"] == "yes":
         ids.append(c["wire_id"])
 print(",".join(sorted(ids)))' "$G")

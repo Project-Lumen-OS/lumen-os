@@ -1,7 +1,7 @@
 # X50 (G0111): HDMI, sound output, ARC / eARC, CEC, EDID, game mode, source at power-on
 
 Stock X50 v1.2.64 against the Lumen X50 image (branch `x50-hdmi`, apps/X50Projector), ported from what works on the HB
-(G0130, apps/HbProjector = apps/ProjectorBase + HB layer). Offline from the dump; nothing was sent to a projector.
+(G0130, apps/HbProjector = apps/LumenProjector/core + HB layer). Offline from the dump; nothing was sent to a projector.
 
 Sources (on xgimi-builder, never copied into git):
 - dump `~/devices/g0111_mt9681/work/fs` (system_root, vendor, mnt/vendor/xgimiconfig/G0111/feature/feature.xml);
@@ -64,9 +64,9 @@ See the tsv rows marked `x50-hdmi`. Every value a setter may carry is fixed in G
 TV 3 (0..3), AUDIO 2 (0, 2, 3, 4, 6, 100: never 1 = SPDIF), TV 40 (1, 2), TV 63 (0..2), DISPLAY 76 (0..3),
 DISPLAY 146 (0 on | 1 off), DISPLAY 147 (0 manual | 1 auto).
 
-Host checks (2026-11-08, nothing built into an image, nothing sent to a projector): `sh apps/X50Projector/test/run.sh
+Host checks (2026-11-08, nothing built into an image, nothing sent to a projector): `sh apps/LumenProjector/host/activity/test/run.sh
 build/g0111/stage/X50Projector.apk` = ProjectorTest 1988, HdmiAudioTest 626, HomePanelTest 28, RemoteTest 65, all
-passed; check_aidl_hal OK 61 calls on 7 interfaces (sources and dex); `sh apps/X50Projector/test/mutate.sh` 81 killed,
+passed; check_aidl_hal OK 61 calls on 7 interfaces (sources and dex); `sh apps/LumenProjector/host/activity/test/mutate.sh` 81 killed,
 0 survived (26 x50-hdmi mutants); `devices/g0111/test/x50_menu_apk_check_test.sh` 4 passed (MENU_APP 61 calls).
 
 ## 4. What to check live (only with the owner's OK; read-only first)

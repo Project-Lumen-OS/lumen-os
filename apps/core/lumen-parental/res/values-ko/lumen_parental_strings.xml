@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">자녀 보호</string>
-    <string name="lumen_lp_intro">아이가 열 수 있는 항목과 시청 시간을 제한합니다.</string>
     <string name="lumen_lp_lock">어린이 잠금</string>
-    <string name="lumen_lp_lock_desc">켜면 관리 범위, 시청 시간 등을 설정할 수 있습니다</string>
     <string name="lumen_lp_lock_off_title">어린이 잠금을 끌까요?</string>
     <string name="lumen_lp_lock_off_text">시간 제한과 전원 켤 때 비밀번호가 작동하지 않습니다. 보호자 설정은 비밀번호 없이 열립니다.</string>
-    <string name="lumen_lp_turn_off">끄기</string>
-    <string name="lumen_lp_cancel">취소</string>
     <string name="lumen_lp_child_mode">어린이 모드</string>
     <string name="lumen_lp_child_apps">어린이 모드 앱</string>
     <string name="lumen_lp_child_apps_count">%1$d개 선택됨</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">어린이 모드만</string>
     <string name="lumen_lp_range_global">전체</string>
     <string name="lumen_lp_session">1회 사용 시간</string>
-    <string name="lumen_lp_session_desc">그 후 10분 휴식</string>
     <string name="lumen_lp_daily">하루 사용 시간</string>
     <string name="lumen_lp_no_limit">제한 없음</string>
     <string name="lumen_lp_minutes">%1$d분</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">사용 시간이 끝났습니다. 10분 쉬세요</string>
     <string name="lumen_lp_rest_daily">오늘 시청 시간이 끝났습니다</string>
     <string name="lumen_lp_rest_unlock">잠금 해제</string>
-    <string name="lumen_lp_on">켜짐</string>
-    <string name="lumen_lp_off">꺼짐</string>
 </resources>

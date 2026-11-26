@@ -7,6 +7,9 @@
 #   1. Probe.java: the behaviour transcript (channels, versions, slots, manifest parsing, applicable, blobs,
 #      install checks with a fake boot gate, download folder) must equal golden/<app>.txt line for line;
 #   2. static.py: manifest and non-value resources unchanged, value entries (strings) only added, never changed.
+# Behaviour changed on purpose after the move, every changed transcript line tied to it: 2026-11-19 updater-channel-fix
+# (beta channel by build type when never chosen, the version before every requirement, blk_vendor's own|supported
+# firmware argument), transcripts re-recorded, static goldens kept (rewritten.txt).
 # Host only (javac, python3), no device, no network. Writes only a temp dir.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)

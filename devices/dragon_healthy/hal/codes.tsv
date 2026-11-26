@@ -8,7 +8,7 @@
 #   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
 # columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
 # args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
-java	Play6Projector	apps/Play6Projector/src/org/lumen/projector/hal/HalCodes.java
+java	Play6Projector	apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/hal/HalCodes.java
 stock	IGmpf	research/play6/gmpf_codes_play6.tsv	BpHwGmpf
 stock	IGmpf2	research/play6/gmpf_codes_play6.tsv	BpHwGmpf2
 # interface	NAME	code	method	args	kind	apps	source

@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal312/rs20-hal312.menu.json",
+  "device": "g0077",
+  "model": "G0077",
+  "note": "RS 20 Pro Master (G0077, Product_athenapromaster): the RS 20 profile, stock tree settings_tree_product_athenapromaster (devices/g0077/stock.tsv)."
+}

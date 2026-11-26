@@ -62,10 +62,29 @@ SETTINGS = (
         ("standby_now", "config_cecPowerStateChangeOnActiveSourceLostStandbyNow_default"))),
     ("set_menu_language", (("1", "config_cecSetMenuLanguageEnabled_default"),
                            ("0", "config_cecSetMenuLanguageDisabled_default"))),
+    # the codecs RequestSadAction asks the audio system for, four per <Request Short Audio Descriptor>
+    ("query_sad_lpcm", (("1", "config_cecQuerySadLpcmEnabled_default"), ("0", "config_cecQuerySadLpcmDisabled_default"))),
+    ("query_sad_dd", (("1", "config_cecQuerySadDdEnabled_default"), ("0", "config_cecQuerySadDdDisabled_default"))),
+    ("query_sad_mpeg1", (("1", "config_cecQuerySadMpeg1Enabled_default"), ("0", "config_cecQuerySadMpeg1Disabled_default"))),
+    ("query_sad_mp3", (("1", "config_cecQuerySadMp3Enabled_default"), ("0", "config_cecQuerySadMp3Disabled_default"))),
+    ("query_sad_mpeg2", (("1", "config_cecQuerySadMpeg2Enabled_default"), ("0", "config_cecQuerySadMpeg2Disabled_default"))),
+    ("query_sad_aac", (("1", "config_cecQuerySadAacEnabled_default"), ("0", "config_cecQuerySadAacDisabled_default"))),
+    ("query_sad_dts", (("1", "config_cecQuerySadDtsEnabled_default"), ("0", "config_cecQuerySadDtsDisabled_default"))),
+    ("query_sad_atrac", (("1", "config_cecQuerySadAtracEnabled_default"), ("0", "config_cecQuerySadAtracDisabled_default"))),
+    ("query_sad_onebitaudio", (("1", "config_cecQuerySadOnebitaudioEnabled_default"), ("0", "config_cecQuerySadOnebitaudioDisabled_default"))),
+    ("query_sad_ddp", (("1", "config_cecQuerySadDdpEnabled_default"), ("0", "config_cecQuerySadDdpDisabled_default"))),
+    ("query_sad_dtshd", (("1", "config_cecQuerySadDtshdEnabled_default"), ("0", "config_cecQuerySadDtshdDisabled_default"))),
+    ("query_sad_truehd", (("1", "config_cecQuerySadTruehdEnabled_default"), ("0", "config_cecQuerySadTruehdDisabled_default"))),
+    ("query_sad_dst", (("1", "config_cecQuerySadDstEnabled_default"), ("0", "config_cecQuerySadDstDisabled_default"))),
+    ("query_sad_wmapro", (("1", "config_cecQuerySadWmaproEnabled_default"), ("0", "config_cecQuerySadWmaproDisabled_default"))),
+    ("query_sad_max", (("1", "config_cecQuerySadMaxEnabled_default"), ("0", "config_cecQuerySadMaxDisabled_default"))),
 )
 # the switches the projector app writes itself (lumen-cec CecSettings), so a reset row may name only these
 RESETTABLE = ("tv_send_standby_on_sleep", "tv_wake_on_one_touch_play")
 CEC_RES = re.compile(r'name="(config_cec[A-Za-z0-9_]*)"')
+# a resource line value: the stock bool, or no copy of that stock file left when the row was added (no evidence)
+UNREAD = "unread"
+STOCK_VALUES = ("true", "false", UNREAD)
 
 
 def settings():
@@ -91,6 +110,7 @@ class Table:
     def __init__(self, text, where=TABLE):
         known = settings()
         self.defaults, self.devices, self.resets, self.errs = {}, {}, [], []
+        self.owner = {}
         for n, line in enumerate(text.splitlines(), 1):
             f = line.split("#", 1)[0].split()
             if not f:
@@ -112,6 +132,14 @@ class Table:
                     self.errs.append("%s: %s %s given twice" % (at, f[1], f[2]))
                 else:
                     self.devices.setdefault(f[1], {})[f[2]] = f[3]
+            elif f[0] == "owner" and len(f) == 3:
+                bad = _value_error(known, f[1], f[2])
+                if bad:
+                    self.errs.append("%s: %s" % (at, bad))
+                elif f[1] in self.owner:
+                    self.errs.append("%s: owner %s given twice" % (at, f[1]))
+                else:
+                    self.owner[f[1]] = f[2]
             elif f[0] == "reset" and len(f) == 3:
                 if f[2] not in RESETTABLE:
                     self.errs.append("%s: reset of %s: the app writes only %s" % (at, f[2], " ".join(RESETTABLE)))
@@ -131,9 +159,15 @@ class Table:
                     self.errs.append("%s: device %s %s %s equals the default (drop the line)" % (where, dev, s, v))
 
     def values(self, device):
-        """{setting: value} on one device."""
+        """{setting: value} of the stock system of one device (the evidence the stock dumps are checked against)."""
         out = dict(self.defaults)
         out.update(self.devices.get(device, {}))
+        return out
+
+    def image_values(self, device):
+        """{setting: value} the image of one device ships: the stock values with the maintainer's lines on top."""
+        out = self.values(device)
+        out.update(self.owner)
         return out
 
 
@@ -158,7 +192,7 @@ class Stock:
                     self.errs.append("%s: %s" % (at, bad))
                 else:
                     self.sets.setdefault(f[1], {})[f[2]] = f[3]
-            elif self.cols is not None and len(f) == len(self.cols) + 1 and all(x in ("true", "false") for x in f[1:]):
+            elif self.cols is not None and len(f) == len(self.cols) + 1 and all(x in STOCK_VALUES for x in f[1:]):
                 self.rows[f[0]] = dict(zip(self.cols, f[1:]))
             else:
                 self.errs.append("%s: expected 'dump ID DEVICES SHA256', 'cols ID...', 'set ID SETTING VALUE' or a "
@@ -196,6 +230,8 @@ def stock_errors(table, stock, known_devices):
                 want = "true" if vals[s] == v else "false"
                 if got is None:
                     errs.append("%s: no line for %s" % (STOCK, res))
+                elif got == UNREAD:
+                    continue
                 elif got != want:
                     errs.append("%s: %s %s = %s, the table gives %s %s = %s" % (STOCK, d, res, got, dev, s, vals[s]))
             for s, v in sorted(stock.sets.get(d, {}).items()):
@@ -259,17 +295,13 @@ def rros(root, errs):
 
 def recipes_with_cec(root):
     """[(recipe path, text)] of every device app recipe that builds the lumen-cec module in."""
+    import assemble_app  # every recipe a model builds, its own or its family's (devices/README.md)
     out = []
-    d = os.path.join(root, "devices")
-    for c in sorted(os.listdir(d)):
-        a = os.path.join(d, c, "app")
-        if not os.path.isdir(a):
-            continue
-        for f in sorted(os.listdir(a)):
-            if f.endswith(".layers"):
-                t = open(os.path.join(a, f), encoding="utf-8").read()
-                if re.search(r"^module\s+lumen-cec\s*$", t, re.M):
-                    out.append(("devices/%s/app/%s" % (c, f), t))
+    for c, _, f in assemble_app.all_recipes(root):
+        t = open(f, encoding="utf-8").read()
+        rel = os.path.relpath(f, root)
+        if re.search(r"^module\s+lumen-cec\s*$", t, re.M):
+            out.append((rel if rel.startswith("devices/%s/" % c) else "%s (%s)" % (rel, c), t))
     return out
 
 
@@ -292,7 +324,7 @@ def check(root, write=False):
     # ---- the framework RRO of every image
     by_rro = rros(root, errs)
     for rro, cs in sorted(by_rro.items()):
-        vals = [table.values(c) for c in cs]
+        vals = [table.image_values(c) for c in cs]
         if any(v != vals[0] for v in vals):
             errs.append("apps/%s serves %s, whose stock CEC values differ: one RRO cannot carry both"
                         % (rro, " ".join(cs)))

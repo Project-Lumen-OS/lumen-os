@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">按键音</string>
-    <string name="lumen_m_hdmi_options">HDMI 输入选项</string>
     <string name="lumen_m_colour_vision">色觉优化</string>
     <string name="lumen_m_temperature">温度</string>
     <string name="lumen_m_high_altitude">高海拔模式</string>

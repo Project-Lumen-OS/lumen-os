@@ -7,11 +7,12 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.View;
 
-/** Section header inside a page. Not focusable. */
+/** Section header inside a page, with an optional state text on the right (stock SubTitleWithStateCellView). Not focusable. */
 public class HeaderRow extends View {
     private final TextPaint paint;
     private final float padH;
     private CharSequence text;
+    private CharSequence state = "";
 
     public HeaderRow(Context c, CharSequence text) {
         super(c);
@@ -23,6 +24,16 @@ public class HeaderRow extends View {
     }
 
     public void setText(CharSequence t) { text = t == null ? "" : t; invalidate(); }
+
+    /** The text on the right (the picture page's signal format), "" for none. */
+    public void setState(CharSequence s) {
+        CharSequence n = s == null ? "" : s;
+        if (n.toString().equals(state.toString())) return;
+        state = n;
+        invalidate();
+    }
+
+    public CharSequence getState() { return state; }
 
     @Override
     protected void onMeasure(int wSpec, int hSpec) {
@@ -38,5 +49,9 @@ public class HeaderRow extends View {
             x = getWidth() - padH - paint.measureText(t, 0, t.length());
         }
         c.drawText(t, 0, t.length(), x, base, paint);
+        if (state.length() == 0) return;
+        float sw = paint.measureText(state, 0, state.length());
+        float sx = getLayoutDirection() == LAYOUT_DIRECTION_RTL ? padH : getWidth() - padH - sw;
+        c.drawText(state, 0, state.length(), sx, base, paint);
     }
 }

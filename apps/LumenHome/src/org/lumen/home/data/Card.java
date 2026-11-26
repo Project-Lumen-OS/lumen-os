@@ -15,6 +15,8 @@ public final class Card {
     public static final int CAST = 5;
     public static final int FEATURE = 6;
     public static final int MORE_APPS = 7;
+    /** A folder of the dock (Customize Home): id = its token, title = its name, {@link #members} = its apps. */
+    public static final int FOLDER = 8;
 
     // aspect classes (TvContract ratios mapped to our card sizes)
     public static final int A_16_9 = 0;
@@ -71,6 +73,7 @@ public final class Card {
     public String watchPkg = "";      // the app the title opens in, "" = Lumen search with the title
     public String watchLabel = "";    // the watch button: "Смотреть в Lampa", "Найти"
     public String rating = "";        // TMDB rating, "7.8"
+    public String members = "";      // folder: its visible apps' packages, '\n' joined, in the folder's order
     public String where = "";         // where to watch in the user's region: "Кинопоиск, Okko"
 
     public Card() {}

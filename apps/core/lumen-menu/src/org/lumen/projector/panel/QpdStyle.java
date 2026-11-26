@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.animation.PathInterpolator;
 
+import org.lumen.projector.ui.Row;
 import org.lumen.projector.ui.Theme;
 import org.lumen.ui.Palette;
 
@@ -61,6 +62,9 @@ final class QpdStyle {
     // the menu's colours now (theme()): popup and list rows (prototype .po / .r / .dot / .tg / .ln), All settings rail (.it)
     static int PANEL, TILE, TILE_HI, INK, MUTE, TRACK, RING, DOT_OFF, SWITCH_OFF, DIVIDER, ROW_TRACK, RAIL_CIRCLE,
             RAIL_CURRENT, ICON, FILL, SELECTED, FAINT, ACCENT, VALUE_FOCUSED, ROW_VALUE_FOCUSED;
+    /** The grey of a disabled row now (QpdLayout.disabled) and the layer paint that draws a row in it. */
+    static int DISABLED;
+    private static Paint disabledLayer;
     private static boolean light;
 
     static {
@@ -75,8 +79,14 @@ final class QpdStyle {
         PANEL = p[0]; TILE = p[1]; TILE_HI = p[2]; INK = p[3]; MUTE = p[4]; TRACK = p[5]; RING = p[6]; DOT_OFF = p[7];
         SWITCH_OFF = p[8]; DIVIDER = p[9]; ROW_TRACK = p[10]; RAIL_CIRCLE = p[11]; RAIL_CURRENT = p[12]; ICON = p[13];
         FILL = p[14]; SELECTED = p[15]; FAINT = p[16]; ACCENT = p[17]; VALUE_FOCUSED = p[18]; ROW_VALUE_FOCUSED = p[19];
+        DISABLED = QpdLayout.disabled(lightNow);
+        disabledLayer = Row.disabledPaint(DISABLED);
+        Row.setDisabledInk(DISABLED);                       // rows that draw themselves (NATIVE) take the same grey
         return changed;
     }
+
+    /** The layer paint of a disabled row: every text and icon of the row in {@link #DISABLED}. */
+    static Paint disabledLayer() { return disabledLayer; }
 
     static boolean light() { return light; }
 

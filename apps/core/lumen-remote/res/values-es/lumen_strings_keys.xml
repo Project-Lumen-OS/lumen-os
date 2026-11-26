@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">Tecla de contactos</string>
     <string name="lumen_remote_keys_name_calendar">Tecla del calendario</string>
     <string name="lumen_remote_keys_name_bookmarks">Tecla de marcadores</string>
-    <string name="lumen_remote_keys_do_source">Entrada</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Trapecio</string>
-    <string name="lumen_remote_keys_do_focus">Enfoque</string>
-    <string name="lumen_remote_keys_do_quick">Ajustes rápidos</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Señal</string>
 </resources>

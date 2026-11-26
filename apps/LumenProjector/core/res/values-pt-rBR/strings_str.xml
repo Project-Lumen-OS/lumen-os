@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Suspensão profunda desligada</string>
+    <string name="hb_str_blocked_usb">Um computador está conectado por USB: em espera, o projetor não suspende por completo e os ventiladores continuam funcionando. Desconecte o cabo USB para recuperar a suspensão profunda.</string>
+    <string name="hb_str_blocked_update">Uma atualização está sendo instalada: a suspensão profunda volta quando terminar.</string>
+    <string name="hb_str_blocked_update_check">O sistema atualizado está sendo verificado após a inicialização: a suspensão profunda volta em alguns minutos.</string>
+    <string name="hb_str_blocked_off">A suspensão profunda está desligada neste projetor (configuração de serviço).</string>
+</resources>

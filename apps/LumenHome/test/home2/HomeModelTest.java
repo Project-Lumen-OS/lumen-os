@@ -262,8 +262,8 @@ public final class HomeModelTest {
                 && src.contains("getLaunchIntentForPackage("), "wiring: AppSource picks one activity per package");
         check(loader.contains("migrateAppKeys(p, found.resolved);") && loader.contains("new Card(Card.APP, a.cn.getPackageName(),"),
                 "wiring: HomeLoader migrates stored keys and keys app cards by package");
-        check(act.contains("toggleInSet(Prefs.K_HIDDEN_APPS, k.pkg, true)") && !act.contains("K_HIDDEN_APPS, k.intent")
-                && act.contains("order.add(k.pkg)"), "wiring: hide and move store packages");
+        check(act.contains("l.hidden.add(k.pkg)") && !act.contains("K_HIDDEN_APPS, k.intent") && !act.contains("hidden.add(k.intent")
+                && act.contains("order.add(k.pkg)") && act.contains("dockTokens()"), "wiring: hide and move store packages");
         check(safe.contains("AppSource.load(c)") && !safe.contains("queryIntentActivities"),
                 "wiring: safe mode lists the same one-per-package apps");
     }
@@ -306,7 +306,7 @@ public final class HomeModelTest {
 
     static FocusMap.Row dock(int n) { return new FocusMap.Row(n, 248, 40); }
 
-    static FocusMap.Row bottom(int inputs) { return new FocusMap.Row(Vitrina.bottomCenters(inputs)); }
+    static FocusMap.Row bottom(int inputs) { return new FocusMap.Row(Vitrina.bottomCenters(inputs, Math.min(inputs, 2))); }
 
     static void focusMap() {
         // the owner's page: hero buttons, dock of 6, the bottom line (2 chips, All apps, Settings)
@@ -328,11 +328,14 @@ public final class HomeModelTest {
         eq(f.first(0), 0, "6 apps never slide");
         eq(f.move(FocusMap.RIGHT), FocusMap.NONE, "RIGHT on the last app does nothing, no jump");
         f.move(FocusMap.DOWN);
-        // app 5 centre 116 + 5 * 288 + 124 = 1680: the nearest of the bottom line is All apps (1636 + 36 = 1672)
+        // app 5 centre 116 + 5 * 288 + 124 = 1680: the nearest of the bottom line is Customize Home (1636 + 36 = 1672)
         eq(f.row, 1, "bottom line");
-        eq(f.item(1), 2 + Vitrina.ROUND_APPS, "app 5 lands on All apps");
+        eq(f.item(1), 2 + Vitrina.ROUND_LAYOUT, "app 5 lands on Customize Home");
         f.move(FocusMap.RIGHT);
         eq(f.item(1), 2 + Vitrina.ROUND_SETTINGS, "then Settings");
+        f.move(FocusMap.LEFT);
+        f.move(FocusMap.LEFT);
+        eq(f.item(1), 2 + Vitrina.ROUND_APPS, "All apps left of it");
         eq(f.move(FocusMap.DOWN), FocusMap.NONE, "nothing under the bottom line");
         f.focusItem(1, 0);
         f.move(FocusMap.UP);
@@ -381,10 +384,60 @@ public final class HomeModelTest {
         f.setLayout(0, new FocusMap.Row[0]);
         eq(f.zone, FocusMap.HERO, "nothing left: the zone falls back");
         eq(f.move(FocusMap.DOWN), FocusMap.NONE, "and keys do nothing");
+        entryAndDelete();
+    }
+
+    /**
+     * Owner, Z9X 1.1.0-beta2: every way into Home put the focus on the hero (Watch on ...), RIGHT paged the hero; it
+     * starts on the first app of the apps row. Delete of a Continue card hands the focus to its neighbour in the row.
+     */
+    static void entryAndDelete() {
+        FocusMap h = new FocusMap();
+        h.setLayout(2, new FocusMap.Row[] { dock(6), bottom(2) });
+        h.focusItem(0, 4);
+        h.home(0);
+        check(h.zone == FocusMap.ROWS && h.row == 0 && h.item(0) == 0 && h.first(0) == 0, "entry with hero buttons: on the first app");
+        FocusMap c = new FocusMap();
+        c.setLayout(0, new FocusMap.Row[] { cards(4), dock(6), bottom(2) });
+        c.home(1);
+        check(c.zone == FocusMap.ROWS && c.row == 1 && c.item(1) == 0, "entry with a Continue row: on the first app, not the first card");
+        c.home(-1);
+        check(c.zone == FocusMap.ROWS && c.row == 0 && c.item(0) == 0, "entry without an apps row: as before");
+        FocusMap e = new FocusMap();
+        e.setLayout(2, new FocusMap.Row[] { dock(0), bottom(2) });
+        e.home(0);
+        eq(e.zone, FocusMap.HERO, "an empty apps row: the old landing");
+        // Delete in the Continue row: the next card takes the place, after the last one the previous card
+        c.focusItem(0, 1);
+        c.removeItem(0, 1, cards(3));
+        check(c.row == 0 && c.item(0) == 1, "delete card 2 of 4: the focus on the next card (now card 2)");
+        c.focusItem(0, 2);
+        c.removeItem(0, 2, cards(2));
+        check(c.row == 0 && c.item(0) == 1, "delete the last card: the focus on the previous card");
+        c.focusItem(0, 1);
+        c.removeItem(0, 0, cards(1));
+        check(c.item(0) == 0, "a card left of the focus goes: the focus stays on its card");
+        // the data of a delete in place
+        HomeData d = new HomeData();
+        for (int i = 0; i < 3; i++) {
+            Card k = new Card();
+            k.id = "wn:" + i;
+            k.title = "t" + i;
+            d.cont.add(k);
+        }
+        d.dock.add(new Card());
+        d.plan = RowPlan.of(0, 3, 1);
+        check(d.planned() && d.hasContinue("wn:1"), "three cards: planned, card 2 there");
+        HomeData g = d.withoutContinue("wn:1");
+        check(d.cont.size() == 3 && g.cont.size() == 2 && !g.hasContinue("wn:1") && g.cont.get(1).id.equals("wn:2"),
+                "without card 2: a copy, the others keep their order");
+        check(g.plan == d.plan && g.plan.continueRow() && !g.planned(), "the row stays as shown until Home is entered again");
+        HomeData p = g.replanned();
+        check(p.planned() && !p.plan.continueRow() && p.cont.size() == 2, "entered again: two cards go to the hero");
     }
 
     /** The owner's screen: hero buttons, a dock of 6, the bottom line (2 chips, All apps, Settings), 6 tiles on Apps. */
-    static final int[] SIZES = { 6, 4 };
+    static final int[] SIZES = { 6, 2 + Vitrina.ROUNDS };
     static final int GRID = 6;
 
     /** How many elements show the focus when the activity paints them all from the map (HomeActivity.applyFocus). */
@@ -414,7 +467,7 @@ public final class HomeModelTest {
         return n;
     }
 
-    static final int ALL_APPS = 2 + Vitrina.ROUND_APPS, GEAR = 2 + Vitrina.ROUND_SETTINGS;
+    static final int ALL_APPS = 2 + Vitrina.ROUND_APPS, LAYOUT = 2 + Vitrina.ROUND_LAYOUT, GEAR = 2 + Vitrina.ROUND_SETTINGS;
 
     static void focusPaint() {
         FocusMap f = new FocusMap();
@@ -443,7 +496,9 @@ public final class HomeModelTest {
         f.focusItem(1, ALL_APPS);
         check(lit(f, 3) == 1 && f.itemFocused(1, ALL_APPS) && !f.gridFocused(3, 3), "paint: back on All apps alone");
         f.move(FocusMap.RIGHT);
-        check(lit(f, 3) == 1 && f.itemFocused(1, GEAR) && !f.itemFocused(1, ALL_APPS), "paint: the gear, All apps off");
+        check(lit(f, 3) == 1 && f.itemFocused(1, LAYOUT) && !f.itemFocused(1, ALL_APPS), "paint: Customize Home, All apps off");
+        f.move(FocusMap.RIGHT);
+        check(lit(f, 3) == 1 && f.itemFocused(1, GEAR) && !f.itemFocused(1, LAYOUT), "paint: the gear, Customize Home off");
         check(rings(f, 3) == 1, "ring: on the gear only");
         // leaving and returning (onPause / onResume repaint) and a theme change change nothing in the map
         FocusMap before = f;
@@ -621,7 +676,8 @@ public final class HomeModelTest {
         nulls.intent = null;
         d.inputs.add(nulls);
         d.online = true;
-        d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.apps.size());
+        d.dock.addAll(d.apps);                               // no folders: the top level is the apps (HomeLoader.dock)
+        d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.dock.size());
         return d;
     }
 
@@ -631,8 +687,8 @@ public final class HomeModelTest {
         HomeData r = HomeSnapshot.decode(b, 42L, "ru-RU");
         check(r != null, "snapshot: reads back");
         if (r == null) return;
-        List<List<Card>> a = Arrays.asList(d.apps, d.hidden, d.cont, d.hero, d.inputs);
-        List<List<Card>> z = Arrays.asList(r.apps, r.hidden, r.cont, r.hero, r.inputs);
+        List<List<Card>> a = Arrays.asList(d.apps, d.dock, d.hidden, d.cont, d.hero, d.inputs);
+        List<List<Card>> z = Arrays.asList(r.apps, r.dock, r.hidden, r.cont, r.hero, r.inputs);
         for (int i = 0; i < a.size(); i++) {
             eq(z.get(i).size(), a.get(i).size(), "snapshot: list " + i + " size");
             for (int j = 0; j < Math.min(a.get(i).size(), z.get(i).size()); j++) {
@@ -742,14 +798,32 @@ public final class HomeModelTest {
         eq(Grid.CHIP_W, Grid.span(3), "a chip is 3 columns");
         check(Math.abs(Grid.UPNEXT_W / (double) Grid.UPNEXT_H - 16 / 9.0) < 0.02, "a Continue card is 16:9");
         eq(Vitrina.roundX(Vitrina.ROUND_SETTINGS) + Grid.ROUND, Grid.W - Grid.MARGIN, "Settings on the right margin");
-        eq(Vitrina.roundX(Vitrina.ROUND_APPS), 1636, "All apps 24 left of Settings (the mock)");
-        eq(Vitrina.chipX(1), 548, "HDMI 2 on column 4");
-        check(Vitrina.chipX(Grid.MAX_CHIPS - 1) + Grid.CHIP_W < Vitrina.roundX(0), "3 chips never touch the round buttons");
+        eq(Vitrina.roundX(Vitrina.ROUND_LAYOUT), 1636, "Customize Home 24 left of Settings (where All apps stood in the mock)");
+        eq(Vitrina.roundX(Vitrina.ROUND_APPS), 1540, "All apps 24 left of Customize Home");
+        eq(Vitrina.chipX(1, 3), 548, "HDMI 2 on column 4");
+        check(Vitrina.chipX(Grid.MAX_CHIPS - 1, 3) + Grid.CHIP_W < Vitrina.roundX(0), "3 chips never touch the round buttons");
         eq(Grid.CHIPS_Y + Grid.CHIP_H, Grid.BOTTOM, "the bottom line ends on the bottom margin");
-        eq(Vitrina.chips(2), 2, "2 inputs: 2 chips");
-        eq(Vitrina.chips(5), 3, "5 inputs: 3 chips");
-        check(!Vitrina.moreChip(3) && Vitrina.moreChip(4), "the last chip lists them all from 4 inputs");
-        eq(Vitrina.bottomCenters(2).length, 4, "2 chips and 2 round buttons");
+        eq(Vitrina.chips(2, 2), 2, "2 inputs: 2 chips");
+        eq(Vitrina.chips(5, 2), 3, "5 inputs, 2 ports: 3 chips");
+        check(!Vitrina.moreChip(3, 2) && Vitrina.moreChip(4, 2), "two ports: the last chip lists them all from 4 inputs");
+        eq(Vitrina.bottomCenters(2, 2).length, 5, "2 chips and 3 round buttons (All apps, Customize Home, Settings)");
+        // X50 family: three HDMI ports keep a chip each (Slava 2026-11-19: HDMI 3 missing from Home)
+        eq(Vitrina.chips(3, 3), 3, "three ports only: three chips of three columns");
+        eq(Vitrina.chipW(3), Grid.CHIP_W, "three chips keep the grid width");
+        eq(Vitrina.chips(4, 3), 4, "three ports and a USB drive: four chips, nothing hidden");
+        check(!Vitrina.moreChip(4, 3), "three ports and one more input: no list chip");
+        eq(Vitrina.chips(5, 3), 4, "three ports, mirroring and USB: four chips");
+        check(Vitrina.moreChip(5, 3), "... the fourth lists the rest, HDMI 3 keeps its own chip");
+        eq(Vitrina.chipX(0, 4), Grid.MARGIN, "four chips start on the margin");
+        check(Vitrina.chipX(3, 4) + Vitrina.chipW(4) + Grid.GUTTER <= Vitrina.roundX(0), "four chips end a gutter before the round buttons");
+        // 316 with three round buttons: an icon and "PlayStation 5" at 22 px still fit (the X50 family only)
+        check(Vitrina.chipW(4) >= 300 && Vitrina.chipW(4) < Grid.CHIP_W, "four chips are narrower, still wide enough for a name");
+        eq(Vitrina.chipX(1, 4) - Vitrina.chipX(0, 4), Vitrina.chipW(4) + Grid.GUTTER, "four chips one gutter apart");
+        eq(Vitrina.bottomCenters(5, 3).length, 7, "4 chips and 3 round buttons");
+        check(Vitrina.roundX(0) - Grid.GUTTER - (Vitrina.chipX(3, 4) + Vitrina.chipW(4)) < 4,
+                "four chips fill the line up to a gutter before the round buttons (rounding only)");
+        eq(Vitrina.bottomCenters(5, 3)[3], Vitrina.chipX(3, 4) + Vitrina.chipW(4) / 2, "focus goes to the middle of the fourth chip");
+        eq(Vitrina.bottomCenters(5, 3)[0], Vitrina.chipX(0, 4) + Vitrina.chipW(4) / 2, "... and of the first narrow chip");
         // one screen: shelf, (Continue row), dock, bottom line never overlap
         eq(Vitrina.shelfBottom(false) - ShelfH.WITH_BUTTONS, 312, "the full shelf starts at 312 (the mock)");
         check(Vitrina.shelfBottom(false) < Grid.DOCK_Y, "hero buttons above the dock");

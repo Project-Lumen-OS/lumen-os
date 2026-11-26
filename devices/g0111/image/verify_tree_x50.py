@@ -25,6 +25,8 @@ Allowed differences, and nothing else:
             system/etc/security/otacerts.zip
             (a zip without any certificate: no OTA payload verifies on the X50 test image); owner, mode and
             label of all three as in the base;
+  prebuilt  system/app/<name> of every prebuilt= app of the descriptor (tools/build/prebuilt.py: the published APK,
+            NOTICE.txt and lib/<isa>/*.so, root:root, 0755 folders, 0644 files, system_file), each file pinned;
   added     system/etc/init/x50_netadb.rc, x50_nui.rc and system/etc/z9x/blobs.conf (the reader's X50 family
             settings), x50_blobs_allow.txt, each byte-identical to its IN file (root:root, 0644, system_file), and
             two 0-byte placeholders the blobs reader binds the user's own files over:
@@ -168,12 +170,17 @@ MENU_APP = {
     "cert": "3a741e26026295ba510b6135b98294198013e271b8916db50a80a45be6fd76d2",
     "ifaces": ["xgimi.hardware.gmpf.IDisplayManager", "xgimi.hardware.gmpf.IGmAudioManager",
                "xgimi.hardware.gmpf.IGmFactoryManager", "xgimi.hardware.gmpf.IGmTvManager",
-               "xgimi.hardware.gmpf.IMotionDetectionManager",
+               "xgimi.hardware.gmpf.IMotionDetectionManager", "xgimi.hardware.gmpf.IPowerManager",
                "xgimi.hardware.gmpf.IProjectorFocusManager", "xgimi.hardware.gmpf.ISystemManager",
                "xgimi.hardware.gmpf.ITemperatureManager"],
     "callbacks": ["xgimi.hardware.gmpf.IGmTvCallback", "xgimi.hardware.gmpf.IProjectorFocusCallback",
                   "xgimi.hardware.gmpf.ISystemCallback"],
-    "calls": [["-", 0x00FFFFFF, "getInterfaceVersion"],
+    "calls": [["PowerManager", 6, "goToSleep", "0,0;4,2"],
+              ["PowerManager", 12, "wakeUp", "2"],
+              ["SystemManager", 48, "getBootMode", "-"],
+              ["SystemManager", 225, "getPJlinkEnable", "-"],
+              ["SystemManager", 248, "getConsoleType", "-"],
+              ["-", 0x00FFFFFF, "getInterfaceVersion"],
               ["-", 0x00FFFFFE, "getInterfaceHash"],
               ["DisplayManager", 38, "correctKeystoneReset"],
               ["DisplayManager", 84, "getCurrentKeystoneMode"],
@@ -247,6 +254,19 @@ MENU_APP = {
               ["GmTvManager", 34, "getPictureMode"],
               ["DisplayManager", 172, "setDynamicBlackType"],
               ["DisplayManager", 174, "getDynamicBlackType"],
+              ["DisplayManager", 173, "setDynamicBlackLevel", "1|3"],
+              ["DisplayManager", 175, "getDynamicBlackLevel", "-"],
+              ["DisplayManager", 233, "setDynamicBlackSubtitleRegion", "0|1,2,1,12,0..1920,0..1080,1,12,0..1920,0..1080"],
+              ["DisplayManager", 234, "getDynamicBlackSubtitleRegion", "0|1,2"],
+              ["DisplayManager", 235, "resetDynamicBlackSubtitleRegion", "-"],
+              ["DisplayManager", 207, "isKeystoneAdjusted", "0"],
+              ["DisplayManager", 217, "getUserColorUniformityInfo", "-"],
+              ["DisplayManager", 218, "getUserColorUniformityCell", "0|1,0..8,0..11"],
+              ["DisplayManager", 219, "setUserColorUniformityCell", "0|1,1,32,0..8,0..11,1,16,0..1023,0..1023,0..1023"],
+              ["DisplayManager", 220, "getUserColorUniformityGrid", "0|1"],
+              ["DisplayManager", 221, "setUserColorUniformityGrid"],
+              ["DisplayManager", 222, "switchUserColorUniformityMode", "0|1"],
+              ["DisplayManager", 223, "resetUserColorUniformity", "0|1,0"],
               ["GmTvManager", 113, "setTvDynamicContrastEnable"],
               ["GmTvManager", 114, "getTvDynamicContrastEnable"],
               # t20 (decision 2026-11-10): the whole keystone reset, the light level, the zoom and lens shift
@@ -278,6 +298,8 @@ MENU_APP = {
               ["ProjectorFocusManager", 104, "setTiltShiftKstAlgInfo", "-"],
               ["ProjectorFocusManager", 105, "setTiltShiftCompensation", "-"],
               ["ProjectorFocusManager", 112, "getUitiltShiftSwithStatus", "0..1"],
+              # g0170 (b45c3f1d): the same shift page flag at 107 on the RS30 Ultra v1.2.5 table (GmpfFirmware picks it by hash)
+              ["ProjectorFocusManager", 107, "getUitiltShiftSwithStatus", "0..1"],
               ["SystemManager", 147, "setPushPullScreenState", "0..1"],
               # core-menu-x50game: the stock X50 game menu's calls, each with
               # its argument range; gated in GameSequences (getter in range first, every write read back)
@@ -313,7 +335,7 @@ MENU_APP = {
               ["DisplayManager", 103, "getDispColorSpace", "0..3,0..41"],
               ["DisplayManager", 72, "translationKst", "1..4,0..1"],
               ["SystemManager", 122, "pantiltElectricMove", "3..8,f:0"],
-              ["GmTvManager", 199, "SetIrisLevel", "0;20;30;40;55;70"],
+              ["GmTvManager", 199, "SetIrisLevel", "0;20;30;35;40;50;55;70"],
               ["GmTvManager", 200, "GetIrisLevel", "-"],
               # quick-3d-x50: the stock 3D (newsettings PictureRepository.setImage3D, X50ThreeD)
               ["DisplayManager", 22, "enable3D", "1..4"],
@@ -324,6 +346,7 @@ MENU_APP = {
               ["DisplayManager", 48, "is3DFormatSupported", "0"],
               ["DisplayManager", 57, "getOutputTimingInfo", "-"],
               ["GmTvManager", 78, "getHdrType", "-"],
+              ["GmTvManager", 204, "getHdmiColorSpaceInfo", "1..3"],
               ["GmTvManager", 38, "getHdmiInfo", "-"],
               # rs30-parity-picture: the stock picture rows of every X50 family tree (ProPictureHal), Gmpf refuses them
               # where ModelMenu does not name the row
@@ -392,6 +415,7 @@ MENU_APP = {
               ["GmTvManager", 185, "SetScreenMetaData", "1,88,0,0,5..20,80|90|100|110|120|130|140|150|160|170|180|190|200|250|300,0,0,54,0,0,0,0,0,0,0,0,0,0,0,0,0,0"],
               ["GmTvManager", 186, "GetScreenMetaData", "-"],
               ["GmTvManager", 73, "setDolbyVisionTmax", "5..20,80|88|90|100|110|120|130|140|150|160|170|180|190|200|250|300"],
+              ["GmTvManager", 74, "setDolbyVisionPicMode", "0|1"],
               ["GmTvManager", 76, "getDolbyVisionTmaxSize", "-"],
               ["GmTvManager", 77, "getDolbyVisionTmaxGain", "-"],
               ["GmTvManager", 162, "toggleAutoMode", "0,0..1"],
@@ -409,6 +433,7 @@ MENU_APP = {
               # them where ModelMenu does not name serial.switch (the RS30)
               ["SystemManager", 1, "setSystemCallback"],
               ["SystemManager", 208, "setConsoleID", "s:1,0..20"],
+              ["DisplayManager", 37, "getDlpImageVersion", "-"],
               ["SystemManager", 209, "getConsoleID", "-"],
               ["SystemManager", 210, "setConsoleGroupAckEnable", "0..1"],
               ["SystemManager", 211, "getConsoleGroupAckEnable", "-"],
@@ -561,8 +586,22 @@ SETUP_APP = {"path": "system/priv-app/Z9xSetup/Z9xSetup.apk", "staged": "stage/Z
 SETUP_OAT = "system/priv-app/Z9xSetup/oat"
 CHANGED.add(SETUP_APP["path"])
 removed |= {k for k in B if k == SETUP_OAT or k.startswith(SETUP_OAT + "/")}
+# screen casting on every model (2026-11-21): the AirPlay receiver with the casting screen of this tree (apps/LumenAirPlay,
+# built and signed with the model's platform key on the Mac, staged as IN/stage/Z9xAirPlay.apk) in place of the base's
+# re-signed 1.0.9 copy, its base oat files go
+AIRPLAY_APP = {"path": "system/app/Z9xAirPlay/Z9xAirPlay.apk", "staged": "stage/Z9xAirPlay.apk"}
+AIRPLAY_OAT = "system/app/Z9xAirPlay/oat"
+CHANGED.add(AIRPLAY_APP["path"])
+removed |= {k for k in B if k == AIRPLAY_OAT or k.startswith(AIRPLAY_OAT + "/")}
 # the shared boot animation with the power-on sound (overlay/v1/bootanimation.zip, staged as IN/bootanimation.zip) over
 # the base's 1.0.9 member, which has none; owner, mode and label stay the base's, the frames too (checked below)
+# the Wi-Fi APEX with lineage/patches/wifi/0001 (staged as IN/com.android.wifi.capex) over the base's, byte for byte,
+# owner, mode and label as the base's; the base's dexpreopt files of the old service-wifi.jar go
+WIFI_APEX = "system/apex/com.android.wifi.capex"
+REPLACED[WIFI_APEX] = "com.android.wifi.capex"
+CHANGED.add(WIFI_APEX)
+WIFI_OAT = "system/framework/oat/arm64/" + "@".join(("apex", "com.android.wifi", "javalib", "service-wifi.jar", "classes"))
+removed |= {WIFI_OAT + ".odex", WIFI_OAT + ".vdex"}
 BOOTANIM = "system/product/media/bootanimation.zip"
 REPLACED[BOOTANIM] = "bootanimation.zip"
 CHANGED.add(BOOTANIM)
@@ -600,17 +639,33 @@ ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
          # install from a DSU try (t8, apps/LumenDsuInstall): the app, its init rc (gated, checked below), its script
          "system/priv-app/LumenDsuInstall": (0, 0, 0o755, SYSF, DIR),
          "system/priv-app/LumenDsuInstall/LumenDsuInstall.apk": (0, 0, 0o644, SYSF, "stage/LumenDsuInstall.apk"),
+         # Files (apps/LumenFiles): the file manager of every model, a priv-app without a permissions file
+         "system/priv-app/LumenFiles": (0, 0, 0o755, SYSF, DIR),
+         "system/priv-app/LumenFiles/LumenFiles.apk": (0, 0, 0o644, SYSF, "stage/LumenFiles.apk"),
          "system/etc/init/lumen_dsu_install.rc": (0, 0, 0o644, SYSF, "lumen_dsu_install.rc"),
          "system/etc/lumen": (0, 0, 0o755, SYSF, DIR),
          "system/etc/lumen/lumen_dsu_install.sh": (0, 0, 0o755, SYSF, "lumen_dsu_install.sh"),
          "system/etc/init/lumen_hdmirx.rc": (0, 0, 0o644, SYSF, "lumen_hdmirx.rc"),
          "system/etc/lumen/lumen_hdmirx.sh": (0, 0, 0o755, SYSF, "lumen_hdmirx.sh"),
+         # the problem report log helper of every image (apps/core/lumen-report/image)
+         "system/etc/init/lumen_report.rc": (0, 0, 0o644, SYSF, "lumen_report.rc"),
+         "system/etc/lumen/lumen_report.sh": (0, 0, 0o755, SYSF, "lumen_report.sh"),
          # the projector menu with the remote pairing (t11, apps/X50Projector; t10 had the pairing alone as X50Remote):
          # priv-app (privileged permissions with privapp control off) and its runtime Bluetooth permissions; the second
          # HAL app, MENU_APP below
          os.path.dirname(MENU_APP["path"]): (0, 0, 0o755, SYSF, DIR),
          MENU_APP["path"]: (0, 0, 0o644, SYSF, MENU_APP["staged"]),
-         "system/product/etc/default-permissions/x50-projector.xml": (0, 0, 0o644, SYSF, "x50-projector.xml")}
+         "system/product/etc/default-permissions/x50-projector.xml": (0, 0, 0o644, SYSF, "x50-projector.xml"),
+         # screen casting on every model (2026-11-21): the Miracast sink (priv-app), its privileged and default
+         # permissions, the Wi-Fi Direct device type TV (apps/LumenWifiP2pOverlay: resources only, no dex)
+         "system/priv-app/LumenMiracast": (0, 0, 0o755, SYSF, DIR),
+         "system/priv-app/LumenMiracast/LumenMiracast.apk": (0, 0, 0o644, SYSF, "stage/LumenMiracast.apk"),
+         "system/etc/permissions/privapp-permissions-lumen-miracast.xml": (0, 0, 0o644, SYSF,
+                                                                           "privapp-permissions-lumen-miracast.xml"),
+         "system/product/etc/default-permissions/lumen-miracast.xml": (0, 0, 0o644, SYSF,
+                                                                       "lumen-miracast-default-permissions.xml"),
+         "system/product/overlay/LumenWifiP2pOverlay.apk": (0, 0, 0o644, SYSF, "stage/LumenWifiP2pOverlay.apk"),
+         "system/etc/sysconfig/lumen-cast.xml": (0, 0, 0o644, SYSF, "lumen-cast-sysconfig.xml")}
 # the public variant (a release version, 2026-11-11): no network adb, so no x50_netadb.rc (an extra file is refused)
 if PUBLIC:
     del ADDED["system/etc/init/x50_netadb.rc"]
@@ -623,6 +678,14 @@ if OTA:
                   "system/etc/lumen/ota_gate.conf": (0, 0, 0o644, SYSF, "ota_gate.conf"),
                   os.path.dirname(UPD_APP): (0, 0, 0o755, SYSF, DIR),
                   UPD_APP: (0, 0, 0o644, SYSF, "stage/LumenUpdater.apk")})
+# the apps that enter the image as their published APK (build.conf prebuilt=, tools/build/prebuilt.py): every entry of
+# their folder, the APK and every unpacked library pinned by sha256 (PIN), the notice the staged copy
+PIN = "pinned"
+PINNED = {}
+import prebuilt  # noqa: E402  staged in IN with the builder
+for k, (kind, mode, want) in prebuilt.expected(IN).items():
+    ADDED[k] = (0, 0, mode, SYSF, DIR if kind == "dir" else PIN)
+    PINNED[k] = want
 EMPTY = hashlib.sha256(b"").hexdigest()
 
 for k in sorted(removed):
@@ -650,7 +713,10 @@ for k, (uid, gid, mode, label, src) in ADDED.items():
         bad.append("added %s has %s, not %d:%d %o %r" % (k, m, uid, gid, mode, label))
     if src == DIR:
         continue
-    if m.get("sha") != (sha(os.path.join(IN, src)) if src else EMPTY):
+    if src == PIN:
+        if m.get("sha") != PINNED[k]:
+            bad.append("added %s is not the pinned file (sha256 %s)" % (k, PINNED[k]))
+    elif m.get("sha") != (sha(os.path.join(IN, src)) if src else EMPTY):
         bad.append("added %s is not %s" % (k, "the staged " + src if src else "a 0-byte placeholder"))
 same = 0
 for k in sorted(set(B) - removed):
@@ -944,8 +1010,8 @@ if len(APEX_CERTS) != 4:
 for k, (kind, old, new, rep) in sorted(SIGNED.items()):
     if rep in B and sha(B[rep]) != old:
         bad.append("base_signed.tsv: %s is not the base file the Mac signed" % rep)
-    if k in (HOME_APP["path"], TVIN_APP["path"], KBD_APP["path"], SETUP_APP["path"]):
-        continue   # replaced by this tree's Home / TV input / keyboard / Setup below
+    if k in (HOME_APP["path"], TVIN_APP["path"], KBD_APP["path"], SETUP_APP["path"], AIRPLAY_APP["path"]):
+        continue   # replaced by this tree's Home / TV input / keyboard / Setup / AirPlay below
     if k not in N or sha(N[k]) != new:
         bad.append("%s is not the file sign_x50_base.py signed" % k)
     elif kind == "apex":
@@ -964,6 +1030,23 @@ else:
         bad.append("%s does not name org.lumen.x50.projector (not the device-aware Home)" % hp)
     else:
         print("verify_tree_x50: Home %s sha256 %s on the %s key, oat removed" % (hp, sha(N[hp]), C))
+ap = AIRPLAY_APP["path"]
+if ap not in N or sha(N[ap]) != sha(os.path.join(IN, AIRPLAY_APP["staged"])):
+    bad.append("%s is not IN/%s (tools/devices/build_apps.sh, apps/LumenAirPlay/app.layers)" % (ap, AIRPLAY_APP["staged"]))
+else:
+    with zipfile.ZipFile(N[ap]) as z:
+        ap_dex = b"".join(z.read(n) for n in z.namelist() if re.fullmatch(r"classes\d*\.dex", n))
+        ap_libs = [n for n in z.namelist() if n.startswith("lib/") and n.endswith("/libz9xairplay.so")]
+    aps = x50_apk_check.signers(open(N[ap], "rb").read())
+    if not aps or any(set(c) != {HAL_APP["cert"]} for c in aps.values()):
+        bad.append("%s is not signed by the %s platform certificate alone: %s" % (ap, C, aps))
+    elif b"Lorg/lumen/airplay/CastActivity;" not in ap_dex:
+        bad.append("%s has no casting screen (CastActivity): not the AirPlay receiver of this tree" % ap)
+    elif not ap_libs:
+        bad.append("%s carries no libz9xairplay.so (apps/LumenAirPlay/tools/libs_from_pin.sh before the build)" % ap)
+    else:
+        print("verify_tree_x50: AirPlay %s sha256 %s on the %s key, %d native libraries, oat removed"
+              % (ap, sha(N[ap]), C, len(ap_libs)))
 kp = KBD_APP["path"]
 if kp not in N or sha(N[kp]) != sha(os.path.join(IN, KBD_APP["staged"])):
     bad.append("%s is not IN/%s (tools/devices/build_apps.sh)" % (kp, KBD_APP["staged"]))
@@ -1003,10 +1086,10 @@ else:
         bad.append("%s is not signed by the %s platform certificate alone: %s" % (tp, C, ts))
     elif tv_pkg != "org.lumen.tvinput":
         bad.append("%s is package %r, not org.lumen.tvinput (the base app's package)" % (tp, tv_pkg))
-    elif b"Lorg/lumen/ui/TvFocus;" not in tv_dex or b"Lorg/lumen/tvinput/InputPickerActivity;" not in tv_dex:
-        # arch phase 2: the X50 layer's picker uses the lumen-ui module's TvFocus (org.lumen.ui); the base Z9X app
-        # (frozen, no module) has neither it nor any other TvFocus
-        bad.append("%s has no org.lumen.ui.TvFocus picker (not the X50 source picker of X50TvInput.layers)" % tp)
+    elif b"Lorg/lumen/tvinput/InputPickerActivity;" in tv_dex or b"Lorg/lumen/tvinput/PortState;" not in tv_dex:
+        # the X50 TV input is the base app of X50TvInput.layers: the one port state, no own source picker (the
+        # Source key card of the projector app lists the inputs)
+        bad.append("%s is not the base TV input of X50TvInput.layers (a source picker, or no PortState)" % tp)
     else:
         print("verify_tree_x50: TV input %s sha256 %s on the %s key, oat removed" % (tp, sha(N[tp]), C))
 fw = "system/framework/framework-res.apk"

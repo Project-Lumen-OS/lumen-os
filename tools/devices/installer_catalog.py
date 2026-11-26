@@ -470,7 +470,9 @@ def verify_sig(data, sig, pems):
         for i, pem in enumerate(pems):
             c, k = Path(t) / ("c%d" % i), Path(t) / ("k%d" % i)
             c.write_text(pem)
-            r = subprocess.run(["openssl", "x509", "-in", str(c), "-pubkey", "-noout", "-out", str(k)], capture_output=True)
+            # the key from stdout: LibreSSL (the Mac's openssl) prints it there and leaves -out empty
+            r = subprocess.run(["openssl", "x509", "-in", str(c), "-pubkey", "-noout"], capture_output=True)
+            k.write_bytes(r.stdout)
             if r.returncode == 0 and subprocess.run(["openssl", "dgst", "-sha256", "-verify", str(k), "-signature", str(s),
                                                       str(d)], capture_output=True).returncode == 0:
                 return True
@@ -667,7 +669,8 @@ def build(serial=None, net=None, trial_rules=True):
     choice: a catalog that is signed always follows them"""
     net = net or Net()
     rels = net.releases()
-    devs = [d for _, d in sorted(registry.load(str(G)).items())]
+    # a model with image=none has its data but no image recipe yet (tools/devices/devices.py): no build, no row
+    devs = [d for _, d in sorted(registry.load(str(G)).items()) if d.get("image") != "none"]
     rows, iconf = model_rows(devs), installer_index.installer_conf()
     models = []
     for d in devs:

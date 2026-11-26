@@ -28,16 +28,15 @@ import java.util.function.Consumer;
 
 /**
  * The rows of the old Projector settings page that live in the shared menu now (All settings, General
- * 2026-11-19): pairing a remote and Remote buttons, the source at power-on, the voice assistant, the interface
- * resolution, the statistics switch and diagnostics. One class for the Z9X, HB and Play 6 adapters with the page's
+ * 2026-11-19): the source at power-on, the voice assistant, the interface resolution, the statistics switch and
+ * diagnostics. Pair remote and Remote buttons are module rows of lumen-menu (ModuleScreens) for every model. One class for the Z9X, HB and Play 6 adapters with the page's
  * behaviour; what differs per model is its {@link Device}. The power-on melody row is Lumen's own sound now (lumen-menu
  * module row, lumen-audio BootSound): here the unit's stock switch only gives its first value and is turned off, so
  * the vendor music never plays next to it.
  */
 public final class SettingsRows {
     public static final Set<FeatureId> FEATURES = Collections.unmodifiableSet(EnumSet.of(FeatureId.POWER_BOOT_SOURCE, FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK, FeatureId.VOICE_KEY,
-            FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE,
-            FeatureId.SETTINGS_REMOTE_KEYS));
+            FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_DIAGNOSTICS));
     private static final String TAG = "SettingsRows", ON = "on";
     private static final ExecutorService BG = Executors.newSingleThreadExecutor(r -> new Thread(r, "settings-rows"));
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
@@ -162,12 +161,6 @@ public final class SettingsRows {
     public boolean open(FeatureId f) {
         switch (f) {
             case VOICE_KEY: return VoiceKeyActivity.open(app);
-            case SETTINGS_REMOTE:                                   // 120 s fast LE scan, as the old page's row
-                org.lumen.remote.RemotePairing.startPairing(app);
-                return true;
-            case SETTINGS_REMOTE_KEYS:
-                org.lumen.remote.keys.KeyBindActivity.open(app);
-                return true;
             case SETTINGS_UI_RESOLUTION:
                 dev.openUiResolution();
                 return true;

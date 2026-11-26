@@ -59,8 +59,151 @@ public final class ReportTest {
         zip();
         uploader();
         parts();
+        hdmiDump();
+        cecJournal();
+        rootLogs();
+        powerDump();
+        screen();
         System.out.println("report host tests passed=" + passed + " failed=" + failed);
         System.exit(failed == 0 ? 0 : 1);
+    }
+
+    // ------------------------------------------------------------------ PowerDump (power.txt from the log helper)
+    private static void powerDump() {
+        String dump = "POWER MANAGER (dumpsys power)\n\nPower Manager State:\n  mWakefulness=Asleep\n  mWakefulnessChanging=false\n"
+                + "  mLastSleepReason=power_button\n\nSettings and Configuration:\n  mScreenOffTimeoutSetting=600000\n\n"
+                + "Wake Locks: size=2\n  PARTIAL_WAKE_LOCK              'AudioMix' ACQ=-5s (uid=1041 ws=WorkSource{10101 com.example.player})\n"
+                + "  PARTIAL_WAKE_LOCK              '*job*/com.example.player/.Sync' ACQ=-1s (uid=10101)\n\n"
+                + "Suspend Blockers: size=1\n  PowerManagerService.WakeLocks: ref count=1\n\n"
+                + "Display Power: state=OFF\n\nUid states:\n  UID 10101: PROCESS_STATE_TOP  ACTIVE count=1 state=2\n"
+                + "Looper state:\n  Looper (power, tid 120) {9e1c}\n";
+        String t = PowerDump.text(dump);
+        check(t.contains("mWakefulness=Asleep") && t.contains("mLastSleepReason=power_button")
+                && t.contains("mScreenOffTimeoutSetting=600000") && t.contains("Display Power: state=OFF"), "power: the state stays");
+        check(t.contains("Wake Locks: size=2") && t.contains("(2 lines left out)"), "power: the wake lock header with the count");
+        check(!t.contains("com.example.player") && !t.contains("AudioMix") && !t.contains("UID 10101"), "power: no app named");
+        check(t.contains("Uid states:") && t.contains("Suspend Blockers: size=1") && !t.contains("ref count"), "power: other app blocks out");
+        check(PowerDump.text(null).contains("(not readable)"), "power: a missing dump is named");
+        StringBuilder big = new StringBuilder();
+        for (int i = 0; i < 40_000; i++) big.append("  mSetting").append(i).append("=1\n");
+        String c = PowerDump.text(big.toString());
+        check(c.length() < PowerDump.CAP + 200 && c.contains("(cut at "), "power: capped");
+        // hdmi.txt from the helper's dumps: one path, a missing helper answer names both parts
+        check(HdmiDump.text(null, null, null).contains("(not readable)"), "hdmi: no helper answer is named, nothing else read");
+    }
+
+    // ------------------------------------------------------------------ RootLogs (the image's root log helper)
+    /** Properties of a fake image: the helper answers {@code answer} for the token it was asked after {@code delay} polls. */
+    private static final class FakeProps implements RootLogs.Props {
+        final java.util.Map<String, String> v = new java.util.HashMap<>();
+        final List<String> sets = new ArrayList<>();
+        String answer;
+        int delay, polls;
+        boolean refuseSet;
+
+        @Override public String get(String k) {
+            if (RootLogs.PROP_DONE.equals(k) && answer != null && v.containsKey(RootLogs.PROP_REQ) && ++polls > delay) {
+                return v.get(RootLogs.PROP_REQ) + " " + answer;
+            }
+            return v.getOrDefault(k, "");
+        }
+
+        @Override public void set(String k, String val) {
+            if (refuseSet) throw new RuntimeException("denied");
+            sets.add(k + "=" + val);
+            v.put(k, val);
+        }
+    }
+
+    private static final class FakeClock implements RootLogs.Clock {
+        long t;
+        int cancelAfter = -1, sleeps;
+
+        @Override public long now() { return t; }
+
+        /** A wait that never ends is a failure, not a hang: after 100000 polls the fake clock cancels. */
+        @Override public boolean sleep(long ms) {
+            t += ms;
+            return ++sleeps < (cancelAfter < 0 ? 100_000 : cancelAfter);
+        }
+    }
+
+    private static void rootLogs() throws Exception {
+        Set<String> tokens = new HashSet<>();
+        for (int i = 0; i < 200; i++) {
+            String t = RootLogs.token(i % 3 == 0 ? Long.MAX_VALUE : 123_456_789L);
+            if (!RootLogs.valid(t)) { check(false, "token in the helper's alphabet: " + t); break; }
+            tokens.add(t);
+        }
+        check(tokens.size() == 200, "tokens are fresh");
+        for (String bad : new String[] {"", null, "ABC", "a b", "a;rm", "x$(id)", "../x", "abcdefghijklmnopqrstuvwxy", "k_1"}) {
+            check(!RootLogs.valid(bad), "token refused like the helper does: " + bad);
+        }
+        check(RootLogs.valid("abcdefghijklmnopqrstuvwx"), "24 characters are fine");
+
+        check(RootLogs.parse("t1 ok", "t1") == RootLogs.Answer.OK, "answer ok");
+        check(RootLogs.parse("t1 busy", "t1") == RootLogs.Answer.BUSY, "answer busy");
+        check(RootLogs.parse("t1 none", "t1") == RootLogs.Answer.NONE, "answer none");
+        check(RootLogs.parse("t1 refused", "t1") == RootLogs.Answer.REFUSED, "answer refused");
+        check(RootLogs.parse("t1-2 ok", "t1") == null, "another token's answer is not ours");
+        check(RootLogs.parse("aa-1 ok", "bb-2") == null, "an older token of the same length is not ours");
+        check(RootLogs.parse("t1", "t1") == null && RootLogs.parse("", "t1") == null && RootLogs.parse(null, "t1") == null,
+                "no answer yet");
+        check(RootLogs.parse("t1 maybe", "t1") == null, "an unknown word is no answer");
+
+        FakeProps p = new FakeProps();
+        p.answer = "ok";
+        p.delay = 3;
+        FakeClock c = new FakeClock();
+        check(RootLogs.request(p, c, "r-1", 30_000) == RootLogs.Answer.OK, "request: the helper's ok");
+        check(p.sets.equals(Collections.singletonList(RootLogs.PROP_REQ + "=r-1")), "request: only the token was set");
+        check(c.t == 3 * RootLogs.POLL_MS, "request: polled until the answer");
+
+        p = new FakeProps();
+        p.v.put(RootLogs.PROP_DONE, "old-1 ok");
+        c = new FakeClock();
+        check(RootLogs.request(p, c, "r-2", 30_000) == RootLogs.Answer.TIMEOUT, "request: an older answer is no answer, timeout");
+        check(c.t >= 30_000 && c.t < 30_000 + 2 * RootLogs.POLL_MS, "request: gives up at the timeout");
+
+        p = new FakeProps();
+        c = new FakeClock();
+        c.cancelAfter = 4;
+        check(RootLogs.request(p, c, "r-3", 30_000) == RootLogs.Answer.CANCELED, "request: cancel stops the wait");
+        check(c.t < 1000, "request: cancel stops at once");
+
+        p = new FakeProps();
+        check(RootLogs.request(p, new FakeClock(), "BAD token", 30_000) == RootLogs.Answer.NONE && p.sets.isEmpty(),
+                "request: an invalid token is never sent");
+        p = new FakeProps();
+        p.refuseSet = true;
+        check(RootLogs.request(p, new FakeClock(), "r-4", 30_000) == RootLogs.Answer.NONE, "request: a refused set is none");
+
+        File d = Files.createTempDirectory("rootlogs").toFile();
+        check(!RootLogs.fresh(d, "r-5"), "fresh: no token file");
+        Files.write(new File(d, "token").toPath(), "r-4\n".getBytes(StandardCharsets.UTF_8));
+        check(!RootLogs.fresh(d, "r-5"), "fresh: the files of another request");
+        Files.write(new File(d, "token").toPath(), "r-5\n".getBytes(StandardCharsets.UTF_8));
+        check(RootLogs.fresh(d, "r-5"), "fresh: the files of this request");
+
+        p = new FakeProps();
+        RootLogs.ack(p, "r-5");
+        check(p.sets.equals(Collections.singletonList(RootLogs.PROP_ACK + "=r-5")), "ack: the token in the ack property");
+        p.refuseSet = true;
+        RootLogs.ack(p, "r-6");                                   // must not throw
+
+        // the helper's logcat as root goes through the same filter: system and image apps, crash of any app
+        LogcatFilter f = new LogcatFilter(new HashSet<>(Collections.singletonList(10057)), 10057, true);
+        check(f.keep("--------- beginning of main"), "helper log: divider");
+        check(f.keep("11-26 10:00:00.001  1000  1200  1210 I HdmiControlService: <Report Physical Address> 2.0.0.0"),
+                "helper log: a system line");
+        check(!f.keep("11-26 10:00:00.007 10101  2100  2101 D OkHttp: GET /feed"), "helper log: a user app line stays out");
+        check(f.keep("--------- switch to events") && f.keep("11-26 10:00:00.011  1000  1200  1214 I am_proc_start: [0,2000]"),
+                "helper log: the events buffer");
+        check(f.sawOtherProcesses(), "helper log: counted as full log access");
+        for (String k : new String[] {"logcat.txt", "crash.txt", "kernel.txt"}) {
+            check(Arrays.asList(RootLogs.LOGCAT, RootLogs.CRASH, RootLogs.KERNEL).contains(k), "helper file name " + k);
+        }
+        check(Arrays.asList(RootLogs.DUMPSYS).equals(Arrays.asList("hdmi_control", "audio", "power")), "helper dumpsys list");
     }
 
     // ------------------------------------------------------------------ PartUpload
@@ -75,6 +218,10 @@ public final class ReportTest {
         final java.util.Set<Integer> fail503 = new java.util.HashSet<>(), drop = new java.util.HashSet<>();
         final java.util.concurrent.atomic.AtomicInteger calls = new java.util.concurrent.atomic.AtomicInteger();
         volatile boolean choke;
+        /** parts on their way at once (each waits slowMs here, so lanes overlap) */
+        final java.util.concurrent.atomic.AtomicInteger inFlight = new java.util.concurrent.atomic.AtomicInteger(),
+                maxInFlight = new java.util.concurrent.atomic.AtomicInteger();
+        volatile int slowMs;
         final com.sun.net.httpserver.HttpServer srv;
 
         PartServer() throws IOException {
@@ -86,6 +233,9 @@ public final class ReportTest {
                 String up = h.getFirst("X-Lumen-Upload");
                 long off = Long.parseLong(h.getFirst("X-Lumen-Offset")), total = Long.parseLong(h.getFirst("X-Lumen-Total"));
                 byte[] body = ex.getRequestBody().readAllBytes();
+                maxInFlight.accumulateAndGet(inFlight.incrementAndGet(), Math::max);
+                if (slowMs > 0) try { Thread.sleep(slowMs); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                inFlight.decrementAndGet();
                 boolean query = "1".equals(h.getFirst("X-Lumen-Query"));
                 seen.add((query ? "q" : off + ":" + body.length) + ":" + h.getFirst("X-Lumen-Kind") + ":" + h.getFirst("X-Lumen-Serial")
                         + ":" + h.getFirst("Connection") + ":" + h.getFirst("X-Lumen-Model"));
@@ -134,6 +284,7 @@ public final class ReportTest {
         try {
             // a choked network: the first large part gets no answer, the rest goes in small parts, several at once
             ps.choke = true;
+            ps.slowMs = 30;
             ps.fail503.add(3);
             ps.drop.add(6);
             PartUpload u = new PartUpload("0123456789abcdef01234567", "6.17.12 (beta)", "g0111", "dump", "CZW1234567MK", true);
@@ -155,21 +306,29 @@ public final class ReportTest {
                 }
             }
             check(big >= 1 && big <= PartUpload.LANES && heads, "parts: at most one large try per lane, then small parts; kind, serial, model and Connection: close on every part: " + big);
-            check(last[0] >= data.length - PartUpload.PART * (PartUpload.LANES + 1), "parts: progress near the end: " + last[0]);
+            check(last[0] >= data.length - PartUpload.PART * (PartUpload.LANES_CHOKED + 1), "parts: progress near the end: " + last[0]);
+            check(ps.maxInFlight.get() > PartUpload.LANES && ps.maxInFlight.get() <= PartUpload.LANES_CHOKED,
+                    "parts: more lanes once the choke was found: " + ps.maxInFlight.get());
             // the next run of a choked upload starts small, and nothing large is tried again
             ps.seen.clear();
             String up2 = PartUpload.newUploadId();
             PartUpload u2 = new PartUpload("0123456789abcdef01234567", "1", "g0111", "dump", "", true);
+            ps.maxInFlight.set(0);
             check("LR-PART01".equals(u2.send(java.util.Arrays.asList(ps.url()), zip, up2, true, (s, t) -> true)), "parts: started small");
+            check(ps.maxInFlight.get() > PartUpload.LANES && ps.maxInFlight.get() <= PartUpload.LANES_CHOKED,
+                    "parts: a choked upload starts with LANES_CHOKED lanes: " + ps.maxInFlight.get());
             for (String s : new java.util.ArrayList<>(ps.seen)) small &= s.startsWith("q") || Integer.parseInt(s.split(":")[1]) <= PartUpload.PART;
             check(small, "parts: a choked upload never tries a large part again");
-            // no choke: large parts, few calls
+            // no choke: large parts, few calls, at most LANES at once
             ps.choke = false;
+            ps.maxInFlight.set(0);
             ps.seen.clear();
             String up3 = PartUpload.newUploadId();
             PartUpload u3 = new PartUpload("0123456789abcdef01234567", "1", "g0111", "dump", "", true);
             check("LR-PART01".equals(u3.send(java.util.Arrays.asList(ps.url()), zip, up3, (s, t) -> true)) && !u3.choked()
-                    && ps.seen.size() <= 1 + 3 + PartUpload.LANES, "parts: large parts where nothing is choked: " + ps.seen.size());
+                    && ps.seen.size() <= 1 + 3 + PartUpload.LANES && ps.maxInFlight.get() <= PartUpload.LANES,
+                    "parts: large parts where nothing is choked: " + ps.seen.size() + " " + ps.maxInFlight.get());
+            ps.slowMs = 0;
             // resume: the server already has the first part of an upload, the next run sends only the rest
             String up4 = PartUpload.newUploadId();
             PartUpload first = new PartUpload("0123456789abcdef01234567", "1", "g0111", "dump", "", true);
@@ -820,8 +979,10 @@ public final class ReportTest {
 
     // ------------------------------------------------------------------ ReportUrl, ReportFailure
     private static void url() {
-        check(ReportUrl.CLOUDFLARE.equals("https://prompt.az/lumen/v1/report"), "default address = our server");
-        check(ReportUrl.DEFAULTS.equals(Arrays.asList(ReportUrl.CLOUDFLARE)), "no direct address in the code");
+        check(ReportUrl.SERVER.equals("https://stats.lumen-os.net/lumen/v1/report"), "default address = our server");
+        check(ReportUrl.CLOUDFLARE.equals("https://prompt.az/lumen/v1/report"), "the old address behind Cloudflare");
+        check(ReportUrl.DEFAULTS.equals(Arrays.asList(ReportUrl.SERVER, ReportUrl.CLOUDFLARE)),
+                "our server first, the old address after it");
         check(ReportUrl.DEFAULTS.equals(ReportUrl.choose("", "")) && ReportUrl.DEFAULTS.equals(ReportUrl.choose(null, null)),
                 "no property = our server");
         check(ReportUrl.choose("", "off").isEmpty(), "image switch off");
@@ -1088,6 +1249,166 @@ public final class ReportTest {
         } else {
             passed++;
         }
+    }
+
+    /**
+     * hdmi.txt (HdmiDump): a CEC report must show the projector's CEC history, power status and System Audio flag
+     * whole, and from dumpsys audio only the HDMI / ARC / System Audio lines, never the apps that played sound.
+     * Lines from the stock HB G0148 dump with a box on HDMI 2 and a soundbar on ARC (2026-11-17), a Yandex <Standby>.
+     */
+    private static void hdmiDump() {
+        String cec = "mProhibitMode: false\nmPowerStatus: 0\n  mSystemAudioActivated: true\n"
+                + "  tv_send_standby_on_sleep (int): 0 (default: 0) [modifiable]\n"
+                + "    mActiveSource: (0x08, 0x2000)\n    mArcEstablished: true\n"
+                + "    [R] time=2026-11-26 21:00:01 message=<Standby> 80:36\n"
+                + "    [S] time=2026-11-26 21:00:01 message=<Feature Abort> 08:00:36:01 (ACK)\n"
+                + "    [R] time=2026-11-26 21:01:10 message=<Set System Audio Mode> 5F:72:00";
+        String audio = "Audio routes:\n  mMainType=0x0\n  mBluetoothName=null\n"
+                + "  mHdmiSystemAudioSupported=true\n"
+                + "absolute volume devices: [AudioDeviceAttributes: role:output type:hdmi_arc addr: name:]\n"
+                + "  AudioPlaybackConfiguration piid:63 deviceId:2 type:android.media.SoundPool u/pid:10123/4567 "
+                + "state:started attr:AudioAttributes: usage=USAGE_MEDIA package=com.example.player\n"
+                + "  AudioPlaybackConfiguration piid:71 state:started package=com.google.android.katniss.search\n"
+                + "Force use for media: FORCE_NONE\n"
+                + "  Devices: out speaker(0x2), hdmi arc(0x40000)\n";
+        String t = HdmiDump.text(cec, "1 CEC messages\n11-26 17:43:49.318 [R]:<Active Source> BF:82:20:00\n", audio);
+        check(t.contains("message=<Standby> 80:36") && t.contains("<Feature Abort> 08:00:36:01"),
+                "hdmi.txt keeps the CEC history whole");
+        check(t.contains("mPowerStatus: 0") && t.contains("mSystemAudioActivated: true") && t.contains("mArcEstablished: true"),
+                "hdmi.txt keeps the power status, System Audio and ARC");
+        check(t.contains("mHdmiSystemAudioSupported=true") && t.contains("type:hdmi_arc") && t.contains("hdmi arc(0x40000)")
+                && t.contains("Force use for media"), "hdmi.txt keeps the HDMI, ARC and forced route lines of dumpsys audio");
+        check(!t.contains("com.example.player") && !t.contains("katniss.search") && !t.contains("mBluetoothName"),
+                "hdmi.txt drops the audio lines without HDMI or ARC (apps that played sound)");
+        check(t.indexOf("== dumpsys hdmi_control") < t.indexOf("== CEC messages of the system log")
+                && t.indexOf("[R]:<Active Source> BF:82:20:00") > t.indexOf("== CEC messages of the system log")
+                && t.indexOf("== CEC messages of the system log") < t.indexOf("== dumpsys audio"),
+                "hdmi.txt: CEC state, then the system log journal, then audio");
+        String none = HdmiDump.text(null, null, null);
+        check(none.contains("== dumpsys hdmi_control\n(not readable)") && none.contains("lines)\n(not readable)")
+                && none.contains("(CecJournal)\n(not read)"), "hdmi.txt names a part it could not read");
+        StringBuilder big = new StringBuilder();
+        while (big.length() <= HdmiDump.CAP + 10) big.append("[R] <Report Power Status> 50:90:00\n");
+        String c = HdmiDump.cap(big.toString());
+        check(c.length() < HdmiDump.CAP + 100 && c.contains("(cut at " + HdmiDump.CAP + " characters"),
+                "hdmi.txt parts are capped and say so");
+    }
+
+    private static String cecLine(String time, String dir, String msg) {
+        return "11-26 " + time + "  1000   962  " + (dir.equals("R") ? "1210" : "1290") + " D HDMI    : [" + dir + "]:" + msg;
+    }
+
+    /** A soundbar poll pair at {@code time} (17:mm:ss): its question to the projector and the projector's answer. */
+    private static void barPoll(CecJournal j, String time, String status) {
+        j.add(cecLine(time + ".201", "R", "<Give Device Power Status> 50:8F"));
+        j.add(cecLine(time + ".210", "S", "<Report Power Status> 05:90:" + status));
+    }
+
+    /**
+     * The CEC journal (CecJournal): the framework's [R]/[S] lines of the system log in order, the power polls of a
+     * soundbar counted so that a whole evening fits (evleo790 LR-VRE2Z1: the bar on 5 asked every 2 s, the dump kept
+     * 4 minutes and lost the box's &lt;Active Source&gt; of 17:43:49), every other message whole.
+     */
+    private static void cecJournal() {
+        CecJournal j = new CecJournal();
+        j.add("11-26 17:27:08.386  1000   962   962 V DeviceDiscoveryAction:   Device features: arc_rx: ?");
+        j.add("11-26 17:27:09.002  1000   962  1210 D HDMI    : Hotplug event:[port:1, connected:true]");
+        for (int i = 0; i < 300; i++) {
+            barPoll(j, String.format(java.util.Locale.US, "17:%02d:%02d", 30 + i * 2 / 60, i * 2 % 60), "00");
+            if (i % 30 == 0) {                                           // the projector's own minute poll of the box
+                j.add(cecLine(String.format(java.util.Locale.US, "17:%02d:%02d.500", 30 + i * 2 / 60, i * 2 % 60), "S",
+                        "<Give Device Power Status> 0B:8F"));
+                j.add(cecLine(String.format(java.util.Locale.US, "17:%02d:%02d.530", 30 + i * 2 / 60, i * 2 % 60), "R",
+                        "<Report Power Status> B0:90:00"));
+            }
+        }
+        j.add(cecLine("17:43:49.318", "R", "<Active Source> BF:82:20:00"));
+        barPoll(j, "17:43:50", "00");
+        barPoll(j, "17:43:52", "00");
+        barPoll(j, "17:43:54", "01");
+        barPoll(j, "17:43:56", "01");
+        j.add("11-26 17:44:00.100  1000   962  1290 W HdmiCecController: Failed to send <Give Device Power Status> 0B:8F with errorCode=1");
+        j.add(cecLine("17:44:00.090", "S", "<Give Device Power Status> 0B:8F"));
+        j.add(cecLine("17:44:02.090", "S", "<Give Device Power Status> 0B:8F"));
+        j.add("11-26 17:44:23.604   962  1210 D HDMI    : [R]:<Active Source> BF:82:20:00");    // adb logcat, no uid column
+        j.add(cecLine("17:44:24.000", "R", "<Report Power Status> 50:90:01"));
+        j.add("11-26 17:44:25.000  1000   962   962 I HdmiControlService: onStandby");
+        j.add("11-26 17:44:26.000  1000   962   962 D HDMI_X  : [R]:<Standby> 0F:36");
+        String t = j.text("D");
+        String[] raw = t.split("\n");                       // padded: a wrong count fails a check, never throws
+        String[] l = Arrays.copyOf(raw, Math.max(raw.length, 16));
+        Arrays.fill(l, raw.length, l.length, "");
+        check(l[0].equals((600 + 20 + 1 + 8 + 2 + 2) + " CEC messages from 11-26 17:27:09.002 to 11-26 17:44:24.000, "
+                + "log.tag.HDMI \"D\", repeated power status questions counted"), "journal header: messages, span, the prop: " + l[0]);
+        check(l[1].equals("11-26 17:27:09.002 Hotplug event:[port:1, connected:true]"), "journal keeps other HDMI lines");
+        check(l[2].equals("11-26 17:30:00.201 to 11-26 17:39:58.210 x300 [R]:<Give Device Power Status> 50:8F answer "
+                + "[S]:<Report Power Status> 05:90:00"), "journal: 300 soundbar polls are one counted line: " + l[2]);
+        check(l[3].equals("11-26 17:30:00.500 to 11-26 17:39:00.530 x10 [S]:<Give Device Power Status> 0B:8F answer "
+                + "[R]:<Report Power Status> B0:90:00"), "journal: the minute poll of another device counts on its own: " + l[3]);
+        check(l[4].equals("11-26 17:43:49.318 [R]:<Active Source> BF:82:20:00"), "journal: the 17:43:49 event in its place");
+        check(l[5].startsWith("11-26 17:43:50.201 to 11-26 17:43:52.210 x2 ") && l[5].endsWith("05:90:00")
+                && l[6].startsWith("11-26 17:43:54.201 to 11-26 17:43:56.210 x2 ") && l[6].endsWith("05:90:01"),
+                "journal: a changed answer is its own line (standby)");
+        check(l[7].equals("11-26 17:44:00.100 W HdmiCecController: Failed to send <Give Device Power Status> 0B:8F with errorCode=1"),
+                "journal keeps a failed send with its level and tag");
+        check(l[8].equals("11-26 17:44:00.090 to 11-26 17:44:02.090 x2 [S]:<Give Device Power Status> 0B:8F (no answer)")
+                && l[9].equals("11-26 17:44:23.604 [R]:<Active Source> BF:82:20:00"),
+                "journal: unanswered questions counted, a line without the uid column read");
+        check(l[10].equals("11-26 17:44:24.000 [R]:<Report Power Status> 50:90:01") && raw.length == 11,
+                "journal: a power report nobody asked for is a message; other tags left out");
+        check(new CecJournal().text("").contains("no CEC lines in the system log; log.tag.HDMI is \"\""),
+                "journal: none found names the prop");
+        CecJournal big = new CecJournal();
+        for (int i = 0; i < CecJournal.MAX_LINES + 5; i++) {
+            big.add(cecLine(String.format(java.util.Locale.US, "18:%02d:%02d.%03d", i / 60000 % 60, i / 1000 % 60, i % 1000),
+                    "R", "<User Control Pressed> 40:44:41"));
+        }
+        String b = big.text(null);
+        check(b.contains("\n(5 older lines left out)\n") && !b.contains("18:00:00.004 [R]") && b.contains("18:00:00.005 [R]") && b.contains("18:00:04.004 [R]")
+                && b.split("\n").length == CecJournal.MAX_LINES + 2 && b.contains("log.tag.HDMI unknown"),
+                "journal keeps the newest lines and says how many older ones were left out");
+    }
+
+    /** The report screen A (ReportView): screens, actions, the first focus, BACK, the bar and the last report. */
+    private static void screen() {
+        ReportView v = ReportView.of(ReportState.IDLE, false);
+        check(v.screen == ReportView.Screen.START, "idle shows the start screen");
+        check(v.focus == ReportView.Action.SEND, "the focus starts on Send report");
+        check(v.actions.equals(java.util.Arrays.asList(ReportView.Action.SEND, ReportView.Action.AUTO,
+                ReportView.Action.DETAILS, ReportView.Action.CLOSE)), "start: send, automatic, what is in it, close");
+        check(v.back() == ReportView.Back.LEAVE, "back on start leaves");
+        ReportView d = ReportView.of(ReportState.IDLE, true);
+        check(d.screen == ReportView.Screen.DETAILS && d.focus == ReportView.Action.BACK
+                && d.actions.equals(java.util.Collections.singletonList(ReportView.Action.BACK)), "details: only Back, focused");
+        check(d.back() == ReportView.Back.START, "back on details returns to start");
+        check(ReportView.returnFocus(ReportView.Screen.DETAILS) == ReportView.Action.DETAILS, "back from details lands on its row");
+        check(ReportView.returnFocus(ReportView.Screen.DONE) == ReportView.Action.SEND, "back from the code lands on Send");
+        for (ReportState st : new ReportState[] {ReportState.COLLECTING, ReportState.UPLOADING}) {
+            ReportView p = ReportView.of(st, true);
+            check(p.screen == ReportView.Screen.PROGRESS && p.focus == ReportView.Action.CANCEL, st + ": progress, Cancel focused");
+            check(p.back() == ReportView.Back.CANCEL, st + ": back stops the report");
+        }
+        ReportView done = ReportView.of(ReportState.DONE, false);
+        check(done.screen == ReportView.Screen.DONE && done.focus == ReportView.Action.DONE, "done: the code and Done");
+        check(done.back() == ReportView.Back.START, "back on the code returns to start");
+        ReportView q = ReportView.of(ReportState.QUEUED, false);
+        check(q.screen == ReportView.Screen.QUEUED && q.focus == ReportView.Action.CLOSE, "offline: queued, Close");
+        ReportView f = ReportView.of(ReportState.FAILED, false);
+        check(f.screen == ReportView.Screen.FAILED && f.focus == ReportView.Action.RETRY
+                && f.actions.equals(java.util.Arrays.asList(ReportView.Action.RETRY, ReportView.Action.CLOSE)), "failed: Try again first, Close");
+        check(ReportView.of(null, false).screen == ReportView.Screen.START, "no state is the start screen");
+        check(ReportView.progress(ReportState.COLLECTING, 1, 9, 0, 0) == 0f, "collecting step 1 starts empty");
+        check(Math.abs(ReportView.progress(ReportState.COLLECTING, 9, 9, 0, 0) - 0.7f * 8 / 9) < 1e-6, "collecting fills 70 %");
+        check(ReportView.progress(ReportState.COLLECTING, 20, 9, 0, 0) < 0.7f, "a step past the end stays below sending");
+        check(ReportView.progress(ReportState.UPLOADING, 0, 0, 0, 100) == 0.7f, "sending starts at 70 %");
+        check(Math.abs(ReportView.progress(ReportState.UPLOADING, 0, 0, 50, 100) - 0.85f) < 1e-6, "sending half way");
+        check(ReportView.progress(ReportState.UPLOADING, 0, 0, 500, 100) == 1f, "sent never beyond full");
+        check(ReportView.progress(ReportState.DONE, 3, 9, 1, 1) == 0f, "no bar outside a running report");
+        check(ReportView.step(0, 9) == 1 && ReportView.step(12, 9) == 9 && ReportView.step(3, 0) == 1, "shown step 1..n");
+        check(!ReportView.newerIsAuto("LR-AAAA", 5, "LR-BBBB", 4), "the newer manual report is named");
+        check(ReportView.newerIsAuto("LR-AAAA", 5, "LR-BBBB", 6), "the newer automatic report is named");
+        check(ReportView.newerIsAuto(null, 0, "LR-BBBB", 6), "only an automatic one");
+        check(!ReportView.newerIsAuto("LR-AAAA", 5, null, 9), "an automatic time without a code is none");
     }
 
     private static void check(boolean ok, String what) {

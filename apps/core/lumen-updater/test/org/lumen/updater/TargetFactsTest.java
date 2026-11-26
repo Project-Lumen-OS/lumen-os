@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * The model table of README.md, pinned per assembled updater: test/run.sh passes the expected facts of each recipe
  * as key=value arguments and this compares them with the recipe's Target.SPEC. A changed model value fails here even
- * where no behaviour test reaches it (the start-up import, the hidden settings row, the DSU hand-over).
+ * where no behaviour test reaches it (the hidden settings row, the DSU hand-over).
  */
 public final class TargetFactsTest {
     public static void main(String[] a) {
@@ -24,7 +24,6 @@ public final class TargetFactsTest {
         got.put("install", t.install.name());
         got.put("checks", t.gateProp != null ? "prop:" + t.gateProp + ":" + t.checks.name() : t.checks.name());
         got.put("dsu", String.valueOf(t.dsuHandover));
-        got.put("import", String.valueOf(t.importBridgeData));
         got.put("hide", String.valueOf(t.hideWithoutDevice));
         got.put("vabc", String.join(",", t.compressedSnapshots));
         int pass = 0, fail = 0;

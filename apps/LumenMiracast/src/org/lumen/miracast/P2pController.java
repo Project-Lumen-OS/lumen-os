@@ -21,6 +21,7 @@ import android.util.Log;
 
 import org.lumen.miracast.core.Diag;
 import org.lumen.miracast.core.P2pCapability;
+import org.lumen.miracast.core.P2pHealth;
 import org.lumen.miracast.core.P2pRules;
 import org.lumen.miracast.core.P2pVerdict;
 
@@ -30,8 +31,12 @@ import java.util.Locale;
  * Wi-Fi Direct side of the receiver, on the main thread.
  *
  * - Announces the projector as a WFD primary sink (setWfdInfo: CONFIGURE_WIFI_DISPLAY) under the
- *   chosen name (setDeviceName: NETWORK_SETTINGS), and stays discoverable with extended listen
- *   (startListening; falls back to periodic discoverPeers like the stock XGIMI service).
+ *   chosen name (setDeviceName: NETWORK_SETTINGS), and stays discoverable with periodic discoverPeers like the
+ *   stock XGIMI service. Never startListening: on the MediaTek TV vendors the framework turns it into a supplicant
+ *   call the vendor lacks (configureExtListenWithParams) and loses its P2P interface until the next set-up.
+ * - Watches that the framework's link to Wi-Fi Direct still answers ({@link P2pHealth}): calls failing with ERROR,
+ *   or the link lost right after accepting a connection, reopen the channel so Android sets the interface up again,
+ *   and the fault names the cause for the status line.
  * - Takes over the framework's "accept invitation?" dialog with an external approver bound to the
  *   broadcast address (Android 13+ treats it as the approver for every peer), so the receiver shows
  *   its own prompt or accepts by itself (MANAGE_WIFI_NETWORK_SELECTION). The framework drops that
@@ -59,13 +64,18 @@ final class P2pController {
 
         /** Wi-Fi Direct proven (YES) or missing (NO); definitive = NO that nothing can change on this boot. */
         void onCapability(P2pVerdict verdict, String why, boolean definitive);
+
+        /** The link died right after a connection was accepted: keep it for this system build. */
+        void onConnectBroken();
     }
 
     private static final long REASSERT_MS = 60_000;
     private static final long DISCOVER_RETRY_MS = 8_000;
     private static final long REATTACH_MS = 500;
-    /** With discovery as the fallback, listen mode is tried again this often (a refusal at boot can be transient). */
-    private static final int LISTEN_RETRY_EVERY = 10;
+    /** A closed channel lets Android tear the P2P interface down; the next call after this sets it up again. */
+    private static final long REOPEN_MS = 3_000;
+    /** After an accepted request: one harmless call this much later tells whether the link survived it. */
+    private static final long ACCEPT_PROBE_MS = 4_000;
 
     private final Context ctx;
     private final Callback cb;
@@ -73,14 +83,15 @@ final class P2pController {
     private final Handler main = new Handler(Looper.getMainLooper());
     private WifiP2pManager mgr;
     private WifiP2pManager.Channel channel;
-    private boolean receiverOn, p2pEnabled, groupFormed, running, useDiscovery, approverAttached, removingApprover;
-    private int reasserts;
+    private boolean receiverOn, p2pEnabled, groupFormed, running, approverAttached, removingApprover;
     private String name;
     private P2pState state = P2pState.STOPPED;
     private String lastError;
     private final P2pCapability cap = new P2pCapability();
+    private final P2pHealth health = new P2pHealth();
     private P2pVerdict reported = P2pVerdict.UNKNOWN;
     private boolean wifiOn;
+    private WifiP2pWfdInfo wfd;
 
     P2pController(Context ctx, Callback cb, Diag diag) {
         this.ctx = ctx;
@@ -96,10 +107,20 @@ final class P2pController {
         return lastError;
     }
 
+    /** What the status line names beyond the state (P2pHealth). */
+    P2pHealth.Fault fault() {
+        return health.fault();
+    }
+
+    /** The link died after an accepted connection on an earlier start of this system build. */
+    void knownConnectBroken() {
+        health.knownConnectBroken();
+    }
+
     /** One line for dumpsys and the status page. */
     String summary() {
         return "state=" + state + " p2p=" + p2pEnabled + " group=" + groupFormed + " approver=" + approverAttached
-                + " visible=" + (useDiscovery ? "discovery (listen refused)" : "listen") + " lastError=" + lastError
+                + " visible=discovery fault=" + health.fault() + " lastError=" + lastError
                 + " wifi=" + wifiOn + " wifiDirect=" + cap.verdict() + " (" + cap.why() + ")";
     }
 
@@ -125,7 +146,6 @@ final class P2pController {
             f.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
             f.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
             f.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
-            f.addAction(WifiP2pManager.ACTION_WIFI_P2P_LISTEN_STATE_CHANGED);
             ctx.registerReceiver(receiver, f, Context.RECEIVER_NOT_EXPORTED);
             receiverOn = true;
         }
@@ -139,7 +159,6 @@ final class P2pController {
         cap.wifi(false, now());   // a stopped receiver makes no Wi-Fi Direct call: its time proves nothing
         if (mgr != null && channel != null) {
             try {
-                mgr.stopListening(channel, null);
                 mgr.stopPeerDiscovery(channel, null);
                 if (approverAttached) {
                     removingApprover = true;
@@ -187,7 +206,36 @@ final class P2pController {
             diag.fail(Diag.Stage.ANSWER, what + ": " + t);
             Log.w(TAG, "answer: " + t);
         }
+        if (accept) {
+            main.removeCallbacks(acceptProbe);
+            main.postDelayed(acceptProbe, ACCEPT_PROBE_MS);
+        }
     }
+
+    /**
+     * Did the link survive the accepted request? The framework answers it with a supplicant call; on a vendor that
+     * lacks that call the framework loses its P2P interface and every later call fails with ERROR. Setting the same
+     * WFD information again is a harmless call that tells it.
+     */
+    private final Runnable acceptProbe = () -> {
+        if (!running || groupFormed || mgr == null || channel == null || wfd == null) return;
+        mgr.setWfdInfo(channel, wfd, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                healthOk();
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                if (reason != P2pHealth.REASON_ERROR || groupFormed) return;
+                lastError = "Wi-Fi Direct lost its link right after accepting a connection";
+                Log.w(TAG, lastError + ": the system cannot finish connections on this unit");
+                diag.fail(Diag.Stage.GROUP, lastError + " (the system's Wi-Fi part does not match this vendor's driver)");
+                cb.onConnectBroken();
+                act(health.lostAfterAccept(), "after an accepted connection");
+            }
+        });
+    };
 
     /** Let the framework show its own dialog for this request (PIN entry or PIN display on our side). */
     void deferToSystem(String deviceAddress, String why) {
@@ -264,7 +312,7 @@ final class P2pController {
     private void configure() {
         if (mgr == null || channel == null) return;
         setName();
-        WifiP2pWfdInfo wfd = new WifiP2pWfdInfo();
+        wfd = new WifiP2pWfdInfo();
         wfd.setEnabled(true);
         wfd.setDeviceType(WifiP2pWfdInfo.DEVICE_TYPE_PRIMARY_SINK);
         wfd.setSessionAvailable(true);
@@ -293,41 +341,61 @@ final class P2pController {
         mgr.setDeviceName(channel, name, stageListener("setDeviceName " + name, Diag.Stage.NAME, name));
     }
 
+    /** Discovery alternates search and listen, so phones find the projector while it runs (the stock way). */
     private void becomeVisible() {
         if (mgr == null || channel == null || groupFormed || !running) return;
-        if (useDiscovery && reasserts % LISTEN_RETRY_EVERY != 0) {
-            mgr.discoverPeers(channel, stageListener("discoverPeers", Diag.Stage.VISIBLE, "discovery (listen refused earlier)"));
-            return;
-        }
-        mgr.startListening(channel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                Log.i(TAG, "listening (discoverable)");
-                decide(cap.proven("startListening ok"));
-                useDiscovery = false;
-                diag.ok(Diag.Stage.VISIBLE, "listen");
-                setState(P2pState.VISIBLE);
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.w(TAG, "startListening failed " + reason + "; using discoverPeers");
-                decide(cap.callFailed(reason, "startListening"));
-                diag.waiting(Diag.Stage.VISIBLE, "startListening refused (" + reasonName(reason) + "), trying discovery");
-                useDiscovery = true;
-                if (mgr != null && channel != null) {
-                    mgr.discoverPeers(channel, stageListener("discoverPeers", Diag.Stage.VISIBLE, "discovery (listen refused)"));
-                }
-            }
-        });
+        mgr.discoverPeers(channel, stageListener("discoverPeers", Diag.Stage.VISIBLE, "discovery"));
     }
 
-    /** Periodically re-announce: some framework paths drop listen mode silently (scan, group removal). */
+    /**
+     * The framework lost its link to the supplicant's P2P interface: close the channel (the last client gone, Android
+     * tears the interface down) and open a new one, whose first call sets the interface up again.
+     */
+    private void restart(String why) {
+        if (!running || mgr == null) return;
+        Log.w(TAG, "Wi-Fi Direct stopped answering (" + why + "), reopening the channel");
+        diag.waiting(Diag.Stage.P2P, "stopped answering (" + why + "), reopening the channel so the system sets it up again");
+        main.removeCallbacks(acceptProbe);
+        if (channel != null) {
+            try {
+                channel.close();
+            } catch (Throwable t) {
+                Log.w(TAG, "channel close: " + t);
+            }
+        }
+        channel = null;
+        approverAttached = false;
+        setState(P2pState.STARTING);
+        main.postDelayed(() -> {
+            if (!running || channel != null) return;
+            openChannel();
+            if (p2pEnabled) configure();
+        }, REOPEN_MS);
+    }
+
+    private void act(P2pHealth.Action a, String why) {
+        cb.onStateChanged();
+        if (a == P2pHealth.Action.RESTART) restart(why);
+    }
+
+    private void healthOk() {
+        P2pHealth.Fault was = health.fault();
+        health.ok();
+        if (health.fault() != was) cb.onStateChanged();
+    }
+
+    private void healthFailed(int reason, String what) {
+        P2pHealth.Fault was = health.fault();
+        P2pHealth.Action a = health.failed(reason, now());
+        if (a == P2pHealth.Action.RESTART) act(a, what + " failed (" + reasonName(reason) + ")");
+        else if (health.fault() != was) cb.onStateChanged();
+    }
+
+    /** Periodically re-announce: some framework paths stop discovery silently (scan, group removal). */
     private final Runnable reassert = new Runnable() {
         @Override
         public void run() {
             if (!running) return;
-            reasserts++;
             if (p2pEnabled && !groupFormed) {
                 attachApprover();
                 becomeVisible();
@@ -406,6 +474,7 @@ final class P2pController {
                     boolean on = i.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN)
                             == WifiManager.WIFI_STATE_ENABLED;
                     if (on != wifiOn) Log.i(TAG, "wifi " + (on ? "on" : "off"));
+                    if (!on) health.wifiOff();
                     onWifi(on);
                     break;
                 }
@@ -454,18 +523,11 @@ final class P2pController {
                 }
                 case WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION: {
                     int st = i.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED);
-                    if (useDiscovery && st == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED && running && !groupFormed) {
+                    if (st == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED && running && !groupFormed) {
                         main.postDelayed(P2pController.this::becomeVisible, DISCOVER_RETRY_MS);
-                    } else if (st == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED && useDiscovery) {
+                    } else if (st == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED) {
                         setState(P2pState.VISIBLE);
                     }
-                    break;
-                }
-                case WifiP2pManager.ACTION_WIFI_P2P_LISTEN_STATE_CHANGED: {
-                    int st = i.getIntExtra(WifiP2pManager.EXTRA_LISTEN_STATE, WifiP2pManager.WIFI_P2P_LISTEN_STOPPED);
-                    Log.i(TAG, "listen state " + st);
-                    if (st == WifiP2pManager.WIFI_P2P_LISTEN_STARTED) setState(P2pState.VISIBLE);
-                    else if (!groupFormed && running && !useDiscovery) setState(P2pState.STARTING);
                     break;
                 }
                 default:
@@ -480,6 +542,7 @@ final class P2pController {
             public void onSuccess() {
                 Log.i(TAG, what + " ok");
                 decide(cap.proven(what + " ok"));
+                healthOk();
             }
 
             @Override
@@ -487,6 +550,7 @@ final class P2pController {
                 lastError = what + " failed (" + reasonName(reason) + ")";
                 Log.w(TAG, lastError);
                 decide(cap.callFailed(reason, what));
+                healthFailed(reason, what);
             }
         };
     }
@@ -499,6 +563,8 @@ final class P2pController {
                 Log.i(TAG, what + " ok");
                 diag.ok(stage, okDetail);
                 decide(cap.proven(what + " ok"));
+                healthOk();
+                if (stage == Diag.Stage.VISIBLE) setState(P2pState.VISIBLE);
             }
 
             @Override
@@ -507,6 +573,7 @@ final class P2pController {
                 Log.w(TAG, lastError);
                 diag.fail(stage, lastError);
                 decide(cap.callFailed(reason, what));
+                healthFailed(reason, what);
             }
         };
     }

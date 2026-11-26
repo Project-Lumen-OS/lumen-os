@@ -110,22 +110,24 @@ public final class TitanUxMenuTest {
         List<MenuSpec.Group> ks = s.sections.get(MenuSpec.KEYSTONE), kp = s.popups.get(MenuSpec.KEYSTONE);
         ok(dev + ": auto and manual focus on the Image correction page", in(ks, FeatureId.FOCUS_AF_NOW) && in(ks, FeatureId.FOCUS_MANUAL));
         int manual = rows(ks).indexOf(FeatureId.KEYSTONE_MANUAL), af = rows(ks).indexOf(FeatureId.FOCUS_AF_NOW);
-        ok(dev + ": right after manual keystone", manual >= 0 && af == manual + 1);
-        ok(dev + ": smart focus on the focus.settings sub page of that page", in(ks, FeatureId.FOCUS_SETTINGS)
-                && in(s.pages.get(FeatureId.FOCUS_SETTINGS), FeatureId.FOCUS_SMART) && !in(ks, FeatureId.FOCUS_SMART));
+        ok(dev + ": right after manual keystone", p.has(FeatureId.KEYSTONE_MANUAL) ? manual >= 0 && af == manual + 1
+                : manual < 0 && af >= 0);   // a HAL without the manual keystone (RS 20 v1.6.52): the row is off
+        ok(dev + ": smart focus on the focus.settings sub page of that page (where its stock has it)", in(ks, FeatureId.FOCUS_SETTINGS)
+                && in(s.pages.get(FeatureId.FOCUS_SETTINGS), FeatureId.FOCUS_SMART) == p.has(FeatureId.FOCUS_SMART) && !in(ks, FeatureId.FOCUS_SMART));
         ok(dev + ": All settings has no own Focus category any more", !s.allSettings.contains(MenuSpec.FOCUS)
                 && s.allSettings.contains(MenuSpec.KEYSTONE));
         ok(dev + ": the keystone popup leaves the focus rows to the Focus tile (each row once on the card)",
                 !in(kp, FeatureId.FOCUS_AF_NOW) && !in(kp, FeatureId.FOCUS_MANUAL) && !in(kp, FeatureId.FOCUS_SETTINGS));
         List<MenuSpec.Group> fp = s.popups.get(MenuSpec.FOCUS);
         ok(dev + ": the Focus tile popup keeps every focus row", in(fp, FeatureId.FOCUS_AF_NOW) && in(fp, FeatureId.FOCUS_MANUAL)
-                && in(fp, FeatureId.FOCUS_SMART));
+                && in(fp, FeatureId.FOCUS_SMART) == p.has(FeatureId.FOCUS_SMART));
         List<MenuSpec.Group> gen = s.sections.get(MenuSpec.GENERAL);
         boolean menuGroup = false;
         if (gen != null) for (MenuSpec.Group g : gen) {
-            if ("menu".equals(g.header) && g.rows.contains(FeatureId.SETTINGS_MENU_SIDE) && g.rows.contains(FeatureId.SETTINGS_MENU_DENSITY)) menuGroup = true;
+            if (MenuSpec.DISPLAY_MENU.equals(g.header) && g.rows.contains(FeatureId.SETTINGS_MENU_SIDE)
+                    && g.rows.contains(FeatureId.SETTINGS_MENU_DENSITY)) menuGroup = true;
         }
-        ok(dev + ": General has the Menu group (side and size)", menuGroup);
+        ok(dev + ": General has the menu's side and size in Display and menu", menuGroup);
         if (p.has(FeatureId.KEYSTONE_ANGLE_H)) {
             boolean sized = false;
             for (MenuSpec.Group g : ks) {

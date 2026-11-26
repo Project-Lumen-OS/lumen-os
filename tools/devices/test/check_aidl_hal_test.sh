@@ -94,11 +94,11 @@ build() { # build-dir: compile $W/app with the throwaway key into $W/app.apk
     > "$W/build.log" 2>&1
 }
 
-# ------------------------------------------------------------------ part 2: the hal_app (apps/HbProjector)
+# ------------------------------------------------------------------ part 2: the hal_app (the HB app, its recipe)
 APP=$HAL_APP
 # an app built from a recipe: the test runs on its assembled tree, as the build
 if [ -n "$(ls "$G"/devices/goat_elegant/app/*.layers 2>/dev/null)" ]; then
-  python3 -B "$G/tools/devices/assemble_app.py" --device goat_elegant --app "$(basename "$HAL_APP")" --out "$W/hal_app" --quiet \
+  python3 -B "$G/tools/devices/assemble_app.py" --device goat_elegant --app HbProjector --out "$W/hal_app" --quiet \
     || { echo "FAIL p2: the recipe of ${HAL_APP#$G/} does not assemble"; exit 1; }
   APP=$W/hal_app
 fi
@@ -150,7 +150,7 @@ expect p2_parcel_in_kstpoint 1
 reported p2_parcel_in_kstpoint 'rule 1: src/org/lumen/projector/hal/KstPoint.java:.*: Parcel outside the transport file'
 
 copy
-edit $H/AidlCaller.java 'b.transact(c.code, data, reply, 0)' 'b.transact(33, data, reply, 0)'
+edit src/org/lumen/hal/AidlTransport.java 'b.transact(c.code(), data, reply, 0)' 'b.transact(33, data, reply, 0)'
 expect p2_raw_integer_code 1
 reported p2_raw_integer_code 'rule 1: .*found .33.'
 
@@ -167,10 +167,10 @@ reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*getMethod( outside'
 reported p2_reflection_bypass 'rule 1: .*GmpfClient.java:.*\.invoke( outside'
 
 copy
-edit $H/AidlWire.java '@Override public void i32(GmpfCall k, int v) throws RemoteException { callI32(k, v); }' \
-  '@Override public void i32(GmpfCall k, int v) throws RemoteException { callI32(36, v); }'
+edit $H/AidlWire.java '@Override public void i32(GmpfCall k, int v) throws RemoteException { proxyCall(k, o -> o.i32(v), RET_VOID); }' \
+  '@Override public void i32(GmpfCall k, int v) throws RemoteException { proxyCall(36, o -> o.i32(v), RET_VOID); }'
 expect p2_helper_integer_code 1
-reported p2_helper_integer_code 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*callI32(36, v) passes no Call'
+reported p2_helper_integer_code 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*proxyCall(36, .*) passes no Call'
 
 # rule 5 names: a class outside the transport's hierarchy with its own method of a transport name calls its own method
 # (the shared menu's QpdMirror: call(method, arg) on a content provider); a transport subclass is checked even through
@@ -187,12 +187,12 @@ JEOF
 expect p2_local_method_named_like_transport 0
 
 copy
-edit $H/AidlWire.java 'final class AidlWire extends AidlCaller implements GmpfWire<GmpfCall> {' \
-  'final class AidlWire extends AidlCaller implements GmpfWire<GmpfCall> {
-    private int callI32(int code, int v) throws android.os.RemoteException { return code + v; }
-    int poke() throws android.os.RemoteException { return callI32(36, 1); }'
+edit $H/AidlWire.java 'final class AidlWire extends AidlTransport<GmpfCall> implements GmpfWire<GmpfCall> {' \
+  'final class AidlWire extends AidlTransport<GmpfCall> implements GmpfWire<GmpfCall> {
+    private int proxyCall(int code, int v) throws android.os.RemoteException { return code + v; }
+    int poke() throws android.os.RemoteException { return proxyCall(36, 1); }'
 expect p2_subclass_own_overload 1
-reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*callI32(36, 1) passes no Call'
+reported p2_subclass_own_overload 'rule 5: src/org/lumen/projector/hal/AidlWire.java:.*proxyCall(36, 1) passes no Call'
 
 copy
 edit $H/GmpfCall.java "$LAST" "$LAST_OPEN GET_DLP_LUMENS_COMPONENT_RGB_LEVEL(GmpfIface.DISPLAY, 9, \"getDlpLumensComponent_RGB_Level\");"
@@ -259,6 +259,37 @@ else
     PASS=$((PASS + 1)); echo "ok   p3_focus102_unsent: no allowlist row, no Call"
   fi
 fi
+
+# ------------------------------------------------------------------ part 4: calls of only some firmwares (fw: rows)
+# x50-1338-menu: X50Projector sends DisplayManager 233..235 and GmTvManager 204 only on XGIMI v1.3.38 (its allow rows
+# carry fw:aidl_codes_v1338.tsv), without the column those rows are no row of the v1.2.64 table, a fw: column naming
+# a table that is not a --codes one is refused too
+X=$W/X50Projector XR=$G/devices/g0111/research   # the app as its recipe layers it: the activity host and its HAL adapter
+mkdir -p "$X" && cp -R "$G/apps/LumenProjector/host/activity/src" "$X/" && cp -R "$G/apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/." "$X/src/"
+x50() { # allowed-file
+  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$X" --codes "$XR/aidl_codes.tsv" --codes "$XR/aidl_codes_v1254.tsv" \
+    --codes "$XR/aidl_codes_v1338.tsv" --banned "$R/banned.tsv" --allowed "$1" --module "$G/apps/core/lumen-hal" \
+    --unbanned "$XR/unbanned_x50projector.tsv" > "$W/out" 2>&1
+}
+echo "part 4: X50Projector fw: rows"
+x50 "$XR/allowed_x50projector.tsv"; result p4_clean 0 $?
+sed 's/\tfw:aidl_codes_v1338\.tsv\t/\t/' "$XR/allowed_x50projector.tsv" > "$W/x50_nofw.tsv"
+x50 "$W/x50_nofw.tsv"; result p4_no_fw_column 1 $?
+reported p4_no_fw_column "setDynamicBlackSubtitleRegion is not a row of aidl_codes.tsv"
+sed 's/\tfw:aidl_codes_v1338\.tsv\t/\tfw:aidl_codes_v1339.tsv\t/' "$XR/allowed_x50projector.tsv" > "$W/x50_badfw.tsv"
+x50 "$W/x50_badfw.tsv"; result p4_fw_unknown_table 1 $?
+reported p4_fw_unknown_table "fw: names aidl_codes_v1339.tsv"
+# the shared app is checked once per model: a TITAN build has the v1.2.99 table and no v1.3.38 one, so the v1.3.38
+# rows are never sent there and the colour uniformity rows must be rows of the v1.2.99 table
+x50t() { # allowed-file
+  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$X" --codes "$XR/aidl_codes.tsv" --codes "$XR/aidl_codes_v1254.tsv" \
+    --codes "$G/devices/h0062/research/aidl_codes_v1299.tsv" --banned "$R/banned.tsv" --allowed "$1" \
+    --module "$G/apps/core/lumen-hal" --unbanned "$XR/unbanned_x50projector.tsv" > "$W/out" 2>&1
+}
+x50t "$XR/allowed_x50projector.tsv"; result p4_titan_tables 0 $?
+sed 's/^\(DisplayManager\t233\t.*\)\tfw:aidl_codes_v1338\.tsv\t/\1\tfw:aidl_codes_v1254.tsv,aidl_codes_v1338.tsv\t/' "$XR/allowed_x50projector.tsv" > "$W/x50_fw1254.tsv"
+x50 "$W/x50_fw1254.tsv"; result p4_named_table_without_row 1 $?
+reported p4_named_table_without_row "setDynamicBlackSubtitleRegion is not a row of aidl_codes_v1254.tsv"
 
 echo "check_aidl_hal_test: $PASS passed, $FAIL failed"
 [ $FAIL = 0 ]

@@ -1837,16 +1837,16 @@ C getGameModeOption()() s3
   = null
 C getGameModeProp()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGameModeProp()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
 C getGameModeProp()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
 C getGameModeProp()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGamePicture(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C getGamePicture(int)(-1) s2
@@ -1953,16 +1953,16 @@ C getHdmiHwConfig(int)(0) s2
   ! IllegalArgumentException: hdmi port 0 not in 1..2
 C getHdmiHwConfig(int)(1) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(1) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(2) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(2) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(3) s0
   ! IllegalArgumentException: hdmi port 3 not in 1..2
 C getHdmiHwConfig(int)(3) s2
@@ -2029,16 +2029,16 @@ C getHdmiHwConfig(int)(20000) s2
   ! IllegalArgumentException: hdmi port 20000 not in 1..2
 C getHdmiInfo()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiInfo()() s1
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
 C getHdmiInfo()() s2
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiInfo()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
 C getHdmiRange()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 64 f0 
   = 1
@@ -2089,22 +2089,22 @@ C getHgig()() s3
   = true
 C getHsyColorModel(HsyType)(HUE) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(HUE) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C getHsyColorModel(HsyType)(null) s2
@@ -2112,19 +2112,19 @@ C getHsyColorModel(HsyType)(null) s2
 C getKeystonePoints()() s0
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (1)
 C getKeystonePoints()() s1
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: null parcelable in the reply
 C getKeystonePoints()() s2
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (3)
 C getKeystonePoints()() s3
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (2)
 C getLampLevel()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 7 f0 
   = 1
@@ -2176,19 +2176,19 @@ C getMemcLevel()() s3
 C getMotionDetection()() s0
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
 C getMotionDetection()() s1
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
 C getMotionDetection()() s2
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
 C getMotionDetection()() s3
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
 C getMoveAf()() s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 5 f0 
   = true
@@ -2235,20 +2235,20 @@ C getMultiPointWb(int)(3) s2
   ! IllegalArgumentException: wb point 3
 C getMultiPointWb(int)(5) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(5) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(6) s0
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(6) s2
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(10) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(10) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(12) s0
   ! IllegalArgumentException: wb point 12
 C getMultiPointWb(int)(12) s2
@@ -2267,16 +2267,16 @@ C getMultiPointWb(int)(44) s2
   ! IllegalArgumentException: wb point 44
 C getMultiPointWb(int)(50) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(50) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(100) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(100) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(101) s0
   ! IllegalArgumentException: wb point 101
 C getMultiPointWb(int)(101) s2
@@ -2484,19 +2484,19 @@ C getScreenOn()() s3
 C getScreenRotation()() s0
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getScreenRotation()() s1
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: null parcelable in the reply
 C getScreenRotation()() s2
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (2)
 C getScreenRotation()() s3
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getSensorTemperature(int)(-1) s0
   ! NotOnHbException: getTemperatureFromSensor: not on the Z9X HB, nothing sent
 C getSensorTemperature(int)(-1) s2
@@ -2832,19 +2832,19 @@ C getWb(WbItem)(null) s2
 C getZoomLimitStep()() s0
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomLimitStep()() s1
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomLimitStep()() s2
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomLimitStep()() s3
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomLimitTotal()() s0
   GATE OPTICAL_ZOOM zoomControl(12, 10)
   TX xgimi.hardware.gmpf.IDisplayManager 63 f0 12 10
@@ -2863,28 +2863,28 @@ C getZoomLimitTotal()() s3
   = 5
 C getZoomStep()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStep()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStep()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStep()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStepRange()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStepRange()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C goToBootCompleted(BootStage)(EARLY) s0
   TX xgimi.hardware.gmpf.IPowerManager 2 f0 0
   = true
@@ -12840,16 +12840,16 @@ C getGameModeOption()() s3
   = null
 C getGameModeProp()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGameModeProp()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
 C getGameModeProp()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
 C getGameModeProp()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGamePicture(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C getGamePicture(int)(-1) s2
@@ -12956,16 +12956,16 @@ C getHdmiHwConfig(int)(0) s2
   ! IllegalArgumentException: hdmi port 0 not in 1..2
 C getHdmiHwConfig(int)(1) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(1) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(2) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(2) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(3) s0
   ! IllegalArgumentException: hdmi port 3 not in 1..2
 C getHdmiHwConfig(int)(3) s2
@@ -13032,16 +13032,16 @@ C getHdmiHwConfig(int)(20000) s2
   ! IllegalArgumentException: hdmi port 20000 not in 1..2
 C getHdmiInfo()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiInfo()() s1
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
 C getHdmiInfo()() s2
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiInfo()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
 C getHdmiRange()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 64 f0 
   = 1
@@ -13092,22 +13092,22 @@ C getHgig()() s3
   = true
 C getHsyColorModel(HsyType)(HUE) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(HUE) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C getHsyColorModel(HsyType)(null) s2
@@ -13115,19 +13115,19 @@ C getHsyColorModel(HsyType)(null) s2
 C getKeystonePoints()() s0
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (1)
 C getKeystonePoints()() s1
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: null parcelable in the reply
 C getKeystonePoints()() s2
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (3)
 C getKeystonePoints()() s3
   GATE MANUAL_KEYSTONE getCorrectKeystoneFullPiont
   TX xgimi.hardware.gmpf.IDisplayManager 16 f0 0
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getCorrectKeystoneFullPiont: java.lang.IllegalStateException: parcelable too small (2)
 C getLampLevel()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 7 f0 
   = 1
@@ -13179,19 +13179,19 @@ C getMemcLevel()() s3
 C getMotionDetection()() s0
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: parcelable too small (1)
 C getMotionDetection()() s1
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: null parcelable in the reply
 C getMotionDetection()() s2
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: parcelable too small (3)
 C getMotionDetection()() s3
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: int array of 17 (at most 8)
 C getMoveAf()() s0
   TX xgimi.hardware.gmpf.IMotionDetectionManager 5 f0 
   = true
@@ -13238,20 +13238,20 @@ C getMultiPointWb(int)(3) s2
   ! IllegalArgumentException: wb point 3
 C getMultiPointWb(int)(5) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(5) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(6) s0
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(6) s2
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(10) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(10) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(12) s0
   ! IllegalArgumentException: wb point 12
 C getMultiPointWb(int)(12) s2
@@ -13270,16 +13270,16 @@ C getMultiPointWb(int)(44) s2
   ! IllegalArgumentException: wb point 44
 C getMultiPointWb(int)(50) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(50) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(100) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(100) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(101) s0
   ! IllegalArgumentException: wb point 101
 C getMultiPointWb(int)(101) s2
@@ -13483,19 +13483,19 @@ C getScreenOn()() s3
 C getScreenRotation()() s0
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getScreenRotation()() s1
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: null parcelable in the reply
 C getScreenRotation()() s2
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (2)
 C getScreenRotation()() s3
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getSensorTemperature(int)(-1) s0
   ! NotOnHbException: getTemperatureFromSensor: not on the Z9X HB, nothing sent
 C getSensorTemperature(int)(-1) s2
@@ -13827,19 +13827,19 @@ C getWb(WbItem)(null) s2
 C getZoomLimitStep()() s0
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomLimitStep()() s1
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomLimitStep()() s2
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomLimitStep()() s3
   GATE OPTICAL_ZOOM GetCurrentZoomLimitStep
   TX xgimi.hardware.gmpf.IDisplayManager 190 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of GetCurrentZoomLimitStep: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomLimitTotal()() s0
   GATE OPTICAL_ZOOM zoomControl(12, 10)
   TX xgimi.hardware.gmpf.IDisplayManager 63 f0 12 10
@@ -13858,28 +13858,28 @@ C getZoomLimitTotal()() s3
   = 5
 C getZoomStep()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStep()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStep()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStep()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStepRange()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStepRange()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C goToBootCompleted(BootStage)(EARLY) s0
   TX xgimi.hardware.gmpf.IPowerManager 2 f0 0
   = true
@@ -23831,16 +23831,16 @@ C getGameModeOption()() s3
   = null
 C getGameModeProp()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGameModeProp()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: null parcelable in the reply
 C getGameModeProp()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (2)
 C getGameModeProp()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: parcelable too small (1)
 C getGamePicture(int)(-1) s0
   ! IllegalArgumentException: hdmi source -1 not in 1..2
 C getGamePicture(int)(-1) s2
@@ -23947,16 +23947,16 @@ C getHdmiHwConfig(int)(0) s2
   ! IllegalArgumentException: hdmi port 0 not in 1..2
 C getHdmiHwConfig(int)(1) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(1) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 1
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(2) s0
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiHwConfig(int)(2) s2
   TX xgimi.hardware.gmpf.IGmTvManager 153 f0 2
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiHwConfig: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiHwConfig(int)(3) s0
   ! IllegalArgumentException: hdmi port 3 not in 1..2
 C getHdmiHwConfig(int)(3) s2
@@ -24023,16 +24023,16 @@ C getHdmiHwConfig(int)(20000) s2
   ! IllegalArgumentException: hdmi port 20000 not in 1..2
 C getHdmiInfo()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (1)
 C getHdmiInfo()() s1
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: null parcelable in the reply
 C getHdmiInfo()() s2
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable too small (3)
 C getHdmiInfo()() s3
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
+  ! ReplyException: reply of getHdmiInfo: java.lang.IllegalStateException: parcelable of 10 bytes is shorter than its fields
 C getHdmiRange()() s0
   TX xgimi.hardware.gmpf.IGmTvManager 64 f0 
   = 1
@@ -24083,22 +24083,22 @@ C getHgig()() s3
   = true
 C getHsyColorModel(HsyType)(HUE) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(HUE) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(SATURATION) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 1 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s0
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 1, expected 7
 C getHsyColorModel(HsyType)(LIGHTNESS) s2
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 2 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 3, expected 7
 C getHsyColorModel(HsyType)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C getHsyColorModel(HsyType)(null) s2
@@ -24221,20 +24221,20 @@ C getMultiPointWb(int)(3) s2
   ! IllegalArgumentException: wb point 3
 C getMultiPointWb(int)(5) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(5) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 5
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(6) s0
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(6) s2
   ! IllegalArgumentException: wb point 6
 C getMultiPointWb(int)(10) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(10) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 10
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(12) s0
   ! IllegalArgumentException: wb point 12
 C getMultiPointWb(int)(12) s2
@@ -24253,16 +24253,16 @@ C getMultiPointWb(int)(44) s2
   ! IllegalArgumentException: wb point 44
 C getMultiPointWb(int)(50) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(50) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(100) s0
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (1)
 C getMultiPointWb(int)(100) s2
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 100
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: parcelable too small (2)
 C getMultiPointWb(int)(101) s0
   ! IllegalArgumentException: wb point 101
 C getMultiPointWb(int)(101) s2
@@ -24825,28 +24825,28 @@ C getZoomLimitTotal()() s3
   ! NotOnHbException: zoomControl(12, 10) (OPTICAL_ZOOM is OFF): not on the Z9X HB, nothing sent
 C getZoomStep()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStep()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStep()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStep()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 98 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getCurrentZoomStep2: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s0
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C getZoomStepRange()() s1
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: null parcelable in the reply
 C getZoomStepRange()() s2
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (2)
 C getZoomStepRange()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 97 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
+  ! ReplyException: reply of getZoomStepRange: java.lang.IllegalStateException: parcelable too small (1)
 C goToBootCompleted(BootStage)(EARLY) s0
   TX xgimi.hardware.gmpf.IPowerManager 2 f0 0
   = true
@@ -33039,7 +33039,7 @@ C motion getMotionDetection()
 C motion getMotionDetection()
   GATE MOTION getMotionDetection
   TX xgimi.hardware.gmpf.IMotionDetectionManager 2 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IMotionDetectionManager getMotionDetection: java.lang.IllegalStateException: MsensorDataStruct arrays 2 / 3
+  ! ReplyException: reply of getMotionDetection: java.lang.IllegalStateException: MsensorDataStruct arrays 2 / 3
 C struct getScreenRotation()
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
@@ -33047,23 +33047,23 @@ C struct getScreenRotation()
 C struct getScreenRotation()
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: 142 struct -50.0,10.0,0.0,0.0
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: 142 struct -50.0,10.0,0.0,0.0
 C struct getScreenRotation()
   GATE ROTATION getScreenRotationInfo
   TX xgimi.hardware.gmpf.ISystemManager 142 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.ISystemManager getScreenRotationInfo: java.lang.IllegalStateException: 142 returned false
+  ! ReplyException: reply of getScreenRotationInfo: java.lang.IllegalStateException: 142 returned false
 C struct getGameModeProp()
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
   = [0, 0, 1]
 C struct getGameModeProp()
   TX xgimi.hardware.gmpf.IDisplayManager 148 f0 
-  ! ReplyException: reply of xgimi.hardware.gmpf.IDisplayManager getGameModeProp: java.lang.IllegalStateException: 148 returned false
+  ! ReplyException: reply of getGameModeProp: java.lang.IllegalStateException: 148 returned false
 C struct getMultiPointWb(50)
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
   = [10, 20, 30]
 C struct getMultiPointWb(50)
   TX xgimi.hardware.gmpf.IGmTvManager 166 f0 50
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getOneOfMultiPointWB: java.lang.IllegalStateException: 166 struct 40,10,20,30 for 50
+  ! ReplyException: reply of getOneOfMultiPointWB: java.lang.IllegalStateException: 166 struct 40,10,20,30 for 50
 C struct setMultiPointWb(50,10,20,30)
   TX xgimi.hardware.gmpf.IGmTvManager 165 f0 50 1 20 50 10 20 30
   = true
@@ -33072,10 +33072,10 @@ C struct getHsyColorModel(HUE)
   = [50, 40, 30, 20, 10, 0, 100]
 C struct getHsyColorModel(HUE)
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: 118 value 101 at 6
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: 118 value 101 at 6
 C struct getHsyColorModel(HUE)
   TX xgimi.hardware.gmpf.IGmTvManager 118 f0 0 0 7
-  ! ReplyException: reply of xgimi.hardware.gmpf.IGmTvManager getHsyColorModel: java.lang.IllegalStateException: byte array of 6, expected 7
+  ! ReplyException: reply of getHsyColorModel: java.lang.IllegalStateException: byte array of 6, expected 7
 C struct getHdmiInfo()
   TX xgimi.hardware.gmpf.IGmTvManager 38 f0 
   = 3840x2160p@59.9 hdmi raw=3840,2160,false,true,5990
@@ -33107,7 +33107,7 @@ C error isBoost()
   = true
 C error getLampLevel()
   TX xgimi.hardware.gmpf.IDisplayManager 7 f0 
-  ! ReplyException: Method getDlpLumensLevel is unimplemented (code 7)
+  ! ReplyException: getDlpLumensLevel unimplemented
 C callback connectFocusManager()
   TX xgimi.hardware.gmpf.IProjectorFocusManager 1 f0 1651076708
   = null
@@ -33132,3 +33132,46 @@ C callback transact 16777214
   = true reply 92
 C callback transact 77
   = false reply 0
+# transport
+C transport tvCallback (first)
+  TX xgimi.hardware.gmpf.IGmTvManager 1 f0 1651076708
+  = null
+C transport tvCallback (again, the same binder)
+  TX xgimi.hardware.gmpf.IGmTvManager 1 f0 1651076708
+  = null
+C transport u8 200
+  ! IllegalArgumentException: byte argument 200 not in 0..127
+C transport vendor death
+  EVENT onVendorDied
+  = null
+C transport handshake, SYSTEM refuses its guard call
+  CHECKSERVICE xgimi.hardware.gmpf.ISystemManager/default
+  LINK xgimi.hardware.gmpf.ISystemManager/default
+  TX xgimi.hardware.gmpf.ISystemManager 16777215 f0 
+  CHECKSERVICE xgimi.hardware.gmpf.IPowerManager/default
+  LINK xgimi.hardware.gmpf.IPowerManager/default
+  TX xgimi.hardware.gmpf.IPowerManager 16777215 f0 
+  TX xgimi.hardware.gmpf.IPowerManager 16777214 f0 
+  CHECKSERVICE xgimi.hardware.gmpf.IProjectorFocusManager/default
+  LINK xgimi.hardware.gmpf.IProjectorFocusManager/default
+  TX xgimi.hardware.gmpf.IProjectorFocusManager 16777215 f0 
+  TX xgimi.hardware.gmpf.IProjectorFocusManager 16777214 f0 
+  = false
+C transport handshake again (SYSTEM stays closed)
+  = false
+C transport vendor death (the closed interface opens again)
+  = null
+C transport handshake after the death
+  CHECKSERVICE xgimi.hardware.gmpf.ISystemManager/default
+  LINK xgimi.hardware.gmpf.ISystemManager/default
+  TX xgimi.hardware.gmpf.ISystemManager 16777215 f0 
+  TX xgimi.hardware.gmpf.ISystemManager 16777214 f0 
+  CHECKSERVICE xgimi.hardware.gmpf.IPowerManager/default
+  LINK xgimi.hardware.gmpf.IPowerManager/default
+  TX xgimi.hardware.gmpf.IPowerManager 16777215 f0 
+  TX xgimi.hardware.gmpf.IPowerManager 16777214 f0 
+  CHECKSERVICE xgimi.hardware.gmpf.IProjectorFocusManager/default
+  LINK xgimi.hardware.gmpf.IProjectorFocusManager/default
+  TX xgimi.hardware.gmpf.IProjectorFocusManager 16777215 f0 
+  TX xgimi.hardware.gmpf.IProjectorFocusManager 16777214 f0 
+  = true

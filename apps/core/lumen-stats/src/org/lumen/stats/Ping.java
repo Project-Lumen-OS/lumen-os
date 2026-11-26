@@ -20,10 +20,11 @@ public final class Ping {
     /** Default of the statistics switch (the one place that sets it). */
     public static final boolean DEFAULT_ON = true;
     /**
-     * Tried in order until one answers 2xx. Empty = no statistics server in this build: nothing is sent and every
-     * statistics switch is hidden ("never show what does not work").
+     * Tried in order until one answers 2xx: our server, then its old address behind Cloudflare, which forwards to it
+     * (kept as the second try for one release). Empty = no statistics server in this build: nothing is sent and
+     * every statistics switch is hidden ("never show what does not work").
      */
-    public static final String[] URLS = {"https://prompt.az/lumen/v1/ping"};
+    public static final String[] URLS = {"https://stats.lumen-os.net/lumen/v1/ping", "https://prompt.az/lumen/v1/ping"};
     /** A failed send is tried again at the next trigger, but not sooner than this. */
     public static final long RETRY_MS = 5 * 60 * 1000L;
     public static final int VERSION = 3;

@@ -48,6 +48,19 @@ MUTANTS = [
     ("a short gear is no MENU press of the tool panel", PN, "        if (!held) {\n            long t", "        if (false) {\n            long t"),
     ("a held gear is a MENU press of the tool panel", PN, "        if (!held) {\n            long t", "        if (true) {\n            long t"),
     ("every panel takes the gear", PN, "    protected boolean takesMenuKey() { return false; }", "    protected boolean takesMenuKey() { return true; }"),
+    # ---- a tool that hides the menu (the X50 subtitle mask editor, stock showOrHideSettingMenu(false))
+    ("dbm: no tool ever hides the menu", KT, "        return t != null && t.hidesMenu();", "        return false;"),
+    ("dbm: every tool hides the menu", KT, "        return t != null && t.hidesMenu();", "        return t != null;"),
+    ("dbm: the panel stays seen under the mask editor", AH, "        boolean hide = on && KeyTools.frontHidesMenu();", "        boolean hide = false;"),
+    ("dbm: the panel stays unseen after the mask editor", AH, "        boolean hide = on && KeyTools.frontHidesMenu();", "        boolean hide = KeyTools.frontHidesMenu() || !on && aside == null;"),
+    ("dbm: the panel alpha never set", AH, "        if (p.root != null) p.root.setAlpha(hide ? 0f : 1f);\n", ""),
+    ("dbm: the panel hidden by INVISIBLE (the row loses its focus)", AH, "        if (p.root != null) p.root.setAlpha(hide ? 0f : 1f);",
+     "        if (p.root != null) p.root.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);"),
+    ("dbm: the mask editor does not hide the menu", X + "SubtitleMaskActivity.java", "    @Override public boolean hidesMenu() { return true; }\n", ""),
+    ("dbm: the gear does nothing in the mask editor", X + "SubtitleMaskActivity.java", "    @Override public void onMenuKey(boolean held) { back(); }", "    @Override public void onMenuKey(boolean held) { }"),
+    ("dbm: BACK from a page row screen goes to the card", "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java",
+     "        final Runnable back = section != null ? backToRow(section) : () -> { if (!ours()) show(null, null); };",
+     "        final Runnable back = section != null ? backToRow(section) : () -> show(null, null);"),
     # ---- activity host (X50)
     ("activity host: no aside at all", AH, "        if (!onMain(\"aside\")) { main.post(() -> aside(on)); return; }", "        if (true) return;"),
     ("activity host: the focus loss closes the menu under the tool", AH, "if (panel.showing && panel != aside && !hasWindowFocus()) {",
@@ -60,22 +73,28 @@ MUTANTS = [
     ("a tool screen never leaves", TA, "        KeyTools.gone(this);\n", ""),
 ]
 # ---- the glue of every app (wiring.py)
-for app, name in ((Z, "Z9X"), (HB, "HB"), (P6, "Play 6")):
+# one core KeyReceiver for every gmpf family and the Play 6 (step 3b part 4)
+MUTANTS += [
+    ("the gear short opens the quick menu over a tool", Z + "KeyReceiver.java", " && !KeyTools.menuKey(false)) {", ") {"),
+    ("the held gear opens the game menu / settings over a tool", Z + "KeyReceiver.java",
+     "        if (KeyTools.menuKey(true)) return;", ""),
+]
+for kst, name in (("panel/ManualKeystonePanel.java", "Z9X"), ("panel/Play6KeystonePanel.java", "Play 6")):
     MUTANTS += [
-        (name + ": the gear short opens the quick menu over a tool", app + "KeyReceiver.java", " && !KeyTools.menuKey(false)) {", ") {"),
-        (name + ": the held gear opens the game menu / settings over a tool", app + "KeyReceiver.java",
-         "        if (KeyTools.menuKey(true)) return;", ""),
-        (name + ": manual focus is no tool screen", app + "ManualFocusActivity.java", wiring.MF_TOOL,
-         "public final class ManualFocusActivity extends android.app.Activity {"),
-        (name + ": the gear leaves manual focus open", app + "ManualFocusActivity.java", "        if (motor != null) motor.stop();\n        if (!isFinishing()) finish();\n    }\n", "        if (motor != null) motor.stop();\n    }\n"),
-        (name + ": the fine corner adjustment is no tool panel", app + "panel/ManualKeystonePanel.java", wiring.TOOL_PANEL,
+        (name + ": the fine corner adjustment is no tool panel", Z + kst, wiring.TOOL_PANEL,
          "    protected boolean takesMenuKey() { return false; }"),
     ]
-for app, name in ((Z, "Z9X"), (HB, "HB")):
+# manual focus is one core class for every family since step 3b part 3 (the Play 6 copy is gone)
+MUTANTS += [
+    ("manual focus is no tool screen", Z + "ManualFocusActivity.java", wiring.MF_TOOL,
+     "public final class ManualFocusActivity extends android.app.Activity {"),
+    ("the gear leaves manual focus open", Z + "ManualFocusActivity.java", "        if (motor != null) motor.stop();\n        if (!isFinishing()) finish();\n    }\n", "        if (motor != null) motor.stop();\n    }\n"),
+]
+for app, name in ((Z, "Z9X"),):
     MUTANTS.append((name + ": the zoom card is no tool panel", app + "panel/OpticalZoomPanel.java", wiring.TOOL_PANEL,
                     "    protected boolean takesMenuKey() { return false; }"))
 MUTANTS += [
-    ("Play 6: the zoom and shift card is no tool panel", P6 + "panel/Play6ZoomShiftPanel.java", wiring.TOOL_PANEL,
+    ("Play 6: the zoom and shift card is no tool panel", Z + "panel/Play6ZoomShiftPanel.java", wiring.TOOL_PANEL,
      "    protected boolean takesMenuKey() { return false; }"),
     ("X50: the gear opens the menu over a tool", X + "KeyReceiver.java", " && KeyTools.menuKey(longPress)) return;", " && false) return;"),
     ("X50: manual focus is no tool screen", X + "FocusActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
@@ -85,7 +104,9 @@ MUTANTS += [
 
 
 def copy_tree(dst):
-    files = set(wiring.FILES) | {KT, OH, PN, AH, TA, UI + "PanelHost.java", UI + "PanelActivity.java"}
+    files = set(wiring.FILES) | {KT, OH, PN, AH, TA, UI + "PanelHost.java", UI + "PanelActivity.java",
+                                 "apps/core/lumen-menu/src/org/lumen/menu/Rehost.java",
+                                 "apps/core/lumen-remote/src/org/lumen/remote/keys/KeyHook.java"}
     for f in files:
         os.makedirs(os.path.join(dst, os.path.dirname(f)), exist_ok=True)
         shutil.copy(os.path.join(G, f), os.path.join(dst, f))

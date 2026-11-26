@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_asleep">In riposo</string>
+    <string name="lumen_no_signal">Nessun segnale</string>
+</resources>

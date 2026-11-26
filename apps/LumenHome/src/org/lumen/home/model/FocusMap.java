@@ -118,7 +118,36 @@ public final class FocusMap {
         set(r, i);
     }
 
-    /** Where HOME lands: the first hero button, without one the first item of the first row. */
+    /**
+     * Where every way into Home lands (HOME, back from an app, boot): the first item of row {@code appsRow}, the first
+     * app of the dock. Without that row as {@link #home()}.
+     */
+    public void home(int appsRow) {
+        if (appsRow < 0 || appsRow >= mRows.length || mRows[appsRow].count == 0) {
+            home();
+            return;
+        }
+        page = H_HOME;
+        heroBtn = 0;
+        zone = ROWS;
+        row = appsRow;
+        mItem[appsRow] = 0;
+        mFirst[appsRow] = 0;
+    }
+
+    /**
+     * Row {@code r} lost its item {@code i} (a Continue card deleted where it stands) and is {@code now}: an item to the
+     * left of the focus moves it one back, the focused item hands the focus to its neighbour (the next item takes its
+     * place, after the last one the previous item).
+     */
+    public void removeItem(int r, int i, Row now) {
+        if (r < 0 || r >= mRows.length || now == null) return;
+        int f = mItem[r];
+        mRows[r] = now;
+        set(r, i < f ? f - 1 : f);
+    }
+
+    /** The first hero button, without one the first item of the first row. */
     public void home() {
         page = H_HOME;
         heroBtn = 0;

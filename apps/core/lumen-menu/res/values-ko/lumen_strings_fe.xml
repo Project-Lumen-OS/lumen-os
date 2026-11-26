@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">모든 설정 편집</string>
+    <string name="lumen_fe_show_hint">OK: 행 표시 또는 숨기기</string>
+    <string name="lumen_fe_order">순서 변경</string>
+    <string name="lumen_fe_move_hint">OK로 행을 잡습니다. 위아래로 그룹 안에서 옮기고 OK 또는 뒤로로 내려놓습니다.</string>
+</resources>

@@ -4,20 +4,9 @@
      optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
      the Z9X app's pro_* and panel_reset texts with their translations -->
 <resources>
-    <string name="lumen_m_gamma">감마</string>
-    <string name="lumen_m_gamma_manual">수동</string>
-    <string name="lumen_m_gamma_index">감마 값</string>
-    <string name="lumen_m_noise">노이즈 감소</string>
-    <string name="lumen_m_local_contrast">로컬 명암비</string>
-    <string name="lumen_m_color_opt">색상 최적화</string>
-    <string name="lumen_m_hdr_mapping">HDR 다이내믹 톤 매핑</string>
     <string name="lumen_m_ct_balanced">균형</string>
     <string name="lumen_m_elder_color">어르신용 색상</string>
     <string name="lumen_m_gamma_refused">감마 값은 수동 감마에서만 사용할 수 있습니다</string>
     <string name="lumen_m_hdr10_only">HDR10 콘텐츠에서만 작동합니다</string>
-    <string name="lumen_m_reset">초기화</string>
     <string name="lumen_m_picture_reset_all_msg">모든 화면 모드의 설정이 기본값으로 돌아갑니다. 계속할까요?</string>
-    <string name="lumen_m_level_low">낮음</string>
-    <string name="lumen_m_level_medium">보통</string>
-    <string name="lumen_m_level_high">높음</string>
 </resources>

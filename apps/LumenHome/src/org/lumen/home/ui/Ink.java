@@ -18,6 +18,28 @@ public final class Ink {
         return p;
     }
 
+    /**
+     * A tile label at baseline y in {@code maxW} px: smaller first (LabelFit), cut only below its smallest size. Returns
+     * the width drawn.
+     */
+    public static float fitLine(Canvas c, CharSequence s, float x, float baseline, float maxW, TextPaint p) {
+        if (s == null || s.length() == 0) return 0f;
+        float size = p.getTextSize(), w = p.measureText(s, 0, s.length());
+        p.setTextSize(size * LabelFit.scale(w, maxW));
+        CharSequence t = TextUtils.ellipsize(s, p, maxW, TextUtils.TruncateAt.END);
+        float drawn = Math.min(maxW, p.measureText(t, 0, t.length()));
+        c.drawText(t, 0, t.length(), x, baseline, p);
+        p.setTextSize(size);
+        return drawn;
+    }
+
+    /** The width a label takes at its fitted size (for centring it). */
+    public static float fitWidth(CharSequence s, float maxW, TextPaint p) {
+        if (s == null || s.length() == 0) return 0f;
+        float w = p.measureText(s, 0, s.length());
+        return Math.min(maxW, w * LabelFit.scale(w, maxW));
+    }
+
     /** One line at baseline y, cut with an ellipsis to {@code maxW} px. */
     public static void line(Canvas c, CharSequence s, float x, float baseline, float maxW, TextPaint p) {
         if (s == null || s.length() == 0) return;

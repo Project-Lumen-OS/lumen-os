@@ -1,0 +1,14 @@
+# Recipe of the AirPlay receiver with the casting screen (org.lumen.airplay, APK name Z9xAirPlay) for every model, read
+# by tools/devices/assemble_app.py (find_recipe falls back to it): the shared look and icons the casting screen uses,
+# the one Inter file of the shared menu copied in at build time (no second copy in git) with its licence, then the app.
+# lib/<abi>/libz9xairplay.so is not in git: jni/build_native.sh builds it, or tools/libs_from_pin.sh takes it from the
+# released pin (sha256 checked against jni/LIBS.sha256); every image recipe checks the APK carries it (airplay_libs.py).
+app       Z9xAirPlay
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
+module    lumen-ui
+module    lumen-icons
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/licenses/OFL-1.1-Inter.txt
+top       apps/LumenAirPlay
+skip      build/ test/ tools/ jni/ *.apk CHANGES*.md BUILD_PLAN.md README*.md .DS_Store app.layers

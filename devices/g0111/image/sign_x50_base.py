@@ -60,9 +60,9 @@ import x50_family  # noqa: E402  (the X50 family of the registry, read from the 
 # takes the X50 recipe, each on its own keys):
 #   X50_CODENAME=h0062 python3 devices/g0111/image/sign_x50_base.py all  ->  build/h0062/stage/base_signed
 C = os.environ.get("X50_CODENAME", "g0111")
-FAMILY = x50_family.members(G)
+FAMILY = x50_family.base_members(G)   # every model on the Z9X 1.0.9 image (X50 family, RS 20)
 if C not in FAMILY:
-    sys.exit("sign_x50_base: X50_CODENAME %s is not an X50 family model (%s)" % (C, ", ".join(FAMILY)))
+    sys.exit("sign_x50_base: X50_CODENAME %s is not composed on the Z9X 1.0.9 image (%s)" % (C, ", ".join(FAMILY)))
 TAR_DEFAULT = os.path.join(os.path.dirname(G), "gsi", "build", "lumen_v1-1.0.9",
                            "system_tv_lumen_v1_public_nogms_signed.tar")
 # the Z9X 1.0.9 signed tar the published image lumen-os-1.0.9-nogms-system.img (base.sha256) was made from

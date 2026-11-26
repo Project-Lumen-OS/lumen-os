@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">기기를 연결하면 자동으로 HDMI로 전환</string>
+    <string name="lumen_m_hdmi_return_home">소스 연결이 끊기면 홈 화면으로 돌아가기</string>
+    <string name="lumen_m_hdmi_boot_source">전원 켤 때 입력</string>
+    <string name="lumen_m_hdmi_boot_note">기기가 HDMI-CEC로 프로젝터를 켜면 그 기기의 입력이 열립니다.</string>
+    <string name="lumen_m_hdmi_inputs">입력</string>
+    <string name="lumen_m_hdmi_none">HDMI 입력을 찾을 수 없습니다</string>
+</resources>

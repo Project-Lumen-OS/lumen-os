@@ -15,7 +15,7 @@ fails=0; n=0
 check() { n=$((n + 1)); if eval "$2"; then echo "ok   $1"; else echo "FAIL $1"; fails=$((fails + 1)); fi; }
 
 setup() {  # $1 = stick: match | other | none ; $2 = complete: 1 | 0
-  R=$(mktemp -d)
+  R=$(mktemp -d) && [ -d "$R" ] || { echo "FAIL cannot create a temp dir under ${TMPDIR:-/tmp}" >&2; exit 2; }
   mkdir -p "$R/proc/sys/kernel/random" "$R/sys/module/ext4" "$R/sys/module/ehci_hcd" "$R/sys/class/pwm" \
     "$R/dev" "$R/stick" "$R/bin"
   echo "5.00 1.00" > "$R/proc/uptime"
@@ -167,7 +167,8 @@ check "no stray files" '[ -z "$(new_files)" ]'
 rm -rf "$R"
 
 echo "== mark alone, no /proc/boottime"
-R=$(mktemp -d); mkdir -p "$R/proc"; echo "7.25 1.00" > "$R/proc/uptime"
+R=$(mktemp -d) && [ -d "$R" ] || { echo "FAIL cannot create a temp dir under ${TMPDIR:-/tmp}" >&2; exit 2; }
+mkdir -p "$R/proc"; echo "7.25 1.00" > "$R/proc/uptime"
 P6T_PROC="$R/proc" P6T_DIR="$R/t" ${P6T_SH:-/bin/sh} "$SCRIPT" mark post-fs-data
 check "mark line" '[ "$(cat "$R/t/stages.txt")" = "post-fs-data uptime=7.25 boottime_last=[]" ]'
 P6T_PROC="$R/proc" P6T_DIR="$R/t" ${P6T_SH:-/bin/sh} "$SCRIPT" bogus

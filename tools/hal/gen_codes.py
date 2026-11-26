@@ -24,6 +24,9 @@ stock-dump generators). A new AIDL model is one delta file (RS30: X50 + 29 codes
   gen_codes.py --write                write the generated tables and HalCodes classes
   gen_codes.py bootstrap OUT_DIR      derive base.tsv and the deltas from the current full tables (how the split was
                                       made; writes only under OUT_DIR)
+  gen_codes.py derive [--check|--write] [--root DIR]
+                                      the HIDL tables derived by method name (tools/hal/derive.py): every hal/codes.from
+                                      of a model or family folder writes its codes.tsv, GmpfCodes maps and menu layer
   gen_codes.py java [--check|--write] [--root DIR]
                                       the named HAL codes (tools/hal/codes_table.py): every devices/<codename>/hal/
                                       codes.tsv writes, for each of its java lines, the HalCodes class of that app (one
@@ -168,7 +171,41 @@ def java(argv):
     return bad
 
 
+def derived(argv):
+    """The HIDL tables derived by method name (tools/hal/derive.py): every hal/codes.from writes its codes.tsv and its
+    GmpfCodes maps; --check (default) compares byte for byte."""
+    root = ROOT
+    if "--root" in argv:
+        i = argv.index("--root")
+        root, argv = os.path.abspath(argv[i + 1]), argv[:i] + argv[i + 2:]
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import codes_table  # noqa: E402
+    import derive  # noqa: E402
+    bad = 0
+    try:
+        for label, spec, table in derive.specs(root):
+            text, maps = derive.derive(root, label, spec)
+            for path, body in [(table, text)] + sorted(maps.items()):
+                rel = os.path.relpath(path, root)
+                old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
+                if old == body:
+                    print("gen_codes: %s: %s = derived by method name" % (label, rel))
+                elif argv == ["--write"]:
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    open(path, "w", encoding="utf-8").write(body)
+                    print("gen_codes: %s: wrote %s" % (label, rel))
+                else:
+                    print("gen_codes: %s: %s is NOT what %s derives" % (label, rel, os.path.relpath(spec, root)))
+                    bad = 1
+    except (derive.DeriveError, codes_table.TableError, OSError) as e:
+        print("gen_codes: ERROR %s" % e)
+        return 1
+    return bad
+
+
 def main(argv):
+    if argv[:1] == ["derive"]:
+        return derived(argv[1:])
     if argv[:1] == ["java"]:
         return java(argv[1:])
     if argv[:1] == ["bootstrap"] and len(argv) == 2:
@@ -200,7 +237,9 @@ def main(argv):
     if not devs:
         print("gen_codes: ERROR no device has devices/<codename>/hal/codes.delta.tsv")
         return 1
-    return bad | java(["--write"] if write else ["--check"])
+    mode = ["--write"] if write else ["--check"]
+    bad |= derived(mode)
+    return bad | java(mode)
 
 
 if __name__ == "__main__":

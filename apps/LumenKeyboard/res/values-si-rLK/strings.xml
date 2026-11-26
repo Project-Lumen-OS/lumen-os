@@ -22,7 +22,6 @@
     <string name="label_send_key" msgid="1803138506603147503">"යවන්න"</string>
     <string name="label_search_key" msgid="8540828292920277213">"සොයන්න"</string>
     <string name="label_done_key" msgid="4570417022685876778">"අවසන්"</string>
-    <string name="settings_title" msgid="8361325634803696047">"යතුරුපුවරු විකල්ප"</string>
     <string name="btn_on" msgid="5962775761492765922">"සක්‍රිය කරන්න"</string>
     <string name="btn_off" msgid="2029716012096104384">"අක්‍රිය කරන්න"</string>
     <string name="keyboardview_keycode_space" msgid="5107808792477329036">"Space"</string>

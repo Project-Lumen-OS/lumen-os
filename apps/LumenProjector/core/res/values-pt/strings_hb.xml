@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Z9X HB only labels, hb-t8b keys only, Lumen's own wording (clean-room rewrite 2026-10-31) of values-pt; the other HB keys fall back to English -->
+<resources>
+    <!-- hb-t8b (2026-10-30): HB keystone and picture labels at the places of the stock rows; texts
+         written by Lumen (clean-room rewrite 2026-10-31): stock strings only told us the meaning -->
+    <string name="kst_settings_hb">Opções do trapézio</string>
+    <string name="kst_enhancement_hb">Correção adicional</string>
+    <string name="kst_size_position_hb">Tamanho e posição da imagem</string>
+    <string name="kst_projection_type_hb">Tipo de projeção</string>
+    <string name="kst_manual_hb">Ajuste manual dos cantos</string>
+    <string name="pro_contrast_hb">Contraste</string>
+    <string name="pro_gamma_index_hb">Gama</string>
+    <string name="pro_dyn_black_hb">Reforço do preto</string>
+    <string name="pro_clarity_hb">Detalhe</string>
+    <string name="pro_noise_hb">Filtro de ruído</string>
+    <string name="pro_wb_2pt_hb">Balanço de branco em 2 pontos</string>
+    <string name="pro_wb_11pt_hb">Balanço de branco em 11 pontos</string>
+    <string name="pro_segmentation_hb">Nível de cinzento</string>
+    <string name="pro_src_media_hb">Vídeo de apps e arquivos</string>
+    <string name="pro_off_hb">Desligado</string>
+    <string name="pro_auto_hb">Automático</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_locked">No modo de imagem «%1$s», o Boost faz parte do modo e não pode ser desligado aqui. Escolha outro modo de imagem.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="pro_cs_hdr_hb">O espaço de cor não é suportado em conteúdo HDR</string>
+</resources>

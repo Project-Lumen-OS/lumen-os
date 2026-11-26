@@ -1,0 +1,35 @@
+# apps/LumenProjector/app.modules: the shared modules of the one projector app, the same on every model and vendor
+#. A projector recipe names it with 'include apps/LumenProjector/app.modules'
+# (tools/devices/assemble_app.py), then only its model's data files, its vendor layers and the core.
+# the shared texts: every text two places show, once
+module    lumen-common-strings
+module    lumen-system
+# the wall colour adaptation: the stock card, pattern and result bar (a model gives its data file)
+module    lumen-wallcolor
+module    lumen-aipq
+# the Lumen icon set: row marks, key hints, its R class named in R_EXTRA_PACKAGES
+module    lumen-icons
+# problem reports: the screen of the General row, automatic reports, the queue
+module    lumen-report
+# all files access for Lumen Play signed with its release key
+module    lumen-files-access
+# Settings > About: model code, firmware, back to the stock system (its QR code lumen-qr)
+module    lumen-qr
+module    lumen-about
+# Parental controls page of the menu: the state of Lumen Home through its provider (apps/core/lumen-parental)
+module    lumen-parental
+# the remote pairing of every projector (lumen-remote README: remote table, RemotePairing, prompt)
+module    lumen-remote
+# the signal panel and the sensor card (a model gives its rows as data)
+module    lumen-signal
+module    lumen-sensors
+module    lumen-ui
+# the one HDMI port state (org.lumen.tvinput PortState) for the menu HDMI page and the Source key
+module    lumen-hdmiports
+module    lumen-source
+# the projector menu (quick panel D, game menu, All settings: the design notes)
+module    lumen-menu
+# the command core and the phone remote (lumen-control reads the device through lumen-stats), the media route rules
+module    lumen-stats
+module    lumen-audio
+module    lumen-control

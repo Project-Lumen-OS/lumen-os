@@ -21,7 +21,8 @@ repack    For every APEX of PLAN with re-signed APKs inside: take the member fro
           (file_contexts, canned_fs_config, payload fs type from the build info the module was built
           with). The new filesystem is compared with the original one, entry by entry: same paths, same
           type / mode / uid / gid / every xattr (SELinux label, capabilities), same bytes, except the
-          swapped APKs (which must have the re-signed sha256). Output: <out>/<member>.payload.img
+          swapped APKs (which must have the re-signed sha256) and the plan's "files" (other payload files
+          the Mac replaces, e.g. a rebuilt javalib jar, old and new sha256 checked the same way). Output: <out>/<member>.payload.img
           (no AVB footer; the Mac adds it with the payload key) + repack.json.
 compress  `apex_compression_tool compress` of every signed uncompressed APEX whose member is a .capex
           (the tool records the payload root digest in capexMetadata). Output: <out>/<member> (unsigned
@@ -274,14 +275,15 @@ def cmd_repack(a):
         deapexer("extract", apex, tree)
         tree_o = tree_of(tree)
         replaced = {}
-        for k in v["apks"]:
+        swaps = v["apks"] + v.get("files", [])
+        for k in swaps:
             dst = os.path.join(tree, k["inner"])
             src = os.path.join(a.apks, k["file"])
-            if apexlib.sha256_file(dst) != k["old_sha256"]:
-                errs.append(f"{n}: {k['inner']}: not the APK the Mac re-signed (old sha256)")
+            if not os.path.isfile(dst) or apexlib.sha256_file(dst) != k["old_sha256"]:
+                errs.append(f"{n}: {k['inner']}: not the file the Mac planned to replace (old sha256)")
                 continue
             if apexlib.sha256_file(src) != k["new_sha256"]:
-                errs.append(f"{n}: {src}: re-signed APK damaged in transit")
+                errs.append(f"{n}: {src}: replacement damaged in transit")
                 continue
             shutil.copyfile(src, dst)
             replaced["/" + k["inner"]] = k["new_sha256"]
@@ -306,8 +308,8 @@ def cmd_repack(a):
         meta_n = fs_meta(out_img)
         tree_n = rdump(out_img, os.path.join(w, "tree_new"))
         e = compare_fs(n, meta_o, meta_n, tree_o, tree_n, replaced)
-        if len(replaced) != len(v["apks"]):
-            e.append(f"{n}: {len(replaced)} of {len(v['apks'])} APKs swapped")
+        if len(replaced) != len(swaps):
+            e.append(f"{n}: {len(replaced)} of {len(swaps)} files swapped")
         errs += e
         report[n] = {"module": mod, "kind": kind, "unsigned_payload": os.path.relpath(out_img, a.out),
                      "unsigned_payload_sha256": apexlib.sha256_file(out_img), "size": os.path.getsize(out_img),
@@ -390,7 +392,7 @@ def cmd_verify(a):
                 e.append(f"{n}: deapexer info (manifest) changed: {j_o} -> {j_f}")
             l_o = deapexer("list", "--size", "-Z", orig[n]).splitlines()
             l_f = deapexer("list", "--size", "-Z", fin).splitlines()
-            replaced = {"/" + k["inner"]: k["new_sha256"] for k in v["apks"]}
+            replaced = {"/" + k["inner"]: k["new_sha256"] for k in v["apks"] + v.get("files", [])}
 
             def norm(lines):
                 out = {}

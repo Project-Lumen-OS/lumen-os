@@ -11,42 +11,21 @@ final class CecNamesTest {
     private static final int SURFACE2 = 0xFF26221E; // res/values/colors_lumen.xml lumen_surface2, the card
 
     static void run() {
-        for (String g : new String[]{"Playback_1", "Recorder_2", "Tuner_1", "TV", "Audio_System", "playback 3",
-                "Backup_1", "Secondary_TV", "HDMI 1", "hdmi2", "", "  ", null}) {
-            T.ok(CecNames.generic(g), "placeholder: " + g);
-        }
-        for (String n : new String[]{"PlayStation 5", "Apple TV", "Blu-ray Player", "SHIELD"}) {
-            T.ok(!CecNames.generic(n), "real name: " + n);
-        }
-        check(CecNames.of(0, "Playback_1", null, null), null, CecNames.MARK_NONE, 0, "placeholder only: the port's label");
-        check(CecNames.of(0x080046, "Playback_1", "PlayStation 5", null), "PlayStation 5", CecNames.MARK_CONSOLE,
-                0xFF5A9BEA, "PlayStation 5 from the system's CEC list (vendor Sony)");
-        check(CecNames.of(0x080046, "Playback_1"), null, CecNames.MARK_NONE, 0, "Sony vendor alone: not enough");
-        check(CecNames.of(0, "Playback_1", null, "PS5"), "PlayStation", CecNames.MARK_CONSOLE, 0xFF5A9BEA,
-                "PS5 from the TV input's label");
-        check(CecNames.of(0, "Xbox Series X"), "Xbox Series X", CecNames.MARK_CONSOLE, 0xFF52B043, "Xbox model kept");
-        check(CecNames.of(0, "NintendoSwitch"), "Nintendo Switch", CecNames.MARK_CONSOLE, 0xFFE9505A, "Nintendo");
-        check(CecNames.of(0x0010FA, "Playback_1"), "Apple TV", CecNames.MARK_PLAYER, 0, "Apple by vendor id");
-        check(CecNames.of(0, "SHIELD"), "NVIDIA Shield", CecNames.MARK_PLAYER, 0, "Shield");
-        check(CecNames.of(0x001A11, "Playback_2"), "Chromecast", CecNames.MARK_PLAYER, 0, "Google by vendor id");
-        check(CecNames.of(0, "AFTMM"), "Fire TV", CecNames.MARK_PLAYER, 0, "Fire TV model code");
-        check(CecNames.of(0, "Fire TV Stick 4K"), "Fire TV Stick 4K", CecNames.MARK_PLAYER, 0, "Fire TV name kept");
-        check(CecNames.of(0, "Roku Ultra"), "Roku Ultra", CecNames.MARK_PLAYER, 0, "Roku");
-        check(CecNames.of(0, "Blu-ray Player"), "Blu-ray Player", CecNames.MARK_NONE, 0, "unknown real name kept");
-        check(CecNames.of(0, "Recorder_1", "Tuner_1", "HDMI 1"), null, CecNames.MARK_NONE, 0, "no real name");
-        check(CecNames.of(0, "HDMI Switch"), "HDMI Switch", CecNames.MARK_NONE, 0, "a switch is not a Nintendo");
-        // the TV input app's device states and brand accents (InputSource, its provider's port bundles)
-        T.eq(CecNames.deviceState("on"), Card.DEV_ON, "device state on");
-        T.eq(CecNames.deviceState("asleep"), Card.DEV_ASLEEP, "device state asleep");
-        T.eq(CecNames.deviceState("no_signal"), Card.DEV_NO_SIGNAL, "device state no signal");
-        T.eq(CecNames.deviceState("disconnected"), Card.DEV_DISCONNECTED, "device state disconnected");
-        T.eq(CecNames.deviceState("unknown"), -1, "unknown: the TIF state stays");
-        T.eq(CecNames.deviceState(null), -1, "no state: the TIF state stays");
+        int soft = CecNames.softAccent(0xFF5A9BEA);
+        T.ok(contrast(soft, SURFACE2) >= 4.0, "a softened accent stays readable on the card");
+        T.ok(CecNames.mix(0xFF000000, 0xFFFFFFFF, 0f) == 0xFF000000, "mix 0 keeps the first colour");
+        T.ok(CecNames.mix(0xFF000000, 0xFFFFFFFF, 1f) == 0xFFFFFFFF, "mix 1 is the second colour");
+        PortChipTest.run();
     }
 
-    private static void check(CecNames.Device d, String name, int mark, int tint, String what) {
-        T.eq(d.name, name, what + ": name");
-        T.eq(d.mark, mark, what + ": mark");
-        T.eq(d.tint, tint, what + ": tint");
+    private static double lum(int c) {
+        double[] v = {((c >> 16) & 0xFF) / 255.0, ((c >> 8) & 0xFF) / 255.0, (c & 0xFF) / 255.0};
+        for (int i = 0; i < 3; i++) v[i] = v[i] <= 0.03928 ? v[i] / 12.92 : Math.pow((v[i] + 0.055) / 1.055, 2.4);
+        return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    }
+
+    private static double contrast(int a, int b) {
+        double x = lum(a) + 0.05, y = lum(b) + 0.05;
+        return Math.max(x, y) / Math.min(x, y);
     }
 }

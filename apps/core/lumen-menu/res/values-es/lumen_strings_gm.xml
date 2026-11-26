@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">Ajuste</string>
     <string name="lumen_gm_preset_compete">Competición</string>
     <string name="lumen_gm_preset_balance">Equilibrio</string>
-    <string name="lumen_gm_preset_story">Historia</string>
     <string name="lumen_gm_preset_on">Ajuste %1$s activado</string>
     <string name="lumen_gm_preset_partly">Ajuste %1$s activado, pero algunos puntos no cambiaron</string>
     <string name="lumen_gm_lat">Respuesta</string>
-    <string name="lumen_gm_lat_0">Estándar</string>
     <string name="lumen_gm_lat_1">Turbo</string>
     <string name="lumen_gm_lat_d0">Retardo normal. El trapecio y el ajuste de imagen funcionan.</string>
     <string name="lumen_gm_lat_d1">Retardo mínimo. El trapecio y el ajuste de imagen no funcionan.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">Sí</string>
     <string name="lumen_gm_auto">Auto</string>
     <string name="lumen_gm_pic">Modo de imagen</string>
-    <string name="lumen_gm_pic_0">Estándar</string>
     <string name="lumen_gm_pic_4">Deportes</string>
     <string name="lumen_gm_pic_d0">Para cualquier juego.</string>
     <string name="lumen_gm_pic_d1">Para juegos de disparos.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">Pantalla normal.</string>
     <string name="lumen_gm_snd">Sonido de juego</string>
     <string name="lumen_gm_snd_1">Envolvente</string>
-    <string name="lumen_gm_snd_2">Historia</string>
     <string name="lumen_gm_snd_3">Claridad</string>
     <string name="lumen_gm_snd_4">Equilibrado</string>
     <string name="lumen_gm_snd_d0">Sonido como en el juego.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">más rápido</string>
     <string name="lumen_gm_turbo_title">¿Activar Turbo?</string>
     <string name="lumen_gm_turbo_msg">Turbo apaga la corrección del trapecio y devuelve la imagen al cuadro completo. El retardo será el mínimo.</string>
-    <string name="lumen_gm_turbo_ok">Activar</string>
     <string name="lumen_gm_rule_vrr_wide">Primero elige 16:9 o Auto</string>
     <string name="lumen_gm_rule_ar_vrr">Primero apaga VRR</string>
     <string name="lumen_gm_rule_ar_4k">El formato ancho solo funciona con señal 3840 × 2160</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">Durante un juego, mantén pulsado el botón de ajustes para abrir este menú</string>
     <string name="lumen_gm_kind_console">consola</string>
     <string name="lumen_gm_kind_computer">ordenador</string>
-    <string name="lumen_gm_licences">Licencias</string>
     <string name="lumen_gm_licences_d">Autores del material que usa Lumen OS</string>
     <string name="lumen_gm_credits_intro">Las imágenes de mandos del menú de juego salen de estos modelos 3D:</string>
 </resources>

@@ -28,9 +28,18 @@ same place.
    getInterfaceHash 0x00FFFFFE, nothing else. With several --codes (one table per vendor firmware the app accepts,
    e.g. the HB V6.16.24 and V6.17.12 tables), every Call must be a row of EVERY table and that row must be equal in
    all of them (service, code, method, signature and every further column, e.g. the NDK proxy arguments): a method
-   whose code or signature changed between firmwares (HB FOCUS 102 doProImgFusionOverlap) can never be sent.
+   whose code or signature changed between firmwares (HB FOCUS 102 doProImgFusionOverlap) can never be sent. A row
+   with a fw:TABLE[,TABLE] column (X50 v1.3.38 calls: aidl_codes_v1338.tsv) is a call of only those firmwares: it
+   must be a row of each named table that is a --codes one (equal in all) and the others are not asked; the app's
+   transport sends it only behind its firmware guard (org.lumen.hal.GmpfFirmware, X50Projector Gmpf.firmwareGuard).
+   A shared app is checked once per model with that model's tables, so a named table outside --codes is the firmware
+   of another model (X50 v1.3.38 for a TITAN build): it must be a code table of the tree, and a row none of whose
+   tables is a --codes one is never sent on this model.
 4. No Call matches a BANNED or REVIEW row of BANNED_TSV (service, code, method, signature, status) by
-   (service, code) or by (service, method): a call still under review counts as refused.
+   (service, code) or by (service, method): a call still under review counts as refused. A Call of a fw: row matches
+   by method only where the banned row names another method at its code: rule 3 holds its code to its own method on
+   the tables it names (ProjectorFocusManager 107 is the page flag on the RS30 Ultra v1.2.5, the banned lens memory
+   writer elsewhere).
 5. Every call of a transport method (a method of that file with a Call parameter) passes Call.X, a declared
    constant, or a Call parameter of its own method: no integer code anywhere.
 6. The Call list equals ALLOWED_TSV (service, code, method, signature, [args:SPEC,] reason; '-' as service for a meta
@@ -53,6 +62,7 @@ same place.
    class (and its inner classes); no const-string containing "transact" or "ServiceManager" outside it.
 Output 'OK: N calls on M interfaces', exit 0; otherwise one line per violation, exit 1.
 """
+import glob
 import os
 import re
 import subprocess
@@ -162,15 +172,33 @@ def spec_error(spec):
     return None
 
 
+def row_fw(r):
+    """The fw:TABLE[,TABLE] column of an allow row (after args:, before the reason): the call exists only on the
+    firmwares of those code tables (basenames of --codes); the app's transport must hold it to them at run time."""
+    for c in r[4:-1]:
+        if c.startswith("fw:"):
+            return {t for t in c[len("fw:"):].split(",") if t}
+    return None
+
+
 def row_args(r):
     """The args:SPEC column of an allow / unban row (index 4), or None."""
     return r[4][len("args:"):] if len(r) >= 6 and r[4].startswith("args:") else None
+
+
+def tree_tables(codes_list):
+    """Basenames of every HAL code table of the tree (devices/*/research/aidl_codes*.tsv) and of the --codes files: the
+    names a fw: column may use."""
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return ({os.path.basename(p) for p in glob.glob(os.path.join(root, "devices", "*", "research", "aidl_codes*.tsv"))}
+            | {os.path.basename(p) for p in codes_list})
 
 
 def check(app, codes, banned, allowed, module=None, unbanned=None):
     """codes: one code table path or a list of them (the first one names the rows in messages)."""
     codes_list = [codes] if isinstance(codes, str) else list(codes)
     codes = codes_list[0]
+    known_tables = tree_tables(codes_list)
     errs = []
     src = os.path.join(app, "src")
     files = {}
@@ -318,6 +346,7 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
     ban = [(r[0], int(r[1], 0), r[2], r[4]) for r in tsv(banned) if len(r) >= 5 and r[4] in ("BANNED", "REVIEW")]
     allow = set()
     allow_args = {}
+    allow_fw = {}
     for r in tsv(allowed):
         if len(r) < 3 or not re.match(r"^(0x[0-9a-fA-F]+|\d+)$", r[1]):
             errs.append("rule 6: %s: bad row %r" % (os.path.basename(allowed), "\t".join(r)))
@@ -326,6 +355,8 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
         allow.add(k)
         if row_args(r) is not None:
             allow_args[k] = row_args(r)
+        if row_fw(r) is not None:
+            allow_fw[k] = row_fw(r)
     # the maintainer's per-app exceptions to rule 4 (--unbanned)
     unban = {}
     if unbanned:
@@ -370,19 +401,34 @@ def check(app, codes, banned, allowed, module=None, unbanned=None):
         if svc is None:
             errs.append("rule 2: Call.%s: Iface.%s is not declared" % (name, iface))
             continue
-        if table.get((svc, code)) != method:
+        # a fw: row (calls of only some firmwares): only the named tables of this model count, every one must have it
+        fwn = allow_fw.get((svc, code, method))
+        tabs = [(pth, t) for pth, t in zip(codes_list, full) if fwn is None or os.path.basename(pth) in fwn]
+        if fwn is not None and fwn - known_tables:
+            errs.append("rule 3: Call.%s: %s %d %s: fw: names %s, no code table of the tree has that name (the --codes "
+                        "tables are %s)" % (name, svc, code, method, ",".join(sorted(fwn - known_tables)),
+                                            ",".join(os.path.basename(pth) for pth in codes_list)))
+        first_path, first = tabs[0] if tabs else (codes, full[0])
+        sent_here = fwn is None or bool(tabs)    # a row of only other models' firmwares: the guard never sends it here
+        if sent_here and (first.get((svc, code)) or [None, None, None])[2] != method:
             errs.append("rule 3: Call.%s: %s %d %s is not a row of %s (the table has %r)"
-                        % (name, svc, code, method, os.path.basename(codes), table.get((svc, code))))
-        for path, other in zip(codes_list[1:], full[1:]):
-            mine, theirs = full[0].get((svc, code)), other.get((svc, code))
+                        % (name, svc, code, method, os.path.basename(first_path),
+                           (first.get((svc, code)) or [None, None, None])[2]))
+        for path, other in tabs[1:]:
+            mine, theirs = first.get((svc, code)), other.get((svc, code))
             if theirs is None or theirs[2] != method:
                 errs.append("rule 3: Call.%s: %s %d %s is not a row of %s (the table has %r)"
                             % (name, svc, code, method, os.path.basename(path), theirs and theirs[2]))
             elif mine is not None and mine != theirs:
                 errs.append("rule 3: Call.%s: %s %d %s differs between %s and %s (%s / %s): never sent"
-                            % (name, svc, code, method, os.path.basename(codes), os.path.basename(path),
+                            % (name, svc, code, method, os.path.basename(first_path), os.path.basename(path),
                                " | ".join(mine[3:]), " | ".join(theirs[3:])))
+
         for s, c, mth, st in ban:
+            # a fw: row's code is its own method on the tables it names (the RS30 Ultra v1.2.5 107 is
+            # getUitiltShiftSwithStatus): a ban of another table's method at that code is not this call
+            if fwn is not None and c == code and mth != method:
+                continue
             if s == svc and (c == code or mth == method):
                 ub = unban.get((svc, code, method))
                 if st == "BANNED" and (s, c, mth) == (svc, code, method) and ub is not None and specs.get(name) == ub:

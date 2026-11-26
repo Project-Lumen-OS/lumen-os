@@ -55,14 +55,14 @@
     <target android:name="g_dl">
         <aapt:attr name="android:animation">
             <set android:ordering="together">
-                <objectAnimator android:propertyName="translateX" android:valueType="floatType" android:valueFrom="-2.4" android:valueTo="0" android:duration="360" android:startOffset="0" android:interpolator="@interpolator/lumen_qpd_ease" />
+                <objectAnimator android:propertyName="translateX" android:valueType="floatType" android:valueFrom="-1.4" android:valueTo="0" android:duration="360" android:startOffset="0" android:interpolator="@interpolator/lumen_qpd_ease" />
             </set>
         </aapt:attr>
     </target>
     <target android:name="g_dr">
         <aapt:attr name="android:animation">
             <set android:ordering="together">
-                <objectAnimator android:propertyName="translateX" android:valueType="floatType" android:valueFrom="2.4" android:valueTo="0" android:duration="360" android:startOffset="0" android:interpolator="@interpolator/lumen_qpd_ease" />
+                <objectAnimator android:propertyName="translateX" android:valueType="floatType" android:valueFrom="1.4" android:valueTo="0" android:duration="360" android:startOffset="0" android:interpolator="@interpolator/lumen_qpd_ease" />
             </set>
         </aapt:attr>
     </target>

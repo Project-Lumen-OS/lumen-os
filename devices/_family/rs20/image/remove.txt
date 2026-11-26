@@ -1,0 +1,15 @@
+# What the RS 20 trial image drops from the Z9X 1.0.9 base (devices/_family/rs20/image/steps.tsv, verify_rs20.py):
+# PATH<TAB>why. Every APK here is also dropped by devices/g0111/image/remove.txt, so the re-signed platform set of
+# sign_x50_base.py covers every APK that stays.
+system/app/Z9xUpdater	the Z9X OTA client: no updater may ever offer a Z9X image to an RS 20 (trial only, no channel)
+system/app/LumenBridgeUpdater	the org.z9x.updater data bridge of the 1.0.8 rename; its only reader is Z9xUpdater
+system/app/LumenBridgeProjector	the org.z9x.projector data bridge of the 1.0.8 rename; Lumen OS 1.1.0 imports nothing from it
+system/product/etc/default-permissions/z9x-updater.xml	default permissions of the removed Z9xUpdater
+system/etc/init/z9x_rescue.rc	boot rescue (3 failed starts -> fastbootd): a failed trial start goes back to the XGIMI system
+system/etc/z9x/z9x_rescue.sh	its script
+system/etc/init/z9x_power.rc	the Z9X choice of wake sources and the STR lock: the RS 20 keeps its stock wake sources (as the X50)
+system/etc/init/z9x_poweroff.rc	the Z9X watchdog close at shutdown: the RS 20 hardware watchdog stays as stock (as the X50)
+system/etc/xgimi/z9x_poweroff.sh	its script
+system/etc/init/z9x_audio.rc	the 1.0.9 click curve copy (lumen-audio StockVolume, as the Z9X 1.1.0 recipe)
+system/etc/xgimi/audio_policy_engine_stream_volumes.xml	its curve file
+system/product/overlay/EmulatorTetheringConfigOverlay.apk	the emulator's tether list outranks the vendor TetheringRROOverlay (ap0)

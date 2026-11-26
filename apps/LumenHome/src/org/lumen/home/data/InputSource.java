@@ -1,21 +1,18 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
-import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.hdmi.HdmiControlManager;
 import android.hardware.hdmi.HdmiDeviceInfo;
 import android.media.tv.TvContract;
 import android.media.tv.TvInputInfo;
 import android.media.tv.TvInputManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
+import org.lumen.hdmiports.HdmiPort;
+import org.lumen.hdmiports.HdmiPorts;
 import org.lumen.home.App;
-import org.lumen.home.Props;
 import org.lumen.home.R;
 import org.lumen.home.proj.MirrorReceiver;
 import org.lumen.home.proj.ProjectorBridge;
@@ -38,13 +35,6 @@ import java.util.regex.Pattern;
 public final class InputSource {
     private InputSource() {}
 
-    /**
-     * Device switch {@code ro.lumen.home.cec_names} (Props): 1 = the cards of CEC devices get a friendly name
-     * and a mark (CecNames) instead of the raw CEC name, which is a placeholder such as "Playback_1" until
-     * the device sent its OSD name; HomeActivity then also refreshes on TvInputInfo updates. Unset: as 1.0.2.
-     */
-    public static final boolean CEC_NAMES = Props.num("cec_names", 0) > 0;
-
     public static final String TVINPUT_PKG = "org.lumen.tvinput";
     public static final String PKG_CHROMECAST = "com.google.android.apps.mediashell";
     public static final String PKG_AIRPLAY = "org.lumen.airplay";
@@ -64,10 +54,11 @@ public final class InputSource {
             Log.w(App.TAG, "tv inputs: " + t);
             return out;
         }
-        Map<Integer, HdmiDeviceInfo> cec = cecDevices(c);
-        Bundle hdmi = hdmiState(c);
-        int[] showingPorts = showingPorts(hdmi);
-        Map<Integer, Bundle> devices = portDevices(hdmi);   // empty unless the TV input app reports them
+        // the one HDMI port state (lumen-hdmiports, org.lumen.tvinput PortState): never decided here
+        List<HdmiPort> read = HdmiPorts.read(c);
+        Map<Integer, HdmiPort> ports = new HashMap<>();
+        if (read != null) for (HdmiPort p : read) ports.put(p.port, p);
+        int[] showingPorts = read == null ? new int[0] : HdmiPorts.open(c);
         HashMap<String, List<TvInputInfo>> children = new HashMap<>();
         ArrayList<TvInputInfo> tops = new ArrayList<>();
         for (TvInputInfo ii : all) {
@@ -90,56 +81,29 @@ public final class InputSource {
             int port = port(ii);
             String portLabel = label(c, ii);
             List<TvInputInfo> kids = children.get(ii.getId());
-            HdmiDeviceInfo dev = null;
-            String target = ii.getId();
-            if (kids != null && !kids.isEmpty()) {
-                TvInputInfo kid = kids.get(0);
-                dev = kid.getHdmiDeviceInfo();
-                target = kid.getId();
-            }
-            if (dev == null && port > 0) dev = cec.get(port);
-            String devName = dev != null ? dev.getDisplayName() : null;
-            HdmiDeviceInfo live = null;   // cec_names: the system's CEC entry of the port
-            CecNames.Device friendly = null;
-            if (CEC_NAMES) { // the device's names, best first; none of them real: the port's label below
-                if (port > 0) live = cec.get(port);
-                String kidLabel = kids != null && !kids.isEmpty() ? childLabel(c, kids.get(0)) : null;
-                int vendor = dev != null ? dev.getVendorId() : 0;
-                if (vendor == 0 && live != null) vendor = live.getVendorId();
-                friendly = CecNames.of(vendor, devName, live != null ? live.getDisplayName() : null, kidLabel);
-                devName = friendly.name;
-            }
-            String custom = customLabels.get(ii.getId());
-            if (custom != null && !custom.isEmpty()) {
-                k.title = custom;
-                k.desc = devName != null && !devName.isEmpty() ? devName : portLabel;
-            } else if (devName != null && !devName.trim().isEmpty()) {
-                k.title = devName.trim();
-                k.desc = portLabel;
-            } else {
-                k.title = portLabel;
-                k.desc = "";
-            }
-            int st;
-            try {
-                st = tim.getInputState(ii.getId());
-            } catch (Throwable t) {
-                st = TvInputManager.INPUT_STATE_DISCONNECTED;
-            }
-            k.state = st;
-            k.showing = port > 0 && contains(showingPorts, port);
+            HdmiDeviceInfo dev = kids != null && !kids.isEmpty() ? kids.get(0).getHdmiDeviceInfo() : null;
             k.icon = icon(dev);
-            k.intent = TvContract.buildChannelUriForPassthroughInput(target).toString();
             k.pkg = ii.getServiceInfo().packageName;
-            k.meta = stateText(c, st);
+            k.showing = port > 0 && contains(showingPorts, port);
             k.color = 0;
-            if (friendly != null) { // cec_names: the device's mark, tinted on the card by k.color (0 = paper)
-                if (friendly.mark == CecNames.MARK_CONSOLE) k.icon = R.drawable.ic_gamepad;
-                else if (friendly.mark == CecNames.MARK_PLAYER) k.icon = R.drawable.ic_player;
-                k.color = friendly.tint;
+            HdmiPort hp = TVINPUT_PKG.equals(k.pkg) ? ports.get(port) : null;
+            String custom = customLabels.get(ii.getId());
+            if (hp != null) {
+                portCard(c, k, hp, custom, portLabel);
+            } else {                                   // another TV input's input, or the HDMI app does not answer
+                boolean named = custom != null && !custom.isEmpty();
+                k.title = named ? custom : portLabel;
+                k.desc = named ? portLabel : "";
+                int st;
+                try {
+                    st = tim.getInputState(ii.getId());
+                } catch (Throwable t) {
+                    st = TvInputManager.INPUT_STATE_DISCONNECTED;
+                }
+                k.state = st;
+                k.meta = stateText(c, st);
+                k.intent = TvContract.buildChannelUriForPassthroughInput(ii.getId()).toString();
             }
-            Bundle reported = port > 0 ? devices.get(port) : null;   // the TV input app's view of the port
-            if (reported != null) applyDevice(c, k, reported, customLabels.get(ii.getId()), portLabel);
             out.add(k);
         }
         return out;
@@ -214,121 +178,30 @@ public final class InputSource {
         }
     }
 
-    /** port -> CEC device (playback/audio preferred); empty when CEC is unavailable. */
-    private static Map<Integer, HdmiDeviceInfo> cecDevices(Context c) {
-        HashMap<Integer, HdmiDeviceInfo> m = new HashMap<>();
-        try {
-            HdmiControlManager hm = c.getSystemService(HdmiControlManager.class);
-            if (hm == null) return m;
-            List<HdmiDeviceInfo> l = hm.getConnectedDevices();
-            if (l == null) return m;
-            for (HdmiDeviceInfo d : l) {
-                if (d == null || d.getPortId() <= 0) continue;
-                HdmiDeviceInfo cur = m.get(d.getPortId());
-                if (cur == null || rank(d) > rank(cur)) m.put(d.getPortId(), d);
-            }
-        } catch (Throwable t) {
-            Log.i(App.TAG, "cec devices unavailable: " + t);
-        }
-        return m;
-    }
-
-    private static int rank(HdmiDeviceInfo d) {
-        switch (d.getDeviceType()) {
-            case HdmiDeviceInfo.DEVICE_PLAYBACK:
-                return 3;
-            case HdmiDeviceInfo.DEVICE_RECORDER:
-            case HdmiDeviceInfo.DEVICE_TUNER:
-                return 2;
-            case HdmiDeviceInfo.DEVICE_AUDIO_SYSTEM:
-                return 1;
-            default:
-                return 0;
-        }
-    }
-
-    /** org.lumen.tvinput's "hdmi_state" (HDMI_STATE perm), null when it cannot be read. */
-    private static Bundle hdmiState(Context c) {
-        try (ContentProviderClient cl = c.getContentResolver()
-                .acquireUnstableContentProviderClient(Uri.parse("content://org.lumen.tvinput.hdmistate"))) {
-            if (cl == null) return null;
-            return cl.call("hdmi_state", null, null);
-        } catch (Throwable t) {
-            return null;
-        }
-    }
-
-    /** Ports that currently have an open HDMI session ("ports" of hdmi_state). */
-    private static int[] showingPorts(Bundle b) {
-        try {
-            int[] p = b != null ? b.getIntArray("ports") : null;
-            return p != null ? p : new int[0];
-        } catch (Throwable t) {
-            return new int[0];
-        }
-    }
-
-    // ------------------------------------------------------------------ the TV input app's device states
-
-    /** Change notifications of the port states below (org.lumen.tvinput's provider), a content Uri. */
-    public static final String PORTS_URI = "content://org.lumen.tvinput.hdmistate/ports";
-    private static volatile boolean sPortStates;
-
-    /** True once the TV input app reported per-port device states (then Home observes PORTS_URI). */
-    public static boolean portStates() {
-        return sPortStates;
-    }
-
     /**
-     * Port number -> the TV input app's bundle of the device behind it ("port_ids", "port_<n>": state, names,
-     * glyph kind, accent, the input to open; docs of org.lumen.tvinput HdmiStateProvider). Empty when the app
-     * does not report them (older TV input app): every card as before.
+     * The card of one of our HDMI ports, as the HDMI app describes it (lumen-hdmiports HdmiPort): its state (on,
+     * asleep, no signal, not connected), the device's name over the port's label (a name the user gave the input
+     * still wins), the glyph of its kind in a softened brand accent, and the input to open (the device's own input
+     * routes to it, and on an asleep device the HDMI app's viewer offers OK to wake). {@code c} null: no texts (tests).
      */
-    private static Map<Integer, Bundle> portDevices(Bundle b) {
-        HashMap<Integer, Bundle> m = new HashMap<>();
-        try {
-            int[] ids = b != null ? b.getIntArray("port_ids") : null;
-            if (ids == null) return m;
-            sPortStates = true;
-            for (int id : ids) {
-                Bundle p = b.getBundle("port_" + id);
-                if (p != null && p.getString("device_state") != null) m.put(id, p);
-            }
-        } catch (Throwable t) {
-            m.clear();
-        }
-        return m;
-    }
-
-    /**
-     * The card of a port the TV input app describes: its state (on, asleep, no signal, not connected; an
-     * unknown state keeps the TIF one), the device's name over the port's label (a name the user gave the
-     * input still wins), the glyph of its kind in a softened brand accent, and the input to open (the
-     * device's own input routes to it, and on an asleep device the TV input app's viewer offers OK to wake).
-     */
-    private static void applyDevice(Context c, Card k, Bundle d, String custom, String portLabel) {
-        int st = CecNames.deviceState(d.getString("device_state"));
-        if (st < 0) return;
-        String label = nonEmpty(d.getString("label"), portLabel);
-        String title = d.getString("title");
+    static void portCard(Context c, Card k, HdmiPort p, String custom, String portLabel) {
+        String label = nonEmpty(p.label, portLabel);
         if (custom != null && !custom.isEmpty()) {
             k.title = custom;
-            k.desc = nonEmpty(title, label);
-        } else if (title != null && !title.trim().isEmpty()) {
-            k.title = title.trim();
+            k.desc = nonEmpty(p.title, label);
+        } else if (p.title != null) {
+            k.title = p.title;
             k.desc = label;
         } else {
             k.title = label;
             k.desc = "";
         }
-        k.state = st;
-        k.meta = devText(c, st);
-        String kind = d.getString("kind");
-        if ("console".equals(kind)) k.icon = R.drawable.ic_gamepad;
-        else if ("player".equals(kind)) k.icon = R.drawable.ic_player;
-        int accent = d.getInt("accent", 0);
-        k.color = accent == 0 || accent == NEUTRAL_ACCENT ? 0 : CecNames.softAccent(accent);
-        String target = nonEmpty(d.getString("child_input_id"), d.getString("input_id"));
+        k.state = PortChip.state(p.state);
+        k.meta = c == null ? null : devText(c, k.state);
+        if ("console".equals(p.kind)) k.icon = R.drawable.ic_gamepad;
+        else if ("player".equals(p.kind)) k.icon = R.drawable.ic_player;
+        k.color = p.accent == 0 || p.accent == NEUTRAL_ACCENT ? 0 : CecNames.softAccent(p.accent);
+        String target = p.target();
         if (target != null) k.intent = TvContract.buildChannelUriForPassthroughInput(target).toString();
     }
 

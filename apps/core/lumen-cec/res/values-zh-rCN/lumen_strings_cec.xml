@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">HDMI-CEC 不可用</string>
     <string name="lumen_cec_master">HDMI-CEC 控制</string>
     <string name="lumen_cec_master_note">关闭 HDMI-CEC 后，无法通过 HDMI ARC 输出声音。</string>
-    <string name="lumen_cec_wake">由 HDMI 设备开机</string>
     <string name="lumen_cec_wake_note">开启后，投影仪关机时 HDMI 设备也会一并关闭。</string>
     <string name="lumen_cec_night">夜间保护</string>
     <string name="lumen_cec_night_off">关闭</string>

@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">Balance des blancs</string>
-    <string name="lumen_m_wb_2">2 points</string>
-    <string name="lumen_m_wb_11">11 points</string>
-    <string name="lumen_m_red_gain">Gain rouge</string>
-    <string name="lumen_m_green_gain">Gain vert</string>
-    <string name="lumen_m_blue_gain">Gain bleu</string>
-    <string name="lumen_m_red_offset">Décalage rouge</string>
-    <string name="lumen_m_green_offset">Décalage vert</string>
-    <string name="lumen_m_blue_offset">Décalage bleu</string>
-    <string name="lumen_m_wb_level">%1$d %%</string>
-    <string name="lumen_m_red">Rouge</string>
-    <string name="lumen_m_green">Vert</string>
-    <string name="lumen_m_blue">Bleu</string>
-    <string name="lumen_m_cyan">Cyan</string>
-    <string name="lumen_m_magenta">Magenta</string>
-    <string name="lumen_m_yellow">Jaune</string>
-    <string name="lumen_m_skin">Teint de peau</string>
-    <string name="lumen_m_cc">Correction des couleurs</string>
-    <string name="lumen_m_cc_color">Couleur</string>
-    <string name="lumen_m_hue">Teinte</string>
-    <string name="lumen_m_memc_original">Fréquence d’images d’origine</string>
-    <string name="lumen_m_reset_defaults">Revenir aux valeurs par défaut</string>
     <string name="lumen_m_gray_level">Niveau de gris</string>
     <string name="lumen_m_hdr_enh">Amélioration HDR</string>
     <string name="lumen_m_screen_size">Taille de l\'écran</string>
     <string name="lumen_m_screen_gain">Gain de l\'écran</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Lumineux</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Sombre</string>
     <string name="lumen_m_dv_screen">Réglages Dolby Vision</string>
     <string name="lumen_m_auto_switch">Changement de mode automatique</string>
     <string name="lumen_m_style_filter">Filtre de style</string>

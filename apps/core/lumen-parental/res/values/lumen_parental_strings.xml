@@ -4,13 +4,10 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Parental controls</string>
-    <string name="lumen_lp_intro">Limit what children can open and how long they watch.</string>
     <string name="lumen_lp_lock">Child lock</string>
-    <string name="lumen_lp_lock_desc">When on, you can set the control range, viewing time and more</string>
     <string name="lumen_lp_lock_off_title">Turn off the child lock?</string>
     <string name="lumen_lp_lock_off_text">Time limits and the power on password stop working. The parental settings open without a password.</string>
-    <string name="lumen_lp_turn_off">Turn off</string>
-    <string name="lumen_lp_cancel">Cancel</string>
+    <string name="lumen_lp_turn_off">@string/lumen_turn_off</string>
     <string name="lumen_lp_child_mode">Child mode</string>
     <string name="lumen_lp_child_apps">Apps in child mode</string>
     <string name="lumen_lp_child_apps_count">%1$d selected</string>
@@ -18,7 +15,6 @@
     <string name="lumen_lp_range_child">Child mode only</string>
     <string name="lumen_lp_range_global">Everywhere</string>
     <string name="lumen_lp_session">Time per session</string>
-    <string name="lumen_lp_session_desc">After it, a 10 minute break</string>
     <string name="lumen_lp_daily">Time per day</string>
     <string name="lumen_lp_no_limit">No limit</string>
     <string name="lumen_lp_minutes">%1$d min</string>
@@ -41,6 +37,4 @@
     <string name="lumen_lp_rest_session">The session is over. Rest for 10 minutes</string>
     <string name="lumen_lp_rest_daily">Today\'s viewing time is used up</string>
     <string name="lumen_lp_rest_unlock">Unlock</string>
-    <string name="lumen_lp_on">On</string>
-    <string name="lumen_lp_off">Off</string>
 </resources>

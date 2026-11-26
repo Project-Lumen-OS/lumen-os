@@ -28,6 +28,8 @@ section keystone  (stock order: settings_tree_product_athena35ultramax projectio
   screen keystone.wall_color
   -- more
   action keystone.restore
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
 section focus
   action focus.af_now
   screen focus.manual
@@ -40,7 +42,7 @@ section picture  (stock order: settings_tree_product_athena35ultramax image (G01
   slider lamp 1..10
   choice picture.iris [f2, f3, f4, f5_5, f7, dynamic]
   -- image
-  choice picture.mode [ai, sport, movie, color_accuracy, bright, performance]  support color_accuracy for sdr hdr hdr10  hint picture picture_mode
+  choice picture.mode [ai, sport, imax, movie, color_accuracy, bright, performance, dv_bright, dv_dark]  support imax for imax hdr10, color_accuracy for sdr hdr hdr10, dv_bright for dolby, dv_dark for dolby  hint picture picture_mode
   page picture.dv_screen
   action picture.custom_new
   page picture.settings
@@ -77,32 +79,54 @@ section network
   screen network.hotspot_name
   screen network.hotspot_password
   action network.hotspot_reset
-section general
-  action lamp.off
-  screen settings.system
-  choice eye.elder_color [off, low, medium, high]
-  info settings.temperature
+section source
+  screen source.list
   screen settings.cec
   screen settings.hdmi
-  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
-  screen settings.parental
-  screen settings.sleep_timer
-  screen settings.remote
-  screen settings.report
-  screen settings.licences
-  -- screensaver
-  screen settings.screensaver_now
-  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
+section bluetooth
+  screen bluetooth.add
+section general
+  -- language_time
+  screen settings.language
+  screen settings.date_time
   -- power
+  choice settings.power_key [power_menu, sleep]
+  screen settings.sleep_timer
   toggle power.on_ac
   toggle power.on_music
-  -- menu
+  -- display_menu
+  choice eye [off, on]
+  screen settings.screensaver_now
+  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
+  choice eye.elder_color [off, low, medium, high]
+  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
   choice settings.menu_side [left, right]
   choice settings.menu_density [normal, compact]
+  -- remote_voice
+  screen settings.remote
+  screen settings.remote_keys
+  -- apps_devices
+  screen settings.casting
+  screen settings.parental
+  -- storage_updates
+  screen settings.storage
+  screen settings.update
+  screen settings.about
+  -- help
+  screen settings.report
+  screen settings.licences
+  screen settings.system
 section developer
   screen signal.panel
   screen sensors.panel
   toggle signal.pin
+  choice signal.refresh [normal, fast]
+  info settings.temperature
+  screen dev.mirror_diag
+  -- system
+  screen dev.system_info
+  toggle dev.network_adb
+  screen dev.android
 page picture.wb2
   slider picture.wb2.red_gain 0..100
   slider picture.wb2.green_gain 0..100
@@ -195,7 +219,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone picture projection sound eye general developer
+all settings: general keystone picture network source bluetooth sound developer
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)
   game sound: off surround story clarity balanced

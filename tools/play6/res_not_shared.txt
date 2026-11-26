@@ -1,7 +1,7 @@
-# Resource files of apps/ProjectorBase that the Play 6 projector app does not share (the design notes
-# 2.4). Every file of apps/ProjectorBase/res is either listed in apps/common/projector/FILES (shared) or matches
+# Resource files of apps/LumenProjector/core that the Play 6 projector app does not share (the design notes
+# 2.4). Every file of apps/LumenProjector/core/res is either listed in apps/common/projector/FILES (shared) or matches
 # a pattern here; tools/play6/check_forks.py (check F) fails otherwise, and on a pattern that matches nothing.
-# Format: pattern (relative to apps/ProjectorBase, shell glob, values* covers the 17 locale copies) <TAB> reason
+# Format: pattern (relative to apps/LumenProjector/core, shell glob, values* covers the 17 locale copies) <TAB> reason
 res/values*/strings_kst.xml	optical zoom texts of the Z9X 1.0.2 lane; Play 6 keystone labels go to strings_p6.xml
 res/values*/strings_sound.xml	Z9X sound chain texts; Play 6 sound rows have their own text in strings_p6.xml
 res/values*/strings_game.xml	Z9X game speed and console texts; Play 6 game rows have their own text in strings_p6.xml
@@ -10,7 +10,6 @@ res/values*/strings_cec.xml	decided when the CEC page is ported (P2)
 res/values*/strings_dream.xml	decided when the dreams are ported (P2)
 res/values*/strings_display.xml	3D and UI resolution are SKIP on the Play 6
 res/values/strings_sys.xml	only sys_placeholder, unused
-res/drawable/ic_eye_mask.xml	the Play 6 has its own copy since the eye protection port (2026-10-21, forks.tsv)
 res/drawable/brand_icon_projector.xml	single source apps/common/brand (brand/sync.sh), not in FILES
 res/drawable/brand_banner_projector.xml	single source apps/common/brand (brand/sync.sh), not in FILES
 res/drawable/banner.xml	not referenced by the Z9X code or manifest
@@ -25,3 +24,8 @@ res/values*/strings_kst_restore.xml	Z9X 1.0.8 keystone page section "More" / "Re
 res/values*/strings_stats.xml	the anonymous statistics switch of the network updater (sys.UpdaterStats); the Play 6 has USB-only updates, no ping
 res/values*/strings_rules.xml	Z9X 1.0.9 stock refusal notes of the quick panel (PanelRules, G0082 SettingMutexManager rules) and two AF card texts; the Play 6 keeps its own rules
 res/values*/strings_trial.xml	Z9X DSU trial notice of the audio port rules (AudioPorts, Z9X only); the Play 6 has no DSU trial
+res/values*/strings_str.xml	Z9X HB deep sleep blocked notices (power.StrNotice behind Family.STR_NOTICE); the Play 6 has no such notice
+res/values*/strings_hb.xml	the stock labels of the AIDL gmpf line (core feature stock-labels-aidl, the Z9X HB); the Play 6 keeps its own labels
+res/values*/strings_hb_curtain.xml	the fit to screen hint window of the Z9X HB (core feature curtain-align); the Play 6 has no such hint
+res/values*/strings_hb_game.xml	the game menu texts of the Z9X HB (core feature stock-labels-aidl); the Play 6 game rows are its own
+res/drawable/ic_tile_zoom.xml	the optical zoom tile icon of the Z9X HB (core feature zoom-scale); the Play 6 has digital zoom only

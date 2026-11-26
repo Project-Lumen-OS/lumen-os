@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- a row's name for refocusing after a reload, a strip card that is the current place -->
+    <item type="id" name="files_name" />
+    <item type="id" name="files_card" />
+</resources>

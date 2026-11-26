@@ -25,7 +25,6 @@ final class Target {
             .install(InstallKind.UPDATE_ENGINE)
             .checksFrom("ro.lumen.ota.boot_gate", InstallChecks.LUMEN_GATE)
             .dsuHandover(true)
-            .importBridgeData(false)
             .hideWithoutDevice(true)
             .compressedSnapshots("x50", "x50max")
             .build();

@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">버튼 소리</string>
-    <string name="lumen_m_hdmi_options">HDMI 입력 옵션</string>
     <string name="lumen_m_colour_vision">색각 보정</string>
     <string name="lumen_m_temperature">온도</string>
     <string name="lumen_m_high_altitude">고고도 모드</string>

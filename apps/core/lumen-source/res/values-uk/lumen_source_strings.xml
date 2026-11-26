@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="lumen_source_hdmi">HDMI %1$d</string>
-    <string name="lumen_source_home">Головний екран</string>
-</resources>

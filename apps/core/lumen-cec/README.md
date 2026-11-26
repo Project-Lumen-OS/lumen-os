@@ -16,8 +16,8 @@ Drivers:
 
 | projector | driver | rows | power switches |
 |---|---|---|---|
-| Z9X, Z9X HB | `apps/ProjectorBase/.../cec/CecPolicyDriver` (the HB gets it through its base) | all | framework only, the power policy `CecPolicy` (night guard, storm limit, PM51 wake source) behind them |
-| X50 Ultra, X50 Ultra Max, RS30 Ultra Max | `apps/X50Projector/.../X50Cec` | stock `signal_setting_control_cec`: HDMI-CEC on, turn on with an HDMI device, switch to a device, a note under each of the first two (stock tips), none greyed while HDMI-CEC is off | the stock calls of newsettings `SignalRepository.setCEC` / `setDeviceAutoStart` (framework settings and GmTvManager 52 setCecWakeUp, read 53) |
+| Z9X, Z9X HB | `apps/LumenProjector/core/.../cec/CecPolicyDriver` (the HB gets it through its base) | all | framework only, the power policy `CecPolicy` (night guard, storm limit, PM51 wake source) behind them |
+| X50 Ultra, X50 Ultra Max, RS30 Ultra Max | `apps/LumenProjector/vendor/xgimi/mt9681-aidl/.../X50Cec` | stock `signal_setting_control_cec`: HDMI-CEC on, turn on with an HDMI device, switch to a device, a note under each of the first two (stock tips), none greyed while HDMI-CEC is off | the stock calls of newsettings `SignalRepository.setCEC` / `setDeviceAutoStart` (framework settings and GmTvManager 52 setCecWakeUp, read 53) |
 
 A projector app uses it with `module lumen-cec` in its recipe (after `module lumen-menu`) and returns
 `CecPage.build(app, host, driver)` for `settings.cec` from its menu pages.

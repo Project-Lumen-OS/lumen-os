@@ -28,7 +28,7 @@ public final class ChipVolumeTest {
     private static final List<String> A11 = Arrays.asList("2 spk_volume -1 0", "3 headphone_volume -1 4",
             "4 headphone_volume -1 4", "8 bluetooth_volume -1 3", "11 usb_volume -1 6", "22 usb_volume -1 6",
             "6 xgimi_pcm_volume -1 -1", "10 null -1 2", "29 null -1 2");
-    private static final String[] A14_MODELS = {"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063"};
+    private static final String[] A14_MODELS = {"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "g0170", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);
@@ -98,7 +98,9 @@ public final class ChipVolumeTest {
     }
 
     private static void model(File g, String code, List<String> want, String fixed, boolean after) throws Exception {
-        String rel = "devices/" + code + "/audio/chip_volume.tsv";
+        // the model's own table, else its family's (devices/_family/<f>/audio/chip_volume.tsv, devices/README.md)
+        String rel = g.toPath().toAbsolutePath().normalize().relativize(
+                Check.deviceFile(g, code, "audio/chip_volume.tsv").toPath().toAbsolutePath().normalize()).toString();
         ChipTable t = ChipTable.parse(Check.read(new File(g, rel)));
         List<String> rows = new ArrayList<>();
         for (ChipKey r : t.rows()) rows.add(r.type + " " + r.key + " " + r.device + " " + r.path);
@@ -123,8 +125,8 @@ public final class ChipVolumeTest {
         C.eq(code + ": {spdif} alone is no path", MediaPath.NONE, heard(t, 6));
         C.eq(code + ": {hdmi_arc, bt} plays on Bluetooth (not heap order)", MediaPath.BT, heard(t, 10, 8));
         C.eq(code + ": {earc, usb headset} plays on USB", MediaPath.USB, heard(t, 29, 22));
-        String recipe = Check.read(new File(g, "devices/" + code + "/app/" + (code.equals("horse_popular") ? "Z9xProjector"
-                : code.equals("goat_elegant") ? "HbProjector" : code.equals("dragon_healthy") ? "Play6Projector" : "X50Projector") + ".layers"));
+        String recipe = Check.recipe(g, code, code.equals("horse_popular") ? "Z9xProjector"
+                : code.equals("goat_elegant") ? "HbProjector" : code.equals("dragon_healthy") ? "Play6Projector" : "X50Projector");
         C.ok(code + ": the recipe ships the table as the app asset",
                 recipe.contains("file      " + rel + " assets/lumen_audio/chip_volume.tsv\n"));
     }
@@ -194,24 +196,28 @@ public final class ChipVolumeTest {
         C.ok("PathSwitch: the sink again when the audio server is back", ps.contains("StockVolume.onAudioServerUp(() -> sH.post(() -> resink(\"audio server up\")));"));
         C.ok("PathSwitch: a safety end after a switch_start", ps.contains("sink(sTarget, \"safety\");"));
         String[][] adapters = {
-                {"apps/ProjectorBase/src/org/lumen/projector/audio/AudioPathReporter.java", "AudioPorts.registerDeviceCallback(app, cb, h,"},
-                {"apps/HbProjector/src/org/lumen/projector/audio/AudioPathReporter.java", "am.registerAudioDeviceCallback(cb, h);"},
-                {"apps/X50Projector/src/org/lumen/x50/projector/AudioPath.java", "am.registerAudioDeviceCallback(cb, h);"},
-                {"apps/Play6Projector/src/org/lumen/projector/audio/BtAudio.java", "am.registerAudioDeviceCallback(cb, h);"}};
+                {"apps/LumenProjector/core/src/org/lumen/projector/audio/AudioPathReporter.java", "Family.registerAudioDevices(app, cb, h,"},
+                {"apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/AudioPath.java", "am.registerAudioDeviceCallback(cb, h);"},
+                {"apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/audio/BtAudio.java", "am.registerAudioDeviceCallback(cb, h);"}};
         for (String[] a : adapters) {
             String s = Check.read(new File(g, a[0]));
-            boolean p6 = a[0].contains("Play6Projector");
+            boolean p6 = a[0].contains("/play6-hidl/");
             C.ok(a[0] + ": the vendor adapter of the shared switch", s.contains("implements VendorAudio") && s.contains("PathSwitch.install(")
                     && s.contains(a[1]) && (p6 || s.contains("PathSwitch.onBootCompleted(ctx, VENDOR)")));
         }
-        String p6app = Check.read(new File(g, "apps/Play6Projector/src/org/lumen/projector/Play6App.java"));
+        C.ok("Z9X family: the device callback behind the audio policy check", Check.read(new File(g,
+                "apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/Family.java")).contains("AudioPorts.registerDeviceCallback(app, cb, h, tag);"));
+        C.ok("HB family: the device callback at once", Check.read(new File(g,
+                "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java")).contains("am.registerAudioDeviceCallback(cb, h);"));
+        String p6app = Check.read(new File(g, "apps/LumenProjector/core/src/org/lumen/projector/Play6App.java"));
         C.ok("Play 6: the switch installed after the start gate (sys.boot_completed), no boot receiver line",
                 p6app.contains("step(\"BtAudio.install\", () -> org.lumen.projector.audio.BtAudio.install(app));")
                         && p6app.indexOf("if (!\"1\".equals(SystemProperties.get(\"sys.boot_completed\", \"\"))) return \"sys.boot_completed\";") > 0
-                        && !Check.read(new File(g, "apps/Play6Projector/src/org/lumen/play6/BootReceiver.java")).contains("BtAudio"));
+                        && !Check.read(new File(g, "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/play6/BootReceiver.java")).contains("BtAudio"));
         C.ok("PathSwitch: the boot step at install once the boot completed", ps.contains("if (booted()) sH.post(() -> boot(\"process start\"));"));
         String[] keys = {"\"spk_volume", "\"headphone_volume", "\"bluetooth_volume", "\"usb_volume", "\"xgimi_pcm_volume"};
-        for (String app : new String[] {"ProjectorBase", "HbProjector", "X50Projector", "Play6Projector"}) {
+        for (String app : new String[] {"LumenProjector/core", "LumenProjector/vendor/xgimi/aidl-gmpf", "LumenProjector/host/activity", "LumenProjector/vendor/xgimi/mt9681-aidl", "Play6Projector",
+                "LumenProjector/vendor/xgimi/play6-hidl"}) {
             List<File> files = new ArrayList<>();
             walk(new File(g, "apps/" + app + "/src"), files);
             int n = 0;
@@ -221,9 +227,9 @@ public final class ChipVolumeTest {
             }
             C.eq(app + ": no chip level sent past StockVolume", 0, n);
         }
-        for (String gone : new String[] {"apps/ProjectorBase/src/org/lumen/projector/source/HdmiVolume.java",
-                "apps/HbProjector/src/org/lumen/projector/source/HdmiVolume.java", "apps/X50Projector/src/org/lumen/x50/projector/HdmiVolume.java",
-                "apps/Play6Projector/src/org/lumen/projector/source/HdmiVolume.java", "apps/ProjectorBase/src/org/lumen/projector/audio/BtDspVolume.java",
+        for (String gone : new String[] {"apps/LumenProjector/core/src/org/lumen/projector/source/HdmiVolume.java",
+                "apps/HbProjector/src/org/lumen/projector/source/HdmiVolume.java", "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/HdmiVolume.java", "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HdmiVolume.java",
+                "apps/Play6Projector/src/org/lumen/projector/source/HdmiVolume.java", "apps/LumenProjector/core/src/org/lumen/projector/audio/BtDspVolume.java",
                 "overlay/v1/z9x_audio.rc", "overlay/v1/audio_policy_engine_stream_volumes.xml"}) {
             C.ok("no copy left: " + gone, !new File(g, gone).exists());
         }

@@ -1,19 +1,31 @@
 # Recipe of the Play 6 projector app, read by tools/devices/assemble_app.py.
-# The shared files of apps/common/projector (its FILES list), the HIDL transport and the 1.0.8 import (the items
-# hal and migrate of apps/common/sync.sh), then the Play 6 layer. Since setup step 4 apps/Play6Projector is only the
-# Play 6 layer (its own files and its forks of Z9X files, each with a row in tools/play6/forks.tsv); the shared
-# files come from apps/common and are never copied into it. tools/play6/build_play6.sh builds the assembled tree.
+# The shared files of apps/common/projector (its FILES list), the HIDL transport (the item hal of
+# apps/common/sync.sh), the shared gmpf layers, the Play 6 HAL family adapter play6-hidl (with the Play 6 menu suite),
+# the core by its list and features (the texts and icons of the Play 6 pages: core feature texts-play6),
+# the modules and this model's data, the Play 6 manifest. No legacy layer: apps/Play6Projector is gone (step 3b).
+# Forks of core files keep a row in tools/play6/forks.tsv. tools/play6/build_play6.sh builds the assembled tree.
+
 app       Play6Projector
 base      apps/common/projector apps/common/projector/FILES
 file      apps/common/hal/HidlCaller.java src/org/lumen/projector/hal/HidlCaller.java
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 # the shared gmpf clients (apps/core/lumen-gmpf: GmpfBase / Gmpf2Base and their call layer) under Play6Gmpf / Play6Gmpf2,
 # with the Z9X HIDL transport and the vendor value types of the shared bodies (Play6Projector.gmpf)
 module    lumen-gmpf
-base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.gmpf
-file      apps/common/LumenImport.java src/org/lumen/common/LumenImport.java
-base      apps/ProjectorBase devices/dragon_healthy/app/Play6Projector.aipq
+base      apps/LumenProjector/vendor/xgimi/hidl
+base      apps/LumenProjector/vendor/xgimi/gmpf devices/dragon_healthy/app/Play6Projector.gmpf
+# the Play 6 HAL family adapter: the value tables the Play 6 vendor build numbers
+# its own way (aspect ratios, picture reset kinds), one table per family adapter
+base      apps/LumenProjector/vendor/xgimi/play6-hidl
+base      apps/LumenProjector/core devices/dragon_healthy/app/Play6Projector.aipq
+# the optional parts of the core the Play 6 stock has (apps/LumenProjector/core.features)
+feature   speaker-mode battery-notices game-console cec-framework-wake ambient-light lens-mode lamp-level play6-start
+feature   menu-play6 lamp-standby texts-play6
+# the unit's model property for the identity check of core Device (the vendor's model_prop, as the HB recipe ships it)
+file      devices/_vendor/xgimi/vendor.conf assets/lumen_vendor/vendor.conf
 # the shared projector menu of every Lumen projector with the Play 6 profile; the
-# Play 6 adapter is apps/Play6Projector panel/Play6Features (+ Play6MenuGates, Play6MenuPages, Play6Menu)
+# Play 6 adapter is play6-hidl panel/Play6Features (+ Play6MenuPages and the core feature menu-play6)
 module    lumen-system
 # the wall colour module (apps/core/lumen-wallcolor): lumen-menu depends on it, the Play 6 stock has no such row
 module    lumen-wallcolor
@@ -27,6 +39,8 @@ module    lumen-files-access
 # Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
 module    lumen-qr
 module    lumen-about
+# Parental controls page of the menu: the state of Lumen Home through its provider (apps/core/lumen-parental)
+module    lumen-parental
 # the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
 module    lumen-remote
 # the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
@@ -36,6 +50,8 @@ file      devices/dragon_healthy/signal.tsv assets/lumen_signal/items.tsv
 module    lumen-sensors
 file      devices/dragon_healthy/sensors.tsv assets/lumen_sensors/items.tsv
 module    lumen-ui
+# the one HDMI port state (org.lumen.tvinput PortState) for the menu HDMI page and the Source key
+module    lumen-hdmiports
 module    lumen-source
 file      devices/dragon_healthy/source.tsv assets/lumen_source/source.tsv
 module    lumen-menu
@@ -44,9 +60,9 @@ module    lumen-stats
 module    lumen-audio
 # the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
 module    lumen-control
-file      devices/dragon_healthy/menu.json assets/lumen_menu/menu.json
+menu      devices/dragon_healthy/menu.json assets/lumen_menu/menu.json
 file      devices/dragon_healthy/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
-top       apps/Play6Projector
+# the Play 6 manifest (its components: the stock boot handshake receivers, the Play 6 providers and pages)
+file      devices/dragon_healthy/app/Play6Projector.manifest.xml AndroidManifest.xml
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store
-# a byte-identical copy of a shared file in apps/Play6Projector is red: delete it, the common layer gives it
 identical error

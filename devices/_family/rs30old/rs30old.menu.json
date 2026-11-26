@@ -1,0 +1,39 @@
+{
+  "include": "devices/_family/rs30/rs30.menu.json",
+  "note": "RS30 old line (athena3pro, athena3promax, athena3ultra, athena3ultramax): their stock trees are the G0155 tree (athena35ultramax) node for node but these: picture mode 40 is office (image_mode_office_athena3), the colour temperature of image_mode_4_color_temp_athena3 (17 warm), motion compensation without the original frame (no real_cinema_mode), no rainbow reduction row, the wall colour row only from v1.2.27, a screen memory row (not offered: no lens memory calls in the table), the single iris on the Pro, Pro Max and Ultra. Evidence: research/stock_v*.tsv and each model's research/stock_v1227.tsv.",
+  "features": {
+    "picture.mode": {
+      "options": [
+        "ai",
+        "sport",
+        "imax",
+        "movie",
+        "color_accuracy",
+        "office",
+        "performance",
+        "dv_bright",
+        "dv_dark"
+      ],
+      "support": {
+        "imax": [
+          "imax",
+          "hdr10"
+        ],
+        "dv_bright": [
+          "dolby"
+        ],
+        "dv_dark": [
+          "dolby"
+        ],
+        "color_accuracy": [
+          "sdr",
+          "hdr",
+          "hdr10"
+        ]
+      }
+    }
+  },
+  "off": {
+    "picture.anti_rbe": "no picture_anti_rbe node in the old line's tree and no supported_rainbow_reduction in its feature.xml"
+  }
+}

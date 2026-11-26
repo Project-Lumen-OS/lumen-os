@@ -23,12 +23,29 @@ public final class VcontrolModels {
     public static VcontrolModels of(String xgimiModel) {
         switch (xgimiModel == null ? "" : xgimiModel.trim()) {
             case "G0058": return new VcontrolModels("dragon_healthy", 20500319, "v2.5.3.19", true);
+            case "G0063": return new VcontrolModels("g0063", 20500320, "v2.5.3.20", true);
+            case "G0067": return new VcontrolModels("g0067", 20500320, "v2.5.3.20", true);
+            case "G0077": return new VcontrolModels("g0077", 20500320, "v2.5.3.20", true);
+            case "G0078": return new VcontrolModels("g0078", 20500320, "v2.5.3.20", true);
+            case "G0079": return new VcontrolModels("g0079", 20500320, "v2.5.3.20", true);
             case "G0082": return new VcontrolModels("horse_popular", 20500320, "v2.5.3.20", true);
+            case "G0086": return new VcontrolModels("g0086", 20500320, "v2.5.3.20", true);
+            case "G0087": return new VcontrolModels("g0087", 20500320, "v2.5.3.20", true);
+            case "G0088": return new VcontrolModels("g0088", 20500320, "v2.5.3.20", true);
+            case "G0089": return new VcontrolModels("g0089", 20500320, "v2.5.3.20", true);
             case "G0100": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0104": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0109": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0110": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "G0111": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0114": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0115": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0124": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
+            case "G0125": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "G0130": return new VcontrolModels("goat_elegant", 20500406, "v2.5.4.6", true);
             case "G0148": return new VcontrolModels("goat_elegant", 20500502, "v2.5.5.2", true);
             case "G0155": return new VcontrolModels("horse_popular", 20500502, "v2.5.5.2", true);
+            case "G0170": return new VcontrolModels("horse_popular", 20500502, "v2.5.5.2", true);
             case "H0061": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "H0062": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);
             case "H0063": return new VcontrolModels("horse_popular", 20500408, "v2.5.4.8", true);

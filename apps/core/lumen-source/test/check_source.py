@@ -21,25 +21,31 @@ def read(*p):
         return f.read()
 
 
-APPS = {"horse_popular": "Z9xProjector", "goat_elegant": "HbProjector", "g0111": "X50Projector", "g0100": "X50Projector",
-        "g0155": "X50Projector", "h0061": "X50Projector", "h0062": "X50Projector", "h0063": "X50Projector", "dragon_healthy": "Play6Projector"}
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import assemble_app  # noqa: E402  (a model's recipe and data: its own, else its family's, devices/README.md)
+import layered  # noqa: E402
+# every model of the registry that builds a projector app (no hand list: a new model is checked by being added)
+APPS = {c: a for c, a, _ in assemble_app.all_recipes(G) if a.endswith("Projector")}
+ok(len(APPS) >= 10, "projector models in the registry: %d" % len(APPS))
 for c, app in APPS.items():
-    r = read("devices", c, "app", app + ".layers")
+    src = layered.find(os.path.join(G, "devices", c, "device.conf"), "source.tsv")
+    r = assemble_app.recipe_text(G, c, assemble_app.find_recipe(G, c, app))
     ok(re.search(r"^module\s+lumen-source\s*$", r, re.M), c + ": recipe names module lumen-source")
-    ok(re.search(r"^file\s+devices/%s/source\.tsv\s+assets/lumen_source/source\.tsv\s*$" % c, r, re.M),
+    ok(src and re.search(r"^file\s+%s\s+assets/lumen_source/source\.tsv\s*$" % re.escape(os.path.relpath(src, G)), r, re.M),
        c + ": recipe ships its source.tsv")
-    ok(os.path.isfile(os.path.join(G, "devices", c, "source.tsv")), c + ": devices/%s/source.tsv" % c)
-ok(sorted(os.path.basename(os.path.dirname(p)) for p in glob.glob(os.path.join(G, "devices", "*", "source.tsv")))
-   == sorted(APPS), "source.tsv only for the projector models")
+    ok(src is not None, c + ": devices/%s/source.tsv (or its family's)" % c)
+ok(sorted(c for c in os.listdir(os.path.join(G, "devices")) if os.path.isfile(os.path.join(G, "devices", c, "device.conf"))
+          and layered.find(os.path.join(G, "devices", c, "device.conf"), "source.tsv")) == sorted(APPS),
+   "source.tsv only for the projector models")
 
 # the key: the first DOWN, as stock (pressBehaver 0, no long press action)
 key = read("apps", "core", "lumen-source", "src", "org", "lumen", "source", "SourceKey.java")
 ok("e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) press(c, \"key\")" in key, "SourceKey.onKey: first DOWN only")
-for app in ("ProjectorBase", "HbProjector", "Play6Projector"):
+for app in ("LumenProjector/core", "HbProjector", "Play6Projector"):
     k = read("apps", app, "src", "org", "lumen", "projector", "KeyReceiver.java")
     ok('if (firstDown && setupDone(ctx, "source")) org.lumen.source.SourceKey.press(ctx, "key");' in k,
        app + ": Source key -> SourceKey on the first DOWN after setup")
-x50 = read("apps", "X50Projector", "src", "org", "lumen", "x50", "projector", "KeyReceiver.java")
+x50 = read("apps", "LumenProjector", "host", "activity", "src", "org", "lumen", "x50", "projector", "KeyReceiver.java")
 ok('case KeyEvent.KEYCODE_TV_INPUT:' in x50 and 'if (down && e.getRepeatCount() == 0) SourceReceiver.press(c, "key");' in x50,
    "X50: Source key -> SourceReceiver.press on the first DOWN")
 gk = read("apps", "X50PowerOverlay", "res", "xml", "global_keys.xml")
@@ -49,7 +55,7 @@ for f in ("Z9xFrameworkKeysOverlay", "HbFrameworkOverlay", "Play6FrameworkOverla
        f + ": Source to org.lumen.projector")
 for rel in ("apps/common/projector/src/org/lumen/projector/source/SourceRequestReceiver.java",):
     ok('org.lumen.source.SourceKey.press(ctx, "show_source");' in read(*rel.split("/")), rel + ": Source request = the key's step")
-ok('SourceKey.press(c, why);' in read("apps", "X50Projector", "src", "org", "lumen", "x50", "projector", "SourceReceiver.java"),
+ok('SourceKey.press(c, why);' in read("apps", "LumenProjector", "host", "activity", "src", "org", "lumen", "x50", "projector", "SourceReceiver.java"),
    "X50 Source request = the key's step")
 
 # an older HDMI viewer (no quiet mark) shows its own banner in the card's place: the card stands aside for HDMI steps
@@ -82,13 +88,15 @@ for p in glob.glob(os.path.join(G, "apps", "**", "*.java"), recursive=True):
        rel + ": the old source list is gone")
 
 # texts: the old list's own words, every locale, plain
-base = {}
-for f in glob.glob(os.path.join(G, "apps", "common", "projector", "res", "values*", "strings_source.xml")):
-    t = open(f, encoding="utf-8").read()
-    base[os.path.basename(os.path.dirname(f))] = dict(re.findall(r'<string name="(source_home|source_hdmi)">(.*?)</string>', t))
-mod = {}
-for f in glob.glob(os.path.join(M, "res", "values*", "lumen_source_strings.xml")):
-    mod[os.path.basename(os.path.dirname(f))] = dict(re.findall(r'<string name="lumen_source_(home|hdmi)">(.*?)</string>', open(f, encoding="utf-8").read()))
+sys.path.insert(0, os.path.join(G, "tools", "i18n"))
+import res_strings  # noqa: E402  (strings files as the APK resolves them)
+base, mod = {}, {}
+for d in sorted(os.listdir(os.path.join(G, "apps", "common", "projector", "res"))):
+    if d.startswith("values"):
+        base[d] = {k: v for k, v in res_strings.strings(os.path.join(G, "apps", "common", "projector", "res", d, "strings_source.xml")).items()
+                   if k in ("source_home", "source_hdmi")}
+        mod[d] = {k[len("lumen_source_"):]: v for k, v in res_strings.strings(os.path.join(M, "res", d, "lumen_source_strings.xml")).items()
+                  if k in ("lumen_source_home", "lumen_source_hdmi")}
 ok(sorted(mod) == sorted(base) and len(mod) >= 18, "every locale of the old list: %d" % len(mod))
 for loc, v in mod.items():
     ok(v.get("home") == base.get(loc, {}).get("source_home") and v.get("hdmi") == base.get(loc, {}).get("source_hdmi"),

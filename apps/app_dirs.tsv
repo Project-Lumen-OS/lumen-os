@@ -10,4 +10,6 @@ Z9xSetup	apps/LumenSetup
 HbSetup	apps/LumenSetup
 Z9xTvInput	apps/LumenTvInput
 Z9xAirPlay	apps/LumenAirPlay
-Z9xProjector	apps/ProjectorBase
+Z9xProjector	apps/LumenProjector/core
+X50Projector	apps/LumenProjector/host/activity
+HbProjector	apps/LumenProjector/vendor/xgimi/aidl-gmpf

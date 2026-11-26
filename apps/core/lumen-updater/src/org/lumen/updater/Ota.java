@@ -87,7 +87,7 @@ public final class Ota {
     /** The manifest this image was built to read (ChannelRule.image). */
     public static String imageManifestUrl() { return T.channels.image(T); }
 
-    /** The user's "Beta updates" choice (Store, the app's own storage); null = not chosen = the image's channel. */
+    /** The user's "Beta updates" choice (Store, the app's own storage); null = not chosen = by the build type. */
     private static volatile Boolean sBeta;
 
     static void setBeta(Boolean on) { sBeta = on; }
@@ -98,14 +98,20 @@ public final class Ota {
     /** True when this image has a beta channel: only then the updater shows the "Beta updates" switch. */
     public static boolean betaAvailable() { return channels(imageManifestUrl()) != null; }
 
-    /** True when the beta channel is read: the user's choice, else whether the image itself reads it. */
+    /**
+     * True when the beta channel is read: the user's choice, else the build type. A beta (or rc) build follows the
+     * beta channel of its model, a final build the stable one, whichever file of the pair the image URL names (the
+     * public images of the Z9X and the HB name the stable file, the X50 ones the beta file).
+     */
     public static boolean betaOn() { return betaOn(imageManifestUrl(), sBeta); }
 
     static boolean betaOn(String image, Boolean choice) {
-        String[] c = channels(image);
-        if (c == null) return false;
-        return choice != null ? choice : T.channels.betaByDefault(c, image);
+        if (channels(image) == null) return false;
+        return choice != null ? choice : betaBuild();
     }
+
+    /** This build is a beta or a release candidate (VersionScheme.prerelease of &lt;props&gt;.version). */
+    static boolean betaBuild() { return VersionScheme.prerelease(prop(T.props + ".version")); }
 
     /**
      * The main manifest of the chosen channel: the stable or the beta one (betaOn), else the image's own. A check
@@ -166,6 +172,12 @@ public final class Ota {
 
     /** The folder of the downloaded package (OtaDir of this model). */
     public static File dir(Context c) { return T.dir.get(c); }
+
+    /** Every file of the download folder: the offer's package and metadata. */
+    static void deleteFiles(Context c) {
+        File[] fs = dir(c).listFiles();
+        if (fs != null) for (File f : fs) if (!f.delete()) Log.w(TAG, "cannot delete " + f);
+    }
 
     /** Best-effort property for org.lumen.projector (STR / power-off postponed while busy). */
     static void setBusy(Context c, boolean busy, String state) {

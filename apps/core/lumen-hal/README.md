@@ -2,7 +2,7 @@
 
 The one raw Binder path from a Lumen app to XGIMI's stable AIDL vendor services (`xgimi.hardware.gmpf.I*Manager/default`,
 format aidl): `AidlTransport` and the paced call log `HalLog`. Taken on 2026-11-10 from the two transports of
-`apps/X50EyeGuard` and `apps/X50Projector` (`Gmpf`), whose transport parts were the same code.
+`apps/X50EyeGuard` and the X50 family adapter `apps/LumenProjector/vendor/xgimi/mt9681-aidl` (`Gmpf`), whose transport parts were the same code.
 
 - An app subclasses `AidlTransport<GmpfCall>` once (its `Gmpf`). Two top-level enums of the app go with it:
   `GmpfIface implements AidlTransport.Service` names the interfaces, `GmpfCall implements AidlTransport.Method` is its
@@ -20,5 +20,8 @@ format aidl): `AidlTransport` and the paced call log `HalLog`. Taken on 2026-11-
   the dex (one transact site, here; the allow list in the app); `devices/g0111/image/x50_apk_check.py` reads the
   allow list from the dex.
 
-Consumers: X50EyeGuard (8 calls), X50Projector (the menu). The HB (`HbProjector` AidlCaller, `LumenInfo` HbGmpf) and
-LumenSensors keep their own transports while their APKs are frozen or until they move (phase 4).
+Consumers: X50EyeGuard (8 calls), X50Projector (the menu) and the HB projector app (aidl-gmpf `AidlWire`, since
+2026-11-25: the HB rules as the family hooks `replyError` (ReplyException for a delivered failure), `closesOnFailedGuard`,
+`watchesDeath` / `vendorDied`, the stable parcelables of its calls through `proxyCall` with `Out` / `In`, the callbacks
+it registers at every connect through `sendCallback`; the X50 family keeps the defaults). `LumenInfo` HbGmpf (a
+diagnostic app outside the release images) and LumenSensors keep their own transports until they move.

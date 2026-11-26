@@ -3,6 +3,7 @@ package org.lumen.projector.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextDirectionHeuristics;
@@ -12,8 +13,11 @@ import android.view.View;
 /** Multi-line, non-focusable text (dialog message, hints). */
 public class TextRow extends View {
     private final TextPaint paint;
+    private final int baseColor;
     private final float padH, padV;
     private CharSequence text;
+    private Paint focusPaint;
+    private float radius;
     private StaticLayout layout;
     private int layoutWidth = -1;
 
@@ -25,10 +29,19 @@ public class TextRow extends View {
         super(c);
         this.text = text == null ? "" : text;
         paint = Theme.text(c, designSize, color, false);
+        baseColor = color;
         padH = Theme.pxf(c, Theme.ROW_PAD_H);
         padV = Theme.pxf(c, 12);
         setFocusable(false);
         setWillNotDraw(false);
+    }
+
+    /** A long text the reader walks with the D-pad (Licences): it takes the focus and shows it as a row does. */
+    public TextRow readable() {
+        focusPaint = Theme.fill(Theme.ROW_BG_FOCUSED);
+        radius = Theme.pxf(getContext(), Theme.ROW_RADIUS);
+        setFocusable(true);
+        return this;
     }
 
     public void setText(CharSequence t) {
@@ -68,6 +81,9 @@ public class TextRow extends View {
     @Override
     protected void onDraw(Canvas c) {
         build(getWidth());
+        boolean focused = focusPaint != null && isFocused();
+        if (focused) c.drawRoundRect(0, 0, getWidth(), getHeight(), radius, radius, focusPaint);
+        paint.setColor(focused ? Theme.TEXT_FOCUSED : baseColor);
         c.save();
         c.translate(padH, padV);
         layout.draw(c);

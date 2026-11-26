@@ -15,6 +15,10 @@ public final class Control {
     public static final String SET_ENABLED = "set_enabled";
     /** call("set_ask", "1" | "0"): ask before every connection, or not. */
     public static final String SET_ASK = "set_ask";
+    /** call("set_quality", "1" | "-1"): the next or the previous picture quality (WfdQuality.step), then the state. */
+    public static final String SET_QUALITY = "set_quality";
+    /** call("follow_name"): drop the receiver's own name, it lists the system device name again, then the state. */
+    public static final String FOLLOW_NAME = "follow_name";
 
     /** Settings a set call may change (the names are the Prefs keys). */
     public static final String ENABLED = "enabled";
@@ -40,11 +44,22 @@ public final class Control {
      * starting).
      */
     public static ReceiverStatus status(boolean enabled, boolean serviceUp, boolean mirroring, String p2pState) {
+        return status(enabled, serviceUp, mirroring, p2pState, null);
+    }
+
+    /**
+     * As above, with the link fault ({@code fault} = P2pHealth.Fault name, null = none): a lasting one (Wi-Fi Direct
+     * does not answer, or the system cannot finish a connection) makes the receiver FAULT, so the status line names
+     * the cause instead of starting forever.
+     */
+    public static ReceiverStatus status(boolean enabled, boolean serviceUp, boolean mirroring, String p2pState,
+                                        String fault) {
         if (!enabled) return ReceiverStatus.OFF;
         if (!serviceUp) return ReceiverStatus.STARTING;
         if (mirroring) return ReceiverStatus.IN_USE;
         if ("UNSUPPORTED".equals(p2pState)) return ReceiverStatus.UNSUPPORTED;
         if ("WIFI_OFF".equals(p2pState)) return ReceiverStatus.NO_WIFI;
+        if (P2pHealth.lasting(P2pHealth.fault(fault))) return ReceiverStatus.FAULT;
         if ("VISIBLE".equals(p2pState)) return ReceiverStatus.READY;
         return ReceiverStatus.STARTING;
     }

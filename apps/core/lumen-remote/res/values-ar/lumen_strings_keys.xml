@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">مفتاح جهات الاتصال</string>
     <string name="lumen_remote_keys_name_calendar">مفتاح التقويم</string>
     <string name="lumen_remote_keys_name_bookmarks">مفتاح الإشارات المرجعية</string>
-    <string name="lumen_remote_keys_do_source">مصدر الإدخال</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">شبه المنحرف</string>
-    <string name="lumen_remote_keys_do_focus">التركيز</string>
-    <string name="lumen_remote_keys_do_quick">الإعدادات السريعة</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">الإشارة</string>
 </resources>

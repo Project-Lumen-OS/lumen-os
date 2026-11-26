@@ -201,9 +201,9 @@ for name, rel, text, word in (
 # ---- the X50 prop check (verify_tree_x50.py): base + edits + model, then first_start.py apply
 X = os.path.join(W, "x50")
 os.makedirs(os.path.join(X, "base/product/etc"))
-open(os.path.join(X, "base/build.prop"), "w").write("ro.product.system.model=Z9X\nro.build.id=A\n")
+open(os.path.join(X, "base/build.prop"), "w").write("ro.product.system.model=Z9X\nro.build.id=A\nro.lineage.display.version=1.0.9 (kmuradoff)\n")
 open(os.path.join(X, "base/product/etc/build.prop"), "w").write(BASE_PRODUCT)
-open(os.path.join(X, "edits.txt"), "w").write("[system]\nro.product.system.model=X50\n[product]\n+ro.lumen.device=g0111\n")
+open(os.path.join(X, "edits.txt"), "w").write("[system]\nro.product.system.model=X50\n[product]\n+ro.lumen.device=g0111\n+ro.lumen.version=t1\n")
 open(os.path.join(X, "model.txt"), "w").write("ro.xgimi.product.name=Product_dianapro\n")
 shutil.copytree(os.path.join(X, "base"), os.path.join(X, "new"))
 XP = os.path.join(G, "devices", "g0111", "image", "x50_props.py")
@@ -309,11 +309,13 @@ def method(src, sig):
 
 # every SetupActivity an image can get: the base and any layer on top of it (devices/*/app/*.layers "top")
 acts = [os.path.join(SETUP, "src", "org", "lumen", "setup", "SetupActivity.java")]
+import os, sys  # noqa: E401
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import assemble_app  # noqa: E402  (every recipe a model builds, its own or its family's)
 for c in devs:
-    ad = os.path.join(G, "devices", c, "app")
-    for f in sorted(os.listdir(ad)) if os.path.isdir(ad) else []:
+    for f in sorted(set(assemble_app.recipes(G, c).values())):
         if f.endswith(".layers"):
-            for line in open(os.path.join(ad, f)):
+            for line in open(f):
                 p = line.split()
                 if len(p) == 2 and p[0] == "top":
                     a = os.path.join(G, p[1], "src", "org", "lumen", "setup", "SetupActivity.java")

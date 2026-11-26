@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Stock gap rows, round 2: the screensaver rows reuse the Z9X / HB screensaver page texts (apps/ProjectorBase
+<!-- Stock gap rows, round 2: the screensaver rows reuse the Z9X / HB screensaver page texts (apps/LumenProjector/core
      res strings_dream.xml), the senior colour lock means the stock cur_mode_not_support_elder_adjustment. -->
 <resources>
-    <string name="lumen_m_hdr_screensaver">Заставка</string>
-    <string name="lumen_m_dream_now">Запустить заставку</string>
-    <string name="lumen_m_dream_delay">Запускать через</string>
-    <string name="lumen_m_dream_never">Никогда</string>
-    <string name="lumen_m_dream_minutes">%1$d мин</string>
-    <string name="lumen_m_dream_hours">%1$d ч</string>
     <string name="lumen_m_dream_m1">1 мин</string>
     <string name="lumen_m_dream_m5">5 мин</string>
     <string name="lumen_m_dream_m10">10 мин</string>

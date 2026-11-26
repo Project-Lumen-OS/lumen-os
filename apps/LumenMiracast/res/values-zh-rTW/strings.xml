@@ -3,29 +3,19 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="app_name">螢幕鏡像</string>
-    <string name="settings_title">螢幕鏡像</string>
-    <string name="on">開</string>
-    <string name="off">關</string>
-    <string name="ok">確定</string>
-    <string name="cancel">取消</string>
-    <string name="status_title">狀態</string>
     <string name="status_off">已關閉。手機和電腦看不到這台投影機。</string>
     <string name="status_starting">正在啟動</string>
     <string name="status_ready">已就緒。手機和電腦會看到這台投影機，名稱為 %1$s。</string>
     <string name="status_no_wifi">Wi‑Fi 已關閉。請開啟 Wi‑Fi 以接收投放畫面。</string>
     <string name="status_unsupported">這台投影機不支援 Wi‑Fi Direct。</string>
+    <string name="status_waiting_wifi">正在等待 Wi‑Fi 連線。</string>
+    <string name="status_restarting">Wi‑Fi Direct 已停止回應，正在重新啟動。</string>
+    <string name="status_no_answer">Wi‑Fi Direct 沒有回應。請重新啟動投影機。AirPlay 和 DLNA 仍可使用。</string>
+    <string name="status_connect_broken">手機能看到這台投影機，但目前的系統版本暫時無法完成連線。AirPlay 和 DLNA 可以使用。</string>
     <string name="status_in_use">正在顯示 %1$s 的螢幕</string>
-    <string name="row_enabled">螢幕鏡像（Miracast）</string>
-    <string name="row_name">名稱</string>
-    <string name="row_ask">連線前詢問</string>
-    <string name="row_quality">畫質</string>
     <string name="quality_1080_60">最高 1080p，每秒 60 格</string>
     <string name="quality_1080_30">最高 1080p，每秒 30 格</string>
     <string name="quality_720">最高 720p</string>
-    <string name="howto_title">如何連線</string>
-    <string name="howto_android">Android：在快速設定中開啟「投放」或 Smart View，然後選擇 %1$s。</string>
-    <string name="howto_windows">Windows：同時按下 Win 和 K，然後選擇 %1$s。</string>
-    <string name="name_dialog_title">投影機名稱</string>
     <string name="notif_ready">已準備好以 %1$s 接收投放畫面</string>
     <string name="notif_in_use">正在顯示 %1$s 的螢幕</string>
     <string name="prompt_title">%1$s 想要顯示其螢幕</string>

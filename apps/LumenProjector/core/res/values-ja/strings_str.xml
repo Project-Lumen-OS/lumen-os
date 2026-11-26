@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">ディープスリープはオフです</string>
+    <string name="hb_str_blocked_usb">USB でコンピューターが接続されています。スタンバイ中もプロジェクターは完全にはスリープせず、ファンは回り続けます。ディープスリープに戻すには USB ケーブルを抜いてください。</string>
+    <string name="hb_str_blocked_update">アップデートをインストール中です。完了するとディープスリープに戻ります。</string>
+    <string name="hb_str_blocked_update_check">更新されたシステムを起動後に確認中です。数分でディープスリープに戻ります。</string>
+    <string name="hb_str_blocked_off">このプロジェクターではディープスリープがオフになっています（サービス設定）。</string>
+</resources>

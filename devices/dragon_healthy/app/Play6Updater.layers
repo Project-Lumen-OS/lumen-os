@@ -4,6 +4,8 @@
 # AndroidManifest.xml (system uid and RECOVERY for /cache and the BCB, as AOSP's own non-A/B updaters run).
 # tools/play6/build_play6.sh and tools/arch/baseline.sh build the assembled tree.
 app       Play6Updater
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-stats
 # the Lumen icon set (apps/core/lumen-icons, its R class named in the top layer R_EXTRA_PACKAGES)
 module    lumen-icons

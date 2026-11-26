@@ -1,0 +1,10 @@
+# The classes of the one projector app's core (apps/LumenProjector/core) the X50 family's activity host uses as they
+# are, taken by the X50Projector recipes of every MT9681 model in place of a copy of its own (docs/architecture/
+# the design notes). One path per line, relative to apps/LumenProjector/core.
+src/org/lumen/projector/cec/EarcLink.java
+src/org/lumen/projector/cec/EarcRules.java
+src/org/lumen/projector/cec/EarcStep.java
+src/org/lumen/projector/setup/SetupBridge.java
+src/org/lumen/projector/power/SleepAlarm.java
+src/org/lumen/projector/power/SleepHost.java
+src/org/lumen/projector/panel/ProjectorMenu.java

@@ -158,7 +158,9 @@ public final class SoundOutputsTest {
             C.ok(d.getName() + ": Auto and Speaker first", model.size() >= 2 && model.get(0).equals("auto") && model.get(1).equals("speaker"));
             C.ok(d.getName() + ": the jack is manual only on the HB", p.jackSensed() == !"goat_elegant".equals(d.getName()));
         }
-        C.ok("profiles with an output page: 9", n == 9);
+        int all = 0;
+        for (File d : devs == null ? new File[0] : devs) if (new File(d, "menu.json").isFile()) all++;
+        C.ok("every profile has the output page (a base row): " + n + " of " + all, n == all && n > 0);
         C.ok("Play 6 has no jack (stock dayao tree)", !profile(g, "dragon_healthy").options(FeatureId.SOUND_OUTPUT).contains("wired"));
         C.ok("Z9X lists ARC, headphones, Bluetooth, USB (stock voice_output)",
                 profile(g, "horse_popular").options(FeatureId.SOUND_OUTPUT).equals(ALL));
@@ -170,21 +172,24 @@ public final class SoundOutputsTest {
 
     /** The data and the code that use it agree (one source per fact, checked here). */
     private static void wiring(File g) throws Exception {
-        String jack = Check.read(new File(g, "apps/HbProjector/src/org/lumen/projector/audio/HbWiredJack.java"));
+        String jack = Check.read(new File(g, "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/audio/HbWiredJack.java"));
         C.ok("HB senses no plug (HbWiredJack.SENSED false) and its profile says jack manual",
                 jack.contains("static final boolean SENSED = false;") && !profile(g, "goat_elegant").jackSensed());
         String auto = Check.read(new File(g, "apps/core/lumen-audio/src/org/lumen/audio/AutoOutput.java"));
         C.ok("Auto never takes an unsensed jack (AutoOutput.path)",
                 auto.contains("return p == MediaPath.WIRED && !jackSensed ? MediaPath.NONE : p;"));
-        String hb = Check.read(new File(g, "apps/HbProjector/src/org/lumen/projector/audio/AudioOutputChoice.java"));
-        C.ok("HB Auto uses HbWiredJack.SENSED", hb.contains("AutoOutput.device(am, HbWiredJack.SENSED)")
-                && hb.contains("AutoOutput.added(d, kind(sApp) == AudioOutputKind.AUTO, HbWiredJack.SENSED)"));
+        String choice = Check.read(new File(g, "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java"));
+        String hbFamily = Check.read(new File(g, "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java"));
+        C.ok("HB Auto uses the family's jack (Family.JACK_SENSED equals HbWiredJack.SENSED)",
+                choice.contains("AutoOutput.device(am, Family.JACK_SENSED)")
+                && choice.contains("AutoOutput.added(d, kind(sApp) == AudioOutputKind.AUTO, Family.JACK_SENSED)")
+                && hbFamily.contains("public static final boolean JACK_SENSED = false;"));
         String pages = Check.read(new File(g, "apps/core/lumen-menu/src/org/lumen/projector/panel/OutputPages.java"));
         C.ok("the page is drawn from SoundOutputs over OutputScan and the profile's jack",
                 pages.contains("SoundOutputs o = SoundOutputs.of(profile.options(FeatureId.SOUND_OUTPUT),")
                         && pages.contains("OutputScan.read(app), profile.jackSensed(),"));
         C.ok("Connect is a normal Bluetooth connect", pages.contains("BtA2dp.connect(addr, \"output menu\")"));
-        String rows = Check.read(new File(g, "apps/HbProjector/src/org/lumen/projector/audio/HbOutputRows.java"));
+        String rows = Check.read(new File(g, "apps/LumenProjector/core/src/org/lumen/projector/audio/HbOutputRows.java"));
         C.ok("HbOutputRows no longer says Speaker turns System Audio off", !rows.contains("\"Speaker\" turns CEC System"));
         String mc = Check.read(new File(g, "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java"));
         C.ok("the format row sits on the output page", mc.contains("if (MenuSpec.onOutputPage(f, profile)) return;"));

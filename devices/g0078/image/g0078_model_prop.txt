@@ -1,0 +1,25 @@
+# The model properties the stock XGIMI RS 20 Ultra Master system loads at every boot: the stock /system/bin/init (XGIMI build)
+# reads /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop, LineageOS init does not. The recipe
+# (devices/_family/rs20/image/steps.tsv) appends these lines to the image's product build.prop.
+# Rule (x50_props.py model_rule): every line of the stock G0078 file except the identity keys, persist.sys.* and
+# the first-start language keys. Stock file: vendor/etc/xgimimodelname/G0078/build.prop of V1.6.52 (official FULL OTA),
+# sha256 39b9ca2ab0aa7b2865cd9f88ea221e90ddad02e8db510a97d85d7dd4558030ec (x50_props.py model checks it on the build host).
+ro.xgimi.product.name=Product_athenaultramax
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_athenaultramax
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.vendor.xgimi.animation.style=blue
+persist.xgimi.bootanimation.style=blue
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9681+M-UHD003F0003001F0017000100010037+athenaultramax+ProjectorUHD_3

@@ -2786,6 +2786,14 @@ C hasTvListener()() s2
   = true
 C hasTvListener()() s3
   = true
+C hasZoomLimit()() s0
+  = true
+C hasZoomLimit()() s1
+  = true
+C hasZoomLimit()() s2
+  = true
+C hasZoomLimit()() s3
+  = true
 C is3DTo2DEnabled()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 193 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
@@ -13420,6 +13428,14 @@ C hasTvListener()() s1
 C hasTvListener()() s2
   = true
 C hasTvListener()() s3
+  = true
+C hasZoomLimit()() s0
+  = true
+C hasZoomLimit()() s1
+  = true
+C hasZoomLimit()() s2
+  = true
+C hasZoomLimit()() s3
   = true
 C is3DTo2DEnabled()() s0
   TX xgimi.hardware.gmpf@1.0::IGmpf 193 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf

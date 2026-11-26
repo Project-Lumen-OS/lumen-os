@@ -39,7 +39,15 @@ import java.util.Set;
  *
  * Callbacks (ai-mode-stock): {@link #registerCallback} sends the stock setXxxCallback(cb) of a Call of the list with the
  * process's one callback object of a vendor callback interface (IGmTvCallback: the GmTvManager events of the stock AI
- * picture quality), once per vendor binder, so a vendor restart gets it again.
+ * picture quality), once per vendor binder, so a vendor restart gets it again. {@link #sendCallback} sends it on every
+ * call (the HB stock wrappers register again at each connect).
+ *
+ * Family rules (the HB, 2026-11-25): a family whose callers must tell a delivered failure from a lost one returns its own
+ * {@link #replyError} (unimplemented, a bad reply, a refused interface), closes an interface whose guard call failed
+ * after delivery ({@link #closesOnFailedGuard}), and links every binder to death ({@link #watchesDeath}): the first
+ * death notice of a vendor generation drops every interface, opens the closed ones again (a restarted service runs the
+ * guard again) and calls {@link #vendorDied}. Calls with stable parcelables use {@link #proxyCall}. The defaults keep
+ * the plain path of the X50 family.
  */
 public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
     /** A vendor interface: the app's enum Iface implements it. */
@@ -79,6 +87,8 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
     }
 
     private static final Map<String, State> STATES = new HashMap<>();
+    /** The vendor generation: a death notice of an older one is stale. */
+    private static int sGeneration;
     private static final Map<String, EventCallback> CALLBACKS = new HashMap<>();
     private static final HalLog LOG = new HalLog();
 
@@ -109,9 +119,60 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         return deliver(b, c.iface(), c, a, r);
     }
 
+    /** One call whose arguments and reply use the stock proxy layout of stable parcelables ({@link Out}, {@link In}). */
+    protected final <T> T proxyCall(C c, ProxyArgs a, ProxyRet<T> r) throws RemoteException {
+        return call(c, a == null ? null : p -> a.write(new Out(p)), p -> r.read(new In(p)));
+    }
+
+    /** The interface has a live binder that passed the guard (no vendor call). */
+    protected final boolean connected(Service s) {
+        synchronized (AidlTransport.class) {
+            State st = state(s);
+            return st.binder != null && st.verified && st.binder.isBinderAlive();
+        }
+    }
+
+    /** Forget every binder (no vendor call): the guards run again at the next call, closed interfaces stay closed. */
+    protected final void forgetAll() {
+        synchronized (AidlTransport.class) {
+            for (State st : STATES.values()) {
+                st.binder = null;
+                st.verified = false;
+                st.callbacks.clear();
+            }
+        }
+    }
+
+    /** The error of a call the vendor received but did not answer as asked (unimplemented, bad reply, guard). */
+    protected RemoteException replyError(String msg) {
+        return new RemoteException(msg);
+    }
+
+    /** True: a guard call that failed this way closes the interface for the process (until a vendor death). */
+    protected boolean closesOnFailedGuard(RemoteException e) {
+        return false;
+    }
+
+    /** True: every new binder is linked to death (see the class comment). */
+    protected boolean watchesDeath() {
+        return false;
+    }
+
+    /** The first death notice of a vendor generation, after every interface was dropped (binder thread: only post). */
+    protected void vendorDied() {
+    }
+
     /** The interface is reachable and through the guard (only the meta calls are sent). */
     protected final void require(Service s) throws RemoteException {
         need(s);
+    }
+
+    /** The getInterfaceHash answer the guard accepted for {@code s} (the interface is reached first, as require). */
+    protected final String guardedHash(Service s) throws RemoteException {
+        need(s);
+        synchronized (AidlTransport.class) {
+            return state(s).hash;
+        }
     }
 
     /**
@@ -124,14 +185,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         IBinder b = need(c.iface());
         final EventCallback cb;
         synchronized (AidlTransport.class) {
-            EventCallback x = CALLBACKS.get(descriptor);
-            if (x == null) {
-                x = new EventCallback(tag, descriptor);
-                CALLBACKS.put(descriptor, x);
-            }
-            x.sink = sink;
-            x.version = version;
-            x.hash = state(c.iface()).hash;
+            EventCallback x = callback(c, descriptor, sink);
             if (state(c.iface()).callbacks.contains(descriptor)) return false;
             cb = x;
         }
@@ -144,12 +198,163 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         return true;
     }
 
+    /** As registerCallback, but sent on every call, also to a binder that has it already. */
+    protected final void sendCallback(C c, String descriptor, EventSink sink) throws RemoteException {
+        if (Looper.getMainLooper().isCurrentThread()) throw new RemoteException("callback registration on the main thread refused");
+        IBinder b = need(c.iface());
+        final EventCallback cb;
+        synchronized (AidlTransport.class) {
+            cb = callback(c, descriptor, sink);
+        }
+        BinderArgs a = p -> p.writeStrongBinder(cb);
+        deliver(b, c.iface(), c, a, p -> null);
+    }
+
+    /** The process's one callback object of the descriptor, its sink, version and accepted hash set (lock held). */
+    private EventCallback callback(C c, String descriptor, EventSink sink) {
+        EventCallback x = CALLBACKS.get(descriptor);
+        if (x == null) {
+            x = new EventCallback(tag, descriptor);
+            CALLBACKS.put(descriptor, x);
+        }
+        x.sink = sink;
+        x.version = version;
+        x.hash = state(c.iface()).hash;
+        return x;
+    }
+
     /** The result as the call log shows it (null = done; arrays element by element). */
     protected String show(Object v) {
         if (v == null) return "done";
         if (v instanceof float[]) return java.util.Arrays.toString((float[]) v);
         if (v instanceof int[]) return java.util.Arrays.toString((int[]) v);
         return String.valueOf(v);
+    }
+
+    // ---------------------------------------------------------------- the stock proxy layout of stable parcelables
+    /*
+     * For a subclass whose calls carry stable parcelables (the HB, from its AidlCaller, 2026-11-25): byte = writeByte
+     * (one int32), boolean = writeBoolean (int32 0 / 1), in parcelable = int32 1 + the framed fields, out parcelable
+     * after the return value. Every parse error is an IllegalStateException, the reply error of proxyCall. Only
+     * proxyCall makes Out and In, so the subclass never holds a Parcel.
+     */
+    /** Writes the arguments after the interface token. */
+    public interface ProxyArgs { void write(Out o); }
+    /** Reads the reply after readException. */
+    public interface ProxyRet<T> { T read(In r); }
+    /** One stable parcelable's fields, inside its size frame. */
+    public interface Writer { void write(Out o); }
+    public interface Reader<T> { T read(In r); }
+    public interface ElementWriter { void write(Out o, int index); }
+    public interface ElementReader { void read(In r, int index); }
+
+    /** The request after writeInterfaceToken. */
+    public static final class Out {
+        private final Parcel p;
+        private Out(Parcel p) { this.p = p; }
+        public void i32(int v) { p.writeInt(v); }
+        public void bool(boolean v) { p.writeBoolean(v); }
+        public void i8(byte v) { p.writeByte(v); }
+        public void f32(float v) { p.writeFloat(v); }
+        public void str(String v) { p.writeString(v); }
+        /** in byte[]: writeByteArray (length, then the bytes). */
+        public void bytes(byte[] v) { p.writeByteArray(v); }
+        /** out byte[]: only the length the reply must fill (never null, never negative). */
+        public void outBytes(int length) {
+            if (length < 0) throw new IllegalArgumentException("out array length " + length);
+            p.writeInt(length);
+        }
+        /** in parcelable: writeTypedObject(x, 0), i.e. int32 1, then the framed parcelable. */
+        public void object(Writer w) {
+            p.writeInt(1);
+            framed(w);
+        }
+        /** writeTypedArray of n framed parcelables: int32 n, then per element int32 1 and the element. */
+        public void typedArray(int n, ElementWriter w) {
+            p.writeInt(n);
+            for (int k = 0; k < n; k++) {
+                final int idx = k;
+                p.writeInt(1);
+                framed(o -> w.write(o, idx));
+            }
+        }
+        /** Stable parcelable frame: int32 size (patched after the fields), the fields. */
+        public void framed(Writer w) {
+            int start = p.dataPosition();
+            p.writeInt(0);
+            w.write(this);
+            int end = p.dataPosition();
+            p.setDataPosition(start);
+            p.writeInt(end - start);
+            p.setDataPosition(end);
+        }
+    }
+
+    /** The reply after readException. Every parse error is an IllegalStateException. */
+    public static final class In {
+        private final Parcel p;
+        private In(Parcel p) { this.p = p; }
+        public int i32() { need(4); return p.readInt(); }
+        public boolean bool() { need(4); return p.readBoolean(); }
+        public byte i8() { need(4); return p.readByte(); }
+        public float f32() { need(4); return p.readFloat(); }
+        public String str() { return p.readString(); }
+        /** out byte[]: readByteArray, the length must equal the array's. */
+        public void bytes(byte[] dst) {
+            int pos = p.dataPosition();
+            need(4);
+            int n = p.readInt();
+            if (n != dst.length) throw new IllegalStateException("byte array of " + n + ", expected " + dst.length);
+            p.setDataPosition(pos);
+            p.readByteArray(dst);
+        }
+        /** createIntArray: int32 n (negative = null: fails, more than max fails), then n int32. */
+        public int[] ints(int max) {
+            int n = i32();
+            if (n < 0 || n > max) throw new IllegalStateException("int array of " + n + " (at most " + max + ")");
+            int[] a = new int[n];
+            for (int k = 0; k < n; k++) a[k] = i32();
+            return a;
+        }
+        /** Returned parcelable (readTypedObject): int32 non-zero, then the framed parcelable. Zero (null) fails. */
+        public <T> T object(Reader<T> r) {
+            if (i32() == 0) throw new IllegalStateException("null parcelable in the reply");
+            return framed(r);
+        }
+        /** Out parcelable after the return value: int32 non-zero, then readFromParcel. Zero fails. */
+        public <T> T out(Reader<T> r) {
+            return object(r);
+        }
+        /** createTypedArray: int32 n (negative = null: fails), per element int32 present + framed element. */
+        public int typedArray(int max, ElementReader r) {
+            int n = i32();
+            if (n < 0 || n > max) throw new IllegalStateException("typed array of " + n + " (at most " + max + ")");
+            for (int k = 0; k < n; k++) {
+                if (i32() == 0) throw new IllegalStateException("null element " + k);
+                final int idx = k;
+                framed(x -> { r.read(x, idx); return null; });
+            }
+            return n;
+        }
+        /**
+         * Stable parcelable frame: int32 size (at least 4), the fields, then the position moves to start + size
+         * (fields of a newer version are skipped). Fields read past the frame fail (the vendor sent fewer).
+         */
+        public <T> T framed(Reader<T> r) {
+            int start = p.dataPosition();
+            int size = i32();
+            if (size < 4) throw new IllegalStateException("parcelable too small (" + size + ")");
+            if (size > p.dataSize() - start) throw new IllegalStateException("parcelable size " + size + " past the reply");
+            T v = r.read(this);
+            if (p.dataPosition() - start > size) {
+                throw new IllegalStateException("parcelable of " + size + " bytes is shorter than its fields");
+            }
+            p.setDataPosition(start + size);
+            return v;
+        }
+        private void need(int n) {
+            if (p.dataAvail() < n) throw new IllegalStateException("reply too short");
+        }
     }
 
     // ---------------------------------------------------------------- transport
@@ -166,7 +371,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         synchronized (AidlTransport.class) {
             State st = state(i);
             String instance = i.descriptor() + "/default";
-            if (st.refused) throw new RemoteException(i.descriptor() + " closed by the version guard");
+            if (st.refused) throw replyError(i.descriptor() + " closed by the version guard");
             if (st.binder == null || !st.binder.isBinderAlive()) {
                 st.binder = null;
                 st.verified = false;
@@ -174,6 +379,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                 IBinder b;
                 try {
                     b = ServiceManager.checkService(instance);
+                    if (b != null && watchesDeath()) b.linkToDeath(new Death(this, sGeneration), 0);
                 } catch (Throwable t) {
                     throw new RemoteException(instance + ": " + t);
                 }
@@ -188,6 +394,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                     h = deliver(st.binder, i, getHash, null, Parcel::readString);
                 } catch (RemoteException e) {
                     st.binder = null;
+                    if (closesOnFailedGuard(e)) st.refused = true;
                     throw e;
                 }
                 String fw = SystemProperties.get(HashRule.FIRMWARE_PROP, "");
@@ -196,7 +403,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                     st.binder = null;
                     Log.e(tag, "guard: " + i.descriptor() + " version " + v + " hash " + h + " on firmware " + fw
                             + ": closed, nothing sent");
-                    throw new RemoteException(i.descriptor() + " version/hash mismatch");
+                    throw replyError(i.descriptor() + " version/hash mismatch");
                 }
                 st.verified = true;
                 st.hash = h;
@@ -233,7 +440,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
             }
             if (!done) {
                 logCall(c, args, "unimplemented");
-                throw new RemoteException(c.method() + " unimplemented");
+                throw replyError(c.method() + " unimplemented");
             }
             try {
                 reply.readException();
@@ -242,7 +449,7 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
                 return v;
             } catch (RuntimeException e) {
                 logCall(c, args, "error " + e);
-                throw new RemoteException("reply of " + c.method() + ": " + e);
+                throw replyError("reply of " + c.method() + ": " + e);
             }
         } finally {
             data.recycle();
@@ -276,6 +483,32 @@ public abstract class AidlTransport<C extends Enum<C> & AidlTransport.Method> {
         for (int k = 0; k < w.length; k++) w[k] = p.readInt();
         p.setDataPosition(end);
         return w;
+    }
+
+    /** The vendor's death notice of a linked binder: only the first one of a generation acts. */
+    private static final class Death implements IBinder.DeathRecipient {
+        private final AidlTransport<?> owner;
+        private final int generation;
+        Death(AidlTransport<?> owner, int generation) {
+            this.owner = owner;
+            this.generation = generation;
+        }
+        @Override public void binderDied() { owner.died(generation); }
+    }
+
+    private void died(int generation) {
+        synchronized (AidlTransport.class) {
+            if (generation != sGeneration) return;
+            sGeneration++;
+            for (State st : STATES.values()) {
+                st.binder = null;
+                st.verified = false;
+                st.refused = false;
+                st.callbacks.clear();
+            }
+        }
+        Log.w(tag, "vendor service died: every interface dropped");
+        try { vendorDied(); } catch (Throwable t) { Log.w(tag, "death listener: " + t); }
     }
 
     private static void drop(Service i, IBinder b) {

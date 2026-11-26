@@ -39,7 +39,7 @@ Data: `devices/<c>/wallcolor.conf`, in the app as `assets/lumen_wallcolor/model.
     WallColor.onFocusEvent(type, value);      // from the app's focus event dispatch (true for 11001)
     WallColor.open(context);                  // the menu row (lumen-menu FeatureId.KEYSTONE_WALL_COLOR, a module screen)
 
-Z9X and HB: `org.lumen.projector.GmpfWallColor` (ProjectorBase). X50 family: `X50WallColor`.
+Z9X and HB: `org.lumen.projector.GmpfWallColor` (apps/LumenProjector/core). X50 family: `X50WallColor`.
 
 ## Tests
 

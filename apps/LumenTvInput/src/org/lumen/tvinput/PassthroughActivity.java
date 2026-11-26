@@ -576,9 +576,8 @@ public class PassthroughActivity extends Activity {
                 case KeyEvent.KEYCODE_MENU:
                 case KeyEvent.KEYCODE_TV_INPUT:
                     if (event.getAction() == KeyEvent.ACTION_UP && !event.isCanceled()) {
-                        // v6.1: the same XGIMI-style Source overlay as the Source key; our own
-                        // picker only when org.lumen.projector is not installed.
-                        if (!HdmiInputs.openSourceOverlay(this)) HdmiInputs.openPicker(this);
+                        // the same Source card as the Source key (the projector app's lumen-source)
+                        HdmiInputs.openSourceOverlay(this);
                     }
                     return true;
                 case KeyEvent.KEYCODE_INFO:

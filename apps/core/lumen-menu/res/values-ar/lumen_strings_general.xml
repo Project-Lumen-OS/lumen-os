@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">اللغة والوقت</string>
+    <string name="lumen_m_hdr_power">الطاقة</string>
+    <string name="lumen_m_hdr_display_menu">الشاشة والقائمة</string>
+    <string name="lumen_m_hdr_remote_voice">جهاز التحكم والصوت</string>
+    <string name="lumen_m_hdr_apps_devices">التطبيقات والأجهزة</string>
+    <string name="lumen_m_hdr_storage_updates">التخزين والتحديثات</string>
+    <string name="lumen_m_hdr_help">المساعدة</string>
+    <string name="lumen_m_date_time">التاريخ والوقت</string>
+    <string name="lumen_m_date_auto">تلقائي</string>
+    <string name="lumen_m_storage">التخزين</string>
+    <string name="lumen_m_storage_free">المساحة المتاحة %1$s</string>
+    <string name="lumen_m_update">تحديث النظام</string>
+    <string name="lumen_m_about">حول جهاز العرض</string>
+    <string name="lumen_m_system_info">تفاصيل النظام</string>
+    <string name="lumen_m_network_adb">تصحيح الأخطاء عبر الشبكة</string>
+    <string name="lumen_m_android_dev">خيارات مطوري Android</string>
+</resources>

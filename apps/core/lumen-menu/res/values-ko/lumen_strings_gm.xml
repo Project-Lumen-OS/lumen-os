@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">프리셋</string>
     <string name="lumen_gm_preset_compete">경쟁</string>
     <string name="lumen_gm_preset_balance">균형</string>
-    <string name="lumen_gm_preset_story">스토리</string>
     <string name="lumen_gm_preset_on">%1$s 프리셋이 켜졌습니다</string>
     <string name="lumen_gm_preset_partly">%1$s 프리셋이 켜졌지만 일부 항목은 바뀌지 않았습니다</string>
     <string name="lumen_gm_lat">응답 속도</string>
-    <string name="lumen_gm_lat_0">표준</string>
     <string name="lumen_gm_lat_1">터보</string>
     <string name="lumen_gm_lat_d0">보통 지연입니다. 키스톤과 화면 맞춤이 작동합니다.</string>
     <string name="lumen_gm_lat_d1">가장 낮은 지연입니다. 키스톤과 화면 맞춤이 작동하지 않습니다.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">켜기</string>
     <string name="lumen_gm_auto">자동</string>
     <string name="lumen_gm_pic">화면 모드</string>
-    <string name="lumen_gm_pic_0">표준</string>
     <string name="lumen_gm_pic_4">스포츠</string>
     <string name="lumen_gm_pic_d0">모든 게임용.</string>
     <string name="lumen_gm_pic_d1">슈팅 게임용.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">일반 화면입니다.</string>
     <string name="lumen_gm_snd">게임 사운드</string>
     <string name="lumen_gm_snd_1">서라운드</string>
-    <string name="lumen_gm_snd_2">스토리</string>
     <string name="lumen_gm_snd_3">선명</string>
     <string name="lumen_gm_snd_4">균형</string>
     <string name="lumen_gm_snd_d0">게임 그대로의 소리입니다.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">더 빠름</string>
     <string name="lumen_gm_turbo_title">터보를 켤까요?</string>
     <string name="lumen_gm_turbo_msg">터보는 키스톤 보정을 끄고 화면을 전체 프레임으로 되돌립니다. 지연이 가장 낮아집니다.</string>
-    <string name="lumen_gm_turbo_ok">켜기</string>
     <string name="lumen_gm_rule_vrr_wide">먼저 16:9나 자동을 고르세요</string>
     <string name="lumen_gm_rule_ar_vrr">먼저 VRR을 끄세요</string>
     <string name="lumen_gm_rule_ar_4k">와이드 화면은 3840 × 2160 신호에서만 작동합니다</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">게임 중에 설정 버튼을 길게 누르면 이 메뉴가 열립니다</string>
     <string name="lumen_gm_kind_console">콘솔</string>
     <string name="lumen_gm_kind_computer">컴퓨터</string>
-    <string name="lumen_gm_licences">라이선스</string>
     <string name="lumen_gm_licences_d">Lumen OS가 사용하는 자료의 제작자</string>
     <string name="lumen_gm_credits_intro">게임 메뉴의 컨트롤러 그림은 다음 3D 모델로 만들었습니다:</string>
 </resources>

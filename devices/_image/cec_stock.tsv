@@ -17,23 +17,69 @@ dump  H0062-v1.2.99   h0061,h0062,h0063 35f469242fa716c17addd0c47491507c5a7719c4
 dump  G0130-v6.16.24  goat_elegant    375fae007bd02f28285d4f2c201d71cfdbaa65aa74fbfcecb179bd6b9e7ab9e4
 dump  G0148-v6.17.12  goat_elegant    c546ebecab5b3a54461b76820ec2c90c21f720712c28764df98f89f90114b779
 dump  G0155-v1.1.42   g0155           b3e0b30b7a9584005d4c64e1a18adf3e2abb382e8d6c23f1d181401981ecea69
+# The RS30 old line (one framework-res on v1.1.47 and v1.2.27) official FULL OTAs, no dump.
+dump  G0170-v1.2.5    g0170           09933d5da8437db123176d6f5d2b20f703ccf2d376b861e2a72d7484b48ef61a
+dump  G0115-v1.2.27   g0114,g0115,g0124,g0125 328bfb8498810e13546a0d8665f39d3c352d9f335c8280160ebaee22b2ea9f17
+dump  G0115-v1.1.47   g0114,g0115,g0124,g0125 328bfb8498810e13546a0d8665f39d3c352d9f335c8280160ebaee22b2ea9f17
+# The MIRA line (MIRA 4K, 4K Pro, AURA 3 Max) official v1.3.1 FULL OTA, no dump.
+dump  G0109-v1.3.1    g0104,g0109,g0110 752b5a2055508a21cc471c9d6c3bd3a6a6efc2de3838c303a445f310faf31da4
 # Play 6 v1.8.127: SettingsProvider.apk (services.jar 86fd98246d72db182080c4879695c3782bb035fd3f2abb06aa43e144064b2014)
+# The RS 20 line official FULL packages, no dump (system/framework/framework-res.apk of each package; v1.6.50 and
+# v1.6.55 carry the same bytes).
+dump  G0086-v1.6.50   g0086,g0088,g0089 ebd8a99c290201517ee756431bf30fc15a99ffa6262f2f15280cb37f1839d585
+dump  G0087-v1.6.55   g0087           ebd8a99c290201517ee756431bf30fc15a99ffa6262f2f15280cb37f1839d585
+dump  G0063-v1.6.52   g0063,g0067,g0077,g0078,g0079 195a23405eb333a666d28cdcf1215f8f0154a6508c1a221e76c266bfc53289c6
 dump  G0058-v1.8.127  dragon_healthy  11c9c5251a1c96a3c329f9f50f1523c65a1082edfe18539a54c65d61c3aa3119
-cols  lineage-21  G0082-v6.15.62  G0111-v1.2.64  H0062-v1.2.99  G0130-v6.16.24  G0148-v6.17.12  G0155-v1.1.42
-config_cecHdmiCecControlDisabled_default                        false  false  false  false  false  false  false
-config_cecHdmiCecControlEnabled_default                         true   true   true   true   true   true   true
-config_cecPowerControlModeBroadcast_default                     true   false  false  false  false  false  false
-config_cecPowerControlModeNone_default                          false  false  false  false  false  false  false
-config_cecPowerControlModeTvAndAudioSystem_default              false  true   true   true   true   true   true
-config_cecPowerControlModeTv_default                            false  false  false  false  false  false  false
-config_cecPowerStateChangeOnActiveSourceLostNone_default        false  false  false  false  false  false  false
-config_cecPowerStateChangeOnActiveSourceLostStandbyNow_default  true   true   true   true   true   true   true
-config_cecSetMenuLanguageDisabled_default                       false  false  false  false  false  false  false
-config_cecSetMenuLanguageEnabled_default                        true   true   true   true   true   true   true
-config_cecTvSendStandbyOnSleepDisabled_default                  false  true   true   true   true   true   true
-config_cecTvSendStandbyOnSleepEnabled_default                   true   false  false  false  false  false  false
-config_cecTvWakeOnOneTouchPlayDisabled_default                  false  true   true   true   true   true   true
-config_cecTvWakeOnOneTouchPlayEnabled_default                   true   false  false  false  false  false  false
+cols  lineage-21  G0082-v6.15.62  G0111-v1.2.64  H0062-v1.2.99  G0130-v6.16.24  G0148-v6.17.12  G0155-v1.1.42  G0170-v1.2.5  G0115-v1.2.27  G0115-v1.1.47  G0109-v1.3.1  G0086-v1.6.50  G0087-v1.6.55  G0063-v1.6.52
+config_cecHdmiCecControlDisabled_default                        false  false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecHdmiCecControlEnabled_default                         true   true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecPowerControlModeBroadcast_default                     true   false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecPowerControlModeNone_default                          false  false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecPowerControlModeTvAndAudioSystem_default              false  true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecPowerControlModeTv_default                            false  false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecPowerStateChangeOnActiveSourceLostNone_default        false  false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecPowerStateChangeOnActiveSourceLostStandbyNow_default  true   true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecSetMenuLanguageDisabled_default                       false  false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecSetMenuLanguageEnabled_default                        true   true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecTvSendStandbyOnSleepDisabled_default                  false  true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecTvSendStandbyOnSleepEnabled_default                   true   false  false  false  false  false  false  false  false          false  false  false  false  false
+config_cecTvWakeOnOneTouchPlayDisabled_default                  false  true   true   true   true   true   true   true  true           true  true  true  true  true
+config_cecTvWakeOnOneTouchPlayEnabled_default                   true   false  false  false  false  false  false  false  false          false  false  false  false  false
+# query_sad_*: which codecs RequestSadAction asks the soundbar for (2026-11-26, read with `cec_defaults.py stock`
+# from the framework-res.apk of each dump on xgimi-builder / xgimi-llm). Every stock asks only AC-3, DTS, E-AC-3 and
+# TrueHD/MAT (one <Request Short Audio Descriptor>, the X50 stock sniffer trace <mac>); LineageOS asks all
+# fifteen in four messages. 'unread' = no copy of that stock file was left on the hosts (its OTA was unpacked and
+# deleted before these rows existed): no evidence either way, the check skips it.
+config_cecQuerySadLpcmDisabled_default                         false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadLpcmEnabled_default                          true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDdDisabled_default                           false  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDdEnabled_default                            true  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadMpeg1Disabled_default                        false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadMpeg1Enabled_default                         true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadMp3Disabled_default                          false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadMp3Enabled_default                           true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadMpeg2Disabled_default                        false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadMpeg2Enabled_default                         true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadAacDisabled_default                          false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadAacEnabled_default                           true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDtsDisabled_default                          false  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDtsEnabled_default                           true  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadAtracDisabled_default                        false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadAtracEnabled_default                         true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadOnebitaudioDisabled_default                  false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadOnebitaudioEnabled_default                   true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDdpDisabled_default                          false  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadDdpEnabled_default                           true  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadDtshdDisabled_default                        false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadDtshdEnabled_default                         true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadTruehdDisabled_default                       false  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadTruehdEnabled_default                        true  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadDstDisabled_default                          false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadDstEnabled_default                           true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadWmaproDisabled_default                       false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadWmaproEnabled_default                        true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
+config_cecQuerySadMaxDisabled_default                          false  true  true  true  true  true  true  true  unread  unread  true  true  true  true
+config_cecQuerySadMaxEnabled_default                           true  false  false  false  false  false  false  false  unread  unread  false  false  false  false
 # Play 6: HdmiControlService reads hdmi_control_enabled with default true; SettingsProvider settings upgrade 190
 # stores hdmi_control_auto_device_off_enabled = def_hdmiControlAutoDeviceOff = false; HdmiCecLocalDeviceTv reads
 # hdmi_control_auto_wakeup_enabled with default true and no stock code stores it at start (XgimiService

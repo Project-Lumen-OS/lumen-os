@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">Resmî XGIMI dosyaları proje sayfasındaki kılavuzda listelenir.</string>
     <string name="lumen_about_erases">USB bellek projektördeki her şeyi siler: uygulamalar, hesaplar, ayarlar ve dosyalar.</string>
     <string name="lumen_about_scan">Açmak için telefonla tarayın</string>
-    <string name="lumen_about_close">Kapat</string>
 </resources>

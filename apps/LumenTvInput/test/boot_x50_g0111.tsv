@@ -1,0 +1,17 @@
+# A recorded cold boot: X50 Ultra G0111, Lumen 1.0.10-beta14, 2026-11-26 15:06 (read only: logcat -b events/system
+# -v monotonic, dumpsys hdmi_control and tv_input; uptime 780.28 at 15:19:07.45, so 0 ms = 15:06:07.17). HDMI 1 is the
+# eARC port with an LG WOWCAST soundbar (CEC 0x05, audio system), HDMI 2 a Box R 4K Plus (CEC 0x08, standby), HDMI 3
+# empty. The CEC history has whole seconds only: those rows are the start of their second.
+# ms	event	port	source of the row
+24929	boot_screen_end	0	wm_boot_animation_done (the Lumen boot screen ends, Home is drawn)
+24830	hotplug	1	[H] 15:06:32 hotplug port=1 connected=true (the soundbar)
+24830	hotplug	2	[H] 15:06:32 hotplug port=2 connected=true
+24830	hotplug	3	[H] 15:06:32 hotplug port=3 connected=true
+26392	user_unlock	0	ssm.onUnlockingUser-0 TvInputManagerService (stock XRMService starts BootControlService acon here)
+26717	start	0	am_proc_start org.lumen.tvinput (persistent, not direct boot aware)
+27374	input_added	1	TvInputHardwareManager addHardwareInput device 1 -> HW1 (hdmi_port=1)
+27431	input_added	2	addHardwareInput device 2 -> HW2 (hdmi_port=2)
+27465	input_added	3	addHardwareInput device 3 -> HW3 (hdmi_port=3)
+29830	plug	1	[R] 15:06:37 <Initiate ARC> 50:C0: the soundbar brings eARC up, its HPD may bounce
+31830	plug	1	[S] 15:06:39 <Report ARC Initiated> 05:C1
+36651	child_added	2	update inputInfo HDMI200008 (the CEC child input of the Box R on HDMI 2)

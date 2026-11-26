@@ -9,8 +9,10 @@
 #    v6.17.12 (never on v6.16.24, an empty or a null firmware, V6.17.12 in upper case, a value with a space); any other
 #    hash, a null or empty one, the hashes in upper case: refused. answer() gives back the accepted hash.
 # 3. The hashes and the firmware are pinned (the strings of the stock gmpf-V1-ndk.so of each dump).
-# 4. Each transport (AidlCaller, LumenInfo HbGmpf) asks GmpfHash.accepted exactly once, with the
-#    firmware read from GmpfHash.FIRMWARE_PROP, and no app source but GmpfHash.java has a hash literal.
+# 4. The HB projector app's transport (AidlWire on the shared lumen-hal AidlTransport) builds its guard rule once from
+#    the GmpfHash constants and that shared rule answers as GmpfHash.accepted (a firmware with a space is trimmed
+#    there, as on every AIDL family); LumenInfo HbGmpf asks GmpfHash.accepted exactly once, with the firmware read
+#    from GmpfHash.FIRMWARE_PROP. No app source but GmpfHash.java has a hash literal.
 # The tree is only read.
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -19,15 +21,16 @@ trap 'rm -rf "$W"' EXIT
 PASS=0 FAIL=0
 ok() { PASS=$((PASS + 1)); echo "ok   $1"; }
 bad() { FAIL=$((FAIL + 1)); echo "FAIL $1"; }
-COPIES="apps/HbProjector/src/org/lumen/projector/hal apps/LumenInfo/src/org/lumen/info/hal"
-TRANSPORTS="apps/HbProjector/src/org/lumen/projector/hal/AidlCaller.java apps/LumenInfo/src/org/lumen/info/hal/HbGmpf.java"
+COPIES="apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal apps/LumenInfo/src/org/lumen/info/hal"
+TRANSPORTS="apps/LumenInfo/src/org/lumen/info/hal/HbGmpf.java"
+WIRE=apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/AidlWire.java
 
 # 1. one file
 first=""
 for d in $COPIES; do
   f=$G/$d/GmpfHash.java
   [ -f "$f" ] || { bad "copy: $d/GmpfHash.java missing"; continue; }
-  sed -E -e '1d' -e 's/\((HbProjector: AidlCaller|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
+  sed -E -e '1d' -e 's/\((HbProjector: AidlWire|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
   if [ -z "$first" ]; then first=$W/norm.$(echo "$d" | cut -d/ -f2)
   elif cmp -s "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)"; then ok "copy: $d/GmpfHash.java = the HbProjector copy"
   else bad "copy: $d/GmpfHash.java differs from the HbProjector copy: $(diff "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)" | head -4 | tr '\n' ' ')"; fi
@@ -73,7 +76,7 @@ public class HashRule {
 EOF
 classes=""
 for d in $COPIES; do
-  pkg=$(echo "$d" | sed 's#^apps/[^/]*/src/##; s#/#.#g')
+  pkg=$(echo "$d" | sed 's#^.*/src/##; s#/#.#g')
   mkdir -p "$W/src/$(echo "$pkg" | tr . /)"
   cp "$G/$d/GmpfHash.java" "$W/src/$(echo "$pkg" | tr . /)/GmpfHash.java"
   classes="$classes $pkg.GmpfHash"
@@ -96,7 +99,30 @@ for t in $TRANSPORTS; do
     bad "transport: $t: the firmware '$var' is not read from GmpfHash.FIRMWARE_PROP"
   else ok "transport: $t asks GmpfHash.accepted once, firmware from GmpfHash.FIRMWARE_PROP"; fi
 done
-lit=$(cd "$G" && grep -rlE '"(908de964|715affd0)' apps/HbProjector/src apps/LumenInfo/src | grep -v '/GmpfHash\.java$')
+n=$(grep -c 'new HashRule(GmpfHash\.V61624, GmpfHash\.V61712_FIRMWARE, GmpfHash\.V61712)' "$G/$WIRE")
+if [ "$n" = 1 ] && grep -q 'super(TAG, VERSION, RULE,' "$G/$WIRE"; then ok "transport: $WIRE guards with the GmpfHash rule"
+else bad "transport: $WIRE: the guard rule is not new HashRule(V61624, V61712_FIRMWARE, V61712) once"; fi
+mkdir -p "$W/s2/org/lumen/hal" "$W/s2/org/lumen/projector/hal" "$W/o2"
+cp "$G/apps/core/lumen-hal/src/org/lumen/hal/HashRule.java" "$W/s2/org/lumen/hal/"
+cp "$G/apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/GmpfHash.java" "$W/s2/org/lumen/projector/hal/"
+cat > "$W/s2/Same.java" <<'EOF'
+import org.lumen.projector.hal.GmpfHash;
+public class Same {
+    public static void main(String[] a) {
+        org.lumen.hal.HashRule r = new org.lumen.hal.HashRule(GmpfHash.V61624, GmpfHash.V61712_FIRMWARE, GmpfHash.V61712);
+        int bad = 0;
+        for (String h : new String[] {GmpfHash.V61624, GmpfHash.V61712, null, "", GmpfHash.V61624.toUpperCase(), "notfrozen"})
+            for (String f : new String[] {"v6.16.24", "v6.17.12", "v6.18.3", "V6.17.12", "6.17.12", "", null})
+                if (r.accepted(h, f) != GmpfHash.accepted(h, f)) { bad++; System.out.println("differs " + h + " " + f); }
+        System.out.println(bad == 0 ? "same" : bad + " differ");
+        System.exit(bad == 0 ? 0 : 1);
+    }
+}
+EOF
+if javac -d "$W/o2" $(find "$W/s2" -name '*.java') > "$W/j2.log" 2>&1 && java -cp "$W/o2" Same > "$W/same.log" 2>&1; then
+  ok "the shared HashRule of the HB answers as GmpfHash.accepted"
+else bad "the shared HashRule of the HB: $(cat "$W/same.log" "$W/j2.log" 2>/dev/null | head -3 | tr '\n' ' ')"; fi
+lit=$(cd "$G" && grep -rlE '"(908de964|715affd0)' apps/LumenProjector/vendor/xgimi/aidl-gmpf/src apps/LumenInfo/src | grep -v '/GmpfHash\.java$')
 if [ -z "$lit" ]; then ok "no app source but GmpfHash.java has a gmpf hash literal"; else bad "a hash literal outside GmpfHash.java: $lit"; fi
 
 echo "hb_gmpf_hash_test: $PASS passed, $FAIL failed"

@@ -1,0 +1,219 @@
+{
+  "include": "devices/_family/mira/mira.menu.json",
+  "device": "g0104",
+  "model": "G0104",
+  "note": "XGIMI AURA 3 Max (G0104, Product_oscar, MIRA line): its stock settings tree (settings_tree_product_oscar, newsettings 6.03.00.105 of v1.3.1) against the G0155 tree is the line's (devices/_family/mira/mira.menu.json), with the iris f/2.0 .. f/7.0 and dynamic, the Dolby Vision modes, Filmmaker, colour accuracy and the colour temperature 17 named fresh; facts research/stock_v131.tsv.",
+  "features": {
+    "network.hotspot": {
+      "name": "Lumen AURA 3 Max",
+      "iface": "ap0"
+    },
+    "picture.mode": {
+      "options": [
+        "ai",
+        "sport",
+        "color_accuracy",
+        "cinema",
+        "gorgeous",
+        "filmmaker",
+        "imax",
+        "office",
+        "performance",
+        "dv_bright",
+        "dv_dark"
+      ],
+      "support": {
+        "imax": [
+          "imax",
+          "hdr10"
+        ],
+        "filmmaker": [
+          "sdr",
+          "hdr",
+          "hdr10",
+          "filmmaker"
+        ],
+        "dv_bright": [
+          "dolby"
+        ],
+        "dv_dark": [
+          "dolby"
+        ],
+        "color_accuracy": [
+          "sdr",
+          "hdr",
+          "hdr10"
+        ]
+      }
+    },
+    "picture.color_temp": {
+      "options": [
+        "standard",
+        "movie",
+        "d65",
+        "fresh"
+      ]
+    },
+    "picture.iris": {
+      "options": [
+        "f2",
+        "f3",
+        "f4",
+        "f5_5",
+        "f7",
+        "dynamic"
+      ]
+    },
+    "picture.custom_base": {
+      "options": [
+        "sport",
+        "color_accuracy",
+        "cinema",
+        "gorgeous",
+        "filmmaker"
+      ]
+    },
+    "picture.dv_screen": {},
+    "picture.dv_screen.size": {
+      "options": [
+        "80",
+        "88",
+        "90",
+        "100",
+        "110",
+        "120",
+        "130",
+        "140",
+        "150",
+        "160",
+        "170",
+        "180",
+        "190",
+        "200",
+        "250",
+        "300"
+      ]
+    },
+    "picture.dv_screen.gain": {
+      "options": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20"
+      ]
+    }
+  },
+  "off": {
+    "picture.dynamic_black": "the oscar tree has image_mode_set_dynamic_state (off, low, medium, high), not the family switch: not offered, open",
+    "picture.black_tuning": "its level tuning hangs on that four step dynamic black: not offered, open",
+    "eye.elder_color": "no support_elder_color in the G0104 feature.xml (stock hides the senior colour row)"
+  },
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_oscar projection_screen (G0104 V1.3.1, official FULL OTA)"
+    },
+    "picture": {
+      "stock": "settings_tree_product_oscar image (G0104 V1.3.1, official FULL OTA)",
+      "groups": [
+        {
+          "header": "projector_brightness",
+          "rows": [
+            "lamp",
+            "picture.iris"
+          ]
+        },
+        {
+          "header": "image",
+          "rows": [
+            "picture.mode",
+            "picture.dv_screen",
+            "picture.custom_new",
+            {
+              "page": "picture.settings",
+              "groups": [
+                {
+                  "rows": [
+                    "picture.custom_base"
+                  ]
+                },
+                {
+                  "header": "basic",
+                  "rows": [
+                    "picture.auto_switch",
+                    "picture.pq",
+                    "picture.memc"
+                  ]
+                },
+                {
+                  "header": "colour",
+                  "rows": [
+                    "picture.color_temp",
+                    "picture.wb",
+                    "picture.gamut",
+                    "picture.color_opt",
+                    "picture.cc"
+                  ]
+                },
+                {
+                  "header": "contrast",
+                  "rows": [
+                    "picture.gamma",
+                    "picture.gamma_index",
+                    "picture.hdr",
+                    "picture.local_contrast",
+                    "picture.dynamic_contrast",
+                    "picture.ai_contrast",
+                    "picture.black_tuning"
+                  ]
+                },
+                {
+                  "header": "clarity",
+                  "rows": [
+                    "picture.noise",
+                    "picture.super_res"
+                  ]
+                },
+                {
+                  "header": "image_more",
+                  "rows": [
+                    "picture.reset",
+                    "picture.custom_delete"
+                  ]
+                }
+              ]
+            },
+            "picture.reset_all"
+          ]
+        },
+        {
+          "header": "image_more",
+          "rows": [
+            "picture.3d",
+            "picture.style_filter",
+            "picture.anti_rbe"
+          ]
+        },
+        {
+          "header": "hdmi",
+          "rows": [
+            "hdmi.range",
+            "hdmi.edid",
+            "picture.aspect"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -151,6 +151,17 @@ public class ShelfView extends LinearLayout {
         return t;
     }
 
+    /** The small shelf of a look (Minimal, or rows of apps taking the room): a smaller title, no season line. */
+    private static final int TITLE_SMALL = 52, TITLE_SMALL_LINE = 60;
+    private boolean mSmall;
+
+    public void setSmall(boolean small) {
+        if (small == mSmall) return;
+        mSmall = small;
+        if (small) mMeta.setVisibility(GONE);
+        restyle();
+    }
+
     /** White over art, the theme's ink on the bare field. */
     public void setInk(boolean onArt) {
         if (onArt == mOnArt) return;
@@ -164,8 +175,8 @@ public class ShelfView extends LinearLayout {
         Theme.style(mEyebrowText, 22, 600, t2, 0);
         mEyebrowText.setLineHeight(Theme.px(28));
         setEyebrowText();
-        Theme.style(mTitle, TITLE, 700, t1, -2.2f);
-        mTitle.setLineHeight(Theme.px(TITLE_LINE));
+        Theme.style(mTitle, mSmall ? TITLE_SMALL : TITLE, 700, t1, mSmall ? -1.4f : -2.2f);
+        mTitle.setLineHeight(Theme.px(mSmall ? TITLE_SMALL_LINE : TITLE_LINE));
         Theme.style(mMeta, META, 600, t1, -0.2f);
         mMeta.setLineHeight(Theme.px(META_LINE));
         Theme.style(mLeft, LEFT, 450, t3, 0);
@@ -209,7 +220,7 @@ public class ShelfView extends LinearLayout {
         setEyebrowText();
         mTitle.setText(title);
         mMeta.setText(season);
-        mMeta.setVisibility(season == null || season.isEmpty() ? GONE : VISIBLE);
+        mMeta.setVisibility(mSmall || season == null || season.isEmpty() ? GONE : VISIBLE);
         mLeft.setText(left);
         mBar.set(progress);
         mBar.setVisibility(progress >= 0 ? VISIBLE : GONE);
@@ -226,7 +237,7 @@ public class ShelfView extends LinearLayout {
         setEyebrowText();
         mTitle.setText(title);
         mMeta.setText(meta);
-        mMeta.setVisibility(meta == null || meta.isEmpty() ? GONE : VISIBLE);
+        mMeta.setVisibility(mSmall || meta == null || meta.isEmpty() ? GONE : VISIBLE);
         mProgressLine.setVisibility(GONE);
         if (watch == null || watch.isEmpty()) mBtn[0].setText(R.string.hero_watch);
         else mBtn[0].setText(watch);

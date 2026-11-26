@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal312/rs20-hal312.menu.json",
+  "device": "g0063",
+  "model": "G0063",
+  "note": "RS 20 Plus (G0063, Product_athena): the RS 20 profile, stock tree settings_tree_product_athena (devices/g0063/stock.tsv)."
+}

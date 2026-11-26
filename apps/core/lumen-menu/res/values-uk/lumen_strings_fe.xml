@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">Змінити всі налаштування</string>
+    <string name="lumen_fe_show_hint">OK: показати або сховати пункт</string>
+    <string name="lumen_fe_order">Змінити порядок</string>
+    <string name="lumen_fe_move_hint">OK бере пункт. Вгору і вниз рухають його всередині групи. OK або Назад ставлять його на місце.</string>
+</resources>

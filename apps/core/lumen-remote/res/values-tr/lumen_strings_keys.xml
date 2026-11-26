@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">Kişiler tuşu</string>
     <string name="lumen_remote_keys_name_calendar">Takvim tuşu</string>
     <string name="lumen_remote_keys_name_bookmarks">Yer imleri tuşu</string>
-    <string name="lumen_remote_keys_do_source">Giriş</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Yamuk</string>
-    <string name="lumen_remote_keys_do_focus">Odak</string>
-    <string name="lumen_remote_keys_do_quick">Hızlı ayarlar</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Sinyal</string>
 </resources>

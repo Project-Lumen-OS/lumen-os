@@ -36,16 +36,15 @@ MUT = [
     ("hal_fit_on_no_obstacle", HAL, "if (on) g.setObstacleAvoid(true);", ""),
     ("hal_obstacle_on_sets_fit", HAL, "if (!on) g.setCurtainFit(false);", "g.setCurtainFit(on);"),
     ("hal_obstacle_off_keeps_fit", HAL, "if (!on) g.setCurtainFit(false);", ""),
-    ("str_ru_old_claim", "res/values-ru/strings_hb.xml", "<string name=\"hb_boost_effect\">", "<string name=\"hb_boost_effect\">Цвета бледнее. "),
     ("str_de_no_mode", "res/values-de/strings_hb.xml", "Im Bildmodus „%1$s“", "Im Bildmodus"),
-    ("fp_corner_r", "src/org/lumen/projector/FocusPattern.java", "CORNER_R = 230f / 1920f;", "CORNER_R = 200f / 1920f;"),
-    ("fp_no_centre", "src/org/lumen/projector/FocusPattern.java", "{w, h, rc}, {w / 2f, h / 2f, rm},", "{w, h, rc},"),
-    ("fp_line_y", "src/org/lumen/projector/FocusPattern.java", "LINE_Y = 852f / 1080f;", "LINE_Y = 540f / 1080f;"),
-    ("fp_sweep_full", "src/org/lumen/projector/FocusPattern.java", "return 180f / SPOKES;", "return 360f / SPOKES;"),
-    ("fp_inverted", "src/org/lumen/projector/FocusPattern.java", "BACKGROUND = 0xFFFFFFFF;", "BACKGROUND = 0xFF000000;"),
-    ("mf_no_chart", "src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new android.view.View(this), 0,"),
-    ("mf_chart_on_top", "src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new FocusPatternView(this), 1,"),
-    ("fv_no_line", "src/org/lumen/projector/FocusPatternView.java", "c.drawRect(l[0], l[1], l[2], l[3], ink);", "c.drawRect(0, 0, 0, 0, ink);"),
+    ("fp_corner_r", "@Z9X/src/org/lumen/projector/FocusPattern.java", "CORNER_R = 230f / 1920f;", "CORNER_R = 200f / 1920f;"),
+    ("fp_no_centre", "@Z9X/src/org/lumen/projector/FocusPattern.java", "{w, h, rc}, {w / 2f, h / 2f, rm},", "{w, h, rc},"),
+    ("fp_line_y", "@Z9X/src/org/lumen/projector/FocusPattern.java", "LINE_Y = 852f / 1080f;", "LINE_Y = 540f / 1080f;"),
+    ("fp_sweep_full", "@Z9X/src/org/lumen/projector/FocusPattern.java", "return 180f / SPOKES;", "return 360f / SPOKES;"),
+    ("fp_inverted", "@Z9X/src/org/lumen/projector/FocusPattern.java", "BACKGROUND = 0xFFFFFFFF;", "BACKGROUND = 0xFF000000;"),
+    ("mf_no_chart", "@Z9X/src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new android.view.View(this), 0,"),
+    ("mf_chart_on_top", "@Z9X/src/org/lumen/projector/ManualFocusActivity.java", "addView(new FocusPatternView(this), 0,", "addView(new FocusPatternView(this), 1,"),
+    ("fv_no_line", "@Z9X/src/org/lumen/projector/FocusPatternView.java", "c.drawRect(l[0], l[1], l[2], l[3], ink);", "c.drawRect(0, 0, 0, 0, ink);"),
     ("sn_usb_any", "src/org/lumen/projector/power/StrNoticeRules.java", "return now == StrNoticeKind.USB && !shownForThisConnection;", "return now == StrNoticeKind.USB;"),
     ("sn_usb_kind", "src/org/lumen/projector/power/StrNoticeRules.java", "if (blocker.startsWith(StrGate.B_USB)) return StrNoticeKind.USB;", ""),
     ("sn_short_press", "src/org/lumen/projector/power/StrNoticeRules.java", "heldMs >= longPressMs", "heldMs >= 0"),
@@ -53,27 +52,42 @@ MUT = [
     ("sn_stb_code", "src/org/lumen/projector/power/StrNoticeRules.java", "KEYCODE_STB_POWER = 179", "KEYCODE_STB_POWER = 178"),
     ("sn_in_standby", "src/org/lumen/projector/power/StrNotice.java", "            if (StandbyController.isActive()) return;", ""),
     ("sn_wrong_text", "src/org/lumen/projector/power/StrNotice.java", "case UPDATE: return R.string.hb_str_blocked_update;", "case UPDATE: return R.string.hb_str_blocked_usb;"),
-    ("sn_no_hook", "src/org/lumen/projector/KeyReceiver.java", "        org.lumen.projector.power.StrNotice.onGlobalKey(ctx, ev);\n", ""),
+    ("sn_no_hook", "src/org/lumen/projector/KeyReceiver.java", "        if (Family.STR_NOTICE) org.lumen.projector.power.StrNotice.onGlobalKey(ctx, ev);\n", ""),
     ("sn_no_install", "src/org/lumen/projector/App.java", "org.lumen.projector.power.StrNotice.install(this);", "Log.i(TAG, \"x\");"),
-    ("sn_kk_missing", "res/values-kk/strings_hb.xml", "<string name=\"hb_str_blocked_usb\">", "<string name=\"hb_str_blocked_usbX\">"),
+    ("sn_kk_missing", "res/values-kk/strings_str.xml", "<string name=\"hb_str_blocked_usb\">", "<string name=\"hb_str_blocked_usbX\">"),
     ("str_ja_missing", "res/values-ja/strings_hb.xml", "<string name=\"hb_boost_locked\">", "<string name=\"hb_boost_lockedX\">"),
 ]
 
 def tree(dst):
-    shutil.copytree(os.path.join(G, "apps/HbProjector"), os.path.join(dst, "apps/HbProjector"),
-                    ignore=shutil.ignore_patterns("build"))
-    hal = os.path.join(dst, "apps/ProjectorBase/src/org/lumen/projector")
-    os.makedirs(hal)
-    shutil.copy2(os.path.join(G, "apps/ProjectorBase/src/org/lumen/projector/Hal.java"), hal)
-    os.makedirs(os.path.join(hal, "power"))
-    shutil.copy2(os.path.join(G, "apps/ProjectorBase/src/org/lumen/projector/power/StrGate.java"), os.path.join(hal, "power"))
+    # the core and the HB family adapter: the folded classes (KeyReceiver, App,
+    # StrNotice and its texts) and the HB HAL code live there
+    for rel in ("apps/LumenProjector/core/src", "apps/LumenProjector/core/res", "apps/LumenProjector/core/test/beta6",
+                "apps/LumenProjector/core/test/power",
+                "apps/LumenProjector/vendor/xgimi/aidl-gmpf"):
+        shutil.copytree(os.path.join(G, rel), os.path.join(dst, rel), ignore=shutil.ignore_patterns("build"))
+    # the strings files as the APK resolves them (tools/i18n/res_strings.py over the shared texts)
+    shutil.copytree(os.path.join(G, "apps/core/lumen-common-strings/res"), os.path.join(dst, "apps/core/lumen-common-strings/res"))
+    os.makedirs(os.path.join(dst, "tools/i18n"), exist_ok=True)
+    shutil.copy2(os.path.join(G, "tools/i18n/res_strings.py"), os.path.join(dst, "tools/i18n/res_strings.py"))
+    # the one reader of menu profiles the check imports (the HB profile itself is read only when present)
+    os.makedirs(os.path.join(dst, "tools/devices"), exist_ok=True)
+    for f in ("menu_layers.py", "layered.py"):
+        shutil.copy2(os.path.join(G, "tools/devices", f), os.path.join(dst, "tools/devices", f))
+
+SRC_BASES = ("apps/LumenProjector/vendor/xgimi/aidl-gmpf", "apps/LumenProjector/core")
+
 
 def path(root, rel):
-    if rel.startswith("@Z9X/"): return os.path.join(root, "apps/ProjectorBase", rel[5:])
-    return os.path.join(root, "apps/HbProjector", rel)
+    """A source of the HB app as its recipe layers it: the aidl-gmpf adapter, the core."""
+    if rel.startswith("@Z9X/"): return os.path.join(root, "apps/LumenProjector/core", rel[5:])
+    for base in SRC_BASES:
+        f = os.path.join(root, base, rel)
+        if os.path.exists(f): return f
+    return os.path.join(root, SRC_BASES[0], rel)
 
 def run(root):
-    r = subprocess.run(["sh", os.path.join(root, "apps/HbProjector/test/beta6/run.sh")], capture_output=True, text=True)
+    r = subprocess.run(["sh", os.path.join(root, "apps/LumenProjector/core/test/beta6/run.sh")], capture_output=True, text=True,
+                       env=dict(os.environ, LUMEN_GSI=root))
     return r.returncode == 0
 
 only = os.environ.get("MUT_ONLY", "").split()

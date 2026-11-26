@@ -7,8 +7,9 @@
 Then in IntelliJ: File > Open > the gsi folder. One module "gsi" shows the whole tree (build outputs, logs and
 third-party sources excluded); every app with Java sources (apps/<App>/src) is its own module with src as sources,
 test as test sources, and the Android framework headers (apps/sdk/framework-full-headers.jar) as a library, so
-navigation and highlighting work. Nothing is built by IntelliJ: the apps are built by apps/build_apk.sh and the
-per-app scripts. apps/HbProjector holds only the HB forks; the full app is apps/ProjectorBase plus those
+navigation and highlighting work. The shared modules apps/core/* and apps/common/* are modules too and every
+module depends on them, the way the recipes assemble an app from its folder and those modules. Nothing is built
+by IntelliJ: the apps are built by apps/build_apk.sh and the per-app scripts. the HB app is apps/LumenProjector/core with the aidl-gmpf adapter and its manifest patch
 (devices/goat_elegant/app/HbProjector.layers).
 """
 import os
@@ -30,19 +31,24 @@ def write(rel, text):
 
 
 def apps():
+    """(module name, folder) of every Java tree: apps/<App>, then the shared modules apps/core/* and apps/common/*."""
     out = []
-    root = os.path.join(GSI, "apps")
-    for name in sorted(os.listdir(root)):
-        if os.path.isdir(os.path.join(root, name, "src")):
-            out.append(name)
+    for group, prefix in (("apps", ""), ("apps/core", "core-"), ("apps/common", "common-")):
+        root = os.path.join(GSI, group)
+        for name in sorted(os.listdir(root)):
+            if os.path.isdir(os.path.join(root, name, "src")):
+                out.append((prefix + name, group + "/" + name))
     return out
 
 
-def app_iml(name):
-    base = "$MODULE_DIR$/../../apps/" + name
+def app_iml(folder, deps):
+    base = "$MODULE_DIR$/../../" + folder
     folders = ['      <sourceFolder url="file://%s/src" isTestSource="false" />' % base]
-    if os.path.isdir(os.path.join(GSI, "apps", name, "test")):
+    if os.path.isdir(os.path.join(GSI, folder, "test")):
         folders.append('      <sourceFolder url="file://%s/test" isTestSource="true" />' % base)
+    # an app tree is assembled from its folder plus shared modules (devices/*/app/*.layers): every module sees the
+    # shared ones, so navigation crosses into apps/core and apps/common (IntelliJ builds nothing, cycles are fine)
+    entries = "".join('    <orderEntry type="module" module-name="%s" />\n' % d for d in deps)
     return """<?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -54,15 +60,17 @@ def app_iml(name):
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="android-framework" level="project" />
-  </component>
+%s  </component>
 </module>
-""" % (base, "\n".join(folders), base)
+""" % (base, "\n".join(folders), base, entries)
 
 
 def main():
     if os.path.isdir(IDEA):
         shutil.rmtree(IDEA)
-    names = apps()
+    mods_found = apps()
+    names = [n for n, _ in mods_found]
+    shared = [n for n, f in mods_found if f.startswith(("apps/core/", "apps/common/"))]
     excl = "\n".join('      <excludeFolder url="file://$MODULE_DIR$/../../%s" />' % e for e in EXCLUDE
                      if os.path.exists(os.path.join(GSI, e)))
     write("modules/gsi.iml", """<?xml version="1.0" encoding="UTF-8"?>
@@ -77,8 +85,8 @@ def main():
   </component>
 </module>
 """ % excl)
-    for n in names:
-        write("modules/%s.iml" % n, app_iml(n))
+    for n, folder in mods_found:
+        write("modules/%s.iml" % n, app_iml(folder, [d for d in shared if d != n]))
     mods = ['      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gsi.iml" filepath="$PROJECT_DIR$/.idea/modules/gsi.iml" />']
     mods += ['      <module fileurl="file://$PROJECT_DIR$/.idea/modules/%s.iml" filepath="$PROJECT_DIR$/.idea/modules/%s.iml" />'
              % (n, n) for n in names]
@@ -109,7 +117,7 @@ def main():
 </project>
 """)
     write(".name", "Lumen OS (gsi)\n")
-    print("intellij_project: %d app modules + gsi -> %s" % (len(names), IDEA))
+    print("intellij_project: %d app modules, %d shared modules + gsi -> %s" % (len(names) - len(shared), len(shared), IDEA))
 
 
 if __name__ == "__main__":

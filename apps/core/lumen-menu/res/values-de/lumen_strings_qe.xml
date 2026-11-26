@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Neu</string>
     <string name="lumen_qe_reset">Zurücksetzen</string>
     <string name="lumen_qe_select">Auswählen</string>
-    <string name="lumen_qe_done">Fertig</string>
-    <string name="lumen_qe_back">Zurück</string>
     <string name="lumen_qe_close_panel">Bereich schließen</string>
     <string name="lumen_qe_how">Wie zeigen</string>
     <string name="lumen_qe_now" formatted="true">Jetzt: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Unter den Kacheln</string>
     <string name="lumen_qe_panel_note">Kachel, breite Kachel und Kreis öffnen den Bereich rechts vom Menü.</string>
     <string name="lumen_qe_place">Platz</string>
-    <string name="lumen_qe_move">Verschieben</string>
     <string name="lumen_qe_remove">Aus dem Menü entfernen</string>
     <string name="lumen_qe_moving">Verschieben</string>
     <string name="lumen_qe_move_hint">Kreise bewegen sich nur in der oberen Reihe, Kacheln nur zwischen den Zeilen. Für einen Kreis die Ansicht der Kachel ändern.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: neuer Platz</string>
     <string name="lumen_qe_move_keys">Bewegen</string>
     <string name="lumen_qe_move_cancel">Abbrechen, zurücksetzen</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Nach dem Namen oder einem Teil davon</string>
+    <string name="lumen_qe_search_title">Einstellung finden</string>
+    <string name="lumen_qe_search_hint">Zum Beispiel MEMC</string>
+    <string name="lumen_qe_nothing">Nichts gefunden</string>
+    <string name="lumen_qe_unavailable">Gerade nicht verfügbar</string>
 </resources>

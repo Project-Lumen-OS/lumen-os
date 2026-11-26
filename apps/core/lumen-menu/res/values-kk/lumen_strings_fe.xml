@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">Барлық баптауларды өзгерту</string>
+    <string name="lumen_fe_show_hint">OK: тармақты көрсету не жасыру</string>
+    <string name="lumen_fe_order">Ретін өзгерту</string>
+    <string name="lumen_fe_move_hint">OK тармақты алады. Жоғары және төмен оны топ ішінде жылжытады. OK не Артқа оны орнына қояды.</string>
+</resources>

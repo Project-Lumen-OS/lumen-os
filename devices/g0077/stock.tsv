@@ -1,0 +1,81 @@
+# devices/g0077/stock.tsv: the stock facts of the RS 20 Pro Master (G0077) behind its model data, read from the official
+# package of its stock v1.6.52 (devices/_family/rs20-1652/stock.tsv). tools/devices/test/stock_facts.py holds the model's
+# data (registry, HAL table, menu, restore rows, remotes) against these lines. Columns: kind, key, value, evidence.
+fact	code	G0077	xgimiconfig/G0077/system.ini and vendor/etc/xgimimodelname/G0077/build.prop of v1.6.52
+fact	product	Product_athenapromaster	system.ini ProductName, xgimimodelname ro.product.name Product_athenapromaster
+fact	show_name	RS 20 Pro 大师版	system.ini DeviceShowName
+fact	update_bin	XGIMI_HORSEPOPULAR_XR07A.bin	system.ini UpdateBinName (the USB restore file of this code)
+fact	feature_sha256	bce24977f2e955a3c9568ecd5f6bdde57638d127b6077562cebcd16bf3d01215	xgimiconfig/G0077/feature/feature.xml
+fact	tree	settings_tree_product_athenapromaster 810fac87f6c1d63b2e3ba06d578c9c4c68cedcca4e6b0d7e4ed0cfdc486bd650	newsettings release_838 5dd6e461620e8d43 raw resource (the same APK in v1.6.52 and v1.6.55)
+node	picture.mode	ai teleplay movice_v3 gorgeous sport imax_enhanced hdr_vivid prof_color_accuracy office_platform_9270 performance picture_dolby_bright picture_dolby_soft	the image_mode_3_state page of the tree (image_mode_ dropped)
+node	zoom	zoom_and_optical_shift	the zoom page of the tree (Z9X: zoom_and_move)
+feature	dolby_vision_screen_version	2	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	edid_2_version_val	1	feature.xml of G0077 (the Z9X G0082 of the same package: 3)
+feature	hgig_mode	1	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	hide_lumens_performance	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_Adaptived_AK	5	feature.xml of G0077 (the Z9X G0082 of the same package: 0)
+feature	support_Trapezoid_3D	3	feature.xml of G0077 (the Z9X G0082 of the same package: 0)
+feature	support_ambient_light	true	feature.xml of G0077 (the Z9X G0082 of the same package: false)
+feature	support_arc_volume_adjust_optimization	1	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_battery	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_dolby_screen_adjust	true	feature.xml of G0077 (the Z9X G0082 of the same package: false)
+feature	support_dolby_vision	true	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_dts_vx_effect	true	feature.xml of G0077 (the Z9X G0082 of the same package: false)
+feature	support_energy_saving_mode	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_filmmaker	true	feature.xml of G0077 (the Z9X G0082 of the same package: false)
+feature	support_imax	true	feature.xml of G0077 (the Z9X G0082 of the same package: false)
+feature	support_kst_translation	0	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_lan_rj45	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_laser_device	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_lattice_tof	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_lighting_color	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_nimblewall	1	feature.xml of G0077 (the Z9X G0082 of the same package: 0)
+feature	support_ota_shutdown	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_p2p_speaker	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_process_tilt_shift_mode	1	feature.xml of G0077 (the Z9X G0082 of the same package: 0)
+feature	support_screen_zoom	-	feature.xml of G0077 (the Z9X G0082 of the same package: 1)
+feature	support_smartcurtain_service	true	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_spdif	false	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_tiltShift_interface_conflict	1	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_tiltshift_type	2	feature.xml of G0077 (the Z9X G0082 of the same package: 0)
+feature	support_tof	true	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_use_laser_autocolor_ui	1	feature.xml of G0077 (the Z9X G0082 of the same package: -)
+feature	support_zoom_and_displacement_type	2	feature.xml of G0077 (the Z9X G0082 of the same package: 1)
+diff	angle_monitor	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	brightness_adapt_kirin	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	brightness_turbo_light	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	brightness_turbo_light_adapt	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	brightness_turbo_light_entrance	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	digital_shift_only	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	env_adapt_settings_kirin	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	image_mode_3_color_temp	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	image_mode_gorgeous	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	image_mode_imax_enhanced	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	image_mode_movice_v3	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	image_mode_teleplay	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	more_eye_project_be_at_ease_img_cover	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	more_eye_project_follow_img	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	more_eye_state	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	picture_adjustment_enhancement_title	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain_gain	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain_size	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	picture_filmmaker_mode	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	screen_memory	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	signal_one_key_to_play	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	small_title_focus	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	small_title_keystone	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_atmos	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_atmos_high	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_atmos_low	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_atmos_middle	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_atmos_off	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	sound_dts_drc	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	title_size_and_location	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	title_smart	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	zoom_and_optical_shift	stock only	node of settings_tree_product_athenapromaster, not in settings_tree_product_dapeng
+diff	cmiit_id	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenapromaster
+diff	image_mode_3_color_temp_dapeng	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenapromaster
+diff	image_mode_standard	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenapromaster
+diff	voice_audio_headset	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenapromaster
+diff	zoom_and_move	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenapromaster

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v6.3 manual keystone (module panel: ManualKeystonePanel + its quick-panel tile). English base;
+     translations: gsi/apps/i18n/langs/<locale>.txt @projector/strings_kst.xml. Reasons are the
+     description line of the Notify card (max 2 lines of about 30 characters). -->
+<resources>
+    <string name="kst_hint_move">@string/lumen_arrows_move_the_corner_ok</string>
+    <string name="kst_hint_more">Hold OK: reset · Back: save and exit</string>
+    <string name="kst_refused">@string/lumen_manual_keystone_unavailable</string>
+    <string name="kst_reason_not_ready">@string/lumen_the_projector_service_is_not</string>
+    <string name="kst_reason_ak_busy">@string/lumen_auto_keystone_is_running_try</string>
+    <string name="kst_reason_window">@string/lumen_the_adjustment_screen_could_not</string>
+    <string name="kst_reason_game">Keystone is off in the top-speed game mode on HDMI</string>
+    <string name="kst_reason_read">@string/lumen_the_current_corners_could_not</string>
+    <string name="kst_reason_range">@string/lumen_the_reported_corners_lie_outside</string>
+    <string name="kst_reason_shape">@string/lumen_the_reported_corners_are_in</string>
+    <string name="kst_reason_outside">@string/lumen_the_current_corners_are_beyond</string>
+    <string name="kst_reason_check">The projector rejects every corner check</string>
+    <string name="kst_reason_hal">@string/lumen_the_projector_did_not_answer</string>
+    <string name="kst_reason_not_applied">@string/lumen_the_projector_did_not_apply</string>
+    <string name="kst_outside_title">Reset needed first</string>
+    <string name="kst_reset_first">Hold OK to reset to the full picture first</string>
+    <string name="kst_saved">@string/lumen_keystone_saved</string>
+    <string name="kst_hint_view">@string/lumen_menu_grid_over_the_picture</string>
+    <!-- Lumen OS 1.0.2: optical zoom (panel.OpticalZoomPanel) -->
+    <string name="panel_optical_zoom">@string/lumen_optical_zoom</string>
+    <string name="panel_optical_zoom_summary">Picture size without losing sharpness. Auto keystone and “Fit to the screen” move the zoom again.</string>
+    <string name="zoom_wait">@string/lumen_preparing</string>
+    <string name="zoom_hint">Right: bigger · Left: smaller · Back: done</string>
+    <string name="zoom_position">@string/lumen_size_1_d_of_2</string>
+    <string name="zoom_limit_big">@string/lumen_this_is_the_biggest_picture</string>
+    <string name="zoom_limit_small">@string/lumen_this_is_the_smallest_picture</string>
+    <string name="zoom_refused">The projector did not move the zoom</string>
+    <string name="zoom_unavailable">Optical zoom is not available now</string>
+    <!-- 2026-10-30: the zoom has its own reset (MENU), "Reset keystone" no longer moves the lens -->
+    <string name="zoom_reset_hint">Menu: reset the zoom (the biggest picture)</string>
+    <string name="zoom_reset_done">Zoom reset</string>
+</resources>

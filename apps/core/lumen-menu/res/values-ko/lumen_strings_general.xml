@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">언어 및 시간</string>
+    <string name="lumen_m_hdr_power">전원</string>
+    <string name="lumen_m_hdr_display_menu">화면 및 메뉴</string>
+    <string name="lumen_m_hdr_remote_voice">리모컨 및 음성</string>
+    <string name="lumen_m_hdr_apps_devices">앱 및 기기</string>
+    <string name="lumen_m_hdr_storage_updates">저장용량 및 업데이트</string>
+    <string name="lumen_m_hdr_help">도움말</string>
+    <string name="lumen_m_date_time">날짜 및 시간</string>
+    <string name="lumen_m_date_auto">자동</string>
+    <string name="lumen_m_storage">저장용량</string>
+    <string name="lumen_m_storage_free">%1$s 사용 가능</string>
+    <string name="lumen_m_update">시스템 업데이트</string>
+    <string name="lumen_m_about">이 프로젝터 정보</string>
+    <string name="lumen_m_system_info">시스템 세부정보</string>
+    <string name="lumen_m_network_adb">네트워크 디버깅</string>
+    <string name="lumen_m_android_dev">Android 개발자 옵션</string>
+</resources>

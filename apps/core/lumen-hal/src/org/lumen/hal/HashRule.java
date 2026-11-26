@@ -46,6 +46,17 @@ public final class HashRule {
         return h != null && h.matches("[0-9a-f]{40}");
     }
 
+    /**
+     * The hash this rule accepts only on exactly {@code fw} (the firmware's own pair), or the base hash when the rule
+     * names no pair for it (null for {@link #NONE}). The menu decides from it which firmware rows to offer before any
+     * vendor call, the guard still checks the real answer ({@link GmpfFirmware}).
+     */
+    public String hashOn(String fw) {
+        String f = fw == null ? "" : fw.trim();
+        for (int i = 0; i < hash.length; i++) if (firmware[i].equals(f)) return hash[i];
+        return base;
+    }
+
     /** the guard's answer for this hash on this running firmware (null firmware = unknown: base only) */
     public boolean accepted(String h, String fw) {
         if (h == null) return false;

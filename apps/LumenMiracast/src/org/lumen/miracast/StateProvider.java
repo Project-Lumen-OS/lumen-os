@@ -4,6 +4,7 @@ package org.lumen.miracast;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
@@ -19,10 +20,13 @@ import org.lumen.miracast.core.ReceiverStatus;
  *   call("state")                 -> the state below
  *   call("set_enabled", "1"|"0")  -> on or off, then the state
  *   call("set_ask", "1"|"0")      -> ask before connecting or not, then the state
+ *   call("set_quality", "1"|"-1") -> the next (or the one before) picture quality, then the state
+ *   call("follow_name")           -> the name follows the system device name again, then the state
  * State keys: enabled, ask (boolean), name (what phones and computers list), status (the status line in the
- * user's language), code (ReceiverStatus name), mirroring (boolean). A bad method or value changes nothing and
- * returns null. The name is edited on the settings screen (action org.lumen.miracast.SETTINGS with the extra
- * "edit" = "name"): a text field needs an activity.
+ * user's language), quality (the picture quality in the user's language), code (ReceiverStatus name), detail (the cause behind STARTING or FAULT in the user's language,
+ * empty when there is none), mirroring (boolean). A bad method or value changes nothing and
+ * returns null. The casting screen (apps/LumenAirPlay CastActivity) shows and changes these: the sink has no screen
+ * of its own.
  */
 public final class StateProvider extends ContentProvider {
     static final String PERM_CONTROL = "org.lumen.miracast.permission.CONTROL";
@@ -44,14 +48,14 @@ public final class StateProvider extends ContentProvider {
             if (on == null) return null;
             Prefs.get(c).edit().putBoolean(Control.ENABLED.equals(key) ? Prefs.ENABLED : Prefs.ASK, on).commit();
             Log.i(MiracastService.TAG, "set " + key + " " + on + " by uid " + Binder.getCallingUid());
-            long id = Binder.clearCallingIdentity();
-            try {
-                MiracastService.sync(c);
-            } catch (RuntimeException e) {
-                Log.w(MiracastService.TAG, "sync after " + method + ": " + e);
-            } finally {
-                Binder.restoreCallingIdentity(id);
-            }
+            sync(c, method);
+        } else if (Control.SET_QUALITY.equals(method) || Control.FOLLOW_NAME.equals(method)) {
+            SharedPreferences.Editor e = Prefs.get(c).edit();
+            if (Control.SET_QUALITY.equals(method)) e.putString(Prefs.QUALITY, Prefs.quality(c).step("-1".equals(arg) ? -1 : 1).name());
+            else e.remove(Prefs.NAME);
+            e.commit();
+            Log.i(MiracastService.TAG, method + " by uid " + Binder.getCallingUid());
+            sync(c, method);
         } else if (DIAG.equals(method)) {
             // the stage report (hidden status page, support): no switch changes
             Bundle d = new Bundle();
@@ -70,8 +74,23 @@ public final class StateProvider extends ContentProvider {
         b.putString("name", Prefs.name(c));
         b.putString("code", st.name());
         b.putString("status", StatusText.of(c, st));
+        String detail = StatusText.detail(c, st);
+        b.putString("detail", detail != null ? detail : "");
         b.putBoolean("mirroring", s != null && s.mirroring());
+        b.putString("quality", StatusText.quality(c, Prefs.quality(c)));
         return b;
+    }
+
+    /** The receiver takes the change at once, under the sink's own identity. */
+    private static void sync(Context c, String method) {
+        long id = Binder.clearCallingIdentity();
+        try {
+            MiracastService.sync(c);
+        } catch (RuntimeException e) {
+            Log.w(MiracastService.TAG, "sync after " + method + ": " + e);
+        } finally {
+            Binder.restoreCallingIdentity(id);
+        }
     }
 
     @Override

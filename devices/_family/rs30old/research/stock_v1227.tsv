@@ -1,0 +1,25 @@
+# The firmware facts of RS30 old line (RS30 Pro G0125, Pro Max G0124, Ultra G0114, Ultra Max G0115) v1.2.27 behind the line's data, read from the official FULL OTA (no dump of a unit):
+# https://product-library.static.xgimi.com/firmware/release/MTK9681/athenathirdultra/MTK9681_DOHKO_1.2.27_20260629-223527/XGIMI_HORSEPOPULAR_XR08C_FULL_V1.2.27.zip. Unpacked on xgimi-llm ~/devices/rs30old_fw/v1227 (unpack.sh + codes.sh). The model rows (tree, feature, hw) are in
+# devices/<codename>/research/stock_v1227.tsv; tools/devices/test/stock_facts.py holds the data against both.
+# Columns (tab separated): kind, key, value, evidence.
+fact	fingerprint	MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.2.27:user/test-keys	META-INF/com/android/metadata post-build of the official FULL OTA
+fact	build_utc	1782747376	post-timestamp (ro.build.date.utc of a unit on it)
+fact	vendor_fingerprint	MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/xgimi06292332:user/test-keys	vendor/build.prop ro.vendor.build.fingerprint
+fact	branch	[origin/MTK9681_YDN3_MP_20260316]	vendor/build.prop ro.vendor.xgimi.buildbrach
+fact	zip	XGIMI_HORSEPOPULAR_XR08C_FULL_V1.2.27.zip 1773038805 md5 152a527974aa425a1101fe3e80e919f0	the official FULL OTA (md5 = its plain ETag, checked after download)
+fact	boot_sha256	6b8e2f9a8e2e6df799020e521824f5b69f6d6429e51a88cf4c887b4521475514	boot.img of the FULL OTA (the recipe's stock kernel)
+fact	vendor_sha256	ec1079fbde3a198497892c0366f6c0549ba17e60468dd555607f0274d2b9100c	vendor.img of the FULL OTA
+fact	vbmeta_sha256	596ae0145113f0d818e0747e0425ef908c0e5eee8582d41eb24eef0dae50735a	vbmeta.img of the FULL OTA
+fact	gmpf_hash	c7654bc598ee91a1e750fbc0bf84697acb1a3690	vendor/lib/xgimi.hardware.gmpf-V1-ndk.so (org.lumen.hal.GmpfHash RS30_OLD)
+fact	gmpf_methods	1148	research/aidl_codes_v1227.tsv rows (codes.sh over the system_ext middle jar)
+fact	framework_res_sha256	328bfb8498810e13546a0d8665f39d3c352d9f335c8280160ebaee22b2ea9f17	system/framework/framework-res.apk
+fact	newsettings	6.03.00.106 a818797b29f6a0de5dcc53e1ce8b8ba64257312b4815dede3435e79fd4cd5698	system/priv-app/release_838_newsettings
+fact	vcontrol	v2.5.4.8 20500408	vendor/priv-app/vcontrol_release838 (apps/core/lumen-control VcontrolModels)
+fact	ab_ota_partitions	boot,bootdata,dtbo,mboot,optee,owl,product,satf,system,system_ext,tvconfig,tvservice,vbmeta,vbmeta_system,vendor,xgimiconfig	product/etc/build.prop ro.product.ab_ota_partitions
+fact	vendor_remotes	000d:3838 1d5a:c081	vendor/etc/remote.txt voice remotes
+fact	kl_3840_sha256	3ba67e814863727b51ef6ce04c0cc99c60a0a20a3753a919443d14d304773e4d	vendor/usr/keylayout/Vendor_000d_Product_3840.kl: the X50 layout, none of the RS30 Ultra's 172 135 136 217 234
+fact	blob_nativeui	d592c29eb9aa87cdc7e3cad9faad99f8af824026582bc5d58ee7d291d368d087	system/bin/nativeui (image/rs30old_blobs_allow.txt)
+fact	blob_gmpf_ndk	c07cf280003c1120b614ba58dace1ddf3aebdcdb656a37f39ce92562cb7459d6	system/lib/xgimi.hardware.gmpf-V1-ndk.so (image/rs30old_blobs_allow.txt)
+fact	size_vendor	1450934272	vendor.img of the FULL OTA (build.conf budget)
+fact	size_product	65830912	product.img of the FULL OTA (build.conf budget)
+fact	size_system_ext	24252416	system_ext.img of the FULL OTA (build.conf budget)

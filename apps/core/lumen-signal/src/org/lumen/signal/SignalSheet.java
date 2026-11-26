@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * What the panel draws, built from the values alone (no Android): the small card's lines and the full panel's
  * sections. A row whose item this model does not read, or whose value did not come, is not there at all. Sizes and
- * rates read "3840×2160 @ 23.97 Hz" everywhere (2026-11-18). Pure, host tested ({@link #build}).
+ * rates read "3840×2160 @ 23.976 Hz" everywhere (2026-11-18). Pure, host tested ({@link #build}).
  */
 public final class SignalSheet {
     /** One line of the full panel: a section header (label only, section = true) or label and value. */
@@ -47,13 +47,13 @@ public final class SignalSheet {
     }
 
     /** The menu feature ids of the rows the panel shares with the menu (named with the menu's own words). */
-    static final String MENU_PICTURE_MODE = "picture.mode", MENU_MEMC = "picture.memc";
+    static final String MENU_PICTURE_MODE = "picture.mode", MENU_MEMC = "picture.memc", MENU_GAMUT = "picture.gamut";
 
     /** Fixed badge names (brands, not translated). */
     static final String ALLM = "ALLM", VRR = "VRR", FREESYNC = "FreeSync", IMAX = "IMAX Enhanced",
             FILMMAKER = "Filmmaker Mode";
 
-    /** "HDMI 1" or "Projector apps"; the big line of the card, "3840×2160 @ 23.97 Hz" (null when nothing to say). */
+    /** "HDMI 1" or "Projector apps"; the big line of the card, "3840×2160 @ 23.976 Hz" (null when nothing to say). */
     public String port, big;
     public final List<Chip> chips = new ArrayList<>();
     public Judder judder = Judder.UNKNOWN;
@@ -108,7 +108,7 @@ public final class SignalSheet {
         if (Boolean.TRUE.equals(freesync)) s.chips.add(new Chip(FREESYNC, false));
         boolean chip = (items.contains(SignalItem.CHIP) || items.contains(SignalItem.CHIP_RATE)) && v.hasChip();
         if (input && chip) {
-            s.judder = Judder.of(v.rateCenti, v.chipRateCenti);
+            s.judder = Judder.of(v.rateCenti, v.rateStepCenti, v.chipRateCenti, v.chipStepCenti);
             if (s.judder == Judder.SMOOTH) s.verdict = w.get(SignalText.VERDICT_SMOOTH);
             else if (s.judder == Judder.JUDDER) {
                 s.verdict = w.get(SignalText.VERDICT_JUDDER, SignalFormat.rate(v.chipRateCenti, dec),
@@ -135,6 +135,9 @@ public final class SignalSheet {
         if (space != null) s.cardRows.add(row(w, SignalText.R_COLORIMETRY, space, null, RowTone.PLAIN));
         if (depth != null) s.cardRows.add(row(w, SignalText.R_DEPTH, depth, null, RowTone.PLAIN));
         if (hdr != null) s.cardRows.add(row(w, SignalText.R_HDR, w.get(hdr), null, RowTone.PLAIN));
+        // the stock OSD's colour space (vendor read, HDMI only), with the menu's colour space words
+        Row gamut = hdmi ? menuRow(w, items, SignalItem.COLOR_SPACE, MENU_GAMUT, v.colorSpace) : null;
+        if (gamut != null) s.cardRows.add(gamut);
         // the picture mode and motion smoothing as the menu reads and names them (over apps too)
         Row picture = menuRow(w, items, SignalItem.PICTURE_MODE, MENU_PICTURE_MODE, v.pictureMode);
         Row memc = menuRow(w, items, SignalItem.MEMC, MENU_MEMC, v.memc);
@@ -162,6 +165,7 @@ public final class SignalSheet {
             if (space != null) in.add(row(w, SignalText.R_COLORIMETRY, space, spaceNote, RowTone.PLAIN));
             if (depth != null) in.add(row(w, SignalText.R_DEPTH, depth, null, RowTone.PLAIN));
             if (hdr != null) in.add(row(w, SignalText.R_HDR, w.get(hdr), null, RowTone.PLAIN));
+            if (gamut != null) in.add(gamut);                         // the stock OSD's colour space, after the HDR kind
             // the HDR packet's static metadata, only beside an HDR kind the HAL reports and a PQ packet
             boolean pq = rx != null && hdr != null && SignalFormat.isHdr(v.hdrType) && rx.eotf == InfoFrames.EOTF_PQ;
             if (pq && rx.masterMax > 0) {
@@ -176,7 +180,11 @@ public final class SignalSheet {
             yesNo(in, w, SignalText.R_FILMMAKER, filmmaker);
             if (edid != null) in.add(row(w, SignalText.R_EDID, w.get(edid), null, RowTone.PLAIN));
             String port = items.contains(SignalItem.PORT_HW) ? portText(v, w) : null;
-            if (port != null) in.add(row(w, SignalText.R_PORT, port, SignalFormat.physical(v.physicalAddress), RowTone.PLAIN));
+            String address = SignalFormat.physical(v.physicalAddress);
+            if (port != null) {
+                in.add(row(w, SignalText.R_PORT, port, address == null ? null : w.get(SignalText.PORT_ADDRESS, address),
+                        RowTone.PLAIN));
+            }
             yesNo(in, w, SignalText.R_ALLM, allm);
             onOff(in, w, SignalText.R_VRR, vrr);
             onOff(in, w, SignalText.R_FREESYNC, freesync);
@@ -194,8 +202,8 @@ public final class SignalSheet {
             String size = v.chipWidth > 0 && v.chipHeight > 0 ? SignalFormat.size(v.chipWidth, v.chipHeight) : null;
             proj.add(row(w, SignalText.R_CHIP, size == null ? rate : SignalFormat.mode(size, rate), null, RowTone.PLAIN));
         }
-        if (s.judder == Judder.SMOOTH) proj.add(row(w, SignalText.R_MOTION, w.get(SignalText.MOTION_SMOOTH), null, RowTone.OK));
-        if (s.judder == Judder.JUDDER) proj.add(row(w, SignalText.R_MOTION, w.get(SignalText.MOTION_JUDDER), null, RowTone.WARN));
+        if (s.judder == Judder.SMOOTH) proj.add(row(w, SignalText.R_CADENCE, w.get(SignalText.CADENCE_SMOOTH), null, RowTone.OK));
+        if (s.judder == Judder.JUDDER) proj.add(row(w, SignalText.R_CADENCE, w.get(SignalText.CADENCE_JUDDER), null, RowTone.WARN));
         if (items.contains(SignalItem.GAME) && v.game != null) {
             proj.add(row(w, SignalText.R_GAME_MODE, w.get(v.game ? SignalText.ON : SignalText.OFF), null,
                     v.game ? RowTone.OK : RowTone.PLAIN));

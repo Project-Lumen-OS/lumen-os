@@ -10,14 +10,26 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
   the option row), third press hides it.
 - Hold OK on the small card (owner 2026-11-19, `OkHold`, `CardHold`): held for 600 ms it opens the full panel, which
   grows out of the card (`PanelMotion`, 280 ms, none when Android's animations are removed); OK held again or BACK
-  folds it back into the card it came from (a popup card gets its 5 s again). Only while a card is on screen does the
-  key filter run (lumen-remote `KeyHook` over KeyFilterService, the accessibility key filter of the Remote buttons);
-  with no card nothing sits between the remote and the app. A short OK on the card goes on at once and unchanged: its
-  DOWN is not held back until the release, its UP follows, each exactly once (the filter answers "not mine" at once,
-  Android passes the same event on). A held OK's DOWN has reached the app too (nothing can know at DOWN that the press
-  will be long); when the panel takes the keys Android sends the app that press's UP as cancelled. In the full panel OK
-  is the panel's: short = its own OK, held = fold back. The first three cards show "Hold OK to expand", never again
-  once the user held OK. The pinned card follows the same rule. Host test `test/OkHoldTest.java`.
+  folds it back into the card it came from (a popup card gets its 5 s again). Hold BACK on the small card (owner
+  2026-11-21): held for 600 ms the card's window takes the keys (the app gets that press cancelled, so it never acts
+  on the release) and the card goes on the release (`CardKeys`, at the latest after 1.5 s); a card the pin keeps on
+  screen stays away until no HDMI input was on screen for a moment, the option stays on (`PanelToggle.dismiss`).
+  Only while a card is on screen does the key filter run (lumen-remote `KeyHook` over KeyFilterService, the
+  accessibility key filter of the Remote buttons); with no card nothing sits between the remote and the app. A short
+  OK or BACK goes on at once and unchanged: its DOWN is not held back until the release, its UP follows, each exactly
+  once (the filter answers "not mine" at once, Android passes the same event on). The filter never takes a BACK. A
+  held press's DOWN has reached the app too (nothing can know at DOWN that the press will be long). In the full panel
+  OK is the panel's (short = its own OK, held = fold back), but only while the panel's own window has the input focus.
+- Who has the keys (owner 2026-11-21, `OkHold.shown`): the gear key's quick menu opened over the full panel took no OK
+  before this rule (every OK switched the panel's option and the gear never opened). Now the full panel acts only with
+  its own window focus, and the small card acts on no key while any window of this app has the focus (every panel of
+  the shared `OverlayHost` and every activity of the app report their focus to `KeyHook.windowFocus`): over the quick
+  menu, a keystone page or the Remote buttons screen OK and BACK are theirs, held or not. The long press timer never
+  runs before the filter saw the press (`OkHold.timerAt`): a busy main loop cannot turn a short press into a held one.
+- The small card always shows one quiet hint line with the remote's keys as icons: "Hold: (OK) details (Back) hide"
+  (no counter, owner 2026-11-21); the full panel shows its own close or fold hint. A pinned card shows a pin mark in
+  its top line, so switching the pin is never silent. Host tests `test/OkHoldTest.java`, wiring `test/check_signal.py`,
+  mutants `test/mutate_keys.py`.
 - A developer feature (owner 2026-11-18): opened by the remote action "signal" of "Remote buttons"
   (`devices/_remotes/key_actions.tsv`, any key the user gives it) and by its one row on the For developers page,
   the last page of All settings (lumen-menu `FeatureId.SIGNAL_PANEL`, a module screen). No round button on the quick menu.
@@ -27,7 +39,12 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
   who film the screen): the small card stays over every HDMI input, through signal changes and input switches (no HDMI
   input for 3 s takes it away, the next one brings it back); the panel's key or the option closes it (`PanelToggle.pin`).
 - Values change in place: the card window stays, only the changed line is redrawn.
-- Sizes and rates read `3840×2160 @ 23.97 Hz` everywhere (card, input row, chip row), one text, never two glued views.
+- Sizes and rates read `3840×2160 @ 23.976 Hz` everywhere (card, input row, chip row), one text, never two glued views.
+- Rates in 1/100 Hz print the 1000/1001 rates in full (2397 reads `23.976`, 5994 `59.94`), whole rates stay whole.
+- The judder line compares ranges, not printed numbers: each reader sets the read step of its input rate and chip rate
+  (`SignalValues.rateStepCenti`, `chipStepCenti`). Every family today reads the input in 0.1 Hz steps (MI_EXTIN timing,
+  59.94 Hz reads 5990 live on the Z9X and the Z9X HB) and the chip in whole Hz cut down (getDispOutputFps = chip mHz /
+  1000 in libxgimi), so 23.976 against 24 can never be told apart there and never warns, while 24 on 60 or 50 on 60 do.
 - Place (`SignalPlace`): the card 440 px wide at the right edge of the title safe area, below an app's header (top
   136 px, the Lumen Home header ends at 112); the full panel 560 px wide over the title safe height, its list scrolls
   with up and down. Small, calm type (a 100 inch picture reads it well).
@@ -104,8 +121,8 @@ once. Design: `gsi-research/SIGNAL_PANEL.md` variant A, approved by the owner on
 | `SignalPanel`, `SignalWindow`, `SignalReceiver` | the Android side: controller, overlay window, the intent `SIGNAL_PANEL` |
 | `OkHold`, `CardHold`, `PanelMotion` | holding OK on a card (pure rules, the key filter hook, the grow and fold motion), shared with lumen-sensors |
 
-Readers (no new HAL client, the apps' own getters): `apps/ProjectorBase/.../panel/GmpfSignalReader` (Z9X and, through
-the base layer, the HB), `apps/X50Projector/.../X50SignalReader` (X50 family), `apps/Play6Projector/.../panel/Play6SignalReader`.
+Readers (no new HAL client, the apps' own getters): `apps/LumenProjector/core/.../panel/GmpfSignalReader` (Z9X and, through
+the base layer, the HB), `apps/LumenProjector/vendor/xgimi/mt9681-aidl/.../X50SignalReader` (X50 family), `apps/Play6Projector/.../panel/Play6SignalReader`.
 LumenSensors and LumenInfo keep their own readers for now: they are separate APKs (LumenInfo only on the HB image)
 with their own transports, the projector apps' clients are the shared ones (lumen-gmpf).
 

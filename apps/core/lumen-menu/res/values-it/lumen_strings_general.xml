@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">Lingua e ora</string>
+    <string name="lumen_m_hdr_power">Alimentazione</string>
+    <string name="lumen_m_hdr_display_menu">Schermo e menu</string>
+    <string name="lumen_m_hdr_remote_voice">Telecomando e voce</string>
+    <string name="lumen_m_hdr_apps_devices">App e dispositivi</string>
+    <string name="lumen_m_hdr_storage_updates">Memoria e aggiornamenti</string>
+    <string name="lumen_m_hdr_help">Guida</string>
+    <string name="lumen_m_date_time">Data e ora</string>
+    <string name="lumen_m_date_auto">Automatica</string>
+    <string name="lumen_m_storage">Memoria</string>
+    <string name="lumen_m_storage_free">%1$s liberi</string>
+    <string name="lumen_m_update">Aggiornamento di sistema</string>
+    <string name="lumen_m_about">Informazioni sul proiettore</string>
+    <string name="lumen_m_system_info">Dettagli di sistema</string>
+    <string name="lumen_m_network_adb">Debug di rete</string>
+    <string name="lumen_m_android_dev">Opzioni sviluppatore Android</string>
+</resources>

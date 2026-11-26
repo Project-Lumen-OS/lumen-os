@@ -21,11 +21,6 @@
     <string name="voice_keystone">Суретті түзетіп жатырмын</string>
     <string name="voice_downloading">Сөзді тануға арналған тіл жүктелуде, бір минуттан соң қайталаңыз</string>
     <string name="voice_hold_hint">Микрофон түймесін басып тұрып сөйлеңіз</string>
-    <string name="voice_settings">Дауыстық көмекші</string>
-    <string name="voice_language">Сөйлеу тілі</string>
-    <string name="voice_lang_system">Жүйе тілі</string>
-    <string name="voice_speak">Дауыспен жауап беру</string>
-    <string name="voice_key">Gemini дауысы</string>
     <string name="voice_key_off">Құрылғы дауысы</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">aistudio.google.com сайтынан Gemini API кілтін қойыңыз. Google-ға тек жауап мәтіні жіберіледі. Бос өріс: құрылғы дауысы.</string>

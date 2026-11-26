@@ -6,9 +6,11 @@
 # devices/horse_popular/image/z9x_props.py). No test adb of any kind goes into this image. check_image.py and
 # lumen_checks.py run from the repository ({REPO}: they read tools/sign, tools/lumen, tools/ota/image, overlay/v1).
 *	need	patch_tar.py	erofs_kcheck.py	lumen_dsu_install.rc	lumen_dsu_install.sh	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	z9x-sysconfig-nogms.xml	z9x_gapps.sh	z9x_nui.sh	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl	z9x_setup.rc	first_start_prop.txt	first_start.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	z9x_model_props.rc	z9x_model_props.tsv	z9x_model_prop_dapeng.txt	model_props.py	x50_props.py
-*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenPackageInstallerOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk
+*	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenPackageInstallerOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk	stage/apk/LumenFiles.apk	stage/dex/LumenFiles.odex	stage/dex/LumenFiles.vdex
 *	sh_n	lumen_dsu_install.sh
 *	sh_n	z9x_nui.sh
+*	need	com.android.wifi.capex
+*	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
 *	base_pin
 *	out	fresh
 # the projector app, the updater and AirPlay (system/app) and the three priv-apps with their odex and vdex
@@ -32,6 +34,14 @@
 *	tar_add	system/priv-app/Z9xHome/Z9xHome.apk	stage/apk/Z9xHome.apk	644
 *	tar_add	system/priv-app/Z9xHome/oat/arm64/Z9xHome.odex	stage/dex/Z9xHome.odex	644
 *	tar_add	system/priv-app/Z9xHome/oat/arm64/Z9xHome.vdex	stage/dex/Z9xHome.vdex	644
+# Files (apps/LumenFiles, org.lumen.files): the file manager of every model in place of the stock one; a priv-app, so the
+# package installer takes its APKs as a trusted source (one confirm window), no privileged permission, no permissions file
+*	tar_mkdir	system/priv-app/LumenFiles	755
+*	tar_mkdir	system/priv-app/LumenFiles/oat	755
+*	tar_mkdir	system/priv-app/LumenFiles/oat/arm64	755
+*	tar_add	system/priv-app/LumenFiles/LumenFiles.apk	stage/apk/LumenFiles.apk	644
+*	tar_add	system/priv-app/LumenFiles/oat/arm64/LumenFiles.odex	stage/dex/LumenFiles.odex	644
+*	tar_add	system/priv-app/LumenFiles/oat/arm64/LumenFiles.vdex	stage/dex/LumenFiles.vdex	644
 # the first-run app (Lumen Setup, apps/LumenSetup through devices/horse_popular/app/Z9xSetup.layers) over the 1.0.9
 # copy at the same path, with its odex and vdex
 *	tar_mkdir	system/priv-app/Z9xSetup	755
@@ -63,6 +73,12 @@
 # its base odex and vdex are for the old dex, ART would refuse them, so they go and ART compiles the app itself
 *	tar_add	system/system_ext/priv-app/TvSettingsTwoPanel/TvSettingsTwoPanel.apk	stage/apk/TvSettingsTwoPanel.apk	644
 *	tar_rm	system/system_ext/priv-app/TvSettingsTwoPanel/oat
+# Wi-Fi Direct (screen mirroring) on the MediaTek pre-freeze supplicant: the base's Wi-Fi APEX with service-wifi.jar
+# rebuilt from lineage/patches/wifi/0001, re-signed with the base's Lumen APEX keys,
+# owner, mode and label as the base's; the base's dexpreopt files of the old jar go (ART would refuse them)
+*	tar_add	system/apex/com.android.wifi.capex	com.android.wifi.capex	644
+*	tar_rm	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
+*	tar_rm	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
 # screen mirroring: the Wi-Fi Direct device type "television" for Windows (apps/LumenWifiP2pOverlay, static RRO, no dex)
 *	tar_add	system/product/overlay/LumenWifiP2pOverlay.apk	stage/apk/LumenWifiP2pOverlay.apk	644
 # the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
@@ -85,7 +101,7 @@
 *	tar_mkdir	system/etc/lumen	755
 *	tar_add	system/etc/init/lumen_dsu_install.rc	lumen_dsu_install.rc	644
 *	tar_add	system/etc/lumen/lumen_dsu_install.sh	lumen_dsu_install.sh	755
-# the HDMI receiver bridge of the signal panel (apps/core/lumen-signal/image, devices/horse_popular/signal.tsv
+# the HDMI receiver bridge of the signal panel (apps/core/lumen-signal/image, devices/_family/z9x/signal.tsv
 # hdmi_format): a root oneshot that asks the MStar receiver for its info dump and leaves the info lines for the app
 *	need	lumen_hdmirx.rc	lumen_hdmirx.sh
 *	sh_n	lumen_hdmirx.sh
@@ -93,6 +109,29 @@
 *	line	lumen_hdmirx.sh	HELP=help
 *	tar_add	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc	644
 *	tar_add	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh	755
+# the OTA plumbing, UI resolution, blobs and Google add-on boot files of the 1.0.9 tar from the tree: check_image.py wants
+# them byte equal to tools/ota/image and overlay/v1/z9x_uires (since the licence change the tree copies carry the
+# licence header line, the only difference); root:root and the system_file label, as the 1.0.9 members
+*	need	z9x_ota.rc	z9x_ota.sh	update_verifier.rc	z9x_rescue.rc	z9x_rescue.sh	z9x_uires.sh	init.lineage.atv.scaling.rc	blobs_allow.txt	xgimi_compat_public.rc	z9x_gapps.rc	gapps_allow.txt
+*	tar_add	system/etc/init/z9x_ota.rc	z9x_ota.rc	644
+*	tar_add	system/etc/z9x/z9x_ota.sh	z9x_ota.sh	755
+*	tar_add	system/etc/init/update_verifier.rc	update_verifier.rc	644
+*	tar_add	system/etc/init/z9x_rescue.rc	z9x_rescue.rc	644
+*	tar_add	system/etc/z9x/z9x_rescue.sh	z9x_rescue.sh	755
+*	tar_add	system/etc/z9x/z9x_uires.sh	z9x_uires.sh	755
+*	tar_add	system/product/etc/init/init.lineage.atv.scaling.rc	init.lineage.atv.scaling.rc	644
+*	tar_add	system/etc/z9x/blobs_allow.txt	blobs_allow.txt	644
+*	tar_add	system/etc/init/xgimi_compat.rc	xgimi_compat_public.rc	644
+*	tar_add	system/etc/init/z9x_gapps.rc	z9x_gapps.rc	644
+*	tar_add	system/etc/z9x/gapps_allow.txt	gapps_allow.txt	644
+# the problem report log helper of every image (apps/core/lumen-report/image, staged for every device by
+# tools/build/build.py COMMON_FILES): a root oneshot that hands the report app the scrubbed system log without a dialog
+*	need	lumen_report.rc	lumen_report.sh
+*	sh_n	lumen_report.sh
+*	line	lumen_report.rc	service lumen_report /system/bin/sh /system/etc/lumen/lumen_report.sh
+*	line	lumen_report.sh	HOSTS="org.lumen.projector org.lumen.x50.projector"
+*	tar_add	system/etc/init/lumen_report.rc	lumen_report.rc	644
+*	tar_add	system/etc/lumen/lumen_report.sh	lumen_report.sh	755
 # Lumen's power-on sound: init copies the projector app's gate to persist.sys.bootanim.play_sound (lumen-audio BootSound)
 *	need	lumen_boot_sound.rc
 *	tar_add	system/etc/init/lumen_boot_sound.rc	lumen_boot_sound.rc	644
@@ -120,6 +159,14 @@
 # the emulator's tether list (wlan only) outranks the vendor TetheringRROOverlay (ap0): it goes, so the hotspot of the
 # Network popup (lumen-system Hotspot) hands phones an address
 *	tar_rm	system/product/overlay/EmulatorTetheringConfigOverlay.apk
+# the six 1.0.8 data bridges (org.z9x.*) of the 1.0.9 copy go: Lumen OS 1.1.0 imports nothing from 1.0.7 or older, the
+# apps no longer read them, and tools/lumen/lumen_checks.py packages refuses an image that still has them
+*	tar_rm	system/app/LumenBridgeProjector
+*	tar_rm	system/app/LumenBridgeHome
+*	tar_rm	system/app/LumenBridgeSetup
+*	tar_rm	system/app/LumenBridgeTvInput
+*	tar_rm	system/app/LumenBridgeUpdater
+*	tar_rm	system/app/LumenBridgeAirPlay
 *	tar_rm	system/etc/init/z9x_audio.rc
 *	tar_rm	system/etc/xgimi/audio_policy_engine_stream_volumes.xml
 # the stock model properties a Lumen Z9X reads (z9x_model_props.rc: the XGIMI init loads
@@ -148,6 +195,10 @@
 *	tar_add	system/bin/lumen_gmsprops	stage/gms/arm64/lumen_gmsprops	755
 *	tar_add	system/etc/init/lumen_gmsprops.rc	lumen_gmsprops.rc	644
 *	tar_add	system/etc/lumen/gms_props.conf	gms_props.conf	644
+# the video player of every model: Lumen Play (com.xgimiru.player) as its published APK with its own key, so its own
+# updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
+# browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
+*	tar_prebuilt	LumenPlay	arm64	system/app/LumenPlay
 # the two build.prop files (z9x_props.py on the Mac; the product one ends with devices/_image/first_start_prop.txt)
 *	tar_sub	system/build.prop	stage/props/system/build.prop
 *	tar_sub	system/product/etc/build.prop	stage/props/system/product/etc/build.prop
@@ -158,8 +209,11 @@
 *	tar_same	{tar}	system/etc/init/z9x_base.rc	z9x_base.rc
 *	tar_same	{tar}	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc
 *	tar_same	{tar}	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh
+*	tar_same	{tar}	system/etc/init/lumen_report.rc	lumen_report.rc
+*	tar_same	{tar}	system/etc/lumen/lumen_report.sh	lumen_report.sh
 *	tar_same	{tar}	system/etc/init/lumen_boot_sound.rc	lumen_boot_sound.rc
 *	tar_same	{tar}	system/product/media/bootanimation.zip	bootanimation.zip
+*	tar_same	{tar}	system/app/LumenPlay/NOTICE.txt	LumenPlay.NOTICE.txt
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.build_id={build_id}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.z9x.version_code={vcode}
 *	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.version={v}

@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal330/rs20-hal330.menu.json",
+  "device": "g0089",
+  "model": "G0089",
+  "note": "RS 20 Pro Max Highlight (G0089, Product_athenapromasterhl): the RS 20 profile, stock tree settings_tree_product_athenapromasterhl (devices/g0089/stock.tsv)."
+}

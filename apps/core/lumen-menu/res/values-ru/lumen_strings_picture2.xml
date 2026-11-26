@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">Баланс белого</string>
-    <string name="lumen_m_wb_2">2 точки</string>
-    <string name="lumen_m_wb_11">11 точек</string>
-    <string name="lumen_m_red_gain">Усиление красного</string>
-    <string name="lumen_m_green_gain">Усиление зелёного</string>
-    <string name="lumen_m_blue_gain">Усиление синего</string>
-    <string name="lumen_m_red_offset">Смещение красного</string>
-    <string name="lumen_m_green_offset">Смещение зелёного</string>
-    <string name="lumen_m_blue_offset">Смещение синего</string>
-    <string name="lumen_m_wb_level">%1$d%%</string>
-    <string name="lumen_m_red">Красный</string>
-    <string name="lumen_m_green">Зелёный</string>
-    <string name="lumen_m_blue">Синий</string>
-    <string name="lumen_m_cyan">Голубой</string>
-    <string name="lumen_m_magenta">Пурпурный</string>
-    <string name="lumen_m_yellow">Жёлтый</string>
-    <string name="lumen_m_skin">Тон кожи</string>
-    <string name="lumen_m_cc">Коррекция цвета</string>
-    <string name="lumen_m_cc_color">Цвет</string>
-    <string name="lumen_m_hue">Оттенок</string>
-    <string name="lumen_m_memc_original">Исходная частота кадров</string>
-    <string name="lumen_m_reset_defaults">Вернуть стандартные значения</string>
     <string name="lumen_m_gray_level">Уровень серого</string>
     <string name="lumen_m_hdr_enh">Улучшение HDR</string>
     <string name="lumen_m_screen_size">Размер экрана</string>
     <string name="lumen_m_screen_gain">Усиление экрана</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Bright</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dark</string>
     <string name="lumen_m_dv_screen">Настройки Dolby Vision</string>
     <string name="lumen_m_auto_switch">Автосмена режима</string>
     <string name="lumen_m_style_filter">Фильтр стиля</string>

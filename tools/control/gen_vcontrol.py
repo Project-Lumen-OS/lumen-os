@@ -13,6 +13,8 @@ import os
 import sys
 
 GSI = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(GSI, "tools", "devices"))
+import menu_layers  # noqa: E402
 TSV = os.path.join("devices", "_control", "vcontrol.tsv")
 OUT = os.path.join("apps", "core", "lumen-control", "src", "org", "lumen", "control", "vcontrol", "VcontrolModels.java")
 sys.path.insert(0, os.path.join(GSI, "tools", "devices"))
@@ -50,7 +52,7 @@ def autofocus(root, codename):
     path = os.path.join(root, "devices", codename, "menu.json")
     if not os.path.isfile(path):
         return False
-    return "focus.af_now" in (json.load(open(path, encoding="utf-8")).get("features") or {})
+    return "focus.af_now" in (menu_layers.effective(path).get("features") or {})
 
 
 def table(root=GSI):
@@ -78,13 +80,17 @@ def wiring(root=GSI):
     for codename, d in sorted(devices.load(root).items()):
         want = any(m in served for m in d["models"])
         recipes = []
-        app_dir = os.path.join(root, "devices", codename, "app")
-        for name in sorted(os.listdir(app_dir)) if os.path.isdir(app_dir) else []:
-            if not name.endswith(".layers"):
-                continue
-            words = [ln.split() for ln in open(os.path.join(app_dir, name), encoding="utf-8")]
+        sys.path.insert(0, os.path.join(root, "tools", "devices"))
+        import assemble_app  # every recipe the model builds, its own or its family's (devices/README.md)
+        for path in sorted(set(assemble_app.recipes(root, codename).values())):
+            name = os.path.basename(path)
+            words = [ln.split() for ln in assemble_app.recipe_text(root, codename, path).splitlines()]
             if ["module", "lumen-control"] in words:
-                recipes.append((name, [w[1] for w in words if len(w) == 2 and w[0] == "top"]))
+                # the app layer: the last top or base layer with a manifest (a family recipe's top may hold only
+                # generated code classes over the app as base, devices/_family/rs20/app/Z9xProjector.layers)
+                layers = [w[1] for w in words if len(w) >= 2 and w[0] in ("top", "base")]
+                apps = [x for x in layers if os.path.isfile(os.path.join(root, x, "AndroidManifest.xml"))]
+                recipes.append((name, apps[-1:], path))
         if not want:
             if recipes:
                 errs.append("%s: no stock phone remote on %s but %s takes lumen-control"
@@ -93,21 +99,19 @@ def wiring(root=GSI):
         if len(recipes) != 1:
             errs.append("%s: %d app recipes take lumen-control, want 1" % (codename, len(recipes)))
             continue
-        name, tops = recipes[0]
+        name, tops, recipe = recipes[0]
         if len(tops) != 1:
-            errs.append("%s: %s has no single top app" % (codename, name))
+            errs.append("%s: %s has no app layer with a manifest" % (codename, name))
             continue
         top = os.path.join(root, tops[0])
         manifest = open(os.path.join(top, "AndroidManifest.xml"), encoding="utf-8").read()
         for perm in ("INTERNET", "INJECT_EVENTS"):
             if '<uses-permission android:name="android.permission.%s" />' % perm not in manifest:
                 errs.append("%s: %s/AndroidManifest.xml does not ask %s" % (codename, tops[0], perm))
-        starts = 0
-        for base, _, files in os.walk(os.path.join(top, "src")):
-            for f in files:
-                if f.endswith(".java"):
-                    starts += open(os.path.join(base, f), encoding="utf-8").read().count(
-                        "org.lumen.control.android.PhoneRemote.start(")
+        # the Java files of the assembled app (every layer, only the core features and LIST files the recipe takes)
+        files = assemble_app.assemble(root, recipe, codename=codename)[0]
+        starts = sum(open(src, encoding="utf-8").read().count("org.lumen.control.android.PhoneRemote.start(")
+                     for rel, src in files.items() if rel.endswith(".java"))
         if starts != 1:
             errs.append("%s: %s starts PhoneRemote %d times, want 1" % (codename, tops[0], starts))
     return errs

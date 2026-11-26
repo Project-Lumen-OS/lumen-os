@@ -1,0 +1,9 @@
+Source code of this AirPlay receiver (GPL-3.0)
+
+The AirPlay receiver of Lumen OS (org.lumen.airplay) is free software under the GNU General Public License
+version 3. Its complete Corresponding Source (the app, the JNI glue, the patches and the build script that
+fetches UxPlay, libplist, BoringSSL and ALAC at the exact commits named in NOTICE.txt) is attached to every
+Lumen OS release that ships it, as lumen-os-<version>-airplay-source.zip, next to the system image at
+https://github.com/Project-Lumen-OS/lumen-os/releases. It stays available there for at least three years
+after the last release that carries this version. You may copy, change and share it under the GPL-3.0
+(GPL-3.0.txt in this list). There is no warranty.

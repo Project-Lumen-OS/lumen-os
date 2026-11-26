@@ -145,15 +145,26 @@ final class QpdMirror {
     }
 
     // ------------------------------------------------------------------ the receiver's own screen
+    /**
+     * Where a row of the popup leads: the name field of the receiver's settings, else the one casting screen (AirPlay,
+     * screen mirroring and DLNA together, apps/LumenAirPlay CastActivity), the receiver's settings only where an image
+     * has no casting screen yet.
+     */
+    static Intent target(Context c, boolean editName) {
+        Intent cast = new Intent(ModuleScreens.CASTING_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (!editName && cast.resolveActivity(c.getPackageManager()) != null) return cast;
+        Intent i = new Intent(ACTION_SETTINGS).setPackage(PKG).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (editName) i.putExtra("edit", "name");
+        return i;
+    }
+
     /** Name row ({@code editName}) or the full settings row: the panel closes, the receiver's settings open. */
     private void open(boolean editName) {
         if (!host.setupDone("screen mirroring")) return;
         host.closeThen(() -> {
             try {
                 Ui.wakeFromDream(app);
-                Intent i = new Intent(ACTION_SETTINGS).setPackage(PKG).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (editName) i.putExtra("edit", "name");
-                app.startActivity(i);
+                app.startActivity(target(app, editName));
             } catch (Throwable t) {
                 Log.w(TAG, "screen mirroring settings: " + t);
                 Ui.toast(app, R.string.lumen_m_toast_failed);

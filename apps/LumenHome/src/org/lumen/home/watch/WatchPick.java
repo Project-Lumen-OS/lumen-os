@@ -54,6 +54,17 @@ public final class WatchPick {
         return null;
     }
 
+    /**
+     * True when an installed official or catalogue app can open a title: only then the showcase shows TMDB titles, a
+     * unit without one gets no films it cannot play. Video platforms (YouTube, VK) never count.
+     */
+    public static boolean canPlay(WatchApps t, Device d) {
+        for (WatchApps.Row r : t.rows()) {
+            if ((r.kind == WatchApps.Kind.PROVIDER || r.kind == WatchApps.Kind.CATALOG) && usable(r, d) != null) return true;
+        }
+        return false;
+    }
+
     /** True when an installed official provider app has the title (it goes first on the hero). */
     public static boolean inInstalledProvider(WatchApps t, Collection<Integer> providers, Device d) {
         for (WatchApps.Row r : t.rows()) {

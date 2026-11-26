@@ -10,7 +10,7 @@ bad=0
 python3 -B "$G/tools/devices/test/hotspot_image.py" "$G" || bad=1
 mk() {   # mk NAME FILE SED: a copy of the files the rule reads with one change, the rule must fail
   rm -rf "$T/r"; mkdir -p "$T/r/tools/devices/test"
-  (cd "$G" && tar cf - devices/*/menu.json devices/*/device.conf devices/*/build.conf devices/*/image/steps.tsv \
+  (cd "$G" && tar cf - devices/*/menu.json devices/*/device.conf devices/*/build.conf devices/_family devices/*/image/steps.tsv \
     devices/*/image/debloat.txt devices/_image/debloat_gsi_tv_arm.txt devices/g0111/image/remove.txt 2>/dev/null) | tar xf - -C "$T/r"
   sed -i.bak "$3" "$T/r/$2" && rm -f "$T/r/$2.bak"
   if cmp -s "$G/$2" "$T/r/$2"; then echo "FAIL hotspot image mutant $1: the change did not apply"; bad=1; return; fi
@@ -23,6 +23,7 @@ mk arm_kept devices/_image/debloat_gsi_tv_arm.txt '/EmulatorTetheringConfigOverl
 mk rs30_kept devices/g0155/image/debloat.txt '/EmulatorTetheringConfigOverlay/d'
 mk x50_kept devices/g0111/image/remove.txt '/EmulatorTetheringConfigOverlay/d'
 mk x50max_no_list devices/g0100/build.conf 's#devices/g0111/image/remove.txt##'
+mk rs30ultra_no_list devices/_family/rs30/rs30.build.conf 's#devices/g0155/image/debloat.txt ##'
 mk wlan_iface devices/goat_elegant/menu.json 's/"iface": "ap0"/"iface": "wlan0"/'
 mk wrong_name devices/h0062/menu.json 's/"Lumen TITAN Noir Pro"/"Lumen TITAN"/'
 [ $bad = 0 ] && echo "hotspot image: all green"

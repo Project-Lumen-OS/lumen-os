@@ -16,13 +16,13 @@ GM = PJ + 'panel/GameMenu.java'
 CTL = PJ + 'panel/GmController.java'
 VIEW = PJ + 'panel/GmView.java'
 LIC = PJ + 'panel/GmLicences.java'
-ZJ = 'apps/ProjectorBase/src/org/lumen/projector/'
+ZJ = 'apps/LumenProjector/core/src/org/lumen/projector/'
 KEY = ZJ + 'KeyReceiver.java'
-G2 = ZJ + 'hal/Gmpf2Client.java'
+G2 = 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Gmpf2Client.java'
 B2 = 'apps/core/lumen-gmpf/src/org/lumen/projector/hal/Gmpf2Base.java'   # the shared IGmpf2 body
-Z9F = ZJ + 'panel/Z9xFeatures.java'
+Z9F = 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java'
 APPJ = ZJ + 'App.java'
-IO = ZJ + 'panel/Z9xGameIo.java'   # the Z9X side of the shared game menu: its reads, writes and read-backs
+IO = 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xGameIo.java'   # the Z9X side of the shared game menu: its reads, writes and read-backs
 RU = M + 'res/values-ru/lumen_strings_gm.xml'
 DE = M + 'res/values-de/lumen_strings_gm.xml'
 HB = 'devices/goat_elegant/app/HbProjector.layers'
@@ -126,7 +126,7 @@ MUTANTS = [
     ('first auto hide 10 s', MOD, 'return first ? 30_000 : 10_000;', 'return 10_000;'),
     ('frame counter shows 0 Hz', MOD, 'if (frameRateCenti <= 0 || frameRateCenti > 50000) return -1;', ''),
     # ---- wiring: keys, auto show
-    ('gear long press always Android settings', KEY, 'org.lumen.projector.panel.GameMenu.onGearLong(ctx, () -> {',
+    ('gear long press always Android settings', KEY, 'Family.gearLong(ctx, () -> {',
      'android.util.Log.d("x", "long"); ((Runnable) () -> {'),
     ('game menu off HDMI', GM, 'if (!hdmiPort(port)) { fallback.run(); return; }', ''),
     ('game menu without game mode', GM, 'if (Boolean.TRUE.equals(running) && sIo.activePort() == port) show(app, port, false);',
@@ -160,9 +160,11 @@ MUTANTS = [
     ('dock shows every item', CTL, 'List<String> tiles() { return GmModel.visibleOrder(GameMenu.CAPS); }',
      'List<String> tiles() { return java.util.Arrays.asList(GmModel.ORDER); }'),
     # ---- licences, strings, HB
-    ('no Licences row', Z9F, '                case SETTINGS_LICENCES: return LicencesActivity.open(app);\n', ''),
-    ('licences screen stays after its dialog', PJ + 'ui/LicencesActivity.java', '        d.setOnDismissListener(x -> finish());\n', ''),
-    ('licences screen without the credits', PJ + 'ui/LicencesActivity.java', 'AlertDialog d = GmLicences.open(this);', 'AlertDialog d = null;'),
+    ('no Licences page', PJ + 'panel/MenuController.java',
+     '        if (FeatureId.SETTINGS_LICENCES == f) { push(LicencesPage.build(app)); return; }\n', ''),
+    ('licences not readable', PJ + 'panel/LicencesPage.java', 'new TextRow(app, part).readable()', 'new TextRow(app, part)'),
+    ('own licences screen back', 'apps/LumenProjector/core/AndroidManifest.xml', '    </application>',
+     '        <activity android:name="org.lumen.projector.ui.LicencesActivity" />\n    </application>'),
     ('Xbox credit missing', LIC, '"\\"Xbox One Controller Free\\" by paxillop, ', '"\\"Xbox One Controller\\", '),
     ('an em dash in Russian', RU, 'Обычная задержка. Трапеция', 'Обычная задержка \u2014 трапеция'),
     ('a semicolon in German', DE, '<string name="lumen_gm_off">', '<string name="lumen_gm_off">Aus; '),

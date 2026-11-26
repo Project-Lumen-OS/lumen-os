@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">Тіл және уақыт</string>
+    <string name="lumen_m_hdr_power">Қуат</string>
+    <string name="lumen_m_hdr_display_menu">Экран және мәзір</string>
+    <string name="lumen_m_hdr_remote_voice">Пульт және дауыс</string>
+    <string name="lumen_m_hdr_apps_devices">Қолданбалар мен құрылғылар</string>
+    <string name="lumen_m_hdr_storage_updates">Жад және жаңартулар</string>
+    <string name="lumen_m_hdr_help">Анықтама</string>
+    <string name="lumen_m_date_time">Күн мен уақыт</string>
+    <string name="lumen_m_date_auto">Автоматты түрде</string>
+    <string name="lumen_m_storage">Жад</string>
+    <string name="lumen_m_storage_free">Бос орын: %1$s</string>
+    <string name="lumen_m_update">Жүйені жаңарту</string>
+    <string name="lumen_m_about">Құрылғы туралы</string>
+    <string name="lumen_m_system_info">Жүйе мәліметтері</string>
+    <string name="lumen_m_network_adb">Желі арқылы жөндеу</string>
+    <string name="lumen_m_android_dev">Android әзірлеуші параметрлері</string>
+</resources>

@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Contrôle parental</string>
-    <string name="lumen_lp_intro">Limitez ce que les enfants peuvent ouvrir et combien de temps ils regardent.</string>
     <string name="lumen_lp_lock">Verrou enfant</string>
-    <string name="lumen_lp_lock_desc">Activé, vous pouvez régler la portée, le temps de visionnage et plus</string>
     <string name="lumen_lp_lock_off_title">Désactiver le verrou enfant ?</string>
     <string name="lumen_lp_lock_off_text">Les limites de temps et le mot de passe au démarrage ne s\'appliquent plus. Les réglages parentaux s\'ouvrent sans mot de passe.</string>
-    <string name="lumen_lp_turn_off">Désactiver</string>
-    <string name="lumen_lp_cancel">Annuler</string>
     <string name="lumen_lp_child_mode">Mode enfant</string>
     <string name="lumen_lp_child_apps">Applis du mode enfant</string>
     <string name="lumen_lp_child_apps_count">%1$d sélectionnées</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Mode enfant seulement</string>
     <string name="lumen_lp_range_global">Partout</string>
     <string name="lumen_lp_session">Temps par séance</string>
-    <string name="lumen_lp_session_desc">Ensuite, 10 minutes de pause</string>
     <string name="lumen_lp_daily">Temps par jour</string>
     <string name="lumen_lp_no_limit">Sans limite</string>
     <string name="lumen_lp_minutes">%1$d min</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">La séance est finie. Reposez vous 10 minutes</string>
     <string name="lumen_lp_rest_daily">Le temps du jour est écoulé</string>
     <string name="lumen_lp_rest_unlock">Déverrouiller</string>
-    <string name="lumen_lp_on">Oui</string>
-    <string name="lumen_lp_off">Non</string>
 </resources>

@@ -20,8 +20,8 @@ mkdir -p "$OUT/pure" "$OUT/android"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -source 17 -target 17 -d "$OUT/android" -cp "$HJ:$AJ" \
   "$HERE"/src/org/lumen/qr/*.java
 echo "ok   android: the module compiles against android-34"
-other=$(grep -rlE 'ECC_PER_BLOCK|class Qr(Code)? ' --include=*.java "$G/apps/core" "$G/apps/ProjectorBase/src" \
-  "$G/apps/HbProjector/src" "$G/apps/X50Projector/src" "$G/apps/Play6Projector/src" "$G/apps/LumenSetup/src" \
+other=$(grep -rlE 'ECC_PER_BLOCK|class Qr(Code)? ' --include=*.java "$G/apps/core" "$G/apps/LumenProjector/core/src" \
+  "$G/apps/LumenProjector/host/activity/src" "$G/apps/LumenProjector/vendor/xgimi/mt9681-aidl/src" "$G/apps/LumenProjector/vendor/xgimi/play6-hidl/src" "$G/apps/LumenSetup/src" \
   | grep -v "^$HERE/src/" || true)
 if [ -n "$other" ]; then
   echo "FAIL another QR encoder: $other"

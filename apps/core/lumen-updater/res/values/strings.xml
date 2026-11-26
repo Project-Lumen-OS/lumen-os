@@ -3,8 +3,8 @@
      org.lumen.updater English base. Translations: apps/i18n/pending/<set>/<locale>.txt (@updater/strings.xml),
      merged by gen.py. "Lumen OS" is a name: never translated. -->
 <resources>
-    <string name="app_name">Lumen OS update</string>
-    <string name="settings_title">Lumen OS update</string>
+    <string name="app_name">@string/lumen_lumen_os_update</string>
+    <string name="settings_title">@string/lumen_lumen_os_update</string>
 
     <!-- status -->
     <string name="status_up_to_date">Lumen OS is up to date</string>
@@ -14,25 +14,25 @@
     <string name="status_checking">Checking for updates…</string>
     <string name="btn_check">Check for updates</string>
     <string name="row_auto">Automatic updates</string>
-    <string name="auto_off">Off</string>
+    <string name="auto_off">@string/lumen_off_2</string>
     <string name="auto_notify">Only tell me</string>
     <string name="auto_download">Download automatically</string>
     <string name="auto_hint">Updates are never installed without your OK.</string>
     <!-- beta channel (only an edition that has one shows the switch) -->
     <string name="row_beta">Beta updates</string>
     <string name="beta_on">On</string>
-    <string name="beta_off">Off</string>
+    <string name="beta_off">@string/lumen_off_2</string>
     <string name="beta_hint">Beta versions come earlier but are tested less. When you turn them off, your version stays until a newer regular version is out.</string>
     <!-- anonymous statistics (Stats): the row uses beta_on / beta_off for On / Off; stats_hint is the disclosure,
          the same list as the setup wizard (done_stats_note) and the projector settings (stats_note) -->
-    <string name="row_stats">Send anonymous statistics</string>
-    <string name="stats_hint">At every start and once a day: model, version, build, update details, country, a random install number and the serial number (the server keeps only its hash). Your IP address is not stored.</string>
+    <string name="row_stats">@string/lumen_send_anonymous_statistics</string>
+    <string name="stats_hint">@string/lumen_at_every_start_and_once</string>
     <!-- the one-time statistics notice after an update (NoticeActivity); notice_where: %1$s = app_name -->
     <string name="notice_title">Anonymous statistics</string>
     <string name="notice_body">At every start and once a day Lumen OS reports the model, version, build, update details and country, plus a random install number and the serial number (the server keeps only its hash). The IP address is not stored, and what you watch is never sent.</string>
     <string name="notice_where">You can change this under %1$s.</string>
     <string name="notice_ok">OK</string>
-    <string name="notice_off">Turn off</string>
+    <string name="notice_off">@string/lumen_turn_off</string>
 
     <!-- update available -->
     <string name="avail_title">Lumen OS %1$s is available</string>
@@ -53,9 +53,9 @@
     <string name="dl_waiting_network">Waiting for the network…</string>
     <string name="dl_paused">Paused</string>
     <string name="dl_verifying">Checking the download…</string>
-    <string name="btn_pause">Pause</string>
+    <string name="btn_pause">@string/lumen_pause</string>
     <string name="btn_resume">Resume</string>
-    <string name="btn_cancel">Cancel</string>
+    <string name="btn_cancel">@string/lumen_cancel</string>
 
     <!-- installing -->
     <string name="inst_title">Installing Lumen OS %1$s</string>
@@ -95,7 +95,8 @@
     <string name="blk_merge">Finishing the previous update…</string>
     <string name="blk_merge_body">This takes a few minutes in the background. You can keep watching.</string>
     <string name="blk_pending">This version is still being checked after the last update. Try again in a few minutes.</string>
-    <string name="blk_vendor">This update is not made for this projector’s firmware (%1$s).</string>
+    <string name="blk_vendor">This update does not support your projector firmware</string>
+    <string name="blk_vendor_body">It works with projector firmware %2$s. Your projector has firmware %1$s. Nothing changes on your projector. Please wait for a Lumen OS update that supports your firmware.</string>
     <string name="blk_channel">This update is for another Lumen OS edition (%1$s).</string>
     <string name="blk_min_version">This update needs Lumen OS %1$s or newer. Please use the computer installer.</string>
     <string name="blk_thermal">The projector is too warm right now. Try again later.</string>
@@ -127,12 +128,12 @@
 
     <!-- about -->
     <string name="about_header">About</string>
-    <string name="about_version">Version</string>
+    <string name="about_version">@string/lumen_version</string>
     <string name="about_build">Build</string>
     <string name="about_author">Author</string>
     <string name="about_project">Project page</string>
-    <string name="about_licenses">Licenses</string>
-    <string name="about_scan">Scan with a phone to open</string>
+    <string name="about_licenses">@string/lumen_licenses</string>
+    <string name="about_scan">@string/lumen_scan_with_a_phone_to</string>
     <string name="lic_lumen">Lumen OS: PolyForm Noncommercial License 1.0.0. The AirPlay receiver: GNU GPL 3.0.</string>
     <string name="lic_aosp">Android Open Source Project and LineageOS: Apache License 2.0 and the licenses of their components.</string>
     <string name="lic_gapps">Google apps and services: Google’s own terms. Not part of Lumen OS.</string>

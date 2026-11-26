@@ -1,0 +1,44 @@
+# The model properties the stock XGIMI RS30 Pro Max system loads at every boot: the stock /system/bin/init (XGIMI build)
+# reads /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop; LineageOS init does not. The recipe
+# (devices/g0155/image/steps.tsv) appends these lines to the image's product build.prop, so they are set from the first second of boot, as on stock.
+# Rule (x50_props.py model_rule, the X50's): every line of the stock G0124 file except the identity keys and
+# persist.sys.*. Stock file: vendor/etc/xgimimodelname/G0124/build.prop of v1.2.27 (official FULL OTA), sha256
+# afee0f5c4da1bb460f00537f1235faf484765f9ffbbe0db9a1f08b4358fd2aac (x50_props.py model checks it on the build host).
+ro.xgimi.product.name=Product_athena3promax
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_athena3promax
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.vendor.xgimi.animation.style=blue
+persist.xgimi.bootanimation.style=blue
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9681+M-UHD003F0003001F0017000100010037+athena3promax+ProjectorUHD_3
+vendor.xgimi.mw.support=1
+ro.vendor.xgimi.ram_size=3g
+dalvik.vm.heapgrowthlimit=192m
+dalvik.vm.heapsize=512m
+dalvik.vm.heapminfree=2m
+dalvik.vm.heapmaxfree=16m
+dalvik.vm.heaptargetutilization=0.75
+ro.hwui.texture_cache_size=48
+ro.hwui.layer_cache_size=24
+ro.hwui.path_cache_size=12
+ro.lmk.swap_free_low_percentage=35
+ro.lmk.swap_util_max=75
+dalvik.vm.usap_pool_enabled=true
+dalvik.vm.dex2oat-threads=4
+dalvik.vm.dex2oat-cpu-set=0,1,2,3
+dalvik.vm.background-dex2oat-threads=2
+dalvik.vm.background-dex2oat-cpu-set=0,1
+dalvik.vm.image-dex2oat-Xms=128m
+dalvik.vm.dex2oat-Xms=128m

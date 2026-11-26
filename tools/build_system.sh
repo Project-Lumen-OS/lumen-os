@@ -1289,8 +1289,6 @@ stage_prep() {
 
   log "base member check"
   NEW_PATHS=$(printf '%s\n' system/app/Z9xProjector system/app/Z9xTvInput system/app/Z9xAirPlay system/app/Z9xUpdater \
-      system/app/LumenBridgeProjector system/app/LumenBridgeHome system/app/LumenBridgeSetup \
-      system/app/LumenBridgeTvInput system/app/LumenBridgeUpdater system/app/LumenBridgeAirPlay \
       system/priv-app/Z9xHome system/priv-app/Z9xSetup system/priv-app/LumenMiracast system/product/usr/idc system/etc/sysconfig/z9x.xml \
       system/product/usr/keylayout/Generic.kl system/etc/z9x system/etc/init/z9x_ota.rc system/etc/init/z9x_rescue.rc \
       system/etc/permissions/privapp-permissions-z9xhome.xml system/etc/permissions/privapp-permissions-z9xsetup.xml \

@@ -107,6 +107,21 @@ final class QpdAll extends ViewGroup {
         v.setClipToPadding(false);
     }
 
+    /**
+     * The theme's colours now (QpdStyle after a theme press): the three cards, the title, the rail and the rows. The
+     * cards took their colour when the window was made, so All settings opened after a press stayed in the old theme.
+     */
+    void retheme() {
+        for (View v : new View[]{railCard, listCard, tipCard}) {
+            if (v.getBackground() instanceof GradientDrawable) ((GradientDrawable) v.getBackground()).setColor(QpdStyle.PANEL);
+        }
+        title.setTextColor(QpdStyle.INK);
+        for (RailItem it : items) it.invalidate();
+        for (int i = 0; i < list.getChildCount(); i++) list.getChildAt(i).invalidate();
+        if (tipShown != null) tipShown.invalidate();
+        invalidate();
+    }
+
     // ------------------------------------------------------------------ content
     void setRail(List<QpdPanel.Cat> cats, int sel) {
         boolean same = cats.size() == items.size();

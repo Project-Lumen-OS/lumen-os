@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">HDMI-CEC ist nicht verfügbar</string>
     <string name="lumen_cec_master">HDMI-CEC-Steuerung</string>
     <string name="lumen_cec_master_note">Bei ausgeschaltetem HDMI-CEC ist Ton über HDMI ARC nicht verfügbar.</string>
-    <string name="lumen_cec_wake">Mit einem HDMI-Gerät einschalten</string>
     <string name="lumen_cec_wake_note">Wenn aktiviert, werden HDMI-Geräte beim Ausschalten des Projektors ebenfalls ausgeschaltet.</string>
     <string name="lumen_cec_night">Nachtschutz</string>
     <string name="lumen_cec_night_off">Aus</string>

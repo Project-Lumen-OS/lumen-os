@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">すべての設定を編集</string>
+    <string name="lumen_fe_show_hint">OK: 行を表示または非表示</string>
+    <string name="lumen_fe_order">順番を変更</string>
+    <string name="lumen_fe_move_hint">OKで行を持ち上げます。上下でグループ内を移動し、OKまたは戻るで置きます。</string>
+</resources>

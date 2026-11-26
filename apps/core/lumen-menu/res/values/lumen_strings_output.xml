@@ -3,13 +3,13 @@
      Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
 <resources>
     <string name="lumen_m_out_now">Sound is playing on</string>
-    <string name="lumen_m_out_connect">Connect</string>
+    <string name="lumen_m_out_connect">@string/lumen_connect</string>
     <string name="lumen_m_out_connecting">Connecting</string>
-    <string name="lumen_m_out_connected">Connected</string>
-    <string name="lumen_m_out_offline">Not connected</string>
+    <string name="lumen_m_out_connected">@string/lumen_connected</string>
+    <string name="lumen_m_out_offline">@string/lumen_not_connected</string>
     <string name="lumen_m_out_jack">3.5 mm jack</string>
     <string name="lumen_m_out_by_hand">Chosen by hand</string>
     <string name="lumen_m_out_auto_picked">Chosen automatically</string>
     <string name="lumen_m_out_hand_picked">Chosen by you</string>
-    <string name="lumen_m_out_earc">HDMI eARC</string>
+    <string name="lumen_m_out_earc">@string/lumen_hdmi_earc</string>
 </resources>

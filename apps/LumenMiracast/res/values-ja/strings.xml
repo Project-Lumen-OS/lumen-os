@@ -3,29 +3,19 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="app_name">画面ミラーリング</string>
-    <string name="settings_title">画面ミラーリング</string>
-    <string name="on">オン</string>
-    <string name="off">オフ</string>
-    <string name="ok">OK</string>
-    <string name="cancel">キャンセル</string>
-    <string name="status_title">状態</string>
     <string name="status_off">オフです。スマートフォンやパソコンからこのプロジェクターは見えません。</string>
     <string name="status_starting">起動中</string>
     <string name="status_ready">準備完了。スマートフォンやパソコンにはこのプロジェクターが %1$s として表示されます。</string>
     <string name="status_no_wifi">Wi‑Fi がオフです。画面を受信するにはオンにしてください。</string>
     <string name="status_unsupported">このプロジェクターでは Wi‑Fi Direct を利用できません。</string>
+    <string name="status_waiting_wifi">Wi‑Fi の接続を待っています。</string>
+    <string name="status_restarting">Wi‑Fi Direct が応答しなくなりました。再起動しています。</string>
+    <string name="status_no_answer">Wi‑Fi Direct が応答しません。プロジェクターを再起動してください。AirPlay と DLNA は使えます。</string>
+    <string name="status_connect_broken">スマートフォンにはこのプロジェクターが表示されますが、このシステムのバージョンではまだ接続を完了できません。AirPlay と DLNA は使えます。</string>
     <string name="status_in_use">%1$s の画面を表示中</string>
-    <string name="row_enabled">画面ミラーリング（Miracast）</string>
-    <string name="row_name">名前</string>
-    <string name="row_ask">接続前に確認する</string>
-    <string name="row_quality">画質</string>
     <string name="quality_1080_60">最大 1080p、毎秒 60 フレーム</string>
     <string name="quality_1080_30">最大 1080p、毎秒 30 フレーム</string>
     <string name="quality_720">最大 720p</string>
-    <string name="howto_title">接続方法</string>
-    <string name="howto_android">Android：クイック設定でキャストまたは Smart View を開き、%1$s を選びます。</string>
-    <string name="howto_windows">Windows：Win キーと K キーを同時に押して %1$s を選びます。</string>
-    <string name="name_dialog_title">このプロジェクターの名前</string>
     <string name="notif_ready">%1$s として画面を受信できます</string>
     <string name="notif_in_use">%1$s の画面を表示中</string>
     <string name="prompt_title">%1$s が画面を表示しようとしています</string>

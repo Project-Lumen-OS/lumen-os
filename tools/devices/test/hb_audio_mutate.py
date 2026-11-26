@@ -39,7 +39,7 @@ MUT = [
     # ---- slider wiring
     ("pp_commit_only", PP, "                row.setTag(android.os.SystemClock.uptimeMillis());\n                safe(\"slider\", () -> c.submit(value)).run();",
      "                row.setTag(android.os.SystemClock.uptimeMillis());"),
-    ("pp_read_while_sliding", PP, "        if (sliding()) return;                                  // HB fork", "        // HB fork"),
+    ("pp_read_while_sliding", PP, "        if (sliding()) return;                                  // a coalesced slide reads once at its end", "        // a coalesced slide reads once at its end"),
     ("pp_no_forget", PP, "        for (SlideCoalescer c : slides) c.forget();", ""),
     ("pp_no_register", PP, "        slides.add(c);\n", ""),
     ("mf_pq_no_range", QP_HbPictureRows, "        if (v < PQ_MIN || v > PQ_MAX) { refuse(cb, null); return; }\n", ""),
@@ -71,8 +71,6 @@ SUITES = ["test/slider/run.sh", "test/audio/run.sh", "test/features/run.sh"]
 
 
 def tree(dst):
-    shutil.copytree(os.path.join(G, "apps/HbProjector"), os.path.join(dst, "apps/HbProjector"),
-                    ignore=shutil.ignore_patterns("build"))
     # HbAudioRules asks lumen-audio SoundbarMode, check_wiring reads PathSwitch
     shutil.copytree(os.path.join(G, "apps/core/lumen-audio"), os.path.join(dst, "apps/core/lumen-audio"))
     # test/audio/check_wiring.py reads the stock Bluetooth absolute volume line of hb_bt.rc

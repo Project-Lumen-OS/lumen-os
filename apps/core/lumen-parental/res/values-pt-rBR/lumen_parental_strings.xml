@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Controle dos pais</string>
-    <string name="lumen_lp_intro">Limite o que as crianças podem abrir e quanto tempo assistem.</string>
     <string name="lumen_lp_lock">Bloqueio infantil</string>
-    <string name="lumen_lp_lock_desc">Ativado, você pode definir o alcance, o tempo de uso e mais</string>
     <string name="lumen_lp_lock_off_title">Desativar o bloqueio infantil?</string>
     <string name="lumen_lp_lock_off_text">Os limites de tempo e a senha ao ligar deixam de funcionar. As configurações dos pais abrem sem senha.</string>
-    <string name="lumen_lp_turn_off">Desativar</string>
-    <string name="lumen_lp_cancel">Cancelar</string>
     <string name="lumen_lp_child_mode">Modo infantil</string>
     <string name="lumen_lp_child_apps">Apps do modo infantil</string>
     <string name="lumen_lp_child_apps_count">%1$d selecionados</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Só modo infantil</string>
     <string name="lumen_lp_range_global">Em tudo</string>
     <string name="lumen_lp_session">Tempo por sessão</string>
-    <string name="lumen_lp_session_desc">Depois, 10 minutos de pausa</string>
     <string name="lumen_lp_daily">Tempo por dia</string>
     <string name="lumen_lp_no_limit">Sem limite</string>
     <string name="lumen_lp_minutes">%1$d min</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">A sessão acabou. Descanse 10 minutos</string>
     <string name="lumen_lp_rest_daily">O tempo de hoje acabou</string>
     <string name="lumen_lp_rest_unlock">Desbloquear</string>
-    <string name="lumen_lp_on">Sim</string>
-    <string name="lumen_lp_off">Não</string>
 </resources>

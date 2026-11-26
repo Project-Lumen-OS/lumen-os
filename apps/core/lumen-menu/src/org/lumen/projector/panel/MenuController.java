@@ -11,6 +11,7 @@ import android.view.View;
 
 import org.lumen.icons.IconText;
 import org.lumen.menu.ChoiceStep;
+import org.lumen.menu.MenuRequest;
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.FeatureKind;
 import org.lumen.menu.IrisRule;
@@ -26,9 +27,11 @@ import org.lumen.menu.SignalRule;
 import org.lumen.menu.SliderOff;
 import org.lumen.menu.ThreeDMode;
 import org.lumen.menu.quick.Density;
+import org.lumen.menu.quick.FullLayout;
 import org.lumen.menu.quick.Placement;
 import org.lumen.menu.quick.Presentation;
 import org.lumen.menu.quick.QuickCatalog;
+import org.lumen.menu.quick.QuickItem;
 import org.lumen.menu.quick.QuickDefaults;
 import org.lumen.menu.quick.QuickLayout;
 import org.lumen.menu.quick.QuickLayoutJson;
@@ -71,6 +74,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -113,16 +117,20 @@ public final class MenuController {
             FeatureId.PICTURE_3D);
     /** These close the menu first and act when it is gone (they show their own overlay or leave the menu). */
     static final Set<FeatureId> CLOSE_FIRST = set(FeatureId.KEYSTONE_AK_NOW, FeatureId.KEYSTONE_FIT_NOW, FeatureId.FOCUS_AF_NOW,
-            FeatureId.FOCUS_MANUAL, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_HDMI,
+            FeatureId.FOCUS_MANUAL, FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_UI_RESOLUTION,
             FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.SETTINGS_REMOTE,
-            FeatureId.SETTINGS_LICENCES, FeatureId.VOICE_KEY, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE_KEYS,
+            FeatureId.VOICE_KEY, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_REMOTE_KEYS,
+            FeatureId.SETTINGS_LANGUAGE, FeatureId.SETTINGS_DATE_TIME, FeatureId.SETTINGS_STORAGE, FeatureId.SETTINGS_UPDATE,
+            FeatureId.SETTINGS_ABOUT, FeatureId.DEV_SYSTEM_INFO, FeatureId.DEV_ANDROID,
             FeatureId.LAMP_OFF);
     /** A closed panel's exit animation and a frame more: then the action behind it runs. */
     static final long AFTER_CLOSE_MS = Theme.PANEL_EXIT_MS + 60;
     /** These leave the menu for another app or screen: refused while the first-run setup runs. */
     static final Set<FeatureId> SETUP_GATED = set(FeatureId.INPUT, FeatureId.BLUETOOTH, FeatureId.NETWORK,
             FeatureId.SETTINGS_SYSTEM, FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI,
-            FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.VOICE_KEY, FeatureId.SETTINGS_REMOTE_KEYS);
+            FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_LAUNCHER, FeatureId.VOICE_KEY, FeatureId.SETTINGS_REMOTE_KEYS,
+            FeatureId.SETTINGS_LANGUAGE, FeatureId.SETTINGS_DATE_TIME, FeatureId.SETTINGS_STORAGE, FeatureId.SETTINGS_UPDATE,
+            FeatureId.SETTINGS_ABOUT, FeatureId.DEV_SYSTEM_INFO, FeatureId.DEV_ANDROID);
 
     /** Device pages shown inside the panel (null: none, the menu then asks ProjectorFeatures.open). */
     public interface Pages {
@@ -166,11 +174,25 @@ public final class MenuController {
      * popup, MenuSpec.MOVABLE): shown with every state read like the first one.
      */
     private final Map<FeatureId, List<View>> twins = new HashMap<>();
+    /** The "Custom" entry of each picture mode list page (the card's radio popup, the mode list), by page. */
+    private final Map<Page, View> customEntries = new java.util.WeakHashMap<>();
     private final Map<FeatureId, List<CheckRow>> radios = new HashMap<>();  // choice feature -> its popup radios
     private final Map<FeatureId, List<CheckRow>> inline = new HashMap<>();  // inline radio choice -> its rows
+    /** A switch with modes (stock more_eye_state): its mode rows under the switch, shown while it is on. */
+    private final Map<FeatureId, List<CheckRow>> modes = new HashMap<>();
+    /** The page that holds those mode rows (it alone is laid out again when they show or hide). */
+    private final Map<FeatureId, Page> modePages = new HashMap<>();
     private final Map<String, TextRow> notes = new HashMap<>();          // feature or section -> its note line
     private final Map<HeaderRow, List<FeatureId>> headers = new LinkedHashMap<>();
     private final Map<HeaderRow, List<FeatureId>> lineAbove = new HashMap<>();   // a line header -> the page's rows above it
+    /** Headers that name the signal format on their right (stock image_title_v4 and image_mode_two_title). */
+    private final List<HeaderRow> signalHeads = new ArrayList<>();
+    /** The same on top of the picture mode list shown now (built again on each open), or null. */
+    private HeaderRow modeListHead;
+    /** The picture page's "Picture" header (stock image_title_v4), null until built or where the page has none. */
+    private HeaderRow pictureHead;
+    /** The professional settings page of each model (Z9X / HB / Play 6 picture.pro, X50 family picture.settings). */
+    private static final Set<FeatureId> PRO_PAGES = EnumSet.of(FeatureId.PICTURE_PRO, FeatureId.PICTURE_SETTINGS);
     private final Map<View, View> tips = new HashMap<>();                // row -> hint picture
     private final Map<Page, View> pageTips = new HashMap<>();
     private final List<QpdTip> setupTips = new ArrayList<>();               // projection pictures: redrawn by apply
@@ -186,6 +208,8 @@ public final class MenuController {
     private final List<SliderRow> pageLamps = new ArrayList<>();
     private QpdMirror mirror;
     private QpdPanel panel;
+    /** The stock picture adjustment: the menu hides, a three row strip adjusts (null until first used). */
+    private AdjustMode adjust;
     private OutputPages outputs;
     private MenuState state;
     private String lastAllCat;
@@ -199,8 +223,8 @@ public final class MenuController {
     private final PressAgain boostAsk = new PressAgain(BOOST_PRESS_WINDOW_MS);
     /** LEFT at the lowest brightness asks while its hint is on screen (the note's slide in and hold). */
     private final SliderOff sliderOff = new SliderOff(Theme.NOTIFY_SLIDE_MS + Theme.NOTIFY_HOLD_MS);
-    /** apply() is re-rendering the open page: its shown hook must not read again (that read would apply again). */
-    private boolean applying;
+    /** A repaint of the open page (apply(), refreshPage): its shown hook must not read again (RepaintGate). */
+    private final RepaintGate repaint = new RepaintGate();
     /** A popup opened on its checked row and no key since: a read-back moves the focus to the checked row. */
     private boolean popupUntouched;
     /** The section last told to a ProjectorFeatures.Live adapter, and the generation of its live callback. */
@@ -220,6 +244,17 @@ public final class MenuController {
     private final Map<FeatureId, QpdSliderRow> numberSliders = new LinkedHashMap<>();
     /** The panel of an item the user put on the card in a tile look (its row in a page of its own), by feature. */
     private final Map<FeatureId, Page> quickPages = new HashMap<>();
+    /**
+     * All settings as the user arranged it (Slava 2026-11-22, FullLayout in Settings.Secure lumen_full_menu): the stock
+     * rows of each section page, the layout shown and its stored text (read again whenever All settings opens: Lumen
+     * Home's settings backup may have restored it), the editor's row at the end of the General page and the editor.
+     */
+    private final Map<String, FullPageRows> fullRows = new HashMap<>();
+    private final QuickStore fullStore;
+    private FullLayout full = FullLayout.EMPTY;
+    private String fullRaw;
+    private NavRow fullEditRow;
+    private FullEditPages fullEdit;
     private QpdTile themeTile, eyeTile;
     private String quickJson;
 
@@ -252,6 +287,7 @@ public final class MenuController {
         this.signal = new SignalWatch(dev, this::ours, () -> state, this::refresh);
         this.outputWatch = new OutputWatch(app, this::ours, this::refresh);
         this.quickStore = new SecureQuickStore(app);
+        this.fullStore = new SecureQuickStore(app, FullLayout.KEY);
         this.devicePages = devicePages;
         this.custom = new CustomPictures(c.getApplicationContext() != null ? c.getApplicationContext() : c, customHost());
         this.host = host != null ? host : OverlayPanelHost.get(app);
@@ -261,7 +297,7 @@ public final class MenuController {
         for (String sec : spec.sections.keySet()) pages.put(sec, buildSection(sec));
         buildPopups();
         root = buildRoot();
-        lastAllCat = spec.hasSection(MenuSpec.PICTURE) ? MenuSpec.PICTURE : null;
+        lastAllCat = null;                                     // All settings opens on its first category, General
         String last = prefs.getString(KEY_LAST_TILE, null);
         if ("manual_keystone".equals(last)) last = MenuSpec.KEYSTONE;           // the v6.3 tile is the Keystone tile now
         if (last != null) card.remember(last);
@@ -269,6 +305,8 @@ public final class MenuController {
             for (Extension x : extensions(e.getKey())) addRows(e.getKey(), e.getValue(), x);
         }
         for (String sec : spec.popups.keySet()) tilePopup(sec);
+        fullEditRow = fullEditRow();
+        loadFull(true);
     }
 
     private static Set<FeatureId> set(FeatureId... s) { return Collections.unmodifiableSet(new HashSet<>(Arrays.asList(s))); }
@@ -316,29 +354,92 @@ public final class MenuController {
         top.setVisibility(View.GONE);
         p.add(top);
         notes.put(sec, top);
+        FullPageRows rec = new FullPageRows();
+        rec.head(top);
+        fullRows.put(sec, rec);
         List<FeatureId> above = new ArrayList<>();
         for (MenuSpec.Group g : spec.sections.get(sec)) {
             List<FeatureId> present = new ArrayList<>();
             for (FeatureId f : g.rows) if (has(f)) present.add(f);
             if (present.isEmpty()) continue;
+            HeaderRow hr = null;
             if (g.header != null) {
-                HeaderRow hr = p.add(new HeaderRow(app, headerText(g.header)));
+                hr = p.add(new HeaderRow(app, headerText(g.header)));
                 headers.put(hr, present);
+                if (MenuSpec.PICTURE_HEADER.equals(g.header) && MenuSpec.PICTURE.equals(sec)) pictureHead = hr;
                 if (MenuSpec.LINE.equals(g.header)) lineAbove.put(hr, new ArrayList<>(above));
             }
+            FullPageRows.Block block = rec.block(hr, MenuSpec.DISPLAY_MENU.equals(g.header));
             for (FeatureId f : present) {
-                if (FeatureId.LAMP == f && !MenuSpec.LAMP.equals(sec)) addLampRow(p);
-                else addRow(p, f);
+                int before = p.rows().size();
+                String home = MenuSpec.sectionOf(f);
+                if (home != null && !home.equals(sec) && switchWithModes(f) && pages.containsKey(home)) {
+                    addEntry(p, f, pages.get(home));          // stock more_eye_state: an entry with its state
+                } else if (FeatureId.LAMP != f) addRow(p, f);
+                else {
+                    addLampRow(p);                            // the light slider (the lamp page: its tile look opens it)
+                    if (MenuSpec.LAMP.equals(sec)) addRow(p, f);   // then its key hints
+                }
+                rec.rows(block, f, new ArrayList<>(p.rows().subList(before, p.rows().size())));
             }
             above.addAll(present);
         }
         String foot = dev.footer(sec);
         if (foot != null) p.add(new TextRow(app, named(foot)));
+        if (MenuSpec.PICTURE.equals(sec)) {
+            HeaderRow h = pictureHead != null ? pictureHead : firstTitle(p);
+            if (h == null) rec.head(h = titleHead(p));                   // a new one stays on top in the user's order
+            signalHeads.add(h);
+        }
         p.setOnShown(() -> onPageShown(sec));
         return p;
     }
 
+    /** Entries to a section's page from another page (Eye protection in General), each with its feature's state. */
+    private final Map<NavRow, FeatureId> entries = new HashMap<>();
+
+    private void addEntry(Page p, FeatureId f, Page target) {
+        NavRow e = p.add(new NavRow(app, s(MenuLabels.title(f)), () -> safe("entry " + f, () -> openPage(f, target))));
+        entries.put(e, f);
+        featureOf.put(e, f);
+    }
+
+    /** The page's first group title when the page starts with one (no row above it), else null. */
+    private static HeaderRow firstTitle(Page p) {
+        for (View v : p.rows()) {
+            if (v instanceof HeaderRow && PageAccess.headerText((HeaderRow) v).length() > 0) return (HeaderRow) v;
+            if (v instanceof Row) break;                                   // a row before any header
+        }
+        return null;
+    }
+
+    /**
+     * The header that names the signal format on its right as the stock picture title does (image_title_v4,
+     * SubTitleWithStateCellView): the page's first title, else the stock "Picture" header added under the note line.
+     */
+    private HeaderRow titleHead(Page p) {
+        HeaderRow h = firstTitle(p);
+        if (h != null) return h;
+        h = new HeaderRow(app, headerText(MenuSpec.PICTURE_HEADER));
+        p.rows().add(Math.min(1, p.rows().size()), h);
+        return h;
+    }
+
+    /** A header with the signal format alone (stock image_mode_two_title on the professional page and the mode list). */
+    private HeaderRow formatHead(Page p) {
+        HeaderRow h = new HeaderRow(app, "");
+        h.setState(formatText(state));
+        p.rows().add(0, h);
+        return h;
+    }
+
+    /** The format's label, "" while the device has not read it. */
+    private CharSequence formatText(MenuState st) {
+        return st == null || st.format() == null ? "" : named(st.format().label);
+    }
+
     private void onPageShown(String sec) {
+        if (MenuSpec.BLUETOOTH.equals(sec) && pages.get(sec) != null) bt().fill(pages.get(sec));
         refresh();
         live(sec);
         watchSignal();
@@ -365,6 +466,10 @@ public final class MenuController {
             if (present.isEmpty()) continue;
             if (g.header != null) headers.put(p.add(new HeaderRow(app, headerText(g.header))), present);
             for (FeatureId f : present) addRow(p, f);
+        }
+        if (PRO_PAGES.contains(page) && !p.rows().isEmpty()) {   // stock image_mode_two_title: the first title, format right
+            HeaderRow h = firstTitle(p);
+            signalHeads.add(h != null ? h : formatHead(p));
         }
         p.setOnShown(() -> { refresh(); watchSignal(); });
         return p;
@@ -400,8 +505,7 @@ public final class MenuController {
             return;
         }
         addRows(sec, p, x);
-        if (MenuSpec.GAME.equals(sec)) refreshGamePopup();
-        tilePopup(sec);
+        arrange(sec);                                         // the user's order, the editor's row stays last
         Page shown = panel != null && panel.isShowing() ? panel.currentPage() : null;
         if (shown != null && (shown == p || shown == popups.get(sec))) panel.refreshPage();
     }
@@ -409,6 +513,41 @@ public final class MenuController {
     /** A CHOICE whose options are exactly off, on (Z9X eye protection) is one switch, as stock. */
     private boolean switchChoice(FeatureId f) {
         return f.kind == FeatureKind.CHOICE && profile.options(f).equals(Arrays.asList("off", "on"));
+    }
+
+    /**
+     * Eye protection with modes (X50 family, stock more_eye_state): one switch row and, while it is on, the stock
+     * modes under it as a radio list (stock: the switch, then the follow and be at ease pictures), never one stepping
+     * row that repeats the page title. The model data decides it: options off plus at least two modes.
+     */
+    private boolean switchWithModes(FeatureId f) {
+        return FeatureId.EYE == f && QpdLayout.eyeHasPopup(profile.options(f));
+    }
+
+    /** The modes of a switch with modes: its options without off, in the profile's (stock) order. */
+    private List<String> modeOptions(FeatureId f) {
+        List<String> out = new ArrayList<>(profile.options(f));
+        out.remove(QpdLayout.OFF);
+        return out;
+    }
+
+    private void addModes(Page p, FeatureId f) {
+        List<CheckRow> list = new ArrayList<>();
+        for (String o : modeOptions(f)) {
+            CheckRow cr = p.add(new CheckRow(app, optionLabel(f, o), false, () -> safe("mode " + f, () -> choose(f, o))));
+            cr.setVisibility(View.GONE);                      // until a read says the switch is on
+            list.add(cr);
+            featureOf.put(cr, f);
+        }
+        modes.put(f, list);
+        modePages.put(f, p);
+    }
+
+    /** The switch of a switch with modes: as the tile's OK (QpdLayout.eyeToggle), the row shows the device value. */
+    private void onModeSwitch(FeatureId f, ToggleRow row) {
+        String now = state == null ? null : state.get(f);
+        row.setChecked(now == null ? null : !QpdLayout.OFF.equals(now));
+        if (FeatureId.EYE == f) toggleEye();
     }
 
     private void addRow(Page p, FeatureId f) {
@@ -432,6 +571,10 @@ public final class MenuController {
                 }
                 if (switchChoice(f)) {
                     row = p.add(new ToggleRow(app, title, (r, wanted) -> safe("switch " + f, () -> onToggle(f, r, wanted))));
+                    break;
+                }
+                if (switchWithModes(f)) {
+                    row = p.add(new ToggleRow(app, title, (r, wanted) -> safe("switch " + f, () -> onModeSwitch(f, r))));
                     break;
                 }
                 List<String> opts = profile.options(f);
@@ -504,6 +647,7 @@ public final class MenuController {
         featureOf.put(row, f);
         int sum = MenuLabels.summary(f);
         if (sum != 0) featureOf.put(p.add(new TextRow(app, s(sum))), f);
+        if (switchWithModes(f) && !modes.containsKey(f)) addModes(p, f);   // the stock modes under the switch
         View tip = tip(f);
         if (tip != null) {
             tips.put(row, tip);
@@ -558,7 +702,10 @@ public final class MenuController {
             Log.w(TAG, "hint picture " + h + " of " + f + " is not drawable yet: no picture");
             return null;
         }
-        if (kind != HintPicture.PROJECTION) return new QpdTip(app, kind, s(MenuLabels.tipText(h)));
+        if (kind != HintPicture.PROJECTION) {                 // a picture alone where its text would only explain the row
+            int text = MenuLabels.tipText(h);
+            return new QpdTip(app, kind, text == 0 ? null : s(text));
+        }
         QpdTip t = new QpdTip(app, kind, null);
         showSetup(t, state);
         setupTips.add(t);
@@ -678,14 +825,96 @@ public final class MenuController {
         g.setInitialFocus(f);
     }
 
+    // ================================================================== All settings as the user arranged it
+
+    /** Reads the stored layout of All settings and lays every section page out for it ({@code force}: also unchanged). */
+    private void loadFull(boolean force) {
+        String raw = fullStore.load();
+        if (!force && (raw == null ? fullRaw == null : raw.equals(fullRaw))) return;
+        fullRaw = raw;
+        FullLayout l = FullLayout.parse(raw);
+        full = l != null ? l : FullLayout.EMPTY;
+        for (String sec : fullRows.keySet()) arrange(sec);
+    }
+
+    /** One section page in the user's order without his hidden rows; its tile popup and the game popup follow. */
+    private void arrange(String sec) {
+        Page p = pages.get(sec);
+        FullPageRows r = fullRows.get(sec);
+        if (p == null || r == null) return;
+        r.apply(p, sec, full, MenuSpec.GENERAL.equals(sec) ? fullEditRow : null);
+        if (MenuSpec.GAME.equals(sec)) refreshGamePopup();
+        tilePopup(sec);
+    }
+
+    /** The editor's row at the end of the General page (null without one): not a feature row, so never hidden. */
+    private NavRow fullEditRow() {
+        if (pages.get(MenuSpec.GENERAL) == null) return null;
+        fullEdit = new FullEditPages(app, fullHost);
+        return new NavRow(app, s(R.string.lumen_fe_edit), () -> safe("all settings editor", () -> push(fullEdit.top())));
+    }
+
+    private final FullEditPages.Host fullHost = new FullEditPages.Host() {
+        @Override public List<String> categories() {
+            List<String> out = new ArrayList<>();
+            for (String c : spec.allSettings) if (pages.containsKey(c) && fullRows.containsKey(c)) out.add(c);
+            return out;
+        }
+
+        @Override public CharSequence category(String sec) { return s(MenuLabels.category(sec)); }
+
+        @Override public List<List<FeatureId>> groups(String sec) {
+            FullPageRows r = fullRows.get(sec);
+            return r == null ? Collections.emptyList() : r.groups();
+        }
+
+        @Override public CharSequence title(String sec, FeatureId f) {
+            FullPageRows r = fullRows.get(sec);
+            CharSequence t = r == null ? null : r.title(f);
+            return t != null ? t : s(MenuLabels.title(f));
+        }
+
+        @Override public FullLayout layout() { return full; }
+
+        @Override public void save(FullLayout l, String sec) {
+            full = l;
+            fullRaw = l.isEmpty() ? null : l.write();
+            if (!(fullRaw == null ? fullStore.clear() : fullStore.save(fullRaw))) Log.w(TAG, "all settings layout not stored");
+            arrange(sec);
+        }
+
+        @Override public void push(Page p) { MenuController.this.push(p); }
+
+        @Override public void refresh(int index) {
+            if (panel != null && panel.isShowing()) panel.refreshPage(index);
+        }
+
+        @Override public void openBackup() {
+            closeThen(() -> {
+                Intent i = new Intent(HOME_CUSTOMIZE).putExtra("page", "backup").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    app.startActivity(i);
+                } catch (RuntimeException e) {
+                    Log.w(TAG, "home backup: " + e);
+                    host.toast(R.string.lumen_m_toast_failed);
+                }
+            });
+        }
+    };
+
+    /** Lumen Home's Customize Home (its backup page holds the file of the quick menu, All settings and Home). */
+    static final String HOME_CUSTOMIZE = "org.lumen.home.action.CUSTOMIZE";
+
     /**
      * The popup of a section tile whose section has rows with a card tile of their own (MenuSpec.popups: keystone
      * without Auto keystone now and zoom): the full page's rows minus those, the same views. All settings keeps them.
+     * A section of All settings only (General with its eye protection row) never opens as a popup (popupPage).
      */
     private void tilePopup(String sec) {
         Page full = pages.get(sec), p = popups.get(sec);
         List<FeatureId> keep = spec.popupRowsOf(sec);
-        if (full == null || keep.isEmpty() || keep.equals(spec.rowsOf(sec)) || (p != null && !tilePopups.contains(sec))) return;
+        if (full == null || MenuSpec.allSettingsOnly(sec) || keep.isEmpty() || keep.equals(spec.rowsOf(sec))
+                || (p != null && !tilePopups.contains(sec))) return;
         if (p == null) {
             p = new Page(full.getTitle());
             p.setOnShown(() -> onPageShown(sec));
@@ -697,11 +926,17 @@ public final class MenuController {
         for (View v : full.rows()) {
             FeatureId f = featureOf.get(v);
             if (f != null && !keep.contains(f.parent != null ? f.parent : f)) continue;
-            if (v instanceof HeaderRow && Collections.disjoint(headers.get(v), keep)) continue;
+            if (v instanceof HeaderRow && !keepsTitle((HeaderRow) v, keep)) continue;
             if (lineAbove.containsKey(v) && !rowAbove) continue;                // a line never opens the popup
             if (f != null) rowAbove = true;
             p.add(v);
         }
+    }
+
+    /** A group title stays while a row of its group stays; a module's own title (Extension rows) stays with its rows. */
+    private boolean keepsTitle(HeaderRow h, List<FeatureId> keep) {
+        List<FeatureId> group = headers.get(h);
+        return group == null || !Collections.disjoint(group, keep);
     }
 
     private Page buildRoot() {
@@ -731,7 +966,7 @@ public final class MenuController {
      * the gear). Read again at every open, so another user's or a reset menu shows at once.
      */
     private void loadQuick() {
-        quickCatalog = QuickCatalog.of(spec, this::tilePresent);
+        quickCatalog = QuickCatalog.of(spec, this::tilePresent, this::rowPresent);
         quickDefaults = QuickDefaults.of(spec, this::tilePresent);
         quickJson = quickStore.load();
         quickStored = QuickLayoutJson.parse(quickJson);
@@ -823,10 +1058,41 @@ public final class MenuController {
         int r = MenuLabels.tile(id);
         if (r == 0) r = MenuLabels.title(id);
         if (r == 0) r = MenuLabels.section(id);
-        return s(r);
+        if (r != 0) return s(r);
+        View row = f == null ? null : rows.get(f);         // a row whose name the full menu gives itself
+        return row instanceof Row ? ((Row) row).getTitle() : "";
     }
 
-    private int quickIcon(String id) { return MenuLabels.icon(id); }
+    /** The tree's icon of an item or of the page it is a row of, else the icon of its All settings category. */
+    private int quickIcon(String id) {
+        int r = MenuLabels.icon(id);
+        for (String p = id; r == 0 && p.lastIndexOf('.') > 0; ) r = MenuLabels.icon(p = p.substring(0, p.lastIndexOf('.')));
+        QuickItem it = r != 0 || quickCatalog == null ? null : quickCatalog.get(id);
+        return it == null || it.section == null ? r : MenuLabels.icon(tileOf(it.section));
+    }
+
+    /** A row of All settings the full menu built for this projector (its page there): it can be a tile. */
+    private boolean rowPresent(String id) {
+        FeatureId f = FeatureId.of(id);
+        return f != null && tilePresent(id) && (rows.get(f) instanceof Row || inline.containsKey(f));
+    }
+
+    /** The full menu's row of a quick menu item (the volume's own row once it is used), or null. */
+    private View quickRow(FeatureId f) {
+        return f == FeatureId.SOUND_VOLUME ? volumeRow() : rows.get(f);
+    }
+
+    /** The row can be used now: shown and not greyed (a signal rule, the picture mode, nothing read yet). */
+    private static boolean rowOpen(View row) {
+        return row.getVisibility() == View.VISIBLE && (!(row instanceof Row) || ((Row) row).isRowEnabled());
+    }
+
+    /** The rows a slider tile's strip walks: the page of the full menu that has the row, else the row alone. */
+    private List<View> adjustWalk(View row) {
+        for (Page p : pages.values()) if (p.rows().contains(row)) return p.rows();
+        for (Page p : subPages.values()) if (p.rows().contains(row)) return p.rows();
+        return Collections.singletonList(row);
+    }
 
     /** The panel of an item the user put on the card as a tile (a slider, a mode, the output): its row on a page. */
     private Page quickPage(String key) {
@@ -866,11 +1132,32 @@ public final class MenuController {
         return f != null && (!spec.hasTile(id) || card.tile(id) != null && spec.sliders.stream().anyMatch(t -> t.id.equals(id)));
     }
 
-    /** OK on such an item: an action runs, anything else opens its panel right of the card. */
+    /**
+     * OK on such an item does what OK on its row of the full menu does, through that row (2026-11-24, any
+     * setting as a tile): a switch flips, a choice steps to its next option (held OK: its chooser), a slider opens
+     * the stock three row strip at the bottom, a page, screen or action opens or runs; a row greyed or hidden now
+     * (signal, picture mode) only says so. Items without a row of their own open their panel right of the card.
+     */
     private boolean openQuick(String id) {
         if (!quickItem(id)) return false;
         FeatureId f = FeatureId.of(id);
+        View row = quickRow(f);
+        if (row instanceof Row) {
+            if (!rowOpen(row)) { host.toast(R.string.lumen_qe_unavailable); return true; }
+            if (row instanceof SliderRow) { adjust().startOn(row, adjustWalk(row)); return true; }
+            if (row instanceof ChoiceRow && !((ChoiceRow) row).opensOnCenter()) PageAccess.cycle((ChoiceRow) row);
+            else PageAccess.activate((Row) row);
+            applyQuickValues(state);
+            return true;
+        }
+        if (inline.containsKey(f)) { openPopup(MenuSpec.sectionOf(f)); return true; }   // a radio list of its section
         if (f.kind == FeatureKind.ACTION) { action(f); return true; }
+        return openChooser(id);
+    }
+
+    /** The item's row alone in the panel right of the card (a choice tile's held OK, the light level's panel). */
+    private boolean openChooser(String id) {
+        FeatureId f = FeatureId.of(id);
         Page p = quickPage(id);
         if (p == null) return false;
         card.remember(id);
@@ -889,11 +1176,26 @@ public final class MenuController {
             if (f == null || TILE_VALUES.contains(t.key)) continue;
             String v = st == null ? null : st.get(f);
             CharSequence shown = null;
+            View row = quickItem(t.key) ? rows.get(f) : null;
             if (f == FeatureId.LAMP) shown = boostOn() ? s(R.string.lumen_m_panel_boost) : v;
+            else if (row instanceof Row) shown = rowValue(t, row);   // what the full menu's row shows now
             else if (v != null && f.kind == FeatureKind.SLIDER) shown = v;
             else if (v != null && f.kind == FeatureKind.CHOICE) shown = optionLabel(f, v);
             t.setValue(shown);
         }
+    }
+
+    /** A row's value as its tile shows it, the tile dimmed with the row and lit while a switch is on. */
+    private CharSequence rowValue(QpdTile t, View row) {
+        t.setUsable(rowOpen(row));
+        if (row instanceof ToggleRow) {
+            Boolean on = ((ToggleRow) row).isChecked();
+            t.setActive(Boolean.TRUE.equals(on));
+            return on == null ? null : s(on ? R.string.lumen_on : R.string.lumen_off);
+        }
+        if (row instanceof ChoiceRow) return PageAccess.choiceLabel((ChoiceRow) row);
+        if (row instanceof SliderRow) return PageAccess.sliderLabel((SliderRow) row);
+        return row instanceof NavRow ? ((NavRow) row).getValue() : null;
     }
 
     /** Tiles whose value line applyTiles writes (or that have none). */
@@ -941,6 +1243,9 @@ public final class MenuController {
             return s(r != 0 ? r : MenuLabels.section(g));
         }
         @Override public void toast(int res) { host.toast(res); }
+        @Override public boolean search(String now, java.util.function.Consumer<String> then) {
+            return QuickSearch.open(app, now, then);
+        }
         @Override public void done(boolean store, QuickLayout value) {
             edit = null;
             if (store && !(value == null ? quickStore.clear() : quickStore.save(QuickLayoutJson.write(value)))) {
@@ -988,6 +1293,10 @@ public final class MenuController {
         QpdTile t = new QpdTile(app, id, kind, quickIcon(id), quickTitle(id), () -> safe("tile " + id, () -> onTile(id)));
         if (FeatureId.KEYSTONE_AK_NOW.id.equals(id)) t.setValue(s(R.string.lumen_qpd_autocorrect_value));
         if (FeatureId.EYE.id.equals(id) && eyeHasPopup()) t.setOnLongOk(() -> safe("eye popup", () -> openPopup(id)));
+        View row = FeatureId.of(id) == null ? null : rows.get(FeatureId.of(id));
+        if (row instanceof ChoiceRow && !((ChoiceRow) row).opensOnCenter() && quickItem(id)) {
+            t.setOnLongOk(() -> safe("chooser " + id, () -> { card.remember(id); openChooser(id); }));
+        }
         return t;
     }
 
@@ -1109,6 +1418,13 @@ public final class MenuController {
 
     /** Opens the card, or the popup of a section ("general" = All settings, "lamp" = the light bar). */
     public void show(String section) {
+        if (FeatureId.SETTINGS_HDMI.id.equals(section)) { showHdmiPage(); return; }
+        if (MenuRequest.XGIMI_SYSTEM.equals(section)) { showXgimiSystem(); return; }
+        if (FeatureId.SETTINGS_PARENTAL.id.equals(section)) {   // the parental controls' old address
+            openAll(MenuSpec.GENERAL, null);
+            parental().open();
+            return;
+        }
         if (section != null && spec.hasSection(section) && refusedPage(section)) return;
         show(section, null);
     }
@@ -1205,6 +1521,7 @@ public final class MenuController {
 
     private void openAll(String category, View focusRow) {
         popupUntouched = false;
+        loadFull(false);
         List<QpdPanel.Cat> cats = new ArrayList<>();
         for (String c : spec.allSettings) {
             Page p = pages.get(c);
@@ -1251,9 +1568,13 @@ public final class MenuController {
                 case ZOOM_DIGITAL:
                     if (!dev.open(f, () -> show(null, null))) Log.w(TAG, id + " cannot open now");   // BACK comes back here
                     return;
-                case BLUETOOTH:
-                    if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));
-                    return;
+                case BLUETOOTH:                               // the menu's Bluetooth page, else Android's
+                    if (!setupDone(id)) return;
+                    if (popupPage(id) == null) {
+                        closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));
+                        return;
+                    }
+                    break;
                 case NETWORK:                                 // the popup with the hotspot where it works, else Wi-Fi
                     if (!setupDone(id)) return;
                     if (popupPage(id) == null) {
@@ -1331,11 +1652,18 @@ public final class MenuController {
 
     /** The stock "Custom" entry at the end of a picture mode list while a user mode can still be made. */
     private void customEntry(Page p, boolean popFirst) {
-        if (!has(FeatureId.PICTURE_CUSTOM_NEW) || state != null && state.hidden(FeatureId.PICTURE_CUSTOM_NEW)) return;
-        p.add(new NavRow(app, s(MenuLabels.title(FeatureId.PICTURE_CUSTOM_NEW)), () -> safe("custom new", () -> {
+        if (!has(FeatureId.PICTURE_CUSTOM_NEW)) return;
+        View r = p.add(new NavRow(app, s(MenuLabels.title(FeatureId.PICTURE_CUSTOM_NEW)), () -> safe("custom new", () -> {
             if (popFirst && panel != null) panel.pop();
             action(FeatureId.PICTURE_CUSTOM_NEW);
         })));
+        customEntries.put(p, r);
+        showCustomEntry(r, state);
+    }
+
+    /** The "Custom" entry follows the device's hidden flag live (the X50 family hides it while Dolby Vision plays). */
+    private static void showCustomEntry(View r, MenuState st) {
+        r.setVisibility(st != null && st.hidden(FeatureId.PICTURE_CUSTOM_NEW) ? View.GONE : View.VISIBLE);
     }
 
     private CustomPictures.Host customHost() {
@@ -1369,9 +1697,10 @@ public final class MenuController {
         int focus = -1;
         List<String> opts = listed(f, state);
         Set<String> greyed = SignalRule.greyed(profile, f, state);
+        modeListHead = formatHead(p);
         for (int i = 0; i < opts.size(); i++) {
             final String o = opts.get(i);
-            if (o.equals(cur)) focus = i;
+            if (o.equals(cur)) focus = i + 1;                             // under the format header
             p.add(new CheckRow(app, optionLabel(f, o), o.equals(cur), () -> safe("mode list item", () -> {
                 if (panel != null) panel.pop();
                 choose(f, o);
@@ -1401,7 +1730,14 @@ public final class MenuController {
 
     /** Repaints {@code page} when it is the page shown. */
     public void refreshPage(Page page) {
-        if (panel != null && panel.isShowing() && (page == null || panel.currentPage() == page)) panel.refreshPage();
+        QpdPanel p = panel;
+        if (p != null && p.isShowing() && (page == null || p.currentPage() == page)) repaint.repaint(() -> p.refreshPage());
+    }
+
+    /** Repaints {@code page} when it is the page shown, with the focus on row {@code focus} (-1: where it is). */
+    void refreshPage(Page page, int focus) {
+        QpdPanel p = panel;
+        if (p != null && p.isShowing() && p.currentPage() == page) repaint.repaint(() -> p.refreshPage(focus));
     }
 
     /** Closes the menu and runs {@code r} when its exit animation ended. */
@@ -1506,6 +1842,80 @@ public final class MenuController {
         };
     }
 
+    /**
+     * The Input source page's source list: what the Input tile opens (the device's input popup as a page, else the
+     * Source key's step), so the list exists once.
+     */
+    private void openSources() {
+        if (!setupDone(FeatureId.INPUT.id)) return;
+        Page p = popupPage(FeatureId.INPUT.id);
+        if (p != null) {
+            p.setInitialFocus(-1);
+            push(p);
+            return;
+        }
+        closeThen(() -> { if (!dev.open(FeatureId.INPUT, () -> show(null, null))) Log.w(TAG, "input cannot open now"); });
+    }
+
+    private BtPage btPage;
+    private HdmiPage hdmiPage;
+
+    /**
+     * The HDMI page (HdmiPage, one for every model) on the shown menu, or the menu opened on All settings, Input source
+     * with the page on top (a request from outside: the HDMI app's old settings address, a remote key).
+     */
+    public void showHdmiPage() {
+        if (!setupDone(FeatureId.SETTINGS_HDMI.id)) return;
+        if (hdmiPage == null) hdmiPage = new HdmiPage(app, this::refreshPage);
+        if (panel == null || !panel.isShowing()) openAll(MenuSpec.SOURCE, null);
+        hdmiPage.page.setInitialFocus(-1);
+        push(hdmiPage.page);
+    }
+
+    private ParentalPage parentalPage;
+
+    /** Parental controls (ParentalPage): Lumen Home's state as a page of the menu, the password first. */
+    private ParentalPage parental() {
+        if (parentalPage == null) {
+            parentalPage = new ParentalPage(app, new ParentalPage.Host() {
+                @Override public void push(Page p) { MenuController.this.push(p); }
+                @Override public void pop() { if (panel != null && panel.isShowing()) panel.pop(); }
+                @Override public void refresh(Page p, int focus) { refreshPage(p, focus); }
+                @Override public void confirm(CharSequence t, CharSequence m, CharSequence ok, Runnable yes) {
+                    MenuController.this.confirm(t, m, ok, yes);
+                }
+                @Override public void failed() { host.toast(R.string.lumen_m_toast_failed); }
+            });
+        }
+        return parentalPage;
+    }
+
+    private XgimiSystemPage xgimiPage;
+
+    /**
+     * Back to the XGIMI system (XgimiSystemPage), asked by Settings > About through the old screen's address: the menu
+     * opens on All settings, General, asks the stick's erase warning first (focus on Cancel) and then shows the page.
+     */
+    public void showXgimiSystem() {
+        openAll(MenuSpec.GENERAL, null);
+        confirm(s(R.string.lumen_about_back), s(R.string.lumen_about_erases), s(R.string.lumen_continue), () -> {
+            if (xgimiPage == null) xgimiPage = new XgimiSystemPage(app, this::refreshPage);
+            xgimiPage.page.setInitialFocus(-1);
+            push(xgimiPage.page);
+        });
+    }
+
+    private BtPage bt() {
+        if (btPage == null) {
+            btPage = new BtPage(app, new BtPage.Host() {
+                @Override public void push(Page p) { MenuController.this.push(p); }
+                @Override public void refreshPage() { if (panel != null && panel.isShowing()) panel.refreshPage(); }
+                @Override public void back() { if (panel != null && panel.isShowing()) panel.pop(); }
+            });
+        }
+        return btPage;
+    }
+
     /** The tile's Android settings screen through the shared lumen-system module (its chain of ways), else a note. */
     private void openSystemPage(SettingsPage page) {
         Ui.wakeFromDream(app);
@@ -1527,6 +1937,8 @@ public final class MenuController {
         int sliderDir = !onLamp ? 0 : k == towardsEnd ? 1 : k == towardsStart ? -1 : 0;
         if (down) boostAsk.key(sliderDir);    // any other key drops the Boost question too
         if (edit != null && panel != null && panel.hasSide()) return edit.onKey(ev);   // the pencil editor's keys
+        if (fullEdit != null && panel != null && fullEdit.onKey(ev, panel.currentPage())) return true;   // a row taken in the All settings editor
+        if (adjust().onKey(ev, f)) return true;               // OK on a picture setting: the strip, its UP / DOWN / OK / BACK
         // BACK while an equalizer band is being adjusted only ends adjusting
         if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing() && (k == KeyEvent.KEYCODE_BACK || k == KeyEvent.KEYCODE_ESCAPE)) {
             if (ev.getAction() == KeyEvent.ACTION_UP && !ev.isCanceled()) ((EqBandsRow) f).stopEditing();
@@ -1638,6 +2050,12 @@ public final class MenuController {
     }
 
     private void screen(FeatureId f) {
+        if (FeatureId.SOURCE_LIST == f) { openSources(); return; }
+        if (FeatureId.SETTINGS_HDMI == f) { showHdmiPage(); return; }
+        if (FeatureId.SETTINGS_LICENCES == f) { push(LicencesPage.build(app)); return; }
+        if (FeatureId.MIRROR_DIAG == f) { push(MirrorDiagPage.build(app)); return; }
+        if (FeatureId.SETTINGS_PARENTAL == f) { parental().open(); return; }
+        if (FeatureId.BLUETOOTH_ADD == f) { bt().openSearch(); return; }
         if (MenuSpec.MODULE_SCREENS.contains(f) && ModuleScreens.overMenu(f)) {   // the menu steps aside (KeyTools)
             if (!ModuleScreens.open(app, f)) host.toast(R.string.lumen_m_toast_failed);
             return;
@@ -1655,7 +2073,11 @@ public final class MenuController {
             push(p);
             return;
         }
-        final Runnable back = backToRow(lastSectionOf(f));
+        final String section = lastSectionOf(f);
+        // a screen row of a page inside a section (the X50 dynamic black page's subtitle masks): the panel waits under
+        // the screen (KeyTools) and is back on that page and row by itself, BACK opens nothing, the card only when the
+        // panel is gone by then
+        final Runnable back = section != null ? backToRow(section) : () -> { if (!ours()) show(null, null); };
         if (CLOSE_FIRST.contains(f)) {
             closeThen(() -> { if (!dev.open(f, back)) Log.w(TAG, "screen " + f + " cannot open now"); });
             return;
@@ -1724,9 +2146,10 @@ public final class MenuController {
                 break;
             case FAILED: host.toast(R.string.lumen_m_toast_failed); break;
             case NOT_READY: host.toast(R.string.lumen_m_toast_not_ready); break;
-            case ASK:
+            case ASK:                                                 // the read-back first, the question on top
+                if (r.after != null) apply(r.after); else refresh();  // (an apply after it moved the focus to its OK)
                 if (r.confirm != null && value != null) ask(r.confirm, () -> setConfirmed(f, value));
-                break;
+                return;
             default:
                 if (r.note != null) note(r.note, f);
                 break;
@@ -1775,7 +2198,7 @@ public final class MenuController {
 
     /** Re-reads every value and updates the rows (main thread); an older read arriving late is dropped. */
     public void refresh() {
-        if (applying) return;               // the shown hook of apply()'s own re-render: the values are fresh
+        if (repaint.quiet()) return;        // the shown hook of a repaint (apply(), refreshPage): the values are fresh
         if (!dev.ready()) { apply(null); return; }
         final int gen = ++refreshGen;
         dev.read(st -> {
@@ -1811,7 +2234,8 @@ public final class MenuController {
         boolean usable = ok && !st.disabled(f);
         String val = ok ? st.get(f) : null;
         if (v instanceof ToggleRow) {
-            Boolean on = !ok ? null : switchChoice(f) ? (val == null ? null : "on".equals(val)) : st.on(f);
+            Boolean on = !ok ? null : switchChoice(f) ? (val == null ? null : "on".equals(val))
+                    : switchWithModes(f) ? (val == null ? null : !QpdLayout.OFF.equals(val)) : st.on(f);
             ((ToggleRow) v).setChecked(on);
             ((ToggleRow) v).setRowEnabled(usable && on != null);
         } else if (v instanceof ChoiceRow) {
@@ -1836,6 +2260,11 @@ public final class MenuController {
         boolean ok = st != null;
         for (Map.Entry<FeatureId, View> e : rows.entrySet()) applyRow(e.getKey(), e.getValue(), st);
         for (Map.Entry<FeatureId, List<View>> e : twins.entrySet()) for (View v : e.getValue()) applyRow(e.getKey(), v, st);
+        for (Map.Entry<NavRow, FeatureId> e : entries.entrySet()) {
+            String val = ok ? st.get(e.getValue()) : null;
+            e.getKey().setValue(val == null ? null : optionLabel(e.getValue(), val));
+            if (ok) e.getKey().setVisibility(st.hidden(e.getValue()) ? View.GONE : View.VISIBLE);
+        }
         for (Map.Entry<FeatureId, List<CheckRow>> e : inline.entrySet()) {
             String val = ok ? st.get(e.getKey()) : null;
             List<String> opts = profile.options(e.getKey());
@@ -1847,6 +2276,24 @@ public final class MenuController {
                 if (ok) r.setVisibility(st.hidden(e.getKey()) ? View.GONE : View.VISIBLE);
             }
         }
+        Page relayout = null;
+        for (Map.Entry<FeatureId, List<CheckRow>> e : modes.entrySet()) {
+            String val = ok ? st.get(e.getKey()) : null;
+            boolean on = val != null && !QpdLayout.OFF.equals(val) && !st.hidden(e.getKey());
+            List<String> opts = modeOptions(e.getKey());
+            for (int i = 0; i < e.getValue().size(); i++) {
+                CheckRow r = e.getValue().get(i);
+                r.setChecked(opts.get(i).equals(val));
+                r.setRowEnabled(val != null);
+                int vis = on ? View.VISIBLE : View.GONE;
+                if (r.getVisibility() != vis) { r.setVisibility(vis); relayout = modePages.get(e.getKey()); }
+            }
+        }
+        // only the page of the modes, and only while it is the page on screen (never a question pushed over it)
+        if (relayout != null && panel != null && panel.isShowing() && panel.currentPage() == relayout) panel.refreshPage();
+        CharSequence fmt = formatText(st);
+        for (HeaderRow h : signalHeads) h.setState(fmt);
+        if (modeListHead != null) modeListHead.setState(fmt);
         for (Map.Entry<String, TextRow> e : notes.entrySet()) {
             String t = ok ? st.note(e.getKey()) : null;
             e.getValue().setText(t);
@@ -1870,14 +2317,27 @@ public final class MenuController {
         applyQuickValues(st);
         for (QpdTip t : setupTips) showSetup(t, st);
         if (panel != null && panel.isShowing()) {
-            applying = true;
-            try {
-                // a radio list opened before its value was read lands on the checked row when it arrives
-                panel.refreshPage(QpdLayout.popupFocus(popupUntouched && !panel.isAllMode(), checkedIndex(panel.currentPage()), -1));
-            } finally {
-                applying = false;
-            }
+            QpdPanel p = panel;
+            // a radio list opened before its value was read lands on the checked row when it arrives
+            repaint.repaint(() -> p.refreshPage(QpdLayout.popupFocus(popupUntouched && !p.isAllMode(), checkedIndex(p.currentPage()), -1)));
         }
+        if (adjust != null) adjust.sync();                    // the strip shows the values read back
+    }
+
+    private AdjustMode adjust() {
+        if (adjust == null) adjust = new AdjustMode(app, new AdjustMode.Menu() {
+            @Override public void showStrip(AdjustStrip strip) { if (panel != null) panel.showStrip(strip); }
+            @Override public List<View> pageRows() {
+                Page p = panel == null ? null : panel.currentPage();
+                return p == null ? Collections.emptyList() : p.rows();
+            }
+        }, v -> AdjustMode.adjustableKind(v) && pictureSetting(featureOf.get(v)));
+        return adjust;
+    }
+
+    /** A setting of the picture pages (stock type 54 rows open the adjustment strip), never the light slider. */
+    static boolean pictureSetting(FeatureId f) {
+        return f != null && f != FeatureId.LAMP && f.id.startsWith(MenuSpec.PICTURE + ".");
     }
 
     /** The options a choice lists now: the device's runtime subset, else the profile's. */
@@ -1894,6 +2354,7 @@ public final class MenuController {
 
     /** Options with a stock support list follow the content kind while the menu is open (SignalWatch). */
     private void watchSignal() {
+        if (!signalHeads.isEmpty()) { signal.start(); return; }          // the picture page names the format live
         for (FeatureId f : profile.features()) {
             if (profile.hasSupport(f)) { signal.start(); return; }
         }
@@ -1949,6 +2410,7 @@ public final class MenuController {
 
     private void applyRadios(MenuState st) {
         boolean ok = st != null;
+        for (View r : customEntries.values()) showCustomEntry(r, st);
         String pm = ok ? st.get(FeatureId.PICTURE_MODE) : null;
         List<CheckRow> pr = radios.get(FeatureId.PICTURE_MODE);
         if (pr != null) {
@@ -2089,6 +2551,7 @@ public final class MenuController {
         @Override public boolean onKey(KeyEvent ev) { return MenuController.this.onKey(ev); }
         @Override public void onClosed(QpdPanel p) {
             if (edit != null && panel == p) edit.close();      // closed while editing: as Готово (stored when changed)
+            if (adjust != null && panel == p) adjust.stop();   // closed while adjusting: the strip goes too
             if (p.allCategory() != null) lastAllCat = p.allCategory();
             boostAsk.cancel();
             sliderOff.cancel();

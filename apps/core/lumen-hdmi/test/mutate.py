@@ -11,12 +11,19 @@ G = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..'))
 L = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiLink.java'
 R = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java'
 E = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/EdidModes.java'
-ZH = 'apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java'
-XH = 'apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java'
-X = 'apps/X50Projector/src/org/lumen/x50/projector/'
-GP = 'apps/ProjectorBase/src/org/lumen/projector/game/GameProfile.java'
+ZH = 'apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java'
+XH = 'apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java'
+X = 'apps/LumenProjector/host/activity/src/org/lumen/x50/projector/'
+XA = 'apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/'
+GP = 'apps/LumenProjector/core/src/org/lumen/projector/game/GameProfile.java'
 K = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiAudioKeys.java'
 A = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiAudio.java'
+SO = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceOff.java'
+SF = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java'
+SC_ = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepCec.java'
+SS = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java'
+IS = 'apps/core/lumen-hdmi/src/org/lumen/hdmi/InactiveSleep.java'
+STC = 'apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java'
 
 MUTANTS = [
     # name, file, old (once in the file), new
@@ -46,12 +53,28 @@ MUTANTS = [
      'if (contains(allowed, first)) return first;'),
     ('flip to a foreign version', L, 'if (second != current && contains(allowed, second)) return second;',
      'if (second != current) return second;'),
+    # signal reads only without a stable picture (LR-5WQ7M9, stock xhplayer)
+    ('reads during a stable picture', L, 'return !stable(known);', 'return true;'),
+    ('no read after a lost picture', L, 'return !stable(known);', 'return known == UNKNOWN;'),
+    ('another event type counts as a signal report', L, 'if (type != EVENT_SIGNAL || msg == null) return known;',
+     'if (msg == null) return known;'),
+    ('a message of another name counts', L, 'if (p.length < 2 || !"status".equals(p[0])) return known;',
+     'if (p.length < 2) return known;'),
+    ('an unparsed status reads as no picture', L, '            return known;\n        }\n    }', '            return 1;\n        }\n    }'),
+    ('relink reads on every tick', R, '        if (!HdmiLink.readDue(sKnown)) return;', '        if (false) return;'),
+    ('relink forgets its reads', R, '        sKnown = status;\n', ''),
+    ('relink deaf to the vendor events', R, 'final int s = HdmiLink.afterEvent(HdmiLink.UNKNOWN, type, msg);',
+     'final int s = HdmiLink.UNKNOWN; if (s == 0) HdmiLink.afterEvent(0, type, msg);'),
+    ('Z9X and HB do not hand the events to the relink', 'apps/LumenProjector/core/src/org/lumen/projector/App.java',
+     'AiScenePolicy.addTvEventSink(org.lumen.hdmi.HdmiRelink::onTvEvent);', ''),
+    ('the X50 family does not hand the events to the relink',
+     'apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50AiPq.java',
+     '            org.lumen.hdmi.HdmiRelink.onTvEvent(type, msg);\n', ''),
+    ('relink ticks every 4 s', R, 'static final long TICK_MS = 2_000;', 'static final long TICK_MS = 4_000;'),
     # wiring
-    ('relink not told about sessions', 'apps/ProjectorBase/src/org/lumen/projector/game/HdmiEventReceiver.java',
+    ('relink not told about sessions', 'apps/LumenProjector/core/src/org/lumen/projector/game/HdmiEvents.java',
      'org.lumen.hdmi.HdmiRelink.onSessionEvent(', 'org.lumen.projector.source.HdmiSource.onSessionEvent('),
-    ('relink not installed on the Z9X', 'apps/ProjectorBase/src/org/lumen/projector/App.java',
-     'org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost());', ''),
-    ('relink not installed on the HB', 'apps/HbProjector/src/org/lumen/projector/App.java',
+    ('relink not installed on the Z9X and HB', 'apps/LumenProjector/core/src/org/lumen/projector/App.java',
      'org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost());', ''),
     ('relink not installed on the X50 family', X + 'App.java',
      'org.lumen.hdmi.HdmiRelink.install(this, new X50RelinkHost());', ''),
@@ -70,10 +93,10 @@ MUTANTS = [
     ('X50 host with the beta 7 values', XH, 'EDID_VERSIONS = HdmiHal.EDID.wires();', 'EDID_VERSIONS = new int[] {1, 2};'),
     ('X50 host flips to Enhanced first', XH, 'return HdmiHal.EDID.wire(EdidModes.COMPATIBLE); }',
      'return HdmiHal.EDID.wire(EdidModes.ENHANCED); }'),
-    ('X50 model data HDMI 2.1', X + 'HdmiHal.java', 'EdidModes.of(EdidModes.FEATURE_HDMI_20);',
+    ('X50 model data HDMI 2.1', XA + 'HdmiHal.java', 'EdidModes.of(EdidModes.FEATURE_HDMI_20);',
      'EdidModes.of(EdidModes.FEATURE_HDMI_21);'),
-    ('X50 TV 40 guard off', X + 'Gmpf.java', 'if (!HdmiHal.EDID.writable(v)) {', 'if (false) {'),
-    ('X50 row writes the shown copy again', X + 'HdmiSequences.java',
+    ('X50 TV 40 guard off', XA + 'Gmpf.java', 'if (!HdmiHal.EDID.writable(v)) {', 'if (false) {'),
+    ('X50 row writes the shown copy again', XA + 'HdmiSequences.java',
      'if (HdmiHal.EDID.needsWrite(h.edidVersion(), row)) h.edidVersionSet(HdmiHal.EDID.wire(row));',
      'h.edidVersionSet(row + 1);'),
     # EdidModes: the stock rule
@@ -95,12 +118,12 @@ MUTANTS = [
      'return new int[] {wire(ENHANCED), wire(COMPATIBLE)};'),
     ('X50 host never restores at start', XH, 'public void onConnect(Job j) { run(j); }', 'public void onConnect(Job j) { }'),
     ('X50 host read never answered', XH, '            MAIN.post(() -> onMain.accept(out));\n', ''),
-    ('X50 status of another code', X + 'GmpfCall.java', 'HalCodes.TV_GET_SIGNAL_STATUS, "getSignalStatus"',
+    ('X50 status of another code', XA + 'GmpfCall.java', 'HalCodes.TV_GET_SIGNAL_STATUS, "getSignalStatus"',
      'HalCodes.TV_GET_HDR_TYPE, "getSignalStatus"'),
     ('X50 table row of another code', 'devices/g0111/hal/codes.tsv', 'TV_GET_SIGNAL_STATUS\t106\t', 'TV_GET_SIGNAL_STATUS\t107\t'),
-    ('X50 generated constant of another code', X + 'HalCodes.java', 'TV_GET_SIGNAL_STATUS = 106;', 'TV_GET_SIGNAL_STATUS = 107;'),
-    ('X50 recipe without the module', 'devices/g0155/app/X50Projector.layers', 'module    lumen-hdmi\n', ''),
-    ('a per-app relink copy again', 'apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java',
+    ('X50 generated constant of another code', XA + 'HalCodes.java', 'TV_GET_SIGNAL_STATUS = 106;', 'TV_GET_SIGNAL_STATUS = 107;'),
+    ('X50 recipe without the module', 'devices/_family/mt9681/app/X50Projector.layers', 'module    lumen-hdmi\n', ''),
+    ('a per-app relink copy again', 'apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java',
      'public final class GmpfRelinkHost', 'final class HdmiRelinkCopy { }\npublic final class GmpfRelinkHost'),
     ('relink without the tvinput check', R, 'if (!HdmiLink.relinkNow(noPictureMs, onMs, awake(), streaming, sSessionRelinks, sBootRelinks)) {',
      'if (!HdmiLink.relinkNow(noPictureMs, onMs, awake(), true, sSessionRelinks, sBootRelinks)) {'),
@@ -122,9 +145,9 @@ MUTANTS = [
      's != null && s.plausible(), true);'),
     ('no picture counted as a refusal', GP, '"session".equals(o.refusedKind) || "signal".equals(o.refusedKind)) {',
      '"session".equals(o.refusedKind)) {'),
-    ('Z9X signal status of another code', 'apps/ProjectorBase/src/org/lumen/projector/hal/Z9xCodes.java',
+    ('Z9X signal status of another code', 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Z9xCodes.java',
      '.put(GET_SIGNAL_STATUS, HalCodes.GMPF_GET_SIGNAL_STATUS)', '.put(GET_SIGNAL_STATUS, HalCodes.GMPF_GET_HDMI_INFO)'),
-    ('HB signal status of another call', 'apps/HbProjector/src/org/lumen/projector/hal/HbCodes.java',
+    ('HB signal status of another call', 'apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/HbCodes.java',
      '.put(GET_SIGNAL_STATUS, GmpfCall.GET_SIGNAL_STATUS)', '.put(GET_SIGNAL_STATUS, GmpfCall.GET_HDMI_INFO)'),
     # HdmiAudioKeys: the stock audio HAL keys of the HDMI input
     ('audio key on for another status', K, 'STABLE = "3", UNPLUGGED = "0";', 'STABLE = "2", UNPLUGGED = "0";'),
@@ -138,16 +161,81 @@ MUTANTS = [
      'if (p.length < 2) return;'),
     ('the picture mode event gets a hop', K, 'return type == EVENT_SIGNAL || type == EVENT_HOT_PLUG || type == EVENT_OFF;',
      'return true;'),
-    ('the events never reach the keys', A, 'h.run(source -> HdmiAudioKeys.onTvEvent(type, msg, source, OUT));', ''),
-    ('the Z9X app does not hand the events over', 'apps/ProjectorBase/src/org/lumen/projector/App.java',
+    ('the events never reach the keys', A, 'lane.post(() -> HdmiAudioKeys.onTvEvent(type, msg, sSource, OUT));', ''),
+    # HdmiAudio: the keys at the event, on their own thread (report LR-5WQ7M9), HdmiAudioReplayTest
+    ('every key waits for an input source read', A, 'lane.post(() -> HdmiAudioKeys.onTvEvent(type, msg, sSource, OUT));',
+     'lane.post(() -> { try { sSource.current(); } catch (Exception e) { } '
+     'HdmiAudioKeys.onTvEvent(type, msg, sSource, OUT); });'),
+    ('the delayed key at once on the keys thread', A, 'sLane.postDelayed(() -> send(keyValue), delayMs)',
+     'sLane.post(() -> send(keyValue))'),
+    ('the delayed key 100 ms late', A, 'sLane.postDelayed(() -> send(keyValue), delayMs)',
+     'sLane.postDelayed(() -> send(keyValue), delayMs + 100)'),
+    ('Z9X and HB read the source through the HAL queue', 'apps/LumenProjector/core/src/org/lumen/projector/App.java',
+     'Hal.readNow((g, g2) -> g.getCurrentInputSource())', 'Hal.readQueued((g, g2) -> g.getCurrentInputSource())'),
+    ('the direct read reads nothing', 'apps/LumenProjector/core/src/org/lumen/projector/Hal.java',
+     'return q.run(c.client(), c.client2());', 'return null;'),
+    ('the X50 family has no keys', X + 'App.java',
+     'org.lumen.hdmi.HdmiAudio.install(this, X50RelinkHost.audioSource());', ''),
+    ('the X50 events stop before the keys', XA + 'X50AiPq.java', '            org.lumen.hdmi.HdmiAudio.onTvEvent(type, msg);\n', ''),
+    ('the Z9X and HB app does not hand the events over', 'apps/LumenProjector/core/src/org/lumen/projector/App.java',
      'AiScenePolicy.addTvEventSink(org.lumen.hdmi.HdmiAudio::onTvEvent);', ''),
-    ('the vendor events stop at the AI picture', 'apps/ProjectorBase/src/org/lumen/projector/AiScenePolicy.java',
+    ('the vendor events stop at the AI picture', 'apps/LumenProjector/core/src/org/lumen/projector/AiScenePolicy.java',
      'for (TvEventSink s : EXTRA) s.onTvEvent(type, msg);', ''),
+    # the projector follows the HDMI device being watched when it turns off (SourceOff, SourceFollow)
+    ('follow a source never seen on', SO, 'if (!seenOn || !follow) return false;', 'if (!follow) return false;'),
+    ('follow with the switch off', SO, 'if (!seenOn || !follow) return false;', 'if (!seenOn) return false;'),
+    ('follow on the first standby read', SO, 'CONFIRM_READS = 2;', 'CONFIRM_READS = 1;'),
+    ('follow reads once a minute', SO, 'READ_MS = 5_000;', 'READ_MS = 60_000;'),
+    ('turning to standby is not off', SO, 'else if (p == STANDBY || p == TO_STANDBY) off = true;',
+     'else if (p == STANDBY) off = true;'),
+    ('turning on is not on', SO, 'if (p == ON || p == TO_ON) on = true;', 'if (p == ON) on = true;'),
+    ('follow while another source behind the port is on', SO, '        if (on) {\n            seenOn = true;',
+     '        if (on && !off) {\n            seenOn = true;'),
+    ('a wake keeps the old viewing', SO, 'a wake is a new viewing\n            seenOn = false;\n',
+     'a wake is a new viewing\n'),
+    ('follow twice per viewing', SO, 'if (done) return false;', 'if (false) return false;'),
+    ('an audio system counts as the source', SO, 'return type == 1 || type == 3 || type == 4;', 'return type != 0;'),
+    ('a new viewing keeps the source seen on', SO, '        seenOn = false;\n        offReads = 0;\n        done = false;',
+     '        offReads = 0;\n        done = false;'),
+    ('the sessions do not reach the follow', R, '        SourceFollow.onSession(sApp, port, active);', ''),
+    ('a session older than the process is not followed', R, '                SourceFollow.onSession(app, ports[0], true);\n',
+     ''),
+    ('follow sleeps as a power key', SF, 'PowerManager.GO_TO_SLEEP_REASON_HDMI', 'PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON'),
+    ('follow ignores the switch', SF, 'm.getTvSendStandbyOnSleep() == HdmiControlManager.TV_SEND_STANDBY_ON_SLEEP_ENABLED',
+     'true'),
+    ('follow reads audio systems', SF, '            if (!SourceOff.source(d.getDeviceType())) continue;\n', ''),
+    ('follow while asleep', SF, 'RULE.read(powers, follow, HdmiRelink.awake())', 'RULE.read(powers, follow, true)'),
+    # the TV takes the active source back before the sleep (SleepCec, SleepSource), stock order
+    ('sleep: Active Source with CEC off', SC_, 'return cecOn && hdmiShown;', 'return hdmiShown;'),
+    ('sleep: Active Source from Home too', SC_, 'return cecOn && hdmiShown;', 'return cecOn;'),
+    ('sleep: no Active Source', SC_, 'return cecOn && hdmiShown;', 'return false;'),
+    ('sleep: SleepSource skips the select', SS, '        tvTakesSource(ctx);\n', ''),
+    ('sleep: shown at standby forgotten', SS, 'SourceFollow.shownPort() > 0 || sShownAtStandby', 'SourceFollow.shownPort() > 0'),
+    ('sleep: standby goes to sleep directly', STC,
+     'org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);\n        } catch (Throwable t) {\n            Log.e(TAG, "goToSleep failed: lamp-only',
+     'sPm.goToSleep(SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);\n        } catch (Throwable t) {\n            Log.e(TAG, "goToSleep failed: lamp-only'),
+    ('sleep: no mark at standby enter', STC, 'org.lumen.hdmi.SleepSource.standbyBegins();', ''),
+    ('sleep: the X50 power key without the select', X + 'Standby.java', 'org.lumen.hdmi.SleepSource.tvTakesSource(sApp);', ''),
+    ('sleep: the watched device turning off sleeps directly', SF,
+     'SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_HDMI, 0);',
+     'sApp.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis(), PowerManager.GO_TO_SLEEP_REASON_HDMI, 0);'),
+    # the <Inactive Source> rule behind the family flag (off everywhere)
+    ('inactive: flag on by default (X50 family)', 'apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/projector/Family.java', 'INACTIVE_SOURCE_SLEEP = false;', 'INACTIVE_SOURCE_SLEEP = true;'),
+    ('inactive: the history read without the flag', SF, 'if (port == 0 || !HdmiRelink.inactiveSourceSleep()) return;', 'if (port == 0) return;'),
+    ('inactive: 2.5 s wait', IS, 'WAIT_MS = 5_000;', 'WAIT_MS = 2_500;'),
+    ('inactive: a key sent to the device ignored', IS, 'if (e.opcode == KEY) target = -1;', ''),
+    ('inactive: a projector key ignored', IS, '    public void key() {\n        target = -1;', '    public void key() {\n'),
+    ('inactive: any device behind any port', IS, 'if (e.opcode == INACTIVE && has(behind, e.initiator)) {', 'if (e.opcode == INACTIVE) {'),
+    ('inactive: the device back is ignored', IS, 'else if (e.opcode == ACTIVE\n                    || (', 'else if (('),
+    ('inactive: Text View On ignored', IS, 'e.opcode == IMAGE_VIEW_ON || e.opcode == TEXT_VIEW_ON', 'e.opcode == IMAGE_VIEW_ON'),
+    ('inactive: asleep counts', IS, 'if (!on || !awake) {', 'if (!on) {'),
+    ('inactive: the switch ignored', IS, 'if (!on || !awake) {', 'if (!awake) {'),
+    ('inactive: sleeps on every read after', IS, '        target = -1;\n        return true;', '        return true;'),
 ]
 
 COPY = ['apps/core/lumen-hdmi', 'apps/sdk/framework-full-headers.jar'] + ['devices/%s.layers' % r for r in (
-    'horse_popular/app/Z9xProjector', 'goat_elegant/app/HbProjector', 'g0111/app/X50Projector', 'g0100/app/X50Projector',
-    'g0155/app/X50Projector', 'h0061/app/X50Projector', 'h0062/app/X50Projector', 'h0063/app/X50Projector')]
+    'horse_popular/app/Z9xProjector', 'goat_elegant/app/HbProjector', '_family/mt9681/app/X50Projector',
+    )]
 
 
 def main():

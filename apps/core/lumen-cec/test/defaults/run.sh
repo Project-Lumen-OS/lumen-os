@@ -10,6 +10,7 @@ G=$(cd "$HERE/../../.." && pwd)
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d "${TMPDIR:-/tmp}/cecdefaults.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
+G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 AJ=${ANDROID_SDK:-$HOME/Library/Android/sdk}/platforms/android-34/android.jar
 HJ=$G/apps/sdk/framework-full-headers.jar
 C=$HERE/src/org/lumen/cec

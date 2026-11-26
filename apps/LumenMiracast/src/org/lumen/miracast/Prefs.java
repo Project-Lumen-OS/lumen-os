@@ -18,6 +18,8 @@ final class Prefs {
     static final String NAME = "name";
     static final String QUALITY = "quality";
     static final String NOTIF_ASKED = "notif_asked";
+    /** Build.FINGERPRINT of the system on which the link died after an accepted connection (P2pHealth). */
+    static final String CONNECT_BROKEN = "connect_broken_build";
 
     static final boolean DEF_ENABLED = true;
     static final boolean DEF_ASK = true;

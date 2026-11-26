@@ -51,6 +51,15 @@ public final class MediaPath {
     }
 
     /**
+     * The digital output format at an ARC connect (the HAL may have reset it): only while the media already plays on
+     * ARC (confirmed path) and nothing sent it since ARC came; otherwise the switch start to ARC sends it (stock).
+     * evleo790 LR-5MVYWT 18:23:40: the switch start 0 -> 2 sent pcm at .167, the ARC connect sent it again at .177.
+     */
+    public static boolean formatOnArc(int confirmed, boolean sentSinceArc) {
+        return confirmed == ARC && !sentSinceArc;
+    }
+
+    /**
      * The stock switch start (setXgimiPathForDeviceDelay: xgimi_audiopath_switch_start=P, 59(100) and the digital format
      * at once) on every change from a path reported before to another one; nothing for the first report of a process.
      */

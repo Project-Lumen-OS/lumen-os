@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">التبديل إلى HDMI تلقائيًا عند توصيل جهاز</string>
+    <string name="lumen_m_hdmi_return_home">الرجوع إلى الشاشة الرئيسية عند فصل المصدر</string>
+    <string name="lumen_m_hdmi_boot_source">المصدر عند التشغيل</string>
+    <string name="lumen_m_hdmi_boot_note">إذا شغّل جهاز ما جهاز العرض عبر HDMI-CEC، يُفتح مدخله بدلًا من ذلك.</string>
+    <string name="lumen_m_hdmi_inputs">المداخل</string>
+    <string name="lumen_m_hdmi_none">لم يتم العثور على مداخل HDMI</string>
+</resources>

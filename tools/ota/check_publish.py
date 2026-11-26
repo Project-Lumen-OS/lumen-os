@@ -78,7 +78,9 @@ def token_hits(data):
 
 
 PERSONAL = [
-    (re.compile(rb"\b(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b"), "private IPv4 address"),
+    # 10.0.2.2 is the Android emulator's fixed address of the host computer (the same on every machine)
+    (re.compile(rb"\b(?!10\.0\.2\.2\b)(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b"),
+     "private IPv4 address"),
     (re.compile(rb"\bfd[0-9a-f]{2}:[0-9a-f:]+"), "private IPv6 address"),
     (re.compile(rb"(?<![\w.])/(Users|home)/[A-Za-z][A-Za-z0-9_.-]*/"), "absolute home path"),
     (re.compile(rb"/private/tmp/" + rb"claude"), "scratch path"),

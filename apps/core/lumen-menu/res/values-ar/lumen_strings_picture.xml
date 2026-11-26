@@ -4,20 +4,9 @@
      optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
      the Z9X app's pro_* and panel_reset texts with their translations -->
 <resources>
-    <string name="lumen_m_gamma">غاما</string>
-    <string name="lumen_m_gamma_manual">يدوي</string>
-    <string name="lumen_m_gamma_index">قيمة غاما</string>
-    <string name="lumen_m_noise">تقليل التشويش</string>
-    <string name="lumen_m_local_contrast">التباين المحلي</string>
-    <string name="lumen_m_color_opt">تحسين الألوان</string>
-    <string name="lumen_m_hdr_mapping">تعيين نغمات HDR الديناميكي</string>
     <string name="lumen_m_ct_balanced">متوازنة</string>
     <string name="lumen_m_elder_color">ألوان لكبار السن</string>
     <string name="lumen_m_gamma_refused">قيمة غاما تعمل فقط مع غاما اليدوية</string>
     <string name="lumen_m_hdr10_only">يعمل فقط مع محتوى HDR10</string>
-    <string name="lumen_m_reset">إعادة ضبط</string>
     <string name="lumen_m_picture_reset_all_msg">ستعود إعدادات جميع أوضاع الصورة إلى القيم الافتراضية. هل تريد المتابعة؟</string>
-    <string name="lumen_m_level_low">منخفض</string>
-    <string name="lumen_m_level_medium">متوسط</string>
-    <string name="lumen_m_level_high">مرتفع</string>
 </resources>

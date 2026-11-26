@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_power_key_short">Pulsación corta del botón de encendido</string>
+    <string name="lumen_m_power_key_menu">Menú de encendido</string>
+</resources>

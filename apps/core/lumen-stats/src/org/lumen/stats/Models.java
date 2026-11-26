@@ -10,12 +10,29 @@ final class Models {
     static String codename(String xgimiModel) {
         switch (xgimiModel == null ? "" : xgimiModel.trim()) {
             case "G0058": return "dragon_healthy";
+            case "G0063": return "g0063";
+            case "G0067": return "g0067";
+            case "G0077": return "g0077";
+            case "G0078": return "g0078";
+            case "G0079": return "g0079";
             case "G0082": return "horse_popular";
+            case "G0086": return "g0086";
+            case "G0087": return "g0087";
+            case "G0088": return "g0088";
+            case "G0089": return "g0089";
             case "G0100": return "g0100";
+            case "G0104": return "g0104";
+            case "G0109": return "g0109";
+            case "G0110": return "g0110";
             case "G0111": return "g0111";
+            case "G0114": return "g0114";
+            case "G0115": return "g0115";
+            case "G0124": return "g0124";
+            case "G0125": return "g0125";
             case "G0130": return "goat_elegant";
             case "G0148": return "goat_elegant";
             case "G0155": return "g0155";
+            case "G0170": return "g0170";
             case "H0061": return "h0061";
             case "H0062": return "h0062";
             case "H0063": return "h0063";

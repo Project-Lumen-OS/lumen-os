@@ -19,6 +19,14 @@ Providers in Russia shape GitHub per connection (a Z9X on 5 GHz Wi-Fi, 2026-11-1
 in which a connection failed and a window without data decide nothing. A connection that runs out of work takes the
 back half of the largest range left (`Segments`), so all of them stay busy to the last byte.
 
+The last ranges are too small to halve (under 4 MB). A connection without work used to end there, so one slow
+connection kept the end of the file alone: an HB beta23 -> beta24 OTA stood at "518 MB of 520 MB, 22 kB/s" for 2-3
+minutes. Bench on builder-llm (real GitHub, beta24 HB OTA, 1.1 MB/s per connection, the third CDN tunnel at 22 KB/s):
+the old code had 3.8 MB left on that one connection after 79 s and needed 246 s in all, now the whole file takes 77 s,
+same sha256. A connection without work now stays and takes over the whole unread rest of the range that would end
+last, once that range's own connection has had it for 2 s, is less than half as fast and would need more than 2 s
+more. The slow one ends at its last written byte, so nothing is fetched twice.
+
 The data goes to `<file>.part`, the missing ranges to `<file>.part.state` (the caller's key, the sha256 of the file it
 expects, the size, the ETag, one `pos end` line per range), written after an fsync of the data every 2 s and at every
 stop, so a network loss, a pause or a restart continues each range where it stopped. A state file of another key or
@@ -47,10 +55,11 @@ after a growing pause while the others go on; a round fails only when no data ca
 ## Tests
 
 - `test/run.sh`: the module compiles with the JDK alone, then `DownloadTest` against a local GitHub-like server
-  (redirect to a link that expires, Range with ETag and If-Range, a throttle per connection, cut connections, a
-  server without Range, a file that changes on the server, a legacy prefix, 404). Its `Server` and helpers are public
+  (redirect to a link that expires, Range with ETag and If-Range, a throttle per connection, one crawling connection
+  at the end, cut connections, a server without Range, a file that changes on the server, a legacy prefix, 404). Its `Server` and helpers are public
   for the apps' own download tests (the updater's `PackageDownloadTest`).
-- `test/mutate.py`: mutants of the ranges, the renew, If-Range, resume, the fallback and the scaler.
+- `test/mutate.py`: mutants of the ranges, the takeover of a slow end, the renew, If-Range, resume, the fallback and
+  the scaler.
 - `test/bench/run.sh URL SIZE SHA256` (on a builder, never on the Mac): one connection, then the parallel download of a
   real release asset through `throttle_proxy.py` (RATE bytes/s per connection, default 1.1 MB/s). On builder-llm at
   1.1 MB/s per connection: one connection 1.15 MB/s, the parallel download 8.1 MB/s on average over a whole beta OTA,

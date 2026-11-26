@@ -82,7 +82,9 @@ if reg["hal_app"] != "apps/" + name or reg["hal_check"] != "aidl-table" \
     bad.append("registry: hal_app %s hal_check %s hal_allowed %s" % (reg["hal_app"], reg["hal_check"], reg.get("hal_allowed")))
 if h["staged"] != "stage/%s.apk" % name:
     bad.append("HAL_APP staged %s" % h["staged"])
-conf = dict(l.rstrip("\n").split("=", 1) for l in open(os.path.join(G, "devices/g0111/build.conf")) if "=" in l and not l.startswith("#"))
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import layered
+conf = layered.effective(os.path.join(G, "devices/g0111/build.conf"))
 if conf.get("stage_dir") != "build/g0111/stage" or "devices/g0111/image/x50_apk_check.py" not in conf.get("tools", "").split():
     bad.append("build.conf does not stage x50_apk_check.py and build/g0111/stage")
 comp = open(os.path.join(G, "devices/g0111/image/steps.tsv"), encoding="utf-8").read()

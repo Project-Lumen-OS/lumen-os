@@ -4,13 +4,13 @@
      image_set_mode_constrast_ratio_text, image_clarity_text, brightness_more_text, image_mode_prof_setting_text,
      image_mode_vibrant_correct_text; the stock texts where the stock build has the language) -->
 <resources>
-    <string name="lumen_m_hdr_projector_brightness">Projection Brightness</string>
+    <string name="lumen_m_hdr_projector_brightness">Projection brightness</string>
     <string name="lumen_m_hdr_image">Picture</string>
     <string name="lumen_m_hdr_basic">Basic</string>
     <string name="lumen_m_hdr_colour">Color</string>
     <string name="lumen_m_hdr_contrast">Contrast</string>
     <string name="lumen_m_hdr_clarity">Clarity</string>
     <string name="lumen_m_hdr_image_more">More</string>
-    <string name="lumen_m_picture_settings">Professional Settings</string>
-    <string name="lumen_m_black_tuning">Dynamic Black Level Tuning</string>
+    <string name="lumen_m_picture_settings">Professional settings</string>
+    <string name="lumen_m_black_tuning">Dynamic black level tuning</string>
 </resources>

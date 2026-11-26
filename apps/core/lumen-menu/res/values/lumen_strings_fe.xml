@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">Edit “All settings”</string>
+    <string name="lumen_fe_show_hint">OK: show or hide a row</string>
+    <string name="lumen_fe_order">Change the order</string>
+    <string name="lumen_fe_move_hint">OK takes a row. Up and down move it inside its group. OK or Back puts it down.</string>
+    <string name="lumen_fe_backup">@string/lumen_backup_of_the_menus_and</string>
+</resources>

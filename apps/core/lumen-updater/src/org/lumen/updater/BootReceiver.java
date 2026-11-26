@@ -49,6 +49,8 @@ public final class BootReceiver extends BroadcastReceiver {
             Log.i(Ota.TAG, "result '" + st.lastResult() + "' of build '" + st.lastResultBuild() + "' dropped: running " + now);
             st.setLastResult("");
         }
+        // an offer saved on an older build (the unit was updated another way meanwhile) is never shown as an update
+        if (target.isEmpty()) Checker.dropStaleOffer(c, "boot");
         UpdateState s = st.state();
         BootVerdict b = Outcome.afterBoot(target, st.pendingFrom(), st.pendingVersion(), now, Ota.currentVersion(),
                 s == UpdateState.READY, s == UpdateState.INSTALLING, ota, Engine::isNeedReboot);

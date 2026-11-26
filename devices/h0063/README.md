@@ -18,7 +18,7 @@ V1.2.99 have the X50 kernel, kernel config, boot ramdisk, fstab, boot HAL, super
   entry is trial only on every stock version (no installer.conf).
 - HAL: the X50 apps and allow lists unchanged, `org.lumen.hal.GmpfModel` row with `GmpfHash.TITAN_RULE` (the X50 rule plus
   the v1.2.99 hash ad74d059 on exactly v1.2.99). The v1.2.99 table `devices/h0062/research/aidl_codes_v1299.tsv` is the
-  v1.2.64 table plus 20 appended methods, none of them ours. Blobs: set `x50-v1264-b` (the v1.2.99 eye-protection pair).
+  v1.2.64 table plus 20 appended methods, none of them ours. Blobs: set `x50-v1264-c` (the v1.2.99 eye-protection pair).
 - Menu: `menu.json` follows the stock tree (product dianahypro, the Max tree dianahymax is the same bytes): the X50 Ultra Max's rows with the light level, the iris and the DLP dynamic black (`StockLight`, the stock tree has them), picture
   modes standard / movie / sport / Filmmaker / ISF day / ISF night / performance (`ModelMenu.TITAN`, ids 35 29 9 27 38 39 5).
 - `app/*.layers`: the recipes of devices/g0100/app with this profile.

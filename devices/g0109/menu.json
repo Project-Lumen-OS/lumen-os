@@ -1,0 +1,20 @@
+{
+  "include": "devices/_family/mira/mira.menu.json",
+  "device": "g0109",
+  "model": "G0109",
+  "note": "XGIMI MIRA 4K (G0109, Product_bollywood, MIRA line): its stock settings tree (settings_tree_product_bollywood, newsettings 6.03.00.105 of v1.3.1) against the G0155 tree is the line's (devices/_family/mira/mira.menu.json); facts research/stock_v131.tsv.",
+  "features": {
+    "network.hotspot": {
+      "name": "Lumen MIRA 4K",
+      "iface": "ap0"
+    }
+  },
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_bollywood projection_screen (G0109 V1.3.1, official FULL OTA)"
+    },
+    "picture": {
+      "stock": "settings_tree_product_bollywood image (G0109 V1.3.1, official FULL OTA)"
+    }
+  }
+}

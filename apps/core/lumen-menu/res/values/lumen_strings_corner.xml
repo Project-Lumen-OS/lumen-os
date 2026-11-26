@@ -2,12 +2,12 @@
 <!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
-    <string name="lumen_corner_title">Fine corner adjustment</string>
+    <string name="lumen_corner_title">@string/lumen_fine_corner_adjustment</string>
     <string name="lumen_corner_circle">Adjust until the circle in the middle is round</string>
-    <string name="lumen_corner_keys_move">Arrows: move the corner · OK: next corner</string>
+    <string name="lumen_corner_keys_move">@string/lumen_arrows_move_the_corner_ok</string>
     <string name="lumen_corner_keys_more">Hold the gear key: reset · Back: done</string>
-    <string name="lumen_corner_tl">Top left</string>
-    <string name="lumen_corner_tr">Top right</string>
-    <string name="lumen_corner_br">Bottom right</string>
-    <string name="lumen_corner_bl">Bottom left</string>
+    <string name="lumen_corner_tl">@string/lumen_top_left</string>
+    <string name="lumen_corner_tr">@string/lumen_top_right</string>
+    <string name="lumen_corner_br">@string/lumen_bottom_right</string>
+    <string name="lumen_corner_bl">@string/lumen_bottom_left</string>
 </resources>

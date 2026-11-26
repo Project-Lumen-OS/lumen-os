@@ -1,0 +1,33 @@
+# Property edits of every RS30 family trial image (devices/g0155/image/steps.tsv, devices/g0111/image/x50_props.py; format
+# in devices/g0111/image/x50_prop.txt). Base: lineage_gsi_tv_arm eng.root.20261112.004111 (base.sha256). Every test
+# build has its own identity: Android re-runs the default permission grants and rescans packages only when the
+# fingerprint differs from the one stored in /data. One file for every model of the family: @NAME@, @TAGP@, @CODENAME@ and
+# @MODEL@ are the model's build.conf var.NAME, var.TAGP, codename and var.MODEL (the recipe passes them to x50_props.py).
+[system]
+ro.product.system.model=@NAME@
+ro.build.display.id=Lumen OS @TAGP@-@V@ (AP2A.240905.003, @BID@, test)
+ro.build.version.incremental=eng.root.20261112.004111.@TAGP@@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261112.004111.@TAGP@@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm/generic:14/AP2A.240905.003/eng.root.20261112.004111.@TAGP@@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
+# test image: adb over the network with no key prompt (the USB port stays in host mode)
+ro.adb.secure=0
+[product]
+ro.product.product.model=@NAME@
++bluetooth.device.default_name=@NAME@
+# the USB port stays in host mode as on stock (vendor init.mt9681.usb.rc runs usb_otg_agent device on adb, the
+# ToF module and the USB-A port sit on that controller); adb comes over the network (x50_netadb.rc)
++persist.sys.usb.config=mtp
+# a TV, as stock (the GSI says emulator)
+ro.build.characteristics=tv
++service.adb.tcp.port=5555
++ro.lumen.version=@TAGP@-@V@
++ro.lumen.device=@CODENAME@
++ro.lumen.model=@MODEL@
++ro.lumen.models=@MODEL@
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-@TAGP@-@V@-@BID@
++ro.lumen.base_build_id=lineage-21-gsi_tv_arm-uffd-20261112

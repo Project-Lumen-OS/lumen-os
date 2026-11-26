@@ -1,7 +1,7 @@
 #!/bin/sh
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # compare_hal_api.sh: the public members of the Z9X and HB hal clients must be equal,
-# except the device calls listed below. Builds apps/ProjectorBase and apps/HbProjector into a scratch dir with the
+# except the device calls listed below. Builds apps/LumenProjector/core and apps/HbProjector into a scratch dir with the
 # test key of apps/sdk (nothing is written into the tree), then compares javap -public of GmpfClient, Gmpf2Client
 # and KstPoint with their public nested types.
 #

@@ -4,6 +4,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC غير متاح'
@@ -18,6 +20,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недаступны'
@@ -32,6 +36,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC ist nicht verfügbar'
@@ -46,6 +52,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -78,6 +86,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -91,6 +101,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -102,6 +114,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -115,6 +129,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -128,6 +144,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -265,6 +283,8 @@
   [x50-menu-d] hdmi.setHdmiCecEnabled(1)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Could not do that"
   page 'HDMI-CEC'
@@ -279,6 +299,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     TextRow 'HDMI-CEC is not available'
@@ -290,6 +312,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     TextRow 'HDMI-CEC is not available'
@@ -303,6 +327,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
@@ -333,6 +359,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
@@ -344,6 +372,8 @@
   [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=true}
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [main] toast "Could not do that"
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -355,6 +385,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
@@ -367,6 +399,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -399,6 +433,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -412,6 +448,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -423,6 +461,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -468,6 +508,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -481,6 +523,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -492,6 +536,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -505,6 +551,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -537,6 +585,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -550,6 +600,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -561,6 +613,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -574,6 +628,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -589,6 +645,8 @@
   [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Could not do that"
   page 'HDMI-CEC'
@@ -604,6 +662,8 @@
   [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Could not do that"
   page 'HDMI-CEC'
@@ -617,6 +677,8 @@
   [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Could not do that"
   page 'HDMI-CEC'
@@ -629,6 +691,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC is not available'
@@ -643,6 +707,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC no está disponible'
@@ -657,6 +723,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC n’est pas disponible'
@@ -671,6 +739,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC non è disponibile'
@@ -685,6 +755,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC は使用できません'
@@ -699,6 +771,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC қолжетімсіз'
@@ -713,6 +787,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC를 사용할 수 없습니다'
@@ -727,6 +803,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC jest niedostępne'
@@ -741,6 +819,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'O HDMI-CEC não está disponível'
@@ -755,6 +835,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'O HDMI-CEC não está disponível'
@@ -769,6 +851,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -801,6 +885,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -814,6 +900,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -825,6 +913,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -838,6 +928,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -851,6 +943,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_MASTER=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -988,6 +1082,8 @@
   [x50-menu-d] hdmi.setHdmiCecEnabled(1)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Не удалось выполнить"
   page 'HDMI-CEC'
@@ -1002,6 +1098,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     TextRow 'HDMI-CEC недоступен'
@@ -1013,6 +1111,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     TextRow 'HDMI-CEC недоступен'
@@ -1026,6 +1126,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
@@ -1056,6 +1158,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
@@ -1067,6 +1171,8 @@
   [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=true}
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [main] toast "Не удалось выполнить"
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1078,6 +1184,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
@@ -1090,6 +1198,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1122,6 +1232,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1135,6 +1247,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1146,6 +1260,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1191,6 +1307,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1204,6 +1322,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1215,6 +1335,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1228,6 +1350,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1260,6 +1384,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_WAKE=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1273,6 +1399,8 @@
   [x50-menu-d] prefs z9x_cec cec_user_SWITCH=true
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1284,6 +1412,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1297,6 +1427,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1312,6 +1444,8 @@
   [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Не удалось выполнить"
   page 'HDMI-CEC'
@@ -1327,6 +1461,8 @@
   [x50-menu-d] hdmi.setTvWakeOnOneTouchPlay(0)
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Не удалось выполнить"
   page 'HDMI-CEC'
@@ -1340,6 +1476,8 @@
   [x50-menu-d] provider org.lumen.tvinput.hdmistate set_cec_pref cec_one_touch_play {value=false}
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   [main] toast "Не удалось выполнить"
   page 'HDMI-CEC'
@@ -1352,6 +1490,8 @@
   [test] ~ shown again
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступен'
@@ -1366,6 +1506,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC kullanılamıyor'
@@ -1380,6 +1522,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC недоступний'
@@ -1394,6 +1538,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow 'HDMI-CEC 不可用'
@@ -1408,6 +1554,8 @@
   [test] ~ shown
   [x50-menu-d] hdmi.getHdmiCecEnabled()
   [x50-menu-d] hal.getCecWakeUpState()
+  [x50-menu-d] hdmi.getTvSendStandbyOnSleep()
+  [x50-menu-d] hdmi.getTvWakeOnOneTouchPlay()
   [x50-menu-d] provider org.lumen.tvinput.hdmistate get_cec_prefs
   page 'HDMI-CEC'
     (gone) TextRow '無法使用 HDMI-CEC'

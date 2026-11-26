@@ -2,7 +2,6 @@
 <!-- 3D: stock XGIMI settings has no texts in this language (it shows English): Lumen's own words, the stock
      order and meaning. The tile name and the summary are Lumen's. -->
 <resources>
-    <string name="lumen_m_3d">3D</string>
     <string name="lumen_m_3d_title">3D параметрлері</string>
     <string name="lumen_m_3d_off">3D өшіру</string>
     <string name="lumen_m_3d_sbs">Қатар</string>

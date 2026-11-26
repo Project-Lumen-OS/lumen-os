@@ -4,11 +4,16 @@
 
     apex_sign.py run IN.tar OUTDIR [--keys ~/.lumen-keys] [--builder user@host] [--ssh-key KEY]
                      [--remote-tar PATH] [--remote-dir z9x/out/apex_work] [--remote-tools z9x/tools/sign]
+                     [--remote-host-bin PATH] [--swap MEMBER:INNER=FILE@OLDSHA256 ...]
     apex_sign.py verify OUTDIR [--keys ~/.lumen-keys]
 
 The result, OUTDIR/final/<member> + OUTDIR/apex_signed.json, is consumed by
 `sign_tar.py IN.tar OUT.tar --apex-dir OUTDIR`, which puts the APEXes into the tar, re-signs the /system
 APKs and checks everything again. Policy: docs/keys.md#apex; keys: keymap.json "apex" + gen_keys.sh.
+--swap replaces one more payload file of an APEX (not an APK, e.g. javalib/service-wifi.jar rebuilt with
+lineage/patches/wifi): the laptop checks the file it replaces against OLDSHA256 and the new one against the Mac's
+sha256, rebuilds the payload with it, and the APEX is signed like every repacked one. --remote-host-bin names the
+LineageOS host tools on the laptop (relative to its home) when ~/lineage/out has none.
 
 The work is split so that no private key ever leaves this Mac:
 
@@ -44,6 +49,7 @@ import concurrent.futures as cf
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -126,6 +132,7 @@ class Remote:
     def __init__(self, a):
         self.host, self.key = a.builder, a.ssh_key
         self.dir, self.tools, self.tar = a.remote_dir, a.remote_tools, a.remote_tar
+        self.host_bin = getattr(a, "remote_host_bin", None)
         self.ssh = ["ssh", "-i", self.key, "-o", "BatchMode=yes", self.host]
         self.rsync = ["rsync", "-e", f"ssh -i {self.key} -o BatchMode=yes",
                       "--rsync-path=nice -n 19 ionice -c3 rsync"]
@@ -154,9 +161,12 @@ class Remote:
             time.sleep(10)
         die("the laptop stays hot")
 
+    def env(self):
+        return f"ANDROID_HOST_BIN=$HOME/{self.host_bin} " if getattr(self, "host_bin", None) else ""
+
     def laptop(self, args):
         self.thermal()
-        self.sh(f"cd ~ && nice -n 10 ionice -c3 python3 {self.tools}/apex_laptop.py {args}")
+        self.sh(f"cd ~ && {self.env()}nice -n 10 ionice -c3 python3 {self.tools}/apex_laptop.py {args}")
 
 
 class Local(Remote):
@@ -357,6 +367,20 @@ def cmd_run(a):
                               "old_sha256": apexlib.sha256_file(f), "new_sha256": apexlib.sha256_file(dst),
                               "new_cert_sha256": rel[key]["sha256"]})
             o.write(f"{n}\t{ip}\t{i['package']}\t{i['shared_uid'] or '-'}\t{i['signers'][0][0][:16]}\t{key}\t{why}\n")
+    for sw in a.swap or []:
+        m = re.fullmatch(r"([^:]+):([^=]+)=(.+)@([0-9a-f]{64})", sw)
+        if not m or m.group(1) not in plan["apex"] or m.group(2).endswith(".apk") or not os.path.isfile(m.group(3)):
+            die(f"--swap {sw!r}: MEMBER:INNER=FILE@OLDSHA256 with a member of the tar, a payload file that is not an "
+                f"APK and an existing FILE")
+        n, ip, f, old = m.groups()
+        dst = os.path.join(out, "apks", n, ip)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copyfile(f, dst)
+        v = plan["apex"][n]
+        v["repack"] = True
+        v.setdefault("files", []).append({"inner": ip, "file": os.path.relpath(dst, os.path.join(out, "apks")),
+                                          "old_sha256": old, "new_sha256": apexlib.sha256_file(dst)})
+        log(f"swap {n}!{ip}: {old[:16]} -> {apexlib.sha256_file(dst)[:16]}")
     json.dump(plan, open(os.path.join(out, "plan.json"), "w"), indent=1)
 
     r = Local(a) if a.local else Remote(a)
@@ -519,7 +543,7 @@ def cmd_run(a):
     r.push(os.path.join(out, "plan.json"), f"{r.dir}/")
     r.push(os.path.join(out, "final") + "/", f"{r.dir}/final/")
     r.thermal()
-    rc = r.sh(f"cd ~ && nice -n 10 ionice -c3 python3 {r.tools}/apex_laptop.py verify --tar {r.tar} "
+    rc = r.sh(f"cd ~ && {r.env()}nice -n 10 ionice -c3 python3 {r.tools}/apex_laptop.py verify --tar {r.tar} "
               f"--plan {r.dir}/plan.json --final {r.dir}/final --out {r.dir}/verify", check=False)
     r.pull(f"{r.dir}/verify/verify.json", os.path.join(rd, "laptop_verify.json"))
     ver = json.load(open(os.path.join(rd, "laptop_verify.json")))
@@ -538,7 +562,7 @@ def cmd_run(a):
         manifest["apex"][n].update(orig_sha256=v["sha256"], sha256=v["final_sha256"], file="final/" + n,
                                    apks=[{x: k[x] for x in ("inner", "package", "shared_uid", "key", "old_sha256",
                                                             "new_sha256", "new_cert_sha256")} for k in v["apks"]],
-                                   laptop_verify=ver["apex"][n])
+                                   files=v.get("files", []), laptop_verify=ver["apex"][n])
     json.dump(manifest, open(os.path.join(out, "apex_signed.json"), "w"), indent=1)
     with open(os.path.join(rd, "apex_signed.tsv"), "w") as o:
         o.write("# member\tkind\trepacked\tAPKs re-signed\tcontainer cert\tpayload key (avbpubkey sha256)\troot digest\tsha256\n")
@@ -628,6 +652,9 @@ def main():
     p.add_argument("--remote-dir", default="z9x/out/apex_work")
     p.add_argument("--remote-tools", default="z9x/tools/sign")
     p.add_argument("--keep-remote", action="store_true")
+    p.add_argument("--remote-host-bin", help="LineageOS host tools on the laptop (path relative to its home)")
+    p.add_argument("--swap", action="append", metavar="MEMBER:INNER=FILE@OLDSHA256",
+                   help="replace one more payload file (not an APK) of that APEX")
     p.add_argument("--local", metavar="DIR", help="self-builds: run the laptop steps on this machine, in DIR")
     p.add_argument("--jobs", type=int, default=min(6, os.cpu_count() or 2))
     p = sub.add_parser("verify")
@@ -640,7 +667,7 @@ def main():
                 return cmd_run(a)
             if not a.builder:
                 die("--builder user@host (or BUILDER) is needed: payload rebuild and compression run on the laptop")
-            for x in (a.remote_dir, a.remote_tools, a.remote_tar):
+            for x in (a.remote_dir, a.remote_tools, a.remote_tar) + ((a.remote_host_bin,) if a.remote_host_bin else ()):
                 if not x or x.startswith("/") or ".." in x.split("/") or any(c in x for c in " '\"$;&|`"):
                     die(f"remote path {x!r}: give a plain path relative to the laptop home")
             return cmd_run(a)

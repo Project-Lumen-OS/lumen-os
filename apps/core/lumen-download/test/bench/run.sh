@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # Real GitHub through a per-connection throttle (throttle_proxy.py, RATE bytes/s per connection, default 1.1 MB/s as
 # measured on a projector in Russia): one connection for ONE_S seconds, then the shared parallel download of the whole
-# asset with a spoiled CDN link after 5 s (+403), then its sha256 against the manifest. Downloads the asset about
+# asset with a spoiled CDN link after 5 s (+403), then its sha256 against the manifest. SLOW_NTH=3 SLOW_RATE=22528
+# makes the third CDN tunnel crawl at 22 KB/s (the end of an HB download on 2026-11-24). Downloads the asset about
 # once, writes only a temp dir. Run on a builder, never on the Mac:
-#   [ONE_S=0] [RATE=bytes/s] sh apps/core/lumen-download/test/bench/run.sh URL SIZE SHA256
+#   [ONE_S=0] [RATE=bytes/s] [SLOW_NTH=n SLOW_RATE=bytes/s] sh apps/core/lumen-download/test/bench/run.sh URL SIZE SHA256
 set -eu
 HERE=$(cd "$(dirname "$0")/../.." && pwd)
 URL=$1 SIZE=$2 SHA=$3
@@ -13,7 +14,7 @@ JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-21-openjdk-amd64}
 OUT=$(mktemp -d "${TMPDIR:-/tmp}/lumen_dl_bench.XXXXXX")
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/c" "$HERE"/src/org/lumen/download/*.java \
   "$HERE/test/bench/Bench.java"
-python3 -B "$HERE/test/bench/throttle_proxy.py" "$PORT" "$RATE" > "$OUT/proxy.log" 2>&1 &
+python3 -B "$HERE/test/bench/throttle_proxy.py" "$PORT" "$RATE" "${SLOW_NTH:-0}" "${SLOW_RATE:-0}" > "$OUT/proxy.log" 2>&1 &
 PROXY=$!
 trap 'kill $PROXY 2>/dev/null || true
 rm -rf "$OUT"' EXIT

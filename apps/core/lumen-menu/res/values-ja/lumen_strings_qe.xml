@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">新着</string>
     <string name="lumen_qe_reset">元に戻す</string>
     <string name="lumen_qe_select">選択</string>
-    <string name="lumen_qe_done">完了</string>
-    <string name="lumen_qe_back">戻る</string>
     <string name="lumen_qe_close_panel">パネルを閉じる</string>
     <string name="lumen_qe_how">表示方法</string>
     <string name="lumen_qe_now" formatted="true">現在: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">タイルの下</string>
     <string name="lumen_qe_panel_note">タイル、ワイドタイル、円はメニューの右にパネルを開きます。</string>
     <string name="lumen_qe_place">場所</string>
-    <string name="lumen_qe_move">移動</string>
     <string name="lumen_qe_remove">メニューから外す</string>
     <string name="lumen_qe_moving">移動中</string>
     <string name="lumen_qe_move_hint">円は上の列の中だけ、タイルは行の間だけ動きます。タイルを円にするには表示を変えてください。</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: 新しい場所</string>
     <string name="lumen_qe_move_keys">動かす</string>
     <string name="lumen_qe_move_cancel">キャンセルして元に戻す</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">名前またはその一部で</string>
+    <string name="lumen_qe_search_title">設定を探す</string>
+    <string name="lumen_qe_search_hint">例: MEMC</string>
+    <string name="lumen_qe_nothing">見つかりませんでした</string>
+    <string name="lumen_qe_unavailable">現在は使用できません</string>
 </resources>

@@ -98,6 +98,15 @@ final class Outcome {
         return !result.isEmpty() && !resultBuild.equals(now);
     }
 
+    /**
+     * A saved offer (found, downloading, paused or downloaded) that is not newer than the running build: the unit got
+     * that version or a newer one another way (USB stick, computer, adb) while the offer waited. Installing it would
+     * be a downgrade, so it goes. {@code offered} &lt; 0 = no readable offer.
+     */
+    static boolean offerStale(int offered, int current) {
+        return offered >= 0 && offered <= current;
+    }
+
     /** The reasons z9x_ota.sh writes (health_ok, mark, rollback); anything else is shown as it is. */
     static GateReason why(String why) {
         String w = why == null ? "" : why.trim();
@@ -114,7 +123,7 @@ final class Outcome {
 
     /**
      * A saved READY or INSTALLING belongs to the boot that wrote it (Store state_boot). Saved on another boot (or by
-     * an updater that did not save one, e.g. the 1.0.7 state LumenImport copied) = stale until BootReceiver.evaluate
+     * an updater that did not save one, e.g. a 1.0.7 state) = stale until BootReceiver.evaluate
      * has run for this boot. An unreadable current boot id never counts as stale.
      */
     static boolean staleBootState(String state, String savedBoot, String currentBoot) {
@@ -123,9 +132,13 @@ final class Outcome {
         return !currentBoot.equals(savedBoot);
     }
 
-    /** A check that failed (network) keeps a downloaded or paused update as it was instead of "no connection". */
+    /**
+     * A check that failed (network) or found nothing keeps a saved offer as it was (found, downloading, paused,
+     * downloaded) instead of "no connection": an answer that is not there never takes the newest offer away.
+     */
     static boolean keepOnCheckError(String before) {
-        return "DOWNLOADED".equals(before) || "PAUSED".equals(before);
+        return "AVAILABLE".equals(before) || "DOWNLOADING".equals(before) || "DOWNLOADED".equals(before)
+                || "PAUSED".equals(before);
     }
 
     /** update_engine's code (or our -1 / -2 when there was none) in words: never a bare internal sentinel. */

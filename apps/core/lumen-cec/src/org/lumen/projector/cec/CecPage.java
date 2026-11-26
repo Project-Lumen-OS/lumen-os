@@ -50,7 +50,7 @@ public final class CecPage {
         void refreshPage(Page page);
         /** Close the panel, then run r (opening another window). */
         void closeThen(Runnable r);
-        /** org.lumen.tvinput's own HDMI options (auto switch, return home, open at power-on). */
+        /** The menu's HDMI page (auto switch, return home, the source at power-on, the ports). */
         void openHdmiOptions();
         /** First-run gate (toast + false while setup runs). */
         boolean setupDone(String what);
@@ -130,7 +130,7 @@ public final class CecPage {
         }
         if (shown.contains(CecRow.HDMI_OPTIONS)) {
             page.add(new NavRow(app, s(R.string.lumen_m_hdmi_options), () -> {
-                if (host.setupDone("hdmi options")) host.closeThen(host::openHdmiOptions);
+                if (host.setupDone("hdmi options")) host.openHdmiOptions();
             }));
         }
         page.setOnShown(this::load);

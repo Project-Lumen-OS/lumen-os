@@ -15,6 +15,7 @@ HERE=$TREE/app
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT" "$TREE"' EXIT
+G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$HERE/src/org/lumen/projector/panel/GmModel.java" "$T/GmModelTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.GmModelTest
@@ -49,22 +50,24 @@ has() { grep -qF -- "$2" "$1" || fail "$3"; }
 has "$GM" 'GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());' "GameMenu: the profile's VRR rule is not installed"
 has "$SRC/panel/GmController.java" 'case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);' "GmController: no text for the VRR speed rule"
 # the Z9X wiring (its KeyReceiver, App, Z9xGameIo and IGmpf2 client) only on the Z9X; other devices check their own
-# side in their suites (HB: apps/HbProjector/test/menu, X50: apps/X50Projector/test)
+# side in their suites (HB: apps/LumenProjector/core/test/menu, X50: apps/LumenProjector/host/activity/test)
 Z9X=0; [ "${MENU_DEVICE:-horse_popular}" = horse_popular ] && Z9X=1
 
 if [ $Z9X = 1 ]; then
 # ---- gear long press (KeyReceiver): the game menu while game mode runs, Android settings otherwise
 K="$SRC/KeyReceiver.java"
-n=$(grep -c 'GameMenu.onGearLong(ctx, () -> {' "$K" || true)
+n=$(grep -c 'Family.gearLong(ctx, () -> {' "$K" || true)
 [ "$n" = 1 ] || fail "KeyReceiver: $n gear long press hooks (want 1)"
-grep -A3 'GameMenu.onGearLong(ctx, () -> {' "$K" | grep -qF 'if (setupDone(ctx, "gear long press")) openTvSettings(ctx);' \
+grep -A3 'Family.gearLong(ctx, () -> {' "$K" | grep -qF 'if (setupDone(ctx, "gear long press")) openTvSettings(ctx);' \
   || fail "KeyReceiver: Android settings no longer the fallback of the long press"
 grep -qF 'if (GEAR.down(ev.getRepeatCount(), ev.getDownTime())) gearLong(ctx);' "$K" \
   || fail "KeyReceiver: game menu not on the first repeated DOWN of the gear"
 grep -A2 -F 'if (code == Z9xKeys.GEAR_HOLD) {' "$K" | grep -qF 'gearLong(ctx);' \
   || fail "KeyReceiver: the remote's own gear hold (stock MENU 127 / 139) does not open the game menu"
-grep -A2 -F 'private static void gearLong(Context ctx) {' "$K" | grep -qF 'GameMenu.onGearLong(ctx, () -> {' \
+grep -A2 -F 'private static void gearLong(Context ctx) {' "$K" | grep -qF 'Family.gearLong(ctx, () -> {' \
   || fail "KeyReceiver: gearLong is not the game menu"
+grep -qF 'org.lumen.projector.panel.ProjectorMenu.gearLong(ctx, fallback);' "$SRC/Family.java" \
+  || fail "Family: the gear long press of the Z9X is not the menu's gearLong"
 fi
 has "$GM" 'if (!hdmiPort(port)) { fallback.run(); return; }' "onGearLong: shows off HDMI"
 has "$GM" 'static boolean hdmiPort(int port) { return port >= 1 && port <= (sIo == null ? 2 : sIo.hdmiPorts()); }' \
@@ -89,7 +92,7 @@ has "$GM" 'if (firstPending && sHost.current() == null) {' "auto show over anoth
 has "$GM" 'show(app, port, true);' "auto show not marked first"
 has "$GM" '@Override protected long autoHideMs() { return GmModel.autoHideMs(ctl.first); }' "auto hide not from GmModel"
 has "$GM" 'if (!hdmiPort(port) || !screen) {' "watcher reads the HAL with no HDMI session or the screen off"
-[ $Z9X = 1 ] && has "$SRC/App.java" 'org.lumen.projector.panel.GameMenu.install(this, new org.lumen.projector.panel.Z9xGameIo(this));' "App does not install the game menu"
+[ $Z9X = 1 ] && has "$SRC/App.java" 'org.lumen.projector.panel.ProjectorMenu.installGameMenu(this);' "App does not install the game menu"
 
 if [ $Z9X = 1 ]; then
 # ---- HAL: the new IGmpf2 calls only from GameMenu, with the stock ranges, each write read back
@@ -178,14 +181,14 @@ has "$GM" 'marked = sIo.isConsolePort(port);' "the user's console mark is not a 
 has "$CTL" 'boolean hint = consolePort || (snap != null && Boolean.TRUE.equals(snap.allm));' "ALLM is not a console hint"
 
 # ---- licences (CC BY 4.0 credit of the controller models and frames): every app that ships them shows the shared
-#      Licences screen GmLicences from the menu's General page (profile settings.licences -> LicencesActivity)
+#      Licences page of the menu from its General page (profile settings.licences -> LicencesPage, one readable row
+#      per work), never an own screen
 grep -qF '"settings.licences": {}' "$G/devices/${MENU_DEVICE:-horse_popular}/menu.json" \
   || fail "no Licences row: the profile has no settings.licences"
-grep -qF 'android:name="org.lumen.projector.ui.LicencesActivity"' "$HERE/AndroidManifest.xml" \
-  || fail "no Licences row: the app does not declare org.lumen.projector.ui.LicencesActivity"
-grep -rqF 'return LicencesActivity.open(app);' "$HERE/src" || fail "no Licences row: the app never opens LicencesActivity"
-has "$SRC/ui/LicencesActivity.java" 'AlertDialog d = GmLicences.open(this);' "the Licences screen does not show GmLicences"
-has "$SRC/ui/LicencesActivity.java" 'd.setOnDismissListener(x -> finish());' "the Licences screen stays after its dialog"
+has "$SRC/panel/MenuController.java" 'if (FeatureId.SETTINGS_LICENCES == f) { push(LicencesPage.build(app)); return; }' \
+  "the menu does not open its Licences page"
+has "$SRC/panel/LicencesPage.java" 'page.add(new TextRow(app, part).readable());' "the Licences page has no readable credit rows"
+! grep -rqF 'LicencesActivity' "$HERE/AndroidManifest.xml" "$HERE/src" "$SRC" || fail "an own Licences screen is back"
 L="$SRC/panel/GmLicences.java"
 for w in '"PS5 Controller\" by Taohid Animation' '"Xbox One Controller Free\" by paxillop' '"Nintendo Switch OLED\" by Wille Evensson' \
          'https://creativecommons.org/licenses/by/4.0/' 'ps5-controller-b7bb9c5102a04cb0b1966c6d02bad7d6' \
@@ -197,8 +200,15 @@ done
 python3 - "$HERE/res" <<'EOF' || bad=1
 import os, re, sys, xml.etree.ElementTree as ET
 res = sys.argv[1]
+for d in (os.path.abspath(res), os.getcwd()):         # the tree of res, else the tree the test runs in
+    while d != os.path.dirname(d) and not os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        d = os.path.dirname(d)
+    if os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        break
+sys.path.insert(0, os.path.join(d, "tools/i18n"))
+import res_strings  # strings files as the APK resolves them (aliases of lumen-common-strings)
 def load(p, all_=False):
-    return {e.get('name'): ''.join(e.itertext()) for e in ET.parse(p).getroot().iter('string')
+    return {e.get('name'): ''.join(e.itertext()) for e in ET.fromstring(res_strings.text(p)).iter('string')
             if all_ or e.get('translatable') != 'false'}
 base = load(os.path.join(res, 'values/lumen_strings_gm.xml'))
 dirs = sorted(d for d in os.listdir(res) if d.startswith('values-') and os.path.isdir(os.path.join(res, d))

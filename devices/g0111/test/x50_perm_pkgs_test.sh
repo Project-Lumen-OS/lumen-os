@@ -7,7 +7,7 @@ set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
 APK=${1:-$G/build/g0111/stage/X50Projector.apk}
 PY=$G/devices/g0111/image/x50_perm_pkgs.py
-XML=$G/apps/X50Projector/image/x50-projector.xml
+XML=$G/apps/LumenProjector/host/activity/image/x50-projector.xml
 W=$(mktemp -d "${TMPDIR:-/tmp}/x50_perm.XXXXXX") || exit 1
 trap 'rm -rf "$W"' EXIT
 PASS=0 FAIL=0
@@ -59,8 +59,8 @@ mkdir -p "$W/empty"; run "$W/empty"; expect not_a_tree_refused 1 "no APK found"
 run "$W/ok" "$W/empty"; expect not_a_base_refused 1 "not the base tree"
 
 V=$G/devices/g0111/image/verify_tree_x50.py
-if grep -q 'x50_perm_pkgs.problems(NEW_ROOT, BASE_ROOT)' "$V" && ! grep -q 'x50_perm_pkgs.problems(new' "$V" && grep -q 'x50_perm_pkgs.py' "$G/devices/g0111/build.conf" \
-    && grep -q 'tools/lumen/apkinfo.py' "$G/devices/g0111/build.conf"; then ok "verify_tree_x50 runs it, build.conf stages it"
+if grep -q 'x50_perm_pkgs.problems(NEW_ROOT, BASE_ROOT)' "$V" && ! grep -q 'x50_perm_pkgs.problems(new' "$V" && python3 "$G/tools/devices/layered.py" "$G/devices/g0111/build.conf" | grep -q 'x50_perm_pkgs.py' \
+    && python3 "$G/tools/devices/layered.py" "$G/devices/g0111/build.conf" | grep -q 'tools/lumen/apkinfo.py'; then ok "verify_tree_x50 runs it, build.conf stages it"
 else echo "hook" > "$W/out"; bad "verify_tree_x50 runs it, build.conf stages it"; fi
 echo "x50_perm_pkgs_test: $PASS passed, $FAIL failed"
 [ "$FAIL" = 0 ]

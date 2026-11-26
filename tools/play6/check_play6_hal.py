@@ -74,6 +74,10 @@ TSV_V1167 = os.path.join(G, "research/play6/vendor_v1167/gmpf_codes_play6.tsv")
 HASHES = os.path.join(G, "research/play6/hidl_hashes.txt")
 COMMON_FILES = os.path.join(G, "apps/common/projector/FILES")
 Z9X_LIST = os.path.join(G, "devices/dragon_healthy/app/Play6Projector.gmpf")
+# the XGIMI HIDL transport layer of the one projector app (whole layer in the Play 6 recipe)
+HIDL_LAYER = os.path.join(G, "apps/LumenProjector/vendor/xgimi/hidl/src/org/lumen/projector/hal")
+# the Play 6 HAL family adapter of the one projector app (its own value tables)
+PLAY6_LAYER = os.path.join(G, "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/hal")
 CALLER_CHECK = os.path.join(G, "apps/check_hal_callers.py")
 MODULE = os.path.join(G, "apps/core/lumen-gmpf/src")
 WIRE_TEST = os.path.join(G, "apps/core/lumen-gmpf/test/wire")
@@ -561,9 +565,10 @@ def main():
     z9x = {os.path.basename(l.split("#", 1)[0].strip())[:-5] for l in open(Z9X_LIST, encoding="utf-8")
            if l.split("#", 1)[0].strip()}
     module = {f[:-5] for f in os.listdir(os.path.join(MODULE, "org/lumen/projector/hal")) if f.endswith(".java")}
+    hidl = {f[:-5] for f in os.listdir(HIDL_LAYER) + os.listdir(PLAY6_LAYER) if f.endswith(".java")}
     for f in sorted(os.listdir(hal)):
-        if f.endswith(".java") and f[:-5] not in HAL_FILES | z9x | module:
-            find(HAL + "/" + f, "not a Play 6 HAL file (HAL_FILES, the module lumen-gmpf, Play6Projector.gmpf)")
+        if f.endswith(".java") and f[:-5] not in HAL_FILES | z9x | module | hidl:
+            find(HAL + "/" + f, "not a Play 6 HAL file (HAL_FILES, the module lumen-gmpf, the HIDL layer, the Play 6 adapter, Play6Projector.gmpf)")
     for name in sorted(HAL_FILES | {"GmpfBase", "Gmpf2Base", "HidlWire"}):
         if name not in t.files:
             find(HAL, "%s.java is missing" % name)

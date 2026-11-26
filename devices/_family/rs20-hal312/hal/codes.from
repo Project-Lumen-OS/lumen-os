@@ -1,0 +1,11 @@
+# devices/_family/rs20-hal312/hal/codes.from: the HIDL gmpf codes of the RS 20 models of the 312-method IGmpf2 library (stock table of v1.6.52), derived BY METHOD NAME
+# from the Z9X call list (tools/hal/derive.py, python3 tools/hal/gen_codes.py --write): every RS 20 firmware numbers
+# IGmpf2 its own way (v1.6.52 312 methods, v1.6.55 330, the Z9X 333), so no number here is written by hand.
+calls	devices/horse_popular/hal/codes.tsv
+ref	IGmpf	devices/_hal/gmpf-hidl/z9x-v6.15.62.tsv	BpHwGmpf
+ref	IGmpf2	devices/_hal/gmpf-hidl/z9x-v6.15.62.tsv	BpHwGmpf2
+stock	IGmpf	devices/_hal/gmpf-hidl/rs20-v1.6.52.tsv	BpHwGmpf
+stock	IGmpf2	devices/_hal/gmpf-hidl/rs20-v1.6.52.tsv	BpHwGmpf2
+java	ProjectorBase@rs20-hal312	devices/_family/rs20-hal312/hal/app/src/org/lumen/projector/hal/HalCodes.java
+map	apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Z9xCodes.java	devices/_family/rs20-hal312/hal/app/src/org/lumen/projector/hal/Z9xCodes.java
+menu	devices/_family/rs20-hal312/rs20-hal312.menu.json	devices/_family/rs20/rs20.menu.json

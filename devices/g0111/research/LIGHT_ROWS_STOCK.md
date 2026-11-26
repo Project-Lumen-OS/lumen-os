@@ -2,7 +2,7 @@
 
 Read-only research, 2026-11-14 (branch x50-iris). Owner decision 2026-11-14: offer the light level and the iris on
 every model whose stock has them, the dynamic black only where that model's stock offers it. The data is
-`apps/X50Projector/src/org/lumen/x50/projector/StockLight.java` (one row per GmpfModel, fail closed for any other
+`apps/LumenProjector/host/activity/src/org/lumen/x50/projector/StockLight.java` (one row per GmpfModel, fail closed for any other
 model), the profiles are `devices/<c>/menu.json`, X50FeaturesTest holds both equal.
 
 Sources on xgimi-builder:

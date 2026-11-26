@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Поўны сон адключаны</string>
+    <string name="hb_str_blocked_usb">Падключаны камп\'ютар праз USB: у рэжыме чакання праектар не засне цалкам, вентылятары будуць працаваць. Адключыце кабель USB, каб вярнуць поўны сон.</string>
+    <string name="hb_str_blocked_update">Усталёўваецца абнаўленне: поўны сон вернецца пасля ўсталёўкі.</string>
+    <string name="hb_str_blocked_update_check">Абноўленая сістэма правяраецца пасля запуску: поўны сон вернецца праз некалькі хвілін.</string>
+    <string name="hb_str_blocked_off">Поўны сон адключаны на гэтым праектары (сэрвісная налада).</string>
+</resources>

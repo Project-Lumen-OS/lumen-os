@@ -2,18 +2,18 @@
 <!-- lumen-menu: the rows of the old Projector settings page (power-on, voice assistant, interface resolution,
      statistics, diagnostics) with the apps' own translations, and the sensor card row. -->
 <resources>
-    <string name="lumen_m_power_music">Sound at power-on</string>
-    <string name="lumen_m_boot_source">Open at power-on</string>
-    <string name="lumen_m_boot_home">Home screen</string>
-    <string name="lumen_m_hdr_voice">Voice assistant</string>
-    <string name="lumen_m_voice_language">Speech language</string>
-    <string name="lumen_m_voice_lang_system">System language</string>
-    <string name="lumen_m_voice_speak">Speak replies</string>
-    <string name="lumen_m_voice_key">Gemini voice</string>
-    <string name="lumen_m_uires">Interface resolution</string>
-    <string name="lumen_m_stats">Send anonymous statistics</string>
-    <string name="lumen_m_diag">Diagnostics</string>
-    <string name="lumen_m_sensors">Sensors</string>
+    <string name="lumen_m_power_music">@string/lumen_sound_at_power_on</string>
+    <string name="lumen_m_boot_source">@string/lumen_open_at_power_on</string>
+    <string name="lumen_m_boot_home">@string/lumen_home_screen_3</string>
+    <string name="lumen_m_hdr_voice">@string/lumen_voice_assistant</string>
+    <string name="lumen_m_voice_language">@string/lumen_speech_language</string>
+    <string name="lumen_m_voice_lang_system">@string/lumen_system_language</string>
+    <string name="lumen_m_voice_speak">@string/lumen_speak_replies</string>
+    <string name="lumen_m_voice_key">@string/lumen_gemini_voice</string>
+    <string name="lumen_m_uires">@string/lumen_interface_resolution</string>
+    <string name="lumen_m_stats">@string/lumen_send_anonymous_statistics</string>
+    <string name="lumen_m_diag">@string/lumen_diagnostics</string>
+    <string name="lumen_m_sensors">@string/lumen_sensors</string>
     <string name="lumen_m_boot_hdmi" translatable="false">HDMI</string>
     <string name="lumen_m_boot_hdmi1" translatable="false">HDMI 1</string>
     <string name="lumen_m_boot_hdmi2" translatable="false">HDMI 2</string>

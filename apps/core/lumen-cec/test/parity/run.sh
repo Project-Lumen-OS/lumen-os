@@ -25,7 +25,7 @@ for d in $DEVICES; do
     if [ -n "$want" ]; then case " $want " in *" $c "*) ;; *) continue ;; esac; fi
     W="$T/$c"
     mkdir -p "$W/gen" "$W/cls"
-    python3 -B "$ROOT/tools/devices/assemble_app.py" "$ROOT/devices/$c/app/$app.layers" --out "$W/tree" --quiet
+    python3 -B "$ROOT/tools/devices/assemble_app.py" --root "$ROOT" --device "$c" --app "$app" --out "$W/tree" --quiet
     python3 -B "$HERE/gen_res.py" "$W/tree" "$W/gen"
     P="$W/tree/src/org/lumen/projector/cec"
     srcs="$P/CecPage.java $P/CecSettings.java $P/CecDevices.java"

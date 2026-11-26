@@ -15,7 +15,7 @@ import android.view.KeyEvent;
 /**
  * Receives ACTION_GLOBAL_BUTTON from PhoneWindowManager / GlobalKeyManager for the keys mapped to
  * org.lumen.tvinput/.GlobalKeyReceiver in the framework res/xml/global_keys.xml (static RRO on
- * "android"): KEYCODE_TV_INPUT_HDMI_1 (243) and KEYCODE_TV_INPUT_HDMI_2 (244), the direct HDMI keys.
+ * "android"): KEYCODE_TV_INPUT_HDMI_1 (243), _2 (244) and _3 (245), the direct HDMI keys.
  *
  * <p>v6.1: the Source key (KEYCODE_TV_INPUT, 178) belongs to the projector app (apps/core/lumen-source: the next
  * input and a small card, as stock; X50 family: org.lumen.x50.projector), and every image's RRO routes it there, so it
@@ -81,6 +81,9 @@ public class GlobalKeyReceiver extends BroadcastReceiver {
                 break;
             case KeyEvent.KEYCODE_TV_INPUT_HDMI_2:
                 openPort(c, 2);
+                break;
+            case KeyEvent.KEYCODE_TV_INPUT_HDMI_3:            // a remote button given HDMI 3 (X50 family)
+                openPort(c, 3);
                 break;
             default:
                 break;

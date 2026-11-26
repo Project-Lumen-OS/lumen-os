@@ -2,6 +2,8 @@
 package org.lumen.projector.panel;
 
 import org.lumen.projector.audio.AudioPortRulesProbe;
+import org.lumen.projector.audio.EqWriteProbe;
+import org.lumen.projector.audio.WakeReapplyProbe;
 
 /**
  * Host tests of the Sound page state (SoundState) and the audio port rules (audio.AudioPortRules through a probe in
@@ -27,6 +29,8 @@ public final class SoundStateTest {
         hints();
         eq();
         AudioPortRulesProbe.run(SoundStateTest::ok);
+        EqWriteProbe.run(SoundStateTest::ok);
+        WakeReapplyProbe.run(SoundStateTest::ok);
         System.out.println("SoundStateTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);
     }
@@ -91,5 +95,9 @@ public final class SoundStateTest {
         ok(!SoundState.eqUsable(null, false), "no equalizer without a read");
         ok(!SoundState.dtsStored(5, true), "43 on is not DTS stored");
         ok(!SoundState.dtsStored(2, false), "Harman is not DTS stored");
+        ok(SoundState.eqKeepRows(3, 3, false, true), "a pending preset step is kept by a read (owner blink)");
+        ok(SoundState.eqKeepRows(3, 3, true, false), "a band being adjusted is kept by a read");
+        ok(!SoundState.eqKeepRows(3, 3, false, false), "an idle page shows the read");
+        ok(!SoundState.eqKeepRows(1, 3, true, true), "another sound mode read: its own rows");
     }
 }

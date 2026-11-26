@@ -6,7 +6,7 @@
     <string name="app_name" translatable="false">Lumen Home</string>
 
     <!-- top bar -->
-    <string name="tab_apps">Apps</string>
+    <string name="tab_apps">@string/lumen_apps</string>
     <string name="search">Search</string>
     <string name="settings_button">Settings</string>
     <!-- header battery mark (projectors with an internal battery only), read out by a screen reader;
@@ -36,100 +36,41 @@
 
     <!-- apps -->
     <string name="apps_install_usb">Install from USB</string>
-    <string name="usb_title">Install from USB</string>
-    <string name="usb_none">Insert a USB stick with .apk files (in its root or in an apks folder).</string>
-    <string name="usb_empty">No .apk files on the USB stick. Put them in its root or in an apks folder.</string>
-    <string name="usb_new">New</string>
-    <string name="usb_update">Update</string>
-    <string name="usb_installing">Installing: %1$d%%</string>
-    <string name="usb_done">%1$s is installed</string>
-    <string name="usb_failed">%1$s was not installed: %2$s</string>
-    <!-- 1.0.4: Files (usb/UsbFilesActivity, PhotoActivity, PlayerActivity) -->
-    <string name="files_title">Files</string>
-    <string name="files_none">Insert a USB stick: its videos, music and photos will appear here.</string>
-    <string name="files_empty">This folder is empty.</string>
-    <string name="files_more">Not shown: %1$d more</string>
-    <string name="files_open_failed">%1$s can’t be opened</string>
-    <string name="files_play_failed">This file can’t be played on the projector.</string>
-    <string name="files_internal">Projector storage</string>
-    <string name="files_hint_menu">Hold OK on a file or folder to copy or delete it</string>
-    <string name="files_menu_open">Open</string>
-    <string name="files_copy_to">Copy to %1$s</string>
-    <string name="files_delete">Delete</string>
-    <string name="files_delete_confirm">Delete %1$s?</string>
-    <string name="files_cancel">Cancel</string>
-    <string name="files_copying">Copying: %1$d%%</string>
-    <string name="files_copied">Copied: %1$s</string>
-    <string name="files_deleted">Deleted: %1$s</string>
-    <string name="files_failed">Could not do it: %1$s</string>
-    <string name="files_no_space">Not enough free space</string>
-    <string name="files_install">Install app</string>
     <!-- 1.0.6: Files > Network folders (net/NetFolders: SMB shares of a PC, a Mac, a NAS) -->
-    <string name="net_title">Network folders</string>
-    <string name="net_sub">Windows, Mac, Linux or a NAS</string>
-    <string name="net_hint">Hold OK on a server to edit or delete it</string>
-    <string name="net_add">Add a server</string>
-    <string name="net_found">On this network</string>
-    <string name="net_address">Address</string>
-    <string name="net_address_hint">IP address or name</string>
-    <string name="net_port">Port</string>
-    <string name="net_login">Login</string>
-    <string name="net_login_hint">Empty for guest access</string>
-    <string name="net_password">Password</string>
-    <string name="net_share">Share</string>
-    <string name="net_name">Name</string>
-    <string name="net_not_set">Not set</string>
-    <string name="net_guest">Guest access</string>
-    <string name="net_all_shares">All shares</string>
-    <string name="net_connect">Connect</string>
-    <string name="net_connecting">Connecting…</string>
-    <string name="net_enter_share">Enter a share name</string>
-    <string name="net_no_shares">The list of shares is not available. Enter a share name.</string>
-    <string name="net_need_password">Enter the password to connect</string>
-    <string name="net_edit">Edit</string>
-    <string name="net_retry">Try again</string>
-    <string name="net_err_address">Enter the server address</string>
-    <string name="net_err_logon">Wrong login or password</string>
-    <string name="net_err_denied">Access denied</string>
-    <string name="net_err_share">Share not found</string>
-    <string name="net_err_unreachable">Server not reachable. Check the address and port.</string>
-    <string name="net_err_encrypt">This server requires encryption, which is not supported</string>
-    <string name="net_err_other">Could not connect: %1$s</string>
 
     <!-- inputs, cast, projector tiles -->
-    <string name="input_connected">Connected</string>
-    <string name="input_not_connected">Not connected</string>
+    <string name="input_connected">@string/lumen_connected</string>
+    <string name="input_not_connected">@string/lumen_not_connected</string>
     <string name="input_standby">Standby</string>
     <!-- the device behind an HDMI port, as the TV input app reports it (input_not_connected: not connected) -->
     <string name="input_on">On</string>
-    <string name="input_asleep">Asleep</string>
-    <string name="input_no_signal">No signal</string>
+    <string name="input_asleep">@string/lumen_asleep</string>
+    <string name="input_no_signal">@string/lumen_no_signal</string>
     <string name="input_wake_hint">Press OK to wake it</string>
     <string name="cast_chromecast">Chromecast built-in</string>
-    <string name="cast_airplay">AirPlay</string>
+    <string name="cast_airplay">@string/lumen_airplay</string>
     <string name="cast_ready">“%1$s” · Ready</string>
     <string name="tile_autofocus">Autofocus</string>
     <string name="tile_keystone">Keystone</string>
-    <string name="tile_picture">Picture</string>
-    <string name="tile_sound">Sound</string>
-    <string name="tile_eye">Eye protection</string>
+    <string name="tile_picture">@string/lumen_picture</string>
+    <string name="tile_sound">@string/lumen_sound</string>
+    <string name="tile_eye">@string/lumen_eye_protection</string>
     <string name="tile_sleep">Sleep</string>
     <string name="tile_sleep_timer">Sleep timer</string>
     <string name="tile_projector_settings">Projector settings</string>
-    <string name="tile_android_settings">Android settings</string>
+    <string name="tile_android_settings">@string/lumen_system_settings</string>
     <!-- screen mirroring receiver (org.lumen.miracast): opens its settings -->
-    <string name="tile_miracast">Screen mirroring</string>
+    <string name="tile_miracast">@string/lumen_screen_mirroring</string>
 
     <!-- context menu -->
     <string name="menu_open">Open</string>
-    <string name="menu_move">Move</string>
+    <string name="menu_move">@string/lumen_move</string>
     <string name="menu_hide_app">Hide app</string>
     <string name="menu_app_info">App info</string>
     <string name="menu_uninstall">Uninstall</string>
     <string name="menu_remove_continue">Remove from Continue watching</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="close">Close</string>
+    <string name="cancel">@string/lumen_cancel</string>
+    <string name="close">@string/lumen_close</string>
     <string name="cannot_open">This can’t be opened</string>
 
     <!-- weather -->
@@ -150,7 +91,7 @@
 
     <!-- search and voice -->
     <string name="search_hint">Search apps, movies, shows…</string>
-    <string name="search_apps">Apps</string>
+    <string name="search_apps">@string/lumen_apps</string>
     <string name="search_from_apps">From your apps</string>
     <string name="search_in">Search in</string>
     <string name="search_recent">Recent searches</string>
@@ -185,7 +126,7 @@
     <!-- Home 2.0 -->
     <string name="now_popular">Popular now</string>
     <string name="source_title">Input source</string>
-    <string name="source_home_sub">Home screen</string>
+    <string name="source_home_sub">@string/lumen_home_screen_3</string>
     <string name="mirror_sub">AirPlay and Miracast</string>
     <string name="usb_drive">USB drive</string>
     <string name="nothing_connected">Nothing connected</string>
@@ -198,11 +139,11 @@
     <string name="greet_day">Good afternoon</string>
     <string name="greet_evening">Good evening</string>
     <string name="greet_night">Good night</string>
-    <string name="theme_title">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_auto">Auto</string>
-    <string name="theme_auto_sub">Light by day, dark after sunset</string>
+    <string name="theme_title">@string/lumen_theme</string>
+    <string name="theme_light">@string/lumen_light</string>
+    <string name="theme_dark">@string/lumen_dark</string>
+    <string name="theme_auto">@string/lumen_auto_2</string>
+    <string name="theme_auto_sub">@string/lumen_light_by_day_dark_after</string>
     <string name="move_hint">Move with the arrows, then press OK</string>
     <string name="menu_show_app">Show app</string>
     <string name="hidden_none">No hidden apps</string>

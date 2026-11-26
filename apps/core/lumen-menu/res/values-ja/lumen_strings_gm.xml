@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">プリセット</string>
     <string name="lumen_gm_preset_compete">対戦</string>
     <string name="lumen_gm_preset_balance">バランス</string>
-    <string name="lumen_gm_preset_story">ストーリー</string>
     <string name="lumen_gm_preset_on">プリセット「%1$s」をオンにしました</string>
     <string name="lumen_gm_preset_partly">プリセット「%1$s」をオンにしましたが、一部の項目は変わりませんでした</string>
     <string name="lumen_gm_lat">応答速度</string>
-    <string name="lumen_gm_lat_0">標準</string>
     <string name="lumen_gm_lat_1">ターボ</string>
     <string name="lumen_gm_lat_d0">通常の遅延です。台形補正と映像の調整が使えます。</string>
     <string name="lumen_gm_lat_d1">遅延が最も小さくなります。台形補正と映像の調整は使えません。</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">オン</string>
     <string name="lumen_gm_auto">自動</string>
     <string name="lumen_gm_pic">映像モード</string>
-    <string name="lumen_gm_pic_0">標準</string>
     <string name="lumen_gm_pic_4">スポーツ</string>
     <string name="lumen_gm_pic_d0">どのゲームにも。</string>
     <string name="lumen_gm_pic_d1">シューティング向け。</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">通常の画面です。</string>
     <string name="lumen_gm_snd">ゲームサウンド</string>
     <string name="lumen_gm_snd_1">サラウンド</string>
-    <string name="lumen_gm_snd_2">ストーリー</string>
     <string name="lumen_gm_snd_3">クリア</string>
     <string name="lumen_gm_snd_4">バランス</string>
     <string name="lumen_gm_snd_d0">ゲームのままの音です。</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">速い</string>
     <string name="lumen_gm_turbo_title">ターボをオンにしますか？</string>
     <string name="lumen_gm_turbo_msg">ターボは台形補正をオフにし、映像を全画面に戻します。遅延が最も小さくなります。</string>
-    <string name="lumen_gm_turbo_ok">オンにする</string>
     <string name="lumen_gm_rule_vrr_wide">先に16:9か自動を選んでください</string>
     <string name="lumen_gm_rule_ar_vrr">先にVRRをオフにしてください</string>
     <string name="lumen_gm_rule_ar_4k">ワイド画面は3840 × 2160の信号でのみ使えます</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">ゲーム中に設定ボタンを長押しすると、このメニューが開きます</string>
     <string name="lumen_gm_kind_console">ゲーム機</string>
     <string name="lumen_gm_kind_computer">パソコン</string>
-    <string name="lumen_gm_licences">ライセンス</string>
     <string name="lumen_gm_licences_d">Lumen OSで使っている素材の作者</string>
     <string name="lumen_gm_credits_intro">ゲームメニューのコントローラー画像は次の3Dモデルから作りました:</string>
 </resources>

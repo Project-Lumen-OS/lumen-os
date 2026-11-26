@@ -23,7 +23,7 @@
 #  note          why
 remote	scancode	stock_label	stock_action	keycode	bind	unbound	name	note
 xgimi_rc_3838	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
-xgimi_rc_3838	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function (sound mode, source, smart screen, my apps)	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Lumen 1.0 mapped it to ALL_APPS, the app list stays its default
+xgimi_rc_3838	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function (sound mode, source, smart screen, my apps)	TV_RADIO_SERVICE	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Lumen 1.0 mapped it to ALL_APPS, the app list stays its default. Not FEATURED_APP_1: Android 14 PhoneWindowManager eats every KEYCODE_*_APP_* key before the global keys (check_keys.py POLICY_EATS)
 xgimi_rc_3838	64	MUSIC_SOUNDERMODE	Bluetooth speaker mode	-	no	-	-	no Lumen function (PARITY_KEYS row 21)
 xgimi_rc_3838	185	SECONDARY_POWER	second power key	-	no	-	-	power key
 xgimi_rc_3840	240	VIDEO0	app key 2118: youkutv (CIBN Youku)	TV_TERRESTRIAL_ANALOG	app	host	youku	printed: the Youku logo (VIDEO0 = youkutv on every stock remote version). Lumen default: AppSlots slot 1 (Z9X, HB, Play 6), the app list (X50 family)
@@ -32,7 +32,7 @@ xgimi_rc_3840	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iq
 xgimi_rc_3840	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
 xgimi_rc_3840	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
 xgimi_rc_3840	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
-xgimi_rc_3840	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
+xgimi_rc_3840	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	TV_RADIO_SERVICE	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
 xgimi_rc_3840	135	SHORTCUT_1	custom key 2320: stock "Shortcut Keys 1" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key1_text)	MACRO_1	app	pick	custom_1	stock customisable key of remote B870C / B872C (RS30, 2 keys)
 xgimi_rc_3840	136	SHORTCUT_2	custom key 2321: stock "Shortcut Keys 2" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key2_text)	MACRO_2	app	pick	custom_2	stock customisable key of remote B870C / B872C (RS30, 2 keys)
 xgimi_rc_3840	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
@@ -49,7 +49,7 @@ xgimi_rc_3841	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iq
 xgimi_rc_3841	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
 xgimi_rc_3841	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
 xgimi_rc_3841	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
-xgimi_rc_3841	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function, Play 6 default: ambient light	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Play 6 keeps its own layout (ambient speaker light, overlay/play6)
+xgimi_rc_3841	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function, Play 6 default: ambient light	TV_RADIO_SERVICE	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), Play 6 keeps its own layout (ambient speaker light, overlay/play6)
 xgimi_rc_3841	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
 xgimi_rc_3841	64	MUSIC_SOUNDERMODE	Bluetooth speaker mode	-	no	-	-	no Lumen function
 xgimi_rc_3842	240	VIDEO0	app key 2118: youkutv (CIBN Youku)	TV_TERRESTRIAL_ANALOG	app	host	youku	printed: the Youku logo (VIDEO0 = youkutv on every stock remote version)
@@ -58,7 +58,7 @@ xgimi_rc_3842	235	VIDEO2	app key 2120: aiqiyitv (iQIYI)	TV_SATELLITE	app	host	iq
 xgimi_rc_3842	144	VIDEO3	app key 2121: mangotv (Mango TV)	TV_SATELLITE_BS	app	host	mango	printed: Mango TV on B992C and B992B (B995C: bilibili)
 xgimi_rc_3842	134	VIDEO4	app key 2126: bilibilitv (bilibili)	TV_SATELLITE_CS	app	host	bilibili	printed: bilibili (B992C, the only version with this key, the owner's Z9X remote, getevent 2026-11-05)
 xgimi_rc_3842	183	AMBIENT	screen saver key 2116 (stock remote_screen_saver_button: XRMService starts the Atmosphere screen saver)	TV_SATELLITE_SERVICE	app	host	ambient	named by its stock name, it starts the screen saver while no app is given
-xgimi_rc_3842	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	FEATURED_APP_1	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
+xgimi_rc_3842	184	SHORTCUT	Shortcut Key 2117 (stock remote_diy_button): the user picks a stock function	TV_RADIO_SERVICE	app	all_apps	shortcut	stock customisable key, named as stock names it (newsettings bluetooth_rc_custom_key_text), the app list stays its default
 xgimi_rc_3842	137	SHORTCUT_AI	AI voice key	SEARCH	no	-	-	the voice key (microphone)
 xgimi_rc_3842	430	SHORTCUT_SOURCE	input source 2115	TV_INPUT	no	-	-	system key: the input chooser
 xgimi_rc_s3r	135	SHORTCUT_1	custom key 2320: stock "Shortcut Keys 1" (SystemUI shortcut_professional_remote_config, newsettings bluetooth_rc_custom_key1_text)	MACRO_1	app	pick	custom_1	stock customisable key of remote B975D_CY03 (X50 Ultra family, 4 keys)

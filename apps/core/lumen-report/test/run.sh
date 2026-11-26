@@ -6,7 +6,10 @@
 #     out of a start against a freeze and a pulled plug);
 #  2. every module source compiles against Android 34 (android.jar + the framework headers, a stub R of the module
 #     resources), so the Android side is checked without a device;
-#  3. check_repo.py: texts in every language, the wiring of every projector app, the menu row, the consent lines.
+#  3. report_helper_test.sh: the image's root log helper (tokens, refusals, scrub, caps, file modes, cleanup);
+#  4. check_repo.py: texts in every language, the wiring of every projector app, the menu row, the consent lines, the
+#     log helper wiring (no log access dialog path, every report app may read it, staged for every image).
+#  5. ui/guard_test.py: the key walk sends only to a running fake server on this host and stops on anything else.
 set -eu
 HERE=$(cd "$(dirname "$0")/.." && pwd)
 G=$(cd "$HERE/../../.." && pwd)
@@ -17,7 +20,7 @@ OUT=$(mktemp -d "${TMPDIR:-/tmp}/lumen_report.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
 S=$HERE/src/org/lumen/report
 PURE="Scrubber LogcatFilter ReportZip ReportUploader PartUpload ReportFailure ReportKind CanceledException OwnApps PropFilter Incident
-IncidentScan AutoPolicy ReportQueue ReportUrl Alive AliveState AliveFile"
+IncidentScan AutoPolicy ReportQueue ReportUrl Alive AliveState AliveFile HdmiDump CecJournal RootLogs PowerDump ReportState ReportView"
 set --
 for c in $PURE; do set -- "$@" "$S/$c.java"; done
 mkdir -p "$OUT/pure" "$OUT/android/org/lumen/projector" "$OUT/android/org/lumen/icons"
@@ -39,6 +42,8 @@ mkdir -p "$OUT/pure" "$OUT/android/org/lumen/projector" "$OUT/android/org/lumen/
   echo "  }"
   echo "}"
 } > "$OUT/android/org/lumen/projector/R.java"
+# the shared look the screen is drawn in (apps/core/lumen-ui: palette, theme follow, the two-pane page)
+U=$G/apps/core/lumen-ui/src/org/lumen/ui
 # the shared icon set the screen draws its list bullets with (apps/core/lumen-icons): its sources and a stub R of them
 I=$G/apps/core/lumen-icons
 {
@@ -52,6 +57,10 @@ I=$G/apps/core/lumen-icons
   echo "}"
 } > "$OUT/android/org/lumen/icons/R.java"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -source 17 -target 17 -d "$OUT/android" -cp "$HJ:$AJ" \
-  "$OUT/android/org/lumen/projector/R.java" "$OUT/android/org/lumen/icons/R.java" "$S"/*.java "$I"/src/org/lumen/icons/*.java
+  "$OUT/android/org/lumen/projector/R.java" "$OUT/android/org/lumen/icons/R.java" "$S"/*.java "$I"/src/org/lumen/icons/*.java \
+  "$U"/*.java "$U"/page/*.java
 echo "ok   android: $(ls "$S"/*.java | wc -l | tr -d ' ') module sources compile against android-34"
+bash "$HERE/test/report_helper_test.sh"
+python3 -B "$HERE/tools/report_icons.py" check
 python3 -B "$HERE/test/check_repo.py" "$G"
+python3 -B "$HERE/test/ui/guard_test.py"

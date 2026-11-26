@@ -193,6 +193,15 @@ def under_any(n, paths):
     return None
 
 
+def prebuilt_pins(root=None):
+    """{image path of the APK: signer sha256} of the apps that enter the images as their published APK
+    (devices/_image/prebuilt.tsv, tools/build/prebuilt.py): their own release key, never a Lumen one."""
+    root = root or os.path.dirname(os.path.dirname(HERE))
+    sys.path.insert(0, os.path.join(root, "tools", "build"))
+    import prebuilt
+    return {"system/app/%s/%s.apk" % (r["name"], r["name"]): r["signer"] for r in prebuilt.load(prebuilt.table_path(root))}
+
+
 def lumen_signers(certdir=RELEASE_CERTS):
     """The signer names sign_tar.py --verify writes for the Lumen release keys (release_certs/<name>.x509.pem)."""
     return {f[:-len(".x509.pem")] for f in os.listdir(certdir) if f.endswith(".x509.pem")}
@@ -293,6 +302,7 @@ def check_nogms(rd, sha, data, p, signers_tsv=None, nogms=None):
     # (a) signers: the keys step's all_signers.tsv; every APK and APK inside an APEX on a Lumen release key
     tsv = signers_tsv or os.path.join(rd, "all_signers.tsv")
     ours = lumen_signers()
+    pinned = prebuilt_pins()
     rows = 0
     if not os.path.isfile(tsv):
         errs.append(f"edition: no {tsv} (the keys step writes it)")
@@ -302,6 +312,8 @@ def check_nogms(rd, sha, data, p, signers_tsv=None, nogms=None):
             if len(w) < 4 or w[0] not in ("apk", "apex-apk"):
                 continue
             rows += 1
+            if w[0] == "apk" and pinned.get(w[1]) == w[2]:
+                continue   # a prebuilt app on its own pinned key (Lumen Play)
             if w[3] not in ours:
                 errs.append(f"edition: {w[1]} is signed by {w[3]!r} ({w[4] if len(w) > 4 else '?'}), not a Lumen release key")
     # (b) paths

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">Динамикалық қара</string>
+    <string name="lumen_m_db_level">Динамикалық қара деңгейі</string>
+    <string name="lumen_m_db_subtitle_top">Жоғарғы субтитр маскасы</string>
+    <string name="lumen_m_db_subtitle_bottom">Төменгі субтитр маскасы</string>
+    <string name="lumen_m_db_reset">Субтитр маскаларын тастау</string>
+    <string name="lumen_m_color_uniformity">Түс біркелкілігін реттеу</string>
+</resources>

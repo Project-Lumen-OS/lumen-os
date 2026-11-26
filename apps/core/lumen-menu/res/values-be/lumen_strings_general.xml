@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">Мова і час</string>
+    <string name="lumen_m_hdr_power">Сілкаванне</string>
+    <string name="lumen_m_hdr_display_menu">Экран і меню</string>
+    <string name="lumen_m_hdr_remote_voice">Пульт і голас</string>
+    <string name="lumen_m_hdr_apps_devices">Праграмы і прылады</string>
+    <string name="lumen_m_hdr_storage_updates">Памяць і абнаўленні</string>
+    <string name="lumen_m_hdr_help">Даведка</string>
+    <string name="lumen_m_date_time">Дата і час</string>
+    <string name="lumen_m_date_auto">Аўтаматычна</string>
+    <string name="lumen_m_storage">Памяць</string>
+    <string name="lumen_m_storage_free">Вольна %1$s</string>
+    <string name="lumen_m_update">Абнаўленне сістэмы</string>
+    <string name="lumen_m_about">Пра прыладу</string>
+    <string name="lumen_m_system_info">Звесткі пра сістэму</string>
+    <string name="lumen_m_network_adb">Адладка па сетцы</string>
+    <string name="lumen_m_android_dev">Параметры распрацоўшчыка Android</string>
+</resources>

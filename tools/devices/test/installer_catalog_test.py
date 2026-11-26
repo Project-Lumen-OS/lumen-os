@@ -214,14 +214,14 @@ def titan_cases(c, t):
     for code, name, tag, sha, folder in TITAN:
         got, e = builds(v2, code)
         pems = [(G / "devices" / folder / "certs" / n).read_text() for n in ("ota.x509.pem", "ota_next.x509.pem")]
-        stock = [{"version": "v1.2.99", "install": False}, {"version": "v1.2.54", "install": False}]
+        stock = [{"version": "v1.2.99", "install": False}, {"version": "v1.2.54", "install": False}, {"version": "v1.3.38", "install": False}]
         check(e is not None and e["name"] == name and e["board"] == "mt9681" and e["platform"] == "mt5877" and e["product"] is None
               and not e["config_check"] and e["stock"] == stock and e["certs"] == pems and "refused" not in e,
-              "TITAN %s entry: board, no product check, trial only on v1.2.99 and v1.2.54, its own certificates" % code)
+              "TITAN %s entry: board, no product check, trial only on v1.2.99, v1.2.54 and v1.3.38, its own certificates" % code)
         b = (got or {}).get("beta")
         check(set(got or {}) == {"beta"} and b["version"] == "1.0.10-beta1" and b["image"] == GH + tag + "/system_dsu.img"
               and b["size"] == 1021317120 and b["sha256"] == sha and b["sums"] == GH + tag + "/SHA256SUMS" and b["way"] == "trial"
-              and b["install"] and not b["clears_leftovers"] and b["stock"] == ["v1.2.99", "v1.2.54"],
+              and b["install"] and not b["clears_leftovers"] and b["stock"] == ["v1.2.99", "v1.2.54", "v1.3.38"],
               "TITAN %s beta 1.0.10-beta1 from %s" % (code, tag))
     try:
         ic.strict(v2, 2)
@@ -274,12 +274,15 @@ WAY_BACK = {
     "G0130": {"v6.16.24": ("v6.16.24", 2160464496), "v6.17.12": ("v6.17.12", 2178814576)},
     "G0148": {"v6.17.12": ("v6.17.12", 2178814576)},
     "G0058": {"v1.7.116": ("v1.7.116", 2051543712), "v1.8.127": ("v1.8.127", 2115834528)},
-    "G0111": {"v1.2.64": ("v1.2.64", 2693993312), "v1.2.54": ("v1.2.54", 2693731168)},
-    "G0100": {"v1.2.54": ("v1.2.54", 2693731168), "v1.2.64": ("v1.2.64", 2693993312)},
+    "G0111": {"v1.2.64": ("v1.2.64", 2693993312), "v1.2.54": ("v1.2.54", 2693731168), "v1.3.38": ("v1.3.38", 2867991104)},
+    "G0100": {"v1.2.54": ("v1.2.54", 2693731168), "v1.2.64": ("v1.2.64", 2693993312), "v1.3.38": ("v1.3.38", 2867991104)},
+    "H0062": {"v1.2.99": ("v1.2.99", 2519405360), "v1.3.38": ("v1.3.38", 2734101008)},
+    "H0063": {"v1.2.99": ("v1.2.99", 2519405360), "v1.3.38": ("v1.3.38", 2734101008)},
 }
 STICKS = {"G0082": "XGIMI_HORSEPOPULAR_XR03D.bin", "G0130": "XGIMI_GOATELEGANT_XR03D.bin",
           "G0148": "XGIMI_GOATELEGANT_XR03D.bin", "G0058": "XGIMI_DRAGONHEALTHY_XN03C.bin",
-          "G0111": "XGIMI_HORSEPOPULAR_XR04E.bin", "G0100": "XGIMI_HORSEPOPULAR_XR03E.bin"}
+          "G0111": "XGIMI_HORSEPOPULAR_XR04E.bin", "G0100": "XGIMI_HORSEPOPULAR_XR03E.bin",
+          "H0062": "XGIMI_HORSEPOPULAR_XR04EOS.bin", "H0063": "XGIMI_HORSEPOPULAR_XR03EOS.bin"}
 
 
 def restore_cases(c):
@@ -291,7 +294,7 @@ def restore_cases(c):
     check(all(f["url"].startswith(ic.XGIMI_FIRMWARE + "release/") and f["url"].endswith("/" + e["restore"]["file"])
               for e in c["models"] if "restore" in e for f in e["restore"]["files"]),
           "way back: every file on XGIMI's release server under the stick name")
-    check(all("restore" not in e for e in c["models"] if e["model"] in ("G0155", "H0062", "H0063")),
+    check(all("restore" not in e for e in c["models"] if e["model"] in ("G0155",)),
           "way back: no official file for the models without a known one (the screen shows the guide)")
     # the same files as the guides and the computer installer
     docs = {m: (G / "docs/install" / g / "en.md").read_text(encoding="utf-8")
@@ -617,6 +620,9 @@ def main():
     check(rs["board"] == "mt9681" and rs["platform"] == "mt5877" and rs["product"] is None and len(rs["certs"]) == 2,
           "G0155 entry: board, platform, its own two certificates")
     check(json.loads(ic.dump(c)) == c and ic.dump(build_from(FIX)) == ic.dump(c), "the build is stable (same snapshot, same bytes)")
+    want = ["https://stats.lumen-os.net/lumen/v1/report", "https://prompt.az/lumen/v1/report"]
+    check(ic.report_urls() == want and c.get("reports") == want,
+          "report addresses: our server straight first, the old Cloudflare address after it: %s" % c.get("reports"))
     restore_cases(c)
 
     with tempfile.TemporaryDirectory() as t:

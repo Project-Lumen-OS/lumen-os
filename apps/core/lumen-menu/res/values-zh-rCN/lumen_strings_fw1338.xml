@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">动态黑位增强设置</string>
+    <string name="lumen_m_db_level">动态黑位档位</string>
+    <string name="lumen_m_db_subtitle_top">画面顶部字幕遮挡区</string>
+    <string name="lumen_m_db_subtitle_bottom">画面底部字幕遮挡区</string>
+    <string name="lumen_m_db_reset">清除字幕遮挡区</string>
+    <string name="lumen_m_color_uniformity">色均调整</string>
+</resources>

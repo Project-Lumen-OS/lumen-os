@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Module "source": Russian translation of values/strings_source.xml. -->
 <resources>
-    <string name="source_title">Источник сигнала</string>
-    <string name="source_home">Главный экран</string>
-    <string name="source_hdmi">HDMI %1$d</string>
     <string name="source_open_failed">Не удалось открыть %1$s</string>
 </resources>

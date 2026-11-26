@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">Erişim noktası</string>
-    <string name="lumen_m_hotspot_name">Ağ adı</string>
     <string name="lumen_m_hotspot_password">Şifre</string>
     <string name="lumen_m_hotspot_reset">Varsayılana geri yükle</string>
     <string name="lumen_m_hotspot_on" formatted="true">%s erişim noktası açıldı</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">Geçerli yapılandırma kaydedildi</string>
     <string name="lumen_m_hotspot_name_title">Erişim noktası adı</string>
     <string name="lumen_m_hotspot_password_title">Erişim noktası şifresi</string>
-    <string name="lumen_m_hotspot_password_hint">En az 8 karakter</string>
     <string name="lumen_m_hotspot_name_empty">Bir ağ adı girin</string>
     <string name="lumen_m_hotspot_name_long">Ad çok uzun</string>
     <string name="lumen_m_hotspot_password_short">En az 8 karakter girin</string>

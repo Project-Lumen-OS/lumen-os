@@ -1,0 +1,18 @@
+#!/bin/sh
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+# Interface resolution, boot reason and AK 109 unit host checks (display/UiRes, sys/BootReason and
+# ak/AkPatternSpec are plain Java): sh test/uires/run.sh
+set -eu
+HERE=$(cd "$(dirname "$0")/../.." && pwd)
+JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
+OUT=$(mktemp -d)
+trap 'rm -rf "$OUT"' EXIT
+BR=$HERE/src/org/lumen/projector/sys/BootReason.java   # an assembled tree, else the shared projector files
+[ -f "$BR" ] || BR=$(cd "$HERE/../../.." && pwd)/apps/common/projector/src/org/lumen/projector/sys/BootReason.java
+[ -f "$BR" ] || BR=${LUMEN_GSI:-.}/apps/common/projector/src/org/lumen/projector/sys/BootReason.java
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
+  "$HERE/src/org/lumen/projector/display/UiRes.java" "$HERE/src/org/lumen/projector/display/UiResKeep.java" "$BR" \
+  "$HERE/src/org/lumen/projector/ak/AkPatternSpec.java" \
+  "$HERE/test/uires/UiResTest.java" "$HERE/test/uires/AkUnitsTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.display.UiResTest
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.ak.AkUnitsTest

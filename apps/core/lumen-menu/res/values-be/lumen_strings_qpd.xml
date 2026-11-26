@@ -5,13 +5,6 @@
     <string name="lumen_qpd_autocorrect">Аўтакарэкцыя</string>
     <string name="lumen_qpd_autocorrect_value">Адным націскам</string>
     <string name="lumen_qpd_zoom">Зум</string>
-    <string name="lumen_qpd_bluetooth">Bluetooth</string>
-    <string name="lumen_qpd_network">Сетка</string>
-    <string name="lumen_qpd_theme">Афармленне</string>
-    <string name="lumen_qpd_theme_light">Светлая</string>
-    <string name="lumen_qpd_theme_dark">Цёмная</string>
-    <string name="lumen_qpd_theme_auto">Аўта</string>
-    <string name="lumen_qpd_mirroring">Паўтор экрана</string>
     <string name="lumen_qpd_mirror_on">Паўтор экрана (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Пытацца перад падключэннем</string>
     <string name="lumen_qpd_mirror_name">Назва</string>

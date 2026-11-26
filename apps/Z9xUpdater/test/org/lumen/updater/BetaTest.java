@@ -52,7 +52,7 @@ public final class BetaTest {
         eq("nogms beta", BETA, c == null ? null : c[1]);
         eq("private: no beta", null, Ota.channels(LATEST + "update-stable.json"));
         eq("Google edition: no beta", null, Ota.channels(LATEST + "update-public.json"));
-        eq("never chosen = the image's channel", false, Ota.betaOn(NOGMS, null));
+        eq("never chosen, no version: stable", false, Ota.betaOn(NOGMS, null));
         eq("chosen on", true, Ota.betaOn(NOGMS, true));
         eq("chosen off", false, Ota.betaOn(NOGMS, false));
         eq("on without a beta channel", false, Ota.betaOn(LATEST + "update-stable.json", true));
@@ -122,6 +122,30 @@ public final class BetaTest {
         eq("pick: the final over the last beta", 0, Channels.pick(new int[] {1001199, 1001102}));
         Ota.setBeta(false);
         eq("1.0.10 under a beta", "uptodate", res(app("public-nogms", 10012)));
+
+        // never chosen: the build type decides (a Z9X beta reads the beta channel, a final the stable one), the
+        // image URL is the stable file on both; the choice wins either way
+        image(NOGMS, 1001115);
+        SystemProperties.VALUES.put("ro.z9x.version", "1.0.11-beta15");
+        Ota.setBeta(null);
+        eq("beta build: on by default", true, Ota.betaOn());
+        eq("beta build: reads both", NOGMS + " " + BETA, String.join(" ", Channels.read()));
+        eq("beta build: next beta offered", "ok", res(app("public-beta", 1001116)));
+        eq("beta build: older stable is up to date", "uptodate", res(app("public-nogms", 10012)));
+        Ota.setBeta(false);
+        eq("beta build turned to stable", NOGMS, String.join(" ", Channels.read()));
+        eq("beta build on stable: older stable is up to date", "uptodate", res(app("public-nogms", 10012)));
+        eq("beta build on stable: next beta refused", "blk_channel", res(app("public-beta", 1001116)));
+        image(NOGMS, 10012);
+        SystemProperties.VALUES.put("ro.z9x.version", "1.0.10");
+        Ota.setBeta(null);
+        eq("final build: stable by default", false, Ota.betaOn());
+        eq("final build: reads stable only", NOGMS, String.join(" ", Channels.read()));
+        Ota.setBeta(true);
+        eq("final build turned to beta", NOGMS + " " + BETA, String.join(" ", Channels.read()));
+        SystemProperties.VALUES.put("ro.z9x.version", "1.0.11-rc1");
+        Ota.setBeta(null);
+        eq("rc build: beta by default", true, Ota.betaOn());
 
         // the private and the Google editions: no switch, the choice changes nothing
         image(LATEST + "update-stable.json", 10009);

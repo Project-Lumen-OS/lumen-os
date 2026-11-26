@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+# Lumen problem report logs (install as /system/etc/init/lumen_report.rc; script /system/etc/lumen/lumen_report.sh
+# 0755). Shipped in every Lumen image: tools/build/build.py stages both files for every device (COMMON_FILES) and
+# refuses a recipe that does not place them.
+#
+# The report app (apps/core/lumen-report RootLogs) sets sys.lumen.report.req to a new token (the request pattern of
+# lumen_hdmirx.rc); this oneshot collects the system log, the crash buffer, the kernel log and three dumpsys summaries,
+# scrubbed and size-capped, into /dev/lumen_report (readable only by root and the report app's group), answers in
+# sys.lumen.report.done and removes the files once the app set sys.lumen.report.ack to the token (or after 60 s).
+# A request that comes while one runs is served by the running script before it exits (init does not start a running
+# oneshot twice).
+# Labels: the service runs in u:r:su:s0 like every Lumen root helper of these userdebug images (lumen_hdmirx,
+# z9x_bootinfo, lumen_dsu_install); sys.lumen.* is system_prop (sys.*); the images run permissive, so the app's read of
+# /dev/lumen_report is not refused.
+#
+# CEC messages in the system log (the report's CEC journal, CecJournal in hdmi.txt): the framework's HdmiLogger prints
+# every CEC message it sends or receives ([S]/[R], tag HDMI) only when log.tag.HDMI allows DEBUG, and reads that once
+# when system_server loads the class, so it is set here before zygote starts. The message text is built either way;
+# the only cost is the log line (about 60 a minute with a soundbar that asks the power status every 2 s).
+
+on early-init
+    setprop log.tag.HDMI D
+
+on boot
+    mkdir /dev/lumen_report 0750 root system
+
+on property:sys.lumen.report.req=* && property:sys.boot_completed=1
+    start lumen_report
+
+service lumen_report /system/bin/sh /system/etc/lumen/lumen_report.sh
+    user root
+    group root system log
+    seclabel u:r:su:s0
+    oneshot
+    disabled

@@ -1,0 +1,52 @@
+# The stock facts of the XGIMI RS30 Ultra G0114 (G0114) behind its model data, read from the official v1.2.27 FULL OTA (no dump of a
+# unit; the firmware facts are the line's devices/_family/rs30old/research/stock_v*.tsv) (feature.xml or system.ini differs on an older firmware: see the line file). The tree rows name
+# the nodes of settings_tree_product_athena3ultra that differ from settings_tree_product_athena35ultramax (the G0155 tree,
+# the RS30 family's menu). tools/devices/test/stock_facts.py holds the data against these lines.
+# Columns (tab separated): kind, key, value, evidence.
+fact	product	Product_athena3ultra	xgimiconfig/G0114/system.ini ProductName
+fact	show_name	RS30 Ultra	xgimiconfig/G0114/system.ini DeviceShowName
+fact	restore_bin	XGIMI_HORSEPOPULAR_XR07C.bin	xgimiconfig/G0114/system.ini UpdateBinName
+fact	model_prop_sha256	fd11ad032f8e4355f9dc2dd7802a155366368a226d0bf372c8c335309e207f19	vendor/etc/xgimimodelname/G0114/build.prop (image/g0114_model_prop.txt)
+fact	feature_sha256	c3fd9b0a5d80a005bfe6b5f3d752f7426427e9fbe05b37e963fd6109cd367743	xgimiconfig/G0114/feature/feature.xml
+tree	picture_modes	image_mode_4_state	ai sport movie color_accuracy office performance
+tree	memc	image_mode_motion_compensation_v4	off low medium high
+tree	color_temp	image_mode_4_color_temp_athena3	standard movie d65 warm
+tree	extra	wall_color_calibration	in the v1.2.27 tree, not in the v1.1.47 one (newsettings 6.03.00.58): the row follows the newest stock, the same vendor calls on both tables
+tree	absent	picture.anti_rbe	picture_anti_rbe is not in the tree, no supported_rainbow_reduction in feature.xml
+tree	extra	screen_memory	projection screen > screen memory (keystone.action.screen.memory): the line's gmpf table has no lens memory calls (no NimbleOptical methods), not offered: open
+tree	extra	image_mode_office_athena3	picture mode 40 is office here (only a picture mode, none of the office locks), bright on the G0155 tree
+tree	iris	picture_iris_ring_adjustment_athena3	f2 f3_5 f5 dynamic
+feature	real_cinema_mode	-	feature.xml of xgimiconfig/G0114
+feature	support_brightness_boost	2	feature.xml of xgimiconfig/G0114
+feature	support_filmmaker	false	feature.xml of xgimiconfig/G0114
+feature	support_imax	true	feature.xml of xgimiconfig/G0114
+feature	support_dolby_vision	true	feature.xml of xgimiconfig/G0114
+feature	dolby_vision_screen_version	2	feature.xml of xgimiconfig/G0114
+feature	support_hdr_vivid	true	feature.xml of xgimiconfig/G0114
+feature	support_hfr	true	feature.xml of xgimiconfig/G0114
+feature	support_vrr_only_at_top_speed	true	feature.xml of xgimiconfig/G0114
+feature	support_amd_free_sync_premium	true	feature.xml of xgimiconfig/G0114
+feature	hgig_mode	1	feature.xml of xgimiconfig/G0114
+feature	edid_2_version_val	1	feature.xml of xgimiconfig/G0114
+feature	support_wall_color_adjust_type	3	feature.xml of xgimiconfig/G0114
+feature	support_ambient_light	true	feature.xml of xgimiconfig/G0114
+feature	support_human_detect_type	1	feature.xml of xgimiconfig/G0114
+feature	support_human_detect_source_type	4	feature.xml of xgimiconfig/G0114
+feature	support_elder_color	true	feature.xml of xgimiconfig/G0114
+feature	support_optical_zoom	true	feature.xml of xgimiconfig/G0114
+feature	support_pantilt_type	1	feature.xml of xgimiconfig/G0114
+feature	support_dts_vx_effect	true	feature.xml of xgimiconfig/G0114
+feature	support_spdif	false	feature.xml of xgimiconfig/G0114
+feature	support_lan_rj45	false	feature.xml of xgimiconfig/G0114
+feature	supported_rainbow_reduction	-	feature.xml of xgimiconfig/G0114
+hw	hdmi_ports	3	tv/edid14_*.bin
+hw	hdmi_map	1:2,2:0,3:1	tv/tvconfig.sql tbl_Hdmi_Hardware_Mapping u8HdmiIndex -> u8HdmiPortId
+hw	aperture_type	4	aperture/aperture.ini
+hw	tof_type	10	Tof/Tof.ini
+hw	camera_type	6	camera/camera.ini
+hw	pantilt_type	2	panTilt/panTilt.ini
+hw	tiltshift_type	2	tiltshift/tiltshift.ini
+hw	zoom_motor	1	zoom/zoom.ini ZoomControlEn
+hw	human_source_mode	4	xlab/HumanDetect.ini SOURCE_MODE
+hw	audio	spdif_jack_type=1 device_arc=1 device_headset=0	audio/audio.ini
+tree	extra	brightness_boost	feature.xml support_brightness_boost 2 (a Boost step), no RS30 Boost row in StockLight: open, needs DisplayManager 151 / 152 checked on a unit

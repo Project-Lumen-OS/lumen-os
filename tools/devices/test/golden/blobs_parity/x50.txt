@@ -1,14 +1,14 @@
 ## x50 ok
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -76,7 +76,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -96,14 +96,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 ok_again
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 
@@ -161,7 +161,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -181,7 +181,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 partial_again
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -253,7 +253,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 63bd3b4ebd87776f
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 c02ed07fe11946b5
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -384,14 +384,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 slot_a
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -459,7 +459,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -507,14 +507,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 partition_in_trial
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -582,7 +582,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -602,7 +602,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 bad_hash_first
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -673,7 +673,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 63bd3b4ebd87776f
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 c02ed07fe11946b5
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -692,7 +692,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 bad_hash_place
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -763,7 +763,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 63bd3b4ebd87776f
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 c02ed07fe11946b5
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -782,7 +782,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 bad_hash_policy
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -853,7 +853,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 8ae3990a1880a327
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 c553eb25710c2649
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -872,7 +872,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 missing_policy
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -943,7 +943,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1071 6ef2f5d1f34a59f0
+mnt/z9x_blobs/x/MANIFEST f 0644 1071 cbc529c928b60c1f
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -962,7 +962,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 missing_first
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -1033,7 +1033,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1079 95abadce63454f6b
+mnt/z9x_blobs/x/MANIFEST f 0644 1079 79937dafb7c02cb7
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1052,7 +1052,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 placeholder_not_empty
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -1123,7 +1123,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1143,7 +1143,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 placeholder_missing
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -1214,7 +1214,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1234,7 +1234,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 target_missing
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -1305,7 +1305,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1325,14 +1325,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 target_outside
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -1358,7 +1358,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1378,14 +1378,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 target_apex_other
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -1411,7 +1411,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1494,14 +1494,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 short_partition
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -1569,7 +1569,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1651,7 +1651,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -1709,7 +1709,7 @@ sys.z9x.blobs=ok
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'other-set-a' is not this image's 'x50-v1264-b' (files still checked one by one)
+x50_blobs: blob set 'other-set-a' is not this image's 'x50-v1264-c' (files still checked one by one)
 x50_blobs: ok: 11 files of set other-set-a bound
 
 [binds]
@@ -1798,7 +1798,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 mount_fail
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=mount:bin/nativeui
 sys.z9x.blobs=mount:system_ext/lib/libc2plugin_store.so
 
@@ -1862,7 +1862,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -1880,7 +1880,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 mount_fail_policy
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=partial
 
@@ -1954,7 +1954,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2005,7 +2005,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1188 ddaa27e0b563a90d
+mnt/z9x_blobs/x/MANIFEST f 0644 1188 d581f10fc1533551
 mnt/z9x_blobs/x/bin/nativeui f 0644 9437184 2809367229d9c816
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2025,7 +2025,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 z9x_style_partition
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=missing:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -2094,7 +2094,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1102 dc8e804cc3e9237e
+mnt/z9x_blobs/x/MANIFEST f 0644 1102 e8645004b9f36e90
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2112,7 +2112,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_drawer_bad
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -2182,7 +2182,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 276cd23ececbc28e
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 15646f6b921c5ee3
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2200,7 +2200,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_lib_bad
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:lib64/xgimi.hardware.gmpf-V1-ndk.so
 sys.z9x.blobs=partial
 
@@ -2270,7 +2270,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 3f0f0836cdd4b591
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8ef34bd0ec912332
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2288,7 +2288,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_lib_missing
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=missing:lib64/xgimi.hardware.gmpf-V1-ndk.so
 sys.z9x.blobs=partial
 
@@ -2358,7 +2358,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1079 ccc1c607bb87553b
+mnt/z9x_blobs/x/MANIFEST f 0644 1079 fbe0f8195cdfce0f
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2376,7 +2376,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_drawer_missing
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=missing:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -2445,7 +2445,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1102 dc8e804cc3e9237e
+mnt/z9x_blobs/x/MANIFEST f 0644 1102 e8645004b9f36e90
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2463,7 +2463,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_placeholder_not_empty
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=noplaceholder:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -2533,7 +2533,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2552,7 +2552,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_placeholder_missing
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=noplaceholder:lib64/xgimi.hardware.gmpf-V1-ndk.so
 sys.z9x.blobs=partial
 
@@ -2622,7 +2622,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2641,7 +2641,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_second_bind_fails
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=mount:lib64/xgimi.hardware.gmpf-V1-ndk.so
 sys.z9x.blobs=partial
 
@@ -2716,7 +2716,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -2734,14 +2734,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_label_refused
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -2767,7 +2767,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2787,14 +2787,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_mode_refused
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -2820,7 +2820,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2840,14 +2840,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_mode_without_label
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -2873,7 +2873,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2893,14 +2893,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_bind_refused
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -2926,7 +2926,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2946,14 +2946,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_lines_absent
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:allow
 sys.z9x.blobs=bad:allow
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: blob set 'x50-v1264-b' is not this image's '' (files still checked one by one)
+x50_blobs: blob set 'x50-v1264-c' is not this image's '' (files still checked one by one)
 x50_blobs: eye-protection drawer nativeui not started: bad:allow
 x50_blobs: bad:allow
 
@@ -2979,7 +2979,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0644 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -2999,14 +2999,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_v1254
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -3074,7 +3074,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 f603c86a813ce4f2
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8b497aaea1889c4a
 mnt/z9x_blobs/x/bin/nativeui f 0755 56 d2ee431a9c3b060a
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -3094,14 +3094,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_v1299
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -3169,7 +3169,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 245d5afd1fdfcdd6
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 587dd89f5faf33e6
 mnt/z9x_blobs/x/bin/nativeui f 0755 56 a122be1af3d6012b
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -3189,7 +3189,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_v1299_on_v1254
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -3257,7 +3257,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 245d5afd1fdfcdd6
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 587dd89f5faf33e6
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3275,7 +3275,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_v1254_on_v1299
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -3343,7 +3343,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 f603c86a813ce4f2
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8b497aaea1889c4a
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3361,7 +3361,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_other_firmware
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -3429,7 +3429,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 f603c86a813ce4f2
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8b497aaea1889c4a
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3447,7 +3447,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_no_firmware
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -3515,7 +3515,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 f603c86a813ce4f2
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8b497aaea1889c4a
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3533,7 +3533,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_firmware_prefix
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:bin/nativeui
 sys.z9x.blobs=partial
 
@@ -3601,7 +3601,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 f603c86a813ce4f2
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 8b497aaea1889c4a
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3619,7 +3619,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_mixed
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:mixed
 sys.z9x.blobs=partial
 
@@ -3691,7 +3691,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 3204731de7c9d847
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 fb9705f2060e4dd7
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3709,7 +3709,7 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_alt_mixed_lib
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=bad:mixed
 sys.z9x.blobs=partial
 
@@ -3781,7 +3781,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 dfe652a5b7d780e8
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 750d37b37bfa22c3
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
 mnt/z9x_blobs/x/etc/xgimi/libstagefright_foundation.so f 0644 62 3042e0b678db0bd3
@@ -3799,14 +3799,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 eye_base_on_v1254
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -3874,7 +3874,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -3894,14 +3894,14 @@ data/vendor/tmp/bootcomplete f 0644 13 774b9afa5dc47edf
 ## x50 once_per_boot
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 
@@ -3959,7 +3959,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -3980,13 +3980,13 @@ data/vendor/tmp/nuififo p 0644
 ## x50 only_fifos_removed
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo retnuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -4054,7 +4054,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a
@@ -4075,13 +4075,13 @@ data/vendor/tmp/nuififo f 0644 2 73cb3858a687a849
 ## x50 fifo_dir
 [setprop.log]
 sys.z9x.blobs.src=partition
-sys.z9x.blobs.set=x50-v1264-b
+sys.z9x.blobs.set=x50-v1264-c
 sys.lumen.nui=ok
 sys.z9x.blobs=ok
 
 [logcat]
 x50_blobs: removed the native-UI fifo nuififo left from an earlier boot
-x50_blobs: ok: 11 files of set x50-v1264-b bound
+x50_blobs: ok: 11 files of set x50-v1264-c bound
 
 [binds]
 6f4227ee5f78e6bb9a2fa564c096b94be94fab78ff3b2a5c5a453317ec18c4a4 <R>/system/system_ext/lib/libc2plugin_store.so
@@ -4149,7 +4149,7 @@ mnt/z9x_blobs/x/etc d 0755
 mnt/z9x_blobs/x/lib d 0755
 mnt/z9x_blobs/x/lib64 d 0755
 mnt/z9x_blobs/x/system_ext d 0755
-mnt/z9x_blobs/x/MANIFEST f 0644 1183 6b00074689b505b9
+mnt/z9x_blobs/x/MANIFEST f 0644 1183 6265726905720c09
 mnt/z9x_blobs/x/bin/nativeui f 0755 36 00a485f2ceb40aac
 mnt/z9x_blobs/x/etc/xgimi d 0755
 mnt/z9x_blobs/x/etc/xgimi/audio_policy_configuration.xml f 0644 33262 78adb2b609baa08a

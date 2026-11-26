@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.projector.Family;
 import org.lumen.projector.R;
 import org.lumen.projector.ui.NavRow;
 import org.lumen.projector.ui.OverlayHost;
@@ -176,11 +177,11 @@ public final class PowerMenu extends Panel {
         tiles.setClipChildren(false);
         tiles.setClipToPadding(false);
         addTile(ctx, Tile.ICON_SLEEP, ctx.getString(R.string.power_menu_sleep),
-                guarded(() -> PowerKey.PowerActions.sleepWithFade(ctx, "power menu sleep")));
+                guarded(() -> Family.powerSleepWithFade(ctx, "power menu sleep")));
         addTile(ctx, Tile.ICON_POWER, ctx.getString(R.string.power_menu_off),
-                guarded(() -> PowerKey.PowerActions.powerOff(ctx)));
+                guarded(() -> Family.powerOff(ctx)));
         addTile(ctx, Tile.ICON_RESTART, ctx.getString(R.string.power_menu_restart),
-                guarded(() -> PowerKey.PowerActions.restart(ctx)));
+                guarded(() -> Family.powerRestart(ctx)));
         timerTile = addTile(ctx, Tile.ICON_TIMER, ctx.getString(R.string.power_menu_timer),
                 guarded(() -> showTimer(ctx)));
         updateTimerTile(ctx);

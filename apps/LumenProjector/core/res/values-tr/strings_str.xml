@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Derin uyku kapalı</string>
+    <string name="hb_str_blocked_usb">USB ile bir bilgisayar bağlı: bekleme modunda projektör tam olarak uyumaz ve fanlar çalışmaya devam eder. Derin uykuyu geri almak için USB kablosunu çıkarın.</string>
+    <string name="hb_str_blocked_update">Bir güncelleme yükleniyor: derin uyku bittiğinde geri gelir.</string>
+    <string name="hb_str_blocked_update_check">Güncellenen sistem başlatmadan sonra denetleniyor: derin uyku birkaç dakika içinde geri gelir.</string>
+    <string name="hb_str_blocked_off">Bu projektörde derin uyku kapalı (servis ayarı).</string>
+</resources>

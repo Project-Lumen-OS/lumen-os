@@ -173,11 +173,12 @@ public final class PictureSettingsRuleTest {
             eq("78", e.getMessage(), "a failed kept read reaches the adapter");
         }
 
-        // the texts: the stock English (values-en of the HB newsettings, what a stock HB shows in English), every
-        // language folder of the module has all five
+        // the texts: the stock English (values-en of the HB newsettings, what a stock HB shows in English) in the one
+        // capitalisation rule of every English text (tools/i18n/text_style.py, 2026-11-24: game mode in sentence case),
+        // every language folder of the module has all five
         if (a.length > 0) {
             File res = new File(a[0], "apps/core/lumen-menu/res");
-            String[][] en = {{G, "Game Mode in effect"},
+            String[][] en = {{G, "Game mode in effect"},
                     {AI, "Professional settings cannot be used in AI quality picture mode"},
                     {PERF, "Professional settings are not supported in performance picture mode"},
                     {AI_B, "Standard settings cannot be used in AI quality picture mode"},
@@ -228,7 +229,7 @@ public final class PictureSettingsRuleTest {
                 "picture.aspect", "picture.reset_all"));
         java.util.Set<String> z9xBasic = new java.util.HashSet<>(java.util.Arrays.asList("picture.pq", "picture.color_temp",
                 "picture.memc", "picture.reset", "picture.auto_switch"));
-        String[][] models = {{"g0111", "x50"}, {"g0100", "x50"}, {"g0155", "x50"}, {"h0061", "x50"}, {"h0062", "x50"}, {"h0063", "x50"},
+        String[][] models = {{"g0111", "x50"}, {"g0100", "x50"}, {"g0155", "x50"}, {"g0170", "x50"}, {"h0061", "x50"}, {"h0062", "x50"}, {"h0063", "x50"},
                 {"goat_elegant", "hb"}, {"horse_popular", "z9x"}};
         Pattern key = Pattern.compile("\"((?:picture|sound|lamp|boost|game)[a-z0-9_.]*)\"\\s*:\\s*\\{");
         for (String[] m : models) {

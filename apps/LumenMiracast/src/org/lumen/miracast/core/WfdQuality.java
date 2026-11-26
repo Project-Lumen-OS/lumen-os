@@ -12,6 +12,17 @@ public enum WfdQuality {
         maxFps = f;
     }
 
+    /** The next choice of the casting screen's quality row (1080p 60, 1080p 30, 720p, then 1080p 60 again). */
+    public WfdQuality next() {
+        return step(1);
+    }
+
+    /** The choice d steps away (LEFT on the row: -1), round. */
+    public WfdQuality step(int d) {
+        WfdQuality[] all = values();
+        return all[Math.floorMod(ordinal() + d, all.length)];
+    }
+
     public static WfdQuality parse(String s) {
         for (WfdQuality q : values()) {
             if (q.name().equalsIgnoreCase(s)) return q;

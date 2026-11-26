@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">ペアレンタルコントロール</string>
-    <string name="lumen_lp_intro">子どもが開けるものと視聴時間を制限します。</string>
     <string name="lumen_lp_lock">チャイルドロック</string>
-    <string name="lumen_lp_lock_desc">オンにすると、管理範囲や視聴時間などを設定できます</string>
     <string name="lumen_lp_lock_off_title">チャイルドロックをオフにしますか?</string>
     <string name="lumen_lp_lock_off_text">時間制限と起動時のパスワードが無効になります。保護者設定はパスワードなしで開きます。</string>
-    <string name="lumen_lp_turn_off">オフにする</string>
-    <string name="lumen_lp_cancel">キャンセル</string>
     <string name="lumen_lp_child_mode">キッズモード</string>
     <string name="lumen_lp_child_apps">キッズモードのアプリ</string>
     <string name="lumen_lp_child_apps_count">%1$d 個選択</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">キッズモードのみ</string>
     <string name="lumen_lp_range_global">すべて</string>
     <string name="lumen_lp_session">1 回の視聴時間</string>
-    <string name="lumen_lp_session_desc">その後 10 分休憩</string>
     <string name="lumen_lp_daily">1 日の視聴時間</string>
     <string name="lumen_lp_no_limit">制限なし</string>
     <string name="lumen_lp_minutes">%1$d 分</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">視聴時間が終わりました。10 分休憩してください</string>
     <string name="lumen_lp_rest_daily">今日の視聴時間は終わりました</string>
     <string name="lumen_lp_rest_unlock">ロック解除</string>
-    <string name="lumen_lp_on">オン</string>
-    <string name="lumen_lp_off">オフ</string>
 </resources>

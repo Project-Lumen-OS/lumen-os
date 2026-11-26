@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">語言和時間</string>
+    <string name="lumen_m_hdr_power">電源</string>
+    <string name="lumen_m_hdr_display_menu">螢幕和選單</string>
+    <string name="lumen_m_hdr_remote_voice">遙控器和語音</string>
+    <string name="lumen_m_hdr_apps_devices">應用程式和裝置</string>
+    <string name="lumen_m_hdr_storage_updates">儲存空間和更新</string>
+    <string name="lumen_m_hdr_help">說明</string>
+    <string name="lumen_m_date_time">日期和時間</string>
+    <string name="lumen_m_date_auto">自動</string>
+    <string name="lumen_m_storage">儲存空間</string>
+    <string name="lumen_m_storage_free">可用 %1$s</string>
+    <string name="lumen_m_update">系統更新</string>
+    <string name="lumen_m_about">關於這台投影機</string>
+    <string name="lumen_m_system_info">系統詳細資料</string>
+    <string name="lumen_m_network_adb">網路偵錯</string>
+    <string name="lumen_m_android_dev">Android 開發人員選項</string>
+</resources>

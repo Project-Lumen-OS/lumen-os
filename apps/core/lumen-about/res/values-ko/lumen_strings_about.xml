@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">XGIMI 공식 파일 목록은 프로젝트 페이지의 가이드에 있습니다.</string>
     <string name="lumen_about_erases">USB 메모리는 프로젝터의 모든 것을 지웁니다: 앱, 계정, 설정, 파일.</string>
     <string name="lumen_about_scan">휴대전화로 스캔하여 열기</string>
-    <string name="lumen_about_close">닫기</string>
 </resources>

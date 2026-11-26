@@ -3,7 +3,7 @@
 Source: jadx output of the stock X50 v1.2.64 apps on xgimi-builder `~/devices/g0111_mt9681/work/dec/`
 (release_838_newsettings, SystemUI_release_838, XgimiHome_release838, minitvfactory_release_838), grep of call sites
 outside the bundled `com/xgimi/gmpf/api` wrappers (2026-11-08, script `grepcalls.py`). Paths are relative to each
-app's `sources/`. Key sequences quoted in apps/X50Projector/README.md were read in full:
+app's `sources/`. Key sequences quoted in apps/LumenProjector/host/activity/README.md were read in full:
 - newsettings `com/xgimi/focusing/FocusViewModel.java` 155-305: MANUAL_FOCUS_LEFT manualFocus(1), RIGHT manualFocus(0), each followed by a coroutine delay(400) and manualFocus(2); AUTO_FOCUS -> FocusFunctionManager.autoFocus -> GmDisplayManager.autoFocus(46) (ProjectorFocusManager 3, BANNED, not used).
 - SystemUI `FocusUIV2.java` 499: autoFocus() = GmDeviceManager.sendFocusStatus(MusicPlayerManager.EN_LED_AIRPLAY_DISCON = 44).
 - newsettings `com/xgimi/keystone/KeyStoneManager.java` 130-145: autoKeystone(): misckey caller newAutoKst(9), otherwise autoKst(); 255-272 and 318-334: reset = setIChipReset + setLowConfigureKeyStoneValue(50) + zoomControl(5, 10) with optical zoom + setTiltShiftMove(13, 0) with lens shift; 343 setBootAk = savePowerOnAKFlag; 354/362 setProjScreenAdp / setProjCurtainAdp.

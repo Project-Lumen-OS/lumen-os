@@ -17,6 +17,14 @@ public final class ControlTest {
 
     public static void main(String[] a) {
         // which setting a call changes
+        eq("set_quality is not a switch", null, Control.settingOf(Control.SET_QUALITY));
+        eq("follow_name is not a switch", null, Control.settingOf(Control.FOLLOW_NAME));
+        // the casting screen's quality row steps through every choice and back to the first
+        eq("1080p 60 then 1080p 30", WfdQuality.P1080_30, WfdQuality.P1080_60.next());
+        eq("1080p 30 then 720p", WfdQuality.P720_60, WfdQuality.P1080_30.next());
+        eq("720p then 1080p 60", WfdQuality.P1080_60, WfdQuality.P720_60.next());
+        eq("LEFT: 1080p 60 back to 720p", WfdQuality.P720_60, WfdQuality.P1080_60.step(-1));
+        eq("LEFT: 720p back to 1080p 30", WfdQuality.P1080_30, WfdQuality.P720_60.step(-1));
         eq("set_enabled changes enabled", Control.ENABLED, Control.settingOf(Control.SET_ENABLED));
         eq("set_ask changes ask", Control.ASK, Control.settingOf(Control.SET_ASK));
         eq("state changes nothing", null, Control.settingOf(Control.STATE));

@@ -152,7 +152,8 @@ ok("hb steps.tsv: the rc is installed", "lumen\tinstall\t0644\thb_model_props.rc
 ok("hb steps.tsv: proven before installed", steps.find("model_props.py\tcheck") < steps.find("install\t0644\thb_model_props.rc"))
 ok("hb verify_tree.py: the rc is an expected file", '"system/etc/init/hb_model_props.rc": os.path.join(IN, "hb_model_props.rc"),'
    in read(os.path.join(G, "devices/goat_elegant/image/verify_tree.py")))
-hp = read(os.path.join(G, "apps", "HbProjector", "src", "org", "lumen", "projector", "panel", "HbPictureRows.java"))
+hp = read(os.path.join(G, "apps", "LumenProjector", "vendor", "xgimi", "aidl-gmpf", "src", "org", "lumen", "projector", "panel",
+                     "HbPictureRows.java"))
 ok("hb app: the AI mode hands its write to the shared AI picture quality", "org.lumen.projector.AiScenePolicy.afterOwnWrite(g, m.wire);" in hp)
 drv = read(os.path.join(G, "apps", "core", "lumen-aipq", "src", "org", "lumen", "aipq", "AiPqDriver.java"))
 ok("lumen-aipq: the AI default scene is ro.xgimi.default.aipq of the model file", 'PROP_RO = "ro.xgimi.default.aipq"' in drv)
@@ -164,7 +165,13 @@ ok("z9x steps.tsv: the rc is added", add in steps)
 ok("z9x steps.tsv: proven before added", 0 <= steps.find("model_props.py\tcheck") < steps.find(add))
 ok("z9x steps.tsv: read back from the patched tar", "*\ttar_same\t{tar}\tsystem/etc/init/z9x_model_props.rc\tz9x_model_props.rc\n" in steps)
 trap = [l.split()[1:] for l in read(os.path.join(G, "overlay/v1/z9x_trapezoid.rc")).split("\n") if l.strip().startswith("setprop ")]
-ok("z9x_trapezoid.rc: the seven trapezoid lines", len(trap) == 7)
+# the '##trapezoid' block of the stock G0082 build.prop: the dumps check below proves it against every pinned stock
+# file where the dumps are, this copy holds the values on a host without them
+STOCK_TRAP = [["vendor.xgimi.hwc.aa", "true"], ["vendor.mstar.trapezoid.secure.enable", "1"],
+              ["vendor.mstar.trapezoid.4K.enable", "1"], ["vendor.mstar.trapezoid.dual.gop.mode", "1"],
+              ["vendor.mstar.trapezoid.video.gop", "0"], ["vendor.mstar.hwc.tcvideo.format", "1"],
+              ["vendor.mstar.trapezoid.resolution.switch", "1"]]
+ok("z9x_trapezoid.rc: the seven stock trapezoid lines, values and order", trap == STOCK_TRAP)
 zlines = [l for f in IMAGES[1]["files"] for l in read(os.path.join(G, "devices/horse_popular/image", f)).split("\n")
           if l and not l.startswith("#")]
 ok("z9x: no trapezoid line set twice", not {k for k, _ in trap} & {x50_props.keyof(l) for l in zlines})

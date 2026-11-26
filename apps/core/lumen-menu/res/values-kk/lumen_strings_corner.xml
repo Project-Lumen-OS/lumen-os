@@ -2,12 +2,6 @@
 <!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
-    <string name="lumen_corner_title">Бұрыштарды дәл баптау</string>
     <string name="lumen_corner_circle">Ортадағы шеңбер дөп-дөңгелек болғанша реттеңіз</string>
-    <string name="lumen_corner_keys_move">Көрсеткілер: бұрышты жылжыту · OK: келесі бұрыш</string>
     <string name="lumen_corner_keys_more">Тісті доңғалақ түймесін басып тұрыңыз: бастапқы күйге қайтару · Артқа: дайын</string>
-    <string name="lumen_corner_tl">Сол жақ жоғарғы</string>
-    <string name="lumen_corner_tr">Оң жақ жоғарғы</string>
-    <string name="lumen_corner_br">Оң жақ төменгі</string>
-    <string name="lumen_corner_bl">Сол жақ төменгі</string>
 </resources>

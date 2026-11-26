@@ -11,6 +11,9 @@ import android.util.Log;
 
 import org.lumen.projector.R;
 
+import org.lumen.hdmiports.HdmiPort;
+import org.lumen.hdmiports.HdmiPorts;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,9 +51,22 @@ final class SourceInputs {
                 if (port <= 0 || i.getParentId() != null || i.getType() != TvInputInfo.TYPE_HDMI) continue;
                 s.ids.put(port, i.getId());
                 portOf.put(i.getId(), port);
-                if (tim.getInputState(i.getId()) == TvInputManager.INPUT_STATE_CONNECTED) s.connected.add(port);
                 CharSequence custom = i.loadCustomLabel(c);
                 if (custom != null && custom.toString().trim().length() > 0) s.labels.put(port, custom.toString().trim());
+            }
+            // the one port state (lumen-hdmiports, org.lumen.tvinput PortState): +5V as the stock "signal in", the name
+            List<HdmiPort> ports = HdmiPorts.read(c);
+            if (ports != null) {
+                for (HdmiPort p : ports) {
+                    if (p.plugged()) s.connected.add(p.port);
+                    if (p.title != null) s.devices.put(p.port, p.title);
+                }
+                return s;
+            }
+            for (TvInputInfo i : all) {                 // an older HDMI app without port states
+                if (portOf.containsKey(i.getId()) && tim.getInputState(i.getId()) == TvInputManager.INPUT_STATE_CONNECTED) {
+                    s.connected.add(portOf.get(i.getId()));
+                }
             }
             for (TvInputInfo i : all) {
                 Integer port = i.getParentId() == null ? null : portOf.get(i.getParentId());

@@ -2,50 +2,48 @@
 package org.lumen.report;
 
 import android.app.Activity;
-import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.format.Formatter;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.Switch;
-import android.widget.TextView;
 
-import org.lumen.icons.IconText;
 import org.lumen.projector.R;
+import org.lumen.ui.Inter;
+import org.lumen.ui.LumenTheme;
+import org.lumen.ui.Palette;
+import org.lumen.ui.ThemeFade;
+import org.lumen.ui.page.PaneProgress;
+import org.lumen.ui.page.PaneRow;
+import org.lumen.ui.page.TwoPane;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
- * "Send a problem report", the same screen on every projector (General > Send a problem report). Screens, one per
- * ReportJob state:
- *   consent    what is included and what is removed, the switch of automatic reports with its note, the codes of
- *              the last reports; "Send report" / "Cancel" (focus starts on Cancel: nothing leaves the projector
- *              without a deliberate press)
- *   progress   collecting step i of n, then sending x of y; Cancel stops and deletes everything
- *   done       the report code (LR-XXXXXX) to give to the developer
- *   queued     the server cannot be reached: the projector sends the report later, its code then shows here
- *   failed     why, "Try again" (the same zip, or a new collection) / "Close"
- * Framework widgets, D-pad only, every text 18 sp or more, sized for 960x540 dp. BACK: cancel a running report, else
- * close. The job lives in the process, so HOME during a report does not lose the code.
+ * "Send a problem report", the same screen on every projector (All settings > General > Send a problem report), in
+ * the shared two-pane page (lumen-ui TwoPane, owner pick A 2026-11-26): on the left where the user is, what a report
+ * does and the last report's code, on the right the actions. Which screen, which actions and where the focus starts
+ * is {@link ReportView} (focus starts on Send report). It follows the shared light / dark theme live (ThemeFade). The
+ * job lives in the process, so HOME during a report does not lose the code.
  */
 public final class ReportActivity extends Activity implements ReportJob.Listener {
     private static final String TAG = ReportConfig.TAG;
-    private static final int BG = 0xFF15171B, TEXT = 0xFFF1EEE8, DIM = 0xFFB5B1AA, ACCENT = 0xFFE9CF9C;
+    private static final String SEP = "  \u00b7  ";
 
     private ReportJob job;
-    private ScrollView scroll;
-    private TextView title;
-    private LinearLayout body;
-    private LinearLayout buttons;
-    private ReportState shown;
-    private TextView status;
-    private TextView hint;
-    private ProgressBar bar;
+    private ThemeFade theme;
+    private Palette pal;
+    private TwoPane page;
+    private ReportView shown;
+    private boolean details;
+    private ReportView.Action refocus;
+    private PaneProgress progress;
+    private final EnumMap<ReportView.Action, PaneRow> rows = new EnumMap<>(ReportView.Action.class);
 
     @Override
     protected void onCreate(Bundle b) {
@@ -55,7 +53,11 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
             return;
         }
         job = ReportJob.get();
-        buildFrame();
+        pal = LumenTheme.palette(this);
+        theme = ThemeFade.activity(this, p -> {
+            pal = p;
+            if (shown != null) build(focused());
+        });
     }
 
     @Override
@@ -63,13 +65,17 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
         super.onStart();
         if (job == null) return;
         job.addListener(this);
+        theme.start();
         shown = null;
         render();
     }
 
     @Override
     protected void onStop() {
-        if (job != null) job.removeListener(this);
+        if (job != null) {
+            job.removeListener(this);
+            theme.stop();
+        }
         super.onStop();
     }
 
@@ -81,75 +87,186 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
     @SuppressWarnings("deprecation")
     @Override
     public void onBackPressed() {
-        if (job != null) {
-            if (job.busy()) job.cancel();
-            else job.reset();
+        if (job == null || shown == null) {
+            super.onBackPressed();
+            return;
         }
-        super.onBackPressed();
+        switch (shown.back()) {
+            case CANCEL:
+                job.cancel();
+                return;
+            case START:
+                refocus = ReportView.returnFocus(shown.screen);
+                if (shown.screen == ReportView.Screen.DETAILS) details = false;
+                else job.reset();
+                render();
+                return;
+            default:
+                super.onBackPressed();
+        }
     }
 
-    // ------------------------------------------------------------------ frame
-    private int dp(float v) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, getResources().getDisplayMetrics()));
+    // ------------------------------------------------------------------ screens
+    private void render() {
+        if (job.state() != ReportState.IDLE) details = false;
+        ReportView v = ReportView.of(job.state(), details);
+        if (shown != null && v.screen == shown.screen) {
+            updateProgress();
+            return;
+        }
+        shown = v;
+        ReportView.Action f = refocus != null && v.actions.contains(refocus) ? refocus : v.focus;
+        refocus = null;
+        build(f);
     }
 
-    private void buildFrame() {
-        scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        scroll.setBackgroundColor(BG);
-        scroll.setDefaultFocusHighlightEnabled(false);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(48), dp(24), dp(48), dp(16));
-        scroll.addView(root, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        title = text("", 28, TEXT, true);
-        title.setPadding(0, 0, 0, dp(8));
-        root.addView(title);
-        body = new LinearLayout(this);
-        body.setOrientation(LinearLayout.VERTICAL);
-        root.addView(body, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
-        buttons = new LinearLayout(this);
-        buttons.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        blp.topMargin = dp(16);
-        root.addView(buttons, blp);
-        setContentView(scroll);
+    private ReportView.Action focused() {
+        for (Map.Entry<ReportView.Action, PaneRow> e : rows.entrySet()) if (e.getValue().isFocused()) return e.getKey();
+        return shown.focus;
     }
 
-    private TextView text(CharSequence s, int sp, int color, boolean bold) {
-        TextView t = new TextView(this);
-        t.setText(s);
-        t.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
-        t.setTextColor(color);
-        if (bold) t.setTypeface(Typeface.DEFAULT_BOLD);
-        return t;
+    private Drawable icon(int res) {
+        return getDrawable(res);
     }
 
-    private TextView add(LinearLayout parent, CharSequence s, int sp, int color, boolean bold, int topDp) {
-        TextView t = text(s, sp, color, bold);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = dp(topDp);
-        parent.addView(t, lp);
-        return t;
+    private void build(ReportView.Action focus) {
+        page = new TwoPane(this, pal);
+        rows.clear();
+        progress = null;
+        CharSequence crumb = getString(R.string.lumen_report_crumb_settings) + SEP + getString(R.string.lumen_report_crumb_general);
+        page.footer(icon(R.drawable.lumen_report_ic_lock), getString(R.string.lumen_report_footer));
+        switch (shown.screen) {
+            case DETAILS:
+                guideStart(crumb);
+                page.clear(true);
+                page.section(getString(R.string.lumen_report_included));
+                item(R.drawable.lumen_report_ic_logs, R.string.lumen_report_inc_logs, false);
+                item(R.drawable.lumen_report_ic_alert, R.string.lumen_report_inc_crashes, false);
+                item(R.drawable.lumen_report_ic_kernel, R.string.lumen_report_inc_kernel, false);
+                item(R.drawable.lumen_report_ic_devices, R.string.lumen_report_inc_devices, false);
+                item(R.drawable.lumen_report_ic_screen, R.string.lumen_report_inc_system, false);
+                page.section(getString(R.string.lumen_report_excluded));
+                item(R.drawable.lumen_report_ic_lock, R.string.lumen_report_exc_accounts, true);
+                item(R.drawable.lumen_report_ic_wifi_off, R.string.lumen_report_exc_network, true);
+                item(R.drawable.lumen_report_ic_shield, R.string.lumen_report_exc_serial, true);
+                item(R.drawable.lumen_report_ic_package, R.string.lumen_report_exc_apps, true);
+                item(R.drawable.lumen_report_ic_image, R.string.lumen_report_exc_files, true);
+                page.space(18);
+                row(ReportView.Action.BACK, R.drawable.lumen_report_ic_back, R.string.lumen_report_back, 0);
+                break;
+            case PROGRESS:
+                guideStart(crumb);
+                progress = page.progress();
+                updateProgress();
+                row(ReportView.Action.CANCEL, R.drawable.lumen_report_ic_close, R.string.lumen_report_cancel, 0);
+                break;
+            case DONE:
+                page.guide(crumb, getString(R.string.lumen_report_done_title), getString(R.string.lumen_report_done_text));
+                page.code(getString(R.string.lumen_report_code), job.code() == null ? "" : job.code());
+                row(ReportView.Action.DONE, R.drawable.lumen_report_ic_check, R.string.lumen_report_done, 0);
+                break;
+            case QUEUED:
+                page.guide(crumb, getString(R.string.lumen_report_queued_title), getString(R.string.lumen_report_queued_text));
+                row(ReportView.Action.CLOSE, R.drawable.lumen_report_ic_close, R.string.lumen_report_close, 0);
+                break;
+            case FAILED:
+                page.guide(crumb, getString(R.string.lumen_report_failed_title), getString(failureText(job.failure())));
+                row(ReportView.Action.RETRY, R.drawable.lumen_report_ic_refresh, R.string.lumen_report_retry, 0);
+                row(ReportView.Action.CLOSE, R.drawable.lumen_report_ic_close, R.string.lumen_report_close, 0);
+                break;
+            case START:
+            default:
+                guideStart(crumb);
+                row(ReportView.Action.SEND, R.drawable.lumen_report_ic_send, R.string.lumen_report_send,
+                        R.string.lumen_report_send_sub);
+                row(ReportView.Action.AUTO, R.drawable.lumen_report_ic_refresh, R.string.lumen_report_auto,
+                        R.string.lumen_report_auto_sub).withSwitch(ReportPrefs.autoOn(this));
+                row(ReportView.Action.DETAILS, R.drawable.lumen_report_ic_shield_check, R.string.lumen_report_what,
+                        R.string.lumen_report_what_sub).withChevron(icon(R.drawable.lumen_report_ic_chevron));
+                row(ReportView.Action.CLOSE, R.drawable.lumen_report_ic_close, R.string.lumen_report_close, 0);
+                break;
+        }
+        setContentView(page);
+        PaneRow f = rows.get(focus);
+        if (f == null) f = rows.get(shown.focus);
+        if (f != null) {
+            final View v = f;
+            v.post(v::requestFocus);
+        }
     }
 
-    private TextView button(int res, Runnable action) {
-        TextView b = text(getString(res), 20, TEXT, false);
-        b.setGravity(Gravity.CENTER);
-        b.setMinWidth(dp(200));
-        b.setPadding(dp(28), dp(12), dp(28), dp(12));
-        b.setBackgroundResource(R.drawable.lumen_report_row_bg);
-        b.setFocusable(true);
-        b.setClickable(true);
-        b.setOnClickListener(v -> safe(action));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMarginEnd(dp(16));
-        buttons.addView(b, lp);
-        return b;
+    /** The left side of START, DETAILS and PROGRESS: what the page does and the last report. */
+    private void guideStart(CharSequence crumb) {
+        page.guide(crumb, getString(R.string.lumen_report_heading), getString(R.string.lumen_report_intro));
+        String mc = ReportPrefs.lastCode(this, false), ac = ReportPrefs.lastCode(this, true);
+        long mt = ReportPrefs.lastTime(this, false), at = ReportPrefs.lastTime(this, true);
+        boolean auto = ReportView.newerIsAuto(mc, mt, ac, at);
+        String code = auto ? ac : mc;
+        long when = auto ? at : mt;
+        if (code == null || when <= 0) return;
+        SpannableStringBuilder v = new SpannableStringBuilder(code);
+        v.setSpan(new TypefaceSpan(Inter.of(this, 600, 30)), 0, code.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        v.append(", ").append(DateUtils.getRelativeDateTimeString(this, when, DateUtils.DAY_IN_MILLIS,
+                DateUtils.WEEK_IN_MILLIS, 0));
+        page.meta(getString(auto ? R.string.lumen_report_last_auto : R.string.lumen_report_last), v);
+    }
+
+    private void item(int icon, int text, boolean quiet) {
+        page.item(icon(icon), getString(text), quiet);
+    }
+
+    private PaneRow row(ReportView.Action a, int icon, int label, int sub) {
+        PaneRow r = page.row(icon(icon), getString(label), sub == 0 ? null : getString(sub));
+        r.setOnClickListener(v -> safe(() -> act(a, r)));
+        rows.put(a, r);
+        return r;
+    }
+
+    private void act(ReportView.Action a, PaneRow r) {
+        switch (a) {
+            case SEND:
+            case RETRY:
+                job.start(this);
+                break;
+            case AUTO:
+                boolean on = !ReportPrefs.autoOn(this);
+                ReportPrefs.setAutoOn(this, on);
+                r.setOn(on);
+                break;
+            case DETAILS:
+                details = true;
+                render();
+                break;
+            case BACK:
+                details = false;
+                refocus = ReportView.Action.DETAILS;
+                render();
+                break;
+            case CANCEL:
+                job.cancel();
+                break;
+            case DONE:
+                job.reset();
+                break;
+            case CLOSE:
+            default:
+                job.reset();
+                finish();
+                break;
+        }
+    }
+
+    private void updateProgress() {
+        if (progress == null) return;
+        ReportState st = job.state();
+        float done = ReportView.progress(st, job.step(), job.steps(), job.sent(), job.total());
+        if (st == ReportState.COLLECTING) {
+            progress.set(getString(R.string.lumen_report_collecting), getString(R.string.lumen_report_step,
+                    ReportView.step(job.step(), job.steps()), Math.max(1, job.steps())), done);
+        } else {
+            progress.set(getString(R.string.lumen_report_sending), getString(R.string.lumen_report_bytes,
+                    Formatter.formatShortFileSize(this, job.sent()), Formatter.formatShortFileSize(this, job.total())), done);
+        }
     }
 
     private static void safe(Runnable r) {
@@ -158,188 +275,6 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
         } catch (Throwable t) {
             Log.w(TAG, "click: " + t);
         }
-    }
-
-    // ------------------------------------------------------------------ states
-    private void render() {
-        ReportState st = job.state();
-        if (st == shown) {
-            updateProgress();
-            return;
-        }
-        shown = st;
-        body.removeAllViews();
-        buttons.removeAllViews();
-        status = hint = null;
-        bar = null;
-        View focus;
-        switch (st) {
-            case COLLECTING:
-            case UPLOADING:
-                focus = buildProgress();
-                break;
-            case DONE:
-                focus = buildDone();
-                break;
-            case QUEUED:
-                focus = buildQueued();
-                break;
-            case FAILED:
-                focus = buildFailed();
-                break;
-            default:
-                focus = buildConsent();
-                break;
-        }
-        scroll.scrollTo(0, 0);
-        if (focus != null) focus.post(focus::requestFocus);
-    }
-
-    private View buildConsent() {
-        title.setText(R.string.lumen_report_title);
-        add(body, getString(R.string.lumen_report_intro), 18, DIM, false, 0);
-
-        final LinearLayout cols = new LinearLayout(this);
-        cols.setOrientation(LinearLayout.HORIZONTAL);
-        cols.setPadding(dp(12), dp(8), dp(12), dp(8));
-        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        clp.topMargin = dp(12);
-        body.addView(cols, clp);
-        column(cols, R.string.lumen_report_included, R.string.lumen_report_inc_system, R.string.lumen_report_inc_logs,
-                R.string.lumen_report_inc_crashes, R.string.lumen_report_inc_kernel, R.string.lumen_report_inc_state);
-        View gap = new View(this);
-        cols.addView(gap, new LinearLayout.LayoutParams(dp(32), 1));
-        column(cols, R.string.lumen_report_excluded, R.string.lumen_report_exc_accounts, R.string.lumen_report_exc_network,
-                R.string.lumen_report_exc_serial, R.string.lumen_report_exc_apps, R.string.lumen_report_exc_files);
-
-        add(body, getString(R.string.lumen_report_footer), 18, DIM, false, 12);
-        autoRow();
-        last(false, R.string.lumen_report_last);
-        last(true, R.string.lumen_report_last_auto);
-
-        button(R.string.lumen_report_send, () -> job.start(this));
-        TextView cancel = button(R.string.lumen_report_cancel, this::finish);
-        // Only when the text is taller than the screen (long languages): let D-pad UP reach it so the
-        // ScrollView can show its top again. A block that fits never takes focus.
-        cols.post(() -> {
-            View content = scroll.getChildAt(0);
-            if (content != null && content.getHeight() > scroll.getHeight()) {
-                cols.setFocusable(true);
-                cols.setBackgroundResource(R.drawable.lumen_report_row_bg);
-            }
-        });
-        return cancel;
-    }
-
-    /** "Send problem reports automatically": one focusable row, OK flips the switch. */
-    private void autoRow() {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(12), dp(8), dp(12), dp(8));
-        row.setBackgroundResource(R.drawable.lumen_report_row_bg);
-        row.setFocusable(true);
-        row.setClickable(true);
-        TextView label = text(getString(R.string.lumen_report_auto), 20, TEXT, false);
-        row.addView(label, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        final Switch sw = new Switch(this);
-        sw.setFocusable(false);
-        sw.setClickable(false);
-        sw.setChecked(ReportPrefs.autoOn(this));
-        row.addView(sw);
-        row.setOnClickListener(v -> safe(() -> {
-            boolean on = !ReportPrefs.autoOn(this);
-            ReportPrefs.setAutoOn(this, on);
-            sw.setChecked(on);
-        }));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = dp(12);
-        body.addView(row, lp);
-        add(body, getString(R.string.lumen_report_auto_note), 18, DIM, false, 4);
-    }
-
-    private void last(boolean automatic, int res) {
-        String code = ReportPrefs.lastCode(this, automatic);
-        long when = ReportPrefs.lastTime(this, automatic);
-        if (code == null || when <= 0) return;
-        String date = DateUtils.formatDateTime(this, when,
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_ABBREV_MONTH);
-        add(body, getString(res, code, date), 18, DIM, false, 6);
-    }
-
-    private void column(LinearLayout parent, int headerRes, int... items) {
-        LinearLayout col = new LinearLayout(this);
-        col.setOrientation(LinearLayout.VERTICAL);
-        parent.addView(col, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        add(col, getString(headerRes), 20, ACCENT, true, 0);
-        for (int r : items) add(col, IconText.bullet(getString(r), TEXT, dp(3), dp(12)), 18, TEXT, false, 4);
-    }
-
-    private View buildProgress() {
-        title.setText(R.string.lumen_report_title);
-        status = add(body, "", 22, TEXT, false, 8);
-        bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
-        bar.setIndeterminate(false);
-        bar.setMax(1000);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8));
-        lp.topMargin = dp(16);
-        body.addView(bar, lp);
-        hint = add(body, getString(R.string.lumen_report_log_hint), 18, DIM, false, 16);
-        TextView cancel = button(R.string.lumen_report_cancel, () -> {
-            job.cancel();
-            finish();
-        });
-        updateProgress();
-        return cancel;
-    }
-
-    private void updateProgress() {
-        if (status == null || bar == null) return;
-        if (job.state() == ReportState.COLLECTING) {
-            int n = Math.max(1, job.steps());
-            int s = Math.max(1, Math.min(job.step(), n));
-            status.setText(getString(R.string.lumen_report_collecting, s, n));
-            bar.setProgress(1000 * (s - 1) / n);
-            hint.setVisibility(View.VISIBLE);
-        } else {
-            long t = Math.max(1, job.total());
-            status.setText(getString(R.string.lumen_report_sending, Formatter.formatShortFileSize(this, job.sent()),
-                    Formatter.formatShortFileSize(this, job.total())));
-            bar.setProgress((int) (1000 * Math.min(job.sent(), t) / t));
-            hint.setVisibility(View.GONE);
-        }
-    }
-
-    private View buildDone() {
-        title.setText(R.string.lumen_report_done_title);
-        TextView code = add(body, job.code() == null ? "" : job.code(), 56, ACCENT, true, 12);
-        code.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.BOLD));
-        add(body, getString(R.string.lumen_report_done_text), 20, TEXT, false, 12);
-        add(body, getString(R.string.lumen_report_footer), 18, DIM, false, 12);
-        return close();
-    }
-
-    private View buildQueued() {
-        title.setText(R.string.lumen_report_queued_title);
-        add(body, getString(R.string.lumen_report_queued_text), 20, TEXT, false, 12);
-        return close();
-    }
-
-    private View buildFailed() {
-        title.setText(R.string.lumen_report_failed_title);
-        add(body, getString(failureText(job.failure())), 20, TEXT, false, 12);
-        TextView retry = button(R.string.lumen_report_retry, () -> job.start(this));
-        close();
-        return retry;
-    }
-
-    private View close() {
-        return button(R.string.lumen_report_close, () -> {
-            job.reset();
-            finish();
-        });
     }
 
     private static int failureText(ReportFailure f) {

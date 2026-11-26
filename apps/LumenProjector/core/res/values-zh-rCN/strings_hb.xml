@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Z9X HB only labels, hb-t8b keys only, Lumen's own wording (clean-room rewrite 2026-10-31) of values-zh-rCN; the other HB keys fall back to English -->
+<resources>
+    <!-- hb-t8b (2026-10-30): HB keystone and picture labels at the places of the stock rows; texts
+         written by Lumen (clean-room rewrite 2026-10-31): stock strings only told us the meaning -->
+    <string name="kst_settings_hb">梯形校正选项</string>
+    <string name="kst_enhancement_hb">附加校正</string>
+    <string name="kst_size_position_hb">画面大小与位置</string>
+    <string name="kst_projection_type_hb">投影仪摆放方式</string>
+    <string name="kst_manual_hb">手动调整四角</string>
+    <string name="pro_contrast_hb">对比度</string>
+    <string name="pro_gamma_index_hb">伽马</string>
+    <string name="pro_dyn_black_hb">黑色增强</string>
+    <string name="pro_clarity_hb">细节</string>
+    <string name="pro_noise_hb">降噪滤波</string>
+    <string name="pro_wb_2pt_hb">两点白平衡</string>
+    <string name="pro_wb_11pt_hb">十一点白平衡</string>
+    <string name="pro_segmentation_hb">灰阶</string>
+    <string name="pro_src_media_hb">应用与文件视频</string>
+    <string name="pro_off_hb">关闭</string>
+    <string name="pro_auto_hb">自动</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_locked">在“%1$s”图像模式下，Boost 属于该模式，无法在此关闭。请选择其他图像模式。</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="pro_cs_hdr_hb">HDR片源下不支持色彩空间</string>
+</resources>

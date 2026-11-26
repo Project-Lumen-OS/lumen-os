@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Process;
+import android.os.SystemClock;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -117,19 +118,27 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
                 });
                 break;
             case ACTION_DOWNLOAD: {
+                if (Checker.dropStaleOffer(this, "download")) {
+                    stopIfIdle();
+                    break;
+                }
                 boolean then = intent.getBooleanExtra(EXTRA_THEN_INSTALL, false);
                 ServiceJob kind = then ? ServiceJob.DOWNLOAD_INSTALL : ServiceJob.DOWNLOAD;
                 if (repeat(kind)) break;
                 runWorker(kind, () -> {
-                    if (download() && then) install();
+                    if (download() && then && newest()) install();
                     stopIfIdle();
                 });
                 break;
             }
             case ACTION_INSTALL:
                 if (InstallWay.current().dropsInstall(this)) break;
+                if (Checker.dropStaleOffer(this, "install")) {
+                    stopIfIdle();
+                    break;
+                }
                 runWorker(ServiceJob.INSTALL, () -> {
-                    install();
+                    if (newest()) install();
                     stopIfIdle();
                 });
                 break;
@@ -201,10 +210,7 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
         return st.fromUsb() ? new File(st.usbPath(), p.fileName()) : zipFile(c, p);
     }
 
-    public static void deleteFiles(Context c) {
-        File[] fs = Ota.dir(c).listFiles();
-        if (fs != null) for (File f : fs) if (!f.delete()) Log.w(Ota.TAG, "cannot delete " + f);
-    }
+    public static void deleteFiles(Context c) { Ota.deleteFiles(c); }
 
     private UpdateManifest.Pkg pkg() {
         try {
@@ -224,11 +230,32 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
     }
 
     // ------------------------------------------------------------------ download
-    /** @return true when the verified zip + metadata are ready */
+    /**
+     * The offer's package, verified; a newer build that replaces the offer meanwhile is downloaded instead and the old
+     * files go (Newest.downloadNewest). @return true when the verified zip + metadata of the newest offer are ready
+     */
     private boolean download() {
+        return Newest.downloadNewest(Store.get(this), this::downloadOnce);
+    }
+
+    /**
+     * Right before an install: a fresh check, a newer build is downloaded first (Newest.beforeInstall), so the install
+     * is always of the newest verified build. @return true = install the saved offer
+     */
+    private boolean newest() {
+        return Newest.beforeInstall(Store.get(this), () -> Checker.check(this), this::download);
+    }
+
+    /**
+     * One package (its json): download and verify, stopped early once a check replaced the offer with a newer build.
+     * DOWNLOADED is set by Newest.downloadNewest. @return true when the verified zip + metadata are ready
+     */
+    private boolean downloadOnce(String pkgJson) {
         Store st = Store.get(this);
-        UpdateManifest.Pkg p = pkg();
-        if (p == null) {
+        UpdateManifest.Pkg p;
+        try {
+            p = UpdateManifest.Pkg.parse(pkgJson);
+        } catch (JSONException e) {
             st.setState(UpdateState.IDLE);
             return false;
         }
@@ -271,7 +298,6 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
             }
             // the way's own check: metadata = payload prefix, or the package signature
             if (!InstallWay.current().verifyDownload(st, src, p, meta)) return false;
-            st.setState(UpdateState.DOWNLOADED);
             Log.i(Ota.TAG, "download verified: " + p.fileName());
             return true;
         } catch (PackageDownload.HashMismatch e) {
@@ -304,19 +330,28 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
         }, "lumen-download"), ParallelDownload.Tuning.DEFAULT, m -> Log.i(Ota.TAG, m));
     }
 
+    /**
+     * The download's view of the service. A download that lasts (a slow line, a network gap, retries) checks the
+     * manifests again (Newest.Recheck) and stops as soon as a newer build replaced its package (Newest.superseded).
+     */
     private PackageDownload.Host downloadHost(Store st, UpdateManifest.Pkg p, String ver) {
+        Newest.Recheck recheck = new Newest.Recheck(SystemClock.elapsedRealtime());
         return new PackageDownload.Host() {
             @Override
             public boolean online() { return UpdateService.this.online(); }
 
             @Override
-            public boolean stopRequested() { return jobs.stopRequested(); }
+            public boolean stopRequested() { return jobs.stopRequested() || Newest.superseded(p.json, st); }
 
             @Override
-            public void sleep(long ms) { UpdateService.this.sleep(ms); }
+            public void sleep(long ms) {
+                UpdateService.this.sleep(ms);
+                recheck();
+            }
 
             @Override
             public void offline(long have, long total) {
+                recheck.offline();
                 st.setDownload(have, total, st.dlEtag(), 0);
                 notifyProgress(getString(R.string.dl_waiting_network), -1);
             }
@@ -325,7 +360,12 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
             public boolean progress(long bytes, long total, long speed) {
                 st.setDownload(bytes, total, st.dlEtag(), speed);
                 notifyProgress(getString(R.string.dl_title, ver), total > 0 ? (int) (bytes * 100 / total) : -1);
-                return !jobs.stopRequested();
+                recheck();
+                return !stopRequested();
+            }
+
+            private void recheck() {
+                if (recheck.due(SystemClock.elapsedRealtime(), UpdateService.this.online())) Checker.check(UpdateService.this);
             }
 
             @Override
@@ -364,8 +404,8 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
 
     @Override
     public void sleep(long ms) {
-        long end = System.currentTimeMillis() + ms;
-        while (!jobs.stopRequested() && System.currentTimeMillis() < end) {
+        long end = SystemClock.elapsedRealtime() + ms;   // a monotonic clock: the network time may jump the wall clock
+        while (!jobs.stopRequested() && SystemClock.elapsedRealtime() < end) {
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) {
@@ -497,7 +537,7 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
     }
 
     private void notifyProgress(String title, int pct) {
-        long now = System.currentTimeMillis();
+        long now = SystemClock.elapsedRealtime();
         if (now - lastNotif < 1000) return;
         lastNotif = now;
         getSystemService(NotificationManager.class).notify(NOTIF_PROGRESS, progressNotification(title, pct, false));

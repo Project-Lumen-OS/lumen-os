@@ -1,0 +1,155 @@
+device g0079 model G0079
+card
+  top: round network | round theme | round general
+  row 1: wide keystone.ak_now | small keystone
+  row 2: wide picture | small sound | small focus
+  row 3: wide input | small bluetooth | small picture.3d|network
+  row 4: wide game | small projection (yields) | small mirroring | small eye
+  slider: lamp 1..10, Boost at 11 (hint: paler)
+section keystone  (stock order: settings_tree_product_dapeng projection_screen (G0082 V6.15.62), test/stock/projection_screen.json)
+  toggle keystone.realtime
+  action keystone.ak_now
+  action keystone.fit_now
+  -- auto_correction
+  toggle keystone.on_power
+  toggle keystone.obstacle
+  toggle keystone.curtain
+  -- line
+  action focus.af_now
+  screen focus.manual
+  page focus.settings
+  screen keystone.rotation
+  action keystone.restore
+  -- line
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
+section focus
+  action focus.af_now
+  screen focus.manual
+  toggle focus.smart
+section lamp
+  slider lamp 1..10
+  toggle boost
+section picture
+  choice picture.mode [ai, sport, hdr_vivid, color_accuracy, office, performance]  support hdr_vivid for hdr_vivid, color_accuracy for sdr hdr hdr10  hint picture picture_mode
+  slider picture.pq items [brightness, contrast, saturation, sharpness] 0..100
+  choice picture.memc [off, low, medium, high]
+  toggle picture.ai_contrast
+  toggle picture.super_res
+  toggle picture.ultra120
+  screen picture.pro
+  action picture.reset
+  action picture.reset_all
+  choice picture.3d [off, sbs, tb, sbs_2d, tb_2d]
+  -- hdmi
+  choice hdmi.range [auto, full, limited]
+  choice hdmi.edid [compat, enhanced]
+  choice picture.aspect [auto, r4_3, r16_9, original]
+section sound
+  choice sound.enhancement [harman, dts_vx]
+  choice sound.mode [ai, movie, music, sports, karaoke]
+  screen sound.eq
+  toggle sound.leveling
+  toggle sound.earc
+  output page sound.output [auto, speaker, arc, wired, bt, usb]
+    at its bottom sound.format [auto, pcm, passthrough]
+  toggle sound.key_tone
+section projection
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
+section game
+  choice game.mode [off, on, auto]
+  choice game.speed [basic, basic_hfr, top_speed, top_speed_hfr]
+  choice game.allm [signal, device]
+section eye
+  choice eye [off, on]
+section network
+  screen network.wifi
+  -- line
+  toggle network.hotspot
+  screen network.hotspot_name
+  screen network.hotspot_password
+  action network.hotspot_reset
+section source
+  screen source.list
+  screen settings.cec
+  screen settings.hdmi
+section bluetooth
+  screen bluetooth.add
+section general
+  -- language_time
+  screen settings.language
+  screen settings.date_time
+  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
+  -- power
+  choice settings.power_key [power_menu, sleep]
+  screen settings.sleep_timer
+  toggle power.on_ac
+  choice power.boot_source [home, hdmi1, hdmi2]
+  toggle power.on_music
+  -- display_menu
+  choice eye [off, on]
+  choice settings.menu_side [left, right]
+  choice settings.menu_density [normal, compact]
+  -- remote_voice
+  screen settings.remote
+  screen settings.remote_keys
+  toggle voice.speak
+  screen voice.key
+  -- apps_devices
+  choice settings.launcher [lumen, classic]
+  screen settings.recents
+  screen settings.casting
+  screen settings.parental
+  -- storage_updates
+  screen settings.storage
+  screen settings.update
+  screen settings.about
+  -- help
+  screen settings.report
+  toggle settings.stats
+  screen settings.licences
+  screen settings.system
+section developer
+  screen signal.panel
+  screen sensors.panel
+  toggle signal.pin
+  choice signal.refresh [normal, fast]
+  info settings.temperature
+  screen settings.diagnostics
+  screen dev.mirror_diag
+  -- system
+  screen settings.ui_resolution
+  screen dev.system_info
+  toggle dev.network_adb
+  screen dev.android
+page focus.settings
+  toggle focus.smart
+popup keystone (rows with a tile of their own left out)
+  keystone.realtime
+  keystone.fit_now
+  -- auto_correction
+  keystone.on_power
+  keystone.obstacle
+  keystone.curtain
+  -- line
+  keystone.rotation
+  keystone.restore
+popup picture (rows with a tile of their own left out)
+  picture.mode
+  picture.pq
+  picture.memc
+  picture.ai_contrast
+  picture.super_res
+  picture.ultra120
+  picture.pro
+  picture.reset
+  picture.reset_all
+  -- hdmi
+  hdmi.range
+  hdmi.edid
+  picture.aspect
+all settings: general keystone picture network source bluetooth sound developer
+keys: gear short quick_menu, gear long game_menu, eye_gear_short restore
+game menu: lat vrr hfr pic dark sr ar snd aim fps
+  themes: ps xbox switch pad apple windows computer, CEC detection on

@@ -30,7 +30,7 @@ trap 'rm -rf "$W"' EXIT
 PASS=0; FAIL=0; CFAIL=0; CASE=
 SER=X50TESTSER01
 ADDR=192.0.2.61:5555
-dc() { sed -n "s/^$1=//p" "$DCONF" | head -n 1; }
+dc() { python3 "$G/tools/devices/layered.py" "$DCONF" | sed -n "s/^$1=//p" | head -n 1; }
 ID=$(dc installer_id); NAME=$(dc name); MODEL=$(dc models | awk '{print $1}'); BOARD=$(dc hardware)
 PRODUCT=$(dc fastboot_product); FW=$(dc vendor_firmware | awk '{print $1}'); SL=a
 ALLOW=lib/$ID/blobs_allow.txt

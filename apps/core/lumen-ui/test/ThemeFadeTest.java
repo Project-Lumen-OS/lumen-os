@@ -198,7 +198,9 @@ public final class ThemeFadeTest {
                 {"apps/LumenHome/src/org/lumen/home/HomeActivity.java", "ThemeFade.activity(this, this::restyle)"},
                 {"apps/LumenSetup/src/org/lumen/setup/SetupActivity.java", "ThemeFade.activity(this, this::restyle)"},
                 {"apps/core/lumen-menu/src/org/lumen/projector/panel/QpdPanel.java", "ThemeFade.follow(root, host::onTheme)"},
-                {"apps/core/lumen-signal/src/org/lumen/signal/SignalWindow.java", "ThemeFade.follow(r,"},
+                {"apps/core/lumen-signal/src/org/lumen/signal/OverlayWindow.java", "ThemeFade.follow(r,"},
+                {"apps/core/lumen-report/src/org/lumen/report/ReportActivity.java", "ThemeFade.activity(this, p ->"},
+                {"apps/LumenFiles/src/org/lumen/files/ui/FilesActivity.java", "ThemeFade.activity(this, p ->"},
                 {"apps/core/lumen-source/src/org/lumen/source/SourceOsd.java", "ThemeFade.follow(root,"},
         };
         for (String[] u : users) {
@@ -212,6 +214,8 @@ public final class ThemeFadeTest {
         c.ok("Home: its own theme menu switches through the same fade", home.contains("mTheme.apply(LumenTheme.palette(this))"));
         String setup = Check.read(new File(gsi, users[1][0]));
         c.ok("Setup: start/stop with the activity", setup.contains("mTheme.start();") && setup.contains("mTheme.stop();"));
+        String report = Check.read(new File(gsi, "apps/core/lumen-report/src/org/lumen/report/ReportActivity.java"));
+        c.ok("Report screen: start/stop with the activity", report.contains("theme.start();") && report.contains("theme.stop();"));
         c.ok("Setup: rebuild keeps the focus place", setup.contains("ThemeFade.focusPath(mRoot)")
                 && setup.contains("ThemeFade.refocus(mRoot, focus)"));
         String menu = Check.read(new File(gsi, "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java"));

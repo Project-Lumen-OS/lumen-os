@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- lumen-menu power menu texts (PowerMenu), copied from the Z9X app power_menu_off / power_menu_restart (its translations, no new ones). -->
-<resources>
-    <string name="lumen_m_power_off">إيقاف التشغيل</string>
-    <string name="lumen_m_power_restart">إعادة التشغيل</string>
-</resources>

@@ -31,7 +31,6 @@ neutral one with its image properties) and a recipe, never a copy of a class.
 | `install` | `InstallKind.UPDATE_ENGINE` (the other slot) or `RECOVERY` (whole package after a restart) |
 | `checks` / `checksFrom` | `InstallChecks`: the ordered checks before an install, fixed or named by an image property |
 | `dsuHandover` | in a DSU trial the update screen opens the in-trial installer and no update work runs |
-| `importBridgeData` | import the pre-1.0.8 `org.z9x.updater` data at start |
 | `hideWithoutDevice` | without a wire id the update screen and its TvSettings row are hidden |
 | `compressedSnapshots` | the wire ids whose payloads use compressed snapshots (ota.conf `vabc=yes`); STORAGE wants the vendor's `ro.virtual_ab.compression.enabled` to match ("compression on" / "compression off" otherwise) |
 
@@ -61,6 +60,45 @@ neutral one with its image properties) and a recipe, never a copy of a class.
 | signing | Z9X platform key | HB platform key | Play 6 platform key | the model's platform key |
 | snapshots (STORAGE) | not checked (Z9X_GATE) | legacy (vendor compression off) | not checked | compressed, lz4 (vendor compression on), wire ids x50 x50max |
 
+## Which channel, which update
+
+- The image URL names the channel pair (which tag, which wire id), not the side of it. Until the user picks one with
+  "Beta updates", the build type does (`Ota.betaOn`, `VersionScheme.prerelease`): a build whose version ends in
+  -betaN or -rcN reads the stable and the beta manifest and offers the higher version, a final build reads only the
+  stable one. So a Z9X or HB beta follows the newer betas although its image names the stable file, and an X50 final
+  stays on stable although its image names the beta file. The user's choice wins either way and is kept.
+- `Preflight.applicable` checks the identity (schema, wire id), then the version: a manifest whose `version_code` is
+  not above the installed one is "Lumen OS is up to date", never a refusal (a beta build reading the stable channel
+  of an older release sees no firmware or channel text). Only a newer release is checked for its channel, the
+  firmware it supports (`blk_vendor` + `blk_vendor_body`: the supported firmware versions, the projector's own and
+  what to do) and the minimum version.
+
+## Always the newest build (Newest)
+
+`Newest` is the one rule every path follows: `Checker`, `UpdateService`, `CheckJob`, `BootReceiver` and the update
+screen only call it.
+
+- Every check reads every channel manifest fresh (`Http.fetchFresh`): no-cache request headers, no conditional request,
+  a query of its own (`lumen_nc`), the GitHub redirect resolved anew. A json whose .sig does not match yet (an upload in
+  progress) is read again after a pause. The highest verified `version_code` of the channels read is the candidate.
+- A saved offer (found, downloading, paused, downloaded) is replaced by any newer build and its files are deleted. A
+  running download keeps its state while the check reads; when its package is replaced it stops, its files go and the
+  newest one is downloaded (`downloadNewest`, the DOWNLOADED mark is set under the same lock the check uses).
+- An older manifest than the saved offer (a cache, a mirror, a USB stick with an older build) and no answer at all
+  (offline, a 404 while a channel file is replaced) leave the newer offer and its state as they are.
+- A saved offer that is not newer than the running build, or of a channel the check no longer reads, is dropped with
+  its files: at boot, at every check, before a download and before an install. The same build is never offered again.
+- Checks run at every opening of the update screen (at most once a minute, monotonic clock), every 6 hours (the job
+  of the old one day period is rescheduled), 10 minutes after boot, before a paused download is resumed, as a download starts,
+  every 20 minutes of it and right after a network gap in it (`Recheck`), and right before an install
+  (`beforeInstall`: a newer build is downloaded first, so Install never installs anything but the newest verified
+  build; without network the saved verified offer is installed).
+- Publishing: `tools/release/channel_guard.py` refuses a channel file below its live `version_code`.
+- Host test `test/org/lumen/updater/NewestTest.java`: a fake GitHub over HTTPS (channel file 302 to an asset with an
+  ETag) and the real check, download switch and install recheck through publish A, B during A's download, C after the
+  download, offline and online, a stale cached copy then the fresh one, a json ahead of its .sig, a 404, a build at the
+  Install press, the installed build, a lower stable channel, beta off and a beta15 download left over after the unit was updated another way.
+
 ## X50 family (active since 2026-11-14 on the X50 Ultra and Ultra Max)
 
 The X50 updater is the neutral recipe (devices/g0111/app/LumenUpdater.layers and devices/g0100/app, byte copies) and
@@ -82,7 +120,7 @@ booted and the merge ended (MergeCompleted in 20 s, no COW in /data). 1.0.10-bet
 check, which refuses compression: their cloud and USB stick installs stop at "compression on". A unit on them takes
 the fixed updater as an update of the system app (adb install), then updates over the cloud. The updater's
 versionCode (apps/LumenUpdater/BUILD_VERSION) was 2 with that fix, 3 since the plain-words texts (the X50 Ultra
-of the beta tests carries a hand-installed 2) and is 4 since the parallel download: raise it with every later change of the updater, or a copy installed
+of the beta tests carries a hand-installed 2) 4 since the parallel download and is 5 since the channel by build type: raise it with every later change of the updater, or a copy installed
 that way stays in front of the image's own.
 
 ## The download

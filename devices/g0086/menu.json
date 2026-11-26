@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal330/rs20-hal330.menu.json",
+  "device": "g0086",
+  "model": "G0086",
+  "note": "RS 20 Plus New (G0086, Product_athenamaster): the RS 20 profile, stock tree settings_tree_product_athenamaster (devices/g0086/stock.tsv)."
+}

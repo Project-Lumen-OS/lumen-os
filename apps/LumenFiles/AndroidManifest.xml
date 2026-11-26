@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Files (org.lumen.files, apps/LumenFiles, README.md): the file manager of every Lumen model, in place of XGIMI's
+  com.xgimi.filemanager. A platform-signed priv-app (/system/priv-app/LumenFiles), but it asks for no privileged
+  permission: MANAGE_EXTERNAL_STORAGE and REQUEST_INSTALL_PACKAGES come by signature, so no privapp-permissions file.
+  It never installs an APK itself: the system package installer shows its confirm window (ApkInstall).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lumen.files"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
+
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!-- every drive's files (signature|appop: granted to the platform-signed app) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- hand an APK to the system package installer (it shows the confirm window) -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- an APK's details: is that app on the projector already -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <!-- SMB shares and DLNA media servers of the home network -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <application
+        android:label="@string/files_title"
+        android:icon="@drawable/files_icon"
+        android:banner="@drawable/files_banner"
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.Files">
+
+        <!-- the app: its own tile on Home (LEANBACK_LAUNCHER), opened by Home's USB card at a drive (EXTRA_PATH) -->
+        <activity
+            android:name=".ui.FilesActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- the built-in player and the photo viewer (moved from Home): only Files opens them -->
+        <activity
+            android:name=".open.PlayerActivity"
+            android:exported="false"
+            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density" />
+        <activity
+            android:name=".open.PhotoActivity"
+            android:exported="false"
+            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density" />
+        <!-- read-only content addresses for the app that opens a file: one-off grant with the VIEW intent -->
+        <provider
+            android:name=".open.LocalProvider"
+            android:authorities="org.lumen.files.local"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+        <provider
+            android:name=".net.NetFilesProvider"
+            android:authorities="org.lumen.files.netfiles"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+    </application>
+</manifest>

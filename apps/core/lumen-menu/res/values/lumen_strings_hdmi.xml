@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menu's HDMI page (HdmiPage, All settings > Input source > HDMI settings): moved with their translations from
+     org.lumen.tvinput, whose own settings screen it replaces (2026-11-24). -->
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">Switch to HDMI automatically when a device is connected</string>
+    <string name="lumen_m_hdmi_return_home">Return to the home screen when the source is disconnected</string>
+    <string name="lumen_m_hdmi_boot_source">Source at power-on</string>
+    <string name="lumen_m_hdmi_boot_note">If a device turns the projector on over HDMI-CEC, its input opens instead.</string>
+    <string name="lumen_m_hdmi_inputs">Inputs</string>
+    <string name="lumen_m_hdmi_none">No HDMI inputs found</string>
+</resources>

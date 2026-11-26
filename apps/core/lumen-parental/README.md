@@ -21,5 +21,10 @@ for Lumen, one module for every model that has the row:
 Single session choices are the stock list (`SettingActivity.timeList`: off, 20, 30, 40, 50, 60 min). The daily list was
 not found in the decompile (cloud config): 1, 1.5, 2, 3, 4 h, marked for the owner.
 
+Two halves: this module is what Lumen Home and the projector menu share (the state, the rules, the password
+letters, the questions, `ParentalClient` with the provider contract); the Home side (`ParentalProvider`, `Parental`,
+`PinActivity`, `RestActivity`, `UsageService`, the old address `ParentalActivity`) lives in
+`apps/LumenHome/src/org/lumen/parental`, so the projector apps never carry Home's screens and service.
+
 Storage: Home's device protected preferences (`lumen_parental`), the password only as a salted SHA-256.
 Tests: `bash test/run.sh` (host, plain Java).

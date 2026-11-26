@@ -1,0 +1,15 @@
+# devices/_menu/stock_nodes.tsv: the stock settings-tree nodes (XGIMI newsettings settings_tree_product_*) behind a menu
+# row or option of the Z9X app, so tools/devices/test/stock_facts.py can hold a model's menu against its own stock tree:
+# a row or option the model shows needs one of its nodes in that tree (never a row the stock does not have). The nodes
+# are the Z9X tree's (settings_tree_product_dapeng); a model's stock.tsv lists the nodes its tree has or lacks against
+# that tree (diff rows). Columns: row[:option], nodes (any one), evidence.
+picture.mode:ai	image_mode_ai	Z9X tree image_mode_3_state
+picture.mode:standard	image_mode_standard	Z9X tree image_mode_3_state
+picture.mode:sport	image_mode_sport	Z9X tree image_mode_3_state
+picture.mode:hdr_vivid	image_mode_hdr_vivid	Z9X tree image_mode_3_state
+picture.mode:color_accuracy	image_mode_prof_color_accuracy	Z9X tree image_mode_3_state
+picture.mode:office	image_mode_office_platform_9270	Z9X tree image_mode_3_state
+picture.mode:performance	image_mode_performance	Z9X tree image_mode_3_state
+picture.color_temp	image_mode_3_color_temp_dapeng	Z9X tree image_mode_basic_setting (its own colour temperature list)
+zoom	zoom_and_move zoom_and_optical_shift	Z9X tree projection_screen (optical zoom and digital move), RS 20 trees zoom_and_optical_shift (optical zoom and lens shift)
+sound.enhancement:harman	sound_mode_harman_caton_soundtrack_v5 sound_mode_harman_caton_soundtrack	Z9X tree sound mode page

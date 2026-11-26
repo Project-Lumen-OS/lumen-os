@@ -18,7 +18,7 @@ stock rows. Without the provider (an image without this module) the page stays a
 | XGIMI interface | GMUI 6.17.200.03 | `ro.xgimi.gmui.version` of the vendor (Titan's `overseas_` prefix dropped), what the stock settings show as GMUI |
 | MediaTek platform | t-apollo-mp-2101-cnu-mt9681-55-001-112 | `export VERSION :=` of `/vendor/etc/version.txt` |
 | DLP controller | TI DLPC8445, firmware 9.4.128 | `DlpType` of `/mnt/vendor/xgimiconfig/<model>/dlp/dlp.ini`, named by the enum in that file's own comments, and `DlpFlashImageVersion` of `dlp/DlpFlashImageInfo.ini` (the controller image the XGIMI firmware carries) |
-| FPGA | 160T, PH1A400 | `extFPGAType` of the same dlp.ini, named by its comments (`E_FPGA_DEV_TYPE_*`), none for type NONE |
+| FPGA | 160T, firmware 1.3.5.8 | `extFPGAType` of the same dlp.ini, named by its comments (`E_FPGA_DEV_TYPE_*`), none for type NONE; the firmware from the projector HAL (below) |
 | Remote | B940D, firmware 1.0.3 | `persist.xgimi.rc.version` (XGIMI's Bluetooth service stores the remote paired last: model, then `_V` and its firmware) |
 | Wi-Fi | MT7920, firmware 20260205002547 | `vendor.wlan.firmware.version` (the MediaTek Wi-Fi firmware: chip and build stamp) |
 | Back to the XGIMI system | the stick file name, else "With the XGIMI recovery USB stick" | opens the screen below |
@@ -43,6 +43,19 @@ RS30 Ultra Max G0155 TI DLPC8445 11.4.16 FPGA PH1A400, Play 6 G0058 TI DLPC3436 
 seen yet). Not read live yet: whether each image's SELinux policy lets the app read `dlp/` (like `system.ini`, the
 rows simply stay hidden when it does not). The stock settings app shows none of this: its system info screen has no
 DLP or FPGA row, and the only getter of a device version is a factory call, which Lumen never makes.
+
+FPGA firmware: the projector HAL's display service answers `getDlpImageVersion`
+(DisplayManager code 37, `DM_GET_DLP_IMAGE_VERSION` of `devices/g0111/hal/codes.tsv`, the same code in every AIDL
+model's table) with the light engine line, `CRISubType:255,ext-fpga version:1.3.5.8 flash version:9.4.128` on the
+X50 Ultra G0111 v1.3.38 (read 2026-11-21 as uid shell). It is the line the stock factory app takes its FPGA version
+from (the text after `fpga version:`); the stock settings show it nowhere. The installer asks it once per start, only
+when the model's dlp.ini names an FPGA, as an ordinary app (every stock firmware runs SELinux permissive), and waits
+at most 1.5 s; `LightEngine.withFpgaFirmware` takes only a version that follows the words `fpga version:`, else the
+row keeps the type alone. The About page of Lumen OS shows it too (tester ask 2026-11-23: About
+showed 160T without the version the Installer shows): the projector app that carries this module answers
+`AboutHost.dlpImageLine` from its own HAL transport (X50Projector: `Gmpf.dlpImageVersion`, allowed in
+`allowed_x50projector.tsv`), the provider waits at most 1.5 s, and an app without `AboutHost` keeps the type alone. Models whose config names an FPGA: X50 Ultra G0111, Ultra Max G0100, G0112, TITAN
+H0061 to H0063 (160T), RS30 Ultra Max G0155 (PH1A400). The firmware is read live on G0111 only.
 
 ## Back to the XGIMI system
 

@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">새 항목</string>
     <string name="lumen_qe_reset">원래대로</string>
     <string name="lumen_qe_select">선택</string>
-    <string name="lumen_qe_done">완료</string>
-    <string name="lumen_qe_back">뒤로</string>
     <string name="lumen_qe_close_panel">패널 닫기</string>
     <string name="lumen_qe_how">표시 방법</string>
     <string name="lumen_qe_now" formatted="true">현재: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">타일 아래</string>
     <string name="lumen_qe_panel_note">타일, 넓은 타일, 원은 메뉴 오른쪽에 패널을 엽니다.</string>
     <string name="lumen_qe_place">위치</string>
-    <string name="lumen_qe_move">이동</string>
     <string name="lumen_qe_remove">메뉴에서 빼기</string>
     <string name="lumen_qe_moving">이동 중</string>
     <string name="lumen_qe_move_hint">원은 맨 윗줄에서만, 타일은 줄 사이에서만 움직입니다. 타일을 원으로 바꾸려면 보기를 바꾸세요.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: 새 위치</string>
     <string name="lumen_qe_move_keys">움직이기</string>
     <string name="lumen_qe_move_cancel">취소하고 원래대로</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">이름 또는 이름의 일부로</string>
+    <string name="lumen_qe_search_title">설정 찾기</string>
+    <string name="lumen_qe_search_hint">예: MEMC</string>
+    <string name="lumen_qe_nothing">찾은 항목 없음</string>
+    <string name="lumen_qe_unavailable">지금은 사용할 수 없음</string>
 </resources>

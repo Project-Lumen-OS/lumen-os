@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">HDMI-CEC недаступны</string>
     <string name="lumen_cec_master">Кіраванне HDMI-CEC</string>
     <string name="lumen_cec_master_note">Калі HDMI-CEC выключаны, гук праз HDMI ARC недаступны.</string>
-    <string name="lumen_cec_wake">Уключацца ад HDMI-прылады</string>
     <string name="lumen_cec_wake_note">Калі гэта ўключана, HDMI-прылады выключаюцца разам з праектарам.</string>
     <string name="lumen_cec_night">Начная ахова</string>
     <string name="lumen_cec_night_off">Выкл.</string>

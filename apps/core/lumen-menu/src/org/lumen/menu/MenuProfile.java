@@ -179,6 +179,9 @@ public final class MenuProfile {
             problem("the Network popup rows come together: " + MenuSpec.HOTSPOT_ROWS);
         }
         if (hotspot != 0 && !features.containsKey(FeatureId.NETWORK)) problem("the Network popup rows need the network tile");
+        for (FeatureId[] r : MenuSpec.REQUIRES) {
+            if (features.containsKey(r[0]) && !features.containsKey(r[1])) problem(r[0] + " needs " + r[1] + " (its tile)");
+        }
         if (features.containsKey(FeatureId.BOOST)) {
             if (!features.containsKey(FeatureId.LAMP)) problem("boost needs lamp");
             else if (num(features.get(FeatureId.BOOST).get("level"), "boost.level")
@@ -211,7 +214,9 @@ public final class MenuProfile {
         if (!(o instanceof Map)) { problem("keys must be an object"); return; }
         @SuppressWarnings("unchecked") Map<String, Object> m = (Map<String, Object>) o;
         for (String k : m.keySet()) {
-            if (!"gear_short".equals(k) && !"gear_long".equals(k) && !"eye_gear_short".equals(k)) problem("keys: unknown " + k);
+            if (!"gear_short".equals(k) && !"gear_long".equals(k) && !"eye_gear_short".equals(k) && !"power_short".equals(k)) {
+                problem("keys: unknown " + k);
+            }
         }
         String s = str(m.get("gear_short"), "keys.gear_short"), l = str(m.get("gear_long"), "keys.gear_long");
         if (!GEAR_SHORT.contains(s)) problem("keys.gear_short: " + s + " (allowed " + GEAR_SHORT + ")");
@@ -222,6 +227,11 @@ public final class MenuProfile {
             String e = str(m.get("eye_gear_short"), "keys.eye_gear_short");
             if (!EYE_GEAR_SHORT.contains(e)) problem("keys.eye_gear_short: " + e + " (allowed " + EYE_GEAR_SHORT + ")");
             keys.put("eye_gear_short", e);
+        }
+        if (m.containsKey("power_short")) {
+            String p = str(m.get("power_short"), "keys.power_short");
+            if (PowerKeyChoice.of(p) == null) problem("keys.power_short: " + p + " (allowed power_menu, sleep)");
+            keys.put("power_short", p);
         }
     }
 
@@ -493,6 +503,15 @@ public final class MenuProfile {
 
     /** keys.eye_gear_short as named, or null (the default restore). */
     public String eyeGearShort() { return keys.get("eye_gear_short"); }
+
+    /**
+     * keys.power_short: what a short press of the remote power key does until the user picks otherwise (General, Short
+     * press of the power key); the stock power menu when the profile names none.
+     */
+    public PowerKeyChoice powerShort() {
+        PowerKeyChoice c = PowerKeyChoice.of(keys.get("power_short"));
+        return c == null ? PowerKeyChoice.POWER_MENU : c;
+    }
 
     /** A short gear press on the eye-protection mask also turns eye protection off (restore_off; a broken profile: no). */
     public boolean eyeGearShortOff() { return ok() && "restore_off".equals(keys.get("eye_gear_short")); }

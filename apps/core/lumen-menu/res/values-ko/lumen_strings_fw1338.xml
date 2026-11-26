@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">다이내믹 블랙 레벨 향상 설정</string>
+    <string name="lumen_m_db_level">다이내믹 블랙 강도</string>
+    <string name="lumen_m_db_subtitle_top">화면 위쪽 자막 마스크</string>
+    <string name="lumen_m_db_subtitle_bottom">화면 아래쪽 자막 마스크</string>
+    <string name="lumen_m_db_reset">자막 마스크 초기화</string>
+    <string name="lumen_m_color_uniformity">색 균일도 조정</string>
+</resources>

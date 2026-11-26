@@ -14,6 +14,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
+
 # stock node -> what Lumen shows for it: a row (one or more features), a header (None: a group without one), the
 # line, the correction settings sub page shown in place as a group, or nothing (the row lives in another Lumen
 # section or Lumen has no such row). The stock Keystone small title only parts the page from the Focus group above it,
@@ -24,6 +27,8 @@ NODES = {
     "auto_keystone": (ROW, ["keystone.ak_now"]),
     "auto_keystone_ak3": (ROW, ["keystone.ak_now"]),
     "auto_keystone_ak3_diana": (ROW, ["keystone.ak_now"]),
+    "auxiliary_curtain_alignment": (ELSEWHERE, "no Lumen row: the MIRA line's auxiliary curtain alignment (open)"),
+    "flat_wall_adapt": (ELSEWHERE, "no Lumen row: the MIRA line's flat wall adaptation (open)"),
     "boot_autoKeystone_v5": (ROW, ["keystone.on_power"]),
     "displacement_autoKeystone_v5": (ROW, ["keystone.on_move"]),
     "projection_area_self_adapt": (ROW, ["keystone.obstacle"]),
@@ -37,6 +42,7 @@ NODES = {
     "move_only": (ROW, ["zoom.move"]),
     "picture_screen_rotation": (ROW, ["keystone.rotation"]),
     "lens_memory": (ROW, ["zoom.memory"]),                       # a stock sub page, one Lumen screen
+    "screen_memory": (ELSEWHERE, "no Lumen row: the RS30 old line's screen memory button, no lens memory calls in its table"),
     "reset_keystone": (ROW, ["keystone.restore"]),
     "angle_monitor": (ROW, ["keystone.angle_h", "keystone.angle_v"]),
     "small_title_keystone": (HEADER, None),                      # the section's own title: the page and popup title
@@ -47,9 +53,9 @@ NODES = {
     "correcting_setting_v5": (SUBPAGE, "auto_correction"),
     "small_title_focus": (ELSEWHERE, "the Focus section"),
     "focus_tab": (ELSEWHERE, "the Focus section"),
-    "projection_settings": (ELSEWHERE, "the Projection section"),
+    "projection_settings": (ROW, ["projection.mode", "projection.rear"]),   # a stock sub page, the two Lumen rows in place
     "wall_color_calibration": (ROW, ["keystone.wall_color"]),        # lumen-wallcolor, 2026-11-19
-    "color_uniformity_adjustment": (ELSEWHERE, "no Lumen row"),
+    "color_uniformity_adjustment": (ROW, ["keystone.color_uniformity"]),   # x50-1338-menu2 (firmware row)
     "setting_common_back": (ELSEWHERE, "the back key"),
 }
 # inside a sub page shown in place: its back row, lines and small titles are not drawn (it is one group)
@@ -148,7 +154,7 @@ def main(argv):
     bad = n = 0
     for p in sorted(glob.glob(os.path.join(root, "devices/*/menu.json"))):
         dev = os.path.basename(os.path.dirname(p))
-        prof = json.load(open(p, encoding="utf-8"))
+        prof = menu_layers.effective(p)
         ks = [f for f in prof.get("features", {}) if f.startswith("keystone.") or f.startswith("zoom")]
         order = (prof.get("sections") or {}).get("keystone")
         if not ks:

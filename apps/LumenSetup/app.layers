@@ -3,6 +3,14 @@
 # it (devices/<model>/app/*Setup.layers). Play 6 builds Z9xSetup from source through it (build_play6.sh SETUP_SRC=1).
 # The folder alone does not compile since Setup imports org.lumen.system, org.lumen.ui, org.lumen.icons and org.lumen.qr.
 app       Z9xSetup
+# shared files taken from their one source (no copy in the app): the colour tokens and the network time zone lookup
+# of apps/common, the Inter font of apps/core/lumen-menu (AirPlay and the package installer take it the same way)
+file      apps/common/tokens.xml res/values/z9x_tokens.xml
+file      apps/common/GeoIp.java src/org/lumen/common/GeoIp.java
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/fonts/OFL-Inter.txt
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-system
 module    lumen-ui
 module    lumen-icons

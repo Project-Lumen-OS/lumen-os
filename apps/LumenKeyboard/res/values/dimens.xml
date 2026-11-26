@@ -45,7 +45,6 @@
     <dimen name="enter_key_height">32dp</dimen>
     <dimen name="enter_key_font_size">18sp</dimen>
     <dimen name="enter_key_padding_horizontal">16dp</dimen>
-    <dimen name="mode_change_key_font_size">7sp</dimen>
     <!-- candidate layout -->
     <dimen name="candidate_font_size">18sp</dimen>
     <dimen name="candidate_padding_horizontal">16dp</dimen>

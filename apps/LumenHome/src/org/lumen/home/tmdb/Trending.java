@@ -35,7 +35,8 @@ import java.util.TimeZone;
  * (genres, running time, age rating, rating, home release, watch providers in the region) in one call. The app a
  * title opens in is picked per card from what is installed ({@link WatchPick}). Kept on disk: refreshed after 6 hours
  * online or when the language, region or the installed official apps change, the last answer stays while offline; no
- * key and no cache means no showcase (the calm screen). Read on the screen's data lane ({@link #load}), fetched on the
+ * key, no cache or no installed app that plays titles ({@link WatchPick#canPlay}) means no showcase: the hero keeps only
+ * the user's own pages, else the calm screen. Read on the screen's data lane ({@link #load}), fetched on the
  * network lane ({@link #refresh}). The key never reaches the log.
  */
 public final class Trending {
@@ -49,24 +50,37 @@ public final class Trending {
 
     private Trending() {}
 
-    /** The cached list (no network, the screen's data lane): the showcase titles in their order, empty without a cache. */
+    /**
+     * The cached list (no network, the screen's data lane): the showcase titles in their order, empty without a cache
+     * or without an installed app that plays titles ({@link WatchPick#canPlay}).
+     */
     public static List<Card> load(Context c) {
+        WatchApps table = WatchLaunch.table(c);
+        WatchPick.Device dev = WatchLaunch.device(c);
+        if (!WatchPick.canPlay(table, dev)) return new ArrayList<>();
         JSONObject cache;
         synchronized (Trending.class) {
             cache = read(new File(c.getFilesDir(), FILE));
         }
-        return cache == null ? new ArrayList<>() : cards(c, cache, WatchLaunch.table(c), WatchLaunch.device(c));
+        return cache == null ? new ArrayList<>() : cards(c, cache, table, dev);
     }
 
     /**
      * Network lane only: fetches the list when the cache is older than {@link #TTL_MS} or of another language, region
      * or set of installed official apps, and keeps it; true when a new list was stored (the screen then reloads from the
-     * cache). The file lock is not held while the requests run, so the screen's own read never waits for TMDB.
+     * cache). The file lock is not held while the requests run, so the screen's own read never waits for TMDB. Without
+     * an installed app that plays titles nothing is fetched.
      */
     public static boolean refresh(Context c) {
+        WatchApps table = WatchLaunch.table(c);
+        WatchPick.Device dev = WatchLaunch.device(c);
+        if (!WatchPick.canPlay(table, dev)) {
+            Log.i(App.TAG, "trending off: no installed app plays titles");
+            return false;
+        }
         String lang = Locale.getDefault().toLanguageTag();
         String region = Region.of(TimeZone.getDefault().getID(), Locale.getDefault().getCountry());
-        List<Integer> pids = WatchPick.installedProviderIds(WatchLaunch.table(c), WatchLaunch.device(c));
+        List<Integer> pids = WatchPick.installedProviderIds(table, dev);
         String ident = lang + "|" + region + "|" + pids;
         File f = new File(c.getFilesDir(), FILE);
         JSONObject cache;

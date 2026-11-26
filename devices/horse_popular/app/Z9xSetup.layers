@@ -2,6 +2,14 @@
 # module (the Android settings screens: the remote step's "other remote" opens Remotes & Accessories through it) plus
 # the app. The module is closed: no file of apps/LumenSetup may shadow it.
 app       Z9xSetup
+# shared files taken from their one source (no copy in the app): the colour tokens and the network time zone lookup
+# of apps/common, the Inter font of apps/core/lumen-menu (AirPlay and the package installer take it the same way)
+file      apps/common/tokens.xml res/values/z9x_tokens.xml
+file      apps/common/GeoIp.java src/org/lumen/common/GeoIp.java
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/fonts/OFL-Inter.txt
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-system
 # the Lumen 2.0 look (apps/core/lumen-ui: Palette, LumenTheme, Tokens, Motion) and the icon set (apps/core/lumen-icons,
 # its R class named in apps/LumenSetup/R_EXTRA_PACKAGES)

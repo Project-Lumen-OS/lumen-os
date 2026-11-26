@@ -26,8 +26,9 @@ import java.util.Calendar;
  *       the stock XGIMI ones of devices/_image/cec_defaults.tsv (the image's framework RRO, CecStockDefaults).</li>
  *   <li><b>org.lumen.tvinput</b> (its HdmiStateProvider call get_cec_prefs / set_cec_pref, HDMI_STATE):
  *       switch to a device when it turns on, remote controls the device, internal source on exit.</li>
- *   <li><b>Ours</b> (prefs {@value #PREFS}): soundbar on with the projector, turn off with the HDMI
- *       device, night guard hours.</li>
+ *   <li><b>Ours</b> (prefs {@value #PREFS}): soundbar on with the projector, night guard hours. The
+ *       projector following the watched device when it turns off is tv_send_standby_on_sleep too (the stock
+ *       switch couples them), read by lumen-hdmi SourceFollow.</li>
  * </ul>
  * Getters return null when the value cannot be read (CEC service missing, binder error). Every method
  * that does binder or provider work must run off the main thread (CecPolicy's worker). Never throws.
@@ -37,7 +38,6 @@ public final class CecSettings {
 
     static final String PREFS = "z9x_cec";
     static final String K_AVR_ON = "cec_avr_on";
-    static final String K_FOLLOW = "cec_follow_standby";
     static final String K_NIGHT = "cec_night_choice";
     /** The framework OTP wake was switched off for a real power-off and is restored at the next start. */
     static final String K_RESTORE_OTP = "cec_restore_otp_after_poweroff";
@@ -125,7 +125,7 @@ public final class CecSettings {
     }
 
     /** "Turn off HDMI devices with the projector" (framework tv_send_standby_on_sleep). */
-    static Boolean sendStandbyOn(Context c) {
+    public static Boolean sendStandbyOn(Context c) {
         HdmiControlManager m = hm(c);
         if (m == null) return null;
         try {
@@ -208,16 +208,6 @@ public final class CecSettings {
     static void setAvrOn(Context c, boolean on) {
         try { prefs(c).edit().putBoolean(K_AVR_ON, on).apply(); } catch (Throwable t) { Log.w(TAG, "prefs: " + t); }
         Log.i(TAG, "setting: soundbar on with the projector " + (on ? "on" : "off"));
-    }
-
-    /** Turn the projector off when the HDMI device being watched turns off (default on). */
-    static boolean followStandby(Context c) {
-        try { return prefs(c).getBoolean(K_FOLLOW, true); } catch (Throwable t) { return true; }
-    }
-
-    static void setFollowStandby(Context c, boolean on) {
-        try { prefs(c).edit().putBoolean(K_FOLLOW, on).apply(); } catch (Throwable t) { Log.w(TAG, "prefs: " + t); }
-        Log.i(TAG, "setting: turn off with the HDMI device " + (on ? "on" : "off"));
     }
 
     static int nightChoice(Context c) {

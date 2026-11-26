@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Jugendschutz</string>
-    <string name="lumen_lp_intro">Legen Sie fest, was Kinder öffnen dürfen und wie lange sie schauen.</string>
     <string name="lumen_lp_lock">Kindersperre</string>
-    <string name="lumen_lp_lock_desc">Wenn an, lassen sich Geltungsbereich, Sehzeit und mehr festlegen</string>
     <string name="lumen_lp_lock_off_title">Kindersperre ausschalten?</string>
     <string name="lumen_lp_lock_off_text">Zeitgrenzen und das Passwort beim Einschalten gelten dann nicht mehr. Die Jugendschutzeinstellungen öffnen ohne Passwort.</string>
-    <string name="lumen_lp_turn_off">Ausschalten</string>
-    <string name="lumen_lp_cancel">Abbrechen</string>
     <string name="lumen_lp_child_mode">Kindermodus</string>
     <string name="lumen_lp_child_apps">Apps im Kindermodus</string>
     <string name="lumen_lp_child_apps_count">%1$d ausgewählt</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Nur Kindermodus</string>
     <string name="lumen_lp_range_global">Überall</string>
     <string name="lumen_lp_session">Zeit pro Sitzung</string>
-    <string name="lumen_lp_session_desc">Danach 10 Minuten Pause</string>
     <string name="lumen_lp_daily">Zeit pro Tag</string>
     <string name="lumen_lp_no_limit">Ohne Grenze</string>
     <string name="lumen_lp_minutes">%1$d Min.</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">Die Sitzung ist vorbei. 10 Minuten Pause</string>
     <string name="lumen_lp_rest_daily">Die Sehzeit für heute ist aufgebraucht</string>
     <string name="lumen_lp_rest_unlock">Entsperren</string>
-    <string name="lumen_lp_on">An</string>
-    <string name="lumen_lp_off">Aus</string>
 </resources>

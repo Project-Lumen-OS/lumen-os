@@ -21,6 +21,8 @@ U54 = 'row("x50", "G0111", X50, "1.2.54", RevisionVerdict.DRY, "Product_dianapro
 UANY = 'row("x50", "G0111", X50, ANY, RevisionVerdict.REFUSE, null, null,'
 M64 = 'row("x50max", "G0100", X50MAX, "1.2.64", G0100_LIVE ? RevisionVerdict.LIVE : RevisionVerdict.DRY, "Product_dianamax", X50_BLOBS_SET,'
 M54 = 'row("x50max", "G0100", X50MAX, "1.2.54", RevisionVerdict.DRY, "Product_dianamax", X50_BLOBS_SET,'
+U1338 = 'row("x50", "G0111", X50, "1.3.38", RevisionVerdict.LIVE, "Product_dianapro", X50_BLOBS_SET,'
+M1338 = 'row("x50max", "G0100", X50MAX, "1.3.38", G0100_LIVE ? RevisionVerdict.LIVE : RevisionVerdict.DRY, "Product_dianamax", X50_BLOBS_SET,'
 T99 = 'row("titanpro", "H0062", TITAN, "1.2.99", RevisionVerdict.DRY, "Product_dianahypro", X50_BLOBS_SET,'
 T54 = 'row("titanpro", "H0062", TITAN, "1.2.54", RevisionVerdict.DRY, "Product_dianahypro", X50_BLOBS_SET,'
 TANY = 'row("titanpro", "H0062", TITAN, ANY, RevisionVerdict.REFUSE, null, null,'
@@ -42,8 +44,8 @@ MUTANTS = [
     ("rev_u64_max_product", R, U64, U64.replace('"Product_dianapro"', '"Product_dianamax"')),
     ("rev_m54_live", R, M54, M54.replace("RevisionVerdict.DRY", "RevisionVerdict.LIVE")),
     ("rev_m64_ultra_product", R, M64, M64.replace('"Product_dianamax"', '"Product_dianapro"')),
-    ("rev_g0100_switch_on", R, "public static final boolean G0100_LIVE = false;", "public static final boolean G0100_LIVE = true;"),
-    ("rev_m64_live", R, M64, M64.replace("G0100_LIVE ? RevisionVerdict.LIVE : RevisionVerdict.DRY", "RevisionVerdict.LIVE")),
+    ("rev_g0100_switch_off", R, "public static final boolean G0100_LIVE = true;", "public static final boolean G0100_LIVE = false;"),
+    ("rev_m64_dry", R, M64, M64.replace("G0100_LIVE ? RevisionVerdict.LIVE : RevisionVerdict.DRY", "RevisionVerdict.DRY")),
     ("rev_live_versions_any_model", R, "if (r.model.equals(model) && r.verdict == RevisionVerdict.LIVE) out.add(r.version);",
      "if (r.verdict == RevisionVerdict.LIVE) out.add(r.version);"),
     ("rev_t99_live", R, T99, T99.replace("RevisionVerdict.DRY", "RevisionVerdict.LIVE")),
@@ -55,7 +57,13 @@ MUTANTS = [
     ("rev_m99_live", R, M99, M99.replace("RevisionVerdict.DRY", "RevisionVerdict.LIVE")),
     ("rev_m99_pro_product", R, M99, M99.replace('"Product_dianahymax"', '"Product_dianahypro"')),
     ("rev_m99_on_pro_profile", R, M99, M99.replace('row("titanmax",', 'row("titanpro",')),
-    ("rev_blobs_set", R, 'X50_BLOBS_SET = "x50-v1264-b";', 'X50_BLOBS_SET = "x50-test-1";'),
+    ("rev_blobs_set", R, 'X50_BLOBS_SET = "x50-v1264-c";', 'X50_BLOBS_SET = "x50-test-1";'),
+    ("rev_u1338_dry", R, U1338, U1338.replace("RevisionVerdict.LIVE", "RevisionVerdict.DRY")),
+    ("rev_m1338_dry", R, M1338, M1338.replace("G0100_LIVE ? RevisionVerdict.LIVE : RevisionVerdict.DRY", "RevisionVerdict.DRY")),
+    ("rev_u1338_gone", R, U1338, U1338.replace('"1.3.38"', '"1.3.39"')),
+    ("rev_m1338_gone", R, M1338, M1338.replace('"1.3.38"', '"1.3.39"')),
+    ("rev_u1338_max_product", R, U1338, U1338.replace('"Product_dianapro"', '"Product_dianamax"')),
+    ("rev_u1338_any_blobs_set", R, U1338, U1338.replace("X50_BLOBS_SET,", "null,")),
     # ---- the profiles
     ("prof_no_updates_to_stock", P, XP, XP.replace("ALLOW_X50, true, true,", "ALLOW_X50, false, true,")),
     ("prof_no_eye", P, XP, XP.replace("ALLOW_X50, true, true,", "ALLOW_X50, true, false,")),

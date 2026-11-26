@@ -1,0 +1,27 @@
+# The signal panel rows of this model (apps/core/lumen-signal README.md), in the app as assets/lumen_signal/items.tsv.
+# One row per vendor read the panel may make here, read only while the panel is on screen, at most 2 calls per second.
+# A model without a row never shows that line. Columns (tab separated): item (SignalItem token), call, note.
+# X50 family (X50 Ultra, Ultra Max, RS30 Ultra Max, Titan): the same GmTvManager codes (devices/g0111/hal/codes.tsv).
+item	call	note
+hdmi_info	GmTvManager 122 getVideoInfo	input size, HDMI or DVI, frame rate (GameSequences reads it too)
+hdr	GmTvManager 78 getHdrType	SDR, HDR10, HDR10+, HLG, Dolby Vision, HDR Vivid (each named exactly)
+chip_rate	DisplayManager 179 getDispOutputFps	rate on the chip, the judder line
+range	GmTvManager 64 getHdmiRange	the colour range setting
+edid	GmTvManager 39 getEdidVersion	the HDMI mode the input announces
+vrr	GmTvManager 146 getVRREnableState	VRR on this HDMI port
+game	DisplayManager 148 getGameModeProp	the game mode runs now
+allm	GmTvManager 131 getAllmStatus	ALLM sent by the source on this HDMI port
+freesync	GmTvManager 173 getAmdFreeSyncState	FreeSync state
+imax	GmTvManager 163 getExtDecInfo	"format&isimax" only: IMAX Enhanced content
+filmmaker	GmTvManager 163 getExtDecInfo	"format&isfmm" only: Filmmaker Mode content
+port_hw	GmTvManager 153 getHdmiHwConfig	CEC, ARC and physical address of the port
+dv_mode	GmTvManager 75 getDolbyVisionPicMode	Dolby Vision bright or dark, shown only with Dolby Vision
+hgig	GmTvManager 192 getHGiGMode	HGiG
+tone_map	GmTvManager 175 GetHDRDyToneMappingStatus	HDR dynamic tone mapping switch
+temp_light	TemperatureManager 7 getTemperatureFromSensor	sensor 5 only, the red laser (the sensor card reads the same)
+temp_system	TemperatureManager 6 getSystemTemperature	temperature inside
+aspect	GmTvManager 36 getAspectRatio	the aspect setting, only where the model has it (the signal's own aspect comes from its size)
+hdmi_format	MDB HDMIRX bridge ports=1:2,2:1,3:0	colour format, depth, colorimetry, range the signal asks for, HDR static metadata, source name, link rate, from the receiver itself (image lumen_hdmirx, root); HDMI 1 = MStar port 2 (eARC), HDMI 2 = port 1, HDMI 3 = port 0: stock tbl_Hdmi_Hardware_Mapping of this model (xgimiconfig tv/tvconfig.sql, the same table gives the Z9X map proven live)
+picture_mode	GmTvManager 34 getPictureMode	the picture mode, the menu's own read and names (ModelMenu), on the small card too
+memc	GmTvManager 32 getMemcLevel	motion smoothing, the menu's own read and names: Original when FD boost runs (GmTvManager 161 getFDBoostStatus first, as the menu reads it)
+color_space	GmTvManager 204 getHdmiColorSpaceInfo	the stock signal OSD's colour space (BT.2020, DCI-P3, Rec.709, native, Adobe RGB) with the menu's words, HDMI 1..3; only on XGIMI v1.3.38 (the reader offers it where org.lumen.hal.GmpfFirmware has the firmware's gmpf hash)

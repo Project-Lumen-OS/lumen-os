@@ -54,7 +54,7 @@ ZNAME=$(conf z9x NAME); ZMODEL=$(conf z9x MODEL); ZBOARD=$(conf z9x BOARD); ZFW=
 ZVP=$(conf z9x VERSION_PROP)
 # the RS30 Ultra Max (installer_id of the devices/ entry whose models name it): a profile that is not finished (TODO)
 RREG=""
-for f in "$G"/devices/*/device.conf; do grep -qx 'abi=arm32' "$f" && grep -qx 'family=horse_popular' "$f" && { RREG=$f; break; }; done
+for f in "$G"/devices/*/device.conf; do e=$(python3 "$G/tools/devices/layered.py" "$f"); echo "$e" | grep -qx 'abi=arm32' && echo "$e" | grep -qx 'family=horse_popular' && { RREG=$f; break; }; done
 RID=$(sed -n 's/^installer_id=//p' "$RREG"); RNAME=$(conf "$RID" NAME); RMODEL=$(conf "$RID" MODEL)
 RBOARD=$(conf "$RID" BOARD); RFW=$(conf "$RID" VENDOR_OK | awk '{print $1}'); RTOK=$(conf "$RID" IMAGE_TOKEN)
 RCERT=$(conf "$RID" CERT); RLP=$(conf "$RID" LUMEN_PROP)
@@ -63,7 +63,7 @@ RCERT=$(conf "$RID" CERT); RLP=$(conf "$RID" LUMEN_PROP)
 # the X50 Ultra Max (devices/g0100): the X50 Ultra's firmware and board, no profile of its own (trial only)
 MREG=$G/devices/g0100/device.conf
 MID=$(sed -n 's/^installer_id=//p' "$MREG"); MMODEL=$(sed -n 's/^models=//p' "$MREG" | awk '{print $1}')
-MBOARD=$(sed -n 's/^hardware=//p' "$MREG")
+MBOARD=$(python3 "$G/tools/devices/layered.py" "$MREG" | sed -n 's/^hardware=//p')
 [ -n "$MID" ] && [ -n "$MMODEL" ] && [ "$MBOARD" = "$XBOARD" ] || { echo "devices/g0100 is not an X50 Ultra Max entry"; exit 1; }
 [ "$XFAM" = z9x ] || { echo "the $X profile is not on the Z9X's product image (FAMILY '$XFAM')"; exit 1; }
 FBP=$(conf "$XFAM" FB_PRODUCT)

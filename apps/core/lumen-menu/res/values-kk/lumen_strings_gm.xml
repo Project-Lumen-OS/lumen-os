@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">Жиынтық</string>
     <string name="lumen_gm_preset_compete">Жарыс</string>
     <string name="lumen_gm_preset_balance">Теңгерім</string>
-    <string name="lumen_gm_preset_story">Сюжет</string>
     <string name="lumen_gm_preset_on">«%1$s» жиынтығы қосылды</string>
     <string name="lumen_gm_preset_partly">«%1$s» жиынтығы қосылды, бірақ кейбір тармақтар өзгермеді</string>
     <string name="lumen_gm_lat">Жауап жылдамдығы</string>
-    <string name="lumen_gm_lat_0">Стандарт</string>
     <string name="lumen_gm_lat_1">Турбо</string>
     <string name="lumen_gm_lat_d0">Әдеттегі кідіріс. Трапеция мен суретті реттеу жұмыс істейді.</string>
     <string name="lumen_gm_lat_d1">Ең аз кідіріс. Трапеция мен суретті реттеу жұмыс істемейді.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">Қосулы</string>
     <string name="lumen_gm_auto">Авто</string>
     <string name="lumen_gm_pic">Сурет режимі</string>
-    <string name="lumen_gm_pic_0">Стандарт</string>
     <string name="lumen_gm_pic_4">Спорт</string>
     <string name="lumen_gm_pic_d0">Кез келген ойынға.</string>
     <string name="lumen_gm_pic_d1">Атыс ойындарына.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">Қалыпты экран.</string>
     <string name="lumen_gm_snd">Ойын дыбысы</string>
     <string name="lumen_gm_snd_1">Көлемді</string>
-    <string name="lumen_gm_snd_2">Сюжет</string>
     <string name="lumen_gm_snd_3">Анықтық</string>
     <string name="lumen_gm_snd_4">Теңгерімді</string>
     <string name="lumen_gm_snd_d0">Дыбыс ойындағыдай.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">жылдамырақ</string>
     <string name="lumen_gm_turbo_title">Турбоны қосу керек пе?</string>
     <string name="lumen_gm_turbo_msg">Турбо трапеция түзетуін өшіреді және суретті толық кадрға қайтарады. Кідіріс ең аз болады.</string>
-    <string name="lumen_gm_turbo_ok">Қосу</string>
     <string name="lumen_gm_rule_vrr_wide">Алдымен 16:9 немесе Авто пішімін таңдаңыз</string>
     <string name="lumen_gm_rule_ar_vrr">Алдымен VRR өшіріңіз</string>
     <string name="lumen_gm_rule_ar_4k">Кең кадр тек 3840 × 2160 сигналымен жұмыс істейді</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">Ойын кезінде осы мәзірді ашу үшін баптаулар түймесін басып тұрыңыз</string>
     <string name="lumen_gm_kind_console">приставка</string>
     <string name="lumen_gm_kind_computer">компьютер</string>
-    <string name="lumen_gm_licences">Лицензиялар</string>
     <string name="lumen_gm_licences_d">Lumen OS пайдаланатын материалдардың авторлары</string>
     <string name="lumen_gm_credits_intro">Ойын мәзіріндегі геймпад суреттері мына 3D модельдерден жасалған:</string>
 </resources>

@@ -41,7 +41,6 @@
     </string-array>
 
     <!-- Label for LeanbackIme Settings [CHAR LIMIT=50] -->
-    <string name="settings_title">Keyboard Options</string>
     <!-- Description / label for a button that turns a setting on [CHAR LIMIT=50]-->
     <string name="btn_on">On</string>
     <!-- Description / label for a button that turns a setting off [CHAR LIMIT=50]-->

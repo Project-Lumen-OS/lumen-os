@@ -2,7 +2,6 @@
 <!-- Kazakh translation of res/values/strings_pair.xml (Lumen OS 1.0 remote-lost prompt). -->
 <resources>
     <string name="lumen_remote_lost_title">Пультті қайта қосыңыз</string>
-    <string name="lumen_remote_lost_text">Индикатор жыпылықтағанша «Артқа» және «Басты бет» түймелерін 3 секунд басып тұрыңыз.</string>
     <string name="lumen_remote_lost_found">Табылды: %1$s</string>
     <string name="lumen_remote_lost_battery">Ештеңе болмай жатыр ма? Пульттің батареяларын тексеріңіз.</string>
     <string name="lumen_remote_lost_dismiss">Қазір емес</string>

@@ -48,13 +48,19 @@ class TableError(Exception):
 
 
 def tables(root):
-    """[(codename, path)] of every devices/<codename>/hal/codes.tsv, sorted."""
+    """[(codename, path)] of every devices/<codename>/hal/codes.tsv, then every family table
+    devices/_family/<f>/hal/codes.tsv as ('_family/<f>', path), sorted."""
     out = []
     d = os.path.join(root, "devices")
     for c in sorted(os.listdir(d)):
         p = os.path.join(d, c, "hal", "codes.tsv")
         if os.path.isfile(p):
             out.append((c, p))
+    fam = os.path.join(d, "_family")
+    for f in sorted(os.listdir(fam)) if os.path.isdir(fam) else []:
+        p = os.path.join(fam, f, "hal", "codes.tsv")
+        if os.path.isfile(p):
+            out.append(("_family/" + f, p))
     return out
 
 

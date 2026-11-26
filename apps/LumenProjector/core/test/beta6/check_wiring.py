@@ -1,0 +1,200 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+"""HB beta6 wiring checks (source level, the HB app tree): Boost rules used where the vendor refuses 151(0) (in the HB
+adapter of the shared menu, panel/HbMenuFeatures), the stock HB Boost texts in every locale, the optical zoom tile, the zoom screen on ZoomScale, and the one-way fit / obstacle
+coupling (stock spec 2.3, stock KeyStoneRepository.java:506-521) in all four directions, run on the real Hal source."""
+import glob, os, re, subprocess, sys, tempfile
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(os.environ.get("LUMEN_GSI") or os.path.join(HERE, "..", "..", "..", ".."), "tools", "i18n"))
+import res_strings  # noqa: E402  (strings files as the APK resolves them)
+HB = os.path.abspath(os.path.join(HERE, "..", ".."))
+
+# the one projector app: an HB source is in this folder (or the assembled tree of
+# build.sh), in the HB family adapter or in the core
+GSI_ROOT = os.environ.get("LUMEN_GSI") or os.path.abspath(os.path.join(HB, "..", ".."))
+SRC_BASES = (HB, os.path.join(GSI_ROOT, "apps/LumenProjector/vendor/xgimi/aidl-gmpf"),
+             os.path.join(GSI_ROOT, "apps/LumenProjector/core"))
+
+
+def src_of(rel):
+    for base in SRC_BASES:
+        f = os.path.join(base, "src", rel)
+        if os.path.exists(f):
+            return f
+    return os.path.join(HB, "src", rel)
+
+
+def src_glob(pattern):
+    seen = {}
+    for base in SRC_BASES:
+        for f in glob.glob(os.path.join(base, "src", pattern)):
+            seen.setdefault(os.path.basename(f), f)
+    return list(seen.values())
+
+APPS = os.path.dirname(HB)
+QP = src_of("org/lumen/projector/panel/HbMenuFeatures.java")      # the HB adapter of the shared menu
+QPS = [QP] + sorted(src_glob("org/lumen/projector/panel/Hb*Rows.java"))   # and its sections
+GATES = src_of("org/lumen/projector/panel/HbMenuGates.java")
+OZ = src_of("org/lumen/projector/panel/OpticalZoomPanel.java")
+HAL = src_of("org/lumen/projector/Hal.java")
+if not os.path.exists(HAL):                       # the HB app takes Hal.java from its recipe base
+    HAL = os.path.join(APPS, "LumenProjector/core/src/org/lumen/projector/Hal.java")
+LOCALES = ["values", "values-ar", "values-be", "values-de", "values-es", "values-fr", "values-it", "values-ja",
+           "values-kk", "values-ko", "values-pl", "values-pt", "values-pt-rBR", "values-ru", "values-tr", "values-uk",
+           "values-zh-rCN", "values-zh-rTW"]
+n = bad = 0
+def ok(what, cond):
+    global n, bad
+    n += 1
+    if not cond:
+        bad += 1
+        print("FAIL " + what)
+
+def body(src, sig):
+    i = src.find(sig)
+    if i < 0: return ""
+    j = src.find("{", i); depth = 0
+    for k in range(j, len(src)):
+        if src[k] == "{": depth += 1
+        elif src[k] == "}":
+            depth -= 1
+            if depth == 0: return src[i:k + 1]
+    return ""
+
+qp = "\n".join(open(f, encoding="utf-8").read() for f in QPS)
+gates = open(GATES, encoding="utf-8").read()
+# ---- Boost (live beta5 bug), in the HB adapter of the shared menu (panel/HbMenuFeatures)
+sb = body(qp, "private String setBoost(boolean on, GmpfClient g, Gmpf2Client g2)")
+ok("setBoost asks BoostRules before 151", "BoostRules.onLeavePress(cur, pm) == BoostLeave.EXPLAIN_PICTURE_MODE" in sb
+   and sb.find("EXPLAIN_PICTURE_MODE") < sb.find("g2.setBoost(on)"))
+ok("setBoost explains without a vendor call", "EXPLAIN_PICTURE_MODE) return boostLocked(pm);" in sb)
+ok("setBoost judges by the 152 read-back", "BoostRules.judge(on, ret, lensAfter, pmAfter)" in sb and "g2.isBoost()" in sb)
+ok("setBoost reads the picture mode after", "g.getPictureModeRaw()" in sb)
+ok("setBoost explains a picture mode lock", "LOCKED_BY_PICTURE_MODE) return boostLocked(pmAfter);" in sb)
+ok("setBoost fails only on FAILED", "Outcome.FAILED) throw" in sb)
+ok("setBoost no longer throws on the boolean", re.search(r"if \(!ret\)\s*throw", sb) is None)
+pmc = body(qp, "private String setPictureMode(String value, GmpfClient g, Gmpf2Client g2)")
+ok("colour accuracy uses BoostRules", "BoostRules.blocksColorAccuracy(safeBoost(g2), raw)" in pmc)
+ok("no raw boost block for colour accuracy", "COLOR_ACCURACY && Boolean.TRUE.equals(" not in pmc)
+bl = body(qp, "private String boostLocked(Integer pictureModeWire)")
+ok("Boost lock notice: the HB stock text with the mode", "R.string.hb_boost_locked, mode" in bl)
+lamp = qp[qp.find("case LAMP: {"):qp.find("case BOOST:")]
+ok("light step in Boost leaves Boost by the same rules", "setBoost(false, g, g2)" in lamp)
+# ---- strings in every locale
+for loc in LOCALES:
+    f = os.path.join(HB, "res", loc, "strings_hb.xml")
+    x = res_strings.text(f) if os.path.exists(os.path.join(HB, "res", "values", "strings_hb.xml")) else ""
+    eff = re.search(r'<string name="hb_boost_effect">([^<]+)</string>', x)
+    lock = re.search(r'<string name="hb_boost_locked">([^<]+)</string>', x)
+    ok(loc + " hb_boost_effect", eff is not None and "Boost" in eff.group(1))
+    ok(loc + " hb_boost_locked has the mode", lock is not None and "%1$s" in lock.group(1) and "Boost" in lock.group(1))
+    if loc == "values" and eff:
+        t = eff.group(1).lower()
+        ok("en Boost line: higher brightness", "brightness" in t)
+        ok("en Boost line: no paler-colours claim", "pale" not in t and "colour space" not in t and "color space" not in t)
+    if loc == "values-ru" and eff:
+        t = eff.group(1)
+        ok("ru Boost line: no old claims", "бледн" not in t and "Цветовое пространство" not in t)
+# ---- zoom tile (stock quick menu row 102): the shared menu's card has it in row 1 after keystone (module layout D);
+# the HB gates it by OPTICAL_ZOOM and opens the optical zoom screen, refused in a top-speed game
+ok("zoom tile behind OPTICAL_ZOOM", '{FeatureId.ZOOM, "OPTICAL_ZOOM"}' in gates)
+zt = qp[qp.find("case ZOOM:"):]
+ok("zoom tile opens the optical zoom screen", "OpticalZoomPanel.open(app, back)" in zt[:400])
+ok("zoom tile refused in top-speed game", "if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }" in zt[:400])
+GSI = os.environ.get("LUMEN_GSI") or os.path.abspath(os.path.join(HB, "..", ".."))
+sys.path.insert(0, os.path.join(GSI, "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
+prof = os.path.join(GSI, "devices/goat_elegant/menu.json")
+if os.path.exists(prof):
+    ok("zoom in the HB profile", '"zoom": {}' in menu_layers.read_text(prof))
+# ---- zoom screen on ZoomScale
+oz = open(OZ, encoding="utf-8").read()
+ok("zoom: scale from 97 + 63(12,10)", "new ZoomScale(range[2], Family.zoomHasLimit(g2) ? lim : 0)" in oz)
+ok("zoom: moves from ZoomScale", "scale.move(now, dir)" in oz)
+ok("zoom: refused end dropped", "scale.refusedAtEnd(now, dir)" in oz and "r != 0 && after == now" in oz)
+ok("zoom: counter from ZoomScale", "sc.sizeNumber(p), sc.positions()" in oz)
+ok("zoom: progress from ZoomScale", "scale.progress(cur, lim)" in oz)
+# ---- manual focus chart (stock FocusAdjust full-screen cp01_focus_bk)
+MFA = src_of("org/lumen/projector/ManualFocusActivity.java")
+mf = open(MFA, encoding="utf-8").read()
+oc = body(mf, "protected void onCreate(Bundle b)")
+ok("manual focus: chart added behind the panel", "addView(new FocusPatternView(this), 0," in oc and "MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT" in oc)
+ok("manual focus: chart after setContentView", oc.find("setContentView(R.layout.activity_manual_focus)") < oc.find("new FocusPatternView"))
+dk = body(mf, "public boolean dispatchKeyEvent(KeyEvent ev)")
+ok("manual focus: other keys still close (stock)", "motor.stop();" in dk and "finish();" in dk and "KEYCODE_DPAD_LEFT" in dk)
+fv = open(src_of("org/lumen/projector/FocusPatternView.java"), encoding="utf-8").read()
+ok("chart view draws every wheel and the line", "FocusPattern.wheels(w, h)" in fv and "FocusPattern.line(w, h)" in fv and "c.drawRect(l[0], l[1], l[2], l[3], ink)" in fv and "drawColor(FocusPattern.BACKGROUND)" in fv)
+ok("no XGIMI chart asset copied", not any(os.path.exists(os.path.join(HB, "res", d, "cp01_focus_bk.webp")) for d in ("drawable", "drawable-nodpi")))
+# ---- deep sleep blocked notice (StrNotice)
+SN = open(src_of("org/lumen/projector/power/StrNotice.java"), encoding="utf-8").read()
+tr = body(SN, "static int textRes(StrNoticeKind k)")
+for kind, res in (("USB", "hb_str_blocked_usb"), ("UPDATE", "hb_str_blocked_update"), ("UPDATE_CHECK", "hb_str_blocked_update_check")):
+    ok("str notice: " + kind + " text", re.search(r"case " + kind + r": return R\.string\." + res + ";", tr) is not None)
+ok("str notice: kill switch text", "default: return R.string.hb_str_blocked_off;" in tr)
+shw = body(SN, "private static void show(Context app, StrNoticeKind k, String why)")
+ok("str notice: never in standby", "if (StandbyController.isActive()) return;" in shw)
+ok("str notice: never with the screen off", "!pm.isInteractive()) return;" in shw)
+ok("str notice: Notify title + reason", "Notify.show(app, app.getString(R.string.hb_str_blocked_title), app.getString(textRes(k)))" in shw)
+ok("str notice: usb once per connection", "StrNoticeRules.usbNoticeDue(k, sUsbShown)" in SN and "sUsbShown = k == StrNoticeKind.USB;" in SN)
+ok("str notice: power menu by PowerKey.LONG_PRESS_MS", "PowerKey.LONG_PRESS_MS" in SN)
+kr = open(src_of("org/lumen/projector/KeyReceiver.java"), encoding="utf-8").read()
+i1 = kr.find("Family.strNoticeKey(ctx, ev);"); i2 = kr.find("Family.powerKey(ctx, intent, ev)")
+fam = open(src_of("org/lumen/projector/Family.java"), encoding="utf-8").read()
+ok("str notice: KeyReceiver before PowerUi (the family's strNoticeKey, then its powerKey)", 0 <= i1 < i2
+   and "if (STR_NOTICE) org.lumen.projector.power.StrNotice.onGlobalKey(ctx, ev);" in fam
+   and "return org.lumen.projector.power.PowerUi.onGlobalKey(ctx, intent, ev);" in fam)
+apsrc = open(src_of("org/lumen/projector/App.java"), encoding="utf-8").read()
+ok("str notice: installed after PowerPolicy", 0 <= apsrc.find("PowerPolicy.install(this)") < apsrc.find("StrNotice.install(this)"))
+for loc in LOCALES:
+    # the notice and its texts are core classes since the one projector app (res strings_str.xml)
+    f = next((p for p in (os.path.join(HB, "..", "LumenProjector", "core", "res", loc, "strings_str.xml"),
+                          os.path.join(HB, "res", loc, "strings_str.xml")) if os.path.exists(p)), "")
+    x = open(f, encoding="utf-8").read() if f else ""
+    for nm in ("hb_str_blocked_title", "hb_str_blocked_usb", "hb_str_blocked_update", "hb_str_blocked_update_check", "hb_str_blocked_off"):
+        m = re.search(r'<string name="%s">([^<]+)</string>' % nm, x)
+        ok(loc + " " + nm, m is not None and len(m.group(1).strip()) > 3)
+    m = re.search(r'<string name="hb_str_blocked_usb">([^<]+)</string>', x)
+    ok(loc + " usb text names USB", m is not None and "USB" in m.group(1))
+# ---- fit / obstacle coupling: the panel rows use only the coupled setters
+ok("menu obstacle switch coupled", "Hal.setObstacleAvoidCoupled(g, on)" in qp)
+ok("menu fit switch coupled", "Hal.setCurtainFitCoupled(g, on)" in qp)
+for name, path in [("menu", f) for f in QPS]:
+    s = open(path, encoding="utf-8").read()
+    ok(name + ": no direct 290 / 292 writes", re.search(r"\.set(CurtainFit|ObstacleAvoid)\(", s) is None)
+hal = open(HAL, encoding="utf-8").read()
+fit = body(hal, "public static void setCurtainFitCoupled(GmpfClient g, boolean on)")
+obs = body(hal, "public static void setObstacleAvoidCoupled(GmpfClient g, boolean on)")
+ok("Hal coupled setters found", bool(fit) and bool(obs))
+java = """import java.util.*;
+class GmpfClient { List<String> log = new ArrayList<>();
+  void setCurtainFit(boolean on) { log.add("290 " + on); }
+  void setObstacleAvoid(boolean on) { log.add("292 " + on); } }
+public class CouplingRun {
+  %s
+  %s
+  public static void main(String[] a) throws Exception {
+    String[][] cases = { {"fit", "true", "[290 true, 292 true]"}, {"fit", "false", "[290 false]"},
+                         {"obstacle", "false", "[292 false, 290 false]"}, {"obstacle", "true", "[292 true]"} };
+    int bad = 0;
+    for (String[] c : cases) {
+      GmpfClient g = new GmpfClient(); boolean on = Boolean.parseBoolean(c[1]);
+      if (c[0].equals("fit")) setCurtainFitCoupled(g, on); else setObstacleAvoidCoupled(g, on);
+      String got = g.log.toString();
+      if (!got.equals(c[2])) { bad++; System.out.println("FAIL coupling " + c[0] + " " + c[1] + ": " + got + " want " + c[2]); }
+      else System.out.println("coupling " + c[0] + " " + c[1] + " -> " + got);
+    }
+    System.exit(bad == 0 ? 0 : 1);
+  } }
+""" % (fit, obs)
+d = tempfile.mkdtemp()
+open(os.path.join(d, "CouplingRun.java"), "w").write(java)
+jh = os.environ.get("JAVA_HOME") or subprocess.run(["/usr/libexec/java_home"], capture_output=True, text=True).stdout.strip()
+r = subprocess.run([os.path.join(jh, "bin/javac"), "-nowarn", "-d", d, os.path.join(d, "CouplingRun.java")], capture_output=True, text=True)
+ok("coupling compiles: " + r.stderr.strip()[:200], r.returncode == 0)
+if r.returncode == 0:
+    r = subprocess.run([os.path.join(jh, "bin/java"), "-cp", d, "CouplingRun"], capture_output=True, text=True)
+    sys.stdout.write(r.stdout)
+    ok("coupling: all four directions as FEATURE_SPEC 2.3 / stock", r.returncode == 0)
+print("check_wiring: %d/%d passed" % (n - bad, n))
+sys.exit(1 if bad else 0)

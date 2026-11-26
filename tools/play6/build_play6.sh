@@ -6,7 +6,7 @@
 #   tools/play6/build_play6.sh
 #
 # 1. assembles the projector app from its recipe devices/dragon_healthy/app/Play6Projector.layers
-#    (tools/devices/assemble_app.py: apps/common/projector by its FILES, HidlCaller and LumenImport, then
+#    (tools/devices/assemble_app.py: apps/common/projector by its FILES and HidlCaller, then
 #    apps/Play6Projector on top) into OUT_DIR/tree/Play6Projector; a recipe error stops the build
 # 2. checks H (check_play6_hal.py) and K (check_handshake.py) on that assembled tree, and F (check_forks.py);
 #    any red stops the build
@@ -80,8 +80,18 @@ for app in Play6Projector Play6FrameworkOverlay Play6TvSettingsOverlay Play6Upda
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
     sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
-# the receivers of every Lumen projector, no per-model copy (AirPlay is the re-signed pin: sign_play6.py pinned); the
-# receiver's version line is apps/LumenMiracast/BUILD_VERSION, as tools/devices/build_apps.sh reads it
+# the receivers of every Lumen projector, no per-model copy: AirPlay with the casting screen from its recipe
+# (apps/LumenAirPlay/app.layers, its native library from the released pin, checked against jni/LIBS.sha256, screen
+# casting on every model 2026-11-21); the receiver's version line is apps/LumenMiracast/BUILD_VERSION, as
+# tools/devices/build_apps.sh reads it
+python3 -B "$G/tools/devices/assemble_app.py" --root "$G" "$G/apps/LumenAirPlay/app.layers" --out "$OUT/tree/Z9xAirPlay" --quiet \
+  || die "the Z9xAirPlay recipe does not assemble"
+[ -d "$OUT/tree/Z9xAirPlay/lib" ] || sh "$G/apps/LumenAirPlay/tools/libs_from_pin.sh" "$G/overlay/apps_v1/Z9xAirPlay.apk" "$OUT/tree/Z9xAirPlay" \
+  || die "no AirPlay native library: overlay/apps_v1/Z9xAirPlay.apk does not match apps/LumenAirPlay/jni/LIBS.sha256"
+read -r AP_VC AP_VN < "$G/apps/LumenAirPlay/BUILD_VERSION" || die "no apps/LumenAirPlay/BUILD_VERSION"
+BUILD_DIR="$OUT/apk/Z9xAirPlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE=$AP_VC VERSION_NAME=$AP_VN \
+  sh "$G/apps/build_apk.sh" "$OUT/tree/Z9xAirPlay" "$OUT/Z9xAirPlay.apk"
+python3 -B "$G/devices/_image/checks/airplay_libs.py" "$OUT/Z9xAirPlay.apk" || die "Z9xAirPlay: armeabi-v7a library not stored and aligned"
 read -r MC_VC MC_VN < "$G/apps/LumenMiracast/BUILD_VERSION" || die "no apps/LumenMiracast/BUILD_VERSION"
 BUILD_DIR="$OUT/apk/LumenMiracast" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE=$MC_VC VERSION_NAME=$MC_VN \
   sh "$G/apps/build_apk.sh" "$G/apps/LumenMiracast" "$OUT/LumenMiracast.apk"
@@ -92,6 +102,11 @@ python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Lume
   || die "the LumenPackageInstallerOverlay recipe does not assemble"
 BUILD_DIR="$OUT/apk/LumenPackageInstallerOverlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
   sh "$G/apps/build_apk.sh" "$OUT/tree/LumenPackageInstallerOverlay" "$OUT/LumenPackageInstallerOverlay.apk"
+# Files, the file manager of every model (apps/LumenFiles/app.layers: the shared icons and look)
+python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app LumenFiles --out "$OUT/tree/LumenFiles" --quiet \
+  || die "the LumenFiles recipe does not assemble"
+BUILD_DIR="$OUT/apk/LumenFiles" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
+  sh "$G/apps/build_apk.sh" "$OUT/tree/LumenFiles" "$OUT/LumenFiles.apk"
 # the on-screen keyboard of every model (apps/LumenKeyboard: keyboard languages, the language key), in LeanbackIME's place
 BUILD_DIR="$OUT/apk/LumenKeyboard" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
   sh "$G/apps/build_apk.sh" "$G/apps/LumenKeyboard" "$OUT/LumenKeyboard.apk"
@@ -118,6 +133,4 @@ for app in $SRC; do
   BUILD_DIR="$OUT/apk/$app" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION_CODE="$vc" VERSION_NAME="$vn" TMDB_KEY_FILE="$key" \
     sh "$G/apps/build_apk.sh" "$src" "$OUT/$app.apk"
 done
-# Lumen OS 1.0.8 bridges under the Play 6's pre-1.0.8 names (apps/LumenBridge), Play 6 key: OUT_DIR/LumenBridge_<app>.apk
-KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" sh "$G/apps/LumenBridge/build_bridges.sh" "$OUT" play6
 echo "build_play6: OK ($OUT)"

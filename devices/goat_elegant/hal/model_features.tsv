@@ -1,0 +1,9 @@
+# The Z9X HB model codes whose stock settings tree the menu was checked against, and the model-dependent features
+# each one hides (HbFeatures.MODEL_SENSITIVE of apps/LumenProjector/vendor/xgimi/aidl-gmpf hal/HbFeatures;
+# the design notes). A model code without a row hides all of them. The HB recipe
+# ships this file as assets/lumen_hal/model_features.tsv.
+# model<TAB>features off (HbFeatures.F names, blank separated)
+# dapengse: rainbow reduction (picture_anti_rbe) is only in the G0148 tree
+G0130	ANTI_RBE
+# dapengfhm: support_brightness_boost=0, support_custom_picture_mode=false, colour temperature list 16 / 17
+G0148	BOOST CUSTOM_PICTURE_MODE COLOR_TEMP

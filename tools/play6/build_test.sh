@@ -182,8 +182,8 @@ SRC_APPS=()
 
 # ---- 1. checks (Mac)
 # D1: the pinned Lumen Home and TvInput and the framework key map talk to org.lumen.projector
-P6PKG=$(sed -n '/package="/{s/.*package="\([^"]*\)".*/\1/p;q;}' "$G/apps/Play6Projector/AndroidManifest.xml")
-[ "$P6PKG" = org.lumen.projector ] || die "apps/Play6Projector is package '$P6PKG', not org.lumen.projector (SETTINGS_PLAN.md D1)"
+P6PKG=$(sed -n '/package="/{s/.*package="\([^"]*\)".*/\1/p;q;}' "$G/devices/dragon_healthy/app/Play6Projector.manifest.xml")
+[ "$P6PKG" = org.lumen.projector ] || die "the Play 6 manifest is package '$P6PKG', not org.lumen.projector (SETTINGS_PLAN.md D1)"
 echo "== G: the Z9X gate"
 if ! sh "$P/z9x_gate.sh"; then
   REDS=$(grep '^RED: ' "$G/build/play6/z9x_gate.log" || true)
@@ -205,7 +205,7 @@ echo "== S: shared copies"
 python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play6Projector \
   || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble (a shared file copied into apps/Play6Projector, or an untracked fork)"
 python3 -B "$G/tools/devices/assemble_app.py" --device horse_popular --app Z9xProjector \
-  || die "devices/horse_popular/app/Z9xProjector.layers does not assemble (a shared file copied into apps/ProjectorBase)"
+  || die "devices/horse_popular/app/Z9xProjector.layers does not assemble (a shared file copied into apps/LumenProjector/core)"
 sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys || die "Play6FrameworkOverlay key files differ from apps/common (run sync.sh)"
 echo "== P: publish audit"
 PM=$(mktemp "${TMPDIR:-/tmp}/play6_publish.XXXXXX")
@@ -262,18 +262,14 @@ IN=(
   "$G/build/play6/signed/Z9xTvInput.apk"
   "$G/build/play6/signed/Z9xLineagePlatformOverlay.apk"
   "$G/build/play6/signed/Z9xSetup.apk"
-  "$G/build/play6/LumenBridge_projector.apk"
-  "$G/build/play6/LumenBridge_home.apk"
-  "$G/build/play6/LumenBridge_setup.apk"
-  "$G/build/play6/LumenBridge_tvinput.apk"
   "$G/build/play6/LumenMiracast.apk"
   "$G/build/play6/LumenWifiP2pOverlay.apk"
-  "$G/build/play6/signed/Z9xAirPlay.apk"
+  "$G/build/play6/Z9xAirPlay.apk"
   "$L/base_id.txt"
 )
 # the repository files of the descriptor (devices/dragon_healthy/build.conf: overlays, props, tools, the builder)
-while read -r f; do IN+=("$G/$f"); done < <(python3 -B "$G/tools/build/build.py" files dragon_healthy)
-[ "$OTA" = 1 ] && IN+=("$G/build/play6/Play6Updater.apk" "$G/build/play6/LumenBridge_updater.apk" "$G/build/play6/lumen_play6_ota.x509")
+while read -r f; do IN+=("$G/$f"); done < <(python3 -B "$G/tools/build/build.py" files dragon_healthy --no-built)
+[ "$OTA" = 1 ] && IN+=("$G/build/play6/Play6Updater.apk" "$G/build/play6/lumen_play6_ota.x509")
 BS=$G/build/play6/signed/base
 for f in "${IN[@]}" "$BS/base_signed.tsv"; do [ -s "$f" ] || die "missing $f"; done
 D=$(for f in "${IN[@]}"; do basename "$f"; done | sort | uniq -d)

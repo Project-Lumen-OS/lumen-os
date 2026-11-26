@@ -11,13 +11,14 @@ public final class ServiceManager {
             Wire.log("TX " + d + " " + code + " f" + flags + " " + q.payload());
             if (Wire.failNext) { Wire.failNext = false; throw new RemoteException("transport failure"); }
             r.writeInt(0);
+            if (code == 0x00FFFFFF && Wire.unimplementedMetaNext) { Wire.unimplementedMetaNext = false; return false; }
             if (code == 0x00FFFFFF) { r.writeInt(1); r.setDataPosition(0); return true; }
             if (code == 0x00FFFFFE) { r.writeString(Wire.PROPS.getOrDefault("hash", "908de964b7da427ad21df846e629b80ffdc183ab")); r.setDataPosition(0); return true; }
             if (Wire.unimplementedNext) { Wire.unimplementedNext = false; return false; }
             r.generate();
             return true;
         }
-        @Override public void linkToDeath(DeathRecipient x, int f) { Wire.log("LINK " + name); }
+        @Override public void linkToDeath(DeathRecipient x, int f) { Wire.log("LINK " + name); Wire.DEATHS.add(x); }
         @Override public boolean unlinkToDeath(DeathRecipient x, int f) { return true; }
         @Override public boolean isBinderAlive() { return true; }
         @Override public IInterface queryLocalInterface(String d) { return null; }

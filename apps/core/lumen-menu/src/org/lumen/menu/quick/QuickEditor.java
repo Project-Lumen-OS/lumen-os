@@ -58,8 +58,21 @@ public final class QuickEditor {
         if (it == null) return EditResult.UNKNOWN;
         if (work.has(id)) return EditResult.SAME;
         List<Placement> l = new ArrayList<>(work.items);
-        l.add(new Placement(id, it.preferred()));
+        l.add(at(l, it.preferred()), new Placement(id, it.preferred()));
         return apply(work.with(l));
+    }
+
+    /**
+     * Where an added item goes: a tile after the last tile (above the sliders, so a free place of the last tile line
+     * takes it), anything else at the end.
+     */
+    private static int at(List<Placement> l, Presentation as) {
+        if (as != Presentation.WIDE && as != Presentation.SMALL) return l.size();
+        for (int i = l.size() - 1; i >= 0; i--) {
+            if (l.get(i).as == Presentation.WIDE || l.get(i).as == Presentation.SMALL) return i + 1;
+        }
+        for (int i = 0; i < l.size(); i++) if (l.get(i).as == Presentation.SLIDER || l.get(i).as == Presentation.FOOTER) return i;
+        return l.size();
     }
 
     public EditResult remove(String id) {

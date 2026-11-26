@@ -20,6 +20,8 @@
     <!-- Only the projector app (org.lumen.projector; org.lumen.x50.projector on the X50; platform-signed) may start voice
          search and signal the mic release. -->
     <permission android:name="org.lumen.home.permission.MIC" android:protectionLevel="signature" />
+    <!-- the parental controls state (ParentalProvider): the projector apps' menu page reads and writes it -->
+    <permission android:name="org.lumen.parental.permission.SETTINGS" android:protectionLevel="signature" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
@@ -42,20 +44,22 @@
     <!-- network: posters, weather -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- the corner's network mark: the Wi-Fi strength (4PDA 2026-11-22) -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Customize Home, Free up memory (data/MemoryCleaner): the running processes of other apps (REAL_GET_TASKS,
+         signature|privileged) and closing their background processes the way Android does (killBackgroundProcesses
+         of another package needs FORCE_STOP_PACKAGES since Android 14; nothing is force stopped) -->
+    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
     <!-- voice search client: pre-granted by default-permissions, self-grant fallback (signature) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.GRANT_RUNTIME_PERMISSIONS" />
     <!-- 1.0.1: the living sky as the screensaver default on projectors upgraded from 1.0 (sky/DreamDefault,
          once); signature|privileged, held as a platform-signed priv-app -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
-    <!-- 1.0.1, Apps > Install from USB (usb/UsbInstallActivity): every one granted by the platform signature.
-         INSTALL_PACKAGES (signature|privileged; privapp-permissions-z9xhome.xml lists it too) makes Lumen Home
-         a trusted installer (no "unknown sources" detour), REQUEST_INSTALL_PACKAGES (signature|appop) the
-         session API's own need, MANAGE_EXTERNAL_STORAGE (signature|appop|preinstalled) reads the .apk files
-         on the stick, as Z9xUpdater does for its USB updates. Every install still shows the system
-         installer's confirm screen (USER_ACTION_REQUIRED). -->
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- the USB card's size line (data/UsbVolumes, StatFs on the drive); Files (org.lumen.files) does the rest.
+         signature|appop|preinstalled, granted by the platform signature -->
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <!-- Google Play without a Google account (PlayGate): Home reads whether a Google account is there
          (signature|privileged, held as a platform-signed priv-app, privapp-permissions-z9xhome.xml lists it too) -->
@@ -118,6 +122,11 @@
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- Customize Home (extra page=backup: its backup page), opened by the projector menu's backup row -->
+            <intent-filter>
+                <action android:name="org.lumen.home.action.CUSTOMIZE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- [launcher] four-diamond key: PhoneWindowManager.launchAllAppsAction sends ACTION_ALL_APPS to the
@@ -140,77 +149,12 @@
             android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density"
             android:windowSoftInputMode="adjustNothing|stateHidden" />
 
-        <!-- 1.0.1: Apps > Install from USB (the Apps page tile, search's keyboard hint). Kept enabled in
-             classic-launcher mode (org.lumen.keep_in_classic: Z9xProjector's LauncherSwitcher skips it), like
-             search, which may open it; costs nothing until opened -->
-        <activity
-            android:name=".usb.UsbInstallActivity"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.Lumen.Panel"
-            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density"
-            android:windowSoftInputMode="adjustNothing|stateHidden">
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </activity>
-        <!-- 1.0.4: Files (usb/UsbFilesActivity): the USB sticks' folders, in place of XGIMI's file manager. Opened
-             from the Apps page and, through the Files entry below, from any launcher; kept enabled in classic-
-             launcher mode like Install from USB. Its photo viewer and built-in player are not exported. -->
-        <activity
-            android:name=".usb.UsbFilesActivity"
-            android:exported="false"
-            android:label="@string/files_title"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.Lumen.Panel"
-            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density"
-            android:windowSoftInputMode="adjustNothing|stateHidden">
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </activity>
-        <activity-alias
-            android:name=".FilesLauncher"
-            android:targetActivity=".usb.UsbFilesActivity"
-            android:exported="true"
-            android:label="@string/files_title"
-            android:icon="@drawable/files_icon"
-            android:banner="@drawable/files_banner">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-            </intent-filter>
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </activity-alias>
-        <activity
-            android:name=".usb.PhotoActivity"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.Lumen.Home"
-            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density">
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </activity>
-        <activity
-            android:name=".usb.PlayerActivity"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.Lumen.Home"
-            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|orientation|uiMode|density">
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </activity>
-        <!-- the file a player of Files opens (read only, one-off grant with the VIEW intent) -->
+        <!-- Files moved into its own app (org.lumen.files). Once per install it takes the SMB servers saved in the
+             old Files panel from here (data/ServersHandOff: only that app, signed with Home's key, may call it) -->
         <provider
-            android:name=".usb.UsbFilesProvider"
-            android:authorities="org.lumen.home.usbfiles"
-            android:exported="false"
-            android:grantUriPermissions="true" />
-        <!-- 1.0.6: a file of a network folder (net/NetFilesProvider: SMB reads behind a seekable proxy descriptor),
-             for the player of Files the same way: read only, one-off grant with the VIEW intent -->
-        <provider
-            android:name=".net.NetFilesProvider"
-            android:authorities="org.lumen.home.netfiles"
-            android:exported="false"
-            android:grantUriPermissions="true" />
-        <!-- its PackageInstaller session status (our own explicit PendingIntent only) -->
-        <receiver android:name=".usb.UsbInstallReceiver" android:exported="false">
-            <meta-data android:name="org.lumen.keep_in_classic" android:value="true" />
-        </receiver>
+            android:name=".data.ServersHandOff"
+            android:authorities="org.lumen.home.netservers"
+            android:exported="true" />
 
         <!-- ALWAYS enabled (also in classic mode): search. Listening only via VoiceSearchAlias (MIC perm). -->
         <activity
@@ -298,11 +242,17 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-            <!-- the parental controls (apps/core/lumen-parental): the parent page of the projector menu's General row -->
+            <!-- the parental controls (apps/core/lumen-parental): the state for the projector menu's Parental controls
+             page (ParentalProvider); the old address of the parent page only redirects to that page -->
+        <provider
+            android:name="org.lumen.parental.ParentalProvider"
+            android:authorities="org.lumen.parental"
+            android:exported="true"
+            android:permission="org.lumen.parental.permission.SETTINGS" />
         <activity
             android:name="org.lumen.parental.ParentalActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:theme="@android:style/Theme.NoDisplay"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="org.lumen.parental.SETTINGS" />

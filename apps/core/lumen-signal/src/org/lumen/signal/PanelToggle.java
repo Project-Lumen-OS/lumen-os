@@ -67,6 +67,19 @@ public final class PanelToggle {
         return mode;
     }
 
+    /**
+     * BACK held on the small card (2026-11-21, from anywhere): the card goes. A card the pin keeps on screen
+     * stays away like after the panel's key, until no HDMI input was on screen for a moment (the option stays on).
+     */
+    public PanelMode dismiss() {
+        if (!mode.card()) return mode;
+        mode = PanelMode.HIDDEN;
+        byPin = false;
+        held = false;
+        if (pinned) dismissed = true;
+        return mode;
+    }
+
     /** The full panel on screen was opened by holding OK (BACK folds it back instead of closing). */
     public boolean held() { return held && mode == PanelMode.DETAIL; }
 

@@ -42,6 +42,8 @@ public final class PingTest {
         eq("day utc next", "1970-01-02", Ping.day(24L * 3600 * 1000));
         eq("default on", true, Ping.DEFAULT_ON);
         for (String u : Ping.URLS) eq("https " + u, true, u.startsWith("https://"));
+        eq("our server first", "https://stats.lumen-os.net/lumen/v1/ping", Ping.URLS[0]);
+        eq("the old address second", "https://prompt.az/lumen/v1/ping", Ping.URLS[1]);
         eq("configured = a URL is set", Ping.URLS.length > 0, Ping.configured());
         // the channel is the build's, never a switch
         eq("beta", "beta", Ping.channel("1.0.10-beta9"));
@@ -111,25 +113,24 @@ public final class PingTest {
         eq("updater keeps no body of its own", false, z.contains("\"v\\\":") || z.contains("Build.getSerial"));
         for (String rcp : new String[] {"devices/horse_popular/app/Z9xUpdater.layers", "apps/LumenUpdater/LumenUpdater.layers",
                 "devices/goat_elegant/app/LumenUpdater.layers", "devices/dragon_healthy/app/Play6Updater.layers",
-                "devices/dragon_healthy/app/Play6Projector.layers", "devices/g0111/app/X50Projector.layers",
-                "devices/g0100/app/X50Projector.layers", "devices/g0155/app/X50Projector.layers"}) {
+                "devices/dragon_healthy/app/Play6Projector.layers", "devices/_family/mt9681/app/X50Projector.layers"}) {
             eq(rcp + " names lumen-stats", true, read(g.resolve(rcp)).contains("\nmodule    lumen-stats\n"));
         }
-        for (String app : new String[] {"Play6Projector", "X50Projector"}) {
+        for (String app : new String[] {"Play6Projector", "LumenProjector/host/activity"}) {
             String mf = read(g.resolve("apps/" + app + "/AndroidManifest.xml"));
             eq(app + " declares StatsJob", true, mf.contains("android:name=\"org.lumen.stats.StatsJob\"")
                     && mf.contains("android:permission=\"android.permission.BIND_JOB_SERVICE\""));
             eq(app + " INTERNET", true, mf.contains("<uses-permission android:name=\"android.permission.INTERNET\" />"));
             eq(app + " serial permission", true, mf.contains("android.permission.READ_PRIVILEGED_PHONE_STATE"));
         }
-        eq("Play 6 schedules at boot", true, read(g.resolve("apps/Play6Projector/src/org/lumen/play6/BootReceiver.java"))
+        eq("Play 6 schedules at boot", true, read(g.resolve("apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/play6/BootReceiver.java"))
                 .contains("if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) org.lumen.stats.StatsJob.schedule(ctx);"));
-        String xb = read(g.resolve("apps/X50Projector/src/org/lumen/x50/projector/BootReceiver.java"));
+        String xb = read(g.resolve("apps/LumenProjector/host/activity/src/org/lumen/x50/projector/BootReceiver.java"));
         int sched = xb.indexOf("org.lumen.stats.StatsJob.schedule(c);"), gate = xb.indexOf("if (!App.isX50()) return;");
         eq("X50 family schedules at boot, before the model gate", true, sched > 0 && gate > sched);
-        eq("Play 6 switch", true, read(g.resolve("apps/Play6Projector/src/org/lumen/projector/Play6SettingsDevice.java"))
+        eq("Play 6 switch", true, read(g.resolve("apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/Play6SettingsDevice.java"))
                 .contains("stats.setOn(on);"));
-        eq("X50 switch", true, read(g.resolve("apps/X50Projector/src/org/lumen/x50/projector/MenuActivity.java"))
+        eq("X50 switch", true, read(g.resolve("apps/LumenProjector/host/activity/src/org/lumen/x50/projector/MenuActivity.java"))
                 .contains("st.setOn(!st.on());"));
         System.out.println(fails == 0 ? "PingTest: " + checks + " passed" : "PingTest: " + fails + " of " + checks + " failed");
         if (fails != 0) System.exit(1);

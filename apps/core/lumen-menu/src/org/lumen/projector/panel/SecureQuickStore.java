@@ -18,8 +18,15 @@ import org.lumen.menu.quick.QuickStore;
 final class SecureQuickStore implements QuickStore {
     private static final String TAG = "LumenQuickMenu";
     private final ContentResolver cr;
+    private final String key;
 
-    SecureQuickStore(Context c) { cr = c.getContentResolver(); }
+    SecureQuickStore(Context c) { this(c, QuickLayoutJson.KEY); }
+
+    /** The same store for another value of the user's menus (All settings: FullLayout.KEY). */
+    SecureQuickStore(Context c, String key) {
+        cr = c.getContentResolver();
+        this.key = key;
+    }
 
     /** The user in front of the projector when it is not this process's user (a system uid app), else -1. */
     private static int other() {
@@ -34,7 +41,7 @@ final class SecureQuickStore implements QuickStore {
     @Override public String load() {
         try {
             int u = other();
-            return u < 0 ? Settings.Secure.getString(cr, QuickLayoutJson.KEY) : Settings.Secure.getStringForUser(cr, QuickLayoutJson.KEY, u);
+            return u < 0 ? Settings.Secure.getString(cr, key) : Settings.Secure.getStringForUser(cr, key, u);
         } catch (Throwable t) {
             Log.w(TAG, "read: " + t);
             return null;
@@ -48,7 +55,7 @@ final class SecureQuickStore implements QuickStore {
     private boolean put(String v) {
         try {
             int u = other();
-            return u < 0 ? Settings.Secure.putString(cr, QuickLayoutJson.KEY, v) : Settings.Secure.putStringForUser(cr, QuickLayoutJson.KEY, v, u);
+            return u < 0 ? Settings.Secure.putString(cr, key, v) : Settings.Secure.putStringForUser(cr, key, v, u);
         } catch (Throwable t) {
             Log.w(TAG, "write: " + t);
             return false;

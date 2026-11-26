@@ -126,7 +126,7 @@ public final class RecentsActivity extends Activity implements RecentsView.Liste
             finishQuietly();
             return false;
         }
-        if (org.lumen.projector.power.StandbyController.isActive()) {
+        if (org.lumen.projector.Family.standbyActive()) {
             finishQuietly();
             return false;
         }

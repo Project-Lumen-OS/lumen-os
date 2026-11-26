@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_power_key_short">短按電源鍵</string>
+    <string name="lumen_m_power_key_menu">電源選單</string>
+</resources>

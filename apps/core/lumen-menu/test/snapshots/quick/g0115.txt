@@ -1,0 +1,160 @@
+quick menu of g0115 (every runtime check passing)
+catalogue
+  general
+    theme theme round/small/wide
+    general pinned round/footer
+    edit pinned round/footer
+    input action wide/small/round
+    mirroring action wide/small/round
+    eye choice wide/small/round
+    lamp.off action wide/small/round
+    settings.language action wide/small/round
+    settings.date_time action wide/small/round
+    settings.power_key choice wide/small/round
+    settings.sleep_timer action wide/small/round
+    power.on_ac toggle small/wide/round
+    power.on_music toggle small/wide/round
+    settings.screensaver_now action wide/small/round
+    settings.screensaver_delay choice wide/small/round
+    eye.elder_color choice wide/small/round
+    settings.colour_vision choice wide/small/round
+    settings.menu_side choice wide/small/round
+    settings.menu_density choice wide/small/round
+    settings.remote action wide/small/round
+    settings.remote_keys action wide/small/round
+    settings.casting action wide/small/round
+    settings.parental action wide/small/round
+    settings.storage action wide/small/round
+    settings.update action wide/small/round
+    settings.about action wide/small/round
+    settings.report action wide/small/round
+    settings.licences action wide/small/round
+    settings.system action wide/small/round
+  keystone
+    keystone.ak_now action wide/small/round
+    keystone section wide/small/round
+    zoom action wide/small/round
+    keystone.manual action wide/small/round
+    focus.af_now action wide/small/round
+    focus.manual action wide/small/round
+    focus.settings action wide/small/round
+    focus.smart toggle small/wide/round
+    keystone.realtime toggle small/wide/round
+    keystone.on_power toggle small/wide/round
+    keystone.obstacle toggle small/wide/round
+    keystone.curtain toggle small/wide/round
+    zoom.move action wide/small/round
+    keystone.rotation action wide/small/round
+    keystone.wall_color action wide/small/round
+    keystone.restore action wide/small/round
+    projection.mode choice wide/small/round
+    projection.rear toggle small/wide/round
+  picture
+    picture section wide/small/round
+    picture.3d choice wide/small/round
+    lamp slider slider/wide/small/round
+    picture.iris slider slider/wide/small/round
+    picture.mode choice wide/small/round
+    picture.dv_screen action wide/small/round
+    picture.dv_screen.size choice wide/small/round
+    picture.dv_screen.gain choice wide/small/round
+    picture.custom_new action wide/small/round
+    picture.settings action wide/small/round
+    picture.custom_base choice wide/small/round
+    picture.auto_switch toggle small/wide/round
+    picture.pq.brightness slider slider/wide/small/round
+    picture.pq.contrast slider slider/wide/small/round
+    picture.pq.saturation slider slider/wide/small/round
+    picture.pq.sharpness slider slider/wide/small/round
+    picture.memc choice wide/small/round
+    picture.color_temp choice wide/small/round
+    picture.wb action wide/small/round
+    picture.wb2 action wide/small/round
+    picture.wb2.red_gain slider slider/wide/small/round
+    picture.wb2.green_gain slider slider/wide/small/round
+    picture.wb2.blue_gain slider slider/wide/small/round
+    picture.wb2.red_offset slider slider/wide/small/round
+    picture.wb2.green_offset slider slider/wide/small/round
+    picture.wb2.blue_offset slider slider/wide/small/round
+    picture.wb2.reset action wide/small/round
+    picture.wb11 action wide/small/round
+    picture.wb11.level choice wide/small/round
+    picture.wb11.red slider slider/wide/small/round
+    picture.wb11.green slider slider/wide/small/round
+    picture.wb11.blue slider slider/wide/small/round
+    picture.wb11.reset action wide/small/round
+    picture.gamut choice wide/small/round
+    picture.color_opt toggle small/wide/round
+    picture.cc action wide/small/round
+    picture.cc.color choice wide/small/round
+    picture.cc.hue slider slider/wide/small/round
+    picture.cc.saturation slider slider/wide/small/round
+    picture.cc.lightness slider slider/wide/small/round
+    picture.cc.reset action wide/small/round
+    picture.gamma choice wide/small/round
+    picture.gamma_index choice wide/small/round
+    picture.hdr action wide/small/round
+    picture.hdr_mapping toggle small/wide/round
+    picture.hdr.screen_size choice wide/small/round
+    picture.hdr.screen_gain choice wide/small/round
+    picture.local_contrast choice wide/small/round
+    picture.dynamic_contrast toggle small/wide/round
+    picture.ai_contrast toggle small/wide/round
+    picture.dynamic_black toggle small/wide/round
+    picture.noise choice wide/small/round
+    picture.super_res toggle small/wide/round
+    picture.reset action wide/small/round
+    picture.custom_delete action wide/small/round
+    picture.reset_all action wide/small/round
+    picture.style_filter choice wide/small/round
+    hdmi.range choice wide/small/round
+    hdmi.edid choice wide/small/round
+    picture.aspect choice wide/small/round
+  network
+    network action wide/small/round
+    network.wifi action wide/small/round
+    network.hotspot toggle small/wide/round
+    network.hotspot_name action wide/small/round
+    network.hotspot_password action wide/small/round
+    network.hotspot_reset action wide/small/round
+  source
+    source.list action wide/small/round
+    settings.cec action wide/small/round
+    settings.hdmi action wide/small/round
+  bluetooth
+    bluetooth action wide/small/round
+    bluetooth.add action wide/small/round
+  sound
+    sound section wide/small/round
+    sound.volume slider slider/wide/small/round
+    sound.enhancement choice wide/small/round
+    sound.mode choice wide/small/round
+    sound.leveling toggle small/wide/round
+    sound.earc toggle small/wide/round
+    sound.output choice wide/small/round
+    sound.format choice wide/small/round
+    sound.key_tone toggle small/wide/round
+  developer
+    signal.panel action wide/small
+    sensors.panel action wide/small
+    signal.pin toggle small/wide
+    signal.refresh choice wide/small
+    dev.mirror_diag action wide/small
+    dev.system_info action wide/small
+    dev.network_adb toggle small/wide
+    dev.android action wide/small
+  focus
+    focus section wide/small/round
+  projection
+    projection section wide/small/round
+  game
+    game section wide/small/round
+default tiles [network round, theme round, edit round, general round, keystone.ak_now wide, keystone small, zoom small, picture wide, sound small, focus small, input wide, bluetooth small, picture.3d small, game wide, mirroring small, eye small, lamp slider, picture.iris slider]
+top [network round, theme round, edit round, general round]
+148+120 tiles [keystone.ak_now wide, keystone small, zoom small]
+284+120 tiles [picture wide, sound small, focus small]
+420+120 tiles [input wide, bluetooth small, picture.3d small]
+556+120 tiles [game wide, mirroring small, eye small]
+698+96 slider [lamp slider]
+810+96 slider [picture.iris slider]
+height 948

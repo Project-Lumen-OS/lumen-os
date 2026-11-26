@@ -14,7 +14,9 @@ Blocks (exit 1):
   - a file of the image that the base does not hold byte for byte whose sha256 is a stock file or a stock app entry
     of at least 64 bytes (an XGIMI binary, library, config, picture or sound copied in), or an entry of such size
     inside an added or changed APK / JAR / zip with such a sha256; bytes the public base already carries anywhere (a
-    file or a zip entry of Lumen OS 1.0.9: AOSP files that XGIMI's own build also has) are already public and pass
+    file or a zip entry of Lumen OS 1.0.9: AOSP files that XGIMI's own build also has) are already public and pass,
+    and so do the entries of an app that enters as our published APK (devices/_image/prebuilt.tsv, Lumen Play, its
+    sha256 equal to the pin): its open-source library files (a BouncyCastle provider list, a picture) match stock apps
   - the eye-protection drawer and the gmpf NDK library not being 0-byte placeholders (the user's own projector gives
     them at run time)
   - network adb: x50_netadb.rc, any adb_keys, service.adb.tcp.port / persist.adb.tcp.port, ro.adb.secure=0
@@ -41,6 +43,9 @@ import tempfile
 import zipfile
 
 MIN = 64
+# the apps that enter the image as our published APK (tools/build/prebuilt.py)
+PREBUILT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "_image",
+                        "prebuilt.tsv")
 PLACEHOLDERS = ("system/bin/nativeui", "system/lib64/xgimi.hardware.gmpf-V1-ndk.so")
 
 
@@ -75,6 +80,17 @@ def zip_entries(p):
                     yield i.filename, sha_bytes(z.read(i))
     except (zipfile.BadZipFile, OSError, RuntimeError, NotImplementedError):
         return
+
+
+def prebuilt_pins(path=PREBUILT):
+    """name -> the sha256 of its published APKs (one row per ABI); empty without the table."""
+    pins = {}
+    if os.path.isfile(path):
+        for ln in open(path, encoding="utf-8"):
+            f = ln.rstrip("\n").split("\t")
+            if not ln.startswith("#") and len(f) >= 7:
+                pins.setdefault(f[0], set()).add(f[6])
+    return pins
 
 
 def stock_set(dump, cache):
@@ -218,6 +234,10 @@ def main(a):
         public.add(sha_file(p))
         if rel.endswith((".apk", ".jar", ".apex", ".zip")):
             public.update(h for _, h in zip_entries(p))
+    for name, pins in prebuilt_pins().items():
+        rel = "system/app/%s/%s.apk" % (name, name)
+        if rel in I and sha_file(I[rel]) in pins:
+            public.update(h for _, h in zip_entries(I[rel]))
     stock_new = stock - public
     bad, new = [], []
     for rel, p in sorted(I.items()):

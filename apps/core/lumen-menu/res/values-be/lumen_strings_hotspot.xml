@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">Пункт доступу</string>
-    <string name="lumen_m_hotspot_name">Назва сеткі</string>
     <string name="lumen_m_hotspot_password">Пароль</string>
     <string name="lumen_m_hotspot_reset">Скінуць назву і пароль</string>
     <string name="lumen_m_hotspot_on" formatted="true">Пункт доступу %s уключаны</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">Бягучая канфігурацыя захавана</string>
     <string name="lumen_m_hotspot_name_title">Назва пункта доступу</string>
     <string name="lumen_m_hotspot_password_title">Пароль пункта доступу</string>
-    <string name="lumen_m_hotspot_password_hint">Не менш за 8 сімвалаў</string>
     <string name="lumen_m_hotspot_name_empty">Увядзіце назву сеткі</string>
     <string name="lumen_m_hotspot_name_long">Назва занадта доўгая</string>
     <string name="lumen_m_hotspot_password_short">Увядзіце не менш за 8 сімвалаў</string>

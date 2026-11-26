@@ -114,7 +114,7 @@ public class WelcomeStep extends Step {
      * line gives its long one on two lines.
      */
     private Row installRow() {
-        Row offer = new Row(ctx(), InstallOffer.text(host, "offer_title", "Install Lumen OS"));
+        Row offer = new Row(ctx(), InstallOffer.text(host, "offer_title", "Install Lumen OS permanently"));
         offer.startIcon(new Icon(ctx(), Icon.INSTALL), 32);
         String sub = InstallOffer.text(host, "offer_short", null);
         if (sub == null) {

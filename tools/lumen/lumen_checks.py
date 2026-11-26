@@ -83,17 +83,7 @@ APKS = [
     ('Z9xLineagePlatformOverlay', 'org.lumen.overlay.lineageplatform', '', 'rro'),
     ('Z9xDeviceConfigOverlay', 'org.lumen.overlay.deviceconfig', '', 'rro'),
     ('Z9xTvSettingsHdrOverlay', 'org.lumen.overlay.tvsettings.hdr', '', 'pinned'),
-    # Lumen OS 1.0.8 bridges (apps/LumenBridge): the pre-1.0.8 names, so Android keeps their data for the
-    # one-time import into org.lumen.* (org.lumen.common.LumenImport). Never removed while a 1.0.7 device may
-    # still update straight to this image.
-    ('LumenBridgeProjector', 'org.z9x.projector', 'system/app/LumenBridgeProjector', 'bridge'),
-    ('LumenBridgeHome', 'org.z9x.home', 'system/app/LumenBridgeHome', 'bridge'),
-    ('LumenBridgeSetup', 'org.z9x.setup', 'system/app/LumenBridgeSetup', 'bridge'),
-    ('LumenBridgeTvInput', 'org.z9x.tvinput', 'system/app/LumenBridgeTvInput', 'bridge'),
-    ('LumenBridgeUpdater', 'org.z9x.updater', 'system/app/LumenBridgeUpdater', 'bridge'),
-    ('LumenBridgeAirPlay', 'org.z9x.airplay', 'system/app/LumenBridgeAirPlay', 'bridge'),
 ]
-BRIDGE_VERSION = ('1.0.8-bridge', 900000)   # above every old copy (104 on the Z9X, 600000 + N on the Play 6)
 # unchanged v6.5 builds (nothing edits them in Lumen OS 1.0; re-signed with the release key by the
 # sign stage). An apps_v1/PINS.sha256 line for the name overrides the pin (a rebuilt APK).
 PINNED = {
@@ -171,11 +161,6 @@ def cmd_apks(apps, testcerts, releasecerts, plan_out):
         if kind == 'pinned' and name not in pins and PINNED.get(name) and PINNED[name] != h \
                 and os.environ.get('LUMEN_SELF') != '1':
             err('%s: sha256 %s is not the pinned v6.5 build %s' % (name, h, PINNED[name]))
-        if kind == 'bridge':
-            if (m['versionName'], m['versionCode']) != BRIDGE_VERSION:
-                err('%s: version %r / %r, expected %r (apps/LumenBridge)' % (name, m['versionName'], m['versionCode'], BRIDGE_VERSION))
-            if m['actions'] or m['persistent']:
-                err('%s: a bridge has no intent filters and is not persistent' % name)
         if kind in ('app', 'rro'):
             want = KEPT_VERSION.get(name, VERSION_NAME)
             if m['versionName'] != want and not (os.environ.get('LUMEN_SELF') == '1'
@@ -392,7 +377,7 @@ def cmd_base(base, removes):
     for p in adds:
         if p in meta:
             err('already present in the base (would be replaced silently): %s' % p)
-    # every org.lumen package and every 1.0.8 bridge is ours: none may be in the base
+    # every org.lumen package is ours and the 1.0.8 bridges are gone since 1.1.0: none may be in the base
     z9 = [n for n in meta if re.search(r'/(Z9x|LumenBridge)[A-Za-z]+(\.apk)?$', n)]
     if z9:
         err('the base already has Z9x members: %s' % z9[:5])
@@ -530,6 +515,12 @@ FORBIDDEN = {
     'org.lumen.overlay.setupwraith': 'Z9xSetupWraithOverlay (setup spec: dropped)',
     'org.z9x.overlay.setupwraith': 'Z9xSetupWraithOverlay, its pre-1.0.8 name (setup spec: dropped)',
     'org.z9x.btpair': 'Z9xBtPair, retired before 1.0 (its 1.0.8 name org.lumen.btpair is not built either)',
+    'org.z9x.projector': 'the 1.0.8 data bridge of org.lumen.projector, dropped in 1.1.0 (no import from 1.0.7 or older)',
+    'org.z9x.home': 'the 1.0.8 data bridge of org.lumen.home, dropped in 1.1.0 (no import from 1.0.7 or older)',
+    'org.z9x.setup': 'the 1.0.8 data bridge of org.lumen.setup, dropped in 1.1.0 (no import from 1.0.7 or older)',
+    'org.z9x.tvinput': 'the 1.0.8 data bridge of org.lumen.tvinput, dropped in 1.1.0 (no import from 1.0.7 or older)',
+    'org.z9x.updater': 'the 1.0.8 data bridge of org.lumen.updater, dropped in 1.1.0 (no import from 1.0.7 or older)',
+    'org.z9x.airplay': 'the 1.0.8 data bridge of org.lumen.airplay, dropped in 1.1.0 (no import from 1.0.7 or older)',
     'com.example.sampleleanbacklauncher': 'sample launcher (v6)',
     'com.google.android.tv.dfuservice': 'DfuService (speed: removed)',
 }
@@ -537,10 +528,6 @@ REQUIRED = ['android', 'lineageos.platform', 'org.lumen.projector', 'org.lumen.t
             'org.lumen.home', 'org.lumen.setup', 'org.lumen.updater', 'org.lumen.miracast', 'org.lumen.overlay.framework',
             'org.lumen.overlay.lineageplatform', 'org.lumen.overlay.deviceconfig',
             'org.lumen.overlay.tvsettings.hdr',
-            # the 1.0.8 bridges under the pre-1.0.8 names (apps/LumenBridge): without one, Android wipes that
-            # app's old data before the new app can import it
-            'org.z9x.projector', 'org.z9x.home', 'org.z9x.setup', 'org.z9x.tvinput', 'org.z9x.updater',
-            'org.z9x.airplay',
             'org.protonaosp.deviceconfig',
             'com.android.tv.settings', 'com.android.providers.tv']
 # the Google edition (GMS=1, tools/lumen_v1.sh) only

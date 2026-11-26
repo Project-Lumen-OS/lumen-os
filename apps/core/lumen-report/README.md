@@ -7,12 +7,17 @@ once: reports on every model, sent automatically to our own server, with an off 
 
 - **General > Send a problem report**, the shared menu row (lumen-menu `FeatureId.SETTINGS_REPORT`, a module screen:
   the menu opens it itself, no device adapter is involved; every `devices/<c>/menu.json` names `settings.report`).
-- The screen (`ReportActivity`): what goes in and what is removed, **Send report** / **Cancel** (focus on Cancel),
-  then the code `LR-XXXXXX` the user tells us. Without a connection the report waits in the queue and the code shows
-  on the screen once it went out. The same screen has the switch **Send problem reports automatically** (on by
-  default) and the codes of the last manual and automatic reports.
-- Texts: `res/values*/lumen_strings_report.xml`, 17 languages (+ pt-BR). The texts of the old Z9X screen are kept
-  word for word, the new ones (automatic reports, queued report) are written per language.
+- The screen (`ReportActivity`, owner pick A 2026-11-26) is the shared
+  two-pane page of lumen-ui (`org.lumen.ui.page.TwoPane`): on the left where the user is, what a report does and the
+  code of the last report (manual or automatic, the newer one), a privacy line at the bottom; on the right the actions
+  **Send report** (the focus starts here), **Send automatically** (switch, on by default), **What is in a report**
+  (a page: what a report holds and what is never sent, Back) and **Close**. Sending shows a moving bar with Cancel,
+  then the code `LR-XXXXXX` in large even digits to read out; a refused report says why with **Try again**; without
+  a connection the report waits in the queue (the offline screen) and its code shows as the last report once it went
+  out. BACK goes back to the start from every screen (a running report is stopped), and leaves from the start.
+  Which screen, which actions and the first focus are `ReportView` (host tested); the page follows the light / dark
+  theme live (lumen-ui ThemeFade). Icons: Lucide line icons of the mock, `tools/report_icons.py` (ISC).
+- Texts: `res/values*/lumen_strings_report.xml`, 17 languages (+ pt-BR), written per language.
 
 ## Automatic reports
 
@@ -71,27 +76,51 @@ reported as a stop.
 Manual (`ReportCollector`, at most 5 MB): summary.txt (kind, model code, versions, build, slot, trial or installed,
 uptime, boot reason, Lumen apps, memory, storage, displays, thermal state, network TYPE), props.txt (`PropFilter`:
 build, boot, display, Lumen and model keys, never serial, MAC, Wi-Fi, account, address or secret keys), logcat of the
-last 30 minutes of the system and image apps (`LogcatFilter`), the crash buffer, the kernel log, the previous start
-(pstore, z9x_diag), update logs, DropBox records of 7 days, exit reasons.
-Automatic (at most 1 MB): summary.txt with the incidents, props.txt, 10 minutes of logcat and the crash buffer of the
-system and image apps only, the DropBox records of those incidents of the last day.
+whole buffer (main, system, events) of the system and image apps (`LogcatFilter`), the crash buffer, the kernel log of
+this start (dmesg), the previous start (pstore, z9x_diag), update logs, DropBox records of 7 days, exit reasons,
+hdmi.txt (`HdmiDump`: dumpsys hdmi_control with the last 250 CEC messages, the power status, System Audio and ARC;
+the CEC journal of the system log (`CecJournal`): every CEC message the framework sent or received since the system log
+buffer begins, a soundbar's power status questions every 2 s counted as one line per unchanged question and answer
+between two other messages; then the HDMI / ARC / System Audio lines of dumpsys audio) and power.txt (`PowerDump`: dumpsys power without the
+wake lock and uid lists, which name apps).
+Automatic (at most 1 MB): summary.txt with the incidents, props.txt, the newest logcat lines that fit and the crash
+buffer of the system and image apps only, the DropBox records of those incidents of the last day.
 Every line passes `Scrubber`: e-mail, IP and MAC addresses, Wi-Fi names (also the saved ones and URL-encoded),
 paired Bluetooth names, the projector's own name, account and user names, phone numbers, serials and device ids
 (android_id, gsf_id, gaia_id), tokens, passwords, cookies, mDNS host names. The install id of reports is random
 (not the serial, not the statistics id).
 
+## The log helper (always the full system log, never a dialog)
+
+The report app is not the system uid on every model (Z9X: an app uid), and Android 13+ gives such an app only its own
+log lines unless the user answers a log access dialog. Reports never ask (owner 2026-11-26): every image carries the
+root oneshot `image/lumen_report.{rc,sh}` (`/system/etc/init`, `/system/etc/lumen`, staged for every device by
+`tools/build/build.py` COMMON_FILES; `build.py check` refuses a device whose recipe does not place it). `RootLogs`
+sets `sys.lumen.report.req` to a fresh token ([0-9a-z-], at most 24), the helper writes `/dev/lumen_report`
+(tmpfs; folder 0750, files 0640, owner root, group = the uid of the report app from packages.list, `HOSTS`):
+`token`, `logcat.txt` (main, system, events, the last 6 MiB), `crash.txt`, `kernel.txt` (dmesg, 1 MiB),
+`hdmi_control.txt`, `audio.txt`, `power.txt` (dumpsys, 5 s and 256 KiB each), every line scrubbed in the helper
+(e-mail and MAC addresses, Wi-Fi names, passwords, keys, tokens, authorization headers, secret URL parameters, account
+names), answers `sys.lumen.report.done` = `<token> ok|busy|none|refused` (busy: less than 10 s after the last one;
+refused: `ro.lumen.report.url=off`; none: no report app), and removes the files when the app set
+`sys.lumen.report.ack` to the token, at the latest after 60 s. The app takes the files only when `token` matches,
+passes the logs through `LogcatFilter` and `Scrubber` as before and the dumps through `HdmiDump` and `PowerDump` (the
+whole audio dump lists the apps that played sound and stays out). Without an answer in 30 s the app runs logcat itself
+(often its own lines only; summary.txt says which source it was) and hdmi.txt names both parts not readable.
+
 ## Where it goes
 
 `ReportUrl`: our statistics server (`tools/stats/server/lumen_reports.py`, served by `lumen_stats.py`), by default
-`https://prompt.az/lumen/v1/report` through Cloudflare. `ro.lumen.report.url` may list several https addresses
-(spaces or commas between them, `off` switches reports off); `ReportUploader.uploadAny` tries them in that order;
-`persist.lumen.report.url` overrides the list on one unit for tests.
+`https://stats.lumen-os.net/lumen/v1/report` straight to our server, then `https://prompt.az/lumen/v1/report`
+through Cloudflare (the old address forwards to the same server; it stays the second try for one release).
+`ro.lumen.report.url` may list several https addresses (spaces or commas between them, `off` switches reports off);
+`ReportUploader.uploadAny` tries them in that order; `persist.lumen.report.url` overrides the list on one unit for
+tests.
 
 Networks in Russia freeze every connection to a Cloudflare address after about 20 KB (measured 2026-11-14 on two
 Russian networks and from a projector: 20 KB goes through, 32 KB and more never, plain http too; the server's own
-address took 1 MB in half a second). A report is bigger, so from Russia it needs an address that reaches the server
-without Cloudflare, listed first in `ro.lumen.report.url` with the Cloudflare one after it (server side:
-`tools/stats/server/deploy/nginx-report-direct.conf`). One upload is cut after 30 seconds plus 16 KB a second
+address took 1 MB in half a second). A report is bigger, which is why the default address reaches the server without
+Cloudflare. One upload is cut after 30 seconds plus 16 KB a second
 (`ReportUploader.deadlineMs`; the sockets are closed hard, a polite close waits behind the stuck writer): a frozen
 connection fails fast and the next address gets its turn. The next address is also tried after a server failure or
 an answer that is not our server's (3xx, 404, 405); 400, 411, 413, 415 and 429 end it (they judge the report or the
@@ -114,17 +143,22 @@ never served by Android, the run-time receiver of `ReportBoot.listen` does that 
 the provider `org.lumen.report.AliveStart` (authority `<package>.alive`, not exported, not direct boot aware:
 it starts the unexpected-stop watch at every process start). REAL_GET_TASKS names the activity in front. READ_LOGS and
 DUMP are signature|privileged: platform-signed apps get them, a priv-app on an enforcing image also needs them in its
-privapp-permissions file (HB: devices/goat_elegant/image/privapp-permissions-hbprojector.xml). Android 13+ asks the
-user before an app that is not the system uid reads all logs: without that answer logcat.txt holds only this app's
-lines (summary.txt says "LIMITED log access"), DropBox records are not affected.
+privapp-permissions file (HB: devices/goat_elegant/image/privapp-permissions-hbprojector.xml). The system log itself
+comes from the log helper (above), so no app ever shows Android's log access dialog.
 
 ## Tests
 
 - `sh apps/core/lumen-report/test/run.sh`: ReportTest (redaction, incidents, consent and limits, queue, address, zip,
+  the log helper's token, answer and file rules (RootLogs), hdmi.txt and power.txt,
   answers, the unexpected stop: a freeze against every normal way out over several simulated starts), every module
-  source compiled against android-34, `check_repo.py` (texts in every language, recipes, manifests, menu row, consent
+  source compiled against android-34, `report_helper_test.sh` (the helper on a fake root: tokens, refusals,
+  scrub, caps, modes, cleanup), `check_repo.py` (texts in every language, recipes, manifests, menu row, consent
   lines, the standby contract of the apps that send STANDBY_CHANGED). Run it on builder-llm
   (`ANDROID_SDK=~/lumen-tools/android-sdk`).
+- `sh apps/core/lumen-report/test/ui/run_walk.sh SERIAL OUT [DEVICE:APP ...]`: the screen's key walk on a ROOTED
+  emulator (persist.lumen.report.url must take, else it stops before any Send: an unrooted image would send the test
+  reports to our real server), against `test/ui/fake_server.py` on the host; asserts focus, pages, the switch, the
+  code, failed and offline in Russian and English, light and dark, one screenshot per state.
 - `python3 apps/core/lumen-report/test/mutate.py [NAME_PART...]`: every mutant must turn run.sh red (in place: a
   frozen clone only); name parts pick a subset (`stop orderly standby` for the unexpected stop).
 - Server: `python3 tools/stats/server/test_lumen_reports.py`, `python3 tools/stats/server/mutate_lumen_reports.py`.
@@ -137,3 +171,13 @@ public read path at all (reports are read over ssh only), and its limits
 (5 MB per report, 2 GB store, 30 days) fit the 16 GB free disk of the VPS. Cloudflare would add global reach without
 the VPS in the path and R2's free 10 GB, but needs an account, a wrangler token and the R2 payment setup, and puts
 user logs on a third party. The client keeps both open: `ro.lumen.report.url` points an image at the Worker.
+
+## CEC journal
+
+system_server prints a CEC message (HdmiLogger `[S]:` / `[R]:`, tag HDMI, `<Name> SD:OP:params`, OSD names and vendor
+commands hidden by the framework) only when `log.tag.HDMI` allows DEBUG, read once when system_server loads the class.
+`image/lumen_report.rc` sets `log.tag.HDMI D` at early-init in every image. The message text is built either way, so
+the cost is the log line: one per message, about 60 a minute with a soundbar that asks the power status every 2 s
+(evleo790 HB, LR-VRE2Z1: 58 messages a minute in the dump). The 250 entries of dumpsys hdmi_control reach back about
+4 minutes there; the system log buffer (256 KiB compressed, Android 14 logd ignores size props) about 36 minutes with
+these lines added (40 without them). Host replay of that report: `~/lumen-build-tmp/cec-journal-1126/`.

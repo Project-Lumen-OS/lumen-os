@@ -66,6 +66,7 @@ public final class WireTrace {
         Wire.PROPS.put("sys.z9x.nui", "ready");
         OUT.append("# scripted\n");
         scripted();
+        if (dev.equals("hb")) transportHb();
         System.out.print(OUT);
     }
 
@@ -189,6 +190,38 @@ public final class WireTrace {
             cur[i] = x;
             product(v, i + 1, cur, out);
         }
+    }
+
+    // ------------------------------------------------------------------ the HB rules of the shared transport
+    /**
+     * The family hooks of lumen-hal AidlTransport the HB takes (step 2e-2): a callback sent at every registration, a
+     * byte argument outside 0..127 refused before sending, a guard call the vendor refuses closes that interface, the
+     * first death notice drops every interface and opens the closed ones again.
+     */
+    private static void transportHb() throws Exception {
+        OUT.append("# transport\n");
+        Class<?> wc = Class.forName("org.lumen.projector.hal.AidlWire");
+        java.lang.reflect.Constructor<?> wk = wc.getDeclaredConstructor();
+        wk.setAccessible(true);
+        Object w = wk.newInstance();
+        Class<?> cc = Class.forName("org.lumen.projector.hal.GmpfCall");
+        Method tv = null, u8 = null, hs = null;
+        for (Method m : wc.getDeclaredMethods()) {
+            if (m.getName().equals("tvCallback")) tv = m;
+            if (m.getName().equals("u8") && m.getParameterCount() == 2 && m.getParameterTypes()[1] == int.class) u8 = m;
+            if (m.getName().equals("connectHandshake")) hs = m;
+        }
+        for (Method m : new Method[] {tv, u8, hs}) m.setAccessible(true);
+        final Method tvm = tv, u8m = u8, hsm = hs;
+        Object tvCall = cc.getField("SET_GM_TV_CALLBACK").get(null), lamp = cc.getField("SET_DLP_LUMENS_LEVEL").get(null);
+        block("transport tvCallback (first)", () -> tvm.invoke(w, tvCall, null));
+        block("transport tvCallback (again, the same binder)", () -> tvm.invoke(w, tvCall, null));
+        block("transport u8 200", () -> u8m.invoke(w, lamp, 200));
+        block("transport vendor death", () -> { Wire.die(); return null; });
+        block("transport handshake, SYSTEM refuses its guard call", () -> { Wire.unimplementedMetaNext = true; return hsm.invoke(w, (Runnable) null); });
+        block("transport handshake again (SYSTEM stays closed)", () -> hsm.invoke(w, (Runnable) null));
+        block("transport vendor death (the closed interface opens again)", () -> { Wire.die(); return null; });
+        block("transport handshake after the death", () -> hsm.invoke(w, (Runnable) null));
     }
 
     // ------------------------------------------------------------------ scripted sessions

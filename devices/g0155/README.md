@@ -1,4 +1,4 @@
-# XGIMI RS30 Ultra Max (G0155): Lumen codename g0155
+# XGIMI RS30 Ultra Max Flagship (G0155): Lumen codename g0155
 
 Status (2026-11-12): TEST images only (`rs30-tN-net`), trial only. Nothing has been written to any RS30 unit.
 

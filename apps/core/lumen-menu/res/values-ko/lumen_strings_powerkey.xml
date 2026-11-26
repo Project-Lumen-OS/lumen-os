@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_power_key_short">전원 버튼 짧게 누르기</string>
+    <string name="lumen_m_power_key_menu">전원 메뉴</string>
+</resources>

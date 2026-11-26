@@ -52,6 +52,14 @@ public class ChoiceRow extends Row {
 
     public int getSelected() { return index; }
 
+    /** The text the row shows now: the selected option, else the placeholder, else null. */
+    public CharSequence getSelectedText() {
+        return index >= 0 && index < options.length ? options[index] : placeholder;
+    }
+
+    /** True when CENTER opens something of its own ({@link #setOnOpen}). */
+    public boolean opensOnCenter() { return onOpen != null; }
+
     public ChoiceRow setOnChoice(OnChoice l) { listener = l; return this; }
 
     public ChoiceRow setOnOpen(Runnable r) { onOpen = r; return this; }
@@ -137,6 +145,9 @@ public class ChoiceRow extends Row {
             commit.run();
         }
     }
+
+    /** A step the user took is waiting for its commit: a read-back must not put the old value back meanwhile. */
+    public boolean isCommitPending() { return h.hasCallbacks(commit); }
 
     @Override
     protected boolean onActivate() {

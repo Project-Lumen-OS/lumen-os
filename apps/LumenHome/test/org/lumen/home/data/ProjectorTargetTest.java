@@ -18,7 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Which projector app Lumen Home talks to (proj/ProjectorTarget) and the contract both projector apps serve: an X50
  * family image (ro.z9x.device=x50) talks to org.lumen.x50.projector, every other image to org.lumen.projector as before; each of the two apps
  * defines the permissions and serves the SHOW_PANEL / SHOW_SOURCE broadcasts and the standby-state provider Home uses,
- * and the X50 app's mic key reaches Home's voice search. Reads apps/X50Projector and apps/ProjectorBase next to Home.
+ * and the X50 app's mic key reaches Home's voice search. Reads apps/X50Projector and apps/LumenProjector/core next to Home.
  */
 public final class ProjectorTargetTest {
     static final String A = "http://schemas.android.com/apk/res/android";
@@ -68,12 +68,12 @@ public final class ProjectorTargetTest {
         T.ok(queries(hm).contains("org.lumen.x50.projector") && queries(hm).contains("org.lumen.projector"),
                 "home sees both projector apps");
 
-        if (!new File(apps, "X50Projector/AndroidManifest.xml").isFile() || !new File(apps, "ProjectorBase/AndroidManifest.xml").isFile()) {
-            System.out.println("SKIP projector contract: apps/X50Projector or apps/ProjectorBase not in this tree");
+        if (!new File(apps, "LumenProjector/host/activity/AndroidManifest.xml").isFile() || !new File(apps, "LumenProjector/core/AndroidManifest.xml").isFile()) {
+            System.out.println("SKIP projector contract: apps/X50Projector or apps/LumenProjector/core not in this tree");
             return;
         }
         // both projector apps serve the same contract
-        for (String app : new String[] {"ProjectorBase", "X50Projector"}) {
+        for (String app : new String[] {"LumenProjector/core", "LumenProjector/host/activity"}) {
             Document m = xml(new File(apps, app + "/AndroidManifest.xml"));
             for (String perm : new String[] {"SHOW_PANEL", "SHOW_SOURCE", "STANDBY_STATE"}) {
                 Element d = byName(m, "permission", P + perm);
@@ -85,9 +85,9 @@ public final class ProjectorTargetTest {
             T.ok(sp != null && (P + "STANDBY_STATE").equals(sp.getAttributeNS(A, "permission"))
                     && "true".equals(sp.getAttributeNS(A, "exported")), app + ": standby-state provider guarded");
         }
-        Document x50 = xml(new File(apps, "X50Projector/AndroidManifest.xml"));
+        Document x50 = xml(new File(apps, "LumenProjector/host/activity/AndroidManifest.xml"));
         T.eq(((Element) x50.getDocumentElement()).getAttribute("package"), "org.lumen.x50.projector", "X50 app package");
-        File xs = new File(apps, "X50Projector/src/org/lumen/x50/projector");
+        File xs = new File(apps, "LumenProjector/host/activity/src/org/lumen/x50/projector");
         String standby = read(new File(xs, "StandbyStateProvider.java"));
         T.ok(standby.contains("checkCallingPermission(PERMISSION) != PackageManager.PERMISSION_GRANTED")
                 && standby.contains("METHOD = \"standby_state\"") && standby.contains("b.putBoolean(\"standby\", false)"),
@@ -98,7 +98,7 @@ public final class ProjectorTargetTest {
         String source = read(new File(xs, "SourceReceiver.java"));
         T.ok(source.contains("SourceKey.press(c, why)") && source.contains("Menu.mayOpenOver(top)"),
                 "X50 source receiver: the Source key's step (lumen-source), past the eye-protection check");
-        T.ok(new File(apps, "LumenTvInput/src/org/lumen/tvinput/InputPickerActivity.java").isFile(), "tvinput picker class exists");
+        T.ok(!new File(apps, "LumenTvInput/src/org/lumen/tvinput/InputPickerActivity.java").exists(), "no tvinput picker: the Source card lists the inputs");
 
         // the mic key: the X50 app starts Home's voice search and sends the release, Home guards both with MIC
         T.ok(names(x50, "uses-permission").contains("org.lumen.home.permission.MIC"), "X50 app holds Home's MIC permission");

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">Passa automaticamente a HDMI quando si collega un dispositivo</string>
+    <string name="lumen_m_hdmi_return_home">Torna alla schermata Home quando la sorgente viene scollegata</string>
+    <string name="lumen_m_hdmi_boot_source">Sorgente all\'accensione</string>
+    <string name="lumen_m_hdmi_boot_note">Se un dispositivo accende il proiettore tramite HDMI-CEC, si apre il suo ingresso.</string>
+    <string name="lumen_m_hdmi_inputs">Ingressi</string>
+    <string name="lumen_m_hdmi_none">Nessun ingresso HDMI trovato</string>
+</resources>

@@ -31,7 +31,7 @@
     <string name="r_hdr_out">HDR the output accepts</string>
     <string name="r_hdr_policy">HDR conversion</string>
     <string name="r_match_rate">Match frame rate</string>
-    <string name="r_color_space">Colour space (picture setting)</string>
+    <string name="r_color_space">Color space (picture setting)</string>
     <string name="r_range">HDMI range</string>
     <string name="r_allm">Low latency request (ALLM)</string>
     <string name="r_layer">Video layer</string>
@@ -133,7 +133,7 @@
     <string name="e_phys">Physical address</string>
     <string name="e_tmds">Max TMDS clock</string>
     <string name="e_frl">Max FRL rate</string>
-    <string name="e_deep_color">Deep colour</string>
+    <string name="e_deep_color">Deep color</string>
     <string name="e_420">YCbCr 4:2:0</string>
     <string name="e_features">Features</string>
     <string name="e_modes">Video modes</string>
@@ -197,7 +197,7 @@
     <string name="v_panel">panel %1$s</string>
     <string name="v_high_frame_rate">high frame rate</string>
     <string name="v_hdr_vivid_playing">HDR Vivid playing</string>
-    <string name="v_screen_zoom">centre %1$d, horizontal %2$d, vertical %3$d</string>
+    <string name="v_screen_zoom">center %1$d, horizontal %2$d, vertical %3$d</string>
     <string name="v_hw_port">chip port %1$d</string>
     <string name="v_phys_addr">address %1$s</string>
     <string name="r_arc_device">ARC device</string>

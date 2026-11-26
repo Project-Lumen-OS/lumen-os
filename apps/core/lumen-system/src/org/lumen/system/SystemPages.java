@@ -11,6 +11,14 @@ public final class SystemPages {
 
     private SystemPages() { }
 
+    /** True when some app has the page's own screen (its first way; the settings root does not count). */
+    public static boolean has(Context ctx, SettingsPage page) {
+        SystemIntent w = SystemIntent.chain(page).get(0);
+        Intent i = new Intent(w.action);
+        if (w.pkg != null) i.setPackage(w.pkg);
+        return i.resolveActivity(ctx.getPackageManager()) != null;
+    }
+
     /** Starts {@code page} in a new task; false when no way starts (the caller tells the user). */
     public static boolean open(Context ctx, SettingsPage page) {
         for (SystemIntent w : SystemIntent.chain(page)) {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">Sprache und Zeit</string>
+    <string name="lumen_m_hdr_power">Energie</string>
+    <string name="lumen_m_hdr_display_menu">Bildschirm und Menü</string>
+    <string name="lumen_m_hdr_remote_voice">Fernbedienung und Sprache</string>
+    <string name="lumen_m_hdr_apps_devices">Apps und Geräte</string>
+    <string name="lumen_m_hdr_storage_updates">Speicher und Updates</string>
+    <string name="lumen_m_hdr_help">Hilfe</string>
+    <string name="lumen_m_date_time">Datum und Uhrzeit</string>
+    <string name="lumen_m_date_auto">Automatisch</string>
+    <string name="lumen_m_storage">Speicher</string>
+    <string name="lumen_m_storage_free">%1$s frei</string>
+    <string name="lumen_m_update">Systemupdate</string>
+    <string name="lumen_m_about">Über diesen Projektor</string>
+    <string name="lumen_m_system_info">Systemdetails</string>
+    <string name="lumen_m_network_adb">Debugging über Netzwerk</string>
+    <string name="lumen_m_android_dev">Android-Entwickleroptionen</string>
+</resources>

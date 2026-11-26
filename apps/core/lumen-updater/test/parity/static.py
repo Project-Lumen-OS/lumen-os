@@ -27,6 +27,7 @@ def main(tree):
     man = re.sub(r"<!--.*?-->", "", man, flags=re.S)
     out.append("manifest " + norm(man))
     res = os.path.join(tree, "res")
+    values = {}
     for root, dirs, files in os.walk(res):
         dirs.sort()
         for f in sorted(files):
@@ -39,10 +40,19 @@ def main(tree):
                         continue
                     text = ET.tostring(el, encoding="unicode")
                     text = re.sub(r"^<[^>]*>|</[^>]*>\s*$", "", text.strip())
-                    out.append("value %s %s %s = %s" % (folder, el.tag, el.get("name"), norm(text)))
+                    values[(folder, el.tag, el.get("name"))] = norm(text)
             else:
                 h = hashlib.sha256(open(p, "rb").read()).hexdigest()
                 out.append("res %s %s" % (rel, h))
+    # a string alias of res/values (a text of lumen-common-strings) resolves in each folder, as on Android
+    folders = {f for f, _, _ in values}
+    for (f, tag, name), text in sorted(values.items()):
+        if f == "values" and tag == "string" and text.startswith("@string/"):
+            t = text[len("@string/"):]
+            for g in folders:
+                if (g, tag, name) == (f, tag, name) or (g, tag, name) not in values:
+                    values[(g, tag, name)] = values.get((g, tag, t), values.get(("values", tag, t), text))
+    out += ["value %s %s %s = %s" % (f, tag, name, text) for (f, tag, name), text in values.items()]
     print("\n".join(sorted(out)))
 
 

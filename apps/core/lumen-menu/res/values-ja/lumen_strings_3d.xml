@@ -2,7 +2,6 @@
 <!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
      locale ja) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
 <resources>
-    <string name="lumen_m_3d">3D</string>
     <string name="lumen_m_3d_title">3D設定</string>
     <string name="lumen_m_3d_off">3Dを無効化</string>
     <string name="lumen_m_3d_sbs">サイドバイサイド</string>

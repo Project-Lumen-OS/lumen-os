@@ -1,0 +1,52 @@
+# devices/_family/rs20/stock.tsv: what the RS 20 line shares (devices/<code>/stock.tsv has each model's facts). Every
+# node a model's stock tree has and the Z9X tree lacks is either a row of the model's menu or a gap here: a stock row the
+# Z9X app has no code for, so it is not shown (never faked). tools/devices/test/stock_facts.py checks both. Columns: kind,
+# key, value, evidence.
+fact	line	MTK9681/athenaultra DOHKO origin/MTK9681_YDN_SWK_TEMP_20260212	ro.vendor.xgimi.buildbrach of v1.6.50, v1.6.52 and v1.6.55
+fact	scope	trial	owner 2026-11-24: RS 20 as trial builds (no install, no updates) until a unit proved them
+fact	kernel	same build line as the Z9X (5.15.167, fstab.mt9952, /metadata first stage)	LINEUP_RU.md 2026-11-24, boot.img of v1.6.55
+gap	ai_location_when_power_on	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	angle_monitor	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	brightness_adapt_kirin	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	brightness_turbo_light	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	brightness_turbo_light_adapt	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	brightness_turbo_light_entrance	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	digital_shift_only	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	env_adapt_settings_kirin	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_3_color_temp	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_gorgeous	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_imax_enhanced	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_isf_light	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_isf_night	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_movice_v3	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	image_mode_teleplay	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	keystone_automatic_wall_positioning	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	more_eye_project_be_at_ease_img	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	more_eye_project_be_at_ease_img_cover	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	more_eye_project_follow_img	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	more_eye_state	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	picture_adjustment_enhancement_title	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	picture_dolby_curtain	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	picture_dolby_curtain_gain	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	picture_dolby_curtain_size	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	picture_filmmaker_mode	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	ptz_advanced_settings	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	ptz_recover_when_power_on	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	ptz_reset_when_power_off	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	screen_memory	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	signal_one_key_to_play	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	small_title_focus	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	small_title_keystone	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	smart_space	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	smart_space_list	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	smart_wall	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_atmos	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_atmos_high	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_atmos_low	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_atmos_middle	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_atmos_off	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_dts_drc	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_mode_harman_caton_soundtrack	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	sound_strong_effect_native	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	title_size_and_location	not shown	stock row of the RS 20 trees, the Z9X app has no code for it
+gap	title_smart	not shown	stock row of the RS 20 trees, the Z9X app has no code for it

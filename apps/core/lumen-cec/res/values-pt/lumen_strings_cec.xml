@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">O HDMI-CEC não está disponível</string>
     <string name="lumen_cec_master">Controle HDMI-CEC</string>
     <string name="lumen_cec_master_note">Com o HDMI-CEC desligado, o som pelo HDMI ARC não fica disponível.</string>
-    <string name="lumen_cec_wake">Ligar com um dispositivo HDMI</string>
     <string name="lumen_cec_wake_note">Com esta opção ligada, os dispositivos HDMI também desligam quando o projetor desliga.</string>
     <string name="lumen_cec_night">Proteção noturna</string>
     <string name="lumen_cec_night_off">Desativada</string>

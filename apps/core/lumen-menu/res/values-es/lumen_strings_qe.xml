@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Nuevo</string>
     <string name="lumen_qe_reset">Restablecer</string>
     <string name="lumen_qe_select">Elegir</string>
-    <string name="lumen_qe_done">Listo</string>
-    <string name="lumen_qe_back">Atrás</string>
     <string name="lumen_qe_close_panel">Cerrar panel</string>
     <string name="lumen_qe_how">Cómo mostrar</string>
     <string name="lumen_qe_now" formatted="true">Ahora: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Bajo los mosaicos</string>
     <string name="lumen_qe_panel_note">Un mosaico, un mosaico ancho y un círculo abren el panel a la derecha del menú.</string>
     <string name="lumen_qe_place">Lugar</string>
-    <string name="lumen_qe_move">Mover</string>
     <string name="lumen_qe_remove">Quitar del menú</string>
     <string name="lumen_qe_moving">Moviendo</string>
     <string name="lumen_qe_move_hint">Los círculos solo se mueven en la fila de arriba, los mosaicos entre las filas. Para que un mosaico sea un círculo, cambia su aspecto.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: nuevo lugar</string>
     <string name="lumen_qe_move_keys">Mover</string>
     <string name="lumen_qe_move_cancel">Cancelar, dejar como estaba</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Por su nombre o parte de él</string>
+    <string name="lumen_qe_search_title">Buscar un ajuste</string>
+    <string name="lumen_qe_search_hint">Por ejemplo, MEMC</string>
+    <string name="lumen_qe_nothing">No se encontró nada</string>
+    <string name="lumen_qe_unavailable">No disponible ahora</string>
 </resources>

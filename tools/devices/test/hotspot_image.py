@@ -3,8 +3,8 @@
 """The hotspot in every image (lumen-system Hotspot, the Network popup): a model whose profile has network.hotspot
 must drop the emulator's tether overlay (EmulatorTetheringConfigOverlay: Wi-Fi tether list wlan only, a product
 overlay that outranks the vendor TetheringRROOverlay with ap0), else Android starts the hotspot on ap0 and hands the
-phones no address. Per recipe: Z9X tar_rm, HB and Play 6 the shared 32-bit debloat list, RS30 its debloat list, the
-X50 family remove.txt. Also: the profile's iface is one the vendor tether list (wlan, softap, ap + digit) matches and
+phones no address. Per recipe: Z9X tar_rm, HB and Play 6 the shared 32-bit debloat list, RS30 (Ultra Max and Ultra) its debloat
+list, the X50 family remove.txt. Also: the profile's iface is one the vendor tether list (wlan, softap, ap + digit) matches and
 the emulator's list does not, and the default name is "Lumen " + the registry name without "XGIMI ".
 
   python3 tools/devices/test/hotspot_image.py [REPO]
@@ -25,9 +25,25 @@ RECIPES = {
     "g0155": ("devices/g0155/image/debloat.txt", "product/overlay/" + OVERLAY,
               ("devices/g0155/image/steps.tsv", "\tremove\tdebloat.txt\t{sys}")),
 }
-for x50 in ("g0111", "g0100", "h0061", "h0062", "h0063"):
+# layered.py of this tree reads the descriptors of G (a scratch copy in the mutants) with their family files
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+import layered  # noqa: E402
+import menu_layers  # noqa: E402
+def on_recipe(steps):
+    """The models whose build.conf (with its family files) names STEPS: no hand list."""
+    return [c for c in sorted(os.listdir(os.path.join(G, "devices"))) if os.path.isfile(os.path.join(G, "devices", c, "build.conf"))
+            and layered.effective(os.path.join(G, "devices", c, "build.conf")).get("steps") == steps]
+
+
+# every model on the X50 recipe
+for x50 in on_recipe("devices/g0111/image/steps.tsv"):
     RECIPES[x50] = ("devices/g0111/image/remove.txt", "system/product/overlay/" + OVERLAY,
                     ("devices/%s/build.conf" % x50, "devices/g0111/image/remove.txt"))
+# every other model on the RS30 recipe (its steps apply debloat.txt) with the RS30 debloat list in its build.conf
+for rs30 in on_recipe("devices/g0155/image/steps.tsv"):
+    if rs30 != "g0155":
+        RECIPES[rs30] = ("devices/g0155/image/debloat.txt", "product/overlay/" + OVERLAY,
+                         ("devices/%s/build.conf" % rs30, " devices/g0155/image/debloat.txt "))
 
 bad = []
 
@@ -48,9 +64,12 @@ def fullmatch(res, iface):
 n = 0
 for d in sorted(os.listdir(os.path.join(G, "devices"))):
     mj = os.path.join(G, "devices", d, "menu.json")
+    dc = os.path.join(G, "devices", d, "device.conf")
     if not os.path.isfile(mj):
         continue
-    feats = json.load(open(mj, encoding="utf-8")).get("features", {})
+    if os.path.isfile(dc) and layered.effective(dc).get("image") == "none":
+        continue  # data without an image recipe yet (devices.py image=none): no image to drop the overlay from
+    feats = menu_layers.effective(mj).get("features", {})
     hs = feats.get("network.hotspot")
     if hs is None:
         continue
@@ -63,13 +82,17 @@ for d in sorted(os.listdir(os.path.join(G, "devices"))):
         bad.append("%s: %s does not drop the emulator tether overlay (%s)" % (d, rel, want))
     if applied is not None:
         arel, awant = applied
-        text = open(os.path.join(G, arel), encoding="utf-8").read()
-        if awant not in text:
+        if arel.endswith(".conf"):  # a descriptor value, its own or its family's (overlays=, include= chain)
+            vals = layered.effective(os.path.join(G, arel)).values()
+            found = awant.strip() in " ".join(v if isinstance(v, str) else " ".join(v) for v in vals).split()
+        else:
+            found = awant in open(os.path.join(G, arel), encoding="utf-8").read() + "\n"
+        if not found:
             bad.append("%s: %s does not apply %s" % (d, arel, rel))
     iface = hs.get("iface", "")
     if not fullmatch(VENDOR, iface) or fullmatch(EMULATOR, iface):
         bad.append("%s: iface %r is not the vendor AP interface the vendor tether list adds" % (d, iface))
-    conf = open(os.path.join(G, "devices", d, "device.conf"), encoding="utf-8").read()
+    conf = layered.text(os.path.join(G, "devices", d, "device.conf"))
     m = re.search(r"^name=XGIMI (.+)$", conf, re.M)
     want_name = "Lumen " + m.group(1).strip() if m else None
     if hs.get("name") != want_name:

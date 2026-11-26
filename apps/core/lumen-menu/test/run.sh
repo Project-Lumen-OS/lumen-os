@@ -11,13 +11,15 @@ G=$(cd "$HERE/../../.." && pwd)
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d "${TMPDIR:-/tmp}/lumen_menu.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
+LAYERS_ROOT=$G   # the layer files themselves (the view below has them merged)
+G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" \
-  "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
+  "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" "$HERE/test/MenuSnapshot.java" \
+  "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SleepRuleTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HdrFormatTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
   "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ElderColorRuleTest.java" "$HERE/test/ChoiceStepTest.java" \
   "$HERE/test/GeneralChoicesTest.java" \
   "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" "$HERE/test/TitanUxMenuTest.java" \
-  "$HERE"/src/org/lumen/menu/quick/*.java "$HERE/test/quick/QuickTest.java"
+  "$HERE"/src/org/lumen/menu/quick/*.java "$HERE/test/quick/QuickTest.java" "$HERE/test/quick/FullLayoutTest.java"
 bad=0
 n=0
 for j in "$G"/devices/*/menu.json; do
@@ -57,6 +59,7 @@ if [ "${1:-}" = "--update" ]; then "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.me
 else "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.quick.QuickTest "$G" || bad=1; fi
 # the gear key: one shared press rule (GearPress); that every app runs it is checked by tools/devices/test/keylayout_gear_test.py
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GearPressTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.quick.FullLayoutTest || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.ElderColorRuleTest || bad=1
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GeneralChoicesTest || bad=1
 # the focus page's remote picture: the model's own remote (devices/_remotes/focus_guide.tsv, stock RemoteFocusCell)
@@ -78,7 +81,9 @@ done
 python3 -B "$HERE/test/stock_order.py" "$G" || bad=1
 # the Picture section of the X50 family in each model's stock image page order, with its picture settings page
 # (sections.picture = its stock tree, test/stock/picture_image.json), the tuning range and the Boost step per tree
-python3 -B "$HERE/test/stock_picture.py" "$G" || bad=1
+# the layers themselves: a row one of them has off with the reason is not part of the shown order
+python3 -B "$HERE/test/stock_picture.py" "$LAYERS_ROOT" || bad=1
+python3 -B "$HERE/test/stock_modes.py" "$LAYERS_ROOT" || bad=1     # picture mode list per content kind = stock
 # the stock line between two groups: no text, drawn as the frame's divider, never opening a page or popup
 for w in '        if (MenuSpec.LINE.equals(id)) return "";' \
          '                if (MenuSpec.LINE.equals(g.header)) lineAbove.put(hr, new ArrayList<>(above));' \
@@ -88,10 +93,13 @@ for w in '        if (MenuSpec.LINE.equals(id)) return "";' \
 done
 grep -qxF '                f.setDivider(prev == QpdRowFrame.RADIO && f.kind == QpdRowFrame.NAV || f.isLine());' \
   "$HERE/src/org/lumen/projector/panel/QpdPanel.java" || { echo "FAIL line: the row frames do not draw a line header"; bad=1; }
-grep -qxF '        return kind == HEADER && PageAccess.headerText((HeaderRow) row).length() == 0;' \
-  "$HERE/src/org/lumen/projector/panel/QpdRowFrame.java" || { echo "FAIL line: QpdRowFrame.isLine is not the header without text"; bad=1; }
+grep -qxF '        return kind == HEADER && PageAccess.headerText((HeaderRow) row).length() == 0' \
+  "$HERE/src/org/lumen/projector/panel/QpdRowFrame.java" \
+  && grep -qxF '                && ((HeaderRow) row).getState().length() == 0;' "$HERE/src/org/lumen/projector/panel/QpdRowFrame.java" \
+  || { echo "FAIL line: QpdRowFrame.isLine is not the header without text and without a state (signal format)"; bad=1; }
 # options that follow the content (stock support lists)
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.SignalRuleTest "$G" || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.HdrFormatTest "$G" || bad=1
 for w in 'want.removeAll(SignalRule.greyed(profile, f, st));' \
          'pr.get(i).setRowEnabled(!greyed.contains(opts.get(i)));' \
          '}))).setRowEnabled(!greyed.contains(o));' \
@@ -113,7 +121,7 @@ done
 # sections, popups and the pages of the menu's own rows (picture2: the HDR page follows the content)
 [ "$(grep -c 'watchSignal();' "$SMC")" = 3 ] || { echo "FAIL signal rule: the watch does not start on every shown page and popup"; bad=1; }
 SW="$HERE/src/org/lumen/projector/panel/SignalWatch.java"
-grep -qF 'if (now != null && open.getAsBoolean() && st != null && now != st.signal()) reread.run();' "$SW" \
+grep -qF 'if (now != null && open.getAsBoolean() && st != null && now != st.format()) reread.run();' "$SW" \
   && grep -qF 'if (!open.getAsBoolean()) return;' "$SW" \
   || { echo "FAIL signal watch: no re-read on a content change, or it polls with the menu closed"; bad=1; }
 # the lens iris row and its light level rule (IrisRule): the slider step asks the rule before the device
@@ -152,16 +160,44 @@ grep -qxF '        for (Map.Entry<FeatureId, View> e : rows.entrySet()) applyRow
 # the remote power key an app receives (X50 family): one shared rule (PowerPress) and the stock power menu items
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.PowerPressTest || bad=1
 # its hold is the Z9X HB one (one behaviour everywhere): PowerPress.HOLD_MS = Z9xProjector PowerKey.LONG_PRESS_MS
-ZPK="$G/apps/ProjectorBase/src/org/lumen/projector/power/PowerKey.java"
+ZPK="$G/apps/LumenProjector/core/src/org/lumen/projector/power/PowerKey.java"
 if [ -f "$ZPK" ]; then
   z=$(sed -n 's/.*static final long LONG_PRESS_MS = \([0-9]*\);.*/\1/p' "$ZPK")
   m=$(sed -n 's/.*public static final long HOLD_MS = \([0-9]*\);.*/\1/p' "$HERE/src/org/lumen/menu/PowerPress.java")
   if [ -n "$z" ] && [ "$z" = "$m" ]; then echo "ok   power hold = the Z9X HB hold ($m ms)"
   else echo "FAIL power hold '$m' ms, the Z9X HB PowerKey holds '$z' ms"; bad=1; fi
 fi
+# the shortest wake is the Z9X HB wake echo: PowerPress.WAKE_ECHO_MS = PowerKey.WAKE_GUARD_MS
+if [ -f "$ZPK" ]; then
+  z=$(sed -n 's/.*static final long WAKE_GUARD_MS = \([0-9]*\);.*/\1/p' "$ZPK")
+  m=$(sed -n 's/.*public static final long WAKE_ECHO_MS = \([0-9]*\);.*/\1/p' "$HERE/src/org/lumen/menu/PowerPress.java")
+  if [ -n "$z" ] && [ "$z" = "$m" ]; then echo "ok   wake echo = the Z9X HB wake echo ($m ms)"
+  else echo "FAIL wake echo '$m' ms, the Z9X HB PowerKey guards '$z' ms"; bad=1; fi
+fi
+# the stock sleep or power off rule (getShutdownMode: setup, the 15th sleep of a boot)
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.SleepRuleTest || bad=1
 # the brightness slider: LEFT at its minimum asks like Boost (SliderOff), LEFT again while the hint is up goes the
 # "Turn off screen" row's own way (menu closes first), lamp.off only. Boost asks through the same PressAgain
-"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.SliderOffTest "$G" || bad=1
+# lamp.off is a row of the base profile: every model with a light level offers it unless one of its layers switches it
+# off with the reason, so the models that must ask come from the layers, not from a list here
+LAMP_OFF_MODELS=$(python3 -B - "$LAYERS_ROOT" <<'PY'
+import glob, os, sys
+sys.path.insert(0, os.path.join(sys.argv[1], "tools", "devices"))
+import menu_layers
+out = []
+for p in sorted(glob.glob(os.path.join(sys.argv[1], "devices", "*", "menu.json"))):
+    if not menu_layers.is_profile(p):
+        continue
+    layers = menu_layers.chain(p)
+    if "lamp.off" not in (layers[0][1].get("features") or {}):
+        sys.exit("lamp.off is not a row of the base profile %s" % layers[0][0])
+    off = [why for _, d in layers for r, why in (d.get("off") or {}).items() if r == "lamp.off"]
+    if "lamp" in menu_layers.effective(p).get("features", {}) and not (off and all(off)):
+        out.append(os.path.basename(os.path.dirname(p)))
+print(" ".join(out))
+PY
+) || { echo "FAIL lamp.off models: $LAMP_OFF_MODELS"; bad=1; }
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.SliderOffTest "$G" "$LAMP_OFF_MODELS" || bad=1
 LMC="$HERE/src/org/lumen/projector/panel/MenuController.java"
 lw() { grep -qxF -- "$1" "$LMC" || { echo "FAIL lamp slider: MenuController lost: $2"; bad=1; }; }
 lw '            switch (sliderOff.edge(has(FeatureId.LAMP_OFF), row.isKnown() ? row.getValue() : null, row.getMin(), dir, 0,' \
@@ -180,7 +216,7 @@ lw '        if (down) boostAsk.key(sliderDir);    // any other key drops the Boo
   "any other key drops the Boost question"
 # x50-picture-stock: the light level row of a section page (the stock image page starts with it) is the card slider's
 # twin: the same steps, light-off edge and Boost step, one key rule for both
-lw '                if (FeatureId.LAMP == f && !MenuSpec.LAMP.equals(sec)) addLampRow(p);' "a page's light level row is the slider's twin"
+lw '                    addLampRow(p);                            // the light slider (the lamp page: its tile look opens it)' "a page's light level row is the slider's twin"
 lw '        boolean onLamp = isLamp(f);' "the keys ask whether the focus is on a light slider"
 lw '    private boolean isLamp(View v) { return v != null && (v == lamp || pageLamps.contains(v)); }' "the page twins are light sliders"
 [ "$(grep -cxF '        wireLamp(r);' "$LMC")" = 1 ] && [ "$(grep -cxF '                wireLamp(lamp);' "$LMC")" = 1 ] \
@@ -239,11 +275,18 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 res = sys.argv[1]
+for d in (os.path.abspath(res), os.getcwd()):         # the tree of res, else the tree the test runs in
+    while d != os.path.dirname(d) and not os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        d = os.path.dirname(d)
+    if os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        break
+sys.path.insert(0, os.path.join(d, "tools/i18n"))
+import res_strings  # strings files as the APK resolves them (aliases of lumen-common-strings)
 def names(d, all_=False):
     out = set()
-    for f in os.listdir(os.path.join(res, d)):
+    for f in os.listdir(os.path.join(res, "values")):
         if f.endswith(".xml"):
-            for e in ET.parse(os.path.join(res, d, f)).getroot():
+            for e in ET.fromstring(res_strings.text(os.path.join(res, d, f))):
                 if e.tag in ("string", "plurals", "string-array") and (all_ or e.get("translatable") != "false"):
                     out.add(e.get("name"))
     return out
@@ -265,18 +308,23 @@ grep -qF 'String as = state == null ? null : state.shownAs(f, token);' "$LMC" \
   && echo "ok   hdmi range: option labels follow MenuState.shownAs" || { echo "FAIL option labels ignore MenuState.shownAs"; bad=1; }
 # a row that leaves the menu for another app's page waits for the first-run setup and closes the panel first
 leave=0
-for id in SETTINGS_SYSTEM SETTINGS_UI_RESOLUTION SETTINGS_HDMI SETTINGS_RECENTS SETTINGS_LAUNCHER VOICE_KEY; do
+for id in SETTINGS_SYSTEM SETTINGS_UI_RESOLUTION SETTINGS_RECENTS SETTINGS_LAUNCHER VOICE_KEY; do
   for set in SETUP_GATED CLOSE_FIRST; do
     if ! sed -n "/static final Set<FeatureId> $set = set(/,/);/p" "$LMC" | grep -q "FeatureId\.$id[,)]"; then
       echo "FAIL leave the menu: $id not in MenuController.$set"; leave=1; bad=1
     fi
   done
 done
-[ "$leave" = 0 ] && echo "ok   leave the menu: system, projector, HDMI, recents and launcher pages are setup-gated and close the panel first"
-# the Bluetooth and Network tiles: each opens its page through the shared lumen-system module (SystemPages walks the
+# the HDMI page is a page of the menu (HdmiPage): setup-gated, the menu stays
+grep -q "if (!setupDone(FeatureId.SETTINGS_HDMI.id)) return;" "$LMC" \
+  && echo "ok   HDMI page: setup-gated, shown inside the menu" || { echo "FAIL HDMI page: not setup-gated"; bad=1; }
+[ "$leave" = 0 ] && echo "ok   leave the menu: system, projector, recents and launcher pages are setup-gated and close the panel first"
+# the Bluetooth and Network tiles: each opens the menu's page (Bluetooth, the Network popup), else its Android page through the shared lumen-system module (SystemPages walks the
 # ways of SystemIntent.chain, apps/core/lumen-system/test/run.sh), a note when no way starts
-printf '%s\n' '                case BLUETOOTH:' '                    if (setupDone(id)) closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));' \
-  '                    return;' '                case NETWORK:                                 // the popup with the hotspot where it works, else Wi-Fi' \
+printf '%s\n' '                case BLUETOOTH:                               // the menu'"'"'s Bluetooth page, else Android'"'"'s' \
+  '                    if (!setupDone(id)) return;' '                    if (popupPage(id) == null) {' \
+  '                        closeThen(() -> openSystemPage(SettingsPage.BLUETOOTH));' '                        return;' \
+  '                    }' '                    break;' '                case NETWORK:                                 // the popup with the hotspot where it works, else Wi-Fi' \
   '                    if (!setupDone(id)) return;' '                    if (popupPage(id) == null) {' \
   '                        closeThen(() -> openSystemPage(SettingsPage.NETWORK));' '                        return;' \
   '                    }' '                    watchHotspot();' '                    break;' > "$OUT/tiles.exp"
@@ -286,7 +334,7 @@ cat > "$OUT/sys.exp" <<'EOF'
         if (!SystemPages.open(app, page)) host.toast(R.string.lumen_m_toast_failed);
     }
 EOF
-grep -A10 -xF '                case BLUETOOTH:' "$LMC" > "$OUT/tiles.got" || true
+grep -A14 -F '                case BLUETOOTH:  ' "$LMC" > "$OUT/tiles.got" || true
 sed -n '/^    private void openSystemPage(SettingsPage page) {$/,/^    }$/p' "$LMC" > "$OUT/sys.got"
 if cmp -s "$OUT/tiles.exp" "$OUT/tiles.got" && cmp -s "$OUT/sys.exp" "$OUT/sys.got" \
   && [ -z "$(grep -nE 'Settings\.ACTION_|"android\.settings\.' "$LMC" || true)" ] && grep -qE '^depends=(.* )?lumen-system( .*)?$' "$HERE/module.conf"; then
@@ -322,7 +370,10 @@ for w in '        if (problem != 0) {' '            showProblem(problem);' '    
          'public final class TextEditActivity extends ToolActivity {'; do
   grep -qxF -- "$w" "$TE" || { echo "FAIL hotspot: TextEditActivity lost: $w"; bad=1; }
 done
-for m in "$G"/apps/ProjectorBase "$G"/apps/HbProjector "$G"/apps/Play6Projector "$G"/apps/X50Projector; do
+# the HB manifest is the core one plus its patch
+HBM=$(mktemp -d); python3 -B "$G/tools/devices/patch_file.py" "$G/apps/LumenProjector/core/AndroidManifest.xml" "$G/devices/goat_elegant/app/HbProjector.manifest.diff" > "$HBM/AndroidManifest.xml"
+P6M=$(mktemp -d); cp "$G/devices/dragon_healthy/app/Play6Projector.manifest.xml" "$P6M/AndroidManifest.xml"
+for m in "$G"/apps/LumenProjector/core "$HBM" "$P6M" "$G"/apps/LumenProjector/host/activity; do
   for w in TETHER_PRIVILEGED OVERRIDE_WIFI_CONFIG NETWORK_SETTINGS ACCESS_WIFI_STATE; do
     grep -q "<uses-permission android:name=\"android.permission.$w\" />" "$m/AndroidManifest.xml" \
       || { echo "FAIL hotspot: $(basename "$m") lacks $w"; bad=1; }

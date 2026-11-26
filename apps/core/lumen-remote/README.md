@@ -17,7 +17,7 @@ X50 Ultra (g0111), X50 Ultra Max (g0100), RS30 (g0155). One source module, copie
 | `RemoteHost` | the only per-app part: setup event, boot reason rule, the app's own prompt blockers, standby |
 
 Hosts: `apps/common/projector/.../remote/ProjectorRemoteHost.java` (Z9X, HB, Play 6) and
-`apps/X50Projector/.../X50RemoteHost.java` (X50 family, RS30). Bluetooth itself is AOSP on every image (the stock
+`apps/LumenProjector/host/activity/.../X50RemoteHost.java` (X50 family, RS30). Bluetooth itself is AOSP on every image (the stock
 vendor HAL `IBluetoothHci/default` on X50, RS30 and Titan, same rc), so there is no per-model Bluetooth code.
 
 ## Remote buttons (package `org.lumen.remote.keys`)
@@ -108,3 +108,6 @@ Remote buttons: `sh test/keys/run.sh [PNG_DIR]` (the tables against the layouts,
 overlay, the texts of every locale, the wiring of each projector app, `KeysTest` on host stubs with the screens drawn
 in Russian and English, their icons, radio buttons and names checked by pixels, the module's vector icons drawn by
 `VectorIcon` from the XML) and `python3 test/keys/mutate.py` (targeted mutants, every one must turn it red).
+On an emulator: `sh apps/core/lumen-menu/test/ui/run_keys.sh SERIAL` (every bindable XGIMI remote key of the table,
+resolved through its layout, takes the global key path to the screen and binds). A key mapped to a code Android 14
+PhoneWindowManager eats before the global keys (any KEYCODE_*_APP_*, ALL_APPS) never arrives: check_keys.py refuses it.

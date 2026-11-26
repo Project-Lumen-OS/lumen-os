@@ -1,0 +1,17 @@
+{
+  "include": "devices/_family/rs30/rs30.menu.json",
+  "device": "g0170",
+  "model": "G0170",
+  "note": "RS30 Ultra 高亮版 (G0170, Product_athena35ultrahl): its own stock settings tree (newsettings 6.03.06.03 of its stock v1.2.5, settings_tree_product_athena35ultrahl, read from the user's Installer report) is the athena35ultramax tree of the G0155 node for node but three picture nodes, so this profile is the G0155 one (devices/g0155/menu.json, its note has the stock evidence of every row) with these three rows as its stock has them: the iris is the single iris (picture_iris_ring_adjustment_athena3: f/2.0, f/3.5, f/5.0, dynamic in the stock order, GmTvManager 199/200 values 20, 35, 50, 0), motion compensation off / weak / medium / strong without the original frame (image_mode_motion_compensation; its feature.xml has no real_cinema_mode, as the TITAN), and the colour temperature standard / movie / D65 / warm (image_mode_4_color_temp_athena3: the same vendor values 0, 16, 24, 17 as the G0155, 17 named warm). Picture modes, eye protection (a plain switch), light rows, game menu, 3D and the HDMI rows as the G0155 (ModelMenu.RS30 and StockLight.RS30_ULTRA: the same athena35 picture.json ids).",
+  "features": {
+    "network.hotspot": {"name": "Lumen RS30 Ultra Highlight", "iface": "ap0"}
+  },
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_athena35ultrahl projection_screen (G0170 V1.2.5, newsettings 6.03.06.03), test/stock/projection_screen.json"
+    },
+    "picture": {
+      "stock": "settings_tree_product_athena35ultrahl image (G0170 V1.2.5, newsettings 6.03.06.03), test/stock/picture_image.json"
+    }
+  }
+}

@@ -21,6 +21,8 @@ import re
 import sys
 
 G = sys.argv[1]
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
 sys.path.insert(0, os.path.join(G, "tools", "devices"))
 from assemble_app import app_dir  # noqa: E402  apps/<app>, or its renamed folder (apps/app_dirs.tsv)
 M = os.path.join(G, "apps/core/lumen-report")
@@ -33,8 +35,7 @@ def fail(msg):
 
 
 def read(p):
-    with open(p, encoding="utf-8") as f:
-        return f.read()
+    return menu_layers.read_text(p)
 
 
 STR = re.compile(r'<string name="([a-z0-9_]+)">(.*?)</string>', re.S)
@@ -59,12 +60,14 @@ for f in files:
             fail("strings %s: %s is empty" % (loc, k))
 print("ok   strings: %d files, %d keys each" % (len(files), len(base)))
 
-recipes = sorted(glob.glob(os.path.join(G, "devices/*/app/*Projector.layers")))
+import assemble_app  # noqa: E402  (the recipes each model builds, its own or its family's: devices/README.md)
+built = [(c, p) for c, a, p in assemble_app.all_recipes(G) if a.endswith("Projector")]
+recipes = sorted({p for _, p in built})
 for r in recipes:
     if not re.search(r"^module\s+lumen-report\s*$", read(r), re.M):
         fail("recipe %s does not name lumen-report" % os.path.relpath(r, G))
-if len(recipes) < 6:
-    fail("only %d projector recipes found" % len(recipes))
+if len({c for c, _ in built}) < 6:
+    fail("only %d models build a projector app" % len({c for c, _ in built}))
 if not re.search(r"^depends=.*\blumen-report\b", read(os.path.join(G, "apps/core/lumen-menu/module.conf")), re.M):
     fail("lumen-menu does not depend on lumen-report")
 print("ok   recipes: %d projector apps carry the module" % len(recipes))
@@ -74,8 +77,26 @@ PERMS = ["INTERNET", "READ_LOGS", "DUMP", "PACKAGE_USAGE_STATS", "ACCESS_WIFI_ST
 apps = set()
 for r in recipes:
     apps.add(re.search(r"^app\s+(\S+)", read(r), re.M).group(1))
+import patch_file  # noqa: E402  (a model's manifest as a patch of the core one: assemble_app.py rule 10)
+
+
+def manifest_of(a):
+    """The app's manifest: its folder's, or the core one plus the model's patch (devices/<c>/app/<a>.manifest.diff)."""
+    own = os.path.join(G, app_dir(G, a), "AndroidManifest.xml")
+    if os.path.isfile(own):
+        return read(own)
+    for r in recipes:                  # a model's whole manifest as a recipe file row (Play 6, since apps/Play6Projector is gone)
+        if re.search(r"^app\s+%s\s*$" % re.escape(a), read(r), re.M):
+            m = re.search(r"^file\s+(\S+)\s+AndroidManifest\.xml\s*$", read(r), re.M)
+            if m:
+                return read(os.path.join(G, m.group(1)))
+    diff = sorted(glob.glob(os.path.join(G, "devices", "*", "app", a + ".manifest.diff")))[0]
+    return patch_file.apply(read(os.path.join(G, "apps/LumenProjector/core/AndroidManifest.xml")), read(diff))
+
+
+report_pkgs = set()
 for a in sorted(apps):
-    man = read(os.path.join(G, app_dir(G, a), "AndroidManifest.xml"))
+    man = manifest_of(a)
     for p in PERMS:
         if 'android:name="android.permission.%s"' % p not in man:
             fail("%s manifest lacks %s" % (a, p))
@@ -89,6 +110,7 @@ for a in sorted(apps):
             or "android.intent.action.DROPBOX_ENTRY_ADDED" not in rcv.group(0):
         fail("%s manifest lacks the boot and DropBox receiver" % a)
     pkg = re.search(r'<manifest\s[^>]*package="([^"]+)"', man, re.S).group(1)
+    report_pkgs.add(pkg)
     prov = re.search(r'<provider\s[^>]*android:name="org.lumen.report.AliveStart"[^>]*>', man, re.S)
     if not prov or 'android:exported="false"' not in prov.group(0) \
             or 'android:directBootAware="false"' not in prov.group(0) \
@@ -158,6 +180,11 @@ wiring = [
     ("AliveWatch.java", "if (Alive.bootCheck(marker, pending, boot, up, System.currentTimeMillis(), reasons)) {"),
     ("AliveWatch.java", "if (a != null && !AliveFile.write(marker, a.line())) Log.w("),
     ("AliveWatch.java", "if (AliveState.beats(interactive)) worker.postDelayed(beat, AliveState.BEAT_MS);"),
+    ("ReportCollector.java", "            miracastDiag();\n            hdmi();\n"),
+    ("ReportCollector.java", 'parts.add(ReportZip.Part.text("hdmi.txt", scrubber.scrubText(HdmiDump.text(cec, journal, audio))));'),
+    ("ReportCollector.java", 'String cec = dumps.get("hdmi_control"), audio = dumps.get("audio"), power = dumps.get("power");'),
+    ("ReportCollector.java", 'parts.add(ReportZip.Part.text("power.txt", scrubber.scrubText(PowerDump.text(power))));'),
+    ("ReportCollector.java", "for (String s : RootLogs.DUMPSYS) dumps.put(s, readText(new File(root, s + \".txt\"), HdmiDump.CAP * 4));"),
 ]
 for f, w in wiring:
     if w not in read(os.path.join(S, f)):
@@ -179,8 +206,8 @@ print("ok   no old org.lumen.projector.report left" if not left else "")
 AW = read(os.path.join(S, "AliveWatch.java"))
 AL = read(os.path.join(S, "Alive.java"))
 contract = {k: re.search(r'%s = "([^"]+)"' % k, AW).group(1) for k in ("ACTION_STANDBY_CHANGED", "EXTRA_STANDBY", "PERMISSION_STANDBY")}
-senders = ["apps/ProjectorBase/src/org/lumen/projector/power/StandbyController.java",
-           "apps/Play6Projector/src/org/lumen/projector/power/StandbyController.java"]
+senders = ["apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java",
+           "apps/LumenProjector/core/src/org/lumen/projector/power/LampStandby.java"]
 for f in senders:
     src = read(os.path.join(G, f))
     for k, v in (("ACTION_STANDBY_CHANGED", contract["ACTION_STANDBY_CHANGED"]), ("EXTRA_STANDBY", contract["EXTRA_STANDBY"]),
@@ -193,13 +220,49 @@ for k, path in (("STANDBY_ACTIVITY", "apps/%s/src/org/lumen/projector/power/Stan
                 ("HDMI_VIEWER", "apps/LumenTvInput/src/org/lumen/tvinput/PassthroughActivity.java")):
     comp = re.search(r'%s = "([^"/]+)/([^"]+)"' % k, AL)
     pkg, cls = comp.group(1), comp.group(2)
-    for app in (["ProjectorBase", "HbProjector"] if k == "STANDBY_ACTIVITY" else [None]):
+    for app in (["LumenProjector/core"] if k == "STANDBY_ACTIVITY" else [None]):   # one StandbyActivity since step 2b
         p = os.path.join(G, path % app if app else path)
         if not os.path.isfile(p) or ("class " + cls.rsplit(".", 1)[1]) not in read(p) \
                 or ("package " + cls.rsplit(".", 1)[0] + ";") not in read(p):
             fail("Alive.%s names %s/%s, not found at %s" % (k, pkg, cls, os.path.relpath(p, G)))
-    man = os.path.join(G, "apps", "LumenTvInput" if k == "HDMI_VIEWER" else "ProjectorBase", "AndroidManifest.xml")
+    man = os.path.join(G, "apps", "LumenTvInput" if k == "HDMI_VIEWER" else "LumenProjector/core", "AndroidManifest.xml")
     if 'package="%s"' % pkg not in read(man):
         fail("Alive.%s: package %s is not the one of %s" % (k, pkg, os.path.relpath(man, G)))
 print("ok   unexpected-stop watch: standby contract of %d senders, standby screen and HDMI viewer" % len(senders))
+# 8. the image's root log helper (image/lumen_report.sh): reports never ask for log access, every report app may read
+#    the helper's files, every image stages it (tools/build/build.py COMMON_FILES; build.py check: every recipe places it)
+HS = read(os.path.join(M, "image/lumen_report.sh"))
+hosts = re.search(r'^HOSTS="([^"]+)"', HS, re.M).group(1).split()
+for pkg in sorted(report_pkgs):
+    if pkg not in hosts:
+        fail("lumen_report.sh HOSTS lacks the report app %s (its group could not read the logs)" % pkg)
+if 'MAX_TOKEN = 24' not in read(os.path.join(S, "RootLogs.java")) or '[ "${#1}" -le 24 ]' not in HS:
+    fail("RootLogs.valid and lumen_report.sh valid() no longer share the 24 character rule")
+for root, _, fs in os.walk(M):
+    for f in fs:
+        if f.endswith((".java", ".xml")) and "/test/" not in os.path.join(root, f):
+            t = read(os.path.join(root, f))
+            for w in ("lumen_report_log_hint", "lumen_report_inc_hdmi", "LOGCAT_TIMEOUT_MS", "access to device logs",
+                      "serviceDump", "dumpAsync"):
+                if w in t:
+                    fail("%s: %s (reports never ask for log access)" % (os.path.relpath(os.path.join(root, f), G), w))
+RC = read(os.path.join(S, "ReportCollector.java"))
+for w in ["boolean root = rootLogs(since);",
+          "if (a == RootLogs.Answer.OK && RootLogs.fresh(root, token)) {",
+          "            } finally {\n                RootLogs.ack(PROPS, token);\n            }",
+          'filtered("logcat.txt", ReportConfig.CAP_LOGCAT, new File(root, RootLogs.LOGCAT), true);',
+          "LogcatFilter f = new LogcatFilter(imageAppIds, android.os.Process.myUid(), manual);",
+          # the CEC journal: fed with every kept line of logcat.txt, its text in hdmi.txt with the unit's log.tag.HDMI
+          "                if (LOGCAT.equals(name)) cec.add(kept);",
+          "String journal = this.cec.text(ReportConfig.prop(CecJournal.TAG_PROP));",
+          "HdmiDump.text(cec, journal, audio)"]:
+    if w not in RC:
+        fail("ReportCollector lost: " + w.strip())
+if RC.index("boolean root = rootLogs(since);") > RC.index("logcat(\"logcat_kernel.txt\""):
+    fail("ReportCollector runs its own logcat before it asks the log helper")
+BP = read(os.path.join(G, "tools/build/build.py"))
+for f in ("apps/core/lumen-report/image/lumen_report.rc", "apps/core/lumen-report/image/lumen_report.sh"):
+    if '"%s"' % f not in BP:
+        fail("tools/build/build.py COMMON_FILES lacks %s" % f)
+print("ok   log helper: %d report apps may read it, no log access dialog path, staged for every image" % len(report_pkgs))
 sys.exit(1 if bad else 0)

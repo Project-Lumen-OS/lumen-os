@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">جديد</string>
     <string name="lumen_qe_reset">إعادة كما كان</string>
     <string name="lumen_qe_select">اختيار</string>
-    <string name="lumen_qe_done">تم</string>
-    <string name="lumen_qe_back">رجوع</string>
     <string name="lumen_qe_close_panel">إغلاق اللوحة</string>
     <string name="lumen_qe_how">طريقة الإظهار</string>
     <string name="lumen_qe_now" formatted="true">الآن: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">تحت المربعات</string>
     <string name="lumen_qe_panel_note">المربع والمربع العريض والدائرة تفتح اللوحة على يمين القائمة.</string>
     <string name="lumen_qe_place">المكان</string>
-    <string name="lumen_qe_move">نقل</string>
     <string name="lumen_qe_remove">إزالة من القائمة</string>
     <string name="lumen_qe_moving">نقل</string>
     <string name="lumen_qe_move_hint">الدوائر تتحرك في الصف العلوي فقط، والمربعات بين الصفوف فقط. لتصبح المربع دائرة غير شكله.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: مكان جديد</string>
     <string name="lumen_qe_move_keys">تحريك</string>
     <string name="lumen_qe_move_cancel">إلغاء وإعادته كما كان</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">بالاسم أو جزء منه</string>
+    <string name="lumen_qe_search_title">ابحث عن إعداد</string>
+    <string name="lumen_qe_search_hint">مثلا MEMC</string>
+    <string name="lumen_qe_nothing">لم يتم العثور على شيء</string>
+    <string name="lumen_qe_unavailable">غير متاح الآن</string>
 </resources>

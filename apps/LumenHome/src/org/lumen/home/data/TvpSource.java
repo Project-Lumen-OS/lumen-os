@@ -4,7 +4,6 @@ package org.lumen.home.data;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -330,26 +329,25 @@ public final class TvpSource {
     }
 
     /** Removes a program from its row and tells the owning app (Twitch listens for Watch Next). */
+    /**
+     * Delete of a card: the row's browsable flag goes to 0 (Home holds ACCESS_ALL_EPG_DATA), so no launcher shows it.
+     * Home sends no ACTION_*_PROGRAM_BROWSABLE_DISABLED itself: those are protected broadcasts only the system may send,
+     * and the send threw a SecurityException on the io lane, which killed Home (Z9X 1.1.0-beta2: Home restarted
+     * on Delete while the card went). Without the permission nothing can be changed; Home keeps the card out itself
+     * while it runs (HomeActivity.mGone). Never throws.
+     */
     public static void hideProgram(Context c, Card k) {
-        if (k.programId < 0 || k.pkg.isEmpty()) return;
+        if (k.programId < 0 || k.pkg.isEmpty() || !fullAccess(c)) return;
         boolean wn = k.table == Card.T_WATCH_NEXT;
         Uri uri = wn ? TvContract.buildWatchNextProgramUri(k.programId) : TvContract.buildPreviewProgramUri(k.programId);
-        if (fullAccess(c)) {
-            try {
-                ContentValues cv = new ContentValues();
-                cv.put(TvContract.PreviewPrograms.COLUMN_BROWSABLE, 0);
-                c.getContentResolver().update(uri, cv, null, null);
-            } catch (Throwable t) {
-                Log.w(App.TAG, "program browsable: " + t);
-            }
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(TvContract.PreviewPrograms.COLUMN_BROWSABLE, 0);
+            c.getContentResolver().update(uri, cv, null, null);
+            Log.i(App.TAG, (wn ? "wn-disabled" : "pp-disabled") + " pkg=" + k.pkg + " id=" + k.programId);
+        } catch (Throwable t) {
+            Log.w(App.TAG, "program browsable: " + t);
         }
-        Intent i = new Intent(wn ? TvContract.ACTION_WATCH_NEXT_PROGRAM_BROWSABLE_DISABLED
-                : TvContract.ACTION_PREVIEW_PROGRAM_BROWSABLE_DISABLED);
-        i.setPackage(k.pkg);
-        i.putExtra(wn ? TvContract.EXTRA_WATCH_NEXT_PROGRAM_ID : TvContract.EXTRA_PREVIEW_PROGRAM_ID, k.programId);
-        i.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        c.sendBroadcast(i);
-        Log.i(App.TAG, (wn ? "wn-disabled" : "pp-disabled") + " pkg=" + k.pkg + " id=" + k.programId);
     }
 
     private static String nn(String s) {

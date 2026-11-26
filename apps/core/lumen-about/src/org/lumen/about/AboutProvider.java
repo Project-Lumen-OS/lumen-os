@@ -10,6 +10,10 @@ import android.os.Bundle;
 import org.lumen.projector.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * The rows of the system Settings About page (authority org.lumen.about): TvSettings' About page (the base_patch fix
@@ -20,6 +24,8 @@ import java.util.ArrayList;
 public final class AboutProvider extends ContentProvider {
     public static final String AUTHORITY = "org.lumen.about", METHOD_ROWS = "rows";
     public static final String ROWS = "rows", KEY = "key", TITLE = "title", SUMMARY = "summary", SCREEN = "screen";
+    /** the longest the page waits for the HAL's light engine line, as Lumen Installer does */
+    static final long HAL_WAIT_MS = 1500;
 
     @Override
     public boolean onCreate() {
@@ -30,7 +36,7 @@ public final class AboutProvider extends ContentProvider {
     public Bundle call(String method, String arg, Bundle extras) {
         if (!METHOD_ROWS.equals(method)) return null;
         ArrayList<Bundle> out = new ArrayList<>();
-        for (AboutRow r : AboutRows.of(UnitFacts.read(), t -> getContext().getString(text(t)))) {
+        for (AboutRow r : AboutRows.of(UnitFacts.read(this::dlpImageLine), t -> getContext().getString(text(t)))) {
             Bundle b = new Bundle();
             b.putString(KEY, r.key);
             b.putString(TITLE, r.title);
@@ -41,6 +47,24 @@ public final class AboutProvider extends ContentProvider {
         Bundle answer = new Bundle();
         answer.putParcelableArrayList(ROWS, out);
         return answer;
+    }
+
+    /** the host app's light engine line (AboutHost), waited for at most HAL_WAIT_MS, null without it */
+    private String dlpImageLine() {
+        Object app = getContext().getApplicationContext();
+        if (!(app instanceof AboutHost)) return null;
+        FutureTask<String> ask = new FutureTask<>(((AboutHost) app)::dlpImageLine);
+        Thread t = new Thread(ask, "lumen-about-dlp");
+        t.setDaemon(true);
+        t.start();
+        try {
+            return ask.get(HAL_WAIT_MS, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException | TimeoutException e) {
+            ask.cancel(true);
+        }
+        return null;
     }
 
     static int text(RowText t) {

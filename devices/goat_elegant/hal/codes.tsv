@@ -8,7 +8,7 @@
 #   stock<TAB>INTERFACE|*<TAB>TABLE[<TAB>PROXY]  the stock code table the rows are proven against
 # columns: interface (stock name; "-" = AIDL meta call, valid on every interface), NAME, code, stock method,
 # args (stock wire layout W= / R= or AIDL signature), kind (get / set / call / meta), apps, source (evidence)
-java	HbProjector	apps/HbProjector/src/org/lumen/projector/hal/HalCodes.java
+java	HbProjector	apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/HalCodes.java
 java	LumenInfo	apps/LumenInfo/src/org/lumen/info/hal/HalCodes.java
 stock	*	devices/goat_elegant/research/aidl_codes.tsv
 stock	*	devices/goat_elegant/research/aidl_codes_v61712.tsv

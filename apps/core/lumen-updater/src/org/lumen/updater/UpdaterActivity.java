@@ -93,10 +93,21 @@ public final class UpdaterActivity extends Activity {
         UpdateState s = st.state();
         if (s == UpdateState.INSTALLING) {
             UpdateService.start(this, UpdateService.ACTION_WATCH, false);
-        } else if ((s == UpdateState.IDLE || s == UpdateState.ERROR) && result(st).isEmpty()
-                && System.currentTimeMillis() - st.lastCheck() > 30 * 60 * 1000L) {
-            check();
+        } else if (s != UpdateState.READY && s != UpdateState.CHECKING && autoCheckDue()) {
+            // every opening reads the manifests again, also with an offer found, downloading, paused or downloaded,
+            // so the screen never shows an older build than the newest published one; a result after a restart stays
+            bg(() -> Checker.check(this));
         }
+    }
+
+    /** At most one automatic check a minute (monotonic clock: the network time may still be wrong right after boot). */
+    private static long sAutoCheck = -1;
+
+    private static boolean autoCheckDue() {
+        long now = android.os.SystemClock.elapsedRealtime();
+        if (sAutoCheck >= 0 && now - sAutoCheck < 60 * 1000L) return false;
+        sAutoCheck = now;
+        return true;
     }
 
     @Override
@@ -138,7 +149,7 @@ public final class UpdaterActivity extends Activity {
 
     private void checkUsb() {
         bg(() -> {
-            Checker.Result r = Checker.checkUsb(this);
+            CheckResult r = Checker.checkUsb(this);
             if (r.outcome == CheckOutcome.ERROR && "usb_none".equals(r.res)) {
                 Store.get(this).setError("usb_none", "");
             }
@@ -242,7 +253,14 @@ public final class UpdaterActivity extends Activity {
         int id = getResources().getIdentifier(res, "string", getPackageName());
         if (id == 0) return res;
         String s = getString(id);
-        return s.contains("%1$") ? String.format(Locale.getDefault(), s.replace("%1$d", "%1$s"), arg) : s;
+        if (!s.contains("%1$")) return s;
+        // a text with a second placeholder takes the stored argument split in two (Preflight.formatArgs)
+        return String.format(Locale.getDefault(), s.replace("%1$d", "%1$s"), Preflight.formatArgs(arg, s.contains("%2$") ? 2 : 1));
+    }
+
+    /** The explanation under a block title: the string &lt;res&gt;_body when the app has one (blk_merge, blk_vendor). */
+    private boolean hasBody(String res) {
+        return getResources().getIdentifier(res + "_body", "string", getPackageName()) != 0;
     }
 
     private void refresh() {
@@ -479,12 +497,8 @@ public final class UpdaterActivity extends Activity {
             addButton(row, R.string.btn_later, false, v -> finish());
             return f;
         }
-        if ("blk_merge".equals(res)) {
-            title(getString(R.string.blk_merge));
-            body(getString(R.string.blk_merge_body), Ui.DIM);
-        } else {
-            title(str(res, arg));
-        }
+        title(str(res, arg));
+        if (hasBody(res)) body(str(res + "_body", arg), Ui.DIM);
         row = buttons();
         View f = addButton(row, R.string.btn_retry, true, v -> retry());
         addButton(row, R.string.btn_later, false, v -> finish());

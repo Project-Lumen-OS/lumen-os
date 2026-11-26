@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.signal;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -13,7 +15,7 @@ import org.lumen.remote.keys.KeyHook;
 
 /**
  * Holding OK on a developer card (the signal card, the sensor card) opens its full panel, holding it again folds it
- * back (OkHold, README.md). The card registers here whenever it shows or hides; only while one is on screen the key
+ * back, holding BACK hides the small card (OkHold, README.md). The card registers here whenever it shows or hides; only while one is on screen the key
  * filter runs (lumen-remote KeyHook), so with no card nothing at all sits between the remote and the app. Main thread.
  */
 public final class CardHold {
@@ -27,14 +29,20 @@ public final class CardHold {
 
         /** A short OK while the full panel is open (the panel's own OK action). */
         void sheetOk();
+
+        /** The full panel's own window has the input focus (another window opened over it keeps the keys). */
+        boolean hasKeys();
+
+        /** BACK held on the small card: it takes the keys (CardKeys) and goes. */
+        void dismiss();
     }
 
-    private static final String PREFS = "lumen_signal", SEEN = "hold_hint_seen", LEARNED = "hold_learned";
     private static final long RELEASE_MS = 400L;
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
     private static final OkHold HOLD = new OkHold();
     private static Context sApp;
     private static Card sCard;
+    private static boolean sFollowing;
     /** how often the release waited for a held OK's UP (at most 10 times, 4 s) */
     private static int sWaits;
 
@@ -48,6 +56,7 @@ public final class CardHold {
         sApp = c.getApplicationContext();
         sCard = null;
         KeyHook.clear(sApp);
+        followActivities(sApp);
     }
 
     /** The card's mode now: registers it while visible, lets the filter go when nothing is on screen. */
@@ -82,29 +91,45 @@ public final class CardHold {
         }
     };
 
-    /** True when the small card should show the hint now (the first few cards, until the user held OK once). */
-    public static boolean hint(Context c) { return hint(c, false); }
-
-    /** {@code byKey}: opened by the remote key the user gave it (OkHold.hint). */
-    public static boolean hint(Context c, boolean byKey) {
-        SharedPreferences p = prefs(c);
-        return OkHold.hint(p.getInt(SEEN, 0), p.getBoolean(LEARNED, false), byKey);
-    }
-
-    /** A small card came on screen with the hint: one of the few times is used. */
-    public static void hintShown(Context c) {
-        SharedPreferences p = prefs(c);
-        p.edit().putInt(SEEN, p.getInt(SEEN, 0) + 1).apply();
-    }
-
-    private static SharedPreferences prefs(Context c) {
-        return c.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-    }
-
+    /** What the filter may act on now: the card's mode, and who has the keys (OkHold.shown). */
     private static OkHold.Shown shownNow() {
         Card card = sCard;
-        PanelMode m = card == null ? PanelMode.HIDDEN : card.mode();
-        return m == PanelMode.DETAIL ? OkHold.Shown.SHEET : m.card() ? OkHold.Shown.CARD : OkHold.Shown.NONE;
+        if (card == null) return OkHold.Shown.NONE;
+        return OkHold.shown(card.mode(), card.hasKeys(), KeyHook.appHasKeys());
+    }
+
+    /** Every activity of this app tells KeyHook when it is in front and when it has the input focus (once per process). */
+    private static void followActivities(Context c) {
+        Context app = c.getApplicationContext();
+        if (sFollowing || !(app instanceof Application)) return;
+        sFollowing = true;
+        ((Application) app).registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override public void onActivityCreated(Activity a, Bundle b) {
+                a.getWindow().getDecorView().getViewTreeObserver().addOnWindowFocusChangeListener(
+                        has -> KeyHook.windowFocus(a, has));
+            }
+
+            @Override public void onActivityStarted(Activity a) {}
+
+            @Override public void onActivityResumed(Activity a) { KeyHook.front(a, true); }
+
+            @Override public void onActivityPaused(Activity a) { KeyHook.front(a, false); }
+
+            @Override public void onActivityStopped(Activity a) { KeyHook.windowFocus(a, false); }
+
+            @Override public void onActivitySaveInstanceState(Activity a, Bundle b) {}
+
+            @Override public void onActivityDestroyed(Activity a) {
+                KeyHook.front(a, false);
+                KeyHook.windowFocus(a, false);
+            }
+        });
+    }
+
+    /** The key as the card follows it: OK (remote or keyboard), BACK, any other. */
+    static OkHold.Key key(int code) {
+        if (ok(code)) return OkHold.Key.OK;
+        return code == KeyEvent.KEYCODE_BACK ? OkHold.Key.BACK : OkHold.Key.OTHER;
     }
 
     /** OK on a remote or a keyboard. */
@@ -117,11 +142,11 @@ public final class CardHold {
 
     /** The filter's question for every key: the answer comes at once, the card's work runs after it on the main loop. */
     private static final KeyHook.Hook HOOK = e -> {
-        OkHold.Step s = HOLD.key(ok(e.getKeyCode()), e.getAction() == KeyEvent.ACTION_DOWN, e.getRepeatCount(),
+        OkHold.Step s = HOLD.key(key(e.getKeyCode()), e.getAction() == KeyEvent.ACTION_DOWN, e.getRepeatCount(),
                 shownNow(), e.getDownTime());
         if (s.due >= 0) {
             MAIN.removeCallbacks(TIMER);
-            MAIN.postAtTime(TIMER, s.due);
+            MAIN.postAtTime(TIMER, OkHold.timerAt(s.due, SystemClock.uptimeMillis()));
         } else if (HOLD.due() < 0) {
             MAIN.removeCallbacks(TIMER);
         }
@@ -142,12 +167,10 @@ public final class CardHold {
     private static void run(OkHold.Act a) {
         Card card = sCard;
         if (card == null) return;
-        Log.i(SignalPanel.TAG, "OK held: " + a);
+        Log.i(SignalPanel.TAG, "held: " + a);
         switch (a) {
-            case EXPAND:
-                if (sApp != null) prefs(sApp).edit().putBoolean(LEARNED, true).apply();
-                card.expand();
-                break;
+            case EXPAND: card.expand(); break;
+            case HIDE: card.dismiss(); break;
             case COLLAPSE: card.collapse(); break;
             case SHEET_OK: card.sheetOk(); break;
             default: break;

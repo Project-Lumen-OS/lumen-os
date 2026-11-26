@@ -1,5 +1,5 @@
 {
-  "note": "The stock Keystone page of each model: children of projection_screen in the model's own newsettings tree (node ids, a sub page with its children), read from the stock dumps on 2026-11-14. stock_order.py derives the Keystone section order of every devices/*/menu.json from it.",
+  "note": "The stock Keystone page of each model: children of projection_screen in the model's own newsettings tree (node ids, a sub page with its children), read from the stock dumps on 2026-11-14. stock_order.py derives the Keystone section order of every devices/*/menu.json from it. The RS30 old line trees (athena3pro, athena3promax, athena3ultra, athena3ultramax) come from the release_838_newsettings.apk of the official v1.2.27 FULL OTA (read 2026-11-24, the same reader reproduces the athena35ultramax and athena35ultrahl entries node for node). The MIRA line trees (bollywood, bollywoodpro, oscar) come from the release_838_newsettings.apk of the official v1.3.1 FULL OTA.",
   "dapeng": {
     "source": "G0082 V6.15.62 release_838_newsettings.apk (sha256 505908cb95166a50...) raw/settings_tree_product_dapeng",
     "projection_screen": [
@@ -91,7 +91,7 @@
     ]
   },
   "dianapro": {
-    "source": "G0111 V1.2.64 release_838_newsettings.apk (sha256 a0e77bcc8f665905...) raw/settings_tree_product_dianapro",
+    "source": "G0111 V1.3.38 release_838_newsettings.apk (sha256 497c931fc13842da...) raw/settings_tree_product_dianapro",
     "projection_screen": [
       "small_title_focus",
       {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
@@ -105,6 +105,7 @@
       "picture_screen_rotation",
       "title_smart",
       "wall_color_calibration",
+      "color_uniformity_adjustment",
       {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
       "brightness_more_title",
       "reset_keystone",
@@ -113,7 +114,7 @@
     ]
   },
   "dianamax": {
-    "source": "G0111 V1.2.64 release_838_newsettings.apk (sha256 a0e77bcc8f665905...) raw/settings_tree_product_dianamax",
+    "source": "G0111 V1.3.38 release_838_newsettings.apk (sha256 497c931fc13842da...) raw/settings_tree_product_dianamax",
     "projection_screen": [
       "small_title_focus",
       {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
@@ -127,6 +128,7 @@
       "picture_screen_rotation",
       "title_smart",
       "wall_color_calibration",
+      "color_uniformity_adjustment",
       {"lens_memory": ["setting_common_back", "lens_mem_small_title_my", "lens_memory_list", "lens_mem_manager_small_title", "lens_memory_save"]},
       "brightness_more_title",
       "reset_keystone",
@@ -136,6 +138,27 @@
   },
   "athena35ultramax": {
     "source": "G0155 V1.1.42 release_838_newsettings.apk (sha256 f3c91fb51e65c7c4...) raw/settings_tree_product_athena35ultramax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "athena35ultrahl": {
+    "source": "G0170 V1.2.5 release_838_newsettings.apk (sha256 497c931fc13842da...) raw/settings_tree_product_athena35ultrahl",
     "projection_screen": [
       "small_title_focus",
       {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
@@ -221,6 +244,149 @@
       "brightness_more_title",
       "reset_keystone",
       "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  }
+,
+  "athena3pro": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.2.27:user/test-keys release_838_newsettings.apk (sha256 a818797b29f6a0de...) raw/settings_tree_product_athena3pro",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt", "curtain_projection_self_adapt"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "screen_memory",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "athena3promax": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.2.27:user/test-keys release_838_newsettings.apk (sha256 a818797b29f6a0de...) raw/settings_tree_product_athena3promax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "screen_memory",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "athena3ultra": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.2.27:user/test-keys release_838_newsettings.apk (sha256 a818797b29f6a0de...) raw/settings_tree_product_athena3ultra",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "screen_memory",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "athena3ultramax": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.2.27:user/test-keys release_838_newsettings.apk (sha256 a818797b29f6a0de...) raw/settings_tree_product_athena3ultramax",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "smart_auto_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3_diana",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "keystone_non_inductive_real_time", "boot_autoKeystone_v5", "picture_adjustment_enhancement_title", "projection_area_self_adapt_diana", "curtain_projection_self_adapt_diana"]},
+      "title_size_and_location",
+      "zoom_and_optical_shift",
+      "move_only",
+      "picture_screen_rotation",
+      "title_smart",
+      "wall_color_calibration",
+      "screen_memory",
+      "brightness_more_title",
+      "reset_keystone",
+      "angle_monitor",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "bollywood": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.3.1:user/test-keys release_838_newsettings.apk (sha256 ad53cc9a142617a6...) raw/settings_tree_product_bollywood",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "boot_focus", "displacement_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "auxiliary_curtain_alignment",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5"]},
+      "title_smart",
+      "flat_wall_adapt",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "bollywoodpro": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.3.1:user/test-keys release_838_newsettings.apk (sha256 ad53cc9a142617a6...) raw/settings_tree_product_bollywoodpro",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "boot_focus", "displacement_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "auxiliary_curtain_alignment",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5"]},
+      "title_smart",
+      "flat_wall_adapt",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
+      {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
+    ]
+  },
+  "oscar": {
+    "source": "MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.3.1:user/test-keys release_838_newsettings.apk (sha256 ad53cc9a142617a6...) raw/settings_tree_product_oscar",
+    "projection_screen": [
+      "small_title_focus",
+      {"focus_tab": ["setting_common_back", "auto_focus", "manual_focus", "boot_focus", "displacement_focus", "remote_focus_img_guide"]},
+      "small_title_keystone",
+      "auto_keystone_ak3",
+      "auxiliary_curtain_alignment",
+      "manual_keystone",
+      {"correcting_setting_v5": ["setting_common_back", "boot_autoKeystone_v5", "displacement_autoKeystone_v5"]},
+      "title_smart",
+      "flat_wall_adapt",
+      "wall_color_calibration",
+      "brightness_more_title",
+      "reset_keystone",
       {"projection_settings": ["setting_common_back", "projection_settings.autoVerticalTurn_v5", "projection_settings.dress", "projection_settings.hoist", "projection_settings.rearProject"]}
     ]
   }

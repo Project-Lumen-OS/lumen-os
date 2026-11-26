@@ -17,70 +17,26 @@ import java.nio.file.Files;
 
 /**
  * Fetches the update manifest + .sig (with beta updates on: the stable and the beta one, Channels), verifies the
- * signature with the system OTA certificates, checks applicability and records the offer of the higher version.
- * Runs on a worker thread.
+ * signature with the system OTA certificates, checks applicability and records the offer of the newest version
+ * (Newest: the rule every path follows). Runs on a worker thread.
  */
 public final class Checker {
     private Checker() {}
 
-    public static final class Result {
-        public final CheckOutcome outcome;
-        public final UpdateManifest manifest;
-        public final String res, arg;
-
-        Result(CheckOutcome o, UpdateManifest m, String res, String arg) {
-            outcome = o; manifest = m; this.res = res; this.arg = arg;
-        }
-    }
-
-    private static final int MAX_MANIFEST = 256 * 1024;
-
-    /** Online check. */
-    public static synchronized Result check(Context c) {
+    /**
+     * Online check: every channel manifest read fresh (Http.fetchFresh), the newest verified build is the offer
+     * (Newest.check). Also while a download runs: a newer build replaces it.
+     */
+    public static synchronized CheckResult check(Context c) {
         Stats.maybeSend(c);   // own thread, at most once a day, when the user has not turned it off
         Store st = Store.get(c);
-        UpdateState s = st.state();
-        if (s == UpdateState.DOWNLOADING || s == UpdateState.INSTALLING || s == UpdateState.READY) {
-            return new Result(CheckOutcome.BUSY, null, "", "");
-        }
-        UpdateState before = s;
-        st.setState(UpdateState.CHECKING);
         // beta on: the stable and the beta manifest, the higher version is offered; a beta manifest that is
         // missing, unreachable or does not verify is skipped (Channels)
         String[] urls = Channels.read();
-        byte[][] json = new byte[urls.length][], sig = new byte[urls.length][];
-        int[] codes = new int[urls.length];
-        IOException mainError = null;
-        for (int i = 0; i < urls.length; i++) {
-            codes[i] = Channels.MISSING;
-            try {
-                json[i] = Http.fetch(urls[i], MAX_MANIFEST);
-                sig[i] = Http.fetch(urls[i] + ".sig", 4096);
-                UpdateManifest m = verified(json[i], sig[i]);
-                if (m != null) codes[i] = m.versionCode;
-                else if (i > 0) Log.w(Ota.TAG, "beta manifest skipped: not verified");
-            } catch (IOException e) {
-                json[i] = null;
-                if (i == 0) mainError = e;
-                else Log.i(Ota.TAG, "beta manifest skipped: " + e);
-            }
-        }
-        if (urls.length > 1) st.setBetaPublished(codes[1] != Channels.MISSING);
-        else probeBeta(st);
-        int k = Channels.pick(codes);
-        // nothing usable: the main manifest decides, as with one channel (an unverified one is recorded as such)
-        if (k < 0 && json[0] != null) k = 0;
-        if (k >= 0) return accept(c, json[k], sig[k], false, "", before);
-        if (mainError instanceof HttpError && ((HttpError) mainError).code == 404) {
-            // no release published yet (or none for this channel): nothing to install
-            Log.i(Ota.TAG, "no update manifest published (404)");
-            st.setLastCheck(System.currentTimeMillis());
-            st.setState(before == UpdateState.DOWNLOADED || before == UpdateState.PAUSED ? before : UpdateState.IDLE);
-            return new Result(CheckOutcome.UP_TO_DATE, null, "", "");
-        }
-        Log.w(Ota.TAG, "check failed: " + mainError);
-        failed(st, before);
-        return new Result(CheckOutcome.ERROR, null, "err_network", "");
+        CheckResult r = Newest.check(st, urls, Http::fetchFresh, Trust::verifyWithSystemCerts, Ota.currentVersionCode(),
+                System.currentTimeMillis());
+        if (urls.length == 1 && r.outcome != CheckOutcome.BUSY) probeBeta(st);
+        return r;
     }
 
     /**
@@ -90,36 +46,17 @@ public final class Checker {
     private static void probeBeta(Store st) {
         String[] c = Ota.channels(Ota.imageManifestUrl());
         if (c == null) return;
-        try {
-            byte[] json = Http.fetch(c[1], MAX_MANIFEST);
-            st.setBetaPublished(verified(json, Http.fetch(c[1] + ".sig", 4096)) != null);
-        } catch (IOException e) {
-            if (e instanceof HttpError && ((HttpError) e).code == 404) st.setBetaPublished(false);
-        }
-    }
-
-    /** The manifest when its signature verifies with the system OTA certificates and it parses, else null. */
-    private static UpdateManifest verified(byte[] json, byte[] sig) {
-        if (!Trust.verifyWithSystemCerts(json, sig)) return null;
-        try {
-            return new UpdateManifest(new String(json, StandardCharsets.UTF_8));
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    /** 2026-11-04: a failed check never hides a downloaded or paused update behind "no connection". */
-    private static void failed(Store st, UpdateState before) {
-        if (org.lumen.updater.Outcome.keepOnCheckError(before.name())) st.setState(before);
-        else st.setError("err_network", "");
+        Newest.Read r = Newest.read(Http::fetchFresh, Trust::verifyWithSystemCerts, c[1]);
+        if (r.error == null) st.setBetaPublished(r.manifest != null);
+        else if (r.error instanceof HttpError && ((HttpError) r.error).code == 404) st.setBetaPublished(false);
     }
 
     /** Offline: an update copied to the root (or lumen-os/) of a USB stick. */
-    public static synchronized Result checkUsb(Context c) {
+    public static synchronized CheckResult checkUsb(Context c) {
         Store st = Store.get(c);
         UpdateState before = st.state();
         if (before == UpdateState.DOWNLOADING || before == UpdateState.INSTALLING || before == UpdateState.READY) {
-            return new Result(CheckOutcome.BUSY, null, "", "");
+            return new CheckResult(CheckOutcome.BUSY, null, "", "");
         }
         for (File dir : usbDirs(c)) {
             // only this image's own manifest files (an update of another edition is never offered); with beta on
@@ -131,7 +68,7 @@ public final class Checker {
             for (int i = 0; i < files.length; i++) {
                 codes[i] = Channels.MISSING;
                 File j = new File(dir, files[i]), sg = new File(dir, files[i] + ".sig");
-                if (!j.isFile() || !sg.isFile() || j.length() > MAX_MANIFEST) continue;
+                if (!j.isFile() || !sg.isFile() || j.length() > Newest.MAX_MANIFEST) continue;
                 try {
                     json[i] = Files.readAllBytes(j.toPath());
                     sig[i] = Files.readAllBytes(sg.toPath());
@@ -139,18 +76,22 @@ public final class Checker {
                     Log.w(Ota.TAG, "USB " + j + ": " + e);
                     continue;
                 }
-                UpdateManifest m = verified(json[i], sig[i]);
+                UpdateManifest m = Newest.verified(json[i], sig[i], Trust::verifyWithSystemCerts);
                 if (m != null) codes[i] = m.versionCode;
                 else if (unverified < 0) unverified = i;
             }
             if (Channels.pick(codes) < 0 && unverified >= 0) {
                 // only an unverified manifest here: recorded as before (err_signature), the next folder is tried
-                accept(c, json[unverified], sig[unverified], true, dir.getAbsolutePath(), before);
+                Log.w(Ota.TAG, "USB manifest signature invalid: " + files[unverified]);
+                st.setError("err_signature", "");
                 continue;
             }
             for (int k; (k = Channels.pick(codes)) >= 0; codes[k] = Channels.MISSING) {
                 try {
-                    Result r = accept(c, json[k], sig[k], true, dir.getAbsolutePath(), before);
+                    UpdateManifest m = new UpdateManifest(new String(json[k], StandardCharsets.UTF_8));
+                    CheckResult r = Newest.accept(st, m, true, dir.getAbsolutePath(), before, Ota.currentVersionCode(),
+                            System.currentTimeMillis());
+                    if (r.kept) return r;   // a newer offer than this stick's build is saved already: it stays
                     if (r.outcome == CheckOutcome.OFFER) {
                         UpdateManifest.Pkg p = UpdateManifest.Pkg.parse(st.packageJson());
                         if (new File(dir, p.fileName()).isFile()) return r;
@@ -165,7 +106,7 @@ public final class Checker {
                 }
             }
         }
-        return new Result(CheckOutcome.ERROR, null, "usb_none", "");
+        return new CheckResult(CheckOutcome.ERROR, null, "usb_none", "");
     }
 
     static File[] usbDirs(Context c) {
@@ -182,54 +123,11 @@ public final class Checker {
         return out.toArray(new File[0]);
     }
 
-    private static Result accept(Context c, byte[] json, byte[] sig, boolean usb, String usbDir, UpdateState before) {
-        Store st = Store.get(c);
-        if (!Trust.verifyWithSystemCerts(json, sig)) {
-            Log.w(Ota.TAG, "manifest signature invalid");
-            st.setError("err_signature", "");
-            return new Result(CheckOutcome.ERROR, null, "err_signature", "");
-        }
-        UpdateManifest m;
-        try {
-            m = new UpdateManifest(new String(json, StandardCharsets.UTF_8));
-        } catch (JSONException e) {
-            Log.w(Ota.TAG, "manifest unreadable: " + e);
-            st.setError("err_signature", "");
-            return new Result(CheckOutcome.ERROR, null, "err_signature", "");
-        }
-        st.setLastCheck(System.currentTimeMillis());
-        Preflight.Block b = Preflight.applicable(m);
-        if (b != null && "uptodate".equals(b.res)) {
-            if (before != UpdateState.DOWNLOADED) st.clearOffer();
-            st.setState(before == UpdateState.DOWNLOADED || before == UpdateState.PAUSED ? before : UpdateState.IDLE);
-            return new Result(CheckOutcome.UP_TO_DATE, m, "", "");
-        }
-        if (b != null) {
-            st.setError(b.res, b.arg);
-            return new Result(CheckOutcome.BLOCKED, m, b.res, b.arg);
-        }
-        UpdateManifest.Pkg p = m.choose(Ota.buildId());
-        if (p == null) {
-            st.setError("err_signature", "");
-            return new Result(CheckOutcome.ERROR, m, "err_signature", "");
-        }
-        // keep a download in progress if it is the very same file
-        boolean same = false;
-        try {
-            same = !st.packageJson().isEmpty() && UpdateManifest.Pkg.parse(st.packageJson()).sha256.equals(p.sha256)
-                    && st.fromUsb() == usb;
-        } catch (JSONException ignored) {
-        }
-        if (!same) {
-            UpdateService.deleteFiles(c);
-            st.setOffer(m.json, p.json, usb, usbDir);
-            st.setState(UpdateState.AVAILABLE);
-        } else if (before == UpdateState.PAUSED || before == UpdateState.DOWNLOADED) {
-            st.setState(before);
-        } else {
-            st.setState(UpdateState.AVAILABLE);
-        }
-        Log.i(Ota.TAG, "offer " + m.version + " " + p.type + " " + p.size + " B" + (usb ? " (USB)" : ""));
-        return new Result(CheckOutcome.OFFER, m, "", "");
+    /**
+     * Drops a saved offer that is not newer than the running build (Newest.dropStale): at boot, before a download
+     * and before an install. @return true = it was stale and is gone
+     */
+    static boolean dropStaleOffer(Context c, String why) {
+        return Newest.dropStale(Store.get(c), Ota.currentVersionCode(), why);
     }
 }

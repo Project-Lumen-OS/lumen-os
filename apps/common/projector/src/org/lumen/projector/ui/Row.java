@@ -3,6 +3,8 @@ package org.lumen.projector.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -20,7 +22,8 @@ import org.lumen.icons.IconText;
  *
  * Look (Theme / stock spec 1.3): unfocused = transparent background, title #E5FFFFFF, value
  * #B2FFFFFF; focused = white rounded background (radius 24), title #E5000000, value #99000000; no
- * scale. Disabled rows are drawn at 40 % and are not focusable.
+ * scale. Disabled rows are not focusable and draw every text and icon in the theme's disabled grey
+ * ({@link #disabledPaint}), never as a transparent copy of an enabled row.
  *
  * Keys: DPAD_CENTER / ENTER -> {@link #onActivate()} on the release of a press whose DOWN this row got
  * (2026-10-31: a row that opens another window on the DOWN, the optical zoom or the manual keystone, let
@@ -81,13 +84,34 @@ public abstract class Row extends View {
 
     public CharSequence getTitle() { return title; }
 
-    /** Disabled rows are dimmed and skipped by D-pad focus. */
+    /** Disabled rows are drawn in the disabled grey and skipped by D-pad focus. */
     public void setRowEnabled(boolean enabled) {
         if (rowEnabled == enabled) return;
         rowEnabled = enabled;
         setFocusable(enabled);
-        setAlpha(enabled ? 1f : 0.4f);
+        setAlpha(1f);                                       // the grey is the ink, not transparency (a lock's dim comes after)
         invalidate();
+    }
+
+    /** Alpha gain of the disabled layer: a quiet part (value line .56, an unchecked ring .45) reaches the same grey. */
+    public static final float DISABLED_GAIN = 1.5f;
+    private static Paint disabledInk = disabledPaint(Theme.TEXT_DISABLED);
+
+    /** The menu's theme names its disabled grey (QpdStyle.theme): every row that draws itself follows it. */
+    public static void setDisabledInk(int ink) { disabledInk = disabledPaint(ink); }
+
+    /**
+     * The layer paint of a disabled row: everything drawn under it comes out in {@code ink} (an opaque grey), its alpha
+     * times {@link #DISABLED_GAIN}, so a greyed row reads as one solid grey on any theme and over any video.
+     */
+    public static Paint disabledPaint(int ink) {
+        Paint p = new Paint();
+        p.setColorFilter(new ColorMatrixColorFilter(new float[] {
+                0, 0, 0, 0, Color.red(ink),
+                0, 0, 0, 0, Color.green(ink),
+                0, 0, 0, 0, Color.blue(ink),
+                0, 0, 0, DISABLED_GAIN, 0}));
+        return p;
     }
 
     public boolean isRowEnabled() { return rowEnabled; }
@@ -141,6 +165,7 @@ public abstract class Row extends View {
 
     @Override
     protected void onDraw(Canvas c) {
+        int grey = rowEnabled ? -1 : c.saveLayer(0, 0, getWidth(), getHeight(), disabledInk);
         mirrored = isRtl();
         if (mirrored) {
             c.save();
@@ -151,6 +176,7 @@ public abstract class Row extends View {
         } finally {
             if (mirrored) c.restore();
             mirrored = false;
+            if (grey >= 0) c.restoreToCount(grey);
         }
     }
 

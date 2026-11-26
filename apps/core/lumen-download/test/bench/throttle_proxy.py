@@ -2,16 +2,19 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """A local HTTPS proxy that limits every connection on its own, like the per-connection shaping of GitHub by
 providers in Russia: CONNECT tunnels only, the download direction of each tunnel at most RATE bytes/s, the upload
-direction free. Prints a line per tunnel with the open and the peak count.
+direction free. Optionally the SLOW_NTH-th tunnel to the CDN gets SLOW_RATE instead, as one crawling connection of a
+projector. Prints a line per tunnel with the open and the peak count.
 
-  python3 throttle_proxy.py PORT RATE
+  python3 throttle_proxy.py PORT RATE [SLOW_NTH SLOW_RATE]
 """
 import asyncio
 import sys
 import time
 
 PORT, RATE = int(sys.argv[1]), int(sys.argv[2])
-live = peak = 0
+SLOW_NTH = int(sys.argv[3]) if len(sys.argv) > 3 else 0
+SLOW_RATE = int(sys.argv[4]) if len(sys.argv) > 4 else 0
+live = peak = cdn = 0
 
 
 async def pipe(r, w, rate):
@@ -38,7 +41,7 @@ async def pipe(r, w, rate):
 
 
 async def handle(cr, cw):
-    global live, peak
+    global live, peak, cdn
     try:
         host, port = (await cr.readline()).split()[1].decode().rsplit(":", 1)
         while (await cr.readline()) not in (b"\r\n", b"\n", b""):
@@ -52,7 +55,13 @@ async def handle(cr, cw):
     live += 1
     peak = max(peak, live)
     print("%s tunnel %s open=%d peak=%d" % (time.strftime("%H:%M:%S"), host, live, peak), flush=True)
-    await asyncio.gather(pipe(cr, sw, 0), pipe(sr, cw, RATE))
+    rate = RATE
+    if host.startswith("release-assets"):
+        cdn += 1
+        if cdn == SLOW_NTH:
+            rate = SLOW_RATE
+            print("slow tunnel %d at %d bytes/s" % (cdn, rate), flush=True)
+    await asyncio.gather(pipe(cr, sw, 0), pipe(sr, cw, rate))
     live -= 1
 
 

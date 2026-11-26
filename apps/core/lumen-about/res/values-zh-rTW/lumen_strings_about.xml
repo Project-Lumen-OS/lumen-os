@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">專案頁面上的指南列出了 XGIMI 官方檔案。</string>
     <string name="lumen_about_erases">USB 隨身碟會清除投影機上的所有內容：應用程式、帳戶、設定和檔案。</string>
     <string name="lumen_about_scan">用手機掃描即可開啟</string>
-    <string name="lumen_about_close">關閉</string>
 </resources>

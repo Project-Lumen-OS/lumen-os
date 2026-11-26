@@ -56,6 +56,11 @@ public class TileView extends FrameLayout {
     private android.animation.ValueAnimator mAnim;
 
     public TileView(Context c, int kind) {
+        this(c, kind, 0);
+    }
+
+    /** {@code width}: the design width of a CHIP on a bottom line of four (Vitrina.chipW), 0 = the kind's own. */
+    public TileView(Context c, int kind, int width) {
         super(c);
         this.kind = kind;
         switch (kind) {
@@ -72,7 +77,7 @@ public class TileView extends FrameLayout {
                 mW = Grid.UPNEXT_W; mH = Grid.UPNEXT_H; mRadius = 18; mScale = LIFT_SCALE;
                 break;
             case CHIP:
-                mW = Grid.CHIP_W; mH = Grid.CHIP_H; mRadius = Grid.CHIP_H / 2; mScale = PILL_SCALE;
+                mW = width > 0 ? width : Grid.CHIP_W; mH = Grid.CHIP_H; mRadius = Grid.CHIP_H / 2; mScale = PILL_SCALE;
                 break;
             case ROUND:
                 mW = Grid.ROUND; mH = Grid.ROUND; mRadius = Grid.ROUND / 2; mScale = PILL_SCALE;
@@ -288,8 +293,8 @@ public class TileView extends FrameLayout {
         ring(c, w, h, r);
         if (kind == DOCK && f > 0f && mTitle.length() > 0) {
             TextPaint t = Ink.paint(24, 600, Theme.alpha(Theme.TEXT1, f));
-            float tw = Math.min(t.measureText(mTitle.toString()), w + Theme.pxf(80));
-            Ink.line(c, mTitle, (w - tw) / 2f, h + Theme.pxf(Grid.DOCK_LABEL_GAP) + Theme.pxf(24), w + Theme.pxf(80), t);
+            float tw = Ink.fitWidth(mTitle, w + Theme.pxf(80), t);
+            Ink.fitLine(c, mTitle, (w - tw) / 2f, h + Theme.pxf(Grid.DOCK_LABEL_GAP) + Theme.pxf(24), w + Theme.pxf(80), t);
         }
         if (mMoving && f > 0f) arrows(c, w, h);
     }
@@ -504,12 +509,16 @@ public class TileView extends FrameLayout {
             float right = w - Theme.pxf(28);
             TextPaint port = Ink.paint(24, 620, t1);
             float base = h / 2f + Theme.pxf(8.5f);
-            float pw = Math.min(port.measureText(mTitle.toString()), right - x);
-            Ink.line(c, mTitle, x, base, right - x, port);
-            if (mSub.length() > 0 && x + pw + Theme.pxf(16) < right) {
-                TextPaint dev = Ink.paint(22, 480, t3);
-                Ink.line(c, mSub, x + pw + Theme.pxf(16), base, right - x - pw - Theme.pxf(16), dev);
+            TextPaint dev = Ink.paint(22, 480, t3);
+            float gap = Theme.pxf(16), all = right - x;
+            if (mSub.length() > 0) {                          // port and state fit together first, the state is not cut
+                float pw0 = port.measureText(mTitle.toString()), dw0 = dev.measureText(mSub.toString());
+                float k = LabelFit.scale(pw0 + gap + dw0, all);
+                port.setTextSize(port.getTextSize() * k);
+                dev.setTextSize(dev.getTextSize() * k);
             }
+            float pw = Ink.fitLine(c, mTitle, x, base, all, port);
+            if (mSub.length() > 0 && x + pw + gap < right) Ink.fitLine(c, mSub, x + pw + gap, base, right - x - pw - gap, dev);
         }
 
         /** Icon 40 at 28 from the left, centred; name (22/600) and state (20/520) beside it, centred as a pair. */
@@ -528,8 +537,8 @@ public class TileView extends FrameLayout {
             TextPaint t = Ink.paint(Tokens.TYPE_LABEL, 600, Theme.TEXT1);
             boolean two = mSub.length() > 0;
             float block = Theme.pxf(two ? 28 + 4 + 24 : 28), top = (h - block) / 2f;
-            Ink.line(c, mTitle, x, top + Theme.pxf(21), maxW, t);
-            if (two) Ink.line(c, mSub, x, top + Theme.pxf(28 + 4 + 18), maxW, sub);
+            Ink.fitLine(c, mTitle, x, top + Theme.pxf(21), maxW, t);
+            if (two) Ink.fitLine(c, mSub, x, top + Theme.pxf(28 + 4 + 18), maxW, sub);
             if (Theme.dark()) {
                 Paint line = new Paint(Paint.ANTI_ALIAS_FLAG);
                 line.setStyle(Paint.Style.STROKE);

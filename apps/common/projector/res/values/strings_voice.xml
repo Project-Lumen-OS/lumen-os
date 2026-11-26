@@ -20,11 +20,11 @@
     <string name="voice_keystone">Correcting the picture</string>
     <string name="voice_downloading">Downloading this language for speech recognition, try again in a minute</string>
     <string name="voice_hold_hint">Hold the mic button and speak</string>
-    <string name="voice_settings">Voice assistant</string>
-    <string name="voice_language">Speech language</string>
-    <string name="voice_lang_system">System language</string>
-    <string name="voice_speak">Speak replies</string>
-    <string name="voice_key">Gemini voice</string>
+    <string name="voice_settings">@string/lumen_voice_assistant</string>
+    <string name="voice_language">@string/lumen_speech_language</string>
+    <string name="voice_lang_system">@string/lumen_system_language</string>
+    <string name="voice_speak">@string/lumen_speak_replies</string>
+    <string name="voice_key">@string/lumen_gemini_voice</string>
     <string name="voice_key_off">Device voice</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">Paste a Gemini API key from aistudio.google.com. Only the reply text is sent to Google. Leave it empty for the device voice.</string>

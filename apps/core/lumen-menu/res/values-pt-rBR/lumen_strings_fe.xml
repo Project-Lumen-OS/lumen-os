@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">Editar todas as configurações</string>
+    <string name="lumen_fe_show_hint">OK: mostrar ou ocultar uma linha</string>
+    <string name="lumen_fe_order">Mudar a ordem</string>
+    <string name="lumen_fe_move_hint">OK pega uma linha. Cima e baixo movem a linha dentro do grupo. OK ou Voltar solta a linha.</string>
+</resources>

@@ -2,6 +2,8 @@
 # (tools/play6/z9x_gate.sh): the shared updater (apps/core/lumen-updater, with the shared statistics client
 # lumen-stats) and the Z9X layer apps/Z9xUpdater: its UpdateTarget (Target.java) and its AndroidManifest.xml.
 app       Z9xUpdater
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-stats
 # the Lumen icon set (apps/core/lumen-icons, its R class named in the top layer R_EXTRA_PACKAGES)
 module    lumen-icons

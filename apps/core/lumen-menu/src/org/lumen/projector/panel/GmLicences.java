@@ -1,23 +1,27 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.panel;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.graphics.Typeface;
-import android.util.Log;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import org.lumen.projector.R;
 
 /**
  * "Licences" in Projector settings, Help (2026-11-11): the credits that CC BY 4.0 requires for the controller pictures
  * of the game menu (qp_design/models/README.md, CREDITS). The credit lines stay in English as published by the
  * authors; the line above them is translated. A device app without a Projector settings screen (the X50) shows the
- * same dialog from its menu: profile feature settings.licences, org.lumen.projector.ui.LicencesActivity.
+ * same page from its menu: profile feature settings.licences, LicencesPage.
  */
 public final class GmLicences {
     private GmLicences() {}
+
+    /**
+     * The written offer of the GPL-3.0 AirPlay receiver (org.lumen.airplay, UxPlay based) that every image ships: its
+     * Corresponding Source is attached to every Lumen OS release (tools/devices/airplay_source.py) at the same place as
+     * the image, and its licence texts are in the app (Screen casting, Licences).
+     */
+    static final String AIRPLAY_SOURCE = "The AirPlay receiver (org.lumen.airplay) is free software under the GNU General "
+            + "Public License version 3 (GPL-3.0). It is built on UxPlay (https://github.com/FDH2/UxPlay, GPL-3.0) and "
+            + "android-airplay-server (GPL-3.0), with libplist (LGPL-2.1), BoringSSL and ALAC (Apache-2.0). Its complete "
+            + "source code is attached to every Lumen OS release as lumen-os-<version>-airplay-source.zip at "
+            + "https://github.com/Project-Lumen-OS/lumen-os/releases, next to the image, and stays there for at least "
+            + "three years. The full licence texts are in Screen casting, Licences.";
 
     /** The CREDITS block of the models README, word for word (only the models whose frames ship). */
     static final String CREDITS =
@@ -26,35 +30,8 @@ public final class GmLicences {
             + "\"Nintendo Switch OLED\" by Wille Evensson, https://sketchfab.com/3d-models/nintendo-switch-oled-aa2c7d815a104accae7709eb39ac2184, CC BY 4.0. Changed: only the controllers, recoloured, markings removed, reduced and converted to a real-time model, rendered to images.\n\n"
             + "Licence: https://creativecommons.org/licenses/by/4.0/. These are independent fan models, not official Sony, Microsoft or Nintendo material, and do not imply endorsement.\n\n"
             + "Inter typeface by Rasmus Andersson, SIL Open Font License 1.1.\n\n"
+            + AIRPLAY_SOURCE + "\n\n"
             + "The home screen preview in Lumen Setup shows stills from the Blender open movies Cosmos Laundromat, Spring, "
             + "Big Buck Bunny, Sintel, Caminandes, Sprite Fright, Tears of Steel and Coffee Run, (c) Blender Foundation, "
             + "https://www.blender.org, CC BY 3.0 and CC BY 4.0.";
-
-    /** The Licences dialog over {@code a} (Projector settings, Help on the Z9X, HB and Play 6). */
-    public static void show(Activity a) {
-        open(a);
-    }
-
-    /** Shows the Licences dialog over {@code a} and returns it, or null when it could not be shown. */
-    public static AlertDialog open(Activity a) {
-        try {
-            TextView t = new TextView(a);
-            int pad = Math.round(24 * a.getResources().getDisplayMetrics().density);
-            t.setPadding(pad, pad / 2, pad, pad / 2);
-            t.setTextSize(15);
-            t.setTypeface(Typeface.DEFAULT);
-            t.setText(a.getString(R.string.lumen_gm_credits_intro) + "\n\n" + CREDITS);
-            t.setFocusable(true);
-            ScrollView sv = new ScrollView(a);
-            sv.addView(t);
-            return new AlertDialog.Builder(a, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle(R.string.lumen_gm_licences)
-                    .setView(sv)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show();
-        } catch (Throwable e) {
-            Log.w(GameMenu.TAG, "licences: " + e);
-            return null;
-        }
-    }
 }

@@ -1,12 +1,11 @@
 apps/core/lumen-gmpf/src/org/lumen/projector/hal/GmpfBase.java	EDID_14 = 0, EDID_20 = 1, EDID_AUTO = 2, EDID_21 = 3;
 apps/core/lumen-gmpf/src/org/lumen/projector/hal/GmpfBase.java	public int getSignalStatus() throws RemoteException { return wire.retI32(key(GET_SIGNAL_STATUS)); }
-apps/ProjectorBase/src/org/lumen/projector/hal/Z9xCodes.java	.put(GET_SIGNAL_STATUS, HalCodes.GMPF_GET_SIGNAL_STATUS)
-apps/HbProjector/src/org/lumen/projector/hal/HbCodes.java	.put(GET_SIGNAL_STATUS, GmpfCall.GET_SIGNAL_STATUS)
-apps/ProjectorBase/src/org/lumen/projector/game/HdmiEventReceiver.java	org.lumen.hdmi.HdmiRelink.onSessionEvent(intent.getIntExtra("port", -1),
-apps/ProjectorBase/src/org/lumen/projector/App.java	org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost());
-apps/HbProjector/src/org/lumen/projector/App.java	org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost());
-apps/X50Projector/src/org/lumen/x50/projector/App.java	org.lumen.hdmi.HdmiRelink.install(this, new X50RelinkHost());
-apps/X50Projector/src/org/lumen/x50/projector/HdmiSource.java	MAIN.post(() -> org.lumen.hdmi.HdmiRelink.onShownPort(port));
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Z9xCodes.java	.put(GET_SIGNAL_STATUS, HalCodes.GMPF_GET_SIGNAL_STATUS)
+apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/hal/HbCodes.java	.put(GET_SIGNAL_STATUS, GmpfCall.GET_SIGNAL_STATUS)
+apps/LumenProjector/core/src/org/lumen/projector/game/HdmiEvents.java	org.lumen.hdmi.HdmiRelink.onSessionEvent(intent.getIntExtra("port", -1),
+apps/LumenProjector/core/src/org/lumen/projector/App.java	org.lumen.hdmi.HdmiRelink.install(this, new org.lumen.projector.source.GmpfRelinkHost());
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/App.java	org.lumen.hdmi.HdmiRelink.install(this, new X50RelinkHost());
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/HdmiSource.java	MAIN.post(() -> org.lumen.hdmi.HdmiRelink.onShownPort(port));
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	if (!HdmiLink.relinkNow(noPictureMs, onMs, awake(), streaming, sSessionRelinks, sBootRelinks)) {
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	sSourceOnSince = HdmiLink.since(sSourceOnSince, on, now);
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	if (!prefs().edit().putBoolean(K_PENDING, true).putInt(K_USER, user).commit()) {
@@ -16,38 +15,77 @@ apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	to = HdmiLink.flipTo(use
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	return !sHost.standby();
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	if (port > 0) onSessionEvent(port, true);
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	else if (sPort != 0) onSessionEvent(sPort, false);
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int signalStatus() throws Exception { return g.getSignalStatus(); }
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int[] edidVersions() { return g.edidVersions(); }
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int edidFirst() { return GmpfBase.EDID_14; }
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int edidSecond() { return GmpfBase.EDID_20; }
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	Hal.addConnectedListener(() -> Hal.run((g, g2) -> j.run(vendor(g))));
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public boolean standby() { return StandbyController.isActive(); }
-apps/ProjectorBase/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int[] shownPorts(Context ctx) { return TifHdmiState.readPorts(ctx); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int signalStatus() throws Exception { return g.signalStatus(); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	static final int[] EDID_VERSIONS = HdmiHal.EDID.wires();
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int edidFirst() { return HdmiHal.EDID.wire(EdidModes.COMPATIBLE); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int edidSecond() { return HdmiHal.EDID.wire(EdidModes.ENHANCED); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public void onConnect(Job j) { run(j); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int[] shownPorts(Context ctx) { return HdmiSource.readPorts(ctx); }
-apps/X50Projector/src/org/lumen/x50/projector/X50RelinkHost.java	MAIN.post(() -> onMain.accept(out));
-apps/X50Projector/src/org/lumen/x50/projector/Gmpf.java	return call(GmpfCall.GET_SIGNAL_STATUS, null, Parcel::readInt);
-apps/X50Projector/src/org/lumen/x50/projector/GmpfCall.java	GET_SIGNAL_STATUS(GmpfIface.TV, HalCodes.TV_GET_SIGNAL_STATUS, "getSignalStatus", "-"),
-apps/X50Projector/src/org/lumen/x50/projector/HdmiHal.java	EdidModes EDID = EdidModes.of(EdidModes.FEATURE_HDMI_20);
-apps/X50Projector/src/org/lumen/x50/projector/HdmiHal.java	!int EDID_20 = 2;
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int signalStatus() throws Exception { return g.getSignalStatus(); }
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int[] edidVersions() { return g.edidVersions(); }
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int edidFirst() { return GmpfBase.EDID_14; }
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int edidSecond() { return GmpfBase.EDID_20; }
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	Hal.addConnectedListener(() -> Hal.run((g, g2) -> j.run(vendor(g))));
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public boolean standby() { return StandbyController.isActive(); }
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	@Override public int[] shownPorts(Context ctx) { return TifHdmiState.readPorts(ctx); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int signalStatus() throws Exception { return g.signalStatus(); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	static final int[] EDID_VERSIONS = HdmiHal.EDID.wires();
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int edidFirst() { return HdmiHal.EDID.wire(EdidModes.COMPATIBLE); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int edidSecond() { return HdmiHal.EDID.wire(EdidModes.ENHANCED); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public void onConnect(Job j) { run(j); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	@Override public int[] shownPorts(Context ctx) { return HdmiSource.readPorts(ctx); }
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	MAIN.post(() -> onMain.accept(out));
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/Gmpf.java	return call(GmpfCall.GET_SIGNAL_STATUS, null, Parcel::readInt);
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/GmpfCall.java	GET_SIGNAL_STATUS(GmpfIface.TV, HalCodes.TV_GET_SIGNAL_STATUS, "getSignalStatus", "-"),
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HdmiHal.java	EdidModes EDID = EdidModes.of(EdidModes.FEATURE_HDMI_20);
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HdmiHal.java	!int EDID_20 = 2;
 devices/g0111/hal/codes.tsv	GmTvManager	TV_GET_SIGNAL_STATUS	106	getSignalStatus	int()	get	X50Projector
-apps/ProjectorBase/src/org/lumen/projector/game/GameProfile.java	        if (!gameReady(signalStatus, signal)) {
-apps/ProjectorBase/src/org/lumen/projector/game/GameProfile.java	        if (!gameReady(st, now)) {
-apps/ProjectorBase/src/org/lumen/projector/game/GameProfile.java	return HdmiLink.gameReady(status, s != null && s.plausible(), s != null && s.hdmiMode);
-apps/ProjectorBase/src/org/lumen/projector/game/GameProfile.java	"session".equals(o.refusedKind) || "signal".equals(o.refusedKind)) {
-apps/X50Projector/src/org/lumen/x50/projector/HalCodes.java	static final int TV_GET_SIGNAL_STATUS = 106;
-apps/X50Projector/src/org/lumen/x50/projector/Gmpf.java	if (!HdmiHal.EDID.writable(v)) {
-apps/X50Projector/src/org/lumen/x50/projector/X50HdmiRows.java	return check(HdmiSequences.edidSet(hdmi, row) == HdmiHal.EDID.wire(row));
-apps/X50Projector/src/org/lumen/x50/projector/X50HdmiRows.java	HdmiHal.EDID.row(hdmi.edidVersion()) == EdidModes.ENHANCED ? EDID_20 : EDID_14
-apps/X50Projector/src/org/lumen/x50/projector/HdmiSequences.java	if (HdmiHal.EDID.needsWrite(h.edidVersion(), row)) h.edidVersionSet(HdmiHal.EDID.wire(row));
-apps/X50Projector/src/org/lumen/x50/projector/Menu.java	return HdmiHal.EDID.row(read) == EdidModes.ENHANCED ? "edid_20" : "edid_14";
-apps/X50Projector/src/org/lumen/x50/projector/AudioRules.java	!edidShown
+apps/LumenProjector/core/src/org/lumen/projector/game/GameProfile.java	        if (!gameReady(signalStatus, signal)) {
+apps/LumenProjector/core/src/org/lumen/projector/game/GameProfile.java	        if (!gameReady(st, now)) {
+apps/LumenProjector/core/src/org/lumen/projector/game/GameProfile.java	return HdmiLink.gameReady(status, s != null && s.plausible(), s != null && s.hdmiMode);
+apps/LumenProjector/core/src/org/lumen/projector/game/GameProfile.java	"session".equals(o.refusedKind) || "signal".equals(o.refusedKind)) {
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HalCodes.java	static final int TV_GET_SIGNAL_STATUS = 106;
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/Gmpf.java	if (!HdmiHal.EDID.writable(v)) {
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50HdmiRows.java	return check(HdmiSequences.edidSet(hdmi, row) == HdmiHal.EDID.wire(row));
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50HdmiRows.java	HdmiHal.EDID.row(hdmi.edidVersion()) == EdidModes.ENHANCED ? EDID_20 : EDID_14
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/HdmiSequences.java	if (HdmiHal.EDID.needsWrite(h.edidVersion(), row)) h.edidVersionSet(HdmiHal.EDID.wire(row));
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/Menu.java	return HdmiHal.EDID.row(read) == EdidModes.ENHANCED ? "edid_20" : "edid_14";
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioRules.java	!edidShown
 apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	if (!HdmiLink.restorable(user, g.edidVersions())) {
-apps/ProjectorBase/src/org/lumen/projector/App.java	org.lumen.hdmi.HdmiAudio.install(this, j -> Hal.run((g, g2) -> j.run(g::getCurrentInputSource)));
-apps/ProjectorBase/src/org/lumen/projector/App.java	AiScenePolicy.addTvEventSink(org.lumen.hdmi.HdmiAudio::onTvEvent);
-apps/ProjectorBase/src/org/lumen/projector/AiScenePolicy.java	for (TvEventSink s : EXTRA) s.onTvEvent(type, msg);
-apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiAudio.java	h.run(source -> HdmiAudioKeys.onTvEvent(type, msg, source, OUT));
+apps/LumenProjector/core/src/org/lumen/projector/App.java	org.lumen.hdmi.HdmiAudio.install(this, () -> Hal.readNow((g, g2) -> g.getCurrentInputSource()));
+apps/LumenProjector/core/src/org/lumen/projector/App.java	!Family.HDMI_AUDIO
+apps/LumenProjector/core/src/org/lumen/projector/Hal.java	return q.run(c.client(), c.client2());
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/App.java	org.lumen.hdmi.HdmiAudio.install(this, X50RelinkHost.audioSource());
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	return new Gmpf()::currentInputSource;
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50AiPq.java	org.lumen.hdmi.HdmiAudio.onTvEvent(type, msg);
+apps/LumenProjector/core/src/org/lumen/projector/App.java	AiScenePolicy.addTvEventSink(org.lumen.hdmi.HdmiAudio::onTvEvent);
+apps/LumenProjector/core/src/org/lumen/projector/AiScenePolicy.java	for (TvEventSink s : EXTRA) s.onTvEvent(type, msg);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiAudio.java	lane.post(() -> HdmiAudioKeys.onTvEvent(type, msg, sSource, OUT));
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	static final long TICK_MS = 2_000;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	if (!HdmiLink.readDue(sKnown)) return;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	sKnown = status;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	final int s = HdmiLink.afterEvent(HdmiLink.UNKNOWN, type, msg);
+apps/LumenProjector/core/src/org/lumen/projector/App.java	AiScenePolicy.addTvEventSink(org.lumen.hdmi.HdmiRelink::onTvEvent);
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50AiPq.java	org.lumen.hdmi.HdmiRelink.onTvEvent(type, msg);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	SourceFollow.onSession(sApp, port, active);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_HDMI, 0);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	m.getTvSendStandbyOnSleep() == HdmiControlManager.TV_SEND_STANDBY_ON_SLEEP_ENABLED
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	if (!RULE.read(powers, follow, HdmiRelink.awake())) return;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	if (!SourceOff.source(d.getDeviceType())) continue;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/HdmiRelink.java	SourceFollow.onSession(app, ports[0], true);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java	tvTakesSource(ctx);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java	if (!SleepCec.tvTakesSource(cecOn, shown)) return;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java	tv.selectDevice(HdmiDeviceInfo.ADDR_INTERNAL, Runnable::run,
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java	boolean shown = SourceFollow.shownPort() > 0 || sShownAtStandby;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	if (HdmiRelink.inactiveSourceSleep()) sMain.postDelayed(ITICK, InactiveSleep.READ_MS);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	if (port == 0 || !HdmiRelink.inactiveSourceSleep()) return;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	final String dump = on && awake ? hdmiDump() : null;
+apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java	org.lumen.hdmi.SleepSource.standbyBegins();
+apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java	org.lumen.hdmi.SleepSource.standbyEnds();
+apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java	org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);
+apps/LumenProjector/core/src/org/lumen/projector/power/PowerKey.java	org.lumen.hdmi.SleepSource.goToSleep(app, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);
+apps/LumenProjector/core/src/org/lumen/projector/cec/CecPolicy.java	org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);
+apps/LumenProjector/core/src/org/lumen/projector/dream/IdleOwner.java	org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_TIMEOUT, 0);
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/Standby.java	org.lumen.hdmi.SleepSource.tvTakesSource(sApp);
+apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	return org.lumen.projector.Family.INACTIVE_SOURCE_SLEEP;
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	return org.lumen.projector.Family.INACTIVE_SOURCE_SLEEP;
+apps/LumenProjector/core/src/org/lumen/projector/cec/EarcLink.java	switch (EarcRules.step(status, sOurs, present, interactive())) {
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiSession.java	long delay = ExitSelect.delayMs(interactive, Prefs.get(mContext, Prefs.CEC_CONTROL),
+apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
+apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
+apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;

@@ -5,13 +5,13 @@
      the Z9X app's pro_* and panel_reset texts with their translations, the level words (noise reduction, local
      contrast, senior colour) the HB app's pro_weak_hb / pro_medium_hb / pro_strong_hb -->
 <resources>
-    <string name="lumen_m_gamma">Gamma</string>
-    <string name="lumen_m_gamma_manual">Manual</string>
-    <string name="lumen_m_gamma_index">Gamma value</string>
-    <string name="lumen_m_noise">Noise reduction</string>
-    <string name="lumen_m_local_contrast">Local contrast</string>
-    <string name="lumen_m_color_opt">Color optimization</string>
-    <string name="lumen_m_hdr_mapping">HDR dynamic tone mapping</string>
+    <string name="lumen_m_gamma">@string/lumen_gamma</string>
+    <string name="lumen_m_gamma_manual">@string/lumen_manual</string>
+    <string name="lumen_m_gamma_index">@string/lumen_gamma_value</string>
+    <string name="lumen_m_noise">@string/lumen_noise_reduction</string>
+    <string name="lumen_m_local_contrast">@string/lumen_local_contrast</string>
+    <string name="lumen_m_color_opt">@string/lumen_color_optimization</string>
+    <string name="lumen_m_hdr_mapping">@string/lumen_hdr_dynamic_tone_mapping</string>
     <string name="lumen_m_ct_balanced">Balanced</string>
     <string name="lumen_m_elder_color">Colors for older eyes</string>
     <string name="lumen_m_gamma_refused">Gamma value works only with the manual gamma</string>
@@ -28,9 +28,9 @@
     <string name="lumen_m_gamma_2_4" translatable="false">2.4</string>
     <string name="lumen_m_gamma_2_5" translatable="false">2.5</string>
     <string name="lumen_m_gamma_2_6" translatable="false">2.6</string>
-    <string name="lumen_m_reset">Reset</string>
+    <string name="lumen_m_reset">@string/lumen_reset</string>
     <string name="lumen_m_picture_reset_all_msg">The settings of every picture mode go back to their defaults. Continue?</string>
-    <string name="lumen_m_level_low">Low</string>
-    <string name="lumen_m_level_medium">Mid</string>
-    <string name="lumen_m_level_high">High</string>
+    <string name="lumen_m_level_low">@string/lumen_low_2</string>
+    <string name="lumen_m_level_medium">@string/lumen_mid</string>
+    <string name="lumen_m_level_high">@string/lumen_high_2</string>
 </resources>

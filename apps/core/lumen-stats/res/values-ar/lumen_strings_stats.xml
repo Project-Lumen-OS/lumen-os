@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
-     The statistics switch and its disclosure (apps/core/lumen-stats), the texts of apps/ProjectorBase res/values-ar/strings_stats.xml
-     under the module prefix. -->
-<resources>
-    <string name="lumen_stats_row">إرسال إحصاءات مجهولة الهوية</string>
-    <string name="lumen_stats_note">عند كل تشغيل ومرة واحدة يوميًا: الطراز والإصدار والبنية ومعلومات التحديث والبلد ورقم تثبيت عشوائي والرقم التسلسلي (يحتفظ الخادم بقيمته المُجزّأة فقط). لا يتم حفظ عنوان IP الخاص بك.</string>
-</resources>

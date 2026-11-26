@@ -1,0 +1,5 @@
+# The native receiver library of the released AirPlay pin (overlay/apps_v1/Z9xAirPlay.apk be75695e..., built by
+# jni/build_native.sh 2026-10-29, jni/BUILDINFO.txt). tools/libs_from_pin.sh takes lib/ from that APK only when every
+# file matches; a rebuilt library gets new lines here in the same change as its new pin.
+ace70183f071d2a1ac613d93e63620e7cb05f1556fe2a7c9c925252ebc86328d  lib/arm64-v8a/libz9xairplay.so
+3f12aa69fc169977eb1cc2da3377a08c34e6729083c17572811eab0beda6262f  lib/armeabi-v7a/libz9xairplay.so

@@ -11,6 +11,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.Process;
+import android.os.UserHandle;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -18,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Gives trusted user apps all files access (FilesAccessPolicy) on install, on update and once per start of the
- * projector app process. Runs in the persistent projector app (platform signed or android.uid.system), which holds
- * MANAGE_APP_OPS_MODES.
+ * Gives trusted apps their app ops (FilesAccessPolicy: all files access, drawing over other apps) and media read
+ * permissions on install, on update and once per start of the projector app process. Runs in the persistent projector
+ * app (platform signed or android.uid.system), which holds MANAGE_APP_OPS_MODES and GRANT_RUNTIME_PERMISSIONS.
  */
 public final class FilesAccess {
     private FilesAccess() {}
@@ -60,7 +62,7 @@ public final class FilesAccess {
         }, "lumen-files-access").start();
     }
 
-    /** Grants all files access to pkg when the policy says so. Never throws. */
+    /** Grants each app op of FilesAccessPolicy.grants() to pkg when the policy says so. Never throws. */
     static void check(Context app, String pkg) {
         try {
             PackageInfo pi;
@@ -75,37 +77,71 @@ public final class FilesAccess {
             if (pi.signingInfo != null) {
                 for (Signature s : pi.signingInfo.getApkContentsSigners()) signers.add(FilesAccessPolicy.sha256(s.toByteArray()));
             }
-            boolean requested = pi.requestedPermissions != null
-                && Arrays.asList(pi.requestedPermissions).contains(FilesAccessPolicy.PERMISSION);
+            List<String> asked = pi.requestedPermissions != null ? Arrays.asList(pi.requestedPermissions) : new ArrayList<>();
             int uid = pi.applicationInfo.uid;
             AppOpsManager ops = app.getSystemService(AppOpsManager.class);
-            boolean allowed = ops.unsafeCheckOpNoThrow(FilesAccessPolicy.OP, uid, pkg) == AppOpsManager.MODE_ALLOWED;
             SharedPreferences prefs = app.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-            long handled = prefs.getLong(pkg, -1);
-            if (!FilesAccessPolicy.shouldGrant(pkg, signers, requested, allowed, pi.lastUpdateTime, handled)) {
-                if (FilesAccessPolicy.signedByPin(pkg, signers) && allowed) prefs.edit().putLong(pkg, pi.lastUpdateTime).apply();
-                return;
+            for (String[] g : FilesAccessPolicy.grants()) {
+                String op = g[1], key = FilesAccessPolicy.handledKey(pkg, op);
+                boolean requested = asked.contains(g[0]);
+                boolean allowed = ops.unsafeCheckOpNoThrow(op, uid, pkg) == AppOpsManager.MODE_ALLOWED;
+                long handled = prefs.getLong(key, -1);
+                if (!FilesAccessPolicy.shouldGrant(pkg, signers, requested, allowed, pi.lastUpdateTime, handled)) {
+                    if (FilesAccessPolicy.signedByPin(pkg, signers) && allowed) prefs.edit().putLong(key, pi.lastUpdateTime).apply();
+                    continue;
+                }
+                boolean done = setAllowed(ops, op, uid, pkg);
+                if (done) prefs.edit().putLong(key, pi.lastUpdateTime).apply();
+                Log.i(TAG, pkg + ": " + op + (done ? " granted" : " refused by the system"));
             }
-            boolean done = setAllowed(ops, uid, pkg);
-            if (done) prefs.edit().putLong(pkg, pi.lastUpdateTime).apply();
-            Log.i(TAG, pkg + ": all files access " + (done ? "granted" : "refused by the system"));
+            PackageManager pm = app.getPackageManager();
+            UserHandle user = Process.myUserHandle();
+            for (String perm : FilesAccessPolicy.runtimeGrants()) {
+                String key = FilesAccessPolicy.handledKey(pkg, perm);
+                boolean requested = asked.contains(perm);
+                boolean granted = pm.checkPermission(perm, pkg) == PackageManager.PERMISSION_GRANTED;
+                boolean fixed = requested && (pm.getPermissionFlags(perm, pkg, user) & FIXED) != 0;
+                long handled = prefs.getLong(key, -1);
+                if (!FilesAccessPolicy.shouldGrantRuntime(pkg, signers, requested, granted, fixed, pi.lastUpdateTime, handled)) {
+                    if (FilesAccessPolicy.signedByPin(pkg, signers) && granted) prefs.edit().putLong(key, pi.lastUpdateTime).apply();
+                    continue;
+                }
+                boolean done = grant(pm, pkg, perm, user);
+                if (done) prefs.edit().putLong(key, pi.lastUpdateTime).apply();
+                Log.i(TAG, pkg + ": " + perm + (done ? " granted" : " refused by the system"));
+            }
         } catch (RuntimeException e) {
             Log.w(TAG, pkg + ": " + e);
         }
     }
 
+    /** A choice the grant must never override: the user's "don't ask again", a policy, the system. */
+    private static final int FIXED = PackageManager.FLAG_PERMISSION_USER_FIXED | PackageManager.FLAG_PERMISSION_POLICY_FIXED
+            | PackageManager.FLAG_PERMISSION_SYSTEM_FIXED;
+
+    /** PackageManager.grantRuntimePermission (system API, GRANT_RUNTIME_PERMISSIONS), then read back. */
+    private static boolean grant(PackageManager pm, String pkg, String perm, UserHandle user) {
+        try {
+            pm.grantRuntimePermission(pkg, perm, user);
+            return pm.checkPermission(perm, pkg) == PackageManager.PERMISSION_GRANTED;
+        } catch (RuntimeException e) {
+            Log.w(TAG, "grantRuntimePermission: " + e);
+            return false;
+        }
+    }
+
     /** AppOpsManager.setUidMode(String, int, int), else setMode(String, int, String, int): system APIs, compiled against
      *  the framework header jar (apps/sdk/framework-full-headers.jar), allowed for the platform signed projector app. */
-    private static boolean setAllowed(AppOpsManager ops, int uid, String pkg) {
+    private static boolean setAllowed(AppOpsManager ops, String op, int uid, String pkg) {
         try {
-            ops.setUidMode(FilesAccessPolicy.OP, uid, AppOpsManager.MODE_ALLOWED);
-            return ops.unsafeCheckOpNoThrow(FilesAccessPolicy.OP, uid, pkg) == AppOpsManager.MODE_ALLOWED;
+            ops.setUidMode(op, uid, AppOpsManager.MODE_ALLOWED);
+            return ops.unsafeCheckOpNoThrow(op, uid, pkg) == AppOpsManager.MODE_ALLOWED;
         } catch (RuntimeException e) {
             Log.w(TAG, "setUidMode: " + e);
         }
         try {
-            ops.setMode(FilesAccessPolicy.OP, uid, pkg, AppOpsManager.MODE_ALLOWED);
-            return ops.unsafeCheckOpNoThrow(FilesAccessPolicy.OP, uid, pkg) == AppOpsManager.MODE_ALLOWED;
+            ops.setMode(op, uid, pkg, AppOpsManager.MODE_ALLOWED);
+            return ops.unsafeCheckOpNoThrow(op, uid, pkg) == AppOpsManager.MODE_ALLOWED;
         } catch (RuntimeException e) {
             Log.w(TAG, "setMode: " + e);
             return false;

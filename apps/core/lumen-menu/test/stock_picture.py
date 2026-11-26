@@ -7,7 +7,8 @@ test/stock/picture_image.json holds the stock image page of each X50 family mode
 model's own newsettings tree, with its picture settings sub page image_mode_setting). This derives the Lumen order from
 it (rows, groups, headers and the picture settings page) and checks that sections.picture of each profile with a
 picture.settings page is exactly that: the trees its "stock" names (settings_tree_product_<tree>) all give the same
-order, and the profile's groups equal it, rows it lacks included (MenuSpec skips them). It also checks the stock facts
+order, and the profile's groups equal it, rows it lacks included (MenuSpec skips them), rows it has off with a reason
+that its tree has not left out (a family order shared by a model whose tree lacks the row). It also checks the stock facts
 the profile's rows carry: the dynamic black level tuning's range is the stock slider's (-40..40) and is on a model only
 when its tree has image_mode_vibrant_correct; the Boost step only on a model with it (support_brightness_boost 2, the
 X50 and TITAN trees, not the RS30's).
@@ -19,10 +20,15 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
+
 # stock node -> what Lumen shows for it: a row (one or more features: the four picture sliders are one Lumen row with
 # four sliders), a header, the picture settings page (its rows open behind one Lumen row), or nothing (the row lives in
 # another Lumen section, the page title says it, or Lumen has no such row).
 ROW, HEADER, PAGE, ELSEWHERE = "row", "header", "page", "elsewhere"
+# the trees whose build has the Boost step Lumen offers (feature.xml support_brightness_boost 2, X50 and TITAN)
+BOOST_TREES = {"dianapro", "dianamax", "dianahy", "dianahypro", "dianahymax"}
 NODES = {
     # the image page
     "projector_brightness_title": (HEADER, "projector_brightness"),
@@ -30,6 +36,8 @@ NODES = {
     "brightness_adjustment": (ROW, ["lamp"]),                     # the BrightnessCell slider; Boost = its step 11
     "picture_iris_ring_adjustment_diana": (ROW, ["picture.iris"]),
     "picture_iris_ring_adjustment_athena3ultramax": (ROW, ["picture.iris"]),
+    "picture_iris_ring_adjustment_athena3": (ROW, ["picture.iris"]),          # the single iris (RS30 Ultra G0170)
+    "picture_iris_ring_adjustment": (ROW, ["picture.iris"]),                # AURA 3 Max (oscar)
     "image_title_v4": (HEADER, "image"),
     "image_mode_4_state": (ROW, ["picture.mode", "picture.custom_new"]),   # the list ends with the "Custom" entry
     "image_mode_setting": (PAGE, "picture.settings"),
@@ -46,6 +54,8 @@ NODES = {
     "image_mode_custom_base_diana": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
     "image_mode_custom_base_dianahy": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
     "image_mode_custom_base_athena3": (ROW, ["picture.custom_base"]),     # user picture modes: the mode it is based on
+    "image_mode_custom_base_bollywood": (ROW, ["picture.custom_base"]),
+    "image_mode_custom_base_oscar": (ROW, ["picture.custom_base"]),
     "small_title_basic": (HEADER, "basic"),
     "image_set_mode_auto_switch": (ROW, ["picture.auto_switch"]),
     "image_mode_bright": (ROW, ["picture.pq"]),
@@ -53,9 +63,14 @@ NODES = {
     "image_mode_saturation": (ROW, ["picture.pq"]),
     "image_mode_sharpness": (ROW, ["picture.pq"]),
     "image_mode_motion_compensation_v4": (ROW, ["picture.memc"]),
+    "image_mode_motion_compensation": (ROW, ["picture.memc"]),          # without the original frame (G0170)
     "color_title_text_title": (HEADER, "colour"),
     "image_mode_4_color_temp_diana": (ROW, ["picture.color_temp"]),
     "image_mode_4_color_temp_athena35": (ROW, ["picture.color_temp"]),
+    "image_mode_4_color_temp_athena3": (ROW, ["picture.color_temp"]),     # 17 named warm (G0170)
+    "image_mode_4_color_temp_bollywood": (ROW, ["picture.color_temp"]),   # MIRA 4K, 4K Pro
+    "image_mode_4_color_temp_oscar": (ROW, ["picture.color_temp"]),       # AURA 3 Max: 17 named fresh
+    "image_mode_set_dynamic_state": (ELSEWHERE, "no Lumen row: the AURA 3 four step dynamic black (open)"),
     "image_mode_prof_setting_whiteBalance": (ROW, ["picture.wb"]),          # MenuSpec's white balance page
     "picture_gamut_diana": (ROW, ["picture.gamut"]),
     "picture_gamut_athenaultra": (ROW, ["picture.gamut"]),
@@ -68,6 +83,8 @@ NODES = {
     "image_mode_part_constrast_ratio": (ROW, ["picture.local_contrast"]),
     "image_mode_custom_dynamic_contrast": (ROW, ["picture.dynamic_contrast"]),
     "image_ai_contrast": (ROW, ["picture.ai_contrast"]),
+    # v1.3.38 only (Lumen offers it on that firmware, X50DynamicBlackRows): MenuSpec's dynamic black page
+    "dynamic_black_setting": (ROW, ["picture.db_page"]),
     "image_dynamic_black_bit_enhancement": (ROW, ["picture.dynamic_black"]),
     "image_mode_vibrant_correct": (ROW, ["picture.black_tuning"]),
     "image_clarity_text": (HEADER, "clarity"),
@@ -79,6 +96,7 @@ NODES = {
 }
 # Lumen rows the stock image page does not hold: each stands right after the row it belongs with
 #  - picture.dv_screen: stock picture_dolby_curtain, the last node inside the picture mode list (image_mode_4_state)
+#    (its Dolby Vision Bright and Dark are options of picture.mode itself, offered only with Dolby Vision)
 LUMEN_AFTER = [("picture.dv_screen", "picture.mode")]
 # and the group Lumen keeps at the end of Picture: the HDMI signal rows and the aspect ratio (stock: the HDMI input
 # page and the signal source settings, not the image page)
@@ -135,6 +153,41 @@ def has_node(nodes, want):
     return False
 
 
+def rows_of(groups):
+    """Every row name of groups, the rows of a page inside them included."""
+    out = set()
+    for g in groups:
+        for r in g["rows"]:
+            if isinstance(r, dict):
+                out |= rows_of(r["groups"])
+            else:
+                out.add(r)
+    return out
+
+
+def off_rows(path, feats):
+    """The rows a layer of the profile at PATH switches off with a reason (\"off\": {row: why}) and that stay off."""
+    out = set()
+    for _, layer in menu_layers.chain(path):
+        out |= {r for r, why in layer.get("off", {}).items() if why}
+    return out - set(feats)
+
+
+def without_unshown(groups, off, stock_rows):
+    """groups without the rows the profile has off with a reason AND the stock page has not (a row the model's own
+    tree lacks, \"off\" in its family layer): what the model shows is then compared with its stock page."""
+    out = []
+    for g in groups:
+        rows = []
+        for r in g["rows"]:
+            if isinstance(r, dict):
+                rows.append(dict(r, groups=without_unshown(r["groups"], off, stock_rows)))
+            elif not (r in off and r not in stock_rows):
+                rows.append(r)
+        out.append(dict(g, rows=rows))
+    return out
+
+
 def as_json(groups):
     return ",\n".join("        " + json.dumps(g, ensure_ascii=False) for g in groups)
 
@@ -149,7 +202,7 @@ def main(argv):
     bad = n = 0
     for p in sorted(glob.glob(os.path.join(root, "devices/*/menu.json"))):
         dev = os.path.basename(os.path.dirname(p))
-        prof = json.load(open(p, encoding="utf-8"))
+        prof = menu_layers.effective(p)
         feats = prof.get("features", {})
         if "picture.settings" not in feats:
             continue
@@ -167,20 +220,23 @@ def main(argv):
         same = True
         for t in names:
             want = derive_groups(t, trees[t])
-            if order["groups"] != want:
+            have = without_unshown(order["groups"], off_rows(p, feats), rows_of(want))
+            if have != want:
                 print("FAIL stock picture %s: sections.picture is not the %s image page\n  profile %s\n  stock   %s"
-                      % (dev, t, json.dumps(order["groups"]), json.dumps(want)))
+                      % (dev, t, json.dumps(have), json.dumps(want)))
                 same = False
             tuning = has_node(trees[t], "image_mode_vibrant_correct")
-            if ("picture.black_tuning" in feats) != tuning:
+            # a tree's tuning a layer switches off with its reason (the AURA 3 tuning hangs on a four step dynamic black)
+            if ("picture.black_tuning" in feats) != tuning and "picture.black_tuning" not in off_rows(p, feats):
                 print("FAIL stock picture %s: picture.black_tuning %s, the %s tree %s image_mode_vibrant_correct"
                       % (dev, "present" if "picture.black_tuning" in feats else "absent", t, "has" if tuning else "lacks"))
                 same = False
-            elif tuning and {k: feats["picture.black_tuning"].get(k) for k in BLACK_TUNING} != BLACK_TUNING:
+            elif tuning and "picture.black_tuning" in feats and {k: feats["picture.black_tuning"].get(k) for k in BLACK_TUNING} != BLACK_TUNING:
                 print("FAIL stock picture %s: picture.black_tuning %s, stock %s" % (dev, feats["picture.black_tuning"], BLACK_TUNING))
                 same = False
-            # the Boost step: support_brightness_boost 2 on the dianapro / dianamax / dianahy builds, 0 on athena35ultramax
-            boost = not t.startswith("athena")
+            # the Boost step: support_brightness_boost 2 on the dianapro / dianamax / dianahy builds, 0 on athena35ultramax and
+            # the MIRA line (bollywood, bollywoodpro, oscar); the RS30 old line's 2 is open (StockLight, no Boost row)
+            boost = t in BOOST_TREES
             if ("boost" in feats) != boost:
                 print("FAIL stock picture %s: boost %s, the %s build %s the Boost step"
                       % (dev, "present" if "boost" in feats else "absent", t, "has" if boost else "lacks"))

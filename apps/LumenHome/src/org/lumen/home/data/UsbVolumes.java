@@ -14,11 +14,12 @@ import java.util.List;
 /** Mounted USB drives: name and size ("Kingston, 29 ГБ"), for the source menu and the calm screen's inputs. */
 public final class UsbVolumes {
     public static final class Drive {
-        public final String name;
+        public final String name, path;
         public final long bytes;
 
-        Drive(String name, long bytes) {
+        Drive(String name, String path, long bytes) {
             this.name = name;
+            this.path = path;
             this.bytes = bytes;
         }
     }
@@ -41,7 +42,7 @@ public final class UsbVolumes {
                     }
                 }
                 String n = v.getDescription(c);
-                out.add(new Drive(n == null ? "" : n, bytes));
+                out.add(new Drive(n == null ? "" : n, dir == null ? "" : dir.getAbsolutePath(), bytes));
             }
         } catch (RuntimeException ignored) {
         }

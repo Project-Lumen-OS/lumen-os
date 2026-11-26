@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal312/rs20-hal312.menu.json",
+  "device": "g0078",
+  "model": "G0078",
+  "note": "RS 20 Ultra Master (G0078, Product_athenaultramax): the RS 20 profile, stock tree settings_tree_product_athenaultramax (devices/g0078/stock.tsv)."
+}

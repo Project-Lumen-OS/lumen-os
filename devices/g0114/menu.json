@@ -1,0 +1,20 @@
+{
+  "include": "devices/_family/rs30old/rs30old.menu.json",
+  "device": "g0114",
+  "model": "G0114",
+  "note": "XGIMI RS30 Ultra G0114 (G0114, Product_athena3ultra, RS30 old line): its stock settings tree (settings_tree_product_athena3ultra, newsettings 6.03.00.106 of v1.2.27) against the G0155 tree is the line's (devices/_family/rs30old/rs30old.menu.json), with the single iris f/2.0, f/3.5, f/5.0 and dynamic; facts research/stock_v1227.tsv.",
+  "features": {
+    "network.hotspot": {
+      "name": "Lumen RS30 Ultra",
+      "iface": "ap0"
+    }
+  },
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_athena3ultra projection_screen (G0114 V1.2.27 and V1.1.47, official FULL OTA)"
+    },
+    "picture": {
+      "stock": "settings_tree_product_athena3ultra image (G0114 V1.2.27 and V1.1.47, official FULL OTA)"
+    }
+  }
+}

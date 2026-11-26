@@ -10,21 +10,21 @@ import sys
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 G = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 MP = "apps/core/lumen-audio/src/org/lumen/audio/MediaPath.java"
-Z_APR = "apps/ProjectorBase/src/org/lumen/projector/audio/AudioPathReporter.java"
-H_APR = "apps/HbProjector/src/org/lumen/projector/audio/AudioPathReporter.java"
-Z_AOC = "apps/ProjectorBase/src/org/lumen/projector/audio/AudioOutputChoice.java"
-H_AOC = "apps/HbProjector/src/org/lumen/projector/audio/AudioOutputChoice.java"
-P_AOC = "apps/Play6Projector/src/org/lumen/projector/audio/AudioOutputChoice.java"
-P_BT = "apps/Play6Projector/src/org/lumen/projector/audio/BtAudio.java"
-X_RULES = "apps/X50Projector/src/org/lumen/x50/projector/AudioRules.java"
-X_OUT = "apps/X50Projector/src/org/lumen/x50/projector/AudioOutput.java"
-X_PATH = "apps/X50Projector/src/org/lumen/x50/projector/AudioPath.java"
+Z_APR = "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioPathReporter.java"
+H_APR = "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioPathReporter.java"
+Z_AOC = "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java"
+H_AOC = "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java"    # one output choice since the one projector app
+H_FAM = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java"
+P_BT = "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/audio/BtAudio.java"
+X_RULES = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioRules.java"
+X_OUT = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java"
+X_PATH = "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/AudioPath.java"
 SO = "apps/core/lumen-audio/src/org/lumen/audio/SinkOrder.java"
 HS = "apps/core/lumen-audio/src/org/lumen/audio/HalSink.java"
 AP = "apps/core/lumen-audio/src/org/lumen/audio/A2dpPick.java"
 SM = "apps/core/lumen-audio/src/org/lumen/audio/SoundbarMode.java"
-H_SAM = "apps/HbProjector/src/org/lumen/projector/cec/HbSystemAudio.java"
-H_RULES = "apps/HbProjector/src/org/lumen/projector/audio/HbAudioRules.java"
+H_SAM = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/cec/HbSystemAudio.java"
+H_RULES = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/audio/HbAudioRules.java"
 DO = "apps/core/lumen-audio/src/org/lumen/audio/DspOwned.java"
 CL = "apps/core/lumen-audio/src/org/lumen/audio/ChipLevels.java"
 CK = "apps/core/lumen-audio/src/org/lumen/audio/ChipKey.java"
@@ -34,9 +34,18 @@ PS = "apps/core/lumen-audio/src/org/lumen/audio/PathSwitch.java"
 AK = "apps/core/lumen-audio/src/org/lumen/audio/AutoPick.java"
 AO = "apps/core/lumen-audio/src/org/lumen/audio/AutoOutput.java"
 JO = "apps/core/lumen-audio/src/org/lumen/audio/JackOutput.java"
-H_JACK = "apps/HbProjector/src/org/lumen/projector/audio/HbWiredJack.java"
+H_JACK = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/audio/HbWiredJack.java"
 AUDIO_LINE = "module    lumen-audio\n"
 MUTANTS = [
+    (MP, "format at the ARC connect always (LR-5MVYWT double pcm)", "return confirmed == ARC && !sentSinceArc;", "return true;"),
+    (MP, "format at the ARC connect ignores what was sent", "return confirmed == ARC && !sentSinceArc;", "return confirmed == ARC;"),
+    (MP, "format at the ARC connect whatever the path", "return confirmed == ARC && !sentSinceArc;", "return !sentSinceArc;"),
+    ("apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java", "Z9X/HB: ARC connect sends unconditionally",
+     "if (arc && !sArcSeen && MediaPath.formatOnArc(PathSwitch.confirmed(), sFormatSinceArc)) sendFormat", "if (arc && !sArcSeen) sendFormat"),
+    ("apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java", "Z9X/HB: a send does not mark it",
+     "            sFormatSinceArc = true;\n", ""),
+    ("apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java", "X50: ARC absent keeps the mark",
+     "        if (!arc) sFormatSinceArc = false;\n", ""),
     (MP, "heard: list order (arc before bt)", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {ARC, BT, WIRED, USB, SPEAKER}"),
     (MP, "heard: speaker before arc", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {BT, WIRED, USB, SPEAKER, ARC}"),
     (MP, "heard: usb before wired", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {BT, USB, WIRED, ARC, SPEAKER}"),
@@ -47,7 +56,7 @@ MUTANTS = [
     ("devices/goat_elegant/app/HbProjector.layers", "HB recipe without the module", AUDIO_LINE, ""),
     ("devices/horse_popular/app/Z9xProjector.layers", "Z9X recipe without the module", AUDIO_LINE, ""),
     ("devices/dragon_healthy/app/Play6Projector.layers", "Play 6 recipe without the module", AUDIO_LINE, ""),
-    ("devices/g0155/app/X50Projector.layers", "RS30 recipe without the module", AUDIO_LINE, ""),
+    ("devices/_family/mt9681/app/X50Projector.layers", "RS30 recipe without the module", AUDIO_LINE, ""),
     (SO, "order: an older ticket after a newer one goes", "if (ticket <= written) return false;", "if (false) return false;"),
     (SO, "order: the same ticket twice", "if (ticket <= written) return false;", "if (ticket < written) return false;"),
     (SO, "order: the route is ignored", "if (routeNow != ROUTE_UNKNOWN && forRoute != routeNow) return false;", "if (false) return false;"),
@@ -65,12 +74,12 @@ MUTANTS = [
     (AP, "activate: never", "            for (String a : active) if (pick.equalsIgnoreCase(a)) return false;\n        }\n        return true;",
      "            for (String a : active) if (pick.equalsIgnoreCase(a)) return false;\n        }\n        return false;"),
     (H_AOC, "HB choice: no activation", "                if (BtA2dp.activateIfNeeded(pick, why)) return false;", "                if (false) return false;"),
-    (Z_AOC, "Z9X choice: stale address kept", "                String pick = BtA2dp.pick(addr);", "                String pick = null;"),
-    (P_AOC, "Play 6 choice: Bluetooth row from AudioManager only", "                Option bt = btOption(ctx, am, k == kind(ctx) ? addr : \"\");\n                if (bt != null) out.add(bt);\n                continue;\n",
+    (Z_AOC, "Z9X choice: stale address kept", "            String pick = BtA2dp.pick(addr);", "            String pick = null;"),
+    (Z_AOC, "choice: Bluetooth row from AudioManager only", "                Option bt = btOption(ctx, am, k == kind(ctx) ? addr : \"\");\n                if (bt != null) out.add(bt);\n                continue;\n",
      "                if (true) {}\n"),
     (X_OUT, "X50 choice: inactive device no row", "            if (!out.contains(AudioRules.BT) && !BtA2dp.connected().isEmpty()) out.add(AudioRules.BT);\n", ""),
-    (H_AOC, "HB choice: the route with the stored address", "        AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, HbWiredJack.SENSED) : find(am, k, addr);",
-     "        AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, HbWiredJack.SENSED) : find(am, k, prefs(app).getString(KEY_ADDR, \"\"));"),
+    (H_AOC, "HB choice: the route with the stored address", "        AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, Family.JACK_SENSED) : find(am, k, addr);",
+     "        AudioDeviceInfo d = k == AudioOutputKind.AUTO ? AutoOutput.device(am, Family.JACK_SENSED) : find(am, k, prefs(app).getString(KEY_ADDR, \"\"));"),
     (DO, "owned: AudioService adjusts nothing", "music, Runnable::run, NONE, false);", "music, Runnable::run, NONE, true);"),
     (DO, "owned: an index in the registration", "new VolumeInfo.Builder(AudioManager.STREAM_MUSIC).build()",
      "new VolumeInfo.Builder(AudioManager.STREAM_MUSIC).setVolumeIndex(0).build()"),
@@ -128,10 +137,9 @@ MUTANTS = [
     (JO, "jack: role after the first connection", "            aside(am, media, !chosen, why);\n            List<String> active = BtA2dp.active();\n            am.setWiredDeviceConnectionState(jack(), 1);\n",
      "            List<String> active = BtA2dp.active();\n            am.setWiredDeviceConnectionState(jack(), 1);\n            aside(am, media, !chosen, why);\n"),
     (JO, "jack: never settled", "            if (listed(am)) aside(am, media, !chosen, why);\n", ""),
-    (H_JACK, "HB: the jack sensed", "static final boolean SENSED = false;", "static final boolean SENSED = true;"),
-    (Z_AOC, "Z9X: Auto by AOSP again", "? AutoOutput.device(am, JACK_SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
-    (H_AOC, "HB: Auto by AOSP again", "? AutoOutput.device(am, HbWiredJack.SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
-    (P_AOC, "Play 6: Auto by AOSP again", "? AutoOutput.device(am, JACK_SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
+    (H_FAM, "HB: the jack sensed", "public static final boolean JACK_SENSED = false;", "public static final boolean JACK_SENSED = true;"),
+    (Z_AOC, "Z9X: Auto by AOSP again", "? AutoOutput.device(am, Family.JACK_SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
+    (H_AOC, "HB: Auto by AOSP again", "? AutoOutput.device(am, Family.JACK_SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
     (X_OUT, "X50: Auto by AOSP again", "? AutoOutput.device(am, JACK_SENSED) : find(am, k, addr);", "? null : find(am, k, addr);"),
     (Z_AOC, "Z9X: removals not reported", "                        AutoOutput.removed(d);\n", ""),
     (H_AOC, "HB: user choice not reported", "        AutoOutput.chose(k.name());\n        install(ctx);", "        install(ctx);"),
@@ -203,11 +211,11 @@ MUTANTS = [
     (PS, "switch: no boot step at a late install", '        if (booted()) sH.post(() -> boot("process start"));', "        if (false) sH.post(() -> {});"),
     ("devices/horse_popular/audio/chip_volume.tsv", "Z9X table: jack on the speaker key", "out     4     headphone_volume  -       4", "out     4     spk_volume        -       4"),
     ("devices/goat_elegant/audio/chip_volume.tsv", "HB table: no USB", "out     22    usb_volume        -       6     # USB headset 0x4000000\n", ""),
-    ("devices/g0155/audio/chip_volume.tsv", "RS30 table: A2DP without device ids", "out     8     bluetooth_volume  128     3", "out     8     bluetooth_volume  -       3"),
+    ("devices/_family/rs30/audio/chip_volume.tsv", "RS30 table: A2DP without device ids", "out     8     bluetooth_volume  128     3", "out     8     bluetooth_volume  -       3"),
     ("devices/dragon_healthy/audio/chip_volume.tsv", "Play 6 table: levels only before the end", "levels  after-end\n", ""),
     ("devices/dragon_healthy/audio/chip_volume.tsv", "Play 6 table: the A14 device ids", "out     8     bluetooth_volume  -       3", "out     8     bluetooth_volume  128     3"),
     ("devices/h0062/audio/chip_volume.tsv", "Titan table: no dock fixed", "fixed   31 ", "# xxxx 31 "),
-    ("devices/g0100/app/X50Projector.layers", "Ultra Max recipe without the table", "file      devices/g0100/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv\n", ""),
+    ("devices/_family/mt9681/app/X50Projector.layers", "Ultra Max recipe without the table", "file      {device}/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv\n", ""),
     ("overlay/v1/z9x_base.rc", "Z9X image: absolute volume on", "    setprop persist.bluetooth.disableabsvol true\n", "    setprop persist.bluetooth.disableabsvol false\n"),
     ("overlay/play6/play6_base.rc", "Play 6 image: absolute volume on", "    setprop persist.bluetooth.disableabsvol true\n", "    setprop persist.bluetooth.disableabsvol false\n"),
 ]

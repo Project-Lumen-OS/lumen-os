@@ -1,7 +1,7 @@
 # X50 game menu: the stock vendor calls behind each item (branch core-menu-x50game)
 
 Scope: the shared game menu (apps/core/lumen-menu GameMenu / GmModel, design A dock) on the X50 Ultra (G0111) and the
-X50 Ultra Max (G0100). Every vendor call the X50 adapter (`apps/X50Projector/src/org/lumen/projector/panel/X50GameIo.java`
+X50 Ultra Max (G0100). Every vendor call the X50 adapter (`apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/projector/panel/X50GameIo.java`
 over `org.lumen.x50.projector.GameSequences` / `GameHal`) may send is proven here from the STOCK X50 code, with file and
 line. Nothing here is live-tested on an X50.
 

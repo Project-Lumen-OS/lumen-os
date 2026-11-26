@@ -141,20 +141,6 @@
             android:exported="true"
             android:permission="org.lumen.tvinput.permission.HDMI_STATE" />
 
-        <!-- Own source list: fallback for MENU inside the viewer when org.lumen.projector is missing
-             (v6.1: MENU opens the projector's Source overlay) and the last-resort SOURCE-key
-             fallback when org.lumen.projector is missing. Started only from this app
-             (HdmiInputs.openPicker). v6.2 (v6.2 requirements 4): no launcher tile any more; inputs
-             are reached through the Source key and the quick panel's Input tile. Own task affinity
-             so that opening it does not bring a stopped viewer back to the front. -->
-        <activity
-            android:name=".InputPickerActivity"
-            android:label="@string/picker_label"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:taskAffinity="org.lumen.tvinput.picker"
-            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" />
-
         <!-- v6.2 (panel module, v6.2 requirements 4): with the picker's launcher tile gone, the HDMI
              settings are opened from org.lumen.projector's quick panel (All settings > HDMI settings).
              Exported only to platform-signed apps that hold our signature permission HDMI_STATE. -->

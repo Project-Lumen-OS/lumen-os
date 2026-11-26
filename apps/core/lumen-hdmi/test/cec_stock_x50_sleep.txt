@@ -1,0 +1,20 @@
+# Stock X50 family (OSD name XGIMI TV DOHKO) going to sleep with HDMI 2 (Box R 4K Plus) on screen and the LG bar on HDMI 1:
+# Slava's bus sniffer (ESPHome hdmi_cec), 2026-11-26, power off pressed on the projector after 11:49:09. Lines as logged.
+[11:49:09.081][D][hdmi_cec:109]: [received] 04:8F => TV to PlaybackDev1: <Give Device Power Status>[]
+[11:49:09.082][D][hdmi_cec:109]: [received] 40:90:00 => PlaybackDev1 to TV: <Report Power Status>[On]
+[11:49:09.468][D][hdmi_cec:109]: [received] 05:8F => TV to AudioSystem: <Give Device Power Status>[]
+[11:49:09.468][D][hdmi_cec:109]: [received] 50:90:00 => AudioSystem to TV: <Report Power Status>[On]
+[11:49:30.389][D][hdmi_cec:109]: [received] 0F:82:00:00 => TV to All: <Active Source>[0.0.0.0]
+[11:49:30.663][D][hdmi_cec:109]: [received] 05:C4 => TV to AudioSystem: <Request ARC Termination>[]
+[11:49:32.691][D][hdmi_cec:109]: [received] 05:C2 => TV to AudioSystem: <Report ARC Terminated>[]
+[11:49:32.696][D][hdmi_cec:109]: [received] 0F:36 => TV to All: <Standby>[]
+[11:49:32.845][D][hdmi_cec:109]: [received] 5F:72:00 => AudioSystem to All: <Set System Audio Mode>[Off]
+[11:49:33.062][D][hdmi_cec:109]: [received] 05:83 => TV to AudioSystem: <Give Physical Address>[]
+[11:49:33.062][D][hdmi_cec:109]: [received] 5F:72:00 => AudioSystem to All: <Set System Audio Mode>[Off]
+[11:49:33.063][D][hdmi_cec:109]: [received] 05:83 => TV to AudioSystem: <Give Physical Address>[]
+[11:49:33.223][D][hdmi_cec:109]: [received] 5F:84:10:00:05 => AudioSystem to All: <Report Physical Address>[1.0.0.0][Audio System]
+[11:49:33.444][D][hdmi_cec:109]: [received] 45:46 => PlaybackDev1 to AudioSystem: <Give OSD Name>[]
+[11:49:33.445][D][hdmi_cec:109]: [received] 5F:84:10:00:05 => AudioSystem to All: <Report Physical Address>[1.0.0.0][Audio System]
+[11:49:33.741][D][hdmi_cec:109]: [received] 45:46 => PlaybackDev1 to AudioSystem: <Give OSD Name>[]
+[11:49:33.742][D][hdmi_cec:109]: [received] 5F:87:00:E0:91 => AudioSystem to All: <Device Vendor ID>[LG]
+[11:49:33.822][D][hdmi_cec:109]: [received] 50:A7:00:00 => AudioSystem to TV: <?>

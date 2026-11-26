@@ -21,7 +21,9 @@ PAN = PJ + 'panel/QpdPanel.java'
 TILE = PJ + 'panel/QpdTile.java'
 QEM = PJ + 'panel/QuickEditMode.java'
 CARD = PJ + 'panel/QpdCard.java'
-Z9XF = 'apps/ProjectorBase/src/org/lumen/projector/panel/Z9xFeatures.java'
+STY = PJ + 'panel/QpdStyle.java'
+ROW = 'apps/common/projector/src/org/lumen/projector/ui/Row.java'
+Z9XF = 'apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java'
 
 MUTANTS = [
     ('section popup keeps the rows of the card tiles', CTL, '        for (String sec : spec.popups.keySet()) tilePopup(sec);\n', ''),
@@ -126,7 +128,7 @@ MUTANTS = [
      'else row.setChecked(true);'),
     ('mirroring tile without the provider check', MIR, 'resolveContentProvider(AUTHORITY, 0) != null',
      'getPackageInfo(PKG, 0) != null'),
-    ('Name row opens the plain settings', MIR, '                if (editName) i.putExtra("edit", "name");\n', ''),
+    ('Name row opens the plain settings', MIR, '        if (editName) i.putExtra("edit", "name");\n', ''),
     # 2026-11-11 polish: popups, rows, All settings, Source popup
     ('popup wider than 520', SRC, 'return Math.max(POP_W, Math.min(POP_W_MAX, w));', 'return Math.max(POP_W, w);'),
     ('popup narrower than 440', SRC, 'return Math.max(POP_W, Math.min(POP_W_MAX, w));', 'return Math.min(POP_W_MAX, w);'),
@@ -162,7 +164,7 @@ MUTANTS = [
     ('direct open follows a restored row', CTL, '        popupUntouched = target != null && focusRow == null;', '        popupUntouched = target != null;'),
     ('tile popup never follows', CTL, '        popupUntouched = true;\n        panel.push(p);', '        panel.push(p);'),
     ('apply keeps the focus where it is', CTL,
-     'panel.refreshPage(QpdLayout.popupFocus(popupUntouched && !panel.isAllMode(), checkedIndex(panel.currentPage()), -1));',
+     'repaint.repaint(() -> p.refreshPage(QpdLayout.popupFocus(popupUntouched && !p.isAllMode(), checkedIndex(p.currentPage()), -1)));',
      'panel.refreshPage();'),
     ('All settings follows the popup', CTL, '        popupUntouched = false;\n        List<QpdPanel.Cat> cats', '        List<QpdPanel.Cat> cats'),
     ('refreshPage loses the focus row', PAN, 'focusIndex >= 0 ? focusIndex : focusedIndex()', 'focusIndex'),
@@ -182,6 +184,27 @@ MUTANTS = [
     ('running label without soft edges', TILE, 'QpdStyle.drawFaded(c, title, labelP, (w - room) / 2f, room, base + labelP.ascent() - px(4),\n'
      '                base + labelP.descent() + px(4), base, dx, px(QpdLayout.FADE));',
      'c.drawText(title, 0, title.length(), (w - room) / 2f + dx, base, labelP);'),
+    # a disabled row: the theme's opaque grey, far from the enabled ink, never a transparent copy of the row
+    ('disabled dark grey is the full white ink', SRC, 'DISABLED_DARK = 0xFF616161,', 'DISABLED_DARK = 0xFFF4F4F6,'),
+    ('disabled light grey is the ink', SRC, 'DISABLED_LIGHT = 0xFF828282;', 'DISABLED_LIGHT = 0xFF211C13;'),
+    ('disabled light grey takes the Sand tint', SRC, 'DISABLED_LIGHT = 0xFF828282;', 'DISABLED_LIGHT = 0xFF8A8375;'),
+    ('disabled grey too faint to read', SRC, 'DISABLED_DARK = 0xFF616161,', 'DISABLED_DARK = 0xFF3A3A3A,'),
+    ('disabled grey half transparent', SRC, 'DISABLED_DARK = 0xFF616161,', 'DISABLED_DARK = 0x99616161,'),
+    ('both menus one grey', SRC, 'return light ? DISABLED_LIGHT : DISABLED_DARK;', 'return DISABLED_DARK;'),
+    ('frame greys by transparency again', FRM, 'c.saveLayer(0, top, w, getHeight(), QpdStyle.disabledLayer());',
+     'c.saveLayerAlpha(0, top, w, getHeight(), 102);'),
+    ('frame draws a disabled row full white', FRM, 'int save = enabled ? c.save() : c.saveLayer(0, top, w, getHeight(), QpdStyle.disabledLayer());',
+     'int save = c.save();'),
+    ('theme keeps the dark grey on the light menu', STY, '        DISABLED = QpdLayout.disabled(lightNow);\n', '        DISABLED = QpdLayout.disabled(false);\n'),
+    ('rows that draw themselves miss the theme grey', STY, '        Row.setDisabledInk(DISABLED);', ''),
+    ('a row that draws itself is never greyed', ROW, 'int grey = rowEnabled ? -1 : c.saveLayer(0, 0, getWidth(), getHeight(), disabledInk);',
+     'int grey = -1;'),
+    ('a disabled row dimmed by transparency again', ROW, '        setAlpha(1f);                                       // the grey',
+     '        setAlpha(enabled ? 1f : 0.4f);                                       // the grey'),
+    ('Theme grey drifts from the menu grey', 'apps/common/projector/src/org/lumen/projector/ui/Theme.java',
+     'TEXT_DISABLED = 0xFF616161;', 'TEXT_DISABLED = 0xFF999999;'),
+    ('icon: the 3D screens slide out of their box again', 'apps/core/lumen-menu/res/drawable/lumen_qpd_ic_3d.xml',
+     'valueFrom="-1.4"', 'valueFrom="-2.4"'),
 ]
 
 

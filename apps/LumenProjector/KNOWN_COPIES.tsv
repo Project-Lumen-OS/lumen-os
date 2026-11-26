@@ -1,0 +1,15 @@
+# apps/LumenProjector/KNOWN_COPIES.tsv: the classes that still exist in two projector code paths (tools/arch/one_projector.py
+# check, rule 1). The list only shrinks: a new copy is red, a row whose copies are gone is red until it is deleted. Each
+# row leaves when its class is one core class (one behaviour, the model as data) or one class per HAL family adapter.
+# Migration plan: the design notes. Columns: class, code paths (sorted), why it is still a copy.
+App	core host/activity vendor/xgimi/play6-hidl	fork: direct boot split (HbFeatures.init and HalController first, startModules after unlock), no pre-1.0.8 imp; the Play 6 org.lumen.play6.App in play6-hidl is the process entry that starts the stock boot handshake (check K), its module start is the core feature play6-start (Play6App)
+AudioPath	vendor/xgimi/gmpf vendor/xgimi/mt9681-aidl	a class of the same name in each app, not yet one implementation
+BootReceiver	core host/activity vendor/xgimi/play6-hidl	a class of the same name in each app, not yet one implementation; the Play 6 org.lumen.play6.BootReceiver in play6-hidl restarts the stock boot handshake (check K)
+Hal	core vendor/xgimi/mt9681-aidl vendor/xgimi/play6-hidl	Play 6 class of the same name (plan 2.4 not shared): facade on Play6Gmpf / Play6Gmpf2, start gate, p6-hal / p6
+HalToggle	core vendor/xgimi/mt9681-aidl	a HAL toggle table per family, not a fork: the MT9681 one in its adapter, the gmpf one still in the core (its users Hal and the two gmpf HalControllers name it), it moves to the gmpf adapters with Hal (KNOWN_VENDOR_LEAKS)
+HdmiSource	core host/activity vendor/xgimi/play6-hidl	same class name, own Play 6 body, not a copy (t14, first; the Z9X 1.0.3 class of 2026-10-13 is its port to Gmp; the Play 6 body is HAL work (IGmpf 698 source switch) in play6-hidl
+KeyReceiver	core host/activity	the X50 host's key routing (its keys, the focus hold, its menu and game bridge): folds with the host as data (step 4)
+LampOffHal	core vendor/xgimi/play6-hidl	fork (2026-11-12 lamp.off): the Play 6 light calls of the shared Turn off screen (org.lumen.menu.LampOff): sto
+MotorController	core vendor/xgimi/play6-hidl	fork (plan 2.7, step 16): Play6Gmpf.manualFocus (300 with 17 / 1 / 0 / 2), p6-motor via the Hal facade, behind
+PictureMode	vendor/xgimi/gmpf vendor/xgimi/play6-hidl	the Play 6 values of setPictureMode for the shared GmpfBase (stock dayao tree: AI 10, Movie 1, Sport 9, TV 7, 
+SetupEvents	core vendor/xgimi/play6-hidl	Play 6 class of the same name (t19, docs/play6/impl/setup-design.md): install (hal on every IGmpf connect, af 

@@ -41,3 +41,14 @@ checked equal by ThemeTest. The focus ring is `Palette.focusRing` (#2F62D0 light
 Host tests: `sh apps/core/lumen-ui/test/run.sh` (rule, tokens.xml equal to Palette, WCAG AA of every text pair, the
 ring at 3:1, the Sand values, no light copies in apps,
 ThemeFadeTest: the cross fade rules and the wiring of every follower).
+
+## Two-pane page (org.lumen.ui.page)
+
+The settings page shape of Lumen (Android TV settings, owner pick 2026-11-26 for the problem report): `TwoPane` is the
+guide on the left (path, title, explanation, one fact, a privacy line) and the pane on the right with `PaneRow`s
+(icon, title, second line, a switch or a chevron; focused = the palette's filled pill, 1.03, lifted), list pages
+(`section`, `item`), a `PaneProgress` (title, a gliding bar that keeps a slow pulse, step line) and a `code` box.
+Sizes are design px of the approved mock in `PaneStyle`, colours only from `Palette`, the font from `Inter` (the
+`fonts/InterVariable.ttf` asset of the app, else the system sans). A theme change builds the page again in the new
+palette (ThemeFade). User: lumen-report ReportActivity; a new page of this shape uses these classes, never a copy.
+

@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">项目页面上的指南列出了 XGIMI 官方文件。</string>
     <string name="lumen_about_erases">U 盘会清除投影仪上的所有内容：应用、账号、设置和文件。</string>
     <string name="lumen_about_scan">用手机扫描即可打开</string>
-    <string name="lumen_about_close">关闭</string>
 </resources>

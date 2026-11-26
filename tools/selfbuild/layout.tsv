@@ -121,6 +121,7 @@ keys/public/shared.x509.pem	tools/sign/release_certs/shared.x509.pem
 system/etc/build_prop_v1.txt	overlay/v1/build_prop_v1.txt
 system/etc/legacy/xgimi_compat.rc	overlay/xgimi_compat.rc
 system/etc/legacy/z9x_build_prop.txt	overlay/z9x_build_prop.txt
+system/etc/lumen-cast-sysconfig.xml	overlay/v1/lumen-cast-sysconfig.xml
 system/etc/lumen-miracast-default-permissions.xml	overlay/v1/lumen-miracast-default-permissions.xml
 system/etc/privapp-permissions-lumen-miracast.xml	overlay/v1/privapp-permissions-lumen-miracast.xml
 system/etc/privapp-permissions-z9xhome.xml	overlay/v1/privapp-permissions-z9xhome.xml

@@ -1,0 +1,36 @@
+{
+  "include": "devices/_family/mt9681/mt9681.menu.json",
+  "features": {
+    "picture.mode": {"options": ["ai", "sport", "imax", "movie", "color_accuracy", "bright", "performance", "dv_bright", "dv_dark"], "support": {"imax": ["imax", "hdr10"], "dv_bright": ["dolby"], "dv_dark": ["dolby"], "color_accuracy": ["sdr", "hdr", "hdr10"]}},
+    "picture.3d": {"options": ["off", "sbs", "tb", "sbs_2d", "tb_2d"]},
+    "picture.custom_base": {"options": ["sport", "movie", "color_accuracy"]},
+    "picture.gamut": {"options": ["native", "bt2020", "adobe", "p3", "bt709"]},
+    "zoom.move": {},
+    "picture.color_temp": {"options": ["standard", "movie", "d65", "warm"]},
+    "picture.memc": {"options": ["off", "low", "medium", "high"]},
+    "picture.iris": {"options": ["f2", "f3_5", "f5", "dynamic"]}
+  },
+  "off": {
+    "boost": "the RS30 light has no Boost step (StockLight, kept off as before)"
+  },
+  "game_menu": {"vrr_top_speed": true},
+  "sections": {
+    "keystone": {
+      "groups": [
+        {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual", "focus.af_now", "focus.manual", {"page": "focus.settings", "groups": [{"rows": ["focus.smart", "focus.guide"]}]}]},
+        {"header": "auto_correction", "rows": ["keystone.realtime", "keystone.on_power", "keystone.obstacle", "keystone.curtain"]},
+        {"header": "size_position", "rows": ["zoom", "zoom.move", "keystone.rotation", "keystone.angle_h", "keystone.angle_v"]},
+        {"header": "smart", "rows": ["keystone.wall_color"]},
+        {"header": "more", "rows": ["keystone.restore", "projection.mode", "projection.rear"]}
+      ]
+    },
+    "picture": {
+      "groups": [
+        {"header": "projector_brightness", "rows": ["lamp", "picture.iris"]},
+        {"header": "image", "rows": ["picture.mode", "picture.dv_screen", "picture.custom_new", {"page": "picture.settings", "groups": [{"rows": ["picture.custom_base"]}, {"header": "basic", "rows": ["picture.auto_switch", "picture.pq", "picture.memc"]}, {"header": "colour", "rows": ["picture.color_temp", "picture.wb", "picture.gamut", "picture.color_opt", "picture.cc"]}, {"header": "contrast", "rows": ["picture.gamma", "picture.gamma_index", "picture.hdr", "picture.local_contrast", "picture.dynamic_contrast", "picture.ai_contrast", "picture.dynamic_black"]}, {"header": "clarity", "rows": ["picture.noise", "picture.super_res"]}, {"header": "image_more", "rows": ["picture.reset", "picture.custom_delete"]}]}, "picture.reset_all"]},
+        {"header": "image_more", "rows": ["picture.3d", "picture.style_filter", "picture.anti_rbe"]},
+        {"header": "hdmi", "rows": ["hdmi.range", "hdmi.edid", "picture.aspect"]}
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">Automatycznie przełączaj na HDMI po podłączeniu urządzenia</string>
+    <string name="lumen_m_hdmi_return_home">Wracaj do ekranu głównego po odłączeniu źródła</string>
+    <string name="lumen_m_hdmi_boot_source">Źródło po włączeniu</string>
+    <string name="lumen_m_hdmi_boot_note">Jeśli urządzenie włączy projektor przez HDMI-CEC, otworzy się jego wejście.</string>
+    <string name="lumen_m_hdmi_inputs">Wejścia</string>
+    <string name="lumen_m_hdmi_none">Nie znaleziono wejść HDMI</string>
+</resources>

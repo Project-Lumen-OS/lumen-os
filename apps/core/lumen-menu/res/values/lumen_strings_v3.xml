@@ -3,20 +3,20 @@
      lumen_m_lamp_off_press_again, the brightness slider's light-off hint (test/run.sh checks every language). -->
 <resources>
     <string name="lumen_m_panel_move_ak">Auto keystone after moving</string>
-    <string name="lumen_m_boost_effect_brighter">Boost: higher brightness. Leaving Boost gives more vivid colours.</string>
-    <string name="lumen_gm_cs">Colour space</string>
+    <string name="lumen_m_boost_effect_brighter">@string/lumen_boost_higher_brightness_leaving_boost</string>
+    <string name="lumen_gm_cs">Color space</string>
     <string name="lumen_gm_cs_0">Native</string>
     <string name="lumen_gm_hdr_1">Dynamic tone mapping</string>
-    <string name="lumen_gm_chip_hz">%1$d Hz</string>
-    <string name="lumen_m_panel_speed_top_note">Top speed: keystone correction is off</string>
-    <string name="lumen_m_cancel">Cancel</string>
+    <string name="lumen_gm_chip_hz">@string/lumen_1_d_hz</string>
+    <string name="lumen_m_panel_speed_top_note">@string/lumen_top_speed_keystone_correction_is</string>
+    <string name="lumen_m_cancel">@string/lumen_cancel</string>
     <string name="lumen_m_panel_boost_press_again">Press → again for Boost</string>
     <string name="lumen_m_panel_boost_leave_press_again">Press ← again to leave Boost</string>
     <string name="lumen_m_lamp_off_press_again">The picture will turn off. To turn it back on, press the power button. Press ← again to turn it off.</string>
-    <string name="lumen_m_toast_setup_running">Finish the setup first</string>
-    <string name="lumen_m_panel_tileval_pm_ai">AI picture</string>
-    <string name="lumen_m_panel_tileval_pm_color_accuracy">Color accuracy</string>
-    <string name="lumen_m_panel_tileval_pm_performance">Performance</string>
+    <string name="lumen_m_toast_setup_running">@string/lumen_finish_the_setup_first</string>
+    <string name="lumen_m_panel_tileval_pm_ai">@string/lumen_ai_picture_2</string>
+    <string name="lumen_m_panel_tileval_pm_color_accuracy">@string/lumen_color_accuracy_2</string>
+    <string name="lumen_m_panel_tileval_pm_performance">@string/lumen_performance_2</string>
     <string name="lumen_gm_cs_1" translatable="false">BT.2020</string>
     <string name="lumen_gm_cs_2" translatable="false">Adobe RGB</string>
     <string name="lumen_gm_cs_3" translatable="false">DCI-P3</string>
@@ -25,23 +25,25 @@
     <string name="lumen_gm_hdr_2" translatable="false">HGIG</string>
     <!-- Play 6 picture tokens, zoom and shift, power saving, ambient speaker (texts of the Play 6 app; the colour
          temperature Custom agrees with the noun) -->
-    <string name="lumen_m_pm_movie">Movie</string>
+    <string name="lumen_m_pm_movie">@string/lumen_movie</string>
     <string name="lumen_m_pm_tv">TV</string>
-    <string name="lumen_m_pm_custom">Custom</string>
+    <string name="lumen_m_pm_custom">@string/lumen_custom</string>
     <string name="lumen_m_ct_cool">Cool</string>
     <string name="lumen_m_ct_warm">Warm</string>
-    <string name="lumen_m_zs_title">Zoom and shift</string>
-    <string name="lumen_m_eco">Power saving</string>
-    <string name="lumen_m_ambient_speaker">Ambient speaker</string>
+    <string name="lumen_m_zs_title">@string/lumen_zoom_and_shift</string>
+    <string name="lumen_m_eco">@string/lumen_power_saving</string>
+    <string name="lumen_m_ambient_speaker">@string/lumen_ambient_speaker</string>
     <string name="lumen_m_ct_custom">Custom</string>
     <string name="lumen_m_lamp_off">Turn off screen</string>
-    <string name="lumen_m_iris">IRIS</string>
+    <string name="lumen_m_iris">Iris</string>
     <string name="lumen_m_iris_dynamic">Dynamic</string>
-    <string name="lumen_m_iris_lamp_dynamic">Brightness cannot be changed while IRIS is Dynamic.</string>
-    <string name="lumen_m_iris_lamp_held">Brightness cannot be changed at this IRIS setting.</string>
+    <string name="lumen_m_iris_lamp_dynamic">Brightness cannot be changed while the iris is set to Dynamic.</string>
+    <string name="lumen_m_iris_lamp_held">Brightness cannot be changed at this iris setting.</string>
     <string name="lumen_m_iris_f2" translatable="false">f/2.0</string>
     <string name="lumen_m_iris_f3" translatable="false">f/3.0</string>
     <string name="lumen_m_iris_f4" translatable="false">f/4.0</string>
     <string name="lumen_m_iris_f5_5" translatable="false">f/5.5</string>
     <string name="lumen_m_iris_f7" translatable="false">f/7.0</string>
+    <string name="lumen_m_iris_f3_5" translatable="false">f/3.5</string>
+    <string name="lumen_m_iris_f5" translatable="false">f/5.0</string>
 </resources>

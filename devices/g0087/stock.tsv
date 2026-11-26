@@ -1,0 +1,70 @@
+# devices/g0087/stock.tsv: the stock facts of the RS 20 (G0087) behind its model data, read from the official
+# package of its stock v1.6.55 (its firmware facts below). tools/devices/test/stock_facts.py holds the model's
+# data (registry, HAL table, menu, restore rows, remotes) against these lines. Columns: kind, key, value, evidence.
+fact	code	G0087	xgimiconfig/G0087/system.ini and vendor/etc/xgimimodelname/G0087/build.prop of v1.6.55
+fact	product	Product_athenayouth	system.ini ProductName, xgimimodelname ro.product.name Product_athenayouth
+fact	show_name	RS 20	system.ini DeviceShowName
+fact	update_bin	XGIMI_HORSEPOPULAR_XR03C.bin	system.ini UpdateBinName (the USB restore file of this code)
+fact	feature_sha256	f550e37ed75225787c7fa983ab39cc21bde19e336f3fefd7c9eb27fd05c15031	xgimiconfig/G0087/feature/feature.xml
+fact	tree	settings_tree_product_athenayouth b50cd85957dec5a749e4e70f83afb7416507ee04804688761ca0cbc5fd36f49a	newsettings release_838 5dd6e461620e8d43 raw resource (the same APK in v1.6.52 and v1.6.55)
+node	picture.mode	ai teleplay movice_v3 gorgeous sport imax_enhanced hdr_vivid prof_color_accuracy isf_light isf_night office_platform_9270 performance picture_dolby_bright picture_dolby_soft	the image_mode_3_state page of the tree (image_mode_ dropped)
+node	zoom	zoom_and_move	the zoom page of the tree (Z9X: zoom_and_move)
+feature	edid_2_version_val	-	feature.xml of G0087 (the Z9X G0082 of the same package: 3)
+feature	hgig_mode	1	feature.xml of G0087 (the Z9X G0082 of the same package: -)
+feature	stepless_zooming	-	feature.xml of G0087 (the Z9X G0082 of the same package: false)
+feature	support_Adaptived_AK	5	feature.xml of G0087 (the Z9X G0082 of the same package: 0)
+feature	support_ambient_light	true	feature.xml of G0087 (the Z9X G0082 of the same package: false)
+feature	support_amd_free_sync_premium	true	feature.xml of G0087 (the Z9X G0082 of the same package: -)
+feature	support_burnin_autofanspeed	-	feature.xml of G0087 (the Z9X G0082 of the same package: 0)
+feature	support_dts_vx_effect	true	feature.xml of G0087 (the Z9X G0082 of the same package: false)
+feature	support_filmmaker	true	feature.xml of G0087 (the Z9X G0082 of the same package: false)
+feature	support_imax	true	feature.xml of G0087 (the Z9X G0082 of the same package: false)
+feature	support_nimblewall	1	feature.xml of G0087 (the Z9X G0082 of the same package: 0)
+feature	support_setting_animation	1	feature.xml of G0087 (the Z9X G0082 of the same package: -)
+diff	angle_monitor	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	brightness_adapt_kirin	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	brightness_turbo_light	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	brightness_turbo_light_adapt	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	brightness_turbo_light_entrance	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	env_adapt_settings_kirin	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_3_color_temp	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_gorgeous	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_imax_enhanced	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_isf_light	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_isf_night	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_movice_v3	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	image_mode_teleplay	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	more_eye_project_be_at_ease_img_cover	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	more_eye_project_follow_img	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	more_eye_state	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	picture_adjustment_enhancement_title	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain_gain	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	picture_dolby_curtain_size	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	picture_filmmaker_mode	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	screen_memory	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	signal_one_key_to_play	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	small_title_focus	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	small_title_keystone	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	sound_dts_drc	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	sound_mode_harman_caton_soundtrack	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	sound_strong_effect_native	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	title_size_and_location	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	title_smart	stock only	node of settings_tree_product_athenayouth, not in settings_tree_product_dapeng
+diff	cmiit_id	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+diff	image_mode_3_color_temp_dapeng	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+diff	image_mode_standard	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+diff	sound_mode_harman_caton_soundtrack_v5	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+diff	sound_strong_effect	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+diff	voice_audio_headset	Z9X only	node of settings_tree_product_dapeng, not in settings_tree_product_athenayouth
+# the official package of its stock (the only RS 20 code on v1.6.55, so its facts are here)
+fact	firmware	v1.6.55	META-INF/com/android/metadata post-build MediaTek/mt5877_an64_db/mt5877:14/UQ1A.240105.004.A1/v1.6.55:user/test-keys
+fact	folder	release/MTK9681/athenaultra/MTK9681_DOHKO_1.6.55_20260214-103117	product-library CDN, 1-byte range answers 206
+fact	bins	XR03C XR08A	the USB files of that folder (one plain ETag: one build for these codes)
+fact	zip	XGIMI_HORSEPOPULAR_XR03C_FULL_V1.6.55.zip 1941780809 39d947ca7aaccf7cb8771df4c29040ef	FULL OTA zip: name, size, plain ETag (md5)
+fact	build_utc	1771037358	post-timestamp = ro.build.date.utc
+fact	vendor_fingerprint	MediaTek/mt5877_an64_db/mt5877:14/UQ1A.240105.004.A1/xgimi02141043:user/test-keys	vendor/build.prop
+fact	gmpf_lib64	842a571006eb593feb2c628ba4140a7c73f0d4cc6b136db1f3dbba7085caacab	vendor/lib64/xgimi.hardware.gmpf@1.0.so
+fact	hal_table	devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv	tools/hal/hidl_stock.py of that library
+fact	vendor_remotes	000d:3838 1d5a:c081	vendor/etc/remote.txt voice remotes
+fact	keylayouts	24	vendor/usr/keylayout files; all equal the Z9X v6.15.62 files but Vendor_000d_Product_3843.kl (picture mode keys)

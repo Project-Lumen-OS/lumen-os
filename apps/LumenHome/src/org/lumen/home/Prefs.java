@@ -126,8 +126,9 @@ public final class Prefs {
 
     // ------------------------------------------------------------------ typed accessors
 
+    /** Weather in Home's corner: the layout's switch (Customize Home), the old key until the first change. */
     public boolean weatherOn() {
-        return bool(K_WEATHER_ON, true);
+        return App.get().layout().current().weather;
     }
 
     public boolean heroAuto() {
@@ -148,6 +149,6 @@ public final class Prefs {
      * always the calm one (big clock, date, weather over the sky, then the apps) and never reads TvProvider.
      */
     public boolean continueOnHome() {
-        return bool(K_CONTINUE_HOME, true);
+        return App.get().layout().current().cont;
     }
 }

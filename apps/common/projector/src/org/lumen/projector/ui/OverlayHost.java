@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import org.lumen.menu.KeyTools;
+import org.lumen.remote.keys.KeyHook;
 
 import java.util.ArrayList;
 
@@ -169,6 +170,8 @@ public final class OverlayHost implements KeyTools.Host {
             p.showing = true;
             current = p;
             wm.addView(root, lp);
+            // a panel with the keys counts as in front before its window has the focus (no overlay takes them meanwhile)
+            if ((lp.flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 0) KeyHook.front(p, true);
             Notify.relayout(app, true);               // card left of the new panel and above it
             root.post(() -> {
                 if (p.showing) {
@@ -201,6 +204,7 @@ public final class OverlayHost implements KeyTools.Host {
         if (!onMain("dismiss")) { main.post(() -> dismiss(p, animate)); return; }
         if (!p.showing) return;
         p.showing = false;
+        KeyHook.front(p, false);
         if (aside == p) aside = null;
         if (current == p) {
             current = null;
@@ -271,6 +275,7 @@ public final class OverlayHost implements KeyTools.Host {
         } catch (Throwable t) {
             Log.w(TAG, "aside: " + t);
         }
+        KeyHook.front(p, !on && (asideFlags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 0);
         Log.i(TAG, p.getClass().getSimpleName() + (on ? " aside for a tool screen" : " back after the tool screen"));
         if (on) {
             main.removeCallbacks(autoHide);
@@ -443,6 +448,7 @@ public final class OverlayHost implements KeyTools.Host {
         @Override
         public void onWindowFocusChanged(boolean hasFocus) {
             super.onWindowFocusChanged(hasFocus);
+            KeyHook.windowFocus(this, hasFocus);              // the keys are this panel's, never a developer card's
             if (!hasFocus) okDownTime = -1;
             if (hasFocus) {
                 hadFocus = true;
@@ -462,8 +468,15 @@ public final class OverlayHost implements KeyTools.Host {
         }
 
         @Override
+        protected void onAttachedToWindow() {
+            super.onAttachedToWindow();
+            if (hasWindowFocus()) KeyHook.windowFocus(this, true);
+        }
+
+        @Override
         protected void onDetachedFromWindow() {
             removeCallbacks(focusLostCheck);
+            KeyHook.windowFocus(this, false);
             super.onDetachedFromWindow();
         }
     }

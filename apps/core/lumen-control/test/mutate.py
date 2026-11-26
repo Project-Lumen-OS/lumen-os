@@ -98,10 +98,9 @@ MUTANTS = {
     # the model table and every projector app's wiring
     "tsv_version": ("devices/_control/vcontrol.tsv", "G0082\t20500320\t", "G0082\t20500321\t", True),
     "tsv_play6_hidden": ("devices/_control/vcontrol.tsv", "G0058\t20500319\tv2.5.3.19", "G0058\t-\tv2.5.3.19", True),
-    "wiring_g0155_recipe": ("devices/g0155/app/X50Projector.layers", "module    lumen-control\n", ""),
-    "wiring_play6_start": ("apps/Play6Projector/src/org/lumen/projector/Play6App.java", "            org.lumen.control.android.PhoneRemote.start(app);", "            // no phone remote"),
-    "wiring_hb_inject": ("apps/HbProjector/AndroidManifest.xml", "    <uses-permission android:name=\"android.permission.INJECT_EVENTS\" />\n", ""),
-    "wiring_z9x_twice": ("apps/ProjectorBase/src/org/lumen/projector/App.java", "        org.lumen.control.android.PhoneRemote.start(this);", "        org.lumen.control.android.PhoneRemote.start(this);\n        org.lumen.control.android.PhoneRemote.start(this);"),
+    "wiring_g0155_recipe": ("devices/_family/mt9681/app/X50Projector.layers", "module    lumen-control\n", ""),
+    "wiring_play6_start": ("apps/LumenProjector/core/src/org/lumen/projector/Play6App.java", "            org.lumen.control.android.PhoneRemote.start(app);", "            // no phone remote"),
+    "wiring_z9x_twice": ("apps/LumenProjector/core/src/org/lumen/projector/App.java", "        org.lumen.control.android.PhoneRemote.start(this);", "        org.lumen.control.android.PhoneRemote.start(this);\n        org.lumen.control.android.PhoneRemote.start(this);"),
 }
 
 # copied for real into every scratch tree (the rest is symlinked: the test only reads it)

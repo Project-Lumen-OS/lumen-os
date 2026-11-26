@@ -222,8 +222,9 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
 
     /**
      * {@code on}: a tool activity came over the menu activity (the X50 manual focus). The panel stays under it, seen as
-     * the stock X50 menu under its focus bar, and neither the focus loss nor the timer closes it. false: the tool went,
-     * the panel has the keys again where it was and a fresh timer.
+     * the stock X50 menu under its focus bar (not seen under a tool that hides the menu, KeyTools.Tool.hidesMenu: the
+     * subtitle mask editor), and neither the focus loss nor the timer closes it. false: the tool went, the panel is
+     * seen again and has the keys where it was, with a fresh timer.
      */
     @Override
     public void aside(boolean on) {
@@ -231,7 +232,11 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         Panel p = on ? current : aside;
         if (p == null || !p.showing || (on && aside != null)) return;
         aside = on ? p : null;
-        Log.i(TAG, p.getClass().getSimpleName() + (on ? " waits under a tool screen" : " back after the tool screen"));
+        // stock shows that screen without its menu, unseen by alpha, not INVISIBLE: the row keeps its focus for the way back
+        boolean hide = on && KeyTools.frontHidesMenu();
+        if (p.root != null) p.root.setAlpha(hide ? 0f : 1f);
+        Log.i(TAG, p.getClass().getSimpleName() + (on ? " waits under a tool screen" + (hide ? ", not seen" : "")
+                : " back after the tool screen"));
         if (on) {
             main.removeCallbacks(autoHide);
         } else {

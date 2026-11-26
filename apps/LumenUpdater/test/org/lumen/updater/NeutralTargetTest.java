@@ -39,6 +39,8 @@ public final class NeutralTargetTest {
         SystemProperties.VALUES.put("ro.lumen.ota.device", device);
         SystemProperties.VALUES.put("ro.lumen.ota.manifest_url", url);
         SystemProperties.VALUES.put("ro.lumen.version_code", vc);
+        // the version name of that code, as the images carry it (1001005 = 1.0.10-beta5): a beta build
+        SystemProperties.VALUES.put("ro.lumen.version", Ota.versionName(Integer.parseInt(vc)));
         SystemProperties.VALUES.put("ro.lumen.ota.guide", GUIDE);
         SystemProperties.VALUES.put("ro.vendor.build.version.incremental", "v1.2.64");
         if (gate != null) SystemProperties.VALUES.put("ro.lumen.ota.boot_gate", gate);
@@ -87,7 +89,8 @@ public final class NeutralTargetTest {
                 eq(code + " refuses the " + o[0] + " channel", "blk_channel(" + o[1] + "-test)", res(app(dev, o[1] + "-test", 1001006)));
             }
             SystemProperties.VALUES.put("ro.vendor.build.version.incremental", "v1.2.70");
-            eq(code + " other stock firmware", "blk_vendor(v1.2.70)", res(app(dev, dev + "-test", 1001006)));
+            eq(code + " other stock firmware", "blk_vendor(v1.2.70|v1.2.64, v1.2.54)", res(app(dev, dev + "-test", 1001006)));
+            eq(code + " other stock firmware, nothing newer: up to date", "uptodate()", res(app(dev, dev + "-test", 1001005)));
             // beta turned off: only the stable file, no downgrade
             Ota.setBeta(false);
             eq(code + " beta off reads stable", stable, Ota.manifestUrl());

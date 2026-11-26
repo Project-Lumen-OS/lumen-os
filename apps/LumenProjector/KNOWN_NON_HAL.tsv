@@ -1,0 +1,7 @@
+# apps/LumenProjector/KNOWN_NON_HAL.tsv: adapter files that still hold more than HAL work (tools/arch/one_projector.py check,
+# rule 2). The list only shrinks. Columns: file, what it holds besides the HAL.
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/hal/Gmpf2Client.java	a model identity check: the Z9X menu adapter still holds stock rules and screens of its own (to the core, model values as data)
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java	the menu engine: the Z9X menu adapter still holds stock rules and screens of its own (to the core, model values as data)
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xGameIo.java	UI (android.view / android.widget): the Z9X menu adapter still holds stock rules and screens of its own (to the core, model values as data)
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xMenuPages.java	the menu engine: the Z9X menu adapter still holds stock rules and screens of its own (to the core, model values as data)
+apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xMenuRules.java	the menu engine: the Z9X menu adapter still holds stock rules and screens of its own (to the core, model values as data)

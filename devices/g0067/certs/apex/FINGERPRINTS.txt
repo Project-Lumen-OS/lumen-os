@@ -1,0 +1,6 @@
+# Lumen OS X50 (g0067) APEX keys (public). Per module: SHA-256 of the container certificate (DER) and of the
+# payload public key (AVB format = the apex_pubkey entry). Private keys: ~/.lumen-keys/g0067/apex (Mac only).
+com.android.configinfrastructure         container 6606ceefa9a6fda780ca1d4aacf90f3dce87ed639d3d3966a0dd6cec9a4efe82  payload 523572b522c272bbac3e4d4e84631a1ce3312baea72bb4f338d6ec4541a0eeb8
+com.android.devicelock                   container d03db90a1e357b0a4acb9a8437829698b1c27f734bcbbead371fa32f365d2cae  payload bfe3d871ba59912c727db174eb356ef7e291f24454d3d8e23c1c6751747848b9
+com.android.ondevicepersonalization      container 8f7a433697612e9faa944f4813abcfa07c477fc23269d3c37477e54cdaf89845  payload ecec9e147f9e1180318b2c43332a9077872010f88295c9da2a366e19bd928dbd
+com.android.permission                   container 4e4b61060c3e12cb22b34917cca3d41981c6e864a75295eb8a45f765f591ebd2  payload 3957cce178519ae5771a49f38b790a1a2d4573a119c973ca405d760708e45c54

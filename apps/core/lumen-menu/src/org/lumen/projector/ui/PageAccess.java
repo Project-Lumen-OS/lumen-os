@@ -30,6 +30,20 @@ public final class PageAccess {
 
     public static void setFocusIndex(Page p, int i) { if (p != null) p.focusIndex = i; }
 
+    // ------------------------------------------------------------------ a row worked from a quick menu tile
+    /**
+     * OK on {@code r} as the row itself takes it (a switch flips, a page or screen opens, an action runs), so a tile of
+     * the quick menu goes the one path of the full menu: its locks, notes and commits. False when the row is greyed now.
+     */
+    public static boolean activate(Row r) { return r != null && r.isRowEnabled() && r.onActivate(); }
+
+    /** The next option of a choice row, after the last one the first (a choice tile cycles); false when greyed now. */
+    public static boolean cycle(ChoiceRow r) {
+        if (r == null || !r.isRowEnabled() || choiceCount(r) == 0) return false;
+        if (r.getSelected() + 1 >= choiceCount(r)) r.setSelected(-1);    // onStep starts again at the first option
+        return r.onStep(1, 0);
+    }
+
     // ------------------------------------------------------------------ what a shared row shows
     /** NavRow: chevron shown (true when unknown). */
     public static boolean navChevron(NavRow r) {

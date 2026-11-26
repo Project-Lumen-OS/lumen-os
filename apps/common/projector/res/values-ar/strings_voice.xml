@@ -21,11 +21,6 @@
     <string name="voice_keystone">جارٍ تصحيح الصورة</string>
     <string name="voice_downloading">جارٍ تنزيل اللغة للتعرّف على الكلام، حاول مرة أخرى بعد دقيقة</string>
     <string name="voice_hold_hint">اضغط مع الاستمرار على زر الميكروفون وتحدّث</string>
-    <string name="voice_settings">المساعد الصوتي</string>
-    <string name="voice_language">لغة الكلام</string>
-    <string name="voice_lang_system">لغة النظام</string>
-    <string name="voice_speak">الرد بالصوت</string>
-    <string name="voice_key">صوت Gemini</string>
     <string name="voice_key_off">صوت الجهاز</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">الصق مفتاح Gemini API من aistudio.google.com. لا يُرسل إلى Google إلا نص الرد. اتركه فارغًا لصوت الجهاز.</string>

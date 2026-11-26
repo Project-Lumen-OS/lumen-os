@@ -5,7 +5,9 @@ and 3). A device app stops being a full copy: the recipe says "start from this b
 files on top", and this script writes the full tree into a scratch folder for the unchanged apps/build_apk.sh.
 
   assemble_app.py [--root DIR] RECIPE [--out DIR] [--compare DIR] [--list FILE] [--release] [--quiet]
-  assemble_app.py [--root DIR] --device CODENAME --app NAME [same options]   (finds devices/<c>/app/*.layers)
+  assemble_app.py [--root DIR] --device CODENAME --app NAME [same options]   (finds the device's recipe: recipes())
+  assemble_app.py [--root DIR] --device CODENAME --app NAME --show   the recipe with {codename} and {device}/ resolved
+  assemble_app.py [--root DIR] --recipes CODENAME   APP<TAB>recipe path of every app recipe the device sees
 
   --out DIR      write the tree there (the folder is emptied first; it may not lie inside a layer, except in a
                  skipped folder of one, such as build/). Without --out nothing is written: the rules are checked
@@ -15,22 +17,37 @@ files on top", and this script writes the full tree into a scratch folder for th
   --list FILE    write the listing "sha256  path" (sorted by path, LC_ALL=C order) of the assembled tree.
   --release      an override whose origin changed since it was recorded is red (default: a warning).
 
-Recipe (devices/<codename>/app/<App>.layers; one directive per line, '#' starts a comment, paths relative to
-gsi/ unless said otherwise):
+Recipe (devices/<codename>/app/<App>.layers, or a family recipe devices/_family/<f>/app/<App>.layers that serves every
+model including that family (devices/README.md); one directive per line, '#' starts a comment, paths relative to
+gsi/ unless said otherwise; in a family recipe {codename} is the model's codename and {device}/NAME is the model's
+devices/<c>/NAME, else the nearest family folder's NAME):
   app NAME              the app name (apps/NAME is normally the top layer)
   base DIR [LIST]       a base layer: every file of DIR, or only the paths named in LIST (one path relative to
                         DIR per line, '#' comments; apps/common/projector/FILES has that format). Bases are
                         applied in order; two bases that both give one path are an error.
   file SRC DEST         a base layer of one file: SRC (relative to gsi/) at DEST (relative to the app).
+  menu SRC DEST         like file, with the effective menu profile of SRC (devices/<codename>/menu.json and the
+                        layers it builds on, tools/devices/menu_layers.py) at DEST.
   drop PATTERN          remove base files: an exact path, a folder ending in '/', or an fnmatch pattern. Each
                         drop must remove at least one base file (a renamed Z9X file is noticed).
   module NAME|PATH      a shared source module (tools/arch/README.md): apps/core/NAME (or PATH, relative to gsi/,
                         when the word has a '/'), a base layer read with its module.conf (name=, package=,
                         depends=). Modules are closed: see rules 5 to 8.
-  top DIR               the device layer: its files win over the bases.
+  top DIR               the device layer: its files win over the bases. Optional: a recipe whose model adds no
+                        own files (every model of the one projector app once its forks are folded) has none.
+  feature NAME...       the optional parts of a layer this app takes (rule 9): a layer folder DIR may have a table
+                        DIR.features beside it (apps/LumenProjector/core.features), one 'FEATURE PATTERN...' row per
+                        line (PATTERN as in drop); a file a row names is part of the tree only when the recipe names
+                        its feature. A recipe declares what its model has, never which core files it drops.
   skip PATTERN          never part of the tree, in any layer and in --compare: a folder ending in '/' (at the
                         top of a layer), a pattern with '/' (fnmatch on the path) or a file name pattern
                         (fnmatch on the last path element, at any depth).
+  patch DIFF            a model's few changes to one shared file of the assembled bases, as a unified diff (relative
+                        to gsi/; its '+++ b/PATH' names the path in the app): applied after the bases and drops, every
+                        hunk exactly (rule 10). The HB manifest is the core manifest plus
+                        devices/goat_elegant/app/HbProjector.manifest.diff.
+  include FILE          the lines of a recipe fragment (relative to gsi/), read in place: the module set of the one
+                        projector app is apps/LumenProjector/app.modules; a fragment has no app, top or identical line.
   identical allow|error a top file byte-identical to the base file it shadows: 'error' (default) = a pointless
                         copy, delete it; 'allow' only while a device still keeps copies (compare mode).
 
@@ -57,6 +74,12 @@ Rules (fail-closed, exit 1):
      the same resource file is an error by rule 6;
   8. module.conf, README*.md, the design notes, *.tsv (module data), test/, tools/ and image/ (init files an image recipe
      ships, e.g. lumen-signal's root bridge) of a module are never part of an app tree.
+  9. features (DIR.features): every row matches a file of its folder, a file belongs to one feature at most, every
+     feature a recipe names is a row of a table of its layers, a LIST of a base names no file of a feature the
+     recipe does not name, and a drop never removes a file of a feature table (leave its feature out instead).
+ 10. a patch names one base file and every hunk applies at its line with its context and removed lines equal to the
+     base text (no fuzz, no offset): a core change under a patched line is red until the diff is made again from the
+     reviewed result (diff -u BASE NEW); the top may not shadow a patched file.
 Output: one summary line, warnings and errors; exit 0 green, 1 red, 2 usage. Never writes outside --out and
 --list.
 """
@@ -66,15 +89,25 @@ import os
 import re
 import shutil
 import sys
+import tempfile
 
 sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import devices  # noqa: E402
+import layered  # noqa: E402
+import menu_layers  # noqa: E402
+import patch_file  # noqa: E402
+
+
+GUARDED = {}  # tree -> the errors of menu_layers.guard, once per run
 
 
 class RecipeError(Exception):
     pass
+
+
+FEATURE = re.compile(r"^[a-z][a-z0-9-]*$")
 
 
 def sha(path):
@@ -114,37 +147,97 @@ def walk(folder, patterns):
     return out
 
 
-def parse(root, recipe):
+def device_dirs(root, codename):
+    """devices/<codename> and the family folders its device.conf includes (devices/_family/<f>), nearest first,
+    relative to root: where the device's app recipes and data files are looked up (tools/devices/layered.py)."""
+    conf = os.path.join(root, "devices", codename, "device.conf")
+    if not os.path.isfile(conf):
+        return [os.path.join("devices", codename)]
+    return [os.path.relpath(d, root) for d in layered.dirs(conf)]
+
+
+def data_path(root, codename, name, where):
+    """{device}/NAME of a recipe (a file, or a folder such as a top layer): the device's own devices/<c>/NAME, else the
+    nearest family folder's NAME."""
+    for d in device_dirs(root, codename):
+        if os.path.exists(os.path.join(root, d, name)):
+            return os.path.join(d, name)
+    raise RecipeError("%s: %s: no %s in %s" % (where, codename, name, " ".join(device_dirs(root, codename))))
+
+
+def tokens(root, words, codename, where, strict=True):
+    """A recipe line's words with {codename} and {device}/NAME resolved for CODENAME (a family recipe, devices/_family/
+    <f>/app/*.layers, serves every model of the family: its data paths name no model)."""
+    out = []
+    for w in words:
+        if "{codename}" in w or w.startswith("{device}/"):
+            if not codename:
+                raise RecipeError("%s: %s needs a device (assemble_app.py --device CODENAME --app NAME)" % (where, w))
+            w = w.replace("{codename}", codename)
+            if w.startswith("{device}/"):
+                try:
+                    w = data_path(root, codename, w[len("{device}/"):], where)
+                except RecipeError:
+                    if strict:
+                        raise
+                    w = os.path.join("devices", codename, w[len("{device}/"):])
+        out.append(w)
+    return out
+
+
+def parse(root, recipe, codename=None):
     r = {"app": None, "bases": [], "drops": [], "top": None, "skips": [], "identical": "error",
-         "path": recipe}
-    for n, line in enumerate(open(recipe, encoding="utf-8"), 1):
+         "path": recipe, "codename": codename or codename_of(root, recipe), "includes": [], "features": [], "patches": []}
+    read_lines(root, recipe, r, [])
+    if not r["app"] or not r["bases"]:
+        raise RecipeError("%s: needs app and at least one base or module" % os.path.relpath(recipe, root))
+    return r
+
+
+def read_lines(root, path, r, chain):
+    """The directives of a recipe, or of a fragment it includes (include FILE: module, base, file, menu, drop and skip
+    lines shared by several recipes, read in place; no app, top or identical, no cycle)."""
+    frag = bool(chain)
+    for n, line in enumerate(open(path, encoding="utf-8"), 1):
         w = line.split("#", 1)[0].split()
         if not w:
             continue
+        where = "%s:%d" % (os.path.relpath(path, root), n)
+        w = tokens(root, w, r["codename"], where)
         k, a = w[0], w[1:]
-        where = "%s:%d" % (os.path.relpath(recipe, root), n)
-        if k == "app" and len(a) == 1:
+        if k == "include" and len(a) == 1:
+            inc = os.path.join(root, a[0])
+            if not os.path.isfile(inc):
+                raise RecipeError("%s: include %s not found" % (where, a[0]))
+            if os.path.abspath(inc) in chain + [os.path.abspath(path)]:
+                raise RecipeError("%s: include cycle through %s" % (where, a[0]))
+            r["includes"].append(a[0])
+            read_lines(root, inc, r, chain + [os.path.abspath(path)])
+        elif frag and k in ("app", "top", "identical"):
+            raise RecipeError("%s: a recipe fragment gives no %s line" % (where, k))
+        elif k == "app" and len(a) == 1:
             r["app"] = a[0]
         elif k == "base" and len(a) in (1, 2):
             r["bases"].append(("dir", a[0], a[1] if len(a) == 2 else None, where))
-        elif k == "file" and len(a) == 2:
-            r["bases"].append(("file", a[0], a[1], where))
+        elif k in ("file", "menu") and len(a) == 2:
+            r["bases"].append((k, a[0], a[1], where))
         elif k == "module" and len(a) == 1:
-            path = a[0] if "/" in a[0] else "apps/core/" + a[0]
-            r["bases"].append(("module", path.rstrip("/"), None, where))
+            path_ = a[0] if "/" in a[0] else "apps/core/" + a[0]
+            r["bases"].append(("module", path_.rstrip("/"), None, where))
+        elif k == "patch" and len(a) == 1:
+            r["patches"].append((a[0], where))
         elif k == "drop" and len(a) == 1:
             r["drops"].append((a[0], where))
         elif k == "top" and len(a) == 1 and r["top"] is None:
             r["top"] = a[0]
         elif k == "skip" and a:
             r["skips"].extend(a)
+        elif k == "feature" and a and all(FEATURE.match(x) for x in a):
+            r["features"].extend(a)
         elif k == "identical" and len(a) == 1 and a[0] in ("allow", "error"):
             r["identical"] = a[0]
         else:
             raise RecipeError("%s: cannot read %r" % (where, line.strip()))
-    if not r["app"] or not r["top"] or not r["bases"]:
-        raise RecipeError("%s: needs app, at least one base or module and one top" % os.path.relpath(recipe, root))
-    return r
 
 
 def drop_matches(rel, pattern):
@@ -153,6 +246,50 @@ def drop_matches(rel, pattern):
     if any(c in pattern for c in "*?["):
         return fnmatch.fnmatchcase(rel, pattern)
     return rel == pattern
+
+
+def feature_rows(root, folder):
+    """The optional parts of a layer folder: ([(feature, pattern, ref)], table path) of DIR.features beside it (rule
+    9), ([], None) when the layer has no table."""
+    table = folder.rstrip("/") + ".features"
+    if not os.path.isfile(os.path.join(root, table)):
+        return [], None
+    rows = []
+    for n, line in enumerate(open(os.path.join(root, table), encoding="utf-8"), 1):
+        w = line.split("#", 1)[0].split()
+        if not w:
+            continue
+        if len(w) < 2 or not FEATURE.match(w[0]):
+            raise RecipeError("%s:%d: cannot read %r (FEATURE PATTERN...)" % (table, n, line.strip()))
+        rows += [(w[0], p, "%s:%d" % (table, n)) for p in w[1:]]
+    return rows, table
+
+
+def select(root, folder, got, listed, r, known, optional, errors):
+    """got without the files of the features the recipe does not name (rule 9); optional collects every file of a
+    feature table, known every feature a table names."""
+    rows, table = feature_rows(root, folder)
+    if not rows:
+        return got
+    every = walk(os.path.join(root, folder), [])
+    for f, p, ref in rows:
+        known.add(f)
+        if not any(drop_matches(x, p) for x in every):
+            errors.append("%s: %s of feature %s matches no file of %s" % (ref, p, f, folder))
+    out = {}
+    for rel, src in got.items():
+        hit = sorted({f for f, p, _ in rows if drop_matches(rel, p)})
+        if len(hit) > 1:
+            errors.append("%s: %s belongs to the features %s (one at most)" % (table, rel, " ".join(hit)))
+        if hit:
+            optional.add(rel)
+        if hit and hit[0] not in r["features"]:
+            if listed:
+                errors.append("%s: the list %s names %s of feature %s, which the recipe does not name"
+                              % (folder, listed, rel, hit[0]))
+            continue
+        out[rel] = src
+    return out
 
 
 def fork_rows(root, codename):
@@ -233,13 +370,15 @@ def module_errors(path, files, conf):
     return errs
 
 
-def assemble(root, recipe, release=False):
-    """Returns (files {rel: source abs path}, stats, warnings, errors)."""
-    r = parse(root, recipe)
+def assemble(root, recipe, release=False, codename=None):
+    """Returns (files {rel: source abs path}, stats, warnings, errors). CODENAME: the device a family recipe is
+    assembled for (default: the devices/<c>/app/ folder of the recipe)."""
+    r = parse(root, recipe, codename)
     errors, warnings = [], []
     base, origin_of = {}, {}
     module_of = {}                      # path in the app -> module folder (rules 6, 7)
     modules = {os.path.basename(m[1]) for m in r["bases"] if m[0] == "module"}
+    known, optional = set(), set()
     for kind, a, b, where in r["bases"]:
         if kind == "module":
             folder = os.path.join(root, a)
@@ -288,6 +427,7 @@ def assemble(root, recipe, release=False):
                         got[p] = os.path.join(folder, p)
             else:
                 got = walk(folder, r["skips"])
+            got = select(root, a, got, b, r, known, optional, errors)
             for rel, src in got.items():
                 if rel in base:
                     errors.append("%s: %s is given by two bases (%s and %s)" % (where, rel, origin_of[rel], a))
@@ -298,6 +438,15 @@ def assemble(root, recipe, release=False):
             if not os.path.isfile(src):
                 errors.append("%s: no file %s" % (where, a))
                 continue
+            if kind == "menu":                  # the model's effective menu profile (tools/devices/menu_layers.py)
+                if root not in GUARDED:         # and no copy of the menu anywhere in the tree
+                    GUARDED[root] = menu_layers.guard(root)
+                errors.extend("%s: %s" % (where, e) for e in GUARDED[root])
+                try:
+                    src = menu_layers.materialize(src)
+                except (menu_layers.LayerError, layered.LayerError) as e:
+                    errors.append("%s: %s" % (where, e))
+                    continue
             if b in base:
                 errors.append("%s: %s is given by two bases" % (where, b))
             base[b] = src
@@ -312,19 +461,41 @@ def assemble(root, recipe, release=False):
             if p in module_of:
                 errors.append("%s: drop %s removes %s of module %s (modules are closed)" % (where, pattern, p, module_of[p]))
                 continue
+            if p in optional:
+                errors.append("%s: drop %s removes %s of a feature table (leave its feature out instead)"
+                              % (where, pattern, p))
+                continue
             del base[p]
             dropped += 1
-    top_dir = os.path.join(root, r["top"])
-    if not os.path.isdir(top_dir):
+    patched = set()
+    for diff, where in r["patches"]:
+        try:
+            rel, body = apply_patch(root, diff, base)
+        except RecipeError as e:
+            errors.append("%s: %s" % (where, e))
+            continue
+        base[rel] = cached(body, os.path.splitext(rel)[1])
+        origin_of[rel] = diff
+        patched.add(rel)
+    top_dir = os.path.join(root, r["top"]) if r["top"] else None
+    if top_dir is None:
+        top = {}
+    elif not os.path.isdir(top_dir):
         errors.append("%s: no top folder %s" % (os.path.relpath(recipe, root), r["top"]))
         top = {}
     else:
-        top = walk(top_dir, r["skips"])
-    rows, table = fork_rows(root, codename_of(root, recipe))
+        top = select(root, r["top"], walk(top_dir, r["skips"]), None, r, known, optional, errors)
+    for f in sorted(set(r["features"]) - known):
+        errors.append("%s: feature %s is named by no feature table of its layers" % (os.path.relpath(recipe, root), f))
+    rows, table = fork_rows(root, r["codename"])
     forks = copies = own = 0
     for rel, src in top.items():
         if rel not in base:
             own += 1
+            continue
+        if rel in patched:
+            errors.append("%s shadows %s, a patched file (rule 10): put the change into the patch" % (
+                r["top"].rstrip("/") + "/" + rel, rel))
             continue
         copy = r["top"].rstrip("/") + "/" + rel
         if rel in module_of:
@@ -358,14 +529,43 @@ def assemble(root, recipe, release=False):
     return files, stats, warnings, errors
 
 
+def apply_patch(root, diff, base):
+    """(path in the app, patched text) of one unified diff applied exactly to the assembled base file (rule 10)."""
+    src = os.path.join(root, diff)
+    if not os.path.isfile(src):
+        raise RecipeError("no patch %s" % diff)
+    text = open(src, encoding="utf-8").read()
+    rel = patch_file.target(text)
+    if not rel or rel not in base:
+        raise RecipeError("patch %s names %s, no file of the bases" % (diff, rel))
+    try:
+        return rel, patch_file.apply(open(base[rel], encoding="utf-8").read(), text, rel)
+    except patch_file.PatchError as e:
+        raise RecipeError("patch %s %s" % (diff, e))
+
+
+def cached(body, ext):
+    """A file with BODY (a patched base file), cached by its content like the menu profiles."""
+    data = body.encode("utf-8")
+    d = os.path.join(tempfile.gettempdir(), "lumen-patched")
+    os.makedirs(d, exist_ok=True)
+    out = os.path.join(d, hashlib.sha256(data).hexdigest() + ext)
+    if not os.path.isfile(out):
+        tmp = out + ".%d" % os.getpid()
+        with open(tmp, "wb") as f:
+            f.write(data)
+        os.replace(tmp, out)
+    return out
+
+
 def listing(files):
     return "".join("%s  %s\n" % (sha(files[p]), p) for p in sorted(files))
 
 
-def safe_out(root, out, recipe):
-    r = parse(root, recipe)
+def safe_out(root, out, recipe, codename=None):
+    r = parse(root, recipe, codename)
     real = os.path.realpath(out)
-    layers = [r["top"]] + [b[1] for b in r["bases"] if b[0] in ("dir", "module")]
+    layers = [x for x in [r["top"]] if x] + [b[1] for b in r["bases"] if b[0] in ("dir", "module")]
     for x in layers:
         lx = os.path.realpath(os.path.join(root, x))
         if real.startswith(lx + os.sep):
@@ -404,20 +604,58 @@ def app_dir(root, app):
     return own
 
 
-def find_recipe(root, codename, app):
-    """The device's recipe of the app, else the app's own apps/<app>/app.layers (a stand-alone app that uses apps/core
-    modules, the same on every device), else None (the app builds from its folder as it is). apps/<app> is the
-    folder of app_dir."""
-    folder = os.path.join(root, "devices", codename, "app")
-    if os.path.isdir(folder):
-        for n in sorted(os.listdir(folder)):
+def recipes(root, codename):
+    """{app: recipe path} of the device: its devices/<c>/app/*.layers, then those of its family folders
+    (devices/_family/<f>/app/*.layers, nearest first; the device's own recipe of an app wins)."""
+    out = {}
+    for d in device_dirs(root, codename):
+        folder = os.path.join(root, d, "app")
+        for n in sorted(os.listdir(folder)) if os.path.isdir(folder) else []:
             if n.endswith(".layers"):
                 p = os.path.join(folder, n)
-                try:
-                    if parse(root, p)["app"] == app:
-                        return p
-                except RecipeError:
-                    continue
+                out.setdefault(app_name(p), p)
+    return out
+
+
+def app_name(recipe):
+    """The app a recipe builds (its app directive; a recipe without one is named after its file), read without
+    resolving the rest, so a broken recipe is reported by the assembly, not skipped here."""
+    for line in open(recipe, encoding="utf-8"):
+        w = line.split("#", 1)[0].split()
+        if len(w) == 2 and w[0] == "app":
+            return w[1]
+    return os.path.basename(recipe)[:-len(".layers")]
+
+
+def recipe_text(root, codename, recipe, strict=False):
+    """The recipe's directive lines with {codename} and {device}/ resolved for CODENAME (comments dropped), one
+    "directive args" line each, the directive padded to the recipes' column ("module    lumen-ui"). A data file no
+    folder has reads devices/<c>/NAME unless strict (a partial tree of a test); assembling stays strict."""
+    out = []
+    for n, line in enumerate(open(recipe, encoding="utf-8"), 1):
+        w = line.split("#", 1)[0].split()
+        if w:
+            out.append("%-9s %s\n" % (w[0], " ".join(tokens(root, w[1:], codename, "%s:%d" % (recipe, n), strict))))
+    return "".join(out)
+
+
+def all_recipes(root):
+    """[(codename, app, recipe path)] of every device of devices/ (a device.conf) and every app recipe it sees."""
+    out = []
+    d = os.path.join(root, "devices")
+    for c in sorted(os.listdir(d)):
+        if not c.startswith((".", "_")) and os.path.isfile(os.path.join(d, c, "device.conf")):
+            out += [(c, a, p) for a, p in sorted(recipes(root, c).items())]
+    return out
+
+
+def find_recipe(root, codename, app):
+    """The device's recipe of the app (recipes()), else the app's own apps/<app>/app.layers (a stand-alone app that
+    uses apps/core modules, the same on every device), else None (the app builds from its folder as it is).
+    apps/<app> is the folder of app_dir."""
+    p = recipes(root, codename).get(app)
+    if p:
+        return p
     own = os.path.join(root, app_dir(root, app), "app.layers")
     return own if os.path.isfile(own) else None
 
@@ -429,6 +667,10 @@ def main(argv):
     if argv[:1] == ["--app-dir"] and len(argv) == 2:
         print(app_dir(root, argv[1]))
         return 0
+    if argv[:1] == ["--recipes"] and len(argv) == 2:
+        for app, path in sorted(recipes(root, argv[1]).items()):
+            print("%s\t%s" % (app, os.path.relpath(path, root)))
+        return 0
     opts, rest, i = {}, [], 0
     while i < len(argv):
         a = argv[i]
@@ -438,7 +680,7 @@ def main(argv):
                 return 2
             opts[a] = argv[i + 1]
             i += 2
-        elif a in ("--release", "--quiet"):
+        elif a in ("--release", "--quiet", "--show"):
             opts[a] = True
             i += 1
         else:
@@ -450,17 +692,23 @@ def main(argv):
             return 2
         recipe = find_recipe(root, opts["--device"], opts["--app"])
         if not recipe:
-            print("assemble_app: no recipe for %s in devices/%s/app/" % (opts["--app"], opts["--device"]))
+            print("assemble_app: no recipe for %s in %s" % (opts["--app"], " ".join(
+                os.path.join(d, "app/") for d in device_dirs(root, opts["--device"]))))
             return 1
+        if opts.get("--show"):
+            print("# %s for %s" % (os.path.relpath(recipe, root), opts["--device"]))
+            sys.stdout.write(recipe_text(root, opts["--device"], recipe))
+            return 0
     elif len(rest) == 1:
         recipe = os.path.abspath(rest[0])
     else:
         print(__doc__)
         return 2
     try:
-        files, st, warnings, errors = assemble(root, recipe, release=bool(opts.get("--release")))
+        files, st, warnings, errors = assemble(root, recipe, release=bool(opts.get("--release")),
+                                               codename=opts.get("--device"))
         if "--out" in opts and not errors:
-            safe_out(root, opts["--out"], recipe)
+            safe_out(root, opts["--out"], recipe, opts.get("--device"))
     except (RecipeError, devices.RegistryError, OSError) as e:
         print("assemble_app: ERROR %s" % e)
         return 1

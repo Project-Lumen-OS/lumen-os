@@ -14,8 +14,6 @@ import org.lumen.home.data.Card;
 import org.lumen.home.data.InputSource;
 import org.lumen.home.data.IntentGuard;
 import org.lumen.home.proj.ProjectorBridge;
-import org.lumen.home.usb.UsbFilesActivity;
-import org.lumen.home.usb.UsbInstallActivity;
 
 /** Opens what a card stands for. Untrusted program intents always go through IntentGuard. */
 public final class Launch {
@@ -54,11 +52,11 @@ public final class Launch {
                     return true;
                 case Card.MORE_APPS: {
                     if ("usb".equals(k.intent)) {
-                        start(c, new Intent(c, UsbInstallActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), "install from usb");
+                        start(c, FilesLink.apps(), "files apps");
                         return true;
                     }
-                    if ("files".equals(k.intent)) {
-                        start(c, new Intent(c, UsbFilesActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), "files");
+                    if (k.intent != null && k.intent.startsWith(FilesLink.FILES)) {
+                        start(c, FilesLink.open(FilesLink.path(k.intent)), "files");
                         return true;
                     }
                     Intent i = IntentGuard.appLaunch(c, AppSource.PKG_PLAY);

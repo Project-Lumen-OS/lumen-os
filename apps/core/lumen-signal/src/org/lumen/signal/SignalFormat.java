@@ -11,7 +11,7 @@ public final class SignalFormat {
     static final int DV_BRIGHT = 0, DV_DARK = 1;
     /** Plausible temperatures in degrees C (a sensor that is not there answers 0). */
     static final int TEMP_MIN = 1, TEMP_MAX = 150;
-    /** "3840×2160 @ 23.97 Hz": the owner's format (2026-11-18), the size sign and the spaced at sign. */
+    /** "3840×2160 @ 23.976 Hz": the owner's format (2026-11-18), the size sign and the spaced at sign. */
     public static final String TIMES = "\u00d7", AT = " @ ";
 
     /** Aspect tokens: the signal's own (from its size) and the setting (vendor getAspectRatio values). */
@@ -30,13 +30,33 @@ public final class SignalFormat {
     public static final String RANGE_AUTO = "auto", RANGE_FULL = "full", RANGE_LIMITED = "limited",
             EDID_14 = "1.4", EDID_20 = "2.0", EDID_21 = "2.1", EDID_AUTO = "auto";
 
-    /** 2397 -> "23.97", 6000 -> "60", 5994 -> "59.94", 2390 -> "23.9" (dec = the language's separator). */
+    /** The whole rates whose 1000/1001 twin (23.976, 29.97, 59.94, 119.88) a rate in 1/100 Hz can stand for. */
+    private static final int NTSC_MIN = 20, NTSC_MAX = 300;
+
+    /**
+     * A rate in 1/100 Hz as mHz: the 1000/1001 rates exactly (2397 or 2398 -> 23976, 5994 -> 59940), any other one as
+     * it is (5990 -> 59900).
+     */
+    public static long milli(int centi) {
+        if (centi <= 0) return 0;
+        int n = (int) Math.round(centi * 1001 / 100000.0);
+        if (n >= NTSC_MIN && n <= NTSC_MAX && centi % 100 != 0 && Math.abs(centi - n * 100000.0 / 1001) < 1) {
+            return Math.round(n * 1000000.0 / 1001);
+        }
+        return centi * 10L;
+    }
+
+    /**
+     * 2397 -> "23.976", 5994 -> "59.94", 6000 -> "60", 2390 -> "23.9" (dec = the language's separator): the 1000/1001
+     * rates in full, whole rates stay whole.
+     */
     public static String rate(int centi, char dec) {
         if (centi <= 0) return "";
-        int whole = centi / 100, frac = centi % 100;
-        if (frac == 0) return Integer.toString(whole);
-        String f = frac < 10 ? "0" + frac : Integer.toString(frac);
-        if (f.endsWith("0")) f = f.substring(0, 1);
+        long m = milli(centi);
+        long whole = m / 1000, frac = m % 1000;
+        if (frac == 0) return Long.toString(whole);
+        String f = String.valueOf(1000 + frac).substring(1);
+        while (f.endsWith("0")) f = f.substring(0, f.length() - 1);
         return whole + String.valueOf(dec) + f;
     }
 

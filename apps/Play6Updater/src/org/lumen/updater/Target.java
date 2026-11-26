@@ -23,7 +23,6 @@ final class Target {
             .install(InstallKind.RECOVERY)
             .checks(InstallChecks.RECOVERY)
             .dsuHandover(false)
-            .importBridgeData(true)
             .hideWithoutDevice(false)
             .build();
 }

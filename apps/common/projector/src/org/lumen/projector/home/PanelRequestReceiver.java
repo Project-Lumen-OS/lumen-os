@@ -11,9 +11,8 @@ import org.lumen.projector.Hal;
 import org.lumen.projector.KeyReceiver;
 import org.lumen.projector.Ui;
 import org.lumen.projector.panel.QuickPanel;
-import org.lumen.projector.power.PowerKey;
 import org.lumen.projector.power.PowerMenu;
-import org.lumen.projector.power.StandbyController;
+import org.lumen.projector.Family;
 
 /**
  * Lumen OS 1.0 (home spec 5.6): Lumen Home's "Projector" shortcut tiles. Explicit broadcast
@@ -48,7 +47,7 @@ public final class PanelRequestReceiver extends BroadcastReceiver {
 
     private static void handle(Context app, String action, String section) {
         try {
-            if (StandbyController.isActive()) {
+            if (Family.standbyActive()) {
                 Log.i(TAG, "SHOW_PANEL ignored: standby");
                 return;
             }
@@ -58,7 +57,7 @@ public final class PanelRequestReceiver extends BroadcastReceiver {
                         Hal.requestAutofocus(app);
                         return;
                     case "lamp_standby":
-                        PowerKey.PowerActions.sleepWithFade(app, "Lumen Home tile");
+                        Family.powerSleepWithFade(app, "Lumen Home tile");
                         return;
                     case "sleep_timer":
                         PowerMenu.show(app, true);

@@ -10,6 +10,8 @@
                                                                        product file then went through
                                                                        first_start.py apply (the one first-start
                                                                        setting of every image)
+  x50_props.py apply|check ... KEY=VALUE ...                          trailing words fill @KEY@ in EDITS (the RS30
+                                                                       family's one prop file names the model so)
   x50_props.py model  MODEL STOCK_MODEL_PROP                           MODEL is exactly the rule's subset of the
                                                                        stock file (on the build server, the dump)
 
@@ -70,7 +72,7 @@ def version_code(v):
     return int(x) * 1000000 + int(y) * 10000 + int(z) * 100 + k
 
 
-def read_edits(path, v, bid):
+def read_edits(path, v, bid, subs=None):
     out = {"system": [], "product": []}
     sec = None
     for n, raw in enumerate(open(path, encoding="utf-8"), 1):
@@ -85,6 +87,8 @@ def read_edits(path, v, bid):
         if "@VC@" in line:
             line = line.replace("@VC@", str(version_code(v)))
         line = line.replace("@V@", v).replace("@BID@", bid)
+        for k, val in (subs or {}).items():
+            line = line.replace("@%s@" % k, val)
         if "@UTC@" in line or "@DATE@" in line:
             utc, text = bid_time(bid)
             line = line.replace("@UTC@", utc).replace("@DATE@", text)
@@ -97,7 +101,21 @@ def read_edits(path, v, bid):
         if not KEY.match(k) or (op == "del") == bool(eq):
             die("%s:%d: bad edit %r" % (path, n, raw.rstrip()))
         out[sec].append((op, k, val))
+    about_row(out, path)
     return out
+
+
+def about_row(edits, path):
+    """the Lumen OS version row of Settings > About shows the release name of the edits (about_version.py, one rule
+    for every image): set in the system file over the base's \"1.0.9 (kmuradoff)\", never written by a prop file"""
+    import about_version
+    rows = [e for s in edits.values() for e in s]
+    if any(k == about_version.KEY for _, k, _ in rows):
+        die("%s sets %s: the About row follows %s (about_version.py)" % (path, about_version.KEY, about_version.VERSION_KEY))
+    names = [v for op, k, v in rows if k == about_version.VERSION_KEY and op != "del"]
+    if len(names) != 1:
+        die("%s: %d %s edits, the About row needs exactly one" % (path, len(names), about_version.VERSION_KEY))
+    edits["system"].append(("set", about_version.KEY, about_version.value(names[0])))
 
 
 def read_model(path):
@@ -169,10 +187,24 @@ def model_rule(line):
     return k is not None and k not in IDENTITY and not k.startswith(("persist.sys.",) + FIRST_START)
 
 
+SUB = re.compile(r"^([A-Z][A-Z0-9_]*)=(.*)$")
+
+
+def split_subs(a):
+    """(args, {KEY: value}): trailing KEY=VALUE words fill @KEY@ in the edits (one prop file for a family of models)"""
+    subs = {}
+    while a and SUB.match(a[-1]) and a[0] in ("apply", "check"):
+        k, val = SUB.match(a[-1]).groups()
+        subs[k] = val
+        a = a[:-1]
+    return a, subs
+
+
 def main(a):
+    a, subs = split_subs(list(a))
     if len(a) == 7 and a[0] == "apply":
         _, ed, mo, sp, pp, v, bid = a
-        e = read_edits(ed, v, bid)
+        e = read_edits(ed, v, bid, subs)
         m = read_model(mo)
         for path, sec, mod in ((sp, "system", None), (pp, "product", m)):
             base = load(path)
@@ -184,7 +216,7 @@ def main(a):
         return 0
     if len(a) in (9, 10) and a[0] == "check":
         _, ed, mo, bs, bp, ns, np_, v, bid = a[:9]
-        e = read_edits(ed, v, bid)
+        e = read_edits(ed, v, bid, subs)
         m = read_model(mo)
         bad = 0
         for b, n, sec, mod in ((bs, ns, "system", None), (bp, np_, "product", m)):

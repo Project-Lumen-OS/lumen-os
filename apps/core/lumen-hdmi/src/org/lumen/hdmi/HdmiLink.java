@@ -34,6 +34,8 @@ public final class HdmiLink {
     public static final int MAX_PER_BOOT = 3;
     /** The flipped EDID stays this long before the user's version goes back (500 ms HPD low plus the EDID read). */
     public static final long FLIP_HOLD_MS = 2_000;
+    /** GmTvManager event type of the vendor's signal reports ("status:N"). */
+    public static final int EVENT_SIGNAL = 0;
 
     private static final int NO_PICTURE = 1, UNSTABLE = 2;
 
@@ -51,6 +53,31 @@ public final class HdmiLink {
     /** Uptime since which the vendor reports no picture without a break; 0 = it does not (now). */
     public static long noPictureSince(long since, int status, long now) {
         return since(since, noPicture(status), now);
+    }
+
+    /**
+     * A getSignalStatus read is due: only while the picture is not known to be stable. The stock HDMI player
+     * (xhplayer InputActivity, Z9X 6.15.62) asks once a second only while it has no signal and hears the loss from the
+     * vendor's signal event. A read during a stable picture is not free: with the owner's PS5 on the Z9X every other
+     * 2 s read held the vendor 0.3 to 0.6 s (getSignalStatus CALLJUDGE times, log 2026-11-16).
+     */
+    public static boolean readDue(int known) {
+        return !stable(known);
+    }
+
+    /**
+     * The status the projector knows after a vendor GmTvManager event: N of the signal report (type
+     * {@link #EVENT_SIGNAL}, message "status:N", as stock XRMService and xhplayer parse it), else {@code known}.
+     */
+    public static int afterEvent(int known, int type, String msg) {
+        if (type != EVENT_SIGNAL || msg == null) return known;
+        String[] p = msg.trim().split(":");
+        if (p.length < 2 || !"status".equals(p[0])) return known;
+        try {
+            return Integer.parseInt(p[1].trim());
+        } catch (NumberFormatException e) {
+            return known;
+        }
     }
 
     /** Uptime since which {@code holds} has been true without a break (the first true reading); 0 = false now. */

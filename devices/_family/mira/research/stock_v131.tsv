@@ -1,0 +1,25 @@
+# The firmware facts of MIRA line (MIRA 4K G0109, MIRA 4K Pro G0110, AURA 3 Max G0104) v1.3.1 behind the line's data, read from the official FULL OTA (no dump of a unit):
+# https://product-library.static.xgimi.com/firmware/release/MTK9681/bollywoodproguonei/MTK9681_OSCAR_1.3.1_20260629-152744/XGIMI_HORSEPOPULAR_XR03G_FULL_V1.3.1.zip. Unpacked on xgimi-llm ~/devices/mira_fw/v131 (unpack.sh + codes.sh). The model rows (tree, feature, hw) are in
+# devices/<codename>/research/stock_vv131.tsv; tools/devices/test/stock_facts.py holds the data against both.
+# Columns (tab separated): kind, key, value, evidence.
+fact	fingerprint	MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/v1.3.1:user/test-keys	META-INF/com/android/metadata post-build of the official FULL OTA
+fact	build_utc	1782722491	post-timestamp (ro.build.date.utc of a unit on it)
+fact	vendor_fingerprint	MediaTek/mt5877_db/mt5877:14/UQ1A.240105.004.A1/xgimi06291637:user/test-keys	vendor/build.prop ro.vendor.build.fingerprint
+fact	branch	[origin/MTK9681_BollywoodGN_Release_MP_20260417]	vendor/build.prop ro.vendor.xgimi.buildbrach
+fact	zip	XGIMI_HORSEPOPULAR_XR03G_FULL_V1.3.1.zip 1777268836 md5 56a863ad7c43839e20607b567274c45e	the official FULL OTA (md5 = its plain ETag, checked after download)
+fact	boot_sha256	31cd340e62101cb1f385a4ecd050c4589d17e5ec20cb9b5a49a6693710f9fd81	boot.img of the FULL OTA (the recipe's stock kernel)
+fact	vendor_sha256	3c609dbbfa38a76cde3ac5dadd413d5483ca21577506ccc651691c28eb76a40f	vendor.img of the FULL OTA
+fact	vbmeta_sha256	e59a3d8053d232d0f4e3216891fe9abb54cf84f244c5dfcd7d4f97504c66c44c	vbmeta.img of the FULL OTA
+fact	gmpf_hash	20a6fcc512dc6f26121c70204d9f90ea90988680	vendor/lib/xgimi.hardware.gmpf-V1-ndk.so (org.lumen.hal.GmpfHash MIRA)
+fact	gmpf_methods	1164	research/aidl_codes_v131.tsv rows (codes.sh over the system_ext middle jar)
+fact	framework_res_sha256	752b5a2055508a21cc471c9d6c3bd3a6a6efc2de3838c303a445f310faf31da4	system/framework/framework-res.apk
+fact	newsettings	6.03.00.105 ad53cc9a142617a64894b1154812ff33d19b187bb0614054df84c5d72cddfaf6	system/priv-app/release_838_newsettings
+fact	vcontrol	v2.5.4.8 20500408	vendor/priv-app/vcontrol_release838 (apps/core/lumen-control VcontrolModels)
+fact	ab_ota_partitions	boot,bootdata,dtbo,mboot,optee,owl,product,satf,system,system_ext,tvconfig,tvservice,vbmeta,vbmeta_system,vendor,xgimiconfig	product/etc/build.prop ro.product.ab_ota_partitions
+fact	vendor_remotes	000d:3838 1d5a:c081	vendor/etc/remote.txt voice remotes
+fact	kl_3840_sha256	3ba67e814863727b51ef6ce04c0cc99c60a0a20a3753a919443d14d304773e4d	vendor/usr/keylayout/Vendor_000d_Product_3840.kl (remote.txt names the 3838 and c081 voice remotes)
+fact	blob_nativeui	c9755f628cea7c3b435ef1af3fadcb71f49df6c245568b5647fb2f0b5c2c5448	system/bin/nativeui (image/mira_blobs_allow.txt)
+fact	blob_gmpf_ndk	d3938119d84da9e880692daf463e904745aef6b39b5fa70d238f40e68c0e0d78	system/lib/xgimi.hardware.gmpf-V1-ndk.so (image/mira_blobs_allow.txt)
+fact	size_vendor	1460457472	vendor.img of the FULL OTA (build.conf budget)
+fact	size_product	65830912	product.img of the FULL OTA (build.conf budget)
+fact	size_system_ext	24207360	system_ext.img of the FULL OTA (build.conf budget)

@@ -20,13 +20,13 @@ Checks (fatal):
   - plural quantities == CLDR set for the language (Android 14 / ICU 72)
   - no ASCII double quote in text (would be eaten by aapt2), no raw newline
   - output is well-formed XML and re-parses to the same text
-Usage: gen.py [--write] [--check-only]
+Usage: gen.py [--write [--only TARGET]] [--check-only]   (--only: write the files of one target, e.g. strings)
 """
 import os, re, sys, glob
 import xml.etree.ElementTree as ET
 
 APPS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))     # gsi/apps (this file: apps/i18n/gen.py)
-RES = {"projector": APPS + "/ProjectorBase/res", "tvinput": APPS + "/LumenTvInput/res",
+RES = {"projector": APPS + "/LumenProjector/core/res", "tvinput": APPS + "/LumenTvInput/res",
        "airplay": APPS + "/LumenAirPlay/res",
        # Lumen OS 1.0: new apps; every values-<locale>/strings.xml of these is generated
        "home": APPS + "/LumenHome/res", "setup": APPS + "/LumenSetup/res",
@@ -34,7 +34,13 @@ RES = {"projector": APPS + "/ProjectorBase/res", "tvinput": APPS + "/LumenTvInpu
        # screen mirroring receiver (Miracast sink), every values-<locale>/strings.xml generated
        "miracast": APPS + "/LumenMiracast/res",
        # strings files shared by the projector apps (single source, copied by apps/common/sync.sh projector)
-       "common": APPS + "/common/projector/res"}
+       "common": APPS + "/common/projector/res",
+       # the shared string module: every text two places show, once (tools/i18n/share.py); the others alias it
+       "strings": APPS + "/core/lumen-common-strings/res"}
+BASE_GLOB = {"strings": "lumen_strings*.xml"}     # the base files of a target, default strings*.xml
+# base files a target does not generate: the stock texts of the AIDL gmpf line in the core (apps/LumenProjector/
+# core.features stock-labels-aidl, curtain-align), translated from its stock trees by hand
+NOT_GENERATED = {"projector": ("strings_hb.xml", "strings_hb_curtain.xml", "strings_hb_game.xml")}
 HERE = os.path.dirname(os.path.abspath(__file__))
 SHARED = APPS + "/common/projector/FILES"     # paths relative to an app dir; the projector target skips these
 
@@ -105,6 +111,8 @@ def parse_res(path):
             continue
         name = el.get("name")
         tr = el.get("translatable", "true") != "false"
+        if el.tag == "string" and (el.text or "").strip().startswith("@string/"):
+            tr = False      # an alias of a shared text (apps/core/lumen-common-strings): translated there
         if el.tag == "string":
             res[name] = ("string", tr, unescape_android(raw_text(el)))
         elif el.tag == "plurals":
@@ -126,9 +134,11 @@ def base_files():
     out = {}
     shared = shared_files()
     for app, res in RES.items():
-        for f in sorted(glob.glob(res + "/values/strings*.xml")):
+        for f in sorted(glob.glob(res + "/values/" + BASE_GLOB.get(app, "strings*.xml"))):
             if app == "projector" and "res/values/" + os.path.basename(f) in shared:
                 continue  # target common
+            if os.path.basename(f) in NOT_GENERATED.get(app, ()):
+                continue
             b = parse_res(f)
             if any(v[1] for v in b.values()):
                 out[(app, os.path.basename(f))] = b
@@ -255,6 +265,7 @@ def validate_dir_file(errs, app, fname, loc, base, path):
 
 def main():
     write = "--write" in sys.argv
+    only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
     base = base_files()
     errs = []
     planned = []
@@ -285,7 +296,8 @@ def main():
                     errs.append(f"{where}: {e}")
                     continue
                 for d in dirs:
-                    planned.append((os.path.join(RES[app], d, fname), xml))
+                    if only is None or app == only:
+                        planned.append((os.path.join(RES[app], d, fname), xml))
         for (app, fname) in data:
             if (app, fname) not in base:
                 errs.append(f"langs/{loc}.txt: unknown file @{app}/{fname}")

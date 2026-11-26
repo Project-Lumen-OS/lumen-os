@@ -13,8 +13,11 @@ import org.lumen.ui.Grid;
  * sideways and keeps one item of look ahead; the next item peeks at the right edge.
  */
 public final class Vitrina {
-    /** The round buttons of the bottom line. */
-    public static final int ROUND_APPS = 0, ROUND_SETTINGS = 1, ROUNDS = 2;
+    /**
+     * The round buttons of the bottom line: All apps, Customize Home (4PDA 2026-11-22: the Home settings were only behind
+     * a held OK, nobody found them) and Settings.
+     */
+    public static final int ROUND_APPS = 0, ROUND_LAYOUT = 1, ROUND_SETTINGS = 2, ROUNDS = 3;
 
     private Vitrina() {}
 
@@ -32,18 +35,33 @@ public final class Vitrina {
         return continueRow ? Grid.UPNEXT_Y - 40 - h : Grid.STILL_Y;
     }
 
-    /** Input chips on the bottom line for {@code inputs} inputs (at most {@link Grid#MAX_CHIPS}). */
-    public static int chips(int inputs) {
-        return Math.max(0, Math.min(inputs, Grid.MAX_CHIPS));
+    /**
+     * Input chips on the bottom line for {@code inputs} inputs of which {@code ports} are HDMI ports (they come first):
+     * at most {@link Grid#MAX_CHIPS}, or four on a projector with three HDMI ports (X50 family), so every port keeps
+     * its own chip next to the chip that lists the rest (Slava 2026-11-19: no HDMI 3 on the X50).
+     */
+    public static int chips(int inputs, int ports) {
+        return Math.max(0, Math.min(inputs, limit(ports)));
     }
 
     /** More inputs than chips: the last chip lists them all (the source menu) instead of showing one. */
-    public static boolean moreChip(int inputs) {
-        return inputs > Grid.MAX_CHIPS;
+    public static boolean moreChip(int inputs, int ports) {
+        return inputs > limit(ports);
     }
 
-    public static int chipX(int i) {
-        return Grid.x(1 + 3 * i);
+    private static int limit(int ports) {
+        return ports >= Grid.MAX_CHIPS ? Grid.MAX_CHIPS + 1 : Grid.MAX_CHIPS;
+    }
+
+    /** Width of each of {@code n} chips: three columns, four chips share the line up to the round buttons. */
+    public static int chipW(int n) {
+        if (n <= Grid.MAX_CHIPS) return Grid.CHIP_W;
+        return (roundX(0) - Grid.GUTTER - Grid.MARGIN - (n - 1) * Grid.GUTTER) / n;
+    }
+
+    /** x of chip {@code i} of {@code n}. */
+    public static int chipX(int i, int n) {
+        return n <= Grid.MAX_CHIPS ? Grid.x(1 + 3 * i) : Grid.MARGIN + i * (chipW(n) + Grid.GUTTER);
     }
 
     /** x of round button {@code i} ({@link #ROUND_APPS}, {@link #ROUND_SETTINGS}): right aligned on the margin. */
@@ -52,10 +70,10 @@ public final class Vitrina {
     }
 
     /** Centres of the bottom line's items, chips then round buttons (D-pad targets). */
-    public static int[] bottomCenters(int inputs) {
-        int n = chips(inputs);
+    public static int[] bottomCenters(int inputs, int ports) {
+        int n = chips(inputs, ports);
         int[] c = new int[n + ROUNDS];
-        for (int i = 0; i < n; i++) c[i] = chipX(i) + Grid.CHIP_W / 2;
+        for (int i = 0; i < n; i++) c[i] = chipX(i, n) + chipW(n) / 2;
         for (int i = 0; i < ROUNDS; i++) c[n + i] = roundX(i) + Grid.ROUND / 2;
         return c;
     }

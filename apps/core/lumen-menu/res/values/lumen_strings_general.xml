@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- All settings > General grouped under headers and the For developers System group (owner option B 2026-11-26). -->
+<resources>
+    <string name="lumen_m_hdr_language_time">Language and time</string>
+    <string name="lumen_m_hdr_power">Power</string>
+    <string name="lumen_m_hdr_display_menu">Display and menu</string>
+    <string name="lumen_m_hdr_remote_voice">Remote and voice</string>
+    <string name="lumen_m_hdr_apps_devices">Apps and devices</string>
+    <string name="lumen_m_hdr_storage_updates">Storage and updates</string>
+    <string name="lumen_m_hdr_help">Help</string>
+    <string name="lumen_m_language">@string/lumen_system_language</string>
+    <string name="lumen_m_date_time">Date and time</string>
+    <string name="lumen_m_date_auto">Set automatically</string>
+    <string name="lumen_m_storage">Storage</string>
+    <string name="lumen_m_storage_free">%1$s free</string>
+    <string name="lumen_m_update">System update</string>
+    <string name="lumen_m_about">About this projector</string>
+    <string name="lumen_m_system_info">System details</string>
+    <string name="lumen_m_network_adb">Network debugging</string>
+    <string name="lumen_m_android_dev">Android developer options</string>
+    <string name="lumen_m_hdr_system">@string/lumen_system</string>
+</resources>

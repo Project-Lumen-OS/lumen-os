@@ -37,7 +37,9 @@ def copy(rel):
             shutil.copy2(src, dst)
 
 
-for rel in ("tools/devices/cec_defaults.py", "tools/devices/devices.py", "tools/lumen/apkinfo.py", "devices/*/device.conf",
+for rel in ("tools/devices/cec_defaults.py", "tools/devices/devices.py", "tools/devices/assemble_app.py", "tools/devices/layered.py", "tools/devices/patch_file.py",
+            "tools/devices/menu_layers.py", "devices/_menu/*.json", "devices/_family/*/*.menu.json", "devices/*/menu.json",
+            "tools/lumen/apkinfo.py", "devices/*/device.conf", "devices/_family/*/*.conf", "devices/_vendor/*/*.conf", "devices/_family/*/app/*.layers",
             "devices/*/build.conf", "devices/*/app/*.layers", "devices/_image/cec_*.tsv", "apps/*/AndroidManifest.xml",
             "apps/**/res/values*/*.xml"):
     copy(rel)
@@ -65,7 +67,7 @@ def red(name, want, mutate):
 
 TABLE, STOCK = "devices/_image/cec_defaults.tsv", "devices/_image/cec_stock.tsv"
 rc, out = run(G, "check")
-ok("the tree: green", rc == 0 and "4 framework RROs" in out and "8 app recipes" in out, out)
+ok("the tree: green", rc == 0 and "4 framework RROs" in out and " app recipes" in out, out)   # one recipe per model, no count to keep
 rc, out = run(T, "check")
 ok("the scratch copy: green", rc == 0, out)
 rc, out = run(T, "nonsense")
@@ -96,24 +98,24 @@ red("stock: Play 6 without its wake set line", "has no set line for tv_wake_on_o
     lambda: edit(STOCK, "set  G0058-v1.8.127  tv_wake_on_one_touch_play  1\n", ""))
 red("RRO: the Z9X file edited by hand", "apps/Z9xFrameworkKeysOverlay/res/values/lumen_cec.xml differs",
     lambda: edit("apps/Z9xFrameworkKeysOverlay/res/values/lumen_cec.xml",
-                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">false</bool>',
-                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>'))
+                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>',
+                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">false</bool>'))
 red("RRO: the X50 file missing", "apps/X50PowerOverlay/res/values/lumen_cec.xml missing",
     lambda: os.remove(os.path.join(T, "apps/X50PowerOverlay/res/values/lumen_cec.xml")))
 red("own copy: a CEC value back in the Z9X config.xml", "apps/Z9xFrameworkKeysOverlay/res/values/config.xml sets "
     "config_cecTvSendStandbyOnSleepEnabled_default",
     lambda: edit("apps/Z9xFrameworkKeysOverlay/res/values/config.xml", "<resources>",
                  '<resources>\n    <bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>'))
-red("own copy: a CEC value in another app's resources", "apps/HbProjector/res/values/zz_cec.xml sets",
-    lambda: open(os.path.join(T, "apps/HbProjector/res/values/zz_cec.xml"), "w").write(
+red("own copy: a CEC value in another app's resources", "apps/LumenProjector/core/res/values/zz_cec.xml sets",
+    lambda: open(os.path.join(T, "apps/LumenProjector/core/res/values/zz_cec.xml"), "w").write(
         '<resources><bool name="config_cecTvWakeOnOneTouchPlayEnabled_default">true</bool></resources>\n'))
 red("recipe: the HB app without the table asset", "devices/goat_elegant/app/HbProjector.layers: has the lumen-cec module",
     lambda: edit("devices/goat_elegant/app/HbProjector.layers",
                  "file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv\n", ""))
 red("image: the RS30 without its framework RRO", "devices/g0155/build.conf: 0 framework RROs",
-    lambda: edit("devices/g0155/build.conf", "X50PowerOverlay ", ""))
-red("RRO: two devices of one overlay with different stock", "apps/X50PowerOverlay serves g0100 g0111 g0155 h0061 h0062 h0063",
-    lambda: edit(TABLE, "reset    goat_elegant", "device   g0155  tv_wake_on_one_touch_play  1\nreset    goat_elegant"))
+    lambda: edit("devices/_family/rs30/rs30.build.conf", "X50PowerOverlay ", ""))
+red("RRO: two devices of one overlay with different stock", "whose stock CEC values differ: one RRO cannot carry both",
+    lambda: edit(TABLE, "reset    goat_elegant", "device   g0155  set_menu_language  0\nreset    goat_elegant"))
 
 # write restores a lost file byte for byte
 want = open(os.path.join(T, "apps/HbFrameworkOverlay/res/values/lumen_cec.xml"), encoding="utf-8").read()
@@ -123,8 +125,8 @@ got = open(os.path.join(T, "apps/HbFrameworkOverlay/res/values/lumen_cec.xml"), 
 ok("write: restores the HB file byte for byte", rc == 0 and got == want and "wrote apps/HbFrameworkOverlay" in out, out)
 rc, out = run(T, "write")
 ok("write: nothing to write on a clean tree", rc == 0 and "wrote" not in out, out)
-ok("the rendered file: every _default bool of every setting, one true each",
-   got.count("<bool name=") == 14 and got.count(">true</bool>") == 6, got)
+ok("the rendered file: every _default bool of every setting, one true each (21 settings)",
+   got.count("<bool name=") == 44 and got.count(">true</bool>") == 21, got)
 
 print("cec_defaults_test: %d failed" % len(bad) if bad else "cec_defaults_test: all green")
 sys.exit(1 if bad else 0)

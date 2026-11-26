@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">機器を接続したら自動で HDMI に切り替える</string>
+    <string name="lumen_m_hdmi_return_home">ソースが切断されたらホーム画面に戻る</string>
+    <string name="lumen_m_hdmi_boot_source">電源オン時の入力</string>
+    <string name="lumen_m_hdmi_boot_note">HDMI-CEC で機器がプロジェクターの電源を入れた場合は、その入力が開きます。</string>
+    <string name="lumen_m_hdmi_inputs">入力</string>
+    <string name="lumen_m_hdmi_none">HDMI 入力が見つかりません</string>
+</resources>

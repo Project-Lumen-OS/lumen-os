@@ -65,7 +65,10 @@ def read(tree):
 
 def resolve(by_locale):
     base = by_locale.get("default", {})
+    aliases = {k: v for k, v in base.items() if v.startswith("@string/")}
     for loc, table in by_locale.items():
+        for k, v in aliases.items():    # an alias of res/values resolves in the current locale, as on Android
+            table.setdefault(k, v)
         for k in list(table):
             v, seen = table[k], set()
             while v.startswith("@string/") and v not in seen:

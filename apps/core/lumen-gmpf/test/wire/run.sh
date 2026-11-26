@@ -30,7 +30,10 @@ for D in "$@"; do
   H=$T/tree/src/org/lumen/projector/hal
   mkdir -p "$T/stub/org/lumen/projector/hal"
   find "$H" -name '*.java' ! -name HbFeatures.java > "$T/srcs"
-  [ -d "$T/tree/src/org/lumen/hal/gmpf" ] && find "$T/tree/src/org/lumen/hal/gmpf" -name '*.java' >> "$T/srcs"
+  # the shared gmpf call layer, and the lumen-hal transport where the recipe takes it (the HB: AidlWire)
+  [ -d "$T/tree/src/org/lumen/hal" ] && find "$T/tree/src/org/lumen/hal" -name '*.java' >> "$T/srcs"
+  # a core value type a family's hal type extends (the Play 6 Play6KstPoint: panel/Corners)
+  [ -f "$T/tree/src/org/lumen/projector/panel/Corners.java" ] && echo "$T/tree/src/org/lumen/projector/panel/Corners.java" >> "$T/srcs"
   if [ -f "$H/HbFeatures.java" ]; then
     # the real feature names, every one ON (allOn) or OFF; require() refuses as the real one does
     NAMES=$(awk '/public enum F \{/{f=1;next} f&&/^    \}/{exit} f' "$H/HbFeatures.java" \
@@ -43,9 +46,9 @@ public final class HbFeatures {
     static boolean allOn = true;
     public static State state(F f) { return allOn ? State.ON : State.OFF; }
     public static boolean on(F f) { return allOn; }
-    static void require(F f, String what) throws AidlCaller.NotOnHbException {
+    static void require(F f, String what) throws NotOnHbException {
         android.os.Wire.log("GATE " + f + " " + what);
-        if (!allOn) throw new AidlCaller.NotOnHbException(what + " (" + f + " is " + state(f) + ")");
+        if (!allOn) throw new NotOnHbException(what + " (" + f + " is " + state(f) + ")");
     }
 }
 EOF

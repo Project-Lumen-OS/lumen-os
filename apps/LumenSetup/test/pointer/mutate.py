@@ -25,7 +25,7 @@ MUTANTS = [
      'return Arrays.asList(of(BLUETOOTH), of(ROOT));'),
     ('wrong slice', SYS + 'SystemIntent.java', 'accessories.sliceprovider/general', 'accessories.sliceprovider/connected'),
     ('unresolved way started', SYS + 'SystemPages.java', '                if (i.resolveActivity(ctx.getPackageManager()) == null) continue;\n', ''),
-    ('RS30 recipe without the module', 'devices/g0155/app/Z9xSetup.layers', 'module    lumen-system\n', ''),
+    ('RS30 recipe without the module', 'devices/_family/rs30/app/Z9xSetup.layers', 'module    lumen-system\n', ''),
 ]
 
 

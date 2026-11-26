@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">新</string>
     <string name="lumen_qe_reset">恢復原狀</string>
     <string name="lumen_qe_select">選擇</string>
-    <string name="lumen_qe_done">完成</string>
-    <string name="lumen_qe_back">返回</string>
     <string name="lumen_qe_close_panel">關閉面板</string>
     <string name="lumen_qe_how">顯示方式</string>
     <string name="lumen_qe_now" formatted="true">目前：%1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">在圖塊下方</string>
     <string name="lumen_qe_panel_note">圖塊、寬圖塊和圓形會在選單右側開啟面板。</string>
     <string name="lumen_qe_place">位置</string>
-    <string name="lumen_qe_move">移動</string>
     <string name="lumen_qe_remove">從選單移除</string>
     <string name="lumen_qe_moving">正在移動</string>
     <string name="lumen_qe_move_hint">圓形只能在最上列移動，圖塊只能在各列之間移動。要把圖塊變成圓形，請變更樣式。</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s：新位置</string>
     <string name="lumen_qe_move_keys">移動</string>
     <string name="lumen_qe_move_cancel">取消，恢復原狀</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">依名稱或名稱的一部分</string>
+    <string name="lumen_qe_search_title">尋找設定</string>
+    <string name="lumen_qe_search_hint">例如 MEMC</string>
+    <string name="lumen_qe_nothing">找不到</string>
+    <string name="lumen_qe_unavailable">目前無法使用</string>
 </resources>

@@ -21,11 +21,6 @@
     <string name="voice_keystone">Выравниваю картинку</string>
     <string name="voice_downloading">Скачиваю язык для распознавания речи, попробуйте через минуту</string>
     <string name="voice_hold_hint">Зажмите кнопку микрофона и говорите</string>
-    <string name="voice_settings">Голосовой ассистент</string>
-    <string name="voice_language">Язык речи</string>
-    <string name="voice_lang_system">Язык системы</string>
-    <string name="voice_speak">Отвечать голосом</string>
-    <string name="voice_key">Голос Gemini</string>
     <string name="voice_key_off">Голос устройства</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">Вставьте ключ Gemini API с сайта aistudio.google.com. В Google уходит только текст ответа. Пустое поле: голос устройства.</string>

@@ -3,17 +3,22 @@ package org.lumen.about;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
-/** The project's install guide, section Back to stock: Russian for the languages the Russian guide serves. */
+/**
+ * The Back to the XGIMI system page of lumen-os.net: every model with its official files, sizes, checksums and steps,
+ * built from the signed catalog. Russian for the languages the Russian site serves, English for the rest.
+ */
 public final class Guide {
-    static final String BASE = "https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/";
-    static final String SECTION = "#stock";
+    static final String RU = "https://lumen-os.net/restore/";
+    static final String EN = "https://lumen-os.net/en/restore/";
     private static final List<String> RUSSIAN = Arrays.asList("ru", "uk", "be", "kk");
 
     private Guide() {}
 
-    /** the Back to stock section of the guide in this language (an ISO 639 code) */
-    public static String backToStock(String language) {
-        return BASE + (RUSSIAN.contains(language) ? "ru" : "en") + ".md" + SECTION;
+    /** the page in this language (an ISO 639 code), opened at the model (G0111 = #g0111), the model list without one */
+    public static String backToStock(String language, String model) {
+        String anchor = model == null ? "" : model.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+        return (RUSSIAN.contains(language) ? RU : EN) + (anchor.isEmpty() ? "" : "#" + anchor);
     }
 }

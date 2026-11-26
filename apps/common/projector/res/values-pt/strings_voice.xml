@@ -21,11 +21,6 @@
     <string name="voice_keystone">Corrigindo a imagem</string>
     <string name="voice_downloading">Baixando o idioma para o reconhecimento de voz, tente de novo em um minuto</string>
     <string name="voice_hold_hint">Mantenha o botão do microfone pressionado e fale</string>
-    <string name="voice_settings">Assistente de voz</string>
-    <string name="voice_language">Idioma da fala</string>
-    <string name="voice_lang_system">Idioma do sistema</string>
-    <string name="voice_speak">Responder com voz</string>
-    <string name="voice_key">Voz do Gemini</string>
     <string name="voice_key_off">Voz do dispositivo</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">Cole uma chave de API do Gemini de aistudio.google.com. Só o texto da resposta vai para o Google. Vazio: a voz do dispositivo.</string>

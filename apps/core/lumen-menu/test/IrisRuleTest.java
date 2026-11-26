@@ -51,7 +51,19 @@ public final class IrisRuleTest {
             check(note(both, FeatureId.LAMP, iris(free)) == null, "the light level moves at " + free);
         }
         check(note(both, FeatureId.LAMP, MenuState.builder().build()) == null, "iris not read: the slider moves (nothing invented)");
-        check(note(both, FeatureId.LAMP, iris("f5")) == null, "an unknown iris value holds nothing");
+        check(note(both, FeatureId.LAMP, iris("f9")) == null, "an unknown iris value holds nothing");
+        // the single iris (RS30 Ultra G0170, stock picture_iris_ring_adjustment_athena3: 20, 35, 50, 0): f/5.0 holds the
+        // light level as f/5.5 and f/7.0 do (stock setDlpLumenLevel refuses 50 and 51), f/3.5 leaves it free
+        MenuProfile single = parse("\"lamp\": {\"min\": 1, \"max\": 10}, "
+                + "\"picture.iris\": {\"options\": [\"f2\", \"f3_5\", \"f5\", \"dynamic\"]}");
+        check(single.ok(), "a profile with the single iris is valid " + single.problems());
+        check("lumen_m_iris_lamp_held".equals(note(single, FeatureId.LAMP, iris("f5"))), "f/5.0 holds the light level");
+        check(note(single, FeatureId.LAMP, iris("f3_5")) == null && note(single, FeatureId.LAMP, iris("f2")) == null,
+                "the light level moves at f/2.0 and f/3.5");
+        check("lumen_m_iris_lamp_dynamic".equals(note(single, FeatureId.LAMP, iris("dynamic"))), "single iris: dynamic holds it");
+        MenuProfile g0170 = MenuProfile.parse(read(root.resolve("devices/g0170/menu.json")));
+        check(g0170.options(FeatureId.PICTURE_IRIS).equals(Arrays.asList("f2", "f3_5", "f5", "dynamic")),
+                "g0170 iris options = the stock picture_iris_ring_adjustment_athena3 map order");
         check(note(both, FeatureId.LAMP, null) == null, "no state yet: allowed");
         check(note(both, FeatureId.PQ_BRIGHTNESS, iris("dynamic")) == null, "the picture brightness slider is not the light level");
         check(note(both, FeatureId.PICTURE_IRIS, iris("dynamic")) == null, "the iris row itself is never refused by the rule");
@@ -122,7 +134,8 @@ public final class IrisRuleTest {
                     "<string name=\"lumen_m_iris\">" + w[1] + "</string>"), w[0] + ": the iris row is " + w[1]);
         }
         String def = read(mod.resolve("res/values/lumen_strings_v3.xml"));
-        String[][] stops = {{"f2", "f/2.0"}, {"f3", "f/3.0"}, {"f4", "f/4.0"}, {"f5_5", "f/5.5"}, {"f7", "f/7.0"}};
+        String[][] stops = {{"f2", "f/2.0"}, {"f3", "f/3.0"}, {"f4", "f/4.0"}, {"f5_5", "f/5.5"}, {"f7", "f/7.0"},
+                {"f3_5", "f/3.5"}, {"f5", "f/5.0"}};
         for (String[] f : stops) {
             check(def.contains("<string name=\"lumen_m_iris_" + f[0] + "\" translatable=\"false\">" + f[1] + "</string>"),
                     "the stock f-number " + f[1] + " is one text in every language");

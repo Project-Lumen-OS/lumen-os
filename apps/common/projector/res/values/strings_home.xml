@@ -3,9 +3,9 @@
      settings) and the mic key's search (home.HomeSearch). English base; translations:
      apps/i18n/langs/<locale>.txt. "Lumen Home" is the product name of org.lumen.home. -->
 <resources>
-    <string name="launcher_row">Home screen</string>
-    <string name="launcher_lumen">Lumen Home</string>
-    <string name="launcher_classic">Android TV (classic)</string>
+    <string name="launcher_row">@string/lumen_home_screen</string>
+    <string name="launcher_lumen">@string/lumen_lumen_home</string>
+    <string name="launcher_classic">@string/lumen_android_tv_classic</string>
     <string name="launcher_switch">Switch</string>
     <string name="launcher_confirm_classic">The classic Android TV home screen will be turned on and Lumen Home turned off. You can switch back here at any time.</string>
     <string name="launcher_confirm_lumen">Lumen Home will be turned on and the classic home screen turned off. You can switch back here at any time.</string>

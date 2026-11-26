@@ -1,0 +1,238 @@
+Lumen OS: Wi-Fi Direct on vendors whose supplicant reports AIDL V3 from a snapshot taken before V3 froze.
+
+The MediaTek TV vendors of XGIMI projectors (Z9X G0082 v61519/v61558/v61562, X50 Ultra G0111, TITAN H0062 v1.2.54
+and v1.2.99: one 64-bit file, RS30 Ultra Max G0155: its 32-bit build) ship android.hardware.wifi.supplicant-V3-ndk.so
+with interface hash 4652398bc565e185ec0799d2a9ea9db1774710bc, not the frozen V3 55b58c9bd6d40c1459073b5d03f4ede5cfc9a212.
+Its ISupplicantP2pIface has the 63 V2 calls at their frozen transaction codes, a vendor call
+(startWpsPinKeypadWithMac) at code 64, where frozen V3 has connectWithParams, and nothing above it (proven from the
+Bp transact codes and the Bn onTransact jump table of the library). getInterfaceVersion() still answers 3, so this
+framework sends configureExtListenWithParams (code 66) for WifiP2pManager.startListening and connectWithParams
+(code 64) for every connection it accepts. The first fails as unimplemented, handleRemoteException drops the P2P
+interface and every later P2P call fails ("Can't call find, ISupplicantP2pIface is null"); the second would run the
+vendor call with a P2pConnectInfo parcel. A fallback on "unimplemented" alone cannot catch the second one.
+The P2P HAL now decides each V3 call from the interface hash (SupplicantP2pV3Calls): only the frozen V3 hash gets
+connectWithParams, findWithParams and configureExtListenWithParams, any other hash gets the V2 calls connect, find
+and configureExtListen, which every snapshot keeps at their frozen codes. A V3 call that still answers unimplemented
+is switched off for the life of the interface and the V2 call is made instead of dropping the interface.
+Device-neutral: supplicants that report V1 or V2, and frozen V3 ones, get exactly the calls they got before.
+
+diff -ruN a/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pIfaceHalAidlImpl.java b/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pIfaceHalAidlImpl.java
+--- a/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pIfaceHalAidlImpl.java
++++ b/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pIfaceHalAidlImpl.java
+@@ -115,6 +115,7 @@
+     private final WifiInjector mWifiInjector;
+     private ISupplicantP2pIfaceCallback mCallback = null;
+     private int mServiceVersion = -1;
++    private SupplicantP2pV3Calls mV3Calls = SupplicantP2pV3Calls.none();
+ 
+     public SupplicantP2pIfaceHalAidlImpl(WifiP2pMonitor monitor, WifiInjector wifiInjector) {
+         mMonitor = monitor;
+@@ -219,6 +220,7 @@
+                 return false;
+             }
+             mISupplicantP2pIface = iface;
++            mV3Calls = v3CallsOf(iface);
+ 
+             if (mMonitor != null) {
+                 ISupplicantP2pIfaceCallback callback =
+@@ -569,8 +571,8 @@
+             if (!checkP2pIfaceAndLogFailure(methodStr)) {
+                 return false;
+             }
+-            if (getCachedServiceVersion() < 3) {
+-                // HAL does not support findWithParams before V3.
++            if (!mV3Calls.has(SupplicantP2pV3Calls.FIND)) {
++                // The supplicant has no findWithParams (before V3 or a pre-freeze V3 snapshot).
+                 return find(config.getScanType(), config.getFrequencyMhz(), timeout);
+             }
+ 
+@@ -595,6 +597,10 @@
+                 mISupplicantP2pIface.findWithParams(halInfo);
+                 return true;
+             } catch (RemoteException e) {
++                if (mV3Calls.dropIfUnimplemented(SupplicantP2pV3Calls.FIND, e.getMessage())) {
++                    Log.w(TAG, methodStr + " is unimplemented, using the V2 calls");
++                    return find(config.getScanType(), config.getFrequencyMhz(), timeout);
++                }
+                 handleRemoteException(e, methodStr);
+             } catch (ServiceSpecificException e) {
+                 handleServiceSpecificException(e, methodStr);
+@@ -798,6 +804,10 @@
+             try {
+                 return mISupplicantP2pIface.connectWithParams(info);
+             } catch (RemoteException e) {
++                if (mV3Calls.dropIfUnimplemented(SupplicantP2pV3Calls.CONNECT, e.getMessage())) {
++                    Log.w(TAG, methodStr + " is unimplemented, using the V2 calls");
++                    return null;
++                }
+                 handleRemoteException(e, methodStr);
+             } catch (ServiceSpecificException e) {
+                 handleServiceSpecificException(e, methodStr);
+@@ -862,9 +872,12 @@
+                 return null;
+             }
+ 
+-            if (getCachedServiceVersion() >= 3) {
+-                return connectWithParams(joinExistingGroup, peerAddress, provisionMethod,
++            if (mV3Calls.has(SupplicantP2pV3Calls.CONNECT)) {
++                String pin = connectWithParams(joinExistingGroup, peerAddress, provisionMethod,
+                         preSelectedPin, persistent, config.groupOwnerIntent, config);
++                if (pin != null || mV3Calls.has(SupplicantP2pV3Calls.CONNECT)) {
++                    return pin;
++                }
+             }
+ 
+             try {
+@@ -1357,9 +1370,12 @@
+                 return false;
+             }
+ 
+-            if (getCachedServiceVersion() >= 3) {
+-                return configureExtListenWithParams(
++            if (mV3Calls.has(SupplicantP2pV3Calls.EXT_LISTEN)) {
++                boolean done = configureExtListenWithParams(
+                         periodInMillis, intervalInMillis, extListenParams);
++                if (done || mV3Calls.has(SupplicantP2pV3Calls.EXT_LISTEN)) {
++                    return done;
++                }
+             }
+ 
+             try {
+@@ -1393,6 +1409,10 @@
+             mISupplicantP2pIface.configureExtListenWithParams(extListenInfo);
+             return true;
+         } catch (RemoteException e) {
++            if (mV3Calls.dropIfUnimplemented(SupplicantP2pV3Calls.EXT_LISTEN, e.getMessage())) {
++                Log.w(TAG, methodStr + " is unimplemented, using the V2 calls");
++                return false;
++            }
+             handleRemoteException(e, methodStr);
+         } catch (ServiceSpecificException e) {
+             handleServiceSpecificException(e, methodStr);
+@@ -2594,6 +2614,25 @@
+                     WifiSettingsConfigStore.SUPPLICANT_HAL_AIDL_SERVICE_VERSION);
+         }
+         return mServiceVersion;
++    }
++
++    /**
++     * The V3 calls this P2P interface really has, from its interface hash (see SupplicantP2pV3Calls): a supplicant
++     * that reports V3 from a snapshot taken before V3 froze gets the V2 calls.
++     */
++    private SupplicantP2pV3Calls v3CallsOf(@NonNull ISupplicantP2pIface iface) {
++        int version = getCachedServiceVersion();
++        String hash = null;
++        if (version >= 3) {
++            try {
++                hash = iface.getInterfaceHash();
++            } catch (RemoteException e) {
++                Log.e(TAG, "getInterfaceHash failed, using the V2 calls", e);
++            }
++        }
++        SupplicantP2pV3Calls calls = SupplicantP2pV3Calls.of(version, hash);
++        Log.i(TAG, "Supplicant P2P interface: " + calls);
++        return calls;
+     }
+ 
+     /**
+diff -ruN a/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pV3Calls.java b/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pV3Calls.java
+--- /dev/null
++++ b/packages/modules/Wifi/service/java/com/android/server/wifi/p2p/SupplicantP2pV3Calls.java
+@@ -0,0 +1,97 @@
++/*
++ * Copyright (C) 2026 The Lumen OS Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.server.wifi.p2p;
++
++import java.util.Set;
++import java.util.TreeSet;
++
++/**
++ * The AIDL V3 calls of ISupplicantP2pIface that may go to the running supplicant, decided per call from the
++ * interface hash it reports, never from its version number alone.
++ *
++ * A V3 call goes out only when the hash is the frozen V3 one. A supplicant that answers version 3 with another hash
++ * was built from a snapshot taken before V3 froze. The MediaTek TV vendors (hash 4652398b...) keep the 63 V2 calls at
++ * their frozen transaction codes, put a vendor call at code 64, where frozen V3 has connectWithParams, and have
++ * nothing above it: connectWithParams would run that vendor call and every other V3 call fails as unimplemented,
++ * which drops the P2P interface. Such a supplicant gets the V2 calls. A V3 call that still answers unimplemented is
++ * not sent again while the interface lives.
++ */
++public final class SupplicantP2pV3Calls {
++    public static final String CONNECT = "connectWithParams";
++    public static final String FIND = "findWithParams";
++    public static final String EXT_LISTEN = "configureExtListenWithParams";
++
++    /** hardware/interfaces/wifi/supplicant/aidl/aidl_api/android.hardware.wifi.supplicant/3/.hash */
++    public static final String FROZEN_V3_HASH = "55b58c9bd6d40c1459073b5d03f4ede5cfc9a212";
++
++    private static final String UNIMPLEMENTED_PREFIX = "Method ";
++    private static final String UNIMPLEMENTED_SUFFIX = " is unimplemented.";
++
++    private final Set<String> mCalls = new TreeSet<>();
++    private final String mWhy;
++
++    private SupplicantP2pV3Calls(boolean frozenV3, String why) {
++        if (frozenV3) {
++            mCalls.add(CONNECT);
++            mCalls.add(FIND);
++            mCalls.add(EXT_LISTEN);
++        }
++        mWhy = why;
++    }
++
++    /** No V3 call: before the P2P interface is set up. */
++    public static SupplicantP2pV3Calls none() {
++        return new SupplicantP2pV3Calls(false, "no interface");
++    }
++
++    /** The calls for a supplicant that reports this AIDL version and interface hash (null if unknown). */
++    public static SupplicantP2pV3Calls of(int version, String hash) {
++        if (version < 3) {
++            return new SupplicantP2pV3Calls(false, "V" + version);
++        }
++        boolean frozen = FROZEN_V3_HASH.equals(hash);
++        return new SupplicantP2pV3Calls(frozen,
++                "V" + version + " hash " + hash + (frozen ? " (frozen V3)" : " (not the frozen V3, V2 calls)"));
++    }
++
++    /** True if the V3 call may be sent. */
++    public boolean has(String call) {
++        return mCalls.contains(call);
++    }
++
++    /**
++     * After a RemoteException of a V3 call: true if the proxy said the supplicant does not implement it. The call is
++     * then off for the life of the interface and the caller uses the V2 call instead of dropping the interface.
++     */
++    public boolean dropIfUnimplemented(String call, String exceptionMessage) {
++        if (!isUnimplemented(call, exceptionMessage)) {
++            return false;
++        }
++        mCalls.remove(call);
++        return true;
++    }
++
++    /** The message of the AIDL Java proxy when the remote answers UNKNOWN_TRANSACTION. */
++    static boolean isUnimplemented(String call, String exceptionMessage) {
++        return (UNIMPLEMENTED_PREFIX + call + UNIMPLEMENTED_SUFFIX).equals(exceptionMessage);
++    }
++
++    @Override
++    public String toString() {
++        return mWhy + ", V3 calls " + mCalls;
++    }
++}

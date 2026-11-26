@@ -11,9 +11,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
- * While the menu is open, reads the kind of content alone (ProjectorFeatures.readSignal, one getter) and asks for a
- * full re-read when it differs from the shown state, so options with a stock support list grey and ungrey live
- * (SignalRule). Stops by itself once the menu is closed.
+ * While the menu is open, reads the signal format alone (ProjectorFeatures.readFormat, one getter) and asks for a
+ * full re-read when it differs from the shown state, so the picture page names the format live and options with a
+ * stock support list grey and ungrey (SignalRule). Stops by itself once the menu is closed.
  */
 final class SignalWatch implements Runnable {
     static final long POLL_MS = 1_500;
@@ -40,9 +40,9 @@ final class SignalWatch implements Runnable {
     public void run() {
         if (!open.getAsBoolean()) return;
         try {
-            dev.readSignal(now -> {
+            dev.readFormat(now -> {
                 MenuState st = shown.get();
-                if (now != null && open.getAsBoolean() && st != null && now != st.signal()) reread.run();
+                if (now != null && open.getAsBoolean() && st != null && now != st.format()) reread.run();
             });
         } catch (Throwable t) {
             Log.w(MenuController.TAG, "signal: " + t);

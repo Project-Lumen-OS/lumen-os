@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">ホットスポット</string>
-    <string name="lumen_m_hotspot_name">ネットワーク名</string>
     <string name="lumen_m_hotspot_password">パスワード</string>
     <string name="lumen_m_hotspot_reset">デフォルトに復元</string>
     <string name="lumen_m_hotspot_on" formatted="true">%sのホットスポットが有効です</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">現在の構成が保存されました</string>
     <string name="lumen_m_hotspot_name_title">ホットスポット名</string>
     <string name="lumen_m_hotspot_password_title">ホットスポットのパスワード</string>
-    <string name="lumen_m_hotspot_password_hint">8 文字以上</string>
     <string name="lumen_m_hotspot_name_empty">ネットワーク名を入力してください</string>
     <string name="lumen_m_hotspot_name_long">名前が長すぎます</string>
     <string name="lumen_m_hotspot_password_short">8字以上を入力してください</string>

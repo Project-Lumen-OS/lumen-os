@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Nowe</string>
     <string name="lumen_qe_reset">Przywróć</string>
     <string name="lumen_qe_select">Wybierz</string>
-    <string name="lumen_qe_done">Gotowe</string>
-    <string name="lumen_qe_back">Wstecz</string>
     <string name="lumen_qe_close_panel">Zamknij panel</string>
     <string name="lumen_qe_how">Jak pokazywać</string>
     <string name="lumen_qe_now" formatted="true">Teraz: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Pod kafelkami</string>
     <string name="lumen_qe_panel_note">Kafelek, szeroki kafelek i kółko otwierają panel po prawej stronie menu.</string>
     <string name="lumen_qe_place">Miejsce</string>
-    <string name="lumen_qe_move">Przenieś</string>
     <string name="lumen_qe_remove">Usuń z menu</string>
     <string name="lumen_qe_moving">Przenoszenie</string>
     <string name="lumen_qe_move_hint">Kółka przesuwają się tylko w górnym rzędzie, kafelki tylko między wierszami. Aby kafelek stał się kółkiem, zmień jego wygląd.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: nowe miejsce</string>
     <string name="lumen_qe_move_keys">Przesuwać</string>
     <string name="lumen_qe_move_cancel">Anuluj, przywróć jak było</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Po nazwie lub jej części</string>
+    <string name="lumen_qe_search_title">Znajdź ustawienie</string>
+    <string name="lumen_qe_search_hint">Na przykład MEMC</string>
+    <string name="lumen_qe_nothing">Nic nie znaleziono</string>
+    <string name="lumen_qe_unavailable">Teraz niedostępne</string>
 </resources>

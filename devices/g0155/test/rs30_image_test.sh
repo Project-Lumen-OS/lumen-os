@@ -12,7 +12,7 @@
 #   bash devices/g0155/test/rs30_image_test.sh
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
-T=$(mktemp -d "${TMPDIR:-/tmp}/rs30img.XXXXXX")
+T=$(mktemp -d "${TMPDIR:-/tmp}/rs30img.XXXXXX") && [ -d "$T" ] || { echo "FAIL cannot create a temp dir under ${TMPDIR:-/tmp}" >&2; exit 2; }
 trap 'rm -rf "$T"' EXIT
 pass=0 fail=0
 ok() { pass=$((pass + 1)); echo "ok   $1"; }
@@ -24,8 +24,10 @@ RS30_CUSTOM="135:MACRO_1 136:MACRO_2"
 RS30_MENU="172 TV_ZOOM_MODE|217 TV_TIMER_PROGRAMMING|234 TV_NUMBER_ENTRY"
 
 checks() {  # ROOT: every rule on that tree, one line per broken rule, nothing on a good tree
-  local R=$1 S=$1/devices/g0155/image/steps.tsv B=$1/devices/g0155/build.conf D=$1/devices/g0155/image/debloat.txt
-  local P=$1/devices/g0155/image/rs30_prop.txt K u b f p a sc kv want apps n
+  local R=$1 S=$1/devices/g0155/image/steps.tsv B=$T/build.conf.$$ D=$1/devices/g0155/image/debloat.txt
+  # the descriptor with its family files (devices/_family/rs30/rs30.build.conf, tools/devices/layered.py)
+  python3 "$G/tools/devices/layered.py" "$1/devices/g0155/build.conf" > "$B" || echo "build.conf: does not resolve"
+  local P=$1/devices/_family/rs30/image/rs30_prop.txt K u b f p a sc kv want apps n
   row() {  # OP ARG...: the line of the first step of steps.tsv with that op and those first arguments, or nothing
     awk -F'\t' -v want="$(printf '%s\t' "$@")" '$1 !~ /^#/ { s = ""; for (i = 2; i <= NF; i++) s = s $i "\t"
       if (index(s, want) == 1) { print NR; exit } }' "$S"
@@ -84,8 +86,8 @@ EOF2
   grep -qxF "!unsigned	place	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml	0644	0	0	{LABEL}" "$S" \
     || echo "cast: the receiver's privileged permissions are not installed"
   # AirPlay: the released pin re-signed on the g0155 key (sign.conf pinned), its v7a library checked
-  sed -n 's/^pinned=//p' "$R/devices/g0155/image/sign.conf" | tr ' ' '\n' | grep -qx Z9xAirPlay || echo "airplay: not a pinned app of g0155"
-  grep -qxF "!unsigned	place	signed_stage/pinned/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}" "$S" || echo "airplay: not installed"
+  grep -q '^apps=.* Z9xAirPlay ' "$B" || echo "airplay: not built for g0155"
+  grep -qxF "!unsigned	place	signed_stage/apps/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}" "$S" || echo "airplay: not installed"
   grep -qxF "!unsigned	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk" "$S" || echo "airplay: its armeabi-v7a library is not checked"
   # sysconfig: no Lumen package starts stopped (the base sets config_stopSystemPackagesByDefault)
   for f in "z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml" "rs30-sysconfig.xml	{sys}/etc/sysconfig/rs30.xml"; do
@@ -178,7 +180,7 @@ PY
     grep -qE "^key[[:space:]]+$sc[[:space:]]+$key([[:space:]]|$)" "$K" || echo "keys: 3840 $sc is not $key"
     grep -q "keyCode=\"KEYCODE_$key\" component=\"org.lumen.x50.projector/.KeyReceiver\"" "$R/apps/X50PowerOverlay/res/xml/global_keys.xml" \
       || echo "keys: KEYCODE_$key is not a global key of the menu"
-    grep -q "case KeyEvent.KEYCODE_$key:" "$R/apps/X50Projector/src/org/lumen/x50/projector/KeyReceiver.java" \
+    grep -q "case KeyEvent.KEYCODE_$key:" "$R/apps/LumenProjector/host/activity/src/org/lumen/x50/projector/KeyReceiver.java" \
       || echo "keys: KeyReceiver does not handle KEYCODE_$key"
   done
   apps=$(python3 -B "$R/tools/devices/devices.py" --root "$R" get g0155 apps)
@@ -197,7 +199,7 @@ EOF2
   done
   b=$(sed -n 's/^apps=//p' "$B")
   for a in X50PowerOverlay X50TvInput X50Projector; do echo " $b " | grep -q " $a " || echo "apps: $a is not in build.conf apps"; done
-  [ -f "$R/devices/g0155/app/X50TvInput.layers" ] || echo "hdmi: no g0155 recipe of X50TvInput"
+  python3 "$G/tools/devices/assemble_app.py" --root "$R" --recipes g0155 2>/dev/null | grep -q "^X50TvInput	" || echo "hdmi: no g0155 recipe of X50TvInput"
   # every global key goes to a component of the image (the base TvFrameworkOverlay rows to com.google.android.tv stay as
   # the base has them: no such app, the key does nothing, as without the overlay)
   python3 -B - "$R" <<'PY'
@@ -207,7 +209,7 @@ def pkg(manifest):
     return re.search(r'package="([^"]+)"', open(r + "/" + manifest, encoding="utf-8").read()).group(1)
 def receivers(manifest):
     return set(re.findall(r'android:name="\.([A-Za-z]+Receiver)"', open(r + "/" + manifest, encoding="utf-8").read()))
-image = {pkg("apps/X50Projector/AndroidManifest.xml"): receivers("apps/X50Projector/AndroidManifest.xml"),
+image = {pkg("apps/LumenProjector/host/activity/AndroidManifest.xml"): receivers("apps/LumenProjector/host/activity/AndroidManifest.xml"),
          pkg("apps/LumenTvInput/AndroidManifest.xml"): receivers("apps/LumenTvInput/AndroidManifest.xml"),
          "com.android.tv.settings": {"GlobalKeyReceiver"}}
 base_rows = {"com.google.android.tv"}
@@ -230,11 +232,11 @@ if [ -z "$out" ]; then ok "the recipe keeps every rule"; else no "the recipe"; e
 # each rule must turn red on a broken copy
 copy() {
   rm -rf "$T/t"; mkdir -p "$T/t/devices" "$T/t/overlay/v1" "$T/t/apps" "$T/t/tools"
-  cp -R "$G/devices/g0155" "$G/devices/g0111" "$T/t/devices/"
+  cp -R "$G/devices/g0155" "$G/devices/g0111" "$G/devices/_family" "$T/t/devices/"
   cp -R "$G/overlay/v1/keylayout" "$G/overlay/v1/idc" "$T/t/overlay/v1/"
   cp "$G/apps/app_dirs.tsv" "$T/t/apps/"
-  for a in X50PowerOverlay X50Projector X50EyeGuard LumenTvInput LumenSetup LumenHome LumenMiracast; do mkdir -p "$T/t/apps/$a"; cp -R "$G/apps/$a/AndroidManifest.xml" "$G/apps/$a/res" "$T/t/apps/$a/" 2>/dev/null; done
-  mkdir -p "$T/t/apps/X50Projector/src/org/lumen/x50/projector" && cp "$G/apps/X50Projector/src/org/lumen/x50/projector/KeyReceiver.java" "$T/t/apps/X50Projector/src/org/lumen/x50/projector/"
+  for a in X50PowerOverlay LumenProjector/host/activity X50EyeGuard LumenTvInput LumenSetup LumenHome LumenMiracast; do mkdir -p "$T/t/apps/$a"; cp -R "$G/apps/$a/AndroidManifest.xml" "$G/apps/$a/res" "$T/t/apps/$a/" 2>/dev/null; done
+  mkdir -p "$T/t/apps/LumenProjector/host/activity/src/org/lumen/x50/projector" && cp "$G/apps/LumenProjector/host/activity/src/org/lumen/x50/projector/KeyReceiver.java" "$T/t/apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
   cp "$G/overlay/v1/z9x-sysconfig-nogms.xml" "$T/t/overlay/v1/"
   cp -R "$G/tools/devices" "$T/t/tools/"
   for d in "$G"/devices/*/; do d=${d%/}; [ -d "$T/t/devices/${d##*/}" ] || cp -R "$d" "$T/t/devices/"; done
@@ -260,8 +262,8 @@ mut setup_wizard_kept "debloat:" devices/g0155/image/debloat.txt $'system_ext/pr
 mut provision_removed "debloat: a path" devices/g0155/image/debloat.txt $'system_ext/priv-app/Updater\n' $'system_ext/priv-app/Updater\nproduct/priv-app/TvProvision\n'
 mut no_keep_rules "debloat: no keep" "$S" $'\tproduct/priv-app/TvProvision\tsystem_ext/apex' $'\tsystem_ext/apex'
 mut debloat_unchecked "debloat: the image" "$S" $'*\tgone\tdebloat.txt\t{mn}/system\n' ''
-mut usb_adb "usb:" devices/g0155/image/rs30_prop.txt '+persist.sys.usb.config=mtp' '+persist.sys.usb.config=adb'
-mut emulator "props:" devices/g0155/image/rs30_prop.txt 'ro.build.characteristics=tv' 'ro.build.characteristics=emulator'
+mut usb_adb "usb:" devices/_family/rs30/image/rs30_prop.txt '+persist.sys.usb.config=mtp' '+persist.sys.usb.config=adb'
+mut emulator "props:" devices/_family/rs30/image/rs30_prop.txt 'ro.build.characteristics=tv' 'ro.build.characteristics=emulator'
 mut tv_unchecked "props: the image" "$S" $'*\tline\t{mn}/system/product/etc/build.prop\tro.build.characteristics=tv\n' ''
 mut no_power_edit "keys: no power" "$S" $'*\trun_root\tx50_power_keys.py\tapply\t{sys}/product/usr/keylayout\n' ''
 mut stb_power_unchecked "keys: the image is not checked for STB_POWER" "$S" $'\t^key\\s+(?!(113|185)\\s)[0-9]+\\s+STB_POWER\n' $'\t^key\\s+(?!(113|185)\\s)[0-9]+\\s+STB_POWERX\n'
@@ -270,17 +272,17 @@ mut remote_power_unchecked "keys: the image is not checked for the remote power 
 mut rs30_key_mapped "keys: menu-key edit fails" overlay/v1/keylayout/Vendor_000d_Product_3840.kl 'key 102        HOME' $'key 102        HOME\nkey 172        TV'
 mut menu_edit_gone "keys: no menu-key edit" "$S" $'*\trun_root\trs30_menu_keys.py\tapply\t{sys}/product/usr/keylayout\n' ''
 mut menu_edit_first "keys: no menu-key edit after" "$S" $'*\trun_root\tx50_power_keys.py\tapply\t{sys}/product/usr/keylayout\n*\trun_root\trs30_menu_keys.py\tapply\t{sys}/product/usr/keylayout\n' $'*\trun_root\trs30_menu_keys.py\tapply\t{sys}/product/usr/keylayout\n*\trun_root\tx50_power_keys.py\tapply\t{sys}/product/usr/keylayout\n'
-mut menu_tool_unstaged "keys: rs30_menu_keys.py is not a staged tool" devices/g0155/build.conf ' devices/g0155/image/rs30_menu_keys.py' ''
+mut menu_tool_unstaged "keys: rs30_menu_keys.py is not a staged tool" devices/_family/rs30/rs30.build.conf ' devices/g0155/image/rs30_menu_keys.py' ''
 mut menu_tool_not_needed "keys: rs30_menu_keys.py is not a need" "$S" $'x50_power_keys.py\trs30_menu_keys.py\t' $'x50_power_keys.py\t'
 mut menu_line_unchecked "keys: menu key line unchecked in {mn}/system" "$S" $'*\tline\t{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl\tkey 217' $'*\tline\t{mn}/system/product/usr/keylayout/Vendor_000d_Product_3840.kl\tkey 218'
 mut menu_key_not_global "keys: KEYCODE_TV_NUMBER_ENTRY is not a global key" apps/X50PowerOverlay/res/xml/global_keys.xml '<key keyCode="KEYCODE_TV_NUMBER_ENTRY" component="org.lumen.x50.projector/.KeyReceiver" />' ''
 mut menu_key_wrong_code "keys: 3840 234 is not TV_NUMBER_ENTRY" devices/g0155/image/rs30_menu_keys.py '(234, "TV_NUMBER_ENTRY"' '(234, "TV_CONTENTS_MENU"'
-mut menu_key_unhandled "keys: KeyReceiver does not handle KEYCODE_TV_ZOOM_MODE" apps/X50Projector/src/org/lumen/x50/projector/KeyReceiver.java 'case KeyEvent.KEYCODE_TV_ZOOM_MODE:' 'case KeyEvent.KEYCODE_TV_ZOOM_OUT:'
+mut menu_key_unhandled "keys: KeyReceiver does not handle KEYCODE_TV_ZOOM_MODE" apps/LumenProjector/host/activity/src/org/lumen/x50/projector/KeyReceiver.java 'case KeyEvent.KEYCODE_TV_ZOOM_MODE:' 'case KeyEvent.KEYCODE_TV_ZOOM_OUT:'
 mut menu_check_lax "keys: the menu-key check passes" devices/g0155/image/rs30_menu_keys.py '        if tn != want:' '        if False:'
 mut rs30_custom_dropped "keys: 3840 135 is not MACRO_1" overlay/v1/keylayout/Vendor_000d_Product_3840.kl 'key 135        MACRO_1' 'key 135        TV'
 mut gear_elsewhere "keys: KEYCODE_SETTINGS" apps/X50PowerOverlay/res/xml/global_keys.xml '<key keyCode="KEYCODE_SETTINGS" component="org.lumen.x50.projector/.KeyReceiver" />' '<key keyCode="KEYCODE_SETTINGS" component="org.lumen.projector/.KeyReceiver" />'
-mut no_tvinput "apps: X50TvInput" devices/g0155/device.conf 'X50Projector X50TvInput' 'X50Projector'
-mut idc_not_staged "keys: Vendor_000d_Product_3840.idc" devices/g0155/build.conf 'overlay/v1/idc/Vendor_000d_Product_3840.idc ' ''
+mut no_tvinput "apps: X50TvInput" devices/_family/rs30/rs30.device.conf 'X50Projector X50TvInput' 'X50Projector'
+mut idc_not_staged "keys: Vendor_000d_Product_3840.idc" devices/_family/rs30/rs30.build.conf 'overlay/v1/idc/Vendor_000d_Product_3840.idc ' ''
 mut kl_not_placed "keys: Vendor_000d_Product_3840.kl" "$S" $'*\tplace\tVendor_000d_Product_3840.kl\t' $'*\tplace\tVendor_000d_Product_3841.kl\t'
 mut overlay_not_installed "keys: the overlay" "$S" $'signed_stage/apps/X50PowerOverlay.apk\t{sys}/product/overlay/X50PowerOverlay.apk' $'signed_stage/apps/X50PowerOverlay.apk\t{sys}/product/overlay/Other.apk'
 mut tvinput_unchecked "hdmi: org.lumen.tvinput is not checked" "$S" $'!unsigned\tsame\t{mn}/system/app/X50TvInput/X50TvInput.apk' $'!unsigned\tsame\t{mn}/system/app/X50TvInput/Other.apk'
@@ -288,19 +290,19 @@ mut launcher_kept "home: the base launcher is not removed" "$S" $'!unsigned\trem
 mut launcher_unlisted "home: the base launcher stays" devices/_image/debloat_launcher.txt $'product/priv-app/TVLauncherNoGMS\n' ''
 mut launcher_unchecked "home: the image is not checked for the base launcher" "$S" $'!unsigned\tgone\tdebloat_launcher.txt\t{mn}/system\n' ''
 mut home_role "home: no HOME role" "$S" 'Z9xHome.apk:org.lumen.home:home' 'Z9xHome.apk:org.lumen.home:nohome'
-mut home_not_app "cast/home: Z9xHome" devices/g0155/device.conf ' Z9xHome LumenMiracast' ' LumenMiracast'
+mut home_not_app "cast/home: Z9xHome" devices/_family/rs30/rs30.device.conf ' Z9xHome LumenMiracast' ' LumenMiracast'
 mut home_not_placed "home: Lumen Home is not installed" "$S" $'signed_stage/apps/Z9xHome.apk\t{sys}/priv-app/Z9xHome/Z9xHome.apk' $'signed_stage/apps/Z9xHome.apk\t{sys}/app/Z9xHome/Z9xHome.apk'
 mut home_unchecked "home: Lumen Home is not checked" "$S" $'!unsigned\tsame\t{mn}/system/priv-app/Z9xHome/Z9xHome.apk' $'!unsigned\tsame\t{mn}/system/priv-app/Z9xHome/Other.apk'
-mut miracast_not_app "cast/home: LumenMiracast" devices/g0155/device.conf ' LumenMiracast LumenWifiP2pOverlay' ' LumenWifiP2pOverlay'
+mut miracast_not_app "cast/home: LumenMiracast" devices/_family/rs30/rs30.device.conf ' LumenMiracast LumenWifiP2pOverlay' ' LumenWifiP2pOverlay'
 mut p2p_not_placed "cast: the Wi-Fi Direct overlay is not installed" "$S" $'signed_stage/apps/LumenWifiP2pOverlay.apk\t{sys}/product/overlay/LumenWifiP2pOverlay.apk' $'signed_stage/apps/LumenWifiP2pOverlay.apk\t{sys}/app/LumenWifiP2pOverlay.apk'
 mut miracast_privapp "cast: the receiver's privileged" "$S" $'privapp-permissions-lumen-miracast.xml\t{sys}/etc/permissions/' $'privapp-permissions-lumen-miracast.xml\t{sys}/etc/sysconfig/'
-mut airplay_unpinned "airplay: not a pinned" devices/g0155/image/sign.conf 'pinned=Z9xAirPlay' 'pinned=none'
+mut airplay_unbuilt "airplay: not built" devices/_family/rs30/rs30.build.conf ' Z9xAirPlay ' ' '
 mut airplay_libs "airplay: its armeabi-v7a" "$S" $'!unsigned\trun\tairplay_libs.py\t{sys}/app/Z9xAirPlay/Z9xAirPlay.apk\n' ''
 mut sysconfig_unplaced "sysconfig: rs30-sysconfig.xml" "$S" $'*\tplace\trs30-sysconfig.xml\t' $'*\tplace\tother.xml\t'
 mut projector_stopped "sysconfig: org.lumen.x50.projector" devices/g0155/image/rs30-sysconfig.xml '<initial-package-state package="org.lumen.x50.projector" stopped="false" />' ''
-mut setup_not_app "setup: Z9xSetup is not a g0155 app" devices/g0155/device.conf ' Z9xSetup Z9xHome' ' Z9xHome'
-mut setup_not_built "setup: Z9xSetup is not in build.conf" devices/g0155/build.conf ' Z9xSetup Z9xHome' ' Z9xHome'
-mut setup_privapp_unstaged "setup: its privileged permissions are not staged" devices/g0155/build.conf ' overlay/v1/privapp-permissions-z9xsetup.xml' ''
+mut setup_not_app "setup: Z9xSetup is not a g0155 app" devices/_family/rs30/rs30.device.conf ' Z9xSetup Z9xHome' ' Z9xHome'
+mut setup_not_built "setup: Z9xSetup is not in build.conf" devices/_family/rs30/rs30.build.conf ' Z9xSetup Z9xHome' ' Z9xHome'
+mut setup_privapp_unstaged "setup: its privileged permissions are not staged" devices/_family/rs30/rs30.build.conf ' overlay/v1/privapp-permissions-z9xsetup.xml' ''
 mut setup_not_placed "setup: Lumen Setup is not installed" "$S" $'signed_stage/apps/Z9xSetup.apk\t{sys}/priv-app/Z9xSetup/Z9xSetup.apk' $'signed_stage/apps/Z9xSetup.apk\t{sys}/app/Z9xSetup/Z9xSetup.apk'
 mut setup_unchecked "setup: Lumen Setup is not checked" "$S" $'!unsigned\tsame\t{mn}/system/priv-app/Z9xSetup/Z9xSetup.apk' $'!unsigned\tsame\t{mn}/system/priv-app/Z9xSetup/Other.apk'
 mut setup_privapp_unplaced "setup: its privileged permissions are not installed" "$S" $'privapp-permissions-z9xsetup.xml\t{sys}/etc/permissions/' $'privapp-permissions-z9xsetup.xml\t{sys}/etc/sysconfig/'

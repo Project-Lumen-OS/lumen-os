@@ -40,12 +40,12 @@ fi
 # the projector apps: the module in every recipe, the own writes handed over (the files exist in a full tree only)
 if [ -d "$G/devices/horse_popular" ]; then
   for r in horse_popular/app/Z9xProjector goat_elegant/app/HbProjector dragon_healthy/app/Play6Projector \
-      g0111/app/X50Projector g0100/app/X50Projector g0155/app/X50Projector h0061/app/X50Projector h0062/app/X50Projector h0063/app/X50Projector; do
+      _family/mt9681/app/X50Projector; do
     grep -q '^module *lumen-aipq$' "$G/devices/$r.layers" || { echo "FAIL recipe $r.layers does not name lumen-aipq"; bad=1; }
   done
-  for f in apps/ProjectorBase/src/org/lumen/projector/panel/Z9xPictureRows.java \
-      apps/HbProjector/src/org/lumen/projector/panel/HbPictureRows.java \
-      apps/Play6Projector/src/org/lumen/projector/panel/Play6PictureRows.java; do
+  for f in apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xPictureRows.java \
+      apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/panel/HbPictureRows.java \
+      apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/panel/Play6PictureRows.java; do
     grep -q 'org.lumen.projector.AiScenePolicy.afterOwnWrite(g, ' "$G/$f" || { echo "FAIL $f writes a picture mode past the AI picture quality"; bad=1; }
   done
   [ $bad = 0 ] && echo "ok   the projector apps carry lumen-aipq and hand their picture mode writes to it"

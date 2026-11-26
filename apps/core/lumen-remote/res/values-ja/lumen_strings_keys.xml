@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">連絡先キー</string>
     <string name="lumen_remote_keys_name_calendar">カレンダーキー</string>
     <string name="lumen_remote_keys_name_bookmarks">ブックマークキー</string>
-    <string name="lumen_remote_keys_do_source">入力切替</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">台形補正</string>
-    <string name="lumen_remote_keys_do_focus">フォーカス</string>
-    <string name="lumen_remote_keys_do_quick">クイック設定</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">信号</string>
 </resources>

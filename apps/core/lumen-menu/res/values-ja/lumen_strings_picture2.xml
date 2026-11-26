@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">ホワイトバランス</string>
-    <string name="lumen_m_wb_2">2 ポイント</string>
-    <string name="lumen_m_wb_11">11 ポイント</string>
-    <string name="lumen_m_red_gain">赤ゲイン</string>
-    <string name="lumen_m_green_gain">緑ゲイン</string>
-    <string name="lumen_m_blue_gain">青ゲイン</string>
-    <string name="lumen_m_red_offset">赤オフセット</string>
-    <string name="lumen_m_green_offset">緑オフセット</string>
-    <string name="lumen_m_blue_offset">青オフセット</string>
-    <string name="lumen_m_wb_level">%1$d%%</string>
-    <string name="lumen_m_red">赤</string>
-    <string name="lumen_m_green">緑</string>
-    <string name="lumen_m_blue">青</string>
-    <string name="lumen_m_cyan">シアン</string>
-    <string name="lumen_m_magenta">マゼンタ</string>
-    <string name="lumen_m_yellow">黄</string>
-    <string name="lumen_m_skin">肌色</string>
-    <string name="lumen_m_cc">色補正</string>
-    <string name="lumen_m_cc_color">色</string>
-    <string name="lumen_m_hue">色相</string>
-    <string name="lumen_m_memc_original">オリジナルフレームレート</string>
-    <string name="lumen_m_reset_defaults">初期値に戻す</string>
     <string name="lumen_m_gray_level">グレーレベル</string>
     <string name="lumen_m_hdr_enh">HDR強化</string>
     <string name="lumen_m_screen_size">スクリーンサイズ</string>
     <string name="lumen_m_screen_gain">スクリーンゲイン</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Bright</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dark</string>
     <string name="lumen_m_dv_screen">Dolby Vision設定</string>
     <string name="lumen_m_auto_switch">モード自動切替</string>
     <string name="lumen_m_style_filter">スタイルフィルター</string>

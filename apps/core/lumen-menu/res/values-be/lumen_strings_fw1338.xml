@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">Дынамічны чорны</string>
+    <string name="lumen_m_db_level">Узровень дынамічнага чорнага</string>
+    <string name="lumen_m_db_subtitle_top">Маска субтытраў уверсе</string>
+    <string name="lumen_m_db_subtitle_bottom">Маска субтытраў унізе</string>
+    <string name="lumen_m_db_reset">Скінуць маскі субтытраў</string>
+    <string name="lumen_m_color_uniformity">Налада раўнамернасці колеру</string>
+</resources>

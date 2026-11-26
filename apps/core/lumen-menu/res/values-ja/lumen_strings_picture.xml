@@ -4,20 +4,9 @@
      optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
      the Z9X app's pro_* and panel_reset texts with their translations -->
 <resources>
-    <string name="lumen_m_gamma">ガンマ</string>
-    <string name="lumen_m_gamma_manual">手動</string>
-    <string name="lumen_m_gamma_index">ガンマ値</string>
-    <string name="lumen_m_noise">ノイズリダクション</string>
-    <string name="lumen_m_local_contrast">ローカルコントラスト</string>
-    <string name="lumen_m_color_opt">色の最適化</string>
-    <string name="lumen_m_hdr_mapping">HDR ダイナミックトーンマッピング</string>
     <string name="lumen_m_ct_balanced">バランス</string>
     <string name="lumen_m_elder_color">シニア向けカラー</string>
     <string name="lumen_m_gamma_refused">ガンマ値は手動ガンマのときだけ使えます</string>
     <string name="lumen_m_hdr10_only">HDR10 コンテンツでのみ有効です</string>
-    <string name="lumen_m_reset">リセット</string>
     <string name="lumen_m_picture_reset_all_msg">すべての画像モードの設定が初期値に戻ります。続けますか？</string>
-    <string name="lumen_m_level_low">低</string>
-    <string name="lumen_m_level_medium">中</string>
-    <string name="lumen_m_level_high">高</string>
 </resources>

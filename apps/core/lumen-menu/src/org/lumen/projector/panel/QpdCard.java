@@ -213,6 +213,14 @@ final class QpdCard extends ViewGroup {
 
     void tick() { clock.invalidate(); }
 
+    /**
+     * A tile's name changed (the theme button after a press): the line under the clock shows the focused round
+     * button's name, so it changes with it (X50 live audit 2026-11-24: the line kept the old mode while the button showed the new one).
+     */
+    void titleChanged(QpdTile t) {
+        if (t.kind == QpdTile.ROUND && t.hasFocus()) clock.setLine(t.title());
+    }
+
     /** The theme changed: every part redraws in the new colours. */
     void retheme() {
         invalidate();

@@ -1,5 +1,8 @@
 # The report addresses of Lumen Installer's "Send info" (the stock system info, about 100 MB in parts), one per line,
-# tried in this order: the direct address without Cloudflare first (tools/stats/server/deploy/nginx-report-direct.conf,
-# not set up yet: an decision), then https://prompt.az/lumen/v1/report. tools/devices/installer_catalog.py puts
-# them into the signed catalog as "reports". No line here: no "reports" key, the app uses its default (Cloudflare,
-# where 12 KiB parts pass the Russian choke). A change needs a new catalog serial like any other catalog change.
+# tried in this order: our server straight (no Cloudflare: Russian networks freeze a Cloudflare connection after about
+# 20 KB), then the old address behind Cloudflare, which forwards to the same server. tools/devices/installer_catalog.py
+# puts them into the signed catalog as "reports"; Installer 1.0.6 and 1.0.7 in the field take the list from there. No
+# line here: no "reports" key, the app uses its default (the same two). A change needs a new catalog serial like any
+# other catalog change.
+https://stats.lumen-os.net/lumen/v1/report
+https://prompt.az/lumen/v1/report

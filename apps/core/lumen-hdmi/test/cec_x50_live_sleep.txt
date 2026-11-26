@@ -1,0 +1,13 @@
+# Lumen X50 Ultra beta14 going to sleep (KEYCODE_POWER 14:10:02.10) with HDMI 2 (Box R 4K Plus) on screen, LG bar on
+# HDMI 1 eARC: the CEC history of dumpsys hdmi_control (3 s polls, x50-cec-live-1126), 14:10:00-14:10:10.
+[S] time=2026-11-26 14:10:02 message=<Request ARC Termination> 05:C4 (ACK)
+[S] time=2026-11-26 14:10:04 message=<Report ARC Terminated> 05:C2 (ACK)
+[S] time=2026-11-26 14:10:04 message=<Standby> 0F:36 (ACK)
+[R] time=2026-11-26 14:10:05 message=<Set System Audio Mode> 5F:72:00
+[H] time=2026-11-26 14:10:06 hotplug port=1 connected=false
+[H] time=2026-11-26 14:10:08 hotplug port=1 connected=true
+[R] time=2026-11-26 14:10:08 message=<Vendor Command With Id> 50:A0 <Redacted len=13>
+[S] time=2026-11-26 14:10:08 message=<Feature Abort> 05:00:A0:01 (ACK)
+[R] time=2026-11-26 14:10:09 message=<Set System Audio Mode> 50:72:01
+[S] time=2026-11-26 14:10:09 message=<Feature Abort> 05:00:72:01 (ACK)
+[R] time=2026-11-26 14:10:09 message=<Report Audio Status> 50:7A:0B

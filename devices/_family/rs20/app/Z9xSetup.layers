@@ -1,0 +1,13 @@
+# Lumen Setup of the RS 20 trial images: the Z9X recipe (devices/horse_popular/app/Z9xSetup.layers) unchanged.
+app       Z9xSetup
+file      apps/common/tokens.xml res/values/z9x_tokens.xml
+file      apps/common/GeoIp.java src/org/lumen/common/GeoIp.java
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/fonts/OFL-Inter.txt
+module    lumen-common-strings
+module    lumen-system
+module    lumen-ui
+module    lumen-icons
+module    lumen-qr
+top       apps/LumenSetup
+skip      build/ test/ tools/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store BUILD_VERSION

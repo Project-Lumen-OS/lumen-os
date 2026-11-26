@@ -28,7 +28,6 @@ final class Target {
             .install(InstallKind.UPDATE_ENGINE)
             .checks(InstallChecks.Z9X_GATE)
             .dsuHandover(false)
-            .importBridgeData(true)
             .hideWithoutDevice(false)
             .build();
 }

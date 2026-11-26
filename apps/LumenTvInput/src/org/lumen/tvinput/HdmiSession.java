@@ -376,13 +376,9 @@ final class HdmiSession extends TvInputService.Session {
                     final int port = mPortId;
                     final int dev = mCecDeviceId;
                     final Context c = mContext;
-                    if (dev >= 0) {
-                        // CEC child input: route to that device (<Set Stream Path>, also behind an AVR)
-                        post("deviceSelect", () -> CecHelper.deviceSelect(c, dev, port));
-                    } else {
-                        // CEC routing to this port (<Routing Change>): wakes/activates the source.
-                        post("portSelect", () -> CecHelper.portSelect(c, port));
-                    }
+                    // one routing call (Route): portSelect for a port input and for a device that is on directly
+                    // on the port, deviceSelect for one in standby or behind a switch / AVR
+                    post("route", () -> CecHelper.route(c, dev, port));
                 }
             } else if (sMainSession == this) {
                 sMainSession = null;
@@ -413,9 +409,21 @@ final class HdmiSession extends TvInputService.Session {
     }
 
     private void scheduleInternalSelect() {
-        if (!Prefs.get(mContext, Prefs.CEC_INTERNAL_ON_EXIT)) return;
+        boolean interactive = true;
+        try {
+            android.os.PowerManager pm = mContext.getSystemService(android.os.PowerManager.class);
+            if (pm != null) interactive = pm.isInteractive();
+        } catch (Throwable t) {
+            Log.w(TAG, "power state: " + t);
+        }
+        long delay = ExitSelect.delayMs(interactive, Prefs.get(mContext, Prefs.CEC_CONTROL),
+                Prefs.get(mContext, Prefs.CEC_INTERNAL_ON_EXIT));
         mMain.removeCallbacks(mInternalSelect);
-        mMain.postDelayed(mInternalSelect, 1000);
+        if (delay == 0) {
+            runInternalSelect();                // the sleep: before the framework's standby frames, as stock
+        } else if (delay > 0) {
+            mMain.postDelayed(mInternalSelect, delay);
+        }
     }
 
     // ------------------------------------------------------------------ keys (main thread)

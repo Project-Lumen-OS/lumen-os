@@ -38,8 +38,6 @@ public final class UpdateTarget {
     final String gateProp;
     /** A DSU trial hands the update screen over to the in-trial installer and does no update work. */
     final boolean dsuHandover;
-    /** Imports the data of the pre-1.0.8 org.z9x.updater at start (org.lumen.common.LumenImport). */
-    final boolean importBridgeData;
     /** Without a wire id the update screen (and the TvSettings row) is hidden. */
     final boolean hideWithoutDevice;
     /** The wire ids whose payloads use compressed snapshots (devices/&lt;codename&gt;/ota.conf vabc=yes); every other one
@@ -62,7 +60,6 @@ public final class UpdateTarget {
         checks = b.checks;
         gateProp = b.gateProp;
         dsuHandover = b.dsuHandover;
-        importBridgeData = b.importBridgeData;
         hideWithoutDevice = b.hideWithoutDevice;
         compressedSnapshots = Collections.unmodifiableSet(new TreeSet<>(b.compressedSnapshots));
     }
@@ -101,7 +98,7 @@ public final class UpdateTarget {
         private OtaDir dir;
         private InstallKind install;
         private InstallChecks checks;
-        private boolean dsuHandover, importBridgeData, hideWithoutDevice;
+        private boolean dsuHandover, hideWithoutDevice;
         private Set<String> compressedSnapshots = Collections.emptySet();
 
         public Builder props(String ns) { props = ns; return this; }
@@ -118,7 +115,6 @@ public final class UpdateTarget {
         public Builder checks(InstallChecks c) { checks = c; return this; }
         public Builder checksFrom(String prop, InstallChecks byDefault) { gateProp = prop; checks = byDefault; return this; }
         public Builder dsuHandover(boolean on) { dsuHandover = on; return this; }
-        public Builder importBridgeData(boolean on) { importBridgeData = on; return this; }
         public Builder hideWithoutDevice(boolean on) { hideWithoutDevice = on; return this; }
         public Builder compressedSnapshots(String... wireIds) {
             compressedSnapshots = new TreeSet<>(Arrays.asList(wireIds));

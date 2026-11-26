@@ -45,12 +45,12 @@ if old not in s:
 open(p, "w", encoding="utf-8").write(s.replace(old, new, 1))
 PY
 }
-menu() { rm -rf "$W/X50Projector"; mkdir -p "$W/X50Projector"; cp -R "$G/apps/X50Projector/src" "$W/X50Projector/src"
+menu() { rm -rf "$W/X50Projector"; mkdir -p "$W/X50Projector"; cp -R "$G/apps/LumenProjector/host/activity/src" "$W/X50Projector/src" && cp -R "$G/apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/." "$W/X50Projector/src/"
          cp "$R/allowed_x50projector.tsv" "$W/allowed.tsv"; cp "$R/unbanned_x50projector.tsv" "$W/unbanned_x50projector.tsv"; }
 GM=src/org/lumen/x50/projector/GmpfCall.java
 UN=$W/unbanned_x50projector.tsv
 
-menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 228 calls"
+menu; chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect menu_with_its_list 0 "OK: 244 calls"
 menu; chk "$W/X50Projector" "$W/allowed.tsv"; RC=$?; expect menu_without_list_11 1 "Call.CORRECT_KEYSTONE: DisplayManager 11 correctKeystone is banned"
 grep -qF "Call.SET_TILT_SHIFT_MOVE: ProjectorFocusManager 88 setTiltShiftMove is banned" "$W/out" && grep -qF "Call.AUTO_FOCUS: ProjectorFocusManager 3 autoFocus is banned" "$W/out" \
   && ok menu_without_list_88_3 || bad menu_without_list_88_3
@@ -74,12 +74,12 @@ PY
 printf 'DisplayManager\t11\tcorrectKeystone\tint(byte)\targs:50\ttest\n' >> "$W/eye_allowed.tsv"
 grep -q 'DISPLAY(' "$EG" && grep -q 'String args()' "$EG" || true
 chk "$W/X50EyeGuard" "$W/eye_allowed.tsv" "$R/unbanned_x50projector.tsv"; RC=$?
-expect eyeguard_cannot_use_menu_list 1 "is for apps/X50Projector, not for X50EyeGuard"
+expect eyeguard_cannot_use_menu_list 1 "is for X50Projector, not for X50EyeGuard"
 grep -qF "Call.CORRECT_KEYSTONE: DisplayManager 11 correctKeystone is banned" "$W/out" && ok eyeguard_11_still_banned || bad eyeguard_11_still_banned
 
 # the menu's own sources under another app name: refused as well
 menu; rm -rf "$W/OtherApp"; mv "$W/X50Projector" "$W/OtherApp"
-chk "$W/OtherApp" "$W/allowed.tsv" "$UN"; RC=$?; expect other_app_name_refused 1 "is for apps/X50Projector, not for OtherApp"
+chk "$W/OtherApp" "$W/allowed.tsv" "$UN"; RC=$?; expect other_app_name_refused 1 "is for X50Projector, not for OtherApp"
 
 # the Call's range must be the list's
 menu; sub "$W/X50Projector/$GM" '"correctKeystone", "50")' '"correctKeystone", "50;51")'
@@ -92,9 +92,9 @@ chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect shift_range_widened_
 menu; sub "$UN" $'correctKeystone\targs:50\t' $'correctKeystone\targs:0..100\t'
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect list_range_not_allow_range 1 "args '0..100' is not the allow list's args '50'"
 # only BANNED rows can be unbanned, and every row must be used
-menu; printf 'apps/X50Projector\tDisplayManager\t56\tgenerateLogoByTrapezoid\targs:0\ttest\n' >> "$UN"
+menu; printf 'X50Projector\tDisplayManager\t56\tgenerateLogoByTrapezoid\targs:0\ttest\n' >> "$UN"
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect review_row_not_unbannable 1 "56 generateLogoByTrapezoid is no BANNED row"
-menu; printf 'apps/X50Projector\tProjectorFocusManager\t89\tsetTiltShiftSpeed\targs:0,0\ttest\n' >> "$UN"
+menu; printf 'X50Projector\tProjectorFocusManager\t89\tsetTiltShiftSpeed\targs:0,0\ttest\n' >> "$UN"
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect unused_row_refused 1 "89 setTiltShiftSpeed is no Call of the app"
 menu; printf 'apps/X50EyeGuard\tDisplayManager\t11\tcorrectKeystone\targs:50\ttest\n' >> "$UN"
 chk "$W/X50Projector" "$W/allowed.tsv" "$UN"; RC=$?; expect mixed_app_list_refused 1 "is for apps/X50EyeGuard, not for X50Projector"
@@ -147,8 +147,8 @@ import check_hal, devices
 bad = []
 reg = devices.load(G)
 d = reg["g0111"]
-cm = check_hal.command(G, d, app=os.path.join(G, "apps/X50Projector"), allowed="devices/g0111/research/allowed_x50projector.tsv",
-                       app_rel="apps/X50Projector")
+cm = check_hal.command(G, d, app=os.path.join(G, "apps/LumenProjector/host/activity"), allowed="devices/g0111/research/allowed_x50projector.tsv",
+                       app_rel="apps/LumenProjector/host/activity")
 ce = check_hal.command(G, d, app=os.path.join(G, "apps/X50EyeGuard"), allowed=d["hal_allowed"], app_rel="apps/X50EyeGuard")
 if "--unbanned" not in cm or not cm[cm.index("--unbanned") + 1].endswith("devices/g0111/research/unbanned_x50projector.tsv"):
     bad.append("the menu's check gets no --unbanned: %s" % cm)
@@ -156,7 +156,9 @@ if "--unbanned" in ce:
     bad.append("the eye guard's check gets --unbanned: %s" % ce)
 # the X50 family apps: the X50 Ultra Max g0100 (2026-11-11), the RS30 Ultra Max g0155 (2026-11-12) and the TITAN Noir
 # Pro h0062 and Max h0063 (2026-11-13) run the same menu with the same exceptions, row for row
-X50 = ("g0111", "g0100", "g0155", "h0061", "h0062", "h0063")
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import layered  # noqa: E402
+X50 = tuple(sorted(layered.members(G, "mt9681"), key=lambda c: c != "g0111"))   # g0111 first: the reference rows
 rows = lambda f: [l for l in open(os.path.join(G, f), encoding="utf-8").read().splitlines() if l.strip() and not l.startswith("#")]
 for c in X50[1:]:
     if rows("devices/%s/research/unbanned_x50projector.tsv" % c) != rows("devices/g0111/research/unbanned_x50projector.tsv"):
@@ -172,14 +174,14 @@ for c, v in sorted(reg.items()):
 t = tempfile.mkdtemp()
 try:
     shutil.copytree(os.path.join(G, "devices"), os.path.join(t, "devices"))
-    for a in ("apps/X50Projector", "apps/X50EyeGuard", "apps/X50PowerOverlay", "apps/LumenDsuInstall", "apps/X50TvInput"):
+    for a in ("apps/LumenProjector/host/activity", "apps/X50EyeGuard", "apps/X50PowerOverlay", "apps/LumenDsuInstall", "apps/X50TvInput"):
         if os.path.isdir(os.path.join(G, a)):
             os.makedirs(os.path.join(t, a), exist_ok=True)
-    conf = os.path.join(t, "devices/g0111/device.conf")
+    conf = os.path.join(t, "devices/_family/mt9681/mt9681.device.conf")
     base = open(conf, encoding="utf-8").read()
     for name, old, new, want in [
-        ("eye guard entry", "hal_unbanned=apps/X50Projector:", "hal_unbanned=apps/X50EyeGuard:", "the list must be"),
-        ("not a HAL app", "hal_unbanned=apps/X50Projector:", "hal_unbanned=apps/X50PowerOverlay:", "is not a HAL app"),
+        ("eye guard entry", "hal_unbanned=apps/LumenProjector/host/activity:", "hal_unbanned=apps/X50EyeGuard:", "the list must be"),
+        ("not a HAL app", "hal_unbanned=apps/LumenProjector/host/activity:", "hal_unbanned=apps/X50PowerOverlay:", "is not a HAL app"),
         ("other file name", "unbanned_x50projector.tsv", "unbanned_other.tsv", "the list must be")]:
         open(conf, "w", encoding="utf-8").write(base.replace(old, new, 1))
         errs = devices.validate(t)[0]

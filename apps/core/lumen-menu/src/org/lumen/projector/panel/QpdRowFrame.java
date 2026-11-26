@@ -168,12 +168,13 @@ final class QpdRowFrame extends ViewGroup {
     }
 
     boolean isFocusableRow() {
-        return row.getVisibility() == VISIBLE && row.isFocusable() && kind != HEADER && kind != TEXT;
+        return row.getVisibility() == VISIBLE && row.isFocusable() && kind != HEADER;   // a readable text row too
     }
 
     /** A header without text: the stock line between two groups (MenuSpec.LINE), drawn as the divider alone. */
     boolean isLine() {
-        return kind == HEADER && PageAccess.headerText((HeaderRow) row).length() == 0;
+        return kind == HEADER && PageAccess.headerText((HeaderRow) row).length() == 0
+                && ((HeaderRow) row).getState().length() == 0;
     }
 
     // ------------------------------------------------------------------ sizes
@@ -289,7 +290,7 @@ final class QpdRowFrame extends ViewGroup {
     private String key() {
         StringBuilder b = new StringBuilder();
         b.append(row.getVisibility()).append('|').append(title()).append('|').append(valueText());
-        if (kind == HEADER) b.append(PageAccess.headerText((HeaderRow) row));
+        if (kind == HEADER) b.append(PageAccess.headerText((HeaderRow) row)).append('|').append(((HeaderRow) row).getState());
         if (kind == TEXT) b.append(PageAccess.text((TextRow) row));
         if (kind == TOGGLE) b.append(((ToggleRow) row).isChecked() == null);
         return b.toString();
@@ -313,8 +314,9 @@ final class QpdRowFrame extends ViewGroup {
             }
             case HEADER: {
                 CharSequence t = PageAccess.headerText((HeaderRow) row);
-                StaticLayout l = descLayout(w, t, headP, 1.2f);
-                h = t.length() == 0 ? 0 : Math.round(px(look.list ? 20 : 16) + l.getHeight() + px(look.list ? 6 : 8));
+                boolean state = ((HeaderRow) row).getState().length() > 0;
+                StaticLayout l = descLayout(w, t.length() == 0 && state ? " " : t, headP, 1.2f);
+                h = t.length() == 0 && !state ? 0 : Math.round(px(look.list ? 20 : 16) + l.getHeight() + px(look.list ? 6 : 8));
                 break;
             }
             case TEXT: {
@@ -455,6 +457,7 @@ final class QpdRowFrame extends ViewGroup {
             c.translate(px(QpdLayout.ROW_PAD), top + px(look.list ? 20 : 16));
             descLayout(w, PageAccess.headerText((HeaderRow) row), headP, 1.2f).draw(c);
             c.restore();
+            drawHeaderState(c, w, top + px(look.list ? 20 : 16));
             return;
         }
         if (kind == TEXT) {
@@ -465,10 +468,25 @@ final class QpdRowFrame extends ViewGroup {
             return;
         }
         boolean enabled = !(row instanceof Row) || ((Row) row).isRowEnabled();
-        int save = enabled ? c.save() : c.saveLayerAlpha(0, top, w, getHeight(), 102);
+        int save = enabled ? c.save() : c.saveLayer(0, top, w, getHeight(), QpdStyle.disabledLayer());
         c.translate(0, top);
         drawRow(c, w, getHeight() - top);
         c.restoreToCount(save);
+    }
+
+    /**
+     * The state text on the right of a header (the picture page's signal format, stock SubTitleWithStateCellView), on
+     * the header's first line, in the accent colour so it reads as a value.
+     */
+    private void drawHeaderState(Canvas c, int w, float top) {
+        CharSequence st = ((HeaderRow) row).getState();
+        if (st.length() == 0) return;
+        int was = headP.getColor();
+        headP.setColor(QpdStyle.ACCENT);
+        String s = st.toString();
+        float x = getLayoutDirection() == LAYOUT_DIRECTION_RTL ? px(QpdLayout.ROW_PAD) : w - px(QpdLayout.ROW_PAD) - headP.measureText(s);
+        c.drawText(s, x, top - headP.ascent(), headP);
+        headP.setColor(was);
     }
 
     private void drawRow(Canvas c, int w, int h) {

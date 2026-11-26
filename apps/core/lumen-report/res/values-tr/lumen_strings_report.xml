@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
-     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
-     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+     under the module prefix, plus the automatic reports. lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
 <resources>
     <string name="lumen_report_title">Sorun raporu gönder</string>
-    <string name="lumen_report_intro">Lumen OS geliştiricisinin neyin yanlış gittiğini anlamasına yardımcı olur. “Raporu gönder”e basana kadar hiçbir şey gönderilmez.</string>
-    <string name="lumen_report_included">Dahil olanlar</string>
-    <string name="lumen_report_inc_system">Sistem sürümü, çalışma süresi ve hangi sistem kopyasının çalıştığı</string>
-    <string name="lumen_report_inc_logs">Son 30 dakikanın sistem ve Lumen uygulama günlükleri</string>
-    <string name="lumen_report_inc_crashes">Uygulama adlarıyla çökme, donma ve yeniden başlatma kayıtları</string>
-    <string name="lumen_report_inc_kernel">Son yeniden başlatmanın çekirdek günlüğü ve güncelleme günlüğü</string>
-    <string name="lumen_report_inc_state">Ekran, bellek ve ağ türü</string>
-    <string name="lumen_report_excluded">Kaldırılanlar veya dahil olmayanlar</string>
+    <string name="lumen_report_intro">Bir şey düzgün çalışmıyorsa rapor gönderin. Geliştirici projektörün günlüklerini görür ve nedeni daha hızlı bulur.</string>
+    <string name="lumen_report_included">Raporda olanlar</string>
+    <string name="lumen_report_inc_system">Sistem sürümü, ekran, bellek ve ağ türü</string>
+    <string name="lumen_report_inc_logs">Sistem ve Lumen uygulama günlükleri</string>
+    <string name="lumen_report_inc_crashes">Çökmeler, donmalar ve yeniden başlatmalar</string>
+    <string name="lumen_report_inc_kernel">Çekirdek ve güncelleme günlükleri</string>
+    <string name="lumen_report_excluded">Asla gönderilmez</string>
     <string name="lumen_report_exc_accounts">Hesaplar, e-posta adresleri ve telefon numaraları</string>
     <string name="lumen_report_exc_network">Wi-Fi ağ adları, IP ve MAC adresleri</string>
     <string name="lumen_report_exc_serial">Seri numarası: yerine bu projektörün rastgele bir kimliği kullanılır</string>
     <string name="lumen_report_exc_apps">Kendi yüklediğiniz uygulamaların günlükleri</string>
     <string name="lumen_report_exc_files">Fotoğraflar, dosyalar ve şifreler</string>
     <string name="lumen_report_footer">Rapor 30 gün saklanır. Yalnızca Lumen OS geliştiricisi açabilir.</string>
-    <string name="lumen_report_last">Son rapor: %1$s, %2$s</string>
+    <string name="lumen_report_last">Son rapor</string>
     <string name="lumen_report_send">Raporu gönder</string>
-    <string name="lumen_report_collecting">Bilgiler toplanıyor… (%1$d / %2$d)</string>
-    <string name="lumen_report_log_hint">Android cihaz günlüklerine erişime izin verilip verilmeyeceğini sorarsa “İzin ver”i seçin.</string>
-    <string name="lumen_report_sending">Gönderiliyor… %1$s / %2$s</string>
+    <string name="lumen_report_collecting">Günlükler toplanıyor</string>
+    <string name="lumen_report_sending">Rapor gönderiliyor</string>
     <string name="lumen_report_done_title">Rapor gönderildi</string>
     <string name="lumen_report_done_text">Bu kodu sorunun kısa bir açıklamasıyla birlikte Lumen OS geliştiricisine gönderin.</string>
     <string name="lumen_report_failed_title">Rapor gönderilmedi</string>
@@ -34,11 +31,16 @@
     <string name="lumen_report_err_server">Rapor sunucusunda bir sorun oluştu. Daha sonra tekrar deneyin.</string>
     <string name="lumen_report_err_collect">Rapor hazırlanamadı.</string>
     <string name="lumen_report_retry">Tekrar dene</string>
-    <string name="lumen_report_close">Kapat</string>
-    <string name="lumen_report_cancel">İptal</string>
-    <string name="lumen_report_auto">Sorun raporlarını otomatik gönder</string>
-    <string name="lumen_report_auto_note">Sistem ya da bir Lumen uygulaması çökerse veya donarsa kısa bir rapor kendiliğinden gönderilir. Kendi yüklediğiniz uygulamaların günlükleri asla bulunmaz.</string>
+    <string name="lumen_report_auto">Otomatik gönder</string>
     <string name="lumen_report_queued_title">Rapor daha sonra gönderilecek</string>
     <string name="lumen_report_queued_text">Rapor sunucusuna şu anda ulaşılamıyor. Projektör raporu ilk fırsatta kendisi gönderir. Kodu daha sonra burada görünür.</string>
-    <string name="lumen_report_last_auto">Son otomatik rapor: %1$s, %2$s</string>
+    <string name="lumen_report_last_auto">Son otomatik rapor</string>
+    <string name="lumen_report_heading">Sorun raporu</string>
+    <string name="lumen_report_send_sub">Günlükler ve projektör durumu</string>
+    <string name="lumen_report_auto_sub">Sistem veya bir Lumen uygulaması çöktüğünde</string>
+    <string name="lumen_report_what">Raporda neler var</string>
+    <string name="lumen_report_what_sub">Ve asla gönderilmeyenler</string>
+    <string name="lumen_report_inc_devices">HDMI, ses ve güç: cihazlar ve CEC mesajları</string>
+    <string name="lumen_report_bytes">%2$s içinden %1$s gönderildi</string>
+    <string name="lumen_report_code">Rapor kodu</string>
 </resources>

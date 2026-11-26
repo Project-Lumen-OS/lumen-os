@@ -24,7 +24,7 @@ G=$(cd "$H/../../.." && pwd)
 OPENSSL=${OPENSSL:-/opt/homebrew/bin/openssl}
 [ -x "$OPENSSL" ] || die "no $OPENSSL (OpenSSL 3, not LibreSSL)"
 C=${X50_CODENAME:-g0111}
-python3 -B "$G/devices/g0111/image/x50_family.py" check "$C" || die "X50_CODENAME $C is not an X50 family model (devices/<c>/build.conf with the X50 recipe)"
+python3 -B "$G/devices/g0111/image/x50_family.py" check-base "$C" || die "X50_CODENAME $C is not composed on the Z9X 1.0.9 image (devices/<c>/build.conf base_pin)"
 KD=$HOME/.lumen-keys/$C
 [ -f "$KD/platform.pk8" ] && [ -f "$KD/FINGERPRINTS.txt" ] || die "$KD is not the $C key dir (tools/devices/gen_device_keys.sh $C)"
 cmp -s <("$OPENSSL" x509 -in "$KD/platform.x509.pem" -outform DER) <("$OPENSSL" x509 -in "$G/devices/$C/certs/platform.x509.pem" -outform DER) \

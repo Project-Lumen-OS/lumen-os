@@ -4,7 +4,7 @@
 
 [Русская версия](ru.md). Other projectors: [Installing Lumen OS](../en.md).
 
-This page is for the XGIMI Play 6, model code G0058. The Play 6 installs with a computer. Lumen Installer on the
+This page is for the XGIMI Play 6, model code G0058. The Play 6 installs with a computer. Lumen OS Live on the
 projector does not support it. Every other projector installs only from the projector itself, over the
 network.
 

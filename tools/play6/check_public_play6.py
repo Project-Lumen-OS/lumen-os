@@ -91,6 +91,8 @@ ABSENT = [
     "system/etc/init/play6_boottiming.rc", "system/etc/xgimi/play6_boottiming.sh",
     "system/product/etc/init/play6_perf.rc",
     "system/app/Play6Updater", "system/app/LumenBridgeUpdater", "system/etc/init/lumen_recovery.rc",
+    "system/app/LumenBridgeProjector", "system/app/LumenBridgeHome", "system/app/LumenBridgeSetup",
+    "system/app/LumenBridgeTvInput",
     "system/etc/sysconfig/lumen-gapps.xml",
     "system/product/priv-app/PrebuiltGmsCorePano", "system/system_ext/priv-app/GoogleServicesFramework",
     "system/product/priv-app/Phonesky", "system/product/priv-app/Tubesky",

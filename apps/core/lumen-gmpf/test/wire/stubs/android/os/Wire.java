@@ -15,6 +15,11 @@ public final class Wire {
     public static final java.util.ArrayDeque<Object> SCRIPT = new java.util.ArrayDeque<>();
     public static int seed;
     public static boolean failNext, unimplementedNext;
+    /** The next getInterfaceVersion is answered unimplemented (a guard call the vendor refuses). */
+    public static boolean unimplementedMetaNext;
+    /** Every death recipient a transport linked, so a session can let the vendor die (die()). */
+    public static final List<IBinder.DeathRecipient> DEATHS = new ArrayList<>();
+    public static void die() { for (IBinder.DeathRecipient d : new ArrayList<>(DEATHS)) d.binderDied(); DEATHS.clear(); }
     /** The last callback binder the client sent (HIDL HwBinder or AIDL Binder). */
     public static Object lastBinder;
     private static int n;

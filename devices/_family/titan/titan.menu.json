@@ -1,0 +1,13 @@
+{
+  "include": "devices/_family/x50/x50.menu.json",
+  "features": {
+    "picture.mode": {"options": ["standard", "movie", "sport", "filmmaker", "imax", "isf_day", "isf_night", "performance", "dv_bright", "dv_dark"], "support": {"imax": ["imax", "hdr10"], "dv_bright": ["dolby"], "dv_dark": ["dolby"], "filmmaker": ["sdr", "hdr", "hdr10", "filmmaker"]}},
+    "picture.memc": {"options": ["off", "low", "medium", "high"]},
+    "picture.custom_base": {"options": ["standard", "movie", "sport", "filmmaker", "isf_day", "isf_night"]}
+  },
+  "off": {
+    "settings.parental": "not on the TITAN stock trees: dianahy, dianahypro and dianahymax of 1.3.38 have no parental_settings row (dianapro has it), so the TITAN family stays as stock",
+    "settings.screensaver_now": "not on the TITAN stock trees: dianahy, dianahypro and dianahymax of 1.3.38 have no screen_saver_simple row (dianapro has it), so the TITAN family stays as stock",
+    "settings.screensaver_delay": "not on the TITAN stock trees: dianahy, dianahypro and dianahymax of 1.3.38 have no screen_saver_simple row (dianapro has it), so the TITAN family stays as stock"
+  }
+}

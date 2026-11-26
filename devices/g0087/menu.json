@@ -1,0 +1,6 @@
+{
+  "include": "devices/_family/rs20-hal330/rs20-hal330.menu.json",
+  "device": "g0087",
+  "model": "G0087",
+  "note": "RS 20 (G0087, Product_athenayouth): the RS 20 profile, stock tree settings_tree_product_athenayouth (devices/g0087/stock.tsv)."
+}

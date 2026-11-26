@@ -47,7 +47,12 @@ public final class Preflight {
         Block(String res, String arg) { this.res = res; this.arg = arg; }
     }
 
-    /** Is this manifest an update for this projector at all? null = yes. "uptodate" = nothing newer. */
+    /**
+     * Is this manifest an update for this projector at all? null = yes. "uptodate" = nothing newer. The version
+     * comes right after the identity (schema, wire id): a manifest that offers nothing newer than the installed
+     * build is "up to date" and never a refusal, so a stable channel behind a beta build (1.0.9 for a unit on
+     * 1.0.10-beta20) never shows the firmware or channel text. Only a newer release has its requirements checked.
+     */
     public static Block applicable(UpdateManifest m) {
         return applicable(m.schema, m.device, m.channel, m.vendorIncremental, m.versionCode, m.minVersionCode);
     }
@@ -56,20 +61,37 @@ public final class Preflight {
                             int versionCode, int minVersionCode) {
         String mine = Ota.device();
         if (schema != 1 || mine.isEmpty() || !mine.equals(device)) return new Block("err_signature", "");
+        // never a downgrade: also after beta updates are turned off, nothing is offered until the stable
+        // channel has a version above the installed beta
+        int cur = Ota.currentVersionCode();
+        if (versionCode <= cur) return new Block("uptodate", "");
         // the manifest's channel must be a file this check reads (docs/ota.md "Variants", Channels): a USB stick
         // or a mirror may carry another edition's signed manifest, which must never be installed here; a beta
         // manifest counts only while beta updates are on, the stable one always
         if (!Channels.accepts(channel)) return new Block("blk_channel", channel);
         String vendor = Ota.prop("ro.vendor.build.version.incremental");
         if (!vendorIncremental.isEmpty() && !vendorIncremental.contains(vendor)) {
-            return new Block("blk_vendor", vendor.isEmpty() ? "?" : vendor);
+            return new Block("blk_vendor", args(vendor.isEmpty() ? "?" : vendor, String.join(", ", vendorIncremental)));
         }
-        // never a downgrade: also after beta updates are turned off, nothing is offered until the stable
-        // channel has a version above the installed beta
-        int cur = Ota.currentVersionCode();
-        if (versionCode <= cur) return new Block("uptodate", "");
         if (cur < minVersionCode) return new Block("blk_min_version", Ota.versionName(minVersionCode));
         return null;
+    }
+
+    /** Separates the arguments of a block text with more than one placeholder (blk_vendor: %1$s, %2$s). */
+    static final String ARG_SEP = "|";
+
+    /** One stored argument string of several values: the first stays readable alone (older stored errors). */
+    static String args(String... values) { return String.join(ARG_SEP, values); }
+
+    /**
+     * The format arguments of a block text with {@code n} placeholders from a stored argument string: split at
+     * ARG_SEP, missing ones "?" (an error stored by an older updater holds only the first).
+     */
+    public static Object[] formatArgs(String arg, int n) {
+        String[] p = (arg == null ? "" : arg).split(java.util.regex.Pattern.quote(ARG_SEP), Math.max(1, n));
+        Object[] out = new Object[Math.max(1, n)];
+        for (int i = 0; i < out.length; i++) out[i] = i < p.length ? p[i] : "?";
+        return out;
     }
 
     /** Protected-video blob set check: warning only. */

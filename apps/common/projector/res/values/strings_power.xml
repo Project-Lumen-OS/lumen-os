@@ -13,8 +13,8 @@
          for the label. -->
     <string name="power_standby_now">Right away</string>
     <string name="power_standby_never">Never</string>
-    <string name="power_quick_wake_minutes">%1$d min</string>
-    <string name="power_quick_wake_hours">%1$d h</string>
+    <string name="power_quick_wake_minutes">@string/lumen_1_d_min</string>
+    <string name="power_quick_wake_hours">@string/lumen_1_d_h</string>
     <!-- Lumen OS 1.0 (real STR): replaces power_standby_summary in the quick panel's All settings page
          (the standby window row is gone; power_standby_* stay only for the allow_str=0 kill switch). -->
     <string name="power_sleep_summary">The power key, the sleep timer and the idle time turn the light off and put the projector to sleep. Press power to wake it within seconds, right where you left off.</string>
@@ -23,20 +23,20 @@
     <string name="power_wordmark" translatable="false">Lumen</string>
     <!-- Long-press power menu: Sleep, Power off, Restart, Sleep timer. Timer page: presets, custom (LEFT/RIGHT), turn off. -->
     <!-- Lumen OS 1.0: first tile, the same as a short POWER press (light off, then sleep) -->
-    <string name="power_menu_sleep">Sleep</string>
-    <string name="power_menu_off">Power off</string>
-    <string name="power_menu_restart">Restart</string>
-    <string name="power_menu_timer">Sleep timer</string>
-    <string name="power_timer_min">%1$d min</string>
-    <string name="power_timer_hours">%1$d h</string>
+    <string name="power_menu_sleep">@string/lumen_sleep</string>
+    <string name="power_menu_off">@string/lumen_power_off</string>
+    <string name="power_menu_restart">@string/lumen_restart</string>
+    <string name="power_menu_timer">@string/lumen_sleep_timer</string>
+    <string name="power_timer_min">@string/lumen_1_d_min</string>
+    <string name="power_timer_hours">@string/lumen_1_d_h</string>
     <string name="power_timer_hours_min">%1$d h %2$d min</string>
     <string name="power_timer_custom">Custom</string>
-    <string name="power_timer_cancel">Turn off timer</string>
+    <string name="power_timer_cancel">@string/lumen_turn_off_timer</string>
     <string name="power_timer_left">%1$s left</string>
     <string name="power_timer_hint">When the time is up, sound and light fade out and the projector goes to standby.</string>
     <string name="power_timer_running">Turns off at %1$s</string>
     <string name="power_timer_started">Sleep timer: %1$s</string>
-    <string name="power_timer_canceled">Sleep timer off</string>
+    <string name="power_timer_canceled">@string/lumen_sleep_timer_off</string>
     <string name="power_timer_warn">Turning off in 1 minute</string>
     <string name="power_timer_warn_desc">Hold the power key to change the timer</string>
     <string name="power_action_failed">That did not work. Please try again.</string>

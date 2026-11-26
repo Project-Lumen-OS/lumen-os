@@ -52,7 +52,7 @@ recipe_of() {
   python3 -B -c 'import sys; sys.path.insert(0, sys.argv[1]); import assemble_app as a
 import os
 r = a.find_recipe(sys.argv[2], sys.argv[3], sys.argv[4])
-print(r if r and a.parse(sys.argv[2], r)["identical"] != "allow" else "")' "$H" "$ROOT" "$C" "$1"
+print(r if r and a.parse(sys.argv[2], r, sys.argv[3])["identical"] != "allow" else "")' "$H" "$ROOT" "$C" "$1"
 }
 for n in $APPS; do
   # the app's folder: apps/<name>, or its row of apps/app_dirs.tsv (a folder renamed after the APK name shipped)
@@ -61,8 +61,14 @@ for n in $APPS; do
   SRC=$ROOT/$D
   RCP=$(recipe_of "$n") || die "$n: cannot read its recipe"
   if [ -n "$RCP" ]; then
-    python3 -B "$H/assemble_app.py" --root "$ROOT" "$RCP" --out "$W/tree/$n" || die "$n: the recipe $RCP does not assemble"
+    python3 -B "$H/assemble_app.py" --root "$ROOT" --device "$C" --app "$n" --out "$W/tree/$n" || die "$n: the recipe $RCP does not assemble"
     SRC=$W/tree/$n
+  fi
+  # an app whose native libraries are not in git (apps/<dir>/jni/LIBS.sha256, the AirPlay receiver): without a lib/ on
+  # this host its assembled tree takes them from the released pin overlay/apps_v1/<name>.apk, checked file by file
+  if [ -n "$RCP" ] && [ -f "$ROOT/$D/jni/LIBS.sha256" ] && [ ! -d "$SRC/lib" ]; then
+    sh "$ROOT/$D/tools/libs_from_pin.sh" "$ROOT/overlay/apps_v1/$n.apk" "$SRC" >&2 \
+      || die "$n: no lib/ here and overlay/apps_v1/$n.apk does not carry the libraries of $D/jni/LIBS.sha256"
   fi
   # optional apps/<name>/BUILD_VERSION "CODE NAME": the version of an app whose manifest has none (build_apk.sh)
   VC=; VN=

@@ -1,0 +1,47 @@
+{
+  "include": "devices/_family/mt9681/mt9681.menu.json",
+  "features": {
+    "eye": {"options": ["off", "follow", "rest"]},
+    "picture.color_temp": {"options": ["standard", "movie", "d65"]},
+    "picture.3d": {"options": ["off", "sbs", "tb", "sbs_2d", "tb_2d", "frame_packing"]},
+    "zoom.memory": {},
+    "keystone.color_uniformity": {},
+    "picture.iris": {"options": ["dynamic", "f2", "f3", "f4", "f5_5", "f7"]},
+    "picture.gamut": {"options": ["native", "bt2020", "p3", "bt709"]},
+    "picture.db_page": {},
+    "picture.db_page.switch": {},
+    "picture.db_page.level": {"options": ["low", "high"]},
+    "picture.db_page.subtitle_top": {},
+    "picture.db_page.subtitle_bottom": {},
+    "picture.db_page.reset": {},
+    "picture.black_tuning": {"min": -40, "max": 40},
+    "settings.high_altitude": {},
+    "settings.serial": {},
+    "serial.switch": {},
+    "serial.id_group": {"options": ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]},
+    "serial.id_number": {"options": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]},
+    "serial.ack_group": {},
+    "serial.ack_all": {},
+    "serial.master": {}
+  },
+  "hints": {"eye": "eye_follow"},
+  "sections": {
+    "keystone": {
+      "groups": [
+        {"rows": ["keystone.ak_now", "keystone.fit_now", "keystone.manual", "focus.af_now", "focus.manual", {"page": "focus.settings", "groups": [{"rows": ["focus.smart", "focus.guide"]}]}]},
+        {"header": "auto_correction", "rows": ["keystone.realtime", "keystone.on_power", "keystone.obstacle", "keystone.curtain"]},
+        {"header": "size_position", "rows": ["zoom", "zoom.move", "keystone.rotation", "keystone.angle_h", "keystone.angle_v"]},
+        {"header": "smart", "rows": ["keystone.wall_color", "keystone.color_uniformity", "zoom.memory"]},
+        {"header": "more", "rows": ["keystone.restore", "projection.mode", "projection.rear"]}
+      ]
+    },
+    "picture": {
+      "groups": [
+        {"header": "projector_brightness", "rows": ["lamp", "picture.iris"]},
+        {"header": "image", "rows": ["picture.mode", "picture.dv_screen", "picture.custom_new", {"page": "picture.settings", "groups": [{"rows": ["picture.custom_base"]}, {"header": "basic", "rows": ["picture.auto_switch", "picture.pq", "picture.memc"]}, {"header": "colour", "rows": ["picture.color_temp", "picture.wb", "picture.gamut", "picture.color_opt", "picture.cc"]}, {"header": "contrast", "rows": ["picture.gamma", "picture.gamma_index", "picture.hdr", "picture.local_contrast", "picture.dynamic_contrast", "picture.ai_contrast", "picture.db_page", "picture.dynamic_black", "picture.black_tuning"]}, {"header": "clarity", "rows": ["picture.noise", "picture.super_res"]}, {"header": "image_more", "rows": ["picture.reset", "picture.custom_delete"]}]}, "picture.reset_all"]},
+        {"header": "image_more", "rows": ["picture.3d", "picture.style_filter", "picture.anti_rbe"]},
+        {"header": "hdmi", "rows": ["hdmi.range", "hdmi.edid", "picture.aspect"]}
+      ]
+    }
+  }
+}

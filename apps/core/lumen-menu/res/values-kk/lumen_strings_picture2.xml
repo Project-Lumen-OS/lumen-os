@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">Ақ түс балансы</string>
-    <string name="lumen_m_wb_2">2 нүкте</string>
-    <string name="lumen_m_wb_11">11 нүкте</string>
-    <string name="lumen_m_red_gain">Қызыл күшейту</string>
-    <string name="lumen_m_green_gain">Жасыл күшейту</string>
-    <string name="lumen_m_blue_gain">Көк күшейту</string>
-    <string name="lumen_m_red_offset">Қызыл ығысу</string>
-    <string name="lumen_m_green_offset">Жасыл ығысу</string>
-    <string name="lumen_m_blue_offset">Көк ығысу</string>
-    <string name="lumen_m_wb_level">%1$d%%</string>
-    <string name="lumen_m_red">Қызыл</string>
-    <string name="lumen_m_green">Жасыл</string>
-    <string name="lumen_m_blue">Көк</string>
-    <string name="lumen_m_cyan">Көгілдір</string>
-    <string name="lumen_m_magenta">Күлгін</string>
-    <string name="lumen_m_yellow">Сары</string>
-    <string name="lumen_m_skin">Тері реңкі</string>
-    <string name="lumen_m_cc">Түсті түзету</string>
-    <string name="lumen_m_cc_color">Түс</string>
-    <string name="lumen_m_hue">Реңк</string>
-    <string name="lumen_m_memc_original">Бастапқы кадр жиілігі</string>
-    <string name="lumen_m_reset_defaults">Әдепкі мәндерді қайтару</string>
     <string name="lumen_m_gray_level">Сұр деңгейі</string>
     <string name="lumen_m_hdr_enh">HDR жақсарту</string>
     <string name="lumen_m_screen_size">Экран өлшемі</string>
     <string name="lumen_m_screen_gain">Экран күшейтуі</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Bright</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dark</string>
     <string name="lumen_m_dv_screen">Dolby Vision параметрлері</string>
     <string name="lumen_m_auto_switch">Режимді автоматты ауыстыру</string>
     <string name="lumen_m_style_filter">Стиль сүзгісі</string>

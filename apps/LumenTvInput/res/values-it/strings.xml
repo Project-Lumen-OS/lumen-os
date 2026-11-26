@@ -5,7 +5,6 @@
     <string name="app_name">HDMI</string>
     <string name="service_label">Ingressi HDMI</string>
     <string name="viewer_label">HDMI</string>
-    <string name="picker_label">Ingresso</string>
     <string name="settings_label">Impostazioni HDMI</string>
     <string name="input_label">HDMI %1$d</string>
     <string name="input_label_arc">HDMI %1$d (ARC)</string>
@@ -23,18 +22,7 @@
     <string name="state_asleep_device">Il dispositivo è in standby</string>
     <string name="state_press_ok_wake">Premi OK per accenderlo</string>
     <string name="state_waking">Accensione…</string>
-    <string name="picker_title">Ingresso</string>
-    <string name="picker_home">Schermata Home</string>
-    <string name="picker_settings">Impostazioni HDMI</string>
-    <string name="picker_empty">Nessun ingresso HDMI trovato</string>
-    <string name="pref_auto_switch">Passa automaticamente a HDMI quando si collega un dispositivo</string>
-    <string name="pref_return_home">Torna alla schermata Home quando la sorgente viene scollegata</string>
-    <string name="pref_boot_source">Sorgente all\'accensione: %1$s</string>
-    <string name="boot_source_home">Schermata Home</string>
-    <string name="pref_boot_source_note">Se un dispositivo accende il proiettore tramite HDMI-CEC, si apre il suo ingresso.</string>
     <string name="back_key_guide">INDIETRO ora controlla il dispositivo collegato. Premi HOME per uscire.</string>
-    <string name="settings_inputs_header">Ingressi:</string>
-    <string name="settings_safe_mode">Modalità provvisoria: dopo errori ripetuti, il passaggio automatico resta disattivato fino al prossimo riavvio.</string>
     <string name="toast_no_input">%1$s non è disponibile</string>
     <string name="toast_setup_running">Prima completa la configurazione</string>
 </resources>

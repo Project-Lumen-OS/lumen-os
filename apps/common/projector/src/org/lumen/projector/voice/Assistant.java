@@ -12,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.AudioManager;
+import android.media.tv.TvContract;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
@@ -36,6 +37,7 @@ import org.lumen.projector.ui.OverlayHost;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -464,9 +466,10 @@ public final class Assistant {
         am.dispatchMediaKeyEvent(new KeyEvent(t, t, KeyEvent.ACTION_UP, code, 0));
     }
 
-    /** Launchable apps (TV first, then phone launchers), one per package. */
+    /** Launchable apps (TV first, then phone launchers), one per package, marked when they open TV channels. */
     static List<AppMatcher.App> apps(Context c) {
         PackageManager pm = c.getPackageManager();
+        HashSet<String> tv = tvApps(pm);
         ArrayList<AppMatcher.App> out = new ArrayList<>();
         ArrayList<String> seen = new ArrayList<>();
         for (String cat : new String[] {Intent.CATEGORY_LEANBACK_LAUNCHER, Intent.CATEGORY_LAUNCHER}) {
@@ -475,7 +478,21 @@ public final class Assistant {
                 String p = r.activityInfo.packageName;
                 if (seen.contains(p)) continue;
                 seen.add(p);
-                out.add(new AppMatcher.App(p, String.valueOf(r.loadLabel(pm))));
+                out.add(new AppMatcher.App(p, String.valueOf(r.loadLabel(pm)), tv.contains(p)));
+            }
+        }
+        return out;
+    }
+
+    /** Packages that open a TV channel of Android's TV list (Live Channels and IPTV apps), HDMI viewers excluded. */
+    private static HashSet<String> tvApps(PackageManager pm) {
+        HashSet<String> out = new HashSet<>();
+        for (String type : new String[] {TvContract.Channels.CONTENT_ITEM_TYPE, TvContract.Channels.CONTENT_TYPE}) {
+            try {
+                Intent i = new Intent(Intent.ACTION_VIEW).setDataAndType(TvContract.Channels.CONTENT_URI, type);
+                for (ResolveInfo r : pm.queryIntentActivities(i, 0)) out.add(r.activityInfo.packageName);
+            } catch (Throwable t) {
+                Log.w(TAG, "tv apps " + type + ": " + t);
             }
         }
         return out;

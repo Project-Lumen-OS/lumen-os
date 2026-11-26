@@ -10,13 +10,16 @@ apps/HbProjector/test/menu/run.sh must turn red, and the unmutated copy must pas
 import os, shutil, subprocess, sys, tempfile
 
 G = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
 P = "src/org/lumen/projector/panel/"
-GT, MF, GI, HM, QP = P + "HbMenuGates.java", P + "HbMenuFeatures.java", P + "HbGameIo.java", P + "HbMenu.java", \
+GT, MF, GI, HM, QP = P + "HbMenuGates.java", P + "HbMenuFeatures.java", P + "HbGameIo.java", P + "ProjectorMenu.java", \
     P + "QuickPanelController.java"
 MF_HbGeneralRows = 'src/org/lumen/projector/panel/HbGeneralRows.java'
 MF_HbHdmiRows = 'src/org/lumen/projector/panel/HbHdmiRows.java'
 MF_HbPictureRows = 'src/org/lumen/projector/panel/HbPictureRows.java'
 KR, APP = "src/org/lumen/projector/KeyReceiver.java", "src/org/lumen/projector/App.java"
+FAM = "src/org/lumen/projector/Family.java"
 PROF = "@G/devices/goat_elegant/menu.json"
 MUT = [
     # ---- the output row lists the rows the HB offers (2026-11-14)
@@ -48,7 +51,8 @@ MUT = [
     ("mf_boost_no_explain", MF_HbPictureRows, "BoostLeave.EXPLAIN_PICTURE_MODE) return boostLocked(pm);", "BoostLeave.EXPLAIN_PICTURE_MODE) { }"),
     ("mf_range_no_hdmi", MF_HbHdmiRows, 'throw new IllegalArgumentException("range " + value);\n                if (!hdmiNow(g)) return "panel_game_hdmi_only";',
      'throw new IllegalArgumentException("range " + value);'),
-    ("mf_reason_unknown", MF_HbPictureRows, 'return "blocked_game";', 'return "blocked_game_x";'),
+    ("mf_reason_unknown", MF_HbPictureRows, 'return "blocked_game";\n        if (m == PictureMode.COLOR_ACCURACY',
+     'return "blocked_game_x";\n        if (m == PictureMode.COLOR_ACCURACY'),
     ("mf_eye_no_nui", MF_HbGeneralRows, '                if (!GmpfClient.nuiReaderReady()) return "eye_unavailable";   // no NUI fifo reader: nothing sent\n', ""),
     ("mf_items_ungated", MF, "return HbMenuGates.gameItems(f -> HbFeatures.on(HbFeatures.F.valueOf(f)));", "return HbMenuGates.gameItems(f -> true);"),
     # ---- game menu io
@@ -59,11 +63,15 @@ MUT = [
     ("gi_vrr_kept_leaving_top", GI, 'if (g2.getVrr(port)) Log.i(TAG, "145(0) before leaving top speed -> " + g2.setVrr(false, port));',
      'Log.i(TAG, "no 145(0)");'),
     # ---- owner, keys, App, the profile
-    ("hm_game_always", HM, "GameMenu.install(c, on ? new HbGameIo(c) : null)", "GameMenu.install(c, new HbGameIo(c))"),
-    ("hm_no_items_check", HM, " && !HbMenuFeatures.gameItems().isEmpty()", ""),
-    ("kr_game_bar", KR, "org.lumen.projector.panel.HbMenu.gearLong(ctx,", "org.lumen.projector.game.GameBar.gearLong(ctx,"),
-    ("app_no_install", APP, "try { org.lumen.projector.panel.HbMenu.install(this); }", "try { }"),
-    ("qp_hal_call", QP, "void toggle() { HbMenu.get(app).toggle(); }", "void toggle() { org.lumen.projector.Hal.isReady(); HbMenu.get(app).toggle(); }"),
+    # the menu owner is the core's panel/ProjectorMenu since step 2c, the HB game io gate is the family's (Family.gameIo)
+    ("hm_game_always", HM, 'p.gameMenu() && "game_menu".equals(p.gearLong()) ? Family.gameIo(c) : null', "Family.gameIo(c)"),
+    ("hm_no_items_check", FAM, "org.lumen.projector.panel.HbMenuFeatures.gameItems().isEmpty() ? null : new org.lumen.projector.panel.HbGameIo(c)",
+     "new org.lumen.projector.panel.HbGameIo(c)"),
+    # the gear long press of the HB is its family's (KeyReceiver calls Family.gearLong since step 3b part 4)
+    ("kr_game_bar", "src/org/lumen/projector/Family.java",
+     "org.lumen.projector.panel.ProjectorMenu.gearLong(ctx, fallback);", "org.lumen.projector.game.GameBar.gearLong(ctx, fallback);"),
+    ("app_no_install", APP, "try { org.lumen.projector.panel.ProjectorMenu.installGameMenu(this); }", "try { }"),
+    ("qp_hal_call", QP, "void toggle() { ProjectorMenu.get(app).toggle(); }", "void toggle() { org.lumen.projector.Hal.isReady(); ProjectorMenu.get(app).toggle(); }"),
     ("prof_sr_item", PROF, '"items": ["lat", "vrr", "hfr", "pic", "dark", "ar"', '"items": ["lat", "vrr", "hfr", "pic", "dark", "sr", "ar"'),
     ("prof_eye_hint", PROF, '"hints": {"picture.mode": "picture_mode",', '"hints": {"eye": "eye_follow", "picture.mode": "picture_mode",'),
     ("prof_lamp_11", PROF, '"lamp": {"min": 1, "max": 10}', '"lamp": {"min": 1, "max": 11}'),
@@ -80,33 +88,57 @@ MUT = [
      "PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, null)"),
     ("mf_picture_pages_basic", MF, "PICTURE_PAGES = PictureSettingsRule.ONE_PAGE;", "PICTURE_PAGES = PictureSettingsRule.BASIC_AND_PRO;"),
     ("mf_press_not_the_look", MF, "        return locked(feature, now);\n", "        return null;\n"),
-    ("mf_no_signal", MF, "        b.signal(Signal.ofHdrType(sn.hdr));", "        b.signal(null);"),
-    ("mf_signal_not_live", MF, "hdr -> cb.accept(Signal.ofHdrType(hdr))", "hdr -> cb.accept(null)"),
-    ("pr_own_vivid_rule", MF_HbPictureRows, '        if (gameModeOn(g, raw)) return "blocked_game";',
-     '        if (m == PictureMode.HDR_VIVID && g.getHdrType() != 6) return EXPLAINED;\n        if (gameModeOn(g, raw)) return "blocked_game";'),
+    ("mf_no_signal", MF, "        b.hdr(HdrFormat.ofHdrType(sn.hdr));", "        b.format(HdrFormat.ofHdrType(sn.hdr));"),
+    ("mf_signal_not_live", MF, "hdr -> cb.accept(HdrFormat.ofHdrType(hdr))", "hdr -> cb.accept(null)"),
+    ("pr_own_vivid_rule", MF_HbPictureRows, '        if (raw != null && PictureMode.fromWire(raw) == m) return null;\n        if (gameModeOn(g, raw)) return "blocked_game";',
+     '        if (raw != null && PictureMode.fromWire(raw) == m) return null;\n        if (m == PictureMode.HDR_VIVID && g.getHdrType() != 6) return EXPLAINED;\n        if (gameModeOn(g, raw)) return "blocked_game";'),
 ]
 
 
 def tree(dst):
-    shutil.copytree(os.path.join(G, "apps/HbProjector"), os.path.join(dst, "apps/HbProjector"),
-                    ignore=shutil.ignore_patterns("build"))
+    # the HB family adapter and the core: most HB menu sources live there now
+    for rel in ("apps/LumenProjector/vendor/xgimi/aidl-gmpf", "apps/LumenProjector/vendor/xgimi/gmpf",
+                "apps/LumenProjector/core/src", "apps/LumenProjector/core/test/menu"):
+        shutil.copytree(os.path.join(G, rel), os.path.join(dst, rel), ignore=shutil.ignore_patterns("build"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/src"), os.path.join(dst, "apps/core/lumen-menu/src"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/res/values"), os.path.join(dst, "apps/core/lumen-menu/res/values"))
-    shutil.copytree(os.path.join(G, "apps/ProjectorBase/res/values"), os.path.join(dst, "apps/ProjectorBase/res/values"))
+    shutil.copytree(os.path.join(G, "apps/LumenProjector/core/res/values"), os.path.join(dst, "apps/LumenProjector/core/res/values"))
     shutil.copytree(os.path.join(G, "apps/common/projector/res/values"), os.path.join(dst, "apps/common/projector/res/values"))
+    for rel in ("apps/LumenProjector/core/src/org/lumen/projector/SettingsDevice.java",       # the shared settings rows' sources
+                "apps/LumenProjector/core/src/org/lumen/projector/source/BootSource.java",   # check_wiring reads (shared())
+                "apps/common/projector/src/org/lumen/projector/voice/VoiceSettings.java"):
+        os.makedirs(os.path.dirname(os.path.join(dst, rel)), exist_ok=True)
+        shutil.copy2(os.path.join(G, rel), os.path.join(dst, rel))
     os.makedirs(os.path.join(dst, "devices/goat_elegant/app"))
     for f in ("menu.json", "forks.tsv", "app/HbProjector.layers"):
         shutil.copy2(os.path.join(G, "devices/goat_elegant", f), os.path.join(dst, "devices/goat_elegant", f))
+    # the profile flat (its layers are not copied) and the one reader of profiles the HB checks import
+    menu_layers.copy_profile(os.path.join(G, "devices/goat_elegant/menu.json"), os.path.join(dst, "devices/goat_elegant/menu.json"))
+    os.makedirs(os.path.join(dst, "tools/devices"), exist_ok=True)
+    for f in ("menu_layers.py", "layered.py"):
+        shutil.copy2(os.path.join(G, "tools/devices", f), os.path.join(dst, "tools/devices", f))
+    os.makedirs(os.path.join(dst, "tools/i18n"), exist_ok=True)
+    shutil.copy2(os.path.join(G, "tools/i18n/res_strings.py"), os.path.join(dst, "tools/i18n/res_strings.py"))
+    # the shared texts the HB strings alias (res_strings resolves them)
+    shutil.copytree(os.path.join(G, "apps/core/lumen-common-strings/res"), os.path.join(dst, "apps/core/lumen-common-strings/res"))
+
+
+SRC_BASES = ("apps/LumenProjector/vendor/xgimi/aidl-gmpf", "apps/LumenProjector/core")
 
 
 def path(root, rel):
+    """A source of the HB app as its recipe layers it: the aidl-gmpf adapter, the core."""
     if rel.startswith("@G/"): return os.path.join(root, rel[3:])
-    return os.path.join(root, "apps/HbProjector", rel)
+    for base in SRC_BASES:
+        f = os.path.join(root, base, rel)
+        if os.path.exists(f): return f
+    return os.path.join(root, SRC_BASES[0], rel)
 
 
 def run(root):
     env = dict(os.environ, LUMEN_GSI=root)
-    r = subprocess.run(["sh", os.path.join(root, "apps/HbProjector/test/menu/run.sh")], capture_output=True, text=True, env=env)
+    r = subprocess.run(["sh", os.path.join(root, "apps/LumenProjector/core/test/menu/run.sh")], capture_output=True, text=True, env=env)
+    run.last = (r.stdout + r.stderr)[-1500:]
     return r.returncode == 0
 
 
@@ -115,7 +147,7 @@ w = tempfile.mkdtemp(prefix="hb_menumut.")
 try:
     base = os.path.join(w, "base"); tree(base)
     if not run(base):
-        print("BROKEN: the unmutated copy fails"); sys.exit(2)
+        print("BROKEN: the unmutated copy fails:\n" + run.last); sys.exit(2)
     killed = survived = 0
     for name, rel, old, new in MUT:
         if only and not any(name.startswith(o) for o in only): continue

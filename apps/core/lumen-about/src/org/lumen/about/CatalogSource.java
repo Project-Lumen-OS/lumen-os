@@ -21,7 +21,7 @@ import java.security.cert.CertificateFactory;
  * read from GitHub when the screen opens. Only a copy that verifies with the list certificate (the one Lumen
  * Installer carries, assets/lumen_about/index.x509.pem) is used or kept, and never one older than the kept copy.
  */
-final class CatalogSource {
+public final class CatalogSource {
     static final String TAG = "LumenAbout";
     static final String CERT_ASSET = "lumen_about/index.x509.pem";
     private static final String DIR = "lumen_about", FILE = "catalog-v2.json", SIG = FILE + ".sig";
@@ -30,7 +30,7 @@ final class CatalogSource {
     private CatalogSource() {}
 
     /** the kept copy, null when there is none that verifies */
-    static RestoreCatalog kept(Context c) {
+    public static RestoreCatalog kept(Context c) {
         File d = new File(c.getFilesDir(), DIR);
         try {
             return RestoreCatalog.read(Files.readAllBytes(new File(d, FILE).toPath()), Files.readAllBytes(new File(d, SIG).toPath()),
@@ -41,7 +41,7 @@ final class CatalogSource {
     }
 
     /** a fresh copy from GitHub (kept when it is not older than the kept one), null when it cannot be read or verified */
-    static RestoreCatalog fresh(Context c, RestoreCatalog kept) {
+    public static RestoreCatalog fresh(Context c, RestoreCatalog kept) {
         try {
             byte[] json = get(RestoreCatalog.ADDRESS, RestoreCatalog.MAX_BYTES);
             byte[] sig = get(RestoreCatalog.ADDRESS + ".sig", RestoreCatalog.MAX_SIG);

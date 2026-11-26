@@ -14,8 +14,8 @@ KeyToolsTest proves the rule and the window hosts; this checks the device glue i
 """
 import os, sys
 
-Z, HB, P6, X = ("apps/ProjectorBase/src/org/lumen/projector/", "apps/HbProjector/src/org/lumen/projector/",
-                "apps/Play6Projector/src/org/lumen/projector/", "apps/X50Projector/src/org/lumen/x50/projector/")
+Z, HB, P6, X = ("apps/LumenProjector/core/src/org/lumen/projector/", "apps/HbProjector/src/org/lumen/projector/",
+                "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/", "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/")
 GEAR_SHORT = ("        if (action == KeyEvent.ACTION_UP && GEAR.up(ev.getDownTime(), ev.isCanceled()) && !KeyTools.menuKey(false)) {\n"
               "            QuickPanel.toggle(ctx);")
 GEAR_LONG = "    private static void gearLong(Context ctx) {\n        if (KeyTools.menuKey(true)) return;"
@@ -25,17 +25,20 @@ MF_MENU = ("    public void onMenuKey(boolean held) {\n        if (motor != null
 TOOL_PANEL = "    protected boolean takesMenuKey() { return true; }"
 # (file, what, lines that must be there, lines that must not)
 CHECKS = []
-for app in (Z, HB, P6):
-    CHECKS.append((app + "KeyReceiver.java", "the gear asks the tool rule before the quick menu and the long action",
-                   [GEAR_SHORT, GEAR_LONG, "import org.lumen.menu.KeyTools;"], ["Play6ZoomShiftPanel.onMenuKey"]))
-    CHECKS.append((app + "ManualFocusActivity.java", "manual focus is a tool screen the gear closes", [MF_TOOL, MF_MENU], []))
-    CHECKS.append((app + "panel/ManualKeystonePanel.java", "the fine corner adjustment is a tool panel (Menu: view)",
+# one core KeyReceiver for every gmpf family and the Play 6 (step 3b part 4)
+CHECKS.append((Z + "KeyReceiver.java", "the gear asks the tool rule before the quick menu and the long action",
+               [GEAR_SHORT, GEAR_LONG, "import org.lumen.menu.KeyTools;"], ["Play6ZoomShiftPanel.onMenuKey"]))
+# one ManualFocusActivity in the core for every gmpf family (HB since step 2c, Play 6 since step 3b); the Play 6 corner
+# card is the core feature Play6KeystonePanel (step 3b part 7)
+CHECKS.append((Z + "ManualFocusActivity.java", "manual focus is a tool screen the gear closes", [MF_TOOL, MF_MENU], []))
+for kst in ("panel/ManualKeystonePanel.java", "panel/Play6KeystonePanel.java"):
+    CHECKS.append((Z + kst, "the fine corner adjustment is a tool panel (Menu: view)",
                    [TOOL_PANEL, "            case KeyEvent.KEYCODE_MENU:"], []))
-for app in (Z, HB):
+for app in (Z,):
     CHECKS.append((app + "panel/OpticalZoomPanel.java", "the zoom card is a tool panel (Menu: zoom reset)",
                    [TOOL_PANEL, "        if (code == KeyEvent.KEYCODE_MENU) {"], []))
 CHECKS += [
-    (P6 + "panel/Play6ZoomShiftPanel.java", "the Play 6 zoom and shift card is a tool panel (Menu: side menu)",
+    (Z + "panel/Play6ZoomShiftPanel.java", "the Play 6 zoom and shift card is a tool panel (Menu: side menu)",
      [TOOL_PANEL, "        if (code == KeyEvent.KEYCODE_MENU) {"], ["public static boolean onMenuKey("]),
     (X + "KeyReceiver.java", "the X50 gear asks the tool rule before any menu, never over the cover",
      ["        if (a != GearAction.NOTHING && a != GearAction.COVER_MENU && KeyTools.menuKey(longPress)) return;\n"
@@ -43,6 +46,16 @@ CHECKS += [
     (X + "FocusActivity.java", "X50 manual focus is a tool screen the gear closes",
      ["public final class FocusActivity extends ToolActivity {", "    @Override public void onMenuKey(boolean held) {\n"
       "        Focuser.stop();\n        finish();"], []),
+    (X + "SubtitleMaskActivity.java", "the X50 subtitle mask editor is a tool screen that hides the menu as stock, the gear closes it",
+     ["public final class SubtitleMaskActivity extends ToolActivity {", "    @Override public void onMenuKey(boolean held) { back(); }",
+      "    @Override public boolean hidesMenu() { return true; }"], []),
+    ("apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java",
+     "BACK from a screen of a row inside a page keeps the menu on that page and row (the subtitle masks)",
+     ["        final Runnable back = section != null ? backToRow(section) : () -> { if (!ours()) show(null, null); };"],
+     ["        final Runnable back = backToRow(lastSectionOf(f));"]),
+    ("apps/core/lumen-menu/src/org/lumen/projector/ui/ActivityPanelHost.java", "a tool that hides the menu has the panel unseen under it",
+     ["        boolean hide = on && KeyTools.frontHidesMenu();",
+      "        if (p.root != null) p.root.setAlpha(hide ? 0f : 1f);"], ["p.root.setVisibility(hide"]),
     (X + "CornerActivity.java", "the X50 corner screen is a tool screen (held gear: reset)",
      ["public final class CornerActivity extends ToolActivity {", "        if (held) reset();"], ["EXTRA_RESET"]),
     (X + "LensActivity.java", "the X50 lens screen is a tool screen (held gear: stock MENU)",

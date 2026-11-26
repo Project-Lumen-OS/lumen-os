@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Kontrola rodzicielska</string>
-    <string name="lumen_lp_intro">Ogranicz, co dzieci mogą otwierać i jak długo oglądają.</string>
     <string name="lumen_lp_lock">Blokada dziecięca</string>
-    <string name="lumen_lp_lock_desc">Gdy włączona, można ustawić zakres kontroli, czas oglądania i więcej</string>
     <string name="lumen_lp_lock_off_title">Wyłączyć blokadę dziecięcą?</string>
     <string name="lumen_lp_lock_off_text">Limity czasu i hasło przy włączaniu przestaną działać. Ustawienia rodzicielskie otworzą się bez hasła.</string>
-    <string name="lumen_lp_turn_off">Wyłącz</string>
-    <string name="lumen_lp_cancel">Anuluj</string>
     <string name="lumen_lp_child_mode">Tryb dziecięcy</string>
     <string name="lumen_lp_child_apps">Aplikacje trybu dziecięcego</string>
     <string name="lumen_lp_child_apps_count">Wybrano: %1$d</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Tylko tryb dziecięcy</string>
     <string name="lumen_lp_range_global">Wszędzie</string>
     <string name="lumen_lp_session">Czas jednej sesji</string>
-    <string name="lumen_lp_session_desc">Potem 10 minut przerwy</string>
     <string name="lumen_lp_daily">Czas dziennie</string>
     <string name="lumen_lp_no_limit">Bez limitu</string>
     <string name="lumen_lp_minutes">%1$d min</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">Sesja się skończyła. Odpocznij 10 minut</string>
     <string name="lumen_lp_rest_daily">Dzisiejszy czas oglądania się skończył</string>
     <string name="lumen_lp_rest_unlock">Odblokuj</string>
-    <string name="lumen_lp_on">Wł.</string>
-    <string name="lumen_lp_off">Wył.</string>
 </resources>

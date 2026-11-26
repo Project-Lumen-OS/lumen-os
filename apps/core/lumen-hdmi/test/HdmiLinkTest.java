@@ -9,6 +9,8 @@ public final class HdmiLinkTest {
     /** GmpfBase.EDID_* (the wire values of setEdidVersion; run.sh checks GmpfBase still says so). */
     private static final int EDID_14 = 0, EDID_20 = 1, EDID_AUTO = 2, EDID_21 = 3;
     private static int checks, failures;
+    /** HdmiRelink.TICK_MS (run.sh checks the relink still ticks every 2 s). */
+    private static final long TICK_MS = 2_000;
 
     private static void check(boolean ok, String what) {
         checks++;
@@ -32,6 +34,41 @@ public final class HdmiLinkTest {
         check(HdmiLink.noPictureSince(50, 2, 100) == 50, "clock keeps its start");
         check(HdmiLink.noPictureSince(50, 3, 100) == 0, "stable stops the clock");
         check(HdmiLink.noPictureSince(50, HdmiLink.UNKNOWN, 100) == 0, "an unread status stops the clock");
+
+        // signal reads: only while the picture is not known to be stable (stock xhplayer asks only without a signal)
+        check(!HdmiLink.readDue(3), "a stable picture: no read");
+        for (int st : new int[] {HdmiLink.UNKNOWN, 0, 1, 2}) check(HdmiLink.readDue(st), st + ": read");
+        check(HdmiLink.EVENT_SIGNAL == 0, "the signal report is GmTvManager event 0");
+        check(HdmiLink.afterEvent(HdmiLink.UNKNOWN, 0, "status:3") == 3, "event status:3");
+        check(HdmiLink.afterEvent(3, 0, "status:1") == 1, "event status:1");
+        check(HdmiLink.afterEvent(3, 0, " status: 2 ") == 2, "event with blanks");
+        check(HdmiLink.afterEvent(3, 5, "status:1") == 3, "another event type keeps the status");
+        check(HdmiLink.afterEvent(3, 0, "x:0,state:0") == 3, "another message keeps the status");
+        check(HdmiLink.afterEvent(3, 0, "hdr:1") == 3, "a report of another name keeps the status");
+        check(HdmiLink.afterEvent(3, 0, "status:") == 3, "an empty status keeps the status");
+        check(HdmiLink.afterEvent(3, 0, "status:on") == 3, "a status that does not parse keeps the status");
+        check(HdmiLink.afterEvent(3, 0, null) == 3, "no message keeps the status");
+
+        // replay, the owner's PS5 on the Z9X (log 2026-11-16 12:47:18 to 12:50:01): the relink tick every 2 s, the
+        // vendor answers 3 every time; that build sent 82 reads and every other one held the vendor 0.3 to 0.6 s
+        int known = HdmiLink.UNKNOWN, reads = 0;
+        for (long t = 0; t <= 162_000; t += HdmiLinkTest.TICK_MS) {
+            if (HdmiLink.readDue(known)) {
+                reads++;
+                known = 3;
+            }
+            if (t == 60_000) known = HdmiLink.afterEvent(known, 5, "pic:10");       // a picture mode event
+        }
+        check(reads == 1, "PS5 replay, stable picture: 1 read, not " + reads);
+        // the console then loses the picture (rest mode, cable): the vendor event makes the ticks read again until 3
+        known = HdmiLink.afterEvent(known, 0, "status:1");
+        int[] vendor = {1, 1, 2, 3, 3, 3};
+        reads = 0;
+        for (int i = 0; i < vendor.length; i++) {
+            if (HdmiLink.readDue(known)) known = vendor[reads++];
+        }
+        check(reads == 4, "lost picture: reads until the vendor says 3 again, " + reads + " reads");
+        check(HdmiLink.noPictureSince(0, vendor[0], 100) == 100, "the reads after the event still start the clock");
 
         // game profile gate
         // (signalKnown, hdmiMode): a plausible vendor timing and its HDMI flag; 1280x720p60 DVI is the vendor default

@@ -41,6 +41,8 @@ public final class Theme {
     public static final int TEXT = 0xE5FFFFFF;
     public static final int TEXT_DIM = 0xB2FFFFFF;
     public static final int TEXT_FAINT = 0x80FFFFFF;
+    /** Text and icons of a disabled row: an opaque neutral grey (Row.disabledPaint), the menu's dark DISABLED. */
+    public static final int TEXT_DISABLED = 0xFF616161;
     public static final int TEXT_FOCUSED = 0xE5000000;
     public static final int TEXT_FOCUSED_DIM = 0x99000000;
     public static final int ACCENT = 0xFF3B78E7;            // Lumen token z9x_accent_strong (was the XGIMI blue 2F8CFF)

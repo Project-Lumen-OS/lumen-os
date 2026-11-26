@@ -13,7 +13,7 @@ bad = []
 items = re.findall(r'^\s+([A-Z_]+)\("([a-z_]+)"', open(os.path.join(M, "src/org/lumen/sensors/SensorItem.java")).read(), re.M)
 tokens = {t for _, t in items}
 FORBIDDEN = [r"\bIGmpf 194\b", r"\bIGmpf 275\b", r"\bIGmpf2 252\b"]
-for tsv in sorted(glob.glob(os.path.join(G, "devices/*/sensors.tsv"))):
+for tsv in sorted(glob.glob(os.path.join(G, "devices/*/sensors.tsv")) + glob.glob(os.path.join(G, "devices/_family/*/sensors.tsv"))):
     for n, line in enumerate(open(tsv, encoding="utf-8"), 1):
         if line.startswith("#") or line.startswith("item\t") or not line.strip():
             continue
@@ -36,9 +36,9 @@ for codes in glob.glob(os.path.join(G, "devices/*/hal/codes.tsv")):
         c = line.split("\t")
         if len(c) > 3 and ((c[0] == "IGmpf" and c[2] in ("194", "275")) or (c[0] == "IGmpf2" and c[2] == "252")):
             names.add(c[3])
-readers = [os.path.join(G, p) for p in ("apps/ProjectorBase/src/org/lumen/projector/panel/GmpfSensorReader.java",
-           "apps/Play6Projector/src/org/lumen/projector/panel/Play6SensorReader.java",
-           "apps/X50Projector/src/org/lumen/x50/projector/X50SensorReader.java")]
+readers = [os.path.join(G, p) for p in ("apps/LumenProjector/core/src/org/lumen/projector/panel/GmpfSensorReader.java",
+           "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/panel/Play6SensorReader.java",
+           "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50SensorReader.java")]
 for r in readers + glob.glob(os.path.join(M, "src/org/lumen/sensors/*.java")):
     if not os.path.exists(r):
         bad.append(f"missing {r}")
@@ -56,5 +56,5 @@ if os.path.exists(os.path.join(G, "apps/LumenSensors")):
     bad.append("apps/LumenSensors still there (the card replaces it)")
 for b in bad:
     print("FAIL", b)
-print(("ok   " if not bad else "FAIL ") + f"check_sensors: {len(glob.glob(os.path.join(G, 'devices/*/sensors.tsv')))} tables, {len(names)} forbidden getters named")
+print(("ok   " if not bad else "FAIL ") + f"check_sensors: {len(glob.glob(os.path.join(G, 'devices/*/sensors.tsv')) + glob.glob(os.path.join(G, 'devices/_family/*/sensors.tsv')))} tables, {len(names)} forbidden getters named")
 sys.exit(1 if bad else 0)

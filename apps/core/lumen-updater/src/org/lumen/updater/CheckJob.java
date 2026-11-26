@@ -14,8 +14,9 @@ import android.util.Log;
 import org.json.JSONException;
 
 /**
- * Daily check (any network), plus one 10 minutes after boot. Never installs: in "Download
- * automatically" mode it only downloads and then asks (decision 2026-10-06).
+ * A check every 6 hours (any network), plus one 10 minutes after boot. Never installs: in "Download
+ * automatically" mode it only downloads and then asks (decision 2026-10-06). Every check reads the
+ * manifests fresh and moves the offer to the newest build (Newest), also before a paused download is resumed.
  * JOB_GATE (no network, any update mode): the boot gate's verdict a few minutes after an update's
  * first boot (BootReceiver.gateVerdict), asked again while the gate has not decided.
  * JOB_NOTICE (no network): the one-time statistics notice waits for the home screen (Notice).
@@ -23,6 +24,8 @@ import org.json.JSONException;
  */
 public final class CheckJob extends JobService {
     private static final int JOB_DAILY = 7701, JOB_BOOT = 7702;
+    /** The periodic check (JOB_DAILY keeps its id: a unit scheduled with the old day period is rescheduled). */
+    static final long CHECK_EVERY_MS = 6 * 3600 * 1000L, CHECK_FLEX_MS = 2 * 3600 * 1000L;
     /** Gate looks alternate between two ids: a running job never reschedules (and so stops) itself. */
     private static final int JOB_GATE = 7703, JOB_GATE_NEXT = 7704;
     /** First look 3 min after BOOT_COMPLETED (the gate checks 90 s after boot), then every 2 min, 5 looks. */
@@ -37,10 +40,11 @@ public final class CheckJob extends JobService {
         JobScheduler js = c.getSystemService(JobScheduler.class);
         if (js == null) return;
         ComponentName cn = new ComponentName(c, CheckJob.class);
-        if (js.getPendingJob(JOB_DAILY) == null) {
+        JobInfo periodic = js.getPendingJob(JOB_DAILY);
+        if (periodic == null || periodic.getIntervalMillis() != CHECK_EVERY_MS) {
             js.schedule(new JobInfo.Builder(JOB_DAILY, cn)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPeriodic(24 * 3600 * 1000L, 6 * 3600 * 1000L)
+                    .setPeriodic(CHECK_EVERY_MS, CHECK_FLEX_MS)
                     .setPersisted(true).build());
         }
         js.schedule(new JobInfo.Builder(JOB_BOOT, cn)
@@ -123,18 +127,14 @@ public final class CheckJob extends JobService {
     }
 
     private void run(Store st) {
+        // the check first, also for a paused download: a newer build replaces it before anything is resumed
+        CheckResult r = Checker.check(this);
         UpdateState s = st.state();
-        if (s == UpdateState.PAUSED && st.autoMode() == Store.AUTO_DOWNLOAD) {
-            UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false);   // resume an interrupted download
-            return;
-        }
-        Checker.Result r = Checker.check(this);
-        if (r.outcome != CheckOutcome.OFFER) return;
-        String ver = r.manifest.version;
-        if (st.autoMode() == Store.AUTO_DOWNLOAD && st.state() != UpdateState.DOWNLOADED) {
-            UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false);
-        } else {
-            UpdateService.notifyResult(this, getString(R.string.avail_title, ver), getString(R.string.n_available_body));
+        if (st.autoMode() == Store.AUTO_DOWNLOAD && (s == UpdateState.AVAILABLE || s == UpdateState.PAUSED)) {
+            UpdateService.start(this, UpdateService.ACTION_DOWNLOAD, false);   // the newest offer, or the paused one resumed
+        } else if (r.outcome == CheckOutcome.OFFER && s != UpdateState.DOWNLOADING) {
+            UpdateService.notifyResult(this, getString(R.string.avail_title, r.manifest.version),
+                    getString(R.string.n_available_body));
         }
     }
 

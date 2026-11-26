@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Input source and Bluetooth pages of All settings (stock 1.3.38 root/signal, root/bluetooth). -->
+<resources>
+    <string name="lumen_m_sec_source">Źródło sygnału</string>
+    <string name="lumen_m_source_list">Źródła</string>
+    <string name="lumen_m_bt_add">Dodaj więcej urządzeń</string>
+    <string name="lumen_m_bt_mine">Moje urządzenia</string>
+    <string name="lumen_m_bt_disconnect">Rozłącz</string>
+    <string name="lumen_m_bt_forget">Zapomnij</string>
+    <string name="lumen_m_bt_searching">Wyszukiwanie urządzeń…</string>
+    <string name="lumen_m_bt_none">Nie znaleziono urządzeń</string>
+    <string name="lumen_m_bt_pairing">Parowanie…</string>
+</resources>

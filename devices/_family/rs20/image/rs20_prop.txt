@@ -1,0 +1,39 @@
+# Property edits of every RS 20 trial image (devices/_family/rs20/image/steps.tsv, devices/g0111/image/x50_props.py;
+# format in devices/g0111/image/x50_prop.txt). Base: the Z9X 1.0.9 image (devices/g0111/image/base.sha256). One file for
+# every model of the line: @NAME@, @TAGP@, @CODENAME@ and @MODEL@ are the model's build.conf var.NAME, var.TAGP,
+# codename and var.MODEL. Every build has its own identity: Android re-runs the default permission grants and rescans
+# packages only when the fingerprint differs from the one stored in /data.
+[system]
+ro.product.system.model=@NAME@
+ro.build.display.id=Lumen OS @TAGP@-@V@ (AP2A.240905.003, @BID@)
+# Setup shows it; Lumen Setup is the only reader in the image
+ro.z9x.version=@TAGP@-@V@
+ro.build.version.incremental=eng.root.20261003.104216.lumen10.@TAGP@.@V@.@BID@
+ro.build.date=@DATE@
+ro.build.date.utc=@UTC@
+ro.system.build.version.incremental=eng.root.20261003.104216.@TAGP@.@V@.@BID@
+ro.system.build.fingerprint=Android/lineage_gsi_tv_arm64/generic_arm64:14/AP2A.240905.003/eng.root.20261003.104216.@TAGP@.@V@.@BID@:userdebug/test-keys
+ro.system.build.date=@DATE@
+ro.system.build.date.utc=@UTC@
+[product]
+ro.product.product.model=@NAME@
+bluetooth.device.default_name=@NAME@
+ro.lumen.version=@TAGP@-@V@
+# trial only: no partition list, no manifest, no Z9X build id or version code
+-ro.product.ab_ota_partitions
+-ro.z9x.ota.manifest_url
+ro.z9x.build_id=lumen-@TAGP@-@V@-@BID@
+ro.z9x.version_code=0
+# the OTA boot gate behaves like stock update_verifier (no update can be pending without an updater)
+ro.z9x.ota.gate=0
+# no rescue reboot to fastbootd (z9x_rescue.rc is removed too)
+ro.z9x.rescue=0
+# public image: adb stays as the base (Lumen OS 1.0.9) has it; no network adb, no adb without confirmation
++ro.lumen.device=@CODENAME@
++ro.lumen.model=@MODEL@
++ro.lumen.models=@MODEL@
++ro.lumen.family=horse_popular
++ro.lumen.build_id=lumen-@TAGP@-@V@-@BID@
++ro.lumen.base_build_id=lumen-1.0.9-20261106anp
+# Lumen OS Live only: no install from the trial (the kill switch of apps/LumenDsuInstall, which this image does not carry)
++ro.lumen.dsu_install=0

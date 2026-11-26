@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS 1.0.4: Picture > Professional settings of the quick panel (panel.ProPicture), the stock Z9X image
+     mode 3.0 professional settings. English base; translations: gsi/apps/i18n/langs/<locale>.txt
+     @projector/strings_pro.xml. -->
+<resources>
+    <string name="pro_title">@string/lumen_professional_settings</string>
+    <string name="pro_color">Color</string>
+    <string name="pro_wb">@string/lumen_white_balance</string>
+    <string name="pro_wb_2">@string/lumen_2_point</string>
+    <string name="pro_wb_11">@string/lumen_11_point</string>
+    <string name="pro_red_gain">@string/lumen_red_gain</string>
+    <string name="pro_green_gain">@string/lumen_green_gain</string>
+    <string name="pro_blue_gain">@string/lumen_blue_gain</string>
+    <string name="pro_red_offset">@string/lumen_red_offset</string>
+    <string name="pro_green_offset">@string/lumen_green_offset</string>
+    <string name="pro_blue_offset">@string/lumen_blue_offset</string>
+    <string name="pro_wb_point">Level</string>
+    <!-- %1$d = 5, 10, 20 ... 100: a level of the 11-point white balance, in percent of white -->
+    <string name="pro_wb_level">@string/lumen_1_d</string>
+    <string name="pro_red">@string/lumen_red</string>
+    <string name="pro_green">@string/lumen_green</string>
+    <string name="pro_blue">@string/lumen_blue</string>
+    <string name="pro_cyan">@string/lumen_cyan</string>
+    <string name="pro_magenta">@string/lumen_magenta</string>
+    <string name="pro_yellow">@string/lumen_yellow</string>
+    <!-- colour correction colour -->
+    <string name="pro_skin">@string/lumen_skin_tone</string>
+    <string name="pro_cc">@string/lumen_color_correction</string>
+    <string name="pro_cc_color">@string/lumen_color</string>
+    <string name="pro_hue">@string/lumen_hue</string>
+    <!-- colour space option: the projector's own (widest) gamut -->
+    <string name="pro_cs_native">Native</string>
+    <string name="pro_color_space">@string/lumen_color_space</string>
+    <string name="pro_color_opt">@string/lumen_color_optimization</string>
+    <string name="pro_gamma">@string/lumen_gamma</string>
+    <!-- gamma option: a gamma value 1.8..2.6 instead of the curve of the signal -->
+    <string name="pro_gamma_manual">@string/lumen_manual</string>
+    <string name="pro_gamma_value">@string/lumen_gamma_value</string>
+    <string name="pro_hdr_mapping">@string/lumen_hdr_dynamic_tone_mapping</string>
+    <string name="pro_local_contrast">@string/lumen_local_contrast</string>
+    <string name="pro_dynamic_contrast">@string/lumen_dynamic_contrast</string>
+    <string name="pro_dynamic_black">@string/lumen_dynamic_black_enhancement</string>
+    <string name="pro_motion">Motion</string>
+    <string name="pro_native_fps">@string/lumen_original_frame_rate</string>
+    <string name="pro_clarity">Clarity</string>
+    <string name="pro_noise">@string/lumen_noise_reduction</string>
+    <string name="pro_reset">Reset professional settings</string>
+    <string name="pro_reset_msg">White balance, color, gamma, contrast and noise reduction go back to their defaults. Continue?</string>
+    <!-- shown when motion smoothing is changed while Original frame rate is on (stock rule) -->
+    <string name="pro_memc_blocked">Turn off Original frame rate first (Picture &gt; Professional settings)</string>
+</resources>

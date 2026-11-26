@@ -54,10 +54,10 @@ Lumen OS Live запускает Lumen OS с проектора и не трог
 Всё делается на самом проекторе через его интернет, компьютер не нужен. Подробно по шагам:
 [инструкция на lumen-os.net](https://lumen-os.net/install/).
 
-1. Скачайте файл Lumen Installer с окончанием `.apk1` из
+1. Скачайте файл Lumen OS Live с окончанием `.apk1` из
    [последнего выпуска](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest) и скопируйте его на флешку.
 2. Вставьте флешку в проектор и откройте файл в файловом менеджере XGIMI.
-3. Подключите проектор к интернету, откройте Lumen Installer и запустите Lumen OS Live.
+3. Подключите проектор к интернету, откройте приложение Lumen OS Live и запустите Lumen OS Live.
 4. Если понравилось, внутри Lumen OS Live откройте «Установить Lumen OS насовсем».
 
 Play 6 ставится с компьютера, см. [инструкцию для Play 6](docs/install/play6/ru.md).
@@ -74,7 +74,7 @@ Lumen OS обновляется сама. Программа обновлени�
 - Сайт: [lumen-os.net](https://lumen-os.net/)
 - Новости и вопросы: [канал в Telegram](https://t.me/projector_lumenos) и
   [тема XGIMI Z9X на 4PDA](https://4pda.to/forum/index.php?showtopic=1121837)
-- [Lumen Installer](https://github.com/Project-Lumen-OS/lumen-installer)
+- [Lumen OS Live](https://github.com/Project-Lumen-OS/lumen-installer)
 - [Сообщить о проблеме](https://github.com/Project-Lumen-OS/lumen-os/issues)
 - [Что нового в каждой версии](CHANGELOG.md)
 - [Собрать Lumen OS самому](docs/selfbuild/ru.md)

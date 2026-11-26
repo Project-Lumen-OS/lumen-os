@@ -2,8 +2,18 @@
 # (apps/core/lumen-icons), the shared 2.0 look and theme switch (apps/core/lumen-ui) plus the app. Every build of Home assembles this recipe first (build_apps.sh, z9x_gate.sh
 # through assemble_app.find_recipe, build_play6.sh, build_home_x50.sh).
 app       Z9xHome
+# shared files taken from their one source (no copy in the app): the colour tokens and the network time zone lookup
+# of apps/common, the Inter font of apps/core/lumen-menu (AirPlay and the package installer take it the same way)
+file      apps/common/tokens.xml res/values/z9x_tokens.xml
+file      apps/common/GeoIp.java src/org/lumen/common/GeoIp.java
+file      apps/core/lumen-menu/assets/fonts/InterVariable.ttf assets/fonts/InterVariable.ttf
+file      apps/core/lumen-menu/assets/fonts/OFL-Inter.txt assets/fonts/OFL-Inter.txt
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-icons
 module    lumen-ui
+# the one HDMI port state of the Inputs chips (org.lumen.tvinput PortState through apps/core/lumen-hdmiports)
+module    lumen-hdmiports
 # the parental controls of the models whose stock has the parent page (apps/core/lumen-parental)
 module    lumen-parental
 top       apps/LumenHome

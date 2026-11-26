@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Customize Home (4PDA 2026-11-22): the looks, the layout switches, folders, free up memory, the settings backup.
+     Translations: apps/i18n/langs/<locale>.txt, section @home/strings_layout.xml (apps/i18n/gen.py write). -->
+<resources>
+    <string name="home_look_classic">Classic</string>
+    <string name="home_look_minimal">Minimal</string>
+    <string name="home_look_compact">Compact</string>
+    <string name="look_title">Home look</string>
+    <string name="look_custom">Your own: you changed the look</string>
+    <string name="hs_clock">Big clock</string>
+    <string name="hs_showcase">Recommendations</string>
+    <string name="hs_rows">Rows of apps</string>
+    <string name="hs_system">@string/lumen_system</string>
+    <string name="hs_backup">@string/lumen_backup_of_the_menus_and</string>
+    <string name="apps_hint">Hold OK on an app: move it, put it into a folder, hide it</string>
+    <string name="free_memory">Free up memory</string>
+    <string name="free_memory_done" formatted="true">Freed %1$s MB. Apps closed: %2$s</string>
+    <string name="free_memory_none">Nothing to close. Android keeps apps in memory on purpose and frees it when needed</string>
+    <string name="folder_new">New folder</string>
+    <string name="menu_to_folder">Move to folder</string>
+    <string name="menu_out_of_folder">Take out of folder</string>
+    <string name="menu_rename">Rename</string>
+    <string name="menu_delete_folder">Delete folder</string>
+    <string name="folder_video">Video</string>
+    <string name="folder_music">@string/lumen_music</string>
+    <string name="folder_games">Games</string>
+    <string name="folder_tools">Tools</string>
+    <string name="folder_other">Other</string>
+    <string name="folder_own_name">Type a name</string>
+    <string name="folder_save">Save</string>
+    <string name="bk_note">The quick menu, All settings and the Home layout in one file. Keep it on a USB drive to bring them back after a reinstall.</string>
+    <string name="bk_save">Save to %1$s</string>
+    <string name="bk_downloads">Downloads</string>
+    <string name="bk_usb">USB drive</string>
+    <string name="bk_restore">Restore from %1$s</string>
+    <string name="bk_restore_go">Restore</string>
+    <string name="bk_none">No backup on USB drives or in Downloads</string>
+    <string name="bk_saved">Saved to %1$s</string>
+    <string name="bk_failed">Could not save the file</string>
+    <string name="bk_restored">Restored. The menus and Home are as in the backup</string>
+    <string name="bk_reset">Reset the menus and Home</string>
+    <string name="bk_reset_go">Reset</string>
+    <string name="bk_reset_done">The menus and Home are back to how they came</string>
+</resources>

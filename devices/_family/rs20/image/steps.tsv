@@ -1,0 +1,114 @@
+# The RS 20 recipe (devices/_family/rs20/rs20.build.conf): the Z9X 1.0.9 image (base.sha256) with its platform set on the
+# model's own keys (stage/base_signed, devices/g0111/image/sign_x50_base.py), the Z9X family apps built for the model
+# (tools/devices/build_apps.sh: the projector app with the model's HIDL table and menu), the Z9X 1.1.0 image files the
+# 1.0.9 base lacks, and the model's identity props. Steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS; the stage pass
+# (--stage-only) composes and checks the tree, the image pass (--image-only) packs and checks the image. Trial only: no
+# updater, no install from the trial, otacerts.zip empty. verify_rs20.py proves every changed file came from the inputs.
+*	need	com.android.wifi.capex
+*	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
+*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	about_version.py	verify_rs20.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	z9x_setup.rc	z9x_base.rc	z9x_nui.sh	z9x-sysconfig-nogms.xml	z9x_gapps.sh	first_start_prop.txt	first_start.py	bootanimation.zip	bootanim_check.py	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	airplay_libs.py	lumen_boot_sound.rc	lumen_hdmirx.rc	lumen_hdmirx.sh
+*	need	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl
+*	need	stage/Z9xProjector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/Z9xTvInput.apk	stage/Z9xAirPlay.apk	stage/Z9xFrameworkKeysOverlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/LumenFiles.apk	stage/base_signed/base_signed.tsv
+*	sh_n	z9x_nui.sh
+*	sh_n	lumen_hdmirx.sh
+*	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
+*	line	lumen_hdmirx.sh	HELP=help
+*	line	{PROPF}	+ro.lumen.dsu_install=0
+*	out	mounts
+*	run	bootanim_check.py	{in}/bootanimation.zip	>bootanim_check.log
+*	base_pin
+*	sha	{STOCK_MODEL}	{STOCK_MODEL_SHA}
+*	run	x50_props.py	model	{in}/{MPROPF}	{STOCK_MODEL}
+*	base_mount
+*	base_line	system/product/etc/build.prop	ro.z9x.build_id={BASE_BUILD_ID}
+*	base_prefix	system/build.prop	ro.build.display.id=Lumen OS 1.0.9 (
+!image	copy_base
+!image	remove	remove.txt	{root}
+!image	base_signed	stage/base_signed	{mb}	{root}	keep	system/framework/framework-res.apk	system/etc/selinux/plat_mac_permissions.xml	system/apex/com.android.permission.apex
+!image	zip_empty	{sys}/etc/security/otacerts.zip
+!image	run_root	x50_props.py	apply	{in}/{PROPF}	{in}/{MPROPF}	{sys}/build.prop	{sys}/product/etc/build.prop	{v}	{bid}	NAME={NAME}	TAGP={TAGP}	CODENAME={codename}	MODEL={MODEL}
+!image	run_root	first_start.py	apply	{in}/first_start_prop.txt	{sys}
+# the projector app (the model's HIDL table and menu), AirPlay and the HDMI input app at their Z9X paths; the base's
+# odex and vdex are for the 1.0.9 dex, so they go and ART compiles the new apps itself
+!image	place	stage/Z9xProjector.apk	{sys}/app/Z9xProjector/Z9xProjector.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/app/Z9xProjector/oat
+!image	place	stage/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/app/Z9xAirPlay/oat
+!image	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
+!image	place	stage/Z9xTvInput.apk	{sys}/app/Z9xTvInput/Z9xTvInput.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/app/Z9xTvInput/oat
+!image	place	stage/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/priv-app/Z9xHome/oat
+!image	place	stage/Z9xSetup.apk	{sys}/priv-app/Z9xSetup/Z9xSetup.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/priv-app/Z9xSetup/oat
+# Files, screen mirroring (with its permissions) and the on-screen keyboard of every model
+!image	mkdir	0755	{sys}/priv-app/LumenFiles
+!image	label	{sys}/priv-app/LumenFiles	{LABEL}
+!image	place	stage/LumenFiles.apk	{sys}/priv-app/LumenFiles/LumenFiles.apk	0644	0	0	{LABEL}
+!image	mkdir	0755	{sys}/priv-app/LumenMiracast
+!image	label	{sys}/priv-app/LumenMiracast	{LABEL}
+!image	place	stage/LumenMiracast.apk	{sys}/priv-app/LumenMiracast/LumenMiracast.apk	0644	0	0	{LABEL}
+!image	place	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml	0644	0	0	{LABEL}
+!image	place	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml	0644	0	0	{LABEL}
+!image	place	stage/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
+!image	rm	{sys}/product/app/LeanbackIME/oat
+# Wi-Fi Direct on the MediaTek supplicant (the base's Wi-Fi APEX with the patched service-wifi.jar, as every model)
+!image	place	com.android.wifi.capex	{sys}/apex/com.android.wifi.capex	0644	0	0	{LABEL}
+!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
+!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
+# the static overlays (Wi-Fi Direct device type, the package installer look, the framework keys) and the remote layouts
+!image	place	stage/LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk	0644	0	0	{LABEL}
+!image	place	stage/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk	0644	0	0	{LABEL}
+!image	place	stage/Z9xFrameworkKeysOverlay.apk	{sys}/product/overlay/Z9xFrameworkKeysOverlay.apk	0644	0	0	{LABEL}
+!image	place	Vendor_000d_Product_3838.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3838.kl	0644	0	0	{LABEL}
+!image	place	Vendor_000d_Product_3840.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3840.kl	0644	0	0	{LABEL}
+!image	place	Vendor_000d_Product_3841.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3841.kl	0644	0	0	{LABEL}
+!image	place	Vendor_000d_Product_3842.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3842.kl	0644	0	0	{LABEL}
+!image	place	Vendor_000d_Product_3843.kl	{sys}/product/usr/keylayout/Vendor_000d_Product_3843.kl	0644	0	0	{LABEL}
+!image	place	Vendor_1d5a_Product_c081.kl	{sys}/product/usr/keylayout/Vendor_1d5a_Product_c081.kl	0644	0	0	{LABEL}
+!image	place	Vendor_26e3_Product_af02.kl	{sys}/product/usr/keylayout/Vendor_26e3_Product_af02.kl	0644	0	0	{LABEL}
+!image	place	Vendor_3697_Product_0001.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0001.kl	0644	0	0	{LABEL}
+!image	place	Vendor_3697_Product_0002.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0002.kl	0644	0	0	{LABEL}
+# the video player of every model as its published APK with its own key (tools/build/prebuilt.py)
+!image	prebuilt	LumenPlay	arm64	{sys}/app/LumenPlay
+# the Z9X 1.1.0 image files over their 1.0.9 copies: the native UI fifo stub (an RS 20 is not on its list: every command
+# is refused, the vendor is never told a mask is up), the sysconfig, the Google add-on reader, the one blobs reader of
+# every model with the Z9X settings, the first boot over stock data, the stock volume split
+!image	place	z9x_nui.sh	{sys}/etc/xgimi/z9x_nui.sh	0755	0	0	{LABEL}
+!image	place	z9x-sysconfig-nogms.xml	{sys}/etc/sysconfig/z9x.xml	0644	0	0	{LABEL}
+!image	place	z9x_gapps.sh	{sys}/etc/z9x/z9x_gapps.sh	0755	0	0	{LABEL}
+!image	place	z9x_blobs.sh	{sys}/etc/z9x/z9x_blobs.sh	0755	0	0	{LABEL}
+!image	place	z9x_blobs.rc	{sys}/etc/init/z9x_blobs.rc	0644	0	0	{LABEL}
+!image	place	blobs.conf	{sys}/etc/z9x/blobs.conf	0644	0	0	{LABEL}
+!image	place	z9x_setup.rc	{sys}/etc/init/z9x_setup.rc	0644	0	0	{LABEL}
+!image	place	z9x_base.rc	{sys}/etc/init/z9x_base.rc	0644	0	0	{LABEL}
+# the HDMI receiver bridge of the signal panel, the power-on sound and the shared boot animation with its sound
+!image	mkdir	0755	{sys}/etc/lumen
+!image	label	{sys}/etc/lumen	{LABEL}
+!image	place	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc	0644	0	0	{LABEL}
+!image	place	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh	0755	0	0	{LABEL}
+# the problem report log helper of every image (apps/core/lumen-report/image, staged for every device by
+# tools/build/build.py COMMON_FILES): a root oneshot that hands the report app the scrubbed system log without a dialog
+*	need	lumen_report.rc	lumen_report.sh
+*	sh_n	lumen_report.sh
+*	line	lumen_report.rc	service lumen_report /system/bin/sh /system/etc/lumen/lumen_report.sh
+*	line	lumen_report.sh	HOSTS="org.lumen.projector org.lumen.x50.projector"
+!image	place	lumen_report.rc	{sys}/etc/init/lumen_report.rc	0644	0	0	{LABEL}
+!image	place	lumen_report.sh	{sys}/etc/lumen/lumen_report.sh	0755	0	0	{LABEL}
+!image	place	lumen_boot_sound.rc	{sys}/etc/init/lumen_boot_sound.rc	0644	0	0	{LABEL}
+!image	place	bootanimation.zip	{sys}/product/media/bootanimation.zip	0644	0	0	{LABEL}
+!image	run_root	first_start.py	check	{in}/first_start_prop.txt	{sys}	>first_start_stage.log
+!image	run_root	verify_rs20.py	{mb}	{root}	{in}	{v}	{bid}	{codename}	{MODEL}	{NAME}	{TAGP}	>verify_stage.log
+!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}
+!image	echo	stage: OK {t}/STAGE_INFO.txt
+stage	stop
+*	line	{t}/STAGE_INFO.txt	bid={bid}
+*	pack	{root}
+*	run	erofs_kcheck.py	{img}	>kcheck.log
+*	mount_image
+*	run_root	first_start.py	check	{in}/first_start_prop.txt	{mn}/system	>first_start.log
+*	run_root	about_version.py	check	{mn}/system/build.prop	{mn}/system/product/etc/build.prop	>about_version.log
+*	run_root	verify_rs20.py	{mb}	{mn}	{in}	{v}	{bid}	{codename}	{MODEL}	{NAME}	{TAGP}	>verify.log
+*	budget	2500000000
+*	sha256
+*	info	BUILD_INFO.txt	@file({t}/STAGE_INFO.txt)	image=system_{tag}.img	size={size}	sha256={sha256}	budget=2500000000	source_date_epoch={ts}	uuid={uuid}	mkfs={pack_tool}/mkfs.erofs -b4096 -zlz4hc -E noinline_data

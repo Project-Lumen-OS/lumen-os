@@ -8,14 +8,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import org.lumen.projector.Family;
+
 /**
  * MODULE "power" (v6.5 review): the current lamp-only standby state for other Z9X apps.
  *
  * Only {@link #call}: method {@value #METHOD} -> Bundle {standby: boolean} =
- * {@link StandbyController#isActive()} (also true while a standby of this boot waits for its re-enter
+ * StandbyController.isActive() (also true while a standby of this boot waits for its re-enter
  * after a process restart). Authority {@value #AUTHORITY}, exported, guarded by the signature
- * permission {@link StandbyController#PERMISSION_STANDBY_STATE}, checked by hand in call() (the
+ * permission {@link #PERMISSION}, checked by hand in call() (the
  * framework enforces a provider's read / write permissions only for query / insert / update / delete).
+ *
+ * A family without the lamp-only standby (the MT9681 line) answers false and no CEC wake (Family.standbyActive,
+ * Family.cecWake).
  *
  * Lumen OS 1.0: method {@value #METHOD_CEC_WAKE} (same permission): the CEC wake request of
  * org.lumen.tvinput (HdmiWatcher, &lt;Active Source&gt; during the lamp-only standby), answered by the cec module.
@@ -34,6 +39,8 @@ public final class StandbyStateProvider extends ContentProvider {
      * Extras port, la, type, vendor, osd -> {accepted, standby} (org.lumen.projector.cec.CecPolicy).
      */
     public static final String METHOD_CEC_WAKE = "cec_wake";
+    /** The signature permission of both methods (StandbyController.PERMISSION_STANDBY_STATE of the families with one). */
+    public static final String PERMISSION = "org.lumen.projector.permission.STANDBY_STATE";
 
     @Override
     public boolean onCreate() {
@@ -43,13 +50,12 @@ public final class StandbyStateProvider extends ContentProvider {
     @Override
     public Bundle call(String method, String arg, Bundle extras) {
         if (!METHOD.equals(method) && !METHOD_CEC_WAKE.equals(method)) return null;
-        if (getContext() == null || getContext().checkCallingPermission(StandbyController.PERMISSION_STANDBY_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            throw new SecurityException("needs " + StandbyController.PERMISSION_STANDBY_STATE);
+        if (getContext() == null || getContext().checkCallingPermission(PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+            throw new SecurityException("needs " + PERMISSION);
         }
-        if (METHOD_CEC_WAKE.equals(method)) return org.lumen.projector.cec.CecPolicy.onWakeRequest(getContext(), extras);
+        if (METHOD_CEC_WAKE.equals(method)) return Family.cecWake(getContext(), extras);
         Bundle b = new Bundle();
-        b.putBoolean(KEY_STANDBY, StandbyController.isActive());
+        b.putBoolean(KEY_STANDBY, Family.standbyActive());
         return b;
     }
 

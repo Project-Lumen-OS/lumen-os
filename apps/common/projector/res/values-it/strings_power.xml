@@ -4,23 +4,13 @@
 <resources>
     <string name="power_standby_now">Subito</string>
     <string name="power_standby_never">Mai</string>
-    <string name="power_quick_wake_minutes">%1$d min</string>
-    <string name="power_quick_wake_hours">%1$d h</string>
     <string name="power_sleep_summary">Il tasto di accensione, il timer di spegnimento e l\'inattività spengono la luce e sospendono il proiettore. Premi accensione: si riattiva in pochi secondi, esattamente dove eri rimasto.</string>
-    <string name="power_menu_sleep">Sospensione</string>
-    <string name="power_menu_off">Spegni</string>
-    <string name="power_menu_restart">Riavvia</string>
-    <string name="power_menu_timer">Timer</string>
-    <string name="power_timer_min">%1$d min</string>
-    <string name="power_timer_hours">%1$d h</string>
     <string name="power_timer_hours_min">%1$d h %2$d min</string>
     <string name="power_timer_custom">Personalizzato</string>
-    <string name="power_timer_cancel">Disattiva timer</string>
     <string name="power_timer_left">Mancano %1$s</string>
     <string name="power_timer_hint">Allo scadere del tempo, audio e luce si abbassano gradualmente e il proiettore si spegne.</string>
     <string name="power_timer_running">Si spegne alle %1$s</string>
     <string name="power_timer_started">Timer: %1$s</string>
-    <string name="power_timer_canceled">Timer disattivato</string>
     <string name="power_timer_warn">Spegnimento tra 1 minuto</string>
     <string name="power_timer_warn_desc">Tieni premuto il tasto di accensione per modificare il timer</string>
     <string name="power_action_failed">Operazione non riuscita. Riprova.</string>

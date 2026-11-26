@@ -4,7 +4,7 @@
 # X50EyeGuard (Device, Gmpf) and X50Projector (Gmpf, its remote pairing starts behind App.isX50 since lumen-remote):
 # each edit below lets one model's image run on another
 # model, gives a model another model's interface hash rule, or ignores ro.xgimi.modelname; the host suites of both apps
-# (apps/X50EyeGuard/test/run.sh, apps/X50Projector/test/run.sh) must turn red on each, and pass unmutated.
+# (apps/X50EyeGuard/test/run.sh, apps/LumenProjector/host/activity/test/run.sh) must turn red on each, and pass unmutated.
 #   sh tools/devices/test/gmpf_model_mutate.sh
 set -u
 G=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -19,11 +19,11 @@ setup() {
   cp -R "$G/apps/core/." "$W/t/apps/core/"
   cp -R "$G/devices" "$W/t/devices"
   mkdir -p "$W/t/apps/common" && cp -R "$G/apps/common/projector" "$W/t/apps/common/"
-  for a in Play6Projector ProjectorBase; do mkdir -p "$W/t/apps/$a" && cp -R "$G/apps/$a/res" "$W/t/apps/$a/"; done
+  for a in Play6Projector LumenProjector/core; do mkdir -p "$W/t/apps/$a" && cp -R "$G/apps/$a/res" "$W/t/apps/$a/"; done
   ln -s "$G/tools" "$W/t/tools"
 }
 suites() {
-  sh "$W/t/apps/X50EyeGuard/test/run.sh" > "$W/out" 2>&1 && sh "$W/t/apps/X50Projector/test/run.sh" >> "$W/out" 2>&1
+  sh "$W/t/apps/X50EyeGuard/test/run.sh" > "$W/out" 2>&1 && sh "$W/t/apps/LumenProjector/host/activity/test/run.sh" >> "$W/out" 2>&1
 }
 # name file old new
 mut() {
@@ -51,7 +51,7 @@ mut unknown_gets_x50 "$H/GmpfModel.java" '        return HashRule.NONE;' '      
 mut x50_v1254_rs30 "$H/GmpfHash.java" 'RS30_RULE = new HashRule(RS30);' 'RS30_RULE = new HashRule(RS30, X50_V1254_FIRMWARE, X50_V1254);'
 mut rs30_hash_wrong "$H/GmpfHash.java" 'RS30 = "3a8aa5e6c42eb994e5922a154ac5a0bae146628f"' 'RS30 = "3a8aa5e6c42eb994e5922a154ac5a0bae1466280"'
 mut eye_hash_fixed apps/X50EyeGuard/src/org/lumen/x50/eyeguard/Gmpf.java 'GmpfModel.ruleOf(App.bootModel())' 'GmpfModel.ruleOf("G0111")'
-mut menu_hash_fixed apps/X50Projector/src/org/lumen/x50/projector/Gmpf.java 'GmpfModel.ruleOf(App.bootModel())' 'GmpfModel.ruleOf("G0111")'
+mut menu_hash_fixed apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/Gmpf.java 'GmpfModel.ruleOf(App.bootModel())' 'GmpfModel.ruleOf("G0111")'
 mut eye_any_device apps/X50EyeGuard/src/org/lumen/x50/eyeguard/Device.java 'if (GmpfModel.of(lumenDevice, bootModel, model) != null) return Fit.OWN;' 'if (GmpfModel.ruleOf(bootModel) != org.lumen.hal.HashRule.NONE) return Fit.OWN;'
 mut family_none "$H/GmpfModel.java" 'if (g.codename.equals(d)) return true;' 'if (false) return true;'
 mut family_any "$H/GmpfModel.java" 'if (g.codename.equals(d)) return true;' 'if (!d.isEmpty()) return true;'
@@ -59,8 +59,8 @@ mut titan_x50_rule "$H/GmpfModel.java" 'TITAN_NOIR_PRO("h0062", "H0062", GmpfHas
 mut titan_codename_x50 "$H/GmpfModel.java" 'TITAN_NOIR_PRO("h0062", "H0062"' 'TITAN_NOIR_PRO("g0111", "H0062"'
 mut titan_max_x50_rule "$H/GmpfModel.java" 'TITAN_NOIR_MAX("h0063", "H0063", GmpfHash.TITAN_RULE' 'TITAN_NOIR_MAX("h0063", "H0063", GmpfHash.X50_RULE'
 mut titan_max_codename_pro "$H/GmpfModel.java" 'TITAN_NOIR_MAX("h0063", "H0063"' 'TITAN_NOIR_MAX("h0062", "H0063"'
-mut titan_v1299_everywhere "$H/GmpfHash.java" 'X50_RULE = new HashRule(X50, X50_V1254_FIRMWARE, X50_V1254);' 'X50_RULE = new HashRule(X50, X50_V1254_FIRMWARE, X50_V1254, "v1.2.99", "ad74d059b11cf5c5816cff11e285f8ec3bdc9270");'
+mut titan_v1299_everywhere "$H/GmpfHash.java" 'X50_RULE = new HashRule(X50, X50_V1254_FIRMWARE, X50_V1254, X50_V1338_FIRMWARE, X50_V1338);' 'X50_RULE = new HashRule(X50, X50_V1254_FIRMWARE, X50_V1254, X50_V1338_FIRMWARE, X50_V1338, "v1.2.99", "ad74d059b11cf5c5816cff11e285f8ec3bdc9270");'
 mut titan_v1299_any_fw "$H/GmpfHash.java" 'TITAN_V1299_FIRMWARE = "v1.2.99";' 'TITAN_V1299_FIRMWARE = "v1.2.64";'
-mut remote_any_device apps/X50Projector/src/org/lumen/x50/projector/App.java '        return GmpfModel.of(SystemProperties.get("ro.lumen.device", ""),' '        return GmpfModel.ruleOf(bootModel()) != org.lumen.hal.HashRule.NONE || GmpfModel.of(SystemProperties.get("ro.lumen.device", ""),'
+mut remote_any_device apps/LumenProjector/host/activity/src/org/lumen/x50/projector/App.java '        return GmpfModel.of(SystemProperties.get("ro.lumen.device", ""),' '        return GmpfModel.ruleOf(bootModel()) != org.lumen.hal.HashRule.NONE || GmpfModel.of(SystemProperties.get("ro.lumen.device", ""),'
 echo "gmpf_model_mutate: $PASS killed, $FAIL survived"
 [ "$FAIL" = 0 ]

@@ -1,0 +1,7 @@
+{
+  "include": "devices/_family/x50/x50.menu.json",
+  "features": {
+    "picture.mode": {"options": ["ai", "sport", "soft", "imax", "filmmaker", "isf_day", "isf_night", "color_accuracy", "office", "dv_bright", "dv_dark"], "support": {"imax": ["imax", "hdr10"], "dv_bright": ["dolby"], "dv_dark": ["dolby"], "filmmaker": ["sdr", "hdr", "hdr10", "filmmaker"], "color_accuracy": ["sdr", "hdr", "hdr10"]}},
+    "picture.custom_base": {"options": ["sport", "soft", "color_accuracy", "filmmaker", "isf_day", "isf_night"]}
+  }
+}

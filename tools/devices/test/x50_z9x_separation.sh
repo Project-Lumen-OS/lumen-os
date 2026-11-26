@@ -128,9 +128,9 @@ check ota_pub_never_installer_file eval '! grep -h "manifest_url" "$XU" "$XM" | 
 check ota_pub_ab_partitions eval 'grep -qxF "ro.product.ab_ota_partitions=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig" "$XU" && grep -qxF "ro.product.ab_ota_partitions=boot,bootdata,dtbo,mboot,optee,owl,satf,tvconfig,tvservice,vbmeta_system,xgimiconfig" "$XM"'
 check ota_pub_version_code eval 'grep -qxF "+ro.lumen.version_code=@VC@" "$XU" && grep -qxF "ro.lumen.version=@V@" "$XU"'
 check ota_test_image_none eval '! grep -q "ro.lumen.ota" "$XP"'
-check ota_titan_none eval '! grep -q "ro.lumen.ota" "$G/devices/h0062/image/h0062_prop_pub.txt" "$G/devices/h0063/image/h0063_prop_pub.txt" && ! grep -q "^derive=.*ota" "$G/devices/h0062/build.conf" "$G/devices/h0063/build.conf"'
+check ota_titan_none eval '! grep -q "ro.lumen.ota" "$G/devices/h0062/image/h0062_prop_pub.txt" "$G/devices/h0063/image/h0063_prop_pub.txt" && ! cat "$G/devices/h0062/build.conf" "$G/devices/h0063/build.conf" "$G/devices/_family/titan/titan.build.conf" "$G/devices/_family/x50/x50.build.conf" "$G/devices/_family/mt9681/mt9681.build.conf" | grep -q "^derive=.*ota"'
 check ota_gate_aidl grep -qx "hal=aidl" "$G/devices/g0111/image/ota_gate.conf"
-check ota_derive eval 'grep -qx "derive=ota:pub" "$G/devices/g0111/build.conf" && grep -qx "derive=ota:pub" "$G/devices/g0100/build.conf"'
+check ota_derive eval 'python3 "$G/tools/devices/layered.py" "$G/devices/g0111/build.conf" | grep -qx "derive=ota:pub" && python3 "$G/tools/devices/layered.py" "$G/devices/g0100/build.conf" | grep -qx "derive=ota:pub"'
 check ota_z9x_manifest_device grep -q '"device": "z9x"' "$G/tools/ota/make_manifest.py"
 check ota_z9x_updater_device grep -qF '.device("z9x")' "$G/apps/Z9xUpdater/src/org/lumen/updater/Target.java"
 check ota_check_wire eval 'py check-wire >/dev/null'

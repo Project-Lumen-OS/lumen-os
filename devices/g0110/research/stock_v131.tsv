@@ -1,0 +1,63 @@
+# The stock facts of the XGIMI MIRA 4K Pro (G0110) behind its model data, read from the official v1.3.1 FULL OTA (no dump of a
+# unit; the firmware facts are the line's devices/_family/mira/research/stock_v*.tsv). The tree rows name
+# the nodes of settings_tree_product_bollywoodpro that differ from settings_tree_product_athena35ultramax (the G0155 tree,
+# the RS30 family's menu). tools/devices/test/stock_facts.py holds the data against these lines.
+# Columns (tab separated): kind, key, value, evidence.
+fact	product	Product_bollywoodpro	xgimiconfig/G0110/system.ini ProductName
+fact	show_name	MIRA 4K Pro	xgimiconfig/G0110/system.ini DeviceShowName
+fact	restore_bin	XGIMI_HORSEPOPULAR_XR06G.bin	xgimiconfig/G0110/system.ini UpdateBinName
+fact	model_prop_sha256	d78312863a0464401af4a6e788969bcc5749d26cf422186bb54d434b204c388f	vendor/etc/xgimimodelname/G0110/build.prop (image/g0110_model_prop.txt)
+fact	feature_sha256	e0c9f8d54f4bcd0dc26048997fc5c0fad2683a451fd5d254179fbddde0ac6d18	xgimiconfig/G0110/feature/feature.xml
+tree	absent	zoom	no zoom_and_optical_shift, no title_size_and_location (feature.xml support_optical_zoom false)
+tree	absent	zoom.move	no move_only (support_pantilt_type 0)
+tree	absent	keystone.realtime	no keystone_non_inductive_real_time
+tree	absent	keystone.obstacle	no projection_area_self_adapt node
+tree	absent	keystone.curtain	no curtain_projection_self_adapt node
+tree	absent	keystone.rotation	no picture_screen_rotation
+tree	absent	keystone.angle_h	no angle_monitor
+tree	absent	focus.smart	no smart_auto_focus (boot_focus and displacement_focus instead)
+tree	extra	auxiliary_curtain_alignment	projection screen > auxiliary curtain alignment: no Lumen row, open
+tree	extra	flat_wall_adapt	projection screen > flat wall adaptation: no Lumen row, open
+tree	extra	boot_focus	focus > focus at power on: no Lumen row, open
+tree	extra	displacement_focus	focus > focus after a move: no Lumen row, open
+tree	extra	displacement_autoKeystone_v5	correction settings > keystone after a move (keystone.on_move): not offered, open
+tree	extra	silent_mode	more settings > silent mode: no Lumen row, open
+tree	absent	eye	more_eye is in the tree, but feature.xml support_human_detect_source_type 0: no person detection Lumen can watch (X50EyeGuard), off, open
+tree	picture_modes	image_mode_4_state	ai sport cinema gorgeous eye_care office performance
+tree	color_temp	image_mode_4_color_temp_bollywood	standard movie d65
+tree	absent	picture.iris	no picture_iris_ring_adjustment node
+tree	absent	picture.anti_rbe	no picture_anti_rbe node, the v1.3.1 gmpf table has no DisplayManager 203 / 205
+tree	extra	image_mode_vibrant_correct	the dynamic black level tuning under image_dynamic_black_bit_enhancement
+feature	real_cinema_mode	-	feature.xml of xgimiconfig/G0110
+feature	support_brightness_boost	0	feature.xml of xgimiconfig/G0110
+feature	support_filmmaker	false	feature.xml of xgimiconfig/G0110
+feature	support_imax	false	feature.xml of xgimiconfig/G0110
+feature	support_dolby_vision	false	feature.xml of xgimiconfig/G0110
+feature	dolby_vision_screen_version	-	feature.xml of xgimiconfig/G0110
+feature	support_hdr_vivid	true	feature.xml of xgimiconfig/G0110
+feature	support_hfr	true	feature.xml of xgimiconfig/G0110
+feature	support_vrr_only_at_top_speed	-	feature.xml of xgimiconfig/G0110
+feature	support_amd_free_sync_premium	false	feature.xml of xgimiconfig/G0110
+feature	hgig_mode	1	feature.xml of xgimiconfig/G0110
+feature	edid_2_version_val	1	feature.xml of xgimiconfig/G0110
+feature	support_wall_color_adjust_type	2	feature.xml of xgimiconfig/G0110
+feature	support_ambient_light	false	feature.xml of xgimiconfig/G0110
+feature	support_human_detect_type	1	feature.xml of xgimiconfig/G0110
+feature	support_human_detect_source_type	0	feature.xml of xgimiconfig/G0110
+feature	support_elder_color	true	feature.xml of xgimiconfig/G0110
+feature	support_optical_zoom	false	feature.xml of xgimiconfig/G0110
+feature	support_pantilt_type	0	feature.xml of xgimiconfig/G0110
+feature	support_dts_vx_effect	true	feature.xml of xgimiconfig/G0110
+feature	support_spdif	true	feature.xml of xgimiconfig/G0110
+feature	support_lan_rj45	false	feature.xml of xgimiconfig/G0110
+feature	supported_rainbow_reduction	-	feature.xml of xgimiconfig/G0110
+hw	hdmi_ports	3	tv/edid14_*.bin
+hw	hdmi_map	1:0,2:1,3:2	tv/tvconfig.sql tbl_Hdmi_Hardware_Mapping u8HdmiIndex -> u8HdmiPortId
+hw	aperture_type	0	aperture/aperture.ini
+hw	tof_type	10	Tof/Tof.ini
+hw	camera_type	4	camera/camera.ini
+hw	pantilt_type	0	panTilt/panTilt.ini
+hw	tiltshift_type	0	tiltshift/tiltshift.ini
+hw	zoom_motor	0	zoom/zoom.ini ZoomControlEn
+hw	human_source_mode	10	xlab/HumanDetect.ini SOURCE_MODE
+hw	audio	spdif_jack_type=1 device_arc=1 device_headset=0	audio/audio.ini

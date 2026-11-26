@@ -36,6 +36,7 @@ public final class SignalTest {
         format();
         place();
         judder();
+        judderSheet();
         toggle();
         budget();
         sheet();
@@ -49,7 +50,17 @@ public final class SignalTest {
     }
 
     static void format() {
-        eq("rate 23.97", "23.97", SignalFormat.rate(2397, '.'));
+        eq("rate 23.976 in the vendor's notation", "23.976", SignalFormat.rate(2397, '.'));
+        eq("rate 23.976 rounded (Android display mode)", "23,976", SignalFormat.rate(2398, ','));
+        eq("rate 47.952", "47.952", SignalFormat.rate(4795, '.'));
+        eq("rate 29.97", "29,97", SignalFormat.rate(2997, ','));
+        eq("rate 119.88", "119.88", SignalFormat.rate(11988, '.'));
+        eq("rate 24 stays whole", "24", SignalFormat.rate(2400, ','));
+        eq("rate 120 stays whole", "120", SignalFormat.rate(12000, '.'));
+        eq("milli 23.976", 23976L, SignalFormat.milli(2397));
+        eq("milli 59.94", 59940L, SignalFormat.milli(5994));
+        eq("milli 60", 60000L, SignalFormat.milli(6000));
+        eq("milli plain", 59900L, SignalFormat.milli(5990));
         eq("rate 60", "60", SignalFormat.rate(6000, ','));
         eq("rate 59,94", "59,94", SignalFormat.rate(5994, ','));
         eq("rate trailing zero", "23.9", SignalFormat.rate(2390, '.'));
@@ -112,17 +123,78 @@ public final class SignalTest {
         eq("out unknown", SignalText.OUT_OTHER, SignalFormat.outKey("x"));
     }
 
+    /** The read steps of our vendors: input 0.1 Hz (59.94 Hz reads 5990), chip whole Hz cut down. */
+    static final int IN = SignalValues.STEP_TENTH_HZ, CHIP = SignalValues.STEP_WHOLE_HZ, EXACT = 1;
+
     static void judder() {
-        eq("24p on 60 Hz", Judder.JUDDER, Judder.of(2397, 6000));
-        eq("24p on 24 Hz", Judder.SMOOTH, Judder.of(2397, 2400));
-        eq("24p on 120 Hz", Judder.SMOOTH, Judder.of(2397, 12000));
-        eq("59.94 on 60", Judder.SMOOTH, Judder.of(5994, 6000));
-        eq("29.97 on 60", Judder.SMOOTH, Judder.of(2997, 6000));
-        eq("50 on 60", Judder.JUDDER, Judder.of(5000, 6000));
-        eq("120 on 60", Judder.JUDDER, Judder.of(12000, 6000));
-        eq("25 on 50", Judder.SMOOTH, Judder.of(2500, 5000));
-        eq("no source", Judder.UNKNOWN, Judder.of(0, 6000));
-        eq("no chip", Judder.UNKNOWN, Judder.of(2397, 0));
+        // the tester's card (2026-11-25, 4K Dolby Vision, no frame rate matching on the box): signal 24, chip 23
+        eq("signal 24 read, chip 23 read: 23.976 cut down, no warning", Judder.SMOOTH, Judder.of(2400, IN, 2300, CHIP));
+        eq("signal 23.976, chip 23", Judder.SMOOTH, Judder.of(2397, IN, 2300, CHIP));
+        eq("signal 23.976, chip 24", Judder.SMOOTH, Judder.of(2397, IN, 2400, CHIP));
+        eq("24 on 24", Judder.SMOOTH, Judder.of(2400, IN, 2400, CHIP));
+        eq("59.94 on a chip read 59", Judder.SMOOTH, Judder.of(5994, IN, 5900, CHIP));
+        eq("59.94 on a chip read 60", Judder.SMOOTH, Judder.of(5994, IN, 6000, CHIP));
+        eq("59.9 read on 60", Judder.SMOOTH, Judder.of(5990, IN, 6000, CHIP));
+        eq("24p on 120 Hz", Judder.SMOOTH, Judder.of(2397, IN, 12000, CHIP));
+        eq("24p on 119 read (119.88)", Judder.SMOOTH, Judder.of(2397, IN, 11900, CHIP));
+        eq("29.97 on 60", Judder.SMOOTH, Judder.of(2997, IN, 6000, CHIP));
+        eq("25 on 50", Judder.SMOOTH, Judder.of(2500, IN, 5000, CHIP));
+        eq("50 on 50", Judder.SMOOTH, Judder.of(5000, IN, 5000, CHIP));
+        eq("24p on 60 Hz", Judder.JUDDER, Judder.of(2397, IN, 6000, CHIP));
+        eq("24 on 59 read", Judder.JUDDER, Judder.of(2400, IN, 5900, CHIP));
+        eq("50 on 60", Judder.JUDDER, Judder.of(5000, IN, 6000, CHIP));
+        eq("60 on 50", Judder.JUDDER, Judder.of(6000, IN, 5000, CHIP));
+        eq("25 on 60", Judder.JUDDER, Judder.of(2500, IN, 6000, CHIP));
+        eq("30 on 24", Judder.JUDDER, Judder.of(3000, IN, 2400, CHIP));
+        eq("120 on 60", Judder.JUDDER, Judder.of(12000, IN, 6000, CHIP));
+        // exact reads tell 23.976 from 24 (0.1 %: one frame twice every 42 s)
+        eq("exact 23.976 on exact 24", Judder.JUDDER, Judder.of(2397, EXACT, 2400, EXACT));
+        eq("exact 59.94 on exact 60", Judder.JUDDER, Judder.of(5994, EXACT, 6000, EXACT));
+        eq("exact 23.976 on exact 23.976", Judder.SMOOTH, Judder.of(2397, EXACT, 2397, EXACT));
+        eq("exact 24 on exact 24", Judder.SMOOTH, Judder.of(2400, EXACT, 2400, EXACT));
+        eq("exact 23.976 on a chip read 23", Judder.SMOOTH, Judder.of(2397, EXACT, 2300, CHIP));
+        eq("exact 24 on a chip read 23: 24 can read 23 on a cut chip only with slack", Judder.SMOOTH,
+                Judder.of(2400, EXACT, 2300, CHIP));
+        // too coarse to tell: never a warning
+        eq("input in whole Hz: 59 against 60", Judder.SMOOTH, Judder.of(5900, CHIP, 6000, CHIP));
+        eq("no source", Judder.UNKNOWN, Judder.of(0, IN, 6000, CHIP));
+        eq("no chip", Judder.UNKNOWN, Judder.of(2397, IN, 0, CHIP));
+        eq("source precision unknown", Judder.UNKNOWN, Judder.of(2400, 0, 2300, CHIP));
+        eq("chip precision unknown", Judder.UNKNOWN, Judder.of(2400, IN, 2300, 0));
+    }
+
+    /** The card for the tester's signal: every model's reader sets its steps, the sheet warns only on a real mismatch. */
+    static void judderSheet() {
+        int[][] cases = {{2400, 2300}, {2397, 2300}, {5994, 5900}, {5994, 6000}, {2400, 2400}};
+        for (int[] c : cases) {
+            SignalValues v = full();
+            v.rateCenti = c[0]; v.chipRateCenti = c[1];
+            SignalSheet s = SignalSheet.build(v, allItems(), WORDS);
+            eq("no warning for signal " + c[0] + " on chip " + c[1], Judder.SMOOTH, s.judder);
+            eq("smooth words for signal " + c[0] + " on chip " + c[1], "verdict_smooth", s.verdict);
+        }
+        SignalValues v = full();
+        v.rateCenti = 2400; v.chipRateCenti = 2300; v.rateStepCenti = 0;
+        eq("a reader without its input step: no line", Judder.UNKNOWN, SignalSheet.build(v, allItems(), WORDS).judder);
+        v = full();
+        v.chipStepCenti = 0;
+        eq("a reader without its chip step: no line", Judder.UNKNOWN, SignalSheet.build(v, allItems(), WORDS).judder);
+        v = full();
+        v.rateCenti = 5000; v.chipRateCenti = 6000;
+        eq("50 on 60 warns with both rates", "verdict_judder|60|50", SignalSheet.build(v, allItems(), WORDS).verdict);
+        v = full();
+        v.rateCenti = 2397; v.chipRateCenti = 6000;
+        eq("24p on 60 warns with the film rate in full", "verdict_judder|60|23,976",
+                SignalSheet.build(v, allItems(), WORDS).verdict);
+        SignalValues m = new SignalValues(), f = new SignalValues();
+        f.width = 3840; f.height = 2160; f.rateCenti = 2400; f.rateStepCenti = IN;
+        f.chipRateCenti = 2300; f.chipStepCenti = CHIP;
+        m.merge(f, EnumSet.of(SignalItem.HDMI_INFO, SignalItem.CHIP_RATE), 0);
+        eq("merge keeps the input step", IN, m.rateStepCenti);
+        eq("merge keeps the chip step", CHIP, m.chipStepCenti);
+        m = new SignalValues();
+        m.merge(f, EnumSet.of(SignalItem.CHIP), 0);
+        eq("merge keeps the chip step of CHIP", CHIP, m.chipStepCenti);
     }
 
     static void toggle() {
@@ -203,6 +275,7 @@ public final class SignalTest {
         v.port = 1;
         v.width = 3840; v.height = 2160; v.rateCenti = 2397; v.interlaced = false; v.dvi = false;
         v.hdrType = 2; v.chipWidth = 3840; v.chipHeight = 2160; v.chipRateCenti = 2400;
+        v.rateStepCenti = IN; v.chipStepCenti = CHIP;
         v.range = "auto"; v.edid = "2.1"; v.allm = false; v.vrr = false; v.game = false;
         v.freesync = false; v.imax = false; v.filmmaker = false; v.cec = true; v.arc = true; v.physicalAddress = 0x1000;
         v.dvMode = 1; v.hgig = false; v.toneMap = true; v.tempLight = 52; v.tempSystem = 41;
@@ -222,7 +295,7 @@ public final class SignalTest {
     static void sheet() {
         SignalSheet s = SignalSheet.build(full(), allItems(), WORDS);
         eq("port", "port_hdmi|1", s.port);
-        eq("big: size @ rate on one line", "3840\u00d72160 @ hz|23,97", s.big);
+        eq("big: size @ rate on one line", "3840\u00d72160 @ hz|23,976", s.big);
         eq("chips", "[*hdr_dolby, edid_21]", s.chips.toString());
         eq("smooth verdict", Judder.SMOOTH, s.judder);
         eq("verdict text", "verdict_smooth", s.verdict);
@@ -231,25 +304,25 @@ public final class SignalTest {
                 + "r_hdr = hdr_dolby]", s.cardRows.toString());
         eq("full panel rows (the owner's order: aspect, range, HDR, then the rest)", "[r_input, r_link, r_aspect, r_range, r_hdr, "
                 + "r_imax, r_filmmaker, r_edid, r_port, r_allm, r_vrr, "
-                + "r_freesync, r_chip, r_motion, r_game_mode, r_hgig, r_tone_map, r_dv_mode, r_temp_light, r_temp_system, "
+                + "r_freesync, r_chip, r_cadence, r_game_mode, r_hgig, r_tone_map, r_dv_mode, r_temp_light, r_temp_system, "
                 + "r_out, r_sound_format]", keys(s).toString());
-        eq("input row: size @ rate, scan small", "r_input = 3840\u00d72160 @ hz|23,97 (progressive)", s.valueRows().get(0).toString());
+        eq("input row: size @ rate, scan small", "r_input = 3840\u00d72160 @ hz|23,976 (progressive)", s.valueRows().get(0).toString());
         String chipRow = null, portRow = null;
         for (SignalSheet.Row r : s.valueRows()) {
             if (SignalText.R_CHIP.equals(r.key)) chipRow = r.value;
             if (SignalText.R_PORT.equals(r.key)) portRow = r.toString();
         }
         eq("chip row: size @ rate", "3840\u00d72160 @ hz|24", chipRow);
-        eq("port row", "r_port = port_cec, port_arc (1.0.0.0)", portRow);
+        eq("port row: the CEC address named as one", "r_port = port_cec, port_arc (port_address|1.0.0.0)", portRow);
         int sections = 0;
         for (SignalSheet.Row r : s.rows) if (r.section) sections++;
         eq("three sections", 3, sections);
         SignalValues v = full();
         v.chipRateCenti = 6000;
         SignalSheet j = SignalSheet.build(v, allItems(), WORDS);
-        eq("judder verdict", "verdict_judder|60|23,97", j.verdict);
+        eq("judder verdict", "verdict_judder|60|23,976", j.verdict);
         RowTone motion = null;
-        for (SignalSheet.Row r : j.rows) if (SignalText.R_MOTION.equals(r.key)) motion = r.tone;
+        for (SignalSheet.Row r : j.rows) if (SignalText.R_CADENCE.equals(r.key)) motion = r.tone;
         eq("judder row warns", RowTone.WARN, motion);
         v = full();
         v.allm = true; v.vrr = true;
@@ -295,7 +368,7 @@ public final class SignalTest {
     /** Each item off: exactly its rows go, the rest stays (the model hides what it cannot read). */
     static void hiding() {
         Map<SignalItem, List<String>> own = new HashMap<>();
-        own.put(SignalItem.HDMI_INFO, List.of("r_input", "r_link", "r_aspect", "r_motion"));
+        own.put(SignalItem.HDMI_INFO, List.of("r_input", "r_link", "r_aspect", "r_cadence"));
         own.put(SignalItem.HDR, List.of("r_hdr"));
         own.put(SignalItem.CHIP, List.of());       // CHIP_RATE still gives the chip row
         own.put(SignalItem.CHIP_RATE, List.of());
@@ -320,6 +393,7 @@ public final class SignalTest {
         own.put(SignalItem.HDMI_FORMAT, List.of());   // no receiver report in full(): its rows are in HdmiRxTest
         own.put(SignalItem.PICTURE_MODE, List.of());  // WORDS has no menu words: those rows are in menuRows()
         own.put(SignalItem.MEMC, List.of());
+        own.put(SignalItem.COLOR_SPACE, List.of());   // a menu words row too (menuRows())
         List<String> base = keys(SignalSheet.build(full(), allItems(), WORDS));
         for (SignalItem i : SignalItem.values()) {
             Set<SignalItem> items = allItems();
@@ -332,13 +406,13 @@ public final class SignalTest {
         noChip.remove(SignalItem.CHIP);
         noChip.remove(SignalItem.CHIP_RATE);
         SignalSheet s = SignalSheet.build(full(), noChip, WORDS);
-        ok("no chip read: no chip, no motion, no verdict", !keys(s).contains("r_chip") && !keys(s).contains("r_motion")
+        ok("no chip read: no chip, no motion, no verdict", !keys(s).contains("r_chip") && !keys(s).contains("r_cadence")
                 && s.verdict == null);
         SignalValues v = full();
         v.hdrType = null; v.range = null; v.edid = null; v.allm = null; v.vrr = null; v.game = null; v.audioOut = null;
         v.dvi = null; v.freesync = null; v.imax = null; v.filmmaker = null; v.cec = null; v.dvMode = null; v.hgig = null;
         v.toneMap = null; v.tempLight = null; v.tempSystem = null; v.soundFormat = null; v.aspectSetting = null;
-        eq("values not read: rows hidden", "[r_input, r_aspect, r_chip, r_motion]",
+        eq("values not read: rows hidden", "[r_input, r_aspect, r_chip, r_cadence]",
                 keys(SignalSheet.build(v, allItems(), WORDS)).toString());
         v = full();
         v.width = 0;
@@ -403,6 +477,29 @@ public final class SignalTest {
         v.merge(fresh, List.of(SignalItem.PICTURE_MODE), 1);
         eq("merge picture mode", "sport", v.pictureMode);
         eq("merge leaves MEMC", "high", v.memc);
+        // x50-1338-menu: the stock OSD's colour space (X50 family on v1.3.38, GmTvManager 204) with the menu's gamut words
+        v = full();
+        v.pictureMode = null;
+        v.colorSpace = "bt2020";
+        s = SignalSheet.build(v, allItems(), MENU);
+        ok("colour space: on the card after the HDR kind and in the input rows", s.cardRows.toString().contains(
+                "r_hdr = hdr_dolby, M:picture.gamut = picture.gamut=bt2020") && keys(s).contains("color_space")
+                && keys(s).indexOf("color_space") > keys(s).indexOf("r_hdr"));
+        items = allItems();
+        items.remove(SignalItem.COLOR_SPACE);
+        ok("colour space: not on a model or firmware without the item", !keys(SignalSheet.build(v, items, MENU)).contains("color_space")
+                && !SignalSheet.build(v, items, MENU).cardRows.toString().contains("picture.gamut"));
+        v.colorSpace = null;
+        ok("colour space: nothing read, no row", !keys(SignalSheet.build(v, allItems(), MENU)).contains("color_space"));
+        v.colorSpace = "bt709";
+        v.port = 0;
+        ok("colour space: HDMI only", !keys(SignalSheet.build(v, allItems(), MENU)).contains("color_space"));
+        ok("colour space: a slow card read of the HAL, HDMI only", SignalItem.COLOR_SPACE.card() && SignalItem.COLOR_SPACE.hal
+                && SignalItem.COLOR_SPACE.hdmiOnly);
+        fresh = new SignalValues();
+        fresh.colorSpace = "p3";
+        v.merge(fresh, List.of(SignalItem.COLOR_SPACE), 1);
+        eq("merge colour space", "p3", v.colorSpace);
     }
 
     /** One read of the input: w x h at centi (VRR on or off), the shown rate back. */

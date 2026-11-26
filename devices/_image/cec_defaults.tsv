@@ -6,6 +6,8 @@
 #
 #   default  SETTING  VALUE          the stock value of an HdmiCecConfig setting (its name and value)
 #   device   DEVICE  SETTING  VALUE  the stock value on one device where it differs from the default
+#   owner    SETTING  VALUE          the maintainer's value on every image where it differs from stock (the RRO default of a
+#                                    new install; the stock columns stay the evidence of what stock does)
 #   reset    DEVICE  SETTING         once after the update to this table, that device puts the stock value back:
 #                                    its old Lumen image stored the old value by itself, so a stored value is not
 #                                    known to be the user's (unless the user switched the row in the Lumen menu)
@@ -20,9 +22,35 @@ default  tv_wake_on_one_touch_play                 0
 default  power_control_mode                        to_tv_and_audio_system
 default  power_state_change_on_active_source_lost  standby_now
 default  set_menu_language                         1
+# the codecs a TV asks the soundbar for once ARC is up (RequestSadAction, four per message): every stock asks AC-3,
+# DTS, E-AC-3 and TrueHD/MAT in ONE <Request Short Audio Descriptor>; LineageOS asked all fifteen in four. On the HB
+# every answer makes the vendor rewrite the HDMI inputs' EDID with that answer's codecs only (log 2026-11-04 20:10:54,
+# "Update EDID by Audio System SAD Info" three times in 1.1 s), so four questions meant several EDID rewrites
+default  query_sad_lpcm                            0
+default  query_sad_dd                              1
+default  query_sad_mpeg1                           0
+default  query_sad_mp3                             0
+default  query_sad_mpeg2                           0
+default  query_sad_aac                             0
+default  query_sad_dts                             1
+default  query_sad_atrac                           0
+default  query_sad_onebitaudio                     0
+default  query_sad_ddp                             1
+default  query_sad_dtshd                           0
+default  query_sad_truehd                          1
+default  query_sad_dst                             0
+default  query_sad_wmapro                          0
+default  query_sad_max                             0
 # Play 6 stock is Android 11: HdmiCecLocalDeviceTv reads hdmi_control_auto_wakeup_enabled with default true and
 # nothing stores it, so <Image View On> wakes it (its SettingsProvider stores auto device off = false)
 device   dragon_healthy  tv_wake_on_one_touch_play  1
+reset    goat_elegant    tv_wake_on_one_touch_play
 # Z9X HB: the old image had no CEC values (LineageOS: wake on), and the power policy (Z9xProjector cec.CecPolicy)
 # stores that value itself around guarded sleeps and power-offs
-reset    goat_elegant    tv_wake_on_one_touch_play
+
+# 2026-11-26: every HDMI-CEC switch is ON by default on every family ("users who do not want it switch it
+# off"). Stock: send standby on sleep 0 and wake on <Image View On> 0 on every Android 13/14 XGIMI system (Play 6 A11:
+# wake 1), see the columns of cec_stock.tsv. Units that ran an older table get every switch ON once
+# (CecDefaults.allOnOnce, flag cec_defaults_v1_applied), after that the user's choice is never touched again.
+owner    tv_send_standby_on_sleep                  1
+owner    tv_wake_on_one_touch_play                 1

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
+<!-- lumen-menu label of the All settings row that opens the one screen casting page (AirPlay, screen mirroring,
+     DLNA; apps/LumenAirPlay CastActivity) -->
+<resources>
+    <string name="lumen_m_casting">@string/lumen_screen_casting</string>
+</resources>

@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">يسرد الدليل في صفحة المشروع ملفات XGIMI الرسمية.</string>
     <string name="lumen_about_erases">تمسح الذاكرة كل شيء على جهاز العرض: التطبيقات والحسابات والإعدادات والملفات.</string>
     <string name="lumen_about_scan">امسح الرمز بالهاتف لفتحه</string>
-    <string name="lumen_about_close">إغلاق</string>
 </resources>

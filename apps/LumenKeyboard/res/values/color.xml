@@ -23,8 +23,6 @@
 
     <color name="keyboard_background">#FF384248</color>
     <color name="key_text_default">#FFEEEEEE</color>
-    <color name="ime_selector_focus_color">#66EEEEEE</color>
-    <color name="ime_selector_color">#26EEEEEE</color>
 
     <color name="candidate_background">#FF263238</color>
     <color name="candidate_font_color">#FF30C6B4</color>

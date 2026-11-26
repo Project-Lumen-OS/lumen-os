@@ -13,8 +13,17 @@ HERE=$TREE/app
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT" "$TREE"' EXIT
+G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
-  "$HERE/src/org/lumen/projector/panel/QpdLayout.java" "$T/QpdLayoutTest.java"
+  "$HERE/src/org/lumen/projector/panel/QpdLayout.java" "$HERE/src/org/lumen/ui/Palette.java" "$T/QpdLayoutTest.java"
+# the dark menu's card, ink and MUTE (QpdStyle DARK entries 0, 3, 4) for the disabled grey's contrast checks
+DARK=$(python3 - "$HERE/src/org/lumen/projector/panel/QpdStyle.java" <<'EOF'
+import re, sys
+row = re.search(r'int\[\] DARK = \{(.*?)\};', open(sys.argv[1]).read(), re.S).group(1)
+v = re.findall(r'0x([0-9A-Fa-f]{8})', row)
+print(','.join([v[0], v[3], v[4]]))
+EOF
+)
 # the light range of every profile (min, max, Boost level or -1): the slider spans exactly that range
 RANGES=$(python3 - "$G/devices" <<'EOF'
 import glob, json, os, sys
@@ -27,7 +36,7 @@ for p in sorted(glob.glob(os.path.join(sys.argv[1], "*", "menu.json"))):
 print(",".join(out))
 EOF
 )
-"$JAVA_HOME/bin/java" -Dlamp.ranges="$RANGES" -cp "$OUT" org.lumen.projector.panel.QpdLayoutTest
+"$JAVA_HOME/bin/java" -Dlamp.ranges="$RANGES" -Dqpd.dark="$DARK" -cp "$OUT" org.lumen.projector.panel.QpdLayoutTest
 # All settings pages of every profile as list models: greyed rows at the end come into view, headers never alone
 FP=$(mktemp -d)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$FP" "$HERE/src/org/lumen/projector/panel/QpdLayout.java" \
@@ -132,6 +141,8 @@ for m in light dark auto; do
   [ -f "$HERE/res/drawable/lumen_qpd_ic_theme_$m.xml" ] || { echo "FAIL res: no theme icon $m"; bad=1; }
 done
 [ -f "$HERE/res/drawable/lumen_qpd_ic_usb.xml" ] && { echo "FAIL res: the USB tile icon is back"; bad=1; }
+# every animated icon stays inside its own box at every frame (the 3D icon's screens were cut while the tile took the focus)
+python3 -B "$T/icon_bounds.py" "$HERE/res" || bad=1
 # All settings (gear) is its own screen: the gear tile opens it, never a popup
 want 'if (MenuSpec.GENERAL.equals(id)) { openAll(null, null); return; }' "gear opens All settings"
 want 'return !MenuSpec.allSettingsOnly(key) && popupPage(key) != null;' "gear and For developers not a popup"
@@ -140,7 +151,9 @@ want 'return !MenuSpec.allSettingsOnly(key) && popupPage(key) != null;' "gear an
 want '        for (String sec : spec.popups.keySet()) tilePopup(sec);' "section popups without the card's own tiles"
 want '        List<FeatureId> keep = spec.popupRowsOf(sec);' "popup rows from MenuSpec.popupRowsOf"
 want '            if (f != null && !keep.contains(f.parent != null ? f.parent : f)) continue;' "popup leaves out the tiled rows"
-want '            if (v instanceof HeaderRow && Collections.disjoint(headers.get(v), keep)) continue;' "popup drops a header without rows"
+want '            if (v instanceof HeaderRow && !keepsTitle((HeaderRow) v, keep)) continue;' "popup drops a header without rows"
+want '        return group == null || !Collections.disjoint(group, keep);' "a module's own title stays with its rows in a popup"
+want '        if (full == null || MenuSpec.allSettingsOnly(sec) || keep.isEmpty()' "no tile popup of an All settings only section"
 want '        tilePopup(sec);' "extension rows reach the popup"
 want '        if (sum != 0) featureOf.put(p.add(new TextRow(app, s(sum))), f);' "a summary goes with its row"
 # Input tile: the device's input popup (pages API)
@@ -209,7 +222,7 @@ grep -qF 'if (down) all.moveInList(f, dir == QpdLayout.DOWN);' "$HERE/src/org/lu
 want '        popupUntouched = target != null && focusRow == null;' "a direct popup open follows its checked row"
 want '        popupUntouched = true;' "a tile's popup follows its checked row"
 want '        if (down) popupUntouched = false; ' "a key ends the follow"
-want 'panel.refreshPage(QpdLayout.popupFocus(popupUntouched && !panel.isAllMode(), checkedIndex(panel.currentPage()), -1));' \
+want 'repaint.repaint(() -> p.refreshPage(QpdLayout.popupFocus(popupUntouched && !p.isAllMode(), checkedIndex(p.currentPage()), -1)));' \
   "apply puts the focus by QpdLayout.popupFocus"
 first=$(awk '/private boolean onKey\(KeyEvent ev\) \{/ { on = 1 } on && /popupUntouched = false;/ { print "key"; exit } on && /return / { print "return"; exit }' "$C")
 [ "$first" = key ] || { echo "FAIL popup focus: a key can leave onKey before it ends the follow"; bad=1; }
@@ -227,5 +240,19 @@ grep -qF 'labelP.setTextSize(px(QpdLayout.LABEL) * QpdLayout.labelScale(tw, room
   && grep -qF 'QpdStyle.drawFaded(c, title, labelP, (w - room) / 2f, room, base + labelP.ascent() - px(4),' "$QT" \
   && ! grep -q 'ellipsize' "$QT" \
   || { echo "FAIL small tile label: not QpdLayout.labelScale / labelRuns with the wide tiles' marquee, or an ellipsis"; bad=1; }
+# a disabled row: one opaque grey for its text and icons (QpdLayout.disabled through QpdStyle), never transparency
+QF="$HERE/src/org/lumen/projector/panel/QpdRowFrame.java" QS="$HERE/src/org/lumen/projector/panel/QpdStyle.java"
+RJ="$HERE/src/org/lumen/projector/ui/Row.java" TJ="$HERE/src/org/lumen/projector/ui/Theme.java"
+grep -qF 'int save = enabled ? c.save() : c.saveLayer(0, top, w, getHeight(), QpdStyle.disabledLayer());' "$QF" \
+  && ! grep -q 'saveLayerAlpha' "$QF" \
+  || { echo "FAIL disabled row: the frame does not draw a greyed row in QpdStyle.disabledLayer"; bad=1; }
+grep -qF 'disabledLayer = Row.disabledPaint(DISABLED);' "$QS" && grep -qF 'Row.setDisabledInk(DISABLED);' "$QS" \
+  && grep -qF 'DISABLED = QpdLayout.disabled(lightNow);' "$QS" \
+  || { echo "FAIL disabled row: the theme does not take the menu's disabled grey"; bad=1; }
+grep -qF 'int grey = rowEnabled ? -1 : c.saveLayer(0, 0, getWidth(), getHeight(), disabledInk);' "$RJ" \
+  && grep -qF '0, 0, 0, DISABLED_GAIN, 0}));' "$RJ" && ! grep -q 'setAlpha(enabled ? 1f : 0' "$RJ" \
+  || { echo "FAIL disabled row: a row that draws itself is not greyed by its ink layer (or still by transparency)"; bad=1; }
+dg=$(sed -n 's/.*DISABLED_DARK = 0x\([0-9A-Fa-f]*\),.*/\1/p' "$HERE/src/org/lumen/projector/panel/QpdLayout.java")
+grep -qF "TEXT_DISABLED = 0x$dg;" "$TJ" || { echo "FAIL disabled row: Theme.TEXT_DISABLED is not the dark menu's grey $dg"; bad=1; }
 [ $bad = 0 ] && echo "controller wiring: ok"
 exit $bad

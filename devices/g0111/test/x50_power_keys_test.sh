@@ -80,8 +80,8 @@ d=$(diff "$T/base/Vendor_000d_Product_3840.kl" "$T/new/Vendor_000d_Product_3840.
 t "3840: exactly 8 lines changed or added: 113, 64, 88, 127, 185, 184, 135, 136 ($d)" test "$d" = 8
 t "gear hold: no X50 stock remote layout maps a stock MENU scancode to ALL_APPS" sh -c "cd '$T/new' && ! sed 's/#.*//' Vendor_000d_Product_3840.kl Vendor_000d_Product_3838.kl Vendor_000d_Product_3843.kl Vendor_3697_Product_0001.kl Vendor_3697_Product_0002.kl | grep -Eq '^key[[:space:]]+(127|139)[[:space:]]+ALL_APPS'"
 for f_ in Vendor_000d_Product_3838.kl Vendor_000d_Product_3840.kl Vendor_000d_Product_3841.kl Vendor_000d_Product_3842.kl; do
-  t "Remote buttons: $f_ 184 (stock custom shortcut key) is ALL_APPS in the 1.0.9 base, FEATURED_APP_1 after the edit" sh -c \
-    "grep -Eq '^key 184[[:space:]]+ALL_APPS' '$T/base/$f_' && [ \$(grep -Ec '^key 184[[:space:]]' '$T/new/$f_') = 1 ] && grep -Eq '^key 184[[:space:]]+FEATURED_APP_1  # XGIMI: SHORTCUT' '$T/new/$f_'"
+  t "Remote buttons: $f_ 184 (stock custom shortcut key) is ALL_APPS in the 1.0.9 base, TV_RADIO_SERVICE after the edit" sh -c \
+    "grep -Eq '^key 184[[:space:]]+ALL_APPS' '$T/base/$f_' && [ \$(grep -Ec '^key 184[[:space:]]' '$T/new/$f_') = 1 ] && grep -Eq '^key 184[[:space:]]+TV_RADIO_SERVICE  # XGIMI: SHORTCUT' '$T/new/$f_'"
 done
 for k in Vendor_000d_Product_3843.kl:135:MACRO_1 Vendor_000d_Product_3843.kl:136:MACRO_2 Vendor_000d_Product_3843.kl:217:MACRO_3 \
          Vendor_000d_Product_3843.kl:354:MACRO_4 Vendor_000d_Product_3840.kl:135:MACRO_1 Vendor_000d_Product_3840.kl:136:MACRO_2; do
@@ -139,7 +139,7 @@ fresh; pk apply "$T/new" >/dev/null
 sed 's/^key 127        TV_MEDIA_CONTEXT_MENU.*/key 127        ALL_APPS/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
 f "check refuses the gear hold 127 turned into ALL_APPS" pk check "$T/base" "$T/new"
 fresh; pk apply "$T/new" >/dev/null
-sed 's/^key 184        FEATURED_APP_1.*/key 184        ALL_APPS/' "$T/new/Vendor_000d_Product_3841.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3841.kl"
+sed 's/^key 184        TV_RADIO_SERVICE.*/key 184        ALL_APPS/' "$T/new/Vendor_000d_Product_3841.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3841.kl"
 f "check refuses the shortcut key 184 left as ALL_APPS" pk check "$T/base" "$T/new"
 fresh; pk apply "$T/new" >/dev/null
 sed '/^key 354 MACRO_4/d' "$T/new/Vendor_000d_Product_3843.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3843.kl"
@@ -237,7 +237,7 @@ assert set(x) == set(z) | {"KEYCODE_TV_AUDIO_DESCRIPTION", "KEYCODE_TV_DATA_SERV
                           "KEYCODE_TV_MEDIA_CONTEXT_MENU"} | RS30, sorted(set(x) ^ set(z))
 PY
 t "registry: g0111 builds X50PowerOverlay; build.conf stages x50_power_keys.py" sh -c \
-  "grep -qE '^apps=(.* )?X50PowerOverlay( .*)?$' '$G/devices/g0111/device.conf' && grep -q 'devices/g0111/image/x50_power_keys.py' '$G/devices/g0111/build.conf'"
+  "python3 '$G/tools/devices/layered.py' '$G/devices/g0111/device.conf' | grep -qE '^apps=(.* )?X50PowerOverlay( .*)?$' && python3 '$G/tools/devices/layered.py' '$G/devices/g0111/build.conf' | grep -q 'devices/g0111/image/x50_power_keys.py'"
 t "compose and verify name the key edit and the RRO" sh -c \
   "grep -qE 'x50_power_keys.py.apply.[{]sys[}]/product/usr/keylayout' '$G/devices/g0111/image/steps.tsv' && grep -q '{sys}/product/overlay/X50PowerOverlay.apk' '$G/devices/g0111/image/steps.tsv' && grep -q '\"system/product/overlay/X50PowerOverlay.apk\": (0, 0, 0o644, SYSF, \"stage/X50PowerOverlay.apk\")' '$G/devices/g0111/image/verify_tree_x50.py'"
 fresh

@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">Звук кнопок</string>
-    <string name="lumen_m_hdmi_options">Настройки HDMI-входов</string>
     <string name="lumen_m_colour_vision">Коррекция цвета</string>
     <string name="lumen_m_temperature">Температура</string>
     <string name="lumen_m_high_altitude">Режим большой высоты</string>

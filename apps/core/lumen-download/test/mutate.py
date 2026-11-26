@@ -18,12 +18,22 @@ SRC = "apps/core/lumen-download/src/org/lumen/download/"
 T_RUN = "sh apps/core/lumen-download/test/run.sh"
 
 # name, file, old, new, tests (any failing test kills it): ranges never overlap, links renewed on 403, If-Range guards
-# a changed file, resume, the fallback to one connection, the scaler, the speed window
+# a changed file, resume, the fallback to one connection, the scaler, the speed window, the takeover of a slow end
 MUTANTS = [
     ("dl_reserve_past_cut", SRC + "Segments.java", "s.reserved = Math.max(0, Math.min(n, s.end - s.pos));",
      "s.reserved = Math.max(0, n);", [T_RUN]),
-    ("dl_split_whole", SRC + "Segments.java", "if (big == null || free(big) < 2 * minSplit) return null;",
-     "if (big != null || big == null) return null;", [T_RUN]),
+    ("dl_split_whole", SRC + "Segments.java", "if (free(big) >= 2 * minSplit) return cut(",
+     "if (free(big) < 0) return cut(", [T_RUN]),
+    ("dl_no_takeover", SRC + "Segments.java", "return slow == null ? null : cut(slow, slow.pos + slow.reserved, nowMs);",
+     "return null;", [T_RUN]),
+    ("dl_takeover_in_flight", SRC + "Segments.java", "cut(slow, slow.pos + slow.reserved, nowMs)",
+     "cut(slow, slow.pos, nowMs)", [T_RUN]),
+    ("dl_takeover_any_speed", SRC + "Segments.java", "            if (own * 2 >= bps) continue;\n", "", [T_RUN]),
+    ("dl_takeover_new", SRC + "Segments.java", "free(s) <= 0 || age < GRACE_MS", "free(s) <= 0", [T_RUN]),
+    ("dl_takeover_ends_soon", SRC + "Segments.java", "double late = STEAL_MS;", "double late = 0;", [T_RUN]),
+    ("dl_speed_not_counted", SRC + "Segments.java", "        s.got += k;\n", "", [T_RUN]),
+    ("dl_idle_leaves", SRC + "ParallelDownload.java", "if (!ranges || segs.complete()) return;", "return;", [T_RUN]),
+    ("dl_own_speed_unknown", SRC + "ParallelDownload.java", "busy == 0 ? 0 : bytes * 1000 / busy", "0", [T_RUN]),
     ("dl_no_renew", SRC + "ParallelDownload.java", "                url = pr.url;\n", "", [T_RUN]),
     ("dl_renew_waits", SRC + "ParallelDownload.java", "pause(e instanceof Renewed && fails == 1 ? 0 :",
      "pause(e instanceof Renewed && fails == 99 ? 0 :", [T_RUN]),

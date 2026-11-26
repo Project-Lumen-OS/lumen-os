@@ -13,7 +13,9 @@ import android.widget.FrameLayout;
 import org.lumen.menu.KeyTools;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The shared tool key rule (org.lumen.menu.KeyTools) on the REAL window hosts (OverlayHost and Panel of
@@ -35,10 +37,13 @@ public final class KeyToolsTest {
     /** Windows bottom to top; activity windows go under every overlay window. */
     static final class Screen implements WindowManager {
         final List<View> wins = new ArrayList<>();
+        /** The window flags as the window manager last got them (addView, updateViewLayout), never the live params. */
+        final Map<View, Integer> flags = new HashMap<>();
         View focus;
 
         @Override public void addView(View v, ViewGroup.LayoutParams p) {
             v.setLayoutParams(p);
+            flags.put(v, wmFlags(p));
             wins.add(v);
             v.attached = true;
             v.dispatchAttached(true);
@@ -47,6 +52,7 @@ public final class KeyToolsTest {
 
         @Override public void updateViewLayout(View v, ViewGroup.LayoutParams p) {
             v.setLayoutParams(p);
+            flags.put(v, wmFlags(p));
             refocus();
         }
 
@@ -54,6 +60,7 @@ public final class KeyToolsTest {
             if (!wins.remove(v)) throw new IllegalArgumentException("not added");
             v.dispatchAttached(false);
             v.attached = false;
+            flags.remove(v);
             if (focus == v) { focus = null; v.windowFocus = false; v.dispatchWindowFocusChanged(false); }
             refocus();
         }
@@ -63,6 +70,7 @@ public final class KeyToolsTest {
             int i = 0;
             while (i < wins.size() && !overlay(wins.get(i))) i++;
             root.setLayoutParams(new WindowManager.LayoutParams(-1, -1, WindowManager.LayoutParams.TYPE_APPLICATION, 0, 0));
+            flags.put(root, 0);
             wins.add(i, root);
             root.attached = true;
             root.dispatchAttached(true);
@@ -75,9 +83,13 @@ public final class KeyToolsTest {
             return ((WindowManager.LayoutParams) v.getLayoutParams()).type == WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         }
 
-        static boolean focusable(View v) {
+        static int wmFlags(ViewGroup.LayoutParams p) {
+            return p instanceof WindowManager.LayoutParams ? ((WindowManager.LayoutParams) p).flags : 0;
+        }
+
+        boolean focusable(View v) {
             return v.getVisibility() == View.VISIBLE
-                    && (((WindowManager.LayoutParams) v.getLayoutParams()).flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 0;
+                    && (flags.getOrDefault(v, 0) & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 0;
         }
 
         void refocus() {
@@ -149,6 +161,17 @@ public final class KeyToolsTest {
         FocusTool(Context c) { window = new Keys(c); setContentView(window); }
 
         @Override public void onMenuKey(boolean held) { menuKeys.add(held); finish(); }
+    }
+
+    /** The X50 subtitle mask editor: a tool screen stock shows without its menu (KeyTools.Tool.hidesMenu). */
+    static final class MaskTool extends ToolActivity {
+        final Keys window;
+
+        MaskTool(Context c) { window = new Keys(c); setContentView(window); }
+
+        @Override public void onMenuKey(boolean held) { finish(); }
+
+        @Override public boolean hidesMenu() { return true; }
     }
 
     /** The gear's short press in KeyReceiver: the tool rule first, else the quick menu toggles. */
@@ -228,8 +251,9 @@ public final class KeyToolsTest {
         scr.addActivity(tool.window);
         WindowManager.LayoutParams lp = (WindowManager.LayoutParams) menuWin.getLayoutParams();
         ok("overlay: manual focus in front takes the key focus", scr.focus == tool.window);
-        ok("overlay: the menu window is not focusable while it is in front",
-                (lp.flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) != 0);
+        ok("overlay: the menu window is not focusable while it is in front (the window manager got the flag)",
+                (lp.flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) != 0
+                        && (scr.flags.get(menuWin) & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) != 0);
         ok("overlay: the menu is not seen while manual focus is in front", menuWin.getVisibility() == View.INVISIBLE);
         scr.press(KeyEvent.KEYCODE_DPAD_LEFT);
         scr.press(KeyEvent.KEYCODE_DPAD_CENTER);
@@ -280,6 +304,8 @@ public final class KeyToolsTest {
         scr.addActivity(t3.window);
         View card = new FrameLayout(app);
         host.addStatic(card, OverlayHost.fullscreenParams(true));
+        Looper.advance(1_000);                                     // manual focus stays in front a while
+        ok("overlay: a menu aside stays open while the tool is in front", kept.isShowing());
         t3.performPause();
         scr.remove(t3.window);
         Looper.advance(OverlayHost.BACK_FOCUS_MS + 100);
@@ -353,6 +379,8 @@ public final class KeyToolsTest {
         Looper.advance(120_000);
         ok("activity host: LEFT reaches manual focus only, the menu waits under it", tool.window.got.size() == 2
                 && menu.keys.isEmpty() && menu.isShowing() && menu.dismissed == 0 && !pa.isFinishing());
+        ok("activity host: the menu stays seen under manual focus (the stock X50 menu under its focus bar)",
+                menu.root.getAlpha() == 1f && !KeyTools.frontHidesMenu());
         toggles = 0;
         gearShort();
         ok("activity host: the gear goes to manual focus", toggles == 0 && tool.menuKeys.equals(List.of(false)));
@@ -363,6 +391,28 @@ public final class KeyToolsTest {
         Looper.advance(ActivityPanelHost.BACK_FOCUS_MS + 100);
         ok("activity host: the menu is back in the same place with the keys", scr.focus == pa.contentView()
                 && menu.isShowing() && menu.created == 1 && "focus".equals(menu.page) && menu.keys.size() == 2);
+        menu.page = "dynamic black";
+        MaskTool mask = new MaskTool(app);
+        pa.performPause();
+        mask.performResume();
+        scr.addActivity(mask.window);
+        scr.press(KeyEvent.KEYCODE_DPAD_UP);
+        Looper.advance(120_000);
+        ok("activity host: the mask editor has the keys, the menu waits unseen under it (stock hides its menu), still VISIBLE so its row keeps the focus",
+                scr.focus == mask.window && mask.window.got.size() == 2 && menu.keys.size() == 2 && menu.isShowing()
+                        && menu.dismissed == 0 && menu.root.getAlpha() == 0f && menu.root.getVisibility() == View.VISIBLE
+                        && KeyTools.frontHidesMenu());
+        toggles = 0;
+        gearShort();
+        ok("activity host: the gear goes to the mask editor, never the quick menu", toggles == 0 && mask.isFinishing());
+        mask.performPause();
+        scr.remove(mask.window);
+        pa.performResume();
+        scr.press(KeyEvent.KEYCODE_BACK);
+        Looper.advance(ActivityPanelHost.BACK_FOCUS_MS + 100);
+        ok("activity host: after the mask editor the menu is seen again on the same page with the keys",
+                menu.root.getAlpha() == 1f && scr.focus == pa.contentView() && menu.isShowing()
+                        && menu.created == 1 && "dynamic black".equals(menu.page) && menu.keys.size() == 4 && !KeyTools.frontHidesMenu());
         host.dismissAll();
         Looper.advance(10);
         CornerPanel corner = new CornerPanel();

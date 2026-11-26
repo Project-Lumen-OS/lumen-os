@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">Klawisz kontaktów</string>
     <string name="lumen_remote_keys_name_calendar">Klawisz kalendarza</string>
     <string name="lumen_remote_keys_name_bookmarks">Klawisz zakładek</string>
-    <string name="lumen_remote_keys_do_source">Wejście</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Trapez</string>
-    <string name="lumen_remote_keys_do_focus">Ostrość</string>
-    <string name="lumen_remote_keys_do_quick">Szybkie ustawienia</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Sygnał</string>
 </resources>

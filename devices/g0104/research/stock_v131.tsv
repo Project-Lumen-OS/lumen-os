@@ -1,0 +1,64 @@
+# The stock facts of the XGIMI AURA 3 Max (G0104) behind its model data, read from the official v1.3.1 FULL OTA (no dump of a
+# unit; the firmware facts are the line's devices/_family/mira/research/stock_v*.tsv). The tree rows name
+# the nodes of settings_tree_product_oscar that differ from settings_tree_product_athena35ultramax (the G0155 tree,
+# the RS30 family's menu). tools/devices/test/stock_facts.py holds the data against these lines.
+# Columns (tab separated): kind, key, value, evidence.
+fact	product	Product_oscar	xgimiconfig/G0104/system.ini ProductName
+fact	show_name	AURA 3 Max	xgimiconfig/G0104/system.ini DeviceShowName
+fact	restore_bin	XGIMI_HORSEPOPULAR_XR03F.bin	xgimiconfig/G0104/system.ini UpdateBinName
+fact	model_prop_sha256	8f2b4da851d6c817464e43af2c0ec695cd4a27c168d4655e9c0fa99b83b5aa64	vendor/etc/xgimimodelname/G0104/build.prop (image/g0104_model_prop.txt)
+fact	feature_sha256	36118b5398091ef18fd14d0d8018f00f94c44a9de798b526a1426c6773d09d5a	xgimiconfig/G0104/feature/feature.xml
+tree	absent	zoom	no zoom_and_optical_shift, no title_size_and_location (feature.xml support_optical_zoom false)
+tree	absent	zoom.move	no move_only (support_pantilt_type 0)
+tree	absent	keystone.realtime	no keystone_non_inductive_real_time
+tree	absent	keystone.obstacle	no projection_area_self_adapt node
+tree	absent	keystone.curtain	no curtain_projection_self_adapt node
+tree	absent	keystone.rotation	no picture_screen_rotation
+tree	absent	keystone.angle_h	no angle_monitor
+tree	absent	focus.smart	no smart_auto_focus (boot_focus and displacement_focus instead)
+tree	extra	auxiliary_curtain_alignment	projection screen > auxiliary curtain alignment: no Lumen row, open
+tree	extra	flat_wall_adapt	projection screen > flat wall adaptation: no Lumen row, open
+tree	extra	boot_focus	focus > focus at power on: no Lumen row, open
+tree	extra	displacement_focus	focus > focus after a move: no Lumen row, open
+tree	extra	displacement_autoKeystone_v5	correction settings > keystone after a move (keystone.on_move): not offered, open
+tree	extra	silent_mode	more settings > silent mode: no Lumen row, open
+tree	absent	eye	more_eye is in the tree, but feature.xml support_human_detect_source_type 0: no person detection Lumen can watch (X50EyeGuard), off, open
+tree	picture_modes	image_mode_4_state	ai sport color_accuracy cinema gorgeous filmmaker office performance
+tree	color_temp	image_mode_4_color_temp_oscar	standard movie d65 fresh
+tree	iris	picture_iris_ring_adjustment	f2 f3 f4 f5_5 f7 dynamic
+tree	absent	picture.anti_rbe	picture_anti_rbe is in the tree, the v1.3.1 gmpf table has no DisplayManager 203 / 205
+tree	absent	picture.dynamic_black	image_mode_set_dynamic_state (off, low, medium, high) instead of the family switch: not offered, open
+tree	extra	sound_mode_dolby_soundtrack	sound > Dolby soundtrack: no Lumen row, open
+feature	real_cinema_mode	-	feature.xml of xgimiconfig/G0104
+feature	support_brightness_boost	0	feature.xml of xgimiconfig/G0104
+feature	support_filmmaker	true	feature.xml of xgimiconfig/G0104
+feature	support_imax	true	feature.xml of xgimiconfig/G0104
+feature	support_dolby_vision	true	feature.xml of xgimiconfig/G0104
+feature	dolby_vision_screen_version	-	feature.xml of xgimiconfig/G0104
+feature	support_hdr_vivid	true	feature.xml of xgimiconfig/G0104
+feature	support_hfr	true	feature.xml of xgimiconfig/G0104
+feature	support_vrr_only_at_top_speed	-	feature.xml of xgimiconfig/G0104
+feature	support_amd_free_sync_premium	true	feature.xml of xgimiconfig/G0104
+feature	hgig_mode	1	feature.xml of xgimiconfig/G0104
+feature	edid_2_version_val	1	feature.xml of xgimiconfig/G0104
+feature	support_wall_color_adjust_type	2	feature.xml of xgimiconfig/G0104
+feature	support_ambient_light	false	feature.xml of xgimiconfig/G0104
+feature	support_human_detect_type	1	feature.xml of xgimiconfig/G0104
+feature	support_human_detect_source_type	0	feature.xml of xgimiconfig/G0104
+feature	support_elder_color	-	feature.xml of xgimiconfig/G0104
+feature	support_optical_zoom	false	feature.xml of xgimiconfig/G0104
+feature	support_pantilt_type	0	feature.xml of xgimiconfig/G0104
+feature	support_dts_vx_effect	true	feature.xml of xgimiconfig/G0104
+feature	support_spdif	false	feature.xml of xgimiconfig/G0104
+feature	support_lan_rj45	false	feature.xml of xgimiconfig/G0104
+feature	supported_rainbow_reduction	-	feature.xml of xgimiconfig/G0104
+hw	hdmi_ports	3	tv/edid14_*.bin
+hw	hdmi_map	1:0,2:1,3:2	tv/tvconfig.sql tbl_Hdmi_Hardware_Mapping u8HdmiIndex -> u8HdmiPortId
+hw	aperture_type	3	aperture/aperture.ini
+hw	tof_type	10	Tof/Tof.ini
+hw	camera_type	4	camera/camera.ini
+hw	pantilt_type	0	panTilt/panTilt.ini
+hw	tiltshift_type	0	tiltshift/tiltshift.ini
+hw	zoom_motor	0	zoom/zoom.ini ZoomControlEn
+hw	human_source_mode	5	xlab/HumanDetect.ini SOURCE_MODE
+hw	audio	spdif_jack_type=0 device_arc=1 device_headset=0	audio/audio.ini

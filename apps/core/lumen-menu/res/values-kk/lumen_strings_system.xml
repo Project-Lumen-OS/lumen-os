@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">Түйме дыбыстары</string>
-    <string name="lumen_m_hdmi_options">HDMI кірістерінің параметрлері</string>
     <string name="lumen_m_colour_vision">Түсті түзету</string>
     <string name="lumen_m_temperature">Температура</string>
     <string name="lumen_m_high_altitude">Үлкен биіктік режимі</string>

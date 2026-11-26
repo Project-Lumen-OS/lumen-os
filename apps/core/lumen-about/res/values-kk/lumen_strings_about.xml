@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">XGIMI ресми файлдары жоба бетіндегі нұсқаулықта көрсетілген.</string>
     <string name="lumen_about_erases">Флешка проектордағы бәрін өшіреді: қолданбаларды, аккаунттарды, баптауларды және файлдарды.</string>
     <string name="lumen_about_scan">Ашу үшін телефонмен сканерлеңіз</string>
-    <string name="lumen_about_close">Жабу</string>
 </resources>

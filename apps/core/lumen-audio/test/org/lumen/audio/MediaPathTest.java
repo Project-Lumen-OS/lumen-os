@@ -52,6 +52,12 @@ public final class MediaPathTest {
         C.ok("no format on the same path", !MediaPath.formatAgain(A, A));
         C.ok("no format at the first report of a boot", !MediaPath.formatAgain(MediaPath.NONE, A));
         C.ok("no format without a path", !MediaPath.formatAgain(A, MediaPath.NONE));
+        // LR-5MVYWT 18:23:40: switch start 0 -> 2 sent the format (.167), path 2 not confirmed yet at the ARC connect (.177)
+        C.ok("LR-5MVYWT: no second format at the ARC connect after the switch start", !MediaPath.formatOnArc(S, true));
+        C.ok("ARC connect before the switch start: the switch sends it", !MediaPath.formatOnArc(S, false));
+        C.ok("ARC back while the media stays on ARC: format once", MediaPath.formatOnArc(A, false));
+        C.ok("ARC connect, media on ARC, sent since ARC came: nothing", !MediaPath.formatOnArc(A, true));
+        C.ok("ARC connect, no path confirmed yet: nothing", !MediaPath.formatOnArc(MediaPath.NONE, false));
         C.ok("switch start on every change", MediaPath.switchStart(S, B) && MediaPath.switchStart(B, S) && MediaPath.switchStart(S, A));
         C.ok("no switch start for the first report or the same path", !MediaPath.switchStart(MediaPath.NONE, S)
                 && !MediaPath.switchStart(B, B) && !MediaPath.switchStart(B, MediaPath.NONE));
@@ -130,10 +136,8 @@ public final class MediaPathTest {
         C.ok("the one path picker (PathSwitch) asks MediaPath over the table paths",
                 read(g, "apps/core/lumen-audio/src/org/lumen/audio/PathSwitch.java").contains("MediaPath.heard(paths)"));
         String[] choices = {
-                "apps/ProjectorBase/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/HbProjector/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/Play6Projector/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/X50Projector/src/org/lumen/x50/projector/AudioOutput.java",
+                "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java",
+                "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java",
         };
         for (String c : choices) {
             String s = read(g, c);
@@ -144,8 +148,8 @@ public final class MediaPathTest {
             C.ok("output choice: no ArcAside (a preferred Auto device and a disabled ARC would fight): " + c,
                     !s.contains("ArcAside"));
         }
-        C.ok("HB: the jack is no Auto candidate", Check.countCode(read(g, choices[1]), "AutoOutput.device(am, HbWiredJack.SENSED)") == 1
-                && read(g, "apps/HbProjector/src/org/lumen/projector/audio/HbWiredJack.java").contains("static final boolean SENSED = false;"));
+        C.ok("HB: the jack is no Auto candidate", Check.countCode(read(g, choices[0]), "AutoOutput.device(am, Family.JACK_SENSED)") == 1
+                && read(g, "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java").contains("public static final boolean JACK_SENSED = false;"));
         String jack = read(g, "apps/core/lumen-audio/src/org/lumen/audio/JackOutput.java");
         C.ok("JackOutput: never removes the jack (no HEADSET_PLUG 0, players do not pause)",
                 Check.countCode(jack, "setWiredDeviceConnectionState(jack(), 1)") == 1 && !jack.contains(", 0)"));
@@ -159,19 +163,25 @@ public final class MediaPathTest {
                 auto.contains("return p == MediaPath.WIRED && !jackSensed ? MediaPath.NONE : p;"));
         C.ok("format again on a path switch (PathSwitch)",
                 read(g, "apps/core/lumen-audio/src/org/lumen/audio/PathSwitch.java").contains("if (MediaPath.formatAgain(prev, p)) sVendor.formatAgain("));
-        C.ok("Z9X adapter: the stored format again", read(g, "apps/ProjectorBase/src/org/lumen/projector/audio/AudioPathReporter.java")
+        C.ok("Z9X adapter: the stored format again", read(g, "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioPathReporter.java")
                 .contains("AudioOutputChoice.resendFormat(why);"));
-        C.ok("HB adapter: the stored format again", read(g, "apps/HbProjector/src/org/lumen/projector/audio/AudioPathReporter.java")
-                .contains("AudioOutputChoice.resendFormat(why);"));
-        C.ok("X50 adapter: the stored format again", read(g, "apps/X50Projector/src/org/lumen/x50/projector/AudioPath.java")
+        C.ok("X50 adapter: the stored format again", read(g, "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/AudioPath.java")
                 .contains("AudioOutput.resendFormat(why);"));
+        String[] arcFormat = {"apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java",
+                "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java"};
+        for (String p : arcFormat) {
+            String s = read(g, p);
+            C.ok("ARC connect format by MediaPath.formatOnArc: " + p, Check.countCode(s,
+                    "if (arc && !sArcSeen && MediaPath.formatOnArc(PathSwitch.confirmed(), sFormatSinceArc)) sendFormat(\"ARC connected\");") == 1);
+            C.ok("format sent marks it since ARC: " + p, Check.countCode(s, "sFormatSinceArc = true;") == 1
+                    && s.indexOf("sFormatSinceArc = true;") > s.indexOf("private static void sendFormat("));
+            C.ok("ARC absent clears the mark: " + p, Check.countCode(s, "if (!arc) sFormatSinceArc = false;") == 1);
+        }
         String[] recipes = {
                 "devices/horse_popular/app/Z9xProjector.layers",
                 "devices/goat_elegant/app/HbProjector.layers",
                 "devices/dragon_healthy/app/Play6Projector.layers",
-                "devices/g0111/app/X50Projector.layers",
-                "devices/g0100/app/X50Projector.layers",
-                "devices/g0155/app/X50Projector.layers",
+                "devices/_family/mt9681/app/X50Projector.layers",
         };
         for (String r : recipes) {
             boolean named = false;

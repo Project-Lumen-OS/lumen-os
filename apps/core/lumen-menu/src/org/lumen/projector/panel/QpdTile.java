@@ -101,6 +101,7 @@ final class QpdTile extends View {
         title = t == null ? "" : t;
         setContentDescription(title);
         invalidate();
+        if (getParent() instanceof QpdCard) ((QpdCard) getParent()).titleChanged(this);   // the clock line follows
     }
 
     CharSequence title() { return title; }
@@ -129,6 +130,15 @@ final class QpdTile extends View {
     }
 
     boolean active() { return active; }
+
+    /** A tile of a row the full menu greys or hides now (a signal rule, the picture mode): dimmed like that row. */
+    void setUsable(boolean on) {
+        float a = on ? 1f : USABLE_OFF_ALPHA;
+        if (getAlpha() != a) setAlpha(a);
+    }
+
+    /** The dimming of a greyed row (Row.setRowEnabled). */
+    static final float USABLE_OFF_ALPHA = 0.4f;
 
     /** The icon's motion once more (a new value on a focused or lit tile), never while animations are off. */
     void playIcon() {

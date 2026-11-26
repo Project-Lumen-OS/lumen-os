@@ -25,6 +25,8 @@ final class MenuLabels {
     static int title(String id) {
         switch (id) {
             case "network.wifi": return R.string.lumen_m_hotspot_wifi;
+            case "source.list": return R.string.lumen_m_source_list;
+            case "bluetooth.add": return R.string.lumen_m_bt_add;
             case "network.hotspot": return R.string.lumen_m_hotspot_hotspot;
             case "network.hotspot_name": return R.string.lumen_m_hotspot_name;
             case "network.hotspot_password": return R.string.lumen_m_hotspot_password;
@@ -33,8 +35,18 @@ final class MenuLabels {
             case "settings.menu_side": return R.string.lumen_m_menu_side;
             case "focus.settings": return R.string.lumen_m_focus_settings;
             case "settings.menu_density": return R.string.lumen_m_menu_density;
+            case "settings.power_key": return R.string.lumen_m_power_key_short;
+            case "settings.language": return R.string.lumen_m_language;
+            case "settings.date_time": return R.string.lumen_m_date_time;
+            case "settings.storage": return R.string.lumen_m_storage;
+            case "settings.update": return R.string.lumen_m_update;
+            case "settings.about": return R.string.lumen_m_about;
+            case "dev.system_info": return R.string.lumen_m_system_info;
+            case "dev.network_adb": return R.string.lumen_m_network_adb;
+            case "dev.android": return R.string.lumen_m_android_dev;
             case "signal.panel": return R.string.lumen_m_signal;
             case "sensors.panel": return R.string.lumen_m_sensors;
+            case "dev.mirror_diag": return R.string.lumen_m_mirror_diag;
             case "power.on_music": return R.string.lumen_m_power_music;
             case "power.boot_source": return R.string.lumen_m_boot_source;
             case "voice.language": return R.string.lumen_m_voice_language;
@@ -60,6 +72,7 @@ final class MenuLabels {
             case "serial.ack_all": return R.string.lumen_m_serial_ack_all;
             case "serial.master": return R.string.lumen_m_serial_master;
             case "settings.parental": return R.string.lumen_m_parental;
+            case "settings.casting": return R.string.lumen_m_casting;
             case "lamp.off": return R.string.lumen_m_lamp_off;
             case "picture.gamut": return R.string.lumen_m_gamut;
             case "picture.anti_rbe": return R.string.lumen_m_anti_rbe;
@@ -106,6 +119,12 @@ final class MenuLabels {
             case "keystone.angle_v": return R.string.lumen_m_angle_v;
             case "picture.dynamic_contrast": return R.string.lumen_m_dynamic_contrast;
             case "picture.dynamic_black": return R.string.lumen_m_dynamic_black;
+            case "picture.db_page": return R.string.lumen_m_db_page;
+            case "picture.db_page.switch": return R.string.lumen_m_dynamic_black;
+            case "picture.db_page.level": return R.string.lumen_m_db_level;
+            case "picture.db_page.subtitle_top": return R.string.lumen_m_db_subtitle_top;
+            case "picture.db_page.subtitle_bottom": return R.string.lumen_m_db_subtitle_bottom;
+            case "picture.db_page.reset": return R.string.lumen_m_db_reset;
             case "picture.black_tuning": return R.string.lumen_m_black_tuning;
             case "picture.settings": return R.string.lumen_m_picture_settings;
             case "picture.iris": return R.string.lumen_m_iris;
@@ -136,6 +155,7 @@ final class MenuLabels {
             case "keystone.restore": return R.string.lumen_m_kst_restore;
             case "keystone.rotation": return R.string.lumen_m_rot_title;
             case "keystone.wall_color": return R.string.lumen_wallcolor_title;
+            case "keystone.color_uniformity": return R.string.lumen_m_color_uniformity;
             case "lamp": return R.string.lumen_m_panel_lamp;
             case "picture.3d": return R.string.lumen_m_3d_title;
             case "picture.ai_contrast": return R.string.lumen_m_panel_ai_contrast;
@@ -176,10 +196,7 @@ final class MenuLabels {
     static int summary(String id) {
         switch (id) {
             case "boost": return R.string.lumen_m_boost_effect;
-            case "eye": return R.string.lumen_m_panel_eye_desc;
             case "lamp": return R.string.lumen_m_panel_lamp_hint;
-            case "picture.3d": return R.string.lumen_m_3d_summary;
-            case "power.on_ac": return R.string.lumen_m_power_on_ac_tip;
             case "signal.refresh": return R.string.lumen_m_signal_refresh_note;
             default: return 0;
         }
@@ -214,6 +231,13 @@ final class MenuLabels {
             case "power": return R.string.lumen_m_hdr_power;
             case "voice": return R.string.lumen_m_hdr_voice;
             case "menu": return R.string.lumen_m_hdr_menu;
+            case "language_time": return R.string.lumen_m_hdr_language_time;
+            case "display_menu": return R.string.lumen_m_hdr_display_menu;
+            case "remote_voice": return R.string.lumen_m_hdr_remote_voice;
+            case "apps_devices": return R.string.lumen_m_hdr_apps_devices;
+            case "storage_updates": return R.string.lumen_m_hdr_storage_updates;
+            case "help": return R.string.lumen_m_hdr_help;
+            case "system": return R.string.lumen_m_hdr_system;
             default: return 0;
         }
     }
@@ -229,6 +253,8 @@ final class MenuLabels {
             case "keystone": return R.string.lumen_m_panel_tile_keystone;
             case "lamp": return R.string.lumen_m_panel_lamp;
             case "network": return R.string.lumen_qpd_network;
+            case "source": return R.string.lumen_m_sec_source;
+            case "bluetooth": return R.string.lumen_qpd_bluetooth;
             case "picture": return R.string.lumen_m_panel_sec_picture;
             case "projection": return R.string.lumen_m_panel_projection_mode;
             case "sound": return R.string.lumen_m_panel_sec_sound;
@@ -272,6 +298,7 @@ final class MenuLabels {
             case "theme": return R.string.lumen_qpd_theme;
             case "signal.panel": return R.string.lumen_m_signal;
             case "sensors.panel": return R.string.lumen_m_sensors;
+            case "dev.mirror_diag": return R.string.lumen_m_mirror_diag;
             case "power.on_music": return R.string.lumen_m_power_music;
             case "power.boot_source": return R.string.lumen_m_boot_source;
             case "voice.language": return R.string.lumen_m_voice_language;
@@ -296,6 +323,7 @@ final class MenuLabels {
             case "game": return R.drawable.lumen_qpd_ic_game;
             case "general": return R.drawable.lumen_qpd_ic_gear;
             case "input": return R.drawable.lumen_qpd_ic_src;
+            case "source": return R.drawable.lumen_qpd_ic_src;
             case "keystone": return R.drawable.lumen_qpd_ic_kst;
             case "keystone.ak_now": return R.drawable.lumen_qpd_ic_ak;
             case "mirroring": return R.drawable.lumen_qpd_ic_mirror;
@@ -322,6 +350,28 @@ final class MenuLabels {
             case "picture.pq.contrast": return R.drawable.lumen_ic_contrast;
             case "picture.pq.saturation": return R.drawable.lumen_ic_palette;
             case "picture.pq.sharpness": return R.drawable.lumen_ic_sharpness;
+            // the full menu's rows as quick tiles (2026-11-24, Lucide, tools/qpd_icons.py): a row of a page takes
+            // its page's icon (MenuController.quickIcon)
+            case "picture.memc": return R.drawable.lumen_qpd_ic_memc;
+            case "picture.ai_contrast": return R.drawable.lumen_qpd_ic_ai;
+            case "picture.dynamic_black":
+            case "picture.db_page":
+            case "picture.black_tuning": return R.drawable.lumen_qpd_ic_black;
+            case "picture.dynamic_contrast":
+            case "picture.local_contrast": return R.drawable.lumen_qpd_ic_dcontrast;
+            case "picture.color_temp": return R.drawable.lumen_qpd_ic_ctemp;
+            case "picture.gamma":
+            case "picture.gamma_index": return R.drawable.lumen_qpd_ic_gamma;
+            case "picture.hdr":
+            case "picture.hdr_mapping": return R.drawable.lumen_qpd_ic_hdr;
+            case "picture.noise": return R.drawable.lumen_qpd_ic_noise;
+            case "picture.super_res": return R.drawable.lumen_qpd_ic_sres;
+            case "picture.wb":
+            case "picture.wb2":
+            case "picture.wb11": return R.drawable.lumen_qpd_ic_wb;
+            case "picture.cc": return R.drawable.lumen_qpd_ic_cc;
+            case "picture.gamut": return R.drawable.lumen_qpd_ic_gamut;
+            case "picture.anti_rbe": return R.drawable.lumen_qpd_ic_rbe;
             default: return 0;
         }
     }
@@ -352,6 +402,8 @@ final class MenuLabels {
             case "settings.menu_side|right": return R.string.lumen_m_menu_right;
             case "settings.menu_density|normal": return R.string.lumen_m_menu_normal;
             case "settings.menu_density|compact": return R.string.lumen_m_menu_compact;
+            case "settings.power_key|power_menu": return R.string.lumen_m_power_key_menu;
+            case "settings.power_key|sleep": return R.string.lumen_m_power_key_sleep;
             case "picture.color_temp|cool": return R.string.lumen_m_ct_cool;
             case "picture.color_temp|warm": return R.string.lumen_m_ct_warm;
             case "picture.color_temp|custom": return R.string.lumen_m_ct_custom;
@@ -364,10 +416,17 @@ final class MenuLabels {
             case "hdmi.edid|hdmi_1_4": return R.string.lumen_m_edid_hdmi_1_4;
             case "hdmi.edid|hdmi_2_0": return R.string.lumen_m_edid_hdmi_2_0;
             case "picture.mode|filmmaker": return R.string.lumen_m_pm_filmmaker;
+            case "picture.mode|imax": return R.string.lumen_m_pm_imax;
             case "picture.mode|isf_day": return R.string.lumen_m_pm_isf_day;
             case "picture.mode|isf_night": return R.string.lumen_m_pm_isf_night;
             case "picture.mode|bright": return R.string.lumen_m_pm_bright;
             case "picture.mode|soft": return R.string.lumen_m_pm_soft;
+            case "picture.mode|cinema": return R.string.lumen_m_pm_cinema;
+            case "picture.mode|gorgeous": return R.string.lumen_m_pm_gorgeous;
+            case "picture.mode|eye_care": return R.string.lumen_m_pm_eye_care;
+            case "picture.color_temp|fresh": return R.string.lumen_m_ct_fresh;
+            case "picture.mode|dv_bright": return R.string.lumen_m_dv_bright;
+            case "picture.mode|dv_dark": return R.string.lumen_m_dv_dark;
             case "picture.custom_base|standard": return R.string.lumen_m_panel_pm_standard;
             case "picture.custom_base|sport": return R.string.lumen_m_panel_pm_sport;
             case "picture.custom_base|color_accuracy": return R.string.lumen_m_panel_pm_color_accuracy;
@@ -376,6 +435,9 @@ final class MenuLabels {
             case "picture.custom_base|isf_day": return R.string.lumen_m_pm_isf_day;
             case "picture.custom_base|isf_night": return R.string.lumen_m_pm_isf_night;
             case "picture.custom_base|movie": return R.string.lumen_m_pm_movie;
+            case "picture.custom_base|cinema": return R.string.lumen_m_pm_cinema;
+            case "picture.custom_base|gorgeous": return R.string.lumen_m_pm_gorgeous;
+            case "picture.custom_base|eye_care": return R.string.lumen_m_pm_eye_care;
             case "sound.output|arc": return R.string.lumen_m_out_arc;
             case "sound.output|bt": return R.string.lumen_m_out_bt;
             case "sound.output|usb": return R.string.lumen_m_out_usb;
@@ -489,6 +551,8 @@ final class MenuLabels {
             case "picture.noise|high": return R.string.lumen_m_level_high;
             case "picture.local_contrast|off": return R.string.lumen_m_panel_off;
             case "picture.local_contrast|low": return R.string.lumen_m_level_low;
+            case "picture.db_page.level|low": return R.string.lumen_m_level_low;
+            case "picture.db_page.level|high": return R.string.lumen_m_level_high;
             case "picture.local_contrast|medium": return R.string.lumen_m_level_medium;
             case "picture.local_contrast|high": return R.string.lumen_m_level_high;
             case "eye.elder_color|off": return R.string.lumen_m_panel_off;
@@ -552,6 +616,8 @@ final class MenuLabels {
             case "picture.iris|f4": return R.string.lumen_m_iris_f4;
             case "picture.iris|f5_5": return R.string.lumen_m_iris_f5_5;
             case "picture.iris|f7": return R.string.lumen_m_iris_f7;
+            case "picture.iris|f3_5": return R.string.lumen_m_iris_f3_5;
+            case "picture.iris|f5": return R.string.lumen_m_iris_f5;
             default: return 0;
         }
     }
@@ -586,7 +652,6 @@ final class MenuLabels {
     /** The text under a hint picture that does not change (the projection picture has tipMount + tipSide). */
     static int tipText(String hint) {
         switch (hint) {
-            case "picture_mode": return R.string.lumen_qpd_tip_picture;
             case "focus_guide_front": return R.string.lumen_qpd_tip_focus_guide_front;
             case "focus_guide_side": return R.string.lumen_qpd_tip_focus_guide;
             default: return 0;
@@ -618,6 +683,7 @@ final class MenuLabels {
             case "picture.mode|ai": return R.string.lumen_m_panel_tileval_pm_ai;
             case "picture.mode|color_accuracy": return R.string.lumen_m_panel_tileval_pm_color_accuracy;
             case "picture.mode|performance": return R.string.lumen_m_panel_tileval_pm_performance;
+            case "picture.mode|dv_bright": case "picture.mode|dv_dark": return R.string.lumen_m_fmt_dolby;   // stock: Dolby Vision
             default: return 0;
         }
     }

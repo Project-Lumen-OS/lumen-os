@@ -1,11 +1,18 @@
 # Recipe of the Z9X HB projector app, read by tools/devices/assemble_app.py.
-# The HB app is the Z9X app minus the Z9X-only files below, plus the HB layer (apps/HbProjector: the real forks,
-# each with a row in devices/goat_elegant/forks.tsv, and the HB-only files). The Z9X folder is only read.
+# The one projector app: the core with the features of the HB stock, the XGIMI
+# gmpf types and the HB family adapter aidl-gmpf, this model's data, and the HB manifest as the core manifest plus
+# its patch (devices/goat_elegant/app/HbProjector.manifest.diff). No legacy layer: apps/HbProjector is gone.
 app       HbProjector
 base      apps/common/projector apps/common/projector/FILES
-base      apps/ProjectorBase
+base      apps/LumenProjector/core
+# the XGIMI gmpf value types of the vendor layer and the HB family adapter aidl-gmpf (the design notes:
+# the AIDL transport, clients, codes, rules and the menu adapter HbMenuFeatures with its rows)
+base      apps/LumenProjector/vendor/xgimi/gmpf
+base      apps/LumenProjector/vendor/xgimi/aidl-gmpf
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 # the shared projector menu of every Lumen projector with the HB profile; the
-# HB adapters are apps/HbProjector panel/HbMenuFeatures (+ HbMenuGates) and the game menu io
+# HB adapters are aidl-gmpf panel/HbMenuFeatures (+ HbMenuGates) and the game menu io
 module    lumen-system
 # the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar, this model's data
 module    lumen-wallcolor
@@ -21,6 +28,8 @@ module    lumen-files-access
 # Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
 module    lumen-qr
 module    lumen-about
+# Parental controls page of the menu: the state of Lumen Home through its provider (apps/core/lumen-parental)
+module    lumen-parental
 # the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
 module    lumen-remote
 # the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
@@ -30,6 +39,8 @@ file      devices/goat_elegant/signal.tsv assets/lumen_signal/items.tsv
 module    lumen-sensors
 file      devices/goat_elegant/sensors.tsv assets/lumen_sensors/items.tsv
 module    lumen-ui
+# the one HDMI port state (org.lumen.tvinput PortState) for the menu HDMI page and the Source key
+module    lumen-hdmiports
 module    lumen-source
 file      devices/goat_elegant/source.tsv assets/lumen_source/source.tsv
 module    lumen-menu
@@ -37,61 +48,27 @@ module    lumen-menu
 module    lumen-cec
 # the stock HDMI-CEC defaults of every model (devices/_image/cec_defaults.tsv) for lumen-cec CecDefaults
 file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv
-file      devices/goat_elegant/menu.json assets/lumen_menu/menu.json
+menu      devices/goat_elegant/menu.json assets/lumen_menu/menu.json
 file      devices/goat_elegant/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
+# the unit's model code for the family adapter (core UnitModel reads the vendor's model_prop) and the model rows of
+# the feature table (aidl-gmpf HbFeatures): which model codes the menu was checked against, what each one hides
+file      devices/_vendor/xgimi/vendor.conf assets/lumen_vendor/vendor.conf
+file      devices/goat_elegant/hal/model_features.tsv assets/lumen_hal/model_features.tsv
 # the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer); the HB clients, its AIDL transport, its codes
-# and rules are apps/HbProjector hal/ (GmpfClient, Gmpf2Client, AidlWire, HbCodes, HbRules)
+# and rules are aidl-gmpf hal/ (GmpfClient, Gmpf2Client, AidlWire, HbCodes, HbRules)
 module    lumen-gmpf
+# the one raw Binder path of every AIDL family (apps/core/lumen-hal AidlTransport): AidlWire is the HB subclass
+module    lumen-hal
 # the shared media route rules (apps/core/lumen-audio: MediaPath, ArcAside)
 module    lumen-audio
 # the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
 module    lumen-stats
 module    lumen-control
-# the Z9X quick panel controller: on the HB QuickPanel drives the shared MenuController through the HB-only
-# panel/QuickPanelController (HbMenu); the old HB fork of the Z9X controller and the HB game bar are gone
-drop      src/org/lumen/projector/panel/QuickPanelController.java
-# Z9X-only: 3D, the HIDL transport and focus callback (the HB is AIDL), the Z9X
-# gmpf codes and rules, the 1.0.8 import
-drop      src/org/lumen/projector/display/ThreeD.java
-drop      src/org/lumen/projector/display/ThreeDCall.java
-drop      src/org/lumen/projector/hal/Hidl*.java
-drop      src/org/lumen/projector/hal/Z9x*.java
-# the Z9X HIDL code table; the HB has its own HalCodes (devices/goat_elegant/hal/codes.tsv)
-drop      src/org/lumen/projector/hal/HalCodes.java
-# Z9X-only strings of the keystone page's last section (the HB has its own, strings_hb.xml)
-drop      res/values*/strings_kst_restore.xml
-# Z9X-only 1.0.8 rules: the HB quick panel and keystone page are its own forks with their own colour temperature,
-# 3D and game rules, so these classes and their host tests are not part of the HB app
-drop      src/org/lumen/projector/panel/ColorTempRule.java
-drop      src/org/lumen/projector/panel/Lamp3d.java
-drop      src/org/lumen/projector/panel/KstGameLock.java
-drop      test/picture/
-drop      test/kstgame/
-drop      test/lamp3d/
-# Z9X-only 2026-11-04 sweep: the stock Z9X refusal rules (they use KstGameLock / Lamp3d), the AI scene policy and
-# their notes; the HB quick panel, keystone screens and App are its own forks
-drop      src/org/lumen/projector/panel/PanelRules.java
-drop      src/org/lumen/projector/panel/RefusalReason.java
-drop      src/org/lumen/projector/panel/RuleNotes.java
-drop      res/values*/strings_rules.xml
-drop      test/rules/
-# Z9X menu adapters (Z9X HAL): every device brings its own
-drop      src/org/lumen/projector/panel/Z9x*.java
-drop      src/org/lumen/projector/utils/Z9x*.java
-# Z9X game try fixes (2026-11-11): audio device callbacks behind the audio policy check with the trial notice, the
-# Sound page state in the stock mapping; Z9X only (the HB keeps its forks of AudioPathReporter, AudioOutputChoice
-# and App; its quick panel is the shared menu)
-drop      src/org/lumen/projector/audio/AudioPorts.java
-drop      src/org/lumen/projector/audio/AudioPortRules.java
-drop      res/values*/strings_trial.xml
-# Lumen OS installer, final install (2026-11-11): the Z9X KeyReceiver ignores every global key while it writes; Z9X
-# only (the HB keeps its own KeyReceiver fork)
-drop      src/org/lumen/projector/sys/InstallGuard.java
-drop      test/install/
-# Z9X-only: the render parity of the Z9X quick menu against the Z9X 1.0.10 panel (its ROOT is the repo, not this tree)
-drop      test/render/
-# Z9X-only: the Quick 3D host checks (no 3D on the HB stock, its ROOT is the repo, not this tree)
-drop      test/threed/
-top       apps/HbProjector
+# the optional parts of the core this model's stock has (apps/LumenProjector/core.features): the AIDL gmpf line's own
+# pages and rules, none of the Z9X ones (no quick 3D, its own refusal rules, no audio port callbacks, no keystone restore)
+feature   curtain-align output-options boost-rules color-space-rule slide-coalescing zoom-tile sleep-timer-card
+feature   home-tiles-aidl menu-pages-aidl stock-labels-aidl
+# the HB manifest: sharedUserId system, direct boot, the HB receivers and provider (assemble_app.py rule 10)
+patch     devices/goat_elegant/app/HbProjector.manifest.diff
 # never part of an app tree: build output, APKs, notes
 skip      build/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

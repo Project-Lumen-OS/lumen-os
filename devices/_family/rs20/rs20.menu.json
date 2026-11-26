@@ -1,0 +1,30 @@
+{
+  "include": "devices/_family/z9x/z9x.menu.json",
+  "note": "RS 20 line (G0063 G0067 G0077 G0078 G0079 G0086 G0087 G0088 G0089): the Z9X profile with what the RS 20 stock differs in and the Z9X app can do. Stock source: newsettings release_838 of the official v1.6.55 package, trees settings_tree_product_athena* against settings_tree_product_dapeng (devices/_family/rs20/stock.tsv). Picture modes: the stock RS 20 list has no Standard (image_mode_standard is Z9X only), so the Z9X modes the RS 20 has. Zoom: the optical zoom of the stock zoom_and_optical_shift page (zoom.ini ZoomControlEn=1, ZoomLimitEn=0) without the limit position, since the RS 20 HAL has no zoom limit calls (hal/codes.tsv absent rows, Gmpf2Client.hasZoomLimit); the lens shift of that page has no Lumen code yet, and a firmware whose HAL lacks a zoom call gets the row off in its generated layer. Stock rows the Z9X app has no code for are not shown (stock.tsv gap rows).",
+  "features": {
+    "picture.mode": {
+      "options": [
+        "ai",
+        "sport",
+        "hdr_vivid",
+        "color_accuracy",
+        "office",
+        "performance"
+      ],
+      "support": {
+        "hdr_vivid": [
+          "hdr_vivid"
+        ],
+        "color_accuracy": [
+          "sdr",
+          "hdr",
+          "hdr10"
+        ]
+      }
+    }
+  },
+  "off": {
+    "picture.color_temp": "the RS 20 stock colour temperature list is another node (image_mode_3_color_temp, not the Z9X image_mode_3_color_temp_dapeng); its values are not read yet",
+    "keystone.wall_color": "the camera of an RS 20 is not read yet (devices/_family/rs20/wallcolor.conf)"
+  }
+}

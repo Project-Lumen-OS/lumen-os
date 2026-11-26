@@ -6,5 +6,17 @@ public enum SettingsPage {
     /** Remotes & Accessories: pairing a remote or another Bluetooth device. */
     BLUETOOTH,
     /** Wi-Fi. */
-    NETWORK
+    NETWORK,
+    /** The system language. */
+    LANGUAGE,
+    /** Date and time. */
+    DATE_TIME,
+    /** Storage. */
+    STORAGE,
+    /** System update (the Lumen updater answers it). */
+    UPDATE,
+    /** About the device. */
+    ABOUT,
+    /** Android's developer options. */
+    DEVELOPER
 }

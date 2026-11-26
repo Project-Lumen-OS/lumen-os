@@ -5,7 +5,6 @@
     <string name="app_name">HDMI</string>
     <string name="service_label">HDMI 入力</string>
     <string name="viewer_label">HDMI</string>
-    <string name="picker_label">入力切替</string>
     <string name="settings_label">HDMI 設定</string>
     <string name="input_label">HDMI %1$d</string>
     <string name="input_label_arc">HDMI %1$d (ARC)</string>
@@ -23,18 +22,7 @@
     <string name="state_asleep_device">デバイスはスリープ中です</string>
     <string name="state_press_ok_wake">OK を押すと電源が入ります</string>
     <string name="state_waking">電源を入れています…</string>
-    <string name="picker_title">入力切替</string>
-    <string name="picker_home">ホーム画面</string>
-    <string name="picker_settings">HDMI 設定</string>
-    <string name="picker_empty">HDMI 入力が見つかりません</string>
-    <string name="pref_auto_switch">機器を接続したら自動で HDMI に切り替える</string>
-    <string name="pref_return_home">ソースが切断されたらホーム画面に戻る</string>
-    <string name="pref_boot_source">電源オン時の入力: %1$s</string>
-    <string name="boot_source_home">ホーム画面</string>
-    <string name="pref_boot_source_note">HDMI-CEC で機器がプロジェクターの電源を入れた場合は、その入力が開きます。</string>
     <string name="back_key_guide">戻るボタンで接続中の機器を操作します。終了するにはホームを押します。</string>
-    <string name="settings_inputs_header">入力：</string>
-    <string name="settings_safe_mode">セーフモード：エラーが繰り返されたため、次回の再起動まで自動切り替えはオフです。</string>
     <string name="toast_no_input">%1$s は使用できません</string>
     <string name="toast_setup_running">先にセットアップを完了してください</string>
 </resources>

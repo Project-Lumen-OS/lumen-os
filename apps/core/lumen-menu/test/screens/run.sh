@@ -17,7 +17,8 @@ mkdir -p "$OUT/c"
 find "$M/test/projection/stubs" -name '*.java' | sed 's/.*/"&"/' > "$OUT/src.txt"
 for f in "$M"/src/org/lumen/menu/*.java "$M"/src/org/lumen/menu/utils/*.java "$M/src/org/lumen/projector/panel/QpdTip.java" \
          "$M/src/org/lumen/projector/panel/HintPicture.java" "$M/src/org/lumen/projector/panel/CornerView.java" \
-         "$M/src/org/lumen/projector/panel/ShiftRangeView.java" "$T/VectorXml.java" "$T/ScreensTest.java"; do
+         "$M/src/org/lumen/projector/panel/ShiftRangeView.java" "$T/VectorXml.java" "$T/ScreensTest.java" \
+         "$M/../lumen-testkit/src/org/lumen/testkit/Check.java"; do
   printf '"%s"\n' "$f" >> "$OUT/src.txt"
 done
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/c" @"$OUT/src.txt"
@@ -34,7 +35,7 @@ for w in '        else if (kind == HintPicture.FOCUS_FRONT) drawRemoteFocus(c, w
          '        else if (kind == HintPicture.FOCUS_SIDE) drawRemoteFocus(c, w, ih, R.drawable.lumen_focus_guide_remote_side);'; do
   grep -qxF -- "$w" "$QT" || { echo "FAIL wiring: QpdTip lost: $w"; bad=1; }
 done
-X=$G/apps/X50Projector/src/org/lumen/x50/projector
+X=$G/apps/LumenProjector/host/activity/src/org/lumen/x50/projector
 grep -qxF '        view = new CornerView(this);' "$X/CornerActivity.java" || { echo "FAIL wiring: the X50 corner page is not the CornerView"; bad=1; }
 grep -qF 'ShiftRange.of(HAL.shiftPosition(0), HAL.shiftPosition(1), HAL.putMode())' "$X/LensActivity.java" \
   || { echo "FAIL wiring: the X50 shift page does not read the position for the range"; bad=1; }

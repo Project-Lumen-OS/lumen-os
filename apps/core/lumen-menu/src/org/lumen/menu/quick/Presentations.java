@@ -18,7 +18,7 @@ public final class Presentations {
         put(ItemKind.SLIDER, Presentation.SLIDER, Presentation.WIDE, Presentation.SMALL, Presentation.ROUND);
         put(ItemKind.SECTION, Presentation.WIDE, Presentation.SMALL, Presentation.ROUND);
         put(ItemKind.CHOICE, Presentation.WIDE, Presentation.SMALL, Presentation.ROUND);
-        put(ItemKind.TOGGLE, Presentation.ROUND, Presentation.SMALL, Presentation.WIDE);
+        put(ItemKind.TOGGLE, Presentation.SMALL, Presentation.WIDE, Presentation.ROUND);   // a switch is a tile (2026-11-24)
         put(ItemKind.ACTION, Presentation.WIDE, Presentation.SMALL, Presentation.ROUND);
         put(ItemKind.THEME, Presentation.ROUND, Presentation.SMALL, Presentation.WIDE);
         put(ItemKind.PINNED, Presentation.ROUND, Presentation.FOOTER);

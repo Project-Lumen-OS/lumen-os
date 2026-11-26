@@ -55,6 +55,13 @@ public interface RelinkHost {
     /** The lamp-only standby runs (the screen looks off while Android is awake). */
     boolean standby();
 
+    /**
+     * Family data (Family.INACTIVE_SOURCE_SLEEP, false on every family until the owner decides): the projector sleeps
+     * when the watched device says {@code <Inactive Source>} and is not back within 5 s, no key pressed
+     * (InactiveSleep; reads the CEC history only while on).
+     */
+    boolean inactiveSourceSleep();
+
     /** tvinput's shown HDMI ports: [] none, null unknown. Never the main thread. */
     int[] shownPorts(Context ctx);
 }

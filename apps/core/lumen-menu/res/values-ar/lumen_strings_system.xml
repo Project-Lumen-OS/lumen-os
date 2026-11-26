@@ -2,7 +2,6 @@
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
 <resources>
     <string name="lumen_m_sound_key_tone">أصوات الأزرار</string>
-    <string name="lumen_m_hdmi_options">خيارات مداخل HDMI</string>
     <string name="lumen_m_colour_vision">تحسين رؤية الألوان</string>
     <string name="lumen_m_temperature">درجة الحرارة</string>
     <string name="lumen_m_high_altitude">وضع الارتفاعات العالية</string>

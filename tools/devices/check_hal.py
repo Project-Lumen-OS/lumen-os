@@ -53,12 +53,17 @@ def assembled(root, d, scratch, app_rel=None):
     app_rel = app_rel or d["hal_app"]
     name = os.path.basename(app_rel.rstrip("/"))
     recipe = assemble_app.find_recipe(root, d["codename"], name)
-    if not recipe or assemble_app.parse(root, recipe)["identical"] == "allow":
+    if not recipe:   # a folder that is not named after its app (apps/app_dirs.tsv: Z9xProjector = apps/LumenProjector/core)
+        for app in assemble_app.recipes(root, d["codename"]):
+            if assemble_app.app_dir(root, app).rstrip("/") == app_rel.rstrip("/"):
+                name, recipe = app, assemble_app.find_recipe(root, d["codename"], app)
+                break
+    if not recipe or assemble_app.parse(root, recipe, d["codename"])["identical"] == "allow":
         # no recipe, or one still in compare mode: the app folder is the full tree
         return os.path.join(root, app_rel), None
     out = os.path.join(scratch, d["codename"], name)
-    r = subprocess.call([sys.executable, "-B", os.path.join(HERE, "assemble_app.py"), "--root", root, recipe,
-                         "--out", out, "--quiet"])
+    r = subprocess.call([sys.executable, "-B", os.path.join(HERE, "assemble_app.py"), "--root", root,
+                         "--device", d["codename"], "--app", name, "--out", out, "--quiet"])
     return out, (None if r == 0 else "check_hal: %s: the recipe %s does not assemble" % (d["codename"], recipe))
 
 

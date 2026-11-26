@@ -28,6 +28,11 @@ public enum FeatureId {
      * device's part is its WallColorHal and devices/&lt;c&gt;/wallcolor.conf
      */
     KEYSTONE_WALL_COLOR("keystone.wall_color", FeatureKind.SCREEN),
+    /**
+     * the stock colour uniformity adjustment (color_uniformity_adjustment, keystone page, org.lumen.hal.GmpfFirmware):
+     * a white grid of cells whose red, green and blue gains the user evens out by eye
+     */
+    KEYSTONE_COLOR_UNIFORMITY("keystone.color_uniformity", FeatureKind.SCREEN),
     /** real-time keystone (Auto keystone when moved) */
     KEYSTONE_REALTIME("keystone.realtime", FeatureKind.TOGGLE),
     /** keystone at power on */
@@ -103,8 +108,18 @@ public enum FeatureId {
     SOUND_FORMAT("sound.format", FeatureKind.CHOICE),
     /** inputs (wide tile, popup of the sources) */
     INPUT("input", FeatureKind.TILE),
-    /** Bluetooth settings */
+    /** Bluetooth settings: the tile opens the menu's Bluetooth page (stock Bluetooth and accessories) */
     BLUETOOTH("bluetooth", FeatureKind.TILE),
+    /**
+     * Stock Bluetooth and accessories > Add more devices (scan_device_title): the menu's own search page, found devices
+     * pair on OK. The paired devices stand under it on the page (BtPage), as stock My devices. A module row.
+     */
+    BLUETOOTH_ADD("bluetooth.add", FeatureKind.SCREEN),
+    /**
+     * Stock Input source > the source list (signal_list): opens the sources the Input tile opens (the device's input
+     * popup, else the Source key's step). A module row of every model with the Input tile.
+     */
+    SOURCE_LIST("source.list", FeatureKind.SCREEN),
     /** network settings */
     NETWORK("network", FeatureKind.TILE),
     /**
@@ -149,6 +164,21 @@ public enum FeatureId {
     PICTURE_DYNAMIC_CONTRAST("picture.dynamic_contrast", FeatureKind.TOGGLE),
     /** dynamic black level enhancement */
     PICTURE_DYNAMIC_BLACK("picture.dynamic_black", FeatureKind.TOGGLE),
+    /**
+     * The dynamic black page of XGIMI v1.3.38 (stock dynamic_black_setting, picture settings, above the dynamic black
+     * row, org.lumen.hal.GmpfFirmware): its switch, level, the two subtitle masks and their reset.
+     */
+    PICTURE_DB_PAGE("picture.db_page", FeatureKind.PAGE),
+    /** the page's dynamic black switch (stock dynamic_black_switch: the same setting as the dynamic black row) */
+    PICTURE_DB_SWITCH("picture.db_page.switch", FeatureKind.TOGGLE),
+    /** how strong the dynamic black works, low or high (stock dynamic_black_level), options */
+    PICTURE_DB_LEVEL("picture.db_page.level", FeatureKind.CHOICE),
+    /** the area at the top of the screen the dynamic black leaves out for subtitles: the stock mask editor */
+    PICTURE_DB_SUBTITLE_TOP("picture.db_page.subtitle_top", FeatureKind.SCREEN),
+    /** the same at the bottom of the screen */
+    PICTURE_DB_SUBTITLE_BOTTOM("picture.db_page.subtitle_bottom", FeatureKind.SCREEN),
+    /** clears both subtitle masks (stock dynamic_black_reset), only while the dynamic black is on */
+    PICTURE_DB_RESET("picture.db_page.reset", FeatureKind.ACTION),
     /**
      * the lens iris (stock picture_iris_ring_adjustment, first row of the picture page); options dynamic, f2, f3, f4,
      * f5_5, f7 in the stock order of the model. Dynamic, f5.5 and f7 hold the light level ({@link IrisRule})
@@ -206,6 +236,12 @@ public enum FeatureId {
      * the For developers page of All settings; each press goes card, full sheet, hidden. A module screen ({@link MenuSpec#MODULE_SCREENS})
      */
     SENSORS_PANEL("sensors.panel", FeatureKind.SCREEN),
+    /**
+     * "Miracast diagnostics" on the For developers page: the receiver's state and stage report (org.lumen.miracast
+     * StateProvider "state" and "diag"; it was the sink's own hidden status page) as readable rows of the menu, where
+     * the image has the sink. A module screen (MirrorDiagPage).
+     */
+    MIRROR_DIAG("dev.mirror_diag", FeatureKind.SCREEN),
     /** "Remote buttons": give a remote key an app or an action (apps/core/lumen-remote keys, KeyBindActivity) */
     SETTINGS_REMOTE_KEYS("settings.remote_keys", FeatureKind.SCREEN),
     /** the stock power-on melody (IGmpf 420 / 419 on Z9X, HB and Play 6), from the old Projector settings page */
@@ -322,9 +358,10 @@ public enum FeatureId {
     /** key sounds: Android's sound_effects_enabled (the stock sound page's voice_key_tone switch) */
     SOUND_KEY_TONE("sound.key_tone", FeatureKind.TOGGLE),
     /**
-     * the HDMI app's own settings page (org.lumen.tvinput: switch to a newly connected device, back home when it goes,
-     * the startup source), the stock signal page's signal_source_setting_auto and signal_boot_source_info, for a device
-     * app with no HDMI-CEC page that links it ({@link #SETTINGS_CEC} does on the Z9X and the HB)
+     * the HDMI page (lumen-menu HdmiPage: switch to a newly connected device, back home when it goes, the startup
+     * source, the ports), the stock signal page's signal_source_setting_auto and signal_boot_source_info: a row of All
+     * settings, Input source on every model whose image has the HDMI app (org.lumen.tvinput), the HDMI-CEC page links
+     * the same page. A module screen
      */
     SETTINGS_HDMI("settings.hdmi", FeatureKind.SCREEN),
     /**
@@ -372,6 +409,11 @@ public enum FeatureId {
      */
     SETTINGS_PARENTAL("settings.parental", FeatureKind.SCREEN),
     /**
+     * screen casting (2026-11-21: one shared feature on every model): the casting screen of the AirPlay receiver
+     * app (org.lumen.airplay, action org.lumen.cast.SCREEN) with AirPlay, Miracast and DLNA. A module screen
+     */
+    SETTINGS_CASTING("settings.casting", FeatureKind.SCREEN),
+    /**
      * lens memory: stored zoom and lens shift positions to go back to, save, rename and delete (the X50 stock
      * lens_memory list)
      */
@@ -397,6 +439,27 @@ public enum FeatureId {
     SETTINGS_MENU_SIDE("settings.menu_side", FeatureKind.CHOICE),
     /** the menu's size (General, MenuLook: normal / compact, more rows on a page), a module setting of every model */
     SETTINGS_MENU_DENSITY("settings.menu_density", FeatureKind.CHOICE),
+    /**
+     * what a short press of the remote power key does (General, PowerKeyChoice: power_menu / sleep, the hold does the
+     * other one; the profile's keys.power_short is the default), a module setting of every model whose app has the key
+     */
+    SETTINGS_POWER_KEY("settings.power_key", FeatureKind.CHOICE),
+    /** Android's language page (General, Language and time; the value is the system language), every model */
+    SETTINGS_LANGUAGE("settings.language", FeatureKind.SCREEN),
+    /** Android's date and time page (General, Language and time; the value says automatic or manual), every model */
+    SETTINGS_DATE_TIME("settings.date_time", FeatureKind.SCREEN),
+    /** Android's storage page (General, Storage and updates; the value is the free space), every model */
+    SETTINGS_STORAGE("settings.storage", FeatureKind.SCREEN),
+    /** the system update screen (Lumen updater, Storage and updates; the value is the Lumen OS version) */
+    SETTINGS_UPDATE("settings.update", FeatureKind.SCREEN),
+    /** Android's about page (General, Storage and updates; the value is the model name), every model */
+    SETTINGS_ABOUT("settings.about", FeatureKind.SCREEN),
+    /** the system details app (LumenInfo, For developers, System) */
+    DEV_SYSTEM_INFO("dev.system_info", FeatureKind.SCREEN),
+    /** ADB over network (For developers, System): the switch of Android's developer options, port 5555 */
+    DEV_NETWORK_ADB("dev.network_adb", FeatureKind.TOGGLE),
+    /** Android's developer options page (For developers, System), every model */
+    DEV_ANDROID("dev.android", FeatureKind.SCREEN),
     /** the brightness slider of {@link #PICTURE_PQ} */
     PQ_BRIGHTNESS(PICTURE_PQ, "brightness"),
     /** the contrast slider of {@link #PICTURE_PQ} */

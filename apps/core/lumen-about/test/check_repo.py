@@ -72,9 +72,11 @@ for k in ("lumen_about_back_summary_file",):
 conf = read(os.path.join(M, "module.conf"))
 if not re.search(r"^depends=.*\blumen-qr\b", conf, re.M):
     fail("module.conf: lumen-about must depend on lumen-qr")
-layers = sorted(glob.glob(os.path.join(G, "devices/*/app/*Projector.layers")))
-if len(layers) < 8:
-    fail("recipes: %d projector recipes, want every model's (8)" % len(layers))
+import assemble_app  # noqa: E402  (the recipes each model builds, its own or its family's: devices/README.md)
+built = [(c, p) for c, a, p in assemble_app.all_recipes(G) if a.endswith("Projector")]
+layers = sorted({p for _, p in built})
+if len({c for c, _ in built}) < 8:
+    fail("recipes: %d models build a projector app, want every model (8)" % len({c for c, _ in built}))
 apps = set()
 for p in layers:
     text = read(p)
@@ -88,9 +90,28 @@ for p in layers:
     if app:
         apps.add(app.group(1))
 
-# 3. manifests
-for a in sorted(apps):
+# 3. manifests (an app without its own manifest file has the one its recipe assembles: the HB, core + patch)
+
+
+def manifest(a):
     p = os.path.join(G, app_dir(G, a), "AndroidManifest.xml")
+    if os.path.isfile(p):
+        return p
+    for c, app, rec in assemble_app.all_recipes(G):
+        if app == a:
+            # a manifest the recipe takes as one model data file (the Play 6): that file, no assembly
+            for line in open(os.path.join(G, rec) if not os.path.isabs(rec) else rec, encoding="utf-8"):
+                w = line.split("#", 1)[0].split()
+                if len(w) == 3 and w[0] == "file" and w[2] == "AndroidManifest.xml":
+                    return os.path.join(G, w[1])
+            files, _st, _w, errs = assemble_app.assemble(G, rec, codename=c)
+            if not errs and "AndroidManifest.xml" in files:
+                return files["AndroidManifest.xml"]
+    return p
+
+
+for a in sorted(apps):
+    p = manifest(a)
     if not os.path.isfile(p):
         fail("%s: no manifest" % a)
         continue
@@ -127,6 +148,23 @@ if sorted(c for c, _ in cases) != sorted(set(enum)) or any(r != "lumen_about_" +
     fail("AboutProvider.text: each RowText X must give R.string.lumen_about_x: %s" % cases)
 if "XgimiSystemActivity.class.getName()" not in prov:
     fail("AboutProvider: the screen must be named by its class")
+# the old screen is only the address: it asks this app's menu for its page (lumen-menu XgimiSystemPage) and closes
+scr = read(os.path.join(S, "XgimiSystemActivity.java"))
+menu = read(os.path.join(G, "apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java"))
+req = read(os.path.join(G, "apps/core/lumen-menu/src/org/lumen/menu/MenuRequest.java"))
+if "setContentView" in scr or "TextView" in scr or 'PLACE = "settings.xgimi_system"' not in scr \
+        or 'sendBroadcast(new Intent(SHOW_PANEL).setPackage(getPackageName()).putExtra("section", PLACE)' not in scr:
+    fail("XgimiSystemActivity: must only redirect to the menu page settings.xgimi_system (no screen of its own)")
+if 'XGIMI_SYSTEM = "settings.xgimi_system"' not in req \
+        or "if (MenuRequest.XGIMI_SYSTEM.equals(section)) { showXgimiSystem(); return; }" not in menu:
+    fail("lumen-menu: the place settings.xgimi_system does not open Back to the XGIMI system")
+if "confirm(s(R.string.lumen_about_back), s(R.string.lumen_about_erases), s(R.string.lumen_continue)" not in menu:
+    fail("lumen-menu: Back to the XGIMI system must ask the erase warning first")
+for a in sorted(apps):
+    m = read(manifest(a))
+    act = re.search(r'<activity\s[^>]*android:name="org\.lumen\.about\.XgimiSystemActivity"[^>]*>', m, re.S)
+    if act and 'android:theme="@android:style/Theme.NoDisplay"' not in act.group(0):
+        fail("%s: XgimiSystemActivity must have no window (Theme.NoDisplay)" % a)
 rows = read(os.path.join(S, "AboutRows.java"))
 keys = re.findall(r'KEY_[A-Z_]+ = "([a-z_]+)"', rows)
 if len(keys) != 12 or len(set(keys)) != 12 or not all(k.startswith("lumen_") for k in keys):

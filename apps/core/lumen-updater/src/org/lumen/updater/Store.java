@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * in-process change bus for the UI. All writes use apply(); readers always see the latest value
  * in this process.
  */
-public final class Store {
+public final class Store implements Newest.Offers {
     public static final int AUTO_OFF = 0, AUTO_NOTIFY = 1, AUTO_DOWNLOAD = 2;
 
     private static Store sInstance;
@@ -23,10 +23,11 @@ public final class Store {
     private static final Handler sMain = new Handler(Looper.getMainLooper());
 
     private final SharedPreferences p;
+    private final Context app;
 
     private Store(Context c) {
-        p = c.getApplicationContext().createDeviceProtectedStorageContext()
-                .getSharedPreferences("ota", Context.MODE_PRIVATE);
+        app = c.getApplicationContext();
+        p = app.createDeviceProtectedStorageContext().getSharedPreferences("ota", Context.MODE_PRIVATE);
         Ota.setBeta(beta());
     }
 
@@ -99,6 +100,10 @@ public final class Store {
     public boolean fromUsb() { return p.getBoolean("usb", false); }
     public String usbPath() { return p.getString("usb_path", ""); }
 
+    /** The downloaded files of the offer (Ota.deleteFiles). */
+    @Override
+    public void deleteFiles() { Ota.deleteFiles(app); }
+
     public void clearOffer() {
         p.edit().remove("manifest").remove("pkg").remove("usb").remove("usb_path")
                 .remove("dl_bytes").remove("dl_total").remove("dl_etag").remove("progress").apply();
@@ -133,7 +138,7 @@ public final class Store {
     public int autoMode() { return p.getInt("auto", AUTO_DOWNLOAD); }
     public void setAutoMode(int m) { p.edit().putInt("auto", m).apply(); changed(); }
 
-    /** "Beta updates": true on, false off, null never chosen (the image's own channel, Ota.betaOn). */
+    /** "Beta updates": true on, false off, null never chosen (the build type decides, Ota.betaOn). */
     public Boolean beta() { return p.contains("beta") ? p.getBoolean("beta", false) : null; }
 
     public void setBeta(boolean on) {

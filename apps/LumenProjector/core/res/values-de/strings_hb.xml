@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Z9X HB only labels, hb-t8b keys only, Lumen's own wording (clean-room rewrite 2026-10-31) of values-de; the other HB keys fall back to English -->
+<resources>
+    <!-- hb-t8b (2026-10-30): HB keystone and picture labels at the places of the stock rows; texts
+         written by Lumen (clean-room rewrite 2026-10-31): stock strings only told us the meaning -->
+    <string name="kst_settings_hb">Trapez-Optionen</string>
+    <string name="kst_enhancement_hb">Zusätzliche Korrektur</string>
+    <string name="kst_size_position_hb">Bildgröße und Lage</string>
+    <string name="kst_projection_type_hb">Projektionsart</string>
+    <string name="kst_manual_hb">Ecken von Hand einstellen</string>
+    <string name="pro_contrast_hb">Kontrast</string>
+    <string name="pro_gamma_index_hb">Gamma</string>
+    <string name="pro_dyn_black_hb">Schwarz verstärken</string>
+    <string name="pro_clarity_hb">Detailtreue</string>
+    <string name="pro_noise_hb">Rauschfilter</string>
+    <string name="pro_wb_2pt_hb">Weißabgleich mit 2 Punkten</string>
+    <string name="pro_wb_11pt_hb">Weißabgleich mit 11 Punkten</string>
+    <string name="pro_segmentation_hb">Graustufe</string>
+    <string name="pro_src_media_hb">Video aus Apps und Dateien</string>
+    <string name="pro_off_hb">Aus</string>
+    <string name="pro_auto_hb">Auto</string>
+    <!-- HB beta6: Boost line = the stock HB meaning (newsettings boost_title / boost_close_title) -->
+    <string name="hb_boost_locked">Im Bildmodus „%1$s“ gehört Boost zum Modus und lässt sich hier nicht ausschalten. Wählen Sie einen anderen Bildmodus.</string>
+    <!-- HB beta6: why deep sleep (STR) is blocked (power/StrNotice) -->
+    <string name="pro_cs_hdr_hb">Der Farbraum wird bei HDR-Inhalten nicht unterstützt</string>
+</resources>

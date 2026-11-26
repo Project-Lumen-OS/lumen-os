@@ -18,6 +18,8 @@ HP = M + 'src/org/lumen/projector/panel/HintPicture.java'
 CTL = M + 'src/org/lumen/projector/panel/MenuController.java'
 LAB = M + 'src/org/lumen/projector/panel/MenuLabels.java'
 ALL = M + 'src/org/lumen/projector/panel/QpdAll.java'
+STRIP = M + 'src/org/lumen/projector/panel/AdjustStrip.java'
+PAN = M + 'src/org/lumen/projector/panel/QpdPanel.java'
 EN = M + 'res/values/lumen_strings_qpd.xml'
 RU = M + 'res/values-ru/lumen_strings_qpd.xml'
 ZH = M + 'res/values-zh-rCN/lumen_strings_qpd.xml'
@@ -65,13 +67,26 @@ MUTANTS = [
     ('apply does not redraw the picture', CTL, '        for (QpdTip t : setupTips) showSetup(t, st);\n', ''),
     ('picture never registered for redraws', CTL, '        setupTips.add(t);\n', ''),
     ('picture built without the state', CTL, '        showSetup(t, state);\n', ''),
-    ('fixed rear text again', CTL, 'if (kind != HintPicture.PROJECTION) return new QpdTip(app, kind, s(MenuLabels.tipText(h)));',
-     'if (kind != null) return new QpdTip(app, kind, s(R.string.lumen_qpd_tip_rear));'),
+    ('fixed rear text again', CTL, 'if (kind != HintPicture.PROJECTION) {',
+     'if (kind != null) { if (kind != null) return new QpdTip(app, kind, s(R.string.lumen_qpd_tip_rear));'),
     ('caption sentences swapped', CTL, 'Texts.sentences(s(MenuLabels.tipMount(s.mount)), s(MenuLabels.tipSide(s.side())))',
      'Texts.sentences(s(MenuLabels.tipSide(s.side())), s(MenuLabels.tipMount(s.mount)))'),
     ('All settings card a frozen copy', ALL, '        QpdTip t = src.copyFor(rowTitle);', '        QpdTip t = new QpdTip(getContext(), src.kind(), src.text(), rowTitle);'),
     ('All settings card for a hidden hint', ALL, 'if (!(popupTip instanceof QpdTip) || popupTip.getVisibility() == GONE) {',
      'if (!(popupTip instanceof QpdTip)) {'),
+    # the stock picture adjustment strip (4PDA: OK on a picture setting hides the menu, three rows at the bottom centre)
+    ('strip: the track is not filled', STRIP, 'box.set(l, ty - th / 2, x, ty + th / 2);', 'box.set(l, ty - th / 2, l, ty + th / 2);'),
+    ('strip: a closed row in the accent colour', STRIP, 'int acc = it.enabled ? QpdStyle.ACCENT : alpha(QpdStyle.INK, 0x66);', 'int acc = QpdStyle.ACCENT;'),
+    ('strip: no row motion', STRIP, 'float dy = shift * ROW_H * k;', 'float dy = 0;'),
+    ('strip: a choice without its right arrow', STRIP, '            arrow(c, r - a / 2f, cy, 1, a);\n', ''),
+    ('strip: a value not read shown as read', STRIP, 'return new Item(title, known ? text : null, min, max, val, true, enabled && known);',
+     'return new Item(title, text, min, max, val, true, enabled);'),
+    ('strip: square corners', STRIP, 'c.drawRoundRect(box, RADIUS * k, RADIUS * k, fill);', 'c.drawRect(box, fill);'),
+    ('adjust: OK no longer opens the strip', CTL, '        if (adjust().onKey(ev, f)) return true;               // OK on a picture setting: the strip, its UP / DOWN / OK / BACK\n', ''),
+    ('adjust: the scrim stays over the film', PAN, '        if (root.getBackground() != null) root.getBackground().setAlpha(on ? 0 : 255);\n', ''),
+    ('adjust: the light slider adjusted in the strip', CTL, 'return f != null && f != FeatureId.LAMP && f.id.startsWith(MenuSpec.PICTURE + ".");',
+     'return f != null && f.id.startsWith(MenuSpec.PICTURE + ".");'),
+    ('lamp tile: its page without the light slider', CTL, '                    addLampRow(p);                            // the light slider (the lamp page: its tile look opens it)\n', ''),
 ]
 
 

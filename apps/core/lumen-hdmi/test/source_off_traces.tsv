@@ -1,0 +1,134 @@
+# CEC traces replayed by SourceOffTest (apps/core/lumen-hdmi/test/run.sh). Columns: trace, time (hh:mm:ss), event, arg.
+#   init  L:P:T:S   CEC device L behind port P, device type T, cached power status S before the first line
+#   shown P / hidden P   tvinput's session on HDMI P (HDMI_EVENT "session", X50: the port provider)
+#   rx    HEX       a received CEC frame as dumpsys hdmi_control prints it (header:opcode:params)
+#   expect  from to  SourceOff must answer "sleep" once at a read in [from, to] and never before or after
+#   never            SourceOff must never answer "sleep" in this trace
+#
+# ps5-rest: a test Z9X G0082, Lumen 1.1.0-beta2, PS5 on HDMI 1 (1.0.0.0, logical 8), 2026-11-26, rest mode at
+# 11:32:33, dumpsys hdmi_control (~/lumen-build-tmp/cec-standby-1126/live/hdmi_control.txt). The user switched HDMI
+# 2 and 1 four times; at 11:31:15 the cache still held the PS5's standby report of 11:31:08 while it was waking up.
+ps5-rest	11:31:07	init	8:1:4:1
+ps5-rest	11:31:08	rx	80:90:01
+ps5-rest	11:31:11	shown	2
+ps5-rest	11:31:15	hidden	2
+ps5-rest	11:31:15	shown	1
+ps5-rest	11:31:16	rx	80:0D
+ps5-rest	11:31:16	rx	8F:82:10:00
+ps5-rest	11:31:16	rx	80:8E:00
+ps5-rest	11:31:17	rx	8F:82:10:00
+ps5-rest	11:31:23	hidden	1
+ps5-rest	11:31:23	shown	2
+ps5-rest	11:31:28	hidden	2
+ps5-rest	11:31:28	shown	1
+ps5-rest	11:31:29	rx	8F:82:10:00
+ps5-rest	11:32:06	hidden	1
+ps5-rest	11:32:08	rx	80:90:00
+ps5-rest	11:32:12	shown	1
+ps5-rest	11:32:16	rx	80:0D
+ps5-rest	11:32:16	rx	8F:82:10:00
+ps5-rest	11:32:33	rx	80:8E:01
+ps5-rest	11:32:34	rx	80:9D:10:00
+ps5-rest	11:32:37	rx	8F:84:10:00:04
+ps5-rest	11:32:40	rx	8F:84:10:00:04
+ps5-rest	11:33:08	rx	80:90:01
+ps5-rest	11:34:08	rx	80:90:01
+ps5-rest	11:35:08	rx	80:90:01
+ps5-rest	11:33:08	expect	11:33:08 11:33:20
+#
+# ps5-off: the same unit, PS5 FULL power off at 11:49:54, 2026-11-26 (hdmi_control_2.txt there): no <Standby> either,
+# its standby answer to our minute poll at 11:50:08.
+ps5-off	11:46:07	init	8:1:4:0
+ps5-off	11:46:07	shown	1
+ps5-off	11:46:08	rx	80:90:00
+ps5-off	11:47:08	rx	80:90:00
+ps5-off	11:48:08	rx	80:90:00
+ps5-off	11:49:08	rx	80:90:00
+ps5-off	11:49:30	rx	80:0D
+ps5-off	11:49:30	rx	8F:82:10:00
+ps5-off	11:49:30	rx	80:8E:00
+ps5-off	11:49:54	rx	80:8E:01
+ps5-off	11:49:54	rx	80:9D:10:00
+ps5-off	11:50:08	rx	80:90:01
+ps5-off	11:51:08	rx	80:90:01
+ps5-off	11:50:08	expect	11:50:08 11:50:20
+#
+# Opened while the console sleeps and never woken: the user looks at a sleeping source, nothing turned off.
+asleep-shown	12:00:00	init	8:1:4:1
+asleep-shown	12:00:00	shown	1
+asleep-shown	12:01:08	rx	80:90:01
+asleep-shown	12:02:08	rx	80:90:01
+asleep-shown	12:00:00	never
+#
+# A source that only says it has no video (<Inactive Source>, CEC 1.4b 13.2.2) and stays on.
+no-video	12:00:00	init	8:1:4:0
+no-video	12:00:00	shown	1
+no-video	12:00:10	rx	80:9D:10:00
+no-video	12:01:08	rx	80:90:00
+no-video	12:02:08	rx	80:90:00
+no-video	12:00:00	never
+#
+# Yandex Station (playback 4, HDMI 2 = 2.0.0.0) says <Standby>: the framework sleeps the projector itself
+# (HdmiCecLocalDevice.handleStandby -> goToSleep HDMI); nothing more from us, also after its standby report.
+yandex-standby	12:00:00	init	4:2:4:0
+yandex-standby	12:00:00	shown	2
+yandex-standby	12:00:20	rx	40:36
+yandex-standby	12:01:08	rx	40:90:01
+yandex-standby	12:00:00	never
+#
+# Yandex Station turning itself off with <Inactive Source> and a standby report: the same as the PS5.
+yandex-inactive	12:00:00	init	4:2:4:0
+yandex-inactive	12:00:00	shown	2
+yandex-inactive	12:00:20	rx	40:9D:20:00
+yandex-inactive	12:01:08	rx	40:90:01
+yandex-inactive	12:01:08	expect	12:01:08 12:01:20
+#
+# A soundbar (audio system 5) and the PS5 behind HDMI 1: the bar stays on, the console goes to rest.
+bar-and-console	12:00:00	init	5:1:5:0
+bar-and-console	12:00:00	init	8:1:4:0
+bar-and-console	12:00:00	shown	1
+bar-and-console	12:00:30	rx	80:9D:11:00
+bar-and-console	12:01:08	rx	80:90:01
+bar-and-console	12:01:08	rx	50:90:00
+bar-and-console	12:01:08	expect	12:01:08 12:01:20
+#
+# The source on ANOTHER port turns off while HDMI 1 is shown: not the watched device.
+other-port	12:00:00	init	8:1:4:0
+other-port	12:00:00	init	4:2:4:0
+other-port	12:00:00	shown	1
+other-port	12:00:20	rx	40:9D:20:00
+other-port	12:01:08	rx	40:90:01
+other-port	12:00:00	never
+#
+# Left HDMI 1 while the console was on, it went to rest meanwhile, then HDMI 1 opened again: a sleeping source.
+back-to-asleep	12:00:00	init	8:1:4:0
+back-to-asleep	12:00:00	shown	1
+back-to-asleep	12:00:30	hidden	1
+back-to-asleep	12:01:08	rx	80:90:01
+back-to-asleep	12:01:30	shown	1
+back-to-asleep	12:02:08	rx	80:90:01
+back-to-asleep	12:00:00	never
+#
+# box-r-sleep: Slava's X50 Ultra, Lumen 1.0.10-beta14, Box R 4K Plus (Android 14, playback, logical 8) on HDMI 2
+# (2.0.0.0), 2026-11-26 (~/lumen-build-tmp/x50-cec-live-1126, testB2). HDMI 2 opened at 14:07:23, the box answered
+# with <Active Source>; put to sleep at 14:07:51 it sent nothing at all (its own HDMI layer: "Auto device off switch
+# is disabled"), only its standby answer to our minute poll at 14:08:20. beta14 has no SourceFollow and stayed on.
+box-r-sleep	14:07:19	init	8:2:4:0
+box-r-sleep	14:07:23	shown	2
+box-r-sleep	14:07:25	rx	8F:82:20:00
+box-r-sleep	14:07:26	rx	80:8E:00
+box-r-sleep	14:07:26	rx	80:90:00
+box-r-sleep	14:07:27	rx	8F:82:20:00
+box-r-sleep	14:07:27	rx	80:8E:00
+box-r-sleep	14:07:27	rx	80:90:00
+box-r-sleep	14:08:20	rx	80:90:01
+box-r-sleep	14:08:20	expect	14:08:20 14:08:32
+#
+# box-r-wake-home: the same box woken at 14:02:46 while the projector showed Lumen Home (testA): no One Touch Play
+# from the box (its HDMI layer: "Projector cec fun is disable"), its power answer on; nothing is shown, so nothing.
+box-r-wake-home	14:02:20	init	8:2:4:1
+box-r-wake-home	14:02:46	rx	8F:84:20:00:04
+box-r-wake-home	14:02:47	rx	80:8F
+box-r-wake-home	14:02:49	rx	80:90:00
+box-r-wake-home	14:03:20	rx	80:90:00
+box-r-wake-home	14:02:20	never

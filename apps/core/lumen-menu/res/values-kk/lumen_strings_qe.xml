@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Жаңа</string>
     <string name="lumen_qe_reset">Бастапқыға қайтару</string>
     <string name="lumen_qe_select">Таңдау</string>
-    <string name="lumen_qe_done">Дайын</string>
-    <string name="lumen_qe_back">Артқа</string>
     <string name="lumen_qe_close_panel">Панельді жабу</string>
     <string name="lumen_qe_how">Қалай көрсету</string>
     <string name="lumen_qe_now" formatted="true">Қазір: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Тақталардың астында</string>
     <string name="lumen_qe_panel_note">Тақта, кең тақта және дөңгелек мәзірдің оң жағындағы панельді ашады.</string>
     <string name="lumen_qe_place">Орны</string>
-    <string name="lumen_qe_move">Жылжыту</string>
     <string name="lumen_qe_remove">Мәзірден алып тастау</string>
     <string name="lumen_qe_moving">Жылжыту</string>
     <string name="lumen_qe_move_hint">Дөңгелектер тек жоғарғы қатарда, тақталар тек жолдар арасында жылжиды. Тақта дөңгелек болуы үшін оның түрін өзгертіңіз.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: жаңа орын</string>
     <string name="lumen_qe_move_keys">Жылжыту</string>
     <string name="lumen_qe_move_cancel">Болдырмау, бұрынғыдай қайтару</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Атауы немесе оның бөлігі бойынша</string>
+    <string name="lumen_qe_search_title">Баптауды табу</string>
+    <string name="lumen_qe_search_hint">Мысалы, MEMC</string>
+    <string name="lumen_qe_nothing">Ештеңе табылмады</string>
+    <string name="lumen_qe_unavailable">Қазір қолжетімсіз</string>
 </resources>

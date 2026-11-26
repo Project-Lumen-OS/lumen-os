@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
-     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
-     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+     under the module prefix, plus the automatic reports. lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
 <resources>
     <string name="lumen_report_title">Invia una segnalazione di problema</string>
-    <string name="lumen_report_intro">Aiuta lo sviluppatore di Lumen OS a capire cosa non ha funzionato. Non viene inviato nulla finché non premi «Invia segnalazione».</string>
-    <string name="lumen_report_included">Incluso</string>
-    <string name="lumen_report_inc_system">Versione del sistema, tempo di attività e quale copia del sistema è in uso</string>
-    <string name="lumen_report_inc_logs">Log del sistema e delle app Lumen degli ultimi 30 minuti</string>
-    <string name="lumen_report_inc_crashes">Registri di arresti anomali, blocchi e riavvii con i nomi delle app</string>
-    <string name="lumen_report_inc_kernel">Log del kernel dell’ultimo riavvio e log dell’aggiornamento</string>
-    <string name="lumen_report_inc_state">Schermo, memoria e tipo di rete</string>
-    <string name="lumen_report_excluded">Rimosso o non incluso</string>
+    <string name="lumen_report_intro">Se qualcosa non funziona bene, invia una segnalazione. Lo sviluppatore vede i log del proiettore e trova prima la causa.</string>
+    <string name="lumen_report_included">Una segnalazione contiene</string>
+    <string name="lumen_report_inc_system">Versione del sistema, schermo, memoria e tipo di rete</string>
+    <string name="lumen_report_inc_logs">Log del sistema e delle app Lumen</string>
+    <string name="lumen_report_inc_crashes">Arresti anomali, blocchi e riavvii</string>
+    <string name="lumen_report_inc_kernel">Log del kernel e degli aggiornamenti</string>
+    <string name="lumen_report_excluded">Mai inviato</string>
     <string name="lumen_report_exc_accounts">Account, indirizzi email e numeri di telefono</string>
     <string name="lumen_report_exc_network">Nomi delle reti Wi-Fi, indirizzi IP e MAC</string>
     <string name="lumen_report_exc_serial">Numero di serie: al suo posto un ID casuale di questo proiettore</string>
     <string name="lumen_report_exc_apps">Log delle app che hai installato tu</string>
     <string name="lumen_report_exc_files">Foto, file e password</string>
     <string name="lumen_report_footer">La segnalazione viene conservata per 30 giorni. Solo lo sviluppatore di Lumen OS può aprirla.</string>
-    <string name="lumen_report_last">Ultima segnalazione: %1$s, %2$s</string>
+    <string name="lumen_report_last">Ultima segnalazione</string>
     <string name="lumen_report_send">Invia segnalazione</string>
-    <string name="lumen_report_collecting">Raccolta delle informazioni… (%1$d di %2$d)</string>
-    <string name="lumen_report_log_hint">Se Android chiede se consentire l’accesso ai log del dispositivo, scegli «Consenti».</string>
-    <string name="lumen_report_sending">Invio… %1$s di %2$s</string>
+    <string name="lumen_report_collecting">Raccolta dei log</string>
+    <string name="lumen_report_sending">Invio della segnalazione</string>
     <string name="lumen_report_done_title">Segnalazione inviata</string>
     <string name="lumen_report_done_text">Invia questo codice allo sviluppatore di Lumen OS insieme a una breve descrizione del problema.</string>
     <string name="lumen_report_failed_title">La segnalazione non è stata inviata</string>
@@ -34,11 +31,16 @@
     <string name="lumen_report_err_server">Il server delle segnalazioni ha un problema. Riprova più tardi.</string>
     <string name="lumen_report_err_collect">Impossibile preparare la segnalazione.</string>
     <string name="lumen_report_retry">Riprova</string>
-    <string name="lumen_report_close">Chiudi</string>
-    <string name="lumen_report_cancel">Annulla</string>
-    <string name="lumen_report_auto">Invia automaticamente le segnalazioni di problemi</string>
-    <string name="lumen_report_auto_note">Se il sistema o un’app Lumen si chiude o si blocca, parte da sola una breve segnalazione. Non contiene mai i log delle app che hai installato tu.</string>
+    <string name="lumen_report_auto">Invia automaticamente</string>
     <string name="lumen_report_queued_title">La segnalazione verrà inviata più tardi</string>
     <string name="lumen_report_queued_text">Il server delle segnalazioni ora non è raggiungibile. Il proiettore invierà la segnalazione da solo appena possibile. Il suo codice comparirà poi qui.</string>
-    <string name="lumen_report_last_auto">Ultima segnalazione automatica: %1$s, %2$s</string>
+    <string name="lumen_report_last_auto">Ultima segnalazione automatica</string>
+    <string name="lumen_report_heading">Segnalazione di problema</string>
+    <string name="lumen_report_send_sub">Log e stato del proiettore</string>
+    <string name="lumen_report_auto_sub">Quando il sistema o un’app Lumen si blocca</string>
+    <string name="lumen_report_what">Cosa contiene una segnalazione</string>
+    <string name="lumen_report_what_sub">E cosa non viene mai inviato</string>
+    <string name="lumen_report_inc_devices">HDMI, audio e alimentazione: dispositivi e messaggi CEC</string>
+    <string name="lumen_report_bytes">Inviati %1$s di %2$s</string>
+    <string name="lumen_report_code">Codice della segnalazione</string>
 </resources>

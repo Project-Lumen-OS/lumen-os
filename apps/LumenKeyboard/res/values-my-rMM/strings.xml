@@ -22,7 +22,6 @@
     <string name="label_send_key" msgid="1803138506603147503">"ပို့ရန်"</string>
     <string name="label_search_key" msgid="8540828292920277213">"ရှာဖွေရန်"</string>
     <string name="label_done_key" msgid="4570417022685876778">"လုပ်ပြီး"</string>
-    <string name="settings_title" msgid="8361325634803696047">"ကီးဘုတ် ရွေးစရာများ"</string>
     <string name="btn_on" msgid="5962775761492765922">"ဖွင့်ရန်"</string>
     <string name="btn_off" msgid="2029716012096104384">"ပိတ်ထား"</string>
     <string name="keyboardview_keycode_space" msgid="5107808792477329036">"စပေ့စ်ကီး"</string>

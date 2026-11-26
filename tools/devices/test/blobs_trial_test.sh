@@ -375,18 +375,28 @@ if want static; then
     grep -qxF "$l" "$HBIMG/steps.tsv" || fail "HB steps.tsv lacks: $l"
   done
   # one reader for every model: no recipe names another one, every image's ro.lumen.models is its device.conf models
-  grep -n -E 'hb_blobs_trial|blobs_stock_dsu|x50_blobs\.(sh|rc)' "$G"/devices/*/build.conf "$G"/devices/*/image/steps.tsv \
+  grep -n -E 'hb_blobs_trial|blobs_stock_dsu|x50_blobs\.(sh|rc)' "$G"/devices/*/build.conf "$G"/devices/_family/*/*.conf "$G"/devices/*/image/steps.tsv \
     && fail "a second blobs reader in a recipe"
-  for c in g0111 g0100 h0061 h0062 h0063 g0155 horse_popular goat_elegant; do
-    grep -q 'tools/ota/image/z9x_blobs.sh' "$G/devices/$c/build.conf" || fail "$c build.conf lacks the one reader"
+  for c in $(cd "$G/devices" && ls -d */build.conf | sed 's|/build.conf||' | grep -v '^dragon_healthy$'); do
+    python3 "$G/tools/devices/layered.py" "$G/devices/$c/build.conf" | grep -q 'tools/ota/image/z9x_blobs.sh' || fail "$c build.conf lacks the one reader"
   done
   for pc in g0111/image/x50_prop.txt:g0111 g0111/image/x50_prop_pub.txt:g0111 g0111/image/x50max_prop_pub.txt:g0100 \
-            g0155/image/rs30_prop.txt:g0155 h0061/image/h0061_prop_pub.txt:h0061 h0062/image/h0062_prop_pub.txt:h0062 h0063/image/h0063_prop_pub.txt:h0063; do
+            h0061/image/h0061_prop_pub.txt:h0061 h0062/image/h0062_prop_pub.txt:h0062 h0063/image/h0063_prop_pub.txt:h0063; do
     dm=$(sed -n 's/^models=//p' "$G/devices/${pc#*:}/device.conf")
     grep -qx "+ro.lumen.models=$dm" "$G/devices/${pc%%:*}" || fail "${pc%%:*}: ro.lumen.models is not '$dm'"
   done
-  grep -qxF "*	line	{mn}/system/product/etc/build.prop	ro.lumen.models=$(sed -n 's/^models=//p' "$G/devices/g0155/device.conf")" \
+  # the RS30 recipe is shared (g0155, g0170): it checks ro.lumen.models={MODEL}, each model's build.conf sets MODEL
+  grep -qxF "*	line	{mn}/system/product/etc/build.prop	ro.lumen.models={MODEL}" \
     "$G/devices/g0155/image/steps.tsv" || fail "RS30 steps.tsv: no ro.lumen.models line"
+  # the RS30 family's one prop file names ro.lumen.models from var.MODEL (x50_props.py MODEL=), so every member's
+  # var.MODEL is its device.conf models and its var.NAME its device.conf name
+  grep -qx '+ro.lumen.models=@MODEL@' "$G/devices/_family/rs30/image/rs30_prop.txt" || fail "rs30_prop.txt: ro.lumen.models is not @MODEL@"
+  for c in $(python3 "$G/tools/devices/layered.py" --members "$G" rs30); do
+    python3 "$G/tools/devices/layered.py" "$G/devices/$c/build.conf" | grep -qxF "var.MODEL=$(sed -n 's/^models=//p' "$G/devices/$c/device.conf")" \
+      || fail "$c build.conf: var.MODEL is not its device.conf models"
+    python3 "$G/tools/devices/layered.py" "$G/devices/$c/build.conf" | grep -qxF "var.NAME=$(python3 "$G/tools/devices/layered.py" "$G/devices/$c/device.conf" | sed -n 's/^name=//p')" \
+      || fail "$c build.conf: var.NAME is not its device.conf name"
+  done
   grep -q "^models=G0082\$" "$G/devices/horse_popular/device.conf" || fail "Z9X device.conf models changed"
   grep -qxF "*	tar_line	{tar}	system/product/etc/build.prop	ro.lumen.models=G0082" "$G/devices/horse_popular/image/steps.tsv" \
     || fail "Z9X steps.tsv: no ro.lumen.models line"

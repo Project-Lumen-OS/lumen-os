@@ -2,6 +2,7 @@
 package org.lumen.cec;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -18,8 +19,11 @@ import java.util.Map;
  * <pre>
  *   default  SETTING  VALUE          the stock value of an HdmiCecConfig setting
  *   device   DEVICE  SETTING  VALUE  the stock value on one device where it differs
- *   reset    DEVICE  SETTING         put the stock value back once on that device
+ *   owner    SETTING  VALUE          the owner's value on every image where it differs from stock
+ *   reset    DEVICE  SETTING         put the stock value back once on that device (the all-on step runs after it)
  * </pre>
+ * The decision 2026-11-26: every HDMI-CEC switch ON on every family; units of an older table get them ON once
+ * ({@link #allOnOnce}), after that a user's choice is never touched again.
  */
 public final class CecDefaults {
     /** The one-time step of this version ran on a unit (a new reset line needs a new version). */
@@ -29,12 +33,14 @@ public final class CecDefaults {
     private final Map<CecSetting, String> defaults;
     private final Map<String, Map<CecSetting, String>> devices;
     private final Map<String, List<CecSetting>> resets;
+    private final Map<CecSetting, String> owner;
 
     private CecDefaults(Map<CecSetting, String> defaults, Map<String, Map<CecSetting, String>> devices,
-                        Map<String, List<CecSetting>> resets) {
+                        Map<String, List<CecSetting>> resets, Map<CecSetting, String> owner) {
         this.defaults = defaults;
         this.devices = devices;
         this.resets = resets;
+        this.owner = owner;
     }
 
     /** Parses the table text. Throws IllegalArgumentException naming the bad line. */
@@ -42,6 +48,7 @@ public final class CecDefaults {
         Map<CecSetting, String> defaults = new EnumMap<>(CecSetting.class);
         Map<String, Map<CecSetting, String>> devices = new HashMap<>();
         Map<String, List<CecSetting>> resets = new HashMap<>();
+        Map<CecSetting, String> owner = new EnumMap<>(CecSetting.class);
         String[] lines = text == null ? new String[0] : text.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
@@ -59,6 +66,10 @@ public final class CecDefaults {
                     case "device":
                         need(f, 4);
                         put(devices.computeIfAbsent(f[1], k -> new EnumMap<>(CecSetting.class)), setting(f[2]), f[3]);
+                        break;
+                    case "owner":
+                        need(f, 3);
+                        put(owner, setting(f[1]), f[2]);
                         break;
                     case "reset":
                         need(f, 3);
@@ -78,7 +89,7 @@ public final class CecDefaults {
         for (CecSetting s : CecSetting.values()) {
             if (!defaults.containsKey(s)) throw new IllegalArgumentException("no default for " + s.key);
         }
-        return new CecDefaults(defaults, devices, resets);
+        return new CecDefaults(defaults, devices, resets, owner);
     }
 
     private static void need(String[] f, int n) {
@@ -101,6 +112,12 @@ public final class CecDefaults {
         Map<CecSetting, String> d = devices.get(device);
         String v = d == null ? null : d.get(s);
         return v != null ? v : defaults.get(s);
+    }
+
+    /** The value the image of a device ships: the owner's line, else the stock one. */
+    public String value(String device, CecSetting s) {
+        String v = owner.get(s);
+        return v != null ? v : stock(device, s);
     }
 
     /** The switches the device puts back to stock once, in table order. */
@@ -160,5 +177,61 @@ public final class CecDefaults {
             log.add(s.key + ": " + (now || held ? 1 : 0) + " -> stock " + (stock ? 1 : 0));
         }
         return done;
+    }
+
+    /**
+     * The switches of the HDMI-CEC page the user wants ON on every family (2026-11-26): master, turn on with an HDMI
+     * device, turn off devices with the projector (and the projector follows the device), switch to a device when it
+     * turns on, remote controls the device, soundbar sound (System Audio / ARC) and soundbar on with the projector.
+     */
+    public static final List<CecRow> ALL_ON = Collections.unmodifiableList(Arrays.asList(CecRow.MASTER, CecRow.WAKE,
+            CecRow.SEND_STANDBY, CecRow.SWITCH, CecRow.REMOTE, CecRow.SOUNDBAR, CecRow.SOUNDBAR_ON));
+
+    /** The switches of the page (lumen-cec CecStockDefaults over CecSettings, a fake in the tests). */
+    public interface Rows {
+        /** The switch now; null = unknown now (service not up), {@link #absent} = this projector has no such row. */
+        Boolean on(CecRow r);
+
+        boolean absent(CecRow r);
+
+        /** False when it was refused. */
+        boolean set(CecRow r, boolean on);
+
+        /** The one-time step ran on this unit (a persisted flag, kept across reboots and updates). */
+        boolean done();
+
+        void markDone();
+    }
+
+    /**
+     * Once per unit, on the first start of the build that brought the decision: every switch of
+     * {@link #ALL_ON} goes ON, also one the user had switched off before; the flag is set only when every present
+     * switch is ON, so an unknown or refused one is tried again at the next start. After that it never runs again: a
+     * switch the user turns off stays off. True when it changed something.
+     */
+    public static boolean allOnOnce(Rows u, List<String> log) {
+        if (u.done()) return false;
+        boolean complete = true, changed = false;
+        for (CecRow r : ALL_ON) {
+            if (u.absent(r)) {
+                log.add(r + ": not on this projector");
+                continue;
+            }
+            Boolean now = u.on(r);
+            if (now == null) {
+                log.add(r + ": unknown now, again at the next start");
+                complete = false;
+            } else if (now) {
+                log.add(r + ": already on");
+            } else if (u.set(r, true)) {
+                log.add(r + ": 0 -> 1 (owner default, once)");
+                changed = true;
+            } else {
+                log.add(r + ": refused, again at the next start");
+                complete = false;
+            }
+        }
+        if (complete) u.markDone();
+        return changed;
     }
 }

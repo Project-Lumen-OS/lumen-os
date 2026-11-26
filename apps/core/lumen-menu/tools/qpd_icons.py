@@ -116,10 +116,10 @@ ICONS['focus'] = ([
     G('g_b4', 0, 0, [P('p_b4', 'M9,20H5.5A1.5,1.5 0 0 1 4,18.5V15')]),
     G('g_dot', 12, 12, [P('p_dot', circ(12, 12, 2.6), 'fill')]),
 ], [
-    A('g_b1', 'translateX', -3, 0, 460, 0, 'spring'), A('g_b1', 'translateY', -3, 0, 460, 0, 'spring'),
-    A('g_b2', 'translateX', 3, 0, 460, 0, 'spring'), A('g_b2', 'translateY', -3, 0, 460, 0, 'spring'),
-    A('g_b3', 'translateX', 3, 0, 460, 0, 'spring'), A('g_b3', 'translateY', 3, 0, 460, 0, 'spring'),
-    A('g_b4', 'translateX', -3, 0, 460, 0, 'spring'), A('g_b4', 'translateY', 3, 0, 460, 0, 'spring'),
+    A('g_b1', 'translateX', -2.8, 0, 460, 0, 'spring'), A('g_b1', 'translateY', -2.8, 0, 460, 0, 'spring'),
+    A('g_b2', 'translateX', 2.8, 0, 460, 0, 'spring'), A('g_b2', 'translateY', -2.8, 0, 460, 0, 'spring'),
+    A('g_b3', 'translateX', 2.8, 0, 460, 0, 'spring'), A('g_b3', 'translateY', 2.8, 0, 460, 0, 'spring'),
+    A('g_b4', 'translateX', -2.8, 0, 460, 0, 'spring'), A('g_b4', 'translateY', 2.8, 0, 460, 0, 'spring'),
     hold('g_dot', 'scaleX', 0), hold('g_dot', 'scaleY', 0),
     A('g_dot', 'scaleX', 0, 1, 360, 260, 'spring'), A('g_dot', 'scaleY', 0, 1, 360, 260, 'spring'),
 ])
@@ -222,7 +222,7 @@ ICONS['3d'] = ([
     G('g_dt', 12, 12, [P('p_d3', THREE, sw='2'), P('p_dd', DEE, sw='2')]),
 ], [
     hold('p_dl', 'strokeAlpha', 0.55), A('p_dl', 'strokeAlpha', 0.55, 0, 360, 0, 'ease'),
-    A('g_dl', 'translateX', -2.4, 0, 360, 0, 'ease'), A('g_dr', 'translateX', 2.4, 0, 360, 0, 'ease'),
+    A('g_dl', 'translateX', -1.4, 0, 360, 0, 'ease'), A('g_dr', 'translateX', 1.4, 0, 360, 0, 'ease'),   # inside the box
     hold('g_dt', 'scaleX', 0.82), hold('g_dt', 'scaleY', 0.82),
     A('g_dt', 'scaleX', 0.82, 1, 380, 100, 'spring'), A('g_dt', 'scaleY', 0.82, 1, 380, 100, 'spring'),
 ])
@@ -300,6 +300,48 @@ ICONS['theme_auto'] = ([
 ], [
     A('g_th', 'rotation', -180, 0, 700, 0, 'spring'),
 ])
+
+# The full menu's professional picture rows as quick tiles (2026-11-24). Paths from Lucide
+# (lucide-icons/lucide, ISC License), named after each icon: every stroke draws itself.
+# Motion smoothing (MEMC): Lucide wind
+ICONS['memc'] = ([P('p_memc0', 'M12.8 19.6A2 2 0 1 0 14 16H2'), P('p_memc1', 'M17.5 8a2.5 2.5 0 1 1 2 4H2'), P('p_memc2', 'M9.8 4.4A2 2 0 1 1 11 8H2')],
+               [A('p_memc0', 'trimPathEnd', 0, 1, 620, 0), A('p_memc1', 'trimPathEnd', 0, 1, 620, 60), A('p_memc2', 'trimPathEnd', 0, 1, 620, 120)])
+# AI contrast: Lucide sparkles
+ICONS['ai'] = ([P('p_ai0', 'M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z'), P('p_ai1', 'M20 2v4'), P('p_ai2', 'M22 4h-4'), P('p_ai3', circ(4, 20, 2))],
+               [A('p_ai0', 'trimPathEnd', 0, 1, 620, 0), A('p_ai1', 'trimPathEnd', 0, 1, 620, 60), A('p_ai2', 'trimPathEnd', 0, 1, 620, 120), A('p_ai3', 'trimPathEnd', 0, 1, 620, 180)])
+# Dynamic black: Lucide moon
+ICONS['black'] = ([P('p_black0', 'M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401')],
+               [A('p_black0', 'trimPathEnd', 0, 1, 620, 0)])
+# Dynamic and local contrast: Lucide contrast
+ICONS['dcontrast'] = ([P('p_dcontrast0', circ(12, 12, 10)), P('p_dcontrast1', 'M12 18a6 6 0 0 0 0-12v12z')],
+               [A('p_dcontrast0', 'trimPathEnd', 0, 1, 620, 0), A('p_dcontrast1', 'trimPathEnd', 0, 1, 620, 60)])
+# Colour temperature: Lucide thermometer
+ICONS['ctemp'] = ([P('p_ctemp0', 'M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z')],
+               [A('p_ctemp0', 'trimPathEnd', 0, 1, 620, 0)])
+# Gamma: Lucide spline
+ICONS['gamma'] = ([P('p_gamma0', circ(19, 5, 2)), P('p_gamma1', circ(5, 19, 2)), P('p_gamma2', 'M5 17A12 12 0 0 1 17 5')],
+               [A('p_gamma0', 'trimPathEnd', 0, 1, 620, 0), A('p_gamma1', 'trimPathEnd', 0, 1, 620, 60), A('p_gamma2', 'trimPathEnd', 0, 1, 620, 120)])
+# HDR and its tone mapping: Lucide sun-moon
+ICONS['hdr'] = ([P('p_hdr0', 'M12 2v2'), P('p_hdr1', 'M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715'), P('p_hdr2', 'M16 12a4 4 0 0 0-4-4'), P('p_hdr3', 'm19 5-1.256 1.256'), P('p_hdr4', 'M20 12h2')],
+               [A('p_hdr0', 'trimPathEnd', 0, 1, 620, 0), A('p_hdr1', 'trimPathEnd', 0, 1, 620, 60), A('p_hdr2', 'trimPathEnd', 0, 1, 620, 120), A('p_hdr3', 'trimPathEnd', 0, 1, 620, 180), A('p_hdr4', 'trimPathEnd', 0, 1, 620, 240)])
+# Noise reduction: Lucide eraser
+ICONS['noise'] = ([P('p_noise0', 'M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21'), P('p_noise1', 'm5.082 11.09 8.828 8.828')],
+               [A('p_noise0', 'trimPathEnd', 0, 1, 620, 0), A('p_noise1', 'trimPathEnd', 0, 1, 620, 60)])
+# Super resolution: Lucide scan
+ICONS['sres'] = ([P('p_sres0', 'M3 7V5a2 2 0 0 1 2-2h2'), P('p_sres1', 'M17 3h2a2 2 0 0 1 2 2v2'), P('p_sres2', 'M21 17v2a2 2 0 0 1-2 2h-2'), P('p_sres3', 'M7 21H5a2 2 0 0 1-2-2v-2')],
+               [A('p_sres0', 'trimPathEnd', 0, 1, 620, 0), A('p_sres1', 'trimPathEnd', 0, 1, 620, 60), A('p_sres2', 'trimPathEnd', 0, 1, 620, 120), A('p_sres3', 'trimPathEnd', 0, 1, 620, 180)])
+# White balance: Lucide pipette
+ICONS['wb'] = ([P('p_wb0', 'm12 9-8.414 8.414A2 2 0 0 0 3 18.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 3.828 21h1.344a2 2 0 0 0 1.414-.586L15 12'), P('p_wb1', 'm18 9 .4.4a1 1 0 1 1-3 3l-3.8-3.8a1 1 0 1 1 3-3l.4.4 3.4-3.4a1 1 0 1 1 3 3z'), P('p_wb2', 'm2 22 .414-.414')],
+               [A('p_wb0', 'trimPathEnd', 0, 1, 620, 0), A('p_wb1', 'trimPathEnd', 0, 1, 620, 60), A('p_wb2', 'trimPathEnd', 0, 1, 620, 120)])
+# Colour management: Lucide palette
+ICONS['cc'] = ([P('p_cc0', 'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z'), P('p_cc1', circ(13.5, 6.5, 0.5)), P('p_cc2', circ(17.5, 10.5, 0.5)), P('p_cc3', circ(6.5, 12.5, 0.5)), P('p_cc4', circ(8.5, 7.5, 0.5))],
+               [A('p_cc0', 'trimPathEnd', 0, 1, 620, 0), A('p_cc1', 'trimPathEnd', 0, 1, 620, 60), A('p_cc2', 'trimPathEnd', 0, 1, 620, 120), A('p_cc3', 'trimPathEnd', 0, 1, 620, 180), A('p_cc4', 'trimPathEnd', 0, 1, 620, 240)])
+# Rainbow effect reduction: Lucide rainbow
+ICONS['rbe'] = ([P('p_rbe0', 'M22 17a10 10 0 0 0-20 0'), P('p_rbe1', 'M6 17a6 6 0 0 1 12 0'), P('p_rbe2', 'M10 17a2 2 0 0 1 4 0')],
+               [A('p_rbe0', 'trimPathEnd', 0, 1, 620, 0), A('p_rbe1', 'trimPathEnd', 0, 1, 620, 60), A('p_rbe2', 'trimPathEnd', 0, 1, 620, 120)])
+# Colour gamut: Lucide triangle
+ICONS['gamut'] = ([P('p_gamut0', 'M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z')],
+               [A('p_gamut0', 'trimPathEnd', 0, 1, 620, 0)])
 
 INTERP = {'ease': '@interpolator/lumen_qpd_ease', 'spring': '@interpolator/lumen_qpd_spring',
           'linear': '@android:interpolator/linear'}

@@ -10,10 +10,12 @@ import glob, os, re, shutil, subprocess, sys, tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 G = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", ".."))
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
 M = "apps/core/lumen-menu/"
 P = M + "src/org/lumen/projector/panel/"
 SR = M + "src/org/lumen/menu/ShiftRange.java"
-X = "apps/X50Projector/src/org/lumen/x50/projector/"
+X = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
 FG = "devices/_remotes/focus_guide.tsv"
 MUTANTS = [
     # the focus picture per remote
@@ -64,11 +66,15 @@ def scratch():
     tmp = tempfile.mkdtemp(prefix="x50fb1_mut.")
     root = os.path.join(tmp, "gsi")
     shutil.copytree(os.path.join(G, M), os.path.join(root, M))
+    # the suite compiles the shared test kit and reads the X50 zoom texts (ScreensTest)
+    for m in ("lumen-testkit", "lumen-common-strings"):
+        shutil.copytree(os.path.join(G, "apps/core", m), os.path.join(root, "apps/core", m))
+    shutil.copytree(os.path.join(G, X, "../../../../../res"), os.path.join(root, X, "../../../../../res"))
     for c in sorted(os.listdir(os.path.join(G, "devices"))):
         j = os.path.join(G, "devices", c, "menu.json")
         if os.path.isfile(j):
             os.makedirs(os.path.join(root, "devices", c))
-            shutil.copy(j, os.path.join(root, "devices", c))
+            menu_layers.copy_profile(j, os.path.join(root, "devices", c))
     os.makedirs(os.path.join(root, "devices", "_remotes"))
     shutil.copy(os.path.join(G, FG), os.path.join(root, FG))
     for f in ["CornerActivity.java", "LensActivity.java"]:

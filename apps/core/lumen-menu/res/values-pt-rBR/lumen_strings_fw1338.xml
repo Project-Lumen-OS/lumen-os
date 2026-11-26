@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">Preto dinâmico</string>
+    <string name="lumen_m_db_level">Nível do preto dinâmico</string>
+    <string name="lumen_m_db_subtitle_top">Máscara de legendas em cima</string>
+    <string name="lumen_m_db_subtitle_bottom">Máscara de legendas embaixo</string>
+    <string name="lumen_m_db_reset">Redefinir as máscaras de legendas</string>
+    <string name="lumen_m_color_uniformity">Ajuste de uniformidade de cor</string>
+</resources>

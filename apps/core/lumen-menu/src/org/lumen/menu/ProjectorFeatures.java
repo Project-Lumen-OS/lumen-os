@@ -111,11 +111,12 @@ public interface ProjectorFeatures {
     default String footer(String section) { return null; }
 
     /**
-     * The kind of content on screen now, read alone (one getter) so the open menu follows a signal change: options
-     * with a {@code support} list grey and ungrey live ({@link SignalRule}). The callback runs on the main thread;
-     * null = not read (the default: such a device never polls).
+     * The signal format on screen now, read alone (one getter, the vendor getHdrType) so the open menu follows a
+     * signal change: the picture page names it live and options with a {@code support} list grey and ungrey by its
+     * kind ({@link SignalRule}). The callback runs on the main thread; null = not read (the default: such a device
+     * never polls).
      */
-    default void readSignal(Consumer<Signal> cb) { cb.accept(null); }
+    default void readFormat(Consumer<HdrFormat> cb) { cb.accept(null); }
 
     // ================================================================== value types
 

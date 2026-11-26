@@ -21,11 +21,6 @@
     <string name="voice_keystone">正在校正画面</string>
     <string name="voice_downloading">正在下载语音识别所需的语言，请一分钟后再试</string>
     <string name="voice_hold_hint">按住麦克风键说话</string>
-    <string name="voice_settings">语音助手</string>
-    <string name="voice_language">语音语言</string>
-    <string name="voice_lang_system">系统语言</string>
-    <string name="voice_speak">语音回复</string>
-    <string name="voice_key">Gemini 语音</string>
     <string name="voice_key_off">设备语音</string>
     <string name="voice_key_on">Gemini</string>
     <string name="voice_key_hint">粘贴来自 aistudio.google.com 的 Gemini API 密钥。只会把回复文字发送给 Google。留空则使用设备语音。</string>

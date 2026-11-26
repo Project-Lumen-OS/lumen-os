@@ -34,7 +34,7 @@ public final class MenuSpecTest {
     }
 
     /** The profile text without one feature (and its hint line entry). */
-    static String without(String json, String feature) {
+    public static String without(String json, String feature) {
         String q = Pattern.quote("\"" + feature + "\"");
         String s = json.replaceAll("(?m)^\\s*" + q + ":\\s*\\{[^\\n]*\\},?\\n", "");
         s = s.replaceAll(q + ":\\s*\"[a-z_]+\",?\\s*", "");
@@ -104,9 +104,20 @@ public final class MenuSpecTest {
             MenuSpec dm = MenuSpec.of(p);
             List<FeatureId> devRows = new ArrayList<>();
             for (FeatureId d : new FeatureId[]{FeatureId.SIGNAL_PANEL, FeatureId.SENSORS_PANEL, FeatureId.SIGNAL_PIN,
-                    FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS}) {
+                    FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.MIRROR_DIAG,
+                    FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.DEV_SYSTEM_INFO, FeatureId.DEV_NETWORK_ADB, FeatureId.DEV_ANDROID}) {
                 if (p.has(d)) devRows.add(d);
             }
+            // owner option B 2026-11-26: General is the first page of All settings, Send a problem report opens its last
+            // group (Help), picture off has no row there but stays in the quick menu editor
+            check(MenuSpec.GENERAL.equals(dm.allSettings.get(0)), dev + ": General is not the first page " + dm.allSettings);
+            List<MenuSpec.Group> gen = dm.sections.get(MenuSpec.GENERAL);
+            MenuSpec.Group help = gen == null ? null : gen.get(gen.size() - 1);
+            check(!p.has(FeatureId.SETTINGS_REPORT) || help != null && MenuSpec.HELP.equals(help.header)
+                    && help.rows.get(0) == FeatureId.SETTINGS_REPORT, dev + ": Send a problem report does not open Help at the bottom of General");
+            check(!dm.rowsOf(MenuSpec.GENERAL).contains(FeatureId.LAMP_OFF), dev + ": picture off is a row of General");
+            check(!p.has(FeatureId.LAMP_OFF) || org.lumen.menu.quick.QuickCatalog.of(dm, id -> true).has(FeatureId.LAMP_OFF.id),
+                    dev + ": picture off left the quick menu editor");
             check(dm.rowsOf(MenuSpec.DEVELOPER).equals(devRows),
                     dev + ": For developers rows " + dm.rowsOf(MenuSpec.DEVELOPER) + ", want " + devRows);
             String lastPage = dm.allSettings.get(dm.allSettings.size() - 1);
@@ -185,7 +196,10 @@ public final class MenuSpecTest {
                 MenuSpec m1 = MenuSpec.of(p);
                 // a section tile goes with the last row of its popup, so a vanished popup is no change
                 List<String> wantCard = minus(cardIds(m1), id.id);
-                for (String s : m1.popups.keySet()) if (!m2.popups.containsKey(s)) wantCard = minus(wantCard, s);
+                // (a tile that is a feature of its own, Bluetooth or Network, stays without its popup)
+                for (String s : m1.popups.keySet()) {
+                    if (!m2.popups.containsKey(s) && (FeatureId.known(s) == null || !p2.has(FeatureId.known(s)))) wantCard = minus(wantCard, s);
+                }
                 // a tile that pushed another one up (3D, network): without it the other one is back on the card
                 FeatureId up = MenuSpec.pushesOff(id);
                 if (up != null && p.has(up)) {
@@ -215,7 +229,9 @@ public final class MenuSpecTest {
             }
             // every feature of the profile shows up somewhere (no dead profile entries)
             List<String> t = tokens(full);
-            for (FeatureId id : p.features()) check(t.contains(id.id), dev + ": " + id + " in the profile but not in the menu");
+            for (FeatureId id : p.features()) {
+                check(t.contains(id.id) || MenuSpec.QUICK_ONLY.contains(id), dev + ": " + id + " in the profile but not in the menu");
+            }
             reachedOnce(dev, MenuSpec.of(p));
         }
         // (4) broken profiles: no menu (fail closed)
@@ -357,7 +373,7 @@ public final class MenuSpecTest {
                 && ms.contains("            return ScreensaverDelay.set(c, value);"), "screensaver rows: lumen-system start, read, write with read back");
         // stock trees (gsi-stock analysis): screen_saver_simple on Z9X, HB, X50, X50 Max, RS30, Play 6, not
         // TITAN; the Z9X and HB keep their own screensaver page in Projector settings
-        String[][] saver = {{"g0111", "1"}, {"g0100", "1"}, {"g0155", "1"}, {"dragon_healthy", "1"}, {"h0061", "0"},
+        String[][] saver = {{"g0111", "1"}, {"g0100", "1"}, {"g0155", "1"}, {"g0170", "1"}, {"dragon_healthy", "1"}, {"h0061", "0"},
                 {"h0062", "0"}, {"h0063", "0"}, {"horse_popular", "0"}, {"goat_elegant", "0"}};
         for (String[] d : saver) {
             MenuProfile p = MenuProfile.parse(new String(Files.readAllBytes(root.resolve("devices/" + d[0] + "/menu.json")),
@@ -509,7 +525,8 @@ public final class MenuSpecTest {
         List<MenuSpec.Group> g = m.popups.get(MenuSpec.NETWORK);
         check(g != null && g.size() == 2 && g.get(0).header == null && MenuSpec.LINE.equals(g.get(1).header),
                 "hotspot: a line parts Wi-Fi from the hotspot rows");
-        check(!m.allSettings.contains(MenuSpec.NETWORK), "hotspot: no All settings category for the popup");
+        // the stock 1.3.38 rail (X50 live audit 2026-11-24): Network is a category of All settings too
+        check(m.allSettings.contains(MenuSpec.NETWORK), "hotspot: Network is a category of All settings (stock rail)");
         check("Lumen Z9X".equals(z.text(FeatureId.NETWORK_HOTSPOT, "name")) && "ap0".equals(z.text(FeatureId.NETWORK_HOTSPOT, "iface")),
                 "hotspot: the Z9X default name and AP interface");
         for (FeatureId f : MenuSpec.HOTSPOT_ROWS) check(MenuSpec.module(f), "hotspot: " + f + " is a module row");

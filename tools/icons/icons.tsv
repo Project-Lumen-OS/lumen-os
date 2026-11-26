@@ -9,6 +9,7 @@ check_circle	check_circle	1	d13fdbc7bbbcf696b792411c8cb5a74915b95d4bb6d4c62f5b09
 error	cancel	1	6431df1455e292f02dcc295dfbefa43f1bde332577cb11593d3c34572eba1581	a step or check that failed
 warning	warning	0	b6907a9a2d0f1bd6b57191c958c221a2c35cf105e880d04f2a7455791b7a9ea8	a check that needs attention
 info	info	0	ab779a17ff3bc8f5a30e3231509ef9ff6fee709ffcaa46fb65217ce170f03e14	a neutral note
+sensors	sensors	0	719a52d1305b40bc5830c89d11d69d2f9f3450b43959eb364136d65c324454ee	the sensor card of the developer tools (temperatures, fans)
 pending	circle	0	adf550b8d06942c7a6d77e650b0279ccdb6cc888761dcb4d1e860105c623fcaf	a step that has not started
 progress	progress_activity	0	d1f14e2e4001181fa6671d99b0720282901d6eb029b1cf04a4d137d7a43c197e	a step that runs now (rotated while it runs)
 radio_on	radio_button_checked	1	a03e4729ee410ce3fc00c5f9659f90db798199ec5da501432b657906cdb440fb	the chosen entry of a single choice list
@@ -64,7 +65,7 @@ playing	graphic_eq	0	0e40ad547e86077d696cfee5e3053a33bf7a95610256d8323d54a5c2102
 sound_format	surround_sound	0	a26824480a164c5a0140b599a281c7c03efdbbb74daa1da0712e86461812d922	the audio format of the soundbar
 auto	hdr_auto	0	e3f8a3f2b4b2bc2d5cbb70e11e88d76f17044236aadc0997dd89e846952e42fa	the output is chosen automatically
 alert	error	0	3be3e5a6458c1c5ca7686532d6cd72f942c49ad00bc0e6b5702b387ef0963afd	an error message on screen: a wrong password, a remote that was not found
-install	download	0	af215e8e4960234aec60127e3819718a972f4d2a90b3c617602134681bad557f	install the system for good (the trial run offer)
+install	download	0	af215e8e4960234aec60127e3819718a972f4d2a90b3c617602134681bad557f	install the system permanently (the Lumen OS Live offer)
 edit	edit	0	65d2e92a5a2d761c82125ecd95aa6fd8a389b6153a631ccc260c9aa658f65ef6	change a menu: the quick menu editor (pencil)
 move	open_with	0	3c83c24198ec243394bfa87f5a98e4a8bae35a15f3acb40d11adb8895cbfd6f6	move an item to another place
 remove	do_not_disturb_on	0	60ba22a1864af3ad135f97451c0a935911e044064bc1482024ef4507f8441b24	take an item out of a list
@@ -80,3 +81,27 @@ aspect	aspect_ratio	0	45e3d8e2d2cee713a06a8ec7822322910c77e336c8bc5d3b43e17f2f0a
 apps	apps	0	c11e79be76394ee701595f8978628e80d6cc11a2af408596548a706b04331cb4	all apps (the round button of Home)
 gamepad	sports_esports	0	b48be0c109f5285dbaea7224f973ddf0548080ebcc04b701dfa6fb942402fb71	a game console on an input
 home	home	0	b29e5deb4467a06ec02ac358516fd8e5955c0d704fba8776f055b638cfbab607	the home screen (the source switch OSD when the cycle goes back to Lumen)
+folder	folder	0	f42ede1360730469cc156f21e4bc334f2c82b66f7b34cf1c0551fae4be2be4df	a folder in Files
+movie	movie	0	50d64e30f555a2c69809393d6b6ba4ed1299c56c66644c9d90cb8f9b5b77d46f	a video file, the Videos view
+music	music_note	0	6678b23e4e6ef7e9d46362d9085d7e704eeda30adee2d7cb42a3930d3342b11a	a music file, the Music view
+photo	image	0	a53eee7018c2f02e0d825f3c8acb11cd1aa80161a09ce5d34c7579eb32fd3094	a photo, the Photos view
+apk	android	0	dbfcb53f0367f6f1e34195b8dd13330d97da0942bb647e57e709d73fd71439d2	an app file (APK), the Apps view of Files
+archive	folder_zip	0	09cea3b55f2ec8c8819b6c27e49ded56a4258a53d7a9c3d9d8b5d79a41a58102	an archive (zip, tar)
+document	description	0	d7f08af6f115402dc19125e81da70209b53f5a830f5f14b04e16b0ddf569be7f	a document
+file	draft	0	b2a658608399ea58cb68eebc27258cb3bac7469665d8269d95823e763f3abc08	any other file
+search	search	0	8d12ac6ba27a23ccf0e57794c28481ce9c978efcb2f80ba6d2979ccdf238c993	search
+sort	sort	0	a474828d47c4fca8c5ddcc2ff7af37e6c3dc087d130baf95b9d5f0ee1915e13f	the order of a list
+new_folder	create_new_folder	0	7d7494df595b19b517763873a2df568eef098d5398984a0ed5a742849ce4100d	make a new folder
+copy	content_copy	0	01af7f7a06b22849cd0eb73d14953695cba54939f51afdf3e30aeb20cf90d543	copy, paste here
+move_to	drive_file_move	0	4eb3c0bd2fab2514a7c680773bbcd1debe7bfe6e84da9e4f1de22f54191a2059	move to another folder
+delete	delete	0	cd90ebd4c5aa36ef2332e2511ed6dcb051a32e5c99effd60494060473f27b9f9	delete
+storage	hard_drive	0	81905740cfc8c4cb5c35ae2940bf528ea81035b81e4576395839ca466466cf13	the projector's own storage
+sd_card	sd_card	0	b381a314985db0952dc02f415f9f6b66bc6853463033afa95c902341073a79f9	an SD card
+server	dns	0	aeec82825cac4104a1f059c6535203e9b1fcb22f2362d0d80d00420a70d7d235	a network server
+unarchive	unarchive	0	0f7cf47f87f1e151856e7716606bb8184d71a3cb0912cb4dfebc8fcb8d853440	unpack an archive
+open_with	open_in_new	0	6eb8f539bf1616aea85dcbeb21b11cc357e49744f84f5e1f7645efe7ff55d69e	open in another app
+select_all	select_all	0	2e5cdc765060939a911116980c17f57273cb6f1fa43924a941ecfc85b99d4f0c	select every row
+pin	keep	0	786fe93f53274d53ca0821ae90ae3108baf991bacd84298f45249cc2c8a84c36	the signal card stays on screen (the option keep the signal card on screen is on)
+vpn	vpn_key	0	d5f57251f473a61e38ca3a025c47bb0f5ce16da13cc091dba8fb604630f990c1	a VPN is on (the mark beside the network icon of Home)
+memory	memory	0	f3347c10693aa75265d3dde22b02c244bb5093163b3078510da055ef3db6a10d	free up memory: close apps left in the background
+layout	dashboard_customize	0	04e035ac63cc692acfbe37b9f3ec286239ea9faeae0fffb2480dfb37702dfaf7	set up the Home screen (its look, rows, folders)

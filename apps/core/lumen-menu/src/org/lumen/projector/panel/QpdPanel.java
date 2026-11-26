@@ -213,6 +213,33 @@ final class QpdPanel extends PagedPanel {
     // ------------------------------------------------------------------ PagedPanel API (own stack)
     @Override public Page currentPage() { return stack.peek(); }
 
+    /** The picture adjustment strip shown now (AdjustMode), or null. */
+    private View strip;
+
+    /**
+     * The picture adjustment (AdjustMode): a strip hides the menu, panes and scrim, so the film is seen at full
+     * brightness, and sits at the bottom centre of the screen; null brings the menu back. The rows stay where they
+     * are (only their drawing is hidden), so the window keeps the keys and the focus.
+     */
+    void showStrip(View s) {
+        if (root == null) return;
+        if (strip != null) root.removeView(strip);
+        strip = s;
+        boolean on = s != null;
+        for (int i = 0; i < root.getChildCount(); i++) root.getChildAt(i).setAlpha(on ? 0f : 1f);
+        if (root.getBackground() != null) root.getBackground().setAlpha(on ? 0 : 255);
+        if (!on) return;
+        int w = px(AdjustStrip.W);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(w, px(AdjustStrip.H), Gravity.BOTTOM | Gravity.LEFT);
+        lp.bottomMargin = px(AdjustStrip.BOTTOM);
+        root.addView(s, lp);
+        root.post(() -> {                                     // the window sits on the menu's side: centre on the screen
+            int[] at = new int[2];
+            root.getLocationOnScreen(at);
+            s.setTranslationX(root.getResources().getDisplayMetrics().widthPixels / 2f - at[0] - w / 2f);
+        });
+    }
+
     @Override public int depth() { return stack.size(); }
 
     @Override
@@ -337,16 +364,17 @@ final class QpdPanel extends PagedPanel {
         root.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         fade = ThemeFade.follow(root, host::onTheme);
         if (!bar) {
-            // scrim: the video darkens towards the panel (prototype .scrim, 0 % .5, 40 % .18, 60 % 0 of the screen)
+            // scrim: the video darkens towards the panel (prototype .scrim, 0 % .5 to nothing at 60 % of the screen)
             final float scrimW = Theme.pxf(c, QpdLayout.SCRIM_W);
             ShapeDrawable sd = new ShapeDrawable(new RectShape());
             sd.setShaderFactory(new ShapeDrawable.ShaderFactory() {
                 @Override public Shader resize(int w, int h) {
                     float from = right ? w : 0, to = right ? w - scrimW : scrimW;   // darker towards the menu's side
-                    return new LinearGradient(from, 0, to, 0, new int[]{0x80000000, 0x2E000000, 0x00000000},
-                            new float[]{0f, 0.667f, 1f}, Shader.TileMode.CLAMP);
+                    return new LinearGradient(from, 0, to, 0, QpdLayout.scrimColors(), QpdLayout.scrimStops(),
+                            Shader.TileMode.CLAMP);       // eased to nothing: no line where it ends (QpdLayout.scrimAlpha)
                 }
             });
+            sd.getPaint().setDither(true);                    // no bands in the dark picture of a projector
             root.setBackground(sd);
         }
         if (card.getParent() instanceof ViewGroup) ((ViewGroup) card.getParent()).removeView(card);
@@ -481,6 +509,7 @@ final class QpdPanel extends PagedPanel {
     private boolean allKey(int dir, boolean down, int repeat) {
         View f = root.findFocus();
         if (f instanceof EqBandsRow && ((EqBandsRow) f).isEditing()) return false;   // its own UP / DOWN while editing
+        if (f instanceof PinRow) return false;                 // the child lock password: every arrow is a key of it
         if (all.inList(f)) {
             if (dir == QpdLayout.LEFT || dir == QpdLayout.RIGHT) {
                 if (stepsItself(f)) return false;
@@ -562,6 +591,7 @@ final class QpdPanel extends PagedPanel {
     void retheme() {
         card.retheme();
         if (popup != null) popup.retheme();
+        if (all != null) all.retheme();                  // All settings of the same window (X50 live audit 2026-11-24)
         if (root != null) root.invalidate();
     }
 

@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">Predefinição</string>
     <string name="lumen_gm_preset_compete">Competição</string>
     <string name="lumen_gm_preset_balance">Equilíbrio</string>
-    <string name="lumen_gm_preset_story">História</string>
     <string name="lumen_gm_preset_on">Predefinição %1$s ativa</string>
     <string name="lumen_gm_preset_partly">Predefinição %1$s ativa, mas alguns itens não mudaram</string>
     <string name="lumen_gm_lat">Resposta</string>
-    <string name="lumen_gm_lat_0">Padrão</string>
     <string name="lumen_gm_lat_1">Turbo</string>
     <string name="lumen_gm_lat_d0">Atraso normal. O trapézio e o ajuste da imagem funcionam.</string>
     <string name="lumen_gm_lat_d1">Menor atraso. O trapézio e o ajuste da imagem não funcionam.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">Lig.</string>
     <string name="lumen_gm_auto">Auto</string>
     <string name="lumen_gm_pic">Modo de imagem</string>
-    <string name="lumen_gm_pic_0">Padrão</string>
     <string name="lumen_gm_pic_4">Desporto</string>
     <string name="lumen_gm_pic_d0">Para qualquer jogo.</string>
     <string name="lumen_gm_pic_d1">Para jogos de tiros.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">Ecrã normal.</string>
     <string name="lumen_gm_snd">Som do jogo</string>
     <string name="lumen_gm_snd_1">Envolvente</string>
-    <string name="lumen_gm_snd_2">História</string>
     <string name="lumen_gm_snd_3">Clareza</string>
     <string name="lumen_gm_snd_4">Equilibrado</string>
     <string name="lumen_gm_snd_d0">Som como no jogo.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">mais rápido</string>
     <string name="lumen_gm_turbo_title">Ligar o Turbo?</string>
     <string name="lumen_gm_turbo_msg">O Turbo desliga a correção do trapézio e devolve a imagem ao quadro completo. O atraso será o menor.</string>
-    <string name="lumen_gm_turbo_ok">Ligar</string>
     <string name="lumen_gm_rule_vrr_wide">Escolha primeiro 16:9 ou Auto</string>
     <string name="lumen_gm_rule_ar_vrr">Desligue primeiro o VRR</string>
     <string name="lumen_gm_rule_ar_4k">O formato largo só funciona com sinal 3840 × 2160</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">Durante um jogo, mantenha o botão de definições premido para abrir este menu</string>
     <string name="lumen_gm_kind_console">consola</string>
     <string name="lumen_gm_kind_computer">computador</string>
-    <string name="lumen_gm_licences">Licenças</string>
     <string name="lumen_gm_licences_d">Autores dos materiais usados pelo Lumen OS</string>
     <string name="lumen_gm_credits_intro">As imagens dos comandos no menu de jogo foram feitas a partir destes modelos 3D:</string>
 </resources>

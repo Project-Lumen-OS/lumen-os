@@ -165,12 +165,18 @@ final class HdmiInputs {
         }
     }
 
-    static String stateText(Context c, int state) {
-        switch (state) {
-            case TvInputManager.INPUT_STATE_CONNECTED:
+    /**
+     * The words for a port's PortState, the same rule Lumen Home's chips and the menu's HDMI page show (lumen-hdmiports):
+     * connected while a powered device is on it, asleep, no signal, else not connected.
+     */
+    static String portText(Context c, int portState) {
+        switch (portState) {
+            case PortState.ON:
                 return c.getString(R.string.state_connected);
-            case TvInputManager.INPUT_STATE_CONNECTED_STANDBY:
+            case PortState.ASLEEP:
                 return c.getString(R.string.state_standby);
+            case PortState.NO_SIGNAL:
+                return c.getString(R.string.status_no_signal);
             default:
                 return c.getString(R.string.state_disconnected);
         }
@@ -258,7 +264,7 @@ final class HdmiInputs {
 
     /**
      * Remote SOURCE key: the Google TV "Inputs" panel (tvlauncher InputsPanelActivity handles
-     * com.android.tv.action.VIEW_INPUTS), otherwise our own list. startActivity() is tried directly:
+     * com.android.tv.action.VIEW_INPUTS), otherwise the projector app's Source card. startActivity() is tried directly:
      * a resolveActivity() pre-check would be subject to package-visibility filtering.
      */
     static void openInputsPanel(Context c) {
@@ -270,11 +276,11 @@ final class HdmiInputs {
             Log.i(TAG, "opened Google TV inputs panel");
             return;
         } catch (ActivityNotFoundException e) {
-            Log.i(TAG, "no Google TV inputs panel; using own source list");
+            Log.i(TAG, "no Google TV inputs panel: the Source card");
         } catch (Throwable t) {
             Log.w(TAG, "VIEW_INPUTS failed: " + t);
         }
-        openPicker(c);
+        openSourceOverlay(c);
     }
 
     /** The projector app's Source request receivers (signature permission SHOW_SOURCE): Z9X, HB, Play 6, then X50. */
@@ -287,7 +293,7 @@ final class HdmiInputs {
 
     /**
      * Asks the projector app to do what its Source key does (apps/core/lumen-source: the next input and its small
-     * card). Returns false when no such receiver is installed (then the caller falls back to {@link #openPicker}).
+     * card). Returns false when no such receiver is installed.
      */
     static boolean openSourceOverlay(Context c) {
         for (String[] r : SOURCE_RECEIVERS) {
@@ -333,17 +339,6 @@ final class HdmiInputs {
             } catch (Throwable ignored) {
             }
         });
-    }
-
-    /** From an Activity the picker joins that task; from any other context it gets its own task. */
-    static void openPicker(Context c) {
-        try {
-            Intent i = new Intent(c, InputPickerActivity.class);
-            if (!(c instanceof Activity)) i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            c.startActivity(i);
-        } catch (Throwable t) {
-            Log.e(TAG, "openPicker failed", t);
-        }
     }
 
     static boolean isInteractive(Context c) {

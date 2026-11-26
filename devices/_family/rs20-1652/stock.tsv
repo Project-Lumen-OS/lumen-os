@@ -1,0 +1,12 @@
+# devices/_family/rs20-1652/stock.tsv: the official RS 20 package v1.6.52 its models run (read on xgimi-llm ~/rs20-1124).
+# Columns: kind, key, value, evidence.
+fact	firmware	v1.6.52	META-INF/com/android/metadata post-build MediaTek/mt5877_an64_db/mt5877:14/UQ1A.240105.004.A1/v1.6.52:user/test-keys
+fact	folder	release/MTK9681/athenaultra/MTK9681_DOHKO_1.6.52_20260212-151502	product-library CDN, 1-byte range answers 206
+fact	bins	XR03A XR03A3 XR07A XR08A XR09A	the USB files of that folder (one plain ETag: one build for these codes)
+fact	zip	XGIMI_HORSEPOPULAR_XR03A_FULL_V1.6.52.zip 1924888232 678098e9d86e44ffa50103359152de1b	FULL OTA zip: name, size, plain ETag (md5)
+fact	build_utc	1770885465	post-timestamp = ro.build.date.utc
+fact	vendor_fingerprint	MediaTek/mt5877_an64_db/mt5877:14/UQ1A.240105.004.A1/xgimi02121632:user/test-keys	vendor/build.prop
+fact	gmpf_lib64	e2eb296e2597e45fc1bae5c9e8982bfe2c3fb6fd6c5bea28bfb097013a3c25de	vendor/lib64/xgimi.hardware.gmpf@1.0.so
+fact	hal_table	devices/_hal/gmpf-hidl/rs20-v1.6.52.tsv	tools/hal/hidl_stock.py of that library
+fact	vendor_remotes	000d:3838	vendor/etc/remote.txt voice remotes
+fact	keylayouts	20	vendor/usr/keylayout files; all equal the Z9X v6.15.62 files but Vendor_000d_Product_3843.kl (picture mode keys)

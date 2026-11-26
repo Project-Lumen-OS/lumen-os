@@ -58,25 +58,25 @@ public final class SignalPanel {
     private static int[] sPorts = SignalItems.ports(null);
     /** Another developer overlay that closes when the panel opens (lumen-sensors: the two never show together). */
     private static Runnable sOnOpen;
-    /** the small card shows the hold hint this time (CardHold: the first few cards only) */
-    private static boolean sHint;
-    /** the card coming up now was asked for by the remote key the user gave it */
-    private static boolean sByKey;
     /** the menu's words for the rows shared with it (picture mode, motion smoothing), null = those rows stay hidden */
     private static MenuWords sMenu;
 
-    /** Holding OK on the card (CardHold): open, fold back, the panel's own OK. */
+    /** Holding OK or BACK on the card (CardHold): open, fold back, the panel's own OK, hide. */
     private static final CardHold.Card CARD = new CardHold.Card() {
         @Override public PanelMode mode() { return TOGGLE.mode(); }
 
-        @Override public void expand() {
-            sHint = false;
-            apply(TOGGLE.expand());
-        }
+        @Override public void expand() { apply(TOGGLE.expand()); }
 
         @Override public void collapse() { apply(TOGGLE.collapse()); }
 
         @Override public void sheetOk() { switchPopup(); }
+
+        @Override public boolean hasKeys() { return sWindow != null && sWindow.hasKeys(); }
+
+        @Override public void dismiss() {
+            if (sWindow == null) apply(TOGGLE.dismiss());
+            else sWindow.takeKeys(() -> apply(TOGGLE.dismiss()));
+        }
     };
 
     /** A card shown by a signal change goes after POPUP_MS (again after the full panel folded back into it). */
@@ -144,6 +144,7 @@ public final class SignalPanel {
         PanelMode before = TOGGLE.mode();
         PanelMode now = TOGGLE.pin(on, sReader.hdmiPort() > 0);
         if (now != before) show(now);
+        else if (now.visible() && sWindow != null) draw(true);       // the pin mark on the card follows the option
         if (on) MAIN.postDelayed(PIN_WATCH, PIN_MS);
     }
 
@@ -164,14 +165,9 @@ public final class SignalPanel {
     }
 
     /** The one button: card, full panel, hidden. False when this model has no panel. */
-    public static boolean press(Context c) { return press(c, false); }
-
-    /** {@code byKey}: the remote key the user gave the signal action (the card then shows the hold hint, OkHold.hint). */
-    public static boolean press(Context c, boolean byKey) {
+    public static boolean press(Context c) {
         if (!available(c)) return false;
-        sByKey = byKey;
         show(TOGGLE.press());
-        sByKey = false;
         return true;
     }
 
@@ -224,16 +220,14 @@ public final class SignalPanel {
             FORMAT.reset();
             return;
         }
-        if (sWindow == null) sWindow = new SignalWindow(sApp, new SignalWindow.Keys() {
+        if (sWindow == null) sWindow = new SignalWindow(sApp, new OverlayWindow.Keys() {
             @Override public void back() { apply(TOGGLE.back()); }
 
-            @Override public void switchPopup() { SignalPanel.switchPopup(); }
+            @Override public void ok() { switchPopup(); }
 
             @Override public void collapse() { CARD.collapse(); }
         });
         if (!sWindow.shown()) {
-            sHint = mode.card() && CardHold.hint(sApp, sByKey);
-            if (sHint) CardHold.hintShown(sApp);
             if (sOnOpen != null) sOnOpen.run();
             sValues = new SignalValues();
             sValues.port = sReader == null ? 0 : sReader.hdmiPort();
@@ -303,12 +297,12 @@ public final class SignalPanel {
     private static void draw(boolean force) {
         PanelMode mode = TOGGLE.mode();
         SignalSheet s = SignalSheet.build(sValues, sItems, words(sApp));
-        boolean hint = sHint && mode.card(), held = TOGGLE.held();
-        String key = mode + "|" + popupOn(sApp) + "|" + hint + held + "|" + s.port + s.big + s.chips + s.verdict + s.sound
+        boolean pinned = TOGGLE.pinned(), held = TOGGLE.held();
+        String key = mode + "|" + popupOn(sApp) + "|" + pinned + held + "|" + s.port + s.big + s.chips + s.verdict + s.sound
                 + s.rows;
         if (!force && key.equals(sDrawn)) return;
         sDrawn = key;
-        sWindow.show(mode, s, popupOn(sApp), hint, held);
+        sWindow.show(mode, s, popupOn(sApp), pinned, held);
     }
 
     /** The Android items: display mode and the media output, no vendor call. */

@@ -3,7 +3,6 @@
 <!-- lumen-menu labels (the row title is the Z9X app's pro_color_space with its translations) of the RS30 Ultra Max's own stock rows (colour gamut, rainbow reduction, screen shift) and its
      game menu rule (VRR only with Turbo, the top speed) -->
 <resources>
-    <string name="lumen_m_gamut">Przestrzeń barw</string>
     <string name="lumen_m_gamut_native">Natywna</string>
     <string name="lumen_m_gamut_bt2020">BT.2020</string>
     <string name="lumen_m_gamut_p3">DCI-P3</string>

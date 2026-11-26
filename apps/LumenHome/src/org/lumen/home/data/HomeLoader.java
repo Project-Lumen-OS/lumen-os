@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.home.data;
 
+import org.lumen.home.FilesLink;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -16,6 +18,8 @@ import org.lumen.home.App;
 import org.lumen.home.Prefs;
 import org.lumen.home.R;
 import org.lumen.home.model.AppOrder;
+import org.lumen.home.model.Dock;
+import org.lumen.home.model.HomeLayout;
 import org.lumen.home.model.AppPick;
 import org.lumen.home.model.ContinueRules;
 import org.lumen.home.model.ContinueText;
@@ -71,16 +75,23 @@ public final class HomeLoader {
             all.add(new AppOrder.App(pkg, a.label));
             labels.put(pkg, a.label);
         }
-        Set<String> hidden = p.set(Prefs.K_HIDDEN_APPS), unhidden = p.set(K_UNHIDDEN_APPS);
+        HomeLayout lay = app.layout().get();
+        Set<String> hidden = lay.hidden, unhidden = lay.shown;
         List<String> first = Arrays.asList(AppSource.PKG_YOUTUBE, AppSource.PKG_KINOPOISK, AppSource.PKG_PLAY);
         Locale loc = Locale.getDefault();
-        for (AppOrder.App a : AppOrder.order(all, p.list(Prefs.K_FAVORITES), hidden, unhidden, AppOrder.DEFAULT_HIDDEN, first, loc)) {
-            d.apps.add(appCard(byPkg.get(a.pkg)));
+        List<String> visible = new ArrayList<>();
+        Map<String, Card> appCards = new HashMap<>();
+        for (AppOrder.App a : AppOrder.order(all, lay.order, hidden, unhidden, AppOrder.DEFAULT_HIDDEN, first, loc)) {
+            Card k = appCard(byPkg.get(a.pkg));
+            d.apps.add(k);
+            visible.add(a.pkg);
+            appCards.put(a.pkg, k);
         }
+        dock(d, lay, visible, appCards);
         for (AppOrder.App a : AppOrder.hiddenOnes(all, hidden, unhidden, AppOrder.DEFAULT_HIDDEN, loc)) {
             d.hidden.add(appCard(byPkg.get(a.pkg)));
         }
-        TvpSource.Result tvp = p.continueOnHome() ? TvpSource.load(c, labels) : TvpSource.off();
+        TvpSource.Result tvp = lay.cont ? TvpSource.load(c, labels) : TvpSource.off();
         st.done("tvp");
         TmdbArt tmdb = app.tmdb();
         List<Card> cont = ContinueRules.pick(tvp.watchNext, ContinueRules.MAX);
@@ -98,11 +109,11 @@ public final class HomeLoader {
         inputs(c, p, d);
         st.done("inputs");
         d.online = online(c);
-        List<Card> tr = Trending.load(c);
+        List<Card> tr = lay.showcase ? Trending.load(c) : new ArrayList<>();
         for (int i = 0; i < tr.size() && i < RowPlan.MAX_HERO; i++) d.hero.add(tr.get(i));
         st.done("showcase");
-        d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.apps.size());
-        Log.i(App.TAG, "home apps=" + d.apps.size() + " cont=" + d.cont.size() + " hero=" + d.hero.size()
+        d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.dock.size());
+        Log.i(App.TAG, "home apps=" + d.apps.size() + " dock=" + d.dock.size() + " cont=" + d.cont.size() + " hero=" + d.hero.size()
                 + " inputs=" + d.inputs.size() + " online=" + d.online + " calm=" + d.plan.calm
                 + " ms=" + (SystemClock.uptimeMillis() - t0) + st.slow());
         return d;
@@ -121,6 +132,25 @@ public final class HomeLoader {
 
         String slow() {
             return mSlow.toString();
+        }
+    }
+
+    /** The top level (model/Dock): the app cards and a card per folder that has a visible app. */
+    static void dock(HomeData d, HomeLayout lay, List<String> visible, Map<String, Card> apps) {
+        Set<String> vis = new java.util.HashSet<>(visible);
+        for (String t : Dock.tokens(visible, lay)) {
+            String fid = HomeLayout.folderId(t);
+            if (fid == null) {
+                Card k = apps.get(t);
+                if (k != null) d.dock.add(k);
+                continue;
+            }
+            HomeLayout.Folder f = lay.folder(fid);
+            List<String> in = Dock.members(f, vis);
+            Card k = new Card(Card.FOLDER, t, f.name);
+            k.members = String.join("\n", in);
+            k.color = TvpSource.placeholder(in.get(0));
+            d.dock.add(k);
         }
     }
 
@@ -160,7 +190,7 @@ public final class HomeLoader {
     private static void inputs(Context c, Prefs p, HomeData d) {
         Resources r = c.getResources();
         for (Card k : InputSource.inputs(c, p.map(Prefs.K_INPUT_LABELS))) {
-            boolean none = k.state == TvInputManager.INPUT_STATE_DISCONNECTED || k.state == Card.DEV_DISCONNECTED;
+            boolean none = org.lumen.home.data.PortChip.off(k.state);
             String port = k.desc != null && !k.desc.isEmpty() ? k.desc : k.title;
             String dev = k.desc != null && !k.desc.isEmpty() ? k.title : "";
             k.title = port;
@@ -180,7 +210,7 @@ public final class HomeLoader {
             Card u = new Card(Card.MORE_APPS, "usb:" + v.name, r.getString(R.string.usb_drive));
             String size = v.bytes > 0 ? r.getString(R.string.size_gb, UsbVolumes.gb(v.bytes)) : "";
             u.meta = v.name.isEmpty() ? size : size.isEmpty() ? v.name : r.getString(R.string.name_size, v.name, size);
-            u.intent = "files";
+            u.intent = FilesLink.FILES + v.path;
             u.icon = R.drawable.ic_usb;
             d.inputs.add(u);
         }

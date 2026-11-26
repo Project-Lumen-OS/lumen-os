@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+# Lumen OS on the MIRA line (MIRA 4K G0109, MIRA 4K Pro G0110, AURA 3 Max G0104): the MediaTek / XGIMI files the image needs from the user's own stock system. Hashes
+# only; the files themselves are proprietary and are never in git or in an image. These models run Lumen OS only as a
+# trial, so the reader takes them read only from the stock slot (blobs_stock_dsu.sh) and refuses any file whose sha256
+# is not listed here. Image path /system/etc/z9x/x50_blobs_allow.txt (read by /system/etc/z9x/x50_blobs.sh).
+#   - the RS30 set (devices/g0170/image/g0170_blobs_allow.txt) for a 32-bit-only userspace: the two system_ext MTK
+#     libraries, libcodec2_soft_common and the audio policy source have the same sha256 in the official v1.3.1 FULL
+#     OTAs, the VNDK libstagefright_foundation is the X50's (the VNDK APEX is the RS30 one);
+#   - need=eye: the stock eye-protection drawer /system/bin/nativeui and the gmpf NDK library it links, the v1.3.1
+#     copies, the other firmware's own pair as alt= (all base copies or all that firmware's).
+# Line format and options: installer/lib/x50/blobs_allow.txt.
+set=mira-vv131-a
+41a7491f460f92176901399f293b8f6098dd5b8c8b5392198b8a482cba768e9f system_ext/lib/libc2plugin_store.so /system_ext/lib/libc2plugin_store.so
+63a6639d4e9f804f90292e6af7c08ef7dac4b2307d75c8c3014f07d8b8e7e021 system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so /system_ext/lib/vendor.mediatek.hardware.c2.info@1.0.so
+66e9a1676bcaa8a7dddb724eab3e5d9f4b474ea857bf09eca1ea2e2372953b83 lib/libcodec2_soft_common.so /system/lib/libcodec2_soft_common.so
+d6cd92ce457c6594866bca064cce52ae69d16f89e1e7379f2d1f7db229601727 etc/xgimi/libstagefright_foundation.so /apex/com.android.vndk.v34/lib/libstagefright_foundation.so bind=/apex/com.android.vndk.v34/lib/libstagefright_foundation.so
+c8ee620addf084b5a777b5fbfdb534efbceacefeec881a5c13b7d99548a261ed etc/xgimi/audio_policy_configuration.xml /vendor/etc/audio_policy_configuration.xml bind=/vendor/etc/audio_policy_configuration.xml from=19b9d27d55ddef1408094b2ea7d09d0b73462aac992ed42ce89512797f312cbe:113,115d;182,184d;254,256d;386,389d;464,465d
+c9755f628cea7c3b435ef1af3fadcb71f49df6c245568b5647fb2f0b5c2c5448 bin/nativeui /system/bin/nativeui label=nativeui_main_exec mode=0755 need=eye
+d3938119d84da9e880692daf463e904745aef6b39b5fa70d238f40e68c0e0d78 lib/xgimi.hardware.gmpf-V1-ndk.so /system/lib/xgimi.hardware.gmpf-V1-ndk.so need=eye

@@ -11,6 +11,8 @@ OUTDIR/system/build.prop and OUTDIR/system/product/etc/build.prop and prints a u
 """
 import difflib, os, re, sys
 G, old_sys, old_prod, out, bid = sys.argv[1:6]
+sys.path.insert(0, f'{G}/devices/_image/checks')
+import about_version  # noqa: E402  the About row text, one rule for every image
 VER = re.search(r'^VER=(\S+)$', open(f'{G}/tools/lumen_v1.sh').read(), re.M).group(1)
 V1, OTAIMG, UIRES = f'{G}/overlay/v1', f'{G}/tools/ota/image', f'{G}/overlay/v1/z9x_uires'
 rd = lambda p: open(p).read().rstrip('\n')   # bash "$(cat f)" drops trailing newlines
@@ -40,7 +42,7 @@ os.makedirs(f'{out}/system/product/etc', exist_ok=True)
 ns = retail(old_sys, '# Lumen OS 1.0 (appended to system/build.prop by lumen_v1.sh)', sys_tail)
 bp = re.search(r'^ro\.build\.id=(.*)$', ns, re.M).group(1)
 ns, n3 = re.subn(r'^ro\.build\.display\.id=.*$', f'ro.build.display.id=Lumen OS {VER} ({bp}, {bid})', ns, flags=re.M)
-ns, n4 = re.subn(r'^ro\.lineage\.display\.version=.*$', f'ro.lineage.display.version={VER} (kmuradoff)', ns, flags=re.M)
+ns, n4 = re.subn(r'^ro\.lineage\.display\.version=.*$', about_version.line(VER), ns, flags=re.M)
 assert n3 == 1 and n4 == 1
 np_ = retail(old_prod, '# Lumen OS 1.0 product defaults (appended to system/product/etc/build.prop by lumen_v1.sh).', prod_tail)
 assert '\\' not in ns + np_

@@ -239,7 +239,7 @@ class S1:
         if d == self.sdk_platform:
             return f"{role} {d[:16]} is the public AOSP test platform certificate", ""
         if d in self.test:
-            if pkg.startswith(("org.lumen.", "org.z9x.")):   # org.z9x.*: the 1.0.8 bridges
+            if pkg.startswith("org.lumen."):
                 return f"{role} {d[:16]} is the public AOSP test certificate {self.test[d]}", ""
             return "", f"AOSP test certificate {self.test[d]} (not the platform set)"
         return "", ""

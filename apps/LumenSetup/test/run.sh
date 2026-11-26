@@ -25,12 +25,19 @@ RC=0
 python3 - "$HERE/res" <<'PY' || RC=1
 import os, re, sys
 res = sys.argv[1]
+for d in (os.path.abspath(res), os.getcwd()):         # the tree of res, else the tree the test runs in
+    while d != os.path.dirname(d) and not os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        d = os.path.dirname(d)
+    if os.path.isfile(os.path.join(d, "tools/i18n/res_strings.py")):
+        break
+sys.path.insert(0, os.path.join(d, "tools/i18n"))
+import res_strings  # strings files as the APK resolves them (aliases of lumen-common-strings)
 def keys(d):
     out = {}
     for f in ("strings.xml", "strings_pair.xml"):
         p = os.path.join(res, d, f)
-        if os.path.isfile(p):
-            for k, v in re.findall(r'<string name="([a-z_0-9]+)"[^>]*>(.*?)</string>', open(p, encoding="utf-8").read(), re.S):
+        if os.path.isfile(os.path.join(res, "values", f)):
+            for k, v in re.findall(r'<string name="([a-z_0-9]+)"[^>]*>(.*?)</string>', res_strings.text(p), re.S):
                 out[k] = v
     return out
 base = keys("values")

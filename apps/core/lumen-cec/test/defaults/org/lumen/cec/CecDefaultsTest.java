@@ -66,7 +66,7 @@ public final class CecDefaultsTest {
         CecSetting wake = CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY, standby = CecSetting.TV_SEND_STANDBY_ON_SLEEP;
 
         // ---- the real table: the stock values every image gets
-        for (String d : new String[]{"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063"}) {
+        for (String d : new String[]{"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "g0170", "h0061", "h0062", "h0063"}) {
             C.eq(d + ": no <Standby> to the HDMI devices when it sleeps (stock)", "0", t.stock(d, standby));
             C.eq(d + ": no wake on <Image View On> (stock)", "0", t.stock(d, wake));
             C.eq(d + ": HDMI-CEC on (stock)", "1", t.stock(d, CecSetting.HDMI_CEC_ENABLED));
@@ -76,7 +76,7 @@ public final class CecDefaultsTest {
         C.eq("Play 6 (Android 11 stock): wakes on <Image View On>", "1", t.stock("dragon_healthy", wake));
         C.eq("Play 6: no <Standby> when it sleeps", "0", t.stock("dragon_healthy", standby));
         C.eq("HB: the wake switch goes back to stock once", Arrays.asList(wake), t.resets("goat_elegant"));
-        for (String d : new String[]{"horse_popular", "g0111", "g0100", "g0155", "h0061", "h0062", "h0063", "dragon_healthy"}) {
+        for (String d : new String[]{"horse_popular", "g0111", "g0100", "g0155", "g0170", "h0061", "h0062", "h0063", "dragon_healthy"}) {
             C.eq(d + ": nothing to reset (a stored value is the user's)", 0, t.resets(d).size());
         }
 
@@ -164,7 +164,7 @@ public final class CecDefaultsTest {
         // ---- the same settings and switches as the image tool
         String tool = Check.read(new File(g, "tools/devices/cec_defaults.py"));
         Set<String> py = new LinkedHashSet<>();
-        Matcher m = Pattern.compile("^    \\(\"([a-z_]+)\", \\(", Pattern.MULTILINE).matcher(tool);
+        Matcher m = Pattern.compile("^    \\(\"([a-z0-9_]+)\", \\(", Pattern.MULTILINE).matcher(tool);
         while (m.find()) py.add(m.group(1));
         Set<String> java = new LinkedHashSet<>();
         for (CecSetting s : CecSetting.values()) java.add(s.key);
@@ -192,14 +192,94 @@ public final class CecDefaultsTest {
                 glue.contains("if (done) p.edit().putInt(K_DONE, CecDefaults.VERSION).commit();"));
         C.ok("CecStockDefaults: the held wake is CecPolicy's restore pref",
                 glue.contains("CecSettings.restoreOtpPending(c)") && glue.contains("CecSettings.setRestoreOtpPending(c, false)"));
-        String policy = Check.read(new File(g, "apps/ProjectorBase/src/org/lumen/projector/cec/CecPolicy.java"));
+        String policy = Check.read(new File(g, "apps/LumenProjector/core/src/org/lumen/projector/cec/CecPolicy.java"));
         int at = policy.indexOf("private static void startup() {");
         C.ok("Z9X / HB: the step runs first at the start of the power policy", at > 0
                 && policy.indexOf("CecStockDefaults.applyOnce(sApp);", at) > at
                 && policy.indexOf("CecStockDefaults.applyOnce(sApp);", at) < policy.indexOf("restoreOtpPending(sApp)", at));
-        String x50 = Check.read(new File(g, "apps/X50Projector/src/org/lumen/x50/projector/App.java"));
+        String x50 = Check.read(new File(g, "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/App.java"));
         C.ok("X50 family: the step runs at the app start, off the main thread",
-                x50.contains("new Thread(() -> org.lumen.projector.cec.CecStockDefaults.applyOnce(this), \"x50-cec-defaults\").start();"));
+                x50.indexOf("new Thread(() -> {") >= 0
+                        && x50.indexOf("org.lumen.projector.cec.CecStockDefaults.applyOnce(this);") > x50.indexOf("new Thread(() -> {")
+                        && x50.contains("}, \"x50-cec-defaults\").start();"));
+        C.ok("the all-on step runs inside the start step of every family",
+                glue.contains("allOnOnce(c);") && glue.contains("K_ALL_ON = \"cec_defaults_v1_applied\""));
+        allOn();
         C.done();
+    }
+
+    /** Rows with one stored value each; the flag survives "reboots" (a new Rows over the same maps). */
+    private static final class Rows implements CecDefaults.Rows {
+        final Map<CecRow, Boolean> v;
+        final boolean[] flag;
+        final Set<CecRow> gone = EnumSet.noneOf(CecRow.class);
+        boolean refuse;
+        int sets;
+
+        Rows(Map<CecRow, Boolean> v, boolean[] flag) { this.v = v; this.flag = flag; }
+
+        @Override public Boolean on(CecRow r) { return v.get(r); }
+        @Override public boolean absent(CecRow r) { return gone.contains(r); }
+        @Override public boolean set(CecRow r, boolean on) {
+            if (refuse) return false;
+            sets++;
+            v.put(r, on);
+            return true;
+        }
+        @Override public boolean done() { return flag[0]; }
+        @Override public void markDone() { flag[0] = true; }
+    }
+
+    /** 2026-11-26: every switch ON once, also a user's earlier OFF; never again after that. */
+    private static void allOn() {
+        Map<CecRow, Boolean> v = new EnumMap<>(CecRow.class);
+        for (CecRow r : CecDefaults.ALL_ON) v.put(r, false);
+        v.put(CecRow.MASTER, true);
+        boolean[] flag = {false};
+        List<String> log = new ArrayList<>();
+        C.ok("first start of the new build: something changed", CecDefaults.allOnOnce(new Rows(v, flag), log));
+        for (CecRow r : CecDefaults.ALL_ON) C.eq("first start: " + r + " on", true, v.get(r));
+        C.ok("first start: the flag is set", flag[0]);
+        v.put(CecRow.SEND_STANDBY, false);                      // the user turns one off after the update
+        Rows second = new Rows(v, flag);
+        C.ok("second start: nothing changes", !CecDefaults.allOnOnce(second, log));
+        C.eq("second start: no write", 0, second.sets);
+        C.eq("the user's OFF after the update survives starts and updates", false, v.get(CecRow.SEND_STANDBY));
+        Map<CecRow, Boolean> u = new EnumMap<>(CecRow.class);
+        for (CecRow r : CecDefaults.ALL_ON) u.put(r, false);
+        u.put(CecRow.WAKE, null);                               // CEC service not up yet
+        boolean[] f2 = {false};
+        Rows early = new Rows(u, f2);
+        early.gone.add(CecRow.REMOTE);                          // a family without that row
+        CecDefaults.allOnOnce(early, log);
+        C.ok("an unknown switch: no flag, again at the next start", !f2[0]);
+        C.eq("an absent row is never written", false, u.get(CecRow.REMOTE));
+        u.put(CecRow.WAKE, false);
+        Rows later = new Rows(u, f2);
+        later.gone.add(CecRow.REMOTE);
+        CecDefaults.allOnOnce(later, log);
+        C.ok("next start completes it", f2[0] && u.get(CecRow.WAKE));
+        Map<CecRow, Boolean> w = new EnumMap<>(CecRow.class);
+        for (CecRow r : CecDefaults.ALL_ON) w.put(r, false);
+        boolean[] f3 = {false};
+        Rows refused = new Rows(w, f3);
+        refused.refuse = true;
+        CecDefaults.allOnOnce(refused, log);
+        C.ok("a refused write: no flag", !f3[0]);
+        CecDefaults t = CecDefaults.parse("default hdmi_cec_enabled 1\n" + rest());
+        C.eq("owner lines: wake ON on every device", "1", t.value("goat_elegant", CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY));
+        C.eq("owner lines: standby ON on every device", "1", t.value("horse_popular", CecSetting.TV_SEND_STANDBY_ON_SLEEP));
+        C.eq("owner lines leave the stock evidence", "0", t.stock("goat_elegant", CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY));
+    }
+
+    private static String rest() {
+        StringBuilder b = new StringBuilder();
+        for (CecSetting s : CecSetting.values()) {
+            if (s == CecSetting.HDMI_CEC_ENABLED) continue;
+            String v = s == CecSetting.POWER_CONTROL_MODE ? "to_tv_and_audio_system"
+                    : s == CecSetting.POWER_STATE_CHANGE_ON_ACTIVE_SOURCE_LOST ? "standby_now" : "0";
+            b.append("default ").append(s.key).append(' ').append(v).append('\n');
+        }
+        return b.append("owner tv_wake_on_one_touch_play 1\nowner tv_send_standby_on_sleep 1\n").toString();
     }
 }

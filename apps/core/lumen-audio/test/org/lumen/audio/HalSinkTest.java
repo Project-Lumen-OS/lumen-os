@@ -155,16 +155,16 @@ public final class HalSinkTest {
         C.eq("PathSwitch: one ticket, where the sink is decided", 1, Check.countCode(ps, "HalSink.ticket()"));
         C.eq("PathSwitch: one switch_end writer", 1, Check.countCode(ps, "HalSink.end("));
         String[] reporters = {
-                "apps/HbProjector/src/org/lumen/projector/audio/AudioPathReporter.java",
-                "apps/ProjectorBase/src/org/lumen/projector/audio/AudioPathReporter.java",
-                "apps/X50Projector/src/org/lumen/x50/projector/AudioPath.java",
-                "apps/Play6Projector/src/org/lumen/projector/audio/BtAudio.java"};
+                "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioPathReporter.java",
+                "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/AudioPath.java",
+                "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/audio/BtAudio.java"};
         for (String r : reporters) {
             String s = read(g, r);
             C.ok(r + ": no own sink (PathSwitch)", Check.countCode(s, "HalSink.") == 0 && installs(s) == 1);
         }
         // no switch_end / switch_start written past HalSink anywhere in the apps
-        for (String app : new String[] {"HbProjector", "ProjectorBase", "X50Projector", "Play6Projector"}) {
+        for (String app : new String[] {"LumenProjector/vendor/xgimi/aidl-gmpf", "LumenProjector/core", "LumenProjector/host/activity", "LumenProjector/vendor/xgimi/mt9681-aidl", "Play6Projector",
+                "LumenProjector/vendor/xgimi/play6-hidl"}) {
             List<File> files = new java.util.ArrayList<>();
             walk(new File(g, "apps/" + app + "/src"), files);
             for (File f : files) {
@@ -177,10 +177,8 @@ public final class HalSinkTest {
         }
         // the Bluetooth device of every output choice (A2dpPick through BtA2dp), made active when it is not
         String[] choices = {
-                "apps/HbProjector/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/ProjectorBase/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/Play6Projector/src/org/lumen/projector/audio/AudioOutputChoice.java",
-                "apps/X50Projector/src/org/lumen/x50/projector/AudioOutput.java"};
+                "apps/LumenProjector/core/src/org/lumen/projector/audio/AudioOutputChoice.java",
+                "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java"};
         for (String c : choices) {
             String s = read(g, c);
             C.ok(c + ": hears the Bluetooth stack", Check.countCode(s, "BtA2dp.install(sApp,") == 1);
@@ -188,12 +186,10 @@ public final class HalSinkTest {
             C.ok(c + ": a connected inactive device is made active", Check.countCode(s, "if (BtA2dp.activateIfNeeded(pick, why)) return") == 1);
             C.ok(c + ": the route uses the picked device", Check.countCode(s, "find(am, k, addr)") == 1);
         }
-        for (int i = 0; i < 3; i++) {
-            String s = read(g, choices[i]);
-            C.ok(choices[i] + ": the Bluetooth row from the stack", Check.countCode(s, "Option bt = btOption(ctx, am, k == kind(ctx) ? addr : \"\");") == 1
-                    && Check.countCode(s, "String pick = BtA2dp.pick(stored);") == 1);
-        }
-        String xo = read(g, choices[3]);
+        String one = read(g, choices[0]);                            // the one core choice (the Play 6 takes it too)
+        C.ok(choices[0] + ": the Bluetooth row from the stack", Check.countCode(one, "Option bt = btOption(ctx, am, k == kind(ctx) ? addr : \"\");") == 1
+                && Check.countCode(one, "String pick = BtA2dp.pick(stored);") == 1);
+        String xo = read(g, choices[1]);
         C.ok("X50: the Bluetooth row from the stack", Check.countCode(xo, "if (!out.contains(AudioRules.BT) && !BtA2dp.connected().isEmpty()) out.add(AudioRules.BT);") == 1);
         C.ok("X50: a Bluetooth choice stores the connected device", Check.countCode(xo, "String pick = BtA2dp.pick(prefs(ctx).getString(KEY_ADDR, \"\"));") == 1);
     }

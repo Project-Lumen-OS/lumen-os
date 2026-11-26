@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">화이트 밸런스</string>
-    <string name="lumen_m_wb_2">2포인트</string>
-    <string name="lumen_m_wb_11">11포인트</string>
-    <string name="lumen_m_red_gain">빨강 게인</string>
-    <string name="lumen_m_green_gain">초록 게인</string>
-    <string name="lumen_m_blue_gain">파랑 게인</string>
-    <string name="lumen_m_red_offset">빨강 오프셋</string>
-    <string name="lumen_m_green_offset">초록 오프셋</string>
-    <string name="lumen_m_blue_offset">파랑 오프셋</string>
-    <string name="lumen_m_wb_level">%1$d%%</string>
-    <string name="lumen_m_red">빨강</string>
-    <string name="lumen_m_green">초록</string>
-    <string name="lumen_m_blue">파랑</string>
-    <string name="lumen_m_cyan">시안</string>
-    <string name="lumen_m_magenta">마젠타</string>
-    <string name="lumen_m_yellow">노랑</string>
-    <string name="lumen_m_skin">피부색</string>
-    <string name="lumen_m_cc">색 보정</string>
-    <string name="lumen_m_cc_color">색상</string>
-    <string name="lumen_m_hue">색조</string>
-    <string name="lumen_m_memc_original">원본 프레임 속도</string>
-    <string name="lumen_m_reset_defaults">기본값으로 되돌리기</string>
     <string name="lumen_m_gray_level">그레이 레벨</string>
     <string name="lumen_m_hdr_enh">HDR 향상</string>
     <string name="lumen_m_screen_size">스크린 크기</string>
     <string name="lumen_m_screen_gain">스크린 게인</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Bright</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dark</string>
     <string name="lumen_m_dv_screen">Dolby Vision 설정</string>
     <string name="lumen_m_auto_switch">모드 자동 전환</string>
     <string name="lumen_m_style_filter">스타일 필터</string>

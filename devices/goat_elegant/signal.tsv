@@ -4,7 +4,6 @@
 item	call	note
 hdmi_info	GmTvManager 38 getHdmiInfo	input size, scan, HDMI or DVI, frame rate
 hdr	GmTvManager 78 getHdrType	SDR, HDR10, HDR10+, HLG, Dolby Vision, HDR Vivid (each named exactly)
-chip	DisplayManager 57 getOutputTimingInfo	picture size and rate on the chip, the judder line
 range	GmTvManager 64 getHdmiRange	the colour range setting
 edid	GmTvManager 39 getEdidVersion	the HDMI mode the input announces
 allm	GmTvManager 131 getAllmStatus	ALLM sent by the source on this HDMI port
@@ -16,6 +15,6 @@ hgig	GmTvManager 192 getHGiGMode	HGiG (stock hgig_mode=1)
 tone_map	GmTvManager 175 GetHDRDyToneMappingStatus	HDR dynamic tone mapping switch
 temp_system	TemperatureManager 6 getSystemTemperature	temperature inside
 aspect	GmTvManager 36 getAspectRatio	the aspect setting (the signal's own aspect comes from its size)
-hdmi_format	MDB HDMIRX bridge ports=1:0,2:1	colour format, depth, colorimetry, range the signal asks for, from the receiver itself (image lumen_hdmirx, root, a read can stall the picture about 0.4 s); HDMI 1 = MStar port 0 (EDID physical address 1.0.0.0, eARC port), HDMI 2 = port 1 (2.0.0.0)
+hdmi_format	MDB HDMIRX bridge ports=1:0,2:1	colour format, depth, colorimetry, range the signal asks for, from the receiver itself (image lumen_hdmirx, root, the dump takes about 1.6 s to print; a picture stall during it was never observed, UNVERIFIED); HDMI 1 = MStar port 0 (EDID physical address 1.0.0.0, eARC port), HDMI 2 = port 1 (2.0.0.0)
 picture_mode	GmTvManager 34 getPictureMode	the picture mode, the menu's own read and names (a user mode has no fixed name, its row stays hidden), on the small card too
 memc	GmTvManager 32 getMemcLevel	motion smoothing, the menu's own read and names

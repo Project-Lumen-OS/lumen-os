@@ -2,12 +2,6 @@
 <!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
-    <string name="lumen_corner_title">ضبط دقيق للزوايا</string>
     <string name="lumen_corner_circle">اضبط حتى تصبح الدائرة في الوسط مستديرة</string>
-    <string name="lumen_corner_keys_move">الأسهم: تحريك الزاوية · OK: الزاوية التالية</string>
     <string name="lumen_corner_keys_more">اضغط مطولًا على زر الترس: إعادة الضبط · رجوع: تم</string>
-    <string name="lumen_corner_tl">أعلى اليسار</string>
-    <string name="lumen_corner_tr">أعلى اليمين</string>
-    <string name="lumen_corner_br">أسفل اليمين</string>
-    <string name="lumen_corner_bl">أسفل اليسار</string>
 </resources>

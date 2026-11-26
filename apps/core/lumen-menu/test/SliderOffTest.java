@@ -155,12 +155,12 @@ public final class SliderOffTest {
     }
 
     /**
-     * The real profiles with a light level: exactly the ones with lamp.off (Z9X, HB, Play 6, X50 Ultra G0111 and Ultra
-     * Max G0100, RS30 Ultra Max G0155, TITAN Noir H0061, Pro H0062 and Max H0063) ask, and only the second LEFT turns it off.
+     * The real profiles with a light level: exactly the ones the layers give lamp.off (WANT, from test/run.sh: every model
+     * with a light level, unless a layer switches the row off with the reason) ask, and only the second LEFT turns it off.
      */
-    private static void profiles(String devices) throws java.io.IOException {
-        Set<String> want = Set.of("horse_popular", "goat_elegant", "dragon_healthy", "g0111", "g0100", "g0155", "h0061",
-                "h0062", "h0063");
+    private static void profiles(String devices, String models) throws java.io.IOException {
+        Set<String> want = new TreeSet<>(java.util.Arrays.asList(models.trim().split("\\s+")));
+        check(!models.trim().isEmpty(), "the models that offer lamp.off are given (test/run.sh)");
         Set<String> got = new TreeSet<>();
         File[] dirs = new File(devices).listFiles();
         check(dirs != null && dirs.length > 0, "the device profiles are found in " + devices);
@@ -185,7 +185,7 @@ public final class SliderOffTest {
     public static void main(String[] a) throws java.io.IOException {
         sequence();
         pressAgain();
-        profiles(a.length > 0 ? a[0] + "/devices" : "devices");
+        profiles(a.length > 0 ? a[0] + "/devices" : "devices", a.length > 1 ? a[1] : "");
         System.out.println("SliderOffTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);
     }

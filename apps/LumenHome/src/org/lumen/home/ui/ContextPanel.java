@@ -23,6 +23,7 @@ public class ContextPanel extends ViewGroup {
         CharSequence title, sub;
         List<ListPanel.Item> items;
         int focus;
+        Object tag;
     }
 
     private final View mScrim;
@@ -30,6 +31,7 @@ public class ContextPanel extends ViewGroup {
     private final ArrayList<Page> mStack = new ArrayList<>();
     private OnClosed mOnClosed;
     private boolean mOpen;
+    private int mOpens;
     private int mWidthDesign = 560;
 
     public void setWidthDesign(int w) {
@@ -66,10 +68,17 @@ public class ContextPanel extends ViewGroup {
     }
 
     public void open(CharSequence title, CharSequence sub, List<ListPanel.Item> items) {
+        open(title, sub, items, null);
+    }
+
+    /** Opens on a page named {@code page}, which {@link #showing} finds again to {@link #update} it. */
+    public void open(CharSequence title, CharSequence sub, List<ListPanel.Item> items, Object page) {
         mStack.clear();
         push(title, sub, items);
+        mStack.get(0).tag = page;
         if (!mOpen) {
             mOpen = true;
+            mOpens++;
             setVisibility(VISIBLE);
             float dx = Theme.rtl(this) ? -Theme.pxf(mWidthDesign) : Theme.pxf(mWidthDesign);
             mPanel.setTranslationX(dx);
@@ -121,12 +130,27 @@ public class ContextPanel extends ViewGroup {
         show(p, p.focus);
     }
 
-    /** Replaces the items of the current page (e.g. after a toggle). */
-    public void replace(List<ListPanel.Item> items) {
+    /** A pushed page named {@code page} (see {@link #showing}). */
+    public void push(CharSequence title, CharSequence sub, List<ListPanel.Item> items, Object page) {
+        push(title, sub, items);
+        mStack.get(mStack.size() - 1).tag = page;
+    }
+
+    /** The page on top is the one named {@code page}. */
+    public boolean showing(Object page) {
+        return mOpen && !mStack.isEmpty() && page != null && page.equals(mStack.get(mStack.size() - 1).tag);
+    }
+
+    /** New values for the items of the page on top (a switch, a look): the focus stays on the same item. */
+    public void update(List<ListPanel.Item> items) {
         if (mStack.isEmpty()) return;
-        Page p = mStack.get(mStack.size() - 1);
-        p.items = items;
-        show(p, Math.max(0, mPanel.focus()));
+        mStack.get(mStack.size() - 1).items = items;
+        mPanel.update(items);
+    }
+
+    /** The theme changed: the scrim stays, the panel takes the new palette. */
+    public void restyle() {
+        mPanel.restyle();
     }
 
     private void show(Page p, int focus) {
@@ -148,6 +172,12 @@ public class ContextPanel extends ViewGroup {
                 }).start();
         mScrim.animate().alpha(0).setDuration(200).start();
         if (mOnClosed != null) mOnClosed.onClosed();
+    }
+
+    /** For {@code dumpsys activity} (test/ui): open or not, how often it opened, the page stack and the shown page. */
+    public void dump(java.io.PrintWriter w) {
+        w.println("lumen.panel open=" + mOpen + " opens=" + mOpens + " depth=" + mStack.size());
+        if (mOpen) mPanel.dump(w);
     }
 
     /** Mouse or touch: the point lies on the side panel (else on the scrim, which closes like BACK). */

@@ -30,7 +30,7 @@ EXCEPTIONS (below): a code that is banned everywhere except at one reviewed tran
 rule enforced by a guard: the site must sit in the named method of that client group, and that method's body must
 call the named guard before the transaction (one such site per code, every other site of the code fails as banned).
 
-Usage: check_hal_callers.py SRC_ROOT        (SRC_ROOT = ProjectorBase/src, or an assembled app's src)
+Usage: check_hal_callers.py SRC_ROOT        (SRC_ROOT = LumenProjector/core/src, or an assembled app's src)
 """
 import os
 import re

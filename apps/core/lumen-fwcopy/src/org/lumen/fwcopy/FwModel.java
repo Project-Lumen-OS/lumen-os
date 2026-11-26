@@ -83,9 +83,9 @@ public final class FwModel {
      * Its stock writes the first stage the same way (postinst_mtk 288c51e8, the HB's code built again, and the area of the
      * dump is its vendor file outside the mt5877 ranges), but the RS30 copies nothing: no first stage in its row.
      */
-    public static final FwModel RS30 = new FwModel("rs30", list("G0155"), MT5877_STOCK, MT5877_PAIRS, list(""),
+    public static final FwModel RS30 = new FwModel("rs30", list("G0155,G0170,G0114,G0115,G0124,G0125,G0104,G0109,G0110"), MT5877_STOCK, MT5877_PAIRS, list(""),
             "the RS30 has no install and no updater (trial only): its second half is not a way back", "G0155 dump: "
-            + "getprop.txt, by-name.txt", list(""));
+            + "getprop.txt, by-name.txt (G0170: its ab_ota_partitions in a Lumen Installer report)", list(""));
     public static final FwModel PLAY6 = new FwModel("play6", list("G0058"), list(""), list(""), list(""),
             "the Play 6 has one half only: there is nothing to copy", "G0058 stock: no A/B", list(""));
 

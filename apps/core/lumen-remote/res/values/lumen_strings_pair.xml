@@ -5,7 +5,7 @@
      are the ones of remote_pair_hint; the status lines reuse remote_pair_searching / remote_connected. -->
 <resources>
     <string name="lumen_remote_lost_title">Reconnect your remote</string>
-    <string name="lumen_remote_lost_text">Hold Back and Home together for 3 seconds until the light blinks.</string>
+    <string name="lumen_remote_lost_text">@string/lumen_hold_back_and_home_together</string>
     <string name="lumen_remote_lost_found">Found %1$s</string>
     <string name="lumen_remote_lost_battery">Nothing happens? Check the batteries in the remote.</string>
     <string name="lumen_remote_lost_dismiss">Not now</string>

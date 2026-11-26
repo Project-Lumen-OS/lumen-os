@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- x50-1338-menu: the dynamic black page of XGIMI v1.3.38 (FeatureId PICTURE_DB_*), x50-1338-menu2: the colour uniformity row -->
+<resources>
+    <string name="lumen_m_db_page">Noir dynamique</string>
+    <string name="lumen_m_db_level">Niveau du noir dynamique</string>
+    <string name="lumen_m_db_subtitle_top">Masque des sous-titres en haut</string>
+    <string name="lumen_m_db_subtitle_bottom">Masque des sous-titres en bas</string>
+    <string name="lumen_m_db_reset">Réinitialiser les masques des sous-titres</string>
+    <string name="lumen_m_color_uniformity">Réglage de l\'uniformité des couleurs</string>
+</resources>

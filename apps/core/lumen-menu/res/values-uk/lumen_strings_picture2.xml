@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">Баланс білого</string>
-    <string name="lumen_m_wb_2">2 точки</string>
-    <string name="lumen_m_wb_11">11 точок</string>
-    <string name="lumen_m_red_gain">Підсилення червоного</string>
-    <string name="lumen_m_green_gain">Підсилення зеленого</string>
-    <string name="lumen_m_blue_gain">Підсилення синього</string>
-    <string name="lumen_m_red_offset">Зміщення червоного</string>
-    <string name="lumen_m_green_offset">Зміщення зеленого</string>
-    <string name="lumen_m_blue_offset">Зміщення синього</string>
-    <string name="lumen_m_wb_level">%1$d%%</string>
-    <string name="lumen_m_red">Червоний</string>
-    <string name="lumen_m_green">Зелений</string>
-    <string name="lumen_m_blue">Синій</string>
-    <string name="lumen_m_cyan">Блакитний</string>
-    <string name="lumen_m_magenta">Пурпуровий</string>
-    <string name="lumen_m_yellow">Жовтий</string>
-    <string name="lumen_m_skin">Тон шкіри</string>
-    <string name="lumen_m_cc">Корекція кольору</string>
-    <string name="lumen_m_cc_color">Колір</string>
-    <string name="lumen_m_hue">Відтінок</string>
-    <string name="lumen_m_memc_original">Вихідна частота кадрів</string>
-    <string name="lumen_m_reset_defaults">Повернути стандартні значення</string>
     <string name="lumen_m_gray_level">Рівень сірого</string>
     <string name="lumen_m_hdr_enh">Покращення HDR</string>
     <string name="lumen_m_screen_size">Розмір екрана</string>
     <string name="lumen_m_screen_gain">Підсилення екрана</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Bright</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dark</string>
     <string name="lumen_m_dv_screen">Налаштування Dolby Vision</string>
     <string name="lumen_m_auto_switch">Автозміна режиму</string>
     <string name="lumen_m_style_filter">Фільтр стилю</string>

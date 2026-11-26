@@ -1,0 +1,9 @@
+# The looks of Lumen Home (model/Looks): one row per look, no code. Picking one in Customize Home writes these values
+# into the user's layout; changing one of them afterwards makes it his own. The name of a look is the string
+# home_look_<id> (res/values*/strings_layout.xml), so a new row needs that string in every language first.
+# Columns: id, hero (full | small | none), big clock (the calm screen, or in place of the hero where it fits), Continue
+# watching, recommendations, rows of apps
+# id      hero   clock  continue  showcase  rows
+classic   full   1      1         1         1
+compact   small  1      1         1         2
+minimal   none   1      0         0         3

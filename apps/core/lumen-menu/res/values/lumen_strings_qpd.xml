@@ -4,14 +4,14 @@
     <string name="lumen_qpd_autocorrect">Auto correction</string>
     <string name="lumen_qpd_autocorrect_value">One press</string>
     <string name="lumen_qpd_zoom">Zoom</string>
-    <string name="lumen_qpd_bluetooth">Bluetooth</string>
-    <string name="lumen_qpd_network">Network</string>
-    <string name="lumen_qpd_theme">Theme</string>
-    <string name="lumen_qpd_theme_light">Light</string>
-    <string name="lumen_qpd_theme_dark">Dark</string>
-    <string name="lumen_qpd_theme_auto">Auto</string>
+    <string name="lumen_qpd_bluetooth">@string/lumen_bluetooth</string>
+    <string name="lumen_qpd_network">@string/lumen_network</string>
+    <string name="lumen_qpd_theme">@string/lumen_theme</string>
+    <string name="lumen_qpd_theme_light">@string/lumen_light</string>
+    <string name="lumen_qpd_theme_dark">@string/lumen_dark</string>
+    <string name="lumen_qpd_theme_auto">@string/lumen_auto_2</string>
     <!-- screen mirroring tile (org.lumen.miracast) and its popup -->
-    <string name="lumen_qpd_mirroring">Screen mirroring</string>
+    <string name="lumen_qpd_mirroring">@string/lumen_screen_mirroring</string>
     <string name="lumen_qpd_mirror_on">Screen mirroring (Miracast)</string>
     <string name="lumen_qpd_mirror_ask">Ask before connecting</string>
     <string name="lumen_qpd_mirror_name">Name</string>

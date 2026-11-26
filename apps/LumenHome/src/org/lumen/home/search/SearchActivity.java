@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.lumen.home.App;
+import org.lumen.home.FilesLink;
 import org.lumen.home.Launch;
 import org.lumen.home.Prefs;
 import org.lumen.home.R;
@@ -46,7 +47,6 @@ import org.lumen.home.ui.FieldView;
 import org.lumen.home.ui.RowView;
 import org.lumen.home.ui.Theme;
 import org.lumen.home.ui.TileView;
-import org.lumen.home.usb.UsbInstallActivity;
 import org.lumen.home.watch.WatchApps;
 import org.lumen.home.watch.WatchLaunch;
 import org.lumen.home.watch.WatchPick;
@@ -616,8 +616,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         if (getPackageManager().resolveActivity(i, 0) == null) {
             String hint = getString(R.string.kb_no_store);
             showStatus(hint);
-            Launch.start(this, new Intent(this, UsbInstallActivity.class).putExtra(UsbInstallActivity.EXTRA_HINT, hint),
-                    "install from usb (keyboard)");
+            Launch.start(this, FilesLink.apps(), "files apps (keyboard)");
             return;
         }
         Launch.start(this, i, "keyboard app");

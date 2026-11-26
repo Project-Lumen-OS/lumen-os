@@ -14,6 +14,8 @@ the image recipes of the tree (no image, no device). Per model (MODELS below, da
 usage: check_images.py [MODEL...]      MODEL = a key of MODELS or its codename (g0155 = rs30); exit 0 green, 1 red
 """
 import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "devices"))
+import patch_file  # noqa: E402
 import re
 import sys
 
@@ -25,37 +27,37 @@ PERMS = ["android.permission.BLUETOOTH_SCAN", "android.permission.BLUETOOTH_CONN
 # model: (layers recipe, manifest, recipe files that install the key layouts, default-permissions (recipe, target,
 # source xml), privileged route ("signature" or the privapp xml the recipe installs))
 MODELS = {
-    "z9x": ("devices/horse_popular/app/Z9xProjector.layers", "apps/ProjectorBase/AndroidManifest.xml",
+    "z9x": ("devices/horse_popular/app/Z9xProjector.layers", "apps/LumenProjector/core/AndroidManifest.xml",
             ["tools/lumen_v1.sh"],
             ("tools/lumen_v1.sh", "system/product/etc/default-permissions/z9x-projector.xml",
              "overlay/v1/z9x-projector-default-permissions.xml"),
             "signature"),
-    "hb": ("devices/goat_elegant/app/HbProjector.layers", "apps/HbProjector/AndroidManifest.xml",
+    "hb": ("devices/goat_elegant/app/HbProjector.layers", "devices/goat_elegant/app/HbProjector.manifest.diff",
            ["devices/goat_elegant/image/steps.tsv"],
            ("devices/goat_elegant/image/steps.tsv", "{sys}/etc/default-permissions/z9x-projector-default-permissions.xml",
             "overlay/v1/z9x-projector-default-permissions.xml"),
            "devices/goat_elegant/image/privapp-permissions-hbprojector.xml"),
-    "play6": ("devices/dragon_healthy/app/Play6Projector.layers", "apps/Play6Projector/AndroidManifest.xml",
+    "play6": ("devices/dragon_healthy/app/Play6Projector.layers", "devices/dragon_healthy/app/Play6Projector.manifest.xml",
               ["devices/dragon_healthy/image/steps.tsv"],
               ("devices/dragon_healthy/image/steps.tsv", "{sys}/product/etc/default-permissions/z9x-projector.xml",
                "overlay/v1/z9x-projector-default-permissions.xml"),
               "signature"),
     # the X50 and the Ultra Max start from the published Z9X 1.0.9 image (devices/g0111/image/base.sha256), whose key
     # layouts tools/lumen_v1.sh installed
-    "x50": ("devices/g0111/app/X50Projector.layers", "apps/X50Projector/AndroidManifest.xml",
+    "x50": ("devices/_family/mt9681/app/X50Projector.layers", "apps/LumenProjector/host/activity/AndroidManifest.xml",
             ["tools/lumen_v1.sh"],
             ("devices/g0111/image/steps.tsv", "{sys}/product/etc/default-permissions/x50-projector.xml",
-             "apps/X50Projector/image/x50-projector.xml"),
+             "apps/LumenProjector/host/activity/image/x50-projector.xml"),
             "signature"),
-    "x50max": ("devices/g0100/app/X50Projector.layers", "apps/X50Projector/AndroidManifest.xml",
+    "x50max": ("devices/_family/mt9681/app/X50Projector.layers", "apps/LumenProjector/host/activity/AndroidManifest.xml",
                ["tools/lumen_v1.sh"],
                ("devices/g0111/image/steps.tsv", "{sys}/product/etc/default-permissions/x50-projector.xml",
-                "apps/X50Projector/image/x50-projector.xml"),
+                "apps/LumenProjector/host/activity/image/x50-projector.xml"),
                "signature"),
-    "rs30": ("devices/g0155/app/X50Projector.layers", "apps/X50Projector/AndroidManifest.xml",
+    "rs30": ("devices/_family/mt9681/app/X50Projector.layers", "apps/LumenProjector/host/activity/AndroidManifest.xml",
              ["devices/g0155/image/steps.tsv"],
              ("devices/g0155/image/steps.tsv", "{sys}/product/etc/default-permissions/x50-projector.xml",
-              "apps/X50Projector/image/x50-projector.xml"),
+              "apps/LumenProjector/host/activity/image/x50-projector.xml"),
              "signature"),
 }
 
@@ -83,6 +85,8 @@ def check(model):
     if not re.search(r"(?m)^module\s+lumen-remote\s*$", read(layers)):
         bad.append("%s does not name module lumen-remote" % layers)
     man = read(manifest)
+    if manifest.endswith(".diff"):     # the HB: the core manifest plus its patch
+        man = patch_file.apply(read("apps/LumenProjector/core/AndroidManifest.xml"), man)
     m = re.search(r'package="([^"]+)"', man)
     pkg = m.group(1) if m else "?"
     for p in PERMS:

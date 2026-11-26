@@ -54,6 +54,12 @@ public enum SignalItem {
     /** motion smoothing (MEMC) as the menu reads it (Z9X / Play 6 IGmpf 668, HB / X50 family TV 32), its option token */
     MEMC("memc", true, ReadSpeed.DETAIL, false),
     /**
+     * the colour space line of the stock signal OSD (X50 family on XGIMI v1.3.38: GmTvManager 204
+     * getHdmiColorSpaceInfo, 1 BT.2020, 2 DCI-P3, 3 Rec.709, 4 native, 7 Adobe RGB), named with the menu's colour space
+     * words, on the small card too, after the HDR kind (stock order)
+     */
+    COLOR_SPACE("color_space", true, ReadSpeed.CARD_SLOW, true),
+    /**
      * colour format and chroma, bit depth, colorimetry and the range the signal asks for, from the HDMI receiver itself
      * (MStar /proc/utopia_mdb/HDMIRX through the image's root bridge lumen_hdmirx, HdmiRxBridge, HdmiRxInfo): no vendor
      * HAL call, its own pace (FormatWatch). Only a model whose image ships the bridge lists it (Z9X).

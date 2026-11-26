@@ -3,13 +3,9 @@
      Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
 <resources>
     <string name="lumen_m_out_now">Гук зараз ідзе на</string>
-    <string name="lumen_m_out_connect">Падключыць</string>
     <string name="lumen_m_out_connecting">Падключэнне</string>
-    <string name="lumen_m_out_connected">Падключана</string>
-    <string name="lumen_m_out_offline">Не падключана</string>
     <string name="lumen_m_out_jack">Раз\'ём 3,5 мм</string>
     <string name="lumen_m_out_by_hand">Выбіраюцца ўручную</string>
     <string name="lumen_m_out_auto_picked">Выбрана аўтаматычна</string>
     <string name="lumen_m_out_hand_picked">Выбрана ўручную</string>
-    <string name="lumen_m_out_earc">HDMI eARC</string>
 </resources>

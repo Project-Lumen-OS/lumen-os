@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">Клавіша контактів</string>
     <string name="lumen_remote_keys_name_calendar">Клавіша календаря</string>
     <string name="lumen_remote_keys_name_bookmarks">Клавіша закладок</string>
-    <string name="lumen_remote_keys_do_source">Джерело сигналу</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Трапеція</string>
-    <string name="lumen_remote_keys_do_focus">Фокус</string>
-    <string name="lumen_remote_keys_do_quick">Швидкі налаштування</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Сигнал</string>
 </resources>

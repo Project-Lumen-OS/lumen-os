@@ -22,7 +22,7 @@ public final class HomeSnapshot {
     private HomeSnapshot() {}
 
     static final int MAGIC = 0x4C484D32; // "LHM2"
-    static final int VERSION = 2; // 2: the showcase's watch app, button, rating and where to watch
+    static final int VERSION = 3; // 2: the showcase's watch app, button, rating and where to watch; 3: the dock with folders
     private static final int MAX_LIST = 2000;
 
     /** The snapshot bytes of {@code d}. */
@@ -51,13 +51,14 @@ public final class HomeSnapshot {
             if (in.readLong() != apkStamp || !in.readUTF().equals(s(locale))) return null;
             HomeData d = new HomeData();
             cards(in, d.apps);
+            cards(in, d.dock);
             cards(in, d.hidden);
             cards(in, d.cont);
             cards(in, d.hero);
             cards(in, d.inputs);
             d.online = in.readBoolean();
             if (in.read() != -1) return null;
-            d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.apps.size());
+            d.plan = RowPlan.of(d.hero.size(), d.cont.size(), d.dock.size());
             return d;
         } catch (IOException | RuntimeException e) {
             return null;
@@ -75,6 +76,7 @@ public final class HomeSnapshot {
             ByteArrayOutputStream bo = new ByteArrayOutputStream(16 * 1024);
             DataOutputStream o = new DataOutputStream(bo);
             cards(o, d.apps);
+            cards(o, d.dock);
             cards(o, d.hidden);
             cards(o, d.cont);
             cards(o, d.hero);
@@ -136,6 +138,7 @@ public final class HomeSnapshot {
         o.writeUTF(s(k.watchLabel));
         o.writeUTF(s(k.rating));
         o.writeUTF(s(k.where));
+        o.writeUTF(s(k.members));
     }
 
     private static Card card(DataInputStream in) throws IOException {
@@ -181,6 +184,7 @@ public final class HomeSnapshot {
         k.watchLabel = in.readUTF();
         k.rating = in.readUTF();
         k.where = in.readUTF();
+        k.members = in.readUTF();
         return k;
     }
 

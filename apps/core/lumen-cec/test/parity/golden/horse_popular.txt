@@ -166,9 +166,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -512,9 +511,8 @@
     TextRow 'Name on HDMI: Living room'
     NavRow 'HDMI input options' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(1)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -906,9 +904,8 @@
     TextRow 'Name on HDMI: Living room'
     NavRow 'HDMI input options' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] CecPolicy.stormPaused()
   [worker] provider org.lumen.tvinput.hdmistate get_cec_prefs
@@ -1172,9 +1169,8 @@
     TextRow 'Name on HDMI: TestModel'
     NavRow 'HDMI input options' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(1)
   [worker] hdmi.getHdmiCecEnabled()
@@ -1534,9 +1530,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -1888,9 +1883,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -2254,9 +2248,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -2974,9 +2967,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'HDMI input options'
-  [main] host.openHdmiOptions
   [test] ~ flip 'HDMI-CEC control'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] hdmi.getHdmiCecEnabled()
@@ -3734,9 +3726,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -4080,9 +4071,8 @@
     TextRow 'Имя в HDMI: Living room'
     NavRow 'Настройки HDMI-входов' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(1)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -4474,9 +4464,8 @@
     TextRow 'Имя в HDMI: Living room'
     NavRow 'Настройки HDMI-входов' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] CecPolicy.stormPaused()
   [worker] provider org.lumen.tvinput.hdmistate get_cec_prefs
@@ -4740,9 +4729,8 @@
     TextRow 'Имя в HDMI: TestModel'
     NavRow 'Настройки HDMI-входов' value 'null' >
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(1)
   [worker] hdmi.getHdmiCecEnabled()
@@ -5102,9 +5090,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -5456,9 +5443,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -5822,9 +5808,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] prefs z9x_cec cec_user_MASTER=true
@@ -6542,9 +6527,8 @@
   [main] wakeFromDream
   [main] startActivity {act=android.intent.action.VIEW dat=content://android.media.tv/passthrough/org.lumen.tvinput/.HdmiInputService/HW2 cmp=org.lumen.tvinput/org.lumen.tvinput.PassthroughActivity flg=0x10000000}
   [test] host.setupDone hdmi options -> true
-  [test] host.closeThen
+  [test] host.openHdmiOptions
   [test] ~ click 'Настройки HDMI-входов'
-  [main] host.openHdmiOptions
   [test] ~ flip 'Управление HDMI-CEC'
   [worker] hdmi.setHdmiCecEnabled(0)
   [worker] hdmi.getHdmiCecEnabled()

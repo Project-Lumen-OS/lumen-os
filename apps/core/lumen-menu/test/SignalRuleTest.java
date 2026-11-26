@@ -42,6 +42,13 @@ public final class SignalRuleTest {
         return SignalRule.greyed(p, FeatureId.PICTURE_MODE, at(s, mode));
     }
 
+    /** Every picture mode of {@code p} except {@code keep}, in the profile's order. */
+    private static Set<String> allBut(MenuProfile p, String keep) {
+        Set<String> s = new LinkedHashSet<>(p.options(FeatureId.PICTURE_MODE));
+        s.remove(keep);
+        return s;
+    }
+
     private static MenuProfile parse(String features) {
         return MenuProfile.parse("{\"schema\": 1, \"device\": \"t\", \"model\": \"T\", \"adapter\": \"a\", \"features\": {" + features
                 + "}, \"keys\": {\"gear_short\": \"quick_menu\", \"gear_long\": \"none\"}, \"game_menu\": {\"enabled\": false}}");
@@ -69,8 +76,10 @@ public final class SignalRuleTest {
             eq(set("hdr_vivid"), greyed(p, Signal.HDR10, "standard"), dev + ": HDR10 greys HDR Vivid");
             eq(set("hdr_vivid"), greyed(p, Signal.HDR, "standard"), dev + ": HLG / HDR10+ grey HDR Vivid");
             eq(set("color_accuracy"), greyed(p, Signal.HDR_VIVID, "standard"), dev + ": HDR Vivid content greys colour accuracy");
-            eq(set("hdr_vivid", "color_accuracy"), new LinkedHashSet<>(greyed(p, Signal.DOLBY, "standard")),
-                    dev + ": Dolby Vision greys both");
+            eq(allBut(p, "standard"), greyed(p, Signal.DOLBY, "standard"),
+                    dev + ": Dolby Vision closes every picture mode (stock handleDolbyVideo)");
+            eq(new LinkedHashSet<>(p.options(FeatureId.PICTURE_MODE)), greyed(p, Signal.DOLBY, null),
+                    dev + ": Dolby Vision with a vendor-only mode read closes the whole list");
             eq(set("hdr_vivid"), greyed(p, null, "standard"), dev + ": content not read counts as SDR");
             eq(set("hdr_vivid"), SignalRule.greyed(p, FeatureId.PICTURE_MODE, null), dev + ": nothing read counts as SDR");
             eq(Collections.emptySet(), greyed(p, Signal.SDR, "hdr_vivid"), dev + ": the mode set now is never greyed");
@@ -80,9 +89,96 @@ public final class SignalRuleTest {
         }
         // ---- the other stock trees: X50 / RS30 colour accuracy and filmmaker, Play 6 none
         MenuProfile x50 = profile(root, "g0111");
-        eq(set("filmmaker", "color_accuracy"), new LinkedHashSet<>(greyed(x50, Signal.HDR_VIVID, "ai")), "X50: HDR Vivid content");
-        eq(Collections.emptySet(), greyed(x50, Signal.SDR, "ai"), "X50: SDR greys nothing");
-        eq(set("color_accuracy"), greyed(profile(root, "g0155"), Signal.DOLBY, "ai"), "RS30: Dolby greys colour accuracy");
+        eq(set("imax", "filmmaker", "color_accuracy", "dv_bright", "dv_dark"), new LinkedHashSet<>(greyed(x50, Signal.HDR_VIVID, "ai")),
+                "X50: HDR Vivid content");
+        eq(set("imax", "dv_bright", "dv_dark"), greyed(x50, Signal.SDR, "ai"), "X50: SDR greys IMAX Enhanced and the Dolby Vision modes");
+        eq(set("dv_bright", "dv_dark"), greyed(x50, Signal.HDR10, "ai"), "X50: HDR10 greys only the Dolby Vision modes");
+        eq(set("filmmaker", "color_accuracy", "dv_bright", "dv_dark"), new LinkedHashSet<>(greyed(x50, Signal.IMAX, "ai")),
+                "X50: IMAX Enhanced content greys Filmmaker, colour accuracy and the Dolby Vision modes");
+        // ---- the X50 family: Dolby Vision Bright and Dark inside the picture mode list (stock image_mode_4_state nodes
+        //      image_mode_picture_dolby_bright / _soft, support DOLBY), the only open modes while Dolby Vision plays
+        for (String dev : new String[]{"g0111", "g0100", "g0155", "g0170", "h0061", "h0062", "h0063"}) {
+            MenuProfile p = profile(root, dev);
+            Set<String> normal = allBut(p, "dv_bright");
+            normal.remove("dv_dark");
+            check(p.options(FeatureId.PICTURE_MODE).containsAll(set("dv_bright", "dv_dark")), dev + ": the Dolby Vision modes are in the list");
+            eq(normal, greyed(p, Signal.DOLBY, "dv_bright"), dev + ": Dolby Vision opens only its Bright and Dark");
+            eq(normal, greyed(p, Signal.DOLBY, null), dev + ": Dolby Vision with no mode read yet: the same");
+            for (Signal k : new Signal[]{Signal.SDR, Signal.HDR10, Signal.HDR}) {
+                Set<String> g = greyed(p, k, p.options(FeatureId.PICTURE_MODE).get(1));
+                check(g.contains("dv_bright") && g.contains("dv_dark") && Collections.disjoint(g, set("sport", "standard", "movie")),
+                        dev + " " + k.token + ": the Dolby Vision modes greyed, the normal ones open");
+            }
+        }
+        check(!profile(root, "goat_elegant").options(FeatureId.PICTURE_MODE).contains("dv_bright")
+                && !profile(root, "horse_popular").options(FeatureId.PICTURE_MODE).contains("dv_bright"),
+                "Z9X HB and Z9X: no Dolby Vision modes (no Dolby Vision display)");
+        MenuProfile rs30 = profile(root, "g0155");
+        Set<String> rs30Normal = allBut(rs30, "ai");
+        rs30Normal.removeAll(set("dv_bright", "dv_dark"));
+        eq(rs30Normal, greyed(rs30, Signal.DOLBY, "ai"), "RS30: Dolby Vision closes every normal picture mode");
+
+        // ---- Dolby Vision and the runtime list: user picture modes close too, other content leaves them open
+        MenuProfile hb = profile(root, "goat_elegant");
+        java.util.List<String> withUser = new java.util.ArrayList<>(hb.options(FeatureId.PICTURE_MODE));
+        withUser.add(CustomModes.token(101));
+        MenuState dvUser = MenuState.builder().signal(Signal.DOLBY).put(FeatureId.PICTURE_MODE, "standard")
+                .options(FeatureId.PICTURE_MODE, withUser).build();
+        check(SignalRule.greyed(hb, FeatureId.PICTURE_MODE, dvUser).contains(CustomModes.token(101)),
+                "HB: Dolby Vision closes a user picture mode");
+        MenuState sdrUser = MenuState.builder().signal(Signal.SDR).put(FeatureId.PICTURE_MODE, "standard")
+                .options(FeatureId.PICTURE_MODE, withUser).build();
+        eq(set("hdr_vivid"), SignalRule.greyed(hb, FeatureId.PICTURE_MODE, sdrUser), "HB: SDR leaves user picture modes open");
+        // an option that names Dolby Vision in its support list stays open while Dolby Vision plays
+        MenuProfile dv = parse("\"picture.mode\": {\"options\": [\"ai\", \"dv_bright\", \"hdr_vivid\"], \"support\": "
+                + "{\"dv_bright\": [\"dolby\"], \"hdr_vivid\": [\"hdr_vivid\"]}}");
+        check(dv.ok(), "a profile with a Dolby Vision mode parses");
+        eq(set("ai", "hdr_vivid"), greyed(dv, Signal.DOLBY, null), "a Dolby Vision mode stays open in Dolby Vision");
+        eq(set("dv_bright", "hdr_vivid"), greyed(dv, Signal.SDR, "ai"), "a Dolby Vision mode is closed on SDR");
+        for (Signal s : new Signal[]{Signal.HDR10, Signal.HDR, Signal.HDR_VIVID}) {
+            check(greyed(dv, s, "ai").contains("dv_bright") && !greyed(dv, s, "dv_bright").contains("ai"),
+                    s.token + ": the Dolby Vision mode closed, the normal modes open");
+        }
+        // one data rule for every choice with support lists: an option without one is everything but Dolby Vision
+        check(SignalRule.offered(Collections.emptyList(), Signal.SDR) && SignalRule.offered(Collections.emptyList(), Signal.HDR10)
+                && !SignalRule.offered(Collections.emptyList(), Signal.DOLBY), "no list = every kind but Dolby Vision");
+        check(SignalRule.offered(java.util.List.of(Signal.DOLBY), Signal.DOLBY)
+                && !SignalRule.offered(java.util.List.of(Signal.DOLBY), Signal.SDR), "a Dolby Vision list = Dolby Vision only");
+        // the content kind in the stock order (PictureUtils.getCurSourceType): Dolby Vision, IMAX Enhanced, the HDR kind
+        HdrFormat sdr = HdrFormat.ofHdrType(0), hdr10 = HdrFormat.ofHdrType(1), dolby = HdrFormat.ofHdrType(2);
+        eq(Signal.DOLBY, Signal.of(dolby, true), "Dolby Vision before IMAX Enhanced");
+        eq(Signal.IMAX, Signal.of(hdr10, true), "IMAX Enhanced before HDR10");
+        eq(Signal.IMAX, Signal.of(sdr, true), "IMAX Enhanced before SDR");
+        eq(Signal.IMAX, Signal.of(null, true), "IMAX Enhanced with the format not read");
+        eq(Signal.HDR10, Signal.of(hdr10, false), "no IMAX flag: the HDR kind");
+        eq(null, Signal.of(null, false), "nothing read: no kind");
+        MenuState imaxState = MenuState.builder().hdr(hdr10, true).build();
+        check(imaxState.signal() == Signal.IMAX && imaxState.format() == hdr10, "IMAX content: kind IMAX, the page names HDR10");
+        check(MenuState.builder().hdr(hdr10).build().signal() == Signal.HDR10, "one getHdrType read alone: its kind");
+        // IMAX Enhanced (stock support IMAX, HDR10): offered only with IMAX Enhanced or HDR10 content
+        MenuProfile im = parse("\"picture.mode\": {\"options\": [\"ai\", \"imax\", \"filmmaker\"], \"support\": "
+                + "{\"imax\": [\"imax\", \"hdr10\"], \"filmmaker\": [\"sdr\", \"hdr\", \"hdr10\", \"filmmaker\"]}}");
+        check(im.ok(), "a profile with IMAX Enhanced parses");
+        eq(set("filmmaker"), greyed(im, Signal.IMAX, "ai"), "IMAX content: IMAX Enhanced open, Filmmaker closed");
+        eq(Collections.emptySet(), greyed(im, Signal.HDR10, "ai"), "HDR10: IMAX Enhanced open");
+        for (Signal s : new Signal[]{Signal.SDR, Signal.HDR, Signal.HDR_VIVID, Signal.FILMMAKER}) {
+            check(greyed(im, s, "ai").contains("imax"), s.token + ": IMAX Enhanced closed");
+        }
+        eq(set("ai", "imax", "filmmaker"), greyed(im, Signal.DOLBY, null), "Dolby Vision: IMAX Enhanced closed");
+        MenuProfile other = parse("\"sound.mode\": {\"options\": [\"movie\", \"night\"], \"support\": {\"night\": [\"sdr\", \"dolby\"]}}");
+        check(other.ok(), "another choice with a support list parses");
+        eq(set("movie"), SignalRule.greyed(other, FeatureId.SOUND_MODE, MenuState.builder().signal(Signal.DOLBY).build()),
+                "another choice follows the same rule in Dolby Vision");
+        eq(Collections.emptySet(), SignalRule.greyed(other, FeatureId.SOUND_MODE, MenuState.builder().signal(Signal.SDR).build()),
+                "another choice keeps both on SDR");
+        eq(Collections.emptySet(), SignalRule.greyed(dv, FeatureId.PICTURE_COLOR_TEMP, at(Signal.DOLBY, "ai")),
+                "Dolby Vision greys no choice without support lists");
+        MenuState hdr = MenuState.builder().hdr(HdrFormat.DOLBY_VISION).put(FeatureId.PICTURE_MODE, "dv_bright").build();
+        eq(Signal.DOLBY, hdr.signal(), "an adapter's hdr read carries the content kind");
+        eq(HdrFormat.DOLBY_VISION, hdr.format(), "and the format");
+        eq(set("ai", "hdr_vivid"), SignalRule.greyed(dv, FeatureId.PICTURE_MODE, hdr), "the hdr read alone greys by the kind");
+        MenuState unread = MenuState.builder().hdr(null).build();
+        check(unread.signal() == null && unread.format() == null, "no hdr read = nothing read");
         MenuProfile p6 = profile(root, "dragon_healthy");
         check(!p6.hasSupport(FeatureId.PICTURE_MODE), "Play 6: its stock tree has no support lists");
         for (Signal s : Signal.values()) eq(Collections.emptySet(), greyed(p6, s, "ai"), "Play 6 greys nothing on " + s.token);

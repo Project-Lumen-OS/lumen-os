@@ -131,15 +131,15 @@ public final class SoundbarModeTest {
     private static String read(File g, String rel) throws Exception { return Check.read(new File(g, rel)); }
 
     private static void wiring(File g) throws Exception {
-        String hb = read(g, "apps/HbProjector/src/org/lumen/projector/cec/HbSystemAudio.java");
+        String hb = read(g, "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/cec/HbSystemAudio.java");
         C.ok("HB: a choice asks SoundbarMode.requestOnChoice", Check.countCode(hb, "SoundbarMode.requestOnChoice(kind, cecOn, controlOn, avr, modeOn)") == 1);
         C.ok("HB: no own change rule for a choice", Check.countCode(hb, "HbAudioRules.systemAudioChange(") == 0);
-        String x = read(g, "apps/X50Projector/src/org/lumen/x50/projector/AudioOutput.java");
+        String x = read(g, "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java");
         C.ok("X50: a choice asks SoundbarMode.requestOnChoice", Check.countCode(x, "SoundbarMode.requestOnChoice(kind,") == 1);
         C.ok("X50: no own change rule for a choice", Check.countCode(x, "AudioRules.systemAudioChange(") == 0);
         String[][] rules = {
-                {"apps/HbProjector/src/org/lumen/projector/audio/HbAudioRules.java", "HB"},
-                {"apps/X50Projector/src/org/lumen/x50/projector/AudioRules.java", "X50"}};
+                {"apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/audio/HbAudioRules.java", "HB"},
+                {"apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioRules.java", "X50"}};
         for (String[] r : rules) {
             String s = read(g, r[0]);
             C.ok(r[1] + " rules delegate System Audio and CEC volume to SoundbarMode",

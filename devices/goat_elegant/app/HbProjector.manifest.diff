@@ -1,0 +1,252 @@
+# The Z9X HB manifest: the core manifest (apps/LumenProjector/core/AndroidManifest.xml) with the HB changes of
+# the design notes (D5, 7.2, 10.2), the patch line of the HB recipe (assemble_app.py rule 10):
+# sharedUserId android.uid.system (the stock vendor policy grants binder call on aidl_gmpf_xgimi to system_app only),
+# a direct boot aware application whose components but BootReceiver are not, the HB home tile receiver and the device
+# state provider, no 3D key action, no statistics switch or mirroring tile grant (the system uid needs none). A core
+# change under a patched line is red: review it, then make the diff again (diff -u --label a/AndroidManifest.xml
+# --label b/AndroidManifest.xml apps/LumenProjector/core/AndroidManifest.xml NEW).
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -1,8 +1,18 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <!--
+-  org.lumen.projector ("Projector") of Lumen OS 1.0 for XGIMI projectors (author kmuradoff; package and
+-  property names keep the internal z9x prefix in v1).
+-  Install: /system/app/Z9xProjector/Z9xProjector.apk (NOT priv-app), platform-signed, no sharedUserId.
++  org.lumen.projector ("Projector") of Lumen OS for the XGIMI Z9X HB (goat_elegant): the Z9X manifest
++  (apps/LumenProjector/core) with the HB changes of devices/goat_elegant/PROJECTOR_DESIGN.md (D5, 7.2, 10.2):
++  - android:sharedUserId="android.uid.system" (SELinux domain system_app): the stock vendor policy grants
++    binder call on aidl_gmpf_xgimi to system_app only (research/handshake.md 7). Install:
++    /system/priv-app/HbProjector/HbProjector.apk with its privapp permissions file (compose_hb.sh), signed with
++    the goat_elegant platform key;
++  - the application is direct boot aware (the vendor handshake runs before unlock, as HbBoot did); every
++    component says directBootAware="false" except BootReceiver (LOCKED_BOOT_COMPLETED and BOOT_COMPLETED);
++  - no problem reports (Z9X only);
++  - the OTA state receiver power.OtaStateReceiver (docs/architecture/OTA_CLIENT.md step S5) is back for the
++    updater LumenUpdater, guarded by the signature permission OTA_STATE as on the Z9X; not direct boot aware
++    (the updater runs only after unlock).
++  Z9X notes kept below.
+   versionCode/versionName come from build_apk.sh (Lumen OS 1.0: VERSION_CODE=100 VERSION_NAME=1.0;
+   Lumen OS 1.0.0: VERSION_CODE=101 VERSION_NAME=1.0.0; Lumen OS 1.0.1: VERSION_CODE=102 VERSION_NAME=1.0.1;
+   Lumen OS 1.0.2: VERSION_CODE=103 VERSION_NAME=1.0.2; Lumen OS 1.0.3: VERSION_CODE=104 VERSION_NAME=1.0.3).
+@@ -15,7 +25,8 @@
+   (V61_IMAGE_PLAN.md) and self-granted at runtime as a fallback (GRANT_RUNTIME_PERMISSIONS).
+ -->
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="org.lumen.projector">
++    package="org.lumen.projector"
++    android:sharedUserId="android.uid.system">
+ 
+     <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
+ 
+@@ -30,8 +41,15 @@
+         android:name="org.lumen.projector.permission.NOTIFY"
+         android:protectionLevel="signature" />
+     <!-- v6.1: ask org.lumen.tvinput whether an HDMI TIF session is open (its HdmiStateProvider). -->
++    <!-- Problem reports (apps/core/lumen-report, protection levels as in the Lineage 21 source): INTERNET (the
++         upload), READ_LOGS (signature|privileged|development: logcat of other processes and DropBox, with
++         PACKAGE_USAGE_STATS), DUMP (signature|privileged|development: exit reasons of other apps), ACCESS_WIFI_STATE
++         (saved Wi-Fi names, read only to remove them from a report), ACCESS_NETWORK_STATE (send when online). -->
+     <!-- the menu's Parental controls page: Lumen Home's parental state (apps/core/lumen-parental ParentalProvider) -->
+     <uses-permission android:name="org.lumen.parental.permission.SETTINGS" />
++    <uses-permission android:name="android.permission.READ_LOGS" />
++    <uses-permission android:name="android.permission.DUMP" />
++
+     <uses-permission android:name="org.lumen.tvinput.permission.HDMI_STATE" />
+     <!-- ===== v6.2 module "game" (org.lumen.projector.game) BEGIN =====
+          org.lumen.tvinput tells game.HdmiEventReceiver when an HDMI session starts/stops (signature).
+@@ -53,7 +71,7 @@
+ 
+     <!-- ===== Lumen OS 1.0 (PLAN C1, C5, C16) BEGIN: own signature permissions =====
+          SET_LAUNCHER: Lumen Home's Customize asks home.LauncherSwitcher to switch the home screen.
+-         SHOW_PANEL: Lumen Home's projector shortcut tiles (home.PanelRequestReceiver).
++         SHOW_PANEL: Lumen Home's projector shortcut tiles (home.HbPanelRequestReceiver on the HB).
+          SETUP_BRIDGE: Lumen Setup / Lumen Home call setup.SetupBridgeProvider and receive SETUP_STATE.
+          OTA_STATE: the updater reports "installing" / "restart when turned off" (power.OtaStateReceiver).
+          Signature: only platform-signed apps of this image. -->
+@@ -92,18 +110,11 @@
+     <uses-permission android:name="android.permission.NETWORK_SETTINGS" />
+     <!-- ===== Lumen OS 1.0 END ===== -->
+ 
++    <!-- INTERNET (normal): the voice assistant's online part and the problem reports (the note at the top). -->
++    <uses-permission android:name="android.permission.INTERNET" />
+     <!-- apps/core/lumen-control, the stock XGIMI phone remote: INTERNET (its LAN sockets), INJECT_EVENTS (signature,
+          declared once with the remote buttons below: autofocus and keys without a vendor keypad scancode go in as
+-         Android key codes), READ_PRIVILEGED_PHONE_STATE (signature|privileged: Build.getSerial for the hashed id the
+-         phone sees) -->
+-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+-    <!-- Problem reports (apps/core/lumen-report, protection levels as in the Lineage 21 source): INTERNET (the
+-         upload), READ_LOGS (signature|privileged|development: logcat of other processes and DropBox, with
+-         PACKAGE_USAGE_STATS), DUMP (signature|privileged|development: exit reasons of other apps), ACCESS_WIFI_STATE
+-         (saved Wi-Fi names, read only to remove them from a report), ACCESS_NETWORK_STATE (send when online). -->
+-    <uses-permission android:name="android.permission.INTERNET" />
+-    <uses-permission android:name="android.permission.READ_LOGS" />
+-    <uses-permission android:name="android.permission.DUMP" />
++         Android key codes) -->
+     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+ 
+     <uses-feature android:name="android.software.leanback" android:required="false" />
+@@ -183,11 +194,6 @@
+     <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" />
+     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+-    <!-- the anonymous statistics switch in the settings: org.lumen.updater StateProvider (signature permission) -->
+-    <uses-permission android:name="org.lumen.updater.permission.OTA_STATE" />
+-    <!-- the quick menu's screen mirroring tile (layout D, owner 2026-11-11): org.lumen.miracast StateProvider
+-         (signature permission; only granted while the receiver, signed with the same key, is installed) -->
+-    <uses-permission android:name="org.lumen.miracast.permission.CONTROL" />
+     <!-- apps/core/lumen-files-access: sets the all files access and overlay app ops of Lumen Play (system API setUidMode)
+          and grants its media read permissions (GRANT_RUNTIME_PERMISSIONS) -->
+     <uses-permission android:name="android.permission.MANAGE_APP_OPS_MODES" />
+@@ -229,6 +235,7 @@
+         android:icon="@drawable/brand_icon_projector"
+         android:banner="@drawable/brand_banner_projector"
+         android:persistent="true"
++        android:directBootAware="true"
+         android:allowBackup="false"
+         android:supportsRtl="true"
+         android:theme="@style/Theme.Z9x.Settings">
+@@ -243,6 +250,7 @@
+ 
+         <activity
+             android:name=".ManualFocusActivity"
++            android:directBootAware="false"
+             android:exported="false"
+             android:label="@string/act_manual_focus"
+             android:theme="@style/Theme.Z9x.Overlay"
+@@ -255,6 +263,7 @@
+              only by StandbyController. Own task, never in recents, no animations. -->
+         <activity
+             android:name=".power.StandbyActivity"
++            android:directBootAware="false"
+             android:exported="false"
+             android:label="@string/app_name"
+             android:theme="@style/Theme.Z9x.Standby"
+@@ -271,6 +280,7 @@
+              task, never in recents, no history, no relaunch on config changes. -->
+         <activity
+             android:name=".recents.RecentsActivity"
++            android:directBootAware="false"
+             android:exported="true"
+             android:label="@string/recents_title"
+             android:theme="@style/Theme.Z9x.Recents"
+@@ -291,31 +301,38 @@
+              permission is checked in call(). -->
+         <provider
+             android:name=".setup.SetupBridgeProvider"
++            android:directBootAware="false"
+             android:authorities="org.lumen.projector.setupbridge"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.SETUP_BRIDGE" />
+ 
+-        <!-- Lumen OS 1.0: home screen switch (Lumen Home Customize), projector shortcut tiles, updater state. -->
++        <!-- Lumen OS 1.0: home screen switch (Lumen Home Customize), projector shortcut tiles. -->
+         <receiver
+             android:name=".home.LauncherRequestReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.SET_LAUNCHER">
+             <intent-filter>
+                 <action android:name="org.lumen.projector.action.SET_LAUNCHER" />
+             </intent-filter>
+         </receiver>
++        <!-- HB (hb-t5): HbPanelRequestReceiver in place of the shared home.PanelRequestReceiver: the sleep timer
++             tile opens the timer card, and the power tiles are refused right after a standby wake; every other
++             request goes to PanelRequestReceiver unchanged. -->
+         <receiver
+-            android:name=".home.PanelRequestReceiver"
++            android:name=".home.HbPanelRequestReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.SHOW_PANEL">
+             <intent-filter>
+                 <action android:name="org.lumen.projector.action.SHOW_PANEL" />
+-                <!-- the remote's 3D key (lumen-remote key action "3d", org.lumen.menu.MenuRequest.QUICK_3D) -->
+-                <action android:name="org.lumen.projector.action.QUICK_3D" />
+             </intent-filter>
+         </receiver>
++        <!-- HB OTA (OTA_CLIENT.md S5): org.lumen.updater (LumenUpdater, Ota.setBusy) reports busy / restart when
++             turned off; StrGate keeps the SoC out of STR while busy. -->
+         <receiver
+             android:name=".power.OtaStateReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.OTA_STATE">
+             <intent-filter>
+@@ -325,8 +342,17 @@
+ 
+         <!-- v6.5 review: "is the lamp-only standby active?" for org.lumen.tvinput (call() only, method
+              standby_state; the signature permission STANDBY_STATE is checked in call()). -->
++        <!-- Z9X HB: the Lumen Home tiles this projector does not offer (caps) and "no battery", for Lumen Home
++             (apps/LumenHome ProjectorBridge; the Play 6 contract): read only, no HAL call, so no permission. -->
+         <provider
++            android:name=".device.DeviceStateProvider"
++            android:directBootAware="false"
++            android:authorities="org.lumen.projector.device"
++            android:exported="true" />
++
++        <provider
+             android:name=".power.StandbyStateProvider"
++            android:directBootAware="false"
+             android:authorities="org.lumen.projector.standbystate"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.STANDBY_STATE" />
+@@ -334,11 +360,13 @@
+         <!-- GLOBAL_BUTTON from PhoneWindowManager (explicit, protected): no intent-filter. -->
+         <receiver
+             android:name=".KeyReceiver"
++            android:directBootAware="false"
+             android:exported="false" />
+ 
+         <!-- Source overlay on request of org.lumen.tvinput (signature permission, see above). -->
+         <receiver
+             android:name=".source.SourceRequestReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.SHOW_SOURCE">
+             <intent-filter>
+@@ -349,6 +377,7 @@
+         <!-- Shared notification card on request of org.lumen.tvinput (signature permission). -->
+         <receiver
+             android:name=".ui.NotifyRequestReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.NOTIFY">
+             <intent-filter>
+@@ -359,6 +388,7 @@
+         <!-- ===== v6.2 module "game" BEGIN: HDMI session / CEC events from org.lumen.tvinput ===== -->
+         <receiver
+             android:name=".game.HdmiEventReceiver"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="org.lumen.projector.permission.HDMI_EVENT">
+             <intent-filter>
+@@ -367,9 +397,11 @@
+         </receiver>
+         <!-- ===== v6.2 module "game" END ===== -->
+ 
+-        <!-- Protected system broadcasts only; system_server may deliver to non-exported receivers. -->
++        <!-- Protected system broadcasts only; system_server may deliver to non-exported receivers. Direct boot
++             aware: LOCKED_BOOT_COMPLETED reaches it before unlock (from HbBoot). -->
+         <receiver
+             android:name=".BootReceiver"
++            android:directBootAware="true"
+             android:exported="false">
+             <intent-filter>
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+@@ -384,6 +416,7 @@
+              No new permission: WRITE_DREAM_STATE / WRITE_SECURE_SETTINGS / WRITE_SETTINGS are held. -->
+         <service
+             android:name=".dream.ClockDream"
++            android:directBootAware="false"
+             android:exported="true"
+             android:label="@string/dream_label"
+             android:permission="android.permission.BIND_DREAM_SERVICE">
+@@ -401,6 +434,7 @@
+              BIND_DREAM_SERVICE permission, Lineage 21 DreamManagerService.java:580-593). -->
+         <service
+             android:name=".dream.StandbyIdleDream"
++            android:directBootAware="false"
+             android:exported="true"
+             android:permission="android.permission.BIND_DREAM_SERVICE" />
+         <!-- ===== v6.2 module "screensaver" END ===== -->

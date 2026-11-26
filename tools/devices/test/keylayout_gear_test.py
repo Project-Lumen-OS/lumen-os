@@ -20,11 +20,11 @@ GEAR_HOLD = "TV_MEDIA_CONTEXT_MENU"
 LAYOUTS = ["overlay/v1/keylayout", "overlay/play6/keylayout"]
 GLOBAL_KEYS = ["apps/Z9xFrameworkKeysOverlay/res/xml/global_keys.xml", "apps/common/overlay/xml/global_keys.xml",
                "apps/HbFrameworkOverlay/res/xml/global_keys.xml", "apps/Play6FrameworkOverlay/res/xml/global_keys.xml"]
-RECEIVERS = ["apps/ProjectorBase/src/org/lumen/projector", "apps/HbProjector/src/org/lumen/projector",
-             "apps/Play6Projector/src/org/lumen/projector"]
+# one KeyReceiver of the gmpf families in the core since the one projector app (the HB took its fork back)
+RECEIVERS = ["apps/LumenProjector/core/src/org/lumen/projector"]   # the Play 6 takes the core one since step 3b part 4
 # the eye guard each of those apps runs: the HB app takes the Z9X one (no fork; its short gear press on the mask is
 # the profile's keys.eye_gear_short)
-EYE_GUARDS = {"apps/HbProjector/src/org/lumen/projector": "apps/ProjectorBase/src/org/lumen/projector"}
+EYE_GUARDS = {}
 LINE = re.compile(r"^key\s+(\d+)\s+(\S+)(.*)$")
 
 

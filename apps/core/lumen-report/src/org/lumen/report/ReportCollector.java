@@ -59,19 +59,26 @@ import java.util.TimeZone;
  *   summary.txt          kind, model, versions, build, slot, trial or installed, uptime, boot reason, memory, storage,
  *                        displays, thermal status, network TYPE only, section status
  *   props.txt            allow-listed system properties (PropFilter: build, boot, Lumen, display; never serial / MAC)
- *   logcat.txt           main + system, last LOG_MINUTES minutes, system and image apps only (LogcatFilter)
+ *   logcat.txt           main + system + events of the whole buffer, system and image apps only (LogcatFilter)
  *   logcat_crash.txt     crash buffer of this boot (any app)
- *   logcat_kernel.txt    kernel buffer, last LOG_MINUTES minutes (often empty: logd.kernel off)
+ *   logcat_kernel.txt    the kernel log of this start (dmesg)
  *   previous_boot/       logcat -L (pstore pmsg), pstore console, /proc/last_kmsg, z9x_diag summaries (best effort)
  *   ota_log.txt          updater / update_engine lines of the whole log buffer
  *   dropbox/             crash, ANR, watchdog, tombstone, last kmsg and boot entries of the last 7 days
  *   exit_reasons.txt     ApplicationExitInfo of the last 7 days (all apps with DUMP, else ours)
+ *   hdmi.txt             dumpsys hdmi_control (CEC devices, power status, System Audio, ARC, the last CEC messages),
+ *                        the CEC messages of logcat.txt with the power polls counted (CecJournal) and the HDMI / ARC /
+ *                        System Audio lines of dumpsys audio (HdmiDump)
+ *   power.txt            dumpsys power without the wake lock and uid lists (PowerDump)
  * An automatic report (ReportKind CRASH / ANR / BOOT) is smaller: summary.txt with the incidents, props.txt,
- * logcat.txt and logcat_crash.txt of the last AUTO_LOG_MINUTES minutes and dropbox/ of the last day, all of them
+ * logcat.txt and logcat_crash.txt (the newest lines that fit its zip) and dropbox/ of the last day, all of them
  * limited to the system and the image's own apps (crash records of apps the user installed stay out too).
  * After an unexpected stop of the last start (Alive) it also holds unexpected_stop.txt (last sign of life, app in
  * front, input, boot reasons, in plain English), previous_boot/ (its log lines filtered the automatic way) and the
  * SYSTEM_BOOT and SYSTEM_LAST_KMSG records of this start even without a panic.
+ * The logs, the kernel log and the dumpsys texts come from the image's root log helper (RootLogs, never a dialog
+ * to the user); only when it gives no answer the app runs logcat itself (then logcat.txt may hold this app's lines
+ * only, summary.txt says so).
  * Every line passes the Scrubber. Every section is best effort: a failure is a line in summary.txt
  * (Android 14 SELinux keeps pstore and /metadata from a platform app; that is expected, not an error).
  * Permissions used (README): READ_LOGS (logcat of other processes, DropBox), PACKAGE_USAGE_STATS (DropBox), DUMP
@@ -118,6 +125,10 @@ final class ReportCollector {
     private final StringBuilder notes = new StringBuilder();
     private Set<Integer> imageAppIds = Collections.emptySet();
     private String bluetoothLine = "";
+    /** The log helper's dumpsys texts by service (RootLogs.DUMPSYS), for hdmi(); empty without its answer. */
+    private final java.util.Map<String, String> dumps = new java.util.HashMap<>();
+    /** The CEC messages of logcat.txt for hdmi.txt (CecJournal), fed while logcat.txt is written. */
+    private final CecJournal cec = new CecJournal();
 
     ReportCollector(Context c, File dir, Progress progress, ReportKind kind, List<Incident> incidents) {
         this.c = c.getApplicationContext();
@@ -145,15 +156,14 @@ final class ReportCollector {
         props();
 
         step(3);
-        logcat("logcat.txt", ReportConfig.CAP_LOGCAT, manual ? ReportConfig.LOGCAT_TIMEOUT_MS : ReportConfig.SHORT_EXEC_TIMEOUT_MS,
-                true, "-d", "-b", "main,system", "-v", "threadtime", "-v", "uid", "-t", since);
-        logcat("logcat_crash.txt", 512L << 10, ReportConfig.SHORT_EXEC_TIMEOUT_MS, false,
-                "-d", "-b", "crash", "-v", "threadtime", "-v", "uid");
+        boolean root = rootLogs(since);
 
         if (manual) {
             step(4);
-            logcat("logcat_kernel.txt", ReportConfig.CAP_KERNEL, ReportConfig.SHORT_EXEC_TIMEOUT_MS, false,
-                    "-d", "-b", "kernel", "-v", "threadtime", "-v", "uid", "-t", since);
+            if (!root) {
+                logcat("logcat_kernel.txt", ReportConfig.CAP_KERNEL, ReportConfig.SHORT_EXEC_TIMEOUT_MS, false,
+                        "-d", "-b", "kernel", "-v", "threadtime", "-v", "uid", "-t", since);
+            }
 
             step(5);
             previousBoot();
@@ -164,6 +174,7 @@ final class ReportCollector {
                     "-s", "z9x_ota:V", "LumenUpdater:V", "update_engine:V", "update_verifier:V");
             textFile("ota_gate_log.txt", "/metadata/z9x_ota/log.txt", ReportConfig.CAP_OTA);
             miracastDiag();
+            hdmi();
         } else if (stop != null) {
             parts.add(ReportZip.Part.text("unexpected_stop.txt", scrubber.scrubText(stop.detail)));
             note("unexpected_stop.txt: the last start ended without a shutdown");
@@ -324,49 +335,88 @@ final class ReportCollector {
     }
 
     // ------------------------------------------------------------------ logcat
+    /** The root log helper's properties (RootLogs). */
+    private static final RootLogs.Props PROPS = new RootLogs.Props() {
+        @Override public String get(String k) { return ReportConfig.prop(k); }
+
+        @Override public void set(String k, String v) { android.os.SystemProperties.set(k, v); }
+    };
+
+    /**
+     * The logs of this start from the image's root log helper: logcat.txt and logcat_crash.txt, for a manual report
+     * also the kernel log and the dumpsys summaries. Without an answer (an image without the helper, busy, a timeout)
+     * the app runs logcat itself, which Android limits to this app's own lines on most models. True = the helper's.
+     */
+    private boolean rootLogs(String since) throws IOException {
+        String token = RootLogs.token(SystemClock.uptimeMillis());
+        RootLogs.Answer a = RootLogs.request(PROPS, new RootLogs.Clock() {
+            @Override public long now() { return SystemClock.uptimeMillis(); }
+
+            @Override public boolean sleep(long ms) {
+                try {
+                    Thread.sleep(ms);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+                return !progress.isCanceled();
+            }
+        }, token, RootLogs.TIMEOUT_MS);
+        if (a == RootLogs.Answer.CANCELED || progress.isCanceled()) throw new CanceledException();
+        File root = new File(RootLogs.DIR);
+        if (a == RootLogs.Answer.OK && RootLogs.fresh(root, token)) {
+            try {
+                filtered("logcat.txt", ReportConfig.CAP_LOGCAT, new File(root, RootLogs.LOGCAT), true);
+                filtered("logcat_crash.txt", ReportConfig.CAP_CRASH, new File(root, RootLogs.CRASH), false);
+                if (manual) {
+                    textFile("logcat_kernel.txt", new File(root, RootLogs.KERNEL).getPath(), ReportConfig.CAP_KERNEL);
+                    for (String s : RootLogs.DUMPSYS) dumps.put(s, readText(new File(root, s + ".txt"), HdmiDump.CAP * 4));
+                }
+            } finally {
+                RootLogs.ack(PROPS, token);
+            }
+            note("logs: the image's log helper (full system log)");
+            return true;
+        }
+        note("logs: the image's log helper gave no logs (" + (a == RootLogs.Answer.OK ? "old files" : a.name().toLowerCase(Locale.US))
+                + "), the app's own logcat instead");
+        logcat("logcat.txt", ReportConfig.CAP_LOGCAT, ReportConfig.SHORT_EXEC_TIMEOUT_MS,
+                true, "-d", "-b", "main,system", "-v", "threadtime", "-v", "uid", "-t", since);
+        logcat("logcat_crash.txt", ReportConfig.CAP_CRASH, ReportConfig.SHORT_EXEC_TIMEOUT_MS, false,
+                "-d", "-b", "crash", "-v", "threadtime", "-v", "uid");
+        return false;
+    }
+
+    /** A helper file through LogcatFilter and the Scrubber, like a logcat run of the app. */
+    private void filtered(String name, long cap, File in, boolean expectOthers) throws IOException {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(in),
+                StandardCharsets.UTF_8), 64 * 1024)) {
+            keepLines(name, cap, r, expectOthers, null, 0);
+        } catch (CanceledException e) {
+            throw e;
+        } catch (IOException e) {
+            if (progress.isCanceled()) throw new CanceledException();
+            note(name + ": failed (" + e.getMessage() + ")");
+        }
+    }
+
     /**
      * Runs logcat with {@code args}, keeps the lines LogcatFilter allows (crash and kernel buffers are not
      * uid-filtered by the filter itself: crash = any app by design; kernel = uid 0), scrubs them into a file.
      */
     private void logcat(String name, long cap, long timeoutMs, boolean expectOthers, String... args) throws IOException {
-        File out = new File(dir, name.replace('/', '_'));
         List<String> cmd = new ArrayList<>();
         cmd.add("/system/bin/logcat");
         Collections.addAll(cmd, args);
-        LogcatFilter f = new LogcatFilter(imageAppIds, android.os.Process.myUid(), manual);
         Process p = null;
         Timeout kill = null;
-        long lines = 0;
-        String odd = null;
         try {
             p = new ProcessBuilder(cmd).redirectErrorStream(true).start();
             progress.setProcess(p);
             kill = Timeout.start(p, timeoutMs);
-            try (BufferedReader r = reader(p); Writer w = writer(out)) {
-                String line;
-                while ((line = r.readLine()) != null) {
-                    if ((++lines & 1023) == 0 && progress.isCanceled()) throw new CanceledException();
-                    if (!f.keep(line)) {
-                        // logcat's own error message (no log prefix) is worth a note, never the line itself
-                        if (odd == null && !line.isEmpty() && !Character.isDigit(line.charAt(0))) {
-                            odd = line.length() > 120 ? line.substring(0, 120) : line;
-                        }
-                        continue;
-                    }
-                    w.write(scrubber.scrub(line));
-                    w.write('\n');
-                }
+            try (BufferedReader r = reader(p)) {
+                keepLines(name, cap, r, expectOthers, kill, timeoutMs);
             }
-            parts.add(ReportZip.Part.file(name, out, cap));
-            StringBuilder n = new StringBuilder(name).append(": ").append(f.kept()).append(" lines kept, ")
-                    .append(f.dropped()).append(" left out");
-            if (expectOthers) {
-                n.append(f.sawOtherProcesses() ? ", full log access"
-                        : ", LIMITED log access (only this app's lines: the log access request was refused or not shown)");
-            }
-            if (kill.fired) n.append(", stopped after ").append(timeoutMs / 1000).append(" s");
-            if (f.kept() == 0 && odd != null) n.append(", logcat said: ").append(scrubber.scrub(odd));
-            note(n.toString());
         } catch (CanceledException e) {
             throw e;
         } catch (IOException e) {
@@ -377,7 +427,44 @@ final class ReportCollector {
         }
     }
 
-    /** Destroys a child process that runs too long (logcat waiting for an unanswered log access dialog). */
+    /** The system log section, also the source of the CEC journal. */
+    private static final String LOGCAT = "logcat.txt";
+
+    private void keepLines(String name, long cap, BufferedReader r, boolean expectOthers, Timeout kill, long timeoutMs)
+            throws IOException {
+        File out = new File(dir, name.replace('/', '_'));
+        LogcatFilter f = new LogcatFilter(imageAppIds, android.os.Process.myUid(), manual);
+        long lines = 0;
+        String odd = null;
+        try (Writer w = writer(out)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                if ((++lines & 1023) == 0 && progress.isCanceled()) throw new CanceledException();
+                if (!f.keep(line)) {
+                    // logcat's own error message (no log prefix) is worth a note, never the line itself
+                    if (odd == null && !line.isEmpty() && !Character.isDigit(line.charAt(0))) {
+                        odd = line.length() > 120 ? line.substring(0, 120) : line;
+                    }
+                    continue;
+                }
+                String kept = scrubber.scrub(line);
+                w.write(kept);
+                w.write('\n');
+                if (LOGCAT.equals(name)) cec.add(kept);
+            }
+        }
+        parts.add(ReportZip.Part.file(name, out, cap));
+        StringBuilder n = new StringBuilder(name).append(": ").append(f.kept()).append(" lines kept, ")
+                .append(f.dropped()).append(" left out");
+        if (expectOthers) {
+            n.append(f.sawOtherProcesses() ? ", full log access" : ", LIMITED log access (only this app's lines)");
+        }
+        if (kill != null && kill.fired) n.append(", stopped after ").append(timeoutMs / 1000).append(" s");
+        if (f.kept() == 0 && odd != null) n.append(", logcat said: ").append(scrubber.scrub(odd));
+        note(n.toString());
+    }
+
+    /** Destroys a child process that runs too long. */
     private static final class Timeout implements Runnable {
         private final Process p;
         volatile boolean fired;
@@ -427,6 +514,35 @@ final class ReportCollector {
             note("miracast_diag.txt: " + text.length() + " chars");
         } catch (Throwable t) {
             note("miracast_diag.txt: not readable (" + t.getClass().getSimpleName() + ")");
+        }
+    }
+
+    /**
+     * hdmi.txt and power.txt (manual): the HDMI-CEC state and history of system_server and the HDMI lines of the audio
+     * service (HdmiDump), the power state without the app lists (PowerDump), from the dumps of the image's log helper
+     * (RootLogs, read in rootLogs), and the CEC journal fed while logcat.txt was written (log.tag.HDMI lines).
+     */
+    private void hdmi() {
+        String cec = dumps.get("hdmi_control"), audio = dumps.get("audio"), power = dumps.get("power");
+        String journal = this.cec.text(ReportConfig.prop(CecJournal.TAG_PROP));
+        parts.add(ReportZip.Part.text("hdmi.txt", scrubber.scrubText(HdmiDump.text(cec, journal, audio))));
+        parts.add(ReportZip.Part.text("power.txt", scrubber.scrubText(PowerDump.text(power))));
+        note("hdmi.txt: hdmi_control " + (cec == null ? "not readable" : cec.length() + " chars")
+                + ", system log CEC messages " + this.cec.messages()
+                + ", audio " + (audio == null ? "not readable" : audio.length() + " chars")
+                + "; power.txt: " + (power == null ? "not readable" : power.length() + " chars"));
+    }
+
+    /** A helper file as text, at most {@code max} characters; null when it is not readable. */
+    private static String readText(File f, int max) {
+        try (java.io.Reader r = new InputStreamReader(new java.io.FileInputStream(f), StandardCharsets.UTF_8)) {
+            StringBuilder sb = new StringBuilder();
+            char[] buf = new char[8192];
+            int n;
+            while (sb.length() < max && (n = r.read(buf)) > 0) sb.append(buf, 0, n);
+            return sb.toString();
+        } catch (IOException | RuntimeException e) {
+            return null;
         }
     }
 

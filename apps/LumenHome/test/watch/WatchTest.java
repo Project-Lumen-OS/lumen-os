@@ -195,6 +195,32 @@ public final class WatchTest {
         check(!WatchPick.inInstalledProvider(t, Arrays.asList(115), d), "Okko is not installed");
         eq(WatchPick.installedProviderIds(t, d), Collections.singletonList(117), "discover by the installed official apps");
         eq(WatchPick.installedProviderIds(t, z), Collections.emptyList(), "no official app: no discover");
+        canPlay(t);
+    }
+
+    /** The showcase shows TMDB titles only while an installed official or catalogue app can open one. */
+    static void canPlay(WatchApps t) {
+        check(!WatchPick.canPlay(t, new Dev()), "no app at all: no films");
+        check(!WatchPick.canPlay(t, new Dev("com.google.android.youtube.tv", "org.smarttube.stable", "com.vk.tv")),
+                "YouTube, SmartTube and VK only: no films (platforms never count)");
+        check(!WatchPick.canPlay(t, new Dev("com.android.vending", "com.spotify.tv.android")), "apps outside the table: no films");
+        check(WatchPick.canPlay(t, new Dev("top.rootu.lampa")), "Lampa installed: films");
+        check(WatchPick.canPlay(t, new Dev("ru.kinopoisk.tv")), "Kinopoisk installed: films");
+        check(WatchPick.canPlay(t, new Dev("dkc.video.beta_vbox", "com.vk.tv")), "a second package of a catalogue row: films");
+        Dev broken = new Dev("top.rootu.lampa", "ru.kinopoisk.tv", "com.google.android.youtube.tv");
+        broken.broken.add("top.rootu.lampa");
+        broken.broken.add("ru.kinopoisk.tv");
+        check(!WatchPick.canPlay(t, broken), "players whose intents do not resolve: no films");
+        broken.broken.remove("ru.kinopoisk.tv");
+        check(WatchPick.canPlay(t, broken), "one working player is enough");
+        WatchApps l = WatchApps.parse("a.b\tA\tв A\tcatalog\t-\tlaunch\nc.d\tC\tв C\tprovider\t9\tlaunch\n");
+        check(!WatchPick.canPlay(l, new Dev("a.b", "c.d")), "apps that only launch: no films");
+        for (WatchApps.Row r : t.rows()) {
+            Dev only = new Dev(r.pkgs.get(0));
+            boolean plays = WatchPick.canPlay(t, only);
+            if (r.kind == WatchApps.Kind.PLATFORM) check(!plays, "platform alone shows no films: " + r);
+            else check(plays, "a player alone shows films: " + r);
+        }
     }
 
     static void searchOrder(WatchApps t) {
@@ -255,6 +281,25 @@ public final class WatchTest {
         check(home.contains("WatchLaunch.open(this, k)") && !home.contains("new Intent(this, SearchActivity.class).putExtra(SearchManager.QUERY, k.title)"),
                 "hero: Смотреть goes through the watch pick");
         check(src("ui/ShelfView.java").contains("mBtn[0].setText(watch)"), "hero: the button says where it opens");
+        String tr = src("tmdb/Trending.java");
+        String load = body(tr, "public static List<Card> load(Context c) {");
+        String refresh = body(tr, "public static boolean refresh(Context c) {");
+        String gate = "if (!WatchPick.canPlay(table, dev))";
+        check(load.contains(gate + " return new ArrayList<>();") && load.indexOf(gate) < load.indexOf("read(new File("),
+                "showcase: without a player no TMDB titles, even from the cache");
+        check(refresh.contains(gate + " {") && refresh.indexOf(gate) < refresh.indexOf("TmdbKey.read(c)")
+                && refresh.indexOf(gate) < refresh.indexOf("fetch("), "showcase: without a player no TMDB request");
+        check(home.contains("loadSoon(watchApp(i));") && home.contains("WatchLaunch.table(this).of(pkg) != null"),
+                "showcase: a player added or removed reloads with the network lane");
+        check(body(home, "private void unlocked() {").contains("load(true);"), "showcase: decided again after the unlock");
+    }
+
+    /** The text of a method from its signature to its closing brace at the method indent. */
+    static String body(String src, String sig) {
+        int at = src.indexOf(sig);
+        if (at < 0) return "";
+        int end = src.indexOf("\n    }\n", at);
+        return end < 0 ? src.substring(at) : src.substring(at, end);
     }
 
     // ------------------------------------------------------------------ hero rebinding

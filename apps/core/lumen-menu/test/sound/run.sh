@@ -18,8 +18,10 @@ trap 'rm -rf "$OUT" "$TREE"' EXIT
 SRC="$HERE/src/org/lumen/projector"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$SRC/panel/SoundState.java" "$SRC/audio/AudioPortRules.java" \
-  "$T/AudioPortRulesProbe.java" "$T/SoundStateTest.java"
+  "$SRC/audio/EqWrite.java" "$SRC/audio/WakeReapply.java" "$SRC/hal/AudioPath.java" "$SRC/panel/RepaintGate.java" \
+  "$T/AudioPortRulesProbe.java" "$T/EqWriteProbe.java" "$T/WakeReapplyProbe.java" "$T/SoundStateTest.java" "$T/RepaintGateTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.SoundStateTest
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.RepaintGateTest
 QPC="$SRC/panel/Z9xMenuRules.java"            # the Z9X rules of the shared menu (1.0.10 QuickPanelController rules)
 EQP="$SRC/panel/Z9xMenuPages.java"
 ZF="$SRC/panel/Z9xSoundRows.java"                # the sound section of the Z9X adapter (Z9xFeatures)
@@ -42,16 +44,21 @@ users=$(grep -rlF 'registerAudioDeviceCallback(' "$SRC" --include=*.java | sed "
 callers=$(grep -rlF 'EarcLink.install(' "$SRC" --include=*.java | sed "s|$SRC/||" | sort | tr '\n' ' ')
 [ "$callers" = "App.java " ] || fail "EarcLink.install called from: $callers(want App.java, through AudioPorts.whenUp)"
 grep -rlF 'registerAudioPortUpdateListener(' "$SRC" --include=*.java && fail "an audio port listener outside AudioPorts"
-n=$(grep -c 'AudioPorts.registerDeviceCallback(sApp, new AudioDeviceCallback() {' "$SRC/audio/AudioOutputChoice.java")
-[ "$n" = 1 ] || fail "AudioOutputChoice: $n callbacks through AudioPorts (want 1)"
+n=$(grep -c 'Family.registerAudioDevices(sApp, new AudioDeviceCallback() {' "$SRC/audio/AudioOutputChoice.java")
+[ "$n" = 1 ] || fail "AudioOutputChoice: $n callbacks through the family (want 1)"
 # the path reporter is the vendor adapter of lumen-audio PathSwitch: the switch's device callback through AudioPorts too
-n=$(grep -c 'AudioPorts.registerDeviceCallback(app, cb, h, "AudioPathReporter");' "$SRC/audio/AudioPathReporter.java")
-[ "$n" = 1 ] || fail "AudioPathReporter: $n device callbacks through AudioPorts (want 1)"
-grep -A2 'org.lumen.projector.audio.AudioPorts.whenUp(this, new android.os.Handler(android.os.Looper.getMainLooper()),' "$SRC/App.java" \
-  | grep -qF '"EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));' || fail "EarcLink installed before the audio policy answers"
+n=$(grep -c 'Family.registerAudioDevices(app, cb, h, "AudioPathReporter");' "$SRC/audio/AudioPathReporter.java")
+[ "$n" = 1 ] || fail "AudioPathReporter: $n device callbacks through the family (want 1)"
+# the Z9X family registers it behind the audio policy check (AudioPorts), apps/LumenProjector/vendor/xgimi/hidl-gmpf Family
+n=$(grep -c 'AudioPorts.registerDeviceCallback(app, cb, h, tag);' "$G/apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/Family.java")
+[ "$n" = 1 ] || fail "Z9X Family: $n device callbacks through AudioPorts (want 1)"
+ZFAM="$G/apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/Family.java"
+grep -qF 'Family.whenAudioUp(this, "EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));' "$SRC/App.java" \
+  && grep -qF 'AudioPorts.whenUp(app, new Handler(android.os.Looper.getMainLooper()), tag, r);' "$ZFAM" \
+  || fail "EarcLink installed before the audio policy answers"
 n=$(grep -c 'EarcLink.install(' "$SRC/App.java" || true)
-[ "$n" = 1 ] && grep 'EarcLink.install(' "$SRC/App.java" | grep -qF '"EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));' \
-  || fail "EarcLink installed outside AudioPorts.whenUp ($n calls in App)"
+[ "$n" = 1 ] && grep 'EarcLink.install(' "$SRC/App.java" | grep -qF 'Family.whenAudioUp(this, "EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));' \
+  || fail "EarcLink installed outside the family's whenAudioUp ($n calls in App)"
 has "$AP" 'next = AudioPortRules.backoffMs(sFailures);' "probe delay not from AudioPortRules.backoffMs"
 has "$AP" 'boolean up = AudioPortRules.policyUp(outputs);' "policy check not from AudioPortRules.policyUp"
 has "$AP" 'sProbe.postDelayed(AudioPorts::probe, next);' "no back-off between probes"
@@ -80,11 +87,43 @@ for d in ['values'] + dirs:
 print('trial strings: %d dirs' % (len(dirs) + 1)) if not bad else None
 sys.exit(bad)
 EOF
-# ---- HB: these Z9X files stay out of the HB app (the HB keeps its own forks)
+# ---- the equalizer page (owner 1.1.0-beta2: the preset blinks and cannot be changed): a repaint never reads again
+MC="$SRC/panel/MenuController.java"
+has "$MC" 'if (repaint.quiet()) return;' "refresh() reads during a repaint (the shown hook of a repaint reads again)"
+has "$MC" 'repaint.repaint(() -> p.refreshPage());' "refreshPage(Page) repaints outside the gate (equalizer page read loop)"
+has "$MC" 'repaint.repaint(() -> p.refreshPage(focus));' "refreshPage(Page, focus) repaints outside the gate"
+has "$MC" 'repaint.repaint(() -> p.refreshPage(QpdLayout.popupFocus(' "apply() repaints outside the gate"
+n=$(grep -cE '(^|[^.])\bpanel\.refreshPage\(' "$MC" || true)
+[ "$n" -le 5 ] || fail "MenuController: $n direct panel.refreshPage calls (new repaints must go through refreshPage(Page) or the gate)"
+has "$EQP" 'if (!SoundState.eqKeepRows(mode, eqMode, eqBands.isBusy(), eqPreset.isCommitPending())) {' "a read puts the saved preset back over a pending step"
+has "$EQP" 'eqPage.setOnShown(() -> { if (menu != null) menu.refresh(); });' "the equalizer page no longer reads when shown"
+has "$EQP" 'if (menu != null) menu.refreshPage(eqPage);' "applyEq no longer repaints through MenuController.refreshPage"
+# ---- a flat equalizer costs no call stock does not make (42 alone, 44 + 27 alone, 61 alone)
+SEQ="$SRC/audio/SoundEq.java"
+has "$SEQ" 'if (EqWrite.plan(kind, true, sOnByUs, false) == EqWrite.NOTHING) return WakeReapply.WRITTEN;' "flat curve not planned by EqWrite"
+has "$SEQ" 'if (EqWrite.plan(kind, false, sOnByUs, same) == EqWrite.NOTHING) {' "curve dedup not planned by EqWrite"
+[ "$(grep -c 'apply(g, why, KIND_VENDOR);' "$SEQ")" = 2 ] || fail "afterVendorCall / afterUserModeChange not KIND_VENDOR (a flat EQ sends 51(false) after 42, 27, 61)"
+has "$ZF" 'SoundEq.afterVendorCall(g, "42(" + on + ")");' "volume leveling no longer re-applies a user curve after 42"
+# ---- a wake re-applies once (stock restores once): the SCREEN_ON schedules come from WakeReapply, no ARC write
+AIS="$SRC/audio/AiSoundEngine.java"
+P6EQ="$G/apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/audio/P6SoundEq.java"
+grep -qE 'SCREEN_ON(_RESEND)?_MS = \{' "$SEQ" "$AIS" "$P6EQ" && fail "a fixed SCREEN_ON re-apply schedule is back"
+has "$SEQ" 'for (long d : WakeReapply.screenOn(VendorSoundWatch.watching())) reapply("screen on", d, 0);' "SoundEq wake re-apply not from WakeReapply"
+has "$SEQ" 'if (kind != KIND_FORCE && WakeReapply.skipOutput(AudioPathReporter.confirmedPath())) {' "SoundEq writes the speaker EQ on HDMI ARC"
+has "$SEQ" 'if (WakeReapply.retry(outcome, attempt)) reapply(why + " (retry, the HAL refused)", WakeReapply.RETRY_MS, attempt + 1);' "SoundEq retry not from WakeReapply"
+has "$AIS" 'for (long d : WakeReapply.screenOn(watching)) resend("screen on +" + d / 1000 + " s", d, true);' "AiSoundEngine wake re-send not from WakeReapply"
+has "$AIS" 'resend("HAL reconnected", WakeReapply.SCREEN_ON_MS, false);' "AiSoundEngine re-sends more than once after a HAL reconnect"
+has "$AIS" 'if (onlyUnconfirmed && sConfirmed) return;' "AiSoundEngine wake re-send after the sub-mode was already confirmed"
+has "$P6EQ" 'for (long d : WakeReapply.screenOn(false)) Hal.runDelayed((g, g2) -> wake(app, g, 0), d);' "Play 6 EQ wake re-apply not from WakeReapply"
+has "$P6EQ" 'if (WakeReapply.retry(apply(app, g, false, "screen on" + (attempt > 0 ? " (retry, the HAL refused)" : "")), attempt))' "Play 6 EQ retry not from WakeReapply"
+grep -qxF 'src/org/lumen/projector/audio/WakeReapply.java' "$G/devices/dragon_healthy/app/Play6Projector.gmpf" || fail "the Play 6 recipe lacks WakeReapply"
+# ---- HB: the audio ports part of the core stays out of the HB app (its feature audio-ports, core.features)
 HB="$G/devices/goat_elegant/app/HbProjector.layers"
-for l in 'drop      src/org/lumen/projector/audio/AudioPorts.java' 'drop      src/org/lumen/projector/audio/AudioPortRules.java' \
-         'drop      res/values*/strings_trial.xml'; do
-  grep -qxF -- "$l" "$HB" || fail "HB recipe: missing '$l'"
+F="$G/apps/LumenProjector/core.features"
+for p in src/org/lumen/projector/audio/AudioPorts.java src/org/lumen/projector/audio/AudioPortRules.java \
+         'res/values*/strings_trial.xml'; do
+  grep -qE "^audio-ports .*$(printf '%s' "$p" | sed 's/[*.]/\\&/g')" "$F" || fail "core.features: $p is not part of audio-ports"
 done
+grep -qE '^feature .*\baudio-ports\b' "$HB" && fail "HB recipe: takes the feature audio-ports"
 [ $bad = 0 ] && echo "sound wiring: ok"
 exit $bad

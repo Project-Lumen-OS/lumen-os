@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">家長設定</string>
-    <string name="lumen_lp_intro">限制孩子可以開啟的內容和觀看時長。</string>
     <string name="lumen_lp_lock">兒童鎖</string>
-    <string name="lumen_lp_lock_desc">開啟後，可設定管控範圍、使用時長等</string>
     <string name="lumen_lp_lock_off_title">關閉兒童鎖？</string>
     <string name="lumen_lp_lock_off_text">關閉後，時長限制和開機密碼將失效。進入家長設定不需要密碼驗證。</string>
-    <string name="lumen_lp_turn_off">關閉</string>
-    <string name="lumen_lp_cancel">取消</string>
     <string name="lumen_lp_child_mode">兒童模式</string>
     <string name="lumen_lp_child_apps">兒童模式應用程式</string>
     <string name="lumen_lp_child_apps_count">已選 %1$d 個</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">僅兒童模式</string>
     <string name="lumen_lp_range_global">全域</string>
     <string name="lumen_lp_session">單次使用時長</string>
-    <string name="lumen_lp_session_desc">超過後需休息 10 分鐘</string>
     <string name="lumen_lp_daily">全天使用時長</string>
     <string name="lumen_lp_no_limit">不限制</string>
     <string name="lumen_lp_minutes">%1$d 分鐘</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">本次使用已到時，請休息 10 分鐘</string>
     <string name="lumen_lp_rest_daily">今日觀看時長已用完</string>
     <string name="lumen_lp_rest_unlock">解鎖</string>
-    <string name="lumen_lp_on">開</string>
-    <string name="lumen_lp_off">關</string>
 </resources>

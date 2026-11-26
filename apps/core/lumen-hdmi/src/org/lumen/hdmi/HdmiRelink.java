@@ -24,8 +24,10 @@ import java.util.List;
  * version and, {@value HdmiLink#FLIP_HOLD_MS} ms later, the user's version again: the source sees two HPD pulses,
  * reads the EDID again and authenticates again, as after a replug.
  *
- * <p>While tvinput shows an HDMI port, getSignalStatus (Z9X IGmpf 592, HB and X50 family TV 106) is read every
- * {@value #TICK_MS} ms on the host's HAL thread. One relink per session, at most {@value HdmiLink#MAX_PER_BOOT} per
+ * <p>While tvinput shows an HDMI port and the picture is not known to be stable, getSignalStatus (Z9X IGmpf 592, HB and
+ * X50 family TV 106) is read every {@value #TICK_MS} ms on the host's HAL thread. A stable read pauses the reads until
+ * the vendor's signal event ({@link #onTvEvent}) reports another status, a new session or a wake, as the stock HDMI
+ * player does ({@link HdmiLink#readDue}). One relink per session, at most {@value HdmiLink#MAX_PER_BOOT} per
  * boot, only when {@link HdmiLink#relinkNow}: no picture for {@value HdmiLink#NO_LOCK_MS} ms and a CEC device behind
  * the port reporting power on for as long (read every tick while there is no picture, so a console that just woke
  * gets its own 10 s and a source that is off or not there gets nothing), the screen on and out of the lamp-only
@@ -50,6 +52,8 @@ public final class HdmiRelink {
     private static int sSessionRelinks;
     private static int sBootRelinks;
     private static int sLastStatus = Integer.MIN_VALUE;
+    /** The last status a read or a vendor signal event gave in this session; UNKNOWN = not known, read again. */
+    private static int sKnown = HdmiLink.UNKNOWN;
     private static boolean sChecking;
 
     private HdmiRelink() {}
@@ -69,6 +73,7 @@ public final class HdmiRelink {
             final int[] ports = host.shownPorts(app);
             if (ports != null && ports.length > 0) sMain.post(() -> {
                 if (sPort == 0) begin(ports[0]);
+                SourceFollow.onSession(app, ports[0], true);
             });
         });
         Log.i(tag(), "armed: one EDID flip when a powered CEC source gives no picture for " + HdmiLink.NO_LOCK_MS / 1000
@@ -80,6 +85,7 @@ public final class HdmiRelink {
     /** game/HdmiEventReceiver: tvinput's session took (active) or released the HDMI hardware of {@code port}. */
     public static void onSessionEvent(int port, boolean active) {
         if (sApp == null) return;
+        SourceFollow.onSession(sApp, port, active);             // the watched device turning off puts us to sleep
         if (active) {
             if (port == sPort) return;
             begin(port);
@@ -88,6 +94,24 @@ public final class HdmiRelink {
             sPort = 0;
             sMain.removeCallbacks(TICK);
         }
+    }
+
+    /**
+     * A vendor GmTvManager event (any thread, the host's TV event sink): a signal report other than stable makes the
+     * next tick read again, a stable one pauses the reads.
+     */
+    public static void onTvEvent(int type, String msg) {
+        final Handler main = sMain;
+        if (sApp == null || main == null) return;
+        final int s = HdmiLink.afterEvent(HdmiLink.UNKNOWN, type, msg);
+        if (s == HdmiLink.UNKNOWN) return;
+        main.post(() -> {
+            if (sPort == 0 || s == sKnown) return;
+            if (!HdmiLink.readDue(sKnown) && HdmiLink.readDue(s)) {
+                Log.i(tag(), "HDMI " + sPort + " vendor signal status " + s + ": signal reads again");
+            }
+            sKnown = s;
+        });
     }
 
     /**
@@ -107,6 +131,7 @@ public final class HdmiRelink {
         sSourceOnSince = 0;
         sSessionRelinks = 0;
         sLastStatus = Integer.MIN_VALUE;
+        sKnown = HdmiLink.UNKNOWN;
         sChecking = false;
         restartTick(TICK_MS);
     }
@@ -132,8 +157,10 @@ public final class HdmiRelink {
         if (!awake()) {                                         // asleep or in the standby: the clocks start again
             sNoPictureSince = 0;
             sSourceOnSince = 0;
+            sKnown = HdmiLink.UNKNOWN;
             return;
         }
+        if (!HdmiLink.readDue(sKnown)) return;                  // a stable picture: no vendor read (stock)
         sHost.query(HdmiRelink::readStatus, st -> {
             if (gen != sGen || port != sPort) return;
             onStatus(port, gen, st == null ? HdmiLink.UNKNOWN : st);
@@ -143,9 +170,11 @@ public final class HdmiRelink {
     private static void onStatus(int port, int gen, int status) {
         long now = SystemClock.uptimeMillis();
         if (status != sLastStatus) {
-            Log.i(tag(), "HDMI " + port + " signal status " + status + (HdmiLink.stable(status) ? " (stable)" : ""));
+            Log.i(tag(), "HDMI " + port + " signal status " + status + (HdmiLink.stable(status)
+                    ? " (stable): signal reads paused until the vendor reports a change" : ""));
             sLastStatus = status;
         }
+        sKnown = status;
         sNoPictureSince = HdmiLink.noPictureSince(sNoPictureSince, status, now);
         if (sNoPictureSince == 0) {
             sSourceOnSince = 0;
@@ -264,7 +293,7 @@ public final class HdmiRelink {
 
     // ================================================================== helpers
 
-    private static String tag() {
+    static String tag() {
         RelinkHost h = sHost;
         return h == null ? "LumenRelink" : h.tag();
     }
@@ -285,7 +314,13 @@ public final class HdmiRelink {
     }
 
     /** The screen is on and the lamp-only standby is not running. */
-    private static boolean awake() {
+    /** The family flag of the {@code <Inactive Source>} rule (RelinkHost, off on every family). */
+    static boolean inactiveSourceSleep() {
+        RelinkHost h = sHost;
+        return h != null && h.inactiveSourceSleep();
+    }
+
+    static boolean awake() {
         try {
             PowerManager pm = sApp.getSystemService(PowerManager.class);
             if (pm != null && !pm.isInteractive()) return false;

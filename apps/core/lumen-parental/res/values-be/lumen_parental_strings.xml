@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Бацькоўскі кантроль</string>
-    <string name="lumen_lp_intro">Абмяжуйце, што дзеці могуць адкрываць і колькі часу глядзець.</string>
     <string name="lumen_lp_lock">Дзіцячы замок</string>
-    <string name="lumen_lp_lock_desc">Калі ўключаны, можна задаць вобласць кантролю, час прагляду і іншае</string>
     <string name="lumen_lp_lock_off_title">Выключыць дзіцячы замок?</string>
     <string name="lumen_lp_lock_off_text">Перастануць дзейнічаць абмежаванні часу і пароль пры ўключэнні. Бацькоўскія налады будуць адкрывацца без пароля.</string>
-    <string name="lumen_lp_turn_off">Выключыць</string>
-    <string name="lumen_lp_cancel">Скасаваць</string>
     <string name="lumen_lp_child_mode">Дзіцячы рэжым</string>
     <string name="lumen_lp_child_apps">Праграмы дзіцячага рэжыму</string>
     <string name="lumen_lp_child_apps_count">Выбрана: %1$d</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Толькі дзіцячы рэжым</string>
     <string name="lumen_lp_range_global">Усюды</string>
     <string name="lumen_lp_session">Час за адзін раз</string>
-    <string name="lumen_lp_session_desc">Пасля гэтага перапынак 10 хвілін</string>
     <string name="lumen_lp_daily">Час за дзень</string>
     <string name="lumen_lp_no_limit">Без абмежавання</string>
     <string name="lumen_lp_minutes">%1$d хв</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">Час сеанса скончыўся. Адпачніце 10 хвілін</string>
     <string name="lumen_lp_rest_daily">Час прагляду на сёння скончыўся</string>
     <string name="lumen_lp_rest_unlock">Разблакіраваць</string>
-    <string name="lumen_lp_on">Укл.</string>
-    <string name="lumen_lp_off">Выкл.</string>
 </resources>

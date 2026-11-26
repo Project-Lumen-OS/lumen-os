@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- lumen-menu "Short press of the power key" (General, PowerKeyPrefs, 2026-11-26); Sleep has the translations of the
+     power menu's Sleep (apps/common/projector power_menu_sleep). -->
+<resources>
+    <string name="lumen_m_power_key_short">Short press of the power key</string>
+    <string name="lumen_m_power_key_menu">Power menu</string>
+    <string name="lumen_m_power_key_sleep">@string/lumen_sleep</string>
+</resources>

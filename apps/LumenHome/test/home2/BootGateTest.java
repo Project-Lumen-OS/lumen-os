@@ -185,8 +185,9 @@ public final class BootGateTest {
                 "manifest: the app stays credential protected (only HOME is direct boot aware)");
         check(count(man, "directBootAware=\"true\"") == 1, "manifest: no provider, receiver or other activity runs before the unlock");
 
-        check(between(app, "attachBaseContext(", "\n    }").contains("whenUnlocked(\"import\""),
-                "App: the 1.0.8 import and the password re-encryption wait for the unlock");
+        String attach = between(app, "attachBaseContext(", "\n    }");
+        check(attach.contains("new BootGate(um == null || um.isUserUnlocked()") && !attach.contains("LumenImport"),
+                "App: the gate starts from the unlock state, no pre-1.0.8 import (gone in 1.1.0)");
         check(between(app, "private File crashFile()", "\n    }").contains("mDe.getFilesDir()"),
                 "App: the crash counter is device protected (works before the unlock)");
         check(app.contains("Intent.ACTION_USER_UNLOCKED") && app.contains("mGate.unlock()"), "App: the unlock broadcast opens the gate");

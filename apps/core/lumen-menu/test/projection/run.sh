@@ -15,16 +15,34 @@ M=$G/apps/core/lumen-menu
 JAVA_HOME=${JAVA_HOME:-$(/usr/libexec/java_home -v 21 2>/dev/null || /usr/libexec/java_home -v 17)}
 OUT=$(mktemp -d "${TMPDIR:-/tmp}/projection_tip.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
+G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 mkdir -p "$OUT/c"
 find "$T/stubs" -name '*.java' | sed 's/.*/"&"/' > "$OUT/src.txt"   # paths with spaces
 for f in "$M"/src/org/lumen/menu/*.java "$M"/src/org/lumen/menu/utils/*.java "$M/src/org/lumen/projector/panel/QpdTip.java" \
-         "$M/src/org/lumen/projector/panel/HintPicture.java" "$T/ProjectionTipTest.java"; do
+         "$M/src/org/lumen/projector/panel/HintPicture.java" "$T/ProjectionTipTest.java" \
+         "$M/src/org/lumen/projector/panel/AdjustStrip.java" "$T/AdjustStripTest.java"; do
   printf '"%s"\n' "$f" >> "$OUT/src.txt"
 done
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/c" @"$OUT/src.txt"
 bad=0
 "$JAVA_HOME/bin/java" -Djava.awt.headless=true -Dtip.scale=1.5 -Dfont.inter="$M/assets/fonts/InterVariable.ttf" \
   -cp "$OUT/c" org.lumen.projector.panel.ProjectionTipTest "$G" ${1:+"$1"} || bad=1
+# the stock picture adjustment (4PDA: OK on a picture setting hides the menu, a three row strip at the bottom centre)
+"$JAVA_HOME/bin/java" -Djava.awt.headless=true -Dtip.scale=1.5 -Dfont.inter="$M/assets/fonts/InterVariable.ttf" \
+  -cp "$OUT/c" org.lumen.projector.panel.AdjustStripTest ${1:+"$1/adjust"} || bad=1
+MCW=$(cat "$M/src/org/lumen/projector/panel/MenuController.java")
+for w in '        if (adjust().onKey(ev, f)) return true;               // OK on a picture setting: the strip, its UP / DOWN / OK / BACK' \
+         '        if (adjust != null) adjust.sync();                    // the strip shows the values read back' \
+         '            if (adjust != null && panel == p) adjust.stop();   // closed while adjusting: the strip goes too' \
+         '        }, v -> AdjustMode.adjustableKind(v) && pictureSetting(featureOf.get(v)));' \
+         '        return f != null && f != FeatureId.LAMP && f.id.startsWith(MenuSpec.PICTURE + ".");' \
+         '                    addLampRow(p);                            // the light slider (the lamp page: its tile look opens it)'; do
+  printf '%s\n' "$MCW" | grep -qxF -- "$w" || { echo "FAIL wiring: MenuController lost: $w"; bad=1; }
+done
+grep -qxF '        for (int i = 0; i < root.getChildCount(); i++) root.getChildAt(i).setAlpha(on ? 0f : 1f);' "$M/src/org/lumen/projector/panel/QpdPanel.java" \
+  || { echo "FAIL wiring: the adjust strip does not hide the menu panes"; bad=1; }
+grep -qxF '        if (root.getBackground() != null) root.getBackground().setAlpha(on ? 0 : 255);' "$M/src/org/lumen/projector/panel/QpdPanel.java" \
+  || { echo "FAIL wiring: the adjust strip keeps the scrim (the film is not at full brightness)"; bad=1; }
 MC=$M/src/org/lumen/projector/panel/MenuController.java
 AL=$M/src/org/lumen/projector/panel/QpdAll.java
 body=$(sed -n '/^    private void apply(MenuState st) {$/,/^    }$/p' "$MC")
@@ -32,7 +50,8 @@ printf '%s\n' "$body" | grep -qxF '        for (QpdTip t : setupTips) showSetup(
   || { echo "FAIL wiring: apply() does not redraw the projection pictures"; bad=1; }
 tipfn=$(sed -n '/^    private View tip(FeatureId f) {$/,/^    }$/p' "$MC")
 for w in '        HintPicture kind = HintPicture.of(h);' '        showSetup(t, state);' '        setupTips.add(t);' \
-         '        if (kind != HintPicture.PROJECTION) return new QpdTip(app, kind, s(MenuLabels.tipText(h)));'; do
+         '        if (kind != HintPicture.PROJECTION) {                 // a picture alone where its text would only explain the row' \
+         '            return new QpdTip(app, kind, text == 0 ? null : s(text));'; do
   printf '%s\n' "$tipfn" | grep -qxF -- "$w" || { echo "FAIL wiring: tip() lost: $w"; bad=1; }
 done
 grep -qF 'lumen_qpd_tip_rear' "$MC" "$AL" && { echo "FAIL wiring: a fixed rear text outside MenuLabels.tipSide"; bad=1; }

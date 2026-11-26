@@ -5,6 +5,8 @@
 # The updater is the shared module apps/core/lumen-updater plus the neutral UpdateTarget of apps/LumenUpdater (every
 # fact from the image's ro.lumen.ota.* properties) with its update_engine manifest (the Z9X recipe takes the same file).
 app       LumenUpdater
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
 module    lumen-stats
 # the Lumen icon set (apps/core/lumen-icons, its R class named in the top layer R_EXTRA_PACKAGES)
 module    lumen-icons

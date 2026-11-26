@@ -5,7 +5,7 @@
      _basic_setting pair of the picture mode 3.0 basic page) in every language stock has, English from its values-en
      (what a stock HB shows in English). ar, be, kk, pt-BR, tr and uk are new translations of the same sentences -->
 <resources>
-    <string name="lumen_m_ps_game">Game Mode in effect</string>
+    <string name="lumen_m_ps_game">Game mode in effect</string>
     <string name="lumen_m_ps_ai">Professional settings cannot be used in AI quality picture mode</string>
     <string name="lumen_m_ps_performance">Professional settings are not supported in performance picture mode</string>
     <string name="lumen_m_ps_ai_basic">Standard settings cannot be used in AI quality picture mode</string>

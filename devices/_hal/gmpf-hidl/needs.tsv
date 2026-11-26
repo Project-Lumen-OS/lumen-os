@@ -1,0 +1,6 @@
+# devices/_hal/gmpf-hidl/needs.tsv: the HIDL gmpf methods each menu row of the Z9X app sends, so a model whose stock HAL
+# lacks one gets that row off in its generated menu layer (tools/hal/derive.py, menu lines of hal/codes.from).
+# Columns: menu row (feature id), interface, methods (stock names, space separated), evidence (the panel that sends them).
+zoom	IGmpf	zoomStart zoomFinish zoomControl getZoomStepRange getCurrentZoomStep2 setOpticalZoomStep	apps/LumenProjector/core OpticalZoomPanel: the session, the range, the position and the optical steps
+zoom	IGmpf2	setKstPrepare setPushPullScreenState	apps/LumenProjector/core OpticalZoomPanel: setKstPrepareForZoom and setAdjustScreenOpen around the session (the limit position calls 13 / 14 are optional: Gmpf2Client.hasZoomLimit, no limit position without them)
+keystone.manual	IGmpf2	setKstPrepare	apps/LumenProjector/core ManualKeystonePanel: setKstPrepare(true, 0) before the first move and (false, 0) after

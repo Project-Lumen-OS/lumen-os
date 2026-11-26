@@ -661,7 +661,7 @@ for line in open(sys.argv[1]):
         n["eye"] += 1
     if "label" in o:
         assert o["label"] == "nativeui_main_exec" and o.get("mode") == "0755" and w[1] == "bin/nativeui", line
-assert sets == ["set=x50-v1264-b"] and n == {"place": 8, "bind": 3, "eye": 2, "alt": 4}, (sets, n)
+assert sets == ["set=x50-v1264-c"] and n == {"place": 8, "bind": 3, "eye": 2, "alt": 6}, (sets, n)
 PY
       ;;
     rc)

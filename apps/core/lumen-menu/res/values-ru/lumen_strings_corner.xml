@@ -2,12 +2,6 @@
 <!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
-    <string name="lumen_corner_title">Точная настройка углов</string>
     <string name="lumen_corner_circle">Настраивайте, пока круг в центре не станет ровным</string>
-    <string name="lumen_corner_keys_move">Стрелки: сдвиг угла · OK: следующий угол</string>
     <string name="lumen_corner_keys_more">Удерживайте кнопку-шестерёнку: сброс · Назад: готово</string>
-    <string name="lumen_corner_tl">Левый верхний</string>
-    <string name="lumen_corner_tr">Правый верхний</string>
-    <string name="lumen_corner_br">Правый нижний</string>
-    <string name="lumen_corner_bl">Левый нижний</string>
 </resources>

@@ -14,12 +14,6 @@ import android.util.Log;
  */
 public class Z9xTvInputApp extends Application {
 
-    /** Lumen OS 1.0.8 bridge: the pre-1.0.8 org.z9x data comes over before any prefs are read. */
-    @Override
-    protected void attachBaseContext(android.content.Context base) {
-        super.attachBaseContext(base);
-        org.lumen.common.LumenImport.run(base);
-    }
     private static final String TAG = "Z9xHdmiApp";
 
     @Override

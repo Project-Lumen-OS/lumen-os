@@ -11,6 +11,14 @@ public enum GmpfModel {
     X50_ULTRA("g0111", "G0111", GmpfHash.X50_RULE, "hd_server2"),
     X50_ULTRA_MAX("g0100", "G0100", GmpfHash.X50_RULE, "hd_server2"),
     RS30_ULTRA_MAX("g0155", "G0155", GmpfHash.RS30_RULE, ""),
+    RS30_ULTRA("g0170", "G0170", GmpfHash.RS30_ULTRA_RULE, ""),
+    RS30_PRO("g0125", "G0125", GmpfHash.RS30_OLD_RULE, ""),
+    RS30_PRO_MAX("g0124", "G0124", GmpfHash.RS30_OLD_RULE, ""),
+    RS30_ULTRA_G0114("g0114", "G0114", GmpfHash.RS30_OLD_RULE, ""),
+    RS30_ULTRA_MAX_G0115("g0115", "G0115", GmpfHash.RS30_OLD_RULE, ""),
+    MIRA_4K("g0109", "G0109", GmpfHash.MIRA_RULE, ""),
+    MIRA_4K_PRO("g0110", "G0110", GmpfHash.MIRA_RULE, ""),
+    AURA_3_MAX("g0104", "G0104", GmpfHash.MIRA_RULE, ""),
     TITAN_NOIR("h0061", "H0061", GmpfHash.TITAN_RULE, "hd_server2"),
     TITAN_NOIR_PRO("h0062", "H0062", GmpfHash.TITAN_RULE, "hd_server2"),
     TITAN_NOIR_MAX("h0063", "H0063", GmpfHash.TITAN_RULE, "hd_server2");
@@ -27,6 +35,8 @@ public enum GmpfModel {
      * RS30: none. Its HumanDetect.ini has SOURCE_MODE 4 and MULTTOFDETECT_START 1, the multi-point ToF detection runs
      * as threads of xgimi_middle (libxgimi HumDet_Multtof_Cutout, hd_read-multtof, hd_cut-multtof), and the stock
      * v1.1.42 dump has the switch on (Env HumanDetect_OnOff=1) with nativeui running and no hd_server2 at all.
+     * MIRA 4K, 4K Pro and AURA 3 Max: none (their eye protection row is off: feature.xml support_human_detect_source_type 0,
+     * no person detection Lumen can watch on v1.3.1).
      * TITAN Noir Pro and Max: hd_server2, their xgimiconfig H0062 / H0063 xlab/HumanDetect.ini are the G0111 / G0100
      * files but for the folder name in one path (SOURCE_MODE 5, every *DETECT_START 0) in the overseas V1.2.99 and
      * V1.2.54 OTAs (one build for every TITAN Noir, the model chosen at boot). TITAN Noir H0061: its file is the H0062

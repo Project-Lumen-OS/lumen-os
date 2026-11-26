@@ -8,6 +8,6 @@ OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT
 S="$HERE/src/org/lumen/parental"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -d "$OUT" "$S/ControlRange.java" "$S/LimitState.java" "$S/PinCode.java" \
-  "$S/Quiz.java" "$S/ParentalState.java" "$S/ParentalRules.java" "$HERE/test/org/lumen/parental/ParentalTest.java" \
+  "$S/Quiz.java" "$S/ParentalState.java" "$S/ParentalRules.java" "$S/ParentalSettings.java" "$HERE/test/org/lumen/parental/ParentalTest.java" \
   "$HERE/test/ParentalStub.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.parental.ParentalTest

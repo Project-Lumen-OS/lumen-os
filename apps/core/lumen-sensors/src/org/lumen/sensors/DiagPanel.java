@@ -34,7 +34,7 @@ public final class DiagPanel {
         org.lumen.signal.SignalPanel.hide();
         sTitle = title;
         sSource = source;
-        if (sWindow == null) sWindow = new SensorWindow(app, DiagPanel::hide);
+        if (sWindow == null) sWindow = new SensorWindow(app, DiagPanel::hide, null);
         sWindow.setOk(DiagPanel::refresh);
         sWindow.showText(sTitle, "\u2026");
         refresh();

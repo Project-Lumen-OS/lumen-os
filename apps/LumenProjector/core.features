@@ -1,0 +1,58 @@
+# apps/LumenProjector/core.features: the optional parts of the Lumen core (tools/devices/assemble_app.py rule 9,
+# the design notes). Every core file not named here is part of every projector app; a
+# file named here is part of an app only when its recipe says 'feature NAME' (the model has that stock part).
+# FEATURE PATTERN... (an exact path, a folder ending in '/', or an fnmatch pattern, relative to the core folder)
+# the quick 3D switch of a HIDL gmpf stock (the 3D call and its host checks)
+quick-3d        src/org/lumen/projector/display/ThreeD.java src/org/lumen/projector/display/ThreeDCall.java test/threed/
+# the 1.0.8 stock refusal rules of the quick panel and the keystone page (colour temperature, the 3D lamp, the
+# keystone lock in game mode), their notes and texts
+panel-rules     src/org/lumen/projector/panel/PanelRules.java src/org/lumen/projector/panel/RefusalReason.java
+panel-rules     src/org/lumen/projector/panel/RuleNotes.java src/org/lumen/projector/panel/ColorTempRule.java
+panel-rules     src/org/lumen/projector/panel/Lamp3d.java src/org/lumen/projector/panel/KstGameLock.java
+panel-rules     res/values*/strings_rules.xml test/rules/ test/picture/ test/kstgame/ test/lamp3d/
+# the restore section at the end of the keystone page
+kst-restore     res/values*/strings_kst_restore.xml
+# the audio device callbacks behind the audio policy check, with the no sound notice of Lumen OS Live
+audio-ports     src/org/lumen/projector/audio/AudioPorts.java src/org/lumen/projector/audio/AudioPortRules.java
+audio-ports     res/values*/strings_trial.xml
+# the render parity of the quick menu against the stock 1.0.10 panel, the install key guard host test (both read
+# the repository, not the assembled tree)
+render-parity   test/render/
+install-test    test/install/
+# the stock parts of the AIDL gmpf line (Z9X HB): its fit to screen hint window, its sound output page, the Boost rules
+# of its picture modes, its colour space row, the host checks of its coalesced picture sliders, its zoom tile icon, the
+# sleep timer card
+# of the Home tile, the Home shortcut tile receiver, its menu pages, its stock labels
+curtain-align       src/org/lumen/projector/CurtainAlignOverlay.java res/values*/strings_hb_curtain.xml
+output-options      src/org/lumen/projector/audio/HbOutputOptions.java src/org/lumen/projector/audio/HbOutputRows.java test/audio/
+boost-rules         src/org/lumen/projector/panel/BoostRules.java src/org/lumen/projector/panel/BoostLeave.java
+boost-rules         src/org/lumen/projector/panel/BoostOutcome.java test/beta6/
+color-space-rule    src/org/lumen/projector/panel/ColorSpaceRule.java test/colorspace/
+slide-coalescing    test/slider/
+zoom-tile           res/drawable/ic_tile_zoom.xml
+sleep-timer-card    src/org/lumen/projector/power/HbSleepTimerPanel.java
+home-tiles-aidl     src/org/lumen/projector/home/HbPanelRequestReceiver.java
+menu-pages-aidl     src/org/lumen/projector/panel/HbMenuPages.java test/menu/
+stock-labels-aidl   res/values*/strings_hb.xml res/values*/strings_hb_game.xml
+# the Play 6 stock parts: the Bluetooth speaker mode and its Bluetooth role, the battery cards and their test hook,
+# the game console check of game mode Auto
+speaker-mode        src/org/lumen/projector/speaker/
+battery-notices     src/org/lumen/projector/battery/
+game-console        src/org/lumen/projector/game/GameConsole.java
+# the Play 6 CEC wake: the framework's Turn on with an HDMI device ends the lamp-only standby (no STR, no PM51)
+cec-framework-wake  src/org/lumen/projector/cec/CecFrameworkWake.java
+# the Play 6 ambient light and magnetic lens mode pages, and the light level they dim (the family's Hal.lampLevel)
+ambient-light       src/org/lumen/projector/ambient/
+lens-mode           src/org/lumen/projector/lens/LensMode.java
+lamp-level          src/org/lumen/projector/power/LampLevel.java
+# the Play 6 start of its persistent process (the start gate and the modules of its stock), the owner of its shared
+# menu and the plain-Java rules of its menu adapter
+play6-start         src/org/lumen/projector/Play6App.java src/org/lumen/projector/Device.java src/org/lumen/projector/power/Play6PowerKey.java
+menu-play6          src/org/lumen/projector/panel/Play6Menu.java src/org/lumen/projector/panel/Play6MenuGates.java src/org/lumen/projector/panel/Play6ZoomShiftPanel.java src/org/lumen/projector/panel/ZoomIo.java src/org/lumen/projector/panel/ShiftMove.java src/org/lumen/projector/panel/Play6MenuPages.java src/org/lumen/projector/panel/Play6KeystonePanel.java src/org/lumen/projector/panel/KeystoneIo.java src/org/lumen/projector/panel/Corners.java
+# the Play 6 lamp-only standby (the stock power menu's Screen off: the lamp off, Android awake, any key wakes)
+lamp-standby        src/org/lumen/projector/power/LampStandby.java
+# the Play 6 texts (translations: apps/i18n/langs @projector/strings_p6.xml) and its night and speaker tile icons
+texts-play6         res/values*/strings_p6.xml res/drawable/ic_tile_night.xml res/drawable/ic_tile_speaker.xml
+# the sleep timer of a stock that ends it with the power key (an alarm, the stock notices through the family's
+# SleepHost; the MT9681 family): the other families run the in-process fade power/SleepTimer
+sleep-alarm         src/org/lumen/projector/power/SleepAlarm.java src/org/lumen/projector/power/SleepHost.java

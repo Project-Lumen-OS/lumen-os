@@ -5,7 +5,6 @@
     <string name="lumen_cec_unavailable">HDMI-CEC غير متاح</string>
     <string name="lumen_cec_master">التحكم عبر HDMI-CEC</string>
     <string name="lumen_cec_master_note">عند إيقاف HDMI-CEC، لا يتوفر الصوت عبر HDMI ARC.</string>
-    <string name="lumen_cec_wake">التشغيل بواسطة جهاز HDMI</string>
     <string name="lumen_cec_wake_note">عند تشغيل هذا الخيار، تُطفأ أجهزة HDMI أيضًا عند إيقاف جهاز العرض.</string>
     <string name="lumen_cec_night">الحماية الليلية</string>
     <string name="lumen_cec_night_off">متوقفة</string>

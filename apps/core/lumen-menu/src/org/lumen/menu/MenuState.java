@@ -30,6 +30,7 @@ public final class MenuState {
     private final Map<String, String> notes;
     private final Set<String> disabled;
     private final Signal signal;
+    private final HdrFormat format;
 
     private MenuState(Builder b) {
         values = Collections.unmodifiableMap(new TreeMap<>(b.v));
@@ -42,6 +43,7 @@ public final class MenuState {
         notes = Collections.unmodifiableMap(new TreeMap<>(b.notes));
         disabled = Collections.unmodifiableSet(new TreeSet<>(b.disabled));
         signal = b.signal;
+        format = b.format;
     }
 
     public static Builder builder() { return new Builder(); }
@@ -100,6 +102,9 @@ public final class MenuState {
     /** The kind of content on screen ({@link SignalRule}), or null when the device did not read it. */
     public Signal signal() { return signal; }
 
+    /** The signal format the picture page names (SDR, HDR10, HDR10+, HLG, Dolby Vision, HDR Vivid), or null when not read. */
+    public HdrFormat format() { return format; }
+
     /** The values by id text. */
     public Map<String, String> asMap() { return values; }
 
@@ -108,7 +113,7 @@ public final class MenuState {
     @Override public String toString() {
         return values + (hidden.isEmpty() ? "" : " hidden " + hidden) + (options.isEmpty() ? "" : " options " + options)
                 + (tiles.isEmpty() ? "" : " tiles " + tiles) + (notes.isEmpty() ? "" : " notes " + notes)
-                + (signal == null ? "" : " signal " + signal.token);
+                + (signal == null ? "" : " signal " + signal.token) + (format == null ? "" : " format " + format);
     }
     /**
      * This state with {@code part} on top (a live update, ProjectorFeatures.Live: only the values and runtime parts
@@ -136,6 +141,7 @@ public final class MenuState {
         b.disabled.addAll(disabled);
         b.disabled.addAll(part.disabled);
         b.signal = part.signal != null ? part.signal : signal;
+        b.format = part.format != null ? part.format : format;
         return b.build();
     }
 
@@ -151,6 +157,7 @@ public final class MenuState {
         private final TreeMap<String, String> notes = new TreeMap<>();
         private final TreeSet<String> disabled = new TreeSet<>();
         private Signal signal;
+        private HdrFormat format;
 
         public Builder put(FeatureId feature, String value) {
             if (feature != null && value != null) v.put(feature.id, value);
@@ -220,6 +227,22 @@ public final class MenuState {
         public Builder signal(Signal s) {
             signal = s;
             return this;
+        }
+
+        /** The signal format of the picture page (null: not read). */
+        public Builder format(HdrFormat f) {
+            format = f;
+            return this;
+        }
+
+        /** One getHdrType read: the format the picture page names and its content kind for SignalRule (null: not read). */
+        public Builder hdr(HdrFormat f) {
+            return hdr(f, false);
+        }
+
+        /** One getHdrType read and the IMAX Enhanced content flag: the format the page names, the kind of Signal.of. */
+        public Builder hdr(HdrFormat f, boolean imax) {
+            return format(f).signal(Signal.of(f, imax));
         }
 
         public MenuState build() { return new MenuState(this); }

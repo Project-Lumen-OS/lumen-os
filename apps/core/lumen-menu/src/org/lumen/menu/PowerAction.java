@@ -7,8 +7,8 @@ public enum PowerAction {
     NONE,
     /** The press gave the light back ({@link LampOff}) and is used up. */
     RELIGHT,
-    /** The key held: the power menu. */
+    /** The power menu (a short press or the hold, {@link PowerKeyChoice}). */
     MENU,
-    /** A short press: sleep. */
+    /** Sleep (a short press or the hold, {@link PowerKeyChoice}). */
     SLEEP
 }

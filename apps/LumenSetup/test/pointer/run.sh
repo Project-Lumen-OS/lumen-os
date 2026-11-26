@@ -95,15 +95,13 @@ ok("android.permission.QUERY_ALL_PACKAGES" in man, "Setup sees TvSettings for re
 
 # every recipe of Lumen Setup ships the module
 recipes = []
-for c in sorted(os.listdir(os.path.join(root, "devices"))):
-    d = os.path.join(root, "devices", c, "app")
-    if not os.path.isdir(d):
-        continue
-    for f in sorted(os.listdir(d)):
-        t = open(os.path.join(d, f), encoding="utf-8").read() if f.endswith(".layers") else ""
-        if re.search(r"(?m)^app\s+(Z9xSetup|HbSetup)\s*$", t):
-            recipes.append(c)
-            ok(re.search(r"(?m)^module\s+lumen-system\s*$", t) is not None, "devices/%s/app/%s ships lumen-system" % (c, f))
+sys.path.insert(0, os.path.join(root, "tools", "devices"))
+import assemble_app  # noqa: E402  (every recipe a model builds, its own or its family's)
+for c, a, f in assemble_app.all_recipes(root):
+    t = open(f, encoding="utf-8").read()
+    if re.search(r"(?m)^app\s+(Z9xSetup|HbSetup)\s*$", t):
+        recipes.append(c)
+        ok(re.search(r"(?m)^module\s+lumen-system\s*$", t) is not None, "%s (%s) ships lumen-system" % (os.path.relpath(f, root), c))
 ok("g0155" in recipes and "horse_popular" in recipes and "goat_elegant" in recipes, "Setup recipes of the Z9X, the RS30 and the HB: %s" % recipes)
 print("setup pointer: %d checks, %d failed" % (n, bad))
 sys.exit(1 if bad else 0)

@@ -27,7 +27,7 @@ KEY_PEM=$G/devices/$C/certs/platform.x509.pem
 [ "$(certsha "$KEY_PEM")" = "$(certsha "$KD/platform.x509.pem")" ] || die "$KEY_PEM is not the certificate of the $C key"
 grep -q 'X50_IMAGE = "x50"' "$G/apps/LumenHome/src/org/lumen/home/proj/ProjectorTarget.java" \
   || die "this tree's Home has no X50 family projector target (proj/ProjectorTarget, ro.z9x.device=x50)"
-[ -f "$G/apps/LumenHome/assets/fonts/InterVariable.ttf" ] || die "apps/LumenHome/assets/fonts missing (fetched, not in git)"
+[ -f "$G/apps/core/lumen-menu/assets/fonts/InterVariable.ttf" ] || die "apps/core/lumen-menu/assets/fonts missing (Home's recipe takes the font there)"
 mkdir -p "$OUT"
 B=$(mktemp -d "${TMPDIR:-/tmp}/home_x50.XXXXXX")
 trap 'rm -rf "$B"' EXIT

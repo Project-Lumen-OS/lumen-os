@@ -4,11 +4,11 @@
 <resources>
 
     <!-- Title of the input chooser opened by the Source key. -->
-    <string name="source_title">Input</string>
+    <string name="source_title">@string/lumen_input_2</string>
     <!-- Row that returns to the TV home screen (launcher). -->
-    <string name="source_home">Home screen</string>
+    <string name="source_home">@string/lumen_home_screen_2</string>
     <!-- Fallback input labels when the input has no label of its own. %1$d = HDMI port number. -->
-    <string name="source_hdmi">HDMI %1$d</string>
+    <string name="source_hdmi">@string/lumen_hdmi_1_d</string>
     <!-- Input state shown at the right of an HDMI row. -->
     <!-- Notification when an input cannot be opened. %1$s = input name, e.g. "HDMI 1". -->
     <string name="source_open_failed">Cannot open %1$s</string>

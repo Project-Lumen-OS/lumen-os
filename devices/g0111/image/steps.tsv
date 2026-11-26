@@ -4,15 +4,17 @@
 # Base: the published Z9X 1.0.9 image; every kept file is the base's byte for byte with its owner, mode, label and
 # capability. What changes and why: devices/g0111/README.md; verify_tree_x50.py proves exactly that and nothing else.
 # Flags: test (tN) or pub (a release version), stage (--stage-only), image (--image-only).
-*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc	bootanimation.zip	bootanim_check.py
-*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/base_signed/base_signed.tsv
+*	need	com.android.wifi.capex
+*	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
+*	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	about_version.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc	bootanimation.zip	bootanim_check.py	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	lumen-cast-sysconfig.xml	airplay_libs.py
+*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/Z9xAirPlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/base_signed/base_signed.tsv	stage/LumenFiles.apk
 ota	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	ota_gate.conf	otacerts.zip	z9x-updater-default-permissions.xml	remove_ota.txt	stage/LumenUpdater.apk
 # the update client of a model with updates (build.conf derive=ota:pub): the neutral gate, its X50 data, the model's
 # OTA certificates (tools/devices/ota/make_otacerts.py), the base's default permission file of org.lumen.updater
 ota	line	lumen_ota.rc	    exec u:r:su:s0 root root -- /system/bin/sh /system/etc/lumen/lumen_ota.sh count
 ota	line	lumen_update_verifier.rc	service update_verifier /system/bin/sh /system/etc/lumen/lumen_ota.sh verifier
 ota	line	ota_gate.conf	hal=aidl
-ota	sha	z9x-updater-default-permissions.xml	8ffddb73368df23a6052a04a7002feec7e337f6a1d3582e1e2f93735e448fa51
+ota	sha	z9x-updater-default-permissions.xml	0eee6ce8c4c0ccf65e022af5754634ca63e1058fb4b3912ab9f7d76a60a95bd7
 *	dsu_rc	lumen_dsu_install.rc
 *	out	mounts
 # the shared boot animation (overlay/v1/bootanimation.zip, git-ignored: tools/brand/gen_bootanim.py --add-audio over
@@ -77,8 +79,34 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 # the on-screen keyboard of every model: Lumen Keyboard (apps/LumenKeyboard, the LeanbackIME package with keyboard
 # languages and a language key) in LeanbackIME's place; the base's odex of the old APK goes
 !image	rm	{sys}/product/app/LeanbackIME/oat
+# Wi-Fi Direct (screen mirroring) on the MediaTek pre-freeze supplicant: the base's Wi-Fi APEX with service-wifi.jar
+# rebuilt from lineage/patches/wifi/0001, re-signed with the base's Lumen APEX keys,
+# owner, mode and label as the base's; the base's dexpreopt files of the old jar go (ART would refuse them)
+!image	place	com.android.wifi.capex	{sys}/apex/com.android.wifi.capex	0644	0	0	{LABEL}
+!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
+!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
 !image	place	stage/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
+# the video player of every model: Lumen Play (com.xgimiru.player) as its published APK with its own key, so its own
+# updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
+# browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
+!image	prebuilt	LumenPlay	arm64	{sys}/app/LumenPlay
 !image	cleanup	{sys}/app/Z9xTvInput/oat
+# screen casting on every model (2026-11-21, owner: one shared feature set): the AirPlay receiver with the casting
+# screen of this tree (apps/LumenAirPlay, signed with the model's platform key, its native library from the released
+# pin) over the base's 1.0.9 copy (its oat goes), the Miracast sink (priv-app with its privileged and default
+# permissions), the Wi-Fi Direct device type TV (static RRO) and a sysconfig that starts the sink from the first boot
+# (the base's 1.0.9 z9x.xml predates it and stays). The stock vendor of every model of the
+# family runs wpa_supplicant with p2p0 and declares android.hardware.wifi.direct (devices/<c>/cast.conf).
+!image	place	stage/Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk	0644	0	0	{LABEL}
+!image	cleanup	{sys}/app/Z9xAirPlay/oat
+!image	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
+!image	mkdir	0755	{sys}/priv-app/LumenMiracast
+!image	label	{sys}/priv-app/LumenMiracast	{LABEL}
+!image	place	stage/LumenMiracast.apk	{sys}/priv-app/LumenMiracast/LumenMiracast.apk	0644	0	0	{LABEL}
+!image	place	privapp-permissions-lumen-miracast.xml	{sys}/etc/permissions/privapp-permissions-lumen-miracast.xml	0644	0	0	{LABEL}
+!image	place	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml	0644	0	0	{LABEL}
+!image	place	stage/LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk	0644	0	0	{LABEL}
+!image	place	lumen-cast-sysconfig.xml	{sys}/etc/sysconfig/lumen-cast.xml	0644	0	0	{LABEL}
 !image	run_root	x50_diag.py	apply	{sys}/etc/xgimi/z9x_diag.sh
 # install from a DSU try: the app, its init rc and its root script
 !image	mkdir	0755	{sys}/priv-app/LumenDsuInstall
@@ -86,6 +114,11 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	mkdir	0755	{sys}/etc/lumen
 !image	label	{sys}/etc/lumen	{LABEL}
 !image	place	stage/LumenDsuInstall.apk	{sys}/priv-app/LumenDsuInstall/LumenDsuInstall.apk	0644	0	0	{LABEL}
+# Files (apps/LumenFiles, org.lumen.files): the file manager of every model in place of the stock one; a priv-app, so the
+# package installer takes its APKs as a trusted source (one confirm window), no privileged permission, no permissions file
+!image	mkdir	0755	{sys}/priv-app/LumenFiles
+!image	label	{sys}/priv-app/LumenFiles	{LABEL}
+!image	place	stage/LumenFiles.apk	{sys}/priv-app/LumenFiles/LumenFiles.apk	0644	0	0	{LABEL}
 !image	place	lumen_dsu_install.rc	{sys}/etc/init/lumen_dsu_install.rc	0644	0	0	{LABEL}
 !image	place	lumen_dsu_install.sh	{sys}/etc/lumen/lumen_dsu_install.sh	0755	0	0	{LABEL}
 # the signal panel's HDMI receiver bridge (apps/core/lumen-signal/image, signal.tsv hdmi_format): a root oneshot that
@@ -94,9 +127,16 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 *	sh_n	lumen_hdmirx.sh
 *	line	lumen_hdmirx.rc	service lumen_hdmirx /system/bin/sh /system/etc/lumen/lumen_hdmirx.sh
 *	line	lumen_hdmirx.sh	HELP=help
-*	line	lumen_hdmirx.sh	MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "
 !image	place	lumen_hdmirx.rc	{sys}/etc/init/lumen_hdmirx.rc	0644	0	0	{LABEL}
 !image	place	lumen_hdmirx.sh	{sys}/etc/lumen/lumen_hdmirx.sh	0755	0	0	{LABEL}
+# the problem report log helper of every image (apps/core/lumen-report/image, staged for every device by
+# tools/build/build.py COMMON_FILES): a root oneshot that hands the report app the scrubbed system log without a dialog
+*	need	lumen_report.rc	lumen_report.sh
+*	sh_n	lumen_report.sh
+*	line	lumen_report.rc	service lumen_report /system/bin/sh /system/etc/lumen/lumen_report.sh
+*	line	lumen_report.sh	HOSTS="org.lumen.projector org.lumen.x50.projector"
+!image	place	lumen_report.rc	{sys}/etc/init/lumen_report.rc	0644	0	0	{LABEL}
+!image	place	lumen_report.sh	{sys}/etc/lumen/lumen_report.sh	0755	0	0	{LABEL}
 # the update client of a model with updates (flag ota: a public image whose build.conf says derive=ota:pub; owner
 # 2026-11-14, rules.md 2.34): the base's Z9X gate out (remove_ota.txt), the neutral gate in (lumen_ota.rc, the
 # update_verifier.rc that runs it, lumen_ota.sh, ota_gate.conf), otacerts.zip with the model's OTA certificates, the
@@ -121,7 +161,7 @@ ota,!image	echo	ota: neutral gate, otacerts.zip of {codename}, LumenUpdater and 
 # the staged tree against the base
 !image	run_root	first_start.py	check	{in}/first_start_prop.txt	{sys}	>first_start_stage.log
 !image	run_root	verify_tree_x50.py	{mb}	{root}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	{MODEL}	{PREFIX}	{PCERT}	>verify_stage.log
-!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	public={public}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}	inputs_sha256=@catsha(base.sha256,remove.txt,{PROPF},{MPROPF},platform.x509.pem,FINGERPRINTS.txt,x50_props.py,x50_netadb.rc,verify_tree_x50.py,z9x_blobs.sh,z9x_blobs.rc,blobs.conf,x50_blobs_allow.txt,x50_nui.rc,x50_apk_check.py,x50_kconfig.py,x50_power_keys.py,x50_perm_pkgs.py,apkinfo.py,x50_diag.py,lumen_dsu_install.rc,lumen_dsu_install.sh,lumen_hdmirx.rc,lumen_hdmirx.sh,x50-projector.xml,first_start_prop.txt,first_start.py,z9x_setup.rc,stage/X50EyeGuard.apk,stage/X50PowerOverlay.apk,stage/LumenDsuInstall.apk,stage/X50Projector.apk,stage/Z9xHome.apk,stage/Z9xSetup.apk,stage/X50TvInput.apk,bootanimation.zip,bootanim_check.py,stage/base_signed/base_signed.tsv)	kernel=boot_a,boot_b {BOOT_SHA} CONFIG_USERFAULTFD=y	art_gc=@first({t}/verify_stage.log,verify_tree_x50: ART )	blobs_set=@first(x50_blobs_allow.txt,set=)	app=system/app/X50EyeGuard/X50EyeGuard.apk @sha(stage/X50EyeGuard.apk)	overlay=system/product/overlay/X50PowerOverlay.apk @sha(stage/X50PowerOverlay.apk)	dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk @sha(stage/LumenDsuInstall.apk)	menu=system/priv-app/X50Projector/X50Projector.apk @sha(stage/X50Projector.apk)	home=system/priv-app/Z9xHome/Z9xHome.apk @sha(stage/Z9xHome.apk)	setup=system/priv-app/Z9xSetup/Z9xSetup.apk @sha(stage/Z9xSetup.apk)	bootanim=system/product/media/bootanimation.zip @sha(bootanimation.zip)	tvinput=system/app/Z9xTvInput/Z9xTvInput.apk @sha(stage/X50TvInput.apk)	platform_set={codename} @sha(stage/base_signed/base_signed.tsv)
+!image	info	STAGE_INFO.txt	tag={tag}	bid={bid}	build_id={build_id}	codename={codename}	model={MODEL}	public={public}	base_sha256={base_sha256}	base_build_id={BASE_BUILD_ID}	stock_model_sha256={STOCK_MODEL_SHA}	inputs_sha256=@catsha(base.sha256,remove.txt,{PROPF},{MPROPF},platform.x509.pem,FINGERPRINTS.txt,x50_props.py,about_version.py,x50_netadb.rc,verify_tree_x50.py,z9x_blobs.sh,z9x_blobs.rc,blobs.conf,x50_blobs_allow.txt,x50_nui.rc,x50_apk_check.py,x50_kconfig.py,x50_power_keys.py,x50_perm_pkgs.py,apkinfo.py,x50_diag.py,lumen_dsu_install.rc,lumen_dsu_install.sh,lumen_hdmirx.rc,lumen_hdmirx.sh,x50-projector.xml,first_start_prop.txt,first_start.py,z9x_setup.rc,stage/X50EyeGuard.apk,stage/X50PowerOverlay.apk,stage/LumenDsuInstall.apk,stage/X50Projector.apk,stage/Z9xHome.apk,stage/Z9xSetup.apk,stage/X50TvInput.apk,bootanimation.zip,bootanim_check.py,stage/base_signed/base_signed.tsv)	kernel=boot_a,boot_b {BOOT_SHA} CONFIG_USERFAULTFD=y	art_gc=@first({t}/verify_stage.log,verify_tree_x50: ART )	blobs_set=@first(x50_blobs_allow.txt,set=)	app=system/app/X50EyeGuard/X50EyeGuard.apk @sha(stage/X50EyeGuard.apk)	overlay=system/product/overlay/X50PowerOverlay.apk @sha(stage/X50PowerOverlay.apk)	dsu_install=system/priv-app/LumenDsuInstall/LumenDsuInstall.apk @sha(stage/LumenDsuInstall.apk)	menu=system/priv-app/X50Projector/X50Projector.apk @sha(stage/X50Projector.apk)	home=system/priv-app/Z9xHome/Z9xHome.apk @sha(stage/Z9xHome.apk)	setup=system/priv-app/Z9xSetup/Z9xSetup.apk @sha(stage/Z9xSetup.apk)	bootanim=system/product/media/bootanimation.zip @sha(bootanimation.zip)	tvinput=system/app/Z9xTvInput/Z9xTvInput.apk @sha(stage/X50TvInput.apk)	platform_set={codename} @sha(stage/base_signed/base_signed.tsv)
 !image	echo	stage: OK {t}/STAGE_INFO.txt
 stage	stop
 # the image: 4 KiB blocks, lz4hc, no inline data (erofs_kcheck.py), one time for every file, a UUID from TAG,
@@ -131,6 +171,8 @@ stage	stop
 *	run	erofs_kcheck.py	{img}	>kcheck.log
 *	mount_image
 *	run_root	first_start.py	check	{in}/first_start_prop.txt	{mn}/system	>first_start.log
+# the Lumen OS version row of Settings > About shows this release (devices/_image/checks/about_version.py)
+*	run_root	about_version.py	check	{mn}/system/build.prop	{mn}/system/product/etc/build.prop	>about_version.log
 *	run_root	verify_tree_x50.py	{mb}	{mn}	{in}	{v}	{bid}	{codename}	{PROPF}	{MPROPF}	{MODEL}	{PREFIX}	{PCERT}	>verify.log
 # group_oem_a holds 4613734400 bytes; the system stays under 2.5 GB with room for z9x_blobs and z9x_gapps
 *	budget	2500000000

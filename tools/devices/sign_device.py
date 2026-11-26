@@ -127,14 +127,17 @@ class Ctx:
             self.img = devices.image(G, codename)
         except devices.RegistryError as e:
             die(str(e))
-        p = os.path.join(G, "devices", codename, "image", "sign.conf")
-        if not os.path.isfile(p):
-            die(f"no {p}")
+        # the model's own image/sign.conf, else its family's ({codename} and {remote_dir} are the model's)
+        import layered
+        p = layered.find(os.path.join(G, "devices", codename, "build.conf"), os.path.join("image", "sign.conf"))
+        if not p:
+            die(f"no image/sign.conf for {codename} (model or family folder)")
         conf = {}
         for n, line in enumerate(open(p), 1):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
+            line = line.replace("{codename}", codename).replace("{remote_dir}", self.img["remote_dir"])
             k, _, v = line.partition("=")
             if k not in SIGN_KEYS or not v or k in conf:
                 die(f"{p}:{n}: unknown, empty or repeated key {k!r}")
@@ -844,7 +847,8 @@ def stage_check_image(x, tag):
     local = os.path.join(x.out, f"{tag}.apk_apex.sha256")
     run(["scp", "-q", f"{x.host}:{rd}/{tag}/apk_apex.sha256", local])
     r = subprocess.run([sys.executable, "-B", os.path.join(HERE, "check_device_signers.py"), "--device", x.c,
-                        "--list", local, "--search", x.base, "--search", x.stage_dir])
+                        "--list", local, "--search", x.base, "--search", x.stage_dir,
+                        "--search", os.path.join(G, "build", "prebuilt")])
     if r.returncode != 0:
         die(f"S1 is red on the image {tag}")
     log(f"OK: every APK and APEX of {tag} passes S1 ({local})")

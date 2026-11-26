@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """devices.py: the Lumen OS device registry, devices/<codename>/device.conf.
 
-  devices.py [--root DIR] list                      codename, installer id and name of each supported device,
-                                                    one per line
+  devices.py [--root DIR] list [--images]           codename, installer id and name of each supported device,
+                                                    one per line (--images: only those with an image recipe, not
+                                                    image=none)
   devices.py [--root DIR] identify FAMILY MODEL     the entry of (ro.product.device, ro.boot.xgimi.modelname):
                                                     codename and status, tab-separated; exit 1 when none
   devices.py [--root DIR] get CODENAME KEY          one value (scripts use this instead of sourcing a file)
@@ -70,6 +71,11 @@ platform and hardware):
                     row with its argument range); APP must be hal_app or a hal_more app of this device and the list's
                     file name unbanned_<app in lower case>.tsv under devices/<codename>/research (t20, X50 menu)
   apps              optional: device-only apps under apps/<name> (list)
+  image             optional: none = a model with its data but no image recipe yet (no build.conf; tools/build/build.py
+                    check and the release kit skip it), e.g. a line read from the official packages before its image
+  vendor            optional: the projector vendor, devices/_vendor/<vendor>/vendor.conf (an XGIMI line includes
+                    devices/_vendor/xgimi/xgimi.device.conf); with it hal_family names one of that file's families=
+  hal_family        optional: the HAL family adapter of the one projector app (apps/LumenProjector/vendor/<vendor>/<f>)
   ota_tools         optional, update_engine only: the folder of the device's OTA host tools, tools/ota (the
                     default when absent) or tools/devices/ota (they read the wire id from devices/<codename>/ota.conf)
 
@@ -86,6 +92,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import layered  # noqa: E402
+
 sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -93,7 +102,7 @@ ROOT = os.path.dirname(os.path.dirname(HERE))
 REQUIRED = ("codename name models platform hardware abi base_product vendor_sdk vendor_firmware hal_transport "
             "image_fs slots install_flow ota_engine ota_wire_id prop_namespace keys_dir app_prefix channel "
             "installer_id fastboot_product forks hal_check hal_app hal_codes hal_banned").split()
-OPTIONAL = ("apps", "hal_allowed", "hal_more", "ota_tools", "family", "status", "hal_codes_also", "hal_unbanned")
+OPTIONAL = ("vendor", "hal_family", "apps", "hal_allowed", "hal_more", "ota_tools", "family", "status", "hal_codes_also", "hal_unbanned", "image")
 # a stock analysis entry: only who the projector is, nothing to build or install
 RESEARCH_REQUIRED = "codename family status name models platform hardware".split()
 LISTS = ("models", "vendor_firmware", "channel", "apps", "hal_codes_also")
@@ -146,30 +155,30 @@ class RegistryError(Exception):
 
 
 def parse(path, keys=None, others=False):
-    """One device.conf (or the host keys of a build.conf: keys=IMAGE_KEYS, others=True skips the other keys, which
-    the builder checks) -> (dict of raw string values, list of errors)."""
-    vals, errs = {}, []
-    with open(path, encoding="utf-8") as f:
-        for n, line in enumerate(f, 1):
-            line = line.rstrip("\n")
-            if not line.strip() or line.startswith("#"):
-                continue
-            if "=" not in line:
-                errs.append("%s:%d: not key=value: %r" % (path, n, line))
-                continue
-            k, v = line.split("=", 1)
-            if others and k not in keys:
-                continue
-            if not KEY_RE.match(k):
-                errs.append("%s:%d: bad key %r" % (path, n, k))
-            elif (k not in keys) if keys else (k not in REQUIRED and k not in OPTIONAL):
-                errs.append("%s:%d: unknown key %r" % (path, n, k))
-            elif k in vals:
-                errs.append("%s:%d: %s given twice" % (path, n, k))
-            elif not VALUE_RE.match(v):
-                errs.append("%s:%d: %s: character outside the allowed set in %r" % (path, n, k, v))
-            else:
-                vals[k] = v
+    """One device.conf with its family files (tools/devices/layered.py), or the host keys of a build.conf: keys=IMAGE_KEYS,
+    others=True skips the other keys, which the builder checks) -> (dict of raw string values, list of errors)."""
+    vals, origin, errs = {}, {}, []
+    try:
+        rows = layered.lines(path)
+    except layered.LayerError as e:
+        return vals, [str(e)]
+    for src, n, line in rows:
+        if not line.strip() or line.startswith("#"):
+            continue
+        if "=" not in line:
+            errs.append("%s:%d: not key=value: %r" % (src, n, line))
+            continue
+        k, v = line.split("=", 1)
+        if others and k not in keys:
+            continue
+        if not KEY_RE.match(k):
+            errs.append("%s:%d: bad key %r" % (src, n, k))
+        elif (k not in keys) if keys else (k not in REQUIRED and k not in OPTIONAL):
+            errs.append("%s:%d: unknown key %r" % (src, n, k))
+        elif not VALUE_RE.match(v):
+            errs.append("%s:%d: %s: character outside the allowed set in %r" % (src, n, k, v))
+        else:
+            layered.put(vals, origin, k, v, src, n, errs)
     return vals, errs
 
 
@@ -287,6 +296,28 @@ def validate_image(root, codename, image_fs, errs, notes):
         errs.append("%s: stage_dir %r must be a plain relative path" % (rel, sd))
 
 
+def vendor_conf(path):
+    """{key: value} of a devices/_vendor/<v>/vendor.conf (key=value lines, '#' comments)."""
+    out = {}
+    for ln in open(path, encoding="utf-8"):
+        if ln.strip() and not ln.startswith("#") and "=" in ln:
+            k, v = ln.rstrip("\n").split("=", 1)
+            out[k.strip()] = v.strip()
+    return out
+
+
+
+def app_name(root, folder):
+    """The app a folder builds: its row of apps/app_dirs.tsv (X50Projector = apps/LumenProjector/host/activity), else
+    the folder's name."""
+    p = os.path.join(root, "apps", "app_dirs.tsv")
+    if os.path.isfile(p):
+        for ln in open(p, encoding="utf-8"):
+            c = ln.rstrip("\n").split("\t")
+            if len(c) == 2 and not ln.startswith("#") and c[1].rstrip("/") == folder.rstrip("/"):
+                return c[0]
+    return os.path.basename(folder.rstrip("/"))
+
 def validate(root):
     """-> (errors, notes) over every device.conf."""
     errs, notes, seen, fams = [], [], {}, {}
@@ -306,6 +337,15 @@ def validate(root):
             if os.path.isfile(os.path.join(os.path.dirname(p), "build.conf")):
                 errs.append("%s: a research entry has no build.conf" % rel)
         fam = vals.get("family") or vals.get("codename")
+        if not research and "vendor" in vals:
+            vc = os.path.join(root, "devices", "_vendor", vals["vendor"], "vendor.conf")
+            if not os.path.isfile(vc):
+                errs.append("%s: vendor %s has no devices/_vendor/%s/vendor.conf" % (rel, vals["vendor"], vals["vendor"]))
+            elif vals.get("hal_family") not in vendor_conf(vc).get("families", "").split():
+                errs.append("%s: hal_family %r is not one of the families= of %s" % (rel, vals.get("hal_family"),
+                                                                                   os.path.relpath(vc, root)))
+        elif not research and "hal_family" in vals:
+            errs.append("%s: hal_family without vendor" % rel)
         if "family" in vals and not re.match(r"^[a-z0-9_]+$", vals["family"]):
             errs.append("%s: family %r is not [a-z0-9_]+" % (rel, vals["family"]))
         if fam:
@@ -341,7 +381,11 @@ def validate(root):
         hal_apps = [vals.get("hal_app", "")] + [e.partition(":")[0] for e in vals.get("hal_more", "").split()]
         for ent in vals.get("hal_unbanned", "").split():
             ap, _, ub = ent.partition(":")
-            want = "devices/%s/research/unbanned_%s.tsv" % (vals.get("codename", ""), os.path.basename(ap.rstrip("/")).lower())
+            # the model's own list or its family's (one list for a family whose models run the same stock calls)
+            name = "research/unbanned_%s.tsv" % app_name(root, ap).lower()
+            import layered
+            dirs = [os.path.relpath(x, root) for x in layered.dirs(os.path.join(root, "devices", vals.get("codename", ""), "device.conf"))]
+            want = next((os.path.join(x, name) for x in dirs if os.path.isfile(os.path.join(root, x, name))), "devices/%s/%s" % (vals.get("codename", ""), name))
             if vals.get("hal_check") != "aidl-table":
                 errs.append("%s: hal_unbanned is for hal_check aidl-table" % rel)
             if ap.rstrip("/") not in [a.rstrip("/") for a in hal_apps]:
@@ -566,8 +610,10 @@ def main(argv):
         root, argv = os.path.abspath(argv[1]), argv[2:]
     cmd = argv[0] if argv else ""
     try:
-        if cmd == "list" and len(argv) == 1:
+        if cmd == "list" and argv[1:] in ([], ["--images"]):
             for c, d in sorted(load(root).items()):
+                if argv[1:] == ["--images"] and d.get("image") == "none":
+                    continue
                 print("%s\t%s\t%s" % (c, d["installer_id"], d["name"]))
             return 0
         if cmd == "identify" and len(argv) == 3:

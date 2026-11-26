@@ -162,6 +162,17 @@ public final class AboutTest {
                         + "lumen_dlp_controller|DLP controller|TI DLPC8445, firmware 9.4.128|false\nlumen_fpga|FPGA|160T|false\n"
                         + "lumen_back_to_xgimi|Back to the XGIMI system|With the XGIMI recovery USB stick|true\n",
                 "rows: after the firmware the DLP controller with its firmware and the FPGA");
+        Function<String, String> x50Files = p -> p.endsWith("/dlp/dlp.ini") ? X50_DLP : p.endsWith("/DlpFlashImageInfo.ini") ? X50_FLASH : null;
+        XgimiFacts x50hal = XgimiFacts.read(props(XgimiFacts.MODEL_PROP, "G0111"), x50Files, "", () -> X50_DLP_IMAGE);
+        eq(rowsText(AboutRows.versions(x50hal, AboutTest::text, false)),
+                "lumen_dlp_controller|DLP controller|TI DLPC8445, firmware 9.4.128|false\nlumen_fpga|FPGA|160T, firmware 1.3.5.8|false\n",
+                "versions: the FPGA with the firmware the HAL line names");
+        eq(rowsText(AboutRows.versions(XgimiFacts.read(props(XgimiFacts.MODEL_PROP, "G0111"), x50Files, "", () -> null), AboutTest::text, false)),
+                "lumen_dlp_controller|DLP controller|TI DLPC8445, firmware 9.4.128|false\nlumen_fpga|FPGA|160T|false\n",
+                "versions: the FPGA type alone when the HAL line cannot be read");
+        int[] asked = {0};
+        XgimiFacts.read(props(XgimiFacts.MODEL_PROP, "G0082"), p -> p.endsWith("/dlp/dlp.ini") ? Z9X_DLP : null, "", () -> { asked[0]++; return X50_DLP_IMAGE; });
+        eq(asked[0], 0, "facts: the HAL line is asked only when the config names an FPGA");
         XgimiFacts z9x = XgimiFacts.read(props(XgimiFacts.MODEL_PROP, "G0082"), p -> p.endsWith("/dlp/dlp.ini") ? Z9X_DLP : null);
         eq(rowsText(AboutRows.of(z9x, AboutTest::text)),
                 "lumen_model_code|Model code|G0082|false\nlumen_dlp_controller|DLP controller|TI DLPC8445|false\n"
@@ -315,6 +326,8 @@ public final class AboutTest {
             + "# EN_DLP_TI8445 = 13\r\nDlpType = 13;\r\n#E_FPGA_DEV_TYPE_NONE = 0,\r\n#E_FPGA_DEV_TYPE_PL25G = 1,\r\n"
             + "#E_FPGA_DEV_TYPE_200H = 2,\r\n#E_FPGA_DEV_TYPE_160T = 3,\r\n#E_FPGA_DEV_TYPE_PH1A400 = 4,\r\nextFPGAType = 3;\r\n"
             + "# PANEL_TYPE_4K   = 5\r\nDlp2dPanelType = 5;\r\n";
+    /** the HAL's light engine line (DisplayManager getDlpImageVersion), X50 Ultra G0111 on v1.3.38, read 2026-11-21 */
+    static final String X50_DLP_IMAGE = "CRISubType:255,ext-fpga version:1.3.5.8 flash version:9.4.128";
     static final String X50_FLASH = "[DLP_UPGRADE_IMAGE_INFO]\r\nDlpFlashImageVersion = 9.4.128;\r\nDlpSubType = 0xff;\r\nimageCrc = 3966266752;\r\n";
     /** Z9X G0082 V6.15.62: the same enum, no external FPGA line, no flash image file */
     static final String Z9X_DLP = "##DLP_TYPE\n# EN_DLP_TI3436 = 9\n# EN_DLP_TI8445 = 13\nDlpType = 13;\n";
@@ -334,6 +347,18 @@ public final class AboutTest {
         eq(LightEngine.parse("#DlpType = 13;\n# EN_DLP_TI8445 = 13\n", null).controller, "", "engine: a commented value is no value");
         eq(LightEngine.parse(null, X50_FLASH).controller, "", "engine: no file, nothing");
         eq(LightEngine.parse(X50_DLP, "DlpFlashImageVersion = 9.4.128abc;\n").firmware, "", "engine: an odd version is left out");
+        eq(x.fpgaFirmware, "", "engine: no FPGA firmware from the config files alone");
+        eq(x.withFpgaFirmware(X50_DLP_IMAGE).fpgaFirmware, "1.3.5.8", "engine: the FPGA firmware of the HAL line (X50 Ultra v1.3.38)");
+        eq(x.withFpgaFirmware(X50_DLP_IMAGE).fpga + "|" + x.withFpgaFirmware(X50_DLP_IMAGE).firmware, "160T|9.4.128",
+                "engine: the HAL line changes neither the FPGA type nor the controller firmware of the config");
+        eq(x.withFpgaFirmware("CRISubType:255,ext-FPGA Version: 1.3.4.7 flash version:9.3.130").fpgaFirmware, "1.3.4.7",
+                "engine: case and spaces of the HAL line");
+        check(x.withFpgaFirmware(null) == x, "engine: no HAL line, unchanged");
+        eq(x.withFpgaFirmware("CRISubType:255,flash version:9.4.128").fpgaFirmware, "", "engine: a line without an FPGA version, none");
+        eq(x.withFpgaFirmware("ext-fpga version:1.3.5.8x flash version:9.4.128").fpgaFirmware, "", "engine: an odd FPGA version is left out");
+        eq(x.withFpgaFirmware("ext-fpga version: flash version:9.4.128").fpgaFirmware, "", "engine: an empty FPGA version is left out");
+        eq(x.withFpgaFirmware("flash version:9.4.128 fpgaversion:1.3.5.8").fpgaFirmware, "", "engine: only the words fpga version name it");
+        eq(z.withFpgaFirmware(X50_DLP_IMAGE).fpgaFirmware, "", "engine: a model without an FPGA takes no FPGA firmware");
     }
 
     // ------------------------------------------------------------------ catalog
@@ -472,22 +497,24 @@ public final class AboutTest {
         check(w.official != null && w.link.equals(Z9X_URL_62) && w.usbFile.equals(Z9X_BIN) && w.firmware.equals("V6.15.58")
                 && w.model.equals("G0082"), "screen: the official file, its address in the QR code");
         w = WayBack.of(facts("G0082", "v6.15.58", "UpdateBinName = \"XGIMI_HORSEPOPULAR_XR09D.bin\"\n"), c, "en");
-        check(w.official == null && w.usbFile.equals("XGIMI_HORSEPOPULAR_XR09D.bin") && w.link.equals(Guide.backToStock("en")),
-                "screen: a catalog file of another name than the unit's own is never offered");
+        check(w.official == null && w.usbFile.equals("XGIMI_HORSEPOPULAR_XR09D.bin") && w.link.equals("https://lumen-os.net/en/restore/#g0082"),
+                "screen: a catalog file of another name than the unit's own is never offered, the model's restore page");
         w = WayBack.of(facts("G0082", "v6.15.62", null), c, "en");
         check(w.official != null && w.usbFile.equals(Z9X_BIN) && w.link.equals(Z9X_URL_62),
                 "screen: the catalog's stick name when the unit's config cannot be read");
         w = WayBack.of(facts("G0082", "v6.15.58", Z9X_INI), null, "uk");
-        check(w.official == null && w.usbFile.equals(Z9X_BIN) && w.link.equals(Guide.backToStock("uk")),
-                "screen: no catalog yet, the guide");
+        check(w.official == null && w.usbFile.equals(Z9X_BIN) && w.link.equals("https://lumen-os.net/restore/#g0082"),
+                "screen: no catalog yet, the model's restore page in Russian");
         w = WayBack.of(facts("G0082", "v6.15.99", Z9X_INI), c, "de");
-        check(w.official == null && w.link.equals(Guide.backToStock("de")), "screen: a firmware the catalog does not know, the guide");
-        eq(Guide.backToStock("ru"), "https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md#stock", "guide: Russian");
-        for (String l : new String[] {"uk", "be", "kk"}) eq(Guide.backToStock(l), Guide.backToStock("ru"), "guide: Russian for " + l);
+        check(w.official == null && w.link.equals(Guide.backToStock("de", "G0082")), "screen: a firmware the catalog does not know, the restore page");
+        eq(Guide.backToStock("ru", "G0111"), "https://lumen-os.net/restore/#g0111", "restore page: Russian, at the model");
+        for (String l : new String[] {"uk", "be", "kk"}) eq(Guide.backToStock(l, "H0062"), Guide.backToStock("ru", "H0062"), "restore page: Russian for " + l);
         for (String l : new String[] {"en", "de", "zh", ""}) {
-            eq(Guide.backToStock(l), "https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md#stock",
-                    "guide: English for '" + l + "'");
+            eq(Guide.backToStock(l, "G0155"), "https://lumen-os.net/en/restore/#g0155", "restore page: English for '" + l + "'");
         }
+        eq(Guide.backToStock("ru", ""), "https://lumen-os.net/restore/", "restore page: no model known yet, the model list");
+        eq(Guide.backToStock("en", null), "https://lumen-os.net/en/restore/", "restore page: no model, the English model list");
+        eq(Guide.backToStock("en", "G0111\"><x"), "https://lumen-os.net/en/restore/#g0111x", "restore page: only letters and digits in the anchor");
     }
 
     public static void main(String[] a) throws Exception {

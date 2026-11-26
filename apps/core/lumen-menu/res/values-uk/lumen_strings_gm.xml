@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">Набір</string>
     <string name="lumen_gm_preset_compete">Змагання</string>
     <string name="lumen_gm_preset_balance">Баланс</string>
-    <string name="lumen_gm_preset_story">Сюжет</string>
     <string name="lumen_gm_preset_on">Набір «%1$s» увімкнено</string>
     <string name="lumen_gm_preset_partly">Набір «%1$s» увімкнено, але не всі пункти вдалося змінити</string>
     <string name="lumen_gm_lat">Швидкість відгуку</string>
-    <string name="lumen_gm_lat_0">Стандарт</string>
     <string name="lumen_gm_lat_1">Турбо</string>
     <string name="lumen_gm_lat_d0">Звичайна затримка. Трапеція та підгонка зображення працюють.</string>
     <string name="lumen_gm_lat_d1">Найменша затримка. Трапеція та підгонка зображення не працюють.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">Увімк</string>
     <string name="lumen_gm_auto">Авто</string>
     <string name="lumen_gm_pic">Режим зображення</string>
-    <string name="lumen_gm_pic_0">Стандарт</string>
     <string name="lumen_gm_pic_4">Спорт</string>
     <string name="lumen_gm_pic_d0">Для будь яких ігор.</string>
     <string name="lumen_gm_pic_d1">Для шутерів.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">Звичайний екран.</string>
     <string name="lumen_gm_snd">Ігровий звук</string>
     <string name="lumen_gm_snd_1">Об\'ємний</string>
-    <string name="lumen_gm_snd_2">Сюжет</string>
     <string name="lumen_gm_snd_3">Чіткість</string>
     <string name="lumen_gm_snd_4">Збалансований</string>
     <string name="lumen_gm_snd_d0">Звук як у грі.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">швидше</string>
     <string name="lumen_gm_turbo_title">Увімкнути Турбо?</string>
     <string name="lumen_gm_turbo_msg">Турбо вимикає корекцію трапеції та повертає зображення до повного кадру. Затримка буде найменшою.</string>
-    <string name="lumen_gm_turbo_ok">Увімкнути</string>
     <string name="lumen_gm_rule_vrr_wide">Спершу виберіть формат 16:9 або Авто</string>
     <string name="lumen_gm_rule_ar_vrr">Спершу вимкніть VRR</string>
     <string name="lumen_gm_rule_ar_4k">Широкий кадр працює лише із сигналом 3840 × 2160</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">Під час гри утримуйте кнопку налаштувань, щоб відкрити це меню</string>
     <string name="lumen_gm_kind_console">приставка</string>
     <string name="lumen_gm_kind_computer">комп\'ютер</string>
-    <string name="lumen_gm_licences">Ліцензії</string>
     <string name="lumen_gm_licences_d">Автори матеріалів, які використовує Lumen OS</string>
     <string name="lumen_gm_credits_intro">Зображення геймпадів в ігровому меню зроблено з цих 3D моделей:</string>
 </resources>

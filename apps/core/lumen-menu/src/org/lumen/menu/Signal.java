@@ -9,8 +9,6 @@ package org.lumen.menu;
 public enum Signal {
     SDR("sdr"), HDR("hdr"), HDR10("hdr10"), DOLBY("dolby"), HDR_VIVID("hdr_vivid"), IMAX("imax"), FILMMAKER("filmmaker");
 
-    /** getHdrType values of the vendor (stock PictureUtils isSdr / isPlayingHDR10 / isDolbyPlaying / isPlayingHDRVivid). */
-    private static final int HDR_TYPE_SDR = 0, HDR_TYPE_HDR10 = 1, HDR_TYPE_DOLBY = 2, HDR_TYPE_VIVID = 6;
 
     public final String token;
 
@@ -24,17 +22,21 @@ public enum Signal {
 
     /**
      * The kind for a getHdrType read, in the stock order: Dolby Vision, HDR Vivid, HDR10, any other HDR (HLG, HDR10+)
-     * = HDR, else SDR. Null when nothing was read. IMAX and Filmmaker need reads no adapter makes yet: such content
-     * counts as its HDR kind.
+     * = HDR, else SDR. Null when nothing was read. Filmmaker needs a read no adapter makes yet: such content counts as
+     * its HDR kind; IMAX Enhanced content: {@link #of(HdrFormat, boolean)}.
      */
     public static Signal ofHdrType(Integer hdrType) {
-        if (hdrType == null || hdrType < HDR_TYPE_SDR) return null;
-        switch (hdrType) {
-            case HDR_TYPE_SDR: return SDR;
-            case HDR_TYPE_HDR10: return HDR10;
-            case HDR_TYPE_DOLBY: return DOLBY;
-            case HDR_TYPE_VIVID: return HDR_VIVID;
-            default: return HDR;
-        }
+        HdrFormat f = HdrFormat.ofHdrType(hdrType);                  // one table of the vendor values
+        return f == null ? null : f.kind;
+    }
+
+    /**
+     * The kind for a getHdrType read and the stock IMAX Enhanced content flag (getExtDecInfo "format&amp;isimax" = 1), in
+     * the stock order of PictureUtils.getCurSourceType: Dolby Vision first, then IMAX Enhanced, then the HDR kind.
+     */
+    public static Signal of(HdrFormat f, boolean imax) {
+        if (f != null && f.kind == DOLBY) return DOLBY;
+        if (imax) return IMAX;
+        return f == null ? null : f.kind;
     }
 }

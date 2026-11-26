@@ -9,6 +9,11 @@ package org.lumen.menu;
 public final class MenuRequest {
     /** The intent action of the remote's 3D key: the small 3D window (the 3D popup on the card). */
     public static final String QUICK_3D = "org.lumen.projector.action.QUICK_3D";
+    /**
+     * The place Back to the XGIMI system (lumen-menu XgimiSystemPage): Settings > About opens the old screen's address
+     * (lumen-about XgimiSystemActivity), which asks the projector app for this place.
+     */
+    public static final String XGIMI_SYSTEM = "settings.xgimi_system";
 
     private MenuRequest() {}
 

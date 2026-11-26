@@ -15,15 +15,17 @@
 #  name     the text: lumen_remote_keys_do_<name>, <name>_<N> = with N as its argument
 #  hdmi     shown only when the projector has at least this many HDMI inputs (TvInputManager), 0 = always
 #  icon     its Lumen icon on the screen: res/drawable/lumen_ic_<icon> of apps/core/lumen-icons (Material Symbols,
-#           tools/icons/icons.tsv), one per action, HDMI 1 and 2 share the HDMI port
+#           tools/icons/icons.tsv), one per action, the HDMI actions share the HDMI port
 #  stock    stock function codes it stands for (_i.json functionCode: title)
 #  note     why
 id	keycode	intent	feature	name	hdmi	icon	stock	note
 source	TV_INPUT	-	-	source	0	input	-	the input chooser (the stock Source key 2115)
 hdmi_1	TV_INPUT_HDMI_1	-	-	hdmi_1	1	hdmi	1001: HDMI 1	switches to HDMI 1 (org.lumen.tvinput)
-hdmi_2	TV_INPUT_HDMI_2	-	-	hdmi_2	2	hdmi	1002: HDMI 2	switches to HDMI 2 (stock 1003 HDMI 3: no Lumen model has a third input)
+hdmi_2	TV_INPUT_HDMI_2	-	-	hdmi_2	2	hdmi	1002: HDMI 2	switches to HDMI 2 (org.lumen.tvinput)
+hdmi_3	TV_INPUT_HDMI_3	-	-	hdmi_3	3	hdmi	1003: HDMI 3	switches to HDMI 3: only where the TV input list has a third port (X50, Max, RS30, Titan)
 keystone	TV_NETWORK	-	-	keystone	0	keystone	1004: Auto Keystone Correction, 1005: Manual Keystone Correction, 1006: Optical Zoom & Lens Shift, 1015: Lens Memory	the keystone key of the projector panel (each model's keystone and lens page)
 focus	FOCUS	-	-	focus	0	focus	-	the focus key (autofocus)
 quick	SETTINGS	-	-	quick	0	settings	1008: Brightness Adjustment, 1010: picture pro settings	the gear: quick settings with brightness and picture
 3d	-	org.lumen.projector.action.QUICK_3D	picture.3d	3d	0	3d	1011: 3D Settings (three_d_settings)	the small 3D mode window (Off, Side by side, Top and bottom, 3D to 2D): branch quick-3d registers the intent and gives picture.3d to the models whose stock has 3D
 signal	-	org.lumen.projector.action.SIGNAL_PANEL	signal.panel	signal	0	info	-	the signal panel of apps/core/lumen-signal (the stock Titan has a signal panel too): card, full panel, hidden, the user can give it any remote key in Remote buttons (the Shortcut key keeps its stock app list default)
+sensors	-	org.lumen.projector.action.SENSORS_PANEL	sensors.panel	sensors	0	sensors	-	the sensor card of apps/core/lumen-sensors (developer tools, beside the signal panel): card, full sheet, hidden

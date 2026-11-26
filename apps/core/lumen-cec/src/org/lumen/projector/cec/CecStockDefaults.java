@@ -3,6 +3,7 @@ package org.lumen.projector.cec;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 
 import org.lumen.cec.CecDefaults;
@@ -46,6 +47,68 @@ public final class CecStockDefaults {
         } catch (Throwable t) {
             Log.w(TAG, "stock defaults: " + t);
         }
+        allOnOnce(c);
+    }
+
+    /** The owner's all-ON step (CecDefaults.allOnOnce), once per unit, flag {@value #K_ALL_ON}. Never throws. */
+    static void allOnOnce(Context c) {
+        try {
+            List<String> log = new ArrayList<>();
+            CecDefaults.allOnOnce(new FrameworkRows(c), log);
+            for (String l : log) Log.i(TAG, "all on: " + l);
+        } catch (Throwable t) {
+            Log.w(TAG, "all on: " + t);
+        }
+    }
+
+    static final String K_ALL_ON = "cec_defaults_v1_applied";
+
+    /** The page's switches through their owners (CecSettings: framework, tvinput provider, our prefs). */
+    private static final class FrameworkRows implements CecDefaults.Rows {
+        private final Context c;
+        private Bundle tv;
+
+        FrameworkRows(Context c) { this.c = c; }
+
+        private Bundle tv() {
+            if (tv == null) tv = CecSettings.tvinputPrefs(c);
+            return tv;
+        }
+
+        private static String tvKey(CecRow r) {
+            return r == CecRow.SWITCH ? CecSettings.TV_OTP : r == CecRow.REMOTE ? CecSettings.TV_CONTROL : null;
+        }
+
+        @Override public boolean absent(CecRow r) {
+            String k = tvKey(r);
+            return k != null && (tv() == null || !tv().containsKey(k));
+        }
+
+        @Override public Boolean on(CecRow r) {
+            switch (r) {
+                case MASTER: return CecSettings.masterOn(c);
+                case WAKE: return CecSettings.wakeOn(c);
+                case SEND_STANDBY: return CecSettings.sendStandbyOn(c);
+                case SOUNDBAR: return CecSettings.soundbarOn(c);
+                case SOUNDBAR_ON: return CecSettings.avrOn(c);
+                default: return tv() == null ? null : tv().getBoolean(tvKey(r));
+            }
+        }
+
+        @Override public boolean set(CecRow r, boolean on) {
+            switch (r) {
+                case MASTER: return CecSettings.setMaster(c, on);
+                case WAKE: return CecSettings.setWake(c, on);
+                case SEND_STANDBY: return CecSettings.setSendStandby(c, on);
+                case SOUNDBAR: return CecSettings.setSoundbar(c, on);
+                case SOUNDBAR_ON: CecSettings.setAvrOn(c, on); return true;
+                default: return CecSettings.setTvinputPref(c, tvKey(r), on);
+            }
+        }
+
+        @Override public boolean done() { return CecSettings.prefs(c).getBoolean(K_ALL_ON, false); }
+
+        @Override public void markDone() { CecSettings.prefs(c).edit().putBoolean(K_ALL_ON, true).commit(); }
     }
 
     /** The device codename of the app's menu profile (devices/&lt;c&gt;/menu.json "device"). */

@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">Punto de acceso</string>
-    <string name="lumen_m_hotspot_name">Nombre de la red</string>
     <string name="lumen_m_hotspot_password">Contraseña</string>
     <string name="lumen_m_hotspot_reset">Restaurar ajustes predeterminados</string>
     <string name="lumen_m_hotspot_on" formatted="true">El punto de acceso de %s está habilitado</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">Configuración actual guardada</string>
     <string name="lumen_m_hotspot_name_title">Nombre del punto de acceso</string>
     <string name="lumen_m_hotspot_password_title">Contraseña del punto de acceso</string>
-    <string name="lumen_m_hotspot_password_hint">Al menos 8 caracteres</string>
     <string name="lumen_m_hotspot_name_empty">Introduce un nombre de red</string>
     <string name="lumen_m_hotspot_name_long">El nombre es demasiado largo</string>
     <string name="lumen_m_hotspot_password_short">Introduce al menos 8 caracteres</string>

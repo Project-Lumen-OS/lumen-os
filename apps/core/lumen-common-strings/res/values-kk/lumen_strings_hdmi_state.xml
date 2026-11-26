@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_asleep">Ұйқы режимінде</string>
+    <string name="lumen_no_signal">Сигнал жоқ</string>
+</resources>

@@ -8,12 +8,17 @@
   versionCode/versionName come from build_apk.sh (VERSION_CODE=2 VERSION_NAME=1.1; v1.0 = code 1;
   Lumen OS 1.0: 100 / 1.0; Lumen OS 1.0.0: 101 / 1.0.0; Lumen OS 1.0.1: 102 / 1.0.1).
 
-  No launcher / leanback-launcher entry (no home-screen tile). Settings are reached through
+  Screen casting (2026-11-21, casting is one shared feature on every model): CastActivity is
+  the casting page of every model with AirPlay, screen mirroring (org.lumen.miracast, through its
+  control provider) and DLNA (Lumen Play); it is the Home tile (LEANBACK_LAUNCHER, label Screen
+  casting) and the target of org.lumen.cast.SCREEN (the menu's All settings row). It is also the
+  only settings page of AirPlay and Miracast (old-ui-1125: the AirPlay settings screen is gone, its
+  addresses below now open the casting page; the Miracast settings address redirects here). It is reached through
   Settings > Apps > AirPlay > Open (TvSettings uses getLaunchIntentForPackage, which picks the
   MAIN + INFO activity; launchers do not list INFO), the service notification
   (POST_NOTIFICATIONS: pre-granted in the image by overlay/v63/z9x-airplay-default-permissions.xml
   -> /system/product/etc/default-permissions/z9x-airplay.xml, otherwise asked once by the
-  settings screen) and the intent action org.lumen.airplay.SETTINGS. TvSettings on this image
+  casting page) and the intent action org.lumen.airplay.SETTINGS. TvSettings on this image
   does not use APPLICATION_PREFERENCES (no gear); the filter is kept for other settings UIs.
 
   Deliberately NOT android:persistent (decided for the v6.3 image integration): the receiver is
@@ -62,9 +67,19 @@
     <!-- signature|privileged|...: granted by the platform key, also from /data. Lets the service
          bring the receiver screen up when a sender connects. -->
     <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" />
+    <!-- the casting screen: the screen mirroring sink's switches (signature permission of org.lumen.miracast) and the
+         projector's name both receivers follow (Settings.Global device_name, signature|privileged) -->
+    <uses-permission android:name="org.lumen.miracast.permission.CONTROL" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
+    <!-- the casting screen looks for the sink and for Lumen Play, the DLNA renderer -->
+    <queries>
+        <package android:name="org.lumen.miracast" />
+        <package android:name="com.xgimiru.player" />
+        <provider android:authorities="org.lumen.miracast" />
+    </queries>
 
     <application
-        android:name=".LumenApp"
         android:label="@string/app_name"
         android:icon="@drawable/brand_icon_airplay"
         android:allowBackup="false"
@@ -105,16 +120,22 @@
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density"
             android:theme="@style/Theme.Z9xAirPlay.Mirror" />
 
-        <!-- Settings: no LAUNCHER/LEANBACK_LAUNCHER on purpose (no home tile). MAIN + INFO is the
-             package's "front door" for PackageManager.getLaunchIntentForPackage, i.e. the Open
-             button of TvSettings' App info. -->
+        <!-- Screen casting: the Home tile and the menu's casting row. -->
         <activity
-            android:name=".SettingsActivity"
+            android:name=".CastActivity"
             android:exported="true"
-            android:label="@string/settings_title"
-            android:excludeFromRecents="false"
+            android:label="@string/cast_title"
+            android:launchMode="singleTask"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:theme="@style/Theme.Z9xAirPlay.Settings">
+            android:theme="@style/Theme.Z9xAirPlay.Cast">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.lumen.cast.SCREEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.INFO" />
@@ -128,5 +149,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 </manifest>

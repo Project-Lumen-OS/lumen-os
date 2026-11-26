@@ -3,11 +3,12 @@
 # Host checks of the shared updater (apps/core/lumen-updater): sh apps/core/lumen-updater/test/run.sh
 #   1. the model-free parts on the module sources: Outcome (the result after a restart), the one-time statistics
 #      notice, UpdateService's worker (JobRunner: a second "Install now" is dropped, only the newest job ends the
-#      service), the gate block strings in every locale (strings_parity.py);
+#      service), the gate block strings in every locale (strings_parity.py), the firmware refusal (firmware_text.py);
 #   2. per updater recipe (Z9X, HB, Play 6), assembled: the statistics adapter (StatsTest), the facts of the two
 #      install ways (KindTest), the model table of README.md (TargetFactsTest), the service wiring (one UpdateService, the install drop of each InstallWay);
 #   3. PackageDownload over the shared download (test/download.sh; the download itself: apps/core/lumen-download/test/run.sh);
-#   4. parity with the three updaters it replaced (test/parity/run.sh: behaviour transcript + static face).
+#   4. parity with the three updaters it replaced (test/parity/run.sh: behaviour transcript + static face);
+#   5. always the newest build (NewestTest: a fake GitHub over HTTPS on loopback) and the wiring of every path into Newest.
 # Host only, no device, no network (the download test talks to its own server on loopback). Writes only a temp dir. The model checks stay with each model's layer
 # (apps/Z9xUpdater/test/run.sh, apps/LumenUpdater/test/ota/run.sh, apps/Play6Updater/test/run.sh).
 set -eu
@@ -30,6 +31,8 @@ TS=$HERE/test/org/lumen/updater
   "$TS/JobRunnerTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/jobs" org.lumen.updater.JobRunnerTest
 python3 -B "$HERE/test/strings_parity.py" "$HERE" "$HERE/res"
+# the firmware refusal of a newer release: plain words, the supported and the own firmware, in every language
+python3 -B "$HERE/test/firmware_text.py" "$HERE/res"
 # the texts people see: no DSU, vbmeta or slot in any language of any app (the updater's consent and block texts)
 python3 -B "$G/tools/i18n/test/ui_words_test.py" "$G"
 # a javac argument file, one quoted path per line: the checkout path may hold blanks ("XGIMI PLAY 6")
@@ -43,12 +46,12 @@ facts() {
   case $1 in
     Z9xUpdater) echo "props=ro.z9x device=z9x versions=LEGACY channels=FIXED default=${D}z9x/update-public-nogms.json" \
       "beta=${D}z9x/update-public-beta.json guide=${GD}z9x/ dir=APP_DATA install=UPDATE_ENGINE checks=Z9X_GATE" \
-      "dsu=false import=true hide=false vabc=" ;;
+      "dsu=false hide=false vabc=" ;;
     LumenUpdater) echo "props=ro.lumen device=prop:ro.lumen.ota.device versions=O1 channels=PAIR default= beta=null" \
       "guide=null dir=APP_DATA install=UPDATE_ENGINE checks=prop:ro.lumen.ota.boot_gate:LUMEN_GATE dsu=true" \
-      "import=false hide=true vabc=x50,x50max" ;;
+      "hide=true vabc=x50,x50max" ;;
     Play6Updater) echo "props=ro.lumen device=play6 versions=LEGACY channels=FIXED default=${D}play6/update-play6.json" \
-      "beta=null guide=${GD} dir=CACHE install=RECOVERY checks=RECOVERY dsu=false import=true hide=false vabc=" ;;
+      "beta=null guide=${GD} dir=CACHE install=RECOVERY checks=RECOVERY dsu=false hide=false vabc=" ;;
   esac
 }
 
@@ -88,6 +91,53 @@ if grep -nE '"(z9x|hb|play6|x50|x50max|G0[0-9]{3}|horse_popular|goat_elegant|dra
   echo "FAIL a model name in the shared updater code (it belongs to a Target)"; exit 1
 fi
 echo "service wiring passed=3 failed=0"
+
+# always the newest build (Newest): the real check, download switch and install recheck against a fake GitHub over
+# HTTPS (a throwaway certificate for 127.0.0.1 that also signs the test manifests)
+N=$OUT/newest
+mkdir -p "$N"
+"$JAVA_HOME/bin/keytool" -genkeypair -alias lumen -keyalg RSA -keysize 2048 -dname CN=127.0.0.1 -ext SAN=ip:127.0.0.1 \
+  -validity 2 -storetype PKCS12 -keystore "$N/ks.p12" -storepass lumentest -keypass lumentest -noprompt 2>/dev/null
+find "$HERE/test/parity/stubs" -name '*.java' | sed 's/.*/"&"/' > "$OUT/stubs.files"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$N/stubs" -cp "$HJ:$AJ" @"$OUT/stubs.files"
+python3 -B "$G/tools/devices/assemble_app.py" --root "$G" --device horse_popular --app Z9xUpdater --out "$N/app" --quiet
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -implicit:class -d "$N/c" -cp "$N/stubs:$OUT/json:$HJ:$AJ" \
+  -sourcepath "$N/app/src" "$TS/NewestTest.java"
+"$JAVA_HOME/bin/java" -Djava.io.tmpdir="$N" -Djavax.net.ssl.trustStore="$N/ks.p12" -Djavax.net.ssl.trustStorePassword=lumentest \
+  -Djavax.net.ssl.trustStoreType=PKCS12 -cp "$N/c:$N/stubs:$OUT/json:$AJ:$HJ" org.lumen.updater.NewestTest "$N/ks.p12" lumentest
+# every path goes through Newest: the check, the download, the install, the boot, the job and the screen
+want() {  # FILE TEXT
+  grep -qF "$2" "$S/$1" || { echo "FAIL $1: missing: $2"; exit 1; }
+}
+want Checker.java 'CheckResult r = Newest.check(st, urls, Http::fetchFresh, Trust::verifyWithSystemCerts, Ota.currentVersionCode(),'
+want Checker.java 'Newest.Read r = Newest.read(Http::fetchFresh, Trust::verifyWithSystemCerts, c[1]);'
+want Checker.java 'return Newest.dropStale(Store.get(c), Ota.currentVersionCode(), why);'
+want Checker.java 'CheckResult r = Newest.accept(st, m, true, dir.getAbsolutePath(), before, Ota.currentVersionCode(),'
+want Checker.java 'if (r.kept) return r;'
+want UpdateService.java 'return Newest.downloadNewest(Store.get(this), this::downloadOnce);'
+want UpdateService.java 'return Newest.beforeInstall(Store.get(this), () -> Checker.check(this), this::download);'
+want UpdateService.java 'if (download() && then && newest()) install();'
+want UpdateService.java 'if (newest()) install();'
+want UpdateService.java 'public boolean stopRequested() { return jobs.stopRequested() || Newest.superseded(p.json, st); }'
+want UpdateService.java 'if (recheck.due(SystemClock.elapsedRealtime(), UpdateService.this.online())) Checker.check(UpdateService.this);'
+want UpdateService.java 'recheck.offline();'
+want BootReceiver.java 'if (target.isEmpty()) Checker.dropStaleOffer(c, "boot");'
+want CheckJob.java 'CheckResult r = Checker.check(this);'
+want CheckJob.java '.setPeriodic(CHECK_EVERY_MS, CHECK_FLEX_MS)'
+want CheckJob.java 'if (periodic == null || periodic.getIntervalMillis() != CHECK_EVERY_MS) {'
+want UpdaterActivity.java '} else if (s != UpdateState.READY && s != UpdateState.CHECKING && autoCheckDue()) {'
+want Store.java 'public final class Store implements Newest.Offers {'
+# the projector's HTTP stack (OkHttp) adds no cache header of its own: the manifest request carries them itself
+want Http.java 'HttpURLConnection c = open(fresh(url));'
+want Http.java 'c.setIfModifiedSince(0);'
+want Http.java 'c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");'
+want Http.java 'c.setRequestProperty("Pragma", "no-cache");'
+if sed -n '/private boolean downloadOnce/,/^    }$/p' "$S/UpdateService.java" | grep -q 'setState(UpdateState.DOWNLOADED)'; then
+  echo "FAIL UpdateService: a download marks itself DOWNLOADED outside Newest.downloadNewest"; exit 1
+fi
+sed -n '/private void run(Store st)/,/^    }$/p' "$S/CheckJob.java" | grep -m1 -E 'Checker.check|ACTION_DOWNLOAD' | grep -q Checker.check \
+  || { echo "FAIL CheckJob: a paused download resumes before the check"; exit 1; }
+echo "newest wiring passed=1 failed=0"
 
 sh "$HERE/test/download.sh"
 sh "$HERE/test/parity/run.sh"

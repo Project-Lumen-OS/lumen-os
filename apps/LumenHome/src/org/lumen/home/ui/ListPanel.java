@@ -59,6 +59,12 @@ public class ListPanel extends ViewGroup {
             return this;
         }
 
+        /** A name for the item that stays when the page is filled again (the focus keeps to it) and for test/ui. */
+        public Item tag(Object t) {
+            tag = t;
+            return this;
+        }
+
         public Item on(boolean b) {
             on = b;
             return this;
@@ -91,6 +97,8 @@ public class ListPanel extends ViewGroup {
     private int mPicked = -1;
     private MoveListener mMove;
     private final int mPad, mPadEdge;
+    /** The focus pill grows 3 % past its row: the list's window starts this far above the first row (gap 28). */
+    private static final int CLIP_SLACK = 6;
 
     public ListPanel(Context c) {
         super(c);
@@ -181,6 +189,55 @@ public class ListPanel extends ViewGroup {
         return mItems;
     }
 
+    /** The shown page for {@code dumpsys activity} (test/ui): one line per item, the focused one marked. */
+    void dump(java.io.PrintWriter w) {
+        int bg = getBackground() instanceof android.graphics.drawable.ColorDrawable
+                ? ((android.graphics.drawable.ColorDrawable) getBackground()).getColor() : 0;
+        w.println("lumen.panel.page title=" + mTitle.getText() + " focus=" + mFocus + " items=" + mItems.size()
+                + " bg=" + Integer.toHexString(bg) + " surface=" + Integer.toHexString((Theme.SURFACE & 0x00FFFFFF) | 0xFA000000)
+                + " titleBottom=" + mTitle.getBottom() + " clipTop=" + clipTop() + " left=" + screenLeft());
+        for (int i = 0; i < mItems.size(); i++) {
+            Item it = mItems.get(i);
+            w.println("lumen.item " + i + " tag=" + it.tag + " kind=" + it.kind + " on=" + it.on + " focused=" + (i == mFocus)
+                    + " shown=" + shown(i) + " value=" + it.value + " text=" + it.text);
+        }
+    }
+
+    /**
+     * The page again with new values (a switch, a look, the theme): the focus keeps to the item with the same tag
+     * (model/PanelFocus), rows of the same shape take the values in place, the list keeps its scroll.
+     */
+    public void update(List<Item> items) {
+        java.util.ArrayList<Object> ta = new java.util.ArrayList<>(), tb = new java.util.ArrayList<>();
+        java.util.ArrayList<Integer> ka = new java.util.ArrayList<>(), kb = new java.util.ArrayList<>();
+        for (Item it : mItems) {
+            ta.add(it.tag);
+            ka.add(it.kind);
+        }
+        for (Item it : items) {
+            tb.add(it.tag);
+            kb.add(it.kind);
+        }
+        int f = org.lumen.home.model.PanelFocus.keep(ta, tb, mFocus);
+        if (mPicked >= 0 || !org.lumen.home.model.PanelFocus.sameRows(ta, ka, tb, kb)) {
+            setItems(items, f);
+            return;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            mItems.set(i, items.get(i));
+            mViews.get(i).bind(items.get(i));
+        }
+        setFocus(f);
+    }
+
+    /** The theme changed while the panel is shown: its surface, texts and icons take the new palette. */
+    public void restyle() {
+        setBackgroundColor((Theme.SURFACE & 0x00FFFFFF) | 0xFA000000);
+        mTitle.setTextColor(Theme.TEXT1);
+        mSub.setTextColor(Theme.TEXT2);
+        for (ItemView v : mViews) v.restyle();
+    }
+
     public void refresh(Item it) {
         int i = mItems.indexOf(it);
         if (i >= 0) mViews.get(i).invalidate();
@@ -245,11 +302,13 @@ public class ListPanel extends ViewGroup {
     }
 
     private void ensureVisible(int i) {
-        if (getHeight() == 0) {
-            post(() -> ensureVisible(i));
+        if (i < 0 || i >= mViews.size()) return;
+        View v = mViews.get(i);
+        if (getHeight() == 0 || mList.isLayoutRequested() || !v.isLaidOut()) {
+            // new rows (a page again after BACK) have no place yet: measured from 0 they scrolled the list to its top
+            if (isAttachedToWindow() || getHeight() == 0) post(() -> { if (i < mViews.size() && mViews.get(i) == v) ensureVisible(i); });
             return;
         }
-        View v = mViews.get(i);
         int top = mList.getTop() + v.getTop() + (int) mList.getTranslationY();
         int bottom = top + v.getHeight();
         int minY = mList.getTop(), maxY = getHeight() - mPadEdge;
@@ -302,10 +361,7 @@ public class ListPanel extends ViewGroup {
                     }
                     return true;
                 }
-                if (it.kind == TOGGLE) {
-                    it.on = !it.on;
-                    mViews.get(mFocus).invalidate();
-                }
+                // a switch shows what its action stored (the owner fills the page again), never a flip of its own
                 if (it.action != null) it.action.run();
                 return true;
             }
@@ -355,6 +411,35 @@ public class ListPanel extends ViewGroup {
         setMeasuredDimension(w, h);
     }
 
+    /** Top of the window the list draws in: a row scrolled up goes under it, never over the title. */
+    int clipTop() {
+        return mList.getTop() - Theme.px(CLIP_SLACK);
+    }
+
+    @Override
+    protected boolean drawChild(Canvas c, View child, long drawingTime) {
+        if (child != mList) return super.drawChild(c, child, drawingTime);
+        int save = c.save();
+        c.clipRect(0, clipTop(), getWidth(), getHeight());
+        boolean more = super.drawChild(c, child, drawingTime);
+        c.restoreToCount(save);
+        return more;
+    }
+
+    private int screenLeft() {
+        int[] at = new int[2];
+        getLocationOnScreen(at);
+        return at[0];
+    }
+
+    /** Is item {@code i} wholly inside the list's window (between {@link #clipTop} and the bottom margin)? */
+    boolean shown(int i) {
+        if (i < 0 || i >= mViews.size()) return false;
+        View v = mViews.get(i);
+        int top = mList.getTop() + v.getTop() + Math.round(mList.getTranslationY());
+        return v.isLaidOut() && top >= clipTop() && top + v.getHeight() <= getHeight();
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int x = Theme.rtl(this) ? mPadEdge : mPad;
@@ -392,11 +477,22 @@ public class ListPanel extends ViewGroup {
             mText.setTextSize(Theme.pxf(28) * fs);
             mValue.setTextSize(Theme.pxf(22) * fs);
             mValue.setTypeface(Theme.REGULAR);
+            tint();
+            bind(it);
+        }
+
+        /** The palette's marks (check, reorder); bind() tints the item's own icon. */
+        private void tint() {
+            Context c = getContext();
             mCheck = Theme.icon(c, org.lumen.home.R.drawable.ic_check, Theme.ACCENT);
             mCheckF = Theme.icon(c, org.lumen.home.R.drawable.ic_check, Theme.ON_FOCUS);
             mMove = Theme.icon(c, org.lumen.home.R.drawable.ic_reorder, Theme.TEXT2);
             mMoveF = Theme.icon(c, org.lumen.home.R.drawable.ic_reorder, Theme.ON_FOCUS);
-            bind(it);
+        }
+
+        void restyle() {
+            tint();
+            bind(mIt);
         }
 
         void bind(Item it) {

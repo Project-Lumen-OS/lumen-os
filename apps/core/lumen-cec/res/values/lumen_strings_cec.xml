@@ -8,7 +8,7 @@
     <string name="lumen_cec_master">HDMI-CEC control</string>
     <!-- note under it, only where the projector's driver shows it (X50 family, stock general_set_device_control_cec_tip) -->
     <string name="lumen_cec_master_note">With HDMI-CEC off, sound over HDMI ARC is not available.</string>
-    <string name="lumen_cec_wake">Turn on with an HDMI device</string>
+    <string name="lumen_cec_wake">@string/lumen_turn_on_with_an_hdmi</string>
     <!-- note under it, only where the same switch also turns the devices off (X50 family, stock setDeviceAutoStart) -->
     <string name="lumen_cec_wake_note">With this on, HDMI devices also turn off when the projector turns off.</string>
     <string name="lumen_cec_night">Night guard</string>

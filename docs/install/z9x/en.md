@@ -5,7 +5,7 @@
 [Русская версия](ru.md). Other projectors: [Installing Lumen OS](../en.md).
 
 This page is for the XGIMI Z9X, model code G0082. You install Lumen OS from the projector itself, with the
-Lumen Installer app. Lumen OS downloads over the projector's own internet connection, Wi-Fi or Ethernet. You need no
+Lumen OS Live app. Lumen OS downloads over the projector's own internet connection, Wi-Fi or Ethernet. You need no
 computer and no USB cable, and there is no other way to install it.
 
 First Lumen OS starts once as Lumen OS Live. Your XGIMI system and your files stay as they are. If you like it,
@@ -19,19 +19,19 @@ replaces only the system: the XGIMI firmware, calibration, focus, keystone and l
 - The Z9X on its XGIMI system, connected to the internet over Wi-Fi or Ethernet.
 - XGIMI firmware V6.15.58 or V6.15.62. On V6.15.19 only Lumen OS Live works. To install, let the XGIMI system
   update itself over Wi-Fi first.
-- A USB stick with FAT32 or exFAT. It only carries the Lumen Installer app to the projector.
-- Free space in the projector's memory. Lumen Installer tells you how much it needs.
+- A USB stick with FAT32 or exFAT. It only carries the Lumen OS Live app to the projector.
+- Free space in the projector's memory. Lumen OS Live tells you how much it needs.
 - The projector plugged in the whole time.
 
 <a name="install"></a><a name="1-prepare-the-projector-10-min"></a>
 
 ## Install
 
-1. On a computer or a phone, download the Lumen Installer file that ends in `.apk1` from the
-   [latest Lumen Installer release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
+1. On a computer or a phone, download the Lumen OS Live file that ends in `.apk1` from the
+   [latest Lumen OS Live release](https://github.com/Project-Lumen-OS/lumen-installer/releases/latest).
    Copy it to the USB stick as it is.
 2. Plug the stick into the projector. Open the file in the XGIMI file manager and confirm the install.
-3. Open Lumen Installer. At the top it shows your model and its XGIMI firmware. Below it says whether Lumen OS
+3. Open Lumen OS Live. At the top it shows your model and its XGIMI firmware. Below it says whether Lumen OS
    works on this projector.
 4. Press **Prepare Lumen OS Live**. The app checks the projector, downloads Lumen OS, checks the download and
    prepares Lumen OS Live. This takes about 10 minutes. Most of it is the download. You can press **Pause** and
@@ -78,13 +78,13 @@ installs only after your OK. Your apps, settings and files stay.
 
 ## Something went wrong
 
-- Lumen Installer stops with a message. Do what it says. It always tells you when nothing was changed.
+- Lumen OS Live stops with a message. Do what it says. It always tells you when nothing was changed.
 - Your XGIMI firmware is not in the list. Update the XGIMI system over Wi-Fi first. To only try Lumen OS on
   your version, tick **Start Lumen OS Live anyway**. Installing permanently from that version is not possible.
 - The download keeps failing. Check that the projector is online and press **Prepare Lumen OS Live** again.
   The download goes on from where it stopped.
 - Lumen OS Live does not work right. Restart the projector. It goes back to the XGIMI system. To free the space,
-  open Lumen Installer and press **Remove Lumen OS Live**.
+  open the Lumen OS Live app and press **Remove Lumen OS Live**.
 - The install stopped with **Installing stopped**. Your XGIMI system has not changed. You can try again.
 - The app says **Something went wrong after the switch to Lumen OS**. Do not restart. Take a photo of the
   screen with the help code and ask us.
@@ -98,7 +98,7 @@ installs only after your OK. Your apps, settings and files stay.
 
 Ask in the Telegram channel [@projector_lumenos](https://t.me/projector_lumenos) or in
 [GitHub issues](https://github.com/Project-Lumen-OS/lumen-os/issues). Say your model, the XGIMI firmware and
-what you did. It helps if you also press **Send info** in Lumen Installer and tell us the code it shows.
+what you did. It helps if you also press **Send info** in Lumen OS Live and tell us the code it shows.
 
 <a name="stock"></a>
 

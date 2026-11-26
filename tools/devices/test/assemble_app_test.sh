@@ -32,6 +32,17 @@ for r in "$G"/devices/*/app/*.layers; do
   [ -f "$r" ] || continue
   expect "recipe_${r#$G/}" 0 'files (bases' "$r"
 done
+# a family recipe (devices/_family/<f>/app) assembles for every model that sees it
+for c in $(cd "$G/devices" && ls -d */ | tr -d / | grep -v '^_'); do
+  [ -f "$G/devices/$c/device.conf" ] || continue
+  python3 -B "$G/tools/devices/assemble_app.py" --root "$G" --recipes "$c" | while IFS=$(printf '\t') read -r app rel; do
+    case $rel in devices/_family/*) echo "$c $app" ;; esac
+  done
+done > "$W/family_recipes"
+while read -r c app; do
+  expect "family_${c}_$app" 0 'files (bases' --device "$c" --app "$app"
+done < "$W/family_recipes"
+[ -s "$W/family_recipes" ] || { echo "FAIL no family recipe found"; FAIL=$((FAIL + 1)); }
 
 # a small two-layer app in the scratch dir: base B (a, b, c/d), top T
 mkdir -p "$W/B/c" "$W/T"
@@ -67,6 +78,32 @@ expect compare_missing_file 1 'COMPARE FAILED' "$W/r.layers" --compare "$W/cmp"
 mkdir -p "$W/cmp/c"; cp "$W/B/c/d.txt" "$W/cmp/c/"
 expect compare_equal 0 'COMPARE OK' "$W/r.layers" --compare "$W/cmp"
 expect out_written 0 '' "$W/r.layers" --out "$W/o"
+
+# features (rule 9): the optional parts of a layer, named by B.features beside it; a recipe takes a part only by name
+printf '%s\n' "# optional parts" "extra b.txt" "deep c/" > "$W/B.features"
+recipe
+expect feature_left_out 0 ' 2 files' "$W/r.layers"
+recipe "feature extra"
+expect feature_taken 0 ' 3 files' "$W/r.layers"
+recipe "feature extra deep"
+expect feature_both 0 ' 4 files' "$W/r.layers"
+recipe "feature nosuch"
+expect feature_unknown 1 'named by no feature table' "$W/r.layers"
+recipe "feature extra" "drop b.txt"
+expect feature_dropped 1 'leave its feature out' "$W/r.layers"
+printf '%s\n' "extra b.txt" "gone missing.txt" > "$W/B.features"
+recipe
+expect feature_row_stale 1 'matches no file' "$W/r.layers"
+printf '%s\n' "extra b.txt" "other b.txt" > "$W/B.features"
+recipe "feature extra"
+expect feature_twice 1 'one at most' "$W/r.layers"
+printf '%s\n' "extra b.txt" > "$W/B.features"
+printf '%s\n' "a.txt" "b.txt" > "$W/B.list"
+printf '%s\n' "app Test" "base ${W#/}/B ${W#/}/B.list" "top ${W#/}/T" > "$W/r.layers"
+expect feature_listed 1 'which the recipe does not name' "$W/r.layers"
+printf '%s\n' "app Test" "base ${W#/}/B" "feature extra" > "$W/r.layers"
+expect no_top 0 ' 3 files' "$W/r.layers"
+rm -f "$W/B.features" "$W/B.list"
 [ -f "$W/o/c/d.txt" ] && [ -f "$W/o/own.txt" ] && PASS=$((PASS + 1)) || { FAIL=$((FAIL + 1)); echo "FAIL out_written: files missing"; }
 
 # modules (tools/arch/README.md): a module M (module.conf, a class in its package, a prefixed string), used next to B

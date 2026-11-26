@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Veille profonde désactivée</string>
+    <string name="hb_str_blocked_usb">Un ordinateur est connecté en USB : en veille, le projecteur ne s\'endort pas complètement et les ventilateurs continuent de tourner. Débranchez le câble USB pour retrouver la veille profonde.</string>
+    <string name="hb_str_blocked_update">Une mise à jour est en cours d\'installation : la veille profonde reviendra ensuite.</string>
+    <string name="hb_str_blocked_update_check">Le système mis à jour est vérifié après le démarrage : la veille profonde reviendra dans quelques minutes.</string>
+    <string name="hb_str_blocked_off">La veille profonde est désactivée sur ce projecteur (réglage de service).</string>
+</resources>

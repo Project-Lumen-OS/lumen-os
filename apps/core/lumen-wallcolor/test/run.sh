@@ -52,7 +52,7 @@ else
   echo "ok   the module makes no vendor call itself"
 fi
 if grep -rn -E "START_AUTO_COLOR_CALIBRATION|AUTO_COLOR_CALIBRATION_CHECK|GET_AUTO_COLOR_CALIBRATION|startAutoColorCalibration|getAutoColorCalibration" \
-    "$G/apps/ProjectorBase/src" "$G/apps/HbProjector/src" "$G/apps/X50Projector/src" "$G/apps/core/lumen-gmpf/src" "$G/devices"/*/hal/codes.tsv 2>/dev/null; then
+    "$G/apps/LumenProjector/core/src" "$G/apps/LumenProjector/host/activity/src" "$G/apps/LumenProjector/vendor/xgimi/mt9681-aidl/src" "$G/apps/core/lumen-gmpf/src" "$G/devices"/*/hal/codes.tsv 2>/dev/null; then
   echo "FAIL a factory calibration call is wired"; bad=1
 else
   echo "ok   no factory calibration call in any projector app or code table"

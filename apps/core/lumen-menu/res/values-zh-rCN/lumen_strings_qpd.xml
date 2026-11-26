@@ -5,13 +5,6 @@
     <string name="lumen_qpd_autocorrect">自动校正</string>
     <string name="lumen_qpd_autocorrect_value">一键完成</string>
     <string name="lumen_qpd_zoom">缩放</string>
-    <string name="lumen_qpd_bluetooth">蓝牙</string>
-    <string name="lumen_qpd_network">网络</string>
-    <string name="lumen_qpd_theme">主题</string>
-    <string name="lumen_qpd_theme_light">浅色</string>
-    <string name="lumen_qpd_theme_dark">深色</string>
-    <string name="lumen_qpd_theme_auto">自动</string>
-    <string name="lumen_qpd_mirroring">屏幕镜像</string>
     <string name="lumen_qpd_mirror_on">屏幕镜像（Miracast）</string>
     <string name="lumen_qpd_mirror_ask">连接前询问</string>
     <string name="lumen_qpd_mirror_name">名称</string>

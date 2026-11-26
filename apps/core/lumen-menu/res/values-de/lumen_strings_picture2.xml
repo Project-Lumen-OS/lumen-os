@@ -5,32 +5,12 @@
      their translations; the HDR and Dolby Vision screen rows, the custom picture mode rows, the auto switch, the style
      filter and the original frame refusals are new texts -->
 <resources>
-    <string name="lumen_m_wb">Weißabgleich</string>
-    <string name="lumen_m_wb_2">2 Punkte</string>
-    <string name="lumen_m_wb_11">11 Punkte</string>
-    <string name="lumen_m_red_gain">Rot-Verstärkung</string>
-    <string name="lumen_m_green_gain">Grün-Verstärkung</string>
-    <string name="lumen_m_blue_gain">Blau-Verstärkung</string>
-    <string name="lumen_m_red_offset">Rot-Offset</string>
-    <string name="lumen_m_green_offset">Grün-Offset</string>
-    <string name="lumen_m_blue_offset">Blau-Offset</string>
-    <string name="lumen_m_wb_level">%1$d %%</string>
-    <string name="lumen_m_red">Rot</string>
-    <string name="lumen_m_green">Grün</string>
-    <string name="lumen_m_blue">Blau</string>
-    <string name="lumen_m_cyan">Cyan</string>
-    <string name="lumen_m_magenta">Magenta</string>
-    <string name="lumen_m_yellow">Gelb</string>
-    <string name="lumen_m_skin">Hautton</string>
-    <string name="lumen_m_cc">Farbkorrektur</string>
-    <string name="lumen_m_cc_color">Farbe</string>
-    <string name="lumen_m_hue">Farbton</string>
-    <string name="lumen_m_memc_original">Originale Bildrate</string>
-    <string name="lumen_m_reset_defaults">Auf Standardwerte setzen</string>
     <string name="lumen_m_gray_level">Graustufe</string>
     <string name="lumen_m_hdr_enh">HDR-Verbesserung</string>
     <string name="lumen_m_screen_size">Leinwandgröße</string>
     <string name="lumen_m_screen_gain">Leinwandgain</string>
+    <string name="lumen_m_dv_bright">Dolby Vision Hell</string>
+    <string name="lumen_m_dv_dark">Dolby Vision Dunkel</string>
     <string name="lumen_m_dv_screen">Dolby-Vision-Einstellungen</string>
     <string name="lumen_m_auto_switch">Automatischer Moduswechsel</string>
     <string name="lumen_m_style_filter">Stilfilter</string>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdr_language_time">Dil ve saat</string>
+    <string name="lumen_m_hdr_power">Güç</string>
+    <string name="lumen_m_hdr_display_menu">Ekran ve menü</string>
+    <string name="lumen_m_hdr_remote_voice">Kumanda ve ses</string>
+    <string name="lumen_m_hdr_apps_devices">Uygulamalar ve cihazlar</string>
+    <string name="lumen_m_hdr_storage_updates">Depolama ve güncellemeler</string>
+    <string name="lumen_m_hdr_help">Yardım</string>
+    <string name="lumen_m_date_time">Tarih ve saat</string>
+    <string name="lumen_m_date_auto">Otomatik</string>
+    <string name="lumen_m_storage">Depolama</string>
+    <string name="lumen_m_storage_free">%1$s boş</string>
+    <string name="lumen_m_update">Sistem güncellemesi</string>
+    <string name="lumen_m_about">Bu projektör hakkında</string>
+    <string name="lumen_m_system_info">Sistem ayrıntıları</string>
+    <string name="lumen_m_network_adb">Ağ üzerinden hata ayıklama</string>
+    <string name="lumen_m_android_dev">Android geliştirici seçenekleri</string>
+</resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- lumen-source: the Source key card. The words are the old source list's own (ProjectorBase source_home / source_hdmi), not translated again. -->
 <resources>
-    <string name="lumen_source_hdmi">HDMI %1$d</string>
-    <string name="lumen_source_home">Home screen</string>
+    <string name="lumen_source_hdmi">@string/lumen_hdmi_1_d</string>
+    <string name="lumen_source_home">@string/lumen_home_screen_2</string>
 </resources>

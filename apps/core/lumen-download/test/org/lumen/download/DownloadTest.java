@@ -44,6 +44,10 @@ public final class DownloadTest {
         volatile String etag = "\"v1\"";
         public volatile boolean ignoreRange, gone;
         volatile long perConnBps;
+        /** The slowRange-th range request is sent at slowBps, as one crawling connection of a projector. */
+        volatile int slowRange;
+        volatile long slowBps;
+        final AtomicInteger ranges = new AtomicInteger();
         volatile int cutAfter;
         volatile long expireAt = -1, swapAt = -1;
         volatile byte[] swapData;
@@ -88,7 +92,7 @@ public final class DownloadTest {
             byte[] d = data;
             String range = x.getRequestHeaders().getFirst("Range");
             String ifRange = x.getRequestHeaders().getFirst("If-Range");
-            long a = 0, b = d.length - 1;
+            long a = 0, b = d.length - 1, bps = perConnBps;
             // RFC 9110: a weak validator in If-Range never matches; wholeFirst = a client that lost Range on the redirect
             boolean partial = range != null && !ignoreRange && wholeFirst.getAndDecrement() <= 0
                     && (ifRange == null || ifRange.equals(etag) && !ifRange.startsWith("W/"));
@@ -96,7 +100,10 @@ public final class DownloadTest {
                 String[] r = range.substring("bytes=".length()).split("-", -1);
                 a = Long.parseLong(r[0]);
                 if (!r[1].isEmpty()) b = Math.min(b, Long.parseLong(r[1]));
-                if (!"bytes=0-0".equals(range)) rangeStarts.add(a);
+                if (!"bytes=0-0".equals(range)) {
+                    rangeStarts.add(a);
+                    if (ranges.incrementAndGet() == slowRange) bps = slowBps;
+                }
                 x.getResponseHeaders().add("Content-Range", "bytes " + a + "-" + b + "/" + d.length);
             } else {
                 fullBodies.incrementAndGet();
@@ -126,8 +133,8 @@ public final class DownloadTest {
                         data = swapData;
                         etag = "\"v2\"";
                     }
-                    if (perConnBps > 0) {
-                        long due = t0 + sent * 1_000_000_000L / perConnBps;
+                    if (bps > 0) {
+                        long due = t0 + sent * 1_000_000_000L / bps;
                         long wait = due - System.nanoTime();
                         if (wait > 0) Thread.sleep(wait / 1_000_000L, (int) (wait % 1_000_000L));
                     }
@@ -223,6 +230,47 @@ public final class DownloadTest {
         ok("claim: no split below twice the minimum", u.claim() == null && !u.hasWork());
         ok("of: rejects overlapping ranges", Segments.of(100, 1, Arrays.asList(new long[] {0, 50}, new long[] {40, 60})) == null);
         ok("of: rejects ranges past the end", Segments.of(100, 1, Collections.singletonList(new long[] {90, 101})) == null);
+    }
+
+    /** The last ranges, too small to halve: a connection at least twice as fast takes over a slow one's rest. */
+    static void tailPlanner() {
+        Segments s = Segments.plan(300, 2, 100);
+        Segments.Seg a = s.claim(0, 0), b = s.claim(0, 0);
+        s.commit(a, s.reserve(a, 150));
+        s.release(a);
+        s.commit(b, s.reserve(b, 10));
+        ok("tail: no takeover while the slow range is new", s.claim(1000, 150) == null);
+        Segments.Seg c = s.claim(3000, 150);
+        ok("tail: a faster connection takes the whole rest of a slow one", c != null && c.pos == 160 && c.end == 300
+                && b.end == 160);
+        ok("tail: the slow one ends at its last written byte", s.reserve(b, 5) == 0);
+        s.release(b);
+        ok("tail: the taken rest is not handed back at once", s.claim(3500, 1 << 20) == null && s.done() == 160);
+
+        Segments e = Segments.plan(300, 2, 100);
+        Segments.Seg x = e.claim(0, 0), y = e.claim(0, 0);
+        e.commit(x, e.reserve(x, 150));
+        e.release(x);
+        e.commit(y, e.reserve(y, 60));          // 20 bytes/s, 4.5 s left
+        ok("tail: no takeover by a connection less than twice as fast", e.claim(3000, 40) == null);
+        ok("tail: no takeover by a connection of unknown speed", e.claim(3000, 0) == null);
+        Segments.Seg z = e.claim(3000, 41);
+        ok("tail: takeover by one twice as fast", z != null && z.pos == 210 && y.end == 210);
+
+        Segments g = Segments.plan(300, 2, 100);
+        Segments.Seg u = g.claim(0, 0), v = g.claim(0, 0);
+        g.commit(u, g.reserve(u, 150));
+        g.release(u);
+        g.commit(v, g.reserve(v, 140));         // 10 bytes left, read in 0.2 s
+        ok("tail: no takeover of a rest that ends soon", g.claim(3000, 1 << 20) == null);
+
+        Segments h = Segments.plan(300, 2, 100);
+        Segments.Seg m = h.claim(0, 0), n = h.claim(0, 0);
+        h.commit(m, h.reserve(m, 150));
+        h.release(m);
+        h.reserve(n, 30);                       // a connection with nothing written, 30 bytes in flight
+        Segments.Seg w = h.claim(5000, 1);
+        ok("tail: a stalled connection keeps only the bytes in flight", w != null && w.pos == 180 && n.end == 180);
     }
 
     static void scaler() {
@@ -427,6 +475,22 @@ public final class DownloadTest {
         s.stop();
     }
 
+    /** One connection crawls (8 KB/s) while the others get 2 MB/s: the end of the file must not wait for it. */
+    static void slowTail() throws Exception {
+        byte[] d = random(4 << 20, 10);
+        Server s = new Server(d);
+        s.perConnBps = 2L << 20;
+        s.slowRange = 2;
+        s.slowBps = 8 << 10;
+        File f = fresh("tail.zip");
+        long t0 = System.nanoTime();
+        dl(FAST).run(s.url(), f, d.length, sha(d), (b, t, sp) -> true);
+        double secs = (System.nanoTime() - t0) / 1e9;
+        ok("slow connection: content", same(f, d));
+        ok(String.format("slow connection: its rest moves to a fast one (%.1f s)", secs), secs < 6);
+        s.stop();
+    }
+
     static void gone() throws Exception {
         Server s = new Server(random(1 << 20, 9));
         s.gone = true;
@@ -455,6 +519,7 @@ public final class DownloadTest {
         dir = Files.createTempDirectory("lumen_dl").toFile();
         try {
             planner();
+            tailPlanner();
             scaler();
             rate();
             parallel();
@@ -467,6 +532,7 @@ public final class DownloadTest {
             cutConnections();
             changedOnServer();
             legacyPrefix();
+            slowTail();
             gone();
         } catch (Throwable e) {     // the servers' threads would keep a failed run alive
             e.printStackTrace(System.out);

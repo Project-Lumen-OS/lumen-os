@@ -72,6 +72,11 @@ public final class OutcomeTest {
         eq("watched, marked", false, Outcome.rolledBackLater("1.0.1", "marked", "1.0.1"));
 
         // ---- a recorded result belongs to the build it was recorded on
+        // a saved offer not newer than the running build is a downgrade: 1.0.11-beta15 kept after 1.1.0-beta1 came by adb
+        eq("offer older than running", true, Outcome.offerStale(1001115, 1010001));
+        eq("offer equal to running", true, Outcome.offerStale(1010001, 1010001));
+        eq("offer newer than running", false, Outcome.offerStale(1010002, 1010001));
+        eq("no offer", false, Outcome.offerStale(-1, 1010001));
         eq("no result", false, Outcome.resultStale("", "", NEW));
         eq("ok on its build", false, Outcome.resultStale("ok:1.0.1", NEW, NEW));
         eq("unhealthy on its build", false, Outcome.resultStale("unhealthy:1.0.1", NEW, NEW));
@@ -109,6 +114,10 @@ public final class OutcomeTest {
         eq("check error keeps downloaded", true, Outcome.keepOnCheckError("DOWNLOADED"));
         eq("check error keeps paused", true, Outcome.keepOnCheckError("PAUSED"));
         eq("check error after idle", false, Outcome.keepOnCheckError("IDLE"));
+        eq("check error keeps a found offer", true, Outcome.keepOnCheckError("AVAILABLE"));
+        eq("check error keeps a running download", true, Outcome.keepOnCheckError("DOWNLOADING"));
+        eq("check error after an error", false, Outcome.keepOnCheckError("ERROR"));
+        eq("check error while checking", false, Outcome.keepOnCheckError("CHECKING"));
         eq("error -1", InstallError.UNKNOWN, Outcome.installError(-1));
         eq("error -2", InstallError.UNKNOWN, Outcome.installError(-2));
         eq("error 51", InstallError.DOWNGRADE, Outcome.installError(51));

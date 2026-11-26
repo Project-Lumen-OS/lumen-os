@@ -16,7 +16,7 @@ public final class SourceTest {
 
     public static void main(String[] a) throws Exception {
         TreeMap<String, SourceRule> models = models(new File(System.getProperty("gsi"), "devices"));
-        ok(models.size() == 9, "9 projector models carry source.tsv: " + models.keySet());
+        ok(models.size() == 10, "10 projector models carry source.tsv: " + models.keySet());
         for (String c : models.keySet()) {
             SourceRule r = models.get(c);
             boolean play6 = c.equals("dragon_healthy");
@@ -118,9 +118,19 @@ public final class SourceTest {
         if (ds == null) return out;
         for (File d : ds) {
             File f = new File(d, "source.tsv");
-            if (f.isFile()) out.put(d.getName(), SourceRule.parse(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8)));
+            if (!f.isFile() && new File(d, "device.conf").isFile()) f = family(devices, d);
+            if (f != null && f.isFile()) out.put(d.getName(), SourceRule.parse(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8)));
         }
         return out;
+    }
+
+    /** A model's source.tsv from its family folder (tools/devices/layered.py --find, devices/README.md), or null. */
+    private static File family(File devices, File d) throws Exception {
+        File gsi = devices.getParentFile();
+        Process p = new ProcessBuilder("python3", new File(gsi, "tools/devices/layered.py").getPath(), "--find",
+                new File(d, "device.conf").getPath(), "source.tsv").redirectErrorStream(true).start();
+        String out = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+        return p.waitFor() == 0 ? new File(out) : null;
     }
 
     private static Set<Integer> set(int... v) {

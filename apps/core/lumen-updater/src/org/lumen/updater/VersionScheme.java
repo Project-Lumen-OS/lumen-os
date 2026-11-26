@@ -68,6 +68,15 @@ public enum VersionScheme {
         }
     };
 
+    /**
+     * True for a beta or a release candidate: the version name ends in -betaN or -rcN (1.0.10-beta21,
+     * 1.0.11-rc1, x50-1.0.10-beta4). The same on every model whatever the scheme, so the Z9X betas (LEGACY codes)
+     * count too. A final (1.0.10) and an unreadable name are no prerelease.
+     */
+    static boolean prerelease(String version) {
+        return version != null && version.trim().matches(".*[0-9]-(beta|rc)[1-9][0-9]?");
+    }
+
     /** The version code of a version name; 0 when it cannot be read. */
     abstract int code(String version);
 

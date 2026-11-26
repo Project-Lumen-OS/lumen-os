@@ -32,7 +32,32 @@ public final class Http {
     }
 
     public static byte[] fetch(String url, int maxBytes) throws IOException {
-        HttpURLConnection c = open(url);
+        return read(open(url), url, maxBytes);
+    }
+
+    /**
+     * A channel manifest or its signature, never from a cache: the request says no-cache, asks nothing conditional
+     * (no If-None-Match, no If-Modified-Since, so a 304 can never stand for the last copy) and carries a query no cache
+     * has seen (GitHub ignores it and redirects to the current asset). The redirect is resolved anew every time.
+     */
+    public static byte[] fetchFresh(String url, int maxBytes) throws IOException {
+        HttpURLConnection c = open(fresh(url));
+        c.setIfModifiedSince(0);
+        c.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
+        c.setRequestProperty("Pragma", "no-cache");
+        return read(c, url, maxBytes);
+    }
+
+    private static final java.security.SecureRandom NONCE = new java.security.SecureRandom();
+
+    /** {@code url} with a query parameter of its own: lumen_nc=&lt;random&gt;. */
+    static String fresh(String url) {
+        int f = url.indexOf('#');
+        String u = f >= 0 ? url.substring(0, f) : url;
+        return u + (u.indexOf('?') >= 0 ? '&' : '?') + "lumen_nc=" + Long.toHexString(NONCE.nextLong() & Long.MAX_VALUE);
+    }
+
+    private static byte[] read(HttpURLConnection c, String url, int maxBytes) throws IOException {
         try {
             int code = c.getResponseCode();
             if (code != 200) throw new HttpError(code, "HTTP " + code + " for " + url);

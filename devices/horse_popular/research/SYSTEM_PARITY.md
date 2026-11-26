@@ -26,7 +26,7 @@ Lumen base: `origin/integ-1115d` a2f166a9. Stock: G0082, mt5877, V6.15.62 (Andro
 
 How Lumen is built on this model: LineageOS 21 TV GSI as the system, the stock vendor unchanged. The framework carries
 one patch (`lineage/patches/z9x/0001-tvinput-jni-stream-lock-deadlock.patch`). Every XGIMI behaviour is rebuilt in
-`apps/ProjectorBase`, `apps/core/*` and `overlay/v1/*.rc`. `/vendor/app` and `/vendor/priv-app` are hidden at
+`apps/LumenProjector/core`, `apps/core/*` and `overlay/v1/*.rc`. `/vendor/app` and `/vendor/priv-app` are hidden at
 post-fs-data (`xgimi_compat.rc`), so no `com.xgimi.*` package runs (`LIVE/packages.txt`: 121 packages, none of them
 XGIMI).
 
@@ -104,7 +104,7 @@ A hardware-level last resort exists for the SoC only.
 - One related stock tip does have a Lumen counterpart under another name. Stock SystemUI has a
   `HighTemperatureTipsDialog`, created by `FocusUIV2` (295-299), and the focus event text `brightnessAdjust` is a
   constant of the same package (`ConstantFocus.java:64`). Lumen shows a "brightness reduced" notice on that event
-  (focus event 608, `apps/ProjectorBase/.../eye/EyeGuard.java:261-269`, at most once per 30 minutes). That the stock
+  (focus event 608, `apps/LumenProjector/core/.../eye/EyeGuard.java:261-269`, at most once per 30 minutes). That the stock
   dialog is shown on this event is taken from the Lumen comment, the stock branch was not read. The same comment
   attributes the event to the distance dimming thread. What makes the vendor send it was not traced
   (`OUT/lumen_checks11.txt`, `OUT/java_ctx6.txt`). It is a notice only, with no countdown and no power-off.
@@ -148,7 +148,7 @@ shorter forms `source_hdmi`, `audio_source_change`, `EQ_change`. The gap is the 
   SystemUI has a receiver for it (`HdmiVolumeReceiver` 17-63), Lumen has none. Whether Lumen shows the standard
   Android volume bar for a soundbar instead was not checked on a unit.
 - The eARC state forward is not a gap. The first version of this file listed it as missing, which was wrong. Lumen
-  has the behaviour under another name: `apps/ProjectorBase/.../cec/EarcLink.java` (the same class in
+  has the behaviour under another name: `apps/LumenProjector/core/.../cec/EarcLink.java` (the same class in
   `apps/HbProjector`) reads the vendor link state and connects the HDMI ARC output while the link is eARC. That is
   what the stock `seteARCStatus` does, and the class header describes the stock flow it replaces
   (`OUT/lumen_checks9.txt`).
@@ -425,8 +425,8 @@ folders are hidden, so none of the 101 runs.
 |---|---|---|---|
 | AOSP base apps and providers | CaptivePortalLogin, CertInstaller, CompanionDeviceManager, ExtShared, HTMLViewer, KeyChain, PacProcessor, PrintSpooler, SecureElement, BackupRestoreConfirmation, CalendarProvider, ContactsProvider, DownloadProvider, ExternalStorageProvider, FusedLocation, InputDevices, IntentResolver, MediaProviderLegacy, NetworkStack, NetworkStackNext, PackageInstaller_tv, ProxyHandler, SettingsProvider, SharedStorageBackup, Shell, SoundPicker, StatementService, Telecom, TvProvider, UserDictionaryProvider, VpnDialogs, ModuleMetadata, webview, framework-res | 34 | replaced by the LineageOS builds of the same apps. SettingsProvider defaults differ, section 4.7 |
 | Resource overlays | TvNetworkStackOverlay, TvWifiOverlay, TetheringInprocessRROOverlay, TetheringRROOverlay, WifiRROOverlay | 5 | product overlays replaced by LineageOS ones. The three vendor overlays still load from /vendor/overlay (not checked on the unit) |
-| System lifecycle services | XRMService, XgimiService, SystemUI_release_838, TvSystemUI, systwind, PersistentServive, GMService, GlobalConfig | 8 | replaced partially by `apps/ProjectorBase` and `apps/core/*`. Gaps 1 to 5 and 9 come from here |
-| Settings and setup | release_838_newsettings, bootwizard_release_848, Instruction, XgimiFrameworkUi | 4 | replaced by `apps/ProjectorBase` (menus), LineageOS TvSettings, `apps/LumenSetup` |
+| System lifecycle services | XRMService, XgimiService, SystemUI_release_838, TvSystemUI, systwind, PersistentServive, GMService, GlobalConfig | 8 | replaced partially by `apps/LumenProjector/core` and `apps/core/*`. Gaps 1 to 5 and 9 come from here |
+| Settings and setup | release_838_newsettings, bootwizard_release_848, Instruction, XgimiFrameworkUi | 4 | replaced by `apps/LumenProjector/core` (menus), LineageOS TvSettings, `apps/LumenSetup` |
 | Home and launcher | XgimiHome, AgileWall, Atmosphere, screensaver, msgcenter | 5 | replaced by `apps/LumenHome` (with its screensaver). Wallpaper and atmosphere scenes missing |
 | Inputs and players | XgimiTvInputService, release_838_xhplayer, gimiplayer, mediaPlayer, XgimiMusicPlayer, FileManger, com.xgimi.karaokesdk | 7 | HDMI input replaced by `apps/LumenTvInput`, file browsing by the Files part of Home, playback by Lumen Play (separate app). Music player and karaoke missing |
 | Picture and focus helpers | AF, AutoKst, RgbdUpgrade | 3 | replaced partially by Z9xProjector (focus, keystone through the HAL). RgbdUpgrade (sensor firmware update) missing |
@@ -531,7 +531,7 @@ Candidates, none proven:
    with the Skia engine and its own HDR to SDR conversion. That typically looks dimmer and less saturated than the
    vendor video plane. Whether this happens on the Z9X was not observed.
 3. Dolby Vision, unlikely. The Lumen code records that this model has no Dolby Vision
-   (`apps/ProjectorBase/.../hal/GmpfClient.java:147-153`, "SupportHashkeyMode=8", picture mode calls 623 and 624
+   (`apps/LumenProjector/core/.../hal/GmpfClient.java:147-153`, "SupportHashkeyMode=8", picture mode calls 623 and 624
    commented out) and the live hardware composer reports none. The missing profile parsing can then matter only for
    how a Dolby Vision file falls back to its base layer. The vendor codec list still declares Dolby Vision decoders
    (`c2.mtk.dvav`, `c2.mtk.dvav1`, `c2.mtk.dvhe`), so only a test with a Dolby Vision file closes this.

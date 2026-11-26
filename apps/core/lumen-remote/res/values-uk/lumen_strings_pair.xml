@@ -2,7 +2,6 @@
 <!-- Ukrainian translation of res/values/strings_pair.xml (Lumen OS 1.0 remote-lost prompt). -->
 <resources>
     <string name="lumen_remote_lost_title">Підключіть пульт знову</string>
-    <string name="lumen_remote_lost_text">Утримуйте кнопки «Назад» і «Додому» 3 секунди, доки не заблимає індикатор.</string>
     <string name="lumen_remote_lost_found">Знайдено %1$s</string>
     <string name="lumen_remote_lost_battery">Нічого не відбувається? Перевірте батарейки пульта.</string>
     <string name="lumen_remote_lost_dismiss">Не зараз</string>

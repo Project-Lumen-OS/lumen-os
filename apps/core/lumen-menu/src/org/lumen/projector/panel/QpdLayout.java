@@ -14,6 +14,16 @@ import java.util.List;
 final class QpdLayout {
     private QpdLayout() {}
 
+    /**
+     * Text and icons of a disabled row (a picture mode the content does not allow, a row stock keeps closed): an
+     * opaque neutral grey per theme, never a transparent copy of the ink (that took the warm Sand tint on the light
+     * menu and the video through the dark card). Chosen so the grey stays readable on the card yet sits far from the
+     * enabled title and value colours (QpdLayoutTest: contrast limits on both themes).
+     */
+    static final int DISABLED_DARK = 0xFF616161, DISABLED_LIGHT = 0xFF828282;
+
+    static int disabled(boolean light) { return light ? DISABLED_LIGHT : DISABLED_DARK; }
+
     // ---- card (prototype #qp)
     static final int CARD_X = 40, CARD_Y = 40, CARD_W = 592, CARD_PAD = 24, CARD_RADIUS = 44;
     static final int WIDE_W = 272, SMALL_W = 120, TILE_H = 120, GAP = 16, TILE_RADIUS = 26;
@@ -26,6 +36,32 @@ final class QpdLayout {
     static final int SCREEN_H = 1080, MARGIN = 40;
     /** The scrim reaches 60 % of the screen (prototype .scrim). */
     static final int SCRIM_W = 1152;
+    /** Darkness of the scrim at the menu's edge (prototype .scrim 0 %: 0.5) and the number of gradient stops. */
+    static final float SCRIM_EDGE = 0.5f;
+    static final int SCRIM_STOPS = 17;
+
+    /**
+     * The scrim's darkness at {@code t} (0 at the menu's side, 1 where it ends): an eased fall whose slope is 0 where
+     * it ends, so no line is seen there (X50 tester 2026-11-23: the straight ramp ended in a visible vertical edge on
+     * a dark picture, the eye sees the bend of a linear ramp as a line).
+     */
+    static float scrimAlpha(float t) {
+        float x = Math.max(0f, Math.min(1f, t));
+        return SCRIM_EDGE * (1f - x * x * (3f - 2f * x));
+    }
+
+    /** The stops of the scrim gradient: {positions, ARGB black with {@link #scrimAlpha}}. */
+    static int[] scrimColors() {
+        int[] c = new int[SCRIM_STOPS];
+        for (int i = 0; i < SCRIM_STOPS; i++) c[i] = Math.round(255f * scrimAlpha(i / (SCRIM_STOPS - 1f))) << 24;
+        return c;
+    }
+
+    static float[] scrimStops() {
+        float[] f = new float[SCRIM_STOPS];
+        for (int i = 0; i < SCRIM_STOPS; i++) f[i] = i / (SCRIM_STOPS - 1f);
+        return f;
+    }
     /** Window width: the All settings screen, its right edge 40 + 360 + 16 + 620 + 16 + 420 = 1472. */
     static final int WINDOW_W = 1480;
     /** Popup motion (prototype #pop and rowin): fade 220 ms, grow 320 ms, rows 260 ms, 22 ms apart, 8 px in. */

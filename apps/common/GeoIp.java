@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 /*
  * Lumen OS (author kmuradoff). SINGLE SOURCE: gsi/apps/common/GeoIp.java.
- * Copied unchanged into each app as src/org/lumen/common/GeoIp.java by gsi/apps/common/sync.sh;
+ * Taken by the Home and Setup recipes as src/org/lumen/common/GeoIp.java (a file line, no copy in the app);
  * there is no shared runtime library. Edit only the source file, then run sync.sh for every app.
  */
 package org.lumen.common;

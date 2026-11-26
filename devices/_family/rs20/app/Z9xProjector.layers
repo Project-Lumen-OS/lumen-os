@@ -1,0 +1,71 @@
+# Recipe of the projector app of every RS 20 model (family recipe, tools/devices/assemble_app.py): the Z9X app
+# (devices/horse_popular/app/Z9xProjector.layers, the same modules in the same order) with the model's menu profile and
+# its firmware group's HIDL code classes: apps/LumenProjector/core is a base here, its HalCodes.java and Z9xCodes.java are
+# dropped and the generated ones of {device}/hal/app (devices/_family/rs20-<firmware>/hal, derived by method name,
+# tools/hal/derive.py) are the top layer. The Z9X data the RS 20 vendor shares (signal, sensors, source, chip volume:
+# the same vendor line) is read from the Z9X folder. Below: the Z9X recipe's own description.
+# The shared projector menu
+# (apps/core/lumen-menu: quick panel D, game menu, their icons, strings, fonts and controller frames) with the Z9X
+# profile, the shared gmpf clients (apps/core/lumen-gmpf), then the Z9X app (its screens, its HAL clients and its
+# menu adapters Z9xFeatures / Z9xGameIo).
+app       Z9xProjector
+base      apps/common/projector apps/common/projector/FILES
+file      apps/common/hal/HidlCaller.java src/org/lumen/projector/hal/HidlCaller.java
+# the shared texts (apps/core/lumen-common-strings): every text two places show, once
+module    lumen-common-strings
+module    lumen-system
+# the wall colour adaptation (apps/core/lumen-wallcolor): the stock card, pattern and result bar, this model's data
+module    lumen-wallcolor
+file      devices/_family/rs20/wallcolor.conf assets/lumen_wallcolor/model.conf
+module    lumen-aipq
+module    lumen-hdmi
+# the Lumen icon set (apps/core/lumen-icons): row marks, key hints, its R class named in R_EXTRA_PACKAGES
+module    lumen-icons
+# problem reports (apps/core/lumen-report): the screen of the General row, automatic reports, the queue
+module    lumen-report
+# all files access for Lumen Play signed with its release key (apps/core/lumen-files-access)
+module    lumen-files-access
+# Settings > About: model code, XGIMI firmware, Back to the XGIMI system (apps/core/lumen-about, its QR code lumen-qr)
+module    lumen-qr
+module    lumen-about
+# Parental controls page of the menu: the state of Lumen Home through its provider (apps/core/lumen-parental)
+module    lumen-parental
+# the remote pairing of every Lumen projector (apps/core/lumen-remote README: remote table, RemotePairing, prompt)
+module    lumen-remote
+# the signal panel of every projector (apps/core/lumen-signal): the small card and the full panel, this
+# model's rows as data
+module    lumen-signal
+file      devices/_family/z9x/signal.tsv assets/lumen_signal/items.tsv
+module    lumen-sensors
+file      devices/horse_popular/sensors.tsv assets/lumen_sensors/items.tsv
+module    lumen-ui
+# the one HDMI port state (org.lumen.tvinput PortState) for the menu HDMI page and the Source key
+module    lumen-hdmiports
+module    lumen-source
+file      devices/horse_popular/source.tsv assets/lumen_source/source.tsv
+module    lumen-menu
+# the HDMI-CEC page of every projector (apps/core/lumen-cec), driven by this app's CecPolicyDriver
+module    lumen-cec
+# the stock HDMI-CEC defaults of every model (devices/_image/cec_defaults.tsv) for lumen-cec CecDefaults
+file      devices/_image/cec_defaults.tsv assets/lumen_cec/defaults.tsv
+menu      {device}/menu.json assets/lumen_menu/menu.json
+file      devices/horse_popular/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv
+# the shared gmpf clients (GmpfBase / Gmpf2Base and their call layer) under the Z9X GmpfClient / Gmpf2Client
+module    lumen-gmpf
+# the shared media route rules (apps/core/lumen-audio: MediaPath, ArcAside)
+module    lumen-audio
+# the command core and the stock XGIMI phone remote (apps/core/lumen-control; it reads the device through lumen-stats)
+module    lumen-stats
+module    lumen-control
+# the XGIMI vendor layer of the one projector app: the gmpf value types, the HIDL
+# transport and the HIDL gmpf family adapter (clients, code tables, the menu adapter Z9xFeatures and its rows)
+base      apps/LumenProjector/vendor/xgimi/gmpf
+base      apps/LumenProjector/vendor/xgimi/hidl
+base      apps/LumenProjector/vendor/xgimi/hidl-gmpf
+base      apps/LumenProjector/core
+# what this model's stock has of the optional parts of the core (apps/LumenProjector/core.features)
+feature   quick-3d panel-rules kst-restore audio-ports render-parity install-test
+drop      src/org/lumen/projector/hal/HalCodes.java
+drop      src/org/lumen/projector/hal/Z9xCodes.java
+top       {device}/hal/app
+skip      build/ test/ tools/ *.apk CHANGES*.md README*.md SYNCED.txt .DS_Store

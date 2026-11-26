@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">连接设备时自动切换到 HDMI</string>
+    <string name="lumen_m_hdmi_return_home">信号源断开时返回主屏幕</string>
+    <string name="lumen_m_hdmi_boot_source">开机信号源</string>
+    <string name="lumen_m_hdmi_boot_note">如果设备通过 HDMI-CEC 开启投影仪，则打开该设备的输入。</string>
+    <string name="lumen_m_hdmi_inputs">输入</string>
+    <string name="lumen_m_hdmi_none">未找到 HDMI 输入</string>
+</resources>

@@ -17,10 +17,9 @@ F, RC, WB, GD, AR, AP, CS, LE = (SRC + n + ".java" for n in
 RU = "apps/core/lumen-about/res/values-ru/lumen_strings_about.xml"
 COPY = ("apps/core", "apps/sdk", "apps/LumenInstaller/assets", "apps/LumenInstaller/src", "apps/LumenInstaller/res",
         "apps/LumenInstaller/app.layers", "apps/LumenInstaller/lumen-about.files", "apps/app_dirs.tsv",
-        "tools/devices/assemble_app.py", "tools/devices/devices.py", "apps/ProjectorBase/AndroidManifest.xml",
-        "apps/HbProjector/AndroidManifest.xml", "apps/X50Projector/AndroidManifest.xml",
-        "apps/Play6Projector/AndroidManifest.xml", "devices", "tools/base_patch", "tools/i18n",
-        "tools/devices/sign_device.py", "tools/play6/sign_play6.py")
+        "tools/devices", "apps/LumenProjector", "apps/common",   # check_repo assembles the HB manifest (core + patch)
+        "devices", "tools/base_patch", "tools/i18n",
+        "tools/play6/sign_play6.py")
 MUTANTS = {
     # Lumen Installer takes the row texts in exactly its own languages (one language per screen)
     "installer_rows_lose_russian": ("apps/LumenInstaller/lumen-about.files", "res/values-ru/lumen_strings_about.xml\n", ""),
@@ -37,12 +36,20 @@ MUTANTS = {
     "dlp_wrong_folder": (F, "file.apply(CONFIG_ROOT + m + DLP_INI)", "file.apply(CONFIG_ROOT + DLP_INI)"),
     "flash_file_ignored": (F, "file.apply(CONFIG_ROOT + m + DLP_FLASH_INI)", "null"),
     # the light engine: names only from the file's own enum, nothing for an unknown value
-    "dlp_any_name": (LE, 'new LightEngine(chip.isEmpty() ? "" : "TI DLPC" + chip, fw, fpga)', 'new LightEngine("TI DLPC" + chip, fw, fpga)'),
+    "dlp_any_name": (LE, 'new LightEngine(chip.isEmpty() ? "" : "TI DLPC" + chip, fw, fpga, "")', 'new LightEngine("TI DLPC" + chip, fw, fpga, "")'),
     "dlp_enum_value_ignored": (LE, "if (n.group(2).equals(v.group(1))) return n.group(1);", "return n.group(1);"),
     "dlp_commented_value": (LE, '"(?m)^\\\\s*DlpType', '"(?m)^.*DlpType'),
     "fpga_none_shown": (LE, 'if ("NONE".equals(fpga)) fpga = "";', ""),
     "firmware_without_chip": (LE, "if (!chip.isEmpty() && flashIni != null) {", "if (flashIni != null) {"),
     "odd_firmware_ok": (LE, '(?:\\\\.[0-9]{1,5}){1,3})\\\\s*(?:;|$)");', '(?:\\\\.[0-9]{1,5}){1,3})");'),
+    # the FPGA firmware: only from the HAL line's words "fpga version", only for a model whose config names an FPGA
+    "fpga_fw_any_words": (LE, '"(?i)\\\\bfpga version\\\\s*:', '"(?i):'),
+    "fpga_fw_odd_ok": (LE, '{1,4})(?![0-9A-Za-z.])");', '{1,4})");'),
+    "fpga_fw_without_fpga": (LE, "if (fpga.isEmpty() || dlpImage == null) return this;", "if (dlpImage == null) return this;"),
+    "fpga_fw_not_read": (F, "le = le.withFpgaFirmware(dlpImage.get());", "dlpImage.get();"),
+    "fpga_hal_always_asked": (F, "if (!le.fpga.isEmpty()) le = le.withFpgaFirmware(dlpImage.get());",
+                              "String hal = dlpImage.get();\n        if (!le.fpga.isEmpty()) le = le.withFpgaFirmware(hal);"),
+    "fpga_fw_dropped": (AR, "part(texts, le.fpga, le.fpgaFirmware)", "le.fpga"),
     # the rows next to the model code
     "dlp_row_dropped": (AR, "if (!le.controller.isEmpty()) rows.add(row(KEY_DLP, texts.apply(RowText.DLP), part(texts, le.controller, le.firmware)));", ""),
     "dlp_firmware_dropped": (AR, "part(texts, le.controller, le.firmware)", "part(texts, le.controller, \"\")"),
@@ -76,9 +83,12 @@ MUTANTS = {
     "other_name_offered": (WB, "if (o != null && !o.name.equals(file)) o = null;", ""),
     "catalog_name_first": (WB, "String file = f.usbFile.isEmpty() && catalog != null ? catalog.usbFile(f.model) : f.usbFile;",
                            "String file = catalog != null && !catalog.usbFile(f.model).isEmpty() ? catalog.usbFile(f.model) : f.usbFile;"),
-    "qr_always_guide": (WB, "o != null ? o.url : Guide.backToStock(language)", "Guide.backToStock(language)"),
+    "qr_always_guide": (WB, "o != null ? o.url : Guide.backToStock(language, f.model)", "Guide.backToStock(language, f.model)"),
+    "qr_page_no_model": (WB, "Guide.backToStock(language, f.model)", "Guide.backToStock(language, \"\")"),
     "guide_only_ru": (GD, 'Arrays.asList("ru", "uk", "be", "kk")', 'Arrays.asList("ru")'),
-    "guide_no_section": (GD, 'SECTION = "#stock"', 'SECTION = ""'),
+    "guide_no_anchor": (GD, '(anchor.isEmpty() ? "" : "#" + anchor)', '""'),
+    "guide_upper_anchor": (GD, 'model.toLowerCase(Locale.ROOT)', 'model'),
+    "guide_ru_english": (GD, '(RUSSIAN.contains(language) ? RU : EN)', 'EN'),
     # the rows
     "rows_without_model": (AR, "Function<RowText, String> texts) {\n        if (f.model.isEmpty()) return Collections.emptyList();", "Function<RowText, String> texts) {"),
     "versions_without_model": (AR, "boolean system) {\n        if (f.model.isEmpty()) return Collections.emptyList();", "boolean system) {"),
@@ -99,13 +109,15 @@ MUTANTS = {
                           "File d = new File(\"/data/local/tmp\", DIR);\n        if (!d.isDirectory()"),
     "ru_english": (RU, '<string name="lumen_about_model_code">Код модели</string>',
                    '<string name="lumen_about_model_code">Model code</string>'),
-    "ru_semicolon": (RU, '<string name="lumen_about_close">', '<string name="lumen_about_close">;'),
-    "g0155_no_module": ("devices/g0155/app/X50Projector.layers", "module    lumen-about\n", ""),
-    "hb_provider_closed": ("apps/HbProjector/AndroidManifest.xml",
-                           'android:authorities="org.lumen.about"\n            android:directBootAware="false"\n            android:exported="true"',
-                           'android:authorities="org.lumen.about"\n            android:directBootAware="false"\n            android:exported="false"'),
-    "play6_no_screen": ("apps/Play6Projector/AndroidManifest.xml", 'android:name="org.lumen.about.XgimiSystemActivity"',
+    "ru_semicolon": (RU, '<string name="lumen_about_scan">', '<string name="lumen_about_scan">;'),
+    "g0155_no_module": ("devices/_family/mt9681/app/X50Projector.layers", "module    lumen-about\n", ""),
+    "play6_no_screen": ("devices/dragon_healthy/app/Play6Projector.manifest.xml", 'android:name="org.lumen.about.XgimiSystemActivity"',
                         'android:name="org.lumen.about.XgimiSystemScreen"'),
+    "screen_not_redirect": ("apps/core/lumen-about/src/org/lumen/about/XgimiSystemActivity.java",
+                            '.putExtra("section", PLACE)', '.putExtra("section", "general")'),
+    "menu_skips_warning": ("apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java",
+                           "confirm(s(R.string.lumen_about_back), s(R.string.lumen_about_erases), s(R.string.lumen_continue)",
+                           "confirm(s(R.string.lumen_about_back), null, s(R.string.lumen_continue)"),
     "fix_other_method": ("tools/base_patch/tvsettings_about/AboutFragment.java", 'LUMEN_ROWS = "rows"', 'LUMEN_ROWS = "list"'),
     "fix_row_dropped": ("tools/base_patch/patches.tsv", "\ttvsettings_about\t", "\ttvsettings_about_off\t"),
     "dsu_word_on_screen": (RU, '<string name="lumen_about_back_summary">', '<string name="lumen_about_back_summary">DSU '),

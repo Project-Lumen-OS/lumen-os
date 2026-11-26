@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The All settings editor (lumen-menu FullEditPages, Slava 2026-11-22). The backup row reuses Lumen Home's hs_backup. -->
+<resources>
+    <string name="lumen_fe_edit">Alle Einstellungen bearbeiten</string>
+    <string name="lumen_fe_show_hint">OK: Zeile ein oder ausblenden</string>
+    <string name="lumen_fe_order">Reihenfolge ändern</string>
+    <string name="lumen_fe_move_hint">OK nimmt eine Zeile. Hoch und runter verschieben sie in ihrer Gruppe. OK oder Zurück legt sie ab.</string>
+</resources>

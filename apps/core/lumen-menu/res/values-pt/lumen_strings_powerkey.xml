@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_power_key_short">Pressão curta do botão de energia</string>
+    <string name="lumen_m_power_key_menu">Menu de energia</string>
+</resources>

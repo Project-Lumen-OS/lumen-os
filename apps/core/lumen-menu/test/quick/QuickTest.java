@@ -43,13 +43,14 @@ public final class QuickTest {
         List<String> devs = new ArrayList<>();
         for (File d : new File(gsi, "devices").listFiles()) if (new File(d, "menu.json").isFile()) devs.add(d.getName());
         Collections.sort(devs);
-        ok("nine profiles", devs.size() == 9);
+        ok("a profile for every model (" + devs.size() + ", RS 20 and the RS30 old line came 2026-11-24)", devs.size() >= 10);
         for (String dev : devs) {
             MenuSpec spec = spec(gsi, dev);
             parity(dev, spec, ALL);
             parity(dev + " without mirroring", spec, id -> !FeatureId.MIRRORING.id.equals(id));
             snapshot(gsi, dev, spec, update);
             looks(dev, spec);
+            everyRow(gsi, dev, spec);
         }
         MenuSpec z9x = spec(gsi, "horse_popular"), x50 = spec(gsi, "g0111");
         json(z9x);
@@ -57,6 +58,7 @@ public final class QuickTest {
         capacity(z9x, x50);
         moves(z9x);
         catalogue(z9x, x50);
+        anySetting(gsi, z9x, x50);
         System.out.println((fails == 0 ? "ok   " : "FAIL ") + "quick menu: " + checks + " checks, " + fails + " failed");
         System.exit(fails == 0 ? 0 : 1);
     }
@@ -101,11 +103,9 @@ public final class QuickTest {
     static void snapshot(File gsi, String dev, MenuSpec spec, boolean update) throws Exception {
         QuickCatalog cat = QuickCatalog.of(spec, ALL);
         StringBuilder b = new StringBuilder("quick menu of " + dev + " (every runtime check passing)\ncatalogue\n");
-        for (String g : QuickCatalog.GROUPS) {
-            List<QuickItem> items = cat.group(g);
-            if (items.isEmpty()) continue;
+        for (String g : cat.groups()) {
             b.append("  ").append(g).append('\n');
-            for (QuickItem i : items) b.append("    ").append(i.id).append(' ').append(i.kind.name().toLowerCase()).append(' ').append(lookTokens(i)).append('\n');
+            for (QuickItem i : cat.group(g)) b.append("    ").append(i.id).append(' ').append(i.kind.name().toLowerCase()).append(' ').append(lookTokens(i)).append('\n');
         }
         QuickLayout d = QuickDefaults.of(spec, ALL);
         b.append("default ").append(d).append('\n').append(QuickPacker.pack(d)).append('\n');
@@ -314,5 +314,173 @@ public final class QuickTest {
         ok("catalogue: the pencil and All settings are pinned", z.get("edit").pinned() && z.get("general").pinned());
         ok("catalogue: the light level is a slider under Picture", z.get("lamp").kind == ItemKind.SLIDER && z.get("lamp").group.equals("picture"));
         ok("catalogue: eye protection is a choice under General", z.get("eye").kind == ItemKind.CHOICE && z.get("eye").group.equals("general"));
+    }
+
+    /**
+     * 2026-11-24: every setting of the model's full menu can be put into the quick menu, the catalogue from one
+     * place. Its full menu rows equal the quick capable rows of the full menu as test/snapshots/&lt;device&gt;.txt
+     * records it (MenuSpecTest holds that file to MenuSpec): each row of each All settings category, the rows of a page
+     * after the page row, the picture sliders one by one, no readout and no light level; nothing else beyond the card's
+     * own items and the volume. The editor lists every item, a developer tool never as a circle of the top row.
+     */
+    static void everyRow(File gsi, String dev, MenuSpec spec) throws Exception {
+        QuickCatalog cat = QuickCatalog.of(spec, ALL);
+        List<String> want = fullMenuOf(new File(gsi, "apps/core/lumen-menu/test/snapshots/" + dev + ".txt"));
+        List<String> missing = new ArrayList<>(), extra = new ArrayList<>(), card = new ArrayList<>(), unlisted = new ArrayList<>();
+        for (String id : want) if (!cat.has(id) || cat.get(id).section == null) missing.add(id);
+        QuickLayout d = QuickDefaults.of(spec, ALL);
+        for (MenuSpec.Tile t : spec.round) card.add(t.id);
+        for (List<MenuSpec.Tile> row : spec.rows) for (MenuSpec.Tile t : row) { card.add(t.id); card.add(t.orElse); }
+        for (MenuSpec.Tile t : spec.sliders) card.add(t.id);
+        for (QuickItem i : cat.items()) {
+            boolean own = card.contains(i.id) || d.has(i.id) || MenuSpec.EVERY_MODEL.contains(FeatureId.of(i.id))
+                    || MenuSpec.QUICK_ONLY.contains(FeatureId.of(i.id)) && spec.profile.has(FeatureId.of(i.id));
+            if (!want.contains(i.id) && !own || i.section != null && !want.contains(i.id)) extra.add(i.id);
+            if (!cat.group(i.group).contains(i) || !cat.groups().contains(i.group)) unlisted.add(i.id);
+        }
+        ok(dev + ": the catalogue has every quick capable row of the full menu " + missing, missing.isEmpty() && !want.isEmpty());
+        ok(dev + ": nothing in the catalogue beyond the full menu, the card, the volume and picture off " + extra, extra.isEmpty());
+        ok(dev + ": the editor lists every item of the catalogue " + unlisted, unlisted.isEmpty());
+        ok(dev + ": the full menu rows of the catalogue are QuickCatalog.fullMenu", QuickCatalog.fullMenu(spec).size() == want.size());
+        boolean devRound = false, info = false, absent = false;
+        for (QuickItem i : cat.items()) {
+            FeatureId f = FeatureId.of(i.id);
+            if (MenuSpec.DEVELOPER.equals(i.section) && i.allows(Presentation.ROUND)) devRound = true;
+            if (f != null && f.kind == org.lumen.menu.FeatureKind.INFO) info = true;
+            if (f != null && i.section != null && !spec.profile.has(f.parent != null ? f.parent : f)) absent = true;
+        }
+        ok(dev + ": a developer tool is never a circle of the top row", !devRound);
+        ok(dev + ": a readout is no tile", !info);
+        ok(dev + ": only rows the profile has", !absent);
+        QuickLayout top = topOnly(d);
+        for (QuickItem i : cat.items()) {
+            if (i.section == null || d.has(i.id)) continue;
+            QuickEditor e = new QuickEditor(cat, d, top);
+            if (e.add(i.id) != EditResult.DONE || !e.layout().has(i.id) || e.layout().get(i.id).as != i.preferred()) {
+                ok(dev + ": " + i.id + " can be added in its preferred look", false);
+            }
+            boolean tile = i.kind == ItemKind.TOGGLE || i.kind == ItemKind.CHOICE, slider = i.kind == ItemKind.SLIDER;
+            if (tile && !(i.preferred() == Presentation.SMALL || i.preferred() == Presentation.WIDE)
+                    || slider && i.preferred() != Presentation.SLIDER) ok(dev + ": " + i.id + " a tile, a range a slider row", false);
+        }
+    }
+
+    /** The default with only its top row (room for any item on every model; the full card refuses with a note). */
+    static QuickLayout topOnly(QuickLayout d) {
+        List<Placement> keep = new ArrayList<>();
+        for (Placement p : d.items) if (p.as == Presentation.ROUND) keep.add(p);
+        return d.with(keep);
+    }
+
+    /**
+     * The quick capable rows of a recorded full menu (test/snapshots/&lt;device&gt;.txt): from each category of its
+     * "all settings:" line, each row of that section, a page row's own page after it, "slider picture.pq items [..]"
+     * as one slider per item, a row at the bottom of an output page; no info row and no light level.
+     */
+    static List<String> fullMenuOf(File snap) throws Exception {
+        java.util.Map<String, List<String[]>> blocks = new java.util.LinkedHashMap<>();
+        List<String> cats = new ArrayList<>();
+        List<String[]> cur = null;
+        for (String line : Files.readAllLines(snap.toPath(), StandardCharsets.UTF_8)) {
+            if (line.startsWith("all settings: ")) cats.addAll(Arrays.asList(line.substring(14).trim().split(" ")));
+            if (!line.startsWith(" ")) {
+                String[] w = line.split(" +");
+                cur = (w[0].equals("section") || w[0].equals("page")) && w.length > 1 ? new ArrayList<>() : null;
+                if (cur != null) blocks.put(w[0] + " " + w[1], cur);
+                continue;
+            }
+            if (cur == null || line.trim().startsWith("--")) continue;
+            String t = line.trim().replaceFirst("^output page ", "page ").replaceFirst("^at its bottom ", "choice ");
+            String[] w = t.split(" +");
+            if (w.length > 1) cur.add(w.length > 3 && "items".equals(w[2]) ? new String[]{w[0], w[1], t} : new String[]{w[0], w[1]});
+        }
+        List<String> out = new ArrayList<>();
+        for (String c : cats) fullRows(blocks, blocks.get("section " + c), out);
+        return out;
+    }
+
+    private static void fullRows(java.util.Map<String, List<String[]>> blocks, List<String[]> rows, List<String> out) {
+        if (rows == null) return;
+        for (String[] r : rows) {
+            if ("info".equals(r[0]) || "lamp".equals(r[1])) continue;
+            if (r.length > 2) {
+                String items = r[2].substring(r[2].indexOf('[') + 1, r[2].indexOf(']'));
+                for (String it : items.split(", ")) if (!out.contains(r[1] + "." + it)) out.add(r[1] + "." + it);
+                continue;
+            }
+            if (!out.contains(r[1])) out.add(r[1]);
+            if ("page".equals(r[0])) fullRows(blocks, blocks.get("page " + r[1]), out);
+        }
+    }
+
+    /** MEMC and dynamic black as tiles, the model rules, the stored value across models, the search. */
+    static void anySetting(File gsi, MenuSpec z9x, MenuSpec x50) throws Exception {
+        QuickCatalog z = QuickCatalog.of(z9x, ALL), x = QuickCatalog.of(x50, ALL);
+        ok("any setting: MEMC is a choice of Picture on Z9X and X50", z.get("picture.memc") != null
+                && z.get("picture.memc").kind == ItemKind.CHOICE && "picture".equals(z.get("picture.memc").section)
+                && x.get("picture.memc") != null && "picture".equals(x.get("picture.memc").group));
+        ok("any setting: dynamic black is a switch of Picture on X50", x.get("picture.dynamic_black") != null
+                && x.get("picture.dynamic_black").kind == ItemKind.TOGGLE && "picture".equals(x.get("picture.dynamic_black").section));
+        ok("any setting: no dynamic black on Z9X (its profile has none)", !z.has("picture.dynamic_black"));
+        ok("any setting: the X50 dynamic black page and its rows", x.has("picture.db_page") && x.has("picture.db_page.switch")
+                && x.get("picture.db_page.switch").section.equals("picture"));
+        ok("any setting: a slider row of a page (white balance)", !x.has("picture.wb2.red_gain")
+                || x.get("picture.wb2.red_gain").kind == ItemKind.SLIDER);
+        String j = new String(Files.readAllBytes(new File(gsi, "devices/g0111/menu.json").toPath()), StandardCharsets.UTF_8);
+        MenuProfile noMemc = MenuProfile.parse(org.lumen.menu.MenuSpecTest.without(j, "picture.memc"));
+        ok("any setting: the profile without MEMC parses " + noMemc.problems(), noMemc.ok());
+        QuickCatalog n = QuickCatalog.of(MenuSpec.of(noMemc), ALL);
+        ok("any setting: a model without MEMC does not offer it", !n.has("picture.memc") && n.has("picture.dynamic_black"));
+        ok("any setting: MEMC only while the menu has its row now",
+                !QuickCatalog.of(x50, ALL, id -> !"picture.memc".equals(id)).has("picture.memc"));
+        QuickLayout d = QuickDefaults.of(x50, ALL);
+        QuickEditor full = new QuickEditor(x, d, d);
+        EditResult fr = full.add("picture.memc");
+        ok("any setting: a card with no room refuses MEMC with the note (CONTRACT 22), no tile goes (" + fr + ")",
+                fr == EditResult.DONE || fr == EditResult.FULL && full.layout().sameMenu(d));
+        QuickEditor e = new QuickEditor(x, d, topOnly(d));
+        ok("any setting: MEMC added", e.add("picture.memc") == EditResult.DONE && e.layout().has("picture.memc"));
+        ok("any setting: dynamic black added", e.add("picture.dynamic_black") == EditResult.DONE);
+        QuickLayout stored = e.toStore(null);
+        QuickLayout back = QuickLayoutJson.reconcile(QuickLayoutJson.parse(QuickLayoutJson.write(stored)), x, d);
+        ok("any setting: order and looks survive the stored value (the settings backup holds it)",
+                back.has("picture.memc") && back.has("picture.dynamic_black")
+                        && back.indexOf("picture.memc") < back.indexOf("picture.dynamic_black") && back.sameMenu(stored));
+        QuickLayout onZ = QuickLayoutJson.reconcile(QuickLayoutJson.parse(QuickLayoutJson.write(stored)), z,
+                QuickDefaults.of(z9x, ALL));
+        ok("any setting: an X50 menu restored on Z9X keeps MEMC, drops dynamic black", onZ.has("picture.memc")
+                && !onZ.has("picture.dynamic_black"));
+        QuickLayout onN = QuickLayoutJson.reconcile(QuickLayoutJson.parse(QuickLayoutJson.write(stored)), n, d);
+        ok("any setting: on a model without MEMC the stored tile is dropped", !onN.has("picture.memc") && onN.has("picture.dynamic_black"));
+        ok("any setting: remove", e.remove("picture.memc") == EditResult.DONE && !e.layout().has("picture.memc"));
+        ok("search: case and yo ignored", QuickCatalog.matches("Динамический чёрный", "ЧЕРН") && QuickCatalog.matches("MEMC", "memc"));
+        ok("search: every word", QuickCatalog.matches("Dynamic black", "dyn bla") && !QuickCatalog.matches("Dynamic black", "dyn white"));
+        ok("search: empty finds nothing", !QuickCatalog.matches("MEMC", " ") && !QuickCatalog.matches(null, "m"));
+        List<QuickItem> found = x.find("memc", id -> id.equals("picture.memc") ? "Motion smoothing" : "x");
+        ok("search: the menu's own word finds MEMC whatever its name " + found, found.size() == 1 && found.get(0).id.equals("picture.memc"));
+        List<QuickItem> black = x.find("Чёрн", id -> id.equals("picture.dynamic_black") ? "Динамический черный" : "x");
+        ok("search: a part of the name finds dynamic black " + black, black.size() >= 1 && black.get(0).id.equals("picture.dynamic_black"));
+        QuickEditor at = new QuickEditor(x, d, topOnly(d));
+        at.add("picture.pq.contrast");
+        at.add("picture.memc");
+        ok("add: a new tile goes above the sliders", at.layout().indexOf("picture.memc") < at.layout().indexOf("picture.pq.contrast"));
+        ok("editor: the groups in the rail order (General first, option B)", x.groups().indexOf("general") == 0
+                && x.groups().indexOf("keystone") < x.groups().indexOf("picture"));
+        List<QuickItem> pic = x.group("picture");
+        ok("editor: MEMC, AI contrast and dynamic black in the list itself, no detour " + pic, pic.contains(x.get("picture.memc"))
+                && pic.contains(x.get("picture.ai_contrast")) && pic.contains(x.get("picture.dynamic_black")));
+        ok("editor: a switch comes as a small tile, a choice as a wide one, a range as a slider row",
+                x.get("picture.ai_contrast").preferred() == Presentation.SMALL && x.get("picture.memc").preferred() == Presentation.WIDE
+                        && x.get("picture.black_tuning").preferred() == Presentation.SLIDER);
+        QuickEditor three = new QuickEditor(x, d, d);
+        for (String id : new String[]{"game", "mirroring", "eye"}) three.remove(id);
+        ok("X50: MEMC, dynamic black and AI contrast fit in place of the last tile row",
+                three.add("picture.memc") == EditResult.DONE && three.add("picture.dynamic_black") == EditResult.DONE
+                        && three.add("picture.ai_contrast") == EditResult.DONE && QuickPacker.pack(three.layout()).fits());
+        QuickLayout kept = QuickLayoutJson.reconcile(QuickLayoutJson.parse(QuickLayoutJson.write(three.toStore(null))), x, d);
+        ok("X50: the three tiles survive the stored value", kept.has("picture.memc") && kept.has("picture.dynamic_black")
+                && kept.has("picture.ai_contrast") && kept.sameMenu(three.layout()));
+        three.reset();
+        ok("X50: reset gives the default card and stores nothing", three.layout().sameMenu(d) && three.toStore(null) == null);
     }
 }

@@ -18,6 +18,13 @@ public final class SignalValues {
      * reads agree, 0 while a new one waits). vrrMoving: VRR runs and the reads move, the card says "VRR".
      */
     public int measuredCenti;
+    /**
+     * The read step of the input rate and of the chip rate, 1/100 Hz, set by the reader that knows its vendor unit (0 =
+     * unknown: no judder line). Input: {@link #STEP_TENTH_HZ} (59.94 Hz reads 5990), chip: {@link #STEP_WHOLE_HZ} (cut down).
+     */
+    public int rateStepCenti, chipStepCenti;
+    /** The read steps of our vendors in 1/100 Hz: the MI_EXTIN input timing (0.1 Hz) and a whole Hz chip rate. */
+    public static final int STEP_TENTH_HZ = 10, STEP_WHOLE_HZ = 100;
     public boolean vrrMoving;
     private final SteadyRate steady = new SteadyRate();
     public Boolean interlaced, dvi;
@@ -40,6 +47,8 @@ public final class SignalValues {
      * motion smoothing (MEMC, "picture.memc"); the panel names them with the menu's own words
      */
     public String pictureMode, memc;
+    /** the menu's colour space option token of the stock OSD's colour space read (COLOR_SPACE, "picture.gamut") */
+    public String colorSpace;
     /** degrees C (TEMP_LIGHT, TEMP_SYSTEM) */
     public Integer tempLight, tempSystem;
     /** Android display mode (SCREEN) */
@@ -65,6 +74,7 @@ public final class SignalValues {
             switch (i) {
                 case HDMI_INFO:
                     width = fresh.width; height = fresh.height; measuredCenti = fresh.rateCenti;
+                    rateStepCenti = fresh.rateStepCenti;
                     rateCenti = steady.next(fresh.width, fresh.height, fresh.rateCenti, Boolean.TRUE.equals(vrr));
                     vrrMoving = steady.vrrMoving();
                     interlaced = fresh.interlaced; dvi = fresh.dvi;
@@ -72,9 +82,12 @@ public final class SignalValues {
                 case HDR: hdrType = fresh.hdrType; break;
                 case CHIP:
                     chipWidth = fresh.chipWidth; chipHeight = fresh.chipHeight;
-                    if (fresh.chipRateCenti > 0 || chipWidth == 0) chipRateCenti = fresh.chipRateCenti;
+                    if (fresh.chipRateCenti > 0 || chipWidth == 0) {
+                        chipRateCenti = fresh.chipRateCenti;
+                        chipStepCenti = fresh.chipStepCenti;
+                    }
                     break;
-                case CHIP_RATE: chipRateCenti = fresh.chipRateCenti; break;
+                case CHIP_RATE: chipRateCenti = fresh.chipRateCenti; chipStepCenti = fresh.chipStepCenti; break;
                 case RANGE: range = fresh.range; break;
                 case EDID: edid = fresh.edid; break;
                 case ASPECT: aspectSetting = fresh.aspectSetting; break;
@@ -92,6 +105,7 @@ public final class SignalValues {
                 case TEMP_SYSTEM: tempSystem = fresh.tempSystem; break;
                 case PICTURE_MODE: pictureMode = fresh.pictureMode; break;
                 case MEMC: memc = fresh.memc; break;
+                case COLOR_SPACE: colorSpace = fresh.colorSpace; break;
                 case SCREEN:
                     screenWidth = fresh.screenWidth; screenHeight = fresh.screenHeight;
                     screenRateCenti = fresh.screenRateCenti;

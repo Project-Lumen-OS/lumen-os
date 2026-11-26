@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">Офіційні файли XGIMI перелічено в інструкції на сторінці проєкту.</string>
     <string name="lumen_about_erases">Флешка стирає все на проєкторі: застосунки, облікові записи, налаштування й файли.</string>
     <string name="lumen_about_scan">Відскануйте телефоном, щоб відкрити</string>
-    <string name="lumen_about_close">Закрити</string>
 </resources>

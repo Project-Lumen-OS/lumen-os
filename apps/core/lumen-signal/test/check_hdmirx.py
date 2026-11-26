@@ -45,7 +45,20 @@ ok("script: the node is otherwise only tested and read",
 WRITE_CMDS = re.compile(r"\b(fixedeq|hdmiloglevel|hpddelay|rst|ptg|set_edid|output=|riuinfo|WordW|dd)\b")
 ok("script: no receiver write command outside comments", not any(WRITE_CMDS.search(l) for l in code))
 ok("script: the floor between dumps is 0.9 s", "MIN_GAP_CS=90" in code)
-ok("script: Z9X, Z9X HB and the X50 family only", 'MODELS=" G0082 G0130 G0148 G0111 G0100 G0155 H0061 H0062 H0063 "' in code)
+# the models the script serves: every registry model whose signal.tsv (its own or its family's) lists hdmi_format and
+# that has an image recipe (not image=none), so a new model is data only
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import devices as _devices  # noqa: E402
+import layered as _layered  # noqa: E402
+want_models = set()
+for _c, _d in _devices.load(G).items():
+    _t = _layered.find(os.path.join(G, "devices", _c, "device.conf"), "signal.tsv")
+    if _d.get("image") != "none" and _t and re.search(r"^hdmi_format\t", read(_t), re.M):
+        want_models |= set(_d["models"])
+_m = [l for l in code if l.startswith('MODELS="')]
+have_models = set(_m[0].split("=", 1)[1].strip('"').split()) if len(_m) == 1 else None
+ok("script: MODELS = the registry models with hdmi_format and an image (%s)" % " ".join(sorted(want_models ^ (have_models or set()))),
+   have_models == want_models)
 ok("script: token checked before use", code.index('case "$req" in \'\'|*[!0-9a-z-]*) exit 0 ;; esac') < 
    min(i for i, l in enumerate(code) if "answer()" in l))
 rc = read(os.path.join(MOD, "image/lumen_hdmirx.rc"))
@@ -66,11 +79,16 @@ for j in glob.glob(os.path.join(G, "apps/**/*.java"), recursive=True):
         bad.append("names the receiver node: " + os.path.relpath(j, G))
 ok("no app code opens /proc/utopia_mdb", not [b for b in bad if b.startswith("names the receiver node")])
 # model data: hdmi_format only where the image ships the bridge
-for tsv in glob.glob(os.path.join(G, "devices/*/signal.tsv")):
-    c = tsv.split(os.sep)[-2]
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import layered  # noqa: E402  (a model's data: its own file, else its family's, devices/README.md)
+for c in sorted(os.listdir(os.path.join(G, "devices"))):
+    dconf = os.path.join(G, "devices", c, "device.conf")
+    tsv = layered.find(dconf, "signal.tsv") if os.path.isfile(dconf) else None
+    if not tsv or layered.effective(dconf).get("image") == "none":   # image=none: no image recipe yet
+        continue
     has = re.search(r"^hdmi_format\t", read(tsv), re.M) is not None
     conf = os.path.join(G, "devices", c, "build.conf")
-    cf = read(conf) if os.path.exists(conf) else ""
+    cf = layered.text(conf) if os.path.exists(conf) else ""
     # the steps file the build.conf names (the X50 family shares devices/g0111/image/steps.tsv)
     m = re.search(r"^steps=(\S+)", cf, re.M)
     steps = os.path.join(G, m.group(1) if m else "devices/%s/image/steps.tsv" % c)

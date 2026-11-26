@@ -1,0 +1,157 @@
+{
+  "include": "devices/_menu/base.menu.json",
+  "adapter": "apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java",
+  "features": {
+    "picture.mode": {
+      "options": [
+        "ai",
+        "standard",
+        "sport",
+        "hdr_vivid",
+        "color_accuracy",
+        "office",
+        "performance"
+      ],
+      "support": {
+        "hdr_vivid": [
+          "hdr_vivid"
+        ],
+        "color_accuracy": [
+          "sdr",
+          "hdr",
+          "hdr10"
+        ]
+      }
+    },
+    "picture.color_temp": {
+      "options": [
+        "d65",
+        "color_temp_1"
+      ]
+    },
+    "picture.ultra120": {},
+    "picture.3d": {
+      "options": [
+        "off",
+        "sbs",
+        "tb",
+        "sbs_2d",
+        "tb_2d"
+      ]
+    },
+    "sound.mode": {
+      "options": [
+        "ai",
+        "movie",
+        "music",
+        "sports",
+        "karaoke"
+      ]
+    },
+    "sound.format": {
+      "options": [
+        "auto",
+        "pcm",
+        "passthrough"
+      ]
+    },
+    "network.hotspot": {
+      "name": "Lumen Z9X",
+      "iface": "ap0"
+    },
+    "game.speed": {
+      "options": [
+        "basic",
+        "basic_hfr",
+        "top_speed",
+        "top_speed_hfr"
+      ]
+    }
+  },
+  "after": {
+    "picture.mode": "lamp.off",
+    "picture.color_temp": "picture.pq",
+    "picture.ultra120": "picture.super_res",
+    "picture.3d": "picture.reset_all",
+    "game.speed": "game.mode"
+  },
+  "off": {
+    "focus.guide": "not on this model's stock tree (kept off as before)",
+    "picture.custom_new": "Z9xFeatures has no PICTURE_CUSTOM_NEW: not on this model's stock tree or hardware (kept off as before)",
+    "picture.custom_delete": "Z9xFeatures has no PICTURE_CUSTOM_DELETE: not on this model's stock tree or hardware (kept off as before)",
+    "picture.anti_rbe": "Z9xFeatures has no PICTURE_ANTI_RBE: not on this model's stock tree or hardware (kept off as before)",
+    "eye.elder_color": "Z9xFeatures has no EYE_ELDER_COLOR: not on this model's stock tree or hardware (kept off as before)",
+    "settings.colour_vision": "the G0082 stock tree has no colour vision row (module row, kept off as before): open for the owner",
+    "picture.dynamic_contrast": "Z9xFeatures has no PICTURE_DYNAMIC_CONTRAST: not on this model's stock tree or hardware (kept off as before)",
+    "settings.screensaver_now": "Z9X keeps the system screensaver (module row, kept off as before): open for the owner",
+    "settings.screensaver_delay": "Z9X keeps the system screensaver (module row, kept off as before): open for the owner"
+  },
+  "hints": {
+    "keystone.curtain": null
+  },
+  "game_menu": {
+    "items": [
+      "lat",
+      "vrr",
+      "hfr",
+      "pic",
+      "dark",
+      "sr",
+      "ar",
+      "snd",
+      "aim",
+      "fps"
+    ]
+  },
+  "sections": {
+    "keystone": {
+      "stock": "settings_tree_product_dapeng projection_screen (G0082 V6.15.62), test/stock/projection_screen.json",
+      "groups": [
+        {
+          "rows": [
+            "keystone.realtime",
+            "keystone.ak_now",
+            "keystone.fit_now"
+          ]
+        },
+        {
+          "header": "auto_correction",
+          "rows": [
+            "keystone.on_power",
+            "keystone.obstacle",
+            "keystone.curtain"
+          ]
+        },
+        {
+          "header": "line",
+          "rows": [
+            "keystone.manual",
+            "focus.af_now",
+            "focus.manual",
+            {
+              "page": "focus.settings",
+              "groups": [
+                {
+                  "rows": [
+                    "focus.smart"
+                  ]
+                }
+              ]
+            },
+            "zoom",
+            "keystone.rotation",
+            "keystone.wall_color",
+            "keystone.restore"
+          ]
+        },
+        {
+          "header": "line",
+          "rows": [
+            "projection.mode",
+            "projection.rear"
+          ]
+        }
+      ]
+    }
+  }
+}

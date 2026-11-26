@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Głęboki sen wyłączony</string>
+    <string name="hb_str_blocked_usb">Komputer jest podłączony przez USB: w trybie czuwania projektor nie zaśnie całkowicie, a wentylatory będą pracować. Odłącz kabel USB, aby przywrócić głęboki sen.</string>
+    <string name="hb_str_blocked_update">Trwa instalacja aktualizacji: głęboki sen wróci po jej zakończeniu.</string>
+    <string name="hb_str_blocked_update_check">Zaktualizowany system jest sprawdzany po uruchomieniu: głęboki sen wróci za kilka minut.</string>
+    <string name="hb_str_blocked_off">Głęboki sen jest wyłączony na tym projektorze (ustawienie serwisowe).</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- /system/etc/sysconfig/lumen-cast.xml of an image whose shared sysconfig (z9x.xml) predates the screen mirroring
+     sink: the X50 family keeps the z9x.xml of its Z9X 1.0.9 base, which names packages it does not carry. Screen
+     casting is on every model (2026-11-21), so the sink runs from the first boot there too, as overlay/v1/
+     z9x-sysconfig-nogms.xml makes it on the Z9X, the HB, the Play 6 and the RS30. -->
+<config>
+    <initial-package-state package="org.lumen.miracast" stopped="false" />
+</config>

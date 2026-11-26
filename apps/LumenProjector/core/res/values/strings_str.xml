@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep sleep blocked notices (power.StrNotice, the Z9X HB family: Family.STR_NOTICE). -->
+<resources>
+    <string name="hb_str_blocked_title">Deep sleep is off</string>
+    <string name="hb_str_blocked_usb">A computer is connected over USB: in standby the projector will not sleep fully and the fans keep running. Unplug the USB cable to get deep sleep back.</string>
+    <string name="hb_str_blocked_update">An update is being installed: deep sleep returns once it is done.</string>
+    <string name="hb_str_blocked_update_check">The updated system is being checked after start: deep sleep returns in a few minutes.</string>
+    <string name="hb_str_blocked_off">Deep sleep is turned off on this projector (service setting).</string>
+</resources>

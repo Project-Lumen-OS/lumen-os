@@ -43,6 +43,8 @@ public final class VoiceTest {
         cmd("play lofi on youtube", "YOUTUBE(lofi)");
         cmd("Люмен, расскажи анекдот", "UNKNOWN");
         cmd("какая погода завтра", "UNKNOWN");
+        cmd("открой тв-каналы", "OPEN_APP(тв каналы)");
+        cmd("включи IPTV", "OPEN_APP(iptv)[1]");
 
         List<AppMatcher.App> apps = Arrays.asList(new AppMatcher.App("com.google.android.youtube.tv", "YouTube"),
                 new AppMatcher.App("ru.kinopoisk.tv", "Кинопоиск"), new AppMatcher.App("com.vk.tv", "VK Видео"),
@@ -59,8 +61,34 @@ public final class VoiceTest {
         eq(pkg(AppMatcher.match("влц", apps)), "org.videolan.vlc", "влц");
         eq(pkg(AppMatcher.match("люмен плей", apps)), "com.xgimiru.player", "люмен плей");
         eq(pkg(AppMatcher.match("интерстеллар", apps)), "null", "not an app");
+        tvChannels(apps);
         System.out.println("voice tests passed=" + pass + " failed=" + fail);
         if (fail > 0) System.exit(1);
+    }
+
+    /** TV channel words open a TV app or nothing (the caller searches), never Lumen Play: 2.0 has no IPTV. */
+    private static void tvChannels(List<AppMatcher.App> apps) {
+        String[] said = {"iptv", "IP TV", "айпи тв", "тв каналы", "тв-каналы", "телеканалы", "телевизор", "тв",
+                "приложение iptv", "live TV", "TV channels", "Télévision", "chaînes TV", "kanały TV", "TV kanalları",
+                "Fernsehen", "телебачення", "テレビ", "电视", "電視", "티비", "قنوات"};
+        for (String w : said) eq(pkg(AppMatcher.match(w, apps)), "top.rootu.lampa", w + ": Lampa, not Lumen Play");
+        List<AppMatcher.App> playOnly = Arrays.asList(new AppMatcher.App("com.xgimiru.player", "Lumen Play", true),
+                new AppMatcher.App("com.phlox.tvwebbrowser", "TV Bro"), new AppMatcher.App("com.google.android.youtube.tv", "YouTube"));
+        for (String w : said) eq(pkg(AppMatcher.match(w, playOnly)), "null", w + ": no TV app, search");
+        List<AppMatcher.App> rich = Arrays.asList(new AppMatcher.App("com.xgimiru.player", "Lumen Play"),
+                new AppMatcher.App("top.rootu.lampa", "LAMPA"), new AppMatcher.App("ar.tvplayer.tv", "TiviMate"),
+                new AppMatcher.App("com.google.android.tv", "Live Channels"));
+        eq(pkg(AppMatcher.match("тв каналы", rich)), "ar.tvplayer.tv", "IPTV player before Live Channels and Lampa");
+        eq(pkg(AppMatcher.match("тв каналы", Arrays.asList(new AppMatcher.App("top.rootu.lampa", "LAMPA"),
+                new AppMatcher.App("com.google.android.tv", "Live Channels")))), "com.google.android.tv", "Live Channels before Lampa");
+        eq(pkg(AppMatcher.match("iptv", Arrays.asList(new AppMatcher.App("top.rootu.lampa", "LAMPA"),
+                new AppMatcher.App("com.example.channels", "Каналы", true)))), "com.example.channels", "an app that opens TV channels");
+        eq(pkg(AppMatcher.match("live tv", Arrays.asList(new AppMatcher.App("com.xgimiru.player", "Lumen Play"),
+                new AppMatcher.App("com.example.m3u", "Smart IPTV")))), "com.example.m3u", "IPTV in the app name");
+        eq(pkg(AppMatcher.match("лампу", rich)), "top.rootu.lampa", "Lampa by its name");
+        for (String w : new String[] {"кино", "плеер", "видеоплеер", "торренты", "люмен плей", "lumen play", "video player", "torrents"}) {
+            eq(pkg(AppMatcher.match(w, rich)), "com.xgimiru.player", w + ": Lumen Play");
+        }
     }
 
     private static String pkg(AppMatcher.App a) { return a == null ? "null" : a.pkg; }

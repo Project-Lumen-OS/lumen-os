@@ -83,6 +83,9 @@ public class SliderRow extends Row {
 
     public int getMax() { return max; }
 
+    /** The value as the row writes it (its formatter, a dash while not read). */
+    public CharSequence valueText() { return label(); }
+
     @Override
     protected float designHeight() { return Theme.ROW_SLIDER_HEIGHT; }
 

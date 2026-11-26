@@ -3,7 +3,7 @@
 
 One row per HAL method name that Lumen's Z9X client or Play 6 client sends today, with its code on each
 device and the HB (G0130, AIDL V1) service and code found by name (case-insensitive).
-  Z9X:    apps/ProjectorBase/.../hal/GmpfClient.java (IGmpf) and Gmpf2Client.java (IGmpf2). A constant
+  Z9X:    apps/LumenProjector/core/.../hal/GmpfClient.java (IGmpf) and Gmpf2Client.java (IGmpf2). A constant
           counts only if it is the code argument of a call*( site; its name comes from
           research/play6/z9x_gmpf_codes.txt (the Z9X HIDL proxy disassembly).
   Play 6: apps/Play6Projector/.../hal/Play6Gmpf.java and Play6Gmpf2.java, `// tsv:<method>` constants
@@ -52,7 +52,7 @@ def add(method, col, val):
 CONST = re.compile(r'static\s+final\s+int\s+(\w+)\s*=\s*(0x[0-9a-fA-F]+|\d+)\s*;')
 SITE = re.compile(r'\bcall(?:[A-Z]\w*)?\s*\(\s*(?:c\()?\s*([A-Z_][A-Z_0-9]*)\s*[,)]')
 for f, cls, iface in (('GmpfClient.java', 'BpHwGmpf', 'IGmpf'), ('Gmpf2Client.java', 'BpHwGmpf2', 'IGmpf2')):
-    src = open(find('ProjectorBase', 'projector/hal/' + f)).read()
+    src = open(find('LumenProjector/core', 'projector/hal/' + f)).read()
     consts = {n: int(v, 0) for n, v in CONST.findall(src)}
     for name in sorted(set(SITE.findall(strip(src)))):
         if name not in consts: continue

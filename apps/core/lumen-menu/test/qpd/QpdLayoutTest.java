@@ -27,6 +27,67 @@ public final class QpdLayoutTest {
 
     private static String span(float[] s) { return s[0] + ".." + s[1]; }
 
+    // ---- the disabled grey (QpdLayout.disabled): WCAG relative luminance and contrast of opaque colours
+    private static double lin(int c8) {
+        double c = c8 / 255.0;
+        return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    }
+
+    private static double lum(int rgb) {
+        return 0.2126 * lin(rgb >> 16 & 255) + 0.7152 * lin(rgb >> 8 & 255) + 0.0722 * lin(rgb & 255);
+    }
+
+    private static double contrast(int a, int b) {
+        double x = lum(a), y = lum(b);
+        return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+    }
+
+    /** {@code argb} drawn over the opaque {@code under}. */
+    private static int over(int argb, int under) {
+        double a = (argb >>> 24) / 255.0;
+        int out = 0xFF000000;
+        for (int sh = 0; sh <= 16; sh += 8) {
+            out |= (int) Math.round((argb >> sh & 255) * a + (under >> sh & 255) * (1 - a)) << sh;
+        }
+        return out;
+    }
+
+    /**
+     * A disabled row is an obvious grey on both menus (2026-11-26: picture modes the content does not allow stay
+     * listed, clearly grey): opaque and neutral, readable on the card over dark and bright video, and far from both
+     * the enabled title (ink) and the enabled value line (MUTE). Dark colours from QpdStyle's DARK row (run.sh passes
+     * them), the light ones are QpdStyle.light(Palette.of(false)): card = panel .97, ink = ptext1, MUTE = ink .68.
+     */
+    static void disabledGrey() {
+        String[] d = System.getProperty("qpd.dark", "").split(",");
+        check("disabled: run.sh passes the dark panel, ink and MUTE", d.length == 3);
+        if (d.length != 3) return;
+        org.lumen.ui.Palette lp = org.lumen.ui.Palette.of(false);
+        int[][] themes = {
+                {(int) Long.parseLong(d[0], 16), (int) Long.parseLong(d[1], 16), (int) Long.parseLong(d[2], 16), QpdLayout.disabled(false)},
+                {org.lumen.ui.Palette.alpha(lp.panel, 0.97f), lp.ptext1, org.lumen.ui.Palette.alpha(lp.ptext1, 0.68f), QpdLayout.disabled(true)}};
+        String[] names = {"dark", "light"};
+        check("disabled: the two menus have their own grey", QpdLayout.disabled(false) != QpdLayout.disabled(true));
+        for (int t = 0; t < 2; t++) {
+            int panel = themes[t][0], ink = themes[t][1], mute = themes[t][2], grey = themes[t][3];
+            String n = names[t] + " disabled: ";
+            check(n + "opaque (no video or card tint through it)", grey >>> 24 == 255);
+            int r = grey >> 16 & 255, g = grey >> 8 & 255, b = grey & 255;
+            check(n + "a neutral grey", Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b)) <= 4);
+            for (int video : new int[] {0xFF000000, 0xFFFFFFFF}) {
+                int card = over(panel, video);
+                double onCard = contrast(grey, card), toInk = contrast(over(ink, card), grey), toMute = contrast(over(mute, card), grey);
+                String v = video == 0xFF000000 ? " (dark video)" : " (bright video)";
+                if (onCard < 2.2 || toInk < 4.3 || toMute < 1.5) {
+                    System.out.printf("     %s card %.2f ink %.2f mute %.2f%n", n + v, onCard, toInk, toMute);
+                }
+                check(n + "readable on the card" + v, onCard >= 2.2);
+                check(n + "far from an enabled title" + v, toInk >= 4.3);
+                check(n + "never mistaken for an enabled value line" + v, toMute >= 1.5);
+            }
+        }
+    }
+
     private static String at(List<List<String>> rows, int[] rc) {
         return rc == null ? "STAY" : (rc[2] == QpdLayout.OPEN ? "OPEN:" : "") + rows.get(rc[0]).get(rc[1]);
     }
@@ -95,6 +156,23 @@ public final class QpdLayoutTest {
         eq("settled: no answer keeps the old value", Boolean.FALSE, QpdLayout.settled(null, Boolean.FALSE));
         eq("settled: no answer, nothing known", null, QpdLayout.settled(null, null));
 
+        // ---- the scrim behind the card: from 0.5 at the menu's side to nothing at its end, eased, no step, no bend at the end
+        check("scrim starts at 0.5", Math.abs(QpdLayout.scrimAlpha(0f) - 0.5f) < 1e-6);
+        check("scrim ends at nothing", QpdLayout.scrimAlpha(1f) == 0f && QpdLayout.scrimAlpha(1.3f) == 0f);
+        float prev = 1f, maxStep = 0f;
+        for (int i = 0; i <= 1000; i++) {
+            float sa = QpdLayout.scrimAlpha(i / 1000f);
+            check("scrim never gets darker away from the menu (" + i + ")", sa <= prev + 1e-6);
+            maxStep = Math.max(maxStep, prev == 1f ? 0f : prev - sa);
+            prev = sa;
+        }
+        check("scrim has no step (max " + maxStep + " per 0.1 % of its width)", maxStep < 0.001f);
+        check("scrim is flat where it ends (the eye sees a bend there as a line)",
+                QpdLayout.scrimAlpha(0.95f) < 0.004f && QpdLayout.scrimAlpha(0.9f) < 0.015f);
+        int[] sc = QpdLayout.scrimColors();
+        float[] ss = QpdLayout.scrimStops();
+        check("scrim stops: as many colours as positions, 0 to 1", sc.length == ss.length && ss[0] == 0f && ss[ss.length - 1] == 1f
+                && sc[0] >>> 24 == 128 && sc[sc.length - 1] == 0 && (sc[0] & 0xFFFFFF) == 0);
         // ---- eye protection tile: OK switches, the mode used last comes back, RIGHT / held OK only with modes
         List<String> sw = Arrays.asList("off", "on"), modes = Arrays.asList("off", "follow", "rest");
         eq("switch on -> off", "off", QpdLayout.eyeToggle("on", sw, null));
@@ -356,6 +434,8 @@ public final class QpdLayoutTest {
                 QpdLayout.rows(Arrays.asList("general"), Arrays.asList("a"), Arrays.asList("b"), Arrays.asList("lamp")));
         eq("label box: the prototype's 64 for a level", 64f, QpdLayout.labelBox(40f, 1f));
         eq("label box: wider for a long option name", 150f, QpdLayout.labelBox(300f, 2f));
+
+        disabledGrey();
 
         System.out.println("QpdLayoutTest: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);

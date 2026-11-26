@@ -28,7 +28,7 @@ Stock live data (owner's unit, stock V6.15.62, PS5 4K on HDMI 1): `~/lumen-build
 Lumen live data with HDMI in front: there is no full snapshot (no `hal.txt`), but a logcat of the same unit exists:
 `~/lumen-build-tmp/z9x-picture-parity/live/boot1/logcat.txt.3`, Lumen `ro.z9x.version=1.0.11-beta10`, 2026-11-16 12:47, PS5 3840x2160p@59.9 on HDMI 1. It contains the vendor's own log lines (tags `GM_DISP_*`). Caveat: that boot ran vendor `v6.15.58` (`live/boot1/info.txt`), the stock capture is `V6.15.62`. Lines quoted from it are marked "Lumen log".
 
-Lumen code: worktree paths. `Z9xTvInput` = `apps/LumenTvInput/src/org/lumen/tvinput`, `Z9xProjector` = `apps/ProjectorBase/src/org/lumen/projector`.
+Lumen code: worktree paths. `Z9xTvInput` = `apps/LumenTvInput/src/org/lumen/tvinput`, `Z9xProjector` = `apps/LumenProjector/core/src/org/lumen/projector`.
 
 Related branches: `hdmi-color`, `hdmi-relink`, `hdmi-bt-audio`, `cec-core`, `arc-return` have 0 commits ahead of `integ-1115d`, their content is in the base read here. `cec-standby-stock` (ff9b52c2, "HDMI-CEC defaults as stock on every model") is 1 commit ahead and is NOT in the base.
 
@@ -373,7 +373,7 @@ Lumen:
 | Values | `HdmiRange` AUTO 0, FULL 1, LIMITED 2 (`Z9xProjector/hal/HdmiRange.java`) | SAME |
 | Write | IGmpf 635 `setHdmiRange(wire)` from the menu row only, and only when HDMI is on screen (`Z9xProjector/panel/Z9xHdmiRows.java:22-31`) | SAME call and argument. No source index is passed in stock either |
 | Read | IGmpf 634 (`panel/Snapshot.java:120`), row shown only on HDMI with a value 0..2 (`panel/Z9xMenuRules.java:257-264`) | SAME |
-| Any other writer (entry, signal change, boot) | none in `apps/ProjectorBase`, `apps/core`, `apps/LumenTvInput`, `devices/horse_popular` | SAME as stock |
+| Any other writer (entry, signal change, boot) | none in `apps/LumenProjector/core`, `apps/core`, `apps/LumenTvInput`, `devices/horse_popular` | SAME as stock |
 
 Conclusion for the pale picture complaint: Lumen never writes the range by itself, so a wrong range can only come from (a) the user's row, (b) the vendor default of a fresh `/data` store, which is the same vendor code as stock. The live value on Lumen is not captured yet (the read at 12:47:17.215 is in the log without its result). It is the first item of section 11.
 
@@ -396,7 +396,7 @@ Stock:
 
 Lumen:
 
-- No HGiG call on the Z9X at all (no match for "hgig" in `apps/ProjectorBase/src` and `apps/core` except a comment in `apps/core/lumen-menu/src/org/lumen/projector/panel/GmModel.java:41`). Status LUMEN MISSING.
+- No HGiG call on the Z9X at all (no match for "hgig" in `apps/LumenProjector/core/src` and `apps/core` except a comment in `apps/core/lumen-menu/src/org/lumen/projector/panel/GmModel.java:41`). Status LUMEN MISSING.
 - HDR dynamic tone mapping: pro picture row, IGmpf2 270 write, 269 read, window 0 (`Z9xProjector/panel/ProPicture.java:209`, `:300`, `apps/core/lumen-gmpf/src/org/lumen/projector/hal/Gmpf2Base.java:222-227`). Same call as stock.
 - On game mode entry Lumen writes neither (no tone mapping call outside `ProPicture`). Status SAME as stock: both do nothing on entry.
 

@@ -67,6 +67,46 @@ EOF
 }
 t rs30_placeholders 0 rs30_placeholders
 
+# built= inputs (Mac build outputs such as the Wi-Fi capex of the Z9X and the X50 family) are staged like the
+# repository files: build.py files lists them, run stages them for host=local too (files and folders), a folder
+# with anything key-like is refused, a missing one is named. files --no-built leaves them out (Play 6 build_test.sh)
+CAPEX=build/wifi_apex/arm64/com.android.wifi.capex
+lists() { b files "$@" 2>/dev/null | grep -qx "$CAPEX"; }
+t files_lists_built_z9x 0 lists horse_popular
+t files_lists_built_x50 0 lists g0111
+t files_no_built_leaves_built 1 lists horse_popular --no-built
+t files_names_missing_built 0 sh -c "[ -e '$G/$CAPEX' ] || python3 -B '$G/tools/build/build.py' files horse_popular 2>&1 >/dev/null | grep -q 'built input $CAPEX is not in the tree'"
+builtstage() { python3 -B - "$G/tools/build" "$W/bs" <<'PY'
+import os, sys
+sys.path.insert(0, sys.argv[1])
+import build
+from recipe import RecipeError
+root, indir = os.path.join(sys.argv[2], "root"), os.path.join(sys.argv[2], "in")
+for p in ("build/wifi_apex/arm64", "build/x/signed", "build/k"):
+    os.makedirs(os.path.join(root, p))
+os.makedirs(indir)
+open(os.path.join(root, "build/wifi_apex/arm64/com.android.wifi.capex"), "w").write("capex")
+open(os.path.join(root, "build/x/signed/a.apk"), "w").write("a")
+open(os.path.join(root, "build/k/release.pk8"), "w").write("k")
+class D:
+    def __init__(self, built):
+        self.built = built
+    def list(self, k):
+        return self.built if k == "built" else []
+fs = build.present_built(root, D(["build/wifi_apex/arm64/com.android.wifi.capex", "build/x/signed", "gone.txt"]))
+build.stage_local(fs, indir)
+build.stage_local(fs, indir)
+ok = sorted(os.listdir(indir)) == ["com.android.wifi.capex", "signed"] and open(os.path.join(indir, "signed/a.apk")).read() == "a"
+try:
+    build.present_built(root, D(["build/k"]))
+    ok = False
+except RecipeError:
+    pass
+sys.exit(0 if ok else 1)
+PY
+}
+t built_staged_local 0 builtstage
+
 # the parser on a scratch descriptor: a missing key, an unknown key, a bad steps row
 python3 -B - "$G/tools/build" "$W" > "$W/py.out" 2>&1 <<'EOF'
 import os, shutil, sys
@@ -74,7 +114,7 @@ sys.path.insert(0, sys.argv[1])
 import recipe
 w = sys.argv[2]
 good = os.path.join(os.path.dirname(sys.argv[1]), "..", "devices", "g0111", "build.conf")
-lines = open(good).read().split("\n")
+lines = recipe.layered.text(good).split("\n")
 bad = 0
 for name, edit in (("missing_steps", lambda l: [x for x in l if not x.startswith("steps=")]),
                    ("unknown_key", lambda l: l + ["colour=blue"])):

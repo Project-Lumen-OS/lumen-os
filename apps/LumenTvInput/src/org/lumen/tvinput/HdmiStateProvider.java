@@ -31,6 +31,9 @@ import android.util.Log;
  * Lumen OS 1.0 (CEC settings live in the projector's quick panel, cec spec 3.1 Prefs):
  * "get_cec_prefs" -> {cec_one_touch_play, cec_control, cec_internal_on_exit}; "set_cec_pref", arg = one
  * of those keys, extras {value: boolean} -> {ok}.
+ * The HDMI options (the menu's HDMI page, lumen-hdmiports): "get_hdmi_prefs" -> {auto_switch_on_plug,
+ * return_home_on_unplug: boolean, boot_source: int (0 home, else the HDMI port)}; "set_hdmi_pref", arg = one of those
+ * keys, extras {value: boolean or int} -> {ok}.
  * Authority org.lumen.tvinput.hdmistate, exported, guarded by the signature permission
  * org.lumen.tvinput.permission.HDMI_STATE (checked by hand in call(): the framework enforces the
  * provider's read/write permissions only for query/insert/update/delete, not for call()).
@@ -42,6 +45,9 @@ public final class HdmiStateProvider extends ContentProvider {
     private static final String METHOD = "hdmi_state";
     private static final String METHOD_GET_CEC = "get_cec_prefs";
     private static final String METHOD_SET_CEC = "set_cec_pref";
+    private static final String METHOD_GET_HDMI = "get_hdmi_prefs";
+    private static final String METHOD_SET_HDMI = "set_hdmi_pref";
+    private static final String[] HDMI_KEYS = {Prefs.AUTO_SWITCH, Prefs.RETURN_HOME};
     private static final String[] CEC_KEYS = {Prefs.CEC_ONE_TOUCH_PLAY, Prefs.CEC_CONTROL, Prefs.CEC_INTERNAL_ON_EXIT};
 
     /** Open-session count per HDMI port (index = port id; the Z9X has ports 1 and 2). */
@@ -97,7 +103,8 @@ public final class HdmiStateProvider extends ContentProvider {
 
     @Override
     public Bundle call(String method, String arg, Bundle extras) {
-        if (!METHOD.equals(method) && !METHOD_GET_CEC.equals(method) && !METHOD_SET_CEC.equals(method)) return null;
+        if (!METHOD.equals(method) && !METHOD_GET_CEC.equals(method) && !METHOD_SET_CEC.equals(method)
+                && !METHOD_GET_HDMI.equals(method) && !METHOD_SET_HDMI.equals(method)) return null;
         if (getContext() == null
                 || getContext().checkCallingPermission(PERMISSION) != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException("needs " + PERMISSION);
@@ -105,6 +112,15 @@ public final class HdmiStateProvider extends ContentProvider {
         Bundle b = new Bundle();
         if (METHOD_GET_CEC.equals(method)) {
             for (String k : CEC_KEYS) b.putBoolean(k, Prefs.get(getContext(), k));
+            return b;
+        }
+        if (METHOD_GET_HDMI.equals(method)) {
+            for (String k : HDMI_KEYS) b.putBoolean(k, Prefs.get(getContext(), k));
+            b.putInt(BootSource.KEY, BootSource.get(getContext()));
+            return b;
+        }
+        if (METHOD_SET_HDMI.equals(method)) {
+            b.putBoolean("ok", setHdmiPref(arg, extras));
             return b;
         }
         if (METHOD_SET_CEC.equals(method)) {
@@ -136,6 +152,23 @@ public final class HdmiStateProvider extends ContentProvider {
         b.putIntArray("streams", streams);
         putPortStates(b);
         return b;
+    }
+
+    /** The menu's HDMI page writes one HDMI option (lumen-hdmiports HdmiPorts.setPref / setBootSource). */
+    private boolean setHdmiPref(String key, Bundle extras) {
+        if (extras == null || !extras.containsKey("value")) return false;
+        if (BootSource.KEY.equals(key)) {
+            BootSource.set(getContext(), extras.getInt("value", BootSource.HOME));
+            Log.i(TAG, "boot source = " + BootSource.get(getContext()) + " (menu)");
+            return true;
+        }
+        for (String k : HDMI_KEYS) {
+            if (!k.equals(key)) continue;
+            Prefs.set(getContext(), k, extras.getBoolean("value"));
+            Log.i(TAG, "HDMI pref " + k + " = " + Prefs.get(getContext(), k) + " (menu)");
+            return true;
+        }
+        return false;
     }
 
     /** port_ids and port_n (see the class comment), fresh from PortState. */

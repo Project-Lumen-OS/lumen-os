@@ -8,11 +8,9 @@
     <string name="lumen_gm_presets">Ayar seti</string>
     <string name="lumen_gm_preset_compete">Rekabet</string>
     <string name="lumen_gm_preset_balance">Denge</string>
-    <string name="lumen_gm_preset_story">Hikâye</string>
     <string name="lumen_gm_preset_on">%1$s ayar seti açık</string>
     <string name="lumen_gm_preset_partly">%1$s ayar seti açık, ama bazı öğeler değişmedi</string>
     <string name="lumen_gm_lat">Tepki hızı</string>
-    <string name="lumen_gm_lat_0">Standart</string>
     <string name="lumen_gm_lat_1">Turbo</string>
     <string name="lumen_gm_lat_d0">Normal gecikme. Trapez ve görüntü uydurma çalışır.</string>
     <string name="lumen_gm_lat_d1">En düşük gecikme. Trapez ve görüntü uydurma çalışmaz.</string>
@@ -25,7 +23,6 @@
     <string name="lumen_gm_on">Açık</string>
     <string name="lumen_gm_auto">Otomatik</string>
     <string name="lumen_gm_pic">Görüntü modu</string>
-    <string name="lumen_gm_pic_0">Standart</string>
     <string name="lumen_gm_pic_4">Spor</string>
     <string name="lumen_gm_pic_d0">Her oyun için.</string>
     <string name="lumen_gm_pic_d1">Nişancı oyunları için.</string>
@@ -43,7 +40,6 @@
     <string name="lumen_gm_ar_d1">Normal ekran.</string>
     <string name="lumen_gm_snd">Oyun sesi</string>
     <string name="lumen_gm_snd_1">Çevresel</string>
-    <string name="lumen_gm_snd_2">Hikâye</string>
     <string name="lumen_gm_snd_3">Netlik</string>
     <string name="lumen_gm_snd_4">Dengeli</string>
     <string name="lumen_gm_snd_d0">Ses oyundaki gibi.</string>
@@ -63,7 +59,6 @@
     <string name="lumen_gm_faster">daha hızlı</string>
     <string name="lumen_gm_turbo_title">Turbo açılsın mı?</string>
     <string name="lumen_gm_turbo_msg">Turbo trapez düzeltmesini kapatır ve görüntüyü tam kareye döndürür. Gecikme en düşük olur.</string>
-    <string name="lumen_gm_turbo_ok">Aç</string>
     <string name="lumen_gm_rule_vrr_wide">Önce 16:9 ya da Otomatik seçin</string>
     <string name="lumen_gm_rule_ar_vrr">Önce VRR kapatın</string>
     <string name="lumen_gm_rule_ar_4k">Geniş kare yalnızca 3840 × 2160 sinyalle çalışır</string>
@@ -73,7 +68,6 @@
     <string name="lumen_gm_hint_first">Oyun sırasında bu menüyü açmak için ayarlar düğmesini basılı tutun</string>
     <string name="lumen_gm_kind_console">konsol</string>
     <string name="lumen_gm_kind_computer">bilgisayar</string>
-    <string name="lumen_gm_licences">Lisanslar</string>
     <string name="lumen_gm_licences_d">Lumen OS içindeki malzemelerin yazarları</string>
     <string name="lumen_gm_credits_intro">Oyun menüsündeki kumanda resimleri şu 3D modellerden yapıldı:</string>
 </resources>

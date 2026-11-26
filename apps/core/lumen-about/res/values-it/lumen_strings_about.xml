@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">La guida nella pagina del progetto elenca i file ufficiali XGIMI.</string>
     <string name="lumen_about_erases">La chiavetta cancella tutto sul proiettore: app, account, impostazioni e file.</string>
     <string name="lumen_about_scan">Scansiona con il telefono per aprire</string>
-    <string name="lumen_about_close">Chiudi</string>
 </resources>

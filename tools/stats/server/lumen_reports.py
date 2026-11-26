@@ -405,23 +405,30 @@ class Store:
 class Reports:
     """The POST /lumen/v1/report end: headers, limits, a streamed body, the zip check, the store."""
 
-    def __init__(self, root, salt, on_dump=None):
+    def __init__(self, root, salt, on_dump=None, on_check=None):
         self.store = Store(root, salt)
         self.limits = Limits()
         self.salt = salt
         # on_dump(meta, serial, now): a stored dump for the statistics counter (lumen_stats.Store.add_dump)
         self.on_dump = on_dump
+        # on_check(code, zip path, model, version, serial, now): a stored dump for the Sparks check (report_check.Sender)
+        self.on_check = on_check
         self.parts = threading.Lock()
         self.slots = threading.BoundedSemaphore(PART_SLOTS)
         self.open_by = {}           # upload key -> sender, memory only (no address on disk)
 
     def stored(self, f, meta, now):
-        """A dump goes to the counter too; a counter failure never loses the stored zip."""
+        """A dump goes to the counter and to the Sparks check too; their failure never loses the stored zip."""
         if f["kind"] == DUMP_KIND and self.on_dump is not None:
             try:
                 self.on_dump(meta, f["serial"], now)
             except Exception as e:      # noqa: BLE001  the zip is kept, the counter misses one
                 print("dump counter: %s" % e, file=sys.stderr)
+        if f["kind"] == DUMP_KIND and self.on_check is not None:
+            try:
+                self.on_check(meta["code"], self.store.find(meta["code"]), meta["model"], meta["version"], f["serial"], now)
+            except Exception as e:      # noqa: BLE001  the zip is kept, the report waits for the moderator
+                print("dump check: %s" % e, file=sys.stderr)
 
     def room(self, kind, need, now, reserved=0):
         """None when need more bytes of this kind fit (the class cap after pruning, the disk floor with the reserved

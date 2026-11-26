@@ -3,29 +3,19 @@
      v6.1 translate phase; edit the text here or regenerate, keep names/placeholders. -->
 <resources>
     <string name="app_name">Bildschirmspiegelung</string>
-    <string name="settings_title">Bildschirmspiegelung</string>
-    <string name="on">An</string>
-    <string name="off">Aus</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Abbrechen</string>
-    <string name="status_title">Status</string>
     <string name="status_off">Aus. Telefone und Computer sehen diesen Projektor nicht.</string>
     <string name="status_starting">Wird gestartet</string>
     <string name="status_ready">Bereit. Telefone und Computer sehen diesen Projektor als %1$s.</string>
     <string name="status_no_wifi">WLAN ist aus. Schalten Sie es ein, um einen Bildschirm zu empfangen.</string>
     <string name="status_unsupported">Wi‑Fi Direct ist auf diesem Projektor nicht verfügbar.</string>
+    <string name="status_waiting_wifi">Wartet auf die WLAN-Verbindung.</string>
+    <string name="status_restarting">Wi‑Fi Direct antwortet nicht mehr. Es wird neu gestartet.</string>
+    <string name="status_no_answer">Wi‑Fi Direct antwortet nicht. Starten Sie den Projektor neu. AirPlay und DLNA funktionieren weiter.</string>
+    <string name="status_connect_broken">Telefone sehen diesen Projektor, aber diese Systemversion kann die Verbindung noch nicht herstellen. AirPlay und DLNA funktionieren.</string>
     <string name="status_in_use">Bildschirm von %1$s wird gezeigt</string>
-    <string name="row_enabled">Bildschirmspiegelung (Miracast)</string>
-    <string name="row_name">Name</string>
-    <string name="row_ask">Vor dem Verbinden fragen</string>
-    <string name="row_quality">Bildqualität</string>
     <string name="quality_1080_60">Bis 1080p, 60 Bilder pro Sekunde</string>
     <string name="quality_1080_30">Bis 1080p, 30 Bilder pro Sekunde</string>
     <string name="quality_720">Bis 720p</string>
-    <string name="howto_title">So verbinden Sie sich</string>
-    <string name="howto_android">Android: Öffnen Sie in den Schnelleinstellungen Streamen oder Smart View und wählen Sie %1$s.</string>
-    <string name="howto_windows">Windows: Drücken Sie Win und K gleichzeitig und wählen Sie %1$s.</string>
-    <string name="name_dialog_title">Name dieses Projektors</string>
     <string name="notif_ready">Bereit, einen Bildschirm als %1$s zu empfangen</string>
     <string name="notif_in_use">Bildschirm von %1$s wird gezeigt</string>
     <string name="prompt_title">%1$s möchte seinen Bildschirm zeigen</string>

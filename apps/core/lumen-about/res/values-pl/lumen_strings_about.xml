@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">Instrukcja na stronie projektu wymienia oficjalne pliki XGIMI.</string>
     <string name="lumen_about_erases">Pendrive usuwa wszystko z projektora: aplikacje, konta, ustawienia i pliki.</string>
     <string name="lumen_about_scan">Zeskanuj telefonem, aby otworzyć</string>
-    <string name="lumen_about_close">Zamknij</string>
 </resources>

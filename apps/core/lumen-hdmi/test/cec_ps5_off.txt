@@ -1,0 +1,251 @@
+# The same unit, PS5 FULL power off at 11:49:54 (hdmi_control_2.txt there, history lines only).
+    [R] time=2026-11-26 10:24:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:25:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:25:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:26:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:26:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:27:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:27:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:28:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:28:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:29:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:29:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:30:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:30:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:31:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:31:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:32:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:32:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:33:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:33:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:34:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:34:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:35:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:35:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:36:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:36:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:37:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:37:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:38:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:38:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:39:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:39:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:40:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:40:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:41:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:41:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:42:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:42:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:43:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:43:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:44:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:44:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:45:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:45:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:46:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:46:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:47:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:47:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:48:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:48:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:49:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:49:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:50:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:50:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:51:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:51:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:52:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:52:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:53:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:53:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:54:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:54:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:55:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:55:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:56:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:56:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:57:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:57:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:58:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:58:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 10:59:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 10:59:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:00:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:00:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:01:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:01:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:02:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:02:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:03:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:03:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:04:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:04:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:05:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:05:07 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:06:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:06:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:07:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:07:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:08:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:08:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:09:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:09:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:10:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:10:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:11:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:11:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:12:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:12:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:13:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:13:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:14:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:14:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:15:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:15:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:16:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:16:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:17:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:17:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:18:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:18:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:19:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:19:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:20:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:20:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:21:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:21:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:22:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:22:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:23:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:23:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:24:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:24:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:25:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:25:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:26:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:26:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:27:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:27:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:28:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:28:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:29:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:29:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:30:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:30:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:31:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:31:08 message=<Report Power Status> 80:90:01
+    [H] time=2026-11-26 11:31:08 hotplug port=1 connected=true
+    [S] time=2026-11-26 11:31:11 message=<Routing Change> <mac> (ACK)
+    [S] time=2026-11-26 11:31:11 message=<Routing Change> <mac> (ACK)
+    [S] time=2026-11-26 11:31:12 message=<Set Stream Path> 0F:86:20:00 (ACK)
+    [R] time=2026-11-26 11:31:12 message=<Report Physical Address> 8F:84:10:00:04
+    [S] time=2026-11-26 11:31:12 message=<Give Osd Name> 08:46 (ACK)
+    [R] time=2026-11-26 11:31:12 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:31:13 message=<Set Osd Name> 80:47 <Redacted len=13>
+    [S] time=2026-11-26 11:31:13 message=<Give Device Vendor Id> 08:8C (ACK)
+    [R] time=2026-11-26 11:31:13 message=<Device Vendor Id> 8F:87:08:00:46
+    [S] time=2026-11-26 11:31:15 message=<Routing Change> <mac> (ACK)
+    [R] time=2026-11-26 11:31:16 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:31:16 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:31:16 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:31:16 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:31:16 message=<Report Power Status> 08:90:00 (ACK)
+    [S] time=2026-11-26 11:31:16 message=<Set Stream Path> 0F:86:10:00 (ACK)
+    [R] time=2026-11-26 11:31:17 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:31:17 message=<Menu Status> 80:8E:00
+    [S] time=2026-11-26 11:31:23 message=<Routing Change> <mac> (ACK)
+    [S] time=2026-11-26 11:31:24 message=<Set Stream Path> 0F:86:20:00 (ACK)
+    [S] time=2026-11-26 11:31:28 message=<Routing Change> <mac> (ACK)
+    [S] time=2026-11-26 11:31:29 message=<Set Stream Path> 0F:86:10:00 (ACK)
+    [R] time=2026-11-26 11:31:29 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:31:29 message=<Menu Status> 80:8E:00
+    [S] time=2026-11-26 11:32:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:32:08 message=<Report Power Status> 80:90:00
+    [R] time=2026-11-26 11:32:16 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:32:16 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:32:16 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:32:16 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:32:16 message=<Report Power Status> 08:90:00 (ACK)
+    [R] time=2026-11-26 11:32:33 message=<Menu Status> 80:8E:01
+    [R] time=2026-11-26 11:32:34 message=<InActive Source> 80:9D:10:00
+    [R] time=2026-11-26 11:32:37 message=<Report Physical Address> 8F:84:10:00:04
+    [S] time=2026-11-26 11:32:37 message=<Give Osd Name> 08:46 (ACK)
+    [R] time=2026-11-26 11:32:37 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:32:38 message=<Set Osd Name> 80:47 <Redacted len=13>
+    [S] time=2026-11-26 11:32:38 message=<Give Device Vendor Id> 08:8C (ACK)
+    [R] time=2026-11-26 11:32:38 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:32:40 message=<Report Physical Address> 8F:84:10:00:04
+    [S] time=2026-11-26 11:32:40 message=<Give Osd Name> 08:46 (ACK)
+    [R] time=2026-11-26 11:32:40 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:32:40 message=<Set Osd Name> 80:47 <Redacted len=13>
+    [S] time=2026-11-26 11:32:40 message=<Give Device Vendor Id> 08:8C (ACK)
+    [R] time=2026-11-26 11:32:41 message=<Device Vendor Id> 8F:87:08:00:46
+    [H] time=2026-11-26 11:32:59 hotplug port=1 connected=false
+    [S] time=2026-11-26 11:33:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:33:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:34:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:34:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:35:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:35:08 message=<Report Power Status> 80:90:01
+    [H] time=2026-11-26 11:35:29 hotplug port=1 connected=true
+    [R] time=2026-11-26 11:35:33 message=<Report Physical Address> 8F:84:10:00:04
+    [S] time=2026-11-26 11:35:33 message=<Give Osd Name> 08:46 (ACK)
+    [R] time=2026-11-26 11:35:33 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:35:33 message=<Set Osd Name> 80:47 <Redacted len=13>
+    [S] time=2026-11-26 11:35:33 message=<Give Device Vendor Id> 08:8C (ACK)
+    [R] time=2026-11-26 11:35:33 message=<Device Vendor Id> 8F:87:08:00:46
+    [R] time=2026-11-26 11:35:36 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:35:36 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:35:36 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:35:36 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:35:36 message=<Report Power Status> 08:90:00 (ACK)
+    [R] time=2026-11-26 11:35:41 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:35:41 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:35:42 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:35:42 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:35:42 message=<Report Power Status> 08:90:00 (ACK)
+    [S] time=2026-11-26 11:36:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:36:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:37:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:37:08 message=<Report Power Status> 80:90:00
+    [R] time=2026-11-26 11:37:21 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:37:22 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:37:22 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:37:22 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:37:22 message=<Report Power Status> 08:90:00 (ACK)
+    [S] time=2026-11-26 11:38:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:38:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:39:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:39:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:40:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:40:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:41:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:41:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:42:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:42:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:43:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:43:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:44:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:44:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:45:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:45:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:46:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:46:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:47:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:47:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:48:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:48:08 message=<Report Power Status> 80:90:00
+    [S] time=2026-11-26 11:49:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:49:08 message=<Report Power Status> 80:90:00
+    [R] time=2026-11-26 11:49:30 message=<Text View On> 80:0D
+    [R] time=2026-11-26 11:49:30 message=<Active Source> 8F:82:10:00
+    [R] time=2026-11-26 11:49:30 message=<Menu Status> 80:8E:00
+    [R] time=2026-11-26 11:49:30 message=<Give Device Power Status> 80:8F
+    [S] time=2026-11-26 11:49:30 message=<Report Power Status> 08:90:00 (ACK)
+    [H] time=2026-11-26 11:49:54 hotplug port=1 connected=false
+    [R] time=2026-11-26 11:49:54 message=<Menu Status> 80:8E:01
+    [R] time=2026-11-26 11:49:54 message=<InActive Source> 80:9D:10:00
+    [S] time=2026-11-26 11:50:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:50:08 message=<Report Power Status> 80:90:01
+    [S] time=2026-11-26 11:51:07 message=<Give Device Power Status> 08:8F (ACK)
+    [R] time=2026-11-26 11:51:08 message=<Report Power Status> 80:90:01

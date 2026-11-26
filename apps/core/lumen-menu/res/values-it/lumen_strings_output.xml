@@ -3,13 +3,9 @@
      Connected, Not connected and Connect reuse the Lumen Home and Setup translations. -->
 <resources>
     <string name="lumen_m_out_now">Audio in riproduzione su</string>
-    <string name="lumen_m_out_connect">Connetti</string>
     <string name="lumen_m_out_connecting">Connessione in corso</string>
-    <string name="lumen_m_out_connected">Collegato</string>
-    <string name="lumen_m_out_offline">Non collegato</string>
     <string name="lumen_m_out_jack">Jack da 3,5 mm</string>
     <string name="lumen_m_out_by_hand">Da scegliere a mano</string>
     <string name="lumen_m_out_auto_picked">Scelto automaticamente</string>
     <string name="lumen_m_out_hand_picked">Scelto manualmente</string>
-    <string name="lumen_m_out_earc">HDMI eARC</string>
 </resources>

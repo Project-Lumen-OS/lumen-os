@@ -1,0 +1,17 @@
+# FILE<TAB>TEXT (must be there) or FILE<TAB>!TEXT (must not): HdmiWatcher asks BootWindow at its start and at every
+# port input added, and the settle window holds plug and CEC switches only
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	                bootEvent("input added");
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	        bootEvent("start");
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	if (!mBootWindow.openNow(SystemClock.uptimeMillis(), listed)) return;
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	if (mBootWindow.blocks(now, powerOnSource)) return
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	commonSkipReason(REASON_PLUG.equals(reason), REASON_BOOT.equals(reason))
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	String skip = commonSkipReason(true, false);
+# no timer of its own: the open follows the port input (stock has no fixed wait)
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	!BootWindow.OPEN_BY_MS)
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiWatcher.java	!this::bootCheck), BOOT_CHECK_DELAY_MS
+# Route: one routing call per session that becomes main (LR-5MVYWT: two <Set Stream Path> from one deviceSelect)
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiSession.java	post("route", () -> CecHelper.route(c, dev, port));
+apps/LumenTvInput/src/org/lumen/tvinput/HdmiSession.java	!post("deviceSelect"
+apps/LumenTvInput/src/org/lumen/tvinput/CecHelper.java	if (Route.forMain(deviceId, on, direct) == Route.PORT) {
+apps/LumenTvInput/src/org/lumen/tvinput/CecHelper.java	boolean on = d != null && d.getDevicePowerStatus() == HdmiControlManager.POWER_STATUS_ON;
+apps/LumenTvInput/src/org/lumen/tvinput/CecHelper.java	boolean direct = p != null && d.getPhysicalAddress() == p.getAddress();

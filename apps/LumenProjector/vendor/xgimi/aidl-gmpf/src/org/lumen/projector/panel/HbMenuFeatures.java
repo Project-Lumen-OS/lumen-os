@@ -1,0 +1,398 @@
+// SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+package org.lumen.projector.panel;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.provider.Settings;
+import android.util.Log;
+
+import org.lumen.menu.CustomModes;
+import org.lumen.menu.ElderColorRule;
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.HdrFormat;
+import org.lumen.menu.TemperatureText;
+import org.lumen.menu.FeatureKind;
+import org.lumen.menu.MenuState;
+import org.lumen.menu.PictureSettingsRule;
+import org.lumen.menu.ProjectorFeatures;
+import org.lumen.projector.Hal;
+import org.lumen.projector.KeyReceiver;
+import org.lumen.projector.R;
+import org.lumen.projector.Ui;
+import org.lumen.projector.audio.AiSoundEngine;
+import org.lumen.projector.audio.AudioOutputChoice;
+import org.lumen.projector.audio.AudioPathReporter;
+import org.lumen.projector.audio.HbOutputOptions;
+import org.lumen.projector.hal.Gmpf2Client;
+import org.lumen.projector.hal.GmpfClient;
+import org.lumen.projector.hal.HbFeatures;
+import org.lumen.projector.hal.PictureMode;
+import org.lumen.projector.source.TifHdmiState;
+import org.lumen.projector.power.HbSleepTimerPanel;
+import org.lumen.projector.ui.Notify;
+
+import java.util.Set;
+import java.util.function.Consumer;
+
+/**
+ * Z9X HB (goat_elegant): the device adapter of the shared projector menu (apps/core/lumen-menu;
+ * profile devices/goat_elegant/menu.json). Every read and write goes through the HB AIDL clients (GmpfClient /
+ * Gmpf2Client over AidlWire: the allow-list of devices/goat_elegant/research/allowed.tsv, no new call) on the HAL
+ * thread (Hal.query), and every rule the HB quick panel kept is here, not in the menu:
+ *  - presence: implemented() = HbMenuGates.GATES read against HbFeatures (dapengfhm / unknown model: no Boost, no colour
+ *    temperature; a feature.xml key that says off hides its rows);
+ *  - Boost (DISPLAY 151 / 152): refused without a call while Performance / Office holds it, every write judged by the
+ *    152 read-back (BoostRules, stock ignores the boolean);
+ *  - HDMI-only setters (game rows, aspect, HDMI range / EDID) re-check the input right before the write;
+ *  - top-speed game refuses Auto keystone, zoom and the picture restore (stock common.json gameModeFast);
+ *  - the rows of the stock picture settings page refuse while the game mode is on, in the AI picture mode (raw 10)
+ *    and in Performance, with the stock text on the row (shared PictureSettingsRule);
+ *  - the vendor turns dynamic black off after a light / lumens mode / Boost change: the stock notice says so;
+ *  - sound: AI sound engine, equalizer repair after a mode change, eARC through EarcLink, outputs through
+ *    AudioOutputChoice + CEC System Audio (HbSystemAudio), formats as stock.
+ * Values cross as the profile's tokens (HbMenuGates tables); the menu never sees a code.
+ */
+public final class HbMenuFeatures implements ProjectorFeatures {
+    static final String TAG = "HbMenu";
+    /** The vendor's on value of a status getter (DISPLAY 203). */
+    static final int ON = 1;
+
+    final Context app;
+    final SharedPreferences prefs;
+    /** Last snapshot read (main thread), for the synchronous open() checks. */
+    private volatile Snapshot last;
+    private final HbGeneralRows general;
+    private final HbPictureRows picture;
+    private final HbSoundRows sound;
+    private final HbGameRows game;
+    /** The sections a write or an action goes to; each answers {@link HbRows#OTHER} / false for another's feature. */
+    private final HbRows[] sections;
+    /** The rows of the old Projector settings page (power-on, voice, resolution, statistics, diagnostics). */
+    private final SettingsRows rows;
+
+    public HbMenuFeatures(Context ctx) {
+        app = ctx.getApplicationContext();
+        prefs = app.getSharedPreferences(QuickPanel.PREFS, Context.MODE_PRIVATE);
+        general = new HbGeneralRows(this);
+        picture = new HbPictureRows(this);
+        sound = new HbSoundRows(this);
+        game = new HbGameRows(this);
+        sections = new HbRows[]{general, new HbKeystoneRows(this), new HbFocusRows(this), picture, new HbHdmiRows(this),
+                sound, game, new HbProjectionRows(this)};
+        rows = new SettingsRows(app, new org.lumen.projector.SettingsDevice(app));
+    }
+
+    Snapshot last() { return last; }
+
+    // ================================================================== presence
+
+    @Override
+    public Set<FeatureId> implemented() {
+        return HbMenuGates.implemented(f -> HbFeatures.on(HbFeatures.F.valueOf(f)));
+    }
+
+    /** Game menu items on this unit (GameMenu.Io side): GAME_MODE + GAME_BAR and each item's own switch. */
+    public static Set<String> gameItems() {
+        return HbMenuGates.gameItems(f -> HbFeatures.on(HbFeatures.F.valueOf(f)));
+    }
+
+    @Override
+    public boolean ready() { return Hal.isReady(); }
+
+    @Override
+    public boolean available(FeatureId f) { return !SettingsRows.mine(f) || rows.available(f); }
+
+    // ================================================================== read
+
+    @Override
+    public void read(Consumer<MenuState> cb) {
+        Hal.query(this::snapshot, sn -> {
+            last = sn;
+            rows.read(state(sn), cb);
+        });
+    }
+
+    /** The signal format alone (TV 78): the picture page names it and the picture modes follow it while the menu is open. */
+    @Override
+    public void readFormat(Consumer<HdrFormat> cb) {
+        Hal.query((g, g2) -> g.getHdrType(), hdr -> cb.accept(HdrFormat.ofHdrType(hdr)));
+    }
+
+    /** The base of the user picture mode of the last snapshot (TV 198), null outside one; HAL thread writes it. */
+    private volatile Integer customBase;
+
+    /** A picture mode id the vendor enum does not name: one CreateNewCustomImageMode made (TV 34 reads it back). */
+    static boolean userMode(Integer raw) { return raw != null && raw >= 0 && PictureMode.fromWire(raw) == null; }
+
+    /** HAL thread. */
+    private Snapshot snapshot(GmpfClient g, Gmpf2Client g2) {
+        Snapshot sn = Snapshot.read(g, g2);
+        sn.tifHdmi = TifHdmiState.read(app);
+        Set<FeatureId> on = implemented();
+        if (on.contains(FeatureId.EYE_ELDER_COLOR)) {
+            try { sn.elderColor = ElderColorRule.read(HbGeneralRows.elderPort(g)); } catch (Throwable t) { Log.d(TAG, "read elder: " + t); }
+        }
+        if (on.contains(FeatureId.PICTURE_ANTI_RBE)) {
+            try { sn.antiRbe = g.getRainbowReductionStatus() == ON; } catch (Throwable t) { Log.d(TAG, "read 203: " + t); }
+        }
+        Integer base = null;
+        if (on.contains(FeatureId.PICTURE_CUSTOM_BASE) && userMode(sn.pictureMode)) {
+            try { base = g.customPictureBase(sn.pictureMode); } catch (Throwable t) { Log.d(TAG, "read 198: " + t); }
+        }
+        customBase = base;
+        sn.soundPathActive = AudioPathReporter.isActive(g);
+        sn.soundPath = AudioPathReporter.confirmedPath();
+        return sn;
+    }
+
+    /** Main thread: the menu state of a snapshot (null = nothing read: an empty state). */
+    MenuState state(Snapshot sn) { return rows.with(deviceState(sn)); }
+
+    private MenuState deviceState(Snapshot sn) {
+        MenuState.Builder b = MenuState.builder();
+        if (sn == null) return b.build();
+        boolean hdmi = sn.hdmiConfirmed();
+        b.put(FeatureId.INPUT, sn.source == null ? (Boolean.TRUE.equals(sn.tifHdmi) ? "hdmi" : null)
+                : sn.source == GmpfClient.SOURCE_HDMI1 ? "hdmi1" : sn.source == GmpfClient.SOURCE_HDMI2 ? "hdmi2" : "android");
+        b.on(FeatureId.EYE, sn.eye);
+        b.on(FeatureId.KEYSTONE_ON_POWER, sn.powerOnAk);
+        b.on(FeatureId.KEYSTONE_ON_MOVE, sn.moveAk);
+        b.on(FeatureId.POWER_ON_AC, sn.powerOnAc);
+        b.on(FeatureId.KEYSTONE_CURTAIN, sn.curtain);
+        b.on(FeatureId.KEYSTONE_OBSTACLE, sn.obstacle);
+        b.on(FeatureId.FOCUS_SMART, sn.smartAf);
+        // light and Boost: the slider shows Boost at its own step while 152 reads it
+        b.number(FeatureId.LAMP, sn.lamp);
+        if (HbFeatures.on(HbFeatures.F.BOOST)) b.on(FeatureId.BOOST, sn.boost);
+        // picture
+        PictureMode pm = sn.pictureMode == null ? null : PictureMode.fromWire(sn.pictureMode);
+        boolean user = userMode(sn.pictureMode) && implemented().contains(FeatureId.PICTURE_CUSTOM_NEW);
+        b.put(FeatureId.PICTURE_MODE, user ? CustomModes.token(sn.pictureMode) : pm == null ? null : HbMenuGates.PICTURE_MODE.token(pm.wire));
+        Integer base = customBase;
+        if (user && base != null) b.put(FeatureId.PICTURE_CUSTOM_BASE, HbMenuGates.CUSTOM_BASE.token(base));
+        b.hdr(HdrFormat.ofHdrType(sn.hdr));                     // the picture page names it, the support lists grey by its kind
+        String[] items = {"brightness", "contrast", "saturation", "sharpness"};    // PqItem order
+        for (int i = 0; i < items.length && i < sn.pq.length; i++) b.number(FeatureId.pq(items[i]), sn.pq[i]);
+        if (HbFeatures.on(HbFeatures.F.COLOR_TEMP)) b.put(FeatureId.PICTURE_COLOR_TEMP, HbMenuGates.COLOR_TEMP.token(sn.colorTemp));
+        b.put(FeatureId.PICTURE_MEMC, HbMenuGates.MEMC.token(sn.memc));
+        b.on(FeatureId.PICTURE_ANTI_RBE, sn.antiRbe);
+        b.put(FeatureId.EYE_ELDER_COLOR, sn.elderColor);
+        b.put(FeatureId.SETTINGS_TEMPERATURE, TemperatureText.of(sn.temperature));
+        // HDMI rows: values only while an HDMI input is on screen (they belong to that input): without a value the
+        // menu shows the row without a choice (a runtime hide is a module request, REQUESTS-hb.md)
+        if (hdmi) {
+            b.put(FeatureId.HDMI_RANGE, HbMenuGates.HDMI_RANGE.token(sn.hdmiRange));
+            b.put(FeatureId.HDMI_EDID, HbMenuGates.EDID.token(sn.edid));
+            b.put(FeatureId.PICTURE_ASPECT, HbMenuGates.ASPECT.token(sn.aspect));
+        }
+        // sound
+        b.put(FeatureId.SOUND_MODE, HbMenuGates.SOUND_MODE.token(sn.soundEffect));
+        if (sn.soundEffect != null) AiSoundEngine.noteMode(sn.soundEffect, "menu read-back");
+        b.on(FeatureId.SOUND_EARC, sn.earc);
+        outputs(b);
+        game.read(b, sn, hdmi);
+        // projection
+        b.put(FeatureId.PROJECTION_MODE, HbMenuGates.projectionToken(sn.putMode, sn.autoReverse));
+        b.on(FeatureId.PROJECTION_REAR, sn.putMode == null ? null : (Boolean) (sn.putMode == 2 || sn.putMode == 3));
+        // settings
+        try {
+            if (org.lumen.projector.home.LauncherSwitcher.choiceAvailable(app)) {
+                boolean classic = org.lumen.projector.home.LauncherSwitcher.MODE_CLASSIC.equals(
+                        org.lumen.projector.home.LauncherSwitcher.currentMode(app));
+                b.put(FeatureId.SETTINGS_LAUNCHER, classic ? "classic" : "lumen");
+            }
+        } catch (Throwable t) {
+            Log.w(TAG, "launcher: " + t);
+        }
+        return b.build();
+    }
+
+    /** Main thread: the chosen output and format (HbOutputOptions / AudioOutputChoice, as the HB Sound page). */
+    private void outputs(MenuState.Builder b) {
+        try {
+            // the rows offered now (as the HB Sound page), so the row never steps onto an output it would refuse
+            java.util.List<String> kinds = new java.util.ArrayList<>();
+            for (AudioOutputChoice.Option o : HbOutputOptions.rows(app).options) kinds.add(o.kind.name());
+            java.util.List<String> tokens = HbMenuGates.outputTokens(kinds);
+            if (!tokens.isEmpty()) b.options(FeatureId.SOUND_OUTPUT, tokens);
+            b.put(FeatureId.SOUND_OUTPUT, HbMenuGates.outputToken(AudioOutputChoice.kind(app).name()));
+            b.put(FeatureId.SOUND_FORMAT, HbMenuGates.FORMAT.token(AudioOutputChoice.formatIndex(app)));
+        } catch (Throwable t) {
+            Log.w(TAG, "outputs: " + t);
+        }
+    }
+
+    // ================================================================== set
+
+    @Override
+    public void set(FeatureId feature, String value, Consumer<Result> cb) {
+        if (!implemented().contains(feature)) { refuse(cb, null); return; }
+        if (rows.set(feature, value, this, cb)) return;
+        switch (feature) {
+            case SOUND_OUTPUT: sound.setOutput(value, cb); return;
+            case SOUND_FORMAT: sound.setFormat(value, cb); return;
+            case SETTINGS_LAUNCHER: general.setLauncher(value, cb); return;
+            default: break;
+        }
+        if (feature.parent == FeatureId.PICTURE_PQ) { picture.setPq(feature.item, value, cb); return; }
+        write(feature + "=" + value, cb, (g, g2) -> writeHal(feature, value, g, g2));
+    }
+
+    /** A refusal the adapter already explained with its own notice (the menu then shows nothing more). */
+    static final String EXPLAINED = "";
+
+    /** A write: null = done, else the refusal note (string resource name, or EXPLAINED). HAL thread. */
+    interface Write {
+        String run(GmpfClient g, Gmpf2Client g2) throws Exception;
+    }
+
+    /** Runs {@code w} on the HAL thread, then reads everything back; the result on the main thread. */
+    void write(String what, Consumer<Result> cb, Write w) {
+        if (!Hal.isReady()) { Ui.main().post(() -> cb.accept(Result.notReady())); return; }
+        Hal.query((g, g2) -> {
+            Object[] out = new Object[2];
+            try {
+                out[0] = w.run(g, g2);
+                Log.i(TAG, what + (out[0] == null ? "" : ": refused " + out[0]));
+            } catch (Throwable t) {
+                Log.w(TAG, what + ": " + t);
+                out[0] = t;
+            }
+            out[1] = snapshot(g, g2);
+            return out;
+        }, out -> {
+            if (out == null) { cb.accept(Result.notReady()); return; }
+            last = (Snapshot) out[1];
+            MenuState after = state(last);
+            if (out[0] == null) cb.accept(Result.done(after));
+            else if (EXPLAINED.equals(out[0])) cb.accept(Result.refused(null, after));
+            else if (out[0] instanceof String) cb.accept(Result.refused((String) out[0], after));
+            else cb.accept(Result.failed(after));
+        });
+    }
+
+    static void refuse(Consumer<Result> cb, String reason) {
+        Ui.main().post(() -> cb.accept(Result.refused(reason, null)));
+    }
+
+    /** HAL thread: one feature write, by the section whose feature it is. */
+    private String writeHal(FeatureId feature, String value, GmpfClient g, Gmpf2Client g2) throws Exception {
+        boolean on = "on".equals(value);
+        if (feature.kind == FeatureKind.TOGGLE
+                && !on && !"off".equals(value)) throw new IllegalArgumentException(feature + " " + value);
+        for (HbRows s : sections) {
+            String r = s.writeHal(feature, value, on, g, g2);
+            if (r != HbRows.OTHER) return r;
+        }
+        throw new IllegalArgumentException("no writer for " + feature);
+    }
+
+    // ================================================================== refusals
+
+    /** The stock HB settings trees (dapengse, dapenghm, dapengfhm): one image_mode_setting page. */
+    static final PictureSettingsRule.Layout PICTURE_PAGES = PictureSettingsRule.ONE_PAGE;
+
+    /**
+     * Main thread, from the last read: the stock refusal of the picture settings page rows (PictureSettingsRule: game
+     * mode on, picture mode AI read as exactly 10, Performance; not with Dolby Vision), the stock text on the row.
+     */
+    @Override
+    public Note blocked(FeatureId feature, String value, MenuState now) {
+        return locked(feature, now);
+    }
+
+    /** The same rule as the look of the row: a picture settings page row is drawn closed while the page refuses. */
+    @Override
+    public Note locked(FeatureId feature, MenuState now) {
+        Snapshot sn = last;
+        return sn == null ? null : PictureSettingsRule.blocked(PICTURE_PAGES, feature, sn.gameActive55, sn.pictureMode, sn.hdr);
+    }
+
+    // ================================================================== run
+
+    @Override
+    public void run(FeatureId action, Consumer<Result> cb) {
+        if (!implemented().contains(action)) { refuse(cb, null); return; }
+        for (HbRows s : sections) if (s.run(action, cb)) return;
+        refuse(cb, null);
+    }
+
+    // ================================================================== open
+
+    @Override
+    public boolean open(FeatureId screen, Runnable back) {
+        if (!implemented().contains(screen)) return false;
+        Snapshot sn = last;
+        boolean topSpeed = sn != null && sn.isTopSpeedGame();
+        switch (screen) {
+            case KEYSTONE_MANUAL:
+                ManualKeystonePanel.open(app, back);
+                return true;
+            case INPUT:
+                if (!setupDone("input")) return false;
+                org.lumen.source.SourceKey.press(app, "quick_menu");          // the Source key's step and its card
+                return true;
+            case ZOOM:
+                if (topSpeed) { Notify.show(app, app.getString(R.string.panel_kst_game_mode)); return false; }
+                OpticalZoomPanel.open(app, back);
+                return true;
+            case FOCUS_MANUAL:
+                Hal.openManualFocus(app);
+                return true;
+            case SETTINGS_SYSTEM:
+                return setupDone("system settings") && start(new Intent(Settings.ACTION_SETTINGS));
+            case SETTINGS_RECENTS:
+                if (!setupDone("recent apps")) return false;
+                org.lumen.projector.recents.RecentsActivity.open(app);
+                return true;
+            case SETTINGS_SLEEP_TIMER:
+                HbSleepTimerPanel.show(app);                                    // the timer card, as Home's tile on the HB
+                return true;
+            case BLUETOOTH:
+            case NETWORK:
+                // the menu's own tiles: it opens their Android pages itself, never this adapter
+                Log.i(TAG, "open " + screen + ": a tile the menu opens itself, not a screen");
+                return false;
+            case MIRRORING:
+                // the menu's own popup over the receiver (lumen-menu QpdMirror, org.lumen.miracast since 2026-11-21:
+                // casting is shared), shown only where the sink's control provider resolves (Wi-Fi Direct present)
+                Log.i(TAG, "open " + screen + ": the menu's screen mirroring popup, not a screen");
+                return false;
+            case PICTURE_PRO:
+            case SETTINGS_CEC:
+                // panel pages, not screens: ProPicture (expert picture pages) and CecPage go into the menu's popup
+                // through the page hook the module gives device pages (REQUESTS-hb.md); nothing opens from here
+                Log.i(TAG, "open " + screen + ": a page of the menu, not a screen");
+                return false;
+            default:
+                if (SettingsRows.mine(screen)) return rows.open(screen);
+                Log.i(TAG, "open " + screen + ": not a screen of the HB adapter");
+                return false;
+        }
+    }
+
+    // ================================================================== helpers
+
+    private boolean setupDone(String what) {
+        if (KeyReceiver.isSetupComplete(app)) return true;
+        Log.i(TAG, "setup not complete: " + what + " ignored");
+        Ui.toast(app, R.string.toast_setup_running);
+        return false;
+    }
+
+    private boolean start(Intent i) {
+        try {
+            Ui.wakeFromDream(app);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (i.resolveActivity(app.getPackageManager()) == null) i = new Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            app.startActivity(i);
+            return true;
+        } catch (Throwable t) {
+            Log.w(TAG, "start " + i + ": " + t);
+            Ui.toast(app, R.string.toast_failed);
+            return false;
+        }
+    }
+
+}

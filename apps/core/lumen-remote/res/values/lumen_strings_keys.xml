@@ -28,11 +28,12 @@
     <string name="lumen_remote_keys_name_contacts">Contacts key</string>
     <string name="lumen_remote_keys_name_calendar">Calendar key</string>
     <string name="lumen_remote_keys_name_bookmarks">Bookmarks key</string>
-    <string name="lumen_remote_keys_do_source">Input</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Keystone</string>
-    <string name="lumen_remote_keys_do_focus">Focus</string>
-    <string name="lumen_remote_keys_do_quick">Quick settings</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Signal</string>
+    <string name="lumen_remote_keys_do_source">@string/lumen_input_2</string>
+    <string name="lumen_remote_keys_do_hdmi">@string/lumen_hdmi_1_d</string>
+    <string name="lumen_remote_keys_do_keystone">@string/lumen_keystone</string>
+    <string name="lumen_remote_keys_do_focus">@string/lumen_focus</string>
+    <string name="lumen_remote_keys_do_quick">@string/lumen_quick_settings</string>
+    <string name="lumen_remote_keys_do_3d">@string/lumen_3d</string>
+    <string name="lumen_remote_keys_do_signal">@string/lumen_signal</string>
+    <string name="lumen_remote_keys_do_sensors">@string/lumen_sensors</string>
 </resources>

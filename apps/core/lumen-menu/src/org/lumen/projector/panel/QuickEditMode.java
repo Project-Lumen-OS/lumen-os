@@ -20,8 +20,9 @@ import java.util.List;
 
 /**
  * The pencil editor on screen (2026-11-18, mocks qm-editor 02 to 04): the user's card stays on the left as a
- * live preview, the sheet is on the right. Catalogue: the menu look, every item of this projector by section (В меню,
- * Добавить, Новое), Вернуть как было. OK on a card item: its inspector (looks, Переместить, Убрать из меню). Moving:
+ * live preview, the sheet is on the right. Catalogue: the menu look, the search, every item of this projector by group
+ * (the card's own items and every setting of the model's full menu, 2026-11-24: В меню, Добавить, Новое),
+ * Вернуть как было. OK on a card item: its inspector (looks, Переместить, Убрать из меню). Moving:
  * arrows move the item, OK puts it there, BACK puts it back. Every change goes through QuickEditor (refused when the
  * card would not fit, with a plain note); BACK in the catalogue is Готово: the menu is stored only when it changed.
  */
@@ -37,10 +38,13 @@ final class QuickEditMode {
         void toast(int res);
         /** The editor is closed: {@code store} true writes {@code value} (null deletes the stored menu). */
         void done(boolean store, QuickLayout value);
+        /** The text screen for the editor's search, {@code then} gets the text typed (false: it cannot open). */
+        boolean search(String now, java.util.function.Consumer<String> then);
     }
 
-    private static final int CATALOGUE = 0, INSPECTOR = 1, MOVE = 2;
-    private static final String DENSITY = "density.", RESET = "reset", LOOK = "look.", MOVE_KEY = "move", REMOVE = "remove";
+    private static final int CATALOGUE = 0, INSPECTOR = 1, MOVE = 2, ROWS = 4;
+    private static final String DENSITY = "density.", RESET = "reset", LOOK = "look.", MOVE_KEY = "move", REMOVE = "remove",
+            SEARCH = "search";
 
     private final Context app;
     private final Host host;
@@ -51,6 +55,9 @@ final class QuickEditMode {
     private String selected;
     private QuickLayout beforeMove;
     private boolean moveFromAdd;
+    /** The list the inspector and a move go back to: the catalogue or the search results of {@link #query}. */
+    private int list = CATALOGUE;
+    private String query;
 
     QuickEditMode(Context app, Host host, QuickCatalog cat, QuickLayout defaults, QuickLayout shown, QuickLayout stored) {
         this.app = app;
@@ -148,21 +155,73 @@ final class QuickEditMode {
         if (mode == MOVE) { cancelMove(); return true; }
         if (mode == INSPECTOR) {
             String was = selected;
-            mode = CATALOGUE;
             card().setMark(null, 0);
             selected = null;
-            showCatalogue(was);
-            View v = was == null ? null : card().cell(was);
+            backToList(was);
+            View v = was == null || list != CATALOGUE ? null : card().cell(was);
             if (v != null) v.requestFocus();
             return true;
         }
+        if (mode == ROWS) { showCatalogue(SEARCH); return true; }
         finish();
         return true;
     }
 
     // ------------------------------------------------------------------ catalogue
+    /** One item of a list: its icon and name, В меню or Добавить; OK adds it or opens its inspector. */
+    private QuickEditSheet.Pick itemPick(QuickItem it, boolean isNew) {
+        QuickEditSheet.Pick p = new QuickEditSheet.Pick(app, QuickEditSheet.Pick.ROW, it.id, host.icon(it.id), host.title(it.id), null);
+        boolean in = ed.inMenu(it.id);
+        p.badge = in ? QuickEditSheet.Pick.BADGE_IN : QuickEditSheet.Pick.BADGE_ADD;
+        p.badgeText = s(in ? R.string.lumen_qe_in_menu : R.string.lumen_qe_add);
+        if (isNew) p.newText = s(R.string.lumen_qe_new);
+        p.onOk = () -> { if (ed.inMenu(it.id)) select(it.id); else add(it.id); };
+        return p;
+    }
+
+    /** The list the inspector or a move came from, the focus on {@code key}. */
+    private void backToList(String key) {
+        if (list == ROWS) showRows(key);
+        else showCatalogue(key);
+    }
+
+    // ------------------------------------------------------------------ the search
+    /** The items the search of {@link #query} found, by group ("memc" finds Motion smoothing). */
+    private void showRows(String focusKey) {
+        mode = ROWS;
+        list = ROWS;
+        sheet.clear();
+        List<QuickItem> items = ed.catalog().find(query, host::title);
+        sheet.head.set(R.drawable.lumen_ic_search, s(R.string.lumen_qe_search_title), query, s(R.string.lumen_qe_edit));
+        card().setHeading(s(R.string.lumen_qe_your_menu), s(R.string.lumen_qe_hint_select));
+        if (items.isEmpty()) sheet.note(sheet.list, s(R.string.lumen_qe_nothing));
+        String shown = null;
+        for (QuickItem it : items) {
+            if (!it.group.equals(shown)) sheet.label(sheet.list, host.groupTitle(shown = it.group), true);
+            sheet.add(sheet.list, itemPick(it, false));
+        }
+        keys(s(R.string.lumen_qe_back));
+        sheet.post(() -> focusSheet(focusKey));
+    }
+
+    /** The text screen; the words typed show the items they find (nothing typed: the whole list again). */
+    private void search() {
+        if (!host.search(query, text -> {
+            if (!host.panel().hasSide() || mode != CATALOGUE && mode != ROWS) return;   // the editor closed meanwhile
+            query = text == null || text.trim().isEmpty() ? null : text.trim();
+            if (query == null) showCatalogue(SEARCH);
+            else showRows(null);
+        })) host.toast(R.string.lumen_m_toast_failed);
+    }
+
+    private void keys(CharSequence back) {
+        sheet.keys.set(s(R.string.lumen_qe_select), back);
+        sheet.bottom.addView(sheet.keys, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+    }
+
     private void showCatalogue(String focusKey) {
         mode = CATALOGUE;
+        list = CATALOGUE;
         sheet.clear();
         sheet.head.set(0, s(R.string.lumen_qe_edit), s(R.string.lumen_qe_subtitle), null);
         card().setHeading(s(R.string.lumen_qe_your_menu), s(R.string.lumen_qe_hint_select));
@@ -179,19 +238,13 @@ final class QuickEditMode {
             sheet.add(pair, p);
         }
         sheet.label(sheet.top, s(R.string.lumen_qe_show), false);
-        for (String g : QuickCatalog.GROUPS) {
-            List<QuickItem> items = ed.catalog().group(g);
-            if (items.isEmpty()) continue;
+        QuickEditSheet.Pick find = new QuickEditSheet.Pick(app, QuickEditSheet.Pick.ROW, SEARCH, R.drawable.lumen_ic_search,
+                s(R.string.lumen_qe_search_title), query == null ? s(R.string.lumen_qe_search_sub) : query);
+        find.onOk = this::search;
+        sheet.add(sheet.list, find);
+        for (String g : ed.catalog().groups()) {           // 2026-11-24: every setting of the full menu, by category
             sheet.label(sheet.list, host.groupTitle(g), true);
-            for (QuickItem it : items) {
-                QuickEditSheet.Pick p = new QuickEditSheet.Pick(app, QuickEditSheet.Pick.ROW, it.id, host.icon(it.id), host.title(it.id), null);
-                boolean in = ed.inMenu(it.id);
-                p.badge = in ? QuickEditSheet.Pick.BADGE_IN : QuickEditSheet.Pick.BADGE_ADD;
-                p.badgeText = s(in ? R.string.lumen_qe_in_menu : R.string.lumen_qe_add);
-                if (QuickEditor.isNew(stored, it.id)) p.newText = s(R.string.lumen_qe_new);
-                p.onOk = () -> { if (ed.inMenu(it.id)) select(it.id); else add(it.id); };
-                sheet.add(sheet.list, p);
-            }
+            for (QuickItem it : ed.catalog().group(g)) sheet.add(sheet.list, itemPick(it, QuickEditor.isNew(stored, it.id)));
         }
         QuickEditSheet.Pick reset = new QuickEditSheet.Pick(app, QuickEditSheet.Pick.PILL, RESET, R.drawable.lumen_ic_restore,
                 s(R.string.lumen_qe_reset), null);
@@ -310,7 +363,7 @@ final class QuickEditMode {
         card().setMark(null, 0);
         selected = null;
         host.preview(ed.layout());
-        showCatalogue(was);
+        backToList(was);
     }
 
     // ------------------------------------------------------------------ move
@@ -349,7 +402,7 @@ final class QuickEditMode {
             String was = selected;
             card().setMark(null, 0);
             selected = null;
-            showCatalogue(was);
+            backToList(was);
             return;
         }
         card().setMark(selected, QpdTile.MARK_SELECTED);
@@ -363,7 +416,7 @@ final class QuickEditMode {
             String was = selected;
             card().setMark(null, 0);
             selected = null;
-            showCatalogue(was);
+            backToList(was);
             return;
         }
         card().setMark(selected, QpdTile.MARK_SELECTED);

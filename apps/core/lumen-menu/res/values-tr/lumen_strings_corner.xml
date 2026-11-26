@@ -2,12 +2,6 @@
 <!-- The four-corner keystone screen (CornerView). Reused: the title (HbProjector kst_precise_hb), the corner names
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
-    <string name="lumen_corner_title">Köşelerde ince ayar</string>
     <string name="lumen_corner_circle">Ortadaki daire yuvarlak olana kadar ayarlayın</string>
-    <string name="lumen_corner_keys_move">Oklar: köşeyi taşı · OK: sonraki köşe</string>
     <string name="lumen_corner_keys_more">Dişli tuşunu basılı tutun: sıfırla · Geri: bitti</string>
-    <string name="lumen_corner_tl">Sol üst</string>
-    <string name="lumen_corner_tr">Sağ üst</string>
-    <string name="lumen_corner_br">Sağ alt</string>
-    <string name="lumen_corner_bl">Sol alt</string>
 </resources>

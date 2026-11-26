@@ -12,7 +12,7 @@ DUMP="$HERE/test/fixtures/z9x_hdmirx_ps5_4k60.txt"
 HB_DUMP="$HERE/test/fixtures/hb_hdmirx_yuv420_4k60.txt"
 KEEP_OUT=${1:-}
 HB_OUT=${2:-}
-W=$(mktemp -d "${TMPDIR:-/tmp}/lumen_hdmirx.XXXXXX")
+W=$(mktemp -d "${TMPDIR:-/tmp}/lumen_hdmirx.XXXXXX") && [ -d "$W" ] || { echo "FAIL cannot create a temp dir under ${TMPDIR:-/tmp}" >&2; exit 2; }
 trap 'rm -rf "$W"' EXIT
 fails=0 oks=0
 check() { if eval "$2"; then oks=$((oks + 1)); else fails=$((fails + 1)); echo "FAIL $1"; fi; }
@@ -116,7 +116,7 @@ check "HB: the HDR packet and the link state kept" 'grep -qE "^HDR packet Byte 3
 check "HB: no EDID rows, no HDCP, no driver noise, no time stamps" '! grep -qE "^[0-9A-F]{2}: |HDCP|UTPA_INFO|MUTEX_INFO|MI3_ERR|^\[" "$R/dev/lumen_hdmirx/info.txt"'
 [ -n "$HB_OUT" ] && cp "$R/dev/lumen_hdmirx/info.txt" "$HB_OUT"
 # the X50 family (the Z9X's MT5877 platform, the same receiver driver): the same read path on the Z9X capture
-for model in G0111 G0100 G0155 H0061 H0062 H0063; do
+for model in G0111 G0100 G0155 G0170 H0061 H0062 H0063; do
   setup "x50_$model" read "$model"
   tok="x50-$(echo "$model" | tr A-Z a-z)"
   ask "$tok"

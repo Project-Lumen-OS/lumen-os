@@ -1,4 +1,0 @@
-# The remote's Source key on this model (apps/core/lumen-source, evidence the design notes).
-# key	value	evidence
-after_last	home	XRMService XrmShortcutEvent.jumpToHdmi: after the last HDMI port LaunchApkUtils.launchHome
-osd_ms	3000	xhplayer InputActivity SIGNAL_DIALOG_SHOW_TIME = 3000, the stock signal card's time on screen

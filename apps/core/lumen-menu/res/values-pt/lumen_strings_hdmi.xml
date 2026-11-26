@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">Mudar para HDMI automaticamente ao conectar um dispositivo</string>
+    <string name="lumen_m_hdmi_return_home">Voltar para a tela inicial quando a fonte for desconectada</string>
+    <string name="lumen_m_hdmi_boot_source">Fonte ao ligar</string>
+    <string name="lumen_m_hdmi_boot_note">Se um dispositivo ligar o projetor por HDMI-CEC, abre-se a entrada dele.</string>
+    <string name="lumen_m_hdmi_inputs">Entradas</string>
+    <string name="lumen_m_hdmi_none">Nenhuma entrada HDMI encontrada</string>
+</resources>

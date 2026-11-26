@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Problem reports (apps/core/lumen-report), English base. The texts of the former Z9X strings_report.xml
-     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
-     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+     under the module prefix, plus the automatic reports. lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
 <resources>
     <string name="lumen_report_title">Send a problem report</string>
-    <string name="lumen_report_intro">Helps the Lumen OS developer find out what went wrong. Nothing is sent until you press Send report.</string>
-    <string name="lumen_report_included">Included</string>
-    <string name="lumen_report_inc_system">System version, uptime and which system copy is running</string>
-    <string name="lumen_report_inc_logs">System and Lumen app logs of the last 30 minutes</string>
-    <string name="lumen_report_inc_crashes">Crash, freeze and restart records with app names</string>
-    <string name="lumen_report_inc_kernel">Kernel log of the last restart and the update log</string>
-    <string name="lumen_report_inc_state">Screen, memory and network type</string>
-    <string name="lumen_report_excluded">Removed or not included</string>
+    <string name="lumen_report_intro">If something does not work right, send a report. The developer sees the projector logs and finds the cause faster.</string>
+    <string name="lumen_report_included">A report holds</string>
+    <string name="lumen_report_inc_system">System version, screen, memory and network type</string>
+    <string name="lumen_report_inc_logs">System and Lumen app logs</string>
+    <string name="lumen_report_inc_crashes">Crashes, freezes and restarts</string>
+    <string name="lumen_report_inc_kernel">Kernel and update logs</string>
+    <string name="lumen_report_excluded">Never sent</string>
     <string name="lumen_report_exc_accounts">Accounts, e-mail addresses and phone numbers</string>
     <string name="lumen_report_exc_network">Wi-Fi names, IP and MAC addresses</string>
     <string name="lumen_report_exc_serial">Serial number: a random ID of this projector is used instead</string>
     <string name="lumen_report_exc_apps">Logs of apps you installed yourself</string>
     <string name="lumen_report_exc_files">Photos, files and passwords</string>
     <string name="lumen_report_footer">The report is kept for 30 days. Only the Lumen OS developer can open it.</string>
-    <string name="lumen_report_last">Last report: %1$s, %2$s</string>
+    <string name="lumen_report_last">Last report</string>
     <string name="lumen_report_send">Send report</string>
-    <string name="lumen_report_collecting">Collecting information… (%1$d of %2$d)</string>
-    <string name="lumen_report_log_hint">If Android asks whether to allow access to device logs, choose Allow.</string>
-    <string name="lumen_report_sending">Sending… %1$s of %2$s</string>
+    <string name="lumen_report_collecting">Collecting logs</string>
+    <string name="lumen_report_sending">Sending the report</string>
     <string name="lumen_report_done_title">Report sent</string>
     <string name="lumen_report_done_text">Send this code to the Lumen OS developer together with a short description of the problem.</string>
     <string name="lumen_report_failed_title">The report was not sent</string>
@@ -34,11 +31,23 @@
     <string name="lumen_report_err_server">The report server has a problem. Try again later.</string>
     <string name="lumen_report_err_collect">The report could not be prepared.</string>
     <string name="lumen_report_retry">Try again</string>
-    <string name="lumen_report_close">Close</string>
-    <string name="lumen_report_cancel">Cancel</string>
-    <string name="lumen_report_auto">Send problem reports automatically</string>
-    <string name="lumen_report_auto_note">If the system or a Lumen app crashes or freezes, a short report is sent by itself. It never has logs of the apps you installed.</string>
+    <string name="lumen_report_close">@string/lumen_close</string>
+    <string name="lumen_report_cancel">@string/lumen_cancel</string>
+    <string name="lumen_report_auto">Send automatically</string>
     <string name="lumen_report_queued_title">The report will be sent later</string>
     <string name="lumen_report_queued_text">The report server cannot be reached right now. The projector sends the report by itself as soon as it can. Its code then shows up here.</string>
-    <string name="lumen_report_last_auto">Last automatic report: %1$s, %2$s</string>
+    <string name="lumen_report_last_auto">Last automatic report</string>
+    <string name="lumen_report_heading">Problem report</string>
+    <string name="lumen_report_send_sub">Logs and the projector state</string>
+    <string name="lumen_report_auto_sub">When the system or a Lumen app fails</string>
+    <string name="lumen_report_what">What is in a report</string>
+    <string name="lumen_report_what_sub">And what is never sent</string>
+    <string name="lumen_report_inc_devices">HDMI, sound and power: devices and CEC messages</string>
+    <string name="lumen_report_step">@string/lumen_step_of</string>
+    <string name="lumen_report_bytes">Sent %1$s of %2$s</string>
+    <string name="lumen_report_code">Report code</string>
+    <string name="lumen_report_done">@string/lumen_done</string>
+    <string name="lumen_report_back">@string/lumen_back</string>
+    <string name="lumen_report_crumb_settings">@string/lumen_all_settings</string>
+    <string name="lumen_report_crumb_general">@string/lumen_general</string>
 </resources>

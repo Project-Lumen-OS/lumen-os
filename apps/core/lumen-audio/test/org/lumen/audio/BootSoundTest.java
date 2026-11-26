@@ -16,7 +16,7 @@ import java.nio.file.Files;
 public final class BootSoundTest {
     private static final Check C = new Check("lumen-audio boot sound");
     private static final String[] PROFILES = {"horse_popular", "goat_elegant", "dragon_healthy", "g0111", "g0100",
-            "g0155", "h0061", "h0062", "h0063"};
+            "g0155", "g0170", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);
@@ -91,7 +91,7 @@ public final class BootSoundTest {
         C.ok("the row reads and writes BootSound", screens.contains("BootSound.on()") && screens.contains("BootSound.set(c, ON.equals(value))"));
         for (String code : PROFILES) {
             C.ok(code + ": the profile has power.on_music", Check.read(new File(g, "devices/" + code + "/menu.json")).contains("\"power.on_music\""));
-            String conf = Check.read(new File(g, "devices/" + code + "/build.conf"));
+            String conf = "\n" + Check.descriptor(g, "devices/" + code + "/build.conf");
             C.ok(code + ": the image stages lumen_boot_sound.rc", conf.contains("apps/core/lumen-audio/image/lumen_boot_sound.rc"));
             String steps = conf.replaceAll("(?s).*\\nsteps=(\\S+).*", "$1");
             C.ok(code + ": its steps install /system/etc/init/lumen_boot_sound.rc",
@@ -102,9 +102,9 @@ public final class BootSoundTest {
                 rows.contains("BootSound.adopt(app, v)") && rows.contains("dev.setMusic(false"));
         C.ok("Z9X / HB / Play 6: the adapters no longer own the row", !rows.contains("case POWER_ON_MUSIC")
                 && !rows.contains("EnumSet.of(FeatureId.POWER_ON_MUSIC"));
-        for (String a : new String[] {"apps/ProjectorBase/src/org/lumen/projector/panel/Z9xFeatures.java",
-                "apps/HbProjector/src/org/lumen/projector/panel/HbMenuGates.java",
-                "apps/Play6Projector/src/org/lumen/projector/panel/Play6MenuGates.java"}) {
+        for (String a : new String[] {"apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java",
+                "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/panel/HbMenuGates.java",
+                "apps/LumenProjector/core/src/org/lumen/projector/panel/Play6MenuGates.java"}) {
             C.ok(a + " does not name the module row", !Check.read(new File(g, a)).contains("POWER_ON_MUSIC"));
         }
         C.ok("every app: PathSwitch.install installs BootSound",

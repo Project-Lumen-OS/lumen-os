@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">WLAN</string>
     <string name="lumen_m_hotspot_hotspot">Hotspot</string>
-    <string name="lumen_m_hotspot_name">Netzwerkname</string>
     <string name="lumen_m_hotspot_password">Passwort</string>
     <string name="lumen_m_hotspot_reset">Standard wiederherstellen</string>
     <string name="lumen_m_hotspot_on" formatted="true">Hotspot von %s ist aktiviert</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">Aktuelle Konfiguration gespeichert</string>
     <string name="lumen_m_hotspot_name_title">Hotspot-Name</string>
     <string name="lumen_m_hotspot_password_title">Hotspot-Passwort</string>
-    <string name="lumen_m_hotspot_password_hint">Mindestens 8 Zeichen</string>
     <string name="lumen_m_hotspot_name_empty">Netzwerknamen eingeben</string>
     <string name="lumen_m_hotspot_name_long">Der Name ist zu lang</string>
     <string name="lumen_m_hotspot_password_short">Mindestens 8 Zeichen eingeben</string>

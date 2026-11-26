@@ -11,6 +11,10 @@ blk_vbmeta_unknown
 blk_active
 blk_partitions
 #
+# 2026-11-19, updater-channel-fix: the firmware refusal says plainly which firmware the release supports and what to
+# do (a short title, the details in blk_vendor_body with the own and the supported firmware), every language.
+blk_vendor
+#
 # 2026-11-19, Brazilian Portuguese from gen.py (apps/i18n/langs/pt.txt is the Brazilian source): the Play 6 recovery
 # texts of values-pt are the same Brazilian texts as values-pt-rBR now.
 blk_power

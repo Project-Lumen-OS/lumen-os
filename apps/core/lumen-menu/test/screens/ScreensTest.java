@@ -67,8 +67,8 @@ public final class ScreensTest {
 
     static void strings(File dir) throws Exception {
         Map<String, String> s = new HashMap<>();
-        for (File f : dir.listFiles()) {
-            Matcher m = STR.matcher(new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8));
+        for (File f : new File(dir.getParentFile(), "values").listFiles()) {
+            Matcher m = STR.matcher(org.lumen.testkit.Check.strings(new File(dir, f.getName())));
             while (m.find()) s.put(m.group(1), m.group(2).replace("\\'", "'").replace("\\\"", "\""));
         }
         CTX.STRINGS.clear();
@@ -217,7 +217,7 @@ public final class ScreensTest {
 
     /** Review only: the range picture in the LensActivity card (title, tabs, picture, hint) with the X50 app texts. */
     static BufferedImage page(String tag, BufferedImage pic, String what) throws Exception {
-        File d = new File(root, "apps/X50Projector/res/" + (tag.equals("en") ? "values" : "values-ru") + "/strings_zoom.xml");
+        File d = new File(root, "apps/LumenProjector/host/activity/res/" + (tag.equals("en") ? "values" : "values-ru") + "/strings_zoom.xml");
         Map<String, String> s = new HashMap<>();
         Matcher mm = STR.matcher(new String(Files.readAllBytes(d.toPath()), StandardCharsets.UTF_8));
         while (mm.find()) s.put(mm.group(1), mm.group(2));

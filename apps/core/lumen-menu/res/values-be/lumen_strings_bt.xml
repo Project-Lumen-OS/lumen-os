@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Input source and Bluetooth pages of All settings (stock 1.3.38 root/signal, root/bluetooth). -->
+<resources>
+    <string name="lumen_m_sec_source">Крыніца сігналу</string>
+    <string name="lumen_m_source_list">Крыніцы</string>
+    <string name="lumen_m_bt_add">Дадаць прылады</string>
+    <string name="lumen_m_bt_mine">Мае прылады</string>
+    <string name="lumen_m_bt_disconnect">Адключыць</string>
+    <string name="lumen_m_bt_forget">Забыць</string>
+    <string name="lumen_m_bt_searching">Пошук прылад…</string>
+    <string name="lumen_m_bt_none">Прылады не знойдзены</string>
+    <string name="lumen_m_bt_pairing">Спалучэнне…</string>
+</resources>

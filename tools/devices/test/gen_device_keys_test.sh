@@ -25,7 +25,7 @@ W=$(mktemp -d "${TMPDIR:-/tmp}/lumen_genkeys.XXXXXX") && W=$(cd "$W" && pwd -P) 
 trap 'rm -rf "$W"' EXIT
 PASS=0; FAIL=0; CFAIL=0; CASE=
 C=g0111
-dc() { sed -n "s/^$1=//p" "$G/devices/$C/device.conf" | head -n 1; }
+dc() { python3 "$G/tools/devices/layered.py" "$G/devices/$C/device.conf" | sed -n "s/^$1=//p" | head -n 1; }
 IID=$(dc installer_id)
 OSSL=${OPENSSL:-$(command -v openssl)}
 sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum | cut -d' ' -f1; else shasum -a 256 | cut -d' ' -f1; fi; }
@@ -36,14 +36,14 @@ mode() { stat -c '%a' "$1" 2>/dev/null || stat -f '%Lp' "$1"; }   # GNU first: G
 begin() {  # case: a fresh scratch registry ($R) and HOME ($HM)
   CASE=$1; CFAIL=0
   R=$W/$1/root; HM=$W/$1/home; rm -rf "$W/$1"; mkdir -p "$R" "$HM/.lumen-keys"
-  (cd "$G" && for f in devices/*/device.conf devices/*/build.conf; do mkdir -p "$R/$(dirname "$f")"; cp "$f" "$R/$f"; done)
+  (cd "$G" && for f in devices/*/device.conf devices/*/build.conf devices/_family/*/*.conf devices/_vendor/*/*.conf; do mkdir -p "$R/$(dirname "$f")"; cp "$f" "$R/$f"; done)
   local d kd
   for d in "$G"/devices/*/certs; do
     [ -d "$d" ] || continue
     case "$d" in */devices/$C/certs) continue ;; esac
     mkdir -p "$R/${d#"$G"/}"; cp "$d"/*.x509.pem "$R/${d#"$G"/}/"
     # the same public certificates in that device's key folder under the scratch HOME
-    kd=$(sed -n 's/^keys_dir=~\///p' "$(dirname "$d")/device.conf")
+    kd=$(python3 "$G/tools/devices/layered.py" "$(dirname "$d")/device.conf" | sed -n 's/^keys_dir=~\///p')
     mkdir -p "$HM/$kd"; cp "$d"/*.x509.pem "$HM/$kd/"
   done
   rm -rf "$R/devices/$C/certs"
@@ -103,7 +103,7 @@ end
 
 for o in goat_elegant dragon_healthy; do
   begin "other_keys_dir_$o"
-  kd=$(sed -n 's/^keys_dir=//p' "$R/devices/$o/device.conf"); kd=$HM/${kd#\~/}
+  kd=$(python3 "$G/tools/devices/layered.py" "$R/devices/$o/device.conf" | sed -n 's/^keys_dir=//p'); kd=$HM/${kd#\~/}
   gen "$C" "$kd"
   expect_rc 1; expect_out "is the key dir of another device"
   [ ! -e "$kd/platform.pk8" ] || fail "wrote into $kd"

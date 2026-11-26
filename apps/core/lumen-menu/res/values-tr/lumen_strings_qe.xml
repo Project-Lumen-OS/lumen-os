@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Yeni</string>
     <string name="lumen_qe_reset">Varsayılana dön</string>
     <string name="lumen_qe_select">Seç</string>
-    <string name="lumen_qe_done">Bitti</string>
-    <string name="lumen_qe_back">Geri</string>
     <string name="lumen_qe_close_panel">Paneli kapat</string>
     <string name="lumen_qe_how">Nasıl gösterilsin</string>
     <string name="lumen_qe_now" formatted="true">Şimdi: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Kutucukların altında</string>
     <string name="lumen_qe_panel_note">Kutucuk, geniş kutucuk ve daire menünün sağındaki paneli açar.</string>
     <string name="lumen_qe_place">Yer</string>
-    <string name="lumen_qe_move">Taşı</string>
     <string name="lumen_qe_remove">Menüden kaldır</string>
     <string name="lumen_qe_moving">Taşınıyor</string>
     <string name="lumen_qe_move_hint">Daireler yalnızca üst sırada, kutucuklar satırlar arasında hareket eder. Kutucuğu daire yapmak için görünümünü değiştirin.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: yeni yer</string>
     <string name="lumen_qe_move_keys">Taşı</string>
     <string name="lumen_qe_move_cancel">İptal, eski yerine koy</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Adına veya adının bir kısmına göre</string>
+    <string name="lumen_qe_search_title">Ayar bul</string>
+    <string name="lumen_qe_search_hint">Örneğin MEMC</string>
+    <string name="lumen_qe_nothing">Hiçbir şey bulunamadı</string>
+    <string name="lumen_qe_unavailable">Şu anda kullanılamıyor</string>
 </resources>

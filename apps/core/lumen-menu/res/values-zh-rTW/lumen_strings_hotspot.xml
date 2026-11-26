@@ -3,7 +3,6 @@
 <resources>
     <string name="lumen_m_hotspot_wifi">Wi-Fi</string>
     <string name="lumen_m_hotspot_hotspot">熱點</string>
-    <string name="lumen_m_hotspot_name">網路名稱</string>
     <string name="lumen_m_hotspot_password">密碼</string>
     <string name="lumen_m_hotspot_reset">還原預設值</string>
     <string name="lumen_m_hotspot_on" formatted="true">%s 的熱點已啟用</string>
@@ -12,7 +11,6 @@
     <string name="lumen_m_hotspot_saved">目前組態已儲存</string>
     <string name="lumen_m_hotspot_name_title">熱點名稱</string>
     <string name="lumen_m_hotspot_password_title">熱點密碼</string>
-    <string name="lumen_m_hotspot_password_hint">至少 8 個字元</string>
     <string name="lumen_m_hotspot_name_empty">請輸入網路名稱</string>
     <string name="lumen_m_hotspot_name_long">名稱過長</string>
     <string name="lumen_m_hotspot_password_short">至少輸入 8 個字元</string>

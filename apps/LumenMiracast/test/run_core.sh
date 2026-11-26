@@ -16,6 +16,7 @@ trap 'rm -rf "$OUT"' EXIT
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.miracast.core.DiagTest
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.miracast.core.ControlTest
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.miracast.core.CapabilityTest
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.miracast.core.HealthTest
 # the control API wiring (StateProvider, manifest): CONTROL enforced in call(), the provider guarded by it too,
 # a set call only with a valid switch value, the status line from the one shared rule
 P="$HERE/src/org/lumen/miracast/StateProvider.java"
@@ -32,8 +33,15 @@ grep -A5 'android:name=".StateProvider"' "$M" | grep -q 'android:writePermission
   || { echo "FAIL manifest: provider write not guarded by CONTROL"; bad=1; }
 grep -B2 -A2 'android:name="org.lumen.miracast.permission.CONTROL"' "$M" | grep -q 'android:protectionLevel="signature"' \
   || { echo "FAIL manifest: CONTROL is not a signature permission"; bad=1; }
-grep -q 'String st = StatusText.of(this, StatusText.status(this));' "$HERE/src/org/lumen/miracast/SettingsActivity.java" \
-  || { echo "FAIL settings: status line not the shared rule"; bad=1; }
+# no screen of its own: the old settings address only opens the casting screen, the status page is the menu's
+SA="$HERE/src/org/lumen/miracast/SettingsActivity.java"
+grep -q 'new Intent(CAST_SCREEN)' "$SA" && grep -q 'startActivity(castScreen(this, getIntent().getStringExtra(EXTRA_EDIT)));' "$SA" \
+  || { echo "FAIL settings: the old address does not open the casting screen"; bad=1; }
+grep -qE 'setContentView|new (TextView|LinearLayout|ScrollView)' "$SA" && { echo "FAIL settings: the old address builds a screen"; bad=1; }
+grep -A5 'android:name=".SettingsActivity"' "$M" | grep -q 'Theme.NoDisplay' || { echo "FAIL manifest: the redirect shows a window"; bad=1; }
+[ -e "$HERE/src/org/lumen/miracast/DiagActivity.java" ] && { echo "FAIL the old status page is back"; bad=1; }
+grep -q 'DiagActivity' "$M" && { echo "FAIL manifest: the old status page is back"; bad=1; }
+grep -q 'StatusText.quality(c, Prefs.quality(c))' "$P" || { echo "FAIL provider: no quality in the state"; bad=1; }
 [ $bad = 0 ] && echo "control wiring: ok"
 # the receiver fixes of 1.0.11 (Android side, not runnable on the host): the wildcard approver comes back after
 # every answer, a request without a scanned peer is still answered, the screensaver ends before the prompt and
@@ -55,8 +63,27 @@ grep -q 'protected void dump(FileDescriptor fd, PrintWriter pw, String\[\] args)
 grep -A2 '        if (!resumedOnce) {' "$S/MirrorActivity.java" | grep -q 'started under another window' \
   || { echo "FAIL mirror: a screen that was never shown ends the session"; fixbad=1; }
 grep -q 'android:name="android.permission.WRITE_DREAM_STATE"' "$M" || { echo "FAIL manifest: no WRITE_DREAM_STATE"; fixbad=1; }
-grep -q 'android:name=".DiagActivity"' "$M" || { echo "FAIL manifest: no status page"; fixbad=1; }
+grep -q 'DIAG.equals(method)' "$S/StateProvider.java" || { echo "FAIL provider: no stage report for the status page"; fixbad=1; }
 grep -q 'case "wfd_idr_request_capability": return "1";' "$S/core/WfdSession.java" || { echo "FAIL rtsp: IDR capability"; fixbad=1; }
+# the link rule (P2pHealth): never the listen calls (on the MediaTek TV vendors the framework turns them into a
+# supplicant call the vendor lacks and loses its P2P interface), failures reach P2pHealth, a restart reopens the
+# channel, an accepted connection is probed, the casting screen gets the cause
+grep -q 'startListening(\|stopListening(' "$S/P2pController.java" && { echo "FAIL p2p: listen calls are back"; fixbad=1; }
+grep -q 'mgr.discoverPeers(channel, stageListener("discoverPeers", Diag.Stage.VISIBLE, "discovery"));' "$S/P2pController.java" \
+  || { echo "FAIL p2p: not visible by discovery"; fixbad=1; }
+[ "$(grep -c 'healthFailed(reason, what);' "$S/P2pController.java")" = 2 ] || { echo "FAIL p2p: a failure does not reach P2pHealth"; fixbad=1; }
+grep -A12 'private void restart(String why) {' "$S/P2pController.java" | grep -q 'channel.close();' \
+  || { echo "FAIL p2p: a restart does not close the channel"; fixbad=1; }
+grep -q 'main.postDelayed(acceptProbe, ACCEPT_PROBE_MS);' "$S/P2pController.java" || { echo "FAIL p2p: an accepted connection is not probed"; fixbad=1; }
+grep -q 'act(health.lostAfterAccept(), "after an accepted connection");' "$S/P2pController.java" \
+  || { echo "FAIL p2p: a link lost after accepting does not restart"; fixbad=1; }
+grep -q 'b.putString("detail", detail != null ? detail : "");' "$S/StateProvider.java" || { echo "FAIL provider: no detail"; fixbad=1; }
+grep -q 's == null ? null : s.fault().name());' "$S/StatusText.java" || { echo "FAIL status: the fault does not reach the status"; fixbad=1; }
+for f in "$HERE"/res/values*/strings.xml; do
+  for k in status_waiting_wifi status_restarting status_no_answer status_connect_broken; do
+    grep -q "name=\"$k\"" "$f" || { echo "FAIL strings: $k missing in $f"; fixbad=1; }
+  done
+done
 [ $fixbad = 0 ] && echo "receiver fix wiring: ok"
 [ $fixbad = 0 ] || bad=1
 # Wi-Fi Direct capability (every model and chip, decided at run time): a successful call proves it, no framework is a
@@ -66,7 +93,9 @@ capbad=0
 [ "$(grep -c 'decide(cap.proven(what + " ok"));' "$S/P2pController.java")" = 2 ] \
   && grep -A1 '                diag.ok(stage, okDetail);' "$S/P2pController.java" | grep -q 'decide(cap.proven(what + " ok"));' \
   || { echo "FAIL p2p: a successful call does not prove Wi-Fi Direct"; capbad=1; }
-grep -q 'decide(cap.proven("startListening ok"));' "$S/P2pController.java" || { echo "FAIL p2p: listen success is no proof"; capbad=1; }
+grep -A1 'mgr.discoverPeers(channel, stageListener("discoverPeers", Diag.Stage.VISIBLE, "discovery"));' "$S/P2pController.java" >/dev/null \
+  && grep -A4 '                diag.ok(stage, okDetail);' "$S/P2pController.java" | grep -q 'if (stage == Diag.Stage.VISIBLE) setState(P2pState.VISIBLE);' \
+  || { echo "FAIL p2p: a discovery success is no proof of visibility"; capbad=1; }
 grep -q 'decide(cap.callFailed(reason, what));' "$S/P2pController.java" || { echo "FAIL p2p: failures do not reach the capability rule"; capbad=1; }
 grep -q 'decide(cap.noFramework("android.hardware.wifi.direct missing"));' "$S/P2pController.java" \
   || { echo "FAIL p2p: no Wi-Fi Direct framework is not a NO"; capbad=1; }

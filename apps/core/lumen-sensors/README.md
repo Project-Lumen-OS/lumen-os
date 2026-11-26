@@ -43,5 +43,5 @@ again. Opened from the same group (`FeatureId.SETTINGS_DIAGNOSTICS`, the device 
 | `SensorPanel`, `SensorWindow`, `SensorReceiver` | controller, overlay window, the intent |
 | `DiagPanel` | the diagnostics sheet |
 
-Readers: `apps/ProjectorBase/.../panel/GmpfSensorReader` (Z9X and, through the recipe, HB),
-`apps/Play6Projector/.../panel/Play6SensorReader`, `apps/X50Projector/.../X50SensorReader`.
+Readers: `apps/LumenProjector/core/.../panel/GmpfSensorReader` (Z9X and, through the recipe, HB),
+`apps/Play6Projector/.../panel/Play6SensorReader`, `apps/LumenProjector/vendor/xgimi/mt9681-aidl/.../X50SensorReader`.

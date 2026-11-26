@@ -22,7 +22,6 @@
     <string name="label_send_key" msgid="1803138506603147503">"傳送"</string>
     <string name="label_search_key" msgid="8540828292920277213">"搜尋"</string>
     <string name="label_done_key" msgid="4570417022685876778">"完成"</string>
-    <string name="settings_title" msgid="8361325634803696047">"鍵盤選項"</string>
     <string name="btn_on" msgid="5962775761492765922">"開啟"</string>
     <string name="btn_off" msgid="2029716012096104384">"關閉"</string>
     <string name="keyboardview_keycode_space" msgid="5107808792477329036">"空格鍵"</string>

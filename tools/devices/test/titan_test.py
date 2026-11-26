@@ -16,12 +16,14 @@ only on every stock version, install closed. Read only, no network.
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(os.path.abspath(__file__)).parent
 G = HERE.parents[2]
 sys.path.insert(0, str(G / "tools" / "devices"))
+import menu_layers  # noqa: E402
 sys.path.insert(0, str(G / "devices" / "g0111" / "image"))
 sys.path.insert(0, str(HERE))
 import devices as registry  # noqa: E402
@@ -38,7 +40,12 @@ TITANS = (("h0061", "H0061", "titannoir", "Product_dianahy", "g0111", "TITAN_NOI
            "a75145a19fb35f7133ecbbbc66946b973577c95ca2a896d39a778c84344f9daf"),
           ("h0063", "H0063", "titanmax", "Product_dianahymax", "g0100", "TITAN_NOIR_MAX", "XGIMI_HORSEPOPULAR_XR03EOS.bin",
            "e6ba90c3f999ad4aaf209f85076517de549cbc9402e0253e0372c9feb5f5f64b"))
-TITAN_MODES = ["standard", "movie", "sport", "filmmaker", "isf_day", "isf_night", "performance"]
+TITAN_MODES = ["standard", "movie", "sport", "filmmaker", "imax", "isf_day", "isf_night", "performance"]
+# image_mode_imax_enhanced (vendor mode 2) is offered for IMAX Enhanced and HDR10 content only, its stock support list
+TITAN_IMAX = {"imax": ["imax", "hdr10"]}
+# the same stock list (image_mode_4_state of dianahy, dianahypro and dianahymax in v1.2.99 and v1.3.38) ends with
+# image_mode_picture_dolby_bright and image_mode_picture_dolby_soft, support DOLBY only, as on the X50 Ultra
+TITAN_DV = {"dv_bright": ["dolby"], "dv_dark": ["dolby"]}
 FAILED = []
 HAL = G / "apps" / "core" / "lumen-hal" / "src" / "org" / "lumen" / "hal"
 
@@ -80,16 +87,18 @@ def registry_cases(c, mc, iid, prod, twin, row, upd, msha):
     check(d["installer_id"] == iid and d["channel"] == [iid] and d["ota_wire_id"] == "none"
           and d["ota_engine"] == "none" and d["keys_dir"] == "~/.lumen-keys/" + c,
           "%s id and channel, no OTA, its own keys" % iid)
-    check(d["vendor_firmware"] == ["v1.2.99", "v1.2.54"], "stock v1.2.99 (newest overseas) and v1.2.54")
+    check(d["vendor_firmware"] == ["v1.2.99", "v1.2.54", "v1.3.38"], "stock v1.2.99, v1.2.54 and the overseas v1.3.38")
     check("devices/h0062/research/aidl_codes_v1299.tsv" in d["hal_codes_also"], "the v1.2.99 code table is checked too")
+    check("devices/g0111/research/aidl_codes_v1338.tsv" in d["hal_codes_also"],
+          "the v1.3.38 code table (the X50 one: the overseas v1.3.38 has the same gmpf library) is checked too")
 
 
 def revisions_cases(c, mc, iid, prod, *_):
     rows = dsu_revisions.rows(iid)
-    check(rows == [("dry", mc, "v1.2.99"), ("dry", mc, "v1.2.54"), ("refuse", mc, None)],
-          "%s in-trial rows: DRY on v1.2.99 and v1.2.54, every other version refused: %s" % (mc, rows))
+    check(rows == [("dry", mc, "v1.2.99"), ("dry", mc, "v1.2.54"), ("dry", mc, "v1.3.38"), ("refuse", mc, None)],
+          "%s in-trial rows: DRY on v1.2.99, v1.2.54 and v1.3.38, every other version refused: %s" % (mc, rows))
     t = ix.table(iid)
-    check([r[3] for r in t] == [prod, prod, None], "the stock product of the rows that run: " + prod)
+    check([r[3] for r in t] == [prod, prod, prod, None], "the stock product of the rows that run: " + prod)
     check(all(r[0] != "live" for r in t), "no LIVE row: the install stays closed")
     fw = registry.get(str(G), c)["vendor_firmware"]
     check(all(r[2] in fw for r in rows if r[2]), "every row version is a registry stock version")
@@ -121,10 +130,15 @@ def hal_cases(c, mc, iid, prod, twin, row, *_):
 
 def menu_cases(c, mc, iid, prod, twin, *_):
     D = G / "devices" / c
-    m = json.loads((D / "menu.json").read_text(encoding="utf-8"))
-    mx = json.loads((G / "devices" / twin / "menu.json").read_text(encoding="utf-8"))
+    m = menu_layers.effective(str(D / "menu.json"))
+    mx = menu_layers.effective(str(G / "devices" / twin / "menu.json"))
     check(m["device"] == c and m["model"] == mc and m["adapter"] == mx["adapter"], "menu profile of %s / %s, X50Features" % (c, mc))
-    check(m["features"]["picture.mode"]["options"] == TITAN_MODES, "%s: picture modes of the stock TITAN tree" % c)
+    pm = m["features"]["picture.mode"]
+    check(pm["options"] == TITAN_MODES + list(TITAN_DV), "%s: picture modes of the stock TITAN tree" % c)
+    sup = pm.get("support", {})
+    check(all(sup.get(k) == v for k, v in TITAN_IMAX.items()), "%s: IMAX Enhanced only with IMAX Enhanced or HDR10 %s" % (c, sup))
+    check(all(sup.get(k) == v for k, v in TITAN_DV.items()) and not [k for k in TITAN_MODES if "dolby" in sup.get(k, [])],
+          "%s: the Dolby Vision modes only with Dolby Vision, the others never with it %s" % (c, sup))
     a, b = dict(m["features"]), dict(mx["features"])
     a.pop("picture.mode")
     b.pop("picture.mode")
@@ -152,7 +166,8 @@ def menu_cases(c, mc, iid, prod, twin, *_):
           "%s: the light level, the iris and the dynamic black, as the stock tree has them (StockLight)" % c)
     check(a.get("picture.iris", {}).get("options") == ["dynamic", "f2", "f3", "f4", "f5_5", "f7"],
           "%s: the iris in the order of the stock node picture_iris_ring_adjustment_diana" % c)
-    lay = (D / "app" / "X50Projector.layers").read_text(encoding="utf-8")
+    lay = subprocess.run([sys.executable, "-B", str(G / "tools/devices/assemble_app.py"), "--root", str(G), "--device", c,
+                          "--app", "X50Projector", "--show"], capture_output=True, text=True).stdout
     check("devices/%s/menu.json assets/lumen_menu/menu.json" % c in lay and not re.search(r"devices/(g0100|g0111|h006[0-9])/menu", lay.replace("devices/%s/" % c, "")),
           "the menu app carries the %s profile" % c)
 
@@ -216,8 +231,9 @@ def catalog_cases(c, mc, iid, prod, *_):
     e = ic.entries_of(d, conf, ic.model_rows([d]), ix.installer_conf())
     check(len(e) == 1 and e[0]["model"] == mc and e[0]["board"] == "mt9681" and e[0]["platform"] == "mt5877",
           "one %s entry, board mt9681" % mc)
-    check(e and e[0]["stock"] == [{"version": "v1.2.99", "install": False}, {"version": "v1.2.54", "install": False}],
-          "trial only on v1.2.99 and v1.2.54, install closed: %s" % (e[0]["stock"] if e else None))
+    check(e and e[0]["stock"] == [{"version": "v1.2.99", "install": False}, {"version": "v1.2.54", "install": False},
+                                  {"version": "v1.3.38", "install": False}],
+          "trial only on v1.2.99, v1.2.54 and v1.3.38, install closed: %s" % (e[0]["stock"] if e else None))
     check(e and len(e[0]["certs"]) == 2, "its two OTA certificates")
 
 

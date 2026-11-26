@@ -4,20 +4,9 @@
      optimisation, HDR tone mapping, the balanced colour temperature), the senior colour row and the reset question; titles reuse
      the Z9X app's pro_* and panel_reset texts with their translations -->
 <resources>
-    <string name="lumen_m_gamma">Гамма</string>
-    <string name="lumen_m_gamma_manual">Вручну</string>
-    <string name="lumen_m_gamma_index">Значення гамми</string>
-    <string name="lumen_m_noise">Шумозаглушення</string>
-    <string name="lumen_m_local_contrast">Локальний контраст</string>
-    <string name="lumen_m_color_opt">Оптимізація кольору</string>
-    <string name="lumen_m_hdr_mapping">Динамічне відображення HDR</string>
     <string name="lumen_m_ct_balanced">Збалансована</string>
     <string name="lumen_m_elder_color">Кольори для літніх</string>
     <string name="lumen_m_gamma_refused">Значення гамми працює лише з ручною гаммою</string>
     <string name="lumen_m_hdr10_only">Працює лише з HDR10</string>
-    <string name="lumen_m_reset">Скинути</string>
     <string name="lumen_m_picture_reset_all_msg">Налаштування всіх режимів зображення повернуться до стандартних. Продовжити?</string>
-    <string name="lumen_m_level_low">Низький</string>
-    <string name="lumen_m_level_medium">Середній</string>
-    <string name="lumen_m_level_high">Високий</string>
 </resources>

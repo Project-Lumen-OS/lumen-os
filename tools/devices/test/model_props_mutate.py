@@ -16,7 +16,7 @@ ST, VT, BC = I + "steps.tsv", I + "verify_tree.py", "devices/goat_elegant/build.
 ZRC, ZTSV, ZP, ZST, ZBC = Z + "z9x_model_props.rc", Z + "z9x_model_props.tsv", Z + "z9x_model_prop_dapeng.txt", Z + "steps.tsv", \
     "devices/horse_popular/build.conf"
 TRAP = "overlay/v1/z9x_trapezoid.rc"
-HP = "apps/HbProjector/src/org/lumen/projector/panel/HbPictureRows.java"
+HP = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/panel/HbPictureRows.java"
 DRV = "apps/core/lumen-aipq/src/org/lumen/aipq/AiPqDriver.java"
 X50 = "devices/g0111/image/x50_props.py"
 MUT = [

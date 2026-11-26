@@ -28,11 +28,4 @@
     <string name="lumen_remote_keys_name_contacts">Контактілер пернесі</string>
     <string name="lumen_remote_keys_name_calendar">Күнтізбе пернесі</string>
     <string name="lumen_remote_keys_name_bookmarks">Бетбелгілер пернесі</string>
-    <string name="lumen_remote_keys_do_source">Кіріс көзі</string>
-    <string name="lumen_remote_keys_do_hdmi">HDMI %1$d</string>
-    <string name="lumen_remote_keys_do_keystone">Трапеция</string>
-    <string name="lumen_remote_keys_do_focus">Фокус</string>
-    <string name="lumen_remote_keys_do_quick">Жылдам параметрлер</string>
-    <string name="lumen_remote_keys_do_3d">3D</string>
-    <string name="lumen_remote_keys_do_signal">Сигнал</string>
 </resources>

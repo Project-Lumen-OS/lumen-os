@@ -10,6 +10,9 @@ import subprocess
 import sys
 
 indir, out, tag, vname, build_id, vcode, otach, flags = sys.argv[1:9]
+# the About row text (about_version.py): staged next to this file, devices/_image/checks in the repository
+sys.path[:0] = [indir, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "_image", "checks")]
+import about_version  # noqa: E402
 flags = set(flags.split(","))
 pub, rel, lumen = "pub" in flags, "rel" in flags, "lumen" in flags
 TEST_LINES = re.compile(r"^(ro\.adb\.secure=0|ro\.logd\.auditd=false|persist\.logd\.size=.*)$")
@@ -41,7 +44,7 @@ if lumen:
         ota = open(tmp).read().rstrip("\n").split("\n")
         os.unlink(tmp)
         p += ota
-    p += ["ro.build.display.id=Lumen OS %s (%s)" % (vname, build_id), "ro.lineage.display.version=%s (kmuradoff)" % vname]
+    p += ["ro.build.display.id=Lumen OS %s (%s)" % (vname, build_id), about_version.line(vname)]
 if "usbadb" in flags:
     p.append("persist.sys.usb.config=adb")
 if rel:

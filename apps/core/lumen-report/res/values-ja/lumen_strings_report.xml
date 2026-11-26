@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
      Problem reports (apps/core/lumen-report), translation of res/values/lumen_strings_report.xml. The texts of the former Z9X strings_report.xml
-     under the module prefix, plus the automatic reports. lumen_report_inc_logs says 30 minutes =
-     ReportConfig.LOG_MINUTES, lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
+     under the module prefix, plus the automatic reports. lumen_report_footer says 30 days = the server retention (lumen_reports.py). -->
 <resources>
     <string name="lumen_report_title">問題レポートを送信</string>
-    <string name="lumen_report_intro">Lumen OS の開発者が問題の原因を調べるのに役立ちます。「レポートを送信」を押すまで何も送信されません。</string>
-    <string name="lumen_report_included">含まれるもの</string>
-    <string name="lumen_report_inc_system">システムのバージョン、稼働時間、使用中のシステムのコピー</string>
-    <string name="lumen_report_inc_logs">直近 30 分間のシステムと Lumen アプリのログ</string>
-    <string name="lumen_report_inc_crashes">アプリ名を含むクラッシュ、フリーズ、再起動の記録</string>
-    <string name="lumen_report_inc_kernel">前回の再起動時のカーネルログとアップデートのログ</string>
-    <string name="lumen_report_inc_state">画面、メモリ、ネットワークの種類</string>
-    <string name="lumen_report_excluded">削除されるもの・含まれないもの</string>
+    <string name="lumen_report_intro">うまく動かないときはレポートを送ってください。開発者がプロジェクターのログを見て、原因を早く見つけます。</string>
+    <string name="lumen_report_included">レポートに含まれるもの</string>
+    <string name="lumen_report_inc_system">システムのバージョン、画面、メモリ、ネットワークの種類</string>
+    <string name="lumen_report_inc_logs">システムと Lumen アプリのログ</string>
+    <string name="lumen_report_inc_crashes">クラッシュ、フリーズ、再起動</string>
+    <string name="lumen_report_inc_kernel">カーネルと更新のログ</string>
+    <string name="lumen_report_excluded">送信されないもの</string>
     <string name="lumen_report_exc_accounts">アカウント、メールアドレス、電話番号</string>
     <string name="lumen_report_exc_network">Wi-Fi ネットワーク名、IP アドレス、MAC アドレス</string>
     <string name="lumen_report_exc_serial">シリアル番号（代わりにこのプロジェクターのランダムな ID を使用）</string>
     <string name="lumen_report_exc_apps">ご自身でインストールしたアプリのログ</string>
     <string name="lumen_report_exc_files">写真、ファイル、パスワード</string>
     <string name="lumen_report_footer">レポートは 30 日間保存されます。開けるのは Lumen OS の開発者だけです。</string>
-    <string name="lumen_report_last">前回のレポート: %1$s（%2$s）</string>
+    <string name="lumen_report_last">前回のレポート</string>
     <string name="lumen_report_send">レポートを送信</string>
-    <string name="lumen_report_collecting">情報を収集しています…（%1$d/%2$d）</string>
-    <string name="lumen_report_log_hint">デバイスのログへのアクセスを許可するか Android に聞かれたら、「許可」を選んでください。</string>
-    <string name="lumen_report_sending">送信しています… %1$s/%2$s</string>
+    <string name="lumen_report_collecting">ログを収集しています</string>
+    <string name="lumen_report_sending">レポートを送信しています</string>
     <string name="lumen_report_done_title">レポートを送信しました</string>
     <string name="lumen_report_done_text">このコードを問題の簡単な説明と一緒に Lumen OS の開発者に送ってください。</string>
     <string name="lumen_report_failed_title">レポートを送信できませんでした</string>
@@ -34,11 +31,16 @@
     <string name="lumen_report_err_server">レポートサーバーで問題が発生しました。しばらくしてからもう一度お試しください。</string>
     <string name="lumen_report_err_collect">レポートを準備できませんでした。</string>
     <string name="lumen_report_retry">再試行</string>
-    <string name="lumen_report_close">閉じる</string>
-    <string name="lumen_report_cancel">キャンセル</string>
-    <string name="lumen_report_auto">問題レポートを自動で送信</string>
-    <string name="lumen_report_auto_note">システムや Lumen のアプリが強制終了したりフリーズしたりすると、短いレポートが自動で送信されます。ご自身でインストールしたアプリのログは含まれません。</string>
+    <string name="lumen_report_auto">自動で送信</string>
     <string name="lumen_report_queued_title">レポートは後で送信されます</string>
     <string name="lumen_report_queued_text">今はレポートサーバーに接続できません。接続できしだい、プロジェクターが自動でレポートを送信します。そのあとここにコードが表示されます。</string>
-    <string name="lumen_report_last_auto">前回の自動レポート: %1$s（%2$s）</string>
+    <string name="lumen_report_last_auto">前回の自動レポート</string>
+    <string name="lumen_report_heading">問題レポート</string>
+    <string name="lumen_report_send_sub">ログとプロジェクターの状態</string>
+    <string name="lumen_report_auto_sub">システムや Lumen アプリが停止したとき</string>
+    <string name="lumen_report_what">レポートの内容</string>
+    <string name="lumen_report_what_sub">送信されないものについても</string>
+    <string name="lumen_report_inc_devices">HDMI、音声、電源：機器と CEC メッセージ</string>
+    <string name="lumen_report_bytes">%2$s 中 %1$s 送信済み</string>
+    <string name="lumen_report_code">レポートコード</string>
 </resources>

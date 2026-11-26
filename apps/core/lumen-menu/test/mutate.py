@@ -12,11 +12,43 @@ import glob, json, os, re, shutil, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOD = os.path.dirname(HERE)
 G = os.path.dirname(os.path.dirname(os.path.dirname(MOD)))
+sys.path.insert(0, os.path.join(G, "tools", "devices"))
+import menu_layers  # noqa: E402  (menu profiles have one reader, devices/README.md)
 S = "src/org/lumen/menu/"
 MC = "src/org/lumen/projector/panel/MenuController.java"
 UI = "src/org/lumen/projector/ui/"
 MS = "src/org/lumen/projector/panel/ModuleScreens.java"
+QS = "src/org/lumen/menu/quick/"
 MUTANTS = [
+    # ---- option B (2026-11-26): General first, its groups, Send a problem report under Help, picture off only
+    # in the quick menu editor, the technical rows on For developers
+    ("optb: General back after Eye", S + "MenuSpec.java",
+     "ALL_SETTINGS = {GENERAL, KEYSTONE, FOCUS, PICTURE, PROJECTION, NETWORK, SOURCE, BLUETOOTH,\n            SOUND, EYE, DEVELOPER};",
+     "ALL_SETTINGS = {KEYSTONE, FOCUS, PICTURE, PROJECTION, NETWORK, SOURCE, BLUETOOTH,\n            SOUND, EYE, GENERAL, DEVELOPER};"),
+    ("optb: For developers before Sound", S + "MenuSpec.java", "            SOUND, EYE, DEVELOPER};", "            DEVELOPER, SOUND, EYE};"),
+    ("optb: report after statistics", S + "MenuSpec.java",
+     "{HELP, FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_STATS,", "{HELP, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_REPORT,"),
+    ("optb: Help not the last group", S + "MenuSpec.java",
+     "                    {\"storage_updates\", FeatureId.SETTINGS_STORAGE, FeatureId.SETTINGS_UPDATE, FeatureId.SETTINGS_ABOUT},\n"
+     "                    {HELP, FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_LICENCES,\n"
+     "                            FeatureId.SETTINGS_SYSTEM}}},",
+     "                    {HELP, FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_LICENCES,\n"
+     "                            FeatureId.SETTINGS_SYSTEM},\n"
+     "                    {\"storage_updates\", FeatureId.SETTINGS_STORAGE, FeatureId.SETTINGS_UPDATE, FeatureId.SETTINGS_ABOUT}}},"),
+    ("optb: picture off back on General", S + "MenuSpec.java",
+     "{LANGUAGE_TIME, FeatureId.SETTINGS_LANGUAGE,", "{LANGUAGE_TIME, FeatureId.LAMP_OFF, FeatureId.SETTINGS_LANGUAGE,"),
+    ("optb: picture off leaves the quick editor", QS + "QuickCatalog.java",
+     "            if (spec.profile.has(f) && usable.test(f.id)) kinds.putIfAbsent(f.id, kindOf(spec, f.id));\n", ""),
+    ("optb: interface resolution back on General", S + "MenuSpec.java",
+     "FeatureId.SETTINGS_PARENTAL, FeatureId.SETTINGS_SERIAL,\n                            FeatureId.SETTINGS_HIGH_ALTITUDE},",
+     "FeatureId.SETTINGS_PARENTAL, FeatureId.SETTINGS_SERIAL,\n                            FeatureId.SETTINGS_HIGH_ALTITUDE, FeatureId.SETTINGS_UI_RESOLUTION},"),
+    ("optb: interface resolution not in System", S + "MenuSpec.java",
+     "{\"system\", FeatureId.SETTINGS_UI_RESOLUTION, FeatureId.DEV_SYSTEM_INFO,", "{\"system\", FeatureId.DEV_SYSTEM_INFO,"),
+    ("optb: power-on source stays on Input source", S + "MenuSpec.java",
+     "{null, FeatureId.SOURCE_LIST, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI}}},",
+     "{null, FeatureId.SOURCE_LIST, FeatureId.POWER_BOOT_SOURCE, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI}}},"),
+    ("optb: Language and time without its header", S + "MenuSpec.java",
+     "{LANGUAGE_TIME, FeatureId.SETTINGS_LANGUAGE,", "{null, FeatureId.SETTINGS_LANGUAGE,"),
     # ---- TITAN testers: the menu's side and size (MenuLook), the menu kept across the input's restart (Rehost),
     # the picture settings open in game mode except the delay rows (PictureSettingsRule.GAME_LATENCY)
     ("look: junk side is right", S + "MenuLook.java", "return RIGHT.equals(stored) ? RIGHT : LEFT;", "return LEFT.equals(stored) ? LEFT : RIGHT;"),
@@ -150,7 +182,7 @@ MUTANTS = [
      "return offered && dir < 0 && repeatCount == 0", "return offered && repeatCount == 0"),
     ("lamp slider: a held left at the minimum answers", S + "SliderOff.java",
      "return offered && dir < 0 && repeatCount == 0", "return offered && dir < 0"),
-    # ---- the shared power key (PowerPress, the Z9X HB rule) and the stock power menu items (PowerItem)
+    # ---- the shared power key (PowerPress, the user's setting PowerKeyChoice) and the stock power menu items (PowerItem)
     ("power hold not the HB 700 ms", S + "PowerPress.java", "public static final long HOLD_MS = 700;",
      "public static final long HOLD_MS = 1350;"),
     ("power hold 50 ms early", S + "PowerPress.java", "if (!armed || eventTime - eventDownTime < HOLD_MS) return PowerAction.NONE;",
@@ -162,13 +194,42 @@ MUTANTS = [
      "boolean armed = !held;"),
     ("power UP after the hold sleeps", S + "PowerPress.java", "boolean armed = eventDownTime == downTime && !held;",
      "boolean armed = eventDownTime == downTime;"),
-    ("canceled power UP sleeps", S + "PowerPress.java", "return armed && !canceled ? PowerAction.SLEEP : PowerAction.NONE;",
-     "return armed ? PowerAction.SLEEP : PowerAction.NONE;"),
-    ("power short press opens the menu (the old stock rule)", S + "PowerPress.java",
-     "return armed && !canceled ? PowerAction.SLEEP : PowerAction.NONE;", "return armed && !canceled ? PowerAction.MENU : PowerAction.NONE;"),
-    ("power hold sleeps (the old stock rule)", S + "PowerPress.java", "            held = true;\n            return PowerAction.MENU;",
-     "            held = true;\n            return PowerAction.SLEEP;"),
+    ("canceled power UP acts", S + "PowerPress.java", "return armed && !canceled ? choice().shortPress() : PowerAction.NONE;",
+     "return armed ? choice().shortPress() : PowerAction.NONE;"),
+    # the setting (2026-11-26): the short press as the user picked it, the hold the other action, stock by default
+    ("power short press ignores the setting", S + "PowerPress.java",
+     "return armed && !canceled ? choice().shortPress() : PowerAction.NONE;", "return armed && !canceled ? PowerAction.SLEEP : PowerAction.NONE;"),
+    ("power hold ignores the setting", S + "PowerPress.java", "            held = true;\n            return choice().hold();",
+     "            held = true;\n            return PowerAction.MENU;"),
+    ("power hold does the short press action", S + "PowerPress.java", "            held = true;\n            return choice().hold();",
+     "            held = true;\n            return choice().shortPress();"),
+    ("power setting default is sleep", S + "PowerPress.java", "return c == null ? PowerKeyChoice.POWER_MENU : c;",
+     "return c == null ? PowerKeyChoice.SLEEP : c;"),
+    ("power choice: the hold is the short press", S + "PowerKeyChoice.java",
+     "return this == POWER_MENU ? PowerAction.SLEEP : PowerAction.MENU;", "return this == POWER_MENU ? PowerAction.MENU : PowerAction.SLEEP;"),
+    ("power choice: a wrong token is a choice", S + "PowerKeyChoice.java",
+     "for (PowerKeyChoice c : values()) if (c.token.equals(token)) return c;", "for (PowerKeyChoice c : values()) if (token != null) return c;"),
     ("the wake press sleeps", S + "PowerPress.java", "        if (beganAsleep) {", "        if (false) {"),
+    # the wake (stock mSystemActive / checkWakeUpStatus): a press from the sleep until the light is back does nothing
+    ("wake: a press during the wake acts", S + "PowerPress.java", "if (down && repeatCount == 0 && waking(eventDownTime)) {",
+     "if (down && repeatCount == 0 && false) {"),
+    ("wake: asleep presses act", S + "PowerPress.java", "        if (asleep) return true;\n", ""),
+    ("wake: no echo floor", S + "PowerPress.java", "Math.max(lightAt, wokeAt + WAKE_ECHO_MS)", "lightAt"),
+    ("wake: no 7 s cap without checks", S + "PowerPress.java", "lightAt == NO_PRESS ? wokeAt + WAKE_MAX_MS :", "lightAt == NO_PRESS ? Long.MAX_VALUE :"),
+    ("wake: the light check ignores the light", S + "PowerPress.java", "if (!lightOn && now - wokeAt < WAKE_MAX_MS) return WAKE_CHECK_MS;",
+     "if (now - wokeAt < WAKE_MAX_MS) return WAKE_CHECK_MS;"),
+    ("wake: checks never end", S + "PowerPress.java", "if (!lightOn && now - wokeAt < WAKE_MAX_MS) return WAKE_CHECK_MS;",
+     "if (!lightOn) return WAKE_CHECK_MS;"),
+    ("wake: SCREEN_OFF not asleep", S + "PowerPress.java", "        asleep = true;\n", ""),
+    ("wake: SCREEN_ON keeps it asleep", S + "PowerPress.java", "        asleep = false;\n", ""),
+    ("wake: echo 1 s", S + "PowerPress.java", "WAKE_ECHO_MS = 1500;", "WAKE_ECHO_MS = 1000;"),
+    ("wake: cap 5 s", S + "PowerPress.java", "WAKE_MAX_MS = 7000;", "WAKE_MAX_MS = 5000;"),
+    # the stock sleep or power off rule (getShutdownMode)
+    ("sleep rule: never powers off", S + "SleepRule.java", "return n >= max ?", "return false ?"),
+    ("sleep rule: the 16th sleep", S + "SleepRule.java", "int n = sleeps + 1;", "int n = sleeps;"),
+    ("sleep rule: setup ignored", S + "SleepRule.java", "        if (!setupComplete) return \"the user setup is not complete\";\n", ""),
+    ("sleep rule: max 16", S + "SleepRule.java", "STOCK_MAX_STR = 15;", "STOCK_MAX_STR = 16;"),
+    ("sleep rule: the property ignored", S + "SleepRule.java", "int max = maxStr > 0 ? maxStr : STOCK_MAX_STR;", "int max = STOCK_MAX_STR;"),
     ("a power press in the dark sleeps or opens the menu", S + "PowerPress.java",
      "if (lampOff != null && lampOff.eats(LampOffKey.POWER, down, repeatCount, eventDownTime)) {", "if (false) {"),
     ("the relighting press is not told", S + "PowerPress.java",
@@ -279,14 +340,25 @@ MUTANTS = [
      "                        out.add((FeatureId) t[i]);\n                        break;", "                        out.add((FeatureId) t[i]);"),
     ("header kept without rows", S + "MenuSpec.java", "if (!rs.isEmpty()) groups.add", "groups.add"),
     # ---- dev-page (2026-11-19): For developers is its own page, the last of All settings
-    ("developer page not in All settings", S + "MenuSpec.java", "SOUND, EYE, GENERAL, DEVELOPER};", "SOUND, EYE, GENERAL};"),
-    ("developer page before General", S + "MenuSpec.java", "SOUND, EYE, GENERAL, DEVELOPER};", "SOUND, EYE, DEVELOPER, GENERAL};"),
+    # the stock 1.3.38 rail (X50 live audit 2026-11-24)
+    ("rail: Eye protection a category again", S + "MenuSpec.java", "MOVABLE = {FOCUS, PROJECTION, EYE};", "MOVABLE = {FOCUS, PROJECTION};"),
+    ("rail: Projection a category again", S + "MenuSpec.java", "MOVABLE = {FOCUS, PROJECTION, EYE};", "MOVABLE = {FOCUS, EYE};"),
+    ("rail: no Network category", S + "MenuSpec.java", "PROJECTION, NETWORK, SOURCE, BLUETOOTH, SOUND,", "PROJECTION, SOURCE, BLUETOOTH, SOUND,"),
+    ("rail: no Input source category", S + "MenuSpec.java", "PROJECTION, NETWORK, SOURCE, BLUETOOTH, SOUND,", "PROJECTION, NETWORK, BLUETOOTH, SOUND,"),
+    ("rail: temperature back in General", S + "MenuSpec.java", "FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_DIAGNOSTICS}}},",
+     "FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS, FeatureId.SETTINGS_TEMPERATURE}}},"),
+    ("rail: the Bluetooth page without its tile", S + "MenuSpec.java", "{{FeatureId.BLUETOOTH_ADD, FeatureId.BLUETOOTH},\n", "{\n"),
+    ("rail: the projection rows not on the keystone page", S + "MenuSpec.java", "            {KEYSTONE, FeatureId.PROJECTION_MODE}, {KEYSTONE, FeatureId.PROJECTION_REAR}};", "            };"),
+    ("rail: General shown as a popup", "test/MenuSnapshot.java", " || MenuSpec.allSettingsOnly(sec)) continue;", ") continue;"),
+    ("developer page not in All settings", S + "MenuSpec.java", "EYE, GENERAL, DEVELOPER};", "EYE, GENERAL};"),
+    ("developer page before General", S + "MenuSpec.java", "EYE, GENERAL, DEVELOPER};", "EYE, DEVELOPER, GENERAL};"),
     ("developer rows back in General", S + "MenuSpec.java",
      "FeatureId.VOICE_KEY}}},\n", "FeatureId.VOICE_KEY},\n                    {\"developer\", FeatureId.SIGNAL_PANEL}}},\n"),
     ("developer page without the diagnostics", S + "MenuSpec.java",
-     "FeatureId.SIGNAL_REFRESH, FeatureId.SETTINGS_DIAGNOSTICS}}},", "FeatureId.SIGNAL_REFRESH}}},"),
+     "FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_DIAGNOSTICS}}},", "FeatureId.SETTINGS_TEMPERATURE}}},"),
     ("developer page opens as a popup", S + "MenuSpec.java",
-     "return GENERAL.equals(section) || DEVELOPER.equals(section);", "return GENERAL.equals(section);"),
+     "return GENERAL.equals(section) || DEVELOPER.equals(section) || SOURCE.equals(section);",
+     "return GENERAL.equals(section) || SOURCE.equals(section);"),
     ("developer page without its title", "src/org/lumen/projector/panel/MenuLabels.java",
      "            case \"developer\": return R.string.lumen_m_hdr_developer;\n", ""),
     ("tile without the feature", S + "MenuSpec.java", "if (a) r.add(new Tile((String) t[0], id, b ? alt : null, yields));",
@@ -383,11 +455,15 @@ MUTANTS = [
      "if (ok) e.getKey().setVisibility(shown ? View.VISIBLE : View.GONE);",
      "if (ok) e.getKey().setVisibility(View.VISIBLE);"),
     # ---- options that follow the content (stock support lists, SignalRule)
-    ("support lists ignored", S + "SignalRule.java", "if (!on.isEmpty() && !on.contains(now) && !o.equals(current))",
-     "if (false)"),
-    ("support lists read backwards", S + "SignalRule.java", "!on.contains(now) && !o.equals(current)",
-     "on.contains(now) && !o.equals(current)"),
+    ("support lists ignored", S + "SignalRule.java", "if (!offered(profile.support(feature, o), now) && !o.equals(current))", "if (false)"),
+    ("support lists read backwards", S + "SignalRule.java", ": support.contains(now);", ": !support.contains(now);"),
+    ("Dolby Vision keeps the unlisted modes", S + "SignalRule.java", "support.isEmpty() ? now != Signal.DOLBY :",
+     "support.isEmpty() ? true :"),
+    ("every content closes the unlisted modes", S + "SignalRule.java", "support.isEmpty() ? now != Signal.DOLBY :",
+     "support.isEmpty() ? false :"),
     ("the mode set now greyed", S + "SignalRule.java", " && !o.equals(current)) out.add(o);", ") out.add(o);"),
+    ("the hdr read drops the content kind", S + "MenuState.java", "return format(f).signal(f == null ? null : f.kind);",
+     "return format(f);"),
     ("content not read offers every mode", S + "SignalRule.java",
      "Signal now = state == null || state.signal() == null ? Signal.SDR : state.signal();",
      "Signal now = state == null || state.signal() == null ? Signal.HDR_VIVID : state.signal();"),
@@ -409,7 +485,7 @@ MUTANTS = [
     ("a greyed mode chosen", MC, "        if (SignalRule.greyed(profile, f, state).contains(token)) { refresh(); return; }\n", ""),
     ("no live signal watch", MC, "        live(sec);\n        watchSignal();\n", "        live(sec);\n"),
     ("the watch never re-reads", "src/org/lumen/projector/panel/SignalWatch.java",
-     "now != st.signal()) reread.run();", "now != st.signal()) { }"),
+     "now != st.format()) reread.run();", "now != st.format()) { }"),
     ("the watch polls with the menu closed", "src/org/lumen/projector/panel/SignalWatch.java",
      "        if (!open.getAsBoolean()) return;\n", ""),
     # ---- the stock picture settings page refusal (PictureSettingsRule)
@@ -504,13 +580,18 @@ MUTANTS = [
     ("iris: the dynamic iris lets the light level move", S + "IrisRule.java",
      "if (DYNAMIC.equals(iris)) return NOTE_DYNAMIC;", "if (false) return NOTE_DYNAMIC;"),
     ("iris: f7 lets the light level move", S + "IrisRule.java",
-     "if (F5_5.equals(iris) || F7.equals(iris)) return NOTE_HELD;", "if (F5_5.equals(iris)) return NOTE_HELD;"),
+     "if (F5_5.equals(iris) || F7.equals(iris) || F5.equals(iris)) return NOTE_HELD;",
+     "if (F5_5.equals(iris) || F5.equals(iris)) return NOTE_HELD;"),
     ("iris: f5.5 lets the light level move", S + "IrisRule.java",
-     "if (F5_5.equals(iris) || F7.equals(iris)) return NOTE_HELD;", "if (F7.equals(iris)) return NOTE_HELD;"),
+     "if (F5_5.equals(iris) || F7.equals(iris) || F5.equals(iris)) return NOTE_HELD;",
+     "if (F7.equals(iris) || F5.equals(iris)) return NOTE_HELD;"),
+    ("iris: f5 lets the light level move", S + "IrisRule.java",
+     "if (F5_5.equals(iris) || F7.equals(iris) || F5.equals(iris)) return NOTE_HELD;",
+     "if (F5_5.equals(iris) || F7.equals(iris)) return NOTE_HELD;"),
     ("iris: f2 holds the light level too", S + "IrisRule.java",
      "        return null;\n    }\n\n    /** The refusal", "        return iris == null ? null : NOTE_HELD;\n    }\n\n    /** The refusal"),
     ("iris: the dynamic note for f5.5 and f7", S + "IrisRule.java",
-     "F7.equals(iris)) return NOTE_HELD;", "F7.equals(iris)) return NOTE_DYNAMIC;"),
+     "F5.equals(iris)) return NOTE_HELD;", "F5.equals(iris)) return NOTE_DYNAMIC;"),
     ("iris: the rule refuses every slider", S + "IrisRule.java", "if (FeatureId.LAMP != feature || profile", "if (profile"),
     ("iris: the rule without the iris row", S + "IrisRule.java",
      " || !profile.has(FeatureId.PICTURE_IRIS)) return null;", ") return null;"),
@@ -539,7 +620,7 @@ MUTANTS = [
      "(f.kind != FeatureKind.PAGE || pages.containsKey(f))", "(true)"),
     ("a row of a page accepted without its page", S + "MenuProfile.java",
      "if (page != null && !features.containsKey(page)) problem(", "if (false && page != null) problem("),
-    ("pages left out of the snapshot", S + "MenuSnapshot.java", "            groups(b, p, m.pages.get(pg));\n", ""),
+    ("pages left out of the snapshot", "test/MenuSnapshot.java", "            groups(b, p, m.pages.get(pg));\n", ""),
     ("pageOf sees only the first row of a group", S + "MenuSpec.java",
      "for (int i = 1; i < g.length; i++) if (g[i] == f) return (FeatureId) pg[0];",
      "for (int i = 1; i < Math.min(2, g.length); i++) if (g[i] == f) return (FeatureId) pg[0];"),
@@ -555,8 +636,8 @@ MUTANTS = [
      "boolean opens = f.kind == FeatureKind.SCREEN;"),
     # ---- keystone-order: every model's Keystone page in its stock order (sections, MenuSpec.LINE, stock_order.py)
     ("keystone order: the profile's order ignored", 'src/org/lumen/menu/MenuSpec.java',
-     '        Map<FeatureId, String> out = new java.util.HashMap<>();\n        for (Object[] s : SECTIONS) {\n            Object[][] order = p.order((String) s[0]);',
-     '        Map<FeatureId, String> out = new java.util.HashMap<>();\n        for (Object[] s : SECTIONS) {\n            Object[][] order = null;'),
+     '            Object[][] order = p.order((String) s[0]);\n            if (order == null) order = (Object[][]) s[1];',
+     '            Object[][] order = (Object[][]) s[1];'),
     ("keystone order: a line opens the popup", S + "MenuSpec.java",
      "groups.isEmpty() && LINE.equals(g[0]) ? null : (String) g[0]", "(String) g[0]"),
     ("keystone order: a line on top of a page", S + "MenuSpec.java",
@@ -575,7 +656,7 @@ MUTANTS = [
      'if (rows.size() == 1) problem(at + ": a group without rows");', ";"),
     ("keystone order: the section table decides the section of a row", S + "MenuSpec.java",
      "for (int i = 1; i < g.length; i++) if (g[i] == f) return (String) s[0];", "if (g.length > 1 && g[1] == f) return (String) s[0];"),
-    ("keystone order: the source left out of the snapshot", S + "MenuSnapshot.java",
+    ("keystone order: the source left out of the snapshot", "test/MenuSnapshot.java",
      "if (src != null) b.append(\"  (stock order: \").append(src).append(')');", ";"),
     ("keystone order: the size and position header without text", "src/org/lumen/projector/panel/MenuLabels.java",
      '            case "size_position": return R.string.lumen_m_kst_size_position;\n', ""),
@@ -596,12 +677,13 @@ MUTANTS = [
     ("keystone order: HB zoom under the Smart title", "../../../devices/goat_elegant/menu.json",
      '{"header": "size_position", "rows": ["zoom"', '{"header": "smart", "rows": ["zoom"'),
     ('keystone order: X50 lens memory without the Smart title', '../../../devices/g0111/menu.json',
-     '{"header": "smart", "rows": ["keystone.wall_color", "zoom.memory"]}',
-     '{"rows": ["keystone.wall_color", "zoom.memory"]}'),
+     '{"header": "smart", "rows": ["keystone.wall_color", "keystone.color_uniformity", "zoom.memory"]}',
+     '{"rows": ["keystone.wall_color", "keystone.color_uniformity", "zoom.memory"]}'),
     ('keystone order: RS30 rotation before zoom', '../../../devices/g0155/menu.json',
      '["zoom", "zoom.move", "keystone.rotation", "keystone.angle_h", "keystone.angle_v"]',
      '["keystone.rotation", "zoom", "zoom.move", "keystone.angle_h", "keystone.angle_v"]'),
-    ("keystone order: Play 6 without its line", "../../../devices/dragon_healthy/menu.json", '{"header": "line", ', "{"),
+    ("keystone order: Play 6 without its line", "../../../devices/dragon_healthy/menu.json", '{"header": "line", "rows": ["keystone.manual"',
+     '{"rows": ["keystone.manual"'),
     ("keystone order: the stock map moves More to Smart", "test/stock_order.py",
      '"brightness_more_title": (HEADER, "more"),', '"brightness_more_title": (HEADER, "smart"),'),
     ('keystone order: Fit to screen now anywhere', 'test/stock_order.py',
@@ -638,8 +720,8 @@ MUTANTS = [
      "for (Object[] pg : PAGES) if (pg[0] == f) return true;\n        return false;\n    }\n\n    /** The page whose",
      "return false;\n    }\n\n    /** The page whose"),
     ("picture stock: the page light level a plain slider", MC,
-     "                if (FeatureId.LAMP == f && !MenuSpec.LAMP.equals(sec)) addLampRow(p);\n                else addRow(p, f);",
-     "                addRow(p, f);"),
+     "                    addLampRow(p);                            // the light slider (the lamp page: its tile look opens it)\n",
+     "                    addRow(p, f);\n"),
     ("picture stock: the page twins are no light sliders", MC,
      "(v == lamp || pageLamps.contains(v))", "(v == lamp)"),
     ("picture stock: the page twins never refreshed", MC, "        for (SliderRow r : pageLamps) applyLampRow(r, st);\n", ""),
@@ -657,8 +739,8 @@ MUTANTS = [
     ("picture stock: X50 iris above the light level", "../../../devices/g0111/menu.json",
      '{"header": "projector_brightness", "rows": ["lamp", "picture.iris"]}', '{"header": "projector_brightness", "rows": ["picture.iris", "lamp"]}'),
     ("picture stock: TITAN tuning under clarity", "../../../devices/h0062/menu.json",
-     '"picture.dynamic_black", "picture.black_tuning"]},\n            {"header": "clarity", "rows": ["picture.noise", "picture.super_res"]}',
-     '"picture.dynamic_black"]},\n            {"header": "clarity", "rows": ["picture.black_tuning", "picture.noise", "picture.super_res"]}'),
+     '"picture.dynamic_black", "picture.black_tuning"]}, {"header": "clarity", "rows": ["picture.noise", "picture.super_res"]}',
+     '"picture.dynamic_black"]}, {"header": "clarity", "rows": ["picture.black_tuning", "picture.noise", "picture.super_res"]}'),
     ("picture stock: RS30 gets the tuning", "../../../devices/g0155/menu.json",
      '"picture.dynamic_black": {},', '"picture.dynamic_black": {},\n    "picture.black_tuning": {"min": -40, "max": 40},'),
     ("picture stock: X50 Ultra Max 3D after the style filter", "../../../devices/g0100/menu.json",
@@ -673,6 +755,58 @@ MUTANTS = [
      '"brightness_adjustment": (ROW, ["lamp"]),', '"brightness_adjustment": (ELSEWHERE, "x"),'),
     ("picture stock: a typo in a page row passes the build check", "tools/menu_ids.py",
      '                out += group_rows(r.get("groups"))\n', ""),
+    # ---- the signal format the picture page names (HdrFormat, 4PDA: HDR10+ shown as HDR10)
+    ("format: HDR10+ named HDR10", S + "HdrFormat.java", "case TYPE_HDR10_PLUS: return HDR10_PLUS;", "case TYPE_HDR10_PLUS: return HDR10;"),
+    ("format: HLG counted as SDR content", S + "HdrFormat.java", 'HLG("lumen_m_fmt_hlg", Signal.HDR)', 'HLG("lumen_m_fmt_hlg", Signal.SDR)'),
+    ("format: a failed read named SDR", S + "HdrFormat.java", "if (type == null || type < TYPE_SDR) return null;", "if (type == null) return null;"),
+    ("format: a live update drops the shown format", S + "MenuState.java", "b.format = part.format != null ? part.format : format;", "b.format = part.format;"),
+    ("format: Dolby Vision labelled HDR", "res/values/lumen_strings_menu.xml", ">Dolby Vision</string>", ">HDR</string>"),
+    ("format: the content kind keeps its own table", S + "Signal.java", "return f == null ? null : f.kind;", "return f == null ? null : f == HdrFormat.HLG ? SDR : f.kind;"),
+    # ---- every setting of the full menu in the quick menu, the catalogue from one place (2026-11-24): the rows
+    # of the full spec, the model's rows only, all of them in the editor's list, a switch a tile, no developer circle
+    ("any tile: All settings rows left out", QS + "QuickCatalog.java",
+     "        for (String sec : spec.allSettings) for (FeatureId f : spec.rowsOf(sec)) walk(spec, sec, f, out);\n", ""),
+    ("any tile: a readout offered", QS + "QuickCatalog.java",
+     "public static boolean quick(FeatureId f) { return f.kind != FeatureKind.INFO && f != FeatureId.LAMP; }",
+     "public static boolean quick(FeatureId f) { return f != FeatureId.LAMP; }"),
+    ("any tile: a row the menu lacks now offered", QS + "QuickCatalog.java",
+     "if (!kinds.containsKey(f.id) && rowUsable.test(f.id)) kinds.put(", "if (!kinds.containsKey(f.id)) kinds.put("),
+    ("any tile: the rows of a page left out", QS + "QuickCatalog.java",
+     "        if (spec.pages.containsKey(f)) for (FeatureId r : spec.pageRowsOf(f)) walk(spec, sec, r, out);\n", ""),
+    ("any tile: the picture sliders as one group row", QS + "QuickCatalog.java",
+     "            for (String item : spec.profile.items(f)) walk(spec, sec, FeatureId.pq(item), out);\n            return;\n", ""),
+    ("any tile: a card item loses its category", QS + "QuickCatalog.java", "String sec = f == null ? null : full.get(f);",
+     "String sec = f == null || cardIds(spec).contains(e.getKey()) ? null : full.get(f);"),
+    ("catalogue: one setting of the full menu dropped (MEMC)", QS + "QuickCatalog.java",
+     "        if (quick(f)) out.putIfAbsent(f, sec);\n", "        if (quick(f) && f != FeatureId.PICTURE_MEMC) out.putIfAbsent(f, sec);\n"),
+    ("catalogue: the volume dropped", QS + "QuickCatalog.java",
+     "        for (FeatureId f : MenuSpec.EVERY_MODEL) if (usable.test(f.id))", "        for (FeatureId f : MenuSpec.EVERY_MODEL) if (false)"),
+    ("editor: the full menu rows only behind a detour (the card's own items listed)", QS + "QuickCatalog.java",
+     "        for (QuickItem i : items.values()) if (i.group.equals(group)) out.add(i);",
+     "        for (QuickItem i : items.values()) if (i.group.equals(group) && i.section == null) out.add(i);"),
+    ("editor: a group of the catalogue not listed", QS + "QuickCatalog.java",
+     "        for (QuickItem i : items.values()) if (!out.contains(i.group)) out.add(i.group);\n", ""),
+    ("editor: the groups not in the rail order", QS + "QuickCatalog.java",
+     "        List<String> order = new ArrayList<>(spec.allSettings);\n        for (String g : GROUPS) if (!order.contains(g)) order.add(g);",
+     "        List<String> order = new ArrayList<>(GROUPS);\n        for (String g : spec.allSettings) if (!order.contains(g)) order.add(g);"),
+    ("looks: a switch a circle of the top row again", QS + "Presentations.java",
+     "put(ItemKind.TOGGLE, Presentation.SMALL, Presentation.WIDE, Presentation.ROUND);",
+     "put(ItemKind.TOGGLE, Presentation.ROUND, Presentation.SMALL, Presentation.WIDE);"),
+    ("any tile: a developer tool as a circle", QS + "QuickItem.java",
+     "if (!MenuSpec.DEVELOPER.equals(section) || !all.contains(Presentation.ROUND)) return all;", "if (true) return all;"),
+    ("search: case counts", QS + "QuickCatalog.java", "s.toLowerCase(java.util.Locale.ROOT).replace", "s.replace"),
+    ("search: yo counts", QS + "QuickCatalog.java", ".replace('ё', 'е')", ""),
+    ("search: one word is enough", QS + "QuickCatalog.java", "for (String w : q.split(\" +\")) if (!t.contains(w)) return false;\n        return true;",
+     "for (String w : q.split(\" +\")) if (t.contains(w)) return true;\n        return false;"),
+    ("search: an empty query finds all", QS + "QuickCatalog.java", "if (q.isEmpty() || t.isEmpty()) return false;", "if (t.isEmpty()) return false;"),
+    ("search: the menu's own word ignored", QS + "QuickCatalog.java", "if (matches(title.apply(i.id) + \" \" + word, query)) out.add(i);",
+     "if (matches(title.apply(i.id), query)) out.add(i);"),
+    ("add: a new tile under the sliders", QS + "QuickEditor.java",
+     "if (l.get(i).as == Presentation.WIDE || l.get(i).as == Presentation.SMALL) return i + 1;",
+     "if (l.get(i).as == Presentation.WIDE || l.get(i).as == Presentation.SMALL) return l.size();"),
+    ("add: the first tile under the sliders", QS + "QuickEditor.java",
+     "if (l.get(i).as == Presentation.SLIDER || l.get(i).as == Presentation.FOOTER) return i;",
+     "if (l.get(i).as == Presentation.FOOTER) return i;"),
 ]
 
 
@@ -700,12 +834,15 @@ def main():
                 j = os.path.join(G, "devices", c, "menu.json")
                 if os.path.isfile(j):
                     os.makedirs(os.path.join(root, "devices", c))
-                    shutil.copy(j, os.path.join(root, "devices", c, "menu.json"))
+                    menu_layers.copy_profile(j, os.path.join(root, "devices", c, "menu.json"))
             # the focus page's remote table (FocusGuideTest)
             os.makedirs(os.path.join(root, "devices", "_remotes"))
             shutil.copy(os.path.join(G, "devices", "_remotes", "focus_guide.tsv"), os.path.join(root, "devices", "_remotes"))
             # the hotspot permission check reads every projector app's manifest
-            for app in ("ProjectorBase", "HbProjector", "Play6Projector", "X50Projector"):
+            for extra in ("devices/goat_elegant/app/HbProjector.manifest.diff", "tools/devices/patch_file.py"):   # not rel: the mutant's file
+                os.makedirs(os.path.dirname(os.path.join(root, extra)), exist_ok=True)
+                shutil.copy(os.path.join(G, extra), os.path.join(root, extra))
+            for app in ("LumenProjector/core", "LumenProjector/host/activity"):   # the Play 6 manifest is model data now
                 os.makedirs(os.path.join(root, "apps", app), exist_ok=True)
                 shutil.copy(os.path.join(G, "apps", app, "AndroidManifest.xml"), os.path.join(root, "apps", app))
             # the adapters the profiles name and their *Rows sections (read by the contract test)

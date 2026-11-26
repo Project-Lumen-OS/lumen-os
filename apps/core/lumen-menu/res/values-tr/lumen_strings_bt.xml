@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Input source and Bluetooth pages of All settings (stock 1.3.38 root/signal, root/bluetooth). -->
+<resources>
+    <string name="lumen_m_sec_source">Giriş kaynağı</string>
+    <string name="lumen_m_source_list">Kaynaklar</string>
+    <string name="lumen_m_bt_add">Başka cihaz ekle</string>
+    <string name="lumen_m_bt_mine">Cihazlarım</string>
+    <string name="lumen_m_bt_disconnect">Bağlantıyı kes</string>
+    <string name="lumen_m_bt_forget">Unut</string>
+    <string name="lumen_m_bt_searching">Cihazlar aranıyor…</string>
+    <string name="lumen_m_bt_none">Cihaz bulunamadı</string>
+    <string name="lumen_m_bt_pairing">Eşleniyor…</string>
+</resources>

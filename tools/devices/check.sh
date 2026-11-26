@@ -15,7 +15,7 @@
 #   forks     tools/devices/check_forks.py --device <c>
 #   hal       tools/devices/check_hal.py --device <c>
 #   build     tools/build/build.py check <c>: the image descriptor and every variant plan (a dry run, nothing built)
-#   device    horse_popular: the Z9X gate (tools/play6/z9x_gate.sh, incremental; it never records);
+#   device    every model with an image: the one gate (tools/release/gate.py check) and its pin rebuild (gate.py pins);
 #             dragon_healthy: check K (tools/play6/check_handshake.py) on its assembled Play6Projector tree
 # Once: the tests in tools/devices/test/*.sh and the publish audit (to a temp manifest; no REVIEW row).
 # Mac only, no device, no network, no key of an image. Writes only build/devices_check/ (the throwaway key) and
@@ -88,7 +88,7 @@ recipe_steps() { # codename recipe
   cmp_arg=
   grep -qE '^[[:space:]]*identical[[:space:]]+allow' "$r" && cmp_arg="--compare $top"
   # shellcheck disable=SC2086
-  step "$c.$app.assemble" python3 -B tools/devices/assemble_app.py $REL "$r" --out "$out" $cmp_arg || return
+  step "$c.$app.assemble" python3 -B tools/devices/assemble_app.py $REL --device "$c" --app "$app" --out "$out" $cmp_arg || return
   [ -d "$out" ] || return
   step "$c.$app.strings" strings_locales "$out" "$G/$top" "$r"
   step "$c.$app.compile" env KEY_PK8="$K/testkey.pk8" KEY_PEM="$K/testkey.x509.pem" BUILD_DIR="$W/build/$c/$app" \
@@ -106,14 +106,21 @@ recipe_steps() { # codename recipe
 }
 
 for c in $DEVS; do
-  for r in devices/"$c"/app/*.layers; do
+  # every recipe the device builds with: its devices/<c>/app/*.layers and its family's (devices/README.md)
+  python3 -B tools/devices/assemble_app.py --recipes "$c" > "$W/recipes.$c" || echo "FAIL $c: recipes"
+  while IFS=$(printf '\t') read -r app r; do
     [ -f "$r" ] && recipe_steps "$c" "$r"
-  done
+  done < "$W/recipes.$c"
   step "$c.forks" python3 -B tools/devices/check_forks.py --device "$c"
   step "$c.hal" python3 -B tools/devices/check_hal.py --device "$c"
   step "$c.build" python3 -B tools/build/build.py check "$c"
+  # the one gate, the same for every model with an image (tools/release/gate.py), and the pin rebuild of a model whose
+  # image ships prebuilt APKs (devices/_baseline/gate/pins.tsv, incremental here)
+  if [ -f "devices/$c/build.conf" ]; then
+    step "$c.gate" python3 -B tools/release/gate.py check --model "$c"
+    step "$c.pins" python3 -B tools/release/gate.py pins --model "$c"
+  fi
   case $c in
-    horse_popular) step "$c.z9x_gate" sh tools/play6/z9x_gate.sh ;;
     dragon_healthy) step "$c.check_k" python3 -B tools/play6/check_handshake.py "$W/apps/$c/Play6Projector" ;;
   esac
 done
@@ -128,11 +135,13 @@ publish() {
   echo "publish audit: $n REVIEW row(s)"
   [ "$n" = 0 ]
 }
-# the shared vocabulary (apps/core/lumen-common-strings): generated files fresh, every alias resolves, no app keeps a
-# copy of a vocabulary text (tools/i18n/catalog.py)
+# the shared string module (apps/core/lumen-common-strings): no text defined in two places (tools/i18n/share.py),
+# every alias resolves, no app keeps a copy of a shared text (tools/i18n/catalog.py)
 vocabulary() {
+  python3 -B tools/i18n/share.py check || return 1
   python3 -B tools/i18n/catalog.py validate || return 1
-  for a in $(grep -l 'module *lumen-common-strings' apps/*/app.layers devices/*/app/*.layers 2>/dev/null | xargs -n1 awk '$1 == "top" { sub("apps/", "", $2); print $2 }'); do
+  for a in $(grep -l 'module *lumen-common-strings' apps/*/app.layers devices/*/app/*.layers devices/_family/*/app/*.layers 2>/dev/null | xargs -n1 awk '$1 == "top" { sub("apps/", "", $2); print $2 }' | sort -u); do
+    [ -d "apps/$a/res" ] || continue
     python3 -B tools/i18n/catalog.py adopt "$a" --check || return 1
   done
 }

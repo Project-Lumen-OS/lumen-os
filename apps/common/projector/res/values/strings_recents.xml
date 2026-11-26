@@ -3,8 +3,8 @@
      translations: apps/i18n/langs/<locale>.txt (merged into langs/ and gen.py).
      The card age ("5 min. ago") comes from DateUtils, so it is already localized. -->
 <resources>
-    <string name="recents_title">Recent apps</string>
-    <string name="recents_close">Close</string>
+    <string name="recents_title">@string/lumen_recent_apps</string>
+    <string name="recents_close">@string/lumen_close</string>
     <string name="recents_close_all">Close all</string>
     <string name="recents_empty">No open apps</string>
     <!-- card age under a minute -->

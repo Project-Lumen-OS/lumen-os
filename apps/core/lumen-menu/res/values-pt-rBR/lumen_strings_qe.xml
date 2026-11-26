@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Novo</string>
     <string name="lumen_qe_reset">Restaurar</string>
     <string name="lumen_qe_select">Escolher</string>
-    <string name="lumen_qe_done">Concluído</string>
-    <string name="lumen_qe_back">Voltar</string>
     <string name="lumen_qe_close_panel">Fechar painel</string>
     <string name="lumen_qe_how">Como mostrar</string>
     <string name="lumen_qe_now" formatted="true">Agora: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Abaixo dos blocos</string>
     <string name="lumen_qe_panel_note">Um bloco, um bloco largo e um círculo abrem o painel à direita do menu.</string>
     <string name="lumen_qe_place">Lugar</string>
-    <string name="lumen_qe_move">Mover</string>
     <string name="lumen_qe_remove">Tirar do menu</string>
     <string name="lumen_qe_moving">Movendo</string>
     <string name="lumen_qe_move_hint">Os círculos só se movem na linha de cima, os blocos entre as linhas. Para um bloco virar círculo, mude a aparência.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: novo lugar</string>
     <string name="lumen_qe_move_keys">Mover</string>
     <string name="lumen_qe_move_cancel">Cancelar, voltar como estava</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">Pelo nome ou parte dele</string>
+    <string name="lumen_qe_search_title">Encontrar uma configuração</string>
+    <string name="lumen_qe_search_hint">Por exemplo, MEMC</string>
+    <string name="lumen_qe_nothing">Nada encontrado</string>
+    <string name="lumen_qe_unavailable">Indisponível agora</string>
 </resources>

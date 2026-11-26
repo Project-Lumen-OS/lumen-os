@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">الرقابة الأبوية</string>
-    <string name="lumen_lp_intro">حدد ما يمكن للأطفال فتحه وكم يشاهدون.</string>
     <string name="lumen_lp_lock">قفل الأطفال</string>
-    <string name="lumen_lp_lock_desc">عند التشغيل يمكنك ضبط نطاق الرقابة ووقت المشاهدة وغير ذلك</string>
     <string name="lumen_lp_lock_off_title">إيقاف قفل الأطفال؟</string>
     <string name="lumen_lp_lock_off_text">ستتوقف حدود الوقت وكلمة المرور عند التشغيل. ستفتح إعدادات الوالدين بلا كلمة مرور.</string>
-    <string name="lumen_lp_turn_off">إيقاف</string>
-    <string name="lumen_lp_cancel">إلغاء</string>
     <string name="lumen_lp_child_mode">وضع الأطفال</string>
     <string name="lumen_lp_child_apps">تطبيقات وضع الأطفال</string>
     <string name="lumen_lp_child_apps_count">المحدد: %1$d</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">وضع الأطفال فقط</string>
     <string name="lumen_lp_range_global">في كل مكان</string>
     <string name="lumen_lp_session">الوقت لكل جلسة</string>
-    <string name="lumen_lp_session_desc">بعدها استراحة 10 دقائق</string>
     <string name="lumen_lp_daily">الوقت في اليوم</string>
     <string name="lumen_lp_no_limit">بلا حد</string>
     <string name="lumen_lp_minutes">%1$d دقيقة</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">انتهت الجلسة. استرح 10 دقائق</string>
     <string name="lumen_lp_rest_daily">انتهى وقت المشاهدة لهذا اليوم</string>
     <string name="lumen_lp_rest_unlock">فتح القفل</string>
-    <string name="lumen_lp_on">تشغيل</string>
-    <string name="lumen_lp_off">إيقاف</string>
 </resources>

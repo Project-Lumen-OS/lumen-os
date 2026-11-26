@@ -5,7 +5,7 @@ projector that needs a computer. Follow its install guide, it has every step in 
 [English](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/play6/en.md),
 [Русский](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/play6/ru.md).
 
-Every other projector, the XGIMI Z9X included, installs only from the projector itself: Lumen Installer downloads
+Every other projector, the XGIMI Z9X included, installs only from the projector itself: Lumen OS Live downloads
 Lumen OS over the network. See the install guide:
 [English](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/en.md),
 [Русский](https://github.com/Project-Lumen-OS/lumen-os/blob/main/docs/install/ru.md).

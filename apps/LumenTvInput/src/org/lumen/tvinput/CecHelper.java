@@ -106,6 +106,19 @@ final class CecHelper {
         }
     }
 
+    /** The routing call of a session that becomes main (Route): deviceId -1 = a port input. Worker thread. */
+    static void route(Context c, int deviceId, int portId) {
+        HdmiDeviceInfo d = deviceId < 0 ? null : device(c, deviceId);
+        HdmiPortInfo p = d == null ? null : portInfo(c, portId);
+        boolean on = d != null && d.getDevicePowerStatus() == HdmiControlManager.POWER_STATUS_ON;
+        boolean direct = p != null && d.getPhysicalAddress() == p.getAddress();
+        if (Route.forMain(deviceId, on, direct) == Route.PORT) {
+            portSelect(c, portId);
+        } else {
+            deviceSelect(c, deviceId, portId);
+        }
+    }
+
     /** Make the TV itself (internal source, logical address 0) the active source. Optional, off by default. */
     static void selectInternal(Context c) {
         try {

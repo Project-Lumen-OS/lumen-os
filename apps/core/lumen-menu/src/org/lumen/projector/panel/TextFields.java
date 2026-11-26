@@ -14,6 +14,8 @@ final class TextFields {
     static final String HOTSPOT_NAME = "hotspot_name", HOTSPOT_PASSWORD = "hotspot_password";
     /** The name of a new user picture mode (CustomPictures). */
     static final String PICTURE_MODE_NAME = "picture_mode_name";
+    /** The search of the quick menu editor's All settings list (QuickSearch). */
+    static final String QUICK_SEARCH = "quick_search";
 
     private TextFields() {}
 
@@ -22,6 +24,7 @@ final class TextFields {
         if (HOTSPOT_NAME.equals(key)) return hotspot(true);
         if (HOTSPOT_PASSWORD.equals(key)) return hotspot(false);
         if (PICTURE_MODE_NAME.equals(key)) return CustomPictures.nameField();
+        if (QUICK_SEARCH.equals(key)) return QuickSearch.field();
         return null;
     }
 

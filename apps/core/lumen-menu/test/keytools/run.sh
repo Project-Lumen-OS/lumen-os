@@ -16,8 +16,9 @@ OUT=$(mktemp -d "${TMPDIR:-/tmp}/keytools.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
 find "$T/stubs" -name '*.java' | sed 's/.*/"&"/' > "$OUT/stubs.txt"   # paths with spaces
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" @"$OUT/stubs.txt" \
-  "$M/org/lumen/menu/KeyTools.java" "$C/org/lumen/projector/ui/OverlayHost.java" "$C/org/lumen/projector/ui/Panel.java" \
+  "$M/org/lumen/menu/KeyTools.java" "$M/org/lumen/menu/Rehost.java" "$C/org/lumen/projector/ui/OverlayHost.java" "$C/org/lumen/projector/ui/Panel.java" \
   "$M/org/lumen/projector/ui/PanelHost.java" "$M/org/lumen/projector/ui/ActivityPanelHost.java" \
-  "$M/org/lumen/projector/ui/PanelActivity.java" "$M/org/lumen/projector/ui/ToolActivity.java" "$T/KeyToolsTest.java"
+  "$M/org/lumen/projector/ui/PanelActivity.java" "$M/org/lumen/projector/ui/ToolActivity.java" \
+  "$G/apps/core/lumen-remote/src/org/lumen/remote/keys/KeyHook.java" "$T/KeyToolsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.ui.KeyToolsTest
 python3 -B "$T/wiring.py" "$G"

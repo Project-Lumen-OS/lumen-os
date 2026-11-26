@@ -4,7 +4,7 @@ card
   row 1: wide keystone.ak_now | small keystone | small zoom
   row 2: wide picture | small sound | small focus
   row 3: wide input | small bluetooth | small picture.3d|network
-  row 4: wide game | small projection (yields) | small eye
+  row 4: wide game | small projection (yields) | small mirroring | small eye
   slider: lamp 1..10, Boost at 11 (hint: paler)
   slider: picture.iris [dynamic, f2, f3, f4, f5_5, f7]
 section keystone  (stock order: settings_tree_product_dianahymax projection_screen (the H0062 V1.2.99 newsettings, Titan Noir Max tree), test/stock/projection_screen.json)
@@ -25,9 +25,12 @@ section keystone  (stock order: settings_tree_product_dianahymax projection_scre
   info keystone.angle_v
   -- smart
   screen keystone.wall_color
+  screen keystone.color_uniformity
   screen zoom.memory
   -- more
   action keystone.restore
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
 section focus
   action focus.af_now
   screen focus.manual
@@ -41,7 +44,7 @@ section picture  (stock order: settings_tree_product_dianahymax image (the H0062
   slider lamp 1..10
   choice picture.iris [dynamic, f2, f3, f4, f5_5, f7]
   -- image
-  choice picture.mode [standard, movie, sport, filmmaker, isf_day, isf_night, performance]  support filmmaker for sdr hdr hdr10 filmmaker  hint picture picture_mode
+  choice picture.mode [standard, movie, sport, filmmaker, imax, isf_day, isf_night, performance, dv_bright, dv_dark]  support filmmaker for sdr hdr hdr10 filmmaker, imax for imax hdr10, dv_bright for dolby, dv_dark for dolby  hint picture picture_mode
   page picture.dv_screen
   action picture.custom_new
   page picture.settings
@@ -78,30 +81,53 @@ section network
   screen network.hotspot_name
   screen network.hotspot_password
   action network.hotspot_reset
-section general
-  action lamp.off
-  screen settings.system
-  choice eye.elder_color [off, low, medium, high]
-  info settings.temperature
-  toggle settings.high_altitude
+section source
+  screen source.list
   screen settings.cec
   screen settings.hdmi
-  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
-  page settings.serial
-  screen settings.sleep_timer
-  screen settings.remote
-  screen settings.report
-  screen settings.licences
+section bluetooth
+  screen bluetooth.add
+section general
+  -- language_time
+  screen settings.language
+  screen settings.date_time
   -- power
+  choice settings.power_key [power_menu, sleep]
+  screen settings.sleep_timer
   toggle power.on_ac
   toggle power.on_music
-  -- menu
+  -- display_menu
+  choice eye [off, follow, rest]  hint picture eye_follow
+  choice eye.elder_color [off, low, medium, high]
+  choice settings.colour_vision [off, gray, red_green, green_red, blue_yellow]
   choice settings.menu_side [left, right]
   choice settings.menu_density [normal, compact]
+  -- remote_voice
+  screen settings.remote
+  screen settings.remote_keys
+  -- apps_devices
+  screen settings.casting
+  page settings.serial
+  toggle settings.high_altitude
+  -- storage_updates
+  screen settings.storage
+  screen settings.update
+  screen settings.about
+  -- help
+  screen settings.report
+  screen settings.licences
+  screen settings.system
 section developer
   screen signal.panel
   screen sensors.panel
   toggle signal.pin
+  choice signal.refresh [normal, fast]
+  info settings.temperature
+  screen dev.mirror_diag
+  -- system
+  screen dev.system_info
+  toggle dev.network_adb
+  screen dev.android
 page settings.serial
   toggle serial.switch
   choice serial.id_group [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z]
@@ -139,6 +165,12 @@ page picture.hdr
 page picture.dv_screen
   choice picture.dv_screen.size [80, 88, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
   choice picture.dv_screen.gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+page picture.db_page
+  toggle picture.db_page.switch
+  choice picture.db_page.level [low, high]
+  screen picture.db_page.subtitle_top
+  screen picture.db_page.subtitle_bottom
+  action picture.db_page.reset
 page focus.settings
   toggle focus.smart
   info focus.guide  hint picture focus_guide_front
@@ -161,6 +193,7 @@ page picture.settings
   choice picture.local_contrast [off, low, medium, high]
   toggle picture.dynamic_contrast
   toggle picture.ai_contrast
+  page picture.db_page
   toggle picture.dynamic_black  hint picture dynamic_black
   slider picture.black_tuning -40..40
   -- clarity
@@ -182,6 +215,7 @@ popup keystone (rows with a tile of their own left out)
   keystone.angle_v
   -- smart
   keystone.wall_color
+  keystone.color_uniformity
   zoom.memory
   -- more
   keystone.restore
@@ -202,7 +236,7 @@ popup picture (rows with a tile of their own left out)
   hdmi.range
   hdmi.edid
   picture.aspect
-all settings: keystone picture projection sound eye general developer
+all settings: general keystone picture network source bluetooth sound developer
 keys: gear short quick_menu, gear long game_menu
 game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)
   game sound: off surround story clarity balanced

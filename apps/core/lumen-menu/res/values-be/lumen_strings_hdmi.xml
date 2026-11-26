@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lumen_m_hdmi_auto_switch">Аўтаматычна пераключаць на HDMI пры падключэнні прылады</string>
+    <string name="lumen_m_hdmi_return_home">Вяртацца на галоўны экран, калі крыніца адключана</string>
+    <string name="lumen_m_hdmi_boot_source">Крыніца пры ўключэнні</string>
+    <string name="lumen_m_hdmi_boot_note">Калі праектар уключыла прылада праз HDMI-CEC, адкрыецца яе ўваход.</string>
+    <string name="lumen_m_hdmi_inputs">Уваходы</string>
+    <string name="lumen_m_hdmi_none">Уваходы HDMI не знойдзены</string>
+</resources>

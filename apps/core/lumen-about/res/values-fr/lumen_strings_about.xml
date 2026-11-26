@@ -26,5 +26,4 @@
     <string name="lumen_about_guide_files">Le guide de la page du projet liste les fichiers officiels XGIMI.</string>
     <string name="lumen_about_erases">La clé efface tout sur le projecteur : applications, comptes, réglages et fichiers.</string>
     <string name="lumen_about_scan">Scannez avec un téléphone pour ouvrir</string>
-    <string name="lumen_about_close">Fermer</string>
 </resources>

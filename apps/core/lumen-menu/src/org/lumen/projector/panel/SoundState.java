@@ -59,6 +59,16 @@ final class SoundState {
     }
 
     /**
+     * A read-back keeps the equalizer rows as they are: the same sound mode is shown and the user is changing it (a
+     * band being adjusted, or a preset step waiting for its commit). Otherwise the read would put the saved preset
+     * back before the step is committed, and the commit would then send the old preset (the owner's "blinks and
+     * cannot be changed"); the shared choice rows keep a step the same way (MenuController.applyChoice).
+     */
+    static boolean eqKeepRows(int mode, int shownMode, boolean bandsBusy, boolean presetPending) {
+        return mode == shownMode && (bandsBusy || presetPending);
+    }
+
+    /**
      * The row after the user picked {@code row}: the other option is always a real change of the row (the stuck
      * state was a stored DTS shown as Harman, so picking Harman changed nothing). True when picking it reaches the
      * listener (ChoiceRow commits only a changed index).

@@ -4,13 +4,9 @@
      stock XGIMI Home parent page) -->
 <resources>
     <string name="lumen_lp_title">Controllo genitori</string>
-    <string name="lumen_lp_intro">Limita ciò che i bambini possono aprire e quanto tempo guardano.</string>
     <string name="lumen_lp_lock">Blocco bambini</string>
-    <string name="lumen_lp_lock_desc">Se attivo, puoi impostare l\'ambito, il tempo di visione e altro</string>
     <string name="lumen_lp_lock_off_title">Disattivare il blocco bambini?</string>
     <string name="lumen_lp_lock_off_text">I limiti di tempo e la password all\'accensione non funzioneranno più. Le impostazioni genitori si apriranno senza password.</string>
-    <string name="lumen_lp_turn_off">Disattiva</string>
-    <string name="lumen_lp_cancel">Annulla</string>
     <string name="lumen_lp_child_mode">Modalità bambini</string>
     <string name="lumen_lp_child_apps">App della modalità bambini</string>
     <string name="lumen_lp_child_apps_count">%1$d selezionate</string>
@@ -18,7 +14,6 @@
     <string name="lumen_lp_range_child">Solo modalità bambini</string>
     <string name="lumen_lp_range_global">Ovunque</string>
     <string name="lumen_lp_session">Tempo per sessione</string>
-    <string name="lumen_lp_session_desc">Dopo, 10 minuti di pausa</string>
     <string name="lumen_lp_daily">Tempo al giorno</string>
     <string name="lumen_lp_no_limit">Nessun limite</string>
     <string name="lumen_lp_minutes">%1$d min</string>
@@ -41,6 +36,4 @@
     <string name="lumen_lp_rest_session">La sessione è finita. Riposa 10 minuti</string>
     <string name="lumen_lp_rest_daily">Il tempo di oggi è finito</string>
     <string name="lumen_lp_rest_unlock">Sblocca</string>
-    <string name="lumen_lp_on">Sì</string>
-    <string name="lumen_lp_off">No</string>
 </resources>

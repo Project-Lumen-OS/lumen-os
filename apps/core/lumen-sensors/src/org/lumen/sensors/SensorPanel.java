@@ -49,20 +49,22 @@ public final class SensorPanel {
     private static String sDrawn;
     private static long sSystemAt;
     private static boolean sReading;
-    /** the small card shows the hold hint this time (CardHold: the first few cards only) */
-    private static boolean sHint;
 
     private static final CardHold.Card CARD = new CardHold.Card() {
         @Override public PanelMode mode() { return TOGGLE.mode(); }
 
-        @Override public void expand() {
-            sHint = false;
-            show(TOGGLE.expand());
-        }
+        @Override public void expand() { show(TOGGLE.expand()); }
 
         @Override public void collapse() { show(TOGGLE.collapse()); }
 
         @Override public void sheetOk() {}
+
+        @Override public boolean hasKeys() { return sWindow != null && sWindow.hasKeys(); }
+
+        @Override public void dismiss() {
+            if (sWindow == null) show(TOGGLE.dismiss());
+            else sWindow.takeKeys(() -> show(TOGGLE.dismiss()));
+        }
     };
 
     private SensorPanel() {}
@@ -115,12 +117,9 @@ public final class SensorPanel {
             return;
         }
         if (sWindow == null) {
-            sWindow = new SensorWindow(sApp, () -> show(TOGGLE.back()));
-            sWindow.setCollapse(CARD::collapse);
+            sWindow = new SensorWindow(sApp, () -> show(TOGGLE.back()), CARD::collapse);
         }
         if (!sWindow.shown()) {
-            sHint = mode.card() && CardHold.hint(sApp);
-            if (sHint) CardHold.hintShown(sApp);
             sValues = new SensorValues();
             sBudget.reset();
             sSystemAt = 0;
@@ -174,11 +173,11 @@ public final class SensorPanel {
     private static void draw(boolean force) {
         PanelMode mode = TOGGLE.mode();
         SensorSheet s = SensorSheet.build(sValues, sItems, words(sApp));
-        boolean hint = sHint && mode.card(), held = TOGGLE.held();
-        String key = mode + "|" + hint + held + "|" + s.rows;
+        boolean held = TOGGLE.held();
+        String key = mode + "|" + held + "|" + s.rows;
         if (!force && key.equals(sDrawn)) return;
         sDrawn = key;
-        sWindow.show(mode, s, hint, held);
+        sWindow.show(mode, s, held);
     }
 
     /** The texts of the current language (string resources lumen_sensors_*). */

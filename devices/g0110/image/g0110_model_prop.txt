@@ -1,0 +1,71 @@
+# The model properties the stock XGIMI MIRA 4K Pro system loads at every boot: the stock /system/bin/init (XGIMI build)
+# reads /vendor/etc/xgimimodelname/<ro.boot.xgimi.modelname>/build.prop; LineageOS init does not. The recipe
+# (devices/g0155/image/steps.tsv) appends these lines to the image's product build.prop, so they are set from the first second of boot, as on stock.
+# Rule (x50_props.py model_rule, the X50's): every line of the stock G0110 file except the identity keys and
+# persist.sys.*. Stock file: vendor/etc/xgimimodelname/G0110/build.prop of v1.3.1 (official FULL OTA), sha256
+# d78312863a0464401af4a6e788969bcc5749d26cf422186bb54d434b204c388f (x50_props.py model checks it on the build host).
+ro.xgimi.product.name=Product_bollywoodpro
+persist.vendor.xgimi.hd_server=2
+ro.xgimi.fun.hidesystemapp=com.yunos.tv.alitvasr
+persist.xgimi.wifidongle.check=enable
+vendor.xgimi.softap.sta.coexist=true
+vendor.xgimi.disable.subwoofer=1
+ro.xgimi.line.cast=0
+xgimi.image4k.support=1
+tv.series.model=Product_bollywoodpro
+persist.xgimi.gmui.font.bold=Medium
+vendor.mstar.hwc.framebuffer.format=1
+persist.xgimi.external.usb_bus=/dev/bus/usb/001:/dev/bus/usb/002
+ro.xgimi.internal.usb_device=1d6b:0102
+persist.vendor.xgimi.animation.style=black
+persist.xgimi.bootanimation.style=black
+persist.xgimi.vendor.bootwizard.theme=black
+ro.xgimi.default.aipq=film
+log.tag.ANNPreparedModelBase=S
+log.tag.ANNExecutor=S
+ro.product.unique=XGIMI+MT9681+M-UHD003F0003001F0017000100010033+bollywoodpro+ProjectorUHD_3
+vendor.xgimi.autokst.exposure.redpic=20000.000
+vendor.xgimi.autokst.exposure.bluepic=80000.000
+vendor.xgimi.autokst.exposure.featurepic=15000.000
+vendor.xgimi.autokst.exposure.test=10000.000
+ro.surface_flinger.max_frame_buffer_acquired_buffers=2
+persist.webview.multiprocess=false
+ro.xgimi.trans.animation=false
+persist.xgimi.bg_audio_focus_protect=false
+ro.config.low_ram=true
+ro.config.per_app_memcg=false
+ro.lmk.low=2048
+ro.lmk.medium=1536
+ro.lmk.critical=1024
+ro.lmk.critical_upgrade=true
+ro.lmk.upgrade_pressure=60
+ro.lmk.downgrade_pressure=20
+ro.lmk.swap_free_low_percentage=25
+ro.lmk.thrashing_limit=60
+ro.lmk.thrashing_limit_decay=20
+ro.lmk.thrashing_limit_critical=100
+ro.lmk.swap_util_max=80
+ro.lmk.use_psi=true
+ro.lmk.kill_heaviest_task=true
+ro.lmk.psi_complete_stall_ms=300
+ro.lmk.psi_partial_stall_ms=200
+ro.lmk.use_new_strategy=true
+ro.lmk.kill_timeout_ms=100
+dalvik.vm.heapgrowthlimit=128m
+dalvik.vm.heapsize=256m
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapmaxfree=8m
+dalvik.vm.heaptargetutilization=0.80
+ro.hwui.texture_cache_size=32
+ro.hwui.layer_cache_size=16
+ro.hwui.path_cache_size=8
+dalvik.vm.usap_pool_enabled=false
+dalvik.vm.dex2oat-threads=2
+dalvik.vm.dex2oat-cpu-set=0,1
+dalvik.vm.background-dex2oat-threads=2
+dalvik.vm.background-dex2oat-cpu-set=0,1
+dalvik.vm.boot-dex2oat-threads=6
+dalvik.vm.image-dex2oat-Xms=64m
+dalvik.vm.dex2oat-Xms=64m
+persist.xgimi.bg_kill_enabled=true
+persist.xgimi.low_mem_device=true

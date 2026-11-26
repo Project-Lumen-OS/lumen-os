@@ -17,8 +17,6 @@
     <string name="lumen_qe_new">Нове</string>
     <string name="lumen_qe_reset">Повернути як було</string>
     <string name="lumen_qe_select">Вибрати</string>
-    <string name="lumen_qe_done">Готово</string>
-    <string name="lumen_qe_back">Назад</string>
     <string name="lumen_qe_close_panel">Закрити панель</string>
     <string name="lumen_qe_how">Як показувати</string>
     <string name="lumen_qe_now" formatted="true">Зараз: %1$s</string>
@@ -34,7 +32,6 @@
     <string name="lumen_qe_footer_sub">Під плитками</string>
     <string name="lumen_qe_panel_note">Плитка, широка плитка і кружок відкривають панель праворуч від меню.</string>
     <string name="lumen_qe_place">Місце</string>
-    <string name="lumen_qe_move">Перемістити</string>
     <string name="lumen_qe_remove">Прибрати з меню</string>
     <string name="lumen_qe_moving">Переміщення</string>
     <string name="lumen_qe_move_hint">Кружки рухаються лише у верхньому ряду, плитки лише між рядками. Щоб плитка стала кружком, змініть її вигляд.</string>
@@ -48,4 +45,10 @@
     <string name="lumen_qe_move_new_place" formatted="true">%1$s: нове місце</string>
     <string name="lumen_qe_move_keys">Рухати</string>
     <string name="lumen_qe_move_cancel">Скасувати, повернути як було</string>
+    <!-- the All settings list of the editor (2026-11-24: any setting as a tile) -->
+    <string name="lumen_qe_search_sub">За назвою або її частиною</string>
+    <string name="lumen_qe_search_title">Знайти налаштування</string>
+    <string name="lumen_qe_search_hint">Наприклад, MEMC</string>
+    <string name="lumen_qe_nothing">Нічого не знайдено</string>
+    <string name="lumen_qe_unavailable">Зараз недоступно</string>
 </resources>

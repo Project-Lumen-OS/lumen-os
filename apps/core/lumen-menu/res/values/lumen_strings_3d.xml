@@ -2,17 +2,17 @@
 <!-- 3D: the stock texts of XGIMI settings (newsettings head_image_set_3d_text, image_set_3d_*_text, image_set_3d_set_blue3d,
      locale en-rUS) for the popup, its rows and the tile state. The tile name and the summary are Lumen's. -->
 <resources>
-    <string name="lumen_m_3d">3D</string>
-    <string name="lumen_m_3d_title">3D Settings</string>
+    <string name="lumen_m_3d">@string/lumen_3d</string>
+    <string name="lumen_m_3d_title">3D settings</string>
     <string name="lumen_m_3d_off">Disable 3D</string>
-    <string name="lumen_m_3d_sbs">Side by Side</string>
-    <string name="lumen_m_3d_tb">Top and Bottom</string>
-    <string name="lumen_m_3d_sbs_2d">3D to 2D (Side by Side)</string>
-    <string name="lumen_m_3d_tb_2d">3D to 2D (Top and Bottom)</string>
-    <string name="lumen_m_3d_frame_packing">Frame Packing</string>
+    <string name="lumen_m_3d_sbs">Side by side</string>
+    <string name="lumen_m_3d_tb">Top and bottom</string>
+    <string name="lumen_m_3d_sbs_2d">3D to 2D (side by side)</string>
+    <string name="lumen_m_3d_tb_2d">3D to 2D (top and bottom)</string>
+    <string name="lumen_m_3d_frame_packing">Frame packing</string>
     <string name="lumen_m_3d_summary">While a video plays. 3D needs active DLP-Link glasses.</string>
     <!-- 3D refusals: stock three_d_*_tip, hz120_not_3d, hight_not_3d (locale en-rUS) -->
-    <string name="lumen_m_3d_game">3D settings are not supported in Game Mode</string>
+    <string name="lumen_m_3d_game">3D settings are not supported in game mode</string>
     <string name="lumen_m_3d_no_video">Play a video or connect to a signal source and try again</string>
     <string name="lumen_m_3d_4k">3D settings are not supported in 4K video</string>
     <string name="lumen_m_3d_hdr">3D settings are not supported in HDR video</string>

@@ -10,6 +10,7 @@ CTRL = 'src/org/lumen/miracast/core/Control.java'
 PROV = 'src/org/lumen/miracast/StateProvider.java'
 MAN = 'AndroidManifest.xml'
 SET = 'src/org/lumen/miracast/SettingsActivity.java'
+Q = 'src/org/lumen/miracast/core/WfdQuality.java'
 
 MUTANTS = [
     ('set_ask changes enabled', CTRL, 'if (SET_ASK.equals(method)) return ASK;', 'if (SET_ASK.equals(method)) return ENABLED;'),
@@ -30,7 +31,13 @@ MUTANTS = [
     ('bad value still saved', PROV, 'if (on == null) return null;', 'if (on == null) on = Boolean.FALSE;'),
     ('provider read open', MAN, 'android:readPermission="org.lumen.miracast.permission.CONTROL"', ''),
     ('CONTROL not signature', MAN, 'android:protectionLevel="signature" />', 'android:protectionLevel="normal" />'),
-    ('settings screen has its own status rule', SET, 'String st = StatusText.of(this, StatusText.status(this));', 'String st = "";'),
+    ('old address opens nothing', SET, 'startActivity(castScreen(this, getIntent().getStringExtra(EXTRA_EDIT)));', ''),
+    ('old address opens another screen', SET, 'new Intent(CAST_SCREEN)', 'new Intent("org.lumen.miracast.SETTINGS")'),
+    ('redirect shows a window', MAN, 'android:theme="@android:style/Theme.NoDisplay"', 'android:theme="@style/Theme.Miracast.Settings"'),
+    ('quality not in the state', PROV, '        b.putString("quality", StatusText.quality(c, Prefs.quality(c)));\n', ''),
+    ('quality step stays', Q, 'return all[Math.floorMod(ordinal() + d, all.length)];', 'return this;'),
+    ('quality step skips 720p', Q, 'return all[Math.floorMod(ordinal() + d, all.length)];', 'return all[Math.floorMod(ordinal() + d, 2)];'),
+    ('quality back goes forward', Q, 'return all[Math.floorMod(ordinal() + d, all.length)];', 'return all[Math.floorMod(ordinal() + 1, all.length)];'),
 ]
 
 
@@ -43,6 +50,7 @@ def tree(tmp):
     app = os.path.join(tmp, 'app')
     shutil.copytree(os.path.join(APP, 'src'), os.path.join(app, 'src'))
     shutil.copytree(os.path.join(APP, 'test'), os.path.join(app, 'test'))
+    shutil.copytree(os.path.join(APP, 'res'), os.path.join(app, 'res'))
     shutil.copy(os.path.join(APP, MAN), os.path.join(app, MAN))
     return app
 

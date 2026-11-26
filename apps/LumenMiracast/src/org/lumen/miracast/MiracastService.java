@@ -33,6 +33,7 @@ import android.view.Surface;
 
 import org.lumen.miracast.core.Diag;
 import org.lumen.miracast.core.P2pCapability;
+import org.lumen.miracast.core.P2pHealth;
 import org.lumen.miracast.core.P2pRules;
 import org.lumen.miracast.core.P2pVerdict;
 import org.lumen.miracast.core.WfdSession;
@@ -58,8 +59,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * Diagnostics: every step goes to {@link #diag()} (logcat tag LumenMiracastDiag, one line per step), the
  * report of the last finished attempt is kept in diag-last.txt, and both print with
- * {@code adb shell dumpsys activity service org.lumen.miracast/.MiracastService} or on the hidden
- * {@link DiagActivity} page.
+ * {@code adb shell dumpsys activity service org.lumen.miracast/.MiracastService} or on the projector menu's page
+ * For developers, Miracast diagnostics (StateProvider call "diag").
  */
 public final class MiracastService extends Service implements P2pController.Callback, SinkSession.Host {
     static final String TAG = "LumenMiracast";
@@ -143,6 +144,8 @@ public final class MiracastService extends Service implements P2pController.Call
         DIAG.ok(Diag.Stage.SERVICE, "started, version " + versionName() + ", ask=" + Prefs.ask(this));
         prompt = new PromptOverlay(this);
         p2p = new P2pController(this, this, DIAG);
+        // a system build whose Wi-Fi part already failed to finish a connection: say so from the start
+        if (Build.FINGERPRINT.equals(Prefs.get(this).getString(Prefs.CONNECT_BROKEN, null))) p2p.knownConnectBroken();
         p2p.start(Prefs.name(this));
         IntentFilter f = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOff, f, Context.RECEIVER_NOT_EXPORTED);
@@ -263,6 +266,10 @@ public final class MiracastService extends Service implements P2pController.Call
         return p2p != null ? p2p.lastError() : null;
     }
 
+    P2pHealth.Fault fault() {
+        return p2p != null ? p2p.fault() : P2pHealth.Fault.NONE;
+    }
+
     void attachSurface(Surface s) {
         SinkSession ss = session;
         if (ss != null) ss.setSurface(s);
@@ -348,6 +355,12 @@ public final class MiracastService extends Service implements P2pController.Call
     public void onStateChanged() {
         updateNotification();
         notifyUi();
+    }
+
+    @Override
+    public void onConnectBroken() {
+        Prefs.get(this).edit().putString(Prefs.CONNECT_BROKEN, Build.FINGERPRINT).apply();
+        Log.w(TAG, "connections cannot finish on this system build: " + Build.FINGERPRINT);
     }
 
     @Override
@@ -535,11 +548,13 @@ public final class MiracastService extends Service implements P2pController.Call
             text = getString(R.string.status_no_wifi);
         } else if (p2p != null && p2p.state() == P2pState.UNSUPPORTED) {
             text = getString(R.string.status_unsupported);
+        } else if (p2p != null && StatusText.detail(this, p2p.fault()) != null) {
+            text = StatusText.detail(this, p2p.fault());
         } else {
             text = getString(R.string.notif_ready, Prefs.name(this));
         }
         PendingIntent pi = PendingIntent.getActivity(this, 0,
-                new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                SettingsActivity.castScreen(this, null),
                 PendingIntent.FLAG_IMMUTABLE);
         return new Notification.Builder(this, CHANNEL)
                 .setSmallIcon(R.drawable.ic_mirroring)

@@ -9,6 +9,7 @@ public final class AllTests {
         ResolutionTest.run();
         GfxTest.run();
         CecNamesTest.run();
+        PortChipTest.run();
         TmdbTest.run();
         MirrorTileTest.run();
         ProjectorTargetTest.run();

@@ -19,6 +19,9 @@ section keystone  (stock order: settings_tree_product_dayao projection_screen (G
   screen zoom.digital
   screen keystone.rotation
   action keystone.restore
+  -- line
+  choice projection.mode [auto, table, ceiling]
+  toggle projection.rear  hint picture rear_projection
 section focus
   action focus.af_now
   screen focus.manual
@@ -50,39 +53,60 @@ section game
   choice game.mode [off, on, auto]  hint picture game_mode
 section eye
   choice eye [off, on]
+section source
+  screen source.list
+  screen settings.hdmi
+section bluetooth
+  screen bluetooth.add
 section general
-  action lamp.off
-  screen settings.system
-  info settings.temperature
-  screen settings.parental
-  screen settings.recents
-  screen settings.ambient_speaker
+  -- language_time
+  screen settings.language
+  screen settings.date_time
+  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
+  -- power
+  choice settings.power_key [power_menu, sleep]
   screen settings.sleep_timer
+  toggle lamp.eco
+  choice power.boot_source [home, hdmi]
+  toggle power.on_music
+  -- display_menu
+  choice eye [off, on]
+  screen settings.screensaver_now
+  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
+  choice settings.menu_side [left, right]
+  choice settings.menu_density [normal, compact]
+  -- remote_voice
   screen settings.remote
   screen settings.remote_keys
-  toggle lamp.eco
+  toggle voice.speak
+  screen voice.key
+  -- apps_devices
   choice settings.launcher [lumen, classic]
+  screen settings.recents
+  screen settings.casting
+  screen settings.ambient_speaker
+  screen settings.parental
+  -- storage_updates
+  screen settings.storage
+  screen settings.update
+  screen settings.about
+  -- help
   screen settings.report
   toggle settings.stats
   screen settings.licences
-  -- screensaver
-  screen settings.screensaver_now
-  choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
-  -- power
-  toggle power.on_music
-  choice power.boot_source [home, hdmi]
-  -- menu
-  choice settings.menu_side [left, right]
-  choice settings.menu_density [normal, compact]
-  -- voice
-  choice voice.language [system, ru, en, uk, kk, de, fr, es, it, pt, pl, tr, zh, ja, ko, ar]
-  toggle voice.speak
-  screen voice.key
+  screen settings.system
 section developer
   screen signal.panel
   screen sensors.panel
   toggle signal.pin
+  choice signal.refresh [normal, fast]
+  info settings.temperature
   screen settings.diagnostics
+  screen dev.mirror_diag
+  -- system
+  screen dev.system_info
+  toggle dev.network_adb
+  screen dev.android
 page focus.settings
   toggle focus.smart
 popup keystone (rows with a tile of their own left out)
@@ -93,6 +117,6 @@ popup keystone (rows with a tile of their own left out)
   keystone.manual
   keystone.rotation
   keystone.restore
-all settings: keystone picture projection sound eye general developer
+all settings: general keystone picture source bluetooth sound developer
 keys: gear short quick_menu, gear long none, eye_gear_short restore
 game menu: none

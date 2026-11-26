@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Host test of holding OK on a developer card (OkHold, PanelToggle.expand / collapse): a short press passes exactly
- * once and unchanged, a held one opens the panel once, the timing edges, the full panel's own OK, and with no card on
- * screen nothing at all is taken.
+ * Host test of holding OK or BACK on a developer card (OkHold, PanelToggle.expand / collapse / dismiss): a short press
+ * passes exactly once and unchanged, a held OK opens the panel once, a held BACK hides the card, the timing edges, the
+ * full panel's own OK, who has the keys (the full panel only with its own focus, the card never under a window of this
+ * app), and with no card on screen nothing at all is taken.
  */
 public final class OkHoldTest {
     private static int fails, checks;
@@ -170,14 +171,95 @@ public final class OkHoldTest {
         ok("window: a cancelled press does nothing", OkHold.windowUp(true, true, 100) == OkHold.Act.NONE);
         ok("window: short OK = its own OK", OkHold.windowUp(true, false, 599) == OkHold.Act.SHEET_OK);
         ok("window: held OK folds back", OkHold.windowUp(true, false, 600) == OkHold.Act.COLLAPSE);
-        // the hint: the first three cards, never after the user held OK once
-        ok("hint: cards 1 to 3", OkHold.hint(0, false) && OkHold.hint(1, false) && OkHold.hint(2, false));
-        ok("hint: not the fourth", !OkHold.hint(3, false));
-        ok("hint: never once learned", !OkHold.hint(0, true));
-        // opened by the remote key the user gave it: every time until the user expanded a card once
-        ok("hint by key: the fourth card too", OkHold.hint(3, false, true) && OkHold.hint(40, false, true));
-        ok("hint by key: never once learned", !OkHold.hint(3, true, true) && !OkHold.hint(0, true, true));
-        ok("hint not by key: the old rule", !OkHold.hint(3, false, false) && OkHold.hint(2, false, false));
+        // who has the keys (2026-11-21): the card acts only on keys that are not another window's
+        {
+            ok("route: full panel with its own focus takes OK", OkHold.shown(PanelMode.DETAIL, true, false) == SHEET);
+            // 2026-11-23 (sensor card, quick menu over it, OK on the gear did nothing): one rule for every
+            // overlay, a Lumen panel in front has the keys even while the overlay's window still has the focus
+            ok("route: full panel never takes OK while a Lumen panel is in front",
+                    OkHold.shown(PanelMode.DETAIL, true, true) == NONE);
+            {
+                OkHold h = new OkHold();
+                List<OkHold.Act> acts = new ArrayList<>();
+                List<Ev> evs = new ArrayList<>();
+                evs.add(new Ev(OK, true, 0, t0));
+                evs.add(new Ev(OK, false, 0, t0 + 80));
+                List<Ev> passed = run(h, OkHold.shown(PanelMode.DETAIL, true, true), evs, acts);
+                ok("panel in front, sheet focus not yet gone: OK DOWN and UP reach the menu", passed.size() == 2);
+                ok("panel in front, sheet focus not yet gone: the sheet does nothing", acts.isEmpty());
+            }
+            ok("route: full panel under the quick menu takes nothing",
+                    OkHold.shown(PanelMode.DETAIL, false, true) == NONE && OkHold.shown(PanelMode.DETAIL, false, false) == NONE);
+            ok("route: small card over another app", OkHold.shown(PanelMode.COMPACT, false, false) == CARD
+                    && OkHold.shown(PanelMode.POPUP, false, false) == CARD);
+            ok("route: small card while a window of this app has the keys takes nothing",
+                    OkHold.shown(PanelMode.COMPACT, false, true) == NONE && OkHold.shown(PanelMode.POPUP, true, true) == NONE);
+            ok("route: nothing on screen", OkHold.shown(PanelMode.HIDDEN, true, false) == NONE);
+            // the owner's case: full panel open, the gear key's quick menu over it, OK on the gear
+            OkHold h = new OkHold();
+            OkHold.Shown menu = OkHold.shown(PanelMode.DETAIL, false, true);
+            List<OkHold.Act> acts = new ArrayList<>();
+            List<Ev> evs = new ArrayList<>();
+            evs.add(new Ev(OK, true, 0, t0));
+            evs.add(new Ev(OK, false, 0, t0));
+            List<Ev> passed = run(h, menu, evs, acts);
+            ok("gear under the menu: OK reaches the menu, DOWN and UP", passed.size() == 2);
+            ok("gear under the menu: the panel's option does not switch", acts.isEmpty());
+            ok("gear under the menu: no fold or open later", h.timer(menu, t0 + 5000) == OkHold.Act.NONE);
+            h.key(true, true, 0, menu, t0 + 100);
+            ok("menu: a held OK on a tile opens nothing of the card", h.timer(menu, t0 + 2000) == OkHold.Act.NONE);
+            ok("menu: its repeats and UP pass", !h.key(true, true, 3, menu, t0 + 100).consume
+                    && !h.key(true, false, 0, menu, t0 + 100).consume);
+            // short OK and BACK always reach the window in front, whatever is on screen
+            boolean shortOk = true;
+            for (OkHold.Shown s : OkHold.Shown.values()) {
+                for (OkHold.Key k : new OkHold.Key[] {OkHold.Key.BACK, OkHold.Key.OTHER}) {
+                    OkHold g = new OkHold();
+                    shortOk &= !g.key(k, true, 0, s, t0).consume && !g.key(k, false, 0, s, t0).consume
+                            && g.timer(s, t0 + 9000) == OkHold.Act.NONE;
+                }
+                if (s == SHEET) continue;
+                OkHold g = new OkHold();
+                shortOk &= !g.key(OkHold.Key.OK, true, 0, s, t0).consume && !g.key(OkHold.Key.OK, false, 0, s, t0).consume
+                        && g.timer(s, t0 + 9000) == OkHold.Act.NONE;
+            }
+            ok("short OK (no full panel with the keys) and short BACK pass unchanged, nothing acts", shortOk);
+        }
+        // hold BACK on the small card: it goes, the app's keys stay untouched (the card takes the press by focus)
+        {
+            OkHold h = new OkHold();
+            OkHold.Step d = h.key(OkHold.Key.BACK, true, 0, CARD, t0);
+            ok("back: DOWN passes, armed", !d.consume && d.due == t0 + 600);
+            ok("back: 599 ms hides nothing", h.timer(CARD, t0 + 599) == OkHold.Act.NONE);
+            ok("back: held 600 ms hides the card", h.timer(CARD, t0 + 600) == OkHold.Act.HIDE);
+            ok("back: once per press", h.timer(CARD, t0 + 900) == OkHold.Act.NONE);
+            ok("back: repeats and UP pass (a taken UP would repeat forever)",
+                    !h.key(OkHold.Key.BACK, true, 4, CARD, t0).consume && !h.key(OkHold.Key.BACK, false, 0, CARD, t0).consume);
+            h.key(OkHold.Key.BACK, true, 0, OkHold.shown(PanelMode.COMPACT, false, true), t0 + 2000);
+            ok("back: held in a Lumen window over the card hides nothing",
+                    h.timer(OkHold.shown(PanelMode.COMPACT, false, true), t0 + 4000) == OkHold.Act.NONE);
+            h = new OkHold();
+            h.key(OkHold.Key.BACK, true, 0, SHEET, t0);
+            ok("back: in the full panel the panel window's own BACK, the filter arms nothing",
+                    h.due() < 0 && h.timer(SHEET, t0 + 900) == OkHold.Act.NONE);
+            h = new OkHold();
+            h.key(OkHold.Key.BACK, true, 0, CARD, t0);
+            h.key(false, true, 0, CARD, t0 + 100);
+            ok("back: another key during the hold disarms it", h.timer(CARD, t0 + 900) == OkHold.Act.NONE);
+            h = new OkHold();
+            h.key(true, true, 0, CARD, t0);
+            ok("back: the UP of BACK does not end an OK hold", !h.key(OkHold.Key.BACK, false, 0, CARD, t0).consume
+                    && h.timer(CARD, t0 + 600) == OkHold.Act.EXPAND);
+        }
+        // a filter that ran late (busy main loop): the timer never runs before the filter saw the press
+        ok("timer: due in the future stays", OkHold.timerAt(t0 + 600, t0 + 10) == t0 + 600);
+        ok("timer: due in the past waits for now (the queued UP goes first)", OkHold.timerAt(t0 + 600, t0 + 700) == t0 + 700);
+        {
+            OkHold h = new OkHold();
+            h.key(true, true, 0, CARD, t0);
+            h.key(true, false, 0, CARD, t0);
+            ok("timer: a short press seen late expands nothing", h.timer(CARD, OkHold.timerAt(t0 + 600, t0 + 700)) == OkHold.Act.NONE);
+        }
         // PanelToggle: open by holding, fold back into the card it came from
         {
             PanelToggle t = new PanelToggle();
@@ -206,6 +288,21 @@ public final class OkHoldTest {
             t.expand();
             t.hide();
             ok("toggle: hide forgets the hold", !t.held() && t.collapse() == PanelMode.HIDDEN);
+            t = new PanelToggle();
+            t.press();
+            ok("toggle: BACK held hides the card", t.dismiss() == PanelMode.HIDDEN && t.press() == PanelMode.COMPACT);
+            t.press();
+            ok("toggle: BACK held does nothing to the full panel", t.dismiss() == PanelMode.DETAIL);
+            t = new PanelToggle();
+            t.pin(true, true);
+            ok("toggle: a pinned card hides by BACK held", t.dismiss() == PanelMode.HIDDEN && t.pinned());
+            ok("toggle: it stays away over the same input", t.pinTick(true, 10) == PanelMode.HIDDEN);
+            t.pinTick(false, 20);
+            t.pinTick(false, 20 + PanelToggle.PIN_LEAVE_MS);
+            ok("toggle: back on the next HDMI input", t.pinTick(true, 9000) == PanelMode.COMPACT);
+            t = new PanelToggle();
+            t.signalChanged(true, true);
+            ok("toggle: a popup card hides by BACK held", t.dismiss() == PanelMode.HIDDEN && t.popupOver() == PanelMode.HIDDEN);
         }
         System.out.println((fails == 0 ? "ok   " : "FAIL ") + "OkHoldTest: " + (checks - fails) + "/" + checks);
         if (fails > 0) System.exit(1);

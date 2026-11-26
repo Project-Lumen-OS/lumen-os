@@ -4,7 +4,7 @@
 Each mutant changes one line of the code or data the tests pin; the named suites must then fail (the mutant is
 killed). The tree is restored after every mutant, also on error.
   python3 apps/core/lumen-cec/test/parity/mutate.py [NAME_SUBSTRING...]
-Suites: parity = test/parity/run.sh (Z9X, HB, X50, RS30 goldens), x50 = apps/X50Projector/test/run.sh, defaults =
+Suites: parity = test/parity/run.sh (Z9X, HB, X50, RS30 goldens), x50 = apps/LumenProjector/host/activity/test/run.sh, defaults =
 test/defaults/run.sh (the stock CEC defaults table and the one-time step), tool = tools/devices/test/cec_defaults_test.sh
 (the image tool, the RROs and the stock evidence)."""
 import os
@@ -13,18 +13,19 @@ import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../.."))
 PAGE = "apps/core/lumen-cec/src/org/lumen/projector/cec/CecPage.java"
-POLICY = "apps/ProjectorBase/src/org/lumen/projector/cec/CecPolicyDriver.java"
-X = "apps/X50Projector/src/org/lumen/x50/projector/"
+POLICY = "apps/LumenProjector/core/src/org/lumen/projector/cec/CecPolicyDriver.java"
+X = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
+XA = "apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/"
 SUITES = {
     "parity": ["sh", "apps/core/lumen-cec/test/parity/run.sh"],
-    "x50": ["sh", "apps/X50Projector/test/run.sh"],
+    "x50": ["sh", "apps/LumenProjector/host/activity/test/run.sh"],
     "defaults": ["sh", "apps/core/lumen-cec/test/defaults/run.sh"],
     "tool": ["bash", "tools/devices/test/cec_defaults_test.sh"],
 }
 DEF = "apps/core/lumen-cec/src/org/lumen/cec/CecDefaults.java"
 SET = "apps/core/lumen-cec/src/org/lumen/cec/CecSetting.java"
 GLUE = "apps/core/lumen-cec/src/org/lumen/projector/cec/CecStockDefaults.java"
-Z9X_POLICY = "apps/ProjectorBase/src/org/lumen/projector/cec/CecPolicy.java"
+Z9X_POLICY = "apps/LumenProjector/core/src/org/lumen/projector/cec/CecPolicy.java"
 TOOL = "tools/devices/cec_defaults.py"
 TABLE = "devices/_image/cec_defaults.tsv"
 
@@ -53,51 +54,52 @@ MUTANTS = [
     ("Z9X driver: no storm pause", POLICY,
      "public boolean wakePaused() { return CecPolicy.stormPaused(); }", "public boolean wakePaused() { return false; }",
      ["parity"]),
-    ("X50 sequence: CEC off keeps the vendor wake", X + "CecSequences.java",
+    ("X50 sequence: CEC off keeps the vendor wake", XA + "CecSequences.java",
      "            ok &= wakeUpSet(h, false);\n", "", ["parity", "x50"]),
-    ("X50 sequence: CEC off keeps send standby", X + "CecSequences.java",
+    ("X50 sequence: CEC off keeps send standby", XA + "CecSequences.java",
      "            ok &= f.sendStandbySet(false);\n", "", ["parity", "x50"]),
-    ("X50 sequence: wake on does not turn HDMI-CEC on", X + "CecSequences.java",
+    ("X50 sequence: wake on does not turn HDMI-CEC on", XA + "CecSequences.java",
      "        if (on) ok &= f.cecSet(true);\n", "", ["parity", "x50"]),
-    ("X50 sequence: wake sets the framework before the vendor", X + "CecSequences.java",
+    ("X50 sequence: wake sets the framework before the vendor", XA + "CecSequences.java",
      "        boolean ok = wakeUpSet(h, on);\n        ok &= f.sendStandbySet(on);",
      "        boolean ok = f.sendStandbySet(on);\n        ok &= wakeUpSet(h, on);", ["parity", "x50"]),
-    ("X50 sequence: wake without wake-on-play", X + "CecSequences.java",
+    ("X50 sequence: wake without wake-on-play", XA + "CecSequences.java",
      "        ok &= f.wakeOnPlaySet(on);\n        if (on)", "        if (on)", ["parity", "x50"]),
-    ("X50 sequence: 52's boolean taken as the result", X + "CecSequences.java",
+    ("X50 sequence: 52's boolean taken as the result", XA + "CecSequences.java",
      "            h.cecWakeUpSet(on);\n            return true;", "            return h.cecWakeUpSet(on);", ["x50"]),
-    ("X50 sequence: a failed 53 reads off", X + "CecSequences.java",
+    ("X50 sequence: a failed 53 reads off", XA + "CecSequences.java",
      "        } catch (Exception e) {\n            return null;", "        } catch (Exception e) {\n            return false;",
      ["parity", "x50"]),
-    ("X50 sequence: a failing step stops the rest", X + "CecSequences.java",
+    ("X50 sequence: a failing step stops the rest", XA + "CecSequences.java",
      "        ok &= f.sendStandbySet(on);\n        ok &= f.wakeOnPlaySet(on);",
      "        ok = ok && f.sendStandbySet(on);\n        ok = ok && f.wakeOnPlaySet(on);", ["parity", "x50"]),
-    ("X50 driver: no stock tip under the wake row", X + "X50Cec.java",
+    ("X50 driver: no stock tip under the wake row", XA + "X50Cec.java",
      "CecRow.WAKE, CecRow.WAKE_NOTE,", "CecRow.WAKE,", ["parity", "x50"]),
-    ("X50 driver: rows grey with HDMI-CEC off", X + "X50Cec.java",
+    ("X50 driver: rows grey with HDMI-CEC off", XA + "X50Cec.java",
      "public boolean rowsNeedMaster() { return false; }", "public boolean rowsNeedMaster() { return true; }",
      ["parity", "x50"]),
-    ("X50 driver: wake read from the framework, not TV 53", X + "X50Cec.java",
+    ("X50 driver: wake read from the framework, not TV 53", XA + "X50Cec.java",
      "return CecSequences.wakeRead(hal);", "return CecSettings.wakeOn(c);", ["parity", "x50"]),
-    ("X50 driver: send standby and wake-on-play swapped", X + "X50Cec.java",
+    ("X50 driver: send standby and wake-on-play swapped", XA + "X50Cec.java",
      "public boolean sendStandbySet(boolean on) { return CecSettings.setSendStandby(c, on); }",
      "public boolean sendStandbySet(boolean on) { return CecSettings.setWake(c, on); }", ["parity", "x50"]),
     ("X50 pages: no HDMI-CEC page", X + "X50MenuPages.java",
      "            case SETTINGS_CEC: return cec(menu);\n", "", ["x50"]),
-    ("X50 features: settings.cec not opened by the app", X + "X50Features.java",
-     "            FeatureId.SETTINGS_HDMI, FeatureId.SETTINGS_CEC, FeatureId.KEYSTONE_ROTATION, FeatureId.ZOOM_MEMORY};",
-     "            FeatureId.SETTINGS_HDMI, FeatureId.KEYSTONE_ROTATION, FeatureId.ZOOM_MEMORY};", ["x50"]),
-    ("X50 features: no settings.cec", X + "X50Features.java",
+    ("X50 features: settings.cec not opened by the app", XA + "X50Features.java",
+     "            FeatureId.SETTINGS_CEC, FeatureId.KEYSTONE_ROTATION, FeatureId.ZOOM_MEMORY,",
+     "            FeatureId.KEYSTONE_ROTATION, FeatureId.ZOOM_MEMORY,", ["x50"]),
+    ("X50 features: no settings.cec", XA + "X50Features.java",
      "FeatureId.SETTINGS_TEMPERATURE, FeatureId.SETTINGS_CEC, FeatureId.KEYSTONE_ROTATION,\n            FeatureId.FOCUS_GUIDE",
      "FeatureId.SETTINGS_TEMPERATURE, FeatureId.KEYSTONE_ROTATION,\n            FeatureId.FOCUS_GUIDE", ["x50"]),
-    ("Gmpf: 52 allowed with any value", X + "GmpfCall.java",
+    ("Gmpf: 52 allowed with any value", XA + "GmpfCall.java",
      '"setCecWakeUp", "0..1"),', '"setCecWakeUp", "-"),', ["x50"]),
     ("allow list: no 53 row", "devices/g0111/research/allowed_x50projector.tsv",
      "GmTvManager\t53\tgetCecWakeUpState\tboolean()\targs:-\t", "#GmTvManager\t53\tgetCecWakeUpState\tboolean()\targs:-\t",
      ["x50"]),
     ("RS30 profile: no settings.cec", "devices/g0155/menu.json",
-     '    "settings.cec": {},\n', "", ["x50"]),
-    ("X50 recipe: no lumen-cec", "devices/g0100/app/X50Projector.layers",
+     '  "include": "devices/_family/rs30/rs30.menu.json",\n',
+     '  "include": "devices/_family/rs30/rs30.menu.json",\n  "off": {"settings.cec": "mutant"},\n', ["x50"]),
+    ("X50 recipe: no lumen-cec", "devices/_family/mt9681/app/X50Projector.layers",
      "module    lumen-cec\n", "", ["x50"]),
     ("ru: wake note missing", "apps/core/lumen-cec/res/values-ru/lumen_strings_cec.xml",
      '    <string name="lumen_cec_wake_note">', '    <string name="lumen_cec_wake_note_x">', ["parity"]),

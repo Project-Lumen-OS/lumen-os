@@ -23,6 +23,6 @@ config folder comparison: gsi-research/H0061_TITAN_NOIR.md.
 - Lumen Installer: `catalog.conf` (tag `titannoir-{version}`, the trial copy `system_dsu.img`), in catalog-v2.json only (Lumen
   Installer 1.0.4 and later). Trial only on every stock version (no installer.conf).
 - HAL: the X50 apps and allow lists unchanged, `org.lumen.hal.GmpfModel.TITAN_NOIR` with `GmpfHash.TITAN_RULE` (one build with
-  the Pro). Blobs: set `x50-v1264-b` (the v1.2.99 eye-protection pair).
+  the Pro). Blobs: set `x50-v1264-c` (the v1.2.99 eye-protection pair).
 - Menu: `menu.json` = the Pro's rows (the same stock tree and feature.xml), picture modes `ModelMenu.TITAN`.
 - `app/*.layers`: the recipes of devices/h0062/app with this profile.

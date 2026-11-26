@@ -10,8 +10,6 @@ import android.util.Log;
 /**
  * The one Application of org.lumen.updater. What it does at start is this model's data (UpdateTarget):
  * <ul>
- * <li>importBridgeData (Z9X, Play 6, Lumen OS 1.0.8 on): the bridge import of the pre-1.0.8 org.z9x.updater data
- *     (org.lumen.common.LumenImport) before any component reads its prefs;</li>
  * <li>hideWithoutDevice (the neutral updater of the HB and the X50 family): an image without a device wire id
  *     (ro.lumen.ota.device) takes no update, so the update screen is disabled and TvSettings About shows no
  *     "Lumen OS update" row (it lists the SYSTEM_UPDATE_SETTINGS activity only while one resolves); with a wire id
@@ -19,12 +17,6 @@ import android.util.Log;
  * </ul>
  */
 public final class LumenApp extends Application {
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        if (Ota.T.importBridgeData) org.lumen.common.LumenImport.run(base);
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();

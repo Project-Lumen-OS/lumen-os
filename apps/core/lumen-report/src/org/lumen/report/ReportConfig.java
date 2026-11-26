@@ -13,7 +13,7 @@ public final class ReportConfig {
     static final String PROP_URL = "ro.lumen.report.url";
     static final String PROP_URL_DEBUG = "persist.lumen.report.url";
 
-    /** Logcat window of a manual report. The number is also written in the text lumen_report_inc_logs. */
+    /** Logcat window of a manual report when the image's log helper gives no answer (RootLogs takes the whole buffer). */
     static final int LOG_MINUTES = 30;
     /** Logcat window of an automatic report: the minutes around the incident. */
     static final int AUTO_LOG_MINUTES = 10;
@@ -23,6 +23,7 @@ public final class ReportConfig {
     static final long AUTO_MAX_ZIP_BYTES = 1_000_000L;
     /** Raw (scrubbed, uncompressed) caps per section; ReportZip halves them while the zip is too big. */
     static final long CAP_LOGCAT = 6L << 20;
+    static final long CAP_CRASH = 512L << 10;
     static final long CAP_KERNEL = 1L << 20;
     static final long CAP_PREV_BOOT = 1L << 20;
     static final long CAP_PSTORE = 512L << 10;
@@ -33,8 +34,6 @@ public final class ReportConfig {
     /** Dropbox and exit-reason window of a manual report; an automatic one looks at the last day only. */
     static final long HISTORY_MS = 7L * 24 * 3600 * 1000;
     static final long AUTO_HISTORY_MS = 24L * 3600 * 1000;
-    /** One logcat run; the first one may wait for Android's "allow access to device logs" dialog. */
-    static final long LOGCAT_TIMEOUT_MS = 120_000;
     static final long SHORT_EXEC_TIMEOUT_MS = 15_000;
 
     private ReportConfig() {}
