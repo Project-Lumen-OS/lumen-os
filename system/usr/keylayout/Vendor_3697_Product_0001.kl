@@ -37,7 +37,7 @@ key 105        DPAD_LEFT
 key 106        DPAD_RIGHT
 key 115        VOLUME_UP
 key 114        VOLUME_DOWN
-key 116        STB_POWER WAKE
+key 116        WAKEUP  # XGIMI: POWER, sent by the vendor power HAL after every STR resume; wake only (devices/_image/resume_key.py)
 key 102        HOME
 key 139        TV_MEDIA_CONTEXT_MENU  # XGIMI: MENU = the gear held (the remote sends it once on a long press; stock KEYCODE_MENU = the game menu) -> org.lumen.projector gear long press
 key 158        BACK

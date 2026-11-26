@@ -30,7 +30,7 @@ first=""
 for d in $COPIES; do
   f=$G/$d/GmpfHash.java
   [ -f "$f" ] || { bad "copy: $d/GmpfHash.java missing"; continue; }
-  sed -E -e '1d' -e 's/\((HbProjector: AidlWire|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
+  sed -E -e '/^package /d' -e 's/\((HbProjector: AidlWire|LumenInfo: HbGmpf)\)/(APP)/' "$f" > "$W/norm.$(echo "$d" | cut -d/ -f2)"
   if [ -z "$first" ]; then first=$W/norm.$(echo "$d" | cut -d/ -f2)
   elif cmp -s "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)"; then ok "copy: $d/GmpfHash.java = the HbProjector copy"
   else bad "copy: $d/GmpfHash.java differs from the HbProjector copy: $(diff "$first" "$W/norm.$(echo "$d" | cut -d/ -f2)" | head -4 | tr '\n' ' ')"; fi

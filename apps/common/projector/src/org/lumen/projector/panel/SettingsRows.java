@@ -31,8 +31,8 @@ import java.util.function.Consumer;
  * 2026-11-19): the source at power-on, the voice assistant, the interface resolution, the statistics switch and
  * diagnostics. Pair remote and Remote buttons are module rows of lumen-menu (ModuleScreens) for every model. One class for the Z9X, HB and Play 6 adapters with the page's
  * behaviour; what differs per model is its {@link Device}. The power-on melody row is Lumen's own sound now (lumen-menu
- * module row, lumen-audio BootSound): here the unit's stock switch only gives its first value and is turned off, so
- * the vendor music never plays next to it.
+ * module row, lumen-audio BootSound): here the unit's stock switch gives its first value and follows every change the
+ * user makes, so the stock system obeys the same choice.
  */
 public final class SettingsRows {
     public static final Set<FeatureId> FEATURES = Collections.unmodifiableSet(EnumSet.of(FeatureId.POWER_BOOT_SOURCE, FeatureId.VOICE_LANGUAGE, FeatureId.VOICE_SPEAK, FeatureId.VOICE_KEY,
@@ -77,14 +77,16 @@ public final class SettingsRows {
     public SettingsRows(Context c, Device dev) {
         this.app = c.getApplicationContext();
         this.dev = dev;
-        stockMusicOff();
+        stockMusic();
     }
 
-    /** The stock switch gives Lumen's sound its first value on this unit (BootSound.adopt), then goes off. */
-    private void stockMusicOff() {
-        dev.music(v -> {
-            if (BootSound.adopt(app, v)) dev.setMusic(false, rb -> Log.i(TAG, "stock power-on music -> " + rb));
-        });
+    /**
+     * The unit's stock switch: read once for the first value of Lumen's sound (BootSound.adopt), written only when the
+     * user changes the row (BootSound.stock), never at start.
+     */
+    private void stockMusic() {
+        dev.music(v -> BootSound.adopt(app, v));
+        BootSound.stock(on -> dev.setMusic(on, rb -> Log.i(TAG, "stock power-on music " + on + " -> " + rb)));
     }
 
     public static boolean mine(FeatureId f) { return FEATURES.contains(f); }

@@ -41,10 +41,10 @@ ok(sorted(c for c in os.listdir(os.path.join(G, "devices")) if os.path.isfile(os
 # the key: the first DOWN, as stock (pressBehaver 0, no long press action)
 key = read("apps", "core", "lumen-source", "src", "org", "lumen", "source", "SourceKey.java")
 ok("e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) press(c, \"key\")" in key, "SourceKey.onKey: first DOWN only")
-for app in ("LumenProjector/core", "HbProjector", "Play6Projector"):
-    k = read("apps", app, "src", "org", "lumen", "projector", "KeyReceiver.java")
-    ok('if (firstDown && setupDone(ctx, "source")) org.lumen.source.SourceKey.press(ctx, "key");' in k,
-       app + ": Source key -> SourceKey on the first DOWN after setup")
+# the one KeyReceiver of the Z9X, HB and Play 6 projector app (the HB and Play 6 copies folded into it, f4ba3e694)
+k = read("apps", "LumenProjector", "core", "src", "org", "lumen", "projector", "KeyReceiver.java")
+ok('if (firstDown && setupDone(ctx, "source")) org.lumen.source.SourceKey.press(ctx, "key");' in k,
+   "LumenProjector/core: Source key -> SourceKey on the first DOWN after setup")
 x50 = read("apps", "LumenProjector", "host", "activity", "src", "org", "lumen", "x50", "projector", "KeyReceiver.java")
 ok('case KeyEvent.KEYCODE_TV_INPUT:' in x50 and 'if (down && e.getRepeatCount() == 0) SourceReceiver.press(c, "key");' in x50,
    "X50: Source key -> SourceReceiver.press on the first DOWN")

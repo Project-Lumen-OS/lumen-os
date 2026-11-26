@@ -209,6 +209,27 @@ def fixed(rel, data):
     return b"\n".join(lines)
 
 
+def generated(rel, text):
+    """The text a generator writes to rel (path from the tree root, str): its output with the own header as `fix`
+    writes it. Generators write this and compare with current(), so the header has one source (OWN, CODE_EXT and
+    fixed() here) and no generator or check carries a copy of it."""
+    return fixed(rel, text.encode("utf-8")).decode("utf-8")
+
+
+def unheaded(text):
+    """text (str) without the own header line `fix` writes, for a generator that copies an own source into a file
+    with its own first line: generated() puts the header of the copy on top."""
+    m = re.search(r"(?m)^(?:%s) SPDX-License-Identifier: %s\n" % ("|".join(map(re.escape, sorted(set(CODE_EXT.values())))),
+                                                             re.escape(OWN)), text[:HEAD])
+    return text if m is None else text[:m.start()] + text[m.end():]
+
+
+def current(rel, have, want):
+    """True when the file text have (None: no file) is the generator output want, the own header aside: a file
+    `fix` gave the header and one the header never reached are both current, any other difference is not."""
+    return have is not None and generated(rel, have) == generated(rel, want)
+
+
 # where the licensor's name is meant to be public (the Required Notice and the texts around it): check_publish.py
 # reads these files without it, so its personal-data list keeps guarding every other file
 NAMED = re.compile(r"^(?:NOTICE|TRADEMARKS\.md|THIRD_PARTY_NOTICES\.md|tools/ota/licences\.py|docs/repo/licences/.*)$")

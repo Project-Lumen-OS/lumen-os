@@ -4,19 +4,25 @@ package org.lumen.audio;
 import org.lumen.testkit.Check;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * Host checks of the power-on sound: BootSoundRules (switch, first value, boot animation gate, wake, the WAV as the AOSP
  * player reads it) on the shipped asset, then the wiring: the menu row power.on_music is a lumen-menu module setting
- * of every model's profile written through BootSound, the Z9X / HB / Play 6 adapters only adopt and turn off the stock
- * switch, every app installs BootSound with PathSwitch, and every image recipe ships lumen_boot_sound.rc. Argument:
+ * of every model's profile written through BootSound (the only writer), the Z9X / RS 20 / HB / Play 6 adapters read the
+ * stock switch for the first value and write it only on the user's change, every app installs BootSound with
+ * PathSwitch, and every model's image recipe ships lumen_boot_sound.rc. Argument:
  * the gsi folder.
  */
 public final class BootSoundTest {
     private static final Check C = new Check("lumen-audio boot sound");
-    private static final String[] PROFILES = {"horse_popular", "goat_elegant", "dragon_healthy", "g0111", "g0100",
-            "g0155", "g0170", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);
@@ -89,7 +95,12 @@ public final class BootSoundTest {
                 mod > 0 && spec.indexOf("FeatureId.POWER_ON_MUSIC", mod) > 0 && spec.indexOf("FeatureId.POWER_ON_MUSIC", mod) < spec.indexOf(";", mod));
         String screens = Check.read(new File(g, "apps/core/lumen-menu/src/org/lumen/projector/panel/ModuleScreens.java"));
         C.ok("the row reads and writes BootSound", screens.contains("BootSound.on()") && screens.contains("BootSound.set(c, ON.equals(value))"));
-        for (String code : PROFILES) {
+        TreeSet<String> profiles = new TreeSet<>();
+        for (File d : new File(g, "devices").listFiles()) {
+            if (!d.getName().startsWith("_") && new File(d, "menu.json").isFile()) profiles.add(d.getName());
+        }
+        C.ok("every model of the registry is checked (" + profiles.size() + ")", profiles.size() >= 26);
+        for (String code : profiles) {
             C.ok(code + ": the profile has power.on_music", Check.read(new File(g, "devices/" + code + "/menu.json")).contains("\"power.on_music\""));
             String conf = "\n" + Check.descriptor(g, "devices/" + code + "/build.conf");
             C.ok(code + ": the image stages lumen_boot_sound.rc", conf.contains("apps/core/lumen-audio/image/lumen_boot_sound.rc"));
@@ -98,8 +109,29 @@ public final class BootSoundTest {
                     Check.read(new File(g, steps)).contains("/etc/init/lumen_boot_sound.rc"));
         }
         String rows = Check.read(new File(g, "apps/common/projector/src/org/lumen/projector/panel/SettingsRows.java"));
-        C.ok("Z9X / HB / Play 6: the stock switch gives the first value and goes off",
-                rows.contains("BootSound.adopt(app, v)") && rows.contains("dev.setMusic(false"));
+        C.ok("Z9X / RS 20 / HB / Play 6: the stock switch gives the first value (a read)",
+                rows.contains("dev.music(v -> BootSound.adopt(app, v));"));
+        C.ok("Z9X / RS 20 / HB / Play 6: a user change of the row is written to the stock switch",
+                rows.contains("BootSound.stock(on -> dev.setMusic(on, "));
+        C.ok("the stock switch is written nowhere else (never at start)", rows.split("dev\\.setMusic\\(", -1).length == 2);
+        String bsrc = Check.read(new File(g, "apps/core/lumen-audio/src/org/lumen/audio/BootSound.java"));
+        String set = body(bsrc, "public static void set(Context c, boolean on)");
+        C.ok("BootSound.set: the switch, the gate, then the stock switch with the same value",
+                set.matches("(?s).*SystemProperties\\.set\\(PROP_SWITCH, on \\?.*sync\\(c\\);.*if \\(s != null\\) s\\.set\\(on\\);.*"));
+        C.ok("BootSound.adopt only reads the stock switch", !body(bsrc, "public static void adopt(").contains("sStock"));
+        List<String> callers = new ArrayList<>();
+        Path apps = new File(g, "apps").toPath().toRealPath();
+        try (Stream<Path> s = Files.walk(apps, FileVisitOption.FOLLOW_LINKS)) {
+            s.filter(p -> p.toString().endsWith(".java") && !("/" + apps.relativize(p)).contains("/test/")).forEach(p -> {
+                try {
+                    if (new String(Files.readAllBytes(p), StandardCharsets.UTF_8).contains("BootSound.set(")) callers.add(p.getFileName().toString());
+                } catch (Exception e) {
+                    callers.add(p + ": " + e);
+                }
+            });
+        }
+        C.eq("only the menu row changes the switch (so the stock switch only on a user's change)", "[ModuleScreens.java]",
+                callers.toString());
         C.ok("Z9X / HB / Play 6: the adapters no longer own the row", !rows.contains("case POWER_ON_MUSIC")
                 && !rows.contains("EnumSet.of(FeatureId.POWER_ON_MUSIC"));
         for (String a : new String[] {"apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel/Z9xFeatures.java",
@@ -119,5 +151,13 @@ public final class BootSoundTest {
         C.ok("BootSound: the music stream (user's level), static track", bs.contains("USAGE_MEDIA") && bs.contains("MODE_STATIC"));
         C.ok("gen_bootanim.py stores the same asset as part0/audio.wav",
                 Check.read(new File(g, "tools/brand/gen_bootanim.py")).contains("\"lumen-audio\", \"assets\", \"lumen_audio\", \"poweron.wav\""));
+    }
+
+    /** The text of the method that starts at {@code head}, to its closing brace at four spaces. */
+    private static String body(String src, String head) {
+        int a = src.indexOf(head);
+        if (a < 0) return "";
+        int b = src.indexOf("\n    }\n", a);
+        return b < 0 ? src.substring(a) : src.substring(a, b);
     }
 }

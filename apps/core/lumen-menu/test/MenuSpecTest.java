@@ -366,6 +366,18 @@ public final class MenuSpecTest {
         check(ms.contains("if (f == FeatureId.SOUND_KEY_TONE || f == FeatureId.SETTINGS_COLOUR_VISION) return true;")
                 && ms.contains("if (MenuSpec.MODULE_INFO.contains(f)) return true;"),
                 "module rows: shown wherever the profile names them");
+        // every module setting needs a rule in ModuleScreens.available, whose fallback is false: the power-on sound row
+        // had none and was hidden on every model from 2026-11-19 although every profile listed it
+        int a1 = ms.indexOf("static boolean available(Context c, MenuProfile p, FeatureId f)");
+        int a2 = ms.indexOf("\n    }\n", Math.max(0, ms.indexOf("static boolean available(Context c, FeatureId f)")));
+        String avail = a1 < 0 || a2 < a1 ? "" : ms.substring(a1, a2);
+        for (FeatureId f : MenuSpec.MODULE_SETTINGS) {
+            String n = "FeatureId." + f.name();
+            check(avail.contains(n + ")") || avail.contains(n + " ")
+                    || MenuSpec.HOTSPOT_ROWS.contains(f) && avail.contains("MenuSpec.HOTSPOT_ROWS.contains(f)"),
+                    "module setting " + f.name() + " has a rule in ModuleScreens.available (no rule = hidden)");
+        }
+        check(ms.contains("if (f == FeatureId.POWER_ON_MUSIC) return true;"), "the power-on sound row shows on every model that lists it");
         check(MenuSpec.MODULE_SCREENS.contains(FeatureId.SETTINGS_SCREENSAVER_NOW)
                 && MenuSpec.MODULE_SETTINGS.contains(FeatureId.SETTINGS_SCREENSAVER_DELAY), "the screensaver rows are module rows");
         check(ms.contains("if (f == FeatureId.SETTINGS_SCREENSAVER_NOW) return ScreensaverStart.now(c);")

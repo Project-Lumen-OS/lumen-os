@@ -42,8 +42,10 @@ sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "play6"))
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), "ota"))
 import codes_table  # noqa: E402
 import javascan  # noqa: E402
+import licences  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 SITE = re.compile(r"(?<![\w$])(call(?:[A-Z]\w*)?)\s*\(")
@@ -124,7 +126,7 @@ def check_tables(root):
     for c, app, path, text in gens:
         rel = os.path.relpath(path, root)
         old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
-        if old != text:
+        if not licences.current(rel, old, text):
             errs.append("%s: %s is %s: run python3 tools/hal/gen_codes.py --write"
                         % (c, rel, "missing" if old is None else "not what devices/%s/hal/codes.tsv generates" % c))
     return errs

@@ -25,7 +25,7 @@ def body(src, head):
     return src[i:src.index("\n    }\n", i)]
 build = body(ctl, "    private Page buildSection(String sec) {")
 ok("rec.rows(block, f, new ArrayList<>(p.rows().subList(before, p.rows().size())));" in build, "every row of a section page is recorded with its views")
-ok("FullPageRows.Block block = rec.block(hr);" in build and "rec.head(top);" in build, "groups and the note line are recorded")
+ok("FullPageRows.Block block = rec.block(hr, MenuSpec.DISPLAY_MENU.equals(g.header));" in build and "rec.head(top);" in build, "groups and the note line are recorded")
 ok("        fullEditRow = fullEditRow();\n        loadFull(true);\n    }" in ctl, "the constructor lays the pages out for the stored layout")
 ok("        loadFull(false);" in body(ctl, "    private void openAll(String category, View focusRow) {"), "All settings reads the stored layout again when it opens")
 ok("arrange(sec);" in body(ctl, "    private void extensionAdded(String sec, Extension x) {"), "rows of other modules keep the user's order and the editor's row last")

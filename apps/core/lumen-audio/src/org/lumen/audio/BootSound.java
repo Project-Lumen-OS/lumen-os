@@ -31,9 +31,11 @@ import java.io.InputStream;
  *    done (PathSwitch, 3 s), so it sounds at the user's music level on the current output (StockVolume puts that level
  *    on the chip), never while muted or at 0 and never over an app that already plays.
  *  - The switch {@link #PROP_SWITCH} is the menu row power.on_music (lumen-menu ModuleScreens), unset = on.
- * XGIMI's own music lives in its /system (libbootanimation XgimiBootMusic, bootpoweron.wav), which Lumen replaces; the
- * adapters with the vendor switch (Z9X and Play 6 IGmpf 419, HB SystemManager 5) still turn it off through
- * {@link #adopt}, so a stock system on the other half never plays it next to ours either.
+ * XGIMI's own music lives in its /system (libbootanimation XgimiBootMusic, bootpoweron.wav), which Lumen replaces, so
+ * under Lumen the stock switch plays nothing. It is the SAME switch, though: where the adapter has it (Z9X, RS 20 and
+ * Play 6 IGmpf 419 / 420, HB SystemManager 5 / 6) its value is the first value here ({@link #adopt}, a read) and a
+ * user's change of the row is written to it ({@link #stock}), so the stock system on the other half obeys the same
+ * choice. It is never written at start or by a read (as power.on_ac: only the user's own change).
  * Needs nothing beyond the projector apps' permissions. Log tag LumenBootSound.
  */
 public final class BootSound {
@@ -54,24 +56,34 @@ public final class BootSound {
         return BootSoundRules.on(SystemProperties.get(PROP_SWITCH, ""));
     }
 
-    /** Writes the switch and the boot animation gate. Any thread. */
+    /** The unit's own stock power-on music switch, for the adapters that have it. */
+    public interface Stock {
+        void set(boolean on);
+    }
+
+    private static volatile Stock sStock;
+
+    /** The adapter's stock switch: every user change of the row ({@link #set}) is written there too. */
+    public static void stock(Stock s) {
+        sStock = s;
+    }
+
+    /** The row: writes the switch, the boot animation gate and the unit's stock switch. Any thread. */
     public static void set(Context c, boolean on) {
         SystemProperties.set(PROP_SWITCH, on ? BootSoundRules.ON : BootSoundRules.OFF);
         sync(c);
+        Stock s = sStock;
+        if (s != null) s.set(on);
     }
 
-    /**
-     * The unit's stock switch ({@code vendor}, null = no answer) becomes the first value while Lumen stored none.
-     * True when the vendor music is on and the caller turns it off.
-     */
-    public static boolean adopt(Context c, Boolean vendor) {
+    /** The unit's stock switch ({@code vendor}, null = no answer) becomes the first value while Lumen stored none. */
+    public static void adopt(Context c, Boolean vendor) {
         String first = BootSoundRules.adopt(SystemProperties.get(PROP_SWITCH, ""), vendor);
         if (first != null) {
             Log.i(TAG, "first value from the stock switch: " + first);
             SystemProperties.set(PROP_SWITCH, first);
             sync(c);
         }
-        return Boolean.TRUE.equals(vendor);
     }
 
     /** The boot animation gate from the switch and the music level now. Any thread, never throws. */

@@ -1,0 +1,26 @@
+11-26 22:16:28.243  2766  2766 I X50Proj : remote power key: power menu
+11-26 22:16:43.722  2766  2766 I X50Proj : remote power key: power key (stock shutDownsendKeyCode)
+11-26 22:16:43.732  1304  1380 D WindowManager: powerPress: eventTime=575342 interactive=true count=1 mShortPressOnPowerBehavior=1
+11-26 22:16:43.734  1304  1380 I PowerManagerService: Going to sleep due to power_button (uid 1000, screenOffTimeout=900000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...
+11-26 22:16:44.523  1304  1304 I screen_toggled: 0
+11-26 22:16:44.583   696   696 V xgimi.hardware.gmpf-service: goToSleep[95] goToSleep: in_mode=0,in_type=0
+11-26 22:16:45.445  2766  3120 I X50Proj : sleep: vendor goToSleep(0, 0) sent (stock xgimiPrepareSleep)
+11-26 22:16:45.455   806   832 D StabilityCol.PowerHAL: apm_thread_func APM_USER_SUSPEND
+11-26 22:16:45.456   806   832 D StabilityCol.PowerHAL: gmpf_suspend_start
+11-26 22:16:45.456   696   696 V xgimi.hardware.gmpf-service: goToSleep[95] goToSleep: in_mode=2,in_type=1
+11-26 22:16:47.886   806   832 D StabilityCol.PowerHAL: gmpf_suspend_finish
+11-26 22:17:12.223   806   832 D StabilityCol.PowerHAL: apm_thread_func APM_NORMAL_RESUME 
+11-26 22:17:12.930   806   832 D StabilityCol.PowerHAL: gmpf_resume_start
+11-26 22:17:12.932   696   696 V xgimi.hardware.gmpf-service: wakeUp[196] reserve:0, acquire_wake_lock:0
+11-26 22:17:13.358  1304  1602 I PowerManagerService: Waking up from Asleep (uid=1000, reason=WAKE_REASON_WAKE_KEY, details=android.policy:KEY)...
+11-26 22:17:13.363  1304  1304 I screen_toggled: 1
+11-26 22:17:20.658   696   696 E xgimi.hardware.gmpf-service: wakeUp[230] Wait DisplayResumeThread Finished!
+11-26 22:17:20.658   696   696 V xgimi.hardware.gmpf-service: wakeUp[238]getWakeupMode[2]
+11-26 22:17:20.659   806   832 D StabilityCol.PowerHAL: gmpf_resume_finish
+11-26 22:17:20.660   806   832 D StabilityCol.PowerHAL: sendPowerKeyToAndroid write event to /dev/input/event0 success 
+11-26 22:17:20.663  1304  1380 D WindowManager: powerPress: eventTime=589042 interactive=true count=1 mShortPressOnPowerBehavior=1
+11-26 22:17:20.664  1304  1380 I PowerManagerService: Going to sleep due to power_button (uid 1000, screenOffTimeout=900000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...
+11-26 22:17:21.067  2766  2766 I X50Proj : remote power key: the wake is over (light on)
+11-26 22:17:21.374  1304  1304 I screen_toggled: 0
+11-26 22:17:21.412   696  9982 V xgimi.hardware.gmpf-service: goToSleep[95] goToSleep: in_mode=0,in_type=0
+11-26 22:17:22.260  2766  3120 I X50Proj : sleep: vendor goToSleep(0, 0) sent (stock xgimiPrepareSleep)

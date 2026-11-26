@@ -92,6 +92,7 @@ final class ModuleScreens {
         if (f == FeatureId.SETTINGS_SCREENSAVER_NOW || f == FeatureId.SETTINGS_SCREENSAVER_DELAY) return true;
         if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) return true;
         if (f == FeatureId.SETTINGS_POWER_KEY) return true;            // PowerKeyPrefs: the app has the power key
+        if (f == FeatureId.POWER_ON_MUSIC) return true;                // BootSound: every image ships the sound and its rc
         if (f == FeatureId.SETTINGS_REMOTE || f == FeatureId.SETTINGS_REMOTE_KEYS) return true;
         if (MenuSpec.MODULE_PAGES.contains(f)) return true;           // the page row shows when a row of it is there
         if (MenuSpec.MODULE_INFO.contains(f)) return true;

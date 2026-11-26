@@ -17,6 +17,8 @@ import sys
 
 sys.dont_write_bytecode = True
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(ROOT, "tools", "ota"))
+import licences  # noqa: E402
 TABLE = os.path.join(ROOT, "devices", "_remotes", "remotes.tsv")
 OUT = os.path.join(ROOT, "apps", "core", "lumen-remote", "src", "org", "lumen", "remote", "RemoteCatalog.java")
 KEYS = os.path.join(ROOT, "devices", "_remotes", "keys.tsv")
@@ -328,8 +330,8 @@ def main(argv):
     if "--check" in argv:
         bad = 0
         for path, text, what in outputs:
-            have = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
-            if have != text:
+            have = open(path, encoding="utf-8").read() if os.path.exists(path) else None
+            if not licences.current(os.path.relpath(path, ROOT), have, text):
                 print("gen_catalog: %s is stale: run python3 tools/remotes/gen_catalog.py" % os.path.relpath(path, ROOT))
                 bad = 1
             else:
@@ -338,7 +340,7 @@ def main(argv):
     for path, text, what in outputs:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
-            f.write(text)
+            f.write(licences.generated(os.path.relpath(path, ROOT), text))
         print("gen_catalog: wrote %s (%s)" % (os.path.relpath(path, ROOT), what))
     return 0
 

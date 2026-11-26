@@ -30,11 +30,13 @@ t "apply on the base key layouts" pk apply "$T/new"
 t "check: the base with exactly the edit" pk check "$T/base" "$T/new"
 kl() { grep -E "^key $2[[:space:]]" "$T/new/$1" | head -n 1; }
 # stock X50 (v1.2.64 vendor/usr/keylayout): these scancodes are POWER / KPPOWER, so system POWER WAKE here
-for k in Vendor_3697_Product_0001.kl:116 Vendor_3697_Product_0001.kl:190 Vendor_3697_Product_0001.kl:75 \
+for k in Vendor_3697_Product_0001.kl:190 Vendor_3697_Product_0001.kl:75 \
          Vendor_3697_Product_0002.kl:30 Vendor_3697_Product_0002.kl:116 Vendor_3697_Product_0002.kl:260 \
          Vendor_1d5a_Product_c081.kl:116 Generic.kl:142; do
   t "${k%%:*} ${k#*:} is POWER WAKE" sh -c "printf '%s\n' \"\$1\" | grep -Eq '^key ${k#*:}[[:space:]]+POWER[[:space:]]+WAKE([[:space:]]|\$)'" _ "$(kl "${k%%:*}" "${k#*:}")"
 done
+# the vendor power HAL's STR resume key (KEY_POWER 116 into the IR receiver after every resume) wakes only: WAKEUP
+t "Vendor_3697_Product_0001.kl 116 is WAKEUP, noted as the vendor's resume key" sh -c "printf '%s\n' \"\$1\" | grep -Eq '^key 116[[:space:]]+WAKEUP  # X50: the vendor power HAL.s STR resume key, wake only'" _ "$(kl Vendor_3697_Product_0001.kl 116)"
 # rs30-power: the XGIMI BT remotes' own power keys (stock KPPOWER 113, SECONDARY_POWER 185; services.jar kPPowerPress)
 # are the remote power key STB_POWER WAKE, routed to org.lumen.x50.projector (lumen-menu PowerPress)
 for k in Vendor_000d_Product_3838.kl:113 Vendor_000d_Product_3840.kl:113 Vendor_000d_Product_3841.kl:113 \
@@ -106,8 +108,14 @@ t "later base: 3840 exactly 4 lines changed or added: 113, 64, 88, 185 ($d)" tes
 
 # --- check refuses every mutant
 fresh; pk apply "$T/new" >/dev/null
-sed 's/^key 116        POWER WAKE/key 116        STB_POWER WAKE/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+sed 's/^key 190        POWER WAKE/key 190        STB_POWER WAKE/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
 f "check refuses an IR power key left as STB_POWER" pk check "$T/base" "$T/new"
+fresh; pk apply "$T/new" >/dev/null
+sed 's/^key 116        WAKEUP/key 116        POWER WAKE/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+f "check refuses the vendor's resume key as POWER (it slept the projector on every STR wake)" pk check "$T/base" "$T/new"
+fresh; pk apply "$T/new" >/dev/null
+sed 's/^key 116        WAKEUP/key 116        STB_POWER WAKE/' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+f "check refuses the vendor's resume key as STB_POWER" pk check "$T/base" "$T/new"
 fresh; pk apply "$T/new" >/dev/null
 sed 's/^key 113        STB_POWER WAKE/key 113        STB_POWER/' "$T/new/Vendor_000d_Product_3840.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_000d_Product_3840.kl"
 f "check refuses a BT power key without WAKE" pk check "$T/base" "$T/new"
@@ -183,6 +191,9 @@ f "apply refuses another STB_POWER key outside the table" pk apply "$T/new"
 fresh
 sed '/^key 75 /d' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
 f "apply refuses a base without an expected line" pk apply "$T/new"
+fresh
+sed '/^key 116 /d' "$T/new/Vendor_3697_Product_0001.kl" > "$T/m" && cp "$T/m" "$T/new/Vendor_3697_Product_0001.kl"
+f "apply refuses a base without the IR line of the vendor's resume key" pk apply "$T/new"
 
 # --- the RRO
 t "RRO: static on android, priority 2100 over the Z9X 2000" python3 - "$O/AndroidManifest.xml" "$G/apps/Z9xFrameworkKeysOverlay/AndroidManifest.xml" <<'PY'

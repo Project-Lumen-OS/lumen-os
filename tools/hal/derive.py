@@ -42,8 +42,11 @@ Rules (each one refuses the derivation, nothing is written):
 import hashlib
 import os
 import re
+import sys
 
 import codes_table
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ota"))
+import licences  # noqa: E402
 
 HEADER = codes_table.HEADER
 PUT = re.compile(r"^\s*\.put\((\w+), HalCodes\.(\w+)\)(;?)\s*$")
@@ -291,8 +294,9 @@ def direct_uses(root, calls, gone, maps):
 
 
 def map_copy(root, src, kept, gone, rel_spec):
-    """SRC without the .put rows of absent NAMEs (the statement end moves to the row before)."""
-    lines = open(os.path.join(root, src), encoding="utf-8").read().split("\n")
+    """SRC without the .put rows of absent NAMEs (the statement end moves to the row before) and without its licence
+    header: the generated mark is the first line, the header goes on top when the copy is written."""
+    lines = licences.unheaded(open(os.path.join(root, src), encoding="utf-8").read()).split("\n")
     out, unknown = [], []
     for line in lines:
         m = PUT.match(line)

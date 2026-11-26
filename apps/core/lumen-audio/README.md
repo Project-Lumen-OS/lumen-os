@@ -73,5 +73,8 @@ chip table against its stock rows included), mutants: `python3 apps/core/lumen-a
   writes the gate `persist.lumen.boot_sound.play` (switch on and the music audible) and `image/lumen_boot_sound.rc`
   copies it. A wake from standby plays it from the persistent projector process 3.5 s after SCREEN_ON (after the
   vendor path check) on the music stream, never while muted, at 0 or over a playing app. The switch is the lumen-menu
-  module row `power.on_music` (`persist.lumen.boot_sound`, unset = on as the stock default); the Z9X, HB and Play 6
-  adapters give it the unit's stock switch as the first value and turn the stock music off.
+  module row `power.on_music` (All settings, General, Power; `persist.lumen.boot_sound`, unset = on as the stock
+  default). Off silences both: no boot animation sound and no wake sound. The Z9X, RS 20, HB and Play 6 adapters read
+  the unit's stock switch (IGmpf 420, SystemManager 6) as the first value and write every change the user makes to it
+  (IGmpf 419, SystemManager 5), never at start, so the stock system obeys the same choice. Under Lumen the stock switch
+  plays nothing: its player is XGIMI's /system boot animation.

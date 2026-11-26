@@ -4,7 +4,8 @@
 
   manifest  the AndroidManifest.xml without comments and with whitespace collapsed (package, uid, permissions,
             the SYSTEM_UPDATE_SETTINGS entry of TvSettings, components)
-  res       every file of res/ that is not a values file: path + sha256 (icons, drawables)
+  res       every file of res/ that is not a values file: path + sha256 (icons, drawables; an XML file without its
+            comments, which never reach the app: a licence header is one)
   value     every entry of res/values*/*.xml: folder, tag, name, text (strings in every language, colours, themes)
 
 The parity rule (run.sh): every manifest and res line of the recorded app must be there unchanged; value lines may
@@ -42,7 +43,10 @@ def main(tree):
                     text = re.sub(r"^<[^>]*>|</[^>]*>\s*$", "", text.strip())
                     values[(folder, el.tag, el.get("name"))] = norm(text)
             else:
-                h = hashlib.sha256(open(p, "rb").read()).hexdigest()
+                data = open(p, "rb").read()
+                if f.endswith(".xml"):
+                    data = re.sub(rb"<!--.*?-->", b"", data, flags=re.S)
+                h = hashlib.sha256(data).hexdigest()
                 out.append("res %s %s" % (rel, h))
     # a string alias of res/values (a text of lumen-common-strings) resolves in each folder, as on Android
     folders = {f for f, _, _ in values}

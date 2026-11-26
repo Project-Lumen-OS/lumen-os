@@ -412,13 +412,15 @@ grep -qF '@Override public boolean hasStaticLayers() { return false; }' "$AH" \
   || { echo "FAIL hosts: the activity host claims layers over the game, or the overlay host lost them"; bad=1; }
 PM="$HERE/src/org/lumen/projector/panel/PowerMenu.java"
 # the power menu (PowerMenu): the stock items the profile offers, only through the menu's own host (a device's gate
-# holds for it too), Turn off screen the lamp.off row's own action
-if grep -qF '        for (PowerItem item : PowerItem.offered(menu::offers)) {' "$PM" && grep -qxF '        return menu.host().show(panel);' "$PM" \
+# holds for it too), Turn off screen the lamp.off row's own action; the round tiles of every power menu (
+# 2026-11-26: the short press opens the round menu as before, never the side list)
+if grep -qF '        panel = new Tiles(PowerItem.offered(menu::offers));' "$PM" && grep -qxF '        return menu.host().show(panel);' "$PM" \
+  && grep -qF 'private final class Tiles extends RoundTilePanel {' "$PM" && [ -z "$(code 'new PagedPanel\(' "$PM")" ] \
   && [ -z "$(code 'OverlayHost|Notify\.|Ui\.toast|panel\.dismiss\(\)' "$PM")" ] \
   && grep -qxF '                closeThen(() -> menu.act(FeatureId.LAMP_OFF));' "$PM"; then
-  echo "ok   power menu: the profile's stock items, in the menu's host, Turn off screen = the lamp.off row"
+  echo "ok   power menu: the profile's stock items as round tiles, in the menu's host, Turn off screen = the lamp.off row"
 else
-  echo "FAIL power menu: items past the profile, a window past the menu's host, or Turn off screen past the lamp.off row"; bad=1
+  echo "FAIL power menu: items past the profile, not the round tiles, a window past the menu's host, or Turn off screen past the lamp.off row"; bad=1
 fi
 # colour vision (rs30-parity-system2): every stock filter token shows its own label, off the shared Off
 ML="$HERE/src/org/lumen/projector/panel/MenuLabels.java"

@@ -36,7 +36,30 @@ AO = "apps/core/lumen-audio/src/org/lumen/audio/AutoOutput.java"
 JO = "apps/core/lumen-audio/src/org/lumen/audio/JackOutput.java"
 H_JACK = "apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/audio/HbWiredJack.java"
 AUDIO_LINE = "module    lumen-audio\n"
+BS = "apps/core/lumen-audio/src/org/lumen/audio/BootSound.java"
+BR = "apps/core/lumen-audio/src/org/lumen/audio/BootSoundRules.java"
+BRC = "apps/core/lumen-audio/image/lumen_boot_sound.rc"
+SR = "apps/common/projector/src/org/lumen/projector/panel/SettingsRows.java"
+MS = "apps/core/lumen-menu/src/org/lumen/projector/panel/ModuleScreens.java"
 MUTANTS = [
+    # the power-on sound switch (BootSound): every power-on sound follows it, the stock switch only on a user's change
+    (BR, "boot sound: unset switch is off", "return !OFF.equals(stored);", "return ON.equals(stored);"),
+    (BR, "boot sound: the boot animation gate ignores the switch", "return on && !muted && index > 0 ? ON : OFF;",
+     "return !muted && index > 0 ? ON : OFF;"),
+    (BR, "boot sound: a wake ignores the switch", "return on && booted && sinceBootMs", "return booted && sinceBootMs"),
+    (BRC, "boot sound: the rc does not copy the off gate",
+     "on property:persist.lumen.boot_sound.play=0\n    setprop persist.sys.bootanim.play_sound 0\n", ""),
+    (BS, "boot sound: the row does not write the stock switch", "        if (s != null) s.set(on);\n", ""),
+    (BS, "boot sound: the stock switch gets the other value", "if (s != null) s.set(on);", "if (s != null) s.set(!on);"),
+    (BS, "boot sound: adopt writes the stock switch", "            Log.i(TAG, \"first value from the stock switch: \" + first);\n",
+     "            Log.i(TAG, \"first value from the stock switch: \" + first);\n            if (sStock != null) sStock.set(false);\n"),
+    (SR, "boot sound: the stock switch off at every start (old head)", "        dev.music(v -> BootSound.adopt(app, v));\n",
+     "        dev.music(v -> { BootSound.adopt(app, v); dev.setMusic(false, rb -> { }); });\n"),
+    (SR, "boot sound: no stock writer", "        BootSound.stock(on -> dev.setMusic(on, ", "        BootSound.stock(on -> dev.setMusic(true, "),
+    (SR, "boot sound: the stock value not adopted", "dev.music(v -> BootSound.adopt(app, v));", "dev.music(v -> { });"),
+    (MS, "boot sound: the row writes a fixed value", "BootSound.set(c, ON.equals(value));", "BootSound.set(c, true);"),
+    (PS, "boot sound: an app changes the switch by itself", "BootSound.install(sApp);",
+     "BootSound.install(sApp);\n        BootSound.set(sApp, true);"),
     (MP, "format at the ARC connect always (LR-5MVYWT double pcm)", "return confirmed == ARC && !sentSinceArc;", "return true;"),
     (MP, "format at the ARC connect ignores what was sent", "return confirmed == ARC && !sentSinceArc;", "return confirmed == ARC;"),
     (MP, "format at the ARC connect whatever the path", "return confirmed == ARC && !sentSinceArc;", "return !sentSinceArc;"),
@@ -230,13 +253,15 @@ def main():
     if bad:
         print("BROKEN anchors: %s" % ", ".join(bad))
         return 2
+    only = os.environ.get("MUT_ONLY")
+    mutants = [m for m in MUTANTS if not only or only in m[1]]
     base = run()
     if base.returncode != 0:
         print("the unmutated suite is red:\n" + base.stdout[-2000:] + base.stderr[-2000:])
         return 2
     survived = []
     try:
-        for f, name, a, b in MUTANTS:
+        for f, name, a, b in mutants:
             with open(os.path.join(G, f), "w", encoding="utf-8") as fh:
                 fh.write(files[f].replace(a, b, 1))
             r = run()
@@ -252,7 +277,7 @@ def main():
         for f, text in files.items():
             with open(os.path.join(G, f), "w", encoding="utf-8") as fh:
                 fh.write(text)
-    print("lumen-audio mutants: %d killed, %d survived" % (len(MUTANTS) - len(survived), len(survived)))
+    print("lumen-audio mutants: %d killed, %d survived" % (len(mutants) - len(survived), len(survived)))
     return 1 if survived else 0
 
 

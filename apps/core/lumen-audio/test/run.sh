@@ -45,7 +45,7 @@ mkdir -p "$OUT/soundbar"
   "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/org/lumen/audio/SoundbarModeTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/soundbar" org.lumen.audio.SoundbarModeTest "$G"
 # the power-on sound (BootSoundRules on the shipped asset) and its wiring: the module row of every profile, the stock
-# switch off in the Z9X / HB / Play 6 adapters, BootSound installed with PathSwitch, the rc in every image recipe
+# switch read once and written only on a user's change, BootSound installed with PathSwitch, the rc in every image recipe
 mkdir -p "$OUT/boot"
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/boot" "$S/BootSoundRules.java" \
   "$G/apps/core/lumen-testkit/src/org/lumen/testkit/Check.java" "$HERE/test/org/lumen/audio/BootSoundTest.java"

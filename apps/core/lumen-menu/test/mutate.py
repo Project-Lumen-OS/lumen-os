@@ -20,6 +20,12 @@ UI = "src/org/lumen/projector/ui/"
 MS = "src/org/lumen/projector/panel/ModuleScreens.java"
 QS = "src/org/lumen/menu/quick/"
 MUTANTS = [
+    # ---- the power-on sound row (power.on_music): shown on every model whose profile lists it
+    ("bootsound: row hidden (no availability rule)", MS,
+     "        if (f == FeatureId.POWER_ON_MUSIC) return true;                // BootSound: every image ships the sound and its rc\n", ""),
+    ("bootsound: row hidden (rule false)", MS, "if (f == FeatureId.POWER_ON_MUSIC) return true;", "if (f == FeatureId.POWER_ON_MUSIC) return false;"),
+    ("bootsound: key tone rule dropped too", MS, "        if (f == FeatureId.SOUND_KEY_TONE || f == FeatureId.SETTINGS_COLOUR_VISION) return true;\n",
+     "        if (f == FeatureId.SETTINGS_COLOUR_VISION) return true;\n"),
     # ---- option B (2026-11-26): General first, its groups, Send a problem report under Help, picture off only
     # in the quick menu editor, the technical rows on For developers
     ("optb: General back after Eye", S + "MenuSpec.java",
@@ -245,6 +251,8 @@ MUTANTS = [
      "        return menu.host().show(panel);", "        return org.lumen.projector.ui.OverlayHost.get(app).show(panel);"),
     ("Turn off screen in the power menu is not the lamp.off row", "src/org/lumen/projector/panel/PowerMenu.java",
      "closeThen(() -> menu.act(FeatureId.LAMP_OFF));", "closeThen(() -> { });"),
+    ("the power menu's sleep timer as the side list", "src/org/lumen/projector/panel/PowerMenu.java",
+     "menu.host().show(new TimerCard(timer));", "menu.host().show(new PagedPanel(timer));"),
     ("lamp slider: asks above the minimum", S + "SliderOff.java", "value != null && value <= min;", "value != null;"),
     ("lamp slider: the first left turns the light off at once", S + "SliderOff.java",
      "return ask.press(dir, now) ? SliderOffStep.OFF : SliderOffStep.HINT;", "return SliderOffStep.OFF;"),

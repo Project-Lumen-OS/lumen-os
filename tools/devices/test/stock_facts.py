@@ -36,11 +36,13 @@ import sys
 G = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 sys.path.insert(0, os.path.join(G, "tools", "devices"))
 sys.path.insert(0, os.path.join(G, "tools", "hal"))
+sys.path.insert(0, os.path.join(G, "tools", "ota"))
 import devices  # noqa: E402
 import layered  # noqa: E402
 import menu_layers  # noqa: E402
 import codes_table  # noqa: E402
 import derive  # noqa: E402
+import licences  # noqa: E402
 
 bad = []
 
@@ -118,7 +120,8 @@ for c, d in sorted(devices.load_all(G).items()):
                open(table, encoding="utf-8").read() == text)
             for p, body in maps.items():
                 ok("%s: %s is generated (derive.py)" % (c, os.path.relpath(p, G)),
-                   os.path.isfile(p) and open(p, encoding="utf-8").read() == body)
+                   licences.current(os.path.relpath(p, G), open(p, encoding="utf-8").read() if os.path.isfile(p)
+                                    else None, body))
         except Exception as e:  # noqa: BLE001  any refusal of the derivation is a red line of this model
             ok("%s: derive %s: %s" % (c, os.path.relpath(spec, G), e), False)
         stocks = sorted({r[2] for r in rows(spec) if r[0] == "stock"})

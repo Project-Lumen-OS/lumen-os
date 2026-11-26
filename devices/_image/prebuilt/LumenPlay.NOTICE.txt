@@ -1,15 +1,16 @@
-Lumen Play 2.0 in this system image
-====================================
+Lumen Play 2.0.1 in this system image
+======================================
 
-This folder holds Lumen Play 2.0 (package com.xgimiru.player, versionCode 18) exactly as published, unchanged and
+This folder holds Lumen Play 2.0.1 (package com.xgimiru.player, versionCode 19) exactly as published, unchanged and
 with its own signature, so its own updates install over it:
-  https://github.com/kmuradoff/kino-player/releases/tag/v2.0
+  https://github.com/kmuradoff/kino-player/releases/tag/v2.0.1
 
 Complete corresponding source of this build:
-  - the Lumen Play repository at tag v2.0 (commit 1bf9e0e63571ff342bebeac73e46ced3c13888cc):
-    https://github.com/kmuradoff/kino-player/tree/v2.0
+  - the Lumen Play repository at tag v2.0.1 (commit 479a454609b0319a4ce0e505273431116ae10cd8):
+    https://github.com/kmuradoff/kino-player/tree/v2.0.1
   - the built-in torrent engine (TorrServer MatriX.146 with our patches and every Go module it uses):
-    torrserver-MatriX.146-src.tar.gz of the same release
+    torrserver-MatriX.146-src.tar.gz of the Lumen Play 2.0 release (the engine of 2.0.1 is the same file,
+    lib/*/libtorrserver.so byte for byte): https://github.com/kmuradoff/kino-player/releases/tag/v2.0
     (sha256 512f0aef3429439654c82c18457fb900e1da1032f4089dd86b454903c0bf34e1)
 The libraries in lib/ are the APK's own lib/ folder, unpacked byte for byte (Android reads a system app's libraries
 from there).
@@ -19,7 +20,7 @@ is distributed under the GNU General Public License, version 3. libVLC is under 
 Lumen Play's own code under the Apache License 2.0. The project's notice and the three licence texts follow.
 
 ==============================================================================
-NOTICE (kino-player v2.0)
+NOTICE (kino-player v2.0.1)
 ==============================================================================
 
 Lumen Play (formerly Kino), a video player for Android TV
@@ -132,7 +133,7 @@ Fonts and icons
   app/src/main/res/drawable/ic_*.xml            Material Symbols Rounded by Google, Apache License 2.0
 
 ==============================================================================
-Apache License 2.0 (LICENSE of kino-player v2.0)
+Apache License 2.0 (LICENSE of kino-player v2.0.1)
 ==============================================================================
 
                                  Apache License
@@ -338,7 +339,7 @@ Apache License 2.0 (LICENSE of kino-player v2.0)
    limitations under the License.
 
 ==============================================================================
-GNU Lesser General Public License 2.1 (LICENSES/LGPL-2.1-or-later.txt of kino-player v2.0)
+GNU Lesser General Public License 2.1 (LICENSES/LGPL-2.1-or-later.txt of kino-player v2.0.1)
 ==============================================================================
 
                   GNU LESSER GENERAL PUBLIC LICENSE

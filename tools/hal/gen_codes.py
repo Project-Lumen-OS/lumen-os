@@ -39,7 +39,9 @@ import sys
 sys.dont_write_bytecode = True
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools", "devices"))
+sys.path.insert(0, os.path.join(ROOT, "tools", "ota"))
 import devices  # noqa: E402
+import licences  # noqa: E402
 
 BASE = "devices/_hal/gmpf-aidl/base.tsv"
 HEADER = "# service\tcode\tmethod\tsignature\tndk_proxy_args\tkind\tsource"
@@ -155,11 +157,11 @@ def java(argv):
         rel = os.path.relpath(path, root)
         old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
         n = text.count("static final int ")
-        if old == text:
+        if licences.current(rel, old, text):
             print("gen_codes: %s: %s = devices/%s/hal/codes.tsv (%d codes of %s)" % (c, rel, c, n, app))
         elif argv == ["--write"]:
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            open(path, "w", encoding="utf-8").write(text)
+            open(path, "w", encoding="utf-8").write(licences.generated(rel, text))
             print("gen_codes: %s: wrote %s (%d codes of %s)" % (c, rel, n, app))
         else:
             print("gen_codes: %s: %s is %s devices/%s/hal/codes.tsv" % (c, rel, "missing, not generated from" if old is None
@@ -188,11 +190,11 @@ def derived(argv):
             for path, body in [(table, text)] + sorted(maps.items()):
                 rel = os.path.relpath(path, root)
                 old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
-                if old == body:
+                if licences.current(rel, old, body):
                     print("gen_codes: %s: %s = derived by method name" % (label, rel))
                 elif argv == ["--write"]:
                     os.makedirs(os.path.dirname(path), exist_ok=True)
-                    open(path, "w", encoding="utf-8").write(body)
+                    open(path, "w", encoding="utf-8").write(licences.generated(rel, body))
                     print("gen_codes: %s: wrote %s" % (label, rel))
                 else:
                     print("gen_codes: %s: %s is NOT what %s derives" % (label, rel, os.path.relpath(spec, root)))
@@ -223,10 +225,10 @@ def main(argv):
             body = generate(base_rows, delta)
             old = open(path, encoding="utf-8").read() if os.path.isfile(path) else None
             rel = os.path.relpath(path, ROOT)
-            if old == body:
+            if licences.current(rel, old, body):
                 print("gen_codes: %s: %s = base + delta (%d rows)" % (c, rel, body.count("\n") - 1))
             elif write:
-                open(path, "w", encoding="utf-8").write(body)
+                open(path, "w", encoding="utf-8").write(licences.generated(rel, body))
                 print("gen_codes: %s: wrote %s" % (c, rel))
             else:
                 print("gen_codes: %s: %s is NOT base + delta" % (c, rel))

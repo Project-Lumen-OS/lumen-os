@@ -141,6 +141,8 @@ src/org/lumen/projector/remote/ProjectorRemoteHost.java
 src/org/lumen/projector/ui/Theme.java
 src/org/lumen/projector/ui/OverlayHost.java
 src/org/lumen/projector/ui/Panel.java
+src/org/lumen/projector/ui/RoundTile.java
+src/org/lumen/projector/ui/RoundTilePanel.java
 src/org/lumen/projector/ui/Page.java
 src/org/lumen/projector/ui/PagedPanel.java
 src/org/lumen/projector/ui/Marquee.java

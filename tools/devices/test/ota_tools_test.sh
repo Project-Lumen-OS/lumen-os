@@ -84,6 +84,7 @@ mktree() {  # dir [ota.conf sed expression] [registry: s10 (OTA switched on, def
   local R=$1 sedx=${2-} reg=${3:-s10}
   mkdir -p "$R/devices/$DEV/certs" "$R/installer/certs/hb" "$R/installer/lib/hb"
   ln -s "$G/tools" "$R/tools"
+  mkdir -p "$R/devices"; ln -s "$G/devices/_vendor" "$R/devices/_vendor"; ln -s "$G/devices/_family" "$R/devices/_family"
   mkdir -p "$R/devices/$DEV/image"
   (cd "$G/devices/$DEV/image" && find . -maxdepth 1 -type f ! -name '*.pyc' -exec cp {} "$R/devices/$DEV/image/" \;)
   echo "$(fpr_file "$OFX/bootctl")  bootctl (ota_tools_test.sh stand-in)" > "$R/devices/$DEV/image/bootctl.sha256"
