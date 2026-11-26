@@ -52,7 +52,8 @@ ignored.
 A model with updates (its public prop file has +ro.lumen.ota.gate=1; 2026-11-14, rules.md 2.34; build.conf
 derive=ota:pub): on top of the above, remove_ota.txt (the base's Z9X gate) is removed, system/etc/init/update_verifier.rc
 is IN/lumen_update_verifier.rc, otacerts.zip is IN/otacerts.zip (ota.x509.pem then ota_next.x509.pem of the model),
-system/product/etc/default-permissions/z9x-updater.xml stays the base's, and system/etc/init/lumen_ota.rc,
+system/product/etc/default-permissions/z9x-updater.xml keeps the base's owner, mode and label (its text is the
+tree copy, the base's plus the licence header line), and system/etc/init/lumen_ota.rc,
 system/etc/lumen/lumen_ota.sh, system/etc/lumen/ota_gate.conf (hal=aidl, xgimi_middle among the health services) and
 system/app/LumenUpdater/LumenUpdater.apk are added from IN; the props say ro.lumen.ota.gate=1, ro.lumen.ota.device =
 PREFIX (the wire id), ro.product.ab_ota_partitions=<the XGIMI set of apps/core/lumen-fwcopy>, ro.lumen.version = V with its O1
@@ -549,12 +550,15 @@ for k, (kind, old, new, rep) in SIGNED.items():
     else:
         bad.append("base_signed.tsv: %s replaces %s" % (k, rep))
 # the update client: the base's default permission file of org.lumen.updater goes with the Z9X updater (remove.txt)
-# and comes back byte for byte (maintainer, mode, label as the base's) where the image carries the shared updater
+# and comes back with the base's owner, mode and label where the image carries the shared updater; its text is the
+# tree copy (tools/ota/image/z9x-updater-default-permissions.xml, pinned by steps.tsv): the base's permissions plus
+# the licence header line since the licence change, so the content differs from the base by that comment only
 UPD_PERM = "system/product/etc/default-permissions/z9x-updater.xml"
 VERIFIER = "system/etc/init/update_verifier.rc"
 if OTA:
     removed.discard(UPD_PERM)
     CHANGED.add(VERIFIER)
+    CHANGED.add(UPD_PERM)
 for must in ("system/framework/framework-res.apk", "system/etc/selinux/plat_mac_permissions.xml",
              "system/apex/com.android.permission.apex"):
     if must not in SIGNED:
