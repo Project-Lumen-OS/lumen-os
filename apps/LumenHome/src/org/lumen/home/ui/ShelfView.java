@@ -73,7 +73,7 @@ public class ShelfView extends LinearLayout {
         });
         mBadge.setClipToOutline(true);
         LayoutParams bp = new LayoutParams(Theme.px(BADGE), Theme.px(BADGE));
-        bp.rightMargin = Theme.px(12);
+        bp.setMarginEnd(Theme.px(12));
         mEyebrow.addView(mBadge, bp);
         mEyebrowText = new TextView(c);
         mEyebrowText.setSingleLine(true);
@@ -87,7 +87,7 @@ public class ShelfView extends LinearLayout {
         mProgressLine.setGravity(Gravity.CENTER_VERTICAL);
         mBar = new Bar(c);
         LayoutParams barLp = new LayoutParams(Theme.px(BAR_W), Theme.px(BAR_H));
-        barLp.rightMargin = Theme.px(16);
+        barLp.setMarginEnd(Theme.px(16));
         mProgressLine.addView(mBar, barLp);
         mLeft = new TextView(c);
         mLeft.setSingleLine(true);
@@ -123,19 +123,19 @@ public class ShelfView extends LinearLayout {
             int s = Theme.px(i == 0 ? 34 : 30);
             d.setBounds(0, 0, s, s);
             b.setCompoundDrawablesRelative(d, null, null, null);
-            b.setPadding(Theme.px(26), 0, Theme.px(34), 0);
+            b.setPaddingRelative(Theme.px(26), 0, Theme.px(34), 0);
             b.setTag(10 + i);
             b.setOnClickListener(click);
             b.setFocusable(false); // the focus is Home's own (FocusMap), the framework never holds it on a button
             LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-            if (i > 0) lp.leftMargin = Theme.px(16);
+            if (i > 0) lp.setMarginStart(Theme.px(16));
             mButtons.addView(b, lp);
             mBtn[i] = b;
         }
         mDots = new Dots(c);
         mDots.setVisibility(GONE);
         LayoutParams dl = new LayoutParams(Theme.px(DOTS_W), Theme.px(10));
-        dl.leftMargin = Theme.px(32);
+        dl.setMarginStart(Theme.px(32));
         dl.gravity = Gravity.CENTER_VERTICAL;
         mButtons.addView(mDots, dl);
         restyle();

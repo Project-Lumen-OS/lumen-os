@@ -8,6 +8,10 @@ import android.os.Looper;
 
 import org.json.JSONException;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -103,6 +107,22 @@ public final class Store implements Newest.Offers {
     /** The downloaded files of the offer (Ota.deleteFiles). */
     @Override
     public void deleteFiles() { Ota.deleteFiles(app); }
+
+    /** The deltas that failed on the running build: "build_id|sha256,sha256", empty for any other build. */
+    public Set<String> refusedDeltas() {
+        String v = p.getString("delta_refused", "");
+        int bar = v.indexOf('|');
+        if (bar <= 0 || !v.substring(0, bar).equals(Ota.buildId())) return Collections.emptySet();
+        Set<String> s = new TreeSet<>(Arrays.asList(v.substring(bar + 1).split(",")));
+        s.remove("");
+        return s;
+    }
+
+    public void refuseDelta(String sha256) {
+        Set<String> s = new TreeSet<>(refusedDeltas());
+        s.add(sha256);
+        p.edit().putString("delta_refused", Ota.buildId() + "|" + String.join(",", s)).apply();
+    }
 
     public void clearOffer() {
         p.edit().remove("manifest").remove("pkg").remove("usb").remove("usb_path")

@@ -85,6 +85,7 @@ final class ViaUpdateEngine implements InstallWay {
             return;
         }
         if (!Engine.get().verifyMetadata(meta)) {
+            if (Newest.deltaFailed(st, "metadata signature", UpdateState.AVAILABLE)) return;
             st.setError("err_signature", "");
             return;
         }
@@ -120,8 +121,12 @@ final class ViaUpdateEngine implements InstallWay {
                 return;
             }
             st.clearPending();
-            st.setError("err_install_unknown", "");
-            Ota.setBusy(c, false, "error");
+            if (Newest.deltaFailed(st, "applyPayload: " + e.getMessage(), UpdateState.AVAILABLE)) {
+                Ota.setBusy(c, false, "idle");
+            } else {
+                st.setError("err_install_unknown", "");
+                Ota.setBusy(c, false, "error");
+            }
             h.releaseWake();
         }
     }

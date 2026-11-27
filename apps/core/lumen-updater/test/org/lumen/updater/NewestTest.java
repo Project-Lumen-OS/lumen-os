@@ -214,6 +214,9 @@ public final class NewestTest {
         @Override public void setLastCheck(long t) { lastCheck = t; }
         @Override public void setBetaPublished(boolean on) { betaPublished = on; }
         @Override public void deleteFiles() { files.clear(); }
+        final Set<String> refused = new TreeSet<>();
+        @Override public Set<String> refusedDeltas() { return refused; }
+        @Override public void refuseDelta(String sha) { refused.add(sha); }
 
         int offered() {
             UpdateManifest m = Newest.saved(this);

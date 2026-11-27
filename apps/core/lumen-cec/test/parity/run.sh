@@ -28,7 +28,7 @@ for d in $DEVICES; do
     python3 -B "$ROOT/tools/devices/assemble_app.py" --root "$ROOT" --device "$c" --app "$app" --out "$W/tree" --quiet
     python3 -B "$HERE/gen_res.py" "$W/tree" "$W/gen"
     P="$W/tree/src/org/lumen/projector/cec"
-    srcs="$P/CecPage.java $P/CecSettings.java $P/CecDevices.java"
+    srcs="$P/CecPage.java $P/CecSettings.java $P/NightGuard.java $P/CecDevices.java"
     stubs=$(find "$HERE/stubs" -name '*.java' ! -path '*/stubs/policy/*' ! -path '*/stubs/x50/*')
     case $kind in
         policy) stubs="$stubs $(find "$HERE/stubs/policy" -name '*.java')"; driver="new org.lumen.projector.cec.CecPolicyDriver()";

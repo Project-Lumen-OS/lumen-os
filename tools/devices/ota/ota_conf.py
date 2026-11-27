@@ -45,6 +45,7 @@ number (1..49), 50 + the rc number (rc1..rc48) or 99 for the final release: 1.0.
 """
 import atexit
 import datetime
+import hashlib
 import os
 import re
 import shutil
@@ -302,6 +303,25 @@ def cat(img, path, dump=None):
     return r.stdout
 
 
+def published(dev, img, sums):
+    """img is the system image a release published: sums (its SHA256SUMS) is signed with this device's OTA key
+    (sums + ".sig") and lists img's sha256. An older release was built from an older tree, so this tree's scanner may
+    refuse its files; the signed list is what proves it was checked and published then. Raises OtaError."""
+    sig = sums + ".sig"
+    if not (os.path.isfile(sums) and os.path.isfile(sig)):
+        raise OtaError("%s: no SHA256SUMS + .sig of its release" % os.path.basename(img))
+    pub = pubkey(tree_cert(dev), temp_dir())
+    r = subprocess.run(["openssl", "dgst", "-sha256", "-verify", pub, "-signature", sig, sums], capture_output=True)
+    if r.returncode:
+        raise OtaError("%s is not signed with %s" % (sums, os.path.relpath(tree_cert(dev), dev["root"])))
+    h = hashlib.sha256()
+    with open(img, "rb") as f:
+        for b in iter(lambda: f.read(1 << 20), b""):
+            h.update(b)
+    if (h.hexdigest(), os.path.basename(img)) not in [tuple(l.split()[:2]) for l in open(sums) if l.strip()]:
+        raise OtaError("%s: its sha256 is not in %s" % (os.path.basename(img), sums))
+
+
 def image_props(img, dump=None):
     """The effective props of a system image: system, system_ext, then product build.prop (the last one wins)."""
     out = {}
@@ -314,8 +334,9 @@ def image_props(img, dump=None):
     return out
 
 
-def check_image(dev, img, dump=None):
-    """The image is this device's public image with the OTA props: the device scanner passes, then
+def check_image(dev, img, dump=None, scan=True):
+    """The image is this device's public image with the OTA props: the device scanner passes (scan=False: only for the
+    source of a delta that is a published release, see published()), then
     ro.lumen.ota.device = wire_id, ro.lumen.ota.gate=1, ro.product.ab_ota_partitions = ota.conf, the manifest URL
     on the manifest tag and a registry channel, a version with its O1 code. -> (props, channel)."""
     c, root = dev["ota"], dev["root"]
@@ -326,8 +347,8 @@ def check_image(dev, img, dump=None):
     dump = dump or tool("dump.erofs")
     sc = os.path.join(root, c["scanner"])
     print("+ %s %s (the device's public-image check)" % (c["scanner"], os.path.basename(img)), flush=True)
-    r = subprocess.run([sys.executable, "-B", sc, img, "--dump", dump], capture_output=True, text=True)
-    if r.returncode:
+    r = subprocess.run([sys.executable, "-B", sc, img, "--dump", dump], capture_output=True, text=True) if scan else None
+    if r is not None and r.returncode:
         tail = (r.stdout + r.stderr).strip().splitlines()[-6:]
         raise OtaError("%s: the device's public-image check refused it: %s" % (os.path.basename(img), " | ".join(tail)))
     p = image_props(img, dump)

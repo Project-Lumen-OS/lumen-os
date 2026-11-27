@@ -11,7 +11,7 @@ files and checks that none of them carries the Lumen licence.
 - Copyright: Copyright The Android Open Source Project; Copyright The LineageOS Project
 - Source: https://android.googlesource.com, https://github.com/LineageOS
 - What: upstream files and our changed copies of them: the keyboard (LeanbackIME, apps/LumenKeyboard/LICENSE), the resource overlays of framework and system apps, key layouts, TvSettings sources and compile stubs of their APIs, org.json, avbtool, the published AOSP test keys, our patches to LineageOS
-- Files (482):
+- Files (484):
   - `apps/HbFrameworkOverlay/` (1)
   - `apps/HbFrameworkOverlay/res/` (4)
   - `apps/LumenKeyboard/` (2)
@@ -19,6 +19,8 @@ files and checks that none of them carries the Lumen licence.
   - `apps/LumenKeyboard/src/` (10)
   - `apps/LumenPackageInstallerOverlay/` (1)
   - `apps/LumenPackageInstallerOverlay/res/` (11)
+  - `apps/LumenSystemUIOverlay/` (1)
+  - `apps/LumenSystemUIOverlay/res/` (1)
   - `apps/LumenWifiP2pOverlay/` (1)
   - `apps/LumenWifiP2pOverlay/res/` (1)
   - `apps/Play6FrameworkOverlay/` (1)

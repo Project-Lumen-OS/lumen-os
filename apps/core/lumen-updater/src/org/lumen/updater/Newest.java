@@ -8,6 +8,7 @@ import org.lumen.download.HttpError;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
@@ -56,6 +57,9 @@ final class Newest {
         void setLastCheck(long t);
         void setBetaPublished(boolean on);
         void deleteFiles();
+        /** sha256 of the deltas that failed on the running build (DeltaRule: never chosen again). */
+        Set<String> refusedDeltas();
+        void refuseDelta(String sha256);
     }
 
     /** One channel file as read: the verified manifest, or the bytes that did not verify, or the error. */
@@ -181,7 +185,7 @@ final class Newest {
                 o.setError(b.res, b.arg);
                 return new CheckResult(CheckOutcome.BLOCKED, m, b.res, b.arg);
             }
-            UpdateManifest.Pkg p = m.choose(Ota.buildId());
+            UpdateManifest.Pkg p = DeltaRule.choose(m, Ota.buildId(), running, usb, o.refusedDeltas());
             if (p == null) {
                 o.setError("err_signature", "");
                 return result(CheckOutcome.ERROR, m, "err_signature");
@@ -200,6 +204,32 @@ final class Newest {
             }
             log("offer " + m.version + " (" + m.versionCode + ") " + p.type + " " + p.size + " B" + (usb ? " (USB)" : ""));
             return result(CheckOutcome.OFFER, m, "");
+        }
+    }
+
+    /**
+     * The offer is a delta and it failed ({@code why}: its sha256, its metadata, its file gone, update_engine's code): it
+     * is refused for the running build, its files go and the full package of the same manifest becomes the offer, in
+     * state {@code next} (DOWNLOADING: the download worker switches to it, Newest.downloadNewest; AVAILABLE after an
+     * install). @return false when the offer is no delta or the manifest has no full package (the error stays)
+     */
+    static boolean deltaFailed(Offers o, String why, UpdateState next) {
+        synchronized (LOCK) {
+            UpdateManifest m = saved(o);
+            UpdateManifest.Pkg d;
+            try {
+                d = o.packageJson().isEmpty() ? null : UpdateManifest.Pkg.parse(o.packageJson());
+            } catch (JSONException e) {
+                d = null;
+            }
+            UpdateManifest.Pkg full = m == null ? null : m.full();
+            if (d == null || !d.isDelta() || full == null) return false;
+            log("delta from " + d.fromBuildId + " failed (" + why + "): the full package " + full.size + " B instead");
+            o.refuseDelta(d.sha256);
+            o.deleteFiles();
+            o.setOffer(m.json, full.json, false, "");
+            o.setState(next);
+            return true;
         }
     }
 

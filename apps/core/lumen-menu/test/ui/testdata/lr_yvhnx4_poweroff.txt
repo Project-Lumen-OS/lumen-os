@@ -1,0 +1,25 @@
+# expect: sleep
+# LR-YVHNX4 (X50 Ultra Max G0100, lumen-x50max-1.0.10-beta17, stock v1.3.38): the framework lines of the three
+# round power menu > Power off presses (16:32:26, 16:45:38, 16:47:37). Each one: the menu closes, an injected power key,
+# Android sleeps, a later key wakes it. No ShutdownThread.
+# press 16:32:26
+11-27 16:32:26.344  1000  1237  2349 I wm_finish_activity: [0,168042941,40,org.lumen.x50.projector/org.lumen.projector.ui.PanelActivity,app-request]
+11-27 16:32:26.480  1000  1237  2794 I intercept_power: [ACTION_DOWN,0,1]
+11-27 16:32:26.484  1000  1237  2794 I intercept_power: [ACTION_UP,0,0]
+11-27 16:32:26.484  1000  1237  1334 D WindowManager: powerPress: eventTime=93846 interactive=true count=1 mShortPressOnPowerBehavior=1
+11-27 16:32:26.485  1000  1237  1334 I PowerManagerService: Going to sleep due to power_button (uid 1000, screenOffTimeout=900000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...
+11-27 16:32:50.726  1000  1237  1529 I PowerManagerService: Waking up from Asleep (uid=1000, reason=WAKE_REASON_WAKE_KEY, details=android.policy:KEY)...
+# press 16:45:38
+11-27 16:45:38.431  1000  1237  2680 I wm_finish_activity: [0,140073672,46,org.lumen.x50.projector/org.lumen.projector.ui.PanelActivity,app-request]
+11-27 16:45:38.556  1000  1237  2812 I intercept_power: [ACTION_DOWN,0,1]
+11-27 16:45:38.559  1000  1237  2812 I intercept_power: [ACTION_UP,0,0]
+11-27 16:45:38.559  1000  1237  1334 D WindowManager: powerPress: eventTime=869493 interactive=true count=1 mShortPressOnPowerBehavior=1
+11-27 16:45:38.559  1000  1237  1334 I PowerManagerService: Going to sleep due to power_button (uid 1000, screenOffTimeout=900000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...
+11-27 16:46:35.406  1000  1237  1529 I PowerManagerService: Waking up from Asleep (uid=1000, reason=WAKE_REASON_WAKE_KEY, details=android.policy:KEY)...
+# press 16:47:37
+11-27 16:47:37.799  1000  1237  2672 I wm_finish_activity: [0,68112454,48,org.lumen.x50.projector/org.lumen.projector.ui.PanelActivity,app-request]
+11-27 16:47:37.927  1000  1237  2672 I intercept_power: [ACTION_DOWN,0,1]
+11-27 16:47:37.929  1000  1237  2672 I intercept_power: [ACTION_UP,0,0]
+11-27 16:47:37.929  1000  1237  1334 D WindowManager: powerPress: eventTime=938624 interactive=true count=1 mShortPressOnPowerBehavior=1
+11-27 16:47:37.930  1000  1237  1334 I PowerManagerService: Going to sleep due to power_button (uid 1000, screenOffTimeout=900000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...
+11-27 16:48:04.630  1000  1237  1529 I PowerManagerService: Waking up from Asleep (uid=1000, reason=WAKE_REASON_WAKE_KEY, details=android.policy:KEY)...

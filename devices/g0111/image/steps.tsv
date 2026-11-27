@@ -7,7 +7,7 @@
 *	need	com.android.wifi.capex
 *	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
 *	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	about_version.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc	bootanimation.zip	bootanim_check.py	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	lumen-cast-sysconfig.xml	airplay_libs.py
-*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/Z9xAirPlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/base_signed/base_signed.tsv	stage/LumenFiles.apk
+*	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/LumenSystemUIOverlay.apk	stage/Z9xAirPlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/base_signed/base_signed.tsv	stage/LumenFiles.apk
 ota	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	ota_gate.conf	otacerts.zip	z9x-updater-default-permissions.xml	remove_ota.txt	stage/LumenUpdater.apk
 # the update client of a model with updates (build.conf derive=ota:pub): the neutral gate, its X50 data, the model's
 # OTA certificates (tools/devices/ota/make_otacerts.py), the base's default permission file of org.lumen.updater
@@ -68,6 +68,9 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 # the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
 # theme puts the uninstall guided step into a floating dialog (one letter per line), this overlay fixes it for every model
 !image	place	stage/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk	0644	0	0	{LABEL}
+# SystemUI with a right-to-left language (apps/LumenSystemUIOverlay, static RRO, no dex): TvSystemUI's volume panel
+# gravity "end" became LEFT and its TV layout lacks the arrow it then rotates, so SystemUI died on every start
+!image	place	stage/LumenSystemUIOverlay.apk	{sys}/product/overlay/LumenSystemUIOverlay.apk	0644	0	0	{LABEL}
 # Lumen Home and the HDMI input of this tree over the base's (their oat files were compiled for the base APKs)
 !image	place	stage/Z9xHome.apk	{sys}/priv-app/Z9xHome/Z9xHome.apk	0644	0	0	{LABEL}
 !image	cleanup	{sys}/priv-app/Z9xHome/oat

@@ -20,7 +20,8 @@ OUT=$(mktemp -d "${TMPDIR:-/tmp}/lumen_report.XXXXXX")
 trap 'rm -rf "$OUT"' EXIT
 S=$HERE/src/org/lumen/report
 PURE="Scrubber LogcatFilter ReportZip ReportUploader PartUpload ReportFailure ReportKind CanceledException OwnApps PropFilter Incident
-IncidentScan AutoPolicy ReportQueue ReportUrl Alive AliveState AliveFile HdmiDump CecJournal RootLogs PowerDump ReportState ReportView"
+IncidentScan AutoPolicy ReportQueue ReportUrl Alive AliveState AliveFile HdmiDump CecJournal RootLogs PowerDump ReportState ReportView
+SettingsDump"
 set --
 for c in $PURE; do set -- "$@" "$S/$c.java"; done
 mkdir -p "$OUT/pure" "$OUT/android/org/lumen/projector" "$OUT/android/org/lumen/icons"

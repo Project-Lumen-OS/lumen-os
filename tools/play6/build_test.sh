@@ -264,6 +264,7 @@ IN=(
   "$G/build/play6/signed/Z9xSetup.apk"
   "$G/build/play6/LumenMiracast.apk"
   "$G/build/play6/LumenWifiP2pOverlay.apk"
+  "$G/build/play6/LumenSystemUIOverlay.apk"
   "$G/build/play6/Z9xAirPlay.apk"
   "$L/base_id.txt"
 )

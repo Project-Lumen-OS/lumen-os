@@ -28,5 +28,26 @@ mutant 'if (since < 0 || since >= QUICK_SLEEP_MS) return null;' 'if (since < 0 |
 mutant 'if (bad.size() > STORM_MAX) paused = true;' 'if (bad.size() >= STORM_MAX) paused = true;' "storm limit off by one"
 mutant 'now - bad.peekFirst() > STORM_WINDOW_MS' 'now - bad.peekFirst() > STORM_WINDOW_MS * 4' "storm window"
 mutant 'paused = false;' '' "a remote key does not end the pause"
+# the night guard (lumen-cec NightGuard): the same replay must fail
+N=$HERE/../../core/lumen-cec/src/org/lumen/projector/cec/NightGuard.java
+cp "$N" "$T/NightGuard.java.orig"
+trap 'cp "$T/WakeRules.java.orig" "$W"; cp "$T/NightGuard.java.orig" "$N"; rm -rf "$T"' EXIT
+nmutant() {
+    cp "$T/NightGuard.java.orig" "$N"
+    python3 - "$N" "$1" "$2" <<'EOF'
+import sys
+p, old, new = sys.argv[1:]
+t = open(p).read()
+assert t.count(old) == 1, "mutant anchor not unique: " + old
+open(p, "w").write(t.replace(old, new))
+EOF
+    if sh "$HERE/test/cecwake/run.sh" >/dev/null 2>&1; then alive=$((alive + 1)); echo "ALIVE $3"; else killed=$((killed + 1)); fi
+    cp "$T/NightGuard.java.orig" "$N"
+}
+nmutant 'public static final int DEFAULT = 0;' 'public static final int DEFAULT = 4;' "old default 01:00-07:00"
+nmutant 'return stored != null && stored >= 0 && stored < CHOICES.length ? stored : DEFAULT;' 'return DEFAULT;' "a stored choice ignored"
+nmutant 'if (r[0] < 0) return false;' '' "off refuses"
+nmutant '(hourOfDay >= r[0] && hourOfDay < r[1])' '(hourOfDay >= r[0] && hourOfDay <= r[1])' "end hour included"
+nmutant '(hourOfDay >= r[0] || hourOfDay < r[1])' '(hourOfDay >= r[0] && hourOfDay < r[1])' "midnight span"
 echo "cec wake mutants: $killed killed, $alive alive"
 [ "$alive" -eq 0 ]

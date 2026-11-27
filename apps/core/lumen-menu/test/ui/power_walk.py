@@ -127,6 +127,53 @@ def case(what, ms, want):
         start()
 
 
+def power_off_tile():
+    """POWER_OFF=1: the round power menu's Power off tile on the emulator really powers off (Android's ShutdownThread),
+    never the power key's sleep (LR-YVHNX4). The emulator goes down at the end: run it last, one model per boot."""
+    import poweroff_log
+    # the walk APK carries the public test platform key, not the emulator's: allow the hidden PowerManager.shutdown it
+    # calls (a Lumen image's projector app is platform-signed), so the call reaches PowerManagerService
+    sh("settings put global hidden_api_policy 1")
+    sh("am force-stop " + PKG)
+    start()
+    check("the walk activity is in front before the press", ready(), front())
+    sh("logcat -c")
+    hid(150)
+    time.sleep(2.5)                         # the enter animation and the OK guard
+    xml = sh("uiautomator dump /sdcard/pw.xml >/dev/null && cat /sdcard/pw.xml")
+    tiles = sorted((int(x1), d) for d, x1 in re.findall(r'content-desc="([^"]+)"[^>]*bounds="\[(\d+),\d+\]', xml))
+    names = [d for _, d in tiles]
+    idx = next((i for i, d in enumerate(names) if re.search(r"(?i)power ?off|выключ", d)), -1)
+    check("Power off: the round menu shows a Power off tile", idx >= 0, " | ".join(names))
+    if idx < 0:
+        return
+    for _ in range(idx):
+        sh("input keyevent 22")
+        time.sleep(0.4)
+    sh("input keyevent 23")
+    lines, gone = [], False
+    for _ in range(40):
+        time.sleep(1)
+        if adb("get-state", timeout=10).strip() != "device":
+            gone = True
+            break
+        lines = sh("logcat -d -b all -v threadtime").splitlines() or lines
+    keep = [l for l in lines if re.search(r"LumenHalt|ShutdownThread|intercept_power|powerPress|Going to sleep|PowerWalk|"
+                                          r"SecurityException|android\.permission\.REBOOT|power menu (power off|restart)|"
+                                          r"shutdown \(user requested\)|shutdown failed", l)]
+    out = os.environ.get("POWER_OFF_LOG")
+    if out:
+        with open(out, "w") as f:
+            f.write("\n".join(keep) + "\n")
+    v = poweroff_log.verdict(keep)
+    denied = poweroff_log.denied(keep)
+    check("Power off: Android's shutdown was called (ShutdownThread, or PowerManagerService.shutdown refusing only the "
+          "REBOOT permission of a test-signed walk APK), never the power key's sleep",
+          v == "off" or (v == "called" and denied), v + " | " + " | ".join(keep)[-400:])
+    if v == "off":
+        check("Power off: the emulator went down", gone)
+
+
 def main():
     sh("pm clear " + PKG)
     sh("appops set %s SYSTEM_ALERT_WINDOW allow" % PKG)
@@ -134,6 +181,10 @@ def main():
     wake()
     start()
     check("fresh install: the setting is Power menu (stock)", choice() == "power_menu", choice())
+    if os.environ.get("POWER_OFF") == "1":
+        power_off_tile()
+        print("power_walk %s power off: %s" % (PKG, "PASS" if not FAILS else "FAIL %d" % len(FAILS)))
+        return 1 if FAILS else 0
     case("Power menu, short press", 150, "menu")
     case("Power menu, held 1.2 s", 1200, "sleep")
     start("--es power_short sleep")

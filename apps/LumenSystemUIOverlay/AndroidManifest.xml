@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen OS: static RRO on com.android.systemui (the GSI's TvSystemUI, no overlayable declared). It sets only
+     integer/volume_dialog_gravity. TvSystemUI ships end|center_vertical (8388629); with a right-to-left language
+     (Arabic, Persian, Hebrew, Urdu) VolumeDialogImpl.initDialog resolves that to LEFT and rotates the expand arrow
+     (mExpandRows.setRotation(-90)), which the TV landscape layout volume_dialog.xml does not have: a
+     NullPointerException while SystemUIService is created, so SystemUI died on every start and the WM Shell inside it
+     never finished a transition (apps without a focused window, input ANRs). right|center_vertical is the same place
+     for every left-to-right language. Install: /system/product/overlay/LumenSystemUIOverlay.apk (0644). No code,
+     no permissions. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lumen.overlay.systemui"
+    android:versionCode="111"
+    android:versionName="1.0.11">
+    <overlay
+        android:targetPackage="com.android.systemui"
+        android:isStatic="true"
+        android:priority="2000" />
+    <application android:hasCode="false" />
+</manifest>

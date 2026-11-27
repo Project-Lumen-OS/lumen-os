@@ -31,7 +31,7 @@ public class DetailsView extends FrameLayout {
         mCol.setOrientation(LinearLayout.VERTICAL);
         mCol.setClipChildren(false);
         LayoutParams lp = new LayoutParams(Theme.px(1040), LayoutParams.WRAP_CONTENT, Gravity.START | Gravity.CENTER_VERTICAL);
-        lp.leftMargin = Theme.px(Tokens.MARGIN + 48);
+        lp.setMarginStart(Theme.px(Tokens.MARGIN + 48));
         addView(mCol, lp);
         mTitle = add(c, 0);
         mMeta = add(c, 18);
@@ -54,7 +54,7 @@ public class DetailsView extends FrameLayout {
                 act();
             });
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-            if (i > 0) p.leftMargin = Theme.px(16);
+            if (i > 0) p.setMarginStart(Theme.px(16));
             btns.addView(b, p);
             mBtn[i] = b;
         }

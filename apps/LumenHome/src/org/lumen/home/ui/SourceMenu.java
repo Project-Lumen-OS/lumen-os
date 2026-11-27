@@ -56,7 +56,7 @@ public class SourceMenu extends FrameLayout {
         mPanel.setElevation(Theme.pxf(40));
         LayoutParams lp = new LayoutParams(Theme.px(Tokens.PANEL_W), LayoutParams.WRAP_CONTENT, Gravity.END | Gravity.TOP);
         lp.topMargin = Theme.px(124);
-        lp.rightMargin = Theme.px(Tokens.MARGIN);
+        lp.setMarginEnd(Theme.px(Tokens.MARGIN));
         addView(mPanel, lp);
         setVisibility(GONE);
     }
@@ -153,7 +153,7 @@ public class SourceMenu extends FrameLayout {
                 tx.addView(s, slp);
             }
             LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f);
-            tp.leftMargin = Theme.px(18);
+            tp.setMarginStart(Theme.px(18));
             row.addView(tx, tp);
             if (e.current || e.chevron) {
                 ImageView r = new ImageView(c);

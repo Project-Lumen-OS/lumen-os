@@ -67,6 +67,7 @@ final class CecJournal {
         Matcher m = LINE.matcher(logLine);
         if (!m.matches()) return;
         String time = m.group(1), text = m.group(4);
+        if (noise(text)) return;
         if (first == null) first = time;
         last = time;
         boolean plain = "HDMI".equals(m.group(3)) && "D".equals(m.group(2));
@@ -88,6 +89,16 @@ final class CecJournal {
             flush();
             emit(time + " " + text);
         }
+    }
+
+    /**
+     * HdmiCecConfig's debug lines of every setting read ("Getting CEC setting value 'x'." and "Reading 'x' shared
+     * preference.", two per read, every 5 s on a Lumen unit) and the store line of a write: no CEC message, and in
+     * LR-9MEQZP they were most of the journal. The change itself ("Updating CEC setting 'x' to 'v'.") stays.
+     */
+    static boolean noise(String text) {
+        return text.startsWith("Getting CEC setting value ") || (text.startsWith("Reading '") && text.endsWith(" shared preference."))
+                || (text.startsWith("Setting '") && text.endsWith(" shared pref."));
     }
 
     private void pair(Line ask, Line answer) {

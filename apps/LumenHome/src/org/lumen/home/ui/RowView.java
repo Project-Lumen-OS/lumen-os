@@ -63,7 +63,7 @@ public class RowView extends FrameLayout {
         for (int i = 0; i < tiles.size(); i++) {
             TileView t = tiles.get(i);
             LayoutParams lp = new LayoutParams(Theme.px(mItemW), Theme.px(mItemH));
-            lp.leftMargin = Theme.px(i * (mItemW + mGap));
+            lp.setMarginStart(Theme.px(i * (mItemW + mGap)));
             mStrip.addView(t, lp);
         }
         ((LayoutParams) mStrip.getLayoutParams()).topMargin = mTitleText.length() == 0 ? 0 : Theme.px(TITLE_H + Tokens.ROW_TITLE_GAP);
@@ -110,6 +110,7 @@ public class RowView extends FrameLayout {
             }
         }
         float x = -Theme.pxf(first * (mItemW + mGap));
+        if (Theme.rtl(this)) x = -x;   // the strip runs from the right edge in a right-to-left language
         mStrip.animate().cancel();
         if (animate && Theme.animations()) {
             mStrip.animate().translationX(x).setDuration(Theme.ROW_SCROLL_MS).setInterpolator(Theme.EMPHASIZED).start();

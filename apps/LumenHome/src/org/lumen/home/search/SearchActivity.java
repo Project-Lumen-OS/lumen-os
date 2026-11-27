@@ -189,12 +189,12 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         mRoot.addView(new FieldView(this), new FrameLayout.LayoutParams(-1, -1));
         mFieldBg = new FieldBox(this);
         FrameLayout.LayoutParams fb = new FrameLayout.LayoutParams(Theme.px(1728), Theme.px(88));
-        fb.leftMargin = Theme.px(Tokens.MARGIN);
+        fb.setMarginStart(Theme.px(Tokens.MARGIN));
         fb.topMargin = Theme.px(72);
         mRoot.addView(mFieldBg, fb);
         mMic = new Mic(this);
         FrameLayout.LayoutParams ml = new FrameLayout.LayoutParams(Theme.px(64), Theme.px(64));
-        ml.leftMargin = Theme.px(Tokens.MARGIN + 12);
+        ml.setMarginStart(Theme.px(Tokens.MARGIN + 12));
         ml.topMargin = Theme.px(84);
         mMic.setOnClickListener(v -> {
             setZone(Z_MIC);
@@ -233,7 +233,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
             return true;
         });
         FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(Theme.px(1560), Theme.px(88));
-        fl.leftMargin = Theme.px(Tokens.MARGIN + 100);
+        fl.setMarginStart(Theme.px(Tokens.MARGIN + 100));
         fl.topMargin = Theme.px(72);
         mField.setElevation(Theme.pxf(FIELD_Z));
         mRoot.addView(mField, fl);
@@ -242,7 +242,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         mStatus.setSingleLine(true);
         mStatus.setEllipsize(TextUtils.TruncateAt.END);
         FrameLayout.LayoutParams sl = new FrameLayout.LayoutParams(Theme.px(1728), -2);
-        sl.leftMargin = Theme.px(Tokens.MARGIN + 8);
+        sl.setMarginStart(Theme.px(Tokens.MARGIN + 8));
         sl.topMargin = Theme.px(180);
         mRoot.addView(mStatus, sl);
         mResults = new FrameLayout(this);
@@ -516,7 +516,7 @@ public class SearchActivity extends Activity implements VoiceInput.Listener, TvK
         }
         rv.setTiles(tiles);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-1, -2);
-        lp.leftMargin = Theme.px(Tokens.MARGIN);
+        lp.setMarginStart(Theme.px(Tokens.MARGIN));
         mResults.addView(rv, lp);
         mRows.add(rv);
         mActs.add(acts);

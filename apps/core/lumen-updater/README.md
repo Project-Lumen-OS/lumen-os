@@ -120,7 +120,7 @@ booted and the merge ended (MergeCompleted in 20 s, no COW in /data). 1.0.10-bet
 check, which refuses compression: their cloud and USB stick installs stop at "compression on". A unit on them takes
 the fixed updater as an update of the system app (adb install), then updates over the cloud. The updater's
 versionCode (apps/LumenUpdater/BUILD_VERSION) was 2 with that fix, 3 since the plain-words texts (the X50 Ultra
-of the beta tests carries a hand-installed 2) 4 since the parallel download and is 5 since the channel by build type: raise it with every later change of the updater, or a copy installed
+of the beta tests carries a hand-installed 2) 4 since the parallel download, 5 since the channel by build type and is 6 since the deltas: raise it with every later change of the updater, or a copy installed
 that way stays in front of the image's own.
 
 ## The download
@@ -139,6 +139,21 @@ would save the ~700 MB in the app's folder, but update_engine downloads over one
 per-connection shaping), keeps one signed CDN link that expires, and writes the other slot before the whole file was
 checked against the manifest's sha256 (only the payload signature and update_engine's per-operation hashes guard it).
 The updater keeps downloading the zip first. The zip is the payload plus about 28 KB of zip entries, nothing more.
+
+## Deltas (DeltaRule)
+
+A channel manifest may list deltas beside its full package: the optional `incremental` list (tools/release/delta.py;
+older updaters do not read it) and `delta` entries of `packages` (the 1.0.9 form). A delta is taken only when the
+running build is exactly its source: `from_build_id` = the image's build_id and, when the entry has it,
+`from_version_code` = the running version_code; never for an install from a USB stick (the stick holds the full
+package and is the way back) and never again once it failed on this build (`Store.refusedDeltas`: sha256 values keyed
+by the running build_id). Any failure of a delta gives way to the full package of the same manifest
+(`Newest.deltaFailed`): its sha256 after the download's retries, its metadata sha256, the way's check of the download,
+a 404 or 410 of its file (the download goes on with the full package in the same run), the payload metadata signature,
+applyPayload throwing, or update_engine ending with any error but a cancel, missing space or a downgrade (the offer is
+then the full package, state found; the user starts it as usual). update_engine itself checks every block against the
+source and the result against the target, so a delta on the wrong system never changes the other slot's boot.
+Host test `test/org/lumen/updater/DeltaTest.java`, mutants `delta_*` in `test/mutate.py`.
 
 ## Tests
 

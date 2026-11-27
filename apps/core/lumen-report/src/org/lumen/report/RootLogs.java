@@ -23,8 +23,14 @@ final class RootLogs {
     /** The helper's files and the zip names they go in as (the logcat ones through LogcatFilter). */
     static final String LOGCAT = "logcat.txt", CRASH = "crash.txt", KERNEL = "kernel.txt";
     static final String[] DUMPSYS = {"hdmi_control", "audio", "power"};
-    /** A full collection takes 1 to 5 s on the slowest model; past this the report goes on with the app's own log. */
+    /**
+     * An automatic report waits this long for the helper, past it the report goes on with the app's own log. A full
+     * collection takes 1 to 5 s on an idle unit and far longer on a busy one (evleo790 LR-9MEQZP, HB low on memory: no
+     * answer in 30 s, the report had no system log, kernel log or dumpsys).
+     */
     static final long TIMEOUT_MS = 30_000;
+    /** A manual report waits longer: the user is at the progress screen and the system log is the whole point. */
+    static final long MANUAL_TIMEOUT_MS = 90_000;
     static final long POLL_MS = 100;
     private static final int MAX_TOKEN = 24;
 
@@ -98,6 +104,16 @@ final class RootLogs {
             if (clock.now() >= end) return Answer.TIMEOUT;
             if (!clock.sleep(POLL_MS)) return Answer.CANCELED;
         }
+    }
+
+    /** How long a report of this kind waits for the helper. */
+    static long timeout(boolean manual) {
+        return manual ? MANUAL_TIMEOUT_MS : TIMEOUT_MS;
+    }
+
+    /** The helper answered {@code token} after the wait ran out and its files are still there. */
+    static boolean late(Props p, File dir, String token) {
+        return parse(p.get(PROP_DONE), token) == Answer.OK && fresh(dir, token);
     }
 
     /** True when the helper's folder holds the files of {@code token} (and not those of an older request). */

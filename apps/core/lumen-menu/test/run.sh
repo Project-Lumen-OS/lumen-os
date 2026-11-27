@@ -451,13 +451,21 @@ python3 -B "$HERE/test/power_on_ac_test.py" "$G" || bad=1
 # and the General row shows what was read back after a write
 LP="$HERE/src/org/lumen/projector/panel/MenuLookPrefs.java"
 for w in '        if (!MenuLook.valid(f, value)) return false;' \
-  '            if (f == FeatureId.SETTINGS_MENU_SIDE) return MenuLook.side(prefs(c).getString(K_SIDE, null));' \
+  '            if (f == FeatureId.SETTINGS_MENU_SIDE) return MenuLook.side(prefs(c).getString(K_SIDE, null), rtl(c));' \
   '            if (f == FeatureId.SETTINGS_MENU_DENSITY) return MenuLook.density(prefs(c).getString(K_DENSITY, null));' \
   '            return prefs(c).edit().putString(f == FeatureId.SETTINGS_MENU_SIDE ? K_SIDE : K_DENSITY, value).commit();'; do
   grep -qxF -- "$w" "$LP" || { echo "FAIL menu look: MenuLookPrefs lost: $w"; bad=1; }
 done
 grep -qxF '            return MenuLookPrefs.set(c, f, value) && value.equals(MenuLookPrefs.get(c, f));' \
   "$HERE/src/org/lumen/projector/panel/ModuleScreens.java" || { echo "FAIL menu look: the row is not read back after a write"; bad=1; }
+# the power menu's Power off of every family is Android's shutdown (Halt), never the power key's sleep (LR-YVHNX4)
+mkdir -p "$OUT/halt"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/halt" "$HERE/src/org/lumen/projector/panel/Halt.java" \
+  "$HERE/test/halt/stubs/android/os/PowerManager.java" "$HERE/test/halt/stubs/android/content/Context.java" \
+  "$HERE/test/halt/stubs/android/util/Log.java" "$HERE/test/halt/HaltTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/halt" org.lumen.projector.panel.HaltTest || bad=1
+if [ -d "$G/apps/LumenProjector/vendor" ]; then python3 "$HERE/test/poweroff_wiring.py" "$G" || bad=1; fi
+python3 "$HERE/test/ui/poweroff_log_test.py" || bad=1
 for s in "$HERE"/test/snapshots/*.txt; do
   [ -f "$s" ] || continue
   c=$(basename "$s" .txt)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- right (0x05) | center_vertical (0x10): an absolute side, so a right-to-left language keeps the volume panel on the
+     right instead of turning TvSystemUI's "end" into the left side its TV layout cannot draw. -->
+<resources>
+    <integer name="volume_dialog_gravity">21</integer>
+</resources>

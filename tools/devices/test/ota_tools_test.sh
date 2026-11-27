@@ -480,7 +480,8 @@ else: assert dm['vabc'] == 1 and dm['compression'] == 'lz4', dm
     refuse "sign_payload refuses a payload that is $brk" "ERROR" sp --root "$FX" "$D" --image "$NEW"
   done
   D=$WORK/p_tamper; cp -R "$WORK/p_full_off" "$D"; rm -f "$D"/*.sig
-  printf 'x' | dd of="$D/payload.hash" bs=1 seek=0 conv=notrunc 2> /dev/null
+  # flip the first byte (writing a fixed 'x' left the hash as it was whenever it began with 0x78: 1 run in 256 went red)
+  python3 -c 'import sys; b = bytearray(open(sys.argv[1], "rb").read()); b[0] ^= 0xff; open(sys.argv[1], "wb").write(b)' "$D/payload.hash"
   refuse "sign_payload refuses a build-host hash that is not the recomputed one" "not signing" sp --root "$FX" "$D" --image "$NEW"
   refuse "sign_payload refuses a delta without --old-image" "--old-image" sp --root "$FX" "$WORK/p_delta_off" --image "$NEW"
   # sign_payload and finish leave no lumen-ota-* temp dir, also when they stop with an error

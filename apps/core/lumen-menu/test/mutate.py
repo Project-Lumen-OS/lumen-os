@@ -20,6 +20,19 @@ UI = "src/org/lumen/projector/ui/"
 MS = "src/org/lumen/projector/panel/ModuleScreens.java"
 QS = "src/org/lumen/menu/quick/"
 MUTANTS = [
+    # ---- the power menu's Power off is Android's shutdown on every family (Halt), never a sleep (LR-YVHNX4)
+    ("halt: power off sleeps", "src/org/lumen/projector/panel/Halt.java", "        c.getSystemService(PowerManager.class).shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);",
+     "        c.getSystemService(PowerManager.class).goToSleep(0);"),
+    ("halt: power off restarts", "src/org/lumen/projector/panel/Halt.java", ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);", ".reboot(PowerManager.SHUTDOWN_USER_REQUESTED);"),
+    ("halt: power off asks to confirm", "src/org/lumen/projector/panel/Halt.java", ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);",
+     ".shutdown(true, PowerManager.SHUTDOWN_USER_REQUESTED, false);"),
+    ("halt: power off without the reason", "src/org/lumen/projector/panel/Halt.java", ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);", ".shutdown(false, null, false);"),
+    ("halt: restart powers off", "src/org/lumen/projector/panel/Halt.java", ".reboot(PowerManager.SHUTDOWN_USER_REQUESTED);", ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);"),
+    ("halt: no log line", "src/org/lumen/projector/panel/Halt.java", '        Log.i(TAG, "power off: Android shutdown, userrequested (" + why + ")");\n', ""),
+    ("halt replay: a power key sleep not seen", "test/ui/poweroff_log.py", 'SLEEP = re.compile(r"Going to sleep due to power_button|',
+     'SLEEP = re.compile(r"(?!x)x|'),
+    ("halt replay: the Halt line counts as off", "test/ui/poweroff_log.py", "    if any(OFF.search(l) for l in lines):",
+     "    if any(OFF.search(l) or HALT.search(l) for l in lines):"),
     # ---- the power-on sound row (power.on_music): shown on every model whose profile lists it
     ("bootsound: row hidden (no availability rule)", MS,
      "        if (f == FeatureId.POWER_ON_MUSIC) return true;                // BootSound: every image ships the sound and its rc\n", ""),
@@ -71,7 +84,7 @@ MUTANTS = [
     ("look: right first", S + "MenuLook.java", "Arrays.asList(LEFT, RIGHT)", "Arrays.asList(RIGHT, LEFT)"),
     ("look prefs: any value stored", "src/org/lumen/projector/panel/MenuLookPrefs.java", "        if (!MenuLook.valid(f, value)) return false;\n", ""),
     ("look prefs: side read raw", "src/org/lumen/projector/panel/MenuLookPrefs.java",
-     "return MenuLook.side(prefs(c).getString(K_SIDE, null));", "return prefs(c).getString(K_SIDE, MenuLook.LEFT);"),
+     "return MenuLook.side(prefs(c).getString(K_SIDE, null), rtl(c));", "return prefs(c).getString(K_SIDE, MenuLook.LEFT);"),
     ("look prefs: size under the side key", "src/org/lumen/projector/panel/MenuLookPrefs.java",
      "f == FeatureId.SETTINGS_MENU_SIDE ? K_SIDE : K_DENSITY", "K_SIDE"),
     ("look prefs: written without read back", MS, "return MenuLookPrefs.set(c, f, value) && value.equals(MenuLookPrefs.get(c, f));",

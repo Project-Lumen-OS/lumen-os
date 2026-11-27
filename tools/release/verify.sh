@@ -60,6 +60,14 @@ else:
     p = m["packages"]
     assert len(p) == 1 and p[0]["type"] == "full", p
     same(z, p[0])
+    # deltas (tools/release/delta.py): the updater's file only, each from an older build, files beside the full one
+    for e in m.get("incremental", []):
+        assert e["type"] == "delta" and e["from_build_id"] and 0 < e["from_version_code"] < int(vc), e
+        same(e["url"].rsplit("/", 1)[1], e)
+        mn = e["metadata_url"].rsplit("/", 1)[1]
+        assert e["metadata_url"] == url + "/" + mn and "-from-" in mn, e["metadata_url"]
+        if os.path.isfile(os.path.join(d, mn)):
+            assert hashlib.sha256(open(os.path.join(d, mn), "rb").read()).hexdigest() == e["metadata_sha256"], mn
 PY
   done
   if command -v delta_generator > /dev/null && [ -f "$DIR/$zip" ]; then

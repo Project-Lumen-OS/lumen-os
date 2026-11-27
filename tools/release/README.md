@@ -14,6 +14,7 @@ only that release's files and logs).
 | apps + platform set | Mac | `sh tools/devices/build_apps.sh CODENAME build/CODENAME/stage` (+ the family's base signing, `devices/g0111/image/sign_x50_base.py` for the X50 recipe) |
 | stage + compose | Mac, llm | `python3 tools/build/build.py files CODENAME` lists every staged input (family files included); `build.py compose VERSION --stage-only`, then `--image-only` on the build host |
 | digests | llm | `python3 tools/devices/ota/make_ota.py --device CODENAME unsigned ...` (models with updates): `payload.hash`, `metadata.hash` |
+| delta | llm, Mac | `python3 tools/release/delta.py` (below): the update from the build the channel names now, beside the full package |
 | sign | Mac | `bash tools/release/sign.sh CODENAME VERSION KIT`: SHA256SUMS, the two channel manifests, the payload digests; only small files cross the line, keys never leave the Mac |
 | verify | any | `bash tools/release/verify.sh CODENAME VERSION DIR`: sums, signatures (sibling refuses), trial.sh, manifests, payload |
 | publish | llm | `gh auth token \| ssh xgimi-llm 'export GH_TOKEN=$(cat); bash <tree>/tools/release/publish.sh CODENAME VERSION KIT'`: pre-release, upload, download back + verify, channel files, Latest unchanged; `--dry-run` first (no token) |
@@ -29,6 +30,31 @@ beta5 and RS30 Ultra beta1 byte for byte (10 of 10 signatures), and `publish.sh 
 back and verified the live TITAN Noir Max beta5, RS30 Ultra beta1 and X50 Ultra beta12 (sums, signatures with the
 sibling refusing, trial.sh, both channel manifests; the payload signature check runs where `delta_generator` is on
 PATH, llm has none).
+
+## Deltas (incremental updates)
+
+A full package is the whole system (Z9X ~770 MB); a delta holds only the blocks that changed since the build a unit runs.
+`delta.py` makes one per release from the build its channel file names right before the publish (the last published
+build of that channel), for every model with update_engine updates: the model's OTA tools come from its registry entry
+(`ota_tools`, else `tools/ota`), nothing is named per model. Files stay on GitHub only: the source is the published
+system.img of the source release (its signed SHA256SUMS), the delta zip and metadata are assets of the new release.
+
+| step | host | command |
+|---|---|---|
+| source | llm | `delta.py source CODENAME --channel <live updater channel URL> --out SRC`: downloads and checks the source image (signature of SHA256SUMS, sha256, its build_id and version_code = the channel's) |
+| build | llm | `delta.py build CODENAME --source SRC --like FULL_DIR --new NEW.img --out DIR`: make_ota unsigned with --old (same timestamp and super group as the full package in FULL_DIR), then APPLY_OK: update_engine's apply code on the host turns SRC's image into NEW byte for byte |
+| sign | Mac | copy DIR/{ota.json,payload.hash,metadata.hash,source.json} to the Mac, `delta.py sign CODENAME DIR`, payload.sig + metadata.sig back (refused by every other model's certificate) |
+| finish | llm | `delta.py finish CODENAME DIR --old SRC/<image> --new NEW.img`: the signed `...-from-<old>-ota.zip` + `-payload_metadata.bin`, applied again from the zip |
+| entry | llm | `delta.py entry CODENAME DIR --manifest <the updater channel json> --base-url https://github.com/<repo>/releases/download/<TAG>/`: the `incremental` entry, then the Mac signs the manifest as usual |
+
+Put the two delta files into KIT: `publish.sh` uploads and downloads back every `*-from-*` file, `verify.sh` checks
+the entries. The manifest entry (`incremental`, read only by updaters that fall back to the full package) carries
+`from_build_id`, `from_version`, `from_version_code`, `from_sha256`, url, size, sha256, payload range, metadata and
+payload_properties; older updaters read only `packages` and keep taking the full one. The updater takes a delta only
+when its build_id and version_code are the source's, never from a USB stick, and after any failure of the delta (its
+sha256, metadata, a 404, update_engine's error) it offers the full package of the same manifest
+(apps/core/lumen-updater DeltaRule). A Z9X kit outside the tree runs the same steps on its `update-public-beta.json`
+before `mac_sign.sh manifest`.
 
 ## Naming
 

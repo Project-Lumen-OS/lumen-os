@@ -29,10 +29,10 @@ import org.lumen.projector.ui.Theme;
 public final class PowerMenu {
     /** The device side of the two items no menu feature has. */
     public interface Power {
-        /** Stock 关机: the system power key, the projector's standby. */
+        /** Power off (stock 关机): Android's real power off ({@link Halt#powerOff}), never the power key's sleep. */
         void powerOff();
 
-        /** Stock 重启: a restart. */
+        /** Stock 重启: a restart ({@link Halt#restart}). */
         void restart();
     }
 

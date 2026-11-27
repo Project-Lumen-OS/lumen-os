@@ -61,6 +61,7 @@ public final class ReportTest {
         parts();
         hdmiDump();
         cecJournal();
+        settingsDump();
         rootLogs();
         powerDump();
         screen();
@@ -184,6 +185,18 @@ public final class ReportTest {
         check(!RootLogs.fresh(d, "r-5"), "fresh: the files of another request");
         Files.write(new File(d, "token").toPath(), "r-5\n".getBytes(StandardCharsets.UTF_8));
         check(RootLogs.fresh(d, "r-5"), "fresh: the files of this request");
+
+        // evleo790 LR-9MEQZP: no answer within 30 s; a manual report waits longer and takes a late answer's files
+        check(RootLogs.timeout(true) >= 3 * RootLogs.timeout(false) && RootLogs.timeout(false) == RootLogs.TIMEOUT_MS,
+                "timeout: a manual report waits longer than an automatic one");
+        p = new FakeProps();
+        p.v.put(RootLogs.PROP_DONE, "r-5 ok");
+        check(RootLogs.late(p, d, "r-5"), "late: the helper's ok after the wait with its files");
+        check(!RootLogs.late(p, d, "r-7"), "late: another token's answer is not ours");
+        p.v.put(RootLogs.PROP_DONE, "r-5 busy");
+        check(!RootLogs.late(p, d, "r-5"), "late: busy gives no files");
+        p.v.put(RootLogs.PROP_DONE, "r-8 ok");
+        check(!RootLogs.late(p, d, "r-8"), "late: an ok whose files are gone (token file of another request) is no answer");
 
         p = new FakeProps();
         RootLogs.ack(p, "r-5");
@@ -1367,6 +1380,72 @@ public final class ReportTest {
         check(b.contains("\n(5 older lines left out)\n") && !b.contains("18:00:00.004 [R]") && b.contains("18:00:00.005 [R]") && b.contains("18:00:04.004 [R]")
                 && b.split("\n").length == CecJournal.MAX_LINES + 2 && b.contains("log.tag.HDMI unknown"),
                 "journal keeps the newest lines and says how many older ones were left out");
+    }
+
+    /**
+     * settings.txt (SettingsDump): the Settings rows about HDMI, CEC, ARC, eARC and sound, the CEC settings block of
+     * dumpsys hdmi_control and the app's own switches; evleo790 LR-9MEQZP had none of them.
+     */
+    private static void settingsDump() {
+        List<String[]> rows = new ArrayList<>();
+        rows.add(new String[] {"hdmi_control_enabled", "1"});
+        rows.add(new String[] {"encoded_surround_output", "0"});
+        rows.add(new String[] {"volume_music_hdmi_arc", "15"});
+        rows.add(new String[] {"search_engine", "x"});
+        rows.add(new String[] {"wifi_on", "1"});
+        rows.add(new String[] {"charging_sounds_enabled", "1"});
+        rows.add(new String[] {"monarch_mode", "1"});
+        rows.add(new String[] {"hdmi_system_audio_status_enabled", null});
+        String g = SettingsDump.table("Settings.Global", rows, null);
+        check(g.startsWith("== Settings.Global (keys about HDMI, CEC, ARC, eARC and sound)\n")
+                && g.contains("\nencoded_surround_output=0\n") && g.contains("\nhdmi_control_enabled=1\n")
+                && g.contains("\nvolume_music_hdmi_arc=15\n") && g.contains("\nhdmi_system_audio_status_enabled=(null)\n")
+                && g.contains("\ncharging_sounds_enabled=1\n"), "settings: HDMI, ARC, surround, sound keys kept: " + g);
+        check(!g.contains("search_engine") && !g.contains("wifi_on") && !g.contains("monarch"),
+                "settings: other keys left out ('arc' only as a whole word: search, monarch)");
+        check(g.indexOf("encoded_surround") < g.indexOf("hdmi_control") && g.indexOf("hdmi_control") < g.indexOf("volume_music"),
+                "settings: rows sorted by key");
+        check(SettingsDump.table("Settings.Secure", null, "SecurityException").contains("(not readable: SecurityException)"),
+                "settings: a refused table says why");
+        check(SettingsDump.table("Settings.System", Collections.singletonList(new String[] {"font_scale", "1.0"}), null)
+                .contains("(no such key among 1 rows)"), "settings: a table without such keys says so");
+
+        String dump = "HdmiControlService (dumpsys)\nmProhibitMode: false\nCEC settings:\n"
+                + "  hdmi_cec_enabled (int): 1 (default: 1) [modifiable]\n"
+                + "  tv_wake_on_one_touch_play (int): 0 (default: 0) [modifiable]\n"
+                + "  earc_enabled (int): 1 (default: 1) [modifiable]\nmMhlController: \neARC local device: None.\n";
+        String cec = SettingsDump.cecPart(dump);
+        check(cec.equals("== HDMI-CEC settings of the framework (dumpsys hdmi_control)\n"
+                + "hdmi_cec_enabled (int): 1 (default: 1) [modifiable]\n"
+                + "tv_wake_on_one_touch_play (int): 0 (default: 0) [modifiable]\n"
+                + "earc_enabled (int): 1 (default: 1) [modifiable]\n"), "settings: the CEC settings block, nothing after it: " + cec);
+        check(SettingsDump.cecPart(null).contains("(dumpsys hdmi_control not readable)")
+                && SettingsDump.cecPart("mProhibitMode: false\n").contains("(no CEC settings block in the dump)"),
+                "settings: a missing dump or block is named");
+
+        check(SettingsDump.keepPrefsFile("z9x_cec.xml") && SettingsDump.keepPrefsFile("lumen_audio_output.xml")
+                && SettingsDump.keepPrefsFile("power_policy.xml") && !SettingsDump.keepPrefsFile("report_prefs.xml")
+                && !SettingsDump.keepPrefsFile("z9x_cec.xml.bak"), "settings: the app's CEC / sound / power files only");
+        String x = SettingsDump.prefs("z9x_cec.xml", "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n"
+                + "    <int name=\"cec_night_choice\" value=\"4\" />\n    <boolean name=\"cec_defaults_v1_applied\" value=\"true\" />\n"
+                + "    <string name=\"cec_last_wake\">hdmi 2</string>\n    <long name=\"t\" value=\"12\" />\n</map>\n");
+        check(x.equals("[z9x_cec.xml]\ncec_night_choice=4\ncec_defaults_v1_applied=true\ncec_last_wake=hdmi 2\nt=12\n"),
+                "settings: a preferences file as key=value lines: " + x);
+        check(SettingsDump.prefs("a_cec.xml", "<map />").endsWith("(empty)\n") && SettingsDump.prefs("a_cec.xml", null)
+                .endsWith("(not readable)\n"), "settings: an empty or unreadable file is named");
+
+        // the journal drops HdmiCecConfig's read lines (LR-9MEQZP: most of its 725 lines), keeps a written value
+        CecJournal j = new CecJournal();
+        j.add("11-27 05:51:08.312  1000   922  1389 D HDMI    : Getting CEC setting value 'hdmi_cec_enabled'.");
+        j.add("11-27 05:51:08.312  1000   922  1389 D HDMI    : Reading 'hdmi_cec_enabled' shared preference.");
+        j.add("11-27 05:52:11.427  1000   922  1389 D HDMI    : Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.");
+        j.add("11-27 05:52:11.427  1000   922  1389 D HDMI    : Setting 'tv_wake_on_one_touch_play' shared pref.");
+        j.add(cecLine("05:52:18.801", "R", "<Text View On> B0:0D"));
+        j.add(cecLine("05:52:18.802", "S", "<Feature Abort> 0B:00:0D:04"));
+        String[] jl = j.text("D").split("\n");
+        check(jl.length == 4 && jl[1].equals("11-27 05:52:11.427 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.")
+                && jl[2].endsWith("[R]:<Text View On> B0:0D") && jl[3].endsWith("[S]:<Feature Abort> 0B:00:0D:04"),
+                "journal: setting reads left out, the written value and the refused wake kept: " + Arrays.toString(jl));
     }
 
     /** The report screen A (ReportView): screens, actions, the first focus, BACK, the bar and the last report. */

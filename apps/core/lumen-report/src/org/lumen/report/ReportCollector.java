@@ -70,6 +70,9 @@ import java.util.TimeZone;
  *                        the CEC messages of logcat.txt with the power polls counted (CecJournal) and the HDMI / ARC /
  *                        System Audio lines of dumpsys audio (HdmiDump)
  *   power.txt            dumpsys power without the wake lock and uid lists (PowerDump)
+ *   settings.txt         the settings rows about HDMI, CEC, ARC, eARC and sound, the framework's HDMI-CEC settings and
+ *                        the app's own CEC / sound switches (SettingsDump)
+ * A log helper that answers while the app read its own log still gives its files (RootLogs.late).
  * An automatic report (ReportKind CRASH / ANR / BOOT) is smaller: summary.txt with the incidents, props.txt,
  * logcat.txt and logcat_crash.txt (the newest lines that fit its zip) and dropbox/ of the last day, all of them
  * limited to the system and the image's own apps (crash records of apps the user installed stay out too).
@@ -128,7 +131,7 @@ final class ReportCollector {
     /** The log helper's dumpsys texts by service (RootLogs.DUMPSYS), for hdmi(); empty without its answer. */
     private final java.util.Map<String, String> dumps = new java.util.HashMap<>();
     /** The CEC messages of logcat.txt for hdmi.txt (CecJournal), fed while logcat.txt is written. */
-    private final CecJournal cec = new CecJournal();
+    private CecJournal cec = new CecJournal();
 
     ReportCollector(Context c, File dir, Progress progress, ReportKind kind, List<Incident> incidents) {
         this.c = c.getApplicationContext();
@@ -175,6 +178,7 @@ final class ReportCollector {
             textFile("ota_gate_log.txt", "/metadata/z9x_ota/log.txt", ReportConfig.CAP_OTA);
             miracastDiag();
             hdmi();
+            settings();
         } else if (stop != null) {
             parts.add(ReportZip.Part.text("unexpected_stop.txt", scrubber.scrubText(stop.detail)));
             note("unexpected_stop.txt: the last start ended without a shutdown");
@@ -361,20 +365,11 @@ final class ReportCollector {
                 }
                 return !progress.isCanceled();
             }
-        }, token, RootLogs.TIMEOUT_MS);
+        }, token, RootLogs.timeout(manual));
         if (a == RootLogs.Answer.CANCELED || progress.isCanceled()) throw new CanceledException();
         File root = new File(RootLogs.DIR);
         if (a == RootLogs.Answer.OK && RootLogs.fresh(root, token)) {
-            try {
-                filtered("logcat.txt", ReportConfig.CAP_LOGCAT, new File(root, RootLogs.LOGCAT), true);
-                filtered("logcat_crash.txt", ReportConfig.CAP_CRASH, new File(root, RootLogs.CRASH), false);
-                if (manual) {
-                    textFile("logcat_kernel.txt", new File(root, RootLogs.KERNEL).getPath(), ReportConfig.CAP_KERNEL);
-                    for (String s : RootLogs.DUMPSYS) dumps.put(s, readText(new File(root, s + ".txt"), HdmiDump.CAP * 4));
-                }
-            } finally {
-                RootLogs.ack(PROPS, token);
-            }
+            helperFiles(root, token);
             note("logs: the image's log helper (full system log)");
             return true;
         }
@@ -384,7 +379,29 @@ final class ReportCollector {
                 true, "-d", "-b", "main,system", "-v", "threadtime", "-v", "uid", "-t", since);
         logcat("logcat_crash.txt", ReportConfig.CAP_CRASH, ReportConfig.SHORT_EXEC_TIMEOUT_MS, false,
                 "-d", "-b", "crash", "-v", "threadtime", "-v", "uid");
+        // a helper slower than the wait (a busy unit) still answers while the app read its own log: take its files then
+        if (a == RootLogs.Answer.TIMEOUT && RootLogs.late(PROPS, root, token)) {
+            parts.removeIf(p -> p.name.equals("logcat.txt") || p.name.equals("logcat_crash.txt"));
+            cec = new CecJournal();
+            helperFiles(root, token);
+            note("logs: the image's log helper answered late, its full system log replaces the app's own");
+            return true;
+        }
         return false;
+    }
+
+    /** The helper's files of {@code token} into the report, then its acknowledgement (it removes them). */
+    private void helperFiles(File root, String token) throws IOException {
+        try {
+            filtered("logcat.txt", ReportConfig.CAP_LOGCAT, new File(root, RootLogs.LOGCAT), true);
+            filtered("logcat_crash.txt", ReportConfig.CAP_CRASH, new File(root, RootLogs.CRASH), false);
+            if (manual) {
+                textFile("logcat_kernel.txt", new File(root, RootLogs.KERNEL).getPath(), ReportConfig.CAP_KERNEL);
+                for (String s : RootLogs.DUMPSYS) dumps.put(s, readText(new File(root, s + ".txt"), HdmiDump.CAP * 4));
+            }
+        } finally {
+            RootLogs.ack(PROPS, token);
+        }
     }
 
     /** A helper file through LogcatFilter and the Scrubber, like a logcat run of the app. */
@@ -438,19 +455,24 @@ final class ReportCollector {
         String odd = null;
         try (Writer w = writer(out)) {
             String line;
-            while ((line = r.readLine()) != null) {
-                if ((++lines & 1023) == 0 && progress.isCanceled()) throw new CanceledException();
-                if (!f.keep(line)) {
-                    // logcat's own error message (no log prefix) is worth a note, never the line itself
-                    if (odd == null && !line.isEmpty() && !Character.isDigit(line.charAt(0))) {
-                        odd = line.length() > 120 ? line.substring(0, 120) : line;
+            try {
+                while ((line = r.readLine()) != null) {
+                    if ((++lines & 1023) == 0 && progress.isCanceled()) throw new CanceledException();
+                    if (!f.keep(line)) {
+                        // logcat's own error message (no log prefix) is worth a note, never the line itself
+                        if (odd == null && !line.isEmpty() && !Character.isDigit(line.charAt(0))) {
+                            odd = line.length() > 120 ? line.substring(0, 120) : line;
+                        }
+                        continue;
                     }
-                    continue;
+                    String kept = scrubber.scrub(line);
+                    w.write(kept);
+                    w.write('\n');
+                    if (LOGCAT.equals(name)) cec.add(kept);
                 }
-                String kept = scrubber.scrub(line);
-                w.write(kept);
-                w.write('\n');
-                if (LOGCAT.equals(name)) cec.add(kept);
+            } catch (IOException e) {
+                // the time limit closed logcat's stream ("Stream closed"): keep what was read, the note says it stopped
+                if (kill == null || !kill.fired) throw e;
             }
         }
         parts.add(ReportZip.Part.file(name, out, cap));
@@ -531,6 +553,50 @@ final class ReportCollector {
                 + ", system log CEC messages " + this.cec.messages()
                 + ", audio " + (audio == null ? "not readable" : audio.length() + " chars")
                 + "; power.txt: " + (power == null ? "not readable" : power.length() + " chars"));
+    }
+
+    /**
+     * settings.txt (SettingsDump): the Settings rows about HDMI, CEC, ARC, eARC and sound, the framework's HDMI-CEC
+     * settings and the app's own switches about them. After hdmi(), which fills the hdmi_control dump.
+     */
+    private void settings() {
+        StringBuilder sb = new StringBuilder();
+        String[][] tables = {{"Settings.Global", "global"}, {"Settings.Secure", "secure"}, {"Settings.System", "system"}};
+        for (String[] t : tables) {
+            List<String[]> rows = null;
+            String why = null;
+            try {
+                rows = settingsRows(android.net.Uri.parse("content://settings/" + t[1]));
+            } catch (RuntimeException e) {
+                why = e.getClass().getSimpleName();
+            }
+            sb.append(SettingsDump.table(t[0], rows, why)).append('\n');
+        }
+        sb.append(SettingsDump.cecPart(dumps.get("hdmi_control"))).append('\n');
+        sb.append("== The projector app's own settings about CEC, sound, HDMI and power\n");
+        File[] files = new File(c.getApplicationInfo().dataDir, "shared_prefs").listFiles();
+        int n = 0;
+        if (files != null) {
+            java.util.Arrays.sort(files);
+            for (File f : files) {
+                if (!SettingsDump.keepPrefsFile(f.getName())) continue;
+                sb.append(SettingsDump.prefs(f.getName(), readText(f, SettingsDump.PREFS_CAP)));
+                n++;
+            }
+        }
+        if (n == 0) sb.append("(none)\n");
+        parts.add(ReportZip.Part.text("settings.txt", scrubber.scrubText(sb.toString())));
+        note("settings.txt: " + sb.length() + " chars, " + n + " app settings files");
+    }
+
+    /** The name / value rows of one settings table; throws when the provider refuses it. */
+    private List<String[]> settingsRows(android.net.Uri uri) {
+        List<String[]> rows = new ArrayList<>();
+        try (android.database.Cursor cur = c.getContentResolver().query(uri, new String[] {"name", "value"}, null, null, null)) {
+            if (cur == null) throw new IllegalStateException("no cursor");
+            while (cur.moveToNext()) rows.add(new String[] {cur.getString(0), cur.getString(1)});
+        }
+        return rows;
     }
 
     /** A helper file as text, at most {@code max} characters; null when it is not readable. */

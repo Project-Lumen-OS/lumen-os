@@ -19,7 +19,7 @@
     (gone) TextRow 'HDMI-CEC غير متاح'
     ToggleRow 'التحكم عبر HDMI-CEC' = true
     ToggleRow 'التشغيل بواسطة جهاز HDMI' = true
-    ChoiceRow 'الحماية الليلية' = #4 of [متوقفة, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'الحماية الليلية' = #0 of [متوقفة, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'خلال هذه الساعات لا يمكن لأجهزة HDMI تشغيل جهاز العرض.'
     (gone) TextRow 'متوقفة مؤقتًا بعد عدة مرات تشغيل بلا صورة. تعود للعمل عند استخدام جهاز التحكم عن بُعد.'
     ToggleRow 'التبديل إلى الجهاز عند تشغيله' = true
@@ -57,7 +57,7 @@
     (gone) TextRow 'HDMI-CEC недаступны'
     ToggleRow 'Кіраванне HDMI-CEC' = true
     ToggleRow 'Уключацца ад HDMI-прылады' = true
-    ChoiceRow 'Начная ахова' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Начная ахова' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'У гэтыя гадзіны HDMI-прылады не могуць уключыць праектар.'
     (gone) TextRow 'Прыпынена пасля некалькіх уключэнняў без выявы. Адновіцца, калі вы скарыстаецеся пультам.'
     ToggleRow 'Пераключацца на прыладу, калі яна ўключаецца' = true
@@ -95,7 +95,7 @@
     (gone) TextRow 'HDMI-CEC ist nicht verfügbar'
     ToggleRow 'HDMI-CEC-Steuerung' = true
     ToggleRow 'Mit einem HDMI-Gerät einschalten' = true
-    ChoiceRow 'Nachtschutz' = #4 of [Aus, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Nachtschutz' = #0 of [Aus, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'In diesen Stunden können HDMI-Geräte den Projektor nicht einschalten.'
     (gone) TextRow 'Nach mehreren Einschaltvorgängen ohne Bild pausiert. Sobald Sie die Fernbedienung benutzen, ist es wieder aktiv.'
     ToggleRow 'Zum Gerät wechseln, wenn es eingeschaltet wird' = true
@@ -133,7 +133,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -185,7 +185,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -214,7 +214,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = false
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -496,7 +496,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -532,7 +532,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -567,7 +567,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = false
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -889,7 +889,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -914,7 +914,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -936,7 +936,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -1154,7 +1154,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -1186,7 +1186,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -1215,7 +1215,7 @@
     TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' [grey] = null
     ToggleRow 'Turn on with an HDMI device' [grey] = null
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -1497,7 +1497,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = null
@@ -1548,7 +1548,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = null
@@ -1576,7 +1576,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = false
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = null
@@ -1850,7 +1850,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -1902,7 +1902,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -1931,7 +1931,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = false
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -2215,7 +2215,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = false
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -2266,7 +2266,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = false
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -2295,7 +2295,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -2579,7 +2579,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -2621,7 +2621,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = true
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -2650,7 +2650,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = false
     ToggleRow 'Turn on with an HDMI device' [grey] = false
-    ChoiceRow 'Night guard' [grey] = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' [grey] = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' [grey] = true
@@ -2934,7 +2934,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -2986,7 +2986,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -3020,7 +3020,7 @@
     (gone) TextRow 'HDMI-CEC is not available'
     ToggleRow 'HDMI-CEC control' = true
     ToggleRow 'Turn on with an HDMI device' = true
-    ChoiceRow 'Night guard' = #4 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Night guard' = #0 of [Off, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'During these hours HDMI devices cannot turn the projector on.'
     (gone) TextRow 'Paused after several wake-ups without a picture. Using the remote turns it back on.'
     ToggleRow 'Switch to a device when it turns on' = true
@@ -3351,7 +3351,7 @@
     (gone) TextRow 'HDMI-CEC no está disponible'
     ToggleRow 'Control HDMI-CEC' = true
     ToggleRow 'Encender con un dispositivo HDMI' = true
-    ChoiceRow 'Protección nocturna' = #4 of [Desactivada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Protección nocturna' = #0 of [Desactivada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Durante estas horas, los dispositivos HDMI no pueden encender el proyector.'
     (gone) TextRow 'En pausa tras varios encendidos sin imagen. Se reactiva al usar el mando.'
     ToggleRow 'Cambiar a un dispositivo cuando se enciende' = true
@@ -3389,7 +3389,7 @@
     (gone) TextRow 'HDMI-CEC n’est pas disponible'
     ToggleRow 'Contrôle HDMI-CEC' = true
     ToggleRow 'Allumer avec un appareil HDMI' = true
-    ChoiceRow 'Protection nocturne' = #4 of [Désactivée, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Protection nocturne' = #0 of [Désactivée, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Pendant ces heures, les appareils HDMI ne peuvent pas allumer le projecteur.'
     (gone) TextRow 'En pause après plusieurs allumages sans image. Utiliser la télécommande la réactive.'
     ToggleRow 'Basculer vers un appareil quand il s’allume' = true
@@ -3427,7 +3427,7 @@
     (gone) TextRow 'HDMI-CEC non è disponibile'
     ToggleRow 'Controllo HDMI-CEC' = true
     ToggleRow 'Accendi con un dispositivo HDMI' = true
-    ChoiceRow 'Protezione notturna' = #4 of [Disattivata, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Protezione notturna' = #0 of [Disattivata, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'In queste ore i dispositivi HDMI non possono accendere il proiettore.'
     (gone) TextRow 'In pausa dopo diverse accensioni senza immagine. Si riattiva quando usi il telecomando.'
     ToggleRow 'Passa a un dispositivo quando si accende' = true
@@ -3465,7 +3465,7 @@
     (gone) TextRow 'HDMI-CEC は使用できません'
     ToggleRow 'HDMI-CEC 制御' = true
     ToggleRow 'HDMI 機器で電源を入れる' = true
-    ChoiceRow '夜間ガード' = #4 of [オフ, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow '夜間ガード' = #0 of [オフ, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'この時間帯は、HDMI 機器からプロジェクターの電源を入れることはできません。'
     (gone) TextRow '映像のない起動が続いたため一時停止しています。リモコンを使うと再開します。'
     ToggleRow '機器の電源が入ったらその機器に切り替える' = true
@@ -3503,7 +3503,7 @@
     (gone) TextRow 'HDMI-CEC қолжетімсіз'
     ToggleRow 'HDMI-CEC басқаруы' = true
     ToggleRow 'HDMI құрылғысынан қосылу' = true
-    ChoiceRow 'Түнгі қорғаныс' = #4 of [Өшірулі, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Түнгі қорғаныс' = #0 of [Өшірулі, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Осы сағаттарда HDMI құрылғылары проекторды қоса алмайды.'
     (gone) TextRow 'Суретсіз бірнеше рет қосылғаннан кейін тоқтатылды. Пультті пайдаланғанда қайта іске қосылады.'
     ToggleRow 'Құрылғы қосылғанда соған ауысу' = true
@@ -3541,7 +3541,7 @@
     (gone) TextRow 'HDMI-CEC를 사용할 수 없습니다'
     ToggleRow 'HDMI-CEC 제어' = true
     ToggleRow 'HDMI 기기로 전원 켜기' = true
-    ChoiceRow '야간 보호' = #4 of [끄기, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow '야간 보호' = #0 of [끄기, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow '이 시간에는 HDMI 기기가 프로젝터를 켤 수 없습니다.'
     (gone) TextRow '화면 없이 여러 번 켜져서 일시 중지되었습니다. 리모컨을 사용하면 다시 작동합니다.'
     ToggleRow '기기가 켜지면 해당 기기로 전환' = true
@@ -3579,7 +3579,7 @@
     (gone) TextRow 'HDMI-CEC jest niedostępne'
     ToggleRow 'Sterowanie HDMI-CEC' = true
     ToggleRow 'Włączaj urządzeniem HDMI' = true
-    ChoiceRow 'Ochrona nocna' = #4 of [Wył., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ochrona nocna' = #0 of [Wył., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'W tych godzinach urządzenia HDMI nie mogą włączyć projektora.'
     (gone) TextRow 'Wstrzymano po kilku włączeniach bez obrazu. Użycie pilota przywróci tę funkcję.'
     ToggleRow 'Przełączaj na urządzenie, gdy się włącza' = true
@@ -3617,7 +3617,7 @@
     (gone) TextRow 'O HDMI-CEC não está disponível'
     ToggleRow 'Controle HDMI-CEC' = true
     ToggleRow 'Ligar com um dispositivo HDMI' = true
-    ChoiceRow 'Proteção noturna' = #4 of [Desativada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Proteção noturna' = #0 of [Desativada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Nesses horários, os dispositivos HDMI não podem ligar o projetor.'
     (gone) TextRow 'Pausado após várias vezes ligado sem imagem. Usar o controle remoto reativa.'
     ToggleRow 'Mudar para um dispositivo quando ele ligar' = true
@@ -3655,7 +3655,7 @@
     (gone) TextRow 'O HDMI-CEC não está disponível'
     ToggleRow 'Controle HDMI-CEC' = true
     ToggleRow 'Ligar com um dispositivo HDMI' = true
-    ChoiceRow 'Proteção noturna' = #4 of [Desativada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Proteção noturna' = #0 of [Desativada, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Nesses horários, os dispositivos HDMI não podem ligar o projetor.'
     (gone) TextRow 'Pausado após várias vezes ligado sem imagem. Usar o controle remoto reativa.'
     ToggleRow 'Mudar para um dispositivo quando ele ligar' = true
@@ -3693,7 +3693,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -3745,7 +3745,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -3774,7 +3774,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = false
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4056,7 +4056,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4092,7 +4092,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -4127,7 +4127,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = false
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -4449,7 +4449,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4474,7 +4474,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4496,7 +4496,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4714,7 +4714,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4746,7 +4746,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -4775,7 +4775,7 @@
     TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' [grey] = null
     ToggleRow 'Включаться от HDMI-устройства' [grey] = null
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -5057,7 +5057,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = null
@@ -5108,7 +5108,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = null
@@ -5136,7 +5136,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = false
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = null
@@ -5410,7 +5410,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -5462,7 +5462,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -5491,7 +5491,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = false
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -5775,7 +5775,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = false
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -5826,7 +5826,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = false
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -5855,7 +5855,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -6139,7 +6139,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -6181,7 +6181,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = true
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -6210,7 +6210,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = false
     ToggleRow 'Включаться от HDMI-устройства' [grey] = false
-    ChoiceRow 'Ночная защита' [grey] = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' [grey] = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' [grey] = true
@@ -6494,7 +6494,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -6546,7 +6546,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -6580,7 +6580,7 @@
     (gone) TextRow 'HDMI-CEC недоступен'
     ToggleRow 'Управление HDMI-CEC' = true
     ToggleRow 'Включаться от HDMI-устройства' = true
-    ChoiceRow 'Ночная защита' = #4 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Ночная защита' = #0 of [Выкл., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'В эти часы HDMI-устройства не могут включить проектор.'
     (gone) TextRow 'Приостановлено после нескольких включений без изображения. Возобновится, когда вы воспользуетесь пультом.'
     ToggleRow 'Переключаться на устройство при его включении' = true
@@ -6911,7 +6911,7 @@
     (gone) TextRow 'HDMI-CEC kullanılamıyor'
     ToggleRow 'HDMI-CEC kontrolü' = true
     ToggleRow 'Bir HDMI cihazıyla aç' = true
-    ChoiceRow 'Gece koruması' = #4 of [Kapalı, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Gece koruması' = #0 of [Kapalı, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'Bu saatlerde HDMI cihazları projektörü açamaz.'
     (gone) TextRow 'Görüntü olmadan birkaç kez açıldığı için duraklatıldı. Kumandayı kullandığınızda yeniden etkinleşir.'
     ToggleRow 'Açıldığında cihaza geç' = true
@@ -6949,7 +6949,7 @@
     (gone) TextRow 'HDMI-CEC недоступний'
     ToggleRow 'Керування HDMI-CEC' = true
     ToggleRow 'Вмикатися від HDMI-пристрою' = true
-    ChoiceRow 'Нічний захист' = #4 of [Вимк., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow 'Нічний захист' = #0 of [Вимк., 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow 'У ці години HDMI-пристрої не можуть увімкнути проєктор.'
     (gone) TextRow 'Призупинено після кількох увімкнень без зображення. Відновиться, коли ви скористаєтеся пультом.'
     ToggleRow 'Перемикатися на пристрій, коли він вмикається' = true
@@ -6987,7 +6987,7 @@
     (gone) TextRow 'HDMI-CEC 不可用'
     ToggleRow 'HDMI-CEC 控制' = true
     ToggleRow '由 HDMI 设备开机' = true
-    ChoiceRow '夜间保护' = #4 of [关闭, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow '夜间保护' = #0 of [关闭, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow '在这些时段内，HDMI 设备无法开启投影仪。'
     (gone) TextRow '多次开机均无画面，已暂停。使用遥控器后即恢复。'
     ToggleRow '设备开机时切换到该设备' = true
@@ -7025,7 +7025,7 @@
     (gone) TextRow '無法使用 HDMI-CEC'
     ToggleRow 'HDMI-CEC 控制' = true
     ToggleRow '由 HDMI 裝置開機' = true
-    ChoiceRow '夜間保護' = #4 of [關閉, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
+    ChoiceRow '夜間保護' = #0 of [關閉, 22:00–07:00, 23:00–07:00, 00:00–07:00, 01:00–07:00] commit 500 ms
     TextRow '在這些時段內，HDMI 裝置無法開啟投影機。'
     (gone) TextRow '多次開機都沒有畫面，已暫停。使用遙控器後即會恢復。'
     ToggleRow '裝置開機時切換到該裝置' = true

@@ -45,14 +45,14 @@ public class CalmView extends LinearLayout {
             }
         };
         LayoutParams dp = new LayoutParams(Theme.px(6), Theme.px(6));
-        dp.leftMargin = Theme.px(14);
-        dp.rightMargin = Theme.px(14);
+        dp.setMarginStart(Theme.px(14));
+        dp.setMarginEnd(Theme.px(14));
         day.addView(mDot, dp);
         mWxIcon = new ImageView(c);
         day.addView(mWxIcon, new LayoutParams(Theme.px(32), Theme.px(32)));
         mWx = new TextView(c);
         LayoutParams wp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        wp.leftMargin = Theme.px(10);
+        wp.setMarginStart(Theme.px(10));
         day.addView(mWx, wp);
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.topMargin = Theme.px(12);

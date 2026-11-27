@@ -475,7 +475,6 @@ public final class Play6PowerKey {
             OverlayHost.get(app).dismissAll(false);
             SleepTimer.cancel(app, false);
             Runnable go = () -> worker().post(() -> {
-                PowerManager pm = app.getSystemService(PowerManager.class);
                 sHaltInFlight = true;
                 LampStandby.noteShutdown();
                 try {
@@ -483,9 +482,9 @@ public final class Play6PowerKey {
                     // REBOOT permission (signature|privileged, granted by the platform signature).
                     // Reason SHUTDOWN_USER_REQUESTED, like the system menu.
                     if (reboot) {
-                        pm.reboot(PowerManager.SHUTDOWN_USER_REQUESTED);           // blocks
+                        org.lumen.projector.panel.Halt.restart(app, "power menu");   // blocks
                     } else {
-                        pm.shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);
+                        org.lumen.projector.panel.Halt.powerOff(app, "power menu");
                     }
                 } catch (Throwable t) {
                     sHaltInFlight = false;

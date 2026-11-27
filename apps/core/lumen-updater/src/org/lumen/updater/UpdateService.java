@@ -285,6 +285,7 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
                     byte[] m = fetchWithRetry(p.metadataUrl);
                     if (m == null) return false;
                     if (!p.metadataSha256.isEmpty() && !Trust.hex(Trust.sha256().digest(m)).equals(p.metadataSha256)) {
+                        if (Newest.deltaFailed(st, "metadata sha256", UpdateState.DOWNLOADING)) return false;
                         throw new IOException("metadata sha256 mismatch");
                     }
                     try (FileOutputStream o = new FileOutputStream(meta)) {
@@ -297,13 +298,18 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
                 st.setDownload(p.size, p.size, tag, 0);
             }
             // the way's own check: metadata = payload prefix, or the package signature
-            if (!InstallWay.current().verifyDownload(st, src, p, meta)) return false;
+            if (!InstallWay.current().verifyDownload(st, src, p, meta)) {
+                Newest.deltaFailed(st, "payload check", UpdateState.DOWNLOADING);   // a full package keeps its error
+                return false;
+            }
             Log.i(Ota.TAG, "download verified: " + p.fileName());
             return true;
         } catch (PackageDownload.HashMismatch e) {
+            if (Newest.deltaFailed(st, "sha256", UpdateState.DOWNLOADING)) return false;
             st.setError("err_hash", "");
             return false;
         } catch (IOException e) {
+            if (gone(e) && Newest.deltaFailed(st, e.getMessage(), UpdateState.DOWNLOADING)) return false;
             Log.w(Ota.TAG, "download failed", e);
             if (!jobs.stopRequested()) st.setError(st.fromUsb() ? "usb_none" : "err_network", "");
             return false;
@@ -311,6 +317,11 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
             if (jobs.stopRequested() && st.state() == UpdateState.DOWNLOADING) st.setState(UpdateState.PAUSED);
             Ota.setBusy(this, false, st.state().name().toLowerCase());
         }
+    }
+
+    /** The file is not on the server (404, 410): a delta that was taken down gives way to the full package. */
+    static boolean gone(IOException e) {
+        return e instanceof HttpError && (((HttpError) e).code == 404 || ((HttpError) e).code == 410);
     }
 
     /** The whole zip against the manifest's sha256: the same check for a download and a file on the USB stick. */
@@ -484,6 +495,11 @@ public final class UpdateService extends Service implements Engine.Listener, Ser
         } else if (code == Ota.ERR_USER_CANCELED) {
             st.clearPending();
             st.setState(UpdateState.DOWNLOADED);
+            Ota.setBusy(this, false, "idle");
+        } else if (DeltaRule.applyFailed(code)
+                && Newest.deltaFailed(st, "update_engine code " + code, UpdateState.AVAILABLE)) {
+            // the delta did not fit this system: the full package of the same build is the offer now
+            st.clearPending();
             Ota.setBusy(this, false, "idle");
         } else {
             st.clearPending();

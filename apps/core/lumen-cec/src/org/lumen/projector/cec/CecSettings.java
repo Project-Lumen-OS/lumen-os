@@ -44,9 +44,8 @@ public final class CecSettings {
     /** + a CecRow name: the user switched that row of the page (CecStockDefaults keeps the value then). */
     static final String K_USER_ROW = "cec_user_";
 
-    /** Night guard choices: {from hour, to hour} local time, {-1,-1} = off. Default 01:00-07:00. */
-    static final int[][] NIGHT_CHOICES = {{-1, -1}, {22, 7}, {23, 7}, {0, 7}, {1, 7}};
-    static final int NIGHT_DEFAULT = 4;
+    /** Night guard choices (NightGuard): {from hour, to hour} local time, {-1,-1} = off; off unless the user picks hours. */
+    static final int[][] NIGHT_CHOICES = NightGuard.CHOICES;
 
     /** Boot default of PM51 cec0 (overlay/v1/z9x_power.rc block 2): 1 = CEC master on AND wake on. */
     static final String PROP_WAKE = "persist.z9x.cec_wake";
@@ -211,9 +210,9 @@ public final class CecSettings {
     }
 
     static int nightChoice(Context c) {
-        int i;
-        try { i = prefs(c).getInt(K_NIGHT, NIGHT_DEFAULT); } catch (Throwable t) { i = NIGHT_DEFAULT; }
-        return i >= 0 && i < NIGHT_CHOICES.length ? i : NIGHT_DEFAULT;
+        Integer i;
+        try { i = prefs(c).getInt(K_NIGHT, -1); } catch (Throwable t) { i = null; }   // -1: none stored
+        return NightGuard.choice(i);
     }
 
     static void setNightChoice(Context c, int i) {
@@ -223,18 +222,14 @@ public final class CecSettings {
     }
 
     static String describeNight(int i) {
-        int[] r = NIGHT_CHOICES[i];
-        return r[0] < 0 ? "off" : r[0] + ":00-" + r[1] + ":00";
+        return NightGuard.describe(i);
     }
 
     /** Inside the night guard hours right now (local time)? */
     static boolean inNight(Context c, long wallMs) {
-        int[] r = NIGHT_CHOICES[nightChoice(c)];
-        if (r[0] < 0) return false;
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(wallMs);
-        int h = cal.get(Calendar.HOUR_OF_DAY);
-        return r[0] < r[1] ? (h >= r[0] && h < r[1]) : (h >= r[0] || h < r[1]);
+        return NightGuard.blocks(nightChoice(c), cal.get(Calendar.HOUR_OF_DAY));
     }
 
     static boolean restoreOtpPending(Context c) {

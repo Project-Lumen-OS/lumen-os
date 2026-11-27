@@ -43,6 +43,9 @@ public final class TitanUxMenuTest {
         ok("side: nothing stored = left, the place so far", MenuLook.LEFT.equals(MenuLook.side(null)) && !MenuLook.right(null));
         ok("side: right stored = right", MenuLook.right("right") && MenuLook.RIGHT.equals(MenuLook.side("right")));
         ok("side: junk = left", MenuLook.LEFT.equals(MenuLook.side("middle")));
+        ok("side: nothing stored in a right-to-left language = right", MenuLook.RIGHT.equals(MenuLook.side(null, true)));
+        ok("side: left stored stays left in a right-to-left language", MenuLook.LEFT.equals(MenuLook.side("left", true)));
+        ok("side: junk in a right-to-left language = right", MenuLook.RIGHT.equals(MenuLook.side("middle", true)));
         ok("size: nothing stored = normal at scale 1", MenuLook.NORMAL.equals(MenuLook.density(null)) && MenuLook.scale(null) == 1f);
         ok("size: compact draws smaller (more rows fit)", MenuLook.scale("compact") == MenuLook.COMPACT_SCALE
                 && MenuLook.COMPACT_SCALE < 1f && MenuLook.COMPACT_SCALE >= 0.8f);

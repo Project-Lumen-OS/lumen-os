@@ -229,12 +229,17 @@ public final class Probe {
                     .append(" props=").append(Arrays.toString(k.properties)).append(" file=").append(k.fileName())
                     .append(" delta=").append(k.isDelta());
         }
-        UpdateManifest.Pkg c1 = m.choose("lumen-1.0.9-20261106anp"), c2 = m.choose(""), c3 = m.choose("other");
+        UpdateManifest.Pkg c1 = pick(m, "lumen-1.0.9-20261106anp"), c2 = pick(m, ""), c3 = pick(m, "other");
         b.append("\n    choose ").append(c1 == null ? "null" : c1.type).append(' ').append(c2 == null ? "null" : c2.type)
                 .append(' ').append(c3 == null ? "null" : c3.type);
         b.append("\n    changelog ").append(m.changelogFor(Locale.ENGLISH)).append('|').append(m.changelogFor(new Locale("ru", "RU")))
                 .append('|').append(m.changelogFor(new Locale("pt", "BR"))).append('|').append(m.changelogFor(Locale.JAPANESE));
         return b.toString();
+    }
+
+    /** The package a unit on build {@code id} takes (DeltaRule; no version_code in these manifests' deltas). */
+    static UpdateManifest.Pkg pick(UpdateManifest m, String id) {
+        return DeltaRule.choose(m, id, 0, false, java.util.Collections.emptySet());
     }
 
     static void applicable() throws Exception {

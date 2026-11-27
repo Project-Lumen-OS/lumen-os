@@ -1,0 +1,76 @@
+# evleo790 LR-9MEQZP (Z9X HB G0148, Lumen 1.0.10-beta27, report 2026-11-27 06:09 local UTC+3): the lines of its CEC
+# journal (hdmi.txt, CecJournal) about the wake: the Yandex module's <Standby> / <Text View On>, the projector's
+# <Feature Abort> to them (0D:04 = refused), the framework's wake setting changes and its CEC control on/off.
+# Times are the unit's local time. Read by WakeReplayTest (night guard replay).
+11-27 05:52:10.574 [R]:<Standby> B0:36
+11-27 05:52:11.377 enableSystemCecControl: false
+11-27 05:52:11.427 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 05:52:18.801 [R]:<Text View On> B0:0D
+11-27 05:52:18.802 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:20.985 [R]:<Text View On> B0:0D
+11-27 05:52:20.986 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:22.945 [R]:<Text View On> B0:0D
+11-27 05:52:22.946 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:24.925 [R]:<Text View On> B0:0D
+11-27 05:52:24.926 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:27.029 [R]:<Text View On> B0:0D
+11-27 05:52:27.030 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:29.009 [R]:<Text View On> B0:0D
+11-27 05:52:29.010 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:52:32.902 enableSystemCecControl: true
+11-27 05:52:34.481 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 05:52:35.270 [R]:<Text View On> B0:0D
+11-27 05:53:57.386 [S]:<Standby> 0F:36
+11-27 05:53:57.486 enableSystemCecControl: false
+11-27 05:53:57.495 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 05:54:00.398 enableSystemCecControl: true
+11-27 05:54:01.989 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 05:55:46.986 [S]:<Standby> 0F:36
+11-27 05:55:47.086 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 05:55:47.098 enableSystemCecControl: false
+11-27 05:55:58.488 enableSystemCecControl: true
+11-27 05:56:00.082 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 05:56:41.545 [R]:<Standby> B0:36
+11-27 05:56:47.073 enableSystemCecControl: false
+11-27 05:56:47.336 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 05:56:48.773 [R]:<Text View On> B0:0D
+11-27 05:56:48.774 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:56:50.873 [R]:<Text View On> B0:0D
+11-27 05:56:50.874 [S]:<Feature Abort> 0B:00:0D:04
+11-27 05:56:56.528 enableSystemCecControl: true
+11-27 05:56:57.159 [R]:<Text View On> B0:0D
+11-27 05:56:58.135 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 05:57:22.116 [S]:<Standby> 0F:36
+11-27 05:57:22.195 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 05:57:26.673 enableSystemCecControl: false
+11-27 06:04:50.805 [R]:<Text View On> B0:0D
+11-27 06:04:50.807 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:04:56.929 [R]:<Text View On> B0:0D
+11-27 06:04:56.930 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:04:58.969 [R]:<Text View On> B0:0D
+11-27 06:04:58.970 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:00.805 [R]:<Text View On> B0:0D
+11-27 06:05:00.806 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:02.845 [R]:<Text View On> B0:0D
+11-27 06:05:02.845 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:04.806 [R]:<Text View On> B0:0D
+11-27 06:05:04.806 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:06.841 [R]:<Text View On> B0:0D
+11-27 06:05:06.842 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:08.821 [R]:<Text View On> B0:0D
+11-27 06:05:08.822 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:05:09.640 enableSystemCecControl: true
+11-27 06:05:11.454 [R]:<Text View On> B0:0D
+11-27 06:05:11.575 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 06:06:54.777 [R]:<Standby> B0:36
+11-27 06:07:00.104 enableSystemCecControl: false
+11-27 06:07:00.359 Updating CEC setting 'tv_wake_on_one_touch_play' to '0'.
+11-27 06:07:01.875 [R]:<Text View On> B0:0D
+11-27 06:07:01.875 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:07:08.029 [R]:<Text View On> B0:0D
+11-27 06:07:08.030 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:07:10.077 [R]:<Text View On> B0:0D
+11-27 06:07:10.078 [S]:<Feature Abort> 0B:00:0D:04
+11-27 06:07:10.218 enableSystemCecControl: true
+11-27 06:07:11.781 Updating CEC setting 'tv_wake_on_one_touch_play' to '1'.
+11-27 06:07:12.172 [R]:<Text View On> B0:0D

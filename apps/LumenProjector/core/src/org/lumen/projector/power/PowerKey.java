@@ -312,7 +312,6 @@ public final class PowerKey {
             OverlayHost.get(app).dismissAll(false);
             SleepTimer.cancel(app, false);
             Runnable go = () -> worker().post(() -> {
-                PowerManager pm = app.getSystemService(PowerManager.class);
                 sHaltInFlight = true;
                 try {
                     Log.i(TAG, reboot ? "reboot (user requested)" : "shutdown (user requested)");
@@ -322,12 +321,12 @@ public final class PowerKey {
                     if (reboot) {
                         // v6.5: an orderly reboot, never an unattended reset (boot-dark check)
                         StandbyController.noteOrderlyReboot("power menu restart");
-                        pm.reboot(PowerManager.SHUTDOWN_USER_REQUESTED);           // blocks
+                        org.lumen.projector.panel.Halt.restart(app, "power menu");   // blocks
                     } else {
                         // v6.5: the same 'off' marker (state + wall time) as the standby deadline's
                         // power-off, so the next boot's boot-dark check treats both alike
                         StandbyController.notePowerOff("power menu");
-                        pm.shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);
+                        org.lumen.projector.panel.Halt.powerOff(app, "power menu");
                     }
                 } catch (Throwable t) {
                     sHaltInFlight = false;

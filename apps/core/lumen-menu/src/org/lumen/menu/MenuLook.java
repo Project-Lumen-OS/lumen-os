@@ -21,7 +21,15 @@ public final class MenuLook {
     public static final float COMPACT_SCALE = 0.85f;
 
     /** A stored side as a token; anything unknown (nothing stored yet) is the left side, the menu's place so far. */
-    public static String side(String stored) { return RIGHT.equals(stored) ? RIGHT : LEFT; }
+    public static String side(String stored) { return side(stored, false); }
+
+    /**
+     * A stored side as a token; with nothing (or junk) stored the menu starts where reading starts: left, or right in a
+     * right-to-left language, where the whole menu is then mirrored.
+     */
+    public static String side(String stored, boolean rtl) {
+        return RIGHT.equals(stored) || LEFT.equals(stored) ? stored : rtl ? RIGHT : LEFT;
+    }
 
     /** A stored size as a token; anything unknown is the normal size. */
     public static String density(String stored) { return COMPACT.equals(stored) ? COMPACT : NORMAL; }

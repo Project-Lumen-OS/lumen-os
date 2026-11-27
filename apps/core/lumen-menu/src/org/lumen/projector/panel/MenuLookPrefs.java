@@ -20,12 +20,17 @@ final class MenuLookPrefs {
     /** The token of {@code f} as stored (the default when nothing is). */
     static String get(Context c, FeatureId f) {
         try {
-            if (f == FeatureId.SETTINGS_MENU_SIDE) return MenuLook.side(prefs(c).getString(K_SIDE, null));
+            if (f == FeatureId.SETTINGS_MENU_SIDE) return MenuLook.side(prefs(c).getString(K_SIDE, null), rtl(c));
             if (f == FeatureId.SETTINGS_MENU_DENSITY) return MenuLook.density(prefs(c).getString(K_DENSITY, null));
         } catch (RuntimeException e) {
             // the defaults below
         }
-        return f == FeatureId.SETTINGS_MENU_SIDE ? MenuLook.LEFT : f == FeatureId.SETTINGS_MENU_DENSITY ? MenuLook.NORMAL : null;
+        return f == FeatureId.SETTINGS_MENU_SIDE ? MenuLook.side(null, rtl(c)) : f == FeatureId.SETTINGS_MENU_DENSITY ? MenuLook.NORMAL : null;
+    }
+
+    /** True in a right-to-left language (Arabic, Hebrew, Persian): the default side is then the right one. */
+    private static boolean rtl(Context c) {
+        return c.getResources().getConfiguration().getLayoutDirection() == android.view.View.LAYOUT_DIRECTION_RTL;
     }
 
     /** Stores a token of {@code f}; false for a value the setting does not take or a failed write. */

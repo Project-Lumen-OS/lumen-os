@@ -41,7 +41,14 @@ public class CheckRow extends Row {
         path.moveTo(l, cy);
         path.lineTo(l + size * 0.38f, cy + size * 0.36f);
         path.lineTo(right, cy - size * 0.4f);
+        // a check mark keeps its direction in a right-to-left row: flip it back inside the mirrored canvas
+        boolean flip = isMirroredNow();
+        if (flip) {
+            c.save();
+            c.scale(-1f, 1f, l + size / 2f, 0f);
+        }
         c.drawPath(path, mark);
+        if (flip) c.restore();
     }
 
     @Override

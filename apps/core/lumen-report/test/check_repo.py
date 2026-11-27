@@ -249,7 +249,12 @@ for root, _, fs in os.walk(M):
 RC = read(os.path.join(S, "ReportCollector.java"))
 for w in ["boolean root = rootLogs(since);",
           "if (a == RootLogs.Answer.OK && RootLogs.fresh(root, token)) {",
-          "            } finally {\n                RootLogs.ack(PROPS, token);\n            }",
+          "        } finally {\n            RootLogs.ack(PROPS, token);\n        }",
+          # evleo790 LR-9MEQZP: a slow helper's late answer is still taken, a log cut by the time limit is kept
+          "if (a == RootLogs.Answer.TIMEOUT && RootLogs.late(PROPS, root, token)) {",
+          "if (kill == null || !kill.fired) throw e;",
+          "}, token, RootLogs.timeout(manual));",
+          "            settings();",
           'filtered("logcat.txt", ReportConfig.CAP_LOGCAT, new File(root, RootLogs.LOGCAT), true);',
           "LogcatFilter f = new LogcatFilter(imageAppIds, android.os.Process.myUid(), manual);",
           # the CEC journal: fed with every kept line of logcat.txt, its text in hdmi.txt with the unit's log.tag.HDMI

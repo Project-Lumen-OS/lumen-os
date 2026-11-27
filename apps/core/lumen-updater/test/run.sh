@@ -8,7 +8,8 @@
 #      install ways (KindTest), the model table of README.md (TargetFactsTest), the service wiring (one UpdateService, the install drop of each InstallWay);
 #   3. PackageDownload over the shared download (test/download.sh; the download itself: apps/core/lumen-download/test/run.sh);
 #   4. parity with the three updaters it replaced (test/parity/run.sh: behaviour transcript + static face);
-#   5. always the newest build (NewestTest: a fake GitHub over HTTPS on loopback) and the wiring of every path into Newest.
+#   5. always the newest build (NewestTest: a fake GitHub over HTTPS on loopback) and the wiring of every path into Newest;
+#   6. deltas only for their exact source build, the full package after any delta failure (DeltaTest).
 # Host only, no device, no network (the download test talks to its own server on loopback). Writes only a temp dir. The model checks stay with each model's layer
 # (apps/Z9xUpdater/test/run.sh, apps/LumenUpdater/test/ota/run.sh, apps/Play6Updater/test/run.sh).
 set -eu
@@ -105,10 +106,27 @@ python3 -B "$G/tools/devices/assemble_app.py" --root "$G" --device horse_popular
   -sourcepath "$N/app/src" "$TS/NewestTest.java"
 "$JAVA_HOME/bin/java" -Djava.io.tmpdir="$N" -Djavax.net.ssl.trustStore="$N/ks.p12" -Djavax.net.ssl.trustStorePassword=lumentest \
   -Djavax.net.ssl.trustStoreType=PKCS12 -cp "$N/c:$N/stubs:$OUT/json:$AJ:$HJ" org.lumen.updater.NewestTest "$N/ks.p12" lumentest
+# deltas: the source build takes its delta, anything else (and a failed delta) the full package (DeltaTest)
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -implicit:class -d "$N/d" -cp "$N/stubs:$OUT/json:$HJ:$AJ" \
+  -sourcepath "$N/app/src:$HERE/test" "$TS/DeltaTest.java"
+"$JAVA_HOME/bin/java" -Djava.io.tmpdir="$N" -cp "$N/d:$N/stubs:$OUT/json:$AJ:$HJ" org.lumen.updater.DeltaTest
 # every path goes through Newest: the check, the download, the install, the boot, the job and the screen
 want() {  # FILE TEXT
   grep -qF "$2" "$S/$1" || { echo "FAIL $1: missing: $2"; exit 1; }
 }
+# a delta gives way to the full package on every failure path (DeltaRule, Newest.deltaFailed)
+want Newest.java 'UpdateManifest.Pkg p = DeltaRule.choose(m, Ota.buildId(), running, usb, o.refusedDeltas());'
+want UpdateService.java 'if (Newest.deltaFailed(st, "metadata sha256", UpdateState.DOWNLOADING)) return false;'
+want UpdateService.java 'Newest.deltaFailed(st, "payload check", UpdateState.DOWNLOADING);'
+want UpdateService.java 'if (Newest.deltaFailed(st, "sha256", UpdateState.DOWNLOADING)) return false;'
+want UpdateService.java 'if (gone(e) && Newest.deltaFailed(st, e.getMessage(), UpdateState.DOWNLOADING)) return false;'
+want UpdateService.java '} else if (DeltaRule.applyFailed(code)'
+want UpdateService.java '&& Newest.deltaFailed(st, "update_engine code " + code, UpdateState.AVAILABLE)) {'
+want UpdateService.java 'return e instanceof HttpError && (((HttpError) e).code == 404 || ((HttpError) e).code == 410);'
+want ViaUpdateEngine.java 'if (Newest.deltaFailed(st, "metadata signature", UpdateState.AVAILABLE)) return;'
+want ViaUpdateEngine.java 'if (Newest.deltaFailed(st, "applyPayload: " + e.getMessage(), UpdateState.AVAILABLE)) {'
+want Store.java 'if (bar <= 0 || !v.substring(0, bar).equals(Ota.buildId())) return Collections.emptySet();'
+want Store.java 'p.edit().putString("delta_refused", Ota.buildId() + "|" + String.join(",", s)).apply();'
 want Checker.java 'CheckResult r = Newest.check(st, urls, Http::fetchFresh, Trust::verifyWithSystemCerts, Ota.currentVersionCode(),'
 want Checker.java 'Newest.Read r = Newest.read(Http::fetchFresh, Trust::verifyWithSystemCerts, c[1]);'
 want Checker.java 'return Newest.dropStale(Store.get(c), Ota.currentVersionCode(), why);'

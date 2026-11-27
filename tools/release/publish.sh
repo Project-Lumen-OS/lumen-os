@@ -18,6 +18,9 @@ set -uo pipefail
 C=${1:?CODENAME}; V=${2:?VERSION}; K=$(cd "${3:?KIT}" && pwd); MODE=real; [ "${4:-}" = --dry-run ] && MODE=dry
 H=$(cd "$(dirname "$0")" && pwd)
 eval "$(python3 -B "$H/model.py" "$C" "$V")"
+# the release's deltas (tools/release/delta.py) when the kit holds them: assets beside the full package
+DELTAS=$(cd "$K" && ls -- *-nogms-from-*-ota.zip *-nogms-from-*-payload_metadata.bin 2> /dev/null | tr '\n' ' ')
+ASSETS="$ASSETS${DELTAS:+ $DELTAS}"
 LATEST=${LATEST:-z9x-1.0.10}
 B=https://github.com/$REPO/releases/download
 R=$K/publish_$MODE.log; : > "$R"

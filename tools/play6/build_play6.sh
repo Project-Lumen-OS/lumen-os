@@ -97,6 +97,9 @@ BUILD_DIR="$OUT/apk/LumenMiracast" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" VERSION
   sh "$G/apps/build_apk.sh" "$G/apps/LumenMiracast" "$OUT/LumenMiracast.apk"
 BUILD_DIR="$OUT/apk/LumenWifiP2pOverlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
   sh "$G/apps/build_apk.sh" "$G/apps/LumenWifiP2pOverlay" "$OUT/LumenWifiP2pOverlay.apk"
+# SystemUI with a right-to-left language: the volume panel stays on the right (apps/LumenSystemUIOverlay, no dex)
+BUILD_DIR="$OUT/apk/LumenSystemUIOverlay" KEY_PK8="$KEY_PK8" KEY_PEM="$KEY_PEM" \
+  sh "$G/apps/build_apk.sh" "$G/apps/LumenSystemUIOverlay" "$OUT/LumenSystemUIOverlay.apk"
 # the package installer in the Lumen look (apps/LumenPackageInstallerOverlay/app.layers adds the shared Inter font)
 python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app LumenPackageInstallerOverlay --out "$OUT/tree/LumenPackageInstallerOverlay" --quiet \
   || die "the LumenPackageInstallerOverlay recipe does not assemble"

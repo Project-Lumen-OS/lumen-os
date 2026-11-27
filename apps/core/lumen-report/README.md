@@ -105,8 +105,17 @@ names), answers `sys.lumen.report.done` = `<token> ok|busy|none|refused` (busy: 
 refused: `ro.lumen.report.url=off`; none: no report app), and removes the files when the app set
 `sys.lumen.report.ack` to the token, at the latest after 60 s. The app takes the files only when `token` matches,
 passes the logs through `LogcatFilter` and `Scrubber` as before and the dumps through `HdmiDump` and `PowerDump` (the
-whole audio dump lists the apps that played sound and stays out). Without an answer in 30 s the app runs logcat itself
-(often its own lines only; summary.txt says which source it was) and hdmi.txt names both parts not readable.
+whole audio dump lists the apps that played sound and stays out). Without an answer in 30 s (90 s for a manual report: a
+busy unit can take longer, evleo790 LR-9MEQZP had no system log, kernel log or dump after 30 s) the app runs logcat itself
+(often its own lines only; summary.txt says which source it was; a run the time limit stops keeps what it read) and
+hdmi.txt names both parts not readable. When the helper answers while the app read its own log, its files replace the
+app's ("answered late" in summary.txt).
+
+settings.txt of a manual report (`SettingsDump`): the rows of Settings.Global, Secure and System whose key names HDMI,
+CEC, ARC, eARC, sound or volume, the "CEC settings:" block of the helper's dumpsys hdmi_control (every HdmiCecConfig
+value with its default) and the report app's own shared preferences files about CEC, sound, HDMI and power (night
+guard, output choice, one-time steps), as key=value lines. The CEC journal leaves out HdmiCecConfig's read lines
+("Getting CEC setting value", "Reading ... shared preference", most of LR-9MEQZP's journal) and keeps a written value.
 
 ## Where it goes
 

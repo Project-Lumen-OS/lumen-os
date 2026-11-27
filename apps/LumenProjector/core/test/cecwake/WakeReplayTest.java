@@ -46,6 +46,7 @@ public final class WakeReplayTest {
         wakeReplay(table);
         stormReplay();
         noRelinkNoEarcRestart();
+        if (a.length > 1) nightGuardReplay(a[1]);
         System.out.println("cec wake replay: " + pass + " passed, " + fail + " failed");
         if (fail > 0) System.exit(1);
     }
@@ -177,6 +178,47 @@ public final class WakeReplayTest {
             if (f.length == 3 && "default".equals(f[0])) m.put(f[1], f[2]);
         }
         return m;
+    }
+
+    /**
+     * evleo790 LR-9MEQZP (HB beta27, 05:52-06:10 local): every CEC wake his Yandex module asked for came while the wake
+     * setting was off for the sleep (CecPolicy.suspendOtp with the night guard's old default 01:00-07:00), and the
+     * projector refused each &lt;Text View On&gt; with &lt;Feature Abort&gt; 0D:04. Replayed from the journal lines: the old
+     * default refuses every one of them, the new default (off, as stock: no XGIMI stock has a night guard, the X50
+     * family never had one) allows them all; a choice the user stored on the CEC page still works.
+     */
+    static void nightGuardReplay(String journal) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(journal), StandardCharsets.UTF_8);
+        boolean wakeOff = false;
+        int asked = 0, refusedOnUnit = 0, refusedOld = 0, refusedNew = 0, unexplained = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            String l = lines.get(i);
+            if (l.startsWith("#") || l.length() < 19) continue;
+            int hour = Integer.parseInt(l.substring(6, 8));
+            if (l.contains("'tv_wake_on_one_touch_play' to '0'")) wakeOff = true;
+            if (l.contains("'tv_wake_on_one_touch_play' to '1'")) wakeOff = false;
+            if (!l.contains("[R]:<Text View On>")) continue;
+            boolean refused = i + 1 < lines.size() && lines.get(i + 1).contains("[S]:<Feature Abort> 0B:00:0D:04");
+            if (!refused) continue;                                         // the projector was already waking
+            asked++;
+            refusedOnUnit++;
+            if (!wakeOff) unexplained++;
+            if (NightGuard.blocks(4, hour)) refusedOld++;                   // the old default, 01:00-07:00
+            if (NightGuard.blocks(NightGuard.choice(null), hour)) refusedNew++;
+        }
+        eq("LR-9MEQZP: refused <Text View On> found in the journal", true, refusedOnUnit >= 13);
+        eq("LR-9MEQZP: every refusal came while the wake setting was off for the sleep", 0, unexplained);
+        eq("LR-9MEQZP: the old night guard default refuses every one (05:xx / 06:xx local)", asked, refusedOld);
+        eq("LR-9MEQZP: no night guard by default, every one is a wake", 0, refusedNew);
+        eq("night guard: no stored choice is off", 0, NightGuard.choice(null));
+        eq("night guard: a stored choice is kept", 4, NightGuard.choice(4));
+        eq("night guard: a broken stored value is off", 0, NightGuard.choice(99));
+        eq("night guard: 1-7 refuses at 1:00 and 6:59, not at 7:00 or 0:59", "true true false false",
+                NightGuard.blocks(4, 1) + " " + NightGuard.blocks(4, 6) + " " + NightGuard.blocks(4, 7) + " " + NightGuard.blocks(4, 0));
+        eq("night guard: 22-7 spans midnight", "true true true false",
+                NightGuard.blocks(1, 22) + " " + NightGuard.blocks(1, 0) + " " + NightGuard.blocks(1, 6) + " " + NightGuard.blocks(1, 12));
+        eq("night guard: off never refuses", false, NightGuard.blocks(0, 3));
+        eq("night guard: describe", "off 1:00-7:00", NightGuard.describe(0) + " " + NightGuard.describe(4));
     }
 
     static void eq(String what, Object want, Object got) {

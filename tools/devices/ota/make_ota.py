@@ -104,7 +104,17 @@ def cmd_unsigned(a):
         new_props, new_ch = ota_conf.check_image(dev, a.new)
         old_props = old_ch = None
         if a.old:
-            old_props, old_ch = ota_conf.check_image(dev, a.old)
+            try:
+                old_props, old_ch = ota_conf.check_image(dev, a.old)
+            except ota_conf.OtaError as e:
+                if not a.old_published:
+                    raise
+                # a release built from an older tree: this tree's scanner may refuse its files, its signed
+                # SHA256SUMS proves it is the image that release published (tools/release/delta.py source)
+                ota_conf.published(dev, a.old, a.old_published)
+                print(f"--old: this tree's public-image check refused it ({str(e)[:160]}...); it is the published image "
+                      f"of {a.old_published} (signature verified)", flush=True)
+                old_props, old_ch = ota_conf.check_image(dev, a.old, scan=False)
     except ota_conf.OtaError as e:
         die(str(e))
     if new_props["ro.lumen.version"] != a.version:
@@ -237,6 +247,8 @@ def main():
     u = sp.add_parser("unsigned")
     u.add_argument("--new", required=True, help="new system.img (the public release image, erofs)")
     u.add_argument("--old", help="previous release system.img, byte-identical to the devices' system (delta)")
+    u.add_argument("--old-published", help="the SHA256SUMS (+ .sig) of --old's release: --old may then be an image this "
+                   "tree's scanner refuses (built from an older tree)")
     u.add_argument("--version", required=True)
     u.add_argument("--timestamp", type=int, help="ro.build.date.utc of the new image (default: read from it)")
     u.add_argument("--out", required=True)

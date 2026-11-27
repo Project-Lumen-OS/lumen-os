@@ -1,0 +1,8 @@
+# expect: called
+# emulator (android-tv 34), lumen-menu test/ui/run_power_off.sh, dragon_healthy: the round power menu > Power off with
+# the walk APK (test platform key, so PowerManagerService refuses REBOOT). Halt called shutdown; no power key, no sleep.
+# press 1
+11-27 10:55:31.835  3782  3978 I P6Power : shutdown (user requested)
+11-27 10:55:31.836  3782  3978 I LumenHalt: power off: Android shutdown, userrequested (power menu)
+11-27 10:55:31.836  3782  3978 E P6Power : shutdown failed
+11-27 10:55:31.836  3782  3978 E P6Power : java.lang.SecurityException: Neither user U nor current process has android.permission.REBOOT.

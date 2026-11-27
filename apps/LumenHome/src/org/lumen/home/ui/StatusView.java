@@ -28,7 +28,7 @@ public class StatusView extends LinearLayout {
         mVpn.setImageResource(org.lumen.icons.R.drawable.lumen_ic_vpn);
         mVpn.setVisibility(GONE);
         LayoutParams vp = new LayoutParams(Theme.px(24), Theme.px(24));
-        vp.leftMargin = Theme.px(4);
+        vp.setMarginStart(Theme.px(4));
         addView(mVpn, vp);
         View gap = new View(c);
         addView(gap, new LayoutParams(Theme.px(24), 1));
@@ -37,8 +37,8 @@ public class StatusView extends LinearLayout {
         addView(mWxIcon, new LayoutParams(Theme.px(32), Theme.px(32)));
         mWx = new TextView(c);
         LayoutParams wp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        wp.leftMargin = Theme.px(10);
-        wp.rightMargin = Theme.px(24);
+        wp.setMarginStart(Theme.px(10));
+        wp.setMarginEnd(Theme.px(24));
         addView(mWx, wp);
         mClock = new TextView(c);
         addView(mClock);

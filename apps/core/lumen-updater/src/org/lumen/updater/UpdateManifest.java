@@ -12,7 +12,9 @@ import java.util.Locale;
 /**
  * The signed update manifest (schema 1: tools/ota/make_manifest.py, tools/devices/ota/make_manifest.py,
  * tools/play6/ota/make_manifest_play6.py). Parsed only after its signature was verified. What a package must carry
- * follows this model's InstallKind (payloadFacts).
+ * follows this model's InstallKind (payloadFacts). Deltas: "delta" entries of "packages" (the 1.0.9 form, read by every
+ * updater) and the optional "incremental" list (read only by updaters that fall back to the full package when a delta
+ * fails: DeltaRule); a malformed incremental entry is skipped, it never costs the full package.
  */
 public final class UpdateManifest {
     public final String json;
@@ -24,10 +26,12 @@ public final class UpdateManifest {
     public final List<String> blobsSets = new ArrayList<>();
     public final JSONObject changelog;
     public final List<Pkg> packages = new ArrayList<>();
+    public final List<Pkg> incremental = new ArrayList<>();
 
     public static final class Pkg {
         public final String json;
-        public final String type, fromBuildId, url, sha256, metadataUrl, metadataSha256;
+        public final String type, fromBuildId, fromVersion, url, sha256, metadataUrl, metadataSha256;
+        public final int fromVersionCode;
         public final long size, payloadOffset, payloadSize, metadataSize;
         public final String[] properties;
 
@@ -35,6 +39,8 @@ public final class UpdateManifest {
             json = o.toString();
             type = o.getString("type");
             fromBuildId = o.optString("from_build_id", "");
+            fromVersion = o.optString("from_version", "");
+            fromVersionCode = o.optInt("from_version_code", 0);
             url = o.getString("url");
             size = o.getLong("size");
             sha256 = o.getString("sha256").toLowerCase(Locale.ROOT);
@@ -97,17 +103,29 @@ public final class UpdateManifest {
         changelog = o.optJSONObject("changelog");
         JSONArray pk = o.getJSONArray("packages");
         for (int i = 0; i < pk.length(); i++) packages.add(new Pkg(pk.getJSONObject(i)));
+        JSONArray inc = o.optJSONArray("incremental");
+        for (int i = 0; inc != null && i < inc.length(); i++) {
+            try {
+                Pkg d = new Pkg(inc.getJSONObject(i));
+                if (d.isDelta() && !d.fromBuildId.isEmpty()) incremental.add(d);
+            } catch (JSONException skipped) {
+                // an entry this updater cannot use: the full package stays the offer
+            }
+        }
         if (schema != 1) throw new JSONException("unsupported schema " + schema);
     }
 
-    /** Delta from exactly this build if offered, else the full package (null if none). */
-    public Pkg choose(String currentBuildId) {
-        Pkg full = null;
-        for (Pkg p : packages) {
-            if (p.isDelta() && !currentBuildId.isEmpty() && currentBuildId.equals(p.fromBuildId)) return p;
-            if (!p.isDelta() && full == null) full = p;
-        }
-        return full;
+    /** The full package (the first one; null if none). */
+    public Pkg full() {
+        for (Pkg p : packages) if (!p.isDelta()) return p;
+        return null;
+    }
+
+    /** Every delta of this manifest: the incremental list first, then the deltas of "packages". */
+    public List<Pkg> deltas() {
+        List<Pkg> d = new ArrayList<>(incremental);
+        for (Pkg p : packages) if (p.isDelta()) d.add(p);
+        return d;
     }
 
     /** Changelog in the UI language, else English, else the first one. */

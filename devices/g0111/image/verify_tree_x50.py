@@ -640,6 +640,8 @@ ADDED = {"system/etc/init/x50_netadb.rc": (0, 0, 0o644, SYSF, "x50_netadb.rc"),
          "system/product/overlay/X50PowerOverlay.apk": (0, 0, 0o644, SYSF, "stage/X50PowerOverlay.apk"),
          # the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay: resources only, no dex)
          "system/product/overlay/LumenPackageInstallerOverlay.apk": (0, 0, 0o644, SYSF, "stage/LumenPackageInstallerOverlay.apk"),
+         # SystemUI with a right-to-left language (apps/LumenSystemUIOverlay: resources only, no dex)
+         "system/product/overlay/LumenSystemUIOverlay.apk": (0, 0, 0o644, SYSF, "stage/LumenSystemUIOverlay.apk"),
          # install from a DSU try (t8, apps/LumenDsuInstall): the app, its init rc (gated, checked below), its script
          "system/priv-app/LumenDsuInstall": (0, 0, 0o755, SYSF, DIR),
          "system/priv-app/LumenDsuInstall/LumenDsuInstall.apk": (0, 0, 0o644, SYSF, "stage/LumenDsuInstall.apk"),
