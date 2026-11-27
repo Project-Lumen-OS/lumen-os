@@ -595,6 +595,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d ч
 lumen_1_d_hz=%1$d Гц
 lumen_1_d_min=%1$d мин
+lumen_1_d_s=%1$d с
 lumen_2_point=2 точки
 lumen_3d=3D
 lumen_ai_contrast=AI-контрастность
@@ -880,6 +881,8 @@ lumen_white_balance=Баланс белого
 lumen_yellow=Жёлтый
 lumen_zoom_and_shift=Масштаб и сдвиг
 lumen_zoom_and_shift_is_not=Масштаб и сдвиг сейчас недоступны
+lumen_optical_out=Оптический выход
+lumen_focus_chart_hint=OK: тестовая таблица
 
 @projector/strings_p6.xml
 p6_batt_low=Низкий заряд: осталось %1$d %%

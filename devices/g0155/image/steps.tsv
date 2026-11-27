@@ -151,6 +151,8 @@
 # updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
 # browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
 !unsigned	prebuilt	LumenPlay	arm32	{sys}/app/LumenPlay
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+*	framework	rs30	{sys}
 # Lumen Setup (org.lumen.setup, apps/LumenSetup on the g0155 platform key): HOME 10 on fresh data, the remote, the
 # language, Wi-Fi, the time zone from the network and the picture through X50Projector's setup bridge, then it marks
 # the device provisioned and disables itself (the X50 image has it from its Z9X base, the HB and the Play 6 build it)

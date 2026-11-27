@@ -37,6 +37,10 @@ public final class SourceFollow {
     private static volatile int sPort;
     private static int sGen;
     private static final SourceOff RULE = new SourceOff();
+    /** The stock switch (CEC on and tv_send_standby_on_sleep), read once per viewing and on a change; null = read. */
+    private static volatile Boolean sFollow;
+    /** Uptime of the last read of the switch: read again after {@link SourceOff#SWITCH_READ_MS}. */
+    private static volatile long sFollowAt;
 
     /** The rule behind the family flag (RelinkHost.inactiveSourceSleep, off everywhere): main thread. */
     private static final InactiveSleep INACTIVE = new InactiveSleep();
@@ -62,6 +66,7 @@ public final class SourceFollow {
             HandlerThread t = new HandlerThread("lumen-follow");
             t.start();
             sWork = new Handler(t.getLooper());
+            sWork.post(SourceFollow::listen);
         }
         if (active) {
             if (port == sPort) return;
@@ -69,8 +74,9 @@ public final class SourceFollow {
             sPort = port;
             RULE.reset();
             INACTIVE.reset();
+            sFollow = null;
             sMain.removeCallbacks(TICK);
-            sMain.postDelayed(TICK, SourceOff.READ_MS);
+            sMain.postDelayed(TICK, SourceOff.FIRST_READ_MS);
             sMain.removeCallbacks(ITICK);
             if (HdmiRelink.inactiveSourceSleep()) sMain.postDelayed(ITICK, InactiveSleep.READ_MS);
         } else if (port == sPort) {
@@ -223,10 +229,26 @@ public final class SourceFollow {
         return java.util.Arrays.copyOf(out, n);
     }
 
-    /** Worker: the stock switch, tv_send_standby_on_sleep (HdmiCecConfig). */
+    /** Worker: the stock switch, tv_send_standby_on_sleep (HdmiCecConfig), from the cache when it is still valid. */
     private static boolean follow() {
+        Boolean f = sFollow;
+        if (f != null && SystemClock.uptimeMillis() - sFollowAt < SourceOff.SWITCH_READ_MS) return f;
         HdmiControlManager m = sApp.getSystemService(HdmiControlManager.class);
-        return m != null && m.getHdmiCecEnabled() == HdmiControlManager.HDMI_CEC_CONTROL_ENABLED
+        boolean on = m != null && m.getHdmiCecEnabled() == HdmiControlManager.HDMI_CEC_CONTROL_ENABLED
                 && m.getTvSendStandbyOnSleep() == HdmiControlManager.TV_SEND_STANDBY_ON_SLEEP_ENABLED;
+        sFollow = on;
+        sFollowAt = SystemClock.uptimeMillis();
+        return on;
+    }
+
+    /** Worker, once: CEC switched on or off makes the next tick read the switch again (Android 14 has no listener
+     *  for tv_send_standby_on_sleep: that one is read again after SourceOff.SWITCH_READ_MS, not every 5 s). */
+    private static void listen() {
+        try {
+            HdmiControlManager m = sApp.getSystemService(HdmiControlManager.class);
+            if (m != null) m.addHdmiCecEnabledChangeListener(sWork::post, name -> sFollow = null);
+        } catch (Throwable t) {
+            Log.w(HdmiRelink.tag(), "follow listener: " + t);
+        }
     }
 }

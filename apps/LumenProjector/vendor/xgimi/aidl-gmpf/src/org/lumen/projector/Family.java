@@ -20,6 +20,16 @@ public final class Family {
     private Family() {}
 
     /**
+     * power.VendorSleep, HAL thread: the stock prepare's vendor calls (power/StrPrepare, power/GmpfStrVendor) on
+     * the HB (G0118, G0130 6.16.24, G0148 6.17.12): IPowerManager 6, whose type 0 releases gmpf_wake_lock
+     * (PowerManagerImpl.goToSleep, Ghidra on both gmpf-service builds); without it only the first sleep after a cold
+     * boot reached STR (GitHub issue 5); null when the HAL has no goToSleep.
+     */
+    public static org.lumen.projector.power.StrPrepare.Vendor strVendor(GmpfClient g) {
+        return org.lumen.projector.power.GmpfStrVendor.of(g);
+    }
+
+    /**
      * power.StandbyActivity (hb-t5): after a wake by OK the window keeps the focus until the waking press is released
      * and this long has passed, so Lumen Home never acts on the OK UP of the wake (the lamp needs ~300 ms anyway).
      */
@@ -38,8 +48,6 @@ public final class Family {
      *  was pressed. Off until the owner decides (2026-11-26); RelinkHost.inactiveSourceSleep reads it. */
     public static final boolean INACTIVE_SOURCE_SLEEP = false;
 
-    /** ManualFocusActivity: the stock window is the full-screen focus chart (FocusPattern, the HB stock SystemUI). */
-    public static final boolean FOCUS_CHART = true;
     /** ManualFocusActivity: not ported to the HB (its stock wheel path is not read yet). */
     public static final boolean FOCUS_WHEEL = false;
 
@@ -167,14 +175,13 @@ public final class Family {
         HbFeatures.init(app, model);
     }
 
-    /** App.startModules: CEC volume control / System Audio follow the sound output choice at boot, wake and ARC. */
+    /** App.startModules: CEC volume control / System Audio follow the sound output choice (start, choice, listener). */
     public static void installCec(Context app) {
         org.lumen.projector.cec.HbSystemAudio.install(app);
     }
 
-    /** App screen receiver: SCREEN_ON for cec.HbSystemAudio. */
+    /** App screen receiver: nothing at SCREEN_ON on this family (no CEC call in the wake window, cec-fix-1127). */
     public static void onScreenOn() {
-        org.lumen.projector.cec.HbSystemAudio.onScreenOn();
     }
 
     /** App: the audio policy of this family needs no wait, {@code r} runs now. */
@@ -352,8 +359,6 @@ public final class Family {
 
     /** cec.EarcLink: the log tag and the thread of the eARC link watch. */
     public static final String EARC_TAG = "Z9xEarc", EARC_THREAD = "z9x-earc";
-    /** cec.EarcLink: the ARC restart after a lost link (IHdmiControlService.setArcMode, which stock never sends). */
-    public static final boolean ARC_RESTART = true;
 
     /** cec.EarcLink: one getEARCStatus read (HB TV 79) on the HAL thread, its value to status there. */
     public static void earcStatus(java.util.function.IntConsumer status) {
@@ -381,34 +386,6 @@ public final class Family {
     /** cec.EarcLink: the link moved to or from eARC, the output format is sent again. */
     public static void earcFormatAgain(String why) {
         org.lumen.projector.audio.AudioOutputChoice.resendFormat(why);
-    }
-
-    /** cec.EarcLink ARC restart: the stored sound output (an AudioOutputKind name, null = none stored). */
-    public static String audioOutputKind(Context app) {
-        org.lumen.projector.audio.AudioOutputKind k = org.lumen.projector.audio.AudioOutputChoice.kind(app);
-        return k == null ? null : k.name();
-    }
-
-    /**
-     * cec.EarcLink ARC restart: IHdmiControlService.setArcMode(true) through the framework's service behind
-     * HdmiTvClient (HdmiClient.mService): setArcMode has no manager method, and the HAL gate keeps ServiceManager out
-     * of this app. False without a TV client.
-     */
-    public static boolean arcModeOn(Context app) throws Exception {
-        android.hardware.hdmi.HdmiControlManager m;
-        try {
-            m = app.getApplicationContext().getSystemService(android.hardware.hdmi.HdmiControlManager.class);
-        } catch (Throwable t) {
-            m = null;
-        }
-        android.hardware.hdmi.HdmiTvClient tv = m == null ? null : m.getTvClient();
-        if (tv == null) return false;
-        java.lang.reflect.Field f = tv.getClass().getSuperclass().getDeclaredField("mService");
-        f.setAccessible(true);
-        android.hardware.hdmi.IHdmiControlService s = (android.hardware.hdmi.IHdmiControlService) f.get(tv);
-        if (s == null) return false;
-        s.setArcMode(true);
-        return true;
     }
 
     // ---- the log tags and thread names of the core classes that name their family (BootSource, ManualFocusActivity)

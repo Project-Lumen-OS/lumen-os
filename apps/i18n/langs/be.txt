@@ -10,7 +10,7 @@ tg_move_ak=Аўтатрапецыя пасля перамяшчэння
 ok=OK
 app_not_found=Праграма для гэтай кнопкі не знойдзена
 diag_app_version=Версія праграмы: %1$s
-manual_focus_panel=Ручны фокус   ◀ ▶     OK/Назад: гатова
+manual_focus_panel=Ручны фокус   ◀ ▶     Назад: гатова
 toast_af=Аўтафокус
 toast_af_running=Аўтафокус…
 toast_af_failed=Не ўдалося сфакусаваць
@@ -687,6 +687,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d гадз
 lumen_1_d_hz=%1$d Гц
 lumen_1_d_min=%1$d хв
+lumen_1_d_s=%1$d с
 lumen_2_point=2 пункты
 lumen_3d=3D
 lumen_ai_contrast=AI-кантраснасць
@@ -972,6 +973,8 @@ lumen_white_balance=Баланс белага
 lumen_yellow=Жоўты
 lumen_zoom_and_shift=Маштаб і зрух
 lumen_zoom_and_shift_is_not=Маштаб і зрух зараз недаступныя
+lumen_optical_out=Аптычны выхад
+lumen_focus_chart_hint=OK: тэставая табліца
 
 @projector/strings_p6.xml
 p6_batt_low=Нізкі зарад: засталося %1$d %%

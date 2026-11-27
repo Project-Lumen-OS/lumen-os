@@ -38,7 +38,8 @@ import java.util.function.IntConsumer;
  *  - nothing is sent when ready == 1 and 60 already reads P; 1.5 s after 59(P) the same check, else retries with
  *    backoff; SCREEN_ON and a HAL reconnect check again (Msrv GoToShutdown resets the path), the audio server coming
  *    back and an A2DP sink added again select the sink again;
- *  - never 1 (SPDIF), never on the main thread.
+ *  - 1 (SPDIF) only where the model's chip table maps the optical jack to it (stock threadInit of the X50 family
+ *    sends 1 for a SPDIF sink, audio.ini spdif_jack_type 1); never on the main thread.
  * Threads: device callbacks, the debounce and the sink on "lumen-audiopath"; vendor calls on the model's HAL thread.
  * Log tag LumenPathSwitch.
  */
@@ -401,6 +402,12 @@ public final class PathSwitch {
             Log.w(TAG, "60: " + t);
             return false;
         }
+    }
+
+    /** The vendor path of an output type on this model (its chip table), NONE before install or for no path. */
+    public static int pathOf(int type) {
+        ChipTable t = sTable;
+        return t == null ? MediaPath.NONE : t.pathOf(type);
     }
 
     /** The path of the media route (getDevicesForAttributes), else of the connected outputs; NONE when unknown. */

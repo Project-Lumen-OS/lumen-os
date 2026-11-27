@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d сағ</string>
     <string name="lumen_1_d_hz">%1$d Гц</string>
     <string name="lumen_1_d_min">%1$d мин</string>
+    <string name="lumen_1_d_s">%1$d с</string>
     <string name="lumen_2_point">2 нүкте</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">AI контраст</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">Сары</string>
     <string name="lumen_zoom_and_shift">Масштаб және ығысу</string>
     <string name="lumen_zoom_and_shift_is_not">Масштаб және ығысу қазір қолжетімсіз</string>
+    <string name="lumen_optical_out">Оптикалық шығыс</string>
+    <string name="lumen_focus_chart_hint">OK: сынақ кестесі</string>
 </resources>

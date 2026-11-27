@@ -12,7 +12,7 @@
     <string name="ok">확인</string>
     <string name="app_not_found">이 버튼에 연결된 앱이 없습니다</string>
     <string name="diag_app_version">앱 버전: %1$s</string>
-    <string name="manual_focus_panel">수동 초점   ◀ ▶     OK/뒤로: 완료</string>
+    <string name="manual_focus_panel">수동 초점   ◀ ▶     뒤로: 완료</string>
     <string name="toast_af">자동 초점</string>
     <string name="toast_af_running">자동 초점 중…</string>
     <string name="toast_af_failed">자동 초점에 실패했습니다</string>

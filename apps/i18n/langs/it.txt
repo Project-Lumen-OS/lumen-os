@@ -10,7 +10,7 @@ tg_move_ak=Trapezio auto dopo lo spostamento
 ok=OK
 app_not_found=Nessuna app trovata per questo tasto
 diag_app_version=Versione app: %1$s
-manual_focus_panel=Messa a fuoco manuale   ◀ ▶     OK/Indietro: fine
+manual_focus_panel=Messa a fuoco manuale   ◀ ▶     Indietro: fine
 toast_af=Autofocus
 toast_af_running=Messa a fuoco…
 toast_af_failed=Messa a fuoco non riuscita
@@ -686,6 +686,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d h
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d min
+lumen_1_d_s=%1$d s
 lumen_2_point=2 punti
 lumen_3d=3D
 lumen_ai_contrast=Contrasto IA
@@ -971,6 +972,8 @@ lumen_white_balance=Bilanciamento del bianco
 lumen_yellow=Giallo
 lumen_zoom_and_shift=Zoom e spostamento
 lumen_zoom_and_shift_is_not=Zoom e spostamento non disponibili ora
+lumen_optical_out=Uscita ottica
+lumen_focus_chart_hint=OK: immagine di prova
 
 @projector/strings_p6.xml
 p6_batt_low=Batteria bassa: resta il %1$d %%

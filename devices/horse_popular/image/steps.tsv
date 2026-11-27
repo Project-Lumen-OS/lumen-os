@@ -73,6 +73,8 @@
 # its base odex and vdex are for the old dex, ART would refuse them, so they go and ART compiles the app itself
 *	tar_add	system/system_ext/priv-app/TvSettingsTwoPanel/TvSettingsTwoPanel.apk	stage/apk/TvSettingsTwoPanel.apk	644
 *	tar_rm	system/system_ext/priv-app/TvSettingsTwoPanel/oat
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+*	tar_framework	z9x
 # Wi-Fi Direct (screen mirroring) on the MediaTek pre-freeze supplicant: the base's Wi-Fi APEX with service-wifi.jar
 # rebuilt from lineage/patches/wifi/0001, re-signed with the base's Lumen APEX keys,
 # owner, mode and label as the base's; the base's dexpreopt files of the old jar go (ART would refuse them)

@@ -9,9 +9,9 @@
      a fork of apps/Z9xFrameworkKeysOverlay/res/values/config.xml (tools/play6/forks.tsv, check F:
      config_defaultAssistant and config_dreamsDefaultComponent must equal the Z9X values; the HDMI-CEC
      defaults are res/values/lumen_cec.xml, written by tools/devices/cec_defaults.py). Left out on purpose:
-       - the KEYCODE_POWER items (config_shortPressOnPowerBehavior, config_longPressOnPowerBehavior,
-         config_globalActionsList): base defaults until open question 12 (body key and IR power on the
-         Play 6) is answered. The BT remote's power key is KEYCODE_STB_POWER and reaches
+       - the KEYCODE_POWER press items (config_shortPressOnPowerBehavior, config_longPressOnPowerBehavior):
+         base defaults until open question 12 (body key and IR power on the Play 6) is answered. The power
+         menu entries are the shared res/values/lumen_power_menu.xml (sync.sh power), as on every model. The BT remote's power key is KEYCODE_STB_POWER and reaches
          org.lumen.projector's KeyReceiver through res/xml/global_keys.xml either way.
        - config_maxUiWidth: the Play 6 panel is 1080p, TvFrameworkOverlay's 1920 cap is right here. -->
 <resources>

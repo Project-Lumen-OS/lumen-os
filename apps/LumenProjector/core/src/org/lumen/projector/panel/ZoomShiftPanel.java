@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
@@ -33,7 +34,7 @@ import org.lumen.projector.ui.Theme;
  * Lumen OS 1.0.4: "Zoom and shift" without the zoom motor, the stock zoom_and_move screen in its digital form
  * (ZoomMoveWind: ZoomStateView "digital only" + PtzViewModel): the picture is made smaller and moved inside
  * the projected area by the keystone engine, so it can be fitted to the screen frame without moving the
- * projector. A full-screen grid with a white edge (as the manual keystone) shows the picture's edge.
+ * projector. The stock edge frame of the zoom and shift screen (EdgeFrame GUIDES) shows the picture's edge.
  *   Size (first): LEFT / DOWN smaller, RIGHT / UP bigger. OK switches to Shift: the arrows move the picture.
  *   BACK: done.
  * Stock calls, in stock order: IGmpf2 194(1) and IGmpf 121 zoomStart(0) on open; IGmpf 573(2, false) while
@@ -273,7 +274,7 @@ public final class ZoomShiftPanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeGrid(c), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        root.addView(new EdgeFrameView(c, EdgeFrame.GUIDES), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = EdgeGrid.card(c);
         card.addView(EdgeGrid.text(c, c.getString(R.string.zs_title), 40, Theme.TEXT));

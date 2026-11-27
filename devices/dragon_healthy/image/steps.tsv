@@ -115,6 +115,8 @@ gms	need	gms/members.txt	gms/lumen-gapps.xml	gms/gms.tsv
 # updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
 # browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
 *	prebuilt	LumenPlay	arm32	{sys}/app/LumenPlay
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+*	framework	p6	{sys}
 *	install	0644	Z9xAirPlay.apk	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk
 *	install	0644	z9x-airplay-default-permissions.xml	{sys}/etc/default-permissions/z9x-airplay-default-permissions.xml
 *	run	airplay_libs.py	{sys}/app/Z9xAirPlay/Z9xAirPlay.apk

@@ -64,3 +64,25 @@ class `LumenRows`, nothing else changed (`test/base_patch_test.py` checks it). `
 system app, takes only keys that start with `lumen_`, opens only an activity of that same app and leaves the page as
 it was when the provider is missing or fails. `test/AboutRowsTest.java` runs that part (`test/about_extract.py`)
 on host stand-ins. It is the second fix of TvSettings: base `3753686b...` is the result of `tvsettings_a2dp`.
+
+## services.jar (`services.py`, `framework.tsv`)
+
+The same idea for the framework: `services_hdmi` is the stock XGIMI eARC link of `lineage/patches/hdmi/0001` in the HDMI
+service. A soong rebuild of services.jar is never byte-reproducible (protologtool names a `ProtoLogImpl_<random>` class
+in every build, and the jar is R8-shrunk), so `services.py build BASE` (builder-llm, docker) swaps the patched classes
+into the base jar instead and pins every result per base in `framework.tsv` (z9x: Z9X, X50 family, TITAN, RS 20;
+p6: HB, Play 6; rs30: RS30 lines, MIRA). Proofs in one run: the base build's own soong dexpreopt command
+(`services_dexpreopt.sh`, read from the RS30 base build's ninja file; OUT_DIR `out` for the Z9X base, `/out` for the
+others, because the app image records the class loader jar's host path) gives the shipped .prof, .bprof, odex, vdex and
+art byte for byte on the shipped jar; the LineageOS 21 sources (`services_hdmi/lineage21`, javac of the tree's JDK 17)
+have the methods, references and strings of the shipped classes (`src_cmp.py`); every other class of the dex is
+unchanged (dexdump, call sites written out), the other dex files are byte equal, `JarLink.java` finds no dangling
+reference into the jar and every new platform reference resolves in the headers. Images take the six files with one
+recipe step (`tools/build/framework.py`, build.conf `framework=`).
+
+```
+JAVAC=~/rs30-base/src/prebuilts/jdk/jdk17/linux-x86/bin/javac python3 tools/base_patch/services.py build z9x \
+  --sys SYSTEM_ROOT --hostout BASE_OUT/host/linux-x86 --boot BASE_OUT/soong/dexpreopt_arm64 \
+  --profiles ~/rs30-base/src/frameworks/base/services
+python3 tools/base_patch/services.py check z9x build/base_patch/services/z9x
+```

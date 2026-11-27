@@ -144,6 +144,7 @@ def edit(text, name):
     remap.update({sc: (SHORTCUT_KEY, SHORTCUT_BASE109, SHORTCUT_WHY, "the shortcut key") for sc in SHORTCUT.get(name, ())})
     out, seen, bad, held = [], set(), [], set()
     drop_185 = SECONDARY in ADD.get(name, ())
+    added = {sc for sc, key, _ in ADD.get(name, ()) if key.split()[0] == "STB_POWER"}
     stale = False
     for line in text.split("\n"):
         if drop_185 and (STALE_185.match(line) or (stale and line.startswith(STALE_185_MORE))):
@@ -188,6 +189,10 @@ def edit(text, name):
                 bad.append("%s: scancode %d twice" % (name, sc))
             seen.add(sc)
             line = "key %s%sSTB_POWER%s%s" % (m.group(1), m.group(2), m.group(3), REMOTE_NOTE)
+        elif m and int(m.group(1)) in added:                    # a later base has the X50 addition: kept as it is
+            if int(m.group(1)) in seen:
+                bad.append("%s: scancode %s twice" % (name, m.group(1)))
+            seen.add(int(m.group(1)))
         elif m:
             bad.append("%s: key %s is STB_POWER but not in the X50 table" % (name, m.group(1)))
         out.append(line)
@@ -196,7 +201,8 @@ def edit(text, name):
     for sc in sorted(set(remap) - held):
         bad.append("%s: no 'key %d %s' (or '%s') line in the base (%s)" % (name, sc, remap[sc][0], remap[sc][1], remap[sc][3]))
     if name in ADD:
-        mapped = {int(m.group(2)): m.group(4) for m in (ANY_LINE.match(l.split("#", 1)[0]) for l in out) if m}
+        mapped = {int(m.group(2)): " ".join(l.split("#", 1)[0].split()[2:])
+                  for m, l in ((ANY_LINE.match(l.split("#", 1)[0]), l) for l in out) if m}
         tail = []
         while out and out[-1] == "":
             tail.append(out.pop())

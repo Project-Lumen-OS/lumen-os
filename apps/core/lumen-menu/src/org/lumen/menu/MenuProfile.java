@@ -51,7 +51,7 @@ public final class MenuProfile {
     private static final Set<String> TOP = set("schema", "device", "model", "adapter", "features", "hints", "keys",
             "game_menu", "sections", "pending", "note");
     private static final Set<String> PARAMS = set("options", "min", "max", "level", "items", "note", "summary", "support", "jack",
-            "name", "iface");
+            "name", "iface", "chart");
     /** The vendor hotspot interface of network.hotspot (ro.vendor.wifi.sap.interface of the stock dumps: ap0). */
     private static final java.util.regex.Pattern IFACE = java.util.regex.Pattern.compile("[a-z]+[0-9]+");
     private static final Set<String> GAME_KEYS = set("enabled", "items", "themes", "cec_detect", "note", "gated", "sound",
@@ -136,6 +136,10 @@ public final class MenuProfile {
                 }
             } else if (par.containsKey("options") || par.containsKey("support")) {
                 problem(id + ": only a choice has options and support");
+            }
+            if (par.containsKey("chart") && (FeatureId.FOCUS_MANUAL != id || !FocusChart.SHORT.equals(par.get("chart"))
+                    && !FocusChart.OFF.equals(par.get("chart")))) {
+                problem(id + ": chart is focus.manual's, \"short\" or \"off\" (FocusChart)");
             }
             if (par.containsKey("jack") && (FeatureId.SOUND_OUTPUT != id
                     || !SoundJack.SENSED.equals(par.get("jack")) && !SoundJack.MANUAL.equals(par.get("jack")))) {

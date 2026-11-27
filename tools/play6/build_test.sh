@@ -206,7 +206,7 @@ python3 -B "$G/tools/devices/assemble_app.py" --device dragon_healthy --app Play
   || die "devices/dragon_healthy/app/Play6Projector.layers does not assemble (a shared file copied into apps/Play6Projector, or an untracked fork)"
 python3 -B "$G/tools/devices/assemble_app.py" --device horse_popular --app Z9xProjector \
   || die "devices/horse_popular/app/Z9xProjector.layers does not assemble (a shared file copied into apps/LumenProjector/core)"
-sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys || die "Play6FrameworkOverlay key files differ from apps/common (run sync.sh)"
+sh "$G/apps/common/sync.sh" --check "$G/apps/Play6FrameworkOverlay" keys power || die "Play6FrameworkOverlay key and power menu files differ from apps/common (run sync.sh)"
 echo "== P: publish audit"
 PM=$(mktemp "${TMPDIR:-/tmp}/play6_publish.XXXXXX")
 python3 -B "$G/docs/repo/publish_audit.py" "$G" "$PM" | sed 's/^/  /' || { rm -f "$PM"; die "publish_audit.py failed"; }

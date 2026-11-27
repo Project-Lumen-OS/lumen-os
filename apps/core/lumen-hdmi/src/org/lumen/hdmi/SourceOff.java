@@ -22,6 +22,14 @@ public final class SourceOff {
     public static final int ON = 0, STANDBY = 1, TO_ON = 2, TO_STANDBY = 3, UNKNOWN = -1;
     /** One read of the cache every 5 s while a port is shown (the cache itself changes at most once a minute). */
     public static final long READ_MS = 5_000;
+    /**
+     * The first read of a viewing waits this long (cec-fix-1127): a viewing that starts with a wake shares its first
+     * seconds with the framework's CEC re-init (ARC, System Audio, discovery), and the cached power status of a source
+     * is the one from before the sleep for up to a minute anyway, so a read there could only cost the CEC thread time.
+     */
+    public static final long FIRST_READ_MS = 30_000;
+    /** The stock switch (tv_send_standby_on_sleep) is read once per viewing and again after this long, not per read. */
+    public static final long SWITCH_READ_MS = 60_000;
     /** Standby on this many reads in a row: a source passing through standby for a moment does not count. */
     static final int CONFIRM_READS = 2;
 

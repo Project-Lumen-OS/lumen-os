@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d sa</string>
     <string name="lumen_1_d_hz">%1$d Hz</string>
     <string name="lumen_1_d_min">%1$d dk</string>
+    <string name="lumen_1_d_s">%1$d sn</string>
     <string name="lumen_2_point">2 nokta</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">AI kontrast</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">Sarı</string>
     <string name="lumen_zoom_and_shift">Yakınlaştırma ve kaydırma</string>
     <string name="lumen_zoom_and_shift_is_not">Yakınlaştırma ve kaydırma şu anda kullanılamıyor</string>
+    <string name="lumen_optical_out">Optik çıkış</string>
+    <string name="lumen_focus_chart_hint">OK: test deseni</string>
 </resources>

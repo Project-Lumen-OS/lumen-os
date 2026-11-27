@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Family;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
@@ -32,7 +33,7 @@ import org.lumen.projector.ui.Theme;
 
 /**
  * Manual OPTICAL zoom (Z9X zoom lens), stock V6.15.62 ZoomStateView / ZoomUtils / KeyStoneManager logic. A full-screen
- * overlay like the manual keystone (grey grid, a white line on the outermost pixels = the picture edge): RIGHT / UP =
+ * overlay with the stock picture edge frame (EdgeFrame GUIDES: black, the white edge on the outermost pixels, the guides): RIGHT / UP =
  * bigger, LEFT / DOWN = smaller (held: at most one move per 220 ms), MENU = zoom reset, BACK = done.
  * Lumen OS 1.0.8: OK switches to the picture position (141 shift, see {@link #shiftMode}) and back.
  *
@@ -524,7 +525,7 @@ public final class OpticalZoomPanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeView(c), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        root.addView(new EdgeFrameView(c, EdgeFrame.GUIDES), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = new LinearLayout(c);
         card.setOrientation(LinearLayout.VERTICAL);
@@ -627,32 +628,6 @@ public final class OpticalZoomPanel extends Panel {
                 float sh = h * (0.45f + 0.55f * i / Math.max(1, n - 1));
                 c.drawRoundRect(x, h - sh, x + seg, h, r, r, i <= pos ? on : off);
             }
-        }
-    }
-
-    /** Grey grid with a white line on the outermost pixels (the picture edge), as the manual keystone. */
-    private static final class EdgeView extends View {
-        private static final int BG = 0xFF8A8A8A, LINE = 0xFFE6E6E6;
-        private final Paint line = new Paint(), edge = new Paint();
-
-        EdgeView(Context c) {
-            super(c);
-            line.setColor(LINE);
-            edge.setColor(0xFFFFFFFF);
-        }
-
-        private float px(float design) { return Math.max(1f, Math.round(Theme.pxf(getContext(), design))); }
-
-        @Override
-        protected void onDraw(Canvas c) {
-            float w = getWidth(), h = getHeight(), cell = px(120), t = px(2), e = px(6);
-            c.drawColor(BG);
-            for (float x = cell; x < w - 1; x += cell) c.drawRect(x - t / 2, 0, x + t / 2, h, line);
-            for (float y = cell; y < h - 1; y += cell) c.drawRect(0, y - t / 2, w, y + t / 2, line);
-            c.drawRect(0, 0, w, e, edge);
-            c.drawRect(0, h - e, w, h, edge);
-            c.drawRect(0, 0, e, h, edge);
-            c.drawRect(w - e, 0, w, h, edge);
         }
     }
 }

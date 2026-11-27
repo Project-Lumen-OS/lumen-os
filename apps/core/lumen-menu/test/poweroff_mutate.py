@@ -14,12 +14,14 @@ G = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
 P = "apps/LumenProjector/core/src/org/lumen/projector/power/"
 V = "apps/LumenProjector/vendor/xgimi/"
 X = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
-FILES = [P + "PowerKey.java", P + "Play6PowerKey.java", X + "X50Power.java", X + "Standby.java",
+FILES = [P + "PowerKey.java", P + "Play6PowerKey.java", P + "PowerKeyPress.java", X + "X50Power.java", X + "Standby.java",
+         "apps/common/projector/src/org/lumen/projector/ui/RoundTilePanel.java",
          "apps/common/projector/src/org/lumen/projector/power/PowerMenu.java",
          "apps/core/lumen-menu/src/org/lumen/projector/panel/PowerMenu.java",
          "apps/core/lumen-menu/src/org/lumen/projector/panel/Halt.java"] + \
         [V + f + "/src/org/lumen/projector/Family.java" for f in ("hidl-gmpf", "aidl-gmpf", "play6-hidl")]
 HALT = 'org.lumen.projector.panel.Halt.powerOff(app, "power menu");'
+RT = "apps/common/projector/src/org/lumen/projector/ui/RoundTilePanel.java"
 MUTANTS = [
     ("Z9X HB: halt powers off with its own PowerManager", P + "PowerKey.java", HALT,
      "app.getSystemService(android.os.PowerManager.class).shutdown(false, null, false);"),
@@ -45,6 +47,20 @@ MUTANTS = [
      "            case SLEEP:\n                halt(false);"),
     ("X50 Standby: the SleepRule power off sends the key", X + "Standby.java", "else Halt.powerOff(sApp, why + \", \" + off);",
      "else new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_POWER);"),
+    # the stock menu (power-menu-1127)
+    ("round panel: any key stops the count", RT, "        int code = ev.getKeyCode();\n", "        int code = ev.getKeyCode();\n        if (ev.getAction() == KeyEvent.ACTION_DOWN) stopCountdown(KeyEvent.keyCodeToString(code));\n"),
+    ("round panel: the focus leaving keeps the count", RT, '                if (countdown.focusChanged(has)) stopCountdown("the focus left Power off");\n', "                countdown.focusChanged(has);\n"),
+    ("round panel: the count ignores the timer", RT, "countdown.start(first == power, timerRunning())", "countdown.start(first == power, false)"),
+    ("round panel: the end ignores the focus", RT, 'String why = !t.hasFocus() ? "the focus left Power off" : blockedReason();', "String why = blockedReason();"),
+    ("round panel: closing keeps the count", RT, '        stopCountdown("menu closed");\n', ""),
+    ("round panel: the 15 s auto hide is back", RT, "AUTO_HIDE_MS = 20_000;", "AUTO_HIDE_MS = 15_000;"),
+    ("Z9X menu: the count end sleeps", "apps/common/projector/src/org/lumen/projector/power/PowerMenu.java", "        dismiss();\n        Family.powerOff(c);", "        dismiss();\n        Family.powerSleepWithFade(c, \"end\");"),
+    ("Z9X menu: the power key again restarts", "apps/common/projector/src/org/lumen/projector/power/PowerMenu.java", "        m.dismiss();\n        Family.powerOff(m.shownIn);", "        m.dismiss();\n        Family.powerRestart(m.shownIn);"),
+    ("Z9X menu: no countdown tile", "apps/common/projector/src/org/lumen/projector/power/PowerMenu.java", "@Override protected RoundTile countdownTile() { return powerOffTile; }", "@Override protected RoundTile countdownTile() { return null; }"),
+    ("gmpf power key: the open menu not read", P + "PowerKeyPress.java", "shortPress(PowerMenu.isOpen())", "shortPress()"),
+    ("round menu: the count end restarts", "apps/core/lumen-menu/src/org/lumen/projector/panel/PowerMenu.java",
+     "@Override protected void onCountdownEnd() { closeThen(power::powerOff); }", "@Override protected void onCountdownEnd() { closeThen(power::restart); }"),
+    ("X50: the press rule without the open menu", X + "X50Power.java", ", () -> sMenu != null && sMenu.isShowing());", ");"),
 ]
 
 

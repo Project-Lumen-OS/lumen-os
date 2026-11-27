@@ -10,7 +10,7 @@ tg_move_ak=Trapézio automático após mover
 ok=OK
 app_not_found=Nenhum app encontrado para este botão
 diag_app_version=Versão do app: %1$s
-manual_focus_panel=Foco manual   ◀ ▶     OK/Voltar: concluir
+manual_focus_panel=Foco manual   ◀ ▶     Voltar: concluir
 toast_af=Foco automático
 toast_af_running=Focando…
 toast_af_failed=Falha no foco automático
@@ -686,6 +686,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d h
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d min
+lumen_1_d_s=%1$d s
 lumen_2_point=2 pontos
 lumen_3d=3D
 lumen_ai_contrast=Contraste IA
@@ -971,6 +972,8 @@ lumen_white_balance=Balanço de branco
 lumen_yellow=Amarelo
 lumen_zoom_and_shift=Zoom e deslocamento
 lumen_zoom_and_shift_is_not=Zoom e deslocamento indisponível agora
+lumen_optical_out=Saída ótica
+lumen_focus_chart_hint=OK: padrão de teste
 
 @projector/strings_p6.xml
 p6_batt_low=Bateria fraca: restam %1$d %%

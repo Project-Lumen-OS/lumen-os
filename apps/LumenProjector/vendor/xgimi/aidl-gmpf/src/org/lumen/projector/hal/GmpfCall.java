@@ -165,6 +165,8 @@ enum GmpfCall implements AidlTransport.Method {
     GET_AUTO_REVERSE(GmpfIface.MOTION, HalCodes.MD_GET_AUTO_REVERSE, "getAutoReverse"),
     TEMPORARY_SWITCH_TRIGGER(GmpfIface.MOTION, HalCodes.MD_TEMPORARY_SWITCH_TRIGGER, "temporarySwitchTrigger"),
     GO_TO_BOOT_COMPLETED(GmpfIface.POWER, HalCodes.PM_GO_TO_BOOT_COMPLETED, "goToBootCompleted"),
+    // the stock sleep: PowerManagerService.xgimiPrepareSleep -> XgimiSmsController.gotoSleep(0, 0) only (power/StrPrepare)
+    GO_TO_SLEEP(GmpfIface.POWER, HalCodes.PM_GO_TO_SLEEP, "goToSleep", "0,0"),
     SET_FOCUS_CALLBACK(GmpfIface.FOCUS, HalCodes.PF_SET_FOCUS_CALLBACK, "setFocusCallback"),
     MANUAL_FOCUS(GmpfIface.FOCUS, HalCodes.PF_MANUAL_FOCUS, "manualFocus"),
     POWER_ON_AF_ENABLE(GmpfIface.FOCUS, HalCodes.PF_POWER_ON_AF_ENABLE, "powerOnAFEnable"),
@@ -194,14 +196,22 @@ enum GmpfCall implements AidlTransport.Method {
     final GmpfIface iface;   // null: meta call, valid on any Iface
     final int code;
     final String method;
+    /** The argument range the shared transport enforces (AidlTransport, ArgSpec, the allow list's args column), or null. */
+    final String args;
 
     GmpfCall(GmpfIface iface, int code, String method) {
+        this(iface, code, method, null);
+    }
+
+    GmpfCall(GmpfIface iface, int code, String method, String args) {
         this.iface = iface;
         this.code = code;
         this.method = method;
+        this.args = args;
     }
 
     @Override public AidlTransport.Service iface() { return iface; }
     @Override public int code() { return code; }
     @Override public String method() { return method; }
+    @Override public String args() { return args; }
 }

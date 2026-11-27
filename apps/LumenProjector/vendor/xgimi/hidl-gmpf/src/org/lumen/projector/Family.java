@@ -22,6 +22,15 @@ import org.lumen.projector.panel.RuleNotes;
 public final class Family {
     private Family() {}
 
+    /**
+     * power.VendorSleep, HAL thread: the stock prepare's vendor calls (power/StrPrepare, power/GmpfStrVendor) on
+     * the Z9X and RS 20: IGmpf 241 (gmpf_main has no wake lock, so their STR worked without it; sent
+     * for the stock parity of the vendor's standby stage and shutdown step); null when the HAL has no goToSleep.
+     */
+    public static org.lumen.projector.power.StrPrepare.Vendor strVendor(GmpfClient g) {
+        return org.lumen.projector.power.GmpfStrVendor.of(g);
+    }
+
     /** power.StandbyActivity: how long the window keeps the focus after a wake by OK (0: it closes at once). */
     public static final long WAKE_HOLD_MS = 0;
     /** power.StandbyActivity: the hold never lasts longer, also with the waking key held down. */
@@ -35,8 +44,6 @@ public final class Family {
      *  was pressed. Off until the owner decides (2026-11-26); RelinkHost.inactiveSourceSleep reads it. */
     public static final boolean INACTIVE_SOURCE_SLEEP = false;
 
-    /** ManualFocusActivity: the stock window is the full-screen focus chart (FocusPattern, the HB stock SystemUI). */
-    public static final boolean FOCUS_CHART = false;
     /** ManualFocusActivity: the Z9X stock systemui FocusAdjust.java:586-603: a mouse wheel moves the lens for 200 ms per notch. */
     public static final boolean FOCUS_WHEEL = true;
 
@@ -360,8 +367,6 @@ public final class Family {
 
     /** cec.EarcLink: the log tag and the thread of the eARC link watch. */
     public static final String EARC_TAG = "Z9xEarc", EARC_THREAD = "z9x-earc";
-    /** cec.EarcLink: the ARC restart after a lost link (IHdmiControlService.setArcMode, which stock never sends). */
-    public static final boolean ARC_RESTART = true;
 
     /** cec.EarcLink: one getEARCStatus read (Z9X IGmpf 619) on the HAL thread, its value to status there. */
     public static void earcStatus(java.util.function.IntConsumer status) {
@@ -389,34 +394,6 @@ public final class Family {
     /** cec.EarcLink: the link moved to or from eARC, the output format is sent again. */
     public static void earcFormatAgain(String why) {
         org.lumen.projector.audio.AudioOutputChoice.resendFormat(why);
-    }
-
-    /** cec.EarcLink ARC restart: the stored sound output (an AudioOutputKind name, null = none stored). */
-    public static String audioOutputKind(Context app) {
-        org.lumen.projector.audio.AudioOutputKind k = org.lumen.projector.audio.AudioOutputChoice.kind(app);
-        return k == null ? null : k.name();
-    }
-
-    /**
-     * cec.EarcLink ARC restart: IHdmiControlService.setArcMode(true) through the framework's service behind
-     * HdmiTvClient (HdmiClient.mService): setArcMode has no manager method, and the HAL gate keeps ServiceManager out
-     * of this app. False without a TV client.
-     */
-    public static boolean arcModeOn(Context app) throws Exception {
-        android.hardware.hdmi.HdmiControlManager m;
-        try {
-            m = app.getApplicationContext().getSystemService(android.hardware.hdmi.HdmiControlManager.class);
-        } catch (Throwable t) {
-            m = null;
-        }
-        android.hardware.hdmi.HdmiTvClient tv = m == null ? null : m.getTvClient();
-        if (tv == null) return false;
-        java.lang.reflect.Field f = tv.getClass().getSuperclass().getDeclaredField("mService");
-        f.setAccessible(true);
-        android.hardware.hdmi.IHdmiControlService s = (android.hardware.hdmi.IHdmiControlService) f.get(tv);
-        if (s == null) return false;
-        s.setArcMode(true);
-        return true;
     }
 
     // ---- the log tags and thread names of the core classes that name their family (BootSource, ManualFocusActivity)

@@ -1,0 +1,8 @@
+# unbanned_hbprojector.tsv: the maintainer's per-app exception to devices/goat_elegant/research/banned.tsv for the app
+# HbProjector ONLY (the gmpf families' stock sleep, 2026-11-27, same rule as the X50 family's of 2026-11-26: a code change
+# that does exactly what stock does). Read by tools/devices/check_aidl_hal.py --unbanned, which tools/devices/check_hal.py
+# passes only for the app named in devices/goat_elegant/device.conf hal_unbanned. Each row: the app, the BANNED row
+# (service, code, method) and its argument range (args, org.lumen.hal.ArgSpec), which must equal the Call in
+# GmpfCall.java and the allow-list row; the shared transport (AidlTransport) enforces it on the device. Every other
+# PowerManager 6 use (mode 1 = reboot, type 1 = the power HAL's step, the light standby (4, 2)) stays BANNED.
+HbProjector	PowerManager	6	goToSleep	args:0,0	the stock sleep's vendor step (services.jar PowerManagerService.xgimiPrepareSleep -> XgimiSmsController.gotoSleep(0, 0), G0148 6.17.12, G0130 6.16.24): standby stage 1, the vendor shutdown step, then release_wake_lock(gmpf_wake_lock), which wakeUp takes on every STR resume; without it only the first sleep after a cold boot reaches STR (GitHub issue 5)

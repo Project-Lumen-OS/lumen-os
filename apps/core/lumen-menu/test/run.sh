@@ -17,7 +17,7 @@ G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")  
   "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" "$HERE/test/MenuSnapshot.java" \
   "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SleepRuleTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HdrFormatTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
   "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ElderColorRuleTest.java" "$HERE/test/ChoiceStepTest.java" \
-  "$HERE/test/GeneralChoicesTest.java" \
+  "$HERE/test/GeneralChoicesTest.java" "$HERE/test/chart/ChartTest.java" \
   "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" "$HERE/test/TitanUxMenuTest.java" \
   "$HERE"/src/org/lumen/menu/quick/*.java "$HERE/test/quick/QuickTest.java" "$HERE/test/quick/FullLayoutTest.java"
 bad=0
@@ -64,6 +64,8 @@ else "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.quick.QuickTest "$G" || bad
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.GeneralChoicesTest || bad=1
 # the focus page's remote picture: the model's own remote (devices/_remotes/focus_guide.tsv, stock RemoteFocusCell)
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.FocusGuideTest "$G" || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.ChartTest "$G" || bad=1
+python3 -B "$HERE/test/chart/chart_wiring.py" "$LAYERS_ROOT" > "$OUT/chart_wiring.txt" || { cat "$OUT/chart_wiring.txt"; bad=1; }
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.utils.MenuValuesTest || bad=1
 # a stepped choice the device refused shows its value at once (ChoiceStep, HB output row 2026-11-14)
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.ChoiceStepTest || bad=1
@@ -414,7 +416,7 @@ PM="$HERE/src/org/lumen/projector/panel/PowerMenu.java"
 # the power menu (PowerMenu): the stock items the profile offers, only through the menu's own host (a device's gate
 # holds for it too), Turn off screen the lamp.off row's own action; the round tiles of every power menu (
 # 2026-11-26: the short press opens the round menu as before, never the side list)
-if grep -qF '        panel = new Tiles(PowerItem.offered(menu::offers));' "$PM" && grep -qxF '        return menu.host().show(panel);' "$PM" \
+if grep -qF '        panel = new Tiles(PowerItem.offered(menu::offers), false);' "$PM" && grep -qxF '        return menu.host().show(panel);' "$PM" \
   && grep -qF 'private final class Tiles extends RoundTilePanel {' "$PM" && [ -z "$(code 'new PagedPanel\(' "$PM")" ] \
   && [ -z "$(code 'OverlayHost|Notify\.|Ui\.toast|panel\.dismiss\(\)' "$PM")" ] \
   && grep -qxF '                closeThen(() -> menu.act(FeatureId.LAMP_OFF));' "$PM"; then

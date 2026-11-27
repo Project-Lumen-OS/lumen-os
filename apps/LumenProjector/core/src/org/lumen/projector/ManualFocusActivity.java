@@ -9,9 +9,14 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import org.lumen.menu.FocusChart;
+import org.lumen.projector.panel.FocusChartView;
+import org.lumen.projector.panel.MenuController;
 import org.lumen.projector.ui.ToolActivity;
 
 /**
@@ -25,6 +30,9 @@ import org.lumen.projector.ui.ToolActivity;
  * A Lumen tool screen (ToolActivity, org.lumen.menu.KeyTools): while it is in front a menu panel on screen steps
  * aside, so LEFT / RIGHT / OK / BACK reach this window only, and the panel has the keys again where it was when this
  * closes; the remote's menu key (the gear) closes it like any other key.
+ * The stock focus chart (org.lumen.menu.FocusChart: cp01_focus_bk, the MIRA line's short one, the centre dial) fills
+ * the window behind the panel from the first frame where the model's stock has one; OK shows or hides it (tester
+ * 2026-11-27, the one key that no longer closes) and the panel says so; LEFT / RIGHT turn the dial's rings.
  * All motor work goes through MotorController (its own thread).
  */
 public final class ManualFocusActivity extends ToolActivity {
@@ -35,6 +43,7 @@ public final class ManualFocusActivity extends ToolActivity {
     private static ManualFocusActivity sOpen;
 
     private MotorController motor;
+    private FocusChartView chart;
     private long lastKeyAt;
     /** Closing because an autofocus starts: leave the 17 mode without manualFocus(2). */
     private boolean closingForAf;
@@ -84,12 +93,14 @@ public final class ManualFocusActivity extends ToolActivity {
         try {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             setContentView(R.layout.activity_manual_focus);
-            // the family's stock window (Family.FOCUS_CHART, the HB beta6 tester: SystemUI FocusAdjust cp01_focus_bk,
-            // FocusPattern): the full-screen focus chart behind the panel from the first frame, as stock
-            if (Family.FOCUS_CHART) {
-                ((ViewGroup) findViewById(android.R.id.content)).addView(new FocusPatternView(this), 0,
-                        new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            }
+            // the model's stock chart (profile focus.manual chart) behind the panel from the first frame, as stock
+            String style = FocusChart.style(MenuController.profile(this));
+            chart = new FocusChartView(this, FocusChart.drawn(style));
+            chart.setVisibility(FocusChart.shownAtOpen(style) ? View.VISIBLE : View.GONE);
+            ((ViewGroup) findViewById(android.R.id.content)).addView(chart, 0,
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            ((TextView) findViewById(R.id.panel)).setText(getString(R.string.manual_focus_panel) + "     "
+                    + getString(R.string.lumen_focus_chart_hint));
             motor = Family.focusMotor(this);
         } catch (Throwable t) {
             Log.e(TAG, "onCreate", t);
@@ -151,6 +162,7 @@ public final class ManualFocusActivity extends ToolActivity {
             if (action == KeyEvent.ACTION_DOWN) {
                 if (ev.getRepeatCount() == 0) motor.start(code == KeyEvent.KEYCODE_DPAD_LEFT ? 1 : 0);
                 else motor.feed();
+                if (chart != null) chart.turn(code == KeyEvent.KEYCODE_DPAD_LEFT ? 1 : -1);
             } else if (action == KeyEvent.ACTION_UP) {
                 motor.stop();                                     // any UP, also canceled
             }
@@ -161,6 +173,14 @@ public final class ManualFocusActivity extends ToolActivity {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
                 return super.dispatchKeyEvent(ev);                // volume keys keep working
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_NUMPAD_ENTER:
+                // OK shows or hides the chart at its first DOWN; a lone UP (the press that opened us) does nothing
+                if (action == KeyEvent.ACTION_DOWN && ev.getRepeatCount() == 0 && chart != null) {
+                    chart.setVisibility(chart.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                }
+                return true;
             default:
                 break;
         }

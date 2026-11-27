@@ -11,7 +11,7 @@ tg_move_ak=移动后自动梯形校正
 ok=确定
 app_not_found=未找到此按键对应的应用
 diag_app_version=应用版本：%1$s
-manual_focus_panel=手动对焦   ◀ ▶     OK/返回：完成
+manual_focus_panel=手动对焦   ◀ ▶     返回：完成
 toast_af=自动对焦
 toast_af_running=正在自动对焦…
 toast_af_failed=自动对焦失败
@@ -685,6 +685,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d 小时
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d 分钟
+lumen_1_d_s=%1$d 秒
 lumen_2_point=2 点
 lumen_3d=3D
 lumen_ai_contrast=AI 对比度
@@ -970,6 +971,8 @@ lumen_white_balance=白平衡
 lumen_yellow=黄色
 lumen_zoom_and_shift=缩放与位移
 lumen_zoom_and_shift_is_not=缩放与位移暂不可用
+lumen_optical_out=光纤输出
+lumen_focus_chart_hint=OK：测试图
 
 @projector/strings_p6.xml
 p6_batt_low=电量低：剩余 %1$d%%

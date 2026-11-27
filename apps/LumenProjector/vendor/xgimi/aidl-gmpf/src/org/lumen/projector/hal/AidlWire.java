@@ -117,6 +117,7 @@ final class AidlWire extends AidlTransport<GmpfCall> implements GmpfWire<GmpfCal
     @Override public boolean i32RetBool(GmpfCall k, int v) throws RemoteException { return proxyCall(k, o -> o.i32(v), RET_BOOL); }
     @Override public int i32RetI32(GmpfCall k, int v) throws RemoteException { return proxyCall(k, o -> o.i32(v), RET_I32); }
     @Override public byte i32RetI8(GmpfCall k, int v) throws RemoteException { return proxyCall(k, o -> o.i32(v), RET_I8); }
+    @Override public void i32I32(GmpfCall k, int a, int b) throws RemoteException { proxyCall(k, o -> { o.i32(a); o.i32(b); }, RET_VOID); }
     @Override public boolean i32I32RetBool(GmpfCall k, int a, int b) throws RemoteException { return proxyCall(k, o -> { o.i32(a); o.i32(b); }, RET_BOOL); }
     @Override public int i32I32RetI32(GmpfCall k, int a, int b) throws RemoteException { return proxyCall(k, o -> { o.i32(a); o.i32(b); }, RET_I32); }
     @Override public boolean i32BoolRetBool(GmpfCall k, int a, boolean b) throws RemoteException { return proxyCall(k, o -> { o.i32(a); o.bool(b); }, RET_BOOL); }

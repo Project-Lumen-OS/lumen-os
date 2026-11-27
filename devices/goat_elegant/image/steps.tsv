@@ -148,6 +148,8 @@ lumen	install	0644	signed_stage/apps/LumenKeyboard.apk	{sys}/product/app/Leanbac
 # updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
 # browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
 lumen	prebuilt	LumenPlay	arm32	{sys}/app/LumenPlay
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+lumen	framework	p6	{sys}
 lumen,info	install	0644	privapp-permissions-lumeninfo.xml	{sys}/etc/permissions/privapp-permissions-lumeninfo.xml
 lumen	install	0644	hb_audio.rc	{sys}/etc/init/hb_audio.rc
 lumen	install	0644	hb_audio_policy_engine_stream_volumes.xml	{sys}/etc/xgimi/hb_audio_policy_engine_stream_volumes.xml

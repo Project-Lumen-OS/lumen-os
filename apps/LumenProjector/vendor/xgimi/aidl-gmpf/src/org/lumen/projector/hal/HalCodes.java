@@ -176,6 +176,7 @@ final class HalCodes {
 
     // PowerManager
     static final int PM_GO_TO_BOOT_COMPLETED = 2;               // goToBootCompleted  boolean(int)
+    static final int PM_GO_TO_SLEEP = 6;                        // goToSleep  void(int, int)
 
     // ProjectorFocusManager
     static final int PF_SET_FOCUS_CALLBACK = 1;                 // setFocusCallback  void(IProjectorFocusCallback)

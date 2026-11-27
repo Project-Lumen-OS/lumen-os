@@ -2,6 +2,7 @@
   "include": "devices/_family/rs30/rs30.menu.json",
   "note": "MIRA line (bollywood, bollywoodpro, oscar: one XGIMI build, MTK9681 bollywoodproguonei OSCAR v1.3.1): the RS30 recipe and gmpf table (the G0155 v1.1.42 codes), their own stock trees: picture modes AI 10, sport 9, cinema 29, gorgeous 0, eye care 41, office 25, performance 5 (MIRA; AURA 3 its own list), colour temperature 0 / 16 / 24, no iris on MIRA, the dynamic black with its level tuning, none of the zoom, real time, obstacle and curtain keystone rows, the rotation, the level angles and smart focus, no eye protection in Lumen (no person detection to watch). Evidence: research/stock_v131.tsv and each model's research/stock_v131.tsv.",
   "features": {
+    "focus.manual": {"chart": "short"},
     "picture.mode": {
       "options": [
         "ai",

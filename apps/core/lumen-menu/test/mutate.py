@@ -20,6 +20,23 @@ UI = "src/org/lumen/projector/ui/"
 MS = "src/org/lumen/projector/panel/ModuleScreens.java"
 QS = "src/org/lumen/menu/quick/"
 MUTANTS = [
+    ("optical: the row needs a connected device", "src/org/lumen/menu/sound/SoundOutputs.java", " && !OPTICAL.equals(k) && !listed.contains(k)) {", " && !listed.contains(k)) {"),
+    ("optical: no format on the card", "src/org/lumen/menu/sound/SoundOutputs.java", " || OPTICAL.equals(now.kind)) ? format", ") ? format"),
+    ("optical: unknown token", "src/org/lumen/menu/sound/SoundOutputs.java", "Arrays.asList(AUTO, SPEAKER, OPTICAL, ARC,", "Arrays.asList(AUTO, SPEAKER, ARC,"),
+    # ---- the power menu as stock (power-menu-1127): five items, the 15 s power off, the power key again powers off
+    ("stock menu: no Sleep item", "src/org/lumen/menu/PowerItem.java", "    SLEEP(null),\n", ""),
+    ("stock menu: Sleep needs a feature", "src/org/lumen/menu/PowerItem.java", "    SLEEP(null),", "    SLEEP(FeatureId.LAMP_OFF),"),
+    ("stock menu: the count starts at 10", "src/org/lumen/menu/PowerCountdown.java", "SECONDS = 15;", "SECONDS = 10;"),
+    ("stock menu: the count runs with a timer set", "src/org/lumen/menu/PowerCountdown.java", "focusOnPowerOff && !timerRunning ?", "focusOnPowerOff ?"),
+    ("stock menu: the count runs off Power off", "src/org/lumen/menu/PowerCountdown.java", "focusOnPowerOff && !timerRunning ?", "!timerRunning ?"),
+    ("stock menu: power off at 0, not a second later", "src/org/lumen/menu/PowerCountdown.java", "        if (left == 0) {", "        if (left <= 1) {"),
+    ("stock menu: stop keeps counting", "src/org/lumen/menu/PowerCountdown.java", "    public void stop() {\n        left = OFF;", "    public void stop() {\n        left = left;"),
+    ("stock menu: leaving Power off keeps counting", "src/org/lumen/menu/PowerCountdown.java", "        if (onPowerOff || left == OFF) return false;\n        left = OFF;", "        if (onPowerOff || left == OFF) return false;"),
+    ("stock menu: a move onto Power off stops the count", "src/org/lumen/menu/PowerCountdown.java", "if (onPowerOff || left == OFF) return false;", "if (left == OFF) return false;"),
+    ("stock menu: the power key again opens the menu", "src/org/lumen/menu/PowerKeyChoice.java", "return menuOpen ? PowerAction.POWER_OFF : shortPress();", "return shortPress();"),
+    ("stock menu: the press rule ignores the open menu", "src/org/lumen/menu/PowerPress.java", "choice().shortPress(menuOpen != null && menuOpen.getAsBoolean())", "choice().shortPress()"),
+    ("stock menu: the hold powers off with the menu open", "src/org/lumen/menu/PowerPress.java", "            held = true;\n            return choice().hold();",
+     "            held = true;\n            return menuOpen != null && menuOpen.getAsBoolean() ? PowerAction.POWER_OFF : choice().hold();"),
     # ---- the power menu's Power off is Android's shutdown on every family (Halt), never a sleep (LR-YVHNX4)
     ("halt: power off sleeps", "src/org/lumen/projector/panel/Halt.java", "        c.getSystemService(PowerManager.class).shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);",
      "        c.getSystemService(PowerManager.class).goToSleep(0);"),

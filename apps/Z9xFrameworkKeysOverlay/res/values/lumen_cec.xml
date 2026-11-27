@@ -8,9 +8,9 @@
     <!-- hdmi_cec_enabled = 1 -->
     <bool name="config_cecHdmiCecControlEnabled_default">true</bool>
     <bool name="config_cecHdmiCecControlDisabled_default">false</bool>
-    <!-- tv_send_standby_on_sleep = 1 -->
-    <bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>
-    <bool name="config_cecTvSendStandbyOnSleepDisabled_default">false</bool>
+    <!-- tv_send_standby_on_sleep = 0 -->
+    <bool name="config_cecTvSendStandbyOnSleepEnabled_default">false</bool>
+    <bool name="config_cecTvSendStandbyOnSleepDisabled_default">true</bool>
     <!-- tv_wake_on_one_touch_play = 1 -->
     <bool name="config_cecTvWakeOnOneTouchPlayEnabled_default">true</bool>
     <bool name="config_cecTvWakeOnOneTouchPlayDisabled_default">false</bool>

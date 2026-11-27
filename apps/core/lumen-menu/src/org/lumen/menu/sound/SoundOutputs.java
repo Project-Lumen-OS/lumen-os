@@ -21,7 +21,9 @@ import java.util.Set;
  * choice lists now (the soundbar while it is known, the stored choice even while its device is missing), null = the
  * outputs connected now. {@code jackSensed} false (the HB kernel senses no 3.5 mm plug, menu.json "jack": "manual",
  * MenuProfile.jackSensed):
- * the headphones row is always listed, as stock lists it, and says it is chosen by hand.
+ * the headphones row is always listed, as stock lists it, and says it is chosen by hand. The optical jack (menu.json
+ * "optical", only models whose stock audio.ini has spdif_jack_type 1) is always listed like the speaker: the plug cannot
+ * be sensed and stock voice_audio_spdif is always on the page.
  *
  * <p>Rows: Auto first, then the model's order. Exactly one choice row is selected (the stored choice, Auto when it
  * is not listed). The playing mark goes on the one row media is routed to now, never on Auto or an offline row. The
@@ -29,13 +31,14 @@ import java.util.Set;
  */
 public final class SoundOutputs {
     /** Choice tokens (menu.json sound.output options). */
-    public static final String AUTO = "auto", SPEAKER = "speaker", ARC = "arc", BT = "bt", WIRED = "wired", USB = "usb";
+    public static final String AUTO = "auto", SPEAKER = "speaker", OPTICAL = "optical", ARC = "arc", BT = "bt", WIRED = "wired",
+            USB = "usb";
     /** How a row's output is reached (the line under its name). */
     public static final String VIA_ARC = "arc", VIA_EARC = "earc", VIA_BT = "bt", VIA_JACK = "jack", VIA_USB = "usb";
     /** The state on that line: connected now, a paired device that is not connected, headphones chosen by hand. */
     public static final String CONNECTED = "connected", OFFLINE = "offline", BY_HAND = "by_hand";
 
-    private static final List<String> KNOWN = Collections.unmodifiableList(java.util.Arrays.asList(AUTO, SPEAKER, ARC, BT, WIRED, USB));
+    private static final List<String> KNOWN = Collections.unmodifiableList(java.util.Arrays.asList(AUTO, SPEAKER, OPTICAL, ARC, BT, WIRED, USB));
 
     /** One row of the page. */
     public static final class Row {
@@ -76,7 +79,7 @@ public final class SoundOutputs {
     public final Row now;
     /** True: the system picked {@link #now} (Auto, or the chosen output is not reachable now). */
     public final boolean nowAuto;
-    /** The audio format token on the card (only while the sound goes to HDMI ARC / eARC), else null. */
+    /** The audio format token on the card (only while the sound goes to HDMI ARC / eARC or the optical jack), else null. */
     public final String nowFormat;
 
     private SoundOutputs(List<Row> rows, Row now, boolean nowAuto, String nowFormat) {
@@ -123,7 +126,7 @@ public final class SoundOutputs {
 
         List<Row> rows = new ArrayList<>();
         for (String k : kinds) {
-            if (!AUTO.equals(k) && !SPEAKER.equals(k) && !listed.contains(k)) {
+            if (!AUTO.equals(k) && !SPEAKER.equals(k) && !OPTICAL.equals(k) && !listed.contains(k)) {
                 if (BT.equals(k)) addOffline(rows, scan);
                 continue;
             }
@@ -131,6 +134,7 @@ public final class SoundOutputs {
             switch (k) {
                 case AUTO:
                 case SPEAKER:
+                case OPTICAL:
                     rows.add(new Row(tok, k, null, "", null, null, false, false));
                     break;
                 case ARC: {
@@ -165,7 +169,7 @@ public final class SoundOutputs {
             if (play) now = r;
         }
         boolean auto = AUTO.equals(chosenKind) || now == null || !now.selected;
-        String fmt = now != null && ARC.equals(now.kind) ? format : null;
+        String fmt = now != null && (ARC.equals(now.kind) || OPTICAL.equals(now.kind)) ? format : null;
         return new SoundOutputs(rows, now, auto, fmt);
     }
 

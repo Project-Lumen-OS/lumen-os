@@ -34,21 +34,16 @@ public final class EarcRulesTest {
         eq("awake, eARC linked, nothing listed: connect", con, EarcRules.step(3, false, false, true));
         eq("awake, ours removed by <Terminate ARC>: connect", con, EarcRules.step(3, true, false, true));
         eq("awake, link ended, ours: removed", dis, EarcRules.step(1, true, true, true));
-        eq("restart: auto", true, EarcRules.arcRestart("AUTO", false, true));
-        eq("restart: soundbar chosen", true, EarcRules.arcRestart("ARC", false, true));
-        eq("restart: nothing stored", true, EarcRules.arcRestart(null, false, true));
-        eq("restart: ARC back", false, EarcRules.arcRestart("AUTO", true, true));
-        eq("restart: speaker", false, EarcRules.arcRestart("SPEAKER", false, true));
-        eq("restart: BT", false, EarcRules.arcRestart("BT", false, true));
-        eq("restart: wired", false, EarcRules.arcRestart("WIRED", false, true));
-        eq("restart: no audio system", false, EarcRules.arcRestart("AUTO", false, false));
-        // ---- 2026-11-04 (A1): restart only after an eARC event of this process
-        eq("allowed: link 3 seen", true, EarcRules.restartAllowed(999_999, false, true, 30_000));
-        eq("allowed: row pressed 5 s ago", true, EarcRules.restartAllowed(5_000, true, false, 30_000));
-        eq("refused: row pressed 31 s ago", false, EarcRules.restartAllowed(31_000, true, false, 30_000));
-        eq("refused: plain ARC soundbar off, no row press", false, EarcRules.restartAllowed(1_000, false, false, 30_000));
-        eq("refused: clock went back", false, EarcRules.restartAllowed(-1, true, false, 30_000));
-        eq("awake: screen on, soundbar on", true, EarcRules.restartAwake(true, false));
+        // ---- cec-fix-1127: the vendor's event 11 instead of a poll; no ARC restart; System Audio keeps CEC ARC's output
+        eq("event: linked", 3, EarcRules.eventStatus(11, "eARCstate:1"));
+        eq("event: ended", 0, EarcRules.eventStatus(11, "eARCstate:0"));
+        eq("event: other type", -1, EarcRules.eventStatus(5, "eARCstate:1"));
+        eq("event: other text", -1, EarcRules.eventStatus(11, "picturemode:3"));
+        eq("event: no value", -1, EarcRules.eventStatus(11, "eARCstate"));
+        eq("event: null", -1, EarcRules.eventStatus(11, null));
+        eq("link end, System Audio on: CEC ARC keeps the output", none, EarcRules.afterLinkEnd(dis, true));
+        eq("link end, System Audio off: ours removed", dis, EarcRules.afterLinkEnd(dis, false));
+        eq("connect is not touched by the System Audio rule", con, EarcRules.afterLinkEnd(con, true));
         // ---- 2026-11-13: the digital output format again on an eARC link change
         eq("format: link up from ARC", true, EarcRules.formatAgain(1, 3));
         eq("format: link down to ARC", true, EarcRules.formatAgain(3, 1));
@@ -56,8 +51,6 @@ public final class EarcRulesTest {
         eq("format: no change", false, EarcRules.formatAgain(3, 3));
         eq("format: ARC to pending, no link involved", false, EarcRules.formatAgain(1, 2));
         eq("format: first read of the process", false, EarcRules.formatAgain(-1, 3));
-        eq("awake: screen off", false, EarcRules.restartAwake(false, false));
-        eq("awake: soundbar standby", false, EarcRules.restartAwake(true, true));
         if (fails > 0) {
             System.out.println("EarcRulesTest: " + fails + " of " + checks + " checks failed");
             System.exit(1);

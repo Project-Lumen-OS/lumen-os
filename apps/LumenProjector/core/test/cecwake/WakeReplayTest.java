@@ -134,8 +134,8 @@ public final class WakeReplayTest {
                 HdmiLink.relinkNow(2_000, 15_000, true, true, 0, 0));
         eq("eARC not linked at the wake: EarcLink adds no ARC output", EarcStep.NONE,
                 EarcRules.step(0, false, false, true));
-        eq("no link of 3 seen since the wake, no panel press: no ARC restart from the app", false,
-                EarcRules.restartAllowed(5_000, false, false, 30_000));
+        eq("a plain ARC soundbar's vendor event at the wake: no eARC link", 0,
+                EarcRules.eventStatus(EarcRules.EVENT_EARC, "eARCstate:0"));
     }
 
     // ------------------------------------------------------------------ model helpers

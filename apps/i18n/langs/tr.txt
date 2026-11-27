@@ -10,7 +10,7 @@ tg_move_ak=Taşıdıktan sonra yamuk düzeltme
 ok=Tamam
 app_not_found=Bu tuş için uygulama bulunamadı
 diag_app_version=Uygulama sürümü: %1$s
-manual_focus_panel=Manuel odak   ◀ ▶     OK/Geri: bitti
+manual_focus_panel=Manuel odak   ◀ ▶     Geri: bitti
 toast_af=Otomatik odak
 toast_af_running=Odaklanıyor…
 toast_af_failed=Otomatik odak başarısız
@@ -685,6 +685,7 @@ lumen_1_d=%%%1$d
 lumen_1_d_h=%1$d sa
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d dk
+lumen_1_d_s=%1$d sn
 lumen_2_point=2 nokta
 lumen_3d=3D
 lumen_ai_contrast=AI kontrast
@@ -970,6 +971,8 @@ lumen_white_balance=Beyaz dengesi
 lumen_yellow=Sarı
 lumen_zoom_and_shift=Yakınlaştırma ve kaydırma
 lumen_zoom_and_shift_is_not=Yakınlaştırma ve kaydırma şu anda kullanılamıyor
+lumen_optical_out=Optik çıkış
+lumen_focus_chart_hint=OK: test deseni
 
 @projector/strings_p6.xml
 p6_batt_low=Pil zayıf: %%%1$d kaldı

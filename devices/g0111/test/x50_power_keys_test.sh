@@ -104,7 +104,11 @@ for k in $GH; do
     "grep -Eq '^key $sc[[:space:]]+TV_MEDIA_CONTEXT_MENU([[:space:]]|\$)' '$T/base/$f_' && [ \"\$(grep -E '^key $sc[[:space:]]' '$T/new/$f_')\" = \"\$(grep -E '^key $sc[[:space:]]' '$T/base/$f_')\" ]"
 done
 d=$(diff "$T/base/Vendor_000d_Product_3840.kl" "$T/new/Vendor_000d_Product_3840.kl" | grep -c '^>')
-t "later base: 3840 exactly 4 lines changed or added: 113, 64, 88, 185 ($d)" test "$d" = 4
+t "later base: 3840 exactly 3 lines changed: 113, 64, 88 (185 is already the base's STB_POWER WAKE line) ($d)" test "$d" = 3
+for f_ in Vendor_000d_Product_3838.kl Vendor_000d_Product_3840.kl Vendor_000d_Product_3841.kl Vendor_000d_Product_3842.kl; do
+  t "later base: $f_ keeps the base's 185 SECONDARY_POWER line byte for byte, once" sh -c \
+    "[ \"\$(grep -E '^key 185[[:space:]]' '$T/new/$f_')\" = \"\$(grep -E '^key 185[[:space:]]' '$T/base/$f_')\" ] && [ \$(grep -cE '^key 185[[:space:]]+STB_POWER WAKE' '$T/new/$f_') = 1 ]"
+done
 
 # --- check refuses every mutant
 fresh; pk apply "$T/new" >/dev/null
@@ -258,7 +262,7 @@ t "every layout the edit changes is one of its files" sh -c \
 t "verify_tree_x50 lets exactly the edited layouts differ (FILES, the remote power keys included)" sh -c \
   "grep -q 'for n in x50_power_keys.FILES}' '$G/devices/g0111/image/verify_tree_x50.py' && ! grep -q 'x50_power_keys.TABLE' '$G/devices/g0111/image/verify_tree_x50.py'"
 t "nothing outside the X50 names the RRO or the key tool" sh -c \
-  "! grep -rlE 'X50PowerOverlay|x50_power_keys' '$G/tools/ota' '$G/tools/play6' '$G/installer' '$G/devices/horse_popular' '$G/devices/goat_elegant' 2>/dev/null | grep -q ."
+  "! grep -rhE 'X50PowerOverlay|x50_power_keys' '$G/tools/ota' '$G/tools/play6' '$G/installer' '$G/devices/horse_popular' '$G/devices/goat_elegant' 2>/dev/null | grep -vx '  sync_check apps/X50PowerOverlay power' | grep -q ."
 
 if [ "${BUILD:-0}" = 1 ]; then
   t "RRO builds with the test key" env BUILD_DIR="$T/b" sh "$G/apps/build_apk.sh" "$O" "$T/X50PowerOverlay.apk"

@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d시간</string>
     <string name="lumen_1_d_hz">%1$d Hz</string>
     <string name="lumen_1_d_min">%1$d분</string>
+    <string name="lumen_1_d_s">%1$d초</string>
     <string name="lumen_2_point">2포인트</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">AI 명암</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">노랑</string>
     <string name="lumen_zoom_and_shift">줌 및 이동</string>
     <string name="lumen_zoom_and_shift_is_not">줌 및 이동을 지금 사용할 수 없습니다</string>
+    <string name="lumen_optical_out">광출력</string>
+    <string name="lumen_focus_chart_hint">OK: 테스트 차트</string>
 </resources>

@@ -70,6 +70,7 @@ IGmpf	GMPF_GET_SCREEN_ON_OFF	196	getScreenOnOff	W= R=readBool	get	ProjectorBase	
 IGmpf	GMPF_CORRECT_KEYSTONE_RESET	207	correctKeystoneReset	W=writeUint8 R=	call	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
 IGmpf	GMPF_GET_BOOT_REASON	230	getBootReason	W= R=readInt8	get	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
 IGmpf	GMPF_GO_TO_BOOT_COMPLETED	237	goToBootCompleted	W=writeInt32 R=readBool	call	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
+IGmpf	GMPF_GO_TO_SLEEP	241	goToSleep	W=writeInt32,writeInt32 R=	call	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; services.jar PowerManagerService.xgimiPrepareSleep -> XgimiSmsController.gotoSleep(0, 0) only (power/StrPrepare); client GmpfClient
 IGmpf	GMPF_NEW_AUTO_KST	272	newAutoKst	W=writeInt32 R=readInt8	call	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient
 IGmpf	GMPF_GET_TOF_DISTANCE	279	getTofDistance	W= R=readInt32	get	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient, Z9xGmpfReader
 IGmpf	GMPF_GET_PROJ_CURTAIN_ADP	289	getProjCurtainAdp	W= R=readBool	get	ProjectorBase	stock research/play6/z9x_gmpf_codes.txt BpHwGmpf; client GmpfClient

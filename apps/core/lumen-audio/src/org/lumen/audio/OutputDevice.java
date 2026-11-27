@@ -12,7 +12,7 @@ import java.util.List;
  * paired Bluetooth device that is not connected is listed with connected false). {@link Scan} is what OutputScan read.
  */
 public final class OutputDevice {
-    public static final String SPEAKER = "SPEAKER", ARC = "ARC", BT = "BT", WIRED = "WIRED", USB = "USB";
+    public static final String SPEAKER = "SPEAKER", ARC = "ARC", BT = "BT", WIRED = "WIRED", USB = "USB", OPTICAL = "OPTICAL";
 
     public final String kind;
     public final String addr;

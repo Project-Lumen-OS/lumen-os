@@ -32,10 +32,12 @@ REAL_DEXDUMP=${BUILD_TOOLS:-$ANDROID_SDK/build-tools/36.0.0}/dexdump
 
 copy() { rm -rf "$W/app"; mkdir -p "$W/app"; cp -R "$APP/src" "$W/app/src"; cp "$ALLOWED" "$W/allowed.tsv"; }
 CODES_ALSO=""   # part 3: the code tables of the other stock firmware (hal_codes_also, relative to G), one --codes each
+UNBAN=""   # parts 2 and 3: the HB app's per-app exceptions (hal_unbanned), the copy named as the list names its app
 run() { # extra args...
-  local more=() c
+  local more=() c app=$W/app
   for c in $CODES_ALSO; do more+=(--codes "$G/$c"); done
-  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$W/app" --codes "$R/aidl_codes.tsv" ${more[@]+"${more[@]}"} \
+  if [ -n "$UNBAN" ]; then ln -sfn "$W/app" "$W/HbProjector"; app=$W/HbProjector; more+=(--unbanned "$UNBAN"); fi
+  python3 -B "$G/tools/devices/check_aidl_hal.py" --app "$app" --codes "$R/aidl_codes.tsv" ${more[@]+"${more[@]}"} \
     --banned "$R/banned.tsv" "$@" > "$W/out" 2>&1
 }
 result() { # name want got
@@ -103,6 +105,8 @@ if [ -n "$(ls "$G"/devices/goat_elegant/app/*.layers 2>/dev/null)" ]; then
   APP=$W/hal_app
 fi
 ALLOWED=$HAL_ALLOWED
+UNBAN=$G/$(python3 -B "$G/tools/devices/devices.py" get goat_elegant hal_unbanned 2>/dev/null | cut -d: -f2)
+[ -f "$UNBAN" ] || UNBAN=""
 H=src/org/lumen/projector/hal
 LAST='GET_SYSTEM_TEMPERATURE(GmpfIface.TEMPERATURE, HalCodes.TM_GET_SYSTEM_TEMPERATURE, "getSystemTemperature");'
 LAST_OPEN='GET_SYSTEM_TEMPERATURE(GmpfIface.TEMPERATURE, HalCodes.TM_GET_SYSTEM_TEMPERATURE, "getSystemTemperature"),'

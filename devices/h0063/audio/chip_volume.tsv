@@ -8,7 +8,7 @@ out     8     bluetooth_volume  256     3
 out     8     bluetooth_volume  512     3
 out     11    usb_volume        -       6     # USB device 0x4000 (DEVICE_OUT_ALL_USB_SET)
 out     22    usb_volume        -       6     # USB headset 0x4000000
-out     6     xgimi_pcm_volume  -       -     # SPDIF 0x80000: a level, never a path (threadInit never sends 1)
+out     6     xgimi_pcm_volume  -       1     # SPDIF 0x80000: the optical jack, stock audio.ini spdif_jack_type 1, threadInit path 1
 out     10    -                 -       2     # HDMI ARC: no chip key, the soundbar keeps its own volume
 out     29    -                 -       2     # HDMI eARC
 path    0                                     # every other output: the speaker path (threadInit default)

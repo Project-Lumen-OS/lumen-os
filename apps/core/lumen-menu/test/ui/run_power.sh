@@ -18,7 +18,7 @@ bad=0
 for m in "$@"; do
   d=${m%%:*} a=${m#*:}
   WALK=PowerWalkActivity EXTRA_SRC="org/lumen/x50/projector/X50Power.java org/lumen/projector/Family.java org/lumen/projector/panel/ModuleScreens.java" \
-    EXTRA_PERMS="android.permission.DEVICE_POWER android.permission.INJECT_EVENTS android.permission.SYSTEM_ALERT_WINDOW android.permission.REBOOT" \
+    EXTRA_PERMS="android.permission.DEVICE_POWER android.permission.INJECT_EVENTS android.permission.SYSTEM_ALERT_WINDOW android.permission.REBOOT android.permission.SCHEDULE_EXACT_ALARM" \
     bash "$HERE/build.sh" "$OUT/$d" "$d" "$a" >/dev/null
   "$ADB" -s "$SERIAL" install -r -g "$OUT/$d/walk.apk" >/dev/null </dev/null
   echo "== $d ($a, $(cat "$OUT/$d/package"))"

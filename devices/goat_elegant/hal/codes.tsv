@@ -177,6 +177,7 @@ MotionDetectionManager	MD_SET_AUTO_REVERSE	8	setAutoReverse	boolean(boolean)	set
 MotionDetectionManager	MD_GET_AUTO_REVERSE	9	getAutoReverse	boolean()	get	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
 MotionDetectionManager	MD_TEMPORARY_SWITCH_TRIGGER	15	temporarySwitchTrigger	boolean(int, boolean)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
 PowerManager	PM_GO_TO_BOOT_COMPLETED	2	goToBootCompleted	boolean(int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
+PowerManager	PM_GO_TO_SLEEP	6	goToSleep	void(int, int)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; services.jar PowerManagerService.xgimiPrepareSleep -> XgimiSmsController.gotoSleep(0, 0) only (power/StrPrepare); client AidlCaller; allow allowed.tsv
 ProjectorFocusManager	PF_SET_FOCUS_CALLBACK	1	setFocusCallback	void(IProjectorFocusCallback)	set	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
 ProjectorFocusManager	PF_MANUAL_FOCUS	2	manualFocus	void(byte)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv
 ProjectorFocusManager	PF_POWER_ON_AF_ENABLE	4	powerOnAFEnable	void(boolean)	call	HbProjector	stock devices/goat_elegant/research/aidl_codes.tsv; client AidlCaller; allow allowed.tsv

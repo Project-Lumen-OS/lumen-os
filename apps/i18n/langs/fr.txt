@@ -10,7 +10,7 @@ tg_move_ak=Trapèze auto après déplacement
 ok=OK
 app_not_found=Aucune application trouvée pour cette touche
 diag_app_version=Version de l'application : %1$s
-manual_focus_panel=Mise au point manuelle   ◀ ▶     OK/Retour : terminé
+manual_focus_panel=Mise au point manuelle   ◀ ▶     Retour : terminé
 toast_af=Mise au point auto
 toast_af_running=Mise au point…
 toast_af_failed=Échec de la mise au point
@@ -686,6 +686,7 @@ lumen_1_d=%1$d %%
 lumen_1_d_h=%1$d h
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d min
+lumen_1_d_s=%1$d s
 lumen_2_point=2 points
 lumen_3d=3D
 lumen_ai_contrast=Contraste IA
@@ -971,6 +972,8 @@ lumen_white_balance=Balance des blancs
 lumen_yellow=Jaune
 lumen_zoom_and_shift=Zoom et décalage
 lumen_zoom_and_shift_is_not=Zoom et décalage indisponibles pour le moment
+lumen_optical_out=Sortie optique
+lumen_focus_chart_hint=OK : mire de test
 
 @projector/strings_p6.xml
 p6_batt_low=Batterie faible : %1$d %% restants

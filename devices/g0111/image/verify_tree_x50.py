@@ -527,6 +527,10 @@ CHANGED = {"system/build.prop", "system/product/etc/build.prop", "system/etc/sec
     | {KL + "/" + n for n in x50_power_keys.FILES}
 # the one blobs reader of every model over the base's Z9X copy (maintainer, mode and label as the base's), byte for byte
 REPLACED = {"system/etc/init/z9x_blobs.rc": "z9x_blobs.rc", "system/etc/z9x/z9x_blobs.sh": "z9x_blobs.sh"}
+# the base's services.jar fix (build.conf framework=, tools/build/framework.py), byte for byte the staged file
+sys.path.insert(0, IN)
+import framework  # noqa: E402  staged in IN with the builder
+REPLACED.update({k: os.path.basename(src) for k, (src, want) in framework.expected(IN).items()})
 CHANGED |= set(REPLACED)
 # t12: the platform set on the g0111 keys (devices/g0111/image/sign_x50_base.py, compose_x50.sh step 3b): every row of
 # IN/stage/base_signed/base_signed.tsv is a base file (its base sha256) replaced by the signed one (its signed

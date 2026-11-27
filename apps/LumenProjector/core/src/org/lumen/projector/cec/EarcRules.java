@@ -36,24 +36,27 @@ public final class EarcRules {
     }
 
     /**
-     * After an eARC link ended (or an eARC attempt failed) and no ARC output came back: ask the framework for ARC again
-     * (IHdmiControlService.setArcMode(true), the AOSP RequestArcInitiationAction) for "Auto" or the soundbar (kind =
-     * AudioOutputKind name, null = none stored), never with a local output chosen ("Speaker" ends ARC on purpose)
-     * and only with an audio system known.
+     * The vendor's TV event 11 (stock: the TV service's signal receiver turns "eARCstate:1" into seteARCStatus(true),
+     * any other value into false) as a link status: {@link #EARC_LINKED} or 0; -1 = not an eARC event.
      */
-    public static boolean arcRestart(String kind, boolean arcPresent, boolean avrKnown) {
-        if (arcPresent || !avrKnown) return false;
-        return kind == null || "AUTO".equals(kind) || "ARC".equals(kind);
+    public static int eventStatus(int type, String msg) {
+        if (type != EVENT_EARC || msg == null) return -1;
+        String[] f = msg.split(":");
+        if (f.length < 2 || !"eARCstate".equals(f[0].trim())) return -1;
+        return "1".equals(f[1].trim()) ? EARC_LINKED : 0;
     }
 
+    /** The vendor's TV event type of an eARC link change ("eARCstate:1|0"). */
+    public static final int EVENT_EARC = 11;
+
     /**
-     * 2026-11-04: the "no eARC, no ARC" restart is scheduled only after an eARC event of this process: the panel row
-     * pressed within windowMs (a failed Auto, the vendor's "Amp Not Support EARC"), or a link of 3 seen before. A plain
-     * ARC soundbar the user turned off (it sends &lt;Terminate ARC&gt;) is never asked for ARC again.
+     * The link ended and this module had connected the HDMI ARC output. Stock AudioService.seteARCStatus(false)
+     * removes it only while CEC ARC is not established; an app cannot read that state, so a System Audio mode that is
+     * on (the soundbar's CEC ARC session) keeps the output. A new base with the framework part (sys.lumen.vendor_earc_glue)
+     * decides this itself and the app never touches the output.
      */
-    public static boolean restartAllowed(long sinceUserMs, boolean userPressed, boolean sawLinked, long windowMs) {
-        if (sawLinked) return true;
-        return userPressed && sinceUserMs >= 0 && sinceUserMs < windowMs;
+    public static EarcStep afterLinkEnd(EarcStep s, boolean systemAudioOn) {
+        return s == EarcStep.DISCONNECT && systemAudioOn ? EarcStep.NONE : s;
     }
 
     /**
@@ -66,10 +69,5 @@ public final class EarcRules {
     public static boolean formatAgain(int before, int now) {
         if (before < 0 || before == now) return false;
         return before == EARC_LINKED || now == EARC_LINKED;
-    }
-
-    /** The restart itself: only with the screen on and an audio system that does not report standby. */
-    public static boolean restartAwake(boolean interactive, boolean avrStandby) {
-        return interactive && !avrStandby;
     }
 }

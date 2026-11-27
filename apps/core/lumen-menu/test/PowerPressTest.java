@@ -55,6 +55,20 @@ public final class PowerPressTest {
 
     private static List<PowerAction> list(PowerAction... a) { return Arrays.asList(a); }
 
+    /** A whole held press whose MENU opens the menu ({@code open}) at once, as the app does: the actions in order. */
+    private static List<PowerAction> pressOpening(PowerPress p, long downTime, int repeats, boolean[] open) {
+        List<PowerAction> out = new ArrayList<>();
+        PowerAction a = p.on(true, 0, downTime, downTime, false, false);
+        for (int r = 0; r <= repeats + 1; r++) {
+            if (a == PowerAction.MENU) open[0] = true;
+            add(out, a);
+            if (r == repeats + 1) break;
+            a = r < repeats ? p.on(true, r + 1, downTime, at(downTime, r + 1), false, false)
+                    : p.on(false, 0, downTime, at(downTime, repeats) + 20, false, false);
+        }
+        return out;
+    }
+
     /** The setting "Sleep": a short press sleeps, the hold opens the power menu. */
     private static final Supplier<PowerKeyChoice> SLEEP_FIRST = () -> PowerKeyChoice.SLEEP;
 
@@ -216,14 +230,69 @@ public final class PowerPressTest {
         check(press(c, 801_000, 0, false, false).equals(list(PowerAction.MENU)), "changed in the menu: the next press opens the menu");
         check(press(c, 802_000, 7, false, false).equals(list(PowerAction.SLEEP)), "changed in the menu: the next hold sleeps");
 
-        // the power menu items: the stock order, feature-backed ones only where the menu offers them
-        check(PowerItem.offered(f -> true).equals(Arrays.asList(PowerItem.SCREEN_OFF, PowerItem.POWER_OFF, PowerItem.RESTART,
-                PowerItem.SLEEP_TIMER)), "stock order: Turn off screen, Power off, Restart, Sleep timer");
-        check(PowerItem.offered(f -> false).equals(Arrays.asList(PowerItem.POWER_OFF, PowerItem.RESTART)),
-                "without lamp.off and the sleep timer only Power off and Restart");
+        // the power key again while the power menu is open: power off (stock PowerUI.dispatchAction), the hold unchanged
+        check(PowerKeyChoice.POWER_MENU.shortPress(true) == PowerAction.POWER_OFF && PowerKeyChoice.SLEEP.shortPress(true) == PowerAction.POWER_OFF
+                && PowerKeyChoice.POWER_MENU.shortPress(false) == PowerAction.MENU && PowerKeyChoice.SLEEP.shortPress(false) == PowerAction.SLEEP,
+                "a short press with the menu open powers off, whatever the setting");
+        boolean[] open = {false};
+        PowerPress mo = new PowerPress(null, () -> PowerKeyChoice.POWER_MENU, () -> open[0]);
+        check(press(mo, 900_000, 0, false, false).equals(list(PowerAction.MENU)), "menu closed: a short press opens it");
+        open[0] = true;
+        check(press(mo, 901_000, 0, false, false).equals(list(PowerAction.POWER_OFF)), "menu open: the second short press powers off");
+        check(press(mo, 902_000, 7, false, false).equals(list(PowerAction.SLEEP)), "menu open: the hold still sleeps");
+        check(press(mo, 903_000, 0, true, false).isEmpty(), "menu open: a canceled press does nothing");
+        PowerPress so = new PowerPress(null, SLEEP_FIRST, () -> open[0]);
+        open[0] = false;
+        List<PowerAction> held = new ArrayList<>();
+        held.addAll(pressOpening(so, 904_000, 7, open));
+        check(open[0], "Sleep setting: the hold opened the menu");
+        check(held.equals(list(PowerAction.MENU)), "Sleep setting: the hold opens the menu, its own UP does not power off: " + held);
+        check(press(so, 905_000, 0, false, false).equals(list(PowerAction.POWER_OFF)), "Sleep setting, menu open: a short press powers off");
+        check(press(new PowerPress(null, SLEEP_FIRST, null), 906_000, 0, false, false).equals(list(PowerAction.SLEEP)),
+                "no menu source: a short press keeps the setting");
+
+        // the 15 s power off (stock PowerDialog MSG_SHUT_DOWN_15_SECOND)
+        PowerCountdown cd = new PowerCountdown();
+        check(!cd.running() && cd.left() == -1 && !cd.tick(), "the count does not run before the menu settled");
+        check(cd.start(true, false) && cd.left() == PowerCountdown.SECONDS && PowerCountdown.SECONDS == 15
+                && PowerCountdown.TICK_MS == 1000, "settled on Power off: 15");
+        int ticks = 0;
+        boolean fired = false;
+        StringBuilder shown = new StringBuilder().append(cd.left());
+        while (!fired && ticks < 100) {
+            fired = cd.tick();
+            ticks++;
+            if (!fired) shown.append(',').append(cd.left());
+        }
+        check(fired && ticks == 16 && !cd.running(), "power off one second after 0 (16 ticks): " + ticks);
+        check(shown.toString().equals("15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0"), "it reads 15 down to 0: " + shown);
+        check(!cd.tick(), "after the power off nothing more");
+        check(!cd.start(false, false) && !cd.tick(), "settled on another tile: no count");
+        check(!cd.start(true, true) && !cd.tick(), "a sleep timer runs: no count (stock focuses the timer)");
+        cd.start(true, false);
+        for (int i = 0; i < 5; i++) cd.tick();
+        cd.stop();
+        boolean any = false;
+        for (int i = 0; i < 30; i++) any |= cd.tick();
+        check(!any && !cd.running() && cd.left() == -1, "the menu closing stops it for this show, no power off later");
+        cd.start(true, false);
+        for (int i = 0; i < 3; i++) cd.tick();
+        check(!cd.focusChanged(true) && cd.running() && cd.left() == 12, "a move onto Power off keeps the count: " + cd.left());
+        check(cd.focusChanged(false) && !cd.running() && cd.left() == -1, "the focus leaving Power off stops it");
+        check(!cd.focusChanged(false) && !cd.focusChanged(true) && !cd.running(), "back on Power off: no new count (stock)");
+        any = false;
+        for (int i = 0; i < 30; i++) any |= cd.tick();
+        check(!any, "after the focus left no power off later");
+        check(cd.start(true, false) && cd.left() == 15, "the next show starts at 15 again");
+
+        // the power menu items: Sleep next to the stock four, feature-backed ones only where the menu offers them
+        check(PowerItem.offered(f -> true).equals(Arrays.asList(PowerItem.SCREEN_OFF, PowerItem.SLEEP, PowerItem.POWER_OFF,
+                PowerItem.RESTART, PowerItem.SLEEP_TIMER)), "five items: Turn off screen, Sleep, Power off, Restart, Sleep timer");
+        check(PowerItem.offered(f -> false).equals(Arrays.asList(PowerItem.SLEEP, PowerItem.POWER_OFF, PowerItem.RESTART)),
+                "without lamp.off and the sleep timer only Sleep, Power off and Restart");
         EnumSet<FeatureId> some = EnumSet.of(FeatureId.SETTINGS_SLEEP_TIMER);
-        check(PowerItem.offered(some::contains).equals(Arrays.asList(PowerItem.POWER_OFF, PowerItem.RESTART, PowerItem.SLEEP_TIMER)),
-                "Turn off screen only with lamp.off");
+        check(PowerItem.offered(some::contains).equals(Arrays.asList(PowerItem.SLEEP, PowerItem.POWER_OFF, PowerItem.RESTART,
+                PowerItem.SLEEP_TIMER)), "Turn off screen only with lamp.off");
         check(PowerItem.SCREEN_OFF.feature == FeatureId.LAMP_OFF && PowerItem.SLEEP_TIMER.feature == FeatureId.SETTINGS_SLEEP_TIMER,
                 "the items use the menu's own features");
 

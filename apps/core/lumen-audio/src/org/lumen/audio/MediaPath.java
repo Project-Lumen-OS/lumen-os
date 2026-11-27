@@ -8,8 +8,8 @@ import java.util.Collection;
  * host-tested (test/run.sh).
  *
  * Paths are the stock EN_XGIMI_AUDIO_PATH wire values (libxgimiaudiopolicy threadInit, the 59 / AUDIO 2 setAudioOutput
- * argument and the HAL's xgimi_audiopath_switch_end): 0 speaker, 2 HDMI ARC or eARC, 3 Bluetooth A2DP, 4 the 3.5 mm
- * jack, 6 USB audio. The vendor HAL plays on ONE sink: on Bluetooth its loopback writes A2DP only while the sink is 3.
+ * argument and the HAL's xgimi_audiopath_switch_end): 0 speaker, 1 the optical (SPDIF) jack, 2 HDMI ARC or eARC,
+ * 3 Bluetooth A2DP, 4 the 3.5 mm jack, 6 USB audio. The vendor HAL plays on ONE sink: on Bluetooth its loopback writes A2DP only while the sink is 3.
  *
  * Why a priority and not the list order: AOSP 14 adds an available HDMI ARC / eARC and SPDIF to every media route
  * (enginedefault Engine.cpp, STRATEGY_MEDIA, "ARC, SPDIF and AUX_LINE can co-exist with others"), and
@@ -19,7 +19,7 @@ import java.util.Collection;
  * first: the headphones showed connected and stayed silent.
  */
 public final class MediaPath {
-    public static final int NONE = -1, SPEAKER = 0, ARC = 2, BT = 3, WIRED = 4, USB = 6;
+    public static final int NONE = -1, SPEAKER = 0, OPTICAL = 1, ARC = 2, BT = 3, WIRED = 4, USB = 6;
     /** The 59 / AUDIO 2 value of a switch start: the vendor mutes every TV path until the next real path. */
     public static final int SWITCHING = 100;
     /** Stock threadInit: 50 x 20 ms after the last change (libxgimiaudiopolicy.so). */
@@ -29,8 +29,12 @@ public final class MediaPath {
     /** A switch_start whose switch_end did not follow within this time gets its switch_end anyway (never stay muted). */
     public static final long SWITCH_END_SAFETY_MS = 6_000L;
 
-    /** What the listener hears: the output he wears or plugged in, then the soundbar, then the projector itself. */
-    private static final int[] HEARD = {BT, WIRED, USB, ARC, SPEAKER};
+    /**
+     * What the listener hears: the output he wears or plugged in, then the soundbar, then the projector itself. The
+     * optical jack last: the vendor policy lists Spdif as attached on every model, so it is the path only when the media
+     * route is the optical output alone (the user chose it, stock force use 17).
+     */
+    private static final int[] HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL};
 
     private MediaPath() {}
 
@@ -67,8 +71,13 @@ public final class MediaPath {
         return prev != NONE && next != NONE && prev != next;
     }
 
-    /** The wait before 59(P) after a change: stock 1 s around an HDMI ARC switch, 300 ms otherwise (Lumen 1.0.6). */
+    /** The wait before 59(P) after a change: stock 1 s around a digital output (HDMI ARC, optical), 300 ms otherwise (Lumen 1.0.6). */
     public static long switchDelayMs(int prev, int next) {
-        return switchStart(prev, next) && (prev == ARC || next == ARC) ? STOCK_SWITCH_MS : SHORT_SWITCH_MS;
+        return switchStart(prev, next) && (digital(prev) || digital(next)) ? STOCK_SWITCH_MS : SHORT_SWITCH_MS;
+    }
+
+    /** The outputs that carry the digital output format (stock setXgimiPathForDeviceDelay: SPDIF and ARC). */
+    public static boolean digital(int path) {
+        return path == ARC || path == OPTICAL;
     }
 }

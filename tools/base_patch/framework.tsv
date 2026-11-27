@@ -1,0 +1,47 @@
+# The framework fixes of services.jar per Lumen base (services.py, README.md "services.jar"). A base is one LineageOS 21
+# system build that images take their framework from; every image of the base gets the same six files.
+#   base   NAME  ISA  GC  DEX2OAT  OUT   the base build's dexpreopt target: instruction set, cmc (uffd GC) or cc, the
+#                                        dex2oat of its host tools (soong runs dex2oatd), its OUT_DIR (the app image
+#                                        records the host path of the class loader jar below it)
+#   input  NAME  KEY  SHA256             a pinned input: the class loader jar, the profile listings of
+#                                        frameworks/base/services, the LineageOS 21 sources of the replaced classes
+#   file   NAME  PATH  BASE_SHA256  PATCHED_SHA256   a file of the base image and the one the fix puts in its place
+# z9x:  the Z9X 1.0.9 anp image (lineage_gsi_tv_arm64, uffd GC): Z9X, the X50 family, TITAN, RS 20
+# p6:   the Play 6 base play6-out (lineage_gsi_tv_arm with lineage/patches/play6, concurrent copying GC): HB, Play 6
+# rs30: the RS30 base ~/rs30-base of builder-llm (lineage_gsi_tv_arm, play6 patches, uffd GC): RS30 lines, MIRA, AURA
+base	z9x	arm64	cmc	dex2oatd	out
+input	z9x	class_loader_jar	0f39ec56c0c38c3f79258ecba05574d1db1a5fe8870c48654160fba6ee530df5
+input	z9x	art-profile	7d41b12fdce7065582848bd7fade07b42edbd37970a81d0f3caa95c52d7e61dc
+input	z9x	art-profile-boot	9de8b1debf7afde6a08bd1dcbfa935d6cf68117c95e62615c574f146b2b3a88d
+input	z9x	HdmiCecLocalDeviceTv.java	2f74e5e09864a22fdc1ba758b5f716378466e1cbe9b8674a008f3ebbe89628e3
+input	z9x	RequestArcInitiationAction.java	87e3f5ce7ddb5119c2e9892c3f35b7b02eee1496265ebbb953c40097472c0e3f
+file	z9x	system/framework/services.jar	e2bd1c45c17b0db3ef54cbcae037b86d8291ca9298d750cfa9983d7c74baa77c	92388c8f3f676ff1ec4f7f03154bc793ffdf5f2620fb538fd531ffed94129aa2
+file	z9x	system/framework/services.jar.prof	3d7522cc772b43026a90ce7d903c2cace4345f29395f993a0c0c8c42728fa3ed	88c76cf0433d81627519b15372cbe388cf685a7e7968434f80c0ae7a7a3084f0
+file	z9x	system/framework/services.jar.bprof	43f99bbe1f3fa1536aeb1f91378a258f0d004e4ad726753ade1c939397f758e8	2c7c2654668711940bad4244b2b110a98a32ca4701e2219b27c25e147e947683
+file	z9x	system/framework/oat/arm64/services.odex	3825aff02a28b4b21481aff5aca6a9b4cb3140e471906cade32daa88832e0884	b3d674a4410e6568ef968e94208fdf7a13ddd2594ddd79456893f76264af97ae
+file	z9x	system/framework/oat/arm64/services.vdex	17da4c833d653d1ea0ce34d77ceaf0c6e194064f24c4a216083da62b6f3ce65f	f49d38587347544df1fd02b9837ef1241c5e5750783a9bab5966cba2c9f0df92
+file	z9x	system/framework/oat/arm64/services.art	d21fdb5e9d597c6e6b7f6067eef8bf99fdd1604f31ce9e4e82fca2dee871a22a	3e2dc7ec53b15d5cd135bf2984252903b43bab83fdf46f14816c7bfe0ac73a52
+base	p6	arm	cc	dex2oatd	/out
+input	p6	class_loader_jar	0f39ec56c0c38c3f79258ecba05574d1db1a5fe8870c48654160fba6ee530df5
+input	p6	art-profile	7d41b12fdce7065582848bd7fade07b42edbd37970a81d0f3caa95c52d7e61dc
+input	p6	art-profile-boot	9de8b1debf7afde6a08bd1dcbfa935d6cf68117c95e62615c574f146b2b3a88d
+input	p6	HdmiCecLocalDeviceTv.java	2f74e5e09864a22fdc1ba758b5f716378466e1cbe9b8674a008f3ebbe89628e3
+input	p6	RequestArcInitiationAction.java	87e3f5ce7ddb5119c2e9892c3f35b7b02eee1496265ebbb953c40097472c0e3f
+file	p6	system/framework/services.jar	00c2b16ff04dd43b3c1a1d7780841a3caa1f8f2355f2e3b6ab447e7174029f6b	f20fc07fe1595af6e6abef277ff8adce251183d607df142a964d6e96a9a11d79
+file	p6	system/framework/services.jar.prof	3fa26d2195453d00e869500e5990b26f13464adb645bfd8d2d40b3d066c2729b	49673a93f01446d53db0010424e60ae221e49d8102b36a5cb73ab7b9af45500f
+file	p6	system/framework/services.jar.bprof	ae917fd468542e110dfe1b053ff8266e2fda546d4e98d363d6b89dc50f986153	0efd910c3c0e6f5c9bde49bef0a65f3647e74521e6ca53e0aea25a17980ba9d9
+file	p6	system/framework/oat/arm/services.odex	32da2e7c9755928971aa98d617bebd142ae317747dbefbf2511ed984f316f582	02bbf0978c35f2fbcabd38b56c9da10624b5d1158caed6ba3885e7d208f8521f
+file	p6	system/framework/oat/arm/services.vdex	5ed5d3f1ad1b111e5f6f625370e88017d5bd59c5d9a7517aebcdda8f7b917e0f	e46abba8764f9d1d772f5f4d58060101211081430c215d30f5ef55a3c6d1c987
+file	p6	system/framework/oat/arm/services.art	00dda25d814053858d602b76844dc171f86dba6c46f3455b2da97c44936b3f9b	6a313fcef036fac7f74c71c49d839c1858abdc7fa3b4db52fe35aff2e4a4dce5
+base	rs30	arm	cmc	dex2oatd	/out
+input	rs30	class_loader_jar	0f39ec56c0c38c3f79258ecba05574d1db1a5fe8870c48654160fba6ee530df5
+input	rs30	art-profile	7d41b12fdce7065582848bd7fade07b42edbd37970a81d0f3caa95c52d7e61dc
+input	rs30	art-profile-boot	9de8b1debf7afde6a08bd1dcbfa935d6cf68117c95e62615c574f146b2b3a88d
+input	rs30	HdmiCecLocalDeviceTv.java	2f74e5e09864a22fdc1ba758b5f716378466e1cbe9b8674a008f3ebbe89628e3
+input	rs30	RequestArcInitiationAction.java	87e3f5ce7ddb5119c2e9892c3f35b7b02eee1496265ebbb953c40097472c0e3f
+file	rs30	system/framework/services.jar	f4df9a19cce97171680f25a9655d9a77d88768a34e0842693fedfc58e3d28f92	cd3df384dbab470eac2370fb533c7710e8e0446bb1e51141176646921aaf2181
+file	rs30	system/framework/services.jar.prof	27dc86ad2070f172b5bdcf150c0187c2d018bc9fa1d92e0d66a3b91090e876d7	04050034c684d18cf5ec9c67231693803ecfd4b132ff4db40ce3fccdd1f14473
+file	rs30	system/framework/services.jar.bprof	ae917fd468542e110dfe1b053ff8266e2fda546d4e98d363d6b89dc50f986153	0efd910c3c0e6f5c9bde49bef0a65f3647e74521e6ca53e0aea25a17980ba9d9
+file	rs30	system/framework/oat/arm/services.odex	4ba51c823e19f9ac1a80bc49a55ebeb80e4aa693bf61a89066dbcee35d146214	3c44def2fddd0304aed90bc65dfb69ee9cbaf4e695782d2226f1798031a708d2
+file	rs30	system/framework/oat/arm/services.vdex	6c66c1d7c1a65eeb694cde7a016f985e3c10bfa864ad2b8e22fb25a234607034	6538cb2d76968a3a8b872aee357a64e095622f2c2f7304f321f8606c814ed5d4
+file	rs30	system/framework/oat/arm/services.art	a638a4c7ec4cff1fa85a9f4fc6e9c8394f149f514dbe6aea05875b66bffbcbc2	ea6d984635af47e24fc4b0c6a851c08c37f2f4bcb2d45256c5ab2d3490b5ac0b

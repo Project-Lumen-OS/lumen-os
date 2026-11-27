@@ -47,12 +47,42 @@ check("shared round power menu: POWER_OFF is the device's Power.powerOff", "case
 x = read(X + "X50Power.java")
 check("X50 family: Power.powerOff is halt(false) = Halt.powerOff",
       "    @Override public void powerOff() {\n        halt(false);" in x and "else Halt.powerOff(app, \"power menu\");" in x)
-check("X50 family: the power menu never sends the power key", "Standby.press(\"power menu" not in x and "KEYCODE_POWER" not in x)
+check("X50 family: only the power menu's Sleep sends the power key (Standby), Power off and Restart never",
+      x.count("Standby.press(\"power menu") == 1 and "    @Override public void sleep() {\n        Standby.press(\"power menu sleep\", null);" in x
+      and "KEYCODE_POWER" not in x)
 check("X50 family: the remote power key's Sleep stays the power key sleep",
       "            case SLEEP:\n                Standby.press(\"remote power key\", null);" in x)
 st = read(X + "Standby.java")
 check("X50 Standby: the stock power off of a sleep (SleepRule) is Halt.powerOff, the sleep the power key",
       "else Halt.powerOff(sApp, why + \", \" + off);" in st and "sendKeyDownUpSync(KeyEvent.KEYCODE_POWER)" in st)
+# the stock menu (power-menu-1127): the items of PowerItem, the 15 s power off in the shared round panel, the power key
+# again powers off on every family
+rt = read("apps/common/projector/src/org/lumen/projector/ui/RoundTilePanel.java")
+check("round panel: no key stops the 15 s power off (stock: UP, DOWN and the keys that keep the focus keep it)",
+      "stopCountdown(KeyEvent" not in rt and rt.count("stopCountdown(") == 3)
+check("round panel: the focus leaving Power off stops the count (stock onFocusChange)",
+      'power.setOnFocusChangeListener((v, has) -> {\n                if (countdown.focusChanged(has)) stopCountdown("the focus left Power off");' in rt)
+check("round panel: the count starts once settled, on the focused countdown tile, without a timer",
+      "if (power != null && countdown.start(first == power, timerRunning())) {" in rt)
+check("round panel: the end powers off only with Power off focused and nothing blocking",
+      'String why = !t.hasFocus() ? "the focus left Power off" : blockedReason();' in rt and "        onCountdownEnd();" in rt)
+check("round panel: closing the menu stops the count", '        stopCountdown("menu closed");' in rt)
+check("round panel: the stock 20 s auto hide", "AUTO_HIDE_MS = 20_000;" in rt and "autoHideMs() { return AUTO_HIDE_MS; }" in rt)
+check("Z9X HB RS20 Play 6 menu: the shared item list, Power off the countdown tile",
+      "for (PowerItem item : PowerItem.offered(" in common and "@Override protected RoundTile countdownTile() { return powerOffTile; }" in common)
+check("Z9X HB RS20 Play 6 menu: the count end and the power key again power off (Family.powerOff)",
+      "        dismiss();\n        Family.powerOff(c);" in common and "        m.dismiss();\n        Family.powerOff(m.shownIn);" in common)
+check("Z9X HB RS20 Play 6 menu: Turn off screen is the lamp.off row's LampOffHal",
+      "LampOffHal.get(ctx).run(r -> { })" in common)
+kp = read(P + "PowerKeyPress.java")
+check("gmpf and Play 6 power key: a short press with the menu open powers off",
+      "PowerKeyPrefs.choice(ctx).shortPress(PowerMenu.isOpen())" in kp
+      and 'a == PowerAction.POWER_OFF && !PowerMenu.powerOffNow("power key " + press + " again")' in kp)
+check("shared round power menu: the count end and the power key again power off",
+      "@Override protected void onCountdownEnd() { closeThen(power::powerOff); }" in menu
+      and "        closeThen(power::powerOff);\n        return true;" in menu)
+check("X50 family: the press rule knows the open menu, its POWER_OFF is the menu's power off",
+      "() -> sMenu != null && sMenu.isShowing());" in x and 'sMenu.powerOffNow("remote power key again")' in x)
 h = read("apps/core/lumen-menu/src/org/lumen/projector/panel/Halt.java")
 check("Halt: shutdown(false, SHUTDOWN_USER_REQUESTED, false) and reboot(SHUTDOWN_USER_REQUESTED)",
       ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);" in h and ".reboot(PowerManager.SHUTDOWN_USER_REQUESTED);" in h)

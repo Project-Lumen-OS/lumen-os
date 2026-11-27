@@ -10,7 +10,7 @@ tg_move_ak=Жылжытқаннан кейін трапецияны түзету
 ok=Жарайды
 app_not_found=Бұл түймеге қолданба табылмады
 diag_app_version=Қолданба нұсқасы: %1$s
-manual_focus_panel=Қолмен фокустау   ◀ ▶     OK/Артқа: дайын
+manual_focus_panel=Қолмен фокустау   ◀ ▶     Артқа: дайын
 toast_af=Автофокус
 toast_af_running=Автофокус…
 toast_af_failed=Автофокус орындалмады
@@ -685,6 +685,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d сағ
 lumen_1_d_hz=%1$d Гц
 lumen_1_d_min=%1$d мин
+lumen_1_d_s=%1$d с
 lumen_2_point=2 нүкте
 lumen_3d=3D
 lumen_ai_contrast=AI контраст
@@ -970,6 +971,8 @@ lumen_white_balance=Ақ түс балансы
 lumen_yellow=Сары
 lumen_zoom_and_shift=Масштаб және ығысу
 lumen_zoom_and_shift_is_not=Масштаб және ығысу қазір қолжетімсіз
+lumen_optical_out=Оптикалық шығыс
+lumen_focus_chart_hint=OK: сынақ кестесі
 
 @projector/strings_p6.xml
 p6_batt_low=Заряд төмен: %1$d %% қалды

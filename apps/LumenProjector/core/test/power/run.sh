@@ -1,7 +1,8 @@
 #!/bin/sh
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # hb-t7 sleep decision host check (power/StrGate with stubs for the few Android classes it uses) against the image
-# props devices/goat_elegant/image/hb_lumen_prop.txt: sh test/power/run.sh
+# props devices/goat_elegant/image/hb_lumen_prop.txt, then the stock STR prepare (power/StrPrepare, StrPrepareTest):
+# sh test/power/run.sh
 set -eu
 # in the repository this suite runs inside the HB app as its recipe assembles it (apps/LumenProjector/core.features)
 if [ -f "$(dirname "$0")/../../../core.features" ]; then
@@ -27,3 +28,9 @@ trap 'rm -rf "$OUT"' EXIT
   "$T/stubs/android/os/SystemProperties.java" "$T/stubs/android/os/SystemClock.java" \
   "$T/stubs/android/util/Log.java" "$T/StrGateTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.power.StrGateTest "$GSI/devices/goat_elegant/image/hb_lumen_prop.txt"
+# str-gmpf-1127 (GitHub issue 5): the stock STR prepare of the gmpf families, the issue's replay and the wiring
+SP=$HERE/src/org/lumen/projector/power/StrPrepare.java
+[ -f "$SP" ] || SP=$GSI/apps/LumenProjector/core/src/org/lumen/projector/power/StrPrepare.java
+mkdir -p "$OUT/sp"
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/sp" "$SP" "$T/StrPrepareTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/sp" org.lumen.projector.power.StrPrepareTest "$GSI"

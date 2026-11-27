@@ -59,6 +59,15 @@ public final class OtaStateReceiver extends BroadcastReceiver {
     }
 
     /** True once (cleared here): the updater asked for a reboot at the next turn-off. */
+    /** A reboot for an update waits for the next screen off ({@link #consumeRebootWhenOff} not called yet). */
+    static boolean rebootWhenOffPending(Context app) {
+        try {
+            return prefs(app).getBoolean(K_REBOOT_WHEN_OFF, false);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
     static boolean consumeRebootWhenOff(Context app) {
         try {
             SharedPreferences p = prefs(app);

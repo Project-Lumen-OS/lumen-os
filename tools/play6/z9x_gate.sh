@@ -271,8 +271,13 @@ for r in horse_popular:Z9xProjector goat_elegant:HbProjector dragon_healthy:Play
   if [ $rc = 0 ]; then say "  assemble ${r#*:}: OK"; else red "assemble ${r#*:}: $out"; fi
 done
 if [ -d apps/common/overlay ]; then
-  sync_check apps/Z9xFrameworkKeysOverlay keys
-  sync_check apps/Play6FrameworkOverlay keys
+  sync_check apps/Z9xFrameworkKeysOverlay keys power
+  sync_check apps/HbFrameworkOverlay keys power
+  sync_check apps/Play6FrameworkOverlay keys power
+  sync_check apps/X50PowerOverlay power
+  # the Android power menu: one list and one power off / restart screen in the framework RRO of every model
+  out=$(python3 -B apps/common/test/power_menu_test.py 2>&1); rc=$?
+  if [ $rc = 0 ]; then say "  $(printf '%s' "$out" | tail -1)"; else red "power_menu_test: $out"; fi
 else
   say "  sync item keys: not set up yet (apps/common/overlay, plan step 5)"
 fi

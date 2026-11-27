@@ -12,8 +12,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.FeatureId;
+import org.lumen.menu.PowerItem;
 import org.lumen.projector.Family;
 import org.lumen.projector.R;
+import org.lumen.projector.panel.MenuController;
 import org.lumen.projector.ui.NavRow;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.RoundTile;
@@ -22,16 +25,22 @@ import org.lumen.projector.ui.Row;
 import org.lumen.projector.ui.Theme;
 
 /**
- * MODULE "power" (v6.2): the long-press power menu (v6.2 requirements 2). Lumen OS 1.0: four round
- * tiles: Sleep (lamp off, then STR, the same as a short POWER press) / Power off / Restart / Sleep
- * timer, centred over a dimmed picture.
- * LEFT / RIGHT move, OK acts, BACK closes. Auto-hide 15 s.
+ * MODULE "power" (v6.2): the power menu of the gmpf and Play 6 families (a short POWER press by default, the hold with
+ * the setting "Sleep"; lumen-menu PowerKeyChoice). The items and their order are the shared lumen-menu PowerItem list
+ * (the X50 family's panel.PowerMenu shows the same): Turn off screen (the menu's lamp.off, LampOffHal) / Sleep (lamp
+ * off, then STR, the same as the power key's sleep) / Power off (Android's real power off, Halt) / Restart / Sleep
+ * timer, round tiles centred over a dimmed picture. LEFT / RIGHT move, OK acts, BACK closes; closes 20 s after the last
+ * key (stock).
+ *
+ * Stock (com.xgimi.shutdown PowerDialog, the same code on every family): the focus starts on Power off (on the timer
+ * while one runs), Power off counts 15 s down and powers off unless the focus leaves it (ui.RoundTilePanel, lumen-menu
+ * PowerCountdown); the power key again while the menu is open powers off at once ({@link #powerOffNow}).
  *
  * v6.2b safety (a menu must never act unseen):
  *  - never shown while the wake / sleep curtain is up ({@link #show} refuses; PowerKey lifts the
  *    curtain and waits for a new press), and no tile or row acts while a curtain is up;
  *  - no tile has focus until the enter animation has finished (the tiles are blocked, a neutral
- *    holder takes the window focus); then focus goes to the first tile, Sleep (order kept);
+ *    holder takes the window focus); then focus goes to Power off (or the timer, see above);
  *  - OK / ENTER is ignored for {@link #OK_GUARD_MS} after the menu opened and until focus is
  *    placed; an OK press that began in that time (or before the menu) never acts, because a tile
  *    acts only on the UP of a DOWN it received itself. D-pad keys are held back until then too.
@@ -41,16 +50,18 @@ import org.lumen.projector.ui.Theme;
  * timer runs. BACK returns to the tiles. Starting or stopping the timer closes the menu and shows
  * the Notify card.
  *
- * The round tiles, their stage, animations and the safety below are the shared ui.RoundTilePanel / ui.RoundTile
- * (the X50 family's power menu shows the same tiles); this class adds the four tiles, the curtain block and the
- * timer card. Framework widgets only (no AndroidX), own line icons (no XGIMI assets). Main thread.
+ * The round tiles, their stage, animations, the 15 s power off and the safety below are the shared ui.RoundTilePanel /
+ * ui.RoundTile; this class adds the tiles, the curtain block and the timer card. Framework widgets only (no AndroidX),
+ * own line icons (no XGIMI assets). Main thread.
  */
 public final class PowerMenu extends RoundTilePanel {
     private static PowerMenu sMenu;
 
     private View timerCard;
-    private RoundTile timerTile;
+    private RoundTile timerTile, powerOffTile;
     private boolean timerPage;
+    /** The app's context of the last show (the power key again powers off through it). */
+    private Context shownIn;
 
     private static final String TAG = "Z9xPowerMenu";
     /** OK / ENTER is ignored this long after the menu opened (RoundTilePanel). */
@@ -68,7 +79,24 @@ public final class PowerMenu extends RoundTilePanel {
         }
         if (sMenu == null) sMenu = new PowerMenu();
         sMenu.focusTimerFirst = focusTimer;
+        sMenu.shownIn = ctx.getApplicationContext();
         OverlayHost.get(ctx).show(sMenu);
+    }
+
+    /** The menu is on screen (a short press of the power key then powers off, lumen-menu PowerKeyChoice). */
+    public static boolean isOpen() {
+        return sMenu != null && sMenu.isShowing();
+    }
+
+    /** The power key again while the menu is open (stock PowerUI.dispatchAction): power off now; false when not open. */
+    public static boolean powerOffNow(String why) {
+        PowerMenu m = sMenu;
+        if (m == null || !m.isShowing()) return false;
+        Log.i(TAG, why + ": power off");
+        m.stopCountdown(why);
+        m.dismiss();
+        Family.powerOff(m.shownIn);
+        return true;
     }
 
     /** One-shot: makeReady focuses the timer tile instead of the first one. */
@@ -81,11 +109,21 @@ public final class PowerMenu extends RoundTilePanel {
         return WakeCurtain.isShowing() ? "a curtain is up" : null;
     }
 
-    /** One-shot: the timer tile takes the first focus instead of the first one. */
+    /** Power off, as stock; the timer tile while a timer runs or once after Home's "Sleep timer" shortcut. */
     @Override protected View initialTile() {
-        View t = focusTimerFirst ? timerTile : null;
+        View t = focusTimerFirst || timerRunning() ? timerTile : powerOffTile;
         focusTimerFirst = false;
         return t;
+    }
+
+    @Override protected RoundTile countdownTile() { return powerOffTile; }
+
+    @Override protected boolean timerRunning() { return SleepTimer.isRunning() && SleepTimer.minutesLeft() > 0; }
+
+    @Override protected void onCountdownEnd() {
+        Context c = stage.getContext();
+        dismiss();
+        Family.powerOff(c);
     }
 
     /** "15 min", "1 h", "1 h 30 min". */
@@ -95,7 +133,7 @@ public final class PowerMenu extends RoundTilePanel {
         return m == 0 ? c.getString(R.string.power_timer_hours, h) : c.getString(R.string.power_timer_hours_min, h, m);
     }
 
-    @Override protected long autoHideMs() { return timerPage ? 30_000 : 15_000; }
+    @Override protected long autoHideMs() { return timerPage ? 30_000 : super.autoHideMs(); }
 
     @Override protected View onCreateView(Context ctx) {
         timerPage = false;
@@ -104,14 +142,32 @@ public final class PowerMenu extends RoundTilePanel {
     }
 
     @Override protected void onAddTiles(Context ctx) {
-        addTile(ctx, RoundTile.ICON_SLEEP, ctx.getString(R.string.power_menu_sleep),
-                guarded(() -> Family.powerSleepWithFade(ctx, "power menu sleep")));
-        addTile(ctx, RoundTile.ICON_POWER, ctx.getString(R.string.power_menu_off),
-                guarded(() -> Family.powerOff(ctx)));
-        addTile(ctx, RoundTile.ICON_RESTART, ctx.getString(R.string.power_menu_restart),
-                guarded(() -> Family.powerRestart(ctx)));
-        timerTile = addTile(ctx, RoundTile.ICON_TIMER, ctx.getString(R.string.power_menu_timer),
-                guarded(() -> showTimer(ctx)));
+        // the shared item list: Turn off screen where the profile has lamp.off (every gmpf and Play 6 model), the timer
+        // card on every one of them
+        for (PowerItem item : PowerItem.offered(f -> f == FeatureId.SETTINGS_SLEEP_TIMER
+                || MenuController.profile(ctx).has(f))) {
+            switch (item) {
+                case SCREEN_OFF:
+                    addTile(ctx, RoundTile.ICON_SCREEN_OFF, ctx.getString(R.string.lumen_m_lamp_off),
+                            guarded(() -> { dismiss(); LampOffHal.get(ctx).run(r -> { }); }));
+                    break;
+                case SLEEP:
+                    addTile(ctx, RoundTile.ICON_SLEEP, ctx.getString(R.string.power_menu_sleep),
+                            guarded(() -> Family.powerSleepWithFade(ctx, "power menu sleep")));
+                    break;
+                case POWER_OFF:
+                    powerOffTile = addTile(ctx, RoundTile.ICON_POWER, ctx.getString(R.string.power_menu_off),
+                            guarded(() -> Family.powerOff(ctx)));
+                    break;
+                case RESTART:
+                    addTile(ctx, RoundTile.ICON_RESTART, ctx.getString(R.string.power_menu_restart),
+                            guarded(() -> Family.powerRestart(ctx)));
+                    break;
+                default:
+                    timerTile = addTile(ctx, RoundTile.ICON_TIMER, ctx.getString(R.string.power_menu_timer),
+                            guarded(() -> showTimer(ctx)));
+            }
+        }
         updateTimerTile(ctx);
     }
 

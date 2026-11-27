@@ -12,7 +12,7 @@ tg_move_ak=تصحيح شبه المنحرف بعد التحريك
 ok=حسنًا
 app_not_found=لم يتم العثور على تطبيق لهذا الزر
 diag_app_version=إصدار التطبيق: %1$s
-manual_focus_panel=تركيز يدوي   ◀ ▶     OK/رجوع: تم
+manual_focus_panel=تركيز يدوي   ◀ ▶     رجوع: تم
 toast_af=تركيز تلقائي
 toast_af_running=جارٍ التركيز التلقائي…
 toast_af_failed=تعذّر التركيز التلقائي
@@ -691,6 +691,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d س
 lumen_1_d_hz=%1$d هرتز
 lumen_1_d_min=%1$d د
+lumen_1_d_s=%1$d ث
 lumen_2_point=نقطتان
 lumen_3d=3D
 lumen_ai_contrast=تباين بالذكاء الاصطناعي
@@ -976,6 +977,8 @@ lumen_white_balance=توازن الأبيض
 lumen_yellow=أصفر
 lumen_zoom_and_shift=التكبير والإزاحة
 lumen_zoom_and_shift_is_not=التكبير والإزاحة غير متاحين الآن
+lumen_optical_out=الإخراج البصري
+lumen_focus_chart_hint=OK: نمط الاختبار
 
 @projector/strings_p6.xml
 p6_batt_low=البطارية منخفضة: تبقّى %1$d%%

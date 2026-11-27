@@ -98,8 +98,8 @@ red("stock: Play 6 without its wake set line", "has no set line for tv_wake_on_o
     lambda: edit(STOCK, "set  G0058-v1.8.127  tv_wake_on_one_touch_play  1\n", ""))
 red("RRO: the Z9X file edited by hand", "apps/Z9xFrameworkKeysOverlay/res/values/lumen_cec.xml differs",
     lambda: edit("apps/Z9xFrameworkKeysOverlay/res/values/lumen_cec.xml",
-                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>',
-                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">false</bool>'))
+                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">false</bool>',
+                 '<bool name="config_cecTvSendStandbyOnSleepEnabled_default">true</bool>'))
 red("RRO: the X50 file missing", "apps/X50PowerOverlay/res/values/lumen_cec.xml missing",
     lambda: os.remove(os.path.join(T, "apps/X50PowerOverlay/res/values/lumen_cec.xml")))
 red("own copy: a CEC value back in the Z9X config.xml", "apps/Z9xFrameworkKeysOverlay/res/values/config.xml sets "

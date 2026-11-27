@@ -59,11 +59,11 @@ public final class OutputScan {
                 }
                 List<Integer> paths = new ArrayList<>();
                 List<AudioDeviceAttributes> route = am.getDevicesForAttributes(MEDIA);
-                for (AudioDeviceAttributes a : route) paths.add(AutoOutput.pathOf(a.getType()));
+                for (AudioDeviceAttributes a : route) paths.add(routePath(a.getType()));
                 int heard = MediaPath.heard(paths);
                 playKind = kindOfPath(heard);
                 for (AudioDeviceAttributes a : route) {
-                    if (AutoOutput.pathOf(a.getType()) == heard) { playAddr = a.getAddress(); break; }
+                    if (routePath(a.getType()) == heard) { playAddr = a.getAddress(); break; }
                 }
             }
         } catch (Throwable t) {
@@ -132,9 +132,16 @@ public final class OutputScan {
         }
     }
 
+    /** The stock path of a routed type; SPDIF only where the model has the optical jack (its chip table). */
+    private static int routePath(int type) {
+        int p = AutoOutput.pathOf(type);
+        return p == MediaPath.NONE && type == AudioDeviceInfo.TYPE_LINE_DIGITAL ? PathSwitch.pathOf(type) : p;
+    }
+
     private static String kindOfPath(int path) {
         switch (path) {
             case MediaPath.SPEAKER: return OutputDevice.SPEAKER;
+            case MediaPath.OPTICAL: return OutputDevice.OPTICAL;
             case MediaPath.ARC: return OutputDevice.ARC;
             case MediaPath.BT: return OutputDevice.BT;
             case MediaPath.WIRED: return OutputDevice.WIRED;

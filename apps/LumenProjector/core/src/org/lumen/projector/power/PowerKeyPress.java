@@ -12,8 +12,9 @@ import org.lumen.projector.panel.PowerKeyPrefs;
 /**
  * What a short press and the hold of the remote power key do where the key runs through PowerKey (gmpf) or
  * Play6PowerKey: one rule over the user's setting (General, "Short press of the power key", lumen-menu PowerKeyPrefs;
- * the stock power menu by default, the hold does the other action). The X50 family reads the same setting through
- * lumen-menu PowerPress. Both press machines call only {@link #shortPress} and {@link #hold}. Main thread.
+ * the stock power menu by default, the hold does the other action; a short press while the power menu is open powers
+ * off, as stock). The X50 family reads the same setting through lumen-menu PowerPress. Both press machines call only
+ * {@link #shortPress} and {@link #hold}. Main thread.
  */
 final class PowerKeyPress {
     private static final String TAG = "PowerKeyPress";
@@ -22,7 +23,7 @@ final class PowerKeyPress {
 
     /** The armed press was released before the hold. */
     static void shortPress(Context ctx) {
-        run(ctx, PowerKeyPrefs.choice(ctx).shortPress(), "short press");
+        run(ctx, PowerKeyPrefs.choice(ctx).shortPress(PowerMenu.isOpen()), "short press");
     }
 
     /** The armed press reached the hold while the key is still down. */
@@ -33,6 +34,9 @@ final class PowerKeyPress {
     private static void run(Context ctx, PowerAction a, String press) {
         if (a == PowerAction.MENU) menu(ctx, press);
         else if (a == PowerAction.SLEEP) sleep(ctx, press);
+        else if (a == PowerAction.POWER_OFF && !PowerMenu.powerOffNow("power key " + press + " again")) {
+            Log.i(TAG, press + ": the power menu closed meanwhile");
+        }
     }
 
     private static void sleep(Context ctx, String press) {

@@ -19,55 +19,41 @@
  *       audio_policy_configuration.xml:276), which stock does not use: eARC audio leaves through the ARC output and
  *       the vendor's ARC path.</li>
  * </ul>
- * Lumen has the same vendor and the AOSP framework (no eARC AIDL HAL, no seteARCStatus), so this module plays the
- * XRMService and framework part:
+ * Lumen has the same vendor; this module plays the XRMService part and, until the base carries the framework part
+ * (frameworks/base com.android.server.hdmi.VendorEarc, which sets sys.lumen.vendor_earc_glue), the AudioService part:
  * <ul>
- *   <li>No setEARCEnable of its own. getEARCEnableState reads the vendor database (the runtime flag is a separate
- *       field), but the link comes up without one: live on the HB 2026-11-04 19:10 (beta3, none sent since its boot)
- *       getEARCStatus read 3 and the MI kernel read the soundbar's eARC capability data (MAT 2.x, DTS-HD). Every earlier
- *       HB failure (10-31, 11-03) followed a toggle (forced &lt;Request ARC Termination&gt; and HPD re-pull), so a call
- *       at boot could break a working link. Only the panel row sends it, as stock.</li>
- *   <li>The link is read in a short watch (1 s steps) after the HAL connect, the panel row and every ARC output change
- *       (the vendor's link change always moves CEC ARC). While it reads 3 and no HDMI ARC output is listed, one is
- *       connected (AudioManager.setWiredDeviceConnectionState, no descriptors, as stock), e.g. after the framework
- *       removed CEC ARC's on &lt;Terminate ARC&gt;; a listed one is never touched.</li>
- *   <li>When the link ends, the output this module connected is removed; if no ARC output comes back within
- *       ARC_RESTART_OWN_MS (ARC_RESTART_MS after a failed attempt) the framework is asked for ARC again (IHdmiControlService.setArcMode(true), the AOSP
- *       RequestArcInitiationAction), except with a local output chosen (EarcRules.arcRestart). The same restart
- *       follows a failed attempt (the vendor's "Amp Not Support EARC": status 1 and no ARC output).</li>
+ *   <li>No setEARCEnable of its own (only the panel row sends it, as stock): a toggle forces &lt;Request ARC
+ *       Termination&gt; and an HPD re-pull, so a call at boot could break a working link (HB 2026-10-31, 11-03).</li>
+ *   <li>The link comes from the vendor's TV event 11 ({@link #onTvEvent}, the event callback every family registers
+ *       already) and ONE getEARCStatus read at the start and after every HAL (re)connect, as stock XRMService. No
+ *       polling: the earlier 1 s x 15 s watch after every screen on, hotplug and ARC output change plus the 10 s
+ *       follow put up to ~25 vendor calls into the wake window where the CEC HAL and the framework re-initiate ARC
+ *       (cec-audit-1127 R5).</li>
+ *   <li>Every link change is written to Settings.Global lumen_vendor_earc (1 / 0), what stock passes to
+ *       AudioService.seteARCStatus. With the framework part present the framework keeps the HDMI ARC output from it
+ *       and the app touches no output. Without it (images of the current base): while the link is up and no HDMI ARC
+ *       output is listed, one is connected (AudioManager.setWiredDeviceConnectionState, no descriptors, as stock),
+ *       also right after the framework removed CEC ARC's output (the device callback, no read); when the link ends,
+ *       the output this module connected is removed unless System Audio is on (stock removes it only while CEC ARC is
+ *       not established). Never while the projector sleeps (EarcRules.step); SCREEN_ON applies the last event.</li>
+ *   <li>No ARC restart from the app (IHdmiControlService.setArcMode, which stock never sends): it only repaired the
+ *       app's own removal of an output that CEC ARC had taken over, which the System Audio rule above and the
+ *       framework part avoid.</li>
  * </ul>
  * AudioOutputChoice labels the soundbar "HDMI eARC" while linked(). Decisions in EarcRules (host test test/earc). HAL
  * calls on the family's HAL thread (Family.earcStatus), the rest on Family.EARC_THREAD. Log tag Family.EARC_TAG.
  * One class for every family: the X50 line (MT9681) has the same vendor flow (XRMService hdmi/SignalChangeReceiver,
- * TV 79) and no ARC restart (Family.ARC_RESTART, its app refuses the reflection to IHdmiControlService).
- * <p>
- * 2026-11-04 Z9X sweep (skeptic C1-C4):
- * <ul>
- *   <li>A link that drops with no ARC output change (the soundbar powered off after &lt;Terminate ARC&gt;, so no CEC
- *       ARC session ends) is still seen: while this module's output is up or the link reads 3, a slow read every
- *       SLOW_STEP_MS follows the 15 s watch; a watch also starts at screen on and on every HDMI hotplug event of the
- *       ARC port (stock gets GmTv event 11 "eARCstate:0" for this).</li>
- *   <li>Our output outlives this process in system_server: "ours" is kept in prefs with the boot id, so after a
- *       crash or an APK update the stale output is still removed. install() also starts a watch when the HAL is
- *       already connected (a restart in the same boot connects before this module registers its hook).</li>
- *   <li>The ARC restart (setArcMode(true), which stock never sends) only follows an eARC event of this process: a
- *       link of 3 seen and lost, or the panel row within USER_WINDOW_MS. Never for a plain ARC soundbar the user
- *       turned off, never while the screen is off, never to an audio system that reports standby.</li>
- * </ul>
- * The Z9X vendor audio policy does declare an "HDMI EARC" port (audio_policy_configuration.xml:276), which stock
- * does not use; the HB policy has none. Both stock frameworks connect the plain HDMI ARC output.
+ * TV 79). "ours" is kept in prefs with the boot id, so a stale output of a crashed process is still removed.
  */
 package org.lumen.projector.cec;
 
 import android.content.Context;
-import android.hardware.hdmi.HdmiControlManager;
 import android.media.AudioDeviceAttributes;
 import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.SystemClock;
 import android.util.Log;
 
 import org.lumen.projector.Family;
@@ -76,34 +62,16 @@ import java.util.concurrent.Callable;
 
 public final class EarcLink {
     private static final String TAG = Family.EARC_TAG;
-    /** Watch length after the HAL connect, the panel row or an ARC output change (the vendor decides 600 ms after its HPD pull). */
-    private static final long WATCH_MS = 15_000L;
-    private static final long STEP_MS = 1_000L;
-    /** After the watch, while our output is up or the link reads 3: one read this often (link drops with no event). */
-    private static final long SLOW_STEP_MS = 10_000L;
-    /** A failed "Auto" of the panel row may restart ARC this long after the press. */
-    private static final long USER_WINDOW_MS = 30_000L;
     private static final String PREFS = "earc_state", K_OURS_BOOT = "ours_boot";
-    /** Without an ARC output this long after the link ended, ask the framework for ARC. */
-    private static final long ARC_RESTART_MS = 6_000L;
-    /**
-     * After this module removed its own output. CEC ARC may have re-attached to that output meanwhile (AOSP connects
-     * an output that is already listed without a device event), so the framework can still count ARC as up with no
-     * output left: ask at once. Seen live on the HB 2026-11-04 20:10 (setArcMode off / on while eARC was linked).
-     */
-    private static final long ARC_RESTART_OWN_MS = 1_500L;
-    private static final Object WATCH_TOKEN = new Object();
-    private static final Object RESTART_TOKEN = new Object();
+    /** Settings.Global the framework part follows (frameworks/base com.android.server.hdmi.VendorEarc.SETTING). */
+    static final String SETTING = "lumen_vendor_earc";
+    /** Set by the framework part while it runs (VendorEarc.GLUE_PROPERTY): the output is the framework's. */
+    static final String GLUE_PROPERTY = "sys.lumen.vendor_earc_glue";
     private static Handler sH;
     private static Context sApp;
     /** EarcLink connected the HDMI ARC output and has not removed it ("z9x-earc"). */
     private static boolean sOurs;
     private static volatile int sLastStatus = -1;
-    private static long sWatchUntil;
-    /** Uptime of the last panel row press (0 = none in this process). "z9x-earc" and the HAL thread. */
-    private static volatile long sUserAt;
-    /** A link of 3 was read in this process since the last restart check ("z9x-earc"). */
-    private static boolean sSawLinked;
 
     private EarcLink() {}
 
@@ -117,64 +85,130 @@ public final class EarcLink {
             AudioManager am = sApp.getSystemService(AudioManager.class);
             if (am != null) {
                 am.registerAudioDeviceCallback(new AudioDeviceCallback() {
-                    @Override public void onAudioDevicesAdded(AudioDeviceInfo[] d) {
-                        if (hasArc(d)) watch("ARC output added");
-                    }
                     @Override public void onAudioDevicesRemoved(AudioDeviceInfo[] d) {
-                        if (hasArc(d)) watch("ARC output removed");
+                        if (hasArc(d)) apply("ARC output removed");
                     }
                 }, h);
             }
         } catch (Throwable t) {
             Log.w(TAG, "device callback: " + t);
         }
-        Family.whenHalConnected(EarcLink::onHalConnected);
-        // C2: our output survives a process death in system_server; restore "ours" for this boot
+        Family.whenHalConnected(() -> read("HAL connected"));
         try {
             String boot = Family.bootId();
             String stored = sApp.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(K_OURS_BOOT, null);
-            final boolean ours = boot != null && boot.equals(stored);
-            if (ours) {
+            if (boot != null && boot.equals(stored)) {
                 h.post(() -> sOurs = true);
                 Log.i(TAG, "our HDMI ARC output of this boot is still connected (process restart)");
             }
         } catch (Throwable t) {
             Log.w(TAG, "restore ours: " + t);
         }
-        // C1: a link drop with no audio device change; stock gets GmTv event 11 for it
         try {
             android.content.IntentFilter f = new android.content.IntentFilter(android.content.Intent.ACTION_SCREEN_ON);
             sApp.registerReceiver(new android.content.BroadcastReceiver() {
-                @Override public void onReceive(Context c, android.content.Intent i) { watch("screen on"); }
+                @Override public void onReceive(Context c, android.content.Intent i) { apply("screen on"); }
             }, f, null, h, Context.RECEIVER_EXPORTED);
         } catch (Throwable t) {
             Log.w(TAG, "screen receiver: " + t);
         }
-        try {
-            HdmiControlManager m = CecSettings.hm(sApp);
-            if (m != null) {
-                m.addHotplugEventListener(h::post, ev -> {
-                    if (ev != null && arcPort(ev.getPort())) watch("hotplug port " + ev.getPort() + " " + ev.isConnected());
-                });
-            }
-        } catch (Throwable t) {
-            Log.w(TAG, "hotplug listener: " + t);
-        }
-        // a restart within this boot: the HAL may have connected before the hook above was added
-        if (Family.halReady()) watch("install");
+        if (Family.halReady()) read("start");
     }
 
-    /** An HDMI port that supports ARC (the soundbar's). Unknown = true (one watch too many is cheap). */
-    private static boolean arcPort(int port) {
-        try {
-            HdmiControlManager m = CecSettings.hm(sApp);
-            java.util.List<android.hardware.hdmi.HdmiPortInfo> ports = m == null ? null : m.getPortInfo();
-            if (ports == null) return true;
-            for (android.hardware.hdmi.HdmiPortInfo p : ports) if (p != null && p.getId() == port) return p.isArcSupported();
-        } catch (Throwable t) {
-            Log.d(TAG, "port info: " + t);
+    /** The vendor's TV events (the family's event callback, a vendor binder thread: only posts). */
+    public static void onTvEvent(int type, String msg) {
+        int s = EarcRules.eventStatus(type, msg);
+        Handler h = sH;
+        if (s < 0 || h == null || sApp == null) return;
+        h.post(() -> onStatus(s, "event " + msg));
+    }
+
+    /** The last link status (event or read) was 3. Any thread. */
+    public static boolean linked() {
+        return sLastStatus == EarcRules.EARC_LINKED;
+    }
+
+    /** The panel's eARC row (stock "eARC Mode" Auto / Off): send is the family's setEARCEnable. HAL thread. */
+    public static boolean setUser(Callable<Boolean> send, boolean on) throws Exception {
+        boolean ok = send.call();
+        Log.i(TAG, "user: setEARCEnable(" + on + ") -> " + ok + " (the vendor's event reports the link)");
+        return ok;
+    }
+
+    /** A menu that sent setEARCEnable itself (the X50 eARC row, TV 65): the vendor's event reports the link. */
+    public static void userChanged(boolean on) {
+        Log.i(TAG, "user: eARC " + (on ? "Auto" : "Off") + " (the vendor's event reports the link)");
+    }
+
+    /** One getEARCStatus read (stock XRMService at its start). Any thread. */
+    private static void read(String why) {
+        Handler h = handler();
+        if (h == null) return;
+        Family.earcStatus(s -> h.post(() -> onStatus(s, "read, " + why)));
+    }
+
+    /** "z9x-earc": a status from the vendor (event or read). */
+    private static void onStatus(int status, String why) {
+        if (status < 0) return;                                 // a failed read says nothing
+        if (status != sLastStatus) {
+            Log.i(TAG, "eARC status " + sLastStatus + " -> " + status + " (" + why + ")");
+            if (EarcRules.formatAgain(sLastStatus, status)) {
+                Family.earcFormatAgain("eARC status " + sLastStatus + " -> " + status);
+            }
+            report(status == EarcRules.EARC_LINKED);
         }
-        return true;
+        sLastStatus = status;
+        apply(why);
+    }
+
+    /** Settings.Global lumen_vendor_earc: what stock passes to AudioService.seteARCStatus. "z9x-earc". */
+    private static void report(boolean on) {
+        try {
+            android.provider.Settings.Global.putInt(sApp.getContentResolver(), SETTING, on ? 1 : 0);
+        } catch (Throwable t) {
+            Log.w(TAG, "report " + on + ": " + t);
+        }
+    }
+
+    /** "z9x-earc": the HDMI ARC output for the last status, only without the framework part. */
+    private static void apply(String why) {
+        int status = sLastStatus;
+        if (status < 0 || frameworkOwns()) return;
+        boolean present = arcPresent();
+        EarcStep step = EarcRules.step(status, sOurs, present, interactive());
+        if (step == EarcStep.DISCONNECT) step = EarcRules.afterLinkEnd(step, systemAudioOn());
+        switch (step) {
+            case CONNECT:
+                if (connect(true)) setOurs(true);
+                break;
+            case DISCONNECT:
+                connect(false);
+                setOurs(false);
+                break;
+            default:
+                if (status != EarcRules.EARC_LINKED && sOurs) {
+                    Log.i(TAG, "eARC ended, the HDMI ARC output stays: System Audio is on (" + why + ")");
+                    setOurs(false);                             // CEC ARC owns it now
+                }
+        }
+    }
+
+    /** The base carries the framework part (VendorEarc): it keeps the HDMI ARC output, the app adds nothing. */
+    private static boolean frameworkOwns() {
+        try {
+            return "1".equals(android.os.SystemProperties.get(GLUE_PROPERTY));
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    private static boolean systemAudioOn() {
+        try {
+            android.hardware.hdmi.HdmiControlManager m = CecSettings.hm(sApp);
+            return m != null && m.getSystemAudioMode();
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     /** Our output state, with the boot id ("z9x-earc"). */
@@ -189,127 +223,6 @@ public final class EarcLink {
             Log.w(TAG, "store ours: " + t);
         }
     }
-
-    /** "z9x-hal", after every (re)connect: one watch (the link may be up before any ARC output change). */
-    private static void onHalConnected() {
-        watch("HAL connected");
-    }
-
-    /** The last getEARCStatus read was 3. Any thread. */
-    public static boolean linked() {
-        return sLastStatus == EarcRules.EARC_LINKED;
-    }
-
-    /** The panel's eARC row (stock "eARC Mode" Auto / Off): send is the family's setEARCEnable. HAL thread. */
-    public static boolean setUser(Callable<Boolean> send, boolean on) throws Exception {
-        sUserAt = SystemClock.uptimeMillis();
-        boolean ok = send.call();
-        Log.i(TAG, "user: setEARCEnable(" + on + ") -> " + ok);
-        watch(on ? "user Auto" : "user Off");
-        return ok;
-    }
-
-    /** A menu that sent setEARCEnable itself (the X50 eARC row, TV 65). Any thread. */
-    public static void userChanged(boolean on) {
-        sUserAt = SystemClock.uptimeMillis();
-        watch(on ? "user Auto" : "user Off");
-    }
-
-    /** Starts (or extends) the getEARCStatus watch. Any thread. */
-    private static void watch(String why) {
-        Handler h = handler();
-        if (h == null) return;
-        h.post(() -> {
-            boolean running = SystemClock.uptimeMillis() < sWatchUntil;
-            sWatchUntil = SystemClock.uptimeMillis() + WATCH_MS;
-            Log.i(TAG, "watch (" + why + ")" + (running ? ", extended" : ""));
-            if (!running) {
-                h.removeCallbacksAndMessages(WATCH_TOKEN);
-                step();
-            }
-        });
-    }
-
-    /** "z9x-earc": one getEARCStatus read, the next step while the watch runs. */
-    private static void step() {
-        Handler h = handler();
-        if (h == null) return;
-        Family.earcStatus(s -> h.post(() -> onStatus(s)));
-        if (SystemClock.uptimeMillis() < sWatchUntil) {
-            h.postAtTime(EarcLink::step, WATCH_TOKEN, SystemClock.uptimeMillis() + STEP_MS);
-        } else if (sOurs || linked()) {
-            h.postAtTime(EarcLink::step, WATCH_TOKEN, SystemClock.uptimeMillis() + SLOW_STEP_MS);   // C1: slow follow
-        }
-    }
-
-    /** "z9x-earc". */
-    private static void onStatus(int status) {
-        boolean present = arcPresent();
-        if (status != sLastStatus) {
-            Log.i(TAG, "eARC status " + sLastStatus + " -> " + status + " (ARC output " + present
-                    + ", ours " + sOurs + ")");
-        }
-        if (EarcRules.formatAgain(sLastStatus, status)) {
-            Family.earcFormatAgain("eARC status " + sLastStatus + " -> " + status);
-        }
-        sLastStatus = status;
-        if (status == EarcRules.EARC_LINKED) sSawLinked = true;
-        switch (EarcRules.step(status, sOurs, present, interactive())) {
-            case CONNECT:
-                if (connect(true)) setOurs(true);
-                handler().removeCallbacksAndMessages(RESTART_TOKEN);
-                break;
-            case DISCONNECT:
-                connect(false);
-                setOurs(false);
-                restartLater("eARC ended", ARC_RESTART_OWN_MS);
-                break;
-            default:
-                if (status != EarcRules.EARC_LINKED && !present
-                        && EarcRules.restartAllowed(SystemClock.uptimeMillis() - sUserAt, sUserAt != 0, sSawLinked,
-                                USER_WINDOW_MS)) {
-                    restartLater("no eARC, no ARC", ARC_RESTART_MS);
-                }
-        }
-    }
-
-    /** One pending ARC restart at a time. "z9x-earc". */
-    private static void restartLater(String why, long delayMs) {
-        if (!Family.ARC_RESTART) return;
-        Handler h = handler();
-        if (h == null || h.hasCallbacks(RESTART_RUNNABLE)) return;
-        h.postAtTime(RESTART_RUNNABLE, RESTART_TOKEN, SystemClock.uptimeMillis() + delayMs);
-        Log.i(TAG, why + ": ARC restart check in " + delayMs + " ms");
-    }
-
-    private static final Runnable RESTART_RUNNABLE = () -> {
-        try {
-            if (sLastStatus == EarcRules.EARC_LINKED) return;
-            Context app = sApp;
-            String k = Family.audioOutputKind(app);
-            boolean present = arcPresent();
-            android.hardware.hdmi.HdmiDeviceInfo avrInfo = CecDevices.audioSystem(app);
-            boolean avr = avrInfo != null;
-            boolean interactive = true;
-            try {
-                android.os.PowerManager pm = app.getSystemService(android.os.PowerManager.class);
-                if (pm != null) interactive = pm.isInteractive();
-            } catch (Throwable t) { Log.d(TAG, "isInteractive: " + t); }
-            boolean avrStandby = avrInfo != null
-                    && avrInfo.getDevicePowerStatus() == HdmiControlManager.POWER_STATUS_STANDBY;
-            sSawLinked = false;                              // one restart per link loss
-            if (!EarcRules.arcRestart(k, present, avr)
-                    || !EarcRules.restartAwake(interactive, avrStandby)) {
-                Log.i(TAG, "ARC restart: not needed (" + k + ", ARC output " + present + ", audio system " + avr
-                        + ", screen on " + interactive + ", audio system standby " + avrStandby + ")");
-                return;
-            }
-            if (!Family.arcModeOn(app)) return;
-            Log.i(TAG, "ARC restart: the framework asked for ARC (" + k + ")");
-        } catch (Throwable t) {
-            Log.w(TAG, "ARC restart: " + t);
-        }
-    };
 
     /** Connects or removes the HDMI ARC output (no name, no descriptors: the stock AudioService call). */
     private static boolean connect(boolean on) {

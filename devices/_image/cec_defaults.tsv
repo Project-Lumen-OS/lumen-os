@@ -54,3 +54,9 @@ reset    goat_elegant    tv_wake_on_one_touch_play
 # (CecDefaults.allOnOnce, flag cec_defaults_v1_applied), after that the user's choice is never touched again.
 owner    tv_send_standby_on_sleep                  1
 owner    tv_wake_on_one_touch_play                 1
+# 2026-11-27 (cec-audit-1127 R3: "Да, давай как в стоке лучше сделаем, причем для всех"): "Turn off HDMI devices
+# with the projector" goes back to stock 0 on every unit: the image ships 0, the all-on step leaves the row alone, and
+# every unit gets 0 ONCE on the first start of this build, also where the user had switched the row (flag
+# cec_stock_again_v1_applied); after that the user's choice is never touched again. 0 here = the maintainer's value above.
+# CecDefaults and tools/devices/cec_defaults.py read it.
+stock_again  tv_send_standby_on_sleep  1

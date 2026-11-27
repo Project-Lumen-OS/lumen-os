@@ -10,5 +10,7 @@ public enum PowerAction {
     /** The power menu (a short press or the hold, {@link PowerKeyChoice}). */
     MENU,
     /** Sleep (a short press or the hold, {@link PowerKeyChoice}). */
-    SLEEP
+    SLEEP,
+    /** Power off: a short press while the power menu is open (stock PowerUI.dispatchAction, {@link PowerKeyChoice}). */
+    POWER_OFF
 }

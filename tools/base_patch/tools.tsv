@@ -2,3 +2,4 @@
 # file	url	sha256
 smali-dexlib2-3.0.10.jar	https://dl.google.com/android/maven2/com/android/tools/smali/smali-dexlib2/3.0.10/smali-dexlib2-3.0.10.jar	688dee6a46962a4dd1774b64be926534b0b6504bfd5d5c9f89c0f5af284f50c1
 guava-31.1-android.jar	https://repo1.maven.org/maven2/com/google/guava/guava/31.1-android/guava-31.1-android.jar	32ac2ed709d96d278b5d2e3e5cea178fa4939939c525fb647532f013308db309
+dex-tools-v2.4.zip	https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip	ee7c45eb3c1d2474a6145d8d447e651a736a22d9664b6d3d3be5a5a817dda23a

@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Family;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
@@ -301,7 +302,7 @@ public final class RotatePanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeGrid(c), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        root.addView(new EdgeFrameView(c, EdgeFrame.FRAME), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = EdgeGrid.card(c);
         card.addView(EdgeGrid.text(c, c.getString(R.string.rot_title), 40, Theme.TEXT));

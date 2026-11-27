@@ -111,6 +111,7 @@ class Table:
         known = settings()
         self.defaults, self.devices, self.resets, self.errs = {}, {}, [], []
         self.owner = {}
+        self.stock_again = {}
         for n, line in enumerate(text.splitlines(), 1):
             f = line.split("#", 1)[0].split()
             if not f:
@@ -140,6 +141,15 @@ class Table:
                     self.errs.append("%s: owner %s given twice" % (at, f[1]))
                 else:
                     self.owner[f[1]] = f[2]
+            elif f[0] == "stock_again" and len(f) == 3:
+                if f[1] not in RESETTABLE:
+                    self.errs.append("%s: stock_again of %s: the app writes only %s" % (at, f[1], " ".join(RESETTABLE)))
+                elif f[2] not in ("0", "1"):
+                    self.errs.append("%s: stock_again %s is 0 or 1" % (at, f[1]))
+                elif f[1] in self.stock_again:
+                    self.errs.append("%s: stock_again %s given twice" % (at, f[1]))
+                else:
+                    self.stock_again[f[1]] = f[2] == "1"
             elif f[0] == "reset" and len(f) == 3:
                 if f[2] not in RESETTABLE:
                     self.errs.append("%s: reset of %s: the app writes only %s" % (at, f[2], " ".join(RESETTABLE)))
@@ -150,6 +160,9 @@ class Table:
             else:
                 self.errs.append("%s: expected 'default SETTING VALUE', 'device DEVICE SETTING VALUE' or 'reset DEVICE "
                                  "SETTING': %s" % (at, line.strip()))
+        for s in self.stock_again:
+            if s not in self.owner:
+                self.errs.append("%s: stock_again %s without an owner line" % (where, s))
         for s in known:
             if s not in self.defaults:
                 self.errs.append("%s: no default for %s" % (where, s))
@@ -167,7 +180,7 @@ class Table:
     def image_values(self, device):
         """{setting: value} the image of one device ships: the stock values with the maintainer's lines on top."""
         out = self.values(device)
-        out.update(self.owner)
+        out.update({s: v for s, v in self.owner.items() if not self.stock_again.get(s)})
         return out
 
 

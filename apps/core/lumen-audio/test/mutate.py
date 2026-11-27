@@ -42,6 +42,11 @@ BRC = "apps/core/lumen-audio/image/lumen_boot_sound.rc"
 SR = "apps/common/projector/src/org/lumen/projector/panel/SettingsRows.java"
 MS = "apps/core/lumen-menu/src/org/lumen/projector/panel/ModuleScreens.java"
 MUTANTS = [
+    # the optical jack (path 1): heard only alone, never over the speaker the vendor policy pairs it with
+    (MP, "optical: heard before every output", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL};", "HEARD = {OPTICAL, BT, WIRED, USB, ARC, SPEAKER};"),
+    (MP, "optical: never heard", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL};", "HEARD = {BT, WIRED, USB, ARC, SPEAKER};"),
+    (MP, "optical: not a digital output", "return path == ARC || path == OPTICAL;", "return path == ARC;"),
+    ("devices/g0100/audio/chip_volume.tsv", "optical: Ultra Max table loses the jack", "xgimi_pcm_volume  -       1 ", "xgimi_pcm_volume  -       - "),
     # the power-on sound switch (BootSound): every power-on sound follows it, the stock switch only on a user's change
     (BR, "boot sound: unset switch is off", "return !OFF.equals(stored);", "return ON.equals(stored);"),
     (BR, "boot sound: the boot animation gate ignores the switch", "return on && !muted && index > 0 ? ON : OFF;",
@@ -69,10 +74,10 @@ MUTANTS = [
      "            sFormatSinceArc = true;\n", ""),
     ("apps/LumenProjector/host/activity/src/org/lumen/x50/projector/AudioOutput.java", "X50: ARC absent keeps the mark",
      "        if (!arc) sFormatSinceArc = false;\n", ""),
-    (MP, "heard: list order (arc before bt)", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {ARC, BT, WIRED, USB, SPEAKER}"),
-    (MP, "heard: speaker before arc", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {BT, WIRED, USB, SPEAKER, ARC}"),
-    (MP, "heard: usb before wired", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {BT, USB, WIRED, ARC, SPEAKER}"),
-    (MP, "heard: no usb", "HEARD = {BT, WIRED, USB, ARC, SPEAKER}", "HEARD = {BT, WIRED, ARC, SPEAKER}"),
+    (MP, "heard: list order (arc before bt)", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL}", "HEARD = {ARC, BT, WIRED, USB, SPEAKER, OPTICAL}"),
+    (MP, "heard: speaker before arc", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL}", "HEARD = {BT, WIRED, USB, SPEAKER, ARC, OPTICAL}"),
+    (MP, "heard: usb before wired", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL}", "HEARD = {BT, USB, WIRED, ARC, SPEAKER, OPTICAL}"),
+    (MP, "heard: no usb", "HEARD = {BT, WIRED, USB, ARC, SPEAKER, OPTICAL}", "HEARD = {BT, WIRED, ARC, SPEAKER, OPTICAL}"),
     (MP, "heard: null list", "if (paths == null) return NONE;", "if (paths == null) return SPEAKER;"),
     (MP, "formatAgain: first report too", "return prev != NONE && next != NONE && prev != next;", "return next != NONE && prev != next;"),
     (MP, "formatAgain: same path too", "return prev != NONE && next != NONE && prev != next;", "return prev != NONE && next != NONE;"),
@@ -194,7 +199,7 @@ MUTANTS = [
     (MP, "switch start: also the first report", "return prev != NONE && next != NONE && prev != next;", "return next != NONE && prev != next;"),
     (MP, "switch start: also the same path", "return prev != NONE && next != NONE && prev != next;", "return prev != NONE && next != NONE;"),
     (MP, "delay: always 300 ms", "? STOCK_SWITCH_MS : SHORT_SWITCH_MS;", "? SHORT_SWITCH_MS : SHORT_SWITCH_MS;"),
-    (MP, "delay: 1 s only to ARC", "(prev == ARC || next == ARC)", "(next == ARC)"),
+    (MP, "delay: 1 s only to ARC", "(digital(prev) || digital(next))", "(digital(next))"),
     (DO, "owned: AudioService adjusts nothing", "music, Runnable::run, NONE, false);", "music, Runnable::run, NONE, true);"),
     (DO, "owned: an index in the registration", "new VolumeInfo.Builder(AudioManager.STREAM_MUSIC).build()",
      "new VolumeInfo.Builder(AudioManager.STREAM_MUSIC).setVolumeIndex(0).build()"),

@@ -439,6 +439,7 @@ final class MenuLabels {
             case "picture.custom_base|gorgeous": return R.string.lumen_m_pm_gorgeous;
             case "picture.custom_base|eye_care": return R.string.lumen_m_pm_eye_care;
             case "sound.output|arc": return R.string.lumen_m_out_arc;
+            case "sound.output|optical": return R.string.lumen_m_out_optical;
             case "sound.output|bt": return R.string.lumen_m_out_bt;
             case "sound.output|usb": return R.string.lumen_m_out_usb;
             case "sound.output|wired": return R.string.lumen_m_out_wired;

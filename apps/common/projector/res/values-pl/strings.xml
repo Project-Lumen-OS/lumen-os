@@ -12,7 +12,7 @@
     <string name="ok">OK</string>
     <string name="app_not_found">Nie znaleziono aplikacji dla tego przycisku</string>
     <string name="diag_app_version">Wersja aplikacji: %1$s</string>
-    <string name="manual_focus_panel">Ręczna ostrość   ◀ ▶     OK/Wstecz: gotowe</string>
+    <string name="manual_focus_panel">Ręczna ostrość   ◀ ▶     Wstecz: gotowe</string>
     <string name="toast_af">Autofokus</string>
     <string name="toast_af_running">Ustawianie ostrości…</string>
     <string name="toast_af_failed">Nie udało się ustawić ostrości</string>

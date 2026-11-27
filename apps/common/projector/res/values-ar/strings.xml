@@ -12,7 +12,7 @@
     <string name="ok">حسنًا</string>
     <string name="app_not_found">لم يتم العثور على تطبيق لهذا الزر</string>
     <string name="diag_app_version">إصدار التطبيق: %1$s</string>
-    <string name="manual_focus_panel">تركيز يدوي   ◀ ▶     OK/رجوع: تم</string>
+    <string name="manual_focus_panel">تركيز يدوي   ◀ ▶     رجوع: تم</string>
     <string name="toast_af">تركيز تلقائي</string>
     <string name="toast_af_running">جارٍ التركيز التلقائي…</string>
     <string name="toast_af_failed">تعذّر التركيز التلقائي</string>

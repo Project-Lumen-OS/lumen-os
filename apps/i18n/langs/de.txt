@@ -10,7 +10,7 @@ tg_move_ak=Trapezkorrektur nach Bewegen
 ok=OK
 app_not_found=Keine App für diese Taste gefunden
 diag_app_version=App-Version: %1$s
-manual_focus_panel=Manueller Fokus   ◀ ▶     OK/Zurück: fertig
+manual_focus_panel=Manueller Fokus   ◀ ▶     Zurück: fertig
 toast_af=Autofokus
 toast_af_running=Autofokus…
 toast_af_failed=Autofokus fehlgeschlagen
@@ -685,6 +685,7 @@ lumen_1_d=%1$d %%
 lumen_1_d_h=%1$d Std.
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d Min.
+lumen_1_d_s=%1$d s
 lumen_2_point=2 Punkte
 lumen_3d=3D
 lumen_ai_contrast=KI-Kontrast
@@ -970,6 +971,8 @@ lumen_white_balance=Weißabgleich
 lumen_yellow=Gelb
 lumen_zoom_and_shift=Zoom und Verschieben
 lumen_zoom_and_shift_is_not=Zoom und Verschieben ist gerade nicht verfügbar
+lumen_optical_out=Optischer Ausgang
+lumen_focus_chart_hint=OK: Testbild
 
 @projector/strings_p6.xml
 p6_batt_low=Akku schwach: noch %1$d %%

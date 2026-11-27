@@ -12,4 +12,5 @@
     <string name="lumen_m_out_auto_picked">Chosen automatically</string>
     <string name="lumen_m_out_hand_picked">Chosen by you</string>
     <string name="lumen_m_out_earc">@string/lumen_hdmi_earc</string>
+    <string name="lumen_m_out_optical">@string/lumen_optical_out</string>
 </resources>

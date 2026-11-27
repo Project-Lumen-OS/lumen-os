@@ -42,7 +42,8 @@ import java.util.function.BooleanSupplier;
  * <b>Re-check</b> ({@link #recheckOff}): while the lamp should stay off, 196 true -> 195(false); used
  * by StandbyController's lamp watchdog and on every HAL reconnect (a gmpf_main restart may light it).
  *
- * Never: IGmpf 241 / 422 / 229 / 233 / 543, PowerManager.forceSuspend; 148 only with true.
+ * Never: IGmpf 422 / 229 / 233 / 543, PowerManager.forceSuspend; 148 only with true; 241 only as VendorSleep's
+ * stock goToSleep(0, 0).
  * HAL calls only through {@link Hal#runDelayed} (z9x-hal); scheduling on "z9x-lampctl".
  */
 final class LampControl {

@@ -35,31 +35,55 @@ public final class CecStockDefaults {
     private CecStockDefaults() {}
 
     public static void applyOnce(Context c) {
+        CecDefaults table = null;
+        String device = null;
         try {
+            table = CecDefaults.parse(asset(c, CecDefaults.ASSET));
+            device = device(c);
             SharedPreferences p = CecSettings.prefs(c);
-            if (p.getInt(K_DONE, 0) >= CecDefaults.VERSION) return;
-            CecDefaults table = CecDefaults.parse(asset(c, CecDefaults.ASSET));
-            String device = device(c);
-            List<String> log = new ArrayList<>();
-            boolean done = table.apply(device, new FrameworkUnit(c), log);
-            for (String l : log) Log.i(TAG, "stock defaults (" + device + "): " + l);
-            if (done) p.edit().putInt(K_DONE, CecDefaults.VERSION).commit();
+            if (p.getInt(K_DONE, 0) < CecDefaults.VERSION) {
+                List<String> log = new ArrayList<>();
+                boolean done = table.apply(device, new FrameworkUnit(c), log);
+                for (String l : log) Log.i(TAG, "stock defaults (" + device + "): " + l);
+                if (done) p.edit().putInt(K_DONE, CecDefaults.VERSION).commit();
+            }
         } catch (Throwable t) {
             Log.w(TAG, "stock defaults: " + t);
         }
-        allOnOnce(c);
+        allOnOnce(c, table);
+        stockAgainOnce(c, table, device);
     }
 
     /** The owner's all-ON step (CecDefaults.allOnOnce), once per unit, flag {@value #K_ALL_ON}. Never throws. */
-    static void allOnOnce(Context c) {
+    static void allOnOnce(Context c, CecDefaults table) {
         try {
             List<String> log = new ArrayList<>();
-            CecDefaults.allOnOnce(new FrameworkRows(c), log);
+            CecDefaults.allOnOnce(new FrameworkRows(c), table == null ? CecDefaults.ALL_ON : table.allOn(), log);
             for (String l : log) Log.i(TAG, "all on: " + l);
         } catch (Throwable t) {
             Log.w(TAG, "all on: " + t);
         }
     }
+
+    /** An owner value taken back to stock (CecDefaults.stockAgainOnce), once per unit, flag {@value #K_STOCK_AGAIN}. */
+    static void stockAgainOnce(Context c, CecDefaults table, String device) {
+        if (table == null) return;
+        try {
+            SharedPreferences p = CecSettings.prefs(c);
+            if (p.getBoolean(K_STOCK_AGAIN, false)) return;
+            boolean any = false;
+            for (CecSetting s : CecSetting.values()) any |= table.stockAgain(s);
+            if (!any) return;
+            List<String> log = new ArrayList<>();
+            boolean done = table.stockAgainOnce(device, new FrameworkUnit(c), log);
+            for (String l : log) Log.i(TAG, "stock again: " + l);
+            if (done) p.edit().putBoolean(K_STOCK_AGAIN, true).commit();
+        } catch (Throwable t) {
+            Log.w(TAG, "stock again: " + t);
+        }
+    }
+
+    static final String K_STOCK_AGAIN = "cec_stock_again_v1_applied";
 
     static final String K_ALL_ON = "cec_defaults_v1_applied";
 

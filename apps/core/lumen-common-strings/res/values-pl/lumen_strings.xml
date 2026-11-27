@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d godz.</string>
     <string name="lumen_1_d_hz">%1$d Hz</string>
     <string name="lumen_1_d_min">%1$d min</string>
+    <string name="lumen_1_d_s">%1$d s</string>
     <string name="lumen_2_point">2 punkty</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">Kontrast AI</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">Żółty</string>
     <string name="lumen_zoom_and_shift">Powiększenie i przesunięcie</string>
     <string name="lumen_zoom_and_shift_is_not">Powiększenie i przesunięcie są teraz niedostępne</string>
+    <string name="lumen_optical_out">Wyjście optyczne</string>
+    <string name="lumen_focus_chart_hint">OK: plansza testowa</string>
 </resources>

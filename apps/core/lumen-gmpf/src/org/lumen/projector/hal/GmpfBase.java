@@ -160,6 +160,22 @@ public abstract class GmpfBase<K> extends GmpfCaller<K> {
         return wire.i32RetBool(key(GO_TO_BOOT_COMPLETED), s.wire);
     }
 
+    /** goToSleep's values in stock PowerManagerService.xgimiPrepareSleep: mode 0 (STR), type 0 (the framework's prepare). */
+    private static final int SLEEP_MODE_STR = 0;
+    private static final int SLEEP_TYPE_PREPARE = 0;
+
+    /**
+     * goToSleep(0, 0) only: the vendor step of the stock STR sleep (power/StrPrepare, once per Android sleep). The
+     * vendor sets its standby stage, runs its shutdown step and releases gmpf_wake_lock, which its wakeUp takes on every
+     * STR resume (GitHub issue 5). Every other mode / type stays banned (apps/check_hal_callers.py ONLY_ARGS).
+     */
+    public void strPrepareSleep() throws RemoteException {
+        wire.i32I32(key(GO_TO_SLEEP), SLEEP_MODE_STR, SLEEP_TYPE_PREPARE);
+    }
+
+    /** Whether this projector's HAL has goToSleep (a row of its code table). */
+    public boolean hasStrPrepareSleep() { return has(GO_TO_SLEEP); }
+
     /** sendFocusStatus(17): starts the vendor power-on AF flow. Handshake only, last. */
     public void sendPowerOnUiReady() throws RemoteException { wire.u8(key(SEND_FOCUS_STATUS), FOCUS_STATUS_UI_READY); }
 

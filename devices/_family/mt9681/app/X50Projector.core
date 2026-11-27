@@ -7,4 +7,5 @@ src/org/lumen/projector/cec/EarcStep.java
 src/org/lumen/projector/setup/SetupBridge.java
 src/org/lumen/projector/power/SleepAlarm.java
 src/org/lumen/projector/power/SleepHost.java
+src/org/lumen/projector/power/StrPrepare.java
 src/org/lumen/projector/panel/ProjectorMenu.java

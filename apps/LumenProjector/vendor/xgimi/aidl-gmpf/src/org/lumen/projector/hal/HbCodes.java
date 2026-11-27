@@ -99,6 +99,7 @@ final class HbCodes {
             .put(GET_WAKE_UP_SOURCE, GmpfCall.GET_WAKE_UP_SOURCE)
             .put(GET_ZOOM_STEP_RANGE, GmpfCall.GET_ZOOM_STEP_RANGE)
             .put(GO_TO_BOOT_COMPLETED, GmpfCall.GO_TO_BOOT_COMPLETED)
+            .put(GO_TO_SLEEP, GmpfCall.GO_TO_SLEEP)
             .put(IS_POWER_ON_AF_ENABLED, GmpfCall.IS_POWER_ON_AF_ENABLED)
             .put(IS_POWER_ON_MUSIC_ENABLED, GmpfCall.IS_POWER_ON_MUSIC_ENABLED)
             .put(IS_VIDEO_PLAYING, GmpfCall.IS_VIDEO_PLAYING)

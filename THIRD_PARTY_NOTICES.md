@@ -11,9 +11,9 @@ files and checks that none of them carries the Lumen licence.
 - Copyright: Copyright The Android Open Source Project; Copyright The LineageOS Project
 - Source: https://android.googlesource.com, https://github.com/LineageOS
 - What: upstream files and our changed copies of them: the keyboard (LeanbackIME, apps/LumenKeyboard/LICENSE), the resource overlays of framework and system apps, key layouts, TvSettings sources and compile stubs of their APIs, org.json, avbtool, the published AOSP test keys, our patches to LineageOS
-- Files (484):
+- Files (491):
   - `apps/HbFrameworkOverlay/` (1)
-  - `apps/HbFrameworkOverlay/res/` (4)
+  - `apps/HbFrameworkOverlay/res/` (5)
   - `apps/LumenKeyboard/` (2)
   - `apps/LumenKeyboard/res/` (262)
   - `apps/LumenKeyboard/src/` (10)
@@ -24,27 +24,29 @@ files and checks that none of them carries the Lumen licence.
   - `apps/LumenWifiP2pOverlay/` (1)
   - `apps/LumenWifiP2pOverlay/res/` (1)
   - `apps/Play6FrameworkOverlay/` (1)
-  - `apps/Play6FrameworkOverlay/res/` (4)
+  - `apps/Play6FrameworkOverlay/res/` (5)
   - `apps/Play6TvSettingsOverlay/` (1)
   - `apps/Play6TvSettingsOverlay/res/` (2)
   - `apps/Z9xDeviceConfigOverlay/` (1)
   - `apps/Z9xDeviceConfigOverlay/res/` (1)
   - `apps/Z9xFrameworkKeysOverlay/` (1)
-  - `apps/Z9xFrameworkKeysOverlay/res/` (4)
+  - `apps/Z9xFrameworkKeysOverlay/res/` (5)
   - `apps/Z9xLineagePlatformOverlay/` (1)
   - `apps/Z9xLineagePlatformOverlay/res/` (55)
   - `apps/Z9xTvSettingsHdrOverlay/` (1)
   - `apps/Z9xTvSettingsHdrOverlay/res/` (3)
-  - `apps/common/overlay/` (2)
+  - `apps/common/overlay/` (3)
   - `apps/core/lumen-updater/` (6)
   - `apps/sdk/testkeys/` (2)
   - `devices/g0111/test/` (16)
   - `lineage/patches/` (1)
+  - `lineage/patches/hdmi/` (1)
   - `lineage/patches/play6/` (6)
   - `lineage/patches/wifi/` (1)
   - `lineage/patches/z9x/` (1)
   - `overlay/play6/keylayout/` (1)
   - `system/usr/keylayout/` (14)
+  - `tools/base_patch/services_hdmi/` (2)
   - `tools/base_patch/test/` (22)
   - `tools/base_patch/tvsettings_a2dp/` (2)
   - `tools/base_patch/tvsettings_about/` (29)
@@ -120,7 +122,7 @@ files and checks that none of them carries the Lumen licence.
 - Copyright: XGIMI
 - Source: stock firmware of the projectors
 - What: facts the code must match to work with the hardware (feature tables, EDID, model files) kept as test data. The Lumen licence does not cover them
-- Files (86):
+- Files (87):
   - `apps/LumenInfo/test/` (4)
   - `apps/LumenProjector/vendor/` (2)
   - `apps/core/lumen-about/` (36)
@@ -135,7 +137,7 @@ files and checks that none of them carries the Lumen licence.
   - `devices/g0125/research/` (1)
   - `devices/g0155/research/` (3)
   - `devices/g0170/research/` (2)
-  - `devices/goat_elegant/research/` (7)
+  - `devices/goat_elegant/research/` (8)
   - `devices/h0061/research/` (1)
   - `devices/h0062/research/` (2)
   - `devices/h0063/research/` (1)

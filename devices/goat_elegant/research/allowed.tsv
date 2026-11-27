@@ -159,6 +159,7 @@ MotionDetectionManager	8	setAutoReverse	setAutoReverse [Z9X IGmpf 580]
 MotionDetectionManager	9	getAutoReverse	getAutoReverse [Z9X IGmpf 579]
 MotionDetectionManager	15	temporarySwitchTrigger	setRealtimeAkTemporarily,resetRealtimeAkTemporary [Z9X IGmpf 573]; (2, b) as before; hb-t7: (2, false) when the fit-to-screen hint window shows and (0, false) when it goes, as stock HB SystemUI AuxiliaryCurtainAlignDialog.show / dismiss (jadx AuxiliaryCurtainAlignDialog.java:217 and :268)
 PowerManager	2	goToBootCompleted	goToBootCompleted [Z9X IGmpf 237]; HbBoot rows C (0) and E (1)
+PowerManager	6	goToSleep	void(int, int)	args:0,0	goToSleep [Z9X IGmpf 241]: stock services.jar PowerManagerService.goToSleep(100) -> xgimiPrepareSleep (G0148 6.17.12 :5015-5034, G0130, also G0082 and RS 20) -> XgimiSmsController.gotoSleep(0, 0) only, once per STR sleep (power/VendorSleep); releases gmpf_wake_lock (GitHub issue 5)
 ProjectorFocusManager	1	setFocusCallback	connectFocusManager [Z9X IGmpf 298]
 ProjectorFocusManager	2	manualFocus	manualFocus [Z9X IGmpf 300]
 ProjectorFocusManager	4	powerOnAFEnable	setPowerOnAf [Z9X IGmpf 302]

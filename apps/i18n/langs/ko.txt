@@ -10,7 +10,7 @@ tg_move_ak=이동 후 자동 키스톤 보정
 ok=확인
 app_not_found=이 버튼에 연결된 앱이 없습니다
 diag_app_version=앱 버전: %1$s
-manual_focus_panel=수동 초점   ◀ ▶     OK/뒤로: 완료
+manual_focus_panel=수동 초점   ◀ ▶     뒤로: 완료
 toast_af=자동 초점
 toast_af_running=자동 초점 중…
 toast_af_failed=자동 초점에 실패했습니다
@@ -684,6 +684,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d시간
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d분
+lumen_1_d_s=%1$d초
 lumen_2_point=2포인트
 lumen_3d=3D
 lumen_ai_contrast=AI 명암
@@ -969,6 +970,8 @@ lumen_white_balance=화이트 밸런스
 lumen_yellow=노랑
 lumen_zoom_and_shift=줌 및 이동
 lumen_zoom_and_shift_is_not=줌 및 이동을 지금 사용할 수 없습니다
+lumen_optical_out=광출력
+lumen_focus_chart_hint=OK: 테스트 차트
 
 @projector/strings_p6.xml
 p6_batt_low=배터리 부족: %1$d%% 남음

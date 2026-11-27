@@ -34,9 +34,11 @@
  *       off for a local output, the CEC page's soundbar switch for "Soundbar" / "Auto" (CecSettings.setSoundbar keeps
  *       the two equal). With it off no volume key leaves over CEC, whoever turns System Audio on. No own setting: it is
  *       derived from the stored choice every time.</li>
- *   <li>Applied on a choice, 10 s and 40 s after the start (CEC discovery and the auto initiation of the boot),
- *       10 s after SCREEN_ON (after CecPolicy's soundbar on, 4 s + 4 s fallback), when an ARC / eARC output appears
- *       (the soundbar or CecPolicy turned System Audio on), and when anyone changes volume control.</li>
+ *   <li>Applied on a choice, once 10 s after the start, and when anyone changes volume control (the framework's
+ *       listener; the setting is persistent and AOSP never changes it by itself). Not at SCREEN_ON, not on an ARC
+ *       output change and no second start check (cec-fix-1127): those reads and writes landed in the wake window
+ *       where the framework re-initiates ARC (LR-9MEQZP 05:54:10.47, inside the 5 s CEC stall), and they could
+ *       not find anything the listener had not seen.</li>
  * </ul>
  *
  * Binder work on the thread "z9x-hbsam". Log tag Z9xHbSam.
@@ -62,9 +64,6 @@ import org.lumen.projector.audio.HbAudioRules;
 public final class HbSystemAudio {
     private static final String TAG = "Z9xHbSam";
     private static final long START_CHECK_MS = 10_000L;
-    private static final long START_RECHECK_MS = 40_000L;
-    private static final long SCREEN_ON_CHECK_MS = 10_000L;
-    private static final long ARC_CHECK_MS = 1_500L;
     private static final Object CHECK_TOKEN = new Object();
     private static Handler sH;
     private static Context sApp;
@@ -82,9 +81,7 @@ public final class HbSystemAudio {
             if (am != null) {
                 am.registerAudioDeviceCallback(new AudioDeviceCallback() {
                     @Override public void onAudioDevicesAdded(AudioDeviceInfo[] added) {
-                        if (!hasArc(added)) return;
-                        org.lumen.projector.audio.HbOutputOptions.noteSoundbar();
-                        check("ARC output added", ARC_CHECK_MS);
+                        if (hasArc(added)) org.lumen.projector.audio.HbOutputOptions.noteSoundbar();
                     }
                 }, h);
             }
@@ -103,12 +100,6 @@ public final class HbSystemAudio {
             }
         });
         check("start", START_CHECK_MS);
-        h.postDelayed(() -> enforce("start recheck"), START_RECHECK_MS);
-    }
-
-    /** SCREEN_ON (main thread): check after CecPolicy's soundbar on. */
-    public static void onScreenOn() {
-        check("screen on", SCREEN_ON_CHECK_MS);
     }
 
     private static void runOnWorker(Runnable r) {

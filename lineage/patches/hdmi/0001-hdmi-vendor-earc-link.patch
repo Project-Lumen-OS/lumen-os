@@ -1,0 +1,210 @@
+Lumen OS: keep a vendor eARC link next to CEC ARC, as the stock XGIMI frameworks do.
+
+The XGIMI vendors have no Android eARC HAL: the vendor brings the eARC link up by itself and raises a TV event. The
+stock framework of every XGIMI family (services.jar of G0082, G0111, G0130, G0148: AudioService seteARCStatus,
+geteArcStatus, setCecStatus; HdmiCecLocalDeviceTv notifyArcStatusToAudioService) keeps the soundbar output from it:
+the link coming up while CEC ARC is not established connects the HDMI ARC output, the link ending removes it, and
+CEC ARC ending while the link is up keeps the output ("don't disconnect ARC while eARC mode"). Here the projector
+app reports the link in Settings.Global lumen_vendor_earc (stock: XRMService on the vendor's event 11), the new
+VendorEarc holds the two states on the HDMI service thread and sets sys.lumen.vendor_earc_glue=1 so the app stops
+connecting the output itself.
+
+RequestArcInitiationAction.ANSWER_TIMEOUT_MS: how long the TV waits for the answer to <Request ARC Initiation>.
+It is HdmiConfig.TIMEOUT_MS, 2000 ms started before the request is sent: exactly what every stock XGIMI framework does
+(services.jar RequestArcInitiationAction.start, const/16 2000 before sendCommand: G0082, G0148 6.17.12, X50 v1.3.38;
+javac drops the other branch). A longer value would start the wait when the request was really sent.
+
+The unpatched files are the LineageOS 21 sources of the shipped Lumen services.jar (same methods, references and
+strings per class: cec-fix-1127 fw_cmp.py). Device-neutral: without the setting nothing changes.
+
+diff -ruN a/frameworks/base/services/core/java/com/android/server/hdmi/HdmiCecLocalDeviceTv.java b/frameworks/base/services/core/java/com/android/server/hdmi/HdmiCecLocalDeviceTv.java
+--- a/frameworks/base/services/core/java/com/android/server/hdmi/HdmiCecLocalDeviceTv.java
++++ b/frameworks/base/services/core/java/com/android/server/hdmi/HdmiCecLocalDeviceTv.java
+@@ -181,6 +181,7 @@
+             mArcFeatureEnabled.put(port.getId(), port.isArcSupported());
+         }
+         mService.registerTvInputCallback(mTvInputCallback);
++        VendorEarc.get(mService);
+         mService.sendCecCommand(
+                 HdmiCecMessageBuilder.buildReportPhysicalAddressCommand(
+                         getDeviceInfo().getLogicalAddress(),
+@@ -854,6 +855,7 @@
+         enableAudioReturnChannel(true);
+         notifyArcStatusToAudioService(true, supportedSads);
+         mArcEstablished = true;
++        VendorEarc.get(mService).setCecArc(true);
+     }
+ 
+     @ServiceThreadOnly
+@@ -864,6 +866,7 @@
+         enableAudioReturnChannel(false);
+         notifyArcStatusToAudioService(false, new ArrayList<>());
+         mArcEstablished = false;
++        VendorEarc.get(mService).setCecArc(false);
+     }
+ 
+     /**
+@@ -885,6 +888,11 @@
+     }
+ 
+     private void notifyArcStatusToAudioService(boolean enabled, List<byte[]> supportedSads) {
++        if (!enabled && VendorEarc.get(mService).linked()) {
++            // the vendor eARC link carries the sound: keep the HDMI ARC output (stock XGIMI framework)
++            Slog.e(TAG, "don't disconnect ARC while eARC mode");
++            return;
++        }
+         // Note that we don't set any name to ARC.
+         AudioDeviceAttributes attributes = new AudioDeviceAttributes(
+                 AudioDeviceAttributes.ROLE_OUTPUT, AudioDeviceInfo.TYPE_HDMI_ARC, "", "",
+diff -ruN a/frameworks/base/services/core/java/com/android/server/hdmi/RequestArcInitiationAction.java b/frameworks/base/services/core/java/com/android/server/hdmi/RequestArcInitiationAction.java
+--- a/frameworks/base/services/core/java/com/android/server/hdmi/RequestArcInitiationAction.java
++++ b/frameworks/base/services/core/java/com/android/server/hdmi/RequestArcInitiationAction.java
+@@ -47,11 +47,21 @@
+         super(source, avrAddress, callback);
+     }
+ 
++    /**
++     * How long the TV waits for the audio system's answer to <Request ARC Initiation>. HdmiConfig.TIMEOUT_MS is the
++     * AOSP wait, started before the request is queued. A longer value starts the wait when the request was really
++     * sent, so a soundbar that answers after a few seconds is not sent <Report ARC Terminated> first. Lumen keeps the
++     * AOSP value until the owner decides (cec-audit-1127 patch 02).
++     */
++    static final int ANSWER_TIMEOUT_MS = HdmiConfig.TIMEOUT_MS;
++
+     @Override
+     boolean start() {
+         // Seq #38
+         mState = STATE_WATING_FOR_REQUEST_ARC_REQUEST_RESPONSE;
+-        addTimer(mState, HdmiConfig.TIMEOUT_MS);
++        if (ANSWER_TIMEOUT_MS == HdmiConfig.TIMEOUT_MS) {
++            addTimer(mState, HdmiConfig.TIMEOUT_MS);
++        }
+ 
+         HdmiCecMessage command = HdmiCecMessageBuilder.buildRequestArcInitiation(
+                 getSourceAddress(), mAvrAddress);
+@@ -62,6 +72,9 @@
+                     // Turn off ARC status if <Request ARC Initiation> fails.
+                     tv().disableArc();
+                     finishWithCallback(HdmiControlManager.RESULT_TARGET_NOT_AVAILABLE);
++                } else if (ANSWER_TIMEOUT_MS != HdmiConfig.TIMEOUT_MS
++                        && mState == STATE_WATING_FOR_REQUEST_ARC_REQUEST_RESPONSE) {
++                    addTimer(mState, ANSWER_TIMEOUT_MS);
+                 }
+             }
+         });
+diff -ruN a/frameworks/base/services/core/java/com/android/server/hdmi/VendorEarc.java b/frameworks/base/services/core/java/com/android/server/hdmi/VendorEarc.java
+--- a/frameworks/base/services/core/java/com/android/server/hdmi/VendorEarc.java
++++ b/frameworks/base/services/core/java/com/android/server/hdmi/VendorEarc.java
+@@ -0,0 +1,112 @@
++/*
++ * Copyright (C) 2026 Lumen OS
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.server.hdmi;
++
++import android.content.ContentResolver;
++import android.database.ContentObserver;
++import android.media.AudioDeviceAttributes;
++import android.media.AudioDeviceInfo;
++import android.os.Handler;
++import android.os.UserHandle;
++import android.provider.Settings.Global;
++import android.util.Slog;
++
++import com.android.server.hdmi.HdmiAnnotations.ServiceThreadOnly;
++
++/**
++ * A vendor eARC link next to CEC ARC, the way the stock XGIMI frameworks keep it (G0082, G0111, G0130 and G0148
++ * services.jar: AudioService seteARCStatus / geteArcStatus / setCecStatus, HdmiCecLocalDeviceTv
++ * notifyArcStatusToAudioService). These vendors have no Android eARC HAL: the vendor brings the link up by itself and
++ * the projector app reports it (stock: XRMService on the vendor's TV event 11 "eARCstate:1|0" and one read at its
++ * start). Here the app writes {@link #SETTING}; the rules are the stock ones:
++ * <ul>
++ *   <li>the link comes up while CEC ARC is not established: the HDMI ARC output is connected (no name, no
++ *       descriptors); the link ends while CEC ARC is not established: that output is removed;</li>
++ *   <li>CEC ARC ends while the link is up: the HDMI ARC output stays ("don't disconnect ARC while eARC mode").</li>
++ * </ul>
++ * The setting is put back to 0 when this starts (a link of a past boot says nothing), and {@link #GLUE_PROPERTY} tells
++ * the projector app that it no longer connects the output itself. Service thread only.
++ */
++final class VendorEarc {
++    private static final String TAG = "HdmiVendorEarc";
++    /** Settings.Global, written by the projector app: 1 = the vendor's eARC link is up. */
++    static final String SETTING = "lumen_vendor_earc";
++    /** "1" while this code runs (the projector app leaves the HDMI ARC output to the framework). */
++    static final String GLUE_PROPERTY = "sys.lumen.vendor_earc_glue";
++
++    private static VendorEarc sInstance;
++
++    private final HdmiControlService mService;
++    /** Stock AudioService.meARCStatus. */
++    private boolean mLinked;
++    /** Stock AudioService.mARCStatus (HdmiCecLocalDeviceTv.setCecStatus). */
++    private boolean mCecArc;
++
++    private VendorEarc(HdmiControlService service) {
++        mService = service;
++    }
++
++    @ServiceThreadOnly
++    static VendorEarc get(HdmiControlService service) {
++        if (sInstance == null) {
++            sInstance = new VendorEarc(service);
++            sInstance.start();
++        }
++        return sInstance;
++    }
++
++    private void start() {
++        try {
++            ContentResolver cr = mService.getContext().getContentResolver();
++            Global.putInt(cr, SETTING, 0);
++            cr.registerContentObserver(Global.getUriFor(SETTING), false,
++                    new ContentObserver(new Handler(mService.getServiceLooper())) {
++                        @Override
++                        public void onChange(boolean selfChange) {
++                            onSetting();
++                        }
++                    }, UserHandle.USER_ALL);
++            mService.writeStringSystemProperty(GLUE_PROPERTY, "1");
++        } catch (RuntimeException e) {
++            Slog.w(TAG, "vendor eARC link not followed: " + e);
++        }
++    }
++
++    @ServiceThreadOnly
++    private void onSetting() {
++        boolean linked = Global.getInt(mService.getContext().getContentResolver(), SETTING, 0) == 1;
++        if (linked == mLinked) return;
++        mLinked = linked;
++        Slog.d(TAG, "meARC Status: " + linked);
++        if (mCecArc) return;
++        AudioManagerWrapper audio = mService.getAudioManager();
++        if (audio == null) return;
++        audio.setWiredDeviceConnectionState(new AudioDeviceAttributes(AudioDeviceAttributes.ROLE_OUTPUT,
++                AudioDeviceInfo.TYPE_HDMI_ARC, ""), linked ? 1 : 0);
++    }
++
++    /** Stock geteArcStatus: the vendor's eARC link is up. */
++    boolean linked() {
++        return mLinked;
++    }
++
++    /** Stock setCecStatus: CEC ARC is established (true) or not. */
++    void setCecArc(boolean established) {
++        mCecArc = established;
++        Slog.d(TAG, "mARC Status: " + established);
++    }
++}

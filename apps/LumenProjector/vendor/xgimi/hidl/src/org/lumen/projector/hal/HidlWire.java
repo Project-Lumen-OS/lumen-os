@@ -62,6 +62,9 @@ final class HidlWire extends HidlCaller implements GmpfWire<Integer> {
     @Override public boolean i32RetBool(Integer k, int v) throws RemoteException { return send(k, q().withI32(v).p, RET_BOOL); }
     @Override public int i32RetI32(Integer k, int v) throws RemoteException { return send(k, q().withI32(v).p, RET_I32); }
     @Override public byte i32RetI8(Integer k, int v) throws RemoteException { return send(k, q().withI32(v).p, RET_I8); }
+    @Override public void i32I32(Integer k, int a, int b) throws RemoteException {
+        send(k, q().withI32(a).withI32(b).p, RET_VOID);
+    }
     @Override public boolean i32I32RetBool(Integer k, int a, int b) throws RemoteException {
         return send(k, q().withI32(a).withI32(b).p, RET_BOOL);
     }

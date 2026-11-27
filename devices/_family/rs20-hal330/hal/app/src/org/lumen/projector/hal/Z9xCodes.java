@@ -73,6 +73,7 @@ final class Z9xCodes {
             .put(GET_WAKE_UP_SOURCE, HalCodes.GMPF_GET_WAKE_UP_SOURCE)
             .put(GET_ZOOM_STEP_RANGE, HalCodes.GMPF_GET_ZOOM_STEP_RANGE)
             .put(GO_TO_BOOT_COMPLETED, HalCodes.GMPF_GO_TO_BOOT_COMPLETED)
+            .put(GO_TO_SLEEP, HalCodes.GMPF_GO_TO_SLEEP)
             .put(IS_3D_TO_2D_ENABLED, HalCodes.GMPF_IS_3D_TO_2D_ENABLED)
             .put(IS_POWER_ON_AF_ENABLED, HalCodes.GMPF_IS_POWER_ON_AF_ENABLED)
             .put(IS_POWER_ON_MUSIC_ENABLED, HalCodes.GMPF_IS_POWER_ON_MUSIC_ENABLED)

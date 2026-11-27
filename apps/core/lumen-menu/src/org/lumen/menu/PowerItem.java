@@ -7,14 +7,18 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * The items of the stock power menu (com.xgimi.shutdown res/raw/systemui_9681.json of the X50 family, sorted by
- * PowerViewModel levels): Turn off screen, Power off, Restart, Sleep timer. An item backed by a menu feature is there
- * only where the menu offers that feature; Power off and Restart are on every projector.
+ * The items of the power menu of every projector, in this order: the stock ones (com.xgimi.shutdown res/raw
+ * systemui_*.json, the same four on every family: 关屏 Turn off screen, 关机 Power off, 重启 Restart, 定时关机 Sleep timer)
+ * plus Sleep (stock 关机 only sleeps; Lumen's Power off really powers off, decision, so the sleep keeps its own
+ * item). An item backed by a menu feature is there only where the menu offers that feature; Sleep, Power off and Restart
+ * are on every projector.
  */
 public enum PowerItem {
     /** 关屏: the menu's lamp.off. */
     SCREEN_OFF(FeatureId.LAMP_OFF),
-    /** 关机: the system power key (PowerUtils.shutDownsendKeyCode), the projector's standby. */
+    /** Sleep: what stock 关机 does (the power key, PowerUtils.shutDownsendKeyCode = the projector's standby). */
+    SLEEP(null),
+    /** 关机: Android's real power off (panel Halt, decision), the item the {@link PowerCountdown} runs on. */
     POWER_OFF(null),
     /** 重启: a restart (PowerUtils.reboot). */
     RESTART(null),

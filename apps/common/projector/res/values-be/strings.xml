@@ -12,7 +12,7 @@
     <string name="ok">OK</string>
     <string name="app_not_found">Праграма для гэтай кнопкі не знойдзена</string>
     <string name="diag_app_version">Версія праграмы: %1$s</string>
-    <string name="manual_focus_panel">Ручны фокус   ◀ ▶     OK/Назад: гатова</string>
+    <string name="manual_focus_panel">Ручны фокус   ◀ ▶     Назад: гатова</string>
     <string name="toast_af">Аўтафокус</string>
     <string name="toast_af_running">Аўтафокус…</string>
     <string name="toast_af_failed">Не ўдалося сфакусаваць</string>

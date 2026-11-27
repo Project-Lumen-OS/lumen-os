@@ -70,6 +70,7 @@ final class HalCodes {
     static final int GMPF_CORRECT_KEYSTONE_RESET = 207;               // correctKeystoneReset  W=writeUint8 R=
     static final int GMPF_GET_BOOT_REASON = 230;                      // getBootReason  W= R=readInt8
     static final int GMPF_GO_TO_BOOT_COMPLETED = 237;                 // goToBootCompleted  W=writeInt32 R=readBool
+    static final int GMPF_GO_TO_SLEEP = 241;                          // goToSleep  W=writeInt32,writeInt32 R=
     static final int GMPF_NEW_AUTO_KST = 272;                         // newAutoKst  W=writeInt32 R=readInt8
     static final int GMPF_GET_TOF_DISTANCE = 279;                     // getTofDistance  W= R=readInt32
     static final int GMPF_GET_PROJ_CURTAIN_ADP = 289;                 // getProjCurtainAdp  W= R=readBool

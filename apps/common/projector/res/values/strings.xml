@@ -28,7 +28,7 @@
 
     <string name="diag_app_version">App version: %1$s</string>
 
-    <string name="manual_focus_panel">Manual focus   ◀ ▶     OK/Back: done</string>
+    <string name="manual_focus_panel">Manual focus   ◀ ▶     Back: done</string>
 
     <string name="toast_af">Autofocus</string>
     <string name="toast_af_running">Autofocus…</string>

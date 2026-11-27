@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import org.lumen.menu.PowerCountdown;
+
 /**
  * The round power menu of every projector (Lumen OS 1.0, the stock-like look the owner keeps): {@link RoundTile}s in
  * one row, centred over a dimmed picture, full screen in the host that shows it (OverlayHost for the gmpf and Play 6
@@ -25,12 +27,20 @@ import android.widget.LinearLayout;
  * back until then too (a tile acts only on the UP of a DOWN it received itself); {@link #blockedReason} stops every
  * tile while it answers a reason.
  *
+ * The 15 s power off of the stock menu (lumen-menu {@link PowerCountdown}): once the menu settled with the focus on
+ * {@link #countdownTile} and no sleep timer running, that tile shows the seconds left under its label and
+ * {@link #onCountdownEnd} runs one second after 0 if it still has the focus; only the focus leaving that tile stops it
+ * for this show (as stock: UP, DOWN and the other keys that keep the focus there do not). The menu
+ * closes {@link #AUTO_HIDE_MS} after the last key, as stock, so the count always ends first.
+ *
  * Animations: the scrim fades in (200 ms), the tiles rise and settle with a 40 ms stagger (Theme.panelInterpolator,
  * 320 ms), the focused tile's disc grows by 8 % (160 ms). Main thread.
  */
 public abstract class RoundTilePanel extends Panel {
     /** OK / ENTER is ignored this long after the menu opened. */
     public static final long OK_GUARD_MS = 400;
+    /** Stock PowerDialog MSG_CANCEL_POWER_DIALOG: the menu closes 20 s after the last focus change or key. */
+    public static final long AUTO_HIDE_MS = 20_000;
     /** Enter animation length (scrim 200 ms; tiles 60 + 40 * 2 + 320 ms) plus margin: focus fallback. */
     private static final long READY_FALLBACK_MS = 700;
 
@@ -42,6 +52,10 @@ public abstract class RoundTilePanel extends Panel {
     private boolean focusReady;
     private View focusHolder;
     private final Runnable readyFallback = this::makeReady;
+    private final PowerCountdown countdown = new PowerCountdown();
+    /** The tile the running count shows on, null when none runs. */
+    private RoundTile counting;
+    private final Runnable countdownTick = this::countdownTick;
 
     /** The log tag of this menu. */
     protected abstract String tag();
@@ -54,6 +68,15 @@ public abstract class RoundTilePanel extends Panel {
 
     /** Why no tile may act now (e.g. "a curtain is up"), null when they may. */
     protected String blockedReason() { return null; }
+
+    /** The tile the 15 s power off runs on (Power off), null for none. */
+    protected RoundTile countdownTile() { return null; }
+
+    /** A sleep timer runs: no count (stock focuses the timer tile then). */
+    protected boolean timerRunning() { return false; }
+
+    /** The count ended with {@link #countdownTile} still focused: power off. */
+    protected void onCountdownEnd() {}
 
     protected final RoundTile addTile(Context c, int icon, String label, Runnable onClick) {
         RoundTile t = new RoundTile(c, icon, label, onClick);
@@ -116,9 +139,56 @@ public abstract class RoundTilePanel extends Panel {
         if (first == null && tiles.getChildCount() > 0) first = tiles.getChildAt(0);
         if (first != null) first.requestFocus();
         if (focusHolder != null) focusHolder.setFocusable(false);
+        RoundTile power = countdownTile();
+        if (power != null && countdown.start(first == power, timerRunning())) {
+            counting = power;
+            power.setOnFocusChangeListener((v, has) -> {
+                if (countdown.focusChanged(has)) stopCountdown("the focus left Power off");
+            });
+            showCount();
+            stage.postDelayed(countdownTick, PowerCountdown.TICK_MS);
+            Log.i(tag(), "power off in " + countdown.left() + " s unless the focus leaves Power off");
+        }
     }
 
-    @Override protected long autoHideMs() { return 15_000; }
+    /** One second of the 15 s power off. */
+    private void countdownTick() {
+        if (counting == null || !isShowing()) return;
+        if (!countdown.tick()) {
+            showCount();
+            stage.postDelayed(countdownTick, PowerCountdown.TICK_MS);
+            return;
+        }
+        RoundTile t = counting;
+        counting = null;
+        t.value = null;
+        t.invalidate();
+        String why = !t.hasFocus() ? "the focus left Power off" : blockedReason();
+        if (why != null) {
+            Log.i(tag(), "countdown end ignored: " + why);
+            return;
+        }
+        Log.i(tag(), "countdown end: power off");
+        onCountdownEnd();
+    }
+
+    private void showCount() {
+        counting.value = counting.getContext().getString(org.lumen.projector.R.string.lumen_1_d_s, countdown.left());
+        counting.invalidate();
+    }
+
+    /** No power off in this show (the focus left Power off, the menu closing, the power key again). */
+    public final void stopCountdown(String why) {
+        if (stage != null) stage.removeCallbacks(countdownTick);
+        countdown.stop();
+        if (counting == null) return;
+        counting.value = null;
+        counting.invalidate();
+        counting = null;
+        Log.i(tag(), "countdown stopped: " + why);
+    }
+
+    @Override protected long autoHideMs() { return AUTO_HIDE_MS; }
 
     @Override protected WindowManager.LayoutParams onCreateLayoutParams(Context ctx) {
         return OverlayHost.params(true, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -178,6 +248,7 @@ public abstract class RoundTilePanel extends Panel {
 
     @Override protected void onDismissed() {
         focusReady = false;
+        stopCountdown("menu closed");
         if (stage != null) stage.removeCallbacks(readyFallback);
     }
 }

@@ -55,7 +55,7 @@ SHORT = {0: "nothing", 1: "sleep"}
 # power key rule: short press per the user's setting, held = the other action). Unmapped = the line is absent.
 BT_PAIR = [("Vendor_000d_Product_%s.kl" % p, sc) for p in ("3838", "3840", "3841", "3842") for sc in (113, 185)]
 USER_KEYS = {
-    "gmpf": dict([(k, "app" if k[1] == 113 else "nothing") for k in BT_PAIR]
+    "gmpf": dict([(k, "app") for k in BT_PAIR]
                  + [(("Vendor_000d_Product_3843.kl", 113), "app"), (("Vendor_1d5a_Product_c081.kl", 116), "app"),
                     (("Vendor_1d5a_Product_c081.kl", 185), "nothing"), (("Vendor_26e3_Product_af02.kl", 116), "app"),
                     ((IR, 190), "app"), ((IR, 75), "app"), ((KEYPAD, 30), "app"), ((KEYPAD, 116), "app"),

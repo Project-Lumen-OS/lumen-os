@@ -28,13 +28,16 @@ public final class ChipVolumeTest {
     private static final List<String> A11 = Arrays.asList("2 spk_volume -1 0", "3 headphone_volume -1 4",
             "4 headphone_volume -1 4", "8 bluetooth_volume -1 3", "11 usb_volume -1 6", "22 usb_volume -1 6",
             "6 xgimi_pcm_volume -1 -1", "10 null -1 2", "29 null -1 2");
+    /** The same rows on a model with the optical jack (stock audio.ini spdif_jack_type 1): SPDIF is the threadInit path 1. */
+    private static final List<String> A14_OPTICAL = optical(A14);
+    private static final List<String> OPTICAL_MODELS = Arrays.asList("g0111", "g0100", "h0061", "h0062", "h0063");
     private static final String[] A14_MODELS = {"horse_popular", "goat_elegant", "g0111", "g0100", "g0155", "g0170", "h0061", "h0062", "h0063"};
 
     public static void main(String[] args) throws Exception {
         File g = new File(args[0]);
         levels();
         parse();
-        for (String m : A14_MODELS) model(g, m, A14, "[31, 19]", false);
+        for (String m : A14_MODELS) model(g, m, OPTICAL_MODELS.contains(m) ? A14_OPTICAL : A14, "[31, 19]", false);
         model(g, "dragon_healthy", A11, "[13, 31, 19]", true);
         owned();
         wiring(g);
@@ -97,7 +100,14 @@ public final class ChipVolumeTest {
         }
     }
 
+    private static List<String> optical(List<String> rows) {
+        List<String> out = new ArrayList<>();
+        for (String r : rows) out.add("6 xgimi_pcm_volume -1 -1".equals(r) ? "6 xgimi_pcm_volume -1 1" : r);
+        return out;
+    }
+
     private static void model(File g, String code, List<String> want, String fixed, boolean after) throws Exception {
+        int spdif = want.contains("6 xgimi_pcm_volume -1 1") ? MediaPath.OPTICAL : MediaPath.NONE;
         // the model's own table, else its family's (devices/_family/<f>/audio/chip_volume.tsv, devices/README.md)
         String rel = g.toPath().toAbsolutePath().normalize().relativize(
                 Check.deviceFile(g, code, "audio/chip_volume.tsv").toPath().toAbsolutePath().normalize()).toString();
@@ -118,11 +128,13 @@ public final class ChipVolumeTest {
         C.eq(code + ": jack path stores headphone_volume", "[headphone_volume, headphone_volume]", slotsOf(t.ofPath(MediaPath.WIRED)));
         C.eq(code + ": USB path stores usb_volume", "[usb_volume, usb_volume]", slotsOf(t.ofPath(MediaPath.USB)));
         C.eq(code + ": ARC stores nothing", "[]", slotsOf(t.ofPath(MediaPath.ARC)));
-        C.eq(code + ": SPDIF is never a path", MediaPath.NONE, t.pathOf(6));
+        C.eq(code + ": SPDIF is the optical path only with the jack", spdif, t.pathOf(6));
+        C.eq(code + ": the optical path stores xgimi_pcm_volume (stock setDspVolumesToHal)", spdif == MediaPath.OPTICAL ? "[xgimi_pcm_volume]" : "[]",
+                slotsOf(t.ofPath(MediaPath.OPTICAL)));
         C.eq(code + ": unlisted (XGIMI wireless speaker bus) is the speaker path", MediaPath.SPEAKER, t.pathOf(21));
         C.eq(code + ": {hdmi_arc, spdif} plays on ARC", MediaPath.ARC, heard(t, 10, 6));
         C.eq(code + ": {speaker, spdif} plays on the speaker", MediaPath.SPEAKER, heard(t, 2, 6));
-        C.eq(code + ": {spdif} alone is no path", MediaPath.NONE, heard(t, 6));
+        C.eq(code + ": {spdif} alone is the optical path only with the jack", spdif, heard(t, 6));
         C.eq(code + ": {hdmi_arc, bt} plays on Bluetooth (not heap order)", MediaPath.BT, heard(t, 10, 8));
         C.eq(code + ": {earc, usb headset} plays on USB", MediaPath.USB, heard(t, 29, 22));
         String recipe = Check.recipe(g, code, code.equals("horse_popular") ? "Z9xProjector"

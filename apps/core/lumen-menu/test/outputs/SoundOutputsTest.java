@@ -161,6 +161,25 @@ public final class SoundOutputsTest {
         int all = 0;
         for (File d : devs == null ? new File[0] : devs) if (new File(d, "menu.json").isFile()) all++;
         C.ok("every profile has the output page (a base row): " + n + " of " + all, n == all && n > 0);
+        List<String> withOptical = Arrays.asList("auto", "speaker", "optical", "arc", "wired", "bt", "usb");
+        for (String c : new String[] {"h0061", "h0062", "h0063", "g0111", "g0100"}) {
+            C.eq(c + ": the optical jack after the speaker (stock audio.ini spdif_jack_type 1)", withOptical,
+                    profile(g, c).options(FeatureId.SOUND_OUTPUT));
+        }
+        File[] all2 = new File(g, "devices").listFiles();
+        for (File d : all2 == null ? new File[0] : all2) {
+            String c = d.getName();
+            if (!new File(d, "menu.json").isFile() || Arrays.asList("h0061", "h0062", "h0063", "g0111", "g0100").contains(c)) continue;
+            C.ok(c + ": no optical row (no optical jack in its stock)", !profile(g, c).options(FeatureId.SOUND_OUTPUT).contains("optical"));
+        }
+        SoundOutputs opt = SoundOutputs.of(withOptical, null, "optical", OutputDevice.Scan.empty(), true, "bypass");
+        C.ok("the optical row is listed with nothing connected, selected when chosen", opt.selected() != null
+                && "optical".equals(opt.selected().kind) && opt.rows.get(2).kind.equals("optical"));
+        OutputDevice.Scan playOpt = new OutputDevice.Scan(Collections.<OutputDevice>emptyList(), Collections.<OutputDevice>emptyList(),
+                OutputDevice.OPTICAL, "", null);
+        SoundOutputs po = SoundOutputs.of(withOptical, null, "optical", playOpt, true, "bypass");
+        C.ok("playing on the optical jack: the card names it, by hand, with the audio format", po.now != null
+                && "optical".equals(po.now.kind) && !po.nowAuto && "bypass".equals(po.nowFormat));
         C.ok("Play 6 has no jack (stock dayao tree)", !profile(g, "dragon_healthy").options(FeatureId.SOUND_OUTPUT).contains("wired"));
         C.ok("Z9X lists ARC, headphones, Bluetooth, USB (stock voice_output)",
                 profile(g, "horse_popular").options(FeatureId.SOUND_OUTPUT).equals(ALL));

@@ -44,7 +44,7 @@ BANNED = {
         24: "newAutoKst", 80: "no sensor", 155: "no sensor",
         94: "factory white balance", 95: "factory white balance", 533: "factory white balance",
         556: "factory white balance", 101: "auto-colour calibration",
-        102: "auto-colour calibration", 229: "power", 233: "power", 241: "power", 422: "power",
+        102: "auto-colour calibration", 229: "power", 233: "power", 422: "power",
         299: "autofocus", 301: "autoFocus", 400: "reset", 421: "reset", 453: "factoryControlMotor",
         583: "gyroscopeCorrection",
         297: "controlZoomMotor (large zoom move)", 283: "zoom (factory move)", 457: "zoom (factory move)",
@@ -68,7 +68,10 @@ EXCEPTIONS = {
 # zoomReset, GmpfClient.zoomHome, Lumen OS 1.0.4) and the limit count read (mode 12, steps 10: stock
 # ZoomStateView.getLimitStep, GmpfClient.getZoomLimitTotal, Lumen OS 1.0.8 zoom audit F1); every other mode stays a
 # large / factory move
-ONLY_ARGS = {"GmpfClient.java": {153: {(5, 10), (12, 10)}}}
+# 241 goToSleep: only (0, 0), stock PowerManagerService.xgimiPrepareSleep's vendor step once per STR sleep
+# (GmpfBase.strPrepareSleep, power/VendorSleep; GitHub issue 5: without it the vendor keeps gmpf_wake_lock after the
+# first STR wake); mode 1 (reboot), type 1 (the power HAL's own step) and the light standby (4, 2) stay out
+ONLY_ARGS = {"GmpfClient.java": {153: {(5, 10), (12, 10)}, 241: {(0, 0)}}}
 CONST = re.compile(r"\bstatic\s+final\s+int\s+(\w+)\s*=\s*(0x[0-9a-fA-F]+|\d+)\s*;")
 CODE_ARG = re.compile(r"\bcall(?:[A-Z]\w*)?\s*\(\s*([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?|0x[0-9a-fA-F]+|\d+)\s*[,)]")
 GENERATED = "HalCodes.java"   # the generated code table of the app (hal/HalCodes.java), constants used as HalCodes.NAME
@@ -242,8 +245,9 @@ def main():
                 arg = arg.strip()
                 return int(arg, 0) if re.match(r"^(0x[0-9a-fA-F]+|\d+)$", arg) else consts.get(arg)
 
-            def site(n, code, args):
-                """One transact site at line n sending code; args: the two arguments after the code, if any."""
+            def site(n, code, args, query=False):
+                """One transact site at line n sending code; args: the two arguments after the code, if any; query: a
+                has(OP) capability read (sends nothing, so no argument rule applies)."""
                 if code is None:
                     return
                 if code in BANNED.get(f, {}):
@@ -259,7 +263,7 @@ def main():
                         banned.append("%s:%d sends %d outside %s after %s (EXCEPTION: %s)" % (name, n + 1, code, meth, guard, rule))
                     exception_sites.setdefault((f, code), []).append("%s:%d" % (name, n + 1))
                 only = ONLY_ARGS.get(f, {}).get(code)
-                if only is not None:
+                if only is not None and not query:
                     got = tuple(value(a) for a in args) if args and len(args) == 2 else None
                     if got not in only:
                         allowed = " or ".join("(%s)" % ", ".join(map(str, o)) for o in sorted(only))
@@ -274,7 +278,8 @@ def main():
                     site(n, value(m.group(1)), None)
                 for m in re.finditer(r"\b(?:key|has)\s*\(\s*([A-Z][A-Z0-9_]*)\s*\)(\s*,\s*([^,)]+)\s*,\s*([^,)]+)\s*\))?", line):
                     if m.group(1) in ops and m.group(1) in present[f]:
-                        site(n, present[f][m.group(1)], (m.group(3), m.group(4)) if m.group(2) else None)
+                        site(n, present[f][m.group(1)], (m.group(3), m.group(4)) if m.group(2) else None,
+                             m.group(0).startswith("has"))
                 for m in re.finditer(r"\b(?:key|has)\s*\(\s*has\s*\(\s*([A-Z][A-Z0-9_]*)\s*\)\s*\?\s*([A-Z][A-Z0-9_]*)\s*:\s*([A-Z][A-Z0-9_]*)", line):
                     for op in m.groups():
                         if op in present[f]:

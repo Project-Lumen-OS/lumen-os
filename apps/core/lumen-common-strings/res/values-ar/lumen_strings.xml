@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d س</string>
     <string name="lumen_1_d_hz">%1$d هرتز</string>
     <string name="lumen_1_d_min">%1$d د</string>
+    <string name="lumen_1_d_s">%1$d ث</string>
     <string name="lumen_2_point">نقطتان</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">تباين بالذكاء الاصطناعي</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">أصفر</string>
     <string name="lumen_zoom_and_shift">التكبير والإزاحة</string>
     <string name="lumen_zoom_and_shift_is_not">التكبير والإزاحة غير متاحين الآن</string>
+    <string name="lumen_optical_out">الإخراج البصري</string>
+    <string name="lumen_focus_chart_hint">OK: نمط الاختبار</string>
 </resources>

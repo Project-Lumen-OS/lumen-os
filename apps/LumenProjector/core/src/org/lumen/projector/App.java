@@ -112,6 +112,7 @@ public final class App extends Application {
         // EarcLink registers an audio device callback: when the family's audio policy answers (Z9X: AudioPorts)
         try {
             Family.whenAudioUp(this, "EarcLink", () -> org.lumen.projector.cec.EarcLink.install(this));
+            AiScenePolicy.addTvEventSink(org.lumen.projector.cec.EarcLink::onTvEvent);   // the vendor's eARC link event 11
         } catch (Throwable t) { Log.e(TAG, "EarcLink.install", t); }
         try { RemotePairing.install(this, new ProjectorRemoteHost()); } catch (Throwable t) { Log.e(TAG, "RemotePairing.install", t); }
         try { EyeGuard.install(this); } catch (Throwable t) { Log.e(TAG, "EyeGuard.install", t); }

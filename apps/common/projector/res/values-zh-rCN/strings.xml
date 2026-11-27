@@ -12,7 +12,7 @@
     <string name="ok">确定</string>
     <string name="app_not_found">未找到此按键对应的应用</string>
     <string name="diag_app_version">应用版本：%1$s</string>
-    <string name="manual_focus_panel">手动对焦   ◀ ▶     OK/返回：完成</string>
+    <string name="manual_focus_panel">手动对焦   ◀ ▶     返回：完成</string>
     <string name="toast_af">自动对焦</string>
     <string name="toast_af_running">正在自动对焦…</string>
     <string name="toast_af_failed">自动对焦失败</string>

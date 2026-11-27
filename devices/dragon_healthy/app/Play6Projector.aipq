@@ -11,8 +11,6 @@ res/drawable/ic_eye_mask.xml
 src/org/lumen/projector/voice/AssistantHost.java
 src/org/lumen/projector/source/BootSource.java
 src/org/lumen/projector/ManualFocusActivity.java
-src/org/lumen/projector/FocusPattern.java
-src/org/lumen/projector/FocusPatternView.java
 # the core classes folded for the Play 6 (step 3b part 4): what differs is the play6-hidl Family (the eye mask without
 # the vendor UI watchdog, the timer fade without the lamp step, the keys' power, focus, shortcut and screensaver
 # rules, the sound output without the digital format)

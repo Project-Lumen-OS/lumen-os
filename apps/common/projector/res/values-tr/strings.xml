@@ -12,7 +12,7 @@
     <string name="ok">Tamam</string>
     <string name="app_not_found">Bu tuş için uygulama bulunamadı</string>
     <string name="diag_app_version">Uygulama sürümü: %1$s</string>
-    <string name="manual_focus_panel">Manuel odak   ◀ ▶     OK/Geri: bitti</string>
+    <string name="manual_focus_panel">Manuel odak   ◀ ▶     Geri: bitti</string>
     <string name="toast_af">Otomatik odak</string>
     <string name="toast_af_running">Odaklanıyor…</string>
     <string name="toast_af_failed">Otomatik odak başarısız</string>

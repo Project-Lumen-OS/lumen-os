@@ -74,6 +74,8 @@
 !image	place	Vendor_3697_Product_0002.kl	{sys}/product/usr/keylayout/Vendor_3697_Product_0002.kl	0644	0	0	{LABEL}
 # the video player of every model as its published APK with its own key (tools/build/prebuilt.py)
 !image	prebuilt	LumenPlay	arm64	{sys}/app/LumenPlay
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+!image	framework	z9x	{sys}
 # the Z9X 1.1.0 image files over their 1.0.9 copies: the native UI fifo stub (an RS 20 is not on its list: every command
 # is refused, the vendor is never told a mask is up), the sysconfig, the Google add-on reader, the one blobs reader of
 # every model with the Z9X settings, the first boot over stock data, the stock volume split

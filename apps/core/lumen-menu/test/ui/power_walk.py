@@ -8,7 +8,12 @@ code decides; every step CHECKS the decision the code logs, the window in front 
 
 Checks: a fresh install has "Short press of the power key" = Power menu (stock); a short press opens the power menu and
 does not sleep; Back closes it; the hold (1.2 s) sleeps; after "Sleep" is chosen a short press sleeps and the hold
-opens the power menu; back to Power menu the short press opens the menu again. One PASS/FAIL line per check.
+opens the power menu; back to Power menu the short press opens the menu again. The menu as stock (menu_rules): five
+tiles, the 15 s power off on Power off, the power key again powers off (Halt), UP and DOWN keep the focus and the count
+and it powers off (Halt) 16 s after the menu settled, LEFT moves the focus off Power off and stops the count for this show
+(RIGHT back does not start it again, no power off, the menu stays), the sleep timer card opens and starts a timer, with a timer set
+the menu opens on it without a count. Halt's call is refused on the emulator (the walk APK has the test platform key,
+REBOOT is denied), its log line is the proof. One PASS/FAIL line per check.
 """
 import os
 import re
@@ -127,6 +132,130 @@ def case(what, ms, want):
         start()
 
 
+HALT = re.compile(r"LumenHalt.*power off: Android shutdown")
+MONO = re.compile(r"^\s*(\d+\.\d+)")
+
+
+def bpress(ms=150):
+    """The power key through the walk activity's receiver (a HID key would reach the power menu window, not the app)."""
+    sh("am broadcast -a org.lumen.menu.walk.PRESS --ei ms %d -p %s" % (ms, PKG))
+
+
+def tile_names():
+    xml = sh("uiautomator dump /data/local/tmp/pw_rules.xml >/dev/null && cat /data/local/tmp/pw_rules.xml")
+    return [d for _, d in sorted((int(x1), d) for d, x1 in re.findall(r'content-desc="([^"]+)"[^>]*bounds="\[(\d+),\d+\]', xml))], xml
+
+
+def at(log, what):
+    """Monotonic time of the first log line containing what, None when none."""
+    for l in log.splitlines():
+        if what in l:
+            m = MONO.match(l)
+            return float(m.group(1)) if m else None
+    return None
+
+
+def open_menu(what):
+    check(what + ": the walk activity is in front", ready(), front())
+    sh("logcat -c")
+    hid(150)
+    time.sleep(2.5)
+    log = sh("logcat -d -v monotonic")
+    m = re.search(r"round power menu shown: (\d+) tiles", log)
+    return log, (int(m.group(1)) if m else 0)
+
+
+def menu_rules():
+    x50 = "x50" in PKG
+    sh("settings put global hidden_api_policy 1")    # Halt's hidden PowerManager.shutdown reaches PowerManagerService
+    log, n = open_menu("second press")
+    names, _ = tile_names()
+    check("menu: five tiles (Turn off screen, Sleep, Power off, Restart, Sleep timer)", n == 5 and len(names) == 5,
+          "%d shown | %s" % (n, " | ".join(names)))
+    check("menu: the 15 s power off starts on Power off", "power off in 15 s unless the focus leaves Power off" in log, log[-300:])
+    time.sleep(1.0)
+    bpress(150)
+    time.sleep(2.5)
+    log = sh("logcat -d -v monotonic")
+    check("menu: the power key again powers off (Halt), no sleep", bool(re.search(r"again: power off", log))
+          and bool(HALT.search(log)) and not SLEEP_LOG.search(log), " | ".join(l for l in log.splitlines()
+                                                                             if re.search("Halt|again|sleep|PowerMenu", l))[-400:])
+    sh("am force-stop " + PKG)
+    start()
+    log, n = open_menu("up down")
+    time.sleep(0.5)
+    sh("input keyevent 19")
+    time.sleep(0.3)
+    sh("input keyevent 20")
+    time.sleep(9.5)
+    log = sh("logcat -d -v monotonic")
+    check("up down: UP and DOWN keep the count (stock: only the focus leaving Power off stops it)",
+          "countdown stopped" not in log and "power off in 15 s" in log, log[-300:])
+    check("up down: no power off 13 s after the menu opened", not HALT.search(log) and "countdown end" not in log)
+    time.sleep(6)
+    log = sh("logcat -d -v monotonic")
+    t0, t1 = at(log, "power off in 15 s"), at(log, "countdown end: power off")
+    check("up down: the count powers off (Halt) 16 s after the menu settled (stock: 0 shown for a second)",
+          t0 is not None and t1 is not None and 15.5 <= t1 - t0 <= 17.0 and bool(HALT.search(log)),
+          "settled %s end %s" % (t0, t1))
+    sh("am force-stop " + PKG)
+    start()
+    log, n = open_menu("arrow")
+    sh("input keyevent 21")
+    time.sleep(0.5)
+    sh("input keyevent 22")
+    time.sleep(16.5)
+    log = sh("logcat -d -v monotonic")
+    check("arrow: LEFT (the focus leaves Power off) stops the count", "countdown stopped: the focus left Power off" in log,
+          log[-300:])
+    check("arrow: RIGHT back on Power off starts no new count (stock)", log.count("power off in 15 s") == 1, log[-300:])
+    check("arrow: no power off 19 s after the menu opened", not HALT.search(log) and "countdown end" not in log)
+    check("arrow: the menu stays open (it closes 20 s after the last key)", ACT not in front(), front())
+    sh("input keyevent 4")
+    time.sleep(1.5)
+    log, n = open_menu("timer")
+    for _ in range(2):                                  # Power off -> Restart -> Sleep timer
+        sh("input keyevent 22")
+        time.sleep(0.5)
+    sh("input keyevent 23")
+    time.sleep(1.5)
+    shown, xml = tile_names()
+    check("timer: OK on Sleep timer opens its card in place of the tiles", not shown and 'focused="true"' in xml,
+          " | ".join(shown) + " " + xml[-200:])
+    sh("input keyevent 4")
+    time.sleep(1.5)
+    log = sh("logcat -d -v monotonic")
+    check("timer: Back returns to the tiles, no new count", ACT not in front() and log.count("power off in 15 s") == 1,
+          front())
+    sh("input keyevent 23")
+    time.sleep(1.5)
+    if x50:
+        sh("input keyevent 20")                         # the X50 page starts on Off
+        time.sleep(0.5)
+    sh("input keyevent 23")
+    time.sleep(2)
+    log = sh("logcat -d -v monotonic")
+    check("timer: a 15 min timer starts from the card", bool(re.search(r"started: 15 min|sleep timer 15 min", log)), log[-300:])
+    sh("input keyevent 4")
+    time.sleep(1.5)
+    log, n = open_menu("timer set")
+    time.sleep(1)
+    log = sh("logcat -d -v monotonic")
+    check("timer set: the menu opens without the count (stock: on the timer)", n == 5 and "power off in" not in log, log[-300:])
+    sh("input keyevent 23")                             # the timer tile has the focus: its card, turn the timer off
+    time.sleep(1.5)
+    if x50:
+        sh("input keyevent 19")
+    else:
+        for _ in range(3):
+            sh("input keyevent 20")
+            time.sleep(0.4)
+    time.sleep(0.5)
+    sh("input keyevent 23")
+    time.sleep(1.5)
+    sh("input keyevent 4")
+
+
 def power_off_tile():
     """POWER_OFF=1: the round power menu's Power off tile on the emulator really powers off (Android's ShutdownThread),
     never the power key's sleep (LR-YVHNX4). The emulator goes down at the end: run it last, one model per boot."""
@@ -177,6 +306,7 @@ def power_off_tile():
 def main():
     sh("pm clear " + PKG)
     sh("appops set %s SYSTEM_ALERT_WINDOW allow" % PKG)
+    sh("appops set %s SCHEDULE_EXACT_ALARM allow" % PKG)      # the X50 sleep timer (SleepAlarm), as the real app
     sh("settings put system screen_off_timeout 1800000")
     wake()
     start()
@@ -194,6 +324,8 @@ def main():
     start("--es power_short power_menu")
     check("set back to Power menu", choice() == "power_menu", choice())
     case("Power menu again, short press", 150, "menu")
+    if os.environ.get("MENU_RULES", "1") == "1":
+        menu_rules()
     sh("am force-stop " + PKG)
     print("power_walk %s: %s" % (PKG, "PASS" if not FAILS else "FAIL %d" % len(FAILS)))
     return 1 if FAILS else 0

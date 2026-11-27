@@ -203,9 +203,53 @@ public final class CecDefaultsTest {
                         && x50.indexOf("org.lumen.projector.cec.CecStockDefaults.applyOnce(this);") > x50.indexOf("new Thread(() -> {")
                         && x50.contains("}, \"x50-cec-defaults\").start();"));
         C.ok("the all-on step runs inside the start step of every family",
-                glue.contains("allOnOnce(c);") && glue.contains("K_ALL_ON = \"cec_defaults_v1_applied\""));
+                glue.contains("allOnOnce(c, table);") && glue.contains("K_ALL_ON = \"cec_defaults_v1_applied\""));
+        C.ok("the stock-again step runs after the all-on step, once (its own flag)",
+                glue.indexOf("stockAgainOnce(c, table, device);") > glue.indexOf("allOnOnce(c, table);")
+                        && glue.contains("K_STOCK_AGAIN = \"cec_stock_again_v1_applied\""));
+        stockAgain(t);
         allOn();
         C.done();
+    }
+
+    /** R3: tv_send_standby_on_sleep back to stock behind ONE table line, on in the shipped table (2026-11-27). */
+    private static void stockAgain(CecDefaults real) {
+        CecSetting standby = CecSetting.TV_SEND_STANDBY_ON_SLEEP;
+        C.ok("shipped table: send standby back to stock 0 (stock_again 1, owner 2026-11-27)", real.stockAgain(standby)
+                && "0".equals(real.value("goat_elegant", standby)) && "0".equals(real.value("horse_popular", standby))
+                && "0".equals(real.value("g0111", standby)) && !real.allOn().contains(CecRow.SEND_STANDBY)
+                && "1".equals(real.value("goat_elegant", CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY)));
+        String owner = base() + "owner tv_send_standby_on_sleep 1\nowner tv_wake_on_one_touch_play 1\n";
+        C.ok("parse: stock_again without an owner line is refused", refused(base() + "stock_again tv_send_standby_on_sleep 1\n"));
+        C.ok("parse: stock_again 2 is refused", refused(owner + "stock_again tv_send_standby_on_sleep 2\n"));
+        C.ok("parse: stock_again of a setting the page never writes is refused", refused(owner + "owner power_control_mode none\nstock_again power_control_mode 1\n"));
+        CecDefaults off = CecDefaults.parse(owner + "stock_again tv_send_standby_on_sleep 0\n");
+        CecDefaults on = CecDefaults.parse(owner + "stock_again tv_send_standby_on_sleep 1\n");
+        C.eq("flag 0: the image ships the owner's 1", "1", off.value("goat_elegant", standby));
+        C.eq("flag 1: the image ships stock 0", "0", on.value("goat_elegant", standby));
+        C.eq("flag 1: the wake stays the owner's", "1", on.value("goat_elegant", CecSetting.TV_WAKE_ON_ONE_TOUCH_PLAY));
+        C.ok("flag 1: the all-on step leaves SEND_STANDBY alone", !on.allOn().contains(CecRow.SEND_STANDBY)
+                && on.allOn().size() == CecDefaults.ALL_ON.size() - 1 && off.allOn().equals(CecDefaults.ALL_ON));
+        Fake u = new Fake();
+        u.on.put(standby, true);
+        List<String> log = new ArrayList<>();
+        C.ok("flag 1, never touched by the user: done", on.stockAgainOnce("goat_elegant", u, log));
+        C.ok("flag 1: set to stock 0", Boolean.FALSE.equals(u.on.get(standby)) && log.get(0).contains("1 -> stock 0"));
+        Fake chose = new Fake();
+        chose.on.put(standby, true);
+        chose.chose.add(CecRow.SEND_STANDBY);
+        C.ok("flag 1, the user switched the row: stock 0 once too (for everyone)",
+                on.stockAgainOnce("goat_elegant", chose, new ArrayList<>()) && Boolean.FALSE.equals(chose.on.get(standby))
+                        && chose.calls.contains("set tv_send_standby_on_sleep false"));
+        Fake unknown = new Fake();
+        C.ok("flag 1, no CEC service yet: again at the next start", !on.stockAgainOnce("goat_elegant", unknown, new ArrayList<>()));
+        Fake already = new Fake();
+        already.on.put(standby, false);
+        C.ok("flag 1, already 0: nothing written", on.stockAgainOnce("goat_elegant", already, new ArrayList<>())
+                && !already.calls.contains("set tv_send_standby_on_sleep false"));
+        Fake none = new Fake();
+        none.on.put(standby, true);
+        C.ok("flag 0: nothing to do", off.stockAgainOnce("goat_elegant", none, new ArrayList<>()) && none.calls.isEmpty());
     }
 
     /** Rows with one stored value each; the flag survives "reboots" (a new Rows over the same maps). */

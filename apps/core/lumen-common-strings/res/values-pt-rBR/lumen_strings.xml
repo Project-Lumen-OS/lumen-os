@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d h</string>
     <string name="lumen_1_d_hz">%1$d Hz</string>
     <string name="lumen_1_d_min">%1$d min</string>
+    <string name="lumen_1_d_s">%1$d s</string>
     <string name="lumen_2_point">2 pontos</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">Contraste IA</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">Amarelo</string>
     <string name="lumen_zoom_and_shift">Zoom e deslocamento</string>
     <string name="lumen_zoom_and_shift_is_not">Zoom e deslocamento indisponível agora</string>
+    <string name="lumen_optical_out">Saída ótica</string>
+    <string name="lumen_focus_chart_hint">OK: padrão de teste</string>
 </resources>

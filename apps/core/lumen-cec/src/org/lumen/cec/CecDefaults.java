@@ -21,6 +21,9 @@ import java.util.Map;
  *   device   DEVICE  SETTING  VALUE  the stock value on one device where it differs
  *   owner    SETTING  VALUE          the owner's value on every image where it differs from stock
  *   reset    DEVICE  SETTING         put the stock value back once on that device (the all-on step runs after it)
+ *   stock_again  SETTING  0|1        1: the owner's value of SETTING goes back to stock: the image ships the stock
+ *                                    value, the all-on step leaves its row alone, and a unit whose user never switched
+ *                                    that row gets the stock value once ({@link #stockAgainOnce}); 0: the owner's value
  * </pre>
  * The decision 2026-11-26: every HDMI-CEC switch ON on every family; units of an older table get them ON once
  * ({@link #allOnOnce}), after that a user's choice is never touched again.
@@ -34,13 +37,16 @@ public final class CecDefaults {
     private final Map<String, Map<CecSetting, String>> devices;
     private final Map<String, List<CecSetting>> resets;
     private final Map<CecSetting, String> owner;
+    private final Map<CecSetting, Boolean> stockAgain;
 
     private CecDefaults(Map<CecSetting, String> defaults, Map<String, Map<CecSetting, String>> devices,
-                        Map<String, List<CecSetting>> resets, Map<CecSetting, String> owner) {
+                        Map<String, List<CecSetting>> resets, Map<CecSetting, String> owner,
+                        Map<CecSetting, Boolean> stockAgain) {
         this.defaults = defaults;
         this.devices = devices;
         this.resets = resets;
         this.owner = owner;
+        this.stockAgain = stockAgain;
     }
 
     /** Parses the table text. Throws IllegalArgumentException naming the bad line. */
@@ -49,6 +55,7 @@ public final class CecDefaults {
         Map<String, Map<CecSetting, String>> devices = new HashMap<>();
         Map<String, List<CecSetting>> resets = new HashMap<>();
         Map<CecSetting, String> owner = new EnumMap<>(CecSetting.class);
+        Map<CecSetting, Boolean> stockAgain = new EnumMap<>(CecSetting.class);
         String[] lines = text == null ? new String[0] : text.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
@@ -71,6 +78,14 @@ public final class CecDefaults {
                         need(f, 3);
                         put(owner, setting(f[1]), f[2]);
                         break;
+                    case "stock_again": {
+                        need(f, 3);
+                        CecSetting s = setting(f[1]);
+                        if (!s.writable() || s.row == null) throw new IllegalArgumentException(s.key + " is no switch of the page");
+                        if (!"0".equals(f[2]) && !"1".equals(f[2])) throw new IllegalArgumentException("stock_again is 0 or 1");
+                        if (stockAgain.put(s, "1".equals(f[2])) != null) throw new IllegalArgumentException(s.key + " given twice");
+                        break;
+                    }
                     case "reset":
                         need(f, 3);
                         CecSetting s = setting(f[2]);
@@ -89,7 +104,10 @@ public final class CecDefaults {
         for (CecSetting s : CecSetting.values()) {
             if (!defaults.containsKey(s)) throw new IllegalArgumentException("no default for " + s.key);
         }
-        return new CecDefaults(defaults, devices, resets, owner);
+        for (CecSetting s : stockAgain.keySet()) {
+            if (!owner.containsKey(s)) throw new IllegalArgumentException("stock_again " + s.key + " without an owner line");
+        }
+        return new CecDefaults(defaults, devices, resets, owner, stockAgain);
     }
 
     private static void need(String[] f, int n) {
@@ -116,8 +134,57 @@ public final class CecDefaults {
 
     /** The value the image of a device ships: the owner's line, else the stock one. */
     public String value(String device, CecSetting s) {
-        String v = owner.get(s);
+        String v = stockAgain(s) ? null : owner.get(s);
         return v != null ? v : stock(device, s);
+    }
+
+    /** The owner's value of s goes back to stock (a stock_again line with 1). */
+    public boolean stockAgain(CecSetting s) {
+        return Boolean.TRUE.equals(stockAgain.get(s));
+    }
+
+    /** The rows of {@link #ALL_ON} the all-on step still turns on (a stock_again row is left alone). */
+    public List<CecRow> allOn() {
+        List<CecRow> l = new ArrayList<>();
+        for (CecRow r : ALL_ON) {
+            boolean back = false;
+            for (CecSetting s : CecSetting.values()) if (s.row == r && stockAgain(s)) back = true;
+            if (!back) l.add(r);
+        }
+        return Collections.unmodifiableList(l);
+    }
+
+    /**
+     * Once per unit and setting (the caller's persisted flag): every stock_again switch gets the stock value, also where
+     * the user had switched its row (2026-11-27: for everyone, once; afterwards the user's choice stays). A held
+     * switch-off counts as on, as in {@link #apply}. True when it is complete; false = a switch could not be read or
+     * written, run it again at the next start. Every decision to log.
+     */
+    public boolean stockAgainOnce(String device, Unit u, List<String> log) {
+        boolean done = true;
+        for (CecSetting s : CecSetting.values()) {
+            if (!stockAgain(s)) continue;
+            boolean stock = "1".equals(stock(device, s));
+            Boolean now = u.on(s);
+            if (now == null) {
+                log.add(s.key + ": unknown now, again at the next start");
+                done = false;
+                continue;
+            }
+            boolean held = u.heldOff(s);
+            if ((now || held) == stock) {
+                log.add(s.key + ": already stock (" + (stock ? 1 : 0) + ")");
+                continue;
+            }
+            if (now != stock && !u.set(s, stock)) {
+                log.add(s.key + ": refused, again at the next start");
+                done = false;
+                continue;
+            }
+            if (held) u.dropHold(s);
+            log.add(s.key + ": " + (now || held ? 1 : 0) + " -> stock " + (stock ? 1 : 0) + " (owner value back to stock, once)");
+        }
+        return done;
     }
 
     /** The switches the device puts back to stock once, in table order. */
@@ -210,9 +277,14 @@ public final class CecDefaults {
      * switch the user turns off stays off. True when it changed something.
      */
     public static boolean allOnOnce(Rows u, List<String> log) {
+        return allOnOnce(u, ALL_ON, log);
+    }
+
+    /** {@link #allOnOnce(Rows, List)} over the rows of a table ({@link #allOn}). */
+    public static boolean allOnOnce(Rows u, List<CecRow> rows, List<String> log) {
         if (u.done()) return false;
         boolean complete = true, changed = false;
-        for (CecRow r : ALL_ON) {
+        for (CecRow r : rows) {
             if (u.absent(r)) {
                 log.add(r + ": not on this projector");
                 continue;

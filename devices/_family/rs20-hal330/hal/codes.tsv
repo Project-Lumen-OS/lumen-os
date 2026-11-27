@@ -62,6 +62,7 @@ IGmpf	GMPF_GET_SCREEN_ON_OFF	196	getScreenOnOff	W= R=readBool	get	ProjectorBase@
 IGmpf	GMPF_CORRECT_KEYSTONE_RESET	207	correctKeystoneReset	W=writeUint8 R=	call	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 207)
 IGmpf	GMPF_GET_BOOT_REASON	230	getBootReason	W= R=readInt8	get	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 230)
 IGmpf	GMPF_GO_TO_BOOT_COMPLETED	237	goToBootCompleted	W=writeInt32 R=readBool	call	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 237)
+IGmpf	GMPF_GO_TO_SLEEP	241	goToSleep	W=writeInt32,writeInt32 R=	call	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 241)
 IGmpf	GMPF_NEW_AUTO_KST	272	newAutoKst	W=writeInt32 R=readInt8	call	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 272)
 IGmpf	GMPF_GET_TOF_DISTANCE	279	getTofDistance	W= R=readInt32	get	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 279)
 IGmpf	GMPF_GET_PROJ_CURTAIN_ADP	289	getProjCurtainAdp	W= R=readBool	get	ProjectorBase@rs20-hal330	stock devices/_hal/gmpf-hidl/rs20-v1.6.55.tsv by name (devices/horse_popular/hal/codes.tsv 289)

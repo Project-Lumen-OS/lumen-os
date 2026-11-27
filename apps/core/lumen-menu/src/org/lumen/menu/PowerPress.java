@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.menu;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -9,7 +10,8 @@ import java.util.function.Supplier;
  * the press gives it back and does nothing else ({@link LampOff#eats}); a press that woke the projector does nothing
  * more; held {@link #HOLD_MS} -> {@link PowerKeyChoice#hold}, once, while the key is still down; released before that
  * -> {@link PowerKeyChoice#shortPress} (2026-11-26: the user's setting, stock power menu by default; the choice is
- * read at each press, so a change in the menu counts from the next press). A canceled UP, a repeat or an UP of a press
+ * read at each press, so a change in the menu counts from the next press); while the power menu is open that short
+ * press powers off (stock, {@link PowerKeyChoice#shortPress(boolean)}). A canceled UP, a repeat or an UP of a press
  * that began elsewhere do nothing; every UP ends the armed press (as {@link GearPress}).
  *
  * <p>The wake (stock XgimiWindowManager: mSystemActive false from the sleep until checkWakeUpStatus reads the light on,
@@ -36,6 +38,8 @@ public final class PowerPress {
     private final LampOff lampOff;
     /** The user's setting, read at each press (null: stock). */
     private final Supplier<PowerKeyChoice> choice;
+    /** The power menu is on screen, read at the UP of a short press (null: never). */
+    private final BooleanSupplier menuOpen;
     /** downTime of the armed press, {@link #NO_PRESS} when none. */
     private long downTime = NO_PRESS;
     /** The armed press already opened the power menu. */
@@ -48,8 +52,13 @@ public final class PowerPress {
     private long lightAt = NO_PRESS;
 
     public PowerPress(LampOff lampOff, Supplier<PowerKeyChoice> choice) {
+        this(lampOff, choice, null);
+    }
+
+    public PowerPress(LampOff lampOff, Supplier<PowerKeyChoice> choice, BooleanSupplier menuOpen) {
         this.lampOff = lampOff;
         this.choice = choice;
+        this.menuOpen = menuOpen;
     }
 
     /** The user's choice, the stock one when it cannot be read. */
@@ -125,7 +134,7 @@ public final class PowerPress {
             return choice().hold();
         }
         disarm();
-        return armed && !canceled ? choice().shortPress() : PowerAction.NONE;
+        return armed && !canceled ? choice().shortPress(menuOpen != null && menuOpen.getAsBoolean()) : PowerAction.NONE;
     }
 
     private void disarm() {

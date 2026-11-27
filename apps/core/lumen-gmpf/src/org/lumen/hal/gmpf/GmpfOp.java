@@ -99,6 +99,7 @@ public enum GmpfOp {
     GET_WAKE_UP_SOURCE("getWakeUpSource"),
     GET_ZOOM_STEP_RANGE("getZoomStepRange"),
     GO_TO_BOOT_COMPLETED("goToBootCompleted"),
+    GO_TO_SLEEP("goToSleep"),
     IS_3D_TO_2D_ENABLED("is3DTo2DEnabled"),
     IS_POWER_ON_AF_ENABLED("isPowerOnAFEnabled"),
     IS_POWER_ON_MUSIC_ENABLED("isPowerOnMusicEnabled"),

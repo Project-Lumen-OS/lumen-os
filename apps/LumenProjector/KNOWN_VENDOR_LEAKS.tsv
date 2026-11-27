@@ -21,7 +21,7 @@ apps/LumenProjector/core/src/org/lumen/projector/audio/SoundEq.java	11
 apps/LumenProjector/core/src/org/lumen/projector/audio/SpdifOff.java	1
 apps/LumenProjector/core/src/org/lumen/projector/audio/VendorSoundWatch.java	8
 apps/LumenProjector/core/src/org/lumen/projector/audio/Z9xAudioFixer.java	2
-apps/LumenProjector/core/src/org/lumen/projector/cec/EarcLink.java	6
+apps/LumenProjector/core/src/org/lumen/projector/cec/EarcLink.java	4
 apps/LumenProjector/core/src/org/lumen/projector/cec/EarcRules.java	1
 apps/LumenProjector/core/src/org/lumen/projector/display/ThreeD.java	19
 apps/LumenProjector/core/src/org/lumen/projector/display/ThreeDCall.java	1

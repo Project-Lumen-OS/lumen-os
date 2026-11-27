@@ -93,6 +93,8 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 # updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and
 # browser send from the first boot: tools/build/prebuilt.py, devices/_image/prebuilt.tsv, build.conf prebuilt=)
 !image	prebuilt	LumenPlay	arm64	{sys}/app/LumenPlay
+# the base's services.jar fix (stock XGIMI eARC link, tools/base_patch/services.py; build.conf framework=, tools/build/framework.py)
+!image	framework	z9x	{sys}
 !image	cleanup	{sys}/app/Z9xTvInput/oat
 # screen casting on every model (2026-11-21, owner: one shared feature set): the AirPlay receiver with the casting
 # screen of this tree (apps/LumenAirPlay, signed with the model's platform key, its native library from the released

@@ -1,0 +1,1 @@
+Synced copies, never edit them here: res/xml/global_keys.xml, res/values/lumen_power_menu.xml and res/layout/shutdown_dialog.xml. Edit apps/common/overlay and run `sh apps/common/sync.sh APP_DIR keys power` for every framework RRO (apps/common/test/power_menu_test.py lists them).

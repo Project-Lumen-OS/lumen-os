@@ -32,6 +32,15 @@ public enum PowerKeyChoice {
         return this == POWER_MENU ? PowerAction.MENU : PowerAction.SLEEP;
     }
 
+    /**
+     * What a short press does while the power menu is open or not: open, it powers off (stock com.xgimi.shutdown
+     * PowerUI.dispatchAction: the power key again while PowerDialog shows = PowerUtils.shutDown, the same code on every
+     * family), whatever the setting; the hold keeps its action.
+     */
+    public PowerAction shortPress(boolean menuOpen) {
+        return menuOpen ? PowerAction.POWER_OFF : shortPress();
+    }
+
     /** What holding the key does: the other action. */
     public PowerAction hold() {
         return this == POWER_MENU ? PowerAction.SLEEP : PowerAction.MENU;

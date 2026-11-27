@@ -80,12 +80,15 @@ apps/LumenProjector/core/src/org/lumen/projector/power/StandbyController.java	or
 apps/LumenProjector/core/src/org/lumen/projector/power/PowerKey.java	org.lumen.hdmi.SleepSource.goToSleep(app, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);
 apps/LumenProjector/core/src/org/lumen/projector/cec/CecPolicy.java	org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON, 0);
 apps/LumenProjector/core/src/org/lumen/projector/dream/IdleOwner.java	org.lumen.hdmi.SleepSource.goToSleep(sApp, PowerManager.GO_TO_SLEEP_REASON_TIMEOUT, 0);
-apps/LumenProjector/host/activity/src/org/lumen/x50/projector/Standby.java	org.lumen.hdmi.SleepSource.tvTakesSource(sApp);
+apps/LumenProjector/host/activity/src/org/lumen/x50/projector/Standby.java	org.lumen.hdmi.SleepSource.beforeSleep(sApp);
 apps/LumenProjector/core/src/org/lumen/projector/source/GmpfRelinkHost.java	return org.lumen.projector.Family.INACTIVE_SOURCE_SLEEP;
 apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/x50/projector/X50RelinkHost.java	return org.lumen.projector.Family.INACTIVE_SOURCE_SLEEP;
-apps/LumenProjector/core/src/org/lumen/projector/cec/EarcLink.java	switch (EarcRules.step(status, sOurs, present, interactive())) {
+apps/LumenProjector/core/src/org/lumen/projector/cec/EarcLink.java	EarcStep step = EarcRules.step(status, sOurs, present, interactive());
 apps/LumenTvInput/src/org/lumen/tvinput/HdmiSession.java	long delay = ExitSelect.delayMs(interactive, Prefs.get(mContext, Prefs.CEC_CONTROL),
 apps/LumenProjector/vendor/xgimi/aidl-gmpf/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
 apps/LumenProjector/vendor/xgimi/hidl-gmpf/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
 apps/LumenProjector/vendor/xgimi/mt9681-aidl/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
 apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/Family.java	public static final boolean INACTIVE_SOURCE_SLEEP = false;
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	sMain.postDelayed(TICK, SourceOff.FIRST_READ_MS);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SourceFollow.java	m.addHdmiCecEnabledChangeListener(sWork::post, name -> sFollow = null);
+apps/core/lumen-hdmi/src/org/lumen/hdmi/SleepSource.java	beforeSleep(ctx);

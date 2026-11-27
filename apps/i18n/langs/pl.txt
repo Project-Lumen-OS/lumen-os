@@ -10,7 +10,7 @@ tg_move_ak=Korekcja trapezu po przesunięciu
 ok=OK
 app_not_found=Nie znaleziono aplikacji dla tego przycisku
 diag_app_version=Wersja aplikacji: %1$s
-manual_focus_panel=Ręczna ostrość   ◀ ▶     OK/Wstecz: gotowe
+manual_focus_panel=Ręczna ostrość   ◀ ▶     Wstecz: gotowe
 toast_af=Autofokus
 toast_af_running=Ustawianie ostrości…
 toast_af_failed=Nie udało się ustawić ostrości
@@ -687,6 +687,7 @@ lumen_1_d=%1$d%%
 lumen_1_d_h=%1$d godz.
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d min
+lumen_1_d_s=%1$d s
 lumen_2_point=2 punkty
 lumen_3d=3D
 lumen_ai_contrast=Kontrast AI
@@ -972,6 +973,8 @@ lumen_white_balance=Balans bieli
 lumen_yellow=Żółty
 lumen_zoom_and_shift=Powiększenie i przesunięcie
 lumen_zoom_and_shift_is_not=Powiększenie i przesunięcie są teraz niedostępne
+lumen_optical_out=Wyjście optyczne
+lumen_focus_chart_hint=OK: plansza testowa
 
 @projector/strings_p6.xml
 p6_batt_low=Niski poziom baterii: pozostało %1$d %%

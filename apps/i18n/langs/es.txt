@@ -10,7 +10,7 @@ tg_move_ak=Trapecio automático al mover
 ok=Aceptar
 app_not_found=No hay ninguna aplicación para este botón
 diag_app_version=Versión de la aplicación: %1$s
-manual_focus_panel=Enfoque manual   ◀ ▶     OK/Atrás: listo
+manual_focus_panel=Enfoque manual   ◀ ▶     Atrás: listo
 toast_af=Autoenfoque
 toast_af_running=Enfocando…
 toast_af_failed=No se ha podido enfocar
@@ -686,6 +686,7 @@ lumen_1_d=%1$d %%
 lumen_1_d_h=%1$d h
 lumen_1_d_hz=%1$d Hz
 lumen_1_d_min=%1$d min
+lumen_1_d_s=%1$d s
 lumen_2_point=2 puntos
 lumen_3d=3D
 lumen_ai_contrast=Contraste IA
@@ -971,6 +972,8 @@ lumen_white_balance=Balance de blancos
 lumen_yellow=Amarillo
 lumen_zoom_and_shift=Zoom y desplazamiento
 lumen_zoom_and_shift_is_not=Zoom y desplazamiento no disponible ahora
+lumen_optical_out=Salida óptica
+lumen_focus_chart_hint=OK: carta de ajuste
 
 @projector/strings_p6.xml
 p6_batt_low=Batería baja: queda un %1$d %%

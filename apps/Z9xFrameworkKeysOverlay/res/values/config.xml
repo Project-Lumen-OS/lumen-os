@@ -33,12 +33,8 @@
          own 3-item power menu; res/xml/global_keys.xml). Values unchanged. -->
     <integer name="config_longPressOnPowerBehavior">1</integer>
 
-    <!-- Power menu: exactly "power" (shut down) and "restart". Lineage reads this array through
-         LineageGlobalActionsService only while LineageSettings.Secure power_menu_actions is unset. -->
-    <string-array name="config_globalActionsList" translatable="false">
-        <item>power</item>
-        <item>restart</item>
-    </string-array>
+    <!-- Power menu entries (config_globalActionsList, "power" and "restart"): res/values/lumen_power_menu.xml, the
+         synced copy of apps/common/overlay/values/lumen_power_menu.xml that every family's framework RRO carries. -->
 
     <!-- ================= Lumen OS 1.0 (plan C9: this file is the single editor of framework values) ====
 

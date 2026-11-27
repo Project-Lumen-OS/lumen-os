@@ -34,6 +34,10 @@ public interface GmpfWire<K> {
     boolean i32RetBool(K k, int v) throws RemoteException;
     int i32RetI32(K k, int v) throws RemoteException;
     byte i32RetI8(K k, int v) throws RemoteException;
+    /** void(int, int): sent only by the transports whose HAL has such a call (the AIDL and HIDL gmpf families). */
+    default void i32I32(K k, int a, int b) throws RemoteException {
+        throw new RemoteException("void(int, int) is not on this transport");
+    }
     boolean i32I32RetBool(K k, int a, int b) throws RemoteException;
     int i32I32RetI32(K k, int a, int b) throws RemoteException;
     boolean i32BoolRetBool(K k, int a, boolean b) throws RemoteException;

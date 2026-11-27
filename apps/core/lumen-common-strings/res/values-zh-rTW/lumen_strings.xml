@@ -7,6 +7,7 @@
     <string name="lumen_1_d_h">%1$d 小時</string>
     <string name="lumen_1_d_hz">%1$d Hz</string>
     <string name="lumen_1_d_min">%1$d 分鐘</string>
+    <string name="lumen_1_d_s">%1$d 秒</string>
     <string name="lumen_2_point">2 點</string>
     <string name="lumen_3d">3D</string>
     <string name="lumen_ai_contrast">AI 對比</string>
@@ -292,4 +293,6 @@
     <string name="lumen_yellow">黃色</string>
     <string name="lumen_zoom_and_shift">縮放與位移</string>
     <string name="lumen_zoom_and_shift_is_not">縮放與位移暫時無法使用</string>
+    <string name="lumen_optical_out">光纖輸出</string>
+    <string name="lumen_focus_chart_hint">OK：測試圖</string>
 </resources>

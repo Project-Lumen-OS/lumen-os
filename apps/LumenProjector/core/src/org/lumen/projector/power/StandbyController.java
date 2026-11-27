@@ -510,6 +510,12 @@ public final class StandbyController {
      * Display off (PowerPolicy at SCREEN_OFF, a process restart while asleep, the gate re-check): keep
      * the CPU awake ("z9x:quickwake") while a blocker holds, else let it suspend. Main thread.
      */
+    /** What {@link #onSleepGate} would decide now: no STR blocker, no update reboot (SleepSource.beforeSleep). */
+    static boolean strWouldBeAllowed() {
+        if (sApp == null || sUpdateReboot) return false;
+        return StrGate.blocker(sApp) == null && !OtaStateReceiver.rebootWhenOffPending(sApp);
+    }
+
     static void onSleepGate(String why) {
         if (sApp == null || interactive()) return;
         String b = StrGate.blocker(sApp);
@@ -533,6 +539,7 @@ public final class StandbyController {
         }
         boolean held = sHoldLock != null && sHoldLock.isHeld();
         clearBlocked();
+        VendorSleep.maybeSend(sApp, why, true);   // the stock prepare's vendor step, before the CPU is let go
         release(sHoldLock);
         Log.i(TAG, "sleep: STR allowed (" + why + ")" + (held ? ", wakelock released" : ""));
     }

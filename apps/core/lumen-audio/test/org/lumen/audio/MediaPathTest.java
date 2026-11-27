@@ -32,6 +32,13 @@ public final class MediaPathTest {
         C.eq("stock wires", "0 2 3 4 6 -1", S + " " + A + " " + B + " " + W + " " + U + " " + MediaPath.NONE);
         // the tester's case: headphones and the soundbar in the route, in both heap orders
         C.eq("bt before arc", B, MediaPath.heard(l(B, A)));
+        C.eq("the optical route alone is path 1", MediaPath.OPTICAL, MediaPath.heard(l(MediaPath.OPTICAL)));
+        C.eq("the attached optical jack never beats the speaker", MediaPath.SPEAKER, MediaPath.heard(l(MediaPath.OPTICAL, MediaPath.SPEAKER)));
+        C.eq("optical is the stock path 1", 1, MediaPath.OPTICAL);
+        C.ok("optical and ARC carry the digital format, the speaker does not", MediaPath.digital(MediaPath.OPTICAL)
+                && MediaPath.digital(A) && !MediaPath.digital(MediaPath.SPEAKER) && !MediaPath.digital(B));
+        C.eq("a switch to the optical jack waits the stock 1 s", MediaPath.STOCK_SWITCH_MS, MediaPath.switchDelayMs(MediaPath.SPEAKER, MediaPath.OPTICAL));
+        C.eq("and back from it", MediaPath.STOCK_SWITCH_MS, MediaPath.switchDelayMs(MediaPath.OPTICAL, MediaPath.SPEAKER));
         C.eq("arc first in the list, bt still wins", B, MediaPath.heard(l(A, B)));
         C.eq("bt with spdif skipped and arc", B, MediaPath.heard(l(MediaPath.NONE, A, B)));
         C.eq("wired over arc", W, MediaPath.heard(l(A, W)));
@@ -45,7 +52,7 @@ public final class MediaPathTest {
         C.eq("nothing known", MediaPath.NONE, MediaPath.heard(l(MediaPath.NONE)));
         C.eq("empty", MediaPath.NONE, MediaPath.heard(Collections.emptyList()));
         C.eq("null", MediaPath.NONE, MediaPath.heard(null));
-        C.eq("an unknown wire is no path", MediaPath.NONE, MediaPath.heard(l(1, 7, 100)));
+        C.eq("an unknown wire is no path", MediaPath.NONE, MediaPath.heard(l(5, 7, 100)));
 
         C.ok("format again on a switch to arc", MediaPath.formatAgain(S, A));
         C.ok("format again on a switch away from arc", MediaPath.formatAgain(A, B));

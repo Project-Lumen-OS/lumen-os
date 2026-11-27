@@ -1,6 +1,7 @@
 {
   "include": "devices/_family/mt9681/mt9681.menu.json",
   "features": {
+    "sound.output": {"options": ["auto", "speaker", "optical", "arc", "wired", "bt", "usb"]},
     "eye": {"options": ["off", "follow", "rest"]},
     "picture.color_temp": {"options": ["standard", "movie", "d65"]},
     "picture.3d": {"options": ["off", "sbs", "tb", "sbs_2d", "tb_2d", "frame_packing"]},

@@ -29,7 +29,8 @@ import java.io.FileReader;
  *     195(false) (stock xgimiPrepareSleep step 7). With STR allowed a short partial wakelock
  *     "z9x:sleepprep" (at most 10 s) lets it finish before the suspend;
  *  4. the STR gate (StandbyController.onSleepGate): a blocker (USB host, update, allow_str=0) keeps the
- *     CPU awake with "z9x:quickwake" until it clears, otherwise nothing of ours holds the suspend;
+ *     CPU awake with "z9x:quickwake" until it clears; once STR is allowed and our lamp-off is done the
+ *     stock vendor step goToSleep(0, 0) goes out ({@link VendorSleep}, "lumen:strprepare" at most 10 s);
  *  5. only with the kill switch allow_str=0 (v6.5 behaviour): the power-off deadline (pref
  *     "quick_wake_min", default 30 min) and the 65 s lamp give-up (power off).
  *
@@ -44,7 +45,8 @@ import java.io.FileReader;
  * into the PM51 wake source cec0). The v6.5 one-shot switch-off (marker {@link #KEY_CEC_WAKE_OFF}) is
  * gone: it would undo that default on a fresh install. The marker key stays reserved.
  *
- * Never: IGmpf 241 goToSleep / 422 goToShutdown / 229 / 233 / 543, PowerManager.forceSuspend,
+ * IGmpf 241 goToSleep only as the stock prepare, (0, 0) once per STR sleep ({@link VendorSleep}, GitHub issue 5).
+ * Never: any other 241 / 422 goToShutdown / 229 / 233 / 543, PowerManager.forceSuspend,
  * Wol/Wow/Cec setters, fan control (IGmpf 434 has no physical effect). 148 is only ever sent with true.
  * Read-only diagnostics (230, 639, 196) are logged once after the HAL connected.
  *
@@ -103,6 +105,8 @@ public final class PowerPolicy {
         sWorker = SafeHandler.newThread("z9x-power");
         sPm = sApp.getSystemService(PowerManager.class);
         loadPrefs(sApp);                                    // synchronous: the deadline needs it
+        // the stock order of a sleep Lumen starts: the vendor's sleep step before goToSleep (the stock prepare)
+        org.lumen.hdmi.SleepSource.setVendorPrepare(c -> VendorSleep.beforeSleep(c, StandbyController.strWouldBeAllowed()));
         sWorker.post(() -> Log.i(TAG, "installed: STR " + (StrGate.allowStr() ? "on" : "off (allow_str=0, standby window "
                 + sQuickWakeMin + " min)") + ", suspend success=" + readSuspendSuccess()));
         sWorker.postDelayed(() -> logDiagnostics(0), DIAG_POLL_MS);
@@ -168,6 +172,8 @@ public final class PowerPolicy {
 
     /** Main thread: lamp-off outcome of a foreign sleep. */
     private static void onSleepLampOff(boolean ok, String detail) {
+        // the lamp-off ran first; the vendor step follows it, before the sleep-prep hold ends (STR allowed only)
+        if (screenOff()) VendorSleep.maybeSend(sApp, "lamp off " + (ok ? "done" : "not confirmed"), StrGate.blocker(sApp) == null);
         StandbyController.releaseSleepPrep();
         if (!screenOff()) return;
         if (!ok) {
@@ -200,6 +206,7 @@ public final class PowerPolicy {
 
     public static void onScreenOn(Context ctx) {
         if (sApp == null) install(ctx);
+        VendorSleep.onWake();
         try { PowerUi.onScreenOn(sApp); } catch (Throwable t) { Log.w(TAG, "PowerUi.onScreenOn: " + t); }
         try { StandbyController.onScreenOn(); } catch (Throwable t) { Log.w(TAG, "standby screen on: " + t); }
         if (StandbyController.shutdownInFlight()) {

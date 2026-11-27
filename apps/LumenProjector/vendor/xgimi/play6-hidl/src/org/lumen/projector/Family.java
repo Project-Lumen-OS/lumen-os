@@ -27,8 +27,6 @@ public final class Family {
         Hal.requestKeystone(c);
     }
 
-    /** ManualFocusActivity: the stock window is the bottom panel only (no focus chart). */
-    public static final boolean FOCUS_CHART = false;
     /** ManualFocusActivity: no mouse wheel on the lens (the Play 6 stock FocusAdjust has none). */
     public static final boolean FOCUS_WHEEL = false;
 

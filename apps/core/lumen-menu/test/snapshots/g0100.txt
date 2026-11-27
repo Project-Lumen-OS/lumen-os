@@ -62,7 +62,7 @@ section sound
   choice sound.mode [ai, music, movie, karaoke, sports, standard]
   toggle sound.leveling
   toggle sound.earc
-  output page sound.output [auto, speaker, arc, wired, bt, usb]
+  output page sound.output [auto, speaker, optical, arc, wired, bt, usb]
     at its bottom sound.format [pcm, passthrough, auto]
   toggle sound.key_tone
 section projection
