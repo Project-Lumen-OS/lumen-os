@@ -57,6 +57,7 @@ public final class ReportTest {
         url();
         failover();
         zip();
+        bootLogs();
         uploader();
         parts();
         hdmiDump();
@@ -295,6 +296,22 @@ public final class ReportTest {
         PartUpload.partDeadlineMs = 2000;
         PartServer ps = new PartServer();
         try {
+            // a report with the kept starts (over SINGLE_MAX) goes in parts, kind manual, upload id from the zip
+            java.io.File rep = java.io.File.createTempFile("lumen_bigreport", ".zip");
+            byte[] rd = new byte[(int) ReportUploader.SINGLE_MAX + 4096];
+            new java.util.Random(9).nextBytes(rd);
+            java.nio.file.Files.write(rep.toPath(), rd);
+            check(ReportUploader.big(rep) && !ReportUploader.big(zip), "parts: a zip over SINGLE_MAX is big, a small one not");
+            String rid = ReportUploader.uploadId(rep);
+            check(rid.matches("[0-9a-f]{32}") && rid.equals(ReportUploader.uploadId(rep)), "parts: the upload id comes from the zip (a retry resumes)");
+            String rc = new ReportUploader().parts(java.util.Arrays.asList(ps.url()), rep, "0123456789abcdef01234567", "1.1.0",
+                    "g0082", ReportKind.MANUAL, (s, t) -> true, true);
+            check("LR-PART01".equals(rc) && java.util.Arrays.equals(ps.data.get(rid), rd), "parts: a big manual report arrives whole: " + rc);
+            boolean manualKind = false;
+            for (String s : new java.util.ArrayList<>(ps.seen)) if (!s.startsWith("q") && s.split(":")[2].equals("manual")) manualKind = true;
+            check(manualKind, "parts: the part requests carry kind manual");
+            rep.delete();
+            ps.seen.clear();
             // a choked network: the first large part gets no answer, the rest goes in small parts, several at once
             ps.choke = true;
             ps.slowMs = 30;
@@ -1173,6 +1190,114 @@ public final class ReportTest {
     }
 
     // ------------------------------------------------------------------ ReportZip
+    // ------------------------------------------------------------------ BootLogs (the kept starts of lumen_report.sh keep)
+    private static void gzFile(File f, String text) throws IOException {
+        try (java.util.zip.GZIPOutputStream o = new java.util.zip.GZIPOutputStream(new FileOutputStream(f))) {
+            o.write(text.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private static String gunzip(File f) throws IOException {
+        try (java.util.zip.GZIPInputStream i = new java.util.zip.GZIPInputStream(new java.io.FileInputStream(f))) {
+            return new String(i.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private static void bootLogs() throws Exception {
+        // parse: newest start first, chunks in order, pstore, info, budget; junk lines and foreign names skipped
+        BootLogs.Item[] budget = new BootLogs.Item[1];
+        List<BootLogs.Start> st = BootLogs.parse(Arrays.asList("b000002.log.000002.txt 900", "b000002.log.000001.txt.gz 400",
+                "b000001.imp.000001.txt.gz 50", "b000001.pstore.console-ramoops-0.txt 70", "b000001.info.txt 30",
+                "budget.txt 99", "../etc/passwd 1", "b000001.log.x.txt 5", "b000001.weird.000001.txt 3", "garbage"), budget);
+        check(st.size() == 2 && st.get(0).id.equals("b000002") && st.get(1).id.equals("b000001"), "kept starts newest first");
+        List<BootLogs.Item> l2 = st.get(0).streams.get(BootLogs.stream("log"));
+        check(l2.size() == 2 && l2.get(0).index == 1 && l2.get(0).gz && !l2.get(1).gz, "chunks in order, gz known");
+        check(l2.get(0).raw() == BootLogs.CHUNK_LOG && l2.get(1).raw() == 900, "a finished chunk counts as a whole chunk, an open one its size");
+        check(st.get(1).pstore.size() == 1 && st.get(1).info != null && budget[0] != null && budget[0].bytes == 99,
+                "pstore, info and budget parsed");
+        check(st.get(1).streams.get(BootLogs.stream("log")).isEmpty(), "a chunk name that does not parse is skipped");
+
+        // pick: head chunks + tail chunks under the caps, the middle counted
+        List<BootLogs.Item> chunks = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) chunks.add(new BootLogs.Item(String.format("b000003.log.%06d.txt.gz", i), "b000003", "log", i, 100));
+        BootLogs.Pick pk = BootLogs.pick(chunks, 2 * BootLogs.CHUNK_LOG, 3 * BootLogs.CHUNK_LOG);
+        check(pk.head.size() == 2 && pk.head.get(0).index == 1 && pk.tail.size() == 3 && pk.tail.get(0).index == 8
+                && pk.tail.get(2).index == 10 && pk.skipped == 5 && pk.skippedRaw == 5 * BootLogs.CHUNK_LOG, "pick: first 2, last 3, 5 left out");
+        BootLogs.Pick all = BootLogs.pick(chunks.subList(0, 3), 2 * BootLogs.CHUNK_LOG, 3 * BootLogs.CHUNK_LOG);
+        check(all.head.size() == 2 && all.tail.size() == 1 && all.skipped == 0, "pick: a short stream goes in whole, never twice");
+        BootLogs.Pick tailOnly = BootLogs.pick(chunks, 0, 1);
+        check(tailOnly.head.isEmpty() && tailOnly.tail.size() == 1 && tailOnly.tail.get(0).index == 10, "pick: tail only takes at least the newest chunk");
+        check(BootLogs.pick(chunks, 0, 0).tail.isEmpty(), "pick: a zero cap takes nothing");
+
+        // write: filter + scrub per line, head / marker / tail, gz out, info and pstore as text; older starts without log
+        File dir = Files.createTempDirectory("bootlogs").toFile();
+        try {
+            File ex = new File(dir, "export"), out = new File(dir, "out");
+            ex.mkdirs();
+            out.mkdirs();
+            List<String> list = new ArrayList<>();
+            String sys = "11-28 10:00:00.000  1000  100  100 I ActivityManager: ";
+            String app = "11-28 10:00:00.000 u0_a99  200  200 I SomeUserApp: ";
+            for (int i = 1; i <= 6; i++) {
+                String n = String.format("b000009.log.%06d.txt%s", i, i < 6 ? ".gz" : "");
+                String text = sys + "chunk " + i + " password=hunter2\n" + app + "private " + i + "\n";
+                if (i < 6) gzFile(new File(ex, n), text); else Files.write(new File(ex, n).toPath(), text.getBytes(StandardCharsets.UTF_8));
+                list.add(n + " " + new File(ex, n).length());
+            }
+            gzFile(new File(ex, "b000009.imp.000001.txt.gz"), sys + "important one\n");
+            list.add("b000009.imp.000001.txt.gz 10");
+            Files.write(new File(ex, "b000009.info.txt").toPath(), "start=9\nboot_id=x\n".getBytes(StandardCharsets.UTF_8));
+            list.add("b000009.info.txt 20");
+            gzFile(new File(ex, "b000008.log.000001.txt.gz"), sys + "older start log\n");
+            list.add("b000008.log.000001.txt.gz 10");
+            gzFile(new File(ex, "b000008.imp.000001.txt.gz"), sys + "older start important\n");
+            list.add("b000008.imp.000001.txt.gz 10");
+            Files.write(new File(ex, "b000008.pstore.console-ramoops-0.txt").toPath(),
+                    "[ 1.0] panic mail anna@example.org\n".getBytes(StandardCharsets.UTF_8));
+            list.add("b000008.pstore.console-ramoops-0.txt 30");
+            List<BootLogs.Start> starts = BootLogs.parse(list, null);
+            BootLogs.Caps caps = new BootLogs.Caps(2).set("log", 0, BootLogs.CHUNK_LOG, 2 * BootLogs.CHUNK_LOG)
+                    .set("imp", 0, 0, BootLogs.CHUNK_SMALL).set("imp", 1, 0, BootLogs.CHUNK_SMALL);
+            List<String> notes = new ArrayList<>();
+            Scrubber sc = new Scrubber();
+            List<BootLogs.Out> outs = BootLogs.write(ex, starts, caps, () -> {
+                LogcatFilter f = new LogcatFilter(Collections.emptySet(), 10070, true);
+                return f::keep;
+            }, sc::scrub, out, () -> false, notes);
+            java.util.Map<String, File> by = new java.util.HashMap<>();
+            for (BootLogs.Out o : outs) by.put(o.zipName, o.file);
+            String log0 = gunzip(by.get("boots/start-0/log.txt.gz"));
+            check(log0.contains("chunk 1 ") && !log0.contains("chunk 2 ") && log0.contains("chunk 5 ") && log0.contains("chunk 6 ")
+                    && log0.indexOf("chunk 1 ") < log0.indexOf("left out here") && log0.indexOf("left out here") < log0.indexOf("chunk 5 "),
+                    "this start: the first chunk, a left-out line, the last two (open one included)");
+            check(!log0.contains("hunter2") && !log0.contains("private "), "kept lines scrubbed again, user app lines dropped");
+            check(gunzip(by.get("boots/start-0/imp.txt.gz")).contains("important one"), "imp of this start");
+            check(!by.containsKey("boots/start-1/log.txt.gz") && gunzip(by.get("boots/start-1/imp.txt.gz")).contains("older start important"),
+                    "an older start: its important lines only (caps)");
+            String ps = new String(Files.readAllBytes(by.get("boots/start-1/pstore/console-ramoops-0.txt").toPath()), StandardCharsets.UTF_8);
+            check(ps.contains("panic") && !ps.contains("anna@"), "pstore of the start that stopped, scrubbed");
+            check(by.containsKey("boots/start-0/info.txt"), "info of each start");
+            check(notes.size() == 3 && notes.get(0).contains("1 first + 2 last of 6"), "one note per stream: " + notes);
+
+            // the zip takes them whole, uncompressed, outside the limit
+            List<ReportZip.Part> parts = new ArrayList<>();
+            parts.add(ReportZip.Part.text("summary.txt", "hello"));
+            File big = new File(dir, "big.gz");
+            byte[] rnd = new byte[300_000];
+            new java.util.Random(7).nextBytes(rnd);
+            Files.write(big.toPath(), rnd);
+            parts.add(ReportZip.Part.raw("boots/start-0/log.txt.gz", big));
+            File z = new File(dir, "r.zip");
+            check(ReportZip.writeWithin(z, parts, 10_000) == 1, "raw parts do not count against the limit");
+            try (java.util.zip.ZipFile zf = new java.util.zip.ZipFile(z)) {
+                java.util.zip.ZipEntry e = zf.getEntry("boots/start-0/log.txt.gz");
+                check(e != null && Arrays.equals(zf.getInputStream(e).readAllBytes(), rnd), "a raw part goes in byte for byte");
+            }
+        } finally {
+            deleteTree(dir);
+        }
+    }
+
     private static void zip() throws Exception {
         File dir = Files.createTempDirectory("reportzip").toFile();
         try {

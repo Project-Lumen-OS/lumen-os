@@ -67,6 +67,8 @@ final class ReportUploader {
      * hangs on a frozen network ignores a polite close (the JDK's SSL close waits for the writer's lock).
      */
     void abort() {
+        PartUpload pu = parts;
+        if (pu != null) pu.abort();
         CutSockets s = sockets;
         if (s != null) s.cut();
         HttpURLConnection c = conn;
@@ -159,6 +161,46 @@ final class ReportUploader {
         int s = e.status;
         return e.failure == ReportFailure.NETWORK || e.failure == ReportFailure.SERVER || s == 404 || s == 405
                 || (s >= 300 && s < 400);
+    }
+
+    /** The largest zip sent in one request; the server takes 5 MiB in one (lumen_reports.MAX_BYTES). */
+    static final long SINGLE_MAX = 5_000_000L;
+
+    private volatile PartUpload parts;
+
+    /** True for a zip that goes in parts (a report with the kept starts of the persistent log). */
+    static boolean big(File zip) {
+        return zip.length() > SINGLE_MAX;
+    }
+
+    /** The upload id of a zip: the start of its sha256, so every later try of the same zip resumes the same upload. */
+    static String uploadId(File zip) throws IOException {
+        return PartUpload.sha256(zip).substring(0, 32);
+    }
+
+    /**
+     * Worker thread: a big zip in parts (PartUpload) to the first address that takes it; it goes on where an earlier
+     * try of the same zip stopped (the server keeps an unfinished upload a day). Returns the report code; failures as
+     * UploadException like upload().
+     */
+    String parts(List<String> urls, File zip, String installId, String version, String model, ReportKind kind,
+                 Progress p) throws IOException {
+        return parts(urls, zip, installId, version, model, kind, p, false);
+    }
+
+    /** localHttp: host tests may use http://127.0.0.1 */
+    String parts(List<String> urls, File zip, String installId, String version, String model, ReportKind kind,
+                 Progress p, boolean localHttp) throws IOException {
+        PartUpload pu = new PartUpload(installId, version, model, kind.wire, "", localHttp);
+        parts = pu;
+        try {
+            return pu.send(urls, zip, uploadId(zip), p::onSent);
+        } catch (PartUpload.Failed e) {
+            if (e.getCause() instanceof UploadException) throw (UploadException) e.getCause();
+            throw new UploadException(e.retry ? ReportFailure.NETWORK : ReportFailure.REJECTED, e.getMessage());
+        } finally {
+            parts = null;
+        }
     }
 
     /** The longest one upload may take: 30 seconds plus 16 KB a second of the zip. */

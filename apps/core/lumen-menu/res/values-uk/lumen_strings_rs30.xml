@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Придушення веселки</string>
     <string name="lumen_m_zoom_move">Зсув зображення</string>
     <string name="lumen_gm_rule_vrr_speed">Спочатку увімкніть Турбо</string>
+    <string name="lumen_gm_rule_hdr_signal">Переконайтеся, що пристрій видає сигнал HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">Коли AMD FreeSync увімкнено, висока частота потрібна</string>
     <string name="lumen_m_move_hint">Стрілки зсувають зображення. За краєм повертається проєктор.</string>
 </resources>

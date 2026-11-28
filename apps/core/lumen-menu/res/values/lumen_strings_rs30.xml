@@ -12,5 +12,8 @@
     <string name="lumen_m_anti_rbe">Rainbow reduction</string>
     <string name="lumen_m_zoom_move">Screen shift</string>
     <string name="lumen_gm_rule_vrr_speed">First turn Turbo on</string>
+    <string name="lumen_gm_rule_hdr_signal">Make sure the device sends an HDR signal</string>
+    <string name="lumen_gm_fs" translatable="false">AMD FreeSync Premium</string>
+    <string name="lumen_gm_rule_hfr_fs">With AMD FreeSync on, high frame rate is needed</string>
     <string name="lumen_m_move_hint">The arrows shift the picture. Past the edge the projector turns.</string>
 </resources>

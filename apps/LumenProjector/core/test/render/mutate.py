@@ -32,8 +32,9 @@ MUTANTS = [
      'return Note.titledBy("panel_lamp", "panel_lamp_mode_locked", name);', 'return Note.titledBy("panel_lamp", "panel_boost_3d");'),
     ("General page titled General", P + "MenuLabels.java", 'case "general": return R.string.lumen_m_panel_all_settings;\n            default: return section(id);',
      'default: return section(id);'),
-    ("All settings says Projection mode", P + "MenuLabels.java", 'case "projection": return R.string.lumen_m_panel_tile_projection;\n            default: return section(id);',
-     'default: return section(id);'),
+    # the projection rows live on the Keystone page since the stock 1.3.38 menu (no rail entry): the page keeps its title
+    ("Projection mode page titled Projection", P + "MenuLabels.java", 'case "projection": return R.string.lumen_m_panel_projection_mode;',
+     'case "projection": return R.string.lumen_m_panel_tile_projection;'),
     ("tile value label swapped", P + "MenuLabels.java", 'case "picture.mode|ai": return R.string.lumen_m_panel_tileval_pm_ai;',
      'case "picture.mode|ai": return R.string.lumen_m_panel_pm_ai;'),
     ("auto correction header lost", "@profile", '{"header": "auto_correction", ', '{'),
@@ -41,14 +42,15 @@ MUTANTS = [
      'case "lamp": return R.string.lumen_m_panel_lamp_hint;', 'case "lamp": return R.string.lumen_m_panel_lamp_hint;\n            case "zoom": return R.string.lumen_m_panel_optical_zoom;'),
     ("keystone header from another string", P + "MenuLabels.java",
      'case "auto_correction": return R.string.lumen_qpd_autocorrect;', 'case "auto_correction": return R.string.lumen_m_kst_more;'),
-    ("Russian off word changed", "res/values-ru/lumen_strings_menu.xml", '<string name="lumen_m_panel_off">', '<string name="lumen_m_panel_off">x'),
-    ("Kazakh game speed changed", "res/values-kk/lumen_strings_menu.xml", '<string name="lumen_m_panel_speed_top">', '<string name="lumen_m_panel_speed_top">x'),
+    # the menu words are shared texts (lumen-common-strings, tools/i18n/share.py): lumen_m_panel_off = @string/lumen_off
+    ("Russian off word changed", "res/values-ru/lumen_strings.xml", '<string name="lumen_off">', '<string name="lumen_off">x'),
+    ("Kazakh game speed changed", "res/values-kk/lumen_strings.xml", '<string name="lumen_top_speed">', '<string name="lumen_top_speed">x'),
     ("profile: sound modes reordered", "@profile", '"ai", "movie", "music", "sports", "karaoke"', '"ai", "music", "movie", "sports", "karaoke"'),
     ("profile: real-time keystone dropped", "@profile", '"keystone.realtime": {},', ''),
-    ("profile: Reset under the Other title again", "@profile", '"keystone.rotation", "keystone.restore"]}',
-     '"keystone.rotation"]},\n        {"header": "more", "rows": ["keystone.restore"]}'),
-    ("the Z9X stock order ignored (the table order)", R + "MenuSpec.java", "Object[][] order = p.order((String) s[0]);",
-     "Object[][] order = null;"),
+    ("profile: Reset under the Other title again", "@profile", '"keystone.wall_color", "keystone.restore"]}',
+     '"keystone.wall_color"]},\n        {"header": "more", "rows": ["keystone.restore"]}'),
+    ("the Z9X stock order ignored (the table order)", R + "MenuSpec.java",
+     "List<Group> groups = groups(order != null ? order : (Object[][]) s[1], p,", "List<Group> groups = groups((Object[][]) s[1], p,"),
 ]
 
 

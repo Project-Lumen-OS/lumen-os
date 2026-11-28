@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, 사운드, 전원: 기기 및 CEC 메시지</string>
     <string name="lumen_report_bytes">%2$s 중 %1$s 전송됨</string>
     <string name="lumen_report_code">보고서 코드</string>
+    <string name="lumen_report_inc_starts">최근 5번 시작의 로그. 보고서는 최대 약 25MB입니다.</string>
 </resources>

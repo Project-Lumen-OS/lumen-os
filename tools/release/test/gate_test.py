@@ -9,6 +9,8 @@ per mutant; gate.py check must name exactly the expected models:
   one model's menu layer                 -> that model only
   a shared build tool                    -> every model
   a released pin's PINS.sha256 row       -> the Z9X only
+  a base APK fix of tools/base_patch     -> every model, named as that fix (its source, then its result pin)
+  the services.jar fix of one base       -> the models of that base (build.conf framework=), named per base
 and a recorded, unchanged tree is green for every model (records are made in the scratch tree: ignored inputs
 differ between checkouts).
 """
@@ -80,6 +82,13 @@ def members(*fams):
     return out
 
 
+def framework_of(root, models):
+    """{model: the base of its services.jar fix (build.conf framework=)}"""
+    sys.path.insert(0, os.path.join(G, "tools", "devices"))
+    import layered  # noqa: E402
+    return {c: layered.effective(os.path.join(root, "devices", c, "build.conf")).get("framework") for c in models}
+
+
 def main():
     # the records of this host (ignored inputs such as pins and the boot animation differ between checkouts): every
     # case records its scratch tree first, then changes one file
@@ -90,6 +99,7 @@ def main():
         ok(rc == 0 and not ch, "a recorded tree is green for every model", out)
     all_models = set(re.findall(r"^gate: (\S+) GREEN", out, re.M))
     x50 = members("mt9681") & all_models
+    rs30 = {c for c, b in framework_of(G, all_models).items() if b == "rs30"}
     core_models = {"horse_popular", "goat_elegant"}   # Play 6 takes only listed core files (not AfAfter) yet
     cases = [
         ("a core file", "apps/LumenProjector/core/src/org/lumen/projector/AfAfter.java", lambda s: s + "\n",
@@ -102,14 +112,23 @@ def main():
         ("a pin row", "overlay/apps_v1/PINS.sha256",
          lambda s: re.sub(r"^[0-9a-f]{64}(  Z9xHome\.apk)$", "0" * 64 + r"\1", s, count=1, flags=re.M),
          lambda c: c == {"horse_popular"}),
+        ("a base APK fix", "tools/base_patch/tvsettings_focus/SettingsPreferenceFragment.java", lambda s: s + "\n",
+         lambda c: c == all_models, r"base_patch tvsettings_focus: rule \w+ -> \w+, same result pin"),
+        ("a base APK fix's result pin", "tools/base_patch/patches.tsv",
+         lambda s: s.replace("\t23cea268", "\t03cea268"), lambda c: c == all_models,
+         r"base_patch tvsettings_focus: result 23cea268eea6 -> 03cea268eea6"),
+        ("the services.jar fix of the rs30 base", "tools/base_patch/framework.tsv",
+         lambda s: s.replace("\tcd3df384", "\t0d3df384"), lambda c: c == rs30,
+         r"base_patch services_hdmi:rs30: result \w+ -> \w+"),
     ]
-    for name, rel, fn, want in cases:
+    for name, rel, fn, want, *msg in cases:
         with tempfile.TemporaryDirectory(prefix="gate_test_") as t:
             tree(t)
             gate(t, "record")
             replace(t, rel, fn)
             rc, ch, out = check(t)
-            ok(rc == 1 and want(ch), "%s names %s" % (name, " ".join(sorted(ch)) or "nothing"), out)
+            ok(rc == 1 and want(ch) and all(re.search(m, out) for m in msg),
+               "%s names %s%s" % (name, " ".join(sorted(ch)) or "nothing", "".join(" (%s)" % m for m in msg)), out)
     print("gate_test: %s" % ("RED (%d)" % len(bad) if bad else "GREEN"))
     return 1 if bad else 0
 

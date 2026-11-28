@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">компьютер</string>
     <string name="lumen_gm_licences_d">Авторы материалов, которые использует Lumen OS</string>
     <string name="lumen_gm_credits_intro">Изображения геймпадов в игровом меню сделаны из этих 3D моделей:</string>
+    <string name="lumen_gm_so">Сдвиг экрана</string>
+    <string name="lumen_gm_so_value">Настроить</string>
+    <string name="lumen_gm_so_move">▲▼ Настроить положение</string>
+    <string name="lumen_gm_so_reset">Долгое нажатие OK: сброс</string>
+    <string name="lumen_gm_rule_so_ratio">Сдвиг экрана работает только с форматом 21:9 или 32:9</string>
 </resources>

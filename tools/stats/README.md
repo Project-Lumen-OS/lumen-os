@@ -35,9 +35,10 @@ server ships a pushed commit of this folder (not in the public repository).
 ## Problem reports (`server/lumen_reports.py`)
 
 The upload end of the projectors' problem reports (`apps/core/lumen-report`), served by `lumen_stats.py` on the same
-port: `POST /lumen/v1/report` with the report zip (at most 5 MiB) answers `201 {"code":"LR-XXXXXX"}`. No HTTP read
+port: `POST /lumen/v1/report` with the report zip (at most 5 MiB; a report with the kept log of the last starts goes
+in parts to `/lumen/v1/report/part`, at most 64 MiB) answers `201 {"code":"LR-XXXXXX"}`. No HTTP read
 path: reports are read over ssh (`lumen_reports.py list | show CODE | cat CODE | rm CODE | prune`, or from the Mac the
-private wrapper in `server/deploy/`). Stored in the state directory for 30 days, at most 2 GB, with the HMAC of the
+private wrapper in `server/deploy/`). Stored in the state directory for 30 days, at most 8 GiB, with the HMAC of the
 report install id, kind, model, version, size and sha256, never the address. Limits in memory: 6 an hour and 20 a
 day per address, 10 a day per projector, 300 a day in all. Kind `test` is checked and not stored (the deploy health
 check). Tests: `python3 tools/stats/server/test_lumen_reports.py`, mutants `mutate_lumen_reports.py`.

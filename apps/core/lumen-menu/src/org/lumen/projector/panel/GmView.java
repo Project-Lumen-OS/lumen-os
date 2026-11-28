@@ -48,7 +48,8 @@ final class GmView extends View implements Gm3dView.Listener {
     private final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG), aimPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF r = new RectF();
     private final TextPaint tName, tSub, tChip, tGroup, tTitle, tValue, tPreset, tPresetLabel, tPopHead, tPopDesc, tRow,
-            tBadge, tConfirmTitle, tConfirmText, tButton, tToast, tHint, tSmallLabel;
+            tBadge, tConfirmTitle, tConfirmText, tButton, tToast, tHint, tSmallLabel, tShift;
+    private final Paint shiftPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private long enterAt, exitAt = -1;
     private Runnable exitEnd;
     private long popupAt;
@@ -84,6 +85,7 @@ final class GmView extends View implements Gm3dView.Listener {
         tButton = paint(c, 22, 600, INK);
         tToast = paint(c, 21, 500, INK);
         tHint = paint(c, 19, 500, 0xDBF4F4F6);
+        tShift = paint(c, 32, 500, 0xA6FFFFFF);          // stock ScreenOffsetDialog: 32 px, white_65
         tSmallLabel = paint(c, 16, 600, MUTE);
         setWillNotDraw(false);
         focusAt.put(ctl.focusId(), SystemClock.uptimeMillis());
@@ -238,7 +240,7 @@ final class GmView extends View implements Gm3dView.Listener {
     private static int iconRes(String id) {
         switch (id) {
             case "t:lat": case "p:0": case "chip:zap": return R.drawable.lumen_gm_ic_zap;
-            case "t:vrr": return R.drawable.lumen_gm_ic_vrr;
+            case "t:vrr": case "t:fs": return R.drawable.lumen_gm_ic_vrr;
             case "t:hfr": return R.drawable.lumen_gm_ic_hfr;
             case "t:pic": return R.drawable.lumen_gm_ic_pic;
             case "t:cs": return R.drawable.lumen_gm_ic_sliders;
@@ -246,12 +248,12 @@ final class GmView extends View implements Gm3dView.Listener {
             case "t:dark": return R.drawable.lumen_gm_ic_dark;
             case "t:sr": return R.drawable.lumen_gm_ic_sr;
             case "t:ar": return R.drawable.lumen_gm_ic_ar;
+            case "t:so": case "move": return R.drawable.lumen_gm_ic_move;
             case "t:snd": return R.drawable.lumen_gm_ic_snd;
             case "t:aim": return R.drawable.lumen_gm_ic_aim;
             case "t:fps": return R.drawable.lumen_gm_ic_fps;
             case "p:1": return R.drawable.lumen_gm_ic_sliders;
             case "p:2": return R.drawable.lumen_gm_ic_film;
-            case "move": return R.drawable.lumen_gm_ic_move;
             case "info": return R.drawable.lumen_gm_ic_info;
             case "gear": return R.drawable.lumen_gm_ic_gear;
             case "pc:" + GmModel.TH_APPLE: return R.drawable.lumen_gm_ic_apple;
@@ -331,6 +333,12 @@ final class GmView extends View implements Gm3dView.Listener {
         c.scale(k, k);
         if (!ctl.theme.equals(framesTheme)) startPicture(ctl.theme);
         if (gate.timedOut(now)) toFrames("no first frame in " + Gm3dGate.READY_MS + " ms");
+        if (ctl.shifting) {
+            drawShift(c);
+            if (ctl.toast != null && now < ctl.toastUntil) drawToast(c);
+            c.restore();
+            return;
+        }
         layoutDock();
         drawShade(c);
         float rise = (1 - ease((now - enterAt) / 340f));
@@ -692,9 +700,11 @@ final class GmView extends View implements Gm3dView.Listener {
             case GmModel.PIC: return R.string.lumen_gm_pic;
             case GmModel.CS: return R.string.lumen_gm_cs;
             case GmModel.HDR: return R.string.lumen_gm_hdr;
+            case GmModel.FS: return R.string.lumen_gm_fs;
             case GmModel.DARK: return R.string.lumen_gm_dark;
             case GmModel.SR: return R.string.lumen_gm_sr;
             case GmModel.AR: return R.string.lumen_gm_ar;
+            case GmModel.SO: return R.string.lumen_gm_so;
             case GmModel.SND: return R.string.lumen_gm_snd;
             case GmModel.AIM: return R.string.lumen_gm_aim;
             default: return R.string.lumen_gm_fps;
@@ -707,7 +717,7 @@ final class GmView extends View implements Gm3dView.Listener {
         switch (k) {
             case GmModel.LAT: return c.getString(v == 1 ? R.string.lumen_gm_lat_1 : R.string.lumen_gm_lat_0);
             case GmModel.HFR: return c.getString(v == 1 ? R.string.lumen_gm_auto : R.string.lumen_gm_off);
-            case GmModel.VRR: case GmModel.DARK: case GmModel.SR: case GmModel.AIM:
+            case GmModel.VRR: case GmModel.DARK: case GmModel.SR: case GmModel.AIM: case GmModel.FS:
                 return c.getString(v == 1 ? R.string.lumen_gm_on : R.string.lumen_gm_off);
             case GmModel.PIC: {
                 int[] p = {R.string.lumen_gm_pic_0, R.string.lumen_gm_pic_1, R.string.lumen_gm_pic_2, R.string.lumen_gm_pic_3, R.string.lumen_gm_pic_4};
@@ -733,6 +743,7 @@ final class GmView extends View implements Gm3dView.Listener {
                         R.string.lumen_gm_snd_4};
                 return v >= 0 && v < p.length && v < GmModel.count(GmModel.SND) ? c.getString(p[v]) : "";
             }
+            case GmModel.SO: return c.getString(R.string.lumen_gm_so_value);
             case GmModel.FPS: {
                 int[] p = {R.string.lumen_gm_off, R.string.lumen_gm_fps_1, R.string.lumen_gm_fps_2, R.string.lumen_gm_fps_3};
                 return v >= 0 && v < p.length ? c.getString(p[v]) : "";
@@ -747,6 +758,7 @@ final class GmView extends View implements Gm3dView.Listener {
             if (raw == GmModel.AR_4_3) return "4:3";
             if (raw == GmModel.AR_ORIGINAL) return getContext().getString(R.string.lumen_m_panel_aspect_original);
         }
+        if (GmModel.SO.equals(k)) return optionText(k, 0);  // stock: the button text Adjust, no value
         if (v == GmModel.BAD) return ctl.loaded ? "" : "\u2026";
         return optionText(k, v);
     }
@@ -763,10 +775,11 @@ final class GmView extends View implements Gm3dView.Listener {
             }
             case GmModel.DARK: return c.getString(v == 1 ? R.string.lumen_gm_dark_d1 : R.string.lumen_gm_dark_d0);
             case GmModel.SR: return c.getString(v == 1 ? R.string.lumen_gm_sr_d1 : R.string.lumen_gm_sr_d0);
-            case GmModel.AR: return c.getString(v == 1 ? R.string.lumen_gm_ar_d1 : R.string.lumen_gm_ar_d0);
+            case GmModel.AR: return c.getString(v >= 2 ? R.string.lumen_gm_rule_ar_4k     // stock tips_aspect_ratio_adjustment_21_9
+                    : v == 1 ? R.string.lumen_gm_ar_d1 : R.string.lumen_gm_ar_d0);
             case GmModel.SND: return c.getString(v == 0 ? R.string.lumen_gm_snd_d0 : R.string.lumen_gm_snd_d1);
             case GmModel.FPS: return c.getString(R.string.lumen_gm_fps_d);
-            case GmModel.CS: case GmModel.HDR: return "";      // the stock bar has no description for these two
+            case GmModel.CS: case GmModel.HDR: case GmModel.FS: return "";  // the stock bar has no description for these
             default: return c.getString(R.string.lumen_gm_aim_d);
         }
     }
@@ -977,6 +990,44 @@ final class GmView extends View implements Gm3dView.Listener {
         c.save();
         c.translate(tr.left + 26 + 28 + 12, tr.centerY() - l.getHeight() / 2f);
         l.draw(c);
+        c.restore();
+    }
+
+    /**
+     * The screen shift band (stock ScreenOffsetDialog): the picture's area in #80000000 with a 6 px white frame, an
+     * up arrow 40 px under its top, the hint row and a down arrow above its bottom; nothing else of the menu.
+     */
+    private void drawShift(Canvas c) {
+        if (ctl.shiftTop < 0) return;                       // the first read is on its way
+        float top = ctl.shiftTop, bottom = ctl.shiftTop + ctl.shiftH;
+        shiftPaint.setStyle(Paint.Style.FILL);
+        shiftPaint.setColor(0x80000000);
+        c.drawRect(0, top, 1920, bottom, shiftPaint);
+        shiftPaint.setStyle(Paint.Style.STROKE);
+        shiftPaint.setStrokeWidth(6);
+        shiftPaint.setColor(0xFFFFFFFF);
+        c.drawRect(3, top + 3, 1917, bottom - 3, shiftPaint);
+        Context cx = getContext();
+        drawShiftArrow(c, -90, top + 40 + 17);            // stock arrow_up_screen_offset 54 x 34, 40 under the top
+        drawShiftArrow(c, 90, bottom - 40 - 17);
+        CharSequence move = org.lumen.icons.IconText.keys(cx, cx.getString(R.string.lumen_gm_so_move));
+        String reset = cx.getString(R.string.lumen_gm_so_reset);
+        float gap = 48, wm = tShift.measureText(move.toString()), wr = tShift.measureText(reset);
+        float y = bottom - 40 - 34 - 90, x = 960 - (wm + gap + wr) / 2;
+        boolean rtl = cx.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        org.lumen.icons.IconText.draw(c, move, rtl ? x + wr + gap : x, y, tShift);   // the move hint first in reading order
+        c.drawText(reset, rtl ? x : x + wm + gap, y, tShift);
+    }
+
+    /** A 54 px chevron (lumen-icons chevron_right turned by {@code deg}) centred at (960, cy). */
+    private void drawShiftArrow(Canvas c, float deg, float cy) {
+        Drawable d = getContext().getDrawable(R.drawable.lumen_ic_chevron_right);
+        if (d == null) return;
+        c.save();
+        c.rotate(deg, 960, cy);
+        d.setBounds(960 - 27, Math.round(cy - 27), 960 + 27, Math.round(cy + 27));
+        d.setTint(0xFFFFFFFF);
+        d.draw(c);
         c.restore();
     }
 

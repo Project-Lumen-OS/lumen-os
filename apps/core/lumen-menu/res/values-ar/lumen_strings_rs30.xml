@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">تقليل تأثير قوس قزح</string>
     <string name="lumen_m_zoom_move">إزاحة الصورة</string>
     <string name="lumen_gm_rule_vrr_speed">شغّل التوربو أولًا</string>
+    <string name="lumen_gm_rule_hdr_signal">تأكد من أن الجهاز يرسل إشارة HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">عند تشغيل AMD FreeSync يلزم معدل إطارات عالٍ</string>
     <string name="lumen_m_move_hint">الأسهم تزيح الصورة. بعد الحافة يدور جهاز العرض.</string>
 </resources>

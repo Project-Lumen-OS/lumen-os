@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """Mutants of problem reports (apps/core/lumen-report) that test/run.sh must kill: redaction rules, which incidents
 are reported, consent and limits of automatic reports, the queue, the address, and the consent wiring of the Android
-side, the unexpected stop (Alive, AliveState, AliveFile and the watch wiring). Mutates the files IN PLACE and
+side, the unexpected stop (Alive, AliveState, AliveFile and the watch wiring), the persistent log of the last starts
+(lumen_report.sh keep, BootLogs). Mutates the files IN PLACE and
 restores them: run it on a frozen snapshot (a builder clone or a detached worktree), never on a tree someone edits.
     python3 apps/core/lumen-report/test/mutate.py [NAME_PART...]   (only the mutants whose name holds a part)"""
 import os
@@ -186,7 +187,7 @@ MUTANTS = [
     ("image/lumen_report.sh", "helper log cap", '  tail -c "$cap" "$OUT/.scrubbed" > "$OUT/$name.new"', '  cat "$OUT/.scrubbed" > "$OUT/$name.new"'),
     ("image/lumen_report.sh", "helper no raw copy", '    rm -f "$OUT/.raw" "$OUT/.scrubbed"\n    put "$s.txt"', '    put "$s.txt"'),
     ("image/lumen_report.sh", "helper floor private", 'chmod 0600 "$OUT/.last"', ':'),
-    ("image/lumen_report.sh", "helper events buffer", '-b main,system,events', '-b main,system'),
+    ("image/lumen_report.sh", "helper events buffer", 'logcat -d -D -b main,system,events', 'logcat -d -D -b main,system'),
     ("image/lumen_report.sh", "helper app group", 'chown "0:$gid" "$OUT/$1.new" && ', ''),
     ("image/lumen_report.sh", "helper file mode", 'chmod 0640 "$OUT/$1.new"', 'chmod 0644 "$OUT/$1.new"'),
     ("image/lumen_report.sh", "helper exact package", 's/^$re \\([0-9][0-9]*\\) .*/\\1/p', 's/^$re.* \\([0-9][0-9]*\\) .*/\\1/p'),
@@ -194,6 +195,36 @@ MUTANTS = [
     ("image/lumen_report.sh", "helper off switch", '[ "$(getprop ro.lumen.report.url)" = off ] && {', 'false && {'),
     ("image/lumen_report.sh", "helper cleanup", '    sleep 0.25\n    n=$((n + 1))\n  done\n  clear_out\n', '    sleep 0.25\n    n=$((n + 1))\n  done\n'),
     ("image/lumen_report.sh", "helper newest request", '[ "$next" != "$req" ] && valid "$next" || break', 'break'),
+    # the persistent log of the last starts (lumen_report.sh keep, logkeep_test.sh) and its report side (BootLogs)
+    ("image/lumen_report.sh", "keep scrub on write", "  line = scrub(line)\n  put(line)\n", "  put(line)\n"),
+    ("image/lumen_report.sh", "keep flush every line", "print line > cur; fflush(cur)", "print line > cur"),
+    ("image/lumen_report.sh", "keep tag cap", "&& ++cnt[tag] > cap) { drop[tag]++; next }", "&& ++cnt[tag] > cap * 100) { drop[tag]++; next }"),
+    ("image/lumen_report.sh", "keep crash never capped", 'keep = buf == "crash" || (tag != "" && tag ~ imp)', 'keep = (tag != "" && tag ~ imp)'),
+    ("image/lumen_report.sh", "keep open minutes", "&& wins > open &&", "&&"),
+    ("image/lumen_report.sh", "keep cap counted", "    put(m)\n", ""),
+    ("image/lumen_report.sh", "keep imp errors", '(keep || lvl == "E" || lvl == "F")', "keep"),
+    ("image/lumen_report.sh", "keep chunk rotation", "if (cur == \"\" || bytes >= chunk) next_chunk()", "if (cur == \"\") next_chunk()"),
+    ("image/lumen_report.sh", "keep newest open chunk", 'case "$f" in "$ol"|"$oi"|"$ok"|"$os"|*/info.txt) continue ;; esac', 'case "$f" in */info.txt) continue ;; esac'),
+    ("image/lumen_report.sh", "keep starts kept", "awk -v k=\"$KEEP_BOOTS\" 'NR > k'", "awk -v k=\"$KEEP_BOOTS\" 'NR > k + 1'"),
+    ("image/lumen_report.sh", "keep resume same start", '    RESUME=1\n    return 0\n', '    RESUME=0\n'),
+    ("image/lumen_report.sh", "keep pstore into the start before", '[ -n "$prev" ] && lk_pstore "$prev"', '[ -n "$prev" ] && lk_pstore "$D"'),
+    ("image/lumen_report.sh", "keep budget percent", "cap = pool * (live ? pctl : pct) / 100", "cap = pool * pct / 100"),
+    ("image/lumen_report.sh", "keep budget ceiling", "    if (cap > m) cap = m\n", ""),
+    ("image/lumen_report.sh", "keep budget low ram", "    if (low) m = m / 2\n", ""),
+    ("image/lumen_report.sh", "keep budget floor", "    if (cap > pool - floor) cap = pool - floor\n", ""),
+    ("image/lumen_report.sh", "keep evict older log first", "if (T[i] == \"log\" && mid) c = old ? 1 : 2", "if (T[i] == \"log\" && mid) c = old ? 2 : 1"),
+    ("image/lumen_report.sh", "keep evict head kept", "pos[i] > head &&", "pos[i] > 0 &&"),
+    ("image/lumen_report.sh", "keep export hard link", '*.gz) ln "$f" "$X/$name" 2> /dev/null || cp "$f" "$X/$name" ;;', '*.gz) cp "$f" "$X/$name" ;;'),
+    ("image/lumen_report.sh", "keep export cleanup", '  rm -rf "$LK/export"\n}\n', '}\n'),
+    ("image/lumen_report.rc", "rc keeper started", "    start lumen_logkeep\n", ""),
+    (S + "BootLogs.java", "bootlogs head", "while (i < n && head > 0 && (p.head.isEmpty() || h + chunks.get(i).raw() <= head))", "while (i < n && (p.head.isEmpty() || h + chunks.get(i).raw() <= head))"),
+    (S + "BootLogs.java", "bootlogs tail newest", "p.tail.add(0, chunks.get(--j));", "p.tail.add(chunks.get(--j));"),
+    (S + "BootLogs.java", "bootlogs filter", "                if (lf != null && !lf.keep(line)) {", "                if (false) {"),
+    (S + "BootLogs.java", "bootlogs scrub", "String s = scrub == null ? line : scrub.scrub(line);", "String s = line;"),
+    (S + "BootLogs.java", "bootlogs left-out line", "            if (p.skipped > 0) {", "            if (p.skipped > 99) {"),
+    (S + "BootLogs.java", "bootlogs newest first", "new TreeMap<>(Collections.reverseOrder())", "new TreeMap<>()"),
+    (S + "ReportZip.java", "zip raw outside the limit", "<= maxBytes + raw) return shrink;", "<= maxBytes) return shrink;"),
+    (S + "ReportZip.java", "zip raw whole", "copyTail(p.file, Long.MAX_VALUE, z, buf);", "copyTail(p.file, Math.max(4096, p.cap / shrink), z, buf);"),
     (S + "RootLogs.java", "rootlogs alphabet", "if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || c == '-')) return false;", ""),
     (S + "RootLogs.java", "rootlogs own token only", 'if (done == null || token == null || !done.startsWith(token + " ")) return null;',
      'if (done == null || token == null || done.indexOf(" ") < 0) return null;'),

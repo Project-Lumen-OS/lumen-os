@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, son et alimentation : appareils et messages CEC</string>
     <string name="lumen_report_bytes">%1$s envoyés sur %2$s</string>
     <string name="lumen_report_code">Code du rapport</string>
+    <string name="lumen_report_inc_starts">Journaux des 5 derniers démarrages. Un rapport fait au plus 25 Mo environ.</string>
 </resources>

@@ -22,6 +22,8 @@ mkdir -p "$OUT/z"
   "$P/KstGameLock.java" "$M/projector/panel/SoundState.java" "$HERE/test/rules/Z9xPictureSettingsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT/z" org.lumen.projector.panel.Z9xPictureSettingsTest
 # the closed look of those rows (ProjectorFeatures.locked): the adapter hands the menu the same rule on its last read
-grep -qxF '    @Override public Note locked(FeatureId f, MenuState now) { return Z9xMenuRules.locked(f, last); }' "$P/Z9xFeatures.java" \
+# Z9xFeatures lives in the XGIMI HIDL vendor layer (One projector app, step 1b), next to Z9xMenuRules
+V="$HERE/../vendor/xgimi/hidl-gmpf/src/org/lumen/projector/panel"
+grep -qxF '    @Override public Note locked(FeatureId f, MenuState now) { return Z9xMenuRules.locked(f, last); }' "$V/Z9xFeatures.java" \
   || { echo "FAIL locked look: Z9xFeatures does not draw the picture settings rows closed from Z9xMenuRules.locked"; exit 1; }
 echo "ok   locked look: Z9xFeatures.locked = Z9xMenuRules.locked on the last read"

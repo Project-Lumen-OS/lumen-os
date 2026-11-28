@@ -21,7 +21,7 @@ trap 'rm -rf "$OUT"' EXIT
 S=$HERE/src/org/lumen/report
 PURE="Scrubber LogcatFilter ReportZip ReportUploader PartUpload ReportFailure ReportKind CanceledException OwnApps PropFilter Incident
 IncidentScan AutoPolicy ReportQueue ReportUrl Alive AliveState AliveFile HdmiDump CecJournal RootLogs PowerDump ReportState ReportView
-SettingsDump"
+SettingsDump BootLogs"
 set --
 for c in $PURE; do set -- "$@" "$S/$c.java"; done
 mkdir -p "$OUT/pure" "$OUT/android/org/lumen/projector" "$OUT/android/org/lumen/icons"
@@ -62,6 +62,7 @@ I=$G/apps/core/lumen-icons
   "$U"/*.java "$U"/page/*.java
 echo "ok   android: $(ls "$S"/*.java | wc -l | tr -d ' ') module sources compile against android-34"
 bash "$HERE/test/report_helper_test.sh"
+bash "$HERE/test/logkeep_test.sh"
 python3 -B "$HERE/tools/report_icons.py" check
 python3 -B "$HERE/test/check_repo.py" "$G"
 python3 -B "$HERE/test/ui/guard_test.py"

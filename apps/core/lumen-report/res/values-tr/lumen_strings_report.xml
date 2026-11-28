@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, ses ve güç: cihazlar ve CEC mesajları</string>
     <string name="lumen_report_bytes">%2$s içinden %1$s gönderildi</string>
     <string name="lumen_report_code">Rapor kodu</string>
+    <string name="lumen_report_inc_starts">Son 5 açılışın günlükleri. Bir rapor en fazla yaklaşık 25 MB olur.</string>
 </resources>

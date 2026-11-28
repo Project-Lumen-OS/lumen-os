@@ -9,8 +9,10 @@
 *	need	stage/apk/Z9xProjector.apk	stage/apk/Z9xHome.apk	stage/apk/Z9xSetup.apk	stage/apk/Z9xTvInput.apk	stage/apk/Z9xUpdater.apk	stage/apk/Z9xAirPlay.apk	stage/apk/Z9xFrameworkKeysOverlay.apk	stage/apk/LumenMiracast.apk	stage/apk/LumenDsuInstall.apk	stage/apk/LumenWifiP2pOverlay.apk	stage/apk/LumenPackageInstallerOverlay.apk	stage/apk/LumenSystemUIOverlay.apk	stage/apk/LumenKeyboard.apk	stage/dex/LumenKeyboard.odex	stage/dex/LumenKeyboard.vdex	stage/props/system/build.prop	stage/props/system/product/etc/build.prop	stage/apk/TvSettingsTwoPanel.apk	stage/apk/LumenFiles.apk	stage/dex/LumenFiles.odex	stage/dex/LumenFiles.vdex
 *	sh_n	lumen_dsu_install.sh
 *	sh_n	z9x_nui.sh
-*	need	com.android.wifi.capex
+*	need	com.android.wifi.capex	service-wifi.odex	service-wifi.vdex
 *	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
+*	sha	service-wifi.odex	{WIFI_ODEX_SHA}
+*	sha	service-wifi.vdex	{WIFI_VDEX_SHA}
 *	base_pin
 *	out	fresh
 # the projector app, the updater and AirPlay (system/app) and the three priv-apps with their odex and vdex
@@ -77,10 +79,12 @@
 *	tar_framework	z9x
 # Wi-Fi Direct (screen mirroring) on the MediaTek pre-freeze supplicant: the base's Wi-Fi APEX with service-wifi.jar
 # rebuilt from lineage/patches/wifi/0001, re-signed with the base's Lumen APEX keys,
-# owner, mode and label as the base's; the base's dexpreopt files of the old jar go (ART would refuse them)
+# owner, mode and label as the base's; the jar's odex and vdex over the base's, made by the base build's own dexpreopt
+# command (tools/base_patch/wifi_dexpreopt.sh): without them the first start on empty data compiles the jar before
+# early-boot and the vendor PWM watchdog restarts the projector (z9x-installfail-1128)
 *	tar_add	system/apex/com.android.wifi.capex	com.android.wifi.capex	644
-*	tar_rm	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
-*	tar_rm	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
+*	tar_add	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex	service-wifi.odex	644
+*	tar_add	system/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex	service-wifi.vdex	644
 # screen mirroring: the Wi-Fi Direct device type "television" for Windows (apps/LumenWifiP2pOverlay, static RRO, no dex)
 *	tar_add	system/product/overlay/LumenWifiP2pOverlay.apk	stage/apk/LumenWifiP2pOverlay.apk	644
 # the system package installer in the Lumen look (apps/LumenPackageInstallerOverlay, static RRO, no dex): the GSI's TV
@@ -161,6 +165,13 @@
 # applies the volume)
 *	need	z9x_base.rc
 *	tar_add	system/etc/init/z9x_base.rc	z9x_base.rc	644
+# HELD (2026-11-28, 1.1.0-beta13 ships the odex/vdex fix only): the vendor PWM driver at post-fs, before the
+# vendor's 12 s wait for pwmchip8 in gmpf_main ends (overlay/v1/z9x_pwm_early.rc). A boot-order change: it goes back in
+# only after one live cold start plus one sleep/wake cycle on a Z9X; then remove the '#HELD ' prefixes of these lines
+# and of its tar_same row, and set first_boot_oat_test.py PWM_RC_PLACED to 1.
+#HELD *	need	z9x_pwm_early.rc
+#HELD *	line	z9x_pwm_early.rc	    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -d /vendor/lib/modules pwm-mt5896.ko
+#HELD *	tar_add	system/etc/init/z9x_pwm_early.rc	z9x_pwm_early.rc	644
 # the emulator's tether list (wlan only) outranks the vendor TetheringRROOverlay (ap0): it goes, so the hotspot of the
 # Network popup (lumen-system Hotspot) hands phones an address
 *	tar_rm	system/product/overlay/EmulatorTetheringConfigOverlay.apk
@@ -212,6 +223,7 @@
 *	tar_same	{tar}	system/product/etc/build.prop	stage/props/system/product/etc/build.prop
 *	tar_same	{tar}	system/etc/init/z9x_model_props.rc	z9x_model_props.rc
 *	tar_same	{tar}	system/etc/init/z9x_base.rc	z9x_base.rc
+#HELD *	tar_same	{tar}	system/etc/init/z9x_pwm_early.rc	z9x_pwm_early.rc
 *	tar_same	{tar}	system/etc/init/lumen_hdmirx.rc	lumen_hdmirx.rc
 *	tar_same	{tar}	system/etc/lumen/lumen_hdmirx.sh	lumen_hdmirx.sh
 *	tar_same	{tar}	system/etc/init/lumen_report.rc	lumen_report.rc

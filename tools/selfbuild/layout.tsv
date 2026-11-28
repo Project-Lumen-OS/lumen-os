@@ -145,6 +145,7 @@ system/etc/z9x_power_cec.rc	overlay/v1/z9x_power_cec.rc
 system/etc/z9x_power_wake.sh	overlay/v1/z9x_power_wake.sh
 system/etc/z9x_poweroff.rc	overlay/v1/z9x_poweroff.rc
 system/etc/z9x_poweroff.sh	overlay/v1/z9x_poweroff.sh
+system/etc/z9x_pwm_early.rc	overlay/v1/z9x_pwm_early.rc
 system/etc/z9x_setup.rc	overlay/v1/z9x_setup.rc
 system/etc/z9x_speed.rc	overlay/v1/z9x_speed.rc
 system/etc/z9x_trapezoid.rc	overlay/v1/z9x_trapezoid.rc

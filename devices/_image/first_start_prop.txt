@@ -24,3 +24,12 @@ persist.sys.timezone=
 # Language lists without the pseudo-locales en-XA and ar-XB (TvSettings lists them once developer options are on).
 # A negative filter: LocalePicker also tests it against the user's own locale.
 ro.localization.locale_filter=^(?!en-XA$|ar-XB$)
+# ---- Display refresh rate: the stock rule on every image
+# Android 14 QPR3 SurfaceFlinger turns content detection on by default (initScheduler: the default follows
+# enable_frame_rate_override, true), while the stock XGIMI SurfaceFlinger of every model runs without it (stock dumps:
+# HB "Content detection: off", Z9X "ContentDetection=false"; every Lumen dump: true). With it on, SurfaceFlinger picks
+# the mode from how often UI layers draw, and on a model with two modes nothing brings it back to the default: a Lumen
+# HB (3840x2160 at 50 and 60 Hz, system default 60 Hz, no app request) ran 11 h 24 min of 12 h at 50 Hz, the stock HB
+# stayed at 60 Hz on Home and on an HDMI input. Off, a rate an app asks for (Surface.setFrameRate, a 25 fps film in
+# ExoPlayer) still switches the mode as on stock, and every other screen stays at the default mode.
+ro.surface_flinger.use_content_detection_for_refresh_rate=false

@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Падаўленне вясёлкі</string>
     <string name="lumen_m_zoom_move">Зрух выявы</string>
     <string name="lumen_gm_rule_vrr_speed">Спачатку ўключыце Турба</string>
+    <string name="lumen_gm_rule_hdr_signal">Пераканайцеся, што прылада выдае сігнал HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">Калі AMD FreeSync уключаны, высокая частата патрэбна</string>
     <string name="lumen_m_move_hint">Стрэлкі зрушваюць выяву. За краем паварочваецца праектар.</string>
 </resources>

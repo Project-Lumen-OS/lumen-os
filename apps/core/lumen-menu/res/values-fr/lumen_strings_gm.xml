@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">ordinateur</string>
     <string name="lumen_gm_licences_d">Auteurs des contenus utilisés par Lumen OS</string>
     <string name="lumen_gm_credits_intro">Les images de manettes du menu de jeu viennent de ces modèles 3D :</string>
+    <string name="lumen_gm_so">Décalage de l\'écran</string>
+    <string name="lumen_gm_so_value">Régler</string>
+    <string name="lumen_gm_so_move">▲▼ Régler la position</string>
+    <string name="lumen_gm_so_reset">Appui long sur OK pour réinitialiser</string>
+    <string name="lumen_gm_rule_so_ratio">Le décalage de l\'écran ne fonctionne qu\'en 21:9 ou 32:9</string>
 </resources>

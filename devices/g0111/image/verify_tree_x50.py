@@ -393,7 +393,7 @@ MENU_APP = {
               ["ProjectorFocusManager", 107, "executeNimbleOpticalPos", "1..999"],
               # x50-parity-gaps: the HDMI aspect ratio of the picture page (stock setImageRatio -> MtkVideo.setZoomMode ->
               # GmTvManager 35, read 36; auto 2, 4:3 0, 16:9 1, original 4)
-              ["GmTvManager", 35, "setAspectRatio", "0..2;4"],
+              ["GmTvManager", 35, "setAspectRatio", "0..2;4..6"],
               ["GmTvManager", 36, "getAspectRatio", "-"],
               # rs30-parity-picture2: the colour and screen pages (ColorHal) and the original frame's mutex reads, Gmpf
               # refuses them where ModelMenu does not name the row
@@ -453,6 +453,11 @@ MENU_APP = {
               ["GmTvManager", 153, "getHdmiHwConfig", "1..3"],
               ["GmTvManager", 173, "getAmdFreeSyncState", "-"],
               ["GmTvManager", 192, "getHGiGMode", "-"],
+              ["GmTvManager", 191, "setHGiGMode"],
+              ["GmTvManager", 172, "setAmdFreeSyncState"],
+              ["GmTvManager", 151, "getDisplayArea", "-"],
+              ["GmTvManager", 41, "setDisplayArea", "0..3840,0..2160,1..3840,1..2160"],
+              ["GmTvManager", 171, "restoreWinByAspRatio", "5..6"],
               ["GmTvManager", 195, "CreateNewCustomImageMode"],
               ["GmTvManager", 196, "DeleteCustomImageMode"],
               ["GmTvManager", 197, "SwitchCustomImageModeMapping"],
@@ -604,12 +609,15 @@ removed |= {k for k in B if k == AIRPLAY_OAT or k.startswith(AIRPLAY_OAT + "/")}
 # the shared boot animation with the power-on sound (overlay/v1/bootanimation.zip, staged as IN/bootanimation.zip) over
 # the base's 1.0.9 member, which has none; owner, mode and label stay the base's, the frames too (checked below)
 # the Wi-Fi APEX with lineage/patches/wifi/0001 (staged as IN/com.android.wifi.capex) over the base's, byte for byte,
-# owner, mode and label as the base's; the base's dexpreopt files of the old service-wifi.jar go
+# owner, mode and label as the base's; its service-wifi.jar odex and vdex (tools/base_patch/wifi_dexpreopt.sh, staged
+# as IN/service-wifi.odex and .vdex) over the base's, byte for byte
 WIFI_APEX = "system/apex/com.android.wifi.capex"
 REPLACED[WIFI_APEX] = "com.android.wifi.capex"
 CHANGED.add(WIFI_APEX)
 WIFI_OAT = "system/framework/oat/arm64/" + "@".join(("apex", "com.android.wifi", "javalib", "service-wifi.jar", "classes"))
-removed |= {WIFI_OAT + ".odex", WIFI_OAT + ".vdex"}
+for _x in ("odex", "vdex"):
+    REPLACED[WIFI_OAT + "." + _x] = "service-wifi." + _x
+    CHANGED.add(WIFI_OAT + "." + _x)
 BOOTANIM = "system/product/media/bootanimation.zip"
 REPLACED[BOOTANIM] = "bootanimation.zip"
 CHANGED.add(BOOTANIM)

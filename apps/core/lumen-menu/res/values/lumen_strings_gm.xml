@@ -80,4 +80,9 @@
     <string name="lumen_gm_licences">@string/lumen_licenses</string>
     <string name="lumen_gm_licences_d">Authors of material used by Lumen OS</string>
     <string name="lumen_gm_credits_intro">The controller pictures in the game menu are made from these 3D models:</string>
+    <string name="lumen_gm_so">Screen shift</string>
+    <string name="lumen_gm_so_value">Adjust</string>
+    <string name="lumen_gm_so_move">▲▼ Adjust position</string>
+    <string name="lumen_gm_so_reset">Long press OK to reset</string>
+    <string name="lumen_gm_rule_so_ratio">Screen shift works only with the 21:9 or 32:9 aspect ratio</string>
 </resources>

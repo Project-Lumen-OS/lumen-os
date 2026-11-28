@@ -41,8 +41,11 @@ final class ReportSender {
                 continue;
             }
             try {
-                String code = ReportUploader.uploadAny(urls, u -> new ReportUploader().upload(u, e.zip,
-                        ReportPrefs.installId(c), ReportConfig.prop("ro.lumen.version"), model(), e.kind, (s, t) -> true));
+                String id = ReportPrefs.installId(c), version = ReportConfig.prop("ro.lumen.version");
+                String code = ReportUploader.big(e.zip)
+                        ? new ReportUploader().parts(urls, e.zip, id, version, model(), e.kind, (s, t) -> true)
+                        : ReportUploader.uploadAny(urls, u -> new ReportUploader().upload(u, e.zip, id, version, model(),
+                                e.kind, (s, t) -> true));
                 ReportPrefs.setLast(c, e.kind, code, System.currentTimeMillis());
                 q.remove(e.id);
                 Log.i(TAG, e.kind.wire + " report sent: " + code);

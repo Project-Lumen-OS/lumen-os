@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, звук и питание: устройства и сообщения CEC</string>
     <string name="lumen_report_bytes">Отправлено %1$s из %2$s</string>
     <string name="lumen_report_code">Код отчёта</string>
+    <string name="lumen_report_inc_starts">Журналы последних 5 запусков. Отчет весит до 25 МБ.</string>
 </resources>

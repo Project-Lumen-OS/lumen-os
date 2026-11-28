@@ -244,6 +244,6 @@ popup picture (rows with a tile of their own left out)
   picture.aspect
 all settings: general keystone picture network source bluetooth sound developer
 keys: gear short quick_menu, gear long game_menu
-game menu: lat vrr hfr pic dark sr snd aim fps (shown once the device answers: sr)
+game menu: lat vrr hfr fs pic cs dark sr ar so hdr snd aim fps (shown once the device answers: sr ar)
   game sound: off surround story clarity balanced
   themes: ps xbox switch pad apple windows computer, CEC detection on

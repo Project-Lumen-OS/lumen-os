@@ -143,6 +143,9 @@ GmTvManager	TV_SET_PICTURE_MODE	33	setPictureMode	boolean(int, int)	set	X50Proje
 GmTvManager	TV_GET_PICTURE_MODE	34	getPictureMode	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_SET_ASPECT_RATIO	35	setAspectRatio	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_ASPECT_RATIO	36	getAspectRatio	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_DISPLAY_AREA	41	setDisplayArea	boolean(int, int, int, int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_GET_DISPLAY_AREA	151	getDisplayArea	boolean(stDisplayArea)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_RESTORE_WIN_BY_ASP_RATIO	171	restoreWinByAspRatio	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_HDMI_INFO	38	getHdmiInfo	stHdmiInfo()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf, X50Gmpf; allow allowed_lumensensors.tsv, allowed_x50projector.tsv
 GmTvManager	TV_GET_EDID_VERSION	39	getEdidVersion	int()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_SET_EDID_VERSION	40	setEdidVersion	boolean(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
@@ -193,6 +196,7 @@ GmTvManager	TV_TOGGLE_FD_BOOST	160	toggleFDBoost	boolean(int, int)	set	X50Projec
 GmTvManager	TV_GET_FD_BOOST_STATUS	161	getFDBoostStatus	int(int)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_TOGGLE_AUTO_MODE	162	toggleAutoMode	boolean(int, boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_EXT_DEC_INFO	163	getExtDecInfo	int(String)	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
+GmTvManager	TV_SET_AMD_FREE_SYNC_STATE	172	setAmdFreeSyncState	boolean(boolean)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_AMD_FREE_SYNC_STATE	173	getAmdFreeSyncState	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_GET_HGIG_MODE	192	getHGiGMode	boolean()	get	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv
 GmTvManager	TV_SET_IRIS_LEVEL	199	SetIrisLevel	int(int)	set	X50Projector	stock devices/g0111/research/aidl_codes.tsv; client Gmpf; allow allowed_x50projector.tsv

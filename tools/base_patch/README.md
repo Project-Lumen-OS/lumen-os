@@ -13,6 +13,11 @@ base APK's dex at signing time and refuses anything it was not written for.
 | `tools.tsv` | dexlib2 (Google Maven) and guava (Maven Central), fetched to `~/.cache/lumen/base_patch`, sha256 pinned |
 | `test/` | `run.sh` (host tests), `mutate.py` (mutants, all must die) |
 
+The release gate (`tools/release/gate.py`) records every fix per model as a `patch` line: a row of `patches.tsv`
+(its row and its folder) in every model, the services.jar fix of the model's base (its `framework.tsv` rows,
+`services_hdmi/`, the `services*` tools, the LineageOS patch) and `tool` (the other files). A new or changed fix is
+red on each model until its proof (`test/run.sh`, `mutate.py`, the result pin) and `gate.py record`.
+
 Signers: `tools/devices/sign_device.py` (HB, RS30, Titan, `resign_input`), `devices/g0111/image/sign_x50_base.py`
 (X50 family, the same `resign_input`) and `tools/play6/sign_play6.py` (Play 6) sign a row of `patches.tsv` from the
 patched copy. The Z9X image has no base signer (it patches the published signed tar): its recipe
@@ -65,6 +70,33 @@ system app, takes only keys that start with `lumen_`, opens only an activity of 
 it was when the provider is missing or fails. `test/AboutRowsTest.java` runs that part (`test/about_extract.py`)
 on host stand-ins. It is the second fix of TvSettings: base `3753686b...` is the result of `tvsettings_a2dp`.
 
+## tvsettings_focus
+
+The special app access lists an app opens by intent (Notification access, Install unknown apps, Usage access, Display
+over other apps, Picture-in-picture, Alarms, ...) are TvSettings' TwoPanel pages on every image. When the first row of
+such a list is disabled, the remote is dead there: nothing gets focus, UP / DOWN / OK do nothing, only BACK works
+(a test app on a TITAN, 2026-11-28: "Android TV Core Services, Required by system" first). Such rows: the ATV
+default notification listener, an app that cannot change (Install unknown apps under a user restriction), every "No
+apps" row. androidx disables the whole row view of a disabled preference, a disabled view cannot take focus, and the
+leanback list hands the page's focus only to the row at its focus position, so focus falls to the panel's scroll
+view. The fix is the LineageOS 21 `SettingsPreferenceFragment` (`test/lineage21_focus/`; our compile has the shipped
+class's methods, interfaces and references, only R8's lambda names and `Boolean.TRUE` for `valueOf(true)` differ) with
+one method in the adapter of `onCreateAdapter`: after androidx binds a disabled selectable row, its row view is enabled
+again. The row stays grey (title, summary and switch keep the disabled state) and OK does nothing on it
+(`Preference.performClick` skips a disabled preference), but the remote can land on it and move on. Rows that are not
+selectable stay as they were. `test/FocusRowsTest.java` runs the bind (`test/focus_extract.py`) on host stand-ins of
+View and androidx Preference for the LineageOS class (no focus) and the fix (`expected_focus_*.txt`). Third fix of
+TvSettings: base `16c4aa9a...` is the result of `tvsettings_about`.
+
+Emulator proof (android-34 `default` x86_64 AVD, the TITAN image's TvSettings and RROs re-signed with the AOSP test
+key, phone Settings and SystemUI removed, an RRO making a demo app the default listener): D-pad only, the base
+leaves focus on `TwoPanelScrollView` (Notification access, Install unknown apps under `no_install_unknown_sources`,
+Picture-in-picture with no app); the fix focuses the grey first row, OK leaves it as it is, DOWN reaches Test App and
+OK grants its listener (`dumpsys notification`); Install unknown apps, Usage access and Display over other apps toggle
+the app op (`appops get`). The android-34 emulator framework lacks `UserInfo.isPrivateProfile()`, which settingslib
+calls for app icons, so the app-op lists ran with that one reference pointed at `isManagedProfile()` in both the base
+and the fixed test APK (emulator only, never in an image).
+
 ## services.jar (`services.py`, `framework.tsv`)
 
 The same idea for the framework: `services_hdmi` is the stock XGIMI eARC link of `lineage/patches/hdmi/0001` in the HDMI
@@ -86,3 +118,25 @@ JAVAC=~/rs30-base/src/prebuilts/jdk/jdk17/linux-x86/bin/javac python3 tools/base
   --profiles ~/rs30-base/src/frameworks/base/services
 python3 tools/base_patch/services.py check z9x build/base_patch/services/z9x
 ```
+
+## service-wifi.jar odex and vdex (`wifi_dexpreopt.sh`)
+
+The arm64 images swap the base's Wi-Fi APEX for one with the patched `service-wifi.jar` (docs/casting/WIFI_P2P_HAL.md).
+Its dexpreopt files must come along: odrefresh accepts system server artifacts on /system by their presence, and when
+one is missing odsign keeps `odsign.key.done` unset until odrefresh has compiled the jar, while init's post-fs-data
+waits for that key. On empty data (a fresh install, a new Lumen OS Live) early-boot, where the vendor loads
+`pwm-mt5896.ko`, then came after gmpf_main's 12 s wait for pwmchip8 and the Z9X restarted itself (z9x-installfail-1128).
+`wifi_dexpreopt.sh` is the base build's soong command for the jar (LineageOS 21 ninja, module service-wifi), run on
+builder-llm with the Z9X base build's host tools and boot image:
+
+```
+bash tools/base_patch/wifi_dexpreopt.sh ~/lumen-builder-backup/lineage-out/host/linux-x86 \
+  ~/lumen-builder-backup/lineage-out/soong/dexpreopt_arm64 IN JAR OUT
+```
+
+IN holds the class loader jars (three from system/framework, the APEXes of the other ten). Proof (2026-11-28): the base
+jar d7118f07 with the Z9X 1.0.9 base's own jars gives the shipped odex 064178eb and vdex 42e21396 byte for byte, twice.
+The image files: the patched jar 5be60c45 with the image's services.jar 92388c8f (framework.tsv z9x) give odex 751c241d
+and vdex 683a088c (the vdex holds the patched classes.dex checksum, the odex the image's services.jar checksum), staged
+from `build/wifi_apex/arm64/` and pinned in build.conf (WIFI_ODEX_SHA, WIFI_VDEX_SHA). `build.py check` refuses any
+recipe that removes a file below framework/oat (`removes_dexpreopt`, replay: tools/devices/test/first_boot_oat_test.py).

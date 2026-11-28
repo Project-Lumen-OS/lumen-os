@@ -17,8 +17,12 @@ public final class ReportConfig {
     static final int LOG_MINUTES = 30;
     /** Logcat window of an automatic report: the minutes around the incident. */
     static final int AUTO_LOG_MINUTES = 10;
-    /** Upper bound of a manual zip; the server takes up to 5 MiB (lumen_reports.MAX_BYTES). */
-    static final long MAX_ZIP_BYTES = 5_000_000L;
+    /**
+     * Upper bound of a manual zip without the kept starts; the server takes up to 5 MiB in one request
+     * (lumen_reports.MAX_BYTES). The kept starts of the persistent log (BootLogs.Caps, about 15 MB zipped at most)
+     * come on top; such a zip goes in parts (ReportUploader.parts, the server takes up to 64 MiB that way).
+     */
+    static final long MAX_ZIP_BYTES = ReportUploader.SINGLE_MAX;
     /** Upper bound of an automatic zip: a crash needs its record and a few minutes of log. */
     static final long AUTO_MAX_ZIP_BYTES = 1_000_000L;
     /** Raw (scrubbed, uncompressed) caps per section; ReportZip halves them while the zip is too big. */

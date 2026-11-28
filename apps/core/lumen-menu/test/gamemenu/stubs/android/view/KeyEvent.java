@@ -8,10 +8,18 @@ public class KeyEvent {
             KEYCODE_DPAD_RIGHT = 22, KEYCODE_DPAD_CENTER = 23, KEYCODE_ENTER = 66, KEYCODE_BUTTON_A = 96,
             KEYCODE_NUMPAD_ENTER = 160;
     private final int action, code, repeat;
+    private final boolean longPress;
 
     public KeyEvent(int action, int code) { this(action, code, 0); }
 
-    public KeyEvent(int action, int code, int repeat) { this.action = action; this.code = code; this.repeat = repeat; }
+    public KeyEvent(int action, int code, int repeat) { this(action, code, repeat, false); }
+
+    /** {@code longPress}: FLAG_LONG_PRESS, as the framework sets it on the repeat at the long-press timeout. */
+    public KeyEvent(int action, int code, int repeat, boolean longPress) {
+        this.action = action; this.code = code; this.repeat = repeat; this.longPress = longPress;
+    }
+
+    public final boolean isLongPress() { return longPress; }
 
     public final int getAction() { return action; }
     public final int getKeyCode() { return code; }

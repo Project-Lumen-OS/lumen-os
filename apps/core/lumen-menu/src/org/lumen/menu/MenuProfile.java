@@ -36,7 +36,10 @@ public final class MenuProfile {
     public static final Set<String> EYE_GEAR_SHORT = set("restore", "restore_off");
     /** Game menu dock items in their fixed order (GmModel.ORDER) and controller themes (GmModel.TH_*). */
     public static final List<String> GAME_ITEMS = Collections.unmodifiableList(Arrays.asList(
-            "lat", "vrr", "hfr", "pic", "cs", "dark", "sr", "ar", "hdr", "snd", "aim", "fps"));
+            "lat", "vrr", "hfr", "fs", "pic", "cs", "dark", "sr", "ar", "so", "hdr", "snd", "aim", "fps"));
+    /** Game menu colour spaces in menu order (GmModel.CS_TOKENS); a profile's game_menu.cs is a subset in this order. */
+    public static final List<String> GAME_CS = Collections.unmodifiableList(Arrays.asList(
+            "native", "bt2020", "adobe", "p3", "bt709"));
     /** Boost hint texts a profile can name (features.boost.summary): what Boost means on that model's stock. */
     public static final Set<String> BOOST_SUMMARIES = set("paler", "brighter");
     /**
@@ -55,7 +58,7 @@ public final class MenuProfile {
     /** The vendor hotspot interface of network.hotspot (ro.vendor.wifi.sap.interface of the stock dumps: ap0). */
     private static final java.util.regex.Pattern IFACE = java.util.regex.Pattern.compile("[a-z]+[0-9]+");
     private static final Set<String> GAME_KEYS = set("enabled", "items", "themes", "cec_detect", "note", "gated", "sound",
-            "vrr_top_speed");
+            "vrr_top_speed", "cs", "ar_wide");
 
     private final String device, model, adapter;
     private final LinkedHashMap<FeatureId, Map<String, Object>> features = new LinkedHashMap<>();
@@ -67,7 +70,9 @@ public final class MenuProfile {
     /** The profile's own sub pages (sections.&lt;s&gt; {"page": ...} rows): their groups in MenuSpec's table form. */
     private final LinkedHashMap<FeatureId, Object[][]> pageOrders = new LinkedHashMap<>();
     private final List<String> gameItems = new ArrayList<>(), gameThemes = new ArrayList<>(), pending = new ArrayList<>(),
-            gameGated = new ArrayList<>(), gameSounds = new ArrayList<>(GAME_SOUNDS.subList(0, 3));
+            gameGated = new ArrayList<>(), gameSounds = new ArrayList<>(GAME_SOUNDS.subList(0, 3)),
+            gameCs = new ArrayList<>(GAME_CS);
+    private final List<Integer> gameArWide = new ArrayList<>();
     private boolean gameSoundNamed;
     private boolean gameMenu, cecDetect, vrrTopSpeed;
     private final List<String> problems = new ArrayList<>();
@@ -271,6 +276,28 @@ public final class MenuProfile {
             else if (snd.size() < 3 || snd.size() > GAME_SOUNDS.size() || !snd.equals(GAME_SOUNDS.subList(0, snd.size())))
                 problem("game_menu.sound: " + snd + " is not " + GAME_SOUNDS.subList(0, 3) + " plus the next of " + GAME_SOUNDS);
             else { gameSounds.clear(); gameSounds.addAll(snd); gameSoundNamed = true; }
+        }
+        if (m.containsKey("cs")) {                                // the stock colour space list of this model
+            List<String> cs = tokens(m.get("cs"), "game_menu.cs");
+            int at = -1;
+            boolean order = !cs.isEmpty();
+            for (String c : cs) {
+                int i = GAME_CS.indexOf(c);
+                if (i <= at) order = false;
+                at = Math.max(at, i);
+            }
+            if (!gameItems.contains("cs")) problem("game_menu.cs without the cs item");
+            else if (!order) problem("game_menu.cs: " + cs + " is not a subset of " + GAME_CS + " in that order");
+            else { gameCs.clear(); gameCs.addAll(cs); }
+        }
+        if (m.containsKey("ar_wide")) {                           // wire values of 21:9 and 32:9 (two ints)
+            Object w = m.get("ar_wide");
+            if (!gameItems.contains("ar")) problem("game_menu.ar_wide without the ar item");
+            else if (!(w instanceof List) || ((List<?>) w).size() != 2) problem("game_menu.ar_wide must be two numbers");
+            else for (Object x : (List<?>) w) {
+                if (!(x instanceof Long) || (Long) x < 0 || (Long) x > 15) problem("game_menu.ar_wide: " + x + " is not a wire value 0..15");
+                else gameArWide.add(((Long) x).intValue());
+            }
         }
         for (String th : tokens(m.get("themes"), "game_menu.themes")) {
             if (!GAME_THEMES.contains(th)) problem("game_menu.themes: unknown " + th);
@@ -529,6 +556,12 @@ public final class MenuProfile {
 
     /** game_menu.sound: the game sound values this model's stock offers (default off, surround, story). */
     public List<String> gameSounds() { return Collections.unmodifiableList(gameSounds); }
+
+    /** The game menu colour spaces of this model (game_menu.cs, default all of GAME_CS). */
+    public List<String> gameCs() { return Collections.unmodifiableList(gameCs); }
+
+    /** The game menu's 21:9 / 32:9 wire values (game_menu.ar_wide), empty when the model offers none. */
+    public List<Integer> gameArWide() { return gameMenu() ? Collections.unmodifiableList(gameArWide) : Collections.emptyList(); }
 
     /** The profile names its game sound values (game_menu.sound). */
     public boolean gameSoundNamed() { return gameMenu() && gameSoundNamed; }

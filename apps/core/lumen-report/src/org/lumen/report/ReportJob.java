@@ -157,20 +157,31 @@ final class ReportJob {
             if (!online(app)) throw new ReportUploader.UploadException(ReportFailure.NO_NETWORK, "offline");
             final File up = z;
             final long[] lastPost = {0};
-            String c = ReportUploader.uploadAny(urls, u -> {
+            ReportUploader.Progress shown = (s, t) -> {
+                long now = SystemClock.uptimeMillis();
+                if (s == t || now - lastPost[0] > 250) {
+                    lastPost[0] = now;
+                    post(r, () -> { sent = s; total = t; notifyListeners(); });
+                }
+                return !r.canceled;
+            };
+            String c;
+            if (ReportUploader.big(up)) {
+                // a report with the kept starts: in parts, resumable (a failed try goes to the queue and goes on there)
                 ReportUploader one = new ReportUploader();
                 r.uploader = one;
-                if (r.canceled) throw new CanceledException();     // cancel() may have missed the uploader
-                return one.upload(u, up, ReportPrefs.installId(app), ReportConfig.prop("ro.lumen.version"),
-                        ReportSender.model(), ReportKind.MANUAL, (s, t) -> {
-                            long now = SystemClock.uptimeMillis();
-                            if (s == t || now - lastPost[0] > 250) {
-                                lastPost[0] = now;
-                                post(r, () -> { sent = s; total = t; notifyListeners(); });
-                            }
-                            return !r.canceled;
-                        });
-            });
+                if (r.canceled) throw new CanceledException();
+                c = one.parts(urls, up, ReportPrefs.installId(app), ReportConfig.prop("ro.lumen.version"),
+                        ReportSender.model(), ReportKind.MANUAL, shown);
+            } else {
+                c = ReportUploader.uploadAny(urls, u -> {
+                    ReportUploader one = new ReportUploader();
+                    r.uploader = one;
+                    if (r.canceled) throw new CanceledException();     // cancel() may have missed the uploader
+                    return one.upload(u, up, ReportPrefs.installId(app), ReportConfig.prop("ro.lumen.version"),
+                            ReportSender.model(), ReportKind.MANUAL, shown);
+                });
+            }
             ReportPrefs.setLast(app, ReportKind.MANUAL, c, System.currentTimeMillis());
             Log.i(TAG, "report sent: " + c + " (" + z.length() + " bytes)");
             AutoReports.deleteDir(r.dir);

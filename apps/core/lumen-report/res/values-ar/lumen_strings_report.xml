@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI والصوت والطاقة: الأجهزة ورسائل CEC</string>
     <string name="lumen_report_bytes">تم إرسال %1$s من %2$s</string>
     <string name="lumen_report_code">رمز التقرير</string>
+    <string name="lumen_report_inc_starts">سجلات آخر 5 مرات تشغيل. يصل حجم التقرير إلى نحو 25 ميغابايت.</string>
 </resources>

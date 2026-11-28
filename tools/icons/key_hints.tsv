@@ -9,3 +9,4 @@ lumen_m_panel_boost_press_again	apps/core/lumen-menu/src/org/lumen/projector/pan
 lumen_m_panel_boost_leave_press_again	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	: R.string.lumen_m_panel_boost_leave_press_again)));
 lumen_m_lamp_off_press_again	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	host.note(IconText.keys(app, s(R.string.lumen_m_lamp_off_press_again)));
 lumen_m_panel_lamp_hint	apps/core/lumen-menu/src/org/lumen/projector/panel/MenuController.java	new TextRow(app, IconText.keys(app, s(MenuLabels.summary(f))))
+lumen_gm_so_move	apps/core/lumen-menu/src/org/lumen/projector/panel/GmView.java	CharSequence move = org.lumen.icons.IconText.keys(cx, cx.getString(R.string.lumen_gm_so_move));

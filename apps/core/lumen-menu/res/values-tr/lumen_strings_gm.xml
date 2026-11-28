@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">bilgisayar</string>
     <string name="lumen_gm_licences_d">Lumen OS içindeki malzemelerin yazarları</string>
     <string name="lumen_gm_credits_intro">Oyun menüsündeki kumanda resimleri şu 3D modellerden yapıldı:</string>
+    <string name="lumen_gm_so">Ekran kaydırma</string>
+    <string name="lumen_gm_so_value">Ayarla</string>
+    <string name="lumen_gm_so_move">▲▼ Konumu ayarla</string>
+    <string name="lumen_gm_so_reset">Sıfırlamak için OK tuşunu basılı tutun</string>
+    <string name="lumen_gm_rule_so_ratio">Ekran kaydırma yalnızca 21:9 veya 32:9 en boy oranında çalışır</string>
 </resources>

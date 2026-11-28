@@ -25,8 +25,6 @@ import sys
 
 BASE, NEW, IN, V, BID, CODENAME, MODEL, NAME, TAGP = sys.argv[1:10]
 PROPS = ("system/build.prop", "system/product/etc/build.prop")
-ODEX = ("system/framework/oat/arm64/<email>@<email>@classes.odex",
-        "system/framework/oat/arm64/<email>@<email>@classes.vdex")
 BANNED = ("Z9xUpdater", "LumenUpdater", "LumenDsuInstall", "dsu_test", "testadb", "adb_keys", "lumen_dsu_install",
           "lumen_ota")
 bad = []
@@ -78,7 +76,7 @@ def under(p, roots):
 removed = sorted(p for p in b if p not in n)
 for p in removed:
     app = p.split("/oat", 1)[0] if "/oat" in p else None
-    if under(p, remove) or p in ODEX or p in replaced or app and app in n and (p.endswith("/oat") or "/oat/" in p):
+    if under(p, remove) or p in replaced or app and app in n and (p.endswith("/oat") or "/oat/" in p):
         continue
     bad.append("removed but not allowed: " + p)
 for p in remove:

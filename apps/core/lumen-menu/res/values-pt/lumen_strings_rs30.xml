@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Redução do arco-íris</string>
     <string name="lumen_m_zoom_move">Deslocação da imagem</string>
     <string name="lumen_gm_rule_vrr_speed">Primeiro ligue o Turbo</string>
+    <string name="lumen_gm_rule_hdr_signal">Confirme que o dispositivo envia um sinal HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">Com o AMD FreeSync ligado a alta frequência é necessária</string>
     <string name="lumen_m_move_hint">As setas deslocam a imagem. Além da borda o projetor roda.</string>
 </resources>

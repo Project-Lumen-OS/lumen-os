@@ -18,6 +18,9 @@ What a record holds (one file per model, the same lines for every model):
           with another copy is named by path
   pin     APP, the sha256 of a prebuilt APK the image ships (devices/_baseline/gate/pins.tsv names the model's pin
           folder and the check that rebuilds each pin from its commit)
+  patch   FIX, RULE, RESULT: a fix of tools/base_patch the image carries (patch_lines): each patches.tsv row (every
+          image signs its base APKs through it), the services.jar fix of the model's base (build.conf framework=) and
+          'tool', the code that builds and swaps them. A check names the fix whose rule or pinned result moved.
 A shared change shows as a changed app line in every model it reaches, never as one model's special case: the
 re-record after a proven refactor is one 'gate.py record' for every model, its diff the list of what changed where.
 Exit 0 green, 1 red, 2 usage.
@@ -35,6 +38,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REC = "devices/_baseline/gate"
 TOOLS = ("apps/build_apk.sh", "apps/sdk", "tools/devices", "tools/build", "apps/check_hal_callers.py")
 SKIP_DIRS = {"__pycache__", "test", ".DS_Store"}
+BP = "tools/base_patch"   # fixes in the code of base APKs and of services.jar (patch_lines)
+BP_TABLES = ("patches.tsv", "framework.tsv")
 
 
 def sha_file(p):
@@ -158,13 +163,74 @@ def pins(root, c):
     return [("pin", n, out[n]) for n in sorted(out)], errs
 
 
+def base_patch(root):
+    """tools/base_patch of root: base_patch.py (the fixes of base APKs, patches.tsv) and services.py (the services.jar
+    fix of each Lumen base, framework.tsv)"""
+    import importlib.util
+    d = os.path.join(root, BP)
+    if d not in sys.path:
+        sys.path.insert(0, d)
+    import base_patch as bp  # noqa: E402
+    spec = importlib.util.spec_from_file_location("base_patch_services", os.path.join(d, "services.py"))
+    sv = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sv)
+    return bp, sv
+
+
+def text_sha(rows, files_digest):
+    return hashlib.sha256(("".join("\t".join(r) + "\n" for r in rows) + files_digest).encode()).hexdigest()
+
+
+def patch_lines(root, c):
+    """[("patch", FIX, RULE, RESULT)] of what the model's image takes from tools/base_patch, and errors.
+    A base APK fix (patches.tsv row; every image signs its base APKs through base_patch.patched_apk): RULE = its row and
+    its source folder <id>/, RESULT = its pinned classes.dex. The services.jar fix of the model's base (build.conf
+    framework=): RULE = the base's framework.tsv rows, services_hdmi/, the services* tools and the LineageOS patch it is
+    written from, RESULT = the patched pins of its files. 'tool': the other files that build and swap every fix.
+    Errors: a built result in this checkout (build/base_patch/...) whose bytes differ from its pin."""
+    bp, sv = base_patch(root)
+    _, layered, _ = devices(root)
+    lineage = os.path.relpath(sv.PATCH, bp.G)
+    tracked = set(subprocess.run(["git", "ls-files", "--", BP, lineage], cwd=root, capture_output=True,
+                                 text=True).stdout.split("\n"))
+
+    def src(*rels):   # tracked sources only (an untracked checkout: every file), no notes
+        return [f for r in rels for f in files_under(root, r) if (f in tracked or not tracked - {""}) and
+                not f.endswith(".md")]
+    top = [f for f in src(BP) if os.path.dirname(f) == BP]
+    svc = [f for f in top if os.path.basename(f).startswith("services")]
+    tables = [os.path.join(BP, t) for t in BP_TABLES]
+    out = [("patch", "tool", digest(root, [f for f in top if f not in svc + tables]), "-")]
+    errs = []
+    for r in bp.rows():
+        row = [r[k] for k in ("path", "id", "cls", "base", "out")]
+        out.append(("patch", r["id"], text_sha([row], digest(root, src(os.path.join(BP, r["id"])))), r["out"]))
+        p = os.path.join(bp.DEX_DIR, r["id"], bp.DEX)
+        if os.path.isfile(p) and sha_file(p) != r["out"]:
+            errs.append("%s base_patch %s: %s is %s, patches.tsv pins %s" % (c, r["id"], os.path.relpath(p, root),
+                                                                           sha_file(p)[:12], r["out"][:12]))
+    base = layered.effective(os.path.join(root, "devices", c, "build.conf")).get("framework")
+    if base:
+        rows = [r for r in bp.table(BP_TABLES[1]) if r[1:2] == [base]]
+        files = [r for r in rows if r[0] == "file"]
+        rule = text_sha(rows, digest(root, svc + src(os.path.join(BP, sv.FIX), lineage)))
+        out.append(("patch", "%s:%s" % (sv.FIX, base), rule, text_sha([(r[2], r[4]) for r in files], "")))
+        for r in files:
+            p = os.path.join(sv.OUT_DIR, base, r[2])
+            if os.path.isfile(p) and sha_file(p) != r[4]:
+                errs.append("%s base_patch %s:%s: %s is %s, framework.tsv pins %s" % (
+                    c, sv.FIX, base, os.path.relpath(p, root), sha_file(p)[:12], r[4][:12]))
+    return out, errs
+
+
 def lines_now(root, c, with_apk, work):
     _, layered, _ = devices(root)
     tracked = set(subprocess.run(["git", "ls-files", "--"] + list(TOOLS), cwd=root, capture_output=True,
                                  text=True).stdout.split("\n"))
     # tracked files only: a build host generates files there (apps/sdk system modules of its JDK)
     tools = [f for t in TOOLS for f in files_under(root, t) if f in tracked or not tracked - {""}]
-    img = image_inputs(root, c)
+    # tools/base_patch (framework.tsv) is in the patch lines, per fix and per base, not in the image line of every model
+    img = [f for f in image_inputs(root, c) if not f.startswith(BP + "/")]
     tracked_img = set(subprocess.run(["git", "ls-files", "--"] + img, cwd=root, capture_output=True,
                                      text=True).stdout.split("\n"))
     out = [("tools", digest(root, tools)), ("image", digest(root, [f for f in img if f in tracked_img]))]
@@ -185,7 +251,8 @@ def lines_now(root, c, with_apk, work):
             continue
         out.append(("app", app, t, apk(root, tdir, work, c + "." + app) if with_apk else "-"))
     pl, perr = pins(root, c)
-    return out + pl, errs + perr
+    bl, berr = patch_lines(root, c)
+    return out + pl + bl, errs + perr + berr
 
 
 def read_record(root, c):
@@ -197,7 +264,7 @@ def read_record(root, c):
 
 
 def key(line):
-    return line[:2] if line[0] in ("app", "pin", "input") else line[:1]
+    return line[:2] if line[0] in ("app", "pin", "input", "patch") else line[:1]
 
 
 def compare(rec, now, with_apk):
@@ -207,7 +274,12 @@ def compare(rec, now, with_apk):
     for k in sorted(set(r) | set(n)):
         a, b = r.get(k), n.get(k)
         if a is None or b is None:
-            diffs.append("%s %s" % ("new" if a is None else "gone", " ".join(k)))
+            diffs.append("%s %s" % ("new" if a is None else "gone", "base_patch " + k[1] if k[0] == "patch" else
+                                    " ".join(k)))
+            continue
+        if k[0] == "patch":
+            if a[2:] != b[2:]:
+                diffs.append(patch_diff(k[1], a, b))
             continue
         if k[0] == "app":
             if a[2] != b[2]:
@@ -218,6 +290,18 @@ def compare(rec, now, with_apk):
         elif a[-1] != b[-1]:
             diffs.append("%s: %s -> %s" % (" ".join(k), a[-1][:12], b[-1][:12]))
     return diffs
+
+
+def patch_diff(fix, a, b):
+    """what moved in a base_patch fix: its pinned result, or its rule with the same result"""
+    prove = "(prove it: tools/base_patch/test/run.sh, mutate.py, then gate.py record)"
+    if fix == "tool":
+        return "the base_patch tool (base_patch.py, DexSwap, JarLink, tools.tsv): %s -> %s, every fix it builds %s" % (
+            a[2][:12], b[2][:12], prove)
+    if a[3] != b[3]:
+        return "base_patch %s: result %s -> %s, rule %s -> %s %s" % (fix, a[3][:12], b[3][:12], a[2][:12], b[2][:12],
+                                                                    prove)
+    return "base_patch %s: rule %s -> %s, same result pin %s" % (fix, a[2][:12], b[2][:12], prove)
 
 
 def head(root):

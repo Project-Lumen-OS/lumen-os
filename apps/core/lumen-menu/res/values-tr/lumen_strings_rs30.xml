@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Gökkuşağı azaltma</string>
     <string name="lumen_m_zoom_move">Görüntü kaydırma</string>
     <string name="lumen_gm_rule_vrr_speed">Önce Turbo\'yu açın</string>
+    <string name="lumen_gm_rule_hdr_signal">Cihazın HDR sinyali gönderdiğinden emin olun</string>
+    <string name="lumen_gm_rule_hfr_fs">AMD FreeSync açıkken yüksek kare hızı gerekir</string>
     <string name="lumen_m_move_hint">Oklar görüntüyü kaydırır. Kenarın ötesinde projektör döner.</string>
 </resources>

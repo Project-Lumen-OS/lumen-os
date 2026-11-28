@@ -50,4 +50,5 @@
     <string name="lumen_report_back">@string/lumen_back</string>
     <string name="lumen_report_crumb_settings">@string/lumen_all_settings</string>
     <string name="lumen_report_crumb_general">@string/lumen_general</string>
+    <string name="lumen_report_inc_starts">Logs of the last 5 starts. A report is up to about 25 MB.</string>
 </resources>

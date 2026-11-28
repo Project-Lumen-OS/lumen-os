@@ -4,8 +4,10 @@
 # Base: the published Z9X 1.0.9 image; every kept file is the base's byte for byte with its owner, mode, label and
 # capability. What changes and why: devices/g0111/README.md; verify_tree_x50.py proves exactly that and nothing else.
 # Flags: test (tN) or pub (a release version), stage (--stage-only), image (--image-only).
-*	need	com.android.wifi.capex
+*	need	com.android.wifi.capex	service-wifi.odex	service-wifi.vdex
 *	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
+*	sha	service-wifi.odex	{WIFI_ODEX_SHA}
+*	sha	service-wifi.vdex	{WIFI_VDEX_SHA}
 *	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	about_version.py	x50_netadb.rc	verify_tree_x50.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	x50_blobs_allow.txt	x50_nui.rc	x50_apk_check.py	x50_kconfig.py	x50_power_keys.py	x50_perm_pkgs.py	apkinfo.py	x50_diag.py	lumen_dsu_install.rc	lumen_dsu_install.sh	x50-projector.xml	first_start_prop.txt	first_start.py	z9x_setup.rc	bootanimation.zip	bootanim_check.py	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	lumen-cast-sysconfig.xml	airplay_libs.py
 *	need	stage/X50EyeGuard.apk	stage/X50PowerOverlay.apk	stage/LumenDsuInstall.apk	stage/X50Projector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/X50TvInput.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/LumenSystemUIOverlay.apk	stage/Z9xAirPlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/base_signed/base_signed.tsv	stage/LumenFiles.apk
 ota	need	lumen_ota.sh	lumen_ota.rc	lumen_update_verifier.rc	ota_gate.conf	otacerts.zip	z9x-updater-default-permissions.xml	remove_ota.txt	stage/LumenUpdater.apk
@@ -84,10 +86,12 @@ test,!image	place	x50_netadb.rc	{sys}/etc/init/x50_netadb.rc	0644	0	0	{LABEL}
 !image	rm	{sys}/product/app/LeanbackIME/oat
 # Wi-Fi Direct (screen mirroring) on the MediaTek pre-freeze supplicant: the base's Wi-Fi APEX with service-wifi.jar
 # rebuilt from lineage/patches/wifi/0001, re-signed with the base's Lumen APEX keys,
-# owner, mode and label as the base's; the base's dexpreopt files of the old jar go (ART would refuse them)
+# owner, mode and label as the base's; the jar's odex and vdex over the base's, made by the base build's own dexpreopt
+# command (tools/base_patch/wifi_dexpreopt.sh): without them the first start on empty data compiles the jar before
+# early-boot, where the vendor PWM wait sits (z9x-installfail-1128)
 !image	place	com.android.wifi.capex	{sys}/apex/com.android.wifi.capex	0644	0	0	{LABEL}
-!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
-!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
+!image	place	service-wifi.odex	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex	0644	0	0	{LABEL}
+!image	place	service-wifi.vdex	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex	0644	0	0	{LABEL}
 !image	place	stage/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
 # the video player of every model: Lumen Play (com.xgimiru.player) as its published APK with its own key, so its own
 # updates install over it, a plain system app with its libraries unpacked and its licence notice (DLNA renderer and

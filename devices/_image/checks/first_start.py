@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
-"""first_start.py: the one first-start setting of every Lumen OS image: language, time and time zone.
+"""first_start.py: the one first-start setting of every Lumen OS image: language, time and time zone (and the stock
+refresh-rate rule of SurfaceFlinger, the other key every image shares).
 
 The setting is devices/_image/first_start_prop.txt (2026-11-13: English, time and time zone from the network,
 no fixed zone, the same on every model). The image builder stages it and this script for every device

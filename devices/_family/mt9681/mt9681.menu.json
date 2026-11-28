@@ -61,5 +61,5 @@
   },
   "hints": {"picture.dynamic_black": "dynamic_black"},
   "keys": {"eye_gear_short": null},
-  "game_menu": {"items": ["lat", "vrr", "hfr", "pic", "dark", "sr", "snd", "aim", "fps"], "gated": ["sr"], "sound": ["off", "surround", "story", "clarity", "balanced"]}
+  "game_menu": {"items": ["lat", "vrr", "hfr", "fs", "pic", "cs", "dark", "sr", "ar", "so", "hdr", "snd", "aim", "fps"], "gated": ["sr", "ar"], "sound": ["off", "surround", "story", "clarity", "balanced"], "cs": ["native", "bt2020", "p3", "bt709"], "ar_wide": [5, 6]}
 }

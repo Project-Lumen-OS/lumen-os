@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">彩虹效應抑制</string>
     <string name="lumen_m_zoom_move">畫面位移</string>
     <string name="lumen_gm_rule_vrr_speed">請先開啟極速</string>
+    <string name="lumen_gm_rule_hdr_signal">請確認訊號源設備輸出HDR訊號</string>
+    <string name="lumen_gm_rule_hfr_fs">AMD FreeSync生效時無法關閉高幀率模式</string>
     <string name="lumen_m_move_hint">方向鍵移動畫面，到達邊緣後投影機會轉動。</string>
 </resources>

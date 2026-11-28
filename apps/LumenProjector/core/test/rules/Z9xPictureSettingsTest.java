@@ -53,19 +53,27 @@ public final class Z9xPictureSettingsTest {
                 {FeatureId.PICTURE_COLOR_TEMP, "d65"}, {FeatureId.PICTURE_MEMC, "low"}, {FeatureId.PICTURE_RESET, null}};
         Object[][] pro = {{FeatureId.PICTURE_PRO, null}, {FeatureId.PICTURE_AI_CONTRAST, "on"},
                 {FeatureId.PICTURE_SUPER_RES, "on"}, {FeatureId.PICTURE_ULTRA120, "off"}};
-        // the 1.0.10 basicOrPro cases (game, 666, 620): NONE, GAME, GAME, AI, NONE, NONE, PERFORMANCE, NONE, NONE, NONE
-        Object[][] pins = {{false, 1, 0, null, null}, {true, 1, 0, G, G}, {true, 10, 0, G, G}, {false, 10, 0, AI_B, AI},
-                {false, 16, 0, null, null}, {false, 10, 2, null, null}, {false, 5, 0, PERF_B, PERF}, {false, 5, 2, null, null},
-                {null, 1, 0, null, null}, {false, null, 0, null, null}};
+        // the 1.0.10 basicOrPro cases (game, 666, 620): NONE, GAME, GAME, AI, NONE, NONE, PERFORMANCE, NONE, NONE, NONE;
+        // game mode on (TITAN testers 2026-11-19, PictureSettingsRule.GAME_LATENCY): only the rows that add delay keep
+        // the game text, the others decide as with the game off (the last two columns)
+        Object[][] pins = {{false, 1, 0, null, null}, {true, 1, 0, G, G, null, null}, {true, 10, 0, G, G, AI_B, AI},
+                {false, 10, 0, AI_B, AI}, {false, 16, 0, null, null}, {false, 10, 2, null, null}, {false, 5, 0, PERF_B, PERF},
+                {false, 5, 2, null, null}, {null, 1, 0, null, null}, {false, null, 0, null, null}};
         for (Object[] p : pins) {
             String what = " game " + p[0] + " 666 " + p[1] + " 620 " + p[2];
             for (Object[] r : basic) {
-                eq(r[0] + what, p[3], note((FeatureId) r[0], (String) r[1], in((Boolean) p[0], (Integer) p[1], (Integer) p[2])));
+                Object want = p.length > 5 && !PictureSettingsRule.gameLatency((FeatureId) r[0]) ? p[5] : p[3];
+                eq(r[0] + what, want, note((FeatureId) r[0], (String) r[1], in((Boolean) p[0], (Integer) p[1], (Integer) p[2])));
             }
             for (Object[] r : pro) {
-                eq(r[0] + what, p[4], note((FeatureId) r[0], (String) r[1], in((Boolean) p[0], (Integer) p[1], (Integer) p[2])));
+                Object want = p.length > 5 && !PictureSettingsRule.gameLatency((FeatureId) r[0]) ? p[6] : p[4];
+                eq(r[0] + what, want, note((FeatureId) r[0], (String) r[1], in((Boolean) p[0], (Integer) p[1], (Integer) p[2])));
             }
         }
+        // the rows that add delay stay closed in game mode whatever the picture mode, the others are drawn open
+        Note memc = Z9xMenuRules.locked(FeatureId.PICTURE_MEMC, in(true, 1, 0));
+        eq("motion compensation drawn closed in game mode", G, memc == null ? null : memc.res);
+        eq("brightness drawn open in game mode", null, Z9xMenuRules.locked(FeatureId.PQ_BRIGHTNESS, in(true, 1, 0)));
         Note n = Z9xMenuRules.blocked(FeatureId.PQ_BRIGHTNESS, null, in(false, 10, 0));
         eq("the stock plain toast, no row title", true, n != null && n.toast && n.title == null);
 

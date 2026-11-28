@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, дыбыс және қуат: құрылғылар мен CEC хабарлары</string>
     <string name="lumen_report_bytes">%2$s ішінен %1$s жіберілді</string>
     <string name="lumen_report_code">Есеп коды</string>
+    <string name="lumen_report_inc_starts">Соңғы 5 іске қосудың журналдары. Есеп көлемі 25 МБ дейін.</string>
 </resources>

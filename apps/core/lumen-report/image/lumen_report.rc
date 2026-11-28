@@ -17,9 +17,18 @@
 # every CEC message it sends or receives ([S]/[R], tag HDMI) only when log.tag.HDMI allows DEBUG, and reads that once
 # when system_server loads the class, so it is set here before zygote starts. The message text is built either way;
 # the only cost is the log line (about 60 a minute with a soundbar that asks the power status every 2 s).
+#
+# The persistent log of the last starts (lumen_report.sh keep, the keep section there): from post-fs-data on, as long
+# as the unit runs, logcat (main, system, events, crash, radio), the kernel log and periodic dumpsys snapshots go into
+# /data/misc/lumen_logs, one folder per start, the newest 6 starts, within a budget of free /data (budget.txt). init
+# restarts the service whenever it ends; it goes on in the same start's folder. persist.lumen.logkeep=off stops it.
 
 on early-init
     setprop log.tag.HDMI D
+
+on post-fs-data
+    mkdir /data/misc/lumen_logs 0711 root root
+    start lumen_logkeep
 
 on boot
     mkdir /dev/lumen_report 0750 root system
@@ -32,4 +41,10 @@ service lumen_report /system/bin/sh /system/etc/lumen/lumen_report.sh
     group root system log
     seclabel u:r:su:s0
     oneshot
+    disabled
+
+service lumen_logkeep /system/bin/sh /system/etc/lumen/lumen_report.sh keep
+    user root
+    group root system log
+    seclabel u:r:su:s0
     disabled

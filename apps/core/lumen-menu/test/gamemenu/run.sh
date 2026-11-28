@@ -19,6 +19,9 @@ G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")  
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$HERE/src/org/lumen/projector/panel/GmModel.java" "$T/GmModelTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.panel.GmModelTest
+"$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT/layers" \
+  "$HERE/src/org/lumen/projector/ui/LayerSet.java" "$T/LayerSetTest.java"
+"$JAVA_HOME/bin/java" -cp "$OUT/layers" org.lumen.projector.ui.LayerSetTest
 # GmController (keys, redraws, device picture) on host stubs of android.* and of its panel neighbours; R from res/
 mkdir -p "$OUT/ctl/gen/org/lumen/projector" "$OUT/ctl/classes"
 python3 - "$HERE/res" "$OUT/ctl/gen/org/lumen/projector/R.java" <<'EOF'
@@ -49,6 +52,7 @@ has() { grep -qF -- "$2" "$1" || fail "$3"; }
 # rs30-menu: the profile's VRR rule (game_menu.vrr_top_speed) reaches GmModel, and its refusal has its own text
 has "$GM" 'GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());' "GameMenu: the profile's VRR rule is not installed"
 has "$SRC/panel/GmController.java" 'case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);' "GmController: no text for the VRR speed rule"
+has "$SRC/panel/GmController.java" 'case GmModel.R_HDR_SIGNAL: return app.getString(R.string.lumen_gm_rule_hdr_signal);' "GmController: no text for the HDR signal rule"
 # the Z9X wiring (its KeyReceiver, App, Z9xGameIo and IGmpf2 client) only on the Z9X; other devices check their own
 # side in their suites (HB: apps/LumenProjector/core/test/menu, X50: apps/LumenProjector/host/activity/test)
 Z9X=0; [ "${MENU_DEVICE:-horse_popular}" = horse_popular ] && Z9X=1

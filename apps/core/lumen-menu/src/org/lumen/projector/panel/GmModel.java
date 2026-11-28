@@ -24,12 +24,13 @@ import java.util.Map;
  *                         (X50 stock also 193 clarity, 194 balanced: profile game_menu.sound, setSounds)
  *   aim  crosshair        no vendor call, our own window
  *   fps  frame counter    no write, our own window, the frame rate of 662 (proven)
+ *   fs   AMD FreeSync Premium (X50 stock xhplayer AMD_FREE_SYNC_PREMIUM: TV 172 / 173)              NEW, gated
  * A gated item is shown only after its getter answered a value inside the stock range on this unit (capability
  * check), and every write is read back: a read-back that disagrees hides the item for the rest of this boot.
- * 21:9 and 32:9 (stock 665 wire values on the mt5877 unknown: Lumen's 665 table is 0 4:3, 1 16:9, 2 Auto, 4 Original)
- * and the frame shift of the wide formats (659 / IGmpf2 320 / 273) are not offered: WIDE_WIRE is empty until a live
- * check reads 664 while stock shows 21:9 and 32:9. Their stock rules stay here (VRR not with a wide format, wide only
- * with a 3840 x 2160 signal) so they hold the day the values are known.
+ * 21:9 and 32:9 (stock common values 6 / 7) are offered where the profile names their wire values (game_menu.ar_wide:
+ * the X50 family's TV 35 setAspectRatio 5 / 6, stock GmDisplayManager.getVideoRatioFromCommonVal on GMPF2); the Z9X
+ * profile names none (its 665 values for them were never read live). Stock rules: VRR and FreeSync not with a wide
+ * format, the item refused while VRR is on; a wide option only shows the stock tip (source at 3840 x 2160).
  */
 final class GmModel {
     private GmModel() {}
@@ -38,18 +39,30 @@ final class GmModel {
     static final String LAT = "lat", VRR = "vrr", HFR = "hfr", PIC = "pic", DARK = "dark", SR = "sr", AR = "ar",
             SND = "snd", AIM = "aim", FPS = "fps";
     /**
+     * AMD FreeSync Premium (stock xhplayer AMD_FREE_SYNC_PREMIUM, off / on): refused on picking below top speed where
+     * the model allows VRR only there (freesync_requires_top_speed) and with 21:9 / 32:9 (vrr_mutex); while it is on,
+     * high frame rate cannot go off (close_high_frame_rate_under_freeSync). Gated like VRR.
+     */
+    static final String FS = "fs";
+    /**
      * HB stock game bar items (v3): colour space (menu values 0 Native, 1 BT.2020, 2 Adobe RGB, 3 DCI-P3, 4 Rec.709; the
      * device Io maps its wire values) and HDR (0 off, 1 dynamic tone mapping, 2 HGIG; offered only while the device
      * answers, e.g. HDR10 content). Gated like VRR: shown only after the device's getter answered.
      */
     static final String CS = "cs", HDR = "hdr";
+    /**
+     * Screen shift (stock xhplayer SCREEN_OFFSET, ScreenOffsetDialog): a band over the 21:9 / 32:9 picture, UP / DOWN
+     * move it 3 UI lines, a long OK restores the frame of the aspect ratio, BACK leaves it. Refused on picking unless the
+     * aspect ratio is 21:9 or 32:9 (MutexManager toast_not_support_screen_offset); shown only where the aspect item is.
+     */
+    static final String SO = "so";
     /** Dock groups of the prototype: Speed, Picture, Sound, Over the game. */
-    static final String[][] GROUPS = {{LAT, VRR, HFR}, {PIC, CS, DARK, SR, AR, HDR}, {SND}, {AIM, FPS}};
-    static final String[] ORDER = {LAT, VRR, HFR, PIC, CS, DARK, SR, AR, HDR, SND, AIM, FPS};
+    static final String[][] GROUPS = {{LAT, VRR, HFR, FS}, {PIC, CS, DARK, SR, AR, SO, HDR}, {SND}, {AIM, FPS}};
+    static final String[] ORDER = {LAT, VRR, HFR, FS, PIC, CS, DARK, SR, AR, SO, HDR, SND, AIM, FPS};
     /** Items whose vendor calls Lumen already used and proved, or that need no vendor call. */
     static final String[] PROVEN = {LAT, HFR, SR, AR, AIM, FPS};
     /** Items with vendor calls new in Lumen (the stock menu sends them): behind the capability check. */
-    static final String[] GATED = {VRR, PIC, DARK, SND, CS, HDR};
+    static final String[] GATED = {VRR, PIC, DARK, SND, CS, HDR, FS};
 
     static final int BAD = Integer.MIN_VALUE;
 
@@ -66,8 +79,8 @@ final class GmModel {
             case HDR: return 3;
             case SND: return sounds;
             case FPS: return 4;
-            case AR: return 4;          // Auto, 16:9, 21:9, 32:9 (the wide two only with WIDE_WIRE)
-            case AIM: return 0;
+            case AR: return 4;          // Auto, 16:9, 21:9, 32:9 (the wide two only with the profile's ar_wide)
+            case AIM: case SO: return 0;
             default: return 2;
         }
     }
@@ -124,6 +137,7 @@ final class GmModel {
         }
 
         boolean visible(String k) {
+            if (SO.equals(k) && !visible(AR)) return false;      // the shift moves the aspect item's wide frame
             return (allowed == null || allowed.contains(k)) && (!cap.containsKey(k) || get(k) == CAP_OK);
         }
     }
@@ -159,7 +173,7 @@ final class GmModel {
         switch (k) {
             case VRR: return raw == -1 ? 0 : (raw == 0 || raw == 1) ? raw : BAD;
             case PIC: return raw == -1 ? 0 : (raw >= 0 && raw <= 4) ? raw : BAD;
-            case DARK: return (raw == 0 || raw == 1) ? raw : BAD;
+            case DARK: case FS: return (raw == 0 || raw == 1) ? raw : BAD;
             case SND: return (raw == 0 || raw == SND_OFF) ? 0 : (raw > SND_OFF && raw < SND_OFF + sounds) ? raw - SND_OFF : BAD;
             case CS: return raw >= 0 && raw <= 4 ? raw : BAD;
             case HDR: return raw >= 0 && raw <= 2 ? raw : BAD;
@@ -202,25 +216,52 @@ final class GmModel {
 
     /** 665 wire of the menu aspect values; -1 = not offered (the wide two until the live check). */
     static final int[] AR_WIRE = {2, 1};
-    /** Wire values of 21:9 and 32:9 on the Z9X: unknown, so empty (the two options stay hidden). */
-    static final int[] WIDE_WIRE = {};
+    /** Wire values of 21:9 and 32:9 (profile game_menu.ar_wide; empty: the two options stay hidden). */
+    private static int[] wideWire = {};
+
+    /** GameMenu.install: the device profile's 21:9 / 32:9 wire values (null or empty: not offered). */
+    static void setWideWire(java.util.List<Integer> w) {
+        if (w == null || w.isEmpty()) { wideWire = new int[0]; return; }
+        if (w.size() != 2) throw new IllegalArgumentException("ar_wide " + w);
+        wideWire = new int[] {w.get(0), w.get(1)};
+    }
+
+    static int wideCount() { return wideWire.length; }
 
     static int arWire(int v) {
         if (v >= 0 && v < AR_WIRE.length) return AR_WIRE[v];
-        if (v >= 2 && v - 2 < WIDE_WIRE.length) return WIDE_WIRE[v - 2];
+        if (v >= 2 && v - 2 < wideWire.length) return wideWire[v - 2];
         return -1;
     }
 
     /** Menu aspect of a 664 reply: 0 Auto, 1 16:9, 2 / 3 wide; -1 another value (4:3, Original: the HDMI page). */
     static int arOf(int raw) {
         for (int i = 0; i < AR_WIRE.length; i++) if (AR_WIRE[i] == raw) return i;
-        for (int i = 0; i < WIDE_WIRE.length; i++) if (WIDE_WIRE[i] == raw) return 2 + i;
+        for (int i = 0; i < wideWire.length; i++) if (wideWire[i] == raw) return 2 + i;
         return -1;
     }
 
-    /** Whether option {@code i} of item {@code k} is offered on the Z9X. */
+    /** Colour space menu values (0 Native, 1 BT.2020, 2 Adobe RGB, 3 DCI-P3, 4 Rec.709) in GmView order. */
+    static final String[] CS_TOKENS = {"native", "bt2020", "adobe", "p3", "bt709"};
+    /** The colour spaces this device's stock offers (profile game_menu.cs; X50 COLOR_SPACE_V2: no Adobe RGB). */
+    private static boolean[] csOffered = {true, true, true, true, true};
+
+    /** GameMenu.install: the device profile's colour space list (tokens of CS_TOKENS, null or empty: all five). */
+    static void setCsOptions(java.util.Collection<String> tokens) {
+        boolean[] o = new boolean[CS_TOKENS.length];
+        boolean any = false;
+        for (int i = 0; i < CS_TOKENS.length; i++) {
+            o[i] = tokens == null || tokens.isEmpty() || tokens.contains(CS_TOKENS[i]);
+            any |= o[i];
+        }
+        if (!any) throw new IllegalArgumentException("colour spaces " + tokens);
+        csOffered = o;
+    }
+
+    /** Whether option {@code i} of item {@code k} is offered on this device. */
     static boolean optionOffered(String k, int i) {
         if (AR.equals(k)) return arWire(i) >= 0;
+        if (CS.equals(k)) return i >= 0 && i < csOffered.length && csOffered[i];
         return i >= 0 && i < count(k);
     }
 
@@ -236,17 +277,18 @@ final class GmModel {
     static final class State {
         final Map<String, Integer> v = new LinkedHashMap<>();
         int width, height;
+        /** The signal's HDR type (Snap.hdr, HDR_ codes), -1 = unknown. */
+        int hdr = -1;
 
         State() { for (String k : ORDER) v.put(k, BAD); }
 
         int get(String k) { Integer x = v.get(k); return x == null ? BAD : x; }
 
         void set(String k, int x) { v.put(k, x); }
-
-        boolean signal4k() { return width == 3840 && height == 2160; }
     }
 
-    static final int OK = 0, R_VRR_WIDE = 1, R_AR_VRR = 2, R_AR_4K = 3, R_HFR_VRR = 4, R_NOT_OFFERED = 5, R_VRR_SPEED = 6;
+    static final int OK = 0, R_VRR_WIDE = 1, R_AR_VRR = 2, R_HFR_VRR = 4, R_NOT_OFFERED = 5, R_VRR_SPEED = 6,
+            R_HDR_SIGNAL = 7, R_FS_SPEED = 8, R_FS_WIDE = 9, R_HFR_FS = 10, R_SO_RATIO = 11;
 
     /** The device's stock allows VRR only at top speed (profile game_menu.vrr_top_speed, the RS30). */
     private static boolean vrrTopSpeed;
@@ -259,16 +301,33 @@ final class GmModel {
      *  VRR on while a wide format is shown; any aspect change while VRR is on; a wide format without a 3840 x 2160
      *  signal; HFR off while VRR is on; a value the Z9X does not offer; VRR on below top speed where the stock allows it
      *  only there (xhplayer MutexManager: Feature.getVrrRequiresTopSpeed() and not isTopSpeedMode, toast
-     *  vrr_requires_top_speed).
+     *  vrr_requires_top_speed); the HDR item without an HDR10 signal ({@link #popupRefused}).
      */
     static int refuse(String k, int v, State s) {
         if (!optionOffered(k, v) && !AIM.equals(k)) return R_NOT_OFFERED;
+        int p = popupRefused(k, s);
+        if (p != OK) return p;
         int vrr = s.get(VRR), ar = s.get(AR);
         if (vrrTopSpeed && VRR.equals(k) && v == 1 && s.get(LAT) != 1) return R_VRR_SPEED;
         if (VRR.equals(k) && v == 1 && ar >= 2) return R_VRR_WIDE;
-        if (AR.equals(k) && vrr == 1 && v != ar) return R_AR_VRR;
-        if (AR.equals(k) && v >= 2 && !s.signal4k()) return R_AR_4K;
+        if (HFR.equals(k) && v == 0 && s.get(FS) == 1) return R_HFR_FS;
         if (HFR.equals(k) && v == 0 && vrr == 1) return R_HFR_VRR;
+        return OK;
+    }
+
+    /**
+     * Stock refusal when the item itself is picked (xhplayer MutexManager.mutex, before its popup opens): the HDR item
+     * only while the signal is HDR10 (PictureUtils.isPlayingHDR10, getHdrType 1), else toast hdr_settings_mutex;
+     * FreeSync below top speed where VRR needs it (freesync_requires_top_speed), then with 21:9 / 32:9 (vrr_mutex).
+     */
+    static int popupRefused(String k, State s) {
+        if (HDR.equals(k) && s.hdr != HDR_HDR10) return R_HDR_SIGNAL;
+        if (AR.equals(k) && s.get(VRR) == 1) return R_AR_VRR;       // stock toast_close_vrr_retry on picking the item
+        if (SO.equals(k) && s.get(AR) < 2) return R_SO_RATIO;       // stock isSupportScreenOffsetRatio: 21:9 / 32:9 only
+        if (FS.equals(k)) {
+            if (vrrTopSpeed && s.get(LAT) != 1) return R_FS_SPEED;
+            if (s.get(AR) >= 2) return R_FS_WIDE;
+        }
         return OK;
     }
 
@@ -279,6 +338,31 @@ final class GmModel {
     static boolean askTurbo(int curLat, int newLat, Boolean fullFrame) {
         return newLat == 1 && curLat != 1 && !Boolean.TRUE.equals(fullFrame);
     }
+
+    // ================================================================== screen shift
+    /** GameMenu.Io.shift ops. */
+    static final int SHIFT_READ = 0, SHIFT_MOVE = 1, SHIFT_RESET = 2;
+    /** Stock ScreenOffsetDialog: 3 UI lines per UP / DOWN on the 1080-line UI. */
+    static final int SHIFT_STEP = 3, UI_LINES = 1080;
+
+    /** Stock vOffset = 1080f / the panel lines (DM 57 disp_height); 1 while unknown (the stock field's start value). */
+    static float shiftScale(int panel) { return panel > 0 ? UI_LINES / (float) panel : 1f; }
+
+    /** The band in UI lines {top, height} of an Io.shift answer {left, top, width, height, panel} (stock initDisplayArea). */
+    static int[] shiftBand(int[] a) {
+        float k = shiftScale(a[4]);
+        return new int[] {(int) (a[1] * k), (int) (a[3] * k)};
+    }
+
+    /** UP / DOWN: the band top 3 lines up or down, kept on the screen (stock dispatchKeyEvent); other keys: as is. */
+    static int shiftNudge(int top, int height, int d) {
+        if (d == UP) return Math.max(0, top - SHIFT_STEP);
+        if (d == DOWN) return Math.max(0, Math.min(UI_LINES - height, top + SHIFT_STEP));
+        return top;
+    }
+
+    /** The panel line stock sends for a UI top: (int) (top / vOffset). */
+    static int shiftWire(int top, int panel) { return (int) (top / shiftScale(panel)); }
 
     // ================================================================== presets
     static final int P_COMPETE = 0, P_BALANCE = 1, P_STORY = 2, PRESETS = 3;
@@ -333,7 +417,7 @@ final class GmModel {
         int latW = want.containsKey(LAT) ? want.get(LAT) : lat;
         int hfrW = want.containsKey(HFR) ? want.get(HFR) : hfr;
         boolean vrrStaysOn = vrrNow == 1 && (vrrWant == null || vrrWant == 1);
-        if (hfrW == 0 && vrrStaysOn) hfrW = 1;                   // stock: HFR cannot go off while VRR is on
+        if (hfrW == 0 && (vrrStaysOn || s.get(FS) == 1)) hfrW = 1; // stock: HFR cannot go off while VRR or FreeSync is on
         if (vrrWant != null && vrrWant == 1) hfrW = 1;            // VRR needs HFR
         if (latW != BAD && hfrW != BAD && (latW != lat || hfrW != hfr)) out.add(new Step(SPEED, option(latW, hfrW)));
         if (vrrWant != null && vrrWant == 1 && vrrNow != 1) out.add(new Step(VRR, 1));

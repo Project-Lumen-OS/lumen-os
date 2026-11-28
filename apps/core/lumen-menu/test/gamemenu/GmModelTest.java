@@ -40,6 +40,7 @@ public final class GmModelTest {
         presets();
         focus();
         aim();
+        shift();
         theme();
         frames();
         timers();
@@ -47,25 +48,80 @@ public final class GmModelTest {
         if (fail > 0) System.exit(1);
     }
 
+    /**
+     * Stock screen shift (xhplayer SCREEN_OFFSET / ScreenOffsetDialog): shown only with the aspect item, refused on
+     * picking unless the aspect is 21:9 / 32:9, the band in UI lines from the panel area (vOffset = 1080f / disp_height),
+     * 3 lines per key kept on screen, the panel line sent = (int) (top / vOffset).
+     */
+    static void shift() {
+        GmModel.setWideWire(java.util.Arrays.asList(5, 6));
+        GmModel.Caps c = new GmModel.Caps();
+        c.allow(java.util.Arrays.asList(GmModel.AR, GmModel.SO));
+        c.gate(java.util.Arrays.asList(GmModel.AR));
+        ok(!c.visible(GmModel.SO) && !c.visible(GmModel.AR), "so: hidden while the aspect item is not proven");
+        c.onRead(GmModel.AR, 5);
+        ok(c.visible(GmModel.SO), "so: shown with the aspect item");
+        GmModel.Caps noAr = new GmModel.Caps();
+        noAr.allow(java.util.Arrays.asList(GmModel.SO));
+        ok(!noAr.visible(GmModel.SO), "so: never without the aspect item in the profile");
+        eq(GmModel.visibleOrder(c), java.util.Arrays.asList(GmModel.AR, GmModel.SO), "so: right after the aspect tile");
+        eq(GmModel.count(GmModel.SO), 0, "so: no option list");
+        GmModel.State s = new GmModel.State();
+        for (int[] ar : new int[][] {{GmModel.BAD, GmModel.R_SO_RATIO}, {0, GmModel.R_SO_RATIO}, {1, GmModel.R_SO_RATIO},
+                {2, GmModel.OK}, {3, GmModel.OK}}) {
+            s.set(GmModel.AR, ar[0]);
+            eq(GmModel.popupRefused(GmModel.SO, s), ar[1], "so refusal with aspect " + ar[0]);
+        }
+        int[] band = GmModel.shiftBand(new int[] {0, 257, 3840, 1646, 2160});
+        eq(band[0] + "," + band[1], "128,823", "so: 21:9 on the 2160-line panel, band top 128 height 823 (stock casts)");
+        int[] one = GmModel.shiftBand(new int[] {0, 129, 1920, 823, 0});
+        eq(one[0] + "," + one[1], "129,823", "so: unknown panel lines, vOffset 1 (stock start value)");
+        eq(GmModel.shiftNudge(128, 823, GmModel.UP), 125, "so: UP 3 lines");
+        eq(GmModel.shiftNudge(128, 823, GmModel.DOWN), 131, "so: DOWN 3 lines");
+        eq(GmModel.shiftNudge(2, 823, GmModel.UP), 0, "so: top kept at 0");
+        eq(GmModel.shiftNudge(256, 823, GmModel.DOWN), 257, "so: bottom kept on screen (1080 - 823)");
+        eq(GmModel.shiftNudge(257, 823, GmModel.DOWN), 257, "so: no move past the bottom");
+        eq(GmModel.shiftNudge(128, 823, GmModel.LEFT), 128, "so: LEFT moves nothing");
+        eq(GmModel.shiftWire(131, 2160), 262, "so: panel line (int) (131 / 0.5)");
+        eq(GmModel.shiftWire(125, 1080), 125, "so: panel line on a 1080-line panel");
+        eq(GmModel.shiftWire(101, 2000), 187, "so: panel line truncated as stock (101 / 0.54)");
+    }
+
     static void items() {
-        eq(GmModel.ORDER.length, 12, "12 tiles (v3: colour space and HDR of the HB bar)");
-        eq(String.join(",", GmModel.ORDER), "lat,vrr,hfr,pic,cs,dark,sr,ar,hdr,snd,aim,fps", "dock order of the prototype");
+        eq(GmModel.ORDER.length, 14, "14 tiles (v3: colour space and HDR of the HB bar; X50 stock FreeSync, screen shift)");
+        eq(String.join(",", GmModel.ORDER), "lat,vrr,hfr,fs,pic,cs,dark,sr,ar,so,hdr,snd,aim,fps", "dock order of the prototype, FreeSync in Speed, screen shift after the aspect");
         eq(GmModel.GROUPS.length, 4, "4 groups");
         int n = 0;
         StringBuilder sb = new StringBuilder();
         for (String[] g : GmModel.GROUPS) { n += g.length; for (String k : g) sb.append(k).append(','); }
-        eq(n, 12, "groups hold the 12 tiles");
-        eq(sb.toString(), "lat,vrr,hfr,pic,cs,dark,sr,ar,hdr,snd,aim,fps,", "groups in dock order");
+        eq(n, 14, "groups hold the 14 tiles");
+        eq(sb.toString(), "lat,vrr,hfr,fs,pic,cs,dark,sr,ar,so,hdr,snd,aim,fps,", "groups in dock order");
         eq(GmModel.count(GmModel.PIC), 5, "5 game pictures");
         eq(GmModel.count(GmModel.SND), 3, "3 game sounds");
         eq(GmModel.count(GmModel.FPS), 4, "frame counter off/left/centre/right");
         ok(GmModel.isPerf(GmModel.LAT, 1) && GmModel.isPerf(GmModel.VRR, 1) && GmModel.isPerf(GmModel.HFR, 1), "turbo/VRR/HFR yellow");
         ok(!GmModel.isPerf(GmModel.LAT, 0) && !GmModel.isPerf(GmModel.PIC, 1) && !GmModel.isPerf(GmModel.SR, 1), "others not yellow");
-        eq(String.join(",", GmModel.GATED), "vrr,pic,dark,snd,cs,hdr", "the new vendor calls are gated");
+        eq(String.join(",", GmModel.GATED), "vrr,pic,dark,snd,cs,hdr,fs", "the new vendor calls are gated");
+        // colour space: all five by default (HB bar, stock COLOR_SPACE), the profile's list where stock has fewer (X50 V2)
+        eq(GmModel.options(GmModel.CS).toString(), "[0, 1, 2, 3, 4]", "colour space: all five by default");
+        GmModel.setCsOptions(java.util.Arrays.asList("native", "bt2020", "p3", "bt709"));
+        eq(GmModel.options(GmModel.CS).toString(), "[0, 1, 3, 4]", "X50 COLOR_SPACE_V2: native, BT.2020, DCI-P3, Rec.709");
+        ok(!GmModel.optionOffered(GmModel.CS, 2), "X50: Adobe RGB not offered");
+        eq(GmModel.refuse(GmModel.CS, 2, new GmModel.State()), GmModel.R_NOT_OFFERED, "X50: Adobe RGB refused");
+        eq(GmModel.refuse(GmModel.CS, 3, new GmModel.State()), GmModel.OK, "X50: DCI-P3 allowed (no stock refusal)");
+        GmModel.setCsOptions(null);
+        eq(GmModel.options(GmModel.CS).toString(), "[0, 1, 2, 3, 4]", "colour space: null = all five");
+        boolean threw = false;
+        try { GmModel.setCsOptions(java.util.Arrays.asList("cmyk")); } catch (IllegalArgumentException e) { threw = true; }
+        ok(threw, "a colour space list without a known value is refused");
+        eq(GmModel.options(GmModel.FS).toString(), "[0, 1]", "FreeSync off / on");
+        eq(GmModel.plain(GmModel.FS, 1), 1, "173 true = on");
+        eq(GmModel.plain(GmModel.FS, 2), GmModel.BAD, "FreeSync 2 bad");
+        eq(GmModel.plain(GmModel.CS, 5), GmModel.BAD, "colour space 5 bad");
         for (String k : GmModel.PROVEN) ok(!GmModel.isGated(k), "proven item not gated: " + k);
         // aspect: only Auto and 16:9 until the wide wire values are known
         eq(GmModel.options(GmModel.AR).toString(), "[0, 1]", "aspect offers Auto and 16:9");
-        eq(GmModel.WIDE_WIRE.length, 0, "21:9 / 32:9 hidden until the live check");
+        eq(GmModel.wideCount(), 0, "21:9 / 32:9 hidden where the profile names no wire values (Z9X)");
         eq(GmModel.arWire(0), 2, "Auto = 665(2)");
         eq(GmModel.arWire(1), 1, "16:9 = 665(1)");
         eq(GmModel.arWire(2), -1, "21:9 not sent");
@@ -81,7 +137,7 @@ public final class GmModelTest {
         GmModel.Caps c = new GmModel.Caps();
         for (String k : GmModel.GATED) ok(!c.visible(k), "gated hidden before any read: " + k);
         for (String k : GmModel.PROVEN) ok(c.visible(k), "proven always visible: " + k);
-        eq(GmModel.visibleOrder(c).toString(), "[lat, hfr, sr, ar, aim, fps]", "dock without the gated items");
+        eq(GmModel.visibleOrder(c).toString(), "[lat, hfr, sr, ar, so, aim, fps]", "dock without the gated items");
         c.onRead(GmModel.VRR, 7);
         ok(!c.visible(GmModel.VRR), "VRR read 7 (outside the stock range) stays hidden");
         c.onRead(GmModel.VRR, -1);
@@ -110,12 +166,12 @@ public final class GmModelTest {
         ok(!c.onReadBack(GmModel.SR, 1, 0), "proven item mismatch reported");
         ok(c.visible(GmModel.SR), "a proven item is never hidden by a mismatch");
         GmModel.Caps all = allCaps();
-        eq(GmModel.visibleOrder(all).size(), 10, "all 10 after good reads");
+        eq(GmModel.visibleOrder(all).size(), 11, "all 11 after good reads");
         List<String[]> g = GmModel.visibleGroups(new GmModel.Caps());
         eq(g.size(), 3, "without the gated items the Sound group is empty and left out");
         StringBuilder sb = new StringBuilder();
         for (String[] r : g) sb.append(String.join("|", r)).append(' ');
-        eq(sb.toString().trim(), "0|lat|hfr 1|sr|ar 3|aim|fps", "empty Sound group left out");
+        eq(sb.toString().trim(), "0|lat|hfr 1|sr|ar|so 3|aim|fps", "empty Sound group left out");
     }
 
     static void rawValues() {
@@ -179,7 +235,7 @@ public final class GmModelTest {
         eq(GmModel.refuse(GmModel.VRR, 0, s), GmModel.OK, "VRR off always allowed");
         s = state(0, 1, 1, 0, 0, 0, 0, 0);
         eq(GmModel.refuse(GmModel.AR, 1, s), GmModel.R_AR_VRR, "aspect refused while VRR on");
-        eq(GmModel.refuse(GmModel.AR, 0, s), GmModel.OK, "same aspect allowed while VRR on");
+        eq(GmModel.refuse(GmModel.AR, 0, s), GmModel.R_AR_VRR, "the aspect item itself refused while VRR on (stock toast_close_vrr_retry)");
         eq(GmModel.refuse(GmModel.HFR, 0, s), GmModel.R_HFR_VRR, "HFR off refused while VRR on");
         eq(GmModel.refuse(GmModel.HFR, 1, s), GmModel.OK, "HFR on allowed while VRR on");
         s = state(0, 0, 0, 0, 0, 0, 0, 0);
@@ -198,7 +254,71 @@ public final class GmModelTest {
         eq(GmModel.refuse(GmModel.HFR, 1, state(0, 1, 1, 0, 0, 0, 0, 0)), GmModel.OK, "the rule touches nothing but VRR on");
         GmModel.setVrrTopSpeed(false);
         eq(GmModel.refuse(GmModel.VRR, 1, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "the rule off again");
-        // the wide-format 4K rule (holds once WIDE_WIRE is filled): checked on the rule order with a fake offered state
+        // FreeSync (stock X50 MutexManager on picking AMD_FREE_SYNC_PREMIUM, OtherFactory HIGH_FRAME_RATE_OFF)
+        eq(GmModel.popupRefused(GmModel.FS, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "FreeSync opens below top speed without the rule");
+        GmModel.setVrrTopSpeed(true);
+        eq(GmModel.popupRefused(GmModel.FS, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.R_FS_SPEED, "FreeSync refused below top speed (rule)");
+        eq(GmModel.popupRefused(GmModel.FS, state(GmModel.BAD, 0, 1, 0, 0, 0, 0, 0)), GmModel.R_FS_SPEED, "FreeSync refused at an unknown speed");
+        eq(GmModel.refuse(GmModel.FS, 1, state(0, 0, 1, 0, 0, 0, 0, 0)), GmModel.R_FS_SPEED, "FreeSync value refused below top speed");
+        eq(GmModel.popupRefused(GmModel.FS, state(1, 0, 1, 0, 0, 0, 0, 0)), GmModel.OK, "FreeSync opens at top speed");
+        eq(GmModel.popupRefused(GmModel.FS, state(1, 0, 1, 0, 0, 0, 2, 0)), GmModel.R_FS_WIDE, "FreeSync refused with 21:9 (vrr_mutex)");
+        eq(GmModel.popupRefused(GmModel.FS, state(0, 0, 1, 0, 0, 0, 3, 0)), GmModel.R_FS_SPEED, "speed is checked before the ratio (stock order)");
+        GmModel.setVrrTopSpeed(false);
+        eq(GmModel.popupRefused(GmModel.FS, state(0, 0, 1, 0, 0, 0, 3, 0)), GmModel.R_FS_WIDE, "FreeSync refused with 32:9");
+        eq(GmModel.popupRefused(GmModel.FS, state(0, 0, 1, 0, 0, 0, 1, 0)), GmModel.OK, "FreeSync opens with 16:9");
+        eq(GmModel.popupRefused(GmModel.VRR, state(0, 0, 1, 0, 0, 0, 3, 0)), GmModel.OK, "the FreeSync rule is the FreeSync item's only");
+        GmModel.State fsOn = state(1, 0, 1, 0, 0, 0, 0, 0);
+        fsOn.set(GmModel.FS, 1);
+        eq(GmModel.refuse(GmModel.HFR, 0, fsOn), GmModel.R_HFR_FS, "HFR off refused while FreeSync is on");
+        fsOn.set(GmModel.VRR, 1);
+        eq(GmModel.refuse(GmModel.HFR, 0, fsOn), GmModel.R_HFR_FS, "FreeSync checked before VRR (stock order)");
+        fsOn.set(GmModel.FS, 0);
+        eq(GmModel.refuse(GmModel.HFR, 0, fsOn), GmModel.R_HFR_VRR, "VRR rule with FreeSync off");
+        fsOn.set(GmModel.VRR, 0);
+        eq(GmModel.refuse(GmModel.HFR, 0, fsOn), GmModel.OK, "HFR off allowed with both off");
+        fsOn.set(GmModel.FS, 1);
+        eq(GmModel.refuse(GmModel.HFR, 1, fsOn), GmModel.OK, "HFR on allowed with FreeSync on");
+        GmModel.Caps fc = allCaps();
+        fc.onRead(GmModel.FS, 1);
+        boolean hfrOff = false;
+        for (GmModel.Step st : GmModel.plan(GmModel.P_STORY, fsOn, fc)) if (st.key.equals(GmModel.SPEED) && GmModel.hfrOf(st.value) == 0) hfrOff = true;
+        ok(!hfrOff, "a preset never turns HFR off while FreeSync is on");
+        // the HDR item (stock X50 xhplayer HDR_SETTINGS, MutexManager: only while getHdrType reads HDR10)
+        GmModel.State h = state(0, 0, 1, 0, 0, 0, 0, 0);
+        eq(GmModel.popupRefused(GmModel.HDR, h), GmModel.R_HDR_SIGNAL, "HDR item refused with an unknown signal");
+        for (int t : new int[] {GmModel.HDR_SDR, GmModel.HDR_DOLBY_VISION, GmModel.HDR_HLG, GmModel.HDR_HDR10_PLUS, GmModel.HDR_VIVID}) {
+            h.hdr = t;
+            eq(GmModel.popupRefused(GmModel.HDR, h), GmModel.R_HDR_SIGNAL, "HDR item refused with signal type " + t);
+            for (int v = 0; v < 3; v++) eq(GmModel.refuse(GmModel.HDR, v, h), GmModel.R_HDR_SIGNAL, "HDR " + v + " refused with type " + t);
+        }
+        h.hdr = GmModel.HDR_HDR10;
+        eq(GmModel.popupRefused(GmModel.HDR, h), GmModel.OK, "HDR item opens with HDR10");
+        for (int v = 0; v < 3; v++) eq(GmModel.refuse(GmModel.HDR, v, h), GmModel.OK, "HDR " + v + " allowed with HDR10");
+        eq(GmModel.refuse(GmModel.HDR, 3, h), GmModel.R_NOT_OFFERED, "HDR 3 not offered");
+        h.hdr = GmModel.HDR_SDR;
+        for (String k : new String[] {GmModel.VRR, GmModel.PIC, GmModel.SND, GmModel.DARK, GmModel.LAT})
+            eq(GmModel.popupRefused(k, h), GmModel.OK, k + " opens without HDR10 (only the HDR item has the rule)");
+        // 21:9 / 32:9 with the X50 family's wire values (profile ar_wide, TV 35: 5 / 6): offered without a 4K rule (stock
+        // shows only the tip), refused while VRR is on (picking the item) and turning VRR / FreeSync on with a wide format
+        GmModel.setWideWire(java.util.Arrays.asList(5, 6));
+        eq(GmModel.options(GmModel.AR).toString(), "[0, 1, 2, 3]", "X50: Auto, 16:9, 21:9, 32:9");
+        eq(GmModel.arWire(2), 5, "21:9 = TV 35(5)");
+        eq(GmModel.arWire(3), 6, "32:9 = TV 35(6)");
+        eq(GmModel.arOf(5), 2, "36 5 = 21:9");
+        eq(GmModel.arOf(6), 3, "36 6 = 32:9");
+        GmModel.State w = state(1, 0, 1, 0, 0, 0, 1, 0);
+        w.width = 1920; w.height = 1080;
+        eq(GmModel.refuse(GmModel.AR, 2, w), GmModel.OK, "21:9 with a 1080p signal: allowed (stock tip only)");
+        w.set(GmModel.VRR, 1);
+        eq(GmModel.popupRefused(GmModel.AR, w), GmModel.R_AR_VRR, "aspect item refused on picking while VRR is on");
+        w.set(GmModel.VRR, 0); w.set(GmModel.AR, 3);
+        eq(GmModel.popupRefused(GmModel.AR, w), GmModel.OK, "aspect item opens with VRR off");
+        eq(GmModel.refuse(GmModel.VRR, 1, w), GmModel.R_VRR_WIDE, "VRR on refused with 32:9");
+        boolean bad = false;
+        try { GmModel.setWideWire(java.util.Arrays.asList(5)); } catch (IllegalArgumentException e) { bad = true; }
+        ok(bad, "ar_wide must name both wide formats");
+        GmModel.setWideWire(null);
+        eq(GmModel.options(GmModel.AR).toString(), "[0, 1]", "no wide values: Auto and 16:9 only");
         ok(GmModel.askTurbo(0, 1, false), "turbo asks when the keystone is not the full frame");
         ok(GmModel.askTurbo(0, 1, null), "turbo asks when the keystone is unknown");
         ok(!GmModel.askTurbo(0, 1, true), "turbo does not ask at the full frame");

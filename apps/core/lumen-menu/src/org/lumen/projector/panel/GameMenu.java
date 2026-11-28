@@ -40,8 +40,8 @@ import java.util.function.Consumer;
  * stock arguments, each item behind the capability check of GmModel.Caps and every write read back.
  *
  * <p>Windows: through the PanelHost given to {@link #install}, the overlay host unless the
- * device gives its activity host; the crosshair and frame counter layers need a host with static layers (the
- * activity host has none, so there they are not drawn).
+ * device gives its activity host; the crosshair and frame counter layers need a host with static layers (the X50
+ * activity host has them through CoverLayers, off while the eye-guard cover is in front).
  */
 public final class GameMenu {
     static final String TAG = "Z9xGameMenu";
@@ -67,6 +67,7 @@ public final class GameMenu {
         int ar = GmModel.BAD;                // 664 raw
         Integer vrr, pic, dark, snd;         // raw replies of the gated getters, null = no answer
         Integer cs, hdrMode;                 // menu values (GmModel.CS / HDR), null = no answer or not offered now
+        Integer fs;                          // AMD FreeSync Premium 0 / 1, null = no answer
     }
 
     /** The menu's access to the projector (real: HalIo; the render harness gives a fake). Callbacks on main. */
@@ -93,6 +94,13 @@ public final class GameMenu {
 
         /** HDMI ports 1..n of this projector (Z9X, HB: 2; X50: 3, stock TV.inputToInt HDMI1..3). */
         default int hdmiPorts() { return 2; }
+
+        /**
+         * Screen shift (stock SCREEN_OFFSET, ScreenOffsetDialog): {@code op} GmModel.SHIFT_READ, SHIFT_MOVE to panel line
+         * {@code top}, SHIFT_RESET; cb on the main thread with {left, top, width, height, panel lines} after it, null when
+         * refused or unanswered (a device without the item: always null).
+         */
+        default void shift(int op, int port, int top, Consumer<int[]> cb) { cb.accept(null); }
     }
 
     /** The device's game menu access, given by the projector app at start (install). */
@@ -204,6 +212,8 @@ public final class GameMenu {
             CAPS.gate(p.gameGated());          // and those its game_menu.gated names only once their getter answers
             GmModel.setSounds(p.gameSounds().size());       // the stock game sound values of this model
             GmModel.setVrrTopSpeed(p.gameVrrTopSpeed());    // VRR only at top speed where the stock says so
+            GmModel.setCsOptions(p.gameCs());                // the stock colour space list of this model
+            GmModel.setWideWire(p.gameArWide());             // 21:9 / 32:9 where the profile names their wire values
             if (Watch.sInstance == null) Watch.sInstance = new Watch(c.getApplicationContext());
         } catch (Throwable t) {
             Log.e(TAG, "install", t);

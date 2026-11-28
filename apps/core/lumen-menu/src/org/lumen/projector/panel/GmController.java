@@ -42,6 +42,10 @@ final class GmController {
     int prow;                   // focused row of the popup (index into GmModel.options or AIM_ROW_*)
     int aimRow;
     boolean moving;             // crosshair move mode
+    boolean shifting;           // screen shift band (stock ScreenOffsetDialog)
+    int[] shiftArea;            // last Io.shift answer {left, top, width, height, panel}, null = none yet
+    int shiftTop = -1, shiftH;  // the band in UI lines (stock locationTop / locationHeight)
+    private boolean shiftResetHeld;   // the long OK of this press already reset
     Runnable confirmOk;         // Turbo question open
     int confirmIdx;             // 0 = switch on, 1 = cancel
     final Set<String> pending = new HashSet<>();
@@ -123,6 +127,7 @@ final class GmController {
 
     void onDismissed() {
         moving = false;
+        shifting = false;
         if (overlays != null) overlays.setMoving(false);
         gmView().release();
     }
@@ -142,6 +147,10 @@ final class GmController {
             else c.onNoAnswer(GmModel.SR);
         }
         arRaw = s.ar;
+        if (c.cap.containsKey(GmModel.AR)) {                   // the profile gates it (X50: 36 must answer first)
+            if (s.ar != GmModel.BAD) c.onRead(GmModel.AR, s.ar);
+            else c.onNoAnswer(GmModel.AR);
+        }
         state.set(GmModel.AR, s.ar == GmModel.BAD ? GmModel.BAD : GmModel.arOf(s.ar));
         gated(c, GmModel.VRR, s.vrr);
         gated(c, GmModel.PIC, s.pic);
@@ -149,8 +158,10 @@ final class GmController {
         gated(c, GmModel.SND, s.snd);
         gated(c, GmModel.CS, s.cs);
         gated(c, GmModel.HDR, s.hdrMode);
+        gated(c, GmModel.FS, s.fs);
         state.width = s.width;
         state.height = s.height;
+        state.hdr = s.hdr;
         updateTheme();
         if (overlays != null) {
             state.set(GmModel.AIM, overlays.aimOn() ? 1 : 0);
@@ -199,10 +210,14 @@ final class GmController {
         int d = dir(code);
         boolean ok = isOk(code);
         if (d < 0 && !ok) return false;
-        if (ev.getAction() != KeyEvent.ACTION_DOWN) return true;
-        if (ev.getRepeatCount() > 0 && !moving && popup == null && d < 0) return true;
+        if (ev.getAction() != KeyEvent.ACTION_DOWN) {
+            if (ok) shiftResetHeld = false;
+            return true;
+        }
+        if (ev.getRepeatCount() > 0 && !moving && !shifting && popup == null && d < 0) return true;
         try {
-            if (confirmOk != null) confirmKey(d, ok);
+            if (shifting) shiftKey(d, ok, ev.isLongPress());       // stock: event.isLongPress() && DPAD_CENTER
+            else if (confirmOk != null) confirmKey(d, ok);
             else if (popup != null) popupKey(d, ok);
             else dockKey(d, ok);
         } catch (Throwable t) {
@@ -218,6 +233,7 @@ final class GmController {
     boolean back() {
         if (confirmOk != null) { confirmOk = null; invalidate(); return true; }
         if (moving) { setMoving(false); invalidate(); return true; }
+        if (shifting) { shifting = false; invalidate(); return true; }
         if (popup != null) { closePopup(); return true; }
         return false;
     }
@@ -249,6 +265,9 @@ final class GmController {
 
     // ---- popups
     void openPopup(String k) {
+        int r = GmModel.popupRefused(k, state);
+        if (r != GmModel.OK) { toast(ruleText(r)); return; }
+        if (GmModel.SO.equals(k)) { startShift(); return; }
         popup = k;
         if (GmModel.AIM.equals(k)) {
             aimRow = GmModel.AIM_ROW_TOGGLE;
@@ -314,6 +333,50 @@ final class GmController {
             ov.setAimOn(true);
             state.set(GmModel.AIM, 1);
         }
+    }
+
+    // ---- screen shift (stock ScreenOffsetDialog)
+    private void startShift() {
+        shifting = true;
+        shiftArea = null;
+        shiftTop = -1;
+        shiftResetHeld = false;
+        io.shift(GmModel.SHIFT_READ, port, 0, this::onShiftArea);
+        invalidate();
+    }
+
+    /** An Io.shift answer: the band follows the area read (null: refused or no answer, the shift closes). */
+    void onShiftArea(int[] a) {
+        if (!shifting) return;
+        if (a == null || a.length < 5) {
+            shifting = false;
+            toast(R.string.lumen_gm_failed_soft);
+            return;
+        }
+        shiftArea = a;
+        int[] b = GmModel.shiftBand(a);
+        shiftTop = b[0];
+        shiftH = b[1];
+        invalidate();
+    }
+
+    /** UP / DOWN move the band and send its panel line at once; a long OK restores the frame; short OK does nothing. */
+    private void shiftKey(int d, boolean ok, boolean longOk) {
+        if (shiftArea == null) return;
+        if (ok) {
+            if (longOk && !shiftResetHeld) {
+                shiftResetHeld = true;
+                io.shift(GmModel.SHIFT_RESET, port, 0, this::onShiftArea);
+            }
+            return;
+        }
+        if (d != GmModel.UP && d != GmModel.DOWN) return;
+        int top = GmModel.shiftNudge(shiftTop, shiftH, d);
+        if (top == shiftTop) return;
+        shiftTop = top;
+        io.shift(GmModel.SHIFT_MOVE, port, GmModel.shiftWire(top, shiftArea[4]), a -> {
+            if (a == null) onShiftArea(null); else shiftArea = a;      // the band stays where the user put it
+        });
     }
 
     private void setMoving(boolean on) {
@@ -414,9 +477,13 @@ final class GmController {
         switch (r) {
             case GmModel.R_VRR_WIDE: return app.getString(R.string.lumen_gm_rule_vrr_wide);
             case GmModel.R_AR_VRR: return app.getString(R.string.lumen_gm_rule_ar_vrr);
-            case GmModel.R_AR_4K: return app.getString(R.string.lumen_gm_rule_ar_4k);
             case GmModel.R_HFR_VRR: return app.getString(R.string.lumen_gm_rule_hfr_vrr);
             case GmModel.R_VRR_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);
+            case GmModel.R_HDR_SIGNAL: return app.getString(R.string.lumen_gm_rule_hdr_signal);
+            case GmModel.R_FS_SPEED: return app.getString(R.string.lumen_gm_rule_vrr_speed);
+            case GmModel.R_FS_WIDE: return app.getString(R.string.lumen_gm_rule_vrr_wide);
+            case GmModel.R_HFR_FS: return app.getString(R.string.lumen_gm_rule_hfr_fs);
+            case GmModel.R_SO_RATIO: return app.getString(R.string.lumen_gm_rule_so_ratio);
             default: return app.getString(R.string.lumen_gm_failed_soft);
         }
     }

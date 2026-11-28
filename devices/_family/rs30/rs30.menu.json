@@ -13,7 +13,7 @@
   "off": {
     "boost": "the RS30 light has no Boost step (StockLight, kept off as before)"
   },
-  "game_menu": {"vrr_top_speed": true},
+  "game_menu": {"vrr_top_speed": true, "cs": ["native", "bt2020", "adobe", "p3", "bt709"]},
   "sections": {
     "keystone": {
       "groups": [

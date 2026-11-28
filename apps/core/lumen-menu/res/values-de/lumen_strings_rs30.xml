@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Regenbogenreduzierung</string>
     <string name="lumen_m_zoom_move">Bildverschiebung</string>
     <string name="lumen_gm_rule_vrr_speed">Zuerst Turbo einschalten</string>
+    <string name="lumen_gm_rule_hdr_signal">Prüfen Sie, ob das Gerät ein HDR-Signal ausgibt</string>
+    <string name="lumen_gm_rule_hfr_fs">Mit AMD FreeSync ist die hohe Bildrate nötig</string>
     <string name="lumen_m_move_hint">Die Pfeile verschieben das Bild. Hinter dem Rand dreht sich der Projektor.</string>
 </resources>

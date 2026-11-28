@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI、聲音和電源：裝置和 CEC 訊息</string>
     <string name="lumen_report_bytes">已傳送 %1$s，共 %2$s</string>
     <string name="lumen_report_code">報告代碼</string>
+    <string name="lumen_report_inc_starts">最近 5 次啟動的記錄。報告最大約 25 MB。</string>
 </resources>

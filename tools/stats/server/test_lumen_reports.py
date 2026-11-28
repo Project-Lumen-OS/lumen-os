@@ -61,7 +61,8 @@ class T(unittest.TestCase):
         return self.r.handle(headers(len(body), **kw), io.BytesIO(body), addr, now)
 
     def test_limits_are_the_documented_ones(self):
-        self.assertEqual((lr.MAX_BYTES, lr.KEEP_DAYS, lr.STORE_MAX_BYTES), (5 * 1024 * 1024, 30, 2 * 1024 ** 3))
+        self.assertEqual((lr.MAX_BYTES, lr.KEEP_DAYS, lr.STORE_MAX_BYTES), (5 * 1024 * 1024, 30, 8 * 1024 ** 3))
+        self.assertEqual((lr.REPORT_PARTS_MAX_BYTES, lr.ZIP_MAX_UNPACKED), (64 * 1024 ** 2, 256 * 1024 ** 2))
         self.assertEqual((lr.RATE_HOUR, lr.RATE_DAY, lr.INSTALL_DAY, lr.GLOBAL_DAY), (6, 20, 10, 300))
         self.assertGreater(lr.MAX_BYTES, 5_000_000)            # the client's manual cap (ReportConfig.MAX_ZIP_BYTES)
         self.assertEqual((lr.DUMP_MAX_BYTES, lr.DUMP_KEEP_DAYS, lr.DUMP_STORE_MAX_BYTES, lr.PART_MAX),
@@ -193,7 +194,8 @@ class T(unittest.TestCase):
             h = dict(kw)
             self.assertEqual(self.part(data, 0, step, **h)[0], 400, kw)
         self.assertEqual(self.part(data, 0, step, X_Lumen_Total=str(step - 1))[0], 400)        # past the end
-        self.assertEqual(self.part(data, 0, step, X_Lumen_Total=str(lr.MAX_BYTES + 1))[0], 413)  # a problem report
+        self.assertEqual(self.part(data, 0, step, X_Lumen_Total=str(lr.MAX_BYTES + 1))[0], 202)  # report + kept starts
+        self.assertEqual(self.part(data, 0, step, X_Lumen_Total=str(lr.REPORT_PARTS_MAX_BYTES + 1))[0], 413)
         self.assertEqual(self.part(data, 0, step, upload="1" * 32, X_Lumen_Kind="dump",
                                    X_Lumen_Total=str(lr.MAX_BYTES + 1))[0], 202)                 # a dump may be large
         self.assertEqual(self.part(data, 0, step, upload="2" * 32, X_Lumen_Kind="dump",

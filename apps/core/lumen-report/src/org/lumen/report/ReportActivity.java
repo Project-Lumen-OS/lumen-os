@@ -141,6 +141,7 @@ public final class ReportActivity extends Activity implements ReportJob.Listener
                 page.clear(true);
                 page.section(getString(R.string.lumen_report_included));
                 item(R.drawable.lumen_report_ic_logs, R.string.lumen_report_inc_logs, false);
+                item(R.drawable.lumen_report_ic_refresh, R.string.lumen_report_inc_starts, false);
                 item(R.drawable.lumen_report_ic_alert, R.string.lumen_report_inc_crashes, false);
                 item(R.drawable.lumen_report_ic_kernel, R.string.lumen_report_inc_kernel, false);
                 item(R.drawable.lumen_report_ic_devices, R.string.lumen_report_inc_devices, false);

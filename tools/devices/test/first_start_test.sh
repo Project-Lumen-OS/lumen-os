@@ -39,6 +39,8 @@ def run(*a):
 want = dict(fs.read_prop(PROP))
 ok("decision_english", want.get("ro.product.locale") == "en-US", want)
 ok("decision_no_fixed_zone", want.get("persist.sys.timezone") == "", want)
+# stock SurfaceFlinger runs without content detection (A14 QPR3 turns it on): the display mode stays the default
+ok("decision_sf_content_detection_off", want.get("ro.surface_flinger.use_content_detection_for_refresh_rate") == "false", want)
 ok("decision_vendor_pair_emptied", all(want.get(k) == "" for k in
                                       ("persist.sys.locale", "persist.sys.language", "persist.sys.country",
                                        "persist.sys.localevar")), want)

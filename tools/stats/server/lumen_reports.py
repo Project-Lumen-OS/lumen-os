@@ -15,8 +15,9 @@ served by lumen_stats.py on the same port, behind the same nginx and Cloudflare)
                             (networks in Russia freeze a connection to a Cloudflare address after about 20 KB, so
                             there the client sends parts of 12 KiB, elsewhere up to PART_MAX). Content-Type
                             application/octet-stream, the headers above plus X-Lumen-Upload (32 lowercase hex, new for
-                            every upload), X-Lumen-Offset, X-Lumen-Total (bytes of the whole zip, at most MAX_BYTES, a
-                            dump DUMP_MAX_BYTES) and X-Lumen-Sha256 (of the whole zip). Parts may come in any order
+                            every upload), X-Lumen-Offset, X-Lumen-Total (bytes of the whole zip, at most
+                            REPORT_PARTS_MAX_BYTES: a problem report with the kept log of the projector's last starts,
+                            a dump DUMP_MAX_BYTES) and X-Lumen-Sha256 (of the whole zip). Parts may come in any order
                             and twice (the client sends several at once): the server keeps the byte ranges it has.
                             The limits count an upload once, at its first part.
         202 {"have":N,"got":M} more parts wanted: N bytes from the start are complete, M bytes in all
@@ -61,13 +62,16 @@ import time
 import zipfile
 
 MAX_BYTES = 5 * 1024 * 1024
+# a problem report in parts: the classic report (at most MAX_BYTES) plus the kept log of the last starts (gzipped
+# streams the projector chose, about 15 MB, BootLogs.Caps of apps/core/lumen-report; room for later growth)
+REPORT_PARTS_MAX_BYTES = 64 * 1024 * 1024
 KEEP_DAYS = 30
-STORE_MAX_BYTES = 2 * 1024 ** 3
+STORE_MAX_BYTES = 8 * 1024 ** 3                      # gorodok: 98 GB disk, 82 GB free (2026-11-28)
 RATE_HOUR, RATE_DAY = 6, 20
 INSTALL_DAY = 10
 GLOBAL_DAY = 300
 ZIP_MAX_ENTRIES = 400
-ZIP_MAX_UNPACKED = 64 * 1024 * 1024
+ZIP_MAX_UNPACKED = 256 * 1024 * 1024               # the kept starts are gz entries stored as they are
 CHUNK = 64 * 1024
 KINDS = ("manual", "crash", "anr", "boot", "dump")
 DUMP_KIND = "dump"
@@ -179,8 +183,8 @@ def check_headers(h, part=False):
 
 
 def max_total(kind):
-    """the largest zip of a part upload: a dump may be large, a problem report not"""
-    return DUMP_MAX_BYTES if kind == DUMP_KIND else MAX_BYTES
+    """the largest zip of a part upload: a dump, or a problem report with the kept log of the last starts"""
+    return DUMP_MAX_BYTES if kind == DUMP_KIND else REPORT_PARTS_MAX_BYTES
 
 
 def check_zip(path, kind=""):

@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, audio e alimentazione: dispositivi e messaggi CEC</string>
     <string name="lumen_report_bytes">Inviati %1$s di %2$s</string>
     <string name="lumen_report_code">Codice della segnalazione</string>
+    <string name="lumen_report_inc_starts">Log degli ultimi 5 avvii. Un rapporto pesa fino a circa 25 MB.</string>
 </resources>

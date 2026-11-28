@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
+# Z9X: the vendor PWM driver before the vendor PWM wait (install as /system/etc/init/z9x_pwm_early.rc).
+# XGIMI's gmpf_main starts at 'on post-fs' (vendor init.xgimi.gmpf.rc); its PlatformPwm::CreatePWMDevices waits 12 s
+# (1201 x 10 ms) for /sys/class/pwm/pwmchip8 and then sets sys.powerctl to plain 'reboot' (kernel: 'System Reboot
+# (boot_reason=0xD1)', command ''). The vendor loads pwm-mt5896.ko, which makes pwmchip8, only at 'on early-boot'
+# (init.insmod.rc), after post-fs-data and zygote-start, so any start whose post-fs-data runs long (a first start on
+# empty data: odsign, APEX decompression) was restarted at ~20 s; on a fresh slot the userdata checkpoint dropped the
+# work, so every retry ended the same way (z9x-installfail-1128; gmpf logs 'pwm wait timeout, ...pwmchip8').
+# Here the vendor's own module is loaded with the vendor's own command at post-fs; the vendor's early-boot modprobe
+# then finds it loaded. pwm-mt5896.ko has no module dependency (modules.dep) and no other PWM driver loads between
+# 'on fs' and early-boot, so the pwmchip numbers stay the stock ones. One exec of one module, nothing else.
+on post-fs
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -d /vendor/lib/modules pwm-mt5896.ko

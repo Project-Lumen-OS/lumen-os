@@ -418,10 +418,13 @@ for w in 'public boolean show(Panel p) { return overlay().show(p); }' 'public vo
          'public void note(CharSequence text) { Notify.show(app, text); }' 'public void toast(int res) { Ui.toast(app, res); }'; do
   grep -qF -- "$w" "$OH" || { echo "FAIL OverlayPanelHost no longer the old overlay call: $w"; bad=1; }
 done
-# no layers over the game in the activity host: the game menu leaves its crosshair and frame counter out there
-grep -qF '@Override public boolean hasStaticLayers() { return false; }' "$AH" \
+# layers over the game in the activity host only through the device's Layers (X50: CoverLayers, off under the eye-guard
+# cover); without them the game menu leaves its crosshair and frame counter out
+grep -qF '@Override public boolean hasStaticLayers() { return layers != null; }' "$AH" \
+  && grep -qF 'if (layers != null) return layers.add(v, lp);' "$AH" \
   && grep -qF 'default boolean hasStaticLayers() { return true; }' "$HERE/src/org/lumen/projector/ui/PanelHost.java" \
-  || { echo "FAIL hosts: the activity host claims layers over the game, or the overlay host lost them"; bad=1; }
+  && grep -qF 'registerTaskStackListener(new TaskStackListener() {' "$HERE/src/org/lumen/projector/ui/CoverLayers.java" \
+  || { echo "FAIL hosts: the activity host claims layers over the game without the device's Layers, or the overlay host lost them"; bad=1; }
 PM="$HERE/src/org/lumen/projector/panel/PowerMenu.java"
 # the power menu (PowerMenu): the stock items the profile offers, only through the menu's own host (a device's gate
 # holds for it too), Turn off screen the lamp.off row's own action; the round tiles of every power menu (

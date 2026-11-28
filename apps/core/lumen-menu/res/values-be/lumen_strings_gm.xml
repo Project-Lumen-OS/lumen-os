@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">камп\'ютар</string>
     <string name="lumen_gm_licences_d">Аўтары матэрыялаў, якія выкарыстоўвае Lumen OS</string>
     <string name="lumen_gm_credits_intro">Выявы геймпадаў у гульнявым меню зроблены з гэтых 3D мадэляў:</string>
+    <string name="lumen_gm_so">Зрух экрана</string>
+    <string name="lumen_gm_so_value">Наладзіць</string>
+    <string name="lumen_gm_so_move">▲▼ Змяніць становішча</string>
+    <string name="lumen_gm_so_reset">Доўгі націск OK: скід</string>
+    <string name="lumen_gm_rule_so_ratio">Зрух экрана працуе толькі з фарматам 21:9 або 32:9</string>
 </resources>

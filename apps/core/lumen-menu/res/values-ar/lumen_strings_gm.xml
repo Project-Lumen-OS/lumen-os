@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">حاسوب</string>
     <string name="lumen_gm_licences_d">مؤلفو المواد التي يستخدمها Lumen OS</string>
     <string name="lumen_gm_credits_intro">صور أذرع التحكم في قائمة الألعاب مصنوعة من نماذج ثلاثية الأبعاد هذه:</string>
+    <string name="lumen_gm_so">إزاحة الشاشة</string>
+    <string name="lumen_gm_so_value">ضبط</string>
+    <string name="lumen_gm_so_move">▲▼ ضبط الموضع</string>
+    <string name="lumen_gm_so_reset">اضغط مطولًا على OK لإعادة الضبط</string>
+    <string name="lumen_gm_rule_so_ratio">إزاحة الشاشة تعمل فقط مع نسبة العرض 21:9 أو 32:9</string>
 </resources>

@@ -83,6 +83,9 @@ the CEC journal of the system log (`CecJournal`): every CEC message the framewor
 buffer begins, a soundbar's power status questions every 2 s counted as one line per unchanged question and answer
 between two other messages; then the HDMI / ARC / System Audio lines of dumpsys audio) and power.txt (`PowerDump`: dumpsys power without the
 wake lock and uid lists, which name apps).
+boots/ (`BootLogs`, the persistent log of the last starts, below): this start and the one before with their boot
+and their last part (log 8 + 40 MiB and 8 + 24 MiB of text), the important lines, kernel log and dumpsys snapshots
+of every kept start, pstore of a hard stop, info.txt per start and budget.txt; gzipped entries, about 15 MB at most.
 Automatic (at most 1 MB): summary.txt with the incidents, props.txt, the newest logcat lines that fit and the crash
 buffer of the system and image apps only, the DropBox records of those incidents of the last day.
 Every line passes `Scrubber`: e-mail, IP and MAC addresses, Wi-Fi names (also the saved ones and URL-encoded),
@@ -116,6 +119,29 @@ CEC, ARC, eARC, sound or volume, the "CEC settings:" block of the helper's dumps
 value with its default) and the report app's own shared preferences files about CEC, sound, HDMI and power (night
 guard, output choice, one-time steps), as key=value lines. The CEC journal leaves out HdmiCecConfig's read lines
 ("Getting CEC setting value", "Reading ... shared preference", most of LR-9MEQZP's journal) and keeps a written value.
+
+## The persistent log of the last starts
+
+The logcat ring of these images holds about a minute next to the vendor's log flood and the previous start's log is
+not readable, so `image/lumen_report.sh keep` (service `lumen_logkeep` of `lumen_report.rc`, from post-fs-data on,
+restarted by init) keeps the log of this start and the 5 before it in `/data/misc/lumen_logs/bNNNNNN/`: logcat main,
+system, events, crash and radio (`log.N`), its important lines (`imp.N`: crash buffer, errors, system life cycle,
+power, HDMI-CEC, sound, input, updates, Lumen tags), `dmesg -w` (`kernel.N`), dumpsys hdmi_control, audio, power,
+input and meminfo 1 minute after boot completed and then every 15 minutes (30 on a low-RAM unit) (`snap.N`), pstore
+of a hard stop (read at the next start) and info.txt (boot id, build, the next start's boot reason). Every line is
+scrubbed when written (the helper's rules); after the first 3 minutes of a start a tag that is not important keeps at
+most 600 lines a minute, the rest is one counted line. Chunks of 4 MiB (1 MiB for the other streams) are gzipped once
+finished; the open one is synced every 2 s, so a power cut loses about the last 2 seconds (emulator: kill -9 of the
+keeper and an immediate reboot without sync lost 1.3 s). Budget (`budget.txt`): 10 % of free /data plus what the logs
+hold, at most 5 GiB; Lumen OS Live 5 % and at most 1 GiB; half the ceiling on a low-RAM unit (under 2.5 GiB or
+`ro.config.low_ram`); never below 1 GiB free on /data. Over it go first the middle chunks of older starts' logs, then
+of this start's log, then the other streams' middles of older starts, whole older starts, the other streams' middles
+of this start; the first 2 and the last 2 chunks of this start stay. `persist.lumen.logkeep=off` switches it off.
+A report request also gets the kept files: hard links in `/data/misc/lumen_logs/export` (0750, group = the report app)
+listed in `persist.txt`; the app (`BootLogs`) picks the chunks per start, filters (`LogcatFilter`) and scrubs
+(`Scrubber`) every line again, and the helper waits up to 10 minutes for its ack. A report over 5 MB goes in parts
+(`ReportUploader.parts`, `PartUpload`, upload id = the start of the zip's sha256, so a try from the queue resumes it).
+Tests: `test/logkeep_test.sh` (host), mutants `keep` and `bootlogs` of `test/mutate.py`.
 
 ## Where it goes
 
@@ -177,7 +203,7 @@ comes from the log helper (above), so no app ever shows Android's log access dia
 `cloud/report-worker` is a ready Cloudflare Worker + R2 version of the same upload (never deployed). We send to our
 own server instead: it needs no new account or key, keeps the reports in the same place as the statistics, has no
 public read path at all (reports are read over ssh only), and its limits
-(5 MB per report, 2 GB store, 30 days) fit the 16 GB free disk of the VPS. Cloudflare would add global reach without
+(5 MB per report in one request, 64 MiB in parts, 8 GiB store, 30 days) fit the 82 GB free disk of the VPS. Cloudflare would add global reach without
 the VPS in the path and R2's free 10 GB, but needs an account, a wrangler token and the R2 payment setup, and puts
 user logs on a third party. The client keeps both open: `ro.lumen.report.url` points an image at the Worker.
 

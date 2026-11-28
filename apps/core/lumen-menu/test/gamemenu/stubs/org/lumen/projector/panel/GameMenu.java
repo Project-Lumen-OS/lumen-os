@@ -20,12 +20,14 @@ final class GameMenu {
         int ar = GmModel.BAD;
         Integer vrr, pic, dark, snd;
         Integer cs, hdrMode;
+        Integer fs;
     }
 
     interface Io {
         void read(int port, Consumer<Snap> cb);
         void apply(String key, int value, int port, Snap now, ApplyResult cb);
         void fullFrame(Consumer<Boolean> cb);
+        default void shift(int op, int port, int top, Consumer<int[]> cb) { cb.accept(null); }
     }
 
     interface ApplyResult {

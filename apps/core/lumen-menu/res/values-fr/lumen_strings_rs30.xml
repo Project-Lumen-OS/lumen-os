@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Réduction de l\'effet arc-en-ciel</string>
     <string name="lumen_m_zoom_move">Décalage de l\'image</string>
     <string name="lumen_gm_rule_vrr_speed">Activez d\'abord le Turbo</string>
+    <string name="lumen_gm_rule_hdr_signal">Vérifiez que l\'appareil envoie un signal HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">Avec AMD FreeSync, la haute fréquence est nécessaire</string>
     <string name="lumen_m_move_hint">Les flèches décalent l\'image. Au-delà du bord, le projecteur pivote.</string>
 </resources>

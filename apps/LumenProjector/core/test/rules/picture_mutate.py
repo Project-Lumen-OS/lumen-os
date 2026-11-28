@@ -49,7 +49,8 @@ def main():
         def copy():
             w = os.path.join(tmp, "g")
             shutil.rmtree(w, ignore_errors=True)
-            for d in ("apps/LumenProjector/core/src", "apps/LumenProjector/core/test/rules", "apps/core/lumen-menu/src"):  # what run.sh reads
+            for d in ("apps/LumenProjector/core/src", "apps/LumenProjector/core/test/rules", "apps/core/lumen-menu/src",
+                      "apps/LumenProjector/vendor/xgimi/hidl-gmpf/src"):  # what run.sh reads
                 shutil.copytree(os.path.join(G, d), os.path.join(w, d))
             return w
 

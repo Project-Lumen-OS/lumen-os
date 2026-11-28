@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 # base_patch host tests (README.md). JDK 17+ (JAVA_HOME or javac on PATH), python3.
 #   sh tools/base_patch/test/run.sh                  the A2DP race on the shipped and the fixed connector, the About
-#                                                    rows, base_patch.py
+#                                                    rows, the focus of disabled rows, base_patch.py
 #   BASE_APK=.../TvSettingsTwoPanel.apk sh ...       also builds the real patched dex and checks it against its pin
 #                                                    (needs BUILD_TOOLS or an SDK with build-tools 36.0.0)
 set -eu
@@ -49,6 +49,25 @@ else
   echo "FAIL about rows"
   rc=1
 fi
+# 1c. Focus: a special app access list whose first row is disabled ("Required by system", an app that cannot change,
+#     "No apps") takes no focus on the LineageOS 21 class, so the remote is dead there; the fix lets every disabled
+#     selectable row take focus and keeps OK doing nothing on it (test/focus_extract.py, FocusRowsTest.java)
+for s in lineage21 fixed; do
+  src="$P/tvsettings_focus/SettingsPreferenceFragment.java"
+  [ "$s" = lineage21 ] && src="$T/lineage21_focus/SettingsPreferenceFragment.java"
+  mkdir -p "$OUT/focus_$s"
+  { find "$T/focus_stubs" -name '*.java'; echo "$OUT/focus_$s/FocusAdapter.java"; echo "$T/FocusRowsTest.java"; } |
+    sed 's/.*/"&"/' > "$OUT/focus_$s.list"
+  if python3 "$T/focus_extract.py" "$src" "$OUT/focus_$s/FocusAdapter.java" &&
+     "$JAVAC" -encoding UTF-8 -nowarn -d "$OUT/focus_$s/cls" @"$OUT/focus_$s.list" &&
+     "$JAVA" -cp "$OUT/focus_$s/cls" com.android.tv.settings.FocusRowsTest > "$OUT/focus_$s.txt" &&
+     diff -u "$T/expected_focus_$s.txt" "$OUT/focus_$s.txt"; then
+    echo "PASS focus $s ($(wc -l < "$OUT/focus_$s.txt" | tr -d ' ') pages)"
+  else
+    echo "FAIL focus $s"
+    rc=1
+  fi
+done
 # 2. base_patch.py: zip swap, pins, the dexdump comparison, the chain of fixes of one file, the reference check
 python3 "$T/base_patch_test.py" || rc=1
 # 3. the signer of HB, RS30 and Titan signs TvSettings from the patched copy
@@ -56,7 +75,7 @@ python3 "$T/signer_hook_test.py" || rc=1
 # 4. the real dex (only with BASE_APK): every fix of the chain built, every other class unchanged, each reference
 #    of the new classes resolves, each result equal to its pin
 if [ -n "${BASE_APK:-}" ]; then
-  for f in tvsettings_a2dp tvsettings_about; do
+  for f in tvsettings_a2dp tvsettings_about tvsettings_focus; do
     if python3 "$P/base_patch.py" build $f "$BASE_APK" --out "$OUT/dex"; then
       echo "PASS real dex build $f"
     else

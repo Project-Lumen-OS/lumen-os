@@ -399,8 +399,47 @@ final class ReportCollector {
                 textFile("logcat_kernel.txt", new File(root, RootLogs.KERNEL).getPath(), ReportConfig.CAP_KERNEL);
                 for (String s : RootLogs.DUMPSYS) dumps.put(s, readText(new File(root, s + ".txt"), HdmiDump.CAP * 4));
             }
+            keptStarts(root);
         } finally {
             RootLogs.ack(PROPS, token);
+        }
+    }
+
+    /**
+     * The persistent log of the last starts (BootLogs), read while the helper's export is there (before its ack): a
+     * manual report takes this start and the one before in full or their first and last chunks, the important lines,
+     * kernel log and snapshots of every start; an unexpected stop the end of the start that stopped; a crash the
+     * minutes before it.
+     */
+    private void keptStarts(File root) throws IOException {
+        File list = new File(root, BootLogs.LIST);
+        if (!list.isFile()) {
+            note("kept starts: none (this image keeps no log of its starts)");
+            return;
+        }
+        BootLogs.Caps caps = manual ? BootLogs.Caps.manual() : stop != null ? BootLogs.Caps.stop() : BootLogs.Caps.crash();
+        try {
+            BootLogs.Item[] budget = new BootLogs.Item[1];
+            List<BootLogs.Start> starts = BootLogs.parse(java.nio.file.Files.readAllLines(list.toPath(),
+                    StandardCharsets.UTF_8), budget);
+            File out = new File(dir, "boots");
+            if (!out.isDirectory() && !out.mkdirs()) throw new IOException("no dir " + out);
+            List<String> lines = new ArrayList<>();
+            final int uid = android.os.Process.myUid();
+            for (BootLogs.Out o : BootLogs.write(new File(BootLogs.DIR), starts, caps, () -> {
+                LogcatFilter f = new LogcatFilter(imageAppIds, uid, manual);
+                return f::keep;
+            }, scrubber::scrub, out, progress::isCanceled, lines)) {
+                parts.add(ReportZip.Part.raw(o.zipName, o.file));
+            }
+            if (budget[0] != null) textFile("boots/budget.txt", new File(BootLogs.DIR, "budget.txt").getPath(), 4096);
+            note("kept starts: " + starts.size() + " on the projector (start-0 = this one), "
+                    + Math.min(starts.size(), caps.starts) + " in this report");
+            for (String l : lines) note(l);
+        } catch (CanceledException e) {
+            throw e;
+        } catch (IOException | RuntimeException e) {
+            note("kept starts: failed (" + e + ")");
         }
     }
 

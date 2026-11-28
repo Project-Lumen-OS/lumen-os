@@ -32,8 +32,8 @@ import org.lumen.menu.Rehost;
  * returns false, media keys go to the active media session, an OK press that began in another window is dropped, and
  * the panel closes when another window takes the focus (300 ms grace), on screen off / HOME (the activity stops) and
  * on the auto-hide timeout. What differs: the activity opens on the first show and finishes when the last panel is
- * gone; the app below is paused while the menu is up (an activity, not an overlay); there are no static layers
- * ({@link #addStatic} answers false: no game crosshair or frame counter in this host); notes go to the app's own
+ * gone; the app below is paused while the menu is up (an activity, not an overlay); static layers only through the
+ * device's {@link Layers} (X50: CoverLayers, off under the eye-guard cover), else none; notes go to the app's own
  * {@link Notes} (the overlay Notify card is an overlay window too).
  *
  * <p>Tool screens (org.lumen.menu.KeyTools): while a tool activity is in front (the X50 manual focus) the panel stays
@@ -69,6 +69,21 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
          */
         default String front() { return null; }
     }
+
+    /**
+     * Layers over the game this host may draw (the game menu's crosshair and frame counter): windows of the app that
+     * the device keeps under its cover (X50: CoverLayers, off while X50EyeGuard's cover is in front). None by default.
+     */
+    public interface Layers {
+        boolean add(View v, WindowManager.LayoutParams lp);
+
+        void remove(View v);
+    }
+
+    private Layers layers;
+
+    /** The device's layers over the game (before GameMenu.install, which asks hasStaticLayers). Main thread. */
+    public void setLayers(Layers l) { layers = l; }
 
     private static ActivityPanelHost sInstance;
 
@@ -185,16 +200,17 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
 
     @Override public Panel current() { return current != null ? current : pending; }
 
-    /** No layer over other apps in this host (it would need an overlay window). */
+    /** A layer over the game through the device's Layers; none without them (an activity host has no overlay). */
     @Override public boolean addStatic(View v, WindowManager.LayoutParams lp) {
+        if (layers != null) return layers.add(v, lp);
         Log.i(TAG, "no static layer in the activity host: " + (lp == null ? "" : lp.getTitle()) + " not shown");
         return false;
     }
 
-    @Override public void removeStatic(View v) { }
+    @Override public void removeStatic(View v) { if (layers != null) layers.remove(v); }
 
-    /** No layers over the game here: the game menu leaves out its crosshair and frame counter tiles. */
-    @Override public boolean hasStaticLayers() { return false; }
+    /** Layers over the game only with the device's Layers: else the game menu leaves out crosshair and frame counter. */
+    @Override public boolean hasStaticLayers() { return layers != null; }
 
     @Override public void note(CharSequence text) {
         if (text == null || text.length() == 0) return;

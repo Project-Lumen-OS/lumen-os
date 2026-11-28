@@ -20,7 +20,8 @@ import java.util.List;
  */
 final class ReportQueue {
     static final int MAX_ENTRIES = 6;
-    static final long MAX_BYTES = 8L << 20;
+    /** a manual report with the kept starts of the persistent log is up to about 25 MB */
+    static final long MAX_BYTES = 96L << 20;
     static final long MAX_AGE_MS = 7L * 24 * 3600 * 1000;
     static final int MAX_ATTEMPTS = 12;
     static final long[] WAIT_MS = {60_000L, 5 * 60_000L, 15 * 60_000L, 3600_000L, 3 * 3600_000L, 6 * 3600_000L,

@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">電腦</string>
     <string name="lumen_gm_licences_d">Lumen OS 所用素材的作者</string>
     <string name="lumen_gm_credits_intro">遊戲選單中的手把圖片來自以下 3D 模型：</string>
+    <string name="lumen_gm_so">螢幕位移</string>
+    <string name="lumen_gm_so_value">調整</string>
+    <string name="lumen_gm_so_move">▲▼ 調整位置</string>
+    <string name="lumen_gm_so_reset">長按 OK 重設</string>
+    <string name="lumen_gm_rule_so_ratio">僅在21:9或32:9畫面比例下支援位移</string>
 </resources>

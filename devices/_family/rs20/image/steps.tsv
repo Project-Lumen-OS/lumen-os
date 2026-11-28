@@ -4,8 +4,10 @@
 # 1.0.9 base lacks, and the model's identity props. Steps of tools/build/engine.py, WHEN<TAB>OP<TAB>ARGS; the stage pass
 # (--stage-only) composes and checks the tree, the image pass (--image-only) packs and checks the image. Trial only: no
 # updater, no install from the trial, otacerts.zip empty. verify_rs20.py proves every changed file came from the inputs.
-*	need	com.android.wifi.capex
+*	need	com.android.wifi.capex	service-wifi.odex	service-wifi.vdex
 *	sha	com.android.wifi.capex	{WIFI_APEX_SHA}
+*	sha	service-wifi.odex	{WIFI_ODEX_SHA}
+*	sha	service-wifi.vdex	{WIFI_VDEX_SHA}
 *	need	base.sha256	remove.txt	{PROPF}	{MPROPF}	platform.x509.pem	FINGERPRINTS.txt	x50_props.py	about_version.py	verify_rs20.py	erofs_kcheck.py	z9x_blobs.sh	z9x_blobs.rc	blobs.conf	z9x_setup.rc	z9x_base.rc	z9x_nui.sh	z9x-sysconfig-nogms.xml	z9x_gapps.sh	first_start_prop.txt	first_start.py	bootanimation.zip	bootanim_check.py	privapp-permissions-lumen-miracast.xml	lumen-miracast-default-permissions.xml	airplay_libs.py	lumen_boot_sound.rc	lumen_hdmirx.rc	lumen_hdmirx.sh
 *	need	Vendor_000d_Product_3838.kl	Vendor_000d_Product_3840.kl	Vendor_000d_Product_3841.kl	Vendor_000d_Product_3842.kl	Vendor_000d_Product_3843.kl	Vendor_1d5a_Product_c081.kl	Vendor_26e3_Product_af02.kl	Vendor_3697_Product_0001.kl	Vendor_3697_Product_0002.kl
 *	need	stage/Z9xProjector.apk	stage/Z9xHome.apk	stage/Z9xSetup.apk	stage/Z9xTvInput.apk	stage/Z9xAirPlay.apk	stage/Z9xFrameworkKeysOverlay.apk	stage/LumenMiracast.apk	stage/LumenWifiP2pOverlay.apk	stage/LumenKeyboard.apk	stage/LumenPackageInstallerOverlay.apk	stage/LumenSystemUIOverlay.apk	stage/LumenFiles.apk	stage/base_signed/base_signed.tsv
@@ -52,10 +54,11 @@
 !image	place	lumen-miracast-default-permissions.xml	{sys}/product/etc/default-permissions/lumen-miracast.xml	0644	0	0	{LABEL}
 !image	place	stage/LumenKeyboard.apk	{sys}/product/app/LeanbackIME/LeanbackIME.apk	0644	0	0	{LABEL}
 !image	rm	{sys}/product/app/LeanbackIME/oat
-# Wi-Fi Direct on the MediaTek supplicant (the base's Wi-Fi APEX with the patched service-wifi.jar, as every model)
+# Wi-Fi Direct on the MediaTek supplicant (the base's Wi-Fi APEX with the patched service-wifi.jar, as every model) and
+# that jar's odex and vdex (tools/base_patch/wifi_dexpreopt.sh): no compile on the first start
 !image	place	com.android.wifi.capex	{sys}/apex/com.android.wifi.capex	0644	0	0	{LABEL}
-!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex
-!image	rm	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex
+!image	place	service-wifi.odex	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.odex	0644	0	0	{LABEL}
+!image	place	service-wifi.vdex	{sys}/framework/oat/arm64/apex{AT}com.android.wifi{AT}javalib{AT}service-wifi.jar{AT}classes.vdex	0644	0	0	{LABEL}
 # the static overlays (Wi-Fi Direct device type, the package installer look, the framework keys) and the remote layouts
 !image	place	stage/LumenWifiP2pOverlay.apk	{sys}/product/overlay/LumenWifiP2pOverlay.apk	0644	0	0	{LABEL}
 !image	place	stage/LumenPackageInstallerOverlay.apk	{sys}/product/overlay/LumenPackageInstallerOverlay.apk	0644	0	0	{LABEL}

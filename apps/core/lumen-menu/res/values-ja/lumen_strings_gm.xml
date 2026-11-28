@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">パソコン</string>
     <string name="lumen_gm_licences_d">Lumen OSで使っている素材の作者</string>
     <string name="lumen_gm_credits_intro">ゲームメニューのコントローラー画像は次の3Dモデルから作りました:</string>
+    <string name="lumen_gm_so">画面シフト</string>
+    <string name="lumen_gm_so_value">調整</string>
+    <string name="lumen_gm_so_move">▲▼ 位置を調整</string>
+    <string name="lumen_gm_so_reset">OK長押しでリセット</string>
+    <string name="lumen_gm_rule_so_ratio">画面シフトは21:9または32:9の画面比でのみ使えます</string>
 </resources>

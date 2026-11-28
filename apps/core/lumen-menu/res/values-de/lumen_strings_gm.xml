@@ -70,4 +70,9 @@
     <string name="lumen_gm_kind_computer">Computer</string>
     <string name="lumen_gm_licences_d">Urheber der Inhalte in Lumen OS</string>
     <string name="lumen_gm_credits_intro">Die Controller Bilder im Spielmenü stammen aus diesen 3D Modellen:</string>
+    <string name="lumen_gm_so">Bildverschiebung</string>
+    <string name="lumen_gm_so_value">Anpassen</string>
+    <string name="lumen_gm_so_move">▲▼ Position anpassen</string>
+    <string name="lumen_gm_so_reset">OK lange drücken zum Zurücksetzen</string>
+    <string name="lumen_gm_rule_so_ratio">Die Bildverschiebung geht nur im Format 21:9 oder 32:9</string>
 </resources>

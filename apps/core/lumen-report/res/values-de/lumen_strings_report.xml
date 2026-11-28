@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, Ton und Strom: Geräte und CEC-Nachrichten</string>
     <string name="lumen_report_bytes">%1$s von %2$s gesendet</string>
     <string name="lumen_report_code">Berichtscode</string>
+    <string name="lumen_report_inc_starts">Protokolle der letzten 5 Starts. Ein Bericht ist bis zu etwa 25 MB groß.</string>
 </resources>

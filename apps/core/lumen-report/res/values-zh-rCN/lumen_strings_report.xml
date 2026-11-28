@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI、声音和电源：设备和 CEC 消息</string>
     <string name="lumen_report_bytes">已发送 %1$s，共 %2$s</string>
     <string name="lumen_report_code">报告代码</string>
+    <string name="lumen_report_inc_starts">最近 5 次启动的日志。报告最大约 25 MB。</string>
 </resources>

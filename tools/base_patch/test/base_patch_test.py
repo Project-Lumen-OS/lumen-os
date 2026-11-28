@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 """base_patch.py host tests without Android tools: the zip swap keeps every other entry byte for byte, the pins
 refuse a foreign base or result, compare() passes a dexlib2 relayout and stops on a real change, the fixes of one
-file apply in their order, link() stops on a reference that does not resolve, the About fix only adds to LineageOS."""
+file apply in their order, link() stops on a reference that does not resolve, the About and focus fixes only add to
+LineageOS."""
+import difflib
 import hashlib
 import os
 import struct
@@ -130,9 +132,10 @@ def main():
     r = bp.row("tvsettings_a2dp")
     check("patches.tsv pins the TvSettings fix", r is not None and len(r["base"]) == 64 and len(r["out"]) == 64)
     tvs = bp.chain(r["path"]) if r else []
-    check("TvSettings: the A2DP fix, then the About fix on its result",
-          [x["id"] for x in tvs] == ["tvsettings_a2dp", "tvsettings_about"] and tvs[1]["base"] == tvs[0]["out"]
-          and len(tvs[1]["out"]) == 64)
+    check("TvSettings: the A2DP fix, the About fix on its result, the focus fix on that",
+          [x["id"] for x in tvs] == ["tvsettings_a2dp", "tvsettings_about", "tvsettings_focus"]
+          and tvs[1]["base"] == tvs[0]["out"] and tvs[2]["base"] == tvs[1]["out"]
+          and all(len(x["out"]) == 64 for x in tvs))
 
     # 5. a chain of two fixes on one file: each on the result of the one before
     mid_dex, end_dex = b"dex\n035\0" + b"M" * 4050, b"dex\n035\0" + b"E" * 4200
@@ -275,7 +278,6 @@ def main():
     lineage = open(os.path.join(T, "lineage21_about", "AboutFragment.java"), encoding="utf-8").read().splitlines()
     fixed = open(os.path.join(os.path.dirname(T), "tvsettings_about", "AboutFragment.java"),
                  encoding="utf-8").read().splitlines()
-    import difflib
     gone = [ln for ln in difflib.unified_diff(lineage, fixed, lineterm="", n=0)
             if ln.startswith("-") and not ln.startswith("---")]
     check("About fix: every LineageOS line kept", gone == [])
@@ -285,6 +287,22 @@ def main():
     call = body.find("LumenRows.insert(screen, findPreference(KEY_DEVICE_MODEL),", start)
     check("About fix: onCreatePreferences puts the rows after Model, after everything else it does",
           start < body.index("updateTutorials();", start) < call < end)
+
+    # 8. the focus fix is the LineageOS 21 SettingsPreferenceFragment plus one method of its adapter, nothing else
+    lineage = open(os.path.join(T, "lineage21_focus", "SettingsPreferenceFragment.java"), encoding="utf-8").read()
+    fixed = open(os.path.join(os.path.dirname(T), "tvsettings_focus", "SettingsPreferenceFragment.java"),
+                 encoding="utf-8").read()
+    diff = list(difflib.unified_diff(lineage.splitlines(), fixed.splitlines(), lineterm="", n=0))
+    gone = [ln for ln in diff if ln.startswith("-") and not ln.startswith("---")]
+    added = [ln[1:] for ln in diff if ln.startswith("+") and not ln.startswith("+++")]
+    check("focus fix: every LineageOS line kept", gone == [])
+    body = "\n".join(ln for ln in added if not ln.lstrip().startswith("//"))
+    check("focus fix: only onBindViewHolder added", body.count("public void onBindViewHolder(") == 1
+          and body.count("public ") == 1 and "new " not in body)
+    a0 = fixed.index("        return new PreferenceGroupAdapter(preferenceScreen) {")
+    a1 = fixed.index("\n        };\n", a0)
+    m = fixed.index("            public void onBindViewHolder(")
+    check("focus fix: the method sits in the adapter of onCreateAdapter", a0 < m < a1)
     print("base_patch_test: %d failed" % len(FAILS))
     return 1 if FAILS else 0
 

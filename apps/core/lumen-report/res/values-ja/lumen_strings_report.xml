@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI、音声、電源：機器と CEC メッセージ</string>
     <string name="lumen_report_bytes">%2$s 中 %1$s 送信済み</string>
     <string name="lumen_report_code">レポートコード</string>
+    <string name="lumen_report_inc_starts">直近 5 回の起動のログ。レポートは最大で約 25 MB です。</string>
 </resources>

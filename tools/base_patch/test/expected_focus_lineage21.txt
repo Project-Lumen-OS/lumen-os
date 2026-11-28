@@ -1,0 +1,7 @@
+S1 notification access, default listener first: focus nowhere | DOWN focus nowhere | OK focus nowhere || Android TV Core Services=on,row-disabled,grey,switch-grey Test App=off
+S2 OK on the required row does nothing: focus nowhere | OK focus nowhere | DOWN focus nowhere | OK focus nowhere || Android TV Core Services=on,row-disabled,grey,switch-grey Test App=off
+S3 install unknown apps, first app cannot change: focus nowhere | DOWN focus nowhere | OK focus nowhere || Files=off,row-disabled,grey,switch-grey Test App=off
+S4 empty list: focus nowhere | DOWN focus nowhere | OK focus nowhere || No apps=off,row-disabled,grey,switch-grey
+S5 all rows enabled: focus Test App | OK focus Test App | DOWN focus Demo | OK focus Demo || Test App=on Demo=on
+S6 disabled row in the middle: focus Test App | DOWN focus Demo | DOWN focus Demo | OK focus Demo || Test App=off Android TV Core Services=on,row-disabled,grey,switch-grey Demo=on
+S7 not selectable rows: focus Test App | DOWN focus Test App || Test App=off Header=off,row-disabled,grey,switch-grey Text=off

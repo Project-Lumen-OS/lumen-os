@@ -46,8 +46,10 @@ lineage/patches/wifi/check.sh` (applies to the pinned source).
   the same re-signing as every Z9X APEX (Lumen `com.android.wifi` keys, keys stay on the Mac, payload rebuilt with
   apexer on the build host, compressed again). Without `--swap` that run reproduces the shipped 1.0.9 capex byte for byte
   (eea71051..., 2026-11-23).
-- The image: the capex replaces `system/apex/com.android.wifi.capex` (owner, mode, label as the base's) and the base's
-  dexpreopt files of the old jar go (the `.odex` and `.vdex` of `service-wifi.jar` in `system/framework/oat/arm64`). One file serves the arm64 base: Z9X, X50 Ultra, X50 Ultra Max, TITAN H0061 to H0063. RS30 (32-bit base,
+- The image: the capex replaces `system/apex/com.android.wifi.capex` (owner, mode, label as the base's) and the jar's
+  `.odex` and `.vdex` in `system/framework/oat/arm64` replace the base's, made by the base build's dexpreopt command
+  (`tools/base_patch/wifi_dexpreopt.sh`). Until 2026-11-28 the recipes deleted them: every first start on empty data
+  then compiled the jar before early-boot and the Z9X vendor PWM watchdog restarted it (z9x-installfail-1128). One file serves the arm64 base: Z9X, X50 Ultra, X50 Ultra Max, TITAN H0061 to H0063. RS30 (32-bit base,
   AOSP module test keys) needs its own build of the same jar into its own capex.
 
 ## Live check (X50 Ultra)

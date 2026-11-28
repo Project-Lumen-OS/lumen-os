@@ -11,5 +11,7 @@
     <string name="lumen_m_anti_rbe">Riduzione arcobaleno</string>
     <string name="lumen_m_zoom_move">Spostamento immagine</string>
     <string name="lumen_gm_rule_vrr_speed">Prima attiva il Turbo</string>
+    <string name="lumen_gm_rule_hdr_signal">Verifica che il dispositivo invii un segnale HDR</string>
+    <string name="lumen_gm_rule_hfr_fs">Con AMD FreeSync serve l’alta frequenza</string>
     <string name="lumen_m_move_hint">Le frecce spostano l\'immagine. Oltre il bordo ruota il proiettore.</string>
 </resources>

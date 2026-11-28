@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
-"""Mutants of the A2DP and About fixes and of base_patch.py: each one must turn test/run.sh red (run.sh green first).
+"""Mutants of the A2DP, About and focus fixes and of base_patch.py: each one must turn test/run.sh red (run.sh green first).
   python3 tools/base_patch/test/mutate.py"""
 import os
 import shutil
@@ -12,6 +12,7 @@ T = os.path.dirname(os.path.abspath(__file__))
 P = os.path.dirname(T)
 FIX = "tools/base_patch/tvsettings_a2dp/BluetoothA2dpConnector.java"
 AB = "tools/base_patch/tvsettings_about/AboutFragment.java"
+FO = "tools/base_patch/tvsettings_focus/SettingsPreferenceFragment.java"
 BP = "tools/base_patch/base_patch.py"
 SD = "tools/devices/sign_device.py"
 COPY = ("tools/base_patch", "tools/devices", "tools/sign", "tools/play6", "devices")
@@ -72,6 +73,16 @@ MUTANTS = {
     "about_rest_not_moved": (AB, "p.setOrder(p.getOrder() + rows.size());", "p.setOrder(p.getOrder());"),
     "about_not_called": (AB, "        LumenRows.insert(screen, findPreference(KEY_DEVICE_MODEL),\n                LumenRows.of(getPreferenceManager().getContext()));\n", ""),
     "about_lineage_line_dropped": (AB, "        updateTutorials();\n\n        LumenRows", "\n        LumenRows"),
+    # the focus fix
+    "focus_row_not_enabled": (FO, "                    holder.itemView.setEnabled(true);\n", "                    holder.itemView.setEnabled(false);\n"),
+    "focus_before_super": (FO, "                super.onBindViewHolder(holder, position);\n                Preference pref = getItem(position);\n",
+                           "                Preference pref = getItem(position);\n                if (pref != null) pref.isEnabled();\n"),
+    "focus_any_disabled_row": (FO, "pref != null && pref.isSelectable() && !pref.isEnabled()", "pref != null && !pref.isEnabled()"),
+    "focus_row_clickable": (FO, "                    holder.itemView.setEnabled(true);\n",
+                            "                    holder.itemView.setEnabled(true);\n                    pref.setEnabled(true);\n"),
+    "focus_method_gone": (FO, "            public void onBindViewHolder(@NonNull PreferenceViewHolder holder, int position) {",
+                          "            public void onBindViewHolderX(@NonNull PreferenceViewHolder holder, int position) {"),
+    "focus_lineage_line_dropped": (FO, "                vh.itemView.setFocusableInTouchMode(true);\n", ""),
     # the signer
     "signer_bypasses_fix": (SD, "resign_input(r, work), r[\"out_file\"]", "r[\"file\"], r[\"out_file\"]"),
     "signer_signs_base": (SD, "    return p or r[\"file\"]", "    return r[\"file\"]"),

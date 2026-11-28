@@ -43,4 +43,5 @@
     <string name="lumen_report_inc_devices">HDMI, звук і живлення: пристрої та повідомлення CEC</string>
     <string name="lumen_report_bytes">Надіслано %1$s з %2$s</string>
     <string name="lumen_report_code">Код звіту</string>
+    <string name="lumen_report_inc_starts">Журнали останніх 5 запусків. Звіт важить до 25 МБ.</string>
 </resources>
