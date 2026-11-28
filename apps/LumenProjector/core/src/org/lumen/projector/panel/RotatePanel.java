@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.OkPress;
 import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Family;
 import org.lumen.projector.Hal;
@@ -30,7 +31,8 @@ import java.util.Locale;
  * "Picture rotation", the stock RotateWind (picture_screen_rotation): straightens a picture that sits slightly tilted
  * on the screen (a projector that does not stand level), by the keystone engine, without moving anything. A
  * full-screen grid (EdgeGrid) shows the picture's edge.
- *   RIGHT: 0.5 degrees clockwise, LEFT: counter-clockwise, OK: back to the angle the screen opened with, BACK: done.
+ *   RIGHT: 0.5 degrees clockwise, LEFT: counter-clockwise, MENU: back to the angle the screen opened with, OK: the
+ *   test chart on / off (hidden at open), BACK: done.
  * The HAL steps are the family's (Family.rotateIo, RotateIo): the bracket on open and close, the {min, max, current,
  * start} read and the relative turn. The step is the stock default (user_manu_screen_rotation_step 0.5).
  * How keys become steps is family data (Family.ADJUST_COALESCE): one step at a time between two fresh reads, keys
@@ -64,6 +66,8 @@ public final class RotatePanel extends Panel {
     private boolean undo;
     private int gen;
     private TextView value, status;
+    private EdgeFrameView frame;
+    private final OkPress okPress = new OkPress();
 
     private RotatePanel(Context app, Runnable onBackExit) {
         this.app = app;
@@ -225,10 +229,22 @@ public final class RotatePanel extends Panel {
     @Override
     protected long autoHideMs() { return AUTO_HIDE_MS; }
 
+    /**
+     * The remote's gear is this card's MENU: back to the start (stock RotateWind: MENU opens its side menu with the
+     * reset); OK shows or hides the test chart. The shared tool rule (org.lumen.menu.KeyTools) hands a short press to
+     * onKeyEvent as KEYCODE_MENU instead of opening the quick menu over the card.
+     */
+    @Override
+    protected boolean takesMenuKey() { return true; }
+
     @Override
     protected boolean onKeyEvent(KeyEvent ev) {
         int code = ev.getKeyCode();
-        boolean ok = code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER;
+        if (OkPress.isOk(code)) {
+            if (okPress.feed(ev.getAction(), ev.getRepeatCount(), ev.getDownTime(), ev.getEventTime(), ev.isCanceled()) == OkPress.SHORT && frame != null) frame.toggleChart();
+            return true;
+        }
+        boolean ok = code == KeyEvent.KEYCODE_MENU;                // back to the start
         boolean left = code == KeyEvent.KEYCODE_DPAD_LEFT, right = code == KeyEvent.KEYCODE_DPAD_RIGHT;
         if (!ok && !left && !right) return code == KeyEvent.KEYCODE_DPAD_UP || code == KeyEvent.KEYCODE_DPAD_DOWN;
         if (ev.getAction() != KeyEvent.ACTION_DOWN || ev.getRepeatCount() > 0 && ok) return true;
@@ -302,13 +318,15 @@ public final class RotatePanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeFrameView(c, EdgeFrame.FRAME), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        frame = new EdgeFrameView(c, EdgeFrame.FRAME).withChart();
+        root.addView(frame, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = EdgeGrid.card(c);
         card.addView(EdgeGrid.text(c, c.getString(R.string.rot_title), 40, Theme.TEXT));
         value = EdgeGrid.text(c, c.getString(R.string.zoom_wait), 56, Theme.TEXT);
         card.addView(value);
         card.addView(EdgeGrid.text(c, c.getString(R.string.rot_hint), 28, Theme.TEXT_DIM));
+        card.addView(EdgeGrid.text(c, c.getString(R.string.lumen_focus_chart_hint), 28, Theme.TEXT_DIM));
         status = EdgeGrid.text(c, "", 28, Theme.TEXT_DIM);
         card.addView(status);
         root.addView(card, new FrameLayout.LayoutParams(Theme.px(c, 900), ViewGroup.LayoutParams.WRAP_CONTENT,

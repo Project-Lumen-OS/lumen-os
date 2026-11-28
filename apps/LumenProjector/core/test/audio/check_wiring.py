@@ -145,9 +145,11 @@ RC = os.path.join(HB, "../../devices/goat_elegant/image/hb_bt.rc")
 if not os.path.exists(RC):                    # the assembled tree of build.sh
     RC = os.path.join(os.environ["LUMEN_GSI"], "devices/goat_elegant/image/hb_bt.rc")
 rc = open(RC, encoding="utf-8").read()
-ok("hb_bt.rc keeps the stock 'no AVRCP absolute volume' at early-boot",
+ok("hb_bt.rc keeps the stock 'no AVRCP absolute volume' at early-boot, off only by the user's stock switch",
    re.search(r"on early-boot\n    setprop persist\.bluetooth\.disableabsvol true\n", rc) is not None
-   and "disableabsvol false" not in rc)
+   and rc.count("disableabsvol false") == 1
+   and "on early-boot && property:persist.lumen.bt_absvol=1\n    setprop persist.bluetooth.disableabsvol false\n" in rc
+   and rc.index("disableabsvol true") < rc.index("disableabsvol false"))
 
 if bad:
     print("check_wiring (audio): %d of %d FAILED" % (bad, n)); sys.exit(1)

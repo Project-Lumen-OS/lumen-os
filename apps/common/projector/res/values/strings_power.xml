@@ -21,12 +21,7 @@
     <!-- v6.2 power UI (own power key, power menu, sleep timer, wake curtain; PowerMenu / SleepTimer / PowerKey) -->
     <!-- Thin wordmark on the wake / power-off curtain (WakeCurtain). Our own mark, not translated. -->
     <string name="power_wordmark" translatable="false">Lumen</string>
-    <!-- Long-press power menu: Sleep, Power off, Restart, Sleep timer. Timer page: presets, custom (LEFT/RIGHT), turn off. -->
-    <!-- Lumen OS 1.0: first tile, the same as a short POWER press (light off, then sleep) -->
-    <string name="power_menu_sleep">@string/lumen_sleep</string>
-    <string name="power_menu_off">@string/lumen_power_off</string>
-    <string name="power_menu_restart">@string/lumen_restart</string>
-    <string name="power_menu_timer">@string/lumen_sleep_timer</string>
+    <!-- Power menu: the tile labels are lumen-menu's (panel/PowerTiles). Timer card: presets, custom (LEFT/RIGHT), turn off. -->
     <string name="power_timer_min">@string/lumen_1_d_min</string>
     <string name="power_timer_hours">@string/lumen_1_d_h</string>
     <string name="power_timer_hours_min">%1$d h %2$d min</string>

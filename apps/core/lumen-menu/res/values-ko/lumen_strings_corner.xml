@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">가운데 원이 동그랗게 될 때까지 조정하세요</string>
-    <string name="lumen_corner_keys_more">톱니바퀴 키 길게 누르기: 초기화 · 뒤로: 완료</string>
+    <string name="lumen_corner_keys_more">톱니바퀴 키: 테스트 차트 · 톱니바퀴 키 길게 누르기: 초기화 · 뒤로: 완료</string>
 </resources>

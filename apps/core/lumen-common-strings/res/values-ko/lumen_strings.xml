@@ -22,7 +22,7 @@
     <string name="lumen_apps">앱</string>
     <string name="lumen_arrows_move_the_corner_ok">화살표: 모서리 이동 · OK: 다음 모서리</string>
     <string name="lumen_arrows_move_the_picture_back">화살표: 화면 이동 · 뒤로: 완료</string>
-    <string name="lumen_arrows_move_the_picture_ok">화살표: 화면 이동 · OK: 크기 · 뒤로: 완료</string>
+    <string name="lumen_arrows_move_the_picture_ok">화살표: 화면 이동 · OK 길게: 크기 · 뒤로: 완료</string>
     <string name="lumen_aspect_ratio">화면 비율</string>
     <string name="lumen_at_every_start_and_once">켤 때마다 그리고 하루 한 번: 모델, 버전, 빌드, 업데이트 정보, 국가, 무작위 설치 번호, 일련번호(서버는 해시만 저장). IP 주소는 저장되지 않습니다.</string>
     <string name="lumen_at_least_8_characters">8자 이상</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">수동 키스톤 보정</string>
     <string name="lumen_manual_keystone_unavailable">수동 키스톤을 사용할 수 없음</string>
     <string name="lumen_medium">중간</string>
-    <string name="lumen_menu_grid_over_the_picture">메뉴: 격자 / 화면 위 테두리 / 테스트 사각형</string>
+    <string name="lumen_menu_grid_over_the_picture">메뉴: 격자 / 테스트 차트 / 화면 위 테두리 / 테스트 사각형</string>
     <string name="lumen_mid">보통</string>
     <string name="lumen_motion_smoothing">모션 스무딩</string>
     <string name="lumen_move">이동</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">기본값으로 되돌리기</string>
     <string name="lumen_restart">다시 시작</string>
     <string name="lumen_restart_now">지금 다시 시작</string>
-    <string name="lumen_right_bigger_left_smaller_ok">오른쪽: 크게 · 왼쪽: 작게 · OK: 화면 이동 · 뒤로: 완료</string>
-    <string name="lumen_right_left_rotate_ok_back">오른쪽 / 왼쪽: 회전 · OK: 처음 상태 · 뒤로: 완료</string>
+    <string name="lumen_right_bigger_left_smaller_ok">오른쪽: 크게 · 왼쪽: 작게 · OK 길게: 위치 · 뒤로: 완료</string>
+    <string name="lumen_right_left_rotate_ok_back">오른쪽 / 왼쪽: 회전 · 메뉴: 처음 상태 · 뒤로: 완료</string>
     <string name="lumen_saturation">채도</string>
     <string name="lumen_scan_with_a_phone_to">휴대전화로 스캔하여 열기</string>
     <string name="lumen_screen_casting">화면 전송</string>

@@ -2901,6 +2901,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasStrPrepareSleep()() s0
+  = true
+C hasStrPrepareSleep()() s1
+  = true
+C hasStrPrepareSleep()() s2
+  = true
+C hasStrPrepareSleep()() s3
+  = true
 C hasTvListener()() s0
   = true
 C hasTvListener()() s1
@@ -10487,6 +10495,18 @@ C startAutoColor()() s2
 C startAutoColor()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
   = true
+C strPrepareSleep()() s0
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s1
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s2
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s3
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -13896,6 +13916,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasStrPrepareSleep()() s0
+  = true
+C hasStrPrepareSleep()() s1
+  = true
+C hasStrPrepareSleep()() s2
+  = true
+C hasStrPrepareSleep()() s3
+  = true
 C hasTvListener()() s0
   = true
 C hasTvListener()() s1
@@ -21490,6 +21518,18 @@ C startAutoColor()() s2
 C startAutoColor()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
   = true
+C strPrepareSleep()() s0
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s1
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s2
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s3
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -24863,6 +24903,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasStrPrepareSleep()() s0
+  = true
+C hasStrPrepareSleep()() s1
+  = true
+C hasStrPrepareSleep()() s2
+  = true
+C hasStrPrepareSleep()() s3
+  = true
 C hasTvListener()() s0
   = true
 C hasTvListener()() s1
@@ -32357,6 +32405,18 @@ C startAutoColor()() s2
 C startAutoColor()() s3
   TX xgimi.hardware.gmpf.IDisplayManager 108 f0 
   = true
+C strPrepareSleep()() s0
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s1
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s2
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
+C strPrepareSleep()() s3
+  TX xgimi.hardware.gmpf.IPowerManager 6 f0 0 0
+  = null
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2

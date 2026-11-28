@@ -115,6 +115,8 @@ public enum FeatureId {
      * pair on OK. The paired devices stand under it on the page (BtPage), as stock My devices. A module row.
      */
     BLUETOOTH_ADD("bluetooth.add", FeatureKind.SCREEN),
+    /** Bluetooth absolute volume: persist.bluetooth.disableabsvol (stock more_bluetooth_switch, lumen-system BtAbsVolume) */
+    BLUETOOTH_ABS_VOLUME("bluetooth.abs_volume", FeatureKind.TOGGLE),
     /**
      * Stock Input source > the source list (signal_list): opens the sources the Input tile opens (the device's input
      * popup, else the Source key's step). A module row of every model with the Input tile.
@@ -430,6 +432,16 @@ public enum FeatureId {
      * groups the profile gives (sections.picture, a {"page": ..., "groups": ...} row), on the models whose stock has it
      */
     PICTURE_SETTINGS("picture.settings", FeatureKind.PAGE),
+    /**
+     * the stock General page Advanced settings (newsettings more_setting, every XGIMI tree): the power on and off page
+     * and the model's own system switches (high altitude), a page of the menu's own rows on every model
+     */
+    SETTINGS_ADVANCED("settings.advanced", FeatureKind.PAGE),
+    /**
+     * the stock Advanced settings page Power on and off (boot_and_power_off_settings): what opens at power-on, the
+     * power-on melody and power on with mains, in the stock order; a page of the menu's own rows on every model
+     */
+    SETTINGS_POWER_ON_OFF("settings.power_on_off", FeatureKind.PAGE),
     /**
      * dynamic black level tuning (stock image_mode_vibrant_correct, right under the dynamic black switch and shown only
      * while it is on): a two-way slider, min and max in the profile (stock -40..40, 0 in the middle)

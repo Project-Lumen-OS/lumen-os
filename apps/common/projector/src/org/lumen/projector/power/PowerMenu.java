@@ -2,26 +2,21 @@
 package org.lumen.projector.power;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.PowerItem;
 import org.lumen.projector.Family;
 import org.lumen.projector.R;
 import org.lumen.projector.panel.MenuController;
-import org.lumen.projector.ui.NavRow;
+import org.lumen.projector.panel.PowerTiles;
 import org.lumen.projector.ui.OverlayHost;
 import org.lumen.projector.ui.RoundTile;
 import org.lumen.projector.ui.RoundTilePanel;
-import org.lumen.projector.ui.Row;
 import org.lumen.projector.ui.Theme;
 
 /**
@@ -126,13 +121,6 @@ public final class PowerMenu extends RoundTilePanel {
         Family.powerOff(c);
     }
 
-    /** "15 min", "1 h", "1 h 30 min". */
-    static String duration(Context c, int minutes) {
-        if (minutes < 60) return c.getString(R.string.power_timer_min, minutes);
-        int h = minutes / 60, m = minutes % 60;
-        return m == 0 ? c.getString(R.string.power_timer_hours, h) : c.getString(R.string.power_timer_hours_min, h, m);
-    }
-
     @Override protected long autoHideMs() { return timerPage ? 30_000 : super.autoHideMs(); }
 
     @Override protected View onCreateView(Context ctx) {
@@ -146,29 +134,27 @@ public final class PowerMenu extends RoundTilePanel {
         // card on every one of them
         for (PowerItem item : PowerItem.offered(f -> f == FeatureId.SETTINGS_SLEEP_TIMER
                 || MenuController.profile(ctx).has(f))) {
-            switch (item) {
-                case SCREEN_OFF:
-                    addTile(ctx, RoundTile.ICON_SCREEN_OFF, ctx.getString(R.string.lumen_m_lamp_off),
-                            guarded(() -> { dismiss(); LampOffHal.get(ctx).run(r -> { }); }));
-                    break;
-                case SLEEP:
-                    addTile(ctx, RoundTile.ICON_SLEEP, ctx.getString(R.string.power_menu_sleep),
-                            guarded(() -> Family.powerSleepWithFade(ctx, "power menu sleep")));
-                    break;
-                case POWER_OFF:
-                    powerOffTile = addTile(ctx, RoundTile.ICON_POWER, ctx.getString(R.string.power_menu_off),
-                            guarded(() -> Family.powerOff(ctx)));
-                    break;
-                case RESTART:
-                    addTile(ctx, RoundTile.ICON_RESTART, ctx.getString(R.string.power_menu_restart),
-                            guarded(() -> Family.powerRestart(ctx)));
-                    break;
-                default:
-                    timerTile = addTile(ctx, RoundTile.ICON_TIMER, ctx.getString(R.string.power_menu_timer),
-                            guarded(() -> showTimer(ctx)));
-            }
+            RoundTile t = addTile(ctx, PowerTiles.icon(item), ctx.getString(PowerTiles.label(item)), action(ctx, item));
+            if (item == PowerItem.POWER_OFF) powerOffTile = t;
+            if (item == PowerItem.SLEEP_TIMER) timerTile = t;
         }
         updateTimerTile(ctx);
+    }
+
+    /** What each tile does (the tile, its icon and label: PowerTiles, the same in the menu host's power menu). */
+    private Runnable action(Context ctx, PowerItem item) {
+        switch (item) {
+            case SCREEN_OFF:
+                return guarded(() -> { dismiss(); LampOffHal.get(ctx).run(r -> { }); });
+            case SLEEP:
+                return guarded(() -> Family.powerSleepWithFade(ctx, "power menu sleep"));
+            case POWER_OFF:
+                return guarded(() -> Family.powerOff(ctx));
+            case RESTART:
+                return guarded(() -> Family.powerRestart(ctx));
+            default:
+                return guarded(() -> showTimer(ctx));
+        }
     }
 
     @Override protected boolean onBack() {
@@ -188,7 +174,7 @@ public final class PowerMenu extends RoundTilePanel {
 
     private void updateTimerTile(Context c) {
         int left = SleepTimer.minutesLeft();
-        timerTile.value = left > 0 ? c.getString(R.string.power_timer_left, duration(c, left)) : null;
+        timerTile.value = left > 0 ? c.getString(R.string.power_timer_left, SleepTimerCard.duration(c, left)) : null;
         timerTile.invalidate();
     }
 
@@ -219,7 +205,7 @@ public final class PowerMenu extends RoundTilePanel {
     private void showTimer(Context c) {
         timerPage = true;
         resetAutoHide();
-        timerCard = buildTimerCard(c);
+        timerCard = SleepTimerCard.build(c, cardHost);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Theme.px(c, 640),
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
         stage.addView(timerCard, lp);
@@ -232,108 +218,18 @@ public final class PowerMenu extends RoundTilePanel {
         timerCard.setScaleY(1.04f);
         timerCard.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(60).setDuration(240)
                 .setInterpolator(Theme.panelInterpolator()).start();
-        View first = ((ViewGroup) timerCard).getChildAt(2);
+        View first = ((ViewGroup) timerCard).getChildAt(SleepTimerCard.FIRST_ROW);
         if (first != null) first.requestFocus();
     }
 
-    private View buildTimerCard(Context c) {
-        LinearLayout card = new LinearLayout(c);
-        card.setOrientation(LinearLayout.VERTICAL);
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(Theme.PANEL_BG);
-        bg.setCornerRadius(Theme.pxf(c, Theme.PANEL_RADIUS));
-        bg.setStroke(Theme.px(c, Theme.STROKE), Theme.PANEL_STROKE);
-        card.setBackground(bg);
-        int ph = Theme.px(c, 24);
-        card.setPadding(ph, Theme.px(c, 36), ph, Theme.px(c, 24));
+    /** The timer card acts through the tiles' guards and closes the menu. */
+    private final SleepTimerCard.Host cardHost = new SleepTimerCard.Host() {
+        @Override public Runnable guarded(Runnable r) { return PowerMenu.this.guarded(r); }
 
-        TextView title = new TextView(c);
-        title.setText(R.string.power_menu_timer);
-        title.setTextColor(Theme.TEXT);
-        title.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, Theme.pxf(c, 38));
-        title.setPadding(Theme.px(c, Theme.ROW_PAD_H), 0, Theme.px(c, Theme.ROW_PAD_H), 0);
-        card.addView(title);
+        @Override public boolean canAct() { return PowerMenu.this.canAct(); }
 
-        TextView sub = new TextView(c);
-        boolean running = SleepTimer.isRunning() && SleepTimer.minutesLeft() > 0;
-        sub.setText(running ? c.getString(R.string.power_timer_running, SleepTimer.endClock(c))
-                : c.getString(R.string.power_timer_hint));
-        sub.setTextColor(Theme.TEXT_DIM);
-        sub.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, Theme.pxf(c, 24));
-        sub.setPadding(Theme.px(c, Theme.ROW_PAD_H), Theme.px(c, 6), Theme.px(c, Theme.ROW_PAD_H), Theme.px(c, 18));
-        card.addView(sub);
+        @Override public void resetAutoHide() { PowerMenu.this.resetAutoHide(); }
 
-        int[] presets = {15, 30};                 // v6.2 requirements 2: 15, 30 or custom
-        for (int m : presets) {
-            final int min = m;
-            addRow(card, new NavRow(c, duration(c, m), guarded(() -> start(c, min))).setChevron(false));
-        }
-        addRow(card, new CustomRow(c));
-        if (running) {
-            addRow(card, new NavRow(c, c.getString(R.string.power_timer_cancel), guarded(() -> {
-                SleepTimer.cancel(c, true);
-                dismiss();
-            })).setChevron(false));
-        }
-        return card;
-    }
-
-    private static void addRow(LinearLayout card, Row r) {
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = Theme.px(card.getContext(), Theme.ROW_GAP);
-        card.addView(r, lp);
-    }
-
-    private void start(Context c, int min) {
-        SleepTimer.start(c, min);
-        dismiss();
-    }
-
-    // ------------------------------------------------------------------ custom row
-
-    /** "Custom    ‹ 45 min ›": LEFT / RIGHT change the time, OK starts it. */
-    private final class CustomRow extends Row {
-        private int minutes;
-        private CharSequence text;
-
-        CustomRow(Context c) {
-            super(c, c.getString(R.string.power_timer_custom));
-            minutes = SleepTimer.customMinutes(c);
-            text = duration(c, minutes);
-        }
-
-        @Override protected float rightWidth() {
-            float w = valuePaint.measureText(duration(getContext(), 225));      // widest: "3 h 45 min"
-            return w + 2 * (chevronWidth(getContext()) + padH / 2);
-        }
-
-        @Override protected void drawRight(Canvas c, float right, float cy, boolean focused) {
-            float cw = chevronWidth(getContext());
-            drawChevronRight(c, right, cy, focused, minutes >= SleepTimer.CUSTOM_MAX);
-            float textRight = right - cw - padH / 2;
-            float w = drawValueRight(c, text, textRight, cy);
-            drawChevronLeft(c, textRight - w - padH / 2 - cw, cy, focused, minutes <= SleepTimer.CUSTOM_MIN);
-        }
-
-        @Override protected boolean onStep(int dir, int repeatCount) {
-            int step = repeatCount > 6 ? 15 : 5;
-            int v = Math.max(SleepTimer.CUSTOM_MIN, Math.min(SleepTimer.CUSTOM_MAX, minutes + dir * step));
-            if (repeatCount > 6) v = Math.round(v / 5f) * 5;
-            if (v != minutes) {
-                minutes = v;
-                text = duration(getContext(), v);
-                invalidate();
-            }
-            resetAutoHide();
-            return true;                                                     // never leaves the row sideways
-        }
-
-        @Override protected boolean onActivate() {
-            if (!canAct()) return true;
-            SleepTimer.saveCustomMinutes(getContext(), minutes);
-            start(getContext(), minutes);
-            return true;
-        }
-    }
+        @Override public void dismiss() { PowerMenu.this.dismiss(); }
+    };
 }

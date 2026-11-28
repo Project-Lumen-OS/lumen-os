@@ -4,6 +4,7 @@ package org.lumen.projector.ui;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -83,6 +84,26 @@ public abstract class Panel {
 
     /** Window removed. Release listeners / pending HAL result callbacks here. */
     protected void onDismissed() {}
+
+    /**
+     * Both hosts' exit of this panel: the exit animation, then {@code remove} exactly once (also when the animation
+     * throws, and after the exit time when it never ends); at once without the animation or a window.
+     */
+    final void exitThen(View root, boolean animate, Handler main, Runnable remove) {
+        if (animate && root != null && root.isAttachedToWindow()) {
+            final boolean[] done = {false};
+            Runnable once = () -> { if (!done[0]) { done[0] = true; remove.run(); } };
+            try {
+                animateOut(root, once);
+            } catch (Throwable t) {
+                once.run();
+                return;
+            }
+            main.postDelayed(once, Theme.PANEL_EXIT_MS + 300);   // safety net
+        } else {
+            remove.run();
+        }
+    }
 
     // ------------------------------------------------------------------ final API
     public final boolean isShowing() { return showing; }

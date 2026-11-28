@@ -151,7 +151,7 @@ public final class SleepTimer {
         sEndAt = SystemClock.uptimeMillis() + dur;
         if (dur > WARN_BEFORE_MS) Ui.main().postDelayed(sWarn, dur - WARN_BEFORE_MS);
         Ui.main().postDelayed(sExpire, dur);
-        Notify.show(sApp, sApp.getString(R.string.power_timer_started, PowerMenu.duration(sApp, minutes)),
+        Notify.show(sApp, sApp.getString(R.string.power_timer_started, SleepTimerCard.duration(sApp, minutes)),
                 sApp.getString(R.string.power_timer_running, endClock(sApp)));
         Log.i(TAG, "started: " + minutes + " min");
     }

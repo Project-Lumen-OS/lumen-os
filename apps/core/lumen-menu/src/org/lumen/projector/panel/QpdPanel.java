@@ -271,7 +271,8 @@ final class QpdPanel extends PagedPanel {
     /** Repaints the shown page with the focus on row {@code focusIndex}, or where it is now (-1). */
     void refreshPage(int focusIndex) {
         if (root == null || stack.size() <= 1) return;
-        PageAccess.setFocusIndex(stack.peek(), focusIndex >= 0 ? focusIndex : focusedIndex());
+        int f = focusIndex >= 0 ? focusIndex : focusedIndex();
+        if (f >= 0) PageAccess.setFocusIndex(stack.peek(), f);    // nothing focused yet (BACK into a page): keep its row
         render(0);
     }
 

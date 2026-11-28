@@ -3,7 +3,6 @@ package org.lumen.projector;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.util.Log;
 
 import org.lumen.projector.ak.AkOverlay;
@@ -51,7 +50,6 @@ final class MotorController {
     private int dir = -1;
     private boolean entered;          // manualFocus(17) sent by the overlay, not yet followed by 2
     private int stopRetries;
-    private volatile long lastActivity;
 
     private final Runnable watchdog = () -> {
         if (moving) {
@@ -133,9 +131,6 @@ final class MotorController {
     /** Not moving AND the persisted manual_moving flag is clear (a failed stop leaves both set). */
     boolean isIdleConfirmed() { return !moving && !flagged(); }
 
-    /** elapsedRealtime of the last motor key (the overlay uses it for its auto-close timer). */
-    long lastActivity() { return lastActivity; }
-
     private boolean flagged() { return state.getBoolean(KEY_MOVING, false); }
 
     /** Returns true when the flag is on disk with this value. */
@@ -154,7 +149,6 @@ final class MotorController {
     // ------------------------------------------------------------------ public (any thread)
     /** Overlay opened: manualFocus(17). */
     void enter() {
-        lastActivity = SystemClock.elapsedRealtime();
         h.post(() -> {
             if (!halUsable() || Hal.isKeystoneRunning() || moving) return;
             if (AkOverlay.isActive()) { Log.i(TAG, "manualFocus(17) refused: auto keystone overlay active"); return; }
@@ -173,13 +167,11 @@ final class MotorController {
 
     /** Key DOWN with repeatCount 0. dir 1 = stock LEFT, 0 = stock RIGHT. */
     void start(final int d) {
-        lastActivity = SystemClock.elapsedRealtime();
         h.post(() -> startNow(d));
     }
 
     /** Key repeat: re-arm the watchdog (no HAL call). */
     void feed() {
-        lastActivity = SystemClock.elapsedRealtime();
         h.post(() -> {
             if (moving) {
                 h.removeCallbacks(watchdog);

@@ -4,7 +4,6 @@ package org.lumen.projector;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -23,10 +22,13 @@ import org.lumen.projector.ui.ToolActivity;
  * Translucent manual-focus overlay: small bottom panel "Manual focus  ◀ ▶   OK/Back: done".
  * onResume -> manualFocus(17); DPAD_LEFT DOWN (repeat 0) -> start(1), DPAD_RIGHT -> start(0),
  * repeats -> feed, UP -> stop; any other key DOWN -> stop first, then close (the volume keys pass
- * through); onPause / onStop / focus loss -> stop; closes itself after 3 s without keys.
- * Lumen 1.0.8 (parity focus items 9, 10, 11): 3 s and "any other key closes" as stock FocusAdjust
- * (HIDE_MENU_DELAY_TIME 3000, every key but LEFT / RIGHT / BACK and service keys hides it); an autofocus
- * start (focus key, AF card) closes it through {@link #closeForAutofocus} without manualFocus(2).
+ * through); onPause / onStop / focus loss -> stop.
+ * Lumen 1.0.8 (parity focus items 9, 10, 11): "any other key closes" as stock FocusAdjust (every key but
+ * LEFT / RIGHT / BACK and service keys hides it); an autofocus start (focus key, AF card) closes it through
+ * {@link #closeForAutofocus} without manualFocus(2).
+ * No idle close, on every family (decision 2026-11-28, a deliberate deviation from stock FocusAdjust, which
+ * hides 3 s after the last key, HIDE_MENU_DELAY_TIME 3000): no timer closes the window; a key closes it, an autofocus
+ * start closes it, and another window or sleep taking the front closes it at onPause.
  * A Lumen tool screen (ToolActivity, org.lumen.menu.KeyTools): while it is in front a menu panel on screen steps
  * aside, so LEFT / RIGHT / OK / BACK reach this window only, and the panel has the keys again where it was when this
  * closes; the remote's menu key (the gear) closes it like any other key.
@@ -37,29 +39,14 @@ import org.lumen.projector.ui.ToolActivity;
  */
 public final class ManualFocusActivity extends ToolActivity {
     private static final String TAG = Family.TAG_PREFIX + "ManualFocus";
-    private static final long IDLE_CLOSE_MS = 3_000;
 
     /** The window on screen (main thread), for {@link #closeForAutofocus}. */
     private static ManualFocusActivity sOpen;
 
     private MotorController motor;
     private FocusChartView chart;
-    private long lastKeyAt;
     /** Closing because an autofocus starts: leave the 17 mode without manualFocus(2). */
     private boolean closingForAf;
-    private final Runnable idleCheck = new Runnable() {
-        @Override public void run() {
-            long last = Math.max(lastKeyAt, motor == null ? 0 : motor.lastActivity());
-            long idle = SystemClock.elapsedRealtime() - last;
-            if (motor != null && motor.isMoving()) idle = 0;      // held key: never close mid-move
-            if (idle >= IDLE_CLOSE_MS) {
-                Log.i(TAG, "closing after " + IDLE_CLOSE_MS + " ms without keys");
-                finish();
-            } else {
-                Ui.main().postDelayed(this, Math.max(250, IDLE_CLOSE_MS - idle));
-            }
-        }
-    };
 
     /** From KeyReceiver (focus long press) or the settings screen. Main thread. */
     static void open(Context ctx) {
@@ -113,17 +100,13 @@ public final class ManualFocusActivity extends ToolActivity {
         super.onResume();
         if (motor == null) return;
         if (Family.focusResumeRefused(this)) { finish(); return; }
-        lastKeyAt = SystemClock.elapsedRealtime();
         sOpen = this;
         closingForAf = false;
         motor.enter();                                            // manualFocus(17)
-        Ui.main().removeCallbacks(idleCheck);
-        Ui.main().postDelayed(idleCheck, IDLE_CLOSE_MS);
     }
 
     @Override
     protected void onPause() {
-        Ui.main().removeCallbacks(idleCheck);
         if (sOpen == this) sOpen = null;
         if (motor != null) {
             if (closingForAf) motor.exitForAutofocus();          // no 2: it would interrupt the AF
@@ -155,7 +138,6 @@ public final class ManualFocusActivity extends ToolActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent ev) {
         if (motor == null) return super.dispatchKeyEvent(ev);
-        lastKeyAt = SystemClock.elapsedRealtime();
         final int code = ev.getKeyCode();
         final int action = ev.getAction();
         if (code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_RIGHT) {
@@ -208,7 +190,6 @@ public final class ManualFocusActivity extends ToolActivity {
                 || ev.getAction() != MotionEvent.ACTION_SCROLL) {
             return super.onGenericMotionEvent(ev);
         }
-        lastKeyAt = SystemClock.elapsedRealtime();
         float v, h;
         if ((ev.getMetaState() & KeyEvent.META_SHIFT_ON) != 0) {
             h = ev.getAxisValue(MotionEvent.AXIS_VSCROLL);

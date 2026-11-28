@@ -5,6 +5,8 @@
 #     ActivityPanelHost, PanelActivity and ToolActivity of lumen-menu) on host stubs of android.* over a fake screen that
 #     gives the key focus as WindowManager does. Owner bugs 2026-11-13: quick menu open, focus key held, LEFT moved the
 #     menu instead of the lens; the gear on the fine corner adjustment opened the quick menu.
+#     Key sounds (owner report 2026-11-28, clicks only on the sound output page): an OK of the panel clicks once, a key
+#     that moved the focus in our code plays its direction, a key left to Android's focus search adds nothing.
 #  2. wiring.py: every projector app sends the gear through the rule and every tool screen and tool panel joins it.
 set -eu
 T=$(cd "$(dirname "$0")" && pwd)
@@ -18,6 +20,7 @@ find "$T/stubs" -name '*.java' | sed 's/.*/"&"/' > "$OUT/stubs.txt"   # paths wi
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" @"$OUT/stubs.txt" \
   "$M/org/lumen/menu/KeyTools.java" "$M/org/lumen/menu/Rehost.java" "$C/org/lumen/projector/ui/OverlayHost.java" "$C/org/lumen/projector/ui/Panel.java" \
   "$M/org/lumen/projector/ui/PanelHost.java" "$M/org/lumen/projector/ui/ActivityPanelHost.java" \
+  "$M/org/lumen/projector/ui/PanelKeys.java" "$G/apps/core/lumen-ui/src/org/lumen/ui/KeySound.java" \
   "$M/org/lumen/projector/ui/PanelActivity.java" "$M/org/lumen/projector/ui/ToolActivity.java" \
   "$G/apps/core/lumen-remote/src/org/lumen/remote/keys/KeyHook.java" "$T/KeyToolsTest.java"
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.projector.ui.KeyToolsTest

@@ -39,13 +39,20 @@ public class MenuWalkActivity extends Activity {
         View v = new View(this);
         v.setBackgroundColor(0xFF808080);
         setContentView(v);
+        echoRows(getIntent().getStringExtra("echo"));
         ProjectorFeatures dev = (ProjectorFeatures) Proxy.newProxyInstance(getClassLoader(),
                 new Class<?>[]{ProjectorFeatures.class}, (p, m, a) -> {
                     switch (m.getName()) {
                         case "implemented": return EnumSet.allOf(FeatureId.class);
                         case "ready": case "available": case "setupDone": return true;
-                        case "read": ((Consumer<MenuState>) a[0]).accept(MenuState.builder().build()); return null;
+                        case "read": answer(() -> ((Consumer<MenuState>) a[0]).accept(echoState())); return null;
                         case "set": case "setConfirmed":
+                            if (echo.containsKey((FeatureId) a[0])) {           // stored, the adapter's read-back
+                                echo.put((FeatureId) a[0], (String) a[1]);
+                                answer(() -> ((Consumer<ProjectorFeatures.Result>) a[2])
+                                        .accept(ProjectorFeatures.Result.done(echoState())));
+                                return null;
+                            }
                             ((Consumer<ProjectorFeatures.Result>) a[2]).accept(ProjectorFeatures.Result.failed(null)); return null;
                         case "run": case "runConfirmed":
                             ((Consumer<ProjectorFeatures.Result>) a[1]).accept(ProjectorFeatures.Result.failed(null)); return null;
@@ -64,6 +71,44 @@ public class MenuWalkActivity extends Activity {
         String section = getIntent().getStringExtra("section");    // "general": All settings
         live = this;
         new Handler(Looper.getMainLooper()).postDelayed(() -> menu.show(section), 700);
+    }
+
+    /**
+     * Device rows of the stand-in that answer as a real adapter does (test/ui/async_rows_walk.py): {@code echo} names
+     * them (comma list of feature ids), each starts on its first option ("on" for a switch); a write stores the value
+     * and answers 150 ms later with the adapter's own read-back of its device rows alone (Result.done(read), as
+     * SettingsRows.set and every family's adapter), which carries none of the menu's own values.
+     */
+    private final java.util.Map<FeatureId, String> echo = new java.util.LinkedHashMap<>();
+    private boolean late;
+
+    private void echoRows(String ids) {
+        if (ids == null || ids.isEmpty()) return;
+        late = true;
+        org.lumen.menu.MenuProfile p = MenuController.profile(getApplicationContext());
+        for (String id : ids.split(",")) {
+            FeatureId f = FeatureId.of(id.trim());
+            if (f == null) continue;
+            List<String> o = p.options(f);
+            echo.put(f, o == null || o.isEmpty() ? "on" : o.get(0));
+        }
+    }
+
+    private MenuState echoState() {
+        MenuState.Builder b = MenuState.builder();
+        org.lumen.menu.MenuProfile p = MenuController.profile(getApplicationContext());
+        for (java.util.Map.Entry<FeatureId, String> e : echo.entrySet()) {
+            List<String> o = p.options(e.getKey());
+            if (o != null && !o.isEmpty()) b.options(e.getKey(), o);
+            b.put(e.getKey(), e.getValue());
+        }
+        return b.build();
+    }
+
+    /** The stand-in's answer: at once, or (echo rows) 150 ms later on the main thread as a HAL read-back. */
+    private void answer(Runnable r) {
+        if (late) new Handler(Looper.getMainLooper()).postDelayed(r, 150);
+        else r.run();
     }
 
     /** The walk activity up now: the menu requests of {@link Request} go to its menu. */
@@ -95,6 +140,12 @@ public class MenuWalkActivity extends Activity {
             if (page != null) {
                 List<View> rows = page.rows();
                 for (int i = 0; i < rows.size(); i++) w.println("walk.row i=" + i + " " + describe(rows.get(i)));
+            }
+            Object all = field(menu, "rows");                          // every feature row the menu built, all pages
+            if (all instanceof java.util.Map) {
+                for (java.util.Map.Entry<?, ?> e : ((java.util.Map<?, ?>) all).entrySet()) {
+                    w.println("walk.all f=" + ((FeatureId) e.getKey()).id + " " + describe((View) e.getValue()));
+                }
             }
         };
         source(w);
@@ -183,7 +234,7 @@ public class MenuWalkActivity extends Activity {
     private static String describe(View v) {
         if (v == null) return "none";
         StringBuilder s = new StringBuilder("class=" + v.getClass().getSimpleName() + " focused=" + v.isFocused());
-        for (String n : new String[]{"key", "title", "value", "text", "checked", "index"}) {
+        for (String n : new String[]{"key", "title", "value", "text", "checked", "index", "known"}) {
             Object o = field(v, n);
             if (o != null) s.append(' ').append(n).append('=').append(String.valueOf(o).replace('\n', ' '));
         }

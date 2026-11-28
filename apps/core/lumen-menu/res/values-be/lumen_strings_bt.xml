@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Пошук прылад…</string>
     <string name="lumen_m_bt_none">Прылады не знойдзены</string>
     <string name="lumen_m_bt_pairing">Спалучэнне…</string>
+    <string name="lumen_m_bt_abs_volume">Абсалютная гучнасць Bluetooth</string>
 </resources>

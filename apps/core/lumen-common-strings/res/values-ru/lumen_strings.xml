@@ -22,7 +22,7 @@
     <string name="lumen_apps">Приложения</string>
     <string name="lumen_arrows_move_the_corner_ok">Стрелки: сдвиг угла · OK: следующий угол</string>
     <string name="lumen_arrows_move_the_picture_back">Стрелки: сдвиг картинки · Назад: готово</string>
-    <string name="lumen_arrows_move_the_picture_ok">Стрелки: сдвиг картинки · OK: размер · Назад: готово</string>
+    <string name="lumen_arrows_move_the_picture_ok">Стрелки: сдвиг картинки · Удерживайте OK: размер · Назад: готово</string>
     <string name="lumen_aspect_ratio">Формат изображения</string>
     <string name="lumen_at_every_start_and_once">При каждом включении и раз в день: модель, версия, сборка, сведения об обновлении, страна, случайный номер установки и серийный номер (сервер хранит только его хеш). Ваш IP-адрес не сохраняется.</string>
     <string name="lumen_at_least_8_characters">Не менее 8 символов</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Ручная коррекция трапеции</string>
     <string name="lumen_manual_keystone_unavailable">Ручная трапеция недоступна</string>
     <string name="lumen_medium">Средняя</string>
-    <string name="lumen_menu_grid_over_the_picture">Меню: сетка / поверх картинки / тест-контур</string>
+    <string name="lumen_menu_grid_over_the_picture">Меню: сетка / тестовая таблица / поверх картинки / тест-контур</string>
     <string name="lumen_mid">Средний</string>
     <string name="lumen_motion_smoothing">Плавность движения</string>
     <string name="lumen_move">Переместить</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Вернуть стандартные значения</string>
     <string name="lumen_restart">Перезагрузить</string>
     <string name="lumen_restart_now">Перезагрузить</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Вправо: больше · Влево: меньше · OK: сдвиг картинки · Назад: готово</string>
-    <string name="lumen_right_left_rotate_ok_back">Вправо / Влево: поворот · OK: как было · Назад: готово</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Вправо: больше · Влево: меньше · Удерживайте OK: положение · Назад: готово</string>
+    <string name="lumen_right_left_rotate_ok_back">Вправо / Влево: поворот · Меню: как было · Назад: готово</string>
     <string name="lumen_saturation">Насыщенность</string>
     <string name="lumen_scan_with_a_phone_to">Отсканируйте телефоном, чтобы открыть</string>
     <string name="lumen_screen_casting">Трансляция экрана</string>

@@ -27,6 +27,7 @@ final class MenuLabels {
             case "network.wifi": return R.string.lumen_m_hotspot_wifi;
             case "source.list": return R.string.lumen_m_source_list;
             case "bluetooth.add": return R.string.lumen_m_bt_add;
+            case "bluetooth.abs_volume": return R.string.lumen_m_bt_abs_volume;
             case "network.hotspot": return R.string.lumen_m_hotspot_hotspot;
             case "network.hotspot_name": return R.string.lumen_m_hotspot_name;
             case "network.hotspot_password": return R.string.lumen_m_hotspot_password;
@@ -34,6 +35,8 @@ final class MenuLabels {
             case "keystone.angle_h": return R.string.lumen_m_angle_h;
             case "settings.menu_side": return R.string.lumen_m_menu_side;
             case "focus.settings": return R.string.lumen_m_focus_settings;
+            case "settings.advanced": return R.string.lumen_m_advanced;
+            case "settings.power_on_off": return R.string.lumen_m_power_on_off;
             case "settings.menu_density": return R.string.lumen_m_menu_density;
             case "settings.power_key": return R.string.lumen_m_power_key_short;
             case "settings.language": return R.string.lumen_m_language;

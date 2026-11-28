@@ -19,6 +19,8 @@
 #include <thread>
 #include <vector>
 
+#include "video_pacing.h"
+
 class AvClock;
 
 class VideoDecoder {
@@ -52,6 +54,7 @@ public:
 private:
     struct Frame {
         std::vector<uint8_t> data;
+        int64_t arriveNs = 0;   /* CLOCK_MONOTONIC when it came off the network */
         int64_t targetNs = 0;   /* CLOCK_MONOTONIC: sender time + latency in the FIFO, the
                                    presentation time once it left the FIFO */
         bool h265 = false;
@@ -85,6 +88,7 @@ private:
     ANativeWindow *currentTarget();
     void outputLoop();
     static void parseNals(const uint8_t *p, size_t n, bool h265, NalInfo *out);
+    static int64_t fixedLeadFromProp();
 
     EventFn mEventFn;
     void *mEventCtx;
@@ -136,14 +140,20 @@ private:
     std::atomic<bool> mFirstFrameSent{false};
     std::atomic<int64_t> mReplaySkipBeforeUs{0};
     std::atomic<int64_t> mDecodeLatencyNs{30000000};
+    FeedPacer mPacer;                       /* feed lead (worker) + decode latency peak (output thread) */
+    const int64_t mFixedLeadNs;             /* debug.z9x.airplay.video_lead_ms, 0 = automatic */
+    std::atomic<uint32_t> mAheadMax{0};     /* most frames waiting in the decoder / for display (worker) */
     /* input timestamps for the decode-latency estimate (SPSC: worker -> output thread) */
     static constexpr int kProbe = 64;
-    struct Probe { int64_t ptsUs; int64_t inNs; };
+    struct Probe { int64_t ptsUs; int64_t inNs; int64_t arriveNs; };
     Probe mProbe[kProbe] = {};
     std::atomic<uint32_t> mProbeW{0};
     uint32_t mProbeR = 0;
     uint32_t mLate = 0, mRendered = 0;
+    uint32_t mLateArrival = 0;              /* late ones that arrived with < 100 ms left (network) */
     int64_t mReleaseLeadSum = 0;
+    int64_t mLatencyMaxNs = 0;              /* longest decode latency in the window */
+    int64_t mArriveLeadMinNs = INT64_MAX;   /* shortest play time - arrival in the window */
     int64_t mStatsNs = 0;
 };
 

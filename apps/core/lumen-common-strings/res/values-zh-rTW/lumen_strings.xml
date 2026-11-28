@@ -22,7 +22,7 @@
     <string name="lumen_apps">應用程式</string>
     <string name="lumen_arrows_move_the_corner_ok">方向鍵：移動角落 · OK：下一個角落</string>
     <string name="lumen_arrows_move_the_picture_back">方向鍵：移動畫面 · 返回：完成</string>
-    <string name="lumen_arrows_move_the_picture_ok">方向鍵：移動畫面 · OK：大小 · 返回：完成</string>
+    <string name="lumen_arrows_move_the_picture_ok">方向鍵：移動畫面 · 長按 OK：大小 · 返回：完成</string>
     <string name="lumen_aspect_ratio">畫面比例</string>
     <string name="lumen_at_every_start_and_once">每次開機時及每天一次：型號、版本、組建、更新資訊、國家、隨機安裝編號和序號（伺服器只保存其雜湊值）。不會儲存你的 IP 位址。</string>
     <string name="lumen_at_least_8_characters">至少 8 個字元</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">手動梯形校正</string>
     <string name="lumen_manual_keystone_unavailable">手動梯形校正無法使用</string>
     <string name="lumen_medium">中</string>
-    <string name="lumen_menu_grid_over_the_picture">選單：網格 / 畫面上邊框 / 測試四邊形</string>
+    <string name="lumen_menu_grid_over_the_picture">選單：網格 / 測試圖 / 畫面上邊框 / 測試四邊形</string>
     <string name="lumen_mid">中</string>
     <string name="lumen_motion_smoothing">動態補償</string>
     <string name="lumen_move">移動</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">回復預設值</string>
     <string name="lumen_restart">重新啟動</string>
     <string name="lumen_restart_now">立即重新啟動</string>
-    <string name="lumen_right_bigger_left_smaller_ok">右：放大 · 左：縮小 · OK：移動畫面 · 返回：完成</string>
-    <string name="lumen_right_left_rotate_ok_back">右 / 左：旋轉 · OK：恢復初始 · 返回：完成</string>
+    <string name="lumen_right_bigger_left_smaller_ok">右：放大 · 左：縮小 · 長按 OK：位置 · 返回：完成</string>
+    <string name="lumen_right_left_rotate_ok_back">右 / 左：旋轉 · 選單：恢復初始 · 返回：完成</string>
     <string name="lumen_saturation">飽和度</string>
     <string name="lumen_scan_with_a_phone_to">用手機掃描即可開啟</string>
     <string name="lumen_screen_casting">螢幕投放</string>

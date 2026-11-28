@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import org.lumen.menu.BootKeys;
 import org.lumen.projector.R;
 import org.lumen.projector.SafeHandler;
 import org.lumen.projector.Ui;
@@ -144,6 +146,8 @@ public final class PowerKey {
     }
 
     private static String guard(Context ctx, Intent intent, KeyEvent ev) {
+        String boot = BootKeys.refuse(SystemProperties.get(BootKeys.BOOT_COMPLETED, ""), SystemProperties.get(BootKeys.BOOTANIM, ""));
+        if (boot != null) return boot;                                  // the start: stock drops every key
         if (intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) return "began non-interactive";
         PowerManager pm = ctx.getSystemService(PowerManager.class);
         if (pm != null && !pm.isInteractive()) return "screen off";

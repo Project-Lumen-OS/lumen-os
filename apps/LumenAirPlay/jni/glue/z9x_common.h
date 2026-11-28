@@ -57,6 +57,8 @@ static inline int64_t z9x_mono_ns(void) { return z9x_clock_ns(CLOCK_MONOTONIC); 
 /* Nice value of ANDROID_PRIORITY_AUDIO (system/thread_defs.h), the priority AudioTrack gives
    its own callback thread inside the app process (init sets RLIMIT_NICE 40 for everyone). */
 #define Z9X_PRIORITY_AUDIO (-16)
+/* ANDROID_PRIORITY_VIDEO: the mirroring decoder worker and its output thread */
+#define Z9X_PRIORITY_VIDEO (-10)
 
 /* Calling thread only (Linux nice values are per thread). Failure is logged, not fatal. */
 static inline void z9x_set_thread_priority(int nice, const char *what) {

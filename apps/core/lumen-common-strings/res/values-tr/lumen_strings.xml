@@ -22,7 +22,7 @@
     <string name="lumen_apps">Uygulamalar</string>
     <string name="lumen_arrows_move_the_corner_ok">Oklar: köşeyi taşı · OK: sonraki köşe</string>
     <string name="lumen_arrows_move_the_picture_back">Oklar: görüntüyü kaydır · Geri: bitti</string>
-    <string name="lumen_arrows_move_the_picture_ok">Oklar: görüntüyü kaydır · OK: boyut · Geri: bitti</string>
+    <string name="lumen_arrows_move_the_picture_ok">Oklar: görüntüyü kaydır · OK basılı tut: boyut · Geri: bitti</string>
     <string name="lumen_aspect_ratio">En boy oranı</string>
     <string name="lumen_at_every_start_and_once">Her açılışta ve günde bir kez: model, sürüm, derleme, güncelleme bilgileri, ülke, rastgele bir kurulum numarası ve seri numarası (sunucu yalnızca karma değerini saklar). IP adresiniz saklanmaz.</string>
     <string name="lumen_at_least_8_characters">En az 8 karakter</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Manuel yamuk düzeltme</string>
     <string name="lumen_manual_keystone_unavailable">Manuel yamuk düzeltme kullanılamıyor</string>
     <string name="lumen_medium">Orta</string>
-    <string name="lumen_menu_grid_over_the_picture">Menü: ızgara / görüntü üzerinde / test dörtgeni</string>
+    <string name="lumen_menu_grid_over_the_picture">Menü: ızgara / test deseni / görüntü üzerinde / test dörtgeni</string>
     <string name="lumen_mid">Orta</string>
     <string name="lumen_motion_smoothing">Hareket yumuşatma</string>
     <string name="lumen_move">Taşı</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Varsayılan değerlere dön</string>
     <string name="lumen_restart">Yeniden başlat</string>
     <string name="lumen_restart_now">Şimdi yeniden başlat</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Sağ: büyüt · Sol: küçült · OK: görüntüyü kaydır · Geri: bitti</string>
-    <string name="lumen_right_left_rotate_ok_back">Sağ / Sol: döndür · OK: başlangıçtaki gibi · Geri: bitti</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Sağ: büyüt · Sol: küçült · OK basılı tut: konum · Geri: bitti</string>
+    <string name="lumen_right_left_rotate_ok_back">Sağ / Sol: döndür · Menü: başlangıçtaki gibi · Geri: bitti</string>
     <string name="lumen_saturation">Doygunluk</string>
     <string name="lumen_scan_with_a_phone_to">Açmak için telefonla tarayın</string>
     <string name="lumen_screen_casting">Ekran yansıtma</string>

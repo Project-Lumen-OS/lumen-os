@@ -14,6 +14,7 @@ import org.lumen.projector.R;
 import org.lumen.report.ReportScreen;
 import org.lumen.sensors.SensorPanel;
 import org.lumen.signal.SignalPanel;
+import org.lumen.system.BtAbsVolume;
 import org.lumen.system.ColourVision;
 import org.lumen.system.DeviceFacts;
 import org.lumen.system.Hotspot;
@@ -89,6 +90,7 @@ final class ModuleScreens {
         if (f == FeatureId.SIGNAL_REFRESH) return SignalPanel.receiverInfo(c);
         if (f == FeatureId.KEYSTONE_WALL_COLOR) return WallColor.available(c);
         if (f == FeatureId.SOUND_KEY_TONE || f == FeatureId.SETTINGS_COLOUR_VISION) return true;
+        if (f == FeatureId.BLUETOOTH_ABS_VOLUME) return true;          // an Android property, every model's stock row
         if (f == FeatureId.SETTINGS_SCREENSAVER_NOW || f == FeatureId.SETTINGS_SCREENSAVER_DELAY) return true;
         if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) return true;
         if (f == FeatureId.SETTINGS_POWER_KEY) return true;            // PowerKeyPrefs: the app has the power key
@@ -181,6 +183,7 @@ final class ModuleScreens {
         if (f == FeatureId.SETTINGS_MENU_SIDE || f == FeatureId.SETTINGS_MENU_DENSITY) return MenuLookPrefs.get(c, f);
         if (f == FeatureId.SETTINGS_POWER_KEY) return PowerKeyPrefs.get(c);
         if (f == FeatureId.DEV_NETWORK_ADB) return NetworkAdb.on() ? ON : OFF;
+        if (f == FeatureId.BLUETOOTH_ABS_VOLUME) return BtAbsVolume.on() ? ON : OFF;
         if (f == FeatureId.SOUND_VOLUME) {
             android.media.AudioManager a = audio(c);
             return a == null ? null : Integer.toString(a.getStreamVolume(android.media.AudioManager.STREAM_MUSIC));
@@ -213,6 +216,7 @@ final class ModuleScreens {
             return PowerKeyPrefs.set(c, value) && value.equals(PowerKeyPrefs.get(c));
         }
         else if (f == FeatureId.DEV_NETWORK_ADB) return NetworkAdb.set(ON.equals(value));   // the port, read back
+        else if (f == FeatureId.BLUETOOTH_ABS_VOLUME) return BtAbsVolume.set(ON.equals(value));   // stock setBlueToothVolume
         else if (f == FeatureId.NETWORK_HOTSPOT) {                 // stock startTethering / stopTethering, a note at the end
             if (ON.equals(value)) Hotspot.start(c, hotspotNotes(c));
             else Hotspot.stop(c, hotspotNotes(c));

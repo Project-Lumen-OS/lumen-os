@@ -2202,7 +2202,7 @@ public final class MenuController {
         if (!dev.ready()) { apply(null); return; }
         final int gen = ++refreshGen;
         dev.read(st -> {
-            if (gen == refreshGen) apply(ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT)));
+            if (gen == refreshGen) apply(st);
         });
     }
 
@@ -2254,7 +2254,14 @@ public final class MenuController {
         if (v instanceof Row && ((Row) v).isRowEnabled()) v.setAlpha(LockedRow.alpha(LockedRow.locked(dev, f, st)));
     }
 
+    /**
+     * Shows a device state on every row: a full read or a write's read-back (Result.after), which carries only the
+     * adapter's own rows. The menu's own values (module settings such as the power-on sound, General's Android facts,
+     * the hotspot) and the user picture modes join it here, on every path, so a read-back after a sibling row changed
+     * never leaves them on the loading dots until the page is opened again.
+     */
     private void apply(MenuState st) {
+        st = ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT));
         if (has(FeatureId.PICTURE_CUSTOM_NEW)) st = CustomPictures.merge(app, profile, st);
         state = st;
         boolean ok = st != null;

@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Buscando dispositivos…</string>
     <string name="lumen_m_bt_none">No se encontraron dispositivos</string>
     <string name="lumen_m_bt_pairing">Vinculando…</string>
+    <string name="lumen_m_bt_abs_volume">Volumen absoluto de Bluetooth</string>
 </resources>

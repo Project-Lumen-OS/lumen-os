@@ -4,7 +4,6 @@ package org.lumen.projector.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -420,19 +419,7 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
             }
             finishIfIdle();
         };
-        if (animate && root != null && root.isAttachedToWindow()) {
-            final boolean[] done = {false};
-            Runnable once = () -> { if (!done[0]) { done[0] = true; remove.run(); } };
-            try {
-                p.animateOut(root, once);
-            } catch (Throwable t) {
-                once.run();
-                return;
-            }
-            main.postDelayed(once, Theme.PANEL_EXIT_MS + 300);   // safety net
-        } else {
-            remove.run();
-        }
+        p.exitThen(root, animate, main, remove);
     }
 
     /** No panel left (none shown, none waiting): the activity goes, the app below gets its window back. */
@@ -455,18 +442,12 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         return false;
     }
 
-    private static boolean isOkKey(int code) {
-        return code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER
-                || code == KeyEvent.KEYCODE_NUMPAD_ENTER;
-    }
 
     // ================================================================== root view of a panel
     /** Wraps every panel in the activity: key routing, timer reset, BACK, media keys, focus loss (as PanelRoot). */
     private final class HostRoot extends FrameLayout {
         private final Panel panel;
-        private boolean backDown;
-        /** downTime of the OK press whose DOWN reached this window, -1 when none. */
-        private long okDownTime = -1;
+        private final PanelKeys keys;
         private boolean hadFocus;
         /** uptime when the window focus went, for Rehost.waitFocus. */
         private long lostAt;
@@ -486,77 +467,28 @@ public final class ActivityPanelHost implements PanelHost, KeyTools.Host {
         HostRoot(Activity a, Panel panel) {
             super(a);
             this.panel = panel;
+            keys = new PanelKeys(TAG, app, panel, new PanelKeys.Root() {
+                @Override public void resetAutoHide(Panel p) { ActivityPanelHost.this.resetAutoHide(p); }
+
+                @Override public void dismiss(Panel p) { ActivityPanelHost.this.dismiss(p, true); }
+
+                @Override public boolean viewsDispatch(KeyEvent ev) { return HostRoot.super.dispatchKeyEvent(ev); }
+
+                @Override public View focused() { return HostRoot.this.findFocus(); }
+            });
             setClipChildren(false);
             setClipToPadding(false);
         }
 
         @Override
         public boolean dispatchKeyEvent(KeyEvent ev) {
-            if (!panel.showing) return true;
-            resetAutoHide(panel);
-            int code = ev.getKeyCode();
-            if (KeyEvent.isMediaSessionKey(code)) {
-                if (ev.getAction() == KeyEvent.ACTION_DOWN || ev.getAction() == KeyEvent.ACTION_UP) {
-                    try {
-                        AudioManager am = app.getSystemService(AudioManager.class);
-                        if (am != null) am.dispatchMediaKeyEvent(ev);
-                    } catch (Throwable t) {
-                        Log.w(TAG, "media key: " + t);
-                    }
-                }
-                return true;
-            }
-            if (isOkKey(code) && !okOfThisWindow(ev)) return true;
-            try {
-                if (panel.onKeyEvent(ev)) return true;
-            } catch (Throwable t) {
-                Log.w(TAG, "onKeyEvent: " + t);
-                return true;
-            }
-            if (code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_ESCAPE) {
-                if (ev.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (ev.getRepeatCount() == 0) backDown = true;
-                } else if (ev.getAction() == KeyEvent.ACTION_UP) {
-                    if (backDown && !ev.isCanceled()) {
-                        boolean consumed = false;
-                        try { consumed = panel.onBack(); } catch (Throwable t) { Log.w(TAG, "onBack: " + t); }
-                        if (!consumed) dismiss(panel, true);
-                    }
-                    backDown = false;
-                }
-                return true;
-            }
-            try {
-                return super.dispatchKeyEvent(ev);
-            } catch (Throwable t) {
-                Log.w(TAG, "dispatchKeyEvent: " + t);
-                return true;
-            }
-        }
-
-        /** The rest of an OK press that went DOWN in another window never reaches the panel (OverlayHost rule). */
-        private boolean okOfThisWindow(KeyEvent ev) {
-            int a = ev.getAction();
-            if (a == KeyEvent.ACTION_DOWN) {
-                if (ev.getRepeatCount() == 0) {
-                    okDownTime = ev.getDownTime();
-                    return true;
-                }
-                return ev.getDownTime() == okDownTime;
-            }
-            if (a == KeyEvent.ACTION_UP) {
-                boolean ours = okDownTime != -1 && ev.getDownTime() == okDownTime;
-                okDownTime = -1;
-                if (!ours) Log.i(TAG, "OK up of a press begun elsewhere: dropped (" + panel.getClass().getSimpleName() + ")");
-                return ours;
-            }
-            return true;
+            return keys.dispatch(ev);
         }
 
         @Override
         public void onWindowFocusChanged(boolean hasFocus) {
             super.onWindowFocusChanged(hasFocus);
-            if (!hasFocus) okDownTime = -1;
+            if (!hasFocus) keys.focusLost();
             if (hasFocus) {
                 hadFocus = true;
                 removeCallbacks(focusLostCheck);

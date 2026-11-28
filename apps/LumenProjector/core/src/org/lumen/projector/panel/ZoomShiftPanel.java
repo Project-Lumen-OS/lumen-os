@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.OkPress;
 import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
@@ -35,8 +36,8 @@ import org.lumen.projector.ui.Theme;
  * (ZoomMoveWind: ZoomStateView "digital only" + PtzViewModel): the picture is made smaller and moved inside
  * the projected area by the keystone engine, so it can be fitted to the screen frame without moving the
  * projector. The stock edge frame of the zoom and shift screen (EdgeFrame GUIDES) shows the picture's edge.
- *   Size (first): LEFT / DOWN smaller, RIGHT / UP bigger. OK switches to Shift: the arrows move the picture.
- *   BACK: done.
+ *   Size (first): LEFT / DOWN smaller, RIGHT / UP bigger. Hold OK switches to Shift: the arrows move the picture.
+ *   OK: the test chart on / off (EdgeFrameView.withChart, hidden at open: stock shows none). BACK: done.
  * Stock calls, in stock order: IGmpf2 194(1) and IGmpf 121 zoomStart(0) on open; IGmpf 573(2, false) while
  * real-time keystone is on; IGmpf2 18(true, 2) before the first move; a size step = IGmpf 118
  * setDigitalZoomStep(digital +1 smaller | -1 bigger) inside the 117 digital range, from a fresh 116 read; a
@@ -71,6 +72,8 @@ public final class ZoomShiftPanel extends Panel {
     private int lo, hi, cur, optical;
     private boolean digital;
     private TextView mode, value, hint, status;
+    private EdgeFrameView frame;
+    private final OkPress okPress = new OkPress();
 
     private ZoomShiftPanel(Context app, Runnable onBackExit) {
         this.app = app;
@@ -215,8 +218,10 @@ public final class ZoomShiftPanel extends Panel {
     @Override
     protected boolean onKeyEvent(KeyEvent ev) {
         int code = ev.getKeyCode();
-        if (code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER) {
-            if (ev.getAction() == KeyEvent.ACTION_UP && state == READY && digital) {
+        if (OkPress.isOk(code)) {
+            int press = okPress.feed(ev.getAction(), ev.getRepeatCount(), ev.getDownTime(), ev.getEventTime(), ev.isCanceled());
+            if (press == OkPress.SHORT && frame != null) frame.toggleChart();
+            else if (press == OkPress.HOLD && state == READY && digital) {
                 shiftMode = !shiftMode;
                 render();
             }
@@ -274,7 +279,8 @@ public final class ZoomShiftPanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeFrameView(c, EdgeFrame.GUIDES), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        frame = new EdgeFrameView(c, EdgeFrame.GUIDES).withChart();
+        root.addView(frame, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = EdgeGrid.card(c);
         card.addView(EdgeGrid.text(c, c.getString(R.string.zs_title), 40, Theme.TEXT));
@@ -284,6 +290,7 @@ public final class ZoomShiftPanel extends Panel {
         card.addView(value);
         hint = EdgeGrid.text(c, "", 28, Theme.TEXT_DIM);
         card.addView(hint);
+        card.addView(EdgeGrid.text(c, c.getString(R.string.lumen_focus_chart_hint), 28, Theme.TEXT_DIM));
         status = EdgeGrid.text(c, "", 28, Theme.TEXT_DIM);
         card.addView(status);
         root.addView(card, new FrameLayout.LayoutParams(Theme.px(c, 900), ViewGroup.LayoutParams.WRAP_CONTENT,

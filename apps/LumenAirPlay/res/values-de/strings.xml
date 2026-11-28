@@ -25,7 +25,7 @@
     <string name="forget_done">Vertrauenswürdige Geräte wurden vergessen</string>
     <string name="set_quality">Qualität der Bildschirmsynchronisierung</string>
     <string name="quality_1080">1080p H.264 (geringste Verzögerung)</string>
-    <string name="quality_4k">4K HEVC</string>
+    <string name="quality_4k">4K</string>
     <string name="set_latency">Verzögerung</string>
     <string name="latency_low">Gering (150 ms)</string>
     <string name="latency_normal">Normal (250 ms)</string>

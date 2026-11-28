@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.OkPress;
 import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Family;
 import org.lumen.projector.Hal;
@@ -117,6 +118,8 @@ public final class OpticalZoomPanel extends Panel {
     private int startOptical = -1;
     private volatile boolean resetting;                  // MENU zoom reset queued or running (main sets, HAL clears)
     private TextView value, status, hint;
+    private EdgeFrameView frame;
+    private final OkPress okPress = new OkPress();
     private SizeBar bar;
     /**
      * Lumen OS 1.0.8 (parity keystone item 10): OK switches the arrows between size (the lens) and position (the
@@ -369,23 +372,25 @@ public final class OpticalZoomPanel extends Panel {
             }
             return true;
         }
-        boolean ok = code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER;
+        if (OkPress.isOk(code)) {
+            // OK: the test chart on / off; hold OK: size <-> position, not while lens moves are queued or running
+            int press = okPress.feed(ev.getAction(), ev.getRepeatCount(), ev.getDownTime(), ev.getEventTime(), ev.isCanceled());
+            if (press == OkPress.SHORT && frame != null) frame.toggleChart();
+            else if (press == OkPress.HOLD && Family.ZOOM_SHIFT && !resetting && state == READY && pending.get() == 0
+                    && !draining.get()) {
+                shiftMode = !shiftMode;
+                Log.i(TAG, "hold OK: " + (shiftMode ? "position (shift)" : "size (zoom)"));
+                render();
+            }
+            return true;
+        }
         if (Family.ZOOM_SHIFT) {
             if (resetting) return true;                  // the lens is walking home
-            if (ok) {
-                // OK: size <-> position (1.0.8); not while lens moves are queued or running
-                if (ev.getAction() == KeyEvent.ACTION_UP && state == READY && pending.get() == 0 && !draining.get()) {
-                    shiftMode = !shiftMode;
-                    Log.i(TAG, "OK: " + (shiftMode ? "position (shift)" : "size (zoom)"));
-                    render();
-                }
-                return true;
-            }
             if (shiftMode) return onShiftKey(ev, code);
         }
         boolean bigger = code == KeyEvent.KEYCODE_DPAD_RIGHT || code == KeyEvent.KEYCODE_DPAD_UP;
         boolean smaller = code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_DOWN;
-        if (!bigger && !smaller) return ok;              // OK without the picture position: nothing (stock HB)
+        if (!bigger && !smaller) return false;
         if (resetting) return true;                      // the lens is walking home
         if (ev.getAction() == KeyEvent.ACTION_UP) {
             pending.set(0);                              // stock: any key up drops the queued moves (audit F5)
@@ -525,7 +530,8 @@ public final class OpticalZoomPanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeFrameView(c, EdgeFrame.GUIDES), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        frame = new EdgeFrameView(c, EdgeFrame.GUIDES).withChart();
+        root.addView(frame, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = new LinearLayout(c);
         card.setOrientation(LinearLayout.VERTICAL);
@@ -547,6 +553,7 @@ public final class OpticalZoomPanel extends Panel {
         card.addView(value);
         hint = text(c, c.getString(Family.ZOOM_SHIFT ? R.string.zs_hint_size : R.string.zoom_hint), 30, Theme.TEXT_DIM);
         card.addView(hint);
+        card.addView(text(c, c.getString(R.string.lumen_focus_chart_hint), 26, Theme.TEXT_DIM));
         card.addView(text(c, c.getString(R.string.zoom_reset_hint), 26, Theme.TEXT_DIM));
         status = text(c, "", 28, Theme.TEXT_DIM);
         card.addView(status);

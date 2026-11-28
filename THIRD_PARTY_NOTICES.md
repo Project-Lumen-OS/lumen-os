@@ -107,13 +107,13 @@ files and checks that none of them carries the Lumen licence.
 - Copyright: android-airplay-server by jqssun; UxPlay; and the authors listed in apps/LumenAirPlay/NOTICE
 - Source: https://github.com/jqssun/android-airplay-server, https://github.com/FDH2/UxPlay
 - What: the whole app adapts GPL code, so all of it stays under the GPL
-- Files (100):
+- Files (106):
   - `apps/LumenAirPlay/` (6)
   - `apps/LumenAirPlay/assets/` (12)
-  - `apps/LumenAirPlay/jni/` (31)
+  - `apps/LumenAirPlay/jni/` (33)
   - `apps/LumenAirPlay/res/` (24)
   - `apps/LumenAirPlay/src/` (20)
-  - `apps/LumenAirPlay/test/` (6)
+  - `apps/LumenAirPlay/test/` (10)
   - `apps/LumenAirPlay/tools/` (1)
 
 ## Values read from XGIMI stock firmware

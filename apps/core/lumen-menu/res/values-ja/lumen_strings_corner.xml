@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">中央の円が丸くなるまで調整します</string>
-    <string name="lumen_corner_keys_more">歯車キーを長押し：リセット · 戻る：完了</string>
+    <string name="lumen_corner_keys_more">歯車キー：テストチャート · 歯車キーを長押し：リセット · 戻る：完了</string>
 </resources>

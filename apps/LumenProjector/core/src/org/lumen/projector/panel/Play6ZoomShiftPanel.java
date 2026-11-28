@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.lumen.menu.OkPress;
 import org.lumen.menu.EdgeFrame;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
@@ -86,6 +87,8 @@ public final class Play6ZoomShiftPanel extends Panel {
     private volatile int span;
     private volatile boolean digital;
     private TextView mode, value, hint, status;
+    private EdgeFrameView frame;
+    private final OkPress okPress = new OkPress();
     /** Stock's side menu: one focused Reset button (MENU shows it). */
     private LinearLayout menu;
     /** Bumped by every move the vendor took: the 200 ms re-read (stock initZoom) runs only for the last one. */
@@ -354,8 +357,11 @@ public final class Play6ZoomShiftPanel extends Panel {
             }
             return code != KeyEvent.KEYCODE_BACK && code != KeyEvent.KEYCODE_ESCAPE;
         }
-        if (code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER) {
-            if (!stockKeys && ev.getAction() == KeyEvent.ACTION_UP && state == READY && digital) {
+        if (OkPress.isOk(code)) {
+            // OK: the test chart on / off; hold OK: Size / Position (not with the stock keys: the arrows always move)
+            int press = okPress.feed(ev.getAction(), ev.getRepeatCount(), ev.getDownTime(), ev.getEventTime(), ev.isCanceled());
+            if (press == OkPress.SHORT && frame != null) frame.toggleChart();
+            else if (press == OkPress.HOLD && !stockKeys && state == READY && digital) {
                 shiftMode = !shiftMode;
                 render();
             }
@@ -363,7 +369,7 @@ public final class Play6ZoomShiftPanel extends Panel {
         }
         // Stock's keys are VOLUME UP / DOWN for the size, but Android TV's window manager never hands the volume keys
         // to an app (PhoneWindowManager, TV routing; stock had the vendor's IGimiCommon.registerInterceptKey). They still
-        // work here if they ever arrive; the arrows do the size in Size mode, OK switches Size / Position.
+        // work here if they ever arrive; the arrows do the size in Size mode, hold OK switches Size / Position.
         boolean up = code == KeyEvent.KEYCODE_DPAD_UP, down = code == KeyEvent.KEYCODE_DPAD_DOWN;
         boolean left = code == KeyEvent.KEYCODE_DPAD_LEFT || code == 149, right = code == KeyEvent.KEYCODE_DPAD_RIGHT || code == 153;
         boolean arrowsMove = stockKeys || shiftMode;                 // stock: the arrows always move
@@ -428,7 +434,8 @@ public final class Play6ZoomShiftPanel extends Panel {
     @Override
     protected View onCreateView(Context c) {
         FrameLayout root = new FrameLayout(c);
-        root.addView(new EdgeFrameView(c, EdgeFrame.FRAME), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        frame = new EdgeFrameView(c, EdgeFrame.FRAME).withChart();
+        root.addView(frame, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         LinearLayout card = EdgeGrid.card(c);
         card.addView(EdgeGrid.text(c, c.getString(R.string.zs_title), 40, Theme.TEXT));
@@ -438,6 +445,7 @@ public final class Play6ZoomShiftPanel extends Panel {
         card.addView(value);
         hint = EdgeGrid.text(c, "", 28, Theme.TEXT_DIM);
         card.addView(hint);
+        card.addView(EdgeGrid.text(c, c.getString(R.string.lumen_focus_chart_hint), 28, Theme.TEXT_DIM));
         status = EdgeGrid.text(c, "", 28, Theme.TEXT_DIM);
         card.addView(status);
         root.addView(card, new FrameLayout.LayoutParams(Theme.px(c, 900), ViewGroup.LayoutParams.WRAP_CONTENT,

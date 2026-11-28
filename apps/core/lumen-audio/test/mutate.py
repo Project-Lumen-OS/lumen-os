@@ -244,6 +244,9 @@ MUTANTS = [
     ("devices/dragon_healthy/audio/chip_volume.tsv", "Play 6 table: the A14 device ids", "out     8     bluetooth_volume  -       3", "out     8     bluetooth_volume  128     3"),
     ("devices/h0062/audio/chip_volume.tsv", "Titan table: no dock fixed", "fixed   31 ", "# xxxx 31 "),
     ("devices/_family/mt9681/app/X50Projector.layers", "Ultra Max recipe without the table", "file      {device}/audio/chip_volume.tsv assets/lumen_audio/chip_volume.tsv\n", ""),
+    ("overlay/v1/z9x_base.rc", "Z9X image: the user's Bluetooth absolute volume ON is lost", "on early-boot && property:persist.lumen.bt_absvol=1\n    setprop persist.bluetooth.disableabsvol false\n", ""),
+    ("overlay/play6/play6_base.rc", "Play 6 image: the user's Bluetooth absolute volume ON is lost", "on early-boot && property:persist.lumen.bt_absvol=1\n    setprop persist.bluetooth.disableabsvol false\n", ""),
+    ("devices/goat_elegant/image/hb_bt.rc", "HB image: the user's Bluetooth absolute volume ON is lost", "on early-boot && property:persist.lumen.bt_absvol=1\n    setprop persist.bluetooth.disableabsvol false\n", ""),
     ("overlay/v1/z9x_base.rc", "Z9X image: absolute volume on", "    setprop persist.bluetooth.disableabsvol true\n", "    setprop persist.bluetooth.disableabsvol false\n"),
     ("overlay/play6/play6_base.rc", "Play 6 image: absolute volume on", "    setprop persist.bluetooth.disableabsvol true\n", "    setprop persist.bluetooth.disableabsvol false\n"),
 ]

@@ -87,6 +87,7 @@ section source
   screen settings.hdmi
 section bluetooth
   screen bluetooth.add
+  toggle bluetooth.abs_volume
 section general
   -- language_time
   screen settings.language
@@ -94,8 +95,6 @@ section general
   -- power
   choice settings.power_key [power_menu, sleep]
   screen settings.sleep_timer
-  toggle power.on_ac
-  toggle power.on_music
   -- display_menu
   choice eye [off, follow, rest]  hint picture eye_follow
   choice eye.elder_color [off, low, medium, high]
@@ -108,7 +107,8 @@ section general
   -- apps_devices
   screen settings.casting
   page settings.serial
-  toggle settings.high_altitude
+  -- more
+  page settings.advanced
   -- storage_updates
   screen settings.storage
   screen settings.update
@@ -171,6 +171,12 @@ page picture.db_page
   screen picture.db_page.subtitle_top
   screen picture.db_page.subtitle_bottom
   action picture.db_page.reset
+page settings.power_on_off
+  toggle power.on_music
+  toggle power.on_ac
+page settings.advanced
+  page settings.power_on_off
+  toggle settings.high_altitude
 page focus.settings
   toggle focus.smart
   info focus.guide  hint picture focus_guide_front

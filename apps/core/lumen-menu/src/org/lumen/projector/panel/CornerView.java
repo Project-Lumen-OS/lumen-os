@@ -35,6 +35,8 @@ public final class CornerView extends View {
     private final String[] names;
     private int corner;
     private boolean up, down, left, right;
+    /** The grey stock page; off while the screen's test chart shows under this view. */
+    private boolean page = true;
 
     public CornerView(Context c) {
         super(c);
@@ -63,12 +65,18 @@ public final class CornerView extends View {
     /** The chosen corner's name (what the screen reader and the tests read). */
     public String cornerName() { return names[corner]; }
 
+    /** The grey page on (stock) or off, so the test chart under this view shows. */
+    public void setPage(boolean on) {
+        page = on;
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas c) {
         float s = getWidth() / 1920f, w = getWidth(), h = getHeight();
         fill.setStyle(Paint.Style.FILL);
         fill.setColor(PAGE);
-        c.drawRect(0, 0, w, h, fill);
+        if (page) c.drawRect(0, 0, w, h, fill);
         float l = w / 2 - 864 * s, r = w / 2 + 864 * s, t = h / 2 - 444 * s, b = h / 2 + 444 * s;
         line.setColor(LINE);
         line.setStrokeWidth(2 * s);

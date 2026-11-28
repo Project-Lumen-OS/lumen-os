@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">Налаштовуйте, доки коло в центрі не стане рівним</string>
-    <string name="lumen_corner_keys_more">Утримуйте кнопку-шестірню: скидання · Назад: готово</string>
+    <string name="lumen_corner_keys_more">Кнопка-шестірня: тестова таблиця · Утримуйте кнопку-шестірню: скидання · Назад: готово</string>
 </resources>

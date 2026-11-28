@@ -1,5 +1,5 @@
 # Z9xAirPlay native build info (written by jni/build_native.sh, do not edit)
-built: 2026-10-29T00:09:08Z
+built: 2026-11-28T07:00:50Z
 ndk: r29 29.0.14206865 (Android (13989888, +pgo, -bolt, +lto, -mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349))
 abis: arm64-v8a armeabi-v7a  platform: android-34  stl: c++_static  max-page-size: 16384
 
@@ -32,12 +32,12 @@ downloads (official sources, recorded at download time):
     59774 bytes  sha256 98635ece42fb1c3fceb75eaa4b5164d866e09f0195b3e7ec4085f1123c5e272f  -> third_party/_downloads/alac-c38887c.tar.gz
 
 outputs:
-  lib/arm64-v8a/libz9xairplay.so  1313856 bytes  sha256 ace70183f071d2a1ac613d93e63620e7cb05f1556fe2a7c9c925252ebc86328d
+  lib/arm64-v8a/libz9xairplay.so  1322400 bytes  sha256 99d9dc450adf4fa5333487f9b3e7f0f8658d7fe1a5b101738628ee06f5b9d854
     NEEDED: liblog.so libandroid.so libmediandk.so libaaudio.so libm.so libc.so libdl.so 
-    build-id: 2c150c2ef7daaa5cc2bb376fbe9c4de46df906d4
-  lib/armeabi-v7a/libz9xairplay.so  934804 bytes  sha256 3f12aa69fc169977eb1cc2da3377a08c34e6729083c17572811eab0beda6262f
+    build-id: e38ef417aaef06c937b06bfd7e822715f672794d
+  lib/armeabi-v7a/libz9xairplay.so  942252 bytes  sha256 421eb88748dfd3dfac543f27dda0ff59353da67fe80dc52b045276bb043bf1a8
     NEEDED: liblog.so libandroid.so libmediandk.so libaaudio.so libm.so libc.so libdl.so 
-    build-id: 2e63ff46385ce0a6168127f0654b0a8cfbc7f098
+    build-id: 530bae2f226e3bc5c9927c01d7db30f077035bcb
 
 exported: JNI_OnLoad only. RegisterNatives class org/lumen/airplay/NativeBridge:
   create (Lorg/lumen/airplay/NativeBridge$Callback;[BLjava/lang/String;Ljava/lang/String;IIZZZIIII)J

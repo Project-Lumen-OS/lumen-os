@@ -15,7 +15,7 @@ LAYERS_ROOT=$G   # the layer files themselves (the view below has them merged)
 G=$(python3 -B "$G/tools/devices/menu_layers.py" --view "$G" "$OUT/menu_view")   # menu profiles as readers see them (devices/README.md)
 "$JAVA_HOME/bin/javac" -encoding UTF-8 -nowarn -proc:none -d "$OUT" \
   "$HERE"/src/org/lumen/menu/*.java "$HERE"/src/org/lumen/menu/utils/*.java "$HERE/test/MenuSpecTest.java" "$HERE/test/MenuSnapshot.java" \
-  "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/SleepRuleTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HdrFormatTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
+  "$HERE/test/GearPressTest.java" "$HERE/test/MenuValuesTest.java" "$HERE/test/LampOffTest.java" "$HERE/test/PowerPressTest.java" "$HERE/test/BootKeysTest.java" "$HERE/test/SleepRuleTest.java" "$HERE/test/SignalRuleTest.java" "$HERE/test/HdrFormatTest.java" "$HERE/test/HeaderTest.java" "$HERE/test/SliderOffTest.java" \
   "$HERE/test/IrisRuleTest.java" "$HERE/test/FocusGuideTest.java" "$HERE/test/ElderColorRuleTest.java" "$HERE/test/ChoiceStepTest.java" \
   "$HERE/test/GeneralChoicesTest.java" "$HERE/test/chart/ChartTest.java" \
   "$HERE/test/PictureSettingsRuleTest.java" "$HERE/test/LockedRowTest.java" "$HERE/test/HdmiRangeRuleTest.java" "$HERE/test/CustomModesTest.java" "$HERE/test/TitanUxMenuTest.java" \
@@ -161,6 +161,7 @@ grep -qxF '        for (Map.Entry<FeatureId, View> e : rows.entrySet()) applyRow
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.LampOffTest || bad=1
 # the remote power key an app receives (X50 family): one shared rule (PowerPress) and the stock power menu items
 "$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.PowerPressTest || bad=1
+"$JAVA_HOME/bin/java" -cp "$OUT" org.lumen.menu.BootKeysTest "$HERE/test" || bad=1
 # its hold is the Z9X HB one (one behaviour everywhere): PowerPress.HOLD_MS = Z9xProjector PowerKey.LONG_PRESS_MS
 ZPK="$G/apps/LumenProjector/core/src/org/lumen/projector/power/PowerKey.java"
 if [ -f "$ZPK" ]; then
@@ -350,7 +351,7 @@ MSC="$HERE/src/org/lumen/projector/panel/ModuleScreens.java"
 for w in '        if (MenuSpec.NETWORK.equals(key) && !rows.containsKey(FeatureId.NETWORK_HOTSPOT)) return null;   // Wi-Fi alone: no popup' \
          '            if (!ModuleScreens.run(app, profile, f)) host.toast(R.string.lumen_m_toast_failed);' \
          '        if (MenuSpec.MODULE_SCREENS.contains(f) && ModuleScreens.overMenu(f)) {   // the menu steps aside (KeyTools)' \
-         '            if (gen == refreshGen) apply(ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT)));' \
+         '        st = ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT));' \
          '        if (MenuSpec.module(f)) return profile.has(f) && ModuleScreens.available(app, profile, f);' \
          '                if (panel != null && panel.isShowing()) { refresh(); return; }'; do
   grep -qxF -- "$w" "$LMC" || { echo "FAIL hotspot: MenuController lost: $w"; bad=1; }
@@ -367,6 +368,15 @@ for w in '        if (MenuSpec.HOTSPOT_ROWS.contains(f)) return Hotspot.supporte
          '        if (f == FeatureId.NETWORK_WIFI) return SystemPages.open(c, SettingsPage.NETWORK);'; do
   grep -qxF -- "$w" "$MSC" || { echo "FAIL hotspot: ModuleScreens lost: $w"; bad=1; }
 done
+# every device state (a read, a write's read-back Result.after) reaches the rows through apply(), whose first line
+# joins the menu's own values (module settings, General's facts, the hotspot): a read-back after a sibling row changed
+# left 'Sound at power-on' on the loading dots (Z9X 1.1.0-beta10). Emulator proof: test/ui/run_async_rows.sh
+if [ "$(sed -n '/^    private void apply(MenuState st) {$/{n;p;}' "$LMC")" = '        st = ModuleScreens.merge(app, profile, st, rows.containsKey(FeatureId.NETWORK_HOTSPOT));' ] \
+  && [ "$(grep -c 'ModuleScreens\.merge(' "$LMC")" = 1 ]; then
+  echo "ok   menu values: every device state is shown through apply(), which joins the menu's own values first"
+else
+  echo "FAIL menu values: a device state can reach the rows without the menu's own values (MenuController.apply)"; bad=1
+fi
 TE="$HERE/src/org/lumen/projector/panel/TextEditActivity.java"
 for w in '        if (problem != 0) {' '            showProblem(problem);' '        if (!field.save(this, t)) {' \
          'public final class TextEditActivity extends ToolActivity {'; do

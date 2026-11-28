@@ -86,8 +86,29 @@ public final class ChartTest {
             String want = dev.getName().matches("g010[49]|g0110") ? FocusChart.SHORT
                     : dev.getName().equals("dragon_healthy") ? FocusChart.OFF : FocusChart.FULL;
             ok(dev.getName() + ": chart " + want, want.equals(FocusChart.style(p)));
+            ok(dev.getName() + ": geometry screens show the focus chart it draws", FocusChart.drawn(want).equals(FocusChart.geometry(p))
+                    && !FocusChart.OFF.equals(FocusChart.geometry(p)));
         }
         ok("profiles with manual focus read (" + models + ")", models >= 20);
+        // the geometry screens' test chart: the model's focus chart, the full one without a profile
+        ok("geometry chart without a profile: full", FocusChart.FULL.equals(FocusChart.geometry(null)));
+        // OkPress: OK on the geometry screens, a short press (the test chart) or a hold (the screen's second key)
+        OkPress k = new OkPress();
+        eq("short: nothing at its DOWN", k.feed(0, 0, 0, 0, false), OkPress.NONE);
+        eq("short: SHORT at its UP", k.feed(1, 0, 0, 120, false), OkPress.SHORT);
+        eq("a lone UP (its DOWN went to another surface): nothing", k.feed(1, 0, 3000, 3010, false), OkPress.NONE);
+        k.feed(0, 0, 1000, 1000, false);
+        eq("repeat before the hold time: nothing", k.feed(0, 1, 1000, 1500, false), OkPress.NONE);
+        eq("hold: HOLD at the hold time", k.feed(0, 2, 1000, 1000 + OkPress.HOLD_MS, false), OkPress.HOLD);
+        eq("hold: only once", k.feed(0, 3, 1000, 1050 + OkPress.HOLD_MS, false), OkPress.NONE);
+        eq("hold: its release is nothing", k.feed(1, 0, 1000, 1100 + OkPress.HOLD_MS, false), OkPress.NONE);
+        k.feed(0, 0, 4000, 4000, false);
+        eq("a cancelled UP: nothing", k.feed(1, 0, 4000, 4050, true), OkPress.NONE);
+        k.feed(0, 0, 5000, 5000, false);
+        eq("after a cancel a new press is short again", k.feed(1, 0, 5000, 5100, false), OkPress.SHORT);
+        ok("OK keys: centre, enter, numpad enter; not the arrows, MENU, BACK", OkPress.isOk(23) && OkPress.isOk(66)
+                && OkPress.isOk(160) && !OkPress.isOk(21) && !OkPress.isOk(82) && !OkPress.isOk(4));
+        eq("hold time = the keystone reset hold", OkPress.HOLD_MS, 800);
         System.out.println("ChartTest: " + (n - fails) + "/" + n + " passed");
         if (fails > 0) System.exit(1);
     }

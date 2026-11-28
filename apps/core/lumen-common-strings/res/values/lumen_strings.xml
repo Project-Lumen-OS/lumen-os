@@ -22,7 +22,7 @@
     <string name="lumen_apps">Apps</string>
     <string name="lumen_arrows_move_the_corner_ok">Arrows: move the corner · OK: next corner</string>
     <string name="lumen_arrows_move_the_picture_back">Arrows: move the picture · Back: done</string>
-    <string name="lumen_arrows_move_the_picture_ok">Arrows: move the picture · OK: size · Back: done</string>
+    <string name="lumen_arrows_move_the_picture_ok">Arrows: move the picture · Hold OK: size · Back: done</string>
     <string name="lumen_aspect_ratio">Aspect ratio</string>
     <string name="lumen_at_every_start_and_once">At every start and once a day: model, version, build, update details, country, a random install number and the serial number (the server keeps only its hash). Your IP address is not stored.</string>
     <string name="lumen_at_least_8_characters">At least 8 characters</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Manual keystone</string>
     <string name="lumen_manual_keystone_unavailable">Manual keystone unavailable</string>
     <string name="lumen_medium">Medium</string>
-    <string name="lumen_menu_grid_over_the_picture">Menu: grid / over the picture / test quad</string>
+    <string name="lumen_menu_grid_over_the_picture">Menu: grid / test chart / over the picture / test quad</string>
     <string name="lumen_mid">Mid</string>
     <string name="lumen_motion_smoothing">Motion smoothing</string>
     <string name="lumen_move">Move</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Reset to defaults</string>
     <string name="lumen_restart">Restart</string>
     <string name="lumen_restart_now">Restart now</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Right: bigger · Left: smaller · OK: move the picture · Back: done</string>
-    <string name="lumen_right_left_rotate_ok_back">Right / Left: rotate · OK: back to the start · Back: done</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Right: bigger · Left: smaller · Hold OK: position · Back: done</string>
+    <string name="lumen_right_left_rotate_ok_back">Right / Left: rotate · Menu: back to the start · Back: done</string>
     <string name="lumen_saturation">Saturation</string>
     <string name="lumen_scan_with_a_phone_to">Scan with a phone to open</string>
     <string name="lumen_screen_casting">Screen casting</string>

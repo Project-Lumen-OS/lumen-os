@@ -22,7 +22,7 @@
     <string name="lumen_apps">Застосунки</string>
     <string name="lumen_arrows_move_the_corner_ok">Стрілки: зсув кута · OK: наступний кут</string>
     <string name="lumen_arrows_move_the_picture_back">Стрілки: зсув картинки · Назад: готово</string>
-    <string name="lumen_arrows_move_the_picture_ok">Стрілки: зсув картинки · OK: розмір · Назад: готово</string>
+    <string name="lumen_arrows_move_the_picture_ok">Стрілки: зсув картинки · Утримуйте OK: розмір · Назад: готово</string>
     <string name="lumen_aspect_ratio">Співвідношення сторін</string>
     <string name="lumen_at_every_start_and_once">Під час кожного ввімкнення і раз на день: модель, версія, збірка, відомості про оновлення, країна, випадковий номер встановлення та серійний номер (сервер зберігає лише його хеш). Ваша IP-адреса не зберігається.</string>
     <string name="lumen_at_least_8_characters">Щонайменше 8 символів</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Ручна корекція трапеції</string>
     <string name="lumen_manual_keystone_unavailable">Ручна трапеція недоступна</string>
     <string name="lumen_medium">Середня</string>
-    <string name="lumen_menu_grid_over_the_picture">Меню: сітка / поверх зображення / тест-контур</string>
+    <string name="lumen_menu_grid_over_the_picture">Меню: сітка / тестова таблиця / поверх зображення / тест-контур</string>
     <string name="lumen_mid">Середній</string>
     <string name="lumen_motion_smoothing">Плавність руху</string>
     <string name="lumen_move">Перемістити</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Повернути стандартні значення</string>
     <string name="lumen_restart">Перезапустити</string>
     <string name="lumen_restart_now">Перезапустити</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Праворуч: більше · Ліворуч: менше · OK: зсув картинки · Назад: готово</string>
-    <string name="lumen_right_left_rotate_ok_back">Праворуч / Ліворуч: поворот · OK: як було · Назад: готово</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Праворуч: більше · Ліворуч: менше · Утримуйте OK: положення · Назад: готово</string>
+    <string name="lumen_right_left_rotate_ok_back">Праворуч / Ліворуч: поворот · Меню: як було · Назад: готово</string>
     <string name="lumen_saturation">Насиченість</string>
     <string name="lumen_scan_with_a_phone_to">Відскануйте телефоном, щоб відкрити</string>
     <string name="lumen_screen_casting">Трансляція екрана</string>

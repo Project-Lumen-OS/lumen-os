@@ -2778,6 +2778,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasStrPrepareSleep()() s0
+  = true
+C hasStrPrepareSleep()() s1
+  = true
+C hasStrPrepareSleep()() s2
+  = true
+C hasStrPrepareSleep()() s3
+  = true
 C hasTvListener()() s0
   = true
 C hasTvListener()() s1
@@ -10106,6 +10114,18 @@ C startAutoColor()() s2
 C startAutoColor()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
+C strPrepareSleep()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2
@@ -13421,6 +13441,14 @@ C goToBootCompleted(BootStage)(null) s0
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
 C goToBootCompleted(BootStage)(null) s2
   ! NullPointerException: Cannot read field "wire" because "<parameter1>" is null
+C hasStrPrepareSleep()() s0
+  = true
+C hasStrPrepareSleep()() s1
+  = true
+C hasStrPrepareSleep()() s2
+  = true
+C hasStrPrepareSleep()() s3
+  = true
 C hasTvListener()() s0
   = true
 C hasTvListener()() s1
@@ -20757,6 +20785,18 @@ C startAutoColor()() s2
 C startAutoColor()() s3
   TX xgimi.hardware.gmpf@1.0::IGmpf 106 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf
   = true
+C strPrepareSleep()() s0
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s1
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s2
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
+C strPrepareSleep()() s3
+  TX xgimi.hardware.gmpf@1.0::IGmpf 241 f0 tok:xgimi.hardware.gmpf@1.0::IGmpf i32:0 i32:0
+  = null
 C switchInputSource(int)(-1) s0
   ! IllegalArgumentException: source -1
 C switchInputSource(int)(-1) s2

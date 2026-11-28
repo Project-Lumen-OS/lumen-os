@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Recherche d’appareils…</string>
     <string name="lumen_m_bt_none">Aucun appareil trouvé</string>
     <string name="lumen_m_bt_pairing">Association…</string>
+    <string name="lumen_m_bt_abs_volume">Volume absolu Bluetooth</string>
 </resources>

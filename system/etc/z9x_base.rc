@@ -26,6 +26,11 @@ on early-boot
     setprop sys.z9x.feat 1
     setprop persist.bluetooth.disableabsvol true
 
+# The stock Bluetooth absolute volume switch (menu bluetooth.abs_volume, lumen-system BtAbsVolume): a user's ON
+# outlives the default set above (same early-boot, later in this file).
+on early-boot && property:persist.lumen.bt_absvol=1
+    setprop persist.bluetooth.disableabsvol false
+
 # ---- v6.5: the v6.4 AFBC workaround is removed (vendor.mtk.disable.layer.afbc /
 # vendor.mtk.enable.framebuffer.afbc are back to the vendor defaults). The block noise after a quick
 # wake came back with linear scan-out too, so GOP AFBC was not the cause.

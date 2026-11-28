@@ -8,11 +8,13 @@ KeyToolsTest proves the rule and the window hosts; this checks the device glue i
   - every manual focus screen and the X50 corner and lens screens are tool screens (ToolActivity: in front at onResume,
     gone at onPause) with their menu key; manual focus closes on it as on every other key;
   - every panel whose hint names Menu (fine corner adjustment, zoom card, Play 6 zoom and shift card) is a tool panel;
-  - no per-screen copy of the rule is left (Play6ZoomShiftPanel.onMenuKey, the X50 EXTRA_RESET path).
+  - no per-screen copy of the rule is left (Play6ZoomShiftPanel.onMenuKey, the X50 EXTRA_RESET path);
+  - no timer closes a manual focus screen (2026-11-28, no idle close on any family; test/ui/focus_idle_walk.py
+    proves it on the emulator): the only delayed post left there is the core mouse wheel's 200 ms stop.
 
   python3 apps/core/lumen-menu/test/keytools/wiring.py [GSI_ROOT]
 """
-import os, sys
+import os, re, sys
 
 Z, HB, P6, X = ("apps/LumenProjector/core/src/org/lumen/projector/", "apps/HbProjector/src/org/lumen/projector/",
                 "apps/LumenProjector/vendor/xgimi/play6-hidl/src/org/lumen/projector/", "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/")
@@ -67,7 +69,10 @@ CHECKS += [
     ("apps/common/projector/src/org/lumen/projector/ui/OverlayHost.java", "the overlay host joins the rule",
      ["        KeyTools.addHost(this);", "public final class OverlayHost implements KeyTools.Host {"], []),
 ]
-FILES = sorted({c[0] for c in CHECKS})
+# (file, the delayed posts it may keep): any other timer in a manual focus screen could close it while idle
+NO_TIMER = [(Z + "ManualFocusActivity.java", ["main.postDelayed(wheelStop, 200);"]), (X + "FocusActivity.java", [])]
+TIMER = re.compile(r"\b(postDelayed|postAtTime|sendMessageDelayed|sendEmptyMessageDelayed|schedule\w*)\(|IDLE_CLOSE")
+FILES = sorted({c[0] for c in CHECKS} | {f for f, _ in NO_TIMER})
 
 
 def main(g):
@@ -84,7 +89,15 @@ def main(g):
             print("FAIL %s: %s (missing %s%s)" % (f, what, miss, (", still there %s" % left) if left else ""))
         else:
             print("ok   %s: %s" % (f.split("/src/")[0].split("/")[-1] + "/" + os.path.basename(f), what))
-    print("keytools wiring: %d checks, %s" % (len(CHECKS), "all green" if not bad else "%d RED" % bad))
+    for f, allowed in NO_TIMER:
+        s = open(os.path.join(g, f), encoding="utf-8").read()
+        timers = [l.strip() for l in s.splitlines() if TIMER.search(l) and l.strip() not in allowed]
+        if timers:
+            bad += 1
+            print("FAIL %s: a timer in manual focus (no idle close, owner 2026-11-28): %s" % (f, timers))
+        else:
+            print("ok   %s: no timer closes manual focus" % os.path.basename(f))
+    print("keytools wiring: %d checks, %s" % (len(CHECKS) + len(NO_TIMER), "all green" if not bad else "%d RED" % bad))
     return 1 if bad else 0
 
 

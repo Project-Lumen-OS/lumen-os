@@ -15,10 +15,14 @@
  *   much earlier for the projector's display chain (SurfaceFlinger + HWC about one frame,
  *   the scaler / DLP formatter about one more). extra, correction and display delay are
  *   applied when a frame leaves the FIFO, so a change also moves the frames already queued.
- *   Compressed frames wait in the FIFO until T - (decode latency + margin), so only a few
- *   decoded frames are ever in flight (small output pool). Every 5 s: frames, late ones,
- *   decode latency, and the A/V leads: play time minus now at arrival (video, audio) and at
- *   release (video), and sender timestamp minus arrival (video, audio).
+ *   Compressed frames wait in the FIFO until T - lead (video_pacing.h: the longest decode
+ *   latency of the last 1-2 s + 25 ms, 60..150 ms, and at most 6 frames in the decoder or
+ *   waiting for display, so the output buffers never run out). A picture that comes out more
+ *   than 34 ms after T is still shown, at once, and counted late. Every 5 s: frames, late ones
+ *   (of them arrived late), decode latency (average and longest), lead, most frames waiting,
+ *   shortest arrival lead, and the A/V leads: play time minus now at arrival (video, audio) and
+ *   at release (video), and sender timestamp minus arrival (video, audio). The worker and the
+ *   output thread run at video priority.
  * - c2.mtk.{avc,hevc}.decoder report adaptive-playback=0: the codec is recreated whenever a
  *   keyframe brings a different SPS (or VPS), e.g. on iPhone rotation, or on H.264<->H.265.
  * - AirPlay senders send SPS/PPS + IDR only at the start and on a format change (UxPlay
@@ -49,7 +53,11 @@
 #include <android/hardware_buffer.h>
 #include <media/NdkMediaFormat.h>
 
+#include <sys/system_properties.h>
+
 #include <algorithm>
+#include <climits>
+#include <cstdlib>
 #include <cstring>
 
 #include "av_clock.h"
@@ -61,9 +69,8 @@ constexpr size_t kMaxQueueBytes = 32u << 20;      /* FIFO overflow = decoder stu
 constexpr size_t kMaxQueueFrames = 600;            /* ~10 s at 60 fps (a long GOP replay) */
 constexpr size_t kMaxGopBytes = 24u << 20;         /* replay cache bound (bytes only) */
 constexpr int64_t kMs = 1000000LL;
-constexpr int64_t kLeadMinNs = 25 * kMs;
-constexpr int64_t kLeadMaxNs = 150 * kMs;
 constexpr int64_t kLateRenderNs = 34 * kMs;        /* ~2 frames at 60 fps */
+constexpr int64_t kLateArrivalNs = 100 * kMs;      /* a late frame with less left at arrival: network */
 constexpr int64_t kBogusFutureNs = 3000 * kMs;
 constexpr int64_t kRecoverWindowNs = 2000 * kMs;   /* failures closer than this count as "again" */
 
@@ -98,7 +105,10 @@ void imageSinkCallback(void *, AImageReader *reader) {
 
 VideoDecoder::VideoDecoder(EventFn fn, void *ctx, int64_t latencyNs, const std::atomic<int64_t> *extraNs,
                            AvClock *clock)
-    : mEventFn(fn), mEventCtx(ctx), mLatencyNs(latencyNs), mExtraNs(extraNs), mClock(clock) {
+    : mEventFn(fn), mEventCtx(ctx), mLatencyNs(latencyNs), mExtraNs(extraNs), mClock(clock),
+      mFixedLeadNs(fixedLeadFromProp()) {
+    if (mFixedLeadNs) Z9X_LOGI("video: fixed feed lead %lld ms (debug.z9x.airplay.video_lead_ms)",
+                               (long long) (mFixedLeadNs / kMs));
     mWorker = std::thread(&VideoDecoder::workerLoop, this);
 }
 
@@ -167,6 +177,7 @@ void VideoDecoder::pushFrame(const uint8_t *data, size_t len, bool h265, uint64_
 
     Frame f;
     f.data.assign(data, data + len);
+    f.arriveNs = now;
     f.targetNs = base;  /* + playAdjustNs() when it leaves the FIFO */
     f.h265 = h265;
     {
@@ -201,6 +212,7 @@ void VideoDecoder::endSession() {
 /* ---------------------------------------------------------------------------------- */
 
 void VideoDecoder::workerLoop() {
+    z9x_set_thread_priority(Z9X_PRIORITY_VIDEO, "video decoder");
     std::unique_lock<std::mutex> lk(mMu);
     while (!mQuit) {
         if (mSurfacePending) {
@@ -250,11 +262,9 @@ void VideoDecoder::workerLoop() {
             continue;
         }
         if (!mQueue.empty()) {
-            const int64_t lead = std::clamp(mDecodeLatencyNs.load(std::memory_order_relaxed) + 15 * kMs,
-                                            kLeadMinNs, kLeadMaxNs);
             const int64_t adjust = playAdjustNs();
-            const int64_t feedAt = mQueue.front().targetNs + adjust - lead;
             const int64_t now = z9x_mono_ns();
+            const int64_t feedAt = mPacer.feedAt(mQueue.front().targetNs + adjust, now, mFixedLeadNs);
             if (feedAt <= now || !mCodec) {  /* without a codec, feed at once to create it */
                 Frame f = std::move(mQueue.front());
                 mQueue.pop_front();
@@ -439,7 +449,8 @@ VideoDecoder::Fed VideoDecoder::queueInput(const Frame &f, bool replay) {
     }
     memcpy(buf, f.data.data(), f.data.size());
     const uint32_t w = mProbeW.load(std::memory_order_relaxed);
-    mProbe[w % kProbe] = {ptsUs, z9x_mono_ns()};
+    const int64_t inNs = z9x_mono_ns();
+    mProbe[w % kProbe] = {ptsUs, inNs, f.arriveNs};
     mProbeW.store(w + 1, std::memory_order_release);
     media_status_t st = AMediaCodec_queueInputBuffer(mCodec, (size_t) idx, 0, f.data.size(),
                                                      (uint64_t) ptsUs, 0);
@@ -447,6 +458,9 @@ VideoDecoder::Fed VideoDecoder::queueInput(const Frame &f, bool replay) {
         codecFailed("queueInputBuffer", st);
         return Fed::kFailed;
     }
+    mPacer.noteFed(f.targetNs, inNs);
+    const uint32_t ahead = (uint32_t) mPacer.ahead();
+    if (ahead > mAheadMax.load(std::memory_order_relaxed)) mAheadMax.store(ahead, std::memory_order_relaxed);
     return Fed::kOk;
 }
 
@@ -521,6 +535,14 @@ ANativeWindow *VideoDecoder::sinkWindow() {
     return mSink;
 }
 
+/* debug.z9x.airplay.video_lead_ms: a fixed feed lead for tests (0 or unset = automatic) */
+int64_t VideoDecoder::fixedLeadFromProp() {
+    char v[PROP_VALUE_MAX] = {0};
+    if (__system_property_get("debug.z9x.airplay.video_lead_ms", v) <= 0) return 0;
+    const int ms = atoi(v);
+    return ms <= 0 ? 0 : (int64_t) std::min(ms, 150) * kMs;
+}
+
 ANativeWindow *VideoDecoder::currentTarget() {
     return mDisplay ? mDisplay : sinkWindow();
 }
@@ -577,6 +599,7 @@ bool VideoDecoder::createCodec(bool h265, const NalInfo &nal, ANativeWindow *tar
         return false;
     }
     mCodecHevc = h265;
+    mPacer.reset();  /* the frames of an earlier instance are gone */
     mToDisplay.store(target == mDisplay && mDisplay != nullptr);
     mFirstFrameSent.store(false);
     mProbeR = mProbeW.load();
@@ -675,6 +698,7 @@ bool VideoDecoder::applySurface(ANativeWindow *win) {
 }
 
 void VideoDecoder::outputLoop() {
+    z9x_set_thread_priority(Z9X_PRIORITY_VIDEO, "video output");
     AMediaCodecBufferInfo info;
     while (mOutRun.load(std::memory_order_relaxed)) {
         ssize_t idx = AMediaCodec_dequeueOutputBuffer(mCodec, &info, 20000);
@@ -702,7 +726,8 @@ void VideoDecoder::outputLoop() {
         const int64_t now = z9x_mono_ns();
         const int64_t ptsUs = info.presentationTimeUs;
         const int64_t target = ptsUs * 1000;
-        /* decode latency estimate (EMA over matched input timestamps) */
+        /* decode latency: EMA (reported) and the peak the pacer covers, over matched inputs */
+        int64_t arriveNs = 0;
         const uint32_t w = mProbeW.load(std::memory_order_acquire);
         for (; mProbeR != w; mProbeR++) {
             const Probe &p = mProbe[mProbeR % kProbe];
@@ -710,6 +735,9 @@ void VideoDecoder::outputLoop() {
                 const int64_t lat = now - p.inNs;
                 const int64_t ema = mDecodeLatencyNs.load(std::memory_order_relaxed);
                 mDecodeLatencyNs.store(ema + (lat - ema) / 8, std::memory_order_relaxed);
+                mPacer.noteLatency(lat, now);
+                mLatencyMaxNs = std::max(mLatencyMaxNs, lat);
+                arriveNs = p.arriveNs;
                 mProbeR++;
                 break;
             }
@@ -722,9 +750,13 @@ void VideoDecoder::outputLoop() {
         if (target > now + 2 * kMs && target - now < kBogusFutureNs) {
             AMediaCodec_releaseOutputBufferAtTime(mCodec, (size_t) idx, target);
         } else {
-            if (now - target > kLateRenderNs) mLate++;
+            if (now - target > kLateRenderNs) {
+                mLate++;
+                if (arriveNs && target - arriveNs < kLateArrivalNs) mLateArrival++;
+            }
             AMediaCodec_releaseOutputBuffer(mCodec, (size_t) idx, true);
         }
+        if (arriveNs) mArriveLeadMinNs = std::min(mArriveLeadMinNs, target - arriveNs);
         mReleaseLeadSum += target - now;
         mRendered++;
         if (mToDisplay.load(std::memory_order_relaxed) && !mFirstFrameSent.exchange(true)) {
@@ -734,10 +766,14 @@ void VideoDecoder::outputLoop() {
             if (mStatsNs) {
                 const AvClock::Window w = mClock ? mClock->takeWindow() : AvClock::Window{};
                 const auto ms = [](int64_t ns) { return (long long) (ns / kMs); };
-                Z9X_LOGI("video: %u frames in 5 s, %u late, decode latency %.1f ms; play time - now: video %lld ms "
+                Z9X_LOGI("video: %u frames in 5 s, %u late (%u arrived late), decode latency %.1f ms (max %lld), "
+                         "lead %lld ms, waiting max %u, arrival lead min %lld ms; play time - now: video %lld ms "
                          "at arrival, %lld ms at release, audio %lld ms at arrival; sender timestamp - arrival: "
                          "video %lld ms, audio %lld ms; video correction %lld ms, display delay %lld ms, extra %lld ms",
-                         mRendered, mLate, mDecodeLatencyNs.load() / 1e6, w.videoN ? ms(w.videoPlayLead) : -1LL,
+                         mRendered, mLate, mLateArrival, mDecodeLatencyNs.load() / 1e6, ms(mLatencyMaxNs),
+                         ms(mPacer.leadNs(mFixedLeadNs)), mAheadMax.exchange(0),
+                         mArriveLeadMinNs == INT64_MAX ? -1LL : ms(mArriveLeadMinNs),
+                         w.videoN ? ms(w.videoPlayLead) : -1LL,
                          mRendered ? ms(mReleaseLeadSum / mRendered) : -1LL, w.audioN ? ms(w.audioPlayLead) : -1LL,
                          w.videoTsN ? ms(w.videoTsLead) : -1LL, w.audioTsN ? ms(w.audioTsLead) : -1LL,
                          mClock ? ms(mClock->videoCorrectionNs()) : 0LL, mClock ? ms(mClock->displayDelayNs()) : 0LL,
@@ -748,7 +784,10 @@ void VideoDecoder::outputLoop() {
             mStatsNs = now;
             mRendered = 0;
             mLate = 0;
+            mLateArrival = 0;
             mReleaseLeadSum = 0;
+            mLatencyMaxNs = 0;
+            mArriveLeadMinNs = INT64_MAX;
         }
     }
 }

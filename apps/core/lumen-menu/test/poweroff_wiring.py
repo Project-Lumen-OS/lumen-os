@@ -27,9 +27,9 @@ P = "apps/LumenProjector/core/src/org/lumen/projector/power/"
 X = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
 common = read("apps/common/projector/src/org/lumen/projector/power/PowerMenu.java")
 check("Z9X HB RS20 Play 6 power menu: the Power off tile is Family.powerOff",
-      "guarded(() -> Family.powerOff(ctx)));" in common)
+      "return guarded(() -> Family.powerOff(ctx));" in common)
 check("Z9X HB RS20 Play 6 power menu: the Sleep tile stays a sleep",
-      "guarded(() -> Family.powerSleepWithFade(ctx, \"power menu sleep\")));" in common)
+      "return guarded(() -> Family.powerSleepWithFade(ctx, \"power menu sleep\"));" in common)
 for fam, key in (("hidl-gmpf", "PowerKey"), ("aidl-gmpf", "PowerKey"), ("play6-hidl", "Play6PowerKey")):
     check(fam + ": Family.powerOff is " + key + ".PowerActions.powerOff",
           "public static void powerOff(Context c) { org.lumen.projector.power." + key + ".PowerActions.powerOff(c); }"
@@ -86,5 +86,17 @@ check("X50 family: the press rule knows the open menu, its POWER_OFF is the menu
 h = read("apps/core/lumen-menu/src/org/lumen/projector/panel/Halt.java")
 check("Halt: shutdown(false, SHUTDOWN_USER_REQUESTED, false) and reboot(SHUTDOWN_USER_REQUESTED)",
       ".shutdown(false, PowerManager.SHUTDOWN_USER_REQUESTED, false);" in h and ".reboot(PowerManager.SHUTDOWN_USER_REQUESTED);" in h)
+# a power press during the start does nothing on every family (BootKeys, stock drops keys while the boot animation runs)
+BOOT = 'String boot = BootKeys.refuse(SystemProperties.get(BootKeys.BOOT_COMPLETED, ""), SystemProperties.get(BootKeys.BOOTANIM, ""));'
+for name, f in (("Z9X HB RS20", "PowerKey.java"), ("Play 6", "Play6PowerKey.java")):
+    k = read(P + f)
+    g = k[k.index("    private static String guard(Context ctx, Intent intent, KeyEvent ev) {\n"):]
+    check(name + " power key: the start refuses the press first (BootKeys)",
+          g.split("\n")[1].strip() == BOOT and g.split("\n")[2].strip().startswith("if (boot != null) return boot;"))
+xb = read(X + "X50Power.java")
+kx = xb[xb.index("    static void key(Context c, KeyEvent e, boolean beganAsleep) {"):]
+check("X50 family power key: the start refuses the press before PowerPress sees it (BootKeys)",
+      BOOT in kx and kx.index(BOOT) < kx.index("sPress.on(")
+      and "            if (boot != null) {" in kx and kx.index("                return;\n", kx.index(BOOT)) < kx.index("sPress.on("))
 print("poweroff_wiring: " + ("all green" if not FAILS else "%d FAIL" % len(FAILS)))
 sys.exit(1 if FAILS else 0)

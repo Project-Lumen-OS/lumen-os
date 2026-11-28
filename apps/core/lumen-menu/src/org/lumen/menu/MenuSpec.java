@@ -183,21 +183,22 @@ public final class MenuSpec {
                             FeatureId.NETWORK_HOTSPOT_RESET}}},
             {SOURCE, new Object[][]{                    // stock root/signal: the list, then its global settings
                     {null, FeatureId.SOURCE_LIST, FeatureId.SETTINGS_CEC, FeatureId.SETTINGS_HDMI}}},
-            {BLUETOOTH, new Object[][]{{null, FeatureId.BLUETOOTH_ADD}}},   // stock root/bluetooth (BtPage adds the devices)
+            {BLUETOOTH, new Object[][]{{null, FeatureId.BLUETOOTH_ADD,     // stock root/bluetooth (BtPage adds the devices)
+                    FeatureId.BLUETOOTH_ABS_VOLUME}}},                  // and its other group: absolute volume
             // owner option B 2026-11-26: General grouped under headers, Send a problem report at its bottom under Help
             // (user reports are the main bug source), picture off only in the power menu and the quick menu
             {GENERAL, new Object[][]{
                     {LANGUAGE_TIME, FeatureId.SETTINGS_LANGUAGE, FeatureId.SETTINGS_DATE_TIME, FeatureId.VOICE_LANGUAGE},
-                    {"power", FeatureId.SETTINGS_POWER_KEY, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.LAMP_ECO,
-                            FeatureId.POWER_ON_AC, FeatureId.POWER_BOOT_SOURCE, FeatureId.POWER_ON_MUSIC},
+                    {"power", FeatureId.SETTINGS_POWER_KEY, FeatureId.SETTINGS_SLEEP_TIMER, FeatureId.LAMP_ECO},
                     {DISPLAY_MENU, FeatureId.EYE, FeatureId.SETTINGS_SCREENSAVER_NOW, FeatureId.SETTINGS_SCREENSAVER_DELAY,
                             FeatureId.EYE_ELDER_COLOR, FeatureId.SETTINGS_COLOUR_VISION, FeatureId.SETTINGS_MENU_SIDE,
                             FeatureId.SETTINGS_MENU_DENSITY},
                     {"remote_voice", FeatureId.SETTINGS_REMOTE, FeatureId.SETTINGS_REMOTE_KEYS, FeatureId.VOICE_SPEAK,
                             FeatureId.VOICE_KEY},
                     {"apps_devices", FeatureId.SETTINGS_LAUNCHER, FeatureId.SETTINGS_RECENTS, FeatureId.SETTINGS_CASTING,
-                            FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_PARENTAL, FeatureId.SETTINGS_SERIAL,
-                            FeatureId.SETTINGS_HIGH_ALTITUDE},
+                            FeatureId.SETTINGS_AMBIENT_SPEAKER, FeatureId.SETTINGS_PARENTAL, FeatureId.SETTINGS_SERIAL},
+                    // stock small_title_more: Advanced settings (more_setting), its power on and off page behind it
+                    {"more", FeatureId.SETTINGS_ADVANCED},
                     {"storage_updates", FeatureId.SETTINGS_STORAGE, FeatureId.SETTINGS_UPDATE, FeatureId.SETTINGS_ABOUT},
                     {HELP, FeatureId.SETTINGS_REPORT, FeatureId.SETTINGS_STATS, FeatureId.SETTINGS_LICENCES,
                             FeatureId.SETTINGS_SYSTEM}}},
@@ -259,7 +260,7 @@ public final class MenuSpec {
             FeatureId.SIGNAL_REFRESH, FeatureId.SOUND_KEY_TONE, FeatureId.SETTINGS_COLOUR_VISION,
             FeatureId.SETTINGS_SCREENSAVER_DELAY, FeatureId.NETWORK_HOTSPOT, FeatureId.POWER_ON_MUSIC,
             FeatureId.SETTINGS_MENU_SIDE, FeatureId.SETTINGS_MENU_DENSITY, FeatureId.SETTINGS_POWER_KEY,
-            FeatureId.DEV_NETWORK_ADB));
+            FeatureId.DEV_NETWORK_ADB, FeatureId.BLUETOOTH_ABS_VOLUME));
 
     /**
      * Rows with no place in All settings that the quick menu editor still offers: picture off (option B 2026-11-26: it
@@ -289,7 +290,8 @@ public final class MenuSpec {
      * Pages of the menu's own grouping (the smart focus page of the Image correction page): only rows of other features
      * open behind them, so no device adapter has a part in the page row itself.
      */
-    public static final Set<FeatureId> MODULE_PAGES = Collections.unmodifiableSet(EnumSet.of(FeatureId.FOCUS_SETTINGS));
+    public static final Set<FeatureId> MODULE_PAGES = Collections.unmodifiableSet(EnumSet.of(FeatureId.FOCUS_SETTINGS,
+            FeatureId.SETTINGS_ADVANCED, FeatureId.SETTINGS_POWER_ON_OFF));
 
     /**
      * Module settings every projector has, so no profile names them: the quick menu editor offers them (the volume,
@@ -341,6 +343,12 @@ public final class MenuSpec {
                     FeatureId.PICTURE_DV_SCREEN_GAIN}}},
             {FeatureId.PICTURE_DB_PAGE, new Object[][]{{null, FeatureId.PICTURE_DB_SWITCH, FeatureId.PICTURE_DB_LEVEL,
                     FeatureId.PICTURE_DB_SUBTITLE_TOP, FeatureId.PICTURE_DB_SUBTITLE_BOTTOM, FeatureId.PICTURE_DB_RESET}}},
+            // stock General > Advanced settings (more_setting) > Power on and off (boot_and_power_off_settings), in the
+            // stock order: signal_boot_source_info, voice_boot_music, power_on; then the advanced page itself
+            {FeatureId.SETTINGS_POWER_ON_OFF, new Object[][]{{null, FeatureId.POWER_BOOT_SOURCE, FeatureId.POWER_ON_MUSIC,
+                    FeatureId.POWER_ON_AC}}},
+            {FeatureId.SETTINGS_ADVANCED, new Object[][]{{null, FeatureId.SETTINGS_POWER_ON_OFF,
+                    FeatureId.SETTINGS_HIGH_ALTITUDE}}},
     };
 
     /** True when {@code f} is one of the fixed pages of {@link #PAGES} (not a page a profile gives itself). */

@@ -44,8 +44,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "sign"))
 sys.path.insert(0, HERE)
 import check_image as ci  # noqa: E402
-import sign_payload as spl  # noqa: E402  (protobuf wire reader)
-import check_release_assets as cra  # noqa: E402  (erofs file walk)
+import payload_wire as spl  # noqa: E402  (protobuf wire reader)
+import erofs_ls  # noqa: E402  (erofs file walk)
 
 REPLACE, REPLACE_BZ, MOVE, BSDIFF, SOURCE_COPY, SOURCE_BSDIFF, ZERO, DISCARD, REPLACE_XZ, PUFFDIFF, \
     BROTLI_BSDIFF, ZUCCHINI, LZ4DIFF_BSDIFF, LZ4DIFF_PUFFDIFF = range(14)
@@ -77,7 +77,7 @@ def protected(img):
             raise RuntimeError(f"dump.erofs --cat nid {nid} failed")
         return h.hexdigest()
 
-    files = list(cra.erofs_files(img, dump))
+    files = list(erofs_ls.erofs_files(img, dump))
     hits = []
     with cf.ThreadPoolExecutor(8) as ex:
         for (rel, nid), h in zip(files, ex.map(lambda f: digest(f[1]), files)):

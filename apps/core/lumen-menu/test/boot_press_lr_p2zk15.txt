@@ -1,0 +1,7 @@
+# LR-P2ZK15 (Z9X HB G0148, Lumen 1.0.10-beta29), system and events log of the start after the stop at
+# 11:05: the boot animation ended, the round power menu opened by a power press, then Android posted BOOT_COMPLETED.
+# The clock is the pre-network one of that start (build time), the order and gaps are real.
+11-28 02:43:47.287  1000   274  1749 I sf_stop_bootanim: 37024
+11-28 02:43:47.293  1000   910  1137 I wm_boot_animation_done: 37029
+11-28 02:43:48.157  1000   910  1138 I input_focus: [Focus request bccca7e Z9xPowerMenu,reason=UpdateInputWindows]
+11-28 02:43:50.179  1000   910  1173 I ActivityManager: Posting BOOT_COMPLETED user #0

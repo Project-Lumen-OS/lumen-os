@@ -22,7 +22,7 @@
     <string name="lumen_apps">アプリ</string>
     <string name="lumen_arrows_move_the_corner_ok">矢印：角を移動 · OK：次の角</string>
     <string name="lumen_arrows_move_the_picture_back">矢印: 画面を移動 · 戻る: 完了</string>
-    <string name="lumen_arrows_move_the_picture_ok">矢印: 画面を移動 · OK: サイズ · 戻る: 完了</string>
+    <string name="lumen_arrows_move_the_picture_ok">矢印: 画面を移動 · OK長押し: サイズ · 戻る: 完了</string>
     <string name="lumen_aspect_ratio">アスペクト比</string>
     <string name="lumen_at_every_start_and_once">起動するたびと1日1回：モデル、バージョン、ビルド、アップデート情報、国、ランダムなインストール番号、シリアル番号（サーバーはハッシュのみ保存）。IP アドレスは保存されません。</string>
     <string name="lumen_at_least_8_characters">8 文字以上</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">手動台形補正</string>
     <string name="lumen_manual_keystone_unavailable">手動台形補正は使用できません</string>
     <string name="lumen_medium">中</string>
-    <string name="lumen_menu_grid_over_the_picture">メニュー：グリッド / 映像の上に枠 / テスト四角形</string>
+    <string name="lumen_menu_grid_over_the_picture">メニュー：グリッド / テストチャート / 映像の上に枠 / テスト四角形</string>
     <string name="lumen_mid">中</string>
     <string name="lumen_motion_smoothing">動きなめらか</string>
     <string name="lumen_move">移動</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">初期値に戻す</string>
     <string name="lumen_restart">再起動</string>
     <string name="lumen_restart_now">今すぐ再起動</string>
-    <string name="lumen_right_bigger_left_smaller_ok">右: 大きく · 左: 小さく · OK: 画面を移動 · 戻る: 完了</string>
-    <string name="lumen_right_left_rotate_ok_back">右 / 左: 回転 · OK: 最初の状態 · 戻る: 完了</string>
+    <string name="lumen_right_bigger_left_smaller_ok">右: 大きく · 左: 小さく · OK長押し: 位置 · 戻る: 完了</string>
+    <string name="lumen_right_left_rotate_ok_back">右 / 左: 回転 · メニュー: 最初の状態 · 戻る: 完了</string>
     <string name="lumen_saturation">色の濃さ</string>
     <string name="lumen_scan_with_a_phone_to">スマートフォンでスキャンして開く</string>
     <string name="lumen_screen_casting">画面キャスト</string>

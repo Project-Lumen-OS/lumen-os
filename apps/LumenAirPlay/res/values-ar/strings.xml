@@ -25,7 +25,7 @@
     <string name="forget_done">تم نسيان الأجهزة الموثوقة</string>
     <string name="set_quality">جودة انعكاس الشاشة</string>
     <string name="quality_1080">1080p H.264 (أقل تأخير)</string>
-    <string name="quality_4k">4K HEVC</string>
+    <string name="quality_4k">4K</string>
     <string name="set_latency">التأخير</string>
     <string name="latency_low">منخفض (150 مللي ثانية)</string>
     <string name="latency_normal">عادي (250 مللي ثانية)</string>

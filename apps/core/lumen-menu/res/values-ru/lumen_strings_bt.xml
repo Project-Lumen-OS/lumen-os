@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Поиск устройств…</string>
     <string name="lumen_m_bt_none">Устройства не найдены</string>
     <string name="lumen_m_bt_pairing">Сопряжение…</string>
+    <string name="lumen_m_bt_abs_volume">Абсолютная громкость Bluetooth</string>
 </resources>

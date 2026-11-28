@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.lumen.menu.FeatureId;
 import org.lumen.menu.PowerItem;
-import org.lumen.projector.R;
 import org.lumen.projector.ui.Page;
 import org.lumen.projector.ui.PagedPanel;
 import org.lumen.projector.ui.RoundTile;
@@ -79,26 +78,6 @@ public final class PowerMenu {
         return panel != null && panel.isShowing() && menu.host().current() == panel;
     }
 
-    static int label(PowerItem item) {
-        switch (item) {
-            case SCREEN_OFF: return MenuLabels.title(FeatureId.LAMP_OFF);
-            case SLEEP: return R.string.lumen_m_power_sleep;
-            case POWER_OFF: return R.string.lumen_m_power_off;
-            case RESTART: return R.string.lumen_m_power_restart;
-            default: return MenuLabels.title(FeatureId.SETTINGS_SLEEP_TIMER);
-        }
-    }
-
-    static int icon(PowerItem item) {
-        switch (item) {
-            case SCREEN_OFF: return RoundTile.ICON_SCREEN_OFF;
-            case SLEEP: return RoundTile.ICON_SLEEP;
-            case POWER_OFF: return RoundTile.ICON_POWER;
-            case RESTART: return RoundTile.ICON_RESTART;
-            default: return RoundTile.ICON_TIMER;
-        }
-    }
-
     private void pick(PowerItem item) {
         switch (item) {
             case SCREEN_OFF:
@@ -145,7 +124,8 @@ public final class PowerMenu {
 
         @Override protected void onAddTiles(Context ctx) {
             for (PowerItem item : items) {
-                RoundTile t = addTile(ctx, icon(item), ctx.getString(label(item)), guarded(() -> pick(item)));
+                RoundTile t = addTile(ctx, PowerTiles.icon(item), ctx.getString(PowerTiles.label(item)),
+                        guarded(() -> pick(item)));
                 if (item == PowerItem.POWER_OFF) powerOff = t;
                 if (item == PowerItem.SLEEP_TIMER) timer = t;
             }

@@ -235,7 +235,7 @@ void audio_process(void *cls, raop_ntp_t *, audio_decode_struct *data) {
     }
     if (!srv->audio || !data->data || data->data_len <= 0) return;
     srv->audio->decode(data->data, data->data_len, (int) data->ct, data->ntp_time_local, data->ntp_time_remote,
-                       data->seqnum);
+                       data->seqnum, data->rtp_time);
 }
 
 /* RTP audio thread (patch z9x-0011): how long the reorder buffer may wait for a resend */

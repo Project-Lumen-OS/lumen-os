@@ -22,7 +22,7 @@
     <string name="lumen_apps">Apps</string>
     <string name="lumen_arrows_move_the_corner_ok">Setas: mover canto · OK: próximo canto</string>
     <string name="lumen_arrows_move_the_picture_back">Setas: mover a imagem · Voltar: pronto</string>
-    <string name="lumen_arrows_move_the_picture_ok">Setas: mover a imagem · OK: tamanho · Voltar: pronto</string>
+    <string name="lumen_arrows_move_the_picture_ok">Setas: mover a imagem · Segure OK: tamanho · Voltar: pronto</string>
     <string name="lumen_aspect_ratio">Proporção</string>
     <string name="lumen_at_every_start_and_once">A cada inicialização e uma vez por dia: modelo, versão, build, dados da atualização, país, um número de instalação aleatório e o número de série (o servidor guarda só o hash dele). Seu endereço IP não é armazenado.</string>
     <string name="lumen_at_least_8_characters">Pelo menos 8 caracteres</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Trapézio manual</string>
     <string name="lumen_manual_keystone_unavailable">Trapézio manual indisponível</string>
     <string name="lumen_medium">Média</string>
-    <string name="lumen_menu_grid_over_the_picture">Menu: grade / sobre a imagem / quadrilátero de teste</string>
+    <string name="lumen_menu_grid_over_the_picture">Menu: grade / padrão de teste / sobre a imagem / quadrilátero de teste</string>
     <string name="lumen_mid">Médio</string>
     <string name="lumen_motion_smoothing">Suavização de movimento</string>
     <string name="lumen_move">Mover</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Voltar aos valores padrão</string>
     <string name="lumen_restart">Reiniciar</string>
     <string name="lumen_restart_now">Reiniciar agora</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Direita: maior · Esquerda: menor · OK: mover a imagem · Voltar: pronto</string>
-    <string name="lumen_right_left_rotate_ok_back">Direita / Esquerda: girar · OK: como no início · Voltar: pronto</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Direita: maior · Esquerda: menor · Segure OK: posição · Voltar: pronto</string>
+    <string name="lumen_right_left_rotate_ok_back">Direita / Esquerda: girar · Menu: como no início · Voltar: pronto</string>
     <string name="lumen_saturation">Saturação</string>
     <string name="lumen_scan_with_a_phone_to">Leia com o celular para abrir</string>
     <string name="lumen_screen_casting">Transmissão de tela</string>

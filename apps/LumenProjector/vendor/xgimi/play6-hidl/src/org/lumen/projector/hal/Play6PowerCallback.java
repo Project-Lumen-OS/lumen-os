@@ -18,34 +18,17 @@
  */
 package org.lumen.projector.hal;
 
-import android.os.HwBinder;
-import android.os.HwBlob;
 import android.os.HwParcel;
-import android.os.IHwBinder;
-import android.os.IHwInterface;
-import android.os.Process;
 import android.util.Log;
 
-import java.util.ArrayList;
-
-public final class Play6PowerCallback extends HwBinder implements IHwInterface {
+public final class Play6PowerCallback extends HidlCallback {
     private static final String TAG = "P6Power";
     public static final String IPOWER_CALLBACK = "xgimi.hardware.gmpf@1.0::IPowerCallback";
-    static final String IBASE = "android.hidl.base@1.0::IBase";
 
     static final int POWER_EVENT = 1;
-    static final int HIDL_DESCRIPTOR_CHAIN = 0x0f43484e;        // 256067662 interfaceChain
-    static final int HIDL_DEBUG = 0x0f444247;                   // 256131655 debug
-    static final int HIDL_GET_DESCRIPTOR = 0x0f445343;          // 256136003 interfaceDescriptor
-    static final int HIDL_HASH_CHAIN = 0x0f485348;              // 256398152 getHashChain
-    static final int HIDL_SET_HAL_INSTRUMENTATION = 0x0f494e54; // 256462420 oneway
-    static final int HIDL_PING = 0x0f504e47;                    // 256921159 ping
-    static final int HIDL_GET_REF_INFO = 0x0f524546;            // 257049926 getDebugInfo
-    static final int HIDL_SYSPROPS_CHANGED = 0x0f535953;        // 257120595 oneway
 
     /** Recorded offline (plan 2.1): IPowerCallback, then IBase. */
     private static final byte[] HASH_SELF = hex("9f7cbc169c8bb9d1478335b858d370a51ab61d9425c901ab85bc645b4e0e94ab");
-    private static final byte[] HASH_BASE = hex("ec7fd79ed02dfa85bc499426adae3ebe23ef0524f3cd6957139324b83b18ca4c");
 
     /** Receives power events. Called on the hwbinder thread AFTER the reply was sent: only post. */
     public interface Sink {
@@ -56,6 +39,7 @@ public final class Play6PowerCallback extends HwBinder implements IHwInterface {
 
     /** The caller keeps a strong reference (the HAL holds only a binder reference to this object). */
     public Play6PowerCallback(Sink sink) {
+        super(TAG, IPOWER_CALLBACK, HASH_SELF);
         this.sink = sink;
     }
 
@@ -85,85 +69,6 @@ public final class Play6PowerCallback extends HwBinder implements IHwInterface {
             }
             return;
         }
-        try {
-            switch (code) {
-                case HIDL_DESCRIPTOR_CHAIN: {
-                    req.enforceInterface(IBASE);
-                    ArrayList<String> chain = new ArrayList<>();
-                    chain.add(IPOWER_CALLBACK);
-                    chain.add(IBASE);
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    reply.writeStringVector(chain);
-                    reply.send();
-                    break;
-                }
-                case HIDL_GET_DESCRIPTOR: {
-                    req.enforceInterface(IBASE);
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    reply.writeString(IPOWER_CALLBACK);
-                    reply.send();
-                    break;
-                }
-                case HIDL_PING: {
-                    req.enforceInterface(IBASE);
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    reply.send();
-                    break;
-                }
-                case HIDL_HASH_CHAIN: {
-                    req.enforceInterface(IBASE);
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    HwBlob vec = new HwBlob(16);              // hidl_vec<uint8_t[32]>
-                    vec.putInt32(8, 2);                       // mSize
-                    vec.putBool(12, false);                   // mOwnsBuffer
-                    HwBlob data = new HwBlob(2 * 32);
-                    data.putInt8Array(0, HASH_SELF);
-                    data.putInt8Array(32, HASH_BASE);
-                    vec.putBlob(0, data);                     // mBuffer
-                    reply.writeBuffer(vec);
-                    reply.send();
-                    break;
-                }
-                case HIDL_GET_REF_INFO: {                      // DebugInfo{i32 pid; u64 ptr; i32 arch}
-                    req.enforceInterface(IBASE);
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    HwBlob info = new HwBlob(24);
-                    info.putInt32(0, Process.myPid());
-                    info.putInt64(8, 0L);
-                    info.putInt32(16, 0);                     // Architecture.UNKNOWN
-                    reply.writeBuffer(info);
-                    reply.send();
-                    break;
-                }
-                case HIDL_DEBUG: {
-                    req.enforceInterface(IBASE);
-                    req.readNativeHandle();
-                    req.readStringVector();
-                    reply.writeStatus(HwParcel.STATUS_SUCCESS);
-                    reply.send();
-                    break;
-                }
-                case HIDL_SET_HAL_INSTRUMENTATION:
-                case HIDL_SYSPROPS_CHANGED:
-                default:
-                    // oneway IBase calls, linkToDeath/unlinkToDeath and unknown codes: no reply
-                    break;
-            }
-        } catch (Throwable t) {
-            Log.w(TAG, "IBase code " + code + ": " + t);
-        }
-    }
-
-    @Override public IHwInterface queryLocalInterface(String descriptor) {
-        return IPOWER_CALLBACK.equals(descriptor) || IBASE.equals(descriptor) ? this : null;
-    }
-    @Override public IHwBinder asBinder() { return this; }
-    @Override public boolean linkToDeath(IHwBinder.DeathRecipient recipient, long cookie) { return true; }
-    @Override public boolean unlinkToDeath(IHwBinder.DeathRecipient recipient) { return true; }
-
-    private static byte[] hex(String s) {
-        byte[] b = new byte[s.length() / 2];
-        for (int i = 0; i < b.length; i++) b[i] = (byte) Integer.parseInt(s.substring(2 * i, 2 * i + 2), 16);
-        return b;
+        answerIBase(code, req, reply);
     }
 }

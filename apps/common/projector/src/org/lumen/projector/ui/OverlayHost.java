@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -228,19 +227,7 @@ public final class OverlayHost implements KeyTools.Host {
             }
             try { p.onDismissed(); } catch (Throwable t) { Log.w(TAG, "onDismissed: " + t); }
         };
-        if (animate && root != null && root.isAttachedToWindow()) {
-            final boolean[] done = {false};
-            Runnable once = () -> { if (!done[0]) { done[0] = true; remove.run(); } };
-            try {
-                p.animateOut(root, once);
-            } catch (Throwable t) {
-                once.run();
-                return;
-            }
-            main.postDelayed(once, Theme.PANEL_EXIT_MS + 300);   // safety net
-        } else {
-            remove.run();
-        }
+        p.exitThen(root, animate, main, remove);
     }
 
     void resetAutoHide(Panel p) {
@@ -358,9 +345,7 @@ public final class OverlayHost implements KeyTools.Host {
     /** Wraps every panel: key routing, timer reset, BACK, media keys, focus loss. */
     private final class PanelRoot extends FrameLayout {
         private final Panel panel;
-        private boolean backDown;
-        /** downTime of the OK press whose DOWN reached this window, -1 when none (see dispatchKeyEvent). */
-        private long okDownTime = -1;
+        private final PanelKeys keys;
         private boolean hadFocus;
         private final Runnable focusLostCheck = new Runnable() {
             @Override public void run() {
@@ -374,82 +359,28 @@ public final class OverlayHost implements KeyTools.Host {
         PanelRoot(Context c, Panel panel) {
             super(c);
             this.panel = panel;
+            keys = new PanelKeys(TAG, app, panel, new PanelKeys.Root() {
+                @Override public void resetAutoHide(Panel p) { OverlayHost.this.resetAutoHide(p); }
+
+                @Override public void dismiss(Panel p) { OverlayHost.this.dismiss(p, true); }
+
+                @Override public boolean viewsDispatch(KeyEvent ev) { return PanelRoot.super.dispatchKeyEvent(ev); }
+
+                @Override public View focused() { return PanelRoot.this.findFocus(); }
+            });
             setClipChildren(false);
         }
 
         @Override
         public boolean dispatchKeyEvent(KeyEvent ev) {
-            if (!panel.showing) return true;
-            resetAutoHide(panel);
-            int code = ev.getKeyCode();
-            if (KeyEvent.isMediaSessionKey(code)) {
-                if (ev.getAction() == KeyEvent.ACTION_DOWN || ev.getAction() == KeyEvent.ACTION_UP) {
-                    try {
-                        AudioManager am = app.getSystemService(AudioManager.class);
-                        if (am != null) am.dispatchMediaKeyEvent(ev);
-                    } catch (Throwable t) {
-                        Log.w(TAG, "media key: " + t);
-                    }
-                }
-                return true;
-            }
-            if (isOkKey(code) && !okOfThisWindow(ev)) return true;
-            try {
-                if (panel.onKeyEvent(ev)) return true;
-            } catch (Throwable t) {
-                Log.w(TAG, "onKeyEvent: " + t);
-                return true;
-            }
-            if (code == KeyEvent.KEYCODE_BACK || code == KeyEvent.KEYCODE_ESCAPE) {
-                if (ev.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (ev.getRepeatCount() == 0) backDown = true;
-                } else if (ev.getAction() == KeyEvent.ACTION_UP) {
-                    if (backDown && !ev.isCanceled()) {
-                        boolean consumed = false;
-                        try { consumed = panel.onBack(); } catch (Throwable t) { Log.w(TAG, "onBack: " + t); }
-                        if (!consumed) dismiss(panel, true);
-                    }
-                    backDown = false;
-                }
-                return true;
-            }
-            try {
-                return super.dispatchKeyEvent(ev);
-            } catch (Throwable t) {
-                Log.w(TAG, "dispatchKeyEvent: " + t);
-                return true;
-            }
-        }
-
-        /**
-         * 2026-10-31: the rest of an OK press that went DOWN in another window (the held repeats and the UP
-         * of the row press that opened this panel, log 14:54:47) never reaches the panel: its OK toggles
-         * and confirmations that act on the UP (optical zoom size / position, zoom shift, fit width) only
-         * see presses that began here.
-         */
-        private boolean okOfThisWindow(KeyEvent ev) {
-            int a = ev.getAction();
-            if (a == KeyEvent.ACTION_DOWN) {
-                if (ev.getRepeatCount() == 0) {
-                    okDownTime = ev.getDownTime();
-                    return true;
-                }
-                return ev.getDownTime() == okDownTime;
-            }
-            if (a == KeyEvent.ACTION_UP) {
-                boolean ours = okDownTime != -1 && ev.getDownTime() == okDownTime;
-                okDownTime = -1;
-                if (!ours) Log.i(TAG, "OK up of a press begun elsewhere: dropped (" + panel.getClass().getSimpleName() + ")");
-                return ours;
-            }
-            return true;
+            return keys.dispatch(ev);
         }
 
         @Override
         public void onWindowFocusChanged(boolean hasFocus) {
             super.onWindowFocusChanged(hasFocus);
             KeyHook.windowFocus(this, hasFocus);              // the keys are this panel's, never a developer card's
-            if (!hasFocus) okDownTime = -1;
+            if (!hasFocus) keys.focusLost();
             if (hasFocus) {
                 hadFocus = true;
                 removeCallbacks(focusLostCheck);
@@ -481,8 +412,4 @@ public final class OverlayHost implements KeyTools.Host {
         }
     }
 
-    private static boolean isOkKey(int code) {
-        return code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER
-                || code == KeyEvent.KEYCODE_NUMPAD_ENTER;
-    }
 }

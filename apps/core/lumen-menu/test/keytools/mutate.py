@@ -98,15 +98,34 @@ MUTANTS += [
      "    protected boolean takesMenuKey() { return false; }"),
     ("X50: the gear opens the menu over a tool", X + "KeyReceiver.java", " && KeyTools.menuKey(longPress)) return;", " && false) return;"),
     ("X50: manual focus is no tool screen", X + "FocusActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
+    # no idle close (2026-11-28): a timer brought back on either manual focus screen
+    ("manual focus closes 3 s after open", Z + "ManualFocusActivity.java",
+     "        motor.enter();                                            // manualFocus(17)\n",
+     "        motor.enter();                                            // manualFocus(17)\n"
+     "        getWindow().getDecorView().postDelayed(this::finish, 3_000);\n"),
+    ("X50: manual focus closes 3 s after open", X + "FocusActivity.java",
+     "        sStartedAt = NOT_STARTING;", "        getWindow().getDecorView().postDelayed(this::finish, 3000);\n        sStartedAt = NOT_STARTING;"),
     ("X50: the corner screen is no tool screen", X + "CornerActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
     ("X50: the lens screen is no tool screen", X + "LensActivity.java", "extends ToolActivity {", "extends android.app.Activity {"),
+]
+# ---- key sounds (PanelKeys + lumen-ui KeySound)
+KS = "apps/core/lumen-ui/src/org/lumen/ui/KeySound.java"
+MUTANTS += [
+    ("sound: OK never clicks", UI + "PanelKeys.java", "        if (click) KeySound.click(before);\n", ""),
+    ("sound: the row's own click is not muted (two clicks)", UI + "PanelKeys.java", "        if (mute) before.setSoundEffectsEnabled(false);\n", ""),
+    ("sound: the row stays muted after the key", UI + "PanelKeys.java", "            if (mute) before.setSoundEffectsEnabled(true);\n", ""),
+    ("sound: a focus move in our code is silent", UI + "PanelKeys.java", "if (after != null && after != before) KeySound.move(after, code);", ""),
+    ("sound: a step that keeps the focus sounds", UI + "PanelKeys.java", "if (after != null && after != before) KeySound.move", "if (after != null) KeySound.move"),
+    ("sound: DOWN plays the UP sound", KS, "case KeyEvent.KEYCODE_DPAD_DOWN: return SoundEffectConstants.NAVIGATION_DOWN;",
+     "case KeyEvent.KEYCODE_DPAD_DOWN: return SoundEffectConstants.NAVIGATION_UP;"),
 ]
 
 
 def copy_tree(dst):
-    files = set(wiring.FILES) | {KT, OH, PN, AH, TA, UI + "PanelHost.java", UI + "PanelActivity.java",
+    files = set(wiring.FILES) | {KT, OH, PN, AH, TA, UI + "PanelHost.java", UI + "PanelActivity.java", UI + "PanelKeys.java",
                                  "apps/core/lumen-menu/src/org/lumen/menu/Rehost.java",
-                                 "apps/core/lumen-remote/src/org/lumen/remote/keys/KeyHook.java"}
+                                 "apps/core/lumen-remote/src/org/lumen/remote/keys/KeyHook.java",
+                                 "apps/core/lumen-ui/src/org/lumen/ui/KeySound.java"}
     for f in files:
         os.makedirs(os.path.join(dst, os.path.dirname(f)), exist_ok=True)
         shutil.copy(os.path.join(G, f), os.path.join(dst, f))

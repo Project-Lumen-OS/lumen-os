@@ -16,6 +16,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import org.lumen.menu.EdgeFrame;
+import org.lumen.menu.FocusChart;
+import org.lumen.menu.OkPress;
 import org.lumen.projector.Hal;
 import org.lumen.projector.Family;
 import org.lumen.projector.R;
@@ -164,8 +167,8 @@ public final class ManualKeystonePanel extends Panel {
     private static final int GRID_BG = 0xFF8A8A8A, GRID_LINE = 0xFFE6E6E6;
     private static final float GRID_CELL = 120, GRID_PX = 2, GRID_CENTRE_PX = 4;
     /** MENU cycles these views (see the class comment). */
-    private static final int VIEW_FRAME = 0, VIEW_PREVIEW = 1, VIEW_QUAD = 2;
-    private static final long LONG_PRESS_MS = 800;
+    private static final int VIEW_FRAME = 0, VIEW_CHART = 1, VIEW_PREVIEW = 2, VIEW_QUAD = 3, VIEWS = 4;
+    private static final String[] VIEW_NAMES = {"grid", "chart", "preview", "quad"};
     private static final long AUTO_HIDE_MS = 120_000;
     private static final long LIMIT_NOTE_GAP_MS = 2_000;
     /** Read-back tolerance (panel px) of the first 185 of a session. */
@@ -203,7 +206,8 @@ public final class ManualKeystonePanel extends Panel {
     private int corner = KstPoint.TL;
     private int viewMode = VIEW_FRAME;                           // main thread; MENU cycles it
     private int state = STATE_WAIT;                              // main thread
-    private boolean okDown, okLongDone, backExit, refusedReturn;
+    private boolean backExit, refusedReturn;
+    private final OkPress okPress = new OkPress();
     private long lastLimitNote;
     private int moveSeq;                                         // main thread writes under lock
     private long pendingSince;                                   // under lock: uptime of the oldest move not sent yet (0 = none)
@@ -1088,25 +1092,16 @@ public final class ManualKeystonePanel extends Panel {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_NUMPAD_ENTER:
-                if (down) {
-                    if (ev.getRepeatCount() == 0) {
-                        okDown = true;
-                        okLongDone = false;
-                    } else if (okDown && !okLongDone && ev.getEventTime() - ev.getDownTime() >= LONG_PRESS_MS) {
-                        okLongDone = true;                        // hold OK: reset
-                        requestReset();
-                    }
-                } else if (action == KeyEvent.ACTION_UP) {
-                    if (okDown && !okLongDone && !ev.isCanceled()) nextCorner();
-                    okDown = false;
-                }
+                int press = okPress.feed(action, ev.getRepeatCount(), ev.getDownTime(), ev.getEventTime(), ev.isCanceled());
+                if (press == OkPress.HOLD) requestReset();          // hold OK: reset
+                else if (press == OkPress.SHORT) nextCorner();
                 return true;
             case KeyEvent.KEYCODE_MENU:
-                // View only (never a reset: that is hold-OK). Grid -> frame over the picture
-                // below -> diagnostic 186 quad (see the class comment).
+                // View only (never a reset: that is hold-OK). Grid -> the test chart (the model's focus chart) ->
+                // frame over the picture below -> diagnostic 186 quad (see the class comment).
                 if (down && ev.getRepeatCount() == 0) {
-                    viewMode = (viewMode + 1) % 3;
-                    Log.i(TAG, "view " + (viewMode == VIEW_FRAME ? "grid" : viewMode == VIEW_PREVIEW ? "preview" : "quad"));
+                    viewMode = (viewMode + 1) % VIEWS;
+                    Log.i(TAG, "view " + VIEW_NAMES[viewMode]);
                     if (view != null) view.invalidate();
                 }
                 return true;
@@ -1195,6 +1190,7 @@ public final class ManualKeystonePanel extends Panel {
         private final Paint dotSel = Theme.fill(Theme.ACCENT);
         private final Paint shownRing;
         private final TextPaint title, sub, hint, warn;
+        private final FocusChartPainter chart;
         private final RectF r = new RectF();
         private final Path path = new Path();
         private final float[] px = new float[4], py = new float[4];   // onDraw scratch (no allocation per frame)
@@ -1235,6 +1231,7 @@ public final class ManualKeystonePanel extends Panel {
             hintMove = c.getString(R.string.kst_hint_move);
             hintMore = c.getString(R.string.kst_hint_more);
             hintView = c.getString(R.string.kst_hint_view);
+            chart = new FocusChartPainter(FocusChart.geometry(MenuController.profile(c)));
             waitText = c.getString(R.string.panel_kst_wait);
             resetFirstText = c.getString(R.string.kst_reset_first);
             cornerNames = new String[]{
@@ -1272,6 +1269,10 @@ public final class ManualKeystonePanel extends Panel {
             // Opaque grid, so nothing below (launcher margins, a dark or letterboxed film) can be
             // taken for the picture edge. PREVIEW / QUAD keep the picture below visible on purpose.
             if (viewMode == VIEW_FRAME) drawGrid(c, w, h);
+            if (viewMode == VIEW_CHART) {
+                c.drawColor(EdgeFrame.PAGE);
+                chart.draw(c, (int) w, (int) h);
+            }
             if (viewMode == VIEW_QUAD) {
                 if (live) drawQuad(c, w, h);
             } else {

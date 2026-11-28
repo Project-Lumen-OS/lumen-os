@@ -26,11 +26,11 @@ KEY = {"up": 19, "down": 20, "left": 21, "right": 22, "ok": 23, "back": 4}
 TEXT = {
     "en": dict(general="General", dev="For developers", report="Send a problem report", lamp_off="Turn off screen",
                uires="Interface resolution", system="System",
-               headers=["Language and time", "Power", "Display and menu", "Remote and voice", "Apps and devices",
+               headers=["Language and time", "Power", "Display and menu", "Remote and voice", "Apps and devices", "Other",
                         "Storage and updates", "Help"]),
     "ru": dict(general="Общие", dev="Для разработчиков", report="Отправить отчёт о проблеме",
                lamp_off="Отключить изображение", uires="Разрешение интерфейса", system="Система",
-               headers=["Язык и время", "Питание", "Экран и меню", "Пульт и голос", "Приложения и устройства",
+               headers=["Язык и время", "Питание", "Экран и меню", "Пульт и голос", "Приложения и устройства", "Прочее",
                         "Память и обновления", "Помощь"]),
 }[LANG]
 FAILS = []

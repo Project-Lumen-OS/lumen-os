@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">Ajuste hasta que el círculo del centro quede redondo</string>
-    <string name="lumen_corner_keys_more">Mantén pulsada la tecla del engranaje: restablecer · Atrás: listo</string>
+    <string name="lumen_corner_keys_more">Tecla del engranaje: carta de ajuste · Mantén pulsada la tecla del engranaje: restablecer · Atrás: listo</string>
 </resources>

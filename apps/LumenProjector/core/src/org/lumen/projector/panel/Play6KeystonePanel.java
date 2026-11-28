@@ -15,6 +15,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import org.lumen.menu.EdgeFrame;
+import org.lumen.menu.FocusChart;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.Ui;
@@ -79,7 +81,8 @@ public final class Play6KeystonePanel extends Panel {
     private static final int GRID_BG = 0xFF8A8A8A, GRID_LINE = 0xFFE6E6E6;
     private static final float GRID_CELL = 120, GRID_PX = 2, GRID_CENTRE_PX = 4;
     /** MENU cycles these views. */
-    private static final int VIEW_FRAME = 0, VIEW_PREVIEW = 1, VIEW_QUAD = 2;
+    private static final int VIEW_FRAME = 0, VIEW_CHART = 1, VIEW_PREVIEW = 2, VIEW_QUAD = 3, VIEWS = 4;
+    private static final String[] VIEW_NAMES = {"grid", "chart", "preview", "quad"};
     private static final long AUTO_HIDE_MS = 120_000;
     private static final long LIMIT_NOTE_GAP_MS = 2_000;
     /** Read-back tolerance (panel px) of the first 185 of a session. */
@@ -862,10 +865,11 @@ public final class Play6KeystonePanel extends Panel {
                 if (action == KeyEvent.ACTION_UP && !ev.isCanceled() && ev.getEventTime() - ev.getDownTime() < 800) nextCorner();
                 return true;
             case KeyEvent.KEYCODE_MENU:
-                // View only. Grid -> frame over the picture below -> diagnostic 186 quad.
+                // View only. Grid -> the test chart (the model's focus chart) -> frame over the picture below ->
+                // diagnostic 186 quad.
                 if (down && ev.getRepeatCount() == 0) {
-                    viewMode = (viewMode + 1) % 3;
-                    Log.i(TAG, "view " + (viewMode == VIEW_FRAME ? "grid" : viewMode == VIEW_PREVIEW ? "preview" : "quad"));
+                    viewMode = (viewMode + 1) % VIEWS;
+                    Log.i(TAG, "view " + VIEW_NAMES[viewMode]);
                     if (view != null) view.invalidate();
                 }
                 return true;
@@ -947,6 +951,7 @@ public final class Play6KeystonePanel extends Panel {
         private final Paint dotSel = Theme.fill(Theme.ACCENT);
         private final Paint shownRing;
         private final TextPaint title, sub, hint;
+        private final FocusChartPainter chart;
         private final RectF r = new RectF();
         private final Path path = new Path();
         private final float[] px = new float[4], py = new float[4];   // onDraw scratch (no allocation per frame)
@@ -986,6 +991,7 @@ public final class Play6KeystonePanel extends Panel {
             hintMove = c.getString(R.string.kst_hint_move);
             hintBack = c.getString(R.string.p6_kst_hint_back);
             hintView = c.getString(R.string.kst_hint_view);
+            chart = new FocusChartPainter(FocusChart.geometry(MenuController.profile(c)));
             waitText = c.getString(R.string.panel_kst_wait);
             cornerNames = new String[]{
                     c.getString(R.string.panel_kst_corner_tl), c.getString(R.string.panel_kst_corner_tr),
@@ -1022,6 +1028,10 @@ public final class Play6KeystonePanel extends Panel {
             // Opaque grid, so nothing below can be taken for the picture edge. PREVIEW / QUAD keep the
             // picture below visible on purpose.
             if (viewMode == VIEW_FRAME) drawGrid(c, w, h);
+            if (viewMode == VIEW_CHART) {
+                c.drawColor(EdgeFrame.PAGE);
+                chart.draw(c, (int) w, (int) h);
+            }
             if (viewMode == VIEW_QUAD) {
                 if (live) drawQuad(c, w, h);
             } else {

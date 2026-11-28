@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">正在搜索设备…</string>
     <string name="lumen_m_bt_none">未发现设备</string>
     <string name="lumen_m_bt_pairing">正在配对…</string>
+    <string name="lumen_m_bt_abs_volume">蓝牙绝对音量</string>
 </resources>

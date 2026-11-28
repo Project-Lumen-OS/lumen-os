@@ -27,7 +27,7 @@ final class Prefs {
     static final String NAME = "device_name";
     static final String PIN_MODE = "pin_mode";        // NativeBridge.PIN_*
     static final String FIXED_PIN = "fixed_pin";      // "0000".."9999"
-    static final String QUALITY_4K = "quality_4k";    // false = 1080p H.264, true = 4K HEVC
+    static final String QUALITY_4K = "quality_4k";    // false = 1080p H.264, true = 4K (H.264 or HEVC: the sender picks)
     static final String NOHOLD = "nohold";            // a new sender may take over
     static final String VIDEO_URL = "video_url";      // "AirPlay video" (YouTube HLS) via MediaPlayer
     static final String LATENCY_MS = "latency_ms";    // 150 / 250 / 500

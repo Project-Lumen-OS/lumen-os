@@ -72,6 +72,7 @@ section source
   screen settings.hdmi
 section bluetooth
   screen bluetooth.add
+  toggle bluetooth.abs_volume
 section general
   -- language_time
   screen settings.language
@@ -79,8 +80,6 @@ section general
   -- power
   choice settings.power_key [power_menu, sleep]
   screen settings.sleep_timer
-  toggle power.on_ac
-  toggle power.on_music
   -- display_menu
   screen settings.screensaver_now
   choice settings.screensaver_delay [never, m1, m5, m10, m30, m60]
@@ -93,6 +92,8 @@ section general
   -- apps_devices
   screen settings.casting
   screen settings.parental
+  -- more
+  page settings.advanced
   -- storage_updates
   screen settings.storage
   screen settings.update
@@ -142,6 +143,11 @@ page picture.hdr
 page picture.dv_screen
   choice picture.dv_screen.size [80, 88, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 250, 300]
   choice picture.dv_screen.gain [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+page settings.power_on_off
+  toggle power.on_music
+  toggle power.on_ac
+page settings.advanced
+  page settings.power_on_off
 page focus.settings
   info focus.guide  hint picture focus_guide_front
 page picture.settings

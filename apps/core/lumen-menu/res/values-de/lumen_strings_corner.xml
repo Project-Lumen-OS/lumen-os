@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">Stellen Sie ein, bis der Kreis in der Mitte rund ist</string>
-    <string name="lumen_corner_keys_more">Zahnradtaste halten: zurücksetzen · Zurück: fertig</string>
+    <string name="lumen_corner_keys_more">Zahnradtaste: Testbild · Zahnradtaste halten: zurücksetzen · Zurück: fertig</string>
 </resources>

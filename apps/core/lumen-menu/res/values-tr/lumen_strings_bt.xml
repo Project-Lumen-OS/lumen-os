@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Cihazlar aranıyor…</string>
     <string name="lumen_m_bt_none">Cihaz bulunamadı</string>
     <string name="lumen_m_bt_pairing">Eşleniyor…</string>
+    <string name="lumen_m_bt_abs_volume">Bluetooth mutlak ses seviyesi</string>
 </resources>

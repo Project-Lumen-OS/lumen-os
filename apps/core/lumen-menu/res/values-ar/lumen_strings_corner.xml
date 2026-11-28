@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">اضبط حتى تصبح الدائرة في الوسط مستديرة</string>
-    <string name="lumen_corner_keys_more">اضغط مطولًا على زر الترس: إعادة الضبط · رجوع: تم</string>
+    <string name="lumen_corner_keys_more">زر الترس: نمط الاختبار · اضغط مطولًا على زر الترس: إعادة الضبط · رجوع: تم</string>
 </resources>

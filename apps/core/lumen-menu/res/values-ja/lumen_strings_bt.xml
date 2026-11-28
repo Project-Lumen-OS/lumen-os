@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">デバイスを検索中…</string>
     <string name="lumen_m_bt_none">デバイスが見つかりません</string>
     <string name="lumen_m_bt_pairing">ペアリング中…</string>
+    <string name="lumen_m_bt_abs_volume">Bluetooth絶対音量</string>
 </resources>

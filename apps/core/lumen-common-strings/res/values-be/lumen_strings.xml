@@ -22,7 +22,7 @@
     <string name="lumen_apps">Праграмы</string>
     <string name="lumen_arrows_move_the_corner_ok">Стрэлкі: зрух кута · OK: наступны кут</string>
     <string name="lumen_arrows_move_the_picture_back">Стрэлкі: зрух відарыса · Назад: гатова</string>
-    <string name="lumen_arrows_move_the_picture_ok">Стрэлкі: зрух відарыса · OK: памер · Назад: гатова</string>
+    <string name="lumen_arrows_move_the_picture_ok">Стрэлкі: зрух відарыса · Утрымлівайце OK: памер · Назад: гатова</string>
     <string name="lumen_aspect_ratio">Суадносіны бакоў</string>
     <string name="lumen_at_every_start_and_once">Пры кожным уключэнні і раз на дзень: мадэль, версія, зборка, звесткі пра абнаўленне, краіна, выпадковы нумар усталёўкі і серыйны нумар (сервер захоўвае толькі яго хэш). Ваш IP-адрас не захоўваецца.</string>
     <string name="lumen_at_least_8_characters">Не менш за 8 сімвалаў</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Ручная карэкцыя трапецыі</string>
     <string name="lumen_manual_keystone_unavailable">Ручная трапецыя недаступная</string>
     <string name="lumen_medium">Сярэдняя</string>
-    <string name="lumen_menu_grid_over_the_picture">Меню: сетка / па-над карцінкай / тэст-контур</string>
+    <string name="lumen_menu_grid_over_the_picture">Меню: сетка / тэставая табліца / па-над карцінкай / тэст-контур</string>
     <string name="lumen_mid">Сярэдні</string>
     <string name="lumen_motion_smoothing">Плаўнасць руху</string>
     <string name="lumen_move">Перамясціць</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Вярнуць стандартныя значэнні</string>
     <string name="lumen_restart">Перазапусціць</string>
     <string name="lumen_restart_now">Перазапусціць</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Управа: большы · Улева: меншы · OK: зрух відарыса · Назад: гатова</string>
-    <string name="lumen_right_left_rotate_ok_back">Управа / Улева: паварот · OK: як было · Назад: гатова</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Управа: большы · Улева: меншы · Утрымлівайце OK: становішча · Назад: гатова</string>
+    <string name="lumen_right_left_rotate_ok_back">Управа / Улева: паварот · Меню: як было · Назад: гатова</string>
     <string name="lumen_saturation">Насычанасць</string>
     <string name="lumen_scan_with_a_phone_to">Адскануйце тэлефонам, каб адкрыць</string>
     <string name="lumen_screen_casting">Трансляцыя экрана</string>

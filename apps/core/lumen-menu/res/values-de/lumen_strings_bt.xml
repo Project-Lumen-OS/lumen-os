@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Suche nach Geräten…</string>
     <string name="lumen_m_bt_none">Keine Geräte gefunden</string>
     <string name="lumen_m_bt_pairing">Wird gekoppelt…</string>
+    <string name="lumen_m_bt_abs_volume">Absolute Bluetooth-Lautstärke</string>
 </resources>

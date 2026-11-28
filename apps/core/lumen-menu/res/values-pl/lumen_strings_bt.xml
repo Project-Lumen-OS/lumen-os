@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">Wyszukiwanie urządzeń…</string>
     <string name="lumen_m_bt_none">Nie znaleziono urządzeń</string>
     <string name="lumen_m_bt_pairing">Parowanie…</string>
+    <string name="lumen_m_bt_abs_volume">Głośność bezwzględna przez Bluetooth</string>
 </resources>

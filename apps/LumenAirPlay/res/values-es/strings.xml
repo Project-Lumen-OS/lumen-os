@@ -25,7 +25,7 @@
     <string name="forget_done">Dispositivos de confianza olvidados</string>
     <string name="set_quality">Calidad de la duplicación de pantalla</string>
     <string name="quality_1080">1080p H.264 (menor retardo)</string>
-    <string name="quality_4k">4K HEVC</string>
+    <string name="quality_4k">4K</string>
     <string name="set_latency">Retardo</string>
     <string name="latency_low">Bajo (150 ms)</string>
     <string name="latency_normal">Normal (250 ms)</string>

@@ -60,10 +60,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(HERE), "sign"))
 sys.path.insert(0, HERE)
 try:
     import check_image as ci  # noqa: E402
-    import sign_payload as spl  # noqa: E402  (protobuf wire reader)
+    import payload_wire as spl  # noqa: E402  (protobuf wire reader)
+    from erofs_ls import erofs_files  # noqa: E402,F401  (the erofs file walk)
     import check_publish as cp  # noqa: E402  (personal tokens)
 except Exception as e:  # noqa: BLE001
-    print(f"check_release_assets: ERROR: cannot load check_image.py / sign_payload.py / check_publish.py: {e}",
+    print(f"check_release_assets: ERROR: cannot load check_image.py / payload_wire.py / check_publish.py: {e}",
           file=sys.stderr)
     sys.exit(1)
 
@@ -203,31 +204,6 @@ def sha256_file(p):
         for b in iter(lambda: f.read(1 << 22), b""):
             h.update(b)
     return h.hexdigest()
-
-
-def erofs_files(img, dump):
-    """Yield (path, nid) of every regular file of an erofs image (dump.erofs --ls, read only; works on a
-    case-insensitive Mac file system, unlike fsck.erofs --extract)."""
-    todo = [("", None)]                                # root: --path=/
-    while todo:
-        path, nid = todo.pop()
-        args = [dump, "--ls"] + (["--nid=%d" % nid] if nid is not None else ["--path=/"]) + [img]
-        r = subprocess.run(args, capture_output=True, text=True, errors="surrogateescape")
-        if r.returncode:
-            raise RuntimeError(f"dump.erofs --ls {path or '/'}: {r.stderr[-200:]}")
-        rows = r.stdout.split("NID TYPE  FILENAME", 1)
-        if len(rows) != 2:
-            raise RuntimeError(f"dump.erofs --ls {path or '/'}: unexpected output")
-        for line in rows[1].splitlines():
-            m = re.match(r"^\s*(\d+)\s+(\d+)\s+(.*)$", line)
-            if not m or m.group(3) in (".", ".."):
-                continue
-            n, t, name = int(m.group(1)), int(m.group(2)), m.group(3)
-            child = path + "/" + name
-            if t == 2:
-                todo.append((child, n))
-            elif t == 1:
-                yield child.lstrip("/"), n
 
 
 def image_edition(img, dump, errs):

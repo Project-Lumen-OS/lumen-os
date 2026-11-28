@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
+<resources>
+    <string name="lumen_m_advanced">Расширенные настройки</string>
+    <string name="lumen_m_power_on_off">Включение и выключение</string>
+</resources>

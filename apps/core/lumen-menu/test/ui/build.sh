@@ -8,7 +8,9 @@
 # WALK=QuickWalkActivity builds the quick menu walk (test/ui/quick_walk.py) instead; WITHOUT="id ..." removes those
 # features from the model's profile in the test APK (a model without them, e.g. picture.memc). EXTRA_SRC="path ..." also
 # compiles those sources of the assembled tree (classes a walk reaches only by reflection), EXTRA_PERMS="perm ..." asks
-# those permissions too (the power walk: the sleep and the overlays of the power key).
+# those permissions too (the power walk: the sleep and the overlays of the power key). EXTRA_ACTIVITIES="class ..."
+# declares those activities of the tree too (exported, translucent: the manual focus walk), TREE_PATCH=script runs on
+# the assembled tree before the build (test-only gates such as the X50 model check; never the repo).
 set -eu
 OUT=$1 DEV=$2 APPNAME=$3 WALK=${WALK:-MenuWalkActivity}
 G=$(cd "$(dirname "$0")/../../../../.." && pwd)
@@ -18,6 +20,7 @@ HJ=$G/apps/sdk/framework-full-headers.jar
 APP=$OUT/tree; B=$OUT/b
 rm -rf "$APP" "$B"; mkdir -p "$B/gen" "$B/classes" "$B/dex" "$B/src/org/lumen/menu/walk"
 python3 -B "$G/tools/devices/assemble_app.py" --root "$G" --device "$DEV" --app "$APPNAME" --out "$APP" --quiet
+[ -n "${TREE_PATCH:-}" ] && sh "$TREE_PATCH" "$APP"
 if [ -n "${WITHOUT:-}" ]; then
   python3 - "$APP/assets/lumen_menu/menu.json" $WITHOUT <<'EOP'
 import json, sys
@@ -75,6 +78,7 @@ $(for p in ${EXTRA_PERMS:-}; do echo "  <uses-permission android:name=\"$p\" />"
     <activity android:name="org.lumen.projector.ui.PanelActivity" android:exported="false" android:noHistory="true"
         android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
     $ABOUT
+$(for a in ${EXTRA_ACTIVITIES:-}; do echo "    <activity android:name=\"$a\" android:exported=\"true\" android:theme=\"@android:style/Theme.Translucent.NoTitleBar.Fullscreen\" />"; done)
     <activity android:name="org.lumen.remote.keys.KeyBindActivity" android:exported="false"
         android:launchMode="singleTask" android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
   </application>

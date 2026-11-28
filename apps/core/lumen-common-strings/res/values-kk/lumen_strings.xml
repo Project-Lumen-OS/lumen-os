@@ -22,7 +22,7 @@
     <string name="lumen_apps">Қолданбалар</string>
     <string name="lumen_arrows_move_the_corner_ok">Көрсеткілер: бұрышты жылжыту · OK: келесі бұрыш</string>
     <string name="lumen_arrows_move_the_picture_back">Көрсеткілер: суретті жылжыту · Артқа: дайын</string>
-    <string name="lumen_arrows_move_the_picture_ok">Көрсеткілер: суретті жылжыту · OK: өлшем · Артқа: дайын</string>
+    <string name="lumen_arrows_move_the_picture_ok">Көрсеткілер: суретті жылжыту · OK басып тұру: өлшем · Артқа: дайын</string>
     <string name="lumen_aspect_ratio">Арақатынас</string>
     <string name="lumen_at_every_start_and_once">Әр қосылған сайын және күніне бір рет: модель, нұсқа, жинақ, жаңарту туралы мәлімет, ел, кездейсоқ орнату нөмірі және сериялық нөмір (сервер тек оның хэшін сақтайды). IP мекенжайыңыз сақталмайды.</string>
     <string name="lumen_at_least_8_characters">Кемінде 8 таңба</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Трапецияны қолмен түзету</string>
     <string name="lumen_manual_keystone_unavailable">Қолмен трапеция қолжетімсіз</string>
     <string name="lumen_medium">Орташа</string>
-    <string name="lumen_menu_grid_over_the_picture">Мәзір: тор / сурет үстінде / тест контуры</string>
+    <string name="lumen_menu_grid_over_the_picture">Мәзір: тор / сынақ кестесі / сурет үстінде / тест контуры</string>
     <string name="lumen_mid">Орташа</string>
     <string name="lumen_motion_smoothing">Қозғалыс тегістігі</string>
     <string name="lumen_move">Жылжыту</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Әдепкі мәндерді қайтару</string>
     <string name="lumen_restart">Қайта қосу</string>
     <string name="lumen_restart_now">Қайта қосу</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Оңға: үлкенірек · Солға: кішірек · OK: суретті жылжыту · Артқа: дайын</string>
-    <string name="lumen_right_left_rotate_ok_back">Оңға / Солға: бұру · OK: бастапқы күйі · Артқа: дайын</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Оңға: үлкенірек · Солға: кішірек · OK басып тұру: орын · Артқа: дайын</string>
+    <string name="lumen_right_left_rotate_ok_back">Оңға / Солға: бұру · Мәзір: бастапқы күйі · Артқа: дайын</string>
     <string name="lumen_saturation">Қанықтық</string>
     <string name="lumen_scan_with_a_phone_to">Ашу үшін телефонмен сканерлеңіз</string>
     <string name="lumen_screen_casting">Экранды тарату</string>

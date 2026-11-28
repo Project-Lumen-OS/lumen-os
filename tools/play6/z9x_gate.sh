@@ -183,9 +183,12 @@ pin_at_commit() { # name commit version_code version_name tmdb_key -> sha256 of 
   d=$W/at_$2
   if [ ! -d "$d" ]; then
     mkdir -p "$d" && git archive "$2" apps tools/devices devices/horse_popular | tar -x -C "$d" || return 1
-    # ignored inputs of a pinned app (the AirPlay native libs) come from this checkout, as for the HEAD build
+    # ignored inputs of a pinned app: the AirPlay native libs of the pin itself (build_apk.sh never compiles jni/,
+    # and this checkout's lib/ may already hold a newer library than the released pin, e.g. 1.0.12)
     a=$(python3 -B tools/devices/assemble_app.py --root "$d" --app-dir Z9xAirPlay)   # its folder at that commit
-    [ -d apps/LumenAirPlay/lib ] && [ -d "$d/$a" ] && cp -R apps/LumenAirPlay/lib "$d/$a/"
+    if [ -d "$d/$a" ] && [ -f "$G/overlay/apps_v1/Z9xAirPlay.apk" ]; then
+      ( cd "$d/$a" && unzip -q -o "$G/overlay/apps_v1/Z9xAirPlay.apk" 'lib/*' ) || return 1
+    fi
   fi
   src=$(src_of "$d" "$1" "$W/at_tree_$1") || return 1
   ( cd "$d" && BUILD_DIR="$W/at_$1" VERSION_CODE="$3" VERSION_NAME="$4" TMDB_KEY_FILE="$5" \

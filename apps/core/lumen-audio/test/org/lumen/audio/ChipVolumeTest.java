@@ -249,13 +249,14 @@ public final class ChipVolumeTest {
         int eb = base.indexOf("\non early-boot\n"), next = base.indexOf("\non ", eb + 2);
         C.ok("Z9X base: no AVRCP absolute volume at early-boot (stock vendor build.prop)", eb >= 0
                 && base.substring(eb, next < 0 ? base.length() : next).contains("\n    setprop persist.bluetooth.disableabsvol true\n")
-                && !base.contains("disableabsvol false"));
+                && userChoiceOnly(base));
         C.ok("Z9X product props: no 1.0.6 absolute volume line", !Check.read(new File(g, "overlay/v1/product_prop_v1.txt")).contains("disableabsvol"));
         String p6 = Check.read(new File(g, "overlay/play6/play6_base.rc"));
         C.ok("Play 6: no AVRCP absolute volume at early-boot", p6.contains("on early-boot\n    setprop persist.bluetooth.disableabsvol true\n")
-                && !p6.contains("disableabsvol false"));
-        C.ok("HB: no AVRCP absolute volume at early-boot", Check.read(new File(g, "devices/goat_elegant/image/hb_bt.rc"))
-                .contains("setprop persist.bluetooth.disableabsvol true"));
+                && userChoiceOnly(p6));
+        String hbRc = Check.read(new File(g, "devices/goat_elegant/image/hb_bt.rc"));
+        C.ok("HB: no AVRCP absolute volume at early-boot", hbRc.contains("setprop persist.bluetooth.disableabsvol true")
+                && userChoiceOnly(hbRc));
         for (String pf : new String[] {"devices/g0111/image/x50_prop.txt", "devices/g0111/image/x50_prop_pub.txt",
                 "devices/g0111/image/x50max_prop_pub.txt", "devices/h0061/image/h0061_prop_pub.txt", "devices/h0062/image/h0062_prop_pub.txt", "devices/h0063/image/h0063_prop_pub.txt"}) {
             String t = Check.read(new File(g, pf));
@@ -289,5 +290,12 @@ public final class ChipVolumeTest {
             if (f.isDirectory()) walk(f, out);
             else if (f.getName().endsWith(".java")) out.add(f);
         }
+    }
+
+    /** The one false of an image rc is the user's stock switch (BtAbsVolume CHOICE), after the default true. */
+    static boolean userChoiceOnly(String rc) {
+        String on = "\non early-boot && property:persist.lumen.bt_absvol=1\n    setprop persist.bluetooth.disableabsvol false\n";
+        int t = rc.indexOf("setprop persist.bluetooth.disableabsvol true"), f = rc.indexOf(on);
+        return t >= 0 && f > t && rc.indexOf("disableabsvol false") == rc.lastIndexOf("disableabsvol false");
     }
 }

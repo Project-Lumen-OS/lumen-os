@@ -11,6 +11,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import org.lumen.menu.BootKeys;
 import org.lumen.projector.Hal;
 import org.lumen.projector.R;
 import org.lumen.projector.SafeHandler;
@@ -266,6 +267,8 @@ public final class Play6PowerKey {
     }
 
     private static String guard(Context ctx, Intent intent, KeyEvent ev) {
+        String boot = BootKeys.refuse(SystemProperties.get(BootKeys.BOOT_COMPLETED, ""), SystemProperties.get(BootKeys.BOOTANIM, ""));
+        if (boot != null) return boot;                                  // the start: stock drops every key
         if (intent.getBooleanExtra(EXTRA_BEGAN_FROM_NON_INTERACTIVE, false)) return "began non-interactive";
         PowerManager pm = ctx.getSystemService(PowerManager.class);
         if (pm != null && !pm.isInteractive()) return "screen off";

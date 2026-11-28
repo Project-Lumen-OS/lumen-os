@@ -4,9 +4,11 @@ package org.lumen.projector.panel;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 
 import org.lumen.menu.EdgeFrame;
+import org.lumen.menu.FocusChart;
 
 /**
  * Draws {@link EdgeFrame} over the whole window: the black page, the edge bands and, for GUIDES, the dashed guides.
@@ -16,6 +18,8 @@ import org.lumen.menu.EdgeFrame;
 public final class EdgeFrameView extends View {
     private final String kind;
     private final Paint p = new Paint();
+    private FocusChartPainter chart;
+    private boolean chartShown;
 
     public EdgeFrameView(Context c, String kind) {
         super(c);
@@ -24,12 +28,32 @@ public final class EdgeFrameView extends View {
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
     }
 
+    /**
+     * The test chart of the geometry screens: the model's manual focus chart (FocusChart.geometry of its profile) on the
+     * page, under the edge bands, hidden at open (stock shows none there); {@link #toggleChart} shows or hides it.
+     */
+    public EdgeFrameView withChart() {
+        chart = new FocusChartPainter(FocusChart.geometry(MenuController.profile(getContext())));
+        return this;
+    }
+
+    /** OK on a geometry screen: shows or hides the test chart; true when it is shown now. */
+    public boolean toggleChart() {
+        chartShown = chart != null && !chartShown;
+        Log.i(FocusChart.TAG, "test chart " + (chartShown ? "on" : "off") + " (" + kind + ")");
+        invalidate();
+        return chartShown;
+    }
+
+    public boolean chartShown() { return chartShown; }
+
     @Override
     protected void onDraw(Canvas c) {
         float w = getWidth(), h = getHeight();
         if (w <= 0 || h <= 0) return;
         float sx = w / EdgeFrame.DESIGN_W, sy = h / EdgeFrame.DESIGN_H;
         c.drawColor(EdgeFrame.PAGE);
+        if (chartShown) chart.draw(c, (int) w, (int) h);
         float[][] bands = EdgeFrame.bands(kind);
         int[] colours = EdgeFrame.colours(kind);
         for (int i = 0; i < bands.length; i++) {

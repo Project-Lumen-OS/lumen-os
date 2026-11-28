@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0
 package org.lumen.projector.hal;
 
-import android.os.HwBinder;
 import android.os.HwParcel;
-import android.os.IHwBinder;
-import android.os.IHwInterface;
 import android.util.Log;
 
 import org.lumen.hal.gmpf.TvEventSink;
@@ -17,15 +14,18 @@ import org.lumen.hal.gmpf.TvEventSink;
  * "picturemode:N" is the picture mode change of the AI picture quality (org.lumen.aipq.AiPq). Hash chain read from
  * the same library (IGmTvCallback::getHashChain, 0xb64a0 and 0xb6540).
  */
-final class HidlTvCallback extends HwBinder implements IHwInterface {
+final class HidlTvCallback extends HidlCallback {
     static final String DESCRIPTOR = "xgimi.hardware.gmpf@1.0::IGmTvCallback";
     private static final String TAG = "LumenGmTv";
     static final int GM_TV_EVENT = 1;
-    private static final byte[] HASH_SELF = HidlFocusCallback.hex(
-            "e0e732ce0a370d085e5fa65314da361e3e090f528884aa1e631ed8f045556c44");
+    private static final byte[] HASH_SELF = hex("e0e732ce0a370d085e5fa65314da361e3e090f528884aa1e631ed8f045556c44");
 
     private static HidlTvCallback sCallback;
     private static volatile TvEventSink sSink;
+
+    private HidlTvCallback() {
+        super(TAG, DESCRIPTOR, HASH_SELF);
+    }
 
     static synchronized void attach(TvEventSink sink) {
         sSink = sink;
@@ -40,7 +40,7 @@ final class HidlTvCallback extends HwBinder implements IHwInterface {
     @Override
     public void onTransact(int code, HwParcel req, HwParcel reply, int flags) {
         if (code != GM_TV_EVENT) {
-            HidlFocusCallback.answerIBase(code, req, reply, DESCRIPTOR, HASH_SELF);
+            answerIBase(code, req, reply);
             return;
         }
         int type = -1;
@@ -66,11 +66,4 @@ final class HidlTvCallback extends HwBinder implements IHwInterface {
             try { s.onTvEvent(type, msg); } catch (Throwable t) { Log.w(TAG, "sink: " + t); }
         }
     }
-
-    @Override public IHwInterface queryLocalInterface(String descriptor) {
-        return DESCRIPTOR.equals(descriptor) || HidlFocusCallback.IBASE.equals(descriptor) ? this : null;
-    }
-    @Override public IHwBinder asBinder() { return this; }
-    @Override public boolean linkToDeath(IHwBinder.DeathRecipient recipient, long cookie) { return true; }
-    @Override public boolean unlinkToDeath(IHwBinder.DeathRecipient recipient) { return true; }
 }

@@ -12,8 +12,6 @@ catalogue
     settings.date_time action wide/small/round
     settings.power_key choice wide/small/round
     settings.sleep_timer action wide/small/round
-    power.on_ac toggle small/wide/round
-    power.on_music toggle small/wide/round
     settings.screensaver_now action wide/small/round
     settings.screensaver_delay choice wide/small/round
     eye.elder_color choice wide/small/round
@@ -24,6 +22,10 @@ catalogue
     settings.remote_keys action wide/small/round
     settings.casting action wide/small/round
     settings.parental action wide/small/round
+    settings.advanced action wide/small/round
+    settings.power_on_off action wide/small/round
+    power.on_music toggle small/wide/round
+    power.on_ac toggle small/wide/round
     settings.storage action wide/small/round
     settings.update action wide/small/round
     settings.about action wide/small/round
@@ -124,6 +126,7 @@ catalogue
   bluetooth
     bluetooth action wide/small/round
     bluetooth.add action wide/small/round
+    bluetooth.abs_volume toggle small/wide/round
   sound
     sound section wide/small/round
     sound.volume slider slider/wide/small/round

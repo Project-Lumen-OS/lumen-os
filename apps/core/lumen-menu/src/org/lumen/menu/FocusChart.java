@@ -16,6 +16,8 @@ public final class FocusChart {
     public static final float DESIGN_W = 1920f, DESIGN_H = 1080f;
     public static final String FULL = "full", SHORT = "short", OFF = "off";
     public static final int WHITE = 0xFFFFFFFF, BLACK = 0xFF000000, CLEAR = 0x00000000;
+    /** Log tag of the chart switches (manual focus and the geometry screens' test chart). */
+    public static final String TAG = "LumenChart";
 
     /**
      * Corner star rings, the corner as centre, from the inside out: {r0, r1, black (1) or white (0), bar width,
@@ -72,6 +74,13 @@ public final class FocusChart {
 
     /** The chart OK shows: the model's own, the full one where the stock has none. */
     public static String drawn(String style) { return OFF.equals(style) ? FULL : style; }
+
+    /**
+     * The test chart of the geometry screens (zoom, shift, rotation, keystone): the same chart as the model's manual
+     * focus screen, the full one where it has none. Stock shows no chart there, so it is hidden at open and OK (the
+     * keystone: MENU) shows it.
+     */
+    public static String geometry(MenuProfile p) { return drawn(style(p)); }
 
     public static float[][] rings(String drawn) { return SHORT.equals(drawn) ? SHORT_RINGS : FULL_RINGS; }
 

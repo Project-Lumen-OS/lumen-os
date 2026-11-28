@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">Ortadaki daire yuvarlak olana kadar ayarlayın</string>
-    <string name="lumen_corner_keys_more">Dişli tuşunu basılı tutun: sıfırla · Geri: bitti</string>
+    <string name="lumen_corner_keys_more">Dişli tuşu: test deseni · Dişli tuşunu basılı tutun: sıfırla · Geri: bitti</string>
 </resources>

@@ -5,7 +5,7 @@
     <string name="lumen_corner_title">@string/lumen_fine_corner_adjustment</string>
     <string name="lumen_corner_circle">Adjust until the circle in the middle is round</string>
     <string name="lumen_corner_keys_move">@string/lumen_arrows_move_the_corner_ok</string>
-    <string name="lumen_corner_keys_more">Hold the gear key: reset · Back: done</string>
+    <string name="lumen_corner_keys_more">Gear key: test chart · Hold the gear key: reset · Back: done</string>
     <string name="lumen_corner_tl">@string/lumen_top_left</string>
     <string name="lumen_corner_tr">@string/lumen_top_right</string>
     <string name="lumen_corner_br">@string/lumen_bottom_right</string>

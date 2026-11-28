@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">调整到中间的圆变圆为止</string>
-    <string name="lumen_corner_keys_more">长按齿轮键：复位 · 返回：完成</string>
+    <string name="lumen_corner_keys_more">齿轮键：测试图 · 长按齿轮键：复位 · 返回：完成</string>
 </resources>

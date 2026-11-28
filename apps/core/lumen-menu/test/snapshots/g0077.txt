@@ -76,6 +76,7 @@ section source
   screen settings.hdmi
 section bluetooth
   screen bluetooth.add
+  toggle bluetooth.abs_volume
 section general
   -- language_time
   screen settings.language
@@ -84,9 +85,6 @@ section general
   -- power
   choice settings.power_key [power_menu, sleep]
   screen settings.sleep_timer
-  toggle power.on_ac
-  choice power.boot_source [home, hdmi1, hdmi2]
-  toggle power.on_music
   -- display_menu
   choice eye [off, on]
   choice settings.menu_side [left, right]
@@ -101,6 +99,8 @@ section general
   screen settings.recents
   screen settings.casting
   screen settings.parental
+  -- more
+  page settings.advanced
   -- storage_updates
   screen settings.storage
   screen settings.update
@@ -123,6 +123,12 @@ section developer
   screen dev.system_info
   toggle dev.network_adb
   screen dev.android
+page settings.power_on_off
+  choice power.boot_source [home, hdmi1, hdmi2]
+  toggle power.on_music
+  toggle power.on_ac
+page settings.advanced
+  page settings.power_on_off
 page focus.settings
   toggle focus.smart
 popup keystone (rows with a tile of their own left out)

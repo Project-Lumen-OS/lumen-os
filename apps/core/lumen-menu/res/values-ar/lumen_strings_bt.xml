@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">جارٍ البحث عن الأجهزة…</string>
     <string name="lumen_m_bt_none">لم يتم العثور على أجهزة</string>
     <string name="lumen_m_bt_pairing">جارٍ الإقران…</string>
+    <string name="lumen_m_bt_abs_volume">مستوى الصوت المطلق للبلوتوث</string>
 </resources>

@@ -433,7 +433,63 @@ public final class KeyToolsTest {
         rule();
         overlay(app, scr);
         activity(app, scr);
+        sounds(app, scr);
         System.out.println(fails == 0 ? "keytools: " + checks + " checks, all green" : "keytools: " + fails + " of " + checks + " FAILED");
         if (fails != 0) System.exit(1);
+    }
+    // ------------------------------------------------------------------ key sounds
+    /** Two rows; DOWN in our code moves the focus to the second, UP is left to the views (Android's focus search). */
+    static final class SoundPanel extends TestPanel {
+        View a, b;
+        @Override protected View onCreateView(Context c) {
+            FrameLayout f = new FrameLayout(c);
+            a = new Row(c, "a"); b = new Row(c, "b");
+            f.addView(a, new ViewGroup.LayoutParams(-1, -2));
+            f.addView(b, new ViewGroup.LayoutParams(-1, -2));
+            a.requestFocus();
+            return f;
+        }
+        @Override protected boolean onKeyEvent(KeyEvent e) {
+            keys.add(e.toString());
+            int k = e.getKeyCode();
+            if (k == KeyEvent.KEYCODE_DPAD_DOWN) { if (e.getAction() == KeyEvent.ACTION_DOWN) b.requestFocus(); return true; }
+            if (k == KeyEvent.KEYCODE_DPAD_RIGHT) return true;            // a slider step: the focus stays
+            return false;                                                 // UP, OK: the views
+        }
+    }
+    /** A row that clicks on its own OK, as Row.onKeyUp or a clickable view's performClick. */
+    static final class Row extends View {
+        Row(Context c, String n) { super(c); name = n; }
+        @Override public boolean dispatchKeyEvent(KeyEvent e) {
+            if (findFocus() != this) return false;                       // keys go to the focused view
+            if (e.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER && e.getAction() == KeyEvent.ACTION_UP) {
+                playSoundEffect(android.view.SoundEffectConstants.CLICK);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    static void sounds(Context app, Screen scr) {
+        OverlayHost host = OverlayHost.get(app);
+        host.dismissAll(false);
+        SoundPanel p = new SoundPanel();
+        host.show(p);
+        View.SOUNDS.clear();
+        scr.press(KeyEvent.KEYCODE_DPAD_DOWN);
+        ok("sound: DOWN that moved the focus in our code plays NAVIGATION_DOWN once", View.SOUNDS.equals(List.of("4@b")));
+        View.SOUNDS.clear();
+        scr.press(KeyEvent.KEYCODE_DPAD_RIGHT);
+        ok("sound: a step that keeps the focus is silent", View.SOUNDS.isEmpty());
+        scr.press(KeyEvent.KEYCODE_DPAD_UP);
+        ok("sound: UP left to Android's focus search adds no sound of ours (Android plays its own)", View.SOUNDS.isEmpty());
+        scr.press(KeyEvent.KEYCODE_DPAD_CENTER);
+        ok("sound: OK clicks once, the row's own click muted for that key " + View.SOUNDS, View.SOUNDS.equals(List.of("0@b")));
+        ok("sound: the row clicks by itself again after the key", p.b.isSoundEffectsEnabled());
+        View.SOUNDS.clear();
+        long t = Looper.now;
+        scr.focus.dispatchKeyEvent(new KeyEvent(t - 5, t, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_CENTER, 0));
+        ok("sound: the OK release of a press begun in another window is silent", View.SOUNDS.isEmpty());
+        host.dismissAll(false);
     }
 }

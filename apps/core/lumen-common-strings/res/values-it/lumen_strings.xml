@@ -22,7 +22,7 @@
     <string name="lumen_apps">App</string>
     <string name="lumen_arrows_move_the_corner_ok">Frecce: sposta l\'angolo · OK: angolo successivo</string>
     <string name="lumen_arrows_move_the_picture_back">Frecce: sposta l’immagine · Indietro: fine</string>
-    <string name="lumen_arrows_move_the_picture_ok">Frecce: sposta l’immagine · OK: dimensione · Indietro: fine</string>
+    <string name="lumen_arrows_move_the_picture_ok">Frecce: sposta l’immagine · Tieni premuto OK: dimensione · Indietro: fine</string>
     <string name="lumen_aspect_ratio">Formato</string>
     <string name="lumen_at_every_start_and_once">A ogni accensione e una volta al giorno: modello, versione, build, dati dell\'aggiornamento, paese, un numero di installazione casuale e il numero di serie (il server ne conserva solo l\'hash). Il tuo indirizzo IP non viene salvato.</string>
     <string name="lumen_at_least_8_characters">Almeno 8 caratteri</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Trapezio manuale</string>
     <string name="lumen_manual_keystone_unavailable">Trapezio manuale non disponibile</string>
     <string name="lumen_medium">Media</string>
-    <string name="lumen_menu_grid_over_the_picture">Menu: griglia / sopra l\'immagine / quadrilatero di prova</string>
+    <string name="lumen_menu_grid_over_the_picture">Menu: griglia / immagine di prova / sopra l\'immagine / quadrilatero di prova</string>
     <string name="lumen_mid">Medio</string>
     <string name="lumen_motion_smoothing">Fluidità movimento</string>
     <string name="lumen_move">Sposta</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Torna ai valori predefiniti</string>
     <string name="lumen_restart">Riavvia</string>
     <string name="lumen_restart_now">Riavvia ora</string>
-    <string name="lumen_right_bigger_left_smaller_ok">Destra: più grande · Sinistra: più piccola · OK: sposta l’immagine · Indietro: fine</string>
-    <string name="lumen_right_left_rotate_ok_back">Destra / Sinistra: ruota · OK: come all’inizio · Indietro: fine</string>
+    <string name="lumen_right_bigger_left_smaller_ok">Destra: più grande · Sinistra: più piccola · Tieni premuto OK: posizione · Indietro: fine</string>
+    <string name="lumen_right_left_rotate_ok_back">Destra / Sinistra: ruota · Menu: come all’inizio · Indietro: fine</string>
     <string name="lumen_saturation">Saturazione</string>
     <string name="lumen_scan_with_a_phone_to">Scansiona con il telefono per aprire</string>
     <string name="lumen_screen_casting">Trasmissione dello schermo</string>

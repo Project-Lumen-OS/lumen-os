@@ -77,4 +77,29 @@ public class View {
 
 
     public void invalidate() { }
+
+    // the key focus and the sound effects (KeySound through PanelKeys)
+    /** Every sound effect a view played, in order ("<effect>@<view>"). */
+    public static final java.util.List<String> SOUNDS = new java.util.ArrayList<>();
+    public String name = "view";
+    private boolean focused, sounds = true;
+
+    public View findFocus() { return focused ? this : null; }
+
+    /** Takes the focus inside its window (the old focus of that window drops it). */
+    public boolean requestFocus() {
+        View r = this;
+        while (r.parent instanceof View) r = (View) r.parent;
+        r.clearFocusTree();
+        focused = true;
+        return true;
+    }
+
+    void clearFocusTree() { focused = false; }
+
+    public void setSoundEffectsEnabled(boolean on) { sounds = on; }
+
+    public boolean isSoundEffectsEnabled() { return sounds; }
+
+    public void playSoundEffect(int effect) { if (sounds) SOUNDS.add(effect + "@" + name); }
 }

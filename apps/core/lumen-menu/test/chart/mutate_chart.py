@@ -9,6 +9,7 @@ G = os.path.abspath(os.path.join(os.path.dirname(__file__), *[".."] * 5))
 M = "apps/core/lumen-menu/src/org/lumen/menu/"
 CORE = "apps/LumenProjector/core/src/org/lumen/projector/"
 X50 = "apps/LumenProjector/host/activity/src/org/lumen/x50/projector/"
+MP = "apps/core/lumen-menu/src/org/lumen/projector/panel/"
 MUTANTS = [
     ("full spokes every 3 degrees", M + "FocusChart.java", "{123f, 230f, 1, 3.5f, 1f, 4f}", "{123f, 230f, 1, 3.5f, 1f, 3f}"),
     ("full star smaller", M + "FocusChart.java", "{123f, 230f, 1,", "{123f, 200f, 1,"),
@@ -40,9 +41,39 @@ MUTANTS = [
     ("optical zoom: frame only", CORE + "panel/OpticalZoomPanel.java", "EdgeFrame.GUIDES)", "EdgeFrame.FRAME)"),
     ("rotate: guides", CORE + "panel/RotatePanel.java", "EdgeFrame.FRAME)", "EdgeFrame.GUIDES)"),
     ("Play 6 zoom: guides", CORE + "panel/Play6ZoomShiftPanel.java", "EdgeFrame.FRAME)", "EdgeFrame.GUIDES)"),
-    ("X50 lens: no frame", X50 + "LensActivity.java", "root.addView(new EdgeFrameView(this, EdgeFrame.GUIDES),", "root.addView(new android.view.View(this),"),
+    ("X50 lens: no frame", X50 + "LensActivity.java", "new EdgeFrameView(this, EdgeFrame.GUIDES)", "new EdgeFrameView(this, null)"),
     ("X50 move: guides", X50 + "MoveActivity.java", "EdgeFrame.FRAME)", "EdgeFrame.GUIDES)"),
-    ("X50 rotate: no frame", X50 + "RotateActivity.java", "root.addView(new EdgeFrameView(this, EdgeFrame.FRAME),", "root.addView(new android.view.View(this),"),
+    ("X50 rotate: no frame", X50 + "RotateActivity.java", "new EdgeFrameView(this, EdgeFrame.FRAME)", "new EdgeFrameView(this, null)"),
+    # the geometry screens' test chart (zoom-pattern-1128)
+    ("chart shown at open", MP + "EdgeFrameView.java", "private boolean chartShown;", "private boolean chartShown = true;"),
+    ("chart never drawn", MP + "EdgeFrameView.java", "        if (chartShown) chart.draw(c, (int) w, (int) h);\n", ""),
+    ("chart not the model's", MP + "EdgeFrameView.java", "FocusChart.geometry(MenuController.profile(getContext()))", "FocusChart.FULL"),
+    ("geometry chart off", M + "FocusChart.java", "public static String geometry(MenuProfile p) { return drawn(style(p)); }",
+     "public static String geometry(MenuProfile p) { return style(p); }"),
+    ("hold at once", M + "OkPress.java", "eventTime - downTime >= HOLD_MS", "eventTime - downTime >= 0"),
+    ("short after a hold", M + "OkPress.java", "boolean isShort = down && !held && !canceled;", "boolean isShort = down && !canceled;"),
+    ("lone UP counts", M + "OkPress.java", "boolean isShort = down && !held && !canceled;", "boolean isShort = !held && !canceled;"),
+    ("cancelled UP counts", M + "OkPress.java", "boolean isShort = down && !held && !canceled;", "boolean isShort = down && !held;"),
+    ("hold twice", M + "OkPress.java", "if (down && !held && eventTime", "if (down && eventTime"),
+    ("no numpad enter", M + "OkPress.java", "{23, 66, 160}", "{23, 66}"),
+    ("zoom shift: OK still switches", CORE + "panel/ZoomShiftPanel.java", "press == OkPress.SHORT && frame != null) frame.toggleChart()",
+     "press == OkPress.HOLD && frame != null) frame.toggleChart()"),
+    ("zoom shift: no chart hint", CORE + "panel/ZoomShiftPanel.java", "R.string.lumen_focus_chart_hint", "R.string.zs_title"),
+    ("optical zoom: no hold switch", CORE + "panel/OpticalZoomPanel.java", "else if (press == OkPress.HOLD && Family.ZOOM_SHIFT",
+     "else if (false && Family.ZOOM_SHIFT"),
+    ("Play 6 zoom: no chart", CORE + "panel/Play6ZoomShiftPanel.java", "EdgeFrame.FRAME).withChart()", "EdgeFrame.FRAME)"),
+    ("X50 lens: hold does nothing", X50 + "LensActivity.java", "                else if (press == OkPress.HOLD) switchPage();\n", ""),
+    ("X50 move: OK does nothing", X50 + "MoveActivity.java", ") == OkPress.SHORT) frame.toggleChart();", ") == OkPress.SHORT) { }"),
+    ("rotate: OK still undoes", CORE + "panel/RotatePanel.java", "boolean ok = code == KeyEvent.KEYCODE_MENU;", "boolean ok = OkPress.isOk(code);"),
+    ("X50 rotate: OK resets", X50 + "RotateActivity.java", ") == OkPress.SHORT) frame.toggleChart();", ") == OkPress.SHORT) key(this::reset);"),
+    ("keystone: three views", CORE + "panel/ManualKeystonePanel.java", "VIEW_QUAD = 3, VIEWS = 4", "VIEW_QUAD = 3, VIEWS = 3"),
+    ("keystone: OK no corner", CORE + "panel/ManualKeystonePanel.java", "else if (press == OkPress.SHORT) nextCorner();", "else if (press == OkPress.SHORT) { }"),
+    ("Play 6 keystone: chart not drawn", CORE + "panel/Play6KeystonePanel.java", "chart.draw(c, (int) w, (int) h);", "c.save();"),
+    ("ru size hint old", "apps/core/lumen-common-strings/res/values-ru/lumen_strings.xml", "Удерживайте OK: положение", "OK: сдвиг картинки"),
+    ("X50 corners: short gear nothing", X50 + "CornerActivity.java", "        else toggleChart();\n", ""),
+    ("X50 corners: the grey page hides the chart", MP + "CornerView.java", "if (page) c.drawRect(0, 0, w, h, fill);", "c.drawRect(0, 0, w, h, fill);"),
+    ("X50 corners: chart shown at open", X50 + "CornerActivity.java", "chart.setVisibility(View.GONE);", "chart.setVisibility(View.VISIBLE);"),
+    ("ja grid without chart", "apps/core/lumen-common-strings/res/values-ja/lumen_strings.xml", "グリッド / テストチャート / ", "グリッド / "),
 ]
 
 
@@ -67,12 +98,15 @@ def run(root):
 
 def scratch():
     d = tempfile.mkdtemp()
-    for p in ("apps/core/lumen-menu", "devices", "tools/devices"):
+    for p in ("apps/core/lumen-menu", "devices", "tools/devices", "apps/core/lumen-common-strings"):
         shutil.copytree(os.path.join(G, p), os.path.join(d, p), ignore=shutil.ignore_patterns("research", "image", "*.img", "*.zip", "test"))
     shutil.copytree(os.path.join(G, "apps/core/lumen-menu/test/chart"), os.path.join(d, "apps/core/lumen-menu/test/chart"), dirs_exist_ok=True)
-    for p in (CORE + "ManualFocusActivity.java", X50 + "FocusActivity.java", X50 + "LensActivity.java", X50 + "MoveActivity.java",
+    for p in ((CORE + "ManualFocusActivity.java", X50 + "FocusActivity.java", X50 + "LensActivity.java", X50 + "MoveActivity.java",
               X50 + "RotateActivity.java", CORE + "panel/ZoomShiftPanel.java", CORE + "panel/OpticalZoomPanel.java",
-              CORE + "panel/RotatePanel.java", CORE + "panel/Play6ZoomShiftPanel.java", CORE + "panel/EdgeGrid.java"):
+              CORE + "panel/RotatePanel.java", CORE + "panel/Play6ZoomShiftPanel.java", CORE + "panel/EdgeGrid.java",
+              CORE + "panel/ManualKeystonePanel.java", CORE + "panel/Play6KeystonePanel.java", X50 + "CornerActivity.java")
+              + tuple("apps/LumenProjector/core/res/%s/strings_kst.xml" % l for l in os.listdir(os.path.join(G, "apps/LumenProjector/core/res"))
+                      if os.path.exists(os.path.join(G, "apps/LumenProjector/core/res", l, "strings_kst.xml")))):
         os.makedirs(os.path.dirname(os.path.join(d, p)), exist_ok=True)
         shutil.copy(os.path.join(G, p), os.path.join(d, p))
     return d

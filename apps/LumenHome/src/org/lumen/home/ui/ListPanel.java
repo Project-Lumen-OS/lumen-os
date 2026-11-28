@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.lumen.ui.KeySound;
 
 /**
  * Right-side panel with a title and a focusable list (context menu, weather popover, Customize pages).
@@ -332,6 +333,7 @@ public class ListPanel extends ViewGroup {
                 while (to >= 0 && (mItems.get(to).kind == INFO || mItems.get(to).kind == HEADER || !mItems.get(to).enabled)) to--;
                 if (to >= 0) setFocus(to);
                 else if (mEditor != null) setFocus(-1);
+                if (to >= 0 || mEditor != null) KeySound.move(this, keyCode);
                 return true;
             }
             case KeyEvent.KEYCODE_DPAD_DOWN: {
@@ -341,7 +343,10 @@ public class ListPanel extends ViewGroup {
                 }
                 int to = mFocus + 1;
                 while (to < mItems.size() && (mItems.get(to).kind == INFO || mItems.get(to).kind == HEADER || !mItems.get(to).enabled)) to++;
-                if (to < mItems.size()) setFocus(to);
+                if (to < mItems.size()) {
+                    setFocus(to);
+                    KeySound.move(this, keyCode);
+                }
                 return true;
             }
             case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -352,6 +357,7 @@ public class ListPanel extends ViewGroup {
             case KeyEvent.KEYCODE_NUMPAD_ENTER: {
                 if (mFocus < 0 || mFocus >= mItems.size()) return false; // editor: the EditText shows the IME
                 if (e.getRepeatCount() > 0) return true; // a held OK (the long press that opened us) never clicks
+                KeySound.click(this);
                 Item it = mItems.get(mFocus);
                 if (it.kind == REORDER) {
                     if (mPicked >= 0) drop();

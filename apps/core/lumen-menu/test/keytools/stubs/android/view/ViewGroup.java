@@ -41,6 +41,18 @@ public class ViewGroup extends View implements ViewParent {
         return false;
     }
 
+    @Override public View findFocus() {
+        View f = super.findFocus();
+        if (f != null) return f;
+        for (View c : children) { f = c.findFocus(); if (f != null) return f; }
+        return null;
+    }
+
+    @Override void clearFocusTree() {
+        super.clearFocusTree();
+        for (View c : children) c.clearFocusTree();
+    }
+
     public void setClipChildren(boolean b) { }
 
     public void setClipToPadding(boolean b) { }

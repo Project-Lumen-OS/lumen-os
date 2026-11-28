@@ -230,7 +230,8 @@ first=$(awk '/private boolean onKey\(KeyEvent ev\) \{/ { on = 1 } on && /popupUn
   || { echo "FAIL popup focus: All settings follows a popup's checked row"; bad=1; }
 QP="$HERE/src/org/lumen/projector/panel/QpdPanel.java"
 grep -qxF '    public void refreshPage() { refreshPage(-1); }' "$QP" \
-  && grep -qF 'PageAccess.setFocusIndex(stack.peek(), focusIndex >= 0 ? focusIndex : focusedIndex());' "$QP" \
+  && grep -qF 'int f = focusIndex >= 0 ? focusIndex : focusedIndex();' "$QP" \
+  && grep -qF 'if (f >= 0) PageAccess.setFocusIndex(stack.peek(), f);' "$QP" \
   || { echo "FAIL popup focus: QpdPanel.refreshPage moves the focus by itself"; bad=1; }
 # a small tile's label: smaller down to 11 px where that fits, else full size and running like the wide tiles (QpdLayout)
 QT="$HERE/src/org/lumen/projector/panel/QpdTile.java"

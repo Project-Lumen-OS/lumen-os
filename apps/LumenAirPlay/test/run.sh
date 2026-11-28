@@ -37,4 +37,6 @@ grep -q 'CASTING_ACTION = "org.lumen.cast.SCREEN"' "$G/apps/core/lumen-menu/src/
 grep -q '"org.lumen.airplay"' "$G/apps/LumenHome/src/org/lumen/home/model/AppOrder.java" \
   && { echo "FAIL home: org.lumen.airplay hidden by default, no tile"; bad=1; }
 [ "$bad" = 0 ] || exit 1
+# the native audio timeline (C++ host simulation of jni/glue/pcm_timeline.h)
+sh "$HERE/test/native/run.sh"
 echo "airplay run.sh: ALL PASSED"

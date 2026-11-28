@@ -22,7 +22,7 @@
     <string name="lumen_apps">Aplikacje</string>
     <string name="lumen_arrows_move_the_corner_ok">Strzałki: przesuń róg · OK: następny róg</string>
     <string name="lumen_arrows_move_the_picture_back">Strzałki: przesuń obraz · Wstecz: gotowe</string>
-    <string name="lumen_arrows_move_the_picture_ok">Strzałki: przesuń obraz · OK: rozmiar · Wstecz: gotowe</string>
+    <string name="lumen_arrows_move_the_picture_ok">Strzałki: przesuń obraz · Przytrzymaj OK: rozmiar · Wstecz: gotowe</string>
     <string name="lumen_aspect_ratio">Proporcje obrazu</string>
     <string name="lumen_at_every_start_and_once">Przy każdym uruchomieniu i raz dziennie: model, wersja, kompilacja, dane o aktualizacji, kraj, losowy numer instalacji i numer seryjny (serwer przechowuje tylko jego skrót). Twój adres IP nie jest zapisywany.</string>
     <string name="lumen_at_least_8_characters">Co najmniej 8 znaków</string>
@@ -143,7 +143,7 @@
     <string name="lumen_manual_keystone">Ręczna korekcja trapezu</string>
     <string name="lumen_manual_keystone_unavailable">Ręczna korekcja trapezu niedostępna</string>
     <string name="lumen_medium">Średnia</string>
-    <string name="lumen_menu_grid_over_the_picture">Menu: siatka / na obrazie / czworokąt testowy</string>
+    <string name="lumen_menu_grid_over_the_picture">Menu: siatka / plansza testowa / na obrazie / czworokąt testowy</string>
     <string name="lumen_mid">Średni</string>
     <string name="lumen_motion_smoothing">Płynność ruchu</string>
     <string name="lumen_move">Przenieś</string>
@@ -210,8 +210,8 @@
     <string name="lumen_reset_to_defaults">Przywróć wartości domyślne</string>
     <string name="lumen_restart">Restartuj</string>
     <string name="lumen_restart_now">Uruchom ponownie</string>
-    <string name="lumen_right_bigger_left_smaller_ok">W prawo: większy · W lewo: mniejszy · OK: przesuń obraz · Wstecz: gotowe</string>
-    <string name="lumen_right_left_rotate_ok_back">W prawo / W lewo: obróć · OK: jak na początku · Wstecz: gotowe</string>
+    <string name="lumen_right_bigger_left_smaller_ok">W prawo: większy · W lewo: mniejszy · Przytrzymaj OK: położenie · Wstecz: gotowe</string>
+    <string name="lumen_right_left_rotate_ok_back">W prawo / W lewo: obróć · Menu: jak na początku · Wstecz: gotowe</string>
     <string name="lumen_saturation">Nasycenie</string>
     <string name="lumen_scan_with_a_phone_to">Zeskanuj telefonem, aby otworzyć</string>
     <string name="lumen_screen_casting">Przesyłanie ekranu</string>

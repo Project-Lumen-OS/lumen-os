@@ -31,9 +31,10 @@ public:
        now, so the picture does not move when the sound starts */
     void expectSession(int ct);
     /* audio_process (UxPlay RTP thread); ntpLocalNs = CLOCK_REALTIME (0 = not synced),
-       ntpRemoteNs = sender time; seqnum = RTP sequence number (lost packets) */
+       ntpRemoteNs = sender time; seqnum = RTP sequence number (lost packets); rtp = RTP
+       timestamp (timing statistics) */
     void decode(const uint8_t *data, int len, int ct, uint64_t ntpLocalNs, uint64_t ntpRemoteNs,
-                uint16_t seqnum);
+                uint16_t seqnum, uint32_t rtp);
     /* UxPlay RTP thread (patch z9x-0011): CLOCK_MONOTONIC time by which the packet with these
        NTP times must be in the decoder to be heard, 0 = unknown */
     uint64_t resendDeadline(uint64_t ntpLocalNs, uint64_t ntpRemoteNs);

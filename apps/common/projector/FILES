@@ -177,6 +177,7 @@ src/org/lumen/projector/source/TifHdmiState.java
 src/org/lumen/projector/mem/MemoryGuard.java
 src/org/lumen/projector/recents/RecentsActivity.java
 src/org/lumen/projector/power/PowerMenu.java
+src/org/lumen/projector/power/SleepTimerCard.java
 src/org/lumen/projector/home/PanelRequestReceiver.java
 src/org/lumen/projector/source/SourceRequestReceiver.java
 src/org/lumen/projector/power/StandbyStateProvider.java

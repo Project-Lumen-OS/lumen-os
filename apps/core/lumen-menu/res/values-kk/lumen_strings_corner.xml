@@ -3,5 +3,5 @@
      (apps/common/projector panel_kst_corner_*), the move keys (Z9xProjector kst_hint_move). -->
 <resources>
     <string name="lumen_corner_circle">Ортадағы шеңбер дөп-дөңгелек болғанша реттеңіз</string>
-    <string name="lumen_corner_keys_more">Тісті доңғалақ түймесін басып тұрыңыз: бастапқы күйге қайтару · Артқа: дайын</string>
+    <string name="lumen_corner_keys_more">Тісті доңғалақ түймесі: сынақ кестесі · Тісті доңғалақ түймесін басып тұрыңыз: бастапқы күйге қайтару · Артқа: дайын</string>
 </resources>

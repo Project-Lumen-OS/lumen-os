@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">기기 검색 중…</string>
     <string name="lumen_m_bt_none">기기를 찾을 수 없음</string>
     <string name="lumen_m_bt_pairing">페어링 중…</string>
+    <string name="lumen_m_bt_abs_volume">블루투스 절대 볼륨</string>
 </resources>

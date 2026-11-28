@@ -10,4 +10,5 @@
     <string name="lumen_m_bt_searching">正在搜尋裝置…</string>
     <string name="lumen_m_bt_none">找不到裝置</string>
     <string name="lumen_m_bt_pairing">正在配對…</string>
+    <string name="lumen_m_bt_abs_volume">藍牙絕對音量</string>
 </resources>

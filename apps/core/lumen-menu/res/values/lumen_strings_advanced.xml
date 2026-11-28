@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: LicenseRef-PolyForm-Noncommercial-1.0.0 -->
+<!-- lumen-menu titles of the stock General page Advanced settings (newsettings more_setting) and its Power on
+     and off page (boot_and_power_off_settings); wording from the stock texts, plain words -->
+<resources>
+    <string name="lumen_m_advanced">Advanced settings</string>
+    <string name="lumen_m_power_on_off">Power on and off</string>
+</resources>
